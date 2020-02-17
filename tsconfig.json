@@ -16,6 +16,60 @@
       ],
       "@fc/rnipp/*": [
         "libs/rnipp/src/*"
+      ],
+      "@fc/identity-management": [
+        "libs/identity-management/src"
+      ],
+      "@fc/identity-management/*": [
+        "libs/identity-management/src/*"
+      ],
+      "@fc/idp-management": [
+        "libs/idp-management/src"
+      ],
+      "@fc/idp-management/*": [
+        "libs/idp-management/src/*"
+      ],
+      "@fc/sp-management": [
+        "libs/sp-management/src"
+      ],
+      "@fc/sp-management/*": [
+        "libs/sp-management/src/*"
+      ],
+      "@fc/logger": [
+        "libs/logger/src"
+      ],
+      "@fc/logger/*": [
+        "libs/logger/src/*"
+      ],
+      "@fc/consent-management": [
+        "libs/consent-management/src"
+      ],
+      "@fc/consent-management/*": [
+        "libs/consent-management/src/*"
+      ],
+      "@fc/oidc-provider": [
+        "libs/oidc-provider/src"
+      ],
+      "@fc/oidc-provider/*": [
+        "libs/oidc-provider/src/*"
+      ],
+      "@fc/oidc-client": [
+        "libs/oidc-client/src"
+      ],
+      "@fc/oidc-client/*": [
+        "libs/oidc-client/src/*"
+      ],
+      "@fc/cryptography": [
+        "libs/cryptography/src"
+      ],
+      "@fc/cryptography/*": [
+        "libs/cryptography/src/*"
+      ],
+      "@fc/insee": [
+        "libs/insee/src"
+      ],
+      "@fc/insee/*": [
+        "libs/insee/src/*"
       ]
     }
   },

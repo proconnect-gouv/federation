@@ -34,6 +34,87 @@
       "compilerOptions": {
         "tsConfigPath": "libs/rnipp/tsconfig.lib.json"
       }
+    },
+    "identity-management": {
+      "type": "library",
+      "root": "libs/identity-management",
+      "entryFile": "index",
+      "sourceRoot": "libs/identity-management/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/identity-management/tsconfig.lib.json"
+      }
+    },
+    "idp-management": {
+      "type": "library",
+      "root": "libs/idp-management",
+      "entryFile": "index",
+      "sourceRoot": "libs/idp-management/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/idp-management/tsconfig.lib.json"
+      }
+    },
+    "sp-management": {
+      "type": "library",
+      "root": "libs/sp-management",
+      "entryFile": "index",
+      "sourceRoot": "libs/sp-management/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/sp-management/tsconfig.lib.json"
+      }
+    },
+    "logger": {
+      "type": "library",
+      "root": "libs/logger",
+      "entryFile": "index",
+      "sourceRoot": "libs/logger/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/logger/tsconfig.lib.json"
+      }
+    },
+    "consent-management": {
+      "type": "library",
+      "root": "libs/consent-management",
+      "entryFile": "index",
+      "sourceRoot": "libs/consent-management/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/consent-management/tsconfig.lib.json"
+      }
+    },
+    "oidc-provider": {
+      "type": "library",
+      "root": "libs/oidc-provider",
+      "entryFile": "index",
+      "sourceRoot": "libs/oidc-provider/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/oidc-provider/tsconfig.lib.json"
+      }
+    },
+    "oidc-client": {
+      "type": "library",
+      "root": "libs/oidc-client",
+      "entryFile": "index",
+      "sourceRoot": "libs/oidc-client/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/oidc-client/tsconfig.lib.json"
+      }
+    },
+    "cryptography": {
+      "type": "library",
+      "root": "libs/cryptography",
+      "entryFile": "index",
+      "sourceRoot": "libs/cryptography/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cryptography/tsconfig.lib.json"
+      }
+    },
+    "insee": {
+      "type": "library",
+      "root": "libs/insee",
+      "entryFile": "index",
+      "sourceRoot": "libs/insee/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/insee/tsconfig.lib.json"
+      }
     }
   }
 }

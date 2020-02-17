@@ -68,7 +68,25 @@
     ],
     "moduleNameMapper": {
       "@fc/rnipp/(.*)": "<rootDir>/libs/rnipp/src/$1",
-      "@fc/rnipp": "<rootDir>/libs/rnipp/src"
+      "@fc/rnipp": "<rootDir>/libs/rnipp/src",
+      "@fc/identity-management/(.*)": "<rootDir>/libs/identity-management/src/$1",
+      "@fc/identity-management": "<rootDir>/libs/identity-management/src",
+      "@fc/id-pmanagement/(.*)": "<rootDir>/libs/id-pmanagement/src/$1",
+      "@fc/id-pmanagement": "<rootDir>/libs/id-pmanagement/src",
+      "@fc/spmanagement/(.*)": "<rootDir>/libs/spmanagement/src/$1",
+      "@fc/spmanagement": "<rootDir>/libs/spmanagement/src",
+      "0fc/logger/(.*)": "<rootDir>/libs/logger/src/$1",
+      "0fc/logger": "<rootDir>/libs/logger/src",
+      "@fc/consent-management/(.*)": "<rootDir>/libs/consent-management/src/$1",
+      "@fc/consent-management": "<rootDir>/libs/consent-management/src",
+      "@fc/oidc-provider/(.*)": "<rootDir>/libs/oidc-provider/src/$1",
+      "@fc/oidc-provider": "<rootDir>/libs/oidc-provider/src",
+      "@fc/oidc-client/(.*)": "<rootDir>/libs/oidc-client/src/$1",
+      "@fc/oidc-client": "<rootDir>/libs/oidc-client/src",
+      "@fc/cryptography/(.*)": "<rootDir>/libs/cryptography/src/$1",
+      "@fc/cryptography": "<rootDir>/libs/cryptography/src",
+      "@fc/insee/(.*)": "<rootDir>/libs/insee/src/$1",
+      "@fc/insee": "<rootDir>/libs/insee/src"
     }
   }
 }
