@@ -115,6 +115,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/insee/tsconfig.lib.json"
       }
+    },
+    "core-fcp": {
+      "type": "library",
+      "root": "libs/core-fcp",
+      "entryFile": "index",
+      "sourceRoot": "libs/core-fcp/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/core-fcp/tsconfig.lib.json"
+      }
     }
   }
 }

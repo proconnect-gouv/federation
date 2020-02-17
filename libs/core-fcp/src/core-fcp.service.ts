@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
-export class AppService {
+export class CoreFcpService {
   getHello(): string {
-    return 'Hello World HIGH!';
+    return 'Hello World FCP!';
   }
 }
