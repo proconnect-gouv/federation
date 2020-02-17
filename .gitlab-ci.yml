@@ -1,0 +1,10 @@
+stages:
+  - test
+  
+global-test:
+  image: node:12.15.0
+  stage: test
+  script:
+    - yarn install
+    - yarn lint
+    - yarn test
