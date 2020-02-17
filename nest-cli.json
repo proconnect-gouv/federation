@@ -1,0 +1,39 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/core-high/src",
+  "monorepo": true,
+  "root": "apps/core-high",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/core-high/tsconfig.app.json"
+  },
+  "projects": {
+    "core-high": {
+      "type": "application",
+      "root": "apps/core-high",
+      "entryFile": "main",
+      "sourceRoot": "apps/core-high/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/core-high/tsconfig.app.json"
+      }
+    },
+    "core-low": {
+      "type": "application",
+      "root": "apps/core-low",
+      "entryFile": "main",
+      "sourceRoot": "apps/core-low/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/core-low/tsconfig.app.json"
+      }
+    },
+    "rnipp": {
+      "type": "library",
+      "root": "libs/rnipp",
+      "entryFile": "index",
+      "sourceRoot": "libs/rnipp/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/rnipp/tsconfig.lib.json"
+      }
+    }
+  }
+}
