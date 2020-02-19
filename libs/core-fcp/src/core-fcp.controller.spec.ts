@@ -16,7 +16,7 @@ describe('CoreFcpController', () => {
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(coreFcpController.getHello()).toBe('Hello World FCP!');
+      expect(coreFcpController.getRedirectToIdp()).toBe('getRedirectToIdp');
     });
   });
 });
