@@ -1,51 +1,79 @@
 import {
   Controller,
   Get,
-  Post,
+  Render,
+  Req,
+  Res,
   UsePipes,
   ValidationPipe,
-  Query,
 } from '@nestjs/common';
-import { CoreFcpService } from './core-fcp.service';
-import { AuthorizeInputDTO } from './dto/authorize-input.dto';
 
-@Controller('/api/v2')
+import { OidcProviderService } from '@fc/oidc-provider';
+
+@Controller()
 export class CoreFcpController {
-  constructor(private readonly coreFcpService: CoreFcpService) {}
+  constructor(private readonly oidcProviderService: OidcProviderService) {}
 
-  @Get('/authorize')
-  @UsePipes(new ValidationPipe({ transform: true }))
-  authorize(@Query() query: AuthorizeInputDTO): string {
-    return this.coreFcpService.getAuthorize(query);
+  // @TODO validate query by DTO
+  @Get('/interaction/:uid')
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  @Render('interaction')
+  async getInteraction(@Req() req, @Res() res) {
+    console.log('### NEST /interaction');
+
+    const provider = this.oidcProviderService.getProvider();
+    const { uid, prompt, params } = await provider.interactionDetails(req, res);
+
+    return {
+      uid,
+      prompt,
+      params,
+    };
   }
 
-  @Get('/redirect-to-idp')
-  getRedirectToIdp(): string {
-    return this.coreFcpService.getRedirectToIdp();
+  // @TODO validate query by DTO
+  @Get('/interaction/:uid/consent')
+  @Render('consent')
+  async getConsent(@Req() req, @Res() res) {
+    console.log('### NEST /interaction/:uid/consent');
+
+    const provider = this.oidcProviderService.getProvider();
+    const { uid, prompt, params } = await provider.interactionDetails(req, res);
+    return {
+      uid,
+      prompt,
+      params,
+    };
   }
 
-  @Get('/oidc-callback')
-  getOidcCallback(): string {
-    return this.coreFcpService.getOidcCallback();
+  // @TODO validate query by DTO
+  @Get('/interaction/:uid/login')
+  async getLogin(@Req() req, @Res() res) {
+    const provider = this.oidcProviderService.getProvider();
+
+    const result = {
+      login: {
+        account: '42',
+        acr: req.body.acr,
+        amr: ['pwd'],
+        ts: Math.floor(Date.now() / 1000),
+      },
+      consent: {
+        rejectedScopes: [],
+        rejectedClaims: [],
+      },
+    };
+
+    return provider.interactionFinished(req, res, result);
   }
 
-  @Get('/consent')
-  getConsent(): string {
-    return this.coreFcpService.getConsent();
-  }
+  // @Get('/redirect-to-idp')
+  // getRedirectToIdp(): string {
+  //   return this.coreFcpService.getRedirectToIdp();
+  // }
 
-  @Post('/consent')
-  postConsent(): string {
-    return this.coreFcpService.postConsent();
-  }
-
-  @Get('/client/.well-known')
-  getClientWellKnown(): string {
-    return this.coreFcpService.getClientWellKnown();
-  }
-
-  @Get('/provider/.well-known')
-  getProviderWellKnown(): string {
-    return this.coreFcpService.getProviderWellKnown();
-  }
+  // @Get('/oidc-callback')
+  // getOidcCallback(): string {
+  //   return this.coreFcpService.getOidcCallback();
+  // }
 }

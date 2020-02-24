@@ -71,11 +71,8 @@
       "@fc/insee/*": [
         "libs/insee/src/*"
       ],
-      "@fc/controller-fcp-high": [
-        "libs/controller-fcp-high/src"
-      ],
-      "@fc/controller-fcp-high/*": [
-        "libs/controller-fcp-high/src/*"
+      "@fc/core-fcp": [
+        "libs/core-fcp/src"
       ]
     }
   },
