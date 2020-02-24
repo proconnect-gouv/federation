@@ -1,0 +1,12 @@
+<html>
+    <body>
+        <div style="width: 400px; margin: auto; margin-top: 200px; text-align: center;">
+            <h1>Retour de l'IdP</h1>
+            <pre><%= JSON.stringify(locals.data, null, 2) %></pre>
+            <button
+                style="font-size: 2em; width: 100%; height: 300px; display: block;"
+                onclick="document.location.href='/interaction/<%= locals.uid %>/login';"
+            >Continuer vers le SP</button>
+        </div>
+    </body>
+</html>

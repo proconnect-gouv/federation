@@ -5,7 +5,8 @@
   "root": "apps/core-high",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/core-high/tsconfig.app.json"
+    "tsConfigPath": "apps/core-high/tsconfig.app.json",
+    "assets": ["**/*.ejs"]
   },
   "projects": {
     "core-high": {
