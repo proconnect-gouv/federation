@@ -1,6 +1,3 @@
-/* Temporay hard coded oidc values. 
-   Remove eslint-disable once values are removed */
-/* eslint-disable @typescript-eslint/camelcase */
 import {
   Controller,
   Get,
@@ -10,43 +7,57 @@ import {
   Req,
   UsePipes,
   ValidationPipe,
+  Inject,
 } from '@nestjs/common';
-import { OidcProviderService } from './oidc-provider.service';
 import { GetAuthorizeParamsDTO } from './dto';
+import { IIdentityManagementService, ISpManagementService } from './interfaces';
+import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
 
 @Controller('/api/v2')
 export class OidcProviderController {
-  constructor(private readonly oidcProviderService: OidcProviderService) {}
+  constructor(
+    @Inject(IDENTITY_MANAGEMENT_SERVICE)
+    private readonly identityManagementService: IIdentityManagementService,
+    @Inject(SP_MANAGEMENT_SERVICE)
+    private readonly spManagementService: ISpManagementService,
+  ) {}
 
-  // @TODO: validation query by DTO (current DTO is almost empty)
+  /** @TODO validation query by DTO (current DTO is almost empty) */
   @Get('/authorize')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
-  getAuthorize(@Next() next, @Query() params: GetAuthorizeParamsDTO) {
+  async getAuthorize(@Next() next, @Query() params: GetAuthorizeParamsDTO) {
     // Start of business related stuff
     console.log('### NEST /api/v2/authorize');
     console.log(params);
-    // End of business related stuff
+
+    const { client_id: clientId } = params;
+
+    this.checkIfSpIsUsable(clientId);
 
     // Pass the query to oidc-provider
     return next();
   }
 
-  // @TODO validation query by DTO
+  /** @TODO validation query by DTO */
   @Post('/token')
   postToken(@Next() next, @Req() req) {
     // Start of business related stuff
     console.log('### NEST /api/v2/token');
     console.log(req.body);
-    // End of business related stuff
+
+    /** @TODO get param properly, not from req.body */
+    const { client_id: clientId } = req.body;
+
+    this.checkIfSpIsUsable(clientId);
 
     // Pass the query to oidc-provider
     return next();
   }
 
-  // @TODO validation query by DTO
+  /** @TODO validation query by DTO */
   // (authorisation header, do we really need to add DTO check? 🤔)
   @Get('/userinfo')
-  getUserInfo(@Req() req) {
+  async getUserInfo(@Req() req) {
     // Start of business related stuff
     console.log('### NEST /api/v2/userinfo');
     console.log(req.headers);
@@ -55,41 +66,25 @@ export class OidcProviderController {
 
     // Return userinfo
     /**
-     * @TODO Inject the service in charge of "getting" userinfo
-     * Should be data comming from IdP / RNIPP
-     * something like:
-     * 
-     * const token: string = this.getToken(req); // private 
-     * 
-     * return this.identityManagementService.getIdentity(token)
+     * @TODO retrieve an identifier from token ?
      */
+    const id = 'abc42';
 
-    
-    return {
-      sub: '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
-      given_name: 'Angela Claire Louise', 
-      family_name: 'DUBOIS',
-      birthdate: '1962-08-24',
-      gender: 'female',
-      birthplace: '75107',
-      birthcountry: '99100',
-      preferred_username: '',
-      _claim_names: {},
-      _claim_sources: {
-        src1: {
-          JWT:
-            'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.Int9Ig.uJPwtftRcQEhR2JYi4rIetaSA1nVt2g0oI3dZnB3yts',
-        },
-      },
-      phone_number: '0123456789',
-      email: 'test@franceconnect.gouv.fr',
-      address: {
-        country: 'France',
-        formatted: 'France Paris 75107 20 avenue de Ségur',
-        locality: 'Paris',
-        postal_code: '75107',
-        street_address: '20 avenue de Ségur',
-      },
-    };
+    /**
+     * @TODO return directly call to service
+     * if we don't do anything else with the result
+     */
+    const userinfo = await this.identityManagementService.getIdentity(id);
+
+    return userinfo;
+  }
+
+  /**
+   * @TODO Implement proper error management
+   */
+  private async checkIfSpIsUsable(clientId) {
+    if (!(await this.spManagementService.isUsable(clientId))) {
+      throw new Error('SP not usable!');
+    }
   }
 }

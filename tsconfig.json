@@ -65,14 +65,20 @@
       "@fc/cryptography/*": [
         "libs/cryptography/src/*"
       ],
-      "@fc/insee": [
-        "libs/insee/src"
-      ],
-      "@fc/insee/*": [
-        "libs/insee/src/*"
-      ],
       "@fc/core-fcp": [
         "libs/core-fcp/src"
+      ],
+      "@fc/common": [
+        "libs/common/src"
+      ],
+      "@fc/common/*": [
+        "libs/common/src/*"
+      ],
+      "@fc/siren": [
+        "libs/siren/src"
+      ],
+      "@fc/siren/*": [
+        "libs/siren/src/*"
       ]
     }
   },

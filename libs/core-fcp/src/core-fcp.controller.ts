@@ -14,7 +14,7 @@ import { OidcProviderService } from '@fc/oidc-provider';
 export class CoreFcpController {
   constructor(private readonly oidcProviderService: OidcProviderService) {}
 
-  // @TODO validate query by DTO
+  /** @TODO validate query by DTO */
   @Get('/interaction/:uid')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Render('interaction')
@@ -31,7 +31,7 @@ export class CoreFcpController {
     };
   }
 
-  // @TODO validate query by DTO
+  /** @TODO validate query by DTO */
   @Get('/interaction/:uid/consent')
   @Render('consent')
   async getConsent(@Req() req, @Res() res) {
@@ -46,7 +46,7 @@ export class CoreFcpController {
     };
   }
 
-  // @TODO validate query by DTO
+  /** @TODO validate query by DTO */
   @Get('/interaction/:uid/login')
   async getLogin(@Req() req, @Res() res) {
     const provider = this.oidcProviderService.getProvider();
