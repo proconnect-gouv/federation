@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { SPManagementService } from './sp-management.service';
+import { SpManagementService } from './sp-management.service';
 
-describe('SPManagementService', () => {
-  let service: SPManagementService;
+describe('SpManagementService', () => {
+  let service: SpManagementService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [SPManagementService],
+      providers: [SpManagementService],
     }).compile();
 
-    service = module.get<SPManagementService>(SPManagementService);
+    service = module.get<SpManagementService>(SpManagementService);
   });
 
   it('should be defined', () => {

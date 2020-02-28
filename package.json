@@ -88,10 +88,12 @@
       "@fc/oidc-client": "<rootDir>/libs/oidc-client/src",
       "@fc/cryptography/(.*)": "<rootDir>/libs/cryptography/src/$1",
       "@fc/cryptography": "<rootDir>/libs/cryptography/src",
-      "@fc/insee/(.*)": "<rootDir>/libs/insee/src/$1",
-      "@fc/insee": "<rootDir>/libs/insee/src",
       "@fc/core-fcp/(.*)": "<rootDir>/libs/core-fcp/src/$1",
-      "@fc/core-fcp": "<rootDir>/libs/core-fcp/src"
+      "@fc/core-fcp": "<rootDir>/libs/core-fcp/src",
+      "@fc/common/(.*)": "<rootDir>/libs/common/src/$1",
+      "@fc/common": "<rootDir>/libs/common/src",
+      "@fc/siren/(.*)": "<rootDir>/libs/siren/src/$1",
+      "@fc/siren": "<rootDir>/libs/siren/src"
     }
   }
 }

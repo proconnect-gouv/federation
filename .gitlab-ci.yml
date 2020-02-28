@@ -7,4 +7,5 @@ global-test:
   script:
     - yarn install
     - yarn lint
-    - yarn test
+    - yarn test --coverage
+  coverage: /All\sfiles.*?\s+(\d+.\d+)/

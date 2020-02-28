@@ -6,7 +6,9 @@
   "compilerOptions": {
     "webpack": true,
     "tsConfigPath": "apps/core-high/tsconfig.app.json",
-    "assets": ["**/*.ejs"]
+    "assets": [
+      "**/*.ejs"
+    ]
   },
   "projects": {
     "core-high": {
@@ -108,15 +110,6 @@
         "tsConfigPath": "libs/cryptography/tsconfig.lib.json"
       }
     },
-    "insee": {
-      "type": "library",
-      "root": "libs/insee",
-      "entryFile": "index",
-      "sourceRoot": "libs/insee/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/insee/tsconfig.lib.json"
-      }
-    },
     "core-fcp": {
       "type": "library",
       "root": "libs/core-fcp",
@@ -124,6 +117,24 @@
       "sourceRoot": "libs/core-fcp/src",
       "compilerOptions": {
         "tsConfigPath": "libs/core-fcp/tsconfig.lib.json"
+      }
+    },
+    "common": {
+      "type": "library",
+      "root": "libs/common",
+      "entryFile": "index",
+      "sourceRoot": "libs/common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "siren": {
+      "type": "library",
+      "root": "libs/siren",
+      "entryFile": "index",
+      "sourceRoot": "libs/siren/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/siren/tsconfig.lib.json"
       }
     }
   }
