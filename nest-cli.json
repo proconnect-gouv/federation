@@ -136,6 +136,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/siren/tsconfig.lib.json"
       }
+    },
+    "cryptography-gateway-low": {
+      "type": "library",
+      "root": "libs/cryptography-gateway-low",
+      "entryFile": "index",
+      "sourceRoot": "libs/cryptography-gateway-low/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cryptography-gateway-low/tsconfig.lib.json"
+      }
+    },
+    "cryptography-gateway-high": {
+      "type": "library",
+      "root": "libs/cryptography-gateway-high",
+      "entryFile": "index",
+      "sourceRoot": "libs/cryptography-gateway-high/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cryptography-gateway-high/tsconfig.lib.json"
+      }
     }
   }
 }

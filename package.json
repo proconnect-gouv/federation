@@ -95,7 +95,11 @@
       "@fc/common/(.*)": "<rootDir>/libs/common/src/$1",
       "@fc/common": "<rootDir>/libs/common/src",
       "@fc/siren/(.*)": "<rootDir>/libs/siren/src/$1",
-      "@fc/siren": "<rootDir>/libs/siren/src"
+      "@fc/siren": "<rootDir>/libs/siren/src",
+      "@app/cryptography-gateway-low/(.*)": "<rootDir>/libs/cryptography-gateway-low/src/$1",
+      "@app/cryptography-gateway-low": "<rootDir>/libs/cryptography-gateway-low/src",
+      "@app/cryptography-gateway-high/(.*)": "<rootDir>/libs/cryptography-gateway-high/src/$1",
+      "@app/cryptography-gateway-high": "<rootDir>/libs/cryptography-gateway-high/src"
     }
   }
 }
