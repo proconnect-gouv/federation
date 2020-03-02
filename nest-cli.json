@@ -7,7 +7,9 @@
     "webpack": true,
     "tsConfigPath": "apps/core-high/tsconfig.app.json",
     "assets": [
-      "**/*.ejs"
+      "../../../libs/**/*.ejs",
+      "../../../libs/**/*.css",
+      "../../../libs/**/*.svg"
     ]
   },
   "projects": {
