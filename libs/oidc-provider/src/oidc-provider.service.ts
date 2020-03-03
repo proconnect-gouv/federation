@@ -4,10 +4,11 @@
 import { HttpAdapterHost } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
 import { Provider } from 'oidc-provider';
+import { oidcProviderHooks, oidcProviderEvents } from './enums';
 
 @Injectable()
 export class OidcProviderService {
-  private readonly provider;
+  private readonly provider: Provider;
 
   constructor(private httpAdapterHost: HttpAdapterHost) {
     const { issuer, configuration } = this.getConfig();
@@ -21,13 +22,37 @@ export class OidcProviderService {
    * @see https://docs.nestjs.com/fundamentals/lifecycle-events
    */
   onModuleInit() {
-    const expressServer = this.httpAdapterHost.httpAdapter.getInstance();
     console.log('Mouting oidc-provider middleware');
-    expressServer.use(this.provider.callback);
+    this.httpAdapterHost.httpAdapter.use(this.provider.callback);
   }
 
   getProvider(): Provider {
     return this.provider;
+  }
+
+  /**
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pre--and-post-middlewares
+   */
+  hook(
+    step: oidcProviderHooks,
+    eventName: oidcProviderEvents,
+    hookFunction: Function,
+  ): void {
+    this.provider.use(async (ctx: any, next: Function) => {
+      if (step === oidcProviderHooks.BEFORE && ctx.path === eventName) {
+        await hookFunction(ctx);
+      }
+
+      await next();
+
+      if (
+        step === oidcProviderHooks.AFTER &&
+        ctx.oidc &&
+        ctx.oidc.route === eventName
+      ) {
+        await hookFunction(ctx);
+      }
+    });
   }
 
   private getConfig() {
