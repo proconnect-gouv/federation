@@ -6,13 +6,9 @@ import { Provider } from 'oidc-provider';
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
 
-  const expressMock = {
-    use: jest.fn(),
-  };
-
   const httpAdapterHostMock = {
     httpAdapter: {
-      getInstance: () => expressMock,
+      use: jest.fn(),
     },
   };
 
@@ -40,7 +36,7 @@ describe('OidcProviderService', () => {
     // When
     service.onModuleInit();
     // Then
-    expect(expressMock.use).toHaveBeenCalledTimes(1);
+    expect(httpAdapterHostMock.httpAdapter.use).toHaveBeenCalledTimes(1);
     /**
      * Sadly we can't test `toHaveBeenCalledWith(service['provider'].callback)`
      * since `̀Provider.callback` is a getter that returns an anonymous function
