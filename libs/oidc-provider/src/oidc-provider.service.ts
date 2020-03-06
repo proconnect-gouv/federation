@@ -3,25 +3,30 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { HttpAdapterHost } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@fc/config';
 import { Provider } from 'oidc-provider';
 import { oidcProviderHooks, oidcProviderEvents } from './enums';
+import { OidcProviderConfig } from './dto';
 
 @Injectable()
 export class OidcProviderService {
-  private readonly provider: Provider;
+  private provider: Provider;
 
-  constructor(private httpAdapterHost: HttpAdapterHost) {
-    const { issuer, configuration } = this.getConfig();
-    console.log('Initializing oidc-provider');
-    this.provider = new Provider(issuer, configuration);
-  }
+  constructor(
+    private httpAdapterHost: HttpAdapterHost,
+    private readonly configService: ConfigService,
+  ) {}
 
   /**
    * Wait for nest to load its own route before binding oidc-provider routes
    * @see https://docs.nestjs.com/faq/http-adapter
    * @see https://docs.nestjs.com/fundamentals/lifecycle-events
    */
-  onModuleInit() {
+  async onModuleInit() {
+    const { issuer, configuration } = await this.getConfig();
+    console.log('Initializing oidc-provider');
+    this.provider = new Provider(issuer, configuration);
+
     console.log('Mouting oidc-provider middleware');
     this.httpAdapterHost.httpAdapter.use(this.provider.callback);
   }
@@ -55,48 +60,42 @@ export class OidcProviderService {
     });
   }
 
-  private getConfig() {
+  private async getClients() {
+    return [
+      {
+        client_id:
+          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
+        client_secret:
+          'a970fc88b3111fcfdce515c2ee03488d8a349e5379a3ba2aa48c225dcea243a5',
+        redirect_uris: [
+          'https://fsp1v2.docker.dev-franceconnect.fr/login-callback',
+        ], // + other client properties
+      },
+    ];
+  }
+
+  private findAccount(ctx, id) {
+    console.log('OidcProviderService.getConfig().findAccount()');
     return {
-      issuer: 'http://localhost:3000',
+      accountId: 'MyAccountId',
+      async claims(use, scope) {
+        return { sub: 'MySub' };
+      },
+    };
+  }
+
+  private async getConfig() {
+    const clients = await this.getClients();
+    const { issuer, configuration } = this.configService.get<
+      OidcProviderConfig
+    >('OidcProvider');
+
+    return {
+      issuer,
       configuration: {
-        // ... see the available options in Configuration options section
-        grant_types_supported: ['authorization_code'],
-        features: {
-          introspection: { enabled: true },
-          revocation: { enabled: true },
-          devInteractions: { enabled: false },
-        },
-        cookies: {
-          keys: ['foo'],
-        },
-        clients: [
-          {
-            client_id:
-              'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-            client_secret:
-              'a970fc88b3111fcfdce515c2ee03488d8a349e5379a3ba2aa48c225dcea243a5',
-            redirect_uris: [
-              'https://fsp1v2.docker.dev-franceconnect.fr/login-callback',
-            ], // + other client properties
-          },
-        ],
-        routes: {
-          authorization: '/api/v2/authorize',
-          interaction: '/interaction',
-          end_session: '/user/session/end',
-          revocation: '/user/token/revocation',
-          token: '/api/v2/token',
-          userinfo: '/api/v2/userinfo',
-        },
-        async findAccount(ctx, id) {
-          console.log('OidcProviderService.getConfig().findAccount()');
-          return {
-            accountId: 'MyAccountId',
-            async claims(use, scope) {
-              return { sub: 'MySub' };
-            },
-          };
-        },
+        ...configuration,
+        clients,
+        findAccount: this.findAccount.bind(this),
       },
     };
   }

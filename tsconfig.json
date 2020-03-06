@@ -91,6 +91,12 @@
       ],
       "@app/cryptography-gateway-high/*": [
         "libs/cryptography-gateway-high/src/*"
+      ],
+      "@fc/config": [
+        "libs/config/src"
+      ],
+      "@fc/config/*": [
+        "libs/config/src/*"
       ]
     }
   },
