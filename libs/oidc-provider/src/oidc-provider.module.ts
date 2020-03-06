@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, DynamicModule } from '@nestjs/common';
 import { InstanceOf } from '@fc/common';
 import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderController } from './oidc-provider.controller';
@@ -6,7 +6,6 @@ import { IIdentityManagementService } from './interfaces/identity-management-ser
 import { IDENTITY_MANAGEMENT_SERVICE } from './tokens/identity-management-service.token';
 import { ISpManagementService } from './interfaces/sp-management-service.interface';
 import { SP_MANAGEMENT_SERVICE } from './tokens/sp-management-service.token';
-
 
 @Module({})
 export class OidcProviderModule {
@@ -19,9 +18,11 @@ export class OidcProviderModule {
   static register(
     identityManagementServiceClass: InstanceOf<IIdentityManagementService>,
     spManagementServiceClass: InstanceOf<ISpManagementService>,
-  ) {
+  ): DynamicModule {
+    // does not need to be tested
+    // istanbul ignore next
     return {
-      module: OidcProviderService,
+      module: OidcProviderModule,
       providers: [
         {
           provide: IDENTITY_MANAGEMENT_SERVICE,

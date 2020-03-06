@@ -26,6 +26,7 @@
     "@nestjs/platform-express": "^6.10.14",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.11.0",
+    "deep-freeze": "^0.0.1",
     "oidc-provider": "^6.21.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
@@ -99,7 +100,9 @@
       "@app/cryptography-gateway-low/(.*)": "<rootDir>/libs/cryptography-gateway-low/src/$1",
       "@app/cryptography-gateway-low": "<rootDir>/libs/cryptography-gateway-low/src",
       "@app/cryptography-gateway-high/(.*)": "<rootDir>/libs/cryptography-gateway-high/src/$1",
-      "@app/cryptography-gateway-high": "<rootDir>/libs/cryptography-gateway-high/src"
+      "@app/cryptography-gateway-high": "<rootDir>/libs/cryptography-gateway-high/src",
+      "@fc/config/(.*)": "<rootDir>/libs/config/src/$1",
+      "@fc/config": "<rootDir>/libs/config/src"
     }
   }
 }
