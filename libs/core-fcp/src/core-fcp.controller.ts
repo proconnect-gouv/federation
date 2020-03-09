@@ -39,10 +39,12 @@ export class CoreFcpController {
 
     const provider = this.oidcProviderService.getProvider();
     const { uid, prompt, params } = await provider.interactionDetails(req, res);
+    const { user } = req.session;
     return {
       uid,
       prompt,
       params,
+      user,
     };
   }
 
@@ -66,14 +68,4 @@ export class CoreFcpController {
 
     return provider.interactionFinished(req, res, result);
   }
-
-  // @Get('/redirect-to-idp')
-  // getRedirectToIdp(): string {
-  //   return this.coreFcpService.getRedirectToIdp();
-  // }
-
-  // @Get('/oidc-callback')
-  // getOidcCallback(): string {
-  //   return this.coreFcpService.getOidcCallback();
-  // }
 }

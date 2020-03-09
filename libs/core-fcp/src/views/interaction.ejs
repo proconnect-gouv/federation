@@ -1,14 +1,38 @@
 <html>
-    <head>
-        <link rel="stylesheet" href="/css/index.css" />
-    </head>
-    <body>
-        <div style="width: 400px; margin: auto; margin-top: 200px; text-align: center;">
-            <h1>Page liste des IdP</h1>
-            <button
-              style="font-size: 2em; width: 100%; height: 300px; display: block;"
-              onclick="document.location.href='/interaction/<%= locals.uid %>/consent';"
-            >Continuer vers un IdP</button>
-        </div>
-    </body>
+  <head>
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
+  <body>
+    <div
+      style="width: 400px; margin: auto; margin-top: 200px; text-align: center;"
+    >
+      <h1>DEMO : Page liste des IdP</h1>
+      <form
+        method="POST"
+        action="/api/v2/redirect-to-idp"
+        id="fs-request"
+        name="fs-request"
+      >
+        <input name="uid" id="uid" value="<%= locals.uid %>" />
+        <input
+          name="client_id"
+          value="a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc"
+        />
+        <input
+          name="redirect_uri"
+          value="https://fsp1v2.docker.dev-franceconnect.fr/login-callback"
+        />
+        <input name="scopes" value="openid profile email adress phone birth" />
+        <input name="state" value="home" />
+        <input name="acr_values" value="eidas1" />
+        <button
+          style="font-size: 2em; width: 100%; height: 300px; display: block;"
+          onclick="document.location.href='/api/v2/redirect-to-idp';"
+          id="idp-test"
+        >
+          Continuer vers un IdP
+        </button>
+      </form>
+    </div>
+  </body>
 </html>
