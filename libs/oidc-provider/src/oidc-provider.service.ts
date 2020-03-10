@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { HttpAdapterHost } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
+import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { Provider } from 'oidc-provider';
 import { oidcProviderHooks, oidcProviderEvents } from './enums';
@@ -15,6 +16,7 @@ export class OidcProviderService {
   constructor(
     private httpAdapterHost: HttpAdapterHost,
     private readonly configService: ConfigService,
+    private readonly logger: LoggerService,
   ) {}
 
   /**
@@ -24,7 +26,7 @@ export class OidcProviderService {
    */
   async onModuleInit() {
     const { issuer, configuration } = await this.getConfig();
-    console.log('Initializing oidc-provider');
+    this.logger.log('Initializing oidc-provider');
     this.provider = new Provider(issuer, configuration);
 
     console.log('Mouting oidc-provider middleware');

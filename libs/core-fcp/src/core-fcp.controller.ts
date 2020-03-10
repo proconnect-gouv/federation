@@ -9,17 +9,23 @@ import {
 } from '@nestjs/common';
 
 import { OidcProviderService } from '@fc/oidc-provider';
+import { LoggerService } from '@fc/logger';
 
 @Controller()
 export class CoreFcpController {
-  constructor(private readonly oidcProviderService: OidcProviderService) {}
+  constructor(
+    private readonly oidcProviderService: OidcProviderService,
+    private readonly loggerService: LoggerService,
+  ) {
+    this.loggerService.setContext(this.constructor.name);
+  }
 
   /** @TODO validate query by DTO */
   @Get('/interaction/:uid')
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Render('interaction')
   async getInteraction(@Req() req, @Res() res) {
-    console.log('### NEST /interaction');
+    this.loggerService.verbose('### NEST /interaction');
 
     const provider = this.oidcProviderService.getProvider();
     const { uid, prompt, params } = await provider.interactionDetails(req, res);

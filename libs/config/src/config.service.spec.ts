@@ -2,10 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from './config.service';
 import { CONFIG_OPTIONS } from './tokens';
 import { IsNumber } from 'class-validator';
-import {
-  InvalidConfigurationError,
-  UnkonwnConfigurationNameError,
-} from './errors';
+import { UnkonwnConfigurationNameError } from './errors';
 
 class Schema {
   @IsNumber()
@@ -42,17 +39,26 @@ describe('ConfigService', () => {
   });
 
   describe('validate', () => {
-    it('should throw if config is not valid', async () => {
+    it('should exit and give feed back if config is not valid', async () => {
       // Given
       const config = {
-        foo: 'a string',
+        foo: 'a string instead of a number',
       };
+      const processExit = jest
+        .spyOn(process, 'exit')
+        .mockImplementation(code => code as never);
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(log => log);
 
-      const validate = async () => {
-        await service['validate'](config, Schema);
-      };
+      // When
+      await service['validate'](config, Schema);
+
       // Then
-      expect(validate()).rejects.toThrow(InvalidConfigurationError);
+      expect(processExit).toHaveBeenCalledWith(1);
+      expect(consoleError).toHaveBeenCalledTimes(3);
+      expect(consoleError).toHaveBeenCalledWith('Invalid configuration Error');
+      expect(consoleError).toHaveBeenCalledWith('Exiting app');
     });
   });
 

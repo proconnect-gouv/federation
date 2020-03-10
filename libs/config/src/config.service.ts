@@ -4,10 +4,7 @@ import * as deepFreeze from 'deep-freeze';
 import { plainToClass } from 'class-transformer';
 import { CONFIG_OPTIONS } from './tokens';
 import { IConfigOptions } from './interfaces';
-import {
-  InvalidConfigurationError,
-  UnkonwnConfigurationNameError,
-} from './errors';
+import { UnkonwnConfigurationNameError } from './errors';
 
 const validationOptions: ValidatorOptions = {
   skipMissingProperties: false,
@@ -34,9 +31,10 @@ export class ConfigService {
     const errors = await validate(object, validationOptions);
 
     if (errors.length > 0) {
-      throw new InvalidConfigurationError(
-        `Configuration not validated: ${JSON.stringify(errors, null, 2)}`,
-      );
+      console.error('Invalid configuration Error');
+      console.error(JSON.stringify(errors, null, 2));
+      console.error('Exiting app');
+      process.exit(1);
     }
   }
 

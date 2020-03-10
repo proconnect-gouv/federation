@@ -3,7 +3,9 @@ import { OidcProviderService } from './oidc-provider.service';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Provider } from 'oidc-provider';
 import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
 import { oidcProviderHooks, oidcProviderEvents } from './enums';
+import { LogLevelNames } from '@fc/logger';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -15,11 +17,26 @@ describe('OidcProviderService', () => {
   };
 
   const configServiceMock = {
-    get: () => ({
-      issuer: 'http://foo.bar',
-      configuration: {},
-    }),
+    get: module => {
+      switch (module) {
+        case 'OidcProvider':
+          return { issuer: 'http://foo.bar', configuration: {} };
+        case 'Logger':
+          return {
+            path: '/dev/null',
+            level: LogLevelNames.TRACE,
+            isDevelopement: false,
+          };
+      }
+    },
   };
+
+  const loggerServiceMock = ({
+    setContext: jest.fn(),
+    verbose: jest.fn(),
+    log: jest.fn(),
+    businessEvent: jest.fn(),
+  } as unknown) as LoggerService;
 
   const useSpy = jest.fn();
 
@@ -33,13 +50,22 @@ describe('OidcProviderService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [OidcProviderService, HttpAdapterHost, ConfigService],
+      providers: [
+        ConfigService,
+        LoggerService,
+        OidcProviderService,
+        HttpAdapterHost,
+      ],
     })
       .overrideProvider(HttpAdapterHost)
       .useValue(httpAdapterHostMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
       .compile();
+
+    module.useLogger(loggerServiceMock);
 
     service = module.get<OidcProviderService>(OidcProviderService);
 
