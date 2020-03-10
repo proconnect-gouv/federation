@@ -8,13 +8,13 @@ describe('LoggerService', () => {
   Object.values(LogLevelNames).forEach(level => {
     configs['dev'][level] = {
       path: '/dev/null',
-      isDevelopement: true,
+      isDevelopment: true,
       level: level,
     };
 
     configs['notDev'][level] = {
       path: '/dev/null',
-      isDevelopement: false,
+      isDevelopment: false,
       level: level,
     };
   });

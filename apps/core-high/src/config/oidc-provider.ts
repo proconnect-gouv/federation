@@ -1,8 +1,8 @@
 import { OidcProviderConfig } from '@fc/oidc-provider';
 
 export default {
-  issuer:
-    process.env.ISSUER_URL,
+  reloadConfigDelayInMs: 60000,
+  issuer: process.env.ISSUER_URL,
   configuration: {
     routes: {
       authorization: '/api/v2/authorize',

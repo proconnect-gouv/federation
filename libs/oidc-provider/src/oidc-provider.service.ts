@@ -3,6 +3,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
 import { HttpAdapterHost } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
+/**
+ * We sadly need `lodash` to override node-oid-provider
+ * configuration function that relies on it.
+ * @see OidcProviderService.overrideConfiguration()
+ */
+import { get } from 'lodash';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { Provider } from 'oidc-provider';
@@ -17,7 +23,21 @@ export class OidcProviderService {
     private httpAdapterHost: HttpAdapterHost,
     private readonly configService: ConfigService,
     private readonly logger: LoggerService,
-  ) {}
+  ) {
+    this.logger.setContext(this.constructor.name);
+    /**
+     * Bind only once
+     *
+     * This methods is called recursivly via setTimeout
+     * thus it needs to be bound to `this`.
+     * We bind it once for all in constructor.
+     *  - less overhead at each run
+     *  - easier to unit test
+     */
+    this.scheduleConfigurationReload = this.scheduleConfigurationReload.bind(
+      this,
+    );
+  }
 
   /**
    * Wait for nest to load its own route before binding oidc-provider routes
@@ -26,11 +46,45 @@ export class OidcProviderService {
    */
   async onModuleInit() {
     const { issuer, configuration } = await this.getConfig();
-    this.logger.log('Initializing oidc-provider');
+    this.logger.debug('Initializing oidc-provider');
+
     this.provider = new Provider(issuer, configuration);
 
-    console.log('Mouting oidc-provider middleware');
+    this.logger.debug('Mouting oidc-provider middleware');
     this.httpAdapterHost.httpAdapter.use(this.provider.callback);
+
+    this.scheduleConfigurationReload();
+  }
+
+  /**
+   * Scheduled reload of oidc-provider configuration
+   */
+  private async scheduleConfigurationReload(): Promise<void> {
+    /** @TODO replace by logger.verbose */
+    const configuration = await this.getConfig();
+    this.logger.debug(
+      `Reload configuration (reloadConfigDelayInMs:${configuration.reloadConfigDelayInMs})`,
+    );
+
+    this.overrideConfiguration(configuration);
+
+    // Schedule next call, N seconds after END of this one
+    /** @TODO get the timeout delay from configuration */
+    setTimeout(
+      this.scheduleConfigurationReload,
+      configuration.reloadConfigDelayInMs,
+    );
+  }
+
+  private overrideConfiguration(configuration: object): void {
+    /**
+     * Use string literral because `configuration` is not exposed
+     * by Provider interface
+     */
+    this.provider['configuration'] = (path: string) => {
+      if (path) return get(configuration, path);
+      return configuration;
+    };
   }
 
   getProvider(): Provider {
@@ -62,6 +116,7 @@ export class OidcProviderService {
     });
   }
 
+  /** @TODO fetch data from database */
   private async getClients() {
     return [
       {
@@ -76,6 +131,10 @@ export class OidcProviderService {
     ];
   }
 
+  /** @TODO Actually retrieve data from database
+   * This should be done by an injected external service
+   * exposing a `findAccount` method
+   */
   private findAccount(ctx, id) {
     console.log('OidcProviderService.getConfig().findAccount()');
     return {
@@ -86,13 +145,21 @@ export class OidcProviderService {
     };
   }
 
-  private async getConfig() {
+  /**
+   * Compose full config by merging static parameters from:
+   *  - configuration file (some may be coming from environment variables)
+   *  - database (SP configuration)
+   */
+  private async getConfig(): Promise<OidcProviderConfig> {
     const clients = await this.getClients();
-    const { issuer, configuration } = this.configService.get<
-      OidcProviderConfig
-    >('OidcProvider');
+    const {
+      issuer,
+      configuration,
+      reloadConfigDelayInMs,
+    } = this.configService.get<OidcProviderConfig>('OidcProvider');
 
     return {
+      reloadConfigDelayInMs,
       issuer,
       configuration: {
         ...configuration,

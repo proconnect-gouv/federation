@@ -6,7 +6,7 @@ export class LoggerConfig {
   readonly level: LogLevelNames;
 
   @IsBoolean()
-  readonly isDevelopement: boolean;
+  readonly isDevelopment: boolean;
 
   @IsString()
   readonly path: string;
