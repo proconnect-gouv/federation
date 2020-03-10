@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { OidcProviderController } from './oidc-provider.controller';
 import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
@@ -22,11 +23,19 @@ describe('OidcProviderController', () => {
     isUsable: jest.fn(),
   };
 
+  const loggerServiceMock = ({
+    setContext: jest.fn(),
+    verbose: jest.fn(),
+    businessEvent: jest.fn(),
+    debug: jest.fn(),
+  } as unknown) as LoggerService;
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [OidcProviderController],
       providers: [
         OidcProviderService,
+        LoggerService,
         {
           provide: IDENTITY_MANAGEMENT_SERVICE,
           useValue: identityManagementServiceMock,
@@ -39,6 +48,8 @@ describe('OidcProviderController', () => {
     })
       .overrideProvider(OidcProviderService)
       .useValue(oidpcProviderServiceMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
       .compile();
 
     oidcProviderController = await app.get<OidcProviderController>(

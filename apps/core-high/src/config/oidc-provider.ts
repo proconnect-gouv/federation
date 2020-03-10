@@ -2,7 +2,7 @@ import { OidcProviderConfig } from '@fc/oidc-provider';
 
 export default {
   issuer:
-    process.env.ISSUER_URL || 'https://corev2.docker.dev-franceconnect.fr',
+    process.env.ISSUER_URL,
   configuration: {
     routes: {
       authorization: '/api/v2/authorize',
