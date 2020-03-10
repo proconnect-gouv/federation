@@ -39,7 +39,7 @@ export class LoggerService extends Logger {
   }
 
   private isDev() {
-    return this.config.isDevelopement;
+    return this.config.isDevelopment;
   }
 
   private technicalLogger(level: string, log: any, context?: string) {

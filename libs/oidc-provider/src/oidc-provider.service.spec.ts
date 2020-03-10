@@ -25,7 +25,7 @@ describe('OidcProviderService', () => {
           return {
             path: '/dev/null',
             level: LogLevelNames.TRACE,
-            isDevelopement: false,
+            isDevelopment: false,
           };
       }
     },
@@ -34,7 +34,7 @@ describe('OidcProviderService', () => {
   const loggerServiceMock = ({
     setContext: jest.fn(),
     verbose: jest.fn(),
-    log: jest.fn(),
+    debug: jest.fn(),
     businessEvent: jest.fn(),
   } as unknown) as LoggerService;
 
@@ -72,7 +72,7 @@ describe('OidcProviderService', () => {
     jest.resetAllMocks();
   });
 
-  describe('contructor', () => {
+  describe('constructor', () => {
     it('Should create oidc-provider instance', async () => {
       // When
       await service.onModuleInit();
@@ -100,6 +100,94 @@ describe('OidcProviderService', () => {
       // Then
       expect(instance).toBeInstanceOf(Provider);
       expect(instance).toBe(service['provider']);
+    });
+  });
+
+  describe('scheduleConfigurationReload', () => {
+    jest.useFakeTimers();
+
+    it('Should call getConfig and overrideConfiguration', async () => {
+      // Given
+      // Can't use jest.spyOn() on private
+      const overrideConfigurationMock = jest.fn();
+      const getConfigMock = jest
+        .fn()
+        .mockResolvedValue({ reloadConfigDelayInMs: 1000 });
+      service['overrideConfiguration'] = overrideConfigurationMock;
+      service['getConfig'] = getConfigMock;
+      // When
+      await service['scheduleConfigurationReload']();
+      // Then
+      expect(getConfigMock).toHaveBeenCalledTimes(1);
+      expect(overrideConfigurationMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('shoud call schedule recursive all with setTimeout() and correct reloadConfigDelayInMs', async () => {
+      // Given
+      const reloadConfigDelayInMs = 1000;
+      const overrideConfigurationMock = jest.fn();
+      const getConfigMock = jest
+        .fn()
+        .mockResolvedValue({ reloadConfigDelayInMs });
+      service['overrideConfiguration'] = overrideConfigurationMock;
+      service['getConfig'] = getConfigMock;
+      // When
+      await service['scheduleConfigurationReload']();
+      // Then
+      expect(setTimeout).toHaveBeenCalledTimes(1);
+      expect(setTimeout).toHaveBeenCalledWith(
+        service['scheduleConfigurationReload'],
+        reloadConfigDelayInMs,
+      );
+    });
+  });
+
+  describe('overrideConfiguration', () => {
+    it('should make the configuration method return fresh data', () => {
+      // Given
+      const configMock = {
+        foo: {
+          bar: 'bar value',
+        },
+      };
+      service['provider'] = {} as Provider;
+      // When
+      service['overrideConfiguration'](configMock);
+      const configuration = service.getProvider()['configuration'];
+      const result = configuration('foo.bar');
+      // Then
+      expect(result).toBe('bar value');
+    });
+
+    it('should give the latest version of data', () => {
+      // Given
+      const newerConfigMock = {
+        foo: {
+          bar: 'fresh bar value',
+        },
+      };
+      service['provider'] = ({
+        configuration: () => 'bar value',
+      } as unknown) as Provider;
+      // When
+      service['overrideConfiguration'](newerConfigMock);
+      const result = service['provider']['configuration']('foo.bar');
+      // Then
+      expect(result).toBe('fresh bar value');
+    });
+    it('should make the whole config available', () => {
+      // Given
+      const configMock = {
+        foo: {
+          bar: 'fresh bar value',
+        },
+      };
+      service['provider'] = {} as Provider;
+      // When
+      service['overrideConfiguration'](configMock);
+      const result = service['provider']['configuration']();
+      // Then
+      expect(result).toBe(configMock);
     });
   });
 

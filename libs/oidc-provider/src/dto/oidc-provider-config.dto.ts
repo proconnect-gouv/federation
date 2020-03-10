@@ -6,6 +6,8 @@ import {
   IsObject,
   IsBoolean,
   ValidateNested,
+  IsOptional,
+  IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -71,6 +73,30 @@ class Configuration {
   @ValidateNested()
   @Type(() => Features)
   readonly features: Features;
+
+  /**
+   * clients is not loaded from real configuration
+   * but is loaded from database after configuration is initialized.
+   *
+   * Thus we have to make it optional for the time being
+   *
+   * @TODO implement a sub DTO to validate clients content
+   */
+  @IsArray()
+  @IsOptional()
+  readonly clients?: any[];
+
+  /**
+   * `findAccount` is a function.
+   * This is not something that should live in a DTO.
+   * Although this is the way `oidc-provider` library offers
+   * to implement our data resolver
+   *
+   * This property is optional because it is injected by the module
+   * rather than by real configuration.
+   */
+  @IsOptional()
+  readonly findAccount?: any;
 }
 
 export class OidcProviderConfig {
@@ -81,4 +107,8 @@ export class OidcProviderConfig {
   @ValidateNested()
   @Type(() => Configuration)
   readonly configuration: Configuration;
+
+  @IsNumber()
+  @IsOptional()
+  readonly reloadConfigDelayInMs?: number;
 }
