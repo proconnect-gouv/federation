@@ -6,6 +6,7 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { oidcProviderHooks, oidcProviderEvents } from './enums';
 import { LogLevelNames } from '@fc/logger';
+import { IDENTITY_MANAGEMENT_SERVICE } from './tokens';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -48,6 +49,10 @@ describe('OidcProviderService', () => {
     },
   };
 
+  const identityManagementServiceMock = {
+    getIdentity: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -55,6 +60,10 @@ describe('OidcProviderService', () => {
         LoggerService,
         OidcProviderService,
         HttpAdapterHost,
+        {
+          provide: IDENTITY_MANAGEMENT_SERVICE,
+          useValue: identityManagementServiceMock,
+        },
       ],
     })
       .overrideProvider(HttpAdapterHost)
@@ -188,6 +197,39 @@ describe('OidcProviderService', () => {
       const result = service['provider']['configuration']();
       // Then
       expect(result).toBe(configMock);
+    });
+  });
+
+  describe('findAccount', () => {
+    it('Should return an object with accountID', async () => {
+      // Given
+      const ctx = {};
+      const sub = 'foo';
+      const identityMock = {};
+      identityManagementServiceMock.getIdentity.mockResolvedValueOnce(
+        identityMock,
+      );
+      // When
+      const result = await service['findAccount'](ctx, sub);
+      // Then
+      expect(result).toHaveProperty('accountId');
+      expect(result.accountId).toBe('foo');
+    });
+    it('Should return an object with a claims function that returns identity', async () => {
+      // Given
+      const ctx = {};
+      const sub = 'foo';
+      const identityMock = {};
+      const use = 'bar';
+      const scope = 'baz';
+      identityManagementServiceMock.getIdentity.mockResolvedValueOnce(
+        identityMock,
+      );
+      const result = await service['findAccount'](ctx, sub);
+      // When
+      const claimsResult = await result.claims(use, scope);
+      // Then
+      expect(claimsResult).toBe(identityMock);
     });
   });
 

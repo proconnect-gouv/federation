@@ -2,5 +2,5 @@ export interface IIdentityManagementService {
   /**
    * @TODO create an interface for output
    */
-  getIdentity(id: string): Promise<object | boolean>;
+  storeIdentity(key: string, identity: any): Promise<boolean>;
 }

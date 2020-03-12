@@ -6,7 +6,7 @@ import { CONFIG_OPTIONS } from './tokens';
 import { IConfigOptions } from './interfaces';
 import { UnkonwnConfigurationNameError } from './errors';
 
-const validationOptions: ValidatorOptions = {
+export const validationOptions: ValidatorOptions = {
   skipMissingProperties: false,
   whitelist: true,
   forbidUnknownValues: true,

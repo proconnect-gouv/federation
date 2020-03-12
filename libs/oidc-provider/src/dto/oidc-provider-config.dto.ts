@@ -74,6 +74,13 @@ class Configuration {
   @Type(() => Features)
   readonly features: Features;
 
+  /** @TODO fix authorized values */
+  @IsArray()
+  readonly acrValues: string[];
+
+  @IsObject()
+  readonly claims: any;
+
   /**
    * clients is not loaded from real configuration
    * but is loaded from database after configuration is initialized.

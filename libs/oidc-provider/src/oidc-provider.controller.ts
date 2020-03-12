@@ -31,7 +31,7 @@ export class OidcProviderController {
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async getAuthorize(@Next() next, @Query() params: GetAuthorizeParamsDTO) {
     // Start of business related stuff
-    this.loggerService.verbose('### NEST /api/v2/authorize');
+    this.loggerService.debug('/api/v2/authorize');
     this.loggerService.businessEvent('### NEST /api/v2/authorize');
 
     const { client_id: clientId } = params;
@@ -46,7 +46,7 @@ export class OidcProviderController {
   @Post('/token')
   postToken(@Next() next, @Req() req) {
     // Start of business related stuff
-    this.loggerService.verbose('### NEST /api/v2/token');
+    this.loggerService.debug('/api/v2/token');
 
     /** @TODO get param properly, not from req.body */
     const { client_id: clientId } = req.body;
@@ -60,25 +60,12 @@ export class OidcProviderController {
   /** @TODO validation query by DTO */
   // (authorisation header, do we really need to add DTO check? 🤔)
   @Get('/userinfo')
-  async getUserInfo(@Req() req) {
+  async getUserInfo(@Req() req, @Next() next) {
     // Start of business related stuff
-    this.loggerService.verbose('### NEST /api/v2/userinfo');
-    this.loggerService.debug(req.headers);
+    this.loggerService.debug('/api/v2/userinfo');
     // End of business related stuff
 
-    // Return userinfo
-    /**
-     * @TODO retrieve an identifier from token ?
-     */
-    const id = 'abc42';
-
-    /**
-     * @TODO return directly call to service
-     * if we don't do anything else with the result
-     */
-    const userinfo = await this.identityManagementService.getIdentity(id);
-
-    return userinfo;
+    return next();
   }
 
   /**

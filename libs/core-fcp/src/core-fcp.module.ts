@@ -9,7 +9,7 @@ import { OidcClientModule } from '@fc/oidc-client';
 @Module({
   imports: [
     OidcProviderModule.register(IdentityManagementService, SpManagementService),
-    OidcClientModule,
+    OidcClientModule.register(IdentityManagementService),
   ],
   controllers: [CoreFcpController],
   providers: [CoreFcpService],

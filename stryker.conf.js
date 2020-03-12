@@ -6,7 +6,21 @@ module.exports = function(config) {
     testRunner: 'jest',
     transpilers: [],
     coverageAnalysis: 'off',
-    tsconfigFile: 'tsconfig.json',
-    mutate: ['src/**/*.ts'],
+    tsconfigFile: 'tsconfig.build.json',
+    mutate: [
+      'libs/**/*.{ts,tsx}',
+      '!libs/**/*.spec.{ts,tsx}',
+      '!libs/**/*.module.ts',
+      '!libs/examples/**/*',
+      '!libs/**/testing/**/*',
+    ],
+    files: [
+      'jest.config.js',
+      'libs/**/*.tsx',
+      'libs/**/*.ts',
+      'libs/**/*.json',
+      'package.json',
+      'tsconfig.json',
+    ],
   });
 };
