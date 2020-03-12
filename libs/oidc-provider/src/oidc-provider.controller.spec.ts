@@ -107,11 +107,12 @@ describe('OidcProviderController', () => {
     it('should call identity service', async () => {
       // Given
       const req = {};
+      const next = jest.fn();
 
       // When
-      await oidcProviderController.getUserInfo(req);
+      await oidcProviderController.getUserInfo(req, next);
       // Then
-      expect(identityManagementServiceMock.getIdentity).toBeCalledTimes(1);
+      expect(next).toBeCalledTimes(1);
     });
   });
 });

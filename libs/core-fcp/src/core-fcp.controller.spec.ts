@@ -16,8 +16,8 @@ describe('CoreFcpController', () => {
 
   const loggerServiceMock = ({
     setContext: jest.fn(),
-    verbose: jest.fn(),
-    businessEvent: jest.fn(),
+    debug: jest.fn(),
+    trace: jest.fn(),
   } as unknown) as LoggerService;
 
   beforeEach(async () => {
@@ -39,7 +39,9 @@ describe('CoreFcpController', () => {
   describe('getInteraction', () => {
     it('should return uid', async () => {
       // Given
-      const req = {};
+      const req = {
+        session: { uid: 42 },
+      };
       const res = {};
       providerMock.interactionDetails.mockResolvedValue({
         uid: 'uid',

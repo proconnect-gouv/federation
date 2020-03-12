@@ -15,9 +15,9 @@ import { LoggerService } from '@fc/logger';
 export class CoreFcpController {
   constructor(
     private readonly oidcProviderService: OidcProviderService,
-    private readonly loggerService: LoggerService,
+    private readonly logger: LoggerService,
   ) {
-    this.loggerService.setContext(this.constructor.name);
+    this.logger.setContext(this.constructor.name);
   }
 
   /** @TODO validate query by DTO */
@@ -25,10 +25,12 @@ export class CoreFcpController {
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Render('interaction')
   async getInteraction(@Req() req, @Res() res) {
-    this.loggerService.verbose('### NEST /interaction');
-
+    this.logger.debug('/interaction/:uid');
+    this.logger.trace(req.session.uid);
     const provider = this.oidcProviderService.getProvider();
     const { uid, prompt, params } = await provider.interactionDetails(req, res);
+
+    req.session.uid = uid;
 
     return {
       uid,
@@ -41,7 +43,9 @@ export class CoreFcpController {
   @Get('/interaction/:uid/consent')
   @Render('consent')
   async getConsent(@Req() req, @Res() res) {
-    console.log('### NEST /interaction/:uid/consent');
+    this.logger.debug('/interaction/:uid/consent');
+
+    this.logger.trace(req.session.uid);
 
     const provider = this.oidcProviderService.getProvider();
     const { uid, prompt, params } = await provider.interactionDetails(req, res);
@@ -61,7 +65,7 @@ export class CoreFcpController {
 
     const result = {
       login: {
-        account: '42',
+        account: req.session.uid,
         acr: req.body.acr,
         amr: ['pwd'],
         ts: Math.floor(Date.now() / 1000),

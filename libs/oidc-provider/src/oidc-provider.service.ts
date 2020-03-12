@@ -1,8 +1,8 @@
-/* Temporay hard coded oidc-prodider config. 
-   Remove eslint-disable once config is implemented */
-/* eslint-disable @typescript-eslint/camelcase */
 import { HttpAdapterHost } from '@nestjs/core';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { IIdentityManagementService } from './interfaces';
+import { IDENTITY_MANAGEMENT_SERVICE } from './tokens';
+
 /**
  * We sadly need `lodash` to override node-oid-provider
  * configuration function that relies on it.
@@ -23,6 +23,8 @@ export class OidcProviderService {
     private httpAdapterHost: HttpAdapterHost,
     private readonly configService: ConfigService,
     private readonly logger: LoggerService,
+    @Inject(IDENTITY_MANAGEMENT_SERVICE)
+    private readonly identityManagementService: IIdentityManagementService,
   ) {
     this.logger.setContext(this.constructor.name);
     /**
@@ -120,10 +122,16 @@ export class OidcProviderService {
   private async getClients() {
     return [
       {
+        // Temporary hard coded `oidc-provider` defined properties
+        // eslint-disable-next-line @typescript-eslint/camelcase
         client_id:
           'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
+        // Temporary hard coded `oidc-provider` defined properties
+        // eslint-disable-next-line @typescript-eslint/camelcase
         client_secret:
           'a970fc88b3111fcfdce515c2ee03488d8a349e5379a3ba2aa48c225dcea243a5',
+        // Temporary hard coded `oidc-provider` defined properties
+        // eslint-disable-next-line @typescript-eslint/camelcase
         redirect_uris: [
           'https://fsp1v2.docker.dev-franceconnect.fr/login-callback',
         ], // + other client properties
@@ -135,12 +143,15 @@ export class OidcProviderService {
    * This should be done by an injected external service
    * exposing a `findAccount` method
    */
-  private findAccount(ctx, id) {
-    console.log('OidcProviderService.getConfig().findAccount()');
+  private async findAccount(ctx, sub: string) {
+    this.logger.debug('OidcProviderService.findAccount()');
+
+    const identity = await this.identityManagementService.getIdentity(sub);
+
     return {
-      accountId: 'MyAccountId',
+      accountId: sub,
       async claims(use, scope) {
-        return { sub: 'MySub' };
+        return identity;
       },
     };
   }

@@ -12,7 +12,7 @@ import {
 
 @Injectable()
 export class OidcClientService {
-  // @TODO: validation body by interface
+  /** @TODO validation body by interface */
   async getAuthorizeUrl(body, req): Promise<string> {
     const client: Client = await this.createOidcClient();
 

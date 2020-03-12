@@ -1,5 +1,6 @@
-import { IsEnum, IsBoolean, IsString } from 'class-validator';
+import { IsEnum, IsBoolean, IsString, IsNotEmpty } from 'class-validator';
 import { LogLevelNames } from '../enum';
+import { Type } from 'class-transformer';
 
 export class LoggerConfig {
   @IsEnum(LogLevelNames)
@@ -9,5 +10,6 @@ export class LoggerConfig {
   readonly isDevelopment: boolean;
 
   @IsString()
+  @IsNotEmpty()
   readonly path: string;
 }

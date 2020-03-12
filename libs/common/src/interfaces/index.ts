@@ -1,1 +1,1 @@
-export * from './instance-of.interface';
+export * from './implementation-of.interface';
