@@ -1,21 +1,62 @@
-/** @TODO Remove once config params deported in config module */
-/* eslint-disable @typescript-eslint/camelcase */
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import {
   Issuer,
-  ResponseType,
   TokenSet,
   generators,
   Client,
-  ClientAuthMethod,
+  ClientMetadata,
 } from 'openid-client';
+import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
+import { OidcClientConfig } from './dto';
+import { IIdPManagementService } from './interfaces';
+import { IDP_MANAGEMENT_SERVICE } from './tokens';
 
 @Injectable()
 export class OidcClientService {
-  /** @TODO validation body by interface */
-  async getAuthorizeUrl(body, req): Promise<string> {
-    const client: Client = await this.createOidcClient();
+  private configuration: OidcClientConfig;
+  private IssuerProxy = Issuer;
 
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly logger: LoggerService,
+    @Inject(IDP_MANAGEMENT_SERVICE)
+    private readonly idpManagementService: IIdPManagementService,
+  ) {
+    this.logger.setContext(this.constructor.name);
+    /**
+     * Bind only once
+     *
+     * This methods is called repeatedly via setTimeout
+     * thus it needs to be bound to `this`.
+     * We bind it once for all in constructor.
+     *  - less overhead at each run
+     *  - easier to unit test
+     */
+    this.scheduleConfigurationReload = this.scheduleConfigurationReload.bind(
+      this,
+    );
+  }
+
+  onModuleInit() {
+    this.scheduleConfigurationReload();
+  }
+
+  /** @TODO validation body by interface */
+  async getAuthorizeUrl(
+    scope: string,
+    providerId: string,
+    // acr_values is an oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    acr_values: string,
+    req,
+  ): Promise<string> {
+    const client: Client = await this.createOidcClient(providerId);
+
+    /** @TODO replace by in house crypto */
+    const state = generators.state();
+
+    /** @TODO replace by in house crypto? */
     const codeVerifier = generators.codeVerifier();
     const codeChallenge = generators.codeChallenge(codeVerifier);
 
@@ -23,81 +64,117 @@ export class OidcClientService {
     req.session.codeVerifier = codeVerifier;
 
     return client.authorizationUrl({
-      scope: body.scopes,
-      state: body.state,
-      acr_values: body.acr_values,
+      scope,
+      state,
+      // oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      acr_values,
+      // oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/camelcase
       code_challenge: codeChallenge,
+      // oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/camelcase
       code_challenge_method: 'S256',
     });
   }
 
   /** @TODO interface tokenSet, to see what we keep ? */
-  async getTokenSet(req): Promise<TokenSet> {
-    const client = await this.createOidcClient();
+  async getTokenSet(req, providerId: string): Promise<TokenSet> {
+    const clientMetadata = await this.getProvider(providerId);
+    const client = await this.createOidcClient(providerId);
+
     const params = await client.callbackParams(req);
+
     const tokenSet = await client.callback(
-      this.getFcAsSpConfig().redirect_uris.join(','),
+      clientMetadata.redirect_uris.join(','),
       params,
       {
         state: params.state,
+        // oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/camelcase
         code_verifier: req.session.codeVerifier,
-        response_type: this.getFcAsSpConfig().response_types.join(','),
+        // oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        response_type: clientMetadata.response_types.join(','),
       },
     );
 
-    console.log('tokenSet', tokenSet);
     return tokenSet;
   }
 
-  /** @TODO interface userinfo */
-  async getUserInfo(accessToken: string): Promise<object> {
-    const client = await this.createOidcClient();
+  /**
+   * @TODO interface userinfo
+   * @TODO handle network error
+   */
+  async getUserInfo(accessToken: string, providerId: string): Promise<object> {
+    /** @TODO Retrieve this info */
+    const client = await this.createOidcClient(providerId);
     return client.userinfo(accessToken);
   }
 
-  private async createOidcClient(): Promise<Client> {
-    // retrieve provider metadata
-    /**
-     * @TODO Get data from...
-     * .well-known URL from config / database?
-     * Issuer from cache in memory? => optimization => later
-     *
-     * @TODO handle network failure with specific Exception / error code
-     */
-    const issuer = await Issuer.discover(
-      'https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration',
+  /**
+   * Scheduled reload of oidc-provider configuration
+   */
+  private async scheduleConfigurationReload(): Promise<void> {
+    this.configuration = await this.getConfig();
+    this.logger.debug(
+      `Reload configuration (reloadConfigDelayInMs:${this.configuration.reloadConfigDelayInMs})`,
     );
 
-    // create FC client as SP
-    return new issuer.Client(this.getFcAsSpConfig());
+    // Schedule next call, N seconds after END of this one
+    setTimeout(
+      this.scheduleConfigurationReload,
+      this.configuration.reloadConfigDelayInMs,
+    );
   }
 
-  /** @TODO Get from config (validation is done at config load time) */
-  private getFcAsSpConfig(): {
-    token_endpoint_auth_method: ClientAuthMethod;
-    client_id: string;
-    client_secret: string;
-    response_types: ResponseType[];
-    redirect_uris: string[];
-    post_logout_redirect_uris: string[];
-    id_token_signed_response_alg: string;
-    authorization_signed_response_alg: string;
-    grant_types: string[];
-  } {
+  private async createOidcClient(providerId: string): Promise<Client> {
+    const clientMetadata = this.getProvider(providerId);
+    /**
+     * Cast to string since well_known_url is not in type `ClientMetadata`.
+     * It does no harm to add this parameter though
+     * @see https://github.com/panva/node-openid-client/blob/master/docs/README.md#new-issuermetadata
+     */
+    const wellKnownUrl = clientMetadata.well_known_url as string;
+    /**
+     * @TODO handle network failure with specific Exception / error code
+     */
+    const issuer = await this.IssuerProxy.discover(wellKnownUrl);
+
+    return new issuer.Client(clientMetadata);
+  }
+
+  /**
+   * @param providerId identifier used to indicate choosen IdP
+   * @returns providers metadata
+   * @throws Error
+   */
+  private getProvider(providerId: string): ClientMetadata {
+    const provider = this.configuration.providers.find(
+      provider => provider.id === providerId,
+    );
+    if (!provider) {
+      /** @TODO proper error management (specific exception?) */
+      throw Error(`Provider not found <${providerId}>`);
+    }
+
+    return provider;
+  }
+
+  /**
+   * Compose full config by merging static parameters from:
+   *  - configuration file (some may be coming from environment variables)
+   *  - database (IdP configuration)
+   */
+  private async getConfig(): Promise<OidcClientConfig> {
+    const providers = await this.idpManagementService.getList();
+    const configuration = this.configService.get<OidcClientConfig>(
+      'OidcClient',
+    );
+
     return {
-      token_endpoint_auth_method: 'client_secret_post',
-      client_id: '09a1a257648c1742c74d6a3d84b31943',
-      client_secret: '7ae4fef2aab63fb78d777fe657b7536f',
-      response_types: ['code'],
-      redirect_uris: [
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback',
-      ],
-      post_logout_redirect_uris: [
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-callback',
-      ],
-      id_token_signed_response_alg: 'HS256',
-      authorization_signed_response_alg: 'HS256',
-      grant_types: ['authorization_code'],
+      ...configuration,
+      providers,
     };
   }
 }

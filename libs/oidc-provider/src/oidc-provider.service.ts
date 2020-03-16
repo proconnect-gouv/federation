@@ -1,8 +1,6 @@
 import { HttpAdapterHost } from '@nestjs/core';
 import { Inject, Injectable } from '@nestjs/common';
-import { IIdentityManagementService } from './interfaces';
-import { IDENTITY_MANAGEMENT_SERVICE } from './tokens';
-
+import { Provider } from 'oidc-provider';
 /**
  * We sadly need `lodash` to override node-oid-provider
  * configuration function that relies on it.
@@ -11,7 +9,8 @@ import { IDENTITY_MANAGEMENT_SERVICE } from './tokens';
 import { get } from 'lodash';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
-import { Provider } from 'oidc-provider';
+import { IIdentityManagementService, ISpManagementService } from './interfaces';
+import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
 import { oidcProviderHooks, oidcProviderEvents } from './enums';
 import { OidcProviderConfig } from './dto';
 
@@ -25,6 +24,8 @@ export class OidcProviderService {
     private readonly logger: LoggerService,
     @Inject(IDENTITY_MANAGEMENT_SERVICE)
     private readonly identityManagementService: IIdentityManagementService,
+    @Inject(SP_MANAGEMENT_SERVICE)
+    private readonly spManagementService: ISpManagementService,
   ) {
     this.logger.setContext(this.constructor.name);
     /**
@@ -62,7 +63,6 @@ export class OidcProviderService {
    * Scheduled reload of oidc-provider configuration
    */
   private async scheduleConfigurationReload(): Promise<void> {
-    /** @TODO replace by logger.verbose */
     const configuration = await this.getConfig();
     this.logger.debug(
       `Reload configuration (reloadConfigDelayInMs:${configuration.reloadConfigDelayInMs})`,
@@ -71,7 +71,6 @@ export class OidcProviderService {
     this.overrideConfiguration(configuration);
 
     // Schedule next call, N seconds after END of this one
-    /** @TODO get the timeout delay from configuration */
     setTimeout(
       this.scheduleConfigurationReload,
       configuration.reloadConfigDelayInMs,
@@ -118,30 +117,11 @@ export class OidcProviderService {
     });
   }
 
-  /** @TODO fetch data from database */
-  private async getClients() {
-    return [
-      {
-        // Temporary hard coded `oidc-provider` defined properties
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        client_id:
-          'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-        // Temporary hard coded `oidc-provider` defined properties
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        client_secret:
-          'a970fc88b3111fcfdce515c2ee03488d8a349e5379a3ba2aa48c225dcea243a5',
-        // Temporary hard coded `oidc-provider` defined properties
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        redirect_uris: [
-          'https://fsp1v2.docker.dev-franceconnect.fr/login-callback',
-        ], // + other client properties
-      },
-    ];
-  }
-
   /** @TODO Actually retrieve data from database
    * This should be done by an injected external service
    * exposing a `findAccount` method
+   *
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#accounts
    */
   private async findAccount(ctx, sub: string) {
     this.logger.debug('OidcProviderService.findAccount()');
@@ -150,7 +130,7 @@ export class OidcProviderService {
 
     return {
       accountId: sub,
-      async claims(use, scope) {
+      async claims() {
         return identity;
       },
     };
@@ -162,7 +142,7 @@ export class OidcProviderService {
    *  - database (SP configuration)
    */
   private async getConfig(): Promise<OidcProviderConfig> {
-    const clients = await this.getClients();
+    const clients = await this.spManagementService.getList();
     const {
       issuer,
       configuration,

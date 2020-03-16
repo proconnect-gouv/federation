@@ -2,6 +2,7 @@ import { IsObject, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { LoggerConfig } from '@fc/logger';
 import { OidcProviderConfig } from '@fc/oidc-provider';
+import { OidcClientConfig } from '@fc/oidc-client';
 
 export class CoreFcpConfig {
   @IsObject()
@@ -16,4 +17,9 @@ export class CoreFcpConfig {
   @ValidateNested()
   @Type(() => OidcProviderConfig)
   readonly OidcProvider: OidcProviderConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => OidcClientConfig)
+  readonly OidcClient: OidcClientConfig;
 }

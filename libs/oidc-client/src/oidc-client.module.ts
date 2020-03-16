@@ -1,7 +1,10 @@
 import { Module, DynamicModule } from '@nestjs/common';
 import { ImplementationOf } from '@fc/common';
-import { IIdentityManagementService } from './interfaces/identity-management-service.interface';
-import { IDENTITY_MANAGEMENT_SERVICE } from './tokens/identity-management-service.token';
+import { IDP_MANAGEMENT_SERVICE, IDENTITY_MANAGEMENT_SERVICE } from './tokens';
+import {
+  IIdentityManagementService,
+  IIdPManagementService,
+} from './interfaces';
 import { OidcClientService } from './oidc-client.service';
 import { OidcClientController } from './oidc-client.controller';
 
@@ -9,6 +12,7 @@ import { OidcClientController } from './oidc-client.controller';
 export class OidcClientModule {
   static register(
     identityManagementClass: ImplementationOf<IIdentityManagementService>,
+    idpManagementClass: ImplementationOf<IIdPManagementService>,
   ): DynamicModule {
     return {
       module: OidcClientModule,
@@ -16,6 +20,10 @@ export class OidcClientModule {
         {
           provide: IDENTITY_MANAGEMENT_SERVICE,
           useClass: identityManagementClass,
+        },
+        {
+          provide: IDP_MANAGEMENT_SERVICE,
+          useClass: idpManagementClass,
         },
         OidcClientService,
       ],

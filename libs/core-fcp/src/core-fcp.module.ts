@@ -2,14 +2,15 @@ import { Module } from '@nestjs/common';
 import { OidcProviderModule } from '@fc/oidc-provider';
 import { IdentityManagementService } from '@fc/identity-management';
 import { SpManagementService } from '@fc/sp-management';
+import { IdPManagementService } from '@fc/idp-management';
+import { OidcClientModule } from '@fc/oidc-client';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from './core-fcp.service';
-import { OidcClientModule } from '@fc/oidc-client';
 
 @Module({
   imports: [
     OidcProviderModule.register(IdentityManagementService, SpManagementService),
-    OidcClientModule.register(IdentityManagementService),
+    OidcClientModule.register(IdentityManagementService, IdPManagementService),
   ],
   controllers: [CoreFcpController],
   providers: [CoreFcpService],
