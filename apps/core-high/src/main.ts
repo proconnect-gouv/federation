@@ -9,13 +9,13 @@ import { ConfigService } from '@fc/config';
 
 // Assets path vary in dev env
 const assetsPath =
-  process.env.NODE_ENV === 'developement'
+  process.env.NODE_ENV === 'development'
     ? // Libs code base to take latest version
       '../../../libs/core-fcp/src'
     : // Current, directory = dist when in production mode
       '';
 
-// avoid 'certificate has expired' on local stack 
+// avoid 'certificate has expired' on local stack
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 async function bootstrap() {
@@ -27,16 +27,18 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, assetsPath, 'public'));
 
-  /** 
-   * @TODO create session module (express?, redis?, ...) 
+  /**
+   * @TODO create session module (express?, redis?, ...)
    * with variable validation
-  **/
-  app.use(session({
-    secret: 'aufooquewooleng8Thahr6quei7Ais',
-    name: 'sessionId',
-    resave: true,
-    saveUninitialized: false,
-  }));
+   **/
+  app.use(
+    session({
+      secret: 'aufooquewooleng8Thahr6quei7Ais',
+      name: 'sessionId',
+      resave: true,
+      saveUninitialized: false,
+    }),
+  );
 
   await app.listen(3000);
 }

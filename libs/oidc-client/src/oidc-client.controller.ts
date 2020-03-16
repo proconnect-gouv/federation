@@ -1,8 +1,16 @@
-import { Controller, Get, Inject, Req, Res, Body, Post } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Inject,
+  Param,
+  Req,
+  Res,
+  Body,
+  Post,
+} from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { IIdentityManagementService } from './interfaces';
 import { IDENTITY_MANAGEMENT_SERVICE } from './tokens';
-
 import { OidcClientService } from './oidc-client.service';
 
 @Controller('/api/v2')
@@ -18,11 +26,18 @@ export class OidcClientController {
   @Post('/redirect-to-idp')
   async redirectToIdp(@Req() req, @Res() res, @Body() body) {
     this.logger.debug('/api/v2/redirect-to-idp');
+    // acr_values is an oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    const { scope, providerId, acr_values, uid } = body;
 
-    req.session.uid = body.uid;
+    req.session.uid = uid;
 
     const authorizationUrl = await this.oidcClientService.getAuthorizeUrl(
-      body,
+      scope,
+      providerId,
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      acr_values,
       req,
     );
 
@@ -30,17 +45,24 @@ export class OidcClientController {
   }
 
   /** @TODO valiate input by DTO */
-  @Get('/oidc-callback')
-  async getOidcCallback(@Req() req, @Res() res) {
+  @Get('/oidc-callback/:providerId')
+  async getOidcCallback(
+    @Param('providerId') providerId,
+    @Req() req,
+    @Res() res,
+  ) {
     this.logger.debug('/api/v2/oidc-callback');
 
     const { uid } = req.session;
 
     const {
       access_token: accessToken,
-    } = await this.oidcClientService.getTokenSet(req);
+    } = await this.oidcClientService.getTokenSet(req, providerId);
 
-    const user = await this.oidcClientService.getUserInfo(accessToken);
+    const user = await this.oidcClientService.getUserInfo(
+      accessToken,
+      providerId,
+    );
 
     this.identityManagementService.storeIdentity(uid, user);
 
@@ -48,6 +70,9 @@ export class OidcClientController {
     res.redirect(`/interaction/${req.session.uid}/consent`);
   }
 
+  /**
+   * @TODO implement!
+   */
   @Get('logout-callback')
   getLogoutCallback() {
     // retourne sur le FS une fois la session du FI terminé

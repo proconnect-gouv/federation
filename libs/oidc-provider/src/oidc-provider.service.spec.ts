@@ -6,7 +6,7 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { oidcProviderHooks, oidcProviderEvents } from './enums';
 import { LogLevelNames } from '@fc/logger';
-import { IDENTITY_MANAGEMENT_SERVICE } from './tokens';
+import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -39,6 +39,10 @@ describe('OidcProviderService', () => {
     businessEvent: jest.fn(),
   } as unknown) as LoggerService;
 
+  const spManagementServiceMock = {
+    getList: jest.fn(),
+  };
+
   const useSpy = jest.fn();
 
   const providerMock = {
@@ -63,6 +67,10 @@ describe('OidcProviderService', () => {
         {
           provide: IDENTITY_MANAGEMENT_SERVICE,
           useValue: identityManagementServiceMock,
+        },
+        {
+          provide: SP_MANAGEMENT_SERVICE,
+          useValue: spManagementServiceMock,
         },
       ],
     })
@@ -113,10 +121,9 @@ describe('OidcProviderService', () => {
   });
 
   describe('scheduleConfigurationReload', () => {
-    jest.useFakeTimers();
-
     it('Should call getConfig and overrideConfiguration', async () => {
       // Given
+      jest.useFakeTimers();
       // Can't use jest.spyOn() on private
       const overrideConfigurationMock = jest.fn();
       const getConfigMock = jest
@@ -133,6 +140,7 @@ describe('OidcProviderService', () => {
 
     it('shoud call schedule recursive all with setTimeout() and correct reloadConfigDelayInMs', async () => {
       // Given
+      jest.useFakeTimers();
       const reloadConfigDelayInMs = 1000;
       const overrideConfigurationMock = jest.fn();
       const getConfigMock = jest
@@ -220,14 +228,12 @@ describe('OidcProviderService', () => {
       const ctx = {};
       const sub = 'foo';
       const identityMock = {};
-      const use = 'bar';
-      const scope = 'baz';
       identityManagementServiceMock.getIdentity.mockResolvedValueOnce(
         identityMock,
       );
       const result = await service['findAccount'](ctx, sub);
       // When
-      const claimsResult = await result.claims(use, scope);
+      const claimsResult = await result.claims();
       // Then
       expect(claimsResult).toBe(identityMock);
     });
@@ -273,26 +279,26 @@ describe('OidcProviderService', () => {
       // Restore
       service['provider'] = originalProvider;
     });
-  });
 
-  it('should call provider use with callback function AFTER', async () => {
-    // Given
-    providerMock.middlewares = [];
-    const originalProvider = service['provider'];
-    service['provider'] = providerMock as any;
-    const callback = jest.fn();
-    const ctx = { oidc: { route: oidcProviderEvents.USERINFO } };
-    const next = () => async () => Promise.resolve();
-    // When
-    service.hook(
-      oidcProviderHooks.AFTER,
-      oidcProviderEvents.USERINFO,
-      callback,
-    );
-    await providerMock.middlewares[0].call(null, ctx, next);
-    // Then
-    expect(callback).toHaveBeenCalledTimes(1);
-    // Restore
-    service['provider'] = originalProvider;
+    it('should call provider use with callback function AFTER', async () => {
+      // Given
+      providerMock.middlewares = [];
+      const originalProvider = service['provider'];
+      service['provider'] = providerMock as any;
+      const callback = jest.fn();
+      const ctx = { oidc: { route: oidcProviderEvents.USERINFO } };
+      const next = () => async () => Promise.resolve();
+      // When
+      service.hook(
+        oidcProviderHooks.AFTER,
+        oidcProviderEvents.USERINFO,
+        callback,
+      );
+      await providerMock.middlewares[0].call(null, ctx, next);
+      // Then
+      expect(callback).toHaveBeenCalledTimes(1);
+      // Restore
+      service['provider'] = originalProvider;
+    });
   });
 });

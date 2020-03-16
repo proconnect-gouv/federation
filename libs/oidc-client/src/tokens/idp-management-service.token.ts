@@ -1,0 +1,1 @@
+export const IDP_MANAGEMENT_SERVICE = Symbol('IDP_MANAGEMENT_SERVICE);');

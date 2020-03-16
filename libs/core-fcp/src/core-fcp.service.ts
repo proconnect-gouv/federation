@@ -13,8 +13,9 @@ export class CoreFcpService {
     this.oidcProviderService.hook(
       oidcProviderHooks.AFTER,
       oidcProviderEvents.TOKEN,
-      ctx => {
-        console.log('Je suis initialisé depuis le module business !!');
+      () => {
+        console.log('Exemple de Hook initialisé depuis le module business !!');
+        console.log('Voir libs/core-fcp/core-fcp.service.ts');
       },
     );
   }

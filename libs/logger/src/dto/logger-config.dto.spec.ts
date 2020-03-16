@@ -1,4 +1,4 @@
-import { getTransformed, validateDto } from '@fc/common';
+import { validateDto } from '@fc/common';
 import { validationOptions } from '@fc/config';
 import { LoggerConfig } from './logger-config.dto';
 import { LogLevelNames } from '../enum';

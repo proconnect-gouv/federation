@@ -13,6 +13,7 @@
         id="fs-request"
         name="fs-request"
       >
+        <input name="providerId" id="providerId" value="fip1v2" />
         <input name="uid" id="uid" value="<%= locals.uid %>" />
         <input
           name="client_id"
@@ -22,7 +23,7 @@
           name="redirect_uri"
           value="https://fsp1v2.docker.dev-franceconnect.fr/login-callback"
         />
-        <input name="scopes" value="openid profile email adress phone birth" />
+        <input name="scope" value="openid profile email adress phone birth" />
         <input name="state" value="home" />
         <input name="acr_values" value="eidas1" />
         <button
