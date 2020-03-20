@@ -97,6 +97,12 @@
       ],
       "@fc/config/*": [
         "libs/config/src/*"
+      ],
+      "@fc/error": [
+        "libs/error/src"
+      ],
+      "@fc/error/*": [
+        "libs/error/src/*"
       ]
     }
   },

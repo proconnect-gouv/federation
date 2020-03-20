@@ -6,6 +6,7 @@ import { IIdentityManagementService } from './interfaces/identity-management-ser
 import { IDENTITY_MANAGEMENT_SERVICE } from './tokens/identity-management-service.token';
 import { ISpManagementService } from './interfaces/sp-management-service.interface';
 import { SP_MANAGEMENT_SERVICE } from './tokens/sp-management-service.token';
+import { FcExceptionFilter } from '@fc/error';
 
 @Module({})
 export class OidcProviderModule {
@@ -24,6 +25,7 @@ export class OidcProviderModule {
     return {
       module: OidcProviderModule,
       providers: [
+        FcExceptionFilter,
         {
           provide: IDENTITY_MANAGEMENT_SERVICE,
           useClass: identityManagementClass,

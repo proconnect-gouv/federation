@@ -34,7 +34,8 @@
     "pino": "^5.17.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
-    "rxjs": "^6.5.4"
+    "rxjs": "^6.5.4",
+    "uuid": "^7.0.2"
   },
   "devDependencies": {
     "@nestjs/cli": "^6.13.2",
@@ -109,7 +110,9 @@
       "@app/cryptography-gateway-high/(.*)": "<rootDir>/libs/cryptography-gateway-high/src/$1",
       "@app/cryptography-gateway-high": "<rootDir>/libs/cryptography-gateway-high/src",
       "@fc/config/(.*)": "<rootDir>/libs/config/src/$1",
-      "@fc/config": "<rootDir>/libs/config/src"
+      "@fc/config": "<rootDir>/libs/config/src",
+      "@fc/error/(.*)": "<rootDir>/libs/error/src/$1",
+      "@fc/error": "<rootDir>/libs/error/src"
     }
   }
 }

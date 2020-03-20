@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OidcProviderService } from './oidc-provider.service';
 import { HttpAdapterHost } from '@nestjs/core';
-import { Provider } from 'oidc-provider';
+import { Provider, KoaContextWithOIDC } from 'oidc-provider';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { oidcProviderHooks, oidcProviderEvents } from './enums';
 import { LogLevelNames } from '@fc/logger';
+import { FcExceptionFilter } from '@fc/error';
 import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
 
 describe('OidcProviderService', () => {
@@ -57,6 +58,10 @@ describe('OidcProviderService', () => {
     getIdentity: jest.fn(),
   };
 
+  const exceptionFilterMock = {
+    catch: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -64,6 +69,7 @@ describe('OidcProviderService', () => {
         LoggerService,
         OidcProviderService,
         HttpAdapterHost,
+        FcExceptionFilter,
         {
           provide: IDENTITY_MANAGEMENT_SERVICE,
           useValue: identityManagementServiceMock,
@@ -80,6 +86,8 @@ describe('OidcProviderService', () => {
       .useValue(configServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(FcExceptionFilter)
+      .useValue(exceptionFilterMock)
       .compile();
 
     module.useLogger(loggerServiceMock);
@@ -299,6 +307,19 @@ describe('OidcProviderService', () => {
       expect(callback).toHaveBeenCalledTimes(1);
       // Restore
       service['provider'] = originalProvider;
+    });
+  });
+
+  describe('renderError', () => {
+    it('should call exceptionFilter.catch', () => {
+      // Given
+      const ctx = { res: {} } as KoaContextWithOIDC;
+      const out = '';
+      const error = new Error('foo bar');
+      // When
+      service['renderError'](ctx, out, error);
+      // Then
+      expect(exceptionFilterMock.catch).toHaveBeenCalledTimes(1);
     });
   });
 });
