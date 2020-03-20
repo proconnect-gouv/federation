@@ -1,6 +1,13 @@
 import { HttpAdapterHost } from '@nestjs/core';
-import { Inject, Injectable } from '@nestjs/common';
-import { Provider } from 'oidc-provider';
+import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
+import { Provider, KoaContextWithOIDC } from 'oidc-provider';
+import { FcExceptionFilter } from '@fc/error';
+import {
+  OidcProviderInitialisationException,
+  OidcProviderRuntimeException,
+  OidcProviderBindingException,
+} from './exceptions';
+
 /**
  * We sadly need `lodash` to override node-oid-provider
  * configuration function that relies on it.
@@ -26,6 +33,7 @@ export class OidcProviderService {
     private readonly identityManagementService: IIdentityManagementService,
     @Inject(SP_MANAGEMENT_SERVICE)
     private readonly spManagementService: ISpManagementService,
+    private readonly exceptionFilter: FcExceptionFilter,
   ) {
     this.logger.setContext(this.constructor.name);
     /**
@@ -51,10 +59,18 @@ export class OidcProviderService {
     const { issuer, configuration } = await this.getConfig();
     this.logger.debug('Initializing oidc-provider');
 
-    this.provider = new Provider(issuer, configuration);
+    try {
+      this.provider = new Provider(issuer, configuration);
+    } catch (error) {
+      throw new OidcProviderInitialisationException(error);
+    }
 
     this.logger.debug('Mouting oidc-provider middleware');
-    this.httpAdapterHost.httpAdapter.use(this.provider.callback);
+    try {
+      this.httpAdapterHost.httpAdapter.use(this.provider.callback);
+    } catch (error) {
+      throw new OidcProviderBindingException(error);
+    }
 
     this.scheduleConfigurationReload();
   }
@@ -137,6 +153,33 @@ export class OidcProviderService {
   }
 
   /**
+   * We can't just throw since oidc-provider has its own catch block
+   * which would prevent us of reaching our NestJs exceptionFilter
+   *
+   * Hacky workarround:
+   * 1. Exception filter is injected in the service
+   * 2. Explicit call to the catch method
+   *
+   * We have to construct a fake ArgumentsHost host instance.
+   *
+   * @param ctx Koa's `ctx` object
+   * @param out output body, we won't use it here.
+   * @param error error trown from oidc-provider
+   *
+   * @see https://github.com/panva/node-oidc-provider/tree/master/docs#rendererror
+   */
+  private renderError(ctx: KoaContextWithOIDC, _out: string, error: any) {
+    // Instantiate our exception
+    const exception = new OidcProviderRuntimeException(error);
+
+    // Build fake ArgumentsHost host instance
+    const host = FcExceptionFilter.ArgumentHostAdapter(ctx) as ArgumentsHost;
+
+    // Finally call the exception filter
+    this.exceptionFilter.catch(exception, host);
+  }
+
+  /**
    * Compose full config by merging static parameters from:
    *  - configuration file (some may be coming from environment variables)
    *  - database (SP configuration)
@@ -156,6 +199,7 @@ export class OidcProviderService {
         ...configuration,
         clients,
         findAccount: this.findAccount.bind(this),
+        renderError: this.renderError.bind(this),
       },
     };
   }

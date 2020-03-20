@@ -6,9 +6,11 @@ import { IdPManagementService } from '@fc/idp-management';
 import { OidcClientModule } from '@fc/oidc-client';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from './core-fcp.service';
+import { ErrorModule } from '@fc/error';
 
 @Module({
   imports: [
+    ErrorModule,
     OidcProviderModule.register(IdentityManagementService, SpManagementService),
     OidcClientModule.register(IdentityManagementService, IdPManagementService),
   ],

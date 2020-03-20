@@ -84,6 +84,7 @@ class Configuration {
   /**
    * clients is not loaded from real configuration
    * but is loaded from database after configuration is initialized.
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#clients
    *
    * Thus we have to make it optional for the time being
    *
@@ -98,12 +99,26 @@ class Configuration {
    * This is not something that should live in a DTO.
    * Although this is the way `oidc-provider` library offers
    * to implement our data resolver
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#findaccount
    *
    * This property is optional because it is injected by the module
    * rather than by real configuration.
    */
   @IsOptional()
   readonly findAccount?: any;
+
+  /**
+   * `renderError` is a function.
+   * This is not something that should live in a DTO.
+   * Although this is the way `oidc-provider` library offers
+   * to implement our error renderer
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#rendererror
+   *
+   * This property is optional because it is injected by the module
+   * rather than by real configuration.
+   */
+  @IsOptional()
+  readonly renderError?: any;
 }
 
 export class OidcProviderConfig {
