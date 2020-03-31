@@ -1,16 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
+import { SignatureDigest } from './enums';
 
 @Injectable()
 export class CryptographyGatewayLowService {
   /**
    * Sign data using crypto and a private key
    * @param privateKey the private key PEM formatted
-   * @param data a serialized data
-   * @param digest default to sha256 (Cf. crypto.createSign)
+   * @param data data to sign as a Buffer
+   * @param digest alg used to digest data before signing (default to sha256).
    * @returns signed data
    */
-  async sign(privateKey: string, data: Buffer, digest = 'sha256'): Promise<Buffer> {
+  async sign(
+    privateKey: string,
+    data: Buffer,
+    digest: SignatureDigest = SignatureDigest.SHA256
+  ): Promise<Buffer> {
     const signer = crypto.createSign(digest);
 
     signer.write(data);

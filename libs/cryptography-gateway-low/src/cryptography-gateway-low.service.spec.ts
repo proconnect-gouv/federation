@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import * as crypto from 'crypto';
 import { CryptographyGatewayLowService } from './cryptography-gateway-low.service';
+import { SignatureDigest } from './enums';
 
 describe('CryptographyGatewayLowService', () => {
   let service: CryptographyGatewayLowService;
@@ -43,7 +44,7 @@ describe('CryptographyGatewayLowService', () => {
 
       // expect
       expect(crypto.createSign).toBeCalledTimes(1);
-      expect(crypto.createSign).toBeCalledWith('sha256');
+      expect(crypto.createSign).toBeCalledWith(SignatureDigest.SHA256);
       expect(mockSigner.write).toBeCalledTimes(1);
       expect(mockSigner.write).toBeCalledWith(data);
       expect(mockSigner.end).toBeCalledTimes(1);
@@ -58,7 +59,7 @@ describe('CryptographyGatewayLowService', () => {
       // setup
       const privateKey = 'private-key';
       const data = Buffer.from('data', 'utf8');
-      const digest = 'sha512';
+      const digest = SignatureDigest.SHA512;
 
       // action
       const signature = await service.sign(privateKey, data, digest);
