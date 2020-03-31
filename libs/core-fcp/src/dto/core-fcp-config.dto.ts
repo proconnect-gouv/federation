@@ -3,6 +3,7 @@ import { Type } from 'class-transformer';
 import { LoggerConfig } from '@fc/logger';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { OidcClientConfig } from '@fc/oidc-client';
+import { MongooseConfig } from '@fc/mongoose';
 
 export class CoreFcpConfig {
   @IsObject()
@@ -22,4 +23,9 @@ export class CoreFcpConfig {
   @ValidateNested()
   @Type(() => OidcClientConfig)
   readonly OidcClient: OidcClientConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => MongooseConfig)
+  readonly Mongoose: MongooseConfig;
 }
