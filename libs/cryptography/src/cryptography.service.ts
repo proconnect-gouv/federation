@@ -1,10 +1,17 @@
-import { randomBytes, createCipheriv, createDecipheriv, createHash, createHmac } from 'crypto';
+import {
+  randomBytes,
+  createCipheriv,
+  createDecipheriv,
+  createHash,
+  createHmac,
+} from 'crypto';
 import { derToJose } from 'jose/lib/help/ecdsa_signatures';
 import { Injectable, Inject } from '@nestjs/common';
+import { createDecipher } from 'crypto';
+
 import { IPivotIdentity } from './interfaces';
 import { GATEWAY } from './tokens';
 import { IGateway } from './interfaces';
-
 
 const NONCE_LENGTH = 12;
 const AUTHTAG_LENGTH = 16;
@@ -79,6 +86,29 @@ export class CryptographyService {
 
     /** @TODO add try/catch block and re thow specific exception */
     return JSON.parse(receivedPlaintext);
+  }
+
+  decryptSecretHash(secretHash: string): string {
+    return this.createDecipherLegacy(secretHash);
+  }
+
+  /**
+   * @TODO refacto: replace createDecipher (deprecated) by createDecipheriv and make unit test
+   * @see ticket: https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/58
+   * @param secretHash
+   */
+  // istanbul ignore next line
+  private createDecipherLegacy(secretHash: string): string {
+    const decipher = createDecipher(
+      'aes-256-cbc',
+      // environment variable which will be deleted on the function refacto
+      process.env.CLIENT_SECRET_CIPHER_LEGACY,
+    );
+
+    let dec = decipher.update(secretHash, 'hex', 'utf8');
+    dec += decipher.final('utf8');
+
+    return JSON.parse(dec).password;
   }
 
   /**

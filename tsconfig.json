@@ -103,6 +103,12 @@
       ],
       "@fc/error/*": [
         "libs/error/src/*"
+      ],
+      "@fc/mongoose": [
+        "libs/mongoose/src"
+      ],
+      "@fc/mongoose/*": [
+        "libs/mongoose/src/*"
       ]
     }
   },

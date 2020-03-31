@@ -1,4 +1,5 @@
 import { Module, DynamicModule } from '@nestjs/common';
+
 import { ImplementationOf } from '@fc/common';
 import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderController } from './oidc-provider.controller';
@@ -19,11 +20,13 @@ export class OidcProviderModule {
   static register(
     identityManagementClass: ImplementationOf<IIdentityManagementService>,
     spManagementClass: ImplementationOf<ISpManagementService>,
+    spManagementModule,
   ): DynamicModule {
     // does not need to be tested
     // istanbul ignore next
     return {
       module: OidcProviderModule,
+      imports: [spManagementModule],
       providers: [
         FcExceptionFilter,
         {
