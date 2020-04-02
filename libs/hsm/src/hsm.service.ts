@@ -6,9 +6,8 @@ import { SignatureDigest } from './enums';
 // Temporary configuration here, remove when configuration module operational
 const config = {
   pin: 'admin', // process.env.HSM_PIN,
-  libhsm:
-    '../tw_proteccio/pkcs11_api/nethsm/client/sharedlib64/libnethsm.so',
-}
+  libhsm: '../tw_proteccio/pkcs11_api/nethsm/client/sharedlib64/libnethsm.so',
+};
 
 /**
  *  Support EC key prime field up to 521 bits
@@ -18,10 +17,10 @@ const config = {
 const MAX_SIG_OUTPUT_SIZE = 132;
 
 /**
- * For documentation  
+ * For documentation
  */
 @Injectable()
-export class CryptographyGatewayHighService {
+export class HsmService {
   private pkcs11Instance: pkcs11js.PKCS11;
   private pkcs11Session: Buffer;
 
@@ -49,11 +48,11 @@ export class CryptographyGatewayHighService {
   async sign(
     privateKeyLabel: string,
     data: Buffer,
-    digest: SignatureDigest = SignatureDigest.SHA256
+    digest: SignatureDigest = SignatureDigest.SHA256,
   ): Promise<Buffer> {
     /** The hash is not computed by the HSM (would be too slow) */
     const hash = createHash(digest);
-    
+
     hash.update(data);
 
     const dataDigest = hash.digest();
@@ -83,7 +82,7 @@ export class CryptographyGatewayHighService {
     /**
      * As "signature" here contain a raw formatted EC signature (two positive numbers "r" and "s" concatened)
      * for performances reasons, we need to encode it to a format that crypto (and so openssl) understand.
-    */
+     */
     return this.encodeRSToAsn1(signature);
   }
 
@@ -114,7 +113,7 @@ export class CryptographyGatewayHighService {
   /**
    * Instanciate the library pkcs11js
    * @param libPath the path of the shared .so library
-   * @returns 
+   * @returns
    */
   private instanciatePkcs11js(libPath: string): pkcs11js.PKCS11 {
     const pkcs11Instance = new pkcs11js.PKCS11();
@@ -130,7 +129,7 @@ export class CryptographyGatewayHighService {
    * Open an anonym session with the HSM (give access to public objects in the HSM)
    */
   private openSessionWithTheHsm(): Buffer {
-    const [ firstSlot ] = this.pkcs11Instance.C_GetSlotList(true);
+    const [firstSlot] = this.pkcs11Instance.C_GetSlotList(true);
 
     return this.pkcs11Instance.C_OpenSession(
       firstSlot,
@@ -139,7 +138,7 @@ export class CryptographyGatewayHighService {
   }
 
   /**
-   * Close the session with the HSM, 
+   * Close the session with the HSM,
    */
   private closeCurrentSessionWithTheHsm(): void {
     this.pkcs11Instance.C_Finalize();
@@ -149,7 +148,11 @@ export class CryptographyGatewayHighService {
    * Authenticated the current session (give access to private objects in the HSM)
    */
   private authenticateWithTheHsm(): void {
-    this.pkcs11Instance.C_Login(this.pkcs11Session, pkcs11js.CKU_USER, config.pin);
+    this.pkcs11Instance.C_Login(
+      this.pkcs11Session,
+      pkcs11js.CKU_USER,
+      config.pin,
+    );
   }
 
   /**
@@ -178,14 +181,14 @@ export class CryptographyGatewayHighService {
   }
 
   /**
-   * Extract r and s from rawSignature and encode it to ASN.1 format 
+   * Extract r and s from rawSignature and encode it to ASN.1 format
    * @param rawSignature The (r, s) pair concatened
    * @returns The der ASN.1 encoded signature
    * @see https://en.wikipedia.org/wiki/Elliptic_Curve_Digital_Signature_Algorithm#Signature_generation_algorithm
    */
   private encodeRSToAsn1(rawSignature: Buffer): Buffer {
     const signHex = rawSignature.toString('hex');
-    const nSize = signHex.length /  2;
+    const nSize = signHex.length / 2;
 
     let r = signHex.substring(0, nSize);
     let s = signHex.substring(nSize);
@@ -219,7 +222,7 @@ export class CryptographyGatewayHighService {
     const payload = `02${this.length(r)}${r}02${this.length(s)}${s}`;
 
     const der = `30${this.length(payload)}${payload}`;
-    
+
     return Buffer.from(der, 'hex');
   }
 
