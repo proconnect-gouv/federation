@@ -10,6 +10,7 @@ import {
   IsNumber,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { JWKECKey, JWKRSAKey } from 'jose';
 
 export class Routes {
   @IsString()
@@ -53,6 +54,20 @@ class Features {
   @ValidateNested()
   @Type(() => FeatureSetting)
   readonly devInteractions: FeatureSetting;
+
+  @ValidateNested()
+  @Type(() => FeatureSetting)
+  readonly encryption: FeatureSetting;
+
+  @ValidateNested()
+  @Type(() => FeatureSetting)
+  readonly jwtUserinfo: FeatureSetting;
+}
+
+class Jwks {
+  @IsArray()
+  /** @TODO properly validate keys */
+  readonly keys: Array<JWKECKey | JWKRSAKey>;
 }
 
 class Configuration {
@@ -119,6 +134,12 @@ class Configuration {
    */
   @IsOptional()
   readonly renderError?: any;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => Jwks)
+  @IsOptional()
+  readonly jwks?: Jwks;
 }
 
 export class OidcProviderConfig {

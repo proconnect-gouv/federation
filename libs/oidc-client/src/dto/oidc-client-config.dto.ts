@@ -1,5 +1,6 @@
-import { IsArray, IsNumber, IsOptional } from 'class-validator';
+import { IsArray, IsNumber, IsOptional, IsObject } from 'class-validator';
 import { ClientMetadata } from 'openid-client';
+import { JSONWebKeySet } from 'jose';
 
 export class OidcClientConfig {
   @IsArray()
@@ -8,4 +9,7 @@ export class OidcClientConfig {
 
   @IsNumber()
   readonly reloadConfigDelayInMs: number;
+
+  @IsObject()
+  readonly jwks: JSONWebKeySet;
 }

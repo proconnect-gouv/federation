@@ -20,13 +20,18 @@ export class FcExceptionFilter extends BaseExceptionFilter
     const id = ErrorService.generateErrorId();
 
     const { message, stack } = exception;
+    let stackTrace = stack.split('\n');
+
+    if (exception.originalError) {
+      stackTrace = stackTrace.concat(exception.originalError.stack.split('\n'));
+    }
 
     this.logger.warn({
       type: 'FcException',
       code,
       id,
       message,
-      stack,
+      stackTrace,
     });
 
     res.status(500);

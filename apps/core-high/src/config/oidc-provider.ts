@@ -23,6 +23,8 @@ export default {
     features: {
       introspection: { enabled: true },
       devInteractions: { enabled: false },
+      encryption: { enabled: true },
+      jwtUserinfo: { enabled: true },
     },
     acrValues: ['eidas1', 'eidas2', 'eidas3'],
     claims: {
@@ -52,6 +54,12 @@ export default {
         'birthplace',
         'birthcountry',
         'preferred_username',
+      ],
+    },
+    jwks: {
+      keys: [
+        ...JSON.parse(process.env.CRYPTO_SIG_DETECTOR_KEY),
+        ...JSON.parse(process.env.CRYPTO_ENC_DETECTOR_KEY),
       ],
     },
   },

@@ -80,37 +80,13 @@ describe('OidcProviderController', () => {
     });
   });
 
-  describe('postToken', () => {
-    it('should check if SP is usable and call next()', async () => {
-      // Given
-      const req = {
-        body: {
-          // param name from OIDC spec
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          client_id: 'abc123',
-        },
-      };
-
-      const next = jest.fn();
-
-      spManagementServiceMock.isUsable.mockResolvedValue(true);
-      // When
-      await oidcProviderController.postToken(next, req);
-      // Then
-      expect(spManagementServiceMock.isUsable).toBeCalledTimes(1);
-      expect(spManagementServiceMock.isUsable).toBeCalledWith('abc123');
-      expect(next).toBeCalledTimes(1);
-    });
-  });
-
   describe('getUserInfo', () => {
     it('should call identity service', async () => {
       // Given
-      const req = {};
       const next = jest.fn();
 
       // When
-      await oidcProviderController.getUserInfo(req, next);
+      await oidcProviderController.getUserInfo(next);
       // Then
       expect(next).toBeCalledTimes(1);
     });

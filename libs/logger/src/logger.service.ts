@@ -60,7 +60,7 @@ export class LoggerService extends Logger {
   }
 
   private overrideNativeConsole() {
-    const methods = ['log', 'error', 'trace', 'debug', 'info', 'warn'];
+    const methods = ['log', 'error', 'debug', 'info', 'warn'];
     const context = 'Native Console';
 
     methods.forEach(method => {

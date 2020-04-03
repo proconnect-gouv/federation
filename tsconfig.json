@@ -80,16 +80,16 @@
       "@fc/siren/*": [
         "libs/siren/src/*"
       ],
-      "@app/cryptography-gateway-low": [
+      "@fc/cryptography-gateway-low": [
         "libs/cryptography-gateway-low/src"
       ],
-      "@app/cryptography-gateway-low/*": [
+      "@fc/cryptography-gateway-low/*": [
         "libs/cryptography-gateway-low/src/*"
       ],
-      "@app/cryptography-gateway-high": [
+      "@fc/cryptography-gateway-high": [
         "libs/cryptography-gateway-high/src"
       ],
-      "@app/cryptography-gateway-high/*": [
+      "@fc/cryptography-gateway-high/*": [
         "libs/cryptography-gateway-high/src/*"
       ],
       "@fc/config": [

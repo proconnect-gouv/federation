@@ -15,6 +15,7 @@ export const mongooseProvider = MongooseModule.forRootAsync({
         `${config.database}` +
         `${config.options}`,
       useNewUrlParser: true,
+      useUnifiedTopology: true,
     };
   },
 });

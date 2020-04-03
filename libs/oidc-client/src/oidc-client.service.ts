@@ -1,3 +1,4 @@
+import { JWK } from 'jose';
 import { Injectable, Inject } from '@nestjs/common';
 import {
   Issuer,
@@ -78,8 +79,19 @@ export class OidcClientService {
     });
   }
 
+  async wellKnownKeys() {
+    const config = this.configService.get<OidcClientConfig>('OidcClient');
+
+    const privateKeys = config.jwks.keys;
+
+    const publicKeys = privateKeys.map(key => JWK.asKey(key as any).toJWK());
+
+    return { keys: publicKeys };
+  }
+
   /** @TODO interface tokenSet, to see what we keep ? */
   async getTokenSet(req, providerId: string): Promise<TokenSet> {
+    this.logger.trace('getTokenSet');
     const clientMetadata = await this.getProvider(providerId);
     const client = await this.createOidcClient(providerId);
 
@@ -107,6 +119,7 @@ export class OidcClientService {
    * @TODO handle network error
    */
   async getUserInfo(accessToken: string, providerId: string): Promise<object> {
+    this.logger.trace('getUserInfo');
     /** @TODO Retrieve this info */
     const client = await this.createOidcClient(providerId);
     return client.userinfo(accessToken);
@@ -130,6 +143,7 @@ export class OidcClientService {
 
   private async createOidcClient(providerId: string): Promise<Client> {
     const clientMetadata = this.getProvider(providerId);
+    const { jwks } = this.configService.get<OidcClientConfig>('OidcClient');
     /**
      * Cast to string since well_known_url is not in type `ClientMetadata`.
      * It does no harm to add this parameter though
@@ -141,7 +155,7 @@ export class OidcClientService {
      */
     const issuer = await this.IssuerProxy.discover(wellKnownUrl);
 
-    return new issuer.Client(clientMetadata);
+    return new issuer.Client(clientMetadata, jwks);
   }
 
   /**

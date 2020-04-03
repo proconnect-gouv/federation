@@ -6,6 +6,11 @@ import { SpManagementModule, SpManagementService } from '@fc/sp-management';
 import { IdPManagementService } from '@fc/idp-management';
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
+import { CryptographyModule } from '@fc/cryptography';
+import {
+  CryptographyGatewayHighModule,
+  CryptographyGatewayHighService,
+} from '@fc/cryptography-gateway-high';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from './core-fcp.service';
 import { ErrorModule } from '@fc/error';
@@ -19,6 +24,8 @@ import { ErrorModule } from '@fc/error';
       SpManagementService,
       SpManagementModule,
     ),
+    CryptographyGatewayHighModule,
+    CryptographyModule.register(CryptographyGatewayHighService),
     OidcClientModule.register(IdentityManagementService, IdPManagementService),
   ],
   controllers: [CoreFcpController],
