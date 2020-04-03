@@ -1,3 +1,9 @@
+/**
+ * Override external library for crypto
+ * This has to be done before any other import in order
+ * to wrap references before they are imported
+ */
+import '@fc/cryptography-gateway-high/overrides';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';

@@ -19,13 +19,14 @@ export class UnhandledExceptionFilter extends BaseExceptionFilter
     const id = ErrorService.generateErrorId();
 
     const { name, message, stack } = exception;
+    const stackTrace = stack.split('\n');
 
     this.logger.error({
       type: name,
       code,
       id,
       message,
-      stack,
+      stackTrace,
     });
 
     res.status(500);

@@ -21,10 +21,33 @@ export class SpManagementService implements ISpManagementService {
         {
           _id: false,
           key: true,
+          // openid defined property names
           // eslint-disable-next-line @typescript-eslint/camelcase
           secret_hash: true,
+          // openid defined property names
           // eslint-disable-next-line @typescript-eslint/camelcase
-          redirect_uris: true,
+          redirect_uris: [],
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          id_token_signed_response_alg: '',
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          id_token_encrypted_response_alg: '',
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          id_token_encrypted_response_enc: '',
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          userinfo_signed_response_alg: '',
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          userinfo_encrypted_response_alg: '',
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          userinfo_encrypted_response_enc: '',
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          jwks_uri: '',
         },
       )
       .exec();

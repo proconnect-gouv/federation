@@ -38,7 +38,22 @@ export class IdPManagementService implements IIdPManagementService {
         ],
         // oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/camelcase
-        id_token_signed_response_alg: 'HS256',
+        id_token_signed_response_alg: 'ES256',
+        // oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        id_token_encrypted_response_alg: 'RSA-OAEP',
+        // oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        id_token_encrypted_response_enc: 'A256GCM',
+        // oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        userinfo_signed_response_alg: 'ES256',
+        // oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        userinfo_encrypted_response_alg: 'RSA-OAEP',
+        // oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        userinfo_encrypted_response_enc: 'A256GCM',
       },
     ]);
   }

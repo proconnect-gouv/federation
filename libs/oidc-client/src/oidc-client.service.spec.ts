@@ -12,8 +12,8 @@ describe('OidcClientService', () => {
   const configServiceMock = {
     get: (module: string) => {
       switch (module) {
-        case 'OidcProvider':
-          return { issuer: 'http://foo.bar', configuration: {} };
+        case 'OidcClient':
+          return { issuer: 'http://foo.bar', configuration: {}, jwks: {} };
         case 'Logger':
           return {
             path: '/dev/null',
@@ -26,32 +26,16 @@ describe('OidcClientService', () => {
 
   const loggerServiceMock = ({
     setContext: jest.fn(),
-    verbose: jest.fn(),
+    trace: jest.fn(),
     debug: jest.fn(),
     businessEvent: jest.fn(),
   } as unknown) as LoggerService;
 
-  const IdPManagementServiceMock = {
-    getList: jest
-      .fn()
-      .mockResolvedValue('IdPManagementServiceMock Resolve Value'),
-  };
-
-  const authorizationUrlMock = jest
-    .fn()
-    .mockResolvedValue('authorizationUrlMock Resolve Value');
-
-  const callbackParamsMock = jest
-    .fn()
-    .mockResolvedValue({ state: 'callbackParamsState' });
-
-  const callbackMock = jest
-    .fn()
-    .mockResolvedValue('callbackMock Resolve Value');
-
-  const userinfoMock = jest
-    .fn()
-    .mockResolvedValue('userinfoMock Resolve Value');
+  const IdPManagementServiceMock = { getList: jest.fn() };
+  const authorizationUrlMock = jest.fn();
+  const callbackParamsMock = jest.fn();
+  const callbackMock = jest.fn();
+  const userinfoMock = jest.fn();
 
   const getProviderMockReturnValue = {
     // oidc defined variable name
@@ -65,22 +49,15 @@ describe('OidcClientService', () => {
     well_known_url: 'mock well-known url',
   };
 
-  const getProviderMock = jest.fn().mockReturnValue(getProviderMockReturnValue);
+  const getProviderMock = jest.fn();
 
   const IssuerClientMock = jest.fn();
 
   const IssuerProxyMock = {
-    discover: jest.fn().mockResolvedValue({
-      Client: IssuerClientMock,
-    }),
+    discover: jest.fn(),
   } as any;
 
-  const createOidcClientMock = jest.fn().mockResolvedValue({
-    authorizationUrl: authorizationUrlMock,
-    callbackParams: callbackParamsMock,
-    callback: callbackMock,
-    userinfo: userinfoMock,
-  });
+  const createOidcClientMock = jest.fn();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -101,6 +78,31 @@ describe('OidcClientService', () => {
       .compile();
 
     service = module.get<OidcClientService>(OidcClientService);
+
+    jest.resetAllMocks();
+
+    IdPManagementServiceMock.getList.mockResolvedValue(
+      'IdPManagementServiceMock Resolve Value',
+    );
+    authorizationUrlMock.mockResolvedValue(
+      'authorizationUrlMock Resolve Value',
+    );
+    callbackParamsMock.mockResolvedValue({ state: 'callbackParamsState' });
+
+    callbackMock.mockResolvedValue('callbackMock Resolve Value');
+    userinfoMock.mockResolvedValue('userinfoMock Resolve Value');
+
+    getProviderMock.mockReturnValue(getProviderMockReturnValue);
+    IssuerProxyMock.discover.mockResolvedValue({
+      Client: IssuerClientMock,
+    });
+
+    createOidcClientMock.mockResolvedValue({
+      authorizationUrl: authorizationUrlMock,
+      callbackParams: callbackParamsMock,
+      callback: callbackMock,
+      userinfo: userinfoMock,
+    });
   });
 
   describe('constructor', () => {
@@ -263,7 +265,7 @@ describe('OidcClientService', () => {
       service['IssuerProxy'] = IssuerProxyMock;
       const providerId = 'provider';
       // When
-      service['createOidcClient'](providerId);
+      await service['createOidcClient'](providerId);
       // Then
       expect(getProviderMock).toHaveBeenCalledWith(providerId);
       expect(IssuerProxyMock.discover).toHaveBeenCalledWith(
@@ -295,7 +297,6 @@ describe('OidcClientService', () => {
       // When
       const result = service['getProvider']('provider2');
       // Then
-      expect(IdPManagementServiceMock.getList).toHaveBeenCalled();
       expect(result).toBe(providerMock2);
     });
     it('should throw if provider is not in config', () => {

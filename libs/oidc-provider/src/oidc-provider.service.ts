@@ -1,6 +1,8 @@
+import { get } from 'lodash';
+import { Provider, KoaContextWithOIDC } from 'oidc-provider';
+import { JWK } from 'jose';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
-import { Provider, KoaContextWithOIDC } from 'oidc-provider';
 import { FcExceptionFilter } from '@fc/error';
 import {
   OidcProviderInitialisationException,
@@ -13,7 +15,6 @@ import {
  * configuration function that relies on it.
  * @see OidcProviderService.overrideConfiguration()
  */
-import { get } from 'lodash';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { IIdentityManagementService, ISpManagementService } from './interfaces';
@@ -73,6 +74,17 @@ export class OidcProviderService {
     }
 
     this.scheduleConfigurationReload();
+  }
+
+  /**
+   * @TODO return keys from HSM (how?)
+   */
+  async wellKnownKeys() {
+    const config = this.configService.get<OidcProviderConfig>('OidcProvider');
+    const privateKeys = config.configuration.jwks.keys;
+    const publicKeys = privateKeys.map(key => JWK.asKey(key as any).toJWK());
+
+    return { keys: publicKeys };
   }
 
   /**

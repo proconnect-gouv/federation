@@ -19,4 +19,6 @@ export class FcException extends Error {
    * @TODO derivat the above documentaiton from the code it self?
    */
   public code: number;
+
+  public originalError?: Error;
 }

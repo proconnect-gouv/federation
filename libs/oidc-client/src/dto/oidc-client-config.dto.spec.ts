@@ -6,6 +6,7 @@ describe('OidcClientConfig', () => {
   const correctObjectMock = {
     providers: [],
     reloadConfigDelayInMs: 1000,
+    jwks: { key: [] },
   };
 
   describe('global validation', () => {
