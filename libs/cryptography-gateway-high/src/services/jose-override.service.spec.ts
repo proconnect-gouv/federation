@@ -78,6 +78,28 @@ describe(' JoseOverrideService', () => {
       // Then
       expect(originalBar).toHaveBeenCalledWith(signature, 'foo');
     });
+    it('should reject exception', () => {
+      // Given
+      const exception = new Error('test error');
+      const signature = Promise.reject(exception);
+      // Then
+      expect(service['derToJose'](signature, alg)).rejects.toThrow(exception);
+    });
+    it('should throw catchable exceptions', async () => {
+      // Given
+      const exception = new Error('test error');
+      originalBar.mockImplementation(() => {
+        throw exception;
+      });
+      const signature = Promise.resolve('signature resolved value');
+      // When
+      try {
+        await service['derToJose'](signature, alg);
+      } catch (error) {
+        // then
+        expect(error).toBe(exception);
+      }
+    });
   });
 
   describe('encodeBuffer', () => {
@@ -101,6 +123,28 @@ describe(' JoseOverrideService', () => {
       service['encodeBuffer'](buffer);
       // Then
       expect(originalBar).toHaveBeenCalledWith(buffer);
+    });
+    it('should reject exception', () => {
+      // Given
+      const exception = new Error('test error');
+      const buffer = Promise.reject(exception);
+      // Then
+      expect(service['encodeBuffer'](buffer)).rejects.toThrow(exception);
+    });
+    it('should throw catchable exceptions', async () => {
+      // Given
+      const exception = new Error('test error');
+      originalBar.mockImplementation(() => {
+        throw exception;
+      });
+      const buffer = Promise.resolve('buffer resolved value');
+      // When
+      try {
+        await service['encodeBuffer'](buffer);
+      } catch (error) {
+        // then
+        expect(error).toBe(exception);
+      }
     });
   });
 
@@ -131,6 +175,31 @@ describe(' JoseOverrideService', () => {
         { signature: 'signature text' },
       ]);
     });
+    it('should reject exception', () => {
+      // Given
+      const exception = new Error('test error');
+      // Given
+      const recipient: any = [{ signature: Promise.reject(exception) }];
+      // Then
+      expect(service['JWS.compact'](payload, recipient)).rejects.toThrow(
+        exception,
+      );
+    });
+    it('should throw catchable exceptions', async () => {
+      // Given
+      const exception = new Error('test error');
+      originalBar.mockImplementation(() => {
+        throw exception;
+      });
+      const recipient: any = [{ signature: Promise.resolve('signature text') }];
+      // When
+      try {
+        await service['JWS.compact'](payload, recipient);
+      } catch (error) {
+        // then
+        expect(error).toBe(exception);
+      }
+    });
   });
 
   describe('JWK.asKey', () => {
@@ -156,6 +225,30 @@ describe(' JoseOverrideService', () => {
       service['JWK.asKey'](key, parameters, options);
       // Then
       expect(originalBar).toHaveBeenCalledWith('key', parameters, options);
+    });
+    it('should reject exception', () => {
+      // Given
+      const exception = new Error('test error');
+      const key = Promise.reject(exception);
+      // Then
+      expect(service['JWK.asKey'](key, parameters, options)).rejects.toThrow(
+        exception,
+      );
+    });
+    it('should throw catchable exceptions', async () => {
+      // Given
+      const exception = new Error('test error');
+      originalBar.mockImplementation(() => {
+        throw exception;
+      });
+      const key = Promise.resolve('key');
+      // When
+      try {
+        await service['JWK.asKey'](key, parameters, options);
+      } catch (error) {
+        // then
+        expect(error).toBe(exception);
+      }
     });
   });
 
@@ -219,6 +312,30 @@ describe(' JoseOverrideService', () => {
       service['JWA.decrypt'](alg, key, ciphertext, opts);
       // Then
       expect(originalBar).toHaveBeenCalledWith(alg, 'key', ciphertext, opts);
+    });
+    it('should reject exception', () => {
+      // Given
+      const exception = new Error('test error');
+      const key = Promise.reject(exception);
+      // Then
+      expect(
+        service['JWA.decrypt'](alg, key, ciphertext, opts),
+      ).rejects.toThrow(exception);
+    });
+    it('should throw catchable exceptions', async () => {
+      // Given
+      const exception = new Error('test error');
+      originalBar.mockImplementation(() => {
+        throw exception;
+      });
+      const key = Promise.resolve('key');
+      // When
+      try {
+        await service['JWA.decrypt'](alg, key, ciphertext, opts);
+      } catch (error) {
+        // then
+        expect(error).toBe(exception);
+      }
     });
   });
 });

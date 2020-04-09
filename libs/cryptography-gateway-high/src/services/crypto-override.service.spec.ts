@@ -86,12 +86,13 @@ describe(' CryptoOverrideService', () => {
   });
 
   describe('crypto.createSecretKey', () => {
+    const createSecretKeyMock = jest.fn();
+    const wrapped = { createSecretKey: createSecretKeyMock };
+    OverrideCode.wrap(wrapped, 'createSecretKey', 'crypto.createSecretKey');
+
     it('should return a promise if payload is a promise', () => {
       // Given
       const payload = Promise.resolve();
-      const createSecretKeyMock = jest.fn();
-      const wrapped = { createSecretKey: createSecretKeyMock };
-      OverrideCode.wrap(wrapped, 'createSecretKey', 'crypto.createSecretKey');
       // When
       const result = service['crypto.createSecretKey'](payload);
       // Then
@@ -102,10 +103,7 @@ describe(' CryptoOverrideService', () => {
       // Given
       const responseValue = Symbol('responseValue');
       const payload = Symbol('payload');
-      const createSecretKeyMock = jest.fn().mockReturnValue(responseValue);
-
-      const wrapped = { createSecretKey: createSecretKeyMock };
-      OverrideCode.wrap(wrapped, 'createSecretKey', 'crypto.createSecretKey');
+      createSecretKeyMock.mockReturnValue(responseValue);
       // When
       const result = service['crypto.createSecretKey'](payload);
       // Then
@@ -116,13 +114,34 @@ describe(' CryptoOverrideService', () => {
       // Given
       const resolveValue = Symbol('payload');
       const payload = Promise.resolve(resolveValue);
-      const createSecretKeyMock = jest.fn();
-      const wrapped = { createSecretKey: createSecretKeyMock };
-      OverrideCode.wrap(wrapped, 'createSecretKey', 'crypto.createSecretKey');
       // When
       await service['crypto.createSecretKey'](payload);
       // Then
       expect(createSecretKeyMock).toHaveBeenCalledWith(resolveValue);
+    });
+    it('should reject exception', () => {
+      // Given
+      const exception = new Error('test error');
+      const payload = Promise.reject(exception);
+      // Then
+      expect(service['crypto.createSecretKey'](payload)).rejects.toThrow(
+        exception,
+      );
+    });
+    it('should throw catchable exceptions', async () => {
+      // Given
+      const exception = new Error('test error');
+      const payload = Promise.resolve('payload resolved value');
+      createSecretKeyMock.mockImplementation(() => {
+        throw exception;
+      });
+      // When
+      try {
+        await service['crypto.createSecretKey'](payload);
+      } catch (error) {
+        // then
+        expect(error).toBe(exception);
+      }
     });
   });
 });
