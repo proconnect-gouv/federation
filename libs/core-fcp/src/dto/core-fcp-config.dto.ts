@@ -4,6 +4,8 @@ import { LoggerConfig } from '@fc/logger';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { MongooseConfig } from '@fc/mongoose';
+import { RedisConfig } from '@fc/redis';
+import { IdentityManagementConfig } from '@fc/identity-management';
 
 export class CoreFcpConfig {
   @IsObject()
@@ -28,4 +30,14 @@ export class CoreFcpConfig {
   @ValidateNested()
   @Type(() => MongooseConfig)
   readonly Mongoose: MongooseConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => RedisConfig)
+  readonly Redis: RedisConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => IdentityManagementConfig)
+  readonly IdentityManagement: IdentityManagementConfig;
 }

@@ -12,9 +12,11 @@ import { OidcClientController } from './oidc-client.controller';
 export class OidcClientModule {
   static register(
     identityManagementClass: ImplementationOf<IIdentityManagementService>,
+    identityManagementModule,
     idpManagementClass: ImplementationOf<IIdPManagementService>,
   ): DynamicModule {
     return {
+      imports: [identityManagementModule],
       module: OidcClientModule,
       providers: [
         {

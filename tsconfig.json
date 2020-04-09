@@ -109,6 +109,12 @@
       ],
       "@fc/mongoose/*": [
         "libs/mongoose/src/*"
+      ],
+      "@fc/redis": [
+        "libs/redis/src"
+      ],
+      "@fc/redis/*": [
+        "libs/redis/src/*"
       ]
     }
   },

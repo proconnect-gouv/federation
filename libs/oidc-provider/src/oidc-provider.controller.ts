@@ -4,7 +4,6 @@ import {
   Next,
   Post,
   Query,
-  Req,
   UsePipes,
   ValidationPipe,
   Inject,
@@ -46,7 +45,7 @@ export class OidcProviderController {
 
   /** @TODO validation query by DTO */
   @Post('/token')
-  postToken(@Next() next, @Req() req) {
+  postToken(@Next() next) {
     // Start of business related stuff
     this.loggerService.debug('/api/v2/token');
 

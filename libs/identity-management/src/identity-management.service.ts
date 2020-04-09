@@ -1,34 +1,90 @@
 import { Injectable } from '@nestjs/common';
 import { IIdentityManagementService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
-
-/** @TODO Remove this POC storage and use a proper tool */
-const uglyTemporaryStoreThatShouldBeReplacedByRedis = {};
+import { RedisService } from '@fc/redis';
+import { CryptographyService } from '@fc/cryptography';
+import { ConfigService } from '@fc/config';
+import { IdentityManagementConfig } from './dto';
+import {
+  IdentityManagementBadFormatException,
+  IdentityManagementNotFoundException,
+} from './exceptions';
 
 @Injectable()
 export class IdentityManagementService implements IIdentityManagementService {
-  constructor(private readonly logger: LoggerService) {
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly logger: LoggerService,
+    private readonly redisService: RedisService,
+    private readonly cryptographyService: CryptographyService,
+  ) {
     this.logger.setContext(this.constructor.name);
   }
+
   /**
-   * Get data from volatile memory
+   * Syntax sugar to get cryptographic key from config
+   *
+   * @returns cryptographyKey entry from config.
+   */
+  private get cryptoKey(): string {
+    const { cryptographyKey } = this.configService.get<
+      IdentityManagementConfig
+    >('IdentityManagement');
+
+    return cryptographyKey;
+  }
+
+  /**
+   * Transform data to encrypted string, easy to persist.
+   *
+   * @param data data to serialize
+   * @returns encrypted string representation of <data>
+   */
+  private serialize(data: object): string {
+    const dataString = JSON.stringify(data);
+    const dataCipher = this.cryptographyService
+      .encryptUserInfosCache(this.cryptoKey, dataString)
+      .toString('base64');
+
+    return dataCipher;
+  }
+
+  /**
+   * Build back an object from encrypted string representation.
+   *
+   * @param data encrypted string representation of a data object
+   * eg output of `serialize` method.
+   * @returns object data
+   */
+  private unserialize(data: string): object {
+    const dataBuffer = Buffer.from(data, 'base64');
+    const dataString = this.cryptographyService.decryptUserInfosCache(
+      this.cryptoKey,
+      dataBuffer,
+    );
+
+    try {
+      return JSON.parse(dataString);
+    } catch (error) {
+      throw new IdentityManagementBadFormatException(error);
+    }
+  }
+
+  /**
+   * Get identity from volatile memory
    *
    * @TODO interface/DTO for identity
-   * @TODO store identity in Redis (via an injected presistance wrapper)
-   * @TODO decrypt data before returning (via an injected crypto wrapper)
    * @TODO handle return or throw if persistance fails
    */
-  async getIdentity(id: string): Promise<boolean | object> {
-    this.logger.debug(`getIdentity with id: <${id}>`);
+  async getIdentity(key: string): Promise<object> {
+    this.logger.debug('get identity from redis');
+    const dataCipher = await this.redisService.get(key);
 
-    if (!uglyTemporaryStoreThatShouldBeReplacedByRedis.hasOwnProperty(id)) {
-      this.logger.debug('Id not found');
-      return false;
+    if (!dataCipher) {
+      throw new IdentityManagementNotFoundException();
     }
 
-    this.logger.debug('Id found');
-
-    return uglyTemporaryStoreThatShouldBeReplacedByRedis[id] as object;
+    return this.unserialize(dataCipher);
   }
 
   /**
@@ -36,16 +92,12 @@ export class IdentityManagementService implements IIdentityManagementService {
    * when SP calls us on /userinfo
    *
    * @TODO interface/DTO for identity
-   * @TODO store identity in Redis (via an injected presistance wrapper)
-   * @TODO encrypt data before storage (via an injected crypto wrapper)
    * @TODO handle return or throw if persistance fails
    */
   async storeIdentity(key: string, identity: object): Promise<boolean> {
-    this.logger.trace('Store identity');
-    this.logger.trace({ key, identity });
+    this.logger.debug('store identity in redis');
+    const data = this.serialize(identity);
 
-    uglyTemporaryStoreThatShouldBeReplacedByRedis[key] = identity;
-
-    return true;
+    return this.redisService.set(key, data);
   }
 }

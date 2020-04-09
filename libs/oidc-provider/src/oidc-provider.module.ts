@@ -19,6 +19,7 @@ export class OidcProviderModule {
    */
   static register(
     identityManagementClass: ImplementationOf<IIdentityManagementService>,
+    identityManagementModule,
     spManagementClass: ImplementationOf<ISpManagementService>,
     spManagementModule,
   ): DynamicModule {
@@ -26,7 +27,7 @@ export class OidcProviderModule {
     // istanbul ignore next
     return {
       module: OidcProviderModule,
-      imports: [spManagementModule],
+      imports: [spManagementModule, identityManagementModule],
       providers: [
         FcExceptionFilter,
         {

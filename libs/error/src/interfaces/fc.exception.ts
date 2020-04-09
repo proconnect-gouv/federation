@@ -10,6 +10,9 @@ export class FcException extends Error {
    * - 03: Service providers (SP)
    * - 04: Data providers (DP)
    * - 05: eIDAS
+   *
+   * @since core-v2 :
+   * - 15: IdentityManagement
    */
   public scope: number;
 

@@ -38,6 +38,7 @@
     "openid-client": "3.14.1",
     "pino": "^5.17.0",
     "pkcs11js": "^1.0.19",
+    "redis": "^3.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.4",
@@ -120,7 +121,9 @@
       "@fc/error/(.*)": "<rootDir>/libs/error/src/$1",
       "@fc/error": "<rootDir>/libs/error/src",
       "@fc/mongoose/(.*)": "<rootDir>/libs/mongoose/src/$1",
-      "@fc/mongoose": "<rootDir>/libs/mongoose/src"
+      "@fc/mongoose": "<rootDir>/libs/mongoose/src",
+      "@fc/redis/(.*)": "<rootDir>/libs/redis/src/$1",
+      "@fc/redis": "<rootDir>/libs/redis/src"
     },
     "preset": "ts-jest"
   }

@@ -8,6 +8,10 @@ import { oidcProviderHooks, oidcProviderEvents } from './enums';
 import { LogLevelNames } from '@fc/logger';
 import { FcExceptionFilter } from '@fc/error';
 import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
+import {
+  OidcProviderInitialisationException,
+  OidcProviderBindingException,
+} from './exceptions';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -17,6 +21,18 @@ describe('OidcProviderService', () => {
       use: jest.fn(),
     },
   };
+
+  const ProviderProxyMock = class {
+    callback() {
+      return true;
+    }
+  } as any;
+
+  const BadProviderProxyMock = class {
+    constructor() {
+      throw Error('not Working');
+    }
+  } as any;
 
   const configServiceMock = {
     get: module => {
@@ -97,7 +113,7 @@ describe('OidcProviderService', () => {
     jest.resetAllMocks();
   });
 
-  describe('constructor', () => {
+  describe('onModuleInit', () => {
     it('Should create oidc-provider instance', async () => {
       // When
       await service.onModuleInit();
@@ -125,6 +141,27 @@ describe('OidcProviderService', () => {
       // Then
       expect(instance).toBeInstanceOf(Provider);
       expect(instance).toBe(service['provider']);
+    });
+
+    it('should throw if provider can not be instantied', async () => {
+      // Given
+      service['ProviderProxy'] = BadProviderProxyMock;
+      // Then
+      await expect(service.onModuleInit()).rejects.toThrow(
+        OidcProviderInitialisationException,
+      );
+    });
+
+    it('should throw if provider can not be mounted to server', async () => {
+      // Given
+      service['ProviderProxy'] = ProviderProxyMock;
+      httpAdapterHostMock.httpAdapter.use.mockImplementation(() => {
+        throw Error('not working');
+      });
+      // Then
+      await expect(service.onModuleInit()).rejects.toThrow(
+        OidcProviderBindingException,
+      );
     });
   });
 
@@ -219,7 +256,7 @@ describe('OidcProviderService', () => {
   describe('findAccount', () => {
     it('Should return an object with accountID', async () => {
       // Given
-      const ctx = {};
+      const ctx = { not: 'altered' };
       const sub = 'foo';
       const identityMock = {};
       identityManagementServiceMock.getIdentity.mockResolvedValueOnce(
@@ -230,10 +267,11 @@ describe('OidcProviderService', () => {
       // Then
       expect(result).toHaveProperty('accountId');
       expect(result.accountId).toBe('foo');
+      expect(ctx).toEqual({ not: 'altered' });
     });
     it('Should return an object with a claims function that returns identity', async () => {
       // Given
-      const ctx = {};
+      const ctx = { not: 'altered' };
       const sub = 'foo';
       const identityMock = {};
       identityManagementServiceMock.getIdentity.mockResolvedValueOnce(
@@ -244,6 +282,22 @@ describe('OidcProviderService', () => {
       const claimsResult = await result.claims();
       // Then
       expect(claimsResult).toBe(identityMock);
+      expect(ctx).toEqual({ not: 'altered' });
+    });
+    it('Should call throwError if an exception is catched', async () => {
+      // Given
+      const ctx = { not: 'altered' };
+      const sub = 'foo';
+      const exception = new Error('foo');
+      identityManagementServiceMock.getIdentity.mockRejectedValueOnce(
+        exception,
+      );
+      service['throwError'] = jest.fn();
+      // When
+      await service['findAccount'](ctx, sub);
+      // Then
+      expect(service['throwError']).toHaveBeenCalledWith(ctx, exception);
+      expect(ctx).toEqual({ not: 'altered' });
     });
   });
 

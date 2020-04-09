@@ -24,6 +24,7 @@ import { OidcProviderConfig } from './dto';
 
 @Injectable()
 export class OidcProviderService {
+  private ProviderProxy = Provider;
   private provider: Provider;
 
   constructor(
@@ -61,7 +62,7 @@ export class OidcProviderService {
     this.logger.debug('Initializing oidc-provider');
 
     try {
-      this.provider = new Provider(issuer, configuration);
+      this.provider = new this.ProviderProxy(issuer, configuration);
     } catch (error) {
       throw new OidcProviderInitialisationException(error);
     }
@@ -145,25 +146,6 @@ export class OidcProviderService {
     });
   }
 
-  /** @TODO Actually retrieve data from database
-   * This should be done by an injected external service
-   * exposing a `findAccount` method
-   *
-   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#accounts
-   */
-  private async findAccount(ctx, sub: string) {
-    this.logger.debug('OidcProviderService.findAccount()');
-
-    const identity = await this.identityManagementService.getIdentity(sub);
-
-    return {
-      accountId: sub,
-      async claims() {
-        return identity;
-      },
-    };
-  }
-
   /**
    * We can't just throw since oidc-provider has its own catch block
    * which would prevent us of reaching our NestJs exceptionFilter
@@ -173,6 +155,45 @@ export class OidcProviderService {
    * 2. Explicit call to the catch method
    *
    * We have to construct a fake ArgumentsHost host instance.
+   * @param ctx Koa's `ctx` object
+   * @param exception error to throw
+   */
+  private throwError(ctx, exception) {
+    // Build fake ArgumentsHost host instance
+    const host = FcExceptionFilter.ArgumentHostAdapter(ctx) as ArgumentsHost;
+
+    // Finally call the exception filter
+    this.exceptionFilter.catch(exception, host);
+  }
+
+  /** @TODO Actually retrieve data from database
+   * This should be done by an injected external service
+   * exposing a `findAccount` method.
+   *
+   * Returned object should contains an `accountId` property
+   * and an async `claims` function.
+   * More documentation can be found in oidc-provider repo.
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#accounts
+   */
+  private async findAccount(ctx, sub: string) {
+    this.logger.debug('OidcProviderService.findAccount()');
+
+    try {
+      const identity = await this.identityManagementService.getIdentity(sub);
+
+      return {
+        accountId: sub,
+        async claims() {
+          return identity;
+        },
+      };
+    } catch (error) {
+      // Hacky throw from oidc-provider
+      this.throwError(ctx, error);
+    }
+  }
+
+  /**
    *
    * @param ctx Koa's `ctx` object
    * @param out output body, we won't use it here.
@@ -183,12 +204,8 @@ export class OidcProviderService {
   private renderError(ctx: KoaContextWithOIDC, _out: string, error: any) {
     // Instantiate our exception
     const exception = new OidcProviderRuntimeException(error);
-
-    // Build fake ArgumentsHost host instance
-    const host = FcExceptionFilter.ArgumentHostAdapter(ctx) as ArgumentsHost;
-
-    // Finally call the exception filter
-    this.exceptionFilter.catch(exception, host);
+    // Call our hacky "thrower"
+    this.throwError(ctx, exception);
   }
 
   /**

@@ -3,7 +3,6 @@ import { LoggerService } from '@fc/logger';
 import { OverrideCode } from '@fc/common';
 import { CryptographyGatewayHighService } from './cryptography-gateway-high.service';
 import { JoseOverrideService } from './jose-override.service';
-import { Cipher } from 'crypto';
 
 describe(' JoseOverrideService', () => {
   let service: JoseOverrideService;
