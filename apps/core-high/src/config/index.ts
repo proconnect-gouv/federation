@@ -4,6 +4,8 @@ import Logger from './logger';
 import OidcProvider from './oidc-provider';
 import OidcClient from './oidc-client';
 import Mongoose from './mongoose';
+import Redis from './redis';
+import IdentityManagement from './identity-management';
 
 export default {
   App,
@@ -11,4 +13,6 @@ export default {
   OidcProvider,
   OidcClient,
   Mongoose,
+  Redis,
+  IdentityManagement,
 } as CoreFcpConfig;

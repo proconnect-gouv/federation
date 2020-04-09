@@ -1,7 +1,10 @@
 import { Module } from '@nestjs/common';
 
 import { OidcProviderModule } from '@fc/oidc-provider';
-import { IdentityManagementService } from '@fc/identity-management';
+import {
+  IdentityManagementModule,
+  IdentityManagementService,
+} from '@fc/identity-management';
 import { SpManagementModule, SpManagementService } from '@fc/sp-management';
 import { IdPManagementService } from '@fc/idp-management';
 import { OidcClientModule } from '@fc/oidc-client';
@@ -19,14 +22,20 @@ import { ErrorModule } from '@fc/error';
   imports: [
     ErrorModule,
     MongooseModule,
+    IdentityManagementModule,
     OidcProviderModule.register(
       IdentityManagementService,
+      IdentityManagementModule,
       SpManagementService,
       SpManagementModule,
     ),
     CryptographyGatewayHighModule,
     CryptographyModule.register(CryptographyGatewayHighService),
-    OidcClientModule.register(IdentityManagementService, IdPManagementService),
+    OidcClientModule.register(
+      IdentityManagementService,
+      IdentityManagementModule,
+      IdPManagementService,
+    ),
   ],
   controllers: [CoreFcpController],
   providers: [CoreFcpService],

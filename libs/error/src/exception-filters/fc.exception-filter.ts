@@ -27,7 +27,7 @@ export class FcExceptionFilter extends BaseExceptionFilter
     }
 
     this.logger.warn({
-      type: 'FcException',
+      type: exception.constructor.name,
       code,
       id,
       message,
