@@ -55,6 +55,7 @@ export class CryptoOverrideService {
 
     return this.cryptographyService.privateDecrypt(privateKey, buffer);
   }
+
   /**
    * Return promise only if buffer is a promise
    */
@@ -63,7 +64,13 @@ export class CryptoOverrideService {
     const original = OverrideCode.getOriginal('crypto.createSecretKey');
 
     if (buffer instanceof Promise) {
-      return new Promise(async resolve => resolve(original(await buffer)));
+      return new Promise(async (resolve, reject) => {
+        try {
+          resolve(original(await buffer));
+        } catch (error) {
+          reject(error);
+        }
+      });
     }
 
     return original(buffer);

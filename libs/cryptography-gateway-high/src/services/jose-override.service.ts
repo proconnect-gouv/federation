@@ -47,9 +47,13 @@ export class JoseOverrideService {
     const original = OverrideCode.getOriginal('derToJose');
 
     if (signature instanceof Promise) {
-      return new Promise(async resolve =>
-        resolve(original(await signature, alg)),
-      );
+      return new Promise(async (resolve, reject) => {
+        try {
+          resolve(original(await signature, alg));
+        } catch (error) {
+          reject(error);
+        }
+      });
     }
 
     return original(signature, alg);
@@ -65,7 +69,13 @@ export class JoseOverrideService {
     const original = OverrideCode.getOriginal('encodeBuffer');
 
     if (buffer instanceof Promise) {
-      return new Promise(async resolve => resolve(original(await buffer)));
+      return new Promise(async (resolve, reject) => {
+        try {
+          resolve(original(await buffer));
+        } catch (error) {
+          reject(error);
+        }
+      });
     }
 
     return original(buffer);
@@ -81,9 +91,13 @@ export class JoseOverrideService {
     const original = OverrideCode.getOriginal('JWS.compact');
 
     if (recipient.signature instanceof Promise) {
-      return new Promise(async resolve => {
-        const signature = await recipient.signature;
-        resolve(original(payload, [{ ...recipient, signature }]));
+      return new Promise(async (resolve, reject) => {
+        try {
+          const signature = await recipient.signature;
+          resolve(original(payload, [{ ...recipient, signature }]));
+        } catch (error) {
+          reject(error);
+        }
       });
     }
 
@@ -101,9 +115,13 @@ export class JoseOverrideService {
     const original = OverrideCode.getOriginal('JWK.asKey');
 
     if (key instanceof Promise) {
-      return new Promise(async resolve =>
-        resolve(original(await key, parameters, options)),
-      );
+      return new Promise(async (resolve, reject) => {
+        try {
+          resolve(original(await key, parameters, options));
+        } catch (error) {
+          reject(error);
+        }
+      });
     }
 
     return original(key, parameters, options);
@@ -152,9 +170,13 @@ export class JoseOverrideService {
     const original = OverrideCode.getOriginal('JWA.decrypt');
 
     if (key instanceof Promise) {
-      return new Promise(async resolve =>
-        resolve(original(alg, await key, ciphertext, opts)),
-      );
+      return new Promise(async (resolve, reject) => {
+        try {
+          resolve(original(alg, await key, ciphertext, opts));
+        } catch (error) {
+          reject(error);
+        }
+      });
     }
 
     return original(alg, key, ciphertext, opts);
