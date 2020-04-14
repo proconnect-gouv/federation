@@ -1,12 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import * as crypto from 'crypto';
+import { LoggerService } from '@fc/logger';
 import * as ecdsaSignaturesService from 'jose/lib/help/ecdsa_signatures';
 import { CryptographyService } from './cryptography.service';
-import { IPivotIdentity } from './interfaces';
-import { GATEWAY } from './tokens';
+import { IPivotIdentity } from '../interfaces';
 
 describe('CryptographyService', () => {
   let service: CryptographyService;
+
+  const loggerServiceMock = {
+    setContext: jest.fn(),
+    debug: jest.fn(),
+  };
 
   const mockEncryptKey = 'p@ss p@rt0ut';
   const mockData = {
@@ -51,25 +56,6 @@ describe('CryptographyService', () => {
   const mockHmacDigestedHash =
     'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8';
 
-  const mockDerSignature = Buffer.from(
-    '6d98490c6f1acddd448e45954f77679369475baa6d98490c6f1acddd448e45954f77679369475baa',
-    'hex',
-  );
-  const mockUnsignedJwt =
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ';
-  const mockJoseSignature = Buffer.from(
-    'SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c',
-    'utf8',
-  );
-
-  const mockSignedJwt = Buffer.from(
-    `${mockUnsignedJwt}.${mockJoseSignature.toString('utf8')}`,
-  );
-
-  const gatewayMock = {
-    sign: jest.fn(),
-  };
-
   const ecdsaSignaturesServiceMock = {
     derToJose: jest.fn(),
   };
@@ -109,37 +95,34 @@ describe('CryptographyService', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        CryptographyService,
-        {
-          provide: GATEWAY,
-          useValue: gatewayMock,
-        },
-      ],
-    }).compile();
+      providers: [LoggerService, CryptographyService],
+    })
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
+      .compile();
 
     service = module.get<CryptographyService>(CryptographyService);
 
-    jest.spyOn(ecdsaSignaturesService, 'derToJose').mockImplementation(
-      ecdsaSignaturesServiceMock.derToJose,
-    );
+    jest
+      .spyOn(ecdsaSignaturesService, 'derToJose')
+      .mockImplementation(ecdsaSignaturesServiceMock.derToJose);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('encryptUserInfosCache', () => {  
+  describe('encryptUserInfosCache', () => {
     beforeEach(() => {
       jest
         .spyOn(crypto, 'randomBytes')
         .mockImplementationOnce(mockCrypto.randomBytes);
       mockCrypto.randomBytes.mockReturnValueOnce(mockRandomBytes12);
-      
+
       jest
         .spyOn(crypto, 'createCipheriv')
         .mockImplementationOnce(mockCrypto.createCipheriv);
-      mockCrypto.createCipheriv.mockReturnValueOnce(mockCipherGcm)
+      mockCrypto.createCipheriv.mockReturnValueOnce(mockCipherGcm);
       mockCipherGcm.update.mockReturnValueOnce(mockCiphertext);
       mockCipherGcm.getAuthTag.mockReturnValueOnce(mockAuthTag16);
     });
@@ -175,7 +158,10 @@ describe('CryptographyService', () => {
 
       // expect
       expect(mockCipherGcm.update).toHaveBeenCalledTimes(1);
-      expect(mockCipherGcm.update).toHaveBeenCalledWith(mockDataToEncrypt, 'utf8');
+      expect(mockCipherGcm.update).toHaveBeenCalledWith(
+        mockDataToEncrypt,
+        'utf8',
+      );
       expect(mockCipherGcm.final).toHaveBeenCalledTimes(1);
     });
 
@@ -192,11 +178,9 @@ describe('CryptographyService', () => {
       const result = service.encryptUserInfosCache(mockEncryptKey, mockData);
 
       // expect
-      expect(result).toMatchObject(Buffer.concat([
-        mockRandomBytes12,
-        mockAuthTag16,
-        mockCiphertext,
-      ]));
+      expect(result).toMatchObject(
+        Buffer.concat([mockRandomBytes12, mockAuthTag16, mockCiphertext]),
+      );
     });
   });
 
@@ -205,7 +189,7 @@ describe('CryptographyService', () => {
       jest
         .spyOn(crypto, 'createDecipheriv')
         .mockImplementationOnce(mockCrypto.createDecipheriv);
-      mockCrypto.createDecipheriv.mockReturnValueOnce(mockDecipherGcm)
+      mockCrypto.createDecipheriv.mockReturnValueOnce(mockDecipherGcm);
       mockDecipherGcm.update.mockReturnValueOnce(mockDecryptedData);
     });
 
@@ -225,7 +209,7 @@ describe('CryptographyService', () => {
       // expect
       expect.hasAssertions();
     });
-    
+
     it('should throw an error when given cipher length is equal to cipher head length', () => {
       //setup
       const WRONG_CIPHER = Buffer.from('------28_BYTES_STRING-------', 'utf8');
@@ -255,7 +239,7 @@ describe('CryptographyService', () => {
         mockRandomBytes12,
         {
           authTagLength: 16,
-        }
+        },
       );
     });
 
@@ -277,7 +261,7 @@ describe('CryptographyService', () => {
       expect(mockDecipherGcm.update).toHaveBeenCalledWith(
         mockCiphertext,
         null,
-        'utf8'
+        'utf8',
       );
       expect(mockDecipherGcm.final).toHaveBeenCalledTimes(1);
       expect(result).toMatchObject(mockData);
@@ -305,7 +289,9 @@ describe('CryptographyService', () => {
 
   describe('computeIdentityHash', () => {
     beforeEach(() => {
-      jest.spyOn(crypto, 'createHash').mockImplementationOnce(mockCrypto.createHash);
+      jest
+        .spyOn(crypto, 'createHash')
+        .mockImplementationOnce(mockCrypto.createHash);
       mockCrypto.createHash.mockReturnValueOnce(mockHash256);
 
       mockHash256.digest.mockReturnValueOnce(mockHexDigestedHash);
@@ -345,7 +331,9 @@ describe('CryptographyService', () => {
 
   describe('computeSubV2', () => {
     beforeEach(() => {
-      jest.spyOn(crypto, 'createHmac').mockImplementationOnce(mockCrypto.createHmac);
+      jest
+        .spyOn(crypto, 'createHmac')
+        .mockImplementationOnce(mockCrypto.createHmac);
       mockCrypto.createHmac.mockReturnValueOnce(mockHmac);
 
       mockHmac.digest.mockReturnValueOnce(mockHmacDigestedHash);
@@ -389,83 +377,6 @@ describe('CryptographyService', () => {
       expect(mockHmac.digest).toHaveBeenCalledTimes(1);
       expect(mockHmac.digest).toHaveBeenCalledWith('hex');
       expect(result).toBe(`${mockHmacDigestedHash}v2`);
-    })
-  });
-
-  describe('decryptJwt', () => {
-    it('should resolve', async () => {
-      // action
-      const result = service.decryptJwt(
-        'privateKey',
-        Buffer.from('cipherWithRsaPkcsOaep', 'utf8'),
-      );
-
-      // expect
-      expect(result).toBeInstanceOf(Promise);
-    });
-
-    it('should decrypt, given a JWT and a private key', async () => {
-      // action
-      const result = await service.decryptJwt(
-        'privateKey',
-        Buffer.from('cipherWithRsaPkcsOaep', 'utf8'),
-      );
-
-      // expect
-      expect(result).toMatchObject(Buffer.from('jwt', 'utf8'));
-    });
-  });
-
-  describe('signJwt', () => {
-    beforeEach(() => {
-      gatewayMock.sign.mockReturnValueOnce(mockDerSignature);
-      ecdsaSignaturesServiceMock.derToJose.mockReturnValueOnce(mockJoseSignature);
-    });
-
-    it('should resolve', async () => {
-      // action
-      const result = service.signJwt(
-        'privateKey',
-        mockUnsignedJwt,
-      );
-
-      // expect
-      expect(result).toBeInstanceOf(Promise);
-    });
-
-    it('should sign, given a JWT and a private key', async () => {
-      // action
-      const result = await service.signJwt(
-        'privateKey',
-        mockUnsignedJwt,
-      );
-
-      // expect
-      expect(result).toBe(mockSignedJwt.toString('utf8'));
-    });
-
-    it('should use the gateway to get the signature der formatted', async () => {
-      // action
-      await service.signJwt(
-        'privateKey',
-        mockUnsignedJwt,
-      );
-
-      // expect
-      expect(gatewayMock.sign).toHaveBeenCalledTimes(1);
-      expect(gatewayMock.sign).toHaveBeenCalledWith('privateKey', Buffer.from(mockUnsignedJwt, 'utf8'));
-    });
-
-    it('should convert the der signature to jose format', async () => {
-      // action
-      await service.signJwt(
-        'privateKey',
-        mockUnsignedJwt,
-      );
-
-      // expect
-      expect(ecdsaSignaturesServiceMock.derToJose).toHaveBeenCalledTimes(1);
-      expect(ecdsaSignaturesServiceMock.derToJose).toHaveBeenCalledWith(mockDerSignature, 'ES256');
     });
   });
 });

@@ -1,7 +1,6 @@
-import { Module, Global } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { HsmService } from './hsm.service';
 
-@Global()
 @Module({
   providers: [HsmService],
   exports: [HsmService],

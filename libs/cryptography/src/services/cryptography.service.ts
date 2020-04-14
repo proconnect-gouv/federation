@@ -1,17 +1,16 @@
 import {
   randomBytes,
   createCipheriv,
+  createDecipher,
   createDecipheriv,
   createHash,
   createHmac,
 } from 'crypto';
-import { derToJose } from 'jose/lib/help/ecdsa_signatures';
-import { Injectable, Inject } from '@nestjs/common';
-import { createDecipher } from 'crypto';
-
-import { IPivotIdentity } from './interfaces';
-import { GATEWAY } from './tokens';
-import { IGateway } from './interfaces';
+import { Injectable } from '@nestjs/common';
+import { LoggerService } from '@fc/logger';
+/** @TODO remove this import once we get ride of temp implementations */
+import { OverrideCode } from '@fc/common';
+import { IPivotIdentity } from '../interfaces';
 
 const NONCE_LENGTH = 12;
 const AUTHTAG_LENGTH = 16;
@@ -19,7 +18,10 @@ const CIPHER_HEAD_LENGTH = NONCE_LENGTH + AUTHTAG_LENGTH;
 
 @Injectable()
 export class CryptographyService {
-  constructor(@Inject(GATEWAY) private readonly gateway: IGateway) {}
+  constructor(private readonly logger: LoggerService) {
+    this.logger.setContext(this.constructor.name);
+  }
+
   /**
    * Encrypt the given UserInfos obtained when oidc-provider want to cache it.
    * Current implementation use symetrical AES-256-GCM.
@@ -143,36 +145,47 @@ export class CryptographyService {
   }
 
   /**
-   * Decrypt the given cipher
-   * Current implementation use asymetrical RSA-PKCS-OAEP
-   * @todo Need implementation
-   * @param privateKey RSA-PKCS-OAEP PEM formatted
-   * @param cipher the cipher to decrypt
-   * @returns the jwt decrypted
+   * Sign data using crypto and a private key
+   * @param privateKey the private key PEM formatted
+   * @param data a serialized data
+   * @param digest default to sha256 (Cf. crypto.createSign)
+   * @returns signed data
+   * Temporary test implementation
+   * @TODO implement real HSM gateway call
    */
-  async decryptJwt(privateKey: string, cipher: Buffer): Promise<Buffer> {
-    // Linter killer
-    cipher as unknown;
-    privateKey as unknown;
+  async sign(
+    privateKey: string,
+    data: Buffer,
+    digest = 'sha256',
+  ): Promise<Buffer> {
+    this.logger.debug('Signing from gateway');
+    const original = OverrideCode.getOriginal('crypto.sign');
 
-    return Buffer.from('jwt', 'utf8');
+    return new Promise(resolve => {
+      setTimeout(() => {
+        this.logger.debug('Resolving async signing from gateway');
+        resolve(original(digest, data, privateKey));
+      }, 200);
+    });
   }
 
   /**
-   * Sign a jwt, given an identity hash and a client id
-   * Current implementation use asymetrical ECDSA-Prime256v1,
-   * @see https://github.com/panva/jose/blob/master/lib/help/ecdsa_signatures.js
-   * @param privateKey ECDSA-Prime256v1 PEM formatted
-   * @param jwt a jwt formatted "<HEADER>.<PAYLOAD>"
-   * @returns the jwt formatted "<HEADER>.<PAYLOAD>.<SIGNATURE>"
+   * Decrypt data using crypto and a private key
+   * @param privateKey the private key PEM formatted
+   * @param cipher a cipher
+   * @returns decrypted data
+   * Temporary test implementation
+   * @TODO implement real HSM gateway call
    */
-  async signJwt(privateKey: string, jwt: string): Promise<string> {
-    const derSignature = await this.gateway.sign(
-      privateKey,
-      Buffer.from(jwt, 'utf8'),
-    );
-    const jws = derToJose(derSignature, 'ES256').toString('utf8');
+  async privateDecrypt(privateKey: string, cipher: Buffer): Promise<Buffer> {
+    this.logger.debug('private decrypting from gateway');
+    const original = OverrideCode.getOriginal('crypto.privateDecrypt');
 
-    return `${jwt}.${jws}`;
+    return new Promise(resolve => {
+      setTimeout(() => {
+        this.logger.debug('Resolving async decrypting from gateway');
+        resolve(original(privateKey, cipher));
+      }, 100);
+    });
   }
 }
