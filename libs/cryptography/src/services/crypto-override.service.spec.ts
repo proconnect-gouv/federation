@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OverrideCode } from '@fc/common';
-import { CryptographyGatewayHighService } from './cryptography-gateway-high.service';
+import { CryptographyService } from './cryptography.service';
 import { CryptoOverrideService } from './crypto-override.service';
 
 describe(' CryptoOverrideService', () => {
@@ -22,13 +22,9 @@ describe(' CryptoOverrideService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        CryptographyGatewayHighService,
-        CryptoOverrideService,
-        LoggerService,
-      ],
+      providers: [CryptographyService, CryptoOverrideService, LoggerService],
     })
-      .overrideProvider(CryptographyGatewayHighService)
+      .overrideProvider(CryptographyService)
       .useValue(cryptoHighServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)

@@ -1,12 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { OverrideCode } from '@fc/common';
 import { LoggerService } from '@fc/logger';
-import { CryptographyGatewayHighService } from './cryptography-gateway-high.service';
+import { CryptographyService } from './cryptography.service';
 
 @Injectable()
 export class CryptoOverrideService {
   constructor(
-    private readonly cryptographyService: CryptographyGatewayHighService,
+    private readonly cryptographyService: CryptographyService,
     private readonly logger: LoggerService,
   ) {
     this.logger.setContext(this.constructor.name);
