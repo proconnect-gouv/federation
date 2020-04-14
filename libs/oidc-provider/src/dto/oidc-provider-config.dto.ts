@@ -11,6 +11,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { JWKECKey, JWKRSAKey } from 'jose';
+import { AdapterConstructor } from 'oidc-provider';
 
 export class Routes {
   @IsString()
@@ -71,6 +72,10 @@ class Jwks {
 }
 
 class Configuration {
+  @IsObject()
+  @IsOptional()
+  readonly adapter?: AdapterConstructor;
+
   @IsObject()
   @ValidateNested()
   @Type(() => Routes)

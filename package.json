@@ -33,6 +33,7 @@
     "deep-freeze": "^0.0.1",
     "express-session": "^1.17.0",
     "jose": "1.25.0",
+    "lodash": "^4.17.15",
     "mongoose": "^5.9.5",
     "oidc-provider": "6.23.3",
     "openid-client": "3.14.1",

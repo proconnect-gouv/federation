@@ -11,4 +11,6 @@ export const enum ErrorCode {
   INIT_PROVIDER = 2,
   RUNTIME = 3,
   BINDING_PROVIDER = 4,
+  STRINGIFY_FOR_REDIS = 5,
+  PARSE_REDIS_RESPONSE = 6,
 }
