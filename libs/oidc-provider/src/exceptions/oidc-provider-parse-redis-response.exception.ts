@@ -3,6 +3,6 @@ import { ErrorCode } from '../enums';
 
 // declarative code
 // istanbul ignore next line
-export class OidcProviderRuntimeException extends OidcProviderBaseException {
-  public readonly code = ErrorCode.RUNTIME;
+export class OidcProviderParseRedisResponseException extends OidcProviderBaseException {
+  public readonly code = ErrorCode.PARSE_REDIS_RESPONSE;
 }

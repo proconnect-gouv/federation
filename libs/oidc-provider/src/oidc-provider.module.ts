@@ -1,13 +1,14 @@
 import { Module, DynamicModule } from '@nestjs/common';
 
 import { ImplementationOf } from '@fc/common';
+import { FcExceptionFilter } from '@fc/error';
+import { RedisModule } from '@fc/redis';
 import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderController } from './oidc-provider.controller';
 import { IIdentityManagementService } from './interfaces/identity-management-service.interface';
 import { IDENTITY_MANAGEMENT_SERVICE } from './tokens/identity-management-service.token';
 import { ISpManagementService } from './interfaces/sp-management-service.interface';
 import { SP_MANAGEMENT_SERVICE } from './tokens/sp-management-service.token';
-import { FcExceptionFilter } from '@fc/error';
 
 @Module({})
 export class OidcProviderModule {
@@ -27,7 +28,7 @@ export class OidcProviderModule {
     // istanbul ignore next
     return {
       module: OidcProviderModule,
-      imports: [spManagementModule, identityManagementModule],
+      imports: [RedisModule, spManagementModule, identityManagementModule],
       providers: [
         FcExceptionFilter,
         {

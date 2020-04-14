@@ -1,26 +1,27 @@
+/**
+ * We sadly need `lodash` to override node-oid-provider
+ * configuration function that relies on it.
+ * @see OidcProviderService.overrideConfiguration()
+ */
 import { get } from 'lodash';
 import { Provider, KoaContextWithOIDC } from 'oidc-provider';
 import { JWK } from 'jose';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
 import { FcExceptionFilter } from '@fc/error';
+import { LoggerService } from '@fc/logger';
+import { ConfigService } from '@fc/config';
+import { RedisService } from '@fc/redis';
+import { IIdentityManagementService, ISpManagementService } from './interfaces';
+import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
+import { oidcProviderHooks, oidcProviderEvents } from './enums';
+import { OidcProviderConfig } from './dto';
 import {
   OidcProviderInitialisationException,
   OidcProviderRuntimeException,
   OidcProviderBindingException,
 } from './exceptions';
-
-/**
- * We sadly need `lodash` to override node-oid-provider
- * configuration function that relies on it.
- * @see OidcProviderService.overrideConfiguration()
- */
-import { LoggerService } from '@fc/logger';
-import { ConfigService } from '@fc/config';
-import { IIdentityManagementService, ISpManagementService } from './interfaces';
-import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
-import { oidcProviderHooks, oidcProviderEvents } from './enums';
-import { OidcProviderConfig } from './dto';
+import { RedisAdapter } from './adapters';
 
 @Injectable()
 export class OidcProviderService {
@@ -30,7 +31,8 @@ export class OidcProviderService {
   constructor(
     private httpAdapterHost: HttpAdapterHost,
     private readonly configService: ConfigService,
-    private readonly logger: LoggerService,
+    readonly logger: LoggerService,
+    readonly redisService: RedisService,
     @Inject(IDENTITY_MANAGEMENT_SERVICE)
     private readonly identityManagementService: IIdentityManagementService,
     @Inject(SP_MANAGEMENT_SERVICE)
@@ -157,8 +159,10 @@ export class OidcProviderService {
    * We have to construct a fake ArgumentsHost host instance.
    * @param ctx Koa's `ctx` object
    * @param exception error to throw
+   *
+   * NB method is public to be callable from redis adapter.
    */
-  private throwError(ctx, exception) {
+  throwError(ctx, exception) {
     // Build fake ArgumentsHost host instance
     const host = FcExceptionFilter.ArgumentHostAdapter(ctx) as ArgumentsHost;
 
@@ -214,18 +218,50 @@ export class OidcProviderService {
    *  - database (SP configuration)
    */
   private async getConfig(): Promise<OidcProviderConfig> {
+    /**
+     * Get SP's information from provided spManagementService
+     */
     const clients = await this.spManagementService.getList();
+
+    /**
+     * Build our memory adapter for oidc-provider
+     * @see https://github.com/panva/node-oidc-provider/tree/master/docs#adapter
+     *
+     * We can't use nest DI for our adapter.
+     * `oidc-provider` wants a class and instantiate the adapter on it's own.
+     * @see https://github.com/panva/node-oidc-provider/blob/9306f66bdbcdff01400773f26539cf35951b9ce8/lib/models/client.js#L201
+     * @see https://github.com/panva/node-oidc-provider/blob/22cc547ffb45503cf2fc4357958325e0f5ed4b2f/lib/models/base_model.js#L28
+     *
+     * So we can not use directly NestJs DI to instantiate the adapter.
+     *
+     * The trick here is simple :
+     * 1. We inject needed services in this service (oidcProviderService)
+     * 2. We bind them to our adapter constructor.
+     * 3. We give the resulting constructor to `oidc-provider`
+     *
+     * NB: If we want to add more services to the adapter,
+     * we need add them to contructor and to pass them along here.
+     */
+    const adapter = RedisAdapter.getConstructorWithDI(this);
+
+    /**
+     * Get data from config file
+     */
     const {
       issuer,
       configuration,
       reloadConfigDelayInMs,
     } = this.configService.get<OidcProviderConfig>('OidcProvider');
 
+    /**
+     * Build final configuration object
+     */
     return {
       reloadConfigDelayInMs,
       issuer,
       configuration: {
         ...configuration,
+        adapter,
         clients,
         findAccount: this.findAccount.bind(this),
         renderError: this.renderError.bind(this),

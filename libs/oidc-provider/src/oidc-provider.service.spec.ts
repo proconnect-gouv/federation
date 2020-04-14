@@ -1,13 +1,15 @@
+import { KoaContextWithOIDC, Provider } from 'oidc-provider';
+import * as MemoryAdapter from 'oidc-provider/lib/adapters/memory_adapter';
 import { Test, TestingModule } from '@nestjs/testing';
-import { OidcProviderService } from './oidc-provider.service';
 import { HttpAdapterHost } from '@nestjs/core';
-import { Provider, KoaContextWithOIDC } from 'oidc-provider';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { oidcProviderHooks, oidcProviderEvents } from './enums';
 import { LogLevelNames } from '@fc/logger';
 import { FcExceptionFilter } from '@fc/error';
+import { RedisService } from '@fc/redis';
+import { oidcProviderHooks, oidcProviderEvents } from './enums';
 import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
+import { OidcProviderService } from './oidc-provider.service';
 import {
   OidcProviderInitialisationException,
   OidcProviderBindingException,
@@ -21,6 +23,8 @@ describe('OidcProviderService', () => {
       use: jest.fn(),
     },
   };
+
+  const redisServiceMock = {};
 
   const ProviderProxyMock = class {
     callback() {
@@ -38,7 +42,10 @@ describe('OidcProviderService', () => {
     get: module => {
       switch (module) {
         case 'OidcProvider':
-          return { issuer: 'http://foo.bar', configuration: {} };
+          return {
+            issuer: 'http://foo.bar',
+            configuration: { adapter: MemoryAdapter },
+          };
         case 'Logger':
           return {
             path: '/dev/null',
@@ -83,6 +90,7 @@ describe('OidcProviderService', () => {
       providers: [
         ConfigService,
         LoggerService,
+        RedisService,
         OidcProviderService,
         HttpAdapterHost,
         FcExceptionFilter,
@@ -100,6 +108,8 @@ describe('OidcProviderService', () => {
       .useValue(httpAdapterHostMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(RedisService)
+      .useValue(redisServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(FcExceptionFilter)
@@ -108,9 +118,8 @@ describe('OidcProviderService', () => {
 
     module.useLogger(loggerServiceMock);
 
-    service = module.get<OidcProviderService>(OidcProviderService);
-
     jest.resetAllMocks();
+    service = module.get<OidcProviderService>(OidcProviderService);
   });
 
   describe('onModuleInit', () => {
