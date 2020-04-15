@@ -13,7 +13,11 @@ describe('OidcClientService', () => {
     get: (module: string) => {
       switch (module) {
         case 'OidcClient':
-          return { issuer: 'http://foo.bar', configuration: {}, jwks: {} };
+          return {
+            issuer: 'http://foo.bar',
+            configuration: {},
+            jwks: { keys: [] },
+          };
         case 'Logger':
           return {
             path: '/dev/null',
@@ -169,6 +173,19 @@ describe('OidcClientService', () => {
       );
       // Then
       expect(result).toBe('authorizationUrlMock Resolve Value');
+    });
+  });
+
+  describe('wellKnownKeys', () => {
+    it('should return object with keys', async () => {
+      // When
+      const result = await service.wellKnownKeys();
+      // Then
+      expect(result).toEqual(
+        expect.objectContaining({
+          keys: expect.any(Array),
+        }),
+      );
     });
   });
 

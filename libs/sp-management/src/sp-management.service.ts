@@ -58,6 +58,7 @@ export class SpManagementService implements ISpManagementService {
   /**
    * @TODO implement real code...
    */
+  // istanbul ignore next line
   async isUsable(clientId: string): Promise<boolean> {
     return Promise.resolve(!!clientId);
   }
