@@ -90,6 +90,8 @@ export class CryptographyService {
     return JSON.parse(receivedPlaintext);
   }
 
+  // Simple alias
+  // istanbul ignore next line
   decryptSecretHash(secretHash: string): string {
     return this.createDecipherLegacy(secretHash);
   }

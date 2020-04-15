@@ -29,6 +29,19 @@ describe('OverrideCode', () => {
     // Then
     expect(originalFunc).toHaveBeenCalledTimes(1);
   });
+  it('should use original function name as store key if none provided', () => {
+    // Given
+    const originalFunc = jest.fn().mockReturnValueOnce('bar return value');
+    const foo = { bar: originalFunc };
+    const overrideResponse = Symbol('override return value');
+    const overrideFunc = jest.fn().mockReturnValueOnce(overrideResponse);
+    OverrideCode.wrap(foo, 'bar');
+    // When
+    OverrideCode.override('bar', overrideFunc);
+    const result = foo.bar();
+    // Then
+    expect(result).toBe(overrideResponse);
+  });
   it('should return value of override function', () => {
     // Given
     const barResponse = Symbol('bar return response');

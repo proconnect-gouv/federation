@@ -43,6 +43,25 @@ describe('FcExceptionFilter', () => {
         }),
       );
     });
+
+    it('should concat stack trace from original error', () => {
+      // Given
+      const exception = new FcException();
+      exception.scope = 2;
+      exception.code = 3;
+      exception.originalError = new Error('foo bar');
+      // When
+      exceptionFilter.catch(exception, argumentHostMock);
+      // Then
+      expect(loggerMock.warn).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: 'FcException',
+          code: 'Y020003',
+          stackTrace: expect.any(Array),
+        }),
+      );
+    });
+
     it('should render error template', () => {
       // Given
       const exception = new FcException('message text');

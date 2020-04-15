@@ -12,6 +12,7 @@ describe('OidcClient Controller', () => {
     getAuthorizeUrl: jest.fn(),
     getTokenSet: jest.fn(),
     getUserInfo: jest.fn(),
+    wellKnownKeys: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -127,6 +128,15 @@ describe('OidcClient Controller', () => {
       );
 
       expect(res.redirect).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('getWellKnownKeys', () => {
+    it('Should call oidc-client-service for wellKnownKeys', async () => {
+      // When
+      await oidcClientController.getWellKnownKeys();
+      // Then
+      expect(oidcClientServiceMock.wellKnownKeys).toHaveBeenCalledTimes(1);
     });
   });
 });

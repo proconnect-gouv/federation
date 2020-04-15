@@ -13,6 +13,7 @@ describe('OidcProviderController', () => {
 
   const oidpcProviderServiceMock = {
     getProvider: () => providerMock,
+    wellKnownKeys: jest.fn(),
   };
 
   const identityManagementServiceMock = {
@@ -89,6 +90,44 @@ describe('OidcProviderController', () => {
       await oidcProviderController.getUserInfo(next);
       // Then
       expect(next).toBeCalledTimes(1);
+    });
+  });
+
+  describe('postToken', () => {
+    it('should call next', async () => {
+      // Given
+      const next = jest.fn();
+
+      // When
+      await oidcProviderController.postToken(next);
+      // Then
+      expect(next).toBeCalledTimes(1);
+    });
+  });
+
+  describe('getWellKnownKeys', () => {
+    it('should call wellKnownKeys', async () => {
+      // Given
+      const resolvedValue = Symbol('resolvedValue');
+      oidpcProviderServiceMock.wellKnownKeys.mockResolvedValueOnce(
+        resolvedValue,
+      );
+      // When
+      const result = await oidcProviderController.getWellKnownKeys();
+      // Then
+      expect(result).toBe(resolvedValue);
+    });
+  });
+
+  describe('checkIfSpIsUsable', () => {
+    it('should throw', async () => {
+      // Given
+      const clientIdMock = '42';
+      spManagementServiceMock.isUsable.mockResolvedValueOnce(false);
+      // Then
+      expect(
+        oidcProviderController['checkIfSpIsUsable'](clientIdMock),
+      ).rejects.toThrow(Error);
     });
   });
 });

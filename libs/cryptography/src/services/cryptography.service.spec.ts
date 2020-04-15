@@ -4,6 +4,7 @@ import { LoggerService } from '@fc/logger';
 import * as ecdsaSignaturesService from 'jose/lib/help/ecdsa_signatures';
 import { CryptographyService } from './cryptography.service';
 import { IPivotIdentity } from '../interfaces';
+import { OverrideCode } from '@fc/common';
 
 describe('CryptographyService', () => {
   let service: CryptographyService;
@@ -89,6 +90,19 @@ describe('CryptographyService', () => {
     update: jest.fn(),
     digest: jest.fn(),
   };
+
+  const signMock = jest.fn();
+  const privateDecryptMock = jest.fn();
+  const overridedCryptoMock = {
+    sign: signMock,
+    privateDecrypt: privateDecryptMock,
+  };
+  OverrideCode.wrap(overridedCryptoMock, 'sign', 'crypto.sign');
+  OverrideCode.wrap(
+    overridedCryptoMock,
+    'privateDecrypt',
+    'crypto.privateDecrypt',
+  );
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -377,6 +391,54 @@ describe('CryptographyService', () => {
       expect(mockHmac.digest).toHaveBeenCalledTimes(1);
       expect(mockHmac.digest).toHaveBeenCalledWith('hex');
       expect(result).toBe(`${mockHmacDigestedHash}v2`);
+    });
+  });
+
+  describe('sign & privateDecrypt', () => {
+    // Given
+    const keyMock = 'key';
+    const dataMock = Buffer.from('data');
+    const digestMock = 'digest';
+
+    describe('sign', () => {
+      it('should return promise', async () => {
+        // When
+        const result = service.sign(keyMock, dataMock, digestMock);
+        // Then
+        expect(result instanceof Promise);
+        // Clean
+        await result;
+      });
+      it('should call original code', async () => {
+        // When
+        await service.sign(keyMock, dataMock, digestMock);
+        // Then
+        expect(signMock).toHaveBeenCalledTimes(1);
+      });
+      it('should default to sha256', async () => {
+        // When
+        await service.sign(keyMock, dataMock);
+        // Then
+        expect(signMock).toHaveBeenCalledWith('sha256', dataMock, keyMock);
+      });
+    });
+
+    describe('privateDecrypt', () => {
+      it('should return promise', async () => {
+        // When
+        const result = service.privateDecrypt(keyMock, dataMock);
+        // Then
+        expect(result instanceof Promise);
+        // Clean
+        await result;
+      });
+
+      it('should call original code', async () => {
+        // When
+        await service.privateDecrypt(keyMock, dataMock);
+        // Then
+        expect(privateDecryptMock).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });

@@ -1,6 +1,6 @@
 import { ConfigService } from '@fc/config';
 import { LoggerService } from './logger.service';
-import { LogLevelNames } from './enum';
+import { LogLevelNames, LogLevels } from './enum';
 
 describe('LoggerService', () => {
   // Generate configs for all levels and dev mode
@@ -257,6 +257,16 @@ describe('LoggerService', () => {
       // Then
       expect(service['internalLogger']).toHaveBeenCalledTimes(0);
       expect(service['externalLogger'].info).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not call external logger when in dev mode + info level', () => {
+      // Given
+      const service = getConfiguredMockedService(configs.dev.debug);
+      // When
+      service['businessLogger'](LogLevelNames.TRACE, 'businessEvent');
+      // Then
+      expect(service['internalLogger']).toHaveBeenCalledTimes(0);
+      expect(service['externalLogger'].info).toHaveBeenCalledTimes(0);
     });
   });
 });

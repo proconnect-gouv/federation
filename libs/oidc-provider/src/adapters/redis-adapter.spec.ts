@@ -148,6 +148,15 @@ describe('RedisAdapter', () => {
         '{}',
       );
     });
+    it('should throw if expires is not a number', async () => {
+      // Given
+      const expires = 'not a number';
+      // When
+      await adapter.upsert(idMock, defaultPayload, expires);
+      // Then
+      expect(throwErrorMock).toHaveBeenCalledTimes(1);
+      expect(throwErrorMock).toHaveBeenCalledWith(expect.any(TypeError));
+    });
     it('should call expires if expiresIn is provided', async () => {
       // When
       await adapter.upsert(idMock, defaultPayload, expiresIn);

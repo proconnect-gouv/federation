@@ -44,7 +44,7 @@ describe('OidcProviderService', () => {
         case 'OidcProvider':
           return {
             issuer: 'http://foo.bar',
-            configuration: { adapter: MemoryAdapter },
+            configuration: { adapter: MemoryAdapter, jwks: { keys: [] } },
           };
         case 'Logger':
           return {
@@ -171,6 +171,15 @@ describe('OidcProviderService', () => {
       await expect(service.onModuleInit()).rejects.toThrow(
         OidcProviderBindingException,
       );
+    });
+  });
+
+  describe('wekkKnownKeys', () => {
+    it('should return keys', async () => {
+      // When
+      const result = await service.wellKnownKeys();
+      // Then
+      expect(result).toEqual({ keys: expect.any(Array) });
     });
   });
 
