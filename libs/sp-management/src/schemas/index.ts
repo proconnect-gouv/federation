@@ -1,1 +1,1 @@
-export * from './sp.schema';
+export * from './service-provider.schema';

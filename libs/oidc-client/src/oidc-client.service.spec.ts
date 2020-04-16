@@ -50,7 +50,7 @@ describe('OidcClientService', () => {
     response_types: ['response', 'types'],
     // oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/camelcase
-    well_known_url: 'mock well-known url',
+    discoveryUrl: 'mock well-known url',
   };
 
   const getProviderMock = jest.fn();
@@ -286,7 +286,7 @@ describe('OidcClientService', () => {
       // Then
       expect(getProviderMock).toHaveBeenCalledWith(providerId);
       expect(IssuerProxyMock.discover).toHaveBeenCalledWith(
-        getProviderMockReturnValue.well_known_url,
+        getProviderMockReturnValue.discoveryUrl,
       );
     });
   });
@@ -305,9 +305,15 @@ describe('OidcClientService', () => {
   describe('getProvider', () => {
     it('should return provider in config', () => {
       // Given
-      const providerMock1 = ({ id: 'provider1' } as unknown) as ClientMetadata;
-      const providerMock2 = ({ id: 'provider2' } as unknown) as ClientMetadata;
-      const providerMock3 = ({ id: 'provider3' } as unknown) as ClientMetadata;
+      const providerMock1 = ({
+        name: 'provider1',
+      } as unknown) as ClientMetadata;
+      const providerMock2 = ({
+        name: 'provider2',
+      } as unknown) as ClientMetadata;
+      const providerMock3 = ({
+        name: 'provider3',
+      } as unknown) as ClientMetadata;
       service['configuration'] = {
         providers: [providerMock1, providerMock2, providerMock3],
       } as OidcClientConfig;
@@ -318,9 +324,15 @@ describe('OidcClientService', () => {
     });
     it('should throw if provider is not in config', () => {
       // Given
-      const providerMock1 = ({ id: 'provider1' } as unknown) as ClientMetadata;
-      const providerMock2 = ({ id: 'provider2' } as unknown) as ClientMetadata;
-      const providerMock3 = ({ id: 'provider3' } as unknown) as ClientMetadata;
+      const providerMock1 = ({
+        name: 'provider1',
+      } as unknown) as ClientMetadata;
+      const providerMock2 = ({
+        name: 'provider2',
+      } as unknown) as ClientMetadata;
+      const providerMock3 = ({
+        name: 'provider3',
+      } as unknown) as ClientMetadata;
       service['configuration'] = {
         providers: [providerMock1, providerMock2, providerMock3],
       } as OidcClientConfig;

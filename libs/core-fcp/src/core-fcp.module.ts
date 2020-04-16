@@ -6,7 +6,7 @@ import {
   IdentityManagementService,
 } from '@fc/identity-management';
 import { SpManagementModule, SpManagementService } from '@fc/sp-management';
-import { IdPManagementService } from '@fc/idp-management';
+import { IdPManagementService, IdPmanagementModule } from '@fc/idp-management';
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
 import { CryptographyModule } from '@fc/cryptography';
@@ -30,6 +30,7 @@ import { ErrorModule } from '@fc/error';
       IdentityManagementService,
       IdentityManagementModule,
       IdPManagementService,
+      IdPmanagementModule,
     ),
   ],
   controllers: [CoreFcpController],

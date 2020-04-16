@@ -1,1 +1,1 @@
-export * from './sp.interface';
+export * from './service-provider.interface';
