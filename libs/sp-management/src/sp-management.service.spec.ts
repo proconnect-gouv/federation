@@ -45,6 +45,13 @@ describe('SpManagementService', () => {
           key: '123',
           secret_hash: 'secret hash',
           redirect_uris: ['redirect_uris'],
+          id_token_signed_response_alg: 'HS256',
+          id_token_encrypted_response_alg: 'RSA-OAEP',
+          id_token_encrypted_response_enc: 'A256GCM',
+          userinfo_encrypted_response_alg: 'RSA-OAEP',
+          userinfo_encrypted_response_enc: 'A256GCM',
+          userinfo_signed_response_alg: 'HS256',
+          jwks_uri: 'https://sp-site.fr/jwks-uri',
         },
       },
     ]);
@@ -53,6 +60,46 @@ describe('SpManagementService', () => {
 
   it('should be defined', () => {
     expect(spManagementservice).toBeDefined();
+  });
+
+  describe('legacyToOpenIdPropertyName', () => {
+    it('should return service provider with change legacy property name by openid property name', () => {
+      // setup
+      const serviceProviderMock = {
+        key: '123',
+        secret_hash: 'secret_hash',
+        redirect_uris: ['redirect_uris'],
+        id_token_signed_response_alg: 'id_token_signed_response_alg',
+        id_token_encrypted_response_alg: 'id_token_encrypted_response_alg',
+        id_token_encrypted_response_enc: 'id_token_encrypted_response_enc',
+        userinfo_encrypted_response_alg: 'userinfo_encrypted_response_alg',
+        userinfo_encrypted_response_enc: 'userinfo_encrypted_response_enc',
+        userinfo_signed_response_alg: 'userinfo_signed_response_alg',
+        jwks_uri: 'https://sp-site.fr/jwks-uri',
+      };
+
+      // action
+      mockCryptographyService.decryptSecretHash.mockReturnValueOnce(
+        'client_secret',
+      );
+      const result = spManagementservice['legacyToOpenIdPropertyName'](
+        serviceProviderMock,
+      );
+
+      // expect
+      expect(result).toStrictEqual({
+        client_id: '123',
+        client_secret: 'client_secret',
+        redirect_uris: ['redirect_uris'],
+        id_token_signed_response_alg: 'id_token_signed_response_alg',
+        id_token_encrypted_response_alg: 'id_token_encrypted_response_alg',
+        id_token_encrypted_response_enc: 'id_token_encrypted_response_enc',
+        userinfo_encrypted_response_alg: 'userinfo_encrypted_response_alg',
+        userinfo_encrypted_response_enc: 'userinfo_encrypted_response_enc',
+        userinfo_signed_response_alg: 'userinfo_signed_response_alg',
+        jwks_uri: 'https://sp-site.fr/jwks-uri',
+      });
+    });
   });
 
   describe('findAllServiceProvider', () => {
@@ -84,6 +131,13 @@ describe('SpManagementService', () => {
           key: '123',
           secret_hash: 'secret hash',
           redirect_uris: ['redirect_uris'],
+          id_token_signed_response_alg: 'HS256',
+          id_token_encrypted_response_alg: 'RSA-OAEP',
+          id_token_encrypted_response_enc: 'A256GCM',
+          userinfo_encrypted_response_alg: 'RSA-OAEP',
+          userinfo_encrypted_response_enc: 'A256GCM',
+          userinfo_signed_response_alg: 'HS256',
+          jwks_uri: 'https://sp-site.fr/jwks-uri',
         },
       ]);
     });
@@ -113,6 +167,13 @@ describe('SpManagementService', () => {
           client_id: '123',
           client_secret: 'client_secret',
           redirect_uris: ['redirect_uris'],
+          id_token_signed_response_alg: 'HS256',
+          id_token_encrypted_response_alg: 'RSA-OAEP',
+          id_token_encrypted_response_enc: 'A256GCM',
+          userinfo_encrypted_response_alg: 'RSA-OAEP',
+          userinfo_encrypted_response_enc: 'A256GCM',
+          userinfo_signed_response_alg: 'HS256',
+          jwks_uri: 'https://sp-site.fr/jwks-uri',
         },
       ]);
     });

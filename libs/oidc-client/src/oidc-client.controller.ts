@@ -28,13 +28,13 @@ export class OidcClientController {
     this.logger.debug('/api/v2/redirect-to-idp');
     // acr_values is an oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/camelcase
-    const { scope, providerId, acr_values, uid } = body;
+    const { scope, providerName, acr_values, uid } = body;
 
     req.session.uid = uid;
 
     const authorizationUrl = await this.oidcClientService.getAuthorizeUrl(
       scope,
-      providerId,
+      providerName,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/camelcase
       acr_values,
@@ -45,9 +45,9 @@ export class OidcClientController {
   }
 
   /** @TODO valiate input by DTO */
-  @Get('/oidc-callback/:providerId')
+  @Get('/oidc-callback/:providerName')
   async getOidcCallback(
-    @Param('providerId') providerId,
+    @Param('providerName') providerName,
     @Req() req,
     @Res() res,
   ) {
@@ -57,11 +57,11 @@ export class OidcClientController {
 
     const {
       access_token: accessToken,
-    } = await this.oidcClientService.getTokenSet(req, providerId);
+    } = await this.oidcClientService.getTokenSet(req, providerName);
 
     const user = await this.oidcClientService.getUserInfo(
       accessToken,
-      providerId,
+      providerName,
     );
 
     this.identityManagementService.storeIdentity(uid, user);

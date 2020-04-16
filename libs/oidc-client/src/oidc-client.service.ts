@@ -46,13 +46,13 @@ export class OidcClientService {
   /** @TODO validation body by interface */
   async getAuthorizeUrl(
     scope: string,
-    providerId: string,
+    providerName: string,
     // acr_values is an oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/camelcase
     acr_values: string,
     req,
   ): Promise<string> {
-    const client: Client = await this.createOidcClient(providerId);
+    const client: Client = await this.createOidcClient(providerName);
 
     /** @TODO replace by in house crypto */
     const state = generators.state();
@@ -90,10 +90,10 @@ export class OidcClientService {
   }
 
   /** @TODO interface tokenSet, to see what we keep ? */
-  async getTokenSet(req, providerId: string): Promise<TokenSet> {
+  async getTokenSet(req, providerName: string): Promise<TokenSet> {
     this.logger.trace('getTokenSet');
-    const clientMetadata = await this.getProvider(providerId);
-    const client = await this.createOidcClient(providerId);
+    const clientMetadata = await this.getProvider(providerName);
+    const client = await this.createOidcClient(providerName);
 
     const params = await client.callbackParams(req);
 
@@ -118,10 +118,13 @@ export class OidcClientService {
    * @TODO interface userinfo
    * @TODO handle network error
    */
-  async getUserInfo(accessToken: string, providerId: string): Promise<object> {
+  async getUserInfo(
+    accessToken: string,
+    providerName: string,
+  ): Promise<object> {
     this.logger.trace('getUserInfo');
     /** @TODO Retrieve this info */
-    const client = await this.createOidcClient(providerId);
+    const client = await this.createOidcClient(providerName);
     return client.userinfo(accessToken);
   }
 
@@ -141,15 +144,16 @@ export class OidcClientService {
     );
   }
 
-  private async createOidcClient(providerId: string): Promise<Client> {
-    const clientMetadata = this.getProvider(providerId);
+  private async createOidcClient(providerName: string): Promise<Client> {
+    const clientMetadata = this.getProvider(providerName);
     const { jwks } = this.configService.get<OidcClientConfig>('OidcClient');
+
     /**
-     * Cast to string since well_known_url is not in type `ClientMetadata`.
+     * Cast to string since discoveryUrl is not in type `ClientMetadata`.
      * It does no harm to add this parameter though
      * @see https://github.com/panva/node-openid-client/blob/master/docs/README.md#new-issuermetadata
      */
-    const wellKnownUrl = clientMetadata.well_known_url as string;
+    const wellKnownUrl = clientMetadata.discoveryUrl as string;
     /**
      * @TODO handle network failure with specific Exception / error code
      */
@@ -159,17 +163,17 @@ export class OidcClientService {
   }
 
   /**
-   * @param providerId identifier used to indicate choosen IdP
+   * @param providerName identifier used to indicate choosen IdP
    * @returns providers metadata
    * @throws Error
    */
-  private getProvider(providerId: string): ClientMetadata {
+  private getProvider(providerName: string): ClientMetadata {
     const provider = this.configuration.providers.find(
-      provider => provider.id === providerId,
+      ({ name }) => name === providerName,
     );
     if (!provider) {
       /** @TODO proper error management (specific exception?) */
-      throw Error(`Provider not found <${providerId}>`);
+      throw Error(`Provider not found <${providerName}>`);
     }
 
     return provider;

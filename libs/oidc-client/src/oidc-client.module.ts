@@ -14,9 +14,10 @@ export class OidcClientModule {
     identityManagementClass: ImplementationOf<IIdentityManagementService>,
     identityManagementModule,
     idpManagementClass: ImplementationOf<IIdPManagementService>,
+    idpManagementModule,
   ): DynamicModule {
     return {
-      imports: [identityManagementModule],
+      imports: [identityManagementModule, idpManagementModule],
       module: OidcClientModule,
       providers: [
         {
