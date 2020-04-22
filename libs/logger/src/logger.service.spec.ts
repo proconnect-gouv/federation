@@ -1,6 +1,6 @@
 import { ConfigService } from '@fc/config';
 import { LoggerService } from './logger.service';
-import { LogLevelNames, LogLevels } from './enum';
+import { LogLevelNames } from './enum';
 
 describe('LoggerService', () => {
   // Generate configs for all levels and dev mode
