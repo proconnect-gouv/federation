@@ -34,6 +34,7 @@
     "express-session": "^1.17.0",
     "jose": "1.25.0",
     "lodash": "^4.17.15",
+    "moment": "^2.24.0",
     "mongoose": "^5.9.5",
     "oidc-provider": "6.23.3",
     "openid-client": "3.14.1",
@@ -43,7 +44,8 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.4",
-    "uuid": "^7.0.2"
+    "uuid": "^7.0.2",
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.1.2",
