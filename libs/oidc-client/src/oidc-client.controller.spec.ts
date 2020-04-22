@@ -2,17 +2,22 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcClientController } from './oidc-client.controller';
 import { OidcClientService } from './oidc-client.service';
-import { IDENTITY_MANAGEMENT_SERVICE } from './tokens';
+import { IDENTITY_MANAGEMENT_SERVICE, IDENTITY_CHECK_SERVICE } from './tokens';
 
 describe('OidcClient Controller', () => {
   let oidcClientController: OidcClientController;
   let req;
   let res;
+
   const oidcClientServiceMock = {
     getAuthorizeUrl: jest.fn(),
     getTokenSet: jest.fn(),
     getUserInfo: jest.fn(),
     wellKnownKeys: jest.fn(),
+  };
+
+  const identityCheckServiceMock = {
+    check: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -36,6 +41,10 @@ describe('OidcClient Controller', () => {
           provide: IDENTITY_MANAGEMENT_SERVICE,
           useValue: identityManagementServiceMock,
         },
+        {
+          provide: IDENTITY_CHECK_SERVICE,
+          useValue: identityCheckServiceMock,
+        }
       ],
     })
       .overrideProvider(OidcClientService)
@@ -105,6 +114,12 @@ describe('OidcClient Controller', () => {
         id_token: 'id_token',
       });
 
+      const userInfoMock = {
+        sub: '1',
+        // oidc spec defined property
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        given_name: 'given_name',
+      };
       oidcClientServiceMock.getUserInfo.mockReturnValueOnce({
         sub: '1',
         // oidc spec defined property
@@ -126,6 +141,9 @@ describe('OidcClient Controller', () => {
         accessToken,
         providerId,
       );
+
+      expect(identityCheckServiceMock.check).toHaveBeenCalledTimes(1);
+      expect(identityCheckServiceMock.check).toHaveBeenCalledWith(userInfoMock);
 
       expect(res.redirect).toHaveBeenCalledTimes(1);
     });

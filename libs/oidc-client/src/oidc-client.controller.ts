@@ -9,8 +9,11 @@ import {
   Post,
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { IIdentityManagementService } from './interfaces';
-import { IDENTITY_MANAGEMENT_SERVICE } from './tokens';
+import {
+  IIdentityManagementService,
+  IIdentityCheckService,
+} from './interfaces';
+import { IDENTITY_MANAGEMENT_SERVICE, IDENTITY_CHECK_SERVICE } from './tokens';
 import { OidcClientService } from './oidc-client.service';
 
 @Controller('/api/v2')
@@ -20,6 +23,8 @@ export class OidcClientController {
     private readonly logger: LoggerService,
     @Inject(IDENTITY_MANAGEMENT_SERVICE)
     private readonly identityManagementService: IIdentityManagementService,
+    @Inject(IDENTITY_CHECK_SERVICE)
+    private readonly identityCheckService: IIdentityCheckService,
   ) {}
 
   /** @TODO validation body by DTO */
@@ -63,6 +68,11 @@ export class OidcClientController {
       accessToken,
       providerName,
     );
+
+    // This function can throw a FcError and interrupt the cinematic
+    const userChecked = await this.identityCheckService.check(user);
+
+    this.logger.debug(userChecked);
 
     this.identityManagementService.storeIdentity(uid, user);
 
