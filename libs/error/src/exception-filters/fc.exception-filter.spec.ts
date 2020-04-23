@@ -1,7 +1,7 @@
 import { ArgumentsHost } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { FcExceptionFilter } from './fc.exception-filter';
-import { FcException } from '../interfaces';
+import { FcException } from '../exceptions';
 
 describe('FcExceptionFilter', () => {
   let exceptionFilter: FcExceptionFilter;

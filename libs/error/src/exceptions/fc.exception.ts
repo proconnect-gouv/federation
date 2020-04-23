@@ -13,6 +13,8 @@ export class FcException extends Error {
    *
    * @since core-v2 :
    * - 15: IdentityManagement
+   * - 16 : Cryptography
+   * - 17 : Consumer-HSM
    */
   public scope: number;
 
@@ -24,4 +26,18 @@ export class FcException extends Error {
   public code: number;
 
   public originalError?: Error;
+
+  constructor(input?: Error | string) {
+    let arg: unknown = input;
+
+    if (input instanceof Error) {
+      arg = input.message;
+    }
+
+    super(arg as string);
+
+    if (input instanceof Error) {
+      this.originalError = input;
+    }
+  }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { FcException, HttpException } from './interfaces';
+import { FcException, HttpException, RpcException } from './exceptions';
 
 /**
  * Global core v2 Error prefix
@@ -22,6 +22,8 @@ export class ErrorService {
       code = exception.code;
     } else if (exception instanceof HttpException) {
       code = exception.getStatus();
+    } else if (exception instanceof RpcException) {
+      code = 0;
     }
 
     return ErrorService.getCode(scope, code);

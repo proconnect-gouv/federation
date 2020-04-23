@@ -1,7 +1,7 @@
 import { ArgumentsHost } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { HttpExceptionFilter } from './http.exception-filter';
-import { HttpException } from '../interfaces';
+import { HttpException } from '../exceptions';
 
 describe('HttpExceptionFilter', () => {
   let exceptionFilter: HttpExceptionFilter;

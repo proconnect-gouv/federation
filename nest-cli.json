@@ -174,6 +174,42 @@
       "compilerOptions": {
         "tsConfigPath": "libs/redis/tsconfig.lib.json"
       }
+    },
+    "rabbitmq": {
+      "type": "library",
+      "root": "libs/rabbitmq",
+      "entryFile": "index",
+      "sourceRoot": "libs/rabbitmq/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/rabbitmq/tsconfig.lib.json"
+      }
+    },
+    "fake-hsm": {
+      "type": "library",
+      "root": "libs/fake-hsm",
+      "entryFile": "index",
+      "sourceRoot": "libs/fake-hsm/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/fake-hsm/tsconfig.lib.json"
+      }
+    },
+    "csmr-hsm": {
+      "type": "application",
+      "root": "apps/csmr-hsm",
+      "entryFile": "main",
+      "sourceRoot": "apps/csmr-hsm/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/csmr-hsm/tsconfig.app.json"
+      }
+    },
+    "protocol": {
+      "type": "library",
+      "root": "libs/protocol",
+      "entryFile": "index",
+      "sourceRoot": "libs/protocol/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/protocol/tsconfig.lib.json"
+      }
     }
   }
 }
