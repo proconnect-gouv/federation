@@ -12,7 +12,10 @@ import { FcExceptionFilter, FcException } from '@fc/error';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { RedisService } from '@fc/redis';
-import { IIdentityManagementService, ISpManagementService } from './interfaces';
+import {
+  IIdentityManagementService,
+  IServiceProviderService,
+} from './interfaces';
 import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
 import {
   OidcProviderEvents,
@@ -41,7 +44,7 @@ export class OidcProviderService {
     @Inject(IDENTITY_MANAGEMENT_SERVICE)
     private readonly identityManagementService: IIdentityManagementService,
     @Inject(SP_MANAGEMENT_SERVICE)
-    private readonly spManagementService: ISpManagementService,
+    private readonly spManagementService: IServiceProviderService,
     private readonly exceptionFilter: FcExceptionFilter,
   ) {
     this.logger.setContext(this.constructor.name);

@@ -5,7 +5,7 @@ import {
   IdentityManagementModule,
   IdentityManagementService,
 } from '@fc/identity-management';
-import { SpManagementModule, SpManagementService } from '@fc/sp-management';
+import { ServiceProviderModule, ServiceProviderService } from '@fc/service-provider';
 import { IdPManagementService, IdPmanagementModule } from '@fc/idp-management';
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
@@ -24,8 +24,8 @@ import { RnippModule, RnippService } from '@fc/rnipp';
     OidcProviderModule.register(
       IdentityManagementService,
       IdentityManagementModule,
-      SpManagementService,
-      SpManagementModule,
+      ServiceProviderService,
+      ServiceProviderModule,
     ),
     CryptographyModule,
     OidcClientModule.register(

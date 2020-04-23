@@ -2,20 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { SPMetadata, ISpManagementService } from '@fc/oidc-provider';
+import { ServiceProviderMetadata, IServiceProviderService } from '@fc/oidc-provider';
 import { CryptographyService } from '@fc/cryptography';
 import { IServiceProvider } from './interfaces';
 
 @Injectable()
-export class SpManagementService implements ISpManagementService {
+export class ServiceProviderService implements IServiceProviderService {
   constructor(
-    @InjectModel('SpManagement')
-    private readonly spManagementModel: Model<IServiceProvider>,
+    @InjectModel('ServiceProvider')
+    private readonly serviceProviderModel: Model<IServiceProvider>,
     private readonly cryptographyService: CryptographyService,
   ) {}
 
   private async findAllServiceProvider(): Promise<IServiceProvider[]> {
-    const rawResult = await this.spManagementModel
+    const rawResult = await this.serviceProviderModel
       .find(
         {},
         {
@@ -66,7 +66,7 @@ export class SpManagementService implements ISpManagementService {
   /**
    * @TODO give restricted output data (interface ISpManagement)
    */
-  async getList(): Promise<SPMetadata[]> {
+  async getList(): Promise<ServiceProviderMetadata[]> {
     const list = await this.findAllServiceProvider();
 
     return list.map(serviceProvider => {
@@ -75,7 +75,7 @@ export class SpManagementService implements ISpManagementService {
   }
 
   /* eslint-disable @typescript-eslint/camelcase */
-  private legacyToOpenIdPropertyName(source: IServiceProvider): SPMetadata {
+  private legacyToOpenIdPropertyName(source: IServiceProvider): ServiceProviderMetadata {
     const client_id = source.key;
     const client_secret = this.cryptographyService.decryptSecretHash(
       source.secret_hash,
@@ -88,7 +88,7 @@ export class SpManagementService implements ISpManagementService {
       ...source,
       client_id,
       client_secret,
-    } as SPMetadata;
+    } as ServiceProviderMetadata;
   }
   /* eslint-enable @typescript-eslint/camelcase */
 }

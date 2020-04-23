@@ -68,7 +68,7 @@ describe('OidcProviderService', () => {
     businessEvent: jest.fn(),
   } as unknown) as LoggerService;
 
-  const spManagementServiceMock = {
+  const serviceProviderServiceMock = {
     getList: jest.fn(),
   };
 
@@ -106,7 +106,7 @@ describe('OidcProviderService', () => {
         },
         {
           provide: SP_MANAGEMENT_SERVICE,
-          useValue: spManagementServiceMock,
+          useValue: serviceProviderServiceMock,
         },
       ],
     })

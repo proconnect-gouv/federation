@@ -7,7 +7,7 @@ import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderController } from './oidc-provider.controller';
 import { IIdentityManagementService } from './interfaces/identity-management-service.interface';
 import { IDENTITY_MANAGEMENT_SERVICE } from './tokens/identity-management-service.token';
-import { ISpManagementService } from './interfaces/sp-management-service.interface';
+import { IServiceProviderService } from './interfaces';
 import { SP_MANAGEMENT_SERVICE } from './tokens/sp-management-service.token';
 
 @Module({})
@@ -21,7 +21,7 @@ export class OidcProviderModule {
   static register(
     identityManagementClass: ImplementationOf<IIdentityManagementService>,
     identityManagementModule,
-    spManagementClass: ImplementationOf<ISpManagementService>,
+    spManagementClass: ImplementationOf<IServiceProviderService>,
     spManagementModule,
   ): DynamicModule {
     // does not need to be tested

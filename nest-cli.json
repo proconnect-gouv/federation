@@ -58,13 +58,13 @@
         "tsConfigPath": "libs/idp-management/tsconfig.lib.json"
       }
     },
-    "sp-management": {
+    "service-provider": {
       "type": "library",
-      "root": "libs/sp-management",
+      "root": "libs/service-provider",
       "entryFile": "index",
-      "sourceRoot": "libs/sp-management/src",
+      "sourceRoot": "libs/service-provider/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/sp-management/tsconfig.lib.json"
+        "tsConfigPath": "libs/service-provider/tsconfig.lib.json"
       }
     },
     "logger": {

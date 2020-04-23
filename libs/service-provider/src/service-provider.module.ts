@@ -3,16 +3,16 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { CryptographyModule } from '@fc/cryptography';
 import { ServiceProviderSchema } from './schemas';
-import { SpManagementService } from './sp-management.service';
+import { ServiceProviderService } from './service-provider.service';
 
 @Module({
   imports: [
     CryptographyModule,
     MongooseModule.forFeature([
-      { name: 'SpManagement', schema: ServiceProviderSchema },
+      { name: 'ServiceProvider', schema: ServiceProviderSchema },
     ]),
   ],
-  providers: [SpManagementService],
-  exports: [SpManagementService, MongooseModule],
+  providers: [ServiceProviderService],
+  exports: [ServiceProviderService, MongooseModule],
 })
-export class SpManagementModule {}
+export class ServiceProviderModule {}

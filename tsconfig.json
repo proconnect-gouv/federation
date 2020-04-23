@@ -29,11 +29,11 @@
       "@fc/idp-management/*": [
         "libs/idp-management/src/*"
       ],
-      "@fc/sp-management": [
-        "libs/sp-management/src"
+      "@fc/service-provider": [
+        "libs/service-provider/src"
       ],
-      "@fc/sp-management/*": [
-        "libs/sp-management/src/*"
+      "@fc/service-provider/*": [
+        "libs/service-provider/src/*"
       ],
       "@fc/logger": [
         "libs/logger/src"
