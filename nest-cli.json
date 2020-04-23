@@ -202,13 +202,13 @@
         "tsConfigPath": "apps/csmr-hsm/tsconfig.app.json"
       }
     },
-    "protocol": {
+    "microservices": {
       "type": "library",
-      "root": "libs/protocol",
+      "root": "libs/microservices",
       "entryFile": "index",
-      "sourceRoot": "libs/protocol/src",
+      "sourceRoot": "libs/microservices/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/protocol/tsconfig.lib.json"
+        "tsConfigPath": "libs/microservices/tsconfig.lib.json"
       }
     }
   }

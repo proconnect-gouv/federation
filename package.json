@@ -134,8 +134,8 @@
       "@fc/rabbitmq": "<rootDir>/libs/rabbitmq/src",
       "@fc/fake-hsm/(.*)": "<rootDir>/libs/fake-hsm/src/$1",
       "@fc/fake-hsm": "<rootDir>/libs/fake-hsm/src",
-      "@fc/protocol/(.*)": "<rootDir>/libs/protocol/src/$1",
-      "@fc/protocol": "<rootDir>/libs/protocol/src"
+      "@fc/microservices/(.*)": "<rootDir>/libs/microservices/src/$1",
+      "@fc/microservices": "<rootDir>/libs/microservices/src"
     },
     "preset": "ts-jest"
   }
