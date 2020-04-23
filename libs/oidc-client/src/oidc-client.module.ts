@@ -17,14 +17,14 @@ export class OidcClientModule {
   static register(
     identity: Type<IIdentityService>,
     identityModule,
-    idp: Type<IIdentityProviderService>,
-    idpModule,
+    identityProvider: Type<IIdentityProviderService>,
+    identityProviderModule,
     identityCheck: Type<IIdentityCheckService>,
     identityCheckModule,
   ): DynamicModule {
     return {
       module: OidcClientModule,
-      imports: [identityModule, idpModule, identityCheckModule],
+      imports: [identityModule, identityProviderModule, identityCheckModule],
       providers: [
         {
           provide: IDENTITY_SERVICE,
@@ -36,7 +36,7 @@ export class OidcClientModule {
         },
         {
           provide: IDENTITY_PROVIDER_SERVICE,
-          useClass: idp,
+          useClass: identityProvider,
         },
         OidcClientService,
       ],
