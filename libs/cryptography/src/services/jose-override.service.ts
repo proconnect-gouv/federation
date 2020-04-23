@@ -21,9 +21,6 @@ export class JoseOverrideService {
     this.registerOverride('derToJose');
     this.registerOverride('encodeBuffer');
     this.registerOverride('JWS.compact');
-    this.registerOverride('JWK.asKey');
-    this.registerOverride('JWA.decrypt');
-    this.registerOverride('JWE.decrypt');
   }
 
   /**
@@ -102,83 +99,5 @@ export class JoseOverrideService {
     }
 
     return original(payload, [recipient]);
-  }
-
-  /**
-   * Make function able to wait for promise resolution
-   * `key` might be a promise when it comes from a private decryption on HSM.
-   * This is typically the case for the symetric pulic key used to decipher JWTs
-   * @see https://github.com/panva/jose/blob/master/lib/jwk/import.js#L31
-   */
-  private ['JWK.asKey'](key, parameters, options) {
-    this.logger.debug('Run override for JWK.asKey');
-    const original = OverrideCode.getOriginal('JWK.asKey');
-
-    if (key instanceof Promise) {
-      return new Promise(async (resolve, reject) => {
-        try {
-          resolve(original(await key, parameters, options));
-        } catch (error) {
-          reject(error);
-        }
-      });
-    }
-
-    return original(key, parameters, options);
-  }
-
-  /**
-   * Make function return an object with a custom toString() method.
-   *
-   * In the context of openid-client, `JWE.decrypt()` result is a buffer,
-   * that is immediatly stringified by a call to `.toString('utf8)`.
-   * @see https://github.com/panva/node-openid-client/blob/master/lib/client.js#L680
-   *
-   * With our overrides, JWE.decrypt returns a promise and not a `Buffer`,
-   * so the call to `toString()` method (on the promise) results in the literral `[Object Promise]`...
-   *
-   * For once, we override the return of the method,
-   * to make it an object with a `toString()` method.
-   * This custom `toString` awaits for the promise to be resolved
-   * and then makes the real `Buffer.toString('utf8)` call, and resolves with its result.
-   *
-   * For original JWE.decrypt
-   * @see https://github.com/panva/jose/blob/master/lib/jwe/decrypt.js#L43
-   */
-  private ['JWE.decrypt'](jwe, key, opts) {
-    this.logger.debug('Run override for JWE.decrypt');
-    const original = OverrideCode.getOriginal('JWE.decrypt');
-
-    return {
-      async toString() {
-        const buffer = await original(jwe, key, opts);
-        return buffer.toString('utf8');
-      },
-    };
-  }
-
-  /**
-   * Make function able to wait for promise resolution
-   * `key` might be a promise when it comes from a private decryption on HSM.
-   * This is typically the case for the symetric pulic key used to decipher JWTs
-   *
-   * Note that the below override is conditionned to a particular algorithm familly
-   * @see https://github.com/panva/jose/blob/master/lib/jwa/aes_gcm.js#L31
-   */
-  private async ['JWA.decrypt'](alg, key, ciphertext, opts) {
-    this.logger.debug('Run override for JWA.decrypt');
-    const original = OverrideCode.getOriginal('JWA.decrypt');
-
-    if (key instanceof Promise) {
-      return new Promise(async (resolve, reject) => {
-        try {
-          resolve(original(alg, await key, ciphertext, opts));
-        } catch (error) {
-          reject(error);
-        }
-      });
-    }
-
-    return original(alg, key, ciphertext, opts);
   }
 }

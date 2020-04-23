@@ -8,13 +8,18 @@ import { Provider, KoaContextWithOIDC } from 'oidc-provider';
 import { JWK } from 'jose';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
-import { FcExceptionFilter } from '@fc/error';
+import { FcExceptionFilter, FcException } from '@fc/error';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { RedisService } from '@fc/redis';
 import { IIdentityManagementService, ISpManagementService } from './interfaces';
 import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
-import { oidcProviderHooks, oidcProviderEvents } from './enums';
+import {
+  OidcProviderEvents,
+  OidcProviderMiddlewareStep,
+  OidcProviderMiddlewarePattern,
+  ErrorCode,
+} from './enums';
 import { OidcProviderConfig } from './dto';
 import {
   OidcProviderInitialisationException,
@@ -76,6 +81,7 @@ export class OidcProviderService {
       throw new OidcProviderBindingException(error);
     }
 
+    this.catchErrorEvents();
     this.scheduleConfigurationReload();
   }
 
@@ -124,28 +130,82 @@ export class OidcProviderService {
   }
 
   /**
+   * Register an event handler for `oidc-provider` built in events
+   *
+   * @param eventName on of possible event name
+   * @param handler the function to execute when event is trigerred
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/events.md
+   */
+  registerEvent(eventName: OidcProviderEvents, handler) {
+    // `oidc-provider` instance is an event emitter
+    this.provider.on(eventName, handler);
+  }
+
+  /**
    * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pre--and-post-middlewares
    */
-  hook(
-    step: oidcProviderHooks,
-    eventName: oidcProviderEvents,
-    hookFunction: Function,
+  registerMiddleware(
+    step: OidcProviderMiddlewareStep,
+    pattern: OidcProviderMiddlewarePattern,
+    middleware: Function,
   ): void {
-    this.provider.use(async (ctx: any, next: Function) => {
-      if (step === oidcProviderHooks.BEFORE && ctx.path === eventName) {
-        await hookFunction(ctx);
+    this.provider.use(async (ctx: KoaContextWithOIDC, next: Function) => {
+      // Extract path and oidc.route from ctx
+      const { path, oidc: { route = '' } = {} } = ctx;
+
+      // run middleware BEFORE pattern occurs
+      if (step === OidcProviderMiddlewareStep.BEFORE && path === pattern) {
+        await middleware(ctx);
       }
 
+      // Let pattern occur
       await next();
 
-      if (
-        step === oidcProviderHooks.AFTER &&
-        ctx.oidc &&
-        ctx.oidc.route === eventName
-      ) {
-        await hookFunction(ctx);
+      // run middleware AFTER pattern occured
+      if (step === OidcProviderMiddlewareStep.AFTER && route === pattern) {
+        await middleware(ctx);
       }
     });
+  }
+
+  catchErrorEvents() {
+    const errorEvents = [
+      OidcProviderEvents.AUTHORIZATION_ERROR,
+      OidcProviderEvents.BACKCHANNEL_ERROR,
+      OidcProviderEvents.JWKS_ERROR,
+      OidcProviderEvents.CHECK_SESSION_ORIGIN_ERROR,
+      OidcProviderEvents.CHECK_SESSION_ERROR,
+      OidcProviderEvents.DISCOVERY_ERROR,
+      OidcProviderEvents.END_SESSION_ERROR,
+      OidcProviderEvents.GRANT_ERROR,
+      OidcProviderEvents.INTROSPECTION_ERROR,
+      OidcProviderEvents.PUSHED_AUTHORIZATION_REQUEST_ERROR,
+      OidcProviderEvents.REGISTRATION_CREATE_ERROR,
+      OidcProviderEvents.REGISTRATION_DELETE_ERROR,
+      OidcProviderEvents.REGISTRATION_READ_ERROR,
+      OidcProviderEvents.REGISTRATION_UPDATE_ERROR,
+      OidcProviderEvents.REVOCATION_ERROR,
+      OidcProviderEvents.SERVER_ERROR,
+      OidcProviderEvents.USERINFO_ERROR,
+    ];
+
+    errorEvents.forEach(eventName => {
+      this.registerEvent(eventName, this.triggerError.bind(this, eventName));
+    });
+  }
+
+  private triggerError(eventName: OidcProviderEvents, ctx, error: Error) {
+    let wrappedError: FcException;
+    if (error instanceof FcException) {
+      wrappedError = error;
+    } else {
+      wrappedError = new OidcProviderRuntimeException(
+        error,
+        ErrorCode[eventName.toUpperCase()],
+      );
+    }
+
+    this.throwError(ctx, wrappedError);
   }
 
   /**
@@ -162,7 +222,7 @@ export class OidcProviderService {
    *
    * NB method is public to be callable from redis adapter.
    */
-  throwError(ctx, exception) {
+  private throwError(ctx, exception) {
     // Build fake ArgumentsHost host instance
     const host = FcExceptionFilter.ArgumentHostAdapter(ctx) as ArgumentsHost;
 
@@ -207,7 +267,10 @@ export class OidcProviderService {
    */
   private renderError(ctx: KoaContextWithOIDC, _out: string, error: any) {
     // Instantiate our exception
-    const exception = new OidcProviderRuntimeException(error);
+    const exception = new OidcProviderRuntimeException(
+      error,
+      ErrorCode.RUNTIME,
+    );
     // Call our hacky "thrower"
     this.throwError(ctx, exception);
   }

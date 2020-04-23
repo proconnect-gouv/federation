@@ -103,6 +103,24 @@
       ],
       "@fc/redis/*": [
         "libs/redis/src/*"
+      ],
+      "@fc/rabbitmq": [
+        "libs/rabbitmq/src"
+      ],
+      "@fc/rabbitmq/*": [
+        "libs/rabbitmq/src/*"
+      ],
+      "@fc/fake-hsm": [
+        "libs/fake-hsm/src"
+      ],
+      "@fc/fake-hsm/*": [
+        "libs/fake-hsm/src/*"
+      ],
+      "@fc/protocol": [
+        "libs/protocol/src"
+      ],
+      "@fc/protocol/*": [
+        "libs/protocol/src/*"
       ]
     }
   },

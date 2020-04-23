@@ -1,5 +1,5 @@
 import { ErrorService } from './error.service';
-import { FcException, HttpException } from './interfaces';
+import { FcException, HttpException, RpcException } from './exceptions';
 
 describe('ErrorService', () => {
   describe('addLeadingZeros', () => {
@@ -89,6 +89,14 @@ describe('ErrorService', () => {
       const result = ErrorService.getExceptionCodeFor<HttpException>(exception);
       // Then
       expect(result).toBe('Y000404');
+    });
+    it('should return the correct value from exception RpcException', () => {
+      // Given
+      const exception = new RpcException('Foo');
+      // When
+      const result = ErrorService.getExceptionCodeFor<RpcException>(exception);
+      // Then
+      expect(result).toBe('Y000000');
     });
     it('should return the correct value from exception unknown', () => {
       // When

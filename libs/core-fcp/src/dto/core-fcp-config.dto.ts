@@ -7,6 +7,7 @@ import { MongooseConfig } from '@fc/mongoose';
 import { RedisConfig } from '@fc/redis';
 import { RnippConfig } from '@fc/rnipp';
 import { IdentityManagementConfig } from '@fc/identity-management';
+import { RabbitmqConfig } from '@fc/rabbitmq';
 
 export class CoreFcpConfig {
   @IsObject()
@@ -46,4 +47,9 @@ export class CoreFcpConfig {
   @ValidateNested()
   @Type(() => IdentityManagementConfig)
   readonly IdentityManagement: IdentityManagementConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => RabbitmqConfig)
+  readonly CryptographyBroker: RabbitmqConfig;
 }

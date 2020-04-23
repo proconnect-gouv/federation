@@ -7,12 +7,17 @@ import { LoggerService } from '@fc/logger';
 import { LogLevelNames } from '@fc/logger';
 import { FcExceptionFilter } from '@fc/error';
 import { RedisService } from '@fc/redis';
-import { oidcProviderHooks, oidcProviderEvents } from './enums';
+import {
+  OidcProviderEvents,
+  OidcProviderMiddlewareStep,
+  OidcProviderMiddlewarePattern,
+} from './enums';
 import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
 import { OidcProviderService } from './oidc-provider.service';
 import {
   OidcProviderInitialisationException,
   OidcProviderBindingException,
+  OidcProviderRuntimeException,
 } from './exceptions';
 
 describe('OidcProviderService', () => {
@@ -75,6 +80,7 @@ describe('OidcProviderService', () => {
       providerMock.middlewares.push(middleware);
       useSpy();
     },
+    on: jest.fn(),
   };
 
   const identityManagementServiceMock = {
@@ -118,8 +124,8 @@ describe('OidcProviderService', () => {
 
     module.useLogger(loggerServiceMock);
 
-    jest.resetAllMocks();
     service = module.get<OidcProviderService>(OidcProviderService);
+    jest.resetAllMocks();
   });
 
   describe('onModuleInit', () => {
@@ -319,17 +325,41 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('hook', () => {
-    it('should register hook but not call callback on hook registration', () => {
+  describe('registerEvent', () => {
+    it('should call provider `in` method', () => {
+      // Given
+      const eventNameMock = OidcProviderEvents.USERINFO_ERROR;
+      const handler = jest.fn();
+      service['provider'] = providerMock as any;
+      // When
+      service.registerEvent(eventNameMock, handler);
+      // Then
+      expect(providerMock.on).toHaveBeenCalledTimes(1);
+      expect(providerMock.on).toHaveBeenCalledWith(eventNameMock, handler);
+    });
+    it('should not execute handler on registration', () => {
+      // Given
+      const eventNameMock = OidcProviderEvents.USERINFO_ERROR;
+      const handler = jest.fn();
+      service['provider'] = providerMock as any;
+      // When
+      service.registerEvent(eventNameMock, handler);
+      // Then
+      expect(handler).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('registerMiddleware', () => {
+    it('should register middleware but not call callback on middleware registration', () => {
       // Given
       providerMock.middlewares = [];
       const originalProvider = service['provider'];
       service['provider'] = providerMock as any;
       const callback = jest.fn();
       // When
-      service.hook(
-        oidcProviderHooks.BEFORE,
-        oidcProviderEvents.USERINFO,
+      service.registerMiddleware(
+        OidcProviderMiddlewareStep.BEFORE,
+        OidcProviderMiddlewarePattern.USERINFO,
         callback,
       );
       // Then
@@ -345,12 +375,12 @@ describe('OidcProviderService', () => {
       const originalProvider = service['provider'];
       service['provider'] = providerMock as any;
       const callback = jest.fn();
-      const ctx = { path: oidcProviderEvents.USERINFO };
+      const ctx = { path: OidcProviderMiddlewarePattern.USERINFO };
       const next = async () => Promise.resolve();
       // When
-      service.hook(
-        oidcProviderHooks.BEFORE,
-        oidcProviderEvents.USERINFO,
+      service.registerMiddleware(
+        OidcProviderMiddlewareStep.BEFORE,
+        OidcProviderMiddlewarePattern.USERINFO,
         callback,
       );
       providerMock.middlewares[0].call(null, ctx, next);
@@ -366,12 +396,14 @@ describe('OidcProviderService', () => {
       const originalProvider = service['provider'];
       service['provider'] = providerMock as any;
       const callback = jest.fn();
-      const ctx = { oidc: { route: oidcProviderEvents.USERINFO } };
+      const ctx = {
+        oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
+      };
       const next = () => async () => Promise.resolve();
       // When
-      service.hook(
-        oidcProviderHooks.AFTER,
-        oidcProviderEvents.USERINFO,
+      service.registerMiddleware(
+        OidcProviderMiddlewareStep.AFTER,
+        OidcProviderMiddlewarePattern.USERINFO,
         callback,
       );
       await providerMock.middlewares[0].call(null, ctx, next);
@@ -392,6 +424,50 @@ describe('OidcProviderService', () => {
       service['renderError'](ctx, out, error);
       // Then
       expect(exceptionFilterMock.catch).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('catchErrorEvents', () => {
+    it('should call register event for each error case', () => {
+      // Given
+      service.registerEvent = jest.fn();
+      const EVENT_COUNT = 17;
+      // When
+      service.catchErrorEvents();
+      // Then
+      expect(service.registerEvent).toHaveBeenCalledTimes(EVENT_COUNT);
+    });
+  });
+
+  describe('triggerError', () => {
+    it('should call throwError with OidcProviderunTimeException if error is not an FcException', () => {
+      // Given
+      const eventName = OidcProviderEvents.SESSION_SAVED;
+      const func = service['triggerError'].bind(service, eventName);
+      const ctxMock = {};
+      const errorMock = Error('some error');
+      service['throwError'] = jest.fn();
+      // When
+      func(ctxMock, errorMock);
+      // Then
+      expect(service['throwError']).toHaveBeenCalledTimes(1);
+      expect(service['throwError']).toHaveBeenCalledWith(
+        ctxMock,
+        expect.any(OidcProviderRuntimeException),
+      );
+    });
+    it('should call throwError with original exception if error is an FcException', () => {
+      // Given
+      const eventName = OidcProviderEvents.SESSION_SAVED;
+      const func = service['triggerError'].bind(service, eventName);
+      const ctxMock = {};
+      const errorMock = new OidcProviderInitialisationException(Error('foo'));
+      service['throwError'] = jest.fn();
+      // When
+      func(ctxMock, errorMock);
+      // Then
+      expect(service['throwError']).toHaveBeenCalledTimes(1);
+      expect(service['throwError']).toHaveBeenCalledWith(ctxMock, errorMock);
     });
   });
 });
