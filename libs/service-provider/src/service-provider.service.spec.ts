@@ -2,11 +2,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 
-import { SpManagementService } from './sp-management.service';
+import { ServiceProviderService } from './service-provider.service';
 import { CryptographyService } from '@fc/cryptography';
 
-describe('SpManagementService', () => {
-  let spManagementservice: SpManagementService;
+describe('ServiceProviderService', () => {
+  let serviceProviderservice: ServiceProviderService;
   const mockCryptographyService = {
     decryptSecretHash: jest.fn(),
   };
@@ -17,7 +17,7 @@ describe('SpManagementService', () => {
 
   const mockExec = jest.fn();
 
-  const serviceProviderModel = getModelToken('SpManagement');
+  const serviceProviderModel = getModelToken('ServiceProvider');
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -26,7 +26,7 @@ describe('SpManagementService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CryptographyService,
-        SpManagementService,
+        ServiceProviderService,
         {
           provide: serviceProviderModel,
           useValue: mockRepository,
@@ -37,7 +37,9 @@ describe('SpManagementService', () => {
       .useValue(mockCryptographyService)
       .compile();
 
-    spManagementservice = module.get<SpManagementService>(SpManagementService);
+    serviceProviderservice = module.get<ServiceProviderService>(
+      ServiceProviderService,
+    );
 
     mockExec.mockReturnValueOnce([
       {
@@ -59,7 +61,7 @@ describe('SpManagementService', () => {
   });
 
   it('should be defined', () => {
-    expect(spManagementservice).toBeDefined();
+    expect(serviceProviderservice).toBeDefined();
   });
 
   describe('legacyToOpenIdPropertyName', () => {
@@ -82,7 +84,7 @@ describe('SpManagementService', () => {
       mockCryptographyService.decryptSecretHash.mockReturnValueOnce(
         'client_secret',
       );
-      const result = spManagementservice['legacyToOpenIdPropertyName'](
+      const result = serviceProviderservice['legacyToOpenIdPropertyName'](
         serviceProviderMock,
       );
 
@@ -105,7 +107,7 @@ describe('SpManagementService', () => {
   describe('findAllServiceProvider', () => {
     it('should resolve', async () => {
       // action
-      const result = spManagementservice['findAllServiceProvider']();
+      const result = serviceProviderservice['findAllServiceProvider']();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
@@ -115,7 +117,7 @@ describe('SpManagementService', () => {
 
     it('should have called find once', async () => {
       // action
-      await spManagementservice['findAllServiceProvider']();
+      await serviceProviderservice['findAllServiceProvider']();
 
       // expect
       expect(mockRepository.find).toHaveBeenCalledTimes(1);
@@ -123,7 +125,7 @@ describe('SpManagementService', () => {
 
     it('should return result of type list', async () => {
       // action
-      const result = await spManagementservice['findAllServiceProvider']();
+      const result = await serviceProviderservice['findAllServiceProvider']();
 
       // expect
       expect(result).toStrictEqual([
@@ -146,7 +148,7 @@ describe('SpManagementService', () => {
   describe('getList', () => {
     it('should resolve', async () => {
       // action
-      const result = spManagementservice.getList();
+      const result = serviceProviderservice.getList();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
@@ -159,7 +161,7 @@ describe('SpManagementService', () => {
       mockCryptographyService.decryptSecretHash.mockReturnValueOnce(
         'client_secret',
       );
-      const result = await spManagementservice.getList();
+      const result = await serviceProviderservice.getList();
 
       // expect
       expect(result).toStrictEqual([

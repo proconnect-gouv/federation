@@ -9,7 +9,10 @@ import {
   Inject,
 } from '@nestjs/common';
 import { GetAuthorizeParamsDTO } from './dto';
-import { IIdentityManagementService, ISpManagementService } from './interfaces';
+import {
+  IIdentityManagementService,
+  IServiceProviderService,
+} from './interfaces';
 import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from './oidc-provider.service';
@@ -20,7 +23,7 @@ export class OidcProviderController {
     @Inject(IDENTITY_MANAGEMENT_SERVICE)
     private readonly identityManagementService: IIdentityManagementService,
     @Inject(SP_MANAGEMENT_SERVICE)
-    private readonly spManagementService: ISpManagementService,
+    private readonly spManagementService: IServiceProviderService,
     private readonly loggerService: LoggerService,
     private readonly oidcProdiverService: OidcProviderService,
   ) {
