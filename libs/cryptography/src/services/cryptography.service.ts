@@ -183,25 +183,9 @@ export class CryptographyService {
           digest,
         };
 
-        // Handle successful call
-        const success = data => {
-          this.logger.debug('Received signature from gateway');
-          /**
-           * @TODO define a more powerful mechanism
-           */
-          if (data === 'ERROR') {
-            return reject(
-              new CryptographyGatewayException(
-                Error('Gateway completed with an error'),
-              ),
-            );
-          }
-          return resolve(Buffer.from(data, payloadEncoding));
-        };
-
-        // Handle microservice failure
-        const failure = error =>
-          reject(new CryptographyGatewayException(error));
+        // Build callbacks
+        const success = this.signSuccess.bind(this, resolve, reject);
+        const failure = this.signFailure.bind(this, reject);
 
         // Send message to gateway
         this.broker
@@ -211,5 +195,29 @@ export class CryptographyService {
         reject(new CryptographyGatewayException(error));
       }
     });
+  }
+
+  // Handle successful call
+  private signSuccess(resolve, reject, data) {
+    this.logger.debug('Received signature from gateway');
+    const { payloadEncoding } = this.config.get<RabbitmqConfig>(
+      'CryptographyBroker',
+    );
+
+    /**
+     * @TODO define a more powerful mechanism
+     */
+    if (data === 'ERROR') {
+      return this.signFailure(
+        reject,
+        new Error('Gateway completed with an error'),
+      );
+    }
+    return resolve(Buffer.from(data, payloadEncoding));
+  }
+
+  // Handle microservice failure
+  private signFailure(reject, error) {
+    reject(new CryptographyGatewayException(error));
   }
 }
