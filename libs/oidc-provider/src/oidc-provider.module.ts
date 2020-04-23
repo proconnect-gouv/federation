@@ -1,6 +1,5 @@
-import { Module, DynamicModule } from '@nestjs/common';
-
-import { ImplementationOf } from '@fc/common';
+import { Module, DynamicModule, Type } from '@nestjs/common';
+import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { FcExceptionFilter } from '@fc/error';
 import { RedisModule } from '@fc/redis';
 import { OidcProviderService } from './oidc-provider.service';
@@ -19,10 +18,10 @@ export class OidcProviderModule {
    * @see https://docs.nestjs.com/fundamentals/custom-providers
    */
   static register(
-    identityClass: ImplementationOf<IIdentityService>,
-    identityModule,
-    serviceProviderClass: ImplementationOf<IServiceProviderService>,
-    serviceProviderModule,
+    identityClass: Type<IIdentityService>,
+    identityModule: Type<ModuleMetadata>,
+    serviceProviderClass: Type<IServiceProviderService>,
+    serviceProviderModule: Type<ModuleMetadata>,
   ): DynamicModule {
     // does not need to be tested
     // istanbul ignore next
