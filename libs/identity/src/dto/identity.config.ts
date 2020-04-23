@@ -2,7 +2,7 @@
 
 import { IsString, Length } from 'class-validator';
 
-export class IdentityManagementConfig {
+export class IdentityConfig {
   /**
    * @TODO evaluate the opportunity to use keyObjects
    * instead of plain string + rotation of keys

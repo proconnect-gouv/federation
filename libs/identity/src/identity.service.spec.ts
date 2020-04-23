@@ -4,13 +4,13 @@ import { RedisService } from '@fc/redis';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import {
-  IdentityManagementBadFormatException,
-  IdentityManagementNotFoundException,
+  IdentityBadFormatException,
+  IdentityNotFoundException,
 } from './exceptions';
-import { IdentityManagementService } from './identity-management.service';
+import { IdentityService } from './identity.service';
 
-describe('IdentityManagementService', () => {
-  let service: IdentityManagementService;
+describe('IdentityService', () => {
+  let service: IdentityService;
 
   const loggerServiceMock = ({
     setContext: jest.fn(),
@@ -37,7 +37,7 @@ describe('IdentityManagementService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        IdentityManagementService,
+        IdentityService,
         LoggerService,
         RedisService,
         ConfigService,
@@ -54,7 +54,7 @@ describe('IdentityManagementService', () => {
       .useValue(configServiceMock)
       .compile();
 
-    service = module.get<IdentityManagementService>(IdentityManagementService);
+    service = module.get<IdentityService>(IdentityService);
 
     jest.resetAllMocks();
 
@@ -83,7 +83,7 @@ describe('IdentityManagementService', () => {
       service['cryptoKey'];
       // Then
       expect(configServiceMock.get).toHaveBeenLastCalledWith(
-        'IdentityManagement',
+        'Identity',
       );
     });
     it('should return cryptogaphyKey value from config', () => {
@@ -144,7 +144,7 @@ describe('IdentityManagementService', () => {
       // Then
       expect(() => {
         service['unserialize'](dataMock);
-      }).toThrow(IdentityManagementBadFormatException);
+      }).toThrow(IdentityBadFormatException);
     });
   });
 
@@ -204,7 +204,7 @@ describe('IdentityManagementService', () => {
       redisServiceMock.get.mockResolvedValue(false);
       // Then
       await expect(service.getIdentity(key)).rejects.toThrow(
-        IdentityManagementNotFoundException,
+        IdentityNotFoundException,
       );
     });
   });

@@ -12,10 +12,7 @@ import { FcExceptionFilter, FcException } from '@fc/error';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { RedisService } from '@fc/redis';
-import {
-  IIdentityManagementService,
-  IServiceProviderService,
-} from './interfaces';
+import { IIdentityService, IServiceProviderService } from './interfaces';
 import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
 import {
   OidcProviderEvents,
@@ -42,9 +39,9 @@ export class OidcProviderService {
     readonly logger: LoggerService,
     readonly redisService: RedisService,
     @Inject(IDENTITY_MANAGEMENT_SERVICE)
-    private readonly identityManagementService: IIdentityManagementService,
+    private readonly identityService: IIdentityService,
     @Inject(SP_MANAGEMENT_SERVICE)
-    private readonly spManagementService: IServiceProviderService,
+    private readonly serviceProviderService: IServiceProviderService,
     private readonly exceptionFilter: FcExceptionFilter,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -246,7 +243,7 @@ export class OidcProviderService {
     this.logger.debug('OidcProviderService.findAccount()');
 
     try {
-      const identity = await this.identityManagementService.getIdentity(sub);
+      const identity = await this.identityService.getIdentity(sub);
 
       return {
         accountId: sub,
@@ -285,9 +282,9 @@ export class OidcProviderService {
    */
   private async getConfig(): Promise<OidcProviderConfig> {
     /**
-     * Get SP's information from provided spManagementService
+     * Get SP's information from provided serviceProviderService
      */
-    const clients = await this.spManagementService.getList();
+    const clients = await this.serviceProviderService.getList();
 
     /**
      * Build our memory adapter for oidc-provider

@@ -1,17 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { IIdentityManagementService } from '@fc/oidc-provider';
+import { IIdentityService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { RedisService } from '@fc/redis';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
-import { IdentityManagementConfig } from './dto';
+import { IdentityConfig } from './dto';
 import {
-  IdentityManagementBadFormatException,
-  IdentityManagementNotFoundException,
+  IdentityBadFormatException,
+  IdentityNotFoundException,
 } from './exceptions';
 
 @Injectable()
-export class IdentityManagementService implements IIdentityManagementService {
+export class IdentityService implements IIdentityService {
   constructor(
     private readonly configService: ConfigService,
     private readonly logger: LoggerService,
@@ -28,8 +28,8 @@ export class IdentityManagementService implements IIdentityManagementService {
    */
   private get cryptoKey(): string {
     const { cryptographyKey } = this.configService.get<
-      IdentityManagementConfig
-    >('IdentityManagement');
+      IdentityConfig
+    >('Identity');
 
     return cryptographyKey;
   }
@@ -66,7 +66,7 @@ export class IdentityManagementService implements IIdentityManagementService {
     try {
       return JSON.parse(dataString);
     } catch (error) {
-      throw new IdentityManagementBadFormatException(error);
+      throw new IdentityBadFormatException(error);
     }
   }
 
@@ -81,7 +81,7 @@ export class IdentityManagementService implements IIdentityManagementService {
     const dataCipher = await this.redisService.get(key);
 
     if (!dataCipher) {
-      throw new IdentityManagementNotFoundException();
+      throw new IdentityNotFoundException();
     }
 
     return this.unserialize(dataCipher);

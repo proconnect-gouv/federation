@@ -5,7 +5,7 @@ import { FcExceptionFilter } from '@fc/error';
 import { RedisModule } from '@fc/redis';
 import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderController } from './oidc-provider.controller';
-import { IIdentityManagementService } from './interfaces/identity-management-service.interface';
+import { IIdentityService } from './interfaces/identity-service.interface';
 import { IDENTITY_MANAGEMENT_SERVICE } from './tokens/identity-management-service.token';
 import { IServiceProviderService } from './interfaces';
 import { SP_MANAGEMENT_SERVICE } from './tokens/sp-management-service.token';
@@ -19,25 +19,25 @@ export class OidcProviderModule {
    * @see https://docs.nestjs.com/fundamentals/custom-providers
    */
   static register(
-    identityManagementClass: ImplementationOf<IIdentityManagementService>,
-    identityManagementModule,
-    spManagementClass: ImplementationOf<IServiceProviderService>,
-    spManagementModule,
+    identityClass: ImplementationOf<IIdentityService>,
+    identityModule,
+    serviceProviderClass: ImplementationOf<IServiceProviderService>,
+    serviceProviderModule,
   ): DynamicModule {
     // does not need to be tested
     // istanbul ignore next
     return {
       module: OidcProviderModule,
-      imports: [RedisModule, spManagementModule, identityManagementModule],
+      imports: [RedisModule, serviceProviderModule, identityModule],
       providers: [
         FcExceptionFilter,
         {
           provide: IDENTITY_MANAGEMENT_SERVICE,
-          useClass: identityManagementClass,
+          useClass: identityClass,
         },
         {
           provide: SP_MANAGEMENT_SERVICE,
-          useClass: spManagementClass,
+          useClass: serviceProviderClass,
         },
         OidcProviderService,
       ],

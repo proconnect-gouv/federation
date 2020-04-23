@@ -1,9 +1,9 @@
-import { IdentityManagementBaseException } from './';
+import { IdentityBaseException } from '.';
 import { ErrorCode } from '../enums';
 
 // declarative code
 // istanbul ignore next line
-export class IdentityManagementNotFoundException extends IdentityManagementBaseException {
+export class IdentityNotFoundException extends IdentityBaseException {
   public readonly code = ErrorCode.NOT_FOUND;
   public message = 'Identity not found';
 }
