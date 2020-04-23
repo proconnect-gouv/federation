@@ -40,13 +40,13 @@
         "tsConfigPath": "libs/rnipp/tsconfig.lib.json"
       }
     },
-    "identity-management": {
+    "identity": {
       "type": "library",
-      "root": "libs/identity-management",
+      "root": "libs/identity",
       "entryFile": "index",
-      "sourceRoot": "libs/identity-management/src",
+      "sourceRoot": "libs/identity/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/identity-management/tsconfig.lib.json"
+        "tsConfigPath": "libs/identity/tsconfig.lib.json"
       }
     },
     "identity-provider": {
@@ -76,13 +76,13 @@
         "tsConfigPath": "libs/logger/tsconfig.lib.json"
       }
     },
-    "consent-management": {
+    "consent": {
       "type": "library",
-      "root": "libs/consent-management",
+      "root": "libs/consent",
       "entryFile": "index",
-      "sourceRoot": "libs/consent-management/src",
+      "sourceRoot": "libs/consent/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/consent-management/tsconfig.lib.json"
+        "tsConfigPath": "libs/consent/tsconfig.lib.json"
       }
     },
     "oidc-provider": {
