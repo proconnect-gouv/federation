@@ -13,10 +13,10 @@ import {
 @Injectable()
 export class IdentityService implements IIdentityService {
   constructor(
-    private readonly configService: ConfigService,
+    private readonly config: ConfigService,
     private readonly logger: LoggerService,
-    private readonly redisService: RedisService,
-    private readonly cryptographyService: CryptographyService,
+    private readonly redis: RedisService,
+    private readonly cryptography: CryptographyService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -27,9 +27,7 @@ export class IdentityService implements IIdentityService {
    * @returns cryptographyKey entry from config.
    */
   private get cryptoKey(): string {
-    const { cryptographyKey } = this.configService.get<
-      IdentityConfig
-    >('Identity');
+    const { cryptographyKey } = this.config.get<IdentityConfig>('Identity');
 
     return cryptographyKey;
   }
@@ -42,7 +40,7 @@ export class IdentityService implements IIdentityService {
    */
   private serialize(data: object): string {
     const dataString = JSON.stringify(data);
-    const dataCipher = this.cryptographyService
+    const dataCipher = this.cryptography
       .encryptUserInfosCache(this.cryptoKey, dataString)
       .toString('base64');
 
@@ -58,7 +56,7 @@ export class IdentityService implements IIdentityService {
    */
   private unserialize(data: string): object {
     const dataBuffer = Buffer.from(data, 'base64');
-    const dataString = this.cryptographyService.decryptUserInfosCache(
+    const dataString = this.cryptography.decryptUserInfosCache(
       this.cryptoKey,
       dataBuffer,
     );
@@ -78,7 +76,7 @@ export class IdentityService implements IIdentityService {
    */
   async getIdentity(key: string): Promise<object> {
     this.logger.debug('get identity from redis');
-    const dataCipher = await this.redisService.get(key);
+    const dataCipher = await this.redis.get(key);
 
     if (!dataCipher) {
       throw new IdentityNotFoundException();
@@ -98,6 +96,6 @@ export class IdentityService implements IIdentityService {
     this.logger.debug('store identity in redis');
     const data = this.serialize(identity);
 
-    return this.redisService.set(key, data);
+    return this.redis.set(key, data);
   }
 }

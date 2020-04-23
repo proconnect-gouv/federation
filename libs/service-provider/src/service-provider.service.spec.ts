@@ -6,8 +6,8 @@ import { ServiceProviderService } from './service-provider.service';
 import { CryptographyService } from '@fc/cryptography';
 
 describe('ServiceProviderService', () => {
-  let serviceProviderservice: ServiceProviderService;
-  const mockCryptographyService = {
+  let service: ServiceProviderService;
+  const mockCryptography = {
     decryptSecretHash: jest.fn(),
   };
 
@@ -34,12 +34,10 @@ describe('ServiceProviderService', () => {
       ],
     })
       .overrideProvider(CryptographyService)
-      .useValue(mockCryptographyService)
+      .useValue(mockCryptography)
       .compile();
 
-    serviceProviderservice = module.get<ServiceProviderService>(
-      ServiceProviderService,
-    );
+    service = module.get<ServiceProviderService>(ServiceProviderService);
 
     mockExec.mockReturnValueOnce([
       {
@@ -61,7 +59,7 @@ describe('ServiceProviderService', () => {
   });
 
   it('should be defined', () => {
-    expect(serviceProviderservice).toBeDefined();
+    expect(service).toBeDefined();
   });
 
   describe('legacyToOpenIdPropertyName', () => {
@@ -81,12 +79,8 @@ describe('ServiceProviderService', () => {
       };
 
       // action
-      mockCryptographyService.decryptSecretHash.mockReturnValueOnce(
-        'client_secret',
-      );
-      const result = serviceProviderservice['legacyToOpenIdPropertyName'](
-        serviceProviderMock,
-      );
+      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
+      const result = service['legacyToOpenIdPropertyName'](serviceProviderMock);
 
       // expect
       expect(result).toStrictEqual({
@@ -107,7 +101,7 @@ describe('ServiceProviderService', () => {
   describe('findAllServiceProvider', () => {
     it('should resolve', async () => {
       // action
-      const result = serviceProviderservice['findAllServiceProvider']();
+      const result = service['findAllServiceProvider']();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
@@ -117,7 +111,7 @@ describe('ServiceProviderService', () => {
 
     it('should have called find once', async () => {
       // action
-      await serviceProviderservice['findAllServiceProvider']();
+      await service['findAllServiceProvider']();
 
       // expect
       expect(mockRepository.find).toHaveBeenCalledTimes(1);
@@ -125,7 +119,7 @@ describe('ServiceProviderService', () => {
 
     it('should return result of type list', async () => {
       // action
-      const result = await serviceProviderservice['findAllServiceProvider']();
+      const result = await service['findAllServiceProvider']();
 
       // expect
       expect(result).toStrictEqual([
@@ -148,7 +142,7 @@ describe('ServiceProviderService', () => {
   describe('getList', () => {
     it('should resolve', async () => {
       // action
-      const result = serviceProviderservice.getList();
+      const result = service.getList();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
@@ -158,10 +152,8 @@ describe('ServiceProviderService', () => {
 
     it('should return result of type list', async () => {
       // action
-      mockCryptographyService.decryptSecretHash.mockReturnValueOnce(
-        'client_secret',
-      );
-      const result = await serviceProviderservice.getList();
+      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
+      const result = await service.getList();
 
       // expect
       expect(result).toStrictEqual([

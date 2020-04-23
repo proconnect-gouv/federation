@@ -14,7 +14,7 @@ export class IdentityProviderService implements IIdentityProviderService {
   constructor(
     @InjectModel('IdentityProvider')
     private readonly identityProviderModel: Model<IIdentityProvider>,
-    private readonly cryptographyService: CryptographyService,
+    private readonly cryptography: CryptographyService,
   ) {}
 
   private async findAllIdentityProvider(): Promise<IIdentityProvider[]> {
@@ -74,7 +74,7 @@ export class IdentityProviderService implements IIdentityProviderService {
     source: IIdentityProvider,
   ): IdentityProviderMetadata {
     const client_id = source.clientID;
-    const client_secret = this.cryptographyService.decryptSecretHash(
+    const client_secret = this.cryptography.decryptSecretHash(
       source.clientSecretHash,
     );
 

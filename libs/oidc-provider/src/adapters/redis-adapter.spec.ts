@@ -71,7 +71,7 @@ describe('RedisAdapter', () => {
     const nameMock = 'foo';
     const oidcProviderService = ({
       logger: loggerMock,
-      redisService: redisMock,
+      redis: redisMock,
     } as unknown) as OidcProviderService;
     const BoundClass = RedisAdapter.getConstructorWithDI(oidcProviderService);
 
@@ -96,7 +96,7 @@ describe('RedisAdapter', () => {
       const result = new BoundClass(nameMock) as any;
       // Then
       expect(result.logger).toBe(loggerMock);
-      expect(result.redisService).toBe(redisMock);
+      expect(result.redis).toBe(redisMock);
     });
     it('Should return an object having original argument handled', () => {
       // When

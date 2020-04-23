@@ -11,14 +11,14 @@ export class RedisService {
   private client: Redis.RedisClient;
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly config: ConfigService,
     private readonly logger: LoggerService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
 
   onModuleInit() {
-    const config = this.configService.get<RedisConfig>('Redis');
+    const config = this.config.get<RedisConfig>('Redis');
     /**
      * @TODO handle connection loss
      * (app should recover if connexion is cut and comes back)

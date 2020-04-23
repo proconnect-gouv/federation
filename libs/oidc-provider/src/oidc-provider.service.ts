@@ -35,11 +35,11 @@ export class OidcProviderService {
 
   constructor(
     private httpAdapterHost: HttpAdapterHost,
-    private readonly configService: ConfigService,
+    private readonly config: ConfigService,
     readonly logger: LoggerService,
-    readonly redisService: RedisService,
+    readonly redis: RedisService,
     @Inject(IDENTITY_SERVICE)
-    private readonly identityService: IIdentityService,
+    private readonly identity: IIdentityService,
     @Inject(SERVICE_PROVIDER_SERVICE)
     private readonly serviceProviderService: IServiceProviderService,
     private readonly exceptionFilter: FcExceptionFilter,
@@ -89,7 +89,7 @@ export class OidcProviderService {
    * @TODO return keys from HSM (how?)
    */
   async wellKnownKeys() {
-    const config = this.configService.get<OidcProviderConfig>('OidcProvider');
+    const config = this.config.get<OidcProviderConfig>('OidcProvider');
     const privateKeys = config.configuration.jwks.keys;
     const publicKeys = privateKeys.map(key => JWK.asKey(key as any).toJWK());
 
@@ -243,7 +243,7 @@ export class OidcProviderService {
     this.logger.debug('OidcProviderService.findAccount()');
 
     try {
-      const identity = await this.identityService.getIdentity(sub);
+      const identity = await this.identity.getIdentity(sub);
 
       return {
         accountId: sub,
@@ -310,11 +310,9 @@ export class OidcProviderService {
     /**
      * Get data from config file
      */
-    const {
-      issuer,
-      configuration,
-      reloadConfigDelayInMs,
-    } = this.configService.get<OidcProviderConfig>('OidcProvider');
+    const { issuer, configuration, reloadConfigDelayInMs } = this.config.get<
+      OidcProviderConfig
+    >('OidcProvider');
 
     /**
      * Build final configuration object

@@ -15,11 +15,11 @@ import { OidcClientController } from './oidc-client.controller';
 @Module({})
 export class OidcClientModule {
   static register(
-    identityService: Type<IIdentityService>,
+    identity: Type<IIdentityService>,
     identityModule,
-    idpService: Type<IIdentityProviderService>,
+    idp: Type<IIdentityProviderService>,
     idpModule,
-    identityCheckService: Type<IIdentityCheckService>,
+    identityCheck: Type<IIdentityCheckService>,
     identityCheckModule,
   ): DynamicModule {
     return {
@@ -28,15 +28,15 @@ export class OidcClientModule {
       providers: [
         {
           provide: IDENTITY_SERVICE,
-          useClass: identityService,
+          useClass: identity,
         },
         {
           provide: IDENTITY_CHECK_SERVICE,
-          useClass: identityCheckService,
+          useClass: identityCheck,
         },
         {
           provide: IDENTITY_PROVIDER_SERVICE,
-          useClass: idpService,
+          useClass: idp,
         },
         OidcClientService,
       ],

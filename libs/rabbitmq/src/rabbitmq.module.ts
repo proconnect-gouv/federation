@@ -64,8 +64,8 @@ export class RabbitmqModule {
     const clientName = `${moduleName}${RabbitmqModule.RABBIT_CLASS_SUFFIX}`;
     const BrokerProvider = {
       provide: clientName,
-      useFactory: (configService: ConfigService) => {
-        const options = configService.get<RabbitmqConfig>(clientName);
+      useFactory: (config: ConfigService) => {
+        const options = config.get<RabbitmqConfig>(clientName);
         return ClientProxyFactory.create({
           transport: Transport.RMQ,
           options,
