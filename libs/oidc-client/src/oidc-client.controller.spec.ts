@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcClientController } from './oidc-client.controller';
 import { OidcClientService } from './oidc-client.service';
-import { IDENTITY_MANAGEMENT_SERVICE, IDENTITY_CHECK_SERVICE } from './tokens';
+import { IDENTITY_SERVICE, IDENTITY_CHECK_SERVICE } from './tokens';
 
 describe('OidcClient Controller', () => {
   let oidcClientController: OidcClientController;
@@ -27,7 +27,7 @@ describe('OidcClient Controller', () => {
     businessEvent: jest.fn(),
   } as unknown) as LoggerService;
 
-  const identityManagementServiceMock = {
+  const identityServiceMock = {
     storeIdentity: jest.fn(),
   };
 
@@ -38,13 +38,13 @@ describe('OidcClient Controller', () => {
         OidcClientService,
         LoggerService,
         {
-          provide: IDENTITY_MANAGEMENT_SERVICE,
-          useValue: identityManagementServiceMock,
+          provide: IDENTITY_SERVICE,
+          useValue: identityServiceMock,
         },
         {
           provide: IDENTITY_CHECK_SERVICE,
           useValue: identityCheckServiceMock,
-        }
+        },
       ],
     })
       .overrideProvider(OidcClientService)

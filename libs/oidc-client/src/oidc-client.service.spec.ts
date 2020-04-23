@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OidcClientService } from './oidc-client.service';
 import { ConfigService } from '@fc/config';
 import { LoggerService, LogLevelNames } from '@fc/logger';
-import { IDP_MANAGEMENT_SERVICE } from './tokens';
+import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { ClientMetadata } from 'oidc-provider';
 import { OidcClientConfig } from './dto';
 
@@ -35,7 +35,7 @@ describe('OidcClientService', () => {
     businessEvent: jest.fn(),
   } as unknown) as LoggerService;
 
-  const IdPManagementServiceMock = { getList: jest.fn() };
+  const IdentityProviderServiceMock = { getList: jest.fn() };
   const authorizationUrlMock = jest.fn();
   const callbackParamsMock = jest.fn();
   const callbackMock = jest.fn();
@@ -70,8 +70,8 @@ describe('OidcClientService', () => {
         LoggerService,
         OidcClientService,
         {
-          provide: IDP_MANAGEMENT_SERVICE,
-          useValue: IdPManagementServiceMock,
+          provide: IDENTITY_PROVIDER_SERVICE,
+          useValue: IdentityProviderServiceMock,
         },
       ],
     })
@@ -85,8 +85,8 @@ describe('OidcClientService', () => {
 
     jest.resetAllMocks();
 
-    IdPManagementServiceMock.getList.mockResolvedValue(
-      'IdPManagementServiceMock Resolve Value',
+    IdentityProviderServiceMock.getList.mockResolvedValue(
+      'IdentityProviderServiceMock Resolve Value',
     );
     authorizationUrlMock.mockResolvedValue(
       'authorizationUrlMock Resolve Value',
@@ -292,13 +292,15 @@ describe('OidcClientService', () => {
   });
 
   describe('getConfig', () => {
-    it('should return data from idpManagement.getList', async () => {
+    it('should return data from identityService.getList', async () => {
       // When
       const result = await service['getConfig']();
       // Then
-      expect(IdPManagementServiceMock.getList).toHaveBeenCalled();
+      expect(IdentityProviderServiceMock.getList).toHaveBeenCalled();
       expect(result).toHaveProperty('providers');
-      expect(result.providers).toBe('IdPManagementServiceMock Resolve Value');
+      expect(result.providers).toBe(
+        'IdentityProviderServiceMock Resolve Value',
+      );
     });
   });
 

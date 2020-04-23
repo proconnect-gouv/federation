@@ -2,7 +2,10 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { ServiceProviderMetadata, IServiceProviderService } from '@fc/oidc-provider';
+import {
+  ServiceProviderMetadata,
+  IServiceProviderService,
+} from '@fc/oidc-provider';
 import { CryptographyService } from '@fc/cryptography';
 import { IServiceProvider } from './interfaces';
 
@@ -64,7 +67,7 @@ export class ServiceProviderService implements IServiceProviderService {
   }
 
   /**
-   * @TODO give restricted output data (interface ISpManagement)
+   * @TODO give restricted output data (interface IServiceProvider)
    */
   async getList(): Promise<ServiceProviderMetadata[]> {
     const list = await this.findAllServiceProvider();
@@ -75,7 +78,9 @@ export class ServiceProviderService implements IServiceProviderService {
   }
 
   /* eslint-disable @typescript-eslint/camelcase */
-  private legacyToOpenIdPropertyName(source: IServiceProvider): ServiceProviderMetadata {
+  private legacyToOpenIdPropertyName(
+    source: IServiceProvider,
+  ): ServiceProviderMetadata {
     const client_id = source.key;
     const client_secret = this.cryptographyService.decryptSecretHash(
       source.secret_hash,
