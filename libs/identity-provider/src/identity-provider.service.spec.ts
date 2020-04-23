@@ -3,10 +3,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 
 import { CryptographyService } from '@fc/cryptography';
-import { IdPManagementService } from './idp-management.service';
+import { IdentityProviderService } from './identity-provider.service';
 
-describe('IdPManagementService', () => {
-  let idpManagementService: IdPManagementService;
+describe('IdentityProviderService', () => {
+  let service: IdentityProviderService;
   const mockCryptographyService = {
     decryptSecretHash: jest.fn(),
   };
@@ -17,7 +17,7 @@ describe('IdPManagementService', () => {
 
   const mockExec = jest.fn();
 
-  const identityProviderModel = getModelToken('IdpManagement');
+  const identityProviderModel = getModelToken('IdentityProvider');
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -26,7 +26,7 @@ describe('IdPManagementService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CryptographyService,
-        IdPManagementService,
+        IdentityProviderService,
         {
           provide: identityProviderModel,
           useValue: mockRepository,
@@ -37,9 +37,7 @@ describe('IdPManagementService', () => {
       .useValue(mockCryptographyService)
       .compile();
 
-    idpManagementService = module.get<IdPManagementService>(
-      IdPManagementService,
-    );
+    service = module.get<IdentityProviderService>(IdentityProviderService);
 
     mockExec.mockReturnValueOnce([
       {
@@ -69,7 +67,7 @@ describe('IdPManagementService', () => {
   });
 
   it('should be defined', () => {
-    expect(idpManagementService).toBeDefined();
+    expect(service).toBeDefined();
   });
 
   describe('legacyToOpenIdPropertyName', () => {
@@ -95,7 +93,7 @@ describe('IdPManagementService', () => {
       mockCryptographyService.decryptSecretHash.mockReturnValueOnce(
         'client_secret',
       );
-      const result = idpManagementService['legacyToOpenIdPropertyName'](
+      const result = service['legacyToOpenIdPropertyName'](
         identityProviderMock,
       );
 
@@ -121,7 +119,7 @@ describe('IdPManagementService', () => {
   describe('findAllIdentityProvider', () => {
     it('should resolve', async () => {
       // action
-      const result = idpManagementService['findAllIdentityProvider']();
+      const result = service['findAllIdentityProvider']();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
@@ -131,7 +129,7 @@ describe('IdPManagementService', () => {
 
     it('should have called find once', async () => {
       // action
-      await idpManagementService['findAllIdentityProvider']();
+      await service['findAllIdentityProvider']();
 
       // expect
       expect(mockRepository.find).toHaveBeenCalledTimes(1);
@@ -139,7 +137,7 @@ describe('IdPManagementService', () => {
 
     it('should return result of type list', async () => {
       // action
-      const result = await idpManagementService['findAllIdentityProvider']();
+      const result = await service['findAllIdentityProvider']();
 
       // expect
       expect(result).toStrictEqual([
@@ -170,7 +168,7 @@ describe('IdPManagementService', () => {
   describe('getList', () => {
     it('should resolve', async () => {
       // action
-      const result = idpManagementService.getList();
+      const result = service.getList();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
@@ -183,7 +181,7 @@ describe('IdPManagementService', () => {
       mockCryptographyService.decryptSecretHash.mockReturnValueOnce(
         'client_secret',
       );
-      const result = await idpManagementService.getList();
+      const result = await service.getList();
 
       // expect
       expect(result).toStrictEqual([

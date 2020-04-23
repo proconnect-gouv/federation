@@ -2,17 +2,17 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { CryptographyModule } from '@fc/cryptography';
-import { IdPManagementService } from './idp-management.service';
+import { IdentityProviderService } from './identity-provider.service';
 import { IdentityProviderSchema } from './schemas';
 
 @Module({
   imports: [
     CryptographyModule,
     MongooseModule.forFeature([
-      { name: 'IdpManagement', schema: IdentityProviderSchema },
+      { name: 'IdentityProvider', schema: IdentityProviderSchema },
     ]),
   ],
-  providers: [IdPManagementService],
-  exports: [IdPManagementService, MongooseModule],
+  providers: [IdentityProviderService],
+  exports: [IdentityProviderService, MongooseModule],
 })
 export class IdPmanagementModule {}
