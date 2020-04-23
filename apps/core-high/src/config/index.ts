@@ -6,6 +6,7 @@ import OidcClient from './oidc-client';
 import Mongoose from './mongoose';
 import Redis from './redis';
 import Rnipp from './rnipp';
+import CryptographyBroker from './cryptography-broker';
 import IdentityManagement from './identity-management';
 
 export default {
@@ -17,4 +18,5 @@ export default {
   Redis,
   Rnipp,
   IdentityManagement,
+  CryptographyBroker,
 } as CoreFcpConfig;

@@ -4,11 +4,11 @@ import {
   CryptoOverrideService,
   JoseOverrideService,
 } from './services';
+import { RabbitmqModule } from '@fc/rabbitmq';
 
 @Module({
-  providers: [CryptographyService,  CryptoOverrideService,
-    JoseOverrideService,],
+  imports: [RabbitmqModule.registerFor('Cryptography')],
+  providers: [CryptographyService, CryptoOverrideService, JoseOverrideService],
   exports: [CryptographyService],
 })
 export class CryptographyModule {}
-

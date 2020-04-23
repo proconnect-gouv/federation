@@ -31,13 +31,3 @@ OverrideCode.wrap(JwsSerializer, 'compact', 'JWS.compact');
 JwsSerializer.compact.validate = OverrideCode.getOriginal(
   'JWS.compact',
 ).validate;
-
-// openid-client overrides
-import * as JWK from 'jose/lib/jwk';
-OverrideCode.wrap(JWK, 'asKey', 'JWK.asKey');
-
-import * as JWA from 'jose/lib/jwa';
-OverrideCode.wrap(JWA, 'decrypt', 'JWA.decrypt');
-
-import * as JWE from 'jose/lib/jwe';
-OverrideCode.wrap(JWE, 'decrypt', 'JWE.decrypt');

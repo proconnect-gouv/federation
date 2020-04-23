@@ -1,17 +1,11 @@
-import { BaseExceptionFilter } from '@nestjs/core';
 import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
-import { FcException } from '../interfaces';
-import { LoggerService } from '@fc/logger';
+import { FcException } from '../exceptions';
+import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 import { ErrorService } from '../error.service';
 
 @Catch(FcException)
-export class FcExceptionFilter extends BaseExceptionFilter
+export class FcExceptionFilter extends FcBaseExceptionFilter
   implements ExceptionFilter {
-  constructor(private readonly logger: LoggerService) {
-    super();
-    this.logger.setContext(this.constructor.name);
-  }
-
   catch(exception: FcException, host: ArgumentsHost) {
     this.logger.debug('Exception from FcException');
 
@@ -19,20 +13,9 @@ export class FcExceptionFilter extends BaseExceptionFilter
     const code = ErrorService.getExceptionCodeFor(exception);
     const id = ErrorService.generateErrorId();
 
-    const { message, stack } = exception;
-    let stackTrace = stack.split('\n');
+    const { message } = exception;
 
-    if (exception.originalError) {
-      stackTrace = stackTrace.concat(exception.originalError.stack.split('\n'));
-    }
-
-    this.logger.warn({
-      type: exception.constructor.name,
-      code,
-      id,
-      message,
-      stackTrace,
-    });
+    this.logException(code, id, exception);
 
     res.status(500);
     res.render('error', { code, id, message });

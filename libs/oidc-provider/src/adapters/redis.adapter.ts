@@ -42,7 +42,6 @@ export class RedisAdapter implements Adapter {
      */
     private readonly logger: LoggerService,
     private readonly redisService: RedisService,
-    private readonly throwError: Function,
     /**
      * Instantiation time argument,
      * must remain the last one.
@@ -51,7 +50,6 @@ export class RedisAdapter implements Adapter {
   ) {
     this.logger.setContext(this.constructor.name);
     this.contextName = contextName;
-    this.throwError = throwError;
   }
 
   /**
@@ -69,15 +67,6 @@ export class RedisAdapter implements Adapter {
       null,
       oidcProviderService.logger,
       oidcProviderService.redisService,
-      /**
-       * We need the throwError method from `oidcProviderService`
-       * to throw when `oidc-provider` does not allow us to do so.
-       *
-       * Bind `oidcProviderService` instance since it uses `this`.
-       * Bind the first argument (`ctx`) of the method, since we do not have
-       * a real `ctx` to provide anyway.
-       */
-      oidcProviderService.throwError.bind(oidcProviderService, {}),
     );
 
     /**
@@ -116,10 +105,8 @@ export class RedisAdapter implements Adapter {
     this.logger.trace(key);
 
     if (expiresIn && isNaN(expiresIn)) {
-      this.throwError(
-        new TypeError(
-          `expiresIn MUST be a number, <${typeof expiresIn}> given.`,
-        ),
+      throw new TypeError(
+        `expiresIn MUST be a number, <${typeof expiresIn}> given.`,
       );
     }
 
@@ -135,7 +122,7 @@ export class RedisAdapter implements Adapter {
        *
        * @see OidcProviderService.throwError()
        */
-      this.throwError(new OidcProviderStringifyPayloadForRedisException(error));
+      throw new OidcProviderStringifyPayloadForRedisException(error);
     }
 
     const store = consumable.has(this.contextName)

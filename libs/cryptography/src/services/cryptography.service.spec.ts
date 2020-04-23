@@ -1,10 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import * as crypto from 'crypto';
+import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
+import { ConfigService } from '@fc/config';
 import * as ecdsaSignaturesService from 'jose/lib/help/ecdsa_signatures';
 import { CryptographyService } from './cryptography.service';
 import { IPivotIdentity } from '../interfaces';
 import { OverrideCode } from '@fc/common';
+import { CryptographyGatewayException } from '../exceptions';
 
 describe('CryptographyService', () => {
   let service: CryptographyService;
@@ -13,6 +15,21 @@ describe('CryptographyService', () => {
     setContext: jest.fn(),
     debug: jest.fn(),
   };
+
+  const messageMock = {
+    subscribe: jest.fn(),
+  };
+
+  const brokerMock = {
+    send: jest.fn(),
+    connect: jest.fn(),
+  };
+
+  const configMock = {
+    get: jest.fn(),
+  };
+
+  const brokerResponseMock = 'brokerResponseMock';
 
   const mockEncryptKey = 'p@ss p@rt0ut';
   const mockData = {
@@ -109,10 +126,20 @@ describe('CryptographyService', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LoggerService, CryptographyService],
+      providers: [
+        LoggerService,
+        ConfigService,
+        CryptographyService,
+        {
+          provide: 'CryptographyBroker',
+          useValue: brokerMock,
+        },
+      ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(ConfigService)
+      .useValue(configMock)
       .compile();
 
     service = module.get<CryptographyService>(CryptographyService);
@@ -120,10 +147,28 @@ describe('CryptographyService', () => {
     jest
       .spyOn(ecdsaSignaturesService, 'derToJose')
       .mockImplementation(ecdsaSignaturesServiceMock.derToJose);
+
+    brokerMock.send.mockReturnValue(messageMock);
+    messageMock.subscribe.mockImplementation(cb => cb(brokerResponseMock));
+    configMock.get.mockReturnValue({
+      payloadEncoding: 'base64',
+      commands: {
+        CRYPTO_SIGN: 'foo',
+      },
+    });
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('onModuleInit', () => {
+    it('should call broker.connect', () => {
+      // When
+      service.onModuleInit();
+      // Then
+      expect(brokerMock.connect).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('encryptUserInfosCache', () => {
@@ -394,7 +439,7 @@ describe('CryptographyService', () => {
     });
   });
 
-  describe('sign & privateDecrypt', () => {
+  describe('sign', () => {
     // Given
     const keyMock = 'key';
     const dataMock = Buffer.from('data');
@@ -409,35 +454,34 @@ describe('CryptographyService', () => {
         // Clean
         await result;
       });
-      it('should call original code', async () => {
-        // When
-        await service.sign(keyMock, dataMock, digestMock);
+      it('should reject if response is "ERROR"', async () => {
+        // Given
+        messageMock.subscribe.mockImplementationOnce(cb => cb('ERROR'));
         // Then
-        expect(signMock).toHaveBeenCalledTimes(1);
+        await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
+          CryptographyGatewayException,
+        );
       });
-      it('should default to sha256', async () => {
-        // When
-        await service.sign(keyMock, dataMock);
+      it('should reject if something turnd bad', async () => {
+        // Given
+        messageMock.subscribe.mockImplementationOnce(() => {
+          throw Error('not good');
+        });
         // Then
-        expect(signMock).toHaveBeenCalledWith('sha256', dataMock, keyMock);
+        await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
+          CryptographyGatewayException,
+        );
       });
-    });
-
-    describe('privateDecrypt', () => {
-      it('should return promise', async () => {
-        // When
-        const result = service.privateDecrypt(keyMock, dataMock);
+      it('should reject if observable throws', async () => {
+        // Given
+        const error = Error('not good');
+        messageMock.subscribe.mockImplementationOnce((_success, failure) => {
+          failure(error);
+        });
         // Then
-        expect(result instanceof Promise);
-        // Clean
-        await result;
-      });
-
-      it('should call original code', async () => {
-        // When
-        await service.privateDecrypt(keyMock, dataMock);
-        // Then
-        expect(privateDecryptMock).toHaveBeenCalledTimes(1);
+        await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
+          CryptographyGatewayException,
+        );
       });
     });
   });

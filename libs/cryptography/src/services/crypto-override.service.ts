@@ -20,8 +20,6 @@ export class CryptoOverrideService {
      * @see your main.ts file
      */
     this.registerOverride('crypto.sign');
-    this.registerOverride('crypto.privateDecrypt');
-    this.registerOverride('crypto.createSecretKey');
   }
 
   private registerOverride(name) {
@@ -45,34 +43,5 @@ export class CryptoOverrideService {
      * @see https://github.com/panva/jose/blob/master/lib/jwa/ecdsa.js#L28
      */
     return this.cryptographyService.sign(key, payload, nodeAlg);
-  }
-
-  /**
-   * Use our own privateDecrypt library
-   */
-  private async ['crypto.privateDecrypt'](privateKey, buffer) {
-    this.logger.debug('Run override for crypto.privateDecrypt');
-
-    return this.cryptographyService.privateDecrypt(privateKey, buffer);
-  }
-
-  /**
-   * Return promise only if buffer is a promise
-   */
-  private ['crypto.createSecretKey'](buffer) {
-    this.logger.debug('Run override for crypto.createSecretKey');
-    const original = OverrideCode.getOriginal('crypto.createSecretKey');
-
-    if (buffer instanceof Promise) {
-      return new Promise(async (resolve, reject) => {
-        try {
-          resolve(original(await buffer));
-        } catch (error) {
-          reject(error);
-        }
-      });
-    }
-
-    return original(buffer);
   }
 }
