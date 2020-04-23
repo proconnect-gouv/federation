@@ -11,7 +11,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { RabbitmqConfig } from '@fc/rabbitmq';
-import { CryptoProtocol } from '@fc/protocol';
+import { CryptoProtocol } from '@fc/microservices';
 import { IPivotIdentity } from '../interfaces';
 import { CryptographyGatewayException } from '../exceptions';
 

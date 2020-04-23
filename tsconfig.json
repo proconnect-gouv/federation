@@ -116,11 +116,11 @@
       "@fc/fake-hsm/*": [
         "libs/fake-hsm/src/*"
       ],
-      "@fc/protocol": [
-        "libs/protocol/src"
+      "@fc/microservices": [
+        "libs/microservices/src"
       ],
-      "@fc/protocol/*": [
-        "libs/protocol/src/*"
+      "@fc/microservices/*": [
+        "libs/microservices/src/*"
       ]
     }
   },
