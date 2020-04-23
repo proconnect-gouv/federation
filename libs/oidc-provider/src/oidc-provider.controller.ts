@@ -10,16 +10,16 @@ import {
 } from '@nestjs/common';
 import { GetAuthorizeParamsDTO } from './dto';
 import { IIdentityService, IServiceProviderService } from './interfaces';
-import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
+import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from './oidc-provider.service';
 
 @Controller('/api/v2')
 export class OidcProviderController {
   constructor(
-    @Inject(IDENTITY_MANAGEMENT_SERVICE)
+    @Inject(IDENTITY_SERVICE)
     private readonly identityService: IIdentityService,
-    @Inject(SP_MANAGEMENT_SERVICE)
+    @Inject(SERVICE_PROVIDER_SERVICE)
     private readonly serviceProviderService: IServiceProviderService,
     private readonly loggerService: LoggerService,
     private readonly oidcProdiverService: OidcProviderService,

@@ -9,11 +9,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import {
-  IIdentityManagementService,
-  IIdentityCheckService,
-} from './interfaces';
-import { IDENTITY_MANAGEMENT_SERVICE, IDENTITY_CHECK_SERVICE } from './tokens';
+import { IIdentityService, IIdentityCheckService } from './interfaces';
+import { IDENTITY_SERVICE, IDENTITY_CHECK_SERVICE } from './tokens';
 import { OidcClientService } from './oidc-client.service';
 
 @Controller('/api/v2')
@@ -21,8 +18,8 @@ export class OidcClientController {
   constructor(
     private readonly oidcClientService: OidcClientService,
     private readonly logger: LoggerService,
-    @Inject(IDENTITY_MANAGEMENT_SERVICE)
-    private readonly identityManagementService: IIdentityManagementService,
+    @Inject(IDENTITY_SERVICE)
+    private readonly identityService: IIdentityService,
     @Inject(IDENTITY_CHECK_SERVICE)
     private readonly identityCheckService: IIdentityCheckService,
   ) {}
@@ -74,7 +71,7 @@ export class OidcClientController {
 
     this.logger.debug(userChecked);
 
-    this.identityManagementService.storeIdentity(uid, user);
+    this.identityService.storeIdentity(uid, user);
 
     // pas sur de la fin de la cinématique
     res.redirect(`/interaction/${req.session.uid}/consent`);

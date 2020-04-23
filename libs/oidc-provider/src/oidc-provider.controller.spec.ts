@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { OidcProviderController } from './oidc-provider.controller';
-import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
+import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
@@ -16,11 +16,11 @@ describe('OidcProviderController', () => {
     wellKnownKeys: jest.fn(),
   };
 
-  const identityManagementServiceMock = {
+  const identityServiceMock = {
     getIdentity: jest.fn(),
   };
 
-  const spManagementServiceMock = {
+  const serviceProviderServiceMock = {
     isUsable: jest.fn(),
   };
 
@@ -38,12 +38,12 @@ describe('OidcProviderController', () => {
         OidcProviderService,
         LoggerService,
         {
-          provide: IDENTITY_MANAGEMENT_SERVICE,
-          useValue: identityManagementServiceMock,
+          provide: IDENTITY_SERVICE,
+          useValue: identityServiceMock,
         },
         {
-          provide: SP_MANAGEMENT_SERVICE,
-          useValue: spManagementServiceMock,
+          provide: SERVICE_PROVIDER_SERVICE,
+          useValue: serviceProviderServiceMock,
         },
       ],
     })
@@ -71,12 +71,12 @@ describe('OidcProviderController', () => {
 
       const next = jest.fn();
 
-      spManagementServiceMock.isUsable.mockResolvedValue(true);
+      serviceProviderServiceMock.isUsable.mockResolvedValue(true);
       // When
       await oidcProviderController.getAuthorize(next, query);
       // Then
-      expect(spManagementServiceMock.isUsable).toBeCalledTimes(1);
-      expect(spManagementServiceMock.isUsable).toBeCalledWith('abc123');
+      expect(serviceProviderServiceMock.isUsable).toBeCalledTimes(1);
+      expect(serviceProviderServiceMock.isUsable).toBeCalledWith('abc123');
       expect(next).toBeCalledTimes(1);
     });
   });
@@ -123,7 +123,7 @@ describe('OidcProviderController', () => {
     it('should throw', async () => {
       // Given
       const clientIdMock = '42';
-      spManagementServiceMock.isUsable.mockResolvedValueOnce(false);
+      serviceProviderServiceMock.isUsable.mockResolvedValueOnce(false);
       // Then
       expect(
         oidcProviderController['checkIfSpIsUsable'](clientIdMock),

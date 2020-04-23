@@ -15,4 +15,4 @@ import { IdentityProviderSchema } from './schemas';
   providers: [IdentityProviderService],
   exports: [IdentityProviderService, MongooseModule],
 })
-export class IdPmanagementModule {}
+export class IdentityProviderModule {}

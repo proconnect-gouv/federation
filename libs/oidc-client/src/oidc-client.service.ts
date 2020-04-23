@@ -11,7 +11,7 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcClientConfig } from './dto';
 import { IIdentityProviderService } from './interfaces';
-import { IDP_MANAGEMENT_SERVICE } from './tokens';
+import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 
 @Injectable()
 export class OidcClientService {
@@ -21,8 +21,8 @@ export class OidcClientService {
   constructor(
     private readonly configService: ConfigService,
     private readonly logger: LoggerService,
-    @Inject(IDP_MANAGEMENT_SERVICE)
-    private readonly identityManagementService: IIdentityProviderService,
+    @Inject(IDENTITY_PROVIDER_SERVICE)
+    private readonly identityProviderService: IIdentityProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
     /**
@@ -185,7 +185,7 @@ export class OidcClientService {
    *  - database (IdP configuration)
    */
   private async getConfig(): Promise<OidcClientConfig> {
-    const providers = await this.identityManagementService.getList();
+    const providers = await this.identityProviderService.getList();
     const configuration = this.configService.get<OidcClientConfig>(
       'OidcClient',
     );

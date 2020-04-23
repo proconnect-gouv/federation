@@ -1,4 +1,4 @@
-export interface IIdentityManagementService {
+export interface IIdentityService {
   /**
    * @TODO create an interface for output
    */

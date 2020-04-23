@@ -8,8 +8,8 @@ import {
 } from '@fc/service-provider';
 import {
   IdentityProviderService,
-  IdPmanagementModule,
-} from 'libs/identity-provider/src';
+  IdentityProviderModule,
+} from '@fc/identity-provider';
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
 import { CryptographyModule } from '@fc/cryptography';
@@ -35,7 +35,7 @@ import { RnippModule, RnippService } from '@fc/rnipp';
       IdentityService,
       IdentityModule,
       IdentityProviderService,
-      IdPmanagementModule,
+      IdentityProviderModule,
       RnippService,
       RnippModule,
     ),

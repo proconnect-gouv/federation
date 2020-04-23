@@ -13,7 +13,7 @@ import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { RedisService } from '@fc/redis';
 import { IIdentityService, IServiceProviderService } from './interfaces';
-import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
+import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
@@ -38,9 +38,9 @@ export class OidcProviderService {
     private readonly configService: ConfigService,
     readonly logger: LoggerService,
     readonly redisService: RedisService,
-    @Inject(IDENTITY_MANAGEMENT_SERVICE)
+    @Inject(IDENTITY_SERVICE)
     private readonly identityService: IIdentityService,
-    @Inject(SP_MANAGEMENT_SERVICE)
+    @Inject(SERVICE_PROVIDER_SERVICE)
     private readonly serviceProviderService: IServiceProviderService,
     private readonly exceptionFilter: FcExceptionFilter,
   ) {
