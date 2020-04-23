@@ -6,11 +6,14 @@ import {
   createHash,
   createHmac,
 } from 'crypto';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { LoggerService } from '@fc/logger';
-/** @TODO remove this import once we get ride of temp implementations */
-import { OverrideCode } from '@fc/common';
+import { ConfigService } from '@fc/config';
+import { RabbitmqConfig } from '@fc/rabbitmq';
+import { CryptoProtocol } from '@fc/protocol';
 import { IPivotIdentity } from '../interfaces';
+import { CryptographyGatewayException } from '../exceptions';
 
 const NONCE_LENGTH = 12;
 const AUTHTAG_LENGTH = 16;
@@ -18,8 +21,16 @@ const CIPHER_HEAD_LENGTH = NONCE_LENGTH + AUTHTAG_LENGTH;
 
 @Injectable()
 export class CryptographyService {
-  constructor(private readonly logger: LoggerService) {
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly config: ConfigService,
+    @Inject('CryptographyBroker') private broker: ClientProxy,
+  ) {
     this.logger.setContext(this.constructor.name);
+  }
+
+  onModuleInit() {
+    this.broker.connect();
   }
 
   /**
@@ -148,46 +159,57 @@ export class CryptographyService {
 
   /**
    * Sign data using crypto and a private key
-   * @param privateKey the private key PEM formatted
+   * @param _unusedKey the private key provided by oidc-provider
+   * we do not use it since signature will occur with an HSM stored key.
    * @param data a serialized data
    * @param digest default to sha256 (Cf. crypto.createSign)
    * @returns signed data
-   * Temporary test implementation
-   * @TODO implement real HSM gateway call
    */
   async sign(
-    privateKey: string,
-    data: Buffer,
+    _unusedKey: any,
+    dataBuffer: Buffer,
     digest = 'sha256',
   ): Promise<Buffer> {
-    this.logger.debug('Signing from gateway');
-    const original = OverrideCode.getOriginal('crypto.sign');
+    return new Promise((resolve, reject) => {
+      const { payloadEncoding } = this.config.get<RabbitmqConfig>(
+        'CryptographyBroker',
+      );
 
-    return new Promise(resolve => {
-      setTimeout(() => {
-        this.logger.debug('Resolving async signing from gateway');
-        resolve(original(digest, data, privateKey));
-      }, 200);
-    });
-  }
+      this.logger.debug('Requesting signature from gateway');
+      try {
+        // Build message
+        const payload = {
+          data: dataBuffer.toString(payloadEncoding),
+          digest,
+        };
 
-  /**
-   * Decrypt data using crypto and a private key
-   * @param privateKey the private key PEM formatted
-   * @param cipher a cipher
-   * @returns decrypted data
-   * Temporary test implementation
-   * @TODO implement real HSM gateway call
-   */
-  async privateDecrypt(privateKey: string, cipher: Buffer): Promise<Buffer> {
-    this.logger.debug('private decrypting from gateway');
-    const original = OverrideCode.getOriginal('crypto.privateDecrypt');
+        // Handle successful call
+        const success = data => {
+          this.logger.debug('Received signature from gateway');
+          /**
+           * @TODO define a more powerful mechanism
+           */
+          if (data === 'ERROR') {
+            return reject(
+              new CryptographyGatewayException(
+                Error('Gateway completed with an error'),
+              ),
+            );
+          }
+          return resolve(Buffer.from(data, payloadEncoding));
+        };
 
-    return new Promise(resolve => {
-      setTimeout(() => {
-        this.logger.debug('Resolving async decrypting from gateway');
-        resolve(original(privateKey, cipher));
-      }, 100);
+        // Handle microservice failure
+        const failure = error =>
+          reject(new CryptographyGatewayException(error));
+
+        // Send message to gateway
+        this.broker
+          .send(CryptoProtocol.Commands.SIGN, payload)
+          .subscribe(success, failure);
+      } catch (error) {
+        reject(new CryptographyGatewayException(error));
+      }
     });
   }
 }

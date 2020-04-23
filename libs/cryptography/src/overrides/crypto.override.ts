@@ -10,5 +10,3 @@ import { OverrideCode } from '@fc/common';
  */
 import * as crypto from 'crypto';
 OverrideCode.wrap(crypto, 'sign', 'crypto.sign');
-OverrideCode.wrap(crypto, 'privateDecrypt', 'crypto.privateDecrypt');
-OverrideCode.wrap(crypto, 'createSecretKey', 'crypto.createSecretKey');

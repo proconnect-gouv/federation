@@ -1,21 +1,15 @@
-import { BaseExceptionFilter } from '@nestjs/core';
 import {
   ExceptionFilter,
   Catch,
   HttpException,
   ArgumentsHost,
 } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
+import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 import { ErrorService } from '../error.service';
 
 @Catch(HttpException)
-export class HttpExceptionFilter extends BaseExceptionFilter
+export class HttpExceptionFilter extends FcBaseExceptionFilter
   implements ExceptionFilter {
-  constructor(private readonly logger: LoggerService) {
-    super();
-    this.logger.setContext(this.constructor.name);
-  }
-
   catch(exception: HttpException, host: ArgumentsHost) {
     this.logger.debug('Exception from HttpException');
 
@@ -23,15 +17,9 @@ export class HttpExceptionFilter extends BaseExceptionFilter
     const code = ErrorService.getExceptionCodeFor(exception);
     const id = ErrorService.generateErrorId();
 
-    const { message, stack } = exception;
+    const { message } = exception;
 
-    this.logger.warn({
-      type: 'HttpException',
-      code,
-      id,
-      message,
-      stack,
-    });
+    this.logException(code, id, exception);
 
     res.status(500);
     res.render('error', {

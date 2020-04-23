@@ -4,5 +4,9 @@ import { ErrorCode } from '../enums';
 // declarative code
 // istanbul ignore next line
 export class OidcProviderRuntimeException extends OidcProviderBaseException {
-  public readonly code = ErrorCode.RUNTIME;
+  public readonly code: ErrorCode;
+  constructor(error: Error, code: ErrorCode) {
+    super(error);
+    this.code = code;
+  }
 }

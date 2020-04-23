@@ -35,15 +35,12 @@ describe('RedisAdapter', () => {
     del: jest.fn(),
   };
 
-  const throwErrorMock = jest.fn();
-
   const testAdapterName = 'testAdapterName';
 
   beforeEach(() => {
     adapter = new RedisAdapter(
       loggerMock,
       (redisMock as unknown) as RedisService,
-      throwErrorMock,
       testAdapterName,
     );
 
@@ -60,7 +57,6 @@ describe('RedisAdapter', () => {
       new RedisAdapter(
         loggerMock,
         (redisMock as unknown) as RedisService,
-        throwErrorMock,
         testAdapterName,
       );
       // Then
@@ -76,7 +72,6 @@ describe('RedisAdapter', () => {
     const oidcProviderService = ({
       logger: loggerMock,
       redisService: redisMock,
-      throwError: throwErrorMock,
     } as unknown) as OidcProviderService;
     const BoundClass = RedisAdapter.getConstructorWithDI(oidcProviderService);
 
@@ -122,7 +117,6 @@ describe('RedisAdapter', () => {
       const authorizationCodeAdapter = new RedisAdapter(
         loggerMock,
         (redisMock as unknown) as RedisService,
-        throwErrorMock,
         'AuthorizationCode',
       );
       // When
@@ -151,11 +145,10 @@ describe('RedisAdapter', () => {
     it('should throw if expires is not a number', async () => {
       // Given
       const expires = 'not a number';
-      // When
-      await adapter.upsert(idMock, defaultPayload, expires);
       // Then
-      expect(throwErrorMock).toHaveBeenCalledTimes(1);
-      expect(throwErrorMock).toHaveBeenCalledWith(expect.any(TypeError));
+      expect(adapter.upsert(idMock, defaultPayload, expires)).rejects.toThrow(
+        TypeError,
+      );
     });
     it('should call expires if expiresIn is provided', async () => {
       // When
@@ -233,12 +226,9 @@ describe('RedisAdapter', () => {
       // Given
       const payload = { foo: 'bar', circularRef: null };
       payload.circularRef = payload;
-      // When
-      await adapter.upsert(idMock, payload);
       // Then
-      expect(throwErrorMock).toHaveBeenCalledTimes(1);
-      expect(throwErrorMock).toHaveBeenCalledWith(
-        expect.any(OidcProviderStringifyPayloadForRedisException),
+      expect(adapter.upsert(idMock, payload)).rejects.toThrow(
+        OidcProviderStringifyPayloadForRedisException,
       );
     });
   });
@@ -249,7 +239,6 @@ describe('RedisAdapter', () => {
       const authorizationCodeAdapter = new RedisAdapter(
         loggerMock,
         (redisMock as unknown) as RedisService,
-        throwErrorMock,
         'AuthorizationCode',
       );
       const idMock = 'foo';

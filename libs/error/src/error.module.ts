@@ -3,7 +3,9 @@ import { APP_FILTER } from '@nestjs/core';
 import {
   FcExceptionFilter,
   HttpExceptionFilter,
+  RpcExceptionFilter,
   UnhandledExceptionFilter,
+  ValidationExceptionFilter,
 } from './exception-filters';
 import { ErrorService } from './error.service';
 
@@ -24,7 +26,15 @@ import { ErrorService } from './error.service';
     },
     {
       provide: APP_FILTER,
+      useClass: RpcExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
       useClass: FcExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ValidationExceptionFilter,
     },
   ],
 })
