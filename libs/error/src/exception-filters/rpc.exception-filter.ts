@@ -4,6 +4,10 @@ import { RpcException } from '@nestjs/microservices';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 import { ErrorService } from '../error.service';
 
+/**
+ * Generic RPC exception filter
+ * @see https://docs.nestjs.com/microservices/exception-filters
+ */
 @Catch(RpcException)
 export class RpcExceptionFilter extends FcBaseExceptionFilter
   implements ExceptionFilter {
