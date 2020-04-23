@@ -2,20 +2,23 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { IdPMetadata, IIdPManagementService } from '@fc/oidc-client';
+import {
+  IdentityProviderMetadata,
+  IIdentityProviderService,
+} from '@fc/oidc-client';
 import { CryptographyService } from '@fc/cryptography';
 import { IIdentityProvider } from './interfaces';
 
 @Injectable()
-export class IdPManagementService implements IIdPManagementService {
+export class IdentityProviderService implements IIdentityProviderService {
   constructor(
-    @InjectModel('IdpManagement')
-    private readonly idpManagementModel: Model<IIdentityProvider>,
+    @InjectModel('IdentityProvider')
+    private readonly identityProviderModel: Model<IIdentityProvider>,
     private readonly cryptographyService: CryptographyService,
   ) {}
 
   private async findAllIdentityProvider(): Promise<IIdentityProvider[]> {
-    const rawResult = await this.idpManagementModel
+    const rawResult = await this.identityProviderModel
       .find(
         {},
         {
@@ -58,7 +61,7 @@ export class IdPManagementService implements IIdPManagementService {
     return rawResult.map(({ _doc }) => _doc);
   }
 
-  async getList(): Promise<IdPMetadata[]> {
+  async getList(): Promise<IdentityProviderMetadata[]> {
     const list = await this.findAllIdentityProvider();
 
     return list.map(identityProvider => {
@@ -67,7 +70,9 @@ export class IdPManagementService implements IIdPManagementService {
   }
 
   /* eslint-disable @typescript-eslint/camelcase */
-  private legacyToOpenIdPropertyName(source: IIdentityProvider): IdPMetadata {
+  private legacyToOpenIdPropertyName(
+    source: IIdentityProvider,
+  ): IdentityProviderMetadata {
     const client_id = source.clientID;
     const client_secret = this.cryptographyService.decryptSecretHash(
       source.clientSecretHash,
@@ -80,7 +85,7 @@ export class IdPManagementService implements IIdPManagementService {
       ...source,
       client_id,
       client_secret,
-    } as IdPMetadata;
+    } as IdentityProviderMetadata;
   }
   /* eslint-enable @typescript-eslint/camelcase */
 }

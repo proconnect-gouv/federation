@@ -49,13 +49,13 @@
         "tsConfigPath": "libs/identity-management/tsconfig.lib.json"
       }
     },
-    "idp-management": {
+    "identity-provider": {
       "type": "library",
-      "root": "libs/idp-management",
+      "root": "libs/identity-provider",
       "entryFile": "index",
-      "sourceRoot": "libs/idp-management/src",
+      "sourceRoot": "libs/identity-provider/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/idp-management/tsconfig.lib.json"
+        "tsConfigPath": "libs/identity-provider/tsconfig.lib.json"
       }
     },
     "service-provider": {

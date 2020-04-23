@@ -6,7 +6,7 @@ import {
 } from './tokens';
 import {
   IIdentityManagementService,
-  IIdPManagementService,
+  IIdentityProviderService,
   IIdentityCheckService,
 } from './interfaces';
 import { OidcClientService } from './oidc-client.service';
@@ -17,7 +17,7 @@ export class OidcClientModule {
   static register(
     identityManagementService: Type<IIdentityManagementService>,
     identityManagementModule,
-    idpManagementService: Type<IIdPManagementService>,
+    idpManagementService: Type<IIdentityProviderService>,
     idpManagementModule,
     identityCheckService: Type<IIdentityCheckService>,
     identityCheckModule,

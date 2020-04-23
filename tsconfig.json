@@ -23,11 +23,11 @@
       "@fc/identity-management/*": [
         "libs/identity-management/src/*"
       ],
-      "@fc/idp-management": [
-        "libs/idp-management/src"
+      "@fc/identity-provider": [
+        "libs/identity-provider/src"
       ],
-      "@fc/idp-management/*": [
-        "libs/idp-management/src/*"
+      "@fc/identity-provider/*": [
+        "libs/identity-provider/src/*"
       ],
       "@fc/service-provider": [
         "libs/service-provider/src"
