@@ -41,7 +41,7 @@ export class RedisAdapter implements Adapter {
      * Bound arguments
      */
     private readonly logger: LoggerService,
-    private readonly redisService: RedisService,
+    private readonly redis: RedisService,
     /**
      * Instantiation time argument,
      * must remain the last one.
@@ -66,7 +66,7 @@ export class RedisAdapter implements Adapter {
     const boundConstructor = RedisAdapter.bind(
       null,
       oidcProviderService.logger,
-      oidcProviderService.redisService,
+      oidcProviderService.redis,
     );
 
     /**
@@ -110,7 +110,7 @@ export class RedisAdapter implements Adapter {
       );
     }
 
-    const multi = this.redisService.multi();
+    const multi = this.redis.multi();
 
     let stringified: string;
     try {
@@ -143,7 +143,7 @@ export class RedisAdapter implements Adapter {
       multi.rpush(grantKey, key);
       // if you're seeing grant key lists growing out of acceptable proportions consider using LTRIM
       // here to trim the list to an appropriate length
-      const ttl = await this.redisService.ttl(grantKey);
+      const ttl = await this.redis.ttl(grantKey);
       if (expiresIn > ttl) {
         multi.expire(grantKey, expiresIn);
       }
@@ -178,7 +178,7 @@ export class RedisAdapter implements Adapter {
     this.logger.trace(this.key(id));
 
     const command = consumable.has(this.contextName) ? 'hgetall' : 'get';
-    const data = await this.redisService[command](key);
+    const data = await this.redis[command](key);
 
     if (isEmpty(data)) {
       this.logger.trace('isEmpty');
@@ -202,12 +202,12 @@ export class RedisAdapter implements Adapter {
   }
 
   async findByUid(uid: string) {
-    const id = await this.redisService.get(this.uidKeyFor(uid));
+    const id = await this.redis.get(this.uidKeyFor(uid));
     return this.find(id);
   }
 
   async findByUserCode(userCode: string) {
-    const id = await this.redisService.get(this.userCodeKeyFor(userCode));
+    const id = await this.redis.get(this.userCodeKeyFor(userCode));
     return this.find(id);
   }
 
@@ -216,19 +216,15 @@ export class RedisAdapter implements Adapter {
     this.logger.trace(this.key(id));
 
     const key = this.key(id);
-    await this.redisService.del(key);
+    await this.redis.del(key);
   }
 
   async revokeByGrantId(grantId: string) {
     this.logger.debug('RevokeByGrantId');
     this.logger.trace(this.grantKeyFor(grantId));
 
-    const multi = this.redisService.multi();
-    const tokens = await this.redisService.lrange(
-      this.grantKeyFor(grantId),
-      0,
-      -1,
-    );
+    const multi = this.redis.multi();
+    const tokens = await this.redis.lrange(this.grantKeyFor(grantId), 0, -1);
     tokens.forEach((token: string) => multi.del(token));
     multi.del(this.grantKeyFor(grantId));
     await new Promise((resolve, reject) => {
@@ -245,7 +241,7 @@ export class RedisAdapter implements Adapter {
     this.logger.debug('Consume');
     this.logger.trace(this.key(id));
 
-    await this.redisService.hset(
+    await this.redis.hset(
       this.key(id),
       'consumed',
       Math.floor(Date.now() / 1000),

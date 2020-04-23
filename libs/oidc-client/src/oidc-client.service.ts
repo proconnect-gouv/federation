@@ -19,10 +19,10 @@ export class OidcClientService {
   private IssuerProxy = Issuer;
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly config: ConfigService,
     private readonly logger: LoggerService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
-    private readonly identityProviderService: IIdentityProviderService,
+    private readonly identityProvider: IIdentityProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
     /**
@@ -80,7 +80,7 @@ export class OidcClientService {
   }
 
   async wellKnownKeys() {
-    const config = this.configService.get<OidcClientConfig>('OidcClient');
+    const config = this.config.get<OidcClientConfig>('OidcClient');
 
     const privateKeys = config.jwks.keys;
 
@@ -146,7 +146,7 @@ export class OidcClientService {
 
   private async createOidcClient(providerName: string): Promise<Client> {
     const clientMetadata = this.getProvider(providerName);
-    const { jwks } = this.configService.get<OidcClientConfig>('OidcClient');
+    const { jwks } = this.config.get<OidcClientConfig>('OidcClient');
 
     /**
      * Cast to string since discoveryUrl is not in type `ClientMetadata`.
@@ -185,10 +185,8 @@ export class OidcClientService {
    *  - database (IdP configuration)
    */
   private async getConfig(): Promise<OidcClientConfig> {
-    const providers = await this.identityProviderService.getList();
-    const configuration = this.configService.get<OidcClientConfig>(
-      'OidcClient',
-    );
+    const providers = await this.identityProvider.getList();
+    const configuration = this.config.get<OidcClientConfig>('OidcClient');
 
     return {
       ...configuration,

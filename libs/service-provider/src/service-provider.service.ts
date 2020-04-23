@@ -14,7 +14,7 @@ export class ServiceProviderService implements IServiceProviderService {
   constructor(
     @InjectModel('ServiceProvider')
     private readonly serviceProviderModel: Model<IServiceProvider>,
-    private readonly cryptographyService: CryptographyService,
+    private readonly cryptography: CryptographyService,
   ) {}
 
   private async findAllServiceProvider(): Promise<IServiceProvider[]> {
@@ -82,7 +82,7 @@ export class ServiceProviderService implements IServiceProviderService {
     source: IServiceProvider,
   ): ServiceProviderMetadata {
     const client_id = source.key;
-    const client_secret = this.cryptographyService.decryptSecretHash(
+    const client_secret = this.cryptography.decryptSecretHash(
       source.secret_hash,
     );
 

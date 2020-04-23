@@ -7,7 +7,7 @@ import { FakeHsmConfig } from './dto';
 
 @Injectable()
 export class FakeHsmService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly config: ConfigService) {}
   /**
    * Sign data using crypto and a private key
    * @param data a serialized data
@@ -16,7 +16,7 @@ export class FakeHsmService {
    * Mock implementation
    */
   sign(data: Buffer, digest = 'sha256'): Promise<Buffer> {
-    const { keys } = this.configService.get<FakeHsmConfig>('Hsm');
+    const { keys } = this.config.get<FakeHsmConfig>('Hsm');
 
     /**
      * @TODO handle errors here

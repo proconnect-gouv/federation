@@ -292,7 +292,7 @@ describe('OidcClientService', () => {
   });
 
   describe('getConfig', () => {
-    it('should return data from identityService.getList', async () => {
+    it('should return data from identity.getList', async () => {
       // When
       const result = await service['getConfig']();
       // Then

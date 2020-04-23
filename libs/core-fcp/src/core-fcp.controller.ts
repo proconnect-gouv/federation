@@ -14,7 +14,7 @@ import { LoggerService } from '@fc/logger';
 @Controller()
 export class CoreFcpController {
   constructor(
-    private readonly oidcProviderService: OidcProviderService,
+    private readonly oidcProvider: OidcProviderService,
     private readonly logger: LoggerService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -27,7 +27,7 @@ export class CoreFcpController {
   async getInteraction(@Req() req, @Res() res) {
     this.logger.debug('/interaction/:uid');
     this.logger.trace(req.session.uid);
-    const provider = this.oidcProviderService.getProvider();
+    const provider = this.oidcProvider.getProvider();
     const { uid, prompt, params } = await provider.interactionDetails(req, res);
 
     req.session.uid = uid;
@@ -47,7 +47,7 @@ export class CoreFcpController {
 
     this.logger.trace(req.session.uid);
 
-    const provider = this.oidcProviderService.getProvider();
+    const provider = this.oidcProvider.getProvider();
     const { uid, prompt, params } = await provider.interactionDetails(req, res);
     const { user } = req.session;
     return {
@@ -61,7 +61,7 @@ export class CoreFcpController {
   /** @TODO validate query by DTO */
   @Get('/interaction/:uid/login')
   async getLogin(@Req() req, @Res() res) {
-    const provider = this.oidcProviderService.getProvider();
+    const provider = this.oidcProvider.getProvider();
 
     const result = {
       login: {

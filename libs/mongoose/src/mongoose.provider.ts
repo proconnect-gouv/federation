@@ -5,15 +5,17 @@ import { MongooseConfig } from './dto';
 export const mongooseProvider = MongooseModule.forRootAsync({
   imports: [ConfigModule],
   inject: [ConfigService],
-  useFactory: async (configService: ConfigService) => {
-    const config = configService.get<MongooseConfig>('Mongoose');
+  useFactory: async (config: ConfigService) => {
+    const { user, password, hosts, database, options } = config.get<
+      MongooseConfig
+    >('Mongoose');
     return {
       uri:
-        `mongodb://${config.user}:` +
-        `${config.password}@` +
-        `${config.hosts}/` +
-        `${config.database}` +
-        `${config.options}`,
+        `mongodb://${user}:` +
+        `${password}@` +
+        `${hosts}/` +
+        `${database}` +
+        `${options}`,
       useNewUrlParser: true,
       useUnifiedTopology: true,
     };

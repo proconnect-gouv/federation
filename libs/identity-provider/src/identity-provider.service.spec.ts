@@ -7,7 +7,7 @@ import { IdentityProviderService } from './identity-provider.service';
 
 describe('IdentityProviderService', () => {
   let service: IdentityProviderService;
-  const mockCryptographyService = {
+  const mockCryptography = {
     decryptSecretHash: jest.fn(),
   };
 
@@ -34,7 +34,7 @@ describe('IdentityProviderService', () => {
       ],
     })
       .overrideProvider(CryptographyService)
-      .useValue(mockCryptographyService)
+      .useValue(mockCryptography)
       .compile();
 
     service = module.get<IdentityProviderService>(IdentityProviderService);
@@ -90,9 +90,7 @@ describe('IdentityProviderService', () => {
       };
 
       // action
-      mockCryptographyService.decryptSecretHash.mockReturnValueOnce(
-        'client_secret',
-      );
+      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
       const result = service['legacyToOpenIdPropertyName'](
         identityProviderMock,
       );
@@ -178,9 +176,7 @@ describe('IdentityProviderService', () => {
 
     it('should return result of type list', async () => {
       // action
-      mockCryptographyService.decryptSecretHash.mockReturnValueOnce(
-        'client_secret',
-      );
+      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
       const result = await service.getList();
 
       // expect
