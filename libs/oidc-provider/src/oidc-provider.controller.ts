@@ -9,10 +9,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { GetAuthorizeParamsDTO } from './dto';
-import {
-  IIdentityManagementService,
-  IServiceProviderService,
-} from './interfaces';
+import { IIdentityService, IServiceProviderService } from './interfaces';
 import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from './oidc-provider.service';
@@ -21,9 +18,9 @@ import { OidcProviderService } from './oidc-provider.service';
 export class OidcProviderController {
   constructor(
     @Inject(IDENTITY_MANAGEMENT_SERVICE)
-    private readonly identityManagementService: IIdentityManagementService,
+    private readonly identityService: IIdentityService,
     @Inject(SP_MANAGEMENT_SERVICE)
-    private readonly spManagementService: IServiceProviderService,
+    private readonly serviceProviderService: IServiceProviderService,
     private readonly loggerService: LoggerService,
     private readonly oidcProdiverService: OidcProviderService,
   ) {
@@ -83,7 +80,7 @@ export class OidcProviderController {
    * @TODO Implement proper error management
    */
   private async checkIfSpIsUsable(clientId) {
-    if (!(await this.spManagementService.isUsable(clientId))) {
+    if (!(await this.serviceProviderService.isUsable(clientId))) {
       throw new Error('SP not usable!');
     }
   }

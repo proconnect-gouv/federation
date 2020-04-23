@@ -17,11 +17,11 @@
       "@fc/rnipp/*": [
         "libs/rnipp/src/*"
       ],
-      "@fc/identity-management": [
-        "libs/identity-management/src"
+      "@fc/identity": [
+        "libs/identity/src"
       ],
-      "@fc/identity-management/*": [
-        "libs/identity-management/src/*"
+      "@fc/identity/*": [
+        "libs/identity/src/*"
       ],
       "@fc/identity-provider": [
         "libs/identity-provider/src"

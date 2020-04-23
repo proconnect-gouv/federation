@@ -1,9 +1,9 @@
-import { IdentityManagementBaseException } from './';
+import { IdentityBaseException } from '.';
 import { ErrorCode } from '../enums';
 
 // declarative code
 // istanbul ignore next line
-export class IdentityManagementBadFormatException extends IdentityManagementBaseException {
+export class IdentityBadFormatException extends IdentityBaseException {
   public readonly code = ErrorCode.BAD_FORMAT;
 
   constructor(error) {
