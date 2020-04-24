@@ -7,10 +7,10 @@ import {
 
 @Injectable()
 export class CoreFcpService {
-  constructor(private readonly oidcProviderService: OidcProviderService) {}
+  constructor(private readonly oidcProvider: OidcProviderService) {}
 
   onModuleInit() {
-    this.oidcProviderService.registerMiddleware(
+    this.oidcProvider.registerMiddleware(
       OidcProviderMiddlewareStep.AFTER,
       OidcProviderMiddlewarePattern.TOKEN,
       () => {

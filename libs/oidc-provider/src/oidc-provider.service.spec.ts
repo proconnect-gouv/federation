@@ -12,7 +12,7 @@ import {
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
 } from './enums';
-import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
+import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import { OidcProviderService } from './oidc-provider.service';
 import {
   OidcProviderInitialisationException,
@@ -68,7 +68,7 @@ describe('OidcProviderService', () => {
     businessEvent: jest.fn(),
   } as unknown) as LoggerService;
 
-  const spManagementServiceMock = {
+  const serviceProviderServiceMock = {
     getList: jest.fn(),
   };
 
@@ -83,7 +83,7 @@ describe('OidcProviderService', () => {
     on: jest.fn(),
   };
 
-  const identityManagementServiceMock = {
+  const identityServiceMock = {
     getIdentity: jest.fn(),
   };
 
@@ -101,12 +101,12 @@ describe('OidcProviderService', () => {
         HttpAdapterHost,
         FcExceptionFilter,
         {
-          provide: IDENTITY_MANAGEMENT_SERVICE,
-          useValue: identityManagementServiceMock,
+          provide: IDENTITY_SERVICE,
+          useValue: identityServiceMock,
         },
         {
-          provide: SP_MANAGEMENT_SERVICE,
-          useValue: spManagementServiceMock,
+          provide: SERVICE_PROVIDER_SERVICE,
+          useValue: serviceProviderServiceMock,
         },
       ],
     })
@@ -283,9 +283,7 @@ describe('OidcProviderService', () => {
       const ctx = { not: 'altered' };
       const sub = 'foo';
       const identityMock = {};
-      identityManagementServiceMock.getIdentity.mockResolvedValueOnce(
-        identityMock,
-      );
+      identityServiceMock.getIdentity.mockResolvedValueOnce(identityMock);
       // When
       const result = await service['findAccount'](ctx, sub);
       // Then
@@ -298,9 +296,7 @@ describe('OidcProviderService', () => {
       const ctx = { not: 'altered' };
       const sub = 'foo';
       const identityMock = {};
-      identityManagementServiceMock.getIdentity.mockResolvedValueOnce(
-        identityMock,
-      );
+      identityServiceMock.getIdentity.mockResolvedValueOnce(identityMock);
       const result = await service['findAccount'](ctx, sub);
       // When
       const claimsResult = await result.claims();
@@ -313,9 +309,7 @@ describe('OidcProviderService', () => {
       const ctx = { not: 'altered' };
       const sub = 'foo';
       const exception = new Error('foo');
-      identityManagementServiceMock.getIdentity.mockRejectedValueOnce(
-        exception,
-      );
+      identityServiceMock.getIdentity.mockRejectedValueOnce(exception);
       service['throwError'] = jest.fn();
       // When
       await service['findAccount'](ctx, sub);

@@ -445,6 +445,9 @@ describe('CryptographyService', () => {
     const dataMock = Buffer.from('data');
     const digestMock = 'digest';
 
+    /**
+     * @TODO refactor tests according to extraction of success and failure callbacks
+     */
     describe('sign', () => {
       it('should return promise', async () => {
         // When

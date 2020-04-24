@@ -7,7 +7,7 @@ import Mongoose from './mongoose';
 import Redis from './redis';
 import Rnipp from './rnipp';
 import CryptographyBroker from './cryptography-broker';
-import IdentityManagement from './identity-management';
+import Identity from './identity';
 
 export default {
   App,
@@ -17,6 +17,6 @@ export default {
   Mongoose,
   Redis,
   Rnipp,
-  IdentityManagement,
+  Identity,
   CryptographyBroker,
 } as CoreFcpConfig;
