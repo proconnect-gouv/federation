@@ -25,9 +25,9 @@ export class LoggerService extends Logger {
     this.overrideNativeConsole();
   }
 
+  // Proxy `super`, cause we can't mock a parent class
+  // istanbul ignore next line
   private internalLogger(level, log, context) {
-    // We can't mock a parent class
-    // istanbul ignore next line
     super[level](log, context);
   }
 
