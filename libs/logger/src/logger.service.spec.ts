@@ -269,4 +269,21 @@ describe('LoggerService', () => {
       expect(service['externalLogger'].info).toHaveBeenCalledTimes(0);
     });
   });
+
+  describe('overrideNativeConsole', () => {
+    it('should override native `console.log` and call service.log instead', () => {
+      // Given
+      const service = getConfiguredMockedService(configs.dev.log);
+      service['overrideNativeConsole']();
+      const messageMock = 'messageMock';
+      service.log = jest.fn();
+      // Hard coded value in function
+      const context = 'Native Console';
+      // When
+      console.log(messageMock);
+      // Then
+      expect(service.log).toHaveBeenCalledTimes(1);
+      expect(service.log).toHaveBeenCalledWith(messageMock, context);
+    });
+  });
 });
