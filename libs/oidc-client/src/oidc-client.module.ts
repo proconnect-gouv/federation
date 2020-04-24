@@ -1,12 +1,12 @@
 import { Module, DynamicModule, Type } from '@nestjs/common';
 import {
-  IDP_MANAGEMENT_SERVICE,
-  IDENTITY_MANAGEMENT_SERVICE,
+  IDENTITY_PROVIDER_SERVICE,
+  IDENTITY_SERVICE,
   IDENTITY_CHECK_SERVICE,
 } from './tokens';
 import {
-  IIdentityManagementService,
-  IIdPManagementService,
+  IIdentityService,
+  IIdentityProviderService,
   IIdentityCheckService,
 } from './interfaces';
 import { OidcClientService } from './oidc-client.service';
@@ -15,32 +15,28 @@ import { OidcClientController } from './oidc-client.controller';
 @Module({})
 export class OidcClientModule {
   static register(
-    identityManagementService: Type<IIdentityManagementService>,
-    identityManagementModule,
-    idpManagementService: Type<IIdPManagementService>,
-    idpManagementModule,
-    identityCheckService: Type<IIdentityCheckService>,
+    identity: Type<IIdentityService>,
+    identityModule,
+    identityProvider: Type<IIdentityProviderService>,
+    identityProviderModule,
+    identityCheck: Type<IIdentityCheckService>,
     identityCheckModule,
   ): DynamicModule {
     return {
       module: OidcClientModule,
-      imports: [
-        identityManagementModule,
-        idpManagementModule,
-        identityCheckModule,
-      ],
+      imports: [identityModule, identityProviderModule, identityCheckModule],
       providers: [
         {
-          provide: IDENTITY_MANAGEMENT_SERVICE,
-          useClass: identityManagementService,
+          provide: IDENTITY_SERVICE,
+          useClass: identity,
         },
         {
           provide: IDENTITY_CHECK_SERVICE,
-          useClass: identityCheckService,
+          useClass: identityCheck,
         },
         {
-          provide: IDP_MANAGEMENT_SERVICE,
-          useClass: idpManagementService,
+          provide: IDENTITY_PROVIDER_SERVICE,
+          useClass: identityProvider,
         },
         OidcClientService,
       ],

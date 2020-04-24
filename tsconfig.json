@@ -17,23 +17,23 @@
       "@fc/rnipp/*": [
         "libs/rnipp/src/*"
       ],
-      "@fc/identity-management": [
-        "libs/identity-management/src"
+      "@fc/identity": [
+        "libs/identity/src"
       ],
-      "@fc/identity-management/*": [
-        "libs/identity-management/src/*"
+      "@fc/identity/*": [
+        "libs/identity/src/*"
       ],
-      "@fc/idp-management": [
-        "libs/idp-management/src"
+      "@fc/identity-provider": [
+        "libs/identity-provider/src"
       ],
-      "@fc/idp-management/*": [
-        "libs/idp-management/src/*"
+      "@fc/identity-provider/*": [
+        "libs/identity-provider/src/*"
       ],
-      "@fc/sp-management": [
-        "libs/sp-management/src"
+      "@fc/service-provider": [
+        "libs/service-provider/src"
       ],
-      "@fc/sp-management/*": [
-        "libs/sp-management/src/*"
+      "@fc/service-provider/*": [
+        "libs/service-provider/src/*"
       ],
       "@fc/logger": [
         "libs/logger/src"
@@ -41,11 +41,11 @@
       "@fc/logger/*": [
         "libs/logger/src/*"
       ],
-      "@fc/consent-management": [
-        "libs/consent-management/src"
+      "@fc/consent": [
+        "libs/consent/src"
       ],
-      "@fc/consent-management/*": [
-        "libs/consent-management/src/*"
+      "@fc/consent/*": [
+        "libs/consent/src/*"
       ],
       "@fc/oidc-provider": [
         "libs/oidc-provider/src"
@@ -116,11 +116,11 @@
       "@fc/fake-hsm/*": [
         "libs/fake-hsm/src/*"
       ],
-      "@fc/protocol": [
-        "libs/protocol/src"
+      "@fc/microservices": [
+        "libs/microservices/src"
       ],
-      "@fc/protocol/*": [
-        "libs/protocol/src/*"
+      "@fc/microservices/*": [
+        "libs/microservices/src/*"
       ]
     }
   },

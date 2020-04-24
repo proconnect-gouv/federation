@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { OidcProviderController } from './oidc-provider.controller';
-import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
+import { SERVICE_PROVIDER_SERVICE } from './tokens';
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
@@ -16,11 +16,7 @@ describe('OidcProviderController', () => {
     wellKnownKeys: jest.fn(),
   };
 
-  const identityManagementServiceMock = {
-    getIdentity: jest.fn(),
-  };
-
-  const spManagementServiceMock = {
+  const serviceProviderServiceMock = {
     isUsable: jest.fn(),
   };
 
@@ -38,12 +34,8 @@ describe('OidcProviderController', () => {
         OidcProviderService,
         LoggerService,
         {
-          provide: IDENTITY_MANAGEMENT_SERVICE,
-          useValue: identityManagementServiceMock,
-        },
-        {
-          provide: SP_MANAGEMENT_SERVICE,
-          useValue: spManagementServiceMock,
+          provide: SERVICE_PROVIDER_SERVICE,
+          useValue: serviceProviderServiceMock,
         },
       ],
     })
@@ -58,6 +50,8 @@ describe('OidcProviderController', () => {
     );
 
     jest.resetAllMocks();
+
+    serviceProviderServiceMock.isUsable.mockResolvedValue(true);
   });
 
   describe('getAuthorize', () => {
@@ -71,12 +65,16 @@ describe('OidcProviderController', () => {
 
       const next = jest.fn();
 
-      spManagementServiceMock.isUsable.mockResolvedValue(true);
+      oidcProviderController['checkIfSpIsUsable'] = jest
+        .fn()
+        .mockResolvedValue(true);
       // When
       await oidcProviderController.getAuthorize(next, query);
       // Then
-      expect(spManagementServiceMock.isUsable).toBeCalledTimes(1);
-      expect(spManagementServiceMock.isUsable).toBeCalledWith('abc123');
+      expect(oidcProviderController['checkIfSpIsUsable']).toBeCalledTimes(1);
+      expect(oidcProviderController['checkIfSpIsUsable']).toBeCalledWith(
+        'abc123',
+      );
       expect(next).toBeCalledTimes(1);
     });
   });
@@ -120,10 +118,21 @@ describe('OidcProviderController', () => {
   });
 
   describe('checkIfSpIsUsable', () => {
+    it('should call serviceProvider method', async () => {
+      // Given
+      const clientIdMock = '42';
+      // When
+      await oidcProviderController['checkIfSpIsUsable'](clientIdMock);
+      // Then
+      expect(serviceProviderServiceMock.isUsable).toHaveBeenCalledTimes(1);
+      expect(serviceProviderServiceMock.isUsable).toHaveBeenCalledWith(
+        clientIdMock,
+      );
+    });
     it('should throw', async () => {
       // Given
       const clientIdMock = '42';
-      spManagementServiceMock.isUsable.mockResolvedValueOnce(false);
+      serviceProviderServiceMock.isUsable.mockResolvedValueOnce(false);
       // Then
       expect(
         oidcProviderController['checkIfSpIsUsable'](clientIdMock),

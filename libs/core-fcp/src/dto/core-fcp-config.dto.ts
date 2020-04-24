@@ -6,7 +6,7 @@ import { OidcClientConfig } from '@fc/oidc-client';
 import { MongooseConfig } from '@fc/mongoose';
 import { RedisConfig } from '@fc/redis';
 import { RnippConfig } from '@fc/rnipp';
-import { IdentityManagementConfig } from '@fc/identity-management';
+import { IdentityConfig } from 'libs/identity/src';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 
 export class CoreFcpConfig {
@@ -45,8 +45,8 @@ export class CoreFcpConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => IdentityManagementConfig)
-  readonly IdentityManagement: IdentityManagementConfig;
+  @Type(() => IdentityConfig)
+  readonly Identity: IdentityConfig;
 
   @IsObject()
   @ValidateNested()

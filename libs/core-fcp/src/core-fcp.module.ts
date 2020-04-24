@@ -1,12 +1,15 @@
 import { Module } from '@nestjs/common';
 
 import { OidcProviderModule } from '@fc/oidc-provider';
+import { IdentityModule, IdentityService } from '@fc/identity';
 import {
-  IdentityManagementModule,
-  IdentityManagementService,
-} from '@fc/identity-management';
-import { SpManagementModule, SpManagementService } from '@fc/sp-management';
-import { IdPManagementService, IdPmanagementModule } from '@fc/idp-management';
+  ServiceProviderModule,
+  ServiceProviderService,
+} from '@fc/service-provider';
+import {
+  IdentityProviderService,
+  IdentityProviderModule,
+} from '@fc/identity-provider';
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
 import { CryptographyModule } from '@fc/cryptography';
@@ -19,20 +22,20 @@ import { RnippModule, RnippService } from '@fc/rnipp';
   imports: [
     ErrorModule,
     MongooseModule,
-    IdentityManagementModule,
+    IdentityModule,
     RnippModule,
     OidcProviderModule.register(
-      IdentityManagementService,
-      IdentityManagementModule,
-      SpManagementService,
-      SpManagementModule,
+      IdentityService,
+      IdentityModule,
+      ServiceProviderService,
+      ServiceProviderModule,
     ),
     CryptographyModule,
     OidcClientModule.register(
-      IdentityManagementService,
-      IdentityManagementModule,
-      IdPManagementService,
-      IdPmanagementModule,
+      IdentityService,
+      IdentityModule,
+      IdentityProviderService,
+      IdentityProviderModule,
       RnippService,
       RnippModule,
     ),

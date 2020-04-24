@@ -1,1 +1,0 @@
-export const SP_MANAGEMENT_SERVICE = Symbol('SP_MANAGEMENT_SERVICE');

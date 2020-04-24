@@ -12,8 +12,8 @@ import { FcExceptionFilter, FcException } from '@fc/error';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { RedisService } from '@fc/redis';
-import { IIdentityManagementService, ISpManagementService } from './interfaces';
-import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
+import { IIdentityService, IServiceProviderService } from './interfaces';
+import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
@@ -35,13 +35,13 @@ export class OidcProviderService {
 
   constructor(
     private httpAdapterHost: HttpAdapterHost,
-    private readonly configService: ConfigService,
+    private readonly config: ConfigService,
     readonly logger: LoggerService,
-    readonly redisService: RedisService,
-    @Inject(IDENTITY_MANAGEMENT_SERVICE)
-    private readonly identityManagementService: IIdentityManagementService,
-    @Inject(SP_MANAGEMENT_SERVICE)
-    private readonly spManagementService: ISpManagementService,
+    readonly redis: RedisService,
+    @Inject(IDENTITY_SERVICE)
+    private readonly identity: IIdentityService,
+    @Inject(SERVICE_PROVIDER_SERVICE)
+    private readonly serviceProviderService: IServiceProviderService,
     private readonly exceptionFilter: FcExceptionFilter,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -89,7 +89,7 @@ export class OidcProviderService {
    * @TODO return keys from HSM (how?)
    */
   async wellKnownKeys() {
-    const config = this.configService.get<OidcProviderConfig>('OidcProvider');
+    const config = this.config.get<OidcProviderConfig>('OidcProvider');
     const privateKeys = config.configuration.jwks.keys;
     const publicKeys = privateKeys.map(key => JWK.asKey(key as any).toJWK());
 
@@ -243,7 +243,7 @@ export class OidcProviderService {
     this.logger.debug('OidcProviderService.findAccount()');
 
     try {
-      const identity = await this.identityManagementService.getIdentity(sub);
+      const identity = await this.identity.getIdentity(sub);
 
       return {
         accountId: sub,
@@ -282,9 +282,9 @@ export class OidcProviderService {
    */
   private async getConfig(): Promise<OidcProviderConfig> {
     /**
-     * Get SP's information from provided spManagementService
+     * Get SP's information from provided serviceProviderService
      */
-    const clients = await this.spManagementService.getList();
+    const clients = await this.serviceProviderService.getList();
 
     /**
      * Build our memory adapter for oidc-provider
@@ -310,11 +310,9 @@ export class OidcProviderService {
     /**
      * Get data from config file
      */
-    const {
-      issuer,
-      configuration,
-      reloadConfigDelayInMs,
-    } = this.configService.get<OidcProviderConfig>('OidcProvider');
+    const { issuer, configuration, reloadConfigDelayInMs } = this.config.get<
+      OidcProviderConfig
+    >('OidcProvider');
 
     /**
      * Build final configuration object

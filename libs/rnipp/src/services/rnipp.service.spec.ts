@@ -358,7 +358,7 @@ describe('RnippService', () => {
       configServiceMock.get.mockReturnValue(httpServiceGetConfig);
     });
 
-    it('should call the "HttpService.get" function and with the given url', async () => {
+    it('should call the "Http.get" function and with the given url', async () => {
       // setup
       httpServiceMock.get.mockReturnValue(axiosResponseMock);
 
@@ -372,7 +372,7 @@ describe('RnippService', () => {
       );
     });
 
-    it('should transform the "Observable" of "HttpService.get" result to a "Promise"', async () => {
+    it('should transform the "Observable" of "Http.get" result to a "Promise"', async () => {
       // setup
       axiosResponseMock.toPromise.mockResolvedValueOnce(
         axiosResponseResolvedMock,

@@ -40,31 +40,31 @@
         "tsConfigPath": "libs/rnipp/tsconfig.lib.json"
       }
     },
-    "identity-management": {
+    "identity": {
       "type": "library",
-      "root": "libs/identity-management",
+      "root": "libs/identity",
       "entryFile": "index",
-      "sourceRoot": "libs/identity-management/src",
+      "sourceRoot": "libs/identity/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/identity-management/tsconfig.lib.json"
+        "tsConfigPath": "libs/identity/tsconfig.lib.json"
       }
     },
-    "idp-management": {
+    "identity-provider": {
       "type": "library",
-      "root": "libs/idp-management",
+      "root": "libs/identity-provider",
       "entryFile": "index",
-      "sourceRoot": "libs/idp-management/src",
+      "sourceRoot": "libs/identity-provider/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/idp-management/tsconfig.lib.json"
+        "tsConfigPath": "libs/identity-provider/tsconfig.lib.json"
       }
     },
-    "sp-management": {
+    "service-provider": {
       "type": "library",
-      "root": "libs/sp-management",
+      "root": "libs/service-provider",
       "entryFile": "index",
-      "sourceRoot": "libs/sp-management/src",
+      "sourceRoot": "libs/service-provider/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/sp-management/tsconfig.lib.json"
+        "tsConfigPath": "libs/service-provider/tsconfig.lib.json"
       }
     },
     "logger": {
@@ -76,13 +76,13 @@
         "tsConfigPath": "libs/logger/tsconfig.lib.json"
       }
     },
-    "consent-management": {
+    "consent": {
       "type": "library",
-      "root": "libs/consent-management",
+      "root": "libs/consent",
       "entryFile": "index",
-      "sourceRoot": "libs/consent-management/src",
+      "sourceRoot": "libs/consent/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/consent-management/tsconfig.lib.json"
+        "tsConfigPath": "libs/consent/tsconfig.lib.json"
       }
     },
     "oidc-provider": {
@@ -202,13 +202,13 @@
         "tsConfigPath": "apps/csmr-hsm/tsconfig.app.json"
       }
     },
-    "protocol": {
+    "microservices": {
       "type": "library",
-      "root": "libs/protocol",
+      "root": "libs/microservices",
       "entryFile": "index",
-      "sourceRoot": "libs/protocol/src",
+      "sourceRoot": "libs/microservices/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/protocol/tsconfig.lib.json"
+        "tsConfigPath": "libs/microservices/tsconfig.lib.json"
       }
     }
   }

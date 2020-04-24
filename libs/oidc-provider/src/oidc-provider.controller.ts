@@ -9,22 +9,20 @@ import {
   Inject,
 } from '@nestjs/common';
 import { GetAuthorizeParamsDTO } from './dto';
-import { IIdentityManagementService, ISpManagementService } from './interfaces';
-import { IDENTITY_MANAGEMENT_SERVICE, SP_MANAGEMENT_SERVICE } from './tokens';
+import { IServiceProviderService } from './interfaces';
+import { SERVICE_PROVIDER_SERVICE } from './tokens';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from './oidc-provider.service';
 
 @Controller('/api/v2')
 export class OidcProviderController {
   constructor(
-    @Inject(IDENTITY_MANAGEMENT_SERVICE)
-    private readonly identityManagementService: IIdentityManagementService,
-    @Inject(SP_MANAGEMENT_SERVICE)
-    private readonly spManagementService: ISpManagementService,
-    private readonly loggerService: LoggerService,
-    private readonly oidcProdiverService: OidcProviderService,
+    @Inject(SERVICE_PROVIDER_SERVICE)
+    private readonly serviceProvider: IServiceProviderService,
+    private readonly logger: LoggerService,
+    private readonly oidcProdiver: OidcProviderService,
   ) {
-    this.loggerService.setContext(this.constructor.name);
+    this.logger.setContext(this.constructor.name);
   }
 
   /** @TODO validation query by DTO (current DTO is almost empty) */
@@ -32,12 +30,12 @@ export class OidcProviderController {
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   async getAuthorize(@Next() next, @Query() params: GetAuthorizeParamsDTO) {
     // Start of business related stuff
-    this.loggerService.debug('/api/v2/authorize');
-    this.loggerService.businessEvent('### NEST /api/v2/authorize');
+    this.logger.debug('/api/v2/authorize');
+    this.logger.businessEvent('### NEST /api/v2/authorize');
 
     const { client_id: clientId } = params;
 
-    this.checkIfSpIsUsable(clientId);
+    await this.checkIfSpIsUsable(clientId);
 
     // Pass the query to oidc-provider
     return next();
@@ -47,7 +45,7 @@ export class OidcProviderController {
   @Post('/token')
   postToken(@Next() next) {
     // Start of business related stuff
-    this.loggerService.debug('/api/v2/token');
+    this.logger.debug('/api/v2/token');
 
     /**
      * Disabled for now:
@@ -65,22 +63,22 @@ export class OidcProviderController {
   @Get('/userinfo')
   async getUserInfo(@Next() next) {
     // Start of business related stuff
-    this.loggerService.debug('/api/v2/userinfo');
+    this.logger.debug('/api/v2/userinfo');
     // End of business related stuff
     return next();
   }
 
   @Get('/.well-known/keys')
   async getWellKnownKeys() {
-    this.loggerService.debug('api/v2/.well-known/keys');
-    return this.oidcProdiverService.wellKnownKeys();
+    this.logger.debug('api/v2/.well-known/keys');
+    return this.oidcProdiver.wellKnownKeys();
   }
 
   /**
    * @TODO Implement proper error management
    */
   private async checkIfSpIsUsable(clientId) {
-    if (!(await this.spManagementService.isUsable(clientId))) {
+    if (!(await this.serviceProvider.isUsable(clientId))) {
       throw new Error('SP not usable!');
     }
   }

@@ -6,7 +6,7 @@ import { CryptographyService } from './cryptography.service';
 @Injectable()
 export class CryptoOverrideService {
   constructor(
-    private readonly cryptographyService: CryptographyService,
+    private readonly cryptography: CryptographyService,
     private readonly logger: LoggerService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -42,6 +42,6 @@ export class CryptoOverrideService {
      * Current version
      * @see https://github.com/panva/jose/blob/master/lib/jwa/ecdsa.js#L28
      */
-    return this.cryptographyService.sign(key, payload, nodeAlg);
+    return this.cryptography.sign(key, payload, nodeAlg);
   }
 }

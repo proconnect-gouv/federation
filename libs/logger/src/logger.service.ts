@@ -11,14 +11,11 @@ import { LoggerConfig } from './dto';
  */
 @Injectable()
 export class LoggerService extends Logger {
-  private config: LoggerConfig;
   private externalLogger: any;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(private readonly config: ConfigService) {
     super(null, false);
-    this.config = this.configService.get<LoggerConfig>('Logger');
-
-    const { level, path } = this.config;
+    const { level, path } = this.config.get<LoggerConfig>('Logger');
 
     this.externalLogger = pino(
       { useLevelLabels: true, level: pinoLevelsMap[level] },
@@ -39,7 +36,8 @@ export class LoggerService extends Logger {
   }
 
   private isDev() {
-    return this.config.isDevelopment;
+    const { isDevelopment } = this.config.get<LoggerConfig>('Logger');
+    return isDevelopment;
   }
 
   private technicalLogger(level: string, log: any, context?: string) {

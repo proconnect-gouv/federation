@@ -15,7 +15,7 @@ import { AppSignException } from './exceptions';
 import { ConfigService } from '@fc/config';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { ValidationException } from '@fc/error';
-import { CryptoProtocol } from '@fc/protocol';
+import { CryptoProtocol } from '@fc/microservices';
 
 const BROKER_NAME = 'CryptographyBroker';
 

@@ -9,22 +9,19 @@ import {
   Post,
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import {
-  IIdentityManagementService,
-  IIdentityCheckService,
-} from './interfaces';
-import { IDENTITY_MANAGEMENT_SERVICE, IDENTITY_CHECK_SERVICE } from './tokens';
+import { IIdentityService, IIdentityCheckService } from './interfaces';
+import { IDENTITY_SERVICE, IDENTITY_CHECK_SERVICE } from './tokens';
 import { OidcClientService } from './oidc-client.service';
 
 @Controller('/api/v2')
 export class OidcClientController {
   constructor(
-    private readonly oidcClientService: OidcClientService,
+    private readonly oidcClient: OidcClientService,
     private readonly logger: LoggerService,
-    @Inject(IDENTITY_MANAGEMENT_SERVICE)
-    private readonly identityManagementService: IIdentityManagementService,
+    @Inject(IDENTITY_SERVICE)
+    private readonly identity: IIdentityService,
     @Inject(IDENTITY_CHECK_SERVICE)
-    private readonly identityCheckService: IIdentityCheckService,
+    private readonly identityCheck: IIdentityCheckService,
   ) {}
 
   /** @TODO validation body by DTO */
@@ -37,7 +34,7 @@ export class OidcClientController {
 
     req.session.uid = uid;
 
-    const authorizationUrl = await this.oidcClientService.getAuthorizeUrl(
+    const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
       scope,
       providerName,
       // acr_values is an oidc defined variable name
@@ -60,21 +57,19 @@ export class OidcClientController {
 
     const { uid } = req.session;
 
-    const {
-      access_token: accessToken,
-    } = await this.oidcClientService.getTokenSet(req, providerName);
-
-    const user = await this.oidcClientService.getUserInfo(
-      accessToken,
+    const { access_token: accessToken } = await this.oidcClient.getTokenSet(
+      req,
       providerName,
     );
 
+    const user = await this.oidcClient.getUserInfo(accessToken, providerName);
+
     // This function can throw a FcError and interrupt the cinematic
-    const userChecked = await this.identityCheckService.check(user);
+    const userChecked = await this.identityCheck.check(user);
 
     this.logger.debug(userChecked);
 
-    this.identityManagementService.storeIdentity(uid, user);
+    this.identity.storeIdentity(uid, user);
 
     // pas sur de la fin de la cinématique
     res.redirect(`/interaction/${req.session.uid}/consent`);
@@ -96,6 +91,6 @@ export class OidcClientController {
   @Get('/client/.well-known/keys')
   async getWellKnownKeys() {
     this.logger.debug('/.well-known/keys');
-    return this.oidcClientService.wellKnownKeys();
+    return this.oidcClient.wellKnownKeys();
   }
 }

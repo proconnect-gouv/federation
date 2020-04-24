@@ -1,2 +1,2 @@
-export * from './identity-management-service.token';
-export * from './sp-management-service.token';
+export * from './identity-service.token';
+export * from './service-provider-service.token';
