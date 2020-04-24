@@ -1,4 +1,5 @@
 import { KoaContextWithOIDC, Provider } from 'oidc-provider';
+import { JWK } from 'jose';
 import * as MemoryAdapter from 'oidc-provider/lib/adapters/memory_adapter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
@@ -44,21 +45,7 @@ describe('OidcProviderService', () => {
   } as any;
 
   const configServiceMock = {
-    get: module => {
-      switch (module) {
-        case 'OidcProvider':
-          return {
-            issuer: 'http://foo.bar',
-            configuration: { adapter: MemoryAdapter, jwks: { keys: [] } },
-          };
-        case 'Logger':
-          return {
-            path: '/dev/null',
-            level: LogLevelNames.TRACE,
-            isDevelopment: false,
-          };
-      }
-    },
+    get: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -126,6 +113,22 @@ describe('OidcProviderService', () => {
 
     service = module.get<OidcProviderService>(OidcProviderService);
     jest.resetAllMocks();
+
+    configServiceMock.get.mockImplementation(module => {
+      switch (module) {
+        case 'OidcProvider':
+          return {
+            issuer: 'http://foo.bar',
+            configuration: { adapter: MemoryAdapter, jwks: { keys: [] } },
+          };
+        case 'Logger':
+          return {
+            path: '/dev/null',
+            level: LogLevelNames.TRACE,
+            isDevelopment: false,
+          };
+      }
+    });
   });
 
   describe('onModuleInit', () => {
@@ -180,12 +183,29 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('wekkKnownKeys', () => {
+  describe('wellKnownKeys', () => {
     it('should return keys', async () => {
+      // Given
+      const JwkKeyMock = {
+        toJWK: jest
+          .fn()
+          .mockReturnValueOnce('a')
+          .mockReturnValueOnce('b'),
+      };
+      const spy = jest.spyOn(JWK, 'asKey').mockReturnValue(JwkKeyMock as any);
+
+      configServiceMock.get.mockReturnValueOnce({
+        configuration: { jwks: { keys: ['foo', 'bar'] } },
+      });
+
       // When
       const result = await service.wellKnownKeys();
       // Then
-      expect(result).toEqual({ keys: expect.any(Array) });
+      expect(spy).toHaveBeenCalledTimes(2);
+      expect(spy).toHaveBeenCalledWith('foo');
+      expect(spy).toHaveBeenCalledWith('bar');
+      expect(JwkKeyMock.toJWK).toHaveBeenCalledTimes(2);
+      expect(result).toEqual({ keys: ['a', 'b'] });
     });
   });
 
