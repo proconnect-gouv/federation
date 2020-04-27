@@ -30,4 +30,5 @@ export enum ErrorCode {
   REVOCATION_ERROR = 21,
   SERVER_ERROR = 22,
   USERINFO_ERROR = 23,
+  SP_INACTIVE = 24,
 }

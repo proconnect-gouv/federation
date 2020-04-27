@@ -129,6 +129,22 @@ export class OidcProviderService {
     return this.provider;
   }
 
+  decodeAuthorizationHeader(authorizationHeader: string): string {
+    const clientId = '';
+    if (authorizationHeader) {
+      if (authorizationHeader.split(' ').length === 2) {
+        const base64ToUtf8 = Buffer.from(
+          authorizationHeader.split(' ')[1],
+          'base64',
+        ).toString('utf8');
+        if (base64ToUtf8.split(':').length === 2) {
+          return base64ToUtf8.split(':')[0];
+        }
+      }
+    }
+    return clientId;
+  }
+
   /**
    * Register an event handler for `oidc-provider` built in events
    *
