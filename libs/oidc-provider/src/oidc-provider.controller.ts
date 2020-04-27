@@ -7,12 +7,14 @@ import {
   UsePipes,
   ValidationPipe,
   Inject,
+  Req,
 } from '@nestjs/common';
 import { GetAuthorizeParamsDTO } from './dto';
 import { IServiceProviderService } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from './oidc-provider.service';
+import { OidcProviderSPInactiveException } from './exceptions';
 
 @Controller('/api/v2')
 export class OidcProviderController {
@@ -43,16 +45,14 @@ export class OidcProviderController {
 
   /** @TODO validation query by DTO */
   @Post('/token')
-  postToken(@Next() next) {
+  async postToken(@Next() next, @Req() req) {
     // Start of business related stuff
     this.logger.debug('/api/v2/token');
 
-    /**
-     * Disabled for now:
-     * @TODO client_id and client_secret are sent in authorization header
-     * We can extract client_id to do the "isUsable" check
-     * ~> this.checkIfSpIsUsable(clientId);
-     */
+    const clientId = this.oidcProdiver.decodeAuthorizationHeader(
+      req.headers.authorization,
+    );
+    await this.checkIfSpIsUsable(clientId);
 
     // Pass the query to oidc-provider
     return next();
@@ -78,8 +78,8 @@ export class OidcProviderController {
    * @TODO Implement proper error management
    */
   private async checkIfSpIsUsable(clientId) {
-    if (!(await this.serviceProvider.isUsable(clientId))) {
-      throw new Error('SP not usable!');
+    if (!(await this.serviceProvider.isActive(clientId))) {
+      throw new OidcProviderSPInactiveException('SP not usable!');
     }
   }
 }
