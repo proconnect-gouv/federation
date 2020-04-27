@@ -11,6 +11,12 @@ import { IServiceProvider } from './interfaces';
 
 @Injectable()
 export class ServiceProviderService implements IServiceProviderService {
+  /**
+   * @TODO see to add timestamps on the latest sp list cached version reloaded
+   * sp list cached reloaded by oidc-provider.service
+   */
+  private serviceProviderListCache: ServiceProviderMetadata[];
+
   constructor(
     @InjectModel('ServiceProvider')
     private readonly serviceProviderModel: Model<IServiceProvider>,
@@ -23,6 +29,7 @@ export class ServiceProviderService implements IServiceProviderService {
         {},
         {
           _id: false,
+          active: true,
           key: true,
           // legacy defined property names
           // eslint-disable-next-line @typescript-eslint/camelcase
@@ -58,23 +65,26 @@ export class ServiceProviderService implements IServiceProviderService {
     return rawResult.map(({ _doc }) => _doc);
   }
 
-  /**
-   * @TODO implement real code...
-   */
-  // istanbul ignore next line
-  async isUsable(clientId: string): Promise<boolean> {
-    return Promise.resolve(!!clientId);
+  async isActive(clientId: string): Promise<boolean> {
+    const serviceProviderList = await this.getList();
+    const sp = serviceProviderList.find(({ client_id: id }) => id === clientId);
+
+    return Boolean(sp && sp.active);
   }
 
   /**
    * @TODO give restricted output data (interface IServiceProvider)
    */
-  async getList(): Promise<ServiceProviderMetadata[]> {
-    const list = await this.findAllServiceProvider();
+  async getList(refresh = false): Promise<ServiceProviderMetadata[]> {
+    if (refresh || !this.serviceProviderListCache) {
+      const list = await this.findAllServiceProvider();
 
-    return list.map(serviceProvider => {
-      return this.legacyToOpenIdPropertyName(serviceProvider);
-    });
+      this.serviceProviderListCache = list.map(serviceProvider => {
+        return this.legacyToOpenIdPropertyName(serviceProvider);
+      });
+    }
+
+    return this.serviceProviderListCache;
   }
 
   /* eslint-disable @typescript-eslint/camelcase */

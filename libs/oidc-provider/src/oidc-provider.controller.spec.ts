@@ -11,13 +11,14 @@ describe('OidcProviderController', () => {
     interactionDetails: jest.fn(),
   };
 
-  const oidpcProviderServiceMock = {
+  const oidcProviderServiceMock = {
     getProvider: () => providerMock,
     wellKnownKeys: jest.fn(),
+    decodeAuthorizationHeader: jest.fn(),
   };
 
   const serviceProviderServiceMock = {
-    isUsable: jest.fn(),
+    isActive: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -40,7 +41,7 @@ describe('OidcProviderController', () => {
       ],
     })
       .overrideProvider(OidcProviderService)
-      .useValue(oidpcProviderServiceMock)
+      .useValue(oidcProviderServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .compile();
@@ -51,7 +52,7 @@ describe('OidcProviderController', () => {
 
     jest.resetAllMocks();
 
-    serviceProviderServiceMock.isUsable.mockResolvedValue(true);
+    serviceProviderServiceMock.isActive.mockResolvedValue(true);
   });
 
   describe('getAuthorize', () => {
@@ -92,13 +93,24 @@ describe('OidcProviderController', () => {
   });
 
   describe('postToken', () => {
-    it('should call next', async () => {
+    it('should check if SP is usable and call next()', async () => {
       // Given
+      const req = {
+        headers: {
+          authorization: 'Basic YWJjMTIz',
+        },
+      };
+      oidcProviderServiceMock.decodeAuthorizationHeader.mockReturnValueOnce(
+        'abc123',
+      );
+      serviceProviderServiceMock.isActive.mockResolvedValueOnce(true);
       const next = jest.fn();
 
       // When
-      await oidcProviderController.postToken(next);
+      await oidcProviderController.postToken(next, req);
       // Then
+      expect(serviceProviderServiceMock.isActive).toBeCalledTimes(1);
+      expect(serviceProviderServiceMock.isActive).toBeCalledWith('abc123');
       expect(next).toBeCalledTimes(1);
     });
   });
@@ -107,7 +119,7 @@ describe('OidcProviderController', () => {
     it('should call wellKnownKeys', async () => {
       // Given
       const resolvedValue = Symbol('resolvedValue');
-      oidpcProviderServiceMock.wellKnownKeys.mockResolvedValueOnce(
+      oidcProviderServiceMock.wellKnownKeys.mockResolvedValueOnce(
         resolvedValue,
       );
       // When
@@ -124,15 +136,15 @@ describe('OidcProviderController', () => {
       // When
       await oidcProviderController['checkIfSpIsUsable'](clientIdMock);
       // Then
-      expect(serviceProviderServiceMock.isUsable).toHaveBeenCalledTimes(1);
-      expect(serviceProviderServiceMock.isUsable).toHaveBeenCalledWith(
+      expect(serviceProviderServiceMock.isActive).toHaveBeenCalledTimes(1);
+      expect(serviceProviderServiceMock.isActive).toHaveBeenCalledWith(
         clientIdMock,
       );
     });
     it('should throw', async () => {
       // Given
       const clientIdMock = '42';
-      serviceProviderServiceMock.isUsable.mockResolvedValueOnce(false);
+      serviceProviderServiceMock.isActive.mockResolvedValueOnce(false);
       // Then
       expect(
         oidcProviderController['checkIfSpIsUsable'](clientIdMock),

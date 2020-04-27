@@ -484,4 +484,42 @@ describe('OidcProviderService', () => {
       expect(service['throwError']).toHaveBeenCalledWith(ctxMock, errorMock);
     });
   });
+
+  describe('decodeAuthorizationHeader', () => {
+    it('Should return the client id from authorization header', () => {
+      // Given
+      const authorizationHeader = 'Basic YWJjMTIzOmF6ZXJ0eQ==';
+      // When
+      const result = service.decodeAuthorizationHeader(authorizationHeader);
+      // Then
+      expect(result).toBe('abc123');
+    });
+
+    it('Should return an empty string if authorization header is empty', () => {
+      // Given
+      const authorizationHeader = '';
+      // When
+      const result = service.decodeAuthorizationHeader(authorizationHeader);
+      // Then
+      expect(result).toBe('');
+    });
+
+    it('Should return an empty string if authorization header has not a good format', () => {
+      // Given
+      const authorizationHeader = 'authorization_header_wrong_format';
+      // When
+      const result = service.decodeAuthorizationHeader(authorizationHeader);
+      // Then
+      expect(result).toBe('');
+    });
+
+    it('Should return an empty string if base64ToUtf8 is not a combinaison of client id and client secret (client_id:client_secret)', () => {
+      // Given
+      const authorizationHeader = 'authorization header';
+      // When
+      const result = service.decodeAuthorizationHeader(authorizationHeader);
+      // Then
+      expect(result).toBe('');
+    });
+  });
 });

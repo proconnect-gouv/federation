@@ -1,6 +1,7 @@
 import { Document } from 'mongoose';
 
 export interface IServiceProvider extends Document {
+  active: boolean;
   key: string;
   secret_hash: string;
   redirect_uris: string[];
