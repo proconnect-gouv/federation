@@ -33,7 +33,7 @@ export class ServiceProviderService implements IServiceProviderService {
           key: true,
           // legacy defined property names
           // eslint-disable-next-line @typescript-eslint/camelcase
-          secret_hash: true,
+          client_secret: true,
           // openid defined property names
           // eslint-disable-next-line @typescript-eslint/camelcase
           redirect_uris: true,
@@ -92,12 +92,12 @@ export class ServiceProviderService implements IServiceProviderService {
     source: IServiceProvider,
   ): ServiceProviderMetadata {
     const client_id = source.key;
-    const client_secret = this.cryptography.decryptSecretHash(
-      source.secret_hash,
+    const client_secret = this.cryptography.decryptClientSecret(
+      source.client_secret,
     );
 
     Reflect.deleteProperty(source, 'key');
-    Reflect.deleteProperty(source, 'secret_hash');
+    Reflect.deleteProperty(source, 'client_secret');
 
     return {
       ...source,

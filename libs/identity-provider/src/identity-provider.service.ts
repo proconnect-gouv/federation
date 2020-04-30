@@ -25,7 +25,9 @@ export class IdentityProviderService implements IIdentityProviderService {
           _id: false,
           name: true,
           clientID: true,
-          clientSecretHash: true,
+          // oidc defined variable name
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          client_secret: true,
           discoveryUrl: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/camelcase
@@ -74,12 +76,12 @@ export class IdentityProviderService implements IIdentityProviderService {
     source: IIdentityProvider,
   ): IdentityProviderMetadata {
     const client_id = source.clientID;
-    const client_secret = this.cryptography.decryptSecretHash(
-      source.clientSecretHash,
+    const client_secret = this.cryptography.decryptClientSecret(
+      source.client_secret,
     );
 
     Reflect.deleteProperty(source, 'clientID');
-    Reflect.deleteProperty(source, 'clientSecretHash');
+    Reflect.deleteProperty(source, 'client_secret');
 
     return {
       ...source,

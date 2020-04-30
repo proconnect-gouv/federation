@@ -1,7 +1,6 @@
 import {
   randomBytes,
   createCipheriv,
-  createDecipher,
   createDecipheriv,
   createHash,
   createHmac,
@@ -43,12 +42,6 @@ export class CryptographyService {
    * @returns the cipher
    */
   encryptUserInfosCache(key: string, data: any): Buffer {
-    const nonce = randomBytes(NONCE_LENGTH);
-
-    const cipher = createCipheriv('aes-256-gcm', key, nonce, {
-      authTagLength: AUTHTAG_LENGTH,
-    });
-
     /**
      * @TODO add a try/catch and re throw specific exception if data can't be "JSON.parsed"
      * @see https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/JSON/stringify
@@ -56,11 +49,7 @@ export class CryptographyService {
      */
     const plaintext = JSON.stringify(data);
 
-    const ciphertext = cipher.update(plaintext, 'utf8');
-    cipher.final();
-    const tag = cipher.getAuthTag();
-
-    return Buffer.concat([nonce, tag, ciphertext]);
+    return this.encrypt(key, plaintext);
   }
 
   /**
@@ -73,29 +62,7 @@ export class CryptographyService {
    * @returns the data decrypted
    */
   decryptUserInfosCache(key: string, cipher: Buffer): any {
-    if (Buffer.byteLength(cipher) <= CIPHER_HEAD_LENGTH) {
-      /** @TODO throw a specific exception */
-      throw new Error('Authentication failed !');
-    }
-
-    const nonce = cipher.slice(0, 12);
-    const tag = cipher.slice(12, 28);
-    const ciphertext = cipher.slice(28);
-
-    const decipher = createDecipheriv('aes-256-gcm', key, nonce, {
-      authTagLength: 16,
-    });
-
-    decipher.setAuthTag(tag);
-
-    const receivedPlaintext = decipher.update(ciphertext, null, 'utf8');
-
-    try {
-      decipher.final();
-    } catch (err) {
-      /** @TODO throw a specific exception */
-      throw new Error('Authentication failed !');
-    }
+    const receivedPlaintext = this.decrypt(key, cipher);
 
     /** @TODO add try/catch block and re thow specific exception */
     return JSON.parse(receivedPlaintext);
@@ -103,27 +70,11 @@ export class CryptographyService {
 
   // Simple alias
   // istanbul ignore next line
-  decryptSecretHash(secretHash: string): string {
-    return this.createDecipherLegacy(secretHash);
-  }
-
-  /**
-   * @TODO refacto: replace createDecipher (deprecated) by createDecipheriv and make unit test
-   * @see ticket: https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/58
-   * @param secretHash
-   */
-  // istanbul ignore next line
-  private createDecipherLegacy(secretHash: string): string {
-    const decipher = createDecipher(
-      'aes-256-cbc',
-      // environment variable which will be deleted on the function refacto
-      process.env.CLIENT_SECRET_CIPHER_LEGACY,
+  decryptClientSecret(clientSecret: string): string {
+    return this.decrypt(
+      process.env.CLIENT_SECRET_CIPHER_PASS,
+      Buffer.from(clientSecret, 'base64'),
     );
-
-    let dec = decipher.update(secretHash, 'hex', 'utf8');
-    dec += decipher.final('utf8');
-
-    return JSON.parse(dec).password;
   }
 
   /**
@@ -219,5 +170,63 @@ export class CryptographyService {
   // Handle microservice failure
   private signFailure(reject, error) {
     reject(new CryptographyGatewayException(error));
+  }
+
+  /**
+   * Encrypt the given string.
+   * Current implementation use symetrical AES-256-GCM.
+   * @see https://crypto.stackexchange.com/a/18092
+   * @param key the key to encrypt the data
+   * @param data the data to encrypt
+   * @returns the cipher
+   */
+  private encrypt(key: string, data: string): Buffer {
+    const nonce = randomBytes(NONCE_LENGTH);
+
+    const cipher = createCipheriv('aes-256-gcm', key, nonce, {
+      authTagLength: AUTHTAG_LENGTH,
+    });
+
+    const ciphertext = cipher.update(data, 'utf8');
+    cipher.final();
+    const tag = cipher.getAuthTag();
+
+    return Buffer.concat([nonce, tag, ciphertext]);
+  }
+
+  /**
+   * Decrypt the given cipher.
+   * Current implementation use symetrical AES-256-GCM.
+   * @see https://crypto.stackexchange.com/a/18092
+   * @param key the key to encrypt the data
+   * @param cipher the cipher to decrypt
+   * @returns the data decrypted
+   */
+  private decrypt(key: string, cipher: Buffer): any {
+    if (Buffer.byteLength(cipher) <= CIPHER_HEAD_LENGTH) {
+      /** @TODO throw a specific exception */
+      throw new Error('Authentication failed !');
+    }
+
+    const nonce = cipher.slice(0, 12);
+    const tag = cipher.slice(12, 28);
+    const ciphertext = cipher.slice(28);
+
+    const decipher = createDecipheriv('aes-256-gcm', key, nonce, {
+      authTagLength: AUTHTAG_LENGTH,
+    });
+
+    decipher.setAuthTag(tag);
+
+    const receivedPlaintext = decipher.update(ciphertext, null, 'utf8');
+
+    try {
+      decipher.final();
+    } catch (err) {
+      /** @TODO throw a specific exception */
+      throw new Error('Authentication failed !');
+    }
+
+    return receivedPlaintext;
   }
 }
