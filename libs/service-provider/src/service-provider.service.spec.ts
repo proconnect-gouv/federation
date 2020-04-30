@@ -9,7 +9,7 @@ describe('ServiceProviderService', () => {
   let service: ServiceProviderService;
   let rawServiceProviderFromDBMock;
   const mockCryptography = {
-    decryptSecretHash: jest.fn(),
+    decryptClientSecret: jest.fn(),
   };
 
   const mockRepository = {
@@ -45,7 +45,7 @@ describe('ServiceProviderService', () => {
         _doc: {
           key: '123',
           active: true,
-          secret_hash: 'secret hash',
+          client_secret: 'secret hash',
           redirect_uris: ['redirect_uris'],
           id_token_signed_response_alg: 'HS256',
           id_token_encrypted_response_alg: 'RSA-OAEP',
@@ -69,7 +69,7 @@ describe('ServiceProviderService', () => {
       const serviceProviderMock = {
         key: '123',
         active: true,
-        secret_hash: 'secret_hash',
+        client_secret: 'client_secret',
         redirect_uris: ['redirect_uris'],
         id_token_signed_response_alg: 'id_token_signed_response_alg',
         id_token_encrypted_response_alg: 'id_token_encrypted_response_alg',
@@ -81,7 +81,7 @@ describe('ServiceProviderService', () => {
       };
 
       // action
-      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
+      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
       const result = service['legacyToOpenIdPropertyName'](serviceProviderMock);
 
       // expect
@@ -142,7 +142,7 @@ describe('ServiceProviderService', () => {
         {
           key: '123',
           active: true,
-          secret_hash: 'secret hash',
+          client_secret: 'secret hash',
           redirect_uris: ['redirect_uris'],
           id_token_signed_response_alg: 'HS256',
           id_token_encrypted_response_alg: 'RSA-OAEP',
@@ -200,7 +200,7 @@ describe('ServiceProviderService', () => {
       ];
       mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
       mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
+      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
 
       // action
       const result = await service.getList(true);
@@ -232,7 +232,7 @@ describe('ServiceProviderService', () => {
       ];
       mockExec.mockReturnValueOnce(RawServiceProviderNotActiveMock);
       mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
+      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
 
       // action
       const result = await service.getList();
@@ -261,7 +261,7 @@ describe('ServiceProviderService', () => {
       ];
       mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
       mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
+      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
 
       // action
       await service.getList(true);
@@ -339,7 +339,7 @@ describe('ServiceProviderService', () => {
         userinfo_signed_response_alg: 'HS256',
         jwks_uri: 'https://sp-site.fr/jwks-uri',
       };
-      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
+      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
 
       // action
       const result = service['legacyToOpenIdPropertyName'](

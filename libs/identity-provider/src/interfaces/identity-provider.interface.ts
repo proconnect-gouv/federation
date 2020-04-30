@@ -3,7 +3,7 @@ import { Document } from 'mongoose';
 export interface IIdentityProvider extends Document {
   name: string;
   clientID: string;
-  clientSecretHash: string;
+  client_secret: string;
   discoveryUrl: string;
   redirect_uris: string[];
   response_types: string[];
