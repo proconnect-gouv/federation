@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcClientController } from './oidc-client.controller';
 import { OidcClientService } from './oidc-client.service';
-import { IDENTITY_SERVICE, IDENTITY_CHECK_SERVICE } from './tokens';
+import { IDENTITY_SERVICE } from './tokens';
 
 describe('OidcClient Controller', () => {
   let oidcClientController: OidcClientController;
@@ -14,10 +14,6 @@ describe('OidcClient Controller', () => {
     getTokenSet: jest.fn(),
     getUserInfo: jest.fn(),
     wellKnownKeys: jest.fn(),
-  };
-
-  const identityCheckServiceMock = {
-    check: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -40,10 +36,6 @@ describe('OidcClient Controller', () => {
         {
           provide: IDENTITY_SERVICE,
           useValue: identityServiceMock,
-        },
-        {
-          provide: IDENTITY_CHECK_SERVICE,
-          useValue: identityCheckServiceMock,
         },
       ],
     })
@@ -141,9 +133,6 @@ describe('OidcClient Controller', () => {
         accessToken,
         providerId,
       );
-
-      expect(identityCheckServiceMock.check).toHaveBeenCalledTimes(1);
-      expect(identityCheckServiceMock.check).toHaveBeenCalledWith(userInfoMock);
 
       expect(res.redirect).toHaveBeenCalledTimes(1);
     });
