@@ -8,7 +8,7 @@ import { IdentityProviderService } from './identity-provider.service';
 describe('IdentityProviderService', () => {
   let service: IdentityProviderService;
   const mockCryptography = {
-    decryptSecretHash: jest.fn(),
+    decryptClientSecret: jest.fn(),
   };
 
   const mockRepository = {
@@ -44,7 +44,7 @@ describe('IdentityProviderService', () => {
         _doc: {
           name: 'provider1',
           clientID: 'clientID',
-          clientSecretHash: 'clientSecretHash',
+          client_secret: 'client_secret',
           discoveryUrl: 'well_known_url',
           id_token_signed_response_alg: 'HS256',
           post_logout_redirect_uris: [
@@ -76,7 +76,7 @@ describe('IdentityProviderService', () => {
       const identityProviderMock = {
         name: 'idp name',
         clientID: '123',
-        clientSecretHash: 'secret hash',
+        client_secret: 'secret hash',
         redirect_uris: ['redirect_uris'],
         id_token_signed_response_alg: 'id_token_signed_response_alg',
         id_token_encrypted_response_alg: 'id_token_encrypted_response_alg',
@@ -90,7 +90,7 @@ describe('IdentityProviderService', () => {
       };
 
       // action
-      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
+      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
       const result = service['legacyToOpenIdPropertyName'](
         identityProviderMock,
       );
@@ -142,7 +142,7 @@ describe('IdentityProviderService', () => {
         {
           name: 'provider1',
           clientID: 'clientID',
-          clientSecretHash: 'clientSecretHash',
+          client_secret: 'client_secret',
           discoveryUrl: 'well_known_url',
           id_token_signed_response_alg: 'HS256',
           post_logout_redirect_uris: [
@@ -176,7 +176,7 @@ describe('IdentityProviderService', () => {
 
     it('should return result of type list', async () => {
       // action
-      mockCryptography.decryptSecretHash.mockReturnValueOnce('client_secret');
+      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
       const result = await service.getList();
 
       // expect

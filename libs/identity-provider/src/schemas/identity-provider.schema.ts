@@ -4,7 +4,9 @@ export const IdentityProviderSchema = new mongoose.Schema(
   {
     name: String,
     clientID: String,
-    clientSecretHash: String,
+    // oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    client_secret: String,
     discoveryUrl: String,
     // oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/camelcase

@@ -5,7 +5,7 @@ export const ServiceProviderSchema = new mongoose.Schema(
     active: Boolean,
     key: String,
     // eslint-disable-next-line @typescript-eslint/camelcase
-    secret_hash: String,
+    client_secret: String,
     // eslint-disable-next-line @typescript-eslint/camelcase
     redirect_uris: [String],
     // openid defined property names
