@@ -9,6 +9,7 @@ import {
   IdentityBadFormatException,
   IdentityNotFoundException,
 } from './exceptions';
+import { IIdentity } from './interfaces';
 
 @Injectable()
 export class IdentityService implements IIdentityService {
@@ -54,7 +55,7 @@ export class IdentityService implements IIdentityService {
    * eg output of `serialize` method.
    * @returns object data
    */
-  private unserialize(data: string): object {
+  private unserialize(data: string): any {
     const dataBuffer = Buffer.from(data, 'base64');
     const dataString = this.cryptography.decryptUserInfosCache(
       this.cryptoKey,
@@ -74,7 +75,7 @@ export class IdentityService implements IIdentityService {
    * @TODO interface/DTO for identity
    * @TODO handle return or throw if persistance fails
    */
-  async getIdentity(key: string): Promise<object> {
+  async getIdentity(key: string): Promise<{ identity: IIdentity; meta: any }> {
     this.logger.debug('get identity from redis');
     const dataCipher = await this.redis.get(key);
 
@@ -92,9 +93,16 @@ export class IdentityService implements IIdentityService {
    * @TODO interface/DTO for identity
    * @TODO handle return or throw if persistance fails
    */
-  async storeIdentity(key: string, identity: object): Promise<boolean> {
+  async storeIdentity(
+    key: string,
+    identity: IIdentity,
+    meta: any,
+  ): Promise<boolean> {
     this.logger.debug('store identity in redis');
-    const data = this.serialize(identity);
+    const data = this.serialize({
+      identity,
+      meta,
+    });
 
     return this.redis.set(key, data);
   }

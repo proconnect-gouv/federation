@@ -135,7 +135,9 @@
       "@fc/fake-hsm/(.*)": "<rootDir>/libs/fake-hsm/src/$1",
       "@fc/fake-hsm": "<rootDir>/libs/fake-hsm/src",
       "@fc/microservices/(.*)": "<rootDir>/libs/microservices/src/$1",
-      "@fc/microservices": "<rootDir>/libs/microservices/src"
+      "@fc/microservices": "<rootDir>/libs/microservices/src",
+      "@fc/account/(.*)": "<rootDir>/libs/account/src/$1",
+      "@fc/account": "<rootDir>/libs/account/src"
     },
     "preset": "ts-jest"
   }

@@ -9,8 +9,8 @@ import {
   Post,
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { IIdentityService, IIdentityCheckService } from './interfaces';
-import { IDENTITY_SERVICE, IDENTITY_CHECK_SERVICE } from './tokens';
+import { IIdentityService } from './interfaces';
+import { IDENTITY_SERVICE } from './tokens';
 import { OidcClientService } from './oidc-client.service';
 
 @Controller('/api/v2')
@@ -20,11 +20,12 @@ export class OidcClientController {
     private readonly logger: LoggerService,
     @Inject(IDENTITY_SERVICE)
     private readonly identity: IIdentityService,
-    @Inject(IDENTITY_CHECK_SERVICE)
-    private readonly identityCheck: IIdentityCheckService,
   ) {}
 
-  /** @TODO validation body by DTO */
+  /**
+   * @TODO validation body by DTO
+   * @TODO control IdP is available
+   */
   @Post('/redirect-to-idp')
   async redirectToIdp(@Req() req, @Res() res, @Body() body) {
     this.logger.debug('/api/v2/redirect-to-idp');
@@ -46,33 +47,35 @@ export class OidcClientController {
     res.redirect(authorizationUrl);
   }
 
-  /** @TODO valiate input by DTO */
-  @Get('/oidc-callback/:providerName')
+  /**
+   * @TODO valiate input by DTO
+   * @TODO control session before access (DTO?)
+   * @TODO control IdP is available
+   */
+  @Get('/oidc-callback/:providerId')
   async getOidcCallback(
-    @Param('providerName') providerName,
+    @Param('providerId') providerId,
     @Req() req,
     @Res() res,
   ) {
     this.logger.debug('/api/v2/oidc-callback');
 
-    const { uid } = req.session;
-
+    // OIDC: call idp's /token endpoint
     const { access_token: accessToken } = await this.oidcClient.getTokenSet(
       req,
-      providerName,
+      providerId,
     );
 
-    const user = await this.oidcClient.getUserInfo(accessToken, providerName);
+    // OIDC: call idp's /userinfo endpoint
+    const user = await this.oidcClient.getUserInfo(accessToken, providerId);
+    const meta = { identityProviderId: providerId };
 
-    // This function can throw a FcError and interrupt the cinematic
-    const userChecked = await this.identityCheck.check(user);
+    // BUSINESS: Locally store received identity
+    const { uid } = req.session;
+    this.identity.storeIdentity(uid, user, meta);
 
-    this.logger.debug(userChecked);
-
-    this.identity.storeIdentity(uid, user);
-
-    // pas sur de la fin de la cinématique
-    res.redirect(`/interaction/${req.session.uid}/consent`);
+    // BUSINESS: Redirect to business page
+    res.redirect(`/interaction/${uid}/consent`);
   }
 
   /**
