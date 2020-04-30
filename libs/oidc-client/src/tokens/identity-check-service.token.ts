@@ -1,3 +1,0 @@
-export const IDENTITY_CHECK_SERVICE = Symbol(
-  'IDENTITY_CHECK_SERVICE',
-);

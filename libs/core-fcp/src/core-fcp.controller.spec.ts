@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { CoreFcpController } from './core-fcp.controller';
+import { CoreFcpService } from './core-fcp.service';
 
 describe('CoreFcpController', () => {
   let coreFcpController: CoreFcpController;
@@ -18,7 +19,8 @@ describe('CoreFcpController', () => {
   };
 
   const oidcProviderServiceMock = {
-    getProvider: jest.fn(),
+    getInteraction: jest.fn(),
+    finishInteraction: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -27,15 +29,21 @@ describe('CoreFcpController', () => {
     trace: jest.fn(),
   } as unknown) as LoggerService;
 
+  const coreFcpServiceMock = {
+    getConsent: jest.fn(),
+  };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [CoreFcpController],
-      providers: [LoggerService, OidcProviderService],
+      providers: [LoggerService, OidcProviderService, CoreFcpService],
     })
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(CoreFcpService)
+      .useValue(coreFcpServiceMock)
       .compile();
 
     coreFcpController = await app.get<CoreFcpController>(CoreFcpController);
@@ -44,8 +52,11 @@ describe('CoreFcpController', () => {
     providerMock.interactionDetails.mockResolvedValue(
       interactionDetailsResolved,
     );
-    providerMock.interactionFinished.mockReturnValue(interactionFinishedValue);
-    oidcProviderServiceMock.getProvider.mockReturnValue(providerMock);
+    oidcProviderServiceMock.finishInteraction.mockReturnValue(
+      interactionFinishedValue,
+    );
+    oidcProviderServiceMock.getInteraction.mockReturnValue(providerMock);
+    coreFcpServiceMock.getConsent.mockResolvedValue(interactionDetailsResolved);
   });
 
   describe('getInteraction', () => {
@@ -55,7 +66,7 @@ describe('CoreFcpController', () => {
         session: { uid: 42 },
       };
       const res = {};
-      providerMock.interactionDetails.mockResolvedValue({
+      oidcProviderServiceMock.getInteraction.mockResolvedValue({
         uid: 'uid',
         prompt: 'prompt',
         params: 'params',
@@ -68,7 +79,7 @@ describe('CoreFcpController', () => {
   });
 
   describe('getConsent', () => {
-    it('should call interactionDetails', async () => {
+    it('should call coreFcpService', async () => {
       // Given
       const req = {
         session: { uid: 42, user: {} },
@@ -77,8 +88,7 @@ describe('CoreFcpController', () => {
       // When
       await coreFcpController.getConsent(req, res);
       // Then
-      expect(oidcProviderServiceMock.getProvider).toHaveBeenCalledTimes(1);
-      expect(providerMock.interactionDetails).toHaveBeenCalledTimes(1);
+      expect(coreFcpServiceMock.getConsent).toHaveBeenCalledTimes(1);
     });
     it('should return an object', async () => {
       // Given
@@ -106,8 +116,9 @@ describe('CoreFcpController', () => {
       // When
       await coreFcpController.getLogin(req, res);
       // Then
-      expect(oidcProviderServiceMock.getProvider).toHaveBeenCalledTimes(1);
-      expect(providerMock.interactionFinished).toHaveBeenCalledTimes(1);
+      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
+        1,
+      );
     });
     it('should return an object', async () => {
       // Given

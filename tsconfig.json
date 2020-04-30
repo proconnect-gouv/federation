@@ -121,6 +121,12 @@
       ],
       "@fc/microservices/*": [
         "libs/microservices/src/*"
+      ],
+      "@fc/account": [
+        "libs/account/src"
+      ],
+      "@fc/account/*": [
+        "libs/account/src/*"
       ]
     }
   },

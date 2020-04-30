@@ -12,6 +12,7 @@ import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
+  ErrorCode,
 } from './enums';
 import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import { OidcProviderService } from './oidc-provider.service';
@@ -68,6 +69,8 @@ describe('OidcProviderService', () => {
       useSpy();
     },
     on: jest.fn(),
+    interactionDetails: jest.fn(),
+    interactionFinished: jest.fn(),
   };
 
   const identityServiceMock = {
@@ -129,6 +132,8 @@ describe('OidcProviderService', () => {
           };
       }
     });
+
+    service['provider'] = providerMock as any;
   });
 
   describe('onModuleInit', () => {
@@ -150,15 +155,6 @@ describe('OidcProviderService', () => {
        * Sadly we can't test `toHaveBeenCalledWith(service['provider'].callback)`
        * since `̀Provider.callback` is a getter that returns an anonymous function
        */
-    });
-
-    it('should return oidc-provier instance', async () => {
-      // When
-      await service.onModuleInit();
-      const instance = service.getProvider();
-      // Then
-      expect(instance).toBeInstanceOf(Provider);
-      expect(instance).toBe(service['provider']);
     });
 
     it('should throw if provider can not be instantied', async () => {
@@ -259,7 +255,7 @@ describe('OidcProviderService', () => {
       service['provider'] = {} as Provider;
       // When
       service['overrideConfiguration'](configMock);
-      const configuration = service.getProvider()['configuration'];
+      const configuration = service['provider']['configuration'];
       const result = configuration('foo.bar');
       // Then
       expect(result).toBe('bar value');
@@ -297,6 +293,62 @@ describe('OidcProviderService', () => {
     });
   });
 
+  describe('getInteraction', () => {
+    it('should return the result of oidc-provider.interactionDetails()', async () => {
+      // Given
+      const reqMock = {};
+      const resMock = {};
+      const resolvedValue = Symbol('resolved value');
+      providerMock.interactionDetails.mockResolvedValueOnce(resolvedValue);
+      // When
+      const result = await service.getInteraction(reqMock, resMock);
+      // Then
+      expect(result).toBe(resolvedValue);
+    });
+    it('should throw OidcProviderRuntimeException', async () => {
+      // Given
+      const reqMock = {};
+      const resMock = {};
+      const nativeError = new Error('invalid_request');
+      providerMock.interactionDetails.mockRejectedValueOnce(nativeError);
+
+      await expect(service.getInteraction(reqMock, resMock)).rejects.toThrow(
+        OidcProviderRuntimeException,
+      );
+    });
+  });
+
+  describe('finishInteraction', () => {
+    it('should return the result of oidc-provider.interactionFinished()', async () => {
+      // Given
+      const reqMock = {};
+      const resMock = {};
+      const resultMock = {};
+      const resolvedValue = Symbol('resolved value');
+      providerMock.interactionFinished.mockResolvedValueOnce(resolvedValue);
+      // When
+      const result = await service.finishInteraction(
+        reqMock,
+        resMock,
+        resultMock,
+      );
+      // Then
+      expect(result).toBe(resolvedValue);
+    });
+    it('should throw OidcProviderRuntimeException', async () => {
+      // Given
+      const reqMock = {};
+      const resMock = {};
+      const resultMock = {};
+      const nativeError = new Error('invalid_request');
+      providerMock.interactionFinished.mockRejectedValueOnce(nativeError);
+
+      await expect(
+        service.finishInteraction(reqMock, resMock, resultMock),
+      ).rejects.toThrow(OidcProviderRuntimeException);
+    });
+  });
+
   describe('findAccount', () => {
     it('Should return an object with accountID', async () => {
       // Given
@@ -316,7 +368,9 @@ describe('OidcProviderService', () => {
       const ctx = { not: 'altered' };
       const sub = 'foo';
       const identityMock = {};
-      identityServiceMock.getIdentity.mockResolvedValueOnce(identityMock);
+      identityServiceMock.getIdentity.mockResolvedValueOnce({
+        identity: identityMock,
+      });
       const result = await service['findAccount'](ctx, sub);
       // When
       const claimsResult = await result.claims();
@@ -344,7 +398,6 @@ describe('OidcProviderService', () => {
       // Given
       const eventNameMock = OidcProviderEvents.USERINFO_ERROR;
       const handler = jest.fn();
-      service['provider'] = providerMock as any;
       // When
       service.registerEvent(eventNameMock, handler);
       // Then
@@ -355,7 +408,6 @@ describe('OidcProviderService', () => {
       // Given
       const eventNameMock = OidcProviderEvents.USERINFO_ERROR;
       const handler = jest.fn();
-      service['provider'] = providerMock as any;
       // When
       service.registerEvent(eventNameMock, handler);
       // Then
@@ -367,8 +419,6 @@ describe('OidcProviderService', () => {
     it('should register middleware but not call callback on middleware registration', () => {
       // Given
       providerMock.middlewares = [];
-      const originalProvider = service['provider'];
-      service['provider'] = providerMock as any;
       const callback = jest.fn();
       // When
       service.registerMiddleware(
@@ -380,14 +430,11 @@ describe('OidcProviderService', () => {
       expect(useSpy).toBeCalledTimes(1);
       expect(providerMock.middlewares).toHaveLength(1);
       expect(callback).toHaveBeenCalledTimes(0);
-      service['provider'] = originalProvider;
     });
 
     it('should call provider use with callback function BEFORE', () => {
       // Given
       providerMock.middlewares = [];
-      const originalProvider = service['provider'];
-      service['provider'] = providerMock as any;
       const callback = jest.fn();
       const ctx = { path: OidcProviderMiddlewarePattern.USERINFO };
       const next = async () => Promise.resolve();
@@ -400,15 +447,11 @@ describe('OidcProviderService', () => {
       providerMock.middlewares[0].call(null, ctx, next);
       // Then
       expect(callback).toHaveBeenCalledTimes(1);
-      // Restore
-      service['provider'] = originalProvider;
     });
 
     it('should call provider use with callback function AFTER', async () => {
       // Given
       providerMock.middlewares = [];
-      const originalProvider = service['provider'];
-      service['provider'] = providerMock as any;
       const callback = jest.fn();
       const ctx = {
         oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
@@ -423,8 +466,6 @@ describe('OidcProviderService', () => {
       await providerMock.middlewares[0].call(null, ctx, next);
       // Then
       expect(callback).toHaveBeenCalledTimes(1);
-      // Restore
-      service['provider'] = originalProvider;
     });
   });
 

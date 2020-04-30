@@ -24,10 +24,7 @@ function basicErrorScenario(params) {
 }
 
 function checkError(errorCode) {
-  cy.url().should(
-    'include',
-    `${Cypress.env('FC_ROOT_URL')}/api/v2/oidc-callback/fip1v2`,
-  );
+  cy.url().should('match', new RegExp(`\/interaction\/.*\/consent`));
   cy.get('h1').contains('🚨 Erreur 😓 !');
   cy.get('pre').contains(`code : ${errorCode}`);
 }
