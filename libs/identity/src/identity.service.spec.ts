@@ -8,6 +8,7 @@ import {
   IdentityNotFoundException,
 } from './exceptions';
 import { IdentityService } from './identity.service';
+import { IIdentity } from './interfaces';
 
 describe('IdentityService', () => {
   let service: IdentityService;
@@ -82,9 +83,7 @@ describe('IdentityService', () => {
       // When
       service['cryptoKey'];
       // Then
-      expect(configServiceMock.get).toHaveBeenLastCalledWith(
-        'Identity',
-      );
+      expect(configServiceMock.get).toHaveBeenLastCalledWith('Identity');
     });
     it('should return cryptogaphyKey value from config', () => {
       // When
@@ -150,22 +149,26 @@ describe('IdentityService', () => {
 
   describe('storeIdentity', () => {
     const key = 'key';
-    const dataMock = { foo: 'bar' };
+    const dataMock = ({ foo: 'bar' } as unknown) as IIdentity;
+    const meta = { identityProviderId: '1337' };
 
     it('should call serialize with dataMock', () => {
       // Given
       service['serialize'] = jest.fn();
       // When
-      service.storeIdentity(key, dataMock);
+      service.storeIdentity(key, dataMock, meta);
       // Then
-      expect(service['serialize']).toHaveBeenCalledWith(dataMock);
+      expect(service['serialize']).toHaveBeenCalledWith({
+        identity: dataMock,
+        meta,
+      });
     });
     it('should call redis set with serialize result', () => {
       // Given
       const serializeResult = Symbol('serialized result');
       service['serialize'] = jest.fn().mockReturnValue(serializeResult);
       // When
-      service.storeIdentity(key, dataMock);
+      service.storeIdentity(key, dataMock, meta);
       // Then
       expect(redisServiceMock.set).toHaveBeenCalledWith(key, serializeResult);
     });

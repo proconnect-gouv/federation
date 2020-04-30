@@ -10,12 +10,14 @@ import {
 
 import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
+import { CoreFcpService } from './core-fcp.service';
 
 @Controller()
 export class CoreFcpController {
   constructor(
     private readonly oidcProvider: OidcProviderService,
     private readonly logger: LoggerService,
+    private readonly coreFcp: CoreFcpService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -26,11 +28,11 @@ export class CoreFcpController {
   @Render('interaction')
   async getInteraction(@Req() req, @Res() res) {
     this.logger.debug('/interaction/:uid');
-    this.logger.trace(req.session.uid);
-    const provider = this.oidcProvider.getProvider();
-    const { uid, prompt, params } = await provider.interactionDetails(req, res);
 
-    req.session.uid = uid;
+    const { uid, prompt, params } = await this.oidcProvider.getInteraction(
+      req,
+      res,
+    );
 
     return {
       uid,
@@ -44,28 +46,17 @@ export class CoreFcpController {
   @Render('consent')
   async getConsent(@Req() req, @Res() res) {
     this.logger.debug('/interaction/:uid/consent');
-
-    this.logger.trace(req.session.uid);
-
-    const provider = this.oidcProvider.getProvider();
-    const { uid, prompt, params } = await provider.interactionDetails(req, res);
-    const { user } = req.session;
-    return {
-      uid,
-      prompt,
-      params,
-      user,
-    };
+    return this.coreFcp.getConsent(req, res);
   }
 
   /** @TODO validate query by DTO */
   @Get('/interaction/:uid/login')
   async getLogin(@Req() req, @Res() res) {
-    const provider = this.oidcProvider.getProvider();
+    const { uid } = await this.oidcProvider.getInteraction(req, res);
 
     const result = {
       login: {
-        account: req.session.uid,
+        account: uid,
         acr: req.body.acr,
         amr: ['pwd'],
         ts: Math.floor(Date.now() / 1000),
@@ -76,6 +67,6 @@ export class CoreFcpController {
       },
     };
 
-    return provider.interactionFinished(req, res, result);
+    return this.oidcProvider.finishInteraction(req, res, result);
   }
 }

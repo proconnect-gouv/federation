@@ -125,8 +125,36 @@ export class OidcProviderService {
     };
   }
 
-  getProvider(): Provider {
-    return this.provider;
+  /**
+   * Wrap `oidc-provider` method to
+   *  - lower coupling in other modules
+   *  - handle exceptions
+   *
+   * @param req
+   * @param res
+   */
+  async getInteraction(req, res): Promise<any> {
+    try {
+      return await this.provider.interactionDetails(req, res);
+    } catch (error) {
+      throw new OidcProviderRuntimeException(error);
+    }
+  }
+
+  /**
+   * Wrap `oidc-provider` method to
+   *  - lower coupling in other modules
+   *  - handle exceptions
+   *
+   * @param req
+   * @param res
+   */
+  async finishInteraction(req, res, result) {
+    try {
+      return await this.provider.interactionFinished(req, res, result);
+    } catch (error) {
+      throw new OidcProviderRuntimeException(error);
+    }
   }
 
   decodeAuthorizationHeader(authorizationHeader: string): string {
@@ -259,7 +287,7 @@ export class OidcProviderService {
     this.logger.debug('OidcProviderService.findAccount()');
 
     try {
-      const identity = await this.identity.getIdentity(sub);
+      const { identity } = await this.identity.getIdentity(sub);
 
       return {
         accountId: sub,

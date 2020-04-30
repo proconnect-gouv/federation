@@ -16,7 +16,8 @@ import { CryptographyModule } from '@fc/cryptography';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from './core-fcp.service';
 import { ErrorModule } from '@fc/error';
-import { RnippModule, RnippService } from '@fc/rnipp';
+import { RnippModule } from '@fc/rnipp';
+import { AccountModule } from '@fc/account';
 
 @Module({
   imports: [
@@ -24,20 +25,19 @@ import { RnippModule, RnippService } from '@fc/rnipp';
     MongooseModule,
     IdentityModule,
     RnippModule,
+    CryptographyModule,
+    AccountModule,
     OidcProviderModule.register(
       IdentityService,
       IdentityModule,
       ServiceProviderService,
       ServiceProviderModule,
     ),
-    CryptographyModule,
     OidcClientModule.register(
       IdentityService,
       IdentityModule,
       IdentityProviderService,
       IdentityProviderModule,
-      RnippService,
-      RnippModule,
     ),
   ],
   controllers: [CoreFcpController],
