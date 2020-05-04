@@ -4,7 +4,7 @@ import { LoggerService } from '@fc/logger';
 import { RnippService } from '@fc/rnipp';
 import { IdentityService, IIdentity } from '@fc/identity';
 import { CryptographyService } from '@fc/cryptography';
-import { AccountService } from '@fc/account';
+import { AccountBlockedException, AccountService } from '@fc/account';
 
 @Injectable()
 export class CoreFcpService {
@@ -69,6 +69,8 @@ export class CoreFcpService {
     // Identity check and normalization
     const rnippIdentity = await this.rnipp.check(idpIdentity);
 
+    await this.checkIfAccountIsBlocked(rnippIdentity);
+
     // Save interaction to database & get sp's sub to avoid double computation
     const { spInteraction } = await this.storeInteraction(
       idpId,
@@ -91,6 +93,19 @@ export class CoreFcpService {
       interactionId,
       identity: idpIdentity,
     };
+  }
+
+  /**
+   * Check if an account exists and is blocked
+   * @param identity
+   */
+  private async checkIfAccountIsBlocked(identity: IIdentity): Promise<void> {
+    const identityHash = this.cryptography.computeIdentityHash(identity);
+    const accountIsBlocked = await this.account.isBlocked(identityHash);
+
+    if (accountIsBlocked) {
+      throw new AccountBlockedException();
+    }
   }
 
   /**

@@ -14,6 +14,18 @@ export class AccountService {
   }
 
   /**
+   * Check in database if an account is registred and blocked
+   * with provided identityHash
+   *
+   * @param identityHash
+   */
+  async isBlocked(identityHash: string): Promise<boolean> {
+    const account = await this.model.findOne({ identityHash, active: false });
+
+    return account !== null;
+  }
+
+  /**
    * Save interaction to database
    *
    * @param interaction
