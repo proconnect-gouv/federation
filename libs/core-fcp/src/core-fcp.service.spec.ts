@@ -4,8 +4,9 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { IdentityService } from '@fc/identity';
 import { RnippService } from '@fc/rnipp';
 import { CryptographyService } from '@fc/cryptography';
-import { AccountService } from '@fc/account';
+import { AccountService, AccountBlockedException } from '@fc/account';
 import { CoreFcpService } from './core-fcp.service';
+import { ErrorService } from '@fc/error/error.service';
 
 describe('CoreFcpService', () => {
   let service: CoreFcpService;
@@ -36,6 +37,7 @@ describe('CoreFcpService', () => {
 
   const accountServiceMock = {
     storeInteraction: jest.fn(),
+    isBlocked: jest.fn(),
   };
 
   const rnippServiceMock = {
@@ -93,6 +95,7 @@ describe('CoreFcpService', () => {
     });
 
     rnippServiceMock.check.mockResolvedValue(identityMock);
+    accountServiceMock.isBlocked.mockResolvedValue(false);
   });
 
   it('should be defined', () => {
@@ -148,6 +151,21 @@ describe('CoreFcpService', () => {
       await expect(service.getConsent(reqMock, resMock)).rejects.toThrow(
         errorMock,
       );
+    });
+    it('should throw if account is blocked', async () => {
+      // Given
+      accountServiceMock.isBlocked.mockResolvedValue(true);
+      // Then
+      await expect(service.getConsent(reqMock, resMock)).rejects.toThrow(
+        AccountBlockedException,
+      );
+    });
+    it('should throw if account blocked check fails', async () => {
+      // Given
+      const error = new Error('foo');
+      accountServiceMock.isBlocked.mockRejectedValueOnce(error);
+      // Then
+      await expect(service.getConsent(reqMock, resMock)).rejects.toThrow(error);
     });
 
     // Non blocking errors
