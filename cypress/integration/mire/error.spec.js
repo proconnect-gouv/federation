@@ -30,6 +30,33 @@ function checkError(errorCode) {
 }
 
 describe('Error scenarios', () => {
+  it('should trigger error Y030110 (session not found)', () => {
+    basicErrorScenario({
+      errorCode: 'test',
+      eidasLevel: 1,
+      idpId: 'test',
+    });
+
+    cy.clearCookies();
+
+    cy.get('#consent').click();
+
+    cy.url().should('match', new RegExp(`\/interaction\/.*\/login`));
+    cy.get('h1').contains('🚨 Erreur 😓 !');
+    cy.get('pre').contains('code : Y030110');
+  });
+  it('should trigger error Y180001 (user blocked)', () => {
+    basicErrorScenario({
+      errorCode: 'E000001',
+      eidasLevel: 1,
+      idpId: 'test',
+    });
+
+    cy.url().should('match', new RegExp(`\/interaction\/.*\/consent`));
+    cy.get('h1').contains('🚨 Erreur 😓 !');
+    cy.get('pre').contains('code : Y180001');
+  });
+
   it('should trigger error Y010004', () => {
     basicErrorScenario({
       errorCode: 'E010004',

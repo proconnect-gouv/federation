@@ -140,4 +140,33 @@ describe('AccountService', () => {
       });
     });
   });
+  describe('isBlocked', () => {
+    const identityHash = 'my identityHash mock';
+    it('should request with condition active = false', async () => {
+      // When
+      await service.isBlocked(identityHash);
+      // Then
+      expect(findOneSpy).toHaveBeenCalledTimes(1);
+      expect(findOneSpy).toHaveBeenCalledWith({
+        identityHash,
+        active: false,
+      });
+    });
+    it('should return false if no blocked record found', async () => {
+      // Given
+      findOneSpy.mockResolvedValueOnce(null);
+      // When
+      const result = await service.isBlocked(identityHash);
+      // Then
+      expect(result).toBe(false);
+    });
+    it('should return true if  blocked record found', async () => {
+      // Given
+      findOneSpy.mockResolvedValueOnce({});
+      // When
+      const result = await service.isBlocked(identityHash);
+      // Then
+      expect(result).toBe(true);
+    });
+  });
 });
