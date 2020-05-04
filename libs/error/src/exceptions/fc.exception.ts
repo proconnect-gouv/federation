@@ -15,6 +15,7 @@ export class FcException extends Error {
    * - 15: Identity
    * - 16 : Cryptography
    * - 17 : Consumer-HSM
+   * - 18 : Account
    */
   public scope: number;
 
