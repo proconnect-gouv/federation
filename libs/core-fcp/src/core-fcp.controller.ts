@@ -10,13 +10,15 @@ import {
 
 import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
+import { IdentityProviderService } from '@fc/identity-provider';
 import { CoreFcpService } from './core-fcp.service';
 
 @Controller()
 export class CoreFcpController {
   constructor(
-    private readonly oidcProvider: OidcProviderService,
     private readonly logger: LoggerService,
+    private readonly oidcProvider: OidcProviderService,
+    private readonly identityProvider: IdentityProviderService,
     private readonly coreFcp: CoreFcpService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -29,15 +31,14 @@ export class CoreFcpController {
   async getInteraction(@Req() req, @Res() res) {
     this.logger.debug('/interaction/:uid');
 
-    const { uid, prompt, params } = await this.oidcProvider.getInteraction(
-      req,
-      res,
-    );
+    const { uid, params } = await this.oidcProvider.getInteraction(req, res);
+
+    const providers = await this.identityProvider.getList();
 
     return {
       uid,
-      prompt,
       params,
+      providers,
     };
   }
 

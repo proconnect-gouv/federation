@@ -1,22 +1,40 @@
 <html>
+  <head>
+    <link rel="stylesheet" href="/css/index.css" />
+  </head>
 
-<head>
-  <link rel="stylesheet" href="/css/index.css" />
-</head>
+  <body>
+    <div
+      style="width: 420px; margin: auto; margin-top: 200px; text-align: center;"
+    >
+      <h1>DEMO : Page liste des IdP</h1>
 
-<body>
-  <div style="width: 400px; margin: auto; margin-top: 200px; text-align: center;">
-    <h1>DEMO : Page liste des IdP</h1>
-    <form method="POST" action="/api/v2/redirect-to-idp" id="fs-request" name="fs-request">
-      <input name="providerName" id="providerName" value="fip1v2" />
-      <input name="uid" id="uid" value="<%= locals.uid %>" />
-      <input name="scope" value="openid profile email adress phone birth" />
-      <input name="acr_values" value="eidas1" />
-      <button style="font-size: 2em; width: 100%; height: 300px; display: block;" id="idp-test">
-        Continuer vers fip1v2
-      </button>
-    </form>
-  </div>
-</body>
-
+      <div>
+        <% locals.providers.forEach((provider) => { %>
+        <form
+          method="POST"
+          action="/api/v2/redirect-to-idp"
+          id="fs-request-<%= provider.name %>"
+          name="fs-request"
+          style="font-size: 2em; width: 200px; height: 200px; margin: 0 5px; float: left;"
+        >
+          <button
+            style="width: 100%; height: 100%;"
+            id="idp-<%= provider.name %>"
+          >
+            <%= provider.name %>
+          </button>
+          <input
+            name="providerName"
+            id="providerName"
+            value="<%= provider.name %>"
+          />
+          <input name="uid" id="uid" value="<%= locals.uid %>" />
+          <input name="scope" value="<%= params.scope %>" />
+          <input name="acr_values" value="<%= params.acr_values %>" />
+        </form>
+        <% }) %>
+      </div>
+    </div>
+  </body>
 </html>

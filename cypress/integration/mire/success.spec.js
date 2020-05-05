@@ -60,7 +60,7 @@ describe('Successful scenarios', () => {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkInformations({
@@ -78,7 +78,7 @@ describe('Successful scenarios', () => {
       userName: 'étranger_présumé_né_jour',
       password: '123',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkInformations({
@@ -95,7 +95,7 @@ describe('Successful scenarios', () => {
       userName: 'étranger_présumé_né_jour_et_mois',
       password: '123',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkInformations({
