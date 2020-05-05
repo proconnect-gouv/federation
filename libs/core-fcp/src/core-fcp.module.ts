@@ -27,6 +27,7 @@ import { AccountModule } from '@fc/account';
     RnippModule,
     CryptographyModule,
     AccountModule,
+    IdentityProviderModule,
     OidcProviderModule.register(
       IdentityService,
       IdentityModule,
