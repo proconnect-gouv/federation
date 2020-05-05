@@ -61,7 +61,7 @@ describe('Error scenarios', () => {
     basicErrorScenario({
       errorCode: 'E010004',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkError('Y010004');
@@ -71,7 +71,7 @@ describe('Error scenarios', () => {
     basicErrorScenario({
       errorCode: 'E010006',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkError('Y010006');
@@ -81,7 +81,7 @@ describe('Error scenarios', () => {
     basicErrorScenario({
       errorCode: 'E010007',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkError('Y010007');
@@ -91,7 +91,7 @@ describe('Error scenarios', () => {
     basicErrorScenario({
       errorCode: 'E010008',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkError('Y010008');
@@ -101,7 +101,7 @@ describe('Error scenarios', () => {
     basicErrorScenario({
       errorCode: 'E010009',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkError('Y010009');
@@ -111,7 +111,7 @@ describe('Error scenarios', () => {
     basicErrorScenario({
       errorCode: 'E010011',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkError('Y010011');
@@ -121,7 +121,7 @@ describe('Error scenarios', () => {
     basicErrorScenario({
       errorCode: 'E010012',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkError('Y010012');
@@ -131,7 +131,7 @@ describe('Error scenarios', () => {
     basicErrorScenario({
       errorCode: 'E010013',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkError('Y010013');
@@ -141,7 +141,7 @@ describe('Error scenarios', () => {
     basicErrorScenario({
       errorCode: 'E010015',
       eidasLevel: 1,
-      idpId: 'test',
+      idpId: 'fip1v2',
     });
 
     checkError('Y010015');

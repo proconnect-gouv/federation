@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
+import { IdentityProviderService } from '@fc/identity-provider';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from './core-fcp.service';
@@ -33,10 +34,19 @@ describe('CoreFcpController', () => {
     getConsent: jest.fn(),
   };
 
+  const identityProviderServiceMock = {
+    getList: jest.fn(),
+  };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [CoreFcpController],
-      providers: [LoggerService, OidcProviderService, CoreFcpService],
+      providers: [
+        LoggerService,
+        OidcProviderService,
+        CoreFcpService,
+        IdentityProviderService,
+      ],
     })
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
@@ -44,6 +54,8 @@ describe('CoreFcpController', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(CoreFcpService)
       .useValue(coreFcpServiceMock)
+      .overrideProvider(IdentityProviderService)
+      .useValue(identityProviderServiceMock)
       .compile();
 
     coreFcpController = await app.get<CoreFcpController>(CoreFcpController);
