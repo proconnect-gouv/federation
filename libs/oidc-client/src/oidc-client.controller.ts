@@ -71,7 +71,7 @@ export class OidcClientController {
     const { acr } = tokenSet.claims();
     const meta = { identityProviderId: providerId, acr };
     const { uid } = req.session;
-    this.identity.storeIdentity(uid, user, meta);
+    this.identity.storeIdpIdentity(uid, user, meta);
 
     // BUSINESS: Redirect to business page
     res.redirect(`/interaction/${uid}/consent`);

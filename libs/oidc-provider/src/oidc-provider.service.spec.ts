@@ -70,7 +70,7 @@ describe('OidcProviderService', () => {
   };
 
   const identityServiceMock = {
-    getIdentity: jest.fn(),
+    getSpIdentity: jest.fn(),
   };
 
   const exceptionFilterMock = {
@@ -362,7 +362,7 @@ describe('OidcProviderService', () => {
       const ctx = { not: 'altered' };
       const sub = 'foo';
       const identityMock = {};
-      identityServiceMock.getIdentity.mockResolvedValueOnce(identityMock);
+      identityServiceMock.getSpIdentity.mockResolvedValueOnce(identityMock);
       // When
       const result = await service['findAccount'](ctx, sub);
       // Then
@@ -375,7 +375,7 @@ describe('OidcProviderService', () => {
       const ctx = { not: 'altered' };
       const sub = 'foo';
       const identityMock = {};
-      identityServiceMock.getIdentity.mockResolvedValueOnce({
+      identityServiceMock.getSpIdentity.mockResolvedValueOnce({
         identity: identityMock,
       });
       const result = await service['findAccount'](ctx, sub);
@@ -390,7 +390,7 @@ describe('OidcProviderService', () => {
       const ctx = { not: 'altered' };
       const sub = 'foo';
       const exception = new Error('foo');
-      identityServiceMock.getIdentity.mockRejectedValueOnce(exception);
+      identityServiceMock.getSpIdentity.mockRejectedValueOnce(exception);
       service['throwError'] = jest.fn();
       // When
       await service['findAccount'](ctx, sub);
