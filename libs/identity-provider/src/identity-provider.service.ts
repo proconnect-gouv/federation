@@ -34,6 +34,9 @@ export class IdentityProviderService implements IIdentityProviderService {
           redirect_uris: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/camelcase
+          post_logout_redirect_uris: true,
+          // oidc defined variable name
+          // eslint-disable-next-line @typescript-eslint/camelcase
           id_token_encrypted_response_alg: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/camelcase
