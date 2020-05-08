@@ -12,7 +12,11 @@ import { ConfigService } from '@fc/config';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { CryptoProtocol } from '@fc/microservices';
 import { IPivotIdentity } from '../interfaces';
-import { CryptographyGatewayException } from '../exceptions';
+import {
+  CryptographyGatewayException,
+  CryptographyComputeIdentityHashException,
+} from '../exceptions';
+import { CryptographyConfig } from '../dto';
 
 const NONCE_LENGTH = 12;
 const AUTHTAG_LENGTH = 16;
@@ -41,44 +45,42 @@ export class CryptographyService {
    * @param data the data to encrypt
    * @returns the cipher
    */
-  encryptUserInfosCache(key: string, data: any): Buffer {
-    /**
-     * @TODO add a try/catch and re throw specific exception if data can't be "JSON.parsed"
-     * @see https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Objets_globaux/JSON/stringify
-     * "TypeError" " BigInt value can't be serialized in JSON"  and "cyclic object value"
-     */
-    const plaintext = JSON.stringify(data);
-
-    return this.encrypt(key, plaintext);
+  encryptUserInfosCache(key: string, data: string): Buffer {
+    return this.encrypt(key, data);
   }
 
   /**
    * Decrypt the given UserInfos retrieved from cache for oidc-provider.
    * Current implementation use symetrical AES-256-GCM.
-   * @todo create an interface with the data schema to transfer to oidc-provider
+   *
    * @see https://crypto.stackexchange.com/a/18092
    * @param key the key to encrypt the data
    * @param cipher the cipher to decrypt
    * @returns the data decrypted
    */
   decryptUserInfosCache(key: string, cipher: Buffer): any {
-    const receivedPlaintext = this.decrypt(key, cipher);
-
-    /** @TODO add try/catch block and re thow specific exception */
-    return JSON.parse(receivedPlaintext);
+    return this.decrypt(key, cipher);
   }
 
-  // Simple alias
-  // istanbul ignore next line
+  /**
+   * Decrypt client secrect with specific key provided by configuration
+   *
+   * @param clientSecret
+   */
   decryptClientSecret(clientSecret: string): string {
-    return this.decrypt(
-      process.env.CLIENT_SECRET_CIPHER_PASS,
-      Buffer.from(clientSecret, 'base64'),
+    const { clientSecretEcKey } = this.config.get<CryptographyConfig>(
+      'Cryptography',
     );
+    return this.decrypt(clientSecretEcKey, Buffer.from(clientSecret, 'base64'));
   }
 
   /**
    * Compute the identity hash
+   *
+   * @TODO implement precise object serialisation,
+   * property per property, to enforce predictability
+   * and stay compatible with core v1 (if there are no additional cost)
+   *
    * Current implementation uses sha256
    * @param pivotIdentity
    * @returns the identity hash "hex" digested
@@ -86,11 +88,14 @@ export class CryptographyService {
   computeIdentityHash(pivotIdentity: IPivotIdentity): string {
     const hash = createHash('sha256');
 
-    /** @TODO add try/catch block + specific exception */
-    const serial = JSON.stringify(pivotIdentity);
-    hash.update(serial);
+    try {
+      const serial = JSON.stringify(pivotIdentity);
+      hash.update(serial);
 
-    return hash.digest('hex');
+      return hash.digest('hex');
+    } catch (error) {
+      throw new CryptographyComputeIdentityHashException(error);
+    }
   }
 
   /**

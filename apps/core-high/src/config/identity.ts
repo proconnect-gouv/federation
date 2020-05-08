@@ -1,4 +1,4 @@
-import { IdentityConfig } from 'libs/identity/src';
+import { IdentityConfig } from '@fc/identity';
 
 export default {
   cryptographyKey: process.env.USERINFO_CRYPT_KEY,
