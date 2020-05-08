@@ -24,7 +24,7 @@ describe('OidcClient Controller', () => {
   } as unknown) as LoggerService;
 
   const identityServiceMock = {
-    storeIdentity: jest.fn(),
+    storeIdpIdentity: jest.fn(),
   };
 
   beforeEach(async () => {

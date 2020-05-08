@@ -81,7 +81,7 @@ describe('Error scenarios', () => {
 
   describe('Account', () => {
     // waiting merge database infra
-    it.skip('should trigger error Y180001 (user blocked)', () => {
+    it('should trigger error Y180001 (user blocked)', () => {
       basicErrorScenario({
         errorCode: 'E000001',
         idpId: 'fip1v2',

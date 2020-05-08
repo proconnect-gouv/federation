@@ -40,8 +40,9 @@ describe('CoreFcpService', () => {
   };
 
   const identityServiceMock = {
-    getIdentity: jest.fn(),
-    storeIdentity: jest.fn(),
+    getIdpIdentity: jest.fn(),
+    storeSpIdentity: jest.fn(),
+    deleteIdpIdentity: jest.fn(),
   };
 
   const accountServiceMock = {
@@ -98,7 +99,7 @@ describe('CoreFcpService', () => {
 
     getInteractionMock.mockResolvedValue(getInteractionResultMock);
 
-    identityServiceMock.getIdentity.mockResolvedValue({
+    identityServiceMock.getIdpIdentity.mockResolvedValue({
       identity: identityMock,
       meta: { identityProviderId: '42', acr: 'eidas3' },
     });
@@ -146,7 +147,7 @@ describe('CoreFcpService', () => {
     it('Should throw if identity provider is not usable', () => {
       // Given
       const errorMock = new Error('my error');
-      identityServiceMock.getIdentity.mockRejectedValueOnce(errorMock);
+      identityServiceMock.getIdpIdentity.mockRejectedValueOnce(errorMock);
       // Then
       expect(service.getConsent(reqMock, resMock)).rejects.toThrow(errorMock);
     });
@@ -160,7 +161,7 @@ describe('CoreFcpService', () => {
     it('Should throw if identity storage for service provider fails', () => {
       // Given
       const errorMock = new Error('my error');
-      identityServiceMock.storeIdentity.mockRejectedValueOnce(errorMock);
+      identityServiceMock.storeSpIdentity.mockRejectedValueOnce(errorMock);
       // Then
       expect(service.getConsent(reqMock, resMock)).rejects.toThrow(errorMock);
     });

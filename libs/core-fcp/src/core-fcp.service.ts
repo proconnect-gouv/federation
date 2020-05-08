@@ -92,6 +92,9 @@ export class CoreFcpService {
       rnippIdentity, // use identity from RNIPP for SP
     );
 
+    // Delete original identity from volatile memory
+    await this.identity.deleteIdpIdentity(interactionId);
+
     // Save identity to volatile memory for service provider.
     await this.storeIdentityForServiceProvider(
       interactionId,
@@ -136,7 +139,9 @@ export class CoreFcpService {
   }
 
   private async getIdentityInfo(interactionId) {
-    const { identity, meta } = await this.identity.getIdentity(interactionId);
+    const { identity, meta } = await this.identity.getIdpIdentity(
+      interactionId,
+    );
 
     return {
       idpId: meta.identityProviderId,
@@ -223,7 +228,7 @@ export class CoreFcpService {
   ): Promise<void> {
     const identityForSp = { ...identity, sub };
     const meta = {};
-    await this.identity.storeIdentity(interactionId, identityForSp, meta);
+    await this.identity.storeSpIdentity(interactionId, identityForSp, meta);
   }
 
   private checkIfAcrIsValid(receivedAcr: string, requestedAcr: string) {
