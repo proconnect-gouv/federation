@@ -6,7 +6,10 @@ import * as ecdsaSignaturesService from 'jose/lib/help/ecdsa_signatures';
 import { CryptographyService } from './cryptography.service';
 import { IPivotIdentity } from '../interfaces';
 import { OverrideCode } from '@fc/common';
-import { CryptographyGatewayException } from '../exceptions';
+import {
+  CryptographyGatewayException,
+  CryptographyComputeIdentityHashException,
+} from '../exceptions';
 
 describe('CryptographyService', () => {
   let service: CryptographyService;
@@ -178,7 +181,7 @@ describe('CryptographyService', () => {
 
     it('should serialize the given data and encrypt it calling "this.encrypt"', () => {
       // action
-      service.encryptUserInfosCache(mockEncryptKey, mockData);
+      service.encryptUserInfosCache(mockEncryptKey, mockDataToEncrypt);
 
       // expect
       expect(service['encrypt']).toHaveBeenCalledTimes(1);
@@ -190,10 +193,17 @@ describe('CryptographyService', () => {
 
     it('should return a buffer containing "nonce", "authTag" and "ciphertext" in this order', () => {
       // setup
-      const finalCipher = Buffer.concat([mockRandomBytes12, mockAuthTag16, mockCiphertext]);
+      const finalCipher = Buffer.concat([
+        mockRandomBytes12,
+        mockAuthTag16,
+        mockCiphertext,
+      ]);
 
       // action
-      const result = service.encryptUserInfosCache(mockEncryptKey, mockData);
+      const result = service.encryptUserInfosCache(
+        mockEncryptKey,
+        mockDataToEncrypt,
+      );
 
       // expect
       expect(result).toMatchObject(finalCipher);
@@ -214,10 +224,28 @@ describe('CryptographyService', () => {
         mockEncryptKey,
         mockCipher,
       );
-      expect(result).toMatchObject(mockData);
+      expect(result).toBe(mockDataToEncrypt);
     });
   });
 
+  describe('decryptClientSecret', () => {
+    it('should call decrypt with enc key from config', () => {
+      // Given
+      const keyMock = 'my key mock';
+      const clientSecretMock = 'some string';
+      configMock.get.mockReturnValueOnce({ clientSecretEcKey: keyMock });
+      service['decrypt'] = jest.fn();
+      // When
+      service.decryptClientSecret(clientSecretMock);
+      // Then
+      expect(configMock.get).toHaveBeenCalledTimes(1);
+      expect(service['decrypt']).toHaveBeenCalledTimes(1);
+      expect(service['decrypt']).toHaveBeenCalledWith(
+        keyMock,
+        Buffer.from(clientSecretMock, 'base64'),
+      );
+    });
+  });
   describe('computeIdentityHash', () => {
     beforeEach(() => {
       jest
@@ -257,6 +285,20 @@ describe('CryptographyService', () => {
       expect(mockHash256.digest).toHaveBeenCalledTimes(1);
       expect(mockHash256.digest).toHaveBeenCalledWith('hex');
       expect(result).toBe(mockHexDigestedHash);
+    });
+
+    it('should throw if JSON.stringify throws', () => {
+      // Given
+      const identityHashMock = {} as IPivotIdentity;
+      const error = new TypeError('some bad JSON stuff');
+      jest.spyOn(JSON, 'stringify').mockImplementation(() => {
+        throw error;
+      });
+      // When
+      const call = () => service.computeIdentityHash(identityHashMock);
+      // Then
+      expect(call).toThrow(CryptographyComputeIdentityHashException);
+      expect(call).toThrow(error);
     });
   });
 

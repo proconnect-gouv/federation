@@ -8,6 +8,7 @@ import Redis from './redis';
 import Rnipp from './rnipp';
 import CryptographyBroker from './cryptography-broker';
 import Identity from './identity';
+import Cryptography from './cryptography';
 
 export default {
   App,
@@ -19,4 +20,5 @@ export default {
   Rnipp,
   Identity,
   CryptographyBroker,
+  Cryptography,
 } as CoreFcpConfig;
