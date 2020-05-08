@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { IIdentityService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
-import { RedisService } from '@fc/redis';
+import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { IdentityConfig } from './dto';
@@ -16,7 +16,7 @@ export class IdentityService implements IIdentityService {
   constructor(
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
-    private readonly redis: RedisService,
+    @Inject(REDIS_CONNECTION_TOKEN) private readonly redis: Redis,
     private readonly cryptography: CryptographyService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -99,11 +99,9 @@ export class IdentityService implements IIdentityService {
     meta: any,
   ): Promise<boolean> {
     this.logger.debug('store identity in redis');
-    const data = this.serialize({
-      identity,
-      meta,
-    });
+    const data = this.serialize({ identity, meta });
+    const status = await this.redis.set(key, data);
 
-    return this.redis.set(key, data);
+    return Boolean(status);
   }
 }
