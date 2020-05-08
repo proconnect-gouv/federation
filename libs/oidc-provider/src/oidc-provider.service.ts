@@ -289,7 +289,7 @@ export class OidcProviderService {
     this.logger.debug('OidcProviderService.findAccount()');
 
     try {
-      const { identity } = await this.identity.getIdentity(sub);
+      const { identity } = await this.identity.getSpIdentity(sub);
 
       return {
         accountId: sub,

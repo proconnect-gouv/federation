@@ -11,6 +11,9 @@ import {
 } from './exceptions';
 import { IIdentity } from './interfaces';
 
+export const IDP_IDENTITY_PREFIX = 'IDP-ID:';
+export const SP_IDENTITY_PREFIX = 'SP-ID:';
+
 @Injectable()
 export class IdentityService implements IIdentityService {
   constructor(
@@ -75,7 +78,9 @@ export class IdentityService implements IIdentityService {
    * @TODO interface/DTO for identity
    * @TODO handle return or throw if persistance fails
    */
-  async getIdentity(key: string): Promise<{ identity: IIdentity; meta: any }> {
+  private async getIdentity(
+    key: string,
+  ): Promise<{ identity: IIdentity; meta: any }> {
     this.logger.debug('get identity from redis');
     const dataCipher = await this.redis.get(key);
 
@@ -93,7 +98,7 @@ export class IdentityService implements IIdentityService {
    * @TODO interface/DTO for identity
    * @TODO handle return or throw if persistance fails
    */
-  async storeIdentity(
+  private async storeIdentity(
     key: string,
     identity: IIdentity,
     meta: any,
@@ -103,5 +108,53 @@ export class IdentityService implements IIdentityService {
     const status = await this.redis.set(key, data);
 
     return Boolean(status);
+  }
+
+  /**
+   * Remove an identity from volatile memory
+   * @param key
+   */
+  private async deleteIdentity(key: string): Promise<number> {
+    this.logger.debug('delete identity in redis');
+
+    return this.redis.del(key);
+  }
+
+  /**
+   * Shortcut methods with prefixs for IdP
+   */
+  storeIdpIdentity(
+    key: string,
+    identity: IIdentity,
+    meta: any,
+  ): Promise<boolean> {
+    return this.storeIdentity(`${IDP_IDENTITY_PREFIX}${key}`, identity, meta);
+  }
+
+  getIdpIdentity(key: string): Promise<{ identity: IIdentity; meta: any }> {
+    return this.getIdentity(`${IDP_IDENTITY_PREFIX}${key}`);
+  }
+
+  deleteIdpIdentity(key: string): Promise<number> {
+    return this.deleteIdentity(`${IDP_IDENTITY_PREFIX}${key}`);
+  }
+
+  /**
+   * Shortcut methods with prefixs for SP
+   */
+  storeSpIdentity(
+    key: string,
+    identity: IIdentity,
+    meta: any,
+  ): Promise<boolean> {
+    return this.storeIdentity(`${SP_IDENTITY_PREFIX}${key}`, identity, meta);
+  }
+
+  getSpIdentity(key: string): Promise<{ identity: IIdentity; meta: any }> {
+    return this.getIdentity(`${SP_IDENTITY_PREFIX}${key}`);
+  }
+
+  deleteSpIdentity(key: string): Promise<number> {
+    return this.deleteIdentity(`${SP_IDENTITY_PREFIX}${key}`);
   }
 }
