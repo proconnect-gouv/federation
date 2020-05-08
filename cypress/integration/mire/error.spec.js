@@ -1,5 +1,5 @@
 function basicErrorScenario(params) {
-  const { idpId, errorCode } = params;
+  const { idpId, errorCode, eidasLevel } = params;
   const password = '123';
 
   // FS: Click on FC button
@@ -20,6 +20,10 @@ function basicErrorScenario(params) {
     .clear()
     .type(password);
 
+  if (eidasLevel) {
+    cy.get('select[name="acr"]').select(eidasLevel);
+  }
+
   cy.get('input[type="submit"]').click();
 }
 
@@ -30,120 +34,145 @@ function checkError(errorCode) {
 }
 
 describe('Error scenarios', () => {
-  it('should trigger error Y030110 (session not found)', () => {
-    basicErrorScenario({
-      errorCode: 'test',
-      eidasLevel: 1,
-      idpId: 'test',
+  describe('Acr', () => {
+    it('should trigger error Y000400 (HTTP 400) when acr from SP is not supported', () => {
+      const baseUrl =
+        '/api/v2/authorize?client_id=a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc&scope=openid&response_type=code&redirect_uri=https%3A%2F%2Fudv2.docker.dev-franceconnect.fr%2Fauthentication%2Flogin-callback&state=stateTraces&nonce=nonceTraces&acr_values=';
+
+      // Control visit
+      cy.visit(`${baseUrl}eidas2`);
+      cy.get('#idp-fip1v2');
+
+      // Real test
+      cy.visit(`${baseUrl}NonSupportedAcr`, { failOnStatusCode: false });
+      cy.get('h1').contains('🚨 Erreur 😓 !');
+      cy.get('pre').contains('code : Y000400');
     });
 
-    cy.clearCookies();
+    it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
+      basicErrorScenario({
+        errorCode: 'test',
+        idpId: 'fip1v2',
+        eidasLevel: 'eidas1',
+      });
 
-    cy.get('#consent').click();
-
-    cy.url().should('match', new RegExp(`\/interaction\/.*\/login`));
-    cy.get('h1').contains('🚨 Erreur 😓 !');
-    cy.get('pre').contains('code : Y030110');
-  });
-  it('should trigger error Y180001 (user blocked)', () => {
-    basicErrorScenario({
-      errorCode: 'E000001',
-      eidasLevel: 1,
-      idpId: 'test',
+      cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/consent`));
+      cy.get('h1').contains('🚨 Erreur 😓 !');
+      cy.get('pre').contains('code : Y020001');
     });
-
-    cy.url().should('match', new RegExp(`\/interaction\/.*\/consent`));
-    cy.get('h1').contains('🚨 Erreur 😓 !');
-    cy.get('pre').contains('code : Y180001');
-  });
-
-  it('should trigger error Y010004', () => {
-    basicErrorScenario({
-      errorCode: 'E010004',
-      eidasLevel: 1,
-      idpId: 'fip1v2',
-    });
-
-    checkError('Y010004');
   });
 
-  it('should trigger error Y010006', () => {
-    basicErrorScenario({
-      errorCode: 'E010006',
-      eidasLevel: 1,
-      idpId: 'fip1v2',
-    });
+  describe('Session', () => {
+    it('should trigger error Y030110 (session not found)', () => {
+      basicErrorScenario({
+        errorCode: 'test',
+        idpId: 'fip1v2',
+      });
 
-    checkError('Y010006');
+      cy.clearCookies();
+
+      cy.get('#consent').click();
+
+      cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/login`));
+      cy.get('h1').contains('🚨 Erreur 😓 !');
+      cy.get('pre').contains('code : Y030110');
+    });
   });
 
-  it('should trigger error Y010007', () => {
-    basicErrorScenario({
-      errorCode: 'E010007',
-      eidasLevel: 1,
-      idpId: 'fip1v2',
-    });
+  describe('Account', () => {
+    // waiting merge database infra
+    it.skip('should trigger error Y180001 (user blocked)', () => {
+      basicErrorScenario({
+        errorCode: 'E000001',
+        idpId: 'fip1v2',
+      });
 
-    checkError('Y010007');
+      cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/consent`));
+      cy.get('h1').contains('🚨 Erreur 😓 !');
+      cy.get('pre').contains('code : Y180001');
+    });
   });
 
-  it('should trigger error Y010008', () => {
-    basicErrorScenario({
-      errorCode: 'E010008',
-      eidasLevel: 1,
-      idpId: 'fip1v2',
+  describe('RNIPP', () => {
+    it('should trigger error Y010004', () => {
+      basicErrorScenario({
+        errorCode: 'E010004',
+        idpId: 'fip1v2',
+      });
+
+      checkError('Y010004');
     });
 
-    checkError('Y010008');
-  });
+    it('should trigger error Y010006', () => {
+      basicErrorScenario({
+        errorCode: 'E010006',
+        idpId: 'fip1v2',
+      });
 
-  it('should trigger error Y010009', () => {
-    basicErrorScenario({
-      errorCode: 'E010009',
-      eidasLevel: 1,
-      idpId: 'fip1v2',
+      checkError('Y010006');
     });
 
-    checkError('Y010009');
-  });
+    it('should trigger error Y010007', () => {
+      basicErrorScenario({
+        errorCode: 'E010007',
+        idpId: 'fip1v2',
+      });
 
-  it('should trigger error Y010011', () => {
-    basicErrorScenario({
-      errorCode: 'E010011',
-      eidasLevel: 1,
-      idpId: 'fip1v2',
+      checkError('Y010007');
     });
 
-    checkError('Y010011');
-  });
+    it('should trigger error Y010008', () => {
+      basicErrorScenario({
+        errorCode: 'E010008',
+        idpId: 'fip1v2',
+      });
 
-  it('should trigger error Y010012', () => {
-    basicErrorScenario({
-      errorCode: 'E010012',
-      eidasLevel: 1,
-      idpId: 'fip1v2',
+      checkError('Y010008');
     });
 
-    checkError('Y010012');
-  });
+    it('should trigger error Y010009', () => {
+      basicErrorScenario({
+        errorCode: 'E010009',
+        idpId: 'fip1v2',
+      });
 
-  it('should trigger error Y010013', () => {
-    basicErrorScenario({
-      errorCode: 'E010013',
-      eidasLevel: 1,
-      idpId: 'fip1v2',
+      checkError('Y010009');
     });
 
-    checkError('Y010013');
-  });
+    it('should trigger error Y010011', () => {
+      basicErrorScenario({
+        errorCode: 'E010011',
+        idpId: 'fip1v2',
+      });
 
-  it('should trigger error Y010015', () => {
-    basicErrorScenario({
-      errorCode: 'E010015',
-      eidasLevel: 1,
-      idpId: 'fip1v2',
+      checkError('Y010011');
     });
 
-    checkError('Y010015');
+    it('should trigger error Y010012', () => {
+      basicErrorScenario({
+        errorCode: 'E010012',
+        idpId: 'fip1v2',
+      });
+
+      checkError('Y010012');
+    });
+
+    it('should trigger error Y010013', () => {
+      basicErrorScenario({
+        errorCode: 'E010013',
+        idpId: 'fip1v2',
+      });
+
+      checkError('Y010013');
+    });
+
+    it('should trigger error Y010015', () => {
+      basicErrorScenario({
+        errorCode: 'E010015',
+        idpId: 'fip1v2',
+      });
+
+      checkError('Y010015');
+    });
   });
 });
