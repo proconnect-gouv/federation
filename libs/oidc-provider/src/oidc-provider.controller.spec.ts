@@ -129,6 +129,30 @@ describe('OidcProviderController', () => {
     });
   });
 
+  describe('getLogout', () => {
+    it('should call logout service', async () => {
+      // Given
+      const next = jest.fn();
+
+      // When
+      await oidcProviderController.getLogout(next);
+      // Then
+      expect(next).toBeCalledTimes(1);
+    });
+  });
+
+  describe('getLogoutConfirm', () => {
+    it('should call logout confirm service', async () => {
+      // Given
+      const next = jest.fn();
+
+      // When
+      await oidcProviderController.getLogoutConfirm(next);
+      // Then
+      expect(next).toBeCalledTimes(1);
+    });
+  });
+
   describe('checkIfSpIsUsable', () => {
     it('should call serviceProvider method', async () => {
       // Given

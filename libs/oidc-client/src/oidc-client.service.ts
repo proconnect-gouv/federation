@@ -7,6 +7,7 @@ import {
   Client,
   ClientMetadata,
 } from 'openid-client';
+
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcClientConfig } from './dto';

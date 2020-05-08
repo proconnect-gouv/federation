@@ -1,5 +1,9 @@
 import { OidcProviderConfig } from '@fc/oidc-provider';
 
+const MINUTE_IN_SECONDS = 60;
+const HOUR_IN_SECONDS = 3600;
+const DAY_IN_SECONDS = 86400;
+
 export default {
   reloadConfigDelayInMs: 60000,
   issuer: process.env.ISSUER_URL,
@@ -9,7 +13,7 @@ export default {
       interaction: '/interaction',
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/camelcase
-      end_session: '/user/session/end',
+      end_session: '/api/v2/logout',
       revocation: '/user/token/revocation',
       token: '/api/v2/token',
       userinfo: '/api/v2/userinfo',
@@ -25,6 +29,15 @@ export default {
       devInteractions: { enabled: false },
       encryption: { enabled: true },
       jwtUserinfo: { enabled: true },
+      sessionManagement: { enabled: true },
+      backchannelLogout: { enabled: true },
+    },
+    ttl: {
+      AccessToken: 1 * HOUR_IN_SECONDS, // 1 hour in seconds
+      AuthorizationCode: 10 * MINUTE_IN_SECONDS, // 10 minutes in seconds
+      IdToken: 1 * HOUR_IN_SECONDS, // 1 hour in seconds
+      DeviceCode: 10 * MINUTE_IN_SECONDS, // 10 minutes in seconds
+      RefreshToken: 1 * DAY_IN_SECONDS, // 1 day in seconds
     },
     acrValues: ['eidas1', 'eidas2', 'eidas3'],
     claims: {
