@@ -39,6 +39,9 @@ export class ServiceProviderService implements IServiceProviderService {
           redirect_uris: true,
           // openid defined property names
           // eslint-disable-next-line @typescript-eslint/camelcase
+          post_logout_redirect_uris: true,
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/camelcase
           id_token_signed_response_alg: true,
           // openid defined property names
           // eslint-disable-next-line @typescript-eslint/camelcase

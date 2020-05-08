@@ -70,6 +70,7 @@ export class OidcProviderService {
 
     try {
       this.provider = new this.ProviderProxy(issuer, configuration);
+      this.provider.proxy = true;
     } catch (error) {
       throw new OidcProviderInitialisationException(error);
     }
@@ -320,6 +321,30 @@ export class OidcProviderService {
   }
 
   /**
+   * More documentation can be found in oidc-provider repo
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#logoutsource
+   */
+  private async logoutSource(ctx: KoaContextWithOIDC, form: any) {
+    ctx.body = `<!DOCTYPE html>
+      <head>
+        <title>Logout</title>
+      </head>
+      <body>
+        ${form}
+        <script>
+          var form = document.forms[0];
+          var input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'logout';
+          input.value = 'yes';
+          form.appendChild(input);
+          form.submit();
+        </script>
+      </body>
+      </html>`;
+  }
+
+  /**
    * Compose full config by merging static parameters from:
    *  - configuration file (some may be coming from environment variables)
    *  - database (SP configuration)
@@ -370,6 +395,7 @@ export class OidcProviderService {
         clients,
         findAccount: this.findAccount.bind(this),
         renderError: this.renderError.bind(this),
+        logoutSource: this.logoutSource.bind(this),
       },
     };
   }
