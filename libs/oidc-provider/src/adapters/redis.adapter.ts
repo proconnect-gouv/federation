@@ -1,6 +1,8 @@
 import { Adapter, AdapterConstructor } from 'oidc-provider';
+
 import { isEmpty } from 'lodash';
-import { RedisService } from '@fc/redis';
+import { Inject } from '@nestjs/common';
+import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { LoggerService } from '@fc/logger';
 import {
   OidcProviderStringifyPayloadForRedisException,
@@ -41,7 +43,7 @@ export class RedisAdapter implements Adapter {
      * Bound arguments
      */
     private readonly logger: LoggerService,
-    private readonly redis: RedisService,
+    @Inject(REDIS_CONNECTION_TOKEN) private readonly redis: Redis,
     /**
      * Instantiation time argument,
      * must remain the last one.
@@ -61,7 +63,7 @@ export class RedisAdapter implements Adapter {
     /**
      * Bind services we want to inject from our regular NestJs service.
      *
-     * NB: Thoses services must be public properties.
+     * NB: Thoses services are privates but we need them to keep NestJs context.
      */
     const boundConstructor = RedisAdapter.bind(
       null,
@@ -130,7 +132,7 @@ export class RedisAdapter implements Adapter {
       : stringified;
 
     const command = consumable.has(this.contextName) ? 'hmset' : 'set';
-    multi[command](key, store);
+    (multi[command] as Function)(key, store);
 
     if (expiresIn) {
       multi.expire(key, expiresIn);
@@ -161,14 +163,7 @@ export class RedisAdapter implements Adapter {
       multi.expire(uidKey, expiresIn);
     }
 
-    await new Promise((resolve, reject) => {
-      multi.exec((err: Error, result: string | object) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(result);
-      });
-    });
+    await multi.exec();
   }
 
   async find(id: string) {
@@ -227,14 +222,8 @@ export class RedisAdapter implements Adapter {
     const tokens = await this.redis.lrange(this.grantKeyFor(grantId), 0, -1);
     tokens.forEach((token: string) => multi.del(token));
     multi.del(this.grantKeyFor(grantId));
-    await new Promise((resolve, reject) => {
-      multi.exec((err: Error, result: string | object) => {
-        if (err) {
-          return reject(err);
-        }
-        return resolve(result);
-      });
-    });
+
+    await multi.exec();
   }
 
   async consume(id: string) {
