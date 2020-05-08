@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { RedisService } from '@fc/redis';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
+import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import {
   IdentityBadFormatException,
   IdentityNotFoundException,
@@ -24,7 +24,7 @@ describe('IdentityService', () => {
   };
 
   const redisGetReturnValueMock = 'redisGetReturnValueMock';
-  const redisServiceMock = {
+  const redisMock = {
     get: jest.fn(),
     set: jest.fn(),
   };
@@ -40,15 +40,16 @@ describe('IdentityService', () => {
       providers: [
         IdentityService,
         LoggerService,
-        RedisService,
         ConfigService,
         CryptographyService,
+        {
+          provide: REDIS_CONNECTION_TOKEN,
+          useValue: redisMock,
+        },
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(RedisService)
-      .useValue(redisServiceMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyServiceMock)
       .overrideProvider(ConfigService)
@@ -70,8 +71,8 @@ describe('IdentityService', () => {
       '{"foo": "bar"}',
     );
 
-    redisServiceMock.get.mockResolvedValue(redisGetReturnValueMock);
-    redisServiceMock.set.mockResolvedValue(true);
+    redisMock.get.mockResolvedValue(redisGetReturnValueMock);
+    redisMock.set.mockResolvedValue('OK');
   });
 
   it('should be defined', () => {
@@ -152,25 +153,39 @@ describe('IdentityService', () => {
     const dataMock = ({ foo: 'bar' } as unknown) as IIdentity;
     const meta = { identityProviderId: '1337' };
 
-    it('should call serialize with dataMock', () => {
+    it('should call serialize with dataMock', async () => {
       // Given
       service['serialize'] = jest.fn();
       // When
-      service.storeIdentity(key, dataMock, meta);
+      await service.storeIdentity(key, dataMock, meta);
       // Then
       expect(service['serialize']).toHaveBeenCalledWith({
         identity: dataMock,
         meta,
       });
     });
-    it('should call redis set with serialize result', () => {
+    it('should call redis set with serialize result', async () => {
       // Given
       const serializeResult = Symbol('serialized result');
       service['serialize'] = jest.fn().mockReturnValue(serializeResult);
       // When
-      service.storeIdentity(key, dataMock, meta);
+      await service.storeIdentity(key, dataMock, meta);
       // Then
-      expect(redisServiceMock.set).toHaveBeenCalledWith(key, serializeResult);
+      expect(redisMock.set).toHaveBeenCalledWith(key, serializeResult);
+    });
+    it('should return true if set was successfull', async () => {
+      // When
+      const res = await service.storeIdentity(key, dataMock, meta);
+      // Then
+      expect(res).toEqual(true);
+    });
+    it('should return false if set was NOT successfull', async () => {
+      // Given
+      redisMock.set.mockResolvedValue(null);
+      // When
+      const res = await service.storeIdentity(key, dataMock, meta);
+      // Then
+      expect(res).toEqual(false);
     });
   });
 
@@ -181,7 +196,7 @@ describe('IdentityService', () => {
       // When
       await service.getIdentity(key);
       // Then
-      expect(redisServiceMock.get).toHaveBeenCalledWith(key);
+      expect(redisMock.get).toHaveBeenCalledWith(key);
     });
     it('should call unserialize with dataMock from redis get', async () => {
       // Given
@@ -204,7 +219,7 @@ describe('IdentityService', () => {
     });
     it('should throw if identity is not found in redis', async () => {
       // Given
-      redisServiceMock.get.mockResolvedValue(false);
+      redisMock.get.mockResolvedValue(false);
       // Then
       await expect(service.getIdentity(key)).rejects.toThrow(
         IdentityNotFoundException,

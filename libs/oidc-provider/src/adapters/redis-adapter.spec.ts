@@ -1,5 +1,5 @@
 import { LoggerService } from '@fc/logger';
-import { RedisService } from '@fc/redis';
+import { Redis } from '@fc/redis';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { RedisAdapter, REDIS_PREFIX } from './redis.adapter';
 import {
@@ -40,7 +40,7 @@ describe('RedisAdapter', () => {
   beforeEach(() => {
     adapter = new RedisAdapter(
       loggerMock,
-      (redisMock as unknown) as RedisService,
+      (redisMock as unknown) as Redis,
       testAdapterName,
     );
 
@@ -48,7 +48,7 @@ describe('RedisAdapter', () => {
     redisMock.multi.mockReturnValue(multiMock);
     redisMock.ttl.mockResolvedValue(42);
     redisMock.lrange.mockResolvedValue(['a', 'b', 'c']);
-    multiMock.exec.mockImplementation(cb => cb());
+    multiMock.exec.mockImplementation();
   });
 
   describe('constructor', () => {
@@ -56,7 +56,7 @@ describe('RedisAdapter', () => {
       // when
       new RedisAdapter(
         loggerMock,
-        (redisMock as unknown) as RedisService,
+        (redisMock as unknown) as Redis,
         testAdapterName,
       );
       // Then
@@ -116,7 +116,7 @@ describe('RedisAdapter', () => {
       // Given
       const authorizationCodeAdapter = new RedisAdapter(
         loggerMock,
-        (redisMock as unknown) as RedisService,
+        (redisMock as unknown) as Redis,
         'AuthorizationCode',
       );
       // When
@@ -218,7 +218,7 @@ describe('RedisAdapter', () => {
     it('should throw an error if exec fails ', async () => {
       // Given
       const error = new Error('exec failed');
-      multiMock.exec.mockImplementationOnce(cb => cb(error));
+      multiMock.exec.mockRejectedValueOnce(error);
       // Then
       expect(adapter.upsert(idMock, defaultPayload)).rejects.toThrow(error);
     });
@@ -238,7 +238,7 @@ describe('RedisAdapter', () => {
       // Given
       const authorizationCodeAdapter = new RedisAdapter(
         loggerMock,
-        (redisMock as unknown) as RedisService,
+        (redisMock as unknown) as Redis,
         'AuthorizationCode',
       );
       const idMock = 'foo';
@@ -394,7 +394,7 @@ describe('RedisAdapter', () => {
       // Given
       const idMock = 'foo';
       const errorMock = new Error('exec failed');
-      multiMock.exec.mockImplementationOnce(cb => cb(errorMock));
+      multiMock.exec.mockRejectedValueOnce(errorMock);
       // Then
       expect(adapter.revokeByGrantId(idMock)).rejects.toThrow(errorMock);
     });

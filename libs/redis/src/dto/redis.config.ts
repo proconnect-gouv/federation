@@ -9,11 +9,11 @@ export class RedisConfig {
 
   @IsNumber()
   @Type(() => Number)
-  readonly port: number | string;
+  readonly port: number;
 
   @IsNumber()
   @Type(() => Number)
-  readonly db: number | string;
+  readonly db: number;
 
   /**
    * @TODO Configure password on docker-compose and make this mandatory
