@@ -4,10 +4,9 @@ import * as MemoryAdapter from 'oidc-provider/lib/adapters/memory_adapter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-import { LogLevelNames } from '@fc/logger';
+import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
+import { LoggerService, LogLevelNames } from '@fc/logger';
 import { FcExceptionFilter } from '@fc/error';
-import { RedisService } from '@fc/redis';
 import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
@@ -30,8 +29,6 @@ describe('OidcProviderService', () => {
       use: jest.fn(),
     },
   };
-
-  const redisServiceMock = {};
 
   const ProviderProxyMock = class {
     callback() {
@@ -81,12 +78,21 @@ describe('OidcProviderService', () => {
     catch: jest.fn(),
   };
 
+  const redisMock = {
+    hgetall: jest.fn(),
+    get: jest.fn(),
+    multi: jest.fn(),
+    hset: jest.fn(),
+    ttl: jest.fn(),
+    lrange: jest.fn(),
+    del: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ConfigService,
         LoggerService,
-        RedisService,
         OidcProviderService,
         HttpAdapterHost,
         FcExceptionFilter,
@@ -98,14 +104,16 @@ describe('OidcProviderService', () => {
           provide: SERVICE_PROVIDER_SERVICE,
           useValue: serviceProviderServiceMock,
         },
+        {
+          provide: REDIS_CONNECTION_TOKEN,
+          useValue: redisMock,
+        },
       ],
     })
       .overrideProvider(HttpAdapterHost)
       .useValue(httpAdapterHostMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(RedisService)
-      .useValue(redisServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(FcExceptionFilter)

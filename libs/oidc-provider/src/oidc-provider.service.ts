@@ -11,7 +11,7 @@ import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
 import { FcExceptionFilter, FcException } from '@fc/error';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
-import { RedisService } from '@fc/redis';
+import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { IIdentityService, IServiceProviderService } from './interfaces';
 import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import {
@@ -37,7 +37,8 @@ export class OidcProviderService {
     private httpAdapterHost: HttpAdapterHost,
     private readonly config: ConfigService,
     readonly logger: LoggerService,
-    readonly redis: RedisService,
+    @Inject(REDIS_CONNECTION_TOKEN)
+    readonly redis: Redis,
     @Inject(IDENTITY_SERVICE)
     private readonly identity: IIdentityService,
     @Inject(SERVICE_PROVIDER_SERVICE)
