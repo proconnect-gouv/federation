@@ -127,6 +127,12 @@
       ],
       "@fc/account/*": [
         "libs/account/src/*"
+      ],
+      "@fc/oidc": [
+        "libs/oidc/src"
+      ],
+      "@fc/oidc/*": [
+        "libs/oidc/src/*"
       ]
     }
   },

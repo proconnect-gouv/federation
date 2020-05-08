@@ -219,6 +219,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/account/tsconfig.lib.json"
       }
+    },
+    "oidc": {
+      "type": "library",
+      "root": "libs/oidc",
+      "entryFile": "index",
+      "sourceRoot": "libs/oidc/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/oidc/tsconfig.lib.json"
+      }
     }
   }
 }

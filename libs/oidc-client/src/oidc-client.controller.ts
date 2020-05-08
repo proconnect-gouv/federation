@@ -61,16 +61,15 @@ export class OidcClientController {
     this.logger.debug('/api/v2/oidc-callback');
 
     // OIDC: call idp's /token endpoint
-    const { access_token: accessToken } = await this.oidcClient.getTokenSet(
-      req,
-      providerId,
-    );
+    const tokenSet = await this.oidcClient.getTokenSet(req, providerId);
+    const { access_token: accessToken } = tokenSet;
 
     // OIDC: call idp's /userinfo endpoint
     const user = await this.oidcClient.getUserInfo(accessToken, providerId);
-    const meta = { identityProviderId: providerId };
 
     // BUSINESS: Locally store received identity
+    const { acr } = tokenSet.claims();
+    const meta = { identityProviderId: providerId, acr };
     const { uid } = req.session;
     this.identity.storeIdentity(uid, user, meta);
 

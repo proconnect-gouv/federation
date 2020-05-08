@@ -5,6 +5,11 @@ import { RnippService } from '@fc/rnipp';
 import { IdentityService, IIdentity } from '@fc/identity';
 import { CryptographyService } from '@fc/cryptography';
 import { AccountBlockedException, AccountService } from '@fc/account';
+import { Acr } from '@fc/oidc';
+import {
+  CoreFcpLowAcrException,
+  CoreFcpInvalidAcrException,
+} from './exceptions';
 
 @Injectable()
 export class CoreFcpService {
@@ -63,8 +68,16 @@ export class CoreFcpService {
     this.logger.debug('getConsent service');
 
     // Grab informations on interaction and identity
-    const { interactionId, spId } = await this.getInteractionInfo(req, res);
-    const { idpId, idpIdentity } = await this.getIdentityInfo(interactionId);
+    const { interactionId, spId, spAcr } = await this.getInteractionInfo(
+      req,
+      res,
+    );
+    const { idpId, idpIdentity, idpAcr } = await this.getIdentityInfo(
+      interactionId,
+    );
+
+    // Acr check
+    await this.checkIfAcrIsValid(idpAcr, spAcr);
 
     // Identity check and normalization
     const rnippIdentity = await this.rnipp.check(idpIdentity);
@@ -118,6 +131,7 @@ export class CoreFcpService {
     return {
       spId: params.client_id,
       interactionId: uid,
+      spAcr: params.acr_values,
     };
   }
 
@@ -126,6 +140,7 @@ export class CoreFcpService {
 
     return {
       idpId: meta.identityProviderId,
+      idpAcr: meta.acr,
       idpIdentity: identity,
     };
   }
@@ -209,5 +224,22 @@ export class CoreFcpService {
     const identityForSp = { ...identity, sub };
     const meta = {};
     await this.identity.storeIdentity(interactionId, identityForSp, meta);
+  }
+
+  private checkIfAcrIsValid(receivedAcr: string, requestedAcr: string) {
+    const received = Acr[receivedAcr];
+    const requested = Acr[requestedAcr];
+
+    if (!received || !requested) {
+      throw new CoreFcpInvalidAcrException(
+        `Invalid ACR parameters, expected: ${requestedAcr}, received: ${receivedAcr}`,
+      );
+    }
+
+    if (received < requested) {
+      throw new CoreFcpLowAcrException(
+        `Low ACR: expected ${requestedAcr} but received ${receivedAcr}`,
+      );
+    }
   }
 }

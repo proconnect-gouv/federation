@@ -104,14 +104,8 @@ describe('OidcClient Controller', () => {
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/camelcase
         id_token: 'id_token',
+        claims: jest.fn().mockReturnValueOnce({ acr: 'foo' }),
       });
-
-      const userInfoMock = {
-        sub: '1',
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        given_name: 'given_name',
-      };
       oidcClientServiceMock.getUserInfo.mockReturnValueOnce({
         sub: '1',
         // oidc spec defined property
