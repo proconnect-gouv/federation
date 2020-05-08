@@ -22,7 +22,7 @@ export class OidcProviderController {
     @Inject(SERVICE_PROVIDER_SERVICE)
     private readonly serviceProvider: IServiceProviderService,
     private readonly logger: LoggerService,
-    private readonly oidcProdiver: OidcProviderService,
+    private readonly oidcProvider: OidcProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -49,7 +49,7 @@ export class OidcProviderController {
     // Start of business related stuff
     this.logger.debug('/api/v2/token');
 
-    const clientId = this.oidcProdiver.decodeAuthorizationHeader(
+    const clientId = this.oidcProvider.decodeAuthorizationHeader(
       req.headers.authorization,
     );
     await this.checkIfSpIsUsable(clientId);
@@ -71,7 +71,21 @@ export class OidcProviderController {
   @Get('/.well-known/keys')
   async getWellKnownKeys() {
     this.logger.debug('api/v2/.well-known/keys');
-    return this.oidcProdiver.wellKnownKeys();
+    return this.oidcProvider.wellKnownKeys();
+  }
+
+  @Get('/logout')
+  async getLogout(@Next() next) {
+    // Start of business related stuff
+    this.logger.debug('/api/v2/logout');
+    return next();
+  }
+
+  @Post('/logout/confirm')
+  async getLogoutConfirm(@Next() next) {
+    // Start of business related stuff
+    this.logger.debug('/api/v2/logout/confirm');
+    return next();
   }
 
   /**

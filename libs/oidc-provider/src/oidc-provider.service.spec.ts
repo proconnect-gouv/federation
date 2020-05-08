@@ -12,7 +12,6 @@ import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
-  ErrorCode,
 } from './enums';
 import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import { OidcProviderService } from './oidc-provider.service';
@@ -561,6 +560,35 @@ describe('OidcProviderService', () => {
       const result = service.decodeAuthorizationHeader(authorizationHeader);
       // Then
       expect(result).toBe('');
+    });
+  });
+
+  describe('logoutSource', () => {
+    it('should call exceptionFilter.catch', () => {
+      // Given
+      const ctx = { body: '' } as KoaContextWithOIDC;
+      const form = '<form></form>';
+      const resultExpected = `<!DOCTYPE html>
+      <head>
+        <title>Logout</title>
+      </head>
+      <body>
+        <form></form>
+        <script>
+          var form = document.forms[0];
+          var input = document.createElement('input');
+          input.type = 'hidden';
+          input.name = 'logout';
+          input.value = 'yes';
+          form.appendChild(input);
+          form.submit();
+        </script>
+      </body>
+      </html>`;
+      // When
+      service['logoutSource'](ctx, form);
+      // Then
+      expect(ctx.body).toBe(resultExpected);
     });
   });
 });

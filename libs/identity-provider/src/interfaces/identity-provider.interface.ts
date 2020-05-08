@@ -6,6 +6,7 @@ export interface IIdentityProvider extends Document {
   client_secret: string;
   discoveryUrl: string;
   redirect_uris: string[];
+  post_logout_redirect_uris: string[];
   response_types: string[];
   id_token_signed_response_alg: string;
   token_endpoint_auth_method: string;

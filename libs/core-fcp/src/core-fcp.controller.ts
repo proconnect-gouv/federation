@@ -53,6 +53,7 @@ export class CoreFcpController {
   /** @TODO validate query by DTO */
   @Get('/interaction/:uid/login')
   async getLogin(@Req() req, @Res() res) {
+    this.logger.debug('/interaction/:uid/login');
     const { uid } = await this.oidcProvider.getInteraction(req, res);
 
     const result = {
