@@ -9,4 +9,5 @@
  */
 export enum ErrorCode {
   GATEWAY = 1,
+  COMPUTE_IDENTITY_HASH = 2,
 }

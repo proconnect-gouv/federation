@@ -8,6 +8,7 @@ import { RedisConfig } from '@fc/redis';
 import { RnippConfig } from '@fc/rnipp';
 import { IdentityConfig } from 'libs/identity/src';
 import { RabbitmqConfig } from '@fc/rabbitmq';
+import { CryptographyConfig } from '@fc/cryptography';
 
 export class CoreFcpConfig {
   @IsObject()
@@ -52,4 +53,9 @@ export class CoreFcpConfig {
   @ValidateNested()
   @Type(() => RabbitmqConfig)
   readonly CryptographyBroker: RabbitmqConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CryptographyConfig)
+  readonly Cryptography: CryptographyConfig;
 }
