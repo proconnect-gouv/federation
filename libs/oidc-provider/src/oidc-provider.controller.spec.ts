@@ -62,6 +62,20 @@ describe('OidcProviderController', () => {
         // param name from OIDC spec
         // eslint-disable-next-line @typescript-eslint/camelcase
         client_id: 'abc123',
+        // param name from OIDC spec
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        response_type: 'code',
+        // param name from OIDC spec
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        acr_values: 'eidas3',
+        // param name from OIDC spec
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        state: 'state',
+        nonce: 'nonce',
+        scope: 'openid',
+        // param name from OIDC spec
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        redirect_uri: 'http://some.where',
       };
 
       const next = jest.fn();
