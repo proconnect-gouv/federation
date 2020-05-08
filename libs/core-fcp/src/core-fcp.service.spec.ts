@@ -5,8 +5,12 @@ import { IdentityService } from '@fc/identity';
 import { RnippService } from '@fc/rnipp';
 import { CryptographyService } from '@fc/cryptography';
 import { AccountService, AccountBlockedException } from '@fc/account';
+
+import {
+  CoreFcpLowAcrException,
+  CoreFcpInvalidAcrException,
+} from './exceptions';
 import { CoreFcpService } from './core-fcp.service';
-import { ErrorService } from '@fc/error/error.service';
 
 describe('CoreFcpService', () => {
   let service: CoreFcpService;
@@ -21,7 +25,12 @@ describe('CoreFcpService', () => {
 
   const getInteractionResultMock = {
     prompt: {},
-    params: {},
+
+    params: {
+      // oidc param
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      acr_values: 'eidas3',
+    },
     uid: uidMock,
   };
   const getInteractionMock = jest.fn();
@@ -91,7 +100,7 @@ describe('CoreFcpService', () => {
 
     identityServiceMock.getIdentity.mockResolvedValue({
       identity: identityMock,
-      meta: { identityProviderId: '42' },
+      meta: { identityProviderId: '42', acr: 'eidas3' },
     });
 
     rnippServiceMock.check.mockResolvedValue(identityMock);
@@ -116,65 +125,68 @@ describe('CoreFcpService', () => {
     });
 
     // Dependencies sevices errors
+    it('Should throw if acr is not validated', async () => {
+      // Given
+      const errorMock = new Error('my error');
+      service['checkIfAcrIsValid'] = jest.fn().mockImplementationOnce(() => {
+        throw errorMock;
+      });
+      // Then
+      await expect(service.getConsent(reqMock, resMock)).rejects.toThrow(
+        errorMock,
+      );
+    });
     it('Should throw if session is not found', async () => {
       // Given
       const errorMock = new Error('my error');
       oidcProviderServiceMock.getInteraction.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.getConsent(reqMock, resMock)).rejects.toThrow(
-        errorMock,
-      );
+      expect(service.getConsent(reqMock, resMock)).rejects.toThrow(errorMock);
     });
-    it('Should throw if identity provider is not usable', async () => {
+    it('Should throw if identity provider is not usable', () => {
       // Given
       const errorMock = new Error('my error');
       identityServiceMock.getIdentity.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.getConsent(reqMock, resMock)).rejects.toThrow(
-        errorMock,
-      );
+      expect(service.getConsent(reqMock, resMock)).rejects.toThrow(errorMock);
     });
-    it('Should throw if rnipp check refuses identity', async () => {
+    it('Should throw if rnipp check refuses identity', () => {
       // Given
       const errorMock = new Error('my error');
       rnippServiceMock.check.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.getConsent(reqMock, resMock)).rejects.toThrow(
-        errorMock,
-      );
+      expect(service.getConsent(reqMock, resMock)).rejects.toThrow(errorMock);
     });
-    it('Should throw if identity storage for service provider fails', async () => {
+    it('Should throw if identity storage for service provider fails', () => {
       // Given
       const errorMock = new Error('my error');
       identityServiceMock.storeIdentity.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.getConsent(reqMock, resMock)).rejects.toThrow(
-        errorMock,
-      );
+      expect(service.getConsent(reqMock, resMock)).rejects.toThrow(errorMock);
     });
-    it('should throw if account is blocked', async () => {
+    it('should throw if account is blocked', () => {
       // Given
       accountServiceMock.isBlocked.mockResolvedValue(true);
       // Then
-      await expect(service.getConsent(reqMock, resMock)).rejects.toThrow(
+      expect(service.getConsent(reqMock, resMock)).rejects.toThrow(
         AccountBlockedException,
       );
     });
-    it('should throw if account blocked check fails', async () => {
+    it('should throw if account blocked check fails', () => {
       // Given
       const error = new Error('foo');
       accountServiceMock.isBlocked.mockRejectedValueOnce(error);
       // Then
-      await expect(service.getConsent(reqMock, resMock)).rejects.toThrow(error);
+      expect(service.getConsent(reqMock, resMock)).rejects.toThrow(error);
     });
 
     // Non blocking errors
-    it('Should pass if interaction storage fails', async () => {
+    it('Should pass if interaction storage fails', () => {
       // Given
       const error = new Error('some error');
       accountServiceMock.storeInteraction.mockRejectedValueOnce(error);
       // When
-      await expect(service.getConsent(reqMock, resMock)).resolves.not.toThrow();
+      expect(service.getConsent(reqMock, resMock)).resolves.not.toThrow();
     });
 
     it('Should log a warning if interaction storage fails', async () => {
@@ -200,5 +212,150 @@ describe('CoreFcpService', () => {
      * // Service provider usability
      * it('Should throw if service provider is not usable ', async () => {});
      */
+  });
+
+  describe('checkIfAcrIsValid', () => {
+    it('should throw if received is not valid', () => {
+      // Given
+      const received = 'someInvalidString';
+      const requested = 'eidas2';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).toThrow(CoreFcpInvalidAcrException);
+    });
+    it('should throw if requested is not valid', () => {
+      // Given
+      const received = 'eidas3';
+      const requested = 'someInvalidString';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).toThrow(CoreFcpInvalidAcrException);
+    });
+
+    it('should throw if requested is empty', () => {
+      // Given
+      const received = 'eidas3';
+      const requested = '';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).toThrow(CoreFcpInvalidAcrException);
+    });
+    it('should throw if received is empty', () => {
+      // Given
+      const received = '';
+      const requested = 'eidas2';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).toThrow(CoreFcpInvalidAcrException);
+    });
+
+    it('should throw if requested is undefined', () => {
+      // Given
+      const received = 'eidas3';
+      const requested = undefined;
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).toThrow(CoreFcpInvalidAcrException);
+    });
+    it('should throw if received is undefined', () => {
+      // Given
+      const received = undefined;
+      const requested = 'eidas2';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).toThrow(CoreFcpInvalidAcrException);
+    });
+
+    it('should throw if requested is null', () => {
+      // Given
+      const received = 'eidas3';
+      const requested = null;
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).toThrow(CoreFcpInvalidAcrException);
+    });
+    it('should throw if received is null', () => {
+      // Given
+      const received = null;
+      const requested = 'eidas2';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).toThrow(CoreFcpInvalidAcrException);
+    });
+
+    it('should throw if received is lower than requested (1 vs 2)', () => {
+      // Given
+      const received = 'eidas1';
+      const requested = 'eidas2';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).toThrow(CoreFcpLowAcrException);
+    });
+
+    it('should throw if received is lower than requested (2 vs 3)', () => {
+      // Given
+      const received = 'eidas2';
+      const requested = 'eidas3';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).toThrow(CoreFcpLowAcrException);
+    });
+
+    it('should not throw if received is equal to requested for level eidas1', () => {
+      // Given
+      const received = 'eidas1';
+      const requested = 'eidas1';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).not.toThrow();
+    });
+    it('should not throw if received is equal to requested for level eidas2', () => {
+      // Given
+      const received = 'eidas2';
+      const requested = 'eidas2';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).not.toThrow();
+    });
+    it('should not throw if received is equal to requested for level eidas3', () => {
+      // Given
+      const received = 'eidas3';
+      const requested = 'eidas3';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).not.toThrow();
+    });
+
+    it('should not throw if received is higher then requested (2 vs 1)', () => {
+      // Given
+      const received = 'eidas2';
+      const requested = 'eidas1';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).not.toThrow();
+    });
+    it('should not throw if received is higher then requested (3 vs 2)', () => {
+      // Given
+      const received = 'eidas3';
+      const requested = 'eidas2';
+      // When
+      const call = () => service['checkIfAcrIsValid'](received, requested);
+      // Then
+      expect(call).not.toThrow();
+    });
   });
 });

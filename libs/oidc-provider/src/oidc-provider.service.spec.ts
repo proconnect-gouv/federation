@@ -12,7 +12,6 @@ import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
-  ErrorCode,
 } from './enums';
 import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import { OidcProviderService } from './oidc-provider.service';

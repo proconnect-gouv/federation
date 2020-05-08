@@ -137,7 +137,9 @@
       "@fc/microservices/(.*)": "<rootDir>/libs/microservices/src/$1",
       "@fc/microservices": "<rootDir>/libs/microservices/src",
       "@fc/account/(.*)": "<rootDir>/libs/account/src/$1",
-      "@fc/account": "<rootDir>/libs/account/src"
+      "@fc/account": "<rootDir>/libs/account/src",
+      "@fc/oidc/(.*)": "<rootDir>/libs/oidc/src/$1",
+      "@fc/oidc": "<rootDir>/libs/oidc/src"
     },
     "preset": "ts-jest"
   }
