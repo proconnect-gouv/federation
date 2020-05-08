@@ -7,7 +7,11 @@ import {
   IdentityBadFormatException,
   IdentityNotFoundException,
 } from './exceptions';
-import { IdentityService } from './identity.service';
+import {
+  IdentityService,
+  IDP_IDENTITY_PREFIX,
+  SP_IDENTITY_PREFIX,
+} from './identity.service';
 import { IIdentity } from './interfaces';
 
 describe('IdentityService', () => {
@@ -27,6 +31,7 @@ describe('IdentityService', () => {
   const redisMock = {
     get: jest.fn(),
     set: jest.fn(),
+    del: jest.fn(),
   };
 
   const cryptographyKeyMock = Symbol('cryptographyKeyMock');
@@ -157,7 +162,7 @@ describe('IdentityService', () => {
       // Given
       service['serialize'] = jest.fn();
       // When
-      await service.storeIdentity(key, dataMock, meta);
+      await service['storeIdentity'](key, dataMock, meta);
       // Then
       expect(service['serialize']).toHaveBeenCalledWith({
         identity: dataMock,
@@ -169,13 +174,13 @@ describe('IdentityService', () => {
       const serializeResult = Symbol('serialized result');
       service['serialize'] = jest.fn().mockReturnValue(serializeResult);
       // When
-      await service.storeIdentity(key, dataMock, meta);
+      await service['storeIdentity'](key, dataMock, meta);
       // Then
       expect(redisMock.set).toHaveBeenCalledWith(key, serializeResult);
     });
     it('should return true if set was successfull', async () => {
       // When
-      const res = await service.storeIdentity(key, dataMock, meta);
+      const res = await service['storeIdentity'](key, dataMock, meta);
       // Then
       expect(res).toEqual(true);
     });
@@ -183,7 +188,7 @@ describe('IdentityService', () => {
       // Given
       redisMock.set.mockResolvedValue(null);
       // When
-      const res = await service.storeIdentity(key, dataMock, meta);
+      const res = await service['storeIdentity'](key, dataMock, meta);
       // Then
       expect(res).toEqual(false);
     });
@@ -194,7 +199,7 @@ describe('IdentityService', () => {
 
     it('should call redis get with key', async () => {
       // When
-      await service.getIdentity(key);
+      await service['getIdentity'](key);
       // Then
       expect(redisMock.get).toHaveBeenCalledWith(key);
     });
@@ -202,7 +207,7 @@ describe('IdentityService', () => {
       // Given
       service['unserialize'] = jest.fn();
       // When
-      await service.getIdentity(key);
+      await service['getIdentity'](key);
       // Then
       expect(service['unserialize']).toHaveBeenCalledWith(
         redisGetReturnValueMock,
@@ -213,7 +218,7 @@ describe('IdentityService', () => {
       const returnOfUnserialize = Symbol('returnOfUnserialize');
       service['unserialize'] = jest.fn().mockReturnValue(returnOfUnserialize);
       // When
-      const result = await service.getIdentity(key);
+      const result = await service['getIdentity'](key);
       // Then
       expect(result).toBe(returnOfUnserialize);
     });
@@ -221,8 +226,103 @@ describe('IdentityService', () => {
       // Given
       redisMock.get.mockResolvedValue(false);
       // Then
-      await expect(service.getIdentity(key)).rejects.toThrow(
+      await expect(service['getIdentity'](key)).rejects.toThrow(
         IdentityNotFoundException,
+      );
+    });
+  });
+  describe('deleteIdentity', () => {
+    const key = 'key';
+
+    it('should call redis del with key', async () => {
+      // When
+      await service['deleteIdentity'](key);
+      // Then
+      expect(redisMock.del).toHaveBeenCalledWith(key);
+    });
+    it('should not throw if identity is not found in redis', async () => {
+      // Given
+      redisMock.del.mockResolvedValue(null);
+      // Then
+      await expect(service['deleteIdentity'](key)).resolves.not.toThrow();
+    });
+  });
+
+  describe('shortcuts', () => {
+    // Given
+    const key = 'key';
+    it('should call getIdentity with idp prefix', () => {
+      // Given
+      service['getIdentity'] = jest.fn();
+      // When
+      service.getIdpIdentity(key);
+      // Then
+      expect(service['getIdentity']).toHaveBeenCalledTimes(1);
+      expect(service['getIdentity']).toHaveBeenCalledWith(
+        `${IDP_IDENTITY_PREFIX}key`,
+      );
+    });
+    it('should call getIdentity with sp prefix', () => {
+      // Given
+      service['getIdentity'] = jest.fn();
+      // When
+      service.getSpIdentity(key);
+      // Then
+      expect(service['getIdentity']).toHaveBeenCalledTimes(1);
+      expect(service['getIdentity']).toHaveBeenCalledWith(
+        `${SP_IDENTITY_PREFIX}key`,
+      );
+    });
+    it('should call storeIdentity with idp prefix', () => {
+      // Given
+      const identity = {} as IIdentity;
+      const meta = {};
+      service['storeIdentity'] = jest.fn();
+      // When
+      service.storeIdpIdentity(key, identity, meta);
+      // Then
+      expect(service['storeIdentity']).toHaveBeenCalledTimes(1);
+      expect(service['storeIdentity']).toHaveBeenCalledWith(
+        `${IDP_IDENTITY_PREFIX}key`,
+        identity,
+        meta,
+      );
+    });
+    it('should call storeIdentity with sp prefix', () => {
+      // Given
+      const identity = {} as IIdentity;
+      const meta = {};
+      service['storeIdentity'] = jest.fn();
+      // When
+      service.storeSpIdentity(key, identity, meta);
+      // Then
+      expect(service['storeIdentity']).toHaveBeenCalledTimes(1);
+      expect(service['storeIdentity']).toHaveBeenCalledWith(
+        `${SP_IDENTITY_PREFIX}key`,
+        identity,
+        meta,
+      );
+    });
+    it('should call deleteIdentity with idp prefix', () => {
+      // Given
+      service['deleteIdentity'] = jest.fn();
+      // When
+      service.deleteIdpIdentity(key);
+      // Then
+      expect(service['deleteIdentity']).toHaveBeenCalledTimes(1);
+      expect(service['deleteIdentity']).toHaveBeenCalledWith(
+        `${IDP_IDENTITY_PREFIX}key`,
+      );
+    });
+    it('should call deleteIdentity with sp prefix', () => {
+      // Given
+      service['deleteIdentity'] = jest.fn();
+      // When
+      service.deleteSpIdentity(key);
+      // Then
+      expect(service['deleteIdentity']).toHaveBeenCalledTimes(1);
+      expect(service['deleteIdentity']).toHaveBeenCalledWith(
+        `${SP_IDENTITY_PREFIX}key`,
       );
     });
   });
