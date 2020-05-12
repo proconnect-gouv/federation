@@ -6,10 +6,7 @@ import * as ecdsaSignaturesService from 'jose/lib/help/ecdsa_signatures';
 import { CryptographyService } from './cryptography.service';
 import { IPivotIdentity } from '../interfaces';
 import { OverrideCode } from '@fc/common';
-import {
-  CryptographyGatewayException,
-  CryptographyComputeIdentityHashException,
-} from '../exceptions';
+import { CryptographyGatewayException } from '../exceptions';
 
 describe('CryptographyService', () => {
   let service: CryptographyService;
@@ -71,11 +68,10 @@ describe('CryptographyService', () => {
     birthcountry: '99100',
   };
 
-  const mockHexDigestedHash =
-    'bfc2a8804a9b983f47e9abccf8c1b56b848a9a98641d5e79ec06057802c873f0';
-
   const mockHmacDigestedHash =
     'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8';
+
+  const mockIdentityHashSalt = 'Salt (2010) Action/Mystery ‧ 1h 44m';
 
   const ecdsaSignaturesServiceMock = {
     derToJose: jest.fn(),
@@ -101,28 +97,16 @@ describe('CryptographyService', () => {
     final: jest.fn(),
   };
 
-  const mockHash256 = {
-    update: jest.fn(),
-    digest: jest.fn(),
-  };
-
   const mockHmac = {
     update: jest.fn(),
     digest: jest.fn(),
   };
 
   const signMock = jest.fn();
-  const privateDecryptMock = jest.fn();
   const overridedCryptoMock = {
     sign: signMock,
-    privateDecrypt: privateDecryptMock,
   };
   OverrideCode.wrap(overridedCryptoMock, 'sign', 'crypto.sign');
-  OverrideCode.wrap(
-    overridedCryptoMock,
-    'privateDecrypt',
-    'crypto.privateDecrypt',
-  );
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -153,11 +137,21 @@ describe('CryptographyService', () => {
 
     brokerMock.send.mockReturnValue(messageMock);
     messageMock.subscribe.mockImplementation(cb => cb(brokerResponseMock));
-    configMock.get.mockReturnValue({
-      payloadEncoding: 'base64',
-      commands: {
-        CRYPTO_SIGN: 'foo',
-      },
+    configMock.get.mockImplementation(config => {
+      switch (config) {
+        case 'Cryptography':
+          return {
+            clientSecretEcKey: mockEncryptKey,
+            identityHashSalt: mockIdentityHashSalt,
+          };
+        case 'CryptographyBroker':
+          return {
+            payloadEncoding: 'base64',
+            commands: {
+              CRYPTO_SIGN: 'foo',
+            },
+          };
+      }
     });
   });
 
@@ -231,9 +225,8 @@ describe('CryptographyService', () => {
   describe('decryptClientSecret', () => {
     it('should call decrypt with enc key from config', () => {
       // Given
-      const keyMock = 'my key mock';
       const clientSecretMock = 'some string';
-      configMock.get.mockReturnValueOnce({ clientSecretEcKey: keyMock });
+
       service['decrypt'] = jest.fn();
       // When
       service.decryptClientSecret(clientSecretMock);
@@ -241,40 +234,45 @@ describe('CryptographyService', () => {
       expect(configMock.get).toHaveBeenCalledTimes(1);
       expect(service['decrypt']).toHaveBeenCalledTimes(1);
       expect(service['decrypt']).toHaveBeenCalledWith(
-        keyMock,
+        mockEncryptKey,
         Buffer.from(clientSecretMock, 'base64'),
       );
     });
   });
+
   describe('computeIdentityHash', () => {
     beforeEach(() => {
       jest
-        .spyOn(crypto, 'createHash')
-        .mockImplementationOnce(mockCrypto.createHash);
-      mockCrypto.createHash.mockReturnValueOnce(mockHash256);
+        .spyOn(crypto, 'createHmac')
+        .mockImplementationOnce(mockCrypto.createHmac);
+      mockCrypto.createHmac.mockReturnValueOnce(mockHmac);
 
-      mockHash256.digest.mockReturnValueOnce(mockHexDigestedHash);
+      mockHmac.digest.mockReturnValueOnce(mockHmacDigestedHash);
     });
 
-    it('should create a Hash instance with sha256', () => {
+    it('should create a Hmac instance with sha256', () => {
       // action
       service.computeIdentityHash(pivotIdentityMock);
 
       // expect
-      expect(mockCrypto.createHash).toHaveBeenCalledTimes(1);
-      expect(mockCrypto.createHash).toHaveBeenCalledWith('sha256');
+      expect(mockCrypto.createHmac).toHaveBeenCalledTimes(1);
+      expect(mockCrypto.createHmac).toHaveBeenCalledWith(
+        'sha256',
+        mockIdentityHashSalt,
+      );
     });
 
     it('should serialize the given pivot identity and hash it', () => {
       // setup
-      const serializedPivotIdentity = JSON.stringify(pivotIdentityMock);
+      const serializedPivotIdentity =
+        'Jean Paul HenriDupont1970-01-01male9527799100';
 
       // action
       service.computeIdentityHash(pivotIdentityMock);
 
       // expect
-      expect(mockHash256.update).toHaveBeenCalledTimes(1);
-      expect(mockHash256.update).toHaveBeenCalledWith(serializedPivotIdentity);
+      expect(mockHmac.update).toHaveBeenCalledTimes(1);
+      expect(mockHmac.update).toHaveBeenCalledWith(serializedPivotIdentity);
     });
 
     it('should digest the hash to hex format and return the result', () => {
@@ -282,23 +280,9 @@ describe('CryptographyService', () => {
       const result = service.computeIdentityHash(pivotIdentityMock);
 
       // expect
-      expect(mockHash256.digest).toHaveBeenCalledTimes(1);
-      expect(mockHash256.digest).toHaveBeenCalledWith('hex');
-      expect(result).toBe(mockHexDigestedHash);
-    });
-
-    it('should throw if JSON.stringify throws', () => {
-      // Given
-      const identityHashMock = {} as IPivotIdentity;
-      const error = new TypeError('some bad JSON stuff');
-      jest.spyOn(JSON, 'stringify').mockImplementation(() => {
-        throw error;
-      });
-      // When
-      const call = () => service.computeIdentityHash(identityHashMock);
-      // Then
-      expect(call).toThrow(CryptographyComputeIdentityHashException);
-      expect(call).toThrow(error);
+      expect(mockHmac.digest).toHaveBeenCalledTimes(1);
+      expect(mockHmac.digest).toHaveBeenCalledWith('hex');
+      expect(result).toBe(mockHmacDigestedHash);
     });
   });
 
