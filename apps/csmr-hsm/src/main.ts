@@ -3,11 +3,17 @@ import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { AppModule } from './app.module';
 import { ConfigService } from '@fc/config';
 import { RabbitmqConfig } from '@fc/rabbitmq';
+import configuration from './config';
+import { CsmrHsmConfig } from './dto';
 
 async function bootstrap() {
+  const configOptions = {
+    isGlobal: false,
+    config: configuration,
+    schema: CsmrHsmConfig,
+  };
   // First create app context to access configService
-  const app = await NestFactory.createApplicationContext(AppModule);
-  const configService = app.get(ConfigService);
+  const configService = new ConfigService(configOptions);
 
   // Fetch broker options from config
   const options = configService.get<RabbitmqConfig>('CryptographyBroker');

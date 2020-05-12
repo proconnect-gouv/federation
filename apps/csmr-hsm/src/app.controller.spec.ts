@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AppController } from './app.controller';
-import { FakeHsmService } from '@fc/fake-hsm';
+import { HsmService, SignatureDigest } from '@fc/hsm';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
+import { AppController } from './app.controller';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -24,16 +24,21 @@ describe('AppController', () => {
     get: jest.fn(),
   };
 
+  const payloadMock = {
+    data: 'some string',
+    digest: 'sha256' as SignatureDigest,
+  };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [AppController],
-      providers: [LoggerService, ConfigService, FakeHsmService],
+      providers: [LoggerService, ConfigService, HsmService],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(FakeHsmService)
+      .overrideProvider(HsmService)
       .useValue(hsmServiceMock)
       .compile();
 
@@ -46,8 +51,6 @@ describe('AppController', () => {
 
   describe('sign', () => {
     it('should call hsm.sign', async () => {
-      // Given
-      const payloadMock = { data: 'some string', digest: 'foo' };
       // When
       await appController.sign(payloadMock);
       // Then
@@ -58,8 +61,6 @@ describe('AppController', () => {
       );
     });
     it('should resolve to stringified hsm.sign response', async () => {
-      // Given
-      const payloadMock = { data: 'some string', digest: 'foo' };
       const base64result = Buffer.from(signResolvedValue).toString('base64');
       // When
       const result = await appController.sign(payloadMock);
@@ -67,8 +68,6 @@ describe('AppController', () => {
       expect(result).toBe(base64result);
     });
     it('should resolve to "ERROR" if execution throwed', async () => {
-      // Given
-      const payloadMock = { data: 'some string', digest: 'foo' };
       hsmServiceMock.sign.mockRejectedValueOnce(Error('something not good'));
       // When
       const result = await appController.sign(payloadMock);

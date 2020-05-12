@@ -92,10 +92,8 @@ export class OidcProviderService {
    */
   async wellKnownKeys() {
     const config = this.config.get<OidcProviderConfig>('OidcProvider');
-    const privateKeys = config.configuration.jwks.keys;
-    const publicKeys = privateKeys.map(key => JWK.asKey(key as any).toJWK());
 
-    return { keys: publicKeys };
+    return { keys: [JWK.asKey(config.sigHsmPubKey).toJWK()] };
   }
 
   /**
@@ -380,9 +378,12 @@ export class OidcProviderService {
     /**
      * Get data from config file
      */
-    const { issuer, configuration, reloadConfigDelayInMs } = this.config.get<
-      OidcProviderConfig
-    >('OidcProvider');
+    const {
+      issuer,
+      sigHsmPubKey,
+      configuration,
+      reloadConfigDelayInMs,
+    } = this.config.get<OidcProviderConfig>('OidcProvider');
 
     /**
      * Build final configuration object
@@ -390,6 +391,7 @@ export class OidcProviderService {
     return {
       reloadConfigDelayInMs,
       issuer,
+      sigHsmPubKey,
       configuration: {
         ...configuration,
         adapter,
