@@ -33,11 +33,9 @@ export default {
       backchannelLogout: { enabled: true },
     },
     ttl: {
-      AccessToken: 1 * HOUR_IN_SECONDS, // 1 hour in seconds
-      AuthorizationCode: 10 * MINUTE_IN_SECONDS, // 10 minutes in seconds
-      IdToken: 1 * HOUR_IN_SECONDS, // 1 hour in seconds
-      DeviceCode: 10 * MINUTE_IN_SECONDS, // 10 minutes in seconds
-      RefreshToken: 1 * DAY_IN_SECONDS, // 1 day in seconds
+      AccessToken: 1 * MINUTE_IN_SECONDS, // 1 minutes in seconds
+      AuthorizationCode: 30, // 30 seconds
+      IdToken: 1 * MINUTE_IN_SECONDS, // 1 minutes in seconds
     },
     acrValues: ['eidas1', 'eidas2', 'eidas3'],
     claims: {

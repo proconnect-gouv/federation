@@ -82,12 +82,6 @@ class Ttl {
 
   @IsNumber()
   readonly IdToken: number;
-
-  @IsNumber()
-  readonly DeviceCode: number;
-
-  @IsNumber()
-  readonly RefreshToken: number;
 }
 
 class Jwks {
