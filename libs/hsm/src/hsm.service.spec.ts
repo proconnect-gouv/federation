@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HsmService } from './hsm.service';
 import * as pkcs11js from 'pkcs11js';
 import { SignatureDigest } from './enums';
+import { ConfigService } from '@fc/config';
 
 /**
  *  Support EC key prime field up to 521 bits
@@ -30,10 +31,6 @@ describe('HsmService', () => {
     // eslint-disable-next-line @typescript-eslint/camelcase
     C_Sign: jest.fn(),
     // eslint-disable-next-line @typescript-eslint/camelcase
-    C_DecryptInit: jest.fn(),
-    // eslint-disable-next-line @typescript-eslint/camelcase
-    C_Decrypt: jest.fn(),
-    // eslint-disable-next-line @typescript-eslint/camelcase
     C_FindObjectsInit: jest.fn(),
     // eslint-disable-next-line @typescript-eslint/camelcase
     C_FindObjects: jest.fn(),
@@ -44,15 +41,13 @@ describe('HsmService', () => {
   };
 
   const mockPin = 'admin';
-  const mockLibHsmPath =
-    '../tw_proteccio/pkcs11_api/nethsm/client/sharedlib64/libnethsm.so';
+  const mockLibHsmPath = '/etc/hsm/libnethsm.so';
 
   const mockSlotList = [Buffer.from('*')];
   const mockKeySlot = Buffer.from('0');
 
   const mockHsmSession = 'If you concentrate you can imagine this is a session';
 
-  const mockCipher = Buffer.from('! eil a si ekac ehT', 'utf8');
   const mockData = Buffer.from('The cake is a lie !', 'utf8');
   const sha256Digest = Buffer.from(
     '59d2da2a2781004e917f3aaadf7ac9b0db31bcf81fbcf7ed391227b18bd7ff22',
@@ -60,10 +55,12 @@ describe('HsmService', () => {
   );
 
   const ckaSigLabel = 'sig-key-prime256v1';
-  const ckaEncLabel = 'enc-key-prime256v1';
 
   const mockRawSignature = Buffer.from('raw', 'utf8');
-  const mockDerSignature = Buffer.from('well-done', 'utf8');
+
+  const configServiceMock = {
+    get: jest.fn(),
+  };
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -77,11 +74,25 @@ describe('HsmService', () => {
     jest.spyOn(crypto.Hash.prototype, 'update');
     jest.spyOn(crypto.Hash.prototype, 'digest');
 
+    configServiceMock.get.mockImplementation(module => {
+      switch (module) {
+        case 'Hsm':
+          return {
+            libhsm: mockLibHsmPath,
+            pin: mockPin,
+            sigKeyCkaLabel: ckaSigLabel,
+          };
+      }
+    });
+
     mockPkcs11Instance.C_GetSlotList.mockReturnValue(mockSlotList);
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [HsmService],
-    }).compile();
+      providers: [HsmService, ConfigService],
+    })
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
+      .compile();
 
     service = module.get<HsmService>(HsmService);
     // The testing module is not calling application lifecycle hooks
@@ -230,7 +241,7 @@ describe('HsmService', () => {
       mockPkcs11Instance.C_Sign.mockReturnValueOnce(mockRawSignature);
 
       // action
-      await service['sign'](ckaSigLabel, mockData);
+      await service['sign'](mockData);
 
       // expect
       expect(crypto.createHash).toHaveBeenCalledTimes(1);
@@ -248,7 +259,7 @@ describe('HsmService', () => {
       service['getPrivateKeySlotByLabel'] = jest.fn();
 
       // action
-      await service['sign'](ckaSigLabel, mockData);
+      await service['sign'](mockData);
 
       // expect
       expect(service['getPrivateKeySlotByLabel']).toHaveBeenCalledTimes(1);
@@ -270,7 +281,7 @@ describe('HsmService', () => {
         .mockReturnValueOnce(mockKeySlot);
 
       // action
-      await service['sign'](ckaSigLabel, mockData);
+      await service['sign'](mockData);
 
       // expect
       expect(mockPkcs11Instance.C_SignInit).toHaveBeenCalledTimes(1);
@@ -291,7 +302,7 @@ describe('HsmService', () => {
       mockPkcs11Instance.C_Sign.mockReturnValueOnce(mockRawSignature);
 
       // action
-      await service['sign'](ckaEncLabel, mockData);
+      await service['sign'](mockData);
 
       // expect
       expect(mockPkcs11Instance.C_Sign).toHaveBeenCalledTimes(1);
@@ -302,22 +313,14 @@ describe('HsmService', () => {
       );
     });
 
-    it('should encode and the signature to openssl ASN.1 DER format', async () => {
+    it('should returnthe signature to RAW (r, s) format', async () => {
       // setup
       mockPkcs11Instance.C_Sign.mockReturnValueOnce(mockRawSignature);
-      const originalEncodeRSToAsn1 = service['encodeRSToAsn1'];
-      service['encodeRSToAsn1'] = jest
-        .fn()
-        .mockReturnValueOnce(mockDerSignature);
-
       // action
-      const result = await service['sign'](ckaSigLabel, mockData);
+      const result = await service['sign'](mockData);
 
       // expect
-      expect(result).toStrictEqual(mockDerSignature);
-
-      // restore
-      service['encodeRSToAsn1'] = originalEncodeRSToAsn1;
+      expect(result).toStrictEqual(mockRawSignature);
     });
 
     it('should throw a "E_SIG_NOT_FOUND" error if C_Sign does not return a Buffer', async () => {
@@ -326,7 +329,7 @@ describe('HsmService', () => {
 
       // action
       try {
-        await service['sign'](ckaSigLabel, mockData);
+        await service['sign'](mockData);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toStrictEqual('E_SIG_NOT_FOUND');
@@ -342,7 +345,7 @@ describe('HsmService', () => {
 
       // action
       try {
-        await service['sign'](ckaSigLabel, mockData);
+        await service['sign'](mockData);
       } catch (e) {
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toStrictEqual('E_SIG_NOT_FOUND');
@@ -350,76 +353,6 @@ describe('HsmService', () => {
 
       // expect
       expect.hasAssertions();
-    });
-  });
-
-  describe('privateDecrypt', () => {
-    it('should call getPrivateKeySlotByLabel with the given CKA_LABEL', async () => {
-      // setup
-      const originalGetPrivateKeySlotByLabel =
-        service['getPrivateKeySlotByLabel'];
-      service['getPrivateKeySlotByLabel'] = jest.fn();
-
-      // action
-      await service['privateDecrypt'](ckaEncLabel, mockCipher);
-
-      // expect
-      expect(service['getPrivateKeySlotByLabel']).toHaveBeenCalledTimes(1);
-      expect(service['getPrivateKeySlotByLabel']).toHaveBeenCalledWith(
-        ckaEncLabel,
-      );
-
-      // restore
-      service['getPrivateKeySlotByLabel'] = originalGetPrivateKeySlotByLabel;
-    });
-
-    it('should call C_DecryptInit with the PKCS#11 session, the CKM_RSA_PKCS_OAEP mekanism and the key slot returned by getPrivateKeySlotByLabel', async () => {
-      // setup
-      const originalGetPrivateKeySlotByLabel =
-        service['getPrivateKeySlotByLabel'];
-      service['getPrivateKeySlotByLabel'] = jest
-        .fn()
-        .mockReturnValueOnce(mockKeySlot);
-
-      // action
-      await service['privateDecrypt'](ckaEncLabel, mockCipher);
-
-      // expect
-      expect(mockPkcs11Instance.C_DecryptInit).toHaveBeenCalledTimes(1);
-      expect(mockPkcs11Instance.C_DecryptInit).toHaveBeenCalledWith(
-        service['pkcs11Session'],
-        {
-          mechanism: pkcs11js.CKM_RSA_PKCS_OAEP,
-        },
-        mockKeySlot,
-      );
-
-      // restore
-      service['getPrivateKeySlotByLabel'] = originalGetPrivateKeySlotByLabel;
-    });
-
-    it('should call C_Decrypt with the PKCS#11 session, the cipher, and a Buffer sizeof cipher.byteLength', async () => {
-      // action
-      await service['privateDecrypt'](ckaEncLabel, mockCipher);
-
-      // expect
-      expect(mockPkcs11Instance.C_Decrypt).toHaveBeenCalledTimes(1);
-      expect(mockPkcs11Instance.C_Decrypt).toHaveBeenCalledWith(
-        service['pkcs11Session'],
-        mockCipher,
-        Buffer.alloc(mockCipher.byteLength),
-      );
-    });
-
-    it('should return the data deciphered', async () => {
-      // setup
-      mockPkcs11Instance.C_Decrypt.mockReturnValueOnce(mockData);
-
-      // action
-      const result = await service['privateDecrypt'](ckaEncLabel, mockCipher);
-
-      // expect
-      expect(result).toStrictEqual(mockData);
     });
   });
 
@@ -538,6 +471,7 @@ describe('HsmService', () => {
       const expectedTemplate = [
         { type: pkcs11js.CKA_KEY_TYPE, value: pkcs11js.CKO_PRIVATE_KEY },
         { type: pkcs11js.CKA_LABEL, value: Buffer.from(ckaSigLabel, 'utf8') },
+        { type: pkcs11js.CKA_SIGN, value: true },
       ];
 
       // action
@@ -611,216 +545,6 @@ describe('HsmService', () => {
 
       // expect
       expect.hasAssertions();
-    });
-  });
-
-  describe('encodeRSToAsn1', () => {
-    it('should return a der ASN.1 encoded signature, given a raw (r, s) concatened pair', async () => {
-      // setup
-      const rawSignature = Buffer.from(
-        '06df97d14a692879e2807821743591fd92e75a9bdde74f72d183a6a09f4b414dca75c62116f7c1d8b6927a2e7271577bd2153386a2286a88fd66cee7a43e8a07',
-        'hex',
-      );
-      const expected = Buffer.from(
-        '3045022006df97d14a692879e2807821743591fd92e75a9bdde74f72d183a6a09f4b414d022100ca75c62116f7c1d8b6927a2e7271577bd2153386a2286a88fd66cee7a43e8a07',
-        'hex',
-      );
-
-      // action
-      const result = service['encodeRSToAsn1'](rawSignature);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-
-    it('should return only ASN.1 metadata since r and s equal 0', () => {
-      // setup
-      const rawSignature = Buffer.from(
-        '00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000',
-        'hex',
-      );
-      const expected = Buffer.from('300402000200', 'hex');
-
-      // action
-      const result = service['encodeRSToAsn1'](rawSignature);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-
-    it('should remove all "0" start padding bytes from r', () => {
-      // setup
-      const rawSignature = Buffer.from(
-        '00000000000000000000000000000000000000000000000000000000000000012222222222222222222222222222222222222222222222222222222222222222',
-        'hex',
-      );
-      const expected = Buffer.from(
-        '302502010102202222222222222222222222222222222222222222222222222222222222222222',
-        'hex',
-      );
-
-      // action
-      const result = service['encodeRSToAsn1'](rawSignature);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-
-    it('should remove all "0" start padding bytes from s', () => {
-      // setup
-      const rawSignature = Buffer.from(
-        '22222222222222222222222222222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000000001',
-        'hex',
-      );
-      const expected = Buffer.from(
-        '302502202222222222222222222222222222222222222222222222222222222222222222020101',
-        'hex',
-      );
-
-      // action
-      const result = service['encodeRSToAsn1'](rawSignature);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-
-    it('should add a single "0" first byte to r if r first byte has a value greater than 127 and there was no "0" start byte padding', () => {
-      // setup
-      const rawSignature = Buffer.from(
-        'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000001',
-        'hex',
-      );
-      const expected = Buffer.from(
-        '3026022100ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff020101',
-        'hex',
-      );
-
-      // action
-      const result = service['encodeRSToAsn1'](rawSignature);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-
-    it('should not add a "0" first byte to r if r first byte has a value greater than 127 and there was some "0" start byte padding', () => {
-      // setup
-      const rawSignature = Buffer.from(
-        '0000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000000000000000000000000000000000000000000000000000000000000001',
-        'hex',
-      );
-      const expected = Buffer.from(
-        '3023021effffffffffffffffffffffffffffffffffffffffffffffffffffffffffff020101',
-        'hex',
-      );
-
-      // action
-      const result = service['encodeRSToAsn1'](rawSignature);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-
-    it('should add a single "0" first byte to s if s first byte has a value greater than 127 and there was no "0" start byte padding', () => {
-      // setup
-      const rawSignature = Buffer.from(
-        '0000000000000000000000000000000000000000000000000000000000000001ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-        'hex',
-      );
-      const expected = Buffer.from(
-        '3026020101022100ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-        'hex',
-      );
-
-      // action
-      const result = service['encodeRSToAsn1'](rawSignature);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-
-    it('should not add a "0" first byte to s if s first byte has a value greater than 127 and there was some "0" start byte padding', () => {
-      // setup
-      const rawSignature = Buffer.from(
-        '00000000000000000000000000000000000000000000000000000000000000010000ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-        'hex',
-      );
-      const expected = Buffer.from(
-        '3023020101021effffffffffffffffffffffffffffffffffffffffffffffffffffffffffff',
-        'hex',
-      );
-
-      // action
-      const result = service['encodeRSToAsn1'](rawSignature);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-
-    it('should remove all "0" start padding bytes from s', () => {
-      // setup
-      const rawSignature = Buffer.from(
-        '22222222222222222222222222222222222222222222222222222222222222220000000000000000000000000000000000000000000000000000000000000001',
-        'hex',
-      );
-      const expected = Buffer.from(
-        '302502202222222222222222222222222222222222222222222222222222222222222222020101',
-        'hex',
-      );
-
-      // action
-      const result = service['encodeRSToAsn1'](rawSignature);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-  });
-
-  describe('length', () => {
-    it('should return 00', async () => {
-      // setup
-      const string = '';
-      const expected = '00';
-
-      // action
-      const result = service['length'](string);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-
-    it('should return 01', async () => {
-      // setup
-      const string = 'a6';
-      const expected = '01';
-
-      // action
-      const result = service['length'](string);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-
-    it('should return 0f', async () => {
-      // setup
-      const string = 'a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6';
-      const expected = '0f';
-
-      // action
-      const result = service['length'](string);
-
-      // expect
-      expect(result).toEqual(expected);
-    });
-    it('should return 10', async () => {
-      // setup
-      const string = 'a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6a6';
-      const expected = '10';
-
-      // action
-      const result = service['length'](string);
-
-      // expect
-      expect(result).toEqual(expected);
     });
   });
 });

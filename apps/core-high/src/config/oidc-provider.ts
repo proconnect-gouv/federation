@@ -68,10 +68,8 @@ export default {
       ],
     },
     jwks: {
-      keys: [
-        ...JSON.parse(process.env.CRYPTO_SIG_DETECTOR_KEY),
-        ...JSON.parse(process.env.CRYPTO_ENC_DETECTOR_KEY),
-      ],
+      keys: [JSON.parse(process.env.CRYPTO_SIG_FAKE_PRIV_KEY)],
     },
   },
+  sigHsmPubKey: JSON.parse(process.env.CRYPTO_SIG_HSM_PUB_KEY),
 } as OidcProviderConfig;
