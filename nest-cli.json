@@ -184,13 +184,13 @@
         "tsConfigPath": "libs/rabbitmq/tsconfig.lib.json"
       }
     },
-    "fake-hsm": {
+    "hsm": {
       "type": "library",
-      "root": "libs/fake-hsm",
+      "root": "libs/hsm",
       "entryFile": "index",
-      "sourceRoot": "libs/fake-hsm/src",
+      "sourceRoot": "libs/hsm/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/fake-hsm/tsconfig.lib.json"
+        "tsConfigPath": "libs/hsm/tsconfig.lib.json"
       }
     },
     "csmr-hsm": {

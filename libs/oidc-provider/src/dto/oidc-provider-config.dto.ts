@@ -195,6 +195,10 @@ export class OidcProviderConfig {
   readonly issuer: string;
 
   @IsObject()
+  /** @TODO properly validate keys */
+  readonly sigHsmPubKey: JWKECKey;
+
+  @IsObject()
   @ValidateNested()
   @Type(() => Configuration)
   readonly configuration: Configuration;

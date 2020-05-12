@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { LoggerModule } from '@fc/logger';
 import { ConfigModule } from '@fc/config';
-import { FakeHsmModule } from '@fc/fake-hsm';
+import { HsmModule } from '@fc/hsm';
 import { AppController } from './app.controller';
 import configuration from './config';
 import { ErrorModule } from '@fc/error';
@@ -20,7 +20,7 @@ import { CsmrHsmConfig } from './dto';
     // 3. Load exceptions module
     ErrorModule,
     // 3. Load other modules
-    FakeHsmModule,
+    HsmModule,
   ],
   controllers: [AppController],
 })

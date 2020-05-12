@@ -4,7 +4,7 @@ import { IsObject, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { LoggerConfig } from '@fc/logger';
 import { RabbitmqConfig } from '@fc/rabbitmq';
-import { FakeHsmConfig as HsmConfig } from '@fc/fake-hsm';
+import { HsmConfig } from '@fc/hsm';
 
 export class CsmrHsmConfig {
   @IsObject()

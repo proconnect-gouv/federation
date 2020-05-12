@@ -110,11 +110,11 @@
       "@fc/rabbitmq/*": [
         "libs/rabbitmq/src/*"
       ],
-      "@fc/fake-hsm": [
-        "libs/fake-hsm/src"
+      "@fc/hsm": [
+        "libs/hsm/src"
       ],
-      "@fc/fake-hsm/*": [
-        "libs/fake-hsm/src/*"
+      "@fc/hsm/*": [
+        "libs/hsm/src/*"
       ],
       "@fc/microservices": [
         "libs/microservices/src"
