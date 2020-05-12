@@ -129,7 +129,14 @@ describe('OidcProviderService', () => {
         case 'OidcProvider':
           return {
             issuer: 'http://foo.bar',
-            configuration: { adapter: MemoryAdapter, jwks: { keys: [] } },
+            configuration: {
+              adapter: MemoryAdapter,
+              jwks: { keys: [] },
+              features: {
+                devInteractions: { enabled: false },
+              },
+            },
+            sigHsmPubKey: 'foo',
           };
         case 'Logger':
           return {
@@ -190,25 +197,24 @@ describe('OidcProviderService', () => {
     it('should return keys', async () => {
       // Given
       const JwkKeyMock = {
-        toJWK: jest
-          .fn()
-          .mockReturnValueOnce('a')
-          .mockReturnValueOnce('b'),
+        toJWK: jest.fn().mockReturnValueOnce('a'),
       };
-      const spy = jest.spyOn(JWK, 'asKey').mockReturnValue(JwkKeyMock as any);
+      const spy = jest
+        .spyOn(JWK, 'asKey')
+        .mockReturnValueOnce(JwkKeyMock as any);
 
       configServiceMock.get.mockReturnValueOnce({
-        configuration: { jwks: { keys: ['foo', 'bar'] } },
+        configuration: { jwks: { keys: ['foo'] } },
+        sigHsmPubKey: 'sigHsmPubKey',
       });
 
       // When
       const result = await service.wellKnownKeys();
       // Then
-      expect(spy).toHaveBeenCalledTimes(2);
-      expect(spy).toHaveBeenCalledWith('foo');
-      expect(spy).toHaveBeenCalledWith('bar');
-      expect(JwkKeyMock.toJWK).toHaveBeenCalledTimes(2);
-      expect(result).toEqual({ keys: ['a', 'b'] });
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith('sigHsmPubKey');
+      expect(JwkKeyMock.toJWK).toHaveBeenCalledTimes(1);
+      expect(result).toEqual({ keys: ['a'] });
     });
   });
 

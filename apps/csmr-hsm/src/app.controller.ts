@@ -9,13 +9,13 @@ import { LoggerService } from '@fc/logger';
  * We would then be able to use real hsm module:
  * import { HsmService } from '@fc/hsm';
  */
-import { FakeHsmService } from '@fc/fake-hsm';
-import { SignPayloadDto } from './dto';
-import { AppSignException } from './exceptions';
 import { ConfigService } from '@fc/config';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { ValidationException } from '@fc/error';
 import { CryptoProtocol } from '@fc/microservices';
+import { HsmService } from '@fc/hsm';
+import { SignPayloadDto } from './dto';
+import { AppSignException } from './exceptions';
 
 const BROKER_NAME = 'CryptographyBroker';
 
@@ -24,7 +24,7 @@ export class AppController {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
-    private readonly hsm: FakeHsmService,
+    private readonly hsm: HsmService,
   ) {
     this.logger.setContext(this.constructor.name);
   }

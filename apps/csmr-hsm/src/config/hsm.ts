@@ -1,5 +1,7 @@
-import { FakeHsmConfig } from '@fc/fake-hsm';
+import { HsmConfig } from '@fc/hsm';
 
 export default {
-  keys: JSON.parse(process.env.CRYPTO_SIG_DETECTOR_KEY),
-} as FakeHsmConfig;
+  libhsm: process.env.HSM_LIB,
+  pin: process.env.HSM_PIN,
+  sigKeyCkaLabel: process.env.HSM_SIG_HSM_PUB_KEY_CKA_LABEL,
+} as HsmConfig;
