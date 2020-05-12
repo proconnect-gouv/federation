@@ -2,7 +2,6 @@ import {
   randomBytes,
   createCipheriv,
   createDecipheriv,
-  createHash,
   createHmac,
 } from 'crypto';
 import { Injectable, Inject } from '@nestjs/common';
@@ -12,10 +11,7 @@ import { ConfigService } from '@fc/config';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { CryptoProtocol } from '@fc/microservices';
 import { IPivotIdentity } from '../interfaces';
-import {
-  CryptographyGatewayException,
-  CryptographyComputeIdentityHashException,
-} from '../exceptions';
+import { CryptographyGatewayException } from '../exceptions';
 import { CryptographyConfig } from '../dto';
 
 const NONCE_LENGTH = 12;
@@ -75,38 +71,40 @@ export class CryptographyService {
   }
 
   /**
-   * Compute the identity hash
-   *
-   * @TODO implement precise object serialisation,
-   * property per property, to enforce predictability
-   * and stay compatible with core v1 (if there are no additional cost)
-   *
+   * Compute the identity hmac
    * Current implementation uses sha256
    * @param pivotIdentity
-   * @returns the identity hash "hex" digested
+   * @returns the identity hmac "hex" digested
    */
   computeIdentityHash(pivotIdentity: IPivotIdentity): string {
-    const hash = createHash('sha256');
+    const { identityHashSalt } = this.config.get<CryptographyConfig>(
+      'Cryptography',
+    );
 
-    try {
-      const serial = JSON.stringify(pivotIdentity);
-      hash.update(serial);
+    const hash = createHmac('sha256', identityHashSalt);
 
-      return hash.digest('hex');
-    } catch (error) {
-      throw new CryptographyComputeIdentityHashException(error);
-    }
+    const serial =
+      pivotIdentity.given_name +
+      pivotIdentity.family_name +
+      pivotIdentity.birthdate +
+      pivotIdentity.gender +
+      pivotIdentity.birthplace +
+      pivotIdentity.birthcountry;
+
+    hash.update(serial);
+
+    return hash.digest('hex');
   }
 
   /**
    * Compute the sub V2, given an identity hash and a client id
    * Current implementation uses HMAC sha256
    * @param identityHash the identity hash computed by calling "computeIdentityHash"
-   * @param secret used to create the HMAC
+   * @param clientId used to create the HMAC
    * @returns the sub "hex" digested and suffixed with "v2"
    */
-  computeSubV2(identityHash: string, secret: string): string {
-    const hmac = createHmac('sha256', secret);
+  computeSubV2(identityHash: string, clientId: string): string {
+    const hmac = createHmac('sha256', clientId);
 
     hmac.update(identityHash);
 
