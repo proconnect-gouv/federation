@@ -7,4 +7,5 @@ export default {
     durable: false,
   },
   payloadEncoding: 'base64',
+  requestTimeout: 2 * 1000, // 2 seconds
 } as RabbitmqConfig;
