@@ -1,4 +1,4 @@
-import { IsArray, IsIn, IsOptional, IsString } from 'class-validator';
+import { IsArray, IsIn, IsOptional, IsString, IsNumber } from 'class-validator';
 
 /**
  * Options for NestJs's RabbitMQ module
@@ -50,4 +50,7 @@ export class RabbitmqConfig {
   ])
   @IsString()
   readonly payloadEncoding: BufferEncoding;
+
+  @IsNumber()
+  readonly requestTimeout: number;
 }

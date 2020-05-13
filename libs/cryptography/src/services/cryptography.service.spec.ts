@@ -17,6 +17,10 @@ describe('CryptographyService', () => {
   };
 
   const messageMock = {
+    pipe: jest.fn(),
+  };
+
+  const pipeMock = {
     subscribe: jest.fn(),
   };
 
@@ -136,7 +140,8 @@ describe('CryptographyService', () => {
       .mockImplementation(ecdsaSignaturesServiceMock.derToJose);
 
     brokerMock.send.mockReturnValue(messageMock);
-    messageMock.subscribe.mockImplementation(cb => cb(brokerResponseMock));
+    messageMock.pipe.mockReturnValue(pipeMock);
+    pipeMock.subscribe.mockImplementation(cb => cb(brokerResponseMock));
     configMock.get.mockImplementation(config => {
       switch (config) {
         case 'Cryptography':
@@ -350,35 +355,43 @@ describe('CryptographyService', () => {
       it('should return promise', async () => {
         // When
         const result = service.sign(keyMock, dataMock, digestMock);
+
         // Then
         expect(result instanceof Promise);
+
         // Clean
         await result;
       });
+
       it('should reject if response is "ERROR"', async () => {
         // Given
-        messageMock.subscribe.mockImplementationOnce(cb => cb('ERROR'));
+        pipeMock.subscribe.mockImplementationOnce(cb => cb('ERROR'));
+
         // Then
         await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
           CryptographyGatewayException,
         );
       });
+
       it('should reject if something turnd bad', async () => {
         // Given
-        messageMock.subscribe.mockImplementationOnce(() => {
+        pipeMock.subscribe.mockImplementationOnce(() => {
           throw Error('not good');
         });
+
         // Then
         await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
           CryptographyGatewayException,
         );
       });
+
       it('should reject if observable throws', async () => {
         // Given
         const error = Error('not good');
-        messageMock.subscribe.mockImplementationOnce((_success, failure) => {
+        pipeMock.subscribe.mockImplementationOnce((_success, failure) => {
           failure(error);
         });
+
         // Then
         await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
           CryptographyGatewayException,

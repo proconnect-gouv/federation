@@ -6,6 +6,7 @@ import {
 } from 'crypto';
 import { Injectable, Inject } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { timeout } from 'rxjs/operators';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { RabbitmqConfig } from '@fc/rabbitmq';
@@ -125,9 +126,9 @@ export class CryptographyService {
     digest = 'sha256',
   ): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-      const { payloadEncoding } = this.config.get<RabbitmqConfig>(
-        'CryptographyBroker',
-      );
+      const { payloadEncoding, requestTimeout } = this.config.get<
+        RabbitmqConfig
+      >('CryptographyBroker');
 
       this.logger.debug('Requesting signature from gateway');
       try {
@@ -144,6 +145,7 @@ export class CryptographyService {
         // Send message to gateway
         this.broker
           .send(CryptoProtocol.Commands.SIGN, payload)
+          .pipe(timeout(requestTimeout))
           .subscribe(success, failure);
       } catch (error) {
         reject(new CryptographyGatewayException(error));
