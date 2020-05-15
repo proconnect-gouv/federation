@@ -10,6 +10,7 @@ import CryptographyBroker from './cryptography-broker';
 import Identity from './identity';
 import Cryptography from './cryptography';
 import HttpProxy from './http-proxy';
+import Session from './session';
 
 export default {
   App,
@@ -23,4 +24,5 @@ export default {
   CryptographyBroker,
   Cryptography,
   HttpProxy,
+  Session,
 } as CoreFcpConfig;
