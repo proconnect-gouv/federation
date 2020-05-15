@@ -27,6 +27,7 @@ describe('CryptographyService', () => {
   const brokerMock = {
     send: jest.fn(),
     connect: jest.fn(),
+    close: jest.fn(),
   };
 
   const configMock = {
@@ -170,6 +171,15 @@ describe('CryptographyService', () => {
       service.onModuleInit();
       // Then
       expect(brokerMock.connect).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('onModuleDestroy', () => {
+    it('should call broker.close', () => {
+      // When
+      service.onModuleDestroy();
+      // Then
+      expect(brokerMock.close).toHaveBeenCalledTimes(1);
     });
   });
 

@@ -1,8 +1,8 @@
 import { createHash } from 'crypto';
-import { Injectable } from '@nestjs/common';
 import * as pkcs11js from 'pkcs11js';
-import { SignatureDigest } from './enums';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
+import { SignatureDigest, Pkcs11Error } from './enums';
 import { HsmConfig } from './dto';
 
 /**
@@ -17,20 +17,30 @@ const MAX_SIG_OUTPUT_SIZE = 132;
  */
 @Injectable()
 export class HsmService {
+  /**
+   * Status of the connection with the HSM
+   */
   private pkcs11Instance: pkcs11js.PKCS11;
   private pkcs11Session: Buffer;
+  public shutdownConsumer: Function;
 
   constructor(private readonly config: ConfigService) {}
 
   onModuleInit() {
-    const { libhsm } = this.config.get<HsmConfig>('Hsm');
-    this.pkcs11Instance = this.instanciatePkcs11js(libhsm);
-    this.pkcs11Session = this.openSessionWithTheHsm();
-    this.authenticateWithTheHsm();
+    try {
+      const { libhsm } = this.config.get<HsmConfig>('Hsm');
+      this.pkcs11Instance = this.instanciatePkcs11js(libhsm);
+      this.pkcs11Session = this.openSessionWithTheHsm();
+      this.authenticateWithTheHsm();
+    } catch (e) {
+      this.handleError(e);
+    }
   }
 
   onModuleDestroy() {
-    this.closeCurrentSessionWithTheHsm();
+    try {
+      this.closeCurrentSessionWithTheHsm();
+    } catch (e) {}
   }
 
   /**
@@ -53,33 +63,37 @@ export class HsmService {
 
     const dataDigest = hash.digest();
 
-    /**
-     * We use the HSM to sign our digest as specified in
-     * @see https://www.cryptsoft.com/pkcs11doc/v211/group__SEC__12__4__2__ECDSA__WITHOUT__HASHING.html
-     */
-    const key = this.getPrivateKeySlotByLabel(sigKeyCkaLabel);
+    try {
+      /**
+       * We use the HSM to sign our digest as specified in
+       * @see https://www.cryptsoft.com/pkcs11doc/v211/group__SEC__12__4__2__ECDSA__WITHOUT__HASHING.html
+       */
+      const key = this.getPrivateKeySlotByLabel(sigKeyCkaLabel);
 
-    this.pkcs11Instance.C_SignInit(
-      this.pkcs11Session,
-      { mechanism: pkcs11js.CKM_ECDSA },
-      key,
-    );
+      this.pkcs11Instance.C_SignInit(
+        this.pkcs11Session,
+        { mechanism: pkcs11js.CKM_ECDSA },
+        key,
+      );
 
-    const signature = this.pkcs11Instance.C_Sign(
-      this.pkcs11Session,
-      dataDigest,
-      Buffer.alloc(MAX_SIG_OUTPUT_SIZE),
-    );
+      const signature = this.pkcs11Instance.C_Sign(
+        this.pkcs11Session,
+        dataDigest,
+        Buffer.alloc(MAX_SIG_OUTPUT_SIZE),
+      );
 
-    if (!(signature instanceof Buffer) || signature.length === 0) {
-      throw new Error('E_SIG_NOT_FOUND');
+      if (!(signature instanceof Buffer) || signature.length === 0) {
+        throw new Error('E_SIG_NOT_FOUND');
+      }
+
+      /**
+       * As "signature" here contain a raw formatted EC signature (two positive numbers "r" and "s" concatened)
+       * for performances reasons, we need to encode it to a format that crypto (and so openssl) understand.
+       */
+      return signature;
+    } catch (e) {
+      this.handleError(e);
     }
-
-    /**
-     * As "signature" here contain a raw formatted EC signature (two positive numbers "r" and "s" concatened)
-     * for performances reasons, we need to encode it to a format that crypto (and so openssl) understand.
-     */
-    return signature;
   }
 
   /**
@@ -113,6 +127,8 @@ export class HsmService {
    * Close the session with the HSM,
    */
   private closeCurrentSessionWithTheHsm(): void {
+    this.pkcs11Instance.C_Logout(this.pkcs11Session);
+    this.pkcs11Instance.C_CloseSession(this.pkcs11Session);
     this.pkcs11Instance.C_Finalize();
   }
 
@@ -135,7 +151,7 @@ export class HsmService {
     this.pkcs11Instance.C_FindObjectsInit(this.pkcs11Session, [
       { type: pkcs11js.CKA_KEY_TYPE, value: pkcs11js.CKO_PRIVATE_KEY },
       { type: pkcs11js.CKA_LABEL, value: Buffer.from(ckaLabel, 'utf8') },
-      { type: pkcs11js.CKA_SIGN, value: true  },
+      { type: pkcs11js.CKA_SIGN, value: true },
     ]);
 
     let hObject: Buffer;
@@ -149,5 +165,17 @@ export class HsmService {
     }
 
     return hObject;
+  }
+
+  private handleError(error: Error) {
+    const [, type] = error.message.match(/^([A-Z_]+)/) || [];
+
+    switch (type) {
+      case Pkcs11Error.CKR_DEVICE_ERROR:
+        this.shutdownConsumer();
+        break;
+      default:
+        throw error;
+    }
   }
 }
