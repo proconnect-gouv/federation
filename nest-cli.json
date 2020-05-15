@@ -228,6 +228,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/oidc/tsconfig.lib.json"
       }
+    },
+    "http-proxy": {
+      "type": "library",
+      "root": "libs/http-proxy",
+      "entryFile": "index",
+      "sourceRoot": "libs/http-proxy/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/http-proxy/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -133,6 +133,12 @@
       ],
       "@fc/oidc/*": [
         "libs/oidc/src/*"
+      ],
+      "@fc/http-proxy": [
+        "libs/http-proxy/src"
+      ],
+      "@fc/http-proxy/*": [
+        "libs/http-proxy/src/*"
       ]
     }
   },
