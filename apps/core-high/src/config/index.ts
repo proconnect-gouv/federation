@@ -9,6 +9,7 @@ import Rnipp from './rnipp';
 import CryptographyBroker from './cryptography-broker';
 import Identity from './identity';
 import Cryptography from './cryptography';
+import HttpProxy from './http-proxy';
 
 export default {
   App,
@@ -21,4 +22,5 @@ export default {
   Identity,
   CryptographyBroker,
   Cryptography,
+  HttpProxy,
 } as CoreFcpConfig;

@@ -18,6 +18,7 @@ import { CoreFcpService } from './core-fcp.service';
 import { ErrorModule } from '@fc/error';
 import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
+import { HttpProxyModule } from '@fc/http-proxy';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AccountModule } from '@fc/account';
     CryptographyModule,
     AccountModule,
     IdentityProviderModule,
+    HttpProxyModule,
     OidcProviderModule.register(
       IdentityService,
       IdentityModule,

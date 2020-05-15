@@ -9,6 +9,7 @@ import { RnippConfig } from '@fc/rnipp';
 import { IdentityConfig } from 'libs/identity/src';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { CryptographyConfig } from '@fc/cryptography';
+import { HttpProxyConfig } from '@fc/http-proxy';
 
 export class CoreFcpConfig {
   @IsObject()
@@ -58,4 +59,9 @@ export class CoreFcpConfig {
   @ValidateNested()
   @Type(() => CryptographyConfig)
   readonly Cryptography: CryptographyConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => HttpProxyConfig)
+  readonly HttpProxy: HttpProxyConfig;
 }
