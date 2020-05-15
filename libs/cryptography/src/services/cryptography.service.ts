@@ -33,6 +33,10 @@ export class CryptographyService {
     this.broker.connect();
   }
 
+  onModuleDestroy() {
+    this.broker.close();
+  }
+
   /**
    * Encrypt the given UserInfos obtained when oidc-provider want to cache it.
    * Current implementation use symetrical AES-256-GCM.
