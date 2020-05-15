@@ -139,6 +139,12 @@
       ],
       "@fc/http-proxy/*": [
         "libs/http-proxy/src/*"
+      ],
+      "@fc/session": [
+        "libs/session/src"
+      ],
+      "@fc/session/*": [
+        "libs/session/src/*"
       ]
     }
   },

@@ -143,7 +143,9 @@
       "@fc/oidc/(.*)": "<rootDir>/libs/oidc/src/$1",
       "@fc/oidc": "<rootDir>/libs/oidc/src",
       "@fc/http-proxy/(.*)": "<rootDir>/libs/http-proxy/src/$1",
-      "@fc/http-proxy": "<rootDir>/libs/http-proxy/src"
+      "@fc/http-proxy": "<rootDir>/libs/http-proxy/src",
+      "@fc/session/(.*)": "<rootDir>/libs/session/src/$1",
+      "@fc/session": "<rootDir>/libs/session/src"
     },
     "preset": "ts-jest"
   }
