@@ -19,9 +19,11 @@ import { ErrorModule } from '@fc/error';
 import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
+import { SessionModule } from '@fc/session';
 
 @Module({
   imports: [
+    SessionModule,
     ErrorModule,
     MongooseModule,
     IdentityModule,
