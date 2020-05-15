@@ -35,6 +35,7 @@
     "class-validator": "^0.11.0",
     "deep-freeze": "^0.0.1",
     "express-session": "^1.17.0",
+    "global-agent": "^2.1.8",
     "ioredis": "^4.16.2",
     "jose": "1.27.0",
     "lodash": "^4.17.15",
@@ -140,7 +141,9 @@
       "@fc/account/(.*)": "<rootDir>/libs/account/src/$1",
       "@fc/account": "<rootDir>/libs/account/src",
       "@fc/oidc/(.*)": "<rootDir>/libs/oidc/src/$1",
-      "@fc/oidc": "<rootDir>/libs/oidc/src"
+      "@fc/oidc": "<rootDir>/libs/oidc/src",
+      "@fc/http-proxy/(.*)": "<rootDir>/libs/http-proxy/src/$1",
+      "@fc/http-proxy": "<rootDir>/libs/http-proxy/src"
     },
     "preset": "ts-jest"
   }
