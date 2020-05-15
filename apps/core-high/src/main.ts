@@ -32,22 +32,6 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, assetsPath, 'public'));
 
-  /**
-   * @TODO create session module (express?, redis?, ...)
-   * with variable validation
-   **/
-  app.use(
-    session({
-      secret: 'aufooquewooleng8Thahr6quei7Ais',
-      name: 'sessionId',
-      resave: true,
-      saveUninitialized: false,
-      cookie: {
-        maxAge: 20 * 60 * 1000, // 20 minutes
-      },
-    }),
-  );
-
   await app.listen(3000);
 }
 bootstrap();
