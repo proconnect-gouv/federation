@@ -68,9 +68,9 @@ export class OidcProviderController {
     return next();
   }
 
-  @Get('/.well-known/keys')
+  @Get('/jwks')
   async getWellKnownKeys() {
-    this.logger.debug('api/v2/.well-known/keys');
+    this.logger.debug('api/v2/jwks');
     return this.oidcProvider.wellKnownKeys();
   }
 

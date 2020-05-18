@@ -66,7 +66,7 @@ export class OidcProviderService {
    * @see https://docs.nestjs.com/fundamentals/lifecycle-events
    */
   async onModuleInit() {
-    const { issuer, configuration } = await this.getConfig();
+    const { prefix, issuer, configuration } = await this.getConfig();
     this.logger.debug('Initializing oidc-provider');
 
     try {
@@ -78,7 +78,7 @@ export class OidcProviderService {
 
     this.logger.debug('Mouting oidc-provider middleware');
     try {
-      this.httpAdapterHost.httpAdapter.use(this.provider.callback);
+      this.httpAdapterHost.httpAdapter.use(prefix, this.provider.callback);
     } catch (error) {
       throw new OidcProviderBindingException(error);
     }
@@ -379,6 +379,7 @@ export class OidcProviderService {
      * Get data from config file
      */
     const {
+      prefix,
       issuer,
       sigHsmPubKey,
       configuration,
@@ -390,6 +391,7 @@ export class OidcProviderService {
      */
     return {
       reloadConfigDelayInMs,
+      prefix,
       issuer,
       sigHsmPubKey,
       configuration: {
