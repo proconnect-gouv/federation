@@ -6,6 +6,10 @@ import { LoggerService, LogLevelNames } from '@fc/logger';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { ClientMetadata } from 'oidc-provider';
 import { OidcClientConfig } from './dto';
+import {
+  OidcClientProviderNotFoundException,
+  OidcClientProviderDisabledException,
+} from './exceptions';
 
 describe('OidcClientService', () => {
   let service: OidcClientService;
@@ -321,20 +325,24 @@ describe('OidcClientService', () => {
   });
 
   describe('getProvider', () => {
+    // Given
+    const providerMock1 = ({
+      name: 'provider1',
+      active: true,
+    } as unknown) as ClientMetadata;
+    const providerMock2 = ({
+      name: 'provider2',
+      active: true,
+    } as unknown) as ClientMetadata;
+    const providerMock3 = ({
+      name: 'provider3',
+      active: true,
+    } as unknown) as ClientMetadata;
+    const providers = [providerMock1, providerMock2, providerMock3];
+
     it('should return provider in config', () => {
       // Given
-      const providerMock1 = ({
-        name: 'provider1',
-      } as unknown) as ClientMetadata;
-      const providerMock2 = ({
-        name: 'provider2',
-      } as unknown) as ClientMetadata;
-      const providerMock3 = ({
-        name: 'provider3',
-      } as unknown) as ClientMetadata;
-      service['configuration'] = {
-        providers: [providerMock1, providerMock2, providerMock3],
-      } as OidcClientConfig;
+      service['configuration'] = { providers } as OidcClientConfig;
       // When
       const result = service['getProvider']('provider2');
       // Then
@@ -342,22 +350,20 @@ describe('OidcClientService', () => {
     });
     it('should throw if provider is not in config', () => {
       // Given
-      const providerMock1 = ({
-        name: 'provider1',
-      } as unknown) as ClientMetadata;
-      const providerMock2 = ({
-        name: 'provider2',
-      } as unknown) as ClientMetadata;
-      const providerMock3 = ({
-        name: 'provider3',
-      } as unknown) as ClientMetadata;
-      service['configuration'] = {
-        providers: [providerMock1, providerMock2, providerMock3],
-      } as OidcClientConfig;
+      service['configuration'] = { providers } as OidcClientConfig;
       // Then
       expect(() => {
         service['getProvider']('provider0');
-      }).toThrow();
+      }).toThrow(OidcClientProviderNotFoundException);
+    });
+    it('should throw if provider is not active', () => {
+      // Given
+      service['configuration'] = { providers } as OidcClientConfig;
+      service['configuration'].providers[1].active = false;
+      // Then
+      expect(() => {
+        service['getProvider']('provider2');
+      }).toThrow(OidcClientProviderDisabledException);
     });
   });
 });

@@ -24,6 +24,8 @@ export class IdentityProviderService implements IIdentityProviderService {
         {
           _id: false,
           name: true,
+          active: true,
+          display: true,
           clientID: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/camelcase

@@ -9,29 +9,26 @@
     >
       <h1>DEMO : Page liste des IdP</h1>
 
-      <div>
-        <% locals.providers.forEach((provider) => { %>
+      <div id="idp-list">
+        <% locals.providers.filter(p => p.display).forEach((provider) => { %>
         <form
           method="POST"
           action="/api/v2/redirect-to-idp"
           id="fs-request-<%= provider.name %>"
           name="fs-request"
-          style="font-size: 2em; width: 200px; height: 200px; margin: 0 5px; float: left;"
+          style="font-size: 2em; width: 200px; height: 200px; margin: 5px; float: left;"
         >
           <button
             style="width: 100%; height: 100%;"
             id="idp-<%= provider.name %>"
+            <% if (!provider.active) { %>disabled<% } %>
           >
             <%= provider.name %>
           </button>
-          <input
-            name="providerName"
-            id="providerName"
-            value="<%= provider.name %>"
-          />
-          <input name="uid" id="uid" value="<%= locals.uid %>" />
-          <input name="scope" value="<%= params.scope %>" />
-          <input name="acr_values" value="<%= params.acr_values %>" />
+          <input type="hidden" name="providerName" id="providerName" value="<%= provider.name %>" />
+          <input type="hidden" name="uid" id="uid" value="<%= locals.uid %>" />
+          <input type="hidden" name="scope" value="<%= params.scope %>" />
+          <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
         </form>
         <% }) %>
       </div>
