@@ -26,7 +26,9 @@ export class ServiceProviderService implements IServiceProviderService {
   private async findAllServiceProvider(): Promise<IServiceProvider[]> {
     const rawResult = await this.serviceProviderModel
       .find(
-        {},
+        {
+          active: true,
+        },
         {
           _id: false,
           active: true,
