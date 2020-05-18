@@ -2,17 +2,18 @@ import { OidcProviderConfig } from '@fc/oidc-provider';
 
 export default {
   reloadConfigDelayInMs: 60 * 1000, // 1 minute
-  issuer: process.env.ISSUER_URL,
+  prefix: process.env.PREFIX,
+  issuer: `https://${process.env.FQDN}${process.env.PREFIX}`,
   configuration: {
     routes: {
-      authorization: '/api/v2/authorize',
-      interaction: '/interaction',
+      authorization: '/authorize',
+      token: '/token',
+      userinfo: '/userinfo',
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/camelcase
-      end_session: '/api/v2/logout',
-      revocation: '/user/token/revocation',
-      token: '/api/v2/token',
-      userinfo: '/api/v2/userinfo',
+      end_session: '/logout',
+      revocation: '/token/revocation',
+      jwks: '/jwks',
     },
     cookies: {
       keys: ['foo'],

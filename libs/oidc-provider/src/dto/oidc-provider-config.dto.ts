@@ -18,19 +18,19 @@ export class Routes {
   readonly authorization: string;
 
   @IsString()
-  readonly interaction: string;
-
-  @IsString()
   readonly end_session: string;
-
-  @IsString()
-  readonly revocation: string;
 
   @IsString()
   readonly token: string;
 
   @IsString()
   readonly userinfo: string;
+
+  @IsString()
+  readonly revocation: string;
+
+  @IsString()
+  readonly jwks: string;
 }
 
 class Cookies {
@@ -185,6 +185,9 @@ class Configuration {
 }
 
 export class OidcProviderConfig {
+  @IsString()
+  readonly prefix: string;
+
   @IsString()
   readonly issuer: string;
 
