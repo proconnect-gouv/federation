@@ -44,6 +44,9 @@ describe('HttpExceptionFilter', () => {
     it('should render error template', () => {
       // Given
       const exception = new HttpException('message text', 403);
+      exception.getResponse = jest
+        .fn()
+        .mockReturnValue({ message: 'some other text' });
       // When
       exceptionFilter.catch(exception, argumentHostMock);
       // Then
@@ -51,7 +54,7 @@ describe('HttpExceptionFilter', () => {
         'error',
         expect.objectContaining({
           code: 'Y000403',
-          message: 'message text',
+          message: 'some other text',
         }),
       );
     });

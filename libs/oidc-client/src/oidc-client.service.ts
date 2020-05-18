@@ -13,6 +13,10 @@ import { LoggerService } from '@fc/logger';
 import { OidcClientConfig } from './dto';
 import { IIdentityProviderService } from './interfaces';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
+import {
+  OidcClientProviderNotFoundException,
+  OidcClientProviderDisabledException,
+} from './exceptions';
 
 @Injectable()
 export class OidcClientService {
@@ -173,8 +177,11 @@ export class OidcClientService {
       ({ name }) => name === providerName,
     );
     if (!provider) {
-      /** @TODO proper error management (specific exception?) */
-      throw Error(`Provider not found <${providerName}>`);
+      throw new OidcClientProviderNotFoundException(providerName);
+    }
+
+    if (!provider.active) {
+      throw new OidcClientProviderDisabledException(providerName);
     }
 
     return provider;
