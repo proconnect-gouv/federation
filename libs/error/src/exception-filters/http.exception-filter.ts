@@ -17,11 +17,11 @@ export class HttpExceptionFilter extends FcBaseExceptionFilter
     const code = ErrorService.getExceptionCodeFor(exception);
     const id = ErrorService.generateErrorId();
 
-    const { message } = exception;
+    const { message } = exception.getResponse() as any;
 
     this.logException(code, id, exception);
 
-    res.status(500);
+    res.status(exception.getStatus());
     res.render('error', {
       code,
       id,

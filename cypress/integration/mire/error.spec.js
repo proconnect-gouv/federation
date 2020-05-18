@@ -27,13 +27,25 @@ function basicErrorScenario(params) {
   cy.get('input[type="submit"]').click();
 }
 
-function checkError(errorCode) {
-  cy.url().should('match', new RegExp(`\/interaction\/.*\/consent`));
-  cy.get('h1').contains('🚨 Erreur 😓 !');
-  cy.get('pre').contains(`code : ${errorCode}`);
-}
-
 describe('Error scenarios', () => {
+  describe('Service Provider', () => {
+    it('should trigger error XXX if SP is not in database', () => {
+      const nonExistingSpAuthorizeUrl =
+        '/api/v2/authorize?client_id=random-bad-client-id&scope=openid&response_type=code&redirect_uri=https%3A%2F%2Fudv2.docker.dev-franceconnect.fr%2Fauthentication%2Flogin-callback&state=stateTraces&nonce=nonceTraces&acr_values=eidas3';
+      cy.visit(nonExistingSpAuthorizeUrl, { failOnStatusCode: false });
+
+      cy.hasError('Y030024');
+    });
+
+    it('should trigger error XXX if SP is in database but disabled', () => {
+      const disabledSpAuthorizeUrl =
+        '/api/v2/authorize?client_id=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950&scope=openid&response_type=code&redirect_uri=https%3A%2F%2Ffsp1v2.docker.dev-franceconnect.fr%2Flogin-callback&state=stateTraces&nonce=nonceTraces&acr_values=eidas3';
+      cy.visit(disabledSpAuthorizeUrl, { failOnStatusCode: false });
+
+      cy.hasError('Y030024');
+    });
+  });
+
   describe('Acr', () => {
     it('should trigger error Y000400 (HTTP 400) when acr from SP is not supported', () => {
       const baseUrl =
@@ -45,8 +57,7 @@ describe('Error scenarios', () => {
 
       // Real test
       cy.visit(`${baseUrl}NonSupportedAcr`, { failOnStatusCode: false });
-      cy.get('h1').contains('🚨 Erreur 😓 !');
-      cy.get('pre').contains('code : Y000400');
+      cy.hasError('Y000400');
     });
 
     it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
@@ -57,8 +68,7 @@ describe('Error scenarios', () => {
       });
 
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/consent`));
-      cy.get('h1').contains('🚨 Erreur 😓 !');
-      cy.get('pre').contains('code : Y020001');
+      cy.hasError('Y020001');
     });
   });
 
@@ -74,8 +84,7 @@ describe('Error scenarios', () => {
       cy.get('#consent').click();
 
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/login`));
-      cy.get('h1').contains('🚨 Erreur 😓 !');
-      cy.get('pre').contains('code : Y030110');
+      cy.hasError('Y030110');
     });
   });
 
@@ -88,8 +97,7 @@ describe('Error scenarios', () => {
       });
 
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/consent`));
-      cy.get('h1').contains('🚨 Erreur 😓 !');
-      cy.get('pre').contains('code : Y180001');
+      cy.hasError('Y180001');
     });
   });
 
@@ -100,7 +108,7 @@ describe('Error scenarios', () => {
         idpId: 'fip1v2',
       });
 
-      checkError('Y010004');
+      cy.hasError('Y010004');
     });
 
     it('should trigger error Y010006', () => {
@@ -109,7 +117,7 @@ describe('Error scenarios', () => {
         idpId: 'fip1v2',
       });
 
-      checkError('Y010006');
+      cy.hasError('Y010006');
     });
 
     it('should trigger error Y010007', () => {
@@ -118,7 +126,7 @@ describe('Error scenarios', () => {
         idpId: 'fip1v2',
       });
 
-      checkError('Y010007');
+      cy.hasError('Y010007');
     });
 
     it('should trigger error Y010008', () => {
@@ -127,7 +135,7 @@ describe('Error scenarios', () => {
         idpId: 'fip1v2',
       });
 
-      checkError('Y010008');
+      cy.hasError('Y010008');
     });
 
     it('should trigger error Y010009', () => {
@@ -136,7 +144,7 @@ describe('Error scenarios', () => {
         idpId: 'fip1v2',
       });
 
-      checkError('Y010009');
+      cy.hasError('Y010009');
     });
 
     it('should trigger error Y010011', () => {
@@ -145,7 +153,7 @@ describe('Error scenarios', () => {
         idpId: 'fip1v2',
       });
 
-      checkError('Y010011');
+      cy.hasError('Y010011');
     });
 
     it('should trigger error Y010012', () => {
@@ -154,7 +162,7 @@ describe('Error scenarios', () => {
         idpId: 'fip1v2',
       });
 
-      checkError('Y010012');
+      cy.hasError('Y010012');
     });
 
     it('should trigger error Y010013', () => {
@@ -163,7 +171,7 @@ describe('Error scenarios', () => {
         idpId: 'fip1v2',
       });
 
-      checkError('Y010013');
+      cy.hasError('Y010013');
     });
 
     it('should trigger error Y010015', () => {
@@ -172,7 +180,7 @@ describe('Error scenarios', () => {
         idpId: 'fip1v2',
       });
 
-      checkError('Y010015');
+      cy.hasError('Y010015');
     });
   });
 });
