@@ -1,11 +1,7 @@
 import { OidcProviderConfig } from '@fc/oidc-provider';
 
-const MINUTE_IN_SECONDS = 60;
-const HOUR_IN_SECONDS = 3600;
-const DAY_IN_SECONDS = 86400;
-
 export default {
-  reloadConfigDelayInMs: 60000,
+  reloadConfigDelayInMs: 60 * 1000, // 1 minute
   issuer: process.env.ISSUER_URL,
   configuration: {
     routes: {
@@ -33,9 +29,9 @@ export default {
       backchannelLogout: { enabled: true },
     },
     ttl: {
-      AccessToken: 1 * MINUTE_IN_SECONDS, // 1 minutes in seconds
+      AccessToken: 60, // 1 minute
       AuthorizationCode: 30, // 30 seconds
-      IdToken: 1 * MINUTE_IN_SECONDS, // 1 minutes in seconds
+      IdToken: 60, // 1 minute
     },
     acrValues: ['eidas1', 'eidas2', 'eidas3'],
     claims: {
