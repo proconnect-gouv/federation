@@ -1,3 +1,5 @@
+import * as QueryString from 'querystring';
+
 function basicErrorScenario(params) {
   const { idpId, errorCode, eidasLevel } = params;
   const password = '123';
@@ -27,36 +29,101 @@ function basicErrorScenario(params) {
   cy.get('input[type="submit"]').click();
 }
 
+function getAuthorizeUrl(overrideParams = {}) {
+  const baseAuthorizeUrl = '/api/v2/authorize';
+  const baseAuthorizeParams = {
+    // oidc param
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    client_id:
+      'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
+    scope: 'openid',
+    // oidc param
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    response_type: 'code',
+    // oidc param
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    redirect_uri:
+      'https://udv2.docker.dev-franceconnect.fr/authentication/login-callback',
+    state: 'stateTraces',
+    nonce: 'nonceTraces',
+    // oidc param
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    acr_values: 'eidas3',
+  };
+  const params = { ...baseAuthorizeParams, ...overrideParams };
+
+  return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;
+}
+
 describe('Error scenarios', () => {
   describe('Service Provider', () => {
-    it('should trigger error XXX if SP is not in database', () => {
-      const nonExistingSpAuthorizeUrl =
-        '/api/v2/authorize?client_id=random-bad-client-id&scope=openid&response_type=code&redirect_uri=https%3A%2F%2Fudv2.docker.dev-franceconnect.fr%2Fauthentication%2Flogin-callback&state=stateTraces&nonce=nonceTraces&acr_values=eidas3';
-      cy.visit(nonExistingSpAuthorizeUrl, { failOnStatusCode: false });
+    it('should trigger error Y030024 if SP is not in database', () => {
+      // oidc param
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      const url = getAuthorizeUrl({ client_id: 'random-bad-client-id' });
+      cy.visit(url, { failOnStatusCode: false });
 
       cy.hasError('Y030024');
     });
 
-    it('should trigger error XXX if SP is in database but disabled', () => {
-      const disabledSpAuthorizeUrl =
-        '/api/v2/authorize?client_id=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950&scope=openid&response_type=code&redirect_uri=https%3A%2F%2Ffsp1v2.docker.dev-franceconnect.fr%2Flogin-callback&state=stateTraces&nonce=nonceTraces&acr_values=eidas3';
-      cy.visit(disabledSpAuthorizeUrl, { failOnStatusCode: false });
+    it('should trigger error Y030024 if SP is in database but disabled', () => {
+      const url = getAuthorizeUrl({
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        client_id:
+          '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
+      });
+      cy.visit(url, { failOnStatusCode: false });
 
       cy.hasError('Y030024');
     });
   });
 
+  describe.only('prompt', () => {
+    it('should not allow prompt=none', () => {
+      const url = getAuthorizeUrl({ prompt: 'none' });
+      cy.visit(url, { failOnStatusCode: false });
+      cy.hasError('Y000400');
+    });
+    it('should not allow prompt=select_account', () => {
+      const url = getAuthorizeUrl({ prompt: 'select_account' });
+      cy.visit(url, { failOnStatusCode: false });
+      cy.hasError('Y000400');
+    });
+    it('should allow prompt=login', () => {
+      const url = getAuthorizeUrl({ prompt: 'login' });
+      cy.visit(url, { failOnStatusCode: false });
+      cy.get('#idp-list').should('exist');
+    });
+    it('should allow prompt=consent', () => {
+      const url = getAuthorizeUrl({ prompt: 'consent' });
+      cy.visit(url, { failOnStatusCode: false });
+      cy.get('#idp-list').should('exist');
+    });
+    it('should allow prompt=login consent', () => {
+      const url = getAuthorizeUrl({ prompt: 'login consent' });
+      cy.visit(url, { failOnStatusCode: false });
+      cy.get('#idp-list').should('exist');
+    });
+    it('should allow prompt=consent login', () => {
+      const url = getAuthorizeUrl({ prompt: 'consent login' });
+      cy.visit(url, { failOnStatusCode: false });
+      cy.get('#idp-list').should('exist');
+    });
+  });
+
   describe('Acr', () => {
     it('should trigger error Y000400 (HTTP 400) when acr from SP is not supported', () => {
-      const baseUrl =
-        '/api/v2/authorize?client_id=a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc&scope=openid&response_type=code&redirect_uri=https%3A%2F%2Fudv2.docker.dev-franceconnect.fr%2Fauthentication%2Flogin-callback&state=stateTraces&nonce=nonceTraces&acr_values=';
-
       // Control visit
-      cy.visit(`${baseUrl}eidas2`);
-      cy.get('#idp-fip1v2');
+      const controlUrl = getAuthorizeUrl();
+      cy.visit(controlUrl);
+      cy.get('#idp-fip1v2').should('exist');
 
       // Real test
-      cy.visit(`${baseUrl}NonSupportedAcr`, { failOnStatusCode: false });
+      // oidc param
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      const testUrl = getAuthorizeUrl({ acr_values: 'NonSupportedAcr' });
+      cy.visit(testUrl, { failOnStatusCode: false });
       cy.hasError('Y000400');
     });
 
