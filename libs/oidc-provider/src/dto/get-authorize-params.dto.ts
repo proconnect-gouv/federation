@@ -1,6 +1,10 @@
-import { IsString, IsIn, IsUrl, Contains } from 'class-validator';
+import { IsString, IsIn, IsUrl, Contains, IsOptional } from 'class-validator';
 import { Acr } from '@fc/oidc';
 
+/**
+ * Control parameters on the authentication request.
+ * @see https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.3.1.2.1
+ */
 export class GetAuthorizeParamsDTO {
   @IsString()
   readonly client_id: string;
@@ -25,4 +29,9 @@ export class GetAuthorizeParamsDTO {
   @IsString()
   @Contains('openid')
   readonly scope: string;
+
+  @IsString()
+  @IsIn(['login', 'consent', 'login consent', 'consent login'])
+  @IsOptional()
+  readonly prompt?: string;
 }

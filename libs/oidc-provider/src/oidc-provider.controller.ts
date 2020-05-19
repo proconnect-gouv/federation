@@ -29,7 +29,13 @@ export class OidcProviderController {
 
   /** @TODO validation query by DTO (current DTO is almost empty) */
   @Get('/authorize')
-  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
   async getAuthorize(@Next() next, @Query() params: GetAuthorizeParamsDTO) {
     // Start of business related stuff
     this.logger.debug('/api/v2/authorize');
