@@ -11,7 +11,14 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { JWKECKey, JWKRSAKey } from 'jose';
-import { AdapterConstructor } from 'oidc-provider';
+import {
+  AdapterConstructor,
+  EncryptionEncValues,
+  EncryptionAlgValues,
+  ResponseType,
+  AsymmetricSigningAlgorithm,
+  ClientAuthMethod,
+} from 'oidc-provider';
 
 export class Routes {
   @IsString()
@@ -33,9 +40,31 @@ export class Routes {
   readonly jwks: string;
 }
 
+type SameSite = 'strict' | 'lax' | 'none';
+
+class CookiesOptions {
+  @IsNumber()
+  maxAge: number;
+
+  @IsString()
+  sameSite: SameSite;
+
+  @IsBoolean()
+  signed: boolean;
+}
+
 class Cookies {
   @IsArray()
+  @IsString({ each: true })
   readonly keys: string[];
+
+  @ValidateNested()
+  @Type(() => CookiesOptions)
+  readonly long: CookiesOptions;
+
+  @ValidateNested()
+  @Type(() => CookiesOptions)
+  readonly short: CookiesOptions;
 }
 
 class FeatureSetting {
@@ -44,10 +73,6 @@ class FeatureSetting {
 }
 
 class Features {
-  @ValidateNested()
-  @Type(() => FeatureSetting)
-  readonly introspection: FeatureSetting;
-
   @ValidateNested()
   @Type(() => FeatureSetting)
   readonly revocation: FeatureSetting;
@@ -66,10 +91,6 @@ class Features {
 
   @ValidateNested()
   @Type(() => FeatureSetting)
-  readonly sessionManagement: FeatureSetting;
-
-  @ValidateNested()
-  @Type(() => FeatureSetting)
   readonly jwtUserinfo: FeatureSetting;
 }
 
@@ -82,6 +103,120 @@ class Ttl {
 
   @IsNumber()
   readonly IdToken: number;
+}
+
+/** Non exhaustive
+ * @see https://tools.ietf.org/html/rfc6749#page-73
+ * @see https://oauth.net/2/grant-types/
+ */
+type GrantType =
+  | 'authorization_code'
+  | 'refresh_token'
+  | 'device_code'
+  | 'client_credentials'
+  | 'password';
+
+/**
+ * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pkce
+ * @see https://github.com/panva/node-oidc-provider/blob/950c21d909b84c9de915ed30cff4d6f1f7cc95f7/types/index.d.ts#L72
+ */
+type ApplicationType = 'web' | 'native';
+
+class ClientDefaults {
+  @IsArray()
+  @IsString({ each: true })
+  grant_types: GrantType[];
+
+  @IsString()
+  id_token_signed_response_alg: AsymmetricSigningAlgorithm;
+
+  @IsArray()
+  @IsString({ each: true })
+  response_types: ResponseType[];
+
+  @IsString()
+  application_type: ApplicationType;
+
+  @IsString()
+  token_endpoint_auth_method: ClientAuthMethod;
+}
+
+class WhitelistedJWA {
+  @IsArray()
+  @IsString({ each: true })
+  authorizationEncryptionAlgValues: EncryptionAlgValues[];
+
+  @IsArray()
+  @IsString({ each: true })
+  authorizationEncryptionEncValues: EncryptionEncValues[];
+
+  @IsArray()
+  @IsString({ each: true })
+  authorizationSigningAlgValues: AsymmetricSigningAlgorithm[];
+
+  @IsArray()
+  @IsString({ each: true })
+  dPoPSigningAlgValues: AsymmetricSigningAlgorithm[];
+
+  @IsArray()
+  @IsString({ each: true })
+  idTokenEncryptionAlgValues: EncryptionAlgValues[];
+
+  @IsArray()
+  @IsString({ each: true })
+  idTokenEncryptionEncValues: EncryptionEncValues[];
+
+  @IsArray()
+  @IsString({ each: true })
+  idTokenSigningAlgValues: AsymmetricSigningAlgorithm[];
+
+  @IsArray()
+  @IsString({ each: true })
+  introspectionEncryptionAlgValues: EncryptionAlgValues[];
+
+  @IsArray()
+  @IsString({ each: true })
+  introspectionEncryptionEncValues: EncryptionEncValues[];
+
+  @IsArray()
+  @IsString({ each: true })
+  introspectionEndpointAuthSigningAlgValues: AsymmetricSigningAlgorithm[];
+
+  @IsArray()
+  @IsString({ each: true })
+  introspectionSigningAlgValues: AsymmetricSigningAlgorithm[];
+
+  @IsArray()
+  @IsString({ each: true })
+  requestObjectEncryptionAlgValues: EncryptionAlgValues[];
+
+  @IsArray()
+  @IsString({ each: true })
+  requestObjectEncryptionEncValues: EncryptionEncValues[];
+
+  @IsArray()
+  @IsString({ each: true })
+  requestObjectSigningAlgValues: AsymmetricSigningAlgorithm[];
+
+  @IsArray()
+  @IsString({ each: true })
+  revocationEndpointAuthSigningAlgValues: AsymmetricSigningAlgorithm[];
+
+  @IsArray()
+  @IsString({ each: true })
+  tokenEndpointAuthSigningAlgValues: AsymmetricSigningAlgorithm[];
+
+  @IsArray()
+  @IsString({ each: true })
+  userinfoEncryptionAlgValues: EncryptionAlgValues[];
+
+  @IsArray()
+  @IsString({ each: true })
+  userinfoEncryptionEncValues: EncryptionEncValues[];
+
+  @IsArray()
+  @IsString({ each: true })
+  userinfoSigningAlgValues: AsymmetricSigningAlgorithm[];
 }
 
 class Jwks {
@@ -106,12 +241,15 @@ class Configuration {
   readonly cookies: Cookies;
 
   @IsArray()
-  readonly grant_types_supported?: string[];
+  readonly grant_types_supported: GrantType[];
 
   @IsObject()
   @ValidateNested()
   @Type(() => Features)
   readonly features: Features;
+
+  @IsBoolean()
+  readonly acceptQueryParamAccessTokens: boolean;
 
   @IsObject()
   @ValidateNested()
@@ -124,6 +262,20 @@ class Configuration {
 
   @IsObject()
   readonly claims: any;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ClientDefaults)
+  readonly clientDefaults: ClientDefaults;
+
+  @IsArray()
+  @IsString({ each: true })
+  responseTypes: ResponseType[];
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => WhitelistedJWA)
+  readonly whitelistedJWA: WhitelistedJWA;
 
   /**
    * clients is not loaded from real configuration

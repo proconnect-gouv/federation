@@ -146,21 +146,7 @@ describe('OidcClientService', () => {
       // Then
       expect(authorizationUrlMock).toHaveBeenCalledTimes(1);
     });
-    it('should store codeVerifier in session (is not oidc-client suppose to that?)', async () => {
-      // Given
-      const scope = 'foo_scope bar_scope';
-      const providerId = 'myidp';
-      // oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      const acr_values = 'eidas1';
-      const req = { session: { codeVerifier: undefined } };
 
-      service['createOidcClient'] = createOidcClientMock;
-      // When
-      await service.getAuthorizeUrl(scope, providerId, acr_values, req);
-      // Then
-      expect(req.session.codeVerifier).toBeDefined();
-    });
     it('should resolve to authorizationUrl return value)', async () => {
       // Given
       const scope = 'foo_scope bar_scope';
@@ -212,7 +198,7 @@ describe('OidcClientService', () => {
   describe('getTokenSet', () => {
     it('should call client.callback with callbackParams', async () => {
       // Given
-      const req = { session: { codeVerifier: 'codeVerifierValue' } };
+      const req = {};
       const providerId = 'foo';
       service['getProvider'] = getProviderMock;
       service['createOidcClient'] = createOidcClientMock;
@@ -226,9 +212,6 @@ describe('OidcClientService', () => {
           state: 'callbackParamsState',
         },
         {
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
-          code_verifier: 'codeVerifierValue',
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/camelcase
           response_type: 'response,types',
