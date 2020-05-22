@@ -322,6 +322,8 @@ export class OidcProviderService {
   /**
    * More documentation can be found in oidc-provider repo
    * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#logoutsource
+   * @TODO Check the behaving of the page when javascript is disabled
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/109
    */
   private async logoutSource(ctx: KoaContextWithOIDC, form: any) {
     ctx.body = `<!DOCTYPE html>
