@@ -62,25 +62,12 @@ export class OidcClientService {
     /** @TODO replace by in house crypto */
     const state = generators.state();
 
-    /** @TODO replace by in house crypto? */
-    const codeVerifier = generators.codeVerifier();
-    const codeChallenge = generators.codeChallenge(codeVerifier);
-
-    /** @TODO store the code_verifier in session mechanism */
-    req.session.codeVerifier = codeVerifier;
-
     return client.authorizationUrl({
       scope,
       state,
       // oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/camelcase
       acr_values,
-      // oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      code_challenge: codeChallenge,
-      // oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/camelcase
-      code_challenge_method: 'S256',
     });
   }
 
@@ -107,9 +94,6 @@ export class OidcClientService {
       params,
       {
         state: params.state,
-        // oidc defined variable name
-        // eslint-disable-next-line @typescript-eslint/camelcase
-        code_verifier: req.session.codeVerifier,
         // oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/camelcase
         response_type: clientMetadata.response_types.join(','),
