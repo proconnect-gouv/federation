@@ -79,7 +79,7 @@ describe('Error scenarios', () => {
     });
   });
 
-  describe.only('prompt', () => {
+  describe('prompt', () => {
     it('should not allow prompt=none', () => {
       const url = getAuthorizeUrl({ prompt: 'none' });
       cy.visit(url, { failOnStatusCode: false });
