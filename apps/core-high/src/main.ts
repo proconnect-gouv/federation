@@ -3,7 +3,7 @@
  * This has to be done before any other import in order
  * to wrap references before they are imported
  */
-import '@fc/cryptography/overrides';
+import '@fc/override-oidc-provider/overrides';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppModule } from './app.module';

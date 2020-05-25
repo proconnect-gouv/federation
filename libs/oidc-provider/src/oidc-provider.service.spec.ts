@@ -1,5 +1,4 @@
 import { KoaContextWithOIDC, Provider } from 'oidc-provider';
-import { JWK } from 'jose';
 import * as MemoryAdapter from 'oidc-provider/lib/adapters/memory_adapter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
@@ -136,7 +135,6 @@ describe('OidcProviderService', () => {
                 devInteractions: { enabled: false },
               },
             },
-            sigHsmPubKey: 'foo',
           };
         case 'Logger':
           return {
@@ -191,30 +189,25 @@ describe('OidcProviderService', () => {
         OidcProviderBindingException,
       );
     });
+    it('should call several internal initializers', async () => {
+      // Given
+      service['ProviderProxy'] = ProviderProxyMock;
+      service['catchErrorEvents'] = jest.fn();
+      service['scheduleConfigurationReload'] = jest.fn();
+      // When
+      await service.onModuleInit();
+      // Then
+      expect(service['catchErrorEvents']).toHaveBeenCalledTimes(1);
+      expect(service['scheduleConfigurationReload']).toHaveBeenCalledTimes(1);
+    });
   });
 
-  describe('wellKnownKeys', () => {
-    it('should return keys', async () => {
-      // Given
-      const JwkKeyMock = {
-        toJWK: jest.fn().mockReturnValueOnce('a'),
-      };
-      const spy = jest
-        .spyOn(JWK, 'asKey')
-        .mockReturnValueOnce(JwkKeyMock as any);
-
-      configServiceMock.get.mockReturnValueOnce({
-        configuration: { jwks: { keys: ['foo'] } },
-        sigHsmPubKey: 'sigHsmPubKey',
-      });
-
+  describe('getProvider', () => {
+    it('Should return the oidc-provider instance', () => {
       // When
-      const result = await service.wellKnownKeys();
+      const result = service.getProvider();
       // Then
-      expect(spy).toHaveBeenCalledTimes(1);
-      expect(spy).toHaveBeenCalledWith('sigHsmPubKey');
-      expect(JwkKeyMock.toJWK).toHaveBeenCalledTimes(1);
-      expect(result).toEqual({ keys: ['a'] });
+      expect(result).toBe(service['provider']);
     });
   });
 
