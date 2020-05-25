@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { OverrideCode } from '@fc/common';
 import { LoggerService } from '@fc/logger';
+import { OverrideCode } from '../helpers';
 
 @Injectable()
 export class JoseOverrideService {
@@ -31,6 +31,7 @@ export class JoseOverrideService {
    * @param overrideName Name of the override to bind to a local method
    */
   private registerOverride(overrideName: string): void {
+    this.logger.debug(`Register override for ${overrideName}`);
     OverrideCode.override(overrideName, this[overrideName].bind(this));
   }
 

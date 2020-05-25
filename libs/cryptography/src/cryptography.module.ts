@@ -1,14 +1,8 @@
 import { Module } from '@nestjs/common';
-import {
-  CryptographyService,
-  CryptoOverrideService,
-  JoseOverrideService,
-} from './services';
-import { RabbitmqModule } from '@fc/rabbitmq';
+import { CryptographyService } from './cryptography.service';
 
 @Module({
-  imports: [RabbitmqModule.registerFor('Cryptography')],
-  providers: [CryptographyService, CryptoOverrideService, JoseOverrideService],
+  providers: [CryptographyService],
   exports: [CryptographyService],
 })
 export class CryptographyModule {}

@@ -5,7 +5,6 @@
  */
 import { get } from 'lodash';
 import { Provider, KoaContextWithOIDC } from 'oidc-provider';
-import { JWK } from 'jose';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
 import { FcExceptionFilter, FcException } from '@fc/error';
@@ -88,12 +87,12 @@ export class OidcProviderService {
   }
 
   /**
-   * @TODO return keys from HSM (how?)
+   * Getter for external override module
+   *
+   * @warning Will return `undefined` before onModuleInit() is ran
    */
-  async wellKnownKeys() {
-    const config = this.config.get<OidcProviderConfig>('OidcProvider');
-
-    return { keys: [JWK.asKey(config.sigHsmPubKey).toJWK()] };
+  getProvider(): Provider {
+    return this.provider;
   }
 
   /**
@@ -383,7 +382,6 @@ export class OidcProviderService {
     const {
       prefix,
       issuer,
-      sigHsmPubKey,
       configuration,
       reloadConfigDelayInMs,
     } = this.config.get<OidcProviderConfig>('OidcProvider');
@@ -395,7 +393,6 @@ export class OidcProviderService {
       reloadConfigDelayInMs,
       prefix,
       issuer,
-      sigHsmPubKey,
       configuration: {
         ...configuration,
         adapter,

@@ -11,6 +11,7 @@ import Identity from './identity';
 import Cryptography from './cryptography';
 import HttpProxy from './http-proxy';
 import Session from './session';
+import OverrideOidcProvider from './override-oidc-provider';
 
 export default {
   App,
@@ -25,4 +26,5 @@ export default {
   Cryptography,
   HttpProxy,
   Session,
+  OverrideOidcProvider,
 } as CoreFcpConfig;

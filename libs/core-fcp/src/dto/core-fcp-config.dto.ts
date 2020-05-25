@@ -11,6 +11,7 @@ import { RabbitmqConfig } from '@fc/rabbitmq';
 import { CryptographyConfig } from '@fc/cryptography';
 import { HttpProxyConfig } from '@fc/http-proxy';
 import { SessionConfig } from '@fc/session';
+import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 
 export class CoreFcpConfig {
   @IsObject()
@@ -70,4 +71,9 @@ export class CoreFcpConfig {
   @ValidateNested()
   @Type(() => SessionConfig)
   readonly Session: SessionConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => OverrideOidcProviderConfig)
+  readonly OverrideOidcProvider: OverrideOidcProviderConfig;
 }

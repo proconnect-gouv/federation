@@ -4,16 +4,11 @@ import {
   createDecipheriv,
   createHmac,
 } from 'crypto';
-import { Injectable, Inject } from '@nestjs/common';
-import { ClientProxy } from '@nestjs/microservices';
-import { timeout } from 'rxjs/operators';
+import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
-import { RabbitmqConfig } from '@fc/rabbitmq';
-import { CryptoProtocol } from '@fc/microservices';
-import { IPivotIdentity } from '../interfaces';
-import { CryptographyGatewayException } from '../exceptions';
-import { CryptographyConfig } from '../dto';
+import { IPivotIdentity } from './interfaces';
+import { CryptographyConfig } from './dto';
 
 const NONCE_LENGTH = 12;
 const AUTHTAG_LENGTH = 16;
@@ -24,17 +19,8 @@ export class CryptographyService {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
-    @Inject('CryptographyBroker') private broker: ClientProxy,
   ) {
     this.logger.setContext(this.constructor.name);
-  }
-
-  onModuleInit() {
-    this.broker.connect();
-  }
-
-  onModuleDestroy() {
-    this.broker.close();
   }
 
   /**
@@ -114,71 +100,6 @@ export class CryptographyService {
     hmac.update(identityHash);
 
     return `${hmac.digest('hex')}v2`;
-  }
-
-  /**
-   * Sign data using crypto and a private key
-   * @param _unusedKey the private key provided by oidc-provider
-   * we do not use it since signature will occur with an HSM stored key.
-   * @param data a serialized data
-   * @param digest default to sha256 (Cf. crypto.createSign)
-   * @returns signed data
-   */
-  async sign(
-    _unusedKey: any,
-    dataBuffer: Buffer,
-    digest = 'sha256',
-  ): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
-      const { payloadEncoding, requestTimeout } = this.config.get<
-        RabbitmqConfig
-      >('CryptographyBroker');
-
-      this.logger.debug('Requesting signature from gateway');
-      try {
-        // Build message
-        const payload = {
-          data: dataBuffer.toString(payloadEncoding),
-          digest,
-        };
-
-        // Build callbacks
-        const success = this.signSuccess.bind(this, resolve, reject);
-        const failure = this.signFailure.bind(this, reject);
-
-        // Send message to gateway
-        this.broker
-          .send(CryptoProtocol.Commands.SIGN, payload)
-          .pipe(timeout(requestTimeout))
-          .subscribe(success, failure);
-      } catch (error) {
-        reject(new CryptographyGatewayException(error));
-      }
-    });
-  }
-
-  // Handle successful call
-  private signSuccess(resolve, reject, data) {
-    this.logger.debug('Received signature from gateway');
-    const { payloadEncoding } = this.config.get<RabbitmqConfig>(
-      'CryptographyBroker',
-    );
-
-    /**
-     * @TODO define a more powerful mechanism
-     */
-    if (data === 'ERROR') {
-      return this.signFailure(
-        reject,
-        new Error('Gateway completed with an error'),
-      );
-    }
-    return resolve(Buffer.from(data, payloadEncoding));
-  }
-
-  // Handle microservice failure
-  private signFailure(reject, error) {
-    reject(new CryptographyGatewayException(error));
   }
 
   /**
