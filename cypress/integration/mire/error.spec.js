@@ -5,7 +5,7 @@ function basicErrorScenario(params) {
   const password = '123';
 
   // FS: Click on FC button
-  cy.visit(`${Cypress.env('UD_ROOT_URL')}`);
+  cy.visit(`${Cypress.env('UD2_ROOT_URL')}`);
 
   cy.get('img[alt="Se connecter à FranceConnect"]').click();
 

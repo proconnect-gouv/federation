@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
-import { OidcProviderService } from '@fc/oidc-provider';
+import { LoggerService, LoggerModule } from '@fc/logger';
+import { ConfigService } from '@fc/config';
+import { OidcProviderService, OidcCtx } from '@fc/oidc-provider';
 import { IdentityService } from '@fc/identity';
 import { RnippService } from '@fc/rnipp';
 import { CryptographyService } from '@fc/cryptography';
@@ -37,6 +38,7 @@ describe('CoreFcpService', () => {
 
   const oidcProviderServiceMock = {
     getInteraction: getInteractionMock,
+    registerMiddleware: jest.fn(),
   };
 
   const identityServiceMock = {
@@ -61,6 +63,10 @@ describe('CoreFcpService', () => {
     computeSubV2: jest.fn(),
   };
 
+  const configServiceMock = {
+    get: jest.fn(),
+  };
+
   const reqMock = {
     session: { uid: uidMock },
   };
@@ -72,6 +78,7 @@ describe('CoreFcpService', () => {
       providers: [
         CoreFcpService,
         LoggerService,
+        ConfigService,
         OidcProviderService,
         IdentityService,
         RnippService,
@@ -81,6 +88,8 @@ describe('CoreFcpService', () => {
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
       .overrideProvider(IdentityService)
@@ -106,10 +115,77 @@ describe('CoreFcpService', () => {
 
     rnippServiceMock.check.mockResolvedValue(identityMock);
     accountServiceMock.isBlocked.mockResolvedValue(false);
+    configServiceMock.get.mockReturnValue({
+      forcedPrompt: ['testprompt'],
+      configuration: { routes: { authorization: '/foo' } },
+    });
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('onModuleInit', () => {
+    it('should register ovrrideAuthorizePrompt middleware', () => {
+      // Given
+      service['overrideAuthorizePrompt'] = jest.fn();
+      // When
+      service.onModuleInit();
+      // Then
+      expect(oidcProviderServiceMock.registerMiddleware).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(service['overrideAuthorizePrompt']).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('overrideAuthorizePrompt', () => {
+    it('should set prompt parameter on query', () => {
+      // Given
+      const ctxMock = {
+        method: 'GET',
+        query: {},
+      } as OidcCtx;
+      const overridePrompt = 'test';
+      // When
+      service['overrideAuthorizePrompt'](overridePrompt, ctxMock);
+      // Then
+      expect(ctxMock.query.prompt).toBe(overridePrompt);
+      expect(ctxMock.body).toBeUndefined();
+    });
+    it('should set prompt parameter on body', () => {
+      // Given
+      const ctxMock = {
+        method: 'POST',
+        body: {},
+      } as OidcCtx;
+      const overridePrompt = 'test';
+      // When
+      service['overrideAuthorizePrompt'](overridePrompt, ctxMock);
+      // Then
+      expect(ctxMock.body.prompt).toBe(overridePrompt);
+      expect(ctxMock.query).toBeUndefined();
+    });
+    it('should not do anything but log if there is no method declared', () => {
+      // Given
+      const ctxMock = {} as OidcCtx;
+      const overridePrompt = 'test';
+      // When
+      service['overrideAuthorizePrompt'](overridePrompt, ctxMock);
+      // Then
+      expect(ctxMock).toEqual({});
+      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
+    });
+    it('should not do anything but log if method is not handled', () => {
+      // Given
+      const ctxMock = { method: 'DELETE' } as OidcCtx;
+      const overridePrompt = 'test';
+      // When
+      service['overrideAuthorizePrompt'](overridePrompt, ctxMock);
+      // Then
+      expect(ctxMock).toEqual({ method: 'DELETE' });
+      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('getConsent', () => {
