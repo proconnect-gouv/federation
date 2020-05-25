@@ -8,6 +8,7 @@ import {
   ValidateNested,
   IsOptional,
   IsNumber,
+  IsEnum,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { JWKECKey, JWKRSAKey } from 'jose';
@@ -19,25 +20,44 @@ import {
   AsymmetricSigningAlgorithm,
   ClientAuthMethod,
 } from 'oidc-provider';
+import { OidcProviderRoutes, OidcProviderPrompt } from '../enums';
 
 export class Routes {
-  @IsString()
-  readonly authorization: string;
+  @IsEnum(OidcProviderRoutes)
+  readonly authorization: OidcProviderRoutes;
 
-  @IsString()
-  readonly end_session: string;
+  @IsEnum(OidcProviderRoutes)
+  readonly check_session: OidcProviderRoutes;
 
-  @IsString()
-  readonly token: string;
+  @IsEnum(OidcProviderRoutes)
+  readonly code_verification: OidcProviderRoutes;
 
-  @IsString()
-  readonly userinfo: string;
+  @IsEnum(OidcProviderRoutes)
+  readonly device_authorization: OidcProviderRoutes;
 
-  @IsString()
-  readonly revocation: string;
+  @IsEnum(OidcProviderRoutes)
+  readonly end_session: OidcProviderRoutes;
 
-  @IsString()
-  readonly jwks: string;
+  @IsEnum(OidcProviderRoutes)
+  readonly introspection: OidcProviderRoutes;
+
+  @IsEnum(OidcProviderRoutes)
+  readonly jwks: OidcProviderRoutes;
+
+  @IsEnum(OidcProviderRoutes)
+  readonly pushed_authorization_request: OidcProviderRoutes;
+
+  @IsEnum(OidcProviderRoutes)
+  readonly registration: OidcProviderRoutes;
+
+  @IsEnum(OidcProviderRoutes)
+  readonly revocation: OidcProviderRoutes;
+
+  @IsEnum(OidcProviderRoutes)
+  readonly token: OidcProviderRoutes;
+
+  @IsEnum(OidcProviderRoutes)
+  readonly userinfo: OidcProviderRoutes;
 }
 
 type SameSite = 'strict' | 'lax' | 'none';
@@ -351,4 +371,8 @@ export class OidcProviderConfig {
   @IsNumber()
   @IsOptional()
   readonly reloadConfigDelayInMs?: number;
+
+  @IsArray()
+  @IsEnum(OidcProviderPrompt, { each: true })
+  readonly forcedPrompt: OidcProviderPrompt[];
 }

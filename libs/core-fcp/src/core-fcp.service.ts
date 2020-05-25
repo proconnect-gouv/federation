@@ -1,5 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { OidcProviderService } from '@fc/oidc-provider';
+import {
+  OidcProviderService,
+  OidcProviderMiddlewareStep,
+  OidcProviderConfig,
+  OidcCtx,
+  OidcProviderRoutes,
+} from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { RnippService } from '@fc/rnipp';
 import { IdentityService, IIdentity } from '@fc/identity';
@@ -10,11 +16,13 @@ import {
   CoreFcpLowAcrException,
   CoreFcpInvalidAcrException,
 } from './exceptions';
+import { ConfigService } from '@fc/config';
 
 @Injectable()
 export class CoreFcpService {
   constructor(
     private readonly logger: LoggerService,
+    private readonly config: ConfigService,
     private readonly oidcProvider: OidcProviderService,
     private readonly identity: IdentityService,
     private readonly rnipp: RnippService,
@@ -26,25 +34,54 @@ export class CoreFcpService {
 
   /**
    * Configure hooks on oidc-provider
-   *
-   * We do not need this feature yet, left for documentation:
-   *
-   * OidcProviderMiddlewareStep and OidcProviderMiddlewarePattern
-   * are imported from '@fc/oidc-provider'
-   *
-   * onModuleInit() {
-   *   this.oidcProvider.registerMiddleware(
-   *     OidcProviderMiddlewareStep.AFTER,
-   *     OidcProviderMiddlewarePattern.TOKEN,
-   *     () => {
-   *       console.log(
-   *         'Exemple de middleware initialisé depuis le module business !!',
-   *       );
-   *       console.log('Voir libs/core-fcp/core-fcp.service.ts');
-   *     },
-   *   );
-   * }
    */
+  onModuleInit() {
+    const { forcedPrompt } = this.config.get<OidcProviderConfig>(
+      'OidcProvider',
+    );
+
+    /** Force prompt @see overrideAuthorizePrompt header */
+    this.oidcProvider.registerMiddleware(
+      OidcProviderMiddlewareStep.BEFORE,
+      OidcProviderRoutes.AUTHORIZATION,
+      this.overrideAuthorizePrompt.bind(this, forcedPrompt.join(' ')),
+    );
+  }
+
+  /**
+   * Override authorize request `prompt` parameter.
+   * We only support 'login' and 'consent' and enforce those.
+   *
+   * Overriding the parameters in the request allows us to influence
+   * `oidc-provider` behavior and disable all 'SSO' or 'auto login' like features.
+   *
+   * We make sure that a new call to autorization endpoint will result
+   * in a new interaction, wether or not user agent has a previous session.
+   *
+   * @param ctx
+   * @param overrideValue
+   */
+  private overrideAuthorizePrompt(overrideValue: string, ctx: OidcCtx) {
+    this.logger.debug('Override OIDC prompt');
+
+    /**
+     * Support both methods
+     * @TODO add test once POST is implemented
+     * @TODO check what needs to be done if we implement pushedAuthorizationRequests
+     */
+    switch (ctx.method) {
+      case 'GET':
+        ctx.query.prompt = overrideValue;
+        break;
+      case 'POST':
+        ctx.body.prompt = overrideValue;
+        break;
+      default:
+        this.logger.warn(
+          `Unsupported method "${ctx.method} on /authorize endpoint". This should not happen`,
+        );
+    }
+  }
 
   /**
    * Main business manipulations occurs in this method
