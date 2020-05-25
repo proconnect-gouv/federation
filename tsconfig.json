@@ -145,6 +145,12 @@
       ],
       "@fc/session/*": [
         "libs/session/src/*"
+      ],
+      "@fc/override-oidc-provider": [
+        "libs/override-oidc-provider/src"
+      ],
+      "@fc/override-oidc-provider/*": [
+        "libs/override-oidc-provider/src/*"
       ]
     }
   },

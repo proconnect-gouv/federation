@@ -74,12 +74,6 @@ export class OidcProviderController {
     return next();
   }
 
-  @Get('/jwks')
-  async getWellKnownKeys() {
-    this.logger.debug('api/v2/jwks');
-    return this.oidcProvider.wellKnownKeys();
-  }
-
   @Get('/logout')
   async getLogout(@Next() next) {
     // Start of business related stuff

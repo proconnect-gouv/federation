@@ -20,6 +20,14 @@ import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
 import { SessionModule } from '@fc/session';
+import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
+
+const oidcProviderModule = OidcProviderModule.register(
+  IdentityService,
+  IdentityModule,
+  ServiceProviderService,
+  ServiceProviderModule,
+);
 
 @Module({
   imports: [
@@ -32,12 +40,8 @@ import { SessionModule } from '@fc/session';
     AccountModule,
     IdentityProviderModule,
     HttpProxyModule,
-    OidcProviderModule.register(
-      IdentityService,
-      IdentityModule,
-      ServiceProviderService,
-      ServiceProviderModule,
-    ),
+    oidcProviderModule,
+    OverrideOidcProviderModule.register(oidcProviderModule),
     OidcClientModule.register(
       IdentityService,
       IdentityModule,

@@ -118,5 +118,4 @@ export default {
       keys: [JSON.parse(process.env.CRYPTO_SIG_FAKE_PRIV_KEY)],
     },
   },
-  sigHsmPubKey: JSON.parse(process.env.CRYPTO_SIG_HSM_PUB_KEY),
 } as OidcProviderConfig;
