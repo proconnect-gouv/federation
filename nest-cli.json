@@ -246,6 +246,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/session/tsconfig.lib.json"
       }
+    },
+    "override-oidc-provider": {
+      "type": "library",
+      "root": "libs/override-oidc-provider",
+      "entryFile": "index",
+      "sourceRoot": "libs/override-oidc-provider/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/override-oidc-provider/tsconfig.lib.json"
+      }
     }
   }
 }

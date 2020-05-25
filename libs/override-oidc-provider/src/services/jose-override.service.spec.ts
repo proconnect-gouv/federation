@@ -1,15 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { OverrideCode } from '@fc/common';
-import { CryptographyService } from './cryptography.service';
+import { OverrideCode } from '../helpers';
 import { JoseOverrideService } from './jose-override.service';
 
 describe(' JoseOverrideService', () => {
   let service: JoseOverrideService;
-
-  const cryptoHighServiceMock = {
-    sign: jest.fn(),
-  };
 
   const loggerServiceMock = {
     setContext: jest.fn(),
@@ -21,10 +16,8 @@ describe(' JoseOverrideService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CryptographyService, JoseOverrideService, LoggerService],
+      providers: [JoseOverrideService, LoggerService],
     })
-      .overrideProvider(CryptographyService)
-      .useValue(cryptoHighServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .compile();

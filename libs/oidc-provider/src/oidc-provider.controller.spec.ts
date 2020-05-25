@@ -129,20 +129,6 @@ describe('OidcProviderController', () => {
     });
   });
 
-  describe('getWellKnownKeys', () => {
-    it('should call wellKnownKeys', async () => {
-      // Given
-      const resolvedValue = Symbol('resolvedValue');
-      oidcProviderServiceMock.wellKnownKeys.mockResolvedValueOnce(
-        resolvedValue,
-      );
-      // When
-      const result = await oidcProviderController.getWellKnownKeys();
-      // Then
-      expect(result).toBe(resolvedValue);
-    });
-  });
-
   describe('getLogout', () => {
     it('should call logout service', async () => {
       // Given
