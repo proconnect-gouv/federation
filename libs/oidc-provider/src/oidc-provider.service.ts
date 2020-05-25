@@ -18,6 +18,7 @@ import {
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
   ErrorCode,
+  OidcProviderRoutes,
 } from './enums';
 import { OidcProviderConfig } from './dto';
 import {
@@ -189,7 +190,7 @@ export class OidcProviderService {
    */
   registerMiddleware(
     step: OidcProviderMiddlewareStep,
-    pattern: OidcProviderMiddlewarePattern,
+    pattern: OidcProviderMiddlewarePattern | OidcProviderRoutes,
     middleware: Function,
   ): void {
     this.provider.use(async (ctx: KoaContextWithOIDC, next: Function) => {
@@ -384,6 +385,7 @@ export class OidcProviderService {
       issuer,
       configuration,
       reloadConfigDelayInMs,
+      forcedPrompt,
     } = this.config.get<OidcProviderConfig>('OidcProvider');
 
     /**
@@ -391,6 +393,7 @@ export class OidcProviderService {
      */
     return {
       reloadConfigDelayInMs,
+      forcedPrompt,
       prefix,
       issuer,
       configuration: {

@@ -1,19 +1,39 @@
-import { OidcProviderConfig } from '@fc/oidc-provider';
+import {
+  OidcProviderConfig,
+  OidcProviderRoutes,
+  OidcProviderPrompt,
+} from '@fc/oidc-provider';
 
 export default {
   reloadConfigDelayInMs: 60 * 1000, // 1 minute
+  forcedPrompt: [OidcProviderPrompt.LOGIN, OidcProviderPrompt.CONSENT],
   prefix: process.env.PREFIX,
   issuer: `https://${process.env.FQDN}${process.env.PREFIX}`,
   configuration: {
     routes: {
-      authorization: '/authorize',
-      token: '/token',
-      userinfo: '/userinfo',
+      authorization: OidcProviderRoutes.AUTHORIZATION,
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/camelcase
-      end_session: '/logout',
-      revocation: '/token/revocation',
-      jwks: '/jwks',
+      check_session: OidcProviderRoutes.CHECK_SESSION,
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      code_verification: OidcProviderRoutes.CODE_VERIFICATION,
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      device_authorization: OidcProviderRoutes.DEVICE_AUTHORIZATION,
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      end_session: OidcProviderRoutes.END_SESSION,
+      introspection: OidcProviderRoutes.INTROSPECTION,
+      jwks: OidcProviderRoutes.JWKS,
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      pushed_authorization_request:
+        OidcProviderRoutes.PUSHED_AUTHORIZATION_REQUEST,
+      registration: OidcProviderRoutes.REGISTRATION,
+      revocation: OidcProviderRoutes.REVOCATION,
+      token: OidcProviderRoutes.TOKEN,
+      userinfo: OidcProviderRoutes.USERINFO,
     },
     cookies: {
       keys: JSON.parse(process.env.OIDC_PROVIDER_COOKIES_KEYS),

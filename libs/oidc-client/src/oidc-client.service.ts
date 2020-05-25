@@ -68,6 +68,7 @@ export class OidcClientService {
       // oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/camelcase
       acr_values,
+      prompt: 'login',
     });
   }
 
