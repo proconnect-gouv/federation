@@ -1,9 +1,9 @@
 function basicSuccessScenario(params) {
-  const { idpId, userName } = params;
+  const { idpId, userName, sp = Cypress.env('UD2_ROOT_URL') } = params;
   const password = params.password || '123';
 
   // FS: Click on FC button
-  cy.visit(`${Cypress.env('UD_ROOT_URL')}`);
+  cy.visit(sp);
 
   cy.get('img[alt="Se connecter à FranceConnect"]').click();
 
@@ -53,6 +53,52 @@ function checkInformations(identity) {
     cy.contains(`COG (Pays de naissance) : ${birthcountry}`);
   }
 }
+
+/** @TODO Add a case with SP logout once implemented */
+describe('No SSO', () => {
+  // Given
+  const loginInfo = {
+    userName: 'test',
+    password: '123',
+    eidasLevel: 1,
+    idpId: 'fip1v2',
+  };
+
+  const userInfos = {
+    gender: 'Femme',
+    givenName: 'Angela Claire Louise',
+    familyName: 'DUBOIS',
+    birthdate: '1962-08-24',
+    birthplace: '75107',
+    birthcountry: '99100',
+  };
+  it('should require full cinematic to login another SP', () => {
+    // When
+    //   ...Log into SP "A"
+    basicSuccessScenario(loginInfo);
+    checkInformations(userInfos);
+
+    //   ...Then log  into SP "B"
+    basicSuccessScenario({ ...loginInfo, sp: Cypress.env('UD3_ROOT_URL') });
+
+    // Then
+    checkInformations(userInfos);
+  });
+  it('should run the whole cinematic all the times even for the same SP', () => {
+    // When
+    //   ...Log into SP
+    basicSuccessScenario(loginInfo);
+    checkInformations(userInfos);
+    //   ...Logout from SP
+    //      ⚠️ Clear only cookies from SP !!
+    cy.clearCookie('sessionId');
+    //   ...Log again into SP
+    basicSuccessScenario(loginInfo);
+
+    // Then
+    checkInformations(userInfos);
+  });
+});
 
 describe('Successful scenarios', () => {
   it('should log in to User Dashboard', () => {
