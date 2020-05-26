@@ -23,6 +23,7 @@ export class IdentityProviderService implements IIdentityProviderService {
         {},
         {
           _id: false,
+          uid: true,
           name: true,
           active: true,
           display: true,

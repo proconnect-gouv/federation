@@ -31,13 +31,13 @@ export class OidcClientController {
     this.logger.debug('/api/v2/redirect-to-idp');
     // acr_values is an oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/camelcase
-    const { scope, providerName, acr_values, uid } = body;
+    const { scope, providerUid, acr_values, uid } = body;
 
     req.session.uid = uid;
 
     const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
       scope,
-      providerName,
+      providerUid,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/camelcase
       acr_values,
@@ -52,24 +52,24 @@ export class OidcClientController {
    * @TODO control session before access (DTO?)
    * @TODO control IdP is available
    */
-  @Get('/oidc-callback/:providerId')
+  @Get('/oidc-callback/:providerUid')
   async getOidcCallback(
-    @Param('providerId') providerId,
+    @Param('providerUid') providerUid,
     @Req() req,
     @Res() res,
   ) {
     this.logger.debug('/api/v2/oidc-callback');
 
     // OIDC: call idp's /token endpoint
-    const tokenSet = await this.oidcClient.getTokenSet(req, providerId);
+    const tokenSet = await this.oidcClient.getTokenSet(req, providerUid);
     const { access_token: accessToken } = tokenSet;
 
     // OIDC: call idp's /userinfo endpoint
-    const user = await this.oidcClient.getUserInfo(accessToken, providerId);
+    const user = await this.oidcClient.getUserInfo(accessToken, providerUid);
 
     // BUSINESS: Locally store received identity
     const { acr } = tokenSet.claims();
-    const meta = { identityProviderId: providerId, acr };
+    const meta = { identityProviderId: providerUid, acr };
     const { uid } = req.session;
     this.identity.storeIdpIdentity(uid, user, meta);
 

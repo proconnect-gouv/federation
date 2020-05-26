@@ -311,14 +311,17 @@ describe('OidcClientService', () => {
     // Given
     const providerMock1 = ({
       name: 'provider1',
+      uid: 'p1',
       active: true,
     } as unknown) as ClientMetadata;
     const providerMock2 = ({
       name: 'provider2',
+      uid: 'p2',
       active: true,
     } as unknown) as ClientMetadata;
     const providerMock3 = ({
       name: 'provider3',
+      uid: 'p3',
       active: true,
     } as unknown) as ClientMetadata;
     const providers = [providerMock1, providerMock2, providerMock3];
@@ -327,7 +330,7 @@ describe('OidcClientService', () => {
       // Given
       service['configuration'] = { providers } as OidcClientConfig;
       // When
-      const result = service['getProvider']('provider2');
+      const result = service['getProvider']('p2');
       // Then
       expect(result).toBe(providerMock2);
     });
@@ -336,7 +339,7 @@ describe('OidcClientService', () => {
       service['configuration'] = { providers } as OidcClientConfig;
       // Then
       expect(() => {
-        service['getProvider']('provider0');
+        service['getProvider']('p0');
       }).toThrow(OidcClientProviderNotFoundException);
     });
     it('should throw if provider is not active', () => {
@@ -345,7 +348,7 @@ describe('OidcClientService', () => {
       service['configuration'].providers[1].active = false;
       // Then
       expect(() => {
-        service['getProvider']('provider2');
+        service['getProvider']('p2');
       }).toThrow(OidcClientProviderDisabledException);
     });
   });
