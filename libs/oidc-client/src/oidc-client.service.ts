@@ -51,13 +51,13 @@ export class OidcClientService {
   /** @TODO validation body by interface */
   async getAuthorizeUrl(
     scope: string,
-    providerName: string,
+    providerUid: string,
     // acr_values is an oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/camelcase
     acr_values: string,
     req,
   ): Promise<string> {
-    const client: Client = await this.createOidcClient(providerName);
+    const client: Client = await this.createOidcClient(providerUid);
 
     /** @TODO replace by in house crypto */
     const state = generators.state();
@@ -83,10 +83,10 @@ export class OidcClientService {
   }
 
   /** @TODO interface tokenSet, to see what we keep ? */
-  async getTokenSet(req, providerName: string): Promise<TokenSet> {
+  async getTokenSet(req, providerUid: string): Promise<TokenSet> {
     this.logger.trace('getTokenSet');
-    const clientMetadata = await this.getProvider(providerName);
-    const client = await this.createOidcClient(providerName);
+    const clientMetadata = await this.getProvider(providerUid);
+    const client = await this.createOidcClient(providerUid);
 
     const params = await client.callbackParams(req);
 
@@ -108,13 +108,10 @@ export class OidcClientService {
    * @TODO interface userinfo
    * @TODO handle network error
    */
-  async getUserInfo(
-    accessToken: string,
-    providerName: string,
-  ): Promise<object> {
+  async getUserInfo(accessToken: string, providerUid: string): Promise<object> {
     this.logger.trace('getUserInfo');
     /** @TODO Retrieve this info */
-    const client = await this.createOidcClient(providerName);
+    const client = await this.createOidcClient(providerUid);
     return client.userinfo(accessToken);
   }
 
@@ -134,8 +131,8 @@ export class OidcClientService {
     );
   }
 
-  private async createOidcClient(providerName: string): Promise<Client> {
-    const clientMetadata = this.getProvider(providerName);
+  private async createOidcClient(providerUid: string): Promise<Client> {
+    const clientMetadata = this.getProvider(providerUid);
     const { jwks } = this.config.get<OidcClientConfig>('OidcClient');
 
     /**
@@ -153,20 +150,21 @@ export class OidcClientService {
   }
 
   /**
-   * @param providerName identifier used to indicate choosen IdP
+   * @param providerUid identifier used to indicate choosen IdP
    * @returns providers metadata
    * @throws Error
    */
-  private getProvider(providerName: string): ClientMetadata {
+  private getProvider(providerUid: string): ClientMetadata {
     const provider = this.configuration.providers.find(
-      ({ name }) => name === providerName,
+      ({ uid }) => uid === providerUid,
     );
+
     if (!provider) {
-      throw new OidcClientProviderNotFoundException(providerName);
+      throw new OidcClientProviderNotFoundException(providerUid);
     }
 
     if (!provider.active) {
-      throw new OidcClientProviderDisabledException(providerName);
+      throw new OidcClientProviderDisabledException(providerUid);
     }
 
     return provider;
