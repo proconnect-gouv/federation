@@ -88,7 +88,7 @@ describe('Idp activation & visibiliy', () => {
     cy.url().should('match', mireUrl);
     // When
     cy.get('#fs-request-fip1v2').within(() => {
-      cy.get('input[name="providerName"]').invoke(
+      cy.get('input[name="providerUid"]').invoke(
         'attr',
         'value',
         'random-non-exisitig-IdP',

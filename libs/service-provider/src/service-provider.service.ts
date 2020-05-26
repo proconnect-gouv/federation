@@ -31,6 +31,7 @@ export class ServiceProviderService implements IServiceProviderService {
         },
         {
           _id: false,
+          uid: true,
           active: true,
           key: true,
           // legacy defined property names
