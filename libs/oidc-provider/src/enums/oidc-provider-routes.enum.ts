@@ -3,7 +3,7 @@ export enum OidcProviderRoutes {
   CHECK_SESSION = '/session/check',
   CODE_VERIFICATION = '/device',
   DEVICE_AUTHORIZATION = '/device/auth',
-  END_SESSION = '/session/end',
+  END_SESSION = '/logout',
   INTROSPECTION = '/token/introspection',
   JWKS = '/jwks',
   PUSHED_AUTHORIZATION_REQUEST = '/request',

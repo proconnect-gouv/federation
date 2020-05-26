@@ -90,8 +90,10 @@ describe('No SSO', () => {
     basicSuccessScenario(loginInfo);
     checkInformations(userInfos);
     //   ...Logout from SP
-    //      ⚠️ Clear only cookies from SP !!
-    cy.clearCookie('sessionId');
+    cy.get('a.nav-logout').click();
+    cy.contains(
+      `Vous devez vous authentifier afin d'accéder à vos données personnelles.`,
+    );
     //   ...Log again into SP
     basicSuccessScenario(loginInfo);
 
