@@ -77,6 +77,17 @@ describe('Error scenarios', () => {
 
       cy.hasError('Y030024');
     });
+
+    it('should trigger error Y030118 if the parameter redirect_uri does NOT match one of the redirect uris of the SP in database', () => {
+      const url = getAuthorizeUrl({
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        redirect_uri: 'https://my-malicious-url.fr/callback',
+      });
+      cy.visit(url, { failOnStatusCode: false });
+
+      cy.hasError('Y030118');
+    });
   });
 
   describe('prompt', () => {
@@ -248,6 +259,30 @@ describe('Error scenarios', () => {
       });
 
       cy.hasError('Y010015');
+    });
+  });
+
+  describe('Scope', () => {
+    it('should return to the SP with an "invalid_scope" error if the query contains scopes that are not whitelisted for this SP', () => {
+      // oidc param
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      const url = getAuthorizeUrl({
+        scope: 'openid profile',
+      });
+
+      cy.visit(url, { failOnStatusCode: false });
+
+      cy.url().should(
+        'match',
+        new RegExp(
+          'https://udv2.docker.dev-franceconnect.fr/authentication/error',
+        ),
+      );
+
+      cy.get('#error-title').contains('invalid_scope');
+      cy.get('#error-description').contains(
+        'requested scope is not whitelisted',
+      );
     });
   });
 });
