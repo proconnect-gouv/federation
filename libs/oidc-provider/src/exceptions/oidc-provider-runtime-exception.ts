@@ -73,7 +73,7 @@ export class OidcProviderRuntimeException extends OidcProviderBaseException {
 
     // If still no code was deduced, apply the default code,
     if (!this.code) {
-      this.code = ErrorCode.RUNTIME;
+      this.code = ErrorCode.UNKNOWN;
     }
   }
 

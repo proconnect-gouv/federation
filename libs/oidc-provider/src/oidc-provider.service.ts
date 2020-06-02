@@ -7,7 +7,7 @@ import { get } from 'lodash';
 import { Provider, KoaContextWithOIDC } from 'oidc-provider';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
-import { FcExceptionFilter, FcException } from '@fc/error';
+import { FcExceptionFilter } from '@fc/error';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
@@ -17,7 +17,6 @@ import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
-  ErrorCode,
   OidcProviderRoutes,
 } from './enums';
 import { OidcProviderConfig } from './dto';
@@ -83,7 +82,6 @@ export class OidcProviderService {
       throw new OidcProviderBindingException(error);
     }
 
-    this.catchErrorEvents();
     this.scheduleConfigurationReload();
   }
 
@@ -212,46 +210,6 @@ export class OidcProviderService {
     });
   }
 
-  catchErrorEvents() {
-    const errorEvents = [
-      OidcProviderEvents.AUTHORIZATION_ERROR,
-      OidcProviderEvents.BACKCHANNEL_ERROR,
-      OidcProviderEvents.JWKS_ERROR,
-      OidcProviderEvents.CHECK_SESSION_ORIGIN_ERROR,
-      OidcProviderEvents.CHECK_SESSION_ERROR,
-      OidcProviderEvents.DISCOVERY_ERROR,
-      OidcProviderEvents.END_SESSION_ERROR,
-      OidcProviderEvents.GRANT_ERROR,
-      OidcProviderEvents.INTROSPECTION_ERROR,
-      OidcProviderEvents.PUSHED_AUTHORIZATION_REQUEST_ERROR,
-      OidcProviderEvents.REGISTRATION_CREATE_ERROR,
-      OidcProviderEvents.REGISTRATION_DELETE_ERROR,
-      OidcProviderEvents.REGISTRATION_READ_ERROR,
-      OidcProviderEvents.REGISTRATION_UPDATE_ERROR,
-      OidcProviderEvents.REVOCATION_ERROR,
-      OidcProviderEvents.SERVER_ERROR,
-      OidcProviderEvents.USERINFO_ERROR,
-    ];
-
-    errorEvents.forEach(eventName => {
-      this.registerEvent(eventName, this.triggerError.bind(this, eventName));
-    });
-  }
-
-  private triggerError(eventName: OidcProviderEvents, ctx, error: Error) {
-    let wrappedError: FcException;
-    if (error instanceof FcException) {
-      wrappedError = error;
-    } else {
-      wrappedError = new OidcProviderRuntimeException(
-        error,
-        ErrorCode[eventName.toUpperCase()],
-      );
-    }
-
-    this.throwError(ctx, wrappedError);
-  }
-
   /**
    * We can't just throw since oidc-provider has its own catch block
    * which would prevent us of reaching our NestJs exceptionFilter
@@ -311,10 +269,7 @@ export class OidcProviderService {
    */
   private renderError(ctx: KoaContextWithOIDC, _out: string, error: any) {
     // Instantiate our exception
-    const exception = new OidcProviderRuntimeException(
-      error,
-      ErrorCode.RUNTIME,
-    );
+    const exception = new OidcProviderRuntimeException(error);
     // Call our hacky "thrower"
     this.throwError(ctx, exception);
   }

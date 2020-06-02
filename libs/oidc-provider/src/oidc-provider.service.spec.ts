@@ -192,12 +192,10 @@ describe('OidcProviderService', () => {
     it('should call several internal initializers', async () => {
       // Given
       service['ProviderProxy'] = ProviderProxyMock;
-      service['catchErrorEvents'] = jest.fn();
       service['scheduleConfigurationReload'] = jest.fn();
       // When
       await service.onModuleInit();
       // Then
-      expect(service['catchErrorEvents']).toHaveBeenCalledTimes(1);
       expect(service['scheduleConfigurationReload']).toHaveBeenCalledTimes(1);
     });
   });
@@ -485,50 +483,6 @@ describe('OidcProviderService', () => {
       service['renderError'](ctx, out, error);
       // Then
       expect(exceptionFilterMock.catch).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('catchErrorEvents', () => {
-    it('should call register event for each error case', () => {
-      // Given
-      service.registerEvent = jest.fn();
-      const EVENT_COUNT = 17;
-      // When
-      service.catchErrorEvents();
-      // Then
-      expect(service.registerEvent).toHaveBeenCalledTimes(EVENT_COUNT);
-    });
-  });
-
-  describe('triggerError', () => {
-    it('should call throwError with OidcProviderunTimeException if error is not an FcException', () => {
-      // Given
-      const eventName = OidcProviderEvents.SESSION_SAVED;
-      const func = service['triggerError'].bind(service, eventName);
-      const ctxMock = {};
-      const errorMock = Error('some error');
-      service['throwError'] = jest.fn();
-      // When
-      func(ctxMock, errorMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(1);
-      expect(service['throwError']).toHaveBeenCalledWith(
-        ctxMock,
-        expect.any(OidcProviderRuntimeException),
-      );
-    });
-    it('should call throwError with original exception if error is an FcException', () => {
-      // Given
-      const eventName = OidcProviderEvents.SESSION_SAVED;
-      const func = service['triggerError'].bind(service, eventName);
-      const ctxMock = {};
-      const errorMock = new OidcProviderInitialisationException(Error('foo'));
-      service['throwError'] = jest.fn();
-      // When
-      func(ctxMock, errorMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(1);
-      expect(service['throwError']).toHaveBeenCalledWith(ctxMock, errorMock);
     });
   });
 

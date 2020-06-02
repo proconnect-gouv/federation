@@ -8,8 +8,8 @@
  * @see https://confluence.kaliop.net/display/FC/Codes+erreurs+des+applications
  */
 export enum ErrorCode {
+  UNKNOWN = 0,
   INIT_PROVIDER = 2,
-  RUNTIME = 3,
   BINDING_PROVIDER = 4,
   STRINGIFY_FOR_REDIS = 5,
   PARSE_REDIS_RESPONSE = 6,
