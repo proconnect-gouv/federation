@@ -41,7 +41,6 @@ export class OidcClientController {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/camelcase
       acr_values,
-      req,
     );
 
     res.redirect(authorizationUrl);

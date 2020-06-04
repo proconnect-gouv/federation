@@ -151,6 +151,12 @@
       ],
       "@fc/override-oidc-provider/*": [
         "libs/override-oidc-provider/src/*"
+      ],
+      "@fc/mailer": [
+        "libs/mailer/src"
+      ],
+      "@fc/mailer/*": [
+        "libs/mailer/src/*"
       ]
     }
   },

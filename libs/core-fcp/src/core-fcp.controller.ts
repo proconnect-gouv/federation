@@ -56,6 +56,11 @@ export class CoreFcpController {
     this.logger.debug('/interaction/:uid/login');
     const { uid } = await this.oidcProvider.getInteraction(req, res);
 
+    this.logger.debug('Sending authentication email to the end-user');
+    /** @todo Use SP and IdP names instead of ids */
+    // send the notification mail to the final user
+    await this.coreFcp.sendAuthenticationMail(req, res);
+
     const result = {
       login: {
         account: uid,
