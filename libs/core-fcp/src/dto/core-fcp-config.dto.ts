@@ -12,6 +12,7 @@ import { CryptographyConfig } from '@fc/cryptography';
 import { HttpProxyConfig } from '@fc/http-proxy';
 import { SessionConfig } from '@fc/session';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
+import { MailerConfig } from '@fc/mailer';
 
 export class CoreFcpConfig {
   @IsObject()
@@ -76,4 +77,9 @@ export class CoreFcpConfig {
   @ValidateNested()
   @Type(() => OverrideOidcProviderConfig)
   readonly OverrideOidcProvider: OverrideOidcProviderConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => MailerConfig)
+  readonly Mailer: MailerConfig;
 }

@@ -255,6 +255,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/override-oidc-provider/tsconfig.lib.json"
       }
+    },
+    "mailer": {
+      "type": "library",
+      "root": "libs/mailer",
+      "entryFile": "index",
+      "sourceRoot": "libs/mailer/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/mailer/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -139,22 +139,20 @@ describe('OidcClientService', () => {
       // oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/camelcase
       const acr_values = 'eidas1';
-      const req = { session: {} };
       service['createOidcClient'] = createOidcClientMock;
       // When
-      await service.getAuthorizeUrl(scope, providerId, acr_values, req);
+      await service.getAuthorizeUrl(scope, providerId, acr_values);
       // Then
       expect(authorizationUrlMock).toHaveBeenCalledTimes(1);
     });
 
-    it('should resolve to authorizationUrl return value)', async () => {
+    it('should resolve to authorizationUrl return value', async () => {
       // Given
       const scope = 'foo_scope bar_scope';
       const providerId = 'myidp';
       // oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/camelcase
       const acr_values = 'eidas1';
-      const req = { session: {} };
       service['createOidcClient'] = createOidcClientMock;
 
       // When
@@ -162,7 +160,6 @@ describe('OidcClientService', () => {
         scope,
         providerId,
         acr_values,
-        req,
       );
       // Then
       expect(result).toBe('authorizationUrlMock Resolve Value');
