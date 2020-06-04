@@ -17,6 +17,7 @@ import {
   CoreFcpInvalidAcrException,
 } from './exceptions';
 import { ConfigService } from '@fc/config';
+import { MailerService, MailerConfig } from '@fc/mailer';
 
 @Injectable()
 export class CoreFcpService {
@@ -28,6 +29,7 @@ export class CoreFcpService {
     private readonly rnipp: RnippService,
     private readonly cryptography: CryptographyService,
     private readonly account: AccountService,
+    private readonly mailer: MailerService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -46,41 +48,6 @@ export class CoreFcpService {
       OidcProviderRoutes.AUTHORIZATION,
       this.overrideAuthorizePrompt.bind(this, forcedPrompt.join(' ')),
     );
-  }
-
-  /**
-   * Override authorize request `prompt` parameter.
-   * We only support 'login' and 'consent' and enforce those.
-   *
-   * Overriding the parameters in the request allows us to influence
-   * `oidc-provider` behavior and disable all 'SSO' or 'auto login' like features.
-   *
-   * We make sure that a new call to autorization endpoint will result
-   * in a new interaction, wether or not user agent has a previous session.
-   *
-   * @param ctx
-   * @param overrideValue
-   */
-  private overrideAuthorizePrompt(overrideValue: string, ctx: OidcCtx) {
-    this.logger.debug('Override OIDC prompt');
-
-    /**
-     * Support both methods
-     * @TODO add test once POST is implemented
-     * @TODO check what needs to be done if we implement pushedAuthorizationRequests
-     */
-    switch (ctx.method) {
-      case 'GET':
-        ctx.query.prompt = overrideValue;
-        break;
-      case 'POST':
-        ctx.body.prompt = overrideValue;
-        break;
-      default:
-        this.logger.warn(
-          `Unsupported method "${ctx.method} on /authorize endpoint". This should not happen`,
-        );
-    }
   }
 
   /**
@@ -146,6 +113,41 @@ export class CoreFcpService {
       interactionId,
       identity: idpIdentity,
     };
+  }
+
+  /**
+   * Override authorize request `prompt` parameter.
+   * We only support 'login' and 'consent' and enforce those.
+   *
+   * Overriding the parameters in the request allows us to influence
+   * `oidc-provider` behavior and disable all 'SSO' or 'auto login' like features.
+   *
+   * We make sure that a new call to autorization endpoint will result
+   * in a new interaction, wether or not user agent has a previous session.
+   *
+   * @param ctx
+   * @param overrideValue
+   */
+  private overrideAuthorizePrompt(overrideValue: string, ctx: OidcCtx) {
+    this.logger.debug('Override OIDC prompt');
+
+    /**
+     * Support both methods
+     * @TODO add test once POST is implemented
+     * @TODO check what needs to be done if we implement pushedAuthorizationRequests
+     */
+    switch (ctx.method) {
+      case 'GET':
+        ctx.query.prompt = overrideValue;
+        break;
+      case 'POST':
+        ctx.body.prompt = overrideValue;
+        break;
+      default:
+        this.logger.warn(
+          `Unsupported method "${ctx.method} on /authorize endpoint". This should not happen`,
+        );
+    }
   }
 
   /**
@@ -283,5 +285,35 @@ export class CoreFcpService {
         `Low ACR: expected ${requestedAcr} but received ${receivedAcr}`,
       );
     }
+  }
+
+  /**
+   * Send an email to the authenticated end-user after consent
+   * @param req Express req object
+   * @param res Express res object
+   */
+  async sendAuthenticationMail(req, res) {
+    const { from } = this.config.get<MailerConfig>('Mailer');
+
+    const { interactionId, spId, idpId } = await this.getInteractionInfo(
+      req,
+      res,
+    );
+
+    // Grab the identity the from volatile memory
+    const { identity } = await this.identity.getSpIdentity(interactionId);
+
+    this.logger.debug('Sending authentication mail');
+    this.mailer.send({
+      from,
+      to: [
+        {
+          email: identity.email,
+          name: `${identity.given_name} ${identity.family_name}`,
+        },
+      ],
+      subject: `Connexion depuis FranceConnect sur ${spId}`,
+      body: `Connexion établie via ${idpId} !`,
+    });
   }
 }

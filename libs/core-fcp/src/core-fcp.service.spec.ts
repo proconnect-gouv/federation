@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService, LoggerModule } from '@fc/logger';
+import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { OidcProviderService, OidcCtx } from '@fc/oidc-provider';
 import { IdentityService } from '@fc/identity';
@@ -12,6 +12,7 @@ import {
   CoreFcpInvalidAcrException,
 } from './exceptions';
 import { CoreFcpService } from './core-fcp.service';
+import { MailerService } from '@fc/mailer';
 
 describe('CoreFcpService', () => {
   let service: CoreFcpService;
@@ -20,6 +21,10 @@ describe('CoreFcpService', () => {
     setContext: jest.fn(),
     debug: jest.fn(),
     warn: jest.fn(),
+  };
+
+  const mailerServiceMock = {
+    send: jest.fn(),
   };
 
   const uidMock = 42;
@@ -31,6 +36,8 @@ describe('CoreFcpService', () => {
       // oidc param
       // eslint-disable-next-line @typescript-eslint/camelcase
       acr_values: 'eidas3',
+      // eslint-disable-next-line @typescript-eslint/camelcase
+      client_id: 'spId',
     },
     uid: uidMock,
   };
@@ -43,6 +50,7 @@ describe('CoreFcpService', () => {
 
   const identityServiceMock = {
     getIdpIdentity: jest.fn(),
+    getSpIdentity: jest.fn(),
     storeSpIdentity: jest.fn(),
     deleteIdpIdentity: jest.fn(),
   };
@@ -56,7 +64,19 @@ describe('CoreFcpService', () => {
     check: jest.fn(),
   };
 
-  const identityMock = {};
+  const identityMock = {
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    given_name: 'Edward',
+    // eslint-disable-next-line @typescript-eslint/camelcase
+    family_name: 'TEACH',
+    email: 'eteach@fqdn.ext',
+  };
+
+  const interactionInfoMock = {
+    interactionId: uidMock,
+    spId: 'spId',
+    idpId: 'idpId',
+  };
 
   const cryptographyServiceMock = {
     computeIdentityHash: jest.fn(),
@@ -84,6 +104,7 @@ describe('CoreFcpService', () => {
         RnippService,
         CryptographyService,
         AccountService,
+        MailerService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -100,6 +121,8 @@ describe('CoreFcpService', () => {
       .useValue(cryptographyServiceMock)
       .overrideProvider(AccountService)
       .useValue(accountServiceMock)
+      .overrideProvider(MailerService)
+      .useValue(mailerServiceMock)
       .compile();
 
     service = module.get<CoreFcpService>(CoreFcpService);
@@ -213,6 +236,7 @@ describe('CoreFcpService', () => {
         errorMock,
       );
     });
+
     it('Should throw if session is not found', async () => {
       // Given
       const errorMock = new Error('my error');
@@ -220,6 +244,7 @@ describe('CoreFcpService', () => {
       // Then
       expect(service.getConsent(reqMock, resMock)).rejects.toThrow(errorMock);
     });
+
     it('Should throw if identity provider is not usable', () => {
       // Given
       const errorMock = new Error('my error');
@@ -227,6 +252,7 @@ describe('CoreFcpService', () => {
       // Then
       expect(service.getConsent(reqMock, resMock)).rejects.toThrow(errorMock);
     });
+
     it('Should throw if rnipp check refuses identity', () => {
       // Given
       const errorMock = new Error('my error');
@@ -234,6 +260,7 @@ describe('CoreFcpService', () => {
       // Then
       expect(service.getConsent(reqMock, resMock)).rejects.toThrow(errorMock);
     });
+
     it('Should throw if identity storage for service provider fails', () => {
       // Given
       const errorMock = new Error('my error');
@@ -241,6 +268,7 @@ describe('CoreFcpService', () => {
       // Then
       expect(service.getConsent(reqMock, resMock)).rejects.toThrow(errorMock);
     });
+
     it('should throw if account is blocked', () => {
       // Given
       accountServiceMock.isBlocked.mockResolvedValue(true);
@@ -249,6 +277,7 @@ describe('CoreFcpService', () => {
         AccountBlockedException,
       );
     });
+
     it('should throw if account blocked check fails', () => {
       // Given
       const error = new Error('foo');
@@ -433,6 +462,79 @@ describe('CoreFcpService', () => {
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).not.toThrow();
+    });
+  });
+
+  describe('sendAuthenticationMail', () => {
+    beforeEach(() => {
+      service['getInteractionInfo'] = jest
+        .fn()
+        .mockResolvedValueOnce(interactionInfoMock);
+      identityServiceMock.getSpIdentity.mockResolvedValueOnce({
+        identity: identityMock,
+      });
+    });
+
+    it('should return a promise', async () => {
+      // action
+      const result = service.sendAuthenticationMail(reqMock, resMock);
+
+      // expect
+      expect(result).toBeInstanceOf(Promise);
+    });
+
+    it('should retrieve the email to send from from config', async () => {
+      // setup
+      const configName = 'Mailer';
+
+      // action
+      await service.sendAuthenticationMail(reqMock, resMock);
+
+      // expect
+      expect(configServiceMock.get).toBeCalledTimes(1);
+      expect(configServiceMock.get).toBeCalledWith(configName);
+    });
+
+    it('should call getInteractionInfo with req and res to retrieve the interactionId', async () => {
+      // action
+      await service.sendAuthenticationMail(reqMock, resMock);
+
+      // expect
+      expect(service['getInteractionInfo']).toBeCalledTimes(1);
+      expect(service['getInteractionInfo']).toBeCalledWith(reqMock, resMock);
+    });
+
+    it('should call getInteractionInfo with the interactionId to get the spIdentity', async () => {
+      // action
+      await service.sendAuthenticationMail(reqMock, resMock);
+
+      // expect
+      expect(identityServiceMock.getSpIdentity).toBeCalledTimes(1);
+      expect(identityServiceMock.getSpIdentity).toBeCalledWith(uidMock);
+    });
+
+    it('should send the email to the end-user by calling "mailer.send"', async () => {
+      // setup
+      const fromMock = { email: 'address@fqdn.ext', name: 'Address' };
+      const expectedEmailParams = {
+        body: `Connexion établie via ${interactionInfoMock.idpId} !`,
+        from: fromMock,
+        subject: `Connexion depuis FranceConnect sur ${interactionInfoMock.spId}`,
+        to: [
+          {
+            email: identityMock.email,
+            name: `${identityMock.given_name} ${identityMock.family_name}`,
+          },
+        ],
+      };
+      configServiceMock.get.mockReturnValueOnce({ from: fromMock });
+
+      // action
+      await service.sendAuthenticationMail(reqMock, resMock);
+
+      // expect
+      expect(mailerServiceMock.send).toBeCalledTimes(1);
+      expect(mailerServiceMock.send).toBeCalledWith(expectedEmailParams);
     });
   });
 });

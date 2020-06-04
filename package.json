@@ -41,6 +41,7 @@
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongoose": "^5.9.5",
+    "node-mailjet": "^3.3.1",
     "oidc-provider": "6.25.0",
     "openid-client": "3.15.0",
     "pino": "^5.17.0",
@@ -147,7 +148,9 @@
       "@fc/session/(.*)": "<rootDir>/libs/session/src/$1",
       "@fc/session": "<rootDir>/libs/session/src",
       "@fc/override-oidc-provider/(.*)": "<rootDir>/libs/override-oidc-provider/src/$1",
-      "@fc/override-oidc-provider": "<rootDir>/libs/override-oidc-provider/src"
+      "@fc/override-oidc-provider": "<rootDir>/libs/override-oidc-provider/src",
+      "@fc/mailer/(.*)": "<rootDir>/libs/mailer/src/$1",
+      "@fc/mailer": "<rootDir>/libs/mailer/src"
     },
     "preset": "ts-jest"
   }
