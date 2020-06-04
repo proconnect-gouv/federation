@@ -32,6 +32,7 @@ describe('CoreFcpController', () => {
 
   const coreFcpServiceMock = {
     getConsent: jest.fn(),
+    sendAuthenticationMail: jest.fn(),
   };
 
   const identityProviderServiceMock = {
@@ -118,6 +119,24 @@ describe('CoreFcpController', () => {
   });
 
   describe('getLogin', () => {
+    it('should send an email notification to the end user by calling coreFcp.sendAuthenticationMail', async () => {
+      // setup
+      const req = {
+        body: {},
+      };
+      const res = {};
+
+      // action
+      await coreFcpController.getLogin(req, res);
+
+      // expect
+      expect(coreFcpServiceMock.sendAuthenticationMail).toBeCalledTimes(1);
+      expect(coreFcpServiceMock.sendAuthenticationMail).toBeCalledWith(
+        req,
+        res,
+      );
+    });
+
     it('should call interactionFinished', async () => {
       // Given
       const req = {

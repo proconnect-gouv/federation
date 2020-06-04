@@ -12,6 +12,7 @@ import Cryptography from './cryptography';
 import HttpProxy from './http-proxy';
 import Session from './session';
 import OverrideOidcProvider from './override-oidc-provider';
+import Mailer from './mailer';
 
 export default {
   App,
@@ -27,4 +28,5 @@ export default {
   HttpProxy,
   Session,
   OverrideOidcProvider,
+  Mailer,
 } as CoreFcpConfig;
