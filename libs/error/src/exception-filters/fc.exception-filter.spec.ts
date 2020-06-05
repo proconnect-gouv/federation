@@ -78,6 +78,34 @@ describe('FcExceptionFilter', () => {
         }),
       );
     });
+
+    it('should not log error', () => {
+      // Given
+      class ExceptionClass extends FcException {
+        isBusiness = true;
+      }
+      const exception = new ExceptionClass('message text');
+      exception.scope = 2;
+      exception.code = 3;
+      exceptionFilter['logException'] = jest.fn();
+      // When
+      exceptionFilter.catch(exception, argumentHostMock);
+      // Then
+      expect(exceptionFilter['logException']).toHaveBeenCalledTimes(1);
+      expect(resMock.render).toHaveBeenCalled();
+    });
+
+    it('should not render for redirections', () => {
+      // Given
+      const exception = new FcException('message text');
+      exception.scope = 2;
+      exception.code = 3;
+      exception.redirect = true;
+      // When
+      exceptionFilter.catch(exception, argumentHostMock);
+      // Then
+      expect(resMock.render).not.toHaveBeenCalled();
+    });
   });
 
   describe('ArgumentHostAdapter', () => {

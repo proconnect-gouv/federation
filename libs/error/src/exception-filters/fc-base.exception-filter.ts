@@ -22,7 +22,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
   }
 
   protected logException(code, id, exception) {
-    const { message } = exception;
+    const { message, redirect } = exception;
     const stackTrace = this.getStackTraceArray(exception);
 
     this.logger.warn({
@@ -31,6 +31,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
       id,
       message,
       stackTrace,
+      redirect,
     });
   }
 }

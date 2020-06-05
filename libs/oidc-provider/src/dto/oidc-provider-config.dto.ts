@@ -64,13 +64,16 @@ type SameSite = 'strict' | 'lax' | 'none';
 
 class CookiesOptions {
   @IsNumber()
-  maxAge: number;
+  readonly maxAge: number;
 
   @IsString()
-  sameSite: SameSite;
+  readonly sameSite: SameSite;
 
   @IsBoolean()
-  signed: boolean;
+  readonly signed: boolean;
+
+  @IsString()
+  readonly path: string;
 }
 
 class Cookies {

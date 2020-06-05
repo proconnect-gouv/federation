@@ -1,11 +1,11 @@
 import { Module, DynamicModule, Type } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { FcExceptionFilter } from '@fc/error';
 import { RedisModule } from '@fc/redis';
+import { SessionModule } from '@fc/session';
 import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderController } from './oidc-provider.controller';
-import { IIdentityService } from './interfaces/identity-service.interface';
-import { IDENTITY_SERVICE } from './tokens/identity-service.token';
 import { IServiceProviderService } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens/service-provider-service.token';
 
@@ -20,32 +20,24 @@ export class OidcProviderModule {
   // does not need to be tested
   // istanbul ignore next
   static register(
-    identityClass: Type<IIdentityService>,
-    identityModule: Type<ModuleMetadata>,
     serviceProviderClass: Type<IServiceProviderService>,
     serviceProviderModule: Type<ModuleMetadata>,
   ): DynamicModule {
-    const identityServiceProvider = {
-      provide: IDENTITY_SERVICE,
-      useClass: identityClass,
-    };
     const serviceProviderProvider = {
       provide: SERVICE_PROVIDER_SERVICE,
       useClass: serviceProviderClass,
     };
     return {
       module: OidcProviderModule,
-      imports: [RedisModule, serviceProviderModule, identityModule],
+      imports: [CqrsModule, RedisModule, serviceProviderModule, SessionModule],
       providers: [
         FcExceptionFilter,
-        identityServiceProvider,
         serviceProviderProvider,
         OidcProviderService,
       ],
       exports: [
         OidcProviderService,
         RedisModule,
-        identityServiceProvider,
         serviceProviderProvider,
         FcExceptionFilter,
       ],

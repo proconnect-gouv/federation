@@ -1,1 +1,0 @@
-export const IDENTITY_SERVICE = Symbol('IDENTITY_SERVICE');

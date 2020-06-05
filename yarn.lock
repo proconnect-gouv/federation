@@ -560,6 +560,11 @@
     tslib "1.11.1"
     uuid "7.0.3"
 
+"@nestjs/cqrs@^7.0.0":
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/cqrs/-/cqrs-7.0.0.tgz#12b70af5f06ca5ffde5fb1493f17dcfc6eed5e1d"
+  integrity sha512-ZqsQuTdTzgqpizFEgacwHXvfz2+ekGLbMWuPcXk5uDS0+rY1R1rkY8oVkHA7SG700PaV4CccG93THxGfRM9mBQ==
+
 "@nestjs/microservices@^7.0.7":
   version "7.0.9"
   resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-7.0.9.tgz#290faaa46d0d61cbbd0a5b957c615af238e5e486"
@@ -2421,6 +2426,14 @@ convert-source-map@^1.4.0, convert-source-map@^1.6.0, convert-source-map@^1.7.0:
   integrity sha512-4FJkXzKXEDB1snCFZlLP4gpC3JILicCpGbzG9f9G7tGqGCzETQ2hWPrcinA9oU4wtf2biUaEH5065UnMeR33oA==
   dependencies:
     safe-buffer "~5.1.1"
+
+cookie-parser@^1.4.5:
+  version "1.4.5"
+  resolved "https://registry.yarnpkg.com/cookie-parser/-/cookie-parser-1.4.5.tgz#3e572d4b7c0c80f9c61daf604e4336831b5d1d49"
+  integrity sha512-f13bPUj/gG/5mDr+xLmSxxDsB9DQiTIfhJS/sqjrmfAWiAN+x2O4i/XguTL9yDZ+/IFDanJ+5x7hC4CXT9Tdzw==
+  dependencies:
+    cookie "0.4.0"
+    cookie-signature "1.0.6"
 
 cookie-signature@1.0.6:
   version "1.0.6"
