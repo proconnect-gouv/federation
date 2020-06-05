@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
+import { validateDto, asyncFilter } from '@fc/common';
+import { validationOptions } from '@fc/config';
 import {
   ServiceProviderMetadata,
   IServiceProviderService,
 } from '@fc/oidc-provider';
 import { CryptographyService } from '@fc/cryptography';
 import { IServiceProvider } from './interfaces';
+import { ServiceProviderDTO } from './dto';
 
 @Injectable()
 export class ServiceProviderService implements IServiceProviderService {
@@ -31,7 +34,6 @@ export class ServiceProviderService implements IServiceProviderService {
         },
         {
           _id: false,
-          uid: true,
           active: true,
           key: true,
           // legacy defined property names
@@ -69,7 +71,16 @@ export class ServiceProviderService implements IServiceProviderService {
       )
       .exec();
 
-    return rawResult.map(({ _doc }) => _doc);
+    const result: any = await asyncFilter(rawResult, async ({ _doc }) => {
+      const errors = await validateDto(
+        _doc,
+        ServiceProviderDTO,
+        validationOptions,
+      );
+      return errors.length < 1;
+    });
+
+    return result.map(({ _doc }) => _doc);
   }
 
   async isActive(clientId: string): Promise<boolean> {
@@ -79,12 +90,9 @@ export class ServiceProviderService implements IServiceProviderService {
     return Boolean(sp && sp.active);
   }
 
-  /**
-   * @TODO give restricted output data (interface IServiceProvider)
-   */
   async getList(refresh = false): Promise<ServiceProviderMetadata[]> {
     if (refresh || !this.serviceProviderListCache) {
-      const list = await this.findAllServiceProvider();
+      const list: IServiceProvider[] = await this.findAllServiceProvider();
 
       this.serviceProviderListCache = list.map(serviceProvider => {
         return this.legacyToOpenIdPropertyName(serviceProvider);

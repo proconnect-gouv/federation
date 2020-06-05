@@ -1,7 +1,10 @@
 import { Document } from 'mongoose';
 
 export interface IIdentityProvider extends Document {
+  uid: string;
   name: string;
+  active: boolean;
+  display: boolean;
   clientID: string;
   client_secret: string;
   discoveryUrl: string;
