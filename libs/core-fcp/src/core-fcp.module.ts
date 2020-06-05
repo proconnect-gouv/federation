@@ -1,7 +1,7 @@
-import { Module } from '@nestjs/common';
-
+import { Module, Global } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { OidcProviderModule } from '@fc/oidc-provider';
-import { IdentityModule, IdentityService } from '@fc/identity';
+import { SessionModule } from '@fc/session';
 import {
   ServiceProviderModule,
   ServiceProviderService,
@@ -19,36 +19,32 @@ import { ErrorModule } from '@fc/error';
 import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
-import { SessionModule } from '@fc/session';
+import { CoreFcpLoggerModule } from '@fc/core-fcp-logger';
 import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
 import { MailerModule } from '@fc/mailer';
 
 const oidcProviderModule = OidcProviderModule.register(
-  IdentityService,
-  IdentityModule,
   ServiceProviderService,
   ServiceProviderModule,
 );
 
+@Global()
 @Module({
   imports: [
-    SessionModule,
     ErrorModule,
+    CoreFcpLoggerModule,
+    CqrsModule,
     MongooseModule,
-    IdentityModule,
+    SessionModule,
     RnippModule,
     CryptographyModule,
     AccountModule,
+    ServiceProviderModule,
     IdentityProviderModule,
     HttpProxyModule,
     oidcProviderModule,
     OverrideOidcProviderModule.register(oidcProviderModule),
-    OidcClientModule.register(
-      IdentityService,
-      IdentityModule,
-      IdentityProviderService,
-      IdentityProviderModule,
-    ),
+    OidcClientModule.register(IdentityProviderService, IdentityProviderModule),
     MailerModule,
   ],
   controllers: [CoreFcpController],

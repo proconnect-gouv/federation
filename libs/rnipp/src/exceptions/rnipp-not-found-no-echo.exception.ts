@@ -5,4 +5,5 @@ import { ErrorCode } from '../enums';
 // istanbul ignore next line
 export class RnippNotFoundNoEchoException extends RnippBaseException {
   public readonly code = ErrorCode.NOT_FOUND_NO_ECHO;
+  static isBusiness = true;
 }

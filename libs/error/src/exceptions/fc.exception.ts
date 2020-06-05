@@ -27,6 +27,9 @@ export class FcException extends Error {
   public code: number;
 
   public originalError?: Error;
+  public redirect: boolean;
+
+  static isBusiness = false;
 
   constructor(input?: Error | string) {
     let arg: unknown = input;
@@ -40,5 +43,7 @@ export class FcException extends Error {
     if (input instanceof Error) {
       this.originalError = input;
     }
+
+    this.redirect = false;
   }
 }

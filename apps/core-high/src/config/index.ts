@@ -7,7 +7,6 @@ import Mongoose from './mongoose';
 import Redis from './redis';
 import Rnipp from './rnipp';
 import CryptographyBroker from './cryptography-broker';
-import Identity from './identity';
 import Cryptography from './cryptography';
 import HttpProxy from './http-proxy';
 import Session from './session';
@@ -22,7 +21,6 @@ export default {
   Mongoose,
   Redis,
   Rnipp,
-  Identity,
   CryptographyBroker,
   Cryptography,
   HttpProxy,

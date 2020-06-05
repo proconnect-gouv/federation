@@ -13,5 +13,5 @@ export type ServiceProviderMetadata = CustomClientMetadata;
 export interface IServiceProviderService {
   isActive(id: string): Promise<boolean>;
 
-  getList(refresh?: boolean): Promise<ServiceProviderMetadata[]>;
+  getList(refreshCache?: boolean): Promise<ServiceProviderMetadata[]>;
 }

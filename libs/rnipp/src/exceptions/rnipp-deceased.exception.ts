@@ -5,4 +5,5 @@ import { ErrorCode } from '../enums';
 // istanbul ignore next line
 export class RnippDeceasedException extends RnippBaseException {
   public readonly code = ErrorCode.DECEASED;
+  static isBusiness = true;
 }

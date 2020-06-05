@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import {
   OidcProviderService,
   OidcProviderMiddlewareStep,
@@ -7,17 +8,29 @@ import {
   OidcProviderRoutes,
 } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
-import { RnippService } from '@fc/rnipp';
-import { IdentityService, IIdentity } from '@fc/identity';
+
+import { SessionService } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
 import { AccountBlockedException, AccountService } from '@fc/account';
-import { Acr } from '@fc/oidc';
+import { Acr, IOidcIdentity } from '@fc/oidc';
 import {
   CoreFcpLowAcrException,
   CoreFcpInvalidAcrException,
 } from './exceptions';
 import { ConfigService } from '@fc/config';
 import { MailerService, MailerConfig } from '@fc/mailer';
+import {
+  RnippService,
+  RnippRequestEvent,
+  RnippReceivedValidEvent,
+  RnippReceivedInvalidEvent,
+  RnippDeceasedException,
+  RnippNotFoundMultipleEchoException,
+  RnippNotFoundNoEchoException,
+  RnippNotFoundSingleEchoException,
+  RnippFoundOnlyWithMaritalNameException,
+  RnippReceivedDeceasedEvent,
+} from '@fc/rnipp';
 
 @Injectable()
 export class CoreFcpService {
@@ -25,11 +38,12 @@ export class CoreFcpService {
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
     private readonly oidcProvider: OidcProviderService,
-    private readonly identity: IdentityService,
+    private readonly session: SessionService,
     private readonly rnipp: RnippService,
     private readonly cryptography: CryptographyService,
     private readonly account: AccountService,
     private readonly mailer: MailerService,
+    private readonly eventBus: EventBus,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -56,7 +70,7 @@ export class CoreFcpService {
    * 1. Get infos on current interaction and identity fetched from IdP
    * 2. Check identity against RNIPP
    * 3. Store interaction with account service (long term storage)
-   * 4. Store identity with identity service (short term storage)
+   * 4. Store identity with session service (short term storage)
    * 5. Display consent page
    *
    * NB:
@@ -68,23 +82,20 @@ export class CoreFcpService {
    * @param req
    * @param res
    */
-  async getConsent(req, res) {
+  async verify(req) {
     this.logger.debug('getConsent service');
 
+    const { interactionId } = req;
+
     // Grab informations on interaction and identity
-    const { interactionId, spId, spAcr } = await this.getInteractionInfo(
-      req,
-      res,
-    );
-    const { idpId, idpIdentity, idpAcr } = await this.getIdentityInfo(
-      interactionId,
-    );
+    const session = await this.session.get(interactionId);
+    const { idpId, idpIdentity, idpAcr, spId, spAcr } = session;
 
     // Acr check
-    await this.checkIfAcrIsValid(idpAcr, spAcr);
+    this.checkIfAcrIsValid(idpAcr, spAcr);
 
     // Identity check and normalization
-    const rnippIdentity = await this.rnipp.check(idpIdentity);
+    const rnippIdentity = await this.rnippCheck(idpIdentity, req);
 
     await this.checkIfAccountIsBlocked(rnippIdentity);
 
@@ -96,23 +107,61 @@ export class CoreFcpService {
       rnippIdentity, // use identity from RNIPP for SP
     );
 
-    // Delete original identity from volatile memory
-    await this.identity.deleteIdpIdentity(interactionId);
+    /**
+     * Prepare identity that will be retrieved by `oidc-provider`
+     * and sent to the SP
+     *
+     * We need to replace IdP's sub, by our own sub
+     */
+    const spIdentity = { ...idpIdentity, sub: spInteraction.sub };
 
-    // Save identity to volatile memory for service provider.
-    await this.storeIdentityForServiceProvider(
-      interactionId,
-      // Identity from identity provider id transmitted to sp.
-      idpIdentity,
-      // Service provider's sub is transmitted to sp (obviously)
-      spInteraction.sub,
-    );
+    // Store the changes in session
+    await this.session.store(interactionId, {
+      ...session,
+      // Delete idp identity from volatile memory
+      idpIdentity: null,
+      // Save identity for service provider
+      spIdentity,
+    });
+  }
 
-    // Return data to display on UI
-    return {
-      interactionId,
-      identity: idpIdentity,
-    };
+  private async rnippCheck(idpIdentity, req) {
+    const { interactionId, ip } = req;
+    const eventProperties = { interactionId, ip };
+    try {
+      this.eventBus.publish(new RnippRequestEvent(eventProperties));
+      const rnippIdentity = await this.rnipp.check(idpIdentity);
+
+      this.eventBus.publish(new RnippReceivedValidEvent(eventProperties));
+      return rnippIdentity;
+    } catch (error) {
+      /**
+       * Business log Rnipp check failures
+       */
+      switch (error.constructor) {
+        /** Deceased has its own sepcial log */
+        case RnippDeceasedException:
+          this.eventBus.publish(
+            new RnippReceivedDeceasedEvent(eventProperties),
+          );
+          break;
+
+        /** Other "not found" case are grouped */
+        case RnippNotFoundMultipleEchoException:
+        case RnippNotFoundNoEchoException:
+        case RnippNotFoundSingleEchoException:
+        case RnippFoundOnlyWithMaritalNameException:
+          this.eventBus.publish(new RnippReceivedInvalidEvent(eventProperties));
+          break;
+        /**
+         * Any other exception is a technical issue
+         * @see `@fc/rnipp` exceptions list for more info
+         */
+      }
+
+      /** Re throw to global exception filter */
+      throw error;
+    }
   }
 
   /**
@@ -154,7 +203,9 @@ export class CoreFcpService {
    * Check if an account exists and is blocked
    * @param identity
    */
-  private async checkIfAccountIsBlocked(identity: IIdentity): Promise<void> {
+  private async checkIfAccountIsBlocked(
+    identity: IOidcIdentity,
+  ): Promise<void> {
     const identityHash = this.cryptography.computeIdentityHash(identity);
     const accountIsBlocked = await this.account.isBlocked(identityHash);
 
@@ -164,38 +215,12 @@ export class CoreFcpService {
   }
 
   /**
-   * Service Provider
-   * @TODO Check SP is active / available, throw if not
-   */
-  private async getInteractionInfo(req, res): Promise<any> {
-    const { uid, params } = await this.oidcProvider.getInteraction(req, res);
-
-    return {
-      spId: params.client_id,
-      interactionId: uid,
-      spAcr: params.acr_values,
-    };
-  }
-
-  private async getIdentityInfo(interactionId) {
-    const { identity, meta } = await this.identity.getIdpIdentity(
-      interactionId,
-    );
-
-    return {
-      idpId: meta.identityProviderId,
-      idpAcr: meta.acr,
-      idpIdentity: identity,
-    };
-  }
-
-  /**
    * Computes hash, sub and federation entry for a given identity and provider id
    *
    * @param providerId
    * @param identity
    */
-  private buildInteractionParts(providerId: string, identity: IIdentity) {
+  private buildInteractionParts(providerId: string, identity: IOidcIdentity) {
     const hash = this.cryptography.computeIdentityHash(identity);
     const sub = this.cryptography.computeSubV2(hash, providerId);
     const federation = { [providerId]: { sub } };
@@ -213,9 +238,9 @@ export class CoreFcpService {
    */
   private async storeInteraction(
     idpId: string,
-    idpIdentity: IIdentity,
+    idpIdentity: IOidcIdentity,
     spId: string,
-    spIdentity: IIdentity,
+    spIdentity: IOidcIdentity,
   ) {
     const spParts = this.buildInteractionParts(spId, spIdentity);
     const idpParts = this.buildInteractionParts(idpId, idpIdentity);
@@ -250,26 +275,6 @@ export class CoreFcpService {
     };
   }
 
-  /**
-   * Store identity that will be retrieved by `oidc-provider`
-   * and sent to the SP
-   *
-   * We need to replace IdP's sub, by our own sub
-   *
-   * @param interactionId
-   * @param identity
-   * @param sub
-   */
-  private async storeIdentityForServiceProvider(
-    interactionId: string,
-    identity: IIdentity,
-    sub: string,
-  ): Promise<void> {
-    const identityForSp = { ...identity, sub };
-    const meta = {};
-    await this.identity.storeSpIdentity(interactionId, identityForSp, meta);
-  }
-
   private checkIfAcrIsValid(receivedAcr: string, requestedAcr: string) {
     const received = Acr[receivedAcr];
     const requested = Acr[requestedAcr];
@@ -292,28 +297,24 @@ export class CoreFcpService {
    * @param req Express req object
    * @param res Express res object
    */
-  async sendAuthenticationMail(req, res) {
+  async sendAuthenticationMail(req) {
     const { from } = this.config.get<MailerConfig>('Mailer');
-
-    const { interactionId, spId, idpId } = await this.getInteractionInfo(
-      req,
-      res,
+    const { interactionId } = req;
+    const { spName, idpName, spIdentity } = await this.session.get(
+      interactionId,
     );
-
-    // Grab the identity the from volatile memory
-    const { identity } = await this.identity.getSpIdentity(interactionId);
 
     this.logger.debug('Sending authentication mail');
     this.mailer.send({
       from,
       to: [
         {
-          email: identity.email,
-          name: `${identity.given_name} ${identity.family_name}`,
+          email: spIdentity.email,
+          name: `${spIdentity.given_name} ${spIdentity.family_name}`,
         },
       ],
-      subject: `Connexion depuis FranceConnect sur ${spId}`,
-      body: `Connexion établie via ${idpId} !`,
+      subject: `Connexion depuis FranceConnect sur ${spName}`,
+      body: `Connexion établie via ${idpName} !`,
     });
   }
 }

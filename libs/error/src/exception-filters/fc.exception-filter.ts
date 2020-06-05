@@ -15,8 +15,33 @@ export class FcExceptionFilter extends FcBaseExceptionFilter
 
     const { message } = exception;
 
-    this.logException(code, id, exception);
+    /**
+     * Business "exceptions" are by definition not technical issues
+     * Thus they do not need to be logged as errors.
+     *
+     * They will most likely trigger a business log.
+     */
+    const isBusinessError = exception.constructor['isBusiness'];
 
+    if (!isBusinessError) {
+      this.logException(code, id, exception);
+    }
+
+    /**
+     * Do not render error if the `redirect` flag is set to true.
+     * This usually means that the error is supposed to trigger a redirect
+     * rather than to display some information.
+     *
+     * This is typically the case for many oidc parameters.
+     * In those scenarios, redirection is handled by `oidc-provider`
+     */
+    if (exception.redirect === true) {
+      return;
+    }
+
+    /**
+     * @todo allow the exception to set the HTTP response code
+     */
     res.status(500);
     res.render('error', { code, id, message });
   }

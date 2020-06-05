@@ -224,4 +224,41 @@ describe('IdentityProviderService', () => {
       ]);
     });
   });
+
+  describe('getById', () => {
+    // Given
+    const idpListMock = [{ uid: 'wizz' }, { uid: 'foo' }, { uid: 'bar' }];
+
+    it('should return an existing IdP', async () => {
+      // Given
+      const idMock = 'foo';
+      service.getList = jest.fn().mockResolvedValueOnce(idpListMock);
+      // When
+      const result = await service.getById(idMock);
+      // Then
+      expect(result).toEqual({ uid: 'foo' });
+    });
+
+    it('should return undefined for non existing IdP', async () => {
+      // Given
+      const idMock = 'nope';
+      service.getList = jest.fn().mockResolvedValueOnce(idpListMock);
+      // When
+      const result = await service.getById(idMock);
+      // Then
+      expect(result).toBeUndefined();
+    });
+
+    it('should pass refresh flag to getList method', async () => {
+      // Given
+      const idMock = 'foo';
+      const refresh = true;
+      service.getList = jest.fn().mockResolvedValueOnce(idpListMock);
+      // When
+      await service.getById(idMock, refresh);
+      // Then
+      expect(service.getList).toHaveBeenCalledTimes(1);
+      expect(service.getList).toHaveBeenCalledWith(refresh);
+    });
+  });
 });

@@ -2,22 +2,30 @@ import { KoaContextWithOIDC, Provider } from 'oidc-provider';
 import * as MemoryAdapter from 'oidc-provider/lib/adapters/memory_adapter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
+import { EventBus } from '@nestjs/cqrs';
 import { ConfigService } from '@fc/config';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { LoggerService, LogLevelNames } from '@fc/logger';
 import { FcExceptionFilter } from '@fc/error';
+import { SessionService } from '@fc/session';
 import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
 } from './enums';
-import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
+import { SERVICE_PROVIDER_SERVICE } from './tokens';
 import { OidcProviderService } from './oidc-provider.service';
 import {
   OidcProviderInitialisationException,
   OidcProviderBindingException,
   OidcProviderRuntimeException,
+  OidcProviderInteractionNotFoundException,
 } from './exceptions';
+import {
+  OidcProviderAuthorizationEvent,
+  OidcProviderTokenEvent,
+  OidcProviderUserinfoEvent,
+} from './events';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -55,6 +63,15 @@ describe('OidcProviderService', () => {
     getList: jest.fn(),
   };
 
+  const sessionServiceMock = {
+    setInteractionIdCookie: jest.fn(),
+    get: jest.fn(),
+  };
+
+  const eventBusMock = {
+    publish: jest.fn(),
+  };
+
   const useSpy = jest.fn();
 
   const providerMock = {
@@ -66,10 +83,6 @@ describe('OidcProviderService', () => {
     on: jest.fn(),
     interactionDetails: jest.fn(),
     interactionFinished: jest.fn(),
-  };
-
-  const identityServiceMock = {
-    getSpIdentity: jest.fn(),
   };
 
   const exceptionFilterMock = {
@@ -86,6 +99,8 @@ describe('OidcProviderService', () => {
     del: jest.fn(),
   };
 
+  const interactionIdSymbol = Symbol('context#uid');
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -94,10 +109,8 @@ describe('OidcProviderService', () => {
         OidcProviderService,
         HttpAdapterHost,
         FcExceptionFilter,
-        {
-          provide: IDENTITY_SERVICE,
-          useValue: identityServiceMock,
-        },
+        SessionService,
+        EventBus,
         {
           provide: SERVICE_PROVIDER_SERVICE,
           useValue: serviceProviderServiceMock,
@@ -116,6 +129,10 @@ describe('OidcProviderService', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(FcExceptionFilter)
       .useValue(exceptionFilterMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
+      .overrideProvider(EventBus)
+      .useValue(eventBusMock)
       .compile();
 
     module.useLogger(loggerServiceMock);
@@ -133,6 +150,9 @@ describe('OidcProviderService', () => {
               jwks: { keys: [] },
               features: {
                 devInteractions: { enabled: false },
+              },
+              cookies: {
+                keys: ['foo'],
               },
             },
           };
@@ -192,10 +212,14 @@ describe('OidcProviderService', () => {
     it('should call several internal initializers', async () => {
       // Given
       service['ProviderProxy'] = ProviderProxyMock;
+      service['registerMiddlewares'] = jest.fn();
+      service['catchErrorEvents'] = jest.fn();
       service['scheduleConfigurationReload'] = jest.fn();
       // When
       await service.onModuleInit();
       // Then
+      expect(service['registerMiddlewares']).toHaveBeenCalledTimes(1);
+      expect(service['catchErrorEvents']).toHaveBeenCalledTimes(1);
       expect(service['scheduleConfigurationReload']).toHaveBeenCalledTimes(1);
     });
   });
@@ -358,8 +382,10 @@ describe('OidcProviderService', () => {
       // Given
       const ctx = { not: 'altered' };
       const sub = 'foo';
-      const identityMock = {};
-      identityServiceMock.getSpIdentity.mockResolvedValueOnce(identityMock);
+      const identityMock = { foo: 'bar' };
+      sessionServiceMock.get.mockResolvedValueOnce({
+        spIdentity: identityMock,
+      });
       // When
       const result = await service['findAccount'](ctx, sub);
       // Then
@@ -371,9 +397,9 @@ describe('OidcProviderService', () => {
       // Given
       const ctx = { not: 'altered' };
       const sub = 'foo';
-      const identityMock = {};
-      identityServiceMock.getSpIdentity.mockResolvedValueOnce({
-        identity: identityMock,
+      const identityMock = { spIdentity: { foo: 'bar' } };
+      sessionServiceMock.get.mockResolvedValueOnce({
+        spIdentity: identityMock,
       });
       const result = await service['findAccount'](ctx, sub);
       // When
@@ -387,7 +413,7 @@ describe('OidcProviderService', () => {
       const ctx = { not: 'altered' };
       const sub = 'foo';
       const exception = new Error('foo');
-      identityServiceMock.getSpIdentity.mockRejectedValueOnce(exception);
+      sessionServiceMock.get.mockRejectedValueOnce(exception);
       service['throwError'] = jest.fn();
       // When
       await service['findAccount'](ctx, sub);
@@ -416,6 +442,175 @@ describe('OidcProviderService', () => {
       service.registerEvent(eventNameMock, handler);
       // Then
       expect(handler).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('registerMiddlewares', () => {
+    it('should register some events', () => {
+      // Given
+      service.registerMiddleware = jest.fn();
+      // When
+      service['registerMiddlewares']();
+      // Then
+      expect(service.registerMiddleware).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  describe('authorizationMiddleware', () => {
+    it('should call session.setInteractionIdCookie', () => {
+      // Given
+      const ctxMock = {
+        req: {
+          ip: '123.123.123.123',
+          // oidc
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          query: { client_id: 'foo', acr_values: 'eidas3' },
+        },
+        res: {},
+      };
+      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
+      // When
+      service['authorizationMiddleware'](ctxMock);
+      // Then
+      expect(sessionServiceMock.setInteractionIdCookie).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(sessionServiceMock.setInteractionIdCookie).toHaveBeenCalledWith(
+        ctxMock.res,
+        '42',
+      );
+    });
+    it('should call publish authorization event', () => {
+      // Given
+      const ctxMock = {
+        req: {
+          ip: '123.123.123.123',
+          // oidc
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          query: { client_id: 'foo', acr_values: 'eidas3' },
+        },
+        res: {},
+      };
+      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
+      // When
+      service['authorizationMiddleware'](ctxMock);
+      // Then
+      expect(eventBusMock.publish).toHaveBeenCalledTimes(1);
+      expect(eventBusMock.publish).toHaveBeenCalledWith(
+        expect.any(OidcProviderAuthorizationEvent),
+      );
+    });
+  });
+
+  describe('tokenMiddleware', () => {
+    it('should publish a token event', () => {
+      // Given
+      const ctxMock = {
+        req: {
+          ip: '123.123.123.123',
+          // oidc
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          query: { client_id: 'foo', acr_values: 'eidas3' },
+        },
+        res: {},
+      };
+      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
+      // When
+      service['tokenMiddleware'](ctxMock);
+      // Then
+      expect(eventBusMock.publish).toHaveBeenCalledTimes(1);
+      expect(eventBusMock.publish).toHaveBeenCalledWith(
+        expect.any(OidcProviderTokenEvent),
+      );
+    });
+  });
+
+  describe('OidcProviderUserinfoEvent', () => {
+    it('should publish a token event', () => {
+      // Given
+      const ctxMock = {
+        req: {
+          ip: '123.123.123.123',
+          // oidc
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          query: { client_id: 'foo', acr_values: 'eidas3' },
+        },
+        res: {},
+      };
+      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
+      // When
+      service['userinfoMiddleware'](ctxMock);
+      // Then
+      expect(eventBusMock.publish).toHaveBeenCalledTimes(1);
+      expect(eventBusMock.publish).toHaveBeenCalledWith(
+        expect.any(OidcProviderUserinfoEvent),
+      );
+    });
+  });
+
+  describe('getInteractionIdFromCtx', () => {
+    it('should call getInteractionIdFromCtxEntities', () => {
+      // Given
+      const ctxMock = { req: { url: '/token' } };
+      service['getInteractionIdFromCtxEntities'] = jest
+        .fn()
+        .mockReturnValue('42');
+      // When
+      service['getInteractionIdFromCtx'](ctxMock);
+      // Then
+      expect(service['getInteractionIdFromCtxEntities']).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(service['getInteractionIdFromCtxEntities']).toHaveBeenCalledWith(
+        ctxMock,
+      );
+    });
+    it('should call getInteractionIdFromCtxSymbol', () => {
+      // Given
+      const ctxMock = { req: { url: '/somewhere' } };
+      service['getInteractionIdFromCtxSymbol'] = jest
+        .fn()
+        .mockReturnValue('42');
+      // When
+      service['getInteractionIdFromCtx'](ctxMock);
+      // Then
+      expect(service['getInteractionIdFromCtxSymbol']).toHaveBeenCalledTimes(1);
+      expect(service['getInteractionIdFromCtxSymbol']).toHaveBeenCalledWith(
+        ctxMock,
+      );
+    });
+    it('should throw', () => {
+      // Given
+      const ctxMock = { req: { url: '/somewhere' } };
+      service['getInteractionIdFromCtxSymbol'] = jest
+        .fn()
+        .mockReturnValue(undefined);
+      // Then
+      expect(() => service['getInteractionIdFromCtx'](ctxMock)).toThrow(
+        OidcProviderInteractionNotFoundException,
+      );
+    });
+  });
+
+  describe('getInteractionIdFromCtxSymbol', () => {
+    it('should retrieve interactionId symbol key', () => {
+      // Given
+      const ctxMock = { oidc: { [interactionIdSymbol]: '42' } };
+      // When
+      const result = service['getInteractionIdFromCtxSymbol'](ctxMock);
+      // Then
+      expect(result).toBe('42');
+    });
+  });
+
+  describe('getInteractionIdFromCtxEntities', () => {
+    it('should retrieve interactionId from entities', () => {
+      // Given
+      const ctxMock = { oidc: { entities: { Account: { accountId: '42' } } } };
+      // When
+      const result = service['getInteractionIdFromCtxEntities'](ctxMock);
+      // Then
+      expect(result).toBe('42');
     });
   });
 
@@ -471,6 +666,24 @@ describe('OidcProviderService', () => {
       // Then
       expect(callback).toHaveBeenCalledTimes(1);
     });
+    it('should match on path', async () => {
+      // Given
+      providerMock.middlewares = [];
+      const callback = jest.fn();
+      const ctx = {
+        path: OidcProviderMiddlewarePattern.USERINFO,
+      };
+      const next = () => async () => Promise.resolve();
+      // When
+      service.registerMiddleware(
+        OidcProviderMiddlewareStep.AFTER,
+        OidcProviderMiddlewarePattern.USERINFO,
+        callback,
+      );
+      await providerMock.middlewares[0].call(null, ctx, next);
+      // Then
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('renderError', () => {
@@ -486,41 +699,47 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('decodeAuthorizationHeader', () => {
-    it('Should return the client id from authorization header', () => {
+  describe('catchErrorEvents', () => {
+    it('should call register event for each error case', () => {
       // Given
-      const authorizationHeader = 'Basic YWJjMTIzOmF6ZXJ0eQ==';
+      service.registerEvent = jest.fn();
+      const EVENT_COUNT = 17;
       // When
-      const result = service.decodeAuthorizationHeader(authorizationHeader);
+      service.catchErrorEvents();
       // Then
-      expect(result).toBe('abc123');
+      expect(service.registerEvent).toHaveBeenCalledTimes(EVENT_COUNT);
     });
+  });
 
-    it('Should return an empty string if authorization header is empty', () => {
+  describe('triggerError', () => {
+    it('should call throwError with OidcProviderunTimeException if error is not an FcException', () => {
       // Given
-      const authorizationHeader = '';
+      const eventName = OidcProviderEvents.SESSION_SAVED;
+      const func = service['triggerError'].bind(service, eventName);
+      const ctxMock = {};
+      const errorMock = Error('some error');
+      service['throwError'] = jest.fn();
       // When
-      const result = service.decodeAuthorizationHeader(authorizationHeader);
+      func(ctxMock, errorMock);
       // Then
-      expect(result).toBe('');
+      expect(service['throwError']).toHaveBeenCalledTimes(1);
+      expect(service['throwError']).toHaveBeenCalledWith(
+        ctxMock,
+        expect.any(OidcProviderRuntimeException),
+      );
     });
-
-    it('Should return an empty string if authorization header has not a good format', () => {
+    it('should call throwError with original exception if error is an FcException', () => {
       // Given
-      const authorizationHeader = 'authorization_header_wrong_format';
+      const eventName = OidcProviderEvents.SESSION_SAVED;
+      const func = service['triggerError'].bind(service, eventName);
+      const ctxMock = {};
+      const errorMock = new OidcProviderInitialisationException(Error('foo'));
+      service['throwError'] = jest.fn();
       // When
-      const result = service.decodeAuthorizationHeader(authorizationHeader);
+      func(ctxMock, errorMock);
       // Then
-      expect(result).toBe('');
-    });
-
-    it('Should return an empty string if base64ToUtf8 is not a combinaison of client id and client secret (client_id:client_secret)', () => {
-      // Given
-      const authorizationHeader = 'authorization header';
-      // When
-      const result = service.decodeAuthorizationHeader(authorizationHeader);
-      // Then
-      expect(result).toBe('');
+      expect(service['throwError']).toHaveBeenCalledTimes(1);
+      expect(service['throwError']).toHaveBeenCalledWith(ctxMock, errorMock);
     });
   });
 
