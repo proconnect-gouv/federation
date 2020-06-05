@@ -42,10 +42,14 @@ describe('IdentityProviderService', () => {
     mockExec.mockReturnValueOnce([
       {
         _doc: {
+          uid: 'uid',
           name: 'provider1',
+          active: true,
+          display: false,
           clientID: 'clientID',
-          client_secret: 'client_secret',
-          discoveryUrl: 'well_known_url',
+          client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+          discoveryUrl:
+            'https://corev2.docker.dev-franceconnect.fr/well_known_url',
           id_token_signed_response_alg: 'HS256',
           post_logout_redirect_uris: [
             'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
@@ -74,7 +78,10 @@ describe('IdentityProviderService', () => {
     it('should return identity provider with change legacy property name by openid property name', () => {
       // setup
       const identityProviderMock = {
+        uid: 'uid',
         name: 'idp name',
+        active: true,
+        display: false,
         clientID: '123',
         client_secret: 'secret hash',
         redirect_uris: ['redirect_uris'],
@@ -98,7 +105,10 @@ describe('IdentityProviderService', () => {
 
       // expect
       expect(result).toStrictEqual({
+        uid: 'uid',
         name: 'idp name',
+        active: true,
+        display: false,
         client_id: '123',
         client_secret: 'client_secret',
         redirect_uris: ['redirect_uris'],
@@ -142,10 +152,14 @@ describe('IdentityProviderService', () => {
       // expect
       expect(result).toStrictEqual([
         {
+          uid: 'uid',
           name: 'provider1',
+          active: true,
+          display: false,
           clientID: 'clientID',
-          client_secret: 'client_secret',
-          discoveryUrl: 'well_known_url',
+          client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+          discoveryUrl:
+            'https://corev2.docker.dev-franceconnect.fr/well_known_url',
           id_token_signed_response_alg: 'HS256',
           post_logout_redirect_uris: [
             'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
@@ -184,10 +198,14 @@ describe('IdentityProviderService', () => {
       // expect
       expect(result).toStrictEqual([
         {
+          uid: 'uid',
           name: 'provider1',
+          active: true,
+          display: false,
           client_id: 'clientID',
           client_secret: 'client_secret',
-          discoveryUrl: 'well_known_url',
+          discoveryUrl:
+            'https://corev2.docker.dev-franceconnect.fr/well_known_url',
           id_token_signed_response_alg: 'HS256',
           post_logout_redirect_uris: [
             'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
