@@ -17,6 +17,7 @@ import {
   OidcClientProviderNotFoundException,
   OidcClientProviderDisabledException,
 } from './exceptions';
+import { IOidcIdentity } from '@fc/oidc';
 
 @Injectable()
 export class OidcClientService {
@@ -82,6 +83,7 @@ export class OidcClientService {
   }
 
   /** @TODO interface tokenSet, to see what we keep ? */
+
   async getTokenSet(req, providerUid: string): Promise<TokenSet> {
     this.logger.trace('getTokenSet');
     const clientMetadata = await this.getProvider(providerUid);
@@ -107,7 +109,10 @@ export class OidcClientService {
    * @TODO interface userinfo
    * @TODO handle network error
    */
-  async getUserInfo(accessToken: string, providerUid: string): Promise<object> {
+  async getUserInfo(
+    accessToken: string,
+    providerUid: string,
+  ): Promise<IOidcIdentity> {
     this.logger.trace('getUserInfo');
     /** @TODO Retrieve this info */
     const client = await this.createOidcClient(providerUid);
@@ -118,7 +123,7 @@ export class OidcClientService {
    * Scheduled reload of oidc-provider configuration
    */
   private async scheduleConfigurationReload(): Promise<void> {
-    this.configuration = await this.getConfig();
+    this.configuration = await this.getConfig(true);
     this.logger.debug(
       `Reload configuration (reloadConfigDelayInMs:${this.configuration.reloadConfigDelayInMs})`,
     );
@@ -174,8 +179,8 @@ export class OidcClientService {
    *  - configuration file (some may be coming from environment variables)
    *  - database (IdP configuration)
    */
-  private async getConfig(): Promise<OidcClientConfig> {
-    const providers = await this.identityProvider.getList();
+  private async getConfig(refresh = false): Promise<OidcClientConfig> {
+    const providers = await this.identityProvider.getList(refresh);
     const configuration = this.config.get<OidcClientConfig>('OidcClient');
 
     return {

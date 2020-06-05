@@ -1,25 +1,29 @@
 import {
   Controller,
   Get,
-  Inject,
   Param,
   Req,
   Res,
   Body,
   Post,
+  Inject,
 } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
-import { IIdentityService } from './interfaces';
-import { IDENTITY_SERVICE } from './tokens';
+import { EventBus } from '@nestjs/cqrs';
 import { OidcClientService } from './oidc-client.service';
-
+import { SessionService } from '@fc/session';
+import { IDENTITY_PROVIDER_SERVICE } from './tokens';
+import { IIdentityProviderService } from './interfaces';
+import { LoggerService } from '@fc/logger';
+import { OidcClientTokenEvent, OidcClientUserinfoEvent } from './events';
 @Controller('/api/v2')
 export class OidcClientController {
   constructor(
     private readonly oidcClient: OidcClientService,
+    private readonly session: SessionService,
     private readonly logger: LoggerService,
-    @Inject(IDENTITY_SERVICE)
-    private readonly identity: IIdentityService,
+    @Inject(IDENTITY_PROVIDER_SERVICE)
+    private readonly identityProvider: IIdentityProviderService,
+    private readonly eventBus: EventBus,
   ) {}
 
   /**
@@ -27,13 +31,10 @@ export class OidcClientController {
    * @TODO control IdP is available
    */
   @Post('/redirect-to-idp')
-  async redirectToIdp(@Req() req, @Res() res, @Body() body) {
-    this.logger.debug('/api/v2/redirect-to-idp');
+  async redirectToIdp(@Res() res, @Body() body) {
     // acr_values is an oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/camelcase
-    const { scope, providerUid, acr_values, uid } = body;
-
-    req.session.uid = uid;
+    const { uid, scope, providerUid, acr_values } = body;
 
     const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
       scope,
@@ -42,6 +43,10 @@ export class OidcClientController {
       // eslint-disable-next-line @typescript-eslint/camelcase
       acr_values,
     );
+
+    const { name: idpName } = await this.identityProvider.getById(providerUid);
+
+    this.session.set(uid, { idpId: providerUid, idpName });
 
     res.redirect(authorizationUrl);
   }
@@ -57,23 +62,27 @@ export class OidcClientController {
     @Req() req,
     @Res() res,
   ) {
-    this.logger.debug('/api/v2/oidc-callback');
+    const uid = req.interactionId;
 
     // OIDC: call idp's /token endpoint
     const tokenSet = await this.oidcClient.getTokenSet(req, providerUid);
     const { access_token: accessToken } = tokenSet;
+    this.eventBus.publish(new OidcClientTokenEvent(uid, req.ip));
 
     // OIDC: call idp's /userinfo endpoint
-    const user = await this.oidcClient.getUserInfo(accessToken, providerUid);
+    const idpIdentity = await this.oidcClient.getUserInfo(
+      accessToken,
+      providerUid,
+    );
+    this.eventBus.publish(new OidcClientUserinfoEvent(uid, req.ip));
 
     // BUSINESS: Locally store received identity
     const { acr } = tokenSet.claims();
-    const meta = { identityProviderId: providerUid, acr };
-    const { uid } = req.session;
-    this.identity.storeIdpIdentity(uid, user, meta);
+
+    this.session.set(uid, { idpIdentity, idpAcr: acr });
 
     // BUSINESS: Redirect to business page
-    res.redirect(`/interaction/${uid}/consent`);
+    res.redirect(`/interaction/${uid}/verify`);
   }
 
   /**
@@ -83,7 +92,6 @@ export class OidcClientController {
    */
   @Get('/client/.well-known/keys')
   async getWellKnownKeys() {
-    this.logger.debug('/.well-known/keys');
     return this.oidcClient.wellKnownKeys();
   }
 }

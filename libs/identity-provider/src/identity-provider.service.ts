@@ -14,6 +14,8 @@ import { IdentityProviderDTO } from './dto';
 
 @Injectable()
 export class IdentityProviderService implements IIdentityProviderService {
+  private listCache: IdentityProviderMetadata[];
+
   constructor(
     @InjectModel('IdentityProvider')
     private readonly identityProviderModel: Model<IIdentityProvider>,
@@ -81,12 +83,27 @@ export class IdentityProviderService implements IIdentityProviderService {
     return result.map(({ _doc }) => _doc);
   }
 
-  async getList(): Promise<IdentityProviderMetadata[]> {
-    const list: IIdentityProvider[] = await this.findAllIdentityProvider();
+  /**
+   * @param refreshCache  Should we refreshCache the cache made by the service?
+   */
+  async getList(refreshCache = false): Promise<IdentityProviderMetadata[]> {
+    if (refreshCache || !this.listCache) {
+      const list: IIdentityProvider[] = await this.findAllIdentityProvider();
 
-    return list.map(identityProvider => {
-      return this.legacyToOpenIdPropertyName(identityProvider);
-    });
+      this.listCache = list.map(identityProvider => {
+        return this.legacyToOpenIdPropertyName(identityProvider);
+      });
+    }
+    return this.listCache;
+  }
+
+  async getById(
+    id: string,
+    refreshCache = false,
+  ): Promise<IdentityProviderMetadata> {
+    const providers = await this.getList(refreshCache);
+
+    return providers.find(({ uid }) => uid === id);
   }
 
   /* eslint-disable @typescript-eslint/camelcase */

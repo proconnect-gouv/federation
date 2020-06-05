@@ -112,6 +112,15 @@
         "tsConfigPath": "libs/cryptography/tsconfig.lib.json"
       }
     },
+    "core-fcp-logger": {
+      "type": "library",
+      "root": "libs/core-fcp-logger",
+      "entryFile": "index",
+      "sourceRoot": "libs/core-fcp-logger/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/core-fcp-logger/tsconfig.lib.json"
+      }
+    },
     "core-fcp": {
       "type": "library",
       "root": "libs/core-fcp",

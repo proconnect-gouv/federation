@@ -7,25 +7,34 @@ import { get } from 'lodash';
 import { Provider, KoaContextWithOIDC } from 'oidc-provider';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
-import { FcExceptionFilter } from '@fc/error';
+import { EventBus } from '@nestjs/cqrs';
+import { FcExceptionFilter, FcException } from '@fc/error';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
+import { SessionService } from '@fc/session';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
-import { IIdentityService, IServiceProviderService } from './interfaces';
-import { IDENTITY_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
+import { IServiceProviderService } from './interfaces';
+import { SERVICE_PROVIDER_SERVICE } from './tokens';
 import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
   OidcProviderRoutes,
+  ErrorCode,
 } from './enums';
 import { OidcProviderConfig } from './dto';
 import {
   OidcProviderInitialisationException,
   OidcProviderRuntimeException,
   OidcProviderBindingException,
+  OidcProviderInteractionNotFoundException,
 } from './exceptions';
 import { RedisAdapter } from './adapters';
+import {
+  OidcProviderAuthorizationEvent,
+  OidcProviderTokenEvent,
+  OidcProviderUserinfoEvent,
+} from './events';
 
 @Injectable()
 export class OidcProviderService {
@@ -38,11 +47,11 @@ export class OidcProviderService {
     readonly logger: LoggerService,
     @Inject(REDIS_CONNECTION_TOKEN)
     readonly redis: Redis,
-    @Inject(IDENTITY_SERVICE)
-    private readonly identity: IIdentityService,
+    private readonly session: SessionService,
     @Inject(SERVICE_PROVIDER_SERVICE)
     private readonly serviceProviderService: IServiceProviderService,
     private readonly exceptionFilter: FcExceptionFilter,
+    private readonly eventBus: EventBus,
   ) {
     this.logger.setContext(this.constructor.name);
     /**
@@ -82,7 +91,94 @@ export class OidcProviderService {
       throw new OidcProviderBindingException(error);
     }
 
+    this.registerMiddlewares();
+    this.catchErrorEvents();
     this.scheduleConfigurationReload();
+  }
+
+  private registerMiddlewares() {
+    this.registerMiddleware(
+      OidcProviderMiddlewareStep.AFTER,
+      OidcProviderRoutes.AUTHORIZATION,
+      this.authorizationMiddleware.bind(this),
+    );
+
+    this.registerMiddleware(
+      OidcProviderMiddlewareStep.AFTER,
+      OidcProviderRoutes.TOKEN,
+      this.tokenMiddleware.bind(this),
+    );
+
+    this.registerMiddleware(
+      OidcProviderMiddlewareStep.AFTER,
+      OidcProviderRoutes.USERINFO,
+      this.userinfoMiddleware.bind(this),
+    );
+  }
+
+  private authorizationMiddleware(ctx) {
+    const interactionId = this.getInteractionIdFromCtx(ctx);
+    const { ip } = ctx.req;
+    const { client_id: spId, acr_values: spAcr } = ctx.req.query;
+
+    this.session.setInteractionIdCookie(ctx.res, interactionId);
+
+    const eventProperties = { interactionId, ip, spId, spAcr };
+    const event = new OidcProviderAuthorizationEvent(eventProperties);
+    this.eventBus.publish(event);
+  }
+
+  private tokenMiddleware(ctx) {
+    const interactionId = this.getInteractionIdFromCtx(ctx);
+    const { ip } = ctx.req;
+    const event = new OidcProviderTokenEvent({ interactionId, ip });
+    this.eventBus.publish(event);
+  }
+
+  private userinfoMiddleware(ctx) {
+    const interactionId = this.getInteractionIdFromCtx(ctx);
+    const { ip } = ctx.req;
+    const event = new OidcProviderUserinfoEvent({ interactionId, ip });
+    this.eventBus.publish(event);
+  }
+
+  private getInteractionIdFromCtx(ctx) {
+    let interactionId: string;
+
+    switch (ctx.req.url) {
+      case OidcProviderRoutes.TOKEN:
+      case OidcProviderRoutes.USERINFO:
+        interactionId = this.getInteractionIdFromCtxEntities(ctx);
+        break;
+      default:
+        interactionId = this.getInteractionIdFromCtxSymbol(ctx);
+        break;
+    }
+
+    if (!interactionId) {
+      throw new OidcProviderInteractionNotFoundException(
+        'Could not find interactionId in ctx.oidc',
+      );
+    }
+
+    return interactionId;
+  }
+
+  private getInteractionIdFromCtxEntities(ctx) {
+    return get(ctx, 'oidc.entities.Account.accountId');
+  }
+
+  /**
+   * `oidc-provider stores the interaction id in a key that is a symbol.
+   */
+  private getInteractionIdFromCtxSymbol(ctx) {
+    const symbolStringRepresentation = 'Symbol(context#uid)';
+
+    const interactionIdSymbol = Object.getOwnPropertySymbols(ctx.oidc).find(
+      symbol => symbol.toString() === symbolStringRepresentation,
+    );
+
+    return ctx.oidc[interactionIdSymbol];
   }
 
   /**
@@ -98,7 +194,7 @@ export class OidcProviderService {
    * Scheduled reload of oidc-provider configuration
    */
   private async scheduleConfigurationReload(): Promise<void> {
-    const configuration = await this.getConfig();
+    const configuration = await this.getConfig(true);
     this.logger.debug(
       `Reload configuration (reloadConfigDelayInMs:${configuration.reloadConfigDelayInMs})`,
     );
@@ -139,6 +235,46 @@ export class OidcProviderService {
     }
   }
 
+  catchErrorEvents() {
+    const errorEvents = [
+      OidcProviderEvents.AUTHORIZATION_ERROR,
+      OidcProviderEvents.BACKCHANNEL_ERROR,
+      OidcProviderEvents.JWKS_ERROR,
+      OidcProviderEvents.CHECK_SESSION_ORIGIN_ERROR,
+      OidcProviderEvents.CHECK_SESSION_ERROR,
+      OidcProviderEvents.DISCOVERY_ERROR,
+      OidcProviderEvents.END_SESSION_ERROR,
+      OidcProviderEvents.GRANT_ERROR,
+      OidcProviderEvents.INTROSPECTION_ERROR,
+      OidcProviderEvents.PUSHED_AUTHORIZATION_REQUEST_ERROR,
+      OidcProviderEvents.REGISTRATION_CREATE_ERROR,
+      OidcProviderEvents.REGISTRATION_DELETE_ERROR,
+      OidcProviderEvents.REGISTRATION_READ_ERROR,
+      OidcProviderEvents.REGISTRATION_UPDATE_ERROR,
+      OidcProviderEvents.REVOCATION_ERROR,
+      OidcProviderEvents.SERVER_ERROR,
+      OidcProviderEvents.USERINFO_ERROR,
+    ];
+
+    errorEvents.forEach(eventName => {
+      this.registerEvent(eventName, this.triggerError.bind(this, eventName));
+    });
+  }
+
+  private triggerError(eventName: OidcProviderEvents, ctx, error: Error) {
+    let wrappedError: FcException;
+    if (error instanceof FcException) {
+      wrappedError = error;
+    } else {
+      wrappedError = new OidcProviderRuntimeException(
+        error,
+        ErrorCode[eventName.toUpperCase()],
+      );
+    }
+
+    this.throwError(ctx, wrappedError);
+  }
+
   /**
    * Wrap `oidc-provider` method to
    *  - lower coupling in other modules
@@ -153,22 +289,6 @@ export class OidcProviderService {
     } catch (error) {
       throw new OidcProviderRuntimeException(error);
     }
-  }
-
-  decodeAuthorizationHeader(authorizationHeader: string): string {
-    const clientId = '';
-    if (authorizationHeader) {
-      if (authorizationHeader.split(' ').length === 2) {
-        const base64ToUtf8 = Buffer.from(
-          authorizationHeader.split(' ')[1],
-          'base64',
-        ).toString('utf8');
-        if (base64ToUtf8.split(':').length === 2) {
-          return base64ToUtf8.split(':')[0];
-        }
-      }
-    }
-    return clientId;
   }
 
   /**
@@ -204,7 +324,19 @@ export class OidcProviderService {
       await next();
 
       // run middleware AFTER pattern occured
-      if (step === OidcProviderMiddlewareStep.AFTER && route === pattern) {
+      if (
+        step === OidcProviderMiddlewareStep.AFTER &&
+        /**
+         * Stange behavior: according to the documentation
+         * we should match on `ctx.oidc.route` but it does not look like what happens.
+         * We actually have matches when comparing to `ctx.path`, like on "BEFORE"
+         *
+         * @TODO #127 investigate and fix (if needed)
+         * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pre--and-post-middlewares
+         * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/127
+         */
+        (route === pattern || path === pattern)
+      ) {
         await middleware(ctx);
       }
     });
@@ -241,16 +373,16 @@ export class OidcProviderService {
    * More documentation can be found in oidc-provider repo.
    * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#accounts
    */
-  private async findAccount(ctx, sub: string) {
+  private async findAccount(ctx, interactionId: string) {
     this.logger.debug('OidcProviderService.findAccount()');
 
     try {
-      const { identity } = await this.identity.getSpIdentity(sub);
+      const { spIdentity } = await this.session.get(interactionId);
 
       return {
-        accountId: sub,
+        accountId: interactionId,
         async claims() {
-          return identity;
+          return spIdentity;
         },
       };
     } catch (error) {
@@ -305,11 +437,11 @@ export class OidcProviderService {
    *  - configuration file (some may be coming from environment variables)
    *  - database (SP configuration)
    */
-  private async getConfig(): Promise<OidcProviderConfig> {
+  private async getConfig(refresh = false): Promise<OidcProviderConfig> {
     /**
      * Get SP's information from provided serviceProviderService
      */
-    const clients = await this.serviceProviderService.getList();
+    const clients = await this.serviceProviderService.getList(refresh);
 
     /**
      * Build our memory adapter for oidc-provider

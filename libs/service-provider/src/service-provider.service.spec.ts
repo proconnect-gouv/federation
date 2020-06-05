@@ -346,6 +346,45 @@ describe('ServiceProviderService', () => {
     });
   });
 
+  describe('getById', () => {
+    // Given
+    const spListMock = [
+      { client_id: 'wizz' },
+      { client_id: 'foo' },
+      { client_id: 'bar' },
+    ];
+
+    it('should return an existing SP', async () => {
+      // Given
+      const idMock = 'foo';
+      service.getList = jest.fn().mockResolvedValueOnce(spListMock);
+      // When
+      const result = await service.getById(idMock);
+      // Then
+      expect(result).toEqual({ client_id: 'foo' });
+    });
+    it('should return undefined for non existing SP', async () => {
+      // Given
+      const idMock = 'nope';
+      service.getList = jest.fn().mockResolvedValueOnce(spListMock);
+      // When
+      const result = await service.getById(idMock);
+      // Then
+      expect(result).toBeUndefined();
+    });
+    it('should pass refresh flag to getList method', async () => {
+      // Given
+      const idMock = 'foo';
+      const refresh = true;
+      service.getList = jest.fn().mockResolvedValueOnce(spListMock);
+      // When
+      await service.getById(idMock, refresh);
+      // Then
+      expect(service.getList).toHaveBeenCalledTimes(1);
+      expect(service.getList).toHaveBeenCalledWith(refresh);
+    });
+  });
+
   describe('legacyToOpenIdPropertyName', () => {
     it('should return service provider with change legacy property name by openid property name', () => {
       // setup

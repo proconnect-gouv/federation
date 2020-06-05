@@ -14,11 +14,7 @@ import { ServiceProviderDTO } from './dto';
 
 @Injectable()
 export class ServiceProviderService implements IServiceProviderService {
-  /**
-   * @TODO see to add timestamps on the latest sp list cached version reloaded
-   * sp list cached reloaded by oidc-provider.service
-   */
-  private serviceProviderListCache: ServiceProviderMetadata[];
+  private listCache: ServiceProviderMetadata[];
 
   constructor(
     @InjectModel('ServiceProvider')
@@ -90,16 +86,27 @@ export class ServiceProviderService implements IServiceProviderService {
     return Boolean(sp && sp.active);
   }
 
-  async getList(refresh = false): Promise<ServiceProviderMetadata[]> {
-    if (refresh || !this.serviceProviderListCache) {
+  /**
+   * @TODO give restricted output data (interface IServiceProvider)
+   * @param refreshCache  Should we refreshCache the cache made by the service?
+   */
+  async getList(refreshCache = false): Promise<ServiceProviderMetadata[]> {
+    if (refreshCache || !this.listCache) {
       const list: IServiceProvider[] = await this.findAllServiceProvider();
-
-      this.serviceProviderListCache = list.map(serviceProvider => {
+      this.listCache = list.map(serviceProvider => {
         return this.legacyToOpenIdPropertyName(serviceProvider);
       });
     }
 
-    return this.serviceProviderListCache;
+    return this.listCache;
+  }
+
+  async getById(
+    id: string,
+    refreshCache = false,
+  ): Promise<ServiceProviderMetadata> {
+    const list = await this.getList(refreshCache);
+    return list.find(({ client_id: dbId }) => dbId === id);
   }
 
   /* eslint-disable @typescript-eslint/camelcase */

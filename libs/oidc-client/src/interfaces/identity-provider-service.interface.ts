@@ -7,5 +7,7 @@ import { ClientMetadata } from 'openid-client';
 export type IdentityProviderMetadata = ClientMetadata;
 
 export interface IIdentityProviderService {
-  getList(): Promise<IdentityProviderMetadata[]>;
+  getList(refeshCache?: boolean): Promise<IdentityProviderMetadata[]>;
+
+  getById(id: string, refeshCache?: boolean): Promise<any>;
 }

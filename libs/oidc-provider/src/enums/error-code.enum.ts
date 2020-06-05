@@ -31,4 +31,5 @@ export enum ErrorCode {
   SERVER_ERROR = 22,
   USERINFO_ERROR = 23,
   SP_INACTIVE = 24,
+  INTERACTION_NOT_FOUND = 25,
 }
