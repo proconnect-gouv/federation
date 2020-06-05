@@ -1,6 +1,8 @@
 import { ConfigService } from '@fc/config';
 import { LoggerService } from './logger.service';
 import { LogLevelNames } from './enum';
+import { IBusinessEvent } from './interfaces';
+import { nestLevelsMap } from './log-maps.map';
 
 describe('LoggerService', () => {
   // Generate configs for all levels and dev mode
@@ -24,6 +26,20 @@ describe('LoggerService', () => {
     info: jest.fn(),
   };
 
+  const businessEventMock = {
+    interactionId: 'foo',
+    ip: '123.123.123.123',
+    step: '1',
+    category: 'some category',
+    event: 'some event',
+    spId: 'sp identifier',
+    spName: 'sp Name',
+    spAcr: 'eidas3',
+    idpId: 'idp identifier',
+    idpName: 'Idp Name',
+    idpAcr: 'eidas2',
+  } as IBusinessEvent;
+
   let configMock = {};
   const configServiceMock = ({
     get: () => configMock,
@@ -38,10 +54,11 @@ describe('LoggerService', () => {
     service['internalLogger'] = internalLoggerMock;
     service['externalLogger'] = externalLoggerMock;
 
+    jest.resetAllMocks();
     return service;
   };
 
-  beforeEach(async () => {
+  beforeEach(() => {
     jest.resetAllMocks();
   });
 
@@ -218,12 +235,56 @@ describe('LoggerService', () => {
     });
   });
 
+  describe('technicalLogger', () => {
+    it('should emit a warning if stringify fails and log oiginal input', () => {
+      // Given
+      const service = getConfiguredMockedService(configs.notDev.error);
+      const message = { a: 'b', selfRef: null };
+      message.selfRef = message;
+      const context = 'test2';
+      const level = LogLevelNames.ERROR;
+      // When
+      service['technicalLogger'](level, message, context);
+      // Then
+      expect(internalLoggerMock).toHaveBeenCalledTimes(2);
+      expect(internalLoggerMock).toHaveBeenCalledWith(
+        nestLevelsMap.warn,
+        'could not JSON stringify a log',
+        context,
+      ),
+        expect(internalLoggerMock).toHaveBeenCalledWith(
+          level,
+          message,
+          context,
+        );
+    });
+    it('should stringify the output', () => {
+      // Given
+      const service = getConfiguredMockedService(configs.notDev.error);
+      const message = { foo: 'bar' };
+      const context = 'test';
+      const level = LogLevelNames.ERROR;
+      const spy = jest.spyOn(JSON, 'stringify');
+      // When
+      service['technicalLogger'](level, message, context);
+      // Then
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(message);
+      expect(internalLoggerMock).toHaveBeenCalledTimes(1);
+      expect(internalLoggerMock).toHaveBeenCalledWith(
+        level,
+        '{"foo":"bar"}',
+        context,
+      );
+    });
+  });
+
   describe('Business logger', () => {
     it('should call both loggers when in dev mode + trace level', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.trace);
       // When
-      service.businessEvent('businessEvent');
+      service.businessEvent(businessEventMock);
       // Then
       expect(service['internalLogger']).toHaveBeenCalledTimes(1);
       expect(service['externalLogger'].info).toHaveBeenCalledTimes(1);
@@ -233,7 +294,7 @@ describe('LoggerService', () => {
       // Given
       const service = getConfiguredMockedService(configs.notDev.trace);
       // When
-      service.businessEvent('businessEvent');
+      service.businessEvent(businessEventMock);
       // Then
       expect(service['internalLogger']).toHaveBeenCalledTimes(0);
       expect(service['externalLogger'].info).toHaveBeenCalledTimes(1);
@@ -243,7 +304,7 @@ describe('LoggerService', () => {
       // Given
       const service = getConfiguredMockedService(configs.notDev.info);
       // When
-      service.businessEvent('businessEvent');
+      service.businessEvent(businessEventMock);
       // Then
       expect(service['internalLogger']).toHaveBeenCalledTimes(0);
       expect(service['externalLogger'].info).toHaveBeenCalledTimes(1);
@@ -253,7 +314,7 @@ describe('LoggerService', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.info);
       // When
-      service.businessEvent('businessEvent');
+      service.businessEvent(businessEventMock);
       // Then
       expect(service['internalLogger']).toHaveBeenCalledTimes(0);
       expect(service['externalLogger'].info).toHaveBeenCalledTimes(1);

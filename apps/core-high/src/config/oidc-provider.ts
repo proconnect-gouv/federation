@@ -41,11 +41,13 @@ export default {
         maxAge: 600000, // 10 minutes
         sameSite: 'strict',
         signed: true,
+        path: '/',
       },
       short: {
         maxAge: 600000, // 10 minutes
         sameSite: 'strict',
         signed: true,
+        path: '/',
       },
     },
     // node-oidc-provider defined key

@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventBus } from '@nestjs/cqrs';
 import { LoggerService } from '@fc/logger';
+import { SessionService } from '@fc/session';
+import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { OidcClientController } from './oidc-client.controller';
 import { OidcClientService } from './oidc-client.service';
-import { IDENTITY_SERVICE } from './tokens';
 
 describe('OidcClient Controller', () => {
   let oidcClientController: OidcClientController;
@@ -23,8 +25,18 @@ describe('OidcClient Controller', () => {
     businessEvent: jest.fn(),
   } as unknown) as LoggerService;
 
-  const identityServiceMock = {
-    storeIdpIdentity: jest.fn(),
+  const sessionServiceMock = {
+    store: jest.fn(),
+    set: jest.fn(),
+    get: jest.fn(),
+  };
+
+  const identityProviderServiceMock = {
+    getById: jest.fn(),
+  };
+
+  const eventBusMock = {
+    publish: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -33,9 +45,11 @@ describe('OidcClient Controller', () => {
       providers: [
         OidcClientService,
         LoggerService,
+        SessionService,
+        EventBus,
         {
-          provide: IDENTITY_SERVICE,
-          useValue: identityServiceMock,
+          provide: IDENTITY_PROVIDER_SERVICE,
+          useValue: identityProviderServiceMock,
         },
       ],
     })
@@ -43,6 +57,10 @@ describe('OidcClient Controller', () => {
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
+      .overrideProvider(EventBus)
+      .useValue(eventBusMock)
       .compile();
 
     oidcClientController = module.get<OidcClientController>(
@@ -61,6 +79,8 @@ describe('OidcClient Controller', () => {
     };
 
     jest.resetAllMocks();
+
+    identityProviderServiceMock.getById.mockReturnValue({ name: 'foo' });
   });
 
   it('should be defined', () => {
@@ -83,7 +103,7 @@ describe('OidcClient Controller', () => {
       );
 
       // action
-      await oidcClientController.redirectToIdp(req, res, body);
+      await oidcClientController.redirectToIdp(res, body);
 
       // assert
       expect(oidcClientServiceMock.getAuthorizeUrl).toHaveBeenCalledTimes(1);

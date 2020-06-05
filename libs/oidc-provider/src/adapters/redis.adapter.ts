@@ -50,7 +50,6 @@ export class RedisAdapter implements Adapter {
      */
     private readonly contextName: string,
   ) {
-    this.logger.setContext(this.constructor.name);
     this.contextName = contextName;
   }
 

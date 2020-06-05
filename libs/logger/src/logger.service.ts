@@ -4,6 +4,7 @@ import { ConfigService } from '@fc/config';
 import { LogLevelNames } from './enum';
 import { pinoLevelsMap, nestLevelsMap } from './log-maps.map';
 import { LoggerConfig } from './dto';
+import { IBusinessEvent } from './interfaces';
 
 /**
  * For usage and good practices:
@@ -42,7 +43,20 @@ export class LoggerService extends Logger {
 
   private technicalLogger(level: string, log: any, context?: string) {
     if (this.canLog(level)) {
-      this.internalLogger(nestLevelsMap[level], log, context);
+      let message = log;
+      if (!this.isDev()) {
+        try {
+          message = JSON.stringify(log);
+        } catch (error) {
+          this.internalLogger(
+            nestLevelsMap.warn,
+            'could not JSON stringify a log',
+            context,
+          );
+          message = log;
+        }
+      }
+      this.internalLogger(nestLevelsMap[level], message, context);
     }
   }
 
@@ -105,7 +119,7 @@ export class LoggerService extends Logger {
   }
 
   // Business logic, goes in event logs
-  businessEvent(log: any, context?: string) {
+  businessEvent(log: IBusinessEvent, context?: string) {
     this.businessLogger(LogLevelNames.INFO, log, context);
   }
 }

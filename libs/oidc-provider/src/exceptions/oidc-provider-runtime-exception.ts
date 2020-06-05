@@ -19,7 +19,7 @@ const nativeErrorsMap = {
   '103': RuntimeErrors.ConsentRequired,
   '104': RuntimeErrors.ExpiredToken,
   '105': RuntimeErrors.InteractionRequired,
-  '106': RuntimeErrors.InvalidClient,
+  '106': RuntimeErrors.InvalidClient, // no redirect
   '107': RuntimeErrors.InvalidClientAuth,
   '108': RuntimeErrors.InvalidClientMetadata,
   '109': RuntimeErrors.InvalidGrant,
@@ -35,7 +35,7 @@ const nativeErrorsMap = {
   '115': RuntimeErrors.InvalidTarget,
   '116': RuntimeErrors.InvalidToken,
   '117': RuntimeErrors.LoginRequired,
-  '118': RuntimeErrors.RedirectUriMismatch,
+  '118': RuntimeErrors.RedirectUriMismatch, // no redirect
   '119': RuntimeErrors.RegistrationNotSupported,
   '120': RuntimeErrors.RequestNotSupported,
   '121': RuntimeErrors.RequestUriNotSupported,
@@ -46,8 +46,11 @@ const nativeErrorsMap = {
   '126': RuntimeErrors.UnsupportedGrantType,
   '127': RuntimeErrors.UnsupportedResponseMode,
   '128': RuntimeErrors.UnsupportedResponseType,
-  '129': RuntimeErrors.WebMessageUriMismatch,
+  '129': RuntimeErrors.WebMessageUriMismatch, // no redirect
 };
+
+const noRedirectionList = ['106', '118', '129'];
+
 /**
  * Default error code for an error thrown by `oidc-provider`
  * but not listed above.
@@ -56,6 +59,7 @@ const unknwonNativeErrorCode = 100;
 
 export class OidcProviderRuntimeException extends OidcProviderBaseException {
   public readonly code: ErrorCode;
+  public redirect = true;
 
   constructor(error: Error, code?: ErrorCode) {
     super(error);
@@ -74,6 +78,10 @@ export class OidcProviderRuntimeException extends OidcProviderBaseException {
     // If still no code was deduced, apply the default code,
     if (!this.code) {
       this.code = ErrorCode.UNKNOWN;
+    }
+
+    if (noRedirectionList.includes(`${this.code}`)) {
+      this.redirect = false;
     }
   }
 

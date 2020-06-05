@@ -1,6 +1,5 @@
 import * as crypto from 'crypto';
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import * as ecdsaSignaturesService from 'jose/lib/help/ecdsa_signatures';
 import { CryptographyService } from './cryptography.service';
@@ -8,11 +7,6 @@ import { IPivotIdentity } from './interfaces';
 
 describe('CryptographyService', () => {
   let service: CryptographyService;
-
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    debug: jest.fn(),
-  };
 
   const configMock = {
     get: jest.fn(),
@@ -94,10 +88,8 @@ describe('CryptographyService', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LoggerService, ConfigService, CryptographyService],
+      providers: [ConfigService, CryptographyService],
     })
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .compile();
@@ -111,6 +103,7 @@ describe('CryptographyService', () => {
     configMock.get.mockImplementation(() => ({
       clientSecretEcKey: mockEncryptKey,
       identityHashSalt: mockIdentityHashSalt,
+      sessionIdLength: 42,
     }));
   });
 
@@ -118,14 +111,14 @@ describe('CryptographyService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('encryptUserInfosCache', () => {
+  describe('encryptSymetric', () => {
     beforeEach(() => {
       service['encrypt'] = jest.fn().mockReturnValueOnce(mockCipher);
     });
 
     it('should serialize the given data and encrypt it calling "this.encrypt"', () => {
       // action
-      service.encryptUserInfosCache(mockEncryptKey, mockDataToEncrypt);
+      service.encryptSymetric(mockEncryptKey, mockDataToEncrypt);
 
       // expect
       expect(service['encrypt']).toHaveBeenCalledTimes(1);
@@ -135,32 +128,32 @@ describe('CryptographyService', () => {
       );
     });
 
-    it('should return a buffer containing "nonce", "authTag" and "ciphertext" in this order', () => {
+    it('should return a base64 encoded string containing "nonce", "authTag" and "ciphertext" in this order', () => {
       // setup
       const finalCipher = Buffer.concat([
         mockRandomBytes12,
         mockAuthTag16,
         mockCiphertext,
-      ]);
+      ]).toString('base64');
 
       // action
-      const result = service.encryptUserInfosCache(
-        mockEncryptKey,
-        mockDataToEncrypt,
-      );
+      const result = service.encryptSymetric(mockEncryptKey, mockDataToEncrypt);
 
       // expect
-      expect(result).toMatchObject(finalCipher);
+      expect(result).toEqual(finalCipher);
     });
   });
 
-  describe('decryptUserInfosCache', () => {
+  describe('decryptSymetric', () => {
     it('should decrypt the given ciphertext calling "this.decrypt" and deserialize it', () => {
       // setup
       service['decrypt'] = jest.fn().mockReturnValueOnce(mockDataToEncrypt);
 
       // action
-      const result = service.decryptUserInfosCache(mockEncryptKey, mockCipher);
+      const result = service.decryptSymetric(
+        mockEncryptKey,
+        mockCipher.toString('base64'),
+      );
 
       // expect
       expect(service['decrypt']).toHaveBeenCalledTimes(1);
@@ -284,6 +277,42 @@ describe('CryptographyService', () => {
       expect(mockHmac.digest).toHaveBeenCalledTimes(1);
       expect(mockHmac.digest).toHaveBeenCalledWith('hex');
       expect(result).toBe(`${mockHmacDigestedHash}v2`);
+    });
+  });
+
+  describe('genSessionId', () => {
+    it('should get session id length from config', () => {
+      // When
+      service.genSessionId();
+      // Then
+      expect(configMock.get).toHaveBeenCalledTimes(1);
+    });
+    it('should return a string the expected number of bytes', () => {
+      // When
+      const result = service.genSessionId();
+      // Then
+      expect(Buffer.from(result, 'base64')).toHaveLength(42);
+    });
+
+    it('should call crypto.randomBytes with config parameter', () => {
+      // Given
+      const spy = jest.spyOn(crypto, 'randomBytes');
+      // When
+      service.genSessionId();
+      // Then
+      expect(spy).toHaveBeenCalledTimes(1);
+      expect(spy).toHaveBeenCalledWith(42);
+    });
+
+    it('should return result from crypto.randomBytes', () => {
+      // Given
+      const value = Buffer.from('foobar', 'utf8');
+      const valueAsBase64 = value.toString('base64');
+      jest.spyOn(crypto, 'randomBytes').mockImplementationOnce(() => value);
+      // When
+      const result = service.genSessionId();
+      // Then
+      expect(result).toBe(valueAsBase64);
     });
   });
 

@@ -5,7 +5,6 @@ import {
   createHmac,
 } from 'crypto';
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { IPivotIdentity } from './interfaces';
 import { CryptographyConfig } from './dto';
@@ -16,28 +15,25 @@ const CIPHER_HEAD_LENGTH = NONCE_LENGTH + AUTHTAG_LENGTH;
 
 @Injectable()
 export class CryptographyService {
-  constructor(
-    private readonly logger: LoggerService,
-    private readonly config: ConfigService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  constructor(private readonly config: ConfigService) {}
 
   /**
-   * Encrypt the given UserInfos obtained when oidc-provider want to cache it.
+   * Encrypt the given data
    * Current implementation use symetrical AES-256-GCM.
    * @todo create an interface with the data schema obtained from oidc-provider
    * @see https://crypto.stackexchange.com/a/18092
    * @param key the key to encrypt the data
    * @param data the data to encrypt
-   * @returns the cipher
+   * @returns the cipher as a base64 encoded string
    */
-  encryptUserInfosCache(key: string, data: string): Buffer {
-    return this.encrypt(key, data);
+  encryptSymetric(key: string, data: string): string {
+    const buffer = this.encrypt(key, data);
+
+    return buffer.toString('base64');
   }
 
   /**
-   * Decrypt the given UserInfos retrieved from cache for oidc-provider.
+   * Decrypt the given cipher
    * Current implementation use symetrical AES-256-GCM.
    *
    * @see https://crypto.stackexchange.com/a/18092
@@ -45,7 +41,8 @@ export class CryptographyService {
    * @param cipher the cipher to decrypt
    * @returns the data decrypted
    */
-  decryptUserInfosCache(key: string, cipher: Buffer): any {
+  decryptSymetric(key: string, data: string): string {
+    const cipher = Buffer.from(data, 'base64');
     return this.decrypt(key, cipher);
   }
 
@@ -100,6 +97,14 @@ export class CryptographyService {
     hmac.update(identityHash);
 
     return `${hmac.digest('hex')}v2`;
+  }
+
+  genSessionId() {
+    const { sessionIdLength } = this.config.get<CryptographyConfig>(
+      'Cryptography',
+    );
+
+    return randomBytes(sessionIdLength).toString('base64');
   }
 
   /**

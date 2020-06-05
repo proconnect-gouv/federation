@@ -51,21 +51,6 @@ describe('RedisAdapter', () => {
     multiMock.exec.mockImplementation();
   });
 
-  describe('constructor', () => {
-    it('should set Name and logger context', () => {
-      // when
-      new RedisAdapter(
-        loggerMock,
-        (redisMock as unknown) as Redis,
-        testAdapterName,
-      );
-      // Then
-      expect(loggerMock.setContext).toHaveBeenCalledTimes(1);
-      expect(loggerMock.setContext).toHaveBeenCalledWith('RedisAdapter');
-      expect(adapter.contextName).toBe(testAdapterName);
-    });
-  });
-
   describe('getConstructorWithDI', () => {
     // Given
     const nameMock = 'foo';

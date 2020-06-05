@@ -145,13 +145,13 @@ describe('Error scenarios', () => {
         eidasLevel: 'eidas1',
       });
 
-      cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/consent`));
+      cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/verify`));
       cy.hasError('Y020001');
     });
   });
 
   describe('Session', () => {
-    it('should trigger error Y030110 (session not found)', () => {
+    it('should trigger error Y150003 (session not found)', () => {
       basicErrorScenario({
         errorCode: 'test',
         idpId: 'fip1v2',
@@ -162,7 +162,7 @@ describe('Error scenarios', () => {
       cy.get('#consent').click();
 
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/login`));
-      cy.hasError('Y030110');
+      cy.hasError('Y150003');
     });
   });
 
@@ -174,7 +174,7 @@ describe('Error scenarios', () => {
         idpId: 'fip1v2',
       });
 
-      cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/consent`));
+      cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/verify`));
       cy.hasError('Y180001');
     });
   });

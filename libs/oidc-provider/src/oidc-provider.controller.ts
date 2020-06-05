@@ -7,13 +7,11 @@ import {
   UsePipes,
   ValidationPipe,
   Inject,
-  Req,
 } from '@nestjs/common';
 import { GetAuthorizeParamsDTO } from './dto';
+import { OidcProviderRoutes } from './enums';
 import { IServiceProviderService } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
-import { LoggerService } from '@fc/logger';
-import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderSPInactiveException } from './exceptions';
 
 @Controller('/api/v2')
@@ -21,14 +19,10 @@ export class OidcProviderController {
   constructor(
     @Inject(SERVICE_PROVIDER_SERVICE)
     private readonly serviceProvider: IServiceProviderService,
-    private readonly logger: LoggerService,
-    private readonly oidcProvider: OidcProviderService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   /** @TODO validation query by DTO (current DTO is almost empty) */
-  @Get('/authorize')
+  @Get(OidcProviderRoutes.AUTHORIZATION)
   @UsePipes(
     new ValidationPipe({
       transform: true,
@@ -38,9 +32,6 @@ export class OidcProviderController {
   )
   async getAuthorize(@Next() next, @Query() params: GetAuthorizeParamsDTO) {
     // Start of business related stuff
-    this.logger.debug('/api/v2/authorize');
-    this.logger.businessEvent('### NEST /api/v2/authorize');
-
     const { client_id: clientId } = params;
 
     await this.checkIfSpIsUsable(clientId);
@@ -50,47 +41,32 @@ export class OidcProviderController {
   }
 
   /** @TODO validation query by DTO */
-  @Post('/token')
-  async postToken(@Next() next, @Req() req) {
-    // Start of business related stuff
-    this.logger.debug('/api/v2/token');
-
-    const clientId = this.oidcProvider.decodeAuthorizationHeader(
-      req.headers.authorization,
-    );
-    await this.checkIfSpIsUsable(clientId);
-
+  @Post(OidcProviderRoutes.TOKEN)
+  async postToken(@Next() next) {
     // Pass the query to oidc-provider
     return next();
   }
 
   /** @TODO validation query by DTO */
   // (authorisation header, do we really need to add DTO check? 🤔)
-  @Get('/userinfo')
+  @Get(OidcProviderRoutes.USERINFO)
   async getUserInfo(@Next() next) {
-    // Start of business related stuff
-    this.logger.debug('/api/v2/userinfo');
-    // End of business related stuff
+    // Pass the query to oidc-provider
     return next();
   }
 
-  @Get('/logout')
+  @Get(OidcProviderRoutes.END_SESSION)
   async getLogout(@Next() next) {
-    // Start of business related stuff
-    this.logger.debug('/api/v2/logout');
+    // Pass the query to oidc-provider
     return next();
   }
 
   @Post('/logout/confirm')
   async getLogoutConfirm(@Next() next) {
-    // Start of business related stuff
-    this.logger.debug('/api/v2/logout/confirm');
+    // Pass the query to oidc-provider
     return next();
   }
 
-  /**
-   * @TODO Implement proper error management
-   */
   private async checkIfSpIsUsable(clientId) {
     if (!(await this.serviceProvider.isActive(clientId))) {
       throw new OidcProviderSPInactiveException('SP not usable!');

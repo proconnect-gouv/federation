@@ -107,24 +107,12 @@ describe('OidcProviderController', () => {
   });
 
   describe('postToken', () => {
-    it('should check if SP is usable and call next()', async () => {
+    it('should call next()', async () => {
       // Given
-      const req = {
-        headers: {
-          authorization: 'Basic YWJjMTIz',
-        },
-      };
-      oidcProviderServiceMock.decodeAuthorizationHeader.mockReturnValueOnce(
-        'abc123',
-      );
-      serviceProviderServiceMock.isActive.mockResolvedValueOnce(true);
       const next = jest.fn();
-
       // When
-      await oidcProviderController.postToken(next, req);
+      await oidcProviderController.postToken(next);
       // Then
-      expect(serviceProviderServiceMock.isActive).toBeCalledTimes(1);
-      expect(serviceProviderServiceMock.isActive).toBeCalledWith('abc123');
       expect(next).toBeCalledTimes(1);
     });
   });
