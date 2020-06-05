@@ -45,11 +45,13 @@ describe('ServiceProviderService', () => {
         _doc: {
           key: '123',
           active: true,
-          client_secret: 'secret hash',
+          client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
           scopes: ['openid', 'profile'],
-          redirect_uris: ['redirect_uris'],
-          post_logout_redirect_uris: ['post_logout_redirect_uris'],
-          id_token_signed_response_alg: 'HS256',
+          redirect_uris: ['https://sp-site.fr/redirect_uris'],
+          post_logout_redirect_uris: [
+            'https://sp-site.fr/post_logout_redirect_uris',
+          ],
+          id_token_signed_response_alg: 'ES256',
           id_token_encrypted_response_alg: 'RSA-OAEP',
           id_token_encrypted_response_enc: 'A256GCM',
           userinfo_encrypted_response_alg: 'RSA-OAEP',
@@ -73,8 +75,10 @@ describe('ServiceProviderService', () => {
         active: true,
         client_secret: 'client_secret',
         scopes: ['openid', 'profile'],
-        redirect_uris: ['redirect_uris'],
-        post_logout_redirect_uris: ['post_logout_redirect_uris'],
+        redirect_uris: ['https://sp-site.fr/redirect_uris'],
+        post_logout_redirect_uris: [
+          'https://sp-site.fr/post_logout_redirect_uris',
+        ],
         id_token_signed_response_alg: 'id_token_signed_response_alg',
         id_token_encrypted_response_alg: 'id_token_encrypted_response_alg',
         id_token_encrypted_response_enc: 'id_token_encrypted_response_enc',
@@ -94,8 +98,10 @@ describe('ServiceProviderService', () => {
         client_id: '123',
         client_secret: 'client_secret',
         scope: 'openid profile',
-        redirect_uris: ['redirect_uris'],
-        post_logout_redirect_uris: ['post_logout_redirect_uris'],
+        redirect_uris: ['https://sp-site.fr/redirect_uris'],
+        post_logout_redirect_uris: [
+          'https://sp-site.fr/post_logout_redirect_uris',
+        ],
         id_token_signed_response_alg: 'id_token_signed_response_alg',
         id_token_encrypted_response_alg: 'id_token_encrypted_response_alg',
         id_token_encrypted_response_enc: 'id_token_encrypted_response_enc',
@@ -148,11 +154,13 @@ describe('ServiceProviderService', () => {
         {
           key: '123',
           active: true,
-          client_secret: 'secret hash',
+          client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
           scopes: ['openid', 'profile'],
-          redirect_uris: ['redirect_uris'],
-          post_logout_redirect_uris: ['post_logout_redirect_uris'],
-          id_token_signed_response_alg: 'HS256',
+          redirect_uris: ['https://sp-site.fr/redirect_uris'],
+          post_logout_redirect_uris: [
+            'https://sp-site.fr/post_logout_redirect_uris',
+          ],
+          id_token_signed_response_alg: 'ES256',
           id_token_encrypted_response_alg: 'RSA-OAEP',
           id_token_encrypted_response_enc: 'A256GCM',
           userinfo_encrypted_response_alg: 'RSA-OAEP',
@@ -197,9 +205,11 @@ describe('ServiceProviderService', () => {
           client_id: '123',
           client_secret: 'client_secret',
           scope: 'openid profile',
-          redirect_uris: ['redirect_uris'],
-          post_logout_redirect_uris: ['post_logout_redirect_uris'],
-          id_token_signed_response_alg: 'HS256',
+          redirect_uris: ['https://sp-site.fr/redirect_uris'],
+          post_logout_redirect_uris: [
+            'https://sp-site.fr/post_logout_redirect_uris',
+          ],
+          id_token_signed_response_alg: 'ES256',
           id_token_encrypted_response_alg: 'RSA-OAEP',
           id_token_encrypted_response_enc: 'A256GCM',
           userinfo_encrypted_response_alg: 'RSA-OAEP',
@@ -231,9 +241,11 @@ describe('ServiceProviderService', () => {
           client_id: '123',
           client_secret: 'client_secret',
           scope: 'openid profile',
-          redirect_uris: ['redirect_uris'],
-          post_logout_redirect_uris: ['post_logout_redirect_uris'],
-          id_token_signed_response_alg: 'HS256',
+          redirect_uris: ['https://sp-site.fr/redirect_uris'],
+          post_logout_redirect_uris: [
+            'https://sp-site.fr/post_logout_redirect_uris',
+          ],
+          id_token_signed_response_alg: 'ES256',
           id_token_encrypted_response_alg: 'RSA-OAEP',
           id_token_encrypted_response_enc: 'A256GCM',
           userinfo_encrypted_response_alg: 'RSA-OAEP',
@@ -262,9 +274,11 @@ describe('ServiceProviderService', () => {
           client_id: '123',
           client_secret: 'client_secret',
           scope: 'openid profile',
-          redirect_uris: ['redirect_uris'],
-          post_logout_redirect_uris: ['post_logout_redirect_uris'],
-          id_token_signed_response_alg: 'HS256',
+          redirect_uris: ['https://sp-site.fr/redirect_uris'],
+          post_logout_redirect_uris: [
+            'https://sp-site.fr/post_logout_redirect_uris',
+          ],
+          id_token_signed_response_alg: 'ES256',
           id_token_encrypted_response_alg: 'RSA-OAEP',
           id_token_encrypted_response_enc: 'A256GCM',
           userinfo_encrypted_response_alg: 'RSA-OAEP',
@@ -294,8 +308,6 @@ describe('ServiceProviderService', () => {
       mockRepository.find.mockReturnValueOnce({ exec: mockExec });
 
       // action
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
       const result = await service['isActive']('123');
 
       // expect
@@ -340,14 +352,17 @@ describe('ServiceProviderService', () => {
       const serviceProviderFromDBMock = {
         ...rawServiceProviderFromDBMock[0]._doc,
       };
+
       const resultExpected = {
         active: true,
         client_id: '123',
         client_secret: 'client_secret',
         scope: 'openid profile',
-        redirect_uris: ['redirect_uris'],
-        post_logout_redirect_uris: ['post_logout_redirect_uris'],
-        id_token_signed_response_alg: 'HS256',
+        redirect_uris: ['https://sp-site.fr/redirect_uris'],
+        post_logout_redirect_uris: [
+          'https://sp-site.fr/post_logout_redirect_uris',
+        ],
+        id_token_signed_response_alg: 'ES256',
         id_token_encrypted_response_alg: 'RSA-OAEP',
         id_token_encrypted_response_enc: 'A256GCM',
         userinfo_encrypted_response_alg: 'RSA-OAEP',

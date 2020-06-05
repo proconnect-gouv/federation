@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
+import { validateDto, asyncFilter } from '@fc/common';
+import { validationOptions } from '@fc/config';
 import {
   IdentityProviderMetadata,
   IIdentityProviderService,
 } from '@fc/oidc-client';
 import { CryptographyService } from '@fc/cryptography';
 import { IIdentityProvider } from './interfaces';
+import { IdentityProviderDTO } from './dto';
 
 @Injectable()
 export class IdentityProviderService implements IIdentityProviderService {
@@ -66,11 +69,20 @@ export class IdentityProviderService implements IIdentityProviderService {
       )
       .exec();
 
-    return rawResult.map(({ _doc }) => _doc);
+    const result: any = await asyncFilter(rawResult, async ({ _doc }) => {
+      const errors = await validateDto(
+        _doc,
+        IdentityProviderDTO,
+        validationOptions,
+      );
+      return errors.length < 1;
+    });
+
+    return result.map(({ _doc }) => _doc);
   }
 
   async getList(): Promise<IdentityProviderMetadata[]> {
-    const list = await this.findAllIdentityProvider();
+    const list: IIdentityProvider[] = await this.findAllIdentityProvider();
 
     return list.map(identityProvider => {
       return this.legacyToOpenIdPropertyName(identityProvider);
