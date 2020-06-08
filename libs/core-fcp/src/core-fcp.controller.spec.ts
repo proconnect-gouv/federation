@@ -10,6 +10,8 @@ import { CoreFcpService } from './core-fcp.service';
 describe('CoreFcpController', () => {
   let coreFcpController: CoreFcpController;
 
+  const params = { uid: 'abcdefghijklmnopqrstuvwxyz0123456789' };
+
   const interactionDetailsResolved = {
     uid: Symbol('uid'),
     prompt: Symbol('prompt'),
@@ -108,7 +110,7 @@ describe('CoreFcpController', () => {
         params: 'params',
       });
       // When
-      const result = await coreFcpController.getInteraction(req, res);
+      const result = await coreFcpController.getInteraction(req, res, params);
       // Then
       expect(result).toHaveProperty('uid');
     });
@@ -124,7 +126,7 @@ describe('CoreFcpController', () => {
         redirect: jest.fn(),
       };
       // When
-      await coreFcpController.getVerify(req, res);
+      await coreFcpController.getVerify(req, res, params);
       // Then
       expect(coreFcpServiceMock.verify).toHaveBeenCalledTimes(1);
     });
@@ -137,7 +139,7 @@ describe('CoreFcpController', () => {
         redirect: jest.fn(),
       };
       // When
-      await coreFcpController.getVerify(req, res);
+      await coreFcpController.getVerify(req, res, params);
       // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
@@ -153,7 +155,7 @@ describe('CoreFcpController', () => {
         interactionId: '42',
       };
       // When
-      await coreFcpController.getConsent(reqMock);
+      await coreFcpController.getConsent(reqMock, params);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.get).toHaveBeenCalledWith('42');
@@ -164,7 +166,7 @@ describe('CoreFcpController', () => {
         interactionId: '42',
       };
       // When
-      const result = await coreFcpController.getConsent(reqMock);
+      const result = await coreFcpController.getConsent(reqMock, params);
       // Then
       expect(result).toEqual({
         interactionId: '42',
@@ -183,7 +185,7 @@ describe('CoreFcpController', () => {
       const body = {};
 
       // action
-      await coreFcpController.getLogin(req, res, body);
+      await coreFcpController.getLogin(req, res, body, params);
 
       // expect
       expect(coreFcpServiceMock.sendAuthenticationMail).toBeCalledTimes(1);
@@ -199,7 +201,7 @@ describe('CoreFcpController', () => {
       const res = {};
       const body = { acr: 'foo' };
       // When
-      await coreFcpController.getLogin(req, res, body);
+      await coreFcpController.getLogin(req, res, body, params);
       // Then
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
         1,
@@ -214,7 +216,7 @@ describe('CoreFcpController', () => {
       const res = {};
       const body = { acr: 'foo' };
       // When
-      const result = await coreFcpController.getLogin(req, res, body);
+      const result = await coreFcpController.getLogin(req, res, body, params);
       // Then
       expect(result).toBe(interactionFinishedValue);
     });

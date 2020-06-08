@@ -93,6 +93,10 @@ describe('OidcClient Controller', () => {
       const body = {
         uid: '123',
         scope: 'openid',
+        providerUid: 'abcdefghijklmnopqrstuvwxyz',
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/camelcase
+        acr_values: 'eidas3',
       };
 
       const mockedoidcClientService =
@@ -116,7 +120,7 @@ describe('OidcClient Controller', () => {
     it('Should call oidc-client-service for retrieve authorize url', async () => {
       // setup
       const accessToken = 'accest_token';
-      const providerId = 'foo';
+      const providerUid = 'foo';
       oidcClientServiceMock.getTokenSet.mockReturnValueOnce({
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/camelcase
@@ -134,18 +138,18 @@ describe('OidcClient Controller', () => {
       });
 
       // action
-      await oidcClientController.getOidcCallback(providerId, req, res);
+      await oidcClientController.getOidcCallback(req, res, { providerUid });
 
       // assert
       expect(oidcClientServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.getTokenSet).toHaveBeenCalledWith(
         req,
-        providerId,
+        providerUid,
       );
       expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledWith(
         accessToken,
-        providerId,
+        providerUid,
       );
 
       expect(res.redirect).toHaveBeenCalledTimes(1);

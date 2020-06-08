@@ -47,8 +47,6 @@ describe('OidcClientService', () => {
 
   const IssuerClientMock = jest.fn();
 
-  const sessionMock = {};
-
   const IssuerProxyMock = {
     discover: jest.fn(),
   } as any;
