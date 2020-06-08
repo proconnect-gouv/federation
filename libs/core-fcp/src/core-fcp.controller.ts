@@ -7,14 +7,16 @@ import {
   Res,
   UsePipes,
   ValidationPipe,
+  Param,
 } from '@nestjs/common';
 
 import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderService } from '@fc/identity-provider';
 import { SessionService } from '@fc/session';
-import { CoreFcpService } from './core-fcp.service';
 import { ServiceProviderService } from '@fc/service-provider';
+import { CoreFcpService } from './core-fcp.service';
+import { Interaction } from './dto';
 
 @Controller()
 export class CoreFcpController {
@@ -30,8 +32,9 @@ export class CoreFcpController {
   }
 
   @Get('/interaction/:uid')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('interaction')
-  async getInteraction(@Req() req, @Res() res) {
+  async getInteraction(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
     const { client_id: spId, acr_values: spAcr } = params;
     const providers = await this.identityProvider.getList();
@@ -52,7 +55,8 @@ export class CoreFcpController {
   }
 
   @Get('/interaction/:uid/verify')
-  async getVerify(@Req() req, @Res() res) {
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getVerify(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { interactionId } = req;
     await this.coreFcp.verify(req);
 
@@ -60,18 +64,23 @@ export class CoreFcpController {
   }
 
   @Get('/interaction/:uid/consent')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('consent')
-  async getConsent(@Req() req) {
+  async getConsent(@Req() req, @Param() _params: Interaction) {
     const { interactionId } = req;
     const { spIdentity: identity } = await this.session.get(interactionId);
 
     return { interactionId, identity };
   }
 
-  /** @TODO validate body by DTO */
   @Get('/interaction/:uid/login')
-  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
-  async getLogin(@Req() req, @Res() res, @Body() body) {
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getLogin(
+    @Req() req,
+    @Res() res,
+    @Body() body,
+    @Param() _params: Interaction,
+  ) {
     const { uid } = await this.oidcProvider.getInteraction(req, res);
 
     this.logger.debug('Sending authentication email to the end-user');
@@ -79,6 +88,10 @@ export class CoreFcpController {
     // send the notification mail to the final user
     await this.coreFcp.sendAuthenticationMail(req);
 
+    /**
+     * @todo Add a DTO to test the result of the interaction
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/130
+     */
     const result = {
       login: {
         account: uid,

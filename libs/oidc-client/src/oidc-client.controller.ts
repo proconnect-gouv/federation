@@ -7,31 +7,33 @@ import {
   Body,
   Post,
   Inject,
+  ValidationPipe,
+  UsePipes,
 } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { OidcClientService } from './oidc-client.service';
 import { SessionService } from '@fc/session';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
-import { LoggerService } from '@fc/logger';
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from './events';
+import { RedirectToIdp, GetOidcCallback } from './dto';
+
 @Controller('/api/v2')
 export class OidcClientController {
   constructor(
     private readonly oidcClient: OidcClientService,
     private readonly session: SessionService,
-    private readonly logger: LoggerService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderService,
     private readonly eventBus: EventBus,
   ) {}
 
   /**
-   * @TODO validation body by DTO
    * @TODO control IdP is available
    */
   @Post('/redirect-to-idp')
-  async redirectToIdp(@Res() res, @Body() body) {
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async redirectToIdp(@Res() res, @Body() body: RedirectToIdp) {
     // acr_values is an oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/camelcase
     const { uid, scope, providerUid, acr_values } = body;
@@ -52,16 +54,17 @@ export class OidcClientController {
   }
 
   /**
-   * @TODO valiate input by DTO
    * @TODO control session before access (DTO?)
    * @TODO control IdP is available
    */
   @Get('/oidc-callback/:providerUid')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async getOidcCallback(
-    @Param('providerUid') providerUid,
     @Req() req,
     @Res() res,
+    @Param() params: GetOidcCallback,
   ) {
+    const { providerUid } = params;
     const uid = req.interactionId;
 
     // OIDC: call idp's /token endpoint
