@@ -1,9 +1,8 @@
-import * as rxjs from 'rxjs/operators';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext } from '@nestjs/common';
 import { CoreFcpLoggerService } from '../core-fcp-logger.service';
 import { CoreFcpLoggerBusinessInterceptor } from './core-fcp-logger-business.interceptor';
-import { IEventMap, IEvent } from '../interfaces';
+import { IEventMap } from '../interfaces';
 
 describe('CoreFcpLoggerBusinessInterceptor', () => {
   let interceptor: CoreFcpLoggerBusinessInterceptor;
