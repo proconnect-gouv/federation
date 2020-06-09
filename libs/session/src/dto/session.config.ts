@@ -9,6 +9,7 @@ import {
   IsNumber,
   ValidateNested,
   IsArray,
+  IsPositive,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -27,6 +28,7 @@ export class CookieOptions {
   readonly secure: boolean;
 
   @IsNumber()
+  @IsPositive()
   readonly maxAge: number;
 
   @IsString()
@@ -61,4 +63,8 @@ export class SessionConfig {
    */
   @IsString()
   readonly interactionCookieName: string;
+
+  @IsNumber()
+  @IsPositive()
+  readonly lifetime: number;
 }
