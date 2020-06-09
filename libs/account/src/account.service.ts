@@ -8,7 +8,7 @@ import { IAccount, IInteraction } from './interfaces';
 export class AccountService {
   constructor(
     private readonly logger: LoggerService,
-    @InjectModel('Account') private model: Model<IAccount>,
+    @InjectModel('Account') private model,
   ) {
     this.logger.setContext(this.constructor.name);
   }
