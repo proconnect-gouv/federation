@@ -246,14 +246,6 @@ describe('CoreFcpService', () => {
       await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
     });
 
-    it('Should throw if session is not found', async () => {
-      // Given
-      const errorMock = new Error('my error');
-      oidcProviderServiceMock.getInteraction.mockRejectedValueOnce(errorMock);
-      // Then
-      expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
     it('Should throw if identity provider is not usable', () => {
       // Given
       const errorMock = new Error('my error');

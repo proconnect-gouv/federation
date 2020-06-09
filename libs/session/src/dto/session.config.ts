@@ -28,6 +28,9 @@ export class CookieOptions {
 
   @IsNumber()
   readonly maxAge: number;
+
+  @IsString()
+  readonly domain: string;
 }
 export class SessionConfig {
   /**

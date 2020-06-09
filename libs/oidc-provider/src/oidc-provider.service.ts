@@ -116,12 +116,18 @@ export class OidcProviderService {
     );
   }
 
-  private authorizationMiddleware(ctx) {
+  private async authorizationMiddleware(ctx) {
     const interactionId = this.getInteractionIdFromCtx(ctx);
     const { ip } = ctx.req;
     const { client_id: spId, acr_values: spAcr } = ctx.req.query;
+    const { name: spName } = await this.serviceProviderService.getById(spId);
 
-    this.session.setInteractionIdCookie(ctx.res, interactionId);
+    const sessionProperties = {
+      spId,
+      spAcr,
+      spName,
+    };
+    this.session.init(ctx.res, interactionId, sessionProperties);
 
     const eventProperties = { interactionId, ip, spId, spAcr };
     const event = new OidcProviderAuthorizationEvent(eventProperties);

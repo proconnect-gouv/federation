@@ -6,6 +6,7 @@ import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import {
   SessionBadFormatException,
   SessionNotFoundException,
+  SessionBadSessionIdException,
 } from './exceptions';
 import { SessionService } from './session.service';
 import { ISession } from './interfaces';
@@ -33,9 +34,11 @@ describe('SessionService', () => {
   const cryptographyPrefixMock = 'my_prefix::';
 
   const cryptographyKeyMock = 'cryptographyKeyMock';
+  const cryptographySessionIdMock = 'my Session Id';
   const cryptographyServiceMock = {
     encryptSymetric: jest.fn(),
     decryptSymetric: jest.fn(),
+    genSessionId: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -66,10 +69,15 @@ describe('SessionService', () => {
     configServiceMock.get.mockReturnValue({
       cryptographyKey: cryptographyKeyMock,
       prefix: cryptographyPrefixMock,
+      interactionCookieName: 'interactionCookieName_value',
+      sessionCookieName: 'sessionCookieName_value',
     });
 
     cryptographyServiceMock.encryptSymetric.mockReturnValue('encryptSymetric');
     cryptographyServiceMock.decryptSymetric.mockReturnValue('{"foo": "bar"}');
+    cryptographyServiceMock.genSessionId.mockReturnValue(
+      cryptographySessionIdMock,
+    );
 
     redisMock.get.mockResolvedValue(redisGetReturnValueMock);
     redisMock.set.mockResolvedValue('OK');
@@ -314,45 +322,89 @@ describe('SessionService', () => {
     });
   });
 
-  describe('refreshCookies', () => {
-    it('should call setCookie with given cookie', () => {
+  describe('init', () => {
+    it('should get data and store it', () => {
       // Given
-      const reqMock = {
-        signedCookies: {
-          foo: 'bar',
-        },
+      const resMock = {
+        cookie: jest.fn(),
       };
-      const resMock = {};
-      const name = 'foo';
-      service.setCookie = jest.fn();
+      const interactionIdMock = 'foo';
+      const propertiesMock = {
+        spId: 'mySpId',
+        spAcr: 'eidas3',
+        spName: 'My SP',
+      };
+      service['store'] = jest.fn();
       // When
-      service.refreshCookie(reqMock, resMock, name);
+      service.init(resMock, interactionIdMock, propertiesMock);
       // Then
-      expect(service.setCookie).toHaveBeenCalledTimes(1);
-      expect(service.setCookie).toHaveBeenCalledWith(resMock, name, 'bar');
+      expect(service['store']).toHaveBeenCalledTimes(1);
+      expect(service['store']).toHaveBeenCalledWith(interactionIdMock, {
+        ...propertiesMock,
+        sessionId: cryptographySessionIdMock,
+      });
+    });
+    it('should set cookies for session and interaction', () => {
+      // Given
+      const resMock = {
+        cookie: jest.fn(),
+      };
+      const interactionIdMock = 'foo';
+      const propertiesMock = {
+        spId: 'mySpId',
+        spAcr: 'eidas3',
+        spName: 'My SP',
+      };
+      service['setCookie'] = jest.fn();
+      service['store'] = jest.fn();
+      // When
+      service.init(resMock, interactionIdMock, propertiesMock);
+      // Then
+      expect(service['setCookie']).toHaveBeenCalledTimes(2);
+      expect(service['setCookie']).toHaveBeenCalledWith(
+        resMock,
+        'interactionCookieName_value',
+        'foo',
+      );
+      expect(service['setCookie']).toHaveBeenCalledWith(
+        resMock,
+        'sessionCookieName_value',
+        cryptographySessionIdMock,
+      );
     });
   });
 
-  describe('setInteractionIdCookie', () => {
-    it('should get name from config and call setCookie with it', () => {
+  describe('verify', () => {
+    it('should throw if session is not found by interactionId', () => {
       // Given
-      const interactionIdCookieName = 'foobar';
-      configServiceMock.get.mockReturnValueOnce({
-        interactionCookieName: interactionIdCookieName,
-      });
-      service.setCookie = jest.fn();
-      const resMock = {};
-      const interactionId = 'some_interaction_id';
-      // When
-      service.setInteractionIdCookie(resMock, interactionId);
+      const error = Error('some error');
+      const interactionIdMock = 'foo';
+      const sessionIdMock = 'bar';
+      service['get'] = jest.fn().mockRejectedValue(error);
       // Then
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(service.setCookie).toHaveBeenCalledTimes(1);
-      expect(service.setCookie).toHaveBeenCalledWith(
-        resMock,
-        interactionIdCookieName,
-        interactionId,
+      expect(service.verify(interactionIdMock, sessionIdMock)).rejects.toThrow(
+        error,
       );
+    });
+    it('should throw if sessionId is not in session found by interactionId', () => {
+      // Given
+      const interactionIdMock = 'foo';
+      const sessionIdMock = 'bar';
+      service['get'] = jest.fn().mockResolvedValue({ sessionId: 'not bar' });
+      // Then
+      expect(service.verify(interactionIdMock, sessionIdMock)).rejects.toThrow(
+        SessionBadSessionIdException,
+      );
+    });
+    it('should not throw if sessionId is in session found by interactionId', () => {
+      // Given
+      const interactionIdMock = 'foo';
+      const sessionIdMock = 'bar';
+      service['get'] = jest.fn().mockResolvedValue({ sessionId: 'bar' });
+      // Then
+      expect(
+        service.verify(interactionIdMock, sessionIdMock),
+      ).resolves.not.toThrow();
     });
   });
 });

@@ -14,9 +14,8 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderService } from '@fc/identity-provider';
 import { SessionService } from '@fc/session';
-import { ServiceProviderService } from '@fc/service-provider';
 import { CoreFcpService } from './core-fcp.service';
-import { Interaction } from './dto';
+import { Interaction } from './dto/interaction.dto';
 
 @Controller()
 export class CoreFcpController {
@@ -24,7 +23,6 @@ export class CoreFcpController {
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderService,
-    private readonly serviceProvider: ServiceProviderService,
     private readonly coreFcp: CoreFcpService,
     private readonly session: SessionService,
   ) {
@@ -36,16 +34,7 @@ export class CoreFcpController {
   @Render('interaction')
   async getInteraction(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
-    const { client_id: spId, acr_values: spAcr } = params;
     const providers = await this.identityProvider.getList();
-
-    const { name: spName } = await this.serviceProvider.getById(spId);
-
-    this.session.store(uid, {
-      spId,
-      spAcr,
-      spName,
-    });
 
     return {
       uid,
