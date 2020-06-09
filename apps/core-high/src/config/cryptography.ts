@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { CryptographyConfig } from '@fc/cryptography';
 
 export default {

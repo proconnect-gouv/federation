@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { Module, DynamicModule } from '@nestjs/common';
 import { RabbitmqModule } from '@fc/rabbitmq';
 import {

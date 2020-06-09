@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { RabbitmqConfig } from '@fc/rabbitmq';
 
 export default {

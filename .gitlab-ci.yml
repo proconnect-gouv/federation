@@ -1,6 +1,6 @@
 stages:
   - test
-  
+
 global-test:
   image: node:12.15.0
   stage: test
@@ -8,4 +8,5 @@ global-test:
     - yarn install
     - yarn lint
     - yarn test --coverage
-  coverage: /All\sfiles.*?\s+(\d+.\d+)/
+    - ./scripts/coverage.sh
+  coverage: '/Global coverage is: \[([\d\.]+)%\]/'
