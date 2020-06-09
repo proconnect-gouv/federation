@@ -23,12 +23,21 @@ describe('SessionService', () => {
   const configServiceMock = {
     get: jest.fn(),
   };
+  const redisLifetimeMock = 100;
 
   const redisGetReturnValueMock = 'redisGetReturnValueMock';
   const redisMock = {
     get: jest.fn(),
     set: jest.fn(),
+    multi: jest.fn(),
     del: jest.fn(),
+    expire: jest.fn(),
+  };
+
+  const multiMock = {
+    set: jest.fn(),
+    expire: jest.fn(),
+    exec: jest.fn(),
   };
 
   const cryptographyPrefixMock = 'my_prefix::';
@@ -71,6 +80,7 @@ describe('SessionService', () => {
       prefix: cryptographyPrefixMock,
       interactionCookieName: 'interactionCookieName_value',
       sessionCookieName: 'sessionCookieName_value',
+      lifetime: redisLifetimeMock,
     });
 
     cryptographyServiceMock.encryptSymetric.mockReturnValue('encryptSymetric');
@@ -81,6 +91,8 @@ describe('SessionService', () => {
 
     redisMock.get.mockResolvedValue(redisGetReturnValueMock);
     redisMock.set.mockResolvedValue('OK');
+    redisMock.multi.mockReturnValue(multiMock);
+    multiMock.exec.mockResolvedValue('OK');
 
     service['cryptoKey'] = cryptographyKeyMock;
     service['prefix'] = cryptographyPrefixMock;
@@ -190,16 +202,36 @@ describe('SessionService', () => {
       expect(service['serialize']).toHaveBeenCalledTimes(1);
       expect(service['serialize']).toHaveBeenCalledWith(dataMock);
     });
-    it('should call redis set with serialize result', async () => {
+    it('should call redis multi', async () => {
+      // Given
+      service['serialize'] = jest.fn();
+      // When
+      await service['store'](key, dataMock);
+      // Then
+      expect(redisMock.multi).toHaveBeenCalledTimes(1);
+    });
+    it('should call multi.set with serialize result', async () => {
       // Given
       const serializeResult = Symbol('serialized result');
       service['serialize'] = jest.fn().mockReturnValue(serializeResult);
       // When
       await service['store'](key, dataMock);
       // Then
-      expect(redisMock.set).toHaveBeenCalledWith(
+      expect(multiMock.set).toHaveBeenCalledWith(
         `${cryptographyPrefixMock}${key}`,
         serializeResult,
+      );
+    });
+    it('should call multi.expirte with value from config', async () => {
+      // Given
+      const serializeResult = Symbol('serialized result');
+      service['serialize'] = jest.fn().mockReturnValue(serializeResult);
+      // When
+      await service['store'](key, dataMock);
+      // Then
+      expect(multiMock.expire).toHaveBeenCalledWith(
+        `${cryptographyPrefixMock}${key}`,
+        redisLifetimeMock,
       );
     });
     it('should return true if set was successfull', async () => {
@@ -208,9 +240,9 @@ describe('SessionService', () => {
       // Then
       expect(res).toEqual(true);
     });
-    it('should return false if set was NOT successfull', async () => {
+    it('should return false if multi.exec was NOT successfull', async () => {
       // Given
-      redisMock.set.mockResolvedValue(null);
+      multiMock.exec.mockResolvedValue(null);
       // When
       const res = await service['store'](key, dataMock);
       // Then
@@ -405,6 +437,21 @@ describe('SessionService', () => {
       expect(
         service.verify(interactionIdMock, sessionIdMock),
       ).resolves.not.toThrow();
+    });
+  });
+
+  describe('refresh', () => {
+    it('should call redis.expire on interactionId with ttl from config', () => {
+      // Given
+      const interactionId = 'foo';
+      // When
+      service.refresh(interactionId);
+      // Then
+      expect(redisMock.expire).toHaveBeenCalledTimes(1);
+      expect(redisMock.expire).toHaveBeenCalledWith(
+        interactionId,
+        redisLifetimeMock,
+      );
     });
   });
 });

@@ -17,4 +17,5 @@ export default {
   cookieSecrets: JSON.parse(process.env.SESSION_COOKIE_SECRETS),
   sessionCookieName: 'fc_session_id',
   interactionCookieName: 'fc_interaction_id',
+  lifetime: 600, // 10 minutes
 } as SessionConfig;

@@ -27,6 +27,7 @@ describe('SessionInterceptor', () => {
   const sessionMock = {
     setCookie: jest.fn(),
     verify: jest.fn(),
+    refresh: jest.fn(),
   };
 
   const httpContextMock = {
@@ -159,6 +160,22 @@ describe('SessionInterceptor', () => {
       expect(req['interactionId']).toBe('bar');
     });
 
+    it('should refresh backend session', async () => {
+      // Given
+      const req = {
+        route: {
+          path: '/interaction/:uid',
+        },
+        signedCookies: {
+          [sessionConfigMock.sessionCookieName]: 'foo',
+          [sessionConfigMock.interactionCookieName]: 'bar',
+        },
+      };
+      // When
+      await interceptor['handleSession'](req, resMock);
+      // Then
+      expect(sessionMock.refresh).toHaveBeenCalledTimes(1);
+    });
     it('should call session.setCookie for both cookies if found', async () => {
       // Given
       const req = {
