@@ -1,7 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
-
 import { validateDto, asyncFilter } from '@fc/common';
 import { validationOptions } from '@fc/config';
 import {
@@ -18,7 +16,7 @@ export class ServiceProviderService implements IServiceProviderService {
 
   constructor(
     @InjectModel('ServiceProvider')
-    private readonly serviceProviderModel: Model<IServiceProvider>,
+    private readonly serviceProviderModel,
     private readonly cryptography: CryptographyService,
   ) {}
 
