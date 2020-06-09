@@ -7,6 +7,7 @@ import { SessionConfig } from './dto';
 import {
   SessionBadFormatException,
   SessionNotFoundException,
+  SessionBadSessionIdException,
 } from './exceptions';
 import { ISession, IPatchSession } from './interfaces';
 
@@ -122,17 +123,31 @@ export class SessionService {
     this.store(key, { ...session, ...newValues });
   }
 
-  setInteractionIdCookie(res, interactionId) {
-    const { interactionCookieName } = this.config.get<SessionConfig>('Session');
-    this.setCookie(res, interactionCookieName, interactionId);
-  }
-
-  refreshCookie(req, res, name: string) {
-    this.setCookie(res, name, req.signedCookies[name]);
-  }
-
   setCookie(res, name, value) {
     const { cookieOptions } = this.config.get<SessionConfig>('Session');
     res.cookie(name, value, cookieOptions);
+  }
+
+  init(res, interactionId, properties) {
+    const sessionId = this.cryptography.genSessionId();
+    const { interactionCookieName, sessionCookieName } = this.config.get<
+      SessionConfig
+    >('Session');
+
+    this.setCookie(res, interactionCookieName, interactionId);
+    this.setCookie(res, sessionCookieName, sessionId);
+
+    this.store(interactionId, {
+      sessionId,
+      ...properties,
+    });
+  }
+
+  async verify(interactionId, sessionId) {
+    const session = await this.get(interactionId);
+
+    if (session.sessionId !== sessionId) {
+      throw new SessionBadSessionIdException();
+    }
   }
 }

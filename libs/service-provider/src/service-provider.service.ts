@@ -31,6 +31,7 @@ export class ServiceProviderService implements IServiceProviderService {
         {
           _id: false,
           active: true,
+          name: true,
           key: true,
           // legacy defined property names
           // eslint-disable-next-line @typescript-eslint/camelcase
@@ -77,13 +78,6 @@ export class ServiceProviderService implements IServiceProviderService {
     });
 
     return result.map(({ _doc }) => _doc);
-  }
-
-  async isActive(clientId: string): Promise<boolean> {
-    const serviceProviderList = await this.getList();
-    const sp = serviceProviderList.find(({ client_id: id }) => id === clientId);
-
-    return Boolean(sp && sp.active);
   }
 
   /**

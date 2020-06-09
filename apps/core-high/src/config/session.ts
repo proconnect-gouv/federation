@@ -12,6 +12,7 @@ export default {
     httpOnly: true,
     secure: true,
     maxAge: 600000, // 10 minutes
+    domain: process.env.FQDN,
   },
   cookieSecrets: JSON.parse(process.env.SESSION_COOKIE_SECRETS),
   sessionCookieName: 'fc_session_id',

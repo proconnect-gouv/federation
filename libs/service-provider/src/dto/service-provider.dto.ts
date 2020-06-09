@@ -17,6 +17,9 @@ export class ServiceProviderDTO {
   readonly key: string;
 
   @IsString()
+  readonly name: string;
+
+  @IsString()
   @MinLength(32)
   readonly client_secret: string;
 

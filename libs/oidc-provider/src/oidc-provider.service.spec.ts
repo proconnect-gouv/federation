@@ -1,5 +1,4 @@
 import { KoaContextWithOIDC, Provider } from 'oidc-provider';
-import * as MemoryAdapter from 'oidc-provider/lib/adapters/memory_adapter';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
 import { EventBus } from '@nestjs/cqrs';
@@ -26,6 +25,7 @@ import {
   OidcProviderTokenEvent,
   OidcProviderUserinfoEvent,
 } from './events';
+import { RedisAdapter } from './adapters';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -51,6 +51,22 @@ describe('OidcProviderService', () => {
   const configServiceMock = {
     get: jest.fn(),
   };
+  const redisAdapterMock = class AdapterMock {};
+  const configOidcProviderMock = {
+    prefix: '/api',
+    issuer: 'http://foo.bar',
+    reloadConfigDelayInMs: 10000,
+    configuration: {
+      adapter: redisAdapterMock,
+      jwks: { keys: [] },
+      features: {
+        devInteractions: { enabled: false },
+      },
+      cookies: {
+        keys: ['foo'],
+      },
+    },
+  };
 
   const loggerServiceMock = ({
     setContext: jest.fn(),
@@ -59,12 +75,14 @@ describe('OidcProviderService', () => {
     businessEvent: jest.fn(),
   } as unknown) as LoggerService;
 
+  const serviceProviderListMock = [{ name: 'my SP' }];
   const serviceProviderServiceMock = {
     getList: jest.fn(),
+    getById: jest.fn(),
   };
 
   const sessionServiceMock = {
-    setInteractionIdCookie: jest.fn(),
+    init: jest.fn(),
     get: jest.fn(),
   };
 
@@ -143,19 +161,7 @@ describe('OidcProviderService', () => {
     configServiceMock.get.mockImplementation(module => {
       switch (module) {
         case 'OidcProvider':
-          return {
-            issuer: 'http://foo.bar',
-            configuration: {
-              adapter: MemoryAdapter,
-              jwks: { keys: [] },
-              features: {
-                devInteractions: { enabled: false },
-              },
-              cookies: {
-                keys: ['foo'],
-              },
-            },
-          };
+          return configOidcProviderMock;
         case 'Logger':
           return {
             path: '/dev/null',
@@ -166,9 +172,25 @@ describe('OidcProviderService', () => {
     });
 
     service['provider'] = providerMock as any;
+
+    serviceProviderServiceMock.getById.mockResolvedValue(
+      serviceProviderListMock[0],
+    );
+    serviceProviderServiceMock.getList.mockResolvedValue(
+      serviceProviderListMock,
+    );
   });
 
   describe('onModuleInit', () => {
+    beforeEach(() => {
+      // Given
+      service['getConfig'] = jest.fn().mockResolvedValue({
+        ...configOidcProviderMock,
+      });
+      service['registerMiddlewares'] = jest.fn();
+      service['catchErrorEvents'] = jest.fn();
+      service['scheduleConfigurationReload'] = jest.fn();
+    });
     it('Should create oidc-provider instance', async () => {
       // When
       await service.onModuleInit();
@@ -212,9 +234,6 @@ describe('OidcProviderService', () => {
     it('should call several internal initializers', async () => {
       // Given
       service['ProviderProxy'] = ProviderProxyMock;
-      service['registerMiddlewares'] = jest.fn();
-      service['catchErrorEvents'] = jest.fn();
-      service['scheduleConfigurationReload'] = jest.fn();
       // When
       await service.onModuleInit();
       // Then
@@ -457,7 +476,7 @@ describe('OidcProviderService', () => {
   });
 
   describe('authorizationMiddleware', () => {
-    it('should call session.setInteractionIdCookie', () => {
+    it('should call session.init', async () => {
       // Given
       const ctxMock = {
         req: {
@@ -470,17 +489,16 @@ describe('OidcProviderService', () => {
       };
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
       // When
-      service['authorizationMiddleware'](ctxMock);
+      await service['authorizationMiddleware'](ctxMock);
       // Then
-      expect(sessionServiceMock.setInteractionIdCookie).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(sessionServiceMock.setInteractionIdCookie).toHaveBeenCalledWith(
-        ctxMock.res,
-        '42',
-      );
+      expect(sessionServiceMock.init).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.init).toHaveBeenCalledWith(ctxMock.res, '42', {
+        spId: 'foo',
+        spAcr: 'eidas3',
+        spName: 'my SP',
+      });
     });
-    it('should call publish authorization event', () => {
+    it('should call publish authorization event', async () => {
       // Given
       const ctxMock = {
         req: {
@@ -493,7 +511,7 @@ describe('OidcProviderService', () => {
       };
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
       // When
-      service['authorizationMiddleware'](ctxMock);
+      await service['authorizationMiddleware'](ctxMock);
       // Then
       expect(eventBusMock.publish).toHaveBeenCalledTimes(1);
       expect(eventBusMock.publish).toHaveBeenCalledWith(
@@ -769,6 +787,45 @@ describe('OidcProviderService', () => {
       service['logoutSource'](ctx, form);
       // Then
       expect(ctx.body).toBe(resultExpected);
+    });
+  });
+
+  describe('getConfig', () => {
+    it('should call several services and concat their ouputs', async () => {
+      // Given
+      RedisAdapter.getConstructorWithDI = jest
+        .fn()
+        .mockReturnValue(redisAdapterMock);
+      // When
+      const result = await service['getConfig']();
+      // Then
+      expect(serviceProviderServiceMock.getList).toHaveBeenCalledTimes(1);
+      expect(serviceProviderServiceMock.getList).toHaveBeenCalledWith(false);
+
+      expect(RedisAdapter.getConstructorWithDI).toHaveBeenCalledTimes(1);
+      expect(RedisAdapter.getConstructorWithDI).toHaveBeenCalledWith(service);
+
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('OidcProvider');
+
+      expect(result).toMatchObject(configOidcProviderMock);
+    });
+
+    it('should pass refresh flag to serviceProvider Service', async () => {
+      // When
+      await service['getConfig'](true);
+      // Then
+      expect(serviceProviderServiceMock.getList).toHaveBeenCalledTimes(1);
+      expect(serviceProviderServiceMock.getList).toHaveBeenCalledWith(true);
+    });
+
+    it('should bind methods to config', async () => {
+      // When
+      const result = await service['getConfig'](true);
+      // Then
+      expect(result).toHaveProperty('configuration.findAccount');
+      expect(result).toHaveProperty('configuration.renderError');
+      expect(result).toHaveProperty('configuration.logoutSource');
     });
   });
 });

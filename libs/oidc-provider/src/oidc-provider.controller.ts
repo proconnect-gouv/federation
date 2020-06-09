@@ -12,7 +12,6 @@ import { GetAuthorizeParamsDTO } from './dto';
 import { OidcProviderRoutes } from './enums';
 import { IServiceProviderService } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
-import { OidcProviderSPInactiveException } from './exceptions';
 
 @Controller('/api/v2')
 export class OidcProviderController {
@@ -30,19 +29,14 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  async getAuthorize(@Next() next, @Query() params: GetAuthorizeParamsDTO) {
-    // Start of business related stuff
-    const { client_id: clientId } = params;
-
-    await this.checkIfSpIsUsable(clientId);
-
+  getAuthorize(@Next() next, @Query() _params: GetAuthorizeParamsDTO) {
     // Pass the query to oidc-provider
     return next();
   }
 
   /** @TODO validation query by DTO */
   @Post(OidcProviderRoutes.TOKEN)
-  async postToken(@Next() next) {
+  postToken(@Next() next) {
     // Pass the query to oidc-provider
     return next();
   }
@@ -50,26 +44,20 @@ export class OidcProviderController {
   /** @TODO validation query by DTO */
   // (authorisation header, do we really need to add DTO check? 🤔)
   @Get(OidcProviderRoutes.USERINFO)
-  async getUserInfo(@Next() next) {
+  getUserInfo(@Next() next) {
     // Pass the query to oidc-provider
     return next();
   }
 
   @Get(OidcProviderRoutes.END_SESSION)
-  async getLogout(@Next() next) {
+  getLogout(@Next() next) {
     // Pass the query to oidc-provider
     return next();
   }
 
   @Post('/logout/confirm')
-  async getLogoutConfirm(@Next() next) {
+  getLogoutConfirm(@Next() next) {
     // Pass the query to oidc-provider
     return next();
-  }
-
-  private async checkIfSpIsUsable(clientId) {
-    if (!(await this.serviceProvider.isActive(clientId))) {
-      throw new OidcProviderSPInactiveException('SP not usable!');
-    }
   }
 }
