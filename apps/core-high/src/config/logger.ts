@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { LoggerConfig } from '@fc/logger';
 
 export default {

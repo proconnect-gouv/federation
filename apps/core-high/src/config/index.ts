@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { CoreFcpConfig } from '@fc/core-fcp';
 import App from './app';
 import Logger from './logger';

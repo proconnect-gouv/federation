@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { RedisConfig } from '@fc/redis';
 
 export default {

@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { OidcClientConfig } from '@fc/oidc-client';
 
 export default {

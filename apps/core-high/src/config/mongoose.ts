@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { MongooseConfig } from '@fc/mongoose';
 
 export default {

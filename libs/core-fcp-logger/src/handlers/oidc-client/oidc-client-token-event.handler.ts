@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { OidcClientTokenEvent } from '@fc/oidc-client';
 import { CoreFcpLoggerService } from '../../core-fcp-logger.service';

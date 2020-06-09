@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { CsmrHsmConfig } from '../dto';
 import Logger from './logger';
 import CryptographyBroker from './cryptograpy-broker';
