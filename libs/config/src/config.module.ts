@@ -5,9 +5,9 @@ import { IConfigOptions } from './interfaces';
 
 @Module({})
 export class ConfigModule {
+  // does not need to be tested
+  // istanbul ignore next
   static forRoot(options: IConfigOptions): DynamicModule {
-    // does not need to be tested
-    // istanbul ignore next
     return {
       global: options.isGlobal,
       module: ConfigModule,

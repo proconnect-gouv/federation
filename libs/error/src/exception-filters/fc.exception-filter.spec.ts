@@ -26,12 +26,64 @@ describe('FcExceptionFilter', () => {
     jest.resetAllMocks();
   });
 
+  describe('getStackTraceArray', () => {
+    it('should return stack trace as an array', () => {
+      // Given
+      const stackMock = ['line1', 'line2', 'line3'];
+      const errorMock = {
+        stack: stackMock.join('\n'),
+      };
+      // When
+      const result = exceptionFilter['getStackTraceArray'](errorMock);
+      // Then
+      expect(result).toEqual(stackMock);
+    });
+
+    it('should return empty array if not stack is present in error object', () => {
+      // Given
+      const errorMock = {};
+      // When
+      const result = exceptionFilter['getStackTraceArray'](errorMock);
+      // Then
+      expect(result).toEqual([]);
+    });
+
+    it('should concat with original error stack if provided', () => {
+      // Given
+      const stackMok = ['A1', 'A2'];
+      const originalErrorStackMock = ['B1', 'B2'];
+      const errorMock = {
+        stack: stackMok.join('\n'),
+        originalError: {
+          stack: originalErrorStackMock.join('\n'),
+        },
+      };
+      // When
+      const result = exceptionFilter['getStackTraceArray'](errorMock);
+      // Then
+      expect(result).toEqual([...stackMok, ...originalErrorStackMock]);
+    });
+
+    it('should work seamlessly if original original error is provided but does not have a stack', () => {
+      // Given
+      const stackMok = ['A1', 'A2'];
+      const errorMock = {
+        stack: stackMok.join('\n'),
+        originalError: {},
+      };
+      // When
+      const result = exceptionFilter['getStackTraceArray'](errorMock);
+      // Then
+      expect(result).toEqual(stackMok);
+    });
+  });
   describe('catch', () => {
     it('should log a warning', () => {
       // Given
       const exception = new FcException('message text');
       exception.scope = 2;
       exception.code = 3;
+      exception.constructor['isBusiness'] = false;
       // When
       exceptionFilter.catch(exception, argumentHostMock);
       // Then
@@ -82,7 +134,23 @@ describe('FcExceptionFilter', () => {
     it('should not log error', () => {
       // Given
       class ExceptionClass extends FcException {
-        isBusiness = true;
+        static isBusiness = true;
+      }
+      const exception = new ExceptionClass('message text');
+      exception.scope = 2;
+      exception.code = 3;
+      exceptionFilter['logException'] = jest.fn();
+      // When
+      exceptionFilter.catch(exception, argumentHostMock);
+      // Then
+      expect(exceptionFilter['logException']).toHaveBeenCalledTimes(0);
+      expect(resMock.render).toHaveBeenCalled();
+    });
+
+    it('should log error', () => {
+      // Given
+      class ExceptionClass extends FcException {
+        static isBusiness = false;
       }
       const exception = new ExceptionClass('message text');
       exception.scope = 2;

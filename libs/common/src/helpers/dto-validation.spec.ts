@@ -234,5 +234,20 @@ describe('DtoValidation', () => {
       expect(error).toBeInstanceOf(Error);
       expect(error.message).toStrictEqual(expectedErrorMessage);
     });
+
+    it('should work with no nested validation and field without contraints', () => {
+      // setup
+      const validationErrors = [
+        {
+          property: 'foo',
+        },
+      ];
+
+      // action
+      const error = getDtoErrors(validationErrors as any);
+
+      // expect
+      expect(error).toBe(null);
+    });
   });
 });
