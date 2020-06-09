@@ -88,16 +88,23 @@ export class SessionService {
   }
 
   /**
-   * Store identity in volatile memory for later retrieval
+   * Store session data in volatile memory for later retrieval
    * when SP calls us on /userinfo
    *
    * @TODO validate session data via DTO
    * @TODO handle return or throw if persistance fails
    */
-  async store(key: string, data: ISession): Promise<boolean> {
+  async store(interactionId: string, data: ISession): Promise<boolean> {
     this.logger.debug('store session in redis');
     const serialized = this.serialize(data);
-    const status = await this.redis.set(this.getKey(key), serialized);
+    const key = this.getKey(interactionId);
+    const { lifetime } = this.config.get<SessionConfig>('Session');
+    const multi = this.redis.multi();
+
+    multi.set(key, serialized);
+    multi.expire(key, lifetime);
+
+    const status = await multi.exec();
 
     return Boolean(status);
   }
@@ -149,5 +156,10 @@ export class SessionService {
     if (session.sessionId !== sessionId) {
       throw new SessionBadSessionIdException();
     }
+  }
+
+  refresh(key: string) {
+    const { lifetime } = this.config.get<SessionConfig>('Session');
+    this.redis.expire(key, lifetime);
   }
 }
