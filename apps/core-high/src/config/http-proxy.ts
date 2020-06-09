@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { HttpProxyConfig } from '@fc/http-proxy';
 
 export default {

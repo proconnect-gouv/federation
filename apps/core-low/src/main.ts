@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Not to be tested
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 

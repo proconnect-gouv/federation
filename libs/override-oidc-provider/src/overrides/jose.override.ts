@@ -1,3 +1,5 @@
+/* istanbul ignore file */
+
 /**
  * This file triggers override of native or installed libraries
  *

@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { OidcProviderUserinfoEvent } from '@fc/oidc-provider';
 import { EventsMap } from '../../events.map';

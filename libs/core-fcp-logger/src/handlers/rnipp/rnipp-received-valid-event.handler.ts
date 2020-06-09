@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { RnippReceivedValidEvent } from '@fc/rnipp';
 import { EventsMap } from '../../events.map';

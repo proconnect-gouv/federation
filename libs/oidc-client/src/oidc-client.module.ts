@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { Module, DynamicModule, Type } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { SessionModule, SessionService } from '@fc/session';

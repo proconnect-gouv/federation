@@ -82,6 +82,10 @@
     "typescript": "^3.7.4"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "libs/**/*.ts",
+      "apps/**/*.ts"
+    ],
     "moduleFileExtensions": [
       "js",
       "json",

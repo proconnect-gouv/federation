@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Module } from '@nestjs/common';
 import { ServiceProviderModule } from '@fc/service-provider';

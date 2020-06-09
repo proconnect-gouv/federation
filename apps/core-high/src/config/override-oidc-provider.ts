@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 
 export default {

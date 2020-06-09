@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { SessionConfig } from '@fc/session';
 
 export default {
