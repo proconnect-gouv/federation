@@ -2,6 +2,7 @@ import { AnyClientMetadata } from 'oidc-provider';
 
 export interface CustomClientMetadata extends AnyClientMetadata {
   active: boolean;
+  name: string;
 }
 
 /**
@@ -11,7 +12,7 @@ export interface CustomClientMetadata extends AnyClientMetadata {
 export type ServiceProviderMetadata = CustomClientMetadata;
 
 export interface IServiceProviderService {
-  isActive(id: string): Promise<boolean>;
-
   getList(refreshCache?: boolean): Promise<ServiceProviderMetadata[]>;
+
+  getById(id: string): Promise<ServiceProviderMetadata>;
 }

@@ -2,6 +2,7 @@ import { Document } from 'mongoose';
 
 export interface IServiceProvider extends Document {
   active: boolean;
+  name: string;
   key: string;
   client_secret: string;
   scopes: string[];

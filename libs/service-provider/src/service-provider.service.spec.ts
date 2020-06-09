@@ -45,6 +45,7 @@ describe('ServiceProviderService', () => {
         _doc: {
           key: '123',
           active: true,
+          name: 'foo',
           client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
           scopes: ['openid', 'profile'],
           redirect_uris: ['https://sp-site.fr/redirect_uris'],
@@ -73,6 +74,7 @@ describe('ServiceProviderService', () => {
       const serviceProviderMock = {
         key: '123',
         active: true,
+        name: 'foo',
         client_secret: 'client_secret',
         scopes: ['openid', 'profile'],
         redirect_uris: ['https://sp-site.fr/redirect_uris'],
@@ -96,6 +98,7 @@ describe('ServiceProviderService', () => {
       expect(result).toStrictEqual({
         active: true,
         client_id: '123',
+        name: 'foo',
         client_secret: 'client_secret',
         scope: 'openid profile',
         redirect_uris: ['https://sp-site.fr/redirect_uris'],
@@ -154,6 +157,7 @@ describe('ServiceProviderService', () => {
         {
           key: '123',
           active: true,
+          name: 'foo',
           client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
           scopes: ['openid', 'profile'],
           redirect_uris: ['https://sp-site.fr/redirect_uris'],
@@ -203,6 +207,7 @@ describe('ServiceProviderService', () => {
         {
           active: true,
           client_id: '123',
+          name: 'foo',
           client_secret: 'client_secret',
           scope: 'openid profile',
           redirect_uris: ['https://sp-site.fr/redirect_uris'],
@@ -239,6 +244,7 @@ describe('ServiceProviderService', () => {
         {
           active: false,
           client_id: '123',
+          name: 'foo',
           client_secret: 'client_secret',
           scope: 'openid profile',
           redirect_uris: ['https://sp-site.fr/redirect_uris'],
@@ -272,6 +278,7 @@ describe('ServiceProviderService', () => {
         {
           active: true,
           client_id: '123',
+          name: 'foo',
           client_secret: 'client_secret',
           scope: 'openid profile',
           redirect_uris: ['https://sp-site.fr/redirect_uris'],
@@ -298,51 +305,6 @@ describe('ServiceProviderService', () => {
       // expect
       expect(mockRepository.find).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual(resultExpected);
-    });
-  });
-
-  describe('isActive', () => {
-    it('Should return true if service provider is active', async () => {
-      // setup
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-
-      // action
-      const result = await service['isActive']('123');
-
-      // expect
-      expect(result).toStrictEqual(true);
-    });
-
-    it('Should return false if service provider is unactive', async () => {
-      // setup
-      const RawServiceProviderNotActiveMock = [
-        { _doc: { ...rawServiceProviderFromDBMock[0]._doc, active: false } },
-      ];
-      mockExec.mockReturnValueOnce(RawServiceProviderNotActiveMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-
-      // action
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-      const result = await service['isActive']('123');
-
-      // expect
-      expect(result).toStrictEqual(false);
-    });
-
-    it('Should return false if service provider is not found', async () => {
-      // setup
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-
-      // action
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-      const result = await service['isActive']('456');
-
-      // expect
-      expect(result).toStrictEqual(false);
     });
   });
 
@@ -395,6 +357,7 @@ describe('ServiceProviderService', () => {
       const resultExpected = {
         active: true,
         client_id: '123',
+        name: 'foo',
         client_secret: 'client_secret',
         scope: 'openid profile',
         redirect_uris: ['https://sp-site.fr/redirect_uris'],
