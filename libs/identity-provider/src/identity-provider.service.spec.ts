@@ -223,6 +223,38 @@ describe('IdentityProviderService', () => {
         },
       ]);
     });
+
+    it('should call findAll method if refreshCache is true', async () => {
+      // Given
+      const refresh = true;
+      const listMock = [{ client_id: 'foo' }, { client_id: 'bar' }];
+      service['findAllIdentityProvider'] = jest
+        .fn()
+        .mockResolvedValue(listMock);
+      service['legacyToOpenIdPropertyName'] = jest
+        .fn()
+        .mockImplementation(input => input);
+      // When
+      const result = await service.getList(refresh);
+      // Then
+      expect(service['findAllIdentityProvider']).toHaveBeenCalledTimes(1);
+      expect(service['findAllIdentityProvider']).toHaveBeenCalledWith();
+      expect(service['legacyToOpenIdPropertyName']).toHaveBeenCalledTimes(
+        listMock.length,
+      );
+      expect(result).toEqual(listMock);
+    });
+
+    it('should not call findAll method if refreshCache is not set and cache exists', async () => {
+      // Given
+      service['listCache'] = [{ client_id: 'foo' }, { client_id: 'bar' }];
+      service['findAllIdentityProvider'] = jest.fn();
+      // When
+      const result = await service.getList();
+      // Then
+      expect(result).toBe(service['listCache']);
+      expect(service['findAllIdentityProvider']).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe('getById', () => {
