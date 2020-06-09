@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { JWKECKey } from 'jose';
 import { IsObject } from 'class-validator';
 

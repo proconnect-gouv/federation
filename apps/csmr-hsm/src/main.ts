@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Not to be tested
 import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { ConfigService } from '@fc/config';
@@ -33,7 +36,7 @@ async function bootstrap() {
    * The consumer chooses to kill its self in case of something going wrong.
    * We let the process manager (PM2, nodemon, etc.) respawn the consumer
    * until things are back to normal.
-   * 
+   *
    * We use "setTimeout" for two reasons:
    *  - First it allows us to temper the restarts of the consumer
    *  - Second, NestJs `app.close()` does not work until the app is fully started.

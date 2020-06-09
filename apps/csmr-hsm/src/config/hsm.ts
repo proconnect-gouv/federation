@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Tested by DTO
 import { HsmConfig } from '@fc/hsm';
 
 export default {

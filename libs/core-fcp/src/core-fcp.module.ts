@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { Module, Global } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { OidcProviderModule } from '@fc/oidc-provider';
