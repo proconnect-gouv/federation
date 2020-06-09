@@ -1,6 +1,7 @@
 import { IOidcIdentity } from '@fc/oidc';
 
 export interface ISession {
+  sessionId?: string;
   /** Service provider informations */
   spId: string;
   spAcr: string;
