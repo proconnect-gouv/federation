@@ -15,7 +15,8 @@ import {
 } from './exceptions';
 
 /**
- * @TODO (low priority / refatco) refactor this
+ * @TODO #149 (low priority / refatco) refactor this
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/149
  * The fact that we rely on data configured in other modules
  * indicates that this interceptor should probably live in a more
  * specific module (core-fcp?) rather than in a generic session module

@@ -9,7 +9,8 @@
  *
  * Codes are documented here:
  * @see https://confluence.kaliop.net/display/FC/Codes+erreurs+des+applications
- * @TODO update the upper link to gitlab when page is migrated
+ * @TODO #140 update the upper link to gitlab when page is migrated
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/140
  */
 export enum ErrorCode {
   DISABLED_PROVIDER = 17,

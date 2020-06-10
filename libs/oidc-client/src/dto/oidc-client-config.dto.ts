@@ -20,7 +20,10 @@ export class OidcClientConfig {
   @IsPositive()
   readonly reloadConfigDelayInMs: number;
 
-  /* @TODO validate the structure of JSONWebKeySet */
+  /**
+   * @TODO #143 validate the structure of JSONWebKeySet
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/143
+   */
   @IsObject()
   readonly jwks: JSONWebKeySet;
 }

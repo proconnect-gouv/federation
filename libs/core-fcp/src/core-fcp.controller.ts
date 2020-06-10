@@ -73,12 +73,11 @@ export class CoreFcpController {
     const { uid } = await this.oidcProvider.getInteraction(req, res);
 
     this.logger.debug('Sending authentication email to the end-user');
-    /** @todo Use SP and IdP names instead of ids */
     // send the notification mail to the final user
     await this.coreFcp.sendAuthenticationMail(req);
 
     /**
-     * @todo Add a DTO to test the result of the interaction
+     * @todo #130 Add a DTO to test the result of the interaction
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/130
      */
     const result = {
