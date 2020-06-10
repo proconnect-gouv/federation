@@ -13,4 +13,5 @@ export const enum ErrorCode {
   NO_SESSION_COOKIE = 3,
   NO_INTERACTION_COOKIE = 4,
   BAD_SESSION_ID = 5,
+  BAD_DATA = 6,
 }
