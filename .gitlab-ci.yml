@@ -58,13 +58,19 @@ global-e2e:
     - docker-stack dep-all
     - docker-stack start-all
     # Stop core and csmr-hsm
-    - docker-stack stop corev2 csmr-hsm
-    # Build like for prod
+    - docker-stack stop corev2 csmr-hsm udv2 udv3
+    # Create log directory just in case
+    - docker-stack exec udv2 mkdir -p /tmp/.pm2/logs
+    - docker-stack exec udv3 mkdir -p /tmp/.pm2/logs
     - docker-stack exec corev2 mkdir -p /tmp/.pm2/logs
     - docker-stack exec csmr-hsm mkdir -p /tmp/.pm2/logs
+    # Build like for prod
+    - docker-stack exec udv2 yarn build # Will build for udv3 as well
     - docker-stack exec corev2 yarn build:core-high
     - docker-stack exec csmr-hsm yarn build:csmr-hsm
     # Launch like prod
+    - docker-stack exec udv2 yarn start:prod &
+    - docker-stack exec udv3 yarn start:prod &
     - docker-stack exec corev2 yarn start:prod:core-high
     - docker-stack exec csmr-hsm yarn start:prod:csmr-hsm
     # Starting Cypress
@@ -79,8 +85,6 @@ global-e2e:
       (docker cp fc_corev2_1:/tmp/.pm2/logs cypress || true) &&
       (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs cypress || true) &&
       (docker cp fc_rnipp_1:/tmp/.pm2/logs cypress || true) &&
-      (docker cp fc_udv2_1:/tmp/.pm2/logs cypress || true) &&
-      (docker cp fc_udv3_1:/tmp/.pm2/logs cypress || true) &&
       (docker cp fc_fip1v2_1:/tmp/.pm2/logs cypress || true) &&
       (docker cp fc_rp-corev2_1:/var/log/nginx cypress/logs || true) &&
       exit 1)
