@@ -40,7 +40,8 @@ export class FcExceptionFilter extends FcBaseExceptionFilter
     }
 
     /**
-     * @todo allow the exception to set the HTTP response code
+     * @todo #139 allow the exception to set the HTTP response code
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/139
      */
     res.status(500);
     res.render('error', { code, id, message });

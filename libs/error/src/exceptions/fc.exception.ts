@@ -22,7 +22,8 @@ export class FcException extends Error {
   /**
    * Unique id for the error being reported
    * @see https://confluence.kaliop.net/display/FC/Codes+erreurs+des+applications
-   * @TODO derivat the above documentaiton from the code it self?
+   * @TODO #140 derivat the above documentaiton from the code it self?
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/140
    */
   public code: number;
 

@@ -244,7 +244,10 @@ class WhitelistedJWA {
 
 class Jwks {
   @IsArray()
-  /** @TODO properly validate keys */
+  /**
+   * @TODO #143 properly validate keys
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/143
+   */
   readonly keys: Array<JWKECKey | JWKRSAKey>;
 }
 
@@ -279,7 +282,6 @@ class Configuration {
   @Type(() => Ttl)
   readonly ttl: Ttl;
 
-  /** @TODO fix authorized values */
   @IsArray()
   readonly acrValues: string[];
 
@@ -306,8 +308,6 @@ class Configuration {
    * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#clients
    *
    * Thus we have to make it optional for the time being
-   *
-   * @TODO implement a sub DTO to validate clients content
    */
   @IsArray()
   @IsOptional()

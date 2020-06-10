@@ -13,13 +13,15 @@ export class RabbitmqConfig {
   readonly queue: string;
 
   /**
-   * @TODO Validate options (hard coded)
+   * @TODO #147 Validate options (hard coded)
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/147
    */
   @IsOptional()
   readonly queueOptions?: object;
 
   /**
-   * @TODO Configure others available options
+   * @TODO #147 Configure others available options
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/147
    * @see https://docs.nestjs.com/microservices/rabbitmq#options
    * @IsNumber()
    * @Type(() => Number)

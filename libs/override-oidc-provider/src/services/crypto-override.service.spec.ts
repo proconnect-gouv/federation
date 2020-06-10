@@ -115,7 +115,8 @@ describe(' CryptoOverrideService', () => {
     const digestMock = 'digest';
 
     /**
-     * @TODO refactor tests according to extraction of success and failure callbacks
+     * @TODO #145 refactor tests according to extraction of success and failure callbacks
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/145
      */
     describe('sign', () => {
       it('should return promise', async () => {

@@ -74,7 +74,8 @@ export class SessionService {
   /**
    * Get Session from volatile memory
    *
-   * @TODO validate session data via DTO
+   * @TODO #83 validate session data via DTO
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/83
    */
   async get(key: string): Promise<ISession> {
     this.logger.debug('get session from redis');
@@ -91,8 +92,8 @@ export class SessionService {
    * Store session data in volatile memory for later retrieval
    * when SP calls us on /userinfo
    *
-   * @TODO validate session data via DTO
-   * @TODO handle return or throw if persistance fails
+   * @TODO #145 handle return or throw if persistance fails
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/150
    */
   async store(interactionId: string, data: ISession): Promise<boolean> {
     this.logger.debug('store session in redis');

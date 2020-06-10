@@ -106,12 +106,13 @@ export class CryptoOverrideService {
     );
 
     /**
-     * @TODO define a more powerful mechanism
+     * @TODO #146 define a more powerful mechanism
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/146
      */
     if (data === 'ERROR') {
       return this.signFailure(
         reject,
-        new Error('Gateway completed with an error'),
+        new CryptographyGatewayException('Gateway completed with an error'),
       );
     }
     return resolve(Buffer.from(data, payloadEncoding));

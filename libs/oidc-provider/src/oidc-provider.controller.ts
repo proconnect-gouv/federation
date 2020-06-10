@@ -20,7 +20,10 @@ export class OidcProviderController {
     private readonly serviceProvider: IServiceProviderService,
   ) {}
 
-  /** @TODO validation query by DTO (current DTO is almost empty) */
+  /**
+   * @TODO #144 do a more shallow validation and let oidc-provider handle redirections
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/144
+   */
   @Get(OidcProviderRoutes.AUTHORIZATION)
   @UsePipes(
     new ValidationPipe({
@@ -34,15 +37,12 @@ export class OidcProviderController {
     return next();
   }
 
-  /** @TODO validation query by DTO */
   @Post(OidcProviderRoutes.TOKEN)
   postToken(@Next() next) {
     // Pass the query to oidc-provider
     return next();
   }
 
-  /** @TODO validation query by DTO */
-  // (authorisation header, do we really need to add DTO check? 🤔)
   @Get(OidcProviderRoutes.USERINFO)
   getUserInfo(@Next() next) {
     // Pass the query to oidc-provider
