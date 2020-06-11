@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsPositive } from 'class-validator';
+import { IsString, IsNumber, Min } from 'class-validator';
 
 export class HsmConfig {
   @IsString()
@@ -8,7 +8,7 @@ export class HsmConfig {
   readonly pin: string;
 
   @IsNumber()
-  @IsPositive()
+  @Min(0)
   readonly virtualHsmSlot: number;
 
   @IsString()
