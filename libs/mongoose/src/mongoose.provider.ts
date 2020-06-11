@@ -7,7 +7,8 @@ import { ConfigModule, ConfigService } from '@fc/config';
 import { MongooseConfig } from './dto';
 
 /**
- * Prevent depreciation warning
+ * Prevent use of depreciated index management
+ * @see https://mongoosejs.com/docs/deprecations.html#ensureindex
  */
 mongoose.set('useCreateIndex', true);
 
