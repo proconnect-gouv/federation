@@ -7,14 +7,20 @@ import { Acr } from '@fc/oidc';
  */
 export class GetAuthorizeParamsDTO {
   @IsString()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_id: string;
 
   @IsString()
   @IsIn(Object.keys(Acr))
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly acr_values: string;
 
   @IsString()
   @IsIn(['code'])
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly response_type: string;
 
   @IsString()
@@ -24,6 +30,8 @@ export class GetAuthorizeParamsDTO {
   readonly state: string;
 
   @IsUrl()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly redirect_uri: string;
 
   @IsString()

@@ -33,21 +33,21 @@ function getAuthorizeUrl(overrideParams = {}) {
   const baseAuthorizeUrl = '/api/v2/authorize';
   const baseAuthorizeParams = {
     // oidc param
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     client_id:
       'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
     scope: 'openid',
     // oidc param
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     response_type: 'code',
     // oidc param
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     redirect_uri:
       'https://udv2.docker.dev-franceconnect.fr/authentication/login-callback',
     state: 'stateTraces',
     nonce: 'nonceTraces',
     // oidc param
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values: 'eidas3',
   };
   const params = { ...baseAuthorizeParams, ...overrideParams };
@@ -59,7 +59,7 @@ describe('Error scenarios', () => {
   describe('Service Provider', () => {
     it('should trigger error Y030106 if SP is not in database', () => {
       // oidc param
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const url = getAuthorizeUrl({ client_id: 'random-bad-client-id' });
       cy.visit(url, { failOnStatusCode: false });
 
@@ -69,7 +69,7 @@ describe('Error scenarios', () => {
     it('should trigger error Y030106 if SP is in database but disabled', () => {
       const url = getAuthorizeUrl({
         // oidc param
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_id:
           '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
       });
@@ -81,7 +81,7 @@ describe('Error scenarios', () => {
     it('should trigger error Y030118 if the parameter redirect_uri does NOT match one of the redirect uris of the SP in database', () => {
       const url = getAuthorizeUrl({
         // oidc param
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         redirect_uri: 'https://my-malicious-url.fr/callback',
       });
       cy.visit(url, { failOnStatusCode: false });
@@ -132,7 +132,7 @@ describe('Error scenarios', () => {
 
       // Real test
       // oidc param
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const testUrl = getAuthorizeUrl({ acr_values: 'NonSupportedAcr' });
       cy.visit(testUrl, { failOnStatusCode: false });
       cy.hasError('Y000400');
@@ -357,7 +357,7 @@ describe('Error scenarios', () => {
   describe('Scope', () => {
     it('should return to the SP with an "invalid_scope" error if the query contains scopes that are not whitelisted for this SP', () => {
       // oidc param
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const url = getAuthorizeUrl({
         scope: 'openid profile',
       });

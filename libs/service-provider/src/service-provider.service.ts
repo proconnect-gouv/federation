@@ -31,36 +31,36 @@ export class ServiceProviderService implements IServiceProviderService {
           active: true,
           name: true,
           key: true,
-          // legacy defined property names
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: true,
           scopes: true,
           // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           redirect_uris: true,
           // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           post_logout_redirect_uris: true,
           // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           id_token_signed_response_alg: true,
           // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           id_token_encrypted_response_alg: true,
           // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           id_token_encrypted_response_enc: true,
           // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_signed_response_alg: true,
           // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_encrypted_response_alg: true,
           // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_encrypted_response_enc: true,
           // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           jwks_uri: true,
         },
       )
@@ -97,14 +97,19 @@ export class ServiceProviderService implements IServiceProviderService {
     refreshCache = false,
   ): Promise<ServiceProviderMetadata> {
     const list = await this.getList(refreshCache);
+    // openid defined property names
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     return list.find(({ client_id: dbId }) => dbId === id);
   }
 
-  /* eslint-disable @typescript-eslint/camelcase */
   private legacyToOpenIdPropertyName(
     source: IServiceProvider,
   ): ServiceProviderMetadata {
+    // openid defined property names
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const client_id = source.key;
+    // openid defined property names
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const client_secret = this.cryptography.decryptClientSecret(
       source.client_secret,
     );
@@ -116,10 +121,13 @@ export class ServiceProviderService implements IServiceProviderService {
 
     return {
       ...source,
+      // openid defined property names
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id,
+      // openid defined property names
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret,
       scope,
     } as ServiceProviderMetadata;
   }
-  /* eslint-enable @typescript-eslint/camelcase */
 }

@@ -53,7 +53,7 @@ export class OidcClientService {
     scope: string,
     providerUid: string,
     // acr_values is an oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values: string,
   ): Promise<string> {
     const client: Client = await this.createOidcClient(providerUid);
@@ -64,7 +64,7 @@ export class OidcClientService {
       scope,
       state,
       // oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
       prompt: 'login',
     });
@@ -93,7 +93,7 @@ export class OidcClientService {
       {
         state: params.state,
         // oidc defined variable name
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         response_type: clientMetadata.response_types.join(','),
       },
     );

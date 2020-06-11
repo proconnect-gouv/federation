@@ -482,7 +482,7 @@ describe('OidcProviderService', () => {
         req: {
           ip: '123.123.123.123',
           // oidc
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           query: { client_id: 'foo', acr_values: 'eidas3' },
         },
         res: {},
@@ -504,7 +504,7 @@ describe('OidcProviderService', () => {
         req: {
           ip: '123.123.123.123',
           // oidc
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           query: { client_id: 'foo', acr_values: 'eidas3' },
         },
         res: {},
@@ -527,7 +527,7 @@ describe('OidcProviderService', () => {
         req: {
           ip: '123.123.123.123',
           // oidc
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           query: { client_id: 'foo', acr_values: 'eidas3' },
         },
         res: {},
@@ -550,7 +550,7 @@ describe('OidcProviderService', () => {
         req: {
           ip: '123.123.123.123',
           // oidc
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           query: { client_id: 'foo', acr_values: 'eidas3' },
         },
         res: {},

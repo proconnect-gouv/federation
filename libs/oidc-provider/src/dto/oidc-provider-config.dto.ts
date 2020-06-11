@@ -27,15 +27,23 @@ export class Routes {
   readonly authorization: OidcProviderRoutes;
 
   @IsEnum(OidcProviderRoutes)
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly check_session: OidcProviderRoutes;
 
   @IsEnum(OidcProviderRoutes)
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly code_verification: OidcProviderRoutes;
 
   @IsEnum(OidcProviderRoutes)
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly device_authorization: OidcProviderRoutes;
 
   @IsEnum(OidcProviderRoutes)
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly end_session: OidcProviderRoutes;
 
   @IsEnum(OidcProviderRoutes)
@@ -45,6 +53,8 @@ export class Routes {
   readonly jwks: OidcProviderRoutes;
 
   @IsEnum(OidcProviderRoutes)
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly pushed_authorization_request: OidcProviderRoutes;
 
   @IsEnum(OidcProviderRoutes)
@@ -148,19 +158,29 @@ type ApplicationType = 'web' | 'native';
 class ClientDefaults {
   @IsArray()
   @IsString({ each: true })
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   grant_types: GrantType[];
 
   @IsString()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   id_token_signed_response_alg: AsymmetricSigningAlgorithm;
 
   @IsArray()
   @IsString({ each: true })
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   response_types: ResponseType[];
 
   @IsString()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   application_type: ApplicationType;
 
   @IsString()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   token_endpoint_auth_method: ClientAuthMethod;
 }
 
@@ -267,6 +287,8 @@ class Configuration {
   readonly cookies: Cookies;
 
   @IsArray()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly grant_types_supported: GrantType[];
 
   @IsObject()

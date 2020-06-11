@@ -31,7 +31,7 @@ process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const logger = await app.resolve(LoggerService);
-  const config = await app.resolve(ConfigService);
+  const config = app.get(ConfigService);
   app.useLogger(logger);
   app.engine('ejs', renderFile);
   app.set('views', [join(__dirname, assetsPath, 'views')]);
