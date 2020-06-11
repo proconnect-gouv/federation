@@ -115,10 +115,12 @@ export class HsmService {
    * Open an anonym session with the HSM (give access to public objects in the HSM)
    */
   private openSessionWithTheHsm(): Buffer {
-    const [firstSlot] = this.pkcs11Instance.C_GetSlotList(true);
+    const { virtualHsmSlot: slotIndex } = this.config.get<HsmConfig>('Hsm');
+
+    const slots = this.pkcs11Instance.C_GetSlotList(true);
 
     return this.pkcs11Instance.C_OpenSession(
-      firstSlot,
+      slots[slotIndex],
       pkcs11js.CKF_SERIAL_SESSION,
     );
   }

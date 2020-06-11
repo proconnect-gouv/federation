@@ -15,6 +15,8 @@ const MAX_SIG_OUTPUT_SIZE = 132;
 describe('HsmService', () => {
   let service: HsmService;
 
+  const virtualHsmSlot = 42;
+
   const mockError = new Error('E_INIT');
 
   // Camel case is disabled here beacause of PKCS#11 implementation
@@ -49,7 +51,10 @@ describe('HsmService', () => {
   const mockPin = 'admin';
   const mockLibHsmPath = '/etc/hsm/libnethsm.so';
 
-  const mockSlotList = [Buffer.from('*')];
+  const mockSlotList = [];
+  /** insert the mock at index "virtualHsmSlot" */
+  mockSlotList.splice(virtualHsmSlot, 0, Buffer.from('*'));
+
   const mockKeySlot = Buffer.from('0');
 
   const mockHsmSession = 'If you concentrate you can imagine this is a session';
@@ -60,7 +65,7 @@ describe('HsmService', () => {
     'hex',
   );
 
-  const ckaSigLabel = 'sig-key-prime256v1';
+  const sigKeyCkaLabel = 'sig-key-prime256v1';
 
   const mockRawSignature = Buffer.from('raw', 'utf8');
 
@@ -80,13 +85,14 @@ describe('HsmService', () => {
     jest.spyOn(crypto.Hash.prototype, 'update');
     jest.spyOn(crypto.Hash.prototype, 'digest');
 
-    configServiceMock.get.mockImplementation(module => {
+    configServiceMock.get.mockImplementation((module) => {
       switch (module) {
         case 'Hsm':
           return {
             libhsm: mockLibHsmPath,
             pin: mockPin,
-            sigKeyCkaLabel: ckaSigLabel,
+            virtualHsmSlot,
+            sigKeyCkaLabel,
           };
       }
     });
@@ -281,7 +287,7 @@ describe('HsmService', () => {
       // expect
       expect(service['getPrivateKeySlotByLabel']).toHaveBeenCalledTimes(1);
       expect(service['getPrivateKeySlotByLabel']).toHaveBeenCalledWith(
-        ckaSigLabel,
+        sigKeyCkaLabel,
       );
 
       // restore
@@ -426,6 +432,17 @@ describe('HsmService', () => {
   });
 
   describe('openSessionWithTheHsm', () => {
+    it('should retrieve the virtualHsmSlot from config', () => {
+      const configName = 'Hsm';
+
+      // action
+      service['openSessionWithTheHsm']();
+
+      // expect
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith(configName);
+    });
+
     it('should retrieve only the slots with tokens from the PKCS#11 instance', () => {
       const tokenPresent = true;
 
@@ -439,14 +456,14 @@ describe('HsmService', () => {
       );
     });
 
-    it('should open a read-only session with the first slot found', () => {
+    it('should open a read-only session with the virtualHsmSlot retrieved from config', () => {
       // action
       service['openSessionWithTheHsm']();
 
       // expect
       expect(mockPkcs11Instance.C_OpenSession).toHaveBeenCalledTimes(1);
       expect(mockPkcs11Instance.C_OpenSession).toHaveBeenCalledWith(
-        mockSlotList[0],
+        mockSlotList[virtualHsmSlot],
         pkcs11js.CKF_SERIAL_SESSION,
       );
     });
@@ -510,7 +527,7 @@ describe('HsmService', () => {
       mockPkcs11Instance.C_FindObjects.mockReturnValueOnce(mockKeySlot);
 
       // action
-      const result = service['getPrivateKeySlotByLabel'](ckaSigLabel);
+      const result = service['getPrivateKeySlotByLabel'](sigKeyCkaLabel);
 
       // expect
       expect(result).toBe(mockKeySlot);
@@ -520,12 +537,15 @@ describe('HsmService', () => {
       // setup
       const expectedTemplate = [
         { type: pkcs11js.CKA_KEY_TYPE, value: pkcs11js.CKO_PRIVATE_KEY },
-        { type: pkcs11js.CKA_LABEL, value: Buffer.from(ckaSigLabel, 'utf8') },
+        {
+          type: pkcs11js.CKA_LABEL,
+          value: Buffer.from(sigKeyCkaLabel, 'utf8'),
+        },
         { type: pkcs11js.CKA_SIGN, value: true },
       ];
 
       // action
-      service['getPrivateKeySlotByLabel'](ckaSigLabel);
+      service['getPrivateKeySlotByLabel'](sigKeyCkaLabel);
 
       // expect
       expect(mockPkcs11Instance.C_FindObjectsInit).toHaveBeenCalledTimes(1);
@@ -537,7 +557,7 @@ describe('HsmService', () => {
 
     it('C_FindObjects shall have been called with the PKCS#11 session', () => {
       // action
-      service['getPrivateKeySlotByLabel'](ckaSigLabel);
+      service['getPrivateKeySlotByLabel'](sigKeyCkaLabel);
 
       // expect
       expect(mockPkcs11Instance.C_FindObjects).toHaveBeenCalledTimes(1);
@@ -548,7 +568,7 @@ describe('HsmService', () => {
 
     it('C_FindObjectsFinal shall have been called with the PKCS#11 session', () => {
       // action
-      service['getPrivateKeySlotByLabel'](ckaSigLabel);
+      service['getPrivateKeySlotByLabel'](sigKeyCkaLabel);
 
       // expect
       expect(mockPkcs11Instance.C_FindObjectsFinal).toHaveBeenCalledTimes(1);
@@ -565,7 +585,7 @@ describe('HsmService', () => {
 
       // action
       try {
-        service['getPrivateKeySlotByLabel'](ckaSigLabel);
+        service['getPrivateKeySlotByLabel'](sigKeyCkaLabel);
       } catch (e) {
         // expect
         expect(mockPkcs11Instance.C_FindObjectsFinal).toHaveBeenCalledTimes(1);
@@ -586,7 +606,7 @@ describe('HsmService', () => {
 
       // action
       try {
-        service['getPrivateKeySlotByLabel'](ckaSigLabel);
+        service['getPrivateKeySlotByLabel'](sigKeyCkaLabel);
       } catch (e) {
         // expect
         expect(e).toBeInstanceOf(Error);
