@@ -2,12 +2,14 @@ import { Injectable, Inject } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { CryptographyService } from '@fc/cryptography';
-import { ConfigService } from '@fc/config';
-import { SessionConfig } from './dto';
+import { ConfigService, validationOptions } from '@fc/config';
+import { validateDto } from '@fc/common';
+import { SessionConfig, SessionDto } from './dto';
 import {
   SessionBadFormatException,
   SessionNotFoundException,
   SessionBadSessionIdException,
+  SessionBadDataException,
 } from './exceptions';
 import { ISession, IPatchSession } from './interfaces';
 
@@ -71,11 +73,16 @@ export class SessionService {
     return `${this.prefix}${key}`;
   }
 
+  private async validate(data: ISession): Promise<void> {
+    const errors = await validateDto(data, SessionDto, validationOptions);
+
+    if (errors.length > 0) {
+      throw new SessionBadDataException(errors);
+    }
+  }
+
   /**
    * Get Session from volatile memory
-   *
-   * @TODO #83 validate session data via DTO
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/83
    */
   async get(key: string): Promise<ISession> {
     this.logger.debug('get session from redis');
@@ -85,7 +92,9 @@ export class SessionService {
       throw new SessionNotFoundException();
     }
 
-    return this.unserialize(dataCipher);
+    const data = this.unserialize(dataCipher);
+    await this.validate(data);
+    return data;
   }
 
   /**
