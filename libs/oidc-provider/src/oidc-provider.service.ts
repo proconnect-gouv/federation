@@ -183,7 +183,7 @@ export class OidcProviderService {
     const symbolStringRepresentation = 'Symbol(context#uid)';
 
     const interactionIdSymbol = Object.getOwnPropertySymbols(ctx.oidc).find(
-      symbol => symbol.toString() === symbolStringRepresentation,
+      (symbol) => symbol.toString() === symbolStringRepresentation,
     );
 
     return ctx.oidc[interactionIdSymbol];
@@ -264,7 +264,7 @@ export class OidcProviderService {
       OidcProviderEvents.USERINFO_ERROR,
     ];
 
-    errorEvents.forEach(eventName => {
+    errorEvents.forEach((eventName) => {
       this.registerEvent(eventName, this.triggerError.bind(this, eventName));
     });
   }
@@ -335,13 +335,12 @@ export class OidcProviderService {
       if (
         step === OidcProviderMiddlewareStep.AFTER &&
         /**
-         * Stange behavior: according to the documentation
-         * we should match on `ctx.oidc.route` but it does not look like what happens.
-         * We actually have matches when comparing to `ctx.path`, like on "BEFORE"
-         *
-         * @TODO #127 investigate and fix (if needed)
+         * In the post processing phase, we may also target more specific actions with ctx.oidc.route
+         * Though we can still match on the path.
          * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pre--and-post-middlewares
-         * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/127
+         *
+         * Since there can be no overlap between MiddlewarePatterns and Routes,
+         * we can safely use a unique function parameter (`pattern`) and test it against both values.
          */
         (route === pattern || path === pattern)
       ) {
