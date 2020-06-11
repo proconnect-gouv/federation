@@ -45,7 +45,6 @@ export class ConfigService {
    */
   get<T>(moduleName: string): T {
     if (!this.configuration.hasOwnProperty(moduleName)) {
-      /** @TODO implement custom error class */
       throw new UnkonwnConfigurationNameError(
         `Asked unknown configuration: <${moduleName}>`,
       );

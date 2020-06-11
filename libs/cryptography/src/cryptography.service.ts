@@ -20,7 +20,6 @@ export class CryptographyService {
   /**
    * Encrypt the given data
    * Current implementation use symetrical AES-256-GCM.
-   * @todo create an interface with the data schema obtained from oidc-provider
    * @see https://crypto.stackexchange.com/a/18092
    * @param key the key to encrypt the data
    * @param data the data to encrypt
@@ -139,7 +138,10 @@ export class CryptographyService {
    */
   private decrypt(key: string, cipher: Buffer): any {
     if (Buffer.byteLength(cipher) <= CIPHER_HEAD_LENGTH) {
-      /** @TODO throw a specific exception */
+      /**
+       * @TODO #138 throw a specific exception
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/138
+       */
       throw new Error('Authentication failed !');
     }
 
@@ -158,7 +160,10 @@ export class CryptographyService {
     try {
       decipher.final();
     } catch (err) {
-      /** @TODO throw a specific exception */
+      /**
+       * @TODO #138 throw a specific exception
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/138
+       */
       throw new Error('Authentication failed !');
     }
 

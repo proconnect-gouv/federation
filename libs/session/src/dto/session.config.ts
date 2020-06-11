@@ -36,8 +36,9 @@ export class CookieOptions {
 }
 export class SessionConfig {
   /**
-   * @TODO evaluate the opportunity to use keyObjects
+   * @TODO #151 evaluate the opportunity to use keyObjects
    * instead of plain string + rotation of keys
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/151
    */
   @IsString()
   @Length(32, 32)
@@ -58,8 +59,9 @@ export class SessionConfig {
   readonly cookieSecrets: string[];
 
   /**
-   * @TODO this is not a generic need
+   * @TODO #149 this is not a generic need
    * see how to refactor this... (low priority)
+   * https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/149
    */
   @IsString()
   readonly interactionCookieName: string;

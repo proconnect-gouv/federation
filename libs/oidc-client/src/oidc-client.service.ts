@@ -49,7 +49,6 @@ export class OidcClientService {
     this.scheduleConfigurationReload();
   }
 
-  /** @TODO validation body by interface */
   async getAuthorizeUrl(
     scope: string,
     providerUid: string,
@@ -59,7 +58,6 @@ export class OidcClientService {
   ): Promise<string> {
     const client: Client = await this.createOidcClient(providerUid);
 
-    /** @TODO replace by in house crypto */
     const state = generators.state();
 
     return client.authorizationUrl({
@@ -82,8 +80,6 @@ export class OidcClientService {
     return { keys: publicKeys };
   }
 
-  /** @TODO interface tokenSet, to see what we keep ? */
-
   async getTokenSet(req, providerUid: string): Promise<TokenSet> {
     this.logger.trace('getTokenSet');
     const clientMetadata = await this.getProvider(providerUid);
@@ -105,16 +101,11 @@ export class OidcClientService {
     return tokenSet;
   }
 
-  /**
-   * @TODO interface userinfo
-   * @TODO handle network error
-   */
   async getUserInfo(
     accessToken: string,
     providerUid: string,
   ): Promise<IOidcIdentity> {
     this.logger.trace('getUserInfo');
-    /** @TODO Retrieve this info */
     const client = await this.createOidcClient(providerUid);
     return client.userinfo(accessToken);
   }
@@ -146,7 +137,8 @@ export class OidcClientService {
      */
     const wellKnownUrl = clientMetadata.discoveryUrl as string;
     /**
-     * @TODO handle network failure with specific Exception / error code
+     * @TODO #142 handle network failure with specific Exception / error code
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/142
      */
     const issuer = await this.IssuerProxy.discover(wellKnownUrl);
 

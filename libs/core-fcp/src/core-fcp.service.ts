@@ -182,8 +182,10 @@ export class CoreFcpService {
 
     /**
      * Support both methods
-     * @TODO add test once POST is implemented
-     * @TODO check what needs to be done if we implement pushedAuthorizationRequests
+     * @TODO #135 add test once POST is implemented
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/135
+     * @TODO #137 check what needs to be done if we implement pushedAuthorizationRequests
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/137
      */
     switch (ctx.method) {
       case 'GET':

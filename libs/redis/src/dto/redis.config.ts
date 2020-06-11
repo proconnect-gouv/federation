@@ -16,7 +16,8 @@ export class RedisConfig {
   readonly db: number;
 
   /**
-   * @TODO Configure password on docker-compose and make this mandatory
+   * @TODO #148 Configure password on docker-compose and make this mandatory
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/148
    */
   @IsString()
   @IsOptional()

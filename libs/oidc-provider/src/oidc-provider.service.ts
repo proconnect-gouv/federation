@@ -370,10 +370,7 @@ export class OidcProviderService {
     this.exceptionFilter.catch(exception, host);
   }
 
-  /** @TODO Actually retrieve data from database
-   * This should be done by an injected external service
-   * exposing a `findAccount` method.
-   *
+  /**
    * Returned object should contains an `accountId` property
    * and an async `claims` function.
    * More documentation can be found in oidc-provider repo.
@@ -415,7 +412,7 @@ export class OidcProviderService {
   /**
    * More documentation can be found in oidc-provider repo
    * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#logoutsource
-   * @TODO Check the behaving of the page when javascript is disabled
+   * @TODO #109 Check the behaving of the page when javascript is disabled
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/109
    */
   private async logoutSource(ctx: KoaContextWithOIDC, form: any) {
