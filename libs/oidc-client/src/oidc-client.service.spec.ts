@@ -33,13 +33,13 @@ describe('OidcClientService', () => {
 
   const getProviderMockReturnValue = {
     // oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     redirect_uris: ['redirect', 'uris'],
     // oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     response_types: ['response', 'types'],
     // oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     discoveryUrl: 'mock well-known url',
   };
 
@@ -137,7 +137,7 @@ describe('OidcClientService', () => {
       const scope = 'foo_scope bar_scope';
       const providerId = 'myidp';
       // oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const acr_values = 'eidas1';
       service['createOidcClient'] = createOidcClientMock;
       // When
@@ -151,7 +151,7 @@ describe('OidcClientService', () => {
       const scope = 'foo_scope bar_scope';
       const providerId = 'myidp';
       // oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       const acr_values = 'eidas1';
       service['createOidcClient'] = createOidcClientMock;
 
@@ -210,7 +210,7 @@ describe('OidcClientService', () => {
         },
         {
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           response_type: 'response,types',
           state: 'callbackParamsState',
         },

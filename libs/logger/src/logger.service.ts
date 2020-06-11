@@ -19,7 +19,14 @@ export class LoggerService extends Logger {
     const { level, path } = this.config.get<LoggerConfig>('Logger');
 
     this.externalLogger = pino(
-      { useLevelLabels: true, level: pinoLevelsMap[level] },
+      {
+        formatters: {
+          level(label: string, _number: number) {
+            return { level: label };
+          },
+        },
+        level: pinoLevelsMap[level],
+      },
       pino.destination(path),
     );
 
@@ -75,7 +82,7 @@ export class LoggerService extends Logger {
     const methods = ['log', 'error', 'debug', 'info', 'warn'];
     const context = 'Native Console';
 
-    methods.forEach(method => {
+    methods.forEach((method) => {
       console[method] = (...args) => this[method](args.join('\n'), context);
     });
   }

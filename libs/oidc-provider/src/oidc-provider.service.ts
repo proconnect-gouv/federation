@@ -119,6 +119,8 @@ export class OidcProviderService {
   private async authorizationMiddleware(ctx) {
     const interactionId = this.getInteractionIdFromCtx(ctx);
     const { ip } = ctx.req;
+    // oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { client_id: spId, acr_values: spAcr } = ctx.req.query;
     const { name: spName } = await this.serviceProviderService.getById(spId);
 

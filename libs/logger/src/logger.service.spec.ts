@@ -7,7 +7,7 @@ import { nestLevelsMap } from './log-maps.map';
 describe('LoggerService', () => {
   // Generate configs for all levels and dev mode
   const configs: any = { dev: {}, notDev: {} };
-  Object.values(LogLevelNames).forEach(level => {
+  Object.values(LogLevelNames).forEach((level) => {
     configs['dev'][level] = {
       path: '/dev/null',
       isDevelopment: true,
@@ -45,7 +45,7 @@ describe('LoggerService', () => {
     get: () => configMock,
   } as unknown) as ConfigService;
 
-  const getConfiguredMockedService = config => {
+  const getConfiguredMockedService = (config) => {
     configMock = config;
     const service = new LoggerService(configServiceMock);
 
@@ -60,6 +60,8 @@ describe('LoggerService', () => {
 
   beforeEach(() => {
     jest.resetAllMocks();
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
   });
 
   describe('logger.log()', () => {
