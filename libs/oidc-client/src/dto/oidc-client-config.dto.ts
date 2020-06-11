@@ -7,14 +7,32 @@ import {
   IsOptional,
   IsObject,
   IsPositive,
+  ValidateNested,
+  IsString,
+  MinLength,
 } from 'class-validator';
 import { ClientMetadata } from 'openid-client';
 import { JSONWebKeySet } from 'jose';
+import { Type } from 'class-transformer';
+
+class HttpOptions {
+  @IsString()
+  @MinLength(1)
+  readonly key: string;
+
+  @IsString()
+  @MinLength(1)
+  readonly cert: string;
+}
 
 export class OidcClientConfig {
   @IsArray()
   @IsOptional()
   readonly providers?: ClientMetadata[];
+
+  @ValidateNested()
+  @Type(() => HttpOptions)
+  readonly httpOptions: HttpOptions;
 
   @IsNumber()
   @IsPositive()
