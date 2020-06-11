@@ -1,5 +1,4 @@
 import {
-  Body,
   Controller,
   Get,
   Render,
@@ -64,29 +63,30 @@ export class CoreFcpController {
 
   @Get('/interaction/:uid/login')
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async getLogin(
-    @Req() req,
-    @Res() res,
-    @Body() body,
-    @Param() _params: Interaction,
-  ) {
-    const { uid } = await this.oidcProvider.getInteraction(req, res);
+  async getLogin(@Req() req, @Res() res, @Param() _params: Interaction) {
+    const { interactionId } = req;
+    const { spAcr } = await this.session.get(interactionId);
 
     this.logger.debug('Sending authentication email to the end-user');
     // send the notification mail to the final user
     await this.coreFcp.sendAuthenticationMail(req);
 
     /**
-     * @todo #130 Add a DTO to test the result of the interaction
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/130
+     * Build Interaction results
+     * For all available options, refer to `oidc-provider` documentation:
+     * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#user-flows
      */
     const result = {
       login: {
-        account: uid,
-        acr: body.acr,
-        amr: ['pwd'],
+        account: interactionId,
+        acr: spAcr,
         ts: Math.floor(Date.now() / 1000),
       },
+      /**
+       * We need to return this information, it will always be empty arrays
+       * since franceConnect does not allow for partial authorizations yet,
+       * it's an "all or nothing" consent.
+       */
       consent: {
         rejectedScopes: [],
         rejectedClaims: [],
