@@ -11,6 +11,8 @@ describe('CoreFcpController', () => {
   let coreFcpController: CoreFcpController;
 
   const params = { uid: 'abcdefghijklmnopqrstuvwxyz0123456789' };
+  const interactionIdMock = 'interactionIdMockValue';
+  const acrMock = 'acrMockValue';
 
   const interactionDetailsResolved = {
     uid: Symbol('uid'),
@@ -92,7 +94,8 @@ describe('CoreFcpController', () => {
     coreFcpServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
     serviceProviderServiceMock.getById.mockResolvedValue({ name: 'some SP' });
     sessionServiceMock.get.mockResolvedValue({
-      interactionId: '42',
+      interactionId: interactionIdMock,
+      spAcr: acrMock,
       spIdentity: {},
     });
   });
@@ -101,7 +104,7 @@ describe('CoreFcpController', () => {
     it('should return uid', async () => {
       // Given
       const req = {
-        interactionId: 42,
+        interactionId: interactionIdMock,
       };
       const res = {};
       oidcProviderServiceMock.getInteraction.mockResolvedValue({
@@ -120,7 +123,7 @@ describe('CoreFcpController', () => {
     it('should call coreFcpService', async () => {
       // Given
       const req = {
-        interactionId: 42,
+        interactionId: interactionIdMock,
       };
       const res = {
         redirect: jest.fn(),
@@ -133,7 +136,7 @@ describe('CoreFcpController', () => {
     it('should redirect to /consent URL', async () => {
       // Given
       const req = {
-        interactionId: 42,
+        interactionId: interactionIdMock,
       };
       const res = {
         redirect: jest.fn(),
@@ -152,24 +155,24 @@ describe('CoreFcpController', () => {
     it('should get data from session for interactionId', async () => {
       // Given
       const reqMock = {
-        interactionId: '42',
+        interactionId: interactionIdMock,
       };
       // When
       await coreFcpController.getConsent(reqMock, params);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.get).toHaveBeenCalledWith('42');
+      expect(sessionServiceMock.get).toHaveBeenCalledWith(interactionIdMock);
     });
     it('should return data from session for interactionId', async () => {
       // Given
       const reqMock = {
-        interactionId: '42',
+        interactionId: interactionIdMock,
       };
       // When
       const result = await coreFcpController.getConsent(reqMock, params);
       // Then
       expect(result).toEqual({
-        interactionId: '42',
+        interactionId: interactionIdMock,
         identity: {},
       });
     });
@@ -178,14 +181,11 @@ describe('CoreFcpController', () => {
   describe('getLogin', () => {
     it('should send an email notification to the end user by calling coreFcp.sendAuthenticationMail', async () => {
       // setup
-      const req = {
-        body: {},
-      };
+      const req = {};
       const res = {};
-      const body = {};
 
       // action
-      await coreFcpController.getLogin(req, res, body, params);
+      await coreFcpController.getLogin(req, res, params);
 
       // expect
       expect(coreFcpServiceMock.sendAuthenticationMail).toBeCalledTimes(1);
@@ -195,28 +195,39 @@ describe('CoreFcpController', () => {
     it('should call interactionFinished', async () => {
       // Given
       const req = {
-        session: { uid: 42 },
-        body: { acr: 'acr' },
+        interactionId: interactionIdMock,
       };
       const res = {};
-      const body = { acr: 'foo' };
       // When
-      await coreFcpController.getLogin(req, res, body, params);
+      await coreFcpController.getLogin(req, res, params);
       // Then
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
         1,
+      );
+      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
+        req,
+        res,
+        expect.objectContaining({
+          login: {
+            account: interactionIdMock,
+            acr: acrMock,
+            ts: expect.any(Number),
+          },
+          consent: {
+            rejectedScopes: [],
+            rejectedClaims: [],
+          },
+        }),
       );
     });
     it('should return an object', async () => {
       // Given
       const req = {
-        session: { uid: 42 },
-        body: { acr: 'acr' },
+        interactionId: interactionIdMock,
       };
       const res = {};
-      const body = { acr: 'foo' };
       // When
-      const result = await coreFcpController.getLogin(req, res, body, params);
+      const result = await coreFcpController.getLogin(req, res, params);
       // Then
       expect(result).toBe(interactionFinishedValue);
     });
