@@ -47,13 +47,13 @@ export class RnippResponseParserService {
     const identity: /* IIdentity */ any = {
       gender: this.getGenderFromParsedXml(parsedXml, RnippXmlSelectors.GENDER),
       // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       family_name: this.getXmlAttribute(
         parsedXml,
         RnippXmlSelectors.FAMILY_NAME,
       ),
       // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       given_name: this.getGivenNamesAttribute(
         parsedXml,
         RnippXmlSelectors.GIVEN_NAME,

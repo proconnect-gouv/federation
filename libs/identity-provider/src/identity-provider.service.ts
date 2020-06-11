@@ -32,38 +32,38 @@ export class IdentityProviderService implements IIdentityProviderService {
           display: true,
           clientID: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: true,
           discoveryUrl: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           redirect_uris: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           post_logout_redirect_uris: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           id_token_encrypted_response_alg: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           id_token_encrypted_response_enc: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_signed_response_alg: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_encrypted_response_alg: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_encrypted_response_enc: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           response_types: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           id_token_signed_response_alg: true,
           // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/camelcase
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_endpoint_auth_method: true,
         },
       )
@@ -104,7 +104,7 @@ export class IdentityProviderService implements IIdentityProviderService {
     return providers.find(({ uid }) => uid === id);
   }
 
-  /* eslint-disable @typescript-eslint/camelcase */
+  /* eslint-disable @typescript-eslint/naming-convention */
   private legacyToOpenIdPropertyName(
     source: IIdentityProvider,
   ): IdentityProviderMetadata {
@@ -122,5 +122,5 @@ export class IdentityProviderService implements IIdentityProviderService {
       client_secret,
     } as IdentityProviderMetadata;
   }
-  /* eslint-enable @typescript-eslint/camelcase */
+  /* eslint-enable @typescript-eslint/naming-convention */
 }

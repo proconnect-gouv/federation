@@ -95,7 +95,7 @@ describe('OidcClient Controller', () => {
         scope: 'openid',
         providerUid: 'abcdefghijklmnopqrstuvwxyz',
         // oidc param
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
       };
 
@@ -123,17 +123,17 @@ describe('OidcClient Controller', () => {
       const providerUid = 'foo';
       oidcClientServiceMock.getTokenSet.mockReturnValueOnce({
         // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         access_token: 'accest_token',
         // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: 'id_token',
         claims: jest.fn().mockReturnValueOnce({ acr: 'foo' }),
       });
       oidcClientServiceMock.getUserInfo.mockReturnValueOnce({
         sub: '1',
         // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/camelcase
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         given_name: 'given_name',
       });
 

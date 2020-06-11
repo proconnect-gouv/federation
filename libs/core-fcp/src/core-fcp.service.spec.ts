@@ -46,9 +46,9 @@ describe('CoreFcpService', () => {
 
     params: {
       // oidc param
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas3',
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: 'spId',
     },
     uid: uidMock,
@@ -76,9 +76,9 @@ describe('CoreFcpService', () => {
   };
 
   const identityMock = {
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Edward',
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
     email: 'eteach@fqdn.ext',
   };
