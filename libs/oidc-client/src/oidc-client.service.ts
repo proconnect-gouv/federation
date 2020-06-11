@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import { JWK } from 'jose';
 import { Injectable, Inject } from '@nestjs/common';
 import {
@@ -6,6 +7,8 @@ import {
   generators,
   Client,
   ClientMetadata,
+  custom,
+  HttpOptions,
 } from 'openid-client';
 
 import { ConfigService } from '@fc/config';
@@ -85,6 +88,8 @@ export class OidcClientService {
     const clientMetadata = await this.getProvider(providerUid);
     const client = await this.createOidcClient(providerUid);
 
+    this.setCustomHttpOptions(client);
+
     const params = await client.callbackParams(req);
 
     const tokenSet = await client.callback(
@@ -107,6 +112,9 @@ export class OidcClientService {
   ): Promise<IOidcIdentity> {
     this.logger.trace('getUserInfo');
     const client = await this.createOidcClient(providerUid);
+
+    this.setCustomHttpOptions(client);
+
     return client.userinfo(accessToken);
   }
 
@@ -179,5 +187,20 @@ export class OidcClientService {
       ...configuration,
       providers,
     };
+  }
+
+  /**
+   * Set custom http options
+   * @param client
+   * @see https://github.com/panva/node-openid-client/blob/master/docs/README.md#customizing-individual-http-requests
+   */
+  private setCustomHttpOptions(client): void {
+    client[custom.http_options] = this.retrieveHttpOptions.bind(this);
+  }
+
+  private retrieveHttpOptions(options): HttpOptions {
+    options.cert = fs.readFileSync(this.configuration.httpOptions.cert);
+    options.key = fs.readFileSync(this.configuration.httpOptions.key);
+    return options;
   }
 }

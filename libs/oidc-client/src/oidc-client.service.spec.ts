@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OidcClientService } from './oidc-client.service';
+import * as fs from 'fs';
 import { JWK } from 'jose';
 import { ConfigService } from '@fc/config';
 import { LoggerService, LogLevelNames } from '@fc/logger';
@@ -347,6 +348,33 @@ describe('OidcClientService', () => {
       expect(() => {
         service['getProvider']('p2');
       }).toThrow(OidcClientProviderDisabledException);
+    });
+  });
+
+  describe('retrieveHttpOptions', () => {
+    it('Should return key and cert http options', () => {
+      // Given
+      jest.spyOn(fs, 'readFileSync').mockImplementation(() => Buffer.alloc(1));
+
+      const options = {
+        key: '',
+        cert: '',
+      };
+
+      service['configuration'] = {
+        httpOptions: {
+          key: 'key',
+          cert: 'cert',
+        },
+      } as OidcClientConfig;
+
+      // When
+      const result = service['retrieveHttpOptions'](options);
+      // Then
+      expect(result).toStrictEqual({
+        key: Buffer.alloc(1),
+        cert: Buffer.alloc(1),
+      });
     });
   });
 });
