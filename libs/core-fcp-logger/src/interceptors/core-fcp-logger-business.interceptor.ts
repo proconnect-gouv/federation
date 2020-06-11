@@ -24,10 +24,11 @@ export class CoreFcpLoggerBusinessInterceptor implements NestInterceptor {
   }
 
   private logEvent(req) {
-    const { interactionId, ip } = req;
+    const { ip } = req;
     const event = this.getEvent(req, EventsMap);
 
-    if (event) {
+    if (event && req.fc) {
+      const { interactionId } = req.fc;
       this.coreFcpLogger.logEvent(event, ip, interactionId);
     }
   }
@@ -39,6 +40,6 @@ export class CoreFcpLoggerBusinessInterceptor implements NestInterceptor {
     return Object.entries(events)
       .map(([, event]) => event)
       .filter(({ intercept }) => intercept)
-      .find(event => event.route === path);
+      .find((event) => event.route === path);
   }
 }

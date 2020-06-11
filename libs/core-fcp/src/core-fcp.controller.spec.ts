@@ -104,7 +104,7 @@ describe('CoreFcpController', () => {
     it('should return uid', async () => {
       // Given
       const req = {
-        interactionId: interactionIdMock,
+        fc: { interactionId: interactionIdMock },
       };
       const res = {};
       oidcProviderServiceMock.getInteraction.mockResolvedValue({
@@ -123,7 +123,7 @@ describe('CoreFcpController', () => {
     it('should call coreFcpService', async () => {
       // Given
       const req = {
-        interactionId: interactionIdMock,
+        fc: { interactionId: interactionIdMock },
       };
       const res = {
         redirect: jest.fn(),
@@ -136,7 +136,7 @@ describe('CoreFcpController', () => {
     it('should redirect to /consent URL', async () => {
       // Given
       const req = {
-        interactionId: interactionIdMock,
+        fc: { interactionId: interactionIdMock },
       };
       const res = {
         redirect: jest.fn(),
@@ -146,7 +146,7 @@ describe('CoreFcpController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
-        `/interaction/${req.interactionId}/consent`,
+        `/interaction/${req.fc.interactionId}/consent`,
       );
     });
   });
@@ -155,7 +155,7 @@ describe('CoreFcpController', () => {
     it('should get data from session for interactionId', async () => {
       // Given
       const reqMock = {
-        interactionId: interactionIdMock,
+        fc: { interactionId: interactionIdMock },
       };
       // When
       await coreFcpController.getConsent(reqMock, params);
@@ -166,7 +166,7 @@ describe('CoreFcpController', () => {
     it('should return data from session for interactionId', async () => {
       // Given
       const reqMock = {
-        interactionId: interactionIdMock,
+        fc: { interactionId: interactionIdMock },
       };
       // When
       const result = await coreFcpController.getConsent(reqMock, params);
@@ -181,7 +181,9 @@ describe('CoreFcpController', () => {
   describe('getLogin', () => {
     it('should send an email notification to the end user by calling coreFcp.sendAuthenticationMail', async () => {
       // setup
-      const req = {};
+      const req = {
+        fc: { interactionId: interactionIdMock },
+      };
       const res = {};
 
       // action
@@ -195,7 +197,7 @@ describe('CoreFcpController', () => {
     it('should call interactionFinished', async () => {
       // Given
       const req = {
-        interactionId: interactionIdMock,
+        fc: { interactionId: interactionIdMock },
       };
       const res = {};
       // When
@@ -223,7 +225,7 @@ describe('CoreFcpController', () => {
     it('should return an object', async () => {
       // Given
       const req = {
-        interactionId: interactionIdMock,
+        fc: { interactionId: interactionIdMock },
       };
       const res = {};
       // When

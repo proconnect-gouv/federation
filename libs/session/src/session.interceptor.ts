@@ -9,6 +9,7 @@ import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { SessionService } from './session.service';
 import { SessionConfig } from './dto';
+import { IFcReq } from './interfaces';
 import {
   SessionNoSessionCookieException,
   SessionNoInteractionCookieException,
@@ -72,7 +73,10 @@ export class SessionInterceptor implements NestInterceptor {
       await this.session.verify(interactionId, sessionId);
 
       // Make interactionId available in `req`
-      req.interactionId = interactionId;
+      if (!req.fc) {
+        req.fc = {} as IFcReq;
+      }
+      req.fc.interactionId = interactionId;
 
       // Refresh session on backend
       this.session.refresh(interactionId);

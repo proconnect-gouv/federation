@@ -58,7 +58,7 @@ export class OidcClientController {
     @Param() params: GetOidcCallback,
   ) {
     const { providerUid } = params;
-    const uid = req.interactionId;
+    const uid = req.fc.interactionId;
 
     // OIDC: call idp's /token endpoint
     const tokenSet = await this.oidcClient.getTokenSet(req, providerUid);
