@@ -1,7 +1,6 @@
 import { AxiosError } from 'axios';
 import { HttpService } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as ValidationDto from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { FcException } from '@fc/error';
@@ -49,10 +48,10 @@ describe('RnippService', () => {
   const identityMock = {
     gender: Genders.MALE,
     // openid claim
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'MARTIN',
     // openid claim
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Jean',
     birthdate: '1981-02-03',
     birthplace: '75112',
@@ -118,8 +117,6 @@ describe('RnippService', () => {
         citizenStatusFound,
       );
 
-      jest.spyOn(ValidationDto, 'validateDto').mockResolvedValueOnce([]);
-
       service['checkCitizenStatusError'] = jest.fn();
       service['checkRnippRectificationError'] = jest.fn();
 
@@ -145,8 +142,6 @@ describe('RnippService', () => {
       rnippResponseParserServiceMock.parseRnippData.mockResolvedValueOnce(
         citizenStatusFound,
       );
-
-      jest.spyOn(ValidationDto, 'validateDto').mockResolvedValueOnce([]);
 
       service['checkCitizenStatusError'] = jest.fn();
       service['checkRnippRectificationError'] = jest.fn();
@@ -200,8 +195,6 @@ describe('RnippService', () => {
         citizenStatusFound,
       );
 
-      jest.spyOn(ValidationDto, 'validateDto').mockResolvedValueOnce([]);
-
       service['checkCitizenStatusError'] = jest
         .fn()
         .mockImplementationOnce(() => {
@@ -237,8 +230,6 @@ describe('RnippService', () => {
       rnippResponseParserServiceMock.parseRnippData.mockResolvedValueOnce(
         citizenStatusFound,
       );
-
-      jest.spyOn(ValidationDto, 'validateDto').mockResolvedValueOnce([]);
 
       service['checkCitizenStatusError'] = jest.fn();
       service[

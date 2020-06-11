@@ -32,14 +32,14 @@ export class OidcClientController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async redirectToIdp(@Res() res, @Body() body: RedirectToIdp) {
     // acr_values is an oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/camelcase
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { uid, scope, providerUid, acr_values } = body;
 
     const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
       scope,
       providerUid,
       // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/camelcase
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
     );
 
@@ -62,6 +62,8 @@ export class OidcClientController {
 
     // OIDC: call idp's /token endpoint
     const tokenSet = await this.oidcClient.getTokenSet(req, providerUid);
+    // openid defined property names
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { access_token: accessToken } = tokenSet;
     this.eventBus.publish(new OidcClientTokenEvent(uid, req.ip));
 

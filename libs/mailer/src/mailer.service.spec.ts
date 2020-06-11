@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { MailjetTransport, StdoutTransport } from './transports';
 import { MailerService } from './mailer.service';
-import * as Mailers from './transports';
+
+jest.mock('./transports');
 
 describe('MailerService', () => {
   let service: MailerService;
@@ -35,19 +37,16 @@ describe('MailerService', () => {
     error: jest.fn(),
   };
 
+  const MailjetTransportMock = (MailjetTransport as unknown) as jest.Mock;
+  const StdoutTransportMock = (StdoutTransport as unknown) as jest.Mock;
+
   const mailjetMailerInstanceMock = {
     send: jest.fn(),
   };
-  const MailjetTransportMock = jest
-    .fn()
-    .mockReturnValueOnce(mailjetMailerInstanceMock);
 
   const stdoutMailerInstanceMock = {
     send: jest.fn(),
   };
-  const StdoutTransportMock = jest
-    .fn()
-    .mockReturnValueOnce(stdoutMailerInstanceMock);
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -84,12 +83,8 @@ describe('MailerService', () => {
       // clear the mocks from the onModuleInit call of the service instanciation
       jest.clearAllMocks();
 
-      jest
-        .spyOn(Mailers, 'MailjetTransport')
-        .mockImplementationOnce(MailjetTransportMock);
-      jest
-        .spyOn(Mailers, 'StdoutTransport')
-        .mockImplementationOnce(StdoutTransportMock);
+      MailjetTransportMock.mockReturnValueOnce(mailjetMailerInstanceMock);
+      StdoutTransportMock.mockReturnValueOnce(stdoutMailerInstanceMock);
     });
 
     it('should get the mailer mode from the config', () => {
@@ -115,8 +110,8 @@ describe('MailerService', () => {
       service.onModuleInit();
 
       // expect
-      expect(Mailers.StdoutTransport).toBeCalledTimes(1);
-      expect(Mailers.StdoutTransport).toBeCalledWith(loggerServiceMock);
+      expect(StdoutTransportMock).toBeCalledTimes(1);
+      expect(StdoutTransportMock).toBeCalledWith(loggerServiceMock);
     });
 
     it('should instanciate the MailjetTransport with the logger instance if mailer is "mailjet"', () => {
@@ -128,8 +123,8 @@ describe('MailerService', () => {
       service.onModuleInit();
 
       // expect
-      expect(Mailers.MailjetTransport).toBeCalledTimes(1);
-      expect(Mailers.MailjetTransport).toBeCalledWith(configServiceMock);
+      expect(MailjetTransportMock).toBeCalledTimes(1);
+      expect(MailjetTransportMock).toBeCalledWith(configServiceMock);
     });
 
     it('should throw an error if mailer is unknown', () => {
@@ -143,8 +138,8 @@ describe('MailerService', () => {
         service.onModuleInit();
       } catch (e) {
         // expect
-        expect(Mailers.MailjetTransport).toBeCalledTimes(0);
-        expect(Mailers.StdoutTransport).toBeCalledTimes(0);
+        expect(MailjetTransportMock).toBeCalledTimes(0);
+        expect(StdoutTransportMock).toBeCalledTimes(0);
 
         expect(e).toBeInstanceOf(Error);
         expect(e.message).toStrictEqual(error.message);
