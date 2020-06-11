@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsString, IsNumber, IsPositive } from 'class-validator';
 
 export class HsmConfig {
   @IsString()
@@ -6,6 +6,10 @@ export class HsmConfig {
 
   @IsString()
   readonly pin: string;
+
+  @IsNumber()
+  @IsPositive()
+  readonly virtualHsmSlot: number;
 
   @IsString()
   readonly sigKeyCkaLabel: string;
