@@ -4,3 +4,4 @@ export * from './session-not-found.exception';
 export * from './session-no-interaction-cookie.exception';
 export * from './session-no-session-cookie.exception';
 export * from './session-bad-session-id.exception';
+export * from './session-bad-data.exception';

@@ -7,6 +7,7 @@ import {
   SessionBadFormatException,
   SessionNotFoundException,
   SessionBadSessionIdException,
+  SessionBadDataException,
 } from './exceptions';
 import { SessionService } from './session.service';
 import { ISession } from './interfaces';
@@ -250,10 +251,33 @@ describe('SessionService', () => {
     });
   });
 
+  describe('validate', () => {
+    it('should throw if data is invalid', async () => {
+      // Given
+      const dataMock = ({ foo: 'bar' } as unknown) as ISession;
+      // Then
+      expect(service['validate'](dataMock)).rejects.toThrow(
+        SessionBadDataException,
+      );
+    });
+    it('should not throw if data is valid', async () => {
+      // Given
+      const dataMock: ISession = {
+        spId: 'my sp id',
+        spAcr: 'eidas3',
+        spName: 'my sp name',
+      };
+      // Then
+      expect(service['validate'](dataMock)).resolves.not.toThrow();
+    });
+  });
+
   describe('get', () => {
     const key = 'key';
 
     it('should call redis get with key', async () => {
+      // Given
+      service['validate'] = jest.fn();
       // When
       await service['get'](key);
       // Then
@@ -264,6 +288,7 @@ describe('SessionService', () => {
     it('should call unserialize with dataMock from redis get', async () => {
       // Given
       service['unserialize'] = jest.fn();
+      service['validate'] = jest.fn();
       // When
       await service['get'](key);
       // Then
@@ -273,6 +298,7 @@ describe('SessionService', () => {
     });
     it('should return value of unserialize', async () => {
       // Given
+      service['validate'] = jest.fn();
       const returnOfUnserialize = Symbol('returnOfUnserialize');
       service['unserialize'] = jest.fn().mockReturnValue(returnOfUnserialize);
       // When
@@ -280,13 +306,34 @@ describe('SessionService', () => {
       // Then
       expect(result).toBe(returnOfUnserialize);
     });
-    it('should throw if identity is not found in redis', async () => {
+    it('should throw if session is not found in redis', async () => {
       // Given
+      service['validate'] = jest.fn();
       redisMock.get.mockResolvedValue(false);
       // Then
-      await expect(service['get'](key)).rejects.toThrow(
-        SessionNotFoundException,
-      );
+      expect(service['get'](key)).rejects.toThrow(SessionNotFoundException);
+    });
+    it('should call validate with data', async () => {
+      // Given
+      const unserializedDataMock = {};
+      service['unserialize'] = jest
+        .fn()
+        .mockReturnValueOnce(unserializedDataMock);
+      service['validate'] = jest.fn();
+      // When
+      await service.get(key);
+      // Then
+      expect(service['validate']).toHaveBeenCalledTimes(1);
+      expect(service['validate']).toHaveBeenCalledWith(unserializedDataMock);
+    });
+    it('should throw if data is invalid', async () => {
+      // Given
+      const unserializedDataMock = { not: 'bar' };
+      service['unserialize'] = jest
+        .fn()
+        .mockReturnValueOnce(unserializedDataMock);
+      // Then
+      expect(service.get(key)).rejects.toThrow();
     });
   });
   describe('delete', () => {
