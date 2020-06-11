@@ -45,7 +45,7 @@ export class CoreFcpController {
   @Get('/interaction/:uid/verify')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getVerify(@Req() req, @Res() res, @Param() _params: Interaction) {
-    const { interactionId } = req;
+    const { interactionId } = req.fc;
     await this.coreFcp.verify(req);
 
     res.redirect(`/interaction/${interactionId}/consent`);
@@ -55,7 +55,7 @@ export class CoreFcpController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('consent')
   async getConsent(@Req() req, @Param() _params: Interaction) {
-    const { interactionId } = req;
+    const { interactionId } = req.fc;
     const { spIdentity: identity } = await this.session.get(interactionId);
 
     return { interactionId, identity };
@@ -64,7 +64,7 @@ export class CoreFcpController {
   @Get('/interaction/:uid/login')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getLogin(@Req() req, @Res() res, @Param() _params: Interaction) {
-    const { interactionId } = req;
+    const { interactionId } = req.fc;
     const { spAcr } = await this.session.get(interactionId);
 
     this.logger.debug('Sending authentication email to the end-user');

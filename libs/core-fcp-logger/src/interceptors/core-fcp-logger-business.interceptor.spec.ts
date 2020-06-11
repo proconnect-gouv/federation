@@ -21,7 +21,7 @@ describe('CoreFcpLoggerBusinessInterceptor', () => {
 
   const reqMock = {
     ip: '123.123.123.123',
-    interactionId: '42',
+    fc: { interactionId: '42' },
   };
 
   const eventsMock = ({
@@ -79,7 +79,7 @@ describe('CoreFcpLoggerBusinessInterceptor', () => {
       expect(coreFcpLoggerMock.logEvent).toHaveBeenCalledWith(
         eventMock,
         reqMock.ip,
-        reqMock.interactionId,
+        reqMock.fc.interactionId,
       );
     });
     it('should not call LoggerService.logEvent if event not found', () => {
