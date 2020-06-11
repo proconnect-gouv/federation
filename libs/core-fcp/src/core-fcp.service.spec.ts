@@ -308,7 +308,8 @@ describe('CoreFcpService', () => {
     });
 
     /**
-     * @TODO Test when implemented
+     * @TODO #134 Test when implemented
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/134
      *
      * // RNIPP resilience
      * it('Should pass if rnipp is down and account is known', async () => {});

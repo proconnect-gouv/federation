@@ -5,6 +5,7 @@ stages:
 variables:
   NODE_VERSION: 'v12.16.1'
   INFRA_BRANCH: 'master'
+  E2E: '0'
 
 global-ut:
   image: node:12.16.1
@@ -33,6 +34,7 @@ global-e2e:
     policy: pull-push
 
   before_script:
+    - if [ "$E2E" = "0" ]; then echo "E2E Skipped"; exit 0; fi;
     - rm -rf $FC_ROOT/infra $FC_ROOT/rnipp-mock $FC_ROOT/fi-mock  $FC_ROOT/user-dashboard
     - git clone -b $INFRA_BRANCH https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/infra.git $FC_ROOT/infra
     - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/rnipp-mock.git $FC_ROOT/rnipp-mock

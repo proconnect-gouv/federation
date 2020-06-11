@@ -79,7 +79,6 @@ export class ServiceProviderService implements IServiceProviderService {
   }
 
   /**
-   * @TODO give restricted output data (interface IServiceProvider)
    * @param refreshCache  Should we refreshCache the cache made by the service?
    */
   async getList(refreshCache = false): Promise<ServiceProviderMetadata[]> {
