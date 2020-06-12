@@ -9,6 +9,7 @@ import {
 import { CryptographyService } from '@fc/cryptography';
 import { IServiceProvider } from './interfaces';
 import { ServiceProviderDTO } from './dto';
+import { LoggerService } from '@fc/logger';
 
 @Injectable()
 export class ServiceProviderService implements IServiceProviderService {
@@ -18,6 +19,7 @@ export class ServiceProviderService implements IServiceProviderService {
     @InjectModel('ServiceProvider')
     private readonly serviceProviderModel,
     private readonly cryptography: CryptographyService,
+    private readonly logger: LoggerService,
   ) {}
 
   private async findAllServiceProvider(): Promise<IServiceProvider[]> {
@@ -72,7 +74,14 @@ export class ServiceProviderService implements IServiceProviderService {
         ServiceProviderDTO,
         validationOptions,
       );
-      return errors.length < 1;
+
+      if (errors.length > 0) {
+        this.logger.warn(
+          `"${_doc.name}" was excluded from the result at DTO validation`,
+        );
+      }
+
+      return errors.length === 0;
     });
 
     return result.map(({ _doc }) => _doc);
@@ -84,9 +93,8 @@ export class ServiceProviderService implements IServiceProviderService {
   async getList(refreshCache = false): Promise<ServiceProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
       const list: IServiceProvider[] = await this.findAllServiceProvider();
-      this.listCache = list.map(serviceProvider => {
-        return this.legacyToOpenIdPropertyName(serviceProvider);
-      });
+
+      this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
     }
 
     return this.listCache;
@@ -115,11 +123,7 @@ export class ServiceProviderService implements IServiceProviderService {
     );
     const scope = source.scopes.join(' ');
 
-    Reflect.deleteProperty(source, 'key');
-    Reflect.deleteProperty(source, 'client_secret');
-    Reflect.deleteProperty(source, 'scopes');
-
-    return {
+    const result = {
       ...source,
       // openid defined property names
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -128,6 +132,11 @@ export class ServiceProviderService implements IServiceProviderService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret,
       scope,
-    } as ServiceProviderMetadata;
+    };
+
+    delete result.key;
+    delete result.scopes;
+
+    return result as ServiceProviderMetadata;
   }
 }
