@@ -4,22 +4,65 @@ import { getModelToken } from '@nestjs/mongoose';
 
 import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderService } from './identity-provider.service';
+import { LoggerService } from '@fc/logger';
 
 describe('IdentityProviderService', () => {
   let service: IdentityProviderService;
-  const mockCryptography = {
+
+  const validIdentityMock = {
+    _doc: {
+      uid: 'uid',
+      name: 'provider1',
+      active: true,
+      display: false,
+      clientID: 'clientID',
+      client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+      discoveryUrl: 'https://corev2.docker.dev-franceconnect.fr/well_known_url',
+      id_token_signed_response_alg: 'HS256',
+      post_logout_redirect_uris: [
+        'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
+      ],
+      redirect_uris: [
+        'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
+      ],
+      response_types: ['code'],
+      token_endpoint_auth_method: 'client_secret_post',
+      revocation_endpoint_auth_method: 'client_secret_post',
+      id_token_encrypted_response_alg: 'RSA-OAEP',
+      id_token_encrypted_response_enc: 'A256GCM',
+      userinfo_encrypted_response_alg: 'RSA-OAEP',
+      userinfo_encrypted_response_enc: 'A256GCM',
+      userinfo_signed_response_alg: 'HS256',
+    },
+  };
+
+  const invalidIdentityMock = {
+    _doc: {
+      ...validIdentityMock._doc,
+      active: 'NOT_A_BOOLEAN',
+    },
+  };
+
+  const identityProviderListMock = [validIdentityMock];
+
+  const loggerMock = {
+    setContext: jest.fn(),
+    warn: jest.fn(),
+  };
+
+  const cryptographyMock = {
     decryptClientSecret: jest.fn(),
   };
 
-  const mockRepository = {
+  const repositoryMock = {
     find: jest.fn(),
+    exec: jest.fn(),
   };
-
-  const mockExec = jest.fn();
 
   const identityProviderModel = getModelToken('IdentityProvider');
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     jest.resetAllMocks();
     jest.restoreAllMocks();
 
@@ -29,45 +72,21 @@ describe('IdentityProviderService', () => {
         IdentityProviderService,
         {
           provide: identityProviderModel,
-          useValue: mockRepository,
+          useValue: repositoryMock,
         },
+        LoggerService,
       ],
     })
       .overrideProvider(CryptographyService)
-      .useValue(mockCryptography)
+      .useValue(cryptographyMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerMock)
       .compile();
 
     service = module.get<IdentityProviderService>(IdentityProviderService);
 
-    mockExec.mockReturnValueOnce([
-      {
-        _doc: {
-          uid: 'uid',
-          name: 'provider1',
-          active: true,
-          display: false,
-          clientID: 'clientID',
-          client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-          discoveryUrl:
-            'https://corev2.docker.dev-franceconnect.fr/well_known_url',
-          id_token_signed_response_alg: 'HS256',
-          post_logout_redirect_uris: [
-            'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
-          ],
-          redirect_uris: [
-            'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
-          ],
-          response_types: ['code'],
-          token_endpoint_auth_method: 'client_secret_post',
-          id_token_encrypted_response_alg: 'RSA-OAEP',
-          id_token_encrypted_response_enc: 'A256GCM',
-          userinfo_encrypted_response_alg: 'RSA-OAEP',
-          userinfo_encrypted_response_enc: 'A256GCM',
-          userinfo_signed_response_alg: 'HS256',
-        },
-      },
-    ]);
-    mockRepository.find.mockReturnValueOnce({ exec: mockExec });
+    repositoryMock.exec.mockResolvedValueOnce(identityProviderListMock);
+    repositoryMock.find.mockReturnValueOnce(repositoryMock);
   });
 
   it('should be defined', () => {
@@ -77,52 +96,23 @@ describe('IdentityProviderService', () => {
   describe('legacyToOpenIdPropertyName', () => {
     it('should return identity provider with change legacy property name by openid property name', () => {
       // setup
-      const identityProviderMock = {
-        uid: 'uid',
-        name: 'idp name',
-        active: true,
-        display: false,
-        clientID: '123',
-        client_secret: 'secret hash',
-        redirect_uris: ['redirect_uris'],
-        post_logout_redirect_uris: ['post_logout_redirect_uris'],
-        id_token_signed_response_alg: 'id_token_signed_response_alg',
-        id_token_encrypted_response_alg: 'id_token_encrypted_response_alg',
-        id_token_encrypted_response_enc: 'id_token_encrypted_response_enc',
-        userinfo_encrypted_response_alg: 'userinfo_encrypted_response_alg',
-        userinfo_encrypted_response_enc: 'userinfo_encrypted_response_enc',
-        userinfo_signed_response_alg: 'userinfo_signed_response_alg',
-        response_types: ['response types'],
-        token_endpoint_auth_method: 'token_endpoint_auth_method',
-        discoveryUrl: 'https://sp-site.fr/discovery-url',
+      const expected = {
+        ...validIdentityMock._doc,
+        client_id: 'clientID',
+        client_secret: 'client_secret',
       };
+      delete expected.clientID;
 
       // action
-      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
+      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+        expected.client_secret,
+      );
       const result = service['legacyToOpenIdPropertyName'](
-        identityProviderMock,
+        validIdentityMock._doc,
       );
 
       // expect
-      expect(result).toStrictEqual({
-        uid: 'uid',
-        name: 'idp name',
-        active: true,
-        display: false,
-        client_id: '123',
-        client_secret: 'client_secret',
-        redirect_uris: ['redirect_uris'],
-        post_logout_redirect_uris: ['post_logout_redirect_uris'],
-        id_token_signed_response_alg: 'id_token_signed_response_alg',
-        id_token_encrypted_response_alg: 'id_token_encrypted_response_alg',
-        id_token_encrypted_response_enc: 'id_token_encrypted_response_enc',
-        userinfo_encrypted_response_alg: 'userinfo_encrypted_response_alg',
-        userinfo_encrypted_response_enc: 'userinfo_encrypted_response_enc',
-        userinfo_signed_response_alg: 'userinfo_signed_response_alg',
-        response_types: ['response types'],
-        token_endpoint_auth_method: 'token_endpoint_auth_method',
-        discoveryUrl: 'https://sp-site.fr/discovery-url',
-      });
+      expect(result).toEqual(expected);
     });
   });
 
@@ -142,7 +132,7 @@ describe('IdentityProviderService', () => {
       await service['findAllIdentityProvider']();
 
       // expect
-      expect(mockRepository.find).toHaveBeenCalledTimes(1);
+      expect(repositoryMock.find).toHaveBeenCalledTimes(1);
     });
 
     it('should return result of type list', async () => {
@@ -150,78 +140,81 @@ describe('IdentityProviderService', () => {
       const result = await service['findAllIdentityProvider']();
 
       // expect
-      expect(result).toStrictEqual([
-        {
-          uid: 'uid',
-          name: 'provider1',
-          active: true,
-          display: false,
-          clientID: 'clientID',
-          client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-          discoveryUrl:
-            'https://corev2.docker.dev-franceconnect.fr/well_known_url',
-          id_token_signed_response_alg: 'HS256',
-          post_logout_redirect_uris: [
-            'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
-          ],
-          redirect_uris: [
-            'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
-          ],
-          response_types: ['code'],
-          token_endpoint_auth_method: 'client_secret_post',
-          id_token_encrypted_response_alg: 'RSA-OAEP',
-          id_token_encrypted_response_enc: 'A256GCM',
-          userinfo_encrypted_response_alg: 'RSA-OAEP',
-          userinfo_encrypted_response_enc: 'A256GCM',
-          userinfo_signed_response_alg: 'HS256',
-        },
-      ]);
+      expect(result).toEqual(identityProviderListMock.map(({ _doc }) => _doc));
+    });
+
+    it('should log a warning if an entry is exluded by the DTO', async () => {
+      // setup
+      const invalidIdentityProviderListMock = [
+        validIdentityMock,
+        invalidIdentityMock,
+      ];
+
+      repositoryMock.exec = jest
+        .fn()
+        .mockResolvedValueOnce(invalidIdentityProviderListMock);
+
+      // action
+      await service['findAllIdentityProvider']();
+
+      // expect
+      expect(loggerMock.warn).toHaveBeenCalledTimes(1);
+    });
+
+    it('should filter out any entry exluded by the DTO', async () => {
+      // setup
+      const invalidIdentityProviderListMock = [
+        validIdentityMock,
+        invalidIdentityMock,
+      ];
+
+      repositoryMock.exec = jest
+        .fn()
+        .mockResolvedValueOnce(invalidIdentityProviderListMock);
+
+      // action
+      const result = await service['findAllIdentityProvider']();
+
+      // expect
+      expect(result).toEqual(identityProviderListMock.map(({ _doc }) => _doc));
     });
   });
 
   describe('getList', () => {
+    beforeEach(() => {
+      service['findAllIdentityProvider'] = jest
+        .fn()
+        .mockResolvedValueOnce(
+          identityProviderListMock.map(({ _doc }) => _doc),
+        );
+    });
     it('should resolve', async () => {
       // action
       const result = service.getList();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
-
-      await result;
     });
 
-    it('should return result of type list', async () => {
+    it('should return a list of valids identity providers', async () => {
+      // setup
+      const expected = [
+        {
+          ...validIdentityMock._doc,
+          client_id: 'clientID',
+          client_secret: 'client_secret',
+        },
+      ];
+      delete expected[0].clientID;
+
       // action
-      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
+      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+        expected[0].client_secret,
+      );
       const result = await service.getList();
 
       // expect
-      expect(result).toStrictEqual([
-        {
-          uid: 'uid',
-          name: 'provider1',
-          active: true,
-          display: false,
-          client_id: 'clientID',
-          client_secret: 'client_secret',
-          discoveryUrl:
-            'https://corev2.docker.dev-franceconnect.fr/well_known_url',
-          id_token_signed_response_alg: 'HS256',
-          post_logout_redirect_uris: [
-            'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
-          ],
-          redirect_uris: [
-            'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
-          ],
-          response_types: ['code'],
-          token_endpoint_auth_method: 'client_secret_post',
-          id_token_encrypted_response_alg: 'RSA-OAEP',
-          id_token_encrypted_response_enc: 'A256GCM',
-          userinfo_encrypted_response_alg: 'RSA-OAEP',
-          userinfo_encrypted_response_enc: 'A256GCM',
-          userinfo_signed_response_alg: 'HS256',
-        },
-      ]);
+      expect(result).toEqual(expected);
     });
 
     it('should call findAll method if refreshCache is true', async () => {
@@ -233,7 +226,7 @@ describe('IdentityProviderService', () => {
         .mockResolvedValue(listMock);
       service['legacyToOpenIdPropertyName'] = jest
         .fn()
-        .mockImplementation(input => input);
+        .mockImplementation((input) => input);
       // When
       const result = await service.getList(refresh);
       // Then
