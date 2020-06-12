@@ -9,7 +9,7 @@ import { LoggerService } from '@fc/logger';
 describe('IdentityProviderService', () => {
   let service: IdentityProviderService;
 
-  const validIdentityMock = {
+  const validIdentityProviderMock = {
     _doc: {
       uid: 'uid',
       name: 'provider1',
@@ -36,14 +36,14 @@ describe('IdentityProviderService', () => {
     },
   };
 
-  const invalidIdentityMock = {
+  const invalidIdentityProviderMock = {
     _doc: {
-      ...validIdentityMock._doc,
+      ...validIdentityProviderMock._doc,
       active: 'NOT_A_BOOLEAN',
     },
   };
 
-  const identityProviderListMock = [validIdentityMock];
+  const identityProviderListMock = [validIdentityProviderMock];
 
   const loggerMock = {
     setContext: jest.fn(),
@@ -97,7 +97,7 @@ describe('IdentityProviderService', () => {
     it('should return identity provider with change legacy property name by openid property name', () => {
       // setup
       const expected = {
-        ...validIdentityMock._doc,
+        ...validIdentityProviderMock._doc,
         client_id: 'clientID',
         client_secret: 'client_secret',
       };
@@ -108,7 +108,7 @@ describe('IdentityProviderService', () => {
         expected.client_secret,
       );
       const result = service['legacyToOpenIdPropertyName'](
-        validIdentityMock._doc,
+        validIdentityProviderMock._doc,
       );
 
       // expect
@@ -123,8 +123,6 @@ describe('IdentityProviderService', () => {
 
       // expect
       expect(result).toBeInstanceOf(Promise);
-
-      await result;
     });
 
     it('should have called find once', async () => {
@@ -146,8 +144,8 @@ describe('IdentityProviderService', () => {
     it('should log a warning if an entry is exluded by the DTO', async () => {
       // setup
       const invalidIdentityProviderListMock = [
-        validIdentityMock,
-        invalidIdentityMock,
+        validIdentityProviderMock,
+        invalidIdentityProviderMock,
       ];
 
       repositoryMock.exec = jest
@@ -164,8 +162,8 @@ describe('IdentityProviderService', () => {
     it('should filter out any entry exluded by the DTO', async () => {
       // setup
       const invalidIdentityProviderListMock = [
-        validIdentityMock,
-        invalidIdentityMock,
+        validIdentityProviderMock,
+        invalidIdentityProviderMock,
       ];
 
       repositoryMock.exec = jest
@@ -200,7 +198,7 @@ describe('IdentityProviderService', () => {
       // setup
       const expected = [
         {
-          ...validIdentityMock._doc,
+          ...validIdentityProviderMock._doc,
           client_id: 'clientID',
           client_secret: 'client_secret',
         },
