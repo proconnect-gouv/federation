@@ -13,7 +13,7 @@ import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { SessionService } from '@fc/session';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
-import { IServiceProviderService } from './interfaces';
+import { IServiceProviderService, OidcCtx } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
 import {
   OidcProviderEvents,
@@ -116,12 +116,25 @@ export class OidcProviderService {
     );
   }
 
+  /**
+   * Extract oidc parameters from initial request
+   */
+  private getAuthorizeParameters(ctx: OidcCtx) {
+    if (ctx.method === 'POST') {
+      /** @TODO enhance interface to allow the use of `body` property */
+      return ctx.req['body'];
+    }
+    return ctx.query;
+  }
+
   private async authorizationMiddleware(ctx) {
     const interactionId = this.getInteractionIdFromCtx(ctx);
     const { ip } = ctx.req;
     // oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { client_id: spId, acr_values: spAcr } = ctx.req.query;
+    const { client_id: spId, acr_values: spAcr } = this.getAuthorizeParameters(
+      ctx,
+    );
     const { name: spName } = await this.serviceProviderService.getById(spId);
 
     const sessionProperties = {

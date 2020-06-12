@@ -26,6 +26,7 @@ import {
   OidcProviderUserinfoEvent,
 } from './events';
 import { RedisAdapter } from './adapters';
+import { OidcCtx } from './interfaces';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -94,7 +95,7 @@ describe('OidcProviderService', () => {
 
   const providerMock = {
     middlewares: [],
-    use: middleware => {
+    use: (middleware) => {
       providerMock.middlewares.push(middleware);
       useSpy();
     },
@@ -158,7 +159,7 @@ describe('OidcProviderService', () => {
     service = module.get<OidcProviderService>(OidcProviderService);
     jest.resetAllMocks();
 
-    configServiceMock.get.mockImplementation(module => {
+    configServiceMock.get.mockImplementation((module) => {
       switch (module) {
         case 'OidcProvider':
           return configOidcProviderMock;
@@ -475,16 +476,44 @@ describe('OidcProviderService', () => {
     });
   });
 
+  describe('getAuthorizeParameters', () => {
+    it('should return the ctx.query when request method is POST', () => {
+      // Given
+      const paramsMock = Symbol('paramsMockValue');
+      const ctxMock = ({
+        method: 'POST',
+        req: { body: paramsMock },
+      } as unknown) as OidcCtx;
+      // When
+      const result = service['getAuthorizeParameters'](ctxMock);
+      // Then
+      expect(result).toBe(paramsMock);
+    });
+
+    it('should return the ctx.query when request method is not POST', () => {
+      // Given
+      const paramsMock = Symbol('paramsMockValue');
+      const ctxMock = {
+        method: 'GET',
+        query: paramsMock,
+      } as OidcCtx;
+      // When
+      const result = service['getAuthorizeParameters'](ctxMock);
+      // Then
+      expect(result).toBe(paramsMock);
+    });
+  });
+
   describe('authorizationMiddleware', () => {
     it('should call session.init', async () => {
       // Given
       const ctxMock = {
         req: {
           ip: '123.123.123.123',
-          // oidc
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          query: { client_id: 'foo', acr_values: 'eidas3' },
         },
+        // oidc
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        query: { client_id: 'foo', acr_values: 'eidas3' },
         res: {},
       };
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
@@ -503,10 +532,10 @@ describe('OidcProviderService', () => {
       const ctxMock = {
         req: {
           ip: '123.123.123.123',
-          // oidc
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          query: { client_id: 'foo', acr_values: 'eidas3' },
         },
+        // oidc
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        query: { client_id: 'foo', acr_values: 'eidas3' },
         res: {},
       };
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');

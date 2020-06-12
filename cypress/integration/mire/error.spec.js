@@ -15,12 +15,8 @@ function basicErrorScenario(params) {
 
   // FI: Authenticate
   cy.url().should('include', `${Cypress.env('FI_ROOT_URL')}/interaction`);
-  cy.get('input[name="login"]')
-    .clear()
-    .type(errorCode);
-  cy.get('input[name="password"]')
-    .clear()
-    .type(password);
+  cy.get('input[name="login"]').clear().type(errorCode);
+  cy.get('input[name="password"]').clear().type(password);
 
   if (eidasLevel) {
     cy.get('select[name="acr"]').select(eidasLevel);
@@ -170,7 +166,7 @@ describe('Error scenarios', () => {
       cy.visit(authorizeUrl);
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
 
-      cy.url().then(interactionUrl => {
+      cy.url().then((interactionUrl) => {
         cy.clearCookie('fc_session_id');
         cy.visit(interactionUrl, { failOnStatusCode: false });
         cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
@@ -183,7 +179,7 @@ describe('Error scenarios', () => {
       cy.visit(authorizeUrl);
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
 
-      cy.url().then(interactionUrl => {
+      cy.url().then((interactionUrl) => {
         cy.clearCookie('fc_interaction_id');
         cy.visit(interactionUrl, { failOnStatusCode: false });
         cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
@@ -196,7 +192,7 @@ describe('Error scenarios', () => {
       cy.visit(authorizeUrl);
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
 
-      cy.url().then(interactionUrl => {
+      cy.url().then((interactionUrl) => {
         /**
          * Forged cookie
          * We override cookie while keeping signature...
@@ -205,7 +201,7 @@ describe('Error scenarios', () => {
          * otherwise it is not reconnized as a signed cookie
          * and we get an error Y150004 which is not what we want to test here.
          */
-        cy.getCookie('fc_interaction_id').then(cookie => {
+        cy.getCookie('fc_interaction_id').then((cookie) => {
           cy.setCookie(
             'fc_interaction_id',
             // Replace the begining of the cookie by arbitratry value
@@ -229,7 +225,7 @@ describe('Error scenarios', () => {
       cy.visit(authorizeUrl);
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
 
-      cy.url().then(interactionUrl => {
+      cy.url().then((interactionUrl) => {
         /**
          * Forged cookie
          * We override cookie while keeping signature...
@@ -238,7 +234,7 @@ describe('Error scenarios', () => {
          * otherwise it is not reconnized as a signed cookie
          * and we get an error Y150004 which is not what we want to test here.
          */
-        cy.getCookie('fc_session_id').then(cookie => {
+        cy.getCookie('fc_session_id').then((cookie) => {
           cy.setCookie(
             'fc_session_id',
             // Replace the begining of the cookie by arbitratry value
