@@ -4,23 +4,60 @@ import { getModelToken } from '@nestjs/mongoose';
 
 import { ServiceProviderService } from './service-provider.service';
 import { CryptographyService } from '@fc/cryptography';
+import { CustomClientMetadata } from '@fc/oidc-provider';
+import { LoggerService } from '@fc/logger';
 
 describe('ServiceProviderService', () => {
   let service: ServiceProviderService;
-  let rawServiceProviderFromDBMock;
-  const mockCryptography = {
+
+  const validServiceProviderMock = {
+    _doc: {
+      key: '123',
+      active: true,
+      name: 'foo',
+      client_secret: "This is an encrypted string, don't ask !",
+      scopes: ['openid', 'profile'],
+      redirect_uris: ['https://sp-site.fr/redirect_uris'],
+      post_logout_redirect_uris: [
+        'https://sp-site.fr/post_logout_redirect_uris',
+      ],
+      id_token_signed_response_alg: 'ES256',
+      id_token_encrypted_response_alg: 'RS256',
+      id_token_encrypted_response_enc: 'AES256GCM',
+      userinfo_encrypted_response_alg: 'RS256',
+      userinfo_encrypted_response_enc: 'AES256GCM',
+      userinfo_signed_response_alg: 'ES256',
+      jwks_uri: 'https://sp-site.fr/jwks-uri',
+    },
+  };
+
+  const invalidServiceProviderMock = {
+    _doc: {
+      ...validServiceProviderMock._doc,
+      active: 'NOT_A_BOOLEAN',
+    },
+  };
+
+  const serviceProviderListMock = [validServiceProviderMock];
+
+  const loggerMock = {
+    setContext: jest.fn(),
+    warn: jest.fn(),
+  };
+
+  const cryptographyMock = {
     decryptClientSecret: jest.fn(),
   };
 
-  const mockRepository = {
+  const repositoryMock = {
     find: jest.fn(),
+    exec: jest.fn(),
   };
-
-  const mockExec = jest.fn();
 
   const serviceProviderModel = getModelToken('ServiceProvider');
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     jest.resetAllMocks();
     jest.restoreAllMocks();
 
@@ -30,38 +67,21 @@ describe('ServiceProviderService', () => {
         ServiceProviderService,
         {
           provide: serviceProviderModel,
-          useValue: mockRepository,
+          useValue: repositoryMock,
         },
+        LoggerService,
       ],
     })
       .overrideProvider(CryptographyService)
-      .useValue(mockCryptography)
+      .useValue(cryptographyMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerMock)
       .compile();
 
     service = module.get<ServiceProviderService>(ServiceProviderService);
 
-    rawServiceProviderFromDBMock = [
-      {
-        _doc: {
-          key: '123',
-          active: true,
-          name: 'foo',
-          client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-          scopes: ['openid', 'profile'],
-          redirect_uris: ['https://sp-site.fr/redirect_uris'],
-          post_logout_redirect_uris: [
-            'https://sp-site.fr/post_logout_redirect_uris',
-          ],
-          id_token_signed_response_alg: 'ES256',
-          id_token_encrypted_response_alg: 'RSA-OAEP',
-          id_token_encrypted_response_enc: 'A256GCM',
-          userinfo_encrypted_response_alg: 'RSA-OAEP',
-          userinfo_encrypted_response_enc: 'A256GCM',
-          userinfo_signed_response_alg: 'HS256',
-          jwks_uri: 'https://sp-site.fr/jwks-uri',
-        },
-      },
-    ];
+    repositoryMock.find.mockReturnValueOnce(repositoryMock);
+    repositoryMock.exec.mockResolvedValueOnce(serviceProviderListMock);
   });
 
   it('should be defined', () => {
@@ -71,240 +91,169 @@ describe('ServiceProviderService', () => {
   describe('legacyToOpenIdPropertyName', () => {
     it('should return service provider with change legacy property name by openid property name', () => {
       // setup
-      const serviceProviderMock = {
-        key: '123',
-        active: true,
-        name: 'foo',
+      const expected = {
+        ...validServiceProviderMock._doc,
+        client_id: validServiceProviderMock._doc.key,
         client_secret: 'client_secret',
-        scopes: ['openid', 'profile'],
-        redirect_uris: ['https://sp-site.fr/redirect_uris'],
-        post_logout_redirect_uris: [
-          'https://sp-site.fr/post_logout_redirect_uris',
-        ],
-        id_token_signed_response_alg: 'id_token_signed_response_alg',
-        id_token_encrypted_response_alg: 'id_token_encrypted_response_alg',
-        id_token_encrypted_response_enc: 'id_token_encrypted_response_enc',
-        userinfo_encrypted_response_alg: 'userinfo_encrypted_response_alg',
-        userinfo_encrypted_response_enc: 'userinfo_encrypted_response_enc',
-        userinfo_signed_response_alg: 'userinfo_signed_response_alg',
-        jwks_uri: 'https://sp-site.fr/jwks-uri',
+        scope: validServiceProviderMock._doc.scopes.join(' '),
       };
+      delete expected.key;
+      delete expected.scopes;
 
       // action
-      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
-      const result = service['legacyToOpenIdPropertyName'](serviceProviderMock);
+      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+        expected.client_secret,
+      );
+      const result = service['legacyToOpenIdPropertyName'](
+        validServiceProviderMock._doc,
+      );
 
       // expect
-      expect(result).toStrictEqual({
-        active: true,
-        client_id: '123',
-        name: 'foo',
-        client_secret: 'client_secret',
-        scope: 'openid profile',
-        redirect_uris: ['https://sp-site.fr/redirect_uris'],
-        post_logout_redirect_uris: [
-          'https://sp-site.fr/post_logout_redirect_uris',
-        ],
-        id_token_signed_response_alg: 'id_token_signed_response_alg',
-        id_token_encrypted_response_alg: 'id_token_encrypted_response_alg',
-        id_token_encrypted_response_enc: 'id_token_encrypted_response_enc',
-        userinfo_encrypted_response_alg: 'userinfo_encrypted_response_alg',
-        userinfo_encrypted_response_enc: 'userinfo_encrypted_response_enc',
-        userinfo_signed_response_alg: 'userinfo_signed_response_alg',
-        jwks_uri: 'https://sp-site.fr/jwks-uri',
-      });
+      expect(result).toStrictEqual(expected);
     });
   });
 
   describe('findAllServiceProvider', () => {
     it('should resolve', async () => {
-      //setup
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-
       // action
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({
-        exec: mockExec,
-      });
       const result = service['findAllServiceProvider']();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
-
-      await result;
     });
 
     it('should have called find once', async () => {
-      // setup
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-
       // action
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({
-        exec: mockExec,
-      });
       await service['findAllServiceProvider']();
 
       // expect
-      expect(mockRepository.find).toHaveBeenCalledTimes(1);
+      expect(repositoryMock.find).toHaveBeenCalledTimes(1);
     });
 
     it('should return result of type list', async () => {
+      // action
+      const result = await service['findAllServiceProvider']();
+
+      // expect
+      expect(result).toStrictEqual(
+        serviceProviderListMock.map(({ _doc }) => _doc),
+      );
+    });
+
+    it('should log a warning if an entry is exluded by the DTO', async () => {
       // setup
-      const resultExpected = [
-        {
-          key: '123',
-          active: true,
-          name: 'foo',
-          client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-          scopes: ['openid', 'profile'],
-          redirect_uris: ['https://sp-site.fr/redirect_uris'],
-          post_logout_redirect_uris: [
-            'https://sp-site.fr/post_logout_redirect_uris',
-          ],
-          id_token_signed_response_alg: 'ES256',
-          id_token_encrypted_response_alg: 'RSA-OAEP',
-          id_token_encrypted_response_enc: 'A256GCM',
-          userinfo_encrypted_response_alg: 'RSA-OAEP',
-          userinfo_encrypted_response_enc: 'A256GCM',
-          userinfo_signed_response_alg: 'HS256',
-          jwks_uri: 'https://sp-site.fr/jwks-uri',
-        },
+      const invalidServiceProviderListMock = [
+        validServiceProviderMock,
+        invalidServiceProviderMock,
       ];
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
+
+      repositoryMock.exec = jest
+        .fn()
+        .mockResolvedValueOnce(invalidServiceProviderListMock);
+
+      // action
+      await service['findAllServiceProvider']();
+
+      // expect
+      expect(loggerMock.warn).toHaveBeenCalledTimes(1);
+    });
+
+    it('should filter out any entry exluded by the DTO', async () => {
+      // setup
+      const invalidServiceProviderListMock = [
+        validServiceProviderMock,
+        invalidServiceProviderMock,
+      ];
+
+      repositoryMock.exec = jest
+        .fn()
+        .mockResolvedValueOnce(invalidServiceProviderListMock);
 
       // action
       const result = await service['findAllServiceProvider']();
 
       // expect
-      expect(result).toStrictEqual(resultExpected);
+      expect(result).toEqual(serviceProviderListMock.map(({ _doc }) => _doc));
     });
   });
 
   describe('getList', () => {
+    beforeEach(() => {
+      service['findAllServiceProvider'] = jest
+        .fn()
+        .mockResolvedValueOnce(serviceProviderListMock.map(({ _doc }) => _doc));
+    });
+
     it('should resolve', async () => {
       // setup
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
 
       // action
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
       const result = service.getList(true);
 
       // expect
       expect(result).toBeInstanceOf(Promise);
-
-      await result;
     });
 
     it('should return service provider list refreshed (refresh forced)', async () => {
-      // setup
-      const resultExpected = [
+      const expected = [
         {
-          active: true,
+          ...validServiceProviderMock._doc,
           client_id: '123',
-          name: 'foo',
           client_secret: 'client_secret',
           scope: 'openid profile',
-          redirect_uris: ['https://sp-site.fr/redirect_uris'],
-          post_logout_redirect_uris: [
-            'https://sp-site.fr/post_logout_redirect_uris',
-          ],
-          id_token_signed_response_alg: 'ES256',
-          id_token_encrypted_response_alg: 'RSA-OAEP',
-          id_token_encrypted_response_enc: 'A256GCM',
-          userinfo_encrypted_response_alg: 'RSA-OAEP',
-          userinfo_encrypted_response_enc: 'A256GCM',
-          userinfo_signed_response_alg: 'HS256',
-          jwks_uri: 'https://sp-site.fr/jwks-uri',
         },
       ];
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
+      delete expected[0].key;
+      delete expected[0].scopes;
+      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+        expected[0].client_secret,
+      );
 
       // action
       const result = await service.getList(true);
 
       // expect
-      expect(mockRepository.find).toHaveBeenCalledTimes(1);
-      expect(result).toStrictEqual(resultExpected);
+      expect(service['findAllServiceProvider']).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual(expected);
     });
 
     it('should return service provider list if serviceProviderListCache is not defined', async () => {
       // setup
-      const RawServiceProviderNotActiveMock = [
-        { _doc: { ...rawServiceProviderFromDBMock[0]._doc, active: false } },
-      ];
-      const resultExpected = [
-        {
-          active: false,
-          client_id: '123',
-          name: 'foo',
-          client_secret: 'client_secret',
-          scope: 'openid profile',
-          redirect_uris: ['https://sp-site.fr/redirect_uris'],
-          post_logout_redirect_uris: [
-            'https://sp-site.fr/post_logout_redirect_uris',
-          ],
-          id_token_signed_response_alg: 'ES256',
-          id_token_encrypted_response_alg: 'RSA-OAEP',
-          id_token_encrypted_response_enc: 'A256GCM',
-          userinfo_encrypted_response_alg: 'RSA-OAEP',
-          userinfo_encrypted_response_enc: 'A256GCM',
-          userinfo_signed_response_alg: 'HS256',
-          jwks_uri: 'https://sp-site.fr/jwks-uri',
-        },
-      ];
-      mockExec.mockReturnValueOnce(RawServiceProviderNotActiveMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
+      service['listCache'] = ([
+        { client_id: 'foo' },
+        { client_id: 'bar' },
+      ] as unknown) as CustomClientMetadata[];
+      service['findAllServiceProvider'] = jest.fn();
 
       // action
       const result = await service.getList();
 
       // expect
-      expect(mockRepository.find).toHaveBeenCalledTimes(1);
-      expect(result).toStrictEqual(resultExpected);
+      expect(result).toBe(service['listCache']);
+      expect(service['findAllServiceProvider']).toHaveBeenCalledTimes(0);
     });
 
     it('should return service provider list with the cached version', async () => {
-      // setup
-      const resultExpected = [
+      const expected = [
         {
-          active: true,
+          ...validServiceProviderMock._doc,
           client_id: '123',
-          name: 'foo',
           client_secret: 'client_secret',
           scope: 'openid profile',
-          redirect_uris: ['https://sp-site.fr/redirect_uris'],
-          post_logout_redirect_uris: [
-            'https://sp-site.fr/post_logout_redirect_uris',
-          ],
-          id_token_signed_response_alg: 'ES256',
-          id_token_encrypted_response_alg: 'RSA-OAEP',
-          id_token_encrypted_response_enc: 'A256GCM',
-          userinfo_encrypted_response_alg: 'RSA-OAEP',
-          userinfo_encrypted_response_enc: 'A256GCM',
-          userinfo_signed_response_alg: 'HS256',
-          jwks_uri: 'https://sp-site.fr/jwks-uri',
         },
       ];
-      mockExec.mockReturnValueOnce(rawServiceProviderFromDBMock);
-      mockRepository.find.mockReturnValueOnce({ exec: mockExec });
-      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
+      delete expected[0].key;
+      delete expected[0].scopes;
+      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+        expected[0].client_secret,
+      );
 
       // action
-      await service.getList(true);
-      const result = await service.getList();
+      const result = await service.getList(true);
 
       // expect
-      expect(mockRepository.find).toHaveBeenCalledTimes(1);
-      expect(result).toStrictEqual(resultExpected);
+      expect(service['findAllServiceProvider']).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual(expected);
     });
   });
 
@@ -350,37 +299,24 @@ describe('ServiceProviderService', () => {
   describe('legacyToOpenIdPropertyName', () => {
     it('should return service provider with change legacy property name by openid property name', () => {
       // setup
-      const serviceProviderFromDBMock = {
-        ...rawServiceProviderFromDBMock[0]._doc,
-      };
-
-      const resultExpected = {
-        active: true,
+      const expected = {
+        ...validServiceProviderMock._doc,
         client_id: '123',
-        name: 'foo',
         client_secret: 'client_secret',
         scope: 'openid profile',
-        redirect_uris: ['https://sp-site.fr/redirect_uris'],
-        post_logout_redirect_uris: [
-          'https://sp-site.fr/post_logout_redirect_uris',
-        ],
-        id_token_signed_response_alg: 'ES256',
-        id_token_encrypted_response_alg: 'RSA-OAEP',
-        id_token_encrypted_response_enc: 'A256GCM',
-        userinfo_encrypted_response_alg: 'RSA-OAEP',
-        userinfo_encrypted_response_enc: 'A256GCM',
-        userinfo_signed_response_alg: 'HS256',
-        jwks_uri: 'https://sp-site.fr/jwks-uri',
       };
-      mockCryptography.decryptClientSecret.mockReturnValueOnce('client_secret');
+      delete expected.key;
+      delete expected.scopes;
+
+      cryptographyMock.decryptClientSecret.mockReturnValueOnce('client_secret');
 
       // action
       const result = service['legacyToOpenIdPropertyName'](
-        serviceProviderFromDBMock,
+        validServiceProviderMock._doc,
       );
 
       // expect
-      expect(result).toStrictEqual(resultExpected);
+      expect(result).toStrictEqual(expected);
     });
   });
 });
