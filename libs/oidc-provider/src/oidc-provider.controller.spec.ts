@@ -3,7 +3,7 @@ import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { OidcProviderController } from './oidc-provider.controller';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
-import { GetAuthorizeParamsDTO } from './dto';
+import { AuthorizeParamsDTO } from './dto';
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
@@ -60,9 +60,21 @@ describe('OidcProviderController', () => {
     it('should call next', () => {
       // Given
       const nextMock = jest.fn();
-      const queryMock = {} as GetAuthorizeParamsDTO;
+      const queryMock = {} as AuthorizeParamsDTO;
       // When
       oidcProviderController.getAuthorize(nextMock, queryMock);
+      // Then
+      expect(nextMock).toHaveReturnedTimes(1);
+    });
+  });
+
+  describe('postAuthorize', () => {
+    it('should call next', () => {
+      // Given
+      const nextMock = jest.fn();
+      const bodyMock = {} as AuthorizeParamsDTO;
+      // When
+      oidcProviderController.postAuthorize(nextMock, bodyMock);
       // Then
       expect(nextMock).toHaveReturnedTimes(1);
     });

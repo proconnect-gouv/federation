@@ -7,8 +7,9 @@ import {
   UsePipes,
   ValidationPipe,
   Inject,
+  Body,
 } from '@nestjs/common';
-import { GetAuthorizeParamsDTO } from './dto';
+import { AuthorizeParamsDTO } from './dto';
 import { OidcProviderRoutes } from './enums';
 import { IServiceProviderService } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
@@ -21,6 +22,10 @@ export class OidcProviderController {
   ) {}
 
   /**
+   * Authorize route via HTTP GET
+   * Authorization endpoint MUST support GET method
+   * @see https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint
+   *
    * @TODO #144 do a more shallow validation and let oidc-provider handle redirections
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/144
    */
@@ -32,7 +37,28 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  getAuthorize(@Next() next, @Query() _params: GetAuthorizeParamsDTO) {
+  getAuthorize(@Next() next, @Query() _params: AuthorizeParamsDTO) {
+    // Pass the query to oidc-provider
+    return next();
+  }
+
+  /**
+   * Authorize route via HTTP POST
+   * Authorization endpoint MUST support POST method
+   * @see https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint
+   *
+   * @TODO #144 do a more shallow validation and let oidc-provider handle redirections
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/144
+   */
+  @Post(OidcProviderRoutes.AUTHORIZATION)
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  postAuthorize(@Next() next, @Body() _params: AuthorizeParamsDTO) {
     // Pass the query to oidc-provider
     return next();
   }
