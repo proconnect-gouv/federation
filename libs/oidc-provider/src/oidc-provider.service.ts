@@ -116,25 +116,23 @@ export class OidcProviderService {
     );
   }
 
-  /**
-   * Extract oidc parameters from initial request
-   */
-  private getAuthorizeParameters(ctx: OidcCtx) {
-    if (ctx.method === 'POST') {
-      /** @TODO enhance interface to allow the use of `body` property */
-      return ctx.req['body'];
-    }
-    return ctx.query;
-  }
-
   private async authorizationMiddleware(ctx) {
+    /**
+     * Abort middleware if authorize is in error
+     *
+     * We do not want to start a session
+     * nor trigger authorization event for invalid requests
+     */
+    if (ctx.oidc['isError'] === true) {
+      return;
+    }
+
     const interactionId = this.getInteractionIdFromCtx(ctx);
     const { ip } = ctx.req;
     // oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { client_id: spId, acr_values: spAcr } = this.getAuthorizeParameters(
-      ctx,
-    );
+    const { client_id: spId, acr_values: spAcr } = ctx.oidc.params;
+
     const { name: spName } = await this.serviceProviderService.getById(spId);
 
     const sessionProperties = {
@@ -282,7 +280,11 @@ export class OidcProviderService {
     });
   }
 
-  private triggerError(eventName: OidcProviderEvents, ctx, error: Error) {
+  private triggerError(
+    eventName: OidcProviderEvents,
+    ctx: OidcCtx,
+    error: Error,
+  ) {
     let wrappedError: FcException;
     if (error instanceof FcException) {
       wrappedError = error;
@@ -293,7 +295,15 @@ export class OidcProviderService {
       );
     }
 
-    this.throwError(ctx, wrappedError);
+    /**
+     * Flag the request as invalid
+     * to inform async tratment (event listeners)
+     */
+    ctx.oidc['isError'] = true;
+
+    if (wrappedError.redirect === true) {
+      this.throwError(ctx, wrappedError);
+    }
   }
 
   /**
