@@ -115,9 +115,14 @@ export default {
       token_endpoint_auth_method: 'client_secret_post',
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      revocation_endpoint_auth_method: 'client_secret_post',
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       application_type: 'web',
     },
     responseTypes: ['code'],
+    revocationEndpointAuthMethods: ['client_secret_post', 'private_key_jwt'],
+    tokenEndpointAuthMethods: ['client_secret_post', 'private_key_jwt'],
     whitelistedJWA: {
       authorizationEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       authorizationEncryptionEncValues: ['A256GCM'],

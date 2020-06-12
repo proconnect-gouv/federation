@@ -27,6 +27,9 @@ export interface IIdentityProvider extends Document {
   token_endpoint_auth_method: string;
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  revocation_endpoint_auth_method: string;
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   id_token_encrypted_response_alg: string;
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention

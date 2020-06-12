@@ -182,6 +182,11 @@ class ClientDefaults {
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   token_endpoint_auth_method: ClientAuthMethod;
+
+  @IsString()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  revocation_endpoint_auth_method: ClientAuthMethod;
 }
 
 class WhitelistedJWA {
@@ -317,7 +322,14 @@ class Configuration {
 
   @IsArray()
   @IsString({ each: true })
-  responseTypes: ResponseType[];
+  readonly responseTypes: ResponseType[];
+
+  @IsArray()
+  @IsString({ each: true })
+  readonly revocationEndpointAuthMethods: ClientAuthMethod[];
+  @IsArray()
+  @IsString({ each: true })
+  readonly tokenEndpointAuthMethods: ClientAuthMethod[];
 
   @IsObject()
   @ValidateNested()

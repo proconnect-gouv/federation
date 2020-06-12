@@ -9,6 +9,7 @@ import {
 import { CryptographyService } from '@fc/cryptography';
 import { IIdentityProvider } from './interfaces';
 import { IdentityProviderDTO } from './dto';
+import { LoggerService } from '@fc/logger';
 
 @Injectable()
 export class IdentityProviderService implements IIdentityProviderService {
@@ -18,7 +19,10 @@ export class IdentityProviderService implements IIdentityProviderService {
     @InjectModel('IdentityProvider')
     private readonly identityProviderModel,
     private readonly cryptography: CryptographyService,
-  ) {}
+    private readonly logger: LoggerService,
+  ) {
+    this.logger.setContext(this.constructor.name);
+  }
 
   private async findAllIdentityProvider(): Promise<IIdentityProvider[]> {
     const rawResult = await this.identityProviderModel
@@ -65,6 +69,9 @@ export class IdentityProviderService implements IIdentityProviderService {
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_endpoint_auth_method: true,
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          revocation_endpoint_auth_method: true,
         },
       )
       .exec();
@@ -75,7 +82,14 @@ export class IdentityProviderService implements IIdentityProviderService {
         IdentityProviderDTO,
         validationOptions,
       );
-      return errors.length < 1;
+
+      if (errors.length > 0) {
+        this.logger.warn(
+          `"${_doc.uid}" was excluded from the result at DTO validation`,
+        );
+      }
+
+      return errors.length === 0;
     });
 
     return result.map(({ _doc }) => _doc);
@@ -88,9 +102,7 @@ export class IdentityProviderService implements IIdentityProviderService {
     if (refreshCache || !this.listCache) {
       const list: IIdentityProvider[] = await this.findAllIdentityProvider();
 
-      this.listCache = list.map(identityProvider => {
-        return this.legacyToOpenIdPropertyName(identityProvider);
-      });
+      this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
     }
     return this.listCache;
   }
@@ -104,23 +116,30 @@ export class IdentityProviderService implements IIdentityProviderService {
     return providers.find(({ uid }) => uid === id);
   }
 
-  /* eslint-disable @typescript-eslint/naming-convention */
   private legacyToOpenIdPropertyName(
     source: IIdentityProvider,
   ): IdentityProviderMetadata {
+    // openid defined property names
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const client_id = source.clientID;
+    // openid defined property names
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     const client_secret = this.cryptography.decryptClientSecret(
       source.client_secret,
     );
 
-    Reflect.deleteProperty(source, 'clientID');
-    Reflect.deleteProperty(source, 'client_secret');
-
-    return {
+    const result = {
       ...source,
+      // openid defined property names
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id,
+      // openid defined property names
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret,
-    } as IdentityProviderMetadata;
+    };
+
+    delete result.clientID;
+
+    return result as IdentityProviderMetadata;
   }
-  /* eslint-enable @typescript-eslint/naming-convention */
 }
