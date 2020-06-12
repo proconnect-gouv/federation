@@ -72,10 +72,7 @@ describe('OidcClient Controller', () => {
     };
 
     req = {
-      session: {
-        destroy: jest.fn(),
-        idToken: 'idToken',
-      },
+      fc: { interactionId: 'interactionIdMockValue' },
     };
 
     jest.resetAllMocks();

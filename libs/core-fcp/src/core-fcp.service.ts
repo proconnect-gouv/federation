@@ -85,7 +85,7 @@ export class CoreFcpService {
   async verify(req) {
     this.logger.debug('getConsent service');
 
-    const { interactionId } = req;
+    const { interactionId } = req.fc;
 
     // Grab informations on interaction and identity
     const session = await this.session.get(interactionId);
@@ -126,7 +126,10 @@ export class CoreFcpService {
   }
 
   private async rnippCheck(idpIdentity, req) {
-    const { interactionId, ip } = req;
+    const {
+      fc: { interactionId },
+      ip,
+    } = req;
     const eventProperties = { interactionId, ip };
     try {
       this.eventBus.publish(new RnippRequestEvent(eventProperties));
@@ -301,7 +304,7 @@ export class CoreFcpService {
    */
   async sendAuthenticationMail(req) {
     const { from } = this.config.get<MailerConfig>('Mailer');
-    const { interactionId } = req;
+    const { interactionId } = req.fc;
     const { spName, idpName, spIdentity } = await this.session.get(
       interactionId,
     );
