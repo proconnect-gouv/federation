@@ -196,15 +196,15 @@ describe('CoreFcpService', () => {
     });
     it('should set prompt parameter on body', () => {
       // Given
-      const ctxMock = {
+      const ctxMock = ({
         method: 'POST',
-        body: {},
-      } as OidcCtx;
+        req: { body: {} },
+      } as unknown) as OidcCtx;
       const overridePrompt = 'test';
       // When
       service['overrideAuthorizePrompt'](overridePrompt, ctxMock);
       // Then
-      expect(ctxMock.body.prompt).toBe(overridePrompt);
+      expect(ctxMock.req['body'].prompt).toBe(overridePrompt);
       expect(ctxMock.query).toBeUndefined();
     });
     it('should not do anything but log if there is no method declared', () => {

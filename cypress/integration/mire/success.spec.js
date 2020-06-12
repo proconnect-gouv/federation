@@ -1,11 +1,15 @@
 function basicSuccessScenario(params) {
-  const { idpId, userName, sp = Cypress.env('UD2_ROOT_URL') } = params;
+  const { idpId, userName, sp = Cypress.env('UD2_ROOT_URL'), method } = params;
   const password = params.password || '123';
 
   // FS: Click on FC button
   cy.visit(sp);
 
-  cy.get('img[alt="Se connecter à FranceConnect"]').click();
+  if (method === 'POST') {
+    cy.get('#connect-POST').click();
+  } else {
+    cy.get('#connect-GET').click();
+  }
 
   // FC: choose FI
   cy.url().should('include', `${Cypress.env('FC_ROOT_URL')}/interaction`);
@@ -13,12 +17,8 @@ function basicSuccessScenario(params) {
 
   // FI: Authenticate
   cy.url().should('include', `${Cypress.env('FI_ROOT_URL')}/interaction`);
-  cy.get('input[name="login"]')
-    .clear()
-    .type(userName);
-  cy.get('input[name="password"]')
-    .clear()
-    .type(password);
+  cy.get('input[name="login"]').clear().type(userName);
+  cy.get('input[name="password"]').clear().type(password);
 
   cy.get('input[type="submit"]').click();
 
@@ -109,6 +109,25 @@ describe('Successful scenarios', () => {
       password: '123',
       eidasLevel: 1,
       idpId: 'fip1v2',
+    });
+
+    checkInformations({
+      gender: 'Femme',
+      givenName: 'Angela Claire Louise',
+      familyName: 'DUBOIS',
+      birthdate: '1962-08-24',
+      birthplace: '75107',
+      birthcountry: '99100',
+    });
+  });
+
+  it('should log in to User Dashboard with POST /authorize', () => {
+    basicSuccessScenario({
+      userName: 'test',
+      password: '123',
+      eidasLevel: 1,
+      idpId: 'fip1v2',
+      method: 'POST',
     });
 
     checkInformations({

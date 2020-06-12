@@ -182,11 +182,8 @@ export class CoreFcpService {
    */
   private overrideAuthorizePrompt(overrideValue: string, ctx: OidcCtx) {
     this.logger.debug('Override OIDC prompt');
-
     /**
      * Support both methods
-     * @TODO #135 add test once POST is implemented
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/135
      * @TODO #137 check what needs to be done if we implement pushedAuthorizationRequests
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/137
      */
@@ -195,7 +192,8 @@ export class CoreFcpService {
         ctx.query.prompt = overrideValue;
         break;
       case 'POST':
-        ctx.body.prompt = overrideValue;
+        /** @TODO enhance interface to allow the use of `body` property */
+        ctx.req['body'].prompt = overrideValue;
         break;
       default:
         this.logger.warn(
