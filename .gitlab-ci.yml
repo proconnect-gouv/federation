@@ -4,7 +4,7 @@ stages:
 
 variables:
   NODE_VERSION: 'v12.16.1'
-  INFRA_BRANCH: 'master'
+  FC_DOCKER_BRANCH: 'staging'
   E2E: '0'
 
 global-ut:
@@ -35,14 +35,14 @@ global-e2e:
 
   before_script:
     - if [ "$E2E" = "0" ]; then echo "E2E Skipped"; exit 0; fi;
-    - rm -rf $FC_ROOT/infra $FC_ROOT/rnipp-mock $FC_ROOT/fi-mock  $FC_ROOT/user-dashboard
-    - git clone -b $INFRA_BRANCH https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/infra.git $FC_ROOT/infra
+    - rm -rf $FC_ROOT/fc-docker $FC_ROOT/rnipp-mock $FC_ROOT/fi-mock  $FC_ROOT/user-dashboard
+    - git clone -b $FC_DOCKER_BRANCH https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
     - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/rnipp-mock.git $FC_ROOT/rnipp-mock
     - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fi-mock.git $FC_ROOT/fi-mock
     - git clone -b FCP-634 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/user-dashboard.git $FC_ROOT/user-dashboard
-    - ln -s $FC_ROOT/rnipp-mock $FC_ROOT/infra/docker/volumes/src
-    - ln -s $FC_ROOT/fi-mock $FC_ROOT/infra/docker/volumes/src/
-    - ln -s $FC_ROOT/user-dashboard $FC_ROOT/infra/docker/volumes/src/
+    - ln -s $FC_ROOT/rnipp-mock $FC_ROOT/fc-docker/volumes/src
+    - ln -s $FC_ROOT/fi-mock $FC_ROOT/fc-docker/volumes/src/
+    - ln -s $FC_ROOT/user-dashboard $FC_ROOT/fc-docker/volumes/src/
     - export CURRENT_UID="$(id -u):$(id -g)"
     - export DOCKER_HOST_IP="$(getent hosts docker | awk '{ print $1 }')"
     - export DOCKER_HOST="tcp://$DOCKER_HOST_IP:2375"
@@ -52,11 +52,11 @@ global-e2e:
     - echo "$DOCKER_HOST_IP fip1v2.docker.dev-franceconnect.fr" >> /etc/hosts
     - echo "$DOCKER_HOST_IP rnipp.docker.dev-franceconnect.fr" >> /etc/hosts
     - shopt -s expand_aliases
-    - alias docker-stack=$FC_ROOT/infra/docker/docker-stack
+    - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
-    - ln -s $CI_PROJECT_DIR $FC_ROOT/infra/docker/volumes/src/fc
-    - docker-stack up corev2
+    - ln -s $CI_PROJECT_DIR $FC_ROOT/fc-docker/volumes/src/fc
+    - docker-stack up core-v2
     - docker-stack dep-all
     - docker-stack start-all
     # Stop core and csmr-hsm

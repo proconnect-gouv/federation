@@ -26,7 +26,6 @@ import {
   OidcProviderUserinfoEvent,
 } from './events';
 import { RedisAdapter } from './adapters';
-import { OidcCtx } from './interfaces';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -476,35 +475,21 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('getAuthorizeParameters', () => {
-    it('should return the ctx.query when request method is POST', () => {
-      // Given
-      const paramsMock = Symbol('paramsMockValue');
-      const ctxMock = ({
-        method: 'POST',
-        req: { body: paramsMock },
-      } as unknown) as OidcCtx;
-      // When
-      const result = service['getAuthorizeParameters'](ctxMock);
-      // Then
-      expect(result).toBe(paramsMock);
-    });
-
-    it('should return the ctx.query when request method is not POST', () => {
-      // Given
-      const paramsMock = Symbol('paramsMockValue');
-      const ctxMock = {
-        method: 'GET',
-        query: paramsMock,
-      } as OidcCtx;
-      // When
-      const result = service['getAuthorizeParameters'](ctxMock);
-      // Then
-      expect(result).toBe(paramsMock);
-    });
-  });
-
   describe('authorizationMiddleware', () => {
+    it('should abort middleware execution if request if flagged as erroring', () => {
+      // Given
+      const ctxMock = {
+        oidc: { isError: true },
+      };
+      service['getInteractionIdFromCtx'] = jest.fn();
+      // When
+      service['authorizationMiddleware'](ctxMock);
+      // Then
+      expect(service['getInteractionIdFromCtx']).toHaveBeenCalledTimes(0);
+      expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(0);
+      expect(sessionServiceMock.init).toHaveBeenCalledTimes(0);
+      expect(eventBusMock.publish).toHaveBeenCalledTimes(0);
+    });
     it('should call session.init', async () => {
       // Given
       const ctxMock = {
@@ -513,7 +498,7 @@ describe('OidcProviderService', () => {
         },
         // oidc
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        query: { client_id: 'foo', acr_values: 'eidas3' },
+        oidc: { params: { client_id: 'foo', acr_values: 'eidas3' } },
         res: {},
       };
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
@@ -535,7 +520,7 @@ describe('OidcProviderService', () => {
         },
         // oidc
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        query: { client_id: 'foo', acr_values: 'eidas3' },
+        oidc: { params: { client_id: 'foo', acr_values: 'eidas3' } },
         res: {},
       };
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
@@ -763,7 +748,7 @@ describe('OidcProviderService', () => {
       // Given
       const eventName = OidcProviderEvents.SESSION_SAVED;
       const func = service['triggerError'].bind(service, eventName);
-      const ctxMock = {};
+      const ctxMock = { oidc: {} };
       const errorMock = Error('some error');
       service['throwError'] = jest.fn();
       // When
@@ -775,18 +760,44 @@ describe('OidcProviderService', () => {
         expect.any(OidcProviderRuntimeException),
       );
     });
-    it('should call throwError with original exception if error is an FcException', () => {
+    it('should flag request as erroring', () => {
       // Given
       const eventName = OidcProviderEvents.SESSION_SAVED;
       const func = service['triggerError'].bind(service, eventName);
-      const ctxMock = {};
+      const ctxMock = { oidc: {} };
+      const errorMock = Error('some error');
+      service['throwError'] = jest.fn();
+      // When
+      func(ctxMock, errorMock);
+      // Then
+      expect(ctxMock.oidc['isError']).toBe(true);
+    });
+    it('should call throwError with original exception if error is an FcException and does a redirection', () => {
+      // Given
+      const eventName = OidcProviderEvents.SESSION_SAVED;
+      const func = service['triggerError'].bind(service, eventName);
+      const ctxMock = { oidc: {} };
       const errorMock = new OidcProviderInitialisationException(Error('foo'));
+      errorMock.redirect = true;
       service['throwError'] = jest.fn();
       // When
       func(ctxMock, errorMock);
       // Then
       expect(service['throwError']).toHaveBeenCalledTimes(1);
       expect(service['throwError']).toHaveBeenCalledWith(ctxMock, errorMock);
+    });
+    it('should not call throwError with original exception if error is an FcException and does no redirection', () => {
+      // Given
+      const eventName = OidcProviderEvents.SESSION_SAVED;
+      const func = service['triggerError'].bind(service, eventName);
+      const ctxMock = { oidc: {} };
+      const errorMock = new OidcProviderInitialisationException(Error('foo'));
+      errorMock.redirect = false;
+      service['throwError'] = jest.fn();
+      // When
+      func(ctxMock, errorMock);
+      // Then
+      expect(service['throwError']).toHaveBeenCalledTimes(0);
     });
   });
 
