@@ -142,9 +142,10 @@ describe('SessionInterceptor', () => {
         SessionNoSessionCookieException,
       );
     });
-    it('should set req.interactionId', async () => {
+    it('should set req.fc.interactionId', async () => {
       // Given
       const req = {
+        fc: { interactionId: undefined },
         route: {
           path: '/interaction/:uid',
         },
@@ -156,8 +157,8 @@ describe('SessionInterceptor', () => {
       // When
       await interceptor['handleSession'](req, resMock);
       // Then
-      expect(req['interactionId']).toBeDefined();
-      expect(req['interactionId']).toBe('bar');
+      expect(req.fc.interactionId).toBeDefined();
+      expect(req.fc.interactionId).toBe('bar');
     });
 
     it('should refresh backend session', async () => {
@@ -217,6 +218,7 @@ describe('SessionInterceptor', () => {
     it('should not have any side effect if route is not listed', async () => {
       // Given
       const req = {
+        fc: { interactionId: undefined },
         route: {
           path: '/somewhere',
         },
@@ -227,7 +229,7 @@ describe('SessionInterceptor', () => {
       expect(cryptographyMock.genSessionId).toHaveBeenCalledTimes(0);
       expect(sessionMock.setCookie).toHaveBeenCalledTimes(0);
 
-      expect(req['interactionId']).not.toBeDefined();
+      expect(req.fc.interactionId).not.toBeDefined();
       expect(sessionMock.setCookie).toHaveBeenCalledTimes(0);
     });
   });

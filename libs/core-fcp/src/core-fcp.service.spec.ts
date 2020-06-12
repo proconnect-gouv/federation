@@ -39,7 +39,7 @@ describe('CoreFcpService', () => {
     send: jest.fn(),
   };
 
-  const uidMock = 42;
+  const uidMock = '42';
 
   const getInteractionResultMock = {
     prompt: {},
@@ -93,7 +93,7 @@ describe('CoreFcpService', () => {
   };
 
   const reqMock = {
-    interactionId: uidMock,
+    fc: { interactionId: uidMock },
     ip: '123.123.123.123',
   };
 
@@ -352,7 +352,7 @@ describe('CoreFcpService', () => {
       // Given
       const expectedEventStruct = {
         properties: {
-          interactionId: 42,
+          interactionId: '42',
           ip: '123.123.123.123',
         },
       };
@@ -651,7 +651,7 @@ describe('CoreFcpService', () => {
 
       // expect
       expect(sessionServiceMock.get).toBeCalledTimes(1);
-      expect(sessionServiceMock.get).toBeCalledWith(reqMock.interactionId);
+      expect(sessionServiceMock.get).toBeCalledWith(reqMock.fc.interactionId);
     });
 
     it('should send the email to the end-user by calling "mailer.send"', async () => {
