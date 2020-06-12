@@ -5,7 +5,7 @@ import { Acr } from '@fc/oidc';
  * Control parameters on the authentication request.
  * @see https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.3.1.2.1
  */
-export class GetAuthorizeParamsDTO {
+export class AuthorizeParamsDTO {
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
