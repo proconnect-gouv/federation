@@ -43,6 +43,7 @@
     "cookie-parser": "^1.4.5",
     "deep-freeze": "^0.0.1",
     "global-agent": "^2.1.12",
+    "helmet": "^3.23.0",
     "ioredis": "^4.16.2",
     "jose": "1.27.1",
     "lodash": "^4.17.15",
