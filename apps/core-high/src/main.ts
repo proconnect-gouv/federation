@@ -7,6 +7,7 @@
  * to wrap references before they are imported
  */
 import '@fc/override-oidc-provider/overrides';
+import * as helmet from 'helmet';
 import * as CookieParser from 'cookie-parser';
 import { urlencoded } from 'body-parser';
 import { NestFactory } from '@nestjs/core';
@@ -42,6 +43,26 @@ async function bootstrap() {
      */
     bodyParser: false,
   });
+
+  /**
+   * Protect app from common risks
+   * @see https://helmetjs.github.io/
+   */
+  app.use(helmet());
+  app.use(
+    helmet.contentSecurityPolicy({
+      directives: {
+        defaultSrc: ["'self'"],
+        /**
+         * Allow inline CSS and JS
+         * @todo remove this header once the UI is properly implemented
+         * to forbid the use of inline CSS or JS
+         */
+        styleSrc: ["'unsafe-inline'"],
+      },
+    }),
+  );
+  app.use(helmet.permittedCrossDomainPolicies());
 
   /**
    * The security concern is on bodyParser.json (see upper comment).
