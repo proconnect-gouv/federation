@@ -1,4 +1,4 @@
-import { KoaContextWithOIDC, Provider } from 'oidc-provider';
+import { KoaContextWithOIDC, Provider, ClientMetadata } from 'oidc-provider';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
 import { EventBus } from '@nestjs/cqrs';
@@ -866,6 +866,21 @@ describe('OidcProviderService', () => {
       expect(result).toHaveProperty('configuration.findAccount');
       expect(result).toHaveProperty('configuration.renderError');
       expect(result).toHaveProperty('configuration.logoutSource');
+    });
+  });
+
+  describe('clientBasedCORS', () => {
+    it('Should return false', () => {
+      // Given
+      const ctx = {} as KoaContextWithOIDC;
+      const origin = {};
+      const client = {} as ClientMetadata;
+
+      // When
+      const result = service['clientBasedCORS'](ctx, origin, client);
+
+      // Then
+      expect(result).toBeFalsy();
     });
   });
 });
