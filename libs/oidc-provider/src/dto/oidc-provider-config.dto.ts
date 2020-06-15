@@ -386,6 +386,19 @@ class Configuration {
   @IsOptional()
   readonly logoutSource?: any;
 
+  /**
+   * `clientBasedCORS` is a function.
+   * This is not something that should live in a DTO.
+   * Although this is the way `oidc-provider` library offers
+   * to implement our client based CORS
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#clientbasedcors
+   *
+   * This property is optional because it is injected by the module
+   * rather than by real configuration.
+   */
+  @IsOptional()
+  readonly clientBasedCORS?: any;
+
   @IsObject()
   @ValidateNested()
   @Type(() => Jwks)
