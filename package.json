@@ -133,8 +133,6 @@
       "@fc/core-fcp": "<rootDir>/libs/core-fcp/src",
       "@fc/common/(.*)": "<rootDir>/libs/common/src/$1",
       "@fc/common": "<rootDir>/libs/common/src",
-      "@fc/siren/(.*)": "<rootDir>/libs/siren/src/$1",
-      "@fc/siren": "<rootDir>/libs/siren/src",
       "@fc/cryptography-gateway-low/(.*)": "<rootDir>/libs/cryptography-gateway-low/src/$1",
       "@fc/cryptography-gateway-low": "<rootDir>/libs/cryptography-gateway-low/src",
       "@fc/cryptography-gateway-high/(.*)": "<rootDir>/libs/cryptography-gateway-high/src/$1",
