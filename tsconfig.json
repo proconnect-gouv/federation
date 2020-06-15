@@ -83,12 +83,6 @@
       "@fc/common/*": [
         "libs/common/src/*"
       ],
-      "@fc/siren": [
-        "libs/siren/src"
-      ],
-      "@fc/siren/*": [
-        "libs/siren/src/*"
-      ],
       "@fc/config": [
         "libs/config/src"
       ],

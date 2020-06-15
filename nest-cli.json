@@ -22,15 +22,6 @@
         "tsConfigPath": "apps/core-high/tsconfig.app.json"
       }
     },
-    "core-low": {
-      "type": "application",
-      "root": "apps/core-low",
-      "entryFile": "main",
-      "sourceRoot": "apps/core-low/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/core-low/tsconfig.app.json"
-      }
-    },
     "rnipp": {
       "type": "library",
       "root": "libs/rnipp",
@@ -137,15 +128,6 @@
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
-      }
-    },
-    "siren": {
-      "type": "library",
-      "root": "libs/siren",
-      "entryFile": "index",
-      "sourceRoot": "libs/siren/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/siren/tsconfig.lib.json"
       }
     },
     "config": {
