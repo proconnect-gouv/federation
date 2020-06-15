@@ -171,10 +171,7 @@ describe('OidcClientService', () => {
     it('should return keys', async () => {
       // Given
       const JwkKeyMock = {
-        toJWK: jest
-          .fn()
-          .mockReturnValueOnce('a')
-          .mockReturnValueOnce('b'),
+        toJWK: jest.fn().mockReturnValueOnce('a').mockReturnValueOnce('b'),
       };
       const spy = jest.spyOn(JWK, 'asKey').mockReturnValue(JwkKeyMock as any);
 

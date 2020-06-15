@@ -4,7 +4,7 @@
  * @see OidcProviderService.overrideConfiguration()
  */
 import { get } from 'lodash';
-import { Provider, KoaContextWithOIDC } from 'oidc-provider';
+import { Provider, KoaContextWithOIDC, ClientMetadata } from 'oidc-provider';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
@@ -459,6 +459,14 @@ export class OidcProviderService {
       </html>`;
   }
 
+  private clientBasedCORS(
+    _ctx: KoaContextWithOIDC,
+    _origin: any,
+    _client: ClientMetadata,
+  ) {
+    return false;
+  }
+
   /**
    * Compose full config by merging static parameters from:
    *  - configuration file (some may be coming from environment variables)
@@ -517,6 +525,7 @@ export class OidcProviderService {
         findAccount: this.findAccount.bind(this),
         renderError: this.renderError.bind(this),
         logoutSource: this.logoutSource.bind(this),
+        clientBasedCORS: this.clientBasedCORS.bind(this),
       },
     };
   }
