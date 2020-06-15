@@ -37,6 +37,7 @@
     "amqp-connection-manager": "^3.2.0",
     "amqplib": "^0.5.5",
     "base64url": "^3.0.1",
+    "body-parser": "^1.19.0",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.12.0",
     "cookie-parser": "^1.4.5",
