@@ -58,7 +58,8 @@ async function bootstrap() {
          * @todo remove this header once the UI is properly implemented
          * to forbid the use of inline CSS or JS
          */
-        styleSrc: ["'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'", "'unsafe-inline'"]
       },
     }),
   );
