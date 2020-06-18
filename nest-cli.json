@@ -1,11 +1,11 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/core-high/src",
+  "sourceRoot": "apps/core-fcp-high/src",
   "monorepo": true,
-  "root": "apps/core-high",
+  "root": "apps/core-fcp-high",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/core-high/tsconfig.app.json",
+    "tsConfigPath": "apps/core-fcp-high/tsconfig.app.json",
     "assets": [
       "../../../libs/**/*.ejs",
       "../../../libs/**/*.css",
@@ -13,13 +13,13 @@
     ]
   },
   "projects": {
-    "core-high": {
+    "core-fcp-high": {
       "type": "application",
-      "root": "apps/core-high",
+      "root": "apps/core-fcp-high",
       "entryFile": "main",
-      "sourceRoot": "apps/core-high/src",
+      "sourceRoot": "apps/core-fcp-high/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/core-high/tsconfig.app.json"
+        "tsConfigPath": "apps/core-fcp-high/tsconfig.app.json"
       }
     },
     "rnipp": {
