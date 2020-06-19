@@ -9,7 +9,9 @@ describe('Idp activation & visibiliy', () => {
       'client_id=a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
       'scope=openid',
       'response_type=code',
-      'redirect_uri=https%3A%2F%2Fudv2.docker.dev-franceconnect.fr%2Fauthentication%2Flogin-callback',
+      `redirect_uri=${Cypress.env(
+        'UD2_ROOT_URL',
+      )}/authentication/login-callback`,
       'state=stateTraces',
       'nonce=nonceTraces',
       'acr_values=eidas3',
