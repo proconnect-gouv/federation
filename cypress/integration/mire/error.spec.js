@@ -38,8 +38,9 @@ function getAuthorizeUrl(overrideParams = {}) {
     response_type: 'code',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uri:
-      'https://udv2.docker.dev-franceconnect.fr/authentication/login-callback',
+    redirect_uri: `${Cypress.env(
+      'UD2_ROOT_URL',
+    )}/authentication/login-callback`,
     state: 'stateTraces',
     nonce: 'nonceTraces',
     // oidc param
@@ -362,9 +363,7 @@ describe('Error scenarios', () => {
 
       cy.url().should(
         'match',
-        new RegExp(
-          'https://udv2.docker.dev-franceconnect.fr/authentication/error',
-        ),
+        new RegExp(`${Cypress.env('UD2_ROOT_URL')}/authentication/error`),
       );
 
       cy.get('#error-title').contains('invalid_scope');
