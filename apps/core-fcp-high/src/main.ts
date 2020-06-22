@@ -59,7 +59,7 @@ async function bootstrap() {
          * to forbid the use of inline CSS or JS
          */
         styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"]
+        scriptSrc: ["'self'", "'unsafe-inline'"],
       },
     }),
   );

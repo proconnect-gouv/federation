@@ -1,20 +1,30 @@
 import * as QueryString from 'querystring';
 
 function basicErrorScenario(params) {
-  const { idpId, errorCode, eidasLevel } = params;
+  const {
+    idpId,
+    errorCode,
+    eidasLevel
+  } = params;
   const password = '123';
 
   // FS: Click on FC button
-  cy.visit(`${Cypress.env('UD2_ROOT_URL')}`);
+  cy.visit(`${Cypress.env('UD1V2_ROOT_URL')}`);
 
   cy.get('img[alt="Se connecter à FranceConnect"]').click();
 
   // FC: choose FI
-  cy.url().should('include', `${Cypress.env('FC_ROOT_URL')}/interaction`);
+  cy.url().should(
+    'include',
+    `${Cypress.env('FC_INTERACTION_URL')}`,
+  );
   cy.get(`#idp-${idpId}`).click();
 
   // FI: Authenticate
-  cy.url().should('include', `${Cypress.env('FI_ROOT_URL')}/interaction`);
+  cy.url().should(
+    'include',
+    `${Cypress.env('FI_INTERACTION_URL')}`,
+  );
   cy.get('input[name="login"]').clear().type(errorCode);
   cy.get('input[name="password"]').clear().type(password);
 
@@ -30,8 +40,7 @@ function getAuthorizeUrl(overrideParams = {}) {
   const baseAuthorizeParams = {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    client_id:
-      'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
+    client_id: 'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
     scope: 'openid',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -39,7 +48,7 @@ function getAuthorizeUrl(overrideParams = {}) {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     redirect_uri: `${Cypress.env(
-      'UD2_ROOT_URL',
+      'UD1V2_ROOT_URL',
     )}/authentication/login-callback`,
     state: 'stateTraces',
     nonce: 'nonceTraces',
@@ -47,7 +56,10 @@ function getAuthorizeUrl(overrideParams = {}) {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values: 'eidas3',
   };
-  const params = { ...baseAuthorizeParams, ...overrideParams };
+  const params = {
+    ...baseAuthorizeParams,
+    ...overrideParams,
+  };
 
   return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;
 }
@@ -55,10 +67,14 @@ function getAuthorizeUrl(overrideParams = {}) {
 describe('Error scenarios', () => {
   describe('Service Provider', () => {
     it('should trigger error Y030106 if SP is not in database', () => {
-      // oidc param
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const url = getAuthorizeUrl({ client_id: 'random-bad-client-id' });
-      cy.visit(url, { failOnStatusCode: false });
+      const url = getAuthorizeUrl({
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: 'random-bad-client-id',
+      });
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
 
       cy.hasError('Y030106');
     });
@@ -67,10 +83,11 @@ describe('Error scenarios', () => {
       const url = getAuthorizeUrl({
         // oidc param
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id:
-          '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
+        client_id: '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
       });
-      cy.visit(url, { failOnStatusCode: false });
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
 
       cy.hasError('Y030106');
     });
@@ -81,7 +98,9 @@ describe('Error scenarios', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         redirect_uri: 'https://my-malicious-url.fr/callback',
       });
-      cy.visit(url, { failOnStatusCode: false });
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
 
       cy.hasError('Y030118');
     });
@@ -89,33 +108,57 @@ describe('Error scenarios', () => {
 
   describe('prompt', () => {
     it('should not allow prompt=none', () => {
-      const url = getAuthorizeUrl({ prompt: 'none' });
-      cy.visit(url, { failOnStatusCode: false });
+      const url = getAuthorizeUrl({
+        prompt: 'none',
+      });
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
       cy.hasError('Y000400');
     });
     it('should not allow prompt=select_account', () => {
-      const url = getAuthorizeUrl({ prompt: 'select_account' });
-      cy.visit(url, { failOnStatusCode: false });
+      const url = getAuthorizeUrl({
+        prompt: 'select_account',
+      });
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
       cy.hasError('Y000400');
     });
     it('should allow prompt=login', () => {
-      const url = getAuthorizeUrl({ prompt: 'login' });
-      cy.visit(url, { failOnStatusCode: false });
+      const url = getAuthorizeUrl({
+        prompt: 'login',
+      });
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
       cy.get('#idp-list').should('exist');
     });
     it('should allow prompt=consent', () => {
-      const url = getAuthorizeUrl({ prompt: 'consent' });
-      cy.visit(url, { failOnStatusCode: false });
+      const url = getAuthorizeUrl({
+        prompt: 'consent',
+      });
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
       cy.get('#idp-list').should('exist');
     });
     it('should allow prompt=login consent', () => {
-      const url = getAuthorizeUrl({ prompt: 'login consent' });
-      cy.visit(url, { failOnStatusCode: false });
+      const url = getAuthorizeUrl({
+        prompt: 'login consent',
+      });
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
       cy.get('#idp-list').should('exist');
     });
     it('should allow prompt=consent login', () => {
-      const url = getAuthorizeUrl({ prompt: 'consent login' });
-      cy.visit(url, { failOnStatusCode: false });
+      const url = getAuthorizeUrl({
+        prompt: 'consent login',
+      });
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
       cy.get('#idp-list').should('exist');
     });
   });
@@ -128,10 +171,14 @@ describe('Error scenarios', () => {
       cy.get('#idp-fip1v2').should('exist');
 
       // Real test
-      // oidc param
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const testUrl = getAuthorizeUrl({ acr_values: 'NonSupportedAcr' });
-      cy.visit(testUrl, { failOnStatusCode: false });
+      const testUrl = getAuthorizeUrl({
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: 'NonSupportedAcr',
+      });
+      cy.visit(testUrl, {
+        failOnStatusCode: false,
+      });
       cy.hasError('Y000400');
     });
 
@@ -165,12 +212,14 @@ describe('Error scenarios', () => {
     it('should trigger error Y150003 if FC session cookie not set', () => {
       const authorizeUrl = getAuthorizeUrl();
       cy.visit(authorizeUrl);
-      cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
+      cy.url().should('match', new RegExp(`\/api\/v2\/interaction\/[^/]+$`));
 
       cy.url().then((interactionUrl) => {
         cy.clearCookie('fc_session_id');
-        cy.visit(interactionUrl, { failOnStatusCode: false });
-        cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
+        cy.visit(interactionUrl, {
+          failOnStatusCode: false,
+        });
+        cy.url().should('match', new RegExp(`\/api\/v2\/interaction\/[^/]+$`));
         cy.hasError('Y150003');
       });
     });
@@ -178,12 +227,14 @@ describe('Error scenarios', () => {
     it('should trigger error Y150004 if FC interaction cookie not set', () => {
       const authorizeUrl = getAuthorizeUrl();
       cy.visit(authorizeUrl);
-      cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
+      cy.url().should('match', new RegExp(`\/api\/v2\/interaction\/[^/]+$`));
 
       cy.url().then((interactionUrl) => {
         cy.clearCookie('fc_interaction_id');
-        cy.visit(interactionUrl, { failOnStatusCode: false });
-        cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
+        cy.visit(interactionUrl, {
+          failOnStatusCode: false,
+        });
+        cy.url().should('match', new RegExp(`\/api\/v2\/interaction\/[^/]+$`));
         cy.hasError('Y150004');
       });
     });
@@ -191,7 +242,7 @@ describe('Error scenarios', () => {
     it('should trigger error Y150001 if FC interaction cookie does not match any backend interaction', () => {
       const authorizeUrl = getAuthorizeUrl();
       cy.visit(authorizeUrl);
-      cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
+      cy.url().should('match', new RegExp(`\/api\/v2\/interaction\/[^/]+$`));
 
       cy.url().then((interactionUrl) => {
         /**
@@ -206,16 +257,20 @@ describe('Error scenarios', () => {
           cy.setCookie(
             'fc_interaction_id',
             // Replace the begining of the cookie by arbitratry value
-            cookie.value.replace(/^s%3A(.){4}/, 's%3Arofl'),
-            {
+            cookie.value.replace(/^s%3A(.){4}/, 's%3Arofl'), {
               httpOnly: true,
               secure: true,
               sameSite: 'Strict',
               domain: Cypress.env('APP_DOMAIN'),
             },
           );
-          cy.visit(interactionUrl, { failOnStatusCode: false });
-          cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
+          cy.visit(interactionUrl, {
+            failOnStatusCode: false,
+          });
+          cy.url().should(
+            'match',
+            new RegExp(`\/api\/v2\/interaction\/[^/]+$`),
+          );
           cy.hasError('Y150001');
         });
       });
@@ -224,7 +279,7 @@ describe('Error scenarios', () => {
     it('should trigger error Y150005 if FC session cookie does not match found backend interaction', () => {
       const authorizeUrl = getAuthorizeUrl();
       cy.visit(authorizeUrl);
-      cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
+      cy.url().should('match', new RegExp(`\/api\/v2\/interaction\/[^/]+$`));
 
       cy.url().then((interactionUrl) => {
         /**
@@ -239,16 +294,20 @@ describe('Error scenarios', () => {
           cy.setCookie(
             'fc_session_id',
             // Replace the begining of the cookie by arbitratry value
-            cookie.value.replace(/^s%3A(.){4}/, 's%3Arofl'),
-            {
+            cookie.value.replace(/^s%3A(.){4}/, 's%3Arofl'), {
               httpOnly: true,
               secure: true,
               sameSite: 'Strict',
               domain: Cypress.env('APP_DOMAIN'),
             },
           );
-          cy.visit(interactionUrl, { failOnStatusCode: false });
-          cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
+          cy.visit(interactionUrl, {
+            failOnStatusCode: false,
+          });
+          cy.url().should(
+            'match',
+            new RegExp(`\/api\/v2\/interaction\/[^/]+$`),
+          );
           cy.hasError('Y150005');
         });
       });
@@ -359,11 +418,13 @@ describe('Error scenarios', () => {
         scope: 'openid profile',
       });
 
-      cy.visit(url, { failOnStatusCode: false });
+      cy.visit(url, {
+        failOnStatusCode: false,
+      });
 
       cy.url().should(
         'match',
-        new RegExp(`${Cypress.env('UD2_ROOT_URL')}/authentication/error`),
+        new RegExp(`${Cypress.env('UD1V2_ROOT_URL')}/authentication/error`),
       );
 
       cy.get('#error-title').contains('invalid_scope');

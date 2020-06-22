@@ -387,6 +387,19 @@ class Configuration {
   readonly logoutSource?: any;
 
   /**
+   * `interactionUrl` is a function.
+   * This is not something that should live in a DTO.
+   * Although this is the way `oidc-provider` library offers
+   * to implement our logout service
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#interactionsurl
+   *
+   * This property is optional because it is injected by the module
+   * rather than by real configuration.
+   */
+  @IsOptional()
+  readonly interactions?: any;
+
+  /**
    * `clientBasedCORS` is a function.
    * This is not something that should live in a DTO.
    * Although this is the way `oidc-provider` library offers

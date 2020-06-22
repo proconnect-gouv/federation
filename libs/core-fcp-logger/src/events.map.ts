@@ -7,7 +7,7 @@ export const EventsMap: IEventMap = {
     step: '1.0.0',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_AUTHORIZE_INITIATED',
-    route: '/authorize',
+    route: '/api/v2/authorize',
     intercept: false,
   },
 
@@ -15,7 +15,7 @@ export const EventsMap: IEventMap = {
     step: '2.0.0',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_SHOWED_IDP_CHOICE',
-    route: '/interaction/:uid',
+    route: '/api/v2/interaction/:uid',
     intercept: true,
   },
 
@@ -63,7 +63,7 @@ export const EventsMap: IEventMap = {
     step: '4.3.0',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_REQUESTED_RNIPP',
-    route: '/interaction/:uid/verify',
+    route: '/api/v2/interaction/:uid/verify',
     intercept: false,
   },
 
@@ -71,7 +71,7 @@ export const EventsMap: IEventMap = {
     step: '4.4.0',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_RECEIVED_RNIPP',
-    route: '/interaction/:uid/verify',
+    route: '/api/v2/interaction/:uid/verify',
     intercept: false,
   },
 
@@ -79,7 +79,7 @@ export const EventsMap: IEventMap = {
     step: '4.4.1',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_FAILED_RNIPP',
-    route: '/interaction/:uid/verify',
+    route: '/api/v2/interaction/:uid/verify',
     intercept: false,
   },
 
@@ -87,7 +87,7 @@ export const EventsMap: IEventMap = {
     step: '4.4.2',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_RECEIVED_VALID_RNIPP',
-    route: '/interaction/:uid/verify',
+    route: '/api/v2/interaction/:uid/verify',
     intercept: false,
   },
 
@@ -95,7 +95,7 @@ export const EventsMap: IEventMap = {
     step: '4.4.3',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_RECEIVED_DECEASED_RNIPP',
-    route: '/interaction/:uid/verify',
+    route: '/api/v2/interaction/:uid/verify',
     intercept: false,
   },
 
@@ -103,7 +103,7 @@ export const EventsMap: IEventMap = {
     step: '4.4.3',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_RECEIVED_INVALID_RNIPP',
-    route: '/interaction/:uid/verify',
+    route: '/api/v2/interaction/:uid/verify',
     intercept: false,
   },
 
@@ -111,7 +111,7 @@ export const EventsMap: IEventMap = {
     step: '5.0.0',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_VERIFIED',
-    route: '/interaction/:uid/verify',
+    route: '/api/v2/interaction/:uid/verify',
     intercept: true,
   },
 
@@ -119,7 +119,7 @@ export const EventsMap: IEventMap = {
     step: '6.1.0',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_SHOWED_CONSENT',
-    route: '/interaction/:uid/consent',
+    route: '/api/v2/interaction/:uid/consent',
     intercept: true,
   },
 
@@ -127,7 +127,7 @@ export const EventsMap: IEventMap = {
     step: '6.2.0',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_SHOWED_CONSENT',
-    route: '/interaction/:uid/consent',
+    route: '/api/v2/interaction/:uid/consent',
     intercept: true,
   },
 
@@ -135,7 +135,7 @@ export const EventsMap: IEventMap = {
     step: '7.0.0',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_REDIRECTED_TO_SP',
-    route: '/interaction/:uid/login',
+    route: '/api/v2/interaction/:uid/login',
     intercept: true,
   },
 
@@ -143,7 +143,7 @@ export const EventsMap: IEventMap = {
     step: '7.1.0',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FCP_CONSENTED',
-    route: '/interaction/:uid/consent',
+    route: '/api/v2/interaction/:uid/consent',
     intercept: true,
   },
 
@@ -177,15 +177,7 @@ export const EventsMap: IEventMap = {
     step: '8.0.0',
     category: EventsCategories.FRONT_CINEMATIC,
     event: 'FS_REQUESTED_LOGOUT',
-    route: '/api/v2/logout',
-    intercept: false,
-  },
-
-  FCP_CONFIRMED_LOGOUT: {
-    step: '8.1.0',
-    category: EventsCategories.FRONT_CINEMATIC,
-    event: 'FCP_CONFIRMED_LOGOUT',
-    route: '/api/v2/logout/confirm',
+    route: '/api/v2/session/end',
     intercept: false,
   },
 };

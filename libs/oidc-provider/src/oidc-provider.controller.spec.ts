@@ -103,25 +103,13 @@ describe('OidcProviderController', () => {
     });
   });
 
-  describe('getLogout', () => {
+  describe('setEndSession', () => {
     it('should call logout service', () => {
       // Given
       const next = jest.fn();
 
       // When
-      oidcProviderController.getLogout(next);
-      // Then
-      expect(next).toBeCalledTimes(1);
-    });
-  });
-
-  describe('getLogoutConfirm', () => {
-    it('should call logout confirm service', () => {
-      // Given
-      const next = jest.fn();
-
-      // When
-      oidcProviderController.getLogoutConfirm(next);
+      oidcProviderController.getEndSession(next);
       // Then
       expect(next).toBeCalledTimes(1);
     });

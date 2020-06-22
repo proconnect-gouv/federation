@@ -14,9 +14,10 @@ import { LoggerService } from '@fc/logger';
 import { IdentityProviderService } from '@fc/identity-provider';
 import { SessionService } from '@fc/session';
 import { CoreFcpService } from './core-fcp.service';
-import { Interaction } from './dto/interaction.dto';
+import { Interaction } from './dto';
+import { CoreFcpRoutes } from './enums';
 
-@Controller()
+@Controller('/api/v2')
 export class CoreFcpController {
   constructor(
     private readonly logger: LoggerService,
@@ -28,7 +29,7 @@ export class CoreFcpController {
     this.logger.setContext(this.constructor.name);
   }
 
-  @Get('/interaction/:uid')
+  @Get(CoreFcpRoutes.INTERACTION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('interaction')
   async getInteraction(@Req() req, @Res() res, @Param() _params: Interaction) {
@@ -42,16 +43,16 @@ export class CoreFcpController {
     };
   }
 
-  @Get('/interaction/:uid/verify')
+  @Get(CoreFcpRoutes.INTERACTION_VERIFY)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getVerify(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { interactionId } = req.fc;
     await this.coreFcp.verify(req);
 
-    res.redirect(`/interaction/${interactionId}/consent`);
+    res.redirect(`/api/v2/interaction/${interactionId}/consent`);
   }
 
-  @Get('/interaction/:uid/consent')
+  @Get(CoreFcpRoutes.INTERACTION_CONSENT)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('consent')
   async getConsent(@Req() req, @Param() _params: Interaction) {
@@ -61,7 +62,7 @@ export class CoreFcpController {
     return { interactionId, identity };
   }
 
-  @Get('/interaction/:uid/login')
+  @Get(CoreFcpRoutes.INTERACTION_LOGIN)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getLogin(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { interactionId } = req.fc;
