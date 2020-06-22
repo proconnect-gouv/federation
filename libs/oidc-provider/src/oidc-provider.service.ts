@@ -459,6 +459,18 @@ export class OidcProviderService {
       </html>`;
   }
 
+  /**
+   * More documentation can be found in oidc-provider repo
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#interactionsurl
+   */
+  private async url(
+    prefix: string,
+    ctx: KoaContextWithOIDC,
+    _interaction: any,
+  ) {
+    return `${prefix}/interaction/${ctx.oidc.uid}`;
+  }
+
   private clientBasedCORS(
     _ctx: KoaContextWithOIDC,
     _origin: any,
@@ -526,6 +538,7 @@ export class OidcProviderService {
         renderError: this.renderError.bind(this),
         logoutSource: this.logoutSource.bind(this),
         clientBasedCORS: this.clientBasedCORS.bind(this),
+        interactions: { url: this.url.bind(this, prefix) },
       },
     };
   }

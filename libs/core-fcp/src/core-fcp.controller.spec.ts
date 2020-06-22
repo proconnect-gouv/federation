@@ -146,7 +146,7 @@ describe('CoreFcpController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
-        `/interaction/${req.fc.interactionId}/consent`,
+        `/api/v2/interaction/${req.fc.interactionId}/consent`,
       );
     });
   });

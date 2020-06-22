@@ -23,13 +23,13 @@ import {
  * specific module (core-fcp?) rather than in a generic session module
  */
 const FRONT_ROUTES = [
-  '/interaction/:uid',
   '/api/v2/redirect-to-idp',
   '/api/v2/oidc-callback/:providerUid',
-  '/interaction/:uid/verify',
-  '/interaction/:uid/consent',
-  '/interaction/:uid/logout',
-  '/interaction/:uid/login',
+  '/api/v2/interaction/:uid',
+  '/api/v2/interaction/:uid/verify',
+  '/api/v2/interaction/:uid/consent',
+  '/api/v2/interaction/:uid/logout',
+  '/api/v2/interaction/:uid/login',
 ];
 
 @Injectable()
