@@ -883,4 +883,19 @@ describe('OidcProviderService', () => {
       expect(result).toBeFalsy();
     });
   });
+
+  describe('url', () => {
+    it('Should return interaction url with prefix', async () => {
+      // Given
+      const prefix = '/prefix';
+      const ctx = ({ oidc: { uid: 123 } } as unknown) as KoaContextWithOIDC;
+      const interaction = {};
+
+      // When
+      const result = await service['url'](prefix, ctx, interaction);
+
+      // Then
+      expect(result).toEqual('/prefix/interaction/123');
+    });
+  });
 });

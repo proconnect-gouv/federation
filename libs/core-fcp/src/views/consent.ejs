@@ -1,17 +1,14 @@
 <html>
-  <body>
-    <div
-      style="width: 400px; margin: auto; margin-top: 200px; text-align: center;"
-    >
-      <h1>Retour de l'IdP</h1>
-      <pre><%= JSON.stringify(locals.identity, null, 2) %></pre>
-      <button
-        id="consent"
-        style="font-size: 2em; width: 100%; height: 300px; display: block;"
-        onclick="document.location.href='/interaction/<%=locals.interactionId%>/login';"
-      >
-        Continuer vers le SP
-      </button>
-    </div>
-  </body>
+
+<body>
+  <div style="width: 400px; margin: auto; margin-top: 200px; text-align: center;">
+    <h1>Retour de l'IdP</h1>
+    <pre><%= JSON.stringify(locals.identity, null, 2) %></pre>
+    <button id="consent" style="font-size: 2em; width: 100%; height: 300px; display: block;"
+      onclick="document.location.href='/api/v2/interaction/<%=locals.interactionId%>/login';">
+      Continuer vers le SP
+    </button>
+  </div>
+</body>
+
 </html>

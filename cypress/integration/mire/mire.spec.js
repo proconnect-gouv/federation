@@ -10,14 +10,14 @@ describe('Idp activation & visibiliy', () => {
       'scope=openid',
       'response_type=code',
       `redirect_uri=${Cypress.env(
-        'UD2_ROOT_URL',
+        'UD1V2_ROOT_URL',
       )}/authentication/login-callback`,
       'state=stateTraces',
       'nonce=nonceTraces',
       'acr_values=eidas3',
     ].join('&');
 
-  const mireUrl = new RegExp('/interaction/[^/]+');
+  const mireUrl = new RegExp('/api/v2/interaction/[^/]+');
 
   it('should display active and visible IdP', () => {
     // Given
@@ -54,7 +54,9 @@ describe('Idp activation & visibiliy', () => {
     cy.visit(authorizeUrl);
     cy.url().should('match', mireUrl);
     // When
-    cy.get('#idp-list button#idp-fip-desactive-visible').click({ force: true });
+    cy.get('#idp-list button#idp-fip-desactive-visible').click({
+      force: true,
+    });
     // Then
     cy.url().should('match', mireUrl);
   });
@@ -79,7 +81,7 @@ describe('Idp activation & visibiliy', () => {
       .invoke('attr', 'disabled', false)
       .click();
     // Then
-    cy.url().should('be', '/redirect-to-idp');
+    cy.url().should('be', '/api/v2/redirect-to-idp');
 
     cy.hasError('Y020017');
   });
@@ -98,7 +100,7 @@ describe('Idp activation & visibiliy', () => {
       cy.get('button#idp-fip1v2').click();
     });
     // Then
-    cy.url().should('be', '/redirect-to-idp');
+    cy.url().should('be', '/api/v2/redirect-to-idp');
     cy.hasError('Y020019');
   });
 });
