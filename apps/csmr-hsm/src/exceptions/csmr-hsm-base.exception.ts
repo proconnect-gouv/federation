@@ -1,5 +1,5 @@
 import { FcException } from '@fc/error';
 
-export class AppBaseException extends FcException {
+export class CsmrHsmBaseException extends FcException {
   scope = 17;
 }
