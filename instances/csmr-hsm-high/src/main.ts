@@ -6,9 +6,9 @@ import { Transport, MicroserviceOptions } from '@nestjs/microservices';
 import { ConfigService } from '@fc/config';
 import { HsmService } from '@fc/hsm';
 import { RabbitmqConfig } from '@fc/rabbitmq';
+import { CsmrHsmConfig } from '@fc/csmr-hsm';
 import { AppModule } from './app.module';
 import configuration from './config';
-import { CsmrHsmConfig } from './dto';
 
 async function bootstrap() {
   const configOptions = {

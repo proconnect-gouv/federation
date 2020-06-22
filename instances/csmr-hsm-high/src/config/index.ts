@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { CsmrHsmConfig } from '../dto';
+import { CsmrHsmConfig } from '@fc/csmr-hsm';
 import Logger from './logger';
 import CryptographyBroker from './cryptograpy-broker';
 import Hsm from './hsm';

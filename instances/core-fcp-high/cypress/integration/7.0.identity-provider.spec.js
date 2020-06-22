@@ -1,27 +1,11 @@
-describe('Idp activation & visibiliy', () => {
-  /**
-   * Mire base URL, no need to go though a SP
-   * for thoses tests
-   */
-  const authorizeUrl =
-    '/api/v2/authorize?' +
-    [
-      'client_id=a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
-      'scope=openid',
-      'response_type=code',
-      `redirect_uri=${Cypress.env(
-        'UD1V2_ROOT_URL',
-      )}/authentication/login-callback`,
-      'state=stateTraces',
-      'nonce=nonceTraces',
-      'acr_values=eidas3',
-    ].join('&');
+import { getAuthorizeUrl } from './mire.utils';
 
-  const mireUrl = new RegExp('/api/v2/interaction/[^/]+');
+describe('Idp activation & visibility', () => {
+  const mireUrl = new RegExp('/interaction/[^/]+');
 
   it('should display active and visible IdP', () => {
     // Given
-    cy.visit(authorizeUrl);
+    cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
     // Then
     cy.get('#idp-list').within(() => {
@@ -37,7 +21,7 @@ describe('Idp activation & visibiliy', () => {
 
   it('should display as disable "not active but visible" IdP', () => {
     // Given
-    cy.visit(authorizeUrl);
+    cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
     // Then
     cy.get('#idp-list').within(() => {
@@ -51,7 +35,7 @@ describe('Idp activation & visibiliy', () => {
 
   it('should not do anything when click on disabled IdP', () => {
     // Given
-    cy.visit(authorizeUrl);
+    cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
     // When
     cy.get('#idp-list button#idp-fip-desactive-visible').click({
@@ -63,7 +47,7 @@ describe('Idp activation & visibiliy', () => {
 
   it('should redirect when click on enabled IdP', () => {
     // Given
-    cy.visit(authorizeUrl);
+    cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
     // When
     cy.get('#idp-list button#idp-fip1v2').click();
@@ -73,7 +57,7 @@ describe('Idp activation & visibiliy', () => {
 
   it('should trigger error 020017 when forging click on disabled IdP', () => {
     // Given
-    cy.visit(authorizeUrl);
+    cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
     // When
     cy.get('#idp-list button#idp-fip-desactive-visible')
@@ -88,7 +72,7 @@ describe('Idp activation & visibiliy', () => {
 
   it('should trigger error 020019 when forging click on non existing IdP', () => {
     // Given
-    cy.visit(authorizeUrl);
+    cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
     // When
     cy.get('#fs-request-fip1v2').within(() => {
