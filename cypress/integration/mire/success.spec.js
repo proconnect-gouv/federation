@@ -1,5 +1,10 @@
 function basicSuccessScenario(params) {
-  const { idpId, userName, sp = Cypress.env('UD2_ROOT_URL'), method } = params;
+  const {
+    idpId,
+    userName,
+    sp = Cypress.env('UD1V2_ROOT_URL'),
+    method
+  } = params;
   const password = params.password || '123';
 
   // FS: Click on FC button
@@ -12,18 +17,18 @@ function basicSuccessScenario(params) {
   }
 
   // FC: choose FI
-  cy.url().should('include', `${Cypress.env('FC_ROOT_URL')}/interaction`);
+  cy.url().should('include', `${Cypress.env('FC_INTERACTION_URL')}`);
   cy.get(`#idp-${idpId}`).click();
 
   // FI: Authenticate
-  cy.url().should('include', `${Cypress.env('FI_ROOT_URL')}/interaction`);
+  cy.url().should('include', `${Cypress.env('FI_INTERACTION_URL')}`);
   cy.get('input[name="login"]').clear().type(userName);
   cy.get('input[name="password"]').clear().type(password);
 
   cy.get('input[type="submit"]').click();
 
   // FC: Read confirmation message :D
-  cy.url().should('match', /\/interaction\/[0-9a-z_-]+\/consent/i);
+  cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
 
   cy.get('#consent').click();
 }
@@ -79,7 +84,10 @@ describe('No SSO', () => {
     checkInformations(userInfos);
 
     //   ...Then log  into SP "B"
-    basicSuccessScenario({ ...loginInfo, sp: Cypress.env('UD3_ROOT_URL') });
+    basicSuccessScenario({
+      ...loginInfo,
+      sp: Cypress.env('UD2V2_ROOT_URL')
+    });
 
     // Then
     checkInformations(userInfos);

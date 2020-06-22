@@ -101,7 +101,7 @@ describe('SessionInterceptor', () => {
       // Given
       const req = {
         route: {
-          path: '/interaction/:uid',
+          path: '/api/v2/interaction/:uid',
         },
         signedCookies: {},
       };
@@ -115,7 +115,7 @@ describe('SessionInterceptor', () => {
       // Given
       const req = {
         route: {
-          path: '/interaction/:uid',
+          path: '/api/v2/interaction/:uid',
         },
         signedCookies: {
           [sessionConfigMock.sessionCookieName]: 'foo',
@@ -131,7 +131,7 @@ describe('SessionInterceptor', () => {
       // Given
       const req = {
         route: {
-          path: '/interaction/:uid',
+          path: '/api/v2/interaction/:uid',
         },
         signedCookies: {
           [sessionConfigMock.interactionCookieName]: 'bar',
@@ -147,7 +147,7 @@ describe('SessionInterceptor', () => {
       const req = {
         fc: { interactionId: undefined },
         route: {
-          path: '/interaction/:uid',
+          path: '/api/v2/interaction/:uid',
         },
         signedCookies: {
           [sessionConfigMock.sessionCookieName]: 'foo',
@@ -165,7 +165,7 @@ describe('SessionInterceptor', () => {
       // Given
       const req = {
         route: {
-          path: '/interaction/:uid',
+          path: '/api/v2/interaction/:uid',
         },
         signedCookies: {
           [sessionConfigMock.sessionCookieName]: 'foo',
@@ -181,7 +181,7 @@ describe('SessionInterceptor', () => {
       // Given
       const req = {
         route: {
-          path: '/interaction/:uid',
+          path: '/api/v2/interaction/:uid',
         },
         signedCookies: {
           [sessionConfigMock.sessionCookieName]: 'foo',

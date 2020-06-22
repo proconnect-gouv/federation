@@ -76,13 +76,7 @@ export class OidcProviderController {
   }
 
   @Get(OidcProviderRoutes.END_SESSION)
-  getLogout(@Next() next) {
-    // Pass the query to oidc-provider
-    return next();
-  }
-
-  @Post('/logout/confirm')
-  getLogoutConfirm(@Next() next) {
+  getEndSession(@Next() next) {
     // Pass the query to oidc-provider
     return next();
   }
