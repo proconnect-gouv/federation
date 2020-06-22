@@ -23,7 +23,7 @@ import { join } from 'path';
 const assetsPath =
   process.env.NODE_ENV === 'development'
     ? // Libs code base to take latest version
-      '../../../libs/core-fcp/src'
+      '../../../apps/core-fcp/src'
     : // Current, directory = dist when in production mode
       '';
 

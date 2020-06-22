@@ -15,12 +15,12 @@ import { ValidationException } from '@fc/error';
 import { CryptoProtocol } from '@fc/microservices';
 import { HsmService } from '@fc/hsm';
 import { SignPayloadDto } from './dto';
-import { AppSignException } from './exceptions';
+import { CsmrHsmSignException } from './exceptions';
 
 const BROKER_NAME = 'CryptographyBroker';
 
 @Controller()
-export class AppController {
+export class CsmrHsmController {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
@@ -49,7 +49,7 @@ export class AppController {
       const signed = signedBuffer.toString(payloadEncoding);
       return signed;
     } catch (error) {
-      this.logger.error(new AppSignException(error));
+      this.logger.error(new CsmrHsmSignException(error));
       return 'ERROR';
     }
   }

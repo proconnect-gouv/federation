@@ -2,7 +2,6 @@
 
 // Declarative code
 import { Module } from '@nestjs/common';
-
 import { LoggerModule } from '@fc/logger';
 import { ConfigModule } from '@fc/config';
 import { CoreFcpConfig, CoreFcpModule } from '@fc/core-fcp';
