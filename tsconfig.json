@@ -72,10 +72,16 @@
         "libs/core-fcp-logger/src/*"
       ],
       "@fc/core-fcp": [
-        "libs/core-fcp/src"
+        "apps/core-fcp/src"
       ],
       "@fc/core-fcp/*": [
-        "libs/core-fcp/src/*"
+        "apps/core-fcp/src/*"
+      ],
+      "@fc/csmr-hsm": [
+        "apps/csmr-hsm/src"
+      ],
+      "@fc/csmr-hsm/*": [
+        "apps/csmr-hsm/src/*"
       ],
       "@fc/common": [
         "libs/common/src"

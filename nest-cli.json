@@ -1,25 +1,34 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/core-fcp-high/src",
+  "sourceRoot": "instances/core-fcp-high/src",
   "monorepo": true,
-  "root": "apps/core-fcp-high",
+  "root": "instances/core-fcp-high",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/core-fcp-high/tsconfig.app.json",
-    "assets": [
-      "../../../libs/**/*.ejs",
-      "../../../libs/**/*.css",
-      "../../../libs/**/*.svg"
-    ]
+    "tsConfigPath": "instances/core-fcp-high/tsconfig.app.json"
   },
   "projects": {
     "core-fcp-high": {
       "type": "application",
-      "root": "apps/core-fcp-high",
+      "root": "instances/core-fcp-high",
       "entryFile": "main",
-      "sourceRoot": "apps/core-fcp-high/src",
+      "sourceRoot": "instances/core-fcp-high/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/core-fcp-high/tsconfig.app.json"
+        "tsConfigPath": "instances/core-fcp-high/tsconfig.app.json",
+        "assets": [
+          "../../../apps/**/*.ejs",
+          "../../../apps/**/*.css",
+          "../../../apps/**/*.svg"
+        ]
+      }
+    },
+    "csmr-hsm-high": {
+      "type": "application",
+      "root": "instances/csmr-hsm-high",
+      "entryFile": "main",
+      "sourceRoot": "instances/csmr-hsm-high/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/csmr-hsm-high/tsconfig.app.json"
       }
     },
     "rnipp": {
@@ -114,11 +123,20 @@
     },
     "core-fcp": {
       "type": "library",
-      "root": "libs/core-fcp",
+      "root": "apps/core-fcp",
       "entryFile": "index",
-      "sourceRoot": "libs/core-fcp/src",
+      "sourceRoot": "apps/core-fcp/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/core-fcp/tsconfig.lib.json"
+        "tsConfigPath": "apps/core-fcp/tsconfig.lib.json"
+      }
+    },
+    "csmr-hsm": {
+      "type": "library",
+      "root": "apps/csmr-hsm",
+      "entryFile": "index",
+      "sourceRoot": "apps/csmr-hsm/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/csmr-hsm/tsconfig.lib.json"
       }
     },
     "common": {
@@ -182,15 +200,6 @@
       "sourceRoot": "libs/hsm/src",
       "compilerOptions": {
         "tsConfigPath": "libs/hsm/tsconfig.lib.json"
-      }
-    },
-    "csmr-hsm": {
-      "type": "application",
-      "root": "apps/csmr-hsm",
-      "entryFile": "main",
-      "sourceRoot": "apps/csmr-hsm/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/csmr-hsm/tsconfig.app.json"
       }
     },
     "microservices": {
