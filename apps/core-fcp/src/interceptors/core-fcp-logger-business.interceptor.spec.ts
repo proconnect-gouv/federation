@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext } from '@nestjs/common';
-import { CoreFcpLoggerService } from '../core-fcp-logger.service';
+import { CoreFcpLoggerService } from '../services';
 import { CoreFcpLoggerBusinessInterceptor } from './core-fcp-logger-business.interceptor';
 import { IEventMap } from '../interfaces';
 

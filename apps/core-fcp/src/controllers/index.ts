@@ -1,4 +1,4 @@
 /* istanbul ignore file */
 
 // Declarative code
-export * from './event-categories.enum';
+export * from './core-fcp.controller';

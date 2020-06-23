@@ -13,10 +13,6 @@ import { SessionService } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
 import { AccountBlockedException, AccountService } from '@fc/account';
 import { Acr, IOidcIdentity } from '@fc/oidc';
-import {
-  CoreFcpLowAcrException,
-  CoreFcpInvalidAcrException,
-} from './exceptions';
 import { ConfigService } from '@fc/config';
 import { MailerService, MailerConfig } from '@fc/mailer';
 import {
@@ -31,6 +27,10 @@ import {
   RnippFoundOnlyWithMaritalNameException,
   RnippReceivedDeceasedEvent,
 } from '@fc/rnipp';
+import {
+  CoreFcpLowAcrException,
+  CoreFcpInvalidAcrException,
+} from '../exceptions';
 
 @Injectable()
 export class CoreFcpService {

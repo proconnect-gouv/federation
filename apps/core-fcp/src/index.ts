@@ -2,6 +2,6 @@
 
 // Declarative code
 export * from './core-fcp.module';
-export * from './core-fcp.service';
+export * from './services';
 export * from './dto';
 export * from './exceptions';

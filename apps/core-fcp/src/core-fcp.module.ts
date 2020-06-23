@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { Module, Global } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { OidcProviderModule } from '@fc/oidc-provider';
@@ -16,16 +17,29 @@ import {
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
 import { CryptographyModule } from '@fc/cryptography';
-import { CoreFcpController } from './core-fcp.controller';
-import { CoreFcpService } from './core-fcp.service';
 import { ErrorModule } from '@fc/error';
 import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
-import { CoreFcpLoggerModule } from '@fc/core-fcp-logger';
 import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
 import { MailerModule } from '@fc/mailer';
-
+import { CoreFcpController } from './controllers';
+import { CoreFcpService, CoreFcpLoggerService } from './services';
+import {
+  CoreFcpLoggerDebugInterceptor,
+  CoreFcpLoggerBusinessInterceptor,
+} from './interceptors';
+import {
+  OidcClientTokenEventHandler,
+  UserinfoEventHandler,
+  RnippRequestEventHandler,
+  RnippReceivedDeceasedEventHandler,
+  RnippReceivedValidEventHandler,
+  RnippReceivedInvalidEventHandler,
+  OidcProviderAuthorizationEventHandler,
+  OidcProviderTokenEventHandler,
+  OidcProviderUserinfoEventHandler,
+} from './handlers';
 const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderService,
   ServiceProviderModule,
@@ -35,7 +49,6 @@ const oidcProviderModule = OidcProviderModule.register(
 @Module({
   imports: [
     ErrorModule,
-    CoreFcpLoggerModule,
     CqrsModule,
     MongooseModule,
     SessionModule,
@@ -51,6 +64,29 @@ const oidcProviderModule = OidcProviderModule.register(
     MailerModule,
   ],
   controllers: [CoreFcpController],
-  providers: [CoreFcpService],
+  providers: [
+    CoreFcpService,
+
+    CoreFcpLoggerService,
+    CoreFcpLoggerDebugInterceptor,
+    CoreFcpLoggerBusinessInterceptor,
+    OidcClientTokenEventHandler,
+    UserinfoEventHandler,
+    RnippRequestEventHandler,
+    RnippReceivedDeceasedEventHandler,
+    RnippReceivedValidEventHandler,
+    RnippReceivedInvalidEventHandler,
+    OidcProviderAuthorizationEventHandler,
+    OidcProviderTokenEventHandler,
+    OidcProviderUserinfoEventHandler,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CoreFcpLoggerDebugInterceptor,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: CoreFcpLoggerBusinessInterceptor,
+    },
+  ],
 })
 export class CoreFcpModule {}

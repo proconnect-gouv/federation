@@ -5,7 +5,7 @@ import { ServiceProviderService } from '@fc/service-provider';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { CoreFcpController } from './core-fcp.controller';
-import { CoreFcpService } from './core-fcp.service';
+import { CoreFcpService } from '../services';
 
 describe('CoreFcpController', () => {
   let coreFcpController: CoreFcpController;
