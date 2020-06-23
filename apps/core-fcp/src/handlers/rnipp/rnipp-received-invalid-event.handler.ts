@@ -4,7 +4,7 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { RnippReceivedInvalidEvent } from '@fc/rnipp';
 import { EventsMap } from '../../events.map';
-import { CoreFcpLoggerService } from '../../core-fcp-logger.service';
+import { CoreFcpLoggerService } from '../../services';
 
 @EventsHandler(RnippReceivedInvalidEvent)
 export class RnippReceivedInvalidEventHandler

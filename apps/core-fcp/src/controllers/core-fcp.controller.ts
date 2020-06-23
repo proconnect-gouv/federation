@@ -13,9 +13,9 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderService } from '@fc/identity-provider';
 import { SessionService } from '@fc/session';
-import { CoreFcpService } from './core-fcp.service';
-import { Interaction } from './dto';
-import { CoreFcpRoutes } from './enums';
+import { CoreFcpService } from '../services';
+import { Interaction } from '../dto';
+import { CoreFcpRoutes } from '../enums';
 
 @Controller('/api/v2')
 export class CoreFcpController {

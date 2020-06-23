@@ -18,13 +18,13 @@ import {
 } from '@fc/rnipp';
 import { CryptographyService } from '@fc/cryptography';
 import { AccountService, AccountBlockedException } from '@fc/account';
+import { MailerService } from '@fc/mailer';
 
 import {
   CoreFcpLowAcrException,
   CoreFcpInvalidAcrException,
-} from './exceptions';
+} from '../exceptions';
 import { CoreFcpService } from './core-fcp.service';
-import { MailerService } from '@fc/mailer';
 
 describe('CoreFcpService', () => {
   let service: CoreFcpService;

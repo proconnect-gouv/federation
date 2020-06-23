@@ -1,1 +1,5 @@
+/* istanbul ignore file */
+
+// Declarative code
 export * from './core-fcp-routes.enum';
+export * from './event-categories.enum';

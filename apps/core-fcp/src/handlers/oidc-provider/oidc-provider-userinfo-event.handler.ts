@@ -2,20 +2,20 @@
 
 // Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { RnippRequestEvent } from '@fc/rnipp';
+import { OidcProviderUserinfoEvent } from '@fc/oidc-provider';
 import { EventsMap } from '../../events.map';
-import { CoreFcpLoggerService } from '../../core-fcp-logger.service';
+import { CoreFcpLoggerService } from '../../services';
 
-@EventsHandler(RnippRequestEvent)
-export class RnippRequestEventHandler
-  implements IEventHandler<RnippRequestEvent> {
+@EventsHandler(OidcProviderUserinfoEvent)
+export class OidcProviderUserinfoEventHandler
+  implements IEventHandler<OidcProviderUserinfoEvent> {
   constructor(private readonly coreFcpLogger: CoreFcpLoggerService) {}
 
-  async handle(event: RnippRequestEvent) {
+  async handle(event: OidcProviderUserinfoEvent) {
     const { interactionId, ip } = event.properties;
 
     this.coreFcpLogger.logEvent(
-      EventsMap.FCP_REQUESTED_RNIPP,
+      EventsMap.FS_REQUESTED_FCP_USERINFO,
       ip,
       interactionId,
     );
