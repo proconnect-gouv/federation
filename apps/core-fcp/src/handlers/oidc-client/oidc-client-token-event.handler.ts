@@ -3,7 +3,7 @@
 // Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { OidcClientTokenEvent } from '@fc/oidc-client';
-import { CoreFcpLoggerService } from '../../core-fcp-logger.service';
+import { CoreFcpLoggerService } from '../../services';
 import { EventsMap } from '../../events.map';
 
 @EventsHandler(OidcClientTokenEvent)

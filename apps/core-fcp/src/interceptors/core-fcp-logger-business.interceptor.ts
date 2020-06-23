@@ -6,7 +6,7 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
-import { CoreFcpLoggerService } from '../core-fcp-logger.service';
+import { CoreFcpLoggerService } from '../services';
 import { EventsMap } from '../events.map';
 import { IEventMap } from '../interfaces';
 
