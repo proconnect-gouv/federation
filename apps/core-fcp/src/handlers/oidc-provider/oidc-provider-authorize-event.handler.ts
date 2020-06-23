@@ -4,7 +4,7 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { OidcProviderAuthorizationEvent } from '@fc/oidc-provider';
 import { EventsMap } from '../../events.map';
-import { CoreFcpLoggerService } from '../../core-fcp-logger.service';
+import { CoreFcpLoggerService } from '../../services';
 
 @EventsHandler(OidcProviderAuthorizationEvent)
 export class OidcProviderAuthorizationEventHandler
