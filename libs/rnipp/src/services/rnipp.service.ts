@@ -64,7 +64,9 @@ export class RnippService {
   }
 
   private buildRequestUrl(identity: IPivotIdentity): string {
-    const { hostname, baseUrl } = this.configService.get<RnippConfig>('Rnipp');
+    const { protocol, hostname, baseUrl } = this.configService.get<RnippConfig>(
+      'Rnipp',
+    );
 
     const params = {
       rechercheType: 'S',
@@ -78,7 +80,7 @@ export class RnippService {
       ),
     };
 
-    return `https://${hostname}${baseUrl}?${stringify(params)}`;
+    return `${protocol}://${hostname}${baseUrl}?${stringify(params)}`;
   }
 
   private formatSexe(gender: string): string {

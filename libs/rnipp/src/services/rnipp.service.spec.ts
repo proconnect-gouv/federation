@@ -256,6 +256,7 @@ describe('RnippService', () => {
     it('should construct the rnipp request url using the givent identity and the configuration', () => {
       // setup
       configServiceMock.get.mockReturnValueOnce({
+        protocol: 'https',
         hostname: 'rnipp.fr',
         baseUrl: '/Brpp2IdentificationComplet/individus',
       });
