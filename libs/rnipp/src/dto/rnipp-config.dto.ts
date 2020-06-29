@@ -1,6 +1,10 @@
-import { IsString, IsNumber } from 'class-validator';
+import { IsString, IsNumber, IsIn } from 'class-validator';
 
 export class RnippConfig {
+  @IsString()
+  @IsIn(['http', 'https'])
+  readonly protocol: string;
+
   @IsString()
   readonly hostname: string;
 
