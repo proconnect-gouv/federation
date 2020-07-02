@@ -1,14 +1,6 @@
 import { Controller, UsePipes, ValidationPipe } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { LoggerService } from '@fc/logger';
-/**
- * Temporary implementation
- * @TODO deploy a container with softHSM
- * and use this service as our HSM for test purpose.
- *
- * We would then be able to use real hsm module:
- * import { HsmService } from '@fc/hsm';
- */
 import { ConfigService } from '@fc/config';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { ValidationException } from '@fc/error';

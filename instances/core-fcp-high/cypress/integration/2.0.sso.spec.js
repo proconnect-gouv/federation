@@ -1,6 +1,5 @@
 import { basicSuccessScenario, checkInformations } from './mire.utils';
 
-/** @TODO Add a case with SP logout once implemented */
 describe('No SSO', () => {
   // Given
   const loginInfo = {
