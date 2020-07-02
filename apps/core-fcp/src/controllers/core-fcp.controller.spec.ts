@@ -13,11 +13,14 @@ describe('CoreFcpController', () => {
   const params = { uid: 'abcdefghijklmnopqrstuvwxyz0123456789' };
   const interactionIdMock = 'interactionIdMockValue';
   const acrMock = 'acrMockValue';
+  const spNameMock = 'some SP';
 
   const interactionDetailsResolved = {
     uid: Symbol('uid'),
     prompt: Symbol('prompt'),
-    params: {},
+    params: {
+      scope: 'toto titi',
+    },
   };
   const interactionFinishedValue = Symbol('interactionFinishedValue');
   const providerMock = {
@@ -90,13 +93,16 @@ describe('CoreFcpController', () => {
     oidcProviderServiceMock.finishInteraction.mockReturnValue(
       interactionFinishedValue,
     );
-    oidcProviderServiceMock.getInteraction.mockReturnValue(providerMock);
+    oidcProviderServiceMock.getInteraction.mockResolvedValue(
+      interactionDetailsResolved,
+    );
     coreFcpServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
-    serviceProviderServiceMock.getById.mockResolvedValue({ name: 'some SP' });
+    serviceProviderServiceMock.getById.mockResolvedValue({ name: spNameMock });
     sessionServiceMock.get.mockResolvedValue({
       interactionId: interactionIdMock,
       spAcr: acrMock,
       spIdentity: {},
+      spName: spNameMock,
     });
   });
 
@@ -152,28 +158,56 @@ describe('CoreFcpController', () => {
   });
 
   describe('getConsent', () => {
-    it('should get data from session for interactionId', async () => {
+    it('should get data from session', async () => {
       // Given
       const reqMock = {
         fc: { interactionId: interactionIdMock },
       };
+      const resMock = {};
+
       // When
-      await coreFcpController.getConsent(reqMock, params);
+      await coreFcpController.getConsent(reqMock, resMock, params);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.get).toHaveBeenCalledWith(interactionIdMock);
     });
+
+    it('should get data from interaction with oidc provider', async () => {
+      // Given
+      const reqMock = {
+        fc: { interactionId: interactionIdMock },
+      };
+      const resMock = {};
+
+      // When
+      await coreFcpController.getConsent(reqMock, resMock, params);
+      // Then
+      expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledTimes(1);
+      expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledWith(
+        reqMock,
+        resMock,
+      );
+    });
+
     it('should return data from session for interactionId', async () => {
       // Given
       const reqMock = {
         fc: { interactionId: interactionIdMock },
       };
+      const resMock = {};
+
       // When
-      const result = await coreFcpController.getConsent(reqMock, params);
+      const result = await coreFcpController.getConsent(
+        reqMock,
+        resMock,
+        params,
+      );
       // Then
       expect(result).toEqual({
         interactionId: interactionIdMock,
         identity: {},
+        scopes: ['toto', 'titi'],
+        spName: spNameMock,
       });
     });
   });

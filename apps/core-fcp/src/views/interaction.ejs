@@ -1,36 +1,58 @@
+<!DOCTYPE html>
 <html>
-  <head>
-    <link rel="stylesheet" href="/css/index.css" />
-  </head>
+  
+  <%- include('partials/head.partial.ejs', { title: 'Connexion - choix du fournisseur d\'identité', style: 'interaction' }); %>
 
   <body>
-    <div
-      style="width: 420px; margin: auto; margin-top: 200px; text-align: center;"
-    >
-      <h1>DEMO : Page liste des IdP</h1>
+    <div id="mire">
+      <div class="content">
+        <header>
+          <a href="<%= locals.params.redirect_uri %>">&#8592; Revenir sur <%= locals.spName %></a>
+          <img src="/img/fc_logo.png" alt="France Connect logo">
+        </header>  
+        <main>    
+          <p>Identifiez vous sur <span><%= locals.spName %></span> avec</p>
 
-      <div id="idp-list">
-        <% locals.providers.filter(p => p.display).forEach((provider) => { %>
-        <form
-          method="POST"
-          action="/api/v2/redirect-to-idp"
-          id="fs-request-<%= provider.uid %>"
-          name="fs-request"
-          style="font-size: 2em; width: 200px; height: 200px; margin: 5px; float: left;"
-        >
-          <button
-            style="width: 100%; height: 100%;"
-            id="idp-<%= provider.uid %>"
-            <% if (!provider.active) { %>disabled<% } %>
-          >
-            <%= provider.name %>
-          </button>
-          <input type="hidden" name="providerUid" id="providerUid" value="<%= provider.uid %>" />
-          <input type="hidden" name="uid" id="uid" value="<%= locals.uid %>" />
-          <input type="hidden" name="scope" value="<%= params.scope %>" />
-          <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
-        </form>
-        <% }) %>
+          <p>votre compte :</p>
+    
+          <div id="idp-list" class="main__providers">
+            <% locals.providers.filter(p => p.display).forEach((provider) => { %>
+              <form
+                method="POST"
+                action="/api/v2/redirect-to-idp"
+                id="fs-request-<%= provider.uid %>"
+                name="fs-request"
+              >
+                <div class="identity-provider">
+                  <button
+                    id="idp-<%= provider.uid %>"
+                    <% if (!provider.active) { %>
+                      disabled
+                    <% } %>
+                  >
+                    <%= provider.name %>
+                  </button>
+                  
+                  <% if (!provider.active) { %>
+                    <div class="identity-provider__tooltip">
+                      <p>Indisponible en environnement de démonstration</p>
+                    </div>
+                  <% } %>
+                </div>
+
+                <input type="hidden" name="providerUid" id="providerUid" value="<%= provider.uid %>" />
+                <input type="hidden" name="uid" id="uid" value="<%= locals.uid %>" />
+                <input type="hidden" name="scope" value="<%= params.scope %>" />
+                <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
+              </form>
+            <% }) %>
+          </div>
+
+          <div class="main__footer">
+            <a href="https://franceconnect.gouv.fr">En savoir plus sur FranceConnect</a>
+            <a href="https://franceconnect.gouv.fr/faq">Foire aux questions</a>
+          </div>
+        </main>
       </div>
     </div>
   </body>
