@@ -264,6 +264,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/mailer/tsconfig.lib.json"
       }
+    },
+    "mock-service-provider": {
+      "type": "library",
+      "root": "apps/mock-service-provider",
+      "entryFile": "index",
+      "sourceRoot": "apps/mock-service-provider/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mock-service-provider/tsconfig.lib.json"
+      }
+    },
+    "mock-service-provider-high": {
+      "type": "application",
+      "root": "instances/mock-service-provider-high",
+      "entryFile": "main",
+      "sourceRoot": "instances/mock-service-provider-high/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/mock-service-provider-high/tsconfig.app.json"
+      }
     }
   }
 }

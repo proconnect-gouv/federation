@@ -166,6 +166,12 @@
       ],
       "@fc/mailer/*": [
         "libs/mailer/src/*"
+      ],
+      "@fc/mock-service-provider": [
+        "apps/mock-service-provider/src"
+      ],
+      "@fc/mock-service-provider/*": [
+        "apps/mock-service-provider/src/*"
       ]
     }
   },
