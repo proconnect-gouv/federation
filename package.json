@@ -163,7 +163,9 @@
       "@fc/override-oidc-provider/(.*)": "<rootDir>/libs/override-oidc-provider/src/$1",
       "@fc/override-oidc-provider": "<rootDir>/libs/override-oidc-provider/src",
       "@fc/mailer/(.*)": "<rootDir>/libs/mailer/src/$1",
-      "@fc/mailer": "<rootDir>/libs/mailer/src"
+      "@fc/mailer": "<rootDir>/libs/mailer/src",
+      "@fc/mock-service-provider/(.*)": "<rootDir>/apps/mock-service-provider/src/$1",
+      "@fc/mock-service-provider": "<rootDir>/apps/mock-service-provider/src"
     },
     "preset": "ts-jest"
   }
