@@ -28,7 +28,7 @@ export class CoreFcpController {
   ) {
     this.logger.setContext(this.constructor.name);
   }
-
+ 
   @Get(CoreFcpRoutes.INTERACTION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('interaction')
@@ -36,10 +36,14 @@ export class CoreFcpController {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
     const providers = await this.identityProvider.getList();
 
+    const { interactionId } = req.fc;
+    const { spName } = await this.session.get(interactionId);
+
     return {
       uid,
       params,
       providers,
+      spName,
     };
   }
 
@@ -55,11 +59,23 @@ export class CoreFcpController {
   @Get(CoreFcpRoutes.INTERACTION_CONSENT)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('consent')
-  async getConsent(@Req() req, @Param() _params: Interaction) {
+  async getConsent(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { interactionId } = req.fc;
-    const { spIdentity: identity } = await this.session.get(interactionId);
+    const { spIdentity: identity, spName } = await this.session.get(
+      interactionId,
+    );
 
-    return { interactionId, identity };
+    /** @TODO
+     * Display claims instead of scopes
+     * Mapping label <==> claims
+     * Pass URLs to template (logout, login, etc.)
+     */
+    const {
+      params: { scope },
+    } = await this.oidcProvider.getInteraction(req, res);
+    const scopes = scope.split(' ');
+
+    return { interactionId, identity, spName, scopes };
   }
 
   @Get(CoreFcpRoutes.INTERACTION_LOGIN)
