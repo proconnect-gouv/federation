@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { Module } from '@nestjs/common';
 import { MockServiceProviderService } from './mock-service-provider.service';
 
