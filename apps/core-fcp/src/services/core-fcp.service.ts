@@ -192,7 +192,10 @@ export class CoreFcpService {
         ctx.query.prompt = overrideValue;
         break;
       case 'POST':
-        /** @TODO enhance interface to allow the use of `body` property */
+        /** 
+         * @TODO #167 enhance interface to allow the use of `body` property 
+         * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/167
+         * */
         ctx.req['body'].prompt = overrideValue;
         break;
       default:
