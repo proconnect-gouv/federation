@@ -3,21 +3,13 @@
 // Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { OidcProviderUserinfoEvent } from '@fc/oidc-provider';
+import { TrackingHandler } from '@fc/tracking';
 import { EventsMap } from '../../events.map';
-import { CoreFcpLoggerService } from '../../services';
 
 @EventsHandler(OidcProviderUserinfoEvent)
-export class OidcProviderUserinfoEventHandler
+export class OidcProviderUserinfoEventHandler extends TrackingHandler
   implements IEventHandler<OidcProviderUserinfoEvent> {
-  constructor(private readonly coreFcpLogger: CoreFcpLoggerService) {}
-
   async handle(event: OidcProviderUserinfoEvent) {
-    const { interactionId, ip } = event.properties;
-
-    this.coreFcpLogger.logEvent(
-      EventsMap.FS_REQUESTED_FCP_USERINFO,
-      ip,
-      interactionId,
-    );
+    this.log(EventsMap.FS_REQUESTED_FCP_USERINFO, event);
   }
 }

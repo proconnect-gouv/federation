@@ -1,4 +1,4 @@
-import { IEventMap } from './interfaces';
+import { IEventMap } from '@fc/tracking';
 import { EventsCategories } from './enums';
 
 export const EventsMap: IEventMap = {

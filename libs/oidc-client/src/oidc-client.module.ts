@@ -2,8 +2,8 @@
 
 // Declarative code
 import { Module, DynamicModule, Type } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
 import { SessionModule, SessionService } from '@fc/session';
+import { TrackingModule } from '@fc/tracking';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import { OidcClientService } from './oidc-client.service';
@@ -17,7 +17,7 @@ export class OidcClientModule {
   ): DynamicModule {
     return {
       module: OidcClientModule,
-      imports: [CqrsModule, identityProviderModule, SessionModule],
+      imports: [identityProviderModule, SessionModule, TrackingModule.forLib()],
       providers: [
         {
           provide: IDENTITY_PROVIDER_SERVICE,

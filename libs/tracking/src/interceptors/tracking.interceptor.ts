@@ -6,13 +6,18 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
-import { CoreFcpLoggerService } from '../services';
-import { EventsMap } from '../events.map';
+import { TrackingService } from '../tracking.service';
 import { IEventMap } from '../interfaces';
+import { LoggerService } from '@fc/logger';
 
 @Injectable()
-export class CoreFcpLoggerBusinessInterceptor implements NestInterceptor {
-  constructor(private readonly coreFcpLogger: CoreFcpLoggerService) {}
+export class TrackingInterceptor implements NestInterceptor {
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly tracking: TrackingService,
+  ) {
+    this.logger.setContext(this.constructor.name);
+  }
 
   async intercept(
     context: ExecutionContext,
@@ -20,16 +25,16 @@ export class CoreFcpLoggerBusinessInterceptor implements NestInterceptor {
   ): Promise<Observable<any>> {
     const req = context.switchToHttp().getRequest();
 
-    return next.handle().pipe(tap(this.logEvent.bind(this, req)));
+    this.logger.debug(`${req.method}/ ${req.path}`);
+
+    return next.handle().pipe(tap(this.log.bind(this, req)));
   }
 
-  private logEvent(req) {
-    const { ip } = req;
-    const event = this.getEvent(req, EventsMap);
+  private log(req) {
+    const event = this.getEvent(req, this.tracking.EventsMap);
 
-    if (event && req.fc) {
-      const { interactionId } = req.fc;
-      this.coreFcpLogger.logEvent(event, ip, interactionId);
+    if (event) {
+      this.tracking.log(event, { req });
     }
   }
 
