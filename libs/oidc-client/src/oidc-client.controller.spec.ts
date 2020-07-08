@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EventBus } from '@nestjs/cqrs';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { OidcClientController } from './oidc-client.controller';
 import { OidcClientService } from './oidc-client.service';
@@ -35,8 +35,8 @@ describe('OidcClient Controller', () => {
     getById: jest.fn(),
   };
 
-  const eventBusMock = {
-    publish: jest.fn(),
+  const trackingMock = {
+    track: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -46,7 +46,7 @@ describe('OidcClient Controller', () => {
         OidcClientService,
         LoggerService,
         SessionService,
-        EventBus,
+        TrackingService,
         {
           provide: IDENTITY_PROVIDER_SERVICE,
           useValue: identityProviderServiceMock,
@@ -59,8 +59,8 @@ describe('OidcClient Controller', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
+      .overrideProvider(TrackingService)
+      .useValue(trackingMock)
       .compile();
 
     oidcClientController = module.get<OidcClientController>(

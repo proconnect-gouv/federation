@@ -165,7 +165,9 @@
       "@fc/mailer/(.*)": "<rootDir>/libs/mailer/src/$1",
       "@fc/mailer": "<rootDir>/libs/mailer/src",
       "@fc/mock-service-provider/(.*)": "<rootDir>/apps/mock-service-provider/src/$1",
-      "@fc/mock-service-provider": "<rootDir>/apps/mock-service-provider/src"
+      "@fc/mock-service-provider": "<rootDir>/apps/mock-service-provider/src",
+      "@fc/tracking/(.*)": "<rootDir>/libs/tracking/src/$1",
+      "@fc/tracking": "<rootDir>/libs/tracking/src"
     },
     "preset": "ts-jest"
   }

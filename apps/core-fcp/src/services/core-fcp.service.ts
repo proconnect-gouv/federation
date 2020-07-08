@@ -1,5 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import {
   OidcProviderService,
   OidcProviderMiddlewareStep,
@@ -15,9 +14,10 @@ import { AccountBlockedException, AccountService } from '@fc/account';
 import { Acr, IOidcIdentity } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
 import { MailerService, MailerConfig } from '@fc/mailer';
+import { TrackingService } from '@fc/tracking';
 import {
   RnippService,
-  RnippRequestEvent,
+  RnippRequestedEvent,
   RnippReceivedValidEvent,
   RnippReceivedInvalidEvent,
   RnippDeceasedException,
@@ -43,7 +43,7 @@ export class CoreFcpService {
     private readonly cryptography: CryptographyService,
     private readonly account: AccountService,
     private readonly mailer: MailerService,
-    private readonly eventBus: EventBus,
+    private readonly tracking: TrackingService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -126,16 +126,11 @@ export class CoreFcpService {
   }
 
   private async rnippCheck(idpIdentity, req) {
-    const {
-      fc: { interactionId },
-      ip,
-    } = req;
-    const eventProperties = { interactionId, ip };
     try {
-      this.eventBus.publish(new RnippRequestEvent(eventProperties));
+      this.tracking.track(RnippRequestedEvent, req);
       const rnippIdentity = await this.rnipp.check(idpIdentity);
+      this.tracking.track(RnippReceivedValidEvent, req);
 
-      this.eventBus.publish(new RnippReceivedValidEvent(eventProperties));
       return rnippIdentity;
     } catch (error) {
       /**
@@ -144,9 +139,7 @@ export class CoreFcpService {
       switch (error.constructor) {
         /** Deceased has its own sepcial log */
         case RnippDeceasedException:
-          this.eventBus.publish(
-            new RnippReceivedDeceasedEvent(eventProperties),
-          );
+          this.tracking.track(RnippReceivedDeceasedEvent, req);
           break;
 
         /** Other "not found" case are grouped */
@@ -154,7 +147,7 @@ export class CoreFcpService {
         case RnippNotFoundNoEchoException:
         case RnippNotFoundSingleEchoException:
         case RnippFoundOnlyWithMaritalNameException:
-          this.eventBus.publish(new RnippReceivedInvalidEvent(eventProperties));
+          this.tracking.track(RnippReceivedInvalidEvent, req);
           break;
         /**
          * Any other exception is a technical issue

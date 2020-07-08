@@ -10,9 +10,9 @@ import {
   ValidationPipe,
   UsePipes,
 } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { OidcClientService } from './oidc-client.service';
 import { SessionService } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from './events';
@@ -26,7 +26,7 @@ export class OidcClientController {
     private readonly session: SessionService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderService,
-    private readonly eventBus: EventBus,
+    private readonly tracking: TrackingService,
   ) {}
 
   @Post(OidcClientRoutes.REDIRECT_TO_IDP)
@@ -46,7 +46,7 @@ export class OidcClientController {
 
     const { name: idpName } = await this.identityProvider.getById(providerUid);
 
-    this.session.set(uid, { idpId: providerUid, idpName });
+    await this.session.set(uid, { idpId: providerUid, idpName });
 
     res.redirect(authorizationUrl);
   }
@@ -66,14 +66,14 @@ export class OidcClientController {
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { access_token: accessToken } = tokenSet;
-    this.eventBus.publish(new OidcClientTokenEvent(uid, req.ip));
+    this.tracking.track(OidcClientTokenEvent, req);
 
     // OIDC: call idp's /userinfo endpoint
     const idpIdentity = await this.oidcClient.getUserInfo(
       accessToken,
       providerUid,
     );
-    this.eventBus.publish(new OidcClientUserinfoEvent(uid, req.ip));
+    this.tracking.track(OidcClientUserinfoEvent, req);
 
     // BUSINESS: Locally store received identity
     const { acr } = tokenSet.claims();

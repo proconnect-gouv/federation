@@ -282,6 +282,15 @@
       "compilerOptions": {
         "tsConfigPath": "instances/mock-service-provider-high/tsconfig.app.json"
       }
+    },
+    "tracking": {
+      "type": "library",
+      "root": "libs/tracking",
+      "entryFile": "index",
+      "sourceRoot": "libs/tracking/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/tracking/tsconfig.lib.json"
+      }
     }
   }
 }

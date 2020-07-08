@@ -172,6 +172,12 @@
       ],
       "@fc/mock-service-provider/*": [
         "apps/mock-service-provider/src/*"
+      ],
+      "@fc/tracking": [
+        "libs/tracking/src"
+      ],
+      "@fc/tracking/*": [
+        "libs/tracking/src/*"
       ]
     }
   },
