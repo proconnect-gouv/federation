@@ -3,18 +3,13 @@
 // Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { OidcProviderAuthorizationEvent } from '@fc/oidc-provider';
+import { TrackingHandler } from '@fc/tracking';
 import { EventsMap } from '../../events.map';
-import { CoreFcpLoggerService } from '../../services';
 
 @EventsHandler(OidcProviderAuthorizationEvent)
-export class OidcProviderAuthorizationEventHandler
+export class OidcProviderAuthorizationEventHandler extends TrackingHandler
   implements IEventHandler<OidcProviderAuthorizationEvent> {
-  constructor(private readonly coreFcpLogger: CoreFcpLoggerService) {}
-
   async handle(event: OidcProviderAuthorizationEvent) {
-    this.coreFcpLogger.logAuthorize(
-      EventsMap.FCP_AUTHORIZE_INITIATED,
-      event.properties,
-    );
+    this.log(EventsMap.FCP_AUTHORIZE_INITIATED, event);
   }
 }

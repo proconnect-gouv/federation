@@ -1,12 +1,12 @@
 import { KoaContextWithOIDC, Provider, ClientMetadata } from 'oidc-provider';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
-import { EventBus } from '@nestjs/cqrs';
 import { ConfigService } from '@fc/config';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { LoggerService, LogLevelNames } from '@fc/logger';
 import { FcExceptionFilter } from '@fc/error';
 import { SessionService } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
 import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
@@ -86,8 +86,8 @@ describe('OidcProviderService', () => {
     get: jest.fn(),
   };
 
-  const eventBusMock = {
-    publish: jest.fn(),
+  const trackingMock = {
+    track: jest.fn(),
   };
 
   const useSpy = jest.fn();
@@ -128,7 +128,7 @@ describe('OidcProviderService', () => {
         HttpAdapterHost,
         FcExceptionFilter,
         SessionService,
-        EventBus,
+        TrackingService,
         {
           provide: SERVICE_PROVIDER_SERVICE,
           useValue: serviceProviderServiceMock,
@@ -149,8 +149,8 @@ describe('OidcProviderService', () => {
       .useValue(exceptionFilterMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
+      .overrideProvider(TrackingService)
+      .useValue(trackingMock)
       .compile();
 
     module.useLogger(loggerServiceMock);
@@ -488,7 +488,7 @@ describe('OidcProviderService', () => {
       expect(service['getInteractionIdFromCtx']).toHaveBeenCalledTimes(0);
       expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(0);
       expect(sessionServiceMock.init).toHaveBeenCalledTimes(0);
-      expect(eventBusMock.publish).toHaveBeenCalledTimes(0);
+      expect(trackingMock.track).toHaveBeenCalledTimes(0);
     });
     it('should call session.init', async () => {
       // Given
@@ -527,9 +527,10 @@ describe('OidcProviderService', () => {
       // When
       await service['authorizationMiddleware'](ctxMock);
       // Then
-      expect(eventBusMock.publish).toHaveBeenCalledTimes(1);
-      expect(eventBusMock.publish).toHaveBeenCalledWith(
-        expect.any(OidcProviderAuthorizationEvent),
+      expect(trackingMock.track).toHaveBeenCalledTimes(1);
+      expect(trackingMock.track).toHaveBeenCalledWith(
+        OidcProviderAuthorizationEvent,
+        expect.any(Object),
       );
     });
   });
@@ -550,9 +551,10 @@ describe('OidcProviderService', () => {
       // When
       service['tokenMiddleware'](ctxMock);
       // Then
-      expect(eventBusMock.publish).toHaveBeenCalledTimes(1);
-      expect(eventBusMock.publish).toHaveBeenCalledWith(
-        expect.any(OidcProviderTokenEvent),
+      expect(trackingMock.track).toHaveBeenCalledTimes(1);
+      expect(trackingMock.track).toHaveBeenCalledWith(
+        OidcProviderTokenEvent,
+        expect.any(Object),
       );
     });
   });
@@ -573,9 +575,10 @@ describe('OidcProviderService', () => {
       // When
       service['userinfoMiddleware'](ctxMock);
       // Then
-      expect(eventBusMock.publish).toHaveBeenCalledTimes(1);
-      expect(eventBusMock.publish).toHaveBeenCalledWith(
-        expect.any(OidcProviderUserinfoEvent),
+      expect(trackingMock.track).toHaveBeenCalledTimes(1);
+      expect(trackingMock.track).toHaveBeenCalledWith(
+        OidcProviderUserinfoEvent,
+        expect.any(Object),
       );
     });
   });

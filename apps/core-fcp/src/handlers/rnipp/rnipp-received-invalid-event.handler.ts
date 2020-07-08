@@ -3,21 +3,13 @@
 // Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
 import { RnippReceivedInvalidEvent } from '@fc/rnipp';
+import { TrackingHandler } from '@fc/tracking';
 import { EventsMap } from '../../events.map';
-import { CoreFcpLoggerService } from '../../services';
 
 @EventsHandler(RnippReceivedInvalidEvent)
-export class RnippReceivedInvalidEventHandler
+export class RnippReceivedInvalidEventHandler extends TrackingHandler
   implements IEventHandler<RnippReceivedInvalidEvent> {
-  constructor(private readonly coreFcpLogger: CoreFcpLoggerService) {}
-
   async handle(event: RnippReceivedInvalidEvent) {
-    const { interactionId, ip } = event.properties;
-
-    this.coreFcpLogger.logEvent(
-      EventsMap.FCP_RECEIVED_INVALID_RNIPP,
-      ip,
-      interactionId,
-    );
+    this.log(EventsMap.FCP_RECEIVED_INVALID_RNIPP, event);
   }
 }

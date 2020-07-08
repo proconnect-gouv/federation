@@ -1,7 +1,6 @@
 import { ConfigService } from '@fc/config';
 import { LoggerService } from './logger.service';
 import { LogLevelNames } from './enum';
-import { IBusinessEvent } from './interfaces';
 import { nestLevelsMap } from './log-maps.map';
 
 describe('LoggerService', () => {
@@ -38,7 +37,7 @@ describe('LoggerService', () => {
     idpId: 'idp identifier',
     idpName: 'Idp Name',
     idpAcr: 'eidas2',
-  } as IBusinessEvent;
+  };
 
   let configMock = {};
   const configServiceMock = ({

@@ -1,5 +1,6 @@
-import { IEventProperties } from '../interfaces';
+/* istanbul ignore file */
 
+// Declarative code
 export class RnippBaseEvent {
-  constructor(public readonly properties: IEventProperties) {}
+  constructor(public readonly req) {}
 }

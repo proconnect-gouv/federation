@@ -1,12 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EventBus } from '@nestjs/cqrs';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { OidcProviderService, OidcCtx } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import {
   RnippService,
-  RnippRequestEvent,
+  RnippRequestedEvent,
   RnippReceivedValidEvent,
   RnippDeceasedException,
   RnippReceivedDeceasedEvent,
@@ -19,6 +18,7 @@ import {
 import { CryptographyService } from '@fc/cryptography';
 import { AccountService, AccountBlockedException } from '@fc/account';
 import { MailerService } from '@fc/mailer';
+import { TrackingService } from '@fc/tracking';
 
 import {
   CoreFcpLowAcrException,
@@ -97,8 +97,8 @@ describe('CoreFcpService', () => {
     ip: '123.123.123.123',
   };
 
-  const eventBusMock = {
-    publish: jest.fn(),
+  const trackingMock = {
+    track: jest.fn(),
   };
 
   const sessionDataMock = {
@@ -123,7 +123,7 @@ describe('CoreFcpService', () => {
         CryptographyService,
         AccountService,
         MailerService,
-        EventBus,
+        TrackingService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -142,8 +142,8 @@ describe('CoreFcpService', () => {
       .useValue(accountServiceMock)
       .overrideProvider(MailerService)
       .useValue(mailerServiceMock)
-      .overrideProvider(EventBus)
-      .useValue(eventBusMock)
+      .overrideProvider(TrackingService)
+      .useValue(trackingMock)
       .compile();
 
     service = module.get<CoreFcpService>(CoreFcpService);
@@ -339,32 +339,34 @@ describe('CoreFcpService', () => {
       // When
       await service['rnippCheck'](identityMock, reqMock);
       // Then
-      expect(eventBusMock.publish).toHaveBeenCalledTimes(2);
-      expect(eventBusMock.publish).toHaveBeenCalledWith(
-        expect.any(RnippRequestEvent),
+      expect(trackingMock.track).toHaveBeenCalledTimes(2);
+      expect(trackingMock.track).toHaveBeenCalledWith(
+        RnippRequestedEvent,
+        expect.any(Object),
       );
-      expect(eventBusMock.publish).toHaveBeenCalledWith(
-        expect.any(RnippReceivedValidEvent),
+      expect(trackingMock.track).toHaveBeenCalledWith(
+        RnippReceivedValidEvent,
+        expect.any(Object),
       );
     });
 
     it('should add interactionId and Ip address properties in published events', async () => {
       // Given
       const expectedEventStruct = {
-        properties: {
-          interactionId: '42',
-          ip: '123.123.123.123',
-        },
+        fc: { interactionId: '42' },
+        ip: '123.123.123.123',
       };
       // When
       await service['rnippCheck'](identityMock, reqMock);
       // Then
-      expect(eventBusMock.publish).toHaveBeenCalledTimes(2);
-      expect(eventBusMock.publish).toHaveBeenCalledWith(
-        expect.any(RnippRequestEvent),
+      expect(trackingMock.track).toHaveBeenCalledTimes(2);
+      expect(trackingMock.track).toHaveBeenCalledWith(
+        RnippRequestedEvent,
+        expectedEventStruct,
       );
-      expect(eventBusMock.publish).toHaveBeenCalledWith(
-        expect.objectContaining(expectedEventStruct),
+      expect(trackingMock.track).toHaveBeenCalledWith(
+        RnippReceivedValidEvent,
+        expectedEventStruct,
       );
     });
 
@@ -380,12 +382,14 @@ describe('CoreFcpService', () => {
         // Then
         expect(error).toBeInstanceOf(RnippDeceasedException);
 
-        expect(eventBusMock.publish).toHaveBeenCalledTimes(2);
-        expect(eventBusMock.publish).toHaveBeenCalledWith(
-          expect.any(RnippRequestEvent),
+        expect(trackingMock.track).toHaveBeenCalledTimes(2);
+        expect(trackingMock.track).toHaveBeenCalledWith(
+          RnippRequestedEvent,
+          expect.any(Object),
         );
-        expect(eventBusMock.publish).toHaveBeenCalledWith(
-          expect.any(RnippReceivedDeceasedEvent),
+        expect(trackingMock.track).toHaveBeenCalledWith(
+          RnippReceivedDeceasedEvent,
+          expect.any(Object),
         );
       }
     });
@@ -402,12 +406,14 @@ describe('CoreFcpService', () => {
         // Then
         expect(error).toBeInstanceOf(RnippNotFoundMultipleEchoException);
 
-        expect(eventBusMock.publish).toHaveBeenCalledTimes(2);
-        expect(eventBusMock.publish).toHaveBeenCalledWith(
-          expect.any(RnippRequestEvent),
+        expect(trackingMock.track).toHaveBeenCalledTimes(2);
+        expect(trackingMock.track).toHaveBeenCalledWith(
+          RnippRequestedEvent,
+          expect.any(Object),
         );
-        expect(eventBusMock.publish).toHaveBeenCalledWith(
-          expect.any(RnippReceivedInvalidEvent),
+        expect(trackingMock.track).toHaveBeenCalledWith(
+          RnippReceivedInvalidEvent,
+          expect.any(Object),
         );
       }
     });
@@ -424,12 +430,14 @@ describe('CoreFcpService', () => {
         // Then
         expect(error).toBeInstanceOf(RnippNotFoundNoEchoException);
 
-        expect(eventBusMock.publish).toHaveBeenCalledTimes(2);
-        expect(eventBusMock.publish).toHaveBeenCalledWith(
-          expect.any(RnippRequestEvent),
+        expect(trackingMock.track).toHaveBeenCalledTimes(2);
+        expect(trackingMock.track).toHaveBeenCalledWith(
+          RnippRequestedEvent,
+          expect.any(Object),
         );
-        expect(eventBusMock.publish).toHaveBeenCalledWith(
-          expect.any(RnippReceivedInvalidEvent),
+        expect(trackingMock.track).toHaveBeenCalledWith(
+          RnippReceivedInvalidEvent,
+          expect.any(Object),
         );
       }
     });
@@ -446,12 +454,14 @@ describe('CoreFcpService', () => {
         // Then
         expect(error).toBeInstanceOf(RnippNotFoundSingleEchoException);
 
-        expect(eventBusMock.publish).toHaveBeenCalledTimes(2);
-        expect(eventBusMock.publish).toHaveBeenCalledWith(
-          expect.any(RnippRequestEvent),
+        expect(trackingMock.track).toHaveBeenCalledTimes(2);
+        expect(trackingMock.track).toHaveBeenCalledWith(
+          RnippRequestedEvent,
+          expect.any(Object),
         );
-        expect(eventBusMock.publish).toHaveBeenCalledWith(
-          expect.any(RnippReceivedInvalidEvent),
+        expect(trackingMock.track).toHaveBeenCalledWith(
+          RnippReceivedInvalidEvent,
+          expect.any(Object),
         );
       }
     });
@@ -469,12 +479,14 @@ describe('CoreFcpService', () => {
       // Then
       expect(error).toBeInstanceOf(RnippFoundOnlyWithMaritalNameException);
 
-      expect(eventBusMock.publish).toHaveBeenCalledTimes(2);
-      expect(eventBusMock.publish).toHaveBeenCalledWith(
-        expect.any(RnippRequestEvent),
+      expect(trackingMock.track).toHaveBeenCalledTimes(2);
+      expect(trackingMock.track).toHaveBeenCalledWith(
+        RnippRequestedEvent,
+        expect.any(Object),
       );
-      expect(eventBusMock.publish).toHaveBeenCalledWith(
-        expect.any(RnippReceivedInvalidEvent),
+      expect(trackingMock.track).toHaveBeenCalledWith(
+        RnippReceivedInvalidEvent,
+        expect.any(Object),
       );
     }
   });

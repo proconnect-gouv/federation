@@ -1,6 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 export class OidcClientUserinfoEvent {
-  constructor(
-    public readonly interactionId: string,
-    public readonly ip: string,
-  ) {}
+  constructor(public readonly req) {}
 }
