@@ -7,12 +7,12 @@ import { get } from 'lodash';
 import { Provider, KoaContextWithOIDC, ClientMetadata } from 'oidc-provider';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
-import { EventBus } from '@nestjs/cqrs';
 import { FcExceptionFilter, FcException } from '@fc/error';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { SessionService } from '@fc/session';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
+import { TrackingService } from '@fc/tracking';
 import { IServiceProviderService, OidcCtx } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
 import {
@@ -51,7 +51,7 @@ export class OidcProviderService {
     @Inject(SERVICE_PROVIDER_SERVICE)
     private readonly serviceProviderService: IServiceProviderService,
     private readonly exceptionFilter: FcExceptionFilter,
-    private readonly eventBus: EventBus,
+    private readonly tracking: TrackingService,
   ) {
     this.logger.setContext(this.constructor.name);
     /**
@@ -142,23 +142,22 @@ export class OidcProviderService {
     };
     this.session.init(ctx.res, interactionId, sessionProperties);
 
-    const eventProperties = { interactionId, ip, spId, spAcr };
-    const event = new OidcProviderAuthorizationEvent(eventProperties);
-    this.eventBus.publish(event);
+    const eventContext = { fc: { interactionId }, ip, spId, spAcr, spName };
+    this.tracking.track(OidcProviderAuthorizationEvent, eventContext);
   }
 
   private tokenMiddleware(ctx) {
     const interactionId = this.getInteractionIdFromCtx(ctx);
     const { ip } = ctx.req;
-    const event = new OidcProviderTokenEvent({ interactionId, ip });
-    this.eventBus.publish(event);
+    const eventContext = { fc: { interactionId }, ip };
+    this.tracking.track(OidcProviderTokenEvent, eventContext);
   }
 
   private userinfoMiddleware(ctx) {
     const interactionId = this.getInteractionIdFromCtx(ctx);
     const { ip } = ctx.req;
-    const event = new OidcProviderUserinfoEvent({ interactionId, ip });
-    this.eventBus.publish(event);
+    const eventContext = { fc: { interactionId }, ip };
+    this.tracking.track(OidcProviderUserinfoEvent, eventContext);
   }
 
   private getInteractionIdFromCtx(ctx) {

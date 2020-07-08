@@ -1,14 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext } from '@nestjs/common';
-import { CoreFcpLoggerService } from '../services';
-import { CoreFcpLoggerBusinessInterceptor } from './core-fcp-logger-business.interceptor';
+import { LoggerService } from '@fc/logger';
 import { IEventMap } from '../interfaces';
+import { TrackingService } from '../tracking.service';
+import { TrackingInterceptor } from './tracking.interceptor';
 
-describe('CoreFcpLoggerBusinessInterceptor', () => {
-  let interceptor: CoreFcpLoggerBusinessInterceptor;
+describe('TrackingInterceptor', () => {
+  let interceptor: TrackingInterceptor;
 
-  const coreFcpLoggerMock = {
-    logEvent: jest.fn(),
+  const trackingMock = {
+    log: jest.fn(),
+  };
+
+  const loggerMock = {
+    setContext: jest.fn(),
+    debug: jest.fn(),
   };
 
   const httpContextMock = {
@@ -37,15 +43,15 @@ describe('CoreFcpLoggerBusinessInterceptor', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CoreFcpLoggerBusinessInterceptor, CoreFcpLoggerService],
+      providers: [TrackingInterceptor, TrackingService, LoggerService],
     })
-      .overrideProvider(CoreFcpLoggerService)
-      .useValue(coreFcpLoggerMock)
+      .overrideProvider(TrackingService)
+      .useValue(trackingMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerMock)
       .compile();
 
-    interceptor = module.get<CoreFcpLoggerBusinessInterceptor>(
-      CoreFcpLoggerBusinessInterceptor,
-    );
+    interceptor = module.get<TrackingInterceptor>(TrackingInterceptor);
 
     jest.resetAllMocks();
     nextMock.handle.mockReturnThis();
@@ -57,39 +63,37 @@ describe('CoreFcpLoggerBusinessInterceptor', () => {
   });
 
   describe('intercept', () => {
-    it('should not call logEvent until next', async () => {
+    it('should not call log until next', async () => {
       // Given
-      interceptor['logEvent'] = jest.fn();
+      interceptor['log'] = jest.fn();
       // When
       await interceptor.intercept(contextMock, nextMock);
       // Then
-      expect(interceptor['logEvent']).toHaveBeenCalledTimes(0);
+      expect(interceptor['log']).toHaveBeenCalledTimes(0);
     });
   });
 
-  describe('logEvent', () => {
-    it('should call LoggerService.logEvent', () => {
+  describe('log', () => {
+    it('should call TrackingService.log', () => {
       // Given
       const eventMock = {};
       interceptor['getEvent'] = jest.fn().mockReturnValue(eventMock);
       // When
-      interceptor['logEvent'](reqMock);
+      interceptor['log'](reqMock);
       // Then
-      expect(coreFcpLoggerMock.logEvent).toHaveBeenCalledTimes(1);
-      expect(coreFcpLoggerMock.logEvent).toHaveBeenCalledWith(
-        eventMock,
-        reqMock.ip,
-        reqMock.fc.interactionId,
-      );
+      expect(trackingMock.log).toHaveBeenCalledTimes(1);
+      expect(trackingMock.log).toHaveBeenCalledWith(eventMock, {
+        req: reqMock,
+      });
     });
-    it('should not call LoggerService.logEvent if event not found', () => {
+    it('should not call TrackingService.log if event not found', () => {
       // Given
       const eventMock = undefined;
       interceptor['getEvent'] = jest.fn().mockReturnValue(eventMock);
       // When
-      interceptor['logEvent'](reqMock);
+      interceptor['log'](reqMock);
       // Then
-      expect(coreFcpLoggerMock.logEvent).toHaveBeenCalledTimes(0);
+      expect(trackingMock.log).toHaveBeenCalledTimes(0);
     });
   });
 
