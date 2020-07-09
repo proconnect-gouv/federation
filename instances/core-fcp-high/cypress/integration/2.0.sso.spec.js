@@ -24,7 +24,7 @@ describe('No SSO', () => {
     checkInformations(userInfos);
 
     //   ...Then log  into SP "B"
-    basicSuccessScenario({ ...loginInfo, sp: Cypress.env('UD2V2_ROOT_URL') });
+    basicSuccessScenario({ ...loginInfo, sp: 'UD2V2' });
 
     // Then
     checkInformations(userInfos);
