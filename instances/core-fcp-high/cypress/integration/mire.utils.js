@@ -1,16 +1,26 @@
 import * as QueryString from 'querystring';
 
+/**
+ * @param params
+ *
+ * Available params :
+ *  - idpId
+ *  - userName
+ *  - password
+ *  - sp Name of the SP, possible values: UD1V2, UD2V2
+ *  - acr_values
+ */
 export function basicSuccessScenario(params) {
-  const {
-    idpId,
-    userName,
-    sp = Cypress.env('UD1V2_ROOT_URL'),
-    method,
-  } = params;
+  const { idpId, userName, sp = 'UD1V2', method } = params;
   const password = params.password || '123';
 
+  const serviceProvider = {
+    url: Cypress.env(`${sp}_ROOT_URL`),
+    id: Cypress.env(`${sp}_CLIENT_ID`),
+  };
+
   // FS: Click on FC button
-  cy.visit(sp);
+  cy.visit(serviceProvider.url);
 
   if (method === 'POST') {
     cy.get('#connect-POST').click();
@@ -19,14 +29,44 @@ export function basicSuccessScenario(params) {
   }
 
   // FC: choose FI
+
   cy.url().should(
     'include',
     `${Cypress.env('FC_ROOT_URL')}/api/v2/interaction`,
   );
+
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FCP_AUTHORIZE_INITIATED',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId: null,
+    idpName: null,
+    idpAcr: null,
+  });
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FCP_SHOWED_IDP_CHOICE',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId: null,
+    idpName: null,
+    idpAcr: null,
+  });
   cy.get(`#idp-${idpId}`).click();
 
   // FI: Authenticate
   cy.url().should('include', `${Cypress.env('FI_ROOT_URL')}/interaction`);
+
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'IDP_CHOSEN',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId, // idpId is set
+    idpAcr: null, // idpAct is still null
+  });
+
   cy.get('input[name="login"]').clear().type(userName);
   cy.get('input[name="password"]').clear().type(password);
 
@@ -35,7 +75,88 @@ export function basicSuccessScenario(params) {
   // FC: Read confirmation message :D
   cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
 
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FCP_REQUESTED_IDP_TOKEN',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId, // idpId is now set
+    idpAcr: null, // idpAcr is still null
+  });
+
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FCP_REQUESTED_IDP_USERINFO',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId,
+    idpAcr: null, // idpAcr is still null
+  });
+
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FCP_REQUESTED_RNIPP',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId,
+    idpAcr: params.acr_values, // idpAcr is set
+  });
+
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FCP_RECEIVED_VALID_RNIPP',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId,
+    idpAcr: params.acr_values,
+  });
+
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FCP_VERIFIED',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId,
+    idpAcr: params.acr_values,
+  });
+
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FCP_SHOWED_CONSENT',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId,
+    idpAcr: params.acr_values,
+  });
+
   cy.get('#consent').click();
+
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FCP_REDIRECTED_TO_SP',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId,
+    idpAcr: params.acr_values,
+  });
+
+  cy.hasBusinessLog({
+    category: 'BACK_CINEMATIC',
+    event: 'FS_REQUESTED_FCP_TOKEN', // @TODO Replace "FS_" by "SP_"
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId,
+    idpAcr: params.acr_values,
+  });
+
+  cy.hasBusinessLog({
+    category: 'BACK_CINEMATIC',
+    event: 'FS_REQUESTED_FCP_USERINFO', // @TODO Replace "FS_" by "SP_"
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId,
+    idpAcr: params.acr_values,
+  });
 }
 
 export function checkInformations(identity) {
