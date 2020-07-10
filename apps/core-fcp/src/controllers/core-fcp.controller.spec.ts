@@ -6,6 +6,7 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from '../services';
+import { ConfigService } from '@fc/config';
 
 describe('CoreFcpController', () => {
   let coreFcpController: CoreFcpController;
@@ -58,6 +59,13 @@ describe('CoreFcpController', () => {
     get: jest.fn(),
   };
 
+  const appConfigMock = {
+    urlPrefix: '/api/v2'
+  };
+  const configServiceMock = {
+    get: () => appConfigMock 
+  }
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [CoreFcpController],
@@ -68,6 +76,7 @@ describe('CoreFcpController', () => {
         IdentityProviderService,
         ServiceProviderService,
         SessionService,
+        ConfigService
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -82,6 +91,8 @@ describe('CoreFcpController', () => {
       .useValue(serviceProviderServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .compile();
 
     coreFcpController = await app.get<CoreFcpController>(CoreFcpController);

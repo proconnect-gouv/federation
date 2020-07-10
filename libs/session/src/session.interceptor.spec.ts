@@ -20,8 +20,20 @@ describe('SessionInterceptor', () => {
     sessionCookieName: 'session_cookie',
     interactionCookieName: 'interaction_cookie',
   };
+
+  const appConfigMock = {
+    urlPrefix: '/api/v2',
+  };
+
   const configMock = {
-    get: jest.fn(),
+    get: (config: string) => {
+      switch (config) {
+        case 'App':
+          return appConfigMock;
+        case 'Session':
+          return sessionConfigMock;
+      }
+    },
   };
 
   const sessionMock = {
@@ -73,7 +85,6 @@ describe('SessionInterceptor', () => {
 
     httpContextMock.getRequest.mockReturnValue(reqMock);
     httpContextMock.getResponse.mockReturnValue(resMock);
-    configMock.get.mockReturnValue(sessionConfigMock);
   });
 
   it('should be defined', () => {

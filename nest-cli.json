@@ -291,6 +291,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/tracking/tsconfig.lib.json"
       }
+    },
+    "app": {
+      "type": "library",
+      "root": "libs/app",
+      "entryFile": "index",
+      "sourceRoot": "libs/app/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/app/tsconfig.lib.json"
+      }
     }
   }
 }

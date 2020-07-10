@@ -13,11 +13,13 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderService } from '@fc/identity-provider';
 import { SessionService } from '@fc/session';
+import { ConfigService } from '@fc/config';
+import { AppConfig } from '@fc/app';
 import { CoreFcpService } from '../services';
 import { Interaction } from '../dto';
 import { CoreFcpRoutes } from '../enums';
 
-@Controller('/api/v2')
+@Controller()
 export class CoreFcpController {
   constructor(
     private readonly logger: LoggerService,
@@ -25,6 +27,7 @@ export class CoreFcpController {
     private readonly identityProvider: IdentityProviderService,
     private readonly coreFcp: CoreFcpService,
     private readonly session: SessionService,
+    private readonly config: ConfigService, 
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -53,7 +56,8 @@ export class CoreFcpController {
     const { interactionId } = req.fc;
     await this.coreFcp.verify(req);
 
-    res.redirect(`/api/v2/interaction/${interactionId}/consent`);
+    const urlPrefix =this.config.get<AppConfig>('App').urlPrefix;
+    res.redirect(`${urlPrefix}/interaction/${interactionId}/consent`);
   }
 
   @Get(CoreFcpRoutes.INTERACTION_CONSENT)

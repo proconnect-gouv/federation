@@ -8,8 +8,21 @@ describe('TrackingHandler', () => {
 
   class TrackingHandlerMock extends TrackingHandler {}
 
+  const EventsMapMock = [
+    {
+      HELLO_WORLD: {
+        step: 'moonwalk',
+        category: 'EASTER_EGG',
+        event: 'ALL_YOUR_BASES_ARE_ARE_BELONG_TO_US',
+        route: `/foo/bar/hello/world`,
+        intercept: false,
+      },
+    },
+  ];
+
   const trackingMock = {
     log: jest.fn(),
+    EventsMap: EventsMapMock,
   };
 
   beforeEach(async () => {
@@ -29,6 +42,16 @@ describe('TrackingHandler', () => {
     handler = module.get<TrackingHandler>(TrackingHandler);
 
     jest.resetAllMocks();
+  });
+
+  describe('EventsMap', () => {
+    it('should return the EventMap from the tracking service', () => {
+      // action
+      const result = handler['EventsMap'];
+
+      // expect
+      expect(result).toEqual(EventsMapMock);
+    });
   });
 
   describe('log', () => {
