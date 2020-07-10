@@ -24,7 +24,8 @@
     "doc:api": "typedoc"
   },
   "resolutions": {
-    "cookie-signature": "1.1.0"
+    "cookie-signature": "1.1.0",
+    "jose": "1.27.2"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.7",
@@ -44,7 +45,7 @@
     "global-agent": "^2.1.12",
     "helmet": "^3.23.0",
     "ioredis": "^4.16.2",
-    "jose": "1.27.1",
+    "jose": "1.27.2",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongoose": "^5.9.5",
