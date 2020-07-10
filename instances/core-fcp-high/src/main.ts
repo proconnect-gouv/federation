@@ -15,6 +15,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { SessionConfig } from '@fc/session';
+import { AppConfig } from '@fc/app';
 import { AppModule } from './app.module';
 import { renderFile } from 'ejs';
 import { join } from 'path';
@@ -44,6 +45,8 @@ async function bootstrap() {
     bodyParser: false,
   });
 
+  const config = app.get(ConfigService);
+  app.setGlobalPrefix(config.get<AppConfig>('App').urlPrefix);
   /**
    * Protect app from common risks
    * @see https://helmetjs.github.io/
@@ -79,7 +82,6 @@ async function bootstrap() {
   app.use(urlencoded({ extended: false }));
 
   const logger = await app.resolve(LoggerService);
-  const config = app.get(ConfigService);
 
   app.useLogger(logger);
   app.engine('ejs', renderFile);

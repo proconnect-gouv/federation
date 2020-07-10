@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
+import { AppConfig } from '@fc/app';
 import { SessionService } from './session.service';
 import { SessionConfig } from './dto';
 import { IFcReq } from './interfaces';
@@ -22,23 +23,35 @@ import {
  * indicates that this interceptor should probably live in a more
  * specific module (core-fcp?) rather than in a generic session module
  */
-const FRONT_ROUTES = [
-  '/api/v2/redirect-to-idp',
-  '/api/v2/oidc-callback/:providerUid',
-  '/api/v2/interaction/:uid',
-  '/api/v2/interaction/:uid/verify',
-  '/api/v2/interaction/:uid/consent',
-  '/api/v2/interaction/:uid/logout',
-  '/api/v2/interaction/:uid/login',
-];
+function getFrontRoutes(urlPrefix: string): string[] {
+  return [
+    `${urlPrefix}/redirect-to-idp`,
+    `${urlPrefix}/oidc-callback/:providerUid`,
+    `${urlPrefix}/interaction/:uid`,
+    `${urlPrefix}/interaction/:uid/verify`,
+    `${urlPrefix}/interaction/:uid/consent`,
+    `${urlPrefix}/interaction/:uid/logout`,
+    `${urlPrefix}/interaction/:uid/login`,
+  ];
+}
 
 @Injectable()
 export class SessionInterceptor implements NestInterceptor {
+  private readonly FrontRoutes;
+
   constructor(
     private readonly config: ConfigService,
+    /**
+     * @todo Remove if not used.
+     * Don't forget to remove in tests: "expect(cryptographyMock.genSessionId).toHaveBeenCalledTimes(0)"
+     */
     private readonly crypto: CryptographyService,
     private readonly session: SessionService,
-  ) {}
+  ) {
+    this.FrontRoutes = getFrontRoutes(
+      this.config.get<AppConfig>('App').urlPrefix,
+    );
+  }
 
   async intercept(
     context: ExecutionContext,
@@ -58,7 +71,7 @@ export class SessionInterceptor implements NestInterceptor {
     >('Session');
 
     // Should just refresh cookies for expiration
-    if (FRONT_ROUTES.includes(route)) {
+    if (this.FrontRoutes.includes(route)) {
       if (!(sessionCookieName in req.signedCookies)) {
         throw new SessionNoSessionCookieException();
       }

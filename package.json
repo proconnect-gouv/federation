@@ -167,7 +167,9 @@
       "@fc/mock-service-provider/(.*)": "<rootDir>/apps/mock-service-provider/src/$1",
       "@fc/mock-service-provider": "<rootDir>/apps/mock-service-provider/src",
       "@fc/tracking/(.*)": "<rootDir>/libs/tracking/src/$1",
-      "@fc/tracking": "<rootDir>/libs/tracking/src"
+      "@fc/tracking": "<rootDir>/libs/tracking/src",
+      "@fc/app/(.*)": "<rootDir>/libs/app/src/$1",
+      "@fc/app": "<rootDir>/libs/app/src"
     },
     "preset": "ts-jest"
   }

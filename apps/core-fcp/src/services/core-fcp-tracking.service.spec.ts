@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { SessionService } from '@fc/session';
+import { ConfigService } from '@fc/config';
 import { CoreFcpTrackingService } from './core-fcp-tracking.service';
-import { EventsMap } from '../events.map';
 import { CoreFcpMissingContext } from '../exceptions';
 
 describe('CoreFcpTrackingService', () => {
@@ -9,6 +9,13 @@ describe('CoreFcpTrackingService', () => {
 
   const sessionMock = {
     get: jest.fn(),
+  };
+
+  const appConfigMock = {
+    urlPrefix: '/api/v2',
+  };
+  const configServiceMock = {
+    get: () => appConfigMock,
   };
 
   const eventMock = {
@@ -42,10 +49,12 @@ describe('CoreFcpTrackingService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CoreFcpTrackingService, SessionService],
+      providers: [CoreFcpTrackingService, SessionService, ConfigService],
     })
       .overrideProvider(SessionService)
       .useValue(sessionMock)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .compile();
 
     service = module.get<CoreFcpTrackingService>(CoreFcpTrackingService);
@@ -74,7 +83,10 @@ describe('CoreFcpTrackingService', () => {
       service['getDataFromContext'] = jest.fn();
       service['getDataFromSession'] = jest.fn();
       // When
-      await service.buildLog(EventsMap.FCP_AUTHORIZE_INITIATED, contextMock);
+      await service.buildLog(
+        service.EventsMap.FCP_AUTHORIZE_INITIATED,
+        contextMock,
+      );
       // Then
       expect(service['getDataFromContext']).toHaveBeenCalledTimes(1);
       expect(service['getDataFromContext']).toHaveBeenCalledWith(contextMock);
@@ -86,7 +98,10 @@ describe('CoreFcpTrackingService', () => {
       service['getDataFromContext'] = jest.fn();
       service['getDataFromSession'] = jest.fn();
       // When
-      await service.buildLog(EventsMap.FCP_SHOWED_IDP_CHOICE, contextMock);
+      await service.buildLog(
+        service.EventsMap.FCP_SHOWED_IDP_CHOICE,
+        contextMock,
+      );
       // Then
       expect(service['getDataFromContext']).toHaveBeenCalledTimes(0);
       expect(service['getDataFromSession']).toHaveBeenCalledTimes(1);

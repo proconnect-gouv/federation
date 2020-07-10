@@ -13,13 +13,15 @@ import {
 import { OidcClientService } from './oidc-client.service';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
+import { AppConfig } from '@fc/app';
+import { ConfigService } from '@fc/config';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from './events';
 import { RedirectToIdp, GetOidcCallback } from './dto';
 import { OidcClientRoutes } from './enums';
 
-@Controller('/api/v2')
+@Controller()
 export class OidcClientController {
   constructor(
     private readonly oidcClient: OidcClientService,
@@ -27,6 +29,7 @@ export class OidcClientController {
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderService,
     private readonly tracking: TrackingService,
+    private readonly config: ConfigService, 
   ) {}
 
   @Post(OidcClientRoutes.REDIRECT_TO_IDP)
@@ -81,7 +84,8 @@ export class OidcClientController {
     this.session.set(uid, { idpIdentity, idpAcr: acr });
 
     // BUSINESS: Redirect to business page
-    res.redirect(`/api/v2/interaction/${uid}/verify`);
+    const { urlPrefix } = this.config.get<AppConfig>('App');
+    res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
   }
 
   /**
