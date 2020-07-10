@@ -14,7 +14,7 @@ import { OidcProviderRoutes } from './enums';
 import { IServiceProviderService } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
 
-@Controller('/api/v2')
+@Controller()
 export class OidcProviderController {
   constructor(
     @Inject(SERVICE_PROVIDER_SERVICE)

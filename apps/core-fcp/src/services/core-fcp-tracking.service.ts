@@ -1,7 +1,9 @@
 import { SessionService } from '@fc/session';
 import { Injectable } from '@nestjs/common';
 import { IEvent, IEventContext, IAppTrackingService } from '@fc/tracking';
-import { EventsMap } from '../events.map';
+import { ConfigService } from '@fc/config';
+import { AppConfig } from '@fc/app';
+import { getEventsMap } from '../events.map';
 import {
   ICoreFcpTrackingLog,
   ICoreFcpTrackingProviders,
@@ -11,9 +13,14 @@ import { CoreFcpMissingContext } from '../exceptions';
 
 @Injectable()
 export class CoreFcpTrackingService implements IAppTrackingService {
-  readonly EventsMap = EventsMap;
+  readonly EventsMap;
 
-  constructor(private readonly session: SessionService) {}
+  constructor(
+    private readonly session: SessionService,
+    private readonly config: ConfigService,
+  ) {
+    this.EventsMap = getEventsMap(this.config.get<AppConfig>('App').urlPrefix);
+  }
 
   async buildLog(
     event: IEvent,
@@ -24,7 +31,7 @@ export class CoreFcpTrackingService implements IAppTrackingService {
     let data: ICoreFcpTrackingProviders;
 
     // Authorization route
-    if (event === EventsMap.FCP_AUTHORIZE_INITIATED) {
+    if (event === this.EventsMap.FCP_AUTHORIZE_INITIATED) {
       data = this.getDataFromContext(context);
     } else {
       data = await this.getDataFromSession(interactionId);

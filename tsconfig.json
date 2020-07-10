@@ -178,6 +178,12 @@
       ],
       "@fc/tracking/*": [
         "libs/tracking/src/*"
+      ],
+      "@fc/app": [
+        "libs/app/src"
+      ],
+      "@fc/app/*": [
+        "libs/app/src/*"
       ]
     }
   },
