@@ -15,10 +15,13 @@ import { CryptographyConfig } from '@fc/cryptography';
 import { HttpProxyConfig } from '@fc/http-proxy';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { MailerConfig } from '@fc/mailer';
+import { AppConfig } from '@fc/app';
 
 export class CoreFcpConfig {
   @IsObject()
-  readonly App: any;
+  @ValidateNested()
+  @Type(() => AppConfig)
+  readonly App: AppConfig;
 
   @IsObject()
   @ValidateNested()
