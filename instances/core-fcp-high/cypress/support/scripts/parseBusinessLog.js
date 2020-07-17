@@ -61,9 +61,9 @@ async function interactionHasEvent([logFile, stringifiedTestEvent]) {
 
     if (differences.length > 0) {
       console.error('Event mismatch');
+      console.error(`Diff: ${JSON.stringify(differences)}`);
       console.error(`Found event: ${JSON.stringify(foundEvent)}`);
       console.error(`Test event: ${JSON.stringify(testEvent)}`);
-      console.error(`Diff: ${JSON.stringify(differences)}`);
       process.exit(4);
     }
 

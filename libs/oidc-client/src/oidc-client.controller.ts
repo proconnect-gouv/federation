@@ -29,7 +29,7 @@ export class OidcClientController {
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderService,
     private readonly tracking: TrackingService,
-    private readonly config: ConfigService, 
+    private readonly config: ConfigService,
   ) {}
 
   @Post(OidcClientRoutes.REDIRECT_TO_IDP)
@@ -49,7 +49,10 @@ export class OidcClientController {
 
     const { name: idpName } = await this.identityProvider.getById(providerUid);
 
-    await this.session.set(uid, { idpId: providerUid, idpName });
+    await this.session.patch(uid, {
+      idpId: providerUid,
+      idpName,
+    });
 
     res.redirect(authorizationUrl);
   }
@@ -81,10 +84,10 @@ export class OidcClientController {
     // BUSINESS: Locally store received identity
     const { acr } = tokenSet.claims();
 
-    this.session.set(uid, { idpIdentity, idpAcr: acr });
+    this.session.patch(uid, { idpIdentity, idpAcr: acr });
 
     // BUSINESS: Redirect to business page
-    const { urlPrefix } = this.config.get<AppConfig>('App');
+    const { urlPrefix } = this.config.get<AppConfig>('App');
     res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
   }
 
