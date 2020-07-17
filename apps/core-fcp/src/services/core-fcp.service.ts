@@ -116,7 +116,7 @@ export class CoreFcpService {
     const spIdentity = { ...idpIdentity, sub: spInteraction.sub };
 
     // Store the changes in session
-    await this.session.store(interactionId, {
+    await this.session.save(interactionId, {
       ...session,
       // Delete idp identity from volatile memory
       idpIdentity: null,
@@ -185,8 +185,8 @@ export class CoreFcpService {
         ctx.query.prompt = overrideValue;
         break;
       case 'POST':
-        /** 
-         * @TODO #167 enhance interface to allow the use of `body` property 
+        /**
+         * @TODO #167 enhance interface to allow the use of `body` property
          * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/167
          * */
         ctx.req['body'].prompt = overrideValue;

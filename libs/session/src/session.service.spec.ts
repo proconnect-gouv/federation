@@ -198,7 +198,7 @@ describe('SessionService', () => {
       // Given
       service['serialize'] = jest.fn();
       // When
-      await service['store'](key, dataMock);
+      await service['save'](key, dataMock);
       // Then
       expect(service['serialize']).toHaveBeenCalledTimes(1);
       expect(service['serialize']).toHaveBeenCalledWith(dataMock);
@@ -207,7 +207,7 @@ describe('SessionService', () => {
       // Given
       service['serialize'] = jest.fn();
       // When
-      await service['store'](key, dataMock);
+      await service['save'](key, dataMock);
       // Then
       expect(redisMock.multi).toHaveBeenCalledTimes(1);
     });
@@ -216,7 +216,7 @@ describe('SessionService', () => {
       const serializeResult = Symbol('serialized result');
       service['serialize'] = jest.fn().mockReturnValue(serializeResult);
       // When
-      await service['store'](key, dataMock);
+      await service['save'](key, dataMock);
       // Then
       expect(multiMock.set).toHaveBeenCalledWith(
         `${cryptographyPrefixMock}${key}`,
@@ -228,7 +228,7 @@ describe('SessionService', () => {
       const serializeResult = Symbol('serialized result');
       service['serialize'] = jest.fn().mockReturnValue(serializeResult);
       // When
-      await service['store'](key, dataMock);
+      await service['save'](key, dataMock);
       // Then
       expect(multiMock.expire).toHaveBeenCalledWith(
         `${cryptographyPrefixMock}${key}`,
@@ -237,7 +237,7 @@ describe('SessionService', () => {
     });
     it('should return true if set was successfull', async () => {
       // When
-      const res = await service['store'](key, dataMock);
+      const res = await service['save'](key, dataMock);
       // Then
       expect(res).toEqual(true);
     });
@@ -245,7 +245,7 @@ describe('SessionService', () => {
       // Given
       multiMock.exec.mockResolvedValue(null);
       // When
-      const res = await service['store'](key, dataMock);
+      const res = await service['save'](key, dataMock);
       // Then
       expect(res).toEqual(false);
     });
@@ -364,13 +364,13 @@ describe('SessionService', () => {
         b: 'B',
       };
       service.get = jest.fn().mockReturnValueOnce(originalSession);
-      service.store = jest.fn();
+      service.save = jest.fn();
       const input = ({ b: 'C' } as unknown) as ISession;
       // When
-      await service.set(key, input);
+      await service.patch(key, input);
       // Then
-      expect(service.store).toHaveBeenCalledTimes(1);
-      expect(service.store).toHaveBeenCalledWith(key, {
+      expect(service.save).toHaveBeenCalledTimes(1);
+      expect(service.save).toHaveBeenCalledWith(key, {
         a: 'A',
         b: 'C',
       });
@@ -413,12 +413,12 @@ describe('SessionService', () => {
         spAcr: 'eidas3',
         spName: 'My SP',
       };
-      service['store'] = jest.fn();
+      service['save'] = jest.fn();
       // When
       service.init(resMock, interactionIdMock, propertiesMock);
       // Then
-      expect(service['store']).toHaveBeenCalledTimes(1);
-      expect(service['store']).toHaveBeenCalledWith(interactionIdMock, {
+      expect(service['save']).toHaveBeenCalledTimes(1);
+      expect(service['save']).toHaveBeenCalledWith(interactionIdMock, {
         ...propertiesMock,
         sessionId: cryptographySessionIdMock,
       });
@@ -435,7 +435,7 @@ describe('SessionService', () => {
         spName: 'My SP',
       };
       service['setCookie'] = jest.fn();
-      service['store'] = jest.fn();
+      service['save'] = jest.fn();
       // When
       service.init(resMock, interactionIdMock, propertiesMock);
       // Then

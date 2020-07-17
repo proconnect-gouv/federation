@@ -104,7 +104,7 @@ export class SessionService {
    * @TODO #145 handle return or throw if persistance fails
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/150
    */
-  async store(interactionId: string, data: ISession): Promise<boolean> {
+  async save(interactionId: string, data: ISession): Promise<boolean> {
     this.logger.debug('store session in redis');
     const serialized = this.serialize(data);
     const key = this.getKey(interactionId);
@@ -135,9 +135,9 @@ export class SessionService {
    * @param key
    * @param newValues
    */
-  async set(key: string, newValues: IPatchSession) {
+  async patch(key: string, newValues: IPatchSession) {
     const session = await this.get(key);
-    this.store(key, { ...session, ...newValues });
+    this.save(key, { ...session, ...newValues });
   }
 
   setCookie(res, name, value) {
@@ -154,13 +154,13 @@ export class SessionService {
     this.setCookie(res, interactionCookieName, interactionId);
     this.setCookie(res, sessionCookieName, sessionId);
 
-    this.store(interactionId, {
+    this.save(interactionId, {
       sessionId,
       ...properties,
     });
   }
 
-  async verify(interactionId, sessionId) {
+  async verify(interactionId: string, sessionId: string) {
     const session = await this.get(interactionId);
 
     if (session.sessionId !== sessionId) {
