@@ -18,6 +18,7 @@ import { AppConfig } from '@fc/app';
 import { CoreFcpService } from '../services';
 import { Interaction } from '../dto';
 import { CoreFcpRoutes } from '../enums';
+import { CoreFcpMissingIdentity } from '../exceptions';
 
 @Controller()
 export class CoreFcpController {
@@ -27,11 +28,11 @@ export class CoreFcpController {
     private readonly identityProvider: IdentityProviderService,
     private readonly coreFcp: CoreFcpService,
     private readonly session: SessionService,
-    private readonly config: ConfigService, 
+    private readonly config: ConfigService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
- 
+
   @Get(CoreFcpRoutes.INTERACTION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('interaction')
@@ -56,7 +57,7 @@ export class CoreFcpController {
     const { interactionId } = req.fc;
     await this.coreFcp.verify(req);
 
-    const urlPrefix =this.config.get<AppConfig>('App').urlPrefix;
+    const urlPrefix = this.config.get<AppConfig>('App').urlPrefix;
     res.redirect(`${urlPrefix}/interaction/${interactionId}/consent`);
   }
 
@@ -86,7 +87,11 @@ export class CoreFcpController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getLogin(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { interactionId } = req.fc;
-    const { spAcr } = await this.session.get(interactionId);
+    const { spAcr, spIdentity } = await this.session.get(interactionId);
+
+    if (!spIdentity) {
+      throw new CoreFcpMissingIdentity();
+    }
 
     this.logger.debug('Sending authentication email to the end-user');
     // send the notification mail to the final user

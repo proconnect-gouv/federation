@@ -62,7 +62,7 @@ describe('CoreFcpService', () => {
 
   const sessionServiceMock = {
     get: jest.fn(),
-    store: jest.fn(),
+    save: jest.fn(),
     delete: jest.fn(),
   };
 
@@ -265,7 +265,7 @@ describe('CoreFcpService', () => {
     it('Should throw if identity storage for service provider fails', () => {
       // Given
       const errorMock = new Error('my error');
-      sessionServiceMock.store.mockRejectedValueOnce(errorMock);
+      sessionServiceMock.save.mockRejectedValueOnce(errorMock);
       // Then
       expect(service.verify(reqMock)).rejects.toThrow(errorMock);
     });

@@ -8,7 +8,6 @@ export class SessionBadDataException extends SessionBaseException {
 
   constructor(error) {
     super();
-    this.originalError = error;
-    this.message = error.message;
+    this.message = error;
   }
 }

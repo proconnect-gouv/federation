@@ -27,8 +27,8 @@ describe('OidcClient Controller', () => {
   } as unknown) as LoggerService;
 
   const sessionServiceMock = {
-    store: jest.fn(),
-    set: jest.fn(),
+    save: jest.fn(),
+    patch: jest.fn(),
     get: jest.fn(),
   };
 
@@ -41,11 +41,11 @@ describe('OidcClient Controller', () => {
   };
 
   const appConfigMock = {
-    urlPrefix: '/api/v2'
+    urlPrefix: '/api/v2',
   };
   const configServiceMock = {
-    get: () => appConfigMock 
-  }
+    get: () => appConfigMock,
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -55,7 +55,7 @@ describe('OidcClient Controller', () => {
         LoggerService,
         SessionService,
         TrackingService,
-        ConfigService ,
+        ConfigService,
         {
           provide: IDENTITY_PROVIDER_SERVICE,
           useValue: identityProviderServiceMock,

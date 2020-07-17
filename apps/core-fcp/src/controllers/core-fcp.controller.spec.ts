@@ -4,9 +4,10 @@ import { IdentityProviderService } from '@fc/identity-provider';
 import { ServiceProviderService } from '@fc/service-provider';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
+import { ConfigService } from '@fc/config';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from '../services';
-import { ConfigService } from '@fc/config';
+import { CoreFcpMissingIdentity } from '../exceptions';
 
 describe('CoreFcpController', () => {
   let coreFcpController: CoreFcpController;
@@ -55,16 +56,15 @@ describe('CoreFcpController', () => {
   };
 
   const sessionServiceMock = {
-    store: jest.fn(),
     get: jest.fn(),
   };
 
   const appConfigMock = {
-    urlPrefix: '/api/v2'
+    urlPrefix: '/api/v2',
   };
   const configServiceMock = {
-    get: () => appConfigMock 
-  }
+    get: () => appConfigMock,
+  };
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -76,7 +76,7 @@ describe('CoreFcpController', () => {
         IdentityProviderService,
         ServiceProviderService,
         SessionService,
-        ConfigService
+        ConfigService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -224,6 +224,22 @@ describe('CoreFcpController', () => {
   });
 
   describe('getLogin', () => {
+    it('should throw an exception if no identity in session', async () => {
+      // Given
+      const req = {
+        fc: { interactionId: interactionIdMock },
+      };
+      const res = {};
+      sessionServiceMock.get.mockResolvedValue({
+        interactionId: interactionIdMock,
+        spAcr: acrMock,
+        spName: spNameMock,
+      });
+      // Then
+      expect(coreFcpController.getLogin(req, res, params)).rejects.toThrow(
+        CoreFcpMissingIdentity,
+      );
+    });
     it('should send an email notification to the end user by calling coreFcp.sendAuthenticationMail', async () => {
       // setup
       const req = {
