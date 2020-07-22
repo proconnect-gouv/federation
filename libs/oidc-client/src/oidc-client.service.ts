@@ -78,7 +78,7 @@ export class OidcClientService {
 
     const privateKeys = config.jwks.keys;
 
-    const publicKeys = privateKeys.map(key => JWK.asKey(key as any).toJWK());
+    const publicKeys = privateKeys.map((key) => JWK.asKey(key as any).toJWK());
 
     return { keys: publicKeys };
   }

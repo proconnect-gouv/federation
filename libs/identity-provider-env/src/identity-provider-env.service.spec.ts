@@ -1,38 +1,91 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { getModelToken } from '@nestjs/mongoose';
-
 import { CryptographyService } from '@fc/cryptography';
-import { IdentityProviderService } from './identity-provider.service';
 import { LoggerService } from '@fc/logger';
+import { ConfigService } from '@fc/config';
+import { IdentityProviderEnvService } from './identity-provider-env.service';
 
-describe('IdentityProviderService', () => {
-  let service: IdentityProviderService;
+describe('IdentityProviderEnvService', () => {
+  let service: IdentityProviderEnvService;
 
   const validIdentityProviderMock = {
-    _doc: {
-      uid: 'uid',
-      name: 'provider1',
-      active: true,
-      display: false,
-      clientID: 'clientID',
+    uid: 'corev2',
+    name: 'corev2',
+    active: true,
+    display: true,
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    client_id: 'client_id',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    discoveryUrl:
+      'https://corev2.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_signed_response_alg: 'ES256',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    post_logout_redirect_uris: [
+      'https://fsp1v2.docker.dev-franceconnect.fr/logout-callback',
+    ],
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    redirect_uris: [
+      'https://fsp1v2.docker.dev-franceconnect.fr/login-callback',
+    ],
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    response_types: ['code'],
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    token_endpoint_auth_method: 'client_secret_post',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    revocation_endpoint_auth_method: 'client_secret_post',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_encrypted_response_alg: 'RSA-OAEP',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_encrypted_response_enc: 'A256GCM',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    userinfo_encrypted_response_alg: 'RSA-OAEP',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    userinfo_encrypted_response_enc: 'A256GCM',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    userinfo_signed_response_alg: 'ES256',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    jwks_uri: 'https://fsp1v2.docker.dev-franceconnect.fr/jwks_uri',
+  };
+
+  const env = {
+    provider: {
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: 'client_id',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+      discoveryUrl:
+        'https://corev2.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      discoveryUrl: 'https://corev2.docker.dev-franceconnect.fr/well_known_url',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      id_token_signed_response_alg: 'HS256',
+      id_token_signed_response_alg: 'ES256',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       post_logout_redirect_uris: [
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
+        'https://fsp1v2.docker.dev-franceconnect.fr/logout-callback',
       ],
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uris: [
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
+        'https://fsp1v2.docker.dev-franceconnect.fr/login-callback',
       ],
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -57,14 +110,10 @@ describe('IdentityProviderService', () => {
       userinfo_encrypted_response_enc: 'A256GCM',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_signed_response_alg: 'HS256',
-    },
-  };
-
-  const invalidIdentityProviderMock = {
-    _doc: {
-      ...validIdentityProviderMock._doc,
-      active: 'NOT_A_BOOLEAN',
+      userinfo_signed_response_alg: 'ES256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      jwks_uri: 'https://fsp1v2.docker.dev-franceconnect.fr/jwks_uri',
     },
   };
 
@@ -79,12 +128,9 @@ describe('IdentityProviderService', () => {
     decryptClientSecret: jest.fn(),
   };
 
-  const repositoryMock = {
-    find: jest.fn(),
-    exec: jest.fn(),
+  const configMock = {
+    get: jest.fn(),
   };
-
-  const identityProviderModel = getModelToken('IdentityProvider');
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -94,24 +140,22 @@ describe('IdentityProviderService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CryptographyService,
-        IdentityProviderService,
-        {
-          provide: identityProviderModel,
-          useValue: repositoryMock,
-        },
+        IdentityProviderEnvService,
         LoggerService,
+        ConfigService,
       ],
     })
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(ConfigService)
+      .useValue(configMock)
       .compile();
 
-    service = module.get<IdentityProviderService>(IdentityProviderService);
-
-    repositoryMock.exec.mockResolvedValueOnce(identityProviderListMock);
-    repositoryMock.find.mockReturnValueOnce(repositoryMock);
+    service = module.get<IdentityProviderEnvService>(
+      IdentityProviderEnvService,
+    );
   });
 
   it('should be defined', () => {
@@ -122,22 +166,18 @@ describe('IdentityProviderService', () => {
     it('should return identity provider with change legacy property name by openid property name', () => {
       // setup
       const expected = {
-        ...validIdentityProviderMock._doc,
-        // oidc param name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id: 'clientID',
+        ...validIdentityProviderMock,
         // oidc param name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         client_secret: 'client_secret',
       };
-      delete expected.clientID;
 
       // action
       cryptographyMock.decryptClientSecret.mockReturnValueOnce(
         expected.client_secret,
       );
       const result = service['legacyToOpenIdPropertyName'](
-        validIdentityProviderMock._doc,
+        validIdentityProviderMock,
       );
 
       // expect
@@ -154,32 +194,26 @@ describe('IdentityProviderService', () => {
       expect(result).toBeInstanceOf(Promise);
     });
 
-    it('should have called find once', async () => {
-      // action
-      await service['findAllIdentityProvider']();
-
-      // expect
-      expect(repositoryMock.find).toHaveBeenCalledTimes(1);
-    });
-
     it('should return result of type list', async () => {
+      // setup
+      configMock.get.mockReturnValueOnce(env);
+
       // action
       const result = await service['findAllIdentityProvider']();
 
       // expect
-      expect(result).toEqual(identityProviderListMock.map(({ _doc }) => _doc));
+      expect(result).toEqual(identityProviderListMock.map((config) => config));
     });
 
-    it('should log a warning if an entry is exluded by the DTO', async () => {
+    it('should log a warning if an entry is not validated by the DTO', async () => {
       // setup
-      const invalidIdentityProviderListMock = [
-        validIdentityProviderMock,
-        invalidIdentityProviderMock,
-      ];
-
-      repositoryMock.exec = jest
-        .fn()
-        .mockResolvedValueOnce(invalidIdentityProviderListMock);
+      const invalidEnvMock = {
+        ...env.provider,
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        jwks_uri: 'not an url',
+      };
+      configMock.get.mockReturnValueOnce(invalidEnvMock);
 
       // action
       await service['findAllIdentityProvider']();
@@ -188,33 +222,25 @@ describe('IdentityProviderService', () => {
       expect(loggerMock.warn).toHaveBeenCalledTimes(1);
     });
 
-    it('should filter out any entry exluded by the DTO', async () => {
+    it('should log a warning if an entry is exluded by the DTO', async () => {
       // setup
-      const invalidIdentityProviderListMock = [
-        validIdentityProviderMock,
-        invalidIdentityProviderMock,
-      ];
-
-      repositoryMock.exec = jest
-        .fn()
-        .mockResolvedValueOnce(invalidIdentityProviderListMock);
+      const invalidEnvMock = {
+        ...env.provider,
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        not_validated: 'by DTO',
+      };
+      configMock.get.mockReturnValueOnce(invalidEnvMock);
 
       // action
-      const result = await service['findAllIdentityProvider']();
+      await service['findAllIdentityProvider']();
 
       // expect
-      expect(result).toEqual(identityProviderListMock.map(({ _doc }) => _doc));
+      expect(loggerMock.warn).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('getList', () => {
-    beforeEach(() => {
-      service['findAllIdentityProvider'] = jest
-        .fn()
-        .mockResolvedValueOnce(
-          identityProviderListMock.map(({ _doc }) => _doc),
-        );
-    });
     it('should resolve', async () => {
       // action
       const result = service.getList();
@@ -225,18 +251,17 @@ describe('IdentityProviderService', () => {
 
     it('should return a list of valids identity providers', async () => {
       // setup
+      configMock.get.mockReturnValueOnce(env);
+
+      // setup
       const expected = [
         {
-          ...validIdentityProviderMock._doc,
-          // oidc param name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id: 'clientID',
+          ...validIdentityProviderMock,
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: 'client_secret',
         },
       ];
-      delete expected[0].clientID;
 
       // action
       cryptographyMock.decryptClientSecret.mockReturnValueOnce(
@@ -282,7 +307,7 @@ describe('IdentityProviderService', () => {
 
     it('should not call findAll method if refreshCache is not set and cache exists', async () => {
       // Given
-      service['listCache'] = [
+      service['identityProviderCache'] = [
         {
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -298,7 +323,7 @@ describe('IdentityProviderService', () => {
       // When
       const result = await service.getList();
       // Then
-      expect(result).toBe(service['listCache']);
+      expect(result).toBe(service['identityProviderCache']);
       expect(service['findAllIdentityProvider']).toHaveBeenCalledTimes(0);
     });
   });

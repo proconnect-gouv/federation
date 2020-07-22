@@ -24,7 +24,10 @@ describe('No SSO', () => {
     checkInformations(userInfos);
 
     //   ...Then log  into SP "B"
-    basicSuccessScenario({ ...loginInfo, sp: 'UD2V2' });
+    basicSuccessScenario({
+      ...loginInfo,
+      sp: 'FS2',
+    });
 
     // Then
     checkInformations(userInfos);
