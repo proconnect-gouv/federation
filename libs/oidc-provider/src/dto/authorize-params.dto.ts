@@ -24,7 +24,8 @@ export class AuthorizeParamsDTO {
   readonly response_type: string;
 
   @IsString()
-  readonly nonce: string;
+  @IsOptional()
+  readonly nonce?: string;
 
   @IsString()
   readonly state: string;

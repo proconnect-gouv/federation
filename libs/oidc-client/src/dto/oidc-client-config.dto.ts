@@ -4,12 +4,12 @@
 import {
   IsArray,
   IsNumber,
-  IsOptional,
   IsObject,
   IsPositive,
   ValidateNested,
   IsString,
   MinLength,
+  IsOptional,
 } from 'class-validator';
 import { ClientMetadata } from 'openid-client';
 import { JSONWebKeySet } from 'jose';

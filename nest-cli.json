@@ -281,6 +281,20 @@
       "sourceRoot": "instances/mock-service-provider-high/src",
       "compilerOptions": {
         "tsConfigPath": "instances/mock-service-provider-high/tsconfig.app.json"
+      },
+      "assets": [
+        "../../../apps/**/*.ejs",
+        "../../../apps/**/*.css",
+        "../../../apps/**/*.svg"
+      ]
+    },
+    "identity-provider-env": {
+      "type": "library",
+      "root": "libs/identity-provider-env",
+      "entryFile": "index",
+      "sourceRoot": "libs/identity-provider-env/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/identity-provider-env/tsconfig.lib.json"
       }
     },
     "tracking": {
