@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 
@@ -15,18 +14,38 @@ describe('ServiceProviderService', () => {
       key: '123',
       active: true,
       name: 'foo',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: "This is an encrypted string, don't ask !",
       scopes: ['openid', 'profile'],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uris: ['https://sp-site.fr/redirect_uris'],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       post_logout_redirect_uris: [
         'https://sp-site.fr/post_logout_redirect_uris',
       ],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_signed_response_alg: 'ES256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_encrypted_response_alg: 'RS256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_encrypted_response_enc: 'AES256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       userinfo_encrypted_response_alg: 'RS256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       userinfo_encrypted_response_enc: 'AES256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       userinfo_signed_response_alg: 'ES256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       jwks_uri: 'https://sp-site.fr/jwks-uri',
     },
   };
@@ -93,7 +112,11 @@ describe('ServiceProviderService', () => {
       // setup
       const expected = {
         ...validServiceProviderMock._doc,
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_id: validServiceProviderMock._doc.key,
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_secret: 'client_secret',
         scope: validServiceProviderMock._doc.scopes.join(' '),
       };
@@ -198,7 +221,11 @@ describe('ServiceProviderService', () => {
       const expected = [
         {
           ...validServiceProviderMock._doc,
+          // oidc param name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: '123',
+          // oidc param name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: 'client_secret',
           scope: 'openid profile',
         },
@@ -220,8 +247,16 @@ describe('ServiceProviderService', () => {
     it('should return service provider list if serviceProviderListCache is not defined', async () => {
       // setup
       service['listCache'] = ([
-        { client_id: 'foo' },
-        { client_id: 'bar' },
+        {
+          // oidc param name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          client_id: 'foo',
+        },
+        {
+          // oidc param name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          client_id: 'bar',
+        },
       ] as unknown) as CustomClientMetadata[];
       service['findAllServiceProvider'] = jest.fn();
 
@@ -237,7 +272,11 @@ describe('ServiceProviderService', () => {
       const expected = [
         {
           ...validServiceProviderMock._doc,
+          // oidc param name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: '123',
+          // oidc param name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: 'client_secret',
           scope: 'openid profile',
         },
@@ -260,9 +299,21 @@ describe('ServiceProviderService', () => {
   describe('getById', () => {
     // Given
     const spListMock = [
-      { client_id: 'wizz' },
-      { client_id: 'foo' },
-      { client_id: 'bar' },
+      {
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: 'wizz',
+      },
+      {
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: 'foo',
+      },
+      {
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: 'bar',
+      },
     ];
 
     it('should return an existing SP', async () => {
@@ -272,7 +323,11 @@ describe('ServiceProviderService', () => {
       // When
       const result = await service.getById(idMock);
       // Then
-      expect(result).toEqual({ client_id: 'foo' });
+      expect(result).toEqual({
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: 'foo',
+      });
     });
     it('should return undefined for non existing SP', async () => {
       // Given
@@ -301,7 +356,11 @@ describe('ServiceProviderService', () => {
       // setup
       const expected = {
         ...validServiceProviderMock._doc,
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_id: '123',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_secret: 'client_secret',
         scope: 'openid profile',
       };

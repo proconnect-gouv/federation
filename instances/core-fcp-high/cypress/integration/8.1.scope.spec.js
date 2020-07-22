@@ -1,4 +1,6 @@
-import { getAuthorizeUrl } from './mire.utils';
+import {
+  getAuthorizeUrl
+} from './mire.utils';
 
 describe('Scope', () => {
   it('should return to the SP with an "invalid_scope" error if the query contains scopes that are not whitelisted for this SP', () => {
@@ -8,11 +10,13 @@ describe('Scope', () => {
       scope: 'openid profile',
     });
 
-    cy.visit(url, { failOnStatusCode: false });
+    cy.visit(url, {
+      failOnStatusCode: false
+    });
 
     cy.url().should(
       'match',
-      new RegExp(`${Cypress.env('UD1V2_ROOT_URL')}/authentication/error`),
+      new RegExp(`${Cypress.env('FS1_ROOT_URL')}/error`),
     );
 
     cy.get('#error-title').contains('invalid_scope');

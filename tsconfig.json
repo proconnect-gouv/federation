@@ -184,6 +184,12 @@
       ],
       "@fc/app/*": [
         "libs/app/src/*"
+      ],
+      "@fc/identity-provider-env": [
+        "libs/identity-provider-env/src"
+      ],
+      "@fc/identity-provider-env/*": [
+        "libs/identity-provider-env/src/*"
       ]
     }
   },
