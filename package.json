@@ -170,7 +170,9 @@
       "@fc/tracking/(.*)": "<rootDir>/libs/tracking/src/$1",
       "@fc/tracking": "<rootDir>/libs/tracking/src",
       "@fc/app/(.*)": "<rootDir>/libs/app/src/$1",
-      "@fc/app": "<rootDir>/libs/app/src"
+      "@fc/app": "<rootDir>/libs/app/src",
+      "@fc/identity-provider-env/(.*)": "<rootDir>/libs/identity-provider-env/src/$1",
+      "@fc/identity-provider-env": "<rootDir>/libs/identity-provider-env/src"
     },
     "preset": "ts-jest"
   }

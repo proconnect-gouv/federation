@@ -1,7 +1,7 @@
 import { basicSuccessScenario, checkInformations } from './mire.utils';
 
 describe('Successful scenarios', () => {
-  it('should log in to User Dashboard', () => {
+  it('should log in to Service Provider Example', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
@@ -19,7 +19,7 @@ describe('Successful scenarios', () => {
     });
   });
 
-  it('should log in to User Dashboard with POST /authorize', () => {
+  it('should log in to Service Provider Example with POST /authorize', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
@@ -38,7 +38,7 @@ describe('Successful scenarios', () => {
     });
   });
 
-  it('should log in to User Dashboard a "présumé né jour"', () => {
+  it('should log in to Service Provider Example a "présumé né jour"', () => {
     basicSuccessScenario({
       userName: 'étranger_présumé_né_jour',
       password: '123',
@@ -55,7 +55,7 @@ describe('Successful scenarios', () => {
     });
   });
 
-  it('should log in to User Dashboard a "présumé né jour et mois"', () => {
+  it('should log in to Service Provider Example a "présumé né jour et mois"', () => {
     basicSuccessScenario({
       userName: 'étranger_présumé_né_jour_et_mois',
       password: '123',

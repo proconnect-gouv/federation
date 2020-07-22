@@ -4,6 +4,7 @@ import {
   MockServiceProviderConfig,
 } from '@fc/mock-service-provider';
 import { ConfigModule } from '@fc/config';
+import { LoggerModule } from '@fc/logger';
 import configuration from './config';
 
 @Module({
@@ -14,6 +15,8 @@ import configuration from './config';
       config: configuration,
       schema: MockServiceProviderConfig,
     }),
+    // 2. Load logger module next
+    LoggerModule,
     // 3. Load other modules
     MockServiceProviderModule,
   ],

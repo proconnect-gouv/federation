@@ -13,12 +13,10 @@
     "FC_INTERACTION_URL": "https://corev2.docker.dev-franceconnect.fr/api/v2/interaction",
     "FI_ROOT_URL": "https://fip1v2.docker.dev-franceconnect.fr",
     "FI_INTERACTION_URL": "https://fip1v2.docker.dev-franceconnect.fr/interaction",
-    "UD1V2_ROOT_URL": "https://ud1v2.docker.dev-franceconnect.fr",
-    "UD1V2_CLIENT_ID": "a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc",
-    "UD2V2_ROOT_URL": "https://ud2v2.docker.dev-franceconnect.fr",
-    "UD2V2_CLIENT_ID": "eisa1Kie5laex2ooyeiquu7eibohneidupiibai8shaepa2oayuh7Ooquish7ooN",
-    "FS_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
-    "FS_SECRET": "99c1105d041adda2c47835a82f6be9dc13e2a2731e302e6f214075aef09f5abb"
+    "FS1_ROOT_URL": "https://fsp1v2.docker.dev-franceconnect.fr",
+    "FS1_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
+    "FS2_ROOT_URL": "https://fsp2v2.docker.dev-franceconnect.fr",
+    "FS2_CLIENT_ID": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775"
   },
   "ignoreTestFiles": "*.util.js"
 }

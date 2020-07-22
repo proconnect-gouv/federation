@@ -7,11 +7,16 @@ import * as QueryString from 'querystring';
  *  - idpId
  *  - userName
  *  - password
- *  - sp Name of the SP, possible values: UD1V2, UD2V2
+ *  - sp Name of the SP, possible values: FS1, FS2
  *  - acr_values
  */
 export function basicSuccessScenario(params) {
-  const { idpId, userName, sp = 'UD1V2', method } = params;
+  const {
+    idpId,
+    userName,
+    sp = 'FS1',
+    method
+  } = params;
   const password = params.password || '123';
 
   const serviceProvider = {
@@ -186,11 +191,15 @@ export function checkInformations(identity) {
 }
 
 export function basicErrorScenario(params) {
-  const { idpId, errorCode, eidasLevel } = params;
+  const {
+    idpId,
+    errorCode,
+    eidasLevel
+  } = params;
   const password = '123';
 
   // FS: Click on FC button
-  cy.visit(`${Cypress.env('UD1V2_ROOT_URL')}`);
+  cy.visit(`${Cypress.env('FS1_ROOT_URL')}`);
 
   cy.get('img[alt="Se connecter à FranceConnect"]').click();
 
@@ -218,24 +227,23 @@ export function getAuthorizeUrl(overrideParams = {}) {
   const baseAuthorizeParams = {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    client_id:
-      'a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc',
+    client_id: `${Cypress.env('FS1_CLIENT_ID')}`,
     scope: 'openid',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     response_type: 'code',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uri: `${Cypress.env(
-      'UD1V2_ROOT_URL',
-    )}/authentication/login-callback`,
+    redirect_uri: `${Cypress.env('FS1_ROOT_URL')}/login-callback`,
     state: 'stateTraces',
-    nonce: 'nonceTraces',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values: 'eidas3',
   };
-  const params = { ...baseAuthorizeParams, ...overrideParams };
+  const params = {
+    ...baseAuthorizeParams,
+    ...overrideParams
+  };
 
   return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;
 }
