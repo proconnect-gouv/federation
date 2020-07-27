@@ -8,7 +8,7 @@ describe('Interaction steps discarding', () => {
     cy.hasError('Y150003');
   });
   it('should trigger error Y000004 when going to /login with a session', () => {
-    const SP_URL = Cypress.env('UD1V2_ROOT_URL');
+    const SP_URL = Cypress.env('SP1_ROOT_URL');
 
     cy.visit(SP_URL);
     cy.get('#connect-GET').click();

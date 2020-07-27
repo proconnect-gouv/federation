@@ -16,7 +16,7 @@ describe('Scope', () => {
 
     cy.url().should(
       'match',
-      new RegExp(`${Cypress.env('FS1_ROOT_URL')}/error`),
+      new RegExp(`${Cypress.env('SP1_ROOT_URL')}/error`),
     );
 
     cy.get('#error-title').contains('invalid_scope');

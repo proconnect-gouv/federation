@@ -53,12 +53,12 @@ core-fcp-high:
     - docker-stack exec corev2 mkdir -p /tmp/.pm2/logs
     - docker-stack exec csmr-hsm mkdir -p /tmp/.pm2/logs
     # Build like for prod
-    - docker-stack exec fsp1v2 yarn build # Will build for fsp2v2 as well
+    - docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
     - docker-stack exec corev2 yarn build core-fcp-high
     - docker-stack exec csmr-hsm yarn build csmr-hsm-high
     # Launch like prod
-    - docker-stack exec fsp1v2 yarn start:prod &
-    - docker-stack exec fsp2v2 yarn start:prod &
+    - docker-stack exec fsp1v2 yarn start:prod:mock-service-provider-high &
+    - docker-stack exec fsp2v2 yarn start:prod:mock-service-provider-high &
     - docker-stack exec corev2 yarn start:prod:core-fcp-high &
     - docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress

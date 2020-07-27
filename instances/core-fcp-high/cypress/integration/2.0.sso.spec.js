@@ -26,7 +26,7 @@ describe('No SSO', () => {
     //   ...Then log  into SP "B"
     basicSuccessScenario({
       ...loginInfo,
-      sp: 'FS2',
+      sp: 'SP2',
     });
 
     // Then
