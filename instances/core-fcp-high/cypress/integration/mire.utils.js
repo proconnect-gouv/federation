@@ -7,14 +7,14 @@ import * as QueryString from 'querystring';
  *  - idpId
  *  - userName
  *  - password
- *  - sp Name of the SP, possible values: FS1, FS2
+ *  - sp Name of the SP, possible values: SP1, SP2
  *  - acr_values
  */
 export function basicSuccessScenario(params) {
   const {
     idpId,
     userName,
-    sp = 'FS1',
+    sp = 'SP1',
     method
   } = params;
   const password = params.password || '123';
@@ -61,7 +61,7 @@ export function basicSuccessScenario(params) {
   cy.get(`#idp-${idpId}`).click();
 
   // FI: Authenticate
-  cy.url().should('include', `${Cypress.env('FI_ROOT_URL')}/interaction`);
+  cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
@@ -199,7 +199,7 @@ export function basicErrorScenario(params) {
   const password = '123';
 
   // FS: Click on FC button
-  cy.visit(`${Cypress.env('FS1_ROOT_URL')}`);
+  cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
   cy.get('img[alt="Se connecter à FranceConnect"]').click();
 
@@ -211,7 +211,7 @@ export function basicErrorScenario(params) {
   cy.get(`#idp-${idpId}`).click();
 
   // FI: Authenticate
-  cy.url().should('include', `${Cypress.env('FI_ROOT_URL')}/interaction`);
+  cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
   cy.get('input[name="login"]').clear().type(errorCode);
   cy.get('input[name="password"]').clear().type(password);
 
@@ -227,14 +227,14 @@ export function getAuthorizeUrl(overrideParams = {}) {
   const baseAuthorizeParams = {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    client_id: `${Cypress.env('FS1_CLIENT_ID')}`,
+    client_id: `${Cypress.env('SP1_CLIENT_ID')}`,
     scope: 'openid',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     response_type: 'code',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uri: `${Cypress.env('FS1_ROOT_URL')}/login-callback`,
+    redirect_uri: `${Cypress.env('SP1_ROOT_URL')}/login-callback`,
     state: 'stateTraces',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention

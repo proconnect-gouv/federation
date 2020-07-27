@@ -14,6 +14,7 @@
     "start:debug": "NODE_ENV=development nest start --debug --watch",
     "start:prod:core-fcp-high": "node dist/instances/core-fcp-high/main.js > /tmp/.pm2/logs/corev2-out-0.log 2> /tmp/.pm2/logs/corev2-error-0.log",
     "start:prod:csmr-hsm-high": "node dist/instances/csmr-hsm-high/main.js > /tmp/.pm2/logs/csmr-hsm-high-out-0.log 2> /tmp/.pm2/csmr-hsm-high-error-0.log",
+    "start:prod:mock-service-provider-high": "node dist/instances/mock-service-provider-high/main.js > /tmp/.pm2/logs/mock-service-provider-high-out-0.log 2> /tmp/.pm2/mock-service-provider-high-error-0.log",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
