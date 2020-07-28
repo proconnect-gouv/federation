@@ -1,17 +1,19 @@
-import {
-  getAuthorizeUrl
-} from './mire.utils';
+import { getAuthorizeUrl } from './mire.utils';
 
 describe('Scope', () => {
   it('should return to the SP with an "invalid_scope" error if the query contains scopes that are not whitelisted for this SP', () => {
+    // First visit SP home page to initialize its session.
+    cy.visit(Cypress.env('SP1_ROOT_URL'));
+
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const url = getAuthorizeUrl({
       scope: 'openid profile',
     });
 
+    // Visit forged /authorize URL
     cy.visit(url, {
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     cy.url().should(

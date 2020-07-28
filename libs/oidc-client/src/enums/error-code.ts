@@ -13,6 +13,10 @@
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/140
  */
 export enum ErrorCode {
+  RUNTIME = 0,
   DISABLED_PROVIDER = 17,
   MISSING_PROVIDER = 19,
+  MISSING_STATE = 21,
+  MISSING_CODE = 25,
+  INVALID_STATE = 22,
 }

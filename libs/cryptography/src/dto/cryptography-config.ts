@@ -1,4 +1,4 @@
-import { IsString, IsNumber, Min } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CryptographyConfig {
   @IsString()
@@ -6,8 +6,4 @@ export class CryptographyConfig {
 
   @IsString()
   readonly identityHashSalt: string;
-
-  @IsNumber()
-  @Min(32)
-  readonly sessionIdLength: number;
 }

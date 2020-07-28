@@ -34,12 +34,18 @@ export class OidcClientController {
 
   @Post(OidcClientRoutes.REDIRECT_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async redirectToIdp(@Res() res, @Body() body: RedirectToIdp) {
-    // acr_values is an oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { uid, scope, providerUid, acr_values } = body;
+  async redirectToIdp(@Res() res, @Req() req, @Body() body: RedirectToIdp) {
+    const {
+      state,
+      scope,
+      providerUid,
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values,
+    } = this.oidcClient.buildAuthorizeParameters(body);
 
     const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
+      state,
       scope,
       providerUid,
       // acr_values is an oidc defined variable name
@@ -49,9 +55,10 @@ export class OidcClientController {
 
     const { name: idpName } = await this.identityProvider.getById(providerUid);
 
-    await this.session.patch(uid, {
+    await this.session.patch(req.fc.interactionId, {
       idpId: providerUid,
       idpName,
+      idpState: state,
     });
 
     res.redirect(authorizationUrl);
@@ -66,9 +73,14 @@ export class OidcClientController {
   ) {
     const { providerUid } = params;
     const uid = req.fc.interactionId;
+    const { idpState } = await this.session.get(uid);
 
     // OIDC: call idp's /token endpoint
-    const tokenSet = await this.oidcClient.getTokenSet(req, providerUid);
+    const tokenSet = await this.oidcClient.getTokenSet(
+      req,
+      providerUid,
+      idpState,
+    );
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { access_token: accessToken } = tokenSet;

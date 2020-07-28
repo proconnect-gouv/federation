@@ -98,12 +98,8 @@ export class CryptographyService {
     return `${hmac.digest('hex')}v2`;
   }
 
-  genSessionId() {
-    const { sessionIdLength } = this.config.get<CryptographyConfig>(
-      'Cryptography',
-    );
-
-    return randomBytes(sessionIdLength).toString('base64');
+  genRandomString(length: number) {
+    return randomBytes(length).toString('base64');
   }
 
   /**
