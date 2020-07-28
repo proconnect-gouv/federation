@@ -12,4 +12,5 @@ export default {
   jwks: {
     keys: [JSON.parse(process.env.CRYPTO_ENC_LOCALE_PRIV_KEY)],
   },
+  stateLength: 16,
 } as OidcClientConfig;

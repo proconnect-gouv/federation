@@ -12,4 +12,5 @@ export default {
   jwks: {
     keys: [JSON.parse(process.env.JWKS)],
   },
+  stateLength: 32,
 } as OidcClientConfig;

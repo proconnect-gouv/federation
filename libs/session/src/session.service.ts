@@ -146,10 +146,13 @@ export class SessionService {
   }
 
   init(res, interactionId, properties) {
-    const sessionId = this.cryptography.genSessionId();
-    const { interactionCookieName, sessionCookieName } = this.config.get<
-      SessionConfig
-    >('Session');
+    const {
+      interactionCookieName,
+      sessionCookieName,
+      sessionIdLength,
+    } = this.config.get<SessionConfig>('Session');
+
+    const sessionId = this.cryptography.genRandomString(sessionIdLength);
 
     this.setCookie(res, interactionCookieName, interactionId);
     this.setCookie(res, sessionCookieName, sessionId);
@@ -171,5 +174,16 @@ export class SessionService {
   refresh(key: string) {
     const { lifetime } = this.config.get<SessionConfig>('Session');
     this.redis.expire(key, lifetime);
+  }
+
+  /**
+   * @todo #179
+   * Temporary helper before we refacto session module
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/179
+   */
+  getId(req) {
+    const { interactionCookieName } = this.config.get<SessionConfig>('Session');
+
+    return req.signedCookies[interactionCookieName];
   }
 }

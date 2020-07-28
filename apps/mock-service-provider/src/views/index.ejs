@@ -40,7 +40,7 @@
             <input type="hidden" name="response_type" value="code" />
             <input type="hidden" name="redirect_uri"
               value="https://fsp1v2.docker.dev-franceconnect.fr/login-callback" />
-            <input type="hidden" name="state" value="stateTraces" />
+            <input type="hidden" name="state" value="<%= state %>" />
             <input type="hidden" name="acr_values" value="eidas2" />
 
             <input type="submit" value="connexion" width="160px" id="connect-POST" />

@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
+import { SessionService } from '@fc/session';
+import { CryptographyService } from '@fc/cryptography';
 import { MockServiceProviderController } from './mock-service-provider.controller';
 import { MockServiceProviderLoginCallbackException } from './exceptions';
 
@@ -14,6 +16,7 @@ describe('MockServiceProviderController', () => {
     getTokenSet: jest.fn(),
     getUserInfo: jest.fn(),
     wellKnownKeys: jest.fn(),
+    buildAuthorizeParameters: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -26,15 +29,39 @@ describe('MockServiceProviderController', () => {
     error_description: 'error_description',
   };
 
+  const sessionMock = {
+    patch: jest.fn(),
+    get: jest.fn(),
+    init: jest.fn(),
+    getId: jest.fn(),
+  };
+
+  const randomStringMock = 'randomStringMockValue';
+  const stateMock = randomStringMock;
+  const sessionIdMock = randomStringMock;
+
+  const cryptographyMock = {
+    genRandomString: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MockServiceProviderController],
-      providers: [OidcClientService, LoggerService],
+      providers: [
+        OidcClientService,
+        LoggerService,
+        SessionService,
+        CryptographyService,
+      ],
     })
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
+      .overrideProvider(CryptographyService)
+      .useValue(cryptographyMock)
       .compile();
 
     controller = module.get<MockServiceProviderController>(
@@ -45,7 +72,29 @@ describe('MockServiceProviderController', () => {
       redirect: jest.fn(),
     };
 
+    req = {
+      fc: {
+        interactionId: 'interactionIdMock',
+      },
+    };
+
     jest.resetAllMocks();
+
+    oidcClientServiceMock.buildAuthorizeParameters.mockReturnValue({
+      state: stateMock,
+      scope: 'scopeMock',
+      providerUid: 'providerUidMock',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'acrMock',
+    });
+
+    sessionMock.get.mockResolvedValue({
+      idpState: stateMock,
+    });
+
+    sessionMock.getId.mockReturnValue(sessionIdMock);
+
+    cryptographyMock.genRandomString.mockReturnValue(randomStringMock);
   });
 
   it('should be defined', () => {
@@ -55,11 +104,12 @@ describe('MockServiceProviderController', () => {
   describe('index', () => {
     it('Should return front title', async () => {
       // action
-      const result = await controller.index();
+      const result = await controller.index(req);
 
       // assert
       expect(result).toEqual({
         titleFront: 'Mock Service Provider',
+        state: stateMock,
       });
     });
   });
@@ -75,7 +125,7 @@ describe('MockServiceProviderController', () => {
       );
 
       // action
-      await controller.login(res);
+      await controller.login(req, res);
 
       // assert
       expect(oidcClientServiceMock.getAuthorizeUrl).toHaveBeenCalledTimes(1);
@@ -89,6 +139,7 @@ describe('MockServiceProviderController', () => {
       // setup
       const accessToken = 'accest_token';
       const providerUid = 'corev2';
+      const query = {};
       oidcClientServiceMock.getTokenSet.mockReturnValueOnce({
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -106,13 +157,14 @@ describe('MockServiceProviderController', () => {
       });
 
       // action
-      const result = await controller.loginCallback(req, res);
+      const result = await controller.loginCallback(req, res, query);
 
       // assert
       expect(oidcClientServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.getTokenSet).toHaveBeenCalledWith(
         req,
         providerUid,
+        stateMock,
       );
       expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledWith(
@@ -134,14 +186,32 @@ describe('MockServiceProviderController', () => {
     it('Should redirect to the error page if getTokenSet throw an error', async () => {
       // setup
       oidcClientServiceMock.getTokenSet.mockRejectedValue(oidcErrorMock);
+      const query = {};
 
       // action
-      await controller.loginCallback(req, res);
+      await controller.loginCallback(req, res, query);
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
         '/error?error=error&error_description=error_description',
+      );
+    });
+
+    it('should redirect to the error page if error params are in the callback url', async () => {
+      // Given
+      const query = {
+        error: 'some_error',
+        // oidc spec defined property
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: 'some error description',
+      };
+      // When
+      controller.loginCallback(req, res, query);
+      // Then
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/error?error=some_error&error_description=some error description',
       );
     });
 
@@ -157,9 +227,10 @@ describe('MockServiceProviderController', () => {
         claims: jest.fn().mockReturnValueOnce({ acr: 'foo' }),
       });
       oidcClientServiceMock.getUserInfo.mockRejectedValue(oidcErrorMock);
+      const query = {};
 
       // action
-      await controller.loginCallback(req, res);
+      await controller.loginCallback(req, res, query);
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
@@ -171,10 +242,11 @@ describe('MockServiceProviderController', () => {
     it('Should throw mock service provider exception if error is not an instance of OPError', () => {
       // setup
       oidcClientServiceMock.getTokenSet.mockRejectedValue({});
+      const query = {};
 
       // assert
       expect(
-        async () => await controller.loginCallback(req, res),
+        async () => await controller.loginCallback(req, res, query),
       ).rejects.toThrow(MockServiceProviderLoginCallbackException);
     });
   });

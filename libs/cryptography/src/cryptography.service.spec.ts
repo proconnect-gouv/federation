@@ -280,25 +280,22 @@ describe('CryptographyService', () => {
     });
   });
 
-  describe('genSessionId', () => {
-    it('should get session id length from config', () => {
-      // When
-      service.genSessionId();
-      // Then
-      expect(configMock.get).toHaveBeenCalledTimes(1);
-    });
+  describe('genRandomString', () => {
     it('should return a string the expected number of bytes', () => {
+      // Given
+      const lengthMock = 42;
       // When
-      const result = service.genSessionId();
+      const result = service.genRandomString(lengthMock);
       // Then
       expect(Buffer.from(result, 'base64')).toHaveLength(42);
     });
 
     it('should call crypto.randomBytes with config parameter', () => {
       // Given
+      const lengthMock = 42;
       const spy = jest.spyOn(crypto, 'randomBytes');
       // When
-      service.genSessionId();
+      service.genRandomString(lengthMock);
       // Then
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(42);
@@ -306,11 +303,12 @@ describe('CryptographyService', () => {
 
     it('should return result from crypto.randomBytes', () => {
       // Given
+      const lengthMock = 32;
       const value = Buffer.from('foobar', 'utf8');
       const valueAsBase64 = value.toString('base64');
       jest.spyOn(crypto, 'randomBytes').mockImplementationOnce(() => value);
       // When
-      const result = service.genSessionId();
+      const result = service.genRandomString(lengthMock);
       // Then
       expect(result).toBe(valueAsBase64);
     });
