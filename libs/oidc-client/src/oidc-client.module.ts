@@ -4,6 +4,7 @@
 import { Module, DynamicModule, Type } from '@nestjs/common';
 import { SessionModule, SessionService } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
+import { CryptographyModule } from '@fc/cryptography';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import { OidcClientService } from './oidc-client.service';
@@ -17,7 +18,12 @@ export class OidcClientModule {
   ): DynamicModule {
     return {
       module: OidcClientModule,
-      imports: [identityProviderModule, SessionModule, TrackingModule.forLib()],
+      imports: [
+        identityProviderModule,
+        SessionModule,
+        CryptographyModule,
+        TrackingModule.forLib(),
+      ],
       providers: [
         {
           provide: IDENTITY_PROVIDER_SERVICE,

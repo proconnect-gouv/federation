@@ -4,7 +4,6 @@ import { Injectable, Inject } from '@nestjs/common';
 import {
   Issuer,
   TokenSet,
-  generators,
   Client,
   ClientMetadata,
   custom,
@@ -13,6 +12,8 @@ import {
 
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { CryptographyService } from '@fc/cryptography';
+import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientConfig } from './dto';
 import { IIdentityProviderService } from './interfaces';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
@@ -20,7 +21,12 @@ import {
   OidcClientProviderNotFoundException,
   OidcClientProviderDisabledException,
 } from './exceptions';
-import { IOidcIdentity } from '@fc/oidc';
+import {
+  OidcClientMissingCodeException,
+  OidcClientMissingStateException,
+  OidcClientInvalidStateException,
+  OidcClientRuntimeException,
+} from './exceptions';
 
 @Injectable()
 export class OidcClientService {
@@ -30,6 +36,7 @@ export class OidcClientService {
   constructor(
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
+    private readonly crypto: CryptographyService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderService,
   ) {
@@ -52,7 +59,26 @@ export class OidcClientService {
     this.scheduleConfigurationReload();
   }
 
+  buildAuthorizeParameters(params) {
+    // acr_values is an oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { uid, scope, providerUid, acr_values } = params;
+    const { stateLength } = this.config.get<OidcClientConfig>('OidcClient');
+    const state = this.crypto.genRandomString(stateLength);
+
+    return {
+      state,
+      uid,
+      scope,
+      providerUid,
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values,
+    };
+  }
+
   async getAuthorizeUrl(
+    state: string,
     scope: string,
     providerUid: string,
     // acr_values is an oidc defined variable name
@@ -60,8 +86,6 @@ export class OidcClientService {
     acr_values: string,
   ): Promise<string> {
     const client: Client = await this.createOidcClient(providerUid);
-
-    const state = generators.state();
 
     return client.authorizationUrl({
       scope,
@@ -83,27 +107,52 @@ export class OidcClientService {
     return { keys: publicKeys };
   }
 
-  async getTokenSet(req, providerUid: string): Promise<TokenSet> {
+  async getTokenSet(
+    req,
+    providerUid: string,
+    stateFromSession: string,
+  ): Promise<TokenSet> {
     this.logger.trace('getTokenSet');
     const clientMetadata = await this.getProvider(providerUid);
     const client = await this.createOidcClient(providerUid);
 
     this.setCustomHttpOptions(client);
 
-    const params = await client.callbackParams(req);
+    /**
+     * Although it is not noted as async
+     * openidClient.callbackParams is and should be awaited
+     */
+    const receivedParams = await client.callbackParams(req);
 
-    const tokenSet = await client.callback(
-      clientMetadata.redirect_uris.join(','),
-      params,
-      {
-        state: params.state,
-        // oidc defined variable name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        response_type: clientMetadata.response_types.join(','),
-      },
-    );
+    if (!receivedParams.code) {
+      throw new OidcClientMissingCodeException();
+    }
 
-    return tokenSet;
+    if (!receivedParams.state) {
+      throw new OidcClientMissingStateException();
+    }
+
+    if (receivedParams.state !== stateFromSession) {
+      throw new OidcClientInvalidStateException();
+    }
+
+    try {
+      // Invoke `openid-client` handler
+      const tokenSet = await client.callback(
+        clientMetadata.redirect_uris.join(','),
+        receivedParams,
+        {
+          state: stateFromSession,
+          // oidc defined variable name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          response_type: clientMetadata.response_types.join(','),
+        },
+      );
+
+      return tokenSet;
+    } catch (error) {
+      throw new OidcClientRuntimeException(error);
+    }
   }
 
   async getUserInfo(
@@ -129,7 +178,7 @@ export class OidcClientService {
 
     // Schedule next call, N seconds after END of this one
     setTimeout(
-      this.scheduleConfigurationReload,
+      this.scheduleConfigurationReload, // `this` is binded in contructor to avoid multi bind
       this.configuration.reloadConfigDelayInMs,
     );
   }

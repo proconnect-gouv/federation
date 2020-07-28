@@ -48,7 +48,7 @@ describe('SessionService', () => {
   const cryptographyServiceMock = {
     encryptSymetric: jest.fn(),
     decryptSymetric: jest.fn(),
-    genSessionId: jest.fn(),
+    genRandomString: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -86,7 +86,7 @@ describe('SessionService', () => {
 
     cryptographyServiceMock.encryptSymetric.mockReturnValue('encryptSymetric');
     cryptographyServiceMock.decryptSymetric.mockReturnValue('{"foo": "bar"}');
-    cryptographyServiceMock.genSessionId.mockReturnValue(
+    cryptographyServiceMock.genRandomString.mockReturnValue(
       cryptographySessionIdMock,
     );
 
@@ -499,6 +499,26 @@ describe('SessionService', () => {
         interactionId,
         redisLifetimeMock,
       );
+    });
+  });
+
+  describe('getId', () => {
+    it('should return value from signeCookies', () => {
+      // Given
+      const cookieName = 'cookieName';
+      const cookieValue = 'cookieValue';
+      configServiceMock.get.mockReturnValueOnce({
+        interactionCookieName: cookieName,
+      });
+      const req = {
+        signedCookies: {
+          [cookieName]: cookieValue,
+        },
+      };
+      // When
+      const result = service.getId(req);
+      // Then
+      expect(result).toBe(cookieValue);
     });
   });
 });

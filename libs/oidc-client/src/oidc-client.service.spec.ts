@@ -1,16 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OidcClientService } from './oidc-client.service';
 import * as fs from 'fs';
 import { JWK } from 'jose';
 import { ConfigService } from '@fc/config';
 import { LoggerService, LogLevelNames } from '@fc/logger';
+import { CryptographyService } from '@fc/cryptography';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { ClientMetadata } from 'oidc-provider';
 import { OidcClientConfig } from './dto';
 import {
   OidcClientProviderNotFoundException,
   OidcClientProviderDisabledException,
+  OidcClientMissingStateException,
+  OidcClientMissingCodeException,
+  OidcClientInvalidStateException,
+  OidcClientRuntimeException,
 } from './exceptions';
+import { OidcClientService } from './oidc-client.service';
 
 describe('OidcClientService', () => {
   let service: OidcClientService;
@@ -48,6 +53,12 @@ describe('OidcClientService', () => {
 
   const IssuerClientMock = jest.fn();
 
+  const cryptoServiceMock = {
+    genRandomString: jest.fn(),
+  };
+
+  const randomStringMock = 'randomStringMockValue';
+
   const IssuerProxyMock = {
     discover: jest.fn(),
   } as any;
@@ -59,6 +70,7 @@ describe('OidcClientService', () => {
       providers: [
         ConfigService,
         LoggerService,
+        CryptographyService,
         OidcClientService,
         {
           provide: IDENTITY_PROVIDER_SERVICE,
@@ -68,6 +80,8 @@ describe('OidcClientService', () => {
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(CryptographyService)
+      .useValue(cryptoServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .compile();
@@ -82,7 +96,10 @@ describe('OidcClientService', () => {
     authorizationUrlMock.mockResolvedValue(
       'authorizationUrlMock Resolve Value',
     );
-    callbackParamsMock.mockResolvedValue({ state: 'callbackParamsState' });
+    callbackParamsMock.mockResolvedValue({
+      state: 'callbackParamsState',
+      code: 'callbackParamsCode',
+    });
 
     callbackMock.mockResolvedValue('callbackMock Resolve Value');
     userinfoMock.mockResolvedValue('userinfoMock Resolve Value');
@@ -115,6 +132,8 @@ describe('OidcClientService', () => {
           };
       }
     });
+
+    cryptoServiceMock.genRandomString.mockReturnValue(randomStringMock);
   });
 
   describe('constructor', () => {
@@ -135,6 +154,7 @@ describe('OidcClientService', () => {
   describe('getAuthorizeUrl', () => {
     it('should call authorizationUrl', async () => {
       // Given
+      const state = 'someState';
       const scope = 'foo_scope bar_scope';
       const providerId = 'myidp';
       // oidc defined variable name
@@ -142,13 +162,14 @@ describe('OidcClientService', () => {
       const acr_values = 'eidas1';
       service['createOidcClient'] = createOidcClientMock;
       // When
-      await service.getAuthorizeUrl(scope, providerId, acr_values);
+      await service.getAuthorizeUrl(state, scope, providerId, acr_values);
       // Then
       expect(authorizationUrlMock).toHaveBeenCalledTimes(1);
     });
 
-    it('should resolve to authorizationUrl return value', async () => {
+    it('should resolve to object containing state & authorizationUrl', async () => {
       // Given
+      const state = 'randomStringMock';
       const scope = 'foo_scope bar_scope';
       const providerId = 'myidp';
       // oidc defined variable name
@@ -157,13 +178,15 @@ describe('OidcClientService', () => {
       service['createOidcClient'] = createOidcClientMock;
 
       // When
-      const result = await service.getAuthorizeUrl(
+      const url = await service.getAuthorizeUrl(
+        state,
         scope,
         providerId,
         acr_values,
       );
       // Then
-      expect(result).toBe('authorizationUrlMock Resolve Value');
+      expect(state).toEqual('randomStringMock');
+      expect(url).toBe('authorizationUrlMock Resolve Value');
     });
   });
 
@@ -190,20 +213,53 @@ describe('OidcClientService', () => {
     });
   });
 
+  describe('buildAuthorizeParameters', () => {
+    // Given
+    const params = {
+      uid: 'uidMock',
+      scope: 'scopeMock',
+      providerUid: 'providerMock',
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'acrMock',
+    };
+
+    it('should call crypto to generate state', () => {
+      // When
+      const result = service.buildAuthorizeParameters(params);
+      // Then
+      expect(result.state).toBeDefined();
+      expect(result.state).toBe(randomStringMock);
+    });
+    it('should return parameters + generated state', () => {
+      // When
+      const result = service.buildAuthorizeParameters(params);
+      // Then
+      expect(result).toEqual({
+        state: randomStringMock,
+        ...params,
+      });
+    });
+  });
+
   describe('getTokenSet', () => {
-    it('should call client.callback with callbackParams', async () => {
-      // Given
-      const req = {};
-      const providerId = 'foo';
+    const req = { session: { codeVerifier: 'codeVerifierValue' } };
+    const providerId = 'foo';
+    const state = 'callbackParamsState';
+    beforeEach(() => {
       service['getProvider'] = getProviderMock;
       service['createOidcClient'] = createOidcClientMock;
+    });
+
+    it('should call client.callback with callbackParams', async () => {
       // When
-      await service.getTokenSet(req, providerId);
+      await service.getTokenSet(req, providerId, state);
       // Then
       expect(callbackMock).toHaveBeenCalled();
       expect(callbackMock).toHaveBeenCalledWith(
         'redirect,uris',
         {
+          code: 'callbackParamsCode',
           state: 'callbackParamsState',
         },
         {
@@ -215,15 +271,44 @@ describe('OidcClientService', () => {
       );
     });
     it('should retrun resolve value of client.callback', async () => {
-      // Given
-      const req = { session: { codeVerifier: 'codeVerifierValue' } };
-      const providerId = 'foo';
-      service['getProvider'] = getProviderMock;
-      service['createOidcClient'] = createOidcClientMock;
       // When
-      const result = await service.getTokenSet(req, providerId);
+      const result = await service.getTokenSet(req, providerId, state);
       // Then
       expect(result).toBe('callbackMock Resolve Value');
+    });
+    it('should throw if state is not provided in url', async () => {
+      // Given
+      callbackParamsMock.mockResolvedValueOnce({ code: 'callbackParamsCode' });
+      // Then
+      expect(service.getTokenSet(req, providerId, state)).rejects.toThrow(
+        OidcClientMissingStateException,
+      );
+    });
+    it('should throw if state in url does not match state in session', async () => {
+      // Given
+      const invalidState = 'notTheSameStateAsInRequest';
+      // Then
+      expect(
+        service.getTokenSet(req, providerId, invalidState),
+      ).rejects.toThrow(OidcClientInvalidStateException);
+    });
+    it('should throw if code is not provided in url', async () => {
+      callbackParamsMock.mockResolvedValueOnce({
+        state: 'callbackParamsState',
+      });
+      // Then
+      expect(service.getTokenSet(req, providerId, state)).rejects.toThrow(
+        OidcClientMissingCodeException,
+      );
+    });
+    it('should throw if something unexpected goes wrong in client.callback', async () => {
+      // Given
+      const errorMock = new Error('lol');
+      callbackMock.mockRejectedValueOnce(errorMock);
+      // Then
+      expect(service.getTokenSet(req, providerId, state)).rejects.toThrow(
+        OidcClientRuntimeException,
+      );
     });
   });
 

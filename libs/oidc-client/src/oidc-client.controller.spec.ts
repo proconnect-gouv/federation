@@ -17,6 +17,7 @@ describe('OidcClient Controller', () => {
     getTokenSet: jest.fn(),
     getUserInfo: jest.fn(),
     wellKnownKeys: jest.fn(),
+    buildAuthorizeParameters: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -46,6 +47,10 @@ describe('OidcClient Controller', () => {
   const configServiceMock = {
     get: () => appConfigMock,
   };
+
+  const stateMock = 'stateMock';
+
+  const providerIdMock = 'providerIdMockValue';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -89,6 +94,15 @@ describe('OidcClient Controller', () => {
     jest.resetAllMocks();
 
     identityProviderServiceMock.getById.mockReturnValue({ name: 'foo' });
+    sessionServiceMock.get.mockResolvedValue({ idpState: stateMock });
+
+    oidcClientServiceMock.buildAuthorizeParameters.mockReturnValue({
+      state: stateMock,
+      scope: 'scopeMock',
+      providerUid: providerIdMock,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'acrMock',
+    });
   });
 
   it('should be defined', () => {
@@ -96,12 +110,11 @@ describe('OidcClient Controller', () => {
   });
 
   describe('redirectToIdp', () => {
-    it('Should call oidc-client-service for retrieve authorize url', async () => {
+    it('should call oidc-client-service for retrieve authorize url', async () => {
       // setup
       const body = {
-        uid: '123',
         scope: 'openid',
-        providerUid: 'abcdefghijklmnopqrstuvwxyz',
+        providerUid: providerIdMock,
         // oidc param
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
@@ -115,17 +128,48 @@ describe('OidcClient Controller', () => {
       );
 
       // action
-      await oidcClientController.redirectToIdp(res, body);
+      await oidcClientController.redirectToIdp(res, req, body);
 
       // assert
       expect(oidcClientServiceMock.getAuthorizeUrl).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(mockedoidcClientService);
     });
+    it('should store state in session', async () => {
+      // setup
+      const body = {
+        scope: 'openid',
+        providerUid: providerIdMock,
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: 'eidas3',
+      };
+
+      const mockedoidcClientService =
+        'https://my-authentication-openid-url.com';
+
+      oidcClientServiceMock.getAuthorizeUrl.mockReturnValueOnce(
+        mockedoidcClientService,
+      );
+
+      // action
+      await oidcClientController.redirectToIdp(res, req, body);
+
+      // assert
+      expect(sessionServiceMock.patch).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.patch).toHaveBeenCalledWith(
+        req.fc.interactionId,
+        {
+          idpId: body.providerUid,
+          idpName: 'foo',
+          idpState: stateMock,
+        },
+      );
+    });
   });
 
   describe('getOidcCallback', () => {
-    it('Should call oidc-client-service for retrieve authorize url', async () => {
+    it('should call oidc-client-service for retrieve authorize url', async () => {
       // setup
       const accessToken = 'accest_token';
       const providerUid = 'foo';
@@ -153,6 +197,7 @@ describe('OidcClient Controller', () => {
       expect(oidcClientServiceMock.getTokenSet).toHaveBeenCalledWith(
         req,
         providerUid,
+        stateMock,
       );
       expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledWith(
@@ -165,7 +210,7 @@ describe('OidcClient Controller', () => {
   });
 
   describe('getWellKnownKeys', () => {
-    it('Should call oidc-client-service for wellKnownKeys', async () => {
+    it('should call oidc-client-service for wellKnownKeys', async () => {
       // When
       await oidcClientController.getWellKnownKeys();
       // Then
