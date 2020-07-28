@@ -18,4 +18,5 @@ export default {
   sessionCookieName: 'fc_session_id',
   interactionCookieName: 'fc_interaction_id',
   lifetime: 600, // 10 minutes
+  sessionIdLength: 64,
 } as SessionConfig;

@@ -4,9 +4,12 @@
 import * as helmet from 'helmet';
 import { renderFile } from 'ejs';
 import { join } from 'path';
+import * as CookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { LoggerService } from '@fc/logger';
+import { ConfigService } from '@fc/config';
+import { SessionConfig } from '@fc/session';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -25,6 +28,8 @@ async function bootstrap() {
      */
     bodyParser: false,
   });
+
+  const config = app.get(ConfigService);
   /**
    * Protect app from common risks
    * @see https://helmetjs.github.io/
@@ -61,6 +66,9 @@ async function bootstrap() {
   app.set('views', [join(__dirname, assetsPath, 'views')]);
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, assetsPath, 'public'));
+
+  const { cookieSecrets } = config.get<SessionConfig>('Session');
+  app.use(CookieParser(cookieSecrets));
 
   await app.listen(3000);
 }

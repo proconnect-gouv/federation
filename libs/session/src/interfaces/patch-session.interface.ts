@@ -9,6 +9,7 @@ export interface IPatchSession {
   spIdentity?: IOidcIdentity;
 
   /** Identity provider informations */
+  idpState?: string;
   idpId?: string;
   idpAcr?: string;
   idpName?: string;

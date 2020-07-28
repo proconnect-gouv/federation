@@ -24,6 +24,10 @@ export class SessionDto {
 
   @IsString()
   @IsOptional()
+  readonly idpState?: string;
+
+  @IsString()
+  @IsOptional()
   readonly idpId?: string;
 
   @IsString()

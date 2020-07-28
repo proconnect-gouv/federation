@@ -10,6 +10,7 @@ import {
   ValidateNested,
   IsArray,
   IsPositive,
+  Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -69,4 +70,8 @@ export class SessionConfig {
   @IsNumber()
   @IsPositive()
   readonly lifetime: number;
+
+  @IsNumber()
+  @Min(32)
+  readonly sessionIdLength: number;
 }

@@ -10,6 +10,7 @@ import {
   IsString,
   MinLength,
   IsOptional,
+  Min,
 } from 'class-validator';
 import { ClientMetadata } from 'openid-client';
 import { JSONWebKeySet } from 'jose';
@@ -44,4 +45,8 @@ export class OidcClientConfig {
    */
   @IsObject()
   readonly jwks: JSONWebKeySet;
+
+  @IsNumber()
+  @Min(16)
+  readonly stateLength: number;
 }

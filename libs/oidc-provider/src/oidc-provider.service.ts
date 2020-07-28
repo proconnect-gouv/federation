@@ -221,7 +221,7 @@ export class OidcProviderService {
 
     // Schedule next call, N seconds after END of this one
     setTimeout(
-      this.scheduleConfigurationReload,
+      this.scheduleConfigurationReload, // `this` is binded in contructor to avoir multi bind
       configuration.reloadConfigDelayInMs,
     );
   }
