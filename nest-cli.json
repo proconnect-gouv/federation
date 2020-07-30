@@ -16,9 +16,9 @@
       "compilerOptions": {
         "tsConfigPath": "instances/core-fcp-high/tsconfig.app.json",
         "assets": [
-          "../../../apps/**/*.ejs",
-          "../../../apps/**/*.css",
-          "../../../apps/**/*.svg"
+          "../../../apps/core-fcp/**/*.ejs",
+          "../../../apps/core-fcp/**/*.css",
+          "../../../apps/core-fcp/**/*.svg"
         ]
       }
     },
@@ -317,3 +317,4 @@
     }
   }
 }
+
