@@ -519,7 +519,7 @@ describe('OidcProviderService', () => {
       });
     });
 
-    it('should call session.init', async () => {
+    it('should throw if the session initialization fails', async () => {
       // Given
       const ctxMock = {
         req: {
