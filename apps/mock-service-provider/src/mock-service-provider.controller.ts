@@ -28,7 +28,7 @@ export class MockServiceProviderController {
      */
     const sessionIdLength = 32;
     const sessionId = this.crypto.genRandomString(sessionIdLength);
-    this.session.init(res, sessionId, { idpState: sessionId });
+    await this.session.init(res, sessionId, { idpState: sessionId });
 
     return {
       titleFront: 'Mock Service Provider',
@@ -66,7 +66,7 @@ export class MockServiceProviderController {
     );
 
     const sessionId = this.session.getId(req);
-    this.session.patch(sessionId, { idpState: state });
+    await this.session.patch(sessionId, { idpState: state });
 
     res.redirect(authorizationUrl);
   }

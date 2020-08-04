@@ -35,7 +35,7 @@ export class AccountService {
 
     const account = await this.getAccountWithInteraction(interaction);
 
-    account.save();
+    await account.save();
   }
 
   /**

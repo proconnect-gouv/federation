@@ -116,6 +116,7 @@ describe('SessionInterceptor', () => {
         },
         signedCookies: {},
       };
+
       // Then
       expect(interceptor['handleSession'](req, resMock)).rejects.toThrow(
         SessionNoSessionCookieException,
@@ -132,6 +133,7 @@ describe('SessionInterceptor', () => {
           [sessionConfigMock.sessionCookieName]: 'foo',
         },
       };
+
       // Then
       expect(interceptor['handleSession'](req, resMock)).rejects.toThrow(
         SessionNoInteractionCookieException,
@@ -148,11 +150,13 @@ describe('SessionInterceptor', () => {
           [sessionConfigMock.interactionCookieName]: 'bar',
         },
       };
+
       // Then
       expect(interceptor['handleSession'](req, resMock)).rejects.toThrow(
         SessionNoSessionCookieException,
       );
     });
+
     it('should set req.fc.interactionId', async () => {
       // Given
       const req = {
@@ -165,8 +169,11 @@ describe('SessionInterceptor', () => {
           [sessionConfigMock.interactionCookieName]: 'bar',
         },
       };
+      sessionMock.refresh.mockResolvedValueOnce(undefined);
+
       // When
       await interceptor['handleSession'](req, resMock);
+
       // Then
       expect(req.fc.interactionId).toBeDefined();
       expect(req.fc.interactionId).toBe('bar');
@@ -183,11 +190,34 @@ describe('SessionInterceptor', () => {
           [sessionConfigMock.interactionCookieName]: 'bar',
         },
       };
+      sessionMock.refresh.mockResolvedValueOnce(undefined);
+
       // When
       await interceptor['handleSession'](req, resMock);
+
       // Then
       expect(sessionMock.refresh).toHaveBeenCalledTimes(1);
     });
+
+    it("should throw if the session can't be refreshed", async () => {
+      // Given
+      const req = {
+        route: {
+          path: '/api/v2/interaction/:uid',
+        },
+        signedCookies: {
+          [sessionConfigMock.sessionCookieName]: 'foo',
+          [sessionConfigMock.interactionCookieName]: 'bar',
+        },
+      };
+      sessionMock.refresh.mockRejectedValueOnce(new Error('test'));
+
+      // Then
+      await expect(
+        interceptor['handleSession'](req, resMock),
+      ).rejects.toThrow();
+    });
+
     it('should call session.setCookie for both cookies if found', async () => {
       // Given
       const req = {
@@ -199,8 +229,11 @@ describe('SessionInterceptor', () => {
           [sessionConfigMock.interactionCookieName]: 'bar',
         },
       };
+      sessionMock.refresh.mockResolvedValueOnce(undefined);
+
       // When
       await interceptor['handleSession'](req, resMock);
+
       // Then
       expect(sessionMock.setCookie).toHaveBeenCalledTimes(2);
       expect(sessionMock.setCookie).toHaveBeenCalledWith(
@@ -222,6 +255,8 @@ describe('SessionInterceptor', () => {
           path: '/somewhere',
         },
       };
+      sessionMock.refresh.mockResolvedValueOnce(undefined);
+
       // Then
       expect(interceptor['handleSession'](req, resMock)).resolves.not.toThrow();
     });
@@ -234,9 +269,14 @@ describe('SessionInterceptor', () => {
           path: '/somewhere',
         },
       };
+      sessionMock.refresh.mockResolvedValueOnce(undefined);
+
       // When
       await interceptor['handleSession'](req, resMock);
+
       // Then
+      expect(sessionMock.refresh).toHaveBeenCalledTimes(0);
+
       expect(cryptographyMock.genSessionId).toHaveBeenCalledTimes(0);
       expect(sessionMock.setCookie).toHaveBeenCalledTimes(0);
 
