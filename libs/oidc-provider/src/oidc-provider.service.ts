@@ -140,7 +140,7 @@ export class OidcProviderService {
       spAcr,
       spName,
     };
-    this.session.init(ctx.res, interactionId, sessionProperties);
+    await this.session.init(ctx.res, interactionId, sessionProperties);
 
     const eventContext = { fc: { interactionId }, ip, spId, spAcr, spName };
     this.tracking.track(OidcProviderAuthorizationEvent, eventContext);

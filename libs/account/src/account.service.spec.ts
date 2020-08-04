@@ -61,11 +61,15 @@ describe('AccountService', () => {
     const interactionMock = { identityHash } as IInteraction;
 
     it('should call model save with result from buildInteraction', async () => {
+      // Given
       service['getAccountWithInteraction'] = jest
         .fn()
         .mockResolvedValueOnce(modelMock);
+      modelMock.save.mockResolvedValueOnce(undefined);
+
       // When
       await service.storeInteraction(interactionMock);
+
       // Then
       expect(service['getAccountWithInteraction']).toHaveBeenCalledTimes(1);
       expect(service['getAccountWithInteraction']).toHaveBeenCalledWith(
@@ -73,11 +77,23 @@ describe('AccountService', () => {
       );
       expect(modelMock.save).toHaveBeenCalledTimes(1);
     });
-    it('should throw if model update fails', async () => {
+
+    it("should throw if it can't retrieve the account", async () => {
       // Given
       service['getAccountWithInteraction'] = jest
         .fn()
         .mockRejectedValueOnce(new Error('test'));
+
+      // Then
+      await expect(service.storeInteraction(interactionMock)).rejects.toThrow();
+    });
+
+    it('should throw if model update fails', async () => {
+      // Given
+      service['getAccountWithInteraction'] = jest
+        .fn()
+        .mockResolvedValueOnce(modelMock);
+      modelMock.save.mockRejectedValueOnce(new Error('test'));
 
       // Then
       await expect(service.storeInteraction(interactionMock)).rejects.toThrow();
