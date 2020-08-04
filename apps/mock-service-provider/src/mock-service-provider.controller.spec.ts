@@ -102,9 +102,47 @@ describe('MockServiceProviderController', () => {
   });
 
   describe('index', () => {
-    it('Should return front title', async () => {
+    it('Should generate a random sessionId of 32 characters', async () => {
+      // setup
+      sessionMock.init.mockResolvedValueOnce(undefined);
+
       // action
-      const result = await controller.index(req);
+      const randSize = 32;
+      await controller.index(res);
+
+      // assert
+      expect(cryptographyMock.genRandomString).toHaveBeenCalledTimes(1);
+      expect(cryptographyMock.genRandomString).toHaveBeenCalledWith(randSize);
+    });
+
+    it('Should init the session', async () => {
+      // setup
+      sessionMock.init.mockResolvedValueOnce(undefined);
+
+      // action
+      await controller.index(res);
+
+      // assert
+      expect(sessionMock.init).toHaveBeenCalledTimes(1);
+      expect(sessionMock.init).toHaveBeenCalledWith(res, randomStringMock, {
+        idpState: randomStringMock,
+      });
+    });
+
+    it("Should throw if the session can't be initialized", async () => {
+      // setup
+      sessionMock.init.mockRejectedValueOnce(new Error('test'));
+
+      // expect
+      await expect(controller.index(res)).rejects.toThrow();
+    });
+
+    it('Should return front title', async () => {
+      // setup
+      sessionMock.init.mockResolvedValueOnce(undefined);
+
+      // action
+      const result = await controller.index(res);
 
       // assert
       expect(result).toEqual({
@@ -123,6 +161,7 @@ describe('MockServiceProviderController', () => {
       oidcClientServiceMock.getAuthorizeUrl.mockReturnValueOnce(
         mockedoidcClientService,
       );
+      sessionMock.patch.mockResolvedValueOnce(undefined);
 
       // action
       await controller.login(req, res);
@@ -131,6 +170,58 @@ describe('MockServiceProviderController', () => {
       expect(oidcClientServiceMock.getAuthorizeUrl).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(mockedoidcClientService);
+    });
+
+    it('Should get the session id', async () => {
+      // setup
+      const mockedoidcClientService =
+        'https://my-authentication-openid-url.com';
+
+      oidcClientServiceMock.getAuthorizeUrl.mockReturnValueOnce(
+        mockedoidcClientService,
+      );
+      sessionMock.patch.mockResolvedValueOnce(undefined);
+
+      // action
+      await controller.login(req, res);
+
+      // assert
+      expect(sessionMock.getId).toHaveBeenCalledTimes(1);
+      expect(sessionMock.getId).toHaveBeenCalledWith(req);
+    });
+
+    it('Should patch the session', async () => {
+      // setup
+      const mockedoidcClientService =
+        'https://my-authentication-openid-url.com';
+
+      oidcClientServiceMock.getAuthorizeUrl.mockReturnValueOnce(
+        mockedoidcClientService,
+      );
+      sessionMock.patch.mockResolvedValueOnce(undefined);
+
+      // action
+      await controller.login(req, res);
+
+      // assert
+      expect(sessionMock.patch).toHaveBeenCalledTimes(1);
+      expect(sessionMock.patch).toHaveBeenCalledWith(sessionIdMock, {
+        idpState: stateMock,
+      });
+    });
+
+    it("Should throw if the session can't be patched", async () => {
+      // setup
+      const mockedoidcClientService =
+        'https://my-authentication-openid-url.com';
+
+      oidcClientServiceMock.getAuthorizeUrl.mockReturnValueOnce(
+        mockedoidcClientService,
+      );
+      sessionMock.patch.mockRejectedValueOnce(new Error('test'));
+
+      // assert
+      await expect(controller.login(req, res)).rejects.toThrow();
     });
   });
 
