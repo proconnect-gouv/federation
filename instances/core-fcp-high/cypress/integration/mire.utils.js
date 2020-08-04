@@ -11,12 +11,7 @@ import * as QueryString from 'querystring';
  *  - acr_values
  */
 export function basicSuccessScenario(params) {
-  const {
-    idpId,
-    userName,
-    sp = 'SP1',
-    method
-  } = params;
+  const { idpId, userName, sp = 'SP1', method } = params;
   const password = params.password || '123';
 
   const serviceProvider = {
@@ -147,7 +142,12 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'BACK_CINEMATIC',
-    event: 'FS_REQUESTED_FCP_TOKEN', // @TODO Replace "FS_" by "SP_"
+    /**
+     * @TODO #194
+     * ETQ Dev, je remplace les `FS_` par `SP_`
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/194
+     */
+    event: 'FS_REQUESTED_FCP_TOKEN',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -156,7 +156,12 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'BACK_CINEMATIC',
-    event: 'FS_REQUESTED_FCP_USERINFO', // @TODO Replace "FS_" by "SP_"
+    /**
+     * @TODO #194
+     * ETQ Dev, je remplace les `FS_` par `SP_`
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/194
+     */
+    event: 'FS_REQUESTED_FCP_USERINFO',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -191,11 +196,7 @@ export function checkInformations(identity) {
 }
 
 export function basicErrorScenario(params) {
-  const {
-    idpId,
-    errorCode,
-    eidasLevel
-  } = params;
+  const { idpId, errorCode, eidasLevel } = params;
   const password = '123';
 
   // FS: Click on FC button
@@ -242,7 +243,7 @@ export function getAuthorizeUrl(overrideParams = {}) {
   };
   const params = {
     ...baseAuthorizeParams,
-    ...overrideParams
+    ...overrideParams,
   };
 
   return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;

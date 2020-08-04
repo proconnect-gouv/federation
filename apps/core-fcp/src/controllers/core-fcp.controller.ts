@@ -70,17 +70,22 @@ export class CoreFcpController {
       interactionId,
     );
 
-    /** @TODO
-     * Display claims instead of scopes
-     * Mapping label <==> claims
-     * Pass URLs to template (logout, login, etc.)
+    /**
+     * @TODO #193
+     * ETQ dev, j'affiche les `claims` à la place des `scopes`
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/193
      */
     const {
       params: { scope },
     } = await this.oidcProvider.getInteraction(req, res);
     const scopes = scope.split(' ');
 
-    return { interactionId, identity, spName, scopes };
+    return {
+      interactionId,
+      identity,
+      spName,
+      scopes,
+    };
   }
 
   @Get(CoreFcpRoutes.INTERACTION_LOGIN)

@@ -41,8 +41,9 @@ async function bootstrap() {
         defaultSrc: ["'self'"],
         /**
          * Allow inline CSS and JS
-         * @todo remove this header once the UI is properly implemented
+         * @TODO #168 remove this header once the UI is properly implemented
          * to forbid the use of inline CSS or JS
+         * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/168
          */
         styleSrc: ["'self'", "'unsafe-inline'"],
         scriptSrc: ["'self'", "'unsafe-inline'"],
@@ -58,9 +59,9 @@ async function bootstrap() {
   const assetsPath =
     process.env.NODE_ENV === 'development'
       ? // Libs code base to take latest version
-      '../../../apps/mock-service-provider/src'
+        '../../../apps/mock-service-provider/src'
       : // Current, directory = dist when in production mode
-      '';
+        '';
 
   app.engine('ejs', renderFile);
   app.set('views', [join(__dirname, assetsPath, 'views')]);
