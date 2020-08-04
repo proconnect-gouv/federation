@@ -21,7 +21,7 @@ export class MockServiceProviderController {
   @Render('index')
   async index(@Res() res) {
     /**
-     * @todo #179
+     * @TODO #179
      * This is just a mock, so we don't bother making this configurable...
      * We'll soon update session system to handle all this init stuff automatically anyway.
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/179
@@ -105,9 +105,9 @@ export class MockServiceProviderController {
         providerUid,
       );
 
-      /** @TODO
-       * save 'tokenSet.id_token' in session for logout
-       * save idpIentity in session
+      /** @TODO #192
+       * ETQ Dev, je complète la session pendant la cinématique des mocks
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/192
        * */
 
       return {
@@ -131,7 +131,10 @@ export class MockServiceProviderController {
 
   @Get(MockServiceProviderRoutes.LOGOUT_CALLBACK)
   async logoutCallback(@Res() res) {
-    /** @TODO remove sp session */
+    /** @TODO #192
+     * ETQ Dev, je complète la session pendant la cinématique des mocks
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/192
+     * */
     return res.redirect('/');
   }
 

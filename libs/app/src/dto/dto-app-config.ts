@@ -5,7 +5,9 @@ export class AppConfig {
   readonly name: string;
 
   /**
-   * @todo regex to check Path and length of String
+   * @TODO #195
+   * ETQ dev, je check le préfix d'url
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/195
    */
   @IsString()
   readonly urlPrefix: string;

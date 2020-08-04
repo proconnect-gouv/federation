@@ -42,8 +42,9 @@ export class SessionInterceptor implements NestInterceptor {
   constructor(
     private readonly config: ConfigService,
     /**
-     * @todo Remove if not used.
-     * Don't forget to remove in tests: "expect(cryptographyMock.genSessionId).toHaveBeenCalledTimes(0)"
+     * @TODO #196
+     * ETQ dev, je supprime le code inutilisé
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/196
      */
     private readonly crypto: CryptographyService,
     private readonly session: SessionService,
