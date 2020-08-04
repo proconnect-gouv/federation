@@ -58,7 +58,7 @@ async function bootstrap() {
         defaultSrc: ["'self'"],
         /**
          * Allow inline CSS and JS
-         * @todo #168 remove this header once the UI is properly implemented
+         * @TODO #168 remove this header once the UI is properly implemented
          * to forbid the use of inline CSS or JS
          * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/168
          */
