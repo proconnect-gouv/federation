@@ -135,9 +135,9 @@ export class SessionService {
    * @param key
    * @param newValues
    */
-  async patch(key: string, newValues: IPatchSession) {
+  async patch(key: string, newValues: IPatchSession): Promise<void> {
     const session = await this.get(key);
-    this.save(key, { ...session, ...newValues });
+    await this.save(key, { ...session, ...newValues });
   }
 
   setCookie(res, name, value) {
@@ -145,7 +145,7 @@ export class SessionService {
     res.cookie(name, value, cookieOptions);
   }
 
-  init(res, interactionId, properties) {
+  async init(res, interactionId, properties): Promise<void> {
     const {
       interactionCookieName,
       sessionCookieName,
@@ -157,13 +157,13 @@ export class SessionService {
     this.setCookie(res, interactionCookieName, interactionId);
     this.setCookie(res, sessionCookieName, sessionId);
 
-    this.save(interactionId, {
+    await this.save(interactionId, {
       sessionId,
       ...properties,
     });
   }
 
-  async verify(interactionId: string, sessionId: string) {
+  async verify(interactionId: string, sessionId: string): Promise<void> {
     const session = await this.get(interactionId);
 
     if (session.sessionId !== sessionId) {
@@ -171,9 +171,9 @@ export class SessionService {
     }
   }
 
-  refresh(key: string) {
+  async refresh(key: string) {
     const { lifetime } = this.config.get<SessionConfig>('Session');
-    this.redis.expire(key, lifetime);
+    await this.redis.expire(key, lifetime);
   }
 
   /**

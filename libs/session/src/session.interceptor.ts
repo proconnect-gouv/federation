@@ -92,7 +92,7 @@ export class SessionInterceptor implements NestInterceptor {
       req.fc.interactionId = interactionId;
 
       // Refresh session on backend
-      this.session.refresh(interactionId);
+      await this.session.refresh(interactionId);
 
       // Refresh session on client
       this.session.setCookie(res, sessionCookieName, sessionId);

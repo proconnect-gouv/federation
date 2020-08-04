@@ -482,14 +482,17 @@ describe('OidcProviderService', () => {
         oidc: { isError: true },
       };
       service['getInteractionIdFromCtx'] = jest.fn();
+
       // When
       service['authorizationMiddleware'](ctxMock);
+
       // Then
       expect(service['getInteractionIdFromCtx']).toHaveBeenCalledTimes(0);
       expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(0);
       expect(sessionServiceMock.init).toHaveBeenCalledTimes(0);
       expect(trackingMock.track).toHaveBeenCalledTimes(0);
     });
+
     it('should call session.init', async () => {
       // Given
       const ctxMock = {
@@ -502,8 +505,11 @@ describe('OidcProviderService', () => {
         res: {},
       };
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
+      sessionServiceMock.init.mockResolvedValueOnce(undefined);
+
       // When
       await service['authorizationMiddleware'](ctxMock);
+
       // Then
       expect(sessionServiceMock.init).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.init).toHaveBeenCalledWith(ctxMock.res, '42', {
@@ -512,6 +518,27 @@ describe('OidcProviderService', () => {
         spName: 'my SP',
       });
     });
+
+    it('should call session.init', async () => {
+      // Given
+      const ctxMock = {
+        req: {
+          ip: '123.123.123.123',
+        },
+        // oidc
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        oidc: { params: { client_id: 'foo', acr_values: 'eidas3' } },
+        res: {},
+      };
+      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
+      sessionServiceMock.init.mockRejectedValueOnce(new Error('test'));
+
+      // Then
+      await expect(
+        service['authorizationMiddleware'](ctxMock),
+      ).rejects.toThrow();
+    });
+
     it('should call publish authorization event', async () => {
       // Given
       const ctxMock = {
@@ -524,8 +551,11 @@ describe('OidcProviderService', () => {
         res: {},
       };
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
+      sessionServiceMock.init.mockResolvedValueOnce(undefined);
+
       // When
       await service['authorizationMiddleware'](ctxMock);
+
       // Then
       expect(trackingMock.track).toHaveBeenCalledTimes(1);
       expect(trackingMock.track).toHaveBeenCalledWith(
