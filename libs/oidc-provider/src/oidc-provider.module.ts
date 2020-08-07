@@ -8,6 +8,7 @@ import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderController } from './oidc-provider.controller';
 import { IServiceProviderService } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens/service-provider-service.token';
+import { IsValidPromptConstraint } from './validators';
 
 @Module({})
 export class OidcProviderModule {
@@ -39,6 +40,7 @@ export class OidcProviderModule {
         FcExceptionFilter,
         serviceProviderProvider,
         OidcProviderService,
+        IsValidPromptConstraint,
       ],
       exports: [
         OidcProviderService,

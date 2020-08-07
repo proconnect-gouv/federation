@@ -37,7 +37,7 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  getAuthorize(@Next() next, @Query() _params: AuthorizeParamsDTO) {
+  getAuthorize(@Next() next, @Query() _query: AuthorizeParamsDTO) {
     // Pass the query to oidc-provider
     return next();
   }
@@ -58,7 +58,7 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  postAuthorize(@Next() next, @Body() _params: AuthorizeParamsDTO) {
+  postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDTO) {
     // Pass the query to oidc-provider
     return next();
   }
