@@ -10,15 +10,16 @@ import '@fc/override-oidc-provider/overrides';
 import * as helmet from 'helmet';
 import * as CookieParser from 'cookie-parser';
 import { urlencoded } from 'body-parser';
+import { renderFile } from 'ejs';
+import { join } from 'path';
+import { useContainer } from 'class-validator';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { AppConfig } from '@fc/app';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { SessionConfig } from '@fc/session';
-import { AppConfig } from '@fc/app';
 import { AppModule } from './app.module';
-import { renderFile } from 'ejs';
-import { join } from 'path';
 
 // Assets path vary in dev env
 const assetsPath =
@@ -91,6 +92,14 @@ async function bootstrap() {
 
   const { cookieSecrets } = config.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));
+
+  /**
+   * Tell the module "class-validator" to use NestJS dependency injection
+   * @see https://github.com/typestack/class-validator#using-service-container
+   * @see https://github.com/nestjs/nest/issues/528#issuecomment-382330137
+   * @see https://github.com/nestjs/nest/issues/528#issuecomment-403212561
+   */
+  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(3000);
 }
