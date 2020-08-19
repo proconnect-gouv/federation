@@ -38,6 +38,7 @@ export default {
       token: OidcProviderRoutes.TOKEN,
       userinfo: OidcProviderRoutes.USERINFO,
     },
+    subjectTypes: ['pairwise'],
     cookies: {
       keys: JSON.parse(process.env.OIDC_PROVIDER_COOKIES_KEYS),
       long: {

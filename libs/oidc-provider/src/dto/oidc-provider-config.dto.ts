@@ -9,6 +9,7 @@ import {
   IsOptional,
   IsNumber,
   IsEnum,
+  IsIn,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { JWKECKey, JWKRSAKey } from 'jose';
@@ -19,6 +20,7 @@ import {
   ResponseType,
   AsymmetricSigningAlgorithm,
   ClientAuthMethod,
+  SubjectTypes,
 } from 'oidc-provider';
 import { OidcProviderRoutes, OidcProviderPrompt } from '../enums';
 
@@ -417,6 +419,10 @@ class Configuration {
   @Type(() => Jwks)
   @IsOptional()
   readonly jwks?: Jwks;
+
+  @IsArray()
+  @IsIn(['public', 'pairwise'], { each: true })
+  readonly subjectTypes: SubjectTypes[];
 }
 
 export class OidcProviderConfig {

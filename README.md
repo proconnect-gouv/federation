@@ -2,9 +2,13 @@
 
 Core & backoffice applications v2
 
-## Librairies / modules du dépôt
+## Librairies
 
-[@fc/tracking](libs/tracking/README.md)
+- [@fc/tracking](libs/tracking/README.md)
+
+## Applications
+
+- [@fc/core-fcp](apps/core-fcp/README.md)
 
 ## Installation
 
