@@ -116,16 +116,8 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       intercept: true,
     },
 
-    FCP_SHOWED_CONTINUE: {
-      step: '6.1.0',
-      category: EventsCategories.FRONT_CINEMATIC,
-      event: 'FCP_SHOWED_CONSENT',
-      route: `${urlPrefix}/interaction/:uid/consent`,
-      intercept: true,
-    },
-
     FCP_SHOWED_CONSENT: {
-      step: '6.2.0',
+      step: '6.1.0',
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_SHOWED_CONSENT',
       route: `${urlPrefix}/interaction/:uid/consent`,

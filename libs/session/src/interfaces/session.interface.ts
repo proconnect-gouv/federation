@@ -16,4 +16,6 @@ export interface ISession {
   idpName?: string;
   /** identitty FROM identity provider */
   idpIdentity?: IOidcIdentity;
+
+  csrfToken?: string;
 }

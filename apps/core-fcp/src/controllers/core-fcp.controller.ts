@@ -1,5 +1,6 @@
 import {
   Controller,
+  Post,
   Get,
   Render,
   Req,
@@ -7,6 +8,7 @@ import {
   UsePipes,
   ValidationPipe,
   Param,
+  Body,
 } from '@nestjs/common';
 
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -15,10 +17,14 @@ import { IdentityProviderService } from '@fc/identity-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
+import { CryptographyService } from '@fc/cryptography';
 import { CoreFcpService } from '../services';
-import { Interaction } from '../dto';
+import { Interaction, CsrfToken } from '../dto';
 import { CoreFcpRoutes } from '../enums';
-import { CoreFcpMissingIdentity } from '../exceptions';
+import {
+  CoreFcpMissingIdentity,
+  CoreFcpInvalidCsrfException,
+} from '../exceptions';
 
 @Controller()
 export class CoreFcpController {
@@ -29,6 +35,7 @@ export class CoreFcpController {
     private readonly coreFcp: CoreFcpService,
     private readonly session: SessionService,
     private readonly config: ConfigService,
+    private readonly crypto: CryptographyService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -80,19 +87,34 @@ export class CoreFcpController {
     } = await this.oidcProvider.getInteraction(req, res);
     const scopes = scope.split(' ');
 
+    const csrfToken = await this.generateAndStoreCsrf(req.fc.interactionId);
+
     return {
       interactionId,
       identity,
       spName,
       scopes,
+      csrfToken,
     };
   }
 
-  @Get(CoreFcpRoutes.INTERACTION_LOGIN)
+  @Post(CoreFcpRoutes.INTERACTION_LOGIN)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async getLogin(@Req() req, @Res() res, @Param() _params: Interaction) {
+  async getLogin(
+    @Req() req,
+    @Res() res,
+    @Body() body: CsrfToken,
+    @Param() _params: Interaction,
+  ) {
+    const { _csrf: csrf } = body;
     const { interactionId } = req.fc;
-    const { spAcr, spIdentity } = await this.session.get(interactionId);
+    const { spAcr, spIdentity, csrfToken } = await this.session.get(
+      interactionId,
+    );
+
+    if (csrf !== csrfToken) {
+      throw new CoreFcpInvalidCsrfException();
+    }
 
     if (!spIdentity) {
       throw new CoreFcpMissingIdentity();
@@ -125,5 +147,16 @@ export class CoreFcpController {
     };
 
     return this.oidcProvider.finishInteraction(req, res, result);
+  }
+
+  /**
+   * @TODO #203
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/203
+   */
+  private async generateAndStoreCsrf(interactionId: string): Promise<string> {
+    const csrfTokenLength = 32;
+    const csrfToken = this.crypto.genRandomString(csrfTokenLength);
+    await this.session.patch(interactionId, { csrfToken: csrfToken });
+    return csrfToken;
   }
 }
