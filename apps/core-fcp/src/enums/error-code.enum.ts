@@ -3,4 +3,5 @@ export enum ErrorCode {
   INVALID_ACR = 2,
   MISSING_CONTEXT = 3,
   MISSING_IDENTITY = 4,
+  INVALID_CSRF = 5,
 }
