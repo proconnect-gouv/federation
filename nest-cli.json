@@ -31,6 +31,20 @@
         "tsConfigPath": "instances/csmr-hsm-high/tsconfig.app.json"
       }
     },
+    "mock-service-provider-high": {
+      "type": "application",
+      "root": "instances/mock-service-provider-high",
+      "entryFile": "main",
+      "sourceRoot": "instances/mock-service-provider-high/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/mock-service-provider-high/tsconfig.app.json",
+        "assets": [
+          "../../../apps/mock-service-provider/**/*.ejs",
+          "../../../apps/mock-service-provider/**/*.css",
+          "../../../apps/mock-service-provider/**/*.svg"
+        ]
+      }
+    },
     "rnipp": {
       "type": "library",
       "root": "libs/rnipp",
@@ -274,20 +288,6 @@
         "tsConfigPath": "apps/mock-service-provider/tsconfig.lib.json"
       }
     },
-    "mock-service-provider-high": {
-      "type": "application",
-      "root": "instances/mock-service-provider-high",
-      "entryFile": "main",
-      "sourceRoot": "instances/mock-service-provider-high/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/mock-service-provider-high/tsconfig.app.json"
-      },
-      "assets": [
-        "../../../apps/**/*.ejs",
-        "../../../apps/**/*.css",
-        "../../../apps/**/*.svg"
-      ]
-    },
     "identity-provider-env": {
       "type": "library",
       "root": "libs/identity-provider-env",
@@ -317,4 +317,3 @@
     }
   }
 }
-
