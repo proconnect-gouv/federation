@@ -1,6 +1,6 @@
 {
   "name": "fc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "",
   "author": "",
   "license": "MIT",
@@ -26,7 +26,7 @@
   },
   "resolutions": {
     "cookie-signature": "1.1.0",
-    "jose": "1.27.3"
+    "jose": "1.28.0"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.7",
@@ -44,14 +44,14 @@
     "cookie-parser": "^1.4.5",
     "deep-freeze": "^0.0.1",
     "global-agent": "^2.1.12",
-    "helmet": "^3.23.3",
+    "helmet": "^4.1.0",
     "ioredis": "^4.16.2",
-    "jose": "1.27.3",
+    "jose": "1.28.0",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongoose": "^5.9.5",
     "node-mailjet": "^3.3.1",
-    "oidc-provider": "6.28.0",
+    "oidc-provider": "6.29.2",
     "openid-client": "3.15.9",
     "pino": "^6.3.2",
     "pkcs11js": "^1.0.19",
@@ -85,7 +85,7 @@
     "ts-loader": "^8.0.2",
     "ts-node": "^8.6.0",
     "tsconfig-paths": "^3.9.0",
-    "typedoc": "^0.17.7",
+    "typedoc": "^0.18.0",
     "typescript": "^3.7.4"
   },
   "jest": {
