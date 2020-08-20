@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsObject, ValidateNested } from 'class-validator';
+import { IsObject, IsUrl, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { LoggerConfig } from '@fc/logger';
 import { OidcProviderConfig } from '@fc/oidc-provider';
@@ -17,7 +17,17 @@ import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { MailerConfig } from '@fc/mailer';
 import { AppConfig } from '@fc/app';
 
+export class CoreFcp {
+  @IsUrl()
+  readonly defaultRedirectUri: string;
+}
+
 export class CoreFcpConfig {
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CoreFcp)
+  readonly CoreFcp: CoreFcp;
+
   @IsObject()
   @ValidateNested()
   @Type(() => AppConfig)
