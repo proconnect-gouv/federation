@@ -73,7 +73,7 @@ describe('CoreFcpController', () => {
     urlPrefix: '/api/v2',
   };
   const configServiceMock = {
-    get: () => appConfigMock,
+    get: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -131,6 +131,27 @@ describe('CoreFcpController', () => {
     });
     sessionServiceMock.patch.mockResolvedValueOnce(undefined);
     cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
+    configServiceMock.get.mockReturnValue(appConfigMock);
+  });
+
+  describe('getDefault', () => {
+    it('should redirect to configured url', () => {
+      // Given
+      const configuredValueMock = 'fooBar';
+      configServiceMock.get.mockReturnValue({
+        defaultRedirectUri: configuredValueMock,
+      });
+      const resMock = {
+        redirect: jest.fn(),
+      };
+      // When
+      coreFcpController.getDefault(resMock);
+      // Then
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('CoreFcp');
+      expect(resMock.redirect).toHaveBeenCalledTimes(1);
+      expect(resMock.redirect).toHaveBeenCalledWith(301, configuredValueMock);
+    });
   });
 
   describe('getInteraction', () => {

@@ -19,7 +19,7 @@ import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
 import { CryptographyService } from '@fc/cryptography';
 import { CoreFcpService } from '../services';
-import { Interaction, CsrfToken } from '../dto';
+import { Interaction, CsrfToken, CoreFcp } from '../dto';
 import { CoreFcpRoutes } from '../enums';
 import {
   CoreFcpMissingIdentity,
@@ -38,6 +38,12 @@ export class CoreFcpController {
     private readonly crypto: CryptographyService,
   ) {
     this.logger.setContext(this.constructor.name);
+  }
+
+  @Get(CoreFcpRoutes.DEFAULT)
+  getDefault(@Res() res) {
+    const { defaultRedirectUri } = this.config.get<CoreFcp>('CoreFcp');
+    res.redirect(301, defaultRedirectUri);
   }
 
   @Get(CoreFcpRoutes.INTERACTION)
