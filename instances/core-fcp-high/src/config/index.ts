@@ -17,6 +17,12 @@ import OverrideOidcProvider from './override-oidc-provider';
 import Mailer from './mailer';
 
 export default {
+  /**
+   * @todo think about a better way to handle app specific parameters
+   */
+  CoreFcp: {
+    defaultRedirectUri: 'https://franceconnect.gouv.fr',
+  },
   App,
   Logger,
   OidcProvider,
