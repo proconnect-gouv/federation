@@ -442,6 +442,18 @@ describe('OidcProviderService', () => {
     });
   });
 
+  describe('pairwiseIdentifier', () => {
+    it('should return second argument as is', () => {
+      // Given
+      const ctx = {};
+      const accountId = 'accountIdValue';
+      // When
+      const result = service['pairwiseIdentifier'](ctx, accountId);
+      // Then
+      expect(result).toBe(accountId);
+    })
+  })
+
   describe('registerEvent', () => {
     it('should call provider `in` method', () => {
       // Given

@@ -418,6 +418,21 @@ export class OidcProviderService {
   }
 
   /**
+   * Passthru original identifier (sub).
+   *
+   * While we could imagine that `accountId` would carry the value set by the `findAccount` method above,
+   * it actually carries the sub.
+   *
+   * We kept the parameter name to be consistent with documentation and original function signature
+   * Note that the function receives a third parameter `client` but it is of no use for our implementation.
+   *
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pairwiseidentifier
+   */
+  private pairwiseIdentifier(_ctx, accountId: string) {
+    return accountId;
+  }
+
+  /**
    *
    * @param ctx Koa's `ctx` object
    * @param out output body, we won't use it here.
@@ -534,6 +549,7 @@ export class OidcProviderService {
         adapter,
         clients,
         findAccount: this.findAccount.bind(this),
+        pairwiseIdentifier: this.pairwiseIdentifier.bind(this),
         renderError: this.renderError.bind(this),
         logoutSource: this.logoutSource.bind(this),
         clientBasedCORS: this.clientBasedCORS.bind(this),
