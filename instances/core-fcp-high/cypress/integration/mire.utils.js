@@ -195,6 +195,15 @@ export function checkInformations(identity) {
   }
 }
 
+export function checkInStringifiedJson(key, value, selector = '#json') {
+  cy.get(selector).then((elem) => {
+    const data = JSON.parse(elem.val().trim());
+
+    expect(data).to.have.property(key);
+    expect(data[key]).to.eq(value);
+  })
+}
+
 export function basicErrorScenario(params) {
   const { idpId, errorCode, eidasLevel } = params;
   const password = '123';

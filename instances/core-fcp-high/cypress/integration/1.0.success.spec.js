@@ -1,4 +1,4 @@
-import { basicSuccessScenario, checkInformations } from './mire.utils';
+import { basicSuccessScenario, checkInformations, checkInStringifiedJson } from './mire.utils';
 
 describe('Successful scenarios', () => {
   it('should redirect to FC website', () => {
@@ -28,6 +28,7 @@ describe('Successful scenarios', () => {
       birthplace: '75107',
       birthcountry: '99100',
     });
+    checkInStringifiedJson('sub', 'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2')
   });
 
   it('should log in to Service Provider Example with POST /authorize', () => {
@@ -47,6 +48,7 @@ describe('Successful scenarios', () => {
       birthplace: '75107',
       birthcountry: '99100',
     });
+    checkInStringifiedJson('sub', 'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2')
   });
 
   it('should log in to Service Provider Example a "présumé né jour"', () => {
@@ -64,6 +66,7 @@ describe('Successful scenarios', () => {
       birthdate: '1992-11-00',
       birthcountry: '99217',
     });
+    checkInStringifiedJson('sub', 'f8272e30d2e64eb79cee891a87860b518780d0ed74bf4af43840f97633aae387v2')
   });
 
   it('should log in to Service Provider Example a "présumé né jour et mois"', () => {
@@ -81,5 +84,6 @@ describe('Successful scenarios', () => {
       birthdate: '1992-00-00',
       birthcountry: '99217',
     });
+    checkInStringifiedJson('sub', '44be9d7eb66b4b5257ceb02c4853c26d8597d4bfa5bd8fb2ddfa7a303e23ba42v2')
   });
 });
