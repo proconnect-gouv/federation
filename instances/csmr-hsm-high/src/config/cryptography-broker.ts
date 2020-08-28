@@ -10,5 +10,7 @@ export default {
     durable: false,
   },
   payloadEncoding: 'base64',
-  requestTimeout: 2 * 1000, // 2 seconds
+
+  // Global request timeout used for any outgoing app requests.
+  requestTimeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
 } as RabbitmqConfig;

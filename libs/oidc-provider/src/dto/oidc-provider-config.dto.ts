@@ -441,6 +441,9 @@ class Configuration {
   @IsArray()
   @IsIn(['public', 'pairwise'], { each: true })
   readonly subjectTypes: SubjectTypes[];
+
+  @IsNumber()
+  readonly timeout: number;
 }
 
 export class OidcProviderConfig {

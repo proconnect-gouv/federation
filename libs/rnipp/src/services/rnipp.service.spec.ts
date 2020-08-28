@@ -1,6 +1,7 @@
 import { AxiosError } from 'axios';
 import { HttpService } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { FcException } from '@fc/error';
@@ -34,7 +35,7 @@ describe('RnippService', () => {
   const configServiceMock = {
     get: jest.fn(),
   };
-  const httpServiceGetConfig = { timeout: 6000 };
+  const httpServiceConfigMock = { timeout: 42 };
 
   const rnippResponseParserServiceMock = {
     parseRnippData: jest.fn(),
@@ -347,7 +348,7 @@ describe('RnippService', () => {
 
   describe('callRnipp', () => {
     beforeEach(() => {
-      configServiceMock.get.mockReturnValue(httpServiceGetConfig);
+      configServiceMock.get.mockReturnValue(httpServiceConfigMock);
     });
 
     it('should call the "Http.get" function and with the given url', async () => {
@@ -360,7 +361,7 @@ describe('RnippService', () => {
       expect(httpServiceMock.get).toHaveBeenCalledTimes(1);
       expect(httpServiceMock.get).toHaveBeenCalledWith(
         requestUrlMock,
-        httpServiceGetConfig,
+        httpServiceConfigMock,
       );
     });
 

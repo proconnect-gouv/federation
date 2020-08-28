@@ -109,8 +109,8 @@ export class RnippService {
 
   private async callRnipp(requestUrl: string): Promise<AxiosResponse> {
     let response;
+    const { timeout } = this.configService.get<RnippConfig>('Rnipp'); 
 
-    const { timeout } = this.configService.get<RnippConfig>('Rnipp');
     try {
       response = await this.httpService
         .get(requestUrl, { timeout })
