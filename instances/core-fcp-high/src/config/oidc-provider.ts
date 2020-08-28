@@ -148,5 +148,8 @@ export default {
     jwks: {
       keys: [JSON.parse(process.env.CRYPTO_SIG_FAKE_PRIV_KEY)],
     },
+
+    // Global request timeout used for any outgoing app requests.
+    timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
   },
 } as OidcProviderConfig;

@@ -86,6 +86,7 @@ export class OidcClientService {
     acr_values: string,
   ): Promise<string> {
     const client: Client = await this.createOidcClient(providerUid);
+    client[custom.http_options] = this.getHttpTimeout.bind(this);
 
     return client.authorizationUrl({
       scope,
@@ -240,16 +241,36 @@ export class OidcClientService {
 
   /**
    * Set custom http options
-   * @param client
    * @see https://github.com/panva/node-openid-client/blob/master/docs/README.md#customizing-individual-http-requests
+   *
+   * @param {Client} client
+   * @returns {void}
    */
   private setCustomHttpOptions(client): void {
-    client[custom.http_options] = this.retrieveHttpOptions.bind(this);
+    client[custom.http_options] = this.getHttpOptions.bind(this);
   }
 
-  private retrieveHttpOptions(options): HttpOptions {
+  /**
+   * Retreive and assign request timeout value for all http requests.
+   * @param {HttpOptions} options HTTP request options
+   * @returns {HttpOptions}
+   */
+  private getHttpTimeout(options: HttpOptions): HttpOptions {
+    options.timeout = this.configuration.httpOptions.timeout;
+
+    return options;
+  }
+
+  /**
+   * Retreive and assign certificate attributes.
+   * @param {HttpOptions} options HTTP request options
+   * @returns {HttpOptions}
+   */
+  private getHttpOptions(options: HttpOptions): HttpOptions {
     options.cert = fs.readFileSync(this.configuration.httpOptions.cert);
     options.key = fs.readFileSync(this.configuration.httpOptions.key);
+    options.timeout = this.configuration.httpOptions.timeout;
+
     return options;
   }
 }
