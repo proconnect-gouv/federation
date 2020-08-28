@@ -24,6 +24,9 @@ class HttpOptions {
   @IsString()
   @MinLength(1)
   readonly cert: string;
+
+  @IsNumber()
+  readonly timeout: number;
 }
 
 export class OidcClientConfig {

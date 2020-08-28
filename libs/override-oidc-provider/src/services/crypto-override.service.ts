@@ -59,11 +59,11 @@ export class CryptoOverrideService {
 
   /**
    * Sign data using crypto and a private key
-   * @param _unusedKey the private key provided by oidc-provider
+   * @param {any} _unusedKey the private key provided by oidc-provider
    * we do not use it since signature will occur with an HSM stored key.
-   * @param data a serialized data
-   * @param digest default to sha256 (Cf. crypto.createSign)
-   * @returns signed data
+   * @param {Buffer} dataBuffer a serialized data
+   * @param {string} digest default to sha256 (Cf. crypto.createSign)
+   * @returns {Promise<Buffer>} signed data
    */
   async sign(
     _unusedKey: any,
