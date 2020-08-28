@@ -358,6 +358,7 @@ describe('OidcClientService', () => {
       );
     });
   });
+
   describe('createOidcClient', () => {
     it('should call issuer with url from provider metadata', async () => {
       // Given
@@ -433,29 +434,84 @@ describe('OidcClientService', () => {
     });
   });
 
-  describe('retrieveHttpOptions', () => {
-    it('Should return key and cert http options', () => {
+  describe('getHttpOptions', () => {
+    // Given
+    const encoding = 'utf8';
+    const timeoutMock = 42;
+    const certPathMock = '/path/to/cert';
+    const keyPathMock = '/path/to/key';
+    const certMock = Buffer.from('cert', encoding);
+    const keyMock = Buffer.from('key', encoding);
+    let readFileSyncMock;
+    const options = {
+      key: keyMock,
+      cert: certMock,
+      timeout: timeoutMock,
+    };
+    
+    beforeEach(() => {
       // Given
-      jest.spyOn(fs, 'readFileSync').mockImplementation(() => Buffer.alloc(1));
+      service['configuration'] = {
+        httpOptions: {
+          key: keyPathMock,
+          cert: certPathMock,
+          timeout: timeoutMock,
+        },
+      } as OidcClientConfig;
+      
+      readFileSyncMock = jest.spyOn(fs, 'readFileSync')
+        .mockReturnValueOnce(certMock)
+        .mockReturnValueOnce(keyMock);
+    })
 
+    it('Should first call readFileSync with the cert path', () => {
+      // When
+      service['getHttpOptions'](options);
+
+      // Then
+      expect(readFileSyncMock).toHaveBeenCalledTimes(2);
+      expect(readFileSyncMock).toHaveBeenCalledWith(certPathMock);
+    });
+    
+    it('Should then call readFileSync with the key path', () => {
+      // When
+      service['getHttpOptions'](options);
+
+      // Then
+      expect(readFileSyncMock).toHaveBeenCalledTimes(2);
+      expect(readFileSyncMock).toHaveBeenCalledWith(keyPathMock);
+    });
+
+    it('Should return key, cert and timeout http options', () => {
+      // When
+      const result = service['getHttpOptions'](options);
+
+      // Then
+      expect(result).toStrictEqual({
+        key: keyMock,
+        cert: certMock,
+        timeout: timeoutMock,
+      });
+    });
+  });
+
+  describe('getHttpTimeout', () => {
+    const timeoutMock = 42;
+    it('Should return the timeout http options', () => {
+      // Given
       const options = {
-        key: '',
-        cert: '',
+        timeout: timeoutMock,
       };
 
       service['configuration'] = {
-        httpOptions: {
-          key: 'key',
-          cert: 'cert',
-        },
+        httpOptions: options,
       } as OidcClientConfig;
 
       // When
-      const result = service['retrieveHttpOptions'](options);
+      const result = service['getHttpTimeout'](options);
       // Then
       expect(result).toStrictEqual({
-        key: Buffer.alloc(1),
-        cert: Buffer.alloc(1),
+        timeout: timeoutMock,
       });
     });
   });

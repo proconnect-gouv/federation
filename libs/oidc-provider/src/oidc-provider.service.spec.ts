@@ -943,4 +943,24 @@ describe('OidcProviderService', () => {
       expect(result).toEqual('/prefix/interaction/123');
     });
   });
+
+  describe('getHttpOptions', () => {
+    const timeoutMock = 42;
+    it('Should return the timeout http options', () => {
+      // Given
+      const options = {
+        timeout: timeoutMock,
+      };
+
+      service['configuration'] = options;
+
+      // When
+      const result = service['getHttpOptions'](options);
+      // Then
+      expect(result).toStrictEqual({
+        timeout: timeoutMock,
+      });
+    });
+  });
+  
 });

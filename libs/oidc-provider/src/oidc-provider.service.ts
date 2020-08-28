@@ -35,11 +35,13 @@ import {
   OidcProviderTokenEvent,
   OidcProviderUserinfoEvent,
 } from './events';
+import { HttpOptions } from 'openid-client';
 
 @Injectable()
 export class OidcProviderService {
   private ProviderProxy = Provider;
   private provider: Provider;
+  private configuration;
 
   constructor(
     private httpAdapterHost: HttpAdapterHost,
@@ -75,10 +77,15 @@ export class OidcProviderService {
    */
   async onModuleInit() {
     const { prefix, issuer, configuration } = await this.getConfig();
+    this.configuration = configuration;
+    
     this.logger.debug('Initializing oidc-provider');
 
     try {
-      this.provider = new this.ProviderProxy(issuer, configuration);
+      this.provider = new this.ProviderProxy(issuer, {
+        ...configuration,
+        httpOptions: this.getHttpOptions.bind(this)
+      });
       this.provider.proxy = true;
     } catch (error) {
       throw new OidcProviderInitialisationException(error);
@@ -235,6 +242,17 @@ export class OidcProviderService {
       if (path) return get(configuration, path);
       return configuration;
     };
+  }
+
+  /**
+   * Add global request timeout
+   * @see https://github.com/panva/node-oidc-provider/blob/HEAD/docs/README.md#httpoptions
+   *
+   * @param {HttpOptions} options
+   */
+  private getHttpOptions(options: HttpOptions): HttpOptions {
+    options.timeout = this.configuration.timeout;
+    return options;
   }
 
   /**

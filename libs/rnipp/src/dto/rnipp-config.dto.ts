@@ -1,4 +1,4 @@
-import { IsString, IsNumber, IsIn } from 'class-validator';
+import { IsString, IsIn, IsNumber } from 'class-validator';
 
 export class RnippConfig {
   @IsString()
