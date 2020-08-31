@@ -49,7 +49,7 @@ const nativeErrorsMap = {
   '129': RuntimeErrors.WebMessageUriMismatch, // no redirect
 };
 
-const noRedirectionList = ['106', '118', '129'];
+const noRedirectionList = ['106', '110', '118', '129'];
 
 /**
  * Default error code for an error thrown by `oidc-provider`
