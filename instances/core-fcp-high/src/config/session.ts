@@ -8,7 +8,7 @@ export default {
   prefix: 'FCP-SESS:',
   cookieOptions: {
     signed: true,
-    sameSite: 'Strict',
+    sameSite: 'Lax',
     httpOnly: true,
     secure: true,
     maxAge: 600000, // 10 minutes
