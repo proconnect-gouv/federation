@@ -89,6 +89,9 @@
     "typescript": "^3.7.4"
   },
   "jest": {
+    "setupFiles": [
+      "./jest-setup-file.ts"
+    ],
     "collectCoverageFrom": [
       "libs/**/*.ts",
       "apps/**/*.ts"
