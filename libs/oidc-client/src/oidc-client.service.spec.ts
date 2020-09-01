@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import * as fs from 'fs';
 import { JWK } from 'jose';
 import { ConfigService } from '@fc/config';
 import { LoggerService, LogLevelNames } from '@fc/logger';
@@ -436,50 +435,24 @@ describe('OidcClientService', () => {
 
   describe('getHttpOptions', () => {
     // Given
-    const encoding = 'utf8';
     const timeoutMock = 42;
-    const certPathMock = '/path/to/cert';
-    const keyPathMock = '/path/to/key';
-    const certMock = Buffer.from('cert', encoding);
-    const keyMock = Buffer.from('key', encoding);
-    let readFileSyncMock;
+    const certMock = 'cert';
+    const keyMock = 'key';
     const options = {
       key: keyMock,
       cert: certMock,
       timeout: timeoutMock,
     };
-    
+
     beforeEach(() => {
       // Given
       service['configuration'] = {
         httpOptions: {
-          key: keyPathMock,
-          cert: certPathMock,
+          key: keyMock,
+          cert: certMock,
           timeout: timeoutMock,
         },
       } as OidcClientConfig;
-      
-      readFileSyncMock = jest.spyOn(fs, 'readFileSync')
-        .mockReturnValueOnce(certMock)
-        .mockReturnValueOnce(keyMock);
-    })
-
-    it('Should first call readFileSync with the cert path', () => {
-      // When
-      service['getHttpOptions'](options);
-
-      // Then
-      expect(readFileSyncMock).toHaveBeenCalledTimes(2);
-      expect(readFileSyncMock).toHaveBeenCalledWith(certPathMock);
-    });
-    
-    it('Should then call readFileSync with the key path', () => {
-      // When
-      service['getHttpOptions'](options);
-
-      // Then
-      expect(readFileSyncMock).toHaveBeenCalledTimes(2);
-      expect(readFileSyncMock).toHaveBeenCalledWith(keyPathMock);
     });
 
     it('Should return key, cert and timeout http options', () => {

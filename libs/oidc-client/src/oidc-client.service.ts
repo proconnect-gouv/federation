@@ -1,4 +1,3 @@
-import * as fs from 'fs';
 import { JWK } from 'jose';
 import { Injectable, Inject } from '@nestjs/common';
 import {
@@ -86,6 +85,9 @@ export class OidcClientService {
     acr_values: string,
   ): Promise<string> {
     const client: Client = await this.createOidcClient(providerUid);
+    /**
+     * @todo see if custom.setHttpOptionsDefault can be used
+     */
     client[custom.http_options] = this.getHttpTimeout.bind(this);
 
     return client.authorizationUrl({
@@ -267,8 +269,8 @@ export class OidcClientService {
    * @returns {HttpOptions}
    */
   private getHttpOptions(options: HttpOptions): HttpOptions {
-    options.cert = fs.readFileSync(this.configuration.httpOptions.cert);
-    options.key = fs.readFileSync(this.configuration.httpOptions.key);
+    options.cert = this.configuration.httpOptions.cert;
+    options.key = this.configuration.httpOptions.key;
     options.timeout = this.configuration.httpOptions.timeout;
 
     return options;

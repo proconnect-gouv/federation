@@ -5,11 +5,13 @@ import {
   IsEnum,
   IsBoolean,
   IsOptional,
+  ValidateIf,
 } from 'class-validator';
-import { IsOptionalExtended } from '@fc/common';
 import { Genders, RnippResponseCodes } from '../enums';
 import { Type } from 'class-transformer';
 import { IsRnippBirthdate, IsCog } from '../validators';
+
+const COG_FRANCE = '99100';
 
 export class RnippPivotIdentity {
   @IsString()
@@ -32,7 +34,7 @@ export class RnippPivotIdentity {
   @IsRnippBirthdate()
   readonly birthdate: string;
 
-  @IsOptionalExtended()
+  @ValidateIf(RnippPivotIdentity.shouldValidateBirthplace)
   @IsString()
   @IsCog()
   readonly birthplace: string;
@@ -40,6 +42,10 @@ export class RnippPivotIdentity {
   @IsString()
   @IsCog()
   readonly birthcountry: string;
+
+  static shouldValidateBirthplace(instance: RnippPivotIdentity) {
+    return instance.birthcountry === COG_FRANCE;
+  }
 }
 
 export class CitizenStatus {

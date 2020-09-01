@@ -5,7 +5,7 @@ import {
   registerDecorator,
 } from 'class-validator';
 
-export function arrayInclude(array: string[], allowed: string[]) {
+export function arrayInclude(array: string[], allowed: string[]): boolean {
   return allowed.some((elem) => array.includes(elem));
 }
 
