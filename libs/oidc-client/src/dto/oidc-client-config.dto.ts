@@ -7,10 +7,10 @@ import {
   IsObject,
   IsPositive,
   ValidateNested,
-  IsString,
-  MinLength,
   IsOptional,
   Min,
+  IsString,
+  MinLength,
 } from 'class-validator';
 import { ClientMetadata } from 'openid-client';
 import { JSONWebKeySet } from 'jose';
