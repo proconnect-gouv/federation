@@ -115,12 +115,14 @@ export class CoreFcpService {
      */
     const spIdentity = { ...idpIdentity, sub: spInteraction.sub };
 
+    // Delete idp identity from volatile memory but keep the sub for the business logs.
+    const idpIdentityReset = { sub: idpIdentity.sub };
+
     // Store the changes in session
-    await this.session.save(interactionId, {
-      ...session,
-      // Delete idp identity from volatile memory
-      idpIdentity: null,
-      // Save identity for service provider
+    await this.session.patch(interactionId, {
+      // Save idp identity.
+      idpIdentity: idpIdentityReset,
+      // Save service provider identity.
       spIdentity,
     });
   }
