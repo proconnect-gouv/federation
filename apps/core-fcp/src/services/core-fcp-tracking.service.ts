@@ -81,12 +81,25 @@ export class CoreFcpTrackingService implements IAppTrackingService {
       spId,
       spAcr,
       spName,
+      spIdentity,
+
       idpId = null,
       idpAcr = null,
       idpName = null,
+      idpIdentity = null,
     } = await this.session.get(interactionId);
 
-    return { spId, spAcr, spName, idpId, idpAcr, idpName };
+    return {
+      spId,
+      spAcr,
+      spName,
+      spSub: spIdentity.sub,
+
+      idpId,
+      idpAcr,
+      idpName,
+      idpSub: idpIdentity?.sub || null,
+    };
   }
 
   /**
@@ -99,8 +112,18 @@ export class CoreFcpTrackingService implements IAppTrackingService {
     if (!context.req) {
       throw new CoreFcpMissingContext('req');
     }
-    const { spId, spAcr, spName } = context.req;
+    const { spId, spAcr, spName, spSub } = context.req;
 
-    return { spId, spAcr, spName, idpId: null, idpAcr: null, idpName: null };
+    return {
+      spId,
+      spAcr,
+      spName,
+      spSub,
+
+      idpId: null,
+      idpAcr: null,
+      idpName: null,
+      idpSub: null,
+    };
   }
 }
