@@ -62,7 +62,7 @@ describe('CoreFcpService', () => {
 
   const sessionServiceMock = {
     get: jest.fn(),
-    save: jest.fn(),
+    patch: jest.fn(),
     delete: jest.fn(),
   };
 
@@ -75,12 +75,16 @@ describe('CoreFcpService', () => {
     check: jest.fn(),
   };
 
-  const identityMock = {
+  const spIdentityMock = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Edward',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
     email: 'eteach@fqdn.ext',
+  };
+
+  const idpIdentityMock = {
+    sub: 'some idpSub',
   };
 
   const cryptographyServiceMock = {
@@ -102,13 +106,15 @@ describe('CoreFcpService', () => {
   };
 
   const sessionDataMock = {
-    spIdentity: identityMock,
     idpId: '42',
     idpAcr: 'eidas3',
     idpName: 'my favorite Idp',
+    idpIdentity: idpIdentityMock,
+
     spId: 'sp_id',
     spAcr: 'eidas3',
     spName: 'my great SP',
+    spIdentity: spIdentityMock,
   };
 
   beforeEach(async () => {
@@ -154,7 +160,7 @@ describe('CoreFcpService', () => {
 
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
 
-    rnippServiceMock.check.mockResolvedValue(identityMock);
+    rnippServiceMock.check.mockResolvedValue(spIdentityMock);
     accountServiceMock.isBlocked.mockResolvedValue(false);
     configServiceMock.get.mockReturnValue({
       forcedPrompt: ['testprompt'],
@@ -265,7 +271,7 @@ describe('CoreFcpService', () => {
     it('Should throw if identity storage for service provider fails', () => {
       // Given
       const errorMock = new Error('my error');
-      sessionServiceMock.save.mockRejectedValueOnce(errorMock);
+      sessionServiceMock.patch.mockRejectedValueOnce(errorMock);
       // Then
       expect(service.verify(reqMock)).rejects.toThrow(errorMock);
     });
@@ -324,20 +330,20 @@ describe('CoreFcpService', () => {
     it('should not throw if rnipp service does not', async () => {
       // Then
       expect(
-        service['rnippCheck'](identityMock, reqMock),
+        service['rnippCheck'](spIdentityMock, reqMock),
       ).resolves.not.toThrow();
     });
 
     it('should return rnippIdentity', async () => {
       // When
-      const result = await service['rnippCheck'](identityMock, reqMock);
+      const result = await service['rnippCheck'](spIdentityMock, reqMock);
       // Then
-      expect(result).toBe(identityMock);
+      expect(result).toBe(spIdentityMock);
     });
 
     it('should publish events when searching', async () => {
       // When
-      await service['rnippCheck'](identityMock, reqMock);
+      await service['rnippCheck'](spIdentityMock, reqMock);
       // Then
       expect(trackingMock.track).toHaveBeenCalledTimes(2);
       expect(trackingMock.track).toHaveBeenCalledWith(
@@ -357,7 +363,7 @@ describe('CoreFcpService', () => {
         ip: '123.123.123.123',
       };
       // When
-      await service['rnippCheck'](identityMock, reqMock);
+      await service['rnippCheck'](spIdentityMock, reqMock);
       // Then
       expect(trackingMock.track).toHaveBeenCalledTimes(2);
       expect(trackingMock.track).toHaveBeenCalledWith(
@@ -377,7 +383,7 @@ describe('CoreFcpService', () => {
       });
       // When
       try {
-        await service['rnippCheck'](identityMock, reqMock);
+        await service['rnippCheck'](spIdentityMock, reqMock);
       } catch (error) {
         // Then
         expect(error).toBeInstanceOf(RnippDeceasedException);
@@ -401,7 +407,7 @@ describe('CoreFcpService', () => {
       });
       // When
       try {
-        await service['rnippCheck'](identityMock, reqMock);
+        await service['rnippCheck'](spIdentityMock, reqMock);
       } catch (error) {
         // Then
         expect(error).toBeInstanceOf(RnippNotFoundMultipleEchoException);
@@ -425,7 +431,7 @@ describe('CoreFcpService', () => {
       });
       // When
       try {
-        await service['rnippCheck'](identityMock, reqMock);
+        await service['rnippCheck'](spIdentityMock, reqMock);
       } catch (error) {
         // Then
         expect(error).toBeInstanceOf(RnippNotFoundNoEchoException);
@@ -449,7 +455,7 @@ describe('CoreFcpService', () => {
       });
       // When
       try {
-        await service['rnippCheck'](identityMock, reqMock);
+        await service['rnippCheck'](spIdentityMock, reqMock);
       } catch (error) {
         // Then
         expect(error).toBeInstanceOf(RnippNotFoundSingleEchoException);
@@ -474,7 +480,7 @@ describe('CoreFcpService', () => {
     });
     // When
     try {
-      await service['rnippCheck'](identityMock, reqMock);
+      await service['rnippCheck'](spIdentityMock, reqMock);
     } catch (error) {
       // Then
       expect(error).toBeInstanceOf(RnippFoundOnlyWithMaritalNameException);
@@ -675,8 +681,8 @@ describe('CoreFcpService', () => {
         subject: `Connexion depuis FranceConnect sur ${sessionDataMock.spName}`,
         to: [
           {
-            email: identityMock.email,
-            name: `${identityMock.given_name} ${identityMock.family_name}`,
+            email: spIdentityMock.email,
+            name: `${spIdentityMock.given_name} ${spIdentityMock.family_name}`,
           },
         ],
       };

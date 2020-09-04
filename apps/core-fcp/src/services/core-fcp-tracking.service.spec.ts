@@ -39,12 +39,14 @@ describe('CoreFcpTrackingService', () => {
 
   const sessionDataMock = {
     spId: 'some spId',
-    spAcr: 'some spAcr',
     spName: 'some spName',
+    spAcr: 'some spAcr',
+    spIdentity: { sub: 'some spSub' },
+
     idpId: 'some idpId',
     idpName: 'some idpName',
     idpAcr: 'some idpAcr',
-    idpIdentity: { foo: 'bar' },
+    idpIdentity: { sub: 'some idpSub' },
   };
 
   beforeEach(async () => {
@@ -118,12 +120,16 @@ describe('CoreFcpTrackingService', () => {
         category: eventMock.category,
         event: eventMock.event,
         ip: ipMock,
+
         spId: 'some spId',
-        spAcr: 'some spAcr',
         spName: 'some spName',
+        spAcr: 'some spAcr',
+        spSub: 'some spSub',
+
         idpId: 'some idpId',
         idpName: 'some idpName',
         idpAcr: 'some idpAcr',
+        idpSub: 'some idpSub',
       };
       // When
       const result = await service.buildLog(eventMock, contextMock);
@@ -191,11 +197,14 @@ describe('CoreFcpTrackingService', () => {
       // Given
       const expectedResult = {
         spId: 'some spId',
-        spAcr: 'some spAcr',
         spName: 'some spName',
+        spAcr: 'some spAcr',
+        spSub: 'some spSub',
+
         idpId: 'some idpId',
         idpName: 'some idpName',
         idpAcr: 'some idpAcr',
+        idpSub: 'some idpSub',
       };
       // When
       const result = await service['getDataFromSession'](interactionIdMock);
@@ -207,16 +216,20 @@ describe('CoreFcpTrackingService', () => {
       // Given
       const expectedResult = {
         spId: 'spIdMock',
-        spAcr: 'spAcrMock',
         spName: 'spNameMock',
+        spAcr: 'spAcrMock',
+        spSub: 'spSubMock',
+
         idpId: null,
-        idpAcr: null,
         idpName: null,
+        idpAcr: null,
+        idpSub: null,
       };
       sessionMock.get.mockResolvedValueOnce({
         spId: 'spIdMock',
-        spAcr: 'spAcrMock',
         spName: 'spNameMock',
+        spAcr: 'spAcrMock',
+        spIdentity: { sub: 'spSubMock' },
       });
       // When
       const result = await service['getDataFromSession'](interactionIdMock);
@@ -230,18 +243,22 @@ describe('CoreFcpTrackingService', () => {
       // Given
       const expectedResult = {
         spId: 'spIdMock',
-        spAcr: 'spAcrMock',
         spName: 'spNameMock',
+        spAcr: 'spAcrMock',
+        spSub: 'spSubMock',
+
         idpId: null,
-        idpAcr: null,
         idpName: null,
+        idpAcr: null,
+        idpSub: null,
       };
       const myContextMock = {
         ...contextMock,
         req: {
           spId: 'spIdMock',
-          spAcr: 'spAcrMock',
           spName: 'spNameMock',
+          spAcr: 'spAcrMock',
+          spSub: 'spSubMock',
         },
       };
       // When
