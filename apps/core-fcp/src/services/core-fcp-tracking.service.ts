@@ -81,7 +81,7 @@ export class CoreFcpTrackingService implements IAppTrackingService {
       spId,
       spAcr,
       spName,
-      spIdentity,
+      spIdentity = null,
 
       idpId = null,
       idpAcr = null,
@@ -93,7 +93,11 @@ export class CoreFcpTrackingService implements IAppTrackingService {
       spId,
       spAcr,
       spName,
-      spSub: spIdentity.sub,
+      /**
+       * @TODO #146 ETQ dev, j'élucide le mystère sur le spIdentity qui est undefined pendant la cinématique
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/229
+       */
+      spSub: spIdentity?.sub || null,
 
       idpId,
       idpAcr,

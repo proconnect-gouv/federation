@@ -212,6 +212,30 @@ describe('CoreFcpTrackingService', () => {
       expect(result).toEqual(expectedResult);
     });
 
+    it('should return null values for idp info and spSub if not set in session', async () => {
+      // Given
+      const expectedResult = {
+        spId: 'spIdMock',
+        spName: 'spNameMock',
+        spAcr: 'spAcrMock',
+        spSub: null,
+
+        idpId: null,
+        idpName: null,
+        idpAcr: null,
+        idpSub: null,
+      };
+      sessionMock.get.mockResolvedValueOnce({
+        spId: 'spIdMock',
+        spName: 'spNameMock',
+        spAcr: 'spAcrMock',
+      });
+      // When
+      const result = await service['getDataFromSession'](interactionIdMock);
+      // Then
+      expect(result).toEqual(expectedResult);
+    });
+
     it('should return null values for idp info if not set in session', async () => {
       // Given
       const expectedResult = {
