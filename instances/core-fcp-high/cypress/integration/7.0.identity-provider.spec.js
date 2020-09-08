@@ -65,7 +65,7 @@ describe('Idp activation & visibility', () => {
       .invoke('attr', 'disabled', false)
       .click();
     // Then
-    cy.url().should('be', '/api/v2/redirect-to-idp');
+    cy.url().should('contain', '/api/v2/redirect-to-idp');
 
     cy.hasError('Y020017');
   });
@@ -84,7 +84,7 @@ describe('Idp activation & visibility', () => {
       cy.get('button#idp-fip1v2').click();
     });
     // Then
-    cy.url().should('be', '/api/v2/redirect-to-idp');
+    cy.url().should('contain', '/api/v2/redirect-to-idp');
     cy.hasError('Y020019');
   });
 });
