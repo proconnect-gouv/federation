@@ -133,6 +133,8 @@
       "@fc/cryptography": "<rootDir>/libs/cryptography/src",
       "@fc/core-fcp-logger/(.*)": "<rootDir>/libs/core-fcp-logger/src/$1",
       "@fc/core-fcp-logger": "<rootDir>/libs/core-fcp-logger/src",
+      "@fc/core-fca/(.*)": "<rootDir>/apps/core-fca/src/$1",
+      "@fc/core-fca": "<rootDir>/apps/core-fca/src",
       "@fc/core-fcp/(.*)": "<rootDir>/apps/core-fcp/src/$1",
       "@fc/core-fcp": "<rootDir>/apps/core-fcp/src",
       "@fc/csmr-hsm/(.*)": "<rootDir>/apps/csmr-hsm/src/$1",
