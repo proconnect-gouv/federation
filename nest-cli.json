@@ -8,6 +8,20 @@
     "tsConfigPath": "instances/core-fcp-high/tsconfig.app.json"
   },
   "projects": {
+    "core-fca-high": {
+      "type": "application",
+      "root": "instances/core-fca-high",
+      "entryFile": "main",
+      "sourceRoot": "instances/core-fca-high/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/core-fca-high/tsconfig.app.json",
+        "assets": [
+          "../../../apps/core-fca/**/*.ejs",
+          "../../../apps/core-fca/**/*.css",
+          "../../../apps/core-fca/**/*.svg"
+        ]
+      }
+    },
     "core-fcp-high": {
       "type": "application",
       "root": "instances/core-fcp-high",
@@ -133,6 +147,15 @@
       "sourceRoot": "libs/core-fcp-logger/src",
       "compilerOptions": {
         "tsConfigPath": "libs/core-fcp-logger/tsconfig.lib.json"
+      }
+    },
+    "core-fca": {
+      "type": "library",
+      "root": "apps/core-fca",
+      "entryFile": "index",
+      "sourceRoot": "apps/core-fca/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/core-fca/tsconfig.lib.json"
       }
     },
     "core-fcp": {

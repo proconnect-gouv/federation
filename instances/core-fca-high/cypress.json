@@ -1,0 +1,22 @@
+{
+  "chromeWebSecurity": false,
+  "videoUploadOnPasses": false,
+  "viewportHeight": 1000,
+  "viewportWidth": 1400,
+  "pageLoadTimeout": 30000,
+  "baseUrl": "https://fca.docker.dev-franceconnect.fr",
+  "env": {
+    "APP_DOMAIN": "fca.docker.dev-franceconnect.fr",
+    "APP_NAME": "fca",
+    "LOG_FILE_PATH": "../../../fc-docker/volumes/log/fca/app.log",
+    "FC_ROOT_URL": "https://fca.docker.dev-franceconnect.fr",
+    "FC_INTERACTION_URL": "https://fca.docker.dev-franceconnect.fr/api/v2/interaction",
+    "IDP_ROOT_URL": "https://fip1v2.docker.dev-franceconnect.fr",
+    "IDP_INTERACTION_URL": "https://fip1v2.docker.dev-franceconnect.fr/interaction",
+    "SP1_ROOT_URL": "https://fsp1v2.docker.dev-franceconnect.fr",
+    "SP1_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
+    "SP2_ROOT_URL": "https://fsp2v2.docker.dev-franceconnect.fr",
+    "SP2_CLIENT_ID": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775"
+  },
+  "ignoreTestFiles": "*.util.js"
+}

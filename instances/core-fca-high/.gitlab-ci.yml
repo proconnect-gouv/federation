@@ -1,0 +1,85 @@
+variables:
+  NODE_VERSION: 'v12.16.1'
+  FC_DOCKER_BRANCH: 'staging'
+  E2E: '0'
+
+core-fcp-high:
+  stage: 'End to end'
+  image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/ci-cd/e2e:cypress-chrome67
+  services:
+    - docker:18.09.7-dind
+  variables:
+    FC_ROOT: '$CI_BUILDS_DIR/france-connect'
+    CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
+    TZ: 'Europe/Paris'
+
+  cache:
+    key: 'cypress-cache'
+    paths:
+      - $CYPRESS_CACHE_FOLDER
+    policy: pull-push
+
+  before_script:
+    - if [ "$E2E" = "0" ]; then echo "E2E Skipped"; exit 0; fi;
+    - rm -rf $FC_ROOT/fc-docker $FC_ROOT/rnipp-mock $FC_ROOT/fi-mock  $FC_ROOT/user-dashboard
+    - git clone -b $FC_DOCKER_BRANCH https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
+    - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/rnipp-mock.git $FC_ROOT/rnipp-mock
+    - git clone https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fi-mock.git $FC_ROOT/fi-mock
+    - git clone -b staging https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/user-dashboard.git $FC_ROOT/user-dashboard
+    - ln -s $FC_ROOT/rnipp-mock $FC_ROOT/fc-docker/volumes/src
+    - ln -s $FC_ROOT/fi-mock $FC_ROOT/fc-docker/volumes/src/
+    - ln -s $FC_ROOT/user-dashboard $FC_ROOT/fc-docker/volumes/src/
+    - export CURRENT_UID="$(id -u):$(id -g)"
+    - export DOCKER_HOST_IP="$(getent hosts docker | awk '{ print $1 }')"
+    - export DOCKER_HOST="tcp://$DOCKER_HOST_IP:2375"
+    - echo "$DOCKER_HOST_IP corev2.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP fsp1v2.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP fsp2v2.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP fip1v2.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP rnipp.docker.dev-franceconnect.fr" >> /etc/hosts
+    - shopt -s expand_aliases
+    - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+  script:
+    - ln -s $CI_PROJECT_DIR $FC_ROOT/fc-docker/volumes/src/fc
+    - docker-stack up core-v2
+    - docker-stack dep-all
+    - docker-stack start-all
+    # Stop core and csmr-hsm
+    #- docker-stack stop corev2 csmr-hsm # fsp1v2 fsp2v2
+    # Create log directory just in case
+    - docker-stack exec fsp1v2 mkdir -p /tmp/.pm2/logs
+    - docker-stack exec fsp2v2 mkdir -p /tmp/.pm2/logs
+    - docker-stack exec corev2 mkdir -p /tmp/.pm2/logs
+    - docker-stack exec csmr-hsm mkdir -p /tmp/.pm2/logs
+    # Build like for prod
+    # - docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
+    #- docker-stack exec corev2 yarn build core-fcp-high
+    #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
+    # Launch like prod
+    # - docker-stack exec fsp1v2 yarn start:prod:mock-service-provider-high &
+    # - docker-stack exec fsp2v2 yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec corev2 yarn start:prod:core-fcp-high &
+    #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
+    # Starting Cypress
+    - timeout 120 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://corev2.docker.dev-franceconnect.fr/login)" != "404" ]];
+      do echo "Waiting for corev2..." && sleep 5; done' ||
+      (echo 'Cannot connect to corev2')
+    - docker-stack exec fsp1v2 cat /tmp/.pm2/logs/fsp1v2-error-0.log
+    - docker-stack exec fsp1v2 cat /tmp/.pm2/logs/fsp1v2-out-0.log
+    - npx cypress run -P instances/core-fcp-high || (
+      (docker cp fc_corev2_1:/tmp/.pm2/logs cypress || true) &&
+      (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs cypress || true) &&
+      (docker cp fc_rnipp_1:/tmp/.pm2/logs cypress || true) &&
+      (docker cp fc_fip1v2_1:/tmp/.pm2/logs cypress || true) &&
+      (docker cp fc_fsp1v2_1:/tmp/.pm2/logs cypress || true) &&
+      (docker cp fc_rp-corev2_1:/var/log/nginx cypress/logs || true) &&
+      exit 1)
+
+  artifacts:
+    expire_in: 1 hrs
+    when: on_failure
+    paths:
+      - instances/core-fcp-high/cypress/screenshots
+      - instances/core-fcp-high/cypress/videos
+      - cypress/logs
