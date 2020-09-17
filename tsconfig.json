@@ -71,6 +71,12 @@
       "@fc/core-fcp-logger/*": [
         "libs/core-fcp-logger/src/*"
       ],
+      "@fc/core-fca": [
+        "apps/core-fca/src"
+      ],
+      "@fc/core-fca/*": [
+        "apps/core-fca/src/*"
+      ],
       "@fc/core-fcp": [
         "apps/core-fcp/src"
       ],
