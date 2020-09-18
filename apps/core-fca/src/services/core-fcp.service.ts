@@ -19,13 +19,6 @@ import {
   RnippService,
   RnippRequestedEvent,
   RnippReceivedValidEvent,
-  RnippReceivedInvalidEvent,
-  RnippDeceasedException,
-  RnippNotFoundMultipleEchoException,
-  RnippNotFoundNoEchoException,
-  RnippNotFoundSingleEchoException,
-  RnippFoundOnlyWithMaritalNameException,
-  RnippReceivedDeceasedEvent,
 } from '@fc/rnipp';
 import {
   CoreFcpLowAcrException,
@@ -128,38 +121,11 @@ export class CoreFcpService {
   }
 
   private async rnippCheck(idpIdentity, req) {
-    try {
-      this.tracking.track(RnippRequestedEvent, req);
-      const rnippIdentity = await this.rnipp.check(idpIdentity);
-      this.tracking.track(RnippReceivedValidEvent, req);
+    this.tracking.track(RnippRequestedEvent, req);
+    const rnippIdentity = await this.rnipp.check(idpIdentity);
+    this.tracking.track(RnippReceivedValidEvent, req);
 
-      return rnippIdentity;
-    } catch (error) {
-      /**
-       * Business log Rnipp check failures
-       */
-      switch (error.constructor) {
-        /** Deceased has its own sepcial log */
-        case RnippDeceasedException:
-          this.tracking.track(RnippReceivedDeceasedEvent, req);
-          break;
-
-        /** Other "not found" case are grouped */
-        case RnippNotFoundMultipleEchoException:
-        case RnippNotFoundNoEchoException:
-        case RnippNotFoundSingleEchoException:
-        case RnippFoundOnlyWithMaritalNameException:
-          this.tracking.track(RnippReceivedInvalidEvent, req);
-          break;
-        /**
-         * Any other exception is a technical issue
-         * @see `@fc/rnipp` exceptions list for more info
-         */
-      }
-
-      /** Re throw to global exception filter */
-      throw error;
-    }
+    return rnippIdentity;
   }
 
   /**

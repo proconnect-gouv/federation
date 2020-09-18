@@ -24,3 +24,7 @@ Le document compile les remontées de checkmarx (outil actuel) ainsi que les con
 ## Etc/hosts
 
 ## Variables d'env
+
+## Erreur
+
+- [@fc/error](libs/error/README.md)
