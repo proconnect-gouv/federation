@@ -78,13 +78,13 @@ export class OidcProviderService {
   async onModuleInit() {
     const { prefix, issuer, configuration } = await this.getConfig();
     this.configuration = configuration;
-    
+
     this.logger.debug('Initializing oidc-provider');
 
     try {
       this.provider = new this.ProviderProxy(issuer, {
         ...configuration,
-        httpOptions: this.getHttpOptions.bind(this)
+        httpOptions: this.getHttpOptions.bind(this),
       });
       this.provider.proxy = true;
     } catch (error) {

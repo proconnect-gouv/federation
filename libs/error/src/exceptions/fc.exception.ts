@@ -1,3 +1,6 @@
+import { Loggable } from '../decorator';
+
+@Loggable()
 export class FcException extends Error {
   /**
    * Inform about wich module triggered the error
@@ -29,8 +32,6 @@ export class FcException extends Error {
 
   public originalError?: Error;
   public redirect: boolean;
-
-  static isBusiness = false;
 
   constructor(input?: Error | string) {
     let arg: unknown = input;
