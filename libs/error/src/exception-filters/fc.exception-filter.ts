@@ -1,15 +1,26 @@
 import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
+import { Trackable, Loggable } from '@fc/error';
+import { TrackingService } from '@fc/tracking';
+import { LoggerService } from '@fc/logger';
 import { FcException } from '../exceptions';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 import { ErrorService } from '../error.service';
+import { TrackableEvent } from '../events/trackable.event';
 
 @Catch(FcException)
 export class FcExceptionFilter extends FcBaseExceptionFilter
   implements ExceptionFilter {
+  constructor(
+    protected readonly logger: LoggerService,
+    protected readonly tracking: TrackingService,
+  ) {
+    super(logger);
+  }
   catch(exception: FcException, host: ArgumentsHost) {
     this.logger.debug('Exception from FcException');
 
     const res = host.switchToHttp().getResponse();
+    const req = host.switchToHttp().getRequest();
     const code = ErrorService.getExceptionCodeFor(exception);
     const id = ErrorService.generateErrorId();
 
@@ -21,10 +32,20 @@ export class FcExceptionFilter extends FcBaseExceptionFilter
      *
      * They will most likely trigger a business log.
      */
-    const isBusinessError = exception.constructor['isBusiness'];
+    const isTrackableError = Trackable.isTrackable(exception);
 
-    if (!isBusinessError) {
+    const isLoggableError = Loggable.isLoggable(exception);
+
+    if (isLoggableError) {
       this.logException(code, id, exception);
+    }
+
+    if (isTrackableError) {
+      /**
+       * @TODO #230 ETQ Dev, je n'envoie pas toute la req
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/230
+       */
+      this.tracking.track(TrackableEvent, { req, exception });
     }
 
     /**

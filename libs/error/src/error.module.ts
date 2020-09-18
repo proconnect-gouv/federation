@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
+import { TrackingModule } from '@fc/tracking';
 import {
   FcExceptionFilter,
   HttpExceptionFilter,
@@ -10,6 +11,7 @@ import {
 import { ErrorService } from './error.service';
 
 @Module({
+  imports: [TrackingModule.forLib()],
   providers: [
     ErrorService,
     /**

@@ -22,6 +22,7 @@ describe('CoreFcpTrackingService', () => {
     step: '1',
     category: 'some category',
     event: 'name',
+    exceptions: [],
     route: '/',
     intercept: false,
   };

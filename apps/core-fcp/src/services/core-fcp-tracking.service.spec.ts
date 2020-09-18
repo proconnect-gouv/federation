@@ -23,6 +23,7 @@ describe('CoreFcpTrackingService', () => {
     category: 'some category',
     event: 'name',
     route: '/',
+    exceptions: [],
     intercept: false,
   };
   const ipMock = '123.123.123.123';

@@ -7,19 +7,11 @@ import {
   RnippService,
   RnippRequestedEvent,
   RnippReceivedValidEvent,
-  RnippDeceasedException,
-  RnippReceivedDeceasedEvent,
-  RnippNotFoundMultipleEchoException,
-  RnippReceivedInvalidEvent,
-  RnippNotFoundNoEchoException,
-  RnippNotFoundSingleEchoException,
-  RnippFoundOnlyWithMaritalNameException,
 } from '@fc/rnipp';
 import { CryptographyService } from '@fc/cryptography';
 import { AccountService, AccountBlockedException } from '@fc/account';
 import { MailerService } from '@fc/mailer';
 import { TrackingService } from '@fc/tracking';
-
 import {
   CoreFcpLowAcrException,
   CoreFcpInvalidAcrException,
@@ -375,126 +367,6 @@ describe('CoreFcpService', () => {
         expectedEventStruct,
       );
     });
-
-    it('should throw and publish deceased event if rnipp throws "desceased" exception', async () => {
-      // Given
-      rnippServiceMock.check.mockImplementationOnce(() => {
-        throw new RnippDeceasedException();
-      });
-      // When
-      try {
-        await service['rnippCheck'](spIdentityMock, reqMock);
-      } catch (error) {
-        // Then
-        expect(error).toBeInstanceOf(RnippDeceasedException);
-
-        expect(trackingMock.track).toHaveBeenCalledTimes(2);
-        expect(trackingMock.track).toHaveBeenCalledWith(
-          RnippRequestedEvent,
-          expect.any(Object),
-        );
-        expect(trackingMock.track).toHaveBeenCalledWith(
-          RnippReceivedDeceasedEvent,
-          expect.any(Object),
-        );
-      }
-    });
-
-    it('should throw and publish Invalid event if rnipp throws "not found multiple echo" exception', async () => {
-      // Given
-      rnippServiceMock.check.mockImplementationOnce(() => {
-        throw new RnippNotFoundMultipleEchoException();
-      });
-      // When
-      try {
-        await service['rnippCheck'](spIdentityMock, reqMock);
-      } catch (error) {
-        // Then
-        expect(error).toBeInstanceOf(RnippNotFoundMultipleEchoException);
-
-        expect(trackingMock.track).toHaveBeenCalledTimes(2);
-        expect(trackingMock.track).toHaveBeenCalledWith(
-          RnippRequestedEvent,
-          expect.any(Object),
-        );
-        expect(trackingMock.track).toHaveBeenCalledWith(
-          RnippReceivedInvalidEvent,
-          expect.any(Object),
-        );
-      }
-    });
-
-    it('should throw and publish Invalid event if rnipp throws "not found no echo" exception', async () => {
-      // Given
-      rnippServiceMock.check.mockImplementationOnce(() => {
-        throw new RnippNotFoundNoEchoException();
-      });
-      // When
-      try {
-        await service['rnippCheck'](spIdentityMock, reqMock);
-      } catch (error) {
-        // Then
-        expect(error).toBeInstanceOf(RnippNotFoundNoEchoException);
-
-        expect(trackingMock.track).toHaveBeenCalledTimes(2);
-        expect(trackingMock.track).toHaveBeenCalledWith(
-          RnippRequestedEvent,
-          expect.any(Object),
-        );
-        expect(trackingMock.track).toHaveBeenCalledWith(
-          RnippReceivedInvalidEvent,
-          expect.any(Object),
-        );
-      }
-    });
-
-    it('should throw and publish Invalid event if rnipp throws "not found single echo" exception', async () => {
-      // Given
-      rnippServiceMock.check.mockImplementationOnce(() => {
-        throw new RnippNotFoundSingleEchoException();
-      });
-      // When
-      try {
-        await service['rnippCheck'](spIdentityMock, reqMock);
-      } catch (error) {
-        // Then
-        expect(error).toBeInstanceOf(RnippNotFoundSingleEchoException);
-
-        expect(trackingMock.track).toHaveBeenCalledTimes(2);
-        expect(trackingMock.track).toHaveBeenCalledWith(
-          RnippRequestedEvent,
-          expect.any(Object),
-        );
-        expect(trackingMock.track).toHaveBeenCalledWith(
-          RnippReceivedInvalidEvent,
-          expect.any(Object),
-        );
-      }
-    });
-  });
-
-  it('should throw and publish Invalid event if rnipp throws "not found only marital" exception', async () => {
-    // Given
-    rnippServiceMock.check.mockImplementationOnce(() => {
-      throw new RnippFoundOnlyWithMaritalNameException();
-    });
-    // When
-    try {
-      await service['rnippCheck'](spIdentityMock, reqMock);
-    } catch (error) {
-      // Then
-      expect(error).toBeInstanceOf(RnippFoundOnlyWithMaritalNameException);
-
-      expect(trackingMock.track).toHaveBeenCalledTimes(2);
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        RnippRequestedEvent,
-        expect.any(Object),
-      );
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        RnippReceivedInvalidEvent,
-        expect.any(Object),
-      );
-    }
   });
 
   describe('checkIfAcrIsValid', () => {
