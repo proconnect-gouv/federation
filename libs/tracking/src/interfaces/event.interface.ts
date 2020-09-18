@@ -1,3 +1,9 @@
+/* istanbul ignore file */
+
+// Declarative code
+import { Type } from '@nestjs/common';
+import { FcException } from '@fc/error';
+
 export interface IEvent {
   /**
    * Indicator of order in a flow scenario.
@@ -37,4 +43,6 @@ export interface IEvent {
    * to decide wether or not event should be automatically logged
    */
   readonly intercept: boolean;
+
+  readonly exceptions: Array<Type<FcException>>;
 }

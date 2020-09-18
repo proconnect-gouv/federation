@@ -9,6 +9,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_AUTHORIZE_INITIATED',
       route: `${urlPrefix}/authorize`,
+      exceptions: [],
       intercept: false,
     },
 
@@ -17,6 +18,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_SHOWED_IDP_CHOICE',
       route: `${urlPrefix}/interaction/:uid`,
+      exceptions: [],
       intercept: true,
     },
 
@@ -25,6 +27,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'IDP_CHOSEN',
       route: `${urlPrefix}/redirect-to-idp`,
+      exceptions: [],
       intercept: true,
     },
 
@@ -33,6 +36,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.DISCOVERY,
       event: 'IDP_REQUESTED_FC_JWKS',
       route: `${urlPrefix}/client/.well-known/jwks`,
+      exceptions: [],
       intercept: true,
     },
 
@@ -41,6 +45,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'IDP_CALLEDBACK',
       route: `${urlPrefix}/oidc-callback/:providerId`,
+      exceptions: [],
       intercept: true,
     },
 
@@ -49,6 +54,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_REQUESTED_IDP_TOKEN',
       route: `${urlPrefix}/oidc-callback/:providerId`,
+      exceptions: [],
       intercept: false,
     },
 
@@ -57,6 +63,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_REQUESTED_IDP_USERINFO',
       route: `${urlPrefix}/oidc-callback/:providerId`,
+      exceptions: [],
       intercept: false,
     },
 
@@ -65,6 +72,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_REQUESTED_RNIPP',
       route: `${urlPrefix}/interaction/:uid/verify`,
+      exceptions: [],
       intercept: false,
     },
 
@@ -73,6 +81,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_RECEIVED_RNIPP',
       route: `${urlPrefix}/interaction/:uid/verify`,
+      exceptions: [],
       intercept: false,
     },
 
@@ -81,6 +90,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_FAILED_RNIPP',
       route: `${urlPrefix}/interaction/:uid/verify`,
+      exceptions: [],
       intercept: false,
     },
 
@@ -89,6 +99,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_RECEIVED_VALID_RNIPP',
       route: `${urlPrefix}/interaction/:uid/verify`,
+      exceptions: [],
       intercept: false,
     },
 
@@ -97,6 +108,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_RECEIVED_DECEASED_RNIPP',
       route: `${urlPrefix}/interaction/:uid/verify`,
+      exceptions: [],
       intercept: false,
     },
 
@@ -105,6 +117,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_RECEIVED_INVALID_RNIPP',
       route: `${urlPrefix}/interaction/:uid/verify`,
+      exceptions: [],
       intercept: false,
     },
 
@@ -113,6 +126,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_VERIFIED',
       route: `${urlPrefix}/interaction/:uid/verify`,
+      exceptions: [],
       intercept: true,
     },
 
@@ -121,6 +135,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_SHOWED_CONSENT',
       route: `${urlPrefix}/interaction/:uid/consent`,
+      exceptions: [],
       intercept: true,
     },
 
@@ -129,6 +144,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_REDIRECTED_TO_SP',
       route: `${urlPrefix}/interaction/:uid/login`,
+      exceptions: [],
       intercept: true,
     },
 
@@ -137,6 +153,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FCP_CONSENTED',
       route: `${urlPrefix}/interaction/:uid/consent`,
+      exceptions: [],
       intercept: true,
     },
 
@@ -146,6 +163,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.DISCOVERY,
       event: 'SP_REQUESTED_FCP_JWKS',
       route: `${urlPrefix}/jwks`,
+      exceptions: [],
       intercept: true,
     },
 
@@ -155,6 +173,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.BACK_CINEMATIC,
       event: 'FS_REQUESTED_FCP_TOKEN',
       route: `${urlPrefix}/token`,
+      exceptions: [],
       intercept: false,
     },
     FS_REQUESTED_FCP_USERINFO: {
@@ -162,6 +181,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.BACK_CINEMATIC,
       event: 'FS_REQUESTED_FCP_USERINFO',
       route: `${urlPrefix}/userinfo`,
+      exceptions: [],
       intercept: false,
     },
 
@@ -171,6 +191,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FS_REQUESTED_LOGOUT',
       route: `${urlPrefix}/session/end`,
+      exceptions: [],
       intercept: false,
     },
   };

@@ -1,28 +1,40 @@
 import { ArgumentsHost } from '@nestjs/common';
+import { Trackable, Loggable } from '@fc/error';
 import { LoggerService } from '@fc/logger';
+import { TrackingService } from '@fc/tracking';
 import { FcExceptionFilter } from './fc.exception-filter';
 import { FcException } from '../exceptions';
+import { TrackableEvent } from '../events';
+jest.mock('@fc/error/decorator/trackable.decorator');
 
 describe('FcExceptionFilter', () => {
   let exceptionFilter: FcExceptionFilter;
   const loggerMock = ({
+    trace: jest.fn(),
     debug: jest.fn(),
     warn: jest.fn(),
     setContext: jest.fn(),
   } as unknown) as LoggerService;
 
+  const trackingMock = ({
+    track: jest.fn(),
+  } as unknown) as TrackingService;
+
   const resMock: any = {};
   resMock.render = jest.fn().mockReturnValue(resMock);
   resMock.status = jest.fn().mockReturnValue(resMock);
 
+  const reqMock: any = {};
+
   const argumentHostMock = {
     switchToHttp: () => ({
       getResponse: () => resMock,
+      getRequest: () => reqMock,
     }),
   } as ArgumentsHost;
 
   beforeEach(() => {
-    exceptionFilter = new FcExceptionFilter(loggerMock);
+    exceptionFilter = new FcExceptionFilter(loggerMock, trackingMock);
     jest.resetAllMocks();
   });
 
@@ -78,12 +90,14 @@ describe('FcExceptionFilter', () => {
     });
   });
   describe('catch', () => {
-    it('should log a warning', () => {
+    const STUB_ERROR_SCOPE = 2;
+    const STUB_ERROR_CODE = 3;
+
+    it('should log a warning by default', () => {
       // Given
       const exception = new FcException('message text');
-      exception.scope = 2;
-      exception.code = 3;
-      exception.constructor['isBusiness'] = false;
+      exception.scope = STUB_ERROR_SCOPE;
+      exception.code = STUB_ERROR_CODE;
       // When
       exceptionFilter.catch(exception, argumentHostMock);
       // Then
@@ -99,8 +113,8 @@ describe('FcExceptionFilter', () => {
     it('should concat stack trace from original error', () => {
       // Given
       const exception = new FcException();
-      exception.scope = 2;
-      exception.code = 3;
+      exception.scope = STUB_ERROR_SCOPE;
+      exception.code = STUB_ERROR_CODE;
       exception.originalError = new Error('foo bar');
       // When
       exceptionFilter.catch(exception, argumentHostMock);
@@ -117,8 +131,8 @@ describe('FcExceptionFilter', () => {
     it('should render error template', () => {
       // Given
       const exception = new FcException('message text');
-      exception.scope = 2;
-      exception.code = 3;
+      exception.scope = STUB_ERROR_SCOPE;
+      exception.code = STUB_ERROR_CODE;
       // When
       exceptionFilter.catch(exception, argumentHostMock);
       // Then
@@ -133,12 +147,11 @@ describe('FcExceptionFilter', () => {
 
     it('should not log error', () => {
       // Given
-      class ExceptionClass extends FcException {
-        static isBusiness = true;
-      }
-      const exception = new ExceptionClass('message text');
-      exception.scope = 2;
-      exception.code = 3;
+      @Loggable(false)
+      class ClassMock extends FcException {}
+      const exception = new ClassMock('message text');
+      exception.scope = STUB_ERROR_SCOPE;
+      exception.code = STUB_ERROR_CODE;
       exceptionFilter['logException'] = jest.fn();
       // When
       exceptionFilter.catch(exception, argumentHostMock);
@@ -149,12 +162,9 @@ describe('FcExceptionFilter', () => {
 
     it('should log error', () => {
       // Given
-      class ExceptionClass extends FcException {
-        static isBusiness = false;
-      }
-      const exception = new ExceptionClass('message text');
-      exception.scope = 2;
-      exception.code = 3;
+      const exception = new FcException('message text');
+      exception.scope = STUB_ERROR_SCOPE;
+      exception.code = STUB_ERROR_CODE;
       exceptionFilter['logException'] = jest.fn();
       // When
       exceptionFilter.catch(exception, argumentHostMock);
@@ -166,13 +176,63 @@ describe('FcExceptionFilter', () => {
     it('should not render for redirections', () => {
       // Given
       const exception = new FcException('message text');
-      exception.scope = 2;
-      exception.code = 3;
+      exception.scope = STUB_ERROR_SCOPE;
+      exception.code = STUB_ERROR_CODE;
       exception.redirect = true;
       // When
       exceptionFilter.catch(exception, argumentHostMock);
       // Then
       expect(resMock.render).not.toHaveBeenCalled();
+    });
+
+    it('should not call tracking service if isTrackable is not defined', () => {
+      // Given
+      const exception = new FcException('message text');
+      exception.scope = STUB_ERROR_SCOPE;
+      exception.code = STUB_ERROR_CODE;
+      // When
+      exceptionFilter.catch(exception, argumentHostMock);
+      // Then
+      expect(trackingMock.track).toHaveBeenCalledTimes(0);
+      expect(resMock.render).toHaveBeenCalled();
+    });
+
+    it('should not call tracking service if isTrackable is defined to false', () => {
+      // Given
+      const exception = new FcException('message text');
+      exception.scope = STUB_ERROR_SCOPE;
+      exception.code = STUB_ERROR_CODE;
+
+      const spy = jest.spyOn(Trackable, 'isTrackable');
+      spy.mockImplementationOnce(() => false);
+      // When
+      exceptionFilter.catch(exception, argumentHostMock);
+      // Then
+      expect(trackingMock.track).toHaveBeenCalledTimes(0);
+      expect(resMock.render).toHaveBeenCalled();
+
+      spy.mockRestore();
+    });
+
+    it('should call tracking service if isTrackable is defined to true', () => {
+      // Given
+      const exception = new FcException('message text');
+      exception.scope = STUB_ERROR_SCOPE;
+      exception.code = STUB_ERROR_CODE;
+
+      const spy = jest.spyOn(Trackable, 'isTrackable');
+      spy.mockImplementationOnce(() => true);
+      // When
+      exceptionFilter.catch(exception, argumentHostMock);
+      // Then
+      expect(trackingMock.track).toHaveBeenCalledTimes(1);
+      expect(trackingMock.track).toHaveBeenCalledWith(TrackableEvent, {
+        req: expect.any(Object),
+        exception: expect.any(FcException),
+      });
+      expect(resMock.render).toHaveBeenCalled();
+
+      spy.mockRestore();
     });
   });
 

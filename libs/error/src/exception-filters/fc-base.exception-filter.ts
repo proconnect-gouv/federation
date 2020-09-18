@@ -1,6 +1,6 @@
 import { BaseExceptionFilter } from '@nestjs/core';
-import { LoggerService } from '@fc/logger';
 import { Catch } from '@nestjs/common';
+import { LoggerService } from '@fc/logger';
 
 @Catch()
 export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
