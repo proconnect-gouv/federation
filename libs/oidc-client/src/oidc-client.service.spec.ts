@@ -142,11 +142,11 @@ describe('OidcClientService', () => {
 
     it('should load config', () => {
       // Given
-      service['scheduleConfigurationReload'] = jest.fn();
+      service['reloadConfiguration'] = jest.fn();
       // When
       service.onModuleInit();
       // Then
-      expect(service['scheduleConfigurationReload']).toHaveBeenCalledTimes(1);
+      expect(service['reloadConfiguration']).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -324,37 +324,17 @@ describe('OidcClientService', () => {
     });
   });
 
-  describe('scheduleConfigurationReload', () => {
-    it('Should call getConfig and overrideConfiguration', async () => {
+  describe('reloadConfiguration', () => {
+    it('Should call getConfig', async () => {
       // Given
       jest.useFakeTimers();
       // Can't use jest.spyOn() on private
-      const getConfigMock = jest
-        .fn()
-        .mockResolvedValue({ reloadConfigDelayInMs: 1000 });
+      const getConfigMock = jest.fn();
       service['getConfig'] = getConfigMock;
       // When
-      await service['scheduleConfigurationReload']();
+      await service['reloadConfiguration']();
       // Then
       expect(getConfigMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('shoud call schedule recursive all with setTimeout() and correct reloadConfigDelayInMs', async () => {
-      // Given
-      jest.useFakeTimers();
-      const reloadConfigDelayInMs = 10000;
-      const getConfigMock = jest
-        .fn()
-        .mockResolvedValue({ reloadConfigDelayInMs });
-      service['getConfig'] = getConfigMock;
-      // When
-      await service['scheduleConfigurationReload']();
-      // Then
-      expect(setTimeout).toHaveBeenCalledTimes(1);
-      expect(setTimeout).toHaveBeenCalledWith(
-        service['scheduleConfigurationReload'],
-        reloadConfigDelayInMs,
-      );
     });
   });
 

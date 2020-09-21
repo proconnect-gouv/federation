@@ -5,6 +5,7 @@ import { ServiceProviderService } from './service-provider.service';
 import { CryptographyService } from '@fc/cryptography';
 import { CustomClientMetadata } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
+import { EventBus } from '@nestjs/cqrs';
 
 describe('ServiceProviderService', () => {
   let service: ServiceProviderService;
@@ -62,6 +63,7 @@ describe('ServiceProviderService', () => {
   const loggerMock = {
     setContext: jest.fn(),
     warn: jest.fn(),
+    debug: jest.fn(),
   };
 
   const cryptographyMock = {
@@ -71,6 +73,11 @@ describe('ServiceProviderService', () => {
   const repositoryMock = {
     find: jest.fn(),
     exec: jest.fn(),
+    watch: jest.fn(),
+  };
+
+  const eventBusMock: object = {
+    publish: jest.fn(),
   };
 
   const serviceProviderModel = getModelToken('ServiceProvider');
@@ -89,12 +96,15 @@ describe('ServiceProviderService', () => {
           useValue: repositoryMock,
         },
         LoggerService,
+        EventBus,
       ],
     })
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(EventBus)
+      .useValue(eventBusMock)
       .compile();
 
     service = module.get<ServiceProviderService>(ServiceProviderService);
@@ -105,6 +115,90 @@ describe('ServiceProviderService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('onModuleInit', () => {
+    it('should call initOperationTypeWatcher', () => {
+      // Given
+      service['initOperationTypeWatcher'] = jest.fn();
+      // When
+      service.onModuleInit();
+      // Then
+      expect(service['initOperationTypeWatcher']).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('initOperationTypeWatcher', () => {
+    it('should call initOperationTypeWatcher', () => {
+      // Given
+      const streamMock = {
+        driverChangeStream: { cursor: { on: jest.fn() } },
+      };
+      repositoryMock.watch = jest.fn().mockReturnValueOnce(streamMock);
+      // When
+      service['initOperationTypeWatcher']();
+      // Then
+      expect(repositoryMock.watch).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('operationTypeWatcher', () => {
+    // Given
+    const operationTypes = {
+      INSERT: 'insert',
+      UPDATE: 'update',
+      DELETE: 'delete',
+      RENAME: 'rename',
+      REPLACE: 'replace',
+    };
+    it('should call eventBus.publish() if DB stream.operationType = INSERT', () => {
+      // Given
+      const streamInsertMock = { operationType: operationTypes.INSERT };
+      // When
+      service['operationTypeWatcher'](streamInsertMock);
+      // Then
+      expect(service['eventBus'].publish).toHaveBeenCalledTimes(1);
+    });
+    it('should call eventBus.publish() if DB stream.operationType = UPDATE', () => {
+      // Given
+      const streamInsertMock = { operationType: operationTypes.UPDATE };
+      // When
+      service['operationTypeWatcher'](streamInsertMock);
+      // Then
+      expect(service['eventBus'].publish).toHaveBeenCalledTimes(1);
+    });
+    it('should call eventBus.publish() if DB stream.operationType = DELETE', () => {
+      // Given
+      const streamInsertMock = { operationType: operationTypes.DELETE };
+      // When
+      service['operationTypeWatcher'](streamInsertMock);
+      // Then
+      expect(service['eventBus'].publish).toHaveBeenCalledTimes(1);
+    });
+    it('should call eventBus.publish() if DB stream.operationType = RENAME', () => {
+      // Given
+      const streamInsertMock = { operationType: operationTypes.RENAME };
+      // When
+      service['operationTypeWatcher'](streamInsertMock);
+      // Then
+      expect(service['eventBus'].publish).toHaveBeenCalledTimes(1);
+    });
+    it('should call eventBus.publish() if DB stream.operationType = REPLACE', () => {
+      // Given
+      const streamInsertMock = { operationType: operationTypes.REPLACE };
+      // When
+      service['operationTypeWatcher'](streamInsertMock);
+      // Then
+      expect(service['eventBus'].publish).toHaveBeenCalledTimes(1);
+    });
+    it("shouldn't call eventBus.publish() if DB stream.operationType = null", () => {
+      // Given
+      const streamInsertMock = { operationType: null };
+      // When
+      service['operationTypeWatcher'](streamInsertMock);
+      // Then
+      expect(service['eventBus'].publish).toHaveBeenCalledTimes(0);
+    });
   });
 
   describe('legacyToOpenIdPropertyName', () => {

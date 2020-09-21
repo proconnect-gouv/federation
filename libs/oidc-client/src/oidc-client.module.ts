@@ -2,6 +2,7 @@
 
 // Declarative code
 import { Module, DynamicModule, Type } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
 import { SessionModule, SessionService } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 import { CryptographyModule } from '@fc/cryptography';
@@ -22,6 +23,7 @@ export class OidcClientModule {
         identityProviderModule,
         SessionModule,
         CryptographyModule,
+        CqrsModule,
         TrackingModule.forLib(),
       ],
       providers: [
