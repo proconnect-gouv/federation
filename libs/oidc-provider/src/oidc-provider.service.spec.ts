@@ -55,7 +55,6 @@ describe('OidcProviderService', () => {
   const configOidcProviderMock = {
     prefix: '/api',
     issuer: 'http://foo.bar',
-    reloadConfigDelayInMs: 10000,
     configuration: {
       adapter: redisAdapterMock,
       jwks: { keys: [] },
@@ -189,7 +188,6 @@ describe('OidcProviderService', () => {
       });
       service['registerMiddlewares'] = jest.fn();
       service['catchErrorEvents'] = jest.fn();
-      service['scheduleConfigurationReload'] = jest.fn();
     });
     it('Should create oidc-provider instance', async () => {
       // When
@@ -239,7 +237,6 @@ describe('OidcProviderService', () => {
       // Then
       expect(service['registerMiddlewares']).toHaveBeenCalledTimes(1);
       expect(service['catchErrorEvents']).toHaveBeenCalledTimes(1);
-      expect(service['scheduleConfigurationReload']).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -252,42 +249,20 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('scheduleConfigurationReload', () => {
+  describe('reloadConfiguration', () => {
     it('Should call getConfig and overrideConfiguration', async () => {
       // Given
       jest.useFakeTimers();
       // Can't use jest.spyOn() on private
       const overrideConfigurationMock = jest.fn();
-      const getConfigMock = jest
-        .fn()
-        .mockResolvedValue({ reloadConfigDelayInMs: 1000 });
+      const getConfigMock = jest.fn();
       service['overrideConfiguration'] = overrideConfigurationMock;
       service['getConfig'] = getConfigMock;
       // When
-      await service['scheduleConfigurationReload']();
+      await service['reloadConfiguration']();
       // Then
       expect(getConfigMock).toHaveBeenCalledTimes(1);
       expect(overrideConfigurationMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('shoud call schedule recursive all with setTimeout() and correct reloadConfigDelayInMs', async () => {
-      // Given
-      jest.useFakeTimers();
-      const reloadConfigDelayInMs = 1000;
-      const overrideConfigurationMock = jest.fn();
-      const getConfigMock = jest
-        .fn()
-        .mockResolvedValue({ reloadConfigDelayInMs });
-      service['overrideConfiguration'] = overrideConfigurationMock;
-      service['getConfig'] = getConfigMock;
-      // When
-      await service['scheduleConfigurationReload']();
-      // Then
-      expect(setTimeout).toHaveBeenCalledTimes(1);
-      expect(setTimeout).toHaveBeenCalledWith(
-        service['scheduleConfigurationReload'],
-        reloadConfigDelayInMs,
-      );
     });
   });
 

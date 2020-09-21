@@ -56,18 +56,6 @@ export class OidcProviderService {
     private readonly tracking: TrackingService,
   ) {
     this.logger.setContext(this.constructor.name);
-    /**
-     * Bind only once
-     *
-     * This methods is called recursivly via setTimeout
-     * thus it needs to be bound to `this`.
-     * We bind it once for all in constructor.
-     *  - less overhead at each run
-     *  - easier to unit test
-     */
-    this.scheduleConfigurationReload = this.scheduleConfigurationReload.bind(
-      this,
-    );
   }
 
   /**
@@ -100,7 +88,6 @@ export class OidcProviderService {
 
     this.registerMiddlewares();
     this.catchErrorEvents();
-    this.scheduleConfigurationReload();
   }
 
   private registerMiddlewares() {
@@ -232,24 +219,6 @@ export class OidcProviderService {
     return this.provider;
   }
 
-  /**
-   * Scheduled reload of oidc-provider configuration
-   */
-  private async scheduleConfigurationReload(): Promise<void> {
-    const configuration = await this.getConfig(true);
-    this.logger.debug(
-      `Reload configuration (reloadConfigDelayInMs:${configuration.reloadConfigDelayInMs})`,
-    );
-
-    this.overrideConfiguration(configuration);
-
-    // Schedule next call, N seconds after END of this one
-    setTimeout(
-      this.scheduleConfigurationReload, // `this` is binded in contructor to avoir multi bind
-      configuration.reloadConfigDelayInMs,
-    );
-  }
-
   private overrideConfiguration(configuration: object): void {
     /**
      * Use string literral because `configuration` is not exposed
@@ -259,6 +228,13 @@ export class OidcProviderService {
       if (path) return get(configuration, path);
       return configuration;
     };
+  }
+
+  public async reloadConfiguration(): Promise<void> {
+    const configuration = await this.getConfig(true);
+    this.logger.debug(`Reload oidc-provider configuration.`);
+
+    this.overrideConfiguration(configuration);
   }
 
   /**
@@ -563,19 +539,14 @@ export class OidcProviderService {
     /**
      * Get data from config file
      */
-    const {
-      prefix,
-      issuer,
-      configuration,
-      reloadConfigDelayInMs,
-      forcedPrompt,
-    } = this.config.get<OidcProviderConfig>('OidcProvider');
+    const { prefix, issuer, configuration, forcedPrompt } = this.config.get<
+      OidcProviderConfig
+    >('OidcProvider');
 
     /**
      * Build final configuration object
      */
     return {
-      reloadConfigDelayInMs,
       forcedPrompt,
       prefix,
       issuer,

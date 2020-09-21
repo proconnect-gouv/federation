@@ -5,7 +5,6 @@ import {
   IsArray,
   IsNumber,
   IsObject,
-  IsPositive,
   ValidateNested,
   IsOptional,
   Min,
@@ -37,10 +36,6 @@ export class OidcClientConfig {
   @ValidateNested()
   @Type(() => HttpOptions)
   readonly httpOptions: HttpOptions;
-
-  @IsNumber()
-  @IsPositive()
-  readonly reloadConfigDelayInMs: number;
 
   /**
    * @TODO #143 validate the structure of JSONWebKeySet
