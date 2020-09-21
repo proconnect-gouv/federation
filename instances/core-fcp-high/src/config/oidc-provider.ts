@@ -8,7 +8,6 @@ import {
 } from '@fc/oidc-provider';
 
 export default {
-  reloadConfigDelayInMs: 60 * 1000, // 1 minute
   forcedPrompt: [OidcProviderPrompt.LOGIN, OidcProviderPrompt.CONSENT],
   prefix: process.env.PREFIX,
   issuer: `https://${process.env.FQDN}${process.env.PREFIX}`,

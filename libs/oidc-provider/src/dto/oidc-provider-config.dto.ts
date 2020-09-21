@@ -458,10 +458,6 @@ export class OidcProviderConfig {
   @Type(() => Configuration)
   readonly configuration: Configuration;
 
-  @IsNumber()
-  @IsOptional()
-  readonly reloadConfigDelayInMs?: number;
-
   @IsArray()
   @IsEnum(OidcProviderPrompt, { each: true })
   readonly forcedPrompt: OidcProviderPrompt[];
