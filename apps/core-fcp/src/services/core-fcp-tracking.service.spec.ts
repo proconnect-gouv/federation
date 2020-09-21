@@ -30,7 +30,7 @@ describe('CoreFcpTrackingService', () => {
 
   const contextMock = {
     req: {
-      ip: ipMock,
+      headers: { 'x-forwarded-for': ipMock },
       fc: {
         interactionId: interactionIdMock,
       },
@@ -159,7 +159,7 @@ describe('CoreFcpTrackingService', () => {
         CoreFcpMissingContext,
       );
     });
-    it('should throw if ip is missing', () => {
+    it('should throw if header is missing', () => {
       // Given
       const contextMock = { req: { fc: { interactionId: 'foo' } } };
       // Then
@@ -167,9 +167,19 @@ describe('CoreFcpTrackingService', () => {
         CoreFcpMissingContext,
       );
     });
+    it('should throw if ip is missing', () => {
+      // Given
+      const contextMock = { req: { headers: {}, fc: { interactionId: 'foo' } } };
+      // Then
+      expect(() => service['extractContext'](contextMock)).toThrow(
+        CoreFcpMissingContext,
+      );
+    });
     it('should throw if fc is missing', () => {
       // Given
-      const contextMock = { req: { ip: 'bar' } };
+      const contextMock = {
+        req: { headers: { 'x-forwarded-for': '123.123.123.123' } },
+      };
       // Then
       expect(() => service['extractContext'](contextMock)).toThrow(
         CoreFcpMissingContext,
@@ -177,7 +187,9 @@ describe('CoreFcpTrackingService', () => {
     });
     it('should throw if interactionId is missing', () => {
       // Given
-      const contextMock = { req: { ip: 'bar', fc: {} } };
+      const contextMock = {
+        req: { headers: { 'x-forwarded-for': '123.123.123.123' }, fc: {} },
+      };
       // Then
       expect(() => service['extractContext'](contextMock)).toThrow(
         CoreFcpMissingContext,

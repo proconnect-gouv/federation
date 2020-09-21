@@ -56,8 +56,12 @@ export class CoreFcpTrackingService implements IAppTrackingService {
     if (!context.req) {
       throw new CoreFcpMissingContext('req');
     }
-    if (!context.req.ip) {
-      throw new CoreFcpMissingContext('req.ip');
+    if (!context.req.headers) {
+      throw new CoreFcpMissingContext('req.headers');
+    }
+    const ip = context.req.headers['x-forwarded-for'];
+    if (!ip) {
+      throw new CoreFcpMissingContext("req.headers['x-forwarded-for']");
     }
     if (!context.req.fc) {
       throw new CoreFcpMissingContext('req.fc');
@@ -65,9 +69,7 @@ export class CoreFcpTrackingService implements IAppTrackingService {
     if (!context.req.fc.interactionId) {
       throw new CoreFcpMissingContext('req.fc.interactionId');
     }
-
     const {
-      ip,
       fc: { interactionId },
     } = context.req;
 
