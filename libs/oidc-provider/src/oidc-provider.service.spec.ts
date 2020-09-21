@@ -451,8 +451,8 @@ describe('OidcProviderService', () => {
       const result = service['pairwiseIdentifier'](ctx, accountId);
       // Then
       expect(result).toBe(accountId);
-    })
-  })
+    });
+  });
 
   describe('registerEvent', () => {
     it('should call provider `in` method', () => {
@@ -488,11 +488,19 @@ describe('OidcProviderService', () => {
   });
 
   describe('authorizationMiddleware', () => {
+    const getCtxMock = (hasError = false) => {
+      return {
+        req: {
+          headers: { 'x-forwarded-for': '123.123.123.123' },
+        },
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        oidc: { isError: hasError, params: { client_id: 'foo', acr_values: 'eidas3' } },
+        res: {},
+      }
+    };
     it('should abort middleware execution if request if flagged as erroring', () => {
       // Given
-      const ctxMock = {
-        oidc: { isError: true },
-      };
+      const ctxMock = getCtxMock(true);
       service['getInteractionIdFromCtx'] = jest.fn();
 
       // When
@@ -507,15 +515,7 @@ describe('OidcProviderService', () => {
 
     it('should call session.init', async () => {
       // Given
-      const ctxMock = {
-        req: {
-          ip: '123.123.123.123',
-        },
-        // oidc
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        oidc: { params: { client_id: 'foo', acr_values: 'eidas3' } },
-        res: {},
-      };
+      const ctxMock = getCtxMock();
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
       sessionServiceMock.init.mockResolvedValueOnce(undefined);
 
@@ -533,15 +533,7 @@ describe('OidcProviderService', () => {
 
     it('should throw if the session initialization fails', async () => {
       // Given
-      const ctxMock = {
-        req: {
-          ip: '123.123.123.123',
-        },
-        // oidc
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        oidc: { params: { client_id: 'foo', acr_values: 'eidas3' } },
-        res: {},
-      };
+      const ctxMock = getCtxMock();
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
       sessionServiceMock.init.mockRejectedValueOnce(new Error('test'));
 
@@ -553,15 +545,7 @@ describe('OidcProviderService', () => {
 
     it('should call publish authorization event', async () => {
       // Given
-      const ctxMock = {
-        req: {
-          ip: '123.123.123.123',
-        },
-        // oidc
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        oidc: { params: { client_id: 'foo', acr_values: 'eidas3' } },
-        res: {},
-      };
+      const ctxMock = getCtxMock();
       service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
       sessionServiceMock.init.mockResolvedValueOnce(undefined);
 
@@ -582,7 +566,7 @@ describe('OidcProviderService', () => {
       // Given
       const ctxMock = {
         req: {
-          ip: '123.123.123.123',
+          headers: { 'x-forwarded-for': '123.123.123.123' },
           // oidc
           // eslint-disable-next-line @typescript-eslint/naming-convention
           query: { client_id: 'foo', acr_values: 'eidas3' },
@@ -606,7 +590,7 @@ describe('OidcProviderService', () => {
       // Given
       const ctxMock = {
         req: {
-          ip: '123.123.123.123',
+          headers: { 'x-forwarded-for': '123.123.123.123' },
           // oidc
           // eslint-disable-next-line @typescript-eslint/naming-convention
           query: { client_id: 'foo', acr_values: 'eidas3' },
@@ -962,5 +946,4 @@ describe('OidcProviderService', () => {
       });
     });
   });
-  
 });

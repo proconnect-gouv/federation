@@ -135,7 +135,8 @@ export class OidcProviderService {
     }
 
     const interactionId = this.getInteractionIdFromCtx(ctx);
-    const { ip } = ctx.req;
+    const ip: string = this.getIpFromCtx(ctx);
+
     // oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { client_id: spId, acr_values: spAcr } = ctx.oidc.params;
@@ -149,22 +150,38 @@ export class OidcProviderService {
     };
     await this.session.init(ctx.res, interactionId, sessionProperties);
 
-    const eventContext = { fc: { interactionId }, ip, spId, spAcr, spName };
+    const eventContext = {
+      fc: { interactionId },
+      headers: { 'x-forwarded-for': ip },
+      spId,
+      spAcr,
+      spName,
+    };
     this.tracking.track(OidcProviderAuthorizationEvent, eventContext);
   }
 
   private tokenMiddleware(ctx) {
-    const interactionId = this.getInteractionIdFromCtx(ctx);
-    const { ip } = ctx.req;
-    const eventContext = { fc: { interactionId }, ip };
+    const interactionId: string = this.getInteractionIdFromCtx(ctx);
+    const ip: string = this.getIpFromCtx(ctx);
+    const eventContext: object = {
+      fc: { interactionId },
+      headers: { 'x-forwarded-for': ip },
+    };
     this.tracking.track(OidcProviderTokenEvent, eventContext);
   }
 
   private userinfoMiddleware(ctx) {
-    const interactionId = this.getInteractionIdFromCtx(ctx);
-    const { ip } = ctx.req;
-    const eventContext = { fc: { interactionId }, ip };
+    const interactionId: string = this.getInteractionIdFromCtx(ctx);
+    const ip: string = this.getIpFromCtx(ctx);
+    const eventContext: object = {
+      fc: { interactionId },
+      headers: { 'x-forwarded-for': ip },
+    };
     this.tracking.track(OidcProviderUserinfoEvent, eventContext);
+  }
+
+  private getIpFromCtx(ctx): string {
+    return ctx.req.headers['x-forwarded-for'];
   }
 
   private getInteractionIdFromCtx(ctx) {
