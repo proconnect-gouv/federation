@@ -7,9 +7,11 @@ import {
   IServiceProviderService,
 } from '@fc/oidc-provider';
 import { CryptographyService } from '@fc/cryptography';
+import { LoggerService } from '@fc/logger';
+import { EventBus } from '@nestjs/cqrs';
 import { IServiceProvider } from './interfaces';
 import { ServiceProviderDTO } from './dto';
-import { LoggerService } from '@fc/logger';
+import { ServiceProviderOperationTypeChangesEvent } from './events';
 
 @Injectable()
 export class ServiceProviderService implements IServiceProviderService {
@@ -19,8 +21,42 @@ export class ServiceProviderService implements IServiceProviderService {
     @InjectModel('ServiceProvider')
     private readonly serviceProviderModel,
     private readonly cryptography: CryptographyService,
+    private readonly eventBus: EventBus,
     private readonly logger: LoggerService,
   ) {}
+
+  async onModuleInit() {
+    this.initOperationTypeWatcher();
+    this.logger.debug('Initializing service-provider');
+  }
+
+  private initOperationTypeWatcher(): void {
+    const watch: any = this.serviceProviderModel.watch();
+    this.logger.debug(
+      `Service's database OperationType watcher initialization.`,
+    );
+    watch.driverChangeStream.cursor.on(
+      'data',
+      this.operationTypeWatcher.bind(this),
+    );
+  }
+
+  /**
+   * Method triggered when an operation type occured on 
+   * Mongo's 'provider' collection.
+   * @param {object} stream Stream of event retrieved.
+   * @returns {void}
+   */
+  private operationTypeWatcher(stream): void {
+    const operationTypes = ['insert', 'update', 'delete', 'rename', 'replace'];
+    const isOperationListened: boolean = operationTypes.includes(
+      stream.operationType,
+    );
+
+    if (isOperationListened === true) {
+      this.eventBus.publish(new ServiceProviderOperationTypeChangesEvent());
+    }
+  }
 
   private async findAllServiceProvider(): Promise<IServiceProvider[]> {
     const rawResult = await this.serviceProviderModel

@@ -40,22 +40,11 @@ export class OidcClientService {
     private readonly identityProvider: IIdentityProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
-    /**
-     * Bind only once
-     *
-     * This methods is called repeatedly via setTimeout
-     * thus it needs to be bound to `this`.
-     * We bind it once for all in constructor.
-     *  - less overhead at each run
-     *  - easier to unit test
-     */
-    this.scheduleConfigurationReload = this.scheduleConfigurationReload.bind(
-      this,
-    );
   }
 
-  onModuleInit() {
-    this.scheduleConfigurationReload();
+  async onModuleInit() {
+    this.reloadConfiguration();
+    this.logger.debug('Initializing oidc-client');
   }
 
   buildAuthorizeParameters(params) {
@@ -171,19 +160,11 @@ export class OidcClientService {
   }
 
   /**
-   * Scheduled reload of oidc-provider configuration
+   * Reload of oidc-client configuration
    */
-  private async scheduleConfigurationReload(): Promise<void> {
+  public async reloadConfiguration(): Promise<void> {
     this.configuration = await this.getConfig(true);
-    this.logger.debug(
-      `Reload configuration (reloadConfigDelayInMs:${this.configuration.reloadConfigDelayInMs})`,
-    );
-
-    // Schedule next call, N seconds after END of this one
-    setTimeout(
-      this.scheduleConfigurationReload, // `this` is binded in contructor to avoid multi bind
-      this.configuration.reloadConfigDelayInMs,
-    );
+    this.logger.debug(`Reload oidc-client configuration.`);
   }
 
   private async createOidcClient(providerUid: string): Promise<Client> {

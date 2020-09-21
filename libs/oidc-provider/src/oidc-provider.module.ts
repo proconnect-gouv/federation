@@ -9,6 +9,7 @@ import { OidcProviderController } from './oidc-provider.controller';
 import { IServiceProviderService } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens/service-provider-service.token';
 import { IsValidPromptConstraint } from './validators';
+import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({})
 export class OidcProviderModule {
@@ -34,6 +35,7 @@ export class OidcProviderModule {
         RedisModule,
         TrackingModule.forLib(),
         serviceProviderModule,
+        CqrsModule,
         SessionModule,
       ],
       providers: [

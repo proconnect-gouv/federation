@@ -33,7 +33,10 @@ import {
   OidcProviderTokenEventHandler,
   OidcProviderUserinfoEventHandler,
   TrackableEventHandler,
+  IdentityProviderOperationTypeChangesHandler,
+  ServiceProviderOperationTypeChangesHandler,
 } from './handlers';
+
 const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderService,
   ServiceProviderModule,
@@ -70,6 +73,8 @@ const oidcProviderModule = OidcProviderModule.register(
     OidcProviderTokenEventHandler,
     OidcProviderUserinfoEventHandler,
     TrackableEventHandler,
+    IdentityProviderOperationTypeChangesHandler,
+    ServiceProviderOperationTypeChangesHandler,
   ],
   // Make `CoreFcpTrackingService` dependencies available
   exports: [SessionModule],
