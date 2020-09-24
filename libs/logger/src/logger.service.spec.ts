@@ -2,6 +2,9 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from './logger.service';
 import { LogLevelNames } from './enum';
 import { nestLevelsMap } from './log-maps.map';
+import * as uuid from 'uuid';
+
+jest.mock('uuid');
 
 describe('LoggerService', () => {
   // Generate configs for all levels and dev mode
@@ -56,14 +59,42 @@ describe('LoggerService', () => {
     jest.resetAllMocks();
     return service;
   };
+  const uuidMock = 'uuidMockValue';
 
   beforeEach(() => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
     jest.clearAllMocks();
+    uuid.v4.mockReturnValue(uuidMock);
   });
 
-  describe('logger.log()', () => {
+  describe('getIdentifiedLog', () => {
+    const service = getConfiguredMockedService(configs.dev.log);
+    it('should add a `logId` property', () => {
+      // Given
+      const logMock = { foo: 'fooValue' };
+      // When
+      const result = service['getIdentifiedLog'](logMock);
+      // Then
+      expect(result).toEqual({
+        foo: 'fooValue',
+        logId: uuidMock,
+      });
+    });
+    it('should override an existing `logId` property', () => {
+      // Given
+      const logMock = { foo: 'fooValue', logId: 'existingValue' };
+      // When
+      const result = service['getIdentifiedLog'](logMock);
+      // Then
+      expect(result).toEqual({
+        foo: 'fooValue',
+        logId: uuidMock,
+      });
+    });
+  });
+
+  describe('log()', () => {
     it('Should call only internalLogger when level: log and dev: true', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.log);
@@ -84,7 +115,7 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('logger.trace()', () => {
+  describe('trace()', () => {
     it('Should call only internalLogger when level: trace and dev: true', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.trace);
@@ -106,7 +137,7 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('logger.verbose()', () => {
+  describe('verbose()', () => {
     it('Should call only internalLogger when level: verbose and dev: true', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.verbose);
@@ -128,7 +159,7 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('logger.debug()', () => {
+  describe('debug()', () => {
     it('Should call only internalLogger when level: debug and dev: true', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.debug);
@@ -150,7 +181,7 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('logger.info()', () => {
+  describe('info()', () => {
     it('Should call only internalLogger when level: info and dev: true', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.info);
@@ -171,7 +202,7 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('logger.warn()', () => {
+  describe('warn()', () => {
     it('Should call only internalLogger when level: warn and dev: true', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.warn);
@@ -192,7 +223,7 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('logger.error()', () => {
+  describe('error()', () => {
     it('Should call only internalLogger when level: error and dev: true', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.error);
@@ -214,7 +245,7 @@ describe('LoggerService', () => {
     });
   });
 
-  describe('logger.fatal()', () => {
+  describe('fatal()', () => {
     it('Should call only internalLogger when level: fatal and dev: true', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.fatal);
@@ -329,6 +360,22 @@ describe('LoggerService', () => {
       // Then
       expect(service['internalLogger']).toHaveBeenCalledTimes(0);
       expect(service['externalLogger'].info).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call external logger with result from getIdentifiedLog', () => {
+      // Given
+      const service = getConfiguredMockedService(configs.dev.info);
+      const getIdentifiedLogResponseMock = 'getIdentifiedLogResponseMockValue';
+      service['getIdentifiedLog'] = jest
+        .fn()
+        .mockReturnValue(getIdentifiedLogResponseMock);
+      // When
+      service.businessEvent(businessEventMock);
+      // Then
+      expect(service['externalLogger'].info).toHaveBeenCalledTimes(1);
+      expect(service['externalLogger'].info).toHaveBeenCalledWith(
+        getIdentifiedLogResponseMock,
+      );
     });
   });
 
