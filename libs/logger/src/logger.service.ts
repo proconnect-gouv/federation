@@ -1,5 +1,6 @@
-import { Logger, Injectable } from '@nestjs/common';
+import { v4 as uuidV4 } from 'uuid';
 import * as pino from 'pino';
+import { Logger, Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { LogLevelNames } from './enum';
 import { pinoLevelsMap, nestLevelsMap } from './log-maps.map';
@@ -31,6 +32,14 @@ export class LoggerService extends Logger {
     );
 
     this.overrideNativeConsole();
+  }
+
+  private getIdentifiedLog(log) {
+    const logId = uuidV4();
+    return {
+      ...log,
+      logId,
+    };
   }
 
   // Proxy `super`, cause we can't mock a parent class
@@ -74,7 +83,7 @@ export class LoggerService extends Logger {
     this.trace(log, context);
 
     if (this.canLog(level)) {
-      this.externalLogger[level](log);
+      this.externalLogger[level](this.getIdentifiedLog(log));
     }
   }
 
