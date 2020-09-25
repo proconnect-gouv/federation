@@ -108,6 +108,9 @@ export class OidcClientService {
     const clientMetadata = await this.getProvider(providerUid);
     const client = await this.createOidcClient(providerUid);
 
+    /**
+     * @todo #208: refacto: this call can be done in Client builder
+     */
     this.setCustomHttpOptions(client);
 
     /**
@@ -154,6 +157,9 @@ export class OidcClientService {
     this.logger.trace('getUserInfo');
     const client = await this.createOidcClient(providerUid);
 
+    /**
+     * @todo #208: refacto: this call can be done in Client builder
+     */
     this.setCustomHttpOptions(client);
 
     return client.userinfo(accessToken);
