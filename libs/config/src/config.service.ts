@@ -1,10 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { validate, ValidatorOptions } from 'class-validator';
+import {
+  validate,
+  ValidatorOptions,
+  isString,
+  isObject,
+} from 'class-validator';
 import * as deepFreeze from 'deep-freeze';
 import { plainToClass } from 'class-transformer';
 import { CONFIG_OPTIONS } from './tokens';
 import { IConfigOptions } from './interfaces';
-import { UnkonwnConfigurationNameError } from './errors';
+import { UnknownConfigurationNameError } from './errors';
 
 export const validationOptions: ValidatorOptions = {
   skipMissingProperties: false,
@@ -41,15 +46,23 @@ export class ConfigService {
   /**
    * Public getter
    * Specify type in order to have static binding while using returned object
-   * @param moduleName
+   * @param paths
    */
-  get<T>(moduleName: string): T {
-    if (!this.configuration.hasOwnProperty(moduleName)) {
-      throw new UnkonwnConfigurationNameError(
-        `Asked unknown configuration: <${moduleName}>`,
+  get<T extends any>(paths): T {
+    if (!isString(paths) || paths.length === 0) {
+      throw new UnknownConfigurationNameError(
+        `Asked unknown configuration: <${paths}>`,
       );
     }
 
-    return this.configuration[moduleName];
+    return paths.split('.').reduce((current, next) => {
+      if (isObject(current) && next in current) {
+        return current[next];
+      }
+
+      throw new UnknownConfigurationNameError(
+        `Asked unknown configuration: <${next}>`,
+      );
+    }, this.configuration);
   }
 }

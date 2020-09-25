@@ -1,1 +1,1 @@
-export class UnkonwnConfigurationNameError extends Error {}
+export class UnknownConfigurationNameError extends Error {}

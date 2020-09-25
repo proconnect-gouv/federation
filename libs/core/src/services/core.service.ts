@@ -5,6 +5,7 @@ import {
   OidcProviderConfig,
   OidcCtx,
   OidcProviderRoutes,
+  Configuration,
 } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 
@@ -21,6 +22,8 @@ import {
   RnippReceivedValidEvent,
 } from '@fc/rnipp';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
+
+import { AcrValues, pickAcr } from '../transforms';
 
 @Injectable()
 export class CoreService {
@@ -46,11 +49,22 @@ export class CoreService {
       'OidcProvider',
     );
 
+    const { acrValues } = this.config.get<Configuration>(
+      'OidcProvider.configuration',
+    );
+
     /** Force prompt @see overrideAuthorizePrompt header */
     this.oidcProvider.registerMiddleware(
       OidcProviderMiddlewareStep.BEFORE,
       OidcProviderRoutes.AUTHORIZATION,
       this.overrideAuthorizePrompt.bind(this, forcedPrompt.join(' ')),
+    );
+
+    /** Force Acr values @see overrideAuthorizeAcrValues header */
+    this.oidcProvider.registerMiddleware(
+      OidcProviderMiddlewareStep.BEFORE,
+      OidcProviderRoutes.AUTHORIZATION,
+      this.overrideAuthorizeAcrValues.bind(this, Array.from(acrValues)),
     );
   }
 
@@ -160,6 +174,22 @@ export class CoreService {
         this.logger.warn(
           `Unsupported method "${ctx.method} on /authorize endpoint". This should not happen`,
         );
+    }
+  }
+
+  private overrideAuthorizeAcrValues(allowed: string[], ctx: OidcCtx) {
+    this.logger.debug('Override OIDC Acr Values');
+
+    if (['POST', 'GET'].includes(ctx.method)) {
+      const data = (ctx.method === 'POST'
+        ? ctx.req['body']
+        : ctx.query) as AcrValues;
+      const acrValues = data.acr_values.split(/[ ]+/);
+      data.acr_values = pickAcr(allowed, acrValues);
+    } else {
+      this.logger.warn(
+        `Unsupported method "${ctx.method} on /authorize endpoint". This should not happen`,
+      );
     }
   }
 

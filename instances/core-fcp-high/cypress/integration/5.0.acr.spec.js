@@ -1,19 +1,109 @@
-import { basicErrorScenario, getAuthorizeUrl } from './mire.utils';
+import { basicErrorScenario, basicScenario } from './mire.utils';
 
 describe('Acr', () => {
-  it('should trigger error Y000400 (HTTP 400) when acr from SP is not supported', () => {
-    // Control visit
-    const controlUrl = getAuthorizeUrl();
-    cy.visit(controlUrl);
-    cy.get('#idp-fip1v2').should('exist');
+  it('should access to FI when acr from SP is unique and known', () => {
 
-    // Real test
-    // oidc param
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const testUrl = getAuthorizeUrl({ acr_values: 'NonSupportedAcr' });
-    cy.visit(testUrl, { failOnStatusCode: false });
-    cy.hasError('Y000400');
+    basicScenario({
+      idpId: 'fip1v2',
+      eidasLevel: 'eidas2',
+      overrideParams:{
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values:'eidas2',
+      }
+    });
   });
+
+  it('should access to FI when acr from SP has multiple values and all are known', () => {
+
+    basicScenario({
+      idpId: 'fip1v2',
+      eidasLevel: 'eidas2',
+      overrideParams:{
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values:'eidas2 eidas3',
+      }
+    });
+  });
+
+  it('should access to FI when acr from SP has multiple values and all are known but different order', () => {
+    basicScenario({
+      idpId: 'fip1v2',
+      eidasLevel: 'eidas2',
+      overrideParams:{
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values:'eidas3 eidas2',
+      }
+    });
+  });
+
+  it('should access to FI when acr from SP is multiple values but only one is known', () => {
+
+    basicScenario({
+      idpId: 'fip1v2',
+      eidasLevel: 'eidas2',
+      overrideParams:{
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values:'eidas2 eidas666 eidas1',
+      }
+    });
+  });
+
+  it('should access to FI when acr from SP is unique and not known', () => {
+
+    basicScenario({
+      idpId: 'fip1v2',
+      eidasLevel: 'eidas3',
+      overrideParams:{
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values:'eidas666',
+      }
+    });
+  });
+
+  it('should access to FI when acr from SP has multiple values and one is known', () => {
+
+    basicScenario({
+      idpId: 'fip1v2',
+      eidasLevel: 'eidas2',
+      overrideParams:{
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values:'eidas2 eidas666 eidas1',
+      }
+    });
+  });
+
+  it('should access to FI when acr from SP has multiple values and some are known', () => {
+
+    basicScenario({
+      idpId: 'fip1v2',
+      eidasLevel: 'eidas2',
+      overrideParams:{
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values:'eidas2 eidas666 eidas3',
+      }
+    });
+  });
+
+  it('should access to FI when acr from SP has multiple values and none are known', () => {
+
+    basicScenario({
+      idpId: 'fip1v2',
+      eidasLevel: 'eidas3',
+      overrideParams:{
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values:'eidas28 eidas666 eidas42',
+      }
+    });
+  });
+
 
   it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
     basicErrorScenario({
