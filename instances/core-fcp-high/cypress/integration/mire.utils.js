@@ -204,14 +204,21 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
   });
 }
 
-export function basicErrorScenario(params) {
-  const { idpId, errorCode, eidasLevel } = params;
+export function basicScenario(params) {
+  const { idpId, login = 'test', eidasLevel, overrideParams } = params;
   const password = '123';
 
-  // FS: Click on FC button
-  cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+  if(overrideParams) {
+    // Direct call to FC with custom params
+    const controlUrl = getAuthorizeUrl(overrideParams);
+    cy.visit(controlUrl);
+  } else {
+    // FS: Click on FC button
+    cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
-  cy.get('img[alt="Se connecter à FranceConnect"]').click();
+    cy.get('img[alt="Se connecter à FranceConnect"]').click();
+  }
+
 
   // FC: choose FI
   cy.url().should(
@@ -222,7 +229,7 @@ export function basicErrorScenario(params) {
 
   // FI: Authenticate
   cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
-  cy.get('input[name="login"]').clear().type(errorCode);
+  cy.get('input[name="login"]').clear().type(login);
   cy.get('input[name="password"]').clear().type(password);
 
   if (eidasLevel) {
@@ -232,13 +239,22 @@ export function basicErrorScenario(params) {
   cy.get('input[type="submit"]').click();
 }
 
+export function basicErrorScenario(params) {
+  const { errorCode } = params;
+  Reflect.deleteProperty(params,'errorCode');
+  basicScenario({
+    ...params,
+    login: errorCode
+  });
+}
+
 export function getAuthorizeUrl(overrideParams = {}) {
   const baseAuthorizeUrl = '/api/v2/authorize';
   const baseAuthorizeParams = {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_id: `${Cypress.env('SP1_CLIENT_ID')}`,
-    scope: 'openid',
+    scope: 'openid gender familyname',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     response_type: 'code',

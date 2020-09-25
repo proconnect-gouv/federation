@@ -1,14 +1,11 @@
 import {
   IsString,
-  IsIn,
   IsUrl,
   Contains,
   IsOptional,
   IsArray,
 } from 'class-validator';
-import { Transform } from 'class-transformer';
-import { split } from '@fc/common';
-import { Acr } from '@fc/oidc';
+import { Split } from '@fc/common';
 import { IsValidPrompt } from '../validators';
 
 /**
@@ -21,12 +18,9 @@ export class AuthorizeParamsDTO {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_id: string;
 
-  @IsString()
-  /**
-   * @TODO #184
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/184
-   */
-  @IsIn(Object.keys(Acr))
+  @IsString({ each: true })
+  @IsArray()
+  @Split(/[ ]+/)
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly acr_values: string;
@@ -56,8 +50,9 @@ export class AuthorizeParamsDTO {
   @Contains('openid')
   readonly scope: string;
 
+  @IsString({ each: true })
   @IsArray()
-  @Transform(split(/[ ]+/))
+  @Split(/[ ]+/)
   /**
    * @TODO #199 Retourner chez le FS en cas d'erreur
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/199

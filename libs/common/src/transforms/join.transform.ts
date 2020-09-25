@@ -1,21 +1,19 @@
 import { TransformOptions } from 'class-transformer';
 import { defaultMetadataStorage } from 'class-transformer/storage';
 
-export function doSplit(separator: string | RegExp = ' ') {
+export function doJoin(joiner = ',') {
   return (value: any) => {
-    return value !== undefined && value !== null
-      ? String(value).split(separator)
-      : [];
+    return !!value || value === false ? Array.from(value).join(joiner) : null;
   };
 }
 
 // declarative code
 /* istanbul ignore next */
-export function Split(
-  separator: string | RegExp,
+export function Join(
+  joiner: string,
   options: TransformOptions = {},
 ): PropertyDecorator {
-  const transformFn = doSplit(separator);
+  const transformFn = doJoin(joiner);
 
   return function (target: any, propertyName: string | symbol): void {
     defaultMetadataStorage.addTransformMetadata({

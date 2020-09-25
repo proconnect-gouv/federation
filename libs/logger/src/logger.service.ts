@@ -92,6 +92,11 @@ export class LoggerService extends Logger {
     const context = 'Native Console';
 
     methods.forEach((method) => {
+      /**
+       * @todo Attention les objects crash : 
+       * TypeError: Cannot convert object to primitive value
+       * et tout ce qui n'est pas primitif.
+       */
       console[method] = (...args) => this[method](args.join('\n'), context);
     });
   }

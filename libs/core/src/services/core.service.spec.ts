@@ -141,20 +141,28 @@ describe('CoreService', () => {
       .useValue(trackingMock)
       .compile();
 
-    service = module.get<CoreService>(CoreService);
-
-    jest.resetAllMocks();
-
-    getInteractionMock.mockResolvedValue(getInteractionResultMock);
-
-    sessionServiceMock.get.mockResolvedValue(sessionDataMock);
-
-    rnippServiceMock.check.mockResolvedValue(spIdentityMock);
-    accountServiceMock.isBlocked.mockResolvedValue(false);
     configServiceMock.get.mockReturnValue({
       forcedPrompt: ['testprompt'],
-      configuration: { routes: { authorization: '/foo' } },
+      configuration: {
+        routes: { authorization: '/foo' },
+      },
+      // OidcProvider.configuration
+      acrValues: ['Boots', 'Motorcycles', 'Glasses'],
     });
+
+    service = module.get<CoreService>(CoreService);
+
+    getInteractionMock.mockResolvedValue(getInteractionResultMock);
+    sessionServiceMock.get.mockResolvedValue(sessionDataMock);
+    rnippServiceMock.check.mockResolvedValue(spIdentityMock);
+    accountServiceMock.isBlocked.mockResolvedValue(false);
+
+    /**
+     * @todo utilisation de clearAllMocks et non jest.resetAllMocks
+     * il y a un problème : logger.warn est déjà utilisé 1 fois à partir
+     * ce qui ne devrait pas être le cas
+     */
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
@@ -165,13 +173,15 @@ describe('CoreService', () => {
     it('should register ovrrideAuthorizePrompt middleware', () => {
       // Given
       service['overrideAuthorizePrompt'] = jest.fn();
+      service['overrideAuthorizeAcrValues'] = jest.fn();
       // When
       service.onModuleInit();
       // Then
       expect(oidcProviderServiceMock.registerMiddleware).toHaveBeenCalledTimes(
-        1,
+        2,
       );
       expect(service['overrideAuthorizePrompt']).toHaveBeenCalledTimes(0);
+      expect(service['overrideAuthorizeAcrValues']).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -224,17 +234,95 @@ describe('CoreService', () => {
     });
   });
 
+  describe('overrideAuthorizeAcrValues', () => {
+    const allowedAcrMock = ['boots', 'clothes', 'motorcycle'];
+    it('should set acr values parameter on query', () => {
+      // Given
+      const overrideAcr = 'boots';
+      const ctxMock = {
+        method: 'GET',
+        // Oidc Naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        query: { acr_values: 'Boots' },
+      } as OidcCtx;
+
+      // When
+      service['overrideAuthorizeAcrValues'](allowedAcrMock, ctxMock);
+      // Then
+      expect(ctxMock.query.acr_values).toBe(overrideAcr);
+      expect(ctxMock.body).toBeUndefined();
+    });
+    it('should set acr values parameter on body', () => {
+      // Given
+      const overrideAcr = 'boots';
+      const ctxMock = ({
+        method: 'POST',
+        // Oidc Naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        req: { body: { acr_values: 'Boots' } },
+      } as unknown) as OidcCtx;
+      // When
+      service['overrideAuthorizeAcrValues'](allowedAcrMock, ctxMock);
+      // Then
+      expect(ctxMock.req['body'].acr_values).toBe(overrideAcr);
+      expect(ctxMock.query).toBeUndefined();
+    });
+    it('should not do anything but log if there is no method declared', () => {
+      // Given
+      const ctxMock = {} as OidcCtx;
+      // When
+      service['overrideAuthorizeAcrValues'](allowedAcrMock, ctxMock);
+      // Then
+      expect(ctxMock).toEqual({});
+      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
+    });
+    it('should not do anything but log if method is not handled', () => {
+      // Given
+      const ctxMock = { method: 'DELETE' } as OidcCtx;
+      // When
+      service['overrideAuthorizeAcrValues'](allowedAcrMock, ctxMock);
+      // Then
+      expect(ctxMock).toEqual({ method: 'DELETE' });
+      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
+    });
+  });
+
   describe('verify', () => {
+    let checkBlockedMock;
+    let checkAcrMock;
+    beforeEach(() => {
+      checkBlockedMock = jest.spyOn<CoreService, any>(
+        service,
+        'checkIfAccountIsBlocked',
+      );
+      checkBlockedMock.mockResolvedValue(true); // nothing happened
+
+      checkAcrMock = jest.spyOn<CoreService, any>(
+        service,
+        'checkIfAcrIsValid',
+      );
+      checkAcrMock.mockResolvedValue(true); // nothing happened
+    });
+
     it('Should not throw if verified', async () => {
       // Then
       expect(service.verify(reqMock)).resolves.not.toThrow();
+    });
+
+    it('Should throw if account is blocked', async () => {
+      // Given
+      const errorMock = new AccountBlockedException();
+      checkBlockedMock.mockRejectedValueOnce(errorMock);
+
+      // Then
+      expect(service.verify(reqMock)).rejects.toThrow(errorMock);
     });
 
     // Dependencies sevices errors
     it('Should throw if acr is not validated', async () => {
       // Given
       const errorMock = new Error('my error 1');
-      service['checkIfAcrIsValid'] = jest.fn().mockImplementationOnce(() => {
+      checkAcrMock.mockImplementation(() => {
         throw errorMock;
       });
       // Then
@@ -265,21 +353,6 @@ describe('CoreService', () => {
       expect(service.verify(reqMock)).rejects.toThrow(errorMock);
     });
 
-    it('should throw if account is blocked', () => {
-      // Given
-      accountServiceMock.isBlocked.mockResolvedValue(true);
-      // Then
-      expect(service.verify(reqMock)).rejects.toThrow(AccountBlockedException);
-    });
-
-    it('should throw if account blocked check fails', () => {
-      // Given
-      const error = new Error('foo');
-      accountServiceMock.isBlocked.mockRejectedValueOnce(error);
-      // Then
-      expect(service.verify(reqMock)).rejects.toThrow(error);
-    });
-
     // Non blocking errors
     it('Should pass if interaction storage fails', () => {
       // Given
@@ -291,6 +364,7 @@ describe('CoreService', () => {
 
     it('Should log a warning if interaction storage fails', async () => {
       // Given
+
       const error = new Error('some error');
       accountServiceMock.storeInteraction.mockRejectedValueOnce(error);
       // When
@@ -313,6 +387,41 @@ describe('CoreService', () => {
      * // Service provider usability
      * it('Should throw if service provider is not usable ', async () => {});
      */
+  });
+
+  describe('checkIfAccountIsBlocked', () => {
+    it('Should go through check if account is not blocked', async () => {
+      // Given
+      const identityMock = {};
+      // Then
+      await service['checkIfAccountIsBlocked'](identityMock);
+
+      expect(accountServiceMock.isBlocked).toBeCalledTimes(1);
+    });
+    it('Should throw if account is blocked', async () => {
+      // Given
+      accountServiceMock.isBlocked.mockResolvedValue(true);
+      const identityMock = {};
+      // Then
+      await expect(
+        service['checkIfAccountIsBlocked'](identityMock),
+      ).rejects.toThrow(AccountBlockedException);
+
+      expect(accountServiceMock.isBlocked).toBeCalledTimes(1);
+    });
+
+    it('Should throw if account blocked check fails', async () => {
+      // Given
+      const error = new Error('foo');
+      accountServiceMock.isBlocked.mockRejectedValueOnce(error);
+      const identityMock = {};
+      // Then
+      await expect(
+        service['checkIfAccountIsBlocked'](identityMock),
+      ).rejects.toThrow(error);
+
+      expect(accountServiceMock.isBlocked).toBeCalledTimes(1);
+    });
   });
 
   describe('rnippCheck', () => {
@@ -512,6 +621,14 @@ describe('CoreService', () => {
   });
 
   describe('sendAuthenticationMail', () => {
+    beforeEach(() => {
+      // avoid to count config.get in constructor
+      configServiceMock.get.mockReset();
+      configServiceMock.get.mockReturnValue({
+        from: 'mail@mail.com',
+      });
+    });
+
     it('should return a promise', async () => {
       // action
       const result = service.sendAuthenticationMail(reqMock);

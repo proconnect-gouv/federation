@@ -1,50 +1,43 @@
 import {
-  ValidatorConstraint,
-  ValidationArguments,
-  ValidatorConstraintInterface,
   ValidationOptions,
-  registerDecorator,
+  ValidateBy,
+  ValidatorConstraint,
+  ValidationArguments
 } from 'class-validator';
-import { Injectable, Inject } from '@nestjs/common';
-import { arrayInclude } from '@fc/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ArrayAtLeastOneConstraint } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { OidcProviderConfig } from '../dto';
+import { OidcProviderPrompt } from '../enums';
+
 
 @ValidatorConstraint()
 @Injectable()
-export class IsValidPromptConstraint implements ValidatorConstraintInterface {
-  private readonly allowed: string[];
+export class IsValidPromptConstraint extends ArrayAtLeastOneConstraint {
 
-  constructor(@Inject('ConfigService') private readonly config: ConfigService) {
-    const { forcedPrompt } = this.config.get<OidcProviderConfig>(
-      'OidcProvider',
-    );
-    this.allowed = forcedPrompt;
+  configValues: OidcProviderPrompt[];
+  constructor(@Inject('ConfigService') public readonly config: ConfigService) {
+    super();
+    const { forcedPrompt } = this.config.get<OidcProviderConfig>('OidcProvider');
+    this.configValues = forcedPrompt;
   }
 
-  validate(value: unknown) {
-    return value instanceof Array && arrayInclude(value, this.allowed);
-  }
-
-  defaultMessage(args: ValidationArguments) {
-    return `prompt allows only theses values: "${this.allowed.join(
-      ', ',
-    )}", got: "${args.value.join(', ')}"`;
+  getAllowedList(_args: ValidationArguments): string[] {
+    return this.configValues;
   }
 }
 
 // declarative code
 /* istanbul ignore next */
-export function IsValidPrompt(validationOptions?: ValidationOptions) {
-  // declarative code
-  /* istanbul ignore next */
-  return (object: object, propertyName: string) => {
-    registerDecorator({
-      target: object.constructor,
-      propertyName: propertyName,
-      options: validationOptions,
+export function IsValidPrompt(
+  validationOptions?: ValidationOptions,
+): PropertyDecorator {
+  return ValidateBy(
+    {
+      name: 'IsValidPrompt',
       constraints: [],
       validator: IsValidPromptConstraint,
-    });
-  };
+    },
+    validationOptions,
+  );
 }

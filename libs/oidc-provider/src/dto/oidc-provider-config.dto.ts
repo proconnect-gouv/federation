@@ -278,7 +278,7 @@ class Jwks {
   readonly keys: Array<JWKECKey | JWKRSAKey>;
 }
 
-class Configuration {
+export class Configuration {
   @IsObject()
   @IsOptional()
   readonly adapter?: AdapterConstructor;
