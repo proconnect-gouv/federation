@@ -1,41 +1,108 @@
-import { ConfigService } from '@fc/config';
-import { IsValidPromptConstraint } from './prompt.validator';
+import {
+  arrayAtLeastOne,
+  ArrayAtLeastOneConstraint,
+} from './array-at-least-one.validator';
 
-describe('IsValidPromptConstraint', () => {
+describe('arrayAtLeastOne', () => {
+  const allowedMock = ['boots', 'clothes', 'motorcycle'];
+
+  it('should return "true" if the array include one of the values allowed', () => {
+    // setup
+    const array = ['clothes'];
+
+    // action
+    const valid = arrayAtLeastOne(allowedMock, array);
+
+    // assert
+    expect(valid).toStrictEqual(true);
+  });
+
+  it('should return "true" if the array include two of the values allowed', () => {
+    // setup
+    const array = ['boots', 'motorcycle'];
+
+    // action
+    const valid = arrayAtLeastOne(allowedMock, array);
+
+    // assert
+    expect(valid).toStrictEqual(true);
+  });
+
+  it('should return "true" if the array include all the values allowed', () => {
+    // setup
+    const array = ['boots', 'clothes', 'motorcycle'];
+
+    // action
+    const valid = arrayAtLeastOne(allowedMock, array);
+
+    // assert
+    expect(valid).toStrictEqual(true);
+  });
+
+  it('should return "true" if the array include one of the values allowed plus another unknown', () => {
+    // setup
+    const array = ['clothes', 'SarahConnor'];
+
+    // action
+    const valid = arrayAtLeastOne(allowedMock, array);
+
+    // assert
+    expect(valid).toStrictEqual(true);
+  });
+
+  it('should return "false" if the array none of the values allowed', () => {
+    // setup
+    const array = ['I will be back 👍'];
+
+    // action
+    const valid = arrayAtLeastOne(allowedMock, array);
+
+    // assert
+    expect(valid).toStrictEqual(false);
+  });
+});
+
+describe('ArrayAtLeastOneConstraint', () => {
   let constraint;
 
-  const configMock = {
-    get: jest.fn(),
-  };
-
-  const argumentsMock = {
-    constraints: ['path'],
-  };
-
-  const resultsMock = ['boots', 'clothes', 'motorcycle'];
-
   beforeEach(() => {
-    jest.clearAllMocks();
-    configMock.get.mockReturnValueOnce({
-      forcedPrompt: resultsMock,
-    });
-    constraint = new IsValidPromptConstraint(
-      (configMock as unknown) as ConfigService,
-    );
+    constraint = new ArrayAtLeastOneConstraint();
   });
 
   describe('getAllowedList', () => {
-    it('should the list from config', () => {
-      // arrange
-      // action
-      const valid = constraint.getAllowedList({});
+    it('should return value from constraints', () => {
+      const resultsMock = ['boots', 'clothes', 'motorcycle'];
+      const validationArguments = {
+        constraints: [resultsMock],
+      };
 
-      // assert
+      const valid = constraint.getAllowedList(validationArguments);
+
       expect(valid).toStrictEqual(resultsMock);
+    });
+    it('should not return value from constraints', () => {
+      const resultsMock = ['boots', 'clothes', 'motorcycle'];
+      const validationArguments = {
+        constraints: ['wrong value', resultsMock],
+      };
+
+      const invalid = constraint.getAllowedList(validationArguments);
+
+      expect(invalid).toStrictEqual('wrong value');
+    });
+
+    it('should throw error if there is no constraint', () => {
+      const validationArguments = {};
+
+      expect(() => constraint.getAllowedList(validationArguments)).toThrow();
     });
   });
 
   describe('validate', () => {
+    const argumentsMock = {
+      constraints: [['boots', 'clothes', 'motorcycle']],
+    };
+
     it('should return "true" if the array include one of the values allowed', () => {
       // setup
       const value = ['clothes'];
@@ -72,6 +139,7 @@ describe('IsValidPromptConstraint', () => {
     it('should return "true" if the value include one of the values allowed plus another unknown', () => {
       // setup
       const value = ['clothes', 'SarahConnor'];
+
       // action
       const valid = constraint.validate(value, argumentsMock);
 
@@ -103,12 +171,6 @@ describe('IsValidPromptConstraint', () => {
   });
 
   describe('defaultMessage', () => {
-    beforeEach(() => {
-      configMock.get.mockReturnValueOnce({
-        forcedPrompt: resultsMock,
-      });
-    });
-
     it('should return a formatted error message', () => {
       // setup
       const validationArguments = {
@@ -130,7 +192,7 @@ describe('IsValidPromptConstraint', () => {
       const validationArguments = {
         value: 'I will be back 👍',
         property: 'Terminator',
-        constraints: [],
+        constraints: [['boots', 'clothes', 'motorcycle']],
       };
 
       // action

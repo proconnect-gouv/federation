@@ -1,4 +1,4 @@
 /* istanbul ignore file */
 
 // Declarative code
-export * from './array-include.validator';
+export * from './array-at-least-one.validator';
