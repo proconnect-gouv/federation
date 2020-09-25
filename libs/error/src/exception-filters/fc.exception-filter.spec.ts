@@ -239,7 +239,7 @@ describe('FcExceptionFilter', () => {
   describe('ArgumentHostAdapter', () => {
     it('should provide a fake argument adapter with switchToHttp method', () => {
       // Given
-      const ctx = { res: {} };
+      const ctx = { res: {}, req: {} };
       // When
       const result = FcExceptionFilter.ArgumentHostAdapter(ctx);
       // Then
@@ -256,6 +256,17 @@ describe('FcExceptionFilter', () => {
       // Then
       expect(result).toBeDefined();
       expect(result).toBe(ctx.res);
+    });
+    it('should provide a fake argument adapter with a getRequest method in response to switchToHttp', () => {
+      // Given
+      const ctx = { req: {} };
+      const adapter = FcExceptionFilter.ArgumentHostAdapter(ctx);
+      const httpAdapter = adapter.switchToHttp();
+      // When
+      const result = httpAdapter.getRequest();
+      // Then
+      expect(result).toBeDefined();
+      expect(result).toBe(ctx.req);
     });
   });
 });
