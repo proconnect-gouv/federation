@@ -8,7 +8,8 @@ import { ErrorService } from '../error.service';
 import { TrackableEvent } from '../events/trackable.event';
 
 @Catch(FcException)
-export class FcExceptionFilter extends FcBaseExceptionFilter
+export class FcExceptionFilter
+  extends FcBaseExceptionFilter
   implements ExceptionFilter {
   constructor(
     protected readonly logger: LoggerService,
@@ -68,10 +69,15 @@ export class FcExceptionFilter extends FcBaseExceptionFilter
     res.render('error', { code, id, message });
   }
 
+  /**
+   * Fake adapter to inject into manual calls to `FcExceptionFilter.catch()`
+   * @see '@fc/oidc-provider/oidc-provider-service' throwError()
+   */
   static ArgumentHostAdapter(ctx) {
     return {
       switchToHttp: () => ({
         getResponse: () => ctx.res,
+        getRequest: () => ctx.req,
       }),
     };
   }
