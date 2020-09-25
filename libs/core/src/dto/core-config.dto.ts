@@ -12,7 +12,6 @@ import { RnippConfig } from '@fc/rnipp';
 import { SessionConfig } from '@fc/session';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { CryptographyConfig } from '@fc/cryptography';
-import { HttpProxyConfig } from '@fc/http-proxy';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { MailerConfig } from '@fc/mailer';
 import { AppConfig } from '@fc/app';
@@ -77,11 +76,6 @@ export class CoreConfig {
   @ValidateNested()
   @Type(() => CryptographyConfig)
   readonly Cryptography: CryptographyConfig;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => HttpProxyConfig)
-  readonly HttpProxy: HttpProxyConfig;
 
   @IsObject()
   @ValidateNested()
