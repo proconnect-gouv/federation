@@ -37,7 +37,7 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FCP_AUTHORIZE_INITIATED',
+    event: 'FC_AUTHORIZE_INITIATED',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId: null,
@@ -46,7 +46,7 @@ export function basicSuccessScenario(params) {
   });
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FCP_SHOWED_IDP_CHOICE',
+    event: 'FC_SHOWED_IDP_CHOICE',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId: null,
@@ -77,7 +77,7 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FCP_REQUESTED_IDP_TOKEN',
+    event: 'FC_REQUESTED_IDP_TOKEN',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId, // idpId is now set
@@ -86,7 +86,7 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FCP_REQUESTED_IDP_USERINFO',
+    event: 'FC_REQUESTED_IDP_USERINFO',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -95,7 +95,7 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FCP_REQUESTED_RNIPP',
+    event: 'FC_REQUESTED_RNIPP',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -104,7 +104,7 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FCP_RECEIVED_VALID_RNIPP',
+    event: 'FC_RECEIVED_VALID_RNIPP',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -113,7 +113,7 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FCP_VERIFIED',
+    event: 'FC_VERIFIED',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -122,7 +122,7 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FCP_SHOWED_CONSENT',
+    event: 'FC_SHOWED_CONSENT',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -133,7 +133,7 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FCP_REDIRECTED_TO_SP',
+    event: 'FC_REDIRECTED_TO_SP',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -147,7 +147,7 @@ export function basicSuccessScenario(params) {
      * ETQ Dev, je remplace les `FS_` par `SP_`
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/194
      */
-    event: 'FS_REQUESTED_FCP_TOKEN',
+    event: 'FS_REQUESTED_FC_TOKEN',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -161,7 +161,7 @@ export function basicSuccessScenario(params) {
      * ETQ Dev, je remplace les `FS_` par `SP_`
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/194
      */
-    event: 'FS_REQUESTED_FCP_USERINFO',
+    event: 'FS_REQUESTED_FC_USERINFO',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -201,7 +201,7 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
 
     expect(data).to.have.property(key);
     expect(data[key]).to.eq(value);
-  })
+  });
 }
 
 export function basicErrorScenario(params) {

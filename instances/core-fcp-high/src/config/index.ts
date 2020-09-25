@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { CoreFcpConfig } from '@fc/core-fcp';
+import { CoreConfig } from '@fc/core';
 import App from './app';
 import Logger from './logger';
 import OidcProvider from './oidc-provider';
@@ -20,7 +20,7 @@ export default {
   /**
    * @todo think about a better way to handle app specific parameters
    */
-  CoreFcp: {
+  Core: {
     defaultRedirectUri: 'https://franceconnect.gouv.fr',
   },
   App,
@@ -36,4 +36,4 @@ export default {
   Session,
   OverrideOidcProvider,
   Mailer,
-} as CoreFcpConfig;
+} as CoreConfig;

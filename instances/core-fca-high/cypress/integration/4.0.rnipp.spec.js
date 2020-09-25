@@ -9,7 +9,7 @@ describe('RNIPP', () => {
 
     cy.hasError('Y010004');
     cy.hasBusinessLog({
-      event: 'FCP_RECEIVED_INVALID_RNIPP',
+      event: 'FC_RECEIVED_INVALID_RNIPP',
       idpId: 'fip1v2',
     });
   });
@@ -22,7 +22,7 @@ describe('RNIPP', () => {
 
     cy.hasError('Y010006');
     cy.hasBusinessLog({
-      event: 'FCP_RECEIVED_INVALID_RNIPP',
+      event: 'FC_RECEIVED_INVALID_RNIPP',
       idpId: 'fip1v2',
     });
   });
@@ -35,7 +35,7 @@ describe('RNIPP', () => {
 
     cy.hasError('Y010007');
     cy.hasBusinessLog({
-      event: 'FCP_RECEIVED_INVALID_RNIPP',
+      event: 'FC_RECEIVED_INVALID_RNIPP',
       idpId: 'fip1v2',
     });
   });
@@ -48,7 +48,7 @@ describe('RNIPP', () => {
 
     cy.hasError('Y010008');
     cy.hasBusinessLog({
-      event: 'FCP_RECEIVED_INVALID_RNIPP',
+      event: 'FC_RECEIVED_INVALID_RNIPP',
       idpId: 'fip1v2',
     });
   });
@@ -97,7 +97,7 @@ describe('RNIPP', () => {
 
     cy.hasError('Y010015');
     cy.hasBusinessLog({
-      event: 'FCP_RECEIVED_DECEASED_RNIPP',
+      event: 'FC_RECEIVED_DECEASED_RNIPP',
       idpId: 'fip1v2',
     });
   });
