@@ -2,49 +2,51 @@ import * as globalAgent from 'global-agent';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpProxyService } from './http-proxy.service';
 import { LoggerService } from '@fc/logger';
-import { ConfigService } from '@fc/config';
+import { HttpService } from '@nestjs/common';
 
 jest.mock('global-agent');
 
+const globalAny: any = global;
+
 describe('HttpProxyService', () => {
   let service: HttpProxyService;
-
-  const httpsProxyValueMock = 'httpsProxyValueMock';
-  const configMock = {
-    get: jest.fn(),
-  };
 
   const loggerMock = {
     setContext: jest.fn(),
     debug: jest.fn(),
   };
 
-  const agentMock = { HTTP_PROXY: undefined, HTTPS_PROXY: undefined };
+  const httpMock = {
+    axiosRef: {
+      defaults: { proxy: 'shouldNotExist' },
+    },
+  };
 
-  const createGlobalProxyAgentMock = jest.spyOn(
-    globalAgent,
-    'createGlobalProxyAgent',
-  );
+  const bootstrapMock = jest.spyOn(globalAgent, 'bootstrap');
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [HttpProxyService, LoggerService, ConfigService],
+      providers: [HttpProxyService, LoggerService, HttpService],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
-      .overrideProvider(ConfigService)
-      .useValue(configMock)
+      .overrideProvider(HttpService)
+      .useValue(httpMock)
       .compile();
 
     service = module.get<HttpProxyService>(HttpProxyService);
 
     jest.resetAllMocks();
 
-    configMock.get.mockReturnValue({
-      httpsProxy: httpsProxyValueMock,
+    bootstrapMock.mockImplementation(() => {
+      global['GLOBAL_AGENT'] = 'mockValue';
     });
 
-    createGlobalProxyAgentMock.mockReturnValue(agentMock);
+    httpMock.axiosRef.defaults.proxy = 'shouldNotExist';
+  });
+
+  afterEach(() => {
+    bootstrapMock.mockRestore();
   });
 
   it('should be defined', () => {
@@ -52,24 +54,28 @@ describe('HttpProxyService', () => {
   });
 
   describe('onModuleInit', () => {
-    it('should call config service', () => {
+    it('should call bootstrap from global-agent', () => {
       // When
       service.onModuleInit();
       // Then
-      expect(configMock.get).toHaveBeenCalledTimes(1);
-      expect(configMock.get).toHaveBeenCalledWith('HttpProxy');
+      expect(bootstrapMock).toHaveBeenCalledTimes(1);
     });
-    it('should call createGlobalProxyAgent', () => {
+    it('should call bootstrap from global-agent', () => {
       // When
       service.onModuleInit();
       // Then
-      expect(createGlobalProxyAgentMock).toHaveBeenCalledTimes(1);
+      expect(globalAny.GLOBAL_AGENT).toBeDefined();
     });
-    it('should set agent variables', () => {
+    it('should shutdown proxy for axios', () => {
       // When
       service.onModuleInit();
       // Then
-      expect(agentMock.HTTPS_PROXY).toBe(httpsProxyValueMock);
+      const {
+        axiosRef: {
+          defaults: { proxy },
+        },
+      } = httpMock;
+      expect(proxy).toBe(false);
     });
   });
 });
