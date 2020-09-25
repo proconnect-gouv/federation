@@ -16,7 +16,6 @@ import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
 import { CryptographyModule } from '@fc/cryptography';
 import { ErrorModule } from '@fc/error';
-import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
 import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
@@ -28,14 +27,9 @@ import {
   CoreTrackingService,
   OidcClientTokenEventHandler,
   UserinfoEventHandler,
-  RnippRequestedEventHandler,
-  RnippReceivedValidEventHandler,
   OidcProviderAuthorizationEventHandler,
   OidcProviderTokenEventHandler,
   OidcProviderUserinfoEventHandler,
-  TrackableEventHandler,
-  IdentityProviderOperationTypeChangesHandler,
-  ServiceProviderOperationTypeChangesHandler,
 } from '@fc/core';
 const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderService,
@@ -48,7 +42,6 @@ const oidcProviderModule = OidcProviderModule.register(
     ErrorModule,
     MongooseModule,
     SessionModule,
-    RnippModule,
     CryptographyModule,
     AccountModule,
     ServiceProviderModule,
@@ -67,16 +60,11 @@ const oidcProviderModule = OidcProviderModule.register(
     CoreTrackingService,
     OidcClientTokenEventHandler,
     UserinfoEventHandler,
-    RnippRequestedEventHandler,
-    RnippReceivedValidEventHandler,
     OidcProviderAuthorizationEventHandler,
     OidcProviderTokenEventHandler,
     OidcProviderUserinfoEventHandler,
-    TrackableEventHandler,
-    IdentityProviderOperationTypeChangesHandler,
-    ServiceProviderOperationTypeChangesHandler,
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [SessionModule],
 })
-export class CoreFcpModule {}
+export class CoreFcaModule {}

@@ -4,7 +4,8 @@
 import { Module } from '@nestjs/common';
 import { LoggerModule } from '@fc/logger';
 import { ConfigModule } from '@fc/config';
-import { CoreFcpConfig, CoreFcpModule } from '@fc/core-fcp';
+import { CoreConfig } from '@fc/core';
+import { CoreFcpModule } from '@fc/core-fcp';
 import configuration from './config';
 
 @Module({
@@ -13,7 +14,7 @@ import configuration from './config';
     ConfigModule.forRoot({
       isGlobal: true,
       config: configuration,
-      schema: CoreFcpConfig,
+      schema: CoreConfig,
     }),
     // 2. Load logger module next
     LoggerModule,

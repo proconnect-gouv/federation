@@ -36,11 +36,16 @@ export class MockServiceProviderController {
     };
   }
 
+  /**
+   * @todo Use an env var to hestimate if the providerUid to use
+   * should be 'fca' or 'corev2'
+   */
   @Get(MockServiceProviderRoutes.LOGIN)
   async login(@Req() req, @Res() res) {
     const params = {
       scope:
         'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address',
+      //providerUid: 'fca',
       providerUid: 'corev2',
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention

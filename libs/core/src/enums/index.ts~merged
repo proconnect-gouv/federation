@@ -1,0 +1,14 @@
+/* istanbul ignore file */
+
+// Declarative code
+<<<<<<< HEAD
+export * from './core-routes.enum';
+=======
+<<<<<<< HEAD:apps/mock-service-provider/src/enums/index.ts
+export * from './mock-service-provider-routes.enum';
+=======
+export * from './core-routes.enum';
+>>>>>>> creation of the core lib to mutualize the code between 'core-fcp' and 'core-fca':libs/core/src/enums/index.ts
+>>>>>>> creation of the core lib to mutualize the code between 'core-fcp' and 'core-fca'
+export * from './error-code.enum';
+export * from './event-categories.enum';
