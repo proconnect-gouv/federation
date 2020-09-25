@@ -51,9 +51,9 @@ describe('OidcProviderController', () => {
       OidcProviderController,
     );
 
-    jest.resetAllMocks();
-
     serviceProviderServiceMock.isActive.mockResolvedValue(true);
+
+    jest.resetAllMocks();
   });
 
   describe('getAuthorize', () => {
