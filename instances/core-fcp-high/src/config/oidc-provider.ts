@@ -68,7 +68,7 @@ export default {
       AuthorizationCode: 30, // 30 seconds
       IdToken: 60, // 1 minute
     },
-    acrValues: ['eidas1', 'eidas2', 'eidas3'],
+    acrValues: ['eidas2', 'eidas3'],
     claims: {
       openid: ['sub'],
       gender: ['gender'],
