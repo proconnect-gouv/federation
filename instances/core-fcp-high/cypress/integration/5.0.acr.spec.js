@@ -104,6 +104,21 @@ describe('Acr', () => {
     });
   });
 
+  it('should complete cinematic even when acr is to low and FC should force it to max value', () => {
+    basicScenario({
+      idpId: 'fip1v2',
+      eidasLevel: 'eidas3',
+      overrideParams:{
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values:'eidas1',
+      }
+    });
+    /**
+     * @todo #fc-240 https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/240
+     * required to check complete cinematic
+     */
+  });
 
   it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
     basicErrorScenario({
