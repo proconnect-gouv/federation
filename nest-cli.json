@@ -22,6 +22,20 @@
         ]
       }
     },
+    "eidas-bridge-instance": {
+      "type": "application",
+      "root": "instances/eidas-bridge",
+      "entryFile": "main",
+      "sourceRoot": "instances/eidas-bridge/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/eidas-bridge/tsconfig.app.json",
+        "assets": [
+          "../../../apps/eidas-bridge/**/*.ejs",
+          "../../../apps/eidas-bridge/**/*.css",
+          "../../../apps/eidas-bridge/**/*.svg"
+        ]
+      }
+    },
     "core-fcp-high": {
       "type": "application",
       "root": "instances/core-fcp-high",
@@ -165,6 +179,15 @@
       "sourceRoot": "apps/core-fca/src",
       "compilerOptions": {
         "tsConfigPath": "apps/core-fca/tsconfig.lib.json"
+      }
+    },
+    "eidas-bridge": {
+      "type": "library",
+      "root": "apps/eidas-bridge",
+      "entryFile": "index",
+      "sourceRoot": "apps/eidas-bridge/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/eidas-bridge/tsconfig.lib.json"
       }
     },
     "core-fcp": {
