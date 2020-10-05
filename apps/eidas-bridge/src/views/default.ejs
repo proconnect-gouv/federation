@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  
+  <%- include('partials/head.partial.ejs', { title: 'Eidas Bridge', style: 'interaction' }); %>
+
+  <body>
+    <div id="mire">
+      <div class="content">
+        <header>
+          <img src="/img/fc_logo.png" alt="France Connect logo">
+        </header>  
+        <main>    
+          <p><%= locals.message %> !</p>
+          <div class="main__footer">
+            <a href="https://franceconnect.gouv.fr">En savoir plus sur FranceConnect</a>
+            <a href="https://franceconnect.gouv.fr/faq">Foire aux questions</a>
+          </div>
+        </main>
+      </div>
+    </div>
+  </body>
+</html>
