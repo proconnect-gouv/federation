@@ -33,6 +33,8 @@
       "@fc/core/*": ["libs/core/src/*"],
       "@fc/core-fcp-logger": ["libs/core-fcp-logger/src"],
       "@fc/core-fcp-logger/*": ["libs/core-fcp-logger/src/*"],
+      "@fc/eidas-bridge": ["apps/eidas-bridge/src"],
+      "@fc/eidas-bridge/*": ["apps/eidas-bridge/src/*"],
       "@fc/core-fca": ["apps/core-fca/src"],
       "@fc/core-fca/*": ["apps/core-fca/src/*"],
       "@fc/core-fcp": ["apps/core-fcp/src"],
