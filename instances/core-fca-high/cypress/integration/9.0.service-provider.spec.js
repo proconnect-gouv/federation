@@ -1,6 +1,4 @@
-import {
-  getAuthorizeUrl
-} from './mire.utils';
+import { getAuthorizeUrl } from './mire.utils';
 
 describe('Service Provider', () => {
   it('should trigger error Y030106 if SP is not in database', () => {
@@ -9,10 +7,10 @@ describe('Service Provider', () => {
     const url = getAuthorizeUrl({
       // oidc param
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: 'random-bad-client-id'
+      client_id: 'random-bad-client-id',
     });
     cy.visit(url, {
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     cy.hasError('Y030106');
@@ -25,7 +23,7 @@ describe('Service Provider', () => {
       client_id: 'my-service-provider-deactivated',
     });
     cy.visit(url, {
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     cy.hasError('Y030106');
@@ -38,7 +36,7 @@ describe('Service Provider', () => {
       redirect_uri: 'https://my-malicious-url.fr/callback',
     });
     cy.visit(url, {
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     cy.hasError('Y030118');

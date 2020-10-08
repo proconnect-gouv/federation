@@ -277,6 +277,7 @@ describe('MockServiceProviderController', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           given_name: 'given_name',
         },
+        acr: 'foo',
       });
     });
 

@@ -208,17 +208,21 @@ export function basicScenario(params) {
   const { idpId, login = 'test', eidasLevel, overrideParams } = params;
   const password = '123';
 
-  if(overrideParams) {
-    // Direct call to FC with custom params
-    const controlUrl = getAuthorizeUrl(overrideParams);
-    cy.visit(controlUrl);
-  } else {
-    // FS: Click on FC button
-    cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+  cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
+  if (overrideParams) {
+    // Steal the state to finish the cinematic
+    cy.get('input[name=state]').invoke('val').then(state => {
+      // Direct call to FC with custom params
+      const controlUrl = getAuthorizeUrl({
+        ...overrideParams,
+        state,
+      });
+      cy.visit(controlUrl);
+    });
+  } else {
     cy.get('img[alt="Se connecter à FranceConnect"]').click();
   }
-
 
   // FC: choose FI
   cy.url().should(
@@ -241,10 +245,10 @@ export function basicScenario(params) {
 
 export function basicErrorScenario(params) {
   const { errorCode } = params;
-  Reflect.deleteProperty(params,'errorCode');
+  Reflect.deleteProperty(params, 'errorCode');
   basicScenario({
     ...params,
-    login: errorCode
+    login: errorCode,
   });
 }
 
@@ -254,7 +258,7 @@ export function getAuthorizeUrl(overrideParams = {}) {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_id: `${Cypress.env('SP1_CLIENT_ID')}`,
-    scope: 'openid gender familyname',
+    scope: 'openid gender family_name',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     response_type: 'code',
