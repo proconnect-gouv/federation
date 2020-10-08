@@ -84,12 +84,11 @@
             <%=locals.idpIdentity.address.locality%> (<%=locals.idpIdentity.address.country%>)</strong></p>
         <% } %>
         <hr>
-        <% if (locals.idpIdentity.birthplace && locals.idpIdentity.birthcountry) { %>
+        <% if (locals.idpIdentity.birthplace) { %>
         <p>COG (lieu de naissance) : <strong><%=locals.idpIdentity.birthplace%></strong></p>
-        <p>COG (Pays de naissance) : <strong><%=locals.idpIdentity.birthcountry%></strong></p>
-        <% } else { %>
-        <p>COG (Pays de naissance) : <strong><%=locals.idpIdentity.birthcountry%></strong></p>
         <% } %>
+        <p>COG (Pays de naissance) : <strong><%=locals.idpIdentity.birthcountry%></strong></p>
+        
         <% } else { %>
         <p class="col d-flex justify-content-center">
           Vous devez vous authentifier afin d'accéder à vos données personnelles.
@@ -100,6 +99,9 @@
       <h2>JSON reçu :</h2>
       <textarea id="json"
         style="width: 600px; height: 400px;"><%- JSON.stringify(locals.idpIdentity, null, 2) %></textarea>
+
+      <h2>Acr:</h2>
+      <p id='info-acr'><%= locals.acr %></p>
     </div>
   </section>
 

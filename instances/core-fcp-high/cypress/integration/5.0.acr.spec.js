@@ -1,29 +1,35 @@
-import { basicErrorScenario, basicScenario } from './mire.utils';
+import {
+  basicErrorScenario,
+  basicScenario,
+} from './mire.utils';
+
+const scope =
+  'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
 
 describe('Acr', () => {
   it('should access to FI when acr from SP is unique and known', () => {
-
     basicScenario({
       idpId: 'fip1v2',
       eidasLevel: 'eidas2',
-      overrideParams:{
+      overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values:'eidas2',
-      }
+        acr_values: 'eidas2',
+        scope,
+      },
     });
   });
 
   it('should access to FI when acr from SP has multiple values and all are known', () => {
-
     basicScenario({
       idpId: 'fip1v2',
       eidasLevel: 'eidas2',
-      overrideParams:{
+      overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values:'eidas2 eidas3',
-      }
+        acr_values: 'eidas2 eidas3',
+        scope,
+      },
     });
   });
 
@@ -31,93 +37,105 @@ describe('Acr', () => {
     basicScenario({
       idpId: 'fip1v2',
       eidasLevel: 'eidas2',
-      overrideParams:{
+      overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values:'eidas3 eidas2',
-      }
+        acr_values: 'eidas3 eidas2',
+        scope,
+      },
     });
   });
 
   it('should access to FI when acr from SP is multiple values but only one is known', () => {
-
     basicScenario({
       idpId: 'fip1v2',
       eidasLevel: 'eidas2',
-      overrideParams:{
+      overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values:'eidas2 eidas666 eidas1',
-      }
+        acr_values: 'eidas2 eidas666 eidas1',
+        scope,
+      },
     });
   });
 
   it('should access to FI when acr from SP is unique and not known', () => {
-
     basicScenario({
       idpId: 'fip1v2',
       eidasLevel: 'eidas3',
-      overrideParams:{
+      overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values:'eidas666',
-      }
+        acr_values: 'eidas666',
+        scope,
+      },
     });
   });
 
   it('should access to FI when acr from SP has multiple values and one is known', () => {
-
     basicScenario({
       idpId: 'fip1v2',
       eidasLevel: 'eidas2',
-      overrideParams:{
+      overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values:'eidas2 eidas666 eidas1',
-      }
+        acr_values: 'eidas2 eidas666 eidas1',
+        scope,
+      },
     });
   });
 
   it('should access to FI when acr from SP has multiple values and some are known', () => {
-
     basicScenario({
       idpId: 'fip1v2',
       eidasLevel: 'eidas2',
-      overrideParams:{
+      overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values:'eidas2 eidas666 eidas3',
-      }
+        acr_values: 'eidas2 eidas666 eidas3',
+        scope,
+      },
     });
   });
 
   it('should access to FI when acr from SP has multiple values and none are known', () => {
-
     basicScenario({
       idpId: 'fip1v2',
       eidasLevel: 'eidas3',
-      overrideParams:{
+      overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values:'eidas28 eidas666 eidas42',
-      }
+        acr_values: 'eidas28 eidas666 eidas42',
+        scope,
+      },
     });
   });
 
   it('should complete cinematic even when acr is to low and FC should force it to max value', () => {
+    
+    const FORCE_MAX_EIDAS = 'eidas3';
     basicScenario({
       idpId: 'fip1v2',
-      eidasLevel: 'eidas3',
-      overrideParams:{
+      eidasLevel: FORCE_MAX_EIDAS,
+      overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values:'eidas1',
-      }
+        acr_values: 'eidas1',
+        scope,
+      },
     });
-    /**
-     * @todo #fc-240 https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/240
-     * required to check complete cinematic
-     */
+
+    // FC: Read confirmation message :D
+    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+
+    // FC: validate consent
+    cy.get('#consent').click();
+
+    // return to FS
+    cy.url().should('include', `${Cypress.env('SP1_ROOT_URL')}/login-callback`);
+
+    cy.get('#info-acr').contains(FORCE_MAX_EIDAS);
+
   });
 
   it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
