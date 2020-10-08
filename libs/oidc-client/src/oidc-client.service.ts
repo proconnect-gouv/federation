@@ -1,5 +1,4 @@
 import { JWK } from 'jose';
-import { Injectable, Inject } from '@nestjs/common';
 import {
   Issuer,
   TokenSet,
@@ -8,7 +7,7 @@ import {
   custom,
   HttpOptions,
 } from 'openid-client';
-
+import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
@@ -19,8 +18,6 @@ import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import {
   OidcClientProviderNotFoundException,
   OidcClientProviderDisabledException,
-} from './exceptions';
-import {
   OidcClientMissingCodeException,
   OidcClientMissingStateException,
   OidcClientInvalidStateException,
@@ -148,6 +145,16 @@ export class OidcClientService {
     } catch (error) {
       throw new OidcClientRuntimeException(error);
     }
+  }
+
+  async revokeToken(accessToken: string, providerUid: string): Promise<void> {
+    this.logger.trace('revokeToken');
+
+    // oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const client = await this.createOidcClient(providerUid);
+
+    await client.revoke(accessToken);
   }
 
   async getUserInfo(

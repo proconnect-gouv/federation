@@ -35,6 +35,7 @@ describe('OidcClientService', () => {
   const callbackParamsMock = jest.fn();
   const callbackMock = jest.fn();
   const userinfoMock = jest.fn();
+  const revokeMock = jest.fn();
 
   const getProviderMockReturnValue = {
     // oidc defined variable name
@@ -102,6 +103,7 @@ describe('OidcClientService', () => {
 
     callbackMock.mockResolvedValue('callbackMock Resolve Value');
     userinfoMock.mockResolvedValue('userinfoMock Resolve Value');
+    revokeMock.mockResolvedValue(void 0);
 
     getProviderMock.mockReturnValue(getProviderMockReturnValue);
     IssuerProxyMock.discover.mockResolvedValue({
@@ -113,6 +115,7 @@ describe('OidcClientService', () => {
       callbackParams: callbackParamsMock,
       callback: callbackMock,
       userinfo: userinfoMock,
+      revoke: revokeMock,
     });
 
     configServiceMock.get.mockImplementation((module: string) => {
@@ -308,6 +311,20 @@ describe('OidcClientService', () => {
       expect(service.getTokenSet(req, providerId, state)).rejects.toThrow(
         OidcClientRuntimeException,
       );
+    });
+  });
+
+  describe('revokeToken', () => {
+    it('should call client.revoke', async () => {
+      // Given
+      const accessToken = 'accessTokenValue';
+      const providerId = 'providerIdValue';
+      service['getProvider'] = getProviderMock;
+      service['createOidcClient'] = createOidcClientMock;
+      // When
+      await service.revokeToken(accessToken, providerId);
+      // Then
+      expect(revokeMock).toHaveBeenCalledTimes(1);
     });
   });
 

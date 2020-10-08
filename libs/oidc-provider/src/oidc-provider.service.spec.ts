@@ -106,6 +106,8 @@ describe('OidcProviderService', () => {
     catch: jest.fn(),
   };
 
+  const unknownError = new Error();
+
   const redisMock = {
     hgetall: jest.fn(),
     get: jest.fn(),
@@ -468,10 +470,13 @@ describe('OidcProviderService', () => {
         req: {
           headers: { 'x-forwarded-for': '123.123.123.123' },
         },
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        oidc: { isError: hasError, params: { client_id: 'foo', acr_values: 'eidas3' } },
+        oidc: {
+          isError: hasError,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          params: { client_id: 'foo', acr_values: 'eidas3' },
+        },
         res: {},
-      }
+      };
     };
     it('should abort middleware execution if request if flagged as erroring', () => {
       // Given
@@ -558,9 +563,56 @@ describe('OidcProviderService', () => {
         expect.any(Object),
       );
     });
+
+    it('should call throwError if getInteractionIdFromCtx throw an error', () => {
+      // Given
+      const ctxMock = { not: 'altered' };
+      service['getInteractionIdFromCtx'] = jest
+        .fn()
+        .mockRejectedValueOnce(unknownError);
+      service['throwError'] = jest.fn();
+      // When
+      service['tokenMiddleware'](ctxMock);
+      // Then
+      expect(service['throwError']).toHaveBeenCalledTimes(1);
+      expect(service['throwError']).toHaveBeenCalledWith(
+        ctxMock,
+        expect.any(Error),
+      );
+    });
+
+    it('should call throwError if getIpFromCtx throw an error', () => {
+      // Given
+      const ctxMock = { not: 'altered' };
+      service['getIpFromCtx'] = jest.fn().mockRejectedValueOnce(unknownError);
+      service['throwError'] = jest.fn();
+      // When
+      service['tokenMiddleware'](ctxMock);
+      // Then
+      expect(service['throwError']).toHaveBeenCalledTimes(1);
+      expect(service['throwError']).toHaveBeenCalledWith(
+        ctxMock,
+        expect.any(Error),
+      );
+    });
+
+    it('should call throwError if tracking.track throw an error', () => {
+      // Given
+      const ctxMock = { not: 'altered' };
+      trackingMock.track.mockRejectedValueOnce(unknownError);
+      service['throwError'] = jest.fn();
+      // When
+      service['tokenMiddleware'](ctxMock);
+      // Then
+      expect(service['throwError']).toHaveBeenCalledTimes(1);
+      expect(service['throwError']).toHaveBeenCalledWith(
+        ctxMock,
+        expect.any(Error),
+      );
+    });
   });
 
-  describe('OidcProviderUserinfoEvent', () => {
+  describe('userinfoMiddleware', () => {
     it('should publish a token event', () => {
       // Given
       const ctxMock = {
@@ -580,6 +632,53 @@ describe('OidcProviderService', () => {
       expect(trackingMock.track).toHaveBeenCalledWith(
         OidcProviderUserinfoEvent,
         expect.any(Object),
+      );
+    });
+
+    it('should call throwError if getInteractionIdFromCtx throw an error', () => {
+      // Given
+      const ctxMock = { not: 'altered' };
+      service['getInteractionIdFromCtx'] = jest
+        .fn()
+        .mockRejectedValueOnce(unknownError);
+      service['throwError'] = jest.fn();
+      // When
+      service['userinfoMiddleware'](ctxMock);
+      // Then
+      expect(service['throwError']).toHaveBeenCalledTimes(1);
+      expect(service['throwError']).toHaveBeenCalledWith(
+        ctxMock,
+        expect.any(Error),
+      );
+    });
+
+    it('should call throwError if getIpFromCtx throw an error', () => {
+      // Given
+      const ctxMock = { not: 'altered' };
+      service['getIpFromCtx'] = jest.fn().mockRejectedValueOnce(unknownError);
+      service['throwError'] = jest.fn();
+      // When
+      service['userinfoMiddleware'](ctxMock);
+      // Then
+      expect(service['throwError']).toHaveBeenCalledTimes(1);
+      expect(service['throwError']).toHaveBeenCalledWith(
+        ctxMock,
+        expect.any(Error),
+      );
+    });
+
+    it('should call throwError if tracking.track throw an error', () => {
+      // Given
+      const ctxMock = { not: 'altered' };
+      trackingMock.track.mockRejectedValueOnce(unknownError);
+      service['throwError'] = jest.fn();
+      // When
+      service['userinfoMiddleware'](ctxMock);
+      // Then
+      expect(service['throwError']).toHaveBeenCalledTimes(1);
+      expect(service['throwError']).toHaveBeenCalledWith(
+        ctxMock,
+        expect.any(Error),
       );
     });
   });
@@ -621,6 +720,7 @@ describe('OidcProviderService', () => {
       service['getInteractionIdFromCtxSymbol'] = jest
         .fn()
         .mockReturnValue(undefined);
+
       // Then
       expect(() => service['getInteractionIdFromCtx'](ctxMock)).toThrow(
         OidcProviderInteractionNotFoundException,

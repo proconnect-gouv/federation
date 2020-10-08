@@ -2,9 +2,10 @@
 
 // Not to be tested
 import * as helmet from 'helmet';
+import * as CookieParser from 'cookie-parser';
+import { urlencoded } from 'body-parser';
 import { renderFile } from 'ejs';
 import { join } from 'path';
-import * as CookieParser from 'cookie-parser';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { LoggerService } from '@fc/logger';
@@ -51,6 +52,18 @@ async function bootstrap() {
     }),
   );
   app.use(helmet.permittedCrossDomainPolicies());
+
+  /**
+   * The security concern is on bodyParser.json (see upper comment).
+   * In the application, only the "urlencoded" form is necessary.
+   * therefore, we only activate the "body.urlencoded" middleware
+   *
+   * JSON parsing exists in our app, but it is handled by `jose`.
+   *
+   * Desactivate extended "qs" parser to prevent prototype pollution hazard.
+   * @see body-parser.md in the project doc folder for further informations.
+   */
+  app.use(urlencoded({ extended: false }));
 
   const logger = await app.resolve(LoggerService);
   app.useLogger(logger);
