@@ -3,7 +3,7 @@ import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { OidcProviderController } from './oidc-provider.controller';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
-import { AuthorizeParamsDTO } from './dto';
+import { AuthorizeParamsDTO, RevocationTokenParamsDTO } from './dto';
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
@@ -110,6 +110,18 @@ describe('OidcProviderController', () => {
 
       // When
       oidcProviderController.getEndSession(next);
+      // Then
+      expect(next).toBeCalledTimes(1);
+    });
+  });
+
+  describe('revokeToken', () => {
+    it('should call next()', () => {
+      // Given
+      const next = jest.fn();
+      const bodyMock = {} as RevocationTokenParamsDTO;
+      // When
+      oidcProviderController.revokeToken(next, bodyMock);
       // Then
       expect(next).toBeCalledTimes(1);
     });
