@@ -55,51 +55,15 @@
 
   <section class="container">
     <div class="row d-flex flex-column">
-      <% if(locals.accessToken) { %>
-      <form action="/revocation" method="POST">
-        <input id="access-token" type="hidden" name="accessToken" value="<%= locals.accessToken %>">
-        <input id="revoke-token" type="submit" value="Révoquer token">
-      </form>
-
-      <form action="/me" method="POST">
-        <input id="access-token" type="hidden" name="accessToken" value="<%= locals.accessToken %>">
-        <input id="reload-userinfo" type="submit" value="Recharger userinfo">
-      </form>
-      <% } %>
-
       <h1 class="col d-flex justify-content-center py-4 mt-4">
-        Mes données
+        Le token a été révoqué
       </h1>
       <div class="col mt-4">
-        <% if (locals.idpIdentity) { %>
-        <p>Civilité : <strong><%= locals.idpIdentity.gender === 'female' ? 'Femme' : 'Homme'; %></strong></p>
-        <p>Prénom(s) : <strong><%=locals.idpIdentity.given_name%></strong></p>
-        <p>Nom(s) : <strong><%=locals.idpIdentity.family_name%></strong></p>
-        <p>Nom d'usage : <strong><%= (locals.idpIdentity.preferred_username) ? locals.idpIdentity.preferred_username : '/';%></strong>
-        </p>
-        <p>Date de naissance : <strong><%=locals.idpIdentity.birthdate%></strong></p>
-        <% if (locals.idpIdentity.address) { %>
-        <p>Addresse : <strong><%=locals.idpIdentity.address.street_address%>,
-            <%=locals.idpIdentity.address.postal_code%>
-            <%=locals.idpIdentity.address.locality%> (<%=locals.idpIdentity.address.country%>)</strong></p>
-        <% } %>
-        <hr>
-        <% if (locals.idpIdentity.birthplace && locals.idpIdentity.birthcountry) { %>
-        <p>COG (lieu de naissance) : <strong><%=locals.idpIdentity.birthplace%></strong></p>
-        <p>COG (Pays de naissance) : <strong><%=locals.idpIdentity.birthcountry%></strong></p>
-        <% } else { %>
-        <p>COG (Pays de naissance) : <strong><%=locals.idpIdentity.birthcountry%></strong></p>
-        <% } %>
-        <% } else { %>
-        <p class="col d-flex justify-content-center">
-          Vous devez vous authentifier afin d'accéder à vos données personnelles.
-        </p>
-        <% } %>
+        <form action="/me" method="POST">
+          <input id="access-token" type="text" name="accessToken" value="<%= locals.accessToken %>">
+          <input id="reload-userinfo" type="submit" value="Recharger userinfo">
+        </form>
       </div>
-
-      <h2>JSON reçu :</h2>
-      <textarea id="json"
-        style="width: 600px; height: 400px;"><%- JSON.stringify(locals.idpIdentity, null, 2) %></textarea>
     </div>
   </section>
 

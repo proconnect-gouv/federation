@@ -1,10 +1,26 @@
-import { Controller, Get, Res, Req, Render, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Res,
+  Req,
+  Render,
+  Query,
+  Body,
+  Post,
+  ValidationPipe,
+  UsePipes,
+} from '@nestjs/common';
 import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { MockServiceProviderRoutes } from './enums';
-import { MockServiceProviderLoginCallbackException } from './exceptions';
 import { CryptographyService } from '@fc/cryptography';
+import { MockServiceProviderRoutes } from './enums';
+import {
+  MockServiceProviderLoginCallbackException,
+  MockServiceProviderTokenRevocationException,
+  MockServiceProviderUserinfoException,
+} from './exceptions';
+import { AccessTokenParamsDTO } from './dto';
 
 @Controller()
 export class MockServiceProviderController {
@@ -118,6 +134,7 @@ export class MockServiceProviderController {
       return {
         titleFront: 'Mock Service Provider - Login Callback',
         idpIdentity,
+        accessToken,
       };
     } catch (e) {
       if (e.error && e.error_description) {
@@ -143,7 +160,72 @@ export class MockServiceProviderController {
     return res.redirect('/');
   }
 
-  @Get('/error')
+  @Post(MockServiceProviderRoutes.REVOCATION)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Render('success-revoke-token')
+  async revocationToken(@Res() res, @Body() body: AccessTokenParamsDTO) {
+    try {
+      const providerUid = 'corev2';
+      const { accessToken } = body;
+      await this.oidcClient.revokeToken(accessToken, providerUid);
+
+      return {
+        titleFront: 'Mock Service Provider - Token révoqué',
+        accessToken,
+      };
+    } catch (e) {
+      /**
+       * @params e.error : error return by panva lib
+       * @params e.error_description : error description return by panva lib
+       *
+       * If exception is not return by panva, we throw our custom class exception
+       * when we try to revoke the token : 'MockServiceProviderTokenRevocationException'
+       */
+      if (e.error && e.error_description) {
+        return res.redirect(
+          `/error?error=${e.error}&error_description=${e.error_description}`,
+        );
+      }
+      throw new MockServiceProviderTokenRevocationException(e);
+    }
+  }
+
+  @Post(MockServiceProviderRoutes.USERINFO)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Render('login-callback')
+  async retrieveUserinfo(@Res() res, @Body() body: AccessTokenParamsDTO) {
+    try {
+      const providerUid = 'corev2';
+      const { accessToken } = body;
+      // OIDC: call idp's /userinfo endpoint
+      const idpIdentity = await this.oidcClient.getUserInfo(
+        accessToken,
+        providerUid,
+      );
+
+      return {
+        titleFront: 'Mock Service Provider - Userinfo',
+        accessToken,
+        idpIdentity,
+      };
+    } catch (e) {
+      /**
+       * @params e.error : error return by panva lib
+       * @params e.error_description : error description return by panva lib
+       *
+       * If exception is not return by panva, we throw our custom class exception
+       * when we try to receive userinfo : 'MockServiceProviderUserinfoException'
+       */
+      if (e.error && e.error_description) {
+        return res.redirect(
+          `/error?error=${e.error}&error_description=${e.error_description}`,
+        );
+      }
+      throw new MockServiceProviderUserinfoException(e);
+    }
+  }
+
+  @Get(MockServiceProviderRoutes.ERROR)
   @Render('error')
   async error(@Query() query) {
     return {

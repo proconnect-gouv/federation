@@ -61,6 +61,7 @@ export default {
       encryption: { enabled: true },
       jwtUserinfo: { enabled: true },
       backchannelLogout: { enabled: true },
+      revocation: { enabled: true },
     },
     acceptQueryParamAccessTokens: true,
     ttl: {
