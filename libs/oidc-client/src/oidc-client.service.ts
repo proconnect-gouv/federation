@@ -72,7 +72,9 @@ export class OidcClientService {
   ): Promise<string> {
     const client: Client = await this.createOidcClient(providerUid);
     /**
-     * @todo see if custom.setHttpOptionsDefault can be used
+     * @TODO #255
+     * ETQ Dev, je change la manière d'envoyer les requêtes HTTP
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/255
      */
     client[custom.http_options] = this.getHttpTimeout.bind(this);
 
