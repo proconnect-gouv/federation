@@ -131,10 +131,12 @@ export class MockServiceProviderController {
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/192
        * */
 
+      const { acr } = tokenSet.claims();
       return {
         titleFront: 'Mock Service Provider - Login Callback',
         idpIdentity,
         accessToken,
+        acr,
       };
     } catch (e) {
       if (e.error && e.error_description) {
