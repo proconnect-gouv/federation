@@ -9,7 +9,7 @@ import {
   Inject,
   Body,
 } from '@nestjs/common';
-import { AuthorizeParamsDTO } from './dto';
+import { AuthorizeParamsDTO, RevocationTokenParamsDTO } from './dto';
 import { OidcProviderRoutes } from './enums';
 import { IServiceProviderService } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
@@ -65,6 +65,18 @@ export class OidcProviderController {
 
   @Post(OidcProviderRoutes.TOKEN)
   postToken(@Next() next) {
+    // Pass the query to oidc-provider
+    return next();
+  }
+
+  @Post(OidcProviderRoutes.REVOCATION)
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  revokeToken(@Next() next, @Body() _body: RevocationTokenParamsDTO) {
     // Pass the query to oidc-provider
     return next();
   }

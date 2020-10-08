@@ -148,23 +148,31 @@ export class OidcProviderService {
   }
 
   private tokenMiddleware(ctx) {
-    const interactionId: string = this.getInteractionIdFromCtx(ctx);
-    const ip: string = this.getIpFromCtx(ctx);
-    const eventContext: object = {
-      fc: { interactionId },
-      headers: { 'x-forwarded-for': ip },
-    };
-    this.tracking.track(OidcProviderTokenEvent, eventContext);
+    try {
+      const interactionId: string = this.getInteractionIdFromCtx(ctx);
+      const ip: string = this.getIpFromCtx(ctx);
+      const eventContext: object = {
+        fc: { interactionId },
+        headers: { 'x-forwarded-for': ip },
+      };
+      this.tracking.track(OidcProviderTokenEvent, eventContext);
+    } catch (exception) {
+      this.throwError(ctx, exception);
+    }
   }
 
   private userinfoMiddleware(ctx) {
-    const interactionId: string = this.getInteractionIdFromCtx(ctx);
-    const ip: string = this.getIpFromCtx(ctx);
-    const eventContext: object = {
-      fc: { interactionId },
-      headers: { 'x-forwarded-for': ip },
-    };
-    this.tracking.track(OidcProviderUserinfoEvent, eventContext);
+    try {
+      const interactionId: string = this.getInteractionIdFromCtx(ctx);
+      const ip: string = this.getIpFromCtx(ctx);
+      const eventContext: object = {
+        fc: { interactionId },
+        headers: { 'x-forwarded-for': ip },
+      };
+      this.tracking.track(OidcProviderUserinfoEvent, eventContext);
+    } catch (exception) {
+      this.throwError(ctx, exception);
+    }
   }
 
   private getIpFromCtx(ctx): string {

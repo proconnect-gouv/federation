@@ -3,6 +3,6 @@ import { ErrorCode } from '../enums';
 
 // declarative code
 // istanbul ignore next line
-export class MockServiceProviderLoginCallbackException extends MockServiceProviderBaseException {
-  code = ErrorCode.LOGIN_CALLBACK;
+export class MockServiceProviderTokenRevocationException extends MockServiceProviderBaseException {
+  code = ErrorCode.TOKEN_REVOCATION;
 }

@@ -4,7 +4,11 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
 import { MockServiceProviderController } from './mock-service-provider.controller';
-import { MockServiceProviderLoginCallbackException } from './exceptions';
+import {
+  MockServiceProviderLoginCallbackException,
+  MockServiceProviderTokenRevocationException,
+  MockServiceProviderUserinfoException,
+} from './exceptions';
 
 describe('MockServiceProviderController', () => {
   let controller: MockServiceProviderController;
@@ -17,6 +21,7 @@ describe('MockServiceProviderController', () => {
     getUserInfo: jest.fn(),
     wellKnownKeys: jest.fn(),
     buildAuthorizeParameters: jest.fn(),
+    revokeToken: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -228,13 +233,13 @@ describe('MockServiceProviderController', () => {
   describe('loginCallback', () => {
     it('Should call oidc-client-service for retrieve authorize url', async () => {
       // setup
-      const accessToken = 'accest_token';
+      const accessToken = 'access_token';
       const providerUid = 'corev2';
       const query = {};
       oidcClientServiceMock.getTokenSet.mockReturnValueOnce({
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        access_token: 'accest_token',
+        access_token: 'access_token',
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: 'id_token',
@@ -264,6 +269,7 @@ describe('MockServiceProviderController', () => {
       );
 
       expect(result).toEqual({
+        accessToken: 'access_token',
         titleFront: 'Mock Service Provider - Login Callback',
         idpIdentity: {
           sub: '1',
@@ -311,7 +317,7 @@ describe('MockServiceProviderController', () => {
       oidcClientServiceMock.getTokenSet.mockReturnValueOnce({
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        access_token: 'accest_token',
+        access_token: 'access_token',
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: 'id_token',
@@ -371,6 +377,109 @@ describe('MockServiceProviderController', () => {
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/logout-callback');
+    });
+  });
+
+  describe('revocationToken', () => {
+    it('should display success page when token is revoked', async () => {
+      // setup
+      const providerUid = 'corev2';
+      const body = { accessToken: 'access_token' };
+      // action
+      const result = await controller.revocationToken(res, body);
+
+      // assert
+      expect(oidcClientServiceMock.revokeToken).toHaveBeenCalledTimes(1);
+      expect(oidcClientServiceMock.revokeToken).toHaveBeenCalledWith(
+        body.accessToken,
+        providerUid,
+      );
+      expect(result).toEqual({
+        accessToken: 'access_token',
+        titleFront: 'Mock Service Provider - Token révoqué',
+      });
+    });
+    it('should redirect to the error page if revokeToken throw an error', async () => {
+      // setup
+      oidcClientServiceMock.revokeToken.mockRejectedValue(oidcErrorMock);
+      const body = { accessToken: 'access_token' };
+
+      // action
+      await controller.revocationToken(res, body);
+
+      // assert
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/error?error=error&error_description=error_description',
+      );
+    });
+    it('Should throw mock service provider revoke token exception if error is not an instance of OPError', () => {
+      // setup
+      const unknowError = { foo: 'bar' };
+      const body = { accessToken: 'access_token' };
+      oidcClientServiceMock.revokeToken.mockRejectedValue(unknowError);
+
+      // assert
+      expect(
+        async () => await controller.revocationToken(res, body),
+      ).rejects.toThrow(MockServiceProviderTokenRevocationException);
+    });
+  });
+
+  describe('retrieveUserinfo', () => {
+    it('should retrieve and display userinfo on userinfo page', async () => {
+      // setup
+      const providerUid = 'corev2';
+      const body = { accessToken: 'access_token' };
+      oidcClientServiceMock.getUserInfo.mockReturnValueOnce({
+        sub: '1',
+        // oidc spec defined property
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        given_name: 'given_name',
+      });
+      // action
+      const result = await controller.retrieveUserinfo(res, body);
+
+      // assert
+      expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
+      expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledWith(
+        body.accessToken,
+        providerUid,
+      );
+      expect(result).toEqual({
+        accessToken: 'access_token',
+        titleFront: 'Mock Service Provider - Userinfo',
+        idpIdentity: {
+          sub: '1',
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          given_name: 'given_name',
+        },
+      });
+    });
+    it('should redirect to the error page if getUserInfo throw an error', async () => {
+      // setup
+      const body = { accessToken: 'access_token' };
+      oidcClientServiceMock.getUserInfo.mockRejectedValue(oidcErrorMock);
+
+      // action
+      await controller.retrieveUserinfo(res, body);
+
+      // assert
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/error?error=error&error_description=error_description',
+      );
+    });
+    it('Should throw mock service provider userinfo exception if error is not an instance of OPError', () => {
+      // setup
+      oidcClientServiceMock.getUserInfo.mockRejectedValue({});
+      const body = { accessToken: 'access_token' };
+
+      // assert
+      expect(
+        async () => await controller.retrieveUserinfo(res, body),
+      ).rejects.toThrow(MockServiceProviderUserinfoException);
     });
   });
 
