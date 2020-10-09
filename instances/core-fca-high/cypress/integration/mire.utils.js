@@ -23,9 +23,9 @@ export function basicSuccessScenario(params) {
   cy.visit(serviceProvider.url);
 
   if (method === 'POST') {
-    cy.get('#connect-POST').click();
+    cy.get('#post-authorize').click();
   } else {
-    cy.get('#connect-GET').click();
+    cy.get('#get-authorize').click();
   }
 
   // FC: choose FI

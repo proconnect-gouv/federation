@@ -67,7 +67,6 @@ export class MockServiceProviderController {
     const params = {
       scope:
         'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address',
-      //providerUid: 'fca',
       providerUid: 'corev2',
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention

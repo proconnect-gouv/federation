@@ -46,8 +46,8 @@ async function bootstrap() {
          * to forbid the use of inline CSS or JS
          * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/168
          */
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
+        scriptSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
       },
     }),
   );

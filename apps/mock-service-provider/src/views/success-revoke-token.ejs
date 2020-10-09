@@ -1,76 +1,18 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="fr">
+  <head>
+    <%- include('includes/head') %>
+    <title><%= locals.titleFront %></title>
+  </head>
+  <body>
+    <%- include('includes/menu') %>
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <title><%= locals.titleFront %></title>
-</head>
-
-<body>
-  <header class="container">
-    <nav class="navbar navbar-expand-lg navbar-light">
-      <a class="navbar-brand" href="/"><img src="/images/fc_logo_v2.png" alt="FranceConnect" class="logo" /></a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <div class="navbar-nav">
-          <% if (locals.idpIdentity) { %>
-          <a href="/logout" class="nav-logout">Se déconnecter</a>
-          <% } else { %>
-
-          <!-- WARNING : Both buttons are used in corev2 E2E-->
-          <a href="/login">
-            <img src="/images/FCboutons.svg" alt="Se connecter à FranceConnect" width="160px" id="connect-GET" />
-          </a>
-
-          <!-- @TODO #174 ETQ Dev, je refacto les vues du mock service provider
-               @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/174
-          -->
-          <form action="https://corev2.docker.dev-franceconnect.fr/api/v2/authorize" method="POST">
-            <input type="hidden" name="client_id"
-              value="6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950" />
-            <input type="hidden" name="scope"
-              value="openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone" />
-            <input type="hidden" name="response_type" value="code" />
-            <input type="hidden" name="redirect_uri"
-              value="https://fsp1v2.docker.dev-franceconnect.fr/login-callback" />
-            <input type="hidden" name="state" value="stateTraces" />
-            <input type="hidden" name="acr_values" value="eidas2" />
-
-            <input type="submit" value="connexion" width="160px" id="connect-POST" />
-          </form>
-
-          <% } %>
-        </div>
+    <section class="welcome">
+      <div class="container text-center">
+        <h1>Le token a été révoqué</h1>
       </div>
-    </nav>
-  </header>
+    </section>
 
-
-  <section class="container">
-    <div class="row d-flex flex-column">
-      <h1 class="col d-flex justify-content-center py-4 mt-4">
-        Le token a été révoqué
-      </h1>
-      <div class="col mt-4">
-        <form action="/me" method="POST">
-          <input id="access-token" type="text" name="accessToken" value="<%= locals.accessToken %>">
-          <input id="reload-userinfo" type="submit" value="Recharger userinfo">
-        </form>
-      </div>
-    </div>
-  </section>
-
-  <footer>
-    <div class="container py-4 px-5 d-flex justify-content-center">@<%- new Date().getFullYear() %> - FranceConnect
-    </div>
-  </footer>
-</body>
-
+    <%- include('includes/footer') %>
+  </body>
 </html>

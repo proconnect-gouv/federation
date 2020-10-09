@@ -23,7 +23,7 @@ describe('Interaction steps discarding', () => {
     const SP_URL = Cypress.env('SP1_ROOT_URL');
 
     cy.visit(SP_URL);
-    cy.get('#connect-GET').click();
+    cy.get('#get-authorize').click();
 
     cy.url().should(
       'include',
