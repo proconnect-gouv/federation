@@ -2,8 +2,9 @@ import { basicErrorScenario } from './mire.utils';
 
 describe('Interaction steps discarding', () => {
   /**
-   * @TODO vérifier la pertinence, test qui failed suite au ticket #173 (passage route GET en POST)
-   * voir si l'erreur Y150003 est encore réalisable
+   * @TODO #252 
+   * ETQ Dev, je vérifie la pertinence des tests cypress
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/252
    */
   it.skip('should trigger error Y150003 when going straigth to /login without a session', () => {
     const interactionId = 'foobar';
@@ -14,8 +15,9 @@ describe('Interaction steps discarding', () => {
     cy.hasError('Y150003');
   });
   /**
-   * @TODO vérifier la pertinence, test qui failed suite au ticket #173 (passage route GET en POST)
-   * voir si l'erreur Y000004 est encore réalisable
+   * @TODO #252 
+   * ETQ Dev, je vérifie la pertinence des tests cypress
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/252
    */
   it.skip('should trigger error Y000004 when going to /login with a session', () => {
     const SP_URL = Cypress.env('SP1_ROOT_URL');
