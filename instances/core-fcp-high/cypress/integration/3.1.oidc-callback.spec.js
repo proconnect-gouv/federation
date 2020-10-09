@@ -38,7 +38,7 @@ function extractInteractionIdFromUrl(url) {
  */
 function prepareOidcCallbackAs(alias) {
   cy.visit(Cypress.env('SP1_ROOT_URL'));
-  cy.get('#connect-GET').click();
+  cy.get('#get-authorize').click();
   cy.get(`#idp-fip1v2`).click();
   cy.url().should('contain', Cypress.env('IDP_ROOT_URL'));
 
@@ -78,7 +78,7 @@ function finishWithReplacedUrl(attackerUrl) {
   cy.clearCookies();
   // Start a new interaction
   cy.visit(Cypress.env('SP1_ROOT_URL'));
-  cy.get('#connect-GET').click();
+  cy.get('#get-authorize').click();
   cy.get(`#idp-fip1v2`).click();
 
   // Use url from previous interaction
