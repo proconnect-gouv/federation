@@ -23,9 +23,9 @@ export function basicSuccessScenario(params) {
   cy.visit(serviceProvider.url);
 
   if (method === 'POST') {
-    cy.get('#connect-POST').click();
+    cy.get('#post-authorize').click();
   } else {
-    cy.get('#connect-GET').click();
+    cy.get('#get-authorize').click();
   }
 
   // FC: choose FI
@@ -197,7 +197,7 @@ export function checkInformations(identity) {
 
 export function checkInStringifiedJson(key, value, selector = '#json') {
   cy.get(selector).then((elem) => {
-    const data = JSON.parse(elem.val().trim());
+    const data = JSON.parse(elem.text().trim());
 
     expect(data).to.have.property(key);
     expect(data[key]).to.eq(value);
@@ -212,14 +212,16 @@ export function basicScenario(params) {
 
   if (overrideParams) {
     // Steal the state to finish the cinematic
-    cy.get('input[name=state]').invoke('val').then(state => {
-      // Direct call to FC with custom params
-      const controlUrl = getAuthorizeUrl({
-        ...overrideParams,
-        state,
+    cy.get('input[name=state]')
+      .invoke('val')
+      .then((state) => {
+        // Direct call to FC with custom params
+        const controlUrl = getAuthorizeUrl({
+          ...overrideParams,
+          state,
+        });
+        cy.visit(controlUrl);
       });
-      cy.visit(controlUrl);
-    });
   } else {
     cy.get('img[alt="Se connecter à FranceConnect"]').click();
   }
