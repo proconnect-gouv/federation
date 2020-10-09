@@ -53,11 +53,17 @@ export class MockServiceProviderController {
   }
 
   /**
-   * @todo Use an env var to hestimate if the providerUid to use
-   * should be 'fca' or 'corev2'
+   * @TODO #251
+   * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
    */
   @Get(MockServiceProviderRoutes.LOGIN)
   async login(@Req() req, @Res() res) {
+    /**
+   * @TODO #251
+   * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
+   */
     const params = {
       scope:
         'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address',
@@ -105,6 +111,11 @@ export class MockServiceProviderController {
     }
 
     try {
+      /**
+       * @TODO #251
+       * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
+       */
       const providerUid = 'corev2';
       const sessionId = this.session.getId(req);
 
@@ -167,6 +178,11 @@ export class MockServiceProviderController {
   @Render('success-revoke-token')
   async revocationToken(@Res() res, @Body() body: AccessTokenParamsDTO) {
     try {
+      /**
+       * @TODO #251
+       * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
+       */
       const providerUid = 'corev2';
       const { accessToken } = body;
       await this.oidcClient.revokeToken(accessToken, providerUid);
@@ -197,6 +213,11 @@ export class MockServiceProviderController {
   @Render('login-callback')
   async retrieveUserinfo(@Res() res, @Body() body: AccessTokenParamsDTO) {
     try {
+      /**
+       * @TODO #251
+       * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
+       */
       const providerUid = 'corev2';
       const { accessToken } = body;
       // OIDC: call idp's /userinfo endpoint

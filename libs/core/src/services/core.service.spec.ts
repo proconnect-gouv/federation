@@ -158,9 +158,9 @@ describe('CoreService', () => {
     accountServiceMock.isBlocked.mockResolvedValue(false);
 
     /**
-     * @todo utilisation de clearAllMocks et non jest.resetAllMocks
-     * il y a un problème : logger.warn est déjà utilisé 1 fois à partir
-     * ce qui ne devrait pas être le cas
+     * @TODO #258
+     * ETQ Dev, je "clear" également les mocks au lieu de seulement les "reset"
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/258
      */
     jest.clearAllMocks();
   });

@@ -93,9 +93,11 @@ export class LoggerService extends Logger {
 
     methods.forEach((method) => {
       /**
-       * @todo Attention les objects crash : 
+       * @TODO #257 
+       * Attention les objects crash : 
        * TypeError: Cannot convert object to primitive value
        * et tout ce qui n'est pas primitif.
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/257
        */
       console[method] = (...args) => this[method](args.join('\n'), context);
     });
