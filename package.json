@@ -20,6 +20,7 @@
     "start:prod:mock-identity-provider-fca-high": "node dist/instances/mock-identity-provider-fca-high/main.js > /tmp/.pm2/logs/mock-identity-provider-fca-high-out-0.log 2> /tmp/.pm2/mock-identity-provider-fca-high-error-0.log",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "prettier": "prettier -c \"{src,apps,libs,test}/**/*.ts\" --config .prettierrc",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix --ignore-pattern front/*",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
