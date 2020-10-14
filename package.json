@@ -25,7 +25,8 @@
     "test:mutate": "stryker run",
     "test:e2e:core-fca-high": "cypress run -P instances/core-fca-high",
     "test:e2e:core-fcp-high": "cypress run -P instances/core-fcp-high",
-    "doc:api": "typedoc"
+    "doc:api": "typedoc",
+    "doc:exceptions": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/error/src/cli/export-exceptions"
   },
   "resolutions": {
     "cookie-signature": "1.1.0",
@@ -38,6 +39,8 @@
     "@nestjs/microservices": "^7.0.7",
     "@nestjs/mongoose": "^7.0.1",
     "@nestjs/platform-express": "^7.0.7",
+    "@types/ejs": "^3.0.4",
+    "@types/glob": "^7.1.3",
     "amqp-connection-manager": "^3.2.0",
     "amqplib": "^0.6.0",
     "base64url": "^3.0.1",
@@ -81,6 +84,7 @@
     "eslint": "^7.2.0",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-import": "^2.19.1",
+    "husky": "^4.3.0",
     "jest": "^26.0.0",
     "prettier": "^2.0.5",
     "supertest": "^4.0.2",

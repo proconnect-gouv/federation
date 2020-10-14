@@ -35,7 +35,7 @@ export class ErrorService {
     return uuidv4();
   }
 
-  private static getCode(scope: number, code: number): string {
+  static getCode(scope: number, code: number): string {
     const scopeString = ErrorService.addLeadingZeros(scope, 2);
     const codeString = ErrorService.addLeadingZeros(code, 4);
 
