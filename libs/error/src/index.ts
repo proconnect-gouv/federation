@@ -3,3 +3,4 @@ export * from './exceptions';
 export * from './exception-filters';
 export * from './events';
 export * from './decorator';
+export * from './error.service';
