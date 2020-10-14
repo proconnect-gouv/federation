@@ -1,6 +1,7 @@
-import { Loggable } from '../decorator';
+import { Description, Loggable } from '../decorator';
 
 @Loggable()
+@Description()
 export class FcException extends Error {
   /**
    * Inform about wich module triggered the error
