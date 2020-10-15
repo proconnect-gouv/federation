@@ -189,7 +189,9 @@
       "@fc/app/(.*)": "<rootDir>/libs/app/src/$1",
       "@fc/app": "<rootDir>/libs/app/src",
       "@fc/identity-provider-env/(.*)": "<rootDir>/libs/identity-provider-env/src/$1",
-      "@fc/identity-provider-env": "<rootDir>/libs/identity-provider-env/src"
+      "@fc/identity-provider-env": "<rootDir>/libs/identity-provider-env/src",
+      "@fc/eidas-common/(.*)": "<rootDir>/libs/eidas-common/src/$1",
+      "@fc/eidas-common": "<rootDir>/libs/eidas-common/src"
     },
     "preset": "ts-jest"
   }
