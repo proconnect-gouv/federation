@@ -369,6 +369,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/app/tsconfig.lib.json"
       }
+    },
+    "eidas-common": {
+      "type": "library",
+      "root": "libs/eidas-common",
+      "entryFile": "index",
+      "sourceRoot": "libs/eidas-common/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/eidas-common/tsconfig.lib.json"
+      }
     }
   }
 }
