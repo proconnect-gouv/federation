@@ -8,6 +8,7 @@
  */
 import '@fc/override-oidc-provider/overrides';
 import * as helmet from 'helmet';
+import * as CookieParser from 'cookie-parser';
 import { urlencoded } from 'body-parser';
 import { renderFile } from 'ejs';
 import { join } from 'path';
@@ -15,9 +16,9 @@ import { useContainer } from 'class-validator';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppConfig } from '@fc/app';
-// import { LoggerService } from '@fc/logger';
+import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
-// import { SessionConfig } from '@fc/session';
+import { SessionConfig } from '@fc/session';
 import { AppModule } from './app.module';
 
 // Assets path vary in dev env
@@ -81,16 +82,16 @@ async function bootstrap() {
    */
   app.use(urlencoded({ extended: false }));
 
-  // const logger = await app.resolve(LoggerService);
+  const logger = await app.resolve(LoggerService);
 
-  // app.useLogger(logger);
+  app.useLogger(logger);
   app.engine('ejs', renderFile);
   app.set('views', [join(__dirname, assetsPath, 'views')]);
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, assetsPath, 'public'));
 
-  // const { cookieSecrets } = config.get<SessionConfig>('Session');
-  // app.use(CookieParser(cookieSecrets));
+  const { cookieSecrets } = config.get<SessionConfig>('Session');
+  app.use(CookieParser(cookieSecrets));
 
   /**
    * Tell the module "class-validator" to use NestJS dependency injection
