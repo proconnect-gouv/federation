@@ -1,4 +1,5 @@
 /* istanbul ignore file */
 
 // Declarative code
-export * from './core-fcp-routes.enum';
+export * from './eidas-bridge-routes.enum';
+export * from './error-code.enum';

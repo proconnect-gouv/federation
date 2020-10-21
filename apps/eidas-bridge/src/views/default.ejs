@@ -1,22 +1,29 @@
-<!DOCTYPE html>
-<html>
-  
-  <%- include('partials/head.partial.ejs', { title: 'Eidas Bridge', style: 'interaction' }); %>
-
+<!doctype html>
+<html lang="fr">
+  <head>
+    <%- include('includes/head') %>
+    <title><%= locals.titleFront %></title>
+  </head>
   <body>
-    <div id="mire">
-      <div class="content">
-        <header>
-          <img src="/img/fc_logo.png" alt="France Connect logo">
-        </header>  
-        <main>    
-          <p><%= locals.message %> !</p>
-          <div class="main__footer">
-            <a href="https://franceconnect.gouv.fr">En savoir plus sur FranceConnect</a>
-            <a href="https://franceconnect.gouv.fr/faq">Foire aux questions</a>
-          </div>
-        </main>
+    <%- include('includes/menu') %>
+    <section class="welcome">
+      <div class="container text-center">
+        <h1><%= locals.message %></h1>
       </div>
+    </section>
+
+    <div class="container">
+      <br />
+      <div class="text-center text-danger">Vous devez vous authentifier afin d'accéder à vos données personnelles.</div>
+
+      <section class="connect bg-light">
+        <h2>Connectez-vous via FranceConnect (GET sur authorize)</h2>
+        <a id="get-authorize" href="/login" class="btn no-pad" role="button">
+          <img src="/img/FCboutons-10.svg" alt="Connexion FC" class="d-inline-block align-top">
+        </a>
+      </section>
     </div>
+
+    <%- include('includes/footer') %>
   </body>
 </html>
