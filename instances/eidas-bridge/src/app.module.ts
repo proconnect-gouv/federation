@@ -15,6 +15,8 @@ import configuration from './config';
       config: configuration,
       schema: EidasBridgeConfig,
     }),
+    // 2. Load logger module next
+    LoggerModule,
     // 3. Load other modules
     EidasBridgeModule,
   ],

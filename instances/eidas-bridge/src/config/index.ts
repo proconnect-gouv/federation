@@ -1,8 +1,14 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { CoreConfig } from '@fc/core';
+import { EidasBridgeConfig } from '@fc/eidas-bridge';
 import App from './app';
+import Cryptography from './cryptography';
+import IdentityProviderEnv from './identity-provider-env';
+import Logger from './logger';
+import OidcClient from './oidc-client';
+import Redis from './redis';
+import Session from './session';
 
 export default {
   /**
@@ -13,5 +19,11 @@ export default {
   Core: {
     defaultRedirectUri: 'https://franceconnect.gouv.fr',
   },
-  App
-} as CoreConfig;
+  App,
+  Cryptography,
+  IdentityProviderEnv,
+  Logger,
+  OidcClient,
+  Redis,
+  Session
+} as EidasBridgeConfig;
