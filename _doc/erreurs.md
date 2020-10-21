@@ -40,6 +40,10 @@
 
 | Code | Message utilisateur | Description |
 |---|---|---|
+| Y050001 |  | N/A |
+
+| Code | Message utilisateur | Description |
+|---|---|---|
 | Y090001 |  | N/A |
 | Y090002 |  | N/A |
 | Y090003 |  | N/A |
