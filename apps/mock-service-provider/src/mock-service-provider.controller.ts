@@ -60,14 +60,18 @@ export class MockServiceProviderController {
   @Get(MockServiceProviderRoutes.LOGIN)
   async login(@Req() req, @Res() res) {
     /**
-   * @TODO #251
-   * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
-   */
+     * @TODO #251
+     * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
+     */
     const params = {
       scope:
         'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address',
       providerUid: 'corev2',
+      /**
+       * @TODO `acr_values` MUST change accordingly with the mock that calls it
+       *       its value should change to either 'eidas2' or 'rgs2' 
+       */
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',

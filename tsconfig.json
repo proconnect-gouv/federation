@@ -214,6 +214,18 @@
       ],
       "@fc/eidas-light-protocol/*": [
         "libs/eidas-light-protocol/src/*"
+      ],
+      "@fc/mock-identity-provider-fca": [
+        "apps/mock-identity-provider-fca/src"
+      ],
+      "@fc/mock-identity-provider-fca/*": [
+        "apps/mock-identity-provider-fca/src/*"
+      ],
+      "@fc/service-provider-env": [
+        "libs/service-provider-env/src"
+      ],
+      "@fc/service-provider-env/*": [
+        "libs/service-provider-env/src/*"
       ]
     }
   },

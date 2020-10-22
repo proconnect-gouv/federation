@@ -103,8 +103,14 @@ export class LoggerService extends Logger {
     });
   }
 
-  // Method which will never output in production
-  trace(log: any, context?: string) {
+  /**
+   * Method which will never output in production
+   *
+   * @param {any} log
+   * @param {string} context
+   * @returns {void}
+   */
+  trace(log?: any, context?: string): void {
     if (this.isDev()) {
       this.technicalLogger(LogLevelNames.TRACE, log, context);
     }
