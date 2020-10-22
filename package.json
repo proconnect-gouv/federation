@@ -65,6 +65,7 @@
     "rimraf": "^3.0.0",
     "rxjs": "^6.5.4",
     "uuid": "^8.1.0",
+    "xml-js": "^1.6.11",
     "xml2js": "^0.4.23"
   },
   "devDependencies": {
@@ -190,8 +191,8 @@
       "@fc/app": "<rootDir>/libs/app/src",
       "@fc/identity-provider-env/(.*)": "<rootDir>/libs/identity-provider-env/src/$1",
       "@fc/identity-provider-env": "<rootDir>/libs/identity-provider-env/src",
-      "@fc/eidas-common/(.*)": "<rootDir>/libs/eidas-common/src/$1",
-      "@fc/eidas-common": "<rootDir>/libs/eidas-common/src"
+      "@fc/eidas-light-protocol/(.*)": "<rootDir>/libs/eidas-light-protocol/src/$1",
+      "@fc/eidas-light-protocol": "<rootDir>/libs/eidas-light-protocol/src"
     },
     "preset": "ts-jest"
   }
