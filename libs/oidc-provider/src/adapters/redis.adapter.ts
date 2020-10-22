@@ -103,7 +103,7 @@ export class RedisAdapter implements Adapter {
     this.logger.debug('Upsert');
 
     const key = this.key(id);
-    this.logger.trace(key);
+    this.logger.trace('RedisAdapter.upsert()', key);
 
     if (expiresIn && isNaN(expiresIn)) {
       throw new TypeError(
@@ -169,13 +169,13 @@ export class RedisAdapter implements Adapter {
     this.logger.debug('Find');
 
     const key = this.key(id);
-    this.logger.trace(this.key(id));
+    this.logger.trace('RedisAdapter.find()', this.key(id));
 
     const command = consumable.has(this.contextName) ? 'hgetall' : 'get';
     const data = await this.redis[command](key);
 
     if (isEmpty(data)) {
-      this.logger.trace('isEmpty');
+      this.logger.trace('RedisAdapter.find() > isEmpty');
       return void 0;
     }
 
@@ -207,7 +207,7 @@ export class RedisAdapter implements Adapter {
 
   async destroy(id: string) {
     this.logger.debug('Destroy');
-    this.logger.trace(this.key(id));
+    this.logger.trace('RedisAdapter.destroy()', this.key(id));
 
     const key = this.key(id);
     await this.redis.del(key);
@@ -215,7 +215,10 @@ export class RedisAdapter implements Adapter {
 
   async revokeByGrantId(grantId: string) {
     this.logger.debug('RevokeByGrantId');
-    this.logger.trace(this.grantKeyFor(grantId));
+    this.logger.trace(
+      'RedisAdapter.revokeByGrantId()',
+      this.grantKeyFor(grantId),
+    );
 
     const multi = this.redis.multi();
     const tokens = await this.redis.lrange(this.grantKeyFor(grantId), 0, -1);
@@ -227,7 +230,7 @@ export class RedisAdapter implements Adapter {
 
   async consume(id: string) {
     this.logger.debug('Consume');
-    this.logger.trace(this.key(id));
+    this.logger.trace('RedisAdapter.consume()', this.key(id));
 
     await this.redis.hset(
       this.key(id),

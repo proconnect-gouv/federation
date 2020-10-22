@@ -11,7 +11,6 @@ import Redis from './redis';
 import Rnipp from './rnipp';
 import CryptographyBroker from './cryptography-broker';
 import Cryptography from './cryptography';
-import HttpProxy from './http-proxy';
 import Session from './session';
 import OverrideOidcProvider from './override-oidc-provider';
 import Mailer from './mailer';
@@ -34,7 +33,6 @@ export default {
   Rnipp,
   CryptographyBroker,
   Cryptography,
-  HttpProxy,
   Session,
   OverrideOidcProvider,
   Mailer,

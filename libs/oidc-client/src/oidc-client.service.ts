@@ -103,7 +103,7 @@ export class OidcClientService {
     providerUid: string,
     stateFromSession: string,
   ): Promise<TokenSet> {
-    this.logger.trace('getTokenSet');
+    this.logger.trace('OidcClientService.getTokenSet()');
     const clientMetadata = await this.getProvider(providerUid);
     const client = await this.createOidcClient(providerUid);
 
@@ -163,7 +163,7 @@ export class OidcClientService {
     accessToken: string,
     providerUid: string,
   ): Promise<IOidcIdentity> {
-    this.logger.trace('getUserInfo');
+    this.logger.trace('OidcClientService.getUserInfo()');
     const client = await this.createOidcClient(providerUid);
 
     /**

@@ -1,12 +1,6 @@
 /* istanbul ignore file */
 
 // Not to be tested
-/**
- * Override external library for crypto
- * This has to be done before any other import in order
- * to wrap references before they are imported
- */
-import '@fc/override-oidc-provider/overrides';
 import * as helmet from 'helmet';
 import * as CookieParser from 'cookie-parser';
 import { urlencoded } from 'body-parser';

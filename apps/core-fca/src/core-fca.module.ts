@@ -16,9 +16,10 @@ import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
 import { CryptographyModule } from '@fc/cryptography';
 import { ErrorModule } from '@fc/error';
+// Must be imported to be complient with `libs/core` shared between `fcp` and `fca`
+import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
-import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
 import { MailerModule } from '@fc/mailer';
 import { TrackingModule } from '@fc/tracking';
 import {
@@ -44,11 +45,11 @@ const oidcProviderModule = OidcProviderModule.register(
     SessionModule,
     CryptographyModule,
     AccountModule,
+    RnippModule,
     ServiceProviderModule,
     IdentityProviderModule,
     HttpProxyModule,
     oidcProviderModule,
-    OverrideOidcProviderModule.register(oidcProviderModule),
     OidcClientModule.register(IdentityProviderService, IdentityProviderModule),
     MailerModule,
     /** Inject app specific tracking service */
