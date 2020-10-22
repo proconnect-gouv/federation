@@ -1,1 +1,1 @@
-export { IJsonifiedXml } from './jsonified-xml.interface';
+export { IRequest } from './request.interface';
