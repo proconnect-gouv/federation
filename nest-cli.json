@@ -73,6 +73,21 @@
         ]
       }
     },
+    "mock-identity-provider-fca-high": {
+      "type": "application",
+      "root": "instances/mock-identity-provider-fca-high",
+      "entryFile": "main",
+      "sourceRoot": "instances/mock-identity-provider-fca-high/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/mock-identity-provider-fca-high/tsconfig.app.json",
+        "assets": [
+          "../../../apps/mock-identity-provider-fca/**/*.ejs",
+          "../../../apps/mock-identity-provider-fca/**/*.css",
+          "../../../apps/mock-identity-provider-fca/**/*.svg",
+          "../../../apps/mock-identity-provider-fca/**/*.csv"
+        ]
+      }
+    },
     "rnipp": {
       "type": "library",
       "root": "libs/rnipp",
@@ -343,6 +358,15 @@
         "tsConfigPath": "apps/mock-service-provider/tsconfig.lib.json"
       }
     },
+    "mock-identity-provider-fca": {
+      "type": "library",
+      "root": "apps/mock-identity-provider-fca",
+      "entryFile": "index",
+      "sourceRoot": "apps/mock-identity-provider-fca/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mock-identity-provider-fca/tsconfig.lib.json"
+      }
+    },
     "identity-provider-env": {
       "type": "library",
       "root": "libs/identity-provider-env",
@@ -350,6 +374,15 @@
       "sourceRoot": "libs/identity-provider-env/src",
       "compilerOptions": {
         "tsConfigPath": "libs/identity-provider-env/tsconfig.lib.json"
+      }
+    },
+    "service-provider-env": {
+      "type": "library",
+      "root": "libs/service-provider-env",
+      "entryFile": "index",
+      "sourceRoot": "libs/service-provider-env/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/service-provider-env/tsconfig.lib.json"
       }
     },
     "tracking": {

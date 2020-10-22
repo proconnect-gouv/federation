@@ -8,7 +8,7 @@ export default {
   key: process.env.MAILJET_KEY,
   secret: process.env.MAILJET_SECRET,
   options: {
-    proxyUrl: process.env.HTTPS_PROXY,
+    proxyUrl: process.env.GLOBAL_AGENT_HTTPS_PROXY,
   },
   from: {
     email: process.env.MAILER_FROM_EMAIL,

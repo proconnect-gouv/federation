@@ -453,9 +453,9 @@ export class OidcProviderService {
 
   /**
    *
-   * @param ctx Koa's `ctx` object
-   * @param out output body, we won't use it here.
-   * @param error error trown from oidc-provider
+   * @param {KoaContextWithOIDC} ctx Koa's `ctx` object
+   * @param {string} out output body, we won't use it here.
+   * @param {any} error error trown from oidc-provider
    *
    * @see https://github.com/panva/node-oidc-provider/tree/master/docs#rendererror
    */
@@ -514,8 +514,11 @@ export class OidcProviderService {
 
   /**
    * Compose full config by merging static parameters from:
-   *  - configuration file (some may be coming from environment variables)
-   *  - database (SP configuration)
+   *  - configuration file (some may be coming from environment variables).
+   *  - database (SP configuration).
+   *
+   * @param {boolean} refresh Default false
+   * @returns {Promise<OidcProviderConfig>}
    */
   private async getConfig(refresh = false): Promise<OidcProviderConfig> {
     /**

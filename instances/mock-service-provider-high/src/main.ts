@@ -1,11 +1,11 @@
 /* istanbul ignore file */
 
 // Not to be tested
+import { join } from 'path';
 import * as helmet from 'helmet';
 import * as CookieParser from 'cookie-parser';
 import { urlencoded } from 'body-parser';
 import { renderFile } from 'ejs';
-import { join } from 'path';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { LoggerService } from '@fc/logger';
