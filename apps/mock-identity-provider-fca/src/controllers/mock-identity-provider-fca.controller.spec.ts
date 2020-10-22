@@ -212,7 +212,10 @@ describe('MockIdentityProviderFcaController', () => {
       mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
         accountMock,
       );
-      const body = { interactionId: interactionIdMock, login: loginMockValue };
+      const body = {
+        interactionId: interactionIdMock,
+        login: loginMockValue,
+      };
       // When
       await controller.getLogin(req, res, body);
       // Then

@@ -8,4 +8,4 @@ import { LightRequestService } from './services';
   providers: [LightRequestService],
   exports: [LightRequestService],
 })
-export class EidasLightProtocolModule { }
+export class EidasLightProtocolModule {}

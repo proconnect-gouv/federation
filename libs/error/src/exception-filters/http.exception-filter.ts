@@ -8,7 +8,8 @@ import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 import { ErrorService } from '../error.service';
 
 @Catch(HttpException)
-export class HttpExceptionFilter extends FcBaseExceptionFilter
+export class HttpExceptionFilter
+  extends FcBaseExceptionFilter
   implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     this.logger.debug('Exception from HttpException');

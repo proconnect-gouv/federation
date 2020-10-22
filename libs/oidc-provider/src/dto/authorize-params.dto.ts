@@ -56,7 +56,7 @@ export class AuthorizeParamsDTO {
   /**
    * @TODO #199 Retourner chez le FS en cas d'erreur
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/199
-   * 
+   *
    * @TODO #256
    * ETQ Dev, je supprime la valeur 'none' pour le prompt
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/256

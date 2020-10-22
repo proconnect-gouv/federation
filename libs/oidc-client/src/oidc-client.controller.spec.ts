@@ -190,7 +190,9 @@ describe('OidcClient Controller', () => {
       });
 
       // action
-      await oidcClientController.getOidcCallback(req, res, { providerUid });
+      await oidcClientController.getOidcCallback(req, res, {
+        providerUid,
+      });
 
       // assert
       expect(oidcClientServiceMock.getTokenSet).toHaveBeenCalledTimes(1);

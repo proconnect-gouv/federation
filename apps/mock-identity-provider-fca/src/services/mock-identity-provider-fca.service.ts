@@ -45,7 +45,9 @@ export class MockIdentityProviderFcaService {
   }
 
   getIdentity(inputUid: string): Identity {
-    const identity: Identity = this.database.find(({ uid }) => uid === inputUid);
+    const identity: Identity = this.database.find(
+      ({ uid }) => uid === inputUid,
+    );
 
     return identity;
   }

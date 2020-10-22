@@ -191,7 +191,10 @@ describe('CoreTrackingService', () => {
     it('should throw if interactionId is missing', () => {
       // Given
       const contextMock = {
-        req: { headers: { 'x-forwarded-for': '123.123.123.123' }, fc: {} },
+        req: {
+          headers: { 'x-forwarded-for': '123.123.123.123' },
+          fc: {},
+        },
       };
       // Then
       expect(() => service['extractContext'](contextMock)).toThrow(
