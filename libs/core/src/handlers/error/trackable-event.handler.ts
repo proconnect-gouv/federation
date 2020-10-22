@@ -3,7 +3,8 @@ import { TrackingHandler } from '@fc/tracking';
 import { TrackableEvent } from '@fc/error';
 
 @EventsHandler(TrackableEvent)
-export class TrackableEventHandler extends TrackingHandler
+export class TrackableEventHandler
+  extends TrackingHandler
   implements IEventHandler<TrackableEvent> {
   async handle(event: TrackableEvent) {
     const { context } = event;

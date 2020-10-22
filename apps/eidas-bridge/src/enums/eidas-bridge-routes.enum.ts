@@ -3,5 +3,5 @@
 export enum EidasBridgeRoutes {
   DEFAULT = '/',
   LOGIN = '/login',
-  LOGIN_CALLBACK = '/login-callback'
+  LOGIN_CALLBACK = '/login-callback',
 }
