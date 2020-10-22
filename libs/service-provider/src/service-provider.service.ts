@@ -42,7 +42,7 @@ export class ServiceProviderService implements IServiceProviderService {
   }
 
   /**
-   * Method triggered when an operation type occured on 
+   * Method triggered when an operation type occured on
    * Mongo's 'provider' collection.
    * @param {object} stream Stream of event retrieved.
    * @returns {void}

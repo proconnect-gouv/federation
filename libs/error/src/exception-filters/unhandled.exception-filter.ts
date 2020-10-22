@@ -4,7 +4,8 @@ import { LoggerService } from '@fc/logger';
 import { ErrorService } from '../error.service';
 
 @Catch()
-export class UnhandledExceptionFilter extends BaseExceptionFilter
+export class UnhandledExceptionFilter
+  extends BaseExceptionFilter
   implements ExceptionFilter {
   constructor(private readonly logger: LoggerService) {
     super();

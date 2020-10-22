@@ -5,7 +5,6 @@ import { readFileSync } from 'fs';
 import { OidcClientConfig } from '@fc/oidc-client';
 
 export default {
-  reloadConfigDelayInMs: 60000,
   httpOptions: {
     key: readFileSync(process.env.HTTPS_CLIENT_KEY).toString('utf8'),
     cert: readFileSync(process.env.HTTPS_CLIENT_CERT).toString('utf8'),

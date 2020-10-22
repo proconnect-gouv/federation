@@ -8,7 +8,6 @@ import {
 } from '@fc/oidc-provider';
 
 export default {
-  reloadConfigDelayInMs: 60 * 1000, // 1 minute
   forcedPrompt: [OidcProviderPrompt.LOGIN, OidcProviderPrompt.CONSENT],
   prefix: process.env.PREFIX,
   issuer: `https://${process.env.FQDN}${process.env.PREFIX}`,
@@ -89,16 +88,51 @@ export default {
       address: ['address'],
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      phone_number: ['phone_number'],
+      phone: ['phone_number'],
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      identity_provider: ['identity_provider'],
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      organizational_unit: ['organizational_unit'],
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      siren: ['siren'],
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      siret: ['siret'],
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      usual_name: ['usual_name'],
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      belonging_population: ['belonging_population'],
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      position: ['position'],
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      job: ['job'],
       profile: [
-        'sub',
+        'openid',
+        'gender',
+        'birthdate',
+        'birthcountry',
+        'birthplace',
         'given_name',
         'family_name',
-        'birthdate',
-        'gender',
-        'birthplace',
-        'birthcountry',
+        'email',
         'preferred_username',
+        'address',
+        'phone_number',
+        'identity_provider',
+        'organizational_unit',
+        'siren',
+        'siret',
+        'usual_name',
+        'belonging_population',
+        'position',
+        'job',
       ],
     },
     clientDefaults: {

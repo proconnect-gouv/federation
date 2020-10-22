@@ -26,7 +26,7 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     return stackTrace;
   }
 
-  protected logException(code, id, exception) {
+  protected logException(code: string, id: string, exception: any): void {
     const { message, redirect } = exception;
     const stackTrace = this.getStackTraceArray(exception);
 
