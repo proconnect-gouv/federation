@@ -21,5 +21,17 @@ export const lightRequestXmlMock = `<?xml version="1.0" encoding="UTF-8" standal
     <attribute>
       <definition>http://eidas.europa.eu/attributes/naturalperson/DateOfBirth</definition>
     </attribute>
+    <attribute>
+      <definition>http://eidas.europa.eu/attributes/naturalperson/CurrentAddress</definition>
+    </attribute>
+    <attribute>
+      <definition>http://eidas.europa.eu/attributes/naturalperson/Gender</definition>
+    </attribute>
+    <attribute>
+      <definition>http://eidas.europa.eu/attributes/naturalperson/BirthName</definition>
+    </attribute>
+    <attribute>
+      <definition>http://eidas.europa.eu/attributes/naturalperson/PlaceOfBirth</definition>
+    </attribute>
   </requestedAttributes>
 </lightRequest>`;

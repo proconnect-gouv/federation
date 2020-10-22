@@ -57,6 +57,28 @@ export const lightRequestJsonMock = {
               'http://eidas.europa.eu/attributes/naturalperson/DateOfBirth',
           },
         },
+        {
+          definition: {
+            _text:
+              'http://eidas.europa.eu/attributes/naturalperson/CurrentAddress',
+          },
+        },
+        {
+          definition: {
+            _text: 'http://eidas.europa.eu/attributes/naturalperson/Gender',
+          },
+        },
+        {
+          definition: {
+            _text: 'http://eidas.europa.eu/attributes/naturalperson/BirthName',
+          },
+        },
+        {
+          definition: {
+            _text:
+              'http://eidas.europa.eu/attributes/naturalperson/PlaceOfBirth',
+          },
+        },
       ],
     },
   },
