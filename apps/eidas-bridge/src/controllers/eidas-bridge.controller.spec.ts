@@ -84,7 +84,9 @@ describe('CoreFcpController', () => {
       .useValue(cryptographyMock)
       .compile();
 
-      eidasBridgeController = await app.get<EidasBridgeController>(EidasBridgeController);
+    eidasBridgeController = await app.get<EidasBridgeController>(
+      EidasBridgeController,
+    );
 
     jest.resetAllMocks();
     configServiceMock.get.mockReturnValue(appConfigMock);
@@ -112,9 +114,9 @@ describe('CoreFcpController', () => {
       const result = await eidasBridgeController.getDefault(res);
       // Then
       expect(result).toEqual({
-        message: "Bienvenue sur le Bridge Eidas", 
-        state: stateMock, 
-        titleFront: 'Eidas Bridge'
+        message: 'Bienvenue sur le Bridge Eidas',
+        state: stateMock,
+        titleFront: 'Eidas Bridge',
       });
     });
 

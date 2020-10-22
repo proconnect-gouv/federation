@@ -55,7 +55,11 @@ export class MockIdentityProviderFcaController {
    * @todo validate body (user uid)
    */
   @Post(MockIdentityProviderFcaRoutes.INTERACTION_LOGIN)
-  async getLogin(@Req() req, @Res() res, @Body() body: SignInDTO): Promise<void> {
+  async getLogin(
+    @Req() req,
+    @Res() res,
+    @Body() body: SignInDTO,
+  ): Promise<void> {
     const identity: Identity = await this.mockIdentityProviderFcaService.getIdentity(
       body.login,
     );

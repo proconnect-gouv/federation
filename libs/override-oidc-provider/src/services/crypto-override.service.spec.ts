@@ -58,7 +58,7 @@ describe(' CryptoOverrideService', () => {
     jest.resetAllMocks();
     brokerMock.send.mockReturnValue(messageMock);
     messageMock.pipe.mockReturnValue(pipeMock);
-    pipeMock.subscribe.mockImplementation(cb => cb(brokerResponseMock));
+    pipeMock.subscribe.mockImplementation((cb) => cb(brokerResponseMock));
     configServiceMock.get.mockReturnValue({
       payloadEncoding: 'base64',
       requestTimeout: 200,
@@ -132,7 +132,7 @@ describe(' CryptoOverrideService', () => {
 
       it('should reject if response is "ERROR"', async () => {
         // Given
-        pipeMock.subscribe.mockImplementationOnce(cb => cb('ERROR'));
+        pipeMock.subscribe.mockImplementationOnce((cb) => cb('ERROR'));
 
         // Then
         await expect(service.sign(keyMock, dataMock)).rejects.toThrow(

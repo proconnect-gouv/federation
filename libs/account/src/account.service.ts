@@ -20,7 +20,10 @@ export class AccountService {
    * @param identityHash
    */
   async isBlocked(identityHash: string): Promise<boolean> {
-    const account = await this.model.findOne({ identityHash, active: false });
+    const account = await this.model.findOne({
+      identityHash,
+      active: false,
+    });
 
     return account !== null;
   }

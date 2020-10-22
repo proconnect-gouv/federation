@@ -280,7 +280,9 @@ describe('OidcClientService', () => {
     });
     it('should throw if state is not provided in url', async () => {
       // Given
-      callbackParamsMock.mockResolvedValueOnce({ code: 'callbackParamsCode' });
+      callbackParamsMock.mockResolvedValueOnce({
+        code: 'callbackParamsCode',
+      });
       // Then
       expect(service.getTokenSet(req, providerId, state)).rejects.toThrow(
         OidcClientMissingStateException,

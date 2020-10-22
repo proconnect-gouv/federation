@@ -17,7 +17,6 @@ import { CryptographyConfig } from '@fc/cryptography';
 import { ServiceProviderEnvConfig } from '@fc/service-provider-env';
 
 export class MockIdentityProviderFcaConfig {
-
   @IsObject()
   @ValidateNested()
   @Type(() => OidcProviderConfig)

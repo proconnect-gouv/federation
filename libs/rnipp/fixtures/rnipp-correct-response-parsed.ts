@@ -28,7 +28,12 @@ export const rnippCorrectResponseParsed = {
                     DateNaissance: ['1962-08-24'],
                     LieuNaissance: [
                       {
-                        Localite: [{ _: 'Ville', $: { code: '75107' } }],
+                        Localite: [
+                          {
+                            _: 'Ville',
+                            $: { code: '75107' },
+                          },
+                        ],
                       },
                     ],
                     NumeroActeNaissance: ['614'],

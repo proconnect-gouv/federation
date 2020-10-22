@@ -3,7 +3,7 @@ import { TrackingService } from '@fc/tracking';
 
 describe('TrackableEventHandler', () => {
   /**
-   * @TODO #254 
+   * @TODO #254
    * ETQ Dev, je regarde pourquoi on ne peut pas tester des vrais class dans JEST
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/254
    */

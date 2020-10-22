@@ -742,7 +742,9 @@ describe('OidcProviderService', () => {
   describe('getInteractionIdFromCtxEntities', () => {
     it('should retrieve interactionId from entities', () => {
       // Given
-      const ctxMock = { oidc: { entities: { Account: { accountId: '42' } } } };
+      const ctxMock = {
+        oidc: { entities: { Account: { accountId: '42' } } },
+      };
       // When
       const result = service['getInteractionIdFromCtxEntities'](ctxMock);
       // Then
@@ -992,7 +994,9 @@ describe('OidcProviderService', () => {
     it('Should return interaction url with prefix', async () => {
       // Given
       const prefix = '/prefix';
-      const ctx = ({ oidc: { uid: 123 } } as unknown) as KoaContextWithOIDC;
+      const ctx = ({
+        oidc: { uid: 123 },
+      } as unknown) as KoaContextWithOIDC;
       const interaction = {};
 
       // When

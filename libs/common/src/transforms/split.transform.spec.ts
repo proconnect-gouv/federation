@@ -20,7 +20,7 @@ describe('Split transform', () => {
       // setup
       const separator = undefined;
       const value = 'I will be back';
-      const output =  ['I', 'will', 'be', 'back'];
+      const output = ['I', 'will', 'be', 'back'];
       const doSplitFn = doSplit(separator);
 
       // action
