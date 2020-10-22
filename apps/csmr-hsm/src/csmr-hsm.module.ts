@@ -7,10 +7,7 @@ import { HsmModule } from '@fc/hsm';
 import { CsmrHsmController } from './csmr-hsm.controller';
 
 @Module({
-  imports: [
-    ErrorModule,
-    HsmModule,
-  ],
+  imports: [ErrorModule, HsmModule],
   controllers: [CsmrHsmController],
 })
 export class CsmrHsmModule {}

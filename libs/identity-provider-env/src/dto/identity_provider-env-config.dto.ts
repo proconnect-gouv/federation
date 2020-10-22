@@ -1,11 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import {
-  IsOptional,
-  IsObject,
-  IsUrl,
-} from 'class-validator';
+import { IsOptional, IsObject, IsUrl } from 'class-validator';
 import { ClientMetadata } from 'openid-client';
 import { JSONWebKeySet } from 'jose';
 

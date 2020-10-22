@@ -9,7 +9,8 @@ import { ErrorService } from '../error.service';
  * @see https://docs.nestjs.com/microservices/exception-filters
  */
 @Catch(RpcException)
-export class RpcExceptionFilter extends FcBaseExceptionFilter
+export class RpcExceptionFilter
+  extends FcBaseExceptionFilter
   implements ExceptionFilter {
   catch(exception: RpcException): Observable<any> {
     this.logger.debug('Exception from RpcException');

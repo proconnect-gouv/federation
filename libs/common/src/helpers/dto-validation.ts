@@ -26,7 +26,7 @@ export async function validateDto(
 function formatErrorMessages(error: ValidationError, prefix: string) {
   const constraints = Object.keys(error.constraints);
 
-  return constraints.map(constraint => {
+  return constraints.map((constraint) => {
     return `${prefix}${error.property}: ${constraint}`;
   });
 }

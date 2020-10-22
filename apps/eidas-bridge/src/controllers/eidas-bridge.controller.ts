@@ -1,11 +1,4 @@
-import {
-  Controller,
-  Get,
-  Render,
-  Res,
-  Req,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Render, Res, Req, Query } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
@@ -39,7 +32,7 @@ export class EidasBridgeController {
     const sessionIdLength = 32;
     const sessionId = this.crypto.genRandomString(sessionIdLength);
     await this.session.init(res, sessionId, { idpState: sessionId });
-    const message = "Bienvenue sur le Bridge Eidas";
+    const message = 'Bienvenue sur le Bridge Eidas';
 
     return {
       message,
@@ -49,9 +42,9 @@ export class EidasBridgeController {
   }
 
   /* @TODO #251
-  * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
-  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251 
-  * */
+   * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
+   * */
   @Get(EidasBridgeRoutes.LOGIN)
   async login(@Req() req, @Res() res) {
     const params = {

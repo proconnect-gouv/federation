@@ -5,7 +5,7 @@ import { Module, HttpModule } from '@nestjs/common';
 import { HttpProxyService } from './http-proxy.service';
 
 @Module({
-  imports:[HttpModule],
+  imports: [HttpModule],
   providers: [HttpProxyService],
   exports: [HttpProxyService],
 })

@@ -536,7 +536,10 @@ describe('HsmService', () => {
     it('C_FindObjectsInit shall have been called with the PKCS#11 session, the key type "private" and the key label', () => {
       // setup
       const expectedTemplate = [
-        { type: pkcs11js.CKA_KEY_TYPE, value: pkcs11js.CKO_PRIVATE_KEY },
+        {
+          type: pkcs11js.CKA_KEY_TYPE,
+          value: pkcs11js.CKO_PRIVATE_KEY,
+        },
         {
           type: pkcs11js.CKA_LABEL,
           value: Buffer.from(sigKeyCkaLabel, 'utf8'),

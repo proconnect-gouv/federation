@@ -2,7 +2,7 @@ import {
   ValidationOptions,
   ValidateBy,
   ValidatorConstraint,
-  ValidationArguments
+  ValidationArguments,
 } from 'class-validator';
 import { Inject, Injectable } from '@nestjs/common';
 import { ArrayAtLeastOneConstraint } from '@fc/common';
@@ -10,15 +10,15 @@ import { ConfigService } from '@fc/config';
 import { OidcProviderConfig } from '../dto';
 import { OidcProviderPrompt } from '../enums';
 
-
 @ValidatorConstraint()
 @Injectable()
 export class IsValidPromptConstraint extends ArrayAtLeastOneConstraint {
-
   configValues: OidcProviderPrompt[];
   constructor(@Inject('ConfigService') public readonly config: ConfigService) {
     super();
-    const { forcedPrompt } = this.config.get<OidcProviderConfig>('OidcProvider');
+    const { forcedPrompt } = this.config.get<OidcProviderConfig>(
+      'OidcProvider',
+    );
     this.configValues = forcedPrompt;
   }
 

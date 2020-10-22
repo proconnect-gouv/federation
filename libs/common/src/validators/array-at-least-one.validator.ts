@@ -1,4 +1,8 @@
-import { ValidationOptions, ValidateBy, ValidationArguments } from 'class-validator';
+import {
+  ValidationOptions,
+  ValidateBy,
+  ValidationArguments,
+} from 'class-validator';
 
 export const ARRAY_AT_LEAST_ONE = 'ArrayAtLeastOne';
 
@@ -7,7 +11,6 @@ export function arrayAtLeastOne(allowed: string[], values: string[]): boolean {
 }
 
 export class ArrayAtLeastOneConstraint {
-
   getAllowedList(args: ValidationArguments): string[] {
     return args.constraints[0];
   }

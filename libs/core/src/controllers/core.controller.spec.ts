@@ -118,7 +118,9 @@ describe('CoreController', () => {
       interactionDetailsResolved,
     );
     coreServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
-    serviceProviderServiceMock.getById.mockResolvedValue({ name: spNameMock });
+    serviceProviderServiceMock.getById.mockResolvedValue({
+      name: spNameMock,
+    });
     sessionServiceMock.get.mockResolvedValue({
       interactionId: interactionIdMock,
       spAcr: acrMock,

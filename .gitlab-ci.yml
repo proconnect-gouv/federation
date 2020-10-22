@@ -8,6 +8,7 @@ global:
   script:
     - yarn install
     - yarn lint
+    - yarn prettier
     - yarn test --coverage
     - ./scripts/coverage.sh
   coverage: '/Global coverage is: \[([\d\.]+)%\]/'

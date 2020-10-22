@@ -3,7 +3,8 @@ import { ValidationException, FcException } from '../exceptions';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
 @Catch(ValidationException)
-export class ValidationExceptionFilter extends FcBaseExceptionFilter
+export class ValidationExceptionFilter
+  extends FcBaseExceptionFilter
   implements ExceptionFilter {
   catch(exception: ValidationException) {
     this.logger.debug('Exception from ValidationException');

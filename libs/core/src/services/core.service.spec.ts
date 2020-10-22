@@ -297,10 +297,7 @@ describe('CoreService', () => {
       );
       checkBlockedMock.mockResolvedValue(true); // nothing happened
 
-      checkAcrMock = jest.spyOn<CoreService, any>(
-        service,
-        'checkIfAcrIsValid',
-      );
+      checkAcrMock = jest.spyOn<CoreService, any>(service, 'checkIfAcrIsValid');
       checkAcrMock.mockResolvedValue(true); // nothing happened
     });
 

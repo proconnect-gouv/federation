@@ -70,7 +70,7 @@ export class MockServiceProviderController {
       providerUid: 'corev2',
       /**
        * @TODO `acr_values` MUST change accordingly with the mock that calls it
-       *       its value should change to either 'eidas2' or 'rgs2' 
+       *       its value should change to either 'eidas2' or 'rgs2'
        */
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
