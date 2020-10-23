@@ -1,0 +1,14 @@
+// ----------------- VARIABLES
+@import '_colors.scss';
+
+// ----------------- VENDORS
+@import '~bootstrap/scss/bootstrap.scss';
+@import '~antd/dist/antd.css';
+
+// ----------------- CUSTOM
+body,
+html,
+#root {
+  height: 100%;
+  min-height: 100%;
+}
