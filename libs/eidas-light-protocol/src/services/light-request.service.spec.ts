@@ -1,6 +1,10 @@
 import * as converter from 'xml-js';
 import { Test, TestingModule } from '@nestjs/testing';
-import { lightRequestJsonMock, lightRequestXmlMock } from '../../fixtures';
+import {
+  lightRequestJsonMock,
+  lightRequestXmlMock,
+  requestJsonMock,
+} from '../../fixtures';
 import {
   EidasJSONConversionException,
   EidasXMLConversionException,
@@ -24,16 +28,14 @@ describe('LightRequestService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('fromJSON', () => {
-    const id = 'Auduye7263';
-
+  describe('fromJson', () => {
     it('should call json2xml function from xml2js library', () => {
       // setup
       jest
         .spyOn(converter, 'json2xml')
         .mockReturnValueOnce(lightRequestXmlMock);
       // action
-      service.fromJSON(lightRequestJsonMock, id);
+      service.fromJson(requestJsonMock);
 
       // assertion
       expect(converter.json2xml).toHaveBeenCalledTimes(1);
@@ -41,7 +43,7 @@ describe('LightRequestService', () => {
 
     it('should convert JSON object to XML document', () => {
       // action
-      const result = service.fromJSON(lightRequestJsonMock, id);
+      const result = service.fromJson(requestJsonMock);
 
       // assertion
       expect(result).toEqual(lightRequestXmlMock);
@@ -49,8 +51,6 @@ describe('LightRequestService', () => {
 
     it('should throw an error if the library receive something else than a JSON object', () => {
       // setup
-      const lightRequestJsonMock = 'tryAgainBuddyYoureMistaken';
-
       const jsonConversionErrorMessage = 'jsonConversion error';
 
       jest.spyOn(converter, 'json2xml').mockImplementation(() => {
@@ -58,7 +58,7 @@ describe('LightRequestService', () => {
       });
       // action
       try {
-        service.fromJSON(lightRequestJsonMock, id);
+        service.fromJson(requestJsonMock);
       } catch (e) {
         // assertion
         expect(e).toBeInstanceOf(EidasJSONConversionException);
@@ -68,14 +68,14 @@ describe('LightRequestService', () => {
     });
   });
 
-  describe('toJSON', () => {
+  describe('toJson', () => {
     it('should call xml2json function from xml2js library', () => {
       // setup
       jest
         .spyOn(converter, 'xml2json')
         .mockReturnValueOnce(JSON.stringify(lightRequestJsonMock));
       // action
-      service.toJSON(lightRequestXmlMock);
+      service.toJson(lightRequestXmlMock);
 
       // assertion
       expect(converter.xml2json).toHaveBeenCalledTimes(1);
@@ -92,7 +92,7 @@ describe('LightRequestService', () => {
 
       // action
       try {
-        service.toJSON(lightRequestXmlMock);
+        service.toJson(lightRequestXmlMock);
       } catch (e) {
         // assertion
         expect(e).toBeInstanceOf(EidasXMLConversionException);
@@ -102,106 +102,33 @@ describe('LightRequestService', () => {
     });
   });
 
-  describe('flattenJSON', () => {
-    const lightRequestJsonMockFlatten = {
-      _declaration: {
-        _attributes: {
-          version: '1.0',
-          encoding: 'UTF-8',
-          standalone: 'yes',
-        },
-      },
-      lightRequest: {
-        citizenCountryCode: {
-          _text: 'BE',
-        },
-        id: {
-          _text: 'Auduye7263',
-        },
-        issuer: {
-          _text: 'EIDASBridge',
-        },
-        levelOfAssurance: {
-          _text: 'http://eidas.europa.eu/LoA/low',
-        },
-        nameIdFormat: {
-          _text:
-            'urn: oasis: names: tc: SAML: 1.1: nameid - format: unspecified',
-        },
-        providerName: {
-          _text: 'FranceConnect',
-        },
-        spType: {
-          _text: 'public',
-        },
-        relayState: {
-          _text: 'myState',
-        },
-        requestedAttributes: {
-          attribute: [
-            {
-              definition: {
-                _text:
-                  'http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier',
-              },
-            },
-            {
-              definition: {
-                _text:
-                  'http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName',
-              },
-            },
-            {
-              definition: {
-                _text:
-                  'http://eidas.europa.eu/attributes/naturalperson/CurrentGivenName',
-              },
-            },
-            {
-              definition: {
-                _text:
-                  'http://eidas.europa.eu/attributes/naturalperson/DateOfBirth',
-              },
-            },
-          ],
-        },
-      },
-    };
-
-    it('should call getJSONValues', () => {
-      // setup
-      const expected = {
-        citizenCountryCode: 'BE',
-        id: 'Auduye7263',
-        issuer: 'EIDASBridge',
-        levelOfAssurance: 'http://eidas.europa.eu/LoA/low',
-        nameIdFormat: 'unspecified',
-        providerName: 'FranceConnect',
-        spType: 'public',
-        relayState: 'myState',
-        requestedAttributes: [
-          'PersonIdentifier',
-          'CurrentFamilyName',
-          'CurrentGivenName',
-          'DateOfBirth',
-        ],
-      };
+  describe('deflateJson', () => {
+    it('should deflate the json', () => {
       // action
-      const result = service['flattenJSON'](lightRequestJsonMockFlatten);
+      const result = service['deflateJson'](lightRequestJsonMock);
 
       // assertion
-      // tslint:disable-next-line: no-string-literal
-      expect(result).toEqual(expected);
+      expect(result).toEqual(requestJsonMock);
     });
   });
 
-  describe('getJSONValues', () => {
+  describe('inflateJson', () => {
+    it('should inflate the json', () => {
+      // action
+      const result = service['inflateJson'](requestJsonMock);
+
+      // assertion
+      expect(result).toEqual(lightRequestJsonMock);
+    });
+  });
+
+  describe('getJsonValues', () => {
     it('should send back the value corresponding to the specified path', () => {
       // setup
       const path = 'lightRequest.citizenCountryCode._text';
 
       // action
-      const result = service['getJSONValues'](lightRequestJsonMock, path);
+      const result = service['getJsonValues'](lightRequestJsonMock, path);
 
       // assertion
       expect(result).toEqual('BE');
@@ -213,7 +140,7 @@ describe('LightRequestService', () => {
       const expected = 'unspecified';
 
       // action
-      const result = service['getJSONValues'](lightRequestJsonMock, path);
+      const result = service['getJsonValues'](lightRequestJsonMock, path);
 
       // assertion
       expect(result).toEqual(expected);
@@ -227,10 +154,14 @@ describe('LightRequestService', () => {
         'CurrentFamilyName',
         'CurrentGivenName',
         'DateOfBirth',
+        'CurrentAddress',
+        'Gender',
+        'BirthName',
+        'PlaceOfBirth',
       ];
 
       // action
-      const result = service['getJSONValues'](lightRequestJsonMock, path);
+      const result = service['getJsonValues'](lightRequestJsonMock, path);
 
       // assertion
       expect(result).toEqual(expected);
