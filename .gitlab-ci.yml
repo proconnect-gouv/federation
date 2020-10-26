@@ -1,17 +1,2 @@
-stages:
-  - 'Unit tests'
-  - 'End to end'
-
-global:
-  image: node:12.16.1
-  stage: 'Unit tests'
-  script:
-    - yarn install
-    - yarn lint
-    - yarn prettier
-    - yarn test --coverage
-    - ./scripts/coverage.sh
-  coverage: '/Global coverage is: \[([\d\.]+)%\]/'
-
 include:
-  - '/instances/core-fcp-high/.gitlab-ci.yml'
+  - '/back/.gitlab-ci.yml'
