@@ -1,0 +1,17 @@
+// ----------------- COLORS
+// BOOTSTRAP DEFAULT VARIABLES
+// @see https://raw.githubusercontent.com/twbs/bootstrap/main/scss/_variables.scss
+
+$primary: #2e94fa !default;
+$blue-cornflower: #e6f3ff !default;
+$orange-tacao: #f4a381 !default;
+$green-shamrock: #40d496 !default;
+$charcoal-grey: #3e4553 !default;
+
+$theme-colors: (
+  'primary': $primary,
+  'orange-tacao': $orange-tacao,
+  'green-shamrock': $green-shamrock,
+  'blue-cornflower': $blue-cornflower,
+  'charcoal': $charcoal-grey,
+);
