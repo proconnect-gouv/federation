@@ -1,0 +1,7 @@
+@each $size in $fontsizes {
+  $pixelValue: ($size * 1px);
+
+  .font-#{$size} {
+    @include rem(font-size, $pixelValue);
+  }
+}
