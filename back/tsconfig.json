@@ -226,7 +226,13 @@
       ],
       "@fc/service-provider-env/*": [
         "libs/service-provider-env/src/*"
-      ]
+      ],
+      "@fc/mock-sp-fca": [
+        "apps/mock-sp-fca/src"
+      ],
+      "@fc/mock-sp-fca/*": [
+        "apps/mock-sp-fca/src/*"
+      ],
     }
   },
   "exclude": ["node_modules", "dist"]
