@@ -110,7 +110,8 @@ class FeatureSetting {
 class Features {
   @ValidateNested()
   @Type(() => FeatureSetting)
-  readonly revocation: FeatureSetting;
+  /** optional because this option doesn't exist in agent connect */
+  readonly revocation?: FeatureSetting;
 
   @ValidateNested()
   @Type(() => FeatureSetting)
