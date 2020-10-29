@@ -1,0 +1,48 @@
+body {
+  margin-bottom: 5rem;
+}
+
+section {
+  padding-bottom: 1.5rem;
+  padding-top: 1.5rem;
+}
+
+section.welcome {
+  background-color: #209cee;
+  color: #fff;
+}
+
+section.connect {
+  margin-top: 1.0rem;
+  margin-bottom: 1.0rem;
+}
+
+.no-pad {
+  padding: 0;
+}
+
+#json {
+  height: 22rem;
+}
+
+.ac-bouton-bleu {
+  width: 235px;
+  height: 65px;
+  background: url("/img/ac-bouton-bleu.svg") no-repeat;
+  display: inline-block;
+}
+
+.ac-bouton-bleu:hover {
+  background: url("/img/ac-bouton-bleu-hover.svg") no-repeat;
+}
+
+.ac-bouton-blanc {
+  width: 235px;
+  height: 65px;
+  background: url("/img/ac-bouton-blanc.svg") no-repeat;
+  display: inline-block;
+}
+
+.ac-bouton-blanc:hover {
+  background: url("/img/ac-bouton-blanc-hover.svg") no-repeat;
+}

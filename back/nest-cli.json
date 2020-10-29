@@ -88,6 +88,20 @@
         ]
       }
     },
+    "mock-sp-fca-instance": {
+      "type": "application",
+      "root": "instances/mock-sp-fca",
+      "entryFile": "main",
+      "sourceRoot": "instances/mock-sp-fca/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/mock-sp-fca/tsconfig.app.json",
+        "assets": [
+          "../../../apps/mock-sp-fca/**/*.ejs",
+          "../../../apps/mock-sp-fca/**/*.css",
+          "../../../apps/mock-sp-fca/**/*.svg"
+        ]
+      }
+    },
     "rnipp": {
       "type": "library",
       "root": "libs/rnipp",
@@ -365,6 +379,15 @@
       "sourceRoot": "apps/mock-identity-provider-fca/src",
       "compilerOptions": {
         "tsConfigPath": "apps/mock-identity-provider-fca/tsconfig.lib.json"
+      }
+    },
+    "mock-sp-fca": {
+      "type": "library",
+      "root": "apps/mock-sp-fca",
+      "entryFile": "index",
+      "sourceRoot": "apps/mock-sp-fca/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/mock-sp-fca/tsconfig.lib.json"
       }
     },
     "identity-provider-env": {
