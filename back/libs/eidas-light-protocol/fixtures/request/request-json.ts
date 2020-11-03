@@ -1,4 +1,4 @@
-import { IRequest } from '../src/interfaces';
+import { IRequest } from '../../src/interfaces';
 export const requestJsonMock: IRequest = {
   citizenCountryCode: 'BE',
   id: 'Auduye7263',
