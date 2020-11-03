@@ -1,0 +1,17 @@
+export enum LightResponseXmlSelectors {
+  ID = 'lightResponse.id._text',
+  IN_RESPONSE_TO_ID = 'lightResponse.inResponseToId._text',
+  ISSUER = 'lightResponse.issuer._text',
+  IP_ADDRESS = 'lightResponse.ipAddress._text',
+  RELAY_STATE = 'lightResponse.relayState._text',
+  SUBJECT = 'lightResponse.subject._text',
+  SUBJECT_NAME_ID_FORMAT = 'lightResponse.subjectNameIdFormat._text',
+  LEVEL_OF_ASSURANCE = 'lightResponse.levelOfAssurance._text',
+  STATUS_FAILURE = 'lightResponse.status.failure._text',
+  STATUS_CODE = 'lightResponse.status.statusCode._text',
+  SUB_STATUS_CODE = 'lightResponse.status.subStatusCode._text',
+  STATUS_MESSAGE = 'lightResponse.status.statusMessage._text',
+  ATTRIBUTES = 'lightResponse.attributes.attribute',
+  ATTRIBUTE_DEFINITION = 'definition._text',
+  ATTRIBUTE_VALUE = 'value',
+}
