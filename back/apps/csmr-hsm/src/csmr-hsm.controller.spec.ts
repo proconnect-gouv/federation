@@ -10,8 +10,11 @@ describe('CsmrHsmController', () => {
   const signResolvedValue = Buffer.from('signResolvedValue');
   const signMock = jest.fn();
 
+  const randomString = 'randomStringValue';
+
   const hsmServiceMock = {
     sign: signMock,
+    genRandom: jest.fn(),
   };
 
   const loggerServiceMock = {
@@ -47,6 +50,7 @@ describe('CsmrHsmController', () => {
     jest.resetAllMocks();
     signMock.mockResolvedValue(signResolvedValue);
     configServiceMock.get.mockReturnValue({ payloadEncoding: 'base64' });
+    hsmServiceMock.genRandom.mockReturnValue(randomString);
   });
 
   describe('sign', () => {
@@ -73,6 +77,37 @@ describe('CsmrHsmController', () => {
       const result = await csmrHsmController.sign(payloadMock);
       // Then
       expect(result).toBe('ERROR');
+    });
+  });
+
+  describe('random', () => {
+    // Given
+    const payload = { length: 64, encoding: 'hex' as BufferEncoding };
+
+    it('should call hsm.random', async () => {
+      // When
+      csmrHsmController.random(payload);
+      // Then
+      expect(hsmServiceMock.genRandom).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return stringified hsm.random response', () => {
+      // When
+      const result = csmrHsmController.random(payload);
+      // Then
+      expect(result).toBe(randomString);
+    });
+
+    it('should return "ERROR" if execution throwed', () => {
+      // Given
+      const errorMock = new Error();
+      hsmServiceMock.genRandom.mockImplementationOnce(() => {
+        throw errorMock;
+      });
+      // When
+      const result = csmrHsmController.random(payload);
+      // Then
+      expect(result).toEqual('ERROR');
     });
   });
 });
