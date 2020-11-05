@@ -46,6 +46,8 @@ describe('HsmService', () => {
     C_CloseSession: jest.fn(),
     // eslint-disable-next-line @typescript-eslint/naming-convention
     C_Finalize: jest.fn(),
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    C_GenerateRandom: jest.fn(),
   };
 
   const mockPin = 'admin';
@@ -59,6 +61,7 @@ describe('HsmService', () => {
 
   const mockHsmSession = 'If you concentrate you can imagine this is a session';
 
+  const mockRandomValue = Buffer.from('mockRandomValue');
   const mockData = Buffer.from('The cake is a lie !', 'utf8');
   const sha256Digest = Buffer.from(
     '59d2da2a2781004e917f3aaadf7ac9b0db31bcf81fbcf7ed391227b18bd7ff22',
@@ -114,6 +117,8 @@ describe('HsmService', () => {
     jest.clearAllMocks();
 
     service.shutdownConsumer = jest.fn();
+
+    mockPkcs11Instance.C_GenerateRandom.mockReturnValue(mockRandomValue);
   });
 
   it('should be defined', () => {
@@ -392,6 +397,23 @@ describe('HsmService', () => {
 
       // expect
       expect.hasAssertions();
+    });
+  });
+
+  describe('genRandom', () => {
+    it('should call PKCS#11 C_GenerateRandom with session', () => {
+      // Given
+      service['pkcs11Session'] = Buffer.from('mock value');
+      const size = 32;
+      const encoding = 'hex';
+      // When
+      service.genRandom(size, encoding);
+      // Then
+      expect(mockPkcs11Instance.C_GenerateRandom).toHaveBeenCalledTimes(1);
+      expect(mockPkcs11Instance.C_GenerateRandom).toHaveBeenCalledWith(
+        service['pkcs11Session'],
+        expect.any(Buffer),
+      );
     });
   });
 

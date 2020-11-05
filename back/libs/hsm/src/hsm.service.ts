@@ -97,6 +97,22 @@ export class HsmService {
   }
 
   /**
+   * Generate random value
+   *
+   * @param size length (bytes) of randomly generated content
+   */
+  public genRandom(size: number, encoding: BufferEncoding): string {
+    const buffer = Buffer.alloc(size);
+
+    const random = this.pkcs11Instance.C_GenerateRandom(
+      this.pkcs11Session,
+      buffer,
+    );
+
+    return random.toString(encoding);
+  }
+
+  /**
    * Instanciate the library pkcs11js
    * @param libPath the path of the shared .so library
    * @returns
