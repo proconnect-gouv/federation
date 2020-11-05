@@ -6,8 +6,8 @@ import { RabbitmqConfig } from '@fc/rabbitmq';
 import { ValidationException } from '@fc/error';
 import { CryptoProtocol } from '@fc/microservices';
 import { HsmService } from '@fc/hsm';
-import { SignPayloadDto } from './dto';
-import { CsmrHsmSignException } from './exceptions';
+import { SignPayloadDto, RandomPayloadDto } from './dto';
+import { CsmrHsmSignException, CsmrHsmRandomException } from './exceptions';
 
 const BROKER_NAME = 'CryptographyBroker';
 
@@ -42,6 +42,26 @@ export class CsmrHsmController {
       return signed;
     } catch (error) {
       this.logger.error(new CsmrHsmSignException(error));
+      return 'ERROR';
+    }
+  }
+
+  @MessagePattern(CryptoProtocol.Commands.RANDOM)
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      exceptionFactory: ValidationException.factory,
+    }),
+  )
+  random(@Payload() payload: RandomPayloadDto) {
+    this.logger.debug(`received new ${CryptoProtocol.Commands.RANDOM} command`);
+    const { length, encoding } = payload;
+
+    try {
+      return this.hsm.genRandom(length, encoding);
+    } catch (error) {
+      this.logger.error(new CsmrHsmRandomException(error));
       return 'ERROR';
     }
   }
