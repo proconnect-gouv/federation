@@ -1,0 +1,7 @@
+{
+  "src/**/*.{js,ts,tsx,jsx,json,md}": [
+    "tsc --noEmit",
+    "eslint src/**/*.ts{,x}",
+    "pretty-quick --staged"
+  ]
+}
