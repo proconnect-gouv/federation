@@ -8,6 +8,11 @@ import {
 } from '@fc/identity-provider-env';
 import { OidcClientModule } from '@fc/oidc-client';
 import { SessionModule } from '@fc/session';
+import { EidasClientController, EidasClientModule } from '@fc/eidas-client';
+import {
+  EidasProviderController,
+  EidasProviderModule,
+} from '@fc/eidas-provider';
 import { EidasBridgeController } from './controllers';
 
 const oidcClientModule = OidcClientModule.register(
@@ -16,8 +21,18 @@ const oidcClientModule = OidcClientModule.register(
 );
 @Global()
 @Module({
-  imports: [SessionModule, IdentityProviderEnvModule, oidcClientModule],
-  controllers: [EidasBridgeController],
+  imports: [
+    SessionModule,
+    IdentityProviderEnvModule,
+    oidcClientModule,
+    EidasClientModule,
+    EidasProviderModule,
+  ],
+  controllers: [
+    EidasBridgeController,
+    EidasClientController,
+    EidasProviderController,
+  ],
   providers: [],
   // Make `CoreFcpTrackingService` dependencies available
   exports: [],

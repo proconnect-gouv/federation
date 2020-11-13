@@ -20,7 +20,7 @@ export const lightRequestJsonMock = {
       _text: 'http://eidas.europa.eu/LoA/low',
     },
     nameIdFormat: {
-      _text: 'urn: oasis: names: tc: SAML: 1.1: nameid - format: unspecified',
+      _text: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
     },
     providerName: {
       _text: 'FranceConnect',

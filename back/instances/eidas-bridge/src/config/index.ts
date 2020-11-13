@@ -9,6 +9,10 @@ import Logger from './logger';
 import OidcClient from './oidc-client';
 import Redis from './redis';
 import Session from './session';
+import EidasClient from './eidas-client';
+import EidasProvider from './eidas-provider';
+import ApacheIgnite from './apache-ignite';
+import EidasLightProtocol from './eidas-light-protocol';
 
 export default {
   /**
@@ -25,5 +29,9 @@ export default {
   Logger,
   OidcClient,
   Redis,
-  Session
+  Session,
+  EidasClient,
+  EidasProvider,
+  ApacheIgnite,
+  EidasLightProtocol,
 } as EidasBridgeConfig;

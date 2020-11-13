@@ -8,10 +8,14 @@
  * @see https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eIDAS-Node+version+2.4?preview=/174391771/174391830/eIDAS-Node%20National%20IdP%20and%20SP%20Integration%20Guide%20v2.4.pdf
  */
 import { Module } from '@nestjs/common';
-import { LightRequestService, LightResponseService } from './services';
+import {
+  LightRequestService,
+  LightResponseService,
+  LightCommonsService,
+} from './services';
 
 @Module({
-  providers: [LightRequestService, LightResponseService],
-  exports: [LightRequestService, LightResponseService],
+  providers: [LightRequestService, LightResponseService, LightCommonsService],
+  exports: [LightRequestService, LightResponseService, LightCommonsService],
 })
 export class EidasLightProtocolModule {}
