@@ -1,6 +1,7 @@
 import * as xmlJs from 'xml-js';
 import * as _ from 'lodash';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@fc/config';
 import {
   successFullJsonMock,
   lightResponseSuccessFullJsonMock,
@@ -11,24 +12,39 @@ import {
   lightResponseFailureFullJsonMock,
 } from '../../fixtures';
 import {
-  EidasJSONConversionException,
-  EidasXMLConversionException,
+  EidasJsonToXmlException,
+  EidasXmlToJsonException,
 } from '../exceptions';
-import { LightResponseService } from './light-response.service';
 import {
   IJsonifiedLightResponseXml,
   IJsonifiedXml,
   IResponseAttributes,
 } from '../interfaces';
 import { LightResponseXmlSelectors } from '../enums';
+import { LightResponseService } from './light-response.service';
+import { LightCommonsService } from './light-commons.service';
 
 describe('LightResponseService', () => {
   let service: LightResponseService;
 
+  const configServiceMock = {
+    get: jest.fn(),
+  };
+
+  const lightCommonsServiceMock = {
+    generateToken: jest.fn(),
+    parseToken: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LightResponseService],
-    }).compile();
+      providers: [LightResponseService, ConfigService, LightCommonsService],
+    })
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
+      .overrideProvider(LightCommonsService)
+      .useValue(lightCommonsServiceMock)
+      .compile();
 
     service = module.get<LightResponseService>(LightResponseService);
 
@@ -87,10 +103,10 @@ describe('LightResponseService', () => {
       expect(result).toStrictEqual(lightResponseSuccessFullXmlMock);
     });
 
-    it('should throw an EidasJSONConversionException exception if one of the calls throws', () => {
+    it('should throw an EidasJsonToXmlException exception if one of the calls throws', () => {
       // setup
       const errorToThrow = new Error('Nani ?');
-      const expectedError = new EidasJSONConversionException(errorToThrow);
+      const expectedError = new EidasJsonToXmlException(errorToThrow);
       jest.spyOn(JSON, 'stringify').mockImplementationOnce(() => {
         throw errorToThrow;
       });
@@ -100,12 +116,64 @@ describe('LightResponseService', () => {
         service.fromJson(successFullJsonMock);
       } catch (e) {
         // expect
-        expect(e).toBeInstanceOf(EidasJSONConversionException);
+        expect(e).toBeInstanceOf(EidasJsonToXmlException);
         expect(e.message).toStrictEqual(expectedError.message);
       }
 
       // expect
       expect.hasAssertions();
+    });
+  });
+
+  describe('generateToken', () => {
+    const lightResponseProxyServiceSecret = 'lightResponseProxyServiceSecret';
+    const id = 'id';
+    const issuer = 'issuer';
+
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValueOnce({
+        lightResponseProxyServiceSecret,
+      });
+    });
+
+    it('should get the lightResponseProxyServiceSecret from the config', () => {
+      // action
+      service.generateToken(id, issuer);
+
+      // expect
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('EidasLightProtocol');
+    });
+
+    it('should call the light commons service with the given id and issuer, and the lightResponseProxyServiceSecret', () => {
+      // action
+      service.generateToken(id, issuer);
+
+      // expect
+      expect(lightCommonsServiceMock.generateToken).toHaveBeenCalledTimes(1);
+      expect(lightCommonsServiceMock.generateToken).toHaveBeenCalledWith(
+        id,
+        issuer,
+        lightResponseProxyServiceSecret,
+        undefined,
+      );
+    });
+
+    it('should call the light commons service with the given id, issuer and date, and the lightResponseProxyServiceSecret', () => {
+      // setup
+      const date = new Date('1992-4-23');
+
+      // action
+      service.generateToken(id, issuer, date);
+
+      // expect
+      expect(lightCommonsServiceMock.generateToken).toHaveBeenCalledTimes(1);
+      expect(lightCommonsServiceMock.generateToken).toHaveBeenCalledWith(
+        id,
+        issuer,
+        lightResponseProxyServiceSecret,
+        date,
+      );
     });
   });
 
@@ -156,10 +224,10 @@ describe('LightResponseService', () => {
       expect(result).toStrictEqual(successFullJsonMock);
     });
 
-    it('should throw an EidasXMLConversionException exception if one of the calls throws', () => {
+    it('should throw an EidasXmlToJsonException exception if one of the calls throws', () => {
       // setup
       const errorToThrow = new Error('Nani ?');
-      const expectedError = new EidasXMLConversionException(errorToThrow);
+      const expectedError = new EidasXmlToJsonException(errorToThrow);
       jest.spyOn(JSON, 'parse').mockImplementationOnce(() => {
         throw errorToThrow;
       });
@@ -169,12 +237,45 @@ describe('LightResponseService', () => {
         service.toJson(lightResponseSuccessFullXmlMock);
       } catch (e) {
         // expect
-        expect(e).toBeInstanceOf(EidasXMLConversionException);
+        expect(e).toBeInstanceOf(EidasXmlToJsonException);
         expect(e.message).toStrictEqual(expectedError.message);
       }
 
       // expect
       expect.hasAssertions();
+    });
+  });
+
+  describe('parseToken', () => {
+    const lightResponseConnectorSecret = 'lightResponseConnectorSecret';
+    const token =
+      'SGV5LCBzZXJpb3VzbHksIGRpZCB5b3UgcmVhbGx5IGV4cGVjdCB0byBmaW5kIHNtZXRoaW5nIGhlcmUgOkQgPw==';
+
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValueOnce({
+        lightResponseConnectorSecret,
+      });
+    });
+
+    it('should get the lightResponseConnectorSecret from the config', () => {
+      // action
+      service.parseToken(token);
+
+      // expect
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('EidasLightProtocol');
+    });
+
+    it('should call the light commons service with the given token, and the lightResponseConnectorSecret', () => {
+      // action
+      service.parseToken(token);
+
+      // expect
+      expect(lightCommonsServiceMock.parseToken).toHaveBeenCalledTimes(1);
+      expect(lightCommonsServiceMock.parseToken).toHaveBeenCalledWith(
+        token,
+        lightResponseConnectorSecret,
+      );
     });
   });
 
@@ -1463,25 +1564,90 @@ describe('LightResponseService', () => {
   });
 
   describe('buildAddress', () => {
-    it('should return the base64 string of a xml element containg the fullCvaddress', () => {
+    it('should call "_.upperFirst" with each key of the object', () => {
       // setup
+      jest.spyOn(_, 'upperFirst');
       const address = {
-        fullCvaddress: '666 rue de la paix Rio',
+        poBox: '1234',
+        locatorDesignator: '28',
+        locatorName: 'DIGIT building',
+        cvaddressArea: 'Etterbeek',
+        thoroughfare: 'Rue Belliard',
+        postName: 'ETTERBEEK CHASSE',
+        adminunitFirstline: 'BE',
+        adminunitSecondline: 'ETTERBEEK',
+        postCode: '1040',
       };
+
       // action
-      expect(service['buildAddress'](address)).toEqual(
-        'PGVpZGFzLW5hdHVyYWw6ZnVsbEN2YWRkcmVzcz42NjYgcnVlIGRlIGxhIHBhaXggUmlvPC9laWRhcy1uYXR1cmFsOmZ1bGxDdmFkZHJlc3M+',
-      );
+      service['buildAddress'](address);
 
       // assertion
+      expect(_.upperFirst).toHaveBeenCalledTimes(9);
+      expect(_.upperFirst).toHaveBeenCalledWith('poBox');
+      expect(_.upperFirst).toHaveBeenCalledWith('locatorDesignator');
+      expect(_.upperFirst).toHaveBeenCalledWith('locatorName');
+      expect(_.upperFirst).toHaveBeenCalledWith('cvaddressArea');
+      expect(_.upperFirst).toHaveBeenCalledWith('thoroughfare');
+      expect(_.upperFirst).toHaveBeenCalledWith('postName');
+      expect(_.upperFirst).toHaveBeenCalledWith('adminunitFirstline');
+      expect(_.upperFirst).toHaveBeenCalledWith('adminunitSecondline');
+      expect(_.upperFirst).toHaveBeenCalledWith('postCode');
+    });
+
+    it('should return a base64 string', () => {
+      // setup
+      const expectedBase64 =
+        'PGVpZGFzLW5hdHVyYWw6UG9Cb3g+MTIzNDwvZWlkYXMtbmF0dXJhbDpQb0JveD4KPGVpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+Mjg8L2VpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+CjxlaWRhcy1uYXR1cmFsOkxvY2F0b3JOYW1lPkRJR0lUIGJ1aWxkaW5nPC9laWRhcy1uYXR1cmFsOkxvY2F0b3JOYW1lPgo8ZWlkYXMtbmF0dXJhbDpDdmFkZHJlc3NBcmVhPkV0dGVyYmVlazwvZWlkYXMtbmF0dXJhbDpDdmFkZHJlc3NBcmVhPgo8ZWlkYXMtbmF0dXJhbDpUaG9yb3VnaGZhcmU+UnVlIEJlbGxpYXJkPC9laWRhcy1uYXR1cmFsOlRob3JvdWdoZmFyZT4KPGVpZGFzLW5hdHVyYWw6UG9zdE5hbWU+RVRURVJCRUVLIENIQVNTRTwvZWlkYXMtbmF0dXJhbDpQb3N0TmFtZT4KPGVpZGFzLW5hdHVyYWw6QWRtaW51bml0Rmlyc3RsaW5lPkJFPC9laWRhcy1uYXR1cmFsOkFkbWludW5pdEZpcnN0bGluZT4KPGVpZGFzLW5hdHVyYWw6QWRtaW51bml0U2Vjb25kbGluZT5FVFRFUkJFRUs8L2VpZGFzLW5hdHVyYWw6QWRtaW51bml0U2Vjb25kbGluZT4KPGVpZGFzLW5hdHVyYWw6UG9zdENvZGU+MTA0MDwvZWlkYXMtbmF0dXJhbDpQb3N0Q29kZT4K';
+      const address = {
+        poBox: '1234',
+        locatorDesignator: '28',
+        locatorName: 'DIGIT building',
+        cvaddressArea: 'Etterbeek',
+        thoroughfare: 'Rue Belliard',
+        postName: 'ETTERBEEK CHASSE',
+        adminunitFirstline: 'BE',
+        adminunitSecondline: 'ETTERBEEK',
+        postCode: '1040',
+      };
+
+      // action
+      const result = service['buildAddress'](address);
+
+      // expect
+      expect(result).toEqual(expectedBase64);
+    });
+
+    it('should be base64 decoded as an eidas address attribute', () => {
+      // setup
+      const expected = `<eidas-natural:PoBox>1234</eidas-natural:PoBox>\n<eidas-natural:LocatorDesignator>28</eidas-natural:LocatorDesignator>\n<eidas-natural:LocatorName>DIGIT building</eidas-natural:LocatorName>\n<eidas-natural:CvaddressArea>Etterbeek</eidas-natural:CvaddressArea>\n<eidas-natural:Thoroughfare>Rue Belliard</eidas-natural:Thoroughfare>\n<eidas-natural:PostName>ETTERBEEK CHASSE</eidas-natural:PostName>\n<eidas-natural:AdminunitFirstline>BE</eidas-natural:AdminunitFirstline>\n<eidas-natural:AdminunitSecondline>ETTERBEEK</eidas-natural:AdminunitSecondline>\n<eidas-natural:PostCode>1040</eidas-natural:PostCode>\n`;
+      const address = {
+        poBox: '1234',
+        locatorDesignator: '28',
+        locatorName: 'DIGIT building',
+        cvaddressArea: 'Etterbeek',
+        thoroughfare: 'Rue Belliard',
+        postName: 'ETTERBEEK CHASSE',
+        adminunitFirstline: 'BE',
+        adminunitSecondline: 'ETTERBEEK',
+        postCode: '1040',
+      };
+
+      // action
+      const result = service['buildAddress'](address);
+
+      // expect
+      expect(Buffer.from(result, 'base64').toString('utf8')).toEqual(expected);
     });
   });
 
   describe('getAddress', () => {
     it('should not keep empty elements in the splitted inflatedAddress', () => {
       // setup
-      const inflatedAddress =
-        'PGVpZGFzLW5hdHVyYWw6UG9Cb3g+MTIzNDwvZWlkYXMtbmF0dXJhbDpQb0JveD4KPGVpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+Mjg8L2VpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+CjxlaWRhcy1uYXR1cmFsOkxvY2F0b3JOYW1lPkRJR0lUIGJ1aWxkaW5nPC9laWRhcy1uYXR1cmFsOkxvY2F0b3JOYW1lPgo8ZWlkYXMtbmF0dXJhbDpDdmFkZHJlc3NBcmVhPkV0dGVyYmVlazwvZWlkYXMtbmF0dXJhbDpDdmFkZHJlc3NBcmVhPgoKCjxlaWRhcy1uYXR1cmFsOlRob3JvdWdoZmFyZT5SdWUgQmVsbGlhcmQ8L2VpZGFzLW5hdHVyYWw6VGhvcm91Z2hmYXJlPgo8ZWlkYXMtbmF0dXJhbDpQb3N0TmFtZT5FVFRFUkJFRUsgQ0hBU1NFPC9laWRhcy1uYXR1cmFsOlBvc3ROYW1lPgoKPGVpZGFzLW5hdHVyYWw6QWRtaW51bml0Rmlyc3RsaW5lPkJFPC9laWRhcy1uYXR1cmFsOkFkbWludW5pdEZpcnN0bGluZT4KPGVpZGFzLW5hdHVyYWw6QWRtaW51bml0U2Vjb25kbGluZT5FVFRFUkJFRUs8L2VpZGFzLW5hdHVyYWw6QWRtaW51bml0U2Vjb25kbGluZT4KPGVpZGFzLW5hdHVyYWw6UG9zdENvZGU+MTA0MDwvZWlkYXMtbmF0dXJhbDpQb3N0Q29kZT4K';
+      const inflatedAddress = {
+        _text:
+          'PGVpZGFzLW5hdHVyYWw6UG9Cb3g+MTIzNDwvZWlkYXMtbmF0dXJhbDpQb0JveD4KPGVpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+Mjg8L2VpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+CjxlaWRhcy1uYXR1cmFsOkxvY2F0b3JOYW1lPkRJR0lUIGJ1aWxkaW5nPC9laWRhcy1uYXR1cmFsOkxvY2F0b3JOYW1lPgo8ZWlkYXMtbmF0dXJhbDpDdmFkZHJlc3NBcmVhPkV0dGVyYmVlazwvZWlkYXMtbmF0dXJhbDpDdmFkZHJlc3NBcmVhPgoKCjxlaWRhcy1uYXR1cmFsOlRob3JvdWdoZmFyZT5SdWUgQmVsbGlhcmQ8L2VpZGFzLW5hdHVyYWw6VGhvcm91Z2hmYXJlPgo8ZWlkYXMtbmF0dXJhbDpQb3N0TmFtZT5FVFRFUkJFRUsgQ0hBU1NFPC9laWRhcy1uYXR1cmFsOlBvc3ROYW1lPgoKPGVpZGFzLW5hdHVyYWw6QWRtaW51bml0Rmlyc3RsaW5lPkJFPC9laWRhcy1uYXR1cmFsOkFkbWludW5pdEZpcnN0bGluZT4KPGVpZGFzLW5hdHVyYWw6QWRtaW51bml0U2Vjb25kbGluZT5FVFRFUkJFRUs8L2VpZGFzLW5hdHVyYWw6QWRtaW51bml0U2Vjb25kbGluZT4KPGVpZGFzLW5hdHVyYWw6UG9zdENvZGU+MTA0MDwvZWlkYXMtbmF0dXJhbDpQb3N0Q29kZT4K',
+      };
 
       // action / expect
       expect(() => service['getAddress'](inflatedAddress)).not.toThrow();
@@ -1489,13 +1655,15 @@ describe('LightResponseService', () => {
 
     it('should return an object of current address', () => {
       // setup
-      const inflatedAddress =
-        'PGVpZGFzLW5hdHVyYWw6UG9Cb3g+MTIzNDwvZWlkYXMtbmF0dXJhbDpQb0JveD4KPGVpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+Mjg8L2VpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+CjxlaWRhcy1uYXR1cmFsOkxvY2F0b3JOYW1lPkRJR0lUIGJ1aWxkaW5nPC9laWRhcy1uYXR1cmFsOkxvY2F0b3JOYW1lPgo8ZWlkYXMtbmF0dXJhbDpDdmFkZHJlc3NBcmVhPkV0dGVyYmVlazwvZWlkYXMtbmF0dXJhbDpDdmFkZHJlc3NBcmVhPgo8ZWlkYXMtbmF0dXJhbDpUaG9yb3VnaGZhcmU+UnVlIEJlbGxpYXJkPC9laWRhcy1uYXR1cmFsOlRob3JvdWdoZmFyZT4KPGVpZGFzLW5hdHVyYWw6UG9zdE5hbWU+RVRURVJCRUVLIENIQVNTRTwvZWlkYXMtbmF0dXJhbDpQb3N0TmFtZT4KPGVpZGFzLW5hdHVyYWw6QWRtaW51bml0Rmlyc3RsaW5lPkJFPC9laWRhcy1uYXR1cmFsOkFkbWludW5pdEZpcnN0bGluZT4KPGVpZGFzLW5hdHVyYWw6QWRtaW51bml0U2Vjb25kbGluZT5FVFRFUkJFRUs8L2VpZGFzLW5hdHVyYWw6QWRtaW51bml0U2Vjb25kbGluZT4KPGVpZGFzLW5hdHVyYWw6UG9zdENvZGU+MTA0MDwvZWlkYXMtbmF0dXJhbDpQb3N0Q29kZT4K';
+      const inflatedAddress = {
+        _text:
+          'PGVpZGFzLW5hdHVyYWw6UG9Cb3g+MTIzNDwvZWlkYXMtbmF0dXJhbDpQb0JveD4KPGVpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+Mjg8L2VpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+CjxlaWRhcy1uYXR1cmFsOkxvY2F0b3JOYW1lPkRJR0lUIGJ1aWxkaW5nPC9laWRhcy1uYXR1cmFsOkxvY2F0b3JOYW1lPgo8ZWlkYXMtbmF0dXJhbDpDdmFkZHJlc3NBcmVhPkV0dGVyYmVlazwvZWlkYXMtbmF0dXJhbDpDdmFkZHJlc3NBcmVhPgo8ZWlkYXMtbmF0dXJhbDpUaG9yb3VnaGZhcmU+UnVlIEJlbGxpYXJkPC9laWRhcy1uYXR1cmFsOlRob3JvdWdoZmFyZT4KPGVpZGFzLW5hdHVyYWw6UG9zdE5hbWU+RVRURVJCRUVLIENIQVNTRTwvZWlkYXMtbmF0dXJhbDpQb3N0TmFtZT4KPGVpZGFzLW5hdHVyYWw6QWRtaW51bml0Rmlyc3RsaW5lPkJFPC9laWRhcy1uYXR1cmFsOkFkbWludW5pdEZpcnN0bGluZT4KPGVpZGFzLW5hdHVyYWw6QWRtaW51bml0U2Vjb25kbGluZT5FVFRFUkJFRUs8L2VpZGFzLW5hdHVyYWw6QWRtaW51bml0U2Vjb25kbGluZT4KPGVpZGFzLW5hdHVyYWw6UG9zdENvZGU+MTA0MDwvZWlkYXMtbmF0dXJhbDpQb3N0Q29kZT4K',
+      };
 
       // action
       const result = service['getAddress'](inflatedAddress);
 
-      // expect
+      // expectd
       expect(result).toEqual(successFullJsonMock.attributes.currentAddress);
     });
   });
@@ -1506,8 +1674,10 @@ describe('LightResponseService', () => {
       <eidas-natural:LocatorDesignator>28</eidas-natural:LocatorDesignator>
       <:PoboxWrong2020>tryAgain</:PoboxWrong2020>
     */
-    const inflatedAddress =
-      'PGVpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+Mjg8L2VpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+Cjw6UG9ib3hXcm9uZzIwMjA+dHJ5QWdhaW48LzpQb2JveFdyb25nMjAyMD4=';
+    const inflatedAddress = {
+      _text:
+        'PGVpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+Mjg8L2VpZGFzLW5hdHVyYWw6TG9jYXRvckRlc2lnbmF0b3I+Cjw6UG9ib3hXcm9uZzIwMjA+dHJ5QWdhaW48LzpQb2JveFdyb25nMjAyMD4=',
+    };
     jest.spyOn(_, 'lowerFirst').mockImplementation();
 
     // action

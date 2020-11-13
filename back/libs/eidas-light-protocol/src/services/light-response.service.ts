@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
 import { json2xml, xml2json } from 'xml-js';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@fc/config';
 import { LightResponseXmlSelectors } from '../enums';
 import {
   IResponse,
@@ -11,11 +12,20 @@ import {
   IJsonifiedXmlContent,
   IResponseContext,
   IJsonifiedXml,
+  IParsedToken,
 } from '../interfaces';
 import {
-  EidasJSONConversionException,
-  EidasXMLConversionException,
+  EidasJsonToXmlException,
+  EidasXmlToJsonException,
 } from '../exceptions';
+import {
+  StatusCode,
+  SubStatusCode,
+  SubjectNameIdFormat,
+  LevelOfAssurance,
+} from '../types';
+import { EidasLightProtocolConfig } from '../dto';
+import { LightCommonsService } from './light-commons.service';
 
 /**
  * @todo This file is too big and need to be splitted in the future between
@@ -23,6 +33,11 @@ import {
  */
 @Injectable()
 export class LightResponseService {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly lightCommons: LightCommonsService,
+  ) {}
+
   /**
    * Convert light response from JSON to XML
    * @param {IResponse} jsonData
@@ -36,8 +51,21 @@ export class LightResponseService {
 
       return json2xml(stringifiedJson, options);
     } catch (error) {
-      throw new EidasJSONConversionException(error);
+      throw new EidasJsonToXmlException(error);
     }
+  }
+
+  generateToken(id: string, issuer: string, date?: Date): string {
+    const { lightResponseProxyServiceSecret } = this.config.get<
+      EidasLightProtocolConfig
+    >('EidasLightProtocol');
+
+    return this.lightCommons.generateToken(
+      id,
+      issuer,
+      lightResponseProxyServiceSecret,
+      date,
+    );
   }
 
   /**
@@ -53,8 +81,16 @@ export class LightResponseService {
 
       return this.deflateJson(inflatedJson);
     } catch (error) {
-      throw new EidasXMLConversionException(error);
+      throw new EidasXmlToJsonException(error);
     }
+  }
+
+  parseToken(token: string): IParsedToken {
+    const { lightResponseConnectorSecret } = this.config.get<
+      EidasLightProtocolConfig
+    >('EidasLightProtocol');
+
+    return this.lightCommons.parseToken(token, lightResponseConnectorSecret);
   }
 
   private inflateJson(json: IResponse): IJsonifiedLightResponseXml {
@@ -271,7 +307,7 @@ export class LightResponseService {
     _.set(
       inflatedResponse,
       LightResponseXmlSelectors.ATTRIBUTES,
-      Object.entries(attributes).map(this.buildAttribute),
+      Object.entries(attributes).map(this.buildAttribute.bind(this)),
     );
 
     return inflatedResponse;
@@ -286,7 +322,7 @@ export class LightResponseService {
     );
 
     const attributes: IResponseAttributes = inflatedAttributes.reduce(
-      this.getAttribute,
+      this.getAttribute.bind(this),
       {},
     );
 
@@ -327,10 +363,10 @@ export class LightResponseService {
       inflatedAttribute,
       LightResponseXmlSelectors.ATTRIBUTE_DEFINITION,
     ) as unknown) as string;
-    const inflatedValue: unknown = _.get(
+    const inflatedValue: IJsonifiedXmlContent = (_.get(
       inflatedAttribute,
       LightResponseXmlSelectors.ATTRIBUTE_VALUE,
-    );
+    ) as unknown) as IJsonifiedXmlContent;
 
     /**
      * This extract everything after the last "/"
@@ -339,7 +375,7 @@ export class LightResponseService {
     const key = _.lowerFirst(this.getLastElementInUrlOrUrn(inflatedKey));
 
     if (key === 'currentAddress') {
-      attributes[key] = this.getAddress(inflatedValue as string);
+      attributes[key] = this.getAddress(inflatedValue);
     } else {
       attributes[key] = this.getValues(
         inflatedValue as IJsonifiedXmlContent | IJsonifiedXmlContent[],
@@ -349,14 +385,20 @@ export class LightResponseService {
     return attributes;
   }
 
-  private buildAddress(address: IResponseAddress) {
-    return Buffer.from(
-      `<eidas-natural:fullCvaddress>${address.fullCvaddress}</eidas-natural:fullCvaddress>`,
-      'utf8',
-    ).toString('base64');
+  private buildAddress(address: IResponseAddress): string {
+    const builtAddress = Object.entries(address)
+      .map(([key, content]: string[]) => {
+        const tag = `eidas-natural:${_.upperFirst(key)}`;
+        return `<${tag}>${content}</${tag}>`;
+      })
+      .join('\n');
+
+    return Buffer.from(`${builtAddress}\n`, 'utf8').toString('base64');
   }
 
-  private getAddress(inflatedAddress: string): IResponseAddress {
+  private getAddress({
+    _text: inflatedAddress,
+  }: IJsonifiedXmlContent): IResponseAddress {
     const decodedAddress = Buffer.from(inflatedAddress, 'base64').toString(
       'utf8',
     );

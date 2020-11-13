@@ -1,26 +1,45 @@
 import * as converter from 'xml-js';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigModule, ConfigService } from '@fc/config';
 import {
   lightRequestJsonMock,
   lightRequestXmlMock,
   requestJsonMock,
 } from '../../fixtures';
 import {
-  EidasJSONConversionException,
-  EidasXMLConversionException,
+  EidasJsonToXmlException,
+  EidasXmlToJsonException,
 } from '../exceptions';
 import { LightRequestXmlSelectors } from '../enums';
+import { LightCommonsService } from './light-commons.service';
 import { LightRequestService } from './light-request.service';
 
 describe('LightRequestService', () => {
   let service: LightRequestService;
 
+  const mockConfigService = {
+    get: jest.fn(),
+  };
+
+  const mockLightCommonsService = {
+    generateToken: jest.fn(),
+    parseToken: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LightRequestService],
-    }).compile();
+      imports: [ConfigModule],
+      providers: [LightRequestService, ConfigService, LightCommonsService],
+    })
+      .overrideProvider(ConfigService)
+      .useValue(mockConfigService)
+      .overrideProvider(LightCommonsService)
+      .useValue(mockLightCommonsService)
+      .compile();
 
     service = module.get<LightRequestService>(LightRequestService);
+
+    jest.resetAllMocks();
     jest.restoreAllMocks();
   });
 
@@ -61,10 +80,84 @@ describe('LightRequestService', () => {
         service.fromJson(requestJsonMock);
       } catch (e) {
         // assertion
-        expect(e).toBeInstanceOf(EidasJSONConversionException);
+        expect(e).toBeInstanceOf(EidasJsonToXmlException);
       }
 
       expect.hasAssertions();
+    });
+  });
+
+  describe('generateToken', () => {
+    const issuer = 'yeltsA-kciR';
+    const id = 'NGGYU';
+    const mockConfig = {
+      lightRequestConnectorSecret: '?v=dQw4w9WgXcQ',
+    };
+
+    beforeEach(() => {
+      mockConfigService.get.mockReturnValueOnce(mockConfig);
+    });
+
+    it('should get the lightRequestConnectorSecret from the config', () => {
+      // setup
+      const expectedConfigName = 'EidasLightProtocol';
+
+      // action
+      service.generateToken(id, issuer);
+
+      // expect
+      expect(mockConfigService.get).toHaveBeenCalledTimes(1);
+      expect(mockConfigService.get).toHaveBeenCalledWith(expectedConfigName);
+    });
+
+    it('should call LightCommons.generateToken with the id, the issuer and the lightRequestConnectorSecret', () => {
+      // setup
+      const expectedDate = undefined;
+
+      // action
+      service.generateToken(id, issuer);
+
+      // expect
+      expect(mockLightCommonsService.generateToken).toHaveBeenCalledTimes(1);
+      expect(mockLightCommonsService.generateToken).toHaveBeenCalledWith(
+        id,
+        issuer,
+        mockConfig.lightRequestConnectorSecret,
+        expectedDate,
+      );
+    });
+
+    it('should call LightCommons.generateToken with a specific date if the date argument is set', () => {
+      // setup
+      const expectedDate = new Date(Date.UTC(2012, 6, 4));
+
+      // action
+      service.generateToken(id, issuer, expectedDate);
+
+      // expect
+      expect(mockLightCommonsService.generateToken).toHaveBeenCalledTimes(1);
+      expect(mockLightCommonsService.generateToken).toHaveBeenCalledWith(
+        id,
+        issuer,
+        mockConfig.lightRequestConnectorSecret,
+        expectedDate,
+      );
+    });
+
+    it('should return the result of LightCommons.generateToken call', () => {
+      // setup
+      /**
+       * This is the expected token for the data described in the beforeEach section
+       */
+      const expected =
+        'eWVsdHNBLWtjaVJ8TkdHWVV8MTk2OS0wNy0yMSAxNzo1NDowMCAwMDB8eFR6aUwyWVZ2U09SYUVEUFBiZFNwOVZvR3k3OEJ4bjNhY3pVcGhnWFozdz0=';
+      mockLightCommonsService.generateToken.mockReturnValueOnce(expected);
+
+      // action
+      const result = service.generateToken(id, issuer);
+
+      // expect
+      expect(result).toStrictEqual(expected);
     });
   });
 
@@ -95,10 +188,61 @@ describe('LightRequestService', () => {
         service.toJson(lightRequestXmlMock);
       } catch (e) {
         // assertion
-        expect(e).toBeInstanceOf(EidasXMLConversionException);
+        expect(e).toBeInstanceOf(EidasXmlToJsonException);
       }
 
       expect.hasAssertions();
+    });
+  });
+
+  describe('parseToken', () => {
+    const mockConfig = {
+      lightRequestProxyServiceSecret: '?v=dQw4w9WgXcQ',
+    };
+    const token = 'avc';
+
+    beforeEach(() => {
+      mockConfigService.get.mockReturnValueOnce(mockConfig);
+    });
+
+    it('should get the lightRequestProxyServiceSecret from the config', () => {
+      // setup
+      const expectedConfigName = 'EidasLightProtocol';
+
+      // action
+      service.parseToken(token);
+
+      // expect
+      expect(mockConfigService.get).toHaveBeenCalledTimes(1);
+      expect(mockConfigService.get).toHaveBeenCalledWith(expectedConfigName);
+    });
+
+    it('should call parseToken from the light commons service with the token and the lightRequestProxyServiceSecret', () => {
+      // action
+      service.parseToken(token);
+
+      // expect
+      expect(mockLightCommonsService.parseToken).toHaveBeenCalledTimes(1);
+      expect(mockLightCommonsService.parseToken).toHaveBeenCalledWith(
+        token,
+        mockConfig.lightRequestProxyServiceSecret,
+      );
+    });
+
+    it('should return the parsed token', () => {
+      // setup
+      const parsedToken = {
+        id: 'id',
+        issuer: 'issuer',
+        date: new Date(),
+      };
+      mockLightCommonsService.parseToken.mockReturnValueOnce(parsedToken);
+
+      // action
+      const result = service.parseToken(token);
+
+      // expect
+      expect(result).toStrictEqual(parsedToken);
     });
   });
 

@@ -3,7 +3,7 @@ export const requestJsonMock: IRequest = {
   citizenCountryCode: 'BE',
   id: 'Auduye7263',
   issuer: 'EIDASBridge',
-  levelOfAssurance: 'http://eidas.europa.eu/LoA/low',
+  levelOfAssurance: 'low',
   nameIdFormat: 'unspecified',
   providerName: 'FranceConnect',
   spType: 'public',
