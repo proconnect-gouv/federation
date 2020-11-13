@@ -434,6 +434,33 @@
       "compilerOptions": {
         "tsConfigPath": "libs/eidas-light-protocol/tsconfig.lib.json"
       }
+    },
+    "eidas-client": {
+      "type": "library",
+      "root": "libs/eidas-client",
+      "entryFile": "index",
+      "sourceRoot": "libs/eidas-client/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/eidas-client/tsconfig.lib.json"
+      }
+    },
+    "apache-ignite": {
+      "type": "library",
+      "root": "libs/apache-ignite",
+      "entryFile": "index",
+      "sourceRoot": "libs/apache-ignite/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/apache-ignite/tsconfig.lib.json"
+      }
+    },
+    "eidas-provider": {
+      "type": "library",
+      "root": "libs/eidas-provider",
+      "entryFile": "index",
+      "sourceRoot": "libs/eidas-provider/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/eidas-provider/tsconfig.lib.json"
+      }
     }
   }
 }
