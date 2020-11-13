@@ -10,6 +10,10 @@ import { LoggerConfig } from '@fc/logger';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { RedisConfig } from '@fc/redis';
 import { SessionConfig } from '@fc/session';
+import { EidasClientConfig } from '@fc/eidas-client';
+import { EidasProviderConfig } from '@fc/eidas-provider';
+import { ApacheIgniteConfig } from '@fc/apache-ignite';
+import { EidasLightProtocolConfig } from '@fc/eidas-light-protocol';
 
 export class Core {
   @IsUrl()
@@ -56,4 +60,24 @@ export class EidasBridgeConfig {
   @ValidateNested()
   @Type(() => IdentityProviderEnvConfig)
   readonly IdentityProviderEnv: IdentityProviderEnvConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => EidasClientConfig)
+  readonly EidasClient: EidasClientConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => EidasProviderConfig)
+  readonly EidasProvider: EidasProviderConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ApacheIgniteConfig)
+  readonly ApacheIgnite: ApacheIgniteConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => EidasLightProtocolConfig)
+  readonly EidasLightProtocol: EidasLightProtocolConfig;
 }

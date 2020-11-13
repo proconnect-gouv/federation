@@ -209,11 +209,11 @@
       "@fc/identity-provider-env/*": [
         "libs/identity-provider-env/src/*"
       ],
-      "@fc/eidas-light-protocol": [
-        "libs/eidas-light-protocol/src"
+      "@fc/service-provider-env": [
+        "libs/service-provider-env/src"
       ],
-      "@fc/eidas-light-protocol/*": [
-        "libs/eidas-light-protocol/src/*"
+      "@fc/service-provider-env/*": [
+        "libs/service-provider-env/src/*"
       ],
       "@fc/mock-identity-provider-fca": [
         "apps/mock-identity-provider-fca/src"
@@ -221,19 +221,40 @@
       "@fc/mock-identity-provider-fca/*": [
         "apps/mock-identity-provider-fca/src/*"
       ],
-      "@fc/service-provider-env": [
-        "libs/service-provider-env/src"
-      ],
-      "@fc/service-provider-env/*": [
-        "libs/service-provider-env/src/*"
-      ],
       "@fc/mock-sp-fca": [
         "apps/mock-sp-fca/src"
       ],
       "@fc/mock-sp-fca/*": [
         "apps/mock-sp-fca/src/*"
       ],
+      "@fc/eidas-light-protocol": [
+        "libs/eidas-light-protocol/src"
+      ],
+      "@fc/eidas-light-protocol/*": [
+        "libs/eidas-light-protocol/src/*"
+      ],
+      "@fc/eidas-client": [
+        "libs/eidas-client/src"
+      ],
+      "@fc/eidas-client/*": [
+        "libs/eidas-client/src/*"
+      ],
+      "@fc/apache-ignite": [
+        "libs/apache-ignite/src"
+      ],
+      "@fc/apache-ignite/*": [
+        "libs/apache-ignite/src/*"
+      ],
+      "@fc/eidas-provider": [
+        "libs/eidas-provider/src"
+      ],
+      "@fc/eidas-provider/*": [
+        "libs/eidas-provider/src/*"
+      ]
     }
   },
-  "exclude": ["node_modules", "dist"]
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

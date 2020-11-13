@@ -1,22 +1,43 @@
 import { json2xml, xml2json } from 'xml-js';
 import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@fc/config';
 import {
-  EidasJSONConversionException,
-  EidasXMLConversionException,
+  EidasJsonToXmlException,
+  EidasXmlToJsonException,
 } from '../exceptions';
 import { LightRequestXmlSelectors } from '../enums';
-import { IRequest } from '../interfaces';
+import { IParsedToken, IRequest } from '../interfaces';
+import { EidasLightProtocolConfig } from '../dto';
+import { LightCommonsService } from './light-commons.service';
 
 @Injectable()
 export class LightRequestService {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly lightCommons: LightCommonsService,
+  ) {}
+
   fromJson(jsonData: IRequest): string {
     try {
       const options = { compact: true, ignoreComment: true, spaces: 2 };
       return json2xml(JSON.stringify(this.inflateJson(jsonData)), options);
     } catch (error) {
-      throw new EidasJSONConversionException(error);
+      throw new EidasJsonToXmlException(error);
     }
+  }
+
+  generateToken(id: string, issuer: string, date?: Date): string {
+    const { lightRequestConnectorSecret } = this.config.get<
+      EidasLightProtocolConfig
+    >('EidasLightProtocol');
+
+    return this.lightCommons.generateToken(
+      id,
+      issuer,
+      lightRequestConnectorSecret,
+      date,
+    );
   }
 
   toJson(xmlDoc: string): IRequest {
@@ -24,8 +45,16 @@ export class LightRequestService {
       const options = { compact: true, spaces: 2 };
       return this.deflateJson(JSON.parse(xml2json(xmlDoc, options)));
     } catch (error) {
-      throw new EidasXMLConversionException(error);
+      throw new EidasXmlToJsonException(error);
     }
+  }
+
+  parseToken(token: string): IParsedToken {
+    const { lightRequestProxyServiceSecret } = this.config.get<
+      EidasLightProtocolConfig
+    >('EidasLightProtocol');
+
+    return this.lightCommons.parseToken(token, lightRequestProxyServiceSecret);
   }
 
   private inflateJson(json: IRequest) {
@@ -56,10 +85,10 @@ export class LightRequestService {
           _text: json.issuer,
         },
         levelOfAssurance: {
-          _text: json.levelOfAssurance,
+          _text: `http://eidas.europa.eu/LoA/${json.levelOfAssurance}`,
         },
         nameIdFormat: {
-          _text: `urn: oasis: names: tc: SAML: 1.1: nameid - format: ${json.nameIdFormat}`,
+          _text: `urn:oasis:names:tc:SAML:1.1:nameid-format:${json.nameIdFormat}`,
         },
         providerName: {
           _text: json.providerName,
@@ -123,8 +152,10 @@ export class LightRequestService {
     let final;
     const value = _.get(json, path);
 
-    if (path === LightRequestXmlSelectors.NAME_ID_FORMAT) {
-      final = value.split('format: ')[1];
+    if (path === LightRequestXmlSelectors.LEVEL_OF_ASSURANCE) {
+      final = value.split('/LoA/')[1];
+    } else if (path === LightRequestXmlSelectors.NAME_ID_FORMAT) {
+      final = value.split('format:')[1];
     } else if (path === LightRequestXmlSelectors.REQUESTED_ATTRIBUTES) {
       final = [];
       value.map((attribute) => {

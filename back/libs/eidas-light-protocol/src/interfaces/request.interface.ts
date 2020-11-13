@@ -1,3 +1,5 @@
+import { RequestedAttributes } from '../types';
+
 export interface IRequest {
   citizenCountryCode: string;
   id: string;

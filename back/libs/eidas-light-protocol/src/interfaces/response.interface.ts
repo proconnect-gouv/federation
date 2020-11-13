@@ -1,3 +1,10 @@
+import {
+  LevelOfAssurance,
+  StatusCode,
+  SubjectNameIdFormat,
+  SubStatusCode,
+} from '../types';
+
 export interface IResponseStatus {
   failure: string;
   statusCode?: StatusCode;
@@ -16,7 +23,6 @@ export interface IResponseAddress {
   postCode?: string;
   postName?: string;
   thoroughfare?: string;
-  fullCvaddress?: string;
 }
 
 export interface IResponseAttributes {

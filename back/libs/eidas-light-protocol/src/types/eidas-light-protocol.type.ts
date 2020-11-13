@@ -6,7 +6,7 @@
  * @see https://ec.europa.eu/cefdigital/wiki/display/CEFDIGITAL/eIDAS+eID+Profile?preview=/82773108/148898847/eIDAS%20SAML%20Attribute%20Profile%20v1.2%20Final.pdf
  * chapter 2.2.2
  */
-declare type RequestedAttributes =
+export type RequestedAttributes =
   | 'PersonIdentifier'
   | 'CurrentFamilyName'
   | 'CurrentGivenName'
@@ -16,13 +16,13 @@ declare type RequestedAttributes =
   | 'BirthName'
   | 'PlaceOfBirth';
 
-declare type SubjectNameIdFormat = 'persistent' | 'transient' | 'unspecified';
+export type SubjectNameIdFormat = 'persistent' | 'transient' | 'unspecified';
 
-declare type LevelOfAssurance = 'low' | 'substantial' | 'high';
+export type LevelOfAssurance = 'low' | 'substantial' | 'high';
 
-declare type StatusCode = 'Success' | 'Requester' | 'Responder';
+export type StatusCode = 'Success' | 'Requester' | 'Responder';
 
-declare type SubStatusCode =
+export type SubStatusCode =
   | 'AuthnFailed'
   | 'InvalidAttrNameOrValue'
   | 'InvalidNameIDPolicy'

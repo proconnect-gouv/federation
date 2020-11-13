@@ -8,6 +8,8 @@
  * @TODO add the link to where errors are documented
  */
 export const enum ErrorCode {
-  JSON_COULD_NOT_BE_CONVERTED = 3,
-  XML_COULD_NOT_BE_CONVERTED = 4,
+  JSON_TO_XML_EXCEPTION = 1,
+  XML_TO_JSON_EXCEPTION = 2,
+  OVERSIZED_TOKEN_EXCEPTION = 3,
+  INVALID_TOKEN_CHECKSUM_EXCEPTION = 4,
 }
