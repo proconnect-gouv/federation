@@ -22,8 +22,8 @@ import {
   RnippReceivedValidEvent,
 } from '@fc/rnipp';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
+
 import { AcrValues, pickAcr } from '../transforms';
-import { Privileges } from '../enums';
 
 @Injectable()
 export class CoreService {
@@ -93,17 +93,13 @@ export class CoreService {
 
     // Grab informations on interaction and identity
     const session = await this.session.get(interactionId);
-    const { idpId, idpIdentity, idpAcr, idpPrivileges, spId, spAcr } = session;
-    const hasRnippCheck: boolean =
-      (idpPrivileges || []).includes(Privileges.IDP_RNIPP_CHECK) || false;
+    const { idpId, idpIdentity, idpAcr, spId, spAcr } = session;
 
     // Acr check
     this.checkIfAcrIsValid(idpAcr, spAcr);
 
     // Identity check and normalization
-    const rnippIdentity = hasRnippCheck
-      ? await this.rnippCheck(idpIdentity, req)
-      : null;
+    const rnippIdentity = await this.rnippCheck(idpIdentity, req);
 
     await this.checkIfAccountIsBlocked(rnippIdentity);
 
