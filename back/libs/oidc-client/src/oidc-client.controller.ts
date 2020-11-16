@@ -42,6 +42,7 @@ export class OidcClientController {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
+      privileges,
     } = this.oidcClient.buildAuthorizeParameters(body);
 
     const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
@@ -59,6 +60,7 @@ export class OidcClientController {
       idpId: providerUid,
       idpName,
       idpState: state,
+      idpPrivileges: privileges,
     });
 
     res.redirect(authorizationUrl);
