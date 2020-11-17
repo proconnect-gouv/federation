@@ -1,5 +1,5 @@
 export enum MockIdentityProviderFcaRoutes {
   INDEX = '/',
   INTERACTION = '/interaction/:uid',
-  INTERACTION_LOGIN = '/login',
+  INTERACTION_LOGIN = '/interaction/:uid/login',
 }

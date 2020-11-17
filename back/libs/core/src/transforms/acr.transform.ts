@@ -1,3 +1,11 @@
+/**
+ * @todo Brice
+ * @todo FIX:
+ * - Remove the hard-coded eidas value.
+ * - Challenge te fact that a default constant is requiered if the config is empty.
+ * - Eidas is a specific value and shouldn't be placed whithin its name.
+ * - Add a @MinLength decorator for the config Dto to prevent any empty object.
+ */
 export const DEFAULT_EIDAS = 'eidas1';
 
 // Oidc naming convention

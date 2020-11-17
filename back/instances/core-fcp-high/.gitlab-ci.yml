@@ -32,33 +32,33 @@ core-fcp-high:
     - export CURRENT_UID="$(id -u):$(id -g)"
     - export DOCKER_HOST_IP="$(getent hosts docker | awk '{ print $1 }')"
     - export DOCKER_HOST="tcp://$DOCKER_HOST_IP:2375"
-    - echo "$DOCKER_HOST_IP corev2.docker.dev-franceconnect.fr" >> /etc/hosts
-    - echo "$DOCKER_HOST_IP fsp1v2.docker.dev-franceconnect.fr" >> /etc/hosts
-    - echo "$DOCKER_HOST_IP fsp2v2.docker.dev-franceconnect.fr" >> /etc/hosts
-    - echo "$DOCKER_HOST_IP fip1v2.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP fca.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP fsa1v2.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP fsa2v2.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP fia1v2.docker.dev-franceconnect.fr" >> /etc/hosts
     - echo "$DOCKER_HOST_IP rnipp.docker.dev-franceconnect.fr" >> /etc/hosts
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc-docker/volumes/src/fc
-    - docker-stack up core-v2
+    - docker-stack up fca
     - docker-stack dep-all
     - docker-stack start-all
-    # Stop core and csmr-hsm
+    # ## -- Stop core and csmr-hsm
     #- docker-stack stop corev2 csmr-hsm # fsp1v2 fsp2v2
     # Create log directory just in case
     - docker-stack exec fsp1v2 mkdir -p /tmp/.pm2/logs
     - docker-stack exec fsp2v2 mkdir -p /tmp/.pm2/logs
     - docker-stack exec corev2 mkdir -p /tmp/.pm2/logs
     - docker-stack exec csmr-hsm mkdir -p /tmp/.pm2/logs
-    # Build like for prod
-    # - docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
+    # ## -- Build like for prod
+    #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
     #- docker-stack exec corev2 yarn build core-fcp-high
     #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
-    # Launch like prod
-    # - docker-stack exec fsp1v2 yarn start:prod:mock-service-provider-high &
-    # - docker-stack exec fsp2v2 yarn start:prod:mock-service-provider-high &
+    # ## -- Launch like prod
+    #- docker-stack exec fsp1v2 yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsp2v2 yarn start:prod:mock-service-provider-high &
     #- docker-stack exec corev2 yarn start:prod:core-fcp-high &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
@@ -71,9 +71,9 @@ core-fcp-high:
       (docker cp fc_corev2_1:/tmp/.pm2/logs cypress || true) &&
       (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs cypress || true) &&
       (docker cp fc_rnipp_1:/tmp/.pm2/logs cypress || true) &&
-      (docker cp fc_fip1v2_1:/tmp/.pm2/logs cypress || true) &&
-      (docker cp fc_fsp1v2_1:/tmp/.pm2/logs cypress || true) &&
-      (docker cp fc_rp-corev2_1:/var/log/nginx cypress/logs || true) &&
+      (docker cp fc_fia1v2_1:/tmp/.pm2/logs cypress || true) &&
+      (docker cp fc_fsa1v2_1:/tmp/.pm2/logs cypress || true) &&
+      (docker cp fc_rp-all_1:/var/log/nginx cypress/logs || true) &&
       exit 1)
 
   artifacts:
