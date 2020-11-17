@@ -46,9 +46,26 @@ export class MockServiceProviderController {
     const sessionId = this.crypto.genRandomString(sessionIdLength);
     await this.session.init(res, sessionId, { idpState: sessionId });
 
+    const authorizationUrl: string =
+      ((await this.getAuthorizationUrl()).authorizationUrl || '').split(
+        '?',
+      )[0] || '';
+    const scopes =
+      'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
+    const redirectUri =
+      'https://fsa1v2.docker.dev-franceconnect.fr/login-callback';
+    const acrValues = 'eidas2';
+    const clientId = process.env.CLIENT_ID;
+    // --
+
     return {
       titleFront: 'Mock Service Provider',
       state: sessionId,
+      authorizationUrl,
+      scopes,
+      acrValues,
+      redirectUri,
+      clientId,
     };
   }
 
@@ -59,42 +76,7 @@ export class MockServiceProviderController {
    */
   @Get(MockServiceProviderRoutes.LOGIN)
   async login(@Req() req, @Res() res) {
-    /**
-     * @TODO #251
-     * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
-     */
-    const params = {
-      scope:
-        'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address',
-      providerUid: 'corev2',
-      /**
-       * @TODO `acr_values` MUST change accordingly with the mock that calls it
-       *       its value should change to either 'eidas2' or 'rgs2'
-       */
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: 'eidas2',
-    };
-
-    const {
-      state,
-      scope,
-      providerUid,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-    } = this.oidcClient.buildAuthorizeParameters(params);
-
-    const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
-      state,
-      scope,
-      providerUid,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-    );
-
+    const { state, authorizationUrl } = await this.getAuthorizationUrl();
     const sessionId = this.session.getId(req);
     await this.session.patch(sessionId, { idpState: state });
 
@@ -146,6 +128,7 @@ export class MockServiceProviderController {
        * */
 
       const { acr } = tokenSet.claims();
+
       return {
         titleFront: 'Mock Service Provider - Login Callback',
         idpIdentity,
@@ -257,6 +240,49 @@ export class MockServiceProviderController {
     return {
       titleFront: "Mock service provider - Erreur lors de l'authentification",
       ...query,
+    };
+  }
+
+  private async getAuthorizationUrl() {
+    /**
+     * @TODO #251
+     * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
+     */
+    const params = {
+      scope:
+        'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address',
+      providerUid: 'corev2',
+      /**
+       * @TODO `acr_values` MUST change accordingly with the mock that calls it
+       *       its value should change to either 'eidas2' or 'rgs2'
+       */
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
+    };
+
+    const {
+      state,
+      scope,
+      providerUid,
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values,
+    } = this.oidcClient.buildAuthorizeParameters(params);
+
+    const authorizationUrl: string = await this.oidcClient.getAuthorizeUrl(
+      state,
+      scope,
+      providerUid,
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values,
+    );
+
+    return {
+      state,
+      authorizationUrl,
     };
   }
 }

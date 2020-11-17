@@ -2,11 +2,14 @@ import { basicSuccessScenario, checkInformations } from './mire.utils';
 
 describe('No SSO', () => {
   // Given
+  // -- replace by either `fip1v2` or `fia1v2`
+  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+
   const loginInfo = {
     userName: 'test',
     password: '123',
     eidasLevel: 1,
-    idpId: 'fip1v2',
+    idpId,
   };
 
   const userInfos = {

@@ -5,7 +5,7 @@ import { SessionConfig } from '@fc/session';
 
 export default {
   cryptographyKey: process.env.USERINFO_CRYPT_KEY,
-  prefix: 'FCP-SESS:',
+  prefix: 'FCA-SESS:',
   cookieOptions: {
     signed: true,
     sameSite: 'Lax',

@@ -25,19 +25,16 @@
 
       <section class="connect bg-light">
         <h2>Connectez-vous via FranceConnect (POST sur authorize)</h2>
-        <form action="https://corev2.docker.dev-franceconnect.fr/api/v2/authorize" method="POST">
-          <input type="hidden" name="client_id"
-            value="6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950" />
-          <input type="hidden" name="scope"
-            value="openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone" />
+        <form action="<%=authorizationUrl;%>" method="POST">
+          <input type="hidden" name="client_id" value="<%=clientId;%>" />
+          <input type="hidden" name="scope" value="<%=scopes;%>" />
           <input type="hidden" name="response_type" value="code" />
-          <input type="hidden" name="redirect_uri"
-            value="https://fsp1v2.docker.dev-franceconnect.fr/login-callback" />
-          <input type="hidden" name="state" value="<%= state %>" />
-          <input type="hidden" name="acr_values" value="eidas2" />
+          <input type="hidden" name="redirect_uri" value="<%=redirectUri;%>" />
+          <input type="hidden" name="state" value="<%=state;%>" />
+          <input type="hidden" name="acr_values" value="<%=acrValues;%>" />
 
           <button id="post-authorize" type="submit" class="btn no-pad" role="button">
-            <img src="/img/FCboutons-10.svg" alt="Connexion FC" class="d-inline-block align-top">
+            <img src="/img/FCboutons-10.svg" alt="Connexion FC" class="d-inline-block align-top"/>
           </button>
         </form>
       </section>

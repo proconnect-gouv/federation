@@ -10,6 +10,7 @@ import {
 import { OidcProviderModule } from '@fc/oidc-provider';
 import { MockIdentityProviderFcaController } from './controllers';
 import { MockIdentityProviderFcaService } from './services';
+import { ErrorModule } from '@fc/error';
 
 const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderEnvService,
@@ -17,7 +18,12 @@ const oidcProviderModule = OidcProviderModule.register(
 );
 
 @Module({
-  imports: [SessionModule, ServiceProviderEnvModule, oidcProviderModule],
+  imports: [
+    ErrorModule,
+    SessionModule,
+    ServiceProviderEnvModule,
+    oidcProviderModule,
+  ],
   controllers: [MockIdentityProviderFcaController],
   providers: [MockIdentityProviderFcaService],
 })

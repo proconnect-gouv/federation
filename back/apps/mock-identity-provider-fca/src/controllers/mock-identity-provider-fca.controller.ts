@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Render,
+  Param,
   Req,
   Res,
   UsePipes,
@@ -11,19 +12,21 @@ import {
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { CryptographyService } from '@fc/cryptography';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { IOidcIdentity } from '@fc/oidc';
 import { MockIdentityProviderFcaRoutes } from '../enums';
 import { MockIdentityProviderFcaService } from '../services';
 import { Identity, SignInDTO } from '../dto';
+import {
+  MockIdentityProviderAccountBannedException,
+  MockIdentityProviderNoAccountException,
+} from '../exceptions';
 
 @Controller()
 export class MockIdentityProviderFcaController {
   constructor(
     private readonly logger: LoggerService,
     private readonly session: SessionService,
-    private readonly crypto: CryptographyService,
     private readonly oidcProvider: OidcProviderService,
     private readonly mockIdentityProviderFcaService: MockIdentityProviderFcaService,
   ) {
@@ -58,11 +61,22 @@ export class MockIdentityProviderFcaController {
   async getLogin(
     @Req() req,
     @Res() res,
+    @Param('uid') interactionId,
     @Body() body: SignInDTO,
   ): Promise<void> {
     const identity: Identity = await this.mockIdentityProviderFcaService.getIdentity(
       body.login,
     );
+
+    // Throw a Y180002 if no account found
+    if (!identity) {
+      throw new MockIdentityProviderNoAccountException();
+    }
+
+    // Throw a Y180001 if the account (../data/database-mock.csv) is restricted.
+    if (identity.uid === 'E000001') {
+      throw new MockIdentityProviderAccountBannedException();
+    }
 
     const spIdentity: IOidcIdentity = {
       ...identity,
@@ -71,21 +85,19 @@ export class MockIdentityProviderFcaController {
 
     // Save in session
     /**
-     * @todo set the eIDAS level in a configuration file
+     * @todo
+     * - Set the eIDAS level in a configuration file
+     * - Transform the sessiosninit into
      */
-    const spAcr = 'eidas2';
+    const { spAcr } = await this.session.get(interactionId);
 
-    const sessionIdLength = 32;
-    const sessionId = this.crypto.genRandomString(sessionIdLength);
-
-    this.session.init(res, body.interactionId, {
-      sessionId,
+    this.session.patch(interactionId, {
       spIdentity,
     });
 
     const result = {
       login: {
-        account: body.interactionId,
+        account: interactionId,
         acr: spAcr,
         ts: Math.floor(Date.now() / 1000),
       },

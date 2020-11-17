@@ -95,33 +95,6 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FC_REQUESTED_RNIPP',
-    spId: serviceProvider.id,
-    spAcr: params.acr_values,
-    idpId,
-    idpAcr: params.acr_values, // idpAcr is set
-  });
-
-  cy.hasBusinessLog({
-    category: 'FRONT_CINEMATIC',
-    event: 'FC_RECEIVED_VALID_RNIPP',
-    spId: serviceProvider.id,
-    spAcr: params.acr_values,
-    idpId,
-    idpAcr: params.acr_values,
-  });
-
-  cy.hasBusinessLog({
-    category: 'FRONT_CINEMATIC',
-    event: 'FC_VERIFIED',
-    spId: serviceProvider.id,
-    spAcr: params.acr_values,
-    idpId,
-    idpAcr: params.acr_values,
-  });
-
-  cy.hasBusinessLog({
-    category: 'FRONT_CINEMATIC',
     event: 'FC_SHOWED_CONSENT',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
@@ -180,7 +153,7 @@ export function checkInformations(identity) {
     birthcountry,
   } = identity;
 
-  cy.contains(`Civilité : ${gender}`);
+  cy.contains(`Sexe : ${gender}`);
   cy.contains(`Prénom(s) : ${givenName}`);
   cy.contains(`Nom(s) : ${familyName}`);
   cy.contains(`Nom d'usage : ${preferredUsername}`);
@@ -237,10 +210,12 @@ export function basicScenario(params) {
   cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
   cy.get('input[name="login"]').clear().type(login);
   cy.get('input[name="password"]').clear().type(password);
-
-  if (eidasLevel) {
-    cy.get('select[name="acr"]').select(eidasLevel);
-  }
+  
+  // -- This section should be impplemented in te IDP Mock instance
+  //if (eidasLevel) {
+  //  cy.get('select[name="acr"]').select(eidasLevel);
+  //}
+  // --
 
   cy.get('input[type="submit"]').click();
 }
