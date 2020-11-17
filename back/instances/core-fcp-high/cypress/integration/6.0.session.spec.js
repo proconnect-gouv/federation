@@ -1,10 +1,13 @@
 import { basicErrorScenario, getAuthorizeUrl } from './mire.utils';
 
 describe('Session', () => {
+  // -- replace by either `fip1v2` or `fia1v2`
+  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+
   it('should trigger error Y150003 (session not found)', () => {
     basicErrorScenario({
       errorCode: 'test',
-      idpId: 'fip1v2',
+      idpId,
     });
 
     cy.clearCookies();

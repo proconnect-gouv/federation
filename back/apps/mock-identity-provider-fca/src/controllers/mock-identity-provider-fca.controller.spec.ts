@@ -2,10 +2,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { CryptographyService } from '@fc/cryptography';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { MockIdentityProviderFcaService } from '../services';
 import { MockIdentityProviderFcaController } from './mock-identity-provider-fca.controller';
+import {
+  MockIdentityProviderAccountBannedException,
+  MockIdentityProviderNoAccountException,
+} from '../exceptions';
 
 describe('MockIdentityProviderFcaController', () => {
   let controller: MockIdentityProviderFcaController;
@@ -57,10 +60,6 @@ describe('MockIdentityProviderFcaController', () => {
   const stateMock = randomStringMock;
   const sessionIdMock = randomStringMock;
 
-  const cryptographyMock = {
-    genRandomString: jest.fn(),
-  };
-
   const interactionMock = {
     uid: Symbol('uidMockValue'),
     params: Symbol('paramsMockValue'),
@@ -68,6 +67,7 @@ describe('MockIdentityProviderFcaController', () => {
 
   const sessionMockValue = {
     spName: Symbol('spNameMockValue'),
+    spAcr: acrMock,
   };
 
   beforeEach(async () => {
@@ -77,23 +77,25 @@ describe('MockIdentityProviderFcaController', () => {
         OidcClientService,
         LoggerService,
         SessionService,
-        CryptographyService,
         OidcProviderService,
         MockIdentityProviderFcaService,
       ],
     })
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
+
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+
       .overrideProvider(SessionService)
       .useValue(sessionMock)
-      .overrideProvider(CryptographyService)
-      .useValue(cryptographyMock)
+
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
+
       .overrideProvider(MockIdentityProviderFcaService)
       .useValue(mockIdentityProviderFcaServiceMock)
+
       .compile();
 
     controller = module.get<MockIdentityProviderFcaController>(
@@ -114,8 +116,6 @@ describe('MockIdentityProviderFcaController', () => {
     sessionMock.get.mockResolvedValue(sessionMockValue);
 
     sessionMock.getId.mockReturnValue(sessionIdMock);
-
-    cryptographyMock.genRandomString.mockReturnValue(randomStringMock);
   });
 
   it('should be defined', () => {
@@ -163,19 +163,20 @@ describe('MockIdentityProviderFcaController', () => {
   });
 
   describe('getLogin', () => {
+    const interactionId: string = interactionIdMock;
     const body = {
       login: loginMockValue,
-      interactionId: interactionIdMock,
+      interactionId,
     };
 
-    it('should call service.getAccount()', () => {
+    it('should call service.getIdentity()', async () => {
       // Given
       const identityMock = {};
       mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
         identityMock,
       );
       // When
-      controller.getLogin(req, res, body);
+      await controller.getLogin(req, res, interactionId, body);
       // Then
 
       expect(
@@ -186,24 +187,50 @@ describe('MockIdentityProviderFcaController', () => {
       ).toHaveBeenCalledWith(body.login);
     });
 
-    it('should call crypto.getRandomString() and pass it to session', async () => {
+    it('should throw an exception if no account have been found', async () => {
       // Given
-      const randomStringMock = 'randomStringMockValue';
-      cryptographyMock.genRandomString.mockReturnValue(randomStringMock);
+      const interactionId: string = body.interactionId;
 
+      const accountMock = null;
+      mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
+        accountMock,
+      );
+      // When / Then
+      expect(
+        async () => await controller.getLogin(req, res, interactionId, body),
+      ).rejects.toThrow(MockIdentityProviderNoAccountException);
+    });
+
+    it('should throw an exception if an account have restricted data', async () => {
+      // Given
+      const interactionId: string = body.interactionId;
+
+      const accountMock = { uid: 'E000001' };
+      mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
+        accountMock,
+      );
+      // When / Then
+      expect(
+        async () => await controller.getLogin(req, res, interactionId, body),
+      ).rejects.toThrow(MockIdentityProviderAccountBannedException);
+    });
+
+    it('should call session.get with interactionId', async () => {
+      // Given
       const accountMock = {};
       mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
         accountMock,
       );
+      const interactionId: string = interactionIdMock;
+      const body = {
+        interactionId,
+        login: loginMockValue,
+      };
       // When
-      await controller.getLogin(req, res, body);
+      await controller.getLogin(req, res, interactionId, body);
       // Then
-      expect(cryptographyMock.genRandomString).toHaveBeenCalledTimes(1);
-      expect(sessionMock.init).toHaveBeenCalledTimes(1);
-      expect(sessionMock.init).toHaveBeenCalledWith(res, body.interactionId, {
-        sessionId: randomStringMock,
-        spIdentity: accountMock,
-      });
+      expect(sessionMock.get).toBeCalledTimes(1);
+      expect(sessionMock.get).toBeCalledWith(req.fc.interactionId);
     });
 
     it('should call oidcProvider.finishInteraction', async () => {
@@ -212,12 +239,13 @@ describe('MockIdentityProviderFcaController', () => {
       mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
         accountMock,
       );
+      const interactionId: string = interactionIdMock;
       const body = {
-        interactionId: interactionIdMock,
+        interactionId,
         login: loginMockValue,
       };
       // When
-      await controller.getLogin(req, res, body);
+      await controller.getLogin(req, res, interactionId, body);
       // Then
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
         1,
@@ -227,8 +255,8 @@ describe('MockIdentityProviderFcaController', () => {
         res,
         expect.objectContaining({
           login: {
-            account: interactionIdMock,
-            acr: acrMock,
+            account: interactionId,
+            acr: sessionMockValue.spAcr,
             ts: expect.any(Number),
           },
           consent: {

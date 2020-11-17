@@ -24,7 +24,7 @@
             <% if (locals.idpIdentity) { %>
 
             <p>Prénom(s) : <strong><%= locals.idpIdentity.given_name %></strong></p>
-            <p>Nom(s) : <strong><%= locals.idpIdentity.usual_name || locals.idpIdentity.family_name; %></strong></p>
+            <p>Nom(s) : <strong><%= locals.idpIdentity.family_name || locals.idpIdentity.usual_name; %></strong></p>
             <p>Email : <strong><%= locals.idpIdentity.email %></strong></p>
             <p>Siret :  <strong><%= locals.idpIdentity.siret || '/'; %></strong></p>
             <p>Sub : <strong><%= locals.idpIdentity.sub %></strong></p>
@@ -42,8 +42,12 @@
             <p>Métier :  <strong><%= locals.idpIdentity.job || '/'; %></strong></p>
             <p>Téléphone :  <strong><%= locals.idpIdentity.phone || '/'; %></strong></p>
             <p>Addresse : <strong><%= locals.idpIdentity.address || '/'; %></strong></p>
-            <p>ACR values : <strong><%= locals.idpIdentity.acr || '/'; %></strong></p>
+            <p>ACR values : <strong id="info-acr"><%= locals.acr || '/'; %></strong></p>
             
+            <hr />
+
+            <p>accessToken : <strong><%= locals.accessToken; %></strong></p>
+
             <% } else { %>
             <p class="col d-flex justify-content-center">
               Vous devez vous authentifier afin d'accéder à vos données personnelles.
@@ -56,7 +60,9 @@
           <h2>JSON</h2>
           <br />
           <div class="jumbotron">
-            <pre id="json"><%- JSON.stringify(locals.idpIdentity, null, 2) %></pre>
+            <pre id="json">
+              <%- JSON.stringify(locals.idpIdentity, null, 2) %>
+            </pre>
           </div>
         </section>
       </div>
