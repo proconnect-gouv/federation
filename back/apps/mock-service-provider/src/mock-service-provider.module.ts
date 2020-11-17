@@ -9,6 +9,7 @@ import {
   IdentityProviderEnvModule,
 } from '@fc/identity-provider-env';
 import { MockServiceProviderController } from './mock-service-provider.controller';
+import { ErrorModule } from '@fc/error';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderEnvService,
@@ -16,7 +17,12 @@ const oidcClientModule = OidcClientModule.register(
 );
 
 @Module({
-  imports: [SessionModule, IdentityProviderEnvModule, oidcClientModule],
+  imports: [
+    ErrorModule,
+    SessionModule,
+    IdentityProviderEnvModule,
+    oidcClientModule,
+  ],
   controllers: [MockServiceProviderController],
 })
 export class MockServiceProviderModule {}

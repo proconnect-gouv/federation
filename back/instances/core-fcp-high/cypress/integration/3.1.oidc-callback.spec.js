@@ -5,7 +5,7 @@ function getOidcCallbackUrl(interactionId, event) {
     url: `${Cypress.env('IDP_ROOT_URL')}/interaction/${interactionId}/login`,
     method: 'POST',
     body: {
-      login: 'test',
+      login: '12353',
       password: '123',
       acr: 'eidas2',
     },
@@ -39,7 +39,7 @@ function extractInteractionIdFromUrl(url) {
 function prepareOidcCallbackAs(alias) {
   cy.visit(Cypress.env('SP1_ROOT_URL'));
   cy.get('#get-authorize').click();
-  cy.get(`#idp-fip1v2`).click();
+  cy.get(`#idp-${Cypress.env('IDP_NAME')}1v2`).click();
   cy.url().should('contain', Cypress.env('IDP_ROOT_URL'));
 
   cy.url().then((url) => {
@@ -79,7 +79,7 @@ function finishWithReplacedUrl(attackerUrl) {
   // Start a new interaction
   cy.visit(Cypress.env('SP1_ROOT_URL'));
   cy.get('#get-authorize').click();
-  cy.get(`#idp-fip1v2`).click();
+  cy.get(`#idp-${Cypress.env('IDP_NAME')}1v2`).click();
 
   // Use url from previous interaction
   cy.visit(attackerUrl, { failOnStatusCode: false });

@@ -1,6 +1,9 @@
 import { basicErrorScenario } from './mire.utils';
 
 describe('Interaction steps discarding', () => {
+  // -- replace by either `fip1v2` or `fia1v2`
+  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+
   /**
    * @TODO #252 
    * ETQ Dev, je vérifie la pertinence des tests cypress
@@ -44,7 +47,7 @@ describe('Interaction steps discarding', () => {
   it('should trigger error Y000005 when csrf token not matching with csrfToken in session', () => {
     basicErrorScenario({
       errorCode: 'test',
-      idpId: 'fip1v2',
+      idpId,
     });
 
     cy.get('input[name="_csrf"]').then((csrf) => {
@@ -59,7 +62,7 @@ describe('Interaction steps discarding', () => {
   it('should trigger error Y000005 when csrf token is empty', () => {
     basicErrorScenario({
       errorCode: 'test',
-      idpId: 'fip1v2',
+      idpId,
     });
 
     cy.get('input[name="_csrf"]').then((csrf) => {
@@ -74,7 +77,7 @@ describe('Interaction steps discarding', () => {
   it('should display "Not found" if we GET on /consent', () => {
     basicErrorScenario({
       errorCode: 'test',
-      idpId: 'fip1v2',
+      idpId,
     });
 
     cy.getCookie('fc_interaction_id').then((cookie) => {
@@ -92,7 +95,7 @@ describe('Interaction steps discarding', () => {
   it('should trigger error Y000400 when csrf token is not present', () => {
     basicErrorScenario({
       errorCode: 'test',
-      idpId: 'fip1v2',
+      idpId,
     });
 
     cy.get('input[name="_csrf"]').then((csrf) => {

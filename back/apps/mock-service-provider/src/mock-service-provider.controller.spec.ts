@@ -145,6 +145,14 @@ describe('MockServiceProviderController', () => {
     it('Should return front title', async () => {
       // setup
       sessionMock.init.mockResolvedValueOnce(undefined);
+      const authorizationUrl = '';
+      const scopes =
+        'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
+      const redirectUri =
+        'https://fsa1v2.docker.dev-franceconnect.fr/login-callback';
+      const acrValues = 'eidas2';
+      const clientId = undefined;
+      //'6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950';
 
       // action
       const result = await controller.index(res);
@@ -153,6 +161,12 @@ describe('MockServiceProviderController', () => {
       expect(result).toEqual({
         titleFront: 'Mock Service Provider',
         state: stateMock,
+
+        authorizationUrl,
+        scopes,
+        redirectUri,
+        acrValues,
+        clientId,
       });
     });
   });

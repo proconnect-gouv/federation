@@ -95,33 +95,6 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
-    event: 'FC_REQUESTED_RNIPP',
-    spId: serviceProvider.id,
-    spAcr: params.acr_values,
-    idpId,
-    idpAcr: params.acr_values, // idpAcr is set
-  });
-
-  cy.hasBusinessLog({
-    category: 'FRONT_CINEMATIC',
-    event: 'FC_RECEIVED_VALID_RNIPP',
-    spId: serviceProvider.id,
-    spAcr: params.acr_values,
-    idpId,
-    idpAcr: params.acr_values,
-  });
-
-  cy.hasBusinessLog({
-    category: 'FRONT_CINEMATIC',
-    event: 'FC_VERIFIED',
-    spId: serviceProvider.id,
-    spAcr: params.acr_values,
-    idpId,
-    idpAcr: params.acr_values,
-  });
-
-  cy.hasBusinessLog({
-    category: 'FRONT_CINEMATIC',
     event: 'FC_SHOWED_CONSENT',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
@@ -180,7 +153,7 @@ export function checkInformations(identity) {
     birthcountry,
   } = identity;
 
-  cy.contains(`Civilité : ${gender}`);
+  cy.contains(`Sexe : ${gender}`);
   cy.contains(`Prénom(s) : ${givenName}`);
   cy.contains(`Nom(s) : ${familyName}`);
   cy.contains(`Nom d'usage : ${preferredUsername}`);
@@ -197,21 +170,36 @@ export function checkInformations(identity) {
 
 export function checkInStringifiedJson(key, value, selector = '#json') {
   cy.get(selector).then((elem) => {
-    const data = JSON.parse(elem.val().trim());
+    const txt = elem.text().trim();
+    const data = JSON.parse(txt);
 
     expect(data).to.have.property(key);
     expect(data[key]).to.eq(value);
   });
 }
 
-export function basicErrorScenario(params) {
-  const { idpId, errorCode, eidasLevel } = params;
+export function basicScenario(params) {
+  //eidasLevel
+  const { idpId, login = 'test', overrideParams } = params;
   const password = '123';
 
-  // FS: Click on FC button
   cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
-  cy.get('img[alt="Se connecter à FranceConnect"]').click();
+  if (overrideParams) {
+    // Steal the state to finish the cinematic
+    cy.get('input[name=state]')
+      .invoke('val')
+      .then((state) => {
+        // Direct call to FC with custom params
+        const controlUrl = getAuthorizeUrl({
+          ...overrideParams,
+          state,
+        });
+        cy.visit(controlUrl);
+      });
+  } else {
+    cy.get('a[id="agent-connect-login"]').click();
+  }
 
   // FC: choose FI
   cy.url().should(
@@ -222,14 +210,27 @@ export function basicErrorScenario(params) {
 
   // FI: Authenticate
   cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
-  cy.get('input[name="login"]').clear().type(errorCode);
+  cy.get('input[name="login"]').clear().type(login);
   cy.get('input[name="password"]').clear().type(password);
 
-  if (eidasLevel) {
-    cy.get('select[name="acr"]').select(eidasLevel);
-  }
+  /**
+   * @todo This section should be impplemented in te IDP Mock instance
+   */
+  //if (eidasLevel) {
+  //  cy.get('select[name="acr"]').select(eidasLevel);
+  //}
+  // --
 
   cy.get('input[type="submit"]').click();
+}
+
+export function basicErrorScenario(params) {
+  const { errorCode } = params;
+  Reflect.deleteProperty(params, 'errorCode');
+  basicScenario({
+    ...params,
+    login: errorCode,
+  });
 }
 
 export function getAuthorizeUrl(overrideParams = {}) {
@@ -238,7 +239,7 @@ export function getAuthorizeUrl(overrideParams = {}) {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_id: `${Cypress.env('SP1_CLIENT_ID')}`,
-    scope: 'openid',
+    scope: 'openid gender family_name',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     response_type: 'code',
