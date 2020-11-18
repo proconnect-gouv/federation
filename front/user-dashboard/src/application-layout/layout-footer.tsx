@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 function FooterComponent(): JSX.Element {
   return (
-    <footer className="fixed-bottom bg-primary">
+    <footer className="bg-primary">
       <nav className="container text-center p-5 text-white">
         <Link className="text-white" to="/">
           En savoir plus sur FranceConnect

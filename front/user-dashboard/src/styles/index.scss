@@ -2,10 +2,13 @@
 @import '_colors.scss';
 
 // ----------------- VENDORS
-@import '~bootstrap/scss/bootstrap.scss';
 @import '~antd/dist/antd.css';
+@import '~bootstrap/scss/bootstrap';
 
 // ----------------- CUSTOM
+@import './_shadow.scss';
+@import './_cursor.scss';
+
 body,
 html,
 #root {
