@@ -13,7 +13,7 @@ export default {
     timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
   },
   jwks: {
-    keys: [JSON.parse(process.env.JWKS)],
+    keys: [JSON.parse(process.env.OidcClient_JWKS)],
   },
   stateLength: 32,
 } as OidcClientConfig;
