@@ -5,7 +5,7 @@ import { SessionConfig } from '@fc/session';
 
 export default {
   cryptographyKey: process.env.USERINFO_CRYPT_KEY,
-  prefix: 'FCP-SESS:',
+  prefix: 'EIDAS-BRIDGE-SESS:',
   cookieOptions: {
     signed: true,
     sameSite: 'Strict',

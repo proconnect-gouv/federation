@@ -7,7 +7,14 @@ import {
   IdentityProviderEnvModule,
 } from '@fc/identity-provider-env';
 import { OidcClientModule } from '@fc/oidc-client';
+import { OidcProviderModule } from '@fc/oidc-provider';
+import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
 import { SessionModule } from '@fc/session';
+import {
+  ServiceProviderEnvService,
+  ServiceProviderEnvModule,
+} from '@fc/service-provider-env';
+import { CryptographyModule } from '@fc/cryptography';
 import { EidasClientController, EidasClientModule } from '@fc/eidas-client';
 import {
   EidasProviderController,
@@ -19,14 +26,23 @@ const oidcClientModule = OidcClientModule.register(
   IdentityProviderEnvService,
   IdentityProviderEnvModule,
 );
+const oidcProviderModule = OidcProviderModule.register(
+  ServiceProviderEnvService,
+  ServiceProviderEnvModule,
+);
+
 @Global()
 @Module({
   imports: [
-    SessionModule,
-    IdentityProviderEnvModule,
-    oidcClientModule,
     EidasClientModule,
     EidasProviderModule,
+    SessionModule,
+    IdentityProviderEnvModule,
+    ServiceProviderEnvModule,
+    oidcClientModule,
+    oidcProviderModule,
+    CryptographyModule,
+    OverrideOidcProviderModule.register(oidcProviderModule),
   ],
   controllers: [
     EidasBridgeController,
