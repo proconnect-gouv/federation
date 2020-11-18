@@ -6,10 +6,14 @@ import { Type } from 'class-transformer';
 import { AppConfig } from '@fc/app';
 import { CryptographyConfig } from '@fc/cryptography';
 import { IdentityProviderEnvConfig } from '@fc/identity-provider-env';
+import { ServiceProviderEnvConfig } from '@fc/service-provider-env';
 import { LoggerConfig } from '@fc/logger';
 import { OidcClientConfig } from '@fc/oidc-client';
+import { OidcProviderConfig } from '@fc/oidc-provider';
+import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { RedisConfig } from '@fc/redis';
 import { SessionConfig } from '@fc/session';
+import { RabbitmqConfig } from '@fc/rabbitmq';
 import { EidasClientConfig } from '@fc/eidas-client';
 import { EidasProviderConfig } from '@fc/eidas-provider';
 import { ApacheIgniteConfig } from '@fc/apache-ignite';
@@ -60,6 +64,26 @@ export class EidasBridgeConfig {
   @ValidateNested()
   @Type(() => IdentityProviderEnvConfig)
   readonly IdentityProviderEnv: IdentityProviderEnvConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => OidcProviderConfig)
+  readonly OidcProvider: OidcProviderConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => OverrideOidcProviderConfig)
+  readonly OverrideOidcProvider: OverrideOidcProviderConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ServiceProviderEnvConfig)
+  readonly ServiceProviderEnv: ServiceProviderEnvConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => RabbitmqConfig)
+  readonly CryptographyBroker: RabbitmqConfig;
 
   @IsObject()
   @ValidateNested()

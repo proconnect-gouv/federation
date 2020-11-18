@@ -71,6 +71,7 @@ export class OidcClientService {
     acr_values: string,
   ): Promise<string> {
     const client: Client = await this.createOidcClient(providerUid);
+
     /**
      * @TODO #255
      * ETQ Dev, je change la manière d'envoyer les requêtes HTTP

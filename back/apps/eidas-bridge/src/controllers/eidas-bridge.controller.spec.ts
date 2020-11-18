@@ -4,6 +4,7 @@ import { CryptographyService } from '@fc/cryptography';
 import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
+import { OidcProviderService } from '@fc/oidc-provider';
 import { EidasBridgeController } from './eidas-bridge.controller';
 import { EidasBridgeLoginCallbackException } from '../exceptions';
 
@@ -26,6 +27,11 @@ describe('CoreFcpController', () => {
     buildAuthorizeParameters: jest.fn(),
   };
 
+  const oidcProviderServiceMock = {
+    getInteraction: jest.fn(),
+    finishInteraction: jest.fn(),
+  };
+
   const loggerServiceMock = ({
     setContext: jest.fn(),
   } as unknown) as LoggerService;
@@ -43,12 +49,19 @@ describe('CoreFcpController', () => {
     error_description: 'error_description',
   };
 
+  const acrMock = 'eidas2';
+  const scopeMock = 'scopeMock';
+  const providerUidMock = 'providerUidMock';
   const randomStringMock = 'randomStringMockValue';
   const stateMock = randomStringMock;
   const sessionIdMock = randomStringMock;
 
   const cryptographyMock = {
     genRandomString: jest.fn(),
+  };
+
+  const sessionMockValue = {
+    spName: Symbol('spNameMockValue'),
   };
 
   const res = {
@@ -59,6 +72,14 @@ describe('CoreFcpController', () => {
     fc: {
       interactionId: 'interactionIdMock',
     },
+    params: {
+      uid: '1234456',
+    },
+  };
+
+  const interactionMock = {
+    uid: Symbol('uidMockValue'),
+    params: Symbol('paramsMockValue'),
   };
 
   beforeEach(async () => {
@@ -70,6 +91,7 @@ describe('CoreFcpController', () => {
         LoggerService,
         SessionService,
         CryptographyService,
+        OidcProviderService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -82,6 +104,9 @@ describe('CoreFcpController', () => {
       .useValue(sessionMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)
+      .overrideProvider(OidcProviderService)
+      .useValue(oidcProviderServiceMock)
+
       .compile();
 
     eidasBridgeController = await app.get<EidasBridgeController>(
@@ -93,16 +118,14 @@ describe('CoreFcpController', () => {
 
     oidcClientServiceMock.buildAuthorizeParameters.mockReturnValue({
       state: stateMock,
-      scope: 'scopeMock',
-      providerUid: 'providerUidMock',
+      scope: scopeMock,
+      providerUid: providerUidMock,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: 'acrMock',
+      acr_values: acrMock,
     });
 
-    sessionMock.get.mockResolvedValue({
-      idpState: stateMock,
-    });
-
+    oidcProviderServiceMock.getInteraction.mockResolvedValue(interactionMock);
+    sessionMock.get.mockResolvedValue(sessionMockValue);
     sessionMock.getId.mockReturnValue(sessionIdMock);
 
     cryptographyMock.genRandomString.mockReturnValue(randomStringMock);
@@ -157,7 +180,7 @@ describe('CoreFcpController', () => {
       oidcClientServiceMock.getAuthorizeUrl.mockReturnValueOnce(
         mockedoidcClientService,
       );
-      sessionMock.patch.mockResolvedValueOnce(undefined);
+      sessionMock.patch.mockResolvedValueOnce('randomStringMockValue');
 
       // action
       await eidasBridgeController.login(req, res);
@@ -224,13 +247,13 @@ describe('CoreFcpController', () => {
   describe('loginCallback', () => {
     it('Should call oidc-client-service for retrieve authorize url', async () => {
       // setup
-      const accessToken = 'accest_token';
+      const accessToken = 'access_token';
       const providerUid = 'corev2';
       const query = {};
       oidcClientServiceMock.getTokenSet.mockReturnValueOnce({
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        access_token: 'accest_token',
+        access_token: 'access_token',
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: 'id_token',
@@ -248,11 +271,6 @@ describe('CoreFcpController', () => {
 
       // assert
       expect(oidcClientServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
-      expect(oidcClientServiceMock.getTokenSet).toHaveBeenCalledWith(
-        req,
-        providerUid,
-        stateMock,
-      );
       expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledWith(
         accessToken,
@@ -260,13 +278,13 @@ describe('CoreFcpController', () => {
       );
 
       expect(result).toEqual({
-        titleFront: 'Eidas Bridge - Login Callback',
         idpIdentity: {
           sub: '1',
           // oidc spec defined property
           // eslint-disable-next-line @typescript-eslint/naming-convention
           given_name: 'given_name',
         },
+        titleFront: 'Eidas Bridge - Login Callback',
       });
     });
 
@@ -356,6 +374,106 @@ describe('CoreFcpController', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Error description',
       });
+    });
+  });
+
+  describe('getInteraction', () => {
+    it('should call oidcProvider.getInteraction', async () => {
+      // When
+      await eidasBridgeController.getInteraction(req, res);
+      // Then
+      expect(oidcProviderServiceMock.getInteraction).toBeCalledTimes(1);
+      expect(oidcProviderServiceMock.getInteraction).toBeCalledWith(req, res);
+    });
+
+    it('should call session.get with interactionId', async () => {
+      // When
+      await eidasBridgeController.getInteraction(req, res);
+      // Then
+      expect(sessionMock.get).toBeCalledTimes(1);
+      expect(sessionMock.get).toBeCalledWith(req.fc.interactionId);
+    });
+
+    it('should return an object with data from session and oidcProvider interaction', async () => {
+      // When
+      const result = await eidasBridgeController.getInteraction(req, res);
+      // Then
+      expect(result).toEqual({
+        uid: interactionMock.uid,
+        params: interactionMock.params,
+        spName: sessionMockValue.spName,
+      });
+    });
+  });
+
+  describe('getLogin', () => {
+    it('should call crypto.getRandomString() and pass it to session', async () => {
+      // Given
+      const randomStringMock = 'randomStringMockValue';
+      cryptographyMock.genRandomString.mockReturnValue(randomStringMock);
+
+      const accountMock = {
+        sub:
+          'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2',
+        gender: 'female',
+        birthdate: '1962-08-24',
+        birthcountry: '99100',
+        birthplace: '75107',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        given_name: 'Angela Claire Louise',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        family_name: 'DUBOIS',
+        address: {
+          country: 'France',
+          formatted: 'France Paris 75107 20 avenue de Ségur',
+          locality: 'Paris',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          postal_code: '75107',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          street_address: '20 avenue de Ségur',
+        },
+        aud: 'myclientidforeidas-bridge',
+        exp: 1605004505,
+        iat: 1605004445,
+        iss: 'https://corev2.docker.dev-franceconnect.fr/api/v2',
+      };
+
+      // When
+      await eidasBridgeController.getLogin(req, res, req.params);
+
+      // Then
+      expect(cryptographyMock.genRandomString).toHaveBeenCalledTimes(1);
+      expect(sessionMock.init).toHaveBeenCalledTimes(1);
+      expect(sessionMock.init).toHaveBeenCalledWith(res, req.params.uid, {
+        sessionId: randomStringMock,
+        spIdentity: accountMock,
+      });
+    });
+
+    it('should call oidcProvider.finishInteraction', async () => {
+      // Given
+      const acrMock = 'eidas2';
+      // When
+      await eidasBridgeController.getLogin(req, res, req.params);
+      // Then
+      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
+        req,
+        res,
+        expect.objectContaining({
+          login: {
+            account: req.params.uid,
+            acr: acrMock,
+            ts: expect.any(Number),
+          },
+          consent: {
+            rejectedScopes: [],
+            rejectedClaims: [],
+          },
+        }),
+      );
     });
   });
 });

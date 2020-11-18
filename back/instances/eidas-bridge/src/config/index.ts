@@ -4,9 +4,13 @@
 import { EidasBridgeConfig } from '@fc/eidas-bridge';
 import App from './app';
 import Cryptography from './cryptography';
+import CryptographyBroker from './cryptography-broker';
 import IdentityProviderEnv from './identity-provider-env';
+import ServiceProviderEnv from './service-provider-env';
 import Logger from './logger';
 import OidcClient from './oidc-client';
+import OidcProvider from './oidc-provider';
+import OverrideOidcProvider from './override-oidc-provider';
 import Redis from './redis';
 import Session from './session';
 import EidasClient from './eidas-client';
@@ -25,9 +29,13 @@ export default {
   },
   App,
   Cryptography,
+  CryptographyBroker,
   IdentityProviderEnv,
+  ServiceProviderEnv,
   Logger,
   OidcClient,
+  OidcProvider,
+  OverrideOidcProvider,
   Redis,
   Session,
   EidasClient,
