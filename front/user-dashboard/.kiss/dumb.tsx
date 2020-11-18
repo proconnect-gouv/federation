@@ -1,7 +1,7 @@
 import React from 'react';
 
-function DumbCompoent(): JSX.Element {
+function DumbComponent(): JSX.Element {
   return <div />;
 }
 
-export default DumbCompoent;
+export default DumbComponent;

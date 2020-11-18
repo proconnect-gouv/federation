@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { Form } from 'react-final-form';
 
-import { HiddenInput } from '../components/form-inputs';
+import { HiddenInput } from '~components/form-inputs';
 
 function HomePage(): JSX.Element {
   const initialValues = {
