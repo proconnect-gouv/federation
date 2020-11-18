@@ -38,17 +38,19 @@ function ApplicationLayout(): JSX.Element {
   const documentTitle = getDocumentTitle(currentRouteObj);
 
   return (
-    <div className="h-100">
-      <Helmet>
-        <title>{documentTitle}</title>
-      </Helmet>
-      <LayoutHeader />
-      <Switch>
-        {routes.map(route => (
-          <Route {...route} key={route.path} />
-        ))}
-        <Route component={NotFoundPage} path="*" title="404" />
-      </Switch>
+    <div id="wrap">
+      <div className="container clear-top" id="root">
+        <Helmet>
+          <title>{documentTitle}</title>
+        </Helmet>
+        <LayoutHeader />
+        <Switch>
+          {routes.map(route => (
+            <Route {...route} key={route.path} />
+          ))}
+          <Route component={NotFoundPage} path="*" title="404" />
+        </Switch>
+      </div>
       <LayoutFooter />
     </div>
   );
