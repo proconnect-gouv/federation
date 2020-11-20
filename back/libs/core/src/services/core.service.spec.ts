@@ -5,8 +5,8 @@ import { OidcProviderService, OidcCtx } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
 import { AccountService, AccountBlockedException } from '@fc/account';
-import { MailerService } from '@fc/mailer';
 import { TrackingService } from '@fc/tracking';
+import { IOidcIdentity } from '@fc/oidc';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
 import { CoreService } from './core.service';
 
@@ -17,10 +17,6 @@ describe('CoreService', () => {
     setContext: jest.fn(),
     debug: jest.fn(),
     warn: jest.fn(),
-  };
-
-  const mailerServiceMock = {
-    send: jest.fn(),
   };
 
   const uidMock = '42';
@@ -76,11 +72,6 @@ describe('CoreService', () => {
     get: jest.fn(),
   };
 
-  const reqMock = {
-    fc: { interactionId: uidMock },
-    ip: '123.123.123.123',
-  };
-
   const trackingMock = {
     track: jest.fn(),
   };
@@ -107,7 +98,6 @@ describe('CoreService', () => {
         SessionService,
         CryptographyService,
         AccountService,
-        MailerService,
         TrackingService,
       ],
     })
@@ -123,8 +113,6 @@ describe('CoreService', () => {
       .useValue(cryptographyServiceMock)
       .overrideProvider(AccountService)
       .useValue(accountServiceMock)
-      .overrideProvider(MailerService)
-      .useValue(mailerServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
       .compile();
@@ -169,6 +157,150 @@ describe('CoreService', () => {
       );
       expect(service['overrideAuthorizePrompt']).toHaveBeenCalledTimes(0);
       expect(service['overrideAuthorizeAcrValues']).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('buildInteractionParts', () => {
+    // Given
+    const hash = 'hashMock';
+    const sub = 'subMock';
+    const id = 'idpIdMock';
+    const identity = ({} as unknown) as IOidcIdentity;
+
+    it('should call cryptography.computeIdentityHash', () => {
+      // When
+      service['buildInteractionParts'](id, identity);
+      // Then
+      expect(cryptographyServiceMock.computeIdentityHash).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(cryptographyServiceMock.computeIdentityHash).toHaveBeenCalledWith(
+        identity,
+      );
+    });
+
+    it('should call cryptography.computeSubV2', () => {
+      // Given
+      cryptographyServiceMock.computeIdentityHash.mockReturnValue(hash);
+      // When
+      service['buildInteractionParts'](id, identity);
+      // Then
+      expect(cryptographyServiceMock.computeSubV2).toHaveBeenCalledTimes(1);
+      expect(cryptographyServiceMock.computeSubV2).toHaveBeenCalledWith(
+        hash,
+        id,
+      );
+    });
+
+    it('should return an object containing hash, sub and federation', () => {
+      // Given
+      cryptographyServiceMock.computeIdentityHash.mockReturnValue(hash);
+      cryptographyServiceMock.computeSubV2.mockReturnValue(sub);
+      // When
+      const result = service['buildInteractionParts'](id, identity);
+      // Then
+      expect(result).toEqual({
+        hash,
+        sub,
+        federation: { idpIdMock: { sub } },
+      });
+    });
+  });
+
+  describe('storeInteraction', () => {
+    // Given
+    const idpId = 'idpIdMock';
+    const idpIdentity = ({} as unknown) as IOidcIdentity;
+    const spId = 'spIdMock';
+    const spIdentity = ({} as unknown) as IOidcIdentity;
+
+    const hash = 'hashMock';
+    const spFederation = 'spFederation';
+    const idpFederation = 'idpFederation';
+
+    const spInteraction = {
+      hash,
+      federation: spFederation,
+    };
+    const idpInteraction = {
+      hash,
+      federation: idpFederation,
+    };
+    const buildInteractionPartsMock = jest.fn();
+
+    beforeEach(() => {
+      buildInteractionPartsMock.mockReturnValueOnce(spInteraction);
+      buildInteractionPartsMock.mockReturnValueOnce(idpInteraction);
+
+      service['buildInteractionParts'] = buildInteractionPartsMock;
+    });
+
+    it('should call buildInteractionParts twice', async () => {
+      // When
+      await service.storeInteraction(idpId, idpIdentity, spId, spIdentity);
+      // Then
+      expect(service['buildInteractionParts']).toHaveBeenCalledTimes(2);
+      expect(service['buildInteractionParts']).toHaveBeenCalledWith(
+        spId,
+        spIdentity,
+      );
+      expect(service['buildInteractionParts']).toHaveBeenCalledWith(
+        idpId,
+        idpIdentity,
+      );
+    });
+
+    it('should call account.storeInteraction', async () => {
+      // When
+      await service.storeInteraction(idpId, idpIdentity, spId, spIdentity);
+      // Then
+      expect(accountServiceMock.storeInteraction).toHaveBeenCalledTimes(1);
+      expect(accountServiceMock.storeInteraction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          identityHash: hash,
+          idpFederation,
+          spFederation,
+          lastConnection: expect.any(Date),
+        }),
+      );
+    });
+
+    it('should return interaction parts', async () => {
+      // When
+      const result = await service.storeInteraction(
+        idpId,
+        idpIdentity,
+        spId,
+        spIdentity,
+      );
+      // Then
+      expect(result).toEqual({
+        spInteraction,
+        idpInteraction,
+      });
+    });
+
+    it('should not throw if interaction storage fails', async () => {
+      // Given
+      const error = new Error();
+      accountServiceMock.storeInteraction.mockRejectedValue(error);
+      // Then
+      await expect(
+        service.storeInteraction(idpId, idpIdentity, spId, spIdentity),
+      ).resolves.not.toThrow();
+    });
+
+    it('should log a warning interaction storage fails', async () => {
+      // Given
+      const error = new Error();
+      accountServiceMock.storeInteraction.mockRejectedValue(error);
+      // When
+      await service.storeInteraction(idpId, idpIdentity, spId, spIdentity);
+      // Then
+      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.warn).toHaveBeenCalledWith(
+        'Could not persist interaction to database',
+      );
     });
   });
 
@@ -451,69 +583,6 @@ describe('CoreService', () => {
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).not.toThrow();
-    });
-  });
-
-  describe('sendAuthenticationMail', () => {
-    beforeEach(() => {
-      // avoid to count config.get in constructor
-      configServiceMock.get.mockReset();
-      configServiceMock.get.mockReturnValue({
-        from: 'mail@mail.com',
-      });
-    });
-
-    it('should return a promise', async () => {
-      // action
-      const result = service.sendAuthenticationMail(reqMock);
-
-      // expect
-      expect(result).toBeInstanceOf(Promise);
-    });
-
-    it('should retrieve the email to send from from config', async () => {
-      // setup
-      const configName = 'Mailer';
-
-      // action
-      await service.sendAuthenticationMail(reqMock);
-
-      // expect
-      expect(configServiceMock.get).toBeCalledTimes(1);
-      expect(configServiceMock.get).toBeCalledWith(configName);
-    });
-
-    it('should call SessionService.get with interactionId', async () => {
-      // action
-      await service.sendAuthenticationMail(reqMock);
-
-      // expect
-      expect(sessionServiceMock.get).toBeCalledTimes(1);
-      expect(sessionServiceMock.get).toBeCalledWith(reqMock.fc.interactionId);
-    });
-
-    it('should send the email to the end-user by calling "mailer.send"', async () => {
-      // setup
-      const fromMock = { email: 'address@fqdn.ext', name: 'Address' };
-      const expectedEmailParams = {
-        body: `Connexion établie via ${sessionDataMock.idpName} !`,
-        from: fromMock,
-        subject: `Connexion depuis FranceConnect sur ${sessionDataMock.spName}`,
-        to: [
-          {
-            email: spIdentityMock.email,
-            name: `${spIdentityMock.given_name} ${spIdentityMock.family_name}`,
-          },
-        ],
-      };
-      configServiceMock.get.mockReturnValueOnce({ from: fromMock });
-
-      // action
-      await service.sendAuthenticationMail(reqMock);
-
-      // expect
-      expect(mailerServiceMock.send).toBeCalledTimes(1);
-      expect(mailerServiceMock.send).toBeCalledWith(expectedEmailParams);
     });
   });
 });

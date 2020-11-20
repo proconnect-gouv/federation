@@ -1,25 +1,15 @@
 import { Injectable } from '@nestjs/common';
-import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { CryptographyService } from '@fc/cryptography';
-import { AccountService } from '@fc/account';
-import { ConfigService } from '@fc/config';
-import { MailerService } from '@fc/mailer';
 import { CoreService } from '@fc/core';
 
 @Injectable()
-export class CoreFcaService extends CoreService {
+export class CoreFcaService {
   constructor(
-    logger: LoggerService,
-    config: ConfigService,
-    oidcProvider: OidcProviderService,
-    session: SessionService,
-    cryptography: CryptographyService,
-    account: AccountService,
-    mailer: MailerService,
+    private readonly logger: LoggerService,
+    private readonly session: SessionService,
+    private readonly core: CoreService,
   ) {
-    super(logger, config, oidcProvider, session, cryptography, account, mailer);
     this.logger.setContext(this.constructor.name);
   }
 
@@ -48,12 +38,12 @@ export class CoreFcaService extends CoreService {
     const { idpId, idpIdentity, idpAcr, spId, spAcr } = session;
 
     // Acr check
-    this.checkIfAcrIsValid(idpAcr, spAcr);
+    this.core.checkIfAcrIsValid(idpAcr, spAcr);
 
-    await this.checkIfAccountIsBlocked(idpIdentity);
+    await this.core.checkIfAccountIsBlocked(idpIdentity);
 
     // Save interaction to database & get sp's sub to avoid double computation
-    const { spInteraction } = await this.storeInteraction(
+    const { spInteraction } = await this.core.storeInteraction(
       idpId,
       idpIdentity, // use identity from IdP for IdP
       spId,

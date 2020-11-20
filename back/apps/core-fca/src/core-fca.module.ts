@@ -23,6 +23,7 @@ import { HttpProxyModule } from '@fc/http-proxy';
 import { MailerModule } from '@fc/mailer';
 import { TrackingModule } from '@fc/tracking';
 import {
+  CoreService,
   CoreTrackingService,
   OidcClientTokenEventHandler,
   UserinfoEventHandler,
@@ -57,6 +58,7 @@ import { CoreFcaService } from './core-fca.service';
   ],
   controllers: [CoreFcaController],
   providers: [
+    CoreService,
     CoreFcaService,
     CoreTrackingService,
     OidcClientTokenEventHandler,

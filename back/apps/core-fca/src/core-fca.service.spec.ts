@@ -1,12 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { ConfigService } from '@fc/config';
-import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
-import { CryptographyService } from '@fc/cryptography';
-import { AccountService, AccountBlockedException } from '@fc/account';
-import { MailerService } from '@fc/mailer';
-import { TrackingService } from '@fc/tracking';
+import { AccountBlockedException } from '@fc/account';
+import { CoreService } from '@fc/core';
 import { CoreFcaService } from './core-fca.service';
 
 describe('CoreFcaService', () => {
@@ -16,10 +12,6 @@ describe('CoreFcaService', () => {
     setContext: jest.fn(),
     debug: jest.fn(),
     warn: jest.fn(),
-  };
-
-  const mailerServiceMock = {
-    send: jest.fn(),
   };
 
   const uidMock = '42';
@@ -38,24 +30,16 @@ describe('CoreFcaService', () => {
   };
   const getInteractionMock = jest.fn();
 
-  const oidcProviderServiceMock = {
-    getInteraction: getInteractionMock,
-    registerMiddleware: jest.fn(),
+  const coreServiceMock = {
+    checkIfAccountIsBlocked: jest.fn(),
+    checkIfAcrIsValid: jest.fn(),
+    storeInteraction: jest.fn(),
   };
 
   const sessionServiceMock = {
     get: jest.fn(),
     patch: jest.fn(),
     delete: jest.fn(),
-  };
-
-  const accountServiceMock = {
-    storeInteraction: jest.fn(),
-    isBlocked: jest.fn(),
-  };
-
-  const rnippServiceMock = {
-    check: jest.fn(),
   };
 
   const spIdentityMock = {
@@ -70,22 +54,9 @@ describe('CoreFcaService', () => {
     sub: 'some idpSub',
   };
 
-  const cryptographyServiceMock = {
-    computeIdentityHash: jest.fn(),
-    computeSubV2: jest.fn(),
-  };
-
-  const configServiceMock = {
-    get: jest.fn(),
-  };
-
   const reqMock = {
     fc: { interactionId: uidMock },
     ip: '123.123.123.123',
-  };
-
-  const trackingMock = {
-    track: jest.fn(),
   };
 
   const sessionDataMock = {
@@ -102,58 +73,22 @@ describe('CoreFcaService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        CoreFcaService,
-        LoggerService,
-        ConfigService,
-        OidcProviderService,
-        SessionService,
-        CryptographyService,
-        AccountService,
-        MailerService,
-        TrackingService,
-      ],
+      providers: [CoreFcaService, LoggerService, CoreService, SessionService],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(ConfigService)
-      .useValue(configServiceMock)
-      .overrideProvider(OidcProviderService)
-      .useValue(oidcProviderServiceMock)
+      .overrideProvider(CoreService)
+      .useValue(coreServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(CryptographyService)
-      .useValue(cryptographyServiceMock)
-      .overrideProvider(AccountService)
-      .useValue(accountServiceMock)
-      .overrideProvider(MailerService)
-      .useValue(mailerServiceMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingMock)
       .compile();
-
-    configServiceMock.get.mockReturnValue({
-      forcedPrompt: ['testprompt'],
-      configuration: {
-        routes: { authorization: '/foo' },
-      },
-      // OidcProvider.configuration
-      acrValues: ['Boots', 'Motorcycles', 'Glasses'],
-    });
-
     service = module.get<CoreFcaService>(CoreFcaService);
+
+    jest.resetAllMocks();
 
     getInteractionMock.mockResolvedValue(getInteractionResultMock);
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
-    rnippServiceMock.check.mockResolvedValue(spIdentityMock);
-    accountServiceMock.isBlocked.mockResolvedValue(false);
-
-    /**
-     * @TODO #258
-     * ETQ Dev, je "clear" également les mocks au lieu de seulement les "reset"
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/258
-     */
-    jest.clearAllMocks();
+    coreServiceMock.storeInteraction.mockResolvedValue({ spInteraction: {} });
   });
 
   it('should be defined', () => {
@@ -161,22 +96,6 @@ describe('CoreFcaService', () => {
   });
 
   describe('verify', () => {
-    let checkBlockedMock;
-    let checkAcrMock;
-    beforeEach(() => {
-      checkBlockedMock = jest.spyOn<CoreFcaService, any>(
-        service,
-        'checkIfAccountIsBlocked',
-      );
-      checkBlockedMock.mockResolvedValue(true); // nothing happened
-
-      checkAcrMock = jest.spyOn<CoreFcaService, any>(
-        service,
-        'checkIfAcrIsValid',
-      );
-      checkAcrMock.mockResolvedValue(true); // nothing happened
-    });
-
     it('Should not throw if verified', async () => {
       // Then
       await expect(service.verify(reqMock)).resolves.not.toThrow();
@@ -185,7 +104,7 @@ describe('CoreFcaService', () => {
     it('Should throw if account is blocked', async () => {
       // Given
       const errorMock = new AccountBlockedException();
-      checkBlockedMock.mockRejectedValueOnce(errorMock);
+      coreServiceMock.checkIfAccountIsBlocked.mockRejectedValueOnce(errorMock);
 
       // Then
       await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
@@ -195,7 +114,7 @@ describe('CoreFcaService', () => {
     it('Should throw if acr is not validated', async () => {
       // Given
       const errorMock = new Error('my error 1');
-      checkAcrMock.mockImplementation(() => {
+      coreServiceMock.checkIfAcrIsValid.mockImplementation(() => {
         throw errorMock;
       });
       // Then
@@ -210,35 +129,19 @@ describe('CoreFcaService', () => {
       await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
     });
 
+    it('Should call interaction storage', async () => {
+      // When
+      await service.verify(reqMock);
+      // Then
+      expect(coreServiceMock.storeInteraction).toHaveBeenCalledTimes(1);
+    });
+
     it('Should throw if identity storage for service provider fails', async () => {
       // Given
       const errorMock = new Error('my error');
       sessionServiceMock.patch.mockRejectedValueOnce(errorMock);
       // Then
       await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    // Non blocking errors
-    it('Should pass if interaction storage fails', async () => {
-      // Given
-      const error = new Error('some error');
-      accountServiceMock.storeInteraction.mockRejectedValueOnce(error);
-      // When
-      await expect(service.verify(reqMock)).resolves.not.toThrow();
-    });
-
-    it('Should log a warning if interaction storage fails', async () => {
-      // Given
-
-      const error = new Error('some error');
-      accountServiceMock.storeInteraction.mockRejectedValueOnce(error);
-      // When
-      await service.verify(reqMock);
-      // Then
-      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.warn).toHaveBeenCalledWith(
-        'Could not persist interaction to database',
-      );
     });
   });
 });
