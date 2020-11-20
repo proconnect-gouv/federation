@@ -23,7 +23,6 @@ import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
 import { MailerModule } from '@fc/mailer';
 import { TrackingModule } from '@fc/tracking';
 import {
-  CoreController,
   CoreService,
   CoreTrackingService,
   OidcClientTokenEventHandler,
@@ -37,6 +36,9 @@ import {
   IdentityProviderOperationTypeChangesHandler,
   ServiceProviderOperationTypeChangesHandler,
 } from '@fc/core';
+import { CoreFcpController } from './core-fcp.controller';
+import { CoreFcpService } from './core-fcp.service';
+
 const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderService,
   ServiceProviderModule,
@@ -61,10 +63,11 @@ const oidcProviderModule = OidcProviderModule.register(
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),
   ],
-  controllers: [CoreController],
+  controllers: [CoreFcpController],
   providers: [
     CoreService,
     CoreTrackingService,
+    CoreFcpService,
     OidcClientTokenEventHandler,
     UserinfoEventHandler,
     RnippRequestedEventHandler,

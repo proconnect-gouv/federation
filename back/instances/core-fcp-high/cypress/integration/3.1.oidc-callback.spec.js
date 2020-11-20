@@ -5,7 +5,7 @@ function getOidcCallbackUrl(interactionId, event) {
     url: `${Cypress.env('IDP_ROOT_URL')}/interaction/${interactionId}/login`,
     method: 'POST',
     body: {
-      login: '12353',
+      login: 'test',
       password: '123',
       acr: 'eidas2',
     },

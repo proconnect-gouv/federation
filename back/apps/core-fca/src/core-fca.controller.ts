@@ -1,6 +1,5 @@
 import {
   Controller,
-  Post,
   Get,
   Render,
   Req,
@@ -8,7 +7,6 @@ import {
   UsePipes,
   ValidationPipe,
   Param,
-  Body,
 } from '@nestjs/common';
 
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -17,22 +15,18 @@ import { IdentityProviderService } from '@fc/identity-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
-import { CryptographyService } from '@fc/cryptography';
-import { CoreService } from '../services';
-import { Interaction, CsrfToken, Core } from '../dto';
-import { CoreRoutes } from '../enums';
-import { CoreMissingIdentity, CoreInvalidCsrfException } from '../exceptions';
+import { Interaction, Core, CoreRoutes, CoreMissingIdentity } from '@fc/core';
+import { CoreFcaService } from './core-fca.service';
 
 @Controller()
-export class CoreController {
+export class CoreFcaController {
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderService,
-    private readonly core: CoreService,
+    private readonly core: CoreFcaService,
     private readonly session: SessionService,
     private readonly config: ConfigService,
-    private readonly crypto: CryptographyService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -67,65 +61,22 @@ export class CoreController {
     const { interactionId } = req.fc;
     await this.core.verify(req);
 
-    const urlPrefix = this.config.get<AppConfig>('App').urlPrefix;
-    res.redirect(`${urlPrefix}/interaction/${interactionId}/consent`);
+    const { urlPrefix } = this.config.get<AppConfig>('App');
+    res.redirect(`${urlPrefix}/interaction/${interactionId}/login`);
   }
 
-  @Get(CoreRoutes.INTERACTION_CONSENT)
+  /**
+   * @TODO Remove this controller once it is globaly available in `@fc/oidc-provider`
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/185
+   */
+  @Get(CoreRoutes.INTERACTION_LOGIN)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Render('consent')
-  async getConsent(@Req() req, @Res() res, @Param() _params: Interaction) {
+  async getLogin(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { interactionId } = req.fc;
-    const { spIdentity: identity, spName } = await this.session.get(
-      interactionId,
-    );
-
-    /**
-     * @TODO #193
-     * ETQ dev, j'affiche les `claims` à la place des `scopes`
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/193
-     */
-    const {
-      params: { scope },
-    } = await this.oidcProvider.getInteraction(req, res);
-    const scopes = scope.split(' ');
-
-    const csrfToken = await this.generateAndStoreCsrf(req.fc.interactionId);
-
-    return {
-      interactionId,
-      identity,
-      spName,
-      scopes,
-      csrfToken,
-    };
-  }
-
-  @Post(CoreRoutes.INTERACTION_LOGIN)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  async getLogin(
-    @Req() req,
-    @Res() res,
-    @Body() body: CsrfToken,
-    @Param() _params: Interaction,
-  ) {
-    const { _csrf: csrf } = body;
-    const { interactionId } = req.fc;
-    const { spAcr, spIdentity, csrfToken } = await this.session.get(
-      interactionId,
-    );
-
-    if (csrf !== csrfToken) {
-      throw new CoreInvalidCsrfException();
-    }
-
+    const { spAcr, spIdentity } = await this.session.get(interactionId);
     if (!spIdentity) {
       throw new CoreMissingIdentity();
     }
-
-    this.logger.debug('Sending authentication email to the end-user');
-    // send the notification mail to the final user
-    await this.core.sendAuthenticationMail(req);
 
     /**
      * Build Interaction results
@@ -150,16 +101,5 @@ export class CoreController {
     };
 
     return this.oidcProvider.finishInteraction(req, res, result);
-  }
-
-  /**
-   * @TODO #203
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/203
-   */
-  private async generateAndStoreCsrf(interactionId: string): Promise<string> {
-    const csrfTokenLength = 32;
-    const csrfToken = this.crypto.genRandomString(csrfTokenLength);
-    await this.session.patch(interactionId, { csrfToken: csrfToken });
-    return csrfToken;
   }
 }

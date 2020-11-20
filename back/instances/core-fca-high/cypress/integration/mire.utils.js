@@ -72,9 +72,6 @@ export function basicSuccessScenario(params) {
 
   cy.get('input[type="submit"]').click();
 
-  // FC: Read confirmation message :D
-  cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
-
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_REQUESTED_IDP_TOKEN',
@@ -92,17 +89,6 @@ export function basicSuccessScenario(params) {
     idpId,
     idpAcr: null, // idpAcr is still null
   });
-
-  cy.hasBusinessLog({
-    category: 'FRONT_CINEMATIC',
-    event: 'FC_SHOWED_CONSENT',
-    spId: serviceProvider.id,
-    spAcr: params.acr_values,
-    idpId,
-    idpAcr: params.acr_values,
-  });
-
-  cy.get('#consent').click();
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',

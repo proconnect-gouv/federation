@@ -3,11 +3,6 @@ import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { OidcProviderService, OidcCtx } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
-import {
-  RnippService,
-  RnippRequestedEvent,
-  RnippReceivedValidEvent,
-} from '@fc/rnipp';
 import { CryptographyService } from '@fc/cryptography';
 import { AccountService, AccountBlockedException } from '@fc/account';
 import { MailerService } from '@fc/mailer';
@@ -60,10 +55,6 @@ describe('CoreService', () => {
     isBlocked: jest.fn(),
   };
 
-  const rnippServiceMock = {
-    check: jest.fn(),
-  };
-
   const spIdentityMock = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Edward',
@@ -114,7 +105,6 @@ describe('CoreService', () => {
         ConfigService,
         OidcProviderService,
         SessionService,
-        RnippService,
         CryptographyService,
         AccountService,
         MailerService,
@@ -129,8 +119,6 @@ describe('CoreService', () => {
       .useValue(oidcProviderServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(RnippService)
-      .useValue(rnippServiceMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyServiceMock)
       .overrideProvider(AccountService)
@@ -154,7 +142,6 @@ describe('CoreService', () => {
 
     getInteractionMock.mockResolvedValue(getInteractionResultMock);
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
-    rnippServiceMock.check.mockResolvedValue(spIdentityMock);
     accountServiceMock.isBlocked.mockResolvedValue(false);
 
     /**
@@ -287,105 +274,6 @@ describe('CoreService', () => {
     });
   });
 
-  describe('verify', () => {
-    let checkBlockedMock;
-    let checkAcrMock;
-    beforeEach(() => {
-      checkBlockedMock = jest.spyOn<CoreService, any>(
-        service,
-        'checkIfAccountIsBlocked',
-      );
-      checkBlockedMock.mockResolvedValue(true); // nothing happened
-
-      checkAcrMock = jest.spyOn<CoreService, any>(service, 'checkIfAcrIsValid');
-      checkAcrMock.mockResolvedValue(true); // nothing happened
-    });
-
-    it('Should not throw if verified', async () => {
-      // Then
-      expect(service.verify(reqMock)).resolves.not.toThrow();
-    });
-
-    it('Should throw if account is blocked', async () => {
-      // Given
-      const errorMock = new AccountBlockedException();
-      checkBlockedMock.mockRejectedValueOnce(errorMock);
-
-      // Then
-      expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    // Dependencies sevices errors
-    it('Should throw if acr is not validated', async () => {
-      // Given
-      const errorMock = new Error('my error 1');
-      checkAcrMock.mockImplementation(() => {
-        throw errorMock;
-      });
-      // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    it('Should throw if identity provider is not usable', () => {
-      // Given
-      const errorMock = new Error('my error');
-      sessionServiceMock.get.mockRejectedValueOnce(errorMock);
-      // Then
-      expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    it('Should throw if rnipp check refuses identity', () => {
-      // Given
-      const errorMock = new Error('my error');
-      rnippServiceMock.check.mockRejectedValueOnce(errorMock);
-      // Then
-      expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    it('Should throw if identity storage for service provider fails', () => {
-      // Given
-      const errorMock = new Error('my error');
-      sessionServiceMock.patch.mockRejectedValueOnce(errorMock);
-      // Then
-      expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    // Non blocking errors
-    it('Should pass if interaction storage fails', () => {
-      // Given
-      const error = new Error('some error');
-      accountServiceMock.storeInteraction.mockRejectedValueOnce(error);
-      // When
-      expect(service.verify(reqMock)).resolves.not.toThrow();
-    });
-
-    it('Should log a warning if interaction storage fails', async () => {
-      // Given
-
-      const error = new Error('some error');
-      accountServiceMock.storeInteraction.mockRejectedValueOnce(error);
-      // When
-      await service.verify(reqMock);
-      // Then
-      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.warn).toHaveBeenCalledWith(
-        'Could not persist interaction to database',
-      );
-    });
-
-    /**
-     * @TODO #134 Test when implemented
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/134
-     *
-     * // RNIPP resilience
-     * it('Should pass if rnipp is down and account is known', async () => {});
-     * it('Should throw if rnipp is down and account is unknown', async () => {});
-     *
-     * // Service provider usability
-     * it('Should throw if service provider is not usable ', async () => {});
-     */
-  });
-
   describe('checkIfAccountIsBlocked', () => {
     it('Should go through check if account is not blocked', async () => {
       // Given
@@ -418,57 +306,6 @@ describe('CoreService', () => {
       ).rejects.toThrow(error);
 
       expect(accountServiceMock.isBlocked).toBeCalledTimes(1);
-    });
-  });
-
-  describe('rnippCheck', () => {
-    it('should not throw if rnipp service does not', async () => {
-      // Then
-      expect(
-        service['rnippCheck'](spIdentityMock, reqMock),
-      ).resolves.not.toThrow();
-    });
-
-    it('should return rnippIdentity', async () => {
-      // When
-      const result = await service['rnippCheck'](spIdentityMock, reqMock);
-      // Then
-      expect(result).toBe(spIdentityMock);
-    });
-
-    it('should publish events when searching', async () => {
-      // When
-      await service['rnippCheck'](spIdentityMock, reqMock);
-      // Then
-      expect(trackingMock.track).toHaveBeenCalledTimes(2);
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        RnippRequestedEvent,
-        expect.any(Object),
-      );
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        RnippReceivedValidEvent,
-        expect.any(Object),
-      );
-    });
-
-    it('should add interactionId and Ip address properties in published events', async () => {
-      // Given
-      const expectedEventStruct = {
-        fc: { interactionId: '42' },
-        ip: '123.123.123.123',
-      };
-      // When
-      await service['rnippCheck'](spIdentityMock, reqMock);
-      // Then
-      expect(trackingMock.track).toHaveBeenCalledTimes(2);
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        RnippRequestedEvent,
-        expectedEventStruct,
-      );
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        RnippReceivedValidEvent,
-        expectedEventStruct,
-      );
     });
   });
 
