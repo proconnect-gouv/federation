@@ -6,12 +6,12 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
-import { CoreController } from './core.controller';
-import { CoreService } from '../services';
-import { CoreMissingIdentity, CoreInvalidCsrfException } from '../exceptions';
+import { CoreMissingIdentity, CoreInvalidCsrfException } from '@fc/core';
+import { CoreFcpController } from './core-fcp.controller';
+import { CoreFcpService } from './core-fcp.service';
 
-describe('CoreController', () => {
-  let coreController: CoreController;
+describe('CoreFcpController', () => {
+  let coreController: CoreFcpController;
 
   const params = { uid: 'abcdefghijklmnopqrstuvwxyz0123456789' };
   const interactionIdMock = 'interactionIdMockValue';
@@ -75,11 +75,11 @@ describe('CoreController', () => {
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      controllers: [CoreController],
+      controllers: [CoreFcpController],
       providers: [
         LoggerService,
         OidcProviderService,
-        CoreService,
+        CoreFcpService,
         IdentityProviderService,
         ServiceProviderService,
         SessionService,
@@ -91,7 +91,7 @@ describe('CoreController', () => {
       .useValue(oidcProviderServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(CoreService)
+      .overrideProvider(CoreFcpService)
       .useValue(coreServiceMock)
       .overrideProvider(IdentityProviderService)
       .useValue(identityProviderServiceMock)
@@ -105,7 +105,7 @@ describe('CoreController', () => {
       .useValue(cryptographyServiceMock)
       .compile();
 
-    coreController = await app.get<CoreController>(CoreController);
+    coreController = await app.get<CoreFcpController>(CoreFcpController);
 
     jest.resetAllMocks();
     providerMock.interactionDetails.mockResolvedValue(
@@ -199,7 +199,7 @@ describe('CoreController', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
-        `/api/v2/interaction/${req.fc.interactionId}/consent`,
+        `/api/v2/interaction/${interactionIdMock}/consent`,
       );
     });
   });
@@ -332,7 +332,7 @@ describe('CoreController', () => {
         }),
       );
     });
-    it('should return an object', async () => {
+    it('should return result from controller.oidcProvider.finishInteraction()', async () => {
       // Given
       const body = { _csrf: randomStringMock };
       const req = {
