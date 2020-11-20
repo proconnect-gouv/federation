@@ -8,26 +8,21 @@ import {
   Configuration,
 } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
-
-import { SessionService } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
 import { AccountBlockedException, AccountService } from '@fc/account';
 import { Acr, IOidcIdentity } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
-import { MailerService, MailerConfig } from '@fc/mailer';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
 import { AcrValues, pickAcr } from '../transforms';
 
 @Injectable()
 export class CoreService {
   constructor(
-    protected readonly logger: LoggerService,
-    protected readonly config: ConfigService,
+    private readonly logger: LoggerService,
+    private readonly config: ConfigService,
     private readonly oidcProvider: OidcProviderService,
-    protected readonly session: SessionService,
     private readonly cryptography: CryptographyService,
-    protected readonly account: AccountService,
-    private readonly mailer: MailerService,
+    private readonly account: AccountService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -117,9 +112,7 @@ export class CoreService {
    * Check if an account exists and is blocked
    * @param identity
    */
-  protected async checkIfAccountIsBlocked(
-    identity: IOidcIdentity,
-  ): Promise<void> {
+  async checkIfAccountIsBlocked(identity: IOidcIdentity): Promise<void> {
     const identityHash = this.cryptography.computeIdentityHash(identity);
     const accountIsBlocked = await this.account.isBlocked(identityHash);
 
@@ -150,7 +143,7 @@ export class CoreService {
    * @param spId Service provider identifier
    * @param spIdentity Identity object for service provider's identity hash
    */
-  protected async storeInteraction(
+  async storeInteraction(
     idpId: string,
     idpIdentity: IOidcIdentity,
     spId: string,
@@ -189,7 +182,7 @@ export class CoreService {
     };
   }
 
-  protected checkIfAcrIsValid(receivedAcr: string, requestedAcr: string) {
+  checkIfAcrIsValid(receivedAcr: string, requestedAcr: string) {
     const received = Acr[receivedAcr];
     const requested = Acr[requestedAcr];
 
@@ -204,31 +197,5 @@ export class CoreService {
         `Low ACR: expected ${requestedAcr} but received ${receivedAcr}`,
       );
     }
-  }
-
-  /**
-   * Send an email to the authenticated end-user after consent
-   * @param req Express req object
-   * @param res Express res object
-   */
-  async sendAuthenticationMail(req) {
-    const { from } = this.config.get<MailerConfig>('Mailer');
-    const { interactionId } = req.fc;
-    const { spName, idpName, spIdentity } = await this.session.get(
-      interactionId,
-    );
-
-    this.logger.debug('Sending authentication mail');
-    this.mailer.send({
-      from,
-      to: [
-        {
-          email: spIdentity.email,
-          name: `${spIdentity.given_name} ${spIdentity.family_name}`,
-        },
-      ],
-      subject: `Connexion depuis FranceConnect sur ${spName}`,
-      body: `Connexion établie via ${idpName} !`,
-    });
   }
 }
