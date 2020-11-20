@@ -1,7 +1,20 @@
-import { Body, Controller, Get, Post, Render } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Render,
+  Query,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { EidasClientService } from './eidas-client.service';
-import { CallbackDTO, EidasClientConfig } from './dto';
+import {
+  CallbackDTO,
+  EidasClientConfig,
+  ValidateEuropeanIdentity,
+} from './dto';
 
 @Controller('eidas-client')
 export class EidasClientController {
@@ -17,11 +30,12 @@ export class EidasClientController {
    * @returns The light-request token and the URL where it should be posted
    */
   @Get('/redirect-to-fr-node-connector')
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('redirect-to-fr-node-connector')
-  async redirectToFrNode() {
+  async redirectToFrNode(@Query() query: ValidateEuropeanIdentity) {
     const tmpRequest: any = {
       id: `${+new Date()}`,
-      citizenCountryCode: 'BE',
+      citizenCountryCode: query.country,
       issuer: 'EIDASBridge Connector',
       levelOfAssurance: 'low',
       nameIdFormat: 'unspecified',
