@@ -2,23 +2,23 @@ import {
   Controller,
   Get,
   Render,
+  Redirect,
   Res,
   Req,
   Query,
   UsePipes,
   ValidationPipe,
-  Param,
   Post,
+  Body,
 } from '@nestjs/common';
-
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
-import { Interaction } from '@fc/core';
 import { EidasBridgeRoutes } from '../enums';
 import { EidasBridgeLoginCallbackException } from '../exceptions';
+import { ValidateEuropeanIdentity } from '../dto';
 
 @Controller()
 export class EidasBridgeController {
@@ -146,6 +146,11 @@ export class EidasBridgeController {
     }
   }
 
+  /**
+   * @TODO #291
+   * modify interaction.ejs
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/271
+   */
   @Get(EidasBridgeRoutes.INTERACTION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('interaction')
@@ -165,72 +170,13 @@ export class EidasBridgeController {
    * @todo ajouter une interface sur l'identité au format oidc
    */
   @Post(EidasBridgeRoutes.INTERACTION_LOGIN)
-  async getLogin(
-    @Req() req,
-    @Res() res,
-    @Param() param: Interaction,
-  ): Promise<void> {
-    const identity = {
-      sub: 'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2',
-      gender: 'female',
-      birthdate: '1962-08-24',
-      birthcountry: '99100',
-      birthplace: '75107',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      given_name: 'Angela Claire Louise',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      family_name: 'DUBOIS',
-      address: {
-        country: 'France',
-        formatted: 'France Paris 75107 20 avenue de Ségur',
-        locality: 'Paris',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        postal_code: '75107',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        street_address: '20 avenue de Ségur',
-      },
-      aud: 'myclientidforeidas-bridge',
-      exp: 1605004505,
-      iat: 1605004445,
-      iss: 'https://corev2.docker.dev-franceconnect.fr/api/v2',
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Redirect()
+  async eidasLogin(@Body() body: ValidateEuropeanIdentity) {
+    return {
+      url: `/eidas-client/redirect-to-fr-node-connector?country=${body.country}`,
+      statusCode: 302,
     };
-    const spIdentity = {
-      ...identity,
-      sub: identity.sub,
-    };
-
-    // Save in session
-    /**
-     * @todo set the eIDAS level in a configuration file
-     */
-    const spAcr = 'eidas2';
-
-    const sessionIdLength = 32;
-    const sessionId = this.crypto.genRandomString(sessionIdLength);
-
-    this.session.init(res, param.uid, {
-      sessionId,
-      spIdentity,
-    });
-
-    const result = {
-      login: {
-        account: param.uid,
-        acr: spAcr,
-        ts: Math.floor(Date.now() / 1000),
-      },
-      /**
-       * We need to return this information, it will always be empty arrays
-       * since franceConnect does not allow for partial authorizations yet,
-       * it's an "all or nothing" consent.
-       */
-      consent: {
-        rejectedScopes: [],
-        rejectedClaims: [],
-      },
-    };
-
-    return this.oidcProvider.finishInteraction(req, res, result);
   }
 
   @Get('/error')

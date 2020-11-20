@@ -84,5 +84,7 @@
 
 | Code | Message utilisateur | Description |
 |---|---|---|
+| Y180001 |  | N/A |
 | Y180001 | Account blocked | Un utilisateur a demandé à ce que sa connexion via franceConnect soit désactivée. La connexion via ses identifiants est donc impossible désormais. Réactivation du compte nécessaire pour pouvoir procéder à une nouvelle connexion via ce compte. |
+| Y180002 |  | N/A |
 

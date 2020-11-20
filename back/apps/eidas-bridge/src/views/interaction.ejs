@@ -1,14 +1,123 @@
-<div>
-  <form
-    action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
-    method="POST"
-  >
-    <button id="post-authorize" type="submit" class="btn no-pad" role="button">
-      <img
-        src="/img/FCboutons-10.svg"
-        alt="Connexion FC"
-        class="d-inline-block align-top"
-      />
-    </button>
-  </form>
-</div>
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('includes/head') %>
+    <title>Choose your country</title>
+  </head>
+  <body>
+    <div class="d-flex flex-row flex-wrap">
+      <div class="country">
+        <form
+          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
+          method="POST"
+        >
+          <button
+            id="country-be"
+            type="submit"
+            class="country-btn"
+            name="country"
+            value="BE"
+          >
+            Belgique
+          </button>
+        </form>
+      </div>
+
+      <div class="country">
+        <form
+          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
+          method="POST"
+        >
+          <button
+            id="country-es"
+            type="submit"
+            class="country-btn"
+            name="country"
+            value="ES"
+          >
+            Espana
+          </button>
+        </form>
+      </div>
+
+      <div class="country">
+        <form
+          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
+          method="POST"
+        >
+          <button
+            id="country-POR"
+            type="submit"
+            class="country-btn"
+            name="country"
+            value="POR"
+          >
+            Portugal
+          </button>
+        </form>
+      </div>
+
+      <div class="country">
+        <form
+          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
+          method="POST"
+        >
+          <button
+            id="country-SWE"
+            type="submit"
+            class="country-btn"
+            name="country"
+            value="SWE"
+          >
+            Sverige
+          </button>
+        </form>
+      </div>
+
+      <div class="country">
+        <form
+          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
+          method="POST"
+        >
+          <button id="country-IT" type="submit" class="country-btn" value="IT">
+            Italia
+          </button>
+        </form>
+      </div>
+
+      <div class="country">
+        <form
+          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
+          method="POST"
+        >
+          <button
+            id="country-IRE"
+            type="submit"
+            class="country-btn"
+            name="country"
+            value="IRE"
+          >
+            Ireland
+          </button>
+        </form>
+      </div>
+
+      <div class="country">
+        <form
+          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
+          method="POST"
+        >
+          <button
+            id="country-LUX"
+            type="submit"
+            class="country-btn"
+            name="country"
+            value="LUX"
+          >
+            Luxembourg
+          </button>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

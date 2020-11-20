@@ -17,6 +17,11 @@ describe('EidasClientController', () => {
     parseLightResponse: jest.fn(),
   };
 
+  const req = {
+    query: {
+      country: 'BE',
+    },
+  };
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -78,7 +83,7 @@ describe('EidasClientController', () => {
 
     it('should call the prepareLightRequest with the request object', async () => {
       // action
-      await controller.redirectToFrNode();
+      await controller.redirectToFrNode(req.query);
 
       // expect
       expect(eidasClientServiceMock.prepareLightRequest).toHaveBeenCalledTimes(
@@ -91,7 +96,7 @@ describe('EidasClientController', () => {
 
     it('should call writeLightRequestInCache with the light request id and the light request', async () => {
       // action
-      await controller.redirectToFrNode();
+      await controller.redirectToFrNode(req.query);
 
       // expect
       expect(
@@ -104,7 +109,7 @@ describe('EidasClientController', () => {
 
     it('should get the connectorRequestCacheUrl from the config', async () => {
       // action
-      await controller.redirectToFrNode();
+      await controller.redirectToFrNode(req.query);
 
       // expect
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
@@ -113,7 +118,7 @@ describe('EidasClientController', () => {
 
     it('should the connectorRequestCacheUrl and the light request token', async () => {
       // action
-      const result = await controller.redirectToFrNode();
+      const result = await controller.redirectToFrNode(req.query);
 
       // expect
       expect(result).toStrictEqual({
