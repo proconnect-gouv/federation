@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { OidcProviderService } from '@fc/oidc-provider';
+import { ConfigService } from '@fc/config';
+import { MailerConfig, MailerService } from '@fc/mailer';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { CryptographyService } from '@fc/cryptography';
-import { AccountService } from '@fc/account';
-import { ConfigService } from '@fc/config';
-import { MailerService } from '@fc/mailer';
 import { TrackingService } from '@fc/tracking';
 import {
   RnippService,
@@ -15,19 +12,16 @@ import {
 import { CoreService } from '@fc/core';
 
 @Injectable()
-export class CoreFcpService extends CoreService {
+export class CoreFcpService {
   constructor(
-    logger: LoggerService,
-    config: ConfigService,
-    oidcProvider: OidcProviderService,
-    session: SessionService,
-    cryptography: CryptographyService,
-    account: AccountService,
-    mailer: MailerService,
+    private readonly logger: LoggerService,
+    private readonly config: ConfigService,
+    private readonly session: SessionService,
+    private readonly core: CoreService,
     private readonly tracking: TrackingService,
     private readonly rnipp: RnippService,
+    private readonly mailer: MailerService,
   ) {
-    super(logger, config, oidcProvider, session, cryptography, account, mailer);
     this.logger.setContext(this.constructor.name);
   }
 
@@ -59,15 +53,15 @@ export class CoreFcpService extends CoreService {
     const { idpId, idpIdentity, idpAcr, spId, spAcr } = session;
 
     // Acr check
-    this.checkIfAcrIsValid(idpAcr, spAcr);
+    this.core.checkIfAcrIsValid(idpAcr, spAcr);
 
     // Identity check and normalization
     const rnippIdentity = await this.rnippCheck(idpIdentity, req);
 
-    await this.checkIfAccountIsBlocked(rnippIdentity);
+    await this.core.checkIfAccountIsBlocked(rnippIdentity);
 
     // Save interaction to database & get sp's sub to avoid double computation
-    const { spInteraction } = await this.storeInteraction(
+    const { spInteraction } = await this.core.storeInteraction(
       idpId,
       idpIdentity, // use identity from IdP for IdP
       spId,
@@ -100,5 +94,31 @@ export class CoreFcpService extends CoreService {
     this.tracking.track(RnippReceivedValidEvent, req);
 
     return rnippIdentity;
+  }
+
+  /**
+   * Send an email to the authenticated end-user after consent
+   * @param req Express req object
+   * @param res Express res object
+   */
+  async sendAuthenticationMail(req) {
+    const { from } = this.config.get<MailerConfig>('Mailer');
+    const { interactionId } = req.fc;
+    const { spName, idpName, spIdentity } = await this.session.get(
+      interactionId,
+    );
+
+    this.logger.debug('Sending authentication mail');
+    this.mailer.send({
+      from,
+      to: [
+        {
+          email: spIdentity.email,
+          name: `${spIdentity.given_name} ${spIdentity.family_name}`,
+        },
+      ],
+      subject: `Connexion depuis FranceConnect sur ${spName}`,
+      body: `Connexion établie via ${idpName} !`,
+    });
   }
 }
