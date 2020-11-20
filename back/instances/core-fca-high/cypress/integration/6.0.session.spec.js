@@ -4,15 +4,24 @@ describe('Session', () => {
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
-  it('should trigger error Y150003 (session not found)', () => {
+  /**
+   * @TODO Backport this test from core-fcp :
+   * We can't reproduce easily the clearCookie only once back from idp
+   * since there is no more consent page.
+   *
+   * We could duplicate `basicScenario`
+   * but we would still have to be able to act between HTTP redirections
+   *
+   * Maybe we can find another way to create this test
+   * (clear only core-fca cookies ?)
+   */
+  it.skip('should trigger error Y150003 (session not found)', () => {
     basicErrorScenario({
       errorCode: 'test',
       idpId,
     });
 
     cy.clearCookies();
-
-    cy.get('#consent').click();
 
     cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/login`));
     cy.hasError('Y150003');
