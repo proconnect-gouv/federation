@@ -53,7 +53,7 @@ export class MockServiceProviderController {
     const scopes =
       'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
     const redirectUri =
-      'https://fsa1v2.docker.dev-franceconnect.fr/login-callback';
+      'https://fsp1v2.docker.dev-franceconnect.fr/login-callback';
     const acrValues = 'eidas2';
     const clientId = process.env.CLIENT_ID;
     // --

@@ -149,7 +149,7 @@ describe('MockServiceProviderController', () => {
       const scopes =
         'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
       const redirectUri =
-        'https://fsa1v2.docker.dev-franceconnect.fr/login-callback';
+        'https://fsp1v2.docker.dev-franceconnect.fr/login-callback';
       const acrValues = 'eidas2';
       const clientId = undefined;
       //'6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950';

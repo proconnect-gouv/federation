@@ -23,8 +23,6 @@ import { HttpProxyModule } from '@fc/http-proxy';
 import { MailerModule } from '@fc/mailer';
 import { TrackingModule } from '@fc/tracking';
 import {
-  CoreController,
-  CoreService,
   CoreTrackingService,
   OidcClientTokenEventHandler,
   UserinfoEventHandler,
@@ -36,6 +34,8 @@ const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderService,
   ServiceProviderModule,
 );
+import { CoreFcaController } from './core-fca.controller';
+import { CoreFcaService } from './core-fca.service';
 
 @Global()
 @Module({
@@ -55,9 +55,9 @@ const oidcProviderModule = OidcProviderModule.register(
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),
   ],
-  controllers: [CoreController],
+  controllers: [CoreFcaController],
   providers: [
-    CoreService,
+    CoreFcaService,
     CoreTrackingService,
     OidcClientTokenEventHandler,
     UserinfoEventHandler,
