@@ -69,6 +69,9 @@ describe('CoreFcpController', () => {
   };
 
   const req = {
+    body: {
+      country: 'BE',
+    },
     fc: {
       interactionId: 'interactionIdMock',
     },
@@ -406,74 +409,15 @@ describe('CoreFcpController', () => {
     });
   });
 
-  describe('getLogin', () => {
-    it('should call crypto.getRandomString() and pass it to session', async () => {
-      // Given
-      const randomStringMock = 'randomStringMockValue';
-      cryptographyMock.genRandomString.mockReturnValue(randomStringMock);
-
-      const accountMock = {
-        sub:
-          'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2',
-        gender: 'female',
-        birthdate: '1962-08-24',
-        birthcountry: '99100',
-        birthplace: '75107',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        given_name: 'Angela Claire Louise',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        family_name: 'DUBOIS',
-        address: {
-          country: 'France',
-          formatted: 'France Paris 75107 20 avenue de Ségur',
-          locality: 'Paris',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          postal_code: '75107',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          street_address: '20 avenue de Ségur',
-        },
-        aud: 'myclientidforeidas-bridge',
-        exp: 1605004505,
-        iat: 1605004445,
-        iss: 'https://corev2.docker.dev-franceconnect.fr/api/v2',
-      };
-
+  describe('eidasLogin', () => {
+    it('should return a status code and a url', async () => {
       // When
-      await eidasBridgeController.getLogin(req, res, req.params);
-
+      const result = await eidasBridgeController.eidasLogin(req.body);
       // Then
-      expect(cryptographyMock.genRandomString).toHaveBeenCalledTimes(1);
-      expect(sessionMock.init).toHaveBeenCalledTimes(1);
-      expect(sessionMock.init).toHaveBeenCalledWith(res, req.params.uid, {
-        sessionId: randomStringMock,
-        spIdentity: accountMock,
+      expect(result).toEqual({
+        statusCode: 302,
+        url: '/eidas-client/redirect-to-fr-node-connector?country=BE',
       });
-    });
-
-    it('should call oidcProvider.finishInteraction', async () => {
-      // Given
-      const acrMock = 'eidas2';
-      // When
-      await eidasBridgeController.getLogin(req, res, req.params);
-      // Then
-      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
-        req,
-        res,
-        expect.objectContaining({
-          login: {
-            account: req.params.uid,
-            acr: acrMock,
-            ts: expect.any(Number),
-          },
-          consent: {
-            rejectedScopes: [],
-            rejectedClaims: [],
-          },
-        }),
-      );
     });
   });
 });
