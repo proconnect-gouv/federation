@@ -343,33 +343,35 @@ describe('OidcProviderService', () => {
   });
 
   describe('finishInteraction', () => {
+    // Given
+    const reqMock = {
+      fc: { interactionId: 'interactiondMockValue' },
+    };
+    const resMock = {};
+
     it('should return the result of oidc-provider.interactionFinished()', async () => {
       // Given
-      const reqMock = {};
-      const resMock = {};
-      const resultMock = {};
       const resolvedValue = Symbol('resolved value');
       providerMock.interactionFinished.mockResolvedValueOnce(resolvedValue);
+      sessionServiceMock.get.mockResolvedValueOnce({
+        spAcr: 'spAcrValue',
+      });
       // When
-      const result = await service.finishInteraction(
-        reqMock,
-        resMock,
-        resultMock,
-      );
+      const result = await service.finishInteraction(reqMock, resMock);
       // Then
       expect(result).toBe(resolvedValue);
     });
     it('should throw OidcProviderRuntimeException', async () => {
       // Given
-      const reqMock = {};
-      const resMock = {};
-      const resultMock = {};
       const nativeError = new Error('invalid_request');
       providerMock.interactionFinished.mockRejectedValueOnce(nativeError);
-
-      await expect(
-        service.finishInteraction(reqMock, resMock, resultMock),
-      ).rejects.toThrow(OidcProviderRuntimeException);
+      sessionServiceMock.get.mockResolvedValueOnce({
+        spAcr: 'spAcrValue',
+      });
+      // Then
+      await expect(service.finishInteraction(reqMock, resMock)).rejects.toThrow(
+        OidcProviderRuntimeException,
+      );
     });
   });
 

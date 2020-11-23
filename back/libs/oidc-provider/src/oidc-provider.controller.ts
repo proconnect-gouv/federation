@@ -6,20 +6,17 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
-  Inject,
   Body,
+  Req,
+  Res,
 } from '@nestjs/common';
 import { AuthorizeParamsDTO, RevocationTokenParamsDTO } from './dto';
 import { OidcProviderRoutes } from './enums';
-import { IServiceProviderService } from './interfaces';
-import { SERVICE_PROVIDER_SERVICE } from './tokens';
+import { OidcProviderService } from './oidc-provider.service';
 
 @Controller()
 export class OidcProviderController {
-  constructor(
-    @Inject(SERVICE_PROVIDER_SERVICE)
-    private readonly serviceProvider: IServiceProviderService,
-  ) {}
+  constructor(private readonly oidcProvider: OidcProviderService) {}
 
   /**
    * Authorize route via HTTP GET
@@ -61,6 +58,12 @@ export class OidcProviderController {
   postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDTO) {
     // Pass the query to oidc-provider
     return next();
+  }
+
+  @Post(OidcProviderRoutes.REDIRECT_TO_SP)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getLogin(@Req() req, @Res() res) {
+    return this.oidcProvider.finishInteraction(req, res);
   }
 
   @Post(OidcProviderRoutes.TOKEN)

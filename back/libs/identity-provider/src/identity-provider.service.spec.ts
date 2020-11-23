@@ -4,6 +4,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { EventBus } from '@nestjs/cqrs';
+import { IdentityProviderMetadata } from '@fc/oidc-client';
 import { IdentityProviderService } from './identity-provider.service';
 
 describe('IdentityProviderService', () => {
@@ -381,12 +382,12 @@ describe('IdentityProviderService', () => {
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: 'foo',
-        },
+        } as IdentityProviderMetadata,
         {
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: 'bar',
-        },
+        } as IdentityProviderMetadata,
       ];
       service['findAllIdentityProvider'] = jest.fn();
       // When

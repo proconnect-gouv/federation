@@ -238,17 +238,6 @@ describe('CoreFcaController', () => {
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
         req,
         res,
-        expect.objectContaining({
-          login: {
-            account: interactionIdMock,
-            acr: acrMock,
-            ts: expect.any(Number),
-          },
-          consent: {
-            rejectedScopes: [],
-            rejectedClaims: [],
-          },
-        }),
       );
     });
     it('should return result from controller.oidcProvider.finishInteraction()', async () => {

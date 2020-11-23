@@ -31,7 +31,7 @@ function getFrontRoutes(urlPrefix: string): string[] {
     `${urlPrefix}/interaction/:uid/verify`,
     `${urlPrefix}/interaction/:uid/consent`,
     `${urlPrefix}/interaction/:uid/logout`,
-    `${urlPrefix}/interaction/:uid/login`,
+    `${urlPrefix}/login`,
   ];
 }
 
@@ -86,7 +86,13 @@ export class SessionInterceptor implements NestInterceptor {
 
       await this.session.verify(interactionId, sessionId);
 
-      // Make interactionId available in `req`
+      /**
+       *
+       * Make interactionId available in `req`
+       *
+       * @todo #149 move this were it belongs: to ̀`@fc/core`
+       * This is not a generic "session" need
+       */
       if (!req.fc) {
         req.fc = {} as IFcReq;
       }

@@ -263,7 +263,7 @@ describe('CoreFcpController', () => {
       const req = {
         fc: { interactionId: interactionIdMock },
       };
-      const res = {};
+      const next = jest.fn();
       sessionServiceMock.get.mockResolvedValue({
         interactionId: interactionIdMock,
         spAcr: acrMock,
@@ -271,7 +271,7 @@ describe('CoreFcpController', () => {
         csrfToken: randomStringMock,
       });
       // Then
-      expect(coreController.getLogin(req, res, body, params)).rejects.toThrow(
+      expect(coreController.getLogin(req, next, body)).rejects.toThrow(
         CoreMissingIdentity,
       );
     });
@@ -281,9 +281,9 @@ describe('CoreFcpController', () => {
       const req = {
         fc: { interactionId: interactionIdMock },
       };
-      const res = {};
+      const next = jest.fn();
       // Then
-      expect(coreController.getLogin(req, res, body, params)).rejects.toThrow(
+      expect(coreController.getLogin(req, next, body)).rejects.toThrow(
         CoreInvalidCsrfException,
       );
     });
@@ -293,56 +293,27 @@ describe('CoreFcpController', () => {
       const req = {
         fc: { interactionId: interactionIdMock },
       };
-      const res = {};
+      const next = jest.fn();
 
       // action
-      await coreController.getLogin(req, res, body, params);
+      await coreController.getLogin(req, next, body);
 
       // expect
       expect(coreServiceMock.sendAuthenticationMail).toBeCalledTimes(1);
       expect(coreServiceMock.sendAuthenticationMail).toBeCalledWith(req);
     });
 
-    it('should call interactionFinished', async () => {
+    it('should call next', async () => {
       // Given
       const body = { _csrf: randomStringMock };
       const req = {
         fc: { interactionId: interactionIdMock },
       };
-      const res = {};
+      const next = jest.fn();
       // When
-      await coreController.getLogin(req, res, body, params);
+      await coreController.getLogin(req, next, body);
       // Then
-      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
-        req,
-        res,
-        expect.objectContaining({
-          login: {
-            account: interactionIdMock,
-            acr: acrMock,
-            ts: expect.any(Number),
-          },
-          consent: {
-            rejectedScopes: [],
-            rejectedClaims: [],
-          },
-        }),
-      );
-    });
-    it('should return result from controller.oidcProvider.finishInteraction()', async () => {
-      // Given
-      const body = { _csrf: randomStringMock };
-      const req = {
-        fc: { interactionId: interactionIdMock },
-      };
-      const res = {};
-      // When
-      const result = await coreController.getLogin(req, res, body, params);
-      // Then
-      expect(result).toBe(interactionFinishedValue);
+      expect(next).toHaveBeenCalledTimes(1);
     });
   });
 

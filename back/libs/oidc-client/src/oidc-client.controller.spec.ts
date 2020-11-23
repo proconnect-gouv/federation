@@ -5,7 +5,7 @@ import { TrackingService } from '@fc/tracking';
 import { ConfigService } from '@fc/config';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { OidcClientController } from './oidc-client.controller';
-import { OidcClientService } from './oidc-client.service';
+import { OidcClientService } from './services';
 
 describe('OidcClient Controller', () => {
   let oidcClientController: OidcClientController;
@@ -49,6 +49,7 @@ describe('OidcClient Controller', () => {
   };
 
   const stateMock = 'stateMock';
+  const nonceMock = 'nonceMock';
 
   const providerIdMock = 'providerIdMockValue';
 
@@ -94,10 +95,14 @@ describe('OidcClient Controller', () => {
     jest.resetAllMocks();
 
     identityProviderServiceMock.getById.mockReturnValue({ name: 'foo' });
-    sessionServiceMock.get.mockResolvedValue({ idpState: stateMock });
+    sessionServiceMock.get.mockResolvedValue({
+      idpState: stateMock,
+      idpNonce: nonceMock,
+    });
 
     oidcClientServiceMock.buildAuthorizeParameters.mockReturnValue({
       state: stateMock,
+      nonce: nonceMock,
       scope: 'scopeMock',
       providerUid: providerIdMock,
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -135,7 +140,7 @@ describe('OidcClient Controller', () => {
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(mockedoidcClientService);
     });
-    it('should store state in session', async () => {
+    it('should store state and nonce in session', async () => {
       // setup
       const body = {
         scope: 'openid',
@@ -163,6 +168,7 @@ describe('OidcClient Controller', () => {
           idpId: body.providerUid,
           idpName: 'foo',
           idpState: stateMock,
+          idpNonce: nonceMock,
         },
       );
     });
@@ -200,6 +206,7 @@ describe('OidcClient Controller', () => {
         req,
         providerUid,
         stateMock,
+        nonceMock,
       );
       expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledWith(

@@ -17,7 +17,7 @@
       </p>
     </section>
 
-    <a href="/api/v2/interaction/<%=locals.interactionId%>/login?_csrf=<%=locals.code%>" id="consent"
+    <a href="/api/v2/login?_csrf=<%=locals.code%>" id="consent"
       class="content__continue">Continuer sur
       <%= locals.spName %></a>
 
@@ -31,7 +31,7 @@
         <a href="#" class="section__more-info">Ce n’est pas vous ?</a>
       </section>
 
-      <form method="POST" action="/api/v2/interaction/<%=locals.interactionId%>/login" name="fc-consent">
+      <form method="POST" action="/api/v2/login" name="fc-consent">
         <button type="submit" id="consent" class="content__continue">Continuer sur <%= locals.spName %></button>
 
         <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
