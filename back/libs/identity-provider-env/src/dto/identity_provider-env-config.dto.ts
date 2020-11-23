@@ -12,6 +12,7 @@ export class IdentityProviderEnvConfig {
   readonly provider: ClientMetadata;
 
   @IsUrl()
+  @IsOptional()
   readonly discoveryUrl: string;
 
   /**

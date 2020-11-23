@@ -102,6 +102,20 @@
         ]
       }
     },
+    "user-dashboard-instance": {
+      "type": "application",
+      "root": "instances/user-dashboard",
+      "entryFile": "main",
+      "sourceRoot": "instances/user-dashboard/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/user-dashboard/tsconfig.app.json",
+        "assets": [
+          "../../../apps/user-dashboard/**/*.ejs",
+          "../../../apps/user-dashboard/**/*.css",
+          "../../../apps/user-dashboard/**/*.svg"
+        ]
+      }
+    },
     "rnipp": {
       "type": "library",
       "root": "libs/rnipp",
@@ -226,6 +240,15 @@
       "sourceRoot": "apps/core-fcp/src",
       "compilerOptions": {
         "tsConfigPath": "apps/core-fcp/tsconfig.lib.json"
+      }
+    },
+    "user-dashboard": {
+      "type": "library",
+      "root": "apps/user-dashboard",
+      "entryFile": "index",
+      "sourceRoot": "apps/user-dashboard/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/user-dashboard/tsconfig.lib.json"
       }
     },
     "csmr-hsm": {

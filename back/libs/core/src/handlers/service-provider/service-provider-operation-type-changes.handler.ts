@@ -3,14 +3,14 @@
 // Declarative code
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
 import { ServiceProviderOperationTypeChangesEvent } from '@fc/service-provider';
-import { OidcClientService } from '@fc/oidc-client';
+import { OidcProviderService } from '@fc/oidc-provider';
 
 @EventsHandler(ServiceProviderOperationTypeChangesEvent)
 export class ServiceProviderOperationTypeChangesHandler
   implements IEventHandler<ServiceProviderOperationTypeChangesEvent> {
-  constructor(private readonly oidcClient: OidcClientService) {}
+  constructor(private readonly oidcProvider: OidcProviderService) {}
 
   public async handle(): Promise<void> {
-    this.oidcClient.reloadConfiguration();
+    this.oidcProvider.reloadConfiguration();
   }
 }

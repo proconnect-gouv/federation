@@ -10,7 +10,7 @@ import {
   ValidationPipe,
   UsePipes,
 } from '@nestjs/common';
-import { OidcClientService } from './oidc-client.service';
+import { OidcClientService } from './services';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 import { AppConfig } from '@fc/app';
@@ -20,7 +20,6 @@ import { IIdentityProviderService } from './interfaces';
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from './events';
 import { RedirectToIdp, GetOidcCallback } from './dto';
 import { OidcClientRoutes } from './enums';
-
 @Controller()
 export class OidcClientController {
   constructor(
@@ -32,6 +31,9 @@ export class OidcClientController {
     private readonly config: ConfigService,
   ) {}
 
+  /**
+   * @todo #242 get configured parameters (scope and acr)
+   */
   @Post(OidcClientRoutes.REDIRECT_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async redirectToIdp(@Res() res, @Req() req, @Body() body: RedirectToIdp) {
@@ -42,7 +44,8 @@ export class OidcClientController {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
-    } = this.oidcClient.buildAuthorizeParameters(body);
+      nonce,
+    } = await this.oidcClient.buildAuthorizeParameters(body);
 
     const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
       state,
@@ -51,6 +54,7 @@ export class OidcClientController {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
+      nonce,
     );
 
     const { name: idpName } = await this.identityProvider.getById(providerUid);
@@ -59,11 +63,23 @@ export class OidcClientController {
       idpId: providerUid,
       idpName,
       idpState: state,
+      idpNonce: nonce,
     });
 
     res.redirect(authorizationUrl);
   }
 
+  /**
+   * @TODO Handle caching `client` or passing it to the service
+   * to avoid double discovery.
+   *
+   * Currently the two methods, `getTokenSet` and `getUserinfo`, each make their own call
+   * to `getClient`, which, if enabled, queries the idp discovery url.
+   *
+   * This results in 2 additionals HTTP queries instead of one or zero (agressive caching)
+   *
+   * Note that this controller already has to perform 2 HTTP queries to idp (`/token` & `/userinfo`)
+   */
   @Get(OidcClientRoutes.OIDC_CALLBACK)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getOidcCallback(
@@ -73,13 +89,14 @@ export class OidcClientController {
   ) {
     const { providerUid } = params;
     const uid = req.fc.interactionId;
-    const { idpState } = await this.session.get(uid);
+    const { idpState, idpNonce } = await this.session.get(uid);
 
     // OIDC: call idp's /token endpoint
     const tokenSet = await this.oidcClient.getTokenSet(
       req,
       providerUid,
       idpState,
+      idpNonce,
     );
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention

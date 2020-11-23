@@ -11,6 +11,7 @@ export interface ISession {
 
   /** Identity provider informations */
   idpState?: string;
+  idpNonce?: string;
   idpId?: string;
   idpAcr?: string;
   idpName?: string;

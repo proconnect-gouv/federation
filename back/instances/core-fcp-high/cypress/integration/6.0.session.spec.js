@@ -14,7 +14,7 @@ describe('Session', () => {
 
     cy.get('#consent').click();
 
-    cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/login`));
+    cy.url().should('match', new RegExp(`\/login`));
     cy.hasError('Y150003');
   });
 

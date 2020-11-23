@@ -73,33 +73,11 @@ export class CoreFcaController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getLogin(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { interactionId } = req.fc;
-    const { spAcr, spIdentity } = await this.session.get(interactionId);
+    const { spIdentity } = await this.session.get(interactionId);
     if (!spIdentity) {
       throw new CoreMissingIdentity();
     }
 
-    /**
-     * Build Interaction results
-     * For all available options, refer to `oidc-provider` documentation:
-     * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#user-flows
-     */
-    const result = {
-      login: {
-        account: interactionId,
-        acr: spAcr,
-        ts: Math.floor(Date.now() / 1000),
-      },
-      /**
-       * We need to return this information, it will always be empty arrays
-       * since franceConnect does not allow for partial authorizations yet,
-       * it's an "all or nothing" consent.
-       */
-      consent: {
-        rejectedScopes: [],
-        rejectedClaims: [],
-      },
-    };
-
-    return this.oidcProvider.finishInteraction(req, res, result);
+    return this.oidcProvider.finishInteraction(req, res);
   }
 }
