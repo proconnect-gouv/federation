@@ -1,66 +1,43 @@
 {
-  "parser": "@typescript-eslint/parser",
+  "root": true,
   "parserOptions": {
-    "ecmaFeatures": {
-      "jsx": true
-    },
-    "ecmaVersion": 2020,
-    "sourceType": "module",
     "project": "./tsconfig.json"
   },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true,
+    "jest": true
+  },
   "plugins": [
-    "react",
-    "@typescript-eslint",
     "simple-import-sort",
     "import",
     "sort-destructure-keys",
-    "sort-keys-fix",
-    "cypress",
-    "jest"
+    "sort-keys-fix"
   ],
-  "extends": [
-    "eslint:recommended",
-    "airbnb-typescript",
-    "airbnb/hooks",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:jest/recommended",
-    "prettier",
-    "prettier/react",
-    "prettier/@typescript-eslint",
-    "plugin:prettier/recommended"
-  ],
-  "root": true,
-  "env": {
-    "browser": true,
-    "node": true,
-    "es6": true,
-    "jest": true,
-    "cypress/globals": true
-  },
-  "globals": {
-    "Atomics": "readonly",
-    "SharedArrayBuffer": "readonly"
-  },
+  "extends": ["react-app", "airbnb-typescript", "prettier", "prettier/react"],
   "rules": {
-    "no-console": 2,
-    "@typescript-eslint/explicit-module-boundary-types": 2,
-    "@typescript-eslint/camelcase": "off",
     "import/first": 2,
     "import/newline-after-import": 2,
-    "import/no-duplicates": 2,
-    "import/no-extraneous-dependencies": [2, { "peerDependencies": true }],
-    "newline-per-chained-call": [2, { "ignoreChainWithDepth": 2 }],
-    "linebreak-style": "off",
-    "prettier/prettier": [2, { "endOfLine": "auto" }],
-    "padding-line-between-statements": [
+    "import/no-extraneous-dependencies": [
       2,
-      { "blankLine": "always", "prev": ["function"], "next": "*" }
+      {
+        "devDependencies": false,
+        "optionalDependencies": false,
+        "peerDependencies": true
+      }
     ],
-    "react/jsx-key": [2, { "checkFragmentShorthand": false }],
-    "react/jsx-filename-extension": [2, { "extensions": [".tsx"] }],
+    "import/no-duplicates": 2,
+    "react/jsx-closing-bracket-location": [
+      2,
+      { "nonEmpty": "after-props", "selfClosing": false }
+    ],
     "react/jsx-fragments": [2, "element"],
-    "react/jsx-indent-props": [2, 2],
+    "react/jsx-indent": [
+      2,
+      2,
+      { "checkAttributes": false, "indentLogicalExpressions": true }
+    ],
     "react/jsx-props-no-spreading": 0,
     "react/jsx-sort-props": [
       2,
