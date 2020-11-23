@@ -156,7 +156,7 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FC_REDIRECTED_TO_SP',
       exceptions: [],
-      route: `${urlPrefix}/interaction/:uid/login`,
+      route: `${urlPrefix}/login`,
       intercept: true,
     },
 

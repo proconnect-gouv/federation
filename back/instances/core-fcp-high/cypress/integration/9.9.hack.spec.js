@@ -5,7 +5,7 @@ describe('Interaction steps discarding', () => {
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
   /**
-   * @TODO #252 
+   * @TODO #252
    * ETQ Dev, je vérifie la pertinence des tests cypress
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/252
    */
@@ -18,7 +18,7 @@ describe('Interaction steps discarding', () => {
     cy.hasError('Y150003');
   });
   /**
-   * @TODO #252 
+   * @TODO #252
    * ETQ Dev, je vérifie la pertinence des tests cypress
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/252
    */
@@ -56,7 +56,7 @@ describe('Interaction steps discarding', () => {
 
     cy.get('#consent').click();
 
-    cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/login`));
+    cy.url().should('match', new RegExp(`\/login`));
     cy.hasError('Y000005');
   });
   it('should trigger error Y000005 when csrf token is empty', () => {
@@ -71,7 +71,7 @@ describe('Interaction steps discarding', () => {
 
     cy.get('#consent').click();
 
-    cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/login`));
+    cy.url().should('match', new RegExp(`\/login`));
     cy.hasError('Y000005');
   });
   it('should display "Not found" if we GET on /consent', () => {
@@ -104,7 +104,7 @@ describe('Interaction steps discarding', () => {
 
     cy.get('#consent').click();
 
-    cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/login`));
+    cy.url().should('match', new RegExp(`\/login`));
     cy.hasError('Y000400');
   });
 });

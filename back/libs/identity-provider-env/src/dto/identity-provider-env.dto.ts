@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsOptional,
   IsString,
   IsArray,
   IsUrl,
@@ -7,6 +8,10 @@ import {
 } from 'class-validator';
 
 export class IdentityProviderEnvDTO {
+  @IsString()
+  @IsOptional()
+  readonly issuer: string;
+
   @IsString()
   readonly uid: string;
 
@@ -30,7 +35,26 @@ export class IdentityProviderEnvDTO {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_secret: string;
 
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly authorization_endpoint: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly token_endpoint: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly userinfo_endpoint: string;
+
   @IsUrl()
+  @IsOptional()
   readonly discoveryUrl: string;
 
   @IsArray()
@@ -57,26 +81,31 @@ export class IdentityProviderEnvDTO {
   readonly id_token_signed_response_alg: string;
 
   @IsString()
+  @IsOptional()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly id_token_encrypted_response_alg: string;
 
   @IsString()
+  @IsOptional()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly id_token_encrypted_response_enc: string;
 
   @IsString()
+  @IsOptional()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly userinfo_signed_response_alg: string;
 
   @IsString()
+  @IsOptional()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly userinfo_encrypted_response_alg: string;
 
   @IsString()
+  @IsOptional()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly userinfo_encrypted_response_enc: string;

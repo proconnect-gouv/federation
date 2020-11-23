@@ -1,4 +1,4 @@
-import { parseBoolean } from './parseBoolean';
+import { parseBoolean } from './parse-boolean';
 
 describe('parseBoolean transform', () => {
   it('should return true with input "true"', () => {

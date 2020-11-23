@@ -250,7 +250,13 @@
       ],
       "@fc/eidas-provider/*": [
         "libs/eidas-provider/src/*"
-      ]
+      ],
+      "@fc/user-dashboard": [
+        "apps/user-dashboard/src"
+      ],
+      "@fc/user-dashboard/*": [
+        "apps/user-dashboard/src/*"
+      ],
     }
   },
   "exclude": [

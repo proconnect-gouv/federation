@@ -16,6 +16,7 @@ describe('OidcProviderController', () => {
     getProvider: () => providerMock,
     wellKnownKeys: jest.fn(),
     decodeAuthorizationHeader: jest.fn(),
+    finishInteraction: jest.fn(),
   };
 
   const serviceProviderServiceMock = {
@@ -89,6 +90,24 @@ describe('OidcProviderController', () => {
       oidcProviderController.getUserInfo(next);
       // Then
       expect(next).toBeCalledTimes(1);
+    });
+  });
+
+  describe('getLogin', () => {
+    it('should call service.finishInteraction', async () => {
+      // Given
+      const req = {};
+      const res = {};
+      // When
+      await oidcProviderController.getLogin(req, res);
+      // Then
+      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
+        req,
+        res,
+      );
     });
   });
 

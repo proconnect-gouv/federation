@@ -9,6 +9,7 @@ import {
   ValidationPipe,
   Param,
   Body,
+  Next,
 } from '@nestjs/common';
 
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -108,17 +109,10 @@ export class CoreFcpController {
 
   @Post(CoreRoutes.INTERACTION_LOGIN)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async getLogin(
-    @Req() req,
-    @Res() res,
-    @Body() body: CsrfToken,
-    @Param() _params: Interaction,
-  ) {
+  async getLogin(@Req() req, @Next() next, @Body() body: CsrfToken) {
     const { _csrf: csrf } = body;
     const { interactionId } = req.fc;
-    const { spAcr, spIdentity, csrfToken } = await this.session.get(
-      interactionId,
-    );
+    const { spIdentity, csrfToken } = await this.session.get(interactionId);
 
     if (csrf !== csrfToken) {
       throw new CoreInvalidCsrfException();
@@ -128,33 +122,12 @@ export class CoreFcpController {
       throw new CoreMissingIdentity();
     }
 
-    this.logger.debug('Sending authentication email to the end-user');
     // send the notification mail to the final user
+    this.logger.debug('Sending authentication email to the end-user');
     await this.core.sendAuthenticationMail(req);
 
-    /**
-     * Build Interaction results
-     * For all available options, refer to `oidc-provider` documentation:
-     * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#user-flows
-     */
-    const result = {
-      login: {
-        account: interactionId,
-        acr: spAcr,
-        ts: Math.floor(Date.now() / 1000),
-      },
-      /**
-       * We need to return this information, it will always be empty arrays
-       * since franceConnect does not allow for partial authorizations yet,
-       * it's an "all or nothing" consent.
-       */
-      consent: {
-        rejectedScopes: [],
-        rejectedClaims: [],
-      },
-    };
-
-    return this.oidcProvider.finishInteraction(req, res, result);
+    // Pass the query to `@fc/oidc-provider` controller
+    return next();
   }
 
   /**

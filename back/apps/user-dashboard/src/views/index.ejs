@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <%- include('includes/head') %>
+    <title><%= locals.titleFront %></title>
+  </head>
+  <body>
+    <%- include('includes/menu') %>
+    <section class="welcome">
+      <div class="container text-center">
+        <h1>Bienvenue sur le démonstrateur de fournisseur de service</h1>
+      </div>
+    </section>
+
+    <div class="container">
+      <br />
+      <div class="text-center text-danger">
+        Vous devez vous authentifier afin d'accéder à vos données personnelles.
+      </div>
+
+      <section class="connect bg-light">
+        <h2>Connectez-vous via FranceConnect (POST sur authorize)</h2>
+        <form action="/redirect-to-idp" method="POST">
+          <input type="hidden" name="providerUid" value="corev2" />
+          <input
+            type="hidden"
+            name="scope"
+            value="openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone"
+          />
+          <input type="hidden" name="response_type" value="code" />
+          <input
+            type="hidden"
+            name="redirect_uri"
+            value="https://fsp1v2.docker.dev-franceconnect.fr/login-callback"
+          />
+          <input type="hidden" name="state" value="<%= state %>" />
+          <input type="hidden" name="acr_values" value="eidas1" />
+
+          <button
+            id="post-authorize"
+            type="submit"
+            class="btn no-pad"
+            role="button"
+          >
+            <img
+              src="/img/FCboutons-10.svg"
+              alt="Connexion FC"
+              class="d-inline-block align-top"
+            />
+          </button>
+        </form>
+      </section>
+    </div>
+
+    <%- include('includes/footer') %>
+  </body>
+</html>

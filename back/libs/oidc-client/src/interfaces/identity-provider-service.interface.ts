@@ -1,10 +1,11 @@
-import { ClientMetadata } from 'openid-client';
+import { ClientMetadata, IssuerMetadata } from '../dto';
 
 /**
  * Alias and export interface provided by `openid-client` from our module,
  * so that we do not expose our depency to `openid-client`.
  */
-export type IdentityProviderMetadata = ClientMetadata;
+export type IdentityProviderMetadata = ClientMetadata &
+  IssuerMetadata & { [key: string]: any };
 
 export interface IIdentityProviderService {
   getList(refeshCache?: boolean): Promise<IdentityProviderMetadata[]>;

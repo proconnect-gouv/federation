@@ -28,6 +28,10 @@ export class SessionDto {
 
   @IsString()
   @IsOptional()
+  readonly idpNonce?: string;
+
+  @IsString()
+  @IsOptional()
   readonly idpId?: string;
 
   @IsString()

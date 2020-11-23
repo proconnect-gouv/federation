@@ -8,7 +8,11 @@ import { TrackingModule } from '@fc/tracking';
 import { CryptographyModule } from '@fc/cryptography';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
-import { OidcClientService } from './oidc-client.service';
+import {
+  OidcClientService,
+  OidcClientConfigService,
+  OidcClientIssuerService,
+} from './services';
 import { OidcClientController } from './oidc-client.controller';
 
 @Module({})
@@ -33,6 +37,8 @@ export class OidcClientModule {
         },
         OidcClientService,
         SessionService,
+        OidcClientConfigService,
+        OidcClientIssuerService,
       ],
       exports: [OidcClientService],
       controllers: [OidcClientController],
