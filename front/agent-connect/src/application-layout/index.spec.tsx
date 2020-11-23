@@ -1,4 +1,4 @@
-import { render, screen, wait } from '@testing-library/react';
+import { render, waitFor } from '@testing-library/react';
 import React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -36,15 +36,15 @@ describe('ApplicationLayout', () => {
   describe('render', () => {
     it('should render application layout with page title for mock-path route when component is mounted', async () => {
       const { path } = ROUTES_MOCK[1];
-      render(
+      const { getByRole } = render(
         <MemoryRouter initialEntries={[path]} initialIndex={0}>
           <ApplicationLayout routes={ROUTES_MOCK} />
-        </MemoryRouter>
+        </MemoryRouter>,
       );
-      await wait(() =>
-        expect(document.title).toStrictEqual('mock-path-title - AgentConnect')
+      await waitFor(() =>
+        expect(document.title).toStrictEqual('mock-path-title - AgentConnect'),
       );
-      expect(screen.getByRole('heading')).toHaveTextContent('Section title');
+      expect(getByRole('heading')).toHaveTextContent('Section title');
     });
   });
 

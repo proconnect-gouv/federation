@@ -1,0 +1,31 @@
+@import './../../styles/_colors.scss';
+
+.fc-autocomplete-dropdown {
+  border-radius: 4px;
+
+  .ant-select-item-option {
+    font-size: 1.1rem;
+    padding: 0.5rem 1.2rem;
+
+    &::before {
+      // display search results as bullet list
+      content: '•';
+      margin-right: 0.5rem;
+    }
+
+    &:hover,
+    &-selected:not(.ant-select-item-option-disabled) {
+      background: transparent;
+      color: $primary;
+      font-weight: normal;
+
+      .ant-select-item-option-content {
+        text-decoration: underline;
+      }
+    }
+
+    &-active:not(.ant-select-item-option-disabled) {
+      background: transparent;
+    }
+  }
+}
