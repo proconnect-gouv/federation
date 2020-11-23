@@ -3,7 +3,7 @@ stages:
   - 'End to end'
 
 global:
-  image: node:12.16.1
+  image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
   stage: 'Unit tests'
   script:
     - cd back/
