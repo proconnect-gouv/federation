@@ -76,7 +76,7 @@ export class EidasBridgeController {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
-    } = this.oidcClient.buildAuthorizeParameters(params);
+    } = await this.oidcClient.buildAuthorizeParameters(params);
 
     const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
       state,

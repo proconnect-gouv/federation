@@ -332,7 +332,31 @@ export class OidcProviderService {
    * @param req
    * @param res
    */
-  async finishInteraction(req, res, result) {
+  async finishInteraction(req, res) {
+    const { interactionId } = req.fc;
+    const { spAcr } = await this.session.get(interactionId);
+    /**
+     * Build Interaction results
+     * For all available options, refer to `oidc-provider` documentation:
+     * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#user-flows
+     */
+    const result = {
+      login: {
+        account: interactionId,
+        acr: spAcr,
+        ts: Math.floor(Date.now() / 1000),
+      },
+      /**
+       * We need to return this information, it will always be empty arrays
+       * since franceConnect does not allow for partial authorizations yet,
+       * it's an "all or nothing" consent.
+       */
+      consent: {
+        rejectedScopes: [],
+        rejectedClaims: [],
+      },
+    };
+
     try {
       return await this.provider.interactionFinished(req, res, result);
     } catch (error) {

@@ -3,5 +3,5 @@ export enum CoreRoutes {
   INTERACTION = '/interaction/:uid',
   INTERACTION_VERIFY = '/interaction/:uid/verify',
   INTERACTION_CONSENT = '/interaction/:uid/consent',
-  INTERACTION_LOGIN = '/interaction/:uid/login',
+  INTERACTION_LOGIN = '/login',
 }

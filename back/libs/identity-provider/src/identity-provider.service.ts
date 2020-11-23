@@ -176,6 +176,10 @@ export class IdentityProviderService implements IIdentityProviderService {
 
     delete result.clientID;
 
-    return result as IdentityProviderMetadata;
+    /**
+     * @TODO Fix type issues between legacy model and `oidc-client` library
+     * We have non blocking incompatilities.
+     */
+    return (result as unknown) as IdentityProviderMetadata;
   }
 }

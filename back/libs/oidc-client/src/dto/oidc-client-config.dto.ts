@@ -11,9 +11,9 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { ClientMetadata } from 'openid-client';
 import { JSONWebKeySet } from 'jose';
 import { Type } from 'class-transformer';
+import { IdentityProviderMetadata } from '../interfaces';
 
 class HttpOptions {
   @IsString()
@@ -31,7 +31,7 @@ class HttpOptions {
 export class OidcClientConfig {
   @IsArray()
   @IsOptional()
-  readonly providers?: ClientMetadata[];
+  readonly providers?: IdentityProviderMetadata[];
 
   @ValidateNested()
   @Type(() => HttpOptions)

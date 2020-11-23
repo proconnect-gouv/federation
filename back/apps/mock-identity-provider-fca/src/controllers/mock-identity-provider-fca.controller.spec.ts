@@ -215,24 +215,6 @@ describe('MockIdentityProviderFcaController', () => {
       ).rejects.toThrow(MockIdentityProviderAccountBannedException);
     });
 
-    it('should call session.get with interactionId', async () => {
-      // Given
-      const accountMock = {};
-      mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
-        accountMock,
-      );
-      const interactionId: string = interactionIdMock;
-      const body = {
-        interactionId,
-        login: loginMockValue,
-      };
-      // When
-      await controller.getLogin(req, res, interactionId, body);
-      // Then
-      expect(sessionMock.get).toBeCalledTimes(1);
-      expect(sessionMock.get).toBeCalledWith(req.fc.interactionId);
-    });
-
     it('should call oidcProvider.finishInteraction', async () => {
       // Given
       const accountMock = {};
@@ -253,17 +235,6 @@ describe('MockIdentityProviderFcaController', () => {
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
         req,
         res,
-        expect.objectContaining({
-          login: {
-            account: interactionId,
-            acr: sessionMockValue.spAcr,
-            ts: expect.any(Number),
-          },
-          consent: {
-            rejectedScopes: [],
-            rejectedClaims: [],
-          },
-        }),
       );
     });
   });

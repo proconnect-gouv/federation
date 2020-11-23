@@ -84,34 +84,10 @@ export class MockIdentityProviderFcaController {
     };
 
     // Save in session
-    /**
-     * @todo
-     * - Set the eIDAS level in a configuration file
-     * - Transform the sessiosninit into
-     */
-    const { spAcr } = await this.session.get(interactionId);
-
     this.session.patch(interactionId, {
       spIdentity,
     });
 
-    const result = {
-      login: {
-        account: interactionId,
-        acr: spAcr,
-        ts: Math.floor(Date.now() / 1000),
-      },
-      /**
-       * We need to return this information, it will always be empty arrays
-       * since franceConnect does not allow for partial authorizations yet,
-       * it's an "all or nothing" consent.
-       */
-      consent: {
-        rejectedScopes: [],
-        rejectedClaims: [],
-      },
-    };
-
-    return this.oidcProvider.finishInteraction(req, res, result);
+    return this.oidcProvider.finishInteraction(req, res);
   }
 }

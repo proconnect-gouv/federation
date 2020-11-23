@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
+import { IdentityProviderMetadata } from '@fc/oidc-client';
 import { IdentityProviderEnvService } from './identity-provider-env.service';
 
 describe('IdentityProviderEnvService', () => {
@@ -202,7 +203,7 @@ describe('IdentityProviderEnvService', () => {
       const result = await service['findAllIdentityProvider']();
 
       // expect
-      expect(result).toEqual(identityProviderListMock.map((config) => config));
+      expect(result).toEqual(identityProviderListMock);
     });
 
     it('should log a warning if an entry is not validated by the DTO', async () => {
@@ -312,12 +313,12 @@ describe('IdentityProviderEnvService', () => {
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: 'foo',
-        },
+        } as IdentityProviderMetadata,
         {
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: 'bar',
-        },
+        } as IdentityProviderMetadata,
       ];
       service['findAllIdentityProvider'] = jest.fn();
       // When

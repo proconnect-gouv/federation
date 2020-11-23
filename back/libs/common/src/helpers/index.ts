@@ -3,4 +3,5 @@
 // Declarative code
 export * from './dto-validation';
 export * from './async-filter';
-export * from './parseBoolean';
+export * from './parse-boolean';
+export * from './parse-json-property';
