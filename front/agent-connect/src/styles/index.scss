@@ -28,7 +28,8 @@ html,
   min-height: 100%;
 }
 
-a {
+a,
+.btn-link {
   color: $charcoal-grey;
 
   &:hover {

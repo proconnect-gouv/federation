@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+// nothing to test
 import React from 'react';
 
 function FooterComponent(): JSX.Element {

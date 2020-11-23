@@ -1,0 +1,12 @@
+/* istanbul ignore file */
+// declarative file
+export const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
+
+export const REDUX_PERSIST_STORAGE_KEY = 'AgentConnect::local::state';
+
+export const ACTION_TYPES = {
+  IDENTITY_PROVIDER_ADD: 'IDENTITY_PROVIDER_ADD',
+  IDENTITY_PROVIDER_REMOVE: 'IDENTITY_PROVIDER_REMOVE',
+  MINISTRY_LIST_LOAD_COMPLETED: 'MINISTRY_LIST_LOAD_COMPLETED',
+  MINISTRY_LIST_LOAD_START: 'MINISTRY_LIST_LOAD_START',
+};

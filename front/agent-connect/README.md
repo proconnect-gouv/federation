@@ -1,3 +1,34 @@
+# Architecture du dossier `src`
+
+**src/index.ts**
+
+- gère les composants/décorateurs principaux de l'application (redux, router...)
+- charge `applicationlayout` qui permet l'affichage des éléments architecturaux principaux (header/footer) communs aux pages
+
+**src/application-layout**
+
+- responsable de l'affichage du header/footer
+- responsable de la page a afficher requêtée par le navigateur
+
+**src/routes.ts**
+
+- fichier déclaratif des routes/pages de l'application
+
+**src/pages**
+
+- chaque fichiers représente une page de l'application
+- l'affichage de ces pages est géré par le `applicationLayout`
+
+**src/components**
+
+- dossier contenant les features/blocks visuels partageables entre toutes les applications
+
+**src/constants.ts**
+
+- fichier des constantes globales à l'application
+
+**src/redux**
+
 # KISS
 
 Le dossier contient des templates de fichier
