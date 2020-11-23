@@ -15,8 +15,8 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
-    "types": ["node", "jest", "cypress"]
+    "types": ["node", "jest", "cypress", "@testing-library/jest-dom"]
   },
-  "include": ["**/src/**/*.ts", "**/src/**/*.tsx"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "include": ["src"],
+  "exclude": ["node_modules", "**/*.spec.js"]
 }

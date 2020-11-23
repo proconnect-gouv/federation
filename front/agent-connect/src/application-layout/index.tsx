@@ -8,8 +8,8 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-import { IRoute } from '../interfaces';
 import NotFoundPage from '../pages/not-found.page';
+import { IRoute } from '../types';
 import LayoutFooter from './layout-footer';
 import LayoutHeader from './layout-header';
 
@@ -26,10 +26,10 @@ export const getDocumentTitle = (obj: IRoute | undefined): string => {
 
 export const getCurrentRouteObjectByPath = (
   entries: IRoute[],
-  locationPathname: string
+  locationPathname: string,
 ): IRoute | undefined => {
-  const found = entries.find(route =>
-    matchPath(locationPathname, route as RouteProps)
+  const found = entries.find((route: RouteProps) =>
+    matchPath(locationPathname, route),
   );
   return found;
 };

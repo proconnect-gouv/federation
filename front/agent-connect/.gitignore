@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/macos,node,react,linux,windows
-# Edit at https://www.toptal.com/developers/gitignore?templates=macos,node,react,linux,windows
+# Created by https://www.toptal.com/opers/gitignore/api/macos,node,react,linux,windows
+# Edit at https://www.toptal.com/opers/gitignore?templates=macos,node,react,linux,windows
 
 ### Linux ###
 *~
@@ -200,5 +200,7 @@ $RECYCLE.BIN/
 
 ## FranceConnect specific
 
+build/
+.env.development
 cypress/snapshots
 cypress/screenshots

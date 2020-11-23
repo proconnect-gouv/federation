@@ -1,0 +1,38 @@
+{
+  "serviceProviderName": "Mes démarches",
+  "redirectURL": "https://fca.docker.dev-franceconnect.fr/api/v2/redirect-to-idp",
+  "ministries": [
+    {
+      "id": "minstere-de-linterieur",
+      "identityProviders": [
+        {
+          "name": "1er fi intérieur",
+          "uid": "1er-fi-interieur"
+        },
+        {
+          "name": "2eme fi intérieur",
+          "uid": "2eme-fi-interieur"
+        },
+        {
+          "name": "3eme fi intérieur",
+          "uid": "3eme-fi-interieur"
+        }
+      ],
+      "name": "Ministère de l'intérieur"
+    },
+    {
+      "id": "minstere-de-la-sante",
+      "identityProviders": [
+        {
+          "name": "1er fi santé",
+          "uid": "1er-fi-sante"
+        },
+        {
+          "name": "2eme fi santé",
+          "uid": "2eme-fi-sante"
+        }
+      ],
+      "name": "Ministère de la santé"
+    }
+  ]
+}
