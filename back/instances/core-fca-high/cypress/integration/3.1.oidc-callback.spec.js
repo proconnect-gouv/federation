@@ -2,9 +2,10 @@ import * as qs from 'querystring';
 
 function getOidcCallbackUrl(interactionId, event) {
   cy.request({
-    url: `${Cypress.env('IDP_ROOT_URL')}/interaction/${interactionId}/login`,
+    url: `${Cypress.env('IDP_ROOT_URL')}/login`,
     method: 'POST',
     body: {
+      interactionId,
       login: 'test',
       password: '123',
       acr: 'eidas2',
