@@ -5,10 +5,6 @@ import { SessionService } from '@fc/session';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { MockIdentityProviderFcaService } from '../services';
 import { MockIdentityProviderFcaController } from './mock-identity-provider-fca.controller';
-import {
-  MockIdentityProviderAccountBannedException,
-  MockIdentityProviderNoAccountException,
-} from '../exceptions';
 
 describe('MockIdentityProviderFcaController', () => {
   let controller: MockIdentityProviderFcaController;
@@ -21,6 +17,8 @@ describe('MockIdentityProviderFcaController', () => {
   const res = {
     redirect: jest.fn(),
   };
+
+  const next = jest.fn();
 
   const oidcClientServiceMock = {
     getAuthorizeUrl: jest.fn(),
@@ -161,7 +159,6 @@ describe('MockIdentityProviderFcaController', () => {
       });
     });
   });
-
   describe('getLogin', () => {
     const interactionId: string = interactionIdMock;
     const body = {
@@ -176,7 +173,7 @@ describe('MockIdentityProviderFcaController', () => {
         identityMock,
       );
       // When
-      await controller.getLogin(req, res, interactionId, body);
+      await controller.getLogin(next, body);
       // Then
 
       expect(
@@ -187,35 +184,7 @@ describe('MockIdentityProviderFcaController', () => {
       ).toHaveBeenCalledWith(body.login);
     });
 
-    it('should throw an exception if no account have been found', async () => {
-      // Given
-      const interactionId: string = body.interactionId;
-
-      const accountMock = null;
-      mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
-        accountMock,
-      );
-      // When / Then
-      expect(
-        async () => await controller.getLogin(req, res, interactionId, body),
-      ).rejects.toThrow(MockIdentityProviderNoAccountException);
-    });
-
-    it('should throw an exception if an account have restricted data', async () => {
-      // Given
-      const interactionId: string = body.interactionId;
-
-      const accountMock = { uid: 'E000001' };
-      mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
-        accountMock,
-      );
-      // When / Then
-      expect(
-        async () => await controller.getLogin(req, res, interactionId, body),
-      ).rejects.toThrow(MockIdentityProviderAccountBannedException);
-    });
-
-    it('should call oidcProvider.finishInteraction', async () => {
+    it('should call next', async () => {
       // Given
       const accountMock = {};
       mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
@@ -227,15 +196,9 @@ describe('MockIdentityProviderFcaController', () => {
         login: loginMockValue,
       };
       // When
-      await controller.getLogin(req, res, interactionId, body);
+      await controller.getLogin(next, body);
       // Then
-      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
-        req,
-        res,
-      );
+      expect(next).toHaveBeenCalledTimes(1);
     });
   });
 });
