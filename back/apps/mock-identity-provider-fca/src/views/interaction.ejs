@@ -18,15 +18,23 @@
         <header>IdP Mock</header>
         <main>
           <div>
-            <form method="POST" action="/interaction/<%= locals.uid %>/login">
+            <form method="POST" action="/login">
+              <input
+                type="hidden"
+                name="interactionId"
+                id="interactionId"
+                value="<%= locals.uid %>"
+              />
               <input type="text" name="login" id="login" value="test" />
-              <input type="password" name="password" id="password" value=""/>
+              <input type="password" name="password" id="password" value="" />
               <input type="submit" value="Login" />
             </form>
           </div>
 
           <div class="main__footer">
-            <a href="https://franceconnect.gouv.fr">En savoir plus sur FranceConnect</a>
+            <a href="https://franceconnect.gouv.fr"
+              >En savoir plus sur FranceConnect</a
+            >
             <a href="https://franceconnect.gouv.fr/faq">Foire aux questions</a>
           </div>
         </main>

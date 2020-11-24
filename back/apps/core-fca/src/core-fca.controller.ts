@@ -58,11 +58,10 @@ export class CoreFcaController {
   @Get(CoreRoutes.INTERACTION_VERIFY)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getVerify(@Req() req, @Res() res, @Param() _params: Interaction) {
-    const { interactionId } = req.fc;
     await this.core.verify(req);
 
     const { urlPrefix } = this.config.get<AppConfig>('App');
-    res.redirect(`${urlPrefix}/interaction/${interactionId}/login`);
+    res.redirect(`${urlPrefix}/login`);
   }
 
   /**
@@ -70,8 +69,7 @@ export class CoreFcaController {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/185
    */
   @Get(CoreRoutes.INTERACTION_LOGIN)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  async getLogin(@Req() req, @Res() res, @Param() _params: Interaction) {
+  async getLogin(@Req() req, @Res() res) {
     const { interactionId } = req.fc;
     const { spIdentity } = await this.session.get(interactionId);
     if (!spIdentity) {
