@@ -198,9 +198,7 @@ describe('CoreFcaController', () => {
       await coreController.getVerify(req, res, params);
       // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(
-        `/api/v2/interaction/${interactionIdMock}/login`,
-      );
+      expect(res.redirect).toHaveBeenCalledWith(`/api/v2/login`);
     });
   });
 
@@ -210,7 +208,7 @@ describe('CoreFcaController', () => {
       const req = {
         fc: { interactionId: interactionIdMock },
       };
-      const res = {};
+      const next = jest.fn();
       sessionServiceMock.get.mockResolvedValue({
         interactionId: interactionIdMock,
         spAcr: acrMock,
@@ -218,19 +216,19 @@ describe('CoreFcaController', () => {
         csrfToken: randomStringMock,
       });
       // Then
-      expect(coreController.getLogin(req, res, params)).rejects.toThrow(
+      expect(coreController.getLogin(req, next)).rejects.toThrow(
         CoreMissingIdentity,
       );
     });
 
-    it('should call interactionFinished', async () => {
+    it('should call next', async () => {
       // Given
       const req = {
         fc: { interactionId: interactionIdMock },
       };
       const res = {};
       // When
-      await coreController.getLogin(req, res, params);
+      await coreController.getLogin(req, res);
       // Then
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
         1,
@@ -247,7 +245,7 @@ describe('CoreFcaController', () => {
       };
       const res = {};
       // When
-      const result = await coreController.getLogin(req, res, params);
+      const result = await coreController.getLogin(req, res);
       // Then
       expect(result).toBe(interactionFinishedValue);
     });

@@ -4,7 +4,7 @@ import {
   Get,
   Post,
   Render,
-  Param,
+  Next,
   Req,
   Res,
   UsePipes,
@@ -17,10 +17,6 @@ import { IOidcIdentity } from '@fc/oidc';
 import { MockIdentityProviderFcaRoutes } from '../enums';
 import { MockIdentityProviderFcaService } from '../services';
 import { Identity, SignInDTO } from '../dto';
-import {
-  MockIdentityProviderAccountBannedException,
-  MockIdentityProviderNoAccountException,
-} from '../exceptions';
 
 @Controller()
 export class MockIdentityProviderFcaController {
@@ -58,25 +54,11 @@ export class MockIdentityProviderFcaController {
    * @todo validate body (user uid)
    */
   @Post(MockIdentityProviderFcaRoutes.INTERACTION_LOGIN)
-  async getLogin(
-    @Req() req,
-    @Res() res,
-    @Param('uid') interactionId,
-    @Body() body: SignInDTO,
-  ): Promise<void> {
+  async getLogin(@Next() next, @Body() body: SignInDTO): Promise<void> {
+    const { login, interactionId } = body;
     const identity: Identity = await this.mockIdentityProviderFcaService.getIdentity(
-      body.login,
+      login,
     );
-
-    // Throw a Y180002 if no account found
-    if (!identity) {
-      throw new MockIdentityProviderNoAccountException();
-    }
-
-    // Throw a Y180001 if the account (../data/database-mock.csv) is restricted.
-    if (identity.uid === 'E000001') {
-      throw new MockIdentityProviderAccountBannedException();
-    }
 
     const spIdentity: IOidcIdentity = {
       ...identity,
@@ -88,6 +70,6 @@ export class MockIdentityProviderFcaController {
       spIdentity,
     });
 
-    return this.oidcProvider.finishInteraction(req, res);
+    return next();
   }
 }
