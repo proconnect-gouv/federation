@@ -1,23 +1,15 @@
 variables:
-  NODE_VERSION: "v12.16.1"
-  FC_DOCKER_BRANCH: "staging"
   E2E: "0"
 
 core-fca-high:
   stage: "End to end"
-  image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/ci-cd/e2e:cypress-chrome67
+  image: ${E2E_DOCKER_IMAGE}
   services:
     - docker:18.09.7-dind
   variables:
     FC_ROOT: "$CI_BUILDS_DIR/france-connect"
     CYPRESS_CACHE_FOLDER: "$CI_PROJECT_DIR/cache/Cypress"
     TZ: "Europe/Paris"
-
-  cache:
-    key: "cypress-cache"
-    paths:
-      - $CYPRESS_CACHE_FOLDER
-    policy: pull-push
 
   before_script:
     - if [ "$E2E" = "0" ]; then echo "E2E Skipped"; exit 0; fi;
