@@ -16,9 +16,10 @@ import { LoggerService } from '@fc/logger';
 import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
+import { ConfigService } from '@fc/config';
 import { EidasBridgeRoutes } from '../enums';
 import { EidasBridgeLoginCallbackException } from '../exceptions';
-import { ValidateEuropeanIdentity } from '../dto';
+import { ValidateEuropeanIdentity, Core } from '../dto';
 
 @Controller()
 export class EidasBridgeController {
@@ -28,6 +29,7 @@ export class EidasBridgeController {
     private readonly oidcClient: OidcClientService,
     private readonly session: SessionService,
     private readonly oidcProvider: OidcProviderService,
+    private readonly config: ConfigService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -156,10 +158,11 @@ export class EidasBridgeController {
   @Render('interaction')
   async getInteraction(@Req() req, @Res() res) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
-
+    const { countryList }  = await this.config.get<Core>('Core')
     const { interactionId } = req.fc;
     const { spName } = await this.session.get(interactionId);
     return {
+      countryList,
       uid,
       params,
       spName,
