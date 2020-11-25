@@ -1,7 +1,13 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsObject, IsUrl, ValidateNested, IsArray, IsString } from 'class-validator';
+import {
+  IsObject,
+  IsUrl,
+  ValidateNested,
+  IsArray,
+  IsString,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 import { AppConfig } from '@fc/app';
 import { CryptographyConfig } from '@fc/cryptography';
@@ -22,7 +28,7 @@ import { EidasLightProtocolConfig } from '@fc/eidas-light-protocol';
 class CountryElement {
   @IsString()
   name: string;
-  @IsString()  
+  @IsString()
   iso: string;
   @IsString()
   icon: string;
@@ -32,7 +38,7 @@ export class Core {
   @IsUrl()
   readonly defaultRedirectUri: string;
   @IsArray()
-  @ValidateNested({each: true})
+  @ValidateNested({ each: true })
   @Type(() => CountryElement)
   readonly countryList: CountryElement[];
 }
