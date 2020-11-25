@@ -25,14 +25,127 @@ section.connect {
   height: 22rem;
 }
 
-.country {
-  margin: 50px 25px 25px 25px;
+
+
+.menu-container{
+  width:100%;
+  margin: 16px;
+
+}
+.logos-container{
+  width: 100%;
+} 
+
+#fc-plus-logo{
+    width: 120px;
 }
 
-.country-btn {
-  width: 400px;
-  height: 150px;
-  padding: 20px;
-  align-items: center;
-  justify-content: center;
+#marianne-logo{
+    width: 78px;
 }
+
+
+.previous-link-container{
+    width: 100%;
+    background-color: #e5edf5;
+    border-radius: 4px;
+}
+
+.previous-link{
+  font-size: 0.9rem;
+  color: #3e4553;
+  text-decoration: none;
+}
+.icon-previous{
+  filter: grayscale(100%);
+}
+
+.container-flags{
+  max-width: 235px;
+  margin: 0 auto;
+}
+
+.country {
+  width: 100%;
+  margin-bottom: 16px;
+}
+.country-btn {
+  width: 100%;
+  height: 62px;
+  align-items: center;
+  border: solid 1px #b4b4dc;
+  background: transparent;
+  text-align: left;
+  padding: 16px;
+  border-radius: 4px;
+}
+
+.country-btn:hover{
+   box-shadow: 0 0 9px 0 #b4b4dc;
+   border: solid 1px #000091;
+}
+
+.country-btn img {
+  margin-right: 16px;
+  box-shadow: 0 0 1px 0 rgba(0, 0, 145, 0.7);
+}
+
+
+
+.ibid-container{
+  border-top: solid 1px #b4b4dc;
+}
+
+.text-charcoal{
+  color: #3e4553;
+}
+
+@media screen and (min-width: 576px) {
+  .logos-container{
+    width: 30%;
+    max-width: 326px;
+  } 
+  .previous-link-container{
+    width: auto;
+    background-color: transparent;
+    border-radius: 0;
+    justify-content: center;
+  }
+  .previous-link{
+    color: #000091;
+  }
+  .icon-previous{
+    border-radius: 4px;
+    border: solid 1px #000091;
+    padding: 6px 8px;
+    filter: grayscale(0);
+  }
+  .container-flags{
+    max-width: 500px;
+  }
+  .country {
+    margin-bottom: 16px;
+    width: 47%;
+  }
+  
+}
+@media screen and (min-width: 768px) {
+  #fc-plus-logo{
+      width: 159px;
+  }
+
+  #marianne-logo{
+      width: 127px;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .container-flags{
+    max-width: 750px;
+  }
+  .country {
+    width: 30%;
+    margin-bottom: 16px;
+  }
+}
+
