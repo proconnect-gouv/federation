@@ -5,119 +5,47 @@
     <title>Choose your country</title>
   </head>
   <body>
-    <div class="d-flex flex-row flex-wrap">
+      <%- include('includes/menu-v2') %>
+  <div class="text-center mb-4">
+    <h1 class="h3 text-charcoal font-weight-light my-3 mx-4">
+      From which country does your digital identity come ?
+    </h1>
+  </div>
+  <div class="container-flags">
+    <div class="d-flex flex-row justify-content-between flex-wrap">
+
+    <% for(let i = 0; i < locals.countryList.length; i++) {%>
       <div class="country">
         <form
           action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
           method="POST"
         >
           <button
-            id="country-be"
+            id="country-<%= countryList[i].iso %>"
             type="submit"
-            class="country-btn"
+            class="country-btn d-flex align-items-center"
             name="country"
-            value="BE"
+            value= <%= countryList[i].iso %>
           >
-            Belgique
+          <img src="<%= countryList[i].icon %>"/>
+          <span class="m-0 d-block text-charcoal h6 font-weight-bold"><%= countryList[i].name %></span>
+             
           </button>
         </form>
       </div>
 
-      <div class="country">
-        <form
-          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
-          method="POST"
-        >
-          <button
-            id="country-es"
-            type="submit"
-            class="country-btn"
-            name="country"
-            value="ES"
-          >
-            Espana
-          </button>
-        </form>
-      </div>
-
-      <div class="country">
-        <form
-          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
-          method="POST"
-        >
-          <button
-            id="country-POR"
-            type="submit"
-            class="country-btn"
-            name="country"
-            value="POR"
-          >
-            Portugal
-          </button>
-        </form>
-      </div>
-
-      <div class="country">
-        <form
-          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
-          method="POST"
-        >
-          <button
-            id="country-SWE"
-            type="submit"
-            class="country-btn"
-            name="country"
-            value="SWE"
-          >
-            Sverige
-          </button>
-        </form>
-      </div>
-
-      <div class="country">
-        <form
-          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
-          method="POST"
-        >
-          <button id="country-IT" type="submit" class="country-btn" value="IT">
-            Italia
-          </button>
-        </form>
-      </div>
-
-      <div class="country">
-        <form
-          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
-          method="POST"
-        >
-          <button
-            id="country-IRE"
-            type="submit"
-            class="country-btn"
-            name="country"
-            value="IRE"
-          >
-            Ireland
-          </button>
-        </form>
-      </div>
-
-      <div class="country">
-        <form
-          action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login"
-          method="POST"
-        >
-          <button
-            id="country-LUX"
-            type="submit"
-            class="country-btn"
-            name="country"
-            value="LUX"
-          >
-            Luxembourg
-          </button>
-        </form>
-      </div>
+    <%}%>
+    </div>
+    </div>
+        <div class="ibid-container py-4 mt-5 mx-4">
+          <p class="text-charcoal h6 font-weight-light">
+            If your country is not on this list then the cross-border authentication option might not be available yet. If this is the case, then plus use
+            <a class="text-charcoal" href="/">these other options</a>
+            to access the servce. Your country will become available in the future? 
+            <br/>
+            <br/>
+            <a class="text-charcoal" href="/">Learn more about the eIDAS regulation</a>
+          </p>
     </div>
   </body>
 </html>
