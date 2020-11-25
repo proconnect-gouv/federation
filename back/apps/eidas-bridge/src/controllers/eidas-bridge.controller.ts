@@ -158,7 +158,7 @@ export class EidasBridgeController {
   @Render('interaction')
   async getInteraction(@Req() req, @Res() res) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
-    const { countryList }  = await this.config.get<Core>('Core')
+    const { countryList } = await this.config.get<Core>('Core');
     const { interactionId } = req.fc;
     const { spName } = await this.session.get(interactionId);
     return {
