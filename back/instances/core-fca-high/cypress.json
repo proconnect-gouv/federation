@@ -10,10 +10,12 @@
     "APP_NAME": "fca",
     "LOG_FILE_PATH": "../../../../fc-docker/volumes/log/fca.log",
     
+    "FC_FRONT_ROOT_URL": "https://fca-front.docker.dev-franceconnect.fr",
     "FC_ROOT_URL": "https://fca.docker.dev-franceconnect.fr",
     "FC_INTERACTION_URL": "https://fca.docker.dev-franceconnect.fr/api/v2/interaction",
     
     "IDP_NAME": "fia",
+    "IDP_NAME_NOT_EXIST": "not-fia",
     "IDP_ROOT_URL": "https://fia1v2.docker.dev-franceconnect.fr",
     "IDP_INTERACTION_URL": "https://fia1v2.docker.dev-franceconnect.fr/interaction",
     

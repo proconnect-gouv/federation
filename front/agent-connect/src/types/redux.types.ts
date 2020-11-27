@@ -15,6 +15,14 @@ export type IdentityProvidersHistoryAction = { payload: string; type: string };
 export type IdentityProvider = {
   name: string;
   uid: string;
+  active: boolean;
+};
+
+export type IdentityProviderFormInputs = {
+  acr_values: string;
+  redirectUriServiceProvider: string;
+  response_type: string;
+  scope: string;
 };
 
 export type Ministry = {
@@ -28,6 +36,7 @@ export type MinistryListAction = {
     serviceProviderName: string;
     redirectURL: string;
     providers: Ministry[];
+    redirectToIdentityProviderInputs: IdentityProviderFormInputs;
   };
   type: string;
 };
@@ -37,4 +46,5 @@ export type RootState = {
   redirectURL: string;
   serviceProviderName: string;
   identityProvidersHistory: string[];
+  redirectToIdentityProviderInputs: IdentityProviderFormInputs;
 };

@@ -16,9 +16,7 @@
       "compilerOptions": {
         "tsConfigPath": "instances/core-fca-high/tsconfig.app.json",
         "assets": [
-          "../../../apps/core-fca/**/*.ejs",
-          "../../../apps/core-fca/**/*.css",
-          "../../../apps/core-fca/**/*.svg"
+          "../../../apps/core-fca/**/*.ejs"
         ]
       }
     },

@@ -11,6 +11,7 @@ const ROUTES_MOCK = [
   {
     component: () => <section />,
     exact: true,
+    id: 'mock-id-0',
     path: '/',
     title: '',
   },
@@ -21,12 +22,14 @@ const ROUTES_MOCK = [
       </section>
     ),
     exact: true,
+    id: 'mock-id-1',
     path: '/mock-path',
     title: 'mock-path-title',
   },
   {
     component: () => <section />,
     exact: true,
+    id: 'mock-id-2',
     path: '/mock-path/1234',
     title: 'mock-path-title-1234',
   },

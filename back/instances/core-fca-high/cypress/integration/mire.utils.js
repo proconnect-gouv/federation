@@ -30,10 +30,7 @@ export function basicSuccessScenario(params) {
 
   // FC: choose FI
 
-  cy.url().should(
-    'include',
-    `${Cypress.env('FC_ROOT_URL')}/api/v2/interaction`,
-  );
+  cy.url().should('include', `${Cypress.env('FC_FRONT_ROOT_URL')}/`)
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
@@ -53,6 +50,7 @@ export function basicSuccessScenario(params) {
     idpName: null,
     idpAcr: null,
   });
+  cy.get(`.ministry-panel`).click({ multiple: true });
   cy.get(`#idp-${idpId}`).click();
 
   // FI: Authenticate
@@ -188,10 +186,8 @@ export function basicScenario(params) {
   }
 
   // FC: choose FI
-  cy.url().should(
-    'include',
-    `${Cypress.env('FC_ROOT_URL')}/api/v2/interaction`,
-  );
+  cy.url().should('include', `${Cypress.env('FC_FRONT_ROOT_URL')}/`);
+  cy.get(`.ministry-panel`).click({ multiple: true });
   cy.get(`#idp-${idpId}`).click();
 
   // FI: Authenticate
@@ -243,4 +239,9 @@ export function getAuthorizeUrl(overrideParams = {}) {
   };
 
   return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;
+}
+
+export function callInteractionByBack(url = '') {
+  const [,id] = url.split('/interaction/');
+  return `${Cypress.env('FC_INTERACTION_URL')}/${id}`;
 }

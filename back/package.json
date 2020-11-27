@@ -6,9 +6,11 @@
   "license": "MIT",
   "scripts": {
     "build": "nest build",
-    "build:core-fca-high": "nest build core-fcp-high",
+    "build:core-fca-high": "./scripts/start-fca.sh",
     "build:core-fcp-high": "nest build core-fcp-high",
     "build:csmr-hsm-high": "nest build csmr-hsm-high",
+    "build:eidas-bridge": "nest build eidas-bridge",
+    "build:mock-service-provider-high": "nest build mock-service-provider-high",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch",

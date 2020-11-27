@@ -40,6 +40,7 @@ function extractInteractionIdFromUrl(url) {
 function prepareOidcCallbackAs(alias) {
   cy.visit(Cypress.env('SP1_ROOT_URL'));
   cy.get('#get-authorize').click();
+  cy.get(`.ministry-panel`).click({ multiple: true });
   cy.get(`#idp-${Cypress.env('IDP_NAME')}1v2`).click();
   cy.url().should('contain', Cypress.env('IDP_ROOT_URL'));
 
@@ -80,6 +81,7 @@ function finishWithReplacedUrl(attackerUrl) {
   // Start a new interaction
   cy.visit(Cypress.env('SP1_ROOT_URL'));
   cy.get('#get-authorize').click();
+  cy.get(`.ministry-panel`).click({ multiple: true });
   cy.get(`#idp-${Cypress.env('IDP_NAME')}1v2`).click();
 
   // Use url from previous interaction
