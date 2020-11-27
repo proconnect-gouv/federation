@@ -18,7 +18,7 @@ function PanelComponent({ ministry, ...props }: PanelProps): JSX.Element {
       key={id}
       showArrow
       {...props}
-      className="mb-4 p-2 border border-primary rounded"
+      className="mb-4 p-2 border border-primary rounded ministry-panel"
       header={<MinistryName name={name} />}>
       <ul className="font-18 px-3">
         {identityProviders.map((identityProvider: IdentityProvider) => {

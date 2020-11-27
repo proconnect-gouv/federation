@@ -1,35 +1,46 @@
 {
   "serviceProviderName": "Mes démarches",
   "redirectURL": "https://fca.docker.dev-franceconnect.fr/api/v2/redirect-to-idp",
+  "redirectToIdentityProviderInputs": {
+    "acr_values": "eidas2",
+    "redirectUriServiceProvider": "https://fsa1v2.docker.dev-franceconnect.fr/login-callback",
+    "response_type": "code",
+    "scope": "openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address usual_name siret organizational_unit"
+  },
   "ministries": [
     {
-      "id": "minstere-de-linterieur",
+      "id": "ministere-de-linterieur",
       "identityProviders": [
         {
           "name": "1er fi intérieur",
-          "uid": "1er-fi-interieur"
+          "uid": "fia1v2",
+          "active": true
         },
         {
           "name": "2eme fi intérieur",
-          "uid": "2eme-fi-interieur"
+          "uid": "fia2v2",
+          "active": true
         },
         {
           "name": "3eme fi intérieur",
-          "uid": "3eme-fi-interieur"
+          "uid": "fia-desactive-visible",
+          "active": false
         }
       ],
       "name": "Ministère de l'intérieur"
     },
     {
-      "id": "minstere-de-la-sante",
+      "id": "ministere-de-la-sante",
       "identityProviders": [
         {
           "name": "1er fi santé",
-          "uid": "1er-fi-sante"
+          "uid": "not-fia1v2",
+          "active": true
         },
         {
           "name": "2eme fi santé",
-          "uid": "2eme-fi-sante"
+          "uid": "fia5v2",
+          "active": false
         }
       ],
       "name": "Ministère de la santé"

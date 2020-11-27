@@ -3,9 +3,19 @@ import React from 'react';
 import { renderWithRedux } from '../../../testUtils';
 import IdentityProviderButton from './identity-provider-button';
 
+const initialState = {
+  redirectToIdentityProviderInputs: {
+    acr_values: 'eidas2',
+    redirectUriServiceProvider: 'https://login-callback',
+    response_type: 'code',
+    scope: 'scopes from backend',
+  },
+};
+
+const props = { identityProvider: { active: true, name: 'mock-name', uid: 'mock-uid' } };
+
 describe('IdentityProviderButton', () => {
   it('should set the name property as the submit button label', () => {
-    const props = { identityProvider: { name: 'mock-name', uid: 'mock-uid' } };
     const { container, getByText } = renderWithRedux(
       <IdentityProviderButton {...props} />,
     );
@@ -15,55 +25,63 @@ describe('IdentityProviderButton', () => {
   });
 
   it('should have input with value "eidas2" and name "acr_values"', () => {
-    const props = { identityProvider: { name: 'mock-name', uid: 'mock-uid' } };
     const { container, getByDisplayValue } = renderWithRedux(
       <IdentityProviderButton {...props} />,
+      {
+        initialState,
+      },
     );
     const valueElement = getByDisplayValue('eidas2');
     const nameElement = container.querySelector('input[name="acr_values"');
     expect(valueElement).toEqual(nameElement);
   });
 
-  it('should have input with value "corev2" and name "providerUid"', () => {
-    const props = { identityProvider: { name: 'mock-name', uid: 'mock-uid' } };
+  it('should have input with value "mock-uid" and name "providerUID"', () => {
     const { container, getByDisplayValue } = renderWithRedux(
       <IdentityProviderButton {...props} />,
+      {
+        initialState,
+      },
     );
-    const valueElement = getByDisplayValue('corev2');
-    const nameElement = container.querySelector('input[name="providerUid"');
+    const valueElement = getByDisplayValue('mock-uid');
+    const nameElement = container.querySelector('input[name="providerUID"');
     expect(valueElement).toEqual(nameElement);
   });
 
-  it('should have input with value "https://fsp1v2.docker.dev-franceconnect.fr/login-callback" and "redirect_uri"', () => {
-    const props = { identityProvider: { name: 'mock-name', uid: 'mock-uid' } };
+  it('should have input with value "https://login-callback" and "redirectUriServiceProvider"', () => {
     const { container, getByDisplayValue } = renderWithRedux(
       <IdentityProviderButton {...props} />,
+      {
+        initialState,
+      },
     );
-    const valueElement = getByDisplayValue(
-      'https://fsp1v2.docker.dev-franceconnect.fr/login-callback',
+    const valueElement = getByDisplayValue('https://login-callback');
+    const nameElement = container.querySelector(
+      'input[name="redirectUriServiceProvider"',
     );
-    const nameElement = container.querySelector('input[name="redirect_uri"');
     expect(valueElement).toEqual(nameElement);
   });
 
   it('should have input with value "code" and name "response_type"', () => {
-    const props = { identityProvider: { name: 'mock-name', uid: 'mock-uid' } };
     const { container, getByDisplayValue } = renderWithRedux(
       <IdentityProviderButton {...props} />,
+      {
+        initialState,
+      },
     );
     const valueElement = getByDisplayValue('code');
     const nameElement = container.querySelector('input[name="response_type"');
     expect(valueElement).toEqual(nameElement);
   });
 
-  it('should have input with value "openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone" and name "scope"', () => {
-    const props = { identityProvider: { name: 'mock-name', uid: 'mock-uid' } };
+  it('should have input with value "scopes from backend" and name "scope"', () => {
     const { container, getByDisplayValue } = renderWithRedux(
       <IdentityProviderButton {...props} />,
+      {
+        initialState,
+      },
     );
-    const valueElement = getByDisplayValue(
-      'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone',
-    );
+    const valueElement = getByDisplayValue('scopes from backend');
     const nameElement = container.querySelector('input[name="scope"');
     expect(valueElement).toEqual(nameElement);
   });

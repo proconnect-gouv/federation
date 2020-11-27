@@ -49,7 +49,7 @@ function ApplicationLayout({ routes }: ApplicationLayoutProps): JSX.Element {
         <LayoutHeader />
         <Switch>
           {routes.map(route => (
-            <Route {...route} key={route.path} />
+            <Route {...route} key={route.id} />
           ))}
           <Route component={NotFoundPage} path="*" title="404" />
         </Switch>
