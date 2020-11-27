@@ -41,14 +41,15 @@
   filter: grayscale(100%);
   margin-right: 10px;
 }
-.previous-link span{
+
+.previous-link span {
   font-size: 11px;
   color: #3e4553;
 }
 
 @media screen and (min-width: 576px) {
 
-  .menu-container{
+  .menu-container {
     margin: 32px;
   }
 
@@ -57,7 +58,7 @@
     max-width: 326px;
   }
 
-  .logos-container a+a{
+  .logos-container a+a {
     margin-left: 40px;
   }
 
@@ -69,12 +70,12 @@
     margin-top: 0;
   }
 
-  .previous-link span{
+  .previous-link span {
     font-size: 14px;
     color: #000091;
   }
 
-  .previous-link:hover{
+  .previous-link:hover {
     text-decoration: underline;
   }
 
@@ -90,6 +91,7 @@
   #fc-plus-logo {
     width: 159px;
   }
+
   #marianne-logo {
     width: 127px;
   }

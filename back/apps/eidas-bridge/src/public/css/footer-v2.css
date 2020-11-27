@@ -3,20 +3,20 @@
   overflow-x: scroll
 }
 
-#footer-v2 a{
+#footer-v2 a {
   color: #fff;
   font-size: 15px;
   text-decoration: none;
 }
 
-#footer-v2 a:hover{
+#footer-v2 a:hover {
   text-decoration: underline;
 }
 
-#footer-v2 a+a:before {
-  content: "|";
-  color: #fff;
-  margin: 0 10px;
+#footer-v2 a+a {
+  border-left: solid 1px #fff;
+  padding-left: 10px;
+  margin-left: 10px;
 }
 
 .footer-nav {
@@ -28,7 +28,8 @@
   .footer-nav {
     padding: 40px 32px;
   }
-  #footer-v2{
+
+  #footer-v2 {
     overflow-x: initial;
   }
 }
