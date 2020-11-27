@@ -37,9 +37,14 @@
   align-items: center;
 }
 
-.previous-link img {
-  filter: grayscale(100%);
+.previous-link-icon {
+  width: 24px;
+  height: 24px;
   margin-right: 10px;
+  background-image: url("../img/retour-icone-gris.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+
 }
 
 .previous-link span {
@@ -79,11 +84,10 @@
     text-decoration: underline;
   }
 
-  .previous-link img {
+  .previous-link-icon {
     border-radius: 4px;
     border: solid 1px #000091;
-    padding: 6px 8px;
-    filter: grayscale(0);
+    background-image: url("../img/retour-icone.svg")
   }
 }
 
