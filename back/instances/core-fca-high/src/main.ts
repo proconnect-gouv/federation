@@ -19,7 +19,7 @@ import { AppModule } from './app.module';
 const assetsPath =
   process.env.NODE_ENV === 'development'
     ? // Libs code base to take latest version
-      '../../../apps/core-fcp/src'
+      '../../../apps/core-fca/src'
     : // Current, directory = dist when in production mode
       '';
 
