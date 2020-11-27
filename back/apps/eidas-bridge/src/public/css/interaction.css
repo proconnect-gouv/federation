@@ -1,8 +1,9 @@
-.page-title-container{
+.page-title-container {
   text-align: center;
   margin-bottom: 32px;
 }
-.page-title-container h1{
+
+.page-title-container h1 {
   color: #3e4553;
   font-size: 20px;
   font-weight: 500;
@@ -55,22 +56,26 @@
   padding-top: 16px;
   margin: 40px 16px;
 }
-.ibid-container p, .ibid-container a{
+
+.ibid-container p, .ibid-container a {
   color: #3e4553;
   font-size: 16px;
 }
 
 @media screen and (min-width: 576px) {
-  .page-title-container h1{
+  .page-title-container h1 {
     font-size: 24px;
   } 
+
   .container-flags {
     max-width: 500px;
   }
+
   .country {
     margin-bottom: 16px;
     width: 47%;
   }
+
   .ibid-container {
     margin: 40px 32px;
   }
@@ -82,6 +87,7 @@
   .container-flags {
     max-width: 750px;
   }
+
   .country {
     width: 30%;
     margin-bottom: 16px;
