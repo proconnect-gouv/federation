@@ -1,0 +1,35 @@
+#footer-v2 {
+  background-color: #000091;
+  overflow-x: scroll
+}
+
+#footer-v2 a {
+  color: #fff;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+#footer-v2 a:hover {
+  text-decoration: underline;
+}
+
+#footer-v2 a+a {
+  border-left: solid 1px #fff;
+  padding-left: 10px;
+  margin-left: 10px;
+}
+
+.footer-nav {
+  width: max-content;
+  padding: 40px 16px;
+}
+
+@media screen and (min-width: 576px) { 
+  .footer-nav {
+    padding: 40px 32px;
+  }
+
+  #footer-v2 {
+    overflow-x: initial;
+  }
+}
