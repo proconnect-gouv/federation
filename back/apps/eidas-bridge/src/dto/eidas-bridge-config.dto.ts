@@ -25,7 +25,7 @@ import { EidasProviderConfig } from '@fc/eidas-provider';
 import { ApacheIgniteConfig } from '@fc/apache-ignite';
 import { EidasLightProtocolConfig } from '@fc/eidas-light-protocol';
 
-class CountryElement {
+export class CountryElement {
   @IsString()
   name: string;
   @IsString()
