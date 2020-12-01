@@ -29,8 +29,11 @@ export function basicSuccessScenario(params) {
   }
 
   // FC: choose FI
+  cy.url().should(
+    'include',
+    `${Cypress.env('FC_ROOT_URL')}/api/v2/interaction`,
+  );
 
-  cy.url().should('include', `${Cypress.env('FC_FRONT_ROOT_URL')}/`)
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
@@ -186,7 +189,10 @@ export function basicScenario(params) {
   }
 
   // FC: choose FI
-  cy.url().should('include', `${Cypress.env('FC_FRONT_ROOT_URL')}/`);
+  cy.url().should(
+    'include',
+    `${Cypress.env('FC_ROOT_URL')}/api/v2/interaction`,
+  );
   cy.get(`.ministry-panel`).click({ multiple: true });
   cy.get(`#idp-${idpId}`).click();
 
