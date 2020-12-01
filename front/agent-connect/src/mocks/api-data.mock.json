@@ -1,6 +1,6 @@
 {
   "serviceProviderName": "Mes démarches",
-  "redirectURL": "https://fca.docker.dev-franceconnect.fr/api/v2/redirect-to-idp",
+  "redirectURL": "/api/v2/redirect-to-idp",
   "redirectToIdentityProviderInputs": {
     "acr_values": "eidas2",
     "redirectUriServiceProvider": "https://fsa1v2.docker.dev-franceconnect.fr/login-callback",
