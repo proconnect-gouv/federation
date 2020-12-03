@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html>
-  
   <%- include('partials/head.partial.ejs', { title: 'Connexion - choix du fournisseur d\'identité', style: 'interaction' }); %>
 
   <body>
+    <%- include('partials/menu-v2.ejs'); %>
     <div id="mire">
       <div class="content">
-        <header>
-          <a href="<%= locals.params.redirect_uri %>">&#8592; Revenir sur <%= locals.spName %></a>
-          <img src="/img/fc_logo.png" alt="France Connect logo">
-        </header>  
         <main>    
           <p>Je choisis un moyen pour me connecter sur :</p>
           <p><span><%= locals.spName %></span></p>
@@ -77,5 +73,6 @@
         </main>
       </div>
     </div>
+    <%- include('partials/footer-v2.ejs'); %>
   </body>
 </html>

@@ -10,8 +10,6 @@ a:hover {
 
 body {
   width: 100%;
-  background: #ededed url(../../img/marianne_background.png) no-repeat right 1% bottom
-    fixed;
 }
 
 #mire {
@@ -23,31 +21,9 @@ body {
 #mire > .content {
   width: 100%;
   background-color: #fff;
-  box-shadow: 2px 0px 4px #888;
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-header {
-  width: 100%;
-  padding: 16px 0;
-  border-bottom: solid 1px #ddd;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-header a {
-  display: block;
-  text-align: center;
-  font-size: 1.4rem;
-}
-
-header img {
-  max-height: 60px;
-  width: auto;
-  display: block;
 }
 
 .mire__development {
@@ -126,18 +102,7 @@ main p span {
   line-height: 1.8rem;
 }
 
-footer {
-  display: flex;
-  justify-content: center;
-  padding: 16px 0;
-}
 
-footer a {
-  width: 80%;
-  text-align: center;
-  font-size: 1.4rem;
-  color: #555;
-}
 @media screen and (min-width: 576px) {
   main > p {
     text-align: center;
@@ -151,9 +116,7 @@ footer a {
     justify-content: space-between;
   }
 
-  footer a {
-    width: auto;
-  }
+  
 }
 @media screen and (min-width: 768px) {
   main {
@@ -323,6 +286,7 @@ footer a {
   border: solid 1px #000091;
   color: #000091;
   max-width: 350px;
+  padding: 16px;
   cursor: pointer;
 }
 
@@ -337,8 +301,10 @@ footer a {
 
   .tuto-container button {
     height: 50px;
+    padding: auto;
   }
 }
+
 @media screen and (min-width: 768px) {
   .tuto-container {
     padding: 24px 16px;
