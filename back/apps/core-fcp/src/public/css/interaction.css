@@ -12,9 +12,6 @@ body {
   width: 100%;
   background: #ededed url(../../img/marianne_background.png) no-repeat right 1% bottom
     fixed;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
 
 #mire {
@@ -72,28 +69,28 @@ header img {
 }
 
 main {
-  width: 100%;
-  padding-top: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  padding: 16px 16px 80px;
 }
 
 main > p {
-  width: 80%;
-  text-align: center;
-  font-size: 3rem;
-  margin-bottom: 32px;
+  width: 100%;
+  font-size: 1.5rem;
   max-width: 768px;
+  color: #3e4553;
+
 }
 
 main > p + p {
-  font-size: 2.4rem;
+  width: 100%;
+  font-size: 1.5rem;
 }
 
 main p span {
-  font-size: 3rem;
+  margin-top: 16px;
+  font-size: 1.5rem;
   font-weight: bold;
+  color: #000091;
+  display: block;
 }
 
 .main__provider-used {
@@ -102,10 +99,7 @@ main p span {
 
 .main__providers {
   width: 100%;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  margin-bottom: 24px;
+  margin: 16px 0 80px;
 }
 
 .main__remember-choice {
@@ -144,19 +138,11 @@ footer a {
   font-size: 1.4rem;
   color: #555;
 }
-
-@media screen and (min-width: 768px) {
-  #mire {
-    margin: 16px;
+@media screen and (min-width: 576px) {
+  main > p {
+    text-align: center;
   }
-
-  header {
-    padding: 16px;
-  }
-
-  .main__remember-choice {
-    margin-bottom: 60px;
-  }
+ 
 
   .main__footer {
     width: 100%;
@@ -167,6 +153,11 @@ footer a {
 
   footer a {
     width: auto;
+  }
+}
+@media screen and (min-width: 768px) {
+  main {
+    padding: 16px 32px 80px;
   }
 }
 
@@ -194,91 +185,69 @@ footer a {
 
 /** Identity providers **/
 .identity-provider {
-  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.identity-provider .icon-container {
+  width: 60px;
+  height: 60px;
+  margin: 0 16px 0 0;
+}
+
+.identity-provider .icon-container img{
+  border-radius: 8px;
+  width: 100%;
 }
 
 .identity-provider button {
-  width: 170px;
-  height: 60px;
-  margin: 4px;
-  border-radius: 6px;
-  border: solid 2px #e5edf5;
-  background-color: #e5edf5;
+  width: 100%;
+  max-width: 376px;
+  padding: 16px;
+  margin: 8px 0;
+  box-shadow: 0 0 3px rgba(0, 0, 145, 0.3);
+  border-radius: 8px;
+  background-color: #fff;
   cursor: pointer;
-  transition: background-color 150ms ease, border 150ms ease;
+  transition: background-color 150ms ease, box-shadow 150ms ease;
   box-sizing: border-box;
   position: relative;
   font-size: 1.5rem;
   font-weight: bold;
   color: #3e4553;
+  display: flex;
+  align-items: center;
 }
 
-.identity-provider button img {
-  top: 50%;
-  left: 50%;
-  max-width: 84%;
-  max-height: 76%;
+.identity-provider button span, .identity-provider button strong {
+  font-size: 16px;
   display: block;
-  transform: translate(-50%, -50%);
-  position: absolute;
+  text-align: left;
+  color: #3e4553;
+  line-height: 1.31;
 }
+
+.identity-provider button span {
+  font-weight: normal;
+  margin-bottom: 5px;
+}
+
+.identity-provider button strong {
+  font-weight: bold;
+}
+
 .identity-provider button:disabled {
   opacity: 0.3;
   cursor: not-allowed;
+  border: none;
 }
 
 .identity-provider button:not(:disabled):hover {
   background-color: transparent;
-  border: solid 2px #0050a0;
+  box-shadow: 0 0 6px rgba(0, 0, 145, 1);
+
 }
 
-.identity-provider__tooltip {
-  width: 170px;
-  height: 55px;
-  left: 50%;
-  top: 100%;
-  transform: translate(-50%, 8px);
-  padding: 8px;
-  position: absolute;
-  background-color: #3e4553;
-  border-radius: 4px;
-  display: none;
-  align-items: center;
-  z-index: 1000;
-}
-
-.identity-provider__tooltip:before {
-  content: '';
-  width: 0;
-  height: 0;
-  top: -8px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-bottom: 8px solid #3e4553;
-  position: absolute;
-}
-
-.identity-provider__tooltip p {
-  width: 100%;
-  color: #fff;
-  font-size: 1.4rem;
-  line-height: 1.6rem;
-  text-align: center;
-}
-
-.identity-provider button:disabled:hover + .identity-provider__tooltip {
-  display: flex;
-}
-
-@media screen and (min-width: 768px) {
-  .identity-provider button {
-    width: 220px;
-    height: 65px;
-    margin: 8px;
-  }
-}
 
 /** Error message **/
 .error-message {
@@ -313,4 +282,69 @@ footer a {
 .error-message > .content .more ul * {
   font-size: 1.4rem;
   line-height: 1.6rem;
+}
+
+
+/** tuto section **/
+.tuto-container {
+  background-color: #f2f4ff;
+  border-radius: 8px;
+  padding: 24px 16px;
+  max-width: 728px;
+}
+
+.tuto-container .logos-container {
+  display: none;
+  justify-content: space-around;
+  align-items: center;
+  margin: 16px 0;
+}
+
+.tuto-container h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #000091;
+}
+
+.tuto-container p {
+  margin: 16px 0 24px;
+  font-size: 0.9rem;
+  line-height: 1.43rem;
+  color: #3e4553;
+}
+
+.tuto-container button {
+  width: 100%;
+  height: 68px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  background-color: transparent;
+  border-radius: 8px;
+  border: solid 1px #000091;
+  color: #000091;
+  max-width: 350px;
+  cursor: pointer;
+}
+
+@media screen and (min-width: 576px) {
+  .tuto-container {
+    text-align: center;
+  }
+  
+  .tuto-container .logos-container {
+    display: flex;
+  }
+
+  .tuto-container button {
+    height: 50px;
+  }
+}
+@media screen and (min-width: 768px) {
+  .tuto-container {
+    padding: 24px 16px;
+  }
+
+  .tuto-container .logos-container {
+    margin: 25px 0;
+  }
 }

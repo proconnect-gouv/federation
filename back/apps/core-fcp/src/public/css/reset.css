@@ -84,7 +84,6 @@ button {
 	padding: 0;
 	border: 0;
 	font: inherit;
-	font-size: 62.5%;
 	vertical-align: baseline;
 	box-sizing: border-box;
 }
@@ -106,6 +105,8 @@ section {
 
 body {
 	line-height: 1;
+	font-size: 62.5%;
+  font-family: 'Montserrat', Helvetica, Arial, sans-serif;
 }
 
 ol,
