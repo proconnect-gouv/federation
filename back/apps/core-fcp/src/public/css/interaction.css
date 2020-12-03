@@ -269,6 +269,7 @@ main > h1 + h2 {
   border: solid 1px #000091;
   color: #000091;
   max-width: 350px;
+  padding: 16px;
   cursor: pointer;
 }
 
@@ -283,8 +284,10 @@ main > h1 + h2 {
 
   .tuto-container button {
     height: 50px;
+    padding: auto;
   }
 }
+
 @media screen and (min-width: 768px) {
   .tuto-container {
     padding: 24px 16px;
