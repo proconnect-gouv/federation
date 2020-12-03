@@ -11,9 +11,9 @@
           <img src="/img/fc_logo.png" alt="France Connect logo">
         </header>  
         <main>    
-          <p>Identifiez vous sur <span><%= locals.spName %></span> avec</p>
+          <p>Je choisis un moyen pour me connecter sur :</p>
+          <p><span><%= locals.spName %></span></p>
 
-          <p>votre compte :</p>
     
           <div id="idp-list" class="main__providers">
             <% locals.providers.filter(p => p.display).forEach((provider) => { %>
@@ -30,14 +30,14 @@
                       disabled
                     <% } %>
                   >
-                    <%= provider.name %>
-                  </button>
-                  
-                  <% if (!provider.active) { %>
-                    <div class="identity-provider__tooltip">
-                      <p>Indisponible en environnement de démonstration</p>
+                    <div class="icon-container">
+                      <img src='/img/fi/fi-placeholder.svg' alt="Logo de <%= provider.name %>"/>
                     </div>
-                  <% } %>
+                    <span>
+                      J’utilise l’application 
+                      <strong><%= provider.name %></strong>
+                    </span>
+                  </button>
                 </div>
 
                 <input type="hidden" name="providerUid" id="providerUid" value="<%= provider.uid %>" />
@@ -48,10 +48,32 @@
             <% }) %>
           </div>
 
-          <div class="main__footer">
+          <div class="tuto-container">
+            <h3>
+              Pourquoi je ne retrouve pas mes comptes habituels ?
+            </h3>
+            <div class="logos-container">
+              <img src="/img/logo-impots-couleurs.svg" alt="Logo impots">
+              <img src="/img/logo-ameli-couleurs.svg" alt="Logo ameli">
+              <img src="/img/logo-msa-couleurs.svg" alt="Logo Msa">
+              <img src="/img/logo-mcm.svg" alt="Logo Mobile connect et moi">
+
+            </div>
+            <p>
+              FranceConnect+ est la nouvelle solution FranceConnect qui vous permet d’accéder à encore plus de démarches en ligne. 
+              Le service auquel vous souhaitez accéder nécessite l’utilisation d’un compte ayant un niveau de sécurité plus élevé.
+            </p>
+            <a href="/">
+              <button>
+                Comment créer une identité numérique
+              </button>
+            </a>
+            </div>
+
+          <!-- <div class="main__footer">
             <a href="https://franceconnect.gouv.fr">En savoir plus sur FranceConnect</a>
             <a href="https://franceconnect.gouv.fr/faq">Foire aux questions</a>
-          </div>
+          </div> -->
         </main>
       </div>
     </div>
