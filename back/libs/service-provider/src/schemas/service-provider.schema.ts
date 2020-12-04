@@ -4,6 +4,7 @@ export const ServiceProviderSchema = new mongoose.Schema(
   {
     active: Boolean,
     key: String,
+    entityId: String,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_secret: String,
     scopes: [String],

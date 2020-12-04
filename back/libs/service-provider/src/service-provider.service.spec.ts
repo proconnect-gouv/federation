@@ -12,7 +12,8 @@ describe('ServiceProviderService', () => {
 
   const validServiceProviderMock = {
     _doc: {
-      key: '123',
+      key: '987654321987654321987654321987654',
+      entityId: '123456789101112131415161718192021',
       active: true,
       name: 'foo',
       // oidc param name
@@ -317,7 +318,7 @@ describe('ServiceProviderService', () => {
           ...validServiceProviderMock._doc,
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id: '123',
+          client_id: '987654321987654321987654321987654',
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: 'client_secret',
@@ -368,7 +369,7 @@ describe('ServiceProviderService', () => {
           ...validServiceProviderMock._doc,
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id: '123',
+          client_id: '987654321987654321987654321987654',
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: 'client_secret',
@@ -452,7 +453,7 @@ describe('ServiceProviderService', () => {
         ...validServiceProviderMock._doc,
         // oidc param name
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id: '123',
+        client_id: '987654321987654321987654321987654',
         // oidc param name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         client_secret: 'client_secret',

@@ -3,6 +3,7 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { AccountBlockedException } from '@fc/account';
 import { CoreService } from '@fc/core';
+import { ServiceProviderService } from '@fc/service-provider';
 import { CoreFcaService } from './core-fca.service';
 
 describe('CoreFcaService', () => {
@@ -33,7 +34,7 @@ describe('CoreFcaService', () => {
   const coreServiceMock = {
     checkIfAccountIsBlocked: jest.fn(),
     checkIfAcrIsValid: jest.fn(),
-    storeInteraction: jest.fn(),
+    computeInteraction: jest.fn(),
   };
 
   const sessionServiceMock = {
@@ -71,9 +72,19 @@ describe('CoreFcaService', () => {
     spIdentity: spIdentityMock,
   };
 
+  const serviceProviderMock = {
+    getById: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CoreFcaService, LoggerService, CoreService, SessionService],
+      providers: [
+        CoreFcaService,
+        LoggerService,
+        CoreService,
+        SessionService,
+        ServiceProviderService,
+      ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
@@ -81,6 +92,8 @@ describe('CoreFcaService', () => {
       .useValue(coreServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
+      .overrideProvider(ServiceProviderService)
+      .useValue(serviceProviderMock)
       .compile();
     service = module.get<CoreFcaService>(CoreFcaService);
 
@@ -88,7 +101,7 @@ describe('CoreFcaService', () => {
 
     getInteractionMock.mockResolvedValue(getInteractionResultMock);
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
-    coreServiceMock.storeInteraction.mockResolvedValue({ spInteraction: {} });
+    coreServiceMock.computeInteraction.mockResolvedValue({ spInteraction: {} });
   });
 
   it('should be defined', () => {
@@ -96,20 +109,18 @@ describe('CoreFcaService', () => {
   });
 
   describe('verify', () => {
+    const spMock = {
+      key: '123456',
+      entityId: 'AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH',
+    };
+    beforeEach(() => {
+      serviceProviderMock.getById.mockResolvedValue(spMock);
+    });
+
     it('Should not throw if verified', async () => {
       // Then
       await expect(service.verify(reqMock)).resolves.not.toThrow();
     });
-
-    it('Should throw if account is blocked', async () => {
-      // Given
-      const errorMock = new AccountBlockedException();
-      coreServiceMock.checkIfAccountIsBlocked.mockRejectedValueOnce(errorMock);
-
-      // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
     // Dependencies sevices errors
     it('Should throw if acr is not validated', async () => {
       // Given
@@ -117,6 +128,15 @@ describe('CoreFcaService', () => {
       coreServiceMock.checkIfAcrIsValid.mockImplementation(() => {
         throw errorMock;
       });
+      // Then
+      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+    });
+
+    it('Should throw if account is blocked', async () => {
+      // Given
+      const errorMock = new AccountBlockedException();
+      coreServiceMock.checkIfAccountIsBlocked.mockRejectedValueOnce(errorMock);
+
       // Then
       await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
     });
@@ -129,11 +149,20 @@ describe('CoreFcaService', () => {
       await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
     });
 
+    it('Should throw if service Provider service fails', () => {
+      // Given
+      const errorMock = new Error('my error');
+      serviceProviderMock.getById.mockReset().mockRejectedValueOnce(errorMock);
+
+      // When
+      expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+    });
+
     it('Should call interaction storage', async () => {
       // When
       await service.verify(reqMock);
       // Then
-      expect(coreServiceMock.storeInteraction).toHaveBeenCalledTimes(1);
+      expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
     });
 
     it('Should throw if identity storage for service provider fails', async () => {

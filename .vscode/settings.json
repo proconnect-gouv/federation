@@ -1,0 +1,12 @@
+{
+  "eslint.workingDirectories": [
+    {
+      "directory": "front",
+      "changeProcessCWD": true
+    },
+    {
+      "directory": "back",
+      "changeProcessCWD": true
+    }
+  ]
+}

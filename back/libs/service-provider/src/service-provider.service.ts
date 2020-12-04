@@ -69,6 +69,7 @@ export class ServiceProviderService implements IServiceProviderService {
           active: true,
           name: true,
           key: true,
+          entityId: true,
           // openid defined property names
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: true,
@@ -105,6 +106,8 @@ export class ServiceProviderService implements IServiceProviderService {
       .exec();
 
     const result: any = await asyncFilter(rawResult, async ({ _doc }) => {
+      const { name } = _doc;
+
       const errors = await validateDto(
         _doc,
         ServiceProviderDTO,
@@ -113,7 +116,11 @@ export class ServiceProviderService implements IServiceProviderService {
 
       if (errors.length > 0) {
         this.logger.warn(
-          `"${_doc.name}" was excluded from the result at DTO validation`,
+          `"${name}" was excluded from the result at DTO validation :${JSON.stringify(
+            errors,
+            null,
+            2,
+          )}`,
         );
       }
 
