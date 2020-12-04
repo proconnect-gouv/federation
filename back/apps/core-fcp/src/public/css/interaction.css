@@ -134,10 +134,11 @@ main h2 {
   border: none;
 }
 
-.identity-provider button:not(:disabled):hover {
+.identity-provider button:not(:disabled):hover,
+.identity-provider button:not(:disabled):focus {
   background-color: transparent;
   box-shadow: 0 0 6px rgba(0, 0, 145, 1);
-
+  outline: none;
 }
 
 /** tuto section **/
