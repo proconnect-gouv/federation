@@ -205,10 +205,16 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
 }
 
 export function basicScenario(params) {
-  const { idpId, login = 'test', eidasLevel, overrideParams } = params;
+  const {
+    idpId,
+    login = 'test',
+    // eidasLevel, see comment below
+    start = Cypress.env('SP1_ROOT_URL'),
+    overrideParams,
+  } = params;
   const password = '123';
 
-  cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+  cy.visit(start);
 
   if (overrideParams) {
     // Steal the state to finish the cinematic
@@ -238,9 +244,11 @@ export function basicScenario(params) {
   cy.get('input[name="login"]').clear().type(login);
   cy.get('input[name="password"]').clear().type(password);
 
-  if (eidasLevel) {
-    cy.get('select[name="acr"]').select(eidasLevel);
-  }
+  // -- This section should be implemented in the IDP Mock instance
+  // if (eidasLevel) {
+  //   cy.get('select[name="acr"]').select(eidasLevel);
+  // }
+  // --
 
   cy.get('input[type="submit"]').click();
 }

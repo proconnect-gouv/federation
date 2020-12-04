@@ -11,6 +11,7 @@ import { TrackingService } from '@fc/tracking';
 import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
 import { MailerService } from '@fc/mailer';
+import { ServiceProviderService } from '@fc/service-provider';
 import { CoreFcpService } from './core-fcp.service';
 
 describe('CoreFcpService', () => {
@@ -76,7 +77,7 @@ describe('CoreFcpService', () => {
   const coreServiceMock = {
     checkIfAccountIsBlocked: jest.fn(),
     checkIfAcrIsValid: jest.fn(),
-    storeInteraction: jest.fn(),
+    computeInteraction: jest.fn(),
   };
 
   const sessionDataMock = {
@@ -95,6 +96,10 @@ describe('CoreFcpService', () => {
     send: jest.fn(),
   };
 
+  const serviceProviderMock = {
+    getById: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -106,6 +111,7 @@ describe('CoreFcpService', () => {
         RnippService,
         MailerService,
         TrackingService,
+        ServiceProviderService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -122,6 +128,8 @@ describe('CoreFcpService', () => {
       .useValue(mailerServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
+      .overrideProvider(ServiceProviderService)
+      .useValue(serviceProviderMock)
       .compile();
 
     service = module.get<CoreFcpService>(CoreFcpService);
@@ -131,7 +139,7 @@ describe('CoreFcpService', () => {
     getInteractionMock.mockResolvedValue(getInteractionResultMock);
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
     rnippServiceMock.check.mockResolvedValue(spIdentityMock);
-    coreServiceMock.storeInteraction.mockResolvedValue({ spInteraction: {} });
+    coreServiceMock.computeInteraction.mockResolvedValue({ spInteraction: {} });
   });
 
   it('should be defined', () => {
@@ -139,6 +147,14 @@ describe('CoreFcpService', () => {
   });
 
   describe('verify', () => {
+    const spMock = {
+      key: '123456',
+      entityId: 'AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH',
+    };
+    beforeEach(() => {
+      serviceProviderMock.getById.mockResolvedValue(spMock);
+    });
+
     it('Should not throw if verified', async () => {
       // Then
       await expect(service.verify(reqMock)).resolves.not.toThrow();
@@ -172,6 +188,15 @@ describe('CoreFcpService', () => {
       await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
     });
 
+    it('Should throw if service Provider service fails', () => {
+      // Given
+      const errorMock = new Error('my error');
+      serviceProviderMock.getById.mockReset().mockRejectedValueOnce(errorMock);
+
+      // When
+      expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+    });
+
     it('Should throw if rnipp check refuses identity', async () => {
       // Given
       const errorMock = new Error('my error');
@@ -192,9 +217,8 @@ describe('CoreFcpService', () => {
       // When
       await service.verify(reqMock);
       // Then
-      expect(coreServiceMock.storeInteraction).toHaveBeenCalledTimes(1);
+      expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
     });
-
     /**
      * @TODO #134 Test when implemented
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/134

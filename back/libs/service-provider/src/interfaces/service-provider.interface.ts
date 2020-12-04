@@ -4,6 +4,7 @@ export interface IServiceProvider extends Document {
   active: boolean;
   name: string;
   key: string;
+  entityId: string;
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   client_secret: string;

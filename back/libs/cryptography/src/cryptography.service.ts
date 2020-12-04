@@ -2,7 +2,7 @@ import {
   randomBytes,
   createCipheriv,
   createDecipheriv,
-  createHmac,
+  createHash,
 } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
@@ -58,17 +58,13 @@ export class CryptographyService {
   }
 
   /**
-   * Compute the identity hmac
+   * Compute the identity hash
    * Current implementation uses sha256
    * @param pivotIdentity
-   * @returns the identity hmac "hex" digested
+   * @returns the identity hash "hex" digested
    */
   computeIdentityHash(pivotIdentity: IPivotIdentity): string {
-    const { identityHashSalt } = this.config.get<CryptographyConfig>(
-      'Cryptography',
-    );
-
-    const hash = createHmac('sha256', identityHashSalt);
+    const hash = createHash('sha256');
 
     const serial =
       pivotIdentity.given_name +
@@ -80,22 +76,28 @@ export class CryptographyService {
 
     hash.update(serial);
 
-    return hash.digest('hex');
+    return hash.digest('base64');
   }
 
   /**
-   * Compute the sub V2, given an identity hash and a client id
-   * Current implementation uses HMAC sha256
+   * Compute the sub v1, given an identity hash
+   * Current implementation uses Hash sha256
+   * @param providerRef the reference used to identify the provider
    * @param identityHash the identity hash computed by calling "computeIdentityHash"
-   * @param clientId used to create the HMAC
-   * @returns the sub "hex" digested and suffixed with "v2"
+   * @returns the sub "hex" digested and suffixed with "v1"
    */
-  computeSubV2(identityHash: string, clientId: string): string {
-    const hmac = createHmac('sha256', clientId);
+  computeSubV1(providerRef: string, identityHash: string): string {
+    const { subSecretKey } = this.config.get<CryptographyConfig>(
+      'Cryptography',
+    );
 
-    hmac.update(identityHash);
+    const data = [providerRef, identityHash, subSecretKey];
 
-    return `${hmac.digest('hex')}v2`;
+    const hash = createHash('sha256');
+
+    hash.update(data.join(''));
+
+    return `${hash.digest('hex')}v1`;
   }
 
   genRandomString(length: number) {
