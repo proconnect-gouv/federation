@@ -80,6 +80,10 @@
 
   .previous-link span {
     font-size: 14px;
+<<<<<<< HEAD
+=======
+    color: #000091;
+>>>>>>> [FC-292] replace #footer-v2 by footer
   }
 
   .previous-link:hover {
@@ -88,7 +92,12 @@
 
   .previous-link-icon {
     border-radius: 4px;
+<<<<<<< HEAD
     border: solid 1px #3e4553;
+=======
+    border: solid 1px #000091;
+    background-image: url("../img/retour-icone.svg")
+>>>>>>> [FC-292] replace #footer-v2 by footer
   }
 }
 
