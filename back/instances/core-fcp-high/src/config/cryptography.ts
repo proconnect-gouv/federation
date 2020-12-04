@@ -5,5 +5,6 @@ import { CryptographyConfig } from '@fc/cryptography';
 
 export default {
   clientSecretEcKey: process.env.CLIENT_SECRET_CIPHER_PASS,
-  identityHashSalt: process.env.IDENTITY_HASH_SALT,
+  // Core Legacy ==> use of secret cookie key
+  subSecretKey: process.env.CRYPTO_SUB_SECRET,
 } as CryptographyConfig;

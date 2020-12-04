@@ -14,6 +14,7 @@ import { Acr, IOidcIdentity } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
 import { AcrValues, pickAcr } from '../transforms';
+import { IdentityGroup, ServiceGroup } from '../types';
 
 @Injectable()
 export class CoreService {
@@ -126,30 +127,37 @@ export class CoreService {
    *
    * @param providerId
    * @param identity
+   * @param federationKey?
    */
-  private buildInteractionParts(providerId: string, identity: IOidcIdentity) {
+  private buildInteractionParts(
+    providerId: string,
+    identity: IOidcIdentity,
+    federationKey?: string,
+  ) {
+    const key = federationKey || providerId;
     const hash = this.cryptography.computeIdentityHash(identity);
-    const sub = this.cryptography.computeSubV2(hash, providerId);
-    const federation = { [providerId]: { sub } };
+    const sub = this.cryptography.computeSubV1(providerId, hash);
+    const federation = { [key]: { sub } };
 
     return { hash, sub, federation };
   }
 
   /**
+   * @todo Découper cette fonction car elle commence à englober plusieurs traitements business
    * Build and persist current interaction with account service
-   *
-   * @param idpId Identity provider identifier
-   * @param idpIdentity Identity object for identity provider's identity hash
-   * @param spId Service provider identifier
-   * @param spIdentity Identity object for service provider's identity hash
+   * @param {Object} idp Identity provider information
+   * @param {string} idp.idpId - id of the Identity Provider
+   * @param {string} idp.idpIdentity - data from Identity Provider
+   * @param {Object} sp Service provider information
+   * @param {string} idp.spId - id of the Service Provider
+   * @param {string} idp.spIdentity - data to give to Service Provider
+   * @param {string} idp.spRef - Reference of Service Provider used to identity
    */
-  async storeInteraction(
-    idpId: string,
-    idpIdentity: IOidcIdentity,
-    spId: string,
-    spIdentity: IOidcIdentity,
+  async computeInteraction(
+    { idpId, idpIdentity }: IdentityGroup,
+    { spIdentity, spId, spRef }: ServiceGroup,
   ) {
-    const spParts = this.buildInteractionParts(spId, spIdentity);
+    const spParts = this.buildInteractionParts(spRef, spIdentity, spId);
     const idpParts = this.buildInteractionParts(idpId, idpIdentity);
 
     const interaction = {

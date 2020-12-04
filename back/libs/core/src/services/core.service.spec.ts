@@ -9,6 +9,7 @@ import { TrackingService } from '@fc/tracking';
 import { IOidcIdentity } from '@fc/oidc';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
 import { CoreService } from './core.service';
+import { IdentityGroup, ServiceGroup } from '../types';
 
 describe('CoreService', () => {
   let service: CoreService;
@@ -65,7 +66,7 @@ describe('CoreService', () => {
 
   const cryptographyServiceMock = {
     computeIdentityHash: jest.fn(),
-    computeSubV2: jest.fn(),
+    computeSubV1: jest.fn(),
   };
 
   const configServiceMock = {
@@ -162,14 +163,24 @@ describe('CoreService', () => {
 
   describe('buildInteractionParts', () => {
     // Given
-    const hash = 'hashMock';
+    const hash = Buffer.from('hashValue', 'utf-8').toString('base64');
     const sub = 'subMock';
     const id = 'idpIdMock';
-    const identity = ({} as unknown) as IOidcIdentity;
+    const identity = ({
+      // OIDC naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      given_name: 'given_nameValue',
+      gender: 'genderValue',
+    } as unknown) as IOidcIdentity;
+
+    beforeEach(() => {
+      cryptographyServiceMock.computeIdentityHash.mockReturnValue(hash);
+    });
 
     it('should call cryptography.computeIdentityHash', () => {
       // When
       service['buildInteractionParts'](id, identity);
+
       // Then
       expect(cryptographyServiceMock.computeIdentityHash).toHaveBeenCalledTimes(
         1,
@@ -179,25 +190,25 @@ describe('CoreService', () => {
       );
     });
 
-    it('should call cryptography.computeSubV2', () => {
-      // Given
-      cryptographyServiceMock.computeIdentityHash.mockReturnValue(hash);
+    it('should call cryptography.computeSubV1', () => {
       // When
       service['buildInteractionParts'](id, identity);
+
       // Then
-      expect(cryptographyServiceMock.computeSubV2).toHaveBeenCalledTimes(1);
-      expect(cryptographyServiceMock.computeSubV2).toHaveBeenCalledWith(
-        hash,
+      expect(cryptographyServiceMock.computeSubV1).toHaveBeenCalledTimes(1);
+      expect(cryptographyServiceMock.computeSubV1).toHaveBeenCalledWith(
         id,
+        hash,
       );
     });
 
     it('should return an object containing hash, sub and federation', () => {
       // Given
-      cryptographyServiceMock.computeIdentityHash.mockReturnValue(hash);
-      cryptographyServiceMock.computeSubV2.mockReturnValue(sub);
+      cryptographyServiceMock.computeSubV1.mockReturnValue(sub);
+
       // When
       const result = service['buildInteractionParts'](id, identity);
+
       // Then
       expect(result).toEqual({
         hash,
@@ -207,100 +218,135 @@ describe('CoreService', () => {
     });
   });
 
-  describe('storeInteraction', () => {
-    // Given
-    const idpId = 'idpIdMock';
-    const idpIdentity = ({} as unknown) as IOidcIdentity;
-    const spId = 'spIdMock';
-    const spIdentity = ({} as unknown) as IOidcIdentity;
-
-    const hash = 'hashMock';
-    const spFederation = 'spFederation';
-    const idpFederation = 'idpFederation';
-
-    const spInteraction = {
-      hash,
-      federation: spFederation,
+  describe('computeInteraction', () => {
+    const spKey = Symbol('spKey');
+    const spMock = {
+      hash: 'hashValue',
+      sub: 'sub:value',
+      federation: {
+        [spKey]: 'sub:value',
+      },
     };
-    const idpInteraction = {
-      hash,
-      federation: idpFederation,
+    const idpKey = Symbol('idpKey');
+    const idpMock = {
+      hash: 'hashValue',
+      sub: 'sub:value',
+      federation: {
+        [idpKey]: 'sub:value',
+      },
     };
-    const buildInteractionPartsMock = jest.fn();
+    let buildInteractionMock;
+
+    const identityMock: IdentityGroup = {
+      idpId: 'xxxxxxx',
+      idpIdentity: {},
+    };
+    const serviceMock: ServiceGroup = {
+      spId: 'xxxxxxx',
+      spIdentity: {},
+      spRef: 'zzzzzzzzz',
+    };
+
+    const accountMock = {
+      identityHash: 'hashValue',
+      idpFederation: {
+        [idpKey]: 'sub:value',
+      },
+      spFederation: { [spKey]: 'sub:value' },
+      lastConnection: expect.any(Date),
+    };
+
+    const resultMock = {
+      idpInteraction: {
+        federation: {
+          [idpKey]: 'sub:value',
+        },
+        hash: 'hashValue',
+        sub: 'sub:value',
+      },
+      spInteraction: {
+        federation: {
+          [spKey]: 'sub:value',
+        },
+        hash: 'hashValue',
+        sub: 'sub:value',
+      },
+    };
 
     beforeEach(() => {
-      buildInteractionPartsMock.mockReturnValueOnce(spInteraction);
-      buildInteractionPartsMock.mockReturnValueOnce(idpInteraction);
-
-      service['buildInteractionParts'] = buildInteractionPartsMock;
-    });
-
-    it('should call buildInteractionParts twice', async () => {
-      // When
-      await service.storeInteraction(idpId, idpIdentity, spId, spIdentity);
-      // Then
-      expect(service['buildInteractionParts']).toHaveBeenCalledTimes(2);
-      expect(service['buildInteractionParts']).toHaveBeenCalledWith(
-        spId,
-        spIdentity,
-      );
-      expect(service['buildInteractionParts']).toHaveBeenCalledWith(
-        idpId,
-        idpIdentity,
+      buildInteractionMock = jest.spyOn<CoreService, any>(
+        service,
+        'buildInteractionParts',
       );
     });
 
-    it('should call account.storeInteraction', async () => {
-      // When
-      await service.storeInteraction(idpId, idpIdentity, spId, spIdentity);
-      // Then
-      expect(accountServiceMock.storeInteraction).toHaveBeenCalledTimes(1);
-      expect(accountServiceMock.storeInteraction).toHaveBeenCalledWith(
-        expect.objectContaining({
-          identityHash: hash,
-          idpFederation,
-          spFederation,
-          lastConnection: expect.any(Date),
-        }),
-      );
-    });
-
-    it('should return interaction parts', async () => {
-      // When
-      const result = await service.storeInteraction(
-        idpId,
-        idpIdentity,
-        spId,
-        spIdentity,
-      );
-      // Then
-      expect(result).toEqual({
-        spInteraction,
-        idpInteraction,
-      });
-    });
-
-    it('should not throw if interaction storage fails', async () => {
+    it('Should store interaction with identity and service data', async () => {
       // Given
-      const error = new Error();
-      accountServiceMock.storeInteraction.mockRejectedValue(error);
+      buildInteractionMock
+        .mockReturnValueOnce(spMock)
+        .mockReturnValueOnce(idpMock);
+
+      // When
+      const result = await service['computeInteraction'](
+        identityMock,
+        serviceMock,
+      );
+
       // Then
-      await expect(
-        service.storeInteraction(idpId, idpIdentity, spId, spIdentity),
-      ).resolves.not.toThrow();
+      expect(accountServiceMock.storeInteraction).toBeCalledTimes(1);
+      expect(accountServiceMock.storeInteraction).toBeCalledWith(accountMock);
+      expect(buildInteractionMock).toBeCalledTimes(2);
+      expect(buildInteractionMock).toHaveBeenNthCalledWith(
+        1,
+        serviceMock.spRef,
+        serviceMock.spIdentity,
+        serviceMock.spId,
+      );
+      expect(buildInteractionMock).toHaveBeenNthCalledWith(
+        2,
+        identityMock.idpId,
+        identityMock.idpIdentity,
+      );
+      expect(result).toStrictEqual(resultMock);
     });
 
-    it('should log a warning interaction storage fails', async () => {
+    it('Should compute Interaction even if account storing process failed', async () => {
       // Given
-      const error = new Error();
-      accountServiceMock.storeInteraction.mockRejectedValue(error);
+      buildInteractionMock
+        .mockReturnValueOnce(spMock)
+        .mockReturnValueOnce(idpMock);
+
+      accountServiceMock.storeInteraction.mockRejectedValueOnce(
+        new Error('Unknown Error'),
+      );
+
       // When
-      await service.storeInteraction(idpId, idpIdentity, spId, spIdentity);
+      const result = await service['computeInteraction'](
+        identityMock,
+        serviceMock,
+      );
+
       // Then
-      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.warn).toHaveBeenCalledWith(
+      expect(accountServiceMock.storeInteraction).toBeCalledTimes(1);
+      expect(accountServiceMock.storeInteraction).toBeCalledWith(accountMock);
+      expect(buildInteractionMock).toBeCalledTimes(2);
+      expect(buildInteractionMock).toHaveBeenNthCalledWith(
+        1,
+        serviceMock.spRef,
+        serviceMock.spIdentity,
+        serviceMock.spId,
+      );
+      expect(buildInteractionMock).toHaveBeenNthCalledWith(
+        2,
+        identityMock.idpId,
+        identityMock.idpIdentity,
+      );
+
+      expect(loggerServiceMock.warn).toBeCalledTimes(1);
+      expect(loggerServiceMock.warn).toBeCalledWith(
         'Could not persist interaction to database',
       );
+      expect(result).toStrictEqual(resultMock);
     });
   });
 

@@ -10,6 +10,7 @@ import {
   RnippReceivedValidEvent,
 } from '@fc/rnipp';
 import { CoreService } from '@fc/core';
+import { ServiceProviderService } from '@fc/service-provider';
 
 @Injectable()
 export class CoreFcpService {
@@ -21,6 +22,7 @@ export class CoreFcpService {
     private readonly tracking: TrackingService,
     private readonly rnipp: RnippService,
     private readonly mailer: MailerService,
+    private readonly serviceProvider: ServiceProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -52,6 +54,16 @@ export class CoreFcpService {
     const session = await this.session.get(interactionId);
     const { idpId, idpIdentity, idpAcr, spId, spAcr } = session;
 
+    /**
+    * @todo - le DTO est permissif et devrait forcer les données
+      if (!idpId || !idpIdentity) {
+        throw new CoreMissingInteraction('identity provider');
+      }
+      if (!spIdentity || !spId) {
+        throw new CoreMissingInteraction('service provider');
+      }
+    */
+
     // Acr check
     this.core.checkIfAcrIsValid(idpAcr, spAcr);
 
@@ -60,12 +72,19 @@ export class CoreFcpService {
 
     await this.core.checkIfAccountIsBlocked(rnippIdentity);
 
+    const { entityId } = await this.serviceProvider.getById(spId);
+
     // Save interaction to database & get sp's sub to avoid double computation
-    const { spInteraction } = await this.core.storeInteraction(
-      idpId,
-      idpIdentity, // use identity from IdP for IdP
-      spId,
-      rnippIdentity, // use identity from RNIPP for SP
+    const { spInteraction } = await this.core.computeInteraction(
+      {
+        idpId,
+        idpIdentity, // use identity from IdP for IdP
+      },
+      {
+        spId,
+        spRef: entityId,
+        spIdentity: rnippIdentity, // use identity from RNIPP for SP
+      },
     );
 
     /**

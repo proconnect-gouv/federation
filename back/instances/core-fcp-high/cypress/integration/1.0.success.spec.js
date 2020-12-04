@@ -37,7 +37,7 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2',
+      '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
     );
   });
 
@@ -60,7 +60,49 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2',
+      '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
+    );
+  });
+
+  it('should log in to Service Provider Example a "présumé né jour"', () => {
+    basicSuccessScenario({
+      userName: 'étranger_présumé_né_jour',
+      password: '123',
+      eidasLevel: 1,
+      idpId,
+    });
+
+    checkInformations({
+      gender: 'Homme',
+      givenName: 'Jean',
+      familyName: 'FLEURET',
+      birthdate: '1992-11-00',
+      birthcountry: '99217',
+    });
+    checkInStringifiedJson(
+      'sub',
+      '1498d9573ecba882e7038ea0407195f4f703d4e477db089e6cb3cbe723cb3b0fv1',
+    );
+  });
+
+  it('should log in to Service Provider Example a "présumé né jour et mois"', () => {
+    basicSuccessScenario({
+      userName: 'étranger_présumé_né_jour_et_mois',
+      password: '123',
+      eidasLevel: 1,
+      idpId,
+    });
+
+    checkInformations({
+      gender: 'Homme',
+      givenName: 'Jean',
+      familyName: 'TARGE',
+      birthdate: '1992-00-00',
+      birthcountry: '99217',
+    });
+    checkInStringifiedJson(
+      'sub',
+      '4718dec56cbcc6f581981c4ea987f0cdd219ae955f454f530e706c5f293321c8v1',
     );
   });
 });

@@ -1,8 +1,8 @@
-import {
-  basicErrorScenario,
-  basicScenario,
-} from './mire.utils';
+import { basicScenario } from './mire.utils';
 
+/**
+ * @todo #242 - remove and let basic scopes
+ */
 const scope =
   'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
 
@@ -112,7 +112,6 @@ describe('Acr', () => {
   });
 
   it('should complete cinematic even when acr is to low and FC should force it to max value', () => {
-    
     const FORCE_MAX_EIDAS = 'eidas3';
     basicScenario({
       idpId: 'fip1v2',
@@ -135,17 +134,18 @@ describe('Acr', () => {
     cy.url().should('include', `${Cypress.env('SP1_ROOT_URL')}/login-callback`);
 
     cy.get('#info-acr').contains(FORCE_MAX_EIDAS);
-
   });
 
-  it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
-    basicErrorScenario({
-      errorCode: 'test',
-      idpId: 'fip1v2',
-      eidasLevel: 'eidas1',
-    });
+  // @todo see: This section should be implemented in the IDP Mock instance (eidasLevel)
+  //
+  // it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
+  //   basicErrorScenario({
+  //     errorCode: 'test',
+  //     idpId: 'fip1v2',
+  //     eidasLevel: 'eidas1',
+  //   });
 
-    cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/verify`));
-    cy.hasError('Y020001');
-  });
+  //   cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/verify`));
+  //   cy.hasError('Y020001');
+  // });
 });

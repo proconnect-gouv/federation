@@ -49,10 +49,10 @@ describe('CryptographyService', () => {
     birthcountry: '99100',
   };
 
-  const mockHmacDigestedHash =
+  const mockHashDigestedHash =
     'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8';
 
-  const mockIdentityHashSalt = 'Salt (2010) Action/Mystery ‧ 1h 44m';
+  const cryptographyKeyMock = 'Méfaits accomplis...';
 
   const ecdsaSignaturesServiceMock = {
     derToJose: jest.fn(),
@@ -78,7 +78,7 @@ describe('CryptographyService', () => {
     final: jest.fn(),
   };
 
-  const mockHmac = {
+  const mockHash = {
     update: jest.fn(),
     digest: jest.fn(),
   };
@@ -101,9 +101,10 @@ describe('CryptographyService', () => {
       .mockImplementation(ecdsaSignaturesServiceMock.derToJose);
 
     configMock.get.mockImplementation(() => ({
+      // Cryptography config
       clientSecretEcKey: mockEncryptKey,
-      identityHashSalt: mockIdentityHashSalt,
       sessionIdLength: 42,
+      subSecretKey: cryptographyKeyMock,
     }));
   });
 
@@ -186,23 +187,20 @@ describe('CryptographyService', () => {
   describe('computeIdentityHash', () => {
     beforeEach(() => {
       jest
-        .spyOn(crypto, 'createHmac')
-        .mockImplementationOnce(mockCrypto.createHmac);
-      mockCrypto.createHmac.mockReturnValueOnce(mockHmac);
+        .spyOn(crypto, 'createHash')
+        .mockImplementationOnce(mockCrypto.createHash);
+      mockCrypto.createHash.mockReturnValueOnce(mockHash);
 
-      mockHmac.digest.mockReturnValueOnce(mockHmacDigestedHash);
+      mockHash.digest.mockReturnValueOnce(mockHashDigestedHash);
     });
 
-    it('should create a Hmac instance with sha256', () => {
+    it('should create a hash instance with sha256', () => {
       // action
       service.computeIdentityHash(pivotIdentityMock);
 
       // expect
-      expect(mockCrypto.createHmac).toHaveBeenCalledTimes(1);
-      expect(mockCrypto.createHmac).toHaveBeenCalledWith(
-        'sha256',
-        mockIdentityHashSalt,
-      );
+      expect(mockCrypto.createHash).toHaveBeenCalledTimes(1);
+      expect(mockCrypto.createHash).toHaveBeenCalledWith('sha256');
     });
 
     it('should serialize the given pivot identity and hash it', () => {
@@ -214,8 +212,8 @@ describe('CryptographyService', () => {
       service.computeIdentityHash(pivotIdentityMock);
 
       // expect
-      expect(mockHmac.update).toHaveBeenCalledTimes(1);
-      expect(mockHmac.update).toHaveBeenCalledWith(serializedPivotIdentity);
+      expect(mockHash.update).toHaveBeenCalledTimes(1);
+      expect(mockHash.update).toHaveBeenCalledWith(serializedPivotIdentity);
     });
 
     it('should digest the hash to hex format and return the result', () => {
@@ -223,60 +221,52 @@ describe('CryptographyService', () => {
       const result = service.computeIdentityHash(pivotIdentityMock);
 
       // expect
-      expect(mockHmac.digest).toHaveBeenCalledTimes(1);
-      expect(mockHmac.digest).toHaveBeenCalledWith('hex');
-      expect(result).toBe(mockHmacDigestedHash);
+      expect(mockHash.digest).toHaveBeenCalledTimes(1);
+      expect(mockHash.digest).toHaveBeenCalledWith('base64');
+      expect(result).toBe(mockHashDigestedHash);
     });
   });
 
-  describe('computeSubV2', () => {
+  describe('computeSubV1', () => {
+    const providerRefMock = 'providerRefMockValue';
+    const identityHashMock = 'identityHashValue';
     beforeEach(() => {
       jest
-        .spyOn(crypto, 'createHmac')
-        .mockImplementationOnce(mockCrypto.createHmac);
-      mockCrypto.createHmac.mockReturnValueOnce(mockHmac);
+        .spyOn(crypto, 'createHash')
+        .mockImplementationOnce(mockCrypto.createHash);
+      mockCrypto.createHash.mockReturnValueOnce(mockHash);
 
-      mockHmac.digest.mockReturnValueOnce(mockHmacDigestedHash);
+      mockHash.digest.mockReturnValueOnce(mockHashDigestedHash);
     });
 
-    it('should create a Hmac instance with sha256', () => {
-      // setup
-      const secret = 'shhht!';
-      const identityHashMock = 'identityHash';
-
+    it('should create a Hash instance with sha256', () => {
       // action
-      service.computeSubV2(identityHashMock, secret);
+      service.computeSubV1(providerRefMock, identityHashMock);
 
       // expect
-      expect(mockCrypto.createHmac).toHaveBeenCalledTimes(1);
-      expect(mockCrypto.createHmac).toHaveBeenCalledWith('sha256', secret);
+      expect(mockCrypto.createHash).toHaveBeenCalledTimes(1);
+      expect(mockCrypto.createHash).toHaveBeenCalledWith('sha256');
     });
 
-    it('should call hmac instance update with identity hash', () => {
+    it('should call hash instance update with identity hash', () => {
       // setup
-      const secret = 'shhht!';
-      const identityHashMock = 'identityHash';
-
+      const resultMock = `${providerRefMock}${identityHashMock}${cryptographyKeyMock}`;
       // action
-      service.computeSubV2(identityHashMock, secret);
+      service.computeSubV1(providerRefMock, identityHashMock);
 
       // expect
-      expect(mockHmac.update).toHaveBeenCalledTimes(1);
-      expect(mockHmac.update).toHaveBeenCalledWith(identityHashMock);
+      expect(mockHash.update).toHaveBeenCalledTimes(1);
+      expect(mockHash.update).toHaveBeenCalledWith(resultMock);
     });
 
-    it('should digest the hmac to hex format and return the result suffixed with the sub version', () => {
-      // setup
-      const secret = 'shhht!';
-      const identityHashMock = 'identityHash';
-
+    it('should digest the hash to hex format and return the result suffixed with the sub version', () => {
       // action
-      const result = service.computeSubV2(identityHashMock, secret);
+      const result = service.computeSubV1(providerRefMock, identityHashMock);
 
       // expect
-      expect(mockHmac.digest).toHaveBeenCalledTimes(1);
-      expect(mockHmac.digest).toHaveBeenCalledWith('hex');
-      expect(result).toBe(`${mockHmacDigestedHash}v2`);
+      expect(mockHash.digest).toHaveBeenCalledTimes(1);
+      expect(mockHash.digest).toHaveBeenCalledWith('hex');
+      expect(result).toBe(`${mockHashDigestedHash}v1`);
     });
   });
 
