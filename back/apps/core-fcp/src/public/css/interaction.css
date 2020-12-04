@@ -48,7 +48,7 @@ main {
   padding: 16px 16px 80px;
 }
 
-main > p {
+main > h1 {
   width: 100%;
   font-size: 1.5rem;
   max-width: 768px;
@@ -56,12 +56,12 @@ main > p {
 
 }
 
-main > p + p {
+main > h1 + h2 {
   width: 100%;
   font-size: 1.5rem;
 }
 
-main p span {
+main h2 {
   margin-top: 16px;
   font-size: 1.5rem;
   font-weight: bold;
@@ -104,7 +104,7 @@ main p span {
 
 
 @media screen and (min-width: 576px) {
-  main > p {
+  main > h2, main > h1 {
     text-align: center;
   }
  
