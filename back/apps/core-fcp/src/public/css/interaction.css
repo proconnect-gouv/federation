@@ -81,21 +81,6 @@ main h2 {
   main > h1 {
     font-size: 1.5rem;
   }
-
-  main > h1 + h2 {
-    font-size: 2.5rem;
-  }
-}
-@media screen and (min-width: 768px) {
-  main {
-    padding: 16px 32px 80px;
-  }
-}
-
-@media screen and (min-width: 1024px) {
-  #mire .content {
-    max-width: 1150px;
-  }
 }
 
 /** Identity providers **/
@@ -169,72 +154,6 @@ main h2 {
   box-shadow: 0 0 6px rgba(0, 0, 145, 1);
   outline: none;
 }
-
-/** tuto section **/
-.tuto-container {
-  background-color: #f2f4ff;
-  border-radius: 8px;
-  padding: 24px 16px;
-  max-width: 728px;
-}
-
-.tuto-container .logos-container {
-  display: none;
-  justify-content: space-around;
-  align-items: center;
-  margin: 16px 0;
-}
-
-.tuto-container h3 {
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #000091;
-}
-
-.tuto-container p {
-  margin: 16px 0 24px;
-  font-size: 0.9rem;
-  line-height: 1.43rem;
-  color: #3e4553;
-}
-
-.tuto-container button {
-  width: 100%;
-  height: 68px;
-  font-size: 0.9rem;
-  font-weight: bold;
-  background-color: transparent;
-  border-radius: 8px;
-  border: solid 1px #000091;
-  color: #000091;
-  max-width: 350px;
-  padding: 16px;
-  cursor: pointer;
-}
-.tuto-container button:disabled {
-  cursor: not-allowed;
-}
-.tuto-container button:hover {
-  background-color: #000091;
-  color: #fff;
-  text-transform: underline;
-}
-
-@media screen and (min-width: 576px) {
-  .tuto-container {
-    text-align: center;
-  }
-  
-  .tuto-container .logos-container {
-    display: flex;
-  }
-
-  .tuto-container button {
-    height: 50px;
-    padding: auto;
-  }
-}
-
 
 /** tuto section **/
 .tuto-container {
