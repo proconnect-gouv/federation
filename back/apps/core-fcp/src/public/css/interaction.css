@@ -26,24 +26,6 @@ body {
   align-items: center;
 }
 
-.mire__development {
-  width: calc(100% - 32px);
-  padding: 16px;
-  margin-bottom: 48px;
-  border: solid 3px #cc2222;
-}
-
-.mire__development * {
-  color: #cc2222;
-  font-size: 1.8rem;
-  line-height: 2.7rem;
-  font-weight: bold;
-}
-
-.mire__development a {
-  color: #034ea2;
-}
-
 main {
   padding: 16px 16px 80px;
 }
@@ -69,54 +51,16 @@ main h2 {
   display: block;
 }
 
-.main__provider-used {
-  margin-bottom: 32px;
-}
 
 .main__providers {
   width: 100%;
   margin: 16px 0 80px;
 }
 
-.main__remember-choice {
-  display: flex;
-  align-items: center;
-  margin-bottom: 32px;
-}
-
-.main__remember-choice label {
-  font-size: 1.4rem;
-  line-height: 1.2rem;
-}
-
-.main__footer {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-bottom: 16px;
-  padding: 0 16px;
-}
-
-.main__footer a {
-  font-size: 1.4rem;
-  line-height: 1.8rem;
-}
-
-
 @media screen and (min-width: 576px) {
   main > h2, main > h1 {
     text-align: center;
   }
- 
-
-  .main__footer {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-  }
-
-  
 }
 @media screen and (min-width: 768px) {
   main {
@@ -127,22 +71,6 @@ main h2 {
 @media screen and (min-width: 1024px) {
   #mire .content {
     max-width: 1150px;
-  }
-
-  header {
-    padding: 16px 24px;
-  }
-
-  .main__sign-in {
-    max-width: none;
-  }
-
-  .main__chose-fi {
-    max-width: none;
-  }
-
-  .main__remember-choice {
-    margin-bottom: 76px;
   }
 }
 
@@ -211,43 +139,6 @@ main h2 {
   box-shadow: 0 0 6px rgba(0, 0, 145, 1);
 
 }
-
-
-/** Error message **/
-.error-message {
-  width: 80%;
-  padding: 16px;
-  border: solid 1px #cc2222;
-  margin-bottom: 48px;
-}
-
-.error-message > .content p {
-  font-size: 1.4rem;
-  line-height: 2.1rem;
-  font-weight: bold;
-  margin-bottom: 16px;
-}
-
-.error-message > .content .more {
-  padding-top: 16px;
-  border-top: solid 1px #f1b0b7;
-}
-
-.error-message > .content .more > ul {
-  margin-bottom: 16px;
-  padding-left: 40px;
-  list-style-type: disc;
-}
-
-.error-message > .content .more > ul:last-child {
-  margin-bottom: 0;
-}
-
-.error-message > .content .more ul * {
-  font-size: 1.4rem;
-  line-height: 1.6rem;
-}
-
 
 /** tuto section **/
 .tuto-container {
