@@ -41,6 +41,7 @@
 .previous-link-icon {
   width: 24px;
   height: 24px;
+  padding: 8px ;
   margin-right: 10px;
   background-image: url("../img/retour-icone-gris.svg");
   background-repeat: no-repeat;
@@ -70,6 +71,7 @@
 
   .previous-link-container {
     width: auto;
+    max-width: 45%;
     background-color: transparent;
     border-radius: 0;
     justify-content: center;
