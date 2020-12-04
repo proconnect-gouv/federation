@@ -161,6 +161,7 @@ main p span {
 .identity-provider .icon-container img{
   border-radius: 8px;
   width: 100%;
+  box-shadow: 0 0 1px 0 rgba(0, 0, 145, 0.7);
 }
 
 .identity-provider button {
@@ -288,6 +289,14 @@ main p span {
   max-width: 350px;
   padding: 16px;
   cursor: pointer;
+}
+.tuto-container button:disabled {
+  cursor: not-allowed;
+}
+.tuto-container button:hover {
+  background-color:  #000091;
+  color: #fff;
+  text-transform: underline;
 }
 
 @media screen and (min-width: 576px) {
