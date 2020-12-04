@@ -272,6 +272,14 @@ main > h1 + h2 {
   padding: 16px;
   cursor: pointer;
 }
+.tuto-container button:disabled {
+  cursor: not-allowed;
+}
+.tuto-container button:hover {
+  background-color:  #000091;
+  color: #fff;
+  text-transform: underline;
+}
 
 @media screen and (min-width: 576px) {
   .tuto-container {
