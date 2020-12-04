@@ -1,9 +1,14 @@
-import { IsString } from 'class-validator';
+import { IsAscii, IsOptional, IsString, MinLength } from 'class-validator';
 
 export class CryptographyConfig {
   @IsString()
   readonly clientSecretEcKey: string;
 
-  @IsString()
-  readonly identityHashSalt: string;
+  @IsAscii()
+  @MinLength(8)
+  /**
+   * @todo this key is specififc to FC and should be extract from Cryptography
+   */
+  @IsOptional()
+  readonly subSecretKey: string;
 }

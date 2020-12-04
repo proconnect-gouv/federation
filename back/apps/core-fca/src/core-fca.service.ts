@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
+import { ServiceProviderService } from '@fc/service-provider';
 
 @Injectable()
 export class CoreFcaService {
@@ -9,6 +10,7 @@ export class CoreFcaService {
     private readonly logger: LoggerService,
     private readonly session: SessionService,
     private readonly core: CoreService,
+    private readonly serviceProvider: ServiceProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -42,12 +44,23 @@ export class CoreFcaService {
 
     await this.core.checkIfAccountIsBlocked(idpIdentity);
 
+    /**
+     * @todo - what is the algorithm of the sub for fca ?
+     *
+     */
+    const { entityId } = await this.serviceProvider.getById(spId);
+
     // Save interaction to database & get sp's sub to avoid double computation
-    const { spInteraction } = await this.core.storeInteraction(
-      idpId,
-      idpIdentity, // use identity from IdP for IdP
-      spId,
-      idpIdentity, // use identity from IdP for SP
+    const { spInteraction } = await this.core.computeInteraction(
+      {
+        idpId,
+        idpIdentity, // use identity from IdP for IdP
+      },
+      {
+        spId,
+        spRef: entityId,
+        spIdentity: idpIdentity, // use identity from RNIPP for SP
+      },
     );
 
     /**
