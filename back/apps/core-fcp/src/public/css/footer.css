@@ -1,37 +1,35 @@
-#footer {
+footer {
   background-color: #000091;
+  overflow-x: scroll
 }
 
-#footer a {
+footer a {
   color: #fff;
   font-size: 15px;
   text-decoration: none;
-  border-right: solid 1px #fff;
-  padding-right: 10px;
-  margin-right: 10px;
-  line-height: 2;
 }
 
-#footer a:hover {
+footer a:hover {
   text-decoration: underline;
 }
 
-#footer a:last-child {
-  border-right: none;
+footer a + a {
+  border-left: solid 1px #fff;
+  padding-left: 10px;
+  margin-left: 10px;
 }
 
 .footer-nav {
+  width: max-content;
   padding: 40px 16px;
-  display: flex;
-  flex-wrap: wrap;
 }
 
-@media screen and (min-width: 576px) {
-  #footer a {
-    line-height: normal;
-  }
-
+@media screen and (min-width: 576px) { 
   .footer-nav {
     padding: 40px 32px;
+  }
+
+  footer {
+    overflow-x: initial;
   }
 }
