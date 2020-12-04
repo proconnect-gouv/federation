@@ -185,7 +185,7 @@ main h2 {
   cursor: not-allowed;
 }
 .tuto-container button:hover {
-  background-color:  #000091;
+  background-color: #000091;
   color: #fff;
   text-transform: underline;
 }

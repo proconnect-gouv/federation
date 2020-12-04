@@ -65,7 +65,7 @@
     max-width: 326px;
   }
 
-  .logos-container a+a {
+  .logos-container a + a {
     margin-left: 40px;
   }
 
