@@ -139,8 +139,8 @@ main h2 {
   box-shadow: none;
 }
 
-.identity-provider button:disabled img{
-  opacity: 0.7
+.identity-provider button:disabled img {
+  opacity: 0.7;
 }
 
 .identity-provider button:not(:disabled):hover,
