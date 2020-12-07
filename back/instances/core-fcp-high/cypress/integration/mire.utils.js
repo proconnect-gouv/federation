@@ -142,12 +142,7 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'BACK_CINEMATIC',
-    /**
-     * @TODO #194
-     * ETQ Dev, je remplace les `FS_` par `SP_`
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/194
-     */
-    event: 'FS_REQUESTED_FC_TOKEN',
+    event: 'SP_REQUESTED_FC_TOKEN',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,
@@ -156,12 +151,7 @@ export function basicSuccessScenario(params) {
 
   cy.hasBusinessLog({
     category: 'BACK_CINEMATIC',
-    /**
-     * @TODO #194
-     * ETQ Dev, je remplace les `FS_` par `SP_`
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/194
-     */
-    event: 'FS_REQUESTED_FC_USERINFO',
+    event: 'SP_REQUESTED_FC_USERINFO',
     spId: serviceProvider.id,
     spAcr: params.acr_values,
     idpId,

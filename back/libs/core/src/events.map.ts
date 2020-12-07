@@ -180,28 +180,28 @@ export function getEventsMap(urlPrefix: string): IEventMap {
     },
 
     // Back channel
-    FS_REQUESTED_FC_TOKEN: {
+    SP_REQUESTED_FC_TOKEN: {
       step: '7.2.0',
       category: EventsCategories.BACK_CINEMATIC,
-      event: 'FS_REQUESTED_FC_TOKEN',
+      event: 'SP_REQUESTED_FC_TOKEN',
       exceptions: [],
       route: `${urlPrefix}/token`,
       intercept: false,
     },
-    FS_REQUESTED_FC_USERINFO: {
+    SP_REQUESTED_FC_USERINFO: {
       step: '7.3.0',
       category: EventsCategories.BACK_CINEMATIC,
-      event: 'FS_REQUESTED_FC_USERINFO',
+      event: 'SP_REQUESTED_FC_USERINFO',
       exceptions: [],
       route: `${urlPrefix}/userinfo`,
       intercept: false,
     },
 
     // Not supported yet
-    FS_REQUESTED_LOGOUT: {
+    SP_REQUESTED_LOGOUT: {
       step: '8.0.0',
       category: EventsCategories.FRONT_CINEMATIC,
-      event: 'FS_REQUESTED_LOGOUT',
+      event: 'SP_REQUESTED_LOGOUT',
       exceptions: [],
       route: `${urlPrefix}/session/end`,
       intercept: false,
