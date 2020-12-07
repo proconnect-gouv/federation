@@ -80,7 +80,6 @@
 
   .previous-link span {
     font-size: 14px;
-    color: #000091;
   }
 
   .previous-link:hover {
@@ -89,8 +88,7 @@
 
   .previous-link-icon {
     border-radius: 4px;
-    border: solid 1px #000091;
-    background-image: url("../img/retour-icone.svg")
+    border: solid 1px #3e4553;
   }
 }
 
