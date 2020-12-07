@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
-<<<<<<< HEAD
   <%- include('partials/head.ejs', { title: 'Connexion - choix du fournisseur d\'identité', style: 'interaction' }); %>
-=======
-  <%- include('partials/head.partial.ejs', { title: 'Connexion - choix du fournisseur d\'identité', style: 'interaction' }); %>
->>>>>>> [FC-292] adaptation for asqatasun
 
   <body>
     <%- include('partials/menu.ejs'); %>
@@ -12,17 +8,7 @@
       <div class="content">
         <main>    
           <h1>Je choisis un moyen pour me connecter sur :</h1>
-<<<<<<< HEAD
-<<<<<<< HEAD
           <h2><%= locals.spName %></h2>
-=======
-          <h2><span><%= locals.spName %></span></h2>
-=======
-          <h2><%= locals.spName %></h2>
->>>>>>> [FC-292] clean interaction.css
-
-    
->>>>>>> [FC-292] adaptation for asqatasun
           <div id="idp-list" class="main__providers">
             <% locals.providers.filter(p => p.display).forEach((provider) => { %>
               <form
@@ -42,17 +28,12 @@
                       <img src='/img/fi/<%-provider.image%>' alt="Logo de <%= provider.name %>" onerror="this.src='/img/fi/fi-placeholder.svg'"/>
                     </div>
                     <span>
-<<<<<<< HEAD
                       <% if (!provider.active) { %>
                         <%= provider.name %> est actuellement indisponible
                       <% } else {%>
                         J’utilise l’application 
                         <strong><%= provider.title %></strong>
                       <% } %>
-=======
-                      J’utilise l’application 
-                      <strong><%= provider.title %></strong>
->>>>>>> add title property to providers in template interaction
                     </span>
                   </button>
                 </div>
