@@ -28,6 +28,7 @@ body {
 
 main {
   padding: 16px 16px 80px;
+  min-height: calc(100vh - (95px + 136px))
 }
 
 main > h1 {
@@ -58,6 +59,10 @@ main h2 {
 }
 
 @media screen and (min-width: 576px) {
+  main {
+    min-height: calc(100vh - (95px + 117px))
+  }
+
   main > h2, main > h1 {
     text-align: center;
   }
