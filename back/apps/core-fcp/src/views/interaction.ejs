@@ -9,8 +9,6 @@
         <main>    
           <h1>Je choisis un moyen pour me connecter sur :</h1>
           <h2><%= locals.spName %></h2>
-
-    
           <div id="idp-list" class="main__providers">
             <% locals.providers.filter(p => p.display).forEach((provider) => { %>
               <form
@@ -27,11 +25,15 @@
                     <% } %>
                   >
                     <div class="icon-container">
-                      <img src='/img/fi/fi-placeholder.svg' alt="Logo de <%= provider.name %>"/>
+                      <img src='/img/fi/<%-provider.image%>' alt="Logo de <%= provider.name %>" onerror="this.src='/img/fi/fi-placeholder.svg'"/>
                     </div>
                     <span>
-                      J’utilise l’application 
-                      <strong><%= provider.title %></strong>
+                      <% if (!provider.active) { %>
+                        <%= provider.name %> est actuellement indisponible
+                      <% } else {%>
+                        J’utilise l’application 
+                        <strong><%= provider.title %></strong>
+                      <% } %>
                     </span>
                   </button>
                 </div>
