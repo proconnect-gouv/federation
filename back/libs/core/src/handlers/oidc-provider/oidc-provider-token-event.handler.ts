@@ -10,6 +10,6 @@ export class OidcProviderTokenEventHandler
   extends TrackingHandler
   implements IEventHandler<OidcProviderTokenEvent> {
   async handle(event: OidcProviderTokenEvent) {
-    this.log(this.EventsMap.FS_REQUESTED_FC_TOKEN, event);
+    this.log(this.EventsMap.SP_REQUESTED_FC_TOKEN, event);
   }
 }
