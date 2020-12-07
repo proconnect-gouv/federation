@@ -42,12 +42,17 @@
                       <img src='/img/fi/<%-provider.image%>' alt="Logo de <%= provider.name %>" onerror="this.src='/img/fi/fi-placeholder.svg'"/>
                     </div>
                     <span>
+<<<<<<< HEAD
                       <% if (!provider.active) { %>
                         <%= provider.name %> est actuellement indisponible
                       <% } else {%>
                         J’utilise l’application 
                         <strong><%= provider.title %></strong>
                       <% } %>
+=======
+                      J’utilise l’application 
+                      <strong><%= provider.title %></strong>
+>>>>>>> add title property to providers in template interaction
                     </span>
                   </button>
                 </div>
