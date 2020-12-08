@@ -13,15 +13,21 @@ import {
 } from '@nestjs/common';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
+import { AcrValues } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
+import { EidasProviderSession } from '@fc/eidas-provider';
+import { IExposedSessionServiceGeneric, Session } from '@fc/session-generic';
+import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { EidasBridgeRoutes } from '../enums';
-import { EidasBridgeLoginCallbackException } from '../exceptions';
 import { ValidateEuropeanIdentity, Core } from '../dto';
 
-@Controller()
+/**
+ * @todo Clean the controller (create a service, generalize code, ...)
+ */
+@Controller(EidasBridgeRoutes.BASE)
 export class EidasBridgeController {
   constructor(
     private readonly crypto: CryptographyService,
@@ -30,28 +36,23 @@ export class EidasBridgeController {
     private readonly session: SessionService,
     private readonly oidcProvider: OidcProviderService,
     private readonly config: ConfigService,
+    private readonly eidasToOidc: EidasToOidcService,
+    private readonly oidcToEidas: OidcToEidasService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
 
-  @Get(EidasBridgeRoutes.DEFAULT)
-  @Render('default')
-  async getDefault(@Res() res) {
-    /**
-     * @TODO #179
-     * This is just a mock, so we don't bother making this configurable...
-     * We'll soon update session system to handle all this init stuff automatically anyway.
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/179
-     */
+  @Get(EidasBridgeRoutes.INIT_SESSION)
+  @Redirect()
+  async initSession(@Res() res) {
     const sessionIdLength = 32;
     const sessionId = this.crypto.genRandomString(sessionIdLength);
+
     await this.session.init(res, sessionId, { idpState: sessionId });
-    const message = 'Bienvenue sur le Bridge Eidas';
 
     return {
-      message,
-      state: sessionId,
-      titleFront: 'Eidas Bridge',
+      url: `${EidasBridgeRoutes.BASE}${EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE}`,
+      statusCode: 302,
     };
   }
 
@@ -60,15 +61,23 @@ export class EidasBridgeController {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
    *
    */
-  @Get(EidasBridgeRoutes.LOGIN)
-  async login(@Req() req, @Res() res) {
+  @Get(EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE)
+  @Redirect()
+  async redirectToFcAuthorize(
+    @Req() req,
+    @Session('EidasProvider')
+    eidasProviderSession: IExposedSessionServiceGeneric<EidasProviderSession>,
+  ) {
+    const eidasRequest = await eidasProviderSession.get('eidasRequest');
+
+    const oidcRequest = this.eidasToOidc.mapPartialRequest(eidasRequest);
+
     const params = {
-      scope:
-        'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address',
       providerUid: 'corev2',
+      scope: oidcRequest.scope.join(' '),
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: 'eidas2',
+      acr_values: oidcRequest.acr_values,
     };
 
     const {
@@ -92,60 +101,83 @@ export class EidasBridgeController {
     const sessionId = this.session.getId(req);
     await this.session.patch(sessionId, { idpState: state });
 
-    res.redirect(authorizationUrl);
+    return { url: authorizationUrl, statusCode: 302 };
   }
 
-  @Get(EidasBridgeRoutes.LOGIN_CALLBACK)
-  @Render('login-callback')
-  async loginCallback(@Req() req, @Res() res, @Query() query) {
+  @Get(EidasBridgeRoutes.REDIRECT_TO_EIDAS_RESPONSE_PROXY)
+  @Redirect()
+  async redirectToEidasResponseProxy(
+    @Req() req,
+    @Query() query,
+    @Session('EidasProvider')
+    eidasProviderSession: IExposedSessionServiceGeneric<EidasProviderSession>,
+  ) {
+    let partialEidasResponse;
+
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { error, error_description } = query;
     if (error) {
-      return res.redirect(
-        `/error?error=${error}&error_description=${error_description}`,
-      );
-    }
+      partialEidasResponse = this.oidcToEidas.mapFailurePartialResponse({
+        error,
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description,
+      });
+    } else {
+      try {
+        const providerUid = 'corev2';
+        const sessionId = this.session.getId(req);
 
-    try {
-      const providerUid = 'corev2';
-      const sessionId = this.session.getId(req);
+        const { idpState } = await this.session.get(sessionId);
 
-      const { idpState } = await this.session.get(sessionId);
+        // OIDC: call idp's /token endpoint
+        const tokenSet = await this.oidcClient.getTokenSet(
+          req,
+          providerUid,
+          idpState,
+        );
 
-      // OIDC: call idp's /token endpoint
-      const tokenSet = await this.oidcClient.getTokenSet(
-        req,
-        providerUid,
-        idpState,
-      );
-      // openid defined property names
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { access_token: accessToken } = tokenSet;
+        const { acr } = tokenSet.claims();
 
-      // OIDC: call idp's /userinfo endpoint
-      const idpIdentity = await this.oidcClient.getUserInfo(
-        accessToken,
-        providerUid,
-      );
+        // openid defined property names
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        const { access_token: accessToken } = tokenSet;
 
-      /** @TODO #192
-       * ETQ Dev, je complète la session pendant la cinématique des mocks
-       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/192
-       * */
+        // OIDC: call idp's /userinfo endpoint
+        const idpIdentity = await this.oidcClient.getUserInfo(
+          accessToken,
+          providerUid,
+        );
 
-      return {
-        titleFront: 'Eidas Bridge - Login Callback',
-        idpIdentity,
-      };
-    } catch (e) {
-      if (e.error && e.error_description) {
-        return res.redirect(
-          `/error?error=${e.error}&error_description=${e.error_description}`,
+        const { requestedAttributes } = await eidasProviderSession.get(
+          'eidasRequest',
+        );
+
+        partialEidasResponse = this.oidcToEidas.mapSuccessPartialResponse(
+          idpIdentity,
+          /**
+           * @todo Apply strong typing to acr values in other libs and apps
+           */
+          acr as AcrValues,
+          requestedAttributes,
+        );
+      } catch (error) {
+        partialEidasResponse = this.oidcToEidas.mapFailurePartialResponse(
+          error,
         );
       }
-      throw new EidasBridgeLoginCallbackException(e);
     }
+
+    await eidasProviderSession.set(
+      'partialEidasResponse',
+      partialEidasResponse,
+    );
+
+    return {
+      url: '/eidas-provider/response-proxy',
+      statusCode: 302,
+    };
   }
 
   /**
@@ -175,19 +207,10 @@ export class EidasBridgeController {
   @Post(EidasBridgeRoutes.INTERACTION_LOGIN)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Redirect()
-  async eidasLogin(@Body() body: ValidateEuropeanIdentity) {
+  async redirectToFrNodeConnector(@Body() body: ValidateEuropeanIdentity) {
     return {
       url: `/eidas-client/redirect-to-fr-node-connector?country=${body.country}`,
       statusCode: 302,
-    };
-  }
-
-  @Get('/error')
-  @Render('error')
-  async error(@Query() query) {
-    return {
-      titleFront: "Eidas Bridge - Erreur lors de l'authentification",
-      ...query,
     };
   }
 }

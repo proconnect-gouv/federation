@@ -13,6 +13,13 @@ global:
     - yarn test --coverage
     - ./scripts/coverage.sh
   coverage: '/Global coverage is: \[([\d\.]+)%\]/'
+  artifacts:
+    paths:
+      - back/node_modules
+      - back/yarn.lock
+    expire_in: 1 hrs
 
 include:
   - '/back/instances/core-fcp-high/.gitlab-ci.yml'
+  - '/back/instances/core-fca-high/.gitlab-ci.yml'
+  - '/back/instances/eidas-bridge/.gitlab-ci.yml'

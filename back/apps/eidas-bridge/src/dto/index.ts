@@ -2,5 +2,6 @@
 
 // Declarative code
 export * from './eidas-bridge-config.dto';
+export * from './eidas-bridge-session.dto';
 export * from './interaction.dto';
 export * from './validate-european-identity.dto';

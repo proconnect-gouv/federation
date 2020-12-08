@@ -3,7 +3,7 @@ export const lightRequestXmlMock = `<?xml version="1.0" encoding="UTF-8" standal
   <citizenCountryCode>BE</citizenCountryCode>
   <id>Auduye7263</id>
   <issuer>EIDASBridge</issuer>
-  <levelOfAssurance>http://eidas.europa.eu/LoA/low</levelOfAssurance>
+  <levelOfAssurance>http://eidas.europa.eu/LoA/substantial</levelOfAssurance>
   <nameIdFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</nameIdFormat>
   <providerName>FranceConnect</providerName>
   <spType>public</spType>

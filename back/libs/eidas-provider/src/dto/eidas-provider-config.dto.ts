@@ -19,4 +19,8 @@ export class EidasProviderConfig {
   @IsString()
   @IsUrl()
   readonly proxyServiceResponseCacheUrl: string;
+
+  @IsString()
+  @IsUrl()
+  readonly redirectAfterRequestHandlingUrl: string;
 }

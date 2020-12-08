@@ -1,10 +1,11 @@
 /* istanbul ignore file */
 
 export enum EidasBridgeRoutes {
-  DEFAULT = '/',
+  BASE = '/oidc-client',
+  INIT_SESSION = '/init-session',
+  REDIRECT_TO_FC_AUTORIZE = '/redirect-to-fc-authorize',
   INTERACTION = '/interaction/:uid',
-  LOGIN = '/login',
   INTERACTION_LOGIN = '/:uid/login',
-  LOGIN_CALLBACK = '/login-callback',
+  REDIRECT_TO_EIDAS_RESPONSE_PROXY = '/redirect-to-eidas-response-proxy',
   USER_AUTHORIZE = '/user/authorize',
 }

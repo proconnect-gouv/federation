@@ -273,4 +273,29 @@ describe('LightCommonsService', () => {
       expect(result).toStrictEqual(encodedTokenMock);
     });
   });
+
+  describe('getLastElementInUrlOrUrn', () => {
+    it('should return all the string after the last slash', () => {
+      // setup
+      const url =
+        'http://eidas.europa.eu/attributes/naturalperson/personIdentifier';
+
+      // action
+      const result = service['getLastElementInUrlOrUrn'](url);
+
+      // expect
+      expect(result).toEqual('personIdentifier');
+    });
+
+    it('should return all the string after the last semicolon', () => {
+      // setup
+      const urn = 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified';
+
+      // action
+      const result = service['getLastElementInUrlOrUrn'](urn);
+
+      // expect
+      expect(result).toEqual('unspecified');
+    });
+  });
 });

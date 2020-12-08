@@ -1,5 +1,5 @@
 import { Description } from '@fc/error';
-import { ErrorCode } from '../enum';
+import { ErrorCode } from '../enums';
 import { EidasProviderBaseException } from './eidas-provider-base.exception';
 
 @Description(
