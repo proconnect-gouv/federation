@@ -2,6 +2,7 @@ import * as xmlJs from 'xml-js';
 import * as _ from 'lodash';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
+import { EidasResponseAttributes } from '@fc/eidas';
 import {
   successFullJsonMock,
   lightResponseSuccessFullJsonMock,
@@ -15,11 +16,7 @@ import {
   EidasJsonToXmlException,
   EidasXmlToJsonException,
 } from '../exceptions';
-import {
-  IJsonifiedLightResponseXml,
-  IJsonifiedXml,
-  IResponseAttributes,
-} from '../interfaces';
+import { IJsonifiedLightResponseXml, IJsonifiedXml } from '../interfaces';
 import { LightResponseXmlSelectors } from '../enums';
 import { LightResponseService } from './light-response.service';
 import { LightCommonsService } from './light-commons.service';
@@ -34,9 +31,14 @@ describe('LightResponseService', () => {
   const lightCommonsServiceMock = {
     generateToken: jest.fn(),
     parseToken: jest.fn(),
+    getLastElementInUrlOrUrn: jest.fn(),
   };
 
   beforeEach(async () => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [LightResponseService, ConfigService, LightCommonsService],
     })
@@ -48,9 +50,9 @@ describe('LightResponseService', () => {
 
     service = module.get<LightResponseService>(LightResponseService);
 
-    jest.resetAllMocks();
-    jest.restoreAllMocks();
-    jest.clearAllMocks();
+    lightCommonsServiceMock.getLastElementInUrlOrUrn.mockImplementation(
+      LightCommonsService.prototype.getLastElementInUrlOrUrn,
+    );
   });
 
   it('should be defined', () => {
@@ -419,18 +421,18 @@ describe('LightResponseService', () => {
     it('should return the deflatedJson', () => {
       // setup
       mockDeflateContext.mockReturnValueOnce({ id: 42 });
-      mockDeflateStatus.mockReturnValueOnce({ failure: 'false' });
+      mockDeflateStatus.mockReturnValueOnce({ failure: false });
       mockDeflateAttributes.mockReturnValueOnce({
-        currentFamilyName: 'Norris',
+        currentFamilyName: ['Norris'],
       });
 
       const expectedDeflatedJson = {
         id: 42,
         status: {
-          failure: 'false',
+          failure: false,
         },
         attributes: {
-          currentFamilyName: 'Norris',
+          currentFamilyName: ['Norris'],
         },
       };
 
@@ -470,7 +472,7 @@ describe('LightResponseService', () => {
         1,
         inflatedJson,
         LightResponseXmlSelectors.STATUS_FAILURE,
-        `urn:oasis:names:tc:SAML:2.0:status:${successFullJsonMock.status.failure}`,
+        `${successFullJsonMock.status.failure}`,
       );
     });
 
@@ -559,7 +561,7 @@ describe('LightResponseService', () => {
         },
         lightResponse: {
           status: {
-            failure: { _text: 'urn:oasis:names:tc:SAML:2.0:status:false' },
+            failure: { _text: 'false' },
             statusCode: { _text: 'urn:oasis:names:tc:SAML:2.0:status:Success' },
             statusMessage: { _text: 'myMessage' },
           },
@@ -796,6 +798,19 @@ describe('LightResponseService', () => {
       );
     });
 
+    it('should not call "_.set" json being inflated, the subject name id format xml selector and subject name id format from the json being inflated in case of failure', () => {
+      // action
+      service['inflateContext'](inflatedJson, failureFullJsonMock);
+
+      // expect
+      expect(_.set).toHaveBeenCalledTimes(5);
+      expect(_.set).not.toHaveBeenCalledWith(
+        inflatedJson,
+        LightResponseXmlSelectors.SUBJECT_NAME_ID_FORMAT,
+        `urn:oasis:names:tc:SAML:1.1:nameid-format:${successFullJsonMock.subjectNameIdFormat}`,
+      );
+    });
+
     it('should call "_.set" json being inflated, the subject xml selector and subject from the json being inflated', () => {
       // action
       service['inflateContext'](inflatedJson, successFullJsonMock);
@@ -810,6 +825,19 @@ describe('LightResponseService', () => {
       );
     });
 
+    it('should not call "_.set" json being inflated, the subject xml selector and subject from the json being inflated in case of failure', () => {
+      // action
+      service['inflateContext'](inflatedJson, failureFullJsonMock);
+
+      // expect
+      expect(_.set).toHaveBeenCalledTimes(5);
+      expect(_.set).not.toHaveBeenCalledWith(
+        inflatedJson,
+        LightResponseXmlSelectors.SUBJECT,
+        successFullJsonMock.subject,
+      );
+    });
+
     it('should call "_.set" json being inflated, the level of assurance xml selector and the level of assurance from the json being inflated', () => {
       // action
       service['inflateContext'](inflatedJson, successFullJsonMock);
@@ -818,6 +846,19 @@ describe('LightResponseService', () => {
       expect(_.set).toHaveBeenCalledTimes(8);
       expect(_.set).toHaveBeenNthCalledWith(
         8,
+        inflatedJson,
+        LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
+        `http://eidas.europa.eu/LoA/${successFullJsonMock.levelOfAssurance}`,
+      );
+    });
+
+    it('should not call "_.set" json being inflated, the level of assurance xml selector and the level of assurance from the json being inflated in case of failure', () => {
+      // action
+      service['inflateContext'](inflatedJson, failureFullJsonMock);
+
+      // expect
+      expect(_.set).toHaveBeenCalledTimes(5);
+      expect(_.set).not.toHaveBeenCalledWith(
         inflatedJson,
         LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
         `http://eidas.europa.eu/LoA/${successFullJsonMock.levelOfAssurance}`,
@@ -881,17 +922,17 @@ describe('LightResponseService', () => {
       // setup
       const expectedSubjectNameIdFormat =
         'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified';
-      service['getLastElementInUrlOrUrn'] = jest.fn();
 
       // action
       service['deflateContext'](lightResponseSuccessFullJsonMock);
 
       // expect
-      expect(service['getLastElementInUrlOrUrn']).toHaveBeenCalledTimes(2);
-      expect(service['getLastElementInUrlOrUrn']).toHaveBeenNthCalledWith(
-        1,
-        expectedSubjectNameIdFormat,
-      );
+      expect(
+        lightCommonsServiceMock.getLastElementInUrlOrUrn,
+      ).toHaveBeenCalledTimes(2);
+      expect(
+        lightCommonsServiceMock.getLastElementInUrlOrUrn,
+      ).toHaveBeenNthCalledWith(1, expectedSubjectNameIdFormat);
     });
 
     it('should call "_.get" with the inflated response and the level of assurance xml selector', () => {
@@ -909,18 +950,18 @@ describe('LightResponseService', () => {
 
     it('should call "getLastElementInUrlOrUrn" with the level of assurance retreived from corresponding call to "_.get" on the inflated response', () => {
       // setup
-      const expectedLoa = 'http://eidas.europa.eu/LoA/low';
-      service['getLastElementInUrlOrUrn'] = jest.fn();
+      const expectedLoa = 'http://eidas.europa.eu/LoA/substantial';
 
       // action
       service['deflateContext'](lightResponseSuccessFullJsonMock);
 
       // expect
-      expect(service['getLastElementInUrlOrUrn']).toHaveBeenCalledTimes(2);
-      expect(service['getLastElementInUrlOrUrn']).toHaveBeenNthCalledWith(
-        2,
-        expectedLoa,
-      );
+      expect(
+        lightCommonsServiceMock.getLastElementInUrlOrUrn,
+      ).toHaveBeenCalledTimes(2);
+      expect(
+        lightCommonsServiceMock.getLastElementInUrlOrUrn,
+      ).toHaveBeenNthCalledWith(2, expectedLoa);
     });
 
     it('should call "_.get" with the inflated response and the id xml selector', () => {
@@ -1067,7 +1108,7 @@ describe('LightResponseService', () => {
       service['buildAttribute'] = jest.fn();
 
       const expectedArguments = [
-        ['personIdentifier', 'BE/FR/12345'],
+        ['personIdentifier', ['BE/FR/12345']],
         ['birthName', ['Ωνάσης', 'Onases']],
       ];
 
@@ -1075,7 +1116,7 @@ describe('LightResponseService', () => {
       service['inflateAttributes'](inflatedJson, ({
         personIdentifier: successFullJsonMock.attributes.personIdentifier,
         birthName: successFullJsonMock.attributes.birthName,
-      } as unknown) as IResponseAttributes);
+      } as unknown) as EidasResponseAttributes);
 
       // expect
       expect(service['buildAttribute']).toHaveBeenCalledTimes(2);
@@ -1131,7 +1172,7 @@ describe('LightResponseService', () => {
       service['inflateAttributes'](inflatedJson, ({
         personIdentifier: successFullJsonMock.attributes.personIdentifier,
         birthName: successFullJsonMock.attributes.birthName,
-      } as unknown) as IResponseAttributes);
+      } as unknown) as EidasResponseAttributes);
 
       // expect
       expect(_.set).toHaveBeenCalledTimes(1);
@@ -1192,7 +1233,7 @@ describe('LightResponseService', () => {
       const result = service['inflateAttributes'](inflatedJson, ({
         personIdentifier: successFullJsonMock.attributes.personIdentifier,
         birthName: successFullJsonMock.attributes.birthName,
-      } as unknown) as IResponseAttributes);
+      } as unknown) as EidasResponseAttributes);
 
       // expect
       expect(result).toStrictEqual(expectedLightResponse);
@@ -1334,10 +1375,15 @@ describe('LightResponseService', () => {
 
     it('should call "_.get" to retrieve the attribute definition', () => {
       // setup
-      service['getLastElementInUrlOrUrn'] = jest.fn();
       service['getValues'] = jest.fn();
 
-      inflatedAttribute = {};
+      const expectedDefinition =
+        'http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier';
+      inflatedAttribute = {
+        definition: {
+          _text: expectedDefinition,
+        },
+      };
 
       // action
       service['getAttribute']({}, inflatedAttribute);
@@ -1353,10 +1399,15 @@ describe('LightResponseService', () => {
 
     it('should call "_.get" to retrieve the attribute value', () => {
       // setup
-      service['getLastElementInUrlOrUrn'] = jest.fn();
       service['getValues'] = jest.fn();
 
-      inflatedAttribute = {};
+      const expectedDefinition =
+        'http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier';
+      inflatedAttribute = {
+        definition: {
+          _text: expectedDefinition,
+        },
+      };
 
       // action
       service['getAttribute']({}, inflatedAttribute);
@@ -1372,7 +1423,6 @@ describe('LightResponseService', () => {
 
     it('should call "getLastElementInUrlOrUrn" with the attribute definition to extract a key', () => {
       // setup
-      service['getLastElementInUrlOrUrn'] = jest.fn();
       service['getValues'] = jest.fn();
 
       const expectedDefinition =
@@ -1387,17 +1437,19 @@ describe('LightResponseService', () => {
       service['getAttribute']({}, inflatedAttribute);
 
       // expect
-      expect(service['getLastElementInUrlOrUrn']).toHaveBeenCalledTimes(1);
-      expect(service['getLastElementInUrlOrUrn']).toHaveBeenCalledWith(
-        expectedDefinition,
-      );
+      expect(
+        lightCommonsServiceMock.getLastElementInUrlOrUrn,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        lightCommonsServiceMock.getLastElementInUrlOrUrn,
+      ).toHaveBeenCalledWith(expectedDefinition);
     });
 
     it('should set the first char of the key to lowercase', () => {
       // setup
       const expectedInflatedKey = 'PersonIdentifier';
 
-      service['getLastElementInUrlOrUrn'] = jest
+      lightCommonsServiceMock.getLastElementInUrlOrUrn = jest
         .fn()
         .mockReturnValueOnce(expectedInflatedKey);
       service['getValues'] = jest.fn();
@@ -1420,13 +1472,17 @@ describe('LightResponseService', () => {
 
     it('should extract the values calling "getValues" with the attribute value if key is not "currentAddress"', () => {
       // setup
-      service['getLastElementInUrlOrUrn'] = jest.fn();
       service['getValues'] = jest.fn();
 
+      const expectedInflatedKey = 'PersonIdentifier';
+      const expectedDefinition = `http://eidas.europa.eu/attributes/naturalperson/${expectedInflatedKey}`;
       const expectedValue = {
         _text: 'BE/FR/12345',
       };
       inflatedAttribute = {
+        definition: {
+          _text: expectedDefinition,
+        },
         value: expectedValue,
       };
 
@@ -1440,14 +1496,18 @@ describe('LightResponseService', () => {
 
     it('should not call getAddress if key is not "currentAddress"', () => {
       // setup
-      service['getLastElementInUrlOrUrn'] = jest.fn();
       service['getValues'] = jest.fn();
       service['getAddress'] = jest.fn();
 
+      const expectedInflatedKey = 'PersonIdentifier';
+      const expectedDefinition = `http://eidas.europa.eu/attributes/naturalperson/${expectedInflatedKey}`;
       const expectedValue = {
         _text: 'BE/FR/12345',
       };
       inflatedAttribute = {
+        definition: {
+          _text: expectedDefinition,
+        },
         value: expectedValue,
       };
 
@@ -1462,7 +1522,7 @@ describe('LightResponseService', () => {
       // setup
       const expectedInflatedKey = 'CurrentAddress';
 
-      service['getLastElementInUrlOrUrn'] = jest
+      lightCommonsServiceMock.getLastElementInUrlOrUrn = jest
         .fn()
         .mockReturnValueOnce(expectedInflatedKey);
       service['getAddress'] = jest.fn();
@@ -1490,7 +1550,7 @@ describe('LightResponseService', () => {
       // setup
       const expectedInflatedKey = 'CurrentAddress';
 
-      service['getLastElementInUrlOrUrn'] = jest
+      lightCommonsServiceMock.getLastElementInUrlOrUrn = jest
         .fn()
         .mockReturnValueOnce(expectedInflatedKey);
       service['getAddress'] = jest.fn();
@@ -1526,7 +1586,7 @@ describe('LightResponseService', () => {
         },
       };
       const expectedAttribute = {
-        personIdentifier: 'BE/FR/12345',
+        personIdentifier: ['BE/FR/12345'],
       };
 
       // action
@@ -1710,9 +1770,9 @@ describe('LightResponseService', () => {
       expect(result).toEqual(expected);
     });
 
-    it('should return an object if the content received is not an instance of array', () => {
+    it('should return an object if the content received has a length of one', () => {
       // setup
-      const valueToInflate = 'onlyValueToSet';
+      const valueToInflate = ['onlyValueToSet'];
       const expected = { _text: 'onlyValueToSet' };
 
       // action
@@ -1724,7 +1784,7 @@ describe('LightResponseService', () => {
   });
 
   describe('getValues', () => {
-    it('should return an array of string if the content received is an instance of array', () => {
+    it('should return an array of string if the content received  has a length greater than one', () => {
       // setup
       const valuesToDeflate = [
         {
@@ -1754,7 +1814,7 @@ describe('LightResponseService', () => {
       ]);
     });
 
-    it('should return an object if the content received is not an instance of array', () => {
+    it('should return an array containing one element if the content received is not an instance of array', () => {
       // setup
       const valuesToDeflate = {
         _text: 'onlyValueToExtract',
@@ -1765,32 +1825,7 @@ describe('LightResponseService', () => {
       const result = service['getValues'](valuesToDeflate);
 
       // expect
-      expect(result).toEqual('onlyValueToExtract');
-    });
-  });
-
-  describe('getLastElementInUrlOrUrn', () => {
-    it('should return all the string after the last slash', () => {
-      // setup
-      const url =
-        'http://eidas.europa.eu/attributes/naturalperson/personIdentifier';
-
-      // action
-      const result = service['getLastElementInUrlOrUrn'](url);
-
-      // expect
-      expect(result).toEqual('personIdentifier');
-    });
-
-    it('should return all the string after the last semicolon', () => {
-      // setup
-      const urn = 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified';
-
-      // action
-      const result = service['getLastElementInUrlOrUrn'](urn);
-
-      // expect
-      expect(result).toEqual('unspecified');
+      expect(result).toEqual(['onlyValueToExtract']);
     });
   });
 });

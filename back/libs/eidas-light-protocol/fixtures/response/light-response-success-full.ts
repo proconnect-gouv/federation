@@ -1,6 +1,12 @@
-import { IJsonifiedLightResponseXml, IResponse } from '../../src/interfaces';
+import {
+  EidasLevelOfAssurances,
+  EidasNameIdFormats,
+  EidasResponse,
+  EidasStatusCodes,
+} from '@fc/eidas';
+import { IJsonifiedLightResponseXml } from '../../src/interfaces';
 
-export const successFullJsonMock: IResponse = {
+export const successFullJsonMock: EidasResponse = {
   id: '_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u',
   inResponseToId: '1602861970744',
   issuer:
@@ -8,18 +14,18 @@ export const successFullJsonMock: IResponse = {
   ipAddress: '127.0.0.1',
   relayState: 'myState',
   subject: '0123456',
-  subjectNameIdFormat: 'unspecified',
-  levelOfAssurance: 'low',
+  subjectNameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+  levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
   status: {
-    failure: 'false',
-    statusCode: 'Success',
+    failure: false,
+    statusCode: EidasStatusCodes.SUCCESS,
     statusMessage: 'myMessage',
   },
   attributes: {
-    personIdentifier: 'BE/FR/12345',
-    currentFamilyName: 'Garcia',
-    currentGivenName: 'javier',
-    dateOfBirth: '1964-12-31',
+    personIdentifier: ['BE/FR/12345'],
+    currentFamilyName: ['Garcia'],
+    currentGivenName: ['javier'],
+    dateOfBirth: ['1964-12-31'],
     currentAddress: {
       poBox: '1234',
       locatorDesignator: '28',
@@ -31,9 +37,9 @@ export const successFullJsonMock: IResponse = {
       adminunitSecondline: 'ETTERBEEK',
       postCode: '1040',
     },
-    gender: 'Male',
+    gender: ['Male'],
     birthName: ['Ωνάσης', 'Onases'],
-    placeOfBirth: 'Place of Birth',
+    placeOfBirth: ['Place of Birth'],
   },
 };
 
@@ -65,7 +71,7 @@ export const lightResponseSuccessFullJsonMock: IJsonifiedLightResponseXml = {
       _text: '0123456',
     },
     levelOfAssurance: {
-      _text: 'http://eidas.europa.eu/LoA/low',
+      _text: 'http://eidas.europa.eu/LoA/substantial',
     },
     status: {
       failure: {
@@ -170,7 +176,7 @@ export const lightResponseSuccessFullXmlMock = `<?xml version="1.0" encoding="UT
   <relayState>myState</relayState>
   <subjectNameIdFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</subjectNameIdFormat>
   <subject>0123456</subject>
-  <levelOfAssurance>http://eidas.europa.eu/LoA/low</levelOfAssurance>
+  <levelOfAssurance>http://eidas.europa.eu/LoA/substantial</levelOfAssurance>
   <status>
     <failure>false</failure>
     <statusCode>urn:oasis:names:tc:SAML:2.0:status:Success</statusCode>

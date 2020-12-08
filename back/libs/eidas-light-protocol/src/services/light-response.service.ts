@@ -2,15 +2,17 @@ import * as _ from 'lodash';
 import { json2xml, xml2json } from 'xml-js';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
+import {
+  EidasResponse,
+  EidasResponseStatus,
+  EidasResponseAddress,
+  EidasResponseAttributes,
+  EidasResponseContext,
+} from '@fc/eidas';
 import { LightResponseXmlSelectors } from '../enums';
 import {
-  IResponse,
-  IResponseStatus,
-  IResponseAddress,
-  IResponseAttributes,
   IJsonifiedLightResponseXml,
   IJsonifiedXmlContent,
-  IResponseContext,
   IJsonifiedXml,
   IParsedToken,
 } from '../interfaces';
@@ -18,12 +20,6 @@ import {
   EidasJsonToXmlException,
   EidasXmlToJsonException,
 } from '../exceptions';
-import {
-  StatusCode,
-  SubStatusCode,
-  SubjectNameIdFormat,
-  LevelOfAssurance,
-} from '../types';
 import { EidasLightProtocolConfig } from '../dto';
 import { LightCommonsService } from './light-commons.service';
 
@@ -40,9 +36,9 @@ export class LightResponseService {
 
   /**
    * Convert light response from JSON to XML
-   * @param {IResponse} jsonData
+   * @param {EidasResponse} jsonData
    */
-  fromJson(jsonData: IResponse): string {
+  fromJson(jsonData: EidasResponse): string {
     try {
       const options = { compact: true, ignoreComment: true, spaces: 2 };
 
@@ -72,7 +68,7 @@ export class LightResponseService {
    * Convert light response XML to JSON
    * @param {string} xmlDoc
    */
-  toJson(xmlDoc: string): IResponse {
+  toJson(xmlDoc: string): EidasResponse {
     try {
       const options = { compact: true, spaces: 2 };
 
@@ -93,7 +89,7 @@ export class LightResponseService {
     return this.lightCommons.parseToken(token, lightResponseConnectorSecret);
   }
 
-  private inflateJson(json: IResponse): IJsonifiedLightResponseXml {
+  private inflateJson(json: EidasResponse): IJsonifiedLightResponseXml {
     const inflatedJson: IJsonifiedLightResponseXml = {
       _declaration: {
         _attributes: {
@@ -108,20 +104,23 @@ export class LightResponseService {
     this.inflateContext(inflatedJson, json);
     this.inflateStatus(inflatedJson, json.status);
 
-    if (json.status.failure === 'false') {
+    if (json.status.failure === false) {
       this.inflateAttributes(inflatedJson, json.attributes);
+    } else {
+      // The EidasNode need an empty "attributes" descriptor in case of failure because of the xsd scheme
+      inflatedJson.lightResponse.attributes = {};
     }
 
     return inflatedJson;
   }
 
-  private deflateJson(inflatedJson: IJsonifiedLightResponseXml): IResponse {
-    const deflatedJson: IResponse = {
+  private deflateJson(inflatedJson: IJsonifiedLightResponseXml): EidasResponse {
+    const deflatedJson: EidasResponse = {
       ...this.deflateContext(inflatedJson),
       status: this.deflateStatus(inflatedJson),
     };
 
-    if (deflatedJson.status.failure === 'false') {
+    if (deflatedJson.status.failure === false) {
       deflatedJson.attributes = this.deflateAttributes(inflatedJson);
     }
 
@@ -130,12 +129,12 @@ export class LightResponseService {
 
   private inflateStatus(
     inflatedResponse: IJsonifiedLightResponseXml,
-    status: IResponseStatus,
+    status: EidasResponseStatus,
   ): IJsonifiedLightResponseXml {
     _.set(
       inflatedResponse,
       LightResponseXmlSelectors.STATUS_FAILURE,
-      `urn:oasis:names:tc:SAML:2.0:status:${status.failure}`,
+      `${status.failure}`,
     );
 
     if (status.statusCode) {
@@ -167,12 +166,11 @@ export class LightResponseService {
 
   private deflateStatus(
     inflatedResponse: IJsonifiedLightResponseXml,
-  ): IResponseStatus {
-    const status: IResponseStatus = {
-      failure: _.get(
-        inflatedResponse,
-        LightResponseXmlSelectors.STATUS_FAILURE,
-      ),
+  ): EidasResponseStatus {
+    const status: EidasResponseStatus = {
+      failure:
+        _.get(inflatedResponse, LightResponseXmlSelectors.STATUS_FAILURE) !==
+        'false',
     };
 
     const statusCode = _.get(
@@ -180,9 +178,9 @@ export class LightResponseService {
       LightResponseXmlSelectors.STATUS_CODE,
     );
     if (statusCode) {
-      status.statusCode = this.getLastElementInUrlOrUrn(
+      status.statusCode = this.lightCommons.getLastElementInUrlOrUrn(
         statusCode,
-      ) as StatusCode;
+      );
     }
 
     const subStatusCode = _.get(
@@ -190,9 +188,9 @@ export class LightResponseService {
       LightResponseXmlSelectors.SUB_STATUS_CODE,
     );
     if (subStatusCode) {
-      status.subStatusCode = this.getLastElementInUrlOrUrn(
+      status.subStatusCode = this.lightCommons.getLastElementInUrlOrUrn(
         subStatusCode,
-      ) as SubStatusCode;
+      );
     }
 
     const statusMessage = _.get(
@@ -208,7 +206,7 @@ export class LightResponseService {
 
   private inflateContext(
     inflatedResponse: IJsonifiedLightResponseXml,
-    json: IResponse,
+    json: EidasResponse,
   ) {
     _.set(inflatedResponse, LightResponseXmlSelectors.ID, json.id);
 
@@ -236,26 +234,28 @@ export class LightResponseService {
       );
     }
 
-    _.set(
-      inflatedResponse,
-      LightResponseXmlSelectors.SUBJECT_NAME_ID_FORMAT,
-      `urn:oasis:names:tc:SAML:1.1:nameid-format:${json.subjectNameIdFormat}`,
-    );
+    if (!json.status.failure) {
+      _.set(
+        inflatedResponse,
+        LightResponseXmlSelectors.SUBJECT_NAME_ID_FORMAT,
+        `urn:oasis:names:tc:SAML:1.1:nameid-format:${json.subjectNameIdFormat}`,
+      );
 
-    _.set(inflatedResponse, LightResponseXmlSelectors.SUBJECT, json.subject);
+      _.set(inflatedResponse, LightResponseXmlSelectors.SUBJECT, json.subject);
 
-    _.set(
-      inflatedResponse,
-      LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
-      `http://eidas.europa.eu/LoA/${json.levelOfAssurance}`,
-    );
+      _.set(
+        inflatedResponse,
+        LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
+        `http://eidas.europa.eu/LoA/${json.levelOfAssurance}`,
+      );
+    }
 
     return inflatedResponse;
   }
 
   private deflateContext(
     inflatedResponse: IJsonifiedLightResponseXml,
-  ): IResponseContext {
+  ): EidasResponseContext {
     const subjectNameIdFormat = _.get(
       inflatedResponse,
       LightResponseXmlSelectors.SUBJECT_NAME_ID_FORMAT,
@@ -265,20 +265,20 @@ export class LightResponseService {
       LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
     );
 
-    const context: IResponseContext = {
+    const context: EidasResponseContext = {
       id: _.get(inflatedResponse, LightResponseXmlSelectors.ID),
       issuer: _.get(inflatedResponse, LightResponseXmlSelectors.ISSUER),
       subject: _.get(inflatedResponse, LightResponseXmlSelectors.SUBJECT),
-      subjectNameIdFormat: this.getLastElementInUrlOrUrn(
+      subjectNameIdFormat: this.lightCommons.getLastElementInUrlOrUrn(
         subjectNameIdFormat,
-      ) as SubjectNameIdFormat,
+      ),
       inResponseToId: _.get(
         inflatedResponse,
         LightResponseXmlSelectors.IN_RESPONSE_TO_ID,
       ),
-      levelOfAssurance: this.getLastElementInUrlOrUrn(
+      levelOfAssurance: this.lightCommons.getLastElementInUrlOrUrn(
         levelOfAssurance,
-      ) as LevelOfAssurance,
+      ),
     };
 
     const relayState = _.get(
@@ -302,7 +302,7 @@ export class LightResponseService {
 
   private inflateAttributes(
     inflatedResponse: IJsonifiedLightResponseXml,
-    attributes: IResponseAttributes,
+    attributes: EidasResponseAttributes,
   ): IJsonifiedLightResponseXml {
     _.set(
       inflatedResponse,
@@ -315,13 +315,13 @@ export class LightResponseService {
 
   private deflateAttributes(
     inflatedResponse: IJsonifiedLightResponseXml,
-  ): IResponseAttributes {
+  ): EidasResponseAttributes {
     const inflatedAttributes = _.get(
       inflatedResponse,
       LightResponseXmlSelectors.ATTRIBUTES,
     );
 
-    const attributes: IResponseAttributes = inflatedAttributes.reduce(
+    const attributes: EidasResponseAttributes = inflatedAttributes.reduce(
       this.getAttribute.bind(this),
       {},
     );
@@ -334,9 +334,9 @@ export class LightResponseService {
 
     let value;
     if (key === 'currentAddress') {
-      value = this.buildAddress(content as IResponseAddress);
+      value = this.buildAddress(content as EidasResponseAddress);
     } else {
-      value = this.buildValues(content as string | string[]);
+      value = this.buildValues(content as string[]);
     }
 
     _.set(
@@ -372,7 +372,9 @@ export class LightResponseService {
      * This extract everything after the last "/"
      * Then set the first letter in lowercase
      */
-    const key = _.lowerFirst(this.getLastElementInUrlOrUrn(inflatedKey));
+    const key = _.lowerFirst(
+      this.lightCommons.getLastElementInUrlOrUrn(inflatedKey),
+    );
 
     if (key === 'currentAddress') {
       attributes[key] = this.getAddress(inflatedValue);
@@ -385,7 +387,7 @@ export class LightResponseService {
     return attributes;
   }
 
-  private buildAddress(address: IResponseAddress): string {
+  private buildAddress(address: EidasResponseAddress): string {
     const builtAddress = Object.entries(address)
       .map(([key, content]: string[]) => {
         const tag = `eidas-natural:${_.upperFirst(key)}`;
@@ -398,7 +400,7 @@ export class LightResponseService {
 
   private getAddress({
     _text: inflatedAddress,
-  }: IJsonifiedXmlContent): IResponseAddress {
+  }: IJsonifiedXmlContent): EidasResponseAddress {
     const decodedAddress = Buffer.from(inflatedAddress, 'base64').toString(
       'utf8',
     );
@@ -406,7 +408,10 @@ export class LightResponseService {
     const addressElementsList = _.compact(decodedAddress.split('\n'));
 
     return addressElementsList.reduce(
-      (address: IResponseAddress, element: string): IResponseAddress => {
+      (
+        address: EidasResponseAddress,
+        element: string,
+      ): EidasResponseAddress => {
         const [match, key, value] =
           /^<eidas-natural:([a-zA-Z]+)>([a-zA-Z0-9\s]+)<\/eidas-natural:[a-zA-Z]+>$/.exec(
             element,
@@ -423,26 +428,22 @@ export class LightResponseService {
   }
 
   private buildValues(
-    content: string | string[],
+    content: string[],
   ): IJsonifiedXmlContent | IJsonifiedXmlContent[] {
-    if (content instanceof Array) {
+    if (content.length > 1) {
       return content.map((value) => ({ _text: value }));
     } else {
-      return { _text: content };
+      return { _text: content[0] };
     }
   }
 
   private getValues(
     inflatedContent: IJsonifiedXmlContent | IJsonifiedXmlContent[],
-  ): string | string[] {
+  ): string[] {
     if (inflatedContent instanceof Array) {
       return inflatedContent.map(({ _text }) => _text);
     } else {
-      return inflatedContent._text;
+      return [inflatedContent._text];
     }
-  }
-
-  private getLastElementInUrlOrUrn(value: string): string {
-    return value.split(/[:/]/).pop();
   }
 }

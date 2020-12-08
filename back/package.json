@@ -191,6 +191,8 @@
       "@fc/oidc": "<rootDir>/libs/oidc/src",
       "@fc/http-proxy/(.*)": "<rootDir>/libs/http-proxy/src/$1",
       "@fc/http-proxy": "<rootDir>/libs/http-proxy/src",
+      "@fc/session-generic/(.*)": "<rootDir>/libs/session-generic/src/$1",
+      "@fc/session-generic": "<rootDir>/libs/session-generic/src",
       "@fc/session/(.*)": "<rootDir>/libs/session/src/$1",
       "@fc/session": "<rootDir>/libs/session/src",
       "@fc/override-oidc-provider/(.*)": "<rootDir>/libs/override-oidc-provider/src/$1",
@@ -212,7 +214,11 @@
       "@fc/apache-ignite/(.*)": "<rootDir>/libs/apache-ignite/src/$1",
       "@fc/apache-ignite": "<rootDir>/libs/apache-ignite/src",
       "@fc/eidas-provider/(.*)": "<rootDir>/libs/eidas-provider/src/$1",
-      "@fc/eidas-provider": "<rootDir>/libs/eidas-provider/src"
+      "@fc/eidas-provider": "<rootDir>/libs/eidas-provider/src",
+      "@fc/eidas-oidc-mapper/(.*)": "<rootDir>/libs/eidas-oidc-mapper/src/$1",
+      "@fc/eidas-oidc-mapper": "<rootDir>/libs/eidas-oidc-mapper/src",
+      "@fc/eidas/(.*)": "<rootDir>/libs/eidas/src/$1",
+      "@fc/eidas": "<rootDir>/libs/eidas/src"
     },
     "preset": "ts-jest"
   }

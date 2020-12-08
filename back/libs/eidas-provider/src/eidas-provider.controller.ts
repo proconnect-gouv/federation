@@ -1,6 +1,11 @@
-import { Body, Controller, Post, Render } from '@nestjs/common';
+import { Body, Controller, Get, Post, Redirect, Render } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
-import { CallbackDTO, EidasProviderConfig } from './dto';
+import { IExposedSessionServiceGeneric, Session } from '@fc/session-generic';
+import {
+  RequestHandlerDTO,
+  EidasProviderConfig,
+  EidasProviderSession,
+} from './dto';
 import { EidasProviderService } from './eidas-provider.service';
 
 @Controller('eidas-provider')
@@ -16,9 +21,13 @@ export class EidasProviderController {
    * @param body The body of the request, containing a light-request token
    * @returns The light-response token and the URL where it should be posted
    */
-  @Post('/callback')
-  @Render('redirect-to-fr-node-proxy-service')
-  async callback(@Body() body: CallbackDTO) {
+  @Post('/request-handler')
+  @Redirect()
+  async requestHandler(
+    @Body() body: RequestHandlerDTO,
+    @Session('EidasProvider')
+    session: IExposedSessionServiceGeneric<EidasProviderSession>,
+  ) {
     const { token } = body;
 
     const lightRequest = await this.eidasProvider.readLightRequestFromCache(
@@ -27,61 +36,60 @@ export class EidasProviderController {
 
     const request = this.eidasProvider.parseLightRequest(lightRequest);
 
-    const successFullJsonMock: any = {
-      id: `${new Date()}`,
-      inResponseToId: request.id,
-      issuer: 'EIDASBridge ProxyService',
-      ipAddress: '127.0.0.1',
-      relayState: request.relayState,
-      subject:
-        '9043a641bacfb18418b571e6d31fabd32307998aeebfb323175e34f81d62351cv1',
-      subjectNameIdFormat: 'unspecified',
-      levelOfAssurance: request.levelOfAssurance,
-      status: {
-        failure: 'false',
-        statusCode: 'Success',
-        statusMessage: 'Hello there :)',
-      },
-      attributes: {
-        personIdentifier:
-          'FR/BE/9043a641bacfb18418b571e6d31fabd32307998aeebfb323175e34f81d62351cv1',
-        currentFamilyName: 'DUBOIS',
-        currentGivenName: ['Angela', 'Claire', 'Louise'],
-        dateOfBirth: '1962-08-24',
-        currentAddress: {
-          poBox: '1234',
-          locatorDesignator: '20',
-          locatorName: 'Ségur Fontenoy',
-          cvaddressArea: 'Paris',
-          thoroughfare: 'Avenue de Ségur',
-          postName: 'PARIS 7',
-          adminunitFirstline: 'FR',
-          adminunitSecondline: 'PARIS',
-          postCode: '75107',
-        },
-        gender: 'Female',
-        birthName: 'DUBOIS',
-        placeOfBirth: '75107',
-      },
-    };
+    await session.set('eidasRequest', request);
 
-    const {
-      token: responseToken,
+    const { redirectAfterRequestHandlingUrl } = this.config.get<
+      EidasProviderConfig
+    >('EidasProvider');
+
+    return { url: redirectAfterRequestHandlingUrl, statusCode: 302 };
+  }
+
+  @Get('/response-proxy')
+  @Render('redirect-to-fr-node-proxy-service')
+  async responseProxy(
+    @Session('EidasProvider')
+    session: IExposedSessionServiceGeneric<EidasProviderSession>,
+  ) {
+    const eidasReponse = await this.getEidasResponse(session);
+
+    const { token, lightResponse } = this.eidasProvider.prepareLightResponse(
+      eidasReponse,
+    );
+
+    await this.eidasProvider.writeLightResponseInCache(
+      eidasReponse.id,
       lightResponse,
-    } = this.eidasProvider.prepareLightResponse(successFullJsonMock);
+    );
 
     const { proxyServiceResponseCacheUrl } = this.config.get<
       EidasProviderConfig
     >('EidasProvider');
 
-    await this.eidasProvider.writeLightResponseInCache(
-      successFullJsonMock.id,
-      lightResponse,
-    );
+    return { proxyServiceResponseCacheUrl, token };
+  }
 
-    return {
-      proxyServiceResponseCacheUrl,
-      token: responseToken,
-    };
+  private async getEidasResponse(
+    session: IExposedSessionServiceGeneric<EidasProviderSession>,
+  ) {
+    const {
+      eidasRequest,
+      partialEidasResponse,
+    }: EidasProviderSession = await session.get();
+
+    let eidasReponse;
+    if (!partialEidasResponse.status.failure) {
+      eidasReponse = this.eidasProvider.completeFcSuccessResponse(
+        partialEidasResponse,
+        eidasRequest,
+      );
+    } else {
+      eidasReponse = this.eidasProvider.completeFcFailureResponse(
+        partialEidasResponse,
+        eidasRequest,
+      );
+    }
+
+    return eidasReponse;
   }
 }

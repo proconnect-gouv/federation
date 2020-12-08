@@ -357,6 +357,15 @@
         "tsConfigPath": "libs/http-proxy/tsconfig.lib.json"
       }
     },
+    "session-generic": {
+      "type": "library",
+      "root": "libs/session-generic",
+      "entryFile": "index",
+      "sourceRoot": "libs/session-generic/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/session-generic/tsconfig.lib.json"
+      }
+    },
     "session": {
       "type": "library",
       "root": "libs/session",
@@ -481,6 +490,24 @@
       "sourceRoot": "libs/eidas-provider/src",
       "compilerOptions": {
         "tsConfigPath": "libs/eidas-provider/tsconfig.lib.json"
+      }
+    },
+    "eidas-oidc-mapper": {
+      "type": "library",
+      "root": "libs/eidas-oidc-mapper",
+      "entryFile": "index",
+      "sourceRoot": "libs/eidas-oidc-mapper/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/eidas-oidc-mapper/tsconfig.lib.json"
+      }
+    },
+    "eidas": {
+      "type": "library",
+      "root": "libs/eidas",
+      "entryFile": "index",
+      "sourceRoot": "libs/eidas/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/eidas/tsconfig.lib.json"
       }
     }
   }

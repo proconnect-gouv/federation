@@ -89,3 +89,8 @@
 |---|---|---|
 | Y180001 | Account blocked | Un utilisateur a demandé à ce que sa connexion via franceConnect soit désactivée. La connexion via ses identifiants est donc impossible désormais. Réactivation du compte nécessaire pour pouvoir procéder à une nouvelle connexion via ce compte. |
 
+| Code | Message utilisateur | Description |
+|---|---|---|
+| Y190001 | Session not found | La Session n&#39;a pas été trouvée |
+| Y190002 | Error | La Session présente une erreur de format de données |
+

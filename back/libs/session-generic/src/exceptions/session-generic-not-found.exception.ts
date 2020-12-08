@@ -1,0 +1,16 @@
+/* istanbul ignore file */
+
+// declarative code
+import { Description } from '@fc/error';
+import { ErrorCode } from '../enums';
+import { SessionGenericBaseException } from './session-generic-base.exception';
+
+@Description("La Session n'a pas été trouvée")
+export class SessionGenericNotFoundException extends SessionGenericBaseException {
+  public readonly code = ErrorCode.NOT_FOUND;
+
+  constructor() {
+    super();
+    this.message = 'Session not found';
+  }
+}
