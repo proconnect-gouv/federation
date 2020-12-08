@@ -13,6 +13,7 @@ import OidcProvider from './oidc-provider';
 import OverrideOidcProvider from './override-oidc-provider';
 import Redis from './redis';
 import Session from './session';
+import SessionGeneric from './session-generic';
 import EidasClient from './eidas-client';
 import EidasProvider from './eidas-provider';
 import ApacheIgnite from './apache-ignite';
@@ -40,6 +41,7 @@ export default {
   OverrideOidcProvider,
   Redis,
   Session,
+  SessionGeneric,
   EidasClient,
   EidasProvider,
   ApacheIgnite,

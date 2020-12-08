@@ -22,7 +22,7 @@ export const lightResponseFailureMandatoryJsonMock: IJsonifiedLightResponseXml =
       _text: '0123456',
     },
     levelOfAssurance: {
-      _text: 'http://eidas.europa.eu/LoA/low',
+      _text: 'http://eidas.europa.eu/LoA/substantial',
     },
     status: {
       failure: {
@@ -39,7 +39,7 @@ export const lightResponseFailureMandatoryXmlMock = `<?xml version="1.0" encodin
   <issuer>https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata</issuer>
   <subjectNameIdFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</subjectNameIdFormat>
   <subject>0123456</subject>
-  <levelOfAssurance>http://eidas.europa.eu/LoA/low</levelOfAssurance>
+  <levelOfAssurance>http://eidas.europa.eu/LoA/substantial</levelOfAssurance>
   <status>
     <failure>true</failure>
   </status>

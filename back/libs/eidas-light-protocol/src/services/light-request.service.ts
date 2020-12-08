@@ -2,12 +2,13 @@ import { json2xml, xml2json } from 'xml-js';
 import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
+import { EidasRequest } from '@fc/eidas';
 import {
   EidasJsonToXmlException,
   EidasXmlToJsonException,
 } from '../exceptions';
 import { LightRequestXmlSelectors } from '../enums';
-import { IParsedToken, IRequest } from '../interfaces';
+import { IParsedToken } from '../interfaces';
 import { EidasLightProtocolConfig } from '../dto';
 import { LightCommonsService } from './light-commons.service';
 
@@ -18,7 +19,7 @@ export class LightRequestService {
     private readonly lightCommons: LightCommonsService,
   ) {}
 
-  fromJson(jsonData: IRequest): string {
+  fromJson(jsonData: EidasRequest): string {
     try {
       const options = { compact: true, ignoreComment: true, spaces: 2 };
       return json2xml(JSON.stringify(this.inflateJson(jsonData)), options);
@@ -40,7 +41,7 @@ export class LightRequestService {
     );
   }
 
-  toJson(xmlDoc: string): IRequest {
+  toJson(xmlDoc: string): EidasRequest {
     try {
       const options = { compact: true, spaces: 2 };
       return this.deflateJson(JSON.parse(xml2json(xmlDoc, options)));
@@ -57,11 +58,13 @@ export class LightRequestService {
     return this.lightCommons.parseToken(token, lightRequestProxyServiceSecret);
   }
 
-  private inflateJson(json: IRequest) {
+  private inflateJson(json: EidasRequest) {
     const requestedAttributes = json.requestedAttributes.map((attribute) => {
       return {
         definition: {
-          _text: `http://eidas.europa.eu/attributes/naturalperson/${attribute}`,
+          _text: `http://eidas.europa.eu/attributes/naturalperson/${_.upperFirst(
+            attribute,
+          )}`,
         },
       };
     });
@@ -108,8 +111,8 @@ export class LightRequestService {
     return lightRequest;
   }
 
-  private deflateJson(json): IRequest {
-    const newJson: IRequest = {
+  private deflateJson(json): EidasRequest {
+    const newJson: EidasRequest = {
       citizenCountryCode: this.getJsonValues(
         json,
         LightRequestXmlSelectors.COUNTRY,
@@ -152,18 +155,24 @@ export class LightRequestService {
     let final;
     const value = _.get(json, path);
 
-    if (path === LightRequestXmlSelectors.LEVEL_OF_ASSURANCE) {
-      final = value.split('/LoA/')[1];
-    } else if (path === LightRequestXmlSelectors.NAME_ID_FORMAT) {
-      final = value.split('format:')[1];
-    } else if (path === LightRequestXmlSelectors.REQUESTED_ATTRIBUTES) {
-      final = [];
-      value.map((attribute) => {
-        final.push(/[^/]*$/.exec(attribute.definition._text)[0]);
-      });
-    } else {
-      final = value;
+    switch (path) {
+      case LightRequestXmlSelectors.LEVEL_OF_ASSURANCE:
+      case LightRequestXmlSelectors.NAME_ID_FORMAT:
+        final = this.lightCommons.getLastElementInUrlOrUrn(value);
+        break;
+      case LightRequestXmlSelectors.REQUESTED_ATTRIBUTES:
+        final = value
+          .map((attribute) => {
+            return this.lightCommons.getLastElementInUrlOrUrn(
+              attribute.definition._text,
+            );
+          })
+          .map((attribute) => _.lowerFirst(attribute));
+        break;
+      default:
+        final = value;
     }
+
     return final;
   }
 }

@@ -16,7 +16,7 @@
   <div class="container-flags">
       <% for(let i = 0; i < locals.countryList.length; i++) {%>
           <div class="country">
-              <form action="https://eidas-bridge.docker.dev-franceconnect.fr/<%= locals.uid %>/login" method="POST">
+              <form action="https://eidas-bridge.docker.dev-franceconnect.fr/oidc-client/<%= locals.uid %>/login" method="POST">
                   <button id="country-<%= countryList[i].iso %>" type="submit" class="country-btn" name="country" value="<%= countryList[i].iso %>">
                       <img 
                         src="<%= countryList[i].icon %>" 

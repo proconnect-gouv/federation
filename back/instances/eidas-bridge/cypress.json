@@ -1,0 +1,19 @@
+{
+  "chromeWebSecurity": false,
+  "videoUploadOnPasses": false,
+  "viewportHeight": 1000,
+  "viewportWidth": 1400,
+  "pageLoadTimeout": 30000,
+  "baseUrl": "https://eidas-bridge.docker.dev-franceconnect.fr",
+  "env": {
+    "BE_SP_URL": "https://eidas-be.docker.dev-franceconnect.fr/SP/populateIndexPage",
+
+    "BRIDGE_ROOT_URL": "https://eidas-bridge.docker.dev-franceconnect.fr",
+ 
+    "CORE_ROOT_URL": "https://corev2.docker.dev-franceconnect.fr",
+ 
+    "IDP_ROOT_URL": "https://IDP_NAME.docker.dev-franceconnect.fr"
+  },
+  "ignoreTestFiles": "*.util.js",
+  "projectId": "m4rv1n"
+}

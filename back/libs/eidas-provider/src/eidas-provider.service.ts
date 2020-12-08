@@ -2,18 +2,17 @@ import { Injectable } from '@nestjs/common';
 import { ApacheIgniteService } from '@fc/apache-ignite';
 import { ConfigService } from '@fc/config';
 import {
-  IRequest,
-  IResponse,
   LightRequestService,
   LightResponseService,
 } from '@fc/eidas-light-protocol';
+import { EidasNameIdFormats, EidasRequest, EidasResponse } from '@fc/eidas';
 import { LoggerService } from '@fc/logger';
+import { CryptographyService } from '@fc/cryptography';
 import { EidasProviderConfig } from './dto';
 import {
   ReadLightRequestFromCacheException,
   WriteLightResponseInCacheException,
 } from './exceptions';
-
 @Injectable()
 export class EidasProviderService {
   private proxyServiceRequestCache;
@@ -22,6 +21,7 @@ export class EidasProviderService {
   constructor(
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
+    private readonly crypto: CryptographyService,
     private readonly apacheIgnite: ApacheIgniteService,
     private readonly lightRequest: LightRequestService,
     private readonly lightResponse: LightResponseService,
@@ -81,8 +81,54 @@ export class EidasProviderService {
    * @param lightRequest The light-request as an XML to parse
    * @returns The request as a more neutral and understandable JSON
    */
-  parseLightRequest(lightRequest: string): IRequest {
+  parseLightRequest(lightRequest: string): EidasRequest {
     return this.lightRequest.toJson(lightRequest);
+  }
+
+  /**
+   * Takes a partial success eidas response and add the missing
+   * parts (id, issuer, ...)
+   * @param partialEidasResponse The partial eidas response to complete
+   * @return An complete successful eIDAS response
+   */
+  completeFcSuccessResponse(
+    { subject, attributes, levelOfAssurance, status }: Partial<EidasResponse>,
+    eidasRequest: EidasRequest,
+  ): EidasResponse {
+    const response = {
+      id: this.crypto.genRandomString(64),
+      issuer: 'FR EidasBridge - ProxyService',
+      inResponseToId: eidasRequest.id,
+      relayState: eidasRequest.relayState,
+      subject,
+      subjectNameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+      levelOfAssurance,
+      status,
+      attributes,
+    };
+
+    return response;
+  }
+
+  /**
+   * Takes a partial fail eidas response and add the missing
+   * parts (id, issuer, ...)
+   * @param partialEidasResponse The partial eidas response to complete
+   * @return An complete failure eIDAS response
+   */
+  completeFcFailureResponse(
+    { status }: Partial<EidasResponse>,
+    eidasRequest: EidasRequest,
+  ) {
+    const response = {
+      id: this.crypto.genRandomString(64),
+      issuer: 'FR EidasBridge - ProxyService',
+      inResponseToId: eidasRequest.id,
+      relayState: eidasRequest.relayState,
+      status,
+    };
+
+    return response;
   }
 
   /**
@@ -91,7 +137,7 @@ export class EidasProviderService {
    * @param response The response as JSON
    * @returns The light-response token and the light-response as an XML
    */
-  prepareLightResponse(response: IResponse) {
+  prepareLightResponse(response: EidasResponse) {
     const { proxyServiceResponseIssuer } = this.config.get<EidasProviderConfig>(
       'EidasProvider',
     );

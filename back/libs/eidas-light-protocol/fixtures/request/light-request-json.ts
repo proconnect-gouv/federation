@@ -17,7 +17,7 @@ export const lightRequestJsonMock = {
       _text: 'EIDASBridge',
     },
     levelOfAssurance: {
-      _text: 'http://eidas.europa.eu/LoA/low',
+      _text: 'http://eidas.europa.eu/LoA/substantial',
     },
     nameIdFormat: {
       _text: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',

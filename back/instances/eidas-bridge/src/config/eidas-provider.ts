@@ -9,4 +9,6 @@ export default {
     process.env.EidasProvider_PROXY_SERVICE_RESPONSE_URL,
   proxyServiceRequestCache:
     process.env.EidasProvider_PROXY_SERVICE_REQUEST_CACHE,
+  redirectAfterRequestHandlingUrl:
+    process.env.EidasProvider_REDIRECT_AFTER_REQUEST_HANDLING_URL,
 } as EidasProviderConfig;
