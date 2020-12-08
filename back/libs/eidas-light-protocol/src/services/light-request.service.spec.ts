@@ -21,12 +21,16 @@ describe('LightRequestService', () => {
     get: jest.fn(),
   };
 
-  const mockLightCommonsService = {
+  const lightCommonsServiceMock = {
     generateToken: jest.fn(),
     parseToken: jest.fn(),
+    getLastElementInUrlOrUrn: jest.fn(),
   };
 
   beforeEach(async () => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       imports: [ConfigModule],
       providers: [LightRequestService, ConfigService, LightCommonsService],
@@ -34,13 +38,14 @@ describe('LightRequestService', () => {
       .overrideProvider(ConfigService)
       .useValue(mockConfigService)
       .overrideProvider(LightCommonsService)
-      .useValue(mockLightCommonsService)
+      .useValue(lightCommonsServiceMock)
       .compile();
 
     service = module.get<LightRequestService>(LightRequestService);
 
-    jest.resetAllMocks();
-    jest.restoreAllMocks();
+    lightCommonsServiceMock.getLastElementInUrlOrUrn.mockImplementation(
+      LightCommonsService.prototype.getLastElementInUrlOrUrn,
+    );
   });
 
   it('should be defined', () => {
@@ -118,8 +123,8 @@ describe('LightRequestService', () => {
       service.generateToken(id, issuer);
 
       // expect
-      expect(mockLightCommonsService.generateToken).toHaveBeenCalledTimes(1);
-      expect(mockLightCommonsService.generateToken).toHaveBeenCalledWith(
+      expect(lightCommonsServiceMock.generateToken).toHaveBeenCalledTimes(1);
+      expect(lightCommonsServiceMock.generateToken).toHaveBeenCalledWith(
         id,
         issuer,
         mockConfig.lightRequestConnectorSecret,
@@ -135,8 +140,8 @@ describe('LightRequestService', () => {
       service.generateToken(id, issuer, expectedDate);
 
       // expect
-      expect(mockLightCommonsService.generateToken).toHaveBeenCalledTimes(1);
-      expect(mockLightCommonsService.generateToken).toHaveBeenCalledWith(
+      expect(lightCommonsServiceMock.generateToken).toHaveBeenCalledTimes(1);
+      expect(lightCommonsServiceMock.generateToken).toHaveBeenCalledWith(
         id,
         issuer,
         mockConfig.lightRequestConnectorSecret,
@@ -151,7 +156,7 @@ describe('LightRequestService', () => {
        */
       const expected =
         'eWVsdHNBLWtjaVJ8TkdHWVV8MTk2OS0wNy0yMSAxNzo1NDowMCAwMDB8eFR6aUwyWVZ2U09SYUVEUFBiZFNwOVZvR3k3OEJ4bjNhY3pVcGhnWFozdz0=';
-      mockLightCommonsService.generateToken.mockReturnValueOnce(expected);
+      lightCommonsServiceMock.generateToken.mockReturnValueOnce(expected);
 
       // action
       const result = service.generateToken(id, issuer);
@@ -222,8 +227,8 @@ describe('LightRequestService', () => {
       service.parseToken(token);
 
       // expect
-      expect(mockLightCommonsService.parseToken).toHaveBeenCalledTimes(1);
-      expect(mockLightCommonsService.parseToken).toHaveBeenCalledWith(
+      expect(lightCommonsServiceMock.parseToken).toHaveBeenCalledTimes(1);
+      expect(lightCommonsServiceMock.parseToken).toHaveBeenCalledWith(
         token,
         mockConfig.lightRequestProxyServiceSecret,
       );
@@ -236,7 +241,7 @@ describe('LightRequestService', () => {
         issuer: 'issuer',
         date: new Date(),
       };
-      mockLightCommonsService.parseToken.mockReturnValueOnce(parsedToken);
+      lightCommonsServiceMock.parseToken.mockReturnValueOnce(parsedToken);
 
       // action
       const result = service.parseToken(token);
@@ -294,14 +299,14 @@ describe('LightRequestService', () => {
       // setup
       const path = LightRequestXmlSelectors.REQUESTED_ATTRIBUTES;
       const expected = [
-        'PersonIdentifier',
-        'CurrentFamilyName',
-        'CurrentGivenName',
-        'DateOfBirth',
-        'CurrentAddress',
-        'Gender',
-        'BirthName',
-        'PlaceOfBirth',
+        'personIdentifier',
+        'currentFamilyName',
+        'currentGivenName',
+        'dateOfBirth',
+        'currentAddress',
+        'gender',
+        'birthName',
+        'placeOfBirth',
       ];
 
       // action

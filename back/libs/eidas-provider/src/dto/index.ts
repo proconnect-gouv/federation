@@ -2,4 +2,5 @@
 
 // Declarative code
 export * from './eidas-provider-config.dto';
-export * from './callback.dto';
+export * from './eidas-provider-session.dto';
+export * from './request-handler.dto';

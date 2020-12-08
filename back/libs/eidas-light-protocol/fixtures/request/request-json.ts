@@ -1,21 +1,29 @@
-import { IRequest } from '../../src/interfaces';
-export const requestJsonMock: IRequest = {
-  citizenCountryCode: 'BE',
+import {
+  EidasCountries,
+  EidasLevelOfAssurances,
+  EidasNameIdFormats,
+  EidasRequest,
+  EidasAttributes,
+  EidasSpTypes,
+} from '@fc/eidas';
+
+export const requestJsonMock: EidasRequest = {
+  citizenCountryCode: EidasCountries.BELGIUM,
   id: 'Auduye7263',
   issuer: 'EIDASBridge',
-  levelOfAssurance: 'low',
-  nameIdFormat: 'unspecified',
+  levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
+  nameIdFormat: EidasNameIdFormats.UNSPECIFIED,
   providerName: 'FranceConnect',
-  spType: 'public',
+  spType: EidasSpTypes.PUBLIC,
   relayState: 'myState',
   requestedAttributes: [
-    'PersonIdentifier',
-    'CurrentFamilyName',
-    'CurrentGivenName',
-    'DateOfBirth',
-    'CurrentAddress',
-    'Gender',
-    'BirthName',
-    'PlaceOfBirth',
+    EidasAttributes.PERSON_IDENTIFIER,
+    EidasAttributes.CURRENT_FAMILY_NAME,
+    EidasAttributes.CURRENT_GIVEN_NAME,
+    EidasAttributes.DATE_OF_BIRTH,
+    EidasAttributes.CURRENT_ADDRESS,
+    EidasAttributes.GENDER,
+    EidasAttributes.BIRTH_NAME,
+    EidasAttributes.PLACE_OF_BIRTH,
   ],
 };

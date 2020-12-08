@@ -1,0 +1,68 @@
+eidas-bridge:
+  stage: 'End to end'
+  image: ${E2E_DOCKER_IMAGE}
+  services:
+    - docker:18.09.7-dind
+  variables:
+    FC_ROOT: '$CI_BUILDS_DIR/france-connect'
+    CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
+    TZ: 'Europe/Paris'
+  dependencies:
+    - global
+  before_script:
+    - if [ "$E2E" != "1" ]; then echo "E2E Skipped"; exit 0; fi;
+    - rm -rf $FC_ROOT/fc-docker
+    - git clone -b $FC_DOCKER_VERSION https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
+    - shopt -s expand_aliases
+    - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
+    - export DOCKER_HOST_IP="$(getent hosts docker | awk '{ print $1 }')"
+    - export DOCKER_HOST="tcp://$DOCKER_HOST_IP:2375"
+    - echo "$DOCKER_HOST_IP fcp.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP fsp1v2.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP fsp2v2.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP fip1v2.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP rnipp.docker.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP eidas-bridge.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP eidas-fr.dev-franceconnect.fr" >> /etc/hosts
+    - echo "$DOCKER_HOST_IP eidas-be.dev-franceconnect.fr" >> /etc/hosts
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - cp -R /var/www/mocks $FC_ROOT/
+    - ln -s $CI_PROJECT_DIR $FC_ROOT/fc-docker/volumes/src/fc
+    - ln -s $FC_ROOT/fc/front/user-dashboard $FC_ROOT/fc-docker/volumes/src/user-dashboard
+    - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc-docker/volumes/src; done
+  script:
+    - docker-stack up eidas
+    - docker-stack dep-all
+    - docker-stack start-all
+    # ## -- Build like for prod
+    #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
+    #- docker-stack exec corev2 yarn build eidas-bridge
+    #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
+    # ## -- Launch like prod
+    #- docker-stack exec fsp1v2 yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsp2v2 yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec corev2 yarn start:prod:eidas-bridge &
+    #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
+    # Starting Cypress
+    - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://eidas-bridge.docker.dev-franceconnect.fr/.well-known/openid-configuration)" != "200" ]];
+      do echo "Waiting for eidas-bridge..." && sleep 10; done' ||
+      (echo 'Cannot connect to eidas-bridge' && exit 1)
+    - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/eidas-bridge || (
+      (docker cp fc_corev2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fip1v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fsp1v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fsp2v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc-rp-all:/var/log/nginx back/instances/eidas-bridge/cypress/logs || true) &&
+      exit 1)
+  # rules:
+  #   - if: '$ALLOW_FAILURE == "true"'
+  #     allow_failure: true
+  artifacts:
+    expire_in: 1 hrs
+    when: on_failure
+    paths:
+      - back/instances/eidas-bridge/cypress/screenshots
+      - back/instances/eidas-bridge/cypress/videos
+      - back/instances/eidas-bridge/cypress/logs

@@ -69,6 +69,16 @@ export class LightCommonsService {
   }
 
   /**
+   * Retrieves the last part of an URL or URN (can be an Enum)
+   * Ex. "toto" in "titi:tutu:tata:toto"
+   * @param value The element we want to parse
+   * @returns the last element
+   */
+  getLastElementInUrlOrUrn<T>(value: string): T {
+    return (value.split(/[:/]/).pop() as unknown) as T;
+  }
+
+  /**
    * Produce a SHA256 signature for a token
    * @param id An id unique for the TTL of the token and used as key for caching
    * @param issuer The entity that is emitting the token

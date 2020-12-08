@@ -1,6 +1,13 @@
-import { IJsonifiedLightResponseXml, IResponse } from '../../src/interfaces';
+import {
+  EidasLevelOfAssurances,
+  EidasNameIdFormats,
+  EidasResponse,
+  EidasStatusCodes,
+  EidasSubStatusCodes,
+} from '@fc/eidas';
+import { IJsonifiedLightResponseXml } from '../../src/interfaces';
 
-export const failureFullJsonMock: IResponse = {
+export const failureFullJsonMock: EidasResponse = {
   id: '_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u',
   inResponseToId: '1602861970744',
   issuer:
@@ -8,12 +15,12 @@ export const failureFullJsonMock: IResponse = {
   ipAddress: '127.0.0.1',
   relayState: 'myState',
   subject: '0123456',
-  subjectNameIdFormat: 'unspecified',
-  levelOfAssurance: 'low',
+  subjectNameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+  levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
   status: {
-    failure: 'true',
-    statusCode: 'Requester',
-    subStatusCode: 'AuthnFailed',
+    failure: true,
+    statusCode: EidasStatusCodes.RESPONDER,
+    subStatusCode: EidasSubStatusCodes.AUTHN_FAILED,
     statusMessage: 'myMessage',
   },
 };
@@ -43,14 +50,14 @@ export const lightResponseFailureFullJsonMock: IJsonifiedLightResponseXml = {
       _text: '0123456',
     },
     levelOfAssurance: {
-      _text: 'http://eidas.europa.eu/LoA/low',
+      _text: 'http://eidas.europa.eu/LoA/substantial',
     },
     status: {
       failure: {
         _text: 'true',
       },
       statusCode: {
-        _text: 'urn:oasis:names:tc:SAML:2.0:status:Requester',
+        _text: 'urn:oasis:names:tc:SAML:2.0:status:Responder',
       },
       statusMessage: {
         _text: 'myMessage',
@@ -70,10 +77,10 @@ export const lightResponseFailureFullXmlMock = `<?xml version="1.0" encoding="UT
   <relayState>myState</relayState>
   <subjectNameIdFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</subjectNameIdFormat>
   <subject>0123456</subject>
-  <levelOfAssurance>http://eidas.europa.eu/LoA/low</levelOfAssurance>
+  <levelOfAssurance>http://eidas.europa.eu/LoA/substantial</levelOfAssurance>
   <status>
     <failure>true</failure>
-    <statusCode>urn:oasis:names:tc:SAML:2.0:status:Requester</statusCode>
+    <statusCode>urn:oasis:names:tc:SAML:2.0:status:Responder</statusCode>
     <statusMessage>myMessage</statusMessage>
     <subStatusCode>urn:oasis:names:tc:SAML:2.0:status:AuthnFailed</subStatusCode>
   </status>

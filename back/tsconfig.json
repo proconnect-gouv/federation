@@ -167,6 +167,12 @@
       "@fc/http-proxy/*": [
         "libs/http-proxy/src/*"
       ],
+      "@fc/session-generic": [
+        "libs/session-generic/src"
+      ],
+      "@fc/session-generic/*": [
+        "libs/session-generic/src/*"
+      ],
       "@fc/session": [
         "libs/session/src"
       ],
@@ -257,6 +263,18 @@
       "@fc/user-dashboard/*": [
         "apps/user-dashboard/src/*"
       ],
+      "@fc/eidas-oidc-mapper": [
+        "libs/eidas-oidc-mapper/src"
+      ],
+      "@fc/eidas-oidc-mapper/*": [
+        "libs/eidas-oidc-mapper/src/*"
+      ],
+      "@fc/eidas": [
+        "libs/eidas/src"
+      ],
+      "@fc/eidas/*": [
+        "libs/eidas/src/*"
+      ]
     }
   },
   "exclude": [

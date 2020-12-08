@@ -2,8 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ApacheIgniteService } from '@fc/apache-ignite';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { EidasRequest } from '@fc/eidas';
 import {
-  IRequest,
   LightRequestService,
   LightResponseService,
 } from '@fc/eidas-light-protocol';
@@ -207,7 +207,7 @@ describe('EidasClientService', () => {
     const requestMock = ({
       id: 'id',
       state: 'state',
-    } as unknown) as IRequest;
+    } as unknown) as EidasRequest;
 
     beforeEach(() => {
       configServiceMock.get.mockReturnValueOnce({

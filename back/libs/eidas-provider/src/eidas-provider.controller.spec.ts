@@ -1,11 +1,15 @@
-import { ConfigService } from '@fc/config';
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@fc/config';
 import { EidasProviderController } from './eidas-provider.controller';
 import { EidasProviderService } from './eidas-provider.service';
 
 describe('EidasProviderController', () => {
   let controller: EidasProviderController;
 
+  const configMock = {
+    proxyServiceResponseCacheUrl: 'proxyServiceResponseCacheUrl',
+    redirectAfterRequestHandlingUrl: 'redirectAfterRequestHandlingUrl',
+  };
   const configServiceMock = {
     get: jest.fn(),
   };
@@ -15,6 +19,19 @@ describe('EidasProviderController', () => {
     writeLightResponseInCache: jest.fn(),
     readLightRequestFromCache: jest.fn(),
     parseLightRequest: jest.fn(),
+    completeFcSuccessResponse: jest.fn(),
+    completeFcFailureResponse: jest.fn(),
+  };
+
+  const exposedSessionMock = {
+    get: jest.fn(),
+    set: jest.fn(),
+  };
+
+  const eidasRequestMock = {
+    id: 'id',
+    relayState: 'relayState',
+    levelOfAssurance: 'levelOfAssurance',
   };
 
   beforeEach(async () => {
@@ -33,6 +50,8 @@ describe('EidasProviderController', () => {
       .compile();
 
     controller = module.get<EidasProviderController>(EidasProviderController);
+
+    configServiceMock.get.mockReturnValueOnce(configMock);
   });
 
   it('should be defined', () => {
@@ -43,64 +62,10 @@ describe('EidasProviderController', () => {
    * :warning: This is a temporary controller, the tests should change with the integration
    * of the FranceConnect openid cinematic
    */
-  describe('callback', () => {
+  describe('requestHandler', () => {
     const body = {
       token:
         'VGhlIExvc3QgQmF0dGFsaW9uIGlzIHRoZSBuYW1lIGdpdmVuIHRvIG5pbmUgY29tcGFuaWVzIG9mIHRoZSBVbml0ZWQgU3RhdGVzIDc3OnRoIERpdmlzaW9uIGR1cmluZyB0aGUgYmF0dGxlIG9mIHRoZSBBcmdvbm5lIGluIDE5MTgu',
-    };
-
-    const formattedLightResponseMock = {
-      token: 'IlNhYmF0b24gLSBUaGUgTG9zdCBCYXR0YWxpb24iIC0+IExpc3Rlbg==',
-      lightResponse:
-        "<LightResponse>If you believe, you'll see</LightResponse>",
-    };
-
-    const requestMock = {
-      id: 'id',
-      relayState: 'relayState',
-      levelOfAssurance: 'levelOfAssurance',
-    };
-
-    const hardcodedIdentityMock = {
-      id: expect.any(String),
-      inResponseToId: requestMock.id,
-      issuer: 'EIDASBridge ProxyService',
-      ipAddress: '127.0.0.1',
-      relayState: requestMock.relayState,
-      subject:
-        '9043a641bacfb18418b571e6d31fabd32307998aeebfb323175e34f81d62351cv1',
-      subjectNameIdFormat: 'unspecified',
-      levelOfAssurance: requestMock.levelOfAssurance,
-      status: {
-        failure: 'false',
-        statusCode: 'Success',
-        statusMessage: 'Hello there :)',
-      },
-      attributes: {
-        personIdentifier:
-          'FR/BE/9043a641bacfb18418b571e6d31fabd32307998aeebfb323175e34f81d62351cv1',
-        currentFamilyName: 'DUBOIS',
-        currentGivenName: ['Angela', 'Claire', 'Louise'],
-        dateOfBirth: '1962-08-24',
-        currentAddress: {
-          poBox: '1234',
-          locatorDesignator: '20',
-          locatorName: 'Ségur Fontenoy',
-          cvaddressArea: 'Paris',
-          thoroughfare: 'Avenue de Ségur',
-          postName: 'PARIS 7',
-          adminunitFirstline: 'FR',
-          adminunitSecondline: 'PARIS',
-          postCode: '75107',
-        },
-        gender: 'Female',
-        birthName: 'DUBOIS',
-        placeOfBirth: '75107',
-      },
-    };
-
-    const configMock = {
-      proxyServiceResponseCacheUrl: 'proxyServiceResponseCacheUrl',
     };
 
     const lightRequestMock =
@@ -111,17 +76,13 @@ describe('EidasProviderController', () => {
         lightRequestMock,
       );
       eidasProviderServiceMock.parseLightRequest.mockReturnValueOnce(
-        requestMock,
+        eidasRequestMock,
       );
-      eidasProviderServiceMock.prepareLightResponse.mockReturnValueOnce(
-        formattedLightResponseMock,
-      );
-      configServiceMock.get.mockReturnValueOnce(configMock);
     });
 
     it('should read the light-request corresponding to the token in the body from the cache', async () => {
       // action
-      await controller.callback(body);
+      await controller.requestHandler(body, exposedSessionMock);
 
       // expect
       expect(
@@ -134,7 +95,7 @@ describe('EidasProviderController', () => {
 
     it('should parse the light-request', async () => {
       // action
-      await controller.callback(body);
+      await controller.requestHandler(body, exposedSessionMock);
 
       // expect
       expect(eidasProviderServiceMock.parseLightRequest).toHaveBeenCalledTimes(
@@ -145,9 +106,81 @@ describe('EidasProviderController', () => {
       );
     });
 
-    it('should format the temporary hardcoded identity as a light-response', async () => {
+    it('should put the eidas request in session', async () => {
       // action
-      await controller.callback(body);
+      await controller.requestHandler(body, exposedSessionMock);
+
+      // expect
+      expect(exposedSessionMock.set).toHaveBeenCalledTimes(1);
+      expect(exposedSessionMock.set).toHaveBeenCalledWith(
+        'eidasRequest',
+        eidasRequestMock,
+      );
+    });
+
+    it('should retrieve the redirectAfterRequestHandlingUrl from the config', async () => {
+      // action
+      await controller.requestHandler(body, exposedSessionMock);
+
+      // expect
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('EidasProvider');
+    });
+
+    it('should return the redirectAfterRequestHandlingUrl with a 302 statusCode', async () => {
+      // setup
+      const expected = {
+        url: configMock.redirectAfterRequestHandlingUrl,
+        statusCode: 302,
+      };
+
+      // action
+      const result = await controller.requestHandler(body, exposedSessionMock);
+
+      // expect
+      expect(result).toStrictEqual(expected);
+    });
+  });
+
+  describe('responseProxy', () => {
+    const partialEidasResponseMock = {
+      status: {
+        failure: false,
+      },
+    };
+    const getEidasSessionMock = jest.fn();
+    const eidasResponseMock = {
+      id: '42691337',
+      ...partialEidasResponseMock,
+    };
+    const formattedLightResponseMock = {
+      token: 'IlNhYmF0b24gLSBUaGUgTG9zdCBCYXR0YWxpb24iIC0+IExpc3Rlbg==',
+      lightResponse:
+        "<LightResponse>If you believe, you'll see</LightResponse>",
+    };
+
+    beforeEach(() => {
+      controller[
+        'getEidasResponse'
+      ] = getEidasSessionMock.mockResolvedValueOnce(eidasResponseMock);
+
+      eidasProviderServiceMock.prepareLightResponse.mockReturnValueOnce(
+        formattedLightResponseMock,
+      );
+    });
+
+    it('should get the proxyServiceResponseCacheUrl from the configuration', async () => {
+      // action
+      await controller.responseProxy(exposedSessionMock);
+
+      // expect
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('EidasProvider');
+    });
+
+    it('should prepare the light response using the eidasReponse', async () => {
+      // action
+      await controller.responseProxy(exposedSessionMock);
 
       // expect
       expect(
@@ -155,21 +188,12 @@ describe('EidasProviderController', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         eidasProviderServiceMock.prepareLightResponse,
-      ).toHaveBeenCalledWith(hardcodedIdentityMock);
-    });
-
-    it('should get the proxyServiceResponseCacheUrl from the configuration', async () => {
-      // action
-      await controller.callback(body);
-
-      // expect
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('EidasProvider');
+      ).toHaveBeenCalledWith(eidasResponseMock);
     });
 
     it('should write the light-response to the cache', async () => {
       // action
-      await controller.callback(body);
+      await controller.responseProxy(exposedSessionMock);
 
       // expect
       expect(
@@ -178,7 +202,7 @@ describe('EidasProviderController', () => {
       expect(
         eidasProviderServiceMock.writeLightResponseInCache,
       ).toHaveBeenCalledWith(
-        hardcodedIdentityMock.id,
+        eidasResponseMock.id,
         formattedLightResponseMock.lightResponse,
       );
     });
@@ -189,10 +213,78 @@ describe('EidasProviderController', () => {
         proxyServiceResponseCacheUrl: configMock.proxyServiceResponseCacheUrl,
         token: formattedLightResponseMock.token,
       };
-      const result = await controller.callback(body);
+      const result = await controller.responseProxy(exposedSessionMock);
 
       // expect
       expect(result).toStrictEqual(expected);
+    });
+  });
+
+  describe('getEidasResponse', () => {
+    const partialEidasResponseMock = {
+      status: {
+        failure: false,
+      },
+    };
+
+    beforeEach(() => {
+      exposedSessionMock.get.mockResolvedValueOnce({
+        eidasRequest: eidasRequestMock,
+        partialEidasResponse: partialEidasResponseMock,
+      });
+    });
+
+    it('should get the eidas request and the partial eidas response from the session', async () => {
+      // action
+      await controller['getEidasResponse'](exposedSessionMock);
+
+      // expect
+      expect(exposedSessionMock.get).toHaveBeenCalledTimes(1);
+      expect(exposedSessionMock.get).toHaveBeenCalledWith();
+    });
+
+    it('should call completeFcSuccessResponse with the partialEidasResponse and the eidasRequest if the status failure is false', async () => {
+      // action
+      await controller['getEidasResponse'](exposedSessionMock);
+
+      // expect
+      expect(
+        eidasProviderServiceMock.completeFcSuccessResponse,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        eidasProviderServiceMock.completeFcSuccessResponse,
+      ).toHaveBeenCalledWith(partialEidasResponseMock, eidasRequestMock);
+    });
+
+    it('should call completeFcFailureResponse with the partialEidasResponse and the eidasRequest if the status failure is true', async () => {
+      // setup
+      const partialFailureEidasResponseMock = {
+        status: {
+          failure: true,
+        },
+      };
+      exposedSessionMock.get.mockReset().mockResolvedValueOnce({
+        eidasRequest: eidasRequestMock,
+        partialEidasResponse: partialFailureEidasResponseMock,
+      });
+      const eidasFailureResponseMock = {
+        id: '42691337',
+        ...partialFailureEidasResponseMock,
+      };
+      eidasProviderServiceMock.completeFcFailureResponse.mockReturnValueOnce(
+        eidasFailureResponseMock,
+      );
+
+      // action
+      await controller['getEidasResponse'](exposedSessionMock);
+
+      // expect
+      expect(
+        eidasProviderServiceMock.completeFcFailureResponse,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        eidasProviderServiceMock.completeFcFailureResponse,
+      ).toHaveBeenCalledWith(partialFailureEidasResponseMock, eidasRequestMock);
     });
   });
 });

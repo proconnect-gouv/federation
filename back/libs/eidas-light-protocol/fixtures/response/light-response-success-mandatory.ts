@@ -1,21 +1,26 @@
-import { IJsonifiedLightResponseXml, IResponse } from '../../src/interfaces';
+import {
+  EidasLevelOfAssurances,
+  EidasNameIdFormats,
+  EidasResponse,
+} from '@fc/eidas';
+import { IJsonifiedLightResponseXml } from '../../src/interfaces';
 
-export const successMandatoryJsonMock: IResponse = {
+export const successMandatoryJsonMock: EidasResponse = {
   id: '_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u',
   inResponseToId: '1602861970744',
   issuer:
     'https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata',
   subject: '0123456',
-  subjectNameIdFormat: 'unspecified',
-  levelOfAssurance: 'low',
+  subjectNameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+  levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
   status: {
-    failure: 'false',
+    failure: false,
   },
   attributes: {
-    personIdentifier: 'BE/FR/12345',
-    currentFamilyName: 'Garcia',
-    currentGivenName: 'javier',
-    dateOfBirth: '1964-12-31',
+    personIdentifier: ['BE/FR/12345'],
+    currentFamilyName: ['Garcia'],
+    currentGivenName: ['javier'],
+    dateOfBirth: ['1964-12-31'],
   },
 };
 
@@ -41,7 +46,7 @@ export const lightResponseSuccessMandatoryJsonMock: IJsonifiedLightResponseXml =
       _text: '0123456',
     },
     levelOfAssurance: {
-      _text: 'http://eidas.europa.eu/LoA/low',
+      _text: 'http://eidas.europa.eu/LoA/substantial',
     },
     status: {
       failure: {
@@ -98,7 +103,7 @@ export const lightResponseSuccessMandatoryXmlMock = `<?xml version="1.0" encodin
   <issuer>https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata</issuer>
   <subjectNameIdFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</subjectNameIdFormat>
   <subject>0123456</subject>
-  <levelOfAssurance>http://eidas.europa.eu/LoA/low</levelOfAssurance>
+  <levelOfAssurance>http://eidas.europa.eu/LoA/substantial</levelOfAssurance>
   <status>
     <failure>false</failure>
   </status>

@@ -5,14 +5,13 @@ import { ApacheIgniteService } from '@fc/apache-ignite';
 import {
   LightRequestService,
   LightResponseService,
-  IRequest,
-  IResponse,
 } from '@fc/eidas-light-protocol';
 import { EidasClientConfig } from './dto';
 import {
   ReadLightResponseFromCacheException,
   WriteLightRequestInCacheException,
 } from './exceptions';
+import { EidasRequest, EidasResponse } from '@fc/eidas';
 
 @Injectable()
 export class EidasClientService {
@@ -60,7 +59,7 @@ export class EidasClientService {
    * @param request The request as JSON
    * @returns The light-request token and the light-request as an XML
    */
-  prepareLightRequest(requested: IRequest) {
+  prepareLightRequest(requested: EidasRequest) {
     const { connectorRequestIssuer } = this.config.get<EidasClientConfig>(
       'EidasClient',
     );
@@ -115,7 +114,7 @@ export class EidasClientService {
    * @param lightResponse The light-response as an XML to parse
    * @returns The response as a more neutral and understandable JSON
    */
-  parseLightResponse(lightResponse: string): IResponse {
+  parseLightResponse(lightResponse: string): EidasResponse {
     return this.lightResponse.toJson(lightResponse);
   }
 }

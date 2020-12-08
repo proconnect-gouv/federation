@@ -2,11 +2,18 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ApacheIgniteService } from '@fc/apache-ignite';
 import { ConfigService } from '@fc/config';
 import {
-  IResponse,
   LightRequestService,
   LightResponseService,
 } from '@fc/eidas-light-protocol';
 import { LoggerService } from '@fc/logger';
+import {
+  EidasAttributes,
+  EidasLevelOfAssurances,
+  EidasNameIdFormats,
+  EidasRequest,
+  EidasResponse,
+} from '@fc/eidas';
+import { CryptographyService } from '@fc/cryptography';
 import { EidasProviderService } from './eidas-provider.service';
 import {
   ReadLightRequestFromCacheException,
@@ -23,6 +30,10 @@ describe('EidasProviderService', () => {
   const loggerServiceMock = {
     setContext: jest.fn(),
     debug: jest.fn(),
+  };
+
+  const cryptographyServiceMock = {
+    genRandomString: jest.fn(),
   };
 
   const apacheIgniteServiceMock = {
@@ -47,6 +58,12 @@ describe('EidasProviderService', () => {
     put: jest.fn(),
   };
 
+  const eidasRequestMock = ({
+    id: 'waikiki-violet-35-bfi',
+    relayState: 'relayState',
+    levelOfAssurance: 'levelOfAssurance',
+  } as unknown) as EidasRequest;
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -57,6 +74,7 @@ describe('EidasProviderService', () => {
         EidasProviderService,
         ConfigService,
         LoggerService,
+        CryptographyService,
         ApacheIgniteService,
         LightRequestService,
         LightResponseService,
@@ -66,6 +84,8 @@ describe('EidasProviderService', () => {
       .useValue(configServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(CryptographyService)
+      .useValue(cryptographyServiceMock)
       .overrideProvider(ApacheIgniteService)
       .useValue(apacheIgniteServiceMock)
       .overrideProvider(LightRequestService)
@@ -283,12 +303,111 @@ describe('EidasProviderService', () => {
     });
   });
 
+  describe('completeFcSuccessResponse', () => {
+    const randomMock = 'cait-sith-slots';
+    const partialEidasResponseMock = {
+      subject: 'nanaki-red-13-ffiv',
+      levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
+      status: {
+        failure: false,
+      },
+      attributes: {
+        [EidasAttributes.BIRTH_NAME]: ['Nanaki'],
+      },
+    };
+
+    beforeEach(() => {
+      cryptographyServiceMock.genRandomString.mockReturnValueOnce(randomMock);
+    });
+
+    it('should generate a 64 characters random string', () => {
+      // action
+      service.completeFcSuccessResponse(
+        partialEidasResponseMock,
+        eidasRequestMock,
+      );
+
+      // expect
+      expect(cryptographyServiceMock.genRandomString).toHaveBeenCalledTimes(1);
+      expect(cryptographyServiceMock.genRandomString).toHaveBeenCalledWith(64);
+    });
+
+    it('should return a complete eidas response', () => {
+      // setup
+      const expected: EidasResponse = {
+        attributes: partialEidasResponseMock.attributes,
+        id: randomMock,
+        inResponseToId: eidasRequestMock.id,
+        issuer: 'FR EidasBridge - ProxyService',
+        levelOfAssurance: partialEidasResponseMock.levelOfAssurance,
+        relayState: eidasRequestMock.relayState,
+        status: partialEidasResponseMock.status,
+        subject: partialEidasResponseMock.subject,
+        subjectNameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+      };
+
+      // action
+      const result = service.completeFcSuccessResponse(
+        partialEidasResponseMock,
+        eidasRequestMock,
+      );
+
+      // expect
+      expect(result).toStrictEqual(expected);
+    });
+  });
+
+  describe('completeFcFailureResponse', () => {
+    const randomMock = 'cait-sith-slots';
+    const partialEidasResponseMock = {
+      status: {
+        failure: true,
+      },
+    };
+
+    beforeEach(() => {
+      cryptographyServiceMock.genRandomString.mockReturnValueOnce(randomMock);
+    });
+
+    it('should generate a 64 characters random string', () => {
+      // action
+      service.completeFcFailureResponse(
+        partialEidasResponseMock,
+        eidasRequestMock,
+      );
+
+      // expect
+      expect(cryptographyServiceMock.genRandomString).toHaveBeenCalledTimes(1);
+      expect(cryptographyServiceMock.genRandomString).toHaveBeenCalledWith(64);
+    });
+
+    it('should return a complete eidas response', () => {
+      // setup
+      const expected: EidasResponse = {
+        id: randomMock,
+        inResponseToId: eidasRequestMock.id,
+        issuer: 'FR EidasBridge - ProxyService',
+        relayState: eidasRequestMock.relayState,
+        status: partialEidasResponseMock.status,
+      };
+
+      // action
+      const result = service.completeFcFailureResponse(
+        partialEidasResponseMock,
+        eidasRequestMock,
+      );
+
+      // expect
+      expect(result).toStrictEqual(expected);
+    });
+  });
+
   describe('prepareLightResponse', () => {
     const proxyServiceResponseIssuer = 'proxyServiceResponseIssuer';
     const responseMock = ({
       id: 'id',
       state: 'state',
-    } as unknown) as IResponse;
+    } as unknown) as EidasResponse;
 
     beforeEach(() => {
       configServiceMock.get.mockReturnValueOnce({
