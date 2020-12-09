@@ -2,9 +2,12 @@ import {
   basicSuccessScenario,
   checkInformationsServiceProvider,
   checkInStringifiedJson,
+  navigateToMire
 } from './mire.utils';
 
 describe('Successful scenarios', () => {
+
+
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
@@ -58,6 +61,7 @@ describe('Successful scenarios', () => {
       birthplace: '75107',
       birthcountry: '99100',
     });
+
     checkInStringifiedJson(
       'sub',
       '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
@@ -153,4 +157,119 @@ describe('Successful scenarios', () => {
       '4718dec56cbcc6f581981c4ea987f0cdd219ae955f454f530e706c5f293321c8v1',
     );
   });
+
+  it('should navigate by tab and enter on 1st menu link', () => {
+    let url = '';
+    navigateToMire({
+        userName: 'test',
+        password: '123',
+        eidasLevel: 1,
+        idpId,
+        method: 'POST',
+      });
+      cy.get('body').tab();
+      cy.focused().then(($el) => {
+        //unfocus selected element to be able to make an enter keypress on it
+        cy.get($el).blur();
+        cy.get($el).type('{enter}',{force: true});
+        //get element href value to check if we navigate on it
+        cy.get($el).invoke('attr', 'href').then((href) => {
+          url = href;
+        })
+      })
+      cy.location().then((loc) => {
+        expect(loc.href).to.equal(url);
+      })
+  });
+
+  it('should navigate by tab and enter on 2nd menu link', () => {
+    let url = '';
+    navigateToMire({
+        userName: 'test',
+        password: '123',
+        eidasLevel: 1,
+        idpId,
+        method: 'POST',
+      });
+      cy.get('body').tab().tab();
+      cy.focused().then(($el) => {
+        //unfocus selected element to be able to make an enter keypress on it
+        cy.get($el).blur();
+        cy.get($el).type('{enter}',{force: true});
+        //get element href value to check if we navigate on it
+        cy.get($el).invoke('attr', 'href').then((href) => {
+          url = href;
+        })
+      })
+      cy.location().then((loc) => {
+        expect(loc.href).to.equal(url);
+      })
+  });
+
+  it('should navigate by tab and enter on 3rd menu link', () => {
+    let url = '';
+    navigateToMire({
+        userName: 'test',
+        password: '123',
+        eidasLevel: 1,
+        idpId,
+        method: 'POST',
+      });
+      cy.get('body').tab().tab().tab();
+      cy.focused().then(($el) => {
+        //unfocus selected element to be able to make an enter keypress on it
+        cy.get($el).blur();
+        cy.get($el).type('{enter}',{force: true});
+        //get element href value to check if we navigate on it
+        cy.get($el).invoke('attr', 'href').then((href) => {
+          url = href;
+        })
+      })
+      cy.location().then((loc) => {
+        expect(loc.href).to.equal(url);
+      })
+  });
+
+  it('should navigate by tab and enter on 1st identity provider link', () => {
+    let url = '';
+    navigateToMire({
+        userName: 'test',
+        password: '123',
+        eidasLevel: 1,
+        idpId,
+        method: 'POST',
+      });
+      cy.get('body').tab().tab().tab().tab();
+      cy.focused().then(($el) => {
+        //unfocus selected element to be able to make an enter keypress on it
+        cy.get($el).blur();
+        //get element href value to check if we navigate on it
+        cy.get($el).closest('form').invoke('attr', 'action').then((href) => {
+          url = href;
+        })
+        cy.get($el).closest('form').submit();  
+      })
+      cy.location().then((loc) => {
+        expect(loc.pathname).to.equal(url);
+      })
+  });
+
+  it('should apply box shadow when identity provider links are focused', () => {
+    navigateToMire({
+      userName: 'test',
+      password: '123',
+      eidasLevel: 1,
+      idpId,
+      method: 'POST',
+    });
+    cy.get('#idp-list form').each((item)=>{
+      cy.get(item).find('div button').invoke('attr', 'disabled').then((isDisabled) => {
+        if((!isDisabled)){
+          cy.get(item).find('div button').focus();
+          cy.get(item).find('div button').should('have.css', 'box-shadow');
+          cy.get(item).find('div button').blur();
+        }
+      })
+    })
+  })
 });

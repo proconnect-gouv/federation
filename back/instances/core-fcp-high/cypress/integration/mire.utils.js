@@ -227,6 +227,28 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
   });
 }
 
+export function navigateToMire(params) {
+  const { overrideParams } = params;
+
+  cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+
+  if (overrideParams) {
+    // Steal the state to finish the cinematic
+    cy.get('input[name=state]')
+      .invoke('val')
+      .then((state) => {
+        // Direct call to FC with custom params
+        const controlUrl = getAuthorizeUrl({
+          ...overrideParams,
+          state,
+        });
+        cy.visit(controlUrl);
+      });
+  } else {
+    cy.get('img[alt="Se connecter à FranceConnect"]').click();
+  }
+}
+
 export function basicScenario(params) {
   const {
     idpId,
@@ -308,6 +330,7 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
     acr_values: 'eidas3',
     nonce: 'nonceThatRespectsTheLengthWhichIsDefinedInTheDTOForKinematicWork',
   };
+  
   const params = {
     ...baseAuthorizeParams,
     ...overrideParams,
