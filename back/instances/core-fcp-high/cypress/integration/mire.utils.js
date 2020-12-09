@@ -323,6 +323,7 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
     acr_values: 'eidas3',
     nonce: 'nonceThatRespectsTheLengthWhichIsDefinedInTheDTOForKinematicWork',
   };
+  
   const params = {
     ...baseAuthorizeParams,
     ...overrideParams,
