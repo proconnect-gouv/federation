@@ -155,11 +155,16 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
 }
 
 export function basicScenario(params) {
-  //eidasLevel
-  const { idpId, login = 'test', overrideParams } = params;
+  const {
+    idpId,
+    login = 'test',
+    // eidasLevel, see comment below
+    start = Cypress.env('SP1_ROOT_URL'),
+    overrideParams,
+  } = params;
   const password = '123';
 
-  cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+  cy.visit(start);
 
   if (overrideParams) {
     // Steal the state to finish the cinematic
