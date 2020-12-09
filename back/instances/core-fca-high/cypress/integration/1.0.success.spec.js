@@ -37,7 +37,7 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2',
+      '71e5edab9c105c02ae0b5bce93d41e52e3ebd66d8063577f75e5f29e7982defdv1',
     );
   });
 
@@ -60,7 +60,7 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2',
+      '71e5edab9c105c02ae0b5bce93d41e52e3ebd66d8063577f75e5f29e7982defdv1',
     );
   });
 });
