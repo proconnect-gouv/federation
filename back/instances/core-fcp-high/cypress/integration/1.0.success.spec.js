@@ -6,6 +6,8 @@ import {
 } from './mire.utils';
 
 describe('Successful scenarios', () => {
+
+
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
