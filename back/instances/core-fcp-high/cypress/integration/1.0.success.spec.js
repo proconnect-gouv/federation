@@ -11,7 +11,7 @@ describe('Successful scenarios', () => {
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
-  it('should redirect to FC website', () => {
+  xit('should redirect to FC website', () => {
     cy.request({
       url: `${Cypress.env('FC_ROOT_URL')}/api/v2`,
       method: 'GET',
@@ -22,7 +22,7 @@ describe('Successful scenarios', () => {
     });
   });
 
-  it('should log in to Service Provider Example', () => {
+  xit('should log in to Service Provider Example', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
@@ -44,7 +44,7 @@ describe('Successful scenarios', () => {
     );
   });
 
-  it('should log in to Service Provider Example with POST /authorize', () => {
+  xit('should log in to Service Provider Example with POST /authorize', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
