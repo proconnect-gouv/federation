@@ -45,6 +45,14 @@ export class OidcClientConfig {
   readonly jwks: JSONWebKeySet;
 
   @IsNumber()
-  @Min(16)
+  @Min(32)
   readonly stateLength: number;
+
+  @IsString()
+  @IsOptional()
+  readonly scope?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly acr?: string;
 }

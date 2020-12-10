@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+
 // declarative file
 import storage from 'redux-persist/lib/storage';
 

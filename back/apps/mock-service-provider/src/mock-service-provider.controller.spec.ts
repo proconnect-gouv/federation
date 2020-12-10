@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OidcClientService } from '@fc/oidc-client';
+import { IdentityProviderMetadata, OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
+import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
+import { IdentityProviderEnvService } from '@fc/identity-provider-env';
 import { MockServiceProviderController } from './mock-service-provider.controller';
 import {
-  MockServiceProviderLoginCallbackException,
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
 } from './exceptions';
@@ -43,10 +44,43 @@ describe('MockServiceProviderController', () => {
 
   const randomStringMock = 'randomStringMockValue';
   const stateMock = randomStringMock;
+  const nonceMock = randomStringMock;
   const sessionIdMock = randomStringMock;
+
+  const sessionDataMock = {
+    idpState: stateMock,
+  };
 
   const cryptographyMock = {
     genRandomString: jest.fn(),
+  };
+
+  const configMock = {
+    get: jest.fn(),
+  };
+  const scopeMock = 'openid profile';
+  const acrMock = 'acrMock';
+
+  const identityProviderMock = {
+    getList: jest.fn(),
+  };
+
+  const identityProviderList = [
+    {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      redirect_uris: ['https://foo.bar.com/buz'],
+      uid: 'providerUidMock',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: 'mock client_id',
+    },
+  ];
+
+  const interactionParametersMock = {
+    authorizationUrl: 'authorizationUrl',
+    params: {
+      state: 'stateMock',
+      nonce: 'nonceMock',
+    },
   };
 
   beforeEach(async () => {
@@ -57,8 +91,12 @@ describe('MockServiceProviderController', () => {
         LoggerService,
         SessionService,
         CryptographyService,
+        ConfigService,
+        IdentityProviderEnvService,
       ],
     })
+      .overrideProvider(IdentityProviderEnvService)
+      .useValue(identityProviderMock)
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
@@ -67,6 +105,8 @@ describe('MockServiceProviderController', () => {
       .useValue(sessionMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)
+      .overrideProvider(ConfigService)
+      .useValue(configMock)
       .compile();
 
     controller = module.get<MockServiceProviderController>(
@@ -87,19 +127,19 @@ describe('MockServiceProviderController', () => {
 
     oidcClientServiceMock.buildAuthorizeParameters.mockReturnValue({
       state: stateMock,
-      scope: 'scopeMock',
+      nonce: nonceMock,
       providerUid: 'providerUidMock',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'acrMock',
     });
 
-    sessionMock.get.mockResolvedValue({
-      idpState: stateMock,
-    });
+    sessionMock.get.mockResolvedValue(sessionDataMock);
 
     sessionMock.getId.mockReturnValue(sessionIdMock);
 
     cryptographyMock.genRandomString.mockReturnValue(randomStringMock);
+    configMock.get.mockReturnValue({ scope: scopeMock, acr: acrMock });
+    identityProviderMock.getList.mockResolvedValue(identityProviderList);
   });
 
   it('should be defined', () => {
@@ -107,6 +147,11 @@ describe('MockServiceProviderController', () => {
   });
 
   describe('index', () => {
+    beforeEach(() => {
+      controller['getInteractionParameters'] = jest
+        .fn()
+        .mockResolvedValue(interactionParametersMock);
+    });
     it('Should generate a random sessionId of 32 characters', async () => {
       // setup
       sessionMock.init.mockResolvedValueOnce(undefined);
@@ -130,7 +175,8 @@ describe('MockServiceProviderController', () => {
       // assert
       expect(sessionMock.init).toHaveBeenCalledTimes(1);
       expect(sessionMock.init).toHaveBeenCalledWith(res, randomStringMock, {
-        idpState: randomStringMock,
+        idpState: interactionParametersMock.params.state,
+        idpNonce: interactionParametersMock.params.nonce,
       });
     });
 
@@ -145,221 +191,34 @@ describe('MockServiceProviderController', () => {
     it('Should return front title', async () => {
       // setup
       sessionMock.init.mockResolvedValueOnce(undefined);
-      const authorizationUrl = '';
-      const scopes =
-        'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
-      const redirectUri =
-        'https://fsp1v2.docker.dev-franceconnect.fr/login-callback';
-      const acrValues = 'eidas2';
-      const clientId = undefined;
-      //'6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950';
-
       // action
       const result = await controller.index(res);
-
       // assert
-      expect(result).toEqual({
-        titleFront: 'Mock Service Provider',
-        state: stateMock,
-
-        authorizationUrl,
-        scopes,
-        redirectUri,
-        acrValues,
-        clientId,
-      });
+      expect(result).toEqual(
+        expect.objectContaining({
+          titleFront: 'Mock Service Provider',
+        }),
+      );
     });
   });
 
-  describe('login', () => {
-    it('Should call oidc-client-service for retrieve authorize url', async () => {
-      // setup
-      const mockedoidcClientService =
-        'https://my-authentication-openid-url.com';
-
-      oidcClientServiceMock.getAuthorizeUrl.mockReturnValueOnce(
-        mockedoidcClientService,
-      );
-      sessionMock.patch.mockResolvedValueOnce(undefined);
-
-      // action
-      await controller.login(req, res);
-
-      // assert
-      expect(oidcClientServiceMock.getAuthorizeUrl).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(mockedoidcClientService);
-    });
-
-    it('Should get the session id', async () => {
-      // setup
-      const mockedoidcClientService =
-        'https://my-authentication-openid-url.com';
-
-      oidcClientServiceMock.getAuthorizeUrl.mockReturnValueOnce(
-        mockedoidcClientService,
-      );
-      sessionMock.patch.mockResolvedValueOnce(undefined);
-
-      // action
-      await controller.login(req, res);
-
-      // assert
-      expect(sessionMock.getId).toHaveBeenCalledTimes(1);
-      expect(sessionMock.getId).toHaveBeenCalledWith(req);
-    });
-
-    it('Should patch the session', async () => {
-      // setup
-      const mockedoidcClientService =
-        'https://my-authentication-openid-url.com';
-
-      oidcClientServiceMock.getAuthorizeUrl.mockReturnValueOnce(
-        mockedoidcClientService,
-      );
-      sessionMock.patch.mockResolvedValueOnce(undefined);
-
-      // action
-      await controller.login(req, res);
-
-      // assert
-      expect(sessionMock.patch).toHaveBeenCalledTimes(1);
-      expect(sessionMock.patch).toHaveBeenCalledWith(sessionIdMock, {
-        idpState: stateMock,
-      });
-    });
-
-    it("Should throw if the session can't be patched", async () => {
-      // setup
-      const mockedoidcClientService =
-        'https://my-authentication-openid-url.com';
-
-      oidcClientServiceMock.getAuthorizeUrl.mockReturnValueOnce(
-        mockedoidcClientService,
-      );
-      sessionMock.patch.mockRejectedValueOnce(new Error('test'));
-
-      // assert
-      await expect(controller.login(req, res)).rejects.toThrow();
-    });
-  });
-
-  describe('loginCallback', () => {
-    it('Should call oidc-client-service for retrieve authorize url', async () => {
-      // setup
-      const accessToken = 'access_token';
-      const providerUid = 'corev2';
-      const query = {};
-      oidcClientServiceMock.getTokenSet.mockReturnValueOnce({
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        access_token: 'access_token',
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        id_token: 'id_token',
-        claims: jest.fn().mockReturnValueOnce({ acr: 'foo' }),
-      });
-      oidcClientServiceMock.getUserInfo.mockReturnValueOnce({
-        sub: '1',
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        given_name: 'given_name',
-      });
-
-      // action
-      const result = await controller.loginCallback(req, res, query);
-
-      // assert
-      expect(oidcClientServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
-      expect(oidcClientServiceMock.getTokenSet).toHaveBeenCalledWith(
-        req,
-        providerUid,
-        stateMock,
-      );
-      expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
-      expect(oidcClientServiceMock.getUserInfo).toHaveBeenCalledWith(
-        accessToken,
-        providerUid,
-      );
-
-      expect(result).toEqual({
-        accessToken: 'access_token',
-        titleFront: 'Mock Service Provider - Login Callback',
-        idpIdentity: {
-          sub: '1',
-          // oidc spec defined property
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          given_name: 'given_name',
-        },
-        acr: 'foo',
-      });
-    });
-
-    it('Should redirect to the error page if getTokenSet throw an error', async () => {
-      // setup
-      oidcClientServiceMock.getTokenSet.mockRejectedValue(oidcErrorMock);
-      const query = {};
-
-      // action
-      await controller.loginCallback(req, res, query);
-
-      // assert
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(
-        '/error?error=error&error_description=error_description',
-      );
-    });
-
-    it('should redirect to the error page if error params are in the callback url', async () => {
-      // Given
-      const query = {
-        error: 'some_error',
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_description: 'some error description',
-      };
+  describe('verify', () => {
+    it('Should call session.get', async () => {
       // When
-      controller.loginCallback(req, res, query);
+      await controller.getVerify(req);
       // Then
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(
-        '/error?error=some_error&error_description=some error description',
-      );
+      expect(sessionMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionMock.get).toHaveBeenCalledWith(randomStringMock);
     });
 
-    it('Should redirect to the error page if getUserInfo throw an error', async () => {
-      // setup
-      oidcClientServiceMock.getTokenSet.mockReturnValueOnce({
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        access_token: 'access_token',
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        id_token: 'id_token',
-        claims: jest.fn().mockReturnValueOnce({ acr: 'foo' }),
+    it('Should return session data and hardcoded title', async () => {
+      // When
+      const result = await controller.getVerify(req);
+      // Then
+      expect(result).toEqual({
+        titleFront: 'Mock Service Provider - Login Callback',
+        ...sessionDataMock,
       });
-      oidcClientServiceMock.getUserInfo.mockRejectedValue(oidcErrorMock);
-      const query = {};
-
-      // action
-      await controller.loginCallback(req, res, query);
-
-      // assert
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(
-        '/error?error=error&error_description=error_description',
-      );
-    });
-
-    it('Should throw mock service provider exception if error is not an instance of OPError', () => {
-      // setup
-      oidcClientServiceMock.getTokenSet.mockRejectedValue({});
-      const query = {};
-
-      // assert
-      expect(
-        async () => await controller.loginCallback(req, res, query),
-      ).rejects.toThrow(MockServiceProviderLoginCallbackException);
     });
   });
 
@@ -398,7 +257,7 @@ describe('MockServiceProviderController', () => {
   describe('revocationToken', () => {
     it('should display success page when token is revoked', async () => {
       // setup
-      const providerUid = 'corev2';
+      const providerUid = 'envIssuer';
       const body = { accessToken: 'access_token' };
       // action
       const result = await controller.revocationToken(res, body);
@@ -444,7 +303,7 @@ describe('MockServiceProviderController', () => {
   describe('retrieveUserinfo', () => {
     it('should retrieve and display userinfo on userinfo page', async () => {
       // setup
-      const providerUid = 'corev2';
+      const providerUid = 'envIssuer';
       const body = { accessToken: 'access_token' };
       oidcClientServiceMock.getUserInfo.mockReturnValueOnce({
         sub: '1',
@@ -506,6 +365,73 @@ describe('MockServiceProviderController', () => {
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/');
+    });
+  });
+
+  describe('getInteractionParameters', () => {
+    const provider = (identityProviderList[0] as unknown) as IdentityProviderMetadata;
+    const urlMock = 'https://somewhere.com/foo';
+    beforeEach(() => {
+      // Given
+      oidcClientServiceMock.getAuthorizeUrl.mockResolvedValue(urlMock);
+    });
+    it('should call config.get', async () => {
+      // When
+      await controller['getInteractionParameters'](provider);
+      // Then
+      expect(configMock.get).toBeCalledTimes(1);
+      expect(configMock.get).toBeCalledWith('OidcClient');
+    });
+
+    it('should call oidcClient.buildAuthorizeParameters', async () => {
+      // When
+      await controller['getInteractionParameters'](provider);
+      // Then
+      expect(oidcClientServiceMock.buildAuthorizeParameters).toBeCalledTimes(1);
+    });
+
+    it('should call oidcClient.getAuthorizeUrl', async () => {
+      // When
+      await controller['getInteractionParameters'](provider);
+      // Then
+      expect(oidcClientServiceMock.getAuthorizeUrl).toBeCalledTimes(1);
+      expect(oidcClientServiceMock.getAuthorizeUrl).toBeCalledWith(
+        stateMock,
+        scopeMock,
+        'providerUidMock',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'acrMock',
+        nonceMock,
+      );
+    });
+
+    it('should return object containing results from various calls', async () => {
+      // Given
+      const {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        redirect_uris,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id,
+      } = identityProviderList[0];
+      // When
+      const result = await controller['getInteractionParameters'](provider);
+      // Then
+      expect(result).toEqual({
+        params: {
+          state: stateMock,
+          nonce: nonceMock,
+          uid: 'providerUidMock',
+          acr: 'acrMock',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          redirect_uri: redirect_uris[0],
+          scope: scopeMock,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          authorization_endpoint: 'https://somewhere.com/foo',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          client_id,
+        },
+        authorizationUrl: urlMock,
+      });
     });
   });
 });

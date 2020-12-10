@@ -113,7 +113,11 @@ export class OidcClientController {
     // BUSINESS: Locally store received identity
     const { acr } = tokenSet.claims();
 
-    this.session.patch(uid, { idpIdentity, idpAcr: acr });
+    this.session.patch(uid, {
+      idpIdentity,
+      idpAcr: acr,
+      idpAccessToken: accessToken,
+    });
 
     // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');

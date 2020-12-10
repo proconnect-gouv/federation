@@ -227,12 +227,6 @@
       "@fc/mock-identity-provider-fca/*": [
         "apps/mock-identity-provider-fca/src/*"
       ],
-      "@fc/mock-sp-fca": [
-        "apps/mock-sp-fca/src"
-      ],
-      "@fc/mock-sp-fca/*": [
-        "apps/mock-sp-fca/src/*"
-      ],
       "@fc/eidas-light-protocol": [
         "libs/eidas-light-protocol/src"
       ],

@@ -205,7 +205,6 @@ describe('OidcClientService', () => {
     // Given
     const params = {
       uid: 'uidMock',
-      scope: 'scopeMock',
       providerUid: 'providerMock',
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention

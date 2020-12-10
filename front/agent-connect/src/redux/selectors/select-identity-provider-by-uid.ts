@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-// unable to spy selectIdentityProviderByUID::selectIdentityProviderByUIDMemo
 import { createCachedSelector } from 're-reselect';
 
 import { IdentityProvider, Ministry, RootState } from '../../types';
@@ -19,17 +17,12 @@ export const findCurrentIdentityProviderByUID = (uid: string) => (
   identityProvider: IdentityProvider,
 ) => identityProvider.uid === uid;
 
-export const selectIdentityProviderByUIDMemo = (
-  ministries: Ministry[],
-  uid: string,
-): IdentityProvider | undefined => {
-  const providers = ministries.reduce(groupIdentityProviders, []);
-  const found = providers.find(findCurrentIdentityProviderByUID(uid));
-  return found;
-};
-
 export const selectIdentityProviderByUID = createCachedSelector(
   getMinistries,
   getUID,
-  selectIdentityProviderByUIDMemo,
+  (ministries: Ministry[], uid: string): IdentityProvider | undefined => {
+    const providers = ministries.reduce(groupIdentityProviders, []);
+    const found = providers.find(findCurrentIdentityProviderByUID(uid));
+    return found;
+  },
 )((_state, uid) => `ministry::identityProvider::${uid}`);

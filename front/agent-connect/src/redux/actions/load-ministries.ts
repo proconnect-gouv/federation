@@ -1,20 +1,18 @@
-/* istanbul ignore file */
-// @TODO tests with not mocked api call
-import { ACTION_TYPES } from '../../constants';
-import MOCK_IDP_FROM_BACKEND from '../../mocks/api-data.mock.json';
-import { ThunkActionType } from '../../types';
+import axios from 'axios';
 
-/**
- * @todo Replace by real API call
- */
-const sleep = (ms: number = 3000) =>
-  new Promise(resolve => setTimeout(resolve, ms));
+import { ACTION_TYPES, API_DATAS_ROUTES } from '../../constants';
+import { ThunkActionType, ThunkDispatchType } from '../../types';
 
-export const loadMinistries = (): ThunkActionType => async dispatch => {
-  dispatch({ type: ACTION_TYPES.MINISTRY_LIST_LOAD_START });
-  await sleep(3000);
+export const loadMinistries: ThunkActionType = () => async (
+  dispatch: ThunkDispatchType,
+): Promise<any> => {
   dispatch({
-    payload: MOCK_IDP_FROM_BACKEND,
+    type: ACTION_TYPES.MINISTRY_LIST_LOAD_START,
+  });
+  const response = await axios.get(API_DATAS_ROUTES);
+  const { data } = response;
+  return dispatch({
+    payload: data,
     type: ACTION_TYPES.MINISTRY_LIST_LOAD_COMPLETED,
   });
 };

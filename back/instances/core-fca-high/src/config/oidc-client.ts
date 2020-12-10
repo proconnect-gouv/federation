@@ -14,5 +14,12 @@ export default {
   jwks: {
     keys: [JSON.parse(process.env.CRYPTO_ENC_LOCALE_PRIV_KEY)],
   },
-  stateLength: 16,
+  stateLength: 32,
+  /**
+   * FCA specific scopes
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/215
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/216
+   */
+  scope:
+    'openid given_name usual_name email siren siret organizational_unit belonging_population phone',
 } as OidcClientConfig;

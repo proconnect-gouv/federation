@@ -16,4 +16,6 @@ export default {
     keys: [JSON.parse(process.env.JWKS)],
   },
   stateLength: 32,
+
+  scope: process.env.OidcClient_SCOPE,
 } as OidcClientConfig;

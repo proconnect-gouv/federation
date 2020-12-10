@@ -42,8 +42,8 @@
 
                 <input type="hidden" name="providerUid" id="providerUid" value="<%= provider.uid %>" />
                 <input type="hidden" name="uid" id="uid" value="<%= locals.uid %>" />
-                <input type="hidden" name="scope" value="<%= params.scope %>" />
                 <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
+                <input type="hidden" name="scope" value="<%= locals.scope %>" />
               </form>
             <% }) %>
           </div>
