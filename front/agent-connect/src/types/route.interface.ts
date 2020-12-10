@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+
 // declarative file
 import { FunctionComponent } from 'react';
 import { RouteProps } from 'react-router-dom';

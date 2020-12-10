@@ -24,3 +24,18 @@ section.connect {
 #json {
   height: 22rem;
 }
+
+#scopes .scope-input-wrapper {
+  display: inline-block;
+  padding: 6px;
+  margin: 3px;
+  border: 1px solid #ccc;
+  background-color: #eee;
+}
+
+select {
+  padding: 6px;
+  margin: 3px;
+  border: 1px solid #ccc;
+  background-color: #eee;
+}

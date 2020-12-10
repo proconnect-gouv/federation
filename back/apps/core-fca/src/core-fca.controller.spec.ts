@@ -153,22 +153,111 @@ describe('CoreFcaController', () => {
     });
   });
 
-  describe('getInteraction', () => {
-    it('should return uid', async () => {
+  describe('getFrontData', () => {
+    // Given
+    const req = {
+      fc: {
+        interactionId: 'interactionIdMock',
+      },
+    };
+    const res = {
+      json: jest.fn(),
+    };
+    const idps = [
+      { active: true, display: true, name: 'toto', uid: 12345 },
+      { active: true, display: true, name: 'tata', uid: 12354 },
+    ];
+
+    beforeEach(() => {
+      oidcProviderServiceMock.getInteraction.mockResolvedValueOnce({
+        params: {
+          // Oidc name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          acr_values: 'eidas2',
+          // Oidc name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          redirect_uri: 'https://youre-redirected',
+          // Oidc name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          response_type: 'success',
+        },
+      });
+
+      identityProviderServiceMock.getList.mockResolvedValueOnce(idps);
+    });
+
+    it('should call oidcProvider.getInteraction', async () => {
       // Given
-      const req = {
-        fc: { interactionId: interactionIdMock },
-      };
-      const res = {};
+      jest.spyOn(oidcProviderServiceMock, 'getInteraction');
+      // When
+      await coreController.getFrontData(req, res);
+
+      // Then
+      expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledTimes(1);
+      expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledWith(
+        req,
+        res,
+      );
+    });
+    it('should call config.get', async () => {
+      // Given
+      jest.spyOn(configServiceMock, 'get');
+      // When
+      await coreController.getFrontData(req, res);
+
+      // Then
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('OidcClient');
+    });
+    it('should call identityProviderGetList', async () => {
+      // When
+      await coreController.getFrontData(req, res);
+
+      // Then
+      expect(identityProviderServiceMock.getList).toHaveBeenCalledTimes(1);
+    });
+    it('should call session.get', async () => {
+      // When
+      await coreController.getFrontData(req, res);
+
+      // Then
+      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith(req.fc.interactionId);
+    });
+    it('should call res.json', async () => {
+      // When
+      await coreController.getFrontData(req, res);
+
+      // Then
+      expect(res.json).toHaveBeenCalledTimes(1);
+    });
+    it('should return object containing needed data', async () => {
+      // When
+      await coreController.getFrontData(req, res);
+      // Then
+      expect(res.json).toHaveBeenCalledWith(
+        expect.objectContaining({
+          redirectToIdentityProviderInputs: expect.any(Object),
+          redirectURL: expect.any(String),
+          ministries: expect.any(Array),
+          serviceProviderName: expect.any(String),
+        }),
+      );
+    });
+  });
+
+  describe('getInteraction', () => {
+    it('should return empty object', async () => {
+      // Given
       oidcProviderServiceMock.getInteraction.mockResolvedValue({
         uid: 'uid',
         prompt: 'prompt',
         params: 'params',
       });
       // When
-      const result = await coreController.getInteraction(req, res, params);
+      const result = await coreController.getInteraction();
       // Then
-      expect(result).toHaveProperty('uid');
+      expect(result).toEqual({});
     });
   });
 

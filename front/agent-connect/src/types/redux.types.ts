@@ -1,14 +1,14 @@
 /* istanbul ignore file */
-// declarative file
-import { Action } from 'redux';
-import { ThunkAction } from 'redux-thunk';
 
-export type ThunkActionType<ReturnType = void> = ThunkAction<
-ReturnType,
-RootState,
-unknown,
-Action<string>
+// declarative file
+import { ActionCreator, AnyAction } from 'redux';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+
+export type ThunkActionType = ActionCreator<
+ThunkAction<Promise<any>, RootState, null, AnyAction>
 >;
+
+export type ThunkDispatchType = ThunkDispatch<RootState, null, AnyAction>;
 
 export type IdentityProvidersHistoryAction = { payload: string; type: string };
 

@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+
 // declarative file
 import { combineReducers, Reducer } from 'redux';
 

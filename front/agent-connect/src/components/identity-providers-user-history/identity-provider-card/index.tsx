@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-// skipped tests, unable to spy button click
 import './index.scss';
 
 import React, { useCallback } from 'react';
@@ -8,42 +6,43 @@ import { useDispatch, useSelector } from 'react-redux';
 import { removeIdentityProvider } from '../../../redux/actions';
 import { selectIdentityProviderByUID } from '../../../redux/selectors';
 import { RootState } from '../../../types';
+import IdentityProviderCardContent from './identity-provider-card-content';
 
 type IdentityProviderCardProps = {
   uid: string;
 };
 
-function IdentityProviderCardComponent({
-  uid,
-}: IdentityProviderCardProps): JSX.Element {
-  const dispatch = useDispatch();
-  const identityProvider = useSelector((state: RootState) =>
-    selectIdentityProviderByUID(state, uid),
-  );
+const IdentityProviderCardComponent = React.memo(
+  ({ uid }: IdentityProviderCardProps): JSX.Element => {
+    const dispatch = useDispatch();
 
-  const onClickRemoveButton = useCallback(() => {
-    const action = removeIdentityProvider(uid);
-    dispatch(action);
-  }, [dispatch, uid]);
+    const identityProvider = useSelector((state: RootState) =>
+      selectIdentityProviderByUID(state, uid),
+    );
 
-  return (
-    <div className="flex-column text-center mb-3 identiy-provider-card">
-      <div className="border border-primary shadow-primary rounded py-4 mb-2">
-        <div className="mb-2">Mon compte</div>
-        <button
-          className="btn btn-link title text-uppercase text-primary font-32"
-          type="button">
-          {identityProvider?.name || ''}
-        </button>
+    const onClickRemoveButton = useCallback(() => {
+      const action = removeIdentityProvider(uid);
+      dispatch(action);
+    }, [dispatch, uid]);
+
+    return (
+      <div className="flex-column text-center mx-2 mx-lg-3 mb-3 identiy-provider-card">
+        {identityProvider && (
+          <React.Fragment>
+            <IdentityProviderCardContent identityProvider={identityProvider} />
+            <button
+              className="btn btn-link font-12 text-charcoal"
+              type="button"
+              onClick={onClickRemoveButton}>
+              Retirer de cette liste
+            </button>
+          </React.Fragment>
+        )}
       </div>
-      <button
-        className="btn btn-link font-12 text-charcoal"
-        type="button"
-        onClick={onClickRemoveButton}>
-        Retirer de cette liste
-      </button>
-    </div>
-  );
-}
+    );
+  },
+);
+
+IdentityProviderCardComponent.displayName = 'IdentityProviderCardComponent';
 
 export default IdentityProviderCardComponent;

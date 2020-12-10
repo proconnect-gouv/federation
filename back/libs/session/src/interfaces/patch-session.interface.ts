@@ -18,4 +18,5 @@ export interface IPatchSession {
   idpIdentity?: IOidcIdentity;
 
   csrfToken?: string;
+  idpAccessToken?: string;
 }

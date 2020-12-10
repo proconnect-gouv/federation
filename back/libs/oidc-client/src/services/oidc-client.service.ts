@@ -28,9 +28,6 @@ export class OidcClientService {
   }
 
   async buildAuthorizeParameters(params) {
-    // acr_values is an oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { uid, scope, providerUid, acr_values } = params;
     const { stateLength } = await this.oidcClientConfig.get();
     const state = this.crypto.genRandomString(stateLength);
     /**
@@ -39,14 +36,9 @@ export class OidcClientService {
     const nonce = this.crypto.genRandomString(stateLength);
 
     return {
+      ...params,
       state,
       nonce,
-      uid,
-      scope,
-      providerUid,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
     };
   }
 

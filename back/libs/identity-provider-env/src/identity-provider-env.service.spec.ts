@@ -9,8 +9,8 @@ describe('IdentityProviderEnvService', () => {
   let service: IdentityProviderEnvService;
 
   const validIdentityProviderMock = {
-    uid: 'corev2',
-    name: 'corev2',
+    uid: 'envIssuer',
+    name: 'envIssuer',
     active: true,
     display: true,
     // oidc param name

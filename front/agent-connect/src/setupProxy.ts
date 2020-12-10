@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// tooling file
 /**
  * Proxy configuration middleware
  *
@@ -23,6 +26,6 @@ module.exports = app => {
     createProxyMiddleware({
       changeOrigin: true,
       target: API_PROXY_HOST,
-    })
+    }),
   );
 };

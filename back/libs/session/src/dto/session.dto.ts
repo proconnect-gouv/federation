@@ -49,4 +49,8 @@ export class SessionDto {
   @IsString()
   @IsOptional()
   readonly csrfToken?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly idpAccessToken?: string;
 }

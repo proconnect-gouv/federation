@@ -1,13 +1,13 @@
-import { IsString, IsAscii } from 'class-validator';
+import { IsString, IsAscii, IsOptional } from 'class-validator';
 
 export class RedirectToIdp {
   @IsString()
   @IsAscii()
-  readonly scope: string;
+  readonly providerUid: string;
 
   @IsString()
-  @IsAscii()
-  readonly providerUid: string;
+  @IsOptional()
+  readonly scope: string;
 
   @IsString()
   @IsAscii()

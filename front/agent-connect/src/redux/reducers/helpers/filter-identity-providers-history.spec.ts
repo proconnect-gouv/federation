@@ -9,6 +9,7 @@ const loadedMinistriesFromBackend = [
     id: 'mock-id-1',
     identityProviders: [
       {
+        active: true,
         name: 'mock-fi-1.1',
         uid: 'mock-1.1',
       },
@@ -19,10 +20,12 @@ const loadedMinistriesFromBackend = [
     id: 'mock-id-2',
     identityProviders: [
       {
+        active: true,
         name: 'mock-fi-2.1',
         uid: 'mock-2.1',
       },
       {
+        active: true,
         name: 'mock-fi-2.2',
         uid: 'mock-2.2',
       },

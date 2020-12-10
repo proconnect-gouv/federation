@@ -2,12 +2,12 @@
 
 // Declarative code
 import { Module } from '@nestjs/common';
-import { IdentityProviderEnvService } from './identity-provider-env.service';
 import { CryptographyModule } from '@fc/cryptography';
+import { IdentityProviderEnvService } from './identity-provider-env.service';
 
 @Module({
   imports: [CryptographyModule],
   providers: [IdentityProviderEnvService],
-  exports: [IdentityProviderEnvService],
+  exports: [IdentityProviderEnvService, CryptographyModule],
 })
 export class IdentityProviderEnvModule {}

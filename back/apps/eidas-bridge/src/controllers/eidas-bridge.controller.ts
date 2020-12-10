@@ -14,7 +14,7 @@ import {
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { AcrValues } from '@fc/oidc';
-import { OidcClientService } from '@fc/oidc-client';
+import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
@@ -31,11 +31,11 @@ import { ValidateEuropeanIdentity, Core } from '../dto';
 export class EidasBridgeController {
   constructor(
     private readonly crypto: CryptographyService,
+    private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
     private readonly session: SessionService,
     private readonly oidcProvider: OidcProviderService,
-    private readonly config: ConfigService,
     private readonly eidasToOidc: EidasToOidcService,
     private readonly oidcToEidas: OidcToEidasService,
   ) {
@@ -79,10 +79,10 @@ export class EidasBridgeController {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: oidcRequest.acr_values,
     };
+    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
     const {
       state,
-      scope,
       providerUid,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention

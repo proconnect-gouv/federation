@@ -10,7 +10,6 @@ core-fca-high:
   dependencies:
     - global
   before_script:
-    - if [ "$E2E" != "1" ]; then echo "E2E Skipped"; exit 0; fi;
     - rm -rf $FC_ROOT/fc-docker
     - git clone -b $FC_DOCKER_VERSION https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
     - shopt -s expand_aliases

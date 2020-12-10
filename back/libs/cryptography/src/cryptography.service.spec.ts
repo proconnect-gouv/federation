@@ -2,8 +2,12 @@ import * as crypto from 'crypto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import * as ecdsaSignaturesService from 'jose/lib/help/ecdsa_signatures';
-import { CryptographyService } from './cryptography.service';
 import { IPivotIdentity } from './interfaces';
+import { LowEntropyArgumentException } from './exceptions';
+import {
+  RANDOM_MIN_ENTROPY,
+  CryptographyService,
+} from './cryptography.service';
 
 describe('CryptographyService', () => {
   let service: CryptographyService;
@@ -277,7 +281,7 @@ describe('CryptographyService', () => {
       // When
       const result = service.genRandomString(lengthMock);
       // Then
-      expect(Buffer.from(result, 'base64')).toHaveLength(42);
+      expect(Buffer.from(result, 'hex')).toHaveLength(42);
     });
 
     it('should call crypto.randomBytes with config parameter', () => {
@@ -295,12 +299,21 @@ describe('CryptographyService', () => {
       // Given
       const lengthMock = 32;
       const value = Buffer.from('foobar', 'utf8');
-      const valueAsBase64 = value.toString('base64');
+      const valueAsHex = value.toString('hex');
       jest.spyOn(crypto, 'randomBytes').mockImplementationOnce(() => value);
       // When
       const result = service.genRandomString(lengthMock);
       // Then
-      expect(result).toBe(valueAsBase64);
+      expect(result).toBe(valueAsHex);
+    });
+
+    it('should throw if length is lower than RANDOM_MIN_ENTROPY', () => {
+      // Given
+      const lengthMock = RANDOM_MIN_ENTROPY - 1;
+      // Then
+      expect(() => service.genRandomString(lengthMock)).toThrow(
+        LowEntropyArgumentException,
+      );
     });
   });
 

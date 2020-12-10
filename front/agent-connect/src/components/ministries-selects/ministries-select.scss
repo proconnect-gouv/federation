@@ -1,0 +1,16 @@
+@import './../../styles/_colors.scss';
+
+.fca-ministries-select {
+  .ant-select-item-option-selected:not(.ant-select-item-option-disabled) {
+    background: transparent;
+    color: $primary;
+    font-weight: bold;
+    text-decoration: none;
+  }
+
+  .ant-select-item-option-active:not(.ant-select-item-option-disabled) {
+    background: transparent;
+    color: $primary;
+    text-decoration: underline;
+  }
+}
