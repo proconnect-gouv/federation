@@ -1,0 +1,46 @@
+@import './../../styles/_colors.scss';
+@import './../../styles/_variables.scss';
+
+#ministries-selects {
+  .h4 {
+    font-weight: bold;
+    margin-bottom: map-get($spacers, 4);
+    text-align: left;
+  }
+
+  .ant-collapse {
+    max-width: 100%;
+  }
+
+  .ant-select-single.ant-select-lg:not(.ant-select-customize-input)
+    .ant-select-selector {
+    height: 60px;
+  }
+
+  .ant-select-selection-item,
+  .ant-select-selection-placeholder {
+    line-height: 60px;
+  }
+}
+
+@media (min-width: $breakpoint-mobile) {
+  #ministries-selects {
+    .h4 {
+      text-align: center;
+    }
+
+    .ant-collapse {
+      margin: 0 auto;
+      max-width: 600px;
+    }
+
+    .ant-collapse > .ant-collapse-item > .ant-collapse-header {
+      color: $charcoal-grey;
+    }
+
+    .ant-collapse-item:not(.ant-collapse-item-active):hover {
+      background: $blue-cornflower;
+      box-shadow: 0 0 0 1px $primary;
+    }
+  }
+}

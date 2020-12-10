@@ -1,70 +1,101 @@
 /* istanbul ignore file */
-// @TODO tests with search feature dev
-import './index.scss';
-import './autocomplete-dropdown.scss';
 
-import { AutoComplete, Button, Form, Input } from 'antd';
-import { OptionData } from 'rc-select/lib/interface';
-import React, { useCallback } from 'react';
-import { IoMdSearch } from 'react-icons/io';
+/**
+ * @TODO Coverage < 100% -> dette
+ * Can not mock FUSE library
+ */
+import { Form } from 'antd';
+import Fuse from 'fuse.js';
+import React, { useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 
-type IdentityProviderSearchProps = {
-  options?: OptionData[];
+import { selectIdentityProviders } from '../../redux/selectors';
+import { IdentityProvider } from '../../types';
+import NoSearchResults from './no-search-results';
+import SearchInput from './search-input';
+import SearchResults from './search-results';
+
+const FUSE_SEARCH_OPTIONS = {
+  findAllMatches: false,
+  ignoreLocation: true,
+  includeMatches: false,
+  includeScore: false,
+  isCaseSensitive: false,
+  keys: ['name'],
+  maxPatternLength: 64,
+  minMatchCharLength: 3,
+  shouldSort: true,
+  threshold: 0.3,
 };
 
-const defaultProps = {
-  options: [
-    { label: 'Light', value: 'light' },
-    { label: 'Bamboo', value: 'bamboo' },
-  ],
+export const isSearchTermValid = (term: string | undefined): boolean => {
+  if (!term || typeof term !== 'string') {
+    return false;
+  }
+  const trimmed = term.trim();
+  return trimmed !== '' && trimmed.length >= 3;
 };
 
-function IdentityProviderSearchComponent({
-  options,
-}: IdentityProviderSearchProps): JSX.Element {
-  const onFormSubmit = useCallback(() => {
-    // not implemented
-  }, []);
+export const searchIdentityProvidersByTerm = (
+  list: IdentityProvider[],
+  term: string,
+): IdentityProvider[] => {
+  const fuse = new Fuse(list, FUSE_SEARCH_OPTIONS);
+  const fuseResults = fuse.search(term);
+  const results = fuseResults
+    .map(fuseResult => fuseResult.item)
+    .filter(identityProvider => identityProvider.name && identityProvider.uid);
+  return results;
+};
 
-  return (
-    <div className="row text-center mb-8" id="identity-provider-search">
-      <Form
-        className="w-100"
-        layout="vertical"
-        size="large"
-        onFinish={onFormSubmit}>
-        <Form.Item
-          className="col-12"
-          colon={false}
-          label={
-            <span className="h4 font-weight-bold">
-              Je connais le nom de mon fournisseur d&apos;identité
-            </span>
-          }>
-          <Input.Group compact>
-            <AutoComplete
-              className="text-left"
-              dropdownClassName="fc-autocomplete-dropdown"
-              options={options}>
-              <Input
-                placeholder="ex: ameli, impot.gouv..."
-                title="Nom du fournisseur"
-              />
-            </AutoComplete>
-            <Button htmlType="submit" type="primary">
-              <IoMdSearch
-                className="text-white align-middle mr-2 fs-24 mb-1"
-                role="img"
-              />
-              <b>Rechercher</b>
-            </Button>
-          </Input.Group>
-        </Form.Item>
-      </Form>
-    </div>
-  );
-}
+const IdentityProviderSearchComponent = React.memo(
+  (): JSX.Element => {
+    const [searchTerm, setSearchTerm] = useState<string | undefined>();
+    const [results, setResults] = useState<IdentityProvider[]>([]);
+    const identityProviders = useSelector(selectIdentityProviders);
 
-IdentityProviderSearchComponent.defaultProps = defaultProps;
+    const onInputChangeHandler = useCallback(
+      inputValue => {
+        setSearchTerm(inputValue);
+        let searchResults: React.SetStateAction<IdentityProvider[]> = [];
+        const term = (inputValue && inputValue.trim()) || false;
+        if (term) {
+          searchResults = searchIdentityProvidersByTerm(
+            identityProviders,
+            term,
+          );
+        }
+        setResults(searchResults);
+      },
+      [identityProviders],
+    );
+
+    const showSearchResults = results.length > 0;
+    const showNoSearchResults =
+      !showSearchResults && isSearchTermValid(searchTerm);
+    return (
+      <div className="row text-center mb-8" id="identity-provider-search">
+        <Form
+          className="w-100"
+          layout="vertical"
+          size="large"
+          onFinish={values => {
+            const inputValue = values['fi-search-term'];
+            onInputChangeHandler(inputValue);
+          }}>
+          <SearchInput
+            label="Je connais le nom de mon fournisseur d'identité"
+            name="fi-search-term"
+            onChange={onInputChangeHandler}
+          />
+        </Form>
+        {showSearchResults && <SearchResults results={results} />}
+        {showNoSearchResults && <NoSearchResults />}
+      </div>
+    );
+  },
+);
+
+IdentityProviderSearchComponent.displayName = 'IdentityProviderSearchComponent';
 
 export default IdentityProviderSearchComponent;

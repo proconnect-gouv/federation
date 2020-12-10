@@ -8,10 +8,12 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { IPivotIdentity } from './interfaces';
 import { CryptographyConfig } from './dto';
+import { LowEntropyArgumentException } from './exceptions';
 
 const NONCE_LENGTH = 12;
 const AUTHTAG_LENGTH = 16;
 const CIPHER_HEAD_LENGTH = NONCE_LENGTH + AUTHTAG_LENGTH;
+export const RANDOM_MIN_ENTROPY = 32;
 
 @Injectable()
 export class CryptographyService {
@@ -100,8 +102,18 @@ export class CryptographyService {
     return `${hash.digest('hex')}v1`;
   }
 
-  genRandomString(length: number) {
-    return randomBytes(length).toString('base64');
+  /**
+   * Generates a random string
+   *
+   * @param byteLength length in bytes (32 minimum)
+   * Since the digest is "hex" the resulting output string will be twice as long in characters.
+   * The digest is hex to ensure URL encoding compatibility.
+   */
+  genRandomString(byteLength: number): string {
+    if (byteLength < RANDOM_MIN_ENTROPY) {
+      throw new LowEntropyArgumentException(byteLength);
+    }
+    return randomBytes(byteLength).toString('hex');
   }
 
   /**

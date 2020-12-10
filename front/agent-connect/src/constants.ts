@@ -1,6 +1,9 @@
 /* istanbul ignore file */
+
 // declarative file
 export const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
+
+export const API_DATAS_ROUTES = '/api/v2/ministries-list';
 
 export const REDUX_PERSIST_STORAGE_KEY = 'AgentConnect::local::state';
 

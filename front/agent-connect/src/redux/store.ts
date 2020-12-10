@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+
 import { applyMiddleware, createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { persistReducer, persistStore } from 'redux-persist';

@@ -6,16 +6,16 @@ const mockMinistries = [
   {
     id: 'mock-ministry-id-1',
     identityProviders: [
-      { name: 'mock-name-1.1', uid: 'mock-1.1' },
-      { name: 'mock-name-1.2', uid: 'mock-1.2' },
+      { active: true, name: 'mock-name-1.1', uid: 'mock-1.1' },
+      { active: true, name: 'mock-name-1.2', uid: 'mock-1.2' },
     ],
     name: 'mock-ministry-name-1',
   },
   {
     id: 'mock-ministry-id-2',
     identityProviders: [
-      { name: 'mock-name-2.1', uid: 'mock-2.1' },
-      { name: 'mock-name-2.2', uid: 'mock-2.2' },
+      { active: true, name: 'mock-name-2.1', uid: 'mock-2.1' },
+      { active: true, name: 'mock-name-2.2', uid: 'mock-2.2' },
     ],
     name: 'mock-ministry-name-2',
   },

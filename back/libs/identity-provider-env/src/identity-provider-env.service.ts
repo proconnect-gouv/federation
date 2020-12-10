@@ -29,8 +29,8 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
 
     const configuration = [
       {
-        uid: 'corev2',
-        name: 'corev2',
+        uid: 'envIssuer',
+        name: 'envIssuer',
         active: true,
         display: true,
         discoveryUrl,

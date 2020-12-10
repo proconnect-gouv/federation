@@ -10,13 +10,18 @@ import {
   ValidationPipe,
   UsePipes,
 } from '@nestjs/common';
-import { OidcClientService } from '@fc/oidc-client';
+import {
+  OidcClientService,
+  OidcClientConfig,
+  IdentityProviderMetadata,
+} from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
+import { ConfigService } from '@fc/config';
+import { IdentityProviderEnvService } from '@fc/identity-provider-env';
 import { MockServiceProviderRoutes } from './enums';
 import {
-  MockServiceProviderLoginCallbackException,
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
 } from './exceptions';
@@ -25,10 +30,12 @@ import { AccessTokenParamsDTO } from './dto';
 @Controller()
 export class MockServiceProviderController {
   constructor(
+    private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
     private readonly logger: LoggerService,
     private readonly session: SessionService,
     private readonly crypto: CryptographyService,
+    private readonly identityProvider: IdentityProviderEnvService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -36,6 +43,13 @@ export class MockServiceProviderController {
   @Get()
   @Render('index')
   async index(@Res() res) {
+    // Only one provider is available with `@fc/identity-provider-env`
+    const [provider] = await this.identityProvider.getList();
+
+    const { authorizationUrl, params } = await this.getInteractionParameters(
+      provider,
+    );
+
     /**
      * @TODO #179
      * This is just a mock, so we don't bother making this configurable...
@@ -44,140 +58,29 @@ export class MockServiceProviderController {
      */
     const sessionIdLength = 32;
     const sessionId = this.crypto.genRandomString(sessionIdLength);
-    await this.session.init(res, sessionId, { idpState: sessionId });
-
-    const authorizationUrl: string =
-      ((await this.getAuthorizationUrl()).authorizationUrl || '').split(
-        '?',
-      )[0] || '';
-    const scopes =
-      'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
-    const redirectUri =
-      'https://fsp1v2.docker.dev-franceconnect.fr/login-callback';
-    const acrValues = 'eidas2';
-    const clientId = process.env.CLIENT_ID;
-    // --
+    await this.session.init(res, sessionId, {
+      idpState: params.state,
+      idpNonce: params.nonce,
+    });
 
     return {
       titleFront: 'Mock Service Provider',
-      state: sessionId,
-      authorizationUrl,
-      scopes,
-      acrValues,
-      redirectUri,
-      clientId,
+      params,
+      authorizationUrl: authorizationUrl,
     };
   }
 
-  /**
-   * @TODO #251
-   * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
-   */
-  @Get(MockServiceProviderRoutes.LOGIN)
-  async login(@Req() req, @Res() res) {
-    /**
-     * @TODO #251
-     * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
-     */
-    const params = {
-      scope:
-        'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address',
-      providerUid: 'corev2',
-      /**
-       * @TODO `acr_values` MUST change accordingly with the mock that calls it
-       *       its value should change to either 'eidas2' or 'rgs2'
-       */
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: 'eidas2',
-    };
-
-    const {
-      state,
-      scope,
-      providerUid,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-    } = await this.oidcClient.buildAuthorizeParameters(params);
-
-    const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
-      state,
-      scope,
-      providerUid,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-    );
-
-    const sessionId = this.session.getId(req);
-    await this.session.patch(sessionId, { idpState: state });
-
-    res.redirect(authorizationUrl);
-  }
-
-  @Get(MockServiceProviderRoutes.LOGIN_CALLBACK)
+  @Get('/interaction/:uid/verify')
   @Render('login-callback')
-  async loginCallback(@Req() req, @Res() res, @Query() query) {
-    // oidc param name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { error, error_description } = query;
-    if (error) {
-      return res.redirect(
-        `/error?error=${error}&error_description=${error_description}`,
-      );
-    }
+  async getVerify(@Req() req) {
+    const sessionId = this.session.getId(req);
+    const session = await this.session.get(sessionId);
 
-    try {
-      /**
-       * @TODO #251
-       * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
-       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
-       */
-      const providerUid = 'corev2';
-      const sessionId = this.session.getId(req);
-
-      const { idpState } = await this.session.get(sessionId);
-
-      // OIDC: call idp's /token endpoint
-      const tokenSet = await this.oidcClient.getTokenSet(
-        req,
-        providerUid,
-        idpState,
-      );
-      // openid defined property names
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      const { access_token: accessToken } = tokenSet;
-
-      // OIDC: call idp's /userinfo endpoint
-      const idpIdentity = await this.oidcClient.getUserInfo(
-        accessToken,
-        providerUid,
-      );
-
-      /** @TODO #192
-       * ETQ Dev, je complète la session pendant la cinématique des mocks
-       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/192
-       * */
-
-      const { acr } = tokenSet.claims();
-
-      return {
-        titleFront: 'Mock Service Provider - Login Callback',
-        idpIdentity,
-        accessToken,
-        acr,
-      };
-    } catch (e) {
-      if (e.error && e.error_description) {
-        return res.redirect(
-          `/error?error=${e.error}&error_description=${e.error_description}`,
-        );
-      }
-      throw new MockServiceProviderLoginCallbackException(e);
-    }
+    return {
+      ...session,
+      accessToken: session.idpAccessToken,
+      titleFront: 'Mock Service Provider - Login Callback',
+    };
   }
 
   @Get(MockServiceProviderRoutes.LOGOUT)
@@ -204,7 +107,7 @@ export class MockServiceProviderController {
        * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
        */
-      const providerUid = 'corev2';
+      const providerUid = 'envIssuer';
       const { accessToken } = body;
       await this.oidcClient.revokeToken(accessToken, providerUid);
 
@@ -239,7 +142,7 @@ export class MockServiceProviderController {
        * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
        */
-      const providerUid = 'corev2';
+      const providerUid = 'envIssuer';
       const { accessToken } = body;
       // OIDC: call idp's /userinfo endpoint
       const idpIdentity = await this.oidcClient.getUserInfo(
@@ -278,45 +181,37 @@ export class MockServiceProviderController {
     };
   }
 
-  private async getAuthorizationUrl() {
-    /**
-     * @TODO #251
-     * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
-     */
-    const params = {
-      scope:
-        'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address',
-      providerUid: 'corev2',
-      /**
-       * @TODO `acr_values` MUST change accordingly with the mock that calls it
-       *       its value should change to either 'eidas2' or 'rgs2'
-       */
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: 'eidas2',
-    };
-
-    const {
-      state,
-      scope,
-      providerUid,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-    } = await this.oidcClient.buildAuthorizeParameters(params);
+  private async getInteractionParameters(provider: IdentityProviderMetadata) {
+    const { scope, acr } = this.config.get<OidcClientConfig>('OidcClient');
+    const { state, nonce } = await this.oidcClient.buildAuthorizeParameters({});
 
     const authorizationUrl: string = await this.oidcClient.getAuthorizeUrl(
       state,
       scope,
-      providerUid,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
+      provider.uid,
+      acr,
+      nonce,
     );
 
+    const url = new URL(authorizationUrl);
+
     return {
-      state,
+      params: {
+        // oidc name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        redirect_uri: provider.redirect_uris[0],
+        // oidc name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: provider.client_id,
+        uid: provider.uid,
+        state,
+        scope,
+        acr,
+        nonce,
+        // oidc name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        authorization_endpoint: `${url.origin}${url.pathname}`,
+      },
       authorizationUrl,
     };
   }

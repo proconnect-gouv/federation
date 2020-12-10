@@ -131,7 +131,10 @@ describe('Acr', () => {
     cy.get('#consent').click();
 
     // return to FS
-    cy.url().should('include', `${Cypress.env('SP1_ROOT_URL')}/login-callback`);
+    cy.url().should(
+      'match',
+      new RegExp(`${Cypress.env('SP1_ROOT_URL')}/interaction/[0-9a-z_-]+/verify`,'i'),
+    );
 
     cy.get('#info-acr').contains(FORCE_MAX_EIDAS);
   });

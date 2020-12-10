@@ -8,8 +8,9 @@ import {
   IdentityProviderEnvService,
   IdentityProviderEnvModule,
 } from '@fc/identity-provider-env';
-import { MockServiceProviderController } from './mock-service-provider.controller';
 import { ErrorModule } from '@fc/error';
+import { CryptographyModule } from '@fc/cryptography';
+import { MockServiceProviderController } from './mock-service-provider.controller';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderEnvService,
@@ -21,6 +22,7 @@ const oidcClientModule = OidcClientModule.register(
     ErrorModule,
     SessionModule,
     IdentityProviderEnvModule,
+    CryptographyModule,
     oidcClientModule,
   ],
   controllers: [MockServiceProviderController],

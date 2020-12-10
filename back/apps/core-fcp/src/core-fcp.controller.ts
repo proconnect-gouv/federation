@@ -19,6 +19,7 @@ import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
 import { CryptographyService } from '@fc/cryptography';
+import { OidcClientConfig } from '@fc/oidc-client';
 import {
   Interaction,
   CsrfToken,
@@ -54,6 +55,7 @@ export class CoreFcpController {
   @Render('interaction')
   async getInteraction(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
+    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
     const providers = await this.identityProvider.getList();
 
     const { interactionId } = req.fc;
@@ -62,6 +64,7 @@ export class CoreFcpController {
     return {
       uid,
       params,
+      scope,
       providers,
       spName,
     };

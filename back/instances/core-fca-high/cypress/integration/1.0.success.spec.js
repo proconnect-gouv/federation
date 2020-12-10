@@ -28,16 +28,12 @@ describe('Successful scenarios', () => {
     });
 
     checkInformations({
-      gender: 'Femme',
       givenName: 'Angela Claire Louise',
       familyName: 'DUBOIS',
-      birthdate: '1962-08-24',
-      birthplace: '75107',
-      birthcountry: '99100',
     });
     checkInStringifiedJson(
       'sub',
-      '71e5edab9c105c02ae0b5bce93d41e52e3ebd66d8063577f75e5f29e7982defdv1',
+      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
     );
   });
 
@@ -60,7 +56,7 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      '71e5edab9c105c02ae0b5bce93d41e52e3ebd66d8063577f75e5f29e7982defdv1',
+      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
     );
   });
 });
