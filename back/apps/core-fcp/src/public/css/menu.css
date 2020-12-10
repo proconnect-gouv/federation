@@ -17,8 +17,21 @@
   width: 120px;
 }
 
+#fc-plus-logo:hover {
+  border: solid blue 4px;
+}
+
+
+#fc-plus-logo:focus{
+  border: solid red 2px;
+}
+
 #marianne-logo {
   width: 78px;
+}
+
+#marianne-logo:focus{
+  border: solid red 2px;
 }
 
 .previous-link-container {
