@@ -245,7 +245,7 @@ export function navigateToMire(params) {
         cy.visit(controlUrl);
       });
   } else {
-    cy.get('img[alt="Se connecter à FranceConnect"]').click();
+    cy.get('#marianne-logo').click();
   }
 }
 
