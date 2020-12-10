@@ -1,4 +1,4 @@
-import removeIdentityProvider from './remove-identity-provider';
+import { removeIdentityProvider } from './remove-identity-provider';
 
 describe('removeIdentityProvider', () => {
   it('should return an array and remove the name provided in parameters from previous array state, previous state is empty', () => {

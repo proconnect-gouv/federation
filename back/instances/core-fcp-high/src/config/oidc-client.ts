@@ -14,5 +14,11 @@ export default {
   jwks: {
     keys: [JSON.parse(process.env.CRYPTO_ENC_LOCALE_PRIV_KEY)],
   },
-  stateLength: 16,
+  stateLength: 32,
+
+  /**
+   * OIDC Standard scopes
+   * @see https://openid.net/specs/openid-connect-basic-1_0.html#Scopes
+   */
+  scope: 'openid profile email address phone',
 } as OidcClientConfig;

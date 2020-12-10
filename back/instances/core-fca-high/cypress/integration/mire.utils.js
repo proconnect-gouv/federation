@@ -52,8 +52,8 @@ export function basicSuccessScenario(params) {
     idpName: null,
     idpAcr: null,
   });
-  cy.get(`.ministry-panel`).click({ multiple: true });
-  cy.get(`#idp-${idpId}`).click();
+
+  chooseIdpOnCore(idpId);
 
   // FI: Authenticate
   cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
@@ -69,7 +69,6 @@ export function basicSuccessScenario(params) {
 
   cy.get('input[name="login"]').clear().type(userName);
   cy.get('input[name="password"]').clear().type(password);
-
   cy.get('input[type="submit"]').click();
 
   cy.hasBusinessLog({
@@ -119,29 +118,10 @@ export function basicSuccessScenario(params) {
 }
 
 export function checkInformations(identity) {
-  const {
-    gender,
-    givenName,
-    familyName,
-    preferredUsername = '/',
-    birthdate,
-    birthplace,
-    birthcountry,
-  } = identity;
+  const { givenName, familyName } = identity;
 
-  cy.contains(`Sexe : ${gender}`);
-  cy.contains(`Prénom(s) : ${givenName}`);
-  cy.contains(`Nom(s) : ${familyName}`);
-  cy.contains(`Nom d'usage : ${preferredUsername}`);
-  cy.contains(`Date de naissance : ${birthdate}`);
-
-  if (birthplace) {
-    cy.contains(`COG (lieu de naissance) : ${birthplace}`);
-  }
-
-  if (birthcountry) {
-    cy.contains(`COG (Pays de naissance) : ${birthcountry}`);
-  }
+  checkInStringifiedJson('given_name', givenName);
+  checkInStringifiedJson('usual_name', familyName);
 }
 
 export function checkInStringifiedJson(key, value, selector = '#json') {
@@ -149,9 +129,27 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
     const txt = elem.text().trim();
     const data = JSON.parse(txt);
 
-    expect(data).to.have.property(key);
-    expect(data[key]).to.eq(value);
+    if (value === undefined) {
+      expect(data).not.to.have.property(key);
+    } else {
+      expect(data).to.have.property(key);
+      expect(data[key]).to.eq(value);
+    }
   });
+}
+
+export function chooseIdpOnCore(idpId) {
+  // FC: choose FI
+  cy.url().should(
+    'include',
+    `${Cypress.env('FC_ROOT_URL')}/api/v2/interaction`,
+  );
+
+  cy.get(`#select-ministry`).click();
+  cy.get(`#ministry-ministere-de-linterieur`).click();
+  cy.get(`#idp-selects`).click();
+  cy.get(`#idp-${idpId}`).click();
+  cy.get('#idp-go').click();
 }
 
 export function basicScenario(params) {
@@ -168,27 +166,25 @@ export function basicScenario(params) {
 
   if (overrideParams) {
     // Steal the state to finish the cinematic
-    cy.get('input[name=state]')
-      .invoke('val')
-      .then((state) => {
+    cy.get('input[name=state]').invoke('val').as('url:state');
+    cy.get('input[name=nonce]').invoke('val').as('url:nonce');
+
+    cy.get('@url:nonce').then(($nonce) => {
+      cy.get('@url:state').then(($state) => {
         // Direct call to FC with custom params
         const controlUrl = getAuthorizeUrl({
           ...overrideParams,
-          state,
+          state: $state,
+          nonce: $nonce,
         });
         cy.visit(controlUrl);
       });
+    });
   } else {
-    cy.get('a[id="agent-connect-login"]').click();
+    cy.get('#post-authorize').click();
   }
 
-  // FC: choose FI
-  cy.url().should(
-    'include',
-    `${Cypress.env('FC_ROOT_URL')}/api/v2/interaction`,
-  );
-  cy.get(`.ministry-panel`).click({ multiple: true });
-  cy.get(`#idp-${idpId}`).click();
+  chooseIdpOnCore(idpId);
 
   // FI: Authenticate
   cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
@@ -227,7 +223,7 @@ export function getAuthorizeUrl(overrideParams = {}) {
     response_type: 'code',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uri: `${Cypress.env('SP1_ROOT_URL')}/login-callback`,
+    redirect_uri: `${Cypress.env('SP1_ROOT_URL')}/oidc-callback/envIssuer`,
     state: 'stateTraces',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention

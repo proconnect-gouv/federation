@@ -1,4 +1,5 @@
 /* istanbul ignore file */
+
 // root application file
 import './styles/index.scss';
 

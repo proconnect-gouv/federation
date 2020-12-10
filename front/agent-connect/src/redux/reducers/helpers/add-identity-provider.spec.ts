@@ -1,4 +1,4 @@
-import addIdentityProvider from './add-identity-provider';
+import { addIdentityProvider } from './add-identity-provider';
 
 describe('addIdentityProvider', () => {
   it('should return an array, but will not add the name if already contained in the array', () => {

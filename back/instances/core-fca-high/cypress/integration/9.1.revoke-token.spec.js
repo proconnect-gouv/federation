@@ -27,7 +27,7 @@ describe('Revoke token', () => {
     });
     checkInStringifiedJson(
       'sub',
-      '71e5edab9c105c02ae0b5bce93d41e52e3ebd66d8063577f75e5f29e7982defdv1',
+      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
     );
 
     // reload userinfo with valid token
@@ -45,7 +45,7 @@ describe('Revoke token', () => {
     });
     checkInStringifiedJson(
       'sub',
-      '71e5edab9c105c02ae0b5bce93d41e52e3ebd66d8063577f75e5f29e7982defdv1',
+      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
     );
 
     // revoke token

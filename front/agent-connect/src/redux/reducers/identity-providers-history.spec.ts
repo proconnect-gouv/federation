@@ -56,6 +56,7 @@ describe('identityProvidersHistory', () => {
               id: 'mock-ministry',
               identityProviders: [
                 {
+                  active: true,
                   name: 'mock-fi-1',
                   uid: 'mock-1',
                 },

@@ -31,6 +31,7 @@ function getFrontRoutes(urlPrefix: string): string[] {
     `${urlPrefix}/interaction/:uid/verify`,
     `${urlPrefix}/interaction/:uid/consent`,
     `${urlPrefix}/interaction/:uid/logout`,
+    `${urlPrefix}/ministries-list`,
     `${urlPrefix}/login`,
   ];
 }

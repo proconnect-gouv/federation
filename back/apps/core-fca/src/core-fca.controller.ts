@@ -15,6 +15,7 @@ import { IdentityProviderService } from '@fc/identity-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
+import { OidcClientConfig } from '@fc/oidc-client';
 import { Interaction, Core, CoreRoutes, CoreMissingIdentity } from '@fc/core';
 import { CoreFcaService } from './core-fca.service';
 
@@ -37,22 +38,48 @@ export class CoreFcaController {
     res.redirect(301, defaultRedirectUri);
   }
 
-  @Get(CoreRoutes.INTERACTION)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Render('interaction')
-  async getInteraction(@Req() req, @Res() res, @Param() _params: Interaction) {
-    const { uid, params } = await this.oidcProvider.getInteraction(req, res);
+  @Get(CoreRoutes.FCA_FRONT_DATAS)
+  async getFrontData(@Req() req, @Res() res) {
+    const { params } = await this.oidcProvider.getInteraction(req, res);
+    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { acr_values, redirect_uri, response_type } = params;
+    const redirectToIdentityProviderInputs = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      redirect_uri,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      response_type,
+      scope,
+    };
     const providers = await this.identityProvider.getList();
 
+    const identityProviders = providers.map(
+      ({ active, display, name, uid }) => ({ active, display, name, uid }),
+    );
     const { interactionId } = req.fc;
+
     const { spName } = await this.session.get(interactionId);
 
-    return {
-      uid,
-      params,
-      providers,
-      spName,
-    };
+    return res.json({
+      redirectToIdentityProviderInputs,
+      redirectURL: '/api/v2/redirect-to-idp',
+      ministries: [
+        {
+          id: 'ministere-de-linterieur',
+          identityProviders: [...identityProviders],
+          name: "Ministere de l'interieur",
+        },
+      ],
+      serviceProviderName: spName,
+    });
+  }
+
+  @Get(CoreRoutes.INTERACTION)
+  @Render('interaction')
+  async getInteraction() {
+    return {};
   }
 
   @Get(CoreRoutes.INTERACTION_VERIFY)

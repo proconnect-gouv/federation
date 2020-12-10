@@ -208,18 +208,22 @@ export function basicScenario(params) {
 
   if (overrideParams) {
     // Steal the state to finish the cinematic
-    cy.get('input[name=state]')
-      .invoke('val')
-      .then((state) => {
+    cy.get('input[name=state]').invoke('val').as('url:state');
+    cy.get('input[name=nonce]').invoke('val').as('url:nonce');
+
+    cy.get('@url:nonce').then(($nonce) => {
+      cy.get('@url:state').then(($state) => {
         // Direct call to FC with custom params
         const controlUrl = getAuthorizeUrl({
           ...overrideParams,
-          state,
+          state: $state,
+          nonce: $nonce,
         });
         cy.visit(controlUrl);
       });
+    });
   } else {
-    cy.get('img[alt="Se connecter à FranceConnect"]').click();
+    cy.get('#post-authorize').click();
   }
 
   // FC: choose FI
@@ -264,7 +268,7 @@ export function getAuthorizeUrl(overrideParams = {}) {
     response_type: 'code',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uri: `${Cypress.env('SP1_ROOT_URL')}/login-callback`,
+    redirect_uri: `${Cypress.env('SP1_ROOT_URL')}/oidc-callback/envIssuer`,
     state: 'stateTraces',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -1,58 +1,67 @@
-import userEvent from '@testing-library/user-event';
 import React from 'react';
+import { mocked } from 'ts-jest/utils';
 
-import * as actions from '../../../redux/actions';
-import { renderWithRedux } from '../../../testUtils';
+import { removeIdentityProvider } from '../../../redux/actions';
+import { fireEvent, renderWithRedux } from '../../../testUtils';
 import IdentityProviderCard from './index';
 
-xdescribe('IdentityProviderCard', () => {
+jest.mock('../../../redux/actions');
+
+// setup
+const props = { uid: 'mock-uid' };
+const action = { payload: 'mock-uid', type: 'mock-action-type' };
+const initialState = {
+  ministries: [
+    {
+      id: 'mock-ministry-id',
+      identityProviders: [
+        {
+          active: true,
+          name: 'mock-name',
+          uid: 'mock-uid',
+        },
+      ],
+      name: 'mock-ministry-name',
+    },
+  ],
+};
+
+describe('IdentityProviderCard', () => {
+  beforeEach(() => {
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
+    jest.clearAllMocks();
+  });
+
   describe('when user click on remove button', () => {
     it('should call redux action removeIdentityProvider', () => {
       // setup
-      const props = { uid: 'mock-uid' };
       const { getByText } = renderWithRedux(
         <IdentityProviderCard {...props} />,
+        { initialState },
       );
       const removeButton = getByText('Retirer de cette liste');
-      const spy = jest.spyOn(actions, 'removeIdentityProvider');
+      const spy = mocked(removeIdentityProvider, true);
+      spy.mockReturnValueOnce(action);
       // action
-      userEvent.click(removeButton);
+      fireEvent.click(removeButton);
       // expect
       expect(spy).toHaveBeenCalledTimes(1);
-      spy.mockRestore();
     });
 
     it('should call redux action removeIdentityProvider with the uid property', () => {
       // setup
-      const props = { uid: 'mock-uid' };
       const { getByText } = renderWithRedux(
         <IdentityProviderCard {...props} />,
+        { initialState },
       );
       const removeButton = getByText('Retirer de cette liste');
-      const spy = jest.spyOn(actions, 'removeIdentityProvider');
+      const spy = mocked(removeIdentityProvider, true);
+      spy.mockReturnValueOnce(action);
       // action
-      userEvent.click(removeButton);
+      fireEvent.click(removeButton);
       // expect
       expect(spy).toHaveBeenCalledWith(props.uid);
-      spy.mockRestore();
-    });
-
-    it('should call redux action removeIdentityProvider and return a redux action', () => {
-      // setup
-      const props = { uid: 'mock-uid' };
-      const { getByText } = renderWithRedux(
-        <IdentityProviderCard {...props} />,
-      );
-      const removeButton = getByText('Retirer de cette liste');
-      const spy = jest.spyOn(actions, 'removeIdentityProvider');
-      // action
-      userEvent.click(removeButton);
-      // expect
-      expect(spy).toHaveReturnedWith({
-        payload: props.uid,
-        type: 'IDENTITY_PROVIDER_REMOVE',
-      });
-      spy.mockRestore();
     });
   });
 });

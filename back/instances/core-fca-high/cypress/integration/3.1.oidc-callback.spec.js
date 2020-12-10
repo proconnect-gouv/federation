@@ -1,4 +1,5 @@
 import * as qs from 'querystring';
+import { chooseIdpOnCore } from './mire.utils';
 
 function getOidcCallbackUrl(interactionId, event) {
   cy.request({
@@ -40,8 +41,9 @@ function extractInteractionIdFromUrl(url) {
 function prepareOidcCallbackAs(alias) {
   cy.visit(Cypress.env('SP1_ROOT_URL'));
   cy.get('#get-authorize').click();
-  cy.get(`.ministry-panel`).click({ multiple: true });
-  cy.get(`#idp-${Cypress.env('IDP_NAME')}1v2`).click();
+  
+  chooseIdpOnCore(`${Cypress.env('IDP_NAME')}1v2`);
+
   cy.url().should('contain', Cypress.env('IDP_ROOT_URL'));
 
   cy.url().then((url) => {
@@ -81,8 +83,8 @@ function finishWithReplacedUrl(attackerUrl) {
   // Start a new interaction
   cy.visit(Cypress.env('SP1_ROOT_URL'));
   cy.get('#get-authorize').click();
-  cy.get(`.ministry-panel`).click({ multiple: true });
-  cy.get(`#idp-${Cypress.env('IDP_NAME')}1v2`).click();
+  
+  chooseIdpOnCore(`${Cypress.env('IDP_NAME')}1v2`);
 
   // Use url from previous interaction
   cy.visit(attackerUrl, { failOnStatusCode: false });

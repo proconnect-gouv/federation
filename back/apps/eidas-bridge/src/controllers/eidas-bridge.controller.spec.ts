@@ -19,6 +19,7 @@ describe('EidasBridgeController', () => {
 
   const appConfigMock = {
     urlPrefix: '/api/v2',
+    scope: 'openid given_name',
   };
 
   const oidcClientServiceMock = {
