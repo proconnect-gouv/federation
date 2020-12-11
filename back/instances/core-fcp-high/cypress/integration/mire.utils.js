@@ -228,7 +228,6 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
   });
 }
 
-
 export function navigateToMire() {
   cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
   // Steal the state to finish the cinematic
