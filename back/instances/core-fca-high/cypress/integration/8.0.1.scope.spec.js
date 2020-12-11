@@ -68,7 +68,7 @@ describe('Scope', () => {
       'sub',
       'c6a6e1847cb13dea4b8104e44b4de7b57353fc57071d28ef40800c29dc5c3c71v1',
     ); // mandatory
-    checkInStringifiedJson('belonging_population', '');
+    checkInStringifiedJson('belonging_population', undefined);
   });
 
   it('should not return optional claims not asked by scope', () => {
@@ -77,6 +77,7 @@ describe('Scope', () => {
     cy.get('#scope_siren').click();
     cy.get('#scope_siret').click();
     cy.get('#scope_belonging_population').click();
+    cy.get('#scope_organizational_unit').click();
     cy.get('#scope_phone').click();
 
     cy.get('#post-authorize').click();
@@ -90,7 +91,7 @@ describe('Scope', () => {
       'sub',
       'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
     ); // mandatory
-    checkInStringifiedJson('organizational_unit', 'comptabilite'); // mandatory
+    checkInStringifiedJson('organizational_unit', undefined); // mandatory
     checkInStringifiedJson('belonging_population', undefined);
     checkInStringifiedJson('siren', undefined); // not mandatory
     checkInStringifiedJson('siret', undefined); // not mandatory
