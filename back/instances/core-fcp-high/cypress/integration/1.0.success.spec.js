@@ -6,12 +6,10 @@ import {
 } from './mire.utils';
 
 describe('Successful scenarios', () => {
-
-
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
-  xit('should redirect to FC website', () => {
+  it('should redirect to FC website', () => {
     cy.request({
       url: `${Cypress.env('FC_ROOT_URL')}/api/v2`,
       method: 'GET',
@@ -22,7 +20,7 @@ describe('Successful scenarios', () => {
     });
   });
 
-  xit('should log in to Service Provider Example', () => {
+  it('should log in to Service Provider Example', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
@@ -44,7 +42,7 @@ describe('Successful scenarios', () => {
     );
   });
 
-  xit('should log in to Service Provider Example with POST /authorize', () => {
+  it('should log in to Service Provider Example with POST /authorize', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
