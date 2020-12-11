@@ -56,7 +56,12 @@ export class CoreFcaController {
     const providers = await this.identityProvider.getList();
 
     const identityProviders = providers.map(
-      ({ active, display, name, uid }) => ({ active, display, name, uid }),
+      ({ active, display, title: name, uid }) => ({
+        active,
+        display,
+        name,
+        uid,
+      }),
     );
     const { interactionId } = req.fc;
 
