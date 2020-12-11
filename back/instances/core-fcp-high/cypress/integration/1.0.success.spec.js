@@ -6,12 +6,10 @@ import {
 } from './mire.utils';
 
 describe('Successful scenarios', () => {
-
-
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
-  xit('should redirect to FC website', () => {
+  it('should redirect to FC website', () => {
     cy.request({
       url: `${Cypress.env('FC_ROOT_URL')}/api/v2`,
       method: 'GET',
@@ -22,7 +20,7 @@ describe('Successful scenarios', () => {
     });
   });
 
-  xit('should log in to Service Provider Example', () => {
+  it('should log in to Service Provider Example', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
@@ -44,7 +42,7 @@ describe('Successful scenarios', () => {
     );
   });
 
-  xit('should log in to Service Provider Example with POST /authorize', () => {
+  it('should log in to Service Provider Example with POST /authorize', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
@@ -158,117 +156,47 @@ describe('Successful scenarios', () => {
     );
   });
 
-  it.only('should navigate by tab and enter on 1st menu link', () => {
-    let url = '';
-    navigateToMire({overrideParams:{
-        userName: 'test',
-        password: '123',
-        eidasLevel: 1,
-        idpId,
-        method: 'POST',
-      }});
-      cy.get('body').tab();
-      cy.focused().then(($el) => {
-        const elem = cy.wrap($el)
-        //unfocus selected element to be able to make an enter keypress on it
-        elem.type('{enter}{enter}');
-        // elem.blur().then(() => {
-        //   elem.type('{enter}');
-        //   //get element href value to check if we navigate on it
-        //   elem.invoke('attr', 'href').then((href) => {
-        //     url = href;
-        //   })
-        // })
-      })
-      // cy.location().then((loc) => {
-      //   expect(loc.href).to.equal(url);
-      // })
+  it('should navigate by tab and enter on 1st menu link', () => {
+    navigateToMire();
+    cy.get('body').tab();
+    cy.focused().invoke('attr', 'href').as('fc:redirectUri');
+
+    //TODO: find how trigger a keypress on key enter instead
+    //After many tests a key press on this keys it seems that it implicitly triggers a click on the focus element
+    cy.focused().click();
+    cy.location().then(({href}) => {
+      cy.get('@fc:redirectUri').should('eq', href);
+    })  
   });
 
   it('should navigate by tab and enter on 2nd menu link', () => {
-    let url = '';
-    navigateToMire({
-        userName: 'test',
-        password: '123',
-        eidasLevel: 1,
-        idpId,
-        method: 'POST',
-      });
-      cy.get('body').tab().tab();
-      cy.focused().then(($el) => {
-        const elem = cy.get($el).closest('a')
-        //unfocus selected element to be able to make an enter keypress on it
-        elem.blur().then(() => {
-          elem.type('{enter}');
-          //get element href value to check if we navigate on it
-          elem.invoke('attr', 'href').then((href) => {
-            url = href;
-          })
-        })
-      })
-      cy.location().then((loc) => {
-        expect(loc.href).to.equal(url);
-      })
+    navigateToMire();
+    cy.get('body').tab().tab();
+    cy.focused().invoke('attr', 'href').as('fc:redirectUri');
+
+    //TODO: find how trigger a keypress on key enter instead
+    //After many tests a key press on this keys it seems that it implicitly triggers a click on the focus element
+    cy.focused().click();
+    cy.location().then(({href}) => {
+      cy.get('@fc:redirectUri').should('eq', href);
+    })  
   });
 
   it('should navigate by tab and enter on 3rd menu link', () => {
-    let url = '';
-    navigateToMire({
-        userName: 'test',
-        password: '123',
-        eidasLevel: 1,
-        idpId,
-        method: 'POST',
-      });
-      cy.get('body').tab().tab().tab();
-      cy.focused().then(($el) => {
-        const elem = cy.get($el).closest('a')
-        //unfocus selected element to be able to make an enter keypress on it
-        elem.blur().then(() => {
-          elem.type('{enter}');
-          //get element href value to check if we navigate on it
-          elem.invoke('attr', 'href').then((href) => {
-            url = href;
-          })
-        })
-      })
-      cy.location().then((loc) => {
-        expect(loc.href).to.equal(url);
-      })
+    navigateToMire();
+    cy.get('body').tab().tab().tab();
+    cy.focused().invoke('attr', 'href').as('fc:redirectUri');
+
+    //TODO: find how trigger a keypress on key enter instead
+    //After many tests a key press on this keys it seems that it implicitly triggers a click on the focus element
+    cy.focused().click();
+    cy.location().then(({href}) => {
+      cy.get('@fc:redirectUri').should('eq', href);
+    })  
   });
 
-  xit('should navigate by tab and enter on 1st identity provider link', () => {
-    let url = '';
-    navigateToMire({
-        userName: 'test',
-        password: '123',
-        eidasLevel: 1,
-        idpId,
-        method: 'POST',
-      });
-      cy.get('body').tab().tab().tab().tab();
-      cy.focused().then(($el) => {
-        //unfocus selected element to be able to make an enter keypress on it
-        cy.get($el).blur();
-        //get element href value to check if we navigate on it
-        cy.get($el).closest('form').invoke('attr', 'action').then((href) => {
-          url = href;
-        })
-        cy.get($el).closest('form').submit();  
-      })
-      cy.location().then((loc) => {
-        expect(loc.pathname).to.equal(url);
-      })
-  });
-
-  xit('should apply box shadow when identity provider links are focused', () => {
-    navigateToMire({
-      userName: 'test',
-      password: '123',
-      eidasLevel: 1,
-      idpId,
-      method: 'POST',
-    });
+  it('should apply box shadow when identity provider links are focused', () => {
+    navigateToMire();
     cy.get('#idp-list form').each((item)=>{
       cy.get(item).find('div button').invoke('attr', 'disabled').then((isDisabled) => {
         if((!isDisabled)){
