@@ -63,12 +63,6 @@
 
 | Code | Message utilisateur | Description |
 |---|---|---|
-| Y100001 |  | Erreur émise lorsqu&#39;il y a une erreur au retour de AC sur la route de callback |
-| Y100002 |  | Erreur émise lorsqu&#39;il y a une erreur au moment de la révocation du token |
-| Y100003 |  | Erreur émise lorsqu&#39;il y a un problème dans la récupération du userinfo |
-
-| Code | Message utilisateur | Description |
-|---|---|---|
 | Y150001 | Session not found | Erreur émise lorsque l&#39;usager n&#39;a plus de session, probablement une fenêtre restée ouverte au delà des 10 minutes. |
 | Y150002 |  | N/A |
 | Y150003 | Should have a session cookie (timed out or wrong entry page) | N/A |

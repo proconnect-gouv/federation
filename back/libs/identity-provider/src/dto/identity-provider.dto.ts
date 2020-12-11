@@ -13,6 +13,9 @@ export class IdentityProviderDTO {
   @IsString()
   readonly name: string;
 
+  @IsString()
+  readonly title: string;
+
   @IsBoolean()
   readonly active: boolean;
 

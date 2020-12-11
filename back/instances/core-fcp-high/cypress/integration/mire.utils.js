@@ -187,10 +187,15 @@ export function checkInformations(identity) {
 
 export function checkInStringifiedJson(key, value, selector = '#json') {
   cy.get(selector).then((elem) => {
-    const data = JSON.parse(elem.text().trim());
+    const txt = elem.text().trim();
+    const data = JSON.parse(txt);
 
-    expect(data).to.have.property(key);
-    expect(data[key]).to.eq(value);
+    if (value === undefined) {
+      expect(data).not.to.have.property(key);
+    } else {
+      expect(data).to.have.property(key);
+      expect(data[key]).to.eq(value);
+    }
   });
 }
 
