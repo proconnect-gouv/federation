@@ -14,6 +14,7 @@ describe('IdentityProviderService', () => {
     _doc: {
       uid: 'uid',
       name: 'provider1',
+      title: 'provider 1',
       active: true,
       display: false,
       clientID: 'clientID',

@@ -71,6 +71,84 @@ describe('MockIdentityProviderFcaService', () => {
       // Then
       expect(() => service['loadDatabase']()).rejects.toThrow(errorMock);
     });
+
+    it('should call removeEmptyColumns', async () => {
+      // Given
+      const dataMock = {
+        rows: [{ foo: 'foo1' }, { foo: 'bar1' }],
+      };
+      const NUMBER_OF_CALLS = dataMock.rows.length;
+      service['csvdbProxy'] = jest.fn().mockResolvedValue(dataMock);
+      service['removeEmptyColums'] = jest.fn();
+
+      // When
+      await service['loadDatabase']();
+      // Then
+      expect(service['removeEmptyColums']).toHaveBeenCalledTimes(
+        NUMBER_OF_CALLS,
+      );
+      expect(service['removeEmptyColums']).toHaveBeenNthCalledWith(
+        1,
+        dataMock.rows[0],
+        0,
+        dataMock.rows,
+      );
+      expect(service['removeEmptyColums']).toHaveBeenNthCalledWith(
+        2,
+        dataMock.rows[1],
+        1,
+        dataMock.rows,
+      );
+    });
+
+    it('should set data to result of removeEmptyColumns', async () => {
+      // Given
+      const dataMock = {
+        rows: [{ foo: 'foo' }],
+      };
+      const cleanedMock = [{}];
+      service['csvdbProxy'] = jest.fn().mockResolvedValue(dataMock);
+      service['removeEmptyColums'] = jest.fn().mockReturnValue(cleanedMock);
+
+      // When
+      await service['loadDatabase']();
+      // Then
+      expect(service['database']).toEqual([cleanedMock]);
+    });
+  });
+
+  describe('removeEmptyColums', () => {
+    it('should remove falsy properties', () => {
+      // Given
+      const data = ({
+        foo: 'foovalue',
+        bar: 'barvalue',
+        wizz: false,
+        buzz: undefined,
+      } as unknown) as Identity;
+      // When
+      const result = service['removeEmptyColums'](data);
+      // Then
+      expect(result).toEqual({
+        foo: 'foovalue',
+        bar: 'barvalue',
+      });
+    });
+
+    it('should remove empty string properties', () => {
+      // Given
+      const data = ({
+        foo: 'foovalue',
+        bar: '',
+        wizz: '',
+      } as unknown) as Identity;
+      // When
+      const result = service['removeEmptyColums'](data);
+      // Then
+      expect(result).toEqual({
+        foo: 'foovalue',
+      });
+    });
   });
 
   describe('getAccount', () => {

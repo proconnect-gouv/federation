@@ -3,6 +3,7 @@ import './identity-providers-select.scss';
 import { Select } from 'antd';
 import React, { useEffect, useState } from 'react';
 
+import { ReactComponent as CustomIconSVG } from '../../assets/select-input-custom-icon.svg';
 import { IdentityProvider } from '../../types';
 
 const { Option } = Select;
@@ -32,6 +33,7 @@ const IdentityProvidersSelectComponent = React.memo(
 
     return (
       <Select
+        aria-label="Sélectionner un fournisseur d'identité"
         className="mb-3 text-left"
         defaultActiveFirstOption={false}
         disabled={identityProviders.length === 0}
@@ -40,6 +42,7 @@ const IdentityProvidersSelectComponent = React.memo(
         placeholder="Sélectionner un fournisseur d'identité"
         size="large"
         style={{ width: '100%' }}
+        suffixIcon={<CustomIconSVG />}
         value={selected}
         onChange={onSelectHandler}>
         {options.map(identityProvider => (

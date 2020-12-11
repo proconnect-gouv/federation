@@ -4,6 +4,7 @@ import { Select } from 'antd';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { ReactComponent as CustomIconSVG } from '../../assets/select-input-custom-icon.svg';
 import { RootState } from '../../types';
 
 type MinistriesSelectComponoentProps = {
@@ -18,6 +19,7 @@ const MinistriesSelectComponoent = React.memo(
 
     return (
       <Select
+        aria-label="Sélectionner un ministère"
         className="mb-3 text-left"
         defaultActiveFirstOption={false}
         dropdownClassName="fca-ministries-select"
@@ -25,6 +27,7 @@ const MinistriesSelectComponoent = React.memo(
         placeholder="Sélectionner un ministère"
         size="large"
         style={{ width: '100%' }}
+        suffixIcon={<CustomIconSVG />}
         onSelect={ministryId => {
           onSelect(ministryId);
         }}>

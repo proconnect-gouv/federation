@@ -31,7 +31,7 @@ export class MockIdentityProviderFcaService {
         rtrim: true,
       });
 
-      this.database = data.rows;
+      this.database = data.rows.map(this.removeEmptyColums);
     } catch (error) {
       this.logger.fatal(
         `Failed to load CSV database, path was: ${absolutePath}`,
@@ -42,6 +42,17 @@ export class MockIdentityProviderFcaService {
     this.logger.debug(
       `Database loaded (${this.database.length} entries found)`,
     );
+  }
+
+  private removeEmptyColums(data: Identity): Identity {
+    const cleanedData = {} as Identity;
+    Object.entries(data).forEach(([key, value]) => {
+      if (value && value !== '') {
+        cleanedData[key] = value;
+      }
+    });
+
+    return cleanedData;
   }
 
   getIdentity(inputUid: string): Identity {
