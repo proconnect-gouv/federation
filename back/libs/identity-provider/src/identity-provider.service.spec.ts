@@ -18,7 +18,6 @@ describe('IdentityProviderService', () => {
       active: true,
       display: false,
       clientID: 'clientID',
-      title: 'provider1 title',
       image: 'provider1.png',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
