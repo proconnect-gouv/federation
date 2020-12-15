@@ -22,6 +22,7 @@ import { HttpProxyModule } from '@fc/http-proxy';
 import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
 import { MailerModule } from '@fc/mailer';
 import { TrackingModule } from '@fc/tracking';
+import { NotificationsModule, NotificationsService } from '@fc/notifications';
 import {
   CoreService,
   CoreTrackingService,
@@ -64,6 +65,7 @@ const oidcProviderModule = OidcProviderModule.register(
     MailerModule,
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),
+    NotificationsModule
   ],
   controllers: [CoreFcpController],
   providers: [
@@ -80,6 +82,7 @@ const oidcProviderModule = OidcProviderModule.register(
     TrackableEventHandler,
     IdentityProviderOperationTypeChangesHandler,
     ServiceProviderOperationTypeChangesHandler,
+    NotificationsService
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [SessionModule],

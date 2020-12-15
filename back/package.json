@@ -224,7 +224,9 @@
       "@fc/eidas/(.*)": "<rootDir>/libs/eidas/src/$1",
       "@fc/eidas": "<rootDir>/libs/eidas/src",
       "@fc/scopes/(.*)": "<rootDir>/libs/scopes/src/$1",
-      "@fc/scopes": "<rootDir>/libs/scopes/src"
+      "@fc/scopes": "<rootDir>/libs/scopes/src",
+      "@fc/notifications/(.*)": "<rootDir>/libs/notifications/src/$1",
+      "@fc/notifications": "<rootDir>/libs/notifications/src"
     },
     "preset": "ts-jest"
   }
