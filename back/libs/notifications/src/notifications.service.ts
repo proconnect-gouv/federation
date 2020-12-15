@@ -4,7 +4,7 @@ import { INotifications } from './interfaces';
 @Injectable()
 export class NotificationsService {
   constructor(
-    @InjectModel('Notifications')
+    @InjectModel('notifications')
     private readonly notificationsModel,
   ) {}
 
