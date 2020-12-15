@@ -12,6 +12,33 @@ body {
   width: 100%;
 }
 
+#notifications {
+  padding: 0 16px;
+  margin: 16px 0;
+}
+
+#notifications div {
+  background-color: #f2f4ff;
+  border-radius: 8px;
+  padding: 16px 16px 16px 42px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+#notifications span {
+  padding-top: 4px;
+  font-size: 1rem;
+  color: #000091;
+  text-align: center;
+  font-weight: bold;
+}
+
+#notifications img {
+  margin-right: 8px;
+  width: 24px;
+}
+
 #mire {
   display: flex;
   flex-direction: column;
