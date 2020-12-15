@@ -4,6 +4,14 @@
 
   <body>
     <%- include('partials/menu.ejs'); %>
+    <% if(locals.notifications){ %> 
+    <div id="notifications">
+      <div>
+        <img src="/img/warning.svg" alt="icone de mise en garde"/>
+        <span> <%- locals.notifications.message %> </span>
+      </div>
+    </div>
+    <% } %> 
     <div id="mire">
       <div class="content">
         <main>    

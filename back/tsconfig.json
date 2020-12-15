@@ -274,6 +274,12 @@
       ],
       "@fc/scopes/*": [
         "libs/scopes/src/*"
+      ],
+      "@fc/notifications": [
+        "libs/notifications/src"
+      ],
+      "@fc/notifications/*": [
+        "libs/notifications/src/*"
       ]
     }
   },
