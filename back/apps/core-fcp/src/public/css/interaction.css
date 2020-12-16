@@ -39,11 +39,6 @@ main > h1 {
 }
 
 main > h1 + h2 {
-  width: 100%;
-  font-size: 1.5rem;
-}
-
-main h2 {
   margin-top: 16px;
   font-size: 1.5rem;
   font-weight: bold;

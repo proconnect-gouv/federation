@@ -10,6 +10,7 @@
           <h1>Je choisis un moyen pour me connecter sur :</h1>
           <h2><%= locals.spName %></h2>
           <div id="idp-list" class="main__providers">
+            <!-- SET BIGGER IMAGE FOR DISABLED BTN -->
             <% locals.providers.filter(p => p.display).forEach((provider) => { %>
               <form
                 method="POST"
