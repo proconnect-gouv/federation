@@ -33,25 +33,18 @@ main {
 
 main > h1 {
   width: 100%;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   max-width: 768px;
   color: #3e4553;
-
 }
 
 main > h1 + h2 {
-  width: 100%;
-  font-size: 1.5rem;
-}
-
-main h2 {
   margin-top: 16px;
   font-size: 1.5rem;
   font-weight: bold;
   color: #000091;
   display: block;
 }
-
 
 .main__providers {
   width: 100%;
@@ -65,6 +58,14 @@ main h2 {
 
   main > h2, main > h1 {
     text-align: center;
+  }
+
+  main > h1 {
+    font-size: 1.5rem;
+  }
+
+  main > h1 + h2 {
+    font-size: 2rem;
   }
 }
 @media screen and (min-width: 768px) {
@@ -127,6 +128,7 @@ main h2 {
 .identity-provider button span {
   font-weight: normal;
   margin-bottom: 5px;
+  width: 70%;
 }
 
 .identity-provider button strong {
