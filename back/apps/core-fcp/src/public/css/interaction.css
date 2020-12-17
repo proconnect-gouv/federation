@@ -33,7 +33,7 @@ main {
 
 main > h1 {
   width: 100%;
-  font-size: 1.2rem;
+  font-size: 1.13rem;
   max-width: 768px;
   color: #3e4553;
 }
@@ -53,7 +53,7 @@ main > h1 + h2 {
 
 @media screen and (min-width: 576px) {
   main {
-    min-height: calc(100vh - (95px + 117px))
+    min-height: calc(100vh - (95px + 117px))  
   }
 
   main > h2, main > h1 {
@@ -61,7 +61,7 @@ main > h1 + h2 {
   }
 
   main > h1 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
   }
 
   main > h1 + h2 {
@@ -71,6 +71,14 @@ main > h1 + h2 {
 @media screen and (min-width: 768px) {
   main {
     padding: 16px 32px 80px;
+  }
+
+  main > h1 {
+    font-size: 1.5rem;
+  }
+
+  main > h1 + h2 {
+    font-size: 2.5rem;
   }
 }
 
@@ -100,7 +108,7 @@ main > h1 + h2 {
 
 .identity-provider button {
   width: 100%;
-  max-width: 376px;
+  max-width: 400px;
   padding: 16px;
   margin: 8px 0;
   box-shadow: 0 0 3px rgba(0, 0, 145, 0.3);
@@ -128,7 +136,7 @@ main > h1 + h2 {
 .identity-provider button span {
   font-weight: normal;
   margin-bottom: 5px;
-  width: 70%;
+  width: 80%;
 }
 
 .identity-provider button strong {
