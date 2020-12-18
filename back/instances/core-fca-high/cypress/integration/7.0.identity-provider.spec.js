@@ -4,7 +4,7 @@ describe('Idp activation & visibility', () => {
   // -- replace by either `fip` or `fia`
   const idpId = `${Cypress.env('IDP_NAME')}`;
   const idpNotExist = `${Cypress.env('IDP_NAME_NOT_EXIST')}`;
-  const ministryId = 'ministere-de-linterieur';
+  const ministryId = 'ministry1';
 
   const mireUrl = new RegExp('/interaction/[^/]+');
 
@@ -87,7 +87,9 @@ describe('Idp activation & visibility', () => {
       'not.exist',
     );
 
-    cy.contains('Aucuns résultats').should('be.visible');
+    cy.contains("Aucun fournisseur d'identités n'a été trouvé").should(
+      'be.visible',
+    );
   });
 
   /**

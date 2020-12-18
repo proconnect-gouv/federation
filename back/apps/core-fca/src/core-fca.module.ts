@@ -12,6 +12,7 @@ import {
   IdentityProviderService,
   IdentityProviderModule,
 } from '@fc/identity-provider';
+import { MinistriesModule } from '@fc/ministries';
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
 import { CryptographyModule } from '@fc/cryptography';
@@ -49,6 +50,7 @@ import { CoreFcaService } from './core-fca.service';
     RnippModule,
     ServiceProviderModule,
     IdentityProviderModule,
+    MinistriesModule,
     HttpProxyModule,
     oidcProviderModule,
     OidcClientModule.register(IdentityProviderService, IdentityProviderModule),

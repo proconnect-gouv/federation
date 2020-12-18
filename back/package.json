@@ -136,6 +136,8 @@
       "@fc/core-fcp": "<rootDir>/apps/core-fcp/src",
       "@fc/csmr-hsm/(.*)": "<rootDir>/apps/csmr-hsm/src/$1",
       "@fc/csmr-hsm": "<rootDir>/apps/csmr-hsm/src",
+      "@fc/ministries": "<rootDir>/libs/ministries/src",
+      "@fc/ministries/(.*)": "<rootDir>/libs/ministries/src/$1",
       "@fc/mock-service-provider/(.*)": "<rootDir>/apps/mock-service-provider/src/$1",
       "@fc/mock-service-provider": "<rootDir>/apps/mock-service-provider/src",
       "@fc/eidas-bridge/(.*)": "<rootDir>/apps/eidas-bridge/src/$1",
