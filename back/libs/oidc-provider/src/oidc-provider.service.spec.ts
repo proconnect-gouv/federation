@@ -569,9 +569,9 @@ describe('OidcProviderService', () => {
     it('should call throwError if getInteractionIdFromCtx throw an error', () => {
       // Given
       const ctxMock = { not: 'altered' };
-      service['getInteractionIdFromCtx'] = jest
-        .fn()
-        .mockRejectedValueOnce(unknownError);
+      service['getInteractionIdFromCtx'] = jest.fn().mockImplementation(() => {
+        throw unknownError;
+      });
       service['throwError'] = jest.fn();
       // When
       service['tokenMiddleware'](ctxMock);
@@ -586,7 +586,9 @@ describe('OidcProviderService', () => {
     it('should call throwError if getIpFromCtx throw an error', () => {
       // Given
       const ctxMock = { not: 'altered' };
-      service['getIpFromCtx'] = jest.fn().mockRejectedValueOnce(unknownError);
+      service['getIpFromCtx'] = jest.fn().mockImplementation(() => {
+        throw unknownError;
+      });
       service['throwError'] = jest.fn();
       // When
       service['tokenMiddleware'](ctxMock);
@@ -601,7 +603,9 @@ describe('OidcProviderService', () => {
     it('should call throwError if tracking.track throw an error', () => {
       // Given
       const ctxMock = { not: 'altered' };
-      trackingMock.track.mockRejectedValueOnce(unknownError);
+      trackingMock.track.mockImplementation(() => {
+        throw unknownError;
+      });
       service['throwError'] = jest.fn();
       // When
       service['tokenMiddleware'](ctxMock);
@@ -640,9 +644,9 @@ describe('OidcProviderService', () => {
     it('should call throwError if getInteractionIdFromCtx throw an error', () => {
       // Given
       const ctxMock = { not: 'altered' };
-      service['getInteractionIdFromCtx'] = jest
-        .fn()
-        .mockRejectedValueOnce(unknownError);
+      service['getInteractionIdFromCtx'] = jest.fn().mockImplementation(() => {
+        throw unknownError;
+      });
       service['throwError'] = jest.fn();
       // When
       service['userinfoMiddleware'](ctxMock);
@@ -657,7 +661,9 @@ describe('OidcProviderService', () => {
     it('should call throwError if getIpFromCtx throw an error', () => {
       // Given
       const ctxMock = { not: 'altered' };
-      service['getIpFromCtx'] = jest.fn().mockRejectedValueOnce(unknownError);
+      service['getIpFromCtx'] = jest.fn().mockImplementation(() => {
+        throw unknownError;
+      });
       service['throwError'] = jest.fn();
       // When
       service['userinfoMiddleware'](ctxMock);

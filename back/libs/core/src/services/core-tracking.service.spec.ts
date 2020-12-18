@@ -73,9 +73,12 @@ describe('CoreTrackingService', () => {
   describe('buildLog', () => {
     it('should call extractContext with req property of context param', async () => {
       // Given
-      service['extractContext'] = jest.fn();
+      service['extractContext'] = jest.fn().mockReturnValue({
+        ip: 'ip',
+        interactionId: 'interactionId',
+      });
       // When
-      service.buildLog(eventMock, contextMock);
+      await service.buildLog(eventMock, contextMock);
       // Then
       expect(service['extractContext']).toHaveBeenCalledTimes(1);
       expect(service['extractContext']).toHaveBeenCalledWith(contextMock);

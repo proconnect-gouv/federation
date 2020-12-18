@@ -1,12 +1,20 @@
-import * as glob from 'glob';
 import * as fs from 'fs';
+import * as glob from 'glob';
+import * as ejs from 'ejs';
 import { FcException } from '@fc/error';
 import Runner from './runner';
 import MarkdownGenerator from './markdown-generator';
 
+jest.mock('fs');
+jest.mock('console');
+jest.mock('ejs');
+jest.mock('glob');
+jest.mock('./markdown-generator');
+
 describe('Runner', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
   });
 
   describe('extractException', () => {
@@ -70,14 +78,40 @@ describe('Runner', () => {
   });
 
   describe('renderFile', () => {
-    it('Should reject the promise caused by invalid params', () => {
+    // Setup
+    const file = 'none.file';
+    const dataMock = [];
+    const renderFileResult = [Symbol('renderFileResult')];
+
+    const renderFileMockErrorImplementation = (
+      _a: string,
+      _b: unknown,
+      callback,
+    ) => callback('error');
+
+    const renderFileMockSuccesImplementation = (
+      _a: string,
+      _b: unknown,
+      callback,
+    ) => callback(null, renderFileResult);
+
+    it('Should reject the promise caused by invalid params', async () => {
       // Setup
-      const file = 'none.file';
-      const obj = [];
-      // Actions
-      const result = Runner.renderFile(file, obj);
+      jest
+        .spyOn(ejs, 'renderFile')
+        .mockImplementationOnce(renderFileMockErrorImplementation);
       // Expect
-      expect(result).rejects.toMatch('error');
+      await expect(Runner.renderFile(file, dataMock)).rejects.toEqual('error');
+    });
+    it('Should return result from ejs renderFile', async () => {
+      // Setup
+      jest
+        .spyOn(ejs, 'renderFile')
+        .mockImplementationOnce(renderFileMockSuccesImplementation);
+      // Action
+      const result = await Runner.renderFile(file, dataMock);
+      // Expect
+      expect(result).toEqual(renderFileResult);
     });
   });
 
@@ -115,88 +149,91 @@ describe('Runner', () => {
   });
 
   describe('getExceptionsFilesPath', () => {
-    it('Should return a list of files named as *.exception.ts', () => {
+    it('Should call glob.sync', () => {
+      // Setup
+      jest.spyOn(glob, 'sync').mockImplementation();
+      const basePath = 'foobar';
+      const pattern = '/**/*.exception.ts';
+      const filePaths = `${basePath}${pattern}`;
       // Actions
-      const found = Runner.getExceptionsFilesPath('@(libs|apps)');
-      const tsFiles = found.filter((f) => f.indexOf('.exception.ts') >= 0);
-      const noTsFiles = found.filter((f) => f.indexOf('.exception.ts') < 0);
+      Runner.getExceptionsFilesPath(basePath, pattern);
       // Expect
-      expect(Array.isArray(found)).toBe(true);
-      expect(noTsFiles.length).toEqual(0);
-      expect(tsFiles.length).toBeGreaterThanOrEqual(1);
+      expect(glob.sync).toHaveBeenCalledTimes(1);
+      expect(glob.sync).toHaveBeenCalledWith(filePaths);
     });
 
-    it('Should return have been called with default parameters', () => {
+    it('Should return result of glob.sync', () => {
       // Setup
-      jest.mock('glob');
-      jest.spyOn(glob, 'sync');
-      const basePath = '@(libs|apps)';
-      const filePaths = `${basePath}/**/*.exception.ts`;
+      const globSyncResult = ['globSyncResult'];
+      jest.spyOn(glob, 'sync').mockImplementation(() => globSyncResult);
       // Actions
-      Runner.getExceptionsFilesPath();
+      const result = Runner.getExceptionsFilesPath();
       // Expect
-      expect(glob.sync).toHaveBeenCalledWith(filePaths);
-      // Restore
-      jest.clearAllMocks();
-    });
-
-    it('Should call glob.sync with base path defined @(libs|apps)', () => {
-      // Setup
-      jest.mock('glob');
-      jest.spyOn(glob, 'sync');
-      const basePath = '@(libs|apps)';
-      const filePaths = `${basePath}/**/*.exception.ts`;
-      // Actions
-      Runner.getExceptionsFilesPath(basePath);
-      // Expect
-      expect(glob.sync).toHaveBeenCalledWith(filePaths);
-      // Restore
-      jest.clearAllMocks();
+      expect(result).toBe(globSyncResult);
     });
   });
 
   describe('run', () => {
-    it('Should call fs.writeFileSync to create the markdown file', async () => {
-      // Setup
-      jest.mock('./runner');
-      Runner.loadExceptions = jest.fn();
-      Runner.getExceptionsFilesPath = jest.fn();
+    // Setup
+    const getExceptionsFilesPathResult = [];
+    const loadExceptionsResult = [];
+    const markdownGenerateResult = [];
+    const renderFileResult = '';
+    const generatorSpy = jest.spyOn(MarkdownGenerator, 'generate');
 
-      jest.mock('./markdown-generator');
-      MarkdownGenerator.generate = jest.fn().mockReturnValueOnce([
-        [
-          {
-            errorCode: 'Y0101',
-            scope: 1,
-            code: 1,
-            message: 'any',
-            description: 'any',
-            trackable: false,
-            loggable: false,
-          },
-        ],
-        [
-          {
-            errorCode: 'Y0201',
-            scope: 2,
-            code: 1,
-            message: 'any',
-            description: 'any',
-            trackable: false,
-            loggable: false,
-          },
-        ],
-      ]);
+    beforeEach(() => {
+      generatorSpy.mockImplementation(() => markdownGenerateResult);
+      // Inhibate library function
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
+      // Inhibate library function
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      jest.spyOn(console, 'log').mockImplementation(() => {});
 
-      jest.mock('fs');
-      jest.spyOn(fs, 'writeFileSync');
+      Runner.renderFile = jest.fn().mockResolvedValue(renderFileResult);
+      Runner.loadExceptions = jest.fn().mockResolvedValue(loadExceptionsResult);
+      Runner.getExceptionsFilesPath = jest
+        .fn()
+        .mockImplementation(() => getExceptionsFilesPathResult);
+    });
 
+    it('Should call loadExceptions with getExceptionsFilesPath result', async () => {
       // Actions
       await Runner.run();
       // Expect
-      expect(fs.writeFileSync).toHaveBeenCalled();
-      // Restore
-      jest.clearAllMocks();
+      expect(Runner.loadExceptions).toHaveBeenCalledTimes(1);
+      expect(Runner.loadExceptions).toHaveBeenCalledWith(
+        getExceptionsFilesPathResult,
+      );
+    });
+
+    it('Should call generate with loadExceptions result', async () => {
+      // Actions
+      await Runner.run();
+      // Expect
+      expect(generatorSpy).toHaveBeenCalledTimes(1);
+      expect(generatorSpy).toHaveBeenCalledWith(loadExceptionsResult);
+    });
+
+    it('Should call renderFile with generate result', async () => {
+      // Actions
+      await Runner.run();
+      // Expect
+      expect(Runner.renderFile).toHaveBeenCalledTimes(1);
+      expect(Runner.renderFile).toHaveBeenCalledWith(expect.any(String), {
+        markdown: markdownGenerateResult,
+      });
+    });
+
+    it('Should call fs.writeFileSync with renderFile result', async () => {
+      // Actions
+      await Runner.run();
+      // Expect
+      expect(fs.writeFileSync).toHaveBeenCalledTimes(1);
+      expect(fs.writeFileSync).toHaveBeenCalledWith(
+        '_doc/erreurs.md',
+        renderFileResult,
+      );
     });
   });
 });

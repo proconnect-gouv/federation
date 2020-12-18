@@ -32,6 +32,7 @@ describe('DtoValidation', () => {
     it('should call "plainToClass" from "class-transformer" through "getTransformed" call', async () => {
       // setup
       jest.spyOn(ClassTransformer, 'plainToClass');
+      jest.spyOn(ClassValidator, 'validate').mockImplementation(async () => []);
 
       class TestClass {}
       const plain = { foo: 'bar' };
