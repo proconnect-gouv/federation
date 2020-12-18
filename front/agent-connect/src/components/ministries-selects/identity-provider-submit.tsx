@@ -3,27 +3,34 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { choosenIdentityProvider } from '../../redux/actions';
-import { selectIdentityProviderInputs } from '../../redux/selectors';
-import { IdentityProvider, RootState } from '../../types';
+import {
+  selectIdentityProviderByUID,
+  selectIdentityProviderInputs,
+} from '../../redux/selectors';
+import { RootState } from '../../types';
 
 type IdentityProviderSubmitProps = {
-  identityProvider: IdentityProvider;
+  uid: string;
 };
 
 const IdentityProviderSubmitComponent = React.memo(
-  ({ identityProvider }: IdentityProviderSubmitProps): JSX.Element => {
-    const { active, uid } = identityProvider;
+  ({ uid }: IdentityProviderSubmitProps): JSX.Element => {
     const dispatch = useDispatch();
-    const formTargetURL = useSelector((state: RootState) => state.redirectURL);
 
-    const redirectToIdentityProviderInputs = useSelector((state: RootState) => {
-      return selectIdentityProviderInputs(state, uid);
-    });
+    const formTargetURL = useSelector((state: RootState) => state.redirectURL);
+    const hiddenInputs = useSelector((state: RootState) =>
+      selectIdentityProviderInputs(state, uid),
+    );
+    const identityProvider = useSelector((state: RootState) =>
+      selectIdentityProviderByUID(state, uid),
+    );
 
     const buttonClickHandler = useCallback(() => {
       const action = choosenIdentityProvider(uid);
       dispatch(action);
     }, [dispatch, uid]);
+
+    const isDisabled = !identityProvider || !identityProvider.active;
 
     return (
       <form
@@ -31,17 +38,12 @@ const IdentityProviderSubmitComponent = React.memo(
         id={`fs-request-${uid}`}
         method="POST"
         name="fs-request">
-        {redirectToIdentityProviderInputs.map(([inputKey, inputValue]) => (
-          <input
-            key={inputKey}
-            defaultValue={inputValue}
-            name={inputKey}
-            type="hidden"
-          />
+        {hiddenInputs.map(([key, value]) => (
+          <input key={key} defaultValue={value} name={key} type="hidden" />
         ))}
         <Button
           className="font-18 mx-auto"
-          disabled={!active}
+          disabled={isDisabled}
           htmlType="submit"
           id="idp-go"
           size="large"

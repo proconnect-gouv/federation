@@ -11,34 +11,28 @@ type MinistriesSelectComponoentProps = {
   onSelect: Function;
 };
 
-const { Option } = Select;
-
 const MinistriesSelectComponoent = React.memo(
   ({ onSelect }: MinistriesSelectComponoentProps): JSX.Element => {
     const ministries = useSelector((state: RootState) => state.ministries);
-
     return (
       <Select
         aria-label="Sélectionner un ministère"
         className="mb-3 text-left"
-        defaultActiveFirstOption={false}
         dropdownClassName="fca-ministries-select"
         id="select-ministry"
         placeholder="Sélectionner un ministère"
         size="large"
         style={{ width: '100%' }}
         suffixIcon={<CustomIconSVG />}
-        onSelect={ministryId => {
-          onSelect(ministryId);
-        }}>
-        {ministries.map(ministry => (
-          <Option
-            key={ministry.id}
-            id={`ministry-${ministry.id}`}
-            value={ministry.id}>
-            {ministry.name}
-          </Option>
-        ))}
+        onSelect={ministryId => onSelect(ministryId)}>
+        {ministries.map(ministry => {
+          const { id, name } = ministry;
+          return (
+            <Select.Option key={id} id={`ministry-${id}`} value={id}>
+              {name}
+            </Select.Option>
+          );
+        })}
       </Select>
     );
   },

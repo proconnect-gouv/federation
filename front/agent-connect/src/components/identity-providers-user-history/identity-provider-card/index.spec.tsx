@@ -11,16 +11,18 @@ jest.mock('../../../redux/actions');
 const props = { uid: 'mock-uid' };
 const action = { payload: 'mock-uid', type: 'mock-action-type' };
 const initialState = {
+  identityProviders: [
+    {
+      active: true,
+      display: true,
+      name: 'mock-name',
+      uid: 'mock-uid',
+    },
+  ],
   ministries: [
     {
       id: 'mock-ministry-id',
-      identityProviders: [
-        {
-          active: true,
-          name: 'mock-name',
-          uid: 'mock-uid',
-        },
-      ],
+      identityProviders: ['mock-uid'],
       name: 'mock-ministry-name',
     },
   ],

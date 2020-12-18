@@ -1,28 +1,21 @@
 import { createCachedSelector } from 're-reselect';
 
-import { IdentityProvider, Ministry, RootState } from '../../types';
+import { IdentityProvider, RootState } from '../../types';
 
-const getMinistries = (state: RootState): Ministry[] => state.ministries;
+const getIdentityProviders = (state: RootState): IdentityProvider[] =>
+  state.identityProviders;
 const getUID = (_state: RootState, uid: string): string => uid;
 
-export const groupIdentityProviders = (
-  previousValue: IdentityProvider[],
-  ministry: Ministry,
-) => {
-  const { identityProviders } = ministry;
-  return [...previousValue, ...identityProviders];
-};
-
-export const findCurrentIdentityProviderByUID = (uid: string) => (
-  identityProvider: IdentityProvider,
-) => identityProvider.uid === uid;
-
 export const selectIdentityProviderByUID = createCachedSelector(
-  getMinistries,
+  getIdentityProviders,
   getUID,
-  (ministries: Ministry[], uid: string): IdentityProvider | undefined => {
-    const providers = ministries.reduce(groupIdentityProviders, []);
-    const found = providers.find(findCurrentIdentityProviderByUID(uid));
+  (
+    providers: IdentityProvider[],
+    uid: string,
+  ): IdentityProvider | undefined => {
+    const found = providers.find(({ uid: id }) => id === uid);
     return found;
   },
 )((_state, uid) => `ministry::identityProvider::${uid}`);
+
+export default selectIdentityProviderByUID;

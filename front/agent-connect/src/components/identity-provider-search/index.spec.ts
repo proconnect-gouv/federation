@@ -1,30 +1,64 @@
-import { IdentityProvider } from '../../types';
-import { isSearchTermValid, searchIdentityProvidersByTerm } from './index';
+import { isSearchTermValid, searchIdentityProvidersByTerm, transformIdentityProviderNameToSlug, transformTermToSlug } from './index';
 
-const list = [
+const slugifiedlist = [
   {
     active: true,
+    display: true,
     name: '2eme fi intérieur',
+    slug: '2eme fi interieur',
     uid: '2eme-fi-interieur',
   },
   {
     active: true,
-    name: '1er fi intérieur',
+    display: true,
+    name: '1er fi élevé',
+    slug: '2eme fi eleve',
     uid: '1er-fi-interieur',
   },
   {
     active: true,
+    display: true,
     name: '3eme fi intérieur',
+    slug: '3eme fi intérieur',
     uid: '3eme-fi-interieur',
-  },
-  {
-    active: true,
-    name: 'toto',
-    uid: 'toto',
   },
 ];
 
 describe('IdentityProviderSearchComponent', () => {
+  describe('transformTermToSlug', () => {
+    it('should return a string without accent', () => {
+      // setup
+      const term = 'élevé';
+      const expected = 'eleve';
+      // action
+      const result = transformTermToSlug(term);
+      // expect
+      expect(result).toStrictEqual(expected);
+    });
+  });
+
+  describe('transformIdentityProviderNameToSlug', () => {
+    it('should return a string without accent', () => {
+      // setup
+      const item = {
+        active: true,
+        display: true,
+        name: '1er fi élevé',
+        uid: '1er-fi-interieur',
+      };
+      // action
+      const result = transformIdentityProviderNameToSlug(item);
+      // expect
+      expect(result).toStrictEqual({
+        active: true,
+        display: true,
+        name: '1er fi élevé',
+        slug: '1er fi eleve',
+        uid: '1er-fi-interieur',
+      });
+    });
+  });
+
   describe('isSearchTermValid', () => {
     it('should return false, term is undefined', () => {
       const term = undefined;
@@ -58,54 +92,28 @@ describe('IdentityProviderSearchComponent', () => {
   });
 
   describe('searchIdentityProvidersByTerm', () => {
-    it('should return a list of results by a term, insensitive case', () => {
+    it('should return a list of results by a term, insensitive case, insensitive accent', () => {
       // setup
-      const term = 'TOTO';
-      const searchlist = [
-        ...list,
-        {
-          active: true,
-          name: 'supertoto',
-          uid: 'supertoto',
-        },
-      ];
+      const term = 'ELEVE';
       // action
-      const result = searchIdentityProvidersByTerm(searchlist, term);
+      const result = searchIdentityProvidersByTerm(slugifiedlist, term);
       // expect
       expect(result).toStrictEqual([
-        { active: true, name: 'toto', uid: 'toto' },
-        { active: true, name: 'supertoto', uid: 'supertoto' },
-      ]);
-    });
-
-    it('should return an empty array, identity providers a key is not valid', () => {
-      // setup
-      const term = 'mock-name';
-      const searchlist = ([
         {
-          name: 'mock-name',
-          notAValidUIDKey: 'mock-uid',
+          active: true,
+          display: true,
+          name: '1er fi élevé',
+          slug: '2eme fi eleve',
+          uid: '1er-fi-interieur',
         },
-      ] as unknown) as IdentityProvider[];
-      // action
-      const result = searchIdentityProvidersByTerm(searchlist, term);
-      // expect
-      expect(result).toStrictEqual([]);
+      ]);
     });
 
     it('should return an empty array, no results', () => {
       // setup
       const term = 'anyterm';
-      const searchlist = [
-        ...list,
-        {
-          active: true,
-          name: 'toto',
-          uid: 'toto',
-        },
-      ];
       // action
-      const result = searchIdentityProvidersByTerm(searchlist, term);
+      const result = searchIdentityProvidersByTerm(slugifiedlist, term);
       // expect
       expect(result).toStrictEqual([]);
     });

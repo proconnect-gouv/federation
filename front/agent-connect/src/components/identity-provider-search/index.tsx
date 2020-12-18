@@ -5,15 +5,23 @@
  * Can not mock FUSE library
  */
 import { Form } from 'antd';
+import diacritics from 'diacritics';
 import Fuse from 'fuse.js';
 import React, { useCallback, useState } from 'react';
 import { useSelector } from 'react-redux';
 
-import { selectIdentityProviders } from '../../redux/selectors';
-import { IdentityProvider } from '../../types';
+import { IdentityProvider, RootState } from '../../types';
 import NoSearchResults from './no-search-results';
 import SearchInput from './search-input';
 import SearchResults from './search-results';
+
+export type SlugifiedIdentityProvider = {
+  name: string;
+  slug: string;
+  uid: string;
+  active: boolean;
+  display: boolean;
+};
 
 const FUSE_SEARCH_OPTIONS = {
   findAllMatches: false,
@@ -21,7 +29,7 @@ const FUSE_SEARCH_OPTIONS = {
   includeMatches: false,
   includeScore: false,
   isCaseSensitive: false,
-  keys: ['name'],
+  keys: ['slug'],
   maxPatternLength: 64,
   minMatchCharLength: 3,
   shouldSort: true,
@@ -36,8 +44,18 @@ export const isSearchTermValid = (term: string | undefined): boolean => {
   return trimmed !== '' && trimmed.length >= 3;
 };
 
+
+export const transformTermToSlug = (term: string) => {
+  return diacritics.remove(term);
+};
+
+export const transformIdentityProviderNameToSlug = (identityProvider: IdentityProvider): SlugifiedIdentityProvider => ({
+  ...identityProvider,
+  slug: diacritics.remove(identityProvider.name),
+});
+
 export const searchIdentityProvidersByTerm = (
-  list: IdentityProvider[],
+  list: SlugifiedIdentityProvider[],
   term: string,
 ): IdentityProvider[] => {
   const fuse = new Fuse(list, FUSE_SEARCH_OPTIONS);
@@ -52,7 +70,10 @@ const IdentityProviderSearchComponent = React.memo(
   (): JSX.Element => {
     const [searchTerm, setSearchTerm] = useState<string | undefined>();
     const [results, setResults] = useState<IdentityProvider[]>([]);
-    const identityProviders = useSelector(selectIdentityProviders);
+
+    const identityProviders = useSelector(
+      (state: RootState) => state.identityProviders.map(transformIdentityProviderNameToSlug),
+    );
 
     const onInputChangeHandler = useCallback(
       inputValue => {
@@ -60,9 +81,10 @@ const IdentityProviderSearchComponent = React.memo(
         let searchResults: React.SetStateAction<IdentityProvider[]> = [];
         const term = (inputValue && inputValue.trim()) || false;
         if (term) {
+          const slug = transformTermToSlug(term);
           searchResults = searchIdentityProvidersByTerm(
             identityProviders,
-            term,
+            slug,
           );
         }
         setResults(searchResults);
@@ -70,19 +92,22 @@ const IdentityProviderSearchComponent = React.memo(
       [identityProviders],
     );
 
+    const onSubmitSearchForm = (values: any) => {
+      const inputValue = values['fi-search-term'];
+      onInputChangeHandler(inputValue);
+    };
+
     const showSearchResults = results.length > 0;
     const showNoSearchResults =
       !showSearchResults && isSearchTermValid(searchTerm);
+
     return (
       <div className="row text-center mb-8" id="identity-provider-search">
         <Form
           className="w-100"
           layout="vertical"
           size="large"
-          onFinish={values => {
-            const inputValue = values['fi-search-term'];
-            onInputChangeHandler(inputValue);
-          }}>
+          onFinish={onSubmitSearchForm}>
           <SearchInput
             label="Je connais le nom de mon fournisseur d'identité"
             name="fi-search-term"
