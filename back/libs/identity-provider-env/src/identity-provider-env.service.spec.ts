@@ -157,6 +157,11 @@ describe('IdentityProviderEnvService', () => {
     service = module.get<IdentityProviderEnvService>(
       IdentityProviderEnvService,
     );
+
+    configMock.get.mockReturnValue({
+      discoveryUrl: 'discoveryUrl',
+      provider: 'provider',
+    });
   });
 
   it('should be defined', () => {
