@@ -50,9 +50,6 @@ export class MockIdentityProviderFcaController {
     };
   }
 
-  /**
-   * @todo validate body (user uid)
-   */
   @Post(MockIdentityProviderFcaRoutes.INTERACTION_LOGIN)
   async getLogin(@Next() next, @Body() body: SignInDTO): Promise<void> {
     const { login, interactionId } = body;

@@ -70,15 +70,8 @@ export class OidcClientController {
   }
 
   /**
-   * @TODO Handle caching `client` or passing it to the service
-   * to avoid double discovery.
-   *
-   * Currently the two methods, `getTokenSet` and `getUserinfo`, each make their own call
-   * to `getClient`, which, if enabled, queries the idp discovery url.
-   *
-   * This results in 2 additionals HTTP queries instead of one or zero (agressive caching)
-   *
-   * Note that this controller already has to perform 2 HTTP queries to idp (`/token` & `/userinfo`)
+   * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
    */
   @Get(OidcClientRoutes.OIDC_CALLBACK)
   @UsePipes(new ValidationPipe({ whitelist: true }))

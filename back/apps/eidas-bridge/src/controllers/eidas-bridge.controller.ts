@@ -56,10 +56,9 @@ export class EidasBridgeController {
     };
   }
 
-  /* @TODO #251
-   * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+  /**
+   * @TODO #251 ETQ Dev, j'utilise une configuration pour savoir si j'utilise FC, AC, EIDAS, et avoir les valeurs de scope et acr en config et non en dur.
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
-   *
    */
   @Get(EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE)
   @Redirect()
@@ -180,11 +179,6 @@ export class EidasBridgeController {
     };
   }
 
-  /**
-   * @TODO #291
-   * modify interaction.ejs
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/271
-   */
   @Get(EidasBridgeRoutes.INTERACTION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('interaction')

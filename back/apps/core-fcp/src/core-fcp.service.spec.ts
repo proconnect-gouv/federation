@@ -220,7 +220,8 @@ describe('CoreFcpService', () => {
       expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
     });
     /**
-     * @TODO #134 Test when implemented
+     * @TODO #134 ETQ FC, je suis résiliant aux fails du RNIPP
+     * Test when implemented
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/134
      *
      * // RNIPP resilience

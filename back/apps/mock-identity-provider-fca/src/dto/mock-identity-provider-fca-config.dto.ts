@@ -11,7 +11,7 @@ import { AppConfig } from '@fc/app';
 import { CryptographyConfig } from '@fc/cryptography';
 /**
  * Rename this librairy into a more appropriate name `adapter`, `mongo`
- * @TODO #246
+ * @TODO #246 ETQ Dev, j'ai des application avec un nommage précis et explicite
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/246
  */
 import { ServiceProviderEnvConfig } from '@fc/service-provider-env';

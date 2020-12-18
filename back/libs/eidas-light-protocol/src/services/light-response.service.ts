@@ -24,7 +24,9 @@ import { EidasLightProtocolConfig } from '../dto';
 import { LightCommonsService } from './light-commons.service';
 
 /**
- * @todo This file is too big and need to be splitted in the future between
+ * @todo #280 ETQ Bridge eIDAS je peux fournir et interpréter une LightResponse XML - Suite
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/280
+ * This file is too big and need to be splitted in the future between
  * generics functions and business functions.
  */
 @Injectable()
