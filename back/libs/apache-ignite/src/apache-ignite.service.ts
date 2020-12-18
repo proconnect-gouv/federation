@@ -79,7 +79,8 @@ export class ApacheIgniteService {
       this.logger.debug('Apache ignite client is connected');
     } else if (state === STATE.DISCONNECTED) {
       /**
-       * @todo Here we may need to try to reconnect or throw
+       * @todo #304 Here we may need to try to reconnect or throw
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/304
        */
       this.logger.debug('Apache ignite client disconnected');
       if (reason) {

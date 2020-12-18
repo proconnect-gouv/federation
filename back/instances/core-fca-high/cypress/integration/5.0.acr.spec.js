@@ -112,7 +112,8 @@ describe('Acr', () => {
   });
 
   /**
-   * @todo Place a dropdown menu in the IDp Mock to allow the ACR to be searched.
+   * @todo #311 Place a dropdown menu in the IDp Mock to allow the ACR to be searched.
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/311
    */
   it.skip('should complete cinematic even when acr is to low and FC should force it to max value', () => {
     const FORCE_MAX_EIDAS = 'eidas3';
@@ -134,7 +135,8 @@ describe('Acr', () => {
   });
 
   /**
-   * @todo Place a dropdown menu in the IDp Mock to allow the ACR to be searched.
+   * @todo #311 Place a dropdown menu in the IDp Mock to allow the ACR to be searched.
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/311
    */
   it.skip('should trigger error Y020001 when acr from IdP is lower than asked', () => {
     basicErrorScenario({

@@ -60,8 +60,8 @@ export class UserDashboardController {
 
   @Get(UserDashboardRoutes.LOGOUT_CALLBACK)
   async logoutCallback(@Res() res) {
-    /** @TODO #192
-     * ETQ Dev, je complète la session pendant la cinématique des mocks
+    /**
+     * @TODO #192 ETQ Dev, je complète la session pendant la cinématique des mocks
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/192
      * */
     return res.redirect('/');
@@ -73,8 +73,7 @@ export class UserDashboardController {
   async revocationToken(@Res() res, @Body() body: AccessTokenParamsDTO) {
     try {
       /**
-       * @TODO #251
-       * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+       * @TODO #251 ETQ Dev, j'utilise une configuration pour savoir si j'utilise FC, AC, EIDAS, et avoir les valeurs de scope et acr en config et non en dur.
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
        */
       const providerUid = 'corev2';
@@ -108,8 +107,7 @@ export class UserDashboardController {
   async retrieveUserinfo(@Res() res, @Body() body: AccessTokenParamsDTO) {
     try {
       /**
-       * @TODO #251
-       * ETQ Dev, j'utilise une variable d'env pour savoir si j'utilise FC, AC, EIDAS
+       * @TODO #251 ETQ Dev, j'utilise une configuration pour savoir si j'utilise FC, AC, EIDAS, et avoir les valeurs de scope et acr en config et non en dur.
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
        */
       const providerUid = 'corev2';
