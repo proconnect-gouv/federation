@@ -1,11 +1,15 @@
-import { basicErrorScenario, getAuthorizeUrl, callInteractionByBack } from './mire.utils';
+import {
+  basicErrorScenario,
+  getAuthorizeUrl,
+  callInteractionByBack,
+} from './mire.utils';
 
 describe('Session', () => {
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
   /**
-   * @TODO Backport this test from core-fcp :
+   * @TODO #306 Backport this test from core-fcp :
    * We can't reproduce easily the clearCookie only once back from idp
    * since there is no more consent page.
    *
@@ -14,6 +18,7 @@ describe('Session', () => {
    *
    * Maybe we can find another way to create this test
    * (clear only core-fca cookies ?)
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/306
    */
   it.skip('should trigger error Y150003 (session not found)', () => {
     basicErrorScenario({

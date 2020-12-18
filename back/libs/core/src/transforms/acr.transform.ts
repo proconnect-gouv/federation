@@ -1,10 +1,10 @@
 /**
- * @todo Brice
- * @todo FIX:
+ * @todo #309 ETQ que DEV, récupérer en config le niveau eidas à utiliser
  * - Remove the hard-coded eidas value.
  * - Challenge te fact that a default constant is requiered if the config is empty.
  * - Eidas is a specific value and shouldn't be placed whithin its name.
  * - Add a @MinLength decorator for the config Dto to prevent any empty object.
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/309
  */
 export const DEFAULT_EIDAS = 'eidas1';
 

@@ -64,7 +64,8 @@ export class CoreFcaService {
     );
 
     /**
-     * @TODO generate unique sub ?
+     * @TODO #305 generate unique sub ?
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/305
      */
     const spIdentity = { ...idpIdentity, sub: spInteraction.sub };
 

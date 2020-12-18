@@ -97,7 +97,7 @@ export class CoreFcaController {
   }
 
   /**
-   * @TODO Remove this controller once it is globaly available in `@fc/oidc-provider`
+   * @TODO #185 Remove this controller once it is globaly available in `@fc/oidc-provider`
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/185
    */
   @Get(CoreRoutes.INTERACTION_LOGIN)

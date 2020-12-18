@@ -90,8 +90,7 @@ export class CoreFcpController {
     );
 
     /**
-     * @TODO #193
-     * ETQ dev, j'affiche les `claims` à la place des `scopes`
+     * @TODO #193 ETQ dev, j'affiche les `claims` à la place des `scopes`
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/193
      */
     const {
@@ -134,7 +133,7 @@ export class CoreFcpController {
   }
 
   /**
-   * @TODO #203
+   * @TODO #203 ETQ dev, je crée une lib de gestion de CSRF
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/203
    */
   private async generateAndStoreCsrf(interactionId: string): Promise<string> {

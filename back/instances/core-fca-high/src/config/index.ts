@@ -17,8 +17,7 @@ import Mailer from './mailer';
 
 export default {
   /**
-   * @TODO #253
-   * ETQ Dev, je réfléchis à une manière de gérer des parmètres spécifiques à une app
+   * @TODO #253 ETQ Dev, je réfléchis à une manière de gérer des parmètres spécifiques à une app
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/253
    */
   Core: {

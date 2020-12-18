@@ -20,7 +20,8 @@ export class MockIdentityProviderFcaService {
 
   private async loadDatabase(): Promise<void> {
     /**
-     * @todo Config this path
+     * @todo #307 Config this path
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/307
      */
     const databasePath = './data/database-mock.csv';
     const absolutePath = path.join(__dirname, databasePath);
