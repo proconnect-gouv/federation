@@ -14,6 +14,7 @@ import { LoggerService } from '@fc/logger';
 import { IdentityProviderService } from '@fc/identity-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
+import { MinistriesService } from '@fc/ministries';
 import { AppConfig } from '@fc/app';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { Interaction, Core, CoreRoutes, CoreMissingIdentity } from '@fc/core';
@@ -25,6 +26,7 @@ export class CoreFcaController {
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderService,
+    private readonly ministries: MinistriesService,
     private readonly core: CoreFcaService,
     private readonly session: SessionService,
     private readonly config: ConfigService,
@@ -53,16 +55,19 @@ export class CoreFcaController {
       response_type,
       scope,
     };
-    const providers = await this.identityProvider.getList();
 
-    const identityProviders = providers.map(
-      ({ active, display, title: name, uid }) => ({
+    const ministries = await this.ministries.getList();
+
+    const identityProvidersList = await this.identityProvider.getList();
+    const identityProviders = identityProvidersList.map(
+      ({ active, display, title, uid }) => ({
         active,
         display,
-        name,
+        name: title,
         uid,
       }),
     );
+
     const { interactionId } = req.fc;
 
     const { spName } = await this.session.get(interactionId);
@@ -70,13 +75,8 @@ export class CoreFcaController {
     return res.json({
       redirectToIdentityProviderInputs,
       redirectURL: '/api/v2/redirect-to-idp',
-      ministries: [
-        {
-          id: 'ministere-de-linterieur',
-          identityProviders: [...identityProviders],
-          name: "Ministere de l'interieur",
-        },
-      ],
+      ministries,
+      identityProviders,
       serviceProviderName: spName,
     });
   }

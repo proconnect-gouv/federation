@@ -204,3 +204,4 @@ build/
 .env.development
 cypress/snapshots
 cypress/screenshots
+public/mock-api-data.json

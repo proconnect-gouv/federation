@@ -9,6 +9,7 @@ import { CryptographyService } from '@fc/cryptography';
 import { CoreMissingIdentity } from '@fc/core';
 import { CoreFcaController } from './core-fca.controller';
 import { CoreFcaService } from './core-fca.service';
+import { MinistriesService } from '@fc/ministries';
 
 describe('CoreFcaController', () => {
   let coreController: CoreFcaController;
@@ -48,6 +49,10 @@ describe('CoreFcaController', () => {
     verify: jest.fn(),
   };
 
+  const ministriesServiceMock = {
+    getList: jest.fn(),
+  };
+
   const identityProviderServiceMock = {
     getList: jest.fn(),
   };
@@ -79,6 +84,7 @@ describe('CoreFcaController', () => {
       providers: [
         LoggerService,
         OidcProviderService,
+        MinistriesService,
         CoreFcaService,
         IdentityProviderService,
         ServiceProviderService,
@@ -91,6 +97,8 @@ describe('CoreFcaController', () => {
       .useValue(oidcProviderServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(MinistriesService)
+      .useValue(ministriesServiceMock)
       .overrideProvider(CoreFcaService)
       .useValue(coreServiceMock)
       .overrideProvider(IdentityProviderService)
@@ -164,8 +172,15 @@ describe('CoreFcaController', () => {
       json: jest.fn(),
     };
     const idps = [
-      { active: true, display: true, name: 'toto', uid: 12345 },
-      { active: true, display: true, name: 'tata', uid: 12354 },
+      { active: true, display: true, title: 'toto', uid: '12345' },
+      { active: true, display: true, title: 'tata', uid: '12354' },
+    ];
+    const ministries = [
+      {
+        id: 'mock-ministry-id',
+        name: 'mocked ministry',
+        identityProviders: ['12345'],
+      },
     ];
 
     beforeEach(() => {
@@ -183,6 +198,7 @@ describe('CoreFcaController', () => {
         },
       });
 
+      ministriesServiceMock.getList.mockResolvedValueOnce(ministries);
       identityProviderServiceMock.getList.mockResolvedValueOnce(idps);
     });
 
@@ -235,14 +251,14 @@ describe('CoreFcaController', () => {
       // When
       await coreController.getFrontData(req, res);
       // Then
-      expect(res.json).toHaveBeenCalledWith(
-        expect.objectContaining({
-          redirectToIdentityProviderInputs: expect.any(Object),
-          redirectURL: expect.any(String),
-          ministries: expect.any(Array),
-          serviceProviderName: expect.any(String),
-        }),
-      );
+      const expected = expect.objectContaining({
+        redirectToIdentityProviderInputs: expect.any(Object),
+        redirectURL: expect.any(String),
+        ministries: expect.any(Array),
+        identityProviders: expect.any(Array),
+        serviceProviderName: expect.any(String),
+      });
+      expect(res.json).toHaveBeenCalledWith(expected);
     });
   });
 

@@ -11,8 +11,9 @@ export const loadMinistries: ThunkActionType = () => async (
   });
   const response = await axios.get(API_DATAS_ROUTES);
   const { data } = response;
+  const payload = data;
   return dispatch({
-    payload: data,
+    payload,
     type: ACTION_TYPES.MINISTRY_LIST_LOAD_COMPLETED,
   });
 };

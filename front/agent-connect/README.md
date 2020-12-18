@@ -1,3 +1,16 @@
+# Utiliser des données d'api local
+
+> Permet d'avoir un jeu de données bouchées et de profiter du hot-reload pour du dévelopement plus rapide
+
+- ajouter le fichier `/public/mock-api-data.json`
+- ajouter le fichier `/.env`
+
+**.env**
+
+```
+REACT_APP_API_MOCK_DATA_FILE=/mock-api-data.json
+```
+
 # Architecture du dossier `src`
 
 **src/index.ts**

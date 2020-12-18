@@ -146,7 +146,7 @@ export function chooseIdpOnCore(idpId) {
   );
 
   cy.get(`#select-ministry`).click();
-  cy.get(`#ministry-ministere-de-linterieur`).click();
+  cy.get(`#ministry-ministry1`).click();
   cy.get(`#idp-selects`).click();
   cy.get(`#idp-${idpId}`).click();
   cy.get('#idp-go').click();

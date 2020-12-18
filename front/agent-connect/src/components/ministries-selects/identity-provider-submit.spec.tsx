@@ -8,19 +8,25 @@ import IdentityProviderSubmitComponent from './identity-provider-submit';
 jest.mock('../../redux/actions');
 
 const initialState = {
+  identityProviders: [
+    {
+      active: false,
+      display: true,
+      name: 'mock-name',
+      uid: 'mock-uid-inactive',
+    },
+    {
+      active: true,
+      display: true,
+      name: 'mock-name',
+      uid: 'mock-uid-active',
+    },
+  ],
   redirectToIdentityProviderInputs: {
     acr_values: 'mock-acr_values',
     redirectUriServiceProvider: 'mock-redirectUriServiceProvider',
     response_type: 'mock-response_type',
     scope: 'mock-scope',
-  },
-};
-
-const props = {
-  identityProvider: {
-    active: false,
-    name: 'mock-name',
-    uid: 'mock-uid',
   },
 };
 
@@ -33,12 +39,11 @@ describe('IdentityProviderSubmitComponent', () => {
 
   it('should have inputs hidden', () => {
     // setup
-    const { identityProvider } = props;
-    const {
-      getByDisplayValue,
-    } = renderWithRedux(
-      <IdentityProviderSubmitComponent identityProvider={identityProvider} />,
-      { initialState },
+    const { getByDisplayValue } = renderWithRedux(
+      <IdentityProviderSubmitComponent uid="mock-uid-active" />,
+      {
+        initialState,
+      },
     );
     // action
     const inputElement1 = getByDisplayValue('mock-acr_values');
@@ -69,7 +74,7 @@ describe('IdentityProviderSubmitComponent', () => {
     expect(inputElement4).toHaveAttribute('type', 'hidden');
 
     // action
-    const inputElement5 = getByDisplayValue('mock-uid');
+    const inputElement5 = getByDisplayValue('mock-uid-active');
     // expect
     expect(inputElement5).toBeInTheDocument();
     expect(inputElement5).toHaveAttribute('name', 'providerUid');
@@ -77,11 +82,25 @@ describe('IdentityProviderSubmitComponent', () => {
   });
 
   it('should have disabled submit button with label ok', () => {
-    // setup
-    const identityProvider = { ...props.identityProvider, active: false };
     // action
     const { getByText } = renderWithRedux(
-      <IdentityProviderSubmitComponent identityProvider={identityProvider} />,
+      <IdentityProviderSubmitComponent uid="mock-uid-inactive" />,
+      {
+        initialState,
+      },
+    );
+    const submitButton = getByText('OK').closest('button');
+    // expect
+    expect(submitButton).toBeDisabled();
+  });
+
+  it('should have disabled submit button with label ok if no uid provided', () => {
+    // action
+    const { getByText } = renderWithRedux(
+      <IdentityProviderSubmitComponent uid={null} />,
+      {
+        initialState,
+      },
     );
     const submitButton = getByText('OK').closest('button');
     // expect
@@ -89,11 +108,12 @@ describe('IdentityProviderSubmitComponent', () => {
   });
 
   it('should not have disabled props on submit button with label ok', () => {
-    // setup
-    const identityProvider = { ...props.identityProvider, active: true };
     // action
     const { getByText } = renderWithRedux(
-      <IdentityProviderSubmitComponent identityProvider={identityProvider} />,
+      <IdentityProviderSubmitComponent uid="mock-uid-active" />,
+      {
+        initialState,
+      },
     );
     const submitButton = getByText('OK').closest('button');
     // expect
@@ -102,14 +122,16 @@ describe('IdentityProviderSubmitComponent', () => {
 
   it('should call choosenIdentityProvider when user click on the button', () => {
     // setup
-    const action = { payload: 'mock-uid', type: 'mock-action-type' };
-    const identityProvider = { ...props.identityProvider, active: true };
+    const action = { payload: 'mock-uid-active', type: 'mock-action-type' };
     const spy = mocked(choosenIdentityProvider, true);
     spy.mockReturnValueOnce(action);
 
     // action
     const { getByText } = renderWithRedux(
-      <IdentityProviderSubmitComponent identityProvider={identityProvider} />,
+      <IdentityProviderSubmitComponent uid="mock-uid-active" />,
+      {
+        initialState,
+      },
     );
     const submitButton = getByText('OK').closest('button');
     fireEvent.click(submitButton as HTMLButtonElement);
