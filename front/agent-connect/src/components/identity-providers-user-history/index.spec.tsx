@@ -4,22 +4,25 @@ import { renderWithRedux } from '../../testUtils';
 import IdentityProvidersUserHistory from './index';
 
 const initialState = {
+  identityProviders: [
+    {
+      active: true,
+      display: true,
+      name: 'mock-name-1',
+      uid: 'mock-uid-1',
+    },
+    {
+      active: false,
+      display: false,
+      name: 'mock-name-2',
+      uid: 'mock-uid-2',
+    },
+  ],
   identityProvidersHistory: ['mock-uid-1', 'mock-uid-2'],
   ministries: [
     {
       id: 'mock-ministry-1',
-      identityProviders: [
-        {
-          active: true,
-          name: 'mock-name-1',
-          uid: 'mock-uid-1',
-        },
-        {
-          active: false,
-          name: 'mock-name-2',
-          uid: 'mock-uid-2',
-        },
-      ],
+      identityProviders: ['mock-uid-1', 'mock-uid-2'],
       name: 'mock ministry 1',
     },
   ],

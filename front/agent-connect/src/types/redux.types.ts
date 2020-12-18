@@ -16,6 +16,13 @@ export type IdentityProvider = {
   name: string;
   uid: string;
   active: boolean;
+  display: boolean;
+};
+
+export type Ministry = {
+  id: string;
+  identityProviders: string[];
+  name: string;
 };
 
 export type IdentityProviderFormInputs = {
@@ -25,24 +32,9 @@ export type IdentityProviderFormInputs = {
   scope: string;
 };
 
-export type Ministry = {
-  id: string;
-  identityProviders: IdentityProvider[];
-  name: string;
-};
-
-export type MinistryListAction = {
-  payload: {
-    serviceProviderName: string;
-    redirectURL: string;
-    providers: Ministry[];
-    redirectToIdentityProviderInputs: IdentityProviderFormInputs;
-  };
-  type: string;
-};
-
 export type RootState = {
   ministries: Ministry[];
+  identityProviders: IdentityProvider[];
   redirectURL: string;
   serviceProviderName: string;
   identityProvidersHistory: string[];

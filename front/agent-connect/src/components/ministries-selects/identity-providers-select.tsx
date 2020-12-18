@@ -2,58 +2,58 @@ import './identity-providers-select.scss';
 
 import { Select } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import { ReactComponent as CustomIconSVG } from '../../assets/select-input-custom-icon.svg';
-import { IdentityProvider } from '../../types';
-
-const { Option } = Select;
+import { RootState } from '../../types';
+import { getIdentityProvidersByMinistryID } from './get-identity-providers-by-ministry-id';
 
 type IdentityProvidersSelectProps = {
-  identityProviders: IdentityProvider[];
-  onSelect: any;
+  ministryID: string;
+  onSelect: Function;
 };
 
 const IdentityProvidersSelectComponent = React.memo(
-  ({
-    identityProviders,
-    onSelect,
-  }: IdentityProvidersSelectProps): JSX.Element => {
-    const [selected, setSelected] = useState<any>(null);
-    const [options, setOptions] = useState<IdentityProvider[]>([]);
+  ({ ministryID, onSelect }: IdentityProvidersSelectProps): JSX.Element => {
+    const [value, setValue] = useState<any>([]);
 
-    const onSelectHandler = (identityProviderUID: string) => {
-      setSelected(identityProviderUID);
-      onSelect(identityProviderUID);
-    };
+    const identityProviders = useSelector((state: RootState) =>
+      getIdentityProvidersByMinistryID(state, ministryID),
+    );
 
-    useEffect(() => {
-      setSelected(null);
-      setOptions(identityProviders);
-    }, [identityProviders]);
+    // reset selected value on ministry changes
+    useEffect(() => setValue([]), [ministryID]);
+
+    const isSelectDisabled = identityProviders.length === 0;
 
     return (
       <Select
         aria-label="Sélectionner un fournisseur d'identité"
         className="mb-3 text-left"
-        defaultActiveFirstOption={false}
-        disabled={identityProviders.length === 0}
+        disabled={isSelectDisabled}
         dropdownClassName="fca-identity-providers-select"
         id="idp-selects"
         placeholder="Sélectionner un fournisseur d'identité"
         size="large"
         style={{ width: '100%' }}
         suffixIcon={<CustomIconSVG />}
-        value={selected}
-        onChange={onSelectHandler}>
-        {options.map(identityProvider => (
-          <Option
-            key={identityProvider.uid}
-            disabled={!identityProvider.active}
-            id={`idp-${identityProvider.uid}`}
-            value={identityProvider.uid}>
-            {identityProvider.name}
-          </Option>
-        ))}
+        value={value}
+        onChange={uid => {
+          setValue(uid);
+          onSelect(uid);
+        }}>
+        {identityProviders.map(identityProvider => {
+          const { active, name, uid } = identityProvider;
+          return (
+            <Select.Option
+              key={uid}
+              disabled={!active}
+              id={`idp-${uid}`}
+              value={uid}>
+              {name}
+            </Select.Option>
+          );
+        })}
       </Select>
     );
   },

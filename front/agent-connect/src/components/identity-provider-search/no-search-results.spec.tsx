@@ -14,7 +14,9 @@ describe('NoSearchResults', () => {
     // setup
     const { getByText } = render(<NoSearchResults />);
     // action
-    const textElement = getByText('Aucuns résultats');
+    const textElement = getByText(
+      "Aucun fournisseur d'identités n'a été trouvé",
+    );
     // expect
     expect(textElement).toBeInTheDocument();
   });

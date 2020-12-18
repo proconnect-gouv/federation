@@ -119,6 +119,12 @@
       "@fc/error/*": [
         "libs/error/src/*"
       ],
+      "@fc/ministries": [
+        "libs/ministries/src"
+      ],
+      "@fc/ministries/*": [
+        "libs/ministries/src/*"
+      ],
       "@fc/mongoose": [
         "libs/mongoose/src"
       ],
