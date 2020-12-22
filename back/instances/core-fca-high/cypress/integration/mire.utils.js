@@ -211,7 +211,7 @@ export function basicErrorScenario(params) {
   });
 }
 
-export function getAuthorizeUrl(overrideParams = {}) {
+export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
   const baseAuthorizeUrl = '/api/v2/authorize';
   const baseAuthorizeParams = {
     // oidc param
@@ -228,16 +228,18 @@ export function getAuthorizeUrl(overrideParams = {}) {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values: 'eidas3',
+    nonce: 'nonceThatRespectsTheLengthWhichIsDefinedInTheDTOForKinematicWork',
   };
   const params = {
     ...baseAuthorizeParams,
     ...overrideParams,
   };
 
-  return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;
-}
+  if (removeParams) {
+    const paramsToKill = Array.isArray(removeParams) ? removeParams : [removeParams];
+    paramsToKill.forEach(deadParam => Reflect.deleteProperty(params, deadParam));
+  }
 
-export function callInteractionByBack(url = '') {
-  const [, id] = url.split('/interaction/');
-  return `${Cypress.env('FC_INTERACTION_URL')}/${id}`;
+
+  return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;
 }

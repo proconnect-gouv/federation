@@ -4,6 +4,8 @@ import {
   Contains,
   IsOptional,
   IsArray,
+  IsAlphanumeric,
+  Length,
 } from 'class-validator';
 import { Split } from '@fc/common';
 import { IsValidPrompt } from '../validators';
@@ -31,8 +33,9 @@ export class AuthorizeParamsDTO {
   readonly response_type: string;
 
   @IsString()
-  @IsOptional()
-  readonly nonce?: string;
+  @IsAlphanumeric()
+  @Length(64, 64)
+  readonly nonce: string;
 
   @IsString()
   readonly state: string;
