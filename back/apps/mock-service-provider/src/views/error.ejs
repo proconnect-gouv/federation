@@ -14,7 +14,7 @@
 
   <section class="container">
     <h2 id="error-title" class=text-center>
-      Error: <span id="error-title"><%= locals.error %></span>
+      Error: <span id="error-title"><%= locals.error || locals.message %></span>
     </h1>
     <p id="error-description" class="text-center">
       <%= locals.error_description %>

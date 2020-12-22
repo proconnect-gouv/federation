@@ -71,6 +71,7 @@ describe('EidasBridgeController', () => {
   const providerUidMock = 'corev2';
   const randomStringMock = 'randomStringMockValue';
   const stateMock = randomStringMock;
+  const nonceMock = randomStringMock;
   const sessionIdMock = randomStringMock;
 
   const cryptographyMock = {
@@ -293,6 +294,7 @@ describe('EidasBridgeController', () => {
         // acr_values is an oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: oidcRequestMock.acr_values,
+        nonce: nonceMock,
       };
       oidcClientServiceMock.buildAuthorizeParameters.mockResolvedValueOnce(
         authorizeParametersMock,
@@ -312,6 +314,7 @@ describe('EidasBridgeController', () => {
         authorizeParametersMock.scope,
         authorizeParametersMock.providerUid,
         authorizeParametersMock.acr_values,
+        authorizeParametersMock.nonce,
       );
     });
 
