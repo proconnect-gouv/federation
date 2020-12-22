@@ -1,7 +1,6 @@
 import {
   basicErrorScenario,
   getAuthorizeUrl,
-  callInteractionByBack,
 } from './mire.utils';
 
 describe('Session', () => {
@@ -39,8 +38,7 @@ describe('Session', () => {
 
     cy.url().then((interactionUrl) => {
       cy.clearCookie('fc_session_id');
-      const interactionUrlFormatted = callInteractionByBack(interactionUrl);
-      cy.visit(interactionUrlFormatted, { failOnStatusCode: false });
+      cy.visit(interactionUrl, { failOnStatusCode: false });
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
       cy.hasError('Y150003');
     });
@@ -53,8 +51,7 @@ describe('Session', () => {
 
     cy.url().then((interactionUrl) => {
       cy.clearCookie('fc_interaction_id');
-      const interactionUrlFormatted = callInteractionByBack(interactionUrl);
-      cy.visit(interactionUrlFormatted, { failOnStatusCode: false });
+      cy.visit(interactionUrl, { failOnStatusCode: false });
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
       cy.hasError('Y150004');
     });
@@ -86,8 +83,7 @@ describe('Session', () => {
             domain: Cypress.env('APP_DOMAIN'),
           },
         );
-        const interactionUrlFormatted = callInteractionByBack(interactionUrl);
-        cy.visit(interactionUrlFormatted, { failOnStatusCode: false });
+        cy.visit(interactionUrl, { failOnStatusCode: false });
         cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
         cy.hasError('Y150001');
       });
@@ -120,8 +116,7 @@ describe('Session', () => {
             domain: Cypress.env('APP_DOMAIN'),
           },
         );
-        const interactionUrlFormatted = callInteractionByBack(interactionUrl);
-        cy.visit(interactionUrlFormatted, { failOnStatusCode: false });
+        cy.visit(interactionUrl, { failOnStatusCode: false });
         cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
         cy.hasError('Y150005');
       });
