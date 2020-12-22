@@ -123,6 +123,7 @@ describe('OidcClient Controller', () => {
         // oidc param
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
+        nonce: nonceMock,
       };
 
       const mockedoidcClientService =
@@ -148,6 +149,7 @@ describe('OidcClient Controller', () => {
         // oidc param
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
+        nonce: nonceMock,
       };
 
       const mockedoidcClientService =
