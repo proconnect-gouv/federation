@@ -1,11 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { INotifications } from './interfaces';
-import { validateDto, asyncFilter } from '@fc/common';
-import { validationOptions } from '@fc/config';
-import { NotificationsDto } from './dto';
-import { LoggerService } from '@fc/logger';
-
 @Injectable()
 export class NotificationsService {
   constructor(
@@ -14,7 +9,6 @@ export class NotificationsService {
   ) {}
 
   private async findActiveNotifications(): Promise<INotifications> {
-
     const result = await this.notificationsModel
       .findOne(
         {
@@ -30,7 +24,7 @@ export class NotificationsService {
     return result;
   }
   async getNotifications(): Promise<string> {
-      const notifications: any = await this.findActiveNotifications();
+    const notifications: any = await this.findActiveNotifications();
     return notifications;
   }
 }
