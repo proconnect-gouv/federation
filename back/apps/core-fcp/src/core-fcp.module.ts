@@ -65,7 +65,7 @@ const oidcProviderModule = OidcProviderModule.register(
     MailerModule,
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),
-    NotificationsModule
+    NotificationsModule,
   ],
   controllers: [CoreFcpController],
   providers: [
@@ -82,7 +82,7 @@ const oidcProviderModule = OidcProviderModule.register(
     TrackableEventHandler,
     IdentityProviderOperationTypeChangesHandler,
     ServiceProviderOperationTypeChangesHandler,
-    NotificationsService
+    NotificationsService,
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [SessionModule],
