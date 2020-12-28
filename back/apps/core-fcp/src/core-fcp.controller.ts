@@ -19,7 +19,7 @@ import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
 import { CryptographyService } from '@fc/cryptography';
-import { NotificationsService } from 'libs/notifications/src';
+import { NotificationsService } from '@fc/notifications';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { ScopesService } from '@fc/scopes';
 import {

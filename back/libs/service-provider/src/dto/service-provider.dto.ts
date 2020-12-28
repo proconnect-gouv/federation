@@ -24,6 +24,9 @@ export class ServiceProviderDTO {
   readonly name: string;
 
   @IsString()
+  readonly title: string;
+
+  @IsString()
   @MinLength(32)
   // oidc defined variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
