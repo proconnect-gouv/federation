@@ -1,7 +1,4 @@
-import {
-  basicErrorScenario,
-  getAuthorizeUrl,
-} from './mire.utils';
+import { basicErrorScenario, getAuthorizeUrl } from './mire.utils';
 
 describe('Session', () => {
   // -- replace by either `fip1v2` or `fia1v2`
