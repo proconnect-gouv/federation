@@ -1,6 +1,7 @@
 export interface IServiceProviderEnv {
   active: boolean;
   name: string;
+  title: string,
   key: string;
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention

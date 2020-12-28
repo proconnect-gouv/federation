@@ -126,7 +126,6 @@ export class ServiceProviderService implements IServiceProviderService {
 
       return errors.length === 0;
     });
-
     return result.map(({ _doc }) => _doc);
   }
 
