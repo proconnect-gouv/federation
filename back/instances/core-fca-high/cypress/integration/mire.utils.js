@@ -236,10 +236,13 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
   };
 
   if (removeParams) {
-    const paramsToKill = Array.isArray(removeParams) ? removeParams : [removeParams];
-    paramsToKill.forEach(deadParam => Reflect.deleteProperty(params, deadParam));
+    const paramsToKill = Array.isArray(removeParams)
+      ? removeParams
+      : [removeParams];
+    paramsToKill.forEach((deadParam) =>
+      Reflect.deleteProperty(params, deadParam),
+    );
   }
-
 
   return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;
 }
