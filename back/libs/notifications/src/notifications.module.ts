@@ -6,10 +6,13 @@ import { NotificationsService } from './notifications.service';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([
-      { name: 'notifications', schema: NotificationsSchema },
-    ]),
     CqrsModule,
+    MongooseModule.forFeature([
+      {
+        name: 'notifications', 
+        schema: NotificationsSchema 
+      },
+    ]),
   ],
   providers: [NotificationsService],
   exports: [NotificationsService, MongooseModule],

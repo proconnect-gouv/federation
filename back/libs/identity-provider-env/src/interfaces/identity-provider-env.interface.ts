@@ -1,6 +1,7 @@
 export interface IIdentityProviderEnv {
   uid: string;
   name: string;
+  title: string;
   active: boolean;
   display: boolean;
   // openid defined property names

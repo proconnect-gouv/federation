@@ -16,6 +16,7 @@ describe('ServiceProviderService', () => {
       entityId: '123456789101112131415161718192021',
       active: true,
       name: 'foo',
+      title: 'title',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: "This is an encrypted string, don't ask !",

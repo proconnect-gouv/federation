@@ -64,7 +64,7 @@
     "jose": "2.0.3",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
-    "mongoose": "^5.0.0",
+    "mongoose": "5.10.6",
     "node-csv-query": "^0.1.0",
     "node-mailjet": "^3.3.1",
     "oidc-provider": "6.29.10",

@@ -4,7 +4,7 @@ import { INotifications } from './interfaces';
 @Injectable()
 export class NotificationsService {
   constructor(
-    @InjectModel('notifications')
+    @InjectModel('Notifications')
     private readonly notificationsModel,
   ) {}
 
@@ -23,8 +23,8 @@ export class NotificationsService {
 
     return result;
   }
-  async getNotifications(): Promise<string> {
-    const notifications: any = await this.findActiveNotifications();
+  async getNotifications(): Promise<INotifications> {
+    const notifications: INotifications = await this.findActiveNotifications();
     return notifications;
   }
 }
