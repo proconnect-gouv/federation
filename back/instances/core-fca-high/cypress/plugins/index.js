@@ -11,7 +11,12 @@
 // This function is called when a project is opened or re-opened (e.g. due to
 // the project's config changing)
 
-module.exports = (_on, _config) => {
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const { logInConsole } = require('./console');
+module.exports = (on) => {
   // `on` is used to hook into various events Cypress emits
   // `config` is the resolved Cypress config
-}
+  on('task', {
+    logInConsole,
+  });
+};
