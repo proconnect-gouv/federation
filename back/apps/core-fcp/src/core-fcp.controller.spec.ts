@@ -70,7 +70,7 @@ describe('CoreFcpController', () => {
   };
 
   const notificationsServiceMock = {
-    getNotifications: jest.fn()
+    getNotifications: jest.fn(),
   };
 
   const appConfigMock = {
@@ -139,7 +139,7 @@ describe('CoreFcpController', () => {
     coreServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
     serviceProviderServiceMock.getById.mockResolvedValue({
       name: spNameMock,
-      title: spTitleMock
+      title: spTitleMock,
     });
     sessionServiceMock.get.mockResolvedValue({
       interactionId: interactionIdMock,
