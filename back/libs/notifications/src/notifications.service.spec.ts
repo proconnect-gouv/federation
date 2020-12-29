@@ -19,10 +19,9 @@ describe('NotificationsService', () => {
         NotificationsService,
         {
           provide: getModelToken('Notifications'),
-          useValue: repositoryMock
-        }
+          useValue: repositoryMock,
+        },
       ],
-      
     }).compile();
 
     service = module.get<NotificationsService>(NotificationsService);
