@@ -10,8 +10,8 @@ const repositoryMock = {
 
 const notificationMock = {
   message: 'message mock',
-}
-const serviceProviderModel = getModelToken('Notifications')
+};
+const serviceProviderModel = getModelToken('Notifications');
 describe('NotificationsService', () => {
   let service: NotificationsService;
   beforeEach(async () => {
@@ -40,8 +40,10 @@ describe('NotificationsService', () => {
 
   it('should return notification', async () => {
     //service.getNotifications = jest.fn().mockResolvedValueOnce(notificationMock)
-    service['findActiveNotifications'] = jest.fn().mockResolvedValueOnce(notificationMock)
-    const expected = notificationMock
+    service['findActiveNotifications'] = jest
+      .fn()
+      .mockResolvedValueOnce(notificationMock);
+    const expected = notificationMock;
 
     // action
     const result = await service.getNotifications();
