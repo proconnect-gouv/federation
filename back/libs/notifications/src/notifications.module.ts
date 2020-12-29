@@ -9,8 +9,8 @@ import { NotificationsService } from './notifications.service';
     CqrsModule,
     MongooseModule.forFeature([
       {
-        name: 'Notifications', 
-        schema: NotificationsSchema 
+        name: 'Notifications',
+        schema: NotificationsSchema,
       },
     ]),
   ],
