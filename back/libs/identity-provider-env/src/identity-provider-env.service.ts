@@ -32,6 +32,7 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
       {
         uid: 'envIssuer',
         name: 'envIssuer',
+        title: 'envIssuer Title',
         active: true,
         display: true,
         discoveryUrl,
@@ -57,7 +58,6 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
         return errors.length === 0;
       },
     );
-
     return result.map((configuration) => configuration);
   }
 

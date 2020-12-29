@@ -235,6 +235,7 @@ main > h1 + h2 {
   .tuto-container .logos-container {
     display: flex;
   }
+}
 
   .tuto-container button {
     height: 50px;
