@@ -3,17 +3,34 @@ import { NotificationsService } from './notifications.service';
 import { getModelToken } from '@nestjs/mongoose';
 
 const repositoryMock = {
-  find: jest.fn(),
+  findOne: jest.fn(),
   exec: jest.fn(),
   watch: jest.fn(),
 };
 
-const notificationMock = {
-  message: 'message mock',
-};
-const serviceProviderModel = getModelToken('Notifications');
+
+const serviceProviderModel = getModelToken('Notifications')
+
 describe('NotificationsService', () => {
   let service: NotificationsService;
+
+  const notificationMock = [{
+    isActive: true,
+    message: 'message mock',
+  }]
+
+  const findOneMock = {
+    findOne: { exec: jest.fn() },
+  };
+  const validNotificationMock = [{
+      isActive: true,
+      message: 'message mock'
+    }]
+
+  const notValidNotificationMock = [
+    'bad data'
+  ]
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -30,26 +47,53 @@ describe('NotificationsService', () => {
 
     service = module.get<NotificationsService>(NotificationsService);
 
-    repositoryMock.find.mockReturnValueOnce(repositoryMock);
+    repositoryMock.findOne.mockReturnValueOnce(repositoryMock);
     repositoryMock.exec.mockResolvedValueOnce(notificationMock);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+  describe('getNotifications', () => {
 
-  it('should return notification', async () => {
-    //service.getNotifications = jest.fn().mockResolvedValueOnce(notificationMock)
-    service['findActiveNotifications'] = jest
-      .fn()
-      .mockResolvedValueOnce(notificationMock);
-    const expected = notificationMock;
-
-    // action
-    const result = await service.getNotifications();
-
-    // expect
-    expect(service['findActiveNotifications']).toHaveBeenCalledTimes(1);
-    expect(result).toStrictEqual(expected);
+    it('should return notification', async () => {
+      service['findActiveNotifications'] = jest.fn().mockResolvedValueOnce(notificationMock)
+      const expected = notificationMock
+      // action
+      const result = await service.getNotifications();
+      // expect
+      expect(result).toStrictEqual(expected);
+    });
   });
-});
+
+  describe('findActiveNotifications', () => {
+    repositoryMock.findOne.mockReturnValueOnce(findOneMock);
+
+    it('should return notification with valid data', async () => {
+      repositoryMock.exec = jest.fn().mockResolvedValueOnce(validNotificationMock);
+      // action
+      const result = await service['findActiveNotifications']();
+      // expect
+      expect(repositoryMock.findOne).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual(notificationMock);
+    });
+
+    it("shouldn't return notification with valid data", async () => {
+      repositoryMock.exec = jest.fn().mockResolvedValueOnce(notValidNotificationMock);
+      // action
+      const result = await service['findActiveNotifications']();
+      // expect
+      expect(repositoryMock.findOne).toHaveBeenCalledTimes(1);
+      expect(result).not.toStrictEqual(notificationMock);
+    });
+
+    xit("should return emptyNotification", async () => {
+      repositoryMock.exec = jest.fn().mockResolvedValueOnce([{isActive: false, message:'message'}]);
+      // action
+      const result = await service['findActiveNotifications']();
+      // expect
+      expect(repositoryMock.findOne).toHaveBeenCalledTimes(1);
+      expect(result).toStrictEqual([]);
+    });
+  })
+})
