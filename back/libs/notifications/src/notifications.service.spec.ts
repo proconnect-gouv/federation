@@ -8,28 +8,29 @@ const repositoryMock = {
   watch: jest.fn(),
 };
 
-
-const serviceProviderModel = getModelToken('Notifications')
+const serviceProviderModel = getModelToken('Notifications');
 
 describe('NotificationsService', () => {
   let service: NotificationsService;
 
-  const notificationMock = [{
-    isActive: true,
-    message: 'message mock',
-  }]
+  const notificationMock = [
+    {
+      isActive: true,
+      message: 'message mock',
+    },
+  ];
 
   const findOneMock = {
     findOne: { exec: jest.fn() },
   };
-  const validNotificationMock = [{
+  const validNotificationMock = [
+    {
       isActive: true,
-      message: 'message mock'
-    }]
+      message: 'message mock',
+    },
+  ];
 
-  const notValidNotificationMock = [
-    'bad data'
-  ]
+  const notValidNotificationMock = ['bad data'];
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -55,10 +56,11 @@ describe('NotificationsService', () => {
     expect(service).toBeDefined();
   });
   describe('getNotifications', () => {
-
     it('should return notification', async () => {
-      service['findActiveNotifications'] = jest.fn().mockResolvedValueOnce(notificationMock)
-      const expected = notificationMock
+      service['findActiveNotifications'] = jest
+        .fn()
+        .mockResolvedValueOnce(notificationMock);
+      const expected = notificationMock;
       // action
       const result = await service.getNotifications();
       // expect
@@ -70,7 +72,9 @@ describe('NotificationsService', () => {
     repositoryMock.findOne.mockReturnValueOnce(findOneMock);
 
     it('should return notification with valid data', async () => {
-      repositoryMock.exec = jest.fn().mockResolvedValueOnce(validNotificationMock);
+      repositoryMock.exec = jest
+        .fn()
+        .mockResolvedValueOnce(validNotificationMock);
       // action
       const result = await service['findActiveNotifications']();
       // expect
@@ -79,7 +83,9 @@ describe('NotificationsService', () => {
     });
 
     it("shouldn't return notification with valid data", async () => {
-      repositoryMock.exec = jest.fn().mockResolvedValueOnce(notValidNotificationMock);
+      repositoryMock.exec = jest
+        .fn()
+        .mockResolvedValueOnce(notValidNotificationMock);
       // action
       const result = await service['findActiveNotifications']();
       // expect
@@ -87,13 +93,15 @@ describe('NotificationsService', () => {
       expect(result).not.toStrictEqual(notificationMock);
     });
 
-    xit("should return emptyNotification", async () => {
-      repositoryMock.exec = jest.fn().mockResolvedValueOnce([{isActive: false, message:'message'}]);
+    xit('should return emptyNotification', async () => {
+      repositoryMock.exec = jest
+        .fn()
+        .mockResolvedValueOnce([{ isActive: false, message: 'message' }]);
       // action
       const result = await service['findActiveNotifications']();
       // expect
       expect(repositoryMock.findOne).toHaveBeenCalledTimes(1);
       expect(result).toStrictEqual([]);
     });
-  })
-})
+  });
+});
