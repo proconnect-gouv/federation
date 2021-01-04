@@ -1,0 +1,37 @@
+#footer {
+  background-color: #000091;
+}
+
+#footer a {
+  color: #fff;
+  font-size: 15px;
+  text-decoration: none;
+  border-right: solid 1px #fff;
+  padding-right: 10px;
+  margin-right: 10px;
+  line-height: 2;
+}
+
+#footer a:hover {
+  text-decoration: underline;
+}
+
+#footer a:last-child {
+  border-right: none;
+}
+
+.footer-nav {
+  padding: 40px 16px;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+@media screen and (min-width: 576px) {
+  #footer a {
+    line-height: normal;
+  }
+
+  .footer-nav {
+    padding: 40px 32px;
+  }
+}

@@ -2,33 +2,22 @@ body {
   font-family: 'Montserrat', Helvetica, Arial, sans-serif;
   display: grid;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-body .border-focus {
-  border: solid 1px #26353f;
+  grid-template-rows: 90px auto 265px;
 }
 
 header {
   width: 100%;
+  position: relative;
+  box-shadow: 0 2px 4px 0 #eeeeee;
   box-sizing: border-box;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
-  padding: 24px 16px;
 }
 
-header .header__logo-marianne {
+header .header__logo {
   width: auto;
-  height: 70px;
-}
-
-header .header__logo-fc-plus {
-  width: auto;
-  height: 50px;
-  margin-left: 40px;
+  height: 60px;
 }
 
 main {
@@ -38,7 +27,6 @@ main {
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex-grow: 1;
 }
 
 main.anonymous {
@@ -46,22 +34,18 @@ main.anonymous {
 }
 
 main section {
-  color: #000091;
+  color: #034ea2;
 }
 
 main section .section__welcome {
   font-size: 2rem;
   font-weight: 500;
-  color: #3e4553;
-  margin-bottom: 16px;
 }
 
 main section .section__identity {
   font-size: 2.8rem;
   font-weight: 800;
   word-break: break-word;
-  margin-bottom: 32px;
-  line-height: 1.2;
 }
 
 main section .section__identity span {
@@ -84,10 +68,6 @@ main section .section__more-info:hover {
   text-decoration: underline;
 }
 
-main form {
-  width: 100%;
-}
-
 main .content__continue {
   width: 100%;
   margin-bottom: 40px;
@@ -95,7 +75,7 @@ main .content__continue {
   border: none;
   border-radius: 4px;
   color: #fff;
-  background-color: #000091;
+  background-color: #034ea2;
   font-size: 1.4rem;
   font-weight: bold;
   cursor: pointer;
@@ -103,12 +83,11 @@ main .content__continue {
   -webkit-appearance: none;
   text-decoration: none;
   text-align: center;
-  line-height: 1.2;
 }
 
 main .content__continue:hover {
   text-decoration: underline;
-  background-color: #000091;
+  background-color: #2183f0;
 }
 
 main .content__success {
@@ -116,7 +95,6 @@ main .content__success {
   font-size: 1.5rem;
   line-height: 2rem;
   color: #26353f;
-  max-width: 439px;
 }
 
 main .content__details {
@@ -124,7 +102,7 @@ main .content__details {
   font-size: 1.3rem;
   line-height: 2rem;
   color: #26353f;
-  background-color: #f2f4ff;
+  background-color: #e5edf5;
   overflow: hidden;
 }
 
@@ -151,7 +129,7 @@ main .content__details .content-details__header:hover {
 main .content__details .content-details__header span {
   font-size: 1.5rem;
   line-height: 2rem;
-  color: #000091;
+  color: #034ea2;
 }
 
 main .content__details .content-details__header:hover span {
@@ -166,7 +144,7 @@ main .content__details .content-details__header:before {
   width: 2px;
   height: 12px;
   border-radius: 1px;
-  background-color: #000091;
+  background-color: #034ea2;
   transform: translateY(-50%) rotate(-50deg);
   position: absolute;
 }
@@ -178,7 +156,7 @@ main .content__details .content-details__header:after {
   width: 2px;
   height: 12px;
   border-radius: 1px;
-  background-color: #000091;
+  background-color: #034ea2;
   transform: translateY(-50%) rotate(50deg);
   position: absolute;
 }
@@ -204,7 +182,7 @@ main .content__details .content-details__content ul li {
 }
 
 main .content__details .content-details__content a {
-  color: #000091;
+  color: #034ea2;
   font-size: 1.3rem;
   text-decoration: none;
 }
@@ -234,35 +212,47 @@ main .content__details.open .content-details__header:after {
   transform: translateY(-50%) rotate(-50deg);
 }
 
-@media screen and (min-width: 576px) {
-  main .content__continue {
-    width: 460px;
-  }
+footer {
+  width: 100%;
+  padding: 36px 16px;
+  background-color: #034ea2;
+}
 
-  main form {
-    width: initial;
-  }
+footer ul {
+  margin-bottom: 24px;
+}
+
+footer ul li {
+  margin-bottom: 6px;
+  position: relative;
+}
+
+footer ul li a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+footer ul li a:hover {
+  text-decoration: underline;
+}
+
+footer .footer__marianne {
+  width: 90px;
 }
 
 @media screen and (min-width: 768px) {
-  header {
-    justify-content: flex-start;
-    padding-left: 40px;
+  body {
+    grid-template-rows: 105px auto 200px;
   }
 
-  header .header__logo-marianne {
-    height: 115px;
-  }
-
-  header .header__logo-fc-plus {
-    height: 68px;
+  header .header__logo {
+    height: 75px;
   }
 
   main section {
     max-width: 600px;
-  }
-
-  main section .section__welcome {
     text-align: center;
   }
 
@@ -273,24 +263,67 @@ main .content__details.open .content-details__header:after {
   }
 
   main .content__continue {
-    width: 530px;
+    width: 600px;
   }
 
-  main .content__success  {
-    text-align: center;
+  main .content__success {
+    max-width: 420px;
   }
 
   main .content__details {
     max-width: 420px;
   }
+
+  footer {
+    padding: 36px 40px;
+  }
+
+  footer ul li {
+    display: inline-block;
+    margin-right: 20px;
+  }
+
+  footer ul li:after {
+    content: '';
+    width: 1px;
+    height: 16px;
+    top: 3px;
+    right: -10px;
+    background: white;
+    position: absolute;
+  }
+
+  footer ul li:last-child:after {
+    content: none;
+  }
 }
 
 @media screen and (min-width: 992px) {
+  body {
+    grid-template-rows: 105px auto 100px;
+  }
+
   main.anonymous {
     padding-top: 80px;
   }
 
   main section {
     max-width: 800px;
+    text-align: center;
+  }
+
+  footer {
+    padding: 25px 210px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  footer ul {
+    margin-bottom: 0;
+  }
+
+  footer ul li {
+    margin-bottom: 0;
   }
 }

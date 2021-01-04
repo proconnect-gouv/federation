@@ -7,6 +7,7 @@ import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { CoreMissingIdentity, CoreInvalidCsrfException } from '@fc/core';
+import { ScopesService } from '@fc/scopes';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from './core-fcp.service';
 
@@ -73,6 +74,12 @@ describe('CoreFcpController', () => {
     get: jest.fn(),
   };
 
+  const scopesServiceMock = {
+    mapScopesToLabel: jest.fn(),
+  };
+
+  const mapScopesToLabelMock = { foo: 'bar' };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [CoreFcpController],
@@ -85,6 +92,7 @@ describe('CoreFcpController', () => {
         SessionService,
         ConfigService,
         CryptographyService,
+        ScopesService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -103,6 +111,8 @@ describe('CoreFcpController', () => {
       .useValue(configServiceMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyServiceMock)
+      .overrideProvider(ScopesService)
+      .useValue(scopesServiceMock)
       .compile();
 
     coreController = await app.get<CoreFcpController>(CoreFcpController);
@@ -131,6 +141,7 @@ describe('CoreFcpController', () => {
     sessionServiceMock.patch.mockResolvedValueOnce(undefined);
     cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
     configServiceMock.get.mockReturnValue(appConfigMock);
+    scopesServiceMock.mapScopesToLabel.mockResolvedValue(mapScopesToLabelMock);
   });
 
   describe('getDefault', () => {
@@ -251,6 +262,7 @@ describe('CoreFcpController', () => {
         interactionId: interactionIdMock,
         identity: {},
         scopes: ['toto', 'titi'],
+        claims: { foo: 'bar' },
         spName: spNameMock,
       });
     });

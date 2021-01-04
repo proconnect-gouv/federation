@@ -159,7 +159,35 @@ export function basicSuccessScenario(params) {
   });
 }
 
-export function checkInformations(identity) {
+export function checkInformationsConsent(scopes) {
+  const IDENTITY_SCOPES_LABEL = {
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  family_name: `Nom(s) de famille`,
+  gender: `Sexe`,
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  given_name: `Prénom(s)`,
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  preferred_username: `Nom d'usage`,
+  birthdate: `Date de naissance`,
+  birthplace: `Lieu de naissance`,
+  birthcountry: `Pays de naissance`,
+  address: `Adresse postale`,
+  phone: `Téléphone`,
+  email: `Adresse email`,
+};
+
+  cy.get('#toggleOpenCloseMenu').click();
+
+  const scopesArray = scopes.split(' ');
+  scopesArray
+    .filter(scope => scope in IDENTITY_SCOPES_LABEL)
+    .forEach(scope => cy.contains(IDENTITY_SCOPES_LABEL[scope]).should('exist'));
+}
+
+export function checkInformationsServiceProvider(identity) {
   const {
     gender,
     givenName,
