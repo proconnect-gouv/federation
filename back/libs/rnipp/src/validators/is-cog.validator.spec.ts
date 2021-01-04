@@ -1,6 +1,6 @@
 import { validateCog } from './is-cog.validator';
 
-describe('IsRnippBirthdate', () => {
+describe('validateCog', () => {
   it('should return "false" if the argument is not a string', () => {
     // setup
     const notAstring = 42;
@@ -15,6 +15,17 @@ describe('IsRnippBirthdate', () => {
   it('should return "true" if the argument is a valid cog', () => {
     // setup
     const cog = '95277';
+
+    // action
+    const valid = validateCog(cog);
+
+    // assert
+    expect(valid).toStrictEqual(true);
+  });
+
+  it('should return "true" if the argument is a valid cog', () => {
+    // setup
+    const cog = '12345';
 
     // action
     const valid = validateCog(cog);
