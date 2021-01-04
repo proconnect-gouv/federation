@@ -1,4 +1,4 @@
-import { basicScenario } from './mire.utils';
+import { basicScenario, checkInformationsConsent } from './mire.utils';
 
 /**
  * @todo #242 - remove and let basic scopes
@@ -18,6 +18,10 @@ describe('Acr', () => {
         scope,
       },
     });
+
+    // FC: Read confirmation message
+    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+    checkInformationsConsent(scope);
   });
 
   it('should access to FI when acr from SP has multiple values and all are known', () => {
@@ -31,6 +35,10 @@ describe('Acr', () => {
         scope,
       },
     });
+
+    // FC: Read confirmation message
+    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+    checkInformationsConsent(scope);
   });
 
   it('should access to FI when acr from SP has multiple values and all are known but different order', () => {
@@ -44,6 +52,10 @@ describe('Acr', () => {
         scope,
       },
     });
+
+    // FC: Read confirmation message
+    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+    checkInformationsConsent(scope);
   });
 
   it('should access to FI when acr from SP is multiple values but only one is known', () => {
@@ -57,6 +69,10 @@ describe('Acr', () => {
         scope,
       },
     });
+
+    // FC: Read confirmation message
+    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+    checkInformationsConsent(scope);
   });
 
   it('should access to FI when acr from SP is unique and not known', () => {
@@ -70,6 +86,10 @@ describe('Acr', () => {
         scope,
       },
     });
+
+    // FC: Read confirmation message
+    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+    checkInformationsConsent(scope);
   });
 
   it('should access to FI when acr from SP has multiple values and one is known', () => {
@@ -83,6 +103,10 @@ describe('Acr', () => {
         scope,
       },
     });
+
+    // FC: Read confirmation message
+    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+    checkInformationsConsent(scope);
   });
 
   it('should access to FI when acr from SP has multiple values and some are known', () => {
@@ -96,6 +120,10 @@ describe('Acr', () => {
         scope,
       },
     });
+
+    // FC: Read confirmation message
+    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+    checkInformationsConsent(scope);
   });
 
   it('should access to FI when acr from SP has multiple values and none are known', () => {
@@ -109,6 +137,10 @@ describe('Acr', () => {
         scope,
       },
     });
+
+    // FC: Read confirmation message
+    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+    checkInformationsConsent(scope);
   });
 
   it('should complete cinematic even when acr is to low and FC should force it to max value', () => {
@@ -126,6 +158,7 @@ describe('Acr', () => {
 
     // FC: Read confirmation message :D
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+    checkInformationsConsent(scope);
 
     // FC: validate consent
     cy.get('#consent').click();

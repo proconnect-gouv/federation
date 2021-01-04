@@ -15,7 +15,6 @@
 
 
     <% 
-
     const defaultTransform = value => value;
 
     const claims = [
@@ -88,9 +87,7 @@
                   <%=locals.idpIdentity.address.locality%> (<%=locals.idpIdentity.address.country;%>)</strong></p>
               <% } %>
 
-              <p>Nom d'usage :
-                <strong><%=(locals.idpIdentity.preferred_username) ? locals.idpIdentity.preferred_username : '/';%></strong>
-              </p>
+              <p>Nom d'usage : <strong><%=(locals.idpIdentity.preferred_username) ? locals.idpIdentity.preferred_username : '/';%></strong></p>
 
               
               <% if (locals.idpIdentity.birthplace && locals.idpIdentity.birthcountry) { %>

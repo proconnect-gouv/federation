@@ -486,6 +486,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/eidas/tsconfig.lib.json"
       }
+    },
+    "scopes": {
+      "type": "library",
+      "root": "libs/scopes",
+      "entryFile": "index",
+      "sourceRoot": "libs/scopes/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/scopes/tsconfig.lib.json"
+      }
     }
   }
 }

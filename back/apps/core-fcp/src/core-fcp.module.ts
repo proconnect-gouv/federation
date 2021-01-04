@@ -36,6 +36,7 @@ import {
   IdentityProviderOperationTypeChangesHandler,
   ServiceProviderOperationTypeChangesHandler,
 } from '@fc/core';
+import { ScopesModule } from '@fc/scopes';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from './core-fcp.service';
 
@@ -57,6 +58,7 @@ const oidcProviderModule = OidcProviderModule.register(
     IdentityProviderModule,
     HttpProxyModule,
     oidcProviderModule,
+    ScopesModule,
     OverrideOidcProviderModule.register(oidcProviderModule),
     OidcClientModule.register(IdentityProviderService, IdentityProviderModule),
     MailerModule,

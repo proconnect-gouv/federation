@@ -1,6 +1,6 @@
 import {
   basicSuccessScenario,
-  checkInformations,
+  checkInformationsServiceProvider,
   checkInStringifiedJson,
 } from './mire.utils';
 
@@ -27,7 +27,7 @@ describe('Successful scenarios', () => {
       idpId,
     });
 
-    checkInformations({
+    checkInformationsServiceProvider({
       gender: 'Femme',
       givenName: 'Angela Claire Louise',
       familyName: 'DUBOIS',
@@ -50,7 +50,7 @@ describe('Successful scenarios', () => {
       method: 'POST',
     });
 
-    checkInformations({
+    checkInformationsServiceProvider({
       gender: 'Femme',
       givenName: 'Angela Claire Louise',
       familyName: 'DUBOIS',
@@ -72,7 +72,7 @@ describe('Successful scenarios', () => {
       idpId,
     });
 
-    checkInformations({
+    checkInformationsServiceProvider({
       gender: 'Homme',
       givenName: 'Jean',
       familyName: 'FLEURET',
@@ -93,7 +93,7 @@ describe('Successful scenarios', () => {
       idpId,
     });
 
-    checkInformations({
+    checkInformationsServiceProvider({
       gender: 'Homme',
       givenName: 'Jean',
       familyName: 'TARGE',
