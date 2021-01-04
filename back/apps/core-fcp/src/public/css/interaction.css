@@ -103,6 +103,11 @@ main > h1 + h2 {
   main > h1 {
     font-size: 1.5rem;
   }
+
+
+  main > h1 + h2 {
+    font-size: 2.5rem;
+  }
 }
 
 /** Identity providers **/
@@ -158,23 +163,24 @@ main > h1 + h2 {
 
 .identity-provider button strong {
   font-weight: bold;
+  margin-top: 5px;
 }
 
 .identity-provider button:disabled {
   cursor: not-allowed;
   border: none;
   box-shadow: none;
-}
-
-.identity-provider button:disabled img {
+  background-color: rgba(232, 232, 232, 0.3);
   opacity: 0.7;
 }
+
 
 .identity-provider button:not(:disabled):hover,
 .identity-provider button:not(:disabled):focus {
   background-color: transparent;
-  box-shadow: 0 0 6px rgba(0, 0, 145, 1);
-  outline: none;
+  box-shadow: 0 0 9px 0 #b4b4dc;
+  border: solid 2px #000091;
+  padding: 14px;
 }
 
 /** tuto section **/
@@ -235,7 +241,6 @@ main > h1 + h2 {
   .tuto-container .logos-container {
     display: flex;
   }
-}
 
   .tuto-container button {
     height: 50px;
