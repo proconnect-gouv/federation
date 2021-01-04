@@ -280,6 +280,12 @@
       ],
       "@fc/notifications/*": [
         "libs/notifications/src/*"
+      ],
+      "@fc/scopes": [
+        "libs/scopes/src"
+      ],
+      "@fc/scopes/*": [
+        "libs/scopes/src/*"
       ]
     }
   },
