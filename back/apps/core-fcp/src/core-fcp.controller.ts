@@ -44,6 +44,7 @@ export class CoreFcpController {
     private readonly crypto: CryptographyService,
     private readonly scopes: ScopesService,
     private readonly notifications: NotificationsService,
+    private readonly scopes: ScopesService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
