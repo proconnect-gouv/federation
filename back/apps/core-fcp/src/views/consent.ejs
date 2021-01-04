@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 
-<%- include('partials/head.partial.ejs', { title: 'Connexion - consentement', style: 'consent' }); %>
+<%- include('partials/head.partial.ejs', { title: 'FranceConnect - Page d\'information', style: 'consent' }); %>
 
 <body>
   <header>
-    <img src="/img/fc_logo.png" alt="" class="header__logo">
+    <img src="/img/logo-marianne.svg" alt="logo république française marianne" class="header__logo-marianne">
+    <img src="/img/logo-fc-plus.svg" alt="logo franceconnect plus" class="header__logo-fc-plus">
   </header>
   <% if (locals.scopes.every(scope => scope === 'openid')) { %>
   <main class="anonymous">
@@ -22,61 +23,52 @@
       <%= locals.spName %></a>
 
     <p><% JSON.stringify(locals.identity); %></p>
-    <% } else { %>
-    <main>
-      <section>
-        <p class="section__welcome">Bienvenue</p>
-        <p class="section__identity"><%= locals.identity.given_name %> <%= locals.identity.family_name %></p>
+  <% } else { %>
+  <main>
+    <section>
+      <p class="section__welcome">Bienvenue</p>
+      <p role="heading" aria-level="1" class="section__identity"><%= locals.identity.given_name %> <%= locals.identity.family_name %></p>
+    </section>
 
-        <a href="#" class="section__more-info">Ce n’est pas vous ?</a>
-      </section>
+    <form method="POST" action="/api/v2/login" name="fc-consent">
+      <button type="submit" id="consent" class="content__continue">Continuer sur <%= locals.spName %></button>
 
-      <form method="POST" action="/api/v2/login" name="fc-consent">
-        <button type="submit" id="consent" class="content__continue">Continuer sur <%= locals.spName %></button>
+      <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+    </form>
 
-        <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
-      </form>
+    <article>
+      <p class="content__success">
+        À la demande du service auquel vous souhaitez accéder, certaines données vont être transmises.
+      </p>
 
-      <article>
-        <p class="content__success">
-          À la demande du service, certaines données vont être transmises.
-        </p>
-
-        <div id="openCloseMenu" class="content__details">
-          <div id="toggleOpenCloseMenu" class="content-details__header">
-            <span class="close">Voir le détail</span>
-            <span class="open">Masquer le détail</span>
-          </div>
-          <div class="content-details__content">
-            <p>
-              Pour confirmer votre identité, FranceConnect doit partager ces informations :
-            </p>
-
-            <ul>
-              <% locals.scopes.forEach(scope => {
-                if (scope !== 'openid') { %>
-              <li><%= scope %></li>
-              <% } %>
-              <% }) %>
-            </ul>
-
-            <a href="https://franceconnect.gouv.fr/cgu" class="more-informations">
-              En savoir plus sur le traitement des données personnelles
-            </a>
-          </div>
+      <div id="openCloseMenu" class="content__details">
+        <div id="toggleOpenCloseMenu" role="button" tabindex="0" class="content-details__header">
+          <span class="close">Voir le détail des données</span>
+          <span class="open">Masquer le détail des données</span>
         </div>
-      </article>
-      <% } %>
-    </main>
-    <footer>
-      <ul>
-        <li><a href="https://franceconnect.gouv.fr">FranceConnect <%= new Date().getFullYear() %></a></li>
-        <li><a href="https://franceconnect.gouv.fr/cgu">Conditions Générales d'Utilisation</a></li>
-        <li><a href="https://franceconnect.gouv.fr/faq">Foire aux questions</a></li>
-      </ul>
-      <img src="/img/marianne_logo.png" alt="logo de marianne" class="footer__marianne">
-    </footer>
-    <script type="text/javascript" src="/js/consent.js"></script>
-</body>
+        <div class="content-details__content">
+          <p>
+            Pour confirmer votre identité, FranceConnect doit partager ces informations :
+          </p>
 
+          <ul>
+            <% claims
+                .forEach(label => { %>
+                <li><%= label %></li>
+              <% }); %>
+          </ul>
+
+          <a href="https://franceconnect.gouv.fr/cgu" class="more-informations">
+            En savoir plus sur le traitement des données personnelles
+          </a>
+        </div>
+      </div>
+    </article>
+  <% } %>
+  </main>
+
+  <%- include('partials/footer.partial.ejs') %>
+
+  <script type="text/javascript" src="/js/consent.js"></script>
+</body>
 </html>

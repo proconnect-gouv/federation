@@ -1,4 +1,4 @@
-import { basicSuccessScenario, checkInformations } from './mire.utils';
+import { basicSuccessScenario, checkInformationsServiceProvider } from './mire.utils';
 
 describe('No SSO', () => {
   // Given
@@ -24,7 +24,7 @@ describe('No SSO', () => {
     // When
     //   ...Log into SP "A"
     basicSuccessScenario(loginInfo);
-    checkInformations(userInfos);
+    checkInformationsServiceProvider(userInfos);
 
     //   ...Then log  into SP "B"
     basicSuccessScenario({
@@ -33,13 +33,13 @@ describe('No SSO', () => {
     });
 
     // Then
-    checkInformations(userInfos);
+    checkInformationsServiceProvider(userInfos);
   });
   it('should run the whole cinematic all the times even for the same SP', () => {
     // When
     //   ...Log into SP
     basicSuccessScenario(loginInfo);
-    checkInformations(userInfos);
+    checkInformationsServiceProvider(userInfos);
     //   ...Logout from SP
     cy.get('a.nav-logout').click();
     cy.contains(
@@ -49,6 +49,6 @@ describe('No SSO', () => {
     basicSuccessScenario(loginInfo);
 
     // Then
-    checkInformations(userInfos);
+    checkInformationsServiceProvider(userInfos);
   });
 });
