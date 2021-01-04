@@ -20,6 +20,7 @@ import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
 import { CryptographyService } from '@fc/cryptography';
 import { OidcClientConfig } from '@fc/oidc-client';
+import { ScopesService } from '@fc/scopes';
 import {
   Interaction,
   CsrfToken,
@@ -40,6 +41,7 @@ export class CoreFcpController {
     private readonly session: SessionService,
     private readonly config: ConfigService,
     private readonly crypto: CryptographyService,
+    private readonly scopes: ScopesService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -89,10 +91,6 @@ export class CoreFcpController {
       interactionId,
     );
 
-    /**
-     * @TODO #193 ETQ dev, j'affiche les `claims` à la place des `scopes`
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/193
-     */
     const {
       params: { scope },
     } = await this.oidcProvider.getInteraction(req, res);
@@ -100,11 +98,14 @@ export class CoreFcpController {
 
     const csrfToken = await this.generateAndStoreCsrf(req.fc.interactionId);
 
+    const claimsReadable = await this.scopes.mapScopesToLabel(scopes);
+
     return {
       interactionId,
       identity,
       spName,
       scopes,
+      claims: claimsReadable,
       csrfToken,
     };
   }

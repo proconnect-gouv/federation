@@ -1,6 +1,6 @@
 import {
   basicSuccessScenario,
-  checkInformations,
+  checkInformationsServiceProvider,
   checkInStringifiedJson,
 } from './mire.utils';
 
@@ -14,7 +14,7 @@ describe('Revoke token', () => {
     });
 
     // Check user information
-    checkInformations({
+    checkInformationsServiceProvider({
       gender: 'Femme',
       givenName: 'Angela Claire Louise',
       familyName: 'DUBOIS',
@@ -32,7 +32,7 @@ describe('Revoke token', () => {
     cy.url().should('include', `${Cypress.env('SP1_ROOT_URL')}/me`);
 
     // Check user information
-    checkInformations({
+    checkInformationsServiceProvider({
       gender: 'Femme',
       givenName: 'Angela Claire Louise',
       familyName: 'DUBOIS',
