@@ -122,6 +122,8 @@ describe('CoreFcpController', () => {
       .useValue(scopesServiceMock)
       .overrideProvider(NotificationsService)
       .useValue(notificationsServiceMock)
+      .overrideProvider(ScopesService)
+      .useValue(scopesServiceMock)
       .compile();
 
     coreController = await app.get<CoreFcpController>(CoreFcpController);

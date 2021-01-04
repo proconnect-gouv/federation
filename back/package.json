@@ -226,7 +226,9 @@
       "@fc/scopes/(.*)": "<rootDir>/libs/scopes/src/$1",
       "@fc/scopes": "<rootDir>/libs/scopes/src",
       "@fc/notifications/(.*)": "<rootDir>/libs/notifications/src/$1",
-      "@fc/notifications": "<rootDir>/libs/notifications/src"
+      "@fc/notifications": "<rootDir>/libs/notifications/src",
+      "@fc/scopes/(.*)": "<rootDir>/libs/scopes/src/$1",
+      "@fc/scopes": "<rootDir>/libs/scopes/src"
     },
     "preset": "ts-jest"
   }
