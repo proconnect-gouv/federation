@@ -23,9 +23,10 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
   }
 
   private async findAllIdentityProvider(): Promise<IdentityProviderEnvDTO[]> {
-    const { discoveryUrl, provider } = this.config.get<
-      IdentityProviderEnvConfig
-    >('IdentityProviderEnv');
+    const {
+      discoveryUrl,
+      provider,
+    } = this.config.get<IdentityProviderEnvConfig>('IdentityProviderEnv');
 
     const configuration = [
       {

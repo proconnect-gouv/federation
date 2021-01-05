@@ -20,5 +20,5 @@ export default {
    * OIDC Standard scopes
    * @see https://openid.net/specs/openid-connect-basic-1_0.html#Scopes
    */
-  scope: 'openid profile email address phone',
+  scope: process.env.OidcClient_SCOPE,
 } as OidcClientConfig;

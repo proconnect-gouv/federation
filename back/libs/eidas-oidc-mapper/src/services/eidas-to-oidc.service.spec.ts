@@ -1,6 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AcrValues } from '@fc/oidc';
-import { EidasAttributes, EidasLevelOfAssurances } from '@fc/eidas';
+import {
+  EidasAttributes,
+  EidasLevelOfAssurances,
+  EidasResponse,
+  EidasStatusCodes,
+  EidasSubStatusCodes,
+} from '@fc/eidas';
 import { EidasToOidcService } from './eidas-to-oidc.service';
 
 describe('EidasToOidcService', () => {
@@ -29,6 +35,11 @@ describe('EidasToOidcService', () => {
     ],
   };
 
+  const attributesMock = {
+    [EidasAttributes.PERSON_IDENTIFIER]: ['0123456789'],
+    [EidasAttributes.CURRENT_GIVEN_NAME]: ['Jean'],
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
 
@@ -43,12 +54,14 @@ describe('EidasToOidcService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('mapRequest', () => {
-    const mapScopesMock = jest.fn();
+  describe('mapPartialRequest', () => {
+    const mapRequestedAttributesToScopesMock = jest.fn();
 
     it('should map the oidc scopes with the eidas requested attributes', () => {
       // setup
-      service['mapScopes'] = mapScopesMock.mockReturnValueOnce(
+      service[
+        'mapRequestedAttributesToScopes'
+      ] = mapRequestedAttributesToScopesMock.mockReturnValueOnce(
         expectedPartialRequest.scope,
       );
 
@@ -56,15 +69,17 @@ describe('EidasToOidcService', () => {
       service.mapPartialRequest(eidasRequestMock);
 
       // expect
-      expect(mapScopesMock).toHaveBeenCalledTimes(1);
-      expect(mapScopesMock).toHaveBeenCalledWith(
+      expect(mapRequestedAttributesToScopesMock).toHaveBeenCalledTimes(1);
+      expect(mapRequestedAttributesToScopesMock).toHaveBeenCalledWith(
         eidasRequestMock.requestedAttributes,
       );
     });
 
     it('should return a partial eidas request with mapped loa and attributes', () => {
       // setup
-      service['mapScopes'] = mapScopesMock.mockReturnValueOnce(
+      service[
+        'mapRequestedAttributesToScopes'
+      ] = mapRequestedAttributesToScopesMock.mockReturnValueOnce(
         expectedPartialRequest.scope,
       );
 
@@ -76,13 +91,94 @@ describe('EidasToOidcService', () => {
     });
   });
 
-  describe('mapScopes', () => {
+  describe('mapPartialResponseSuccess', () => {
+    const EidasResponseMock = ({
+      levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
+      attributes: {
+        [EidasAttributes.PERSON_IDENTIFIER]: ['0123456789'],
+        [EidasAttributes.CURRENT_GIVEN_NAME]: ['Jean'],
+        [EidasAttributes.CURRENT_FAMILY_NAME]: ['Eude'],
+        [EidasAttributes.DATE_OF_BIRTH]: ['1998-02-03'],
+      },
+    } as unknown) as EidasResponse;
+
+    const mapAttributesToClaimsMock = jest.fn();
+
+    beforeEach(() => {
+      service['mapAttributesToClaims'] = mapAttributesToClaimsMock;
+    });
+
+    it('should call mapAttributesToClaims with the given attributes', () => {
+      // action
+      service.mapPartialResponseSuccess(EidasResponseMock);
+
+      // expect
+      expect(mapAttributesToClaimsMock).toHaveBeenCalledTimes(1);
+      expect(mapAttributesToClaimsMock).toHaveBeenCalledWith(
+        EidasResponseMock.attributes,
+      );
+    });
+
+    it('should return the corresponding oidc claims and the acr', () => {
+      // setup
+      const claimsMock = {
+        sub: '0123456789',
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        given_name: 'Jean',
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        family_name: 'Eude',
+        birthdate: '1998-02-03',
+      };
+      const acrMock = AcrValues.EIDAS2;
+      mapAttributesToClaimsMock.mockReturnValueOnce(claimsMock);
+
+      // action
+      const result = service.mapPartialResponseSuccess(EidasResponseMock);
+
+      // expect
+      expect(result).toStrictEqual({
+        acr: acrMock,
+        userinfos: claimsMock,
+      });
+    });
+  });
+
+  describe('mapPartialResponseFailure', () => {
+    const eidasResponse = {
+      status: {
+        statusCode: EidasStatusCodes.SUCCESS,
+        subStatusCode: EidasSubStatusCodes.AUTHN_FAILED,
+        statusMessage: 'This is a message',
+      },
+    } as EidasResponse;
+
+    const expectedError = {
+      error: 'eidas_node_error',
+      // oidc parameter
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      error_description: `StatusCode: ${eidasResponse.status.statusCode}\nSubStatusCode: ${eidasResponse.status.subStatusCode}\nStatusMessage: ${eidasResponse.status.statusMessage}`,
+    };
+
+    it('should return an oidc error from an eidas error', () => {
+      // action
+      const result = service.mapPartialResponseFailure(eidasResponse);
+
+      // expect
+      expect(result).toStrictEqual(expectedError);
+    });
+  });
+
+  describe('mapRequestedAttributesToScopes', () => {
     it('should return the mapped scopes in a set for the requested attributes', () => {
       // setup
       const expectedScope = new Set<string>(expectedPartialRequest.scope);
 
       // action
-      const result = service['mapScopes'](eidasRequestMock.requestedAttributes);
+      const result = service['mapRequestedAttributesToScopes'](
+        eidasRequestMock.requestedAttributes,
+      );
 
       // expect
       expect(result).toStrictEqual(expectedScope);
@@ -94,21 +190,23 @@ describe('EidasToOidcService', () => {
       const expectedScope = new Set<string>(['openid']);
 
       // action
-      const result = service['mapScopes'](eidasEmptyRequestedAttributesMock);
+      const result = service['mapRequestedAttributesToScopes'](
+        eidasEmptyRequestedAttributesMock,
+      );
 
       // expect
       expect(result).toStrictEqual(expectedScope);
     });
   });
 
-  describe('requestedAttributesReducer', () => {
+  describe('requestedAttributesToScopesReducer', () => {
     it('should return the scope within a set for the given eidas attribute if it exists', () => {
       // setup
       const scopeSet = new Set<string>();
       const expected = new Set<string>(['family_name', 'preferred_username']);
 
       // action
-      const result = service['requestedAttributesReducer'](
+      const result = service['requestedAttributesToScopesReducer'](
         scopeSet,
         EidasAttributes.CURRENT_FAMILY_NAME,
       );
@@ -123,9 +221,109 @@ describe('EidasToOidcService', () => {
       const expected = new Set<string>();
 
       // action
-      const result = service['requestedAttributesReducer'](
+      const result = service['requestedAttributesToScopesReducer'](
         scopeSet,
         EidasAttributes.CURRENT_ADDRESS,
+      );
+
+      // expect
+      expect(result).toStrictEqual(expected);
+    });
+  });
+
+  describe('requestedAttributesToScopesReducer', () => {
+    const getClaimsBoundedAttributesToClaimsReducerMock = jest.fn();
+    const expectedReduced = { currentGivenName: true, personIdentifier: true };
+
+    beforeEach(() => {
+      getClaimsBoundedAttributesToClaimsReducerMock.mockReturnValueOnce(
+        (accu, attr) => {
+          accu[attr] = true;
+          return accu;
+        },
+      );
+
+      service[
+        'getClaimsBoundedAttributesToClaimsReducer'
+      ] = getClaimsBoundedAttributesToClaimsReducerMock;
+    });
+
+    it('should call getClaimsBoundedAttributesToClaimsReducerMock with the attribures', () => {
+      // action
+      service['mapAttributesToClaims'](attributesMock);
+
+      // expect
+      expect(
+        getClaimsBoundedAttributesToClaimsReducerMock,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        getClaimsBoundedAttributesToClaimsReducerMock,
+      ).toHaveBeenCalledWith(attributesMock);
+    });
+
+    it('should return the result of the reduce operation', () => {
+      // action
+      const result = service['mapAttributesToClaims'](attributesMock);
+
+      // expect
+      expect(result).toStrictEqual(expectedReduced);
+    });
+  });
+
+  describe('getClaimsBoundedAttributesToClaimsReducer', () => {
+    it('should bind the attributesToClaimsReducer with the EidasToOidc service and the eidas attributes', () => {
+      // setup
+      const attributesToClaimsReducerMock = jest.fn();
+      attributesToClaimsReducerMock.bind = jest.fn();
+      service['attributesToClaimsReducer'] = attributesToClaimsReducerMock;
+
+      // action
+      service['getClaimsBoundedAttributesToClaimsReducer'](attributesMock);
+
+      // expect
+      expect(attributesToClaimsReducerMock.bind).toHaveBeenCalledTimes(1);
+      expect(attributesToClaimsReducerMock.bind).toHaveBeenCalledWith(
+        EidasToOidcService,
+        attributesMock,
+      );
+    });
+
+    it('should bind the attributesToClaimsReducer with the EidasToOidc service and the eidas attributes', () => {
+      // action
+      const result = service['getClaimsBoundedAttributesToClaimsReducer'](
+        attributesMock,
+      );
+
+      // expect
+      expect(result).toStrictEqual(expect.any(Function));
+    });
+  });
+
+  describe('attributesToClaimsReducer', () => {
+    it('should assign the current eidas attribute to the oidc claims if found', () => {
+      // setup
+      const expected = { sub: '0123456789' };
+
+      // action
+      const result = service['attributesToClaimsReducer'](
+        attributesMock,
+        {},
+        EidasAttributes.PERSON_IDENTIFIER,
+      );
+
+      // expect
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('should assign the current eidas attribute to the oidc claims if not found', () => {
+      // setup
+      const expected = {};
+
+      // action
+      const result = service['attributesToClaimsReducer'](
+        attributesMock,
+        {},
+        'what',
       );
 
       // expect

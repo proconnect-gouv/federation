@@ -38,9 +38,9 @@ export class EidasProviderController {
 
     await session.set('eidasRequest', request);
 
-    const { redirectAfterRequestHandlingUrl } = this.config.get<
-      EidasProviderConfig
-    >('EidasProvider');
+    const {
+      redirectAfterRequestHandlingUrl,
+    } = this.config.get<EidasProviderConfig>('EidasProvider');
 
     return { url: redirectAfterRequestHandlingUrl, statusCode: 302 };
   }
@@ -62,9 +62,9 @@ export class EidasProviderController {
       lightResponse,
     );
 
-    const { proxyServiceResponseCacheUrl } = this.config.get<
-      EidasProviderConfig
-    >('EidasProvider');
+    const {
+      proxyServiceResponseCacheUrl,
+    } = this.config.get<EidasProviderConfig>('EidasProvider');
 
     return { proxyServiceResponseCacheUrl, token };
   }

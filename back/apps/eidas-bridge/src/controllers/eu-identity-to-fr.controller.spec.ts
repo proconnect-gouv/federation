@@ -1,0 +1,595 @@
+import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
+import { SessionService } from '@fc/session';
+import {
+  EidasLevelOfAssurances,
+  EidasNameIdFormats,
+  EidasResponse,
+} from '@fc/eidas';
+import { OidcProviderService } from '@fc/oidc-provider';
+import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
+import { EuIdentityToFrController } from './eu-identity-to-fr.controller';
+
+describe('EuIdentityToFrController', () => {
+  let euIdentityToFrController: EuIdentityToFrController;
+
+  const configMock = {
+    urlPrefix: '',
+  };
+
+  const configServiceMock = {
+    get: jest.fn(),
+  };
+
+  const oidcProviderServiceMock = {
+    getInteraction: jest.fn(),
+    finishInteraction: jest.fn(),
+  };
+
+  const loggerServiceMock = ({
+    setContext: jest.fn(),
+  } as unknown) as LoggerService;
+
+  const sessionMock = {
+    patch: jest.fn(),
+    get: jest.fn(),
+    init: jest.fn(),
+    getId: jest.fn(),
+  };
+
+  const exposedSessionMock = {
+    get: jest.fn(),
+    set: jest.fn(),
+  };
+
+  const randomStringMock = 'randomStringMockValue';
+  const sessionIdMock = randomStringMock;
+
+  const sessionMockValue = {
+    spName: Symbol('spNameMockValue'),
+  };
+
+  const res = {
+    redirect: jest.fn(),
+  };
+
+  const req = {
+    body: {
+      country: 'BE',
+    },
+    fc: {
+      interactionId: 'interactionIdMock',
+    },
+    params: {
+      uid: '1234456',
+    },
+  };
+
+  const interactionMock = {
+    uid: Symbol('uidMockValue'),
+    params: Symbol('interactionMockValue'),
+  };
+
+  const oidcToEidasServiceMock = {
+    mapPartialRequest: jest.fn(),
+  };
+
+  const eidasToOidcServiceMock = {
+    mapPartialResponseFailure: jest.fn(),
+    mapPartialResponseSuccess: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    const app: TestingModule = await Test.createTestingModule({
+      controllers: [EuIdentityToFrController],
+      providers: [
+        ConfigService,
+        LoggerService,
+        SessionService,
+        OidcProviderService,
+        OidcToEidasService,
+        EidasToOidcService,
+      ],
+    })
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionMock)
+      .overrideProvider(OidcProviderService)
+      .useValue(oidcProviderServiceMock)
+      .overrideProvider(OidcToEidasService)
+      .useValue(oidcToEidasServiceMock)
+      .overrideProvider(EidasToOidcService)
+      .useValue(eidasToOidcServiceMock)
+
+      .compile();
+
+    euIdentityToFrController = await app.get<EuIdentityToFrController>(
+      EuIdentityToFrController,
+    );
+
+    jest.resetAllMocks();
+    configServiceMock.get.mockReturnValue(configMock);
+
+    oidcProviderServiceMock.getInteraction.mockResolvedValue(interactionMock);
+    sessionMock.get.mockResolvedValue(sessionMockValue);
+    sessionMock.getId.mockReturnValue(sessionIdMock);
+  });
+
+  describe('getInteraction', () => {
+    it('should call oidcProvider.getInteraction', async () => {
+      // When
+      await euIdentityToFrController.getInteraction(
+        req,
+        res,
+        exposedSessionMock,
+      );
+
+      // Then
+      expect(oidcProviderServiceMock.getInteraction).toBeCalledTimes(1);
+      expect(oidcProviderServiceMock.getInteraction).toBeCalledWith(req, res);
+    });
+
+    it('should call get the country list from the config', async () => {
+      // When
+      await euIdentityToFrController.getInteraction(
+        req,
+        res,
+        exposedSessionMock,
+      );
+
+      // Then
+      expect(configServiceMock.get).toBeCalledTimes(1);
+      expect(configServiceMock.get).toBeCalledWith('Core');
+    });
+
+    it('should call session.get with interactionId', async () => {
+      // When
+      await euIdentityToFrController.getInteraction(
+        req,
+        res,
+        exposedSessionMock,
+      );
+
+      // Then
+      expect(sessionMock.get).toBeCalledTimes(1);
+      expect(sessionMock.get).toBeCalledWith(req.fc.interactionId);
+    });
+
+    it('should return an object with data from session and oidcProvider interaction', async () => {
+      // setup
+      const countryListMock = [{ iso: 'ATL', name: 'Atlantis' }];
+      configServiceMock.get.mockReturnValueOnce({
+        countryList: countryListMock,
+      });
+
+      // action
+      const result = await euIdentityToFrController.getInteraction(
+        req,
+        res,
+        exposedSessionMock,
+      );
+
+      // expect
+      expect(result).toStrictEqual({
+        uid: interactionMock.uid,
+        countryList: countryListMock,
+        params: interactionMock.params,
+        spName: sessionMockValue.spName,
+      });
+    });
+  });
+
+  describe('finishInteraction', () => {
+    const successEidasMandatoryJsonMock: EidasResponse = {
+      id: '_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u',
+      inResponseToId: '1602861970744',
+      issuer:
+        'https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata',
+      subject: '0123456',
+      subjectNameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+      levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
+      status: {
+        failure: false,
+      },
+      attributes: {
+        personIdentifier: ['BE/FR/12345'],
+        currentFamilyName: ['Garcia'],
+        currentGivenName: ['javier'],
+        dateOfBirth: ['1964-12-31'],
+      },
+    };
+
+    const successOidcJson = {
+      acr: 'eidas2',
+      userinfos: {
+        sub: 'BE/FR/12345',
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        family_name: 'Garcia',
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        given_name: 'javier',
+        birthdate: '1964-12-31',
+      },
+    };
+
+    const failureEidasMandatoryJsonMock: EidasResponse = {
+      id: '_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u',
+      inResponseToId: '1602861970744',
+      issuer:
+        'https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata',
+      status: {
+        failure: true,
+      },
+    };
+
+    const failureOidcJson = {
+      error: 'error',
+      // oidc parameter
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      error_description: 'error_description',
+    };
+
+    const buildRedirectUriErrorUrlMock = jest.fn();
+    const redirectUriErrorUrlMock = 'https://redirect-uri-error.url';
+
+    it('should get the eidas response from the session', async () => {
+      // setup
+      exposedSessionMock.get.mockReturnValueOnce(successEidasMandatoryJsonMock);
+      eidasToOidcServiceMock.mapPartialResponseSuccess.mockReturnValueOnce(
+        successOidcJson,
+      );
+
+      // action
+      await euIdentityToFrController.finishInteraction(
+        req,
+        res,
+        exposedSessionMock,
+      );
+
+      // expect
+      expect(exposedSessionMock.get).toHaveBeenCalledTimes(1);
+      expect(exposedSessionMock.get).toHaveBeenCalledWith('eidasResponse');
+    });
+
+    describe('eidas response is a success', () => {
+      beforeEach(() => {
+        exposedSessionMock.get.mockReturnValueOnce(
+          successEidasMandatoryJsonMock,
+        );
+        eidasToOidcServiceMock.mapPartialResponseSuccess.mockReturnValueOnce(
+          successOidcJson,
+        );
+      });
+
+      it('should not call getInteraction from oidcProvider', async () => {
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(oidcProviderServiceMock.getInteraction).not.toHaveBeenCalled();
+      });
+
+      it('should not call mapPartialResponseFailure from eidasToOidc', async () => {
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(
+          eidasToOidcServiceMock.mapPartialResponseFailure,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('should not call mapPartialResponseFailure from eidasToOidc', async () => {
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(
+          eidasToOidcServiceMock.mapPartialResponseFailure,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('should not call mapPartialResponseFailure from eidasToOidc', async () => {
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(buildRedirectUriErrorUrlMock).not.toHaveBeenCalled();
+      });
+
+      it('should call mapPartialResponseSuccess with the eidas response to get the partial oidc response', async () => {
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(
+          eidasToOidcServiceMock.mapPartialResponseSuccess,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          eidasToOidcServiceMock.mapPartialResponseSuccess,
+        ).toHaveBeenCalledWith(successEidasMandatoryJsonMock);
+      });
+
+      it('should patch the oidc session with the identity to send to the SP', async () => {
+        // setup
+        const expectedPatch = {
+          idpIdentity: { sub: successOidcJson.userinfos.sub },
+          spAcr: successOidcJson.acr,
+          spIdentity: successOidcJson.userinfos,
+        };
+
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(sessionMock.patch).toHaveBeenCalledTimes(1);
+        expect(sessionMock.patch).toHaveBeenCalledWith(
+          req.fc.interactionId,
+          expectedPatch,
+        );
+      });
+
+      it('should finish the oidc provider interaction passing req and res', async () => {
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
+          1,
+        );
+        expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
+          req,
+          res,
+        );
+      });
+
+      it('should return the promise from the finishInteraction call', async () => {
+        // setup
+        const expectedPromise = new Promise((resolves) => {
+          resolves(true);
+        });
+        oidcProviderServiceMock.finishInteraction.mockReturnValueOnce(
+          expectedPromise,
+        );
+
+        // action
+        const result = euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(result).toStrictEqual(expectedPromise);
+      });
+    });
+
+    describe('eidas response is a failure', () => {
+      const interactionMock = { params: { scope: 'openid', acr: 'eidas2' } };
+
+      beforeEach(() => {
+        exposedSessionMock.get.mockResolvedValueOnce(
+          failureEidasMandatoryJsonMock,
+        );
+
+        oidcProviderServiceMock.getInteraction.mockResolvedValueOnce(
+          interactionMock,
+        );
+
+        euIdentityToFrController[
+          'buildRedirectUriErrorUrl'
+        ] = buildRedirectUriErrorUrlMock;
+      });
+
+      it('should retrieves the interaction using req and res', async () => {
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledTimes(1);
+        expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledWith(
+          req,
+          res,
+        );
+      });
+
+      it('should call mapPartialResponseFailure with the eidas response to get the partial oidc response', async () => {
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(
+          eidasToOidcServiceMock.mapPartialResponseFailure,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          eidasToOidcServiceMock.mapPartialResponseFailure,
+        ).toHaveBeenCalledWith(failureEidasMandatoryJsonMock);
+      });
+
+      it('should call buildRedirectUriErrorUrl with with the params from the interaction and the oidcError returned by the mapper', async () => {
+        // setup
+        eidasToOidcServiceMock.mapPartialResponseFailure.mockReturnValueOnce(
+          failureOidcJson,
+        );
+
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(buildRedirectUriErrorUrlMock).toHaveBeenCalledTimes(1);
+        expect(buildRedirectUriErrorUrlMock).toHaveBeenCalledWith(
+          interactionMock.params,
+          failureOidcJson,
+        );
+      });
+
+      it('should redirect the user to the SP callback with the oidc error', async () => {
+        // setup
+        eidasToOidcServiceMock.mapPartialResponseFailure.mockReturnValueOnce(
+          failureOidcJson,
+        );
+        buildRedirectUriErrorUrlMock.mockReturnValueOnce(
+          redirectUriErrorUrlMock,
+        );
+
+        // action
+        await euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+        expect(res.redirect).toHaveBeenCalledWith(redirectUriErrorUrlMock);
+      });
+
+      it('should return the promise from the res.redirect', async () => {
+        // setup
+        eidasToOidcServiceMock.mapPartialResponseFailure.mockReturnValueOnce(
+          failureOidcJson,
+        );
+        const expectedPromise = new Promise((resolves) => resolves(true));
+        res.redirect.mockReturnValueOnce(expectedPromise);
+
+        // action
+        const result = euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(result).toStrictEqual(expectedPromise);
+      });
+
+      it('should not call mapPartialResponseSuccess', async () => {
+        // action
+        euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(
+          eidasToOidcServiceMock.mapPartialResponseSuccess,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('should not call session.patch', async () => {
+        // action
+        euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(sessionMock.patch).not.toHaveBeenCalled();
+      });
+
+      it('should not call finishInteraction', async () => {
+        // action
+        euIdentityToFrController.finishInteraction(
+          req,
+          res,
+          exposedSessionMock,
+        );
+
+        // expect
+        expect(
+          oidcProviderServiceMock.finishInteraction,
+        ).not.toHaveBeenCalled();
+      });
+    });
+  });
+
+  describe('buildRedirectUriErrorUrl', () => {
+    it('should build a redirect uri with oidc params error', () => {
+      // setup
+      const oidcErrorMock = {
+        error: 'error',
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: 'error_description',
+      };
+      const paramsMock = {
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        redirect_uri: 'https://redirect.url',
+        state: 'texas',
+      };
+      const expectedUrl =
+        'https://redirect.url?error=error&error_description=error_description&state=texas';
+
+      // action
+      const result = euIdentityToFrController['buildRedirectUriErrorUrl'](
+        paramsMock,
+        oidcErrorMock,
+      );
+
+      // expect
+      expect(result).toStrictEqual(expectedUrl);
+    });
+  });
+
+  describe('redirectToFrNodeConnector', () => {
+    it('should return a status code and a url', async () => {
+      // When
+      const result = await euIdentityToFrController.redirectToFrNodeConnector(
+        req.body,
+      );
+      // Then
+      expect(result).toEqual({
+        statusCode: 302,
+        url: '/eidas-client/redirect-to-fr-node-connector?country=BE',
+      });
+    });
+  });
+});

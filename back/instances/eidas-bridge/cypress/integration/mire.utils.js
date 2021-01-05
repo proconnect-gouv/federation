@@ -92,7 +92,7 @@ function configureEidasSpMockRequest(eidasRequest = {}) {
  *    + see the function "configureEidasSpMockRequest"
  *  - LogWith
  *    + idpId
- *    + userName
+ *    + username
  *    + password
  */
 export function basicSuccessScenarioEuSpFrIdp(params) {
@@ -148,4 +148,125 @@ export function checkInformationsEuSpFrIdp(params = {}) {
         cy.get('td').eq(1).contains(value);
       });
   });
+}
+
+function configureOidcSpMockRequest(params = {}) {
+  const idpId = 'eidas-bridge';
+  const { sp = 'SP1', method = 'GET' } = params;
+
+  const serviceProvider = {
+    url: Cypress.env(`${sp}_ROOT_URL`),
+    id: Cypress.env(`${sp}_CLIENT_ID`),
+  };
+
+  // FS: Click on FC button
+  cy.visit(serviceProvider.url);
+
+  if (method === 'POST') {
+    cy.get('#post-authorize').click();
+  } else {
+    cy.get('#get-authorize').click();
+  }
+
+  // FC: choose FI
+
+  cy.url().should(
+    'include',
+    `${Cypress.env('CORE_ROOT_URL')}/api/v2/interaction`,
+  );
+
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FC_AUTHORIZE_INITIATED',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId: null,
+    idpName: null,
+    idpAcr: null,
+  });
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'FC_SHOWED_IDP_CHOICE',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId: null,
+    idpName: null,
+    idpAcr: null,
+  });
+  cy.get(`#idp-${idpId}`).click();
+
+  // FI: Authenticate
+  cy.url().should('include', `${Cypress.env('BRIDGE_ROOT_URL')}/interaction/`);
+
+  cy.hasBusinessLog({
+    category: 'FRONT_CINEMATIC',
+    event: 'IDP_CHOSEN',
+    spId: serviceProvider.id,
+    spAcr: params.acr_values,
+    idpId, // idpId is set
+    idpAcr: null, // idpAct is still null
+  });
+
+  cy.get('#country-BE').click();
+}
+
+export function basicSuccessScenarioFrSpEuIdp(params = {}) {
+  configureOidcSpMockRequest(params);
+
+  const { username = 'xavi', password = 'creus', loa = 'E' } = params;
+
+  cy.get('#buttonNextSlide1').click();
+
+  cy.get('ul.toogle-switch').within(() => {
+    cy.get('li span').eq(0).click();
+    cy.get('li span').eq(1).click();
+  });
+
+  cy.get('#buttonNextSlide2').click();
+
+  cy.get('#username').type(username);
+  cy.get('#password').type(password);
+  cy.get('#eidasloa').select(loa);
+
+  cy.get('#idpSubmitbutton').click();
+  cy.get('#buttonNext').click();
+}
+
+export function basicFailureScenarioFrSpEuIdp(params = {}) {
+  configureOidcSpMockRequest(params);
+
+  const { username = 'xavi', password = 'creus', loa = 'E', cancel } = params;
+
+  if (cancel === 'mandatory_attributes') {
+    return cy.get('#buttonCancelSlide1').click();
+  }
+
+  cy.get('#buttonNextSlide1').click();
+
+  if (cancel === 'optional_attributes') {
+    return cy.get('#buttonCancelSlide2').click();
+  }
+
+  cy.get('ul.toogle-switch').within(() => {
+    cy.get('li span').eq(0).click();
+    cy.get('li span').eq(1).click();
+  });
+
+  cy.get('#buttonNextSlide2').click();
+
+  cy.get('#username').type(username);
+  cy.get('#password').type(password);
+  cy.get('#eidasloa').select(loa);
+
+  cy.get('#idpSubmitbutton').click();
+
+  if (cancel === 'confirmation') {
+    return cy.get('#buttonCancel').click();
+  }
+  cy.get('#buttonNext').click();
+}
+
+export function checkInformationsFrSpEuIdp() {
+  cy.contains('code : Y010013');
+  cy.contains('identity.birthplace: isCog');
 }

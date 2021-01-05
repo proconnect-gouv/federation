@@ -26,7 +26,7 @@ export default {
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   client_id: process.env.ServiceProviderEnv_CLIENT_ID,
-  scope: process.env.IdentityProviderEnv_SCOPE,
+  scope: process.env.ServiceProviderEnv_SCOPE,
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   id_token_signed_response_alg:

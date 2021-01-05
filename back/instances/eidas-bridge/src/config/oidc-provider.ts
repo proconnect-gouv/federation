@@ -89,7 +89,7 @@ export default {
       address: ['address'],
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      phone_number: ['phone_number'],
+      phone: ['phone_number'],
       profile: [
         'sub',
         'given_name',

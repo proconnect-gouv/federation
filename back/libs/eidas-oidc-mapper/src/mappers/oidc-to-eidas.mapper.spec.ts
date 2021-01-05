@@ -1,26 +1,9 @@
 import * as _ from 'lodash';
-import { EidasAttributes, EidasLevelOfAssurances } from '@fc/eidas';
-import {
-  OidcToEidasAttributesMap,
-  OidcToEidasLevelOfAssurancesMap,
-} from './oidc-to-eidas.mapper';
+import { EidasAttributes } from '@fc/eidas';
+import { ClaimsToAttributesMap } from './oidc-to-eidas.mapper';
 
-describe('EidasOidcMapper', () => {
-  describe('OidcToEidasLevelOfAssurancesMap', () => {
-    it('should equal to "EidasLevelOfAssurances.SUBSTANTIAL"', () => {
-      expect(OidcToEidasLevelOfAssurancesMap['eidas2']).toStrictEqual(
-        EidasLevelOfAssurances.SUBSTANTIAL,
-      );
-    });
-
-    it('should equal to "EidasLevelOfAssurances.HIGH"', () => {
-      expect(OidcToEidasLevelOfAssurancesMap['eidas3']).toStrictEqual(
-        EidasLevelOfAssurances.HIGH,
-      );
-    });
-  });
-
-  describe('OidcToEidasAttributesMap', () => {
+describe('OidcToEidasMapper', () => {
+  describe('ClaimsToAttributesMap', () => {
     const claims = {
       sub: '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
       gender: 'female',
@@ -42,7 +25,7 @@ describe('EidasOidcMapper', () => {
     describe('getPersonIdentifier', () => {
       it('should be a function', () => {
         expect(
-          OidcToEidasAttributesMap[EidasAttributes.PERSON_IDENTIFIER],
+          ClaimsToAttributesMap[EidasAttributes.PERSON_IDENTIFIER],
         ).toBeInstanceOf(Function);
       });
 
@@ -51,9 +34,9 @@ describe('EidasOidcMapper', () => {
         const expected = [claims.sub];
 
         // action
-        const result = OidcToEidasAttributesMap[
-          EidasAttributes.PERSON_IDENTIFIER
-        ](claims);
+        const result = ClaimsToAttributesMap[EidasAttributes.PERSON_IDENTIFIER](
+          claims,
+        );
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -63,7 +46,7 @@ describe('EidasOidcMapper', () => {
     describe('getCurrentGivenName', () => {
       it('should be a function', () => {
         expect(
-          OidcToEidasAttributesMap[EidasAttributes.CURRENT_GIVEN_NAME],
+          ClaimsToAttributesMap[EidasAttributes.CURRENT_GIVEN_NAME],
         ).toBeInstanceOf(Function);
       });
 
@@ -72,7 +55,7 @@ describe('EidasOidcMapper', () => {
         const expected = claims.given_name.split(' ');
 
         // action
-        const result = OidcToEidasAttributesMap[
+        const result = ClaimsToAttributesMap[
           EidasAttributes.CURRENT_GIVEN_NAME
         ](claims);
 
@@ -84,7 +67,7 @@ describe('EidasOidcMapper', () => {
     describe('getCurrentFamilyName', () => {
       it('should be a function', () => {
         expect(
-          OidcToEidasAttributesMap[EidasAttributes.CURRENT_FAMILY_NAME],
+          ClaimsToAttributesMap[EidasAttributes.CURRENT_FAMILY_NAME],
         ).toBeInstanceOf(Function);
       });
 
@@ -93,7 +76,7 @@ describe('EidasOidcMapper', () => {
         const expected = [claims.preferred_username];
 
         // action
-        const result = OidcToEidasAttributesMap[
+        const result = ClaimsToAttributesMap[
           EidasAttributes.CURRENT_FAMILY_NAME
         ](claims);
 
@@ -112,7 +95,7 @@ describe('EidasOidcMapper', () => {
         const expected = [claims.family_name];
 
         // action
-        const result = OidcToEidasAttributesMap[
+        const result = ClaimsToAttributesMap[
           EidasAttributes.CURRENT_FAMILY_NAME
         ](claimsWithoutPreferredUsername);
 
@@ -124,7 +107,7 @@ describe('EidasOidcMapper', () => {
     describe('getBirthName', () => {
       it('should be a function', () => {
         expect(
-          OidcToEidasAttributesMap[EidasAttributes.BIRTH_NAME],
+          ClaimsToAttributesMap[EidasAttributes.BIRTH_NAME],
         ).toBeInstanceOf(Function);
       });
 
@@ -133,7 +116,7 @@ describe('EidasOidcMapper', () => {
         const expected = [claims.family_name];
 
         // action
-        const result = OidcToEidasAttributesMap[EidasAttributes.BIRTH_NAME](
+        const result = ClaimsToAttributesMap[EidasAttributes.BIRTH_NAME](
           claims,
         );
 
@@ -145,7 +128,7 @@ describe('EidasOidcMapper', () => {
     describe('getDateOfBirth', () => {
       it('should be a function', () => {
         expect(
-          OidcToEidasAttributesMap[EidasAttributes.DATE_OF_BIRTH],
+          ClaimsToAttributesMap[EidasAttributes.DATE_OF_BIRTH],
         ).toBeInstanceOf(Function);
       });
 
@@ -154,7 +137,7 @@ describe('EidasOidcMapper', () => {
         const expected = [claims.birthdate];
 
         // action
-        const result = OidcToEidasAttributesMap[EidasAttributes.DATE_OF_BIRTH](
+        const result = ClaimsToAttributesMap[EidasAttributes.DATE_OF_BIRTH](
           claims,
         );
 
@@ -185,7 +168,7 @@ describe('EidasOidcMapper', () => {
         const expected = ['1962-08-01'];
 
         // action
-        const result = OidcToEidasAttributesMap[EidasAttributes.DATE_OF_BIRTH](
+        const result = ClaimsToAttributesMap[EidasAttributes.DATE_OF_BIRTH](
           claimsPresumedBornDay,
         );
 
@@ -217,7 +200,7 @@ describe('EidasOidcMapper', () => {
         const expected = ['1962-01-01'];
 
         // action
-        const result = OidcToEidasAttributesMap[EidasAttributes.DATE_OF_BIRTH](
+        const result = ClaimsToAttributesMap[EidasAttributes.DATE_OF_BIRTH](
           claimsPresumedBornDayMonth,
         );
 
@@ -248,7 +231,7 @@ describe('EidasOidcMapper', () => {
         const expected = [undefined];
 
         // action
-        const result = OidcToEidasAttributesMap[EidasAttributes.DATE_OF_BIRTH](
+        const result = ClaimsToAttributesMap[EidasAttributes.DATE_OF_BIRTH](
           claimsPresumedBornDayMonth,
         );
 
@@ -260,7 +243,7 @@ describe('EidasOidcMapper', () => {
     describe('getPlaceOfBirth', () => {
       it('should be a function', () => {
         expect(
-          OidcToEidasAttributesMap[EidasAttributes.PLACE_OF_BIRTH],
+          ClaimsToAttributesMap[EidasAttributes.PLACE_OF_BIRTH],
         ).toBeInstanceOf(Function);
       });
 
@@ -269,7 +252,7 @@ describe('EidasOidcMapper', () => {
         const expected = [claims.birthplace];
 
         // action
-        const result = OidcToEidasAttributesMap[EidasAttributes.PLACE_OF_BIRTH](
+        const result = ClaimsToAttributesMap[EidasAttributes.PLACE_OF_BIRTH](
           claims,
         );
 
@@ -299,7 +282,7 @@ describe('EidasOidcMapper', () => {
         const expected = [claimsWithoutBirthplace.birthcountry];
 
         // action
-        const result = OidcToEidasAttributesMap[EidasAttributes.PLACE_OF_BIRTH](
+        const result = ClaimsToAttributesMap[EidasAttributes.PLACE_OF_BIRTH](
           claimsWithoutBirthplace,
         );
 
@@ -310,7 +293,7 @@ describe('EidasOidcMapper', () => {
 
     describe('getGender', () => {
       it('should be a function', () => {
-        expect(OidcToEidasAttributesMap[EidasAttributes.GENDER]).toBeInstanceOf(
+        expect(ClaimsToAttributesMap[EidasAttributes.GENDER]).toBeInstanceOf(
           Function,
         );
       });
@@ -320,7 +303,7 @@ describe('EidasOidcMapper', () => {
         const expected = [_.upperFirst(claims.gender)];
 
         // action
-        const result = OidcToEidasAttributesMap[EidasAttributes.GENDER](claims);
+        const result = ClaimsToAttributesMap[EidasAttributes.GENDER](claims);
 
         // expect
         expect(result).toStrictEqual(expected);

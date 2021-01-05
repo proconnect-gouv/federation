@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
 import { EidasAttributes, EidasLevelOfAssurances } from '@fc/eidas';
+import { AcrValues } from '@fc/oidc';
+import { OidcScopes } from '../enums';
 
 /**
  * Get the oidc sub in the claims to return as eidas person identifier
@@ -72,12 +74,13 @@ function getGender(claims): string[] {
   return [_.upperFirst(claims.gender)];
 }
 
-export const OidcToEidasLevelOfAssurancesMap = {
-  eidas2: EidasLevelOfAssurances.SUBSTANTIAL,
-  eidas3: EidasLevelOfAssurances.HIGH,
+export const AcrValuesToLevelOfAssurancesMap = {
+  [AcrValues.EIDAS1]: EidasLevelOfAssurances.LOW,
+  [AcrValues.EIDAS2]: EidasLevelOfAssurances.SUBSTANTIAL,
+  [AcrValues.EIDAS3]: EidasLevelOfAssurances.HIGH,
 };
 
-export const OidcToEidasAttributesMap = {
+export const ClaimsToAttributesMap = {
   [EidasAttributes.PERSON_IDENTIFIER]: getPersonIdentifier,
   [EidasAttributes.CURRENT_GIVEN_NAME]: getCurrentGivenName,
   [EidasAttributes.CURRENT_FAMILY_NAME]: getCurrentFamilyName,
@@ -85,4 +88,20 @@ export const OidcToEidasAttributesMap = {
   [EidasAttributes.DATE_OF_BIRTH]: getDateOfBirth,
   [EidasAttributes.PLACE_OF_BIRTH]: getPlaceOfBirth,
   [EidasAttributes.GENDER]: getGender,
+};
+
+export const ScopesToRequestedAttributesMap = {
+  [OidcScopes.OPENID]: [EidasAttributes.PERSON_IDENTIFIER],
+  [OidcScopes.PROFILE]: [
+    EidasAttributes.GENDER,
+    EidasAttributes.DATE_OF_BIRTH,
+    EidasAttributes.CURRENT_GIVEN_NAME,
+    EidasAttributes.CURRENT_FAMILY_NAME,
+  ],
+  [OidcScopes.GENDER]: [EidasAttributes.GENDER],
+  [OidcScopes.BIRTHDATE]: [EidasAttributes.DATE_OF_BIRTH],
+  [OidcScopes.BIRTHPLACE]: [EidasAttributes.PLACE_OF_BIRTH],
+  [OidcScopes.GIVEN_NAME]: [EidasAttributes.CURRENT_GIVEN_NAME],
+  [OidcScopes.FAMILY_NAME]: [EidasAttributes.CURRENT_FAMILY_NAME],
+  [OidcScopes.PREFERRED_USERNAME]: [EidasAttributes.CURRENT_FAMILY_NAME],
 };

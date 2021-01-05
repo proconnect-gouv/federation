@@ -803,7 +803,7 @@ describe('LightResponseService', () => {
       service['inflateContext'](inflatedJson, failureFullJsonMock);
 
       // expect
-      expect(_.set).toHaveBeenCalledTimes(5);
+      expect(_.set).toHaveBeenCalledTimes(4);
       expect(_.set).not.toHaveBeenCalledWith(
         inflatedJson,
         LightResponseXmlSelectors.SUBJECT_NAME_ID_FORMAT,
@@ -830,7 +830,7 @@ describe('LightResponseService', () => {
       service['inflateContext'](inflatedJson, failureFullJsonMock);
 
       // expect
-      expect(_.set).toHaveBeenCalledTimes(5);
+      expect(_.set).toHaveBeenCalledTimes(4);
       expect(_.set).not.toHaveBeenCalledWith(
         inflatedJson,
         LightResponseXmlSelectors.SUBJECT,
@@ -857,7 +857,7 @@ describe('LightResponseService', () => {
       service['inflateContext'](inflatedJson, failureFullJsonMock);
 
       // expect
-      expect(_.set).toHaveBeenCalledTimes(5);
+      expect(_.set).toHaveBeenCalledTimes(4);
       expect(_.set).not.toHaveBeenCalledWith(
         inflatedJson,
         LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
@@ -905,7 +905,7 @@ describe('LightResponseService', () => {
       jest.spyOn(_, 'get');
     });
 
-    it('should call "_.get" with the inflated response and the subject name id format xml selector', () => {
+    it('should call "_.get" with the inflated response and the id xml selector', () => {
       // action
       service['deflateContext'](lightResponseSuccessFullJsonMock);
 
@@ -913,6 +913,97 @@ describe('LightResponseService', () => {
       expect(_.get).toHaveBeenCalledTimes(8);
       expect(_.get).toHaveBeenNthCalledWith(
         1,
+        lightResponseSuccessFullJsonMock,
+        LightResponseXmlSelectors.ID,
+      );
+    });
+
+    it('should call "_.get" with the inflated response and the issuer xml selector', () => {
+      // action
+      service['deflateContext'](lightResponseSuccessFullJsonMock);
+
+      // expect
+      expect(_.get).toHaveBeenCalledTimes(8);
+      expect(_.get).toHaveBeenNthCalledWith(
+        2,
+        lightResponseSuccessFullJsonMock,
+        LightResponseXmlSelectors.ISSUER,
+      );
+    });
+
+    it('should call "_.get" with the inflated response and the subject xml selector', () => {
+      // action
+      service['deflateContext'](lightResponseSuccessFullJsonMock);
+
+      // expect
+      expect(_.get).toHaveBeenCalledTimes(8);
+      expect(_.get).toHaveBeenNthCalledWith(
+        3,
+        lightResponseSuccessFullJsonMock,
+        LightResponseXmlSelectors.SUBJECT,
+      );
+    });
+
+    it('should call "_.get" with the inflated response and the in response to id xml selector', () => {
+      // action
+      service['deflateContext'](lightResponseSuccessFullJsonMock);
+
+      // expect
+      expect(_.get).toHaveBeenCalledTimes(8);
+      expect(_.get).toHaveBeenNthCalledWith(
+        4,
+        lightResponseSuccessFullJsonMock,
+        LightResponseXmlSelectors.IN_RESPONSE_TO_ID,
+      );
+    });
+
+    it('should call "_.get" with the inflated response and the level of assurance xml selector', () => {
+      // action
+      service['deflateContext'](lightResponseSuccessFullJsonMock);
+
+      // expect
+      expect(_.get).toHaveBeenCalledTimes(8);
+      expect(_.get).toHaveBeenNthCalledWith(
+        5,
+        lightResponseSuccessFullJsonMock,
+        LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
+      );
+    });
+
+    it('should call "getLastElementInUrlOrUrn" with the level of assurance retreived from corresponding call to "_.get" on the inflated response', () => {
+      // setup
+      const expectedLoa = 'http://eidas.europa.eu/LoA/substantial';
+
+      // action
+      service['deflateContext'](lightResponseSuccessFullJsonMock);
+
+      // expect
+      expect(
+        lightCommonsServiceMock.getLastElementInUrlOrUrn,
+      ).toHaveBeenCalledTimes(2);
+      expect(
+        lightCommonsServiceMock.getLastElementInUrlOrUrn,
+      ).toHaveBeenNthCalledWith(1, expectedLoa);
+    });
+
+    it('should not set the level of assurance of the context object in case of failure', () => {
+      // action
+      const result = service['deflateContext'](
+        lightResponseFailureFullJsonMock,
+      );
+
+      // expect
+      expect(result).not.toHaveProperty('levelOfAssurance');
+    });
+
+    it('should call "_.get" with the inflated response and the subject name id format xml selector', () => {
+      // action
+      service['deflateContext'](lightResponseSuccessFullJsonMock);
+
+      // expect
+      expect(_.get).toHaveBeenCalledTimes(8);
+      expect(_.get).toHaveBeenNthCalledWith(
+        6,
         lightResponseSuccessFullJsonMock,
         LightResponseXmlSelectors.SUBJECT_NAME_ID_FORMAT,
       );
@@ -932,88 +1023,17 @@ describe('LightResponseService', () => {
       ).toHaveBeenCalledTimes(2);
       expect(
         lightCommonsServiceMock.getLastElementInUrlOrUrn,
-      ).toHaveBeenNthCalledWith(1, expectedSubjectNameIdFormat);
+      ).toHaveBeenNthCalledWith(2, expectedSubjectNameIdFormat);
     });
 
-    it('should call "_.get" with the inflated response and the level of assurance xml selector', () => {
+    it('should not set the subject name id format of the context object in case of failure', () => {
       // action
-      service['deflateContext'](lightResponseSuccessFullJsonMock);
-
-      // expect
-      expect(_.get).toHaveBeenCalledTimes(8);
-      expect(_.get).toHaveBeenNthCalledWith(
-        2,
-        lightResponseSuccessFullJsonMock,
-        LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
+      const result = service['deflateContext'](
+        lightResponseFailureFullJsonMock,
       );
-    });
-
-    it('should call "getLastElementInUrlOrUrn" with the level of assurance retreived from corresponding call to "_.get" on the inflated response', () => {
-      // setup
-      const expectedLoa = 'http://eidas.europa.eu/LoA/substantial';
-
-      // action
-      service['deflateContext'](lightResponseSuccessFullJsonMock);
 
       // expect
-      expect(
-        lightCommonsServiceMock.getLastElementInUrlOrUrn,
-      ).toHaveBeenCalledTimes(2);
-      expect(
-        lightCommonsServiceMock.getLastElementInUrlOrUrn,
-      ).toHaveBeenNthCalledWith(2, expectedLoa);
-    });
-
-    it('should call "_.get" with the inflated response and the id xml selector', () => {
-      // action
-      service['deflateContext'](lightResponseSuccessFullJsonMock);
-
-      // expect
-      expect(_.get).toHaveBeenCalledTimes(8);
-      expect(_.get).toHaveBeenNthCalledWith(
-        3,
-        lightResponseSuccessFullJsonMock,
-        LightResponseXmlSelectors.ID,
-      );
-    });
-
-    it('should call "_.get" with the inflated response and the issuer xml selector', () => {
-      // action
-      service['deflateContext'](lightResponseSuccessFullJsonMock);
-
-      // expect
-      expect(_.get).toHaveBeenCalledTimes(8);
-      expect(_.get).toHaveBeenNthCalledWith(
-        4,
-        lightResponseSuccessFullJsonMock,
-        LightResponseXmlSelectors.ISSUER,
-      );
-    });
-
-    it('should call "_.get" with the inflated response and the subject xml selector', () => {
-      // action
-      service['deflateContext'](lightResponseSuccessFullJsonMock);
-
-      // expect
-      expect(_.get).toHaveBeenCalledTimes(8);
-      expect(_.get).toHaveBeenNthCalledWith(
-        5,
-        lightResponseSuccessFullJsonMock,
-        LightResponseXmlSelectors.SUBJECT,
-      );
-    });
-
-    it('should call "_.get" with the inflated response and the in response to id xml selector', () => {
-      // action
-      service['deflateContext'](lightResponseSuccessFullJsonMock);
-
-      // expect
-      expect(_.get).toHaveBeenCalledTimes(8);
-      expect(_.get).toHaveBeenNthCalledWith(
-        6,
-        lightResponseSuccessFullJsonMock,
-        LightResponseXmlSelectors.IN_RESPONSE_TO_ID,
-      );
+      expect(result).not.toHaveProperty('subjectNameIdFormat');
     });
 
     it('should call "_.get" with the inflated response and the relay state xml selector', () => {

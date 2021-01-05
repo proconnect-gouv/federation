@@ -3,15 +3,23 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { ApacheIgniteService } from '@fc/apache-ignite';
 import {
+  EidasCountries,
+  EidasNameIdFormats,
+  EidasPartialRequest,
+  EidasRequest,
+  EidasResponse,
+  EidasSpTypes,
+} from '@fc/eidas';
+import {
   LightRequestService,
   LightResponseService,
 } from '@fc/eidas-light-protocol';
+import { CryptographyService } from '@fc/cryptography';
 import { EidasClientConfig } from './dto';
 import {
   ReadLightResponseFromCacheException,
   WriteLightRequestInCacheException,
 } from './exceptions';
-import { EidasRequest, EidasResponse } from '@fc/eidas';
 
 @Injectable()
 export class EidasClientService {
@@ -22,6 +30,7 @@ export class EidasClientService {
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly apacheIgnite: ApacheIgniteService,
+    private readonly crypto: CryptographyService,
     private readonly lightRequest: LightRequestService,
     private readonly lightResponse: LightResponseService,
   ) {
@@ -34,9 +43,10 @@ export class EidasClientService {
    * connectorResponseCache -> read the provider country response from the FR Node
    */
   onModuleInit(): void {
-    const { connectorRequestCache, connectorResponseCache } = this.config.get<
-      EidasClientConfig
-    >('EidasClient');
+    const {
+      connectorRequestCache,
+      connectorResponseCache,
+    } = this.config.get<EidasClientConfig>('EidasClient');
 
     this.logger.debug(
       `Accessing caches ${connectorRequestCache} and ${connectorResponseCache}...`,
@@ -51,6 +61,27 @@ export class EidasClientService {
     this.connectorResponseCache = this.apacheIgnite.getCache(
       connectorResponseCache,
     );
+  }
+
+  completeEidasRequest(
+    eidasPartialRequest: EidasPartialRequest,
+    citizenCountryCode: EidasCountries,
+  ): EidasRequest {
+    const { levelOfAssurance, requestedAttributes } = eidasPartialRequest;
+
+    const eidasRequest: EidasRequest = {
+      id: this.crypto.genRandomString(64),
+      citizenCountryCode,
+      issuer: 'EIDASBridge Connector',
+      levelOfAssurance,
+      nameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+      providerName: 'FranceConnect',
+      spType: EidasSpTypes.PUBLIC,
+      relayState: this.crypto.genRandomString(32),
+      requestedAttributes,
+    };
+
+    return eidasRequest;
   }
 
   /**
