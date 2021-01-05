@@ -99,7 +99,7 @@ describe('CoreFcpController', () => {
         ConfigService,
         CryptographyService,
         ScopesService,
-        NotificationsService
+        NotificationsService,
       ],
     })
       .overrideProvider(OidcProviderService)
