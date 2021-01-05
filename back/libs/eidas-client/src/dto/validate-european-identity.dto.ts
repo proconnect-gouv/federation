@@ -1,7 +1,10 @@
-import { EidasBridgeCountries } from '../enum';
+/* istanbul ignore file */
+
+// Declarative code
+import { EidasCountries } from '@fc/eidas';
 import { IsEnum } from 'class-validator';
 
 export class ValidateEuropeanIdentity {
-  @IsEnum(EidasBridgeCountries)
-  readonly country: string;
+  @IsEnum(EidasCountries)
+  readonly country: EidasCountries;
 }

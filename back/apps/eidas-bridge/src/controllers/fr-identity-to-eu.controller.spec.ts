@@ -1,26 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { OidcProviderService } from '@fc/oidc-provider';
-import { EidasBridgeController } from './eidas-bridge.controller';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { AcrValues } from '@fc/oidc';
 import { EidasAttributes } from '@fc/eidas';
+import { FrIdentityToEuController } from './fr-identity-to-eu.controller';
 
-describe('EidasBridgeController', () => {
-  let eidasBridgeController: EidasBridgeController;
-
-  const configServiceMock = {
-    get: jest.fn(),
-  };
-
-  const appConfigMock = {
-    urlPrefix: '/api/v2',
-    scope: 'openid given_name',
-  };
+describe('FrIdentityToEuController', () => {
+  let frIdentityToEuController: FrIdentityToEuController;
 
   const oidcClientServiceMock = {
     getAuthorizeUrl: jest.fn(),
@@ -28,11 +17,6 @@ describe('EidasBridgeController', () => {
     getUserInfo: jest.fn(),
     wellKnownKeys: jest.fn(),
     buildAuthorizeParameters: jest.fn(),
-  };
-
-  const oidcProviderServiceMock = {
-    getInteraction: jest.fn(),
-    finishInteraction: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -44,8 +28,8 @@ describe('EidasBridgeController', () => {
   };
 
   const oidcToEidasServiceMock = {
-    mapSuccessPartialResponse: jest.fn(),
-    mapFailurePartialResponse: jest.fn(),
+    mapPartialResponseSuccess: jest.fn(),
+    mapPartialResponseFailure: jest.fn(),
   };
 
   const sessionMock = {
@@ -68,7 +52,7 @@ describe('EidasBridgeController', () => {
 
   const acrMock = 'eidas2';
   const scopeMock = 'scopeMock';
-  const providerUidMock = 'corev2';
+  const providerUidMock = 'envIssuer';
   const randomStringMock = 'randomStringMockValue';
   const stateMock = randomStringMock;
   const nonceMock = randomStringMock;
@@ -98,27 +82,18 @@ describe('EidasBridgeController', () => {
     },
   };
 
-  const interactionMock = {
-    uid: Symbol('uidMockValue'),
-    params: Symbol('paramsMockValue'),
-  };
-
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
-      controllers: [EidasBridgeController],
+      controllers: [FrIdentityToEuController],
       providers: [
-        ConfigService,
         OidcClientService,
         LoggerService,
         SessionService,
         CryptographyService,
-        OidcProviderService,
         EidasToOidcService,
         OidcToEidasService,
       ],
     })
-      .overrideProvider(ConfigService)
-      .useValue(configServiceMock)
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
@@ -127,21 +102,17 @@ describe('EidasBridgeController', () => {
       .useValue(sessionMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)
-      .overrideProvider(OidcProviderService)
-      .useValue(oidcProviderServiceMock)
       .overrideProvider(EidasToOidcService)
       .useValue(eidasToOidcServiceMock)
       .overrideProvider(OidcToEidasService)
       .useValue(oidcToEidasServiceMock)
-
       .compile();
 
-    eidasBridgeController = await app.get<EidasBridgeController>(
-      EidasBridgeController,
+    frIdentityToEuController = await app.get<FrIdentityToEuController>(
+      FrIdentityToEuController,
     );
 
     jest.resetAllMocks();
-    configServiceMock.get.mockReturnValue(appConfigMock);
 
     oidcClientServiceMock.buildAuthorizeParameters.mockReturnValue({
       state: stateMock,
@@ -152,7 +123,6 @@ describe('EidasBridgeController', () => {
       acr_values: acrMock,
     });
 
-    oidcProviderServiceMock.getInteraction.mockResolvedValue(interactionMock);
     sessionMock.get.mockResolvedValue(sessionMockValue);
     sessionMock.getId.mockReturnValue(sessionIdMock);
 
@@ -166,7 +136,7 @@ describe('EidasBridgeController', () => {
 
       // action
       const randSize = 32;
-      await eidasBridgeController.initSession(res);
+      await frIdentityToEuController.initSession(res);
 
       // assert
       expect(cryptographyMock.genRandomString).toHaveBeenCalledTimes(1);
@@ -178,7 +148,7 @@ describe('EidasBridgeController', () => {
       sessionMock.init.mockResolvedValueOnce(undefined);
 
       // action
-      await eidasBridgeController.initSession(res);
+      await frIdentityToEuController.initSession(res);
 
       // assert
       expect(sessionMock.init).toHaveBeenCalledTimes(1);
@@ -195,7 +165,7 @@ describe('EidasBridgeController', () => {
       };
 
       // action
-      const result = await eidasBridgeController.initSession(res);
+      const result = await frIdentityToEuController.initSession(res);
 
       // expect
       expect(result).toEqual(expected);
@@ -233,7 +203,7 @@ describe('EidasBridgeController', () => {
       sessionMock.patch.mockResolvedValueOnce('randomStringMockValue');
 
       // action
-      await eidasBridgeController.redirectToFcAuthorize(
+      await frIdentityToEuController.redirectToFcAuthorize(
         req,
         exposedSessionMock,
       );
@@ -248,7 +218,7 @@ describe('EidasBridgeController', () => {
       sessionMock.patch.mockResolvedValueOnce('randomStringMockValue');
 
       // action
-      await eidasBridgeController.redirectToFcAuthorize(
+      await frIdentityToEuController.redirectToFcAuthorize(
         req,
         exposedSessionMock,
       );
@@ -263,7 +233,7 @@ describe('EidasBridgeController', () => {
     it('Should build the authorize parameters with the oidc params', async () => {
       // setup
       const oidcParamsMock = {
-        providerUid: 'corev2',
+        providerUid: 'envIssuer',
         // oidc parameter
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: oidcRequestMock.acr_values,
@@ -272,7 +242,7 @@ describe('EidasBridgeController', () => {
       sessionMock.patch.mockResolvedValueOnce('randomStringMockValue');
 
       // action
-      await eidasBridgeController.redirectToFcAuthorize(
+      await frIdentityToEuController.redirectToFcAuthorize(
         req,
         exposedSessionMock,
       );
@@ -290,7 +260,7 @@ describe('EidasBridgeController', () => {
       const authorizeParametersMock = {
         state: 'state',
         scope: oidcRequestMock.scope.join(' '),
-        providerUid: 'corev2',
+        providerUid: 'envIssuer',
         // acr_values is an oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: oidcRequestMock.acr_values,
@@ -302,7 +272,7 @@ describe('EidasBridgeController', () => {
       sessionMock.patch.mockResolvedValueOnce('randomStringMockValue');
 
       // action
-      await eidasBridgeController.redirectToFcAuthorize(
+      await frIdentityToEuController.redirectToFcAuthorize(
         req,
         exposedSessionMock,
       );
@@ -322,7 +292,7 @@ describe('EidasBridgeController', () => {
       sessionMock.patch.mockResolvedValueOnce(undefined);
 
       // action
-      await eidasBridgeController.redirectToFcAuthorize(
+      await frIdentityToEuController.redirectToFcAuthorize(
         req,
         exposedSessionMock,
       );
@@ -336,7 +306,7 @@ describe('EidasBridgeController', () => {
       sessionMock.patch.mockResolvedValueOnce(undefined);
 
       // action
-      await eidasBridgeController.redirectToFcAuthorize(
+      await frIdentityToEuController.redirectToFcAuthorize(
         req,
         exposedSessionMock,
       );
@@ -353,7 +323,7 @@ describe('EidasBridgeController', () => {
 
       // expect
       await expect(
-        eidasBridgeController.redirectToFcAuthorize(req, exposedSessionMock),
+        frIdentityToEuController.redirectToFcAuthorize(req, exposedSessionMock),
       ).rejects.toThrow();
     });
 
@@ -363,7 +333,7 @@ describe('EidasBridgeController', () => {
       sessionMock.patch.mockResolvedValueOnce(undefined);
 
       // action
-      const result = await eidasBridgeController.redirectToFcAuthorize(
+      const result = await frIdentityToEuController.redirectToFcAuthorize(
         req,
         exposedSessionMock,
       );
@@ -377,9 +347,9 @@ describe('EidasBridgeController', () => {
     describe('query contains an oidc error', () => {
       const query = { ...oidcErrorMock };
 
-      it('should call mapFailurePartialResponse', async () => {
+      it('should call mapPartialResponseFailure', async () => {
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -387,10 +357,10 @@ describe('EidasBridgeController', () => {
 
         // expect
         expect(
-          oidcToEidasServiceMock.mapFailurePartialResponse,
+          oidcToEidasServiceMock.mapPartialResponseFailure,
         ).toHaveBeenCalledTimes(1);
         expect(
-          oidcToEidasServiceMock.mapFailurePartialResponse,
+          oidcToEidasServiceMock.mapPartialResponseFailure,
         ).toHaveBeenCalledWith(oidcErrorMock);
       });
 
@@ -401,12 +371,12 @@ describe('EidasBridgeController', () => {
             failure: true,
           },
         };
-        oidcToEidasServiceMock.mapFailurePartialResponse.mockReturnValueOnce(
+        oidcToEidasServiceMock.mapPartialResponseFailure.mockReturnValueOnce(
           eidasPartialFailureResponseMock,
         );
 
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -428,7 +398,7 @@ describe('EidasBridgeController', () => {
         };
 
         // action
-        const result = await eidasBridgeController.redirectToEidasResponseProxy(
+        const result = await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -456,6 +426,7 @@ describe('EidasBridgeController', () => {
       beforeEach(() => {
         sessionMock.get.mockResolvedValueOnce({
           idpState: idpStateMock,
+          idpNonce: nonceMock,
         });
         exposedSessionMock.get.mockResolvedValueOnce({
           requestedAttributes: requestedAttributesMock,
@@ -466,7 +437,7 @@ describe('EidasBridgeController', () => {
 
       it('should retrieve the session id', async () => {
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -479,7 +450,7 @@ describe('EidasBridgeController', () => {
 
       it('should get the session with the session id', async () => {
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -492,7 +463,7 @@ describe('EidasBridgeController', () => {
 
       it('should get the token set from the idp', async () => {
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -504,12 +475,13 @@ describe('EidasBridgeController', () => {
           req,
           providerUidMock,
           idpStateMock,
+          nonceMock,
         );
       });
 
       it('should get claims from the token set', async () => {
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -522,7 +494,7 @@ describe('EidasBridgeController', () => {
 
       it('should get the user infos with the access token from the token set', async () => {
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -538,7 +510,7 @@ describe('EidasBridgeController', () => {
 
       it('should get the eidas request from the session', async () => {
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -549,7 +521,7 @@ describe('EidasBridgeController', () => {
         expect(exposedSessionMock.get).toHaveBeenCalledWith('eidasRequest');
       });
 
-      it('should call mapSuccessPartialResponse with the idp identity, the idp acr and the requested eidas attributes', async () => {
+      it('should call mapPartialResponseSuccess with the idp identity, the idp acr and the requested eidas attributes', async () => {
         // setup
         const userInfosMock = {
           sub: 'sub',
@@ -557,7 +529,7 @@ describe('EidasBridgeController', () => {
         oidcClientServiceMock.getUserInfo.mockResolvedValueOnce(userInfosMock);
 
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -565,10 +537,10 @@ describe('EidasBridgeController', () => {
 
         // expect
         expect(
-          oidcToEidasServiceMock.mapSuccessPartialResponse,
+          oidcToEidasServiceMock.mapPartialResponseSuccess,
         ).toHaveBeenCalledTimes(1);
         expect(
-          oidcToEidasServiceMock.mapSuccessPartialResponse,
+          oidcToEidasServiceMock.mapPartialResponseSuccess,
         ).toHaveBeenCalledWith(userInfosMock, acrMock, requestedAttributesMock);
       });
 
@@ -579,12 +551,12 @@ describe('EidasBridgeController', () => {
             failure: false,
           },
         };
-        oidcToEidasServiceMock.mapSuccessPartialResponse.mockReturnValueOnce(
+        oidcToEidasServiceMock.mapPartialResponseSuccess.mockReturnValueOnce(
           eidasPartialResponseMock,
         );
 
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -606,7 +578,7 @@ describe('EidasBridgeController', () => {
         };
 
         // action
-        const result = await eidasBridgeController.redirectToEidasResponseProxy(
+        const result = await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -616,13 +588,13 @@ describe('EidasBridgeController', () => {
         expect(result).toStrictEqual(expected);
       });
 
-      it('should call mapFailurePartialResponse with the error if an oidc call rejects', async () => {
+      it('should call mapPartialResponseFailure with the error if an oidc call rejects', async () => {
         // setup
         const errorMock = new Error('oops');
         oidcClientServiceMock.getUserInfo.mockRejectedValueOnce(errorMock);
 
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -630,10 +602,10 @@ describe('EidasBridgeController', () => {
 
         // expect
         expect(
-          oidcToEidasServiceMock.mapFailurePartialResponse,
+          oidcToEidasServiceMock.mapPartialResponseFailure,
         ).toHaveBeenCalledTimes(1);
         expect(
-          oidcToEidasServiceMock.mapFailurePartialResponse,
+          oidcToEidasServiceMock.mapPartialResponseFailure,
         ).toHaveBeenCalledWith(errorMock);
       });
 
@@ -646,12 +618,12 @@ describe('EidasBridgeController', () => {
             failure: true,
           },
         };
-        oidcToEidasServiceMock.mapFailurePartialResponse.mockReturnValueOnce(
+        oidcToEidasServiceMock.mapPartialResponseFailure.mockReturnValueOnce(
           eidasPartialFailureResponseMock,
         );
 
         // action
-        await eidasBridgeController.redirectToEidasResponseProxy(
+        await frIdentityToEuController.redirectToEidasResponseProxy(
           req,
           query,
           exposedSessionMock,
@@ -663,68 +635,6 @@ describe('EidasBridgeController', () => {
           'partialEidasResponse',
           eidasPartialFailureResponseMock,
         );
-      });
-    });
-  });
-
-  describe('getInteraction', () => {
-    it('should call oidcProvider.getInteraction', async () => {
-      // When
-      await eidasBridgeController.getInteraction(req, res);
-
-      // Then
-      expect(oidcProviderServiceMock.getInteraction).toBeCalledTimes(1);
-      expect(oidcProviderServiceMock.getInteraction).toBeCalledWith(req, res);
-    });
-
-    it('should call get the country list from the config', async () => {
-      // When
-      await eidasBridgeController.getInteraction(req, res);
-
-      // Then
-      expect(configServiceMock.get).toBeCalledTimes(1);
-      expect(configServiceMock.get).toBeCalledWith('Core');
-    });
-
-    it('should call session.get with interactionId', async () => {
-      // When
-      await eidasBridgeController.getInteraction(req, res);
-
-      // Then
-      expect(sessionMock.get).toBeCalledTimes(1);
-      expect(sessionMock.get).toBeCalledWith(req.fc.interactionId);
-    });
-
-    it('should return an object with data from session and oidcProvider interaction', async () => {
-      // setup
-      const countryListMock = [{ iso: 'ATL', name: 'Atlantis' }];
-      configServiceMock.get.mockReturnValueOnce({
-        countryList: countryListMock,
-      });
-
-      // action
-      const result = await eidasBridgeController.getInteraction(req, res);
-
-      // expect
-      expect(result).toStrictEqual({
-        uid: interactionMock.uid,
-        countryList: countryListMock,
-        params: interactionMock.params,
-        spName: sessionMockValue.spName,
-      });
-    });
-  });
-
-  describe('redirectToFrNodeConnector', () => {
-    it('should return a status code and a url', async () => {
-      // When
-      const result = await eidasBridgeController.redirectToFrNodeConnector(
-        req.body,
-      );
-      // Then
-      expect(result).toEqual({
-        statusCode: 302,
-        url: '/eidas-client/redirect-to-fr-node-connector?country=BE',
       });
     });
   });

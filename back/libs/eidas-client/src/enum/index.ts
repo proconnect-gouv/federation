@@ -2,4 +2,3 @@
 
 // Declarative code
 export * from './error-code.enum';
-export * from './eidas-bridge-countries.enum';

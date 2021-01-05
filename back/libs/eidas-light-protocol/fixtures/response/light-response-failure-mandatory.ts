@@ -1,4 +1,15 @@
+import { EidasResponse } from '@fc/eidas';
 import { IJsonifiedLightResponseXml } from '../../src/interfaces';
+
+export const failureMandatoryJsonMock: EidasResponse = {
+  id: '_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u',
+  inResponseToId: '1602861970744',
+  issuer:
+    'https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata',
+  status: {
+    failure: true,
+  },
+};
 
 export const lightResponseFailureMandatoryJsonMock: IJsonifiedLightResponseXml = {
   _declaration: {
@@ -15,15 +26,6 @@ export const lightResponseFailureMandatoryJsonMock: IJsonifiedLightResponseXml =
       _text:
         'https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata',
     },
-    subjectNameIdFormat: {
-      _text: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-    },
-    subject: {
-      _text: '0123456',
-    },
-    levelOfAssurance: {
-      _text: 'http://eidas.europa.eu/LoA/substantial',
-    },
     status: {
       failure: {
         _text: 'true',
@@ -37,9 +39,6 @@ export const lightResponseFailureMandatoryXmlMock = `<?xml version="1.0" encodin
   <id>_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u</id>
   <inResponseToId>1602861970744</inResponseToId>
   <issuer>https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata</issuer>
-  <subjectNameIdFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</subjectNameIdFormat>
-  <subject>0123456</subject>
-  <levelOfAssurance>http://eidas.europa.eu/LoA/substantial</levelOfAssurance>
   <status>
     <failure>true</failure>
   </status>

@@ -1,8 +1,15 @@
-import { EidasAttributes, EidasRequest } from '@fc/eidas';
+import {
+  EidasAttributes,
+  EidasRequest,
+  EidasResponse,
+  EidasResponseAttributes,
+} from '@fc/eidas';
+import { IOidcIdentity, OidcError } from '@fc/oidc';
 import { Injectable } from '@nestjs/common';
 import {
-  EidasToOidcAttributesMap,
-  EidasToOidcLevelOfAssurancesMap,
+  RequestedAttributesToScopesMap,
+  AttributesToClaimsMap,
+  LevelOfAssurancesToAcrValueMap,
 } from '../mappers';
 
 @Injectable()
@@ -19,14 +26,34 @@ export class EidasToOidcService {
     requestedAttributes,
     levelOfAssurance,
   }: Partial<EidasRequest>) {
-    const scopeSet = this.mapScopes(requestedAttributes);
+    const scopeSet = this.mapRequestedAttributesToScopes(requestedAttributes);
     const scope = Array.from(scopeSet);
 
     return {
       // oidc claim
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: EidasToOidcLevelOfAssurancesMap[levelOfAssurance],
+      acr_values: LevelOfAssurancesToAcrValueMap[levelOfAssurance],
       scope,
+    };
+  }
+
+  mapPartialResponseSuccess({ levelOfAssurance, attributes }: EidasResponse) {
+    return {
+      // oidc claim
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr: LevelOfAssurancesToAcrValueMap[levelOfAssurance],
+      userinfos: this.mapAttributesToClaims(attributes),
+    };
+  }
+
+  mapPartialResponseFailure({ status }: EidasResponse): OidcError {
+    const errorDescription = `StatusCode: ${status.statusCode}\nSubStatusCode: ${status.subStatusCode}\nStatusMessage: ${status.statusMessage}`;
+
+    return {
+      error: 'eidas_node_error',
+      // oidc parameter
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      error_description: errorDescription,
     };
   }
 
@@ -36,7 +63,9 @@ export class EidasToOidcService {
    * @param requestedAttributes The eIDAS requested attributes
    * @return a set of unique oidc scopes
    */
-  private mapScopes(requestedAttributes: EidasAttributes[]): Set<string> {
+  private mapRequestedAttributesToScopes(
+    requestedAttributes: EidasAttributes[],
+  ): Set<string> {
     const scopesSet = new Set<string>();
 
     /**
@@ -46,7 +75,7 @@ export class EidasToOidcService {
     scopesSet.add('openid');
 
     return requestedAttributes.reduce(
-      this.requestedAttributesReducer,
+      this.requestedAttributesToScopesReducer,
       scopesSet,
     );
   }
@@ -58,13 +87,53 @@ export class EidasToOidcService {
    * @param attribute the current eIDAS attribute
    * @return The scope set
    */
-  private requestedAttributesReducer(
+  private requestedAttributesToScopesReducer(
     scopeSet: Set<string>,
     attribute: EidasAttributes,
   ): Set<string> {
-    EidasToOidcAttributesMap[attribute]?.forEach((elem) => {
+    RequestedAttributesToScopesMap[attribute]?.forEach((elem) => {
       scopeSet.add(elem);
     });
     return scopeSet;
+  }
+
+  private mapAttributesToClaims(
+    attributes: Partial<EidasResponseAttributes>,
+  ): IOidcIdentity {
+    const attributesKeys = Object.keys(attributes);
+
+    return attributesKeys.reduce(
+      this.getClaimsBoundedAttributesToClaimsReducer(attributes),
+      {},
+    );
+  }
+
+  /**
+   * Bind the attributes to the attributesToClaimsReducer
+   *
+   * @param attributes The eIDAS attributes from the eIDAS node
+   * @param claims The oidc claims accumulator
+   * @param currentAttribute The current eIDAS attribute
+   * @return The attributesToClaimsReducer with bounded eIDAS attributes
+   */
+  private getClaimsBoundedAttributesToClaimsReducer(
+    attributes: Partial<EidasResponseAttributes>,
+  ) {
+    return this.attributesToClaimsReducer.bind(EidasToOidcService, attributes);
+  }
+
+  private attributesToClaimsReducer(
+    attributes: Partial<EidasResponseAttributes>,
+    claims,
+    currentAttribute,
+  ): IOidcIdentity {
+    if (AttributesToClaimsMap[currentAttribute]) {
+      Object.assign(
+        claims,
+        AttributesToClaimsMap[currentAttribute](attributes),
+      );
+    }
+
+    return claims;
   }
 }

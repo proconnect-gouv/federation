@@ -2,7 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ApacheIgniteService } from '@fc/apache-ignite';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { EidasRequest } from '@fc/eidas';
+import { CryptographyService } from '@fc/cryptography';
+import {
+  EidasAttributes,
+  EidasCountries,
+  EidasLevelOfAssurances,
+  EidasPartialRequest,
+  EidasRequest,
+} from '@fc/eidas';
 import {
   LightRequestService,
   LightResponseService,
@@ -27,6 +34,10 @@ describe('EidasClientService', () => {
 
   const apacheIgniteServiceMock = {
     getCache: jest.fn(),
+  };
+
+  const cryptographyServiceMock = {
+    genRandomString: jest.fn(),
   };
 
   const lightRequestServiceMock = {
@@ -58,6 +69,7 @@ describe('EidasClientService', () => {
         ConfigService,
         LoggerService,
         ApacheIgniteService,
+        CryptographyService,
         LightRequestService,
         LightResponseService,
       ],
@@ -68,6 +80,8 @@ describe('EidasClientService', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(ApacheIgniteService)
       .useValue(apacheIgniteServiceMock)
+      .overrideProvider(CryptographyService)
+      .useValue(cryptographyServiceMock)
       .overrideProvider(LightRequestService)
       .useValue(lightRequestServiceMock)
       .overrideProvider(LightResponseService)
@@ -199,6 +213,73 @@ describe('EidasClientService', () => {
       expect(service['connectorResponseCache']).toStrictEqual(
         connectorResponseCacheMock,
       );
+    });
+  });
+
+  describe('completeEidasRequest', () => {
+    const partialRequestJson: EidasPartialRequest = {
+      levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
+      requestedAttributes: [
+        EidasAttributes.PERSON_IDENTIFIER,
+        EidasAttributes.CURRENT_FAMILY_NAME,
+        EidasAttributes.CURRENT_GIVEN_NAME,
+        EidasAttributes.DATE_OF_BIRTH,
+        EidasAttributes.CURRENT_ADDRESS,
+        EidasAttributes.GENDER,
+        EidasAttributes.BIRTH_NAME,
+        EidasAttributes.PLACE_OF_BIRTH,
+      ],
+    };
+    const requestJson = {
+      ...partialRequestJson,
+      id: '0835656565',
+      citizenCountryCode: 'BE',
+      issuer: 'EIDASBridge Connector',
+      nameIdFormat: 'unspecified',
+      providerName: 'FranceConnect',
+      spType: 'public',
+      relayState: 'myState',
+    };
+    const countryMock = EidasCountries.BELGIUM;
+
+    it('should generate a 64 bytes random for the request id', async () => {
+      // action
+      await service.completeEidasRequest(partialRequestJson, countryMock);
+
+      // expect
+      expect(cryptographyServiceMock.genRandomString).toHaveBeenCalledTimes(2);
+      expect(cryptographyServiceMock.genRandomString).toHaveBeenNthCalledWith(
+        1,
+        64,
+      );
+    });
+
+    it('should generate a 32 bytes random for the request relay state', async () => {
+      // action
+      await service.completeEidasRequest(partialRequestJson, countryMock);
+
+      // expect
+      expect(cryptographyServiceMock.genRandomString).toHaveBeenCalledTimes(2);
+      expect(cryptographyServiceMock.genRandomString).toHaveBeenNthCalledWith(
+        2,
+        32,
+      );
+    });
+
+    it('should return the complete eidas request', async () => {
+      // setup
+      cryptographyServiceMock.genRandomString
+        .mockReturnValueOnce(requestJson.id)
+        .mockReturnValueOnce(requestJson.relayState);
+
+      // action
+      const result = await service.completeEidasRequest(
+        partialRequestJson,
+        countryMock,
+      );
+
+      // expect
+      expect(result).toStrictEqual(requestJson);
     });
   });
 

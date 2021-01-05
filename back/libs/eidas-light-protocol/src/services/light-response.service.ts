@@ -54,9 +54,9 @@ export class LightResponseService {
   }
 
   generateToken(id: string, issuer: string, date?: Date): string {
-    const { lightResponseProxyServiceSecret } = this.config.get<
-      EidasLightProtocolConfig
-    >('EidasLightProtocol');
+    const {
+      lightResponseProxyServiceSecret,
+    } = this.config.get<EidasLightProtocolConfig>('EidasLightProtocol');
 
     return this.lightCommons.generateToken(
       id,
@@ -84,9 +84,9 @@ export class LightResponseService {
   }
 
   parseToken(token: string): IParsedToken {
-    const { lightResponseConnectorSecret } = this.config.get<
-      EidasLightProtocolConfig
-    >('EidasLightProtocol');
+    const {
+      lightResponseConnectorSecret,
+    } = this.config.get<EidasLightProtocolConfig>('EidasLightProtocol');
 
     return this.lightCommons.parseToken(token, lightResponseConnectorSecret);
   }
@@ -258,30 +258,35 @@ export class LightResponseService {
   private deflateContext(
     inflatedResponse: IJsonifiedLightResponseXml,
   ): EidasResponseContext {
-    const subjectNameIdFormat = _.get(
-      inflatedResponse,
-      LightResponseXmlSelectors.SUBJECT_NAME_ID_FORMAT,
-    );
-    const levelOfAssurance = _.get(
-      inflatedResponse,
-      LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
-    );
-
     const context: EidasResponseContext = {
       id: _.get(inflatedResponse, LightResponseXmlSelectors.ID),
       issuer: _.get(inflatedResponse, LightResponseXmlSelectors.ISSUER),
       subject: _.get(inflatedResponse, LightResponseXmlSelectors.SUBJECT),
-      subjectNameIdFormat: this.lightCommons.getLastElementInUrlOrUrn(
-        subjectNameIdFormat,
-      ),
       inResponseToId: _.get(
         inflatedResponse,
         LightResponseXmlSelectors.IN_RESPONSE_TO_ID,
       ),
-      levelOfAssurance: this.lightCommons.getLastElementInUrlOrUrn(
-        levelOfAssurance,
-      ),
     };
+
+    const levelOfAssurance = _.get(
+      inflatedResponse,
+      LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
+    );
+    if (levelOfAssurance) {
+      context.levelOfAssurance = this.lightCommons.getLastElementInUrlOrUrn(
+        levelOfAssurance,
+      );
+    }
+
+    const subjectNameIdFormat = _.get(
+      inflatedResponse,
+      LightResponseXmlSelectors.SUBJECT_NAME_ID_FORMAT,
+    );
+    if (subjectNameIdFormat) {
+      context.subjectNameIdFormat = this.lightCommons.getLastElementInUrlOrUrn(
+        subjectNameIdFormat,
+      );
+    }
 
     const relayState = _.get(
       inflatedResponse,

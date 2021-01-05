@@ -33,6 +33,7 @@ function getFrontRoutes(urlPrefix: string): string[] {
     `${urlPrefix}/interaction/:uid/logout`,
     `${urlPrefix}/ministries-list`,
     `${urlPrefix}/login`,
+    `${urlPrefix}/interaction/oidc/finish`,
   ];
 }
 
@@ -68,9 +69,10 @@ export class SessionInterceptor implements NestInterceptor {
 
   private async handleSession(req, res) {
     const route = req.route.path;
-    const { sessionCookieName, interactionCookieName } = this.config.get<
-      SessionConfig
-    >('Session');
+    const {
+      sessionCookieName,
+      interactionCookieName,
+    } = this.config.get<SessionConfig>('Session');
 
     // Should just refresh cookies for expiration
     if (this.FrontRoutes.includes(route)) {

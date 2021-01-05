@@ -1,41 +1,24 @@
-import {
-  Controller,
-  Get,
-  Render,
-  Redirect,
-  Res,
-  Req,
-  Query,
-  UsePipes,
-  ValidationPipe,
-  Post,
-  Body,
-} from '@nestjs/common';
+import { Controller, Get, Redirect, Res, Req, Query } from '@nestjs/common';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { AcrValues } from '@fc/oidc';
-import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
-import { OidcProviderService } from '@fc/oidc-provider';
+import { OidcClientService } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
-import { ConfigService } from '@fc/config';
 import { EidasProviderSession } from '@fc/eidas-provider';
 import { IExposedSessionServiceGeneric, Session } from '@fc/session-generic';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { EidasBridgeRoutes } from '../enums';
-import { ValidateEuropeanIdentity, Core } from '../dto';
 
 /**
  * @todo Clean the controller (create a service, generalize code, ...)
  */
 @Controller(EidasBridgeRoutes.BASE)
-export class EidasBridgeController {
+export class FrIdentityToEuController {
   constructor(
     private readonly crypto: CryptographyService,
-    private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
     private readonly session: SessionService,
-    private readonly oidcProvider: OidcProviderService,
     private readonly eidasToOidc: EidasToOidcService,
     private readonly oidcToEidas: OidcToEidasService,
   ) {
@@ -72,13 +55,12 @@ export class EidasBridgeController {
     const oidcRequest = this.eidasToOidc.mapPartialRequest(eidasRequest);
 
     const params = {
-      providerUid: 'corev2',
+      providerUid: 'envIssuer',
       scope: oidcRequest.scope.join(' '),
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: oidcRequest.acr_values,
     };
-    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
     const {
       state,
@@ -91,7 +73,7 @@ export class EidasBridgeController {
 
     const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
       state,
-      scope,
+      params.scope,
       providerUid,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -100,7 +82,7 @@ export class EidasBridgeController {
     );
 
     const sessionId = this.session.getId(req);
-    await this.session.patch(sessionId, { idpState: state });
+    await this.session.patch(sessionId, { idpState: state, idpNonce: nonce });
 
     return { url: authorizationUrl, statusCode: 302 };
   }
@@ -119,7 +101,7 @@ export class EidasBridgeController {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { error, error_description } = query;
     if (error) {
-      partialEidasResponse = this.oidcToEidas.mapFailurePartialResponse({
+      partialEidasResponse = this.oidcToEidas.mapPartialResponseFailure({
         error,
         // oidc param name
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -127,16 +109,17 @@ export class EidasBridgeController {
       });
     } else {
       try {
-        const providerUid = 'corev2';
+        const providerUid = 'envIssuer';
         const sessionId = this.session.getId(req);
 
-        const { idpState } = await this.session.get(sessionId);
+        const { idpState, idpNonce } = await this.session.get(sessionId);
 
         // OIDC: call idp's /token endpoint
         const tokenSet = await this.oidcClient.getTokenSet(
           req,
           providerUid,
           idpState,
+          idpNonce,
         );
 
         const { acr } = tokenSet.claims();
@@ -155,7 +138,7 @@ export class EidasBridgeController {
           'eidasRequest',
         );
 
-        partialEidasResponse = this.oidcToEidas.mapSuccessPartialResponse(
+        partialEidasResponse = this.oidcToEidas.mapPartialResponseSuccess(
           idpIdentity,
           /**
            * @todo Apply strong typing to acr values in other libs and apps
@@ -164,7 +147,7 @@ export class EidasBridgeController {
           requestedAttributes,
         );
       } catch (error) {
-        partialEidasResponse = this.oidcToEidas.mapFailurePartialResponse(
+        partialEidasResponse = this.oidcToEidas.mapPartialResponseFailure(
           error,
         );
       }
@@ -177,35 +160,6 @@ export class EidasBridgeController {
 
     return {
       url: '/eidas-provider/response-proxy',
-      statusCode: 302,
-    };
-  }
-
-  @Get(EidasBridgeRoutes.INTERACTION)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Render('interaction')
-  async getInteraction(@Req() req, @Res() res) {
-    const { uid, params } = await this.oidcProvider.getInteraction(req, res);
-    const { countryList } = await this.config.get<Core>('Core');
-    const { interactionId } = req.fc;
-    const { spName } = await this.session.get(interactionId);
-    return {
-      countryList,
-      uid,
-      params,
-      spName,
-    };
-  }
-
-  /**
-   * @todo ajouter une interface sur l'identité au format oidc
-   */
-  @Post(EidasBridgeRoutes.INTERACTION_LOGIN)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Redirect()
-  async redirectToFrNodeConnector(@Body() body: ValidateEuropeanIdentity) {
-    return {
-      url: `/eidas-client/redirect-to-fr-node-connector?country=${body.country}`,
       statusCode: 302,
     };
   }
