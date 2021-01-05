@@ -22,7 +22,10 @@ import {
   EidasProviderModule,
 } from '@fc/eidas-provider';
 import { EidasOidcMapperModule } from '@fc/eidas-oidc-mapper';
-import { EidasBridgeController } from './controllers';
+import {
+  FrIdentityToEuController,
+  EuIdentityToFrController,
+} from './controllers';
 import { EidasBridgeSession } from './dto';
 
 const oidcClientModule = OidcClientModule.register(
@@ -52,7 +55,8 @@ const oidcProviderModule = OidcProviderModule.register(
     EidasOidcMapperModule,
   ],
   controllers: [
-    EidasBridgeController,
+    FrIdentityToEuController,
+    EuIdentityToFrController,
     EidasClientController,
     EidasProviderController,
   ],

@@ -29,9 +29,9 @@ export class LightRequestService {
   }
 
   generateToken(id: string, issuer: string, date?: Date): string {
-    const { lightRequestConnectorSecret } = this.config.get<
-      EidasLightProtocolConfig
-    >('EidasLightProtocol');
+    const {
+      lightRequestConnectorSecret,
+    } = this.config.get<EidasLightProtocolConfig>('EidasLightProtocol');
 
     return this.lightCommons.generateToken(
       id,
@@ -51,9 +51,9 @@ export class LightRequestService {
   }
 
   parseToken(token: string): IParsedToken {
-    const { lightRequestProxyServiceSecret } = this.config.get<
-      EidasLightProtocolConfig
-    >('EidasLightProtocol');
+    const {
+      lightRequestProxyServiceSecret,
+    } = this.config.get<EidasLightProtocolConfig>('EidasLightProtocol');
 
     return this.lightCommons.parseToken(token, lightRequestProxyServiceSecret);
   }

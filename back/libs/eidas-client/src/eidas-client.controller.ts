@@ -7,14 +7,17 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
+  Redirect,
 } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { EidasClientService } from './eidas-client.service';
 import {
-  CallbackDTO,
+  ReponseHandlerDTO,
   EidasClientConfig,
+  EidasClientSession,
   ValidateEuropeanIdentity,
 } from './dto';
+import { IExposedSessionServiceGeneric, Session } from '@fc/session-generic';
 
 @Controller('eidas-client')
 export class EidasClientController {
@@ -32,34 +35,26 @@ export class EidasClientController {
   @Get('/redirect-to-fr-node-connector')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('redirect-to-fr-node-connector')
-  async redirectToFrNode(@Query() query: ValidateEuropeanIdentity) {
-    const tmpRequest: any = {
-      id: `${+new Date()}`,
-      citizenCountryCode: query.country,
-      issuer: 'EIDASBridge Connector',
-      levelOfAssurance: 'low',
-      nameIdFormat: 'unspecified',
-      providerName: 'FranceConnect',
-      spType: 'public',
-      relayState: 'myState',
-      requestedAttributes: [
-        'PersonIdentifier',
-        'CurrentFamilyName',
-        'CurrentGivenName',
-        'DateOfBirth',
-        'CurrentAddress',
-        'Gender',
-        'BirthName',
-        'PlaceOfBirth',
-      ],
-    };
+  async redirectToFrNode(
+    @Query() query: ValidateEuropeanIdentity,
+    @Session('EidasClient')
+    session: IExposedSessionServiceGeneric<EidasClientSession>,
+  ) {
+    const eidasPartialRequest = await session.get('eidasPartialRequest');
+
+    const eidasRequest = this.eidasClient.completeEidasRequest(
+      eidasPartialRequest,
+      query.country,
+    );
+
+    await session.set('eidasRequest', eidasRequest);
 
     const { token, lightRequest } = this.eidasClient.prepareLightRequest(
-      tmpRequest,
+      eidasRequest,
     );
 
     await this.eidasClient.writeLightRequestInCache(
-      tmpRequest.id,
+      eidasRequest.id,
       lightRequest,
     );
 
@@ -78,14 +73,27 @@ export class EidasClientController {
    * @param body The body of the response, containing a light-response token
    * @returns The identity found in the light-response as a JSON
    */
-  @Post('/callback')
-  async callback(@Body() body: CallbackDTO) {
+  @Redirect()
+  @Post('/response-handler')
+  async responseHandler(
+    @Body() body: ReponseHandlerDTO,
+    @Session('EidasClient')
+    session: IExposedSessionServiceGeneric<EidasClientSession>,
+  ) {
     const { token } = body;
 
     const lightResponse = await this.eidasClient.readLightResponseFromCache(
       token,
     );
 
-    return this.eidasClient.parseLightResponse(lightResponse);
+    const eidasResponse = this.eidasClient.parseLightResponse(lightResponse);
+
+    await session.set('eidasResponse', eidasResponse);
+
+    const {
+      redirectAfterResponseHandlingUrl,
+    } = this.config.get<EidasClientConfig>('EidasClient');
+
+    return { url: redirectAfterResponseHandlingUrl, statusCode: 302 };
   }
 }

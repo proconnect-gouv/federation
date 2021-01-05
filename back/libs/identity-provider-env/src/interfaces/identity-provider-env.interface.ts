@@ -1,6 +1,4 @@
-import { Document } from 'mongoose';
-
-export interface IIdentityProviderEnv extends Document {
+export interface IIdentityProviderEnv {
   uid: string;
   name: string;
   active: boolean;
