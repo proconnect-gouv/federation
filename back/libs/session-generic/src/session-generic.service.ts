@@ -28,9 +28,11 @@ export class SessionGenericService {
   }
 
   onModuleInit() {
-    const { prefix, encryptionKey, lifetime } = this.config.get<
-      SessionGenericConfig
-    >('SessionGeneric');
+    const {
+      prefix,
+      encryptionKey,
+      lifetime,
+    } = this.config.get<SessionGenericConfig>('SessionGeneric');
 
     this.prefix = prefix;
     this.encryptionKey = encryptionKey;

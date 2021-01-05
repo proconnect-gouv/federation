@@ -574,9 +574,12 @@ export class OidcProviderService {
     /**
      * Get data from config file
      */
-    const { prefix, issuer, configuration, forcedPrompt } = this.config.get<
-      OidcProviderConfig
-    >('OidcProvider');
+    const {
+      prefix,
+      issuer,
+      configuration,
+      forcedPrompt,
+    } = this.config.get<OidcProviderConfig>('OidcProvider');
 
     /**
      * Build final configuration object

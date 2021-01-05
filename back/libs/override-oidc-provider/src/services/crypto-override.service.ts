@@ -71,9 +71,10 @@ export class CryptoOverrideService {
     digest = 'sha256',
   ): Promise<Buffer> {
     return new Promise((resolve, reject) => {
-      const { payloadEncoding, requestTimeout } = this.config.get<
-        RabbitmqConfig
-      >('CryptographyBroker');
+      const {
+        payloadEncoding,
+        requestTimeout,
+      } = this.config.get<RabbitmqConfig>('CryptographyBroker');
 
       this.logger.debug('Requesting signature from gateway');
       try {

@@ -1,6 +1,8 @@
 import {
   basicSuccessScenarioEuSpFrIdp,
   checkInformationsEuSpFrIdp,
+  basicSuccessScenarioFrSpEuIdp,
+  checkInformationsFrSpEuIdp,
 } from './mire.utils';
 
 describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
@@ -173,5 +175,12 @@ describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
         { name: 'PlaceOfBirth', value: '[99217]' },
       ],
     });
+  });
+});
+
+describe('Successful scenarios (EU Citizen / FR Service Provider)', () => {
+  it('should connect the user through eIDAS and get a "identity.isCog" error', () => {
+    basicSuccessScenarioFrSpEuIdp();
+    checkInformationsFrSpEuIdp();
   });
 });
