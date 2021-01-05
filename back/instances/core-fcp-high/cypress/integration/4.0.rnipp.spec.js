@@ -1,4 +1,4 @@
-import { basicErrorScenario } from './mire.utils';
+import { basicErrorScenario, basicScenario } from './mire.utils';
 
 describe('RNIPP', () => {
   it('should trigger error Y010004', () => {
@@ -84,6 +84,16 @@ describe('RNIPP', () => {
     basicErrorScenario({
       errorCode: 'E010013',
       idpId: 'fip1v2',
+    });
+
+    cy.hasError('Y010013');
+  });
+
+  it('should trigger error Y010013 if user has an invalid COG (AAAAA)', () => {
+    basicScenario({
+      errorCode: 'E010013',
+      idpId: 'fip1v2',
+      login: 'test_INVALID_COG',
     });
 
     cy.hasError('Y010013');
