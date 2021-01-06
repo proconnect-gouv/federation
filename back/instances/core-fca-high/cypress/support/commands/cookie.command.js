@@ -13,10 +13,10 @@ export function deleteCookie(clearCookie, cookieName, options) {
   }).snapshot();
 
   // check first if the cookie exists
-  cy.getCookie(cookieName, { log: false })
+  cy.getCookie(cookieName, { log: true })
     .should('exist')
     .then(() => {
-      return clearCookie(cookieName, { ...options, log: false });
+      return clearCookie(cookieName, { ...options, log: true });
     });
-  return cy.getCookie(cookieName, { log: false }).should('be.null');
+  return cy.getCookie(cookieName, { log: true }).should('be.null');
 }
