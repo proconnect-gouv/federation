@@ -9,7 +9,7 @@
     "build:core-fca-high": "./scripts/start-fca.sh",
     "build:core-fcp-high": "nest build core-fcp-high",
     "build:csmr-hsm-high": "nest build csmr-hsm-high",
-    "build:eidas-bridge": "nest build eidas-bridge",
+    "build:eidas-bridge": "nest build eidas-bridge-instance",
     "build:mock-service-provider-high": "nest build mock-service-provider-high",
     "build:mock-identity-provider-fca-high": "nest build mock-identity-provider-fca-high",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
