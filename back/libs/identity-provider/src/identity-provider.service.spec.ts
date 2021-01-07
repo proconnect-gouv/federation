@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
-
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
-import { EventBus } from '@nestjs/cqrs';
 import { IdentityProviderMetadata } from '@fc/oidc-client';
+import { IdentityProvider } from './schemas';
 import { IdentityProviderService } from './identity-provider.service';
 
 describe('IdentityProviderService', () => {
@@ -233,7 +233,7 @@ describe('IdentityProviderService', () => {
         expected.client_secret,
       );
       const result = service['legacyToOpenIdPropertyName'](
-        validIdentityProviderMock._doc,
+        (validIdentityProviderMock._doc as unknown) as IdentityProvider,
       );
 
       // expect

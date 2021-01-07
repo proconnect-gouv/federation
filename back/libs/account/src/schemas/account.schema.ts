@@ -1,42 +1,48 @@
-import * as mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document, Schema as SchemaNative } from 'mongoose';
+import { IFederation } from '../interfaces';
 
-export const AccountSchema = new mongoose.Schema(
-  {
-    /**
-     * Timestamping
-     */
-    createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date, default: Date.now, index: { expires: '3y' } },
-    lastConnection: { type: Date, default: Date.now },
+@Schema({ strict: true, strictQuery: true, collection: 'account' })
+export class Account extends Document {
+  /**
+   * Timestamping
+   */
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
 
-    /**
-     * Unique id generated from pivot identity
-     */
-    identityHash: { type: String, index: true },
+  @Prop({ type: Date, default: Date.now, index: { expires: '3y' } })
+  updatedAt: Date;
 
-    /**
-     * Is this identity active, ie: not blocked by FC
-     *
-     * It coud be blocked through exploitation app, in case of suspected identoty thief
-     */
-    active: { type: Boolean, default: true },
+  @Prop({ type: Date, default: Date.now })
+  lastConnection: Date;
 
-    /**
-     * Expected format : { [identityProviderId]: identityProviderUserSub, ... },
-     * Stores keys (subs OpenIdConnect) for Identity Provider
-     */
-    idpFederation: Object,
+  /**
+   * Unique id generated from pivot identity
+   */
+  @Prop({ type: String, unique: true })
+  identityHash: string;
 
-    /**
-     * Expected format : { [serviceProviderId]: serviceProviderUserSub, ... },
-     * Stores keys (subs OpenIdConnect) for Service Provider
-     */
-    spFederation: Object,
-  },
-  {
-    // Mongoose add 's' at the end of the collection name without this argument
-    collection: 'account',
-    strict: true,
-    strictQuery: true,
-  },
-);
+  /**
+   * Is this identity active, ie: not blocked by FC
+   *
+   * It coud be blocked through exploitation app, in case of suspected identoty thief
+   */
+  @Prop({ type: Boolean, default: true })
+  active: boolean;
+
+  /**
+   * Expected format : { [identityProviderId]: identityProviderUserSub, ... },
+   * Stores keys (subs OpenIdConnect) for Identity Provider
+   */
+  @Prop({ type: SchemaNative.Types.Mixed })
+  idpFederation: IFederation;
+
+  /**
+   * Expected format : { [serviceProviderId]: serviceProviderUserSub, ... },
+   * Stores keys (subs OpenIdConnect) for Service Provider
+   */
+  @Prop({ type: SchemaNative.Types.Mixed })
+  spFederation: IFederation;
+}
+
+export const AccountSchema = SchemaFactory.createForClass(Account);
