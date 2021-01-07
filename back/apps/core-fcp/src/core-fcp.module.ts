@@ -22,7 +22,7 @@ import { HttpProxyModule } from '@fc/http-proxy';
 import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
 import { MailerModule } from '@fc/mailer';
 import { TrackingModule } from '@fc/tracking';
-import { NotificationsModule, NotificationsService } from '@fc/notifications';
+import { NotificationsModule } from '@fc/notifications';
 import {
   CoreService,
   CoreTrackingService,
