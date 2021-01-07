@@ -9,9 +9,9 @@ import {
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { EventBus } from '@nestjs/cqrs';
-import { IServiceProvider } from './interfaces';
 import { ServiceProviderDTO } from './dto';
 import { ServiceProviderOperationTypeChangesEvent } from './events';
+import { ServiceProvider } from './schemas';
 
 @Injectable()
 export class ServiceProviderService implements IServiceProviderService {
@@ -58,7 +58,7 @@ export class ServiceProviderService implements IServiceProviderService {
     }
   }
 
-  private async findAllServiceProvider(): Promise<IServiceProvider[]> {
+  private async findAllServiceProvider(): Promise<ServiceProvider[]> {
     const rawResult = await this.serviceProviderModel
       .find(
         {
@@ -135,7 +135,7 @@ export class ServiceProviderService implements IServiceProviderService {
    */
   async getList(refreshCache = false): Promise<ServiceProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
-      const list: IServiceProvider[] = await this.findAllServiceProvider();
+      const list: ServiceProvider[] = await this.findAllServiceProvider();
 
       this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
     }
@@ -154,7 +154,7 @@ export class ServiceProviderService implements IServiceProviderService {
   }
 
   private legacyToOpenIdPropertyName(
-    source: IServiceProvider,
+    source: ServiceProvider,
   ): ServiceProviderMetadata {
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention

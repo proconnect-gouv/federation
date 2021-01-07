@@ -1,11 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
-
-import { ServiceProviderService } from './service-provider.service';
 import { CryptographyService } from '@fc/cryptography';
 import { CustomClientMetadata } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
-import { EventBus } from '@nestjs/cqrs';
+import { ServiceProvider } from './schemas';
+import { ServiceProviderService } from './service-provider.service';
 
 describe('ServiceProviderService', () => {
   let service: ServiceProviderService;
@@ -223,7 +223,7 @@ describe('ServiceProviderService', () => {
         expected.client_secret,
       );
       const result = service['legacyToOpenIdPropertyName'](
-        validServiceProviderMock._doc,
+        (validServiceProviderMock._doc as unknown) as ServiceProvider,
       );
 
       // expect
@@ -466,7 +466,7 @@ describe('ServiceProviderService', () => {
 
       // action
       const result = service['legacyToOpenIdPropertyName'](
-        validServiceProviderMock._doc,
+        (validServiceProviderMock._doc as unknown) as ServiceProvider,
       );
 
       // expect
