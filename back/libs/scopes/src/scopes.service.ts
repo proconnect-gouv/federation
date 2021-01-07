@@ -57,6 +57,7 @@ export class ScopesService {
    * @param {*} scopes
    */
   private extractAliasScopes(scopes): string[] {
+    console.log("scopes", scopes)
     return unique(scopes.flatMap((alias) => MAPPING_ALIAS_SCOPES[alias]));
   }
 
