@@ -2,13 +2,14 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { LoggerService } from '@fc/logger';
-import { IAccount, IInteraction } from './interfaces';
+import { IInteraction } from './interfaces';
+import { Account } from './schemas';
 
 @Injectable()
 export class AccountService {
   constructor(
     private readonly logger: LoggerService,
-    @InjectModel('Account') private model,
+    @InjectModel('Account') private model: Model<any>,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -54,7 +55,7 @@ export class AccountService {
    */
   private async getAccountWithInteraction(
     interaction: IInteraction,
-  ): Promise<Model<IAccount>> {
+  ): Promise<Account> {
     const { identityHash } = interaction;
 
     // Get existing account or create one
