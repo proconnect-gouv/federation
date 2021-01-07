@@ -82,7 +82,6 @@ const oidcProviderModule = OidcProviderModule.register(
     TrackableEventHandler,
     IdentityProviderOperationTypeChangesHandler,
     ServiceProviderOperationTypeChangesHandler,
-    NotificationsService,
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [SessionModule],
