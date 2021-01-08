@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext, CallHandler } from '@nestjs/common';
-import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { SessionService } from './session.service';
 import { SessionInterceptor } from './session.interceptor';
@@ -11,10 +10,6 @@ import {
 
 describe('SessionInterceptor', () => {
   let interceptor: SessionInterceptor;
-
-  const cryptographyMock = {
-    genSessionId: jest.fn(),
-  };
 
   const sessionConfigMock = {
     sessionCookieName: 'session_cookie',
@@ -58,30 +53,19 @@ describe('SessionInterceptor', () => {
     handle: jest.fn(),
   } as CallHandler;
 
-  const sessionIdMock = 'session_id_mock';
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        SessionInterceptor,
-        ConfigService,
-        CryptographyService,
-        SessionService,
-      ],
+      providers: [SessionInterceptor, ConfigService, SessionService],
     })
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .overrideProvider(SessionService)
       .useValue(sessionMock)
-      .overrideProvider(CryptographyService)
-      .useValue(cryptographyMock)
       .compile();
 
     interceptor = module.get<SessionInterceptor>(SessionInterceptor);
 
     jest.resetAllMocks();
-
-    cryptographyMock.genSessionId.mockReturnValue(sessionIdMock);
 
     httpContextMock.getRequest.mockReturnValue(reqMock);
     httpContextMock.getResponse.mockReturnValue(resMock);
@@ -277,7 +261,6 @@ describe('SessionInterceptor', () => {
       // Then
       expect(sessionMock.refresh).toHaveBeenCalledTimes(0);
 
-      expect(cryptographyMock.genSessionId).toHaveBeenCalledTimes(0);
       expect(sessionMock.setCookie).toHaveBeenCalledTimes(0);
 
       expect(req.fc.interactionId).not.toBeDefined();

@@ -145,15 +145,6 @@
         "tsConfigPath": "libs/logger/tsconfig.lib.json"
       }
     },
-    "consent": {
-      "type": "library",
-      "root": "libs/consent",
-      "entryFile": "index",
-      "sourceRoot": "libs/consent/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/consent/tsconfig.lib.json"
-      }
-    },
     "oidc-provider": {
       "type": "library",
       "root": "libs/oidc-provider",
