@@ -5,7 +5,7 @@ export function validateCog(value: unknown): boolean {
     return false;
   }
 
-  return /^[0-9]{5}$/.test(value);
+  return /^(?:2[AB]|[0-9]{2})[0-9]{3}$/.test(value);
 }
 
 /**
