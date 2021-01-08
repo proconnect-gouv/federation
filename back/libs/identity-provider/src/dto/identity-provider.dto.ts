@@ -4,6 +4,7 @@ import {
   IsArray,
   IsUrl,
   MinLength,
+  NotContains,
 } from 'class-validator';
 
 export class IdentityProviderDTO {
@@ -14,6 +15,7 @@ export class IdentityProviderDTO {
   readonly name: string;
 
   @IsString()
+  @NotContains('/')
   readonly image: string;
 
   @IsString()
