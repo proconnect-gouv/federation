@@ -22,6 +22,7 @@ import {
   EidasProviderModule,
 } from '@fc/eidas-provider';
 import { EidasOidcMapperModule } from '@fc/eidas-oidc-mapper';
+import { HttpProxyModule } from '@fc/http-proxy';
 import {
   FrIdentityToEuController,
   EuIdentityToFrController,
@@ -47,6 +48,7 @@ const oidcProviderModule = OidcProviderModule.register(
       schema: EidasBridgeSession,
     }),
     IdentityProviderEnvModule,
+    HttpProxyModule,
     ServiceProviderEnvModule,
     oidcClientModule,
     oidcProviderModule,
