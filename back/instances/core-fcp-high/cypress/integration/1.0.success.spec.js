@@ -2,7 +2,8 @@ import {
   basicSuccessScenario,
   checkInformationsServiceProvider,
   checkInStringifiedJson,
-  navigateToMire
+  navigateToMire,
+  checkInformations,
 } from './mire.utils';
 
 describe('Successful scenarios', () => {
@@ -109,6 +110,7 @@ describe('Successful scenarios', () => {
       birthplace: '2B050',
       birthcountry: '99100',
     });
+
     checkInStringifiedJson(
       'sub',
       '5dc66a1463be39c00c2826e5c16e161df7d9e3f897b88e8d8f267461d2cd6680v1',
