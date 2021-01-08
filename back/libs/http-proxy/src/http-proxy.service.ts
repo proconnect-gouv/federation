@@ -25,7 +25,7 @@ export class HttpProxyService {
     bootstrap();
 
     this.logger.debug(
-      `Set up HTTPS proxy to: ${global['GLOBAL_AGENT'].HTTPS_PROXY}`,
+      `Set up HTTPS proxy to: ${globalThis['GLOBAL_AGENT'].HTTPS_PROXY}`,
     );
 
     // Force Axios to not use Proxy Request library for RNIPP calls
