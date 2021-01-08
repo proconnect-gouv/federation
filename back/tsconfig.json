@@ -41,12 +41,6 @@
       "@fc/logger/*": [
         "libs/logger/src/*"
       ],
-      "@fc/consent": [
-        "libs/consent/src"
-      ],
-      "@fc/consent/*": [
-        "libs/consent/src/*"
-      ],
       "@fc/oidc-provider": [
         "libs/oidc-provider/src"
       ],

@@ -22,7 +22,7 @@ export const validationOptions: ValidatorOptions = {
 export class ConfigService {
   private readonly configuration: any;
 
-  constructor(@Inject(CONFIG_OPTIONS) private configOptions: IConfigOptions) {
+  constructor(@Inject(CONFIG_OPTIONS) configOptions: IConfigOptions) {
     const { config, schema } = configOptions;
 
     this.validate(config, schema);

@@ -7,6 +7,10 @@ import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
 
 @Injectable()
 export class OidcClientConfigService {
+  /**
+   * @todo [FC-231] Prossibly the source of the idps refresh problem
+   * Never used
+   */
   private configuration: OidcClientConfig;
 
   constructor(
