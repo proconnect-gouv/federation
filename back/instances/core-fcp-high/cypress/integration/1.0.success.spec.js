@@ -73,7 +73,7 @@ describe('Successful scenarios', () => {
       method: 'POST',
     });
 
-    checkInformations({
+    checkInformationsServiceProvider({
       gender: 'Homme',
       givenName: 'Mario',
       familyName: 'Brosse',
@@ -97,7 +97,7 @@ describe('Successful scenarios', () => {
       method: 'POST',
     });
 
-    checkInformations({
+    checkInformationsServiceProvider({
       gender: 'Homme',
       givenName: 'Luigi',
       familyName: 'Brosse',
