@@ -95,6 +95,7 @@ main > h1 + h2 {
     font-size: 2rem;
   }
 }
+
 @media screen and (min-width: 768px) {
   main {
     padding: 16px 32px 80px;
@@ -121,7 +122,7 @@ main > h1 + h2 {
   margin: 0 16px 0 0;
 }
 
-.identity-provider .icon-container img{
+.identity-provider .icon-container img {
   border-radius: 8px;
   width: 100%;
   box-shadow: 0 0 1px 0 rgba(0, 0, 145, 0.7);
@@ -173,7 +174,6 @@ main > h1 + h2 {
   opacity: 0.7;
 }
 
-
 .identity-provider button:not(:disabled):hover,
 .identity-provider button:not(:disabled):focus {
   background-color: transparent;
@@ -223,9 +223,11 @@ main > h1 + h2 {
   padding: 16px;
   cursor: pointer;
 }
+
 .tuto-container button:disabled {
   cursor: not-allowed;
 }
+
 .tuto-container button:hover {
   background-color: #000091;
   color: #fff;
