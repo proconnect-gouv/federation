@@ -3,7 +3,6 @@ import {
   checkInformationsServiceProvider,
   checkInStringifiedJson,
   navigateToMire,
-  checkInformations,
 } from './mire.utils';
 
 describe('Successful scenarios', () => {
