@@ -214,6 +214,32 @@ export function checkInformationsServiceProvider(identity) {
   }
 }
 
+export function checkInformations(identity) {
+  const {
+    gender,
+    givenName,
+    familyName,
+    preferredUsername = '/',
+    birthdate,
+    birthplace,
+    birthcountry,
+  } = identity;
+
+  cy.contains(`Sexe : ${gender}`);
+  cy.contains(`Prénom(s) : ${givenName}`);
+  cy.contains(`Nom(s) : ${familyName}`);
+  cy.contains(`Nom d'usage : ${preferredUsername}`);
+  cy.contains(`Date de naissance : ${birthdate}`);
+
+  if (birthplace) {
+    cy.contains(`COG (lieu de naissance) : ${birthplace}`);
+  }
+
+  if (birthcountry) {
+    cy.contains(`COG (Pays de naissance) : ${birthcountry}`);
+  }
+}
+
 export function checkInStringifiedJson(key, value, selector = '#json') {
   cy.get(selector).then((elem) => {
     const txt = elem.text().trim();
