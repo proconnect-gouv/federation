@@ -64,6 +64,54 @@ describe('Successful scenarios', () => {
     );
   });
 
+  it('should log in to Service Provider, an user born in Corse 2A', () => {
+    basicSuccessScenario({
+      userName: 'test_CORSE_2A',
+      password: '123',
+      eidasLevel: 1,
+      idpId,
+      method: 'POST',
+    });
+
+    checkInformations({
+      gender: 'Homme',
+      givenName: 'Mario',
+      familyName: 'Brosse',
+      preferredUsername: 'Mario',
+      birthdate: '1981-02-03',
+      birthplace: '2A004',
+      birthcountry: '99100',
+    });
+    checkInStringifiedJson(
+      'sub',
+      'ee0281b8150499ba220fb914a0e6f6aaf83e4673f6ffb0e669e210fbd1612a56v1',
+    );
+  });
+
+  it('should log in to Service Provider, an user born in Corse 2B', () => {
+    basicSuccessScenario({
+      userName: 'test_CORSE_2B',
+      password: '123',
+      eidasLevel: 1,
+      idpId,
+      method: 'POST',
+    });
+
+    checkInformations({
+      gender: 'Homme',
+      givenName: 'Luigi',
+      familyName: 'Brosse',
+      preferredUsername: 'Luigi',
+      birthdate: '1981-02-03',
+      birthplace: '2B050',
+      birthcountry: '99100',
+    });
+    checkInStringifiedJson(
+      'sub',
+      '5dc66a1463be39c00c2826e5c16e161df7d9e3f897b88e8d8f267461d2cd6680v1',
+    );
+  });
+
   it('should log in to Service Provider Example a "présumé né jour"', () => {
     basicSuccessScenario({
       userName: 'étranger_présumé_né_jour',
