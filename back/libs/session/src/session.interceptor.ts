@@ -5,7 +5,6 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
-import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
 import { SessionService } from './session.service';
@@ -43,12 +42,6 @@ export class SessionInterceptor implements NestInterceptor {
 
   constructor(
     private readonly config: ConfigService,
-    /**
-     * @TODO #196
-     * ETQ dev, je supprime le code inutilisé
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/196
-     */
-    private readonly crypto: CryptographyService,
     private readonly session: SessionService,
   ) {
     this.FrontRoutes = getFrontRoutes(

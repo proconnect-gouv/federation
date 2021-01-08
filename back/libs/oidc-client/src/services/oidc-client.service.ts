@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
 import { IOidcIdentity } from '@fc/oidc';
-import { OidcClientConfig } from '../dto';
 import {
   OidcClientMissingCodeException,
   OidcClientMissingStateException,
@@ -16,8 +15,6 @@ import { OidcClientConfigService } from './oidc-client-config.service';
 
 @Injectable()
 export class OidcClientService {
-  private configuration: OidcClientConfig;
-
   constructor(
     private readonly logger: LoggerService,
     private readonly issuer: OidcClientIssuerService,
