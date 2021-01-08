@@ -269,12 +269,6 @@
       "@fc/eidas/*": [
         "libs/eidas/src/*"
       ],
-      "@fc/scopes": [
-        "libs/scopes/src"
-      ],
-      "@fc/scopes/*": [
-        "libs/scopes/src/*"
-      ],
       "@fc/notifications": [
         "libs/notifications/src"
       ],
