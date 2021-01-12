@@ -68,6 +68,7 @@ export class ServiceProviderService implements IServiceProviderService {
           _id: false,
           active: true,
           name: true,
+          title: true,
           key: true,
           entityId: true,
           // openid defined property names

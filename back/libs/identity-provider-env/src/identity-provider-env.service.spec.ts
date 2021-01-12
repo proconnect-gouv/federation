@@ -11,6 +11,7 @@ describe('IdentityProviderEnvService', () => {
   const validIdentityProviderMock = {
     uid: 'envIssuer',
     name: 'envIssuer',
+    title: 'envIssuer Title',
     active: true,
     display: true,
     // oidc param name

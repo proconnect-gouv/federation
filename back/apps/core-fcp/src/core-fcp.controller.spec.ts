@@ -6,6 +6,7 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
+import { NotificationsService } from '@fc/notifications';
 import { CoreMissingIdentity, CoreInvalidCsrfException } from '@fc/core';
 import { ScopesService } from '@fc/scopes';
 import { CoreFcpController } from './core-fcp.controller';
@@ -18,6 +19,7 @@ describe('CoreFcpController', () => {
   const interactionIdMock = 'interactionIdMockValue';
   const acrMock = 'acrMockValue';
   const spNameMock = 'some SP';
+  const spTitleMock = 'title SP';
 
   const interactionDetailsResolved = {
     uid: Symbol('uid'),
@@ -67,6 +69,10 @@ describe('CoreFcpController', () => {
     genRandomString: jest.fn(),
   };
 
+  const notificationsServiceMock = {
+    getNotifications: jest.fn(),
+  };
+
   const appConfigMock = {
     urlPrefix: '/api/v2',
   };
@@ -93,6 +99,7 @@ describe('CoreFcpController', () => {
         ConfigService,
         CryptographyService,
         ScopesService,
+        NotificationsService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -113,6 +120,12 @@ describe('CoreFcpController', () => {
       .useValue(cryptographyServiceMock)
       .overrideProvider(ScopesService)
       .useValue(scopesServiceMock)
+      .overrideProvider(NotificationsService)
+      .useValue(notificationsServiceMock)
+      .overrideProvider(ScopesService)
+      .useValue(scopesServiceMock)
+      .overrideProvider(NotificationsService)
+      .useValue(notificationsServiceMock)
       .compile();
 
     coreController = await app.get<CoreFcpController>(CoreFcpController);
@@ -130,6 +143,7 @@ describe('CoreFcpController', () => {
     coreServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
     serviceProviderServiceMock.getById.mockResolvedValue({
       name: spNameMock,
+      title: spTitleMock,
     });
     sessionServiceMock.get.mockResolvedValue({
       interactionId: interactionIdMock,

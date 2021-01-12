@@ -53,6 +53,7 @@ export function basicSuccessScenario(params) {
     idpName: null,
     idpAcr: null,
   });
+
   cy.get(`#idp-${idpId}`).click();
 
   // FI: Authenticate
@@ -227,6 +228,20 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
   });
 }
 
+export function navigateToMire() {
+  cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+  // Steal the state to finish the cinematic
+  cy.get('input[name=state]')
+    .invoke('val')
+    .then((state) => {
+      // Direct call to FC with custom params
+      const controlUrl = getAuthorizeUrl({
+        state,
+      });
+      cy.visit(controlUrl);
+    });
+}
+
 export function basicScenario(params) {
   const {
     idpId,
@@ -308,6 +323,7 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
     acr_values: 'eidas3',
     nonce: 'nonceThatRespectsTheLengthWhichIsDefinedInTheDTOForKinematicWork',
   };
+  
   const params = {
     ...baseAuthorizeParams,
     ...overrideParams,

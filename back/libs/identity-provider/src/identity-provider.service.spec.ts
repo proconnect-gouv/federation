@@ -18,6 +18,7 @@ describe('IdentityProviderService', () => {
       active: true,
       display: false,
       clientID: 'clientID',
+      image: 'provider1.png',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
