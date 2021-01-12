@@ -7,6 +7,7 @@ describe('ServiceProviderService', () => {
 
   const validServiceProviderMock = {
     name: 'FSA - FSA1v2',
+    title: 'FSA - FSA1v2 - TITLE',
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
     redirect_uris: [

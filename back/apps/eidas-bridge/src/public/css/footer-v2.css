@@ -1,19 +1,19 @@
-#footer-v2 {
+footer {
   background-color: #000091;
   overflow-x: scroll
 }
 
-#footer-v2 a {
+footer a {
   color: #fff;
   font-size: 15px;
   text-decoration: none;
 }
 
-#footer-v2 a:hover {
+footer a:hover {
   text-decoration: underline;
 }
 
-#footer-v2 a+a {
+footer a + a {
   border-left: solid 1px #fff;
   padding-left: 10px;
   margin-left: 10px;
@@ -29,7 +29,7 @@
     padding: 40px 32px;
   }
 
-  #footer-v2 {
+  footer {
     overflow-x: initial;
   }
 }
