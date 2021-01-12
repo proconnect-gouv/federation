@@ -158,35 +158,9 @@ describe('Successful scenarios', () => {
     );
   });
 
-  it('should navigate by tab and enter on 1st menu link', () => {
+  it('should navigate by tab and enter on menu link', () => {
     navigateToMire();
     cy.get('body').tab();
-    cy.focused().invoke('attr', 'href').as('fc:redirectUri');
-
-    //TODO: find how trigger a keypress on key enter instead
-    //After many tests a key press on this keys it seems that it implicitly triggers a click on the focus element
-    cy.focused().click();
-    cy.location().then(({href}) => {
-      cy.get('@fc:redirectUri').should('eq', href);
-    })  
-  });
-
-  it('should navigate by tab and enter on 2nd menu link', () => {
-    navigateToMire();
-    cy.get('body').tab().tab();
-    cy.focused().invoke('attr', 'href').as('fc:redirectUri');
-
-    //TODO: find how trigger a keypress on key enter instead
-    //After many tests a key press on this keys it seems that it implicitly triggers a click on the focus element
-    cy.focused().click();
-    cy.location().then(({href}) => {
-      cy.get('@fc:redirectUri').should('eq', href);
-    })  
-  });
-
-  it('should navigate by tab and enter on 3rd menu link', () => {
-    navigateToMire();
-    cy.get('body').tab().tab().tab();
     cy.focused().invoke('attr', 'href').as('fc:redirectUri');
 
     //TODO: find how trigger a keypress on key enter instead
