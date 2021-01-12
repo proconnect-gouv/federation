@@ -1,20 +1,22 @@
 <!DOCTYPE html>
-<html>
-  
-  <%- include('partials/head.partial.ejs', { title: 'Connexion - choix du fournisseur d\'identité', style: 'interaction' }); %>
+<html lang="fr">
+  <%- include('partials/head.ejs', { title: 'Connexion - choix du fournisseur d\'identité', style: 'interaction' }); %>
 
   <body>
+    <%- include('partials/menu.ejs'); %>
+    <% if(locals.notifications){ %> 
+    <div id="notifications">
+      <div>
+        <img src="/img/warning.svg" alt="icone de mise en garde"/>
+        <span> <%- locals.notifications.message %> </span>
+      </div>
+    </div>
+    <% } %> 
     <div id="mire">
       <div class="content">
-        <header>
-          <a href="<%= locals.params.redirect_uri %>">&#8592; Revenir sur <%= locals.spName %></a>
-          <img src="/img/fc_logo.png" alt="France Connect logo">
-        </header>  
         <main>    
-          <p>Identifiez vous sur <span><%= locals.spName %></span> avec</p>
-
-          <p>votre compte :</p>
-    
+          <h1>Je choisis un moyen pour me connecter sur :</h1>
+          <h2><%= locals.spName %></h2>
           <div id="idp-list" class="main__providers">
             <% locals.providers.filter(p => p.display).forEach((provider) => { %>
               <form
@@ -30,14 +32,18 @@
                       disabled
                     <% } %>
                   >
-                    <%= provider.name %>
-                  </button>
-                  
-                  <% if (!provider.active) { %>
-                    <div class="identity-provider__tooltip">
-                      <p>Indisponible en environnement de démonstration</p>
+                    <div class="icon-container">
+                      <img src='/img/fi/<%-provider.image%>' alt="Logo de <%= provider.name %>" onerror="this.src='/img/fi/fi-placeholder.svg'"/>
                     </div>
-                  <% } %>
+                    <span>
+                      <% if (!provider.active) { %>
+                        <%= provider.name %> est actuellement indisponible
+                      <% } else {%>
+                        J’utilise l’application 
+                        <strong><%= provider.title %></strong>
+                      <% } %>
+                    </span>
+                  </button>
                 </div>
 
                 <input type="hidden" name="providerUid" id="providerUid" value="<%= provider.uid %>" />
@@ -48,12 +54,32 @@
             <% }) %>
           </div>
 
-          <div class="main__footer">
-            <a href="https://franceconnect.gouv.fr">En savoir plus sur FranceConnect</a>
-            <a href="https://franceconnect.gouv.fr/faq">Foire aux questions</a>
-          </div>
+          <div class="tuto-container">
+            <h3>
+              Pourquoi je ne retrouve pas mes comptes habituels ?
+            </h3>
+            <div class="logos-container">
+              <img src="/img/logo-impots-couleurs.svg" alt="Logo impots">
+              <img src="/img/logo-ameli-couleurs.svg" alt="Logo ameli">
+              <img src="/img/logo-msa-couleurs.svg" alt="Logo Msa">
+              <img src="/img/logo-mcm.svg" alt="Logo Mobile connect et moi">
+
+            </div>
+            <p>
+              FranceConnect+ est la nouvelle solution FranceConnect qui vous permet d’accéder à encore plus de démarches en ligne. 
+              Le service auquel vous souhaitez accéder nécessite l’utilisation d’un compte ayant un niveau de sécurité plus élevé.
+            </p>
+            <a href="/">
+              <button
+                disabled
+              >
+                Comment créer une identité numérique
+              </button>
+            </a>
+            </div>
         </main>
       </div>
     </div>
+    <%- include('partials/footer.ejs'); %>
   </body>
 </html>

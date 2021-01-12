@@ -68,6 +68,7 @@ export class IdentityProviderService implements IIdentityProviderService {
           _id: false,
           uid: true,
           name: true,
+          image: true,
           title: true,
           active: true,
           display: true,

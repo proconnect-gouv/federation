@@ -2,9 +2,11 @@ import {
   basicSuccessScenario,
   checkInformationsServiceProvider,
   checkInStringifiedJson,
+  navigateToMire,
 } from './mire.utils';
 
 describe('Successful scenarios', () => {
+
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
@@ -58,6 +60,7 @@ describe('Successful scenarios', () => {
       birthplace: '75107',
       birthcountry: '99100',
     });
+
     checkInStringifiedJson(
       'sub',
       '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
@@ -106,6 +109,7 @@ describe('Successful scenarios', () => {
       birthplace: '2B050',
       birthcountry: '99100',
     });
+
     checkInStringifiedJson(
       'sub',
       '5dc66a1463be39c00c2826e5c16e161df7d9e3f897b88e8d8f267461d2cd6680v1',
@@ -153,4 +157,56 @@ describe('Successful scenarios', () => {
       '4718dec56cbcc6f581981c4ea987f0cdd219ae955f454f530e706c5f293321c8v1',
     );
   });
+
+  it('should navigate by tab and enter on 1st menu link', () => {
+    navigateToMire();
+    cy.get('body').tab();
+    cy.focused().invoke('attr', 'href').as('fc:redirectUri');
+
+    //TODO: find how trigger a keypress on key enter instead
+    //After many tests a key press on this keys it seems that it implicitly triggers a click on the focus element
+    cy.focused().click();
+    cy.location().then(({href}) => {
+      cy.get('@fc:redirectUri').should('eq', href);
+    })  
+  });
+
+  it('should navigate by tab and enter on 2nd menu link', () => {
+    navigateToMire();
+    cy.get('body').tab().tab();
+    cy.focused().invoke('attr', 'href').as('fc:redirectUri');
+
+    //TODO: find how trigger a keypress on key enter instead
+    //After many tests a key press on this keys it seems that it implicitly triggers a click on the focus element
+    cy.focused().click();
+    cy.location().then(({href}) => {
+      cy.get('@fc:redirectUri').should('eq', href);
+    })  
+  });
+
+  it('should navigate by tab and enter on 3rd menu link', () => {
+    navigateToMire();
+    cy.get('body').tab().tab().tab();
+    cy.focused().invoke('attr', 'href').as('fc:redirectUri');
+
+    //TODO: find how trigger a keypress on key enter instead
+    //After many tests a key press on this keys it seems that it implicitly triggers a click on the focus element
+    cy.focused().click();
+    cy.location().then(({href}) => {
+      cy.get('@fc:redirectUri').should('eq', href);
+    })  
+  });
+
+  it('should apply box shadow when identity provider links are focused', () => {
+    navigateToMire();
+    cy.get('#idp-list form').each((item)=>{
+      cy.get(item).find('div button').invoke('attr', 'disabled').then((isDisabled) => {
+        if((!isDisabled)){
+          cy.get(item).find('div button').focus();
+          cy.get(item).find('div button').should('have.css', 'box-shadow');
+          cy.get(item).find('div button').blur();
+        }
+      })
+    })
+  })
 });

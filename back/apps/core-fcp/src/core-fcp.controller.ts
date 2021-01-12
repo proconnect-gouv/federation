@@ -19,6 +19,7 @@ import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
 import { CryptographyService } from '@fc/cryptography';
+import { NotificationsService } from '@fc/notifications';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { ScopesService } from '@fc/scopes';
 import {
@@ -42,6 +43,7 @@ export class CoreFcpController {
     private readonly config: ConfigService,
     private readonly crypto: CryptographyService,
     private readonly scopes: ScopesService,
+    private readonly notifications: NotificationsService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -59,6 +61,7 @@ export class CoreFcpController {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
     const providers = await this.identityProvider.getList();
+    const notifications = await this.notifications.getNotifications();
 
     const { interactionId } = req.fc;
     const { spName } = await this.session.get(interactionId);
@@ -68,6 +71,7 @@ export class CoreFcpController {
       params,
       scope,
       providers,
+      notifications,
       spName,
     };
   }

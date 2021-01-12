@@ -1,0 +1,20 @@
+<header>
+  <nav>
+    <div class="menu-container">
+        <div class="logos-container">
+            <a href="<%= locals.params.redirect_uri %>">
+              <img id="marianne-logo" src="/img/marianne-logo.svg" alt="Logo de la marianne">
+            </a>
+            <a href="<%= locals.params.redirect_uri %>">
+              <img id="fc-plus-logo" src="/img/logo-fc-plus.svg" alt="Logo FC Plus">
+            </a>
+        </div>
+        <div class="previous-link-container">
+            <a class="previous-link" href="<%= locals.params.redirect_uri %>?error=access_denied&error_decription=User%20auth%20aborted">
+              <div class="previous-link-icon"></div>
+              <span>Revenir sur <%= locals.spName %></span>
+            </a>
+        </div>
+    </div>
+  </nav>
+</header>
