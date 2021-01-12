@@ -10,7 +10,7 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
 }
 
 #fc-plus-logo {
@@ -59,6 +59,10 @@
     margin: 32px;
   }
 
+  #fc-plus-logo {
+    margin-left: 24px;
+  }
+
   .menu-container .logos-container {
     width: 30%;
     max-width: 326px;
@@ -100,6 +104,7 @@
 @media screen and (min-width: 768px) {
   #fc-plus-logo {
     width: 159px;
+    margin-top: 12px;
   }
 
   #marianne-logo {
