@@ -129,6 +129,7 @@ main > h1 + h2 {
 }
 
 .identity-provider button {
+  outline: none;
   width: 100%;
   max-width: 400px;
   padding: 16px;
