@@ -110,6 +110,7 @@ export class IdentityProviderService implements IIdentityProviderService {
           // openid defined property names
           // eslint-disable-next-line @typescript-eslint/naming-convention
           revocation_endpoint_auth_method: true,
+          featureHandlers: true,
         },
       )
       .exec();
@@ -124,6 +125,7 @@ export class IdentityProviderService implements IIdentityProviderService {
       if (errors.length > 0) {
         this.logger.warn(
           `"${_doc.uid}" was excluded from the result at DTO validation`,
+          JSON.stringify(errors, null, 2),
         );
       }
 

@@ -1,13 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { AccountBlockedException } from '@fc/account';
+import { TrackingService } from '@fc/tracking';
 import { CoreService } from '@fc/core';
+import { ConfigService } from '@fc/config';
 import { ServiceProviderService } from '@fc/service-provider';
-import { CoreFcaService } from './core-fca.service';
+import { CoreFcpEidasVerifyHandler } from './core-fcp.eidas-verify.handler';
 
-describe('CoreFcaService', () => {
-  let service: CoreFcaService;
+describe('CoreFcpEidasVerifyHandler', () => {
+  let service: CoreFcpEidasVerifyHandler;
 
   const loggerServiceMock = {
     setContext: jest.fn(),
@@ -30,12 +31,6 @@ describe('CoreFcaService', () => {
     uid: uidMock,
   };
   const getInteractionMock = jest.fn();
-
-  const coreServiceMock = {
-    checkIfAccountIsBlocked: jest.fn(),
-    checkIfAcrIsValid: jest.fn(),
-    computeInteraction: jest.fn(),
-  };
 
   const sessionServiceMock = {
     get: jest.fn(),
@@ -60,6 +55,26 @@ describe('CoreFcaService', () => {
     ip: '123.123.123.123',
   };
 
+  const computeInteractionMock = { spInteraction: {} };
+
+  const configServiceMock = {
+    get: jest.fn(),
+  };
+
+  const trackingMock = {
+    track: jest.fn(),
+  };
+
+  const coreServiceMock = {
+    checkIfAccountIsBlocked: jest.fn(),
+    checkIfAcrIsValid: jest.fn(),
+    computeInteraction: jest.fn(),
+  };
+
+  const serviceProviderMock = {
+    getById: jest.fn(),
+  };
+
   const sessionDataMock = {
     idpId: '42',
     idpAcr: 'eidas3',
@@ -72,43 +87,48 @@ describe('CoreFcaService', () => {
     spIdentity: spIdentityMock,
   };
 
-  const serviceProviderMock = {
-    getById: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CoreFcaService,
-        LoggerService,
+        ConfigService,
         CoreService,
+        CoreFcpEidasVerifyHandler,
+        LoggerService,
         SessionService,
+        TrackingService,
         ServiceProviderService,
       ],
     })
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .overrideProvider(CoreService)
       .useValue(coreServiceMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
+      .overrideProvider(TrackingService)
+      .useValue(trackingMock)
       .overrideProvider(ServiceProviderService)
       .useValue(serviceProviderMock)
       .compile();
-    service = module.get<CoreFcaService>(CoreFcaService);
+
+    service = module.get<CoreFcpEidasVerifyHandler>(CoreFcpEidasVerifyHandler);
 
     jest.resetAllMocks();
 
     getInteractionMock.mockResolvedValue(getInteractionResultMock);
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
-    coreServiceMock.computeInteraction.mockResolvedValue({ spInteraction: {} });
+    coreServiceMock.computeInteraction.mockResolvedValue(
+      computeInteractionMock,
+    );
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('verify', () => {
+  describe('handle', () => {
     const spMock = {
       key: '123456',
       entityId: 'AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH',
@@ -119,8 +139,9 @@ describe('CoreFcaService', () => {
 
     it('Should not throw if verified', async () => {
       // Then
-      await expect(service.verify(reqMock)).resolves.not.toThrow();
+      await expect(service.handle(reqMock)).resolves.not.toThrow();
     });
+
     // Dependencies sevices errors
     it('Should throw if acr is not validated', async () => {
       // Given
@@ -129,16 +150,7 @@ describe('CoreFcaService', () => {
         throw errorMock;
       });
       // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    it('Should throw if account is blocked', async () => {
-      // Given
-      const errorMock = new AccountBlockedException();
-      coreServiceMock.checkIfAccountIsBlocked.mockRejectedValueOnce(errorMock);
-
-      // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if identity provider is not usable', async () => {
@@ -146,23 +158,7 @@ describe('CoreFcaService', () => {
       const errorMock = new Error('my error');
       sessionServiceMock.get.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    it('Should throw if service Provider service fails', () => {
-      // Given
-      const errorMock = new Error('my error');
-      serviceProviderMock.getById.mockReset().mockRejectedValueOnce(errorMock);
-
-      // When
-      expect(service.verify(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    it('Should call interaction storage', async () => {
-      // When
-      await service.verify(reqMock);
-      // Then
-      expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
+      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if identity storage for service provider fails', async () => {
@@ -170,7 +166,37 @@ describe('CoreFcaService', () => {
       const errorMock = new Error('my error');
       sessionServiceMock.patch.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
+
+    it('Should call computeInteraction()', async () => {
+      // When
+      await service.handle(reqMock);
+      // Then
+      expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
+      expect(coreServiceMock.computeInteraction).toBeCalledWith(
+        {
+          idpId: sessionDataMock.idpId,
+          idpIdentity: sessionDataMock.idpIdentity,
+        },
+        {
+          spId: sessionDataMock.spId,
+          spRef: spMock.entityId,
+          spIdentity: sessionDataMock.idpIdentity,
+        },
+      );
+    });
+
+    /**
+     * @TODO #134 Test when implemented
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/134
+     *
+     * // RNIPP resilience
+     * it('Should pass if rnipp is down and account is known', async () => {});
+     * it('Should throw if rnipp is down and account is unknown', async () => {});
+     *
+     * // Service provider usability
+     * it('Should throw if service provider is not usable ', async () => {});
+     */
   });
 });

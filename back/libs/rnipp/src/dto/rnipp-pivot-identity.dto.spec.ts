@@ -1,4 +1,4 @@
-import { RnippPivotIdentity } from './citizen-status.dto';
+import { RnippPivotIdentity } from './rnipp-pivot-identity.dto';
 
 describe('RnippPivotIdentity', () => {
   describe('shouldValidateBirthplace', () => {

@@ -2,10 +2,11 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
+import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
 import { ServiceProviderService } from '@fc/service-provider';
-
 @Injectable()
-export class CoreFcaService {
+@FeatureHandler('core-fca-default-verify')
+export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   constructor(
     private readonly logger: LoggerService,
     private readonly session: SessionService,
@@ -21,18 +22,13 @@ export class CoreFcaService {
    * 1. Get infos on current interaction and identity fetched from IdP
    * 2. Store interaction with account service (long term storage)
    * 3. Store identity with session service (short term storage)
-   * 4. Redirects to login
-   *
-   * NB:
-   * Identity from identity provider id transmitted to sp.
-   *   This is not complient with core v1 / eIDAS low.
-   *   We'll see if we make this configurable when we implement low,
-   *   `rnippIdentity` is at hand anyway.
+   * 4. Display consent page
    *
    * @param req
-   * @param res
    */
-  async verify(req) {
+  async handle(req: any): Promise<void> {
+    this.logger.debug('getConsent service: ##### core-fca-default-verify');
+
     const { interactionId } = req.fc;
 
     // Grab informations on interaction and identity
@@ -59,7 +55,7 @@ export class CoreFcaService {
       {
         spId,
         spRef: entityId,
-        spIdentity: idpIdentity, // use identity from RNIPP for SP
+        spIdentity: idpIdentity,
       },
     );
 
@@ -67,17 +63,14 @@ export class CoreFcaService {
      * @TODO #305 generate unique sub ?
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/305
      */
-    const spIdentity = { ...idpIdentity, sub: spInteraction.sub };
+    const spIdentityCleaned = { ...idpIdentity, sub: spInteraction.sub };
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
-    const idpIdentityReset = { sub: idpIdentity.sub };
+    const idpIdentityCleaned = { sub: idpIdentity.sub };
 
-    // Store the changes in session
     await this.session.patch(interactionId, {
-      // Save idp identity.
-      idpIdentity: idpIdentityReset,
-      // Save service provider identity.
-      spIdentity,
+      idpIdentity: idpIdentityCleaned,
+      spIdentity: spIdentityCleaned,
     });
   }
 }

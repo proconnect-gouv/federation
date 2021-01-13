@@ -10,7 +10,7 @@ import { NotificationsService } from '@fc/notifications';
 import { CoreMissingIdentity, CoreInvalidCsrfException } from '@fc/core';
 import { ScopesService } from '@fc/scopes';
 import { CoreFcpController } from './core-fcp.controller';
-import { CoreFcpService } from './core-fcp.service';
+import { CoreFcpService } from '../services/core-fcp.service';
 
 describe('CoreFcpController', () => {
   let coreController: CoreFcpController;

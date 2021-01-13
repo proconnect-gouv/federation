@@ -4,6 +4,7 @@ import { getModelToken } from '@nestjs/mongoose';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc-client';
+import * as validation from '@fc/common/helpers/dto-validation';
 import { IdentityProvider } from './schemas';
 import { IdentityProviderService } from './identity-provider.service';
 
@@ -62,6 +63,7 @@ describe('IdentityProviderService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       userinfo_signed_response_alg: 'HS256',
+      featureHandlers: { coreVerify: 'core-fcp-default-verify' },
     },
   };
 
@@ -243,6 +245,11 @@ describe('IdentityProviderService', () => {
   });
 
   describe('findAllIdentityProvider', () => {
+    let validateDtoMock;
+    beforeEach(() => {
+      validateDtoMock = jest.spyOn(validation, 'validateDto');
+    });
+
     it('should resolve', async () => {
       // action
       const result = service['findAllIdentityProvider']();
@@ -260,6 +267,9 @@ describe('IdentityProviderService', () => {
     });
 
     it('should return result of type list', async () => {
+      // setup
+      validateDtoMock.mockResolvedValueOnce([]);
+
       // action
       const result = await service['findAllIdentityProvider']();
 
@@ -267,12 +277,15 @@ describe('IdentityProviderService', () => {
       expect(result).toEqual(identityProviderListMock.map(({ _doc }) => _doc));
     });
 
-    it('should log a warning if an entry is exluded by the DTO', async () => {
+    it('should log a warning if an entry is excluded by the DTO', async () => {
       // setup
       const invalidIdentityProviderListMock = [
         validIdentityProviderMock,
         invalidIdentityProviderMock,
       ];
+      validateDtoMock
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(['there is an error']);
 
       repositoryMock.exec = jest
         .fn()
@@ -291,6 +304,9 @@ describe('IdentityProviderService', () => {
         validIdentityProviderMock,
         invalidIdentityProviderMock,
       ];
+      validateDtoMock
+        .mockResolvedValueOnce([])
+        .mockResolvedValueOnce(['there is an error']);
 
       repositoryMock.exec = jest
         .fn()

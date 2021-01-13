@@ -36,7 +36,11 @@ export class OidcClientController {
    */
   @Post(OidcClientRoutes.REDIRECT_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async redirectToIdp(@Res() res, @Req() req, @Body() body: RedirectToIdp) {
+  async redirectToIdp(
+    @Res() res,
+    @Req() req,
+    @Body() body: RedirectToIdp,
+  ): Promise<void> {
     const {
       state,
       scope,
