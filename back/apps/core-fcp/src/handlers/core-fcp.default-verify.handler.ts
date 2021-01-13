@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@fc/config';
-import { MailerConfig, MailerService } from '@fc/mailer';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
@@ -11,17 +9,19 @@ import {
 } from '@fc/rnipp';
 import { CoreService } from '@fc/core';
 import { ServiceProviderService } from '@fc/service-provider';
+import { RnippPivotIdentity } from '@fc/rnipp';
+import { IOidcIdentity } from '@fc/oidc';
+import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
 
 @Injectable()
-export class CoreFcpService {
+@FeatureHandler('core-fcp-default-verify')
+export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
   constructor(
     private readonly logger: LoggerService,
-    private readonly config: ConfigService,
     private readonly session: SessionService,
     private readonly core: CoreService,
     private readonly tracking: TrackingService,
     private readonly rnipp: RnippService,
-    private readonly mailer: MailerService,
     private readonly serviceProvider: ServiceProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -43,10 +43,9 @@ export class CoreFcpService {
    *   `rnippIdentity` is at hand anyway.
    *
    * @param req
-   * @param res
    */
-  async verify(req) {
-    this.logger.debug('getConsent service');
+  async handle(req: any): Promise<void> {
+    this.logger.debug('getConsent service: ##### core-fcp-default-verify');
 
     const { interactionId } = req.fc;
 
@@ -96,48 +95,27 @@ export class CoreFcpService {
     const spIdentity = { ...idpIdentity, sub: spInteraction.sub };
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
-    const idpIdentityReset = { sub: idpIdentity.sub };
+    const idpIdentityCleaned = { sub: idpIdentity.sub };
 
-    // Store the changes in session
     await this.session.patch(interactionId, {
-      // Save idp identity.
-      idpIdentity: idpIdentityReset,
-      // Save service provider identity.
+      idpIdentity: idpIdentityCleaned,
       spIdentity,
     });
   }
 
-  private async rnippCheck(idpIdentity, req) {
+  /**
+   *
+   * @param idpIdentity
+   * @param req
+   */
+  private async rnippCheck(
+    idpIdentity: IOidcIdentity,
+    req: any,
+  ): Promise<RnippPivotIdentity> {
     this.tracking.track(RnippRequestedEvent, req);
     const rnippIdentity = await this.rnipp.check(idpIdentity);
     this.tracking.track(RnippReceivedValidEvent, req);
 
     return rnippIdentity;
-  }
-
-  /**
-   * Send an email to the authenticated end-user after consent
-   * @param req Express req object
-   * @param res Express res object
-   */
-  async sendAuthenticationMail(req) {
-    const { from } = this.config.get<MailerConfig>('Mailer');
-    const { interactionId } = req.fc;
-    const { spName, idpName, spIdentity } = await this.session.get(
-      interactionId,
-    );
-
-    this.logger.debug('Sending authentication mail');
-    this.mailer.send({
-      from,
-      to: [
-        {
-          email: spIdentity.email,
-          name: `${spIdentity.given_name} ${spIdentity.family_name}`,
-        },
-      ],
-      subject: `Connexion depuis FranceConnect sur ${spName}`,
-      body: `Connexion établie via ${idpName} !`,
-    });
   }
 }

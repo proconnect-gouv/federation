@@ -38,8 +38,13 @@ import {
   ServiceProviderOperationTypeChangesHandler,
 } from '@fc/core';
 import { ScopesModule } from '@fc/scopes';
-import { CoreFcpController } from './core-fcp.controller';
-import { CoreFcpService } from './core-fcp.service';
+import { FeatureHandlerModule } from '@fc/feature-handler';
+import { CoreFcpController } from './controllers';
+import { CoreFcpService } from './services';
+import {
+  CoreFcpEidasVerifyHandler,
+  CoreFcpDefaultVerifyHandler,
+} from './handlers';
 
 const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderService,
@@ -66,6 +71,7 @@ const oidcProviderModule = OidcProviderModule.register(
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),
     NotificationsModule,
+    FeatureHandlerModule,
   ],
   controllers: [CoreFcpController],
   providers: [
@@ -82,8 +88,14 @@ const oidcProviderModule = OidcProviderModule.register(
     TrackableEventHandler,
     IdentityProviderOperationTypeChangesHandler,
     ServiceProviderOperationTypeChangesHandler,
+    CoreFcpDefaultVerifyHandler,
+    CoreFcpEidasVerifyHandler,
   ],
   // Make `CoreTrackingService` dependencies available
-  exports: [SessionModule],
+  exports: [
+    SessionModule,
+    CoreFcpDefaultVerifyHandler,
+    CoreFcpEidasVerifyHandler,
+  ],
 })
 export class CoreFcpModule {}
