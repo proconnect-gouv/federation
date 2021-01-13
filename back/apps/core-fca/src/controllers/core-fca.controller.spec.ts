@@ -7,9 +7,9 @@ import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { CoreMissingIdentity } from '@fc/core';
-import { CoreFcaController } from './core-fca.controller';
-import { CoreFcaService } from './core-fca.service';
 import { MinistriesService } from '@fc/ministries';
+import { CoreFcaService } from '../services';
+import { CoreFcaController } from './core-fca.controller';
 
 describe('CoreFcaController', () => {
   let coreController: CoreFcaController;

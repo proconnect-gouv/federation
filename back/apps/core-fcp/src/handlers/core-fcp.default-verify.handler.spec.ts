@@ -10,12 +10,11 @@ import { AccountBlockedException } from '@fc/account';
 import { TrackingService } from '@fc/tracking';
 import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
-import { MailerService } from '@fc/mailer';
 import { ServiceProviderService } from '@fc/service-provider';
-import { CoreFcpService } from './core-fcp.service';
+import { CoreFcpDefaultVerifyHandler } from './core-fcp.default-verify.handler';
 
-describe('CoreFcpService', () => {
-  let service: CoreFcpService;
+describe('CoreFcpDefaultVerifyHandler', () => {
+  let service: CoreFcpDefaultVerifyHandler;
 
   const loggerServiceMock = {
     setContext: jest.fn(),
@@ -92,9 +91,7 @@ describe('CoreFcpService', () => {
     spIdentity: spIdentityMock,
   };
 
-  const mailerServiceMock = {
-    send: jest.fn(),
-  };
+  const computeInteractionMock = { spInteraction: {} };
 
   const serviceProviderMock = {
     getById: jest.fn(),
@@ -105,11 +102,10 @@ describe('CoreFcpService', () => {
       providers: [
         ConfigService,
         CoreService,
-        CoreFcpService,
+        CoreFcpDefaultVerifyHandler,
         LoggerService,
         SessionService,
         RnippService,
-        MailerService,
         TrackingService,
         ServiceProviderService,
       ],
@@ -124,29 +120,31 @@ describe('CoreFcpService', () => {
       .useValue(sessionServiceMock)
       .overrideProvider(RnippService)
       .useValue(rnippServiceMock)
-      .overrideProvider(MailerService)
-      .useValue(mailerServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
       .overrideProvider(ServiceProviderService)
       .useValue(serviceProviderMock)
       .compile();
 
-    service = module.get<CoreFcpService>(CoreFcpService);
+    service = module.get<CoreFcpDefaultVerifyHandler>(
+      CoreFcpDefaultVerifyHandler,
+    );
 
     jest.resetAllMocks();
 
     getInteractionMock.mockResolvedValue(getInteractionResultMock);
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
     rnippServiceMock.check.mockResolvedValue(spIdentityMock);
-    coreServiceMock.computeInteraction.mockResolvedValue({ spInteraction: {} });
+    coreServiceMock.computeInteraction.mockResolvedValue(
+      computeInteractionMock,
+    );
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  describe('verify', () => {
+  describe('handle', () => {
     const spMock = {
       key: '123456',
       entityId: 'AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH',
@@ -157,7 +155,7 @@ describe('CoreFcpService', () => {
 
     it('Should not throw if verified', async () => {
       // Then
-      await expect(service.verify(reqMock)).resolves.not.toThrow();
+      await expect(service.handle(reqMock)).resolves.not.toThrow();
     });
 
     it('Should throw if account is blocked', async () => {
@@ -166,7 +164,7 @@ describe('CoreFcpService', () => {
       coreServiceMock.checkIfAccountIsBlocked.mockRejectedValueOnce(errorMock);
 
       // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
     // Dependencies sevices errors
@@ -177,7 +175,7 @@ describe('CoreFcpService', () => {
         throw errorMock;
       });
       // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if identity provider is not usable', async () => {
@@ -185,16 +183,16 @@ describe('CoreFcpService', () => {
       const errorMock = new Error('my error');
       sessionServiceMock.get.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
-    it('Should throw if service Provider service fails', () => {
+    it('Should throw if service Provider service fails', async () => {
       // Given
       const errorMock = new Error('my error');
       serviceProviderMock.getById.mockReset().mockRejectedValueOnce(errorMock);
 
       // When
-      expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if rnipp check refuses identity', async () => {
@@ -202,7 +200,7 @@ describe('CoreFcpService', () => {
       const errorMock = new Error('my error');
       rnippServiceMock.check.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if identity storage for service provider fails', async () => {
@@ -210,15 +208,27 @@ describe('CoreFcpService', () => {
       const errorMock = new Error('my error');
       sessionServiceMock.patch.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.verify(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
-    it('Should call interaction storage', async () => {
+    it('Should call computeInteraction()', async () => {
       // When
-      await service.verify(reqMock);
+      await service.handle(reqMock);
       // Then
       expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
+      expect(coreServiceMock.computeInteraction).toBeCalledWith(
+        {
+          idpId: sessionDataMock.idpId,
+          idpIdentity: sessionDataMock.idpIdentity,
+        },
+        {
+          spId: sessionDataMock.spId,
+          spRef: spMock.entityId,
+          spIdentity: sessionDataMock.spIdentity,
+        },
+      );
     });
+
     /**
      * @TODO #134 ETQ FC, je suis résiliant aux fails du RNIPP
      * Test when implemented
@@ -281,69 +291,6 @@ describe('CoreFcpService', () => {
         RnippReceivedValidEvent,
         expectedEventStruct,
       );
-    });
-  });
-
-  describe('sendAuthenticationMail', () => {
-    beforeEach(() => {
-      // avoid to count config.get in constructor
-      configServiceMock.get.mockReset();
-      configServiceMock.get.mockReturnValue({
-        from: 'mail@mail.com',
-      });
-    });
-
-    it('should return a promise', async () => {
-      // action
-      const result = service.sendAuthenticationMail(reqMock);
-
-      // expect
-      expect(result).toBeInstanceOf(Promise);
-    });
-
-    it('should retrieve the email to send from from config', async () => {
-      // setup
-      const configName = 'Mailer';
-
-      // action
-      await service.sendAuthenticationMail(reqMock);
-
-      // expect
-      expect(configServiceMock.get).toBeCalledTimes(1);
-      expect(configServiceMock.get).toBeCalledWith(configName);
-    });
-
-    it('should call SessionService.get with interactionId', async () => {
-      // action
-      await service.sendAuthenticationMail(reqMock);
-
-      // expect
-      expect(sessionServiceMock.get).toBeCalledTimes(1);
-      expect(sessionServiceMock.get).toBeCalledWith(reqMock.fc.interactionId);
-    });
-
-    it('should send the email to the end-user by calling "mailer.send"', async () => {
-      // setup
-      const fromMock = { email: 'address@fqdn.ext', name: 'Address' };
-      const expectedEmailParams = {
-        body: `Connexion établie via ${sessionDataMock.idpName} !`,
-        from: fromMock,
-        subject: `Connexion depuis FranceConnect sur ${sessionDataMock.spName}`,
-        to: [
-          {
-            email: spIdentityMock.email,
-            name: `${spIdentityMock.given_name} ${spIdentityMock.family_name}`,
-          },
-        ],
-      };
-      configServiceMock.get.mockReturnValueOnce({ from: fromMock });
-
-      // action
-      await service.sendAuthenticationMail(reqMock);
-
-      // expect
-      expect(mailerServiceMock.send).toBeCalledTimes(1);
-      expect(mailerServiceMock.send).toBeCalledWith(expectedEmailParams);
     });
   });
 });
