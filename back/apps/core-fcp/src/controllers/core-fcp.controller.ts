@@ -11,7 +11,6 @@ import {
   Body,
   Next,
 } from '@nestjs/common';
-
 import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderService } from '@fc/identity-provider';
@@ -30,7 +29,7 @@ import {
   CoreMissingIdentity,
   CoreInvalidCsrfException,
 } from '@fc/core';
-import { CoreFcpService } from './core-fcp.service';
+import { CoreFcpService } from '../services';
 
 @Controller()
 export class CoreFcpController {

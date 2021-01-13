@@ -280,7 +280,13 @@
       ],
       "@fc/scopes/*": [
         "libs/scopes/src/*"
-      ]
+      ],
+      "@fc/feature-handler": [
+        "libs/feature-handler/src"
+      ],
+      "@fc/feature-handler/*": [
+        "libs/feature-handler/src/*"
+      ],
     }
   },
   "exclude": [

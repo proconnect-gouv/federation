@@ -18,7 +18,7 @@ import { MinistriesService } from '@fc/ministries';
 import { AppConfig } from '@fc/app';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { Interaction, Core, CoreRoutes, CoreMissingIdentity } from '@fc/core';
-import { CoreFcaService } from './core-fca.service';
+import { CoreFcaService } from '../services';
 
 @Controller()
 export class CoreFcaController {

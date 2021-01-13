@@ -1,11 +1,16 @@
 import {
   IsBoolean,
   IsString,
+  IsObject,
   IsArray,
   IsUrl,
   MinLength,
   NotContains,
 } from 'class-validator';
+import {
+  IFeatureHandlerDatabaseMap,
+  IsRegisteredHandler,
+} from '@fc/feature-handler';
 
 export class IdentityProviderDTO {
   @IsString()
@@ -96,4 +101,8 @@ export class IdentityProviderDTO {
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly revocation_endpoint_auth_method: string;
+
+  @IsRegisteredHandler()
+  @IsObject()
+  readonly featureHandlers: IFeatureHandlerDatabaseMap;
 }

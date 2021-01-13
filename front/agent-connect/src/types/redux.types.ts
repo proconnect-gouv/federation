@@ -4,9 +4,8 @@
 import { ActionCreator, AnyAction } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
-export type ThunkActionType = ActionCreator<
-ThunkAction<Promise<any>, RootState, null, AnyAction>
->;
+// prettier-ignore
+export type ThunkActionType = ActionCreator<ThunkAction<Promise<any>, RootState, null, AnyAction>>;
 
 export type ThunkDispatchType = ThunkDispatch<RootState, null, AnyAction>;
 

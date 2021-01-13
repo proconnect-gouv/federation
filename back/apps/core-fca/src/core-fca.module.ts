@@ -17,11 +17,8 @@ import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
 import { CryptographyModule } from '@fc/cryptography';
 import { ErrorModule } from '@fc/error';
-// Must be imported to be complient with `libs/core` shared between `fcp` and `fca`
-import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
-import { MailerModule } from '@fc/mailer';
 import { TrackingModule } from '@fc/tracking';
 import {
   CoreService,
@@ -36,8 +33,10 @@ const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderService,
   ServiceProviderModule,
 );
-import { CoreFcaController } from './core-fca.controller';
-import { CoreFcaService } from './core-fca.service';
+import { FeatureHandlerModule } from '@fc/feature-handler';
+import { CoreFcaController } from './controllers';
+import { CoreFcaService } from './services';
+import { CoreFcaDefaultVerifyHandler } from './handlers';
 
 @Global()
 @Module({
@@ -47,16 +46,15 @@ import { CoreFcaService } from './core-fca.service';
     SessionModule,
     CryptographyModule,
     AccountModule,
-    RnippModule,
     ServiceProviderModule,
     IdentityProviderModule,
     MinistriesModule,
     HttpProxyModule,
     oidcProviderModule,
     OidcClientModule.register(IdentityProviderService, IdentityProviderModule),
-    MailerModule,
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),
+    FeatureHandlerModule,
   ],
   controllers: [CoreFcaController],
   providers: [
@@ -68,8 +66,9 @@ import { CoreFcaService } from './core-fca.service';
     OidcProviderAuthorizationEventHandler,
     OidcProviderTokenEventHandler,
     OidcProviderUserinfoEventHandler,
+    CoreFcaDefaultVerifyHandler,
   ],
   // Make `CoreTrackingService` dependencies available
-  exports: [SessionModule],
+  exports: [SessionModule, CoreFcaDefaultVerifyHandler],
 })
 export class CoreFcaModule {}
