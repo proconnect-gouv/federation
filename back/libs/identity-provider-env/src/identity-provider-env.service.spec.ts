@@ -22,6 +22,7 @@ describe('IdentityProviderEnvService', () => {
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
+    discovery: true,
     discoveryUrl:
       'https://corev2.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
     // oidc param name
@@ -74,6 +75,7 @@ describe('IdentityProviderEnvService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+      discovery: true,
       discoveryUrl:
         'https://corev2.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
       // oidc param name

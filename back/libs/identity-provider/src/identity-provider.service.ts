@@ -69,6 +69,8 @@ export class IdentityProviderService implements IIdentityProviderService {
           uid: true,
           name: true,
           image: true,
+          issuer: true,
+          url: true,
           title: true,
           active: true,
           display: true,
@@ -76,10 +78,15 @@ export class IdentityProviderService implements IIdentityProviderService {
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: true,
+          discovery: true,
           discoveryUrl: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           redirect_uris: true,
+          authzURL: true,
+          tokenURL: true,
+          userInfoURL: true,
+          jwksURL: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           post_logout_redirect_uris: true,
@@ -95,7 +102,7 @@ export class IdentityProviderService implements IIdentityProviderService {
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_encrypted_response_alg: true,
-          // oidc defined variable name
+          // oidc defined variable namev
           // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_encrypted_response_enc: true,
           // oidc defined variable name
@@ -124,8 +131,13 @@ export class IdentityProviderService implements IIdentityProviderService {
 
       if (errors.length > 0) {
         this.logger.warn(
-          `"${_doc.uid}" was excluded from the result at DTO validation`,
-          JSON.stringify(errors, null, 2),
+          `"${
+            _doc.uid
+          }" was excluded from the result at DTO validation. ${JSON.stringify(
+            errors,
+            null,
+            2,
+          )}`,
         );
       }
 
@@ -160,26 +172,28 @@ export class IdentityProviderService implements IIdentityProviderService {
   private legacyToOpenIdPropertyName(
     source: IdentityProvider,
   ): IdentityProviderMetadata {
-    // openid defined property names
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const client_id = source.clientID;
-    // openid defined property names
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    const client_secret = this.cryptography.decryptClientSecret(
-      source.client_secret,
-    );
-
-    const result = {
-      ...source,
-      // openid defined property names
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id,
-      // openid defined property names
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_secret,
+    const mapping = {
+      clientID: 'client_id',
+      tokenURL: 'token_endpoint',
+      authzURL: 'authorization_endpoint',
+      userInfoURL: 'userinfo_endpoint',
+      jwksURL: 'jwks_uri',
+      url: 'issuer',
+      endSessionURL: 'end_session_endpoint',
     };
 
-    delete result.clientID;
+    const result = { ...source };
+
+    Object.entries(mapping).forEach(([legacyName, oidcName]) => {
+      result[oidcName] = source[legacyName];
+      Reflect.deleteProperty(result, legacyName);
+    });
+
+    // openid defined property names
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    result.client_secret = this.cryptography.decryptClientSecret(
+      source.client_secret,
+    );
 
     /**
      * @TODO Fix type issues between legacy model and `oidc-client` library

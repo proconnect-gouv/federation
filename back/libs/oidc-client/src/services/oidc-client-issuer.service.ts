@@ -55,7 +55,7 @@ export class OidcClientIssuerService {
   private async getIssuer(issuerId: string): Promise<Issuer<Client>> {
     const idpMetadata = await this.getIdpMetadata(issuerId);
 
-    if (idpMetadata.discoveryUrl) {
+    if (idpMetadata.discovery) {
       /**
        * @TODO #142 handle network failure with specific Exception / error code
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/142
