@@ -70,6 +70,7 @@ export default {
       IdToken: 60, // 1 minute
     },
     acrValues: ['eidas2', 'eidas3'],
+    scopes: ['openid'],
     claims: {
       openid: ['sub'],
       gender: ['gender'],

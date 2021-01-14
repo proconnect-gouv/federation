@@ -315,6 +315,9 @@ export class Configuration {
   @IsArray()
   readonly acrValues: string[];
 
+  @IsArray()
+  readonly scopes: string[];
+
   @IsObject()
   readonly claims: any;
 
