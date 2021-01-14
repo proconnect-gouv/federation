@@ -162,30 +162,32 @@ export function basicSuccessScenario(params) {
 
 export function checkInformationsConsent(scopes) {
   const IDENTITY_SCOPES_LABEL = {
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  family_name: `Nom(s) de famille`,
-  gender: `Sexe`,
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  given_name: `Prénom(s)`,
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  preferred_username: `Nom d'usage`,
-  birthdate: `Date de naissance`,
-  birthplace: `Lieu de naissance`,
-  birthcountry: `Pays de naissance`,
-  address: `Adresse postale`,
-  phone: `Téléphone`,
-  email: `Adresse email`,
-};
+    // openid defined property names
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    family_name: `Nom(s) de famille`,
+    gender: `Sexe`,
+    // openid defined property names
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    given_name: `Prénom(s)`,
+    // openid defined property names
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    preferred_username: `Nom d'usage`,
+    birthdate: `Date de naissance`,
+    birthplace: `Lieu de naissance`,
+    birthcountry: `Pays de naissance`,
+    address: `Adresse postale`,
+    phone: `Téléphone`,
+    email: `Adresse email`,
+  };
 
   cy.get('#toggleOpenCloseMenu').click();
 
   const scopesArray = scopes.split(' ');
   scopesArray
-    .filter(scope => scope in IDENTITY_SCOPES_LABEL)
-    .forEach(scope => cy.contains(IDENTITY_SCOPES_LABEL[scope]).should('exist'));
+    .filter((scope) => scope in IDENTITY_SCOPES_LABEL)
+    .forEach((scope) =>
+      cy.contains(IDENTITY_SCOPES_LABEL[scope]).should('exist'),
+    );
 }
 
 export function checkInformationsServiceProvider(identity) {
@@ -223,7 +225,7 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
       expect(data).not.to.have.property(key);
     } else {
       expect(data).to.have.property(key);
-      expect(data[key]).to.eq(value);
+      expect(data[key]).to.deep.equal(value);
     }
   });
 }
@@ -330,8 +332,12 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
   };
 
   if (removeParams) {
-    const paramsToKill = Array.isArray(removeParams) ? removeParams : [removeParams];
-    paramsToKill.forEach(deadParam => Reflect.deleteProperty(params, deadParam));
+    const paramsToKill = Array.isArray(removeParams)
+      ? removeParams
+      : [removeParams];
+    paramsToKill.forEach((deadParam) =>
+      Reflect.deleteProperty(params, deadParam),
+    );
   }
 
   return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;

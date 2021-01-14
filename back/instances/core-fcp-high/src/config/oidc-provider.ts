@@ -70,6 +70,7 @@ export default {
       IdToken: 60, // 1 minute
     },
     acrValues: ['eidas2', 'eidas3'],
+    scopes: ['openid'],
     claims: {
       openid: ['sub'],
       gender: ['gender'],
@@ -99,6 +100,18 @@ export default {
         'birthplace',
         'birthcountry',
         'preferred_username',
+      ],
+      birth: ['birthplace', 'birthcountry'],
+      // node-oidc-provider defined key
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      identite_pivot: [
+        'given_name',
+        'family_name',
+        'preferred_username',
+        'birthdate',
+        'gender',
+        'birthplace',
+        'birthcountry',
       ],
     },
     clientDefaults: {

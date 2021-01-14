@@ -12,12 +12,13 @@
     "BE_SP_URL": "https://eidas-be.docker.dev-franceconnect.fr/SP/populateIndexPage",
 
     "BRIDGE_ROOT_URL": "https://eidas-bridge.docker.dev-franceconnect.fr",
- 
- 
+
     "IDP_ROOT_URL": "https://IDP_NAME.docker.dev-franceconnect.fr",
 
     "SP1_ROOT_URL": "https://fsp1v2.docker.dev-franceconnect.fr",
-    "SP1_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950"
+    "SP1_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
+
+    "WELL_KNOWN": "/.well-known/openid-configuration"
   },
   "ignoreTestFiles": "*.util.js",
   "projectId": "m4rv1n"
