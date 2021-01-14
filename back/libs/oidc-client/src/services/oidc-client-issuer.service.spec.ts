@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { ClientMetadata } from 'oidc-provider';
-import { custom } from 'openid-client';
+import { Client, custom, Issuer } from 'openid-client';
 import {
   OidcClientProviderNotFoundException,
   OidcClientProviderDisabledException,
@@ -23,9 +23,8 @@ describe('OidcClientIssuerService', () => {
     get: jest.fn(),
   };
 
-  const issuerProxyMock = {
-    discover: jest.fn(),
-  };
+  const issuerProxyMock = (jest.fn() as unknown) as Issuer<Client>;
+  issuerProxyMock['discover'] = jest.fn();
 
   const idpMetadataMock = {
     jwks: [],
@@ -45,6 +44,7 @@ describe('OidcClientIssuerService', () => {
         discoveryUrl: 'mock well-known url',
       },
     ],
+    discovery: true,
     discoveryUrl: 'mock well-known url',
   };
 
@@ -82,12 +82,9 @@ describe('OidcClientIssuerService', () => {
       Client: jest.fn(),
     };
 
-    const issuerProxyMock = jest.fn() as any;
-
     const issuerId = 'foo';
 
     beforeEach(() => {
-      service['IssuerProxy'] = issuerProxyMock;
       service['getIdpMetadata'] = jest.fn().mockResolvedValue(idpMetadataMock);
       service['getIssuer'] = jest.fn().mockResolvedValue(issuerMock);
     });
@@ -189,13 +186,11 @@ describe('OidcClientIssuerService', () => {
       const issuerId = 'foo';
       const noDiscoveryMetadata = {
         ...idpMetadataMock,
-        discoveryUrl: undefined,
+        discovery: false,
       };
       service['getIdpMetadata'] = jest
         .fn()
         .mockResolvedValue(noDiscoveryMetadata);
-
-      service['IssuerProxy'] = jest.fn() as any;
       // When
       await service['getIssuer'](issuerId);
       // Then
