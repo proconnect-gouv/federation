@@ -1,12 +1,14 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { IdentityProviderEnvConfig } from '@fc/identity-provider-env/dto';
+import { parseBoolean } from '@fc/common';
+import { IdentityProviderEnvConfig } from '@fc/identity-provider-env';
 
 export default {
   jwks: {
     keys: [JSON.parse(process.env.IdentityProviderEnv_JWKS)],
   },
+  discovery: parseBoolean(process.env.IdentityProviderEnv_DISCOVERY),
   discoveryUrl: process.env.IdentityProviderEnv_DISCOVERY_URL,
   provider: {
     // oidc param name
@@ -28,7 +30,8 @@ export default {
     ),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    id_token_signed_response_alg: process.env.IdentityProviderEnv_ID_TOKEN_SIGNED_RESPONSE_ALG,
+    id_token_signed_response_alg:
+      process.env.IdentityProviderEnv_ID_TOKEN_SIGNED_RESPONSE_ALG,
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     id_token_encrypted_response_alg:
@@ -39,7 +42,8 @@ export default {
       process.env.IdentityProviderEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC,
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    userinfo_signed_response_alg: process.env.IdentityProviderEnv_USERINFO_SIGNED_RESPONSE_ALG,
+    userinfo_signed_response_alg:
+      process.env.IdentityProviderEnv_USERINFO_SIGNED_RESPONSE_ALG,
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     userinfo_encrypted_response_alg:
@@ -53,7 +57,8 @@ export default {
     jwks_uri: process.env.IdentityProviderEnv_JWKS_URI,
     //oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    token_endpoint_auth_method: process.env.IdentityProviderEnv_TOKEN_ENDPOINT_AUTH_METHOD,
+    token_endpoint_auth_method:
+      process.env.IdentityProviderEnv_TOKEN_ENDPOINT_AUTH_METHOD,
     //oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     revocation_endpoint_auth_method:

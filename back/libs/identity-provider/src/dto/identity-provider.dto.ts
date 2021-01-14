@@ -6,6 +6,8 @@ import {
   IsUrl,
   MinLength,
   NotContains,
+  ValidateIf,
+  IsOptional,
 } from 'class-validator';
 import {
   IFeatureHandlerDatabaseMap,
@@ -13,6 +15,10 @@ import {
 } from '@fc/feature-handler';
 
 export class IdentityProviderDTO {
+  @IsString()
+  @IsOptional()
+  readonly url: string;
+
   @IsString()
   readonly uid: string;
 
@@ -41,6 +47,32 @@ export class IdentityProviderDTO {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_secret: string;
 
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly authzURL: string;
+
+  @IsString()
+  @IsOptional()
+  readonly tokenURL: string;
+
+  @IsString()
+  @IsOptional()
+  readonly userInfoURL: string;
+
+  @IsString()
+  @IsOptional()
+  readonly endSessionURL: string;
+
+  @IsString()
+  @IsOptional()
+  readonly jwksURL: string;
+
+  @IsBoolean()
+  readonly discovery: boolean;
+
+  @ValidateIf((o) => o.dicovery)
   @IsUrl()
   readonly discoveryUrl: string;
 

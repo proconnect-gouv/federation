@@ -1,7 +1,13 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsOptional, IsObject, IsUrl } from 'class-validator';
+import {
+  IsOptional,
+  IsObject,
+  IsUrl,
+  IsBoolean,
+  ValidateIf,
+} from 'class-validator';
 import { ClientMetadata } from 'openid-client';
 import { JSONWebKeySet } from 'jose';
 
@@ -11,8 +17,12 @@ export class IdentityProviderEnvConfig {
   @IsOptional()
   readonly provider: ClientMetadata;
 
+  @IsBoolean()
+  readonly discovery: boolean;
+
   @IsUrl()
   @IsOptional()
+  @ValidateIf((o) => o.discovery)
   readonly discoveryUrl: string;
 
   /**

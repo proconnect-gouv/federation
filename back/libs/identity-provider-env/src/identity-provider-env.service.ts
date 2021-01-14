@@ -25,6 +25,7 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
   private async findAllIdentityProvider(): Promise<IdentityProviderEnvDTO[]> {
     const {
       discoveryUrl,
+      discovery,
       provider,
     } = this.config.get<IdentityProviderEnvConfig>('IdentityProviderEnv');
 
@@ -36,6 +37,7 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
         active: true,
         display: true,
         discoveryUrl,
+        discovery,
         ...provider,
       },
     ];
@@ -52,6 +54,7 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
         if (errors.length > 0) {
           this.logger.warn(
             `"${configuration.uid}" was excluded from the result at DTO validation`,
+            JSON.stringify(errors),
           );
         }
 

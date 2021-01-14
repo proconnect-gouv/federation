@@ -56,6 +56,9 @@ export class IdentityProviderEnvDTO {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly userinfo_endpoint: string;
 
+  @IsBoolean()
+  readonly discovery: boolean;
+
   @IsUrl()
   @IsOptional()
   readonly discoveryUrl: string;

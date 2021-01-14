@@ -11,7 +11,7 @@ import { IdentityProviderService } from './identity-provider.service';
 describe('IdentityProviderService', () => {
   let service: IdentityProviderService;
 
-  const validIdentityProviderMock = {
+  const legacyIdentityProviderMock = {
     _doc: {
       uid: 'uid',
       name: 'provider1',
@@ -23,8 +23,7 @@ describe('IdentityProviderService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
+      discovery: true,
       discoveryUrl: 'https://corev2.docker.dev-franceconnect.fr/well_known_url',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -39,6 +38,91 @@ describe('IdentityProviderService', () => {
       redirect_uris: [
         'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
       ],
+      tokenURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/token',
+      jwksURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/certs',
+      authzURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/authorize',
+      userInfoURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/userinfo',
+      url: 'https://corev2.docker.dev-franceconnect.fr',
+      endSessionURL:
+        'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
+      featureHandlers: {
+        coreVerify: 'core-fcp-default-verify',
+      },
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      response_types: ['code'],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      revocation_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_encrypted_response_alg: 'RSA-OAEP',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_encrypted_response_enc: 'A256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_encrypted_response_alg: 'RSA-OAEP',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_encrypted_response_enc: 'A256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_signed_response_alg: 'HS256',
+    },
+  };
+
+  const validIdentityProviderMock = {
+    _doc: {
+      uid: 'uid',
+      name: 'provider1',
+      title: 'provider 1',
+      active: true,
+      display: false,
+      image: 'provider1.png',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: 'clientID',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+      issuer: 'https://corev2.docker.dev-franceconnect.fr',
+      discovery: true,
+      discoveryUrl: 'https://corev2.docker.dev-franceconnect.fr/well_known_url',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_signed_response_alg: 'HS256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      post_logout_redirect_uris: [
+        'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
+      ],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      redirect_uris: [
+        'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
+      ],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_endpoint: 'https://corev2.docker.dev-franceconnect.fr/api/v2/token',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      authorization_endpoint:
+        'https://corev2.docker.dev-franceconnect.fr/api/v2/authorize',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      jwks_uri: 'https://corev2.docker.dev-franceconnect.fr/api/v2/certs',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_endpoint:
+        'https://corev2.docker.dev-franceconnect.fr/api/v2/userinfo',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      end_session_endpoint:
+        'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       response_types: ['code'],
@@ -69,12 +153,12 @@ describe('IdentityProviderService', () => {
 
   const invalidIdentityProviderMock = {
     _doc: {
-      ...validIdentityProviderMock._doc,
+      ...legacyIdentityProviderMock._doc,
       active: 'NOT_A_BOOLEAN',
     },
   };
 
-  const identityProviderListMock = [validIdentityProviderMock];
+  const identityProviderListMock = [legacyIdentityProviderMock];
 
   const loggerMock = {
     setContext: jest.fn(),
@@ -219,28 +303,16 @@ describe('IdentityProviderService', () => {
 
   describe('legacyToOpenIdPropertyName', () => {
     it('should return identity provider with change legacy property name by openid property name', () => {
-      // setup
-      const expected = {
-        ...validIdentityProviderMock._doc,
-        // oidc param name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id: 'clientID',
-        // oidc param name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_secret: 'client_secret',
-      };
-      delete expected.clientID;
-
       // action
       cryptographyMock.decryptClientSecret.mockReturnValueOnce(
-        expected.client_secret,
+        legacyIdentityProviderMock._doc.client_secret,
       );
       const result = service['legacyToOpenIdPropertyName'](
-        (validIdentityProviderMock._doc as unknown) as IdentityProvider,
+        (legacyIdentityProviderMock._doc as unknown) as IdentityProvider,
       );
 
       // expect
-      expect(result).toEqual(expected);
+      expect(result).toEqual(validIdentityProviderMock._doc);
     });
   });
 
@@ -274,13 +346,13 @@ describe('IdentityProviderService', () => {
       const result = await service['findAllIdentityProvider']();
 
       // expect
-      expect(result).toEqual(identityProviderListMock.map(({ _doc }) => _doc));
+      expect(result).toEqual([legacyIdentityProviderMock._doc]);
     });
 
     it('should log a warning if an entry is excluded by the DTO', async () => {
       // setup
       const invalidIdentityProviderListMock = [
-        validIdentityProviderMock,
+        legacyIdentityProviderMock,
         invalidIdentityProviderMock,
       ];
       validateDtoMock
@@ -301,7 +373,7 @@ describe('IdentityProviderService', () => {
     it('should filter out any entry exluded by the DTO', async () => {
       // setup
       const invalidIdentityProviderListMock = [
-        validIdentityProviderMock,
+        legacyIdentityProviderMock,
         invalidIdentityProviderMock,
       ];
       validateDtoMock
@@ -349,7 +421,6 @@ describe('IdentityProviderService', () => {
           client_secret: 'client_secret',
         },
       ];
-      delete expected[0].clientID;
 
       // action
       cryptographyMock.decryptClientSecret.mockReturnValueOnce(
