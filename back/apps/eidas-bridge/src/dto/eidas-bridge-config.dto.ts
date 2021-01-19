@@ -20,7 +20,6 @@ import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { RedisConfig } from '@fc/redis';
 import { SessionConfig } from '@fc/session';
 import { SessionGenericConfig } from '@fc/session-generic';
-import { RabbitmqConfig } from '@fc/rabbitmq';
 import { EidasClientConfig } from '@fc/eidas-client';
 import { EidasProviderConfig } from '@fc/eidas-provider';
 import { ApacheIgniteConfig } from '@fc/apache-ignite';
@@ -104,11 +103,6 @@ export class EidasBridgeConfig {
   @ValidateNested()
   @Type(() => ServiceProviderEnvConfig)
   readonly ServiceProviderEnv: ServiceProviderEnvConfig;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => RabbitmqConfig)
-  readonly CryptographyBroker: RabbitmqConfig;
 
   @IsObject()
   @ValidateNested()

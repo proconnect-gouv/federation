@@ -8,7 +8,6 @@ import {
 } from '@fc/identity-provider-env';
 import { OidcClientModule } from '@fc/oidc-client';
 import { OidcProviderModule } from '@fc/oidc-provider';
-import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
 import { SessionModule } from '@fc/session';
 import { SessionGenericModule } from '@fc/session-generic';
 import {
@@ -53,7 +52,6 @@ const oidcProviderModule = OidcProviderModule.register(
     oidcClientModule,
     oidcProviderModule,
     CryptographyModule,
-    OverrideOidcProviderModule.register(oidcProviderModule),
     EidasOidcMapperModule,
   ],
   controllers: [
