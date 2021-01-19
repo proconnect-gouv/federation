@@ -179,7 +179,7 @@ describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
 });
 
 describe('Successful scenarios (EU Citizen / FR Service Provider)', () => {
-  it('should connect the user through eIDAS and get a "identity.isCog" error', () => {
+  it('should connect the user through eIDAS', () => {
     basicSuccessScenarioFrSpEuIdp();
     checkInformationsFrSpEuIdp();
   });
