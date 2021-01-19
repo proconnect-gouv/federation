@@ -230,6 +230,8 @@ export function basicSuccessScenarioFrSpEuIdp(params = {}) {
 
   cy.get('#idpSubmitbutton').click();
   cy.get('#buttonNext').click();
+
+  cy.get('#consent').click();
 }
 
 export function basicFailureScenarioFrSpEuIdp(params = {}) {
@@ -267,6 +269,13 @@ export function basicFailureScenarioFrSpEuIdp(params = {}) {
 }
 
 export function checkInformationsFrSpEuIdp() {
-  cy.contains('code : Y010013');
-  cy.contains('identity.birthplace: isCog');
+  cy.contains(
+    '"sub": "e6f2d07e7a63ea44487bcce8bcd443b6d2dd9f655af550ad6dc897346c1925d9v1"',
+  );
+  cy.contains('"given_name": "javier"');
+  cy.contains('"family_name": "Garcia"');
+  cy.contains('"birthdate": "1964-12-31"');
+  cy.contains('"gender": "male"');
+  cy.contains('"birthplace": "Place of Birth"');
+  cy.contains('"iss": "https://corev2.docker.dev-franceconnect.fr/api/v2"');
 }
