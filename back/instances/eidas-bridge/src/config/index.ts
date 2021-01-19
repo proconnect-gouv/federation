@@ -4,7 +4,6 @@
 import { EidasBridgeConfig } from '@fc/eidas-bridge';
 import App from './app';
 import Cryptography from './cryptography';
-import CryptographyBroker from './cryptography-broker';
 import IdentityProviderEnv from './identity-provider-env';
 import ServiceProviderEnv from './service-provider-env';
 import Logger from './logger';
@@ -31,7 +30,6 @@ export default {
   },
   App,
   Cryptography,
-  CryptographyBroker,
   IdentityProviderEnv,
   ServiceProviderEnv,
   Logger,
