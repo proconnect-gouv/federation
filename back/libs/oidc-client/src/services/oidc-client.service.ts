@@ -140,11 +140,4 @@ export class OidcClientService {
 
     return client.userinfo(accessToken);
   }
-
-  /**
-   * Expose config reload mechanism for external event handlers
-   */
-  public async reloadConfiguration(): Promise<void> {
-    await this.oidcClientConfig.reload();
-  }
 }

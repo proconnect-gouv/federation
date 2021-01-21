@@ -70,26 +70,6 @@ describe('OidcClientConfigService', () => {
     });
   });
 
-  describe('onModuleInit', () => {
-    it('should load config', () => {
-      // Given
-      service.reload = jest.fn();
-      // When
-      service.onModuleInit();
-      // Then
-      expect(service.reload).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('reload', () => {
-    it('Should call getConfig', async () => {
-      // When
-      await service.reload();
-      // Then
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe('get', () => {
     it('should return data from identity.getList', async () => {
       // When

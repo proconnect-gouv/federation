@@ -90,4 +90,34 @@ describe('Idp activation & visibility', () => {
     cy.url().should('contain', '/api/v2/redirect-to-idp');
     cy.hasError('Y020019');
   });
+  describe('No app restart needed', () => {
+    beforeEach(() => {
+      cy.resetdb();
+    });
+    
+    it('should display an identity provider that has been added without a restart of the app needed', () => {
+      cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      cy.get('#get-authorize').click(); 
+      cy.get('#idp-list').contains('idp-test-update').should('not.exist');
+      
+      cy.e2e('idp_insert');   
+      cy.wait(500);
+      cy.reload();
+      
+      cy.get('#idp-list').contains('idp-test-update')
+    });
+  
+    it('should update an identity provider properties without a restart needed', () => {
+      cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      cy.get('#get-authorize').click(); 
+      cy.get('#idp-list').contains('idp-test-update').should('not.exist');
+      
+      cy.e2e('idp_insert');   
+      cy.e2e('idp_update');
+      cy.wait(500);
+      cy.reload();
+      
+      cy.get('#idp-list').contains('Idp test Updated ')
+    })
+  });
 });
