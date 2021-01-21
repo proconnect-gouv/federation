@@ -34,7 +34,6 @@ import {
   OidcProviderTokenEventHandler,
   OidcProviderUserinfoEventHandler,
   TrackableEventHandler,
-  IdentityProviderOperationTypeChangesHandler,
   ServiceProviderOperationTypeChangesHandler,
 } from '@fc/core';
 import { ScopesModule } from '@fc/scopes';
@@ -86,7 +85,6 @@ const oidcProviderModule = OidcProviderModule.register(
     OidcProviderTokenEventHandler,
     OidcProviderUserinfoEventHandler,
     TrackableEventHandler,
-    IdentityProviderOperationTypeChangesHandler,
     ServiceProviderOperationTypeChangesHandler,
     CoreFcpDefaultVerifyHandler,
     CoreFcpEidasVerifyHandler,

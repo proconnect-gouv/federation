@@ -324,13 +324,4 @@ describe('OidcClientService', () => {
       expect(result).toBe('userinfoMock Resolve Value');
     });
   });
-
-  describe('reloadConfiguration', () => {
-    it('should call config.reload', async () => {
-      // When
-      await service.reloadConfiguration();
-      // Then
-      expect(oidcClientConfigServiceMock.reload).toHaveBeenCalledTimes(1);
-    });
-  });
 });
