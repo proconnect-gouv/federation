@@ -11,7 +11,6 @@ export class OidcClientConfigService {
    * @todo [FC-231] Prossibly the source of the idps refresh problem
    * Never used
    */
-  private configuration: OidcClientConfig;
 
   constructor(
     readonly config: ConfigService,
@@ -20,19 +19,6 @@ export class OidcClientConfigService {
     private readonly identityProvider: IIdentityProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
-  }
-
-  async onModuleInit() {
-    this.reload();
-    this.logger.debug('Initializing oidc-client');
-  }
-
-  /**
-   * Reload of oidc-client configuration
-   */
-  public async reload(): Promise<void> {
-    this.configuration = await this.get(true);
-    this.logger.debug(`Reload oidc-client configuration.`);
   }
 
   /**

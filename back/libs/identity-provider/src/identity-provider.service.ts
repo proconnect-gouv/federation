@@ -152,6 +152,7 @@ export class IdentityProviderService implements IIdentityProviderService {
    */
   async getList(refreshCache = false): Promise<IdentityProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
+      this.logger.debug('Refresh cache from DB');
       const list: IdentityProvider[] = await this.findAllIdentityProvider();
 
       this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
