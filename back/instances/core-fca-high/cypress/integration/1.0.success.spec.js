@@ -29,7 +29,7 @@ describe('Successful scenarios', () => {
 
     checkInformations({
       givenName: 'Angela Claire Louise',
-      familyName: 'DUBOIS',
+      usualName: 'DUBOIS',
     });
     checkInStringifiedJson(
       'sub',
@@ -47,12 +47,8 @@ describe('Successful scenarios', () => {
     });
 
     checkInformations({
-      gender: 'Femme',
       givenName: 'Angela Claire Louise',
-      familyName: 'DUBOIS',
-      birthdate: '1962-08-24',
-      birthplace: '75107',
-      birthcountry: '99100',
+      usualName: 'DUBOIS',
     });
     checkInStringifiedJson(
       'sub',
