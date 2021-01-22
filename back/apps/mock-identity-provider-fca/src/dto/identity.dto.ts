@@ -10,11 +10,6 @@ export class Identity {
   @IsString()
   // OIDC claim
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly identity_provider: string;
-
-  @IsString()
-  // OIDC claim
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly organizational_unit: string;
 
   @IsString()
@@ -36,42 +31,17 @@ export class Identity {
   @IsString()
   // OIDC claim
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly family_name: string;
-
-  @IsString()
-  readonly gender: string;
-
-  @IsString()
-  readonly birthdate: string;
-
-  @IsString()
-  readonly birthcountry: string;
-
-  @IsString()
-  readonly birthplace: string;
-
-  @IsString()
-  // OIDC claim
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly belonging_population: string;
 
   @IsString()
   readonly siret: string;
 
   @IsString()
-  readonly position: string;
-
-  @IsString()
-  readonly job: string;
-
-  @IsString()
   readonly phone: string;
 
   @IsString()
-  readonly address: string;
+  readonly 'chorusdt:societe': string;
 
   @IsString()
-  // OIDC claim
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly preferred_username: string;
+  readonly 'chorusdt:matricule': string;
 }
