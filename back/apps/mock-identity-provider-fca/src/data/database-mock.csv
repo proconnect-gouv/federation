@@ -1,22 +1,22 @@
-"uid","identity_provider","organizational_unit","siren","email","usual_name","given_name","family_name","gender","birthdate","birthcountry","birthplace","belonging_population","siret","position","job","phone","address","preferred_username"
-"test","ministere-outremer","comptabilite","12346AZER","test@abcd.com","DUBOIS","Angela Claire Louise","DUBOIS","female","1962-08-24","99100","75107","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","/"
-"12354",,"comptabilite","12346AZER","test@abcd.com","Martinot","bernard","Martinot","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12352","ministere-outremer",,"12346AZER","test@abcd.com","Martinot","henry","Martinit","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12355","ministere-outremer","comptabilite",,"test@abcd.com","Martinot","mohamed","Martinat","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12356","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Pierre","Martinot","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12357","ministere-outremer","comptabilite","12346AZER",,"Martinot","Paul","Martinot","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12358","ministere-outremer","comptabilite","12346AZER","test@abcd.com",,"Jacques","Martinot","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12351","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot",,"Martinot","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12361","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Frederic",,"male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12371","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Frederique","Martinot",,"1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12381","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Jeanne","Martinot","male",,"FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12391","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Martine","Martinot","male","1989-05-11",,"75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12451","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Martin","Martinot","male","1989-05-11","FRANC",,"agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12551","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Gils","Martinot","male","1989-05-11","FRANC","75012",,"123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12651","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Josiane","Martinot","male","1989-05-11","FRANC","75012","agent",,"directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12751","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Jean-Pierre","Martinot","male","1989-05-11","FRANC","75012","agent","123abcd5612345",,"1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12851","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Philipe","Martinot","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur",,"+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"12951","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Ursule","Martinot","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE",,"33,rue des chat boitteux","JOJO"
-"13351","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Gudule","Martinot","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23",,"JOJO"
-"14351","ministere-outremer","comptabilite","12346AZER","test@abcd.com","Martinot","Maurissette","Martinot","male","1989-05-11","FRANC","75012","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue des chat boitteux","JOJO"
-"E000001","error 1","error 2","error3","error@error.com","error 4","error 5","error 6","male","1987-02-03","FRANC","75001","agent","123abcd5612345","directeur","1CE","+331-12-44-45-23","33,rue XYZ","ERROR"
+uid,organizational_unit,siren,email,usual_name,given_name,belonging_population,siret,phone,chorusdt:societe,chorusdt:matricule
+test,comptabilite,12346AZER,test@abcd.com,DUBOIS,Angela Claire Louise,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123456
+12354,comptabilite,12346AZER,test@abcd.com,Martinot,bernard,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123457
+12352,,12346AZER,test@abcd.com,Martinot,henry,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123458
+12355,comptabilite,,test@abcd.com,Martinot,mohamed,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123459
+12356,comptabilite,12346AZER,test@abcd.com,Martinot,Pierre,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123460
+12357,comptabilite,12346AZER,,Martinot,Paul,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123461
+12358,comptabilite,12346AZER,test@abcd.com,,Jacques,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123462
+12351,comptabilite,12346AZER,test@abcd.com,Martinot,,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123463
+12361,comptabilite,12346AZER,test@abcd.com,Martinot,Frederic,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123464
+12371,comptabilite,12346AZER,test@abcd.com,Martinot,Frederique,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123465
+12381,comptabilite,12346AZER,test@abcd.com,Martinot,Jeanne,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123466
+12391,comptabilite,12346AZER,test@abcd.com,Martinot,Martine,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123467
+12451,comptabilite,12346AZER,test@abcd.com,Martinot,Martin,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123468
+12551,comptabilite,12346AZER,test@abcd.com,Martinot,Gils,,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123469
+12651,comptabilite,12346AZER,test@abcd.com,Martinot,Josiane,agent,,+331-12-44-45-23,MinistèreIntérieur,123470
+12751,comptabilite,12346AZER,test@abcd.com,Martinot,Jean-Pierre,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123471
+12851,comptabilite,12346AZER,test@abcd.com,Martinot,Philipe,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123472
+12951,comptabilite,12346AZER,test@abcd.com,Martinot,Ursule,agent,123abcd5612345,,MinistèreIntérieur,123473
+13351,comptabilite,12346AZER,test@abcd.com,Martinot,Gudule,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123474
+14351,comptabilite,12346AZER,test@abcd.com,Martinot,Maurissette,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123475
+E000001,error 2,error3,error@error.com,error 4,error 5,agent,123abcd5612345,+331-12-44-45-23,MinistèreIntérieur,123476

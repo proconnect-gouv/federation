@@ -124,7 +124,11 @@ describe('8.0.1 Scope', () => {
         country: 'France',
         formatted: 'France Paris 75107 20 avenue de Ségur',
         locality: 'Paris',
+        // openid defined property names
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         postal_code: '75107',
+        // openid defined property names
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         street_address: '20 avenue de Ségur',
       });
       checkInStringifiedJson('phone_number', '123456789');
