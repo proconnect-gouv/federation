@@ -118,10 +118,10 @@ export function basicSuccessScenario(params) {
 }
 
 export function checkInformations(identity) {
-  const { givenName, familyName } = identity;
+  const { givenName, usualName } = identity;
 
   checkInStringifiedJson('given_name', givenName);
-  checkInStringifiedJson('usual_name', familyName);
+  checkInStringifiedJson('usual_name', usualName);
 }
 
 export function checkInStringifiedJson(key, value, selector = '#json') {
