@@ -111,22 +111,61 @@ describe('Scope', () => {
     checkInStringifiedJson('email', undefined); // mandatory
   });
 
+  it('should send back right claims when you choose all scopes except aliases', () => {
+    cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+
+    // Disable aliases
+    cy.get('#scope_uid').click();
+    cy.get('#scope_siren').click();
+    cy.get('#scope_siret').click();
+    cy.get('#scope_organizational_unit').click();
+    cy.get('#scope_belonging_population').click();
+    cy.get('#scope_phone').click();
+    cy.get('#scope_chorusdt\\:societe').click();
+    cy.get('#scope_chorusdt\\:matricule').click();
+
+    // Go to FC
+    cy.get('#get-authorize').click();
+
+    // Choose IdP
+    cy.get(`#fi-search-term`).type('identity');
+    cy.contains('Identity Provider 1 - eIDAS élevé').click();
+
+    // Connect
+    cy.get('form').submit();
+
+    checkInStringifiedJson(
+      'sub',
+      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
+    );
+    checkInStringifiedJson('given_name', 'Angela Claire Louise');
+    checkInStringifiedJson('usual_name', 'DUBOIS');
+    checkInStringifiedJson('email', 'test@abcd.com');
+  });
+
   describe('discovery endpoint', () => {
     it('should not have "offline_access" in supported scopes', () => {
       cy.request(`${Cypress.env('FC_ROOT_URL')}${Cypress.env('WELL_KNOWN')}`)
         .its('body')
         .then((body) => body.scopes_supported)
         .should('not.include', 'offline_access')
-        .and('include', 'openid')
+    });
+
+    it('should have a determined list of scopes in supported scopes', () => {
+      cy.request(`${Cypress.env('FC_ROOT_URL')}${Cypress.env('WELL_KNOWN')}`)
+        .its('body')
+        .then((body) => body.scopes_supported)
+        .should('include', 'openid')
         .and('include', 'given_name')
-        .and('include', 'family_name')
-        .and('include', 'birthdate')
-        .and('include', 'gender')
-        .and('include', 'birthplace')
-        .and('include', 'birthcountry')
+        .and('include', 'usual_name')
         .and('include', 'email')
-        .and('include', 'preferred_username')
-        .and('include', 'profile');
+        .and('include', 'siren')
+        .and('include', 'siret')
+        .and('include', 'organizational_unit')
+        .and('include', 'belonging_population')
+        .and('include', 'phone')
+        .and('include', 'chorusdt:societe')
+        .and('include', 'chorusdt:matricule');
     });
   });
 });

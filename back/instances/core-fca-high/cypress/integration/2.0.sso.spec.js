@@ -13,12 +13,8 @@ describe('No SSO', () => {
   };
 
   const userInfos = {
-    gender: 'Femme',
     givenName: 'Angela Claire Louise',
-    familyName: 'DUBOIS',
-    birthdate: '1962-08-24',
-    birthplace: '75107',
-    birthcountry: '99100',
+    usualName: 'DUBOIS',
   };
   it('should require full cinematic to login another SP', () => {
     // When
