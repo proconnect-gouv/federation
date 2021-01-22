@@ -18,12 +18,8 @@ describe('Revoke token', () => {
 
     // Check user information
     checkInformations({
-      gender: 'Femme',
       givenName: 'Angela Claire Louise',
-      familyName: 'DUBOIS',
-      birthdate: '1962-08-24',
-      birthplace: '75107',
-      birthcountry: '99100',
+      usualName: 'DUBOIS',
     });
     checkInStringifiedJson(
       'sub',
@@ -36,12 +32,8 @@ describe('Revoke token', () => {
 
     // Check user information
     checkInformations({
-      gender: 'Femme',
       givenName: 'Angela Claire Louise',
-      familyName: 'DUBOIS',
-      birthdate: '1962-08-24',
-      birthplace: '75107',
-      birthcountry: '99100',
+      usualName: 'DUBOIS',
     });
     checkInStringifiedJson(
       'sub',

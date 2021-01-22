@@ -21,5 +21,5 @@ export default {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/216
    */
   scope:
-    'openid given_name usual_name email siren siret organizational_unit belonging_population phone',
+  'openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt:societe chorusdt:matricule'
 } as OidcClientConfig;

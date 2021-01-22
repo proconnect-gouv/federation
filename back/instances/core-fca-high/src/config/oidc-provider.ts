@@ -72,36 +72,17 @@ export default {
     acrValues: ['eidas2', 'eidas3'],
     scopes: ['openid'],
     claims: {
+      uid: ['uid'],
       openid: ['sub'],
-      gender: ['gender'],
-      birthdate: ['birthdate'],
-      birthcountry: ['birthcountry'],
-      birthplace: ['birthplace'],
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
       given_name: ['given_name'],
-      // node-oidc-provider defined key
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      family_name: ['family_name'],
       email: ['email'],
-      // node-oidc-provider defined key
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      preferred_username: ['preferred_username'],
-      address: ['address'],
-      // node-oidc-provider defined key
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       phone: ['phone_number'],
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      identity_provider: ['identity_provider'],
-      // node-oidc-provider defined key
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       organizational_unit: ['organizational_unit'],
-      // node-oidc-provider defined key
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       siren: ['siren'],
-      // node-oidc-provider defined key
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       siret: ['siret'],
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -109,33 +90,8 @@ export default {
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
       belonging_population: ['belonging_population'],
-      // node-oidc-provider defined key
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      position: ['position'],
-      // node-oidc-provider defined key
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      job: ['job'],
-      profile: [
-        'openid',
-        'gender',
-        'birthdate',
-        'birthcountry',
-        'birthplace',
-        'given_name',
-        'family_name',
-        'email',
-        'preferred_username',
-        'address',
-        'phone_number',
-        'identity_provider',
-        'organizational_unit',
-        'siren',
-        'siret',
-        'usual_name',
-        'belonging_population',
-        'position',
-        'job',
-      ],
+      'chorusdt:societe': ['chorusdt:societe'],
+      'chorusdt:matricule': ['chorusdt:matricule'],
     },
     clientDefaults: {
       // node-oidc-provider defined key
