@@ -86,8 +86,9 @@
     margin-top: 0;
   }
 
-  .previous-link:hover {
+  .previous-link-container:hover, .previous-link-container:focus {
     text-decoration: underline;
+    outline: none;
   }
 
   .previous-link-icon {
@@ -95,7 +96,7 @@
     width: 24px;
     height: 24px;
     border-radius: 4px;
-    background-image: url("../img/retour-icone.svg");
+    background-image: url("../img/retour-icone-gris.svg");
     border: solid 1px #3e4553;
     display: inline-block;
   }
