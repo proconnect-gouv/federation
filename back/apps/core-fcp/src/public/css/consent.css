@@ -50,14 +50,14 @@ main section {
 }
 
 main section .section__welcome {
-  font-size: 2rem;
+  font-size: 1rem;
   font-weight: 500;
   color: #3e4553;
   margin-bottom: 16px;
 }
 
 main section .section__identity {
-  font-size: 2.8rem;
+  font-size: 2rem;
   font-weight: 800;
   word-break: break-word;
   margin-bottom: 32px;
@@ -65,7 +65,6 @@ main section .section__identity {
 }
 
 main section .section__identity span {
-  font-size: 2.8rem;
   text-transform: uppercase;
 }
 
@@ -90,13 +89,13 @@ main form {
 
 main .content__continue {
   width: 100%;
-  margin-bottom: 40px;
+  margin-bottom: 29px;
   padding: 20px 16px;
   border: none;
   border-radius: 4px;
   color: #fff;
   background-color: #000091;
-  font-size: 1.4rem;
+  font-size: 1.06rem;
   font-weight: bold;
   cursor: pointer;
   white-space: normal;
@@ -106,15 +105,16 @@ main .content__continue {
   line-height: 1.2;
 }
 
-main .content__continue:hover {
+main .content__continue:hover,
+main .content__continue:focus {
   text-decoration: underline;
-  background-color: #000091;
+  background-color: #224AE0;
 }
 
 main .content__success {
   margin-bottom: 20px;
-  font-size: 1.5rem;
-  line-height: 2rem;
+  font-size: 0.95rem;
+  line-height: 1.33;
   color: #26353f;
   max-width: 439px;
 }
@@ -139,9 +139,11 @@ main .content__details.open .content-details__header:hover span {
 main .content__details .content-details__header {
   width: 100%;
   height: 50px;
-  padding: 16px;
+  padding-left: 16px;
   cursor: pointer;
   position: relative;
+  display: flex;
+  align-items: center;
 }
 
 main .content__details .content-details__header:hover {
@@ -149,8 +151,7 @@ main .content__details .content-details__header:hover {
 }
 
 main .content__details .content-details__header span {
-  font-size: 1.5rem;
-  line-height: 2rem;
+  font-size: 0.95rem;
   color: #000091;
 }
 
@@ -188,24 +189,26 @@ main .content__details .content-details__content {
 }
 
 main .content__details .content-details__content p {
-  font-size: 1.3rem;
+  font-size: 0.81rem;
   margin-bottom: 5px;
+  line-height: 1.6;
 }
 
 main .content__details .content-details__content ul {
   list-style: disc;
   margin-left: 6px;
   padding-left: 12px;
-  margin-bottom: 16px;
+  margin-bottom: 8px;
 }
 
 main .content__details .content-details__content ul li {
-  font-size: 1.3rem;
+  font-size: 0.81rem;
+  line-height: 1.6;
 }
 
 main .content__details .content-details__content a {
   color: #000091;
-  font-size: 1.3rem;
+  font-size: 0.81rem;
   text-decoration: none;
 }
 
@@ -235,18 +238,9 @@ main .content__details.open .content-details__header:after {
 }
 
 @media screen and (min-width: 576px) {
-  main .content__continue {
-    width: 460px;
-  }
-
-  main form {
-    width: initial;
-  }
-}
-
-@media screen and (min-width: 768px) {
   header {
     justify-content: flex-start;
+    align-items: flex-start;
     padding-left: 40px;
   }
 
@@ -256,14 +250,38 @@ main .content__details.open .content-details__header:after {
 
   header .header__logo-fc-plus {
     height: 68px;
-  }
-
-  main section {
-    max-width: 600px;
+    margin-top: 12px;
   }
 
   main section .section__welcome {
+    font-size: 1.5rem;
+  }
+
+  main section .section__identity {
+    font-size: 2.5rem;
+  }
+
+  main .content__continue {
+    width: 460px;
+  }
+
+  main form {
+    width: initial;
+  }
+
+  main section .section__welcome,
+  main section .section__identity {
     text-align: center;
+  }
+
+  main .content__details {
+    max-width: 420px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  main section {
+    max-width: 600px;
   }
 
   main article {
@@ -279,13 +297,13 @@ main .content__details.open .content-details__header:after {
   main .content__success  {
     text-align: center;
   }
-
-  main .content__details {
-    max-width: 420px;
-  }
 }
 
 @media screen and (min-width: 992px) {
+  main {
+    padding: 0;
+  }
+
   main.anonymous {
     padding-top: 80px;
   }
