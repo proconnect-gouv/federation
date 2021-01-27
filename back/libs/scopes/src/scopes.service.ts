@@ -15,6 +15,17 @@ const MAPPING_ALIAS_SCOPES = {
     'birthcountry',
   ],
   phone: ['phone_number'],
+  birth: ['birthplace', 'birthcountry'],
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  identite_pivot: [
+    'given_name',
+    'family_name',
+    'preferred_username',
+    'birthdate',
+    'gender',
+    'birthplace',
+    'birthcountry',
+  ],
 };
 
 /**
