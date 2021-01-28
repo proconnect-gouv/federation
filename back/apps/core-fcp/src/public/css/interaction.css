@@ -110,6 +110,38 @@ main > h1 + h2 {
   }
 }
 
+
+/** Identity providers [Overflow] **/
+#or-label {
+  text-align: center;
+  display: block;
+  font-weight: bold;
+  color: #3e4553;
+  font-size: 1.6em;
+  margin: 16px 0;
+}
+
+.identity-provider.overflow .icon-container {
+  height: auto;
+}
+
+.identity-provider.overflow .icon-container img {
+  border-radius: 0;
+}
+
+.identity-provider.overflow button span,
+.identity-provider.overflow button strong{
+  display: initial;
+  margin: 0;
+}
+
+@media screen and (min-width: 768px) {
+  .identity-provider.overflow button {
+    max-width: 665px;
+    padding: 16px 0 16px 16px;
+  }
+}
+
 /** Identity providers **/
 .identity-provider {
   display: flex;
@@ -133,13 +165,13 @@ main > h1 + h2 {
   width: 100%;
   max-width: 400px;
   padding: 16px;
+  border: solid 2px transparent;
   margin: 8px 0;
   box-shadow: 0 0 3px rgba(0, 0, 145, 0.3);
   border-radius: 8px;
   background-color: #fff;
   cursor: pointer;
   transition: background-color 150ms ease, box-shadow 150ms ease;
-  box-sizing: border-box;
   position: relative;
   font-size: 1.5rem;
   font-weight: bold;
@@ -180,7 +212,6 @@ main > h1 + h2 {
   background-color: transparent;
   box-shadow: 0 0 9px 0 #b4b4dc;
   border: solid 2px #000091;
-  padding: 14px;
 }
 
 /** tuto section **/
