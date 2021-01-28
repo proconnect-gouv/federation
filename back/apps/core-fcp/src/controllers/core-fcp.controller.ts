@@ -64,7 +64,6 @@ export class CoreFcpController {
 
     const { interactionId } = req.fc;
     const { spName } = await this.session.get(interactionId);
-
     return {
       uid,
       params,
