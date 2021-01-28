@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="fr">
   <%- include('partials/head.ejs', { title: 'Connexion - choix du fournisseur d\'identité', style: 'interaction' }); %>
-
+  <% const eidasBridgeProvider = locals.providers.find((p) => p.uid === 'eidas-bridge') %> 
   <body>
     <%- include('partials/menu.ejs'); %>
     <% if(locals.notifications){ %> 
@@ -18,7 +18,7 @@
           <h1>Je choisis un moyen pour me connecter sur :</h1>
           <h2><%= locals.spName %></h2>
           <div id="idp-list" class="main__providers">
-            <% locals.providers.filter(p => p.display).forEach((provider) => { %>
+            <% locals.providers.filter((p) => p.display).filter((p) => p.uid !== 'eidas-bridge').forEach((provider) => { %>
               <form
                 method="POST"
                 action="/api/v2/redirect-to-idp"
@@ -52,6 +52,32 @@
                 <input type="hidden" name="scope" value="<%= locals.scope %>" />
               </form>
             <% }) %>
+
+            <% if(eidasBridgeProvider) {%>
+            <span id="or-label">or</span>
+            <form
+            method="POST"
+            action="/api/v2/redirect-to-idp"
+            id="fs-request-<%= eidasBridgeProvider.uid %>"
+            name="fs-request"
+          >
+            <div class="identity-provider overflow">
+              <button
+                id="idp-<%= eidasBridgeProvider.uid %>">
+                <div class="icon-container">
+                  <img src='/img/fi/fi-europe.svg' alt="Logo de <%= eidasBridgeProvider.name %>"/>
+                </div>
+                <span>
+                  Sign in with <strong>a digital identity from another European country</strong>
+                </span>
+              </button>
+            </div>
+            <input type="hidden" name="providerUid" id="providerUid" value="<%= eidasBridgeProvider.uid %>" />
+            <input type="hidden" name="uid" id="uid" value="<%= locals.uid %>" />
+            <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
+            <input type="hidden" name="scope" value="<%= locals.scope %>" />
+          </form>
+          <% } %>
           </div>
 
           <div class="tuto-container">
@@ -63,7 +89,6 @@
               <img src="/img/logo-ameli-couleurs.svg" alt="Logo ameli">
               <img src="/img/logo-msa-couleurs.svg" alt="Logo Msa">
               <img src="/img/logo-mcm.svg" alt="Logo Mobile connect et moi">
-
             </div>
             <p>
               FranceConnect+ est la nouvelle solution FranceConnect qui vous permet d’accéder à encore plus de démarches en ligne. 
