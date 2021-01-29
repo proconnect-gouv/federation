@@ -13,14 +13,13 @@ body {
 }
 
 #notifications {
-  padding: 0 16px;
   margin: 16px 0;
 }
 
 #notifications div {
   background-color: #f2f4ff;
   border-radius: 8px;
-  padding: 16px 16px 16px 42px;
+  padding: 8px 16px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
@@ -28,15 +27,18 @@ body {
 
 #notifications span {
   padding-top: 4px;
-  font-size: 1rem;
+  line-height: 20px;
+  font-size: 0.9rem;
   color: #000091;
-  text-align: center;
+  text-align: left;
   font-weight: bold;
+  position: relative;
 }
 
 #notifications img {
-  margin-right: 8px;
-  width: 24px;
+  margin-right: 4px;
+  width: 20px;
+  vertical-align: top;
 }
 
 #mire {
@@ -93,6 +95,21 @@ main > h1 + h2 {
 
   main > h1 + h2 {
     font-size: 2rem;
+  }
+  #notifications {
+    padding: 0 16px;
+  }
+  #notifications div {
+    padding: 16px;
+  }
+
+  #notifications span {
+    text-align: center;
+  }
+
+  #notifications img {
+    margin-right: 8px;
+    width: 24px;
   }
 }
 
