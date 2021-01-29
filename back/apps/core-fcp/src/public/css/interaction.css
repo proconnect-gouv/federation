@@ -25,7 +25,7 @@ body {
   justify-content: center;
 }
 
-#notifications span {
+#notifications p {
   padding-top: 4px;
   line-height: 20px;
   font-size: 0.9rem;
@@ -103,7 +103,7 @@ main > h1 + h2 {
     padding: 16px;
   }
 
-  #notifications span {
+  #notifications p {
     text-align: center;
   }
 
