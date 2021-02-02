@@ -28,6 +28,7 @@
         "assets": [
           "../../../apps/eidas-bridge/**/*.ejs",
           "../../../apps/eidas-bridge/**/*.css",
+          "../../../apps/eidas-bridge/**/*.js",
           "../../../apps/eidas-bridge/**/*.svg"
         ]
       }
@@ -42,6 +43,7 @@
         "assets": [
           "../../../apps/core-fcp/**/*.ejs",
           "../../../apps/core-fcp/**/*.css",
+          "../../../apps/core-fcp/**/*.js",
           "../../../apps/core-fcp/**/*.svg"
         ]
       }
@@ -65,7 +67,8 @@
         "assets": [
           "../../../apps/mock-service-provider/**/*.ejs",
           "../../../apps/mock-service-provider/**/*.css",
-          "../../../apps/mock-service-provider/**/*.svg"
+          "../../../apps/mock-service-provider/**/*.svg",
+          "../../../apps/mock-service-provider/**/*.png"
         ]
       }
     },
@@ -94,7 +97,8 @@
         "assets": [
           "../../../apps/user-dashboard/**/*.ejs",
           "../../../apps/user-dashboard/**/*.css",
-          "../../../apps/user-dashboard/**/*.svg"
+          "../../../apps/user-dashboard/**/*.svg",
+          "../../../apps/user-dashboard/**/*.png"
         ]
       }
     },
