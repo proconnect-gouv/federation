@@ -186,4 +186,76 @@ describe('Idp activation & visibility', () => {
     cy.url().should('contain', '/api/v2/redirect-to-idp');
     cy.hasError('Y020019');
   });
+
+  describe('No app restart needed', () => {
+    beforeEach(() => {
+      cy.resetdb();
+    });
+    
+    it('should display an identity provider that has been added without an app restart needed', () => {
+      cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      cy.get('#get-authorize').click();
+      cy.get('#fi-search-term').type('idp test');
+      cy.get('#identity-provider-search .list-unstyled').should('not.exist');
+      
+      cy.e2e('fca_idp_insert');   
+      cy.wait(500);
+      cy.reload();
+      
+      cy.get('#fi-search-term').type('idp test');
+      cy.get('#identity-provider-search .list-unstyled').contains('Idp test Inserted');
+    });
+  
+    it('should update an identity provider properties, activate it, without an app restart needed', () => {
+      cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      cy.get('#get-authorize').click(); 
+      cy.get('#fi-search-term').type('idp test');
+      cy.get('#identity-provider-search .list-unstyled').should('not.exist');
+      
+      cy.e2e('fca_idp_insert');  
+      cy.e2e('fca_idp_update_activate');   
+      cy.wait(500);
+      cy.reload();
+      
+      cy.get('#fi-search-term').type('idp test');
+      cy.get('#identity-provider-search .list-unstyled').contains('Idp test Updated, activated');
+    })
+
+    it('should update an identity provider properties, deactivate it, without an app restart needed', () => {
+      cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      cy.get('#get-authorize').click(); 
+      cy.get('#fi-search-term').type('idp test');
+      cy.get('#identity-provider-search .list-unstyled').should('not.exist');
+      
+      cy.e2e('fca_idp_insert');  
+      cy.e2e('fca_idp_update_activate');   
+      cy.e2e('fca_idp_update_desactivate');   
+      cy.wait(500);
+      cy.reload();
+      
+      cy.get('#fi-search-term').type('idp test');
+      cy.get('#identity-provider-search .list-unstyled').contains('Idp test Updated, desactivated');
+    })
+
+    it('should remove an identity provider without an app restart needed', () => {
+      cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      cy.get('#get-authorize').click(); 
+      cy.get('#fi-search-term').type('idp test');
+      cy.get('#identity-provider-search .list-unstyled').should('not.exist');
+      
+      cy.e2e('fca_idp_insert');   
+      cy.wait(500);
+      cy.reload();
+      
+      cy.get('#fi-search-term').type('idp test');
+      cy.get('#identity-provider-search .list-unstyled').contains('Idp test Inserted');
+
+      cy.e2e('fca_idp_remove');   
+      cy.wait(500);
+      cy.reload();
+
+      cy.get('#fi-search-term').type('idp test');
+      cy.get('#identity-provider-search .list-unstyled').should('not.exist', 'Idp test Inserted');
+    })
+  });
 });
