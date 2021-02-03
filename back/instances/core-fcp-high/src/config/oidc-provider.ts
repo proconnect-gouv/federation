@@ -92,13 +92,10 @@ export default {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       phone: ['phone_number'],
       profile: [
-        'sub',
         'given_name',
         'family_name',
         'birthdate',
         'gender',
-        'birthplace',
-        'birthcountry',
         'preferred_username',
       ],
       birth: ['birthplace', 'birthcountry'],
@@ -107,7 +104,6 @@ export default {
       identite_pivot: [
         'given_name',
         'family_name',
-        'preferred_username',
         'birthdate',
         'gender',
         'birthplace',
