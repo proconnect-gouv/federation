@@ -219,13 +219,14 @@ describe('8.0.1 Scope', () => {
       checkInStringifiedJson('birthplace', '75107');
       checkInStringifiedJson('given_name', 'Angela Claire Louise');
       checkInStringifiedJson('family_name', 'DUBOIS');
-      checkInStringifiedJson('email', undefined);
-      checkInStringifiedJson('address', undefined);
-      checkInStringifiedJson('phone_number', undefined);
       checkInStringifiedJson(
         'sub',
         '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
       );
+      checkInStringifiedJson('email', undefined);
+      checkInStringifiedJson('address', undefined);
+      checkInStringifiedJson('phone_number', undefined);
+      checkInStringifiedJson('preferred_username', undefined);
     });
 
     it('should send back right claims when you choose profile alias', () => {
@@ -259,17 +260,17 @@ describe('8.0.1 Scope', () => {
 
       checkInStringifiedJson('gender', 'female');
       checkInStringifiedJson('birthdate', '1962-08-24');
-      checkInStringifiedJson('birthcountry', '99100');
-      checkInStringifiedJson('birthplace', '75107');
       checkInStringifiedJson('given_name', 'Angela Claire Louise');
       checkInStringifiedJson('family_name', 'DUBOIS');
-      checkInStringifiedJson('email', undefined);
-      checkInStringifiedJson('address', undefined);
-      checkInStringifiedJson('phone_number', undefined);
       checkInStringifiedJson(
         'sub',
         '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
-      );
+        );
+      checkInStringifiedJson('birthplace', undefined);
+      checkInStringifiedJson('birthcountry', undefined);
+      checkInStringifiedJson('email', undefined);
+      checkInStringifiedJson('address', undefined);
+      checkInStringifiedJson('phone_number', undefined);
     });
   });
 });
