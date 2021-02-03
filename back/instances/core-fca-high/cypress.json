@@ -9,6 +9,7 @@
     "APP_DOMAIN": "fca.docker.dev-franceconnect.fr",
     "APP_NAME": "fca",
     "LOG_FILE_PATH": "../../../../fc-docker/volumes/log/fca.log",
+    "FC_DOCKER_PATH": "../../../../fc-docker",
 
     "FC_ROOT_URL": "https://fca.docker.dev-franceconnect.fr",
     "FC_INTERACTION_URL": "https://fca.docker.dev-franceconnect.fr/api/v2/interaction",
