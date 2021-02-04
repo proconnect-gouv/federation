@@ -1,11 +1,10 @@
 core-fca-high:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
-  services:
-    - docker:18.09.7-dind
+  tags:
+    - docker
   variables:
     FC_ROOT: '$CI_BUILDS_DIR/france-connect'
-    CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
     TZ: 'Europe/Paris'
   dependencies:
     - global
@@ -14,23 +13,18 @@ core-fca-high:
     - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
-    - export DOCKER_HOST_IP="$(getent hosts docker | awk '{ print $1 }')"
-    - export DOCKER_HOST="tcp://$DOCKER_HOST_IP:2375"
-    - echo "$DOCKER_HOST_IP fca.docker.dev-franceconnect.fr" >> /etc/hosts
-    - echo "$DOCKER_HOST_IP fsa1v2.docker.dev-franceconnect.fr" >> /etc/hosts
-    - echo "$DOCKER_HOST_IP fsa2v2.docker.dev-franceconnect.fr" >> /etc/hosts
-    - echo "$DOCKER_HOST_IP fia1v2.docker.dev-franceconnect.fr" >> /etc/hosts
-    - echo "$DOCKER_HOST_IP rnipp.docker.dev-franceconnect.fr" >> /etc/hosts
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cp -R /var/www/mocks $FC_ROOT/
+    - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc-docker/volumes/src/fc
     - ln -s $FC_ROOT/fc/front/user-dashboard $FC_ROOT/fc-docker/volumes/src/user-dashboard
     - ln -s $FC_ROOT/fc/front/agent-connect $FC_ROOT/fc-docker/volumes/src/agent-connect
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc-docker/volumes/src; done
   script:
+    - docker-stack fca-front &
     - docker-stack up fca
-    - docker-stack fca-front
-    - docker-stack start rnipp fsa1v2 fsa2v2 fia1v2 fca fca-front
+    - docker-stack start rnipp fsa1v2 fsa2v2 fia1v2
+    - wait
+    - docker-stack start fca fca-front
     # ## -- Build like for prod
     #- docker-stack exec fsa1v2 yarn build mock-service-provider-high # Will build for fsa2v2 as well
     #- docker-stack exec fca yarn build core-fca-high
@@ -41,7 +35,7 @@ core-fca-high:
     #- docker-stack exec fca yarn start:prod:core-fca-high &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
-    - timeout 120 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://fca.docker.dev-franceconnect.fr/login)" != "404" ]];
+    - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://fca.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
       do echo "Waiting for fca..." && sleep 10; done' ||
       (echo 'Cannot connect to fca' && exit 1)
     - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fca-high || (
@@ -53,9 +47,6 @@ core-fca-high:
       (docker cp fc_fca-front_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
       (docker cp fc-rp-all:/var/log/nginx back/instances/core-fca-high/cypress/logs || true) &&
       exit 1)
-  # rules:
-  #   - if: '$ALLOW_FAILURE == "true"'
-  #     allow_failure: true
   artifacts:
     expire_in: 1 hrs
     when: on_failure
@@ -63,3 +54,6 @@ core-fca-high:
       - back/instances/core-fca-high/cypress/screenshots
       - back/instances/core-fca-high/cypress/videos
       - back/instances/core-fca-high/cypress/logs
+  after_script:
+    - bash $CI_BUILDS_DIR/france-connect/fc-docker/docker-stack halt
+    - docker container prune --force && docker volume prune --force
