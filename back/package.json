@@ -15,7 +15,6 @@
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch",
-    "start:debug": "NODE_ENV=development nest start --debug=0.0.0.0:9229 --watch",
     "start:prod:core-fca-high": "node dist/instances/core-fca-high/main.js > /tmp/.pm2/logs/fca-out-0.log 2> /tmp/.pm2/logs/fca-error-0.log",
     "start:prod:core-fcp-high": "node dist/instances/core-fcp-high/main.js > /tmp/.pm2/logs/corev2-out-0.log 2> /tmp/.pm2/logs/corev2-error-0.log",
     "start:prod:csmr-hsm-high": "node dist/instances/csmr-hsm-high/main.js > /tmp/.pm2/logs/csmr-hsm-high-out-0.log 2> /tmp/.pm2/csmr-hsm-high-error-0.log",

@@ -14,6 +14,7 @@ import { IBusinessEvent } from './interfaces';
 @Injectable()
 export class LoggerService extends Logger {
   private externalLogger: any;
+  private isDevelopment: boolean = undefined;
 
   constructor(private readonly config: ConfigService) {
     super(null, false);
@@ -31,7 +32,9 @@ export class LoggerService extends Logger {
       pino.destination(path),
     );
 
-    this.overrideNativeConsole();
+    if (!this.isDev()) {
+      this.overrideNativeConsole();
+    }
   }
 
   private getIdentifiedLog(log) {
@@ -53,8 +56,10 @@ export class LoggerService extends Logger {
   }
 
   private isDev() {
-    const { isDevelopment } = this.config.get<LoggerConfig>('Logger');
-    return isDevelopment;
+    return (this.isDevelopment =
+      this.isDevelopment === undefined
+        ? this.config.get<LoggerConfig>('Logger').isDevelopment
+        : this.isDevelopment);
   }
 
   private technicalLogger(level: string, log: any, context?: string) {
