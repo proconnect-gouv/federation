@@ -4,6 +4,8 @@ stages:
 
 global:
   image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+  tags:
+    - nodejs
   stage: 'Unit tests'
   script:
     - cd back/
