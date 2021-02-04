@@ -1,0 +1,246 @@
+{
+  "version": "0.2.0",
+  "setupCommands": [
+    {
+      "ignoreFailures": true
+    }
+  ],
+  "compounds": [
+    {
+      "name": "FCA - ALL",
+      "configurations": [
+        "FCA", 
+        "FCA - FIA1v2", 
+        "FCA - FIA2v2", 
+        "FCA - FSA1v2",
+        "FCA - FSA2v2",
+        "FCA - FSA3v2",
+      ],
+    },
+    {
+      "name": "FCP - ALL",
+      "configurations": [
+        "FCP",
+        "FCP - FSP1v2",
+        "FCP - FSP2v2",
+        "FCP - FSP3v2",
+        "FCP - Eidas-Bridge",
+      ],
+    },
+  ],
+  "serverReadyAction": {
+    "pattern": "listening on.* (https?://\\S+|[0-9]+)",
+    "uriFormat": "http://localhost:%s",
+    "action": "debugWithChrome"
+  },
+  "configurations": [
+    {
+      "name": "FCA",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/core-fca/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCA - FIA1v2",
+      "type": "node",
+      "request": "attach",
+      "port": 9230,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-identity-provider-fca/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCA - FIA2v2",
+      "type": "node",
+      "request": "attach",
+      "port": 9234,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-identity-provider-fca/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCA - FSA1v2",
+      "type": "node",
+      "request": "attach",
+      "port": 9231,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-service-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCA - FSA2v2",
+      "type": "node",
+      "request": "attach",
+      "port": 9232,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-service-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCA - FSA3v2",
+      "type": "node",
+      "request": "attach",
+      "port": 9233,
+      "address": "localhost",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-service-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCP",
+      "type": "node",
+      "request": "attach",
+      "port": 9235,
+      "address": "localhost",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-service-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCP - FSP1v2",
+      "type": "node",
+      "request": "attach",
+      "port": 9238,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-service-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCP - FSP2v2",
+      "type": "node",
+      "request": "attach",
+      "port": 9239,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-service-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCP - FSP3v2",
+      "type": "node",
+      "request": "attach",
+      "port": 9240,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-service-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCP - Eidas-Bridge",
+      "type": "node",
+      "request": "attach",
+      "port": 9243,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/eidas-bridge/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "restart": true,
+      "sourceMaps": true,
+    },
+  ]
+}
