@@ -42,12 +42,12 @@ describe('LoggerService', () => {
     idpAcr: 'eidas2',
   };
 
-  let configMock = {};
+  let configMock = { isDevelopment: true };
   const configServiceMock = ({
     get: () => configMock,
   } as unknown) as ConfigService;
 
-  const getConfiguredMockedService = (config) => {
+  const getConfiguredMockedService = (config: any): LoggerService => {
     configMock = config;
     const service = new LoggerService(configServiceMock);
 
@@ -66,6 +66,23 @@ describe('LoggerService', () => {
     jest.restoreAllMocks();
     jest.clearAllMocks();
     uuid.v4.mockReturnValue(uuidMock);
+  });
+
+  describe('isDev()', () => {
+    const service = getConfiguredMockedService(configs.dev.log);
+    it('should load the configuration file.', () => {
+      // Given
+      service['isDevelopment'] = undefined;
+      jest.spyOn(configServiceMock, 'get').mockReturnValue(configMock);
+      // When
+      const isDevMock = service['isDev']();
+      // Then
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('Logger');
+      expect(configServiceMock.get).toHaveReturnedWith(configMock);
+      expect(isDevMock).toStrictEqual(true);
+      expect(service['isDevelopment']).toStrictEqual(true);
+    });
   });
 
   describe('getIdentifiedLog', () => {
