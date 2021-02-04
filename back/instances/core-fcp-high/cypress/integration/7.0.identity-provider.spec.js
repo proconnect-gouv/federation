@@ -94,64 +94,72 @@ describe('Idp activation & visibility', () => {
     beforeEach(() => {
       cy.resetdb();
     });
-    
+
     it('should display an identity provider that has been added without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
-      cy.get('#get-authorize').click(); 
+      cy.get('#get-authorize').click();
       cy.get('#idp-list').contains('Idp test Inserted').should('not.exist');
-      
-      cy.e2e('idp_insert');   
+
+      cy.e2e('idp_insert');
       cy.wait(500);
       cy.reload();
-      
-      cy.get('#idp-list').contains('Idp test Inserted')
+
+      cy.get('#idp-list').contains('Idp test Inserted');
     });
-  
+
     it('should update an identity provider properties, activate it, without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
-      cy.get('#get-authorize').click(); 
+      cy.get('#get-authorize').click();
       cy.get('#idp-list').contains('Idp test Inserted').should('not.exist');
-      
-      cy.e2e('idp_insert');   
+
+      cy.e2e('idp_insert');
       cy.e2e('idp_update_activate');
       cy.wait(500);
       cy.reload();
-      
-      cy.get('#idp-list').contains('Idp test Updated, activated')
-    })
+
+      cy.get('#idp-list').contains('Idp test Updated, activated');
+    });
 
     it('should update an identity provider properties, deactivate it, without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
-      cy.get('#get-authorize').click(); 
+      cy.get('#get-authorize').click();
       cy.get('#idp-list').contains('idp-test-update').should('not.exist');
-      
+
       cy.e2e('idp_insert');
-      cy.e2e('idp_update_activate');  
+      cy.e2e('idp_update_activate');
       cy.wait(500);
       cy.reload();
-      cy.get('#idp-list').contains('Idp test Updated, activated').should('exist');
+      cy.get('#idp-list')
+        .contains('Idp test Updated, activated')
+        .should('exist');
 
       cy.e2e('idp_update_desactivate');
       cy.wait(500);
       cy.reload();
-      cy.get('#idp-list').contains('Idp test Updated, desactivated est actuellement indisponible')
-    })
+      cy.get('#idp-list').contains(
+        'Idp test Updated, desactivated est actuellement indisponible',
+      );
+    });
 
     it('should remove an identity provider without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
-      cy.get('#get-authorize').click(); 
+      cy.get('#get-authorize').click();
       cy.get('#idp-list').contains('idp-test-update').should('not.exist');
-      
-      cy.e2e('idp_insert');   
-      cy.e2e('idp_update_activate');  
+
+      cy.e2e('idp_insert');
+      cy.e2e('idp_update_activate');
       cy.wait(500);
       cy.reload();
-      cy.get('#idp-list').contains('Idp test Updated, activated').should('exist');
+      cy.get('#idp-list')
+        .contains('Idp test Updated, activated')
+        .should('exist');
 
       cy.e2e('idp_remove');
       cy.wait(500);
       cy.reload();
-      cy.get('#idp-list').contains('Idp test Updated, activated').should('not.exist');
-    })
+      cy.get('#idp-list')
+        .contains('Idp test Updated, activated')
+        .should('not.exist');
+    });
   });
 });
