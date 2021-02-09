@@ -1,7 +1,6 @@
 import {
   IsString,
   IsUrl,
-  Contains,
   IsOptional,
   IsArray,
   IsAlphanumeric,
@@ -45,12 +44,8 @@ export class AuthorizeParamsDTO {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly redirect_uri: string;
 
+  // The openid verification is made into oidc-provider
   @IsString()
-  /**
-   * @TODO #197 Retourner chez le FS en cas d'erreur
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/197
-   */
-  @Contains('openid')
   readonly scope: string;
 
   @IsString({ each: true })
