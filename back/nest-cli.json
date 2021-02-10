@@ -72,6 +72,21 @@
         ]
       }
     },
+    "mock-service-provider-fca": {
+      "type": "application",
+      "root": "instances/mock-service-provider-fca",
+      "entryFile": "main",
+      "sourceRoot": "instances/mock-service-provider-fca/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/mock-service-provider-fca/tsconfig.app.json",
+        "assets": [
+          "../../../apps/mock-service-provider/**/*.ejs",
+          "../../../apps/mock-service-provider/**/*.css",
+          "../../../apps/mock-service-provider/**/*.svg",
+          "../../../apps/mock-service-provider/**/*.png"
+        ]
+      }
+    },
     "mock-identity-provider-fca-high": {
       "type": "application",
       "root": "instances/mock-identity-provider-fca-high",
