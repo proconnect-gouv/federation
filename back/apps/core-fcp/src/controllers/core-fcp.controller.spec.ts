@@ -53,6 +53,7 @@ describe('CoreFcpController', () => {
 
   const identityProviderServiceMock = {
     getList: jest.fn(),
+    getFilteredList: jest.fn(),
   };
 
   const serviceProviderServiceMock = {

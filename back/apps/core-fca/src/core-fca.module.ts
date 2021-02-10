@@ -51,7 +51,12 @@ import { CoreFcaDefaultVerifyHandler } from './handlers';
     MinistriesModule,
     HttpProxyModule,
     oidcProviderModule,
-    OidcClientModule.register(IdentityProviderService, IdentityProviderModule),
+    OidcClientModule.register(
+      IdentityProviderService,
+      IdentityProviderModule,
+      ServiceProviderService,
+      ServiceProviderModule,
+    ),
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),
     FeatureHandlerModule,

@@ -102,6 +102,8 @@ export class ServiceProviderService implements IServiceProviderService {
           // openid defined property names
           // eslint-disable-next-line @typescript-eslint/naming-convention
           jwks_uri: true,
+          idpFilterExclude: true,
+          idpFilterList: true,
         },
       )
       .exec();
@@ -152,6 +154,19 @@ export class ServiceProviderService implements IServiceProviderService {
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
     return list.find(({ client_id: dbId }) => dbId === id);
+  }
+
+  /**
+   * Method triggered when you want to filter or check if
+   * an identity provider is blacklisted or whitelisted
+   * @param spId service provider ID
+   * @param idpId identity provider ID
+   */
+  async shouldExcludeIdp(spId: string, idpId: string): Promise<boolean> {
+    const { idpFilterExclude, idpFilterList } = await this.getById(spId);
+    const idpFound = idpFilterList.includes(idpId);
+
+    return idpFilterExclude ? idpFound : !idpFound;
   }
 
   private legacyToOpenIdPropertyName(

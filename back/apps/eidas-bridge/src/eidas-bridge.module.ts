@@ -31,6 +31,8 @@ import { EidasBridgeSession } from './dto';
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderEnvService,
   IdentityProviderEnvModule,
+  ServiceProviderEnvService,
+  ServiceProviderEnvModule,
 );
 const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderEnvService,
