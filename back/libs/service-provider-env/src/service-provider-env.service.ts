@@ -18,6 +18,13 @@ export class ServiceProviderEnvService implements IServiceProviderService {
     return [configuredSp];
   }
 
+  async shouldExcludeIdp(spId: string, idpId: string): Promise<boolean> {
+    const { idpFilterExclude, idpFilterList } = await this.getById(spId);
+    const idpFound = idpFilterList.includes(idpId);
+
+    return idpFilterExclude ? idpFound : !idpFound;
+  }
+
   async getById(id: string): Promise<ServiceProviderMetadata> {
     const list = await this.getList();
     // openid defined property names

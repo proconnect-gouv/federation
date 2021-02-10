@@ -10,16 +10,22 @@ import {
   ValidationPipe,
   UsePipes,
 } from '@nestjs/common';
-import { OidcClientService } from './services';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { IDENTITY_PROVIDER_SERVICE } from './tokens';
+import { IServiceProviderService } from '@fc/oidc-provider';
+import { IDENTITY_PROVIDER_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from './events';
 import { RedirectToIdp, GetOidcCallback } from './dto';
 import { OidcClientRoutes } from './enums';
+import { OidcClientService } from './services';
+import {
+  OidcClientIdpBlacklistedException,
+  OidcClientFailedToFetchBlacklist,
+} from './exceptions';
+
 @Controller()
 export class OidcClientController {
   constructor(
@@ -27,9 +33,35 @@ export class OidcClientController {
     private readonly session: SessionService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderService,
+    @Inject(SERVICE_PROVIDER_SERVICE)
+    private readonly serviceProvider: IServiceProviderService,
     private readonly tracking: TrackingService,
     private readonly config: ConfigService,
   ) {}
+
+  /**
+   * Method to check if
+   * an identity provider is blacklisted or whitelisted
+   * @param spId service provider ID
+   * @param idpId identity provider ID
+   * @returns {boolean}
+   */
+  private async checkIdpBlacklisted(
+    spId: string,
+    idpId: string,
+  ): Promise<boolean> {
+    let isIdpExcluded = false;
+    try {
+      isIdpExcluded = await this.serviceProvider.shouldExcludeIdp(spId, idpId);
+    } catch (error) {
+      throw new OidcClientFailedToFetchBlacklist(error);
+    }
+
+    if (isIdpExcluded) {
+      throw new OidcClientIdpBlacklistedException(spId, idpId);
+    }
+    return isIdpExcluded;
+  }
 
   /**
    * @todo #242 get configured parameters (scope and acr)
@@ -42,14 +74,31 @@ export class OidcClientController {
     @Body() body: RedirectToIdp,
   ): Promise<void> {
     const {
-      state,
       scope,
       providerUid,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
-      nonce,
-    } = await this.oidcClient.buildAuthorizeParameters(body);
+    } = body;
+
+    /**
+     * @TODO This controller should not be generic
+     * This is a specific behaviour for FC and not for fsp*v2
+     */
+    let serviceProviderId: string | null;
+    try {
+      const { spId } = await this.session.get('spId');
+      serviceProviderId = spId;
+    } catch (error) {
+      serviceProviderId = null;
+    }
+    if (serviceProviderId) {
+      await this.checkIdpBlacklisted(serviceProviderId, providerUid);
+    }
+
+    // TODO END
+
+    const { state, nonce } = await this.oidcClient.buildAuthorizeParameters();
 
     const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
       state,
@@ -85,6 +134,22 @@ export class OidcClientController {
     @Param() params: GetOidcCallback,
   ) {
     const { providerUid } = params;
+    /**
+     * @TODO This service provider should not be generic, When it's called with FC
+     * we have the spId in session but not when it's called with a service provder
+     */
+    let serviceProviderId: string | null;
+    try {
+      const { spId } = await this.session.get('spId');
+      serviceProviderId = spId;
+    } catch (error) {
+      serviceProviderId = null;
+    }
+    if (serviceProviderId) {
+      await this.checkIdpBlacklisted(serviceProviderId, providerUid);
+    }
+    // TODO END
+
     const uid = req.fc.interactionId;
     const { idpState, idpNonce } = await this.session.get(uid);
 
