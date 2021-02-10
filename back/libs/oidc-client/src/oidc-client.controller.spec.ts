@@ -3,9 +3,10 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 import { ConfigService } from '@fc/config';
-import { IDENTITY_PROVIDER_SERVICE } from './tokens';
+import { IDENTITY_PROVIDER_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import { OidcClientController } from './oidc-client.controller';
 import { OidcClientService } from './services';
+import { OidcClientIdpBlacklistedException } from './exceptions';
 
 describe('OidcClient Controller', () => {
   let oidcClientController: OidcClientController;
@@ -37,6 +38,10 @@ describe('OidcClient Controller', () => {
     getById: jest.fn(),
   };
 
+  const serviceProviderServiceMock = {
+    shouldExcludeIdp: jest.fn(),
+  };
+
   const trackingMock = {
     track: jest.fn(),
   };
@@ -65,6 +70,10 @@ describe('OidcClient Controller', () => {
         {
           provide: IDENTITY_PROVIDER_SERVICE,
           useValue: identityProviderServiceMock,
+        },
+        {
+          provide: SERVICE_PROVIDER_SERVICE,
+          useValue: serviceProviderServiceMock,
         },
       ],
     })
@@ -114,6 +123,44 @@ describe('OidcClient Controller', () => {
     expect(oidcClientController).toBeDefined();
   });
 
+  describe('checkIdpBlacklisted', () => {
+    it('should return OidcClientRuntimeException isIdpBlacklist throw an error', async () => {
+      // setup
+      const errorMock = new Error('Unknown Error');
+      // action
+      serviceProviderServiceMock.shouldExcludeIdp.mockRejectedValueOnce(
+        errorMock,
+      );
+
+      // assert
+      await expect(
+        oidcClientController['checkIdpBlacklisted']('spId', 'idpId'),
+      ).rejects.toThrow(errorMock);
+    });
+
+    it('should throw OidcClientIdpBlacklistedException because identity provider is blacklisted', async () => {
+      // setup
+      const errorMock = new OidcClientIdpBlacklistedException('spId', 'idpId');
+      // action
+      serviceProviderServiceMock.shouldExcludeIdp.mockReturnValueOnce(true);
+
+      // assert
+      await expect(
+        oidcClientController['checkIdpBlacklisted']('spId', 'idpId'),
+      ).rejects.toThrow(errorMock);
+    });
+
+    it('should return false because identity provider is not blacklisted', async () => {
+      serviceProviderServiceMock.shouldExcludeIdp.mockReturnValueOnce(false);
+
+      const result = await oidcClientController['checkIdpBlacklisted'](
+        'spId',
+        'idpId',
+      );
+      expect(result).toBeFalsy();
+    });
+  });
+
   describe('redirectToIdp', () => {
     it('should call oidc-client-service for retrieve authorize url', async () => {
       // setup
@@ -141,6 +188,7 @@ describe('OidcClient Controller', () => {
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(mockedoidcClientService);
     });
+
     it('should store state and nonce in session', async () => {
       // setup
       const body = {
@@ -173,6 +221,95 @@ describe('OidcClient Controller', () => {
           idpNonce: nonceMock,
         },
       );
+    });
+
+    it('should resolve even if no spId are fetchable', async () => {
+      // setup
+      const body = {
+        scope: 'openid',
+        providerUid: providerIdMock,
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: 'eidas3',
+        nonce: nonceMock,
+      };
+      sessionServiceMock.get.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      serviceProviderServiceMock.shouldExcludeIdp.mockReturnValueOnce(true);
+
+      // action
+      await oidcClientController.redirectToIdp(res, req, body);
+
+      // assert
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw an error because idp is blacklisted', async () => {
+      // setup
+      const body = {
+        scope: 'openid',
+        providerUid: providerIdMock,
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: 'eidas3',
+        nonce: nonceMock,
+      };
+      sessionServiceMock.get.mockReturnValueOnce('spId');
+
+      // action
+      await oidcClientController.redirectToIdp(res, req, body);
+
+      // assert
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+    });
+
+    describe('Idp blacklisted scenario for redirect to idp', () => {
+      let isBlacklistedMock;
+      beforeEach(() => {
+        isBlacklistedMock = oidcClientController[
+          'checkIdpBlacklisted'
+        ] = jest.fn();
+      });
+      it('idp is blacklisted', async () => {
+        // setup
+        const body = {
+          scope: 'openid',
+          providerUid: providerIdMock,
+          // oidc param
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          acr_values: 'eidas3',
+          nonce: nonceMock,
+        };
+        const errorMock = new Error('New Error');
+        sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
+        isBlacklistedMock.mockRejectedValueOnce(errorMock);
+
+        // action / assert
+        await expect(
+          oidcClientController.redirectToIdp(res, req, body),
+        ).rejects.toThrow(errorMock);
+      });
+
+      it('idp is not blacklisted', async () => {
+        // setup
+        const body = {
+          scope: 'openid',
+          providerUid: providerIdMock,
+          // oidc param
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          acr_values: 'eidas3',
+          nonce: nonceMock,
+        };
+        sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
+        isBlacklistedMock.mockReturnValueOnce(false);
+
+        // action
+        await oidcClientController.redirectToIdp(res, req, body);
+
+        // assert
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+      });
     });
   });
 
@@ -217,6 +354,90 @@ describe('OidcClient Controller', () => {
       );
 
       expect(res.redirect).toHaveBeenCalledTimes(1);
+    });
+
+    it('should resolve callback even if no spId are fetchable', async () => {
+      // setup
+      const providerUid = 'foo';
+      oidcClientServiceMock.getTokenSet.mockReturnValueOnce({
+        // oidc spec defined property
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        access_token: 'accest_token',
+        // oidc spec defined property
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        id_token: 'id_token',
+        claims: jest.fn().mockReturnValueOnce({ acr: 'foo' }),
+      });
+
+      oidcClientServiceMock.getUserInfo.mockReturnValueOnce({
+        sub: '1',
+        // oidc spec defined property
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        given_name: 'given_name',
+      });
+
+      sessionServiceMock.get.mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      // action
+      await oidcClientController.getOidcCallback(req, res, {
+        providerUid,
+      });
+
+      // assert
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+    });
+
+    describe('Idp blacklisted scenario for get oidc callback', () => {
+      let isBlacklistedMock;
+      beforeEach(() => {
+        isBlacklistedMock = oidcClientController[
+          'checkIdpBlacklisted'
+        ] = jest.fn();
+        oidcClientServiceMock.getTokenSet.mockReturnValueOnce({
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          access_token: 'accest_token',
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          id_token: 'id_token',
+          claims: jest.fn().mockReturnValueOnce({ acr: 'foo' }),
+        });
+
+        oidcClientServiceMock.getUserInfo.mockReturnValueOnce({
+          sub: '1',
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          given_name: 'given_name',
+        });
+      });
+
+      it('idp is blacklisted', async () => {
+        // setup
+        const providerUid = 'foo';
+        const errorMock = new Error('New Error');
+        sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
+        isBlacklistedMock.mockRejectedValueOnce(errorMock);
+
+        // action / assert
+        await expect(
+          oidcClientController.getOidcCallback(req, res, { providerUid }),
+        ).rejects.toThrow(errorMock);
+      });
+
+      it('idp is not blacklisted', async () => {
+        // setup
+        const providerUid = 'foo';
+        sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
+        isBlacklistedMock.mockReturnValueOnce(false);
+
+        // action
+        await oidcClientController.getOidcCallback(req, res, { providerUid });
+
+        // assert
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+      });
     });
   });
 

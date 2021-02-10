@@ -172,4 +172,58 @@ describe('ServiceProviderService', () => {
       expect(service.getList).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('shouldExcludeIdp', () => {
+    const spListMock = [
+      {
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: 'wizz',
+        idpFilterExclude: true,
+        idpFilterList: ['idp1'],
+      },
+      {
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: 'foo',
+        idpFilterExclude: false,
+        idpFilterList: ['idp1'],
+      },
+      {
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: 'bar',
+        idpFilterExclude: true,
+        idpFilterList: ['idp2'],
+      },
+    ];
+
+    it('Should return true because idp1 is blacklist', async () => {
+      // setup
+      service.getById = jest.fn().mockReturnValueOnce(spListMock[0]);
+
+      // action
+      const result = await service.shouldExcludeIdp('wizz', 'idp1');
+
+      // expected
+      expect(result).toBe(true);
+    });
+
+    it('Should return false because idp1 is whitelist', async () => {
+      // setup
+      service.getById = jest.fn().mockReturnValueOnce(spListMock[1]);
+
+      // action
+      const result = await service.shouldExcludeIdp('foo', 'idp1');
+      // expected
+      expect(result).toBe(false);
+    });
+
+    it('Should return false because idp1 is not blacklist', async () => {
+      service.getById = jest.fn().mockReturnValueOnce(spListMock[2]);
+
+      const result = await service.shouldExcludeIdp('bar', 'idp1');
+      expect(result).toBe(false);
+    });
+  });
 });

@@ -10,11 +10,17 @@ import {
 } from '@fc/identity-provider-env';
 import { ErrorModule } from '@fc/error';
 import { CryptographyModule } from '@fc/cryptography';
+import {
+  ServiceProviderEnvModule,
+  ServiceProviderEnvService,
+} from '@fc/service-provider-env';
 import { MockServiceProviderController } from './mock-service-provider.controller';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderEnvService,
   IdentityProviderEnvModule,
+  ServiceProviderEnvService,
+  ServiceProviderEnvModule,
 );
 
 @Module({

@@ -160,6 +160,10 @@ describe('IdentityProviderService', () => {
 
   const identityProviderListMock = [legacyIdentityProviderMock];
 
+  const indentityProviderMockMap = identityProviderListMock.map(
+    ({ _doc }) => _doc,
+  );
+
   const loggerMock = {
     setContext: jest.fn(),
     warn: jest.fn(),
@@ -462,6 +466,86 @@ describe('IdentityProviderService', () => {
         listMock.length,
       );
       expect(result).toEqual(listMock);
+    });
+
+    describe('getFilteredList', () => {
+      beforeEach(() => {
+        service['getList'] = jest
+          .fn()
+          .mockResolvedValueOnce(indentityProviderMockMap);
+      });
+
+      it('should resolve', async () => {
+        // action
+        const result = service.getFilteredList([], true);
+
+        // expect
+        expect(result).toBeInstanceOf(Promise);
+      });
+
+      it('should return a list of filtered whitelist identity providers', async () => {
+        // setup
+        const expected = [
+          {
+            ...legacyIdentityProviderMock._doc,
+          },
+        ];
+        cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+          expected[0].client_secret,
+        );
+
+        // action
+        const result = await service.getFilteredList(['uid'], false);
+
+        // expect
+        expect(result).toEqual(expected);
+      });
+
+      it('should return an empty list of filtered whitelist identity providers', async () => {
+        // setup
+        const expected = [
+          {
+            ...legacyIdentityProviderMock._doc,
+          },
+        ];
+        delete expected[0].uid;
+
+        cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+          expected[0].client_secret,
+        );
+
+        // action
+        const result = await service.getFilteredList(['false_uid'], false);
+
+        // expect
+        expect(result).toEqual([]);
+      });
+
+      it('should return an empty list of filtered blacklist identity providers', async () => {
+        const result = await service.getFilteredList(['uid'], true);
+
+        // expect
+        expect(result).toEqual([]);
+      });
+
+      it('should return a list of filtered blacklist identity providers', async () => {
+        // setup
+        const expected = [
+          {
+            ...legacyIdentityProviderMock._doc,
+          },
+        ];
+
+        cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+          expected[0].client_secret,
+        );
+
+        // action
+        const result = await service.getFilteredList(['false_uid'], true);
+
+        // expect
+        expect(result).toEqual(expected);
+      });
     });
 
     it('should not call findAll method if refreshCache is not set and cache exists', async () => {

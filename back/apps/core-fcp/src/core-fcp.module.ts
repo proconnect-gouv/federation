@@ -65,7 +65,12 @@ const oidcProviderModule = OidcProviderModule.register(
     oidcProviderModule,
     ScopesModule,
     OverrideOidcProviderModule.register(oidcProviderModule),
-    OidcClientModule.register(IdentityProviderService, IdentityProviderModule),
+    OidcClientModule.register(
+      IdentityProviderService,
+      IdentityProviderModule,
+      ServiceProviderService,
+      ServiceProviderModule,
+    ),
     MailerModule,
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),
