@@ -28,6 +28,7 @@
 | Y020019 |  | N/A |
 | Y020021 |  | N/A |
 | Y020022 |  | N/A |
+| Y020023 | the identity provider id:undefined is blacklisted by service provider id:Error | N/A |
 | Y020025 |  | N/A |
 
 | Code | Message utilisateur | Description |

@@ -202,30 +202,20 @@ describe('OidcClientService', () => {
   });
 
   describe('buildAuthorizeParameters', () => {
-    // Given
-    const params = {
-      uid: 'uidMock',
-      providerUid: 'providerMock',
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: 'acrMock',
-    };
-
     it('should call crypto to generate state', async () => {
       // When
-      const result = await service.buildAuthorizeParameters(params);
+      const result = await service.buildAuthorizeParameters();
       // Then
       expect(result.state).toBeDefined();
       expect(result.state).toBe(randomStringMock);
     });
     it('should return parameters + generated state', async () => {
       // When
-      const result = await service.buildAuthorizeParameters(params);
+      const result = await service.buildAuthorizeParameters();
       // Then
       expect(result).toEqual({
         state: randomStringMock,
         nonce: randomStringMock,
-        ...params,
       });
     });
   });

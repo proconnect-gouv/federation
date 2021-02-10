@@ -14,6 +14,6 @@ export type ServiceProviderMetadata = CustomClientMetadata;
 
 export interface IServiceProviderService {
   getList(refreshCache?: boolean): Promise<ServiceProviderMetadata[]>;
-
+  shouldExcludeIdp(spId: string, idpId: string): Promise<boolean>;
   getById(id: string): Promise<ServiceProviderMetadata>;
 }

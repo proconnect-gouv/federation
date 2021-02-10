@@ -6,7 +6,8 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { SessionModule, SessionService } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 import { CryptographyModule } from '@fc/cryptography';
-import { IDENTITY_PROVIDER_SERVICE } from './tokens';
+import { IServiceProviderService } from '@fc/oidc-provider';
+import { IDENTITY_PROVIDER_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import {
   OidcClientService,
@@ -20,11 +21,14 @@ export class OidcClientModule {
   static register(
     identityProvider: Type<IIdentityProviderService>,
     identityProviderModule,
+    serviceProvider: Type<IServiceProviderService>,
+    serviceProviderModule,
   ): DynamicModule {
     return {
       module: OidcClientModule,
       imports: [
         identityProviderModule,
+        serviceProviderModule,
         SessionModule,
         CryptographyModule,
         CqrsModule,
@@ -34,6 +38,10 @@ export class OidcClientModule {
         {
           provide: IDENTITY_PROVIDER_SERVICE,
           useClass: identityProvider,
+        },
+        {
+          provide: SERVICE_PROVIDER_SERVICE,
+          useClass: serviceProvider,
         },
         OidcClientService,
         SessionService,

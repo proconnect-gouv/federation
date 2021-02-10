@@ -24,7 +24,7 @@ export class OidcClientService {
     this.logger.setContext(this.constructor.name);
   }
 
-  async buildAuthorizeParameters(params) {
+  async buildAuthorizeParameters() {
     const { stateLength } = await this.oidcClientConfig.get();
     const state = this.crypto.genRandomString(stateLength);
     /**
@@ -33,7 +33,6 @@ export class OidcClientService {
     const nonce = this.crypto.genRandomString(stateLength);
 
     return {
-      ...params,
       state,
       nonce,
     };

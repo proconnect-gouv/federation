@@ -78,6 +78,25 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
     return this.identityProviderCache;
   }
 
+  /**
+   * Method triggered when you want to filter identity providers
+   * from service providers's whitelist/blacklist
+   * @param idpList  list of identity providers's clientId
+   * @param isBlackListed  boolean false = blacklist true = whitelist
+   */
+  async getFilteredList(
+    idpList: string[],
+    blacklist: boolean,
+  ): Promise<IdentityProviderMetadata[]> {
+    const providers = await this.getList();
+    const filteredProviders = providers.filter(({ uid }) => {
+      const idpFound = idpList.includes(uid);
+
+      return blacklist ? !idpFound : idpFound;
+    });
+    return filteredProviders;
+  }
+
   async getById(
     id: string,
     refreshCache = false,
