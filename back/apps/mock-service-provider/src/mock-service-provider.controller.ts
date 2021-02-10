@@ -181,7 +181,7 @@ export class MockServiceProviderController {
 
   private async getInteractionParameters(provider: IdentityProviderMetadata) {
     const { scope, acr } = this.config.get<OidcClientConfig>('OidcClient');
-    const { state, nonce } = await this.oidcClient.buildAuthorizeParameters({});
+    const { state, nonce } = await this.oidcClient.buildAuthorizeParameters();
 
     const authorizationUrl: string = await this.oidcClient.getAuthorizeUrl(
       state,

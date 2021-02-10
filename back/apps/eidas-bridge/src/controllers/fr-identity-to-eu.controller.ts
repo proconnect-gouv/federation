@@ -62,22 +62,15 @@ export class FrIdentityToEuController {
       acr_values: oidcRequest.acr_values,
     };
 
-    const {
-      state,
-      providerUid,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-      nonce,
-    } = await this.oidcClient.buildAuthorizeParameters(params);
+    const { state, nonce } = await this.oidcClient.buildAuthorizeParameters();
 
     const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
       state,
       params.scope,
-      providerUid,
+      params.providerUid,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
+      params.acr_values,
       nonce,
     );
 

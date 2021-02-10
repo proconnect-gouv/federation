@@ -17,6 +17,7 @@ import { ConfigService } from '@fc/config';
 import { MinistriesService } from '@fc/ministries';
 import { AppConfig } from '@fc/app';
 import { OidcClientConfig } from '@fc/oidc-client';
+import { ServiceProviderService } from '@fc/service-provider';
 import { Interaction, Core, CoreRoutes, CoreMissingIdentity } from '@fc/core';
 import { CoreFcaService } from '../services';
 
@@ -26,6 +27,7 @@ export class CoreFcaController {
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderService,
+    private readonly serviceProvider: ServiceProviderService,
     private readonly ministries: MinistriesService,
     private readonly core: CoreFcaService,
     private readonly session: SessionService,
@@ -45,7 +47,16 @@ export class CoreFcaController {
     const { params } = await this.oidcProvider.getInteraction(req, res);
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { acr_values, redirect_uri, response_type } = params;
+    const {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      redirect_uri,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      response_type,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id,
+    } = params;
     const redirectToIdentityProviderInputs = {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
@@ -57,8 +68,16 @@ export class CoreFcaController {
     };
 
     const ministries = await this.ministries.getList();
+    const {
+      idpFilterExclude,
+      idpFilterList,
+    } = await this.serviceProvider.getById(client_id);
 
-    const identityProvidersList = await this.identityProvider.getList();
+    const identityProvidersList = await this.identityProvider.getFilteredList(
+      idpFilterList,
+      idpFilterExclude,
+    );
+
     const identityProviders = identityProvidersList.map(
       ({ active, display, title, uid }) => ({
         active,
