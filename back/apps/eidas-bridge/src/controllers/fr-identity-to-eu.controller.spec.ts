@@ -231,14 +231,6 @@ describe('FrIdentityToEuController', () => {
     });
 
     it('Should build the authorize parameters with the oidc params', async () => {
-      // setup
-      const oidcParamsMock = {
-        providerUid: 'envIssuer',
-        // oidc parameter
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: oidcRequestMock.acr_values,
-        scope: oidcRequestMock.scope.join(' '),
-      };
       sessionMock.patch.mockResolvedValueOnce('randomStringMockValue');
 
       // action
@@ -251,9 +243,6 @@ describe('FrIdentityToEuController', () => {
       expect(
         oidcClientServiceMock.buildAuthorizeParameters,
       ).toHaveBeenCalledTimes(1);
-      expect(
-        oidcClientServiceMock.buildAuthorizeParameters,
-      ).toHaveBeenCalledWith(oidcParamsMock);
     });
 
     it('Should call oidc-client-service for retrieve authorize url', async () => {

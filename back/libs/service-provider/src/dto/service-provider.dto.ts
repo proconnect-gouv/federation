@@ -83,4 +83,11 @@ export class ServiceProviderDTO {
   // oidc defined variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly jwks_uri: string;
+
+  @IsBoolean()
+  idpFilterExclude: boolean;
+
+  @IsArray()
+  @IsString({ each: true })
+  idpFilterList: string[];
 }

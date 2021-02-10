@@ -8,11 +8,17 @@ import {
   IdentityProviderEnvService,
   IdentityProviderEnvModule,
 } from '@fc/identity-provider-env';
+import {
+  ServiceProviderEnvModule,
+  ServiceProviderEnvService,
+} from '@fc/service-provider-env';
 import { UserDashboardController } from './user-dashboard.controller';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderEnvService,
   IdentityProviderEnvModule,
+  ServiceProviderEnvService,
+  ServiceProviderEnvModule,
 );
 
 @Module({

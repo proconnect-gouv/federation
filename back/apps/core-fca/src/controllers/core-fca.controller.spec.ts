@@ -55,6 +55,7 @@ describe('CoreFcaController', () => {
 
   const identityProviderServiceMock = {
     getList: jest.fn(),
+    getFilteredList: jest.fn(),
   };
 
   const serviceProviderServiceMock = {
@@ -199,7 +200,7 @@ describe('CoreFcaController', () => {
       });
 
       ministriesServiceMock.getList.mockResolvedValueOnce(ministries);
-      identityProviderServiceMock.getList.mockResolvedValueOnce(idps);
+      identityProviderServiceMock.getFilteredList.mockResolvedValueOnce(idps);
     });
 
     it('should call oidcProvider.getInteraction', async () => {
@@ -225,12 +226,14 @@ describe('CoreFcaController', () => {
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
       expect(configServiceMock.get).toHaveBeenCalledWith('OidcClient');
     });
-    it('should call identityProviderGetList', async () => {
+    it('should call identityProviderGetFilteredList', async () => {
       // When
       await coreController.getFrontData(req, res);
 
       // Then
-      expect(identityProviderServiceMock.getList).toHaveBeenCalledTimes(1);
+      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledTimes(
+        1,
+      );
     });
     it('should call session.get', async () => {
       // When

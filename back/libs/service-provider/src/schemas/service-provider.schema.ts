@@ -60,6 +60,12 @@ export class ServiceProvider extends Document {
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   jwks_uri: string;
+
+  @Prop({ type: Boolean })
+  idpFilterExclude: boolean;
+
+  @Prop({ type: [String] })
+  idpFilterList: string[];
 }
 
 export const ServiceProviderSchema = SchemaFactory.createForClass(

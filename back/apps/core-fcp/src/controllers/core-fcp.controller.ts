@@ -21,6 +21,7 @@ import { CryptographyService } from '@fc/cryptography';
 import { NotificationsService } from '@fc/notifications';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { ScopesService } from '@fc/scopes';
+import { ServiceProviderService } from '@fc/service-provider';
 import {
   Interaction,
   CsrfToken,
@@ -37,6 +38,7 @@ export class CoreFcpController {
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderService,
+    private readonly serviceProvider: ServiceProviderService,
     private readonly core: CoreFcpService,
     private readonly session: SessionService,
     private readonly config: ConfigService,
@@ -59,7 +61,17 @@ export class CoreFcpController {
   async getInteraction(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
-    const providers = await this.identityProvider.getList();
+
+    const { client_id: clientId } = params;
+    const {
+      idpFilterExclude,
+      idpFilterList,
+    } = await this.serviceProvider.getById(clientId);
+
+    const providers = await this.identityProvider.getFilteredList(
+      idpFilterList,
+      idpFilterExclude,
+    );
     const notifications = await this.notifications.getNotifications();
 
     const { interactionId } = req.fc;

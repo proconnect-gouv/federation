@@ -337,6 +337,84 @@ describe('IdentityProviderEnvService', () => {
     });
   });
 
+  describe('getFilteredList', () => {
+    beforeEach(() => {
+      service['getList'] = jest
+        .fn()
+        .mockResolvedValueOnce(identityProviderListMock);
+    });
+    it('should resolve', async () => {
+      // action
+      const result = service.getFilteredList([], true);
+
+      // expect
+      expect(result).toBeInstanceOf(Promise);
+    });
+
+    it('should return a list of filtered whitelist identity providers', async () => {
+      // setup
+      const expected = [
+        {
+          ...validIdentityProviderMock,
+        },
+      ];
+      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+        expected[0].client_secret,
+      );
+
+      // action
+      const result = await service.getFilteredList(['envIssuer'], false);
+
+      // expect
+      expect(result).toEqual(expected);
+    });
+
+    it('should return an empty list of filtered whitelist identity providers', async () => {
+      // setup
+      const expected = [
+        {
+          ...validIdentityProviderMock,
+        },
+      ];
+
+      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+        expected[0].client_secret,
+      );
+
+      // action
+      const result = await service.getFilteredList(['false_uid'], false);
+
+      // expect
+      expect(result).toEqual([]);
+    });
+
+    it('should return an empty list of filtered blacklist identity providers', async () => {
+      const result = await service.getFilteredList(['envIssuer'], true);
+
+      // expect
+      expect(result).toEqual([]);
+    });
+
+    it('should return a list of filtered blacklist identity providers', async () => {
+      // setup
+      const expected = [
+        {
+          ...validIdentityProviderMock,
+        },
+      ];
+
+      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
+        expected[0].client_secret,
+      );
+
+      // action
+      const result = await service.getFilteredList(['false_uid'], true);
+
+      // expect
+      expect(result).toEqual(expected);
+    });
+  });
+
   describe('getById', () => {
     // Given
     const idpListMock = [{ uid: 'wizz' }, { uid: 'foo' }, { uid: 'bar' }];
