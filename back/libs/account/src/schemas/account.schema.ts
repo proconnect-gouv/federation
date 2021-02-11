@@ -2,7 +2,12 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Schema as SchemaNative } from 'mongoose';
 import { IFederation } from '../interfaces';
 
-@Schema({ strict: true, strictQuery: true, collection: 'account' })
+@Schema({
+  strict: true,
+  strictQuery: true,
+  collection: 'account',
+  timestamps: true,
+})
 export class Account extends Document {
   /**
    * Timestamping
