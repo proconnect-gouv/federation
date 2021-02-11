@@ -83,7 +83,11 @@
           "../../../apps/mock-service-provider/**/*.ejs",
           "../../../apps/mock-service-provider/**/*.css",
           "../../../apps/mock-service-provider/**/*.svg",
-          "../../../apps/mock-service-provider/**/*.png"
+          "../../../apps/mock-service-provider/**/*.png",
+          "../../../instances/mock-service-provider-fca/**/*.ejs",
+          "../../../instances/mock-service-provider-fca/**/*.css",
+          "../../../instances/mock-service-provider-fca/**/*.svg",
+          "../../../instances/mock-service-provider-fca/**/*.png"
         ]
       }
     },
