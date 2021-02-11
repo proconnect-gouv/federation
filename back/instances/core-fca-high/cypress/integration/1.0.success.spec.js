@@ -2,6 +2,7 @@ import {
   basicSuccessScenario,
   checkInformations,
   checkInStringifiedJson,
+  getAuthorizeUrl
 } from './mire.utils';
 
 describe('Successful scenarios', () => {
@@ -54,5 +55,30 @@ describe('Successful scenarios', () => {
       'sub',
       'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
     );
+  });
+
+  it('should return to the SP with an "invalid_request" error if the query does not contain the "openid" scope', () => {
+    // First visit SP home page to initialize its session.
+    cy.visit(Cypress.env('SP1_ROOT_URL'));
+    const url = getAuthorizeUrl({
+      scope: 'given_name',
+    });
+
+    // Visit forged /authorize URL
+    cy.visit(url, {
+      failOnStatusCode: false,
+    });
+
+    cy.url()
+    .should(
+      'contains',
+      `${Cypress.env(`SP1_ROOT_URL`)}/oidc-callback/envIssuer`,
+    )
+    .should('contains', 'error=invalid_request')
+    .should(
+      'contains',
+      'error_description=openid%20scope%20must%20be%20requested%20when%20using%20the%20acr_values',
+    )
+    .should('contains', 'state=stateTraces');
   });
 });
