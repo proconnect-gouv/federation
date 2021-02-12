@@ -37,7 +37,7 @@
 
         <h2>ACR</h2>
         <select name="acr" id="acrSelector" onChange="updateAcr()">
-          <% ['eidas2', 'eidas1', 'eidas2', 'eidas3', 'rgs1', 'rgs2', 'rgs3'].forEach(acr => { %>
+          <% ['rgs1', 'rgs2', 'rgs3'].forEach(acr => { %>
             <option value="<%=acr%>"><%=acr%></option>
           <% }) %>
         </select>
