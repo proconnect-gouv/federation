@@ -80,10 +80,12 @@
       "compilerOptions": {
         "tsConfigPath": "instances/mock-service-provider-fca/tsconfig.app.json",
         "assets": [
+          "../../../apps/mock-service-provider/**/*.js",
           "../../../apps/mock-service-provider/**/*.ejs",
           "../../../apps/mock-service-provider/**/*.css",
           "../../../apps/mock-service-provider/**/*.svg",
           "../../../apps/mock-service-provider/**/*.png",
+          "../../../instances/mock-service-provider-fca/**/*.js",
           "../../../instances/mock-service-provider-fca/**/*.ejs",
           "../../../instances/mock-service-provider-fca/**/*.css",
           "../../../instances/mock-service-provider-fca/**/*.svg",
