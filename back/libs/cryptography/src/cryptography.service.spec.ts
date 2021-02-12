@@ -217,7 +217,10 @@ describe('CryptographyService', () => {
 
       // expect
       expect(mockHash.update).toHaveBeenCalledTimes(1);
-      expect(mockHash.update).toHaveBeenCalledWith(serializedPivotIdentity);
+      expect(mockHash.update).toHaveBeenCalledWith(
+        serializedPivotIdentity,
+        'binary',
+      );
     });
 
     it('should digest the hash to hex format and return the result', () => {
