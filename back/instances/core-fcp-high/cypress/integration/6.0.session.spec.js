@@ -1,4 +1,8 @@
-import { basicErrorScenario, getAuthorizeUrl } from './mire.utils';
+import {
+  basicErrorScenario,
+  basicScenario,
+  getAuthorizeUrl,
+} from './mire.utils';
 
 describe('Session', () => {
   // -- replace by either `fip1v2` or `fia1v2`
@@ -107,6 +111,54 @@ describe('Session', () => {
         cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
         cy.hasError('Y150005');
       });
+    });
+  });
+
+  it('should have two cookies stored for SP with the property `sameSite` value set to `lax`', () => {
+    cy.clearCookie('sp_session_id');
+    cy.clearCookie('sp_interaction_id');
+    cy.visit(Cypress.env('SP1_ROOT_URL'));
+    cy.getCookies()
+      .should('have.length', 2)
+      .then((cookies) => {
+        expect(cookies[1]).to.have.property('sameSite', 'lax');
+      });
+  });
+
+  it('should have cookie stored for IdP with the property `sameSite` value set to `lax`', () => {
+    cy.clearCookies();
+
+    basicScenario({
+      idpId,
+      eidasLevel: 'eidas2',
+      overrideParams: {
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: 'eidas2',
+      },
+    });
+
+    cy.getCookie('fc_interaction_id').then((cookie) => {
+      const interactionId = cookie.value.match(/s%3A([^.]+)/).pop();
+      cy.request({
+        url: `${Cypress.env(
+          'IDP_ROOT_URL',
+        )}/interaction/${interactionId}/login`,
+        method: 'POST',
+        body: {
+          login: 'test',
+          password: '123',
+          acr: 'eidas2',
+        },
+        form: true,
+        followRedirect: false,
+      })
+        .as('idp:step1')
+        .then(() => {
+          cy.getCookie('fc_session_id').then((cookie) => {
+            expect(cookie).to.have.property('sameSite', 'lax');
+          });
+        });
     });
   });
 });
