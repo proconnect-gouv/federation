@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 // Tested by DTO
+import { parseBoolean } from '@fc/common';
 import {
   OidcProviderConfig,
   OidcProviderRoutes,
@@ -58,7 +59,7 @@ export default {
     grant_types_supported: ['authorization_code'],
     features: {
       devInteractions: { enabled: false },
-      encryption: { enabled: true },
+      encryption: { enabled: parseBoolean(process.env.OidcProvider_USE_ENCRYPTION) },
       jwtUserinfo: { enabled: true },
       backchannelLogout: { enabled: true },
       revocation: { enabled: true },
