@@ -69,18 +69,10 @@ async function bootstrap() {
   const logger = await app.resolve(LoggerService);
   app.useLogger(logger);
 
-  // Assets path vary in dev env
-  const assetsPath =
-    process.env.NODE_ENV === 'development'
-      ? // Libs code base to take latest version
-        '../../../apps/mock-identity-provider-fca/src'
-      : // Current, directory = dist when in production mode
-        '';
-
   app.engine('ejs', renderFile);
-  app.set('views', [join(__dirname, assetsPath, 'views')]);
+  app.set('views', [join(__dirname, 'views')]);
   app.setViewEngine('ejs');
-  app.useStaticAssets(join(__dirname, assetsPath, 'public'));
+  app.useStaticAssets(join(__dirname, 'public'));
 
   const { cookieSecrets } = config.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));
