@@ -38,7 +38,7 @@ describe('Scope', () => {
 
     cy.get('#post-authorize').click();
     chooseIdpOnCore('fia1v2');
-    cy.get('input[type=submit]').click();
+    cy.get('button[type=submit]').click();
 
     checkInStringifiedJson('given_name', 'Angela Claire Louise'); // mandatory
     checkInStringifiedJson('usual_name', 'DUBOIS'); // mandatory
@@ -59,7 +59,7 @@ describe('Scope', () => {
     cy.get('#post-authorize').click();
     chooseIdpOnCore('fia1v2');
     cy.get('#login').clear().type('12551');
-    cy.get('input[type=submit]').click();
+    cy.get('button[type=submit]').click();
 
     checkInStringifiedJson('given_name', 'Gils'); // mandatory
     checkInStringifiedJson('usual_name', 'Martinot'); // mandatory
@@ -82,7 +82,7 @@ describe('Scope', () => {
 
     cy.get('#post-authorize').click();
     chooseIdpOnCore('fia1v2');
-    cy.get('input[type=submit]').click();
+    cy.get('button[type=submit]').click();
 
     checkInStringifiedJson('given_name', 'Angela Claire Louise'); // mandatory
     checkInStringifiedJson('usual_name', 'DUBOIS'); // mandatory
@@ -104,7 +104,7 @@ describe('Scope', () => {
 
     cy.get('#post-authorize').click();
     chooseIdpOnCore('fia1v2');
-    cy.get('input[type=submit]').click();
+    cy.get('button[type=submit]').click();
 
     checkInStringifiedJson('given_name', 'Angela Claire Louise'); // mandatory
     checkInStringifiedJson('usual_name', 'DUBOIS'); // mandatory
@@ -148,7 +148,7 @@ describe('Scope', () => {
       cy.request(`${Cypress.env('FC_ROOT_URL')}${Cypress.env('WELL_KNOWN')}`)
         .its('body')
         .then((body) => body.scopes_supported)
-        .should('not.include', 'offline_access')
+        .should('not.include', 'offline_access');
     });
 
     it('should have a determined list of scopes in supported scopes', () => {
