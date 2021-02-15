@@ -104,7 +104,12 @@
           "../../../apps/mock-identity-provider-fca/**/*.ejs",
           "../../../apps/mock-identity-provider-fca/**/*.css",
           "../../../apps/mock-identity-provider-fca/**/*.svg",
-          "../../../apps/mock-identity-provider-fca/**/*.csv"
+          "../../../apps/mock-identity-provider-fca/**/*.png",
+          "../../../apps/mock-identity-provider-fca/**/*.csv",
+          "../../../instances/mock-identity-provider-fca-high/**/*.ejs",
+          "../../../instances/mock-identity-provider-fca-high/**/*.css",
+          "../../../instances/mock-identity-provider-fca-high/**/*.svg",
+          "../../../instances/mock-identity-provider-fca-high/**/*.csv"
         ]
       }
     },
