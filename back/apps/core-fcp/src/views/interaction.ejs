@@ -1,11 +1,17 @@
+<% const eidasBridgeProvider = locals.providers.find((p) => p.uid === 'eidas-bridge') %> 
+
 <!DOCTYPE html>
 <html lang="fr">
-  <%- include('partials/head.ejs', { title: 'Connexion - choix du fournisseur d\'identité', style: 'interaction' }); %>
-  <% const eidasBridgeProvider = locals.providers.find((p) => p.uid === 'eidas-bridge') %> 
+  <head>
+    <%- include('partials/head.ejs'); %>
+    <link rel="stylesheet" href="/css/interaction.css">
+    <link rel="stylesheet" href="/css/numeric-identity.css">
+    <title>Connexion - choix du fournisseur d\'identité</title>
+  </head>
   <body>
     <%- include('partials/menu.ejs'); %>
     <% if(locals.notifications){ %> 
-    <div id="notifications">
+    <div id="notifications"> 
       <div>
         <img src="/img/warning.svg" alt="icone de mise en garde"/>
         <span> <%- locals.notifications.message %> </span>
@@ -94,10 +100,8 @@
               FranceConnect+ est la nouvelle solution FranceConnect qui vous permet d’accéder à encore plus de démarches en ligne. 
               Le service auquel vous souhaitez accéder nécessite l’utilisation d’un compte ayant un niveau de sécurité plus élevé.
             </p>
-            <a href="/">
-              <button
-                disabled
-              >
+            <a href="/" id="tuto-numeric-identity">
+              <button>
                 Comment créer une identité numérique
               </button>
             </a>
@@ -106,5 +110,8 @@
       </div>
     </div>
     <%- include('partials/footer.ejs'); %>
+    <%- include('partials/numeric-identity.ejs'); %>
+
+    <script type="text/javascript" src="/js/numeric-identity.js" defer></script>
   </body>
 </html>
