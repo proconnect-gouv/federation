@@ -72,6 +72,27 @@
         ]
       }
     },
+    "mock-service-provider-fca": {
+      "type": "application",
+      "root": "instances/mock-service-provider-fca",
+      "entryFile": "main",
+      "sourceRoot": "instances/mock-service-provider-fca/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/mock-service-provider-fca/tsconfig.app.json",
+        "assets": [
+          "../../../apps/mock-service-provider/**/*.js",
+          "../../../apps/mock-service-provider/**/*.ejs",
+          "../../../apps/mock-service-provider/**/*.css",
+          "../../../apps/mock-service-provider/**/*.svg",
+          "../../../apps/mock-service-provider/**/*.png",
+          "../../../instances/mock-service-provider-fca/**/*.js",
+          "../../../instances/mock-service-provider-fca/**/*.ejs",
+          "../../../instances/mock-service-provider-fca/**/*.css",
+          "../../../instances/mock-service-provider-fca/**/*.svg",
+          "../../../instances/mock-service-provider-fca/**/*.png"
+        ]
+      }
+    },
     "mock-identity-provider-fca-high": {
       "type": "application",
       "root": "instances/mock-identity-provider-fca-high",
@@ -83,7 +104,12 @@
           "../../../apps/mock-identity-provider-fca/**/*.ejs",
           "../../../apps/mock-identity-provider-fca/**/*.css",
           "../../../apps/mock-identity-provider-fca/**/*.svg",
-          "../../../apps/mock-identity-provider-fca/**/*.csv"
+          "../../../apps/mock-identity-provider-fca/**/*.png",
+          "../../../apps/mock-identity-provider-fca/**/*.csv",
+          "../../../instances/mock-identity-provider-fca-high/**/*.ejs",
+          "../../../instances/mock-identity-provider-fca-high/**/*.css",
+          "../../../instances/mock-identity-provider-fca-high/**/*.svg",
+          "../../../instances/mock-identity-provider-fca-high/**/*.csv"
         ]
       }
     },

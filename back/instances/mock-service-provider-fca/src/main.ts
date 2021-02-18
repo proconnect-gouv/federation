@@ -3,10 +3,9 @@
 // Not to be tested
 import { join } from 'path';
 import * as helmet from 'helmet';
-import { renderFile } from 'ejs';
-import { urlencoded } from 'body-parser';
 import * as CookieParser from 'cookie-parser';
-import { useContainer } from 'class-validator';
+import { urlencoded } from 'body-parser';
+import { renderFile } from 'ejs';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { LoggerService } from '@fc/logger';
@@ -47,8 +46,8 @@ async function bootstrap() {
          * to forbid the use of inline CSS or JS
          * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/168
          */
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
+        styleSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
+        scriptSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
       },
     }),
   );
@@ -76,14 +75,6 @@ async function bootstrap() {
 
   const { cookieSecrets } = config.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));
-
-  /**
-   * Tell the module "class-validator" to use NestJS dependency injection
-   * @see https://github.com/typestack/class-validator#using-service-container
-   * @see https://github.com/nestjs/nest/issues/528#issuecomment-382330137
-   * @see https://github.com/nestjs/nest/issues/528#issuecomment-403212561
-   */
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
   await app.listen(3000);
 }

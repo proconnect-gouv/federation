@@ -69,7 +69,7 @@ export function basicSuccessScenario(params) {
 
   cy.get('input[name="login"]').clear().type(userName);
   cy.get('input[name="password"]').clear().type(password);
-  cy.get('input[type="submit"]').click();
+  cy.get('button[type="submit"]').click();
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
@@ -199,7 +199,7 @@ export function basicScenario(params) {
   //}
   // --
 
-  cy.get('input[type="submit"]').click();
+  cy.get('button[type="submit"]').click();
 }
 
 export function basicErrorScenario(params) {
