@@ -16,6 +16,13 @@ module.exports = {
     node: true,
     jest: true,
   },
+  ignorePatterns: ['**/*.ejs'],
+  overrides: [
+    {
+      files: ['**/*.ejs'],
+      rules: {},
+    },
+  ],
   rules: {
     '@typescript-eslint/naming-convention': [
       'error',
