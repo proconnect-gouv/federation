@@ -13,7 +13,7 @@
     <% if(locals.notifications){ %> 
     <div id="notifications"> 
       <div>
-        <img src="/img/warning.svg" alt="icone de mise en garde"/>
+        <img src="/img/warning.svg" alt="icone de mise en garde" />
         <span> <%- locals.notifications.message %> </span>
       </div>
     </div>
@@ -21,37 +21,24 @@
     <div id="mire">
       <div class="content">
         <main>    
-          <h1>Je choisis un moyen pour me connecter sur :</h1>
+          <h1>Je choisis un moyen pour me connecter sur:</h1>
           <h2><%= locals.spName %></h2>
           <div id="idp-list" class="main__providers">
-            <% locals.providers.filter((p) => p.display).filter((p) => p.uid !== 'eidas-bridge').forEach((provider) => { %>
-              <form
-                method="POST"
-                action="/api/v2/redirect-to-idp"
-                id="fs-request-<%= provider.uid %>"
-                name="fs-request"
-              >
+            <% locals.providers.filter(p => p.display).filter(p => p.uid !== 'eidas-bridge').forEach(provider => { %>
+              <form  method="POST" action="/api/v2/redirect-to-idp" id="fs-request-<%= provider.uid %>"name="fs-request">
                 <div class="identity-provider">
-                  <button
-                    id="idp-<%= provider.uid %>"
-                    <% if (!provider.active) { %>
-                      disabled
-                    <% } %>
-                  >
+                  <button id="idp-<%= provider.uid %>" <%= (!provider.active)? 'disabled' : '' %>>
                     <div class="icon-container">
-                      <img src='/img/fi/<%-provider.image%>' alt="Logo de <%= provider.name %>" onerror="this.src='/img/fi/fi-placeholder.svg'"/>
+                      <img src='/img/fi/<%-provider.image%>' alt="Logo de <%= provider.name %>" onerror="this.src='/img/fi/fi-placeholder.svg'" />
                     </div>
-                    <span>
-                      <% if (!provider.active) { %>
-                        <%= provider.title %> est actuellement indisponible
-                      <% } else {%>
-                        J’utilise l’application 
-                        <strong><%= provider.title %></strong>
-                      <% } %>
+                    <span id="idp-<%= provider.uid %>-title">
+                      <%- (!provider.active) ? 
+                        `<strong>${provider.title}</strong> est actuellement indisponible` : 
+                        `J’utilise l’application <strong>${provider.title}</strong>`;
+                      %>
                     </span>
                   </button>
                 </div>
-
                 <input type="hidden" name="providerUid" id="providerUid" value="<%= provider.uid %>" />
                 <input type="hidden" name="uid" id="uid" value="<%= locals.uid %>" />
                 <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
@@ -60,41 +47,34 @@
             <% }) %>
 
             <% if(eidasBridgeProvider) {%>
-            <span id="or-label">or</span>
-            <form
-            method="POST"
-            action="/api/v2/redirect-to-idp"
-            id="fs-request-<%= eidasBridgeProvider.uid %>"
-            name="fs-request"
-          >
-            <div class="identity-provider overflow">
-              <button
-                id="idp-<%= eidasBridgeProvider.uid %>">
-                <div class="icon-container">
-                  <img src='/img/fi/fi-europe.svg' alt="Logo de <%= eidasBridgeProvider.name %>"/>
-                </div>
-                <span>
-                  Sign in with <strong>a digital identity from another European country</strong>
-                </span>
-              </button>
-            </div>
-            <input type="hidden" name="providerUid" id="providerUid" value="<%= eidasBridgeProvider.uid %>" />
-            <input type="hidden" name="uid" id="uid" value="<%= locals.uid %>" />
-            <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
-            <input type="hidden" name="scope" value="<%= locals.scope %>" />
-          </form>
+              <span id="or-label">or</span>
+              <form method="POST" action="/api/v2/redirect-to-idp" id="fs-request-<%= eidasBridgeProvider.uid %>" name="fs-request">
+              <div class="identity-provider overflow">
+                <button
+                  id="idp-<%= eidasBridgeProvider.uid %>">
+                  <div class="icon-container">
+                    <img src='/img/fi/fi-europe.svg' alt="Logo de <%= eidasBridgeProvider.name %>"/>
+                  </div>
+                  <span>
+                    Sign in with <strong>a digital identity from another European country</strong>
+                  </span>
+                </button>
+              </div>
+              <input type="hidden" name="providerUid" id="providerUid" value="<%= eidasBridgeProvider.uid %>" />
+              <input type="hidden" name="uid" id="uid" value="<%= locals.uid %>" />
+              <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
+              <input type="hidden" name="scope" value="<%= locals.scope %>" />
+            </form>
           <% } %>
+          
           </div>
-
           <div class="tuto-container">
-            <h3>
-              Pourquoi je ne retrouve pas mes comptes habituels ?
-            </h3>
+            <h3>Pourquoi je ne retrouve pas mes comptes habituels ?</h3>
             <div class="logos-container">
-              <img src="/img/logo-impots-couleurs.svg" alt="Logo impots">
-              <img src="/img/logo-ameli-couleurs.svg" alt="Logo ameli">
-              <img src="/img/logo-msa-couleurs.svg" alt="Logo Msa">
-              <img src="/img/logo-mcm.svg" alt="Logo Mobile connect et moi">
+              <img src="/img/logo-impots-couleurs.svg" alt="Logo impots" />
+              <img src="/img/logo-ameli-couleurs.svg" alt="Logo ameli" />
+              <img src="/img/logo-msa-couleurs.svg" alt="Logo Msa" />
+              <img src="/img/logo-mcm.svg" alt="Logo Mobile connect et moi" />
             </div>
             <p>
               FranceConnect+ est la nouvelle solution FranceConnect qui vous permet d’accéder à encore plus de démarches en ligne. 
@@ -111,7 +91,6 @@
     </div>
     <%- include('partials/footer.ejs'); %>
     <%- include('partials/numeric-identity.ejs'); %>
-
     <script type="text/javascript" src="/js/numeric-identity.js" defer></script>
   </body>
 </html>

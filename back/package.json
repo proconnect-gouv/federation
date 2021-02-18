@@ -109,6 +109,11 @@
     "typedoc": "^0.20.0",
     "typescript": "^4.0.0"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "echo \"[Husky] pre-commit\" && yarn lint"
+    }
+  },
   "jest": {
     "setupFiles": [
       "./jest-setup-file.ts"
