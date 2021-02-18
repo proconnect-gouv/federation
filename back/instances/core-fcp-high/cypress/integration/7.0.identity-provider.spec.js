@@ -36,6 +36,25 @@ describe('Idp activation & visibility', () => {
     });
   });
 
+  it('should display the right title either for activated or disabled IdPs', () => {
+    // Given
+    cy.visit(getAuthorizeUrl());
+    cy.url().should('match', mireUrl);
+    // Then
+    cy.get('#idp-list').within(() => {
+      // Control that title is set
+      cy.get(`#idp-${idpId}1v2-title`).should('exist');
+      cy.get(`#idp-${idpId}-desactive-visible-title`).should('exist');
+      // Control that the right text is set
+      cy.get(`#idp-${idpId}1v2-title`).contains(
+        'J’utilise l’application Identity Provider - eIDAS élevé - discov - crypt',
+      );
+      cy.get(`#idp-${idpId}-desactive-visible-title`).contains(
+        'FI désactivé mais visible est actuellement indisponible',
+      );
+    });
+  });
+
   it('should not do anything when click on disabled IdP', () => {
     // Given
     cy.visit(getAuthorizeUrl());
@@ -90,6 +109,7 @@ describe('Idp activation & visibility', () => {
     cy.url().should('contain', '/api/v2/redirect-to-idp');
     cy.hasError('Y020019');
   });
+
   describe('No app restart needed', () => {
     beforeEach(() => {
       cy.resetdb();
