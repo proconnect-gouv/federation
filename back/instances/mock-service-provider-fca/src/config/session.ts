@@ -5,10 +5,10 @@ import { SessionConfig } from '@fc/session';
 
 export default {
   cryptographyKey: process.env.USERINFO_CRYPT_KEY,
-  prefix: 'FCP-SESS:',
+  prefix: 'FCA-IDP-SESS:',
   cookieOptions: {
     signed: true,
-    sameSite: 'Strict',
+    sameSite: 'Lax',
     httpOnly: true,
     secure: true,
     maxAge: 600000, // 10 minutes
