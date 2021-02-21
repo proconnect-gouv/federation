@@ -6,8 +6,12 @@ eidas-bridge:
   variables:
     FC_ROOT: '$CI_BUILDS_DIR/france-connect'
     TZ: 'Europe/Paris'
-  dependencies:
-    - global
+  cache:
+    key: "${CI_PROJECT_ID}"
+    policy: pull-push
+    paths:
+      - back/yarn.lock
+      - back/node_modules/
   before_script:
     - if [ "$E2E" != "1" ]; then echo "E2E Skipped"; exit 0; fi;
     - rm -rf $FC_ROOT/fc-docker
@@ -21,6 +25,7 @@ eidas-bridge:
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc-docker/volumes/src; done
   script:
     - docker-stack up eidas
+    - docker-stack dep eidas
     - docker-stack start-all
     # ## -- Build like for prod
     #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
@@ -53,4 +58,4 @@ eidas-bridge:
       - back/instances/eidas-bridge/cypress/logs
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc-docker/docker-stack halt
-    - docker container prune --force && docker volume prune --force
+    - docker container prune --force

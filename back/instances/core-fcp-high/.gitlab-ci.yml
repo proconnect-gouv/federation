@@ -6,8 +6,12 @@ core-fcp-high:
   variables:
     FC_ROOT: '$CI_BUILDS_DIR/france-connect'
     TZ: 'Europe/Paris'
-  dependencies:
-    - global
+  cache:
+    key: "${CI_PROJECT_ID}"
+    policy: pull-push
+    paths:
+      - back/yarn.lock
+      - back/node_modules/
   before_script:
     - rm -rf $FC_ROOT/fc-docker
     - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
@@ -20,6 +24,7 @@ core-fcp-high:
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc-docker/volumes/src; done
   script:
     - docker-stack up core-v2
+    - docker-stack dep corev2
     - docker-stack start csmr-hsm rnipp fsp1v2 fsp2v2 fip1v2 corev2
     # ## -- Build like for prod
     #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
@@ -52,4 +57,4 @@ core-fcp-high:
       - back/instances/core-fcp-high/cypress/logs
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc-docker/docker-stack halt
-    - docker container prune --force && docker volume prune --force
+    - docker container prune --force
