@@ -11,11 +11,22 @@ import { Module } from '@nestjs/common';
 import {
   LightRequestService,
   LightResponseService,
-  LightCommonsService,
+  LightProtocolCommonsService,
+  LightProtocolXmlService,
 } from './services';
 
 @Module({
-  providers: [LightRequestService, LightResponseService, LightCommonsService],
-  exports: [LightRequestService, LightResponseService, LightCommonsService],
+  providers: [
+    LightRequestService,
+    LightResponseService,
+    LightProtocolCommonsService,
+    LightProtocolXmlService,
+  ],
+  exports: [
+    LightRequestService,
+    LightResponseService,
+    LightProtocolCommonsService,
+    LightProtocolXmlService,
+  ],
 })
 export class EidasLightProtocolModule {}

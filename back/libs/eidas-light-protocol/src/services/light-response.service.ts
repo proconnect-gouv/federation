@@ -1,53 +1,92 @@
 import * as _ from 'lodash';
-import { json2xml, xml2json } from 'xml-js';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
-import {
-  EidasResponse,
-  EidasResponseStatus,
-  EidasResponseAddress,
-  EidasResponseAttributes,
-  EidasResponseContext,
-} from '@fc/eidas';
-import { LightResponseXmlSelectors } from '../enums';
-import {
-  IJsonifiedLightResponseXml,
-  IJsonifiedXmlContent,
-  IJsonifiedXml,
-  IParsedToken,
-} from '../interfaces';
-import {
-  EidasJsonToXmlException,
-  EidasXmlToJsonException,
-} from '../exceptions';
+import { EidasResponse } from '@fc/eidas';
+import { IParsedToken, IPathsObject } from '../interfaces';
+import { EidasJsonToXmlException } from '../exceptions';
 import { EidasLightProtocolConfig } from '../dto';
-import { LightCommonsService } from './light-commons.service';
-
-/**
- * @todo #280 ETQ Bridge eIDAS je peux fournir et interpréter une LightResponse XML - Suite
- * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/280
- * This file is too big and need to be splitted in the future between
- * generics functions and business functions.
- */
+import { LightProtocolCommonsService } from './light-protocol-commons.service';
+import { LightProtocolXmlService } from './light-protocol-xml.service';
 @Injectable()
 export class LightResponseService {
   constructor(
     private readonly config: ConfigService,
-    private readonly lightCommons: LightCommonsService,
+    private readonly lightCommons: LightProtocolCommonsService,
+    private readonly lightXml: LightProtocolXmlService,
   ) {}
 
   /**
    * Convert light response from JSON to XML
-   * @param {EidasResponse} jsonData
+   * @param {EidasResponse} data
    */
-  fromJson(jsonData: EidasResponse): string {
+  formatResponse(eidasResponse: EidasResponse): string {
+    let pathsObject = this.lightXml.jsonToPathsObject(eidasResponse);
+
+    // Add lightResponse sub element
+    pathsObject = this.lightXml.replaceInPaths(
+      pathsObject,
+      /^/,
+      'lightResponse.',
+    );
+
+    // Create a definition attribute and a value attribute for each attribute
+    pathsObject = this.dissociateDefinitionsAndValues(pathsObject);
+
+    // Uppercase the definition of the identity attributes
+    pathsObject = this.lightXml.upperCaseFirstCharForProps(pathsObject, [
+      'definition',
+    ]);
+
+    // Add the namespace for eidas identity attributes
+    pathsObject = this.lightXml.prefixProps(
+      pathsObject,
+      ['definition'],
+      'http://eidas.europa.eu/attributes/naturalperson/',
+    );
+
+    // Inflate the attributes element
+    pathsObject = this.lightXml.replaceInPaths(
+      pathsObject,
+      'attributes.',
+      'attributes.attribute.',
+    );
+
+    // Add XML declaration fields
+    pathsObject = this.lightXml.addDeclarationFields(pathsObject);
+
+    // Add the namespace for subjectNameIdFormat attribute
+    pathsObject = this.lightXml.prefixProps(
+      pathsObject,
+      ['subjectNameIdFormat'],
+      'urn:oasis:names:tc:SAML:1.1:nameid-format:',
+    );
+
+    // Add the namespace for statusCode, subStatusCode attribute
+    pathsObject = this.lightXml.prefixProps(
+      pathsObject,
+      ['statusCode', 'subStatusCode'],
+      'urn:oasis:names:tc:SAML:2.0:status:',
+    );
+
+    // Add the namespace for levelOfAssurance attribute
+    pathsObject = this.lightXml.prefixProps(
+      pathsObject,
+      ['levelOfAssurance'],
+      'http://eidas.europa.eu/LoA/',
+    );
+
+    // Suffixe the lightResponse sub elements with "_text"
+    pathsObject = this.lightXml.replaceInPaths(
+      pathsObject,
+      /^lightResponse\.(.*)$/,
+      'lightResponse.$1._text',
+    );
+
+    // Convert the paths object back to an inflated JSON
+    const json = this.lightXml.pathsObjectToJson(pathsObject);
+
     try {
-      const options = { compact: true, ignoreComment: true, spaces: 2 };
-
-      const inflatedJson = this.inflateJson(jsonData);
-      const stringifiedJson = JSON.stringify(inflatedJson);
-
-      return json2xml(stringifiedJson, options);
+      return this.lightXml.jsonToXml(json);
     } catch (error) {
       throw new EidasJsonToXmlException(error);
     }
@@ -68,19 +107,69 @@ export class LightResponseService {
 
   /**
    * Convert light response XML to JSON
-   * @param {string} xmlDoc
+   * @param {string} xml
    */
-  toJson(xmlDoc: string): EidasResponse {
-    try {
-      const options = { compact: true, spaces: 2 };
+  parseResponse(xml: string): EidasResponse {
+    // Parse the XML to JSON
+    const json = this.lightXml.xmlToJson(xml);
 
-      const stringifiedJson = xml2json(xmlDoc, options);
-      const inflatedJson = JSON.parse(stringifiedJson);
+    // Flatten the JSON to a paths object format
+    let pathsObject = this.lightXml.jsonToPathsObject(json);
 
-      return this.deflateJson(inflatedJson);
-    } catch (error) {
-      throw new EidasXmlToJsonException(error);
-    }
+    // Remove the XML declaration header
+    pathsObject = this.lightXml.removeDeclarationFields(pathsObject);
+
+    // Transform single values to array in paths
+    pathsObject = this.lightXml.replaceInPaths(
+      pathsObject,
+      'value._text',
+      'value.0._text',
+    );
+
+    // Strip unecessary properties in paths
+    pathsObject = this.lightXml.replaceInPaths(
+      pathsObject,
+      'lightResponse.',
+      '',
+    );
+    pathsObject = this.lightXml.replaceInPaths(pathsObject, '._text', '');
+    pathsObject = this.lightXml.replaceInPaths(
+      pathsObject,
+      'attributes.attribute',
+      'attributes',
+    );
+
+    // Strip unnecessary url or urn elements in some props values
+    pathsObject = this.lightXml.stripUrlAndUrnForProps(pathsObject, [
+      'levelOfAssurance',
+      'subjectNameIdFormat',
+      'definition',
+      'statusCode',
+      'subStatusCode',
+    ]);
+
+    // Lowercase the first character of definition
+    pathsObject = this.lightXml.lowerCaseFirstCharForProps(pathsObject, [
+      'definition',
+    ]);
+
+    // Remap attributes to their corresponding definition
+    pathsObject = this.mapValuesToDefinition(pathsObject);
+
+    // remove unnecessary array in attributes
+    pathsObject = this.lightXml.replaceInPaths(
+      pathsObject,
+      /^attributes\.[0-9]+/,
+      'attributes',
+    );
+
+    // Transform failure boolean strings into booleans
+    pathsObject = this.failureAttributeToBoolean(pathsObject);
+
+    // Convert the paths object back to an inflated JSON
+    return (this.lightXml.pathsObjectToJson(
+      pathsObject,
+    ) as unknown) as EidasResponse;
   }
 
   parseToken(token: string): IParsedToken {
@@ -91,366 +180,92 @@ export class LightResponseService {
     return this.lightCommons.parseToken(token, lightResponseConnectorSecret);
   }
 
-  private inflateJson(json: EidasResponse): IJsonifiedLightResponseXml {
-    const inflatedJson: IJsonifiedLightResponseXml = {
-      _declaration: {
-        _attributes: {
-          version: '1.0',
-          encoding: 'UTF-8',
-          standalone: 'yes',
-        },
-      },
-      lightResponse: {},
+  private getMapValuesToDefinitionForPath(state: {
+    currentKey: string;
+  }): Function {
+    return (keyPath: string, value: unknown): Array<[string, unknown]> => {
+      if (keyPath.match(/definition/) && typeof value === 'string') {
+        state.currentKey = keyPath.replace('definition', value);
+      } else if (keyPath.match(/value/)) {
+        const [index] = keyPath.match(/value\.([0-9]+)/)[1];
+
+        return [[`${state.currentKey}.${index}`, value]];
+      } else {
+        return [[keyPath, value]];
+      }
+    };
+  }
+
+  private mapValuesToDefinition(pathsObject: IPathsObject): IPathsObject {
+    const state = {
+      currentKey: undefined,
     };
 
-    this.inflateContext(inflatedJson, json);
-    this.inflateStatus(inflatedJson, json.status);
-
-    if (json.status.failure === false) {
-      this.inflateAttributes(inflatedJson, json.attributes);
-    } else {
-      // The EidasNode need an empty "attributes" descriptor in case of failure because of the xsd scheme
-      inflatedJson.lightResponse.attributes = {};
-    }
-
-    return inflatedJson;
+    return this.lightXml.forEachPath(
+      pathsObject,
+      this.getMapValuesToDefinitionForPath(state),
+    );
   }
 
-  private deflateJson(inflatedJson: IJsonifiedLightResponseXml): EidasResponse {
-    const deflatedJson: EidasResponse = {
-      ...this.deflateContext(inflatedJson),
-      status: this.deflateStatus(inflatedJson),
+  private getDissociateDefinitionsAndValuesForPath(state: {
+    index: number;
+    lastDefinition?: string;
+  }): Function {
+    return (keyPath: string, value: unknown): Array<[string, unknown]> => {
+      if (!keyPath.match(/attributes\.[a-zA-Z]+/)) {
+        return [[keyPath, value]];
+      }
+
+      const [, definition] = keyPath.match(/attributes\.([a-zA-Z]+)/);
+
+      if (state.lastDefinition && definition !== state.lastDefinition) {
+        state.index++;
+      }
+      state.lastDefinition = definition;
+
+      const toReplace = new RegExp(`${definition}\\.[0-9]+`);
+      const definitionKey = keyPath.replace(
+        toReplace,
+        `${state.index}\.definition`,
+      );
+      const valueKey = keyPath.replace(definition, `${state.index}\.value`);
+
+      return [
+        [definitionKey, definition],
+        [valueKey, value],
+      ];
+    };
+  }
+
+  private dissociateDefinitionsAndValues(
+    pathsObject: IPathsObject,
+  ): IPathsObject {
+    const state = {
+      lastDefinition: undefined,
+      index: 0,
     };
 
-    if (deflatedJson.status.failure === false) {
-      deflatedJson.attributes = this.deflateAttributes(inflatedJson);
-    }
-
-    return deflatedJson;
+    return this.lightXml.forEachPath(
+      pathsObject,
+      this.getDissociateDefinitionsAndValuesForPath(state),
+    );
   }
 
-  private inflateStatus(
-    inflatedResponse: IJsonifiedLightResponseXml,
-    status: EidasResponseStatus,
-  ): IJsonifiedLightResponseXml {
-    _.set(
-      inflatedResponse,
-      LightResponseXmlSelectors.STATUS_FAILURE,
-      `${status.failure}`,
-    );
-
-    if (status.statusCode) {
-      _.set(
-        inflatedResponse,
-        LightResponseXmlSelectors.STATUS_CODE,
-        `urn:oasis:names:tc:SAML:2.0:status:${status.statusCode}`,
-      );
-    }
-
-    if (status.subStatusCode) {
-      _.set(
-        inflatedResponse,
-        LightResponseXmlSelectors.SUB_STATUS_CODE,
-        `urn:oasis:names:tc:SAML:2.0:status:${status.subStatusCode}`,
-      );
-    }
-
-    if (status.statusMessage) {
-      _.set(
-        inflatedResponse,
-        LightResponseXmlSelectors.STATUS_MESSAGE,
-        `${status.statusMessage}`,
-      );
-    }
-
-    return inflatedResponse;
-  }
-
-  private deflateStatus(
-    inflatedResponse: IJsonifiedLightResponseXml,
-  ): EidasResponseStatus {
-    const status: EidasResponseStatus = {
-      failure:
-        _.get(inflatedResponse, LightResponseXmlSelectors.STATUS_FAILURE) !==
-        'false',
-    };
-
-    const statusCode = _.get(
-      inflatedResponse,
-      LightResponseXmlSelectors.STATUS_CODE,
-    );
-    if (statusCode) {
-      status.statusCode = this.lightCommons.getLastElementInUrlOrUrn(
-        statusCode,
-      );
-    }
-
-    const subStatusCode = _.get(
-      inflatedResponse,
-      LightResponseXmlSelectors.SUB_STATUS_CODE,
-    );
-    if (subStatusCode) {
-      status.subStatusCode = this.lightCommons.getLastElementInUrlOrUrn(
-        subStatusCode,
-      );
-    }
-
-    const statusMessage = _.get(
-      inflatedResponse,
-      LightResponseXmlSelectors.STATUS_MESSAGE,
-    );
-    if (statusMessage) {
-      status.statusMessage = statusMessage;
-    }
-
-    return status;
-  }
-
-  private inflateContext(
-    inflatedResponse: IJsonifiedLightResponseXml,
-    json: EidasResponse,
-  ) {
-    _.set(inflatedResponse, LightResponseXmlSelectors.ID, json.id);
-
-    _.set(
-      inflatedResponse,
-      LightResponseXmlSelectors.IN_RESPONSE_TO_ID,
-      json.inResponseToId,
-    );
-
-    _.set(inflatedResponse, LightResponseXmlSelectors.ISSUER, json.issuer);
-
-    if (json.ipAddress) {
-      _.set(
-        inflatedResponse,
-        LightResponseXmlSelectors.IP_ADDRESS,
-        json.ipAddress,
-      );
-    }
-
-    if (json.relayState) {
-      _.set(
-        inflatedResponse,
-        LightResponseXmlSelectors.RELAY_STATE,
-        json.relayState,
-      );
-    }
-
-    if (!json.status.failure) {
-      _.set(
-        inflatedResponse,
-        LightResponseXmlSelectors.SUBJECT_NAME_ID_FORMAT,
-        `urn:oasis:names:tc:SAML:1.1:nameid-format:${json.subjectNameIdFormat}`,
-      );
-
-      _.set(inflatedResponse, LightResponseXmlSelectors.SUBJECT, json.subject);
-
-      _.set(
-        inflatedResponse,
-        LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
-        `http://eidas.europa.eu/LoA/${json.levelOfAssurance}`,
-      );
-    }
-
-    return inflatedResponse;
-  }
-
-  private deflateContext(
-    inflatedResponse: IJsonifiedLightResponseXml,
-  ): EidasResponseContext {
-    const context: EidasResponseContext = {
-      id: _.get(inflatedResponse, LightResponseXmlSelectors.ID),
-      issuer: _.get(inflatedResponse, LightResponseXmlSelectors.ISSUER),
-      subject: _.get(inflatedResponse, LightResponseXmlSelectors.SUBJECT),
-      inResponseToId: _.get(
-        inflatedResponse,
-        LightResponseXmlSelectors.IN_RESPONSE_TO_ID,
-      ),
-    };
-
-    const levelOfAssurance = _.get(
-      inflatedResponse,
-      LightResponseXmlSelectors.LEVEL_OF_ASSURANCE,
-    );
-    if (levelOfAssurance) {
-      context.levelOfAssurance = this.lightCommons.getLastElementInUrlOrUrn(
-        levelOfAssurance,
-      );
-    }
-
-    const subjectNameIdFormat = _.get(
-      inflatedResponse,
-      LightResponseXmlSelectors.SUBJECT_NAME_ID_FORMAT,
-    );
-    if (subjectNameIdFormat) {
-      context.subjectNameIdFormat = this.lightCommons.getLastElementInUrlOrUrn(
-        subjectNameIdFormat,
-      );
-    }
-
-    const relayState = _.get(
-      inflatedResponse,
-      LightResponseXmlSelectors.RELAY_STATE,
-    );
-    if (relayState) {
-      context.relayState = relayState;
-    }
-
-    const ipAddress = _.get(
-      inflatedResponse,
-      LightResponseXmlSelectors.IP_ADDRESS,
-    );
-    if (ipAddress) {
-      context.ipAddress = ipAddress;
-    }
-
-    return context;
-  }
-
-  private inflateAttributes(
-    inflatedResponse: IJsonifiedLightResponseXml,
-    attributes: EidasResponseAttributes,
-  ): IJsonifiedLightResponseXml {
-    _.set(
-      inflatedResponse,
-      LightResponseXmlSelectors.ATTRIBUTES,
-      Object.entries(attributes).map(this.buildAttribute.bind(this)),
-    );
-
-    return inflatedResponse;
-  }
-
-  private deflateAttributes(
-    inflatedResponse: IJsonifiedLightResponseXml,
-  ): EidasResponseAttributes {
-    const inflatedAttributes = _.get(
-      inflatedResponse,
-      LightResponseXmlSelectors.ATTRIBUTES,
-    );
-
-    const attributes: EidasResponseAttributes = inflatedAttributes.reduce(
-      this.getAttribute.bind(this),
-      {},
-    );
-
-    return attributes;
-  }
-
-  private buildAttribute([key, content]: [string, unknown]) {
-    const attribute = {};
-
-    let value;
-    if (key === 'currentAddress') {
-      value = this.buildAddress(content as EidasResponseAddress);
+  private failureAttributeToBooleanForPath(
+    keyPath: string,
+    value: unknown,
+  ): Array<[string, unknown]> {
+    if (keyPath.match('status.failure')) {
+      return [[keyPath, value === 'true']];
     } else {
-      value = this.buildValues(content as string[]);
-    }
-
-    _.set(
-      attribute,
-      LightResponseXmlSelectors.ATTRIBUTE_DEFINITION,
-      `http://eidas.europa.eu/attributes/naturalperson/${_.upperFirst(key)}`,
-    );
-
-    _.set(attribute, LightResponseXmlSelectors.ATTRIBUTE_VALUE, value);
-
-    return attribute;
-  }
-
-  private getAttribute(
-    attributes: object,
-    inflatedAttribute: IJsonifiedXml,
-  ): object {
-    /**
-     * We must cast manually to string since lodash has not updated his typescript
-     * past 2.8.
-     * @see https://github.com/DefinitelyTyped/DefinitelyTyped/issues/25758
-     */
-    const inflatedKey: string = (_.get(
-      inflatedAttribute,
-      LightResponseXmlSelectors.ATTRIBUTE_DEFINITION,
-    ) as unknown) as string;
-    const inflatedValue: IJsonifiedXmlContent = (_.get(
-      inflatedAttribute,
-      LightResponseXmlSelectors.ATTRIBUTE_VALUE,
-    ) as unknown) as IJsonifiedXmlContent;
-
-    /**
-     * This extract everything after the last "/"
-     * Then set the first letter in lowercase
-     */
-    const key = _.lowerFirst(
-      this.lightCommons.getLastElementInUrlOrUrn(inflatedKey),
-    );
-
-    if (key === 'currentAddress') {
-      attributes[key] = this.getAddress(inflatedValue);
-    } else {
-      attributes[key] = this.getValues(
-        inflatedValue as IJsonifiedXmlContent | IJsonifiedXmlContent[],
-      );
-    }
-
-    return attributes;
-  }
-
-  private buildAddress(address: EidasResponseAddress): string {
-    const builtAddress = Object.entries(address)
-      .map(([key, content]: string[]) => {
-        const tag = `eidas-natural:${_.upperFirst(key)}`;
-        return `<${tag}>${content}</${tag}>`;
-      })
-      .join('\n');
-
-    return Buffer.from(`${builtAddress}\n`, 'utf8').toString('base64');
-  }
-
-  private getAddress({
-    _text: inflatedAddress,
-  }: IJsonifiedXmlContent): EidasResponseAddress {
-    const decodedAddress = Buffer.from(inflatedAddress, 'base64').toString(
-      'utf8',
-    );
-
-    const addressElementsList = _.compact(decodedAddress.split('\n'));
-
-    return addressElementsList.reduce(
-      (
-        address: EidasResponseAddress,
-        element: string,
-      ): EidasResponseAddress => {
-        const [match, key, value] =
-          /^<eidas-natural:([a-zA-Z]+)>([a-zA-Z0-9\s]+)<\/eidas-natural:[a-zA-Z]+>$/.exec(
-            element,
-          ) || [];
-
-        if (match) {
-          address[_.lowerFirst(key)] = value;
-        }
-
-        return address;
-      },
-      {},
-    );
-  }
-
-  private buildValues(
-    content: string[],
-  ): IJsonifiedXmlContent | IJsonifiedXmlContent[] {
-    if (content.length > 1) {
-      return content.map((value) => ({ _text: value }));
-    } else {
-      return { _text: content[0] };
+      return [[keyPath, value]];
     }
   }
 
-  private getValues(
-    inflatedContent: IJsonifiedXmlContent | IJsonifiedXmlContent[],
-  ): string[] {
-    if (inflatedContent instanceof Array) {
-      return inflatedContent.map(({ _text }) => _text);
-    } else {
-      return [inflatedContent._text];
-    }
+  private failureAttributeToBoolean(pathsObject: IPathsObject): IPathsObject {
+    return this.lightXml.forEachPath(
+      pathsObject,
+      this.failureAttributeToBooleanForPath,
+    );
   }
 }
