@@ -42,12 +42,12 @@ describe('EidasProviderService', () => {
 
   const lightRequestServiceMock = {
     parseToken: jest.fn(),
-    toJson: jest.fn(),
+    parseRequest: jest.fn(),
   };
 
   const lightResponseServiceMock = {
     generateToken: jest.fn(),
-    fromJson: jest.fn(),
+    formatResponse: jest.fn(),
   };
 
   const proxyServiceRequestCacheMock = {
@@ -284,8 +284,10 @@ describe('EidasProviderService', () => {
       service.parseLightRequest(lightRequest);
 
       // expect
-      expect(lightRequestServiceMock.toJson).toHaveBeenCalledTimes(1);
-      expect(lightRequestServiceMock.toJson).toHaveBeenCalledWith(lightRequest);
+      expect(lightRequestServiceMock.parseRequest).toHaveBeenCalledTimes(1);
+      expect(lightRequestServiceMock.parseRequest).toHaveBeenCalledWith(
+        lightRequest,
+      );
     });
 
     it('should return the request parsed as json', () => {
@@ -293,7 +295,7 @@ describe('EidasProviderService', () => {
       const request = {
         id: 'id',
       };
-      lightRequestServiceMock.toJson.mockReturnValueOnce(request);
+      lightRequestServiceMock.parseRequest.mockReturnValueOnce(request);
 
       // action
       const result = service.parseLightRequest(lightRequest);
@@ -436,13 +438,13 @@ describe('EidasProviderService', () => {
       );
     });
 
-    it('should generate build a light response XML with the light response service "fromJson" function', () => {
+    it('should generate build a light response XML with the light response service "formatResponse" function', () => {
       // action
       service.prepareLightResponse(responseMock);
 
       // expect
-      expect(lightResponseServiceMock.fromJson).toHaveBeenCalledTimes(1);
-      expect(lightResponseServiceMock.fromJson).toHaveBeenCalledWith(
+      expect(lightResponseServiceMock.formatResponse).toHaveBeenCalledTimes(1);
+      expect(lightResponseServiceMock.formatResponse).toHaveBeenCalledWith(
         responseMock,
       );
     });

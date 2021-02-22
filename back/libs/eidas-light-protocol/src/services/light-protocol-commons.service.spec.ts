@@ -7,12 +7,12 @@ import {
   EidasOversizedTokenException,
   EidasInvalidTokenChecksumException,
 } from '../exceptions';
-import { LightCommonsService } from './light-commons.service';
+import { LightProtocolCommonsService } from './light-protocol-commons.service';
 
 jest.mock('moment', () => jest.fn());
 
-describe('LightCommonsService', () => {
-  let service: LightCommonsService;
+describe('LightProtocolCommonsService', () => {
+  let service: LightProtocolCommonsService;
 
   const issuer = 'yeltsA-kciR';
   const id = 'NGGYU';
@@ -36,13 +36,15 @@ describe('LightCommonsService', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LightCommonsService, ConfigService],
+      providers: [LightProtocolCommonsService, ConfigService],
     })
       .overrideProvider(ConfigService)
       .useValue(mockConfigService)
       .compile();
 
-    service = module.get<LightCommonsService>(LightCommonsService);
+    service = module.get<LightProtocolCommonsService>(
+      LightProtocolCommonsService,
+    );
   });
 
   it('should be defined', () => {

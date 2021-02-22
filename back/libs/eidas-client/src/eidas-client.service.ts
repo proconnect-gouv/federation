@@ -98,7 +98,7 @@ export class EidasClientService {
       requested.id,
       connectorRequestIssuer,
     );
-    const lightRequest = this.lightRequest.fromJson(requested);
+    const lightRequest = this.lightRequest.formatRequest(requested);
 
     return {
       token,
@@ -146,6 +146,6 @@ export class EidasClientService {
    * @returns The response as a more neutral and understandable JSON
    */
   parseLightResponse(lightResponse: string): EidasResponse {
-    return this.lightResponse.toJson(lightResponse);
+    return this.lightResponse.parseResponse(lightResponse);
   }
 }
