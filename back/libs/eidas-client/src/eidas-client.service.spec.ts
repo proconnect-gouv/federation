@@ -42,12 +42,12 @@ describe('EidasClientService', () => {
 
   const lightRequestServiceMock = {
     generateToken: jest.fn(),
-    fromJson: jest.fn(),
+    formatRequest: jest.fn(),
   };
 
   const lightResponseServiceMock = {
     parseToken: jest.fn(),
-    toJson: jest.fn(),
+    parseResponse: jest.fn(),
   };
 
   const connectorRequestCacheMock = {
@@ -317,13 +317,13 @@ describe('EidasClientService', () => {
       );
     });
 
-    it('should generate build a light request XML with the light request service "fromJson" function', () => {
+    it('should generate build a light request XML with the light request service "formatRequest" function', () => {
       // action
       service.prepareLightRequest(requestMock);
 
       // expect
-      expect(lightRequestServiceMock.fromJson).toHaveBeenCalledTimes(1);
-      expect(lightRequestServiceMock.fromJson).toHaveBeenCalledWith(
+      expect(lightRequestServiceMock.formatRequest).toHaveBeenCalledTimes(1);
+      expect(lightRequestServiceMock.formatRequest).toHaveBeenCalledWith(
         requestMock,
       );
     });
@@ -413,13 +413,13 @@ describe('EidasClientService', () => {
   describe('parseLightResponse', () => {
     const lightResponse = 'Tchoo ! tchoo ! Response is comming !';
 
-    it('should parse the light response using the toJson method from the light request service', () => {
+    it('should parse the light response using the parseResponse method from the light request service', () => {
       // action
       service.parseLightResponse(lightResponse);
 
       // expect
-      expect(lightResponseServiceMock.toJson).toHaveBeenCalledTimes(1);
-      expect(lightResponseServiceMock.toJson).toHaveBeenCalledWith(
+      expect(lightResponseServiceMock.parseResponse).toHaveBeenCalledTimes(1);
+      expect(lightResponseServiceMock.parseResponse).toHaveBeenCalledWith(
         lightResponse,
       );
     });
@@ -429,7 +429,7 @@ describe('EidasClientService', () => {
       const response = {
         id: 'id',
       };
-      lightResponseServiceMock.toJson.mockReturnValueOnce(response);
+      lightResponseServiceMock.parseResponse.mockReturnValueOnce(response);
 
       // action
       const result = service.parseLightResponse(lightResponse);

@@ -10,7 +10,7 @@ import {
 import { IParsedToken } from '../interfaces';
 
 @Injectable()
-export class LightCommonsService {
+export class LightProtocolCommonsService {
   constructor(private readonly config: ConfigService) {}
 
   /**
