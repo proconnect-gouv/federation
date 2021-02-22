@@ -82,7 +82,7 @@ export class EidasProviderService {
    * @returns The request as a more neutral and understandable JSON
    */
   parseLightRequest(lightRequest: string): EidasRequest {
-    return this.lightRequest.toJson(lightRequest);
+    return this.lightRequest.parseRequest(lightRequest);
   }
 
   /**
@@ -145,7 +145,7 @@ export class EidasProviderService {
       response.id,
       proxyServiceResponseIssuer,
     );
-    const lightResponse = this.lightResponse.fromJson(response);
+    const lightResponse = this.lightResponse.formatResponse(response);
 
     return {
       token,
