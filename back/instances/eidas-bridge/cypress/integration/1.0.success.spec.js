@@ -56,7 +56,7 @@ describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
         {
           name: 'PersonIdentifier',
           value:
-            '[FR/BE/1922ce64ade97e2457332f1d6f744eca5e2ad286616b72d636b0a8ba62f5fb68v1]',
+            '[FR/BE/78b6eaf25004bd40b8105be6281d633552fd59b8c941ae23bbdcd0e2fbcb6bdev1]',
         },
         { name: 'PlaceOfBirth', value: '[75117]' },
       ],
