@@ -75,6 +75,7 @@ export class OidcClientController {
   ): Promise<void> {
     const {
       scope,
+      claims,
       providerUid,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -108,6 +109,7 @@ export class OidcClientController {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
       nonce,
+      claims,
     );
 
     const { name: idpName } = await this.identityProvider.getById(providerUid);
@@ -173,11 +175,12 @@ export class OidcClientController {
     this.tracking.track(OidcClientUserinfoEvent, req);
 
     // BUSINESS: Locally store received identity
-    const { acr } = tokenSet.claims();
+    const { acr, amr } = tokenSet.claims();
 
     this.session.patch(uid, {
       idpIdentity,
       idpAcr: acr,
+      amr,
       idpAccessToken: accessToken,
     });
 

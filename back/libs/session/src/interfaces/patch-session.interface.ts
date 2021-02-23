@@ -17,6 +17,7 @@ export interface IPatchSession {
   /** identitty FROM identity provider */
   idpIdentity?: IOidcIdentity;
 
+  amr?: string[];
   csrfToken?: string;
   idpAccessToken?: string;
 }

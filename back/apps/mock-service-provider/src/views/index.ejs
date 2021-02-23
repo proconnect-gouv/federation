@@ -35,6 +35,21 @@
           </div>
         <% }) %>
 
+        <h2>Claims</h2>
+        <% ['amr'].forEach(elem => { %>
+          <div class="claim-input-wrapper">
+            <input
+              id="claim_<%=elem%>"
+              type="checkbox"
+              name="selected-claim"
+              value="<%=elem%>"
+              checked
+              onChange="updateClaim()"
+            />
+            <label for="claim_<%=elem%>"><%=elem%></label>
+          </div>
+        <% }) %>
+
         <h2>ACR</h2>
         <select name="acr" id="acrSelector" onChange="updateAcr()">
           <% ['eidas2', 'eidas1', 'eidas2', 'eidas3', 'rgs1', 'rgs2', 'rgs3'].forEach(acr => { %>
@@ -48,6 +63,7 @@
         <form action="/redirect-to-idp" method="POST">
           <input type="text" name="scope" value="" />
           <input type="text" name="acr_values" value="" />
+          <input type="text" name="claims" value="" />
           <input type="text" name="providerUid" value="<%=locals.params.uid%>" />
 
           <div class="btn no-pad">
@@ -76,6 +92,7 @@
           <input type="hidden" name="state" value="<%=locals.params.state;%>" />
           <input type="hidden" name="nonce" value="<%=locals.params.nonce;%>" />
           <input type="text" name="acr_values" value="" />
+          <input type="text" name="claims" value="" />
           <input type="text" name="scope" value="" />
 
           <button
@@ -112,6 +129,29 @@
           .forEach((elem) => (elem.value = scope));
       }
 
+      function transformClaimsToJsonString (claims) {
+        const values = claims.reduce((acc, key) => ({ ...acc, [key]: { essential: true }}), {});
+        const json = JSON.stringify({ id_token: values });
+        return json;
+      }
+
+      function getClaims() {
+        const selector = 'input[name="selected-claim"]:checked';
+        const elements = [...document.querySelectorAll(selector)];
+        return elements.map(elem => elem.value);
+      }
+
+      function updateClaim() {
+        const claims = getClaims();
+        const claimsAreValid = claims && claims.length > 0;
+        const json = !claimsAreValid ? '' : transformClaimsToJsonString(claims);
+        const selector = 'input[name=claims]';
+        const elements = document.querySelectorAll(selector);
+        elements.forEach((elem) => {
+          elem.value = json;
+        });
+      }
+
       function updateAcr() {
         const acr = document.getElementById('acrSelector').value;
         document.querySelectorAll('input[name="acr_values"]').forEach((elem) => {
@@ -120,6 +160,7 @@
       }
 
       updateAcr();
+      updateClaim();
       updateScope();
     </script>
   </body>
