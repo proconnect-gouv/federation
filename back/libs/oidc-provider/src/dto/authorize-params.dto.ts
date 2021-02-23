@@ -26,6 +26,10 @@ export class AuthorizeParamsDTO {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly acr_values: string;
 
+  @IsOptional()
+  @IsString()
+  readonly claims?: string;
+
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -60,6 +60,7 @@ describe('MockServiceProviderController', () => {
   };
   const scopeMock = 'openid profile';
   const acrMock = 'acrMock';
+  const claimsMock = 'claimsMock';
 
   const identityProviderMock = {
     getList: jest.fn(),
@@ -131,6 +132,7 @@ describe('MockServiceProviderController', () => {
       providerUid: 'providerUidMock',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'acrMock',
+      claims: 'claimsMock',
     });
 
     sessionMock.get.mockResolvedValue(sessionDataMock);
@@ -138,7 +140,11 @@ describe('MockServiceProviderController', () => {
     sessionMock.getId.mockReturnValue(sessionIdMock);
 
     cryptographyMock.genRandomString.mockReturnValue(randomStringMock);
-    configMock.get.mockReturnValue({ scope: scopeMock, acr: acrMock });
+    configMock.get.mockReturnValue({
+      scope: scopeMock,
+      acr: acrMock,
+      claims: claimsMock,
+    });
     identityProviderMock.getList.mockResolvedValue(identityProviderList);
   });
 
@@ -402,6 +408,7 @@ describe('MockServiceProviderController', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'acrMock',
         nonceMock,
+        'claimsMock',
       );
     });
 
@@ -422,6 +429,7 @@ describe('MockServiceProviderController', () => {
           nonce: nonceMock,
           uid: 'providerUidMock',
           acr: 'acrMock',
+          claims: 'claimsMock',
           // eslint-disable-next-line @typescript-eslint/naming-convention
           redirect_uri: redirect_uris[0],
           scope: scopeMock,

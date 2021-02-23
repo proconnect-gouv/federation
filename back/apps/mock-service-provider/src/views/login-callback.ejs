@@ -14,7 +14,7 @@
     </section>
 
 
-    <% 
+    <%
     const defaultTransform = value => value;
 
     const claims = [
@@ -68,7 +68,7 @@
           <br />
           <h2>Identité</h2>
           <br />
-          <div class="jumbotron">
+          <div id="html-output" class="jumbotron">
             <% if (locals.idpIdentity) { %>
 
               <% claims
@@ -77,10 +77,10 @@
                 <p>
                   <%= label %> : <strong><%= transform(locals.idpIdentity[key]) %></strong>
                 </p>
-              
+
               <% }); %>
 
-                
+
               <% if (locals.idpIdentity.address) { %>
               <p>Addresse : <strong><%=locals.idpIdentity.address.street_address;%>,
                   <%=locals.idpIdentity.address.postal_code;%>
@@ -89,13 +89,14 @@
 
               <p>Nom d'usage : <strong><%=(locals.idpIdentity.preferred_username) ? locals.idpIdentity.preferred_username : '/';%></strong></p>
 
-              
+
               <% if (locals.idpIdentity.birthplace && locals.idpIdentity.birthcountry) { %>
                 <p>COG (lieu de naissance) : <strong><%=locals.idpIdentity.birthplace;%></strong></p>
               <% } %>
-              
+
               <p>COG (Pays de naissance) : <strong><%=locals.idpIdentity.birthcountry;%></strong></p>
               <p id="info-acr">ACR value : <strong><%=locals.idpAcr;%></strong></p>
+              <p id="info-acr">AMR value : <strong><%=locals.amr && locals.amr.join(' ') || 'N/A';%></strong></p>
 
             <% } else { %>
             <p class="col d-flex justify-content-center">
@@ -109,7 +110,7 @@
           <h2>JSON</h2>
           <br />
           <div class="jumbotron">
-            <pre id="json"><%- JSON.stringify(locals.idpIdentity, null, 2) %></pre>
+            <pre id="json-output"><%- JSON.stringify(locals.idpIdentity, null, 2) %></pre>
           </div>
         </section>
       </div>

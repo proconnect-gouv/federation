@@ -199,24 +199,31 @@ export function checkInformationsServiceProvider(identity) {
     birthdate,
     birthplace,
     birthcountry,
+    amr,
   } = identity;
 
-  cy.contains(`Sexe : ${gender}`);
-  cy.contains(`Prénom(s) : ${givenName}`);
-  cy.contains(`Nom(s) : ${familyName}`);
-  cy.contains(`Nom d'usage : ${preferredUsername}`);
-  cy.contains(`Date de naissance : ${birthdate}`);
+  cy.get('#html-output').within(() => {
+    cy.contains(`Sexe : ${gender}`);
+    cy.contains(`Prénom(s) : ${givenName}`);
+    cy.contains(`Nom(s) : ${familyName}`);
+    cy.contains(`Nom d'usage : ${preferredUsername}`);
+    cy.contains(`Date de naissance : ${birthdate}`);
 
-  if (birthplace) {
-    cy.contains(`COG (lieu de naissance) : ${birthplace}`);
-  }
+    if (birthplace) {
+      cy.contains(`COG (lieu de naissance) : ${birthplace}`);
+    }
 
-  if (birthcountry) {
-    cy.contains(`COG (Pays de naissance) : ${birthcountry}`);
-  }
+    if (birthcountry) {
+      cy.contains(`COG (Pays de naissance) : ${birthcountry}`);
+    }
+
+    if (amr) {
+      cy.contains(`AMR value : ${amr}`);
+    }
+  });
 }
 
-export function checkInStringifiedJson(key, value, selector = '#json') {
+export function checkInStringifiedJson(key, value, selector = '#json-output') {
   cy.get(selector).then((elem) => {
     const txt = elem.text().trim();
     const data = JSON.parse(txt);
@@ -325,7 +332,7 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
     acr_values: 'eidas3',
     nonce: 'nonceThatRespectsTheLengthWhichIsDefinedInTheDTOForKinematicWork',
   };
-  
+
   const params = {
     ...baseAuthorizeParams,
     ...overrideParams,
