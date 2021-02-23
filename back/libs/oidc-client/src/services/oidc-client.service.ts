@@ -46,6 +46,7 @@ export class OidcClientService {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values: string,
     nonce: string,
+    claims?: string,
   ): Promise<string> {
     const client: Client = await this.issuer.getClient(providerUid);
 
@@ -53,6 +54,7 @@ export class OidcClientService {
       scope,
       state,
       nonce,
+      claims,
       // oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,

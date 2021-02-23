@@ -62,6 +62,7 @@ export default {
       jwtUserinfo: { enabled: true },
       backchannelLogout: { enabled: true },
       revocation: { enabled: true },
+      claimsParameter: { enabled: true },
     },
     acceptQueryParamAccessTokens: true,
     ttl: {
@@ -72,6 +73,7 @@ export default {
     acrValues: ['eidas2', 'eidas3'],
     scopes: ['openid'],
     claims: {
+      amr: ['amr'],
       openid: ['sub'],
       gender: ['gender'],
       birthdate: ['birthdate'],

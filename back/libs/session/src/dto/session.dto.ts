@@ -3,6 +3,10 @@ import { IOidcIdentity } from '@fc/oidc';
 import { IsRegisteredHandler } from '@fc/feature-handler';
 
 export class SessionDto {
+  @IsString({ each: true })
+  @IsOptional()
+  readonly amr?: string;
+
   @IsString()
   @IsOptional()
   readonly sessionId?: string;
