@@ -170,6 +170,7 @@ describe('OidcClient Controller', () => {
         // oidc param
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
+        claims: 'json_stringified',
         nonce: nonceMock,
       };
 
@@ -197,6 +198,7 @@ describe('OidcClient Controller', () => {
         // oidc param
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
+        claims: 'json_stringified',
         nonce: nonceMock,
       };
 
@@ -232,6 +234,7 @@ describe('OidcClient Controller', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
         nonce: nonceMock,
+        claims: 'any_formatted_json_string',
       };
       sessionServiceMock.get.mockImplementationOnce(() => {
         throw new Error();
@@ -254,6 +257,7 @@ describe('OidcClient Controller', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
         nonce: nonceMock,
+        claims: 'any_formatted_json_string',
       };
       sessionServiceMock.get.mockReturnValueOnce('spId');
 
@@ -280,6 +284,7 @@ describe('OidcClient Controller', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           acr_values: 'eidas3',
           nonce: nonceMock,
+          claims: 'any_formatted_json_string',
         };
         const errorMock = new Error('New Error');
         sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
@@ -300,6 +305,7 @@ describe('OidcClient Controller', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           acr_values: 'eidas3',
           nonce: nonceMock,
+          claims: 'any_formatted_json_string',
         };
         sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
         isBlacklistedMock.mockReturnValueOnce(false);
@@ -325,7 +331,7 @@ describe('OidcClient Controller', () => {
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: 'id_token',
-        claims: jest.fn().mockReturnValueOnce({ acr: 'foo' }),
+        claims: jest.fn().mockReturnValueOnce({ acr: 'foo', arm: 'amr_value' }),
       });
       oidcClientServiceMock.getUserInfo.mockReturnValueOnce({
         sub: '1',

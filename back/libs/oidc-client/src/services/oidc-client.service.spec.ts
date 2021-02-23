@@ -144,13 +144,75 @@ describe('OidcClientService', () => {
       // When
       await service.getAuthorizeUrl(
         state,
-        nonce,
         scope,
         providerId,
         acr_values,
+        nonce,
       );
       // Then
       expect(authorizationUrlMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call authorizationUrl without claims parameters', async () => {
+      // Given
+      const state = 'someState';
+      const nonce = 'someNonce';
+      const scope = 'foo_scope bar_scope';
+      const providerId = 'myidp';
+      // oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const acr_values = 'eidas1';
+      service['createOidcClient'] = createOidcClientMock;
+      // When
+      await service.getAuthorizeUrl(
+        state,
+        scope,
+        providerId,
+        acr_values,
+        nonce,
+      );
+      // Then
+      expect(authorizationUrlMock).toHaveBeenCalledWith({
+        prompt: 'login',
+        state,
+        scope,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values,
+        nonce,
+        claims: undefined,
+      });
+    });
+
+    it('should call authorizationUrl with claims parameters', async () => {
+      // Given
+      const state = 'someState';
+      const nonce = 'someNonce';
+      const scope = 'foo_scope bar_scope';
+      const providerId = 'myidp';
+      // oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const acr_values = 'eidas1';
+      const claims = '{ id_token: { amr: { essential: true } } }';
+      service['createOidcClient'] = createOidcClientMock;
+      // When
+      await service.getAuthorizeUrl(
+        state,
+        scope,
+        providerId,
+        acr_values,
+        nonce,
+        claims,
+      );
+      // Then
+      expect(authorizationUrlMock).toHaveBeenCalledWith({
+        prompt: 'login',
+        state,
+        scope,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values,
+        nonce,
+        claims,
+      });
     });
 
     it('should resolve to object containing state & authorizationUrl', async () => {
@@ -167,10 +229,10 @@ describe('OidcClientService', () => {
       // When
       const url = await service.getAuthorizeUrl(
         state,
-        nonce,
         scope,
         providerId,
         acr_values,
+        nonce,
       );
       // Then
       expect(state).toEqual('randomStateMock');
