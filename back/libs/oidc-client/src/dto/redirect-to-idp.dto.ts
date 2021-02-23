@@ -10,6 +10,10 @@ export class RedirectToIdp {
   readonly scope: string;
 
   @IsString()
+  @IsOptional()
+  readonly claims: string;
+
+  @IsString()
   @IsAscii()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention

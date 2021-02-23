@@ -334,7 +334,7 @@ export class OidcProviderService {
    */
   async finishInteraction(req, res) {
     const { interactionId } = req.fc;
-    const { spAcr } = await this.session.get(interactionId);
+    const session = await this.session.get(interactionId);
     /**
      * Build Interaction results
      * For all available options, refer to `oidc-provider` documentation:
@@ -343,7 +343,8 @@ export class OidcProviderService {
     const result = {
       login: {
         account: interactionId,
-        acr: spAcr,
+        acr: session.spAcr,
+        amr: session.amr,
         ts: Math.floor(Date.now() / 1000),
       },
       /**
@@ -446,12 +447,12 @@ export class OidcProviderService {
     this.logger.debug('OidcProviderService.findAccount()');
 
     try {
-      const { spIdentity } = await this.session.get(interactionId);
+      const { spIdentity, amr } = await this.session.get(interactionId);
 
       return {
         accountId: interactionId,
         async claims() {
-          return spIdentity;
+          return { ...spIdentity, amr };
         },
       };
     } catch (error) {

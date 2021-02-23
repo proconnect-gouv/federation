@@ -211,6 +211,18 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
+    it('Should call session patch with amr parameter', async () => {
+      // When
+      await service.handle(reqMock);
+      // Then
+      expect(sessionServiceMock.patch).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.patch).toHaveBeenCalledWith(uidMock, {
+        amr: ['fc'],
+        idpIdentity: { sub: 'some idpSub' },
+        spIdentity: { sub: undefined },
+      });
+    });
+
     it('Should call computeInteraction()', async () => {
       // When
       await service.handle(reqMock);
