@@ -180,7 +180,8 @@ export class MockServiceProviderController {
   }
 
   private async getInteractionParameters(provider: IdentityProviderMetadata) {
-    const { scope, acr } = this.config.get<OidcClientConfig>('OidcClient');
+    const oidcClientConfig = this.config.get<OidcClientConfig>('OidcClient');
+    const { scope, acr, claims } = oidcClientConfig;
     const { state, nonce } = await this.oidcClient.buildAuthorizeParameters();
 
     const authorizationUrl: string = await this.oidcClient.getAuthorizeUrl(
@@ -189,6 +190,7 @@ export class MockServiceProviderController {
       provider.uid,
       acr,
       nonce,
+      claims,
     );
 
     const url = new URL(authorizationUrl);
@@ -205,6 +207,7 @@ export class MockServiceProviderController {
         state,
         scope,
         acr,
+        claims,
         nonce,
         // oidc name
         // eslint-disable-next-line @typescript-eslint/naming-convention

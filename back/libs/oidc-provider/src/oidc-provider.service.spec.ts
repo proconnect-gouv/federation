@@ -361,6 +361,7 @@ describe('OidcProviderService', () => {
       // Then
       expect(result).toBe(resolvedValue);
     });
+
     it('should throw OidcProviderRuntimeException', async () => {
       // Given
       const nativeError = new Error('invalid_request');
@@ -383,6 +384,7 @@ describe('OidcProviderService', () => {
       const identityMock = { foo: 'bar' };
       sessionServiceMock.get.mockResolvedValueOnce({
         spIdentity: identityMock,
+        amr: 'amr_value',
       });
       // When
       const result = await service['findAccount'](ctx, sub);
@@ -395,15 +397,19 @@ describe('OidcProviderService', () => {
       // Given
       const ctx = { not: 'altered' };
       const sub = 'foo';
-      const identityMock = { spIdentity: { foo: 'bar' } };
+      const identityMock = { foo: 'bar' };
       sessionServiceMock.get.mockResolvedValueOnce({
         spIdentity: identityMock,
+        amr: 'amr_value',
       });
       const result = await service['findAccount'](ctx, sub);
       // When
       const claimsResult = await result.claims();
       // Then
-      expect(claimsResult).toBe(identityMock);
+      expect(claimsResult).toStrictEqual({
+        foo: 'bar',
+        amr: 'amr_value',
+      });
       expect(ctx).toEqual({ not: 'altered' });
     });
     it('Should call throwError if an exception is catched', async () => {

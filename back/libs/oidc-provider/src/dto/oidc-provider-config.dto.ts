@@ -128,6 +128,11 @@ class Features {
   @ValidateNested()
   @Type(() => FeatureSetting)
   readonly jwtUserinfo: FeatureSetting;
+
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => FeatureSetting)
+  readonly claimsParameter: FeatureSetting;
 }
 
 class Ttl {

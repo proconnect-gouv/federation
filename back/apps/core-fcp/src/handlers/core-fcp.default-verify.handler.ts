@@ -98,6 +98,7 @@ export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
     const idpIdentityCleaned = { sub: idpIdentity.sub };
 
     await this.session.patch(interactionId, {
+      amr: ['fc'],
       idpIdentity: idpIdentityCleaned,
       spIdentity,
     });

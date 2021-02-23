@@ -54,6 +54,7 @@ export class CoreFcpEidasVerifyHandler implements IFeatureHandler {
     const idpIdentityCleaned = { sub: idpIdentity.sub };
 
     await this.session.patch(interactionId, {
+      amr: ['eidas'],
       idpIdentity: idpIdentityCleaned,
       spIdentity: spIdentityCleaned,
     });

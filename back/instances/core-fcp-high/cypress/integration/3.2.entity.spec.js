@@ -20,7 +20,7 @@ describe('Entity', () => {
     cy.url().should('match', /interaction\/[^\/]+\/verify/);
 
     // Capture Sub from the first SP
-    cy.get('#json').then((elem) => {
+    cy.get('#json-output').then((elem) => {
       const { sub } = JSON.parse(elem.text().trim());
       cy.wrap({ sub }).as('client:sub');
     });
