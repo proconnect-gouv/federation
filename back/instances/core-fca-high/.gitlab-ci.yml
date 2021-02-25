@@ -7,7 +7,7 @@ core-fca-high:
     FC_ROOT: '$CI_BUILDS_DIR/france-connect'
     TZ: 'Europe/Paris'
   cache:
-    key: '${CI_PROJECT_ID}'
+    key: "${CI_PROJECT_ID}-fca"
     policy: pull-push
     paths:
       - back/yarn.lock
@@ -43,8 +43,11 @@ core-fca-high:
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
     - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://fca.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
-      do echo "Waiting for fca..." && sleep 10; done' ||
-      (echo 'Cannot connect to fca' && exit 1)
+      do echo "Waiting for fca..." && sleep 10; done' || (
+      (echo 'Cannot connect to fca') &&
+      (docker exec fc_fca_1 cat /tmp/.pm2/logs/fca-error-0.log || true) &&
+      (docker exec fc_fca_1 cat /tmp/.pm2/logs/fca-out-0.log || true) &&
+      exit 1)
     - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fca-high || (
       (docker cp fc_fca_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
       (docker cp fc_fia1v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
