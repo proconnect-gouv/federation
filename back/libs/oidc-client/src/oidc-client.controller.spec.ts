@@ -261,6 +261,9 @@ describe('OidcClient Controller', () => {
       await oidcClientController.redirectToIdp(res, req, body);
 
       // assert
+      expect(sessionServiceMock.get).toHaveBeenLastCalledWith(
+        req.fc.interactionId,
+      );
       expect(res.redirect).toHaveBeenCalledTimes(1);
     });
 
@@ -289,6 +292,9 @@ describe('OidcClient Controller', () => {
         await expect(
           oidcClientController.redirectToIdp(res, req, body),
         ).rejects.toThrow(errorMock);
+        expect(sessionServiceMock.get).toHaveBeenLastCalledWith(
+          req.fc.interactionId,
+        );
       });
 
       it('idp is not blacklisted', async () => {
@@ -308,6 +314,9 @@ describe('OidcClient Controller', () => {
         await oidcClientController.redirectToIdp(res, req, body);
 
         // assert
+        expect(sessionServiceMock.get).toHaveBeenLastCalledWith(
+          req.fc.interactionId,
+        );
         expect(res.redirect).toHaveBeenCalledTimes(1);
       });
     });
