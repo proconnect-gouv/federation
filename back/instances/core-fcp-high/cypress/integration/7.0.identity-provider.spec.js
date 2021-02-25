@@ -94,7 +94,12 @@ describe('Idp activation & visibility', () => {
 
   it('should trigger error 020019 when forging click on non existing IdP', () => {
     // Given
-    cy.visit(getAuthorizeUrl());
+    cy.visit(getAuthorizeUrl({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
+    }));
     cy.url().should('match', mireUrl);
     // When
     cy.get(`#fs-request-${idpId}1v2`).within(() => {
