@@ -5,7 +5,7 @@ import { TrackingService } from '@fc/tracking';
 import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
 import { ServiceProviderService } from '@fc/service-provider';
-import { CoreFcpEidasVerifyHandler } from './core-fcp.eidas-verify.handler';
+import { CoreFcpEidasVerifyHandler } from './core-fcp-eidas-verify.handler';
 
 describe('CoreFcpEidasVerifyHandler', () => {
   let service: CoreFcpEidasVerifyHandler;

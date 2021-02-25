@@ -6,7 +6,7 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
-import { CoreMissingIdentity } from '@fc/core';
+import { CoreMissingIdentityException } from '@fc/core';
 import { MinistriesService } from '@fc/ministries';
 import { CoreFcaService } from '../services';
 import { CoreFcaController } from './core-fca.controller';
@@ -45,7 +45,6 @@ describe('CoreFcaController', () => {
 
   const coreServiceMock = {
     getConsent: jest.fn(),
-    sendAuthenticationMail: jest.fn(),
     verify: jest.fn(),
   };
 
@@ -325,7 +324,7 @@ describe('CoreFcaController', () => {
       });
       // Then
       expect(coreController.getLogin(req, next)).rejects.toThrow(
-        CoreMissingIdentity,
+        CoreMissingIdentityException,
       );
     });
 

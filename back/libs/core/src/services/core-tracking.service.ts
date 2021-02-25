@@ -9,7 +9,7 @@ import {
   ICoreTrackingProviders,
   ICoreTrackingContext,
 } from '../interfaces';
-import { CoreMissingContext } from '../exceptions';
+import { CoreMissingContextException } from '../exceptions';
 
 @Injectable()
 export class CoreTrackingService implements IAppTrackingService {
@@ -54,20 +54,20 @@ export class CoreTrackingService implements IAppTrackingService {
      * This should never happen and is a *real* exception, not a business one.
      */
     if (!context.req) {
-      throw new CoreMissingContext('req');
+      throw new CoreMissingContextException('req');
     }
     if (!context.req.headers) {
-      throw new CoreMissingContext('req.headers');
+      throw new CoreMissingContextException('req.headers');
     }
     const ip = context.req.headers['x-forwarded-for'];
     if (!ip) {
-      throw new CoreMissingContext("req.headers['x-forwarded-for']");
+      throw new CoreMissingContextException("req.headers['x-forwarded-for']");
     }
     if (!context.req.fc) {
-      throw new CoreMissingContext('req.fc');
+      throw new CoreMissingContextException('req.fc');
     }
     if (!context.req.fc.interactionId) {
-      throw new CoreMissingContext('req.fc.interactionId');
+      throw new CoreMissingContextException('req.fc.interactionId');
     }
     const {
       fc: { interactionId },
@@ -114,7 +114,7 @@ export class CoreTrackingService implements IAppTrackingService {
    */
   private getDataFromContext(context: IEventContext): ICoreTrackingProviders {
     if (!context.req) {
-      throw new CoreMissingContext('req');
+      throw new CoreMissingContextException('req');
     }
     const { spId, spAcr, spName, spSub } = context.req;
 
