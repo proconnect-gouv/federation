@@ -7,7 +7,10 @@ import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { NotificationsService } from '@fc/notifications';
-import { CoreMissingIdentity, CoreInvalidCsrfException } from '@fc/core';
+import {
+  CoreMissingIdentityException,
+  CoreInvalidCsrfException,
+} from '@fc/core';
 import { ScopesService } from '@fc/scopes';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from '../services/core-fcp.service';
@@ -297,7 +300,7 @@ describe('CoreFcpController', () => {
       });
       // Then
       expect(coreController.getLogin(req, next, body)).rejects.toThrow(
-        CoreMissingIdentity,
+        CoreMissingIdentityException,
       );
     });
     it('should throw an exception if csrf not match with csrfToken in session', async () => {

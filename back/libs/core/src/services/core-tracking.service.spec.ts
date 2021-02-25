@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CoreTrackingService } from './core-tracking.service';
-import { CoreMissingContext } from '../exceptions';
+import { CoreMissingContextException } from '../exceptions';
 
 describe('CoreTrackingService', () => {
   let service: CoreTrackingService;
@@ -160,7 +160,7 @@ describe('CoreTrackingService', () => {
       const contextMock = { foo: 'bar' };
       // Then
       expect(() => service['extractContext'](contextMock)).toThrow(
-        CoreMissingContext,
+        CoreMissingContextException,
       );
     });
     it('should throw if header is missing', () => {
@@ -168,7 +168,7 @@ describe('CoreTrackingService', () => {
       const contextMock = { req: { fc: { interactionId: 'foo' } } };
       // Then
       expect(() => service['extractContext'](contextMock)).toThrow(
-        CoreMissingContext,
+        CoreMissingContextException,
       );
     });
     it('should throw if ip is missing', () => {
@@ -178,7 +178,7 @@ describe('CoreTrackingService', () => {
       };
       // Then
       expect(() => service['extractContext'](contextMock)).toThrow(
-        CoreMissingContext,
+        CoreMissingContextException,
       );
     });
     it('should throw if fc is missing', () => {
@@ -188,7 +188,7 @@ describe('CoreTrackingService', () => {
       };
       // Then
       expect(() => service['extractContext'](contextMock)).toThrow(
-        CoreMissingContext,
+        CoreMissingContextException,
       );
     });
     it('should throw if interactionId is missing', () => {
@@ -201,7 +201,7 @@ describe('CoreTrackingService', () => {
       };
       // Then
       expect(() => service['extractContext'](contextMock)).toThrow(
-        CoreMissingContext,
+        CoreMissingContextException,
       );
     });
   });
@@ -317,7 +317,7 @@ describe('CoreTrackingService', () => {
     const contextMock = {};
     // Then
     expect(() => service['getDataFromContext'](contextMock)).toThrow(
-      CoreMissingContext,
+      CoreMissingContextException,
     );
   });
 });

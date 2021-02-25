@@ -2,9 +2,7 @@ import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { CoreService } from '@fc/core';
-import { ConfigService } from '@fc/config';
-import { MailerService } from '@fc/mailer';
+import { CoreMissingAuthenticationEmailException } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderService } from '@fc/identity-provider';
 import { CoreFcpService } from './core-fcp.service';
@@ -44,16 +42,6 @@ describe('CoreFcpService', () => {
     ip: '123.123.123.123',
   };
 
-  const configServiceMock = {
-    get: jest.fn(),
-  };
-
-  const coreServiceMock = {
-    checkIfAccountIsBlocked: jest.fn(),
-    checkIfAcrIsValid: jest.fn(),
-    storeInteraction: jest.fn(),
-  };
-
   const sessionDataMock = {
     idpId: '42',
     idpAcr: 'eidas3',
@@ -66,13 +54,7 @@ describe('CoreFcpService', () => {
     spIdentity: spIdentityMock,
   };
 
-  const storeInteractionMock = { spInteraction: {} };
-
-  const mailerServiceMock = {
-    send: jest.fn(),
-  };
-
-  const featureHandlerMock = jest.spyOn(FeatureHandler, 'get');
+  const featureHandlerGetSpy = jest.spyOn(FeatureHandler, 'get');
 
   const featureHandlerServiceMock = {
     handle: jest.fn(),
@@ -87,33 +69,28 @@ describe('CoreFcpService', () => {
   };
 
   const coreVerifyMock = 'core-fcp-default-verify';
+  const authenticationEmailMock = 'core-fcp-send-email';
 
   const IdentityProviderResultMock = {
-    featureHandlers: { coreVerify: coreVerifyMock },
+    featureHandlers: {
+      coreVerify: coreVerifyMock,
+      authenticationEmail: authenticationEmailMock,
+    },
   };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ConfigService,
-        CoreService,
         CoreFcpService,
         LoggerService,
         SessionService,
         IdentityProviderService,
-        MailerService,
       ],
     })
-      .overrideProvider(ConfigService)
-      .useValue(configServiceMock)
-      .overrideProvider(CoreService)
-      .useValue(coreServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(MailerService)
-      .useValue(mailerServiceMock)
       .overrideProvider(IdentityProviderService)
       .useValue(IdentityProviderMock)
       .overrideProvider(ModuleRef)
@@ -125,8 +102,7 @@ describe('CoreFcpService', () => {
     jest.resetAllMocks();
 
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
-    coreServiceMock.storeInteraction.mockResolvedValue(storeInteractionMock);
-    featureHandlerMock.mockResolvedValueOnce(featureHandlerServiceMock);
+    featureHandlerGetSpy.mockResolvedValueOnce(featureHandlerServiceMock);
     IdentityProviderMock.getById.mockResolvedValue(IdentityProviderResultMock);
   });
 
@@ -135,6 +111,14 @@ describe('CoreFcpService', () => {
   });
 
   describe('verify', () => {
+    it('should return a promise', async () => {
+      // action
+      const result = service.verify(reqMock);
+      await result;
+      // expect
+      expect(result).toBeInstanceOf(Promise);
+    });
+
     it('Should call session.get() with `interactionId`', async () => {
       // Given
       // When
@@ -149,8 +133,8 @@ describe('CoreFcpService', () => {
       // When
       await service.verify(reqMock);
       // Then
-      expect(featureHandlerMock).toBeCalledTimes(1);
-      expect(featureHandlerMock).toBeCalledWith(coreVerifyMock, service);
+      expect(featureHandlerGetSpy).toBeCalledTimes(1);
+      expect(featureHandlerGetSpy).toBeCalledWith(coreVerifyMock, service);
     });
 
     it('Should call featureHandle.handle() with `req`', async () => {
@@ -164,14 +148,6 @@ describe('CoreFcpService', () => {
   });
 
   describe('sendAuthenticationMail', () => {
-    beforeEach(() => {
-      // avoid to count config.get in constructor
-      configServiceMock.get.mockReset();
-      configServiceMock.get.mockReturnValue({
-        from: 'mail@mail.com',
-      });
-    });
-
     it('should return a promise', async () => {
       // action
       const result = service.sendAuthenticationMail(reqMock);
@@ -180,49 +156,51 @@ describe('CoreFcpService', () => {
       expect(result).toBeInstanceOf(Promise);
     });
 
-    it('should retrieve the email to send from from config', async () => {
-      // setup
-      const configName = 'Mailer';
-
-      // action
+    it('Should call session.get() with `interactionId`', async () => {
+      // Given
+      // When
       await service.sendAuthenticationMail(reqMock);
-
-      // expect
-      expect(configServiceMock.get).toBeCalledTimes(1);
-      expect(configServiceMock.get).toBeCalledWith(configName);
-    });
-
-    it('should call SessionService.get with interactionId', async () => {
-      // action
-      await service.sendAuthenticationMail(reqMock);
-
-      // expect
+      // Then
       expect(sessionServiceMock.get).toBeCalledTimes(1);
-      expect(sessionServiceMock.get).toBeCalledWith(reqMock.fc.interactionId);
+      expect(sessionServiceMock.get).toBeCalledWith(uidMock);
     });
 
-    it('should send the email to the end-user by calling "mailer.send"', async () => {
-      // setup
-      const fromMock = { email: 'address@fqdn.ext', name: 'Address' };
-      const expectedEmailParams = {
-        body: `Connexion établie via ${sessionDataMock.idpName} !`,
-        from: fromMock,
-        subject: `Connexion depuis FranceConnect sur ${sessionDataMock.spName}`,
-        to: [
-          {
-            email: spIdentityMock.email,
-            name: `${spIdentityMock.given_name} ${spIdentityMock.family_name}`,
-          },
-        ],
-      };
-      configServiceMock.get.mockReturnValueOnce({ from: fromMock });
-
-      // action
+    it('Should call `FeatureHandler.get()` to get instantiated featureHandler class', async () => {
+      // Given
+      // When
       await service.sendAuthenticationMail(reqMock);
+      // Then
+      expect(featureHandlerGetSpy).toBeCalledTimes(1);
+      expect(featureHandlerGetSpy).toBeCalledWith(
+        authenticationEmailMock,
+        service,
+      );
+    });
 
-      // expect
-      expect(mailerServiceMock.send).toBeCalledTimes(1);
-      expect(mailerServiceMock.send).toBeCalledWith(expectedEmailParams);
+    it("Should throw `CoreMissingAuthenticationEmailException` if the feature handler doesn't exists", async () => {
+      // Given
+      featureHandlerGetSpy.mockReset().mockImplementationOnce(() => {
+        throw new Error();
+      });
+      IdentityProviderMock.getById.mockResolvedValue({
+        featureHandlers: {
+          coreVerify: coreVerifyMock,
+          authenticationEmail: undefined,
+        },
+      });
+      // When, Then
+      await expect(service.sendAuthenticationMail(reqMock)).rejects.toThrow(
+        CoreMissingAuthenticationEmailException,
+      );
+    });
+
+    it('Should call featureHandle.handle() with `req`', async () => {
+      // Given
+      // When
+      await service.sendAuthenticationMail(reqMock);
+      // Then
+      expect(featureHandlerServiceMock.handle).toBeCalledTimes(1);
+      expect(featureHandlerServiceMock.handle).toBeCalledWith(reqMock);
     });
   });
 });

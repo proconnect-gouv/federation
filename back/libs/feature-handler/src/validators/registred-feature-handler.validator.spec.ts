@@ -1,11 +1,21 @@
-import { IsRegisteredFeatureHandlerConstraint } from './registered-feature-handler.validator';
 import { FeatureHandler } from '../decorators';
+import { IsRegisteredFeatureHandlerConstraint } from './registered-feature-handler.validator';
 
 describe('IsRegisteredFeatureHandler', () => {
   describe('IsRegisteredFeatureHandlerConstraint', () => {
     beforeEach(() => {
       jest.resetAllMocks();
       jest.restoreAllMocks();
+    });
+
+    it('should return false if input is null', () => {
+      // Given
+      const input = null;
+      const validator = new IsRegisteredFeatureHandlerConstraint();
+      // When
+      const result = validator.validate(input);
+      // Then
+      expect(result).toBeFalsy();
     });
 
     it('should return false if input is undefined', () => {
