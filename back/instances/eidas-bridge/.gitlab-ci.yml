@@ -7,7 +7,7 @@ eidas-bridge:
     FC_ROOT: '$CI_BUILDS_DIR/france-connect'
     TZ: 'Europe/Paris'
   cache:
-    key: "${CI_PROJECT_ID}"
+    key: "${CI_PROJECT_ID}-eidas"
     policy: pull-push
     paths:
       - back/yarn.lock
@@ -38,10 +38,14 @@ eidas-bridge:
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
     - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://eidas-bridge.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
-      do echo "Waiting for eidas-bridge..." && sleep 10; done' ||
-      (echo 'Cannot connect to eidas-bridge' && exit 1)
+      do echo "Waiting for eidas-bridge..." && sleep 10; done' || ()
+      (echo 'Cannot connect to eidas-bridge') &&
+      (docker exec fc_eidas-bridge_1 cat /tmp/.pm2/logs/eidas-bridge-error-0.log || true) &&
+      (docker exec fc_eidas-bridge_1 cat /tmp/.pm2/logs/eidas-bridge-out-0.log || true) &&
+      exit 1)
     - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/eidas-bridge || (
       (docker cp fc_corev2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_eidas-bridge_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_fip1v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
