@@ -1,4 +1,11 @@
+import { FeatureHandlerNoHandler } from '../handlers';
+
 const _mapping = new Map<string, any>();
+
+// We need to assign the `null` value assigned to the `FeatureHandlerNoHandler()` class
+// to create the corelation between the `null` value set in the database for no action to execute.
+_mapping.set(null, new FeatureHandlerNoHandler());
+
 export function FeatureHandler(key: string) {
   /**
    * @todo type target
@@ -14,17 +21,31 @@ export function FeatureHandler(key: string) {
 
 // For Unit test purpose
 FeatureHandler.cache = _mapping;
+
 /**
  * Retrieve the instatiated class of a given feature handler key.
  *
  * @param {string} key Unique feature handler mapped name.
- * @param {object} ctx context given by te parent caller, usally = this.
+ * @param {any} ctx context given by the parent caller, usally = this.
  * @returns {class} Instatiated class
  */
-
 FeatureHandler.get = function (key: string, ctx: any): any {
-  const klass = FeatureHandler.cache.get(key);
-  return ctx.moduleRef.get(klass);
+  switch (key) {
+    //If the database contain an `undefined` feature handler value,
+    //it is probably a database error.
+    case undefined:
+      throw new Error();
+
+    //If the Feature Handler defined in the database is `null` or an empty string,
+    //a handler class is returned with an empty handle() method.
+    case '':
+    case null:
+      return new FeatureHandlerNoHandler();
+
+    default:
+      const klass = FeatureHandler.cache.get(key);
+      return ctx.moduleRef.get(klass);
+  }
 };
 
 /**

@@ -27,7 +27,7 @@ import {
   CsrfToken,
   Core,
   CoreRoutes,
-  CoreMissingIdentity,
+  CoreMissingIdentityException,
   CoreInvalidCsrfException,
 } from '@fc/core';
 import { CoreFcpService } from '../services';
@@ -136,7 +136,7 @@ export class CoreFcpController {
     }
 
     if (!spIdentity) {
-      throw new CoreMissingIdentity();
+      throw new CoreMissingIdentityException();
     }
 
     // send the notification mail to the final user

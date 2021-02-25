@@ -11,7 +11,7 @@ import { TrackingService } from '@fc/tracking';
 import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
 import { ServiceProviderService } from '@fc/service-provider';
-import { CoreFcpDefaultVerifyHandler } from './core-fcp.default-verify.handler';
+import { CoreFcpDefaultVerifyHandler } from './core-fcp-default-verify.handler';
 
 describe('CoreFcpDefaultVerifyHandler', () => {
   let service: CoreFcpDefaultVerifyHandler;

@@ -74,7 +74,7 @@ describe('CoreFcaService', () => {
   };
 
   const IdentityProviderResultMock = {
-    featureHandlers: { codeVerify: '' },
+    featureHandlers: { codeVerify: 'test', authenticationEmail: null },
   };
 
   beforeEach(async () => {
