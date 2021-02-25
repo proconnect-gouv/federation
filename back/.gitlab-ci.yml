@@ -6,6 +6,12 @@ global:
   image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
   tags:
     - nodejs
+  cache:
+    key: "${CI_PROJECT_ID}-unit"
+    policy: pull-push
+    paths:
+      - back/yarn.lock
+      - back/node_modules/
   stage: 'Unit tests'
   script:
     - cd back/
