@@ -1,21 +1,23 @@
 import { ModuleRef } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@fc/config';
-import { MailerConfig, MailerService } from '@fc/mailer';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
+import { CoreMissingAuthenticationEmailException } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderService } from '@fc/identity-provider';
+import {
+  CoreFcpDefaultVerifyHandler,
+  CoreFcpEidasVerifyHandler,
+  CoreFcpSendEmailHandler,
+} from '../handlers';
 
 @Injectable()
 export class CoreFcpService {
   constructor(
     private readonly logger: LoggerService,
-    private readonly config: ConfigService,
     private readonly session: SessionService,
-    private readonly mailer: MailerService,
     private readonly identityProvider: IdentityProviderService,
-    public moduleRef: ModuleRef,
+    public readonly moduleRef: ModuleRef,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -23,10 +25,11 @@ export class CoreFcpService {
   /**
    * Main business manipulations occurs in this method
    *
-   * @param req
+   * @param {object} req
+   * @returns {Promise<void>}
    */
   async verify(req: any): Promise<void> {
-    this.logger.debug('getConsent service');
+    this.logger.debug('CoreFcpService.verify()');
 
     const { interactionId } = req.fc;
 
@@ -34,33 +37,32 @@ export class CoreFcpService {
     const idp = await this.identityProvider.getById(idpId);
     const { coreVerify } = idp.featureHandlers;
 
-    const handler = await FeatureHandler.get(coreVerify, this);
+    const handler:
+      | CoreFcpDefaultVerifyHandler
+      | CoreFcpEidasVerifyHandler = await FeatureHandler.get(coreVerify, this);
     return await handler.handle(req);
   }
 
   /**
-   * Send an email to the authenticated end-user after consent
-   * @param req Express req object
-   * @param res Express res object
+   * Send an email to the authenticated end-user after consent.
+   *
+   * @param {object} req Express
+   * @returns {Promise<void>}
    */
-  async sendAuthenticationMail(req) {
-    const { from } = this.config.get<MailerConfig>('Mailer');
-    const { interactionId } = req.fc;
-    const { spName, idpName, spIdentity } = await this.session.get(
-      interactionId,
-    );
+  async sendAuthenticationMail(req: any): Promise<void> {
+    this.logger.debug('CoreFcpService.sendAuthenticationMail()');
 
-    this.logger.debug('Sending authentication mail');
-    this.mailer.send({
-      from,
-      to: [
-        {
-          email: spIdentity.email,
-          name: `${spIdentity.given_name} ${spIdentity.family_name}`,
-        },
-      ],
-      subject: `Connexion depuis FranceConnect sur ${spName}`,
-      body: `Connexion établie via ${idpName} !`,
-    });
+    const { interactionId } = req.fc;
+    const { idpId } = await this.session.get(interactionId);
+    const idp = await this.identityProvider.getById(idpId);
+
+    let handler: CoreFcpSendEmailHandler;
+    try {
+      const { authenticationEmail } = idp.featureHandlers;
+      handler = await FeatureHandler.get(authenticationEmail, this);
+    } catch (e) {
+      throw new CoreMissingAuthenticationEmailException(e);
+    }
+    return handler.handle(req);
   }
 }

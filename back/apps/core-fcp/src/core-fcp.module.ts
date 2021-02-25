@@ -43,6 +43,7 @@ import { CoreFcpService } from './services';
 import {
   CoreFcpEidasVerifyHandler,
   CoreFcpDefaultVerifyHandler,
+  CoreFcpSendEmailHandler,
 } from './handlers';
 
 const oidcProviderModule = OidcProviderModule.register(
@@ -93,12 +94,14 @@ const oidcProviderModule = OidcProviderModule.register(
     ServiceProviderOperationTypeChangesHandler,
     CoreFcpDefaultVerifyHandler,
     CoreFcpEidasVerifyHandler,
+    CoreFcpSendEmailHandler,
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [
     SessionModule,
     CoreFcpDefaultVerifyHandler,
     CoreFcpEidasVerifyHandler,
+    CoreFcpSendEmailHandler,
   ],
 })
 export class CoreFcpModule {}
