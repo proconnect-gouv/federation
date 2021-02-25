@@ -87,8 +87,9 @@ export class OidcClientController {
      * This is a specific behaviour for FC and not for fsp*v2
      */
     let serviceProviderId: string | null;
+    const { interactionId } = req.fc;
     try {
-      const { spId } = await this.session.get('spId');
+      const { spId } = await this.session.get(interactionId);
       serviceProviderId = spId;
     } catch (error) {
       serviceProviderId = null;
@@ -142,7 +143,8 @@ export class OidcClientController {
      */
     let serviceProviderId: string | null;
     try {
-      const { spId } = await this.session.get('spId');
+      const { interactionId } = req.fc;
+      const { spId } = await this.session.get(interactionId);
       serviceProviderId = spId;
     } catch (error) {
       serviceProviderId = null;
