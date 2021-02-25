@@ -6,6 +6,7 @@
 | Y000003 | Missing information in context: Error | N/A |
 | Y000004 | No identity for SP found in session | N/A |
 | Y000005 | Invalid csrf | N/A |
+| Y000006 | No authenticationEmail feature handler set in database | N/A |
 
 | Code | Message utilisateur | Description |
 |---|---|---|

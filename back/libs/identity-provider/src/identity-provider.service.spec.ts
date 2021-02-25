@@ -47,6 +47,7 @@ describe('IdentityProviderService', () => {
         'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
       featureHandlers: {
         coreVerify: 'core-fcp-default-verify',
+        authenticationEmail: null,
       },
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -147,7 +148,10 @@ describe('IdentityProviderService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       userinfo_signed_response_alg: 'HS256',
-      featureHandlers: { coreVerify: 'core-fcp-default-verify' },
+      featureHandlers: {
+        coreVerify: 'core-fcp-default-verify',
+        authenticationEmail: null,
+      },
     },
   };
 

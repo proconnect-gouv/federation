@@ -1,3 +1,4 @@
+import { FeatureHandlerNoHandler } from '../handlers';
 import { FeatureHandler } from './feature-handler.decorator';
 
 const ctx = {
@@ -12,15 +13,44 @@ describe('FeatureHandler exception decorator', () => {
   });
 
   describe('get()', () => {
-    it('should retrieve an empty reponse for an unknown featureHandler', async () => {
+    it('should retrieve a `FeatureHandlerNoHandler` response for a `null` featureHandler request', async () => {
       // Given
-      const emptyResponseMock = undefined;
-      const featureHandlerFakeTopicMock = 'doesnt-exists';
+      const emptyFeatureHandlerResponseMock = new FeatureHandlerNoHandler();
+      const emptyFeatureHandlerTopicSetMock = 'feature-hanlder-mock';
+      const emptyFeatureHandlerTopicGetMock = null;
       // When
-      FeatureHandler.cache.set(featureHandlerFakeTopicMock, emptyResponseMock);
+      FeatureHandler.cache.set(
+        emptyFeatureHandlerTopicSetMock,
+        emptyFeatureHandlerResponseMock,
+      );
       // Then
-      const result = await FeatureHandler.get(featureHandlerFakeTopicMock, ctx);
-      expect(result).toStrictEqual(emptyResponseMock);
+      const result = FeatureHandler.get(emptyFeatureHandlerTopicGetMock, ctx);
+      expect(result).toStrictEqual(emptyFeatureHandlerResponseMock);
+    });
+
+    it('should retrieve a `FeatureHandlerNoHandler` response for a empty string `` featureHandler request', async () => {
+      // Given
+      const emptyFeatureHandlerResponseMock = new FeatureHandlerNoHandler();
+      const emptyFeatureHandlerTopicSetMock = 'feature-hanlder-mock';
+      const emptyFeatureHandlerTopicGetMock = '';
+      // When
+      FeatureHandler.cache.set(
+        emptyFeatureHandlerTopicSetMock,
+        emptyFeatureHandlerResponseMock,
+      );
+      // Then
+      const result = FeatureHandler.get(emptyFeatureHandlerTopicGetMock, ctx);
+      expect(result).toStrictEqual(emptyFeatureHandlerResponseMock);
+    });
+
+    it('should throw an `Error` if an `undefined` featureHandler is requested', async () => {
+      // Given
+      const emptyFeatureHandlerMock = undefined;
+      // When
+      // Then
+      expect(() => FeatureHandler.get(emptyFeatureHandlerMock, ctx)).toThrow(
+        new Error(),
+      );
     });
 
     it('should retrieve a instantiated class for a given existing featureHandler', async () => {
