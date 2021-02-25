@@ -12,13 +12,18 @@ import {
 import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderService } from '@fc/identity-provider';
+import { ServiceProviderService } from '@fc/service-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { MinistriesService } from '@fc/ministries';
 import { AppConfig } from '@fc/app';
 import { OidcClientConfig } from '@fc/oidc-client';
-import { ServiceProviderService } from '@fc/service-provider';
-import { Interaction, Core, CoreRoutes, CoreMissingIdentity } from '@fc/core';
+import {
+  Interaction,
+  Core,
+  CoreRoutes,
+  CoreMissingIdentityException,
+} from '@fc/core';
 import { CoreFcaService } from '../services';
 
 @Controller()
@@ -124,7 +129,7 @@ export class CoreFcaController {
     const { interactionId } = req.fc;
     const { spIdentity } = await this.session.get(interactionId);
     if (!spIdentity) {
-      throw new CoreMissingIdentity();
+      throw new CoreMissingIdentityException();
     }
 
     return this.oidcProvider.finishInteraction(req, res);

@@ -3,7 +3,10 @@ interface MailFrom {
   readonly name: string;
 }
 
-type MailTo = MailFrom;
+interface MailTo {
+  readonly email: string;
+  readonly name: string;
+}
 
 export interface MailOptions {
   readonly subject: string;

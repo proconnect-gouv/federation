@@ -1,11 +1,25 @@
-import { IsString, ValidateNested, IsObject, IsEmail } from 'class-validator';
+import {
+  IsString,
+  ValidateNested,
+  IsObject,
+  IsEmail,
+  NotContains,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 type MailerType = 'logs' | 'mailjet';
 
 export class MailFrom {
   @IsEmail()
+  readonly email: string;
+
   @IsString()
+  readonly name: string;
+}
+
+export class MailTo {
+  @IsEmail()
+  @NotContains('localhost')
   readonly email: string;
 
   @IsString()
