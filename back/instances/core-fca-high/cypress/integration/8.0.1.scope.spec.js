@@ -2,16 +2,19 @@ import {
   chooseIdpOnCore,
   checkInStringifiedJson,
   getAuthorizeUrl,
+  getServiceProvider,
 } from './mire.utils';
 
 describe('Scope', () => {
+  const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
+
   /**
    * @TODO #197 Implement tests once feature is implemented in `oidc-client`
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/197
    */
   it.skip('should return to the SP with an "invalid_scope" error if the query contains scopes that are not whitelisted for this SP', () => {
     // First visit SP home page to initialize its session.
-    cy.visit(Cypress.env('SP1_ROOT_URL'));
+    cy.visit(SP_ROOT_URL);
 
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -26,7 +29,7 @@ describe('Scope', () => {
 
     cy.url().should(
       'match',
-      new RegExp(`${Cypress.env('SP1_ROOT_URL')}/error`),
+      new RegExp(`${SP_ROOT_URL}/error`),
     );
 
     cy.get('#error-title').contains('invalid_scope');
@@ -34,7 +37,7 @@ describe('Scope', () => {
   });
 
   it('should send back all mandatory fields and all non mandatory created fields', () => {
-    cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+    cy.visit(`${SP_ROOT_URL}`);
 
     cy.get('#post-authorize').click();
     chooseIdpOnCore('fia1v2');
@@ -54,7 +57,7 @@ describe('Scope', () => {
   });
 
   it('should work even if a non mandatory scope, not existing for the agent, is claimed', () => {
-    cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+    cy.visit(`${SP_ROOT_URL}`);
 
     cy.get('#post-authorize').click();
     chooseIdpOnCore('fia1v2');
@@ -72,7 +75,7 @@ describe('Scope', () => {
   });
 
   it('should not return optional claims not asked by scope', () => {
-    cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+    cy.visit(`${SP_ROOT_URL}`);
 
     cy.get('#scope_siren').click();
     cy.get('#scope_siret').click();
@@ -98,7 +101,7 @@ describe('Scope', () => {
   });
 
   it('should not return mandatory claims not asked by scope', () => {
-    cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+    cy.visit(`${SP_ROOT_URL}`);
 
     cy.get('#scope_email').click();
 
@@ -112,7 +115,7 @@ describe('Scope', () => {
   });
 
   it('should send back right claims when you choose all scopes except aliases', () => {
-    cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+    cy.visit(`${SP_ROOT_URL}`);
 
     // Disable aliases
     cy.get('#scope_uid').click();

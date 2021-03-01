@@ -21,6 +21,7 @@ import {
   AsymmetricSigningAlgorithm,
   ClientAuthMethod,
   SubjectTypes,
+  SymmetricSigningAlgorithm,
 } from 'oidc-provider';
 import { OidcProviderRoutes, OidcProviderPrompt } from '../enums';
 
@@ -208,7 +209,10 @@ class WhitelistedJWA {
 
   @IsArray()
   @IsString({ each: true })
-  authorizationSigningAlgValues: AsymmetricSigningAlgorithm[];
+  authorizationSigningAlgValues: (
+    | AsymmetricSigningAlgorithm
+    | SymmetricSigningAlgorithm
+  )[];
 
   @IsArray()
   @IsString({ each: true })
@@ -224,7 +228,10 @@ class WhitelistedJWA {
 
   @IsArray()
   @IsString({ each: true })
-  idTokenSigningAlgValues: AsymmetricSigningAlgorithm[];
+  idTokenSigningAlgValues: (
+    | AsymmetricSigningAlgorithm
+    | SymmetricSigningAlgorithm
+  )[];
 
   @IsArray()
   @IsString({ each: true })
@@ -240,7 +247,10 @@ class WhitelistedJWA {
 
   @IsArray()
   @IsString({ each: true })
-  introspectionSigningAlgValues: AsymmetricSigningAlgorithm[];
+  introspectionSigningAlgValues: (
+    | AsymmetricSigningAlgorithm
+    | SymmetricSigningAlgorithm
+  )[];
 
   @IsArray()
   @IsString({ each: true })
@@ -252,7 +262,10 @@ class WhitelistedJWA {
 
   @IsArray()
   @IsString({ each: true })
-  requestObjectSigningAlgValues: AsymmetricSigningAlgorithm[];
+  requestObjectSigningAlgValues: (
+    | AsymmetricSigningAlgorithm
+    | SymmetricSigningAlgorithm
+  )[];
 
   @IsArray()
   @IsString({ each: true })
@@ -260,7 +273,10 @@ class WhitelistedJWA {
 
   @IsArray()
   @IsString({ each: true })
-  tokenEndpointAuthSigningAlgValues: AsymmetricSigningAlgorithm[];
+  tokenEndpointAuthSigningAlgValues: (
+    | AsymmetricSigningAlgorithm
+    | SymmetricSigningAlgorithm
+  )[];
 
   @IsArray()
   @IsString({ each: true })
@@ -272,7 +288,10 @@ class WhitelistedJWA {
 
   @IsArray()
   @IsString({ each: true })
-  userinfoSigningAlgValues: AsymmetricSigningAlgorithm[];
+  userinfoSigningAlgValues: (
+    | AsymmetricSigningAlgorithm
+    | SymmetricSigningAlgorithm
+  )[];
 }
 
 class Jwks {
