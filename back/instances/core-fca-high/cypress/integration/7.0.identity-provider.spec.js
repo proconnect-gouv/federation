@@ -1,10 +1,14 @@
-import { getAuthorizeUrl } from './mire.utils';
+import {
+  getAuthorizeUrl,
+  getServiceProvider,
+  getIdentityProvider,
+} from './mire.utils';
 
 describe('Idp activation & visibility', () => {
   // -- replace by either `fip` or `fia`
   const idpId = `${Cypress.env('IDP_NAME')}`;
   const idpNotExist = `${Cypress.env('IDP_NAME_NOT_EXIST')}`;
-  const ministryId = 'ministry1';
+  const { IDP_INTERACTION_URL, MINISTRY } = getIdentityProvider(`${idpId}1v2`);
 
   const mireUrl = new RegExp('/interaction/[^/]+');
 
@@ -14,7 +18,7 @@ describe('Idp activation & visibility', () => {
     cy.url().should('match', mireUrl);
     // Then
     cy.get(`#select-ministry`).click();
-    cy.get(`#ministry-${ministryId}`).click();
+    cy.get(`#ministry-${MINISTRY}`).click();
     cy.get(`#idp-selects`).click();
 
     // Visibles idps
@@ -40,7 +44,7 @@ describe('Idp activation & visibility', () => {
     ).should('not.exist');
 
     cy.contains('Identity Provider 1 - eIDAS élevé').click();
-    cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
+    cy.url().should('include', IDP_INTERACTION_URL);
   });
 
   it('should find an existing idp, case insensitive, without space', () => {
@@ -57,7 +61,7 @@ describe('Idp activation & visibility', () => {
     ).should('not.exist');
 
     cy.contains('Identity Provider 1 - eIDAS élevé').click();
-    cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
+    cy.url().should('include', IDP_INTERACTION_URL);
   });
 
   it('should find an existing idp, case insensitive, without accent', () => {
@@ -74,7 +78,7 @@ describe('Idp activation & visibility', () => {
     ).should('not.exist');
 
     cy.contains('Identity Provider 1 - eIDAS élevé').click();
-    cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
+    cy.url().should('include', IDP_INTERACTION_URL);
   });
 
   it('should display an error message if no idp matches search', () => {
@@ -188,12 +192,15 @@ describe('Idp activation & visibility', () => {
   });
 
   describe('No app restart needed', () => {
+    const spId = `${Cypress.env('SP_NAME')}1v2`;
+
     beforeEach(() => {
       cy.resetdb();
     });
     
     it('should display an identity provider that has been added without an app restart needed', () => {
-      cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      const { SP_ROOT_URL } = getServiceProvider(spId);
+      cy.visit(SP_ROOT_URL);
       cy.get('#get-authorize').click();
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').should('not.exist');
@@ -207,7 +214,8 @@ describe('Idp activation & visibility', () => {
     });
   
     it('should update an identity provider properties, activate it, without an app restart needed', () => {
-      cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      const { SP_ROOT_URL } = getServiceProvider(spId);
+      cy.visit(SP_ROOT_URL);
       cy.get('#get-authorize').click(); 
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').should('not.exist');
@@ -222,7 +230,8 @@ describe('Idp activation & visibility', () => {
     })
 
     it('should update an identity provider properties, deactivate it, without an app restart needed', () => {
-      cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      const { SP_ROOT_URL } = getServiceProvider(spId);
+      cy.visit(SP_ROOT_URL);
       cy.get('#get-authorize').click(); 
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').should('not.exist');
@@ -238,7 +247,8 @@ describe('Idp activation & visibility', () => {
     })
 
     it('should remove an identity provider without an app restart needed', () => {
-      cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      const { SP_ROOT_URL } = getServiceProvider(spId);
+      cy.visit(SP_ROOT_URL);
       cy.get('#get-authorize').click(); 
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').should('not.exist');

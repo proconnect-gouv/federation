@@ -2,7 +2,8 @@ import {
   basicSuccessScenario,
   checkInformations,
   checkInStringifiedJson,
-  getAuthorizeUrl
+  getAuthorizeUrl,
+  getServiceProvider,
 } from './mire.utils';
 
 describe('Successful scenarios', () => {
@@ -58,11 +59,12 @@ describe('Successful scenarios', () => {
   });
 
   it('should return to the SP with an "invalid_request" error if the query does not contain the "openid" scope', () => {
+    const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
     // First visit SP home page to initialize its session.
-    cy.visit(Cypress.env('SP1_ROOT_URL'));
+    cy.visit(SP_ROOT_URL);
     const url = getAuthorizeUrl({
       scope: 'given_name',
-    });
+    })
 
     // Visit forged /authorize URL
     cy.visit(url, {
@@ -72,7 +74,7 @@ describe('Successful scenarios', () => {
     cy.url()
     .should(
       'contains',
-      `${Cypress.env(`SP1_ROOT_URL`)}/oidc-callback/envIssuer`,
+      `${SP_ROOT_URL}/oidc-callback/envIssuer`,
     )
     .should('contains', 'error=invalid_request')
     .should(
@@ -80,5 +82,62 @@ describe('Successful scenarios', () => {
       'error_description=openid%20scope%20must%20be%20requested%20when%20using%20the%20acr_values',
     )
     .should('contains', 'state=stateTraces');
+  });
+
+  it('should log in to Service Provider Example with IDP HS256 alg and response not encrypted', () => {
+    basicSuccessScenario({
+      userName: 'test',
+      password: '123',
+      eidasLevel: 1,
+      idpId: 'fia2v2',
+      sp: `${Cypress.env('SP_NAME')}4v2`,
+    });
+
+    checkInformations({
+      givenName: 'Angela Claire Louise',
+      usualName: 'DUBOIS',
+    });
+    checkInStringifiedJson(
+      'sub',
+      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
+    );
+  });
+
+  it('should log in to Service Provider Example with IDP HS256 alg and response encrypted', () => {
+    basicSuccessScenario({
+      userName: 'test',
+      password: '123',
+      eidasLevel: 1,
+      idpId: 'fia4v2',
+      sp: `${Cypress.env('SP_NAME')}4v2`,
+    });
+
+    checkInformations({
+      givenName: 'Angela Claire Louise',
+      usualName: 'DUBOIS',
+    });
+    checkInStringifiedJson(
+      'sub',
+      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
+    );
+  });
+
+  it('should log in to Service Provider Example with IDP RS256 alg and response encrypted', () => {
+    basicSuccessScenario({
+      userName: 'test',
+      password: '123',
+      eidasLevel: 1,
+      idpId: 'fia5v2',
+      sp: `${Cypress.env('SP_NAME')}4v2`,
+    });
+
+    checkInformations({
+      givenName: 'Angela Claire Louise',
+      usualName: 'DUBOIS',
+    });
+    checkInStringifiedJson(
+      'sub',
+      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
+    );
   });
 });

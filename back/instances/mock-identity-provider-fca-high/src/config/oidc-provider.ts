@@ -59,7 +59,9 @@ export default {
     grant_types_supported: ['authorization_code'],
     features: {
       devInteractions: { enabled: false },
-      encryption: { enabled: parseBoolean(process.env.OidcProvider_USE_ENCRYPTION) },
+      encryption: {
+        enabled: parseBoolean(process.env.OidcProvider_USE_ENCRYPTION),
+      },
       jwtUserinfo: { enabled: true },
       backchannelLogout: { enabled: true },
       revocation: { enabled: true },
@@ -94,8 +96,8 @@ export default {
       // // node-oidc-provider defined key
       // // eslint-disable-next-line @typescript-eslint/naming-convention
       // identity_provider: ['identity_provider'],
-      "chorusdt:societe": ['chorusdt:societe'],
-      "chorusdt:matricule": ['chorusdt:matricule'],
+      'chorusdt:societe': ['chorusdt:societe'],
+      'chorusdt:matricule': ['chorusdt:matricule'],
     },
     clientDefaults: {
       // node-oidc-provider defined key
@@ -123,26 +125,29 @@ export default {
     whitelistedJWA: {
       authorizationEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       authorizationEncryptionEncValues: ['A256GCM'],
-      authorizationSigningAlgValues: ['ES256'],
-      dPoPSigningAlgValues: ['ES256'],
+      authorizationSigningAlgValues: ['ES256', 'RS256', 'HS256'],
+      dPoPSigningAlgValues: ['ES256', 'RS256'],
       idTokenEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       idTokenEncryptionEncValues: ['A256GCM'],
-      idTokenSigningAlgValues: ['ES256'],
+      idTokenSigningAlgValues: ['ES256', 'RS256', 'HS256'],
       introspectionEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       introspectionEncryptionEncValues: ['A256GCM'],
-      introspectionEndpointAuthSigningAlgValues: ['ES256'],
-      introspectionSigningAlgValues: ['ES256'],
+      introspectionEndpointAuthSigningAlgValues: ['ES256', 'RS256'],
+      introspectionSigningAlgValues: ['ES256', 'RS256', 'HS256'],
       requestObjectEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       requestObjectEncryptionEncValues: ['A256GCM'],
-      requestObjectSigningAlgValues: ['ES256'],
-      revocationEndpointAuthSigningAlgValues: ['ES256'],
-      tokenEndpointAuthSigningAlgValues: ['ES256'],
+      requestObjectSigningAlgValues: ['ES256', 'RS256', 'HS256'],
+      revocationEndpointAuthSigningAlgValues: ['ES256', 'RS256'],
+      tokenEndpointAuthSigningAlgValues: ['ES256', 'RS256'],
       userinfoEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       userinfoEncryptionEncValues: ['A256GCM'],
-      userinfoSigningAlgValues: ['ES256'],
+      userinfoSigningAlgValues: ['ES256', 'RS256', 'HS256'],
     },
     jwks: {
-      keys: [JSON.parse(process.env.CRYPTO_SIG_FAKE_PRIV_KEY)],
+      keys: [
+        JSON.parse(process.env.CRYPTO_SIG_ES256_PRIV_KEY),
+        JSON.parse(process.env.CRYPTO_SIG_RS256_PRIV_KEY),
+      ],
     },
 
     // Global request timeout used for any outgoing app requests.

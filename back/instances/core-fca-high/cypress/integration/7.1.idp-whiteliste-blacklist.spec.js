@@ -1,17 +1,18 @@
-import { getAuthorizeUrl } from './mire.utils';
+import { getAuthorizeUrl, getServiceProvider } from './mire.utils';
 
 describe('7.1 Idp whitelist & blacklist', () => {
   const mireUrl = new RegExp('/interaction/[^/]+');
-    // -- replace by either `fip` or `fia`
-    const idpId = `${Cypress.env('IDP_NAME')}`;
+  // -- replace by either `fip` or `fia`
+  const idpId = `${Cypress.env('IDP_NAME')}`;
+  const { SP_ROOT_URL, SP_CLIENT_ID } = getServiceProvider(`${Cypress.env('SP_NAME')}2v2`);
 
 
   it('should display only whitelist idps', () => {
     cy.visit(getAuthorizeUrl({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
+      client_id: `${SP_CLIENT_ID}`,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
+      redirect_uri: `${SP_ROOT_URL}/oidc-callback/envIssuer`,
     }));
     cy.url().should('match', mireUrl);
 
@@ -78,9 +79,9 @@ describe('7.1 Idp whitelist & blacklist', () => {
     // Given
     cy.visit(getAuthorizeUrl({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
+      client_id: `${SP_CLIENT_ID}`,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
+      redirect_uri: `${SP_ROOT_URL}/oidc-callback/envIssuer`,
     }));
     cy.url().should('match', mireUrl);
     // When

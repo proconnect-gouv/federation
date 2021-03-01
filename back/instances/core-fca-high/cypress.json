@@ -16,13 +16,42 @@
 
     "IDP_NAME": "fia",
     "IDP_NAME_NOT_EXIST": "not-fia",
-    "IDP_ROOT_URL": "https://fia1v2.docker.dev-franceconnect.fr",
-    "IDP_INTERACTION_URL": "https://fia1v2.docker.dev-franceconnect.fr/interaction",
+    "IDP_AVAILABLES": [{
+      "ID": "fia1v2",
+      "IDP_ROOT_URL": "https://fia1v2.docker.dev-franceconnect.fr",
+      "IDP_INTERACTION_URL": "https://fia1v2.docker.dev-franceconnect.fr/interaction",
+      "MINISTRY": "ministry1"
+    }, {
+      "ID": "fia2v2",
+      "IDP_ROOT_URL": "https://fia2v2.docker.dev-franceconnect.fr",
+      "IDP_INTERACTION_URL": "https://fia2v2.docker.dev-franceconnect.fr/interaction",
+      "MINISTRY": "ministry1"
+    }, {
+      "ID": "fia4v2",
+      "IDP_ROOT_URL": "https://fia4v2.docker.dev-franceconnect.fr",
+      "IDP_INTERACTION_URL": "https://fia4v2.docker.dev-franceconnect.fr/interaction",
+      "MINISTRY": "ministry4"
+    }, {
+      "ID": "fia5v2",
+      "IDP_ROOT_URL": "https://fia5v2.docker.dev-franceconnect.fr",
+      "IDP_INTERACTION_URL": "https://fia5v2.docker.dev-franceconnect.fr/interaction",
+      "MINISTRY": "ministry4"
+    }],
 
-    "SP1_ROOT_URL": "https://fsa1v2.docker.dev-franceconnect.fr",
-    "SP1_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
-    "SP2_ROOT_URL": "https://fsa2v2.docker.dev-franceconnect.fr",
-    "SP2_CLIENT_ID": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
+    "SP_NAME": "fsa",
+    "SP_AVAILABLES": [{
+      "ID": "fsa1v2",
+      "SP_ROOT_URL": "https://fsa1v2.docker.dev-franceconnect.fr",
+      "SP_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950"
+    }, {
+      "ID": "fsa2v2",
+      "SP_ROOT_URL": "https://fsa2v2.docker.dev-franceconnect.fr",
+      "SP_CLIENT_ID": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775"
+    }, {
+      "ID": "fsa4v2",
+      "SP_ROOT_URL": "https://fsa4v2.docker.dev-franceconnect.fr",
+      "SP_CLIENT_ID": "6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77"
+    }],
 
     "WELL_KNOWN": "/api/v2/.well-known/openid-configuration"
   },

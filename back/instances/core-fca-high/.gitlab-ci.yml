@@ -7,7 +7,7 @@ core-fca-high:
     FC_ROOT: '$CI_BUILDS_DIR/france-connect'
     TZ: 'Europe/Paris'
   cache:
-    key: "${CI_PROJECT_ID}"
+    key: '${CI_PROJECT_ID}'
     policy: pull-push
     paths:
       - back/yarn.lock
@@ -29,7 +29,7 @@ core-fca-high:
     - docker-stack fca-front &
     - docker-stack up fca
     - docker-stack dep fca
-    - docker-stack start rnipp fsa1v2 fsa2v2 fia1v2
+    - docker-stack start fsa1v2 fsa2v2 fsa4v2 fia1v2 fia2v2 fia4v2 fia5v2
     - wait
     - docker-stack start fca fca-front
     # ## -- Build like for prod
@@ -47,10 +47,13 @@ core-fca-high:
       (echo 'Cannot connect to fca' && exit 1)
     - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fca-high || (
       (docker cp fc_fca_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
-      (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
       (docker cp fc_fia1v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fia2v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fia4v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fia5v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
       (docker cp fc_fsa1v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
       (docker cp fc_fsa2v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fsa4v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
       (docker cp fc_fca-front_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
       (docker cp fc-rp-all:/var/log/nginx back/instances/core-fca-high/cypress/logs || true) &&
       exit 1)
