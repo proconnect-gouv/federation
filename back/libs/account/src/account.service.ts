@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { LoggerService } from '@fc/logger';
 import { IInteraction } from './interfaces';
 import { Account } from './schemas';
+import { v4 as uuid } from 'uuid';
 
 @Injectable()
 export class AccountService {
@@ -78,6 +79,7 @@ export class AccountService {
 
     // Update last connection timestamp
     account.lastConnection = interaction.lastConnection;
+    account.id = interaction.id || uuid();
 
     return account;
   }
