@@ -1,4 +1,8 @@
-import { basicErrorScenario, basicScenario } from './mire.utils';
+import {
+  basicErrorScenario,
+  basicScenario,
+  getServiceProvider,
+} from './mire.utils';
 
 const scope =
   'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
@@ -116,6 +120,7 @@ describe('Acr', () => {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/311
    */
   it.skip('should complete cinematic even when acr is to low and FC should force it to max value', () => {
+    const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
     const FORCE_MAX_EIDAS = 'eidas3';
     basicScenario({
       idpId,
@@ -129,7 +134,7 @@ describe('Acr', () => {
     });
 
     // return to FS
-    cy.url().should('include', `${Cypress.env('SP1_ROOT_URL')}/login-callback`);
+    cy.url().should('include', `${SP_ROOT_URL}/login-callback`);
 
     cy.get('#info-acr').contains(FORCE_MAX_EIDAS);
   });

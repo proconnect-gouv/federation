@@ -7,7 +7,7 @@ import {
   IsIn,
 } from 'class-validator';
 
-const SUPPORTED_SIG_ALG = ['ES256', 'ES512'];
+const SUPPORTED_SIG_ALG = ['ES256', 'RS256', 'HS256'];
 
 export class ServiceProviderDTO {
   @IsBoolean()
@@ -52,7 +52,7 @@ export class ServiceProviderDTO {
   @IsIn(SUPPORTED_SIG_ALG)
   // oidc defined variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly id_token_signed_response_alg: 'ES256' | 'ES512';
+  readonly id_token_signed_response_alg: 'ES256' | 'RS256' | 'HS256';
 
   @IsString()
   // oidc defined variable name

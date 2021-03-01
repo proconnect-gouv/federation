@@ -1,4 +1,8 @@
-import { getAuthorizeUrl, chooseIdpOnCore } from './mire.utils';
+import {
+  getAuthorizeUrl,
+  chooseIdpOnCore,
+  getIdentityProvider,
+} from './mire.utils';
 
 describe('nonce', () => {
   it('should return an error if the nonce is not provided (FC as IDP)', () => {
@@ -24,10 +28,11 @@ describe('nonce', () => {
   });
 
   it('should send the nonce through the authorize url (FC as FS)', () => {
+    const { IDP_ROOT_URL } = getIdentityProvider(`${Cypress.env('IDP_NAME')}1v2`);
     const url = getAuthorizeUrl();
     cy.visit(url);
 
-    cy.intercept(`${Cypress.env('IDP_ROOT_URL')}/authorize`).as('getIdp');
+    cy.intercept(`${IDP_ROOT_URL}/authorize`).as('getIdp');
 
     chooseIdpOnCore('fia1v2');
     cy.wait('@getIdp').then(({request: { url }}) => {

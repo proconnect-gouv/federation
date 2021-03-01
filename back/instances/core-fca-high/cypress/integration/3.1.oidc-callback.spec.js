@@ -1,9 +1,15 @@
 import * as qs from 'querystring';
-import { chooseIdpOnCore } from './mire.utils';
+import {
+  chooseIdpOnCore,
+  getServiceProvider,
+  getIdentityProvider,
+} from './mire.utils';
 
 function getOidcCallbackUrl(interactionId, event) {
+  const { IDP_ROOT_URL } = getIdentityProvider(`${Cypress.env('IDP_NAME')}1v2`);
+
   cy.request({
-    url: `${Cypress.env('IDP_ROOT_URL')}/login`,
+    url: `${IDP_ROOT_URL}/login`,
     method: 'POST',
     body: {
       interactionId,
@@ -39,12 +45,15 @@ function extractInteractionIdFromUrl(url) {
  * @param {Function} next a callback function that will receive `/oidc-callback` url as parameter.
  */
 function prepareOidcCallbackAs(alias) {
-  cy.visit(Cypress.env('SP1_ROOT_URL'));
+  const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
+  const { IDP_ROOT_URL } = getIdentityProvider(`${Cypress.env('IDP_NAME')}1v2`);
+
+  cy.visit(SP_ROOT_URL);
   cy.get('#get-authorize').click();
   
   chooseIdpOnCore(`${Cypress.env('IDP_NAME')}1v2`);
 
-  cy.url().should('contain', Cypress.env('IDP_ROOT_URL'));
+  cy.url().should('contain', IDP_ROOT_URL);
 
   cy.url().then((url) => {
     const interactionId = extractInteractionIdFromUrl(url);
@@ -81,7 +90,8 @@ function finishWithReplacedUrl(attackerUrl) {
   // Start a new session by emtying cookies
   cy.clearCookies();
   // Start a new interaction
-  cy.visit(Cypress.env('SP1_ROOT_URL'));
+  const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
+  cy.visit(SP_ROOT_URL);
   cy.get('#get-authorize').click();
   
   chooseIdpOnCore(`${Cypress.env('IDP_NAME')}1v2`);
