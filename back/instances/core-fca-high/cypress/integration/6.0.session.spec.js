@@ -2,6 +2,7 @@ import {
   basicErrorScenario,
   basicScenario,
   getAuthorizeUrl,
+  getServiceProvider,
 } from './mire.utils';
 
 describe('Session', () => {
@@ -125,7 +126,8 @@ describe('Session', () => {
   });
 
   it('should have two cookies stored for SP with the property `sameSite` value set to `lax`', () => {
-    cy.visit(Cypress.env('SP1_ROOT_URL'));
+    const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
+    cy.visit(SP_ROOT_URL);
     cy.getCookies()
       .should('have.length', 2)
       .then((cookies) => {

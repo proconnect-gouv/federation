@@ -25,7 +25,7 @@ describe('No SSO', () => {
     //   ...Then log  into SP "B"
     basicSuccessScenario({
       ...loginInfo,
-      sp: 'SP2',
+      sp: `${Cypress.env('SP_NAME')}2v2`,
     });
 
     // Then
