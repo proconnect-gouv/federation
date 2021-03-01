@@ -5,4 +5,5 @@ export interface IInteraction {
   lastConnection: Date;
   idpFederation: IFederation;
   spFederation: IFederation;
+  id?: string;
 }

@@ -15,6 +15,9 @@ export class Account extends Document {
   @Prop({ type: Date, default: Date.now })
   createdAt: Date;
 
+  @Prop({ type: String })
+  id: string;
+
   @Prop({ type: Date, default: Date.now, index: { expires: '3y' } })
   updatedAt: Date;
 
