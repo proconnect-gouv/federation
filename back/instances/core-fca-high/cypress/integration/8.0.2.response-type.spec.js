@@ -1,6 +1,8 @@
-import { getAuthorizeUrl } from './mire.utils';
+import { getAuthorizeUrl, getServiceProvider } from './mire.utils';
 
 describe('Response type', () => {
+  const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
+
   it('should return to the SP with an "unsupported_response_type" error if the query contains a non registered "response_type" (id_token)', () => {
     const url = getAuthorizeUrl({
       // oidc param
@@ -11,9 +13,7 @@ describe('Response type', () => {
     cy.request({ url, followRedirect: false }).then((resp) => {
       expect(resp.status).to.eq(302);
       expect(resp.redirectedToUrl).to.equals(
-        `${Cypress.env(
-          'SP1_ROOT_URL',
-        )}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        `${SP_ROOT_URL}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -28,9 +28,7 @@ describe('Response type', () => {
     cy.request({ url, followRedirect: false }).then((resp) => {
       expect(resp.status).to.eq(302);
       expect(resp.redirectedToUrl).to.equals(
-        `${Cypress.env(
-          'SP1_ROOT_URL',
-        )}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        `${SP_ROOT_URL}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -45,9 +43,7 @@ describe('Response type', () => {
     cy.request({ url, followRedirect: false }).then((resp) => {
       expect(resp.status).to.eq(302);
       expect(resp.redirectedToUrl).to.equals(
-        `${Cypress.env(
-          'SP1_ROOT_URL',
-        )}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        `${SP_ROOT_URL}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -62,9 +58,7 @@ describe('Response type', () => {
     cy.request({ url, followRedirect: false }).then((resp) => {
       expect(resp.status).to.eq(302);
       expect(resp.redirectedToUrl).to.equals(
-        `${Cypress.env(
-          'SP1_ROOT_URL',
-        )}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        `${SP_ROOT_URL}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -79,9 +73,7 @@ describe('Response type', () => {
     cy.request({ url, followRedirect: false }).then((resp) => {
       expect(resp.status).to.eq(302);
       expect(resp.redirectedToUrl).to.equals(
-        `${Cypress.env(
-          'SP1_ROOT_URL',
-        )}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        `${SP_ROOT_URL}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -103,7 +95,7 @@ describe('Response type', () => {
 
     cy.url().should(
       'match',
-      new RegExp(`${Cypress.env('SP1_ROOT_URL')}/error`),
+      new RegExp(`${SP_ROOT_URL}/error`),
     );
 
     cy.get('#error-title').contains('unsupported_response_type');

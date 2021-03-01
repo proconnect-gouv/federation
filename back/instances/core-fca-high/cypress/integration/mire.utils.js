@@ -11,16 +11,14 @@ import * as QueryString from 'querystring';
  *  - acr_values
  */
 export function basicSuccessScenario(params) {
-  const { idpId, userName, sp = 'SP1', method } = params;
+  const { idpId, userName, sp = 'fsa1v2', method } = params;
   const password = params.password || '123';
 
-  const serviceProvider = {
-    url: Cypress.env(`${sp}_ROOT_URL`),
-    id: Cypress.env(`${sp}_CLIENT_ID`),
-  };
+  const { SP_ROOT_URL, SP_CLIENT_ID } = getServiceProvider(sp);
+  const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
 
   // FS: Click on FC button
-  cy.visit(serviceProvider.url);
+  cy.visit(SP_ROOT_URL);
 
   if (method === 'POST') {
     cy.get('#post-authorize').click();
@@ -37,7 +35,7 @@ export function basicSuccessScenario(params) {
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_AUTHORIZE_INITIATED',
-    spId: serviceProvider.id,
+    spId: SP_CLIENT_ID,
     spAcr: params.acr_values,
     idpId: null,
     idpName: null,
@@ -46,7 +44,7 @@ export function basicSuccessScenario(params) {
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_SHOWED_IDP_CHOICE',
-    spId: serviceProvider.id,
+    spId: SP_CLIENT_ID,
     spAcr: params.acr_values,
     idpId: null,
     idpName: null,
@@ -56,12 +54,12 @@ export function basicSuccessScenario(params) {
   chooseIdpOnCore(idpId);
 
   // FI: Authenticate
-  cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
+  cy.url().should('include', IDP_INTERACTION_URL);
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'IDP_CHOSEN',
-    spId: serviceProvider.id,
+    spId: SP_CLIENT_ID,
     spAcr: params.acr_values,
     idpId, // idpId is set
     idpAcr: null, // idpAct is still null
@@ -74,7 +72,7 @@ export function basicSuccessScenario(params) {
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_REQUESTED_IDP_TOKEN',
-    spId: serviceProvider.id,
+    spId: SP_CLIENT_ID,
     spAcr: params.acr_values,
     idpId, // idpId is now set
     idpAcr: null, // idpAcr is still null
@@ -83,7 +81,7 @@ export function basicSuccessScenario(params) {
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_REQUESTED_IDP_USERINFO',
-    spId: serviceProvider.id,
+    spId: SP_CLIENT_ID,
     spAcr: params.acr_values,
     idpId,
     idpAcr: null, // idpAcr is still null
@@ -92,7 +90,7 @@ export function basicSuccessScenario(params) {
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_REDIRECTED_TO_SP',
-    spId: serviceProvider.id,
+    spId: SP_CLIENT_ID,
     spAcr: params.acr_values,
     idpId,
     idpAcr: params.acr_values,
@@ -101,7 +99,7 @@ export function basicSuccessScenario(params) {
   cy.hasBusinessLog({
     category: 'BACK_CINEMATIC',
     event: 'SP_REQUESTED_FC_TOKEN',
-    spId: serviceProvider.id,
+    spId: SP_CLIENT_ID,
     spAcr: params.acr_values,
     idpId,
     idpAcr: params.acr_values,
@@ -110,7 +108,7 @@ export function basicSuccessScenario(params) {
   cy.hasBusinessLog({
     category: 'BACK_CINEMATIC',
     event: 'SP_REQUESTED_FC_USERINFO',
-    spId: serviceProvider.id,
+    spId: SP_CLIENT_ID,
     spAcr: params.acr_values,
     idpId,
     idpAcr: params.acr_values,
@@ -139,6 +137,7 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
 }
 
 export function chooseIdpOnCore(idpId) {
+  const { MINISTRY } = getIdentityProvider(idpId);
   // FC: choose FI
   cy.url().should(
     'include',
@@ -146,7 +145,7 @@ export function chooseIdpOnCore(idpId) {
   );
 
   cy.get(`#select-ministry`).click();
-  cy.get(`#ministry-ministry1`).click();
+  cy.get(`#ministry-${MINISTRY}`).click();
   cy.get(`#idp-selects`).click();
   cy.get(`#idp-${idpId}`).click();
   cy.get('#idp-go').click();
@@ -157,12 +156,14 @@ export function basicScenario(params) {
     idpId,
     login = 'test',
     // eidasLevel, see comment below
-    start = Cypress.env('SP1_ROOT_URL'),
+    sp = 'fsa1v2',
     overrideParams,
   } = params;
   const password = '123';
+  const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
+  const { SP_ROOT_URL } = getServiceProvider(sp);
 
-  cy.visit(start);
+  cy.visit(SP_ROOT_URL);
 
   if (overrideParams) {
     // Steal the state to finish the cinematic
@@ -187,7 +188,7 @@ export function basicScenario(params) {
   chooseIdpOnCore(idpId);
 
   // FI: Authenticate
-  cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
+  cy.url().should('include', IDP_INTERACTION_URL);
   cy.get('input[name="login"]').clear().type(login);
   cy.get('input[name="password"]').clear().type(password);
 
@@ -212,18 +213,19 @@ export function basicErrorScenario(params) {
 }
 
 export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
+  const { SP_CLIENT_ID, SP_ROOT_URL } = getServiceProvider('fsa1v2');
   const baseAuthorizeUrl = '/api/v2/authorize';
   const baseAuthorizeParams = {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    client_id: `${Cypress.env('SP1_CLIENT_ID')}`,
+    client_id: `${SP_CLIENT_ID}`,
     scope: 'openid gender family_name',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     response_type: 'code',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uri: `${Cypress.env('SP1_ROOT_URL')}/oidc-callback/envIssuer`,
+    redirect_uri: `${SP_ROOT_URL}/oidc-callback/envIssuer`,
     state: 'stateTraces',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -245,4 +247,20 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
   }
 
   return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;
+}
+
+/**
+ * Retrieve service provider information
+ * @param {*} sp : service provider identifier
+ */
+export function getServiceProvider(sp = 'fsa1v2') {
+  return Cypress.env('SP_AVAILABLES').find(({ ID }) => ID === sp);
+}
+
+/**
+ * Retrieve service provider information
+ * @param {*} idp : identity provider uid
+ */
+export function getIdentityProvider(idp = 'fia1v2') {
+  return Cypress.env('IDP_AVAILABLES').find(({ ID }) => ID === idp);
 }
