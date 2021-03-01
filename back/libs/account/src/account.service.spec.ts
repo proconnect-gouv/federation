@@ -1,8 +1,12 @@
+import { mocked } from 'ts-jest/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { LoggerService } from '@fc/logger';
 import { AccountService } from './account.service';
 import { IInteraction } from './interfaces';
+import * as uuid from 'uuid';
+
+jest.mock('uuid');
 
 describe('AccountService', () => {
   let service: AccountService;
@@ -15,6 +19,7 @@ describe('AccountService', () => {
   const accountModel = getModelToken('Account');
 
   const constructorSpy = jest.fn();
+
   const findOneSpy = jest.fn();
   class ModelClassMock {
     constructor(obj) {
@@ -102,8 +107,9 @@ describe('AccountService', () => {
 
   describe('getAccountWithInteraction', () => {
     const identityHash = 'my identityHash mock';
-
+    const id = 'mock-id';
     const newInteractionMock = {
+      id,
       identityHash,
       idpFederation: { idp1Id: { sub: 'idp1Sub' } },
       spFederation: { sp1Id: { sub: 'sp1Sub' } },
@@ -121,6 +127,7 @@ describe('AccountService', () => {
       expect(constructorSpy).toHaveBeenCalledTimes(1);
       expect(constructorSpy).toHaveBeenCalledWith(newInteractionMock);
       expect(result).toEqual({
+        id,
         identityHash,
         idpFederation: { idp1Id: { sub: 'idp1Sub' } },
         spFederation: { sp1Id: { sub: 'sp1Sub' } },
@@ -130,6 +137,7 @@ describe('AccountService', () => {
     it('should return an object with idp and sp arrays when an account exists', async () => {
       // Given
       const databaseInteractionMock = {
+        id,
         identityHash,
         idpFederation: { idp2Id: { sub: 'idp2Sub' } },
         spFederation: { sp2Id: { sub: 'sp2Sub' } },
@@ -143,6 +151,7 @@ describe('AccountService', () => {
       // Then
       expect(constructorSpy).toHaveBeenCalledTimes(0);
       expect(result).toEqual({
+        id,
         identityHash,
         idpFederation: {
           idp1Id: { sub: 'idp1Sub' },
@@ -152,6 +161,34 @@ describe('AccountService', () => {
           sp1Id: { sub: 'sp1Sub' },
           sp2Id: { sub: 'sp2Sub' },
         },
+        lastConnection: new Date('2020-05-01'),
+      });
+    });
+
+    it('should return an uuid if accountId is not defined', async () => {
+      // Given
+      const customUuid = 'mock-uuid';
+      const uuidMock = mocked(uuid, true);
+      uuidMock.v4.mockReturnValue(customUuid);
+
+      // When
+      const result = await service['getAccountWithInteraction']({
+        ...newInteractionMock,
+        id: null,
+      });
+
+      // Then
+      expect(constructorSpy).toHaveBeenCalledTimes(1);
+      expect(uuidMock.v4).toHaveBeenCalledTimes(1);
+      expect(constructorSpy).toHaveBeenCalledWith({
+        ...newInteractionMock,
+        id: customUuid,
+      });
+      expect(result).toEqual({
+        id: customUuid,
+        identityHash,
+        idpFederation: { idp1Id: { sub: 'idp1Sub' } },
+        spFederation: { sp1Id: { sub: 'sp1Sub' } },
         lastConnection: new Date('2020-05-01'),
       });
     });
