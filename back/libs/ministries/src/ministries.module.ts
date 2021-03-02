@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MinistriesSchema } from './schemas';
 import { MinistriesService } from './ministries.service';
+import { MinistriesOperationTypeChangesHandler } from './handler';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { MinistriesService } from './ministries.service';
       },
     ]),
   ],
-  providers: [MinistriesService],
+  providers: [MinistriesService, MinistriesOperationTypeChangesHandler],
   exports: [MinistriesService, MongooseModule],
 })
 export class MinistriesModule {}
