@@ -7,6 +7,7 @@ import {
   IsUrl,
   IsBoolean,
   ValidateIf,
+  IsString,
 } from 'class-validator';
 import { ClientMetadata } from 'openid-client';
 import { JSONWebKeySet } from 'jose';
@@ -31,4 +32,7 @@ export class IdentityProviderEnvConfig {
    */
   @IsObject()
   readonly jwks: JSONWebKeySet;
+
+  @IsString()
+  readonly clientSecretEcKey: string;
 }

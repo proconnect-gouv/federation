@@ -61,4 +61,5 @@ export default {
     revocation_endpoint_auth_method:
       process.env.REVOCATION_ENDPOINT_AUTH_METHOD,
   },
+  clientSecretEcKey: process.env.CLIENT_SECRET_CIPHER_PASS,
 } as IdentityProviderEnvConfig;

@@ -14,7 +14,8 @@ import {
 } from '@fc/identity-provider';
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
-import { CryptographyModule } from '@fc/cryptography';
+import { CryptographyFcpModule } from '@fc/cryptography-fcp';
+import { CryptographyEidasModule } from '@fc/cryptography-eidas';
 import { ErrorModule } from '@fc/error';
 import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
@@ -58,7 +59,8 @@ const oidcProviderModule = OidcProviderModule.register(
     MongooseModule,
     SessionModule,
     RnippModule,
-    CryptographyModule,
+    CryptographyFcpModule,
+    CryptographyEidasModule,
     AccountModule,
     ServiceProviderModule,
     IdentityProviderModule,

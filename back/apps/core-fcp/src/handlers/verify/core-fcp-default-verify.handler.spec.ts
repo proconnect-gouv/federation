@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
@@ -12,6 +13,7 @@ import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
 import { ServiceProviderService } from '@fc/service-provider';
 import { CoreFcpDefaultVerifyHandler } from './core-fcp-default-verify.handler';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
 
 describe('CoreFcpDefaultVerifyHandler', () => {
   let service: CoreFcpDefaultVerifyHandler;
@@ -84,7 +86,6 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     idpAcr: 'eidas3',
     idpName: 'my favorite Idp',
     idpIdentity: idpIdentityMock,
-
     spId: 'sp_id',
     spAcr: 'eidas3',
     spName: 'my great SP',
@@ -95,6 +96,11 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
   const serviceProviderMock = {
     getById: jest.fn(),
+  };
+
+  const cryptographyFcpServiceMock = {
+    computeSubV1: jest.fn(),
+    computeIdentityHash: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -108,6 +114,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
         RnippService,
         TrackingService,
         ServiceProviderService,
+        CryptographyFcpService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -124,6 +131,8 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       .useValue(trackingMock)
       .overrideProvider(ServiceProviderService)
       .useValue(serviceProviderMock)
+      .overrideProvider(CryptographyFcpService)
+      .useValue(cryptographyFcpServiceMock)
       .compile();
 
     service = module.get<CoreFcpDefaultVerifyHandler>(
@@ -135,9 +144,12 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     getInteractionMock.mockResolvedValue(getInteractionResultMock);
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
     rnippServiceMock.check.mockResolvedValue(spIdentityMock);
-    coreServiceMock.computeInteraction.mockResolvedValue(
-      computeInteractionMock,
-    );
+    cryptographyFcpServiceMock.computeIdentityHash
+      .mockReturnValueOnce('spIdentityHash')
+      .mockReturnValueOnce('idpIdentityHash');
+    cryptographyFcpServiceMock.computeSubV1
+      .mockReturnValueOnce('computedSubSp')
+      .mockReturnValueOnce('computedSubIdp');
   });
 
   it('should be defined', () => {
@@ -218,8 +230,8 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       expect(sessionServiceMock.patch).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.patch).toHaveBeenCalledWith(uidMock, {
         amr: ['fc'],
-        idpIdentity: { sub: 'some idpSub' },
-        spIdentity: { sub: undefined },
+        idpIdentity: { sub: 'computedSubIdp' },
+        spIdentity: { ...idpIdentityMock, sub: 'computedSubSp' },
       });
     });
 
@@ -230,14 +242,67 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
       expect(coreServiceMock.computeInteraction).toBeCalledWith(
         {
-          idpId: sessionDataMock.idpId,
-          idpIdentity: sessionDataMock.idpIdentity,
+          spId: sessionDataMock.spId,
+          entityId: spMock.entityId,
+          subSp: 'computedSubSp',
+          hashSp: 'spIdentityHash',
         },
         {
-          spId: sessionDataMock.spId,
-          spRef: spMock.entityId,
-          spIdentity: sessionDataMock.spIdentity,
+          idpId: sessionDataMock.idpId,
+          subIdp: 'computedSubIdp',
         },
+      );
+    });
+
+    it('should call computeIdentityHash with rnipp identity on first call', async () => {
+      // When
+      await service.handle(reqMock);
+
+      // Then
+      expect(
+        cryptographyFcpServiceMock.computeIdentityHash,
+      ).toHaveBeenCalledTimes(2);
+      expect(
+        cryptographyFcpServiceMock.computeIdentityHash,
+      ).toHaveBeenNthCalledWith(1, spIdentityMock);
+    });
+
+    it('should call computeIdentityHash with identity given by the identity provider on the second call', async () => {
+      // When
+      await service.handle(reqMock);
+
+      // Then
+      expect(
+        cryptographyFcpServiceMock.computeIdentityHash,
+      ).toHaveBeenCalledTimes(2);
+      expect(
+        cryptographyFcpServiceMock.computeIdentityHash,
+      ).toHaveBeenNthCalledWith(2, idpIdentityMock);
+    });
+
+    it('should call computeSubV1 with entityId and rnippIdentityHash on first call', async () => {
+      // When
+      await service.handle(reqMock);
+
+      // Then
+      expect(cryptographyFcpServiceMock.computeSubV1).toHaveBeenCalledTimes(2);
+      expect(cryptographyFcpServiceMock.computeSubV1).toHaveBeenNthCalledWith(
+        1,
+        spMock.entityId,
+        'spIdentityHash',
+      );
+    });
+
+    it('should call computeSubV1 with spId and idpIdentityHash on the second call', async () => {
+      // When
+      await service.handle(reqMock);
+
+      // Then
+      expect(cryptographyFcpServiceMock.computeSubV1).toHaveBeenCalledTimes(2);
+      expect(cryptographyFcpServiceMock.computeSubV1).toHaveBeenNthCalledWith(
+        2,
+        sessionDataMock.spId,
+        'idpIdentityHash',
       );
     });
 
