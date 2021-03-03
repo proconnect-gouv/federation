@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { validateDto, asyncFilter } from '@fc/common';
-import { validationOptions } from '@fc/config';
+import { validationOptions, ConfigService } from '@fc/config';
 import {
   IdentityProviderMetadata,
   IIdentityProviderService,
@@ -9,7 +9,7 @@ import {
 import { CryptographyService } from '@fc/cryptography';
 import { EventBus } from '@nestjs/cqrs';
 import { LoggerService } from '@fc/logger';
-import { IdentityProviderDTO } from './dto';
+import { IdentityProviderDTO, IdentityProviderConfig } from './dto';
 import { IdentityProvider } from './schemas';
 import { IdentityProviderOperationTypeChangesEvent } from './events';
 
@@ -20,7 +20,8 @@ export class IdentityProviderService implements IIdentityProviderService {
   constructor(
     @InjectModel('IdentityProvider')
     private readonly identityProviderModel,
-    private readonly cryptography: CryptographyService,
+    private readonly crypto: CryptographyService,
+    private readonly config: ConfigService,
     private readonly eventBus: EventBus,
     private readonly logger: LoggerService,
   ) {
@@ -211,14 +212,27 @@ export class IdentityProviderService implements IIdentityProviderService {
 
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    result.client_secret = this.cryptography.decryptClientSecret(
-      source.client_secret,
-    );
+    result.client_secret = this.decryptClientSecret(source.client_secret);
 
     /**
      * @TODO Fix type issues between legacy model and `oidc-client` library
      * We have non blocking incompatilities.
      */
     return (result as unknown) as IdentityProviderMetadata;
+  }
+
+  /**
+   * Decrypt client secrect with specific key provided by configuration
+   *
+   * @param clientSecret
+   */
+  private decryptClientSecret(clientSecret: string): string {
+    const { clientSecretEcKey } = this.config.get<IdentityProviderConfig>(
+      'Cryptography',
+    );
+    return this.crypto.decrypt(
+      clientSecretEcKey,
+      Buffer.from(clientSecret, 'base64'),
+    );
   }
 }

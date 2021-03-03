@@ -52,6 +52,12 @@
       "@fc/oidc-client/*": [
         "libs/oidc-client/src/*"
       ],
+      "@fc/cryptography-fcp": [
+        "libs/cryptography-fcp/src"
+      ],
+      "@fc/cryptography-fcp/*": [
+        "libs/cryptography-fcp/src/*"
+      ],
       "@fc/cryptography": [
         "libs/cryptography/src"
       ],
@@ -286,6 +292,18 @@
       "@fc/feature-handler/*": [
         "libs/feature-handler/src/*"
       ],
+      "@fc/cryptography-fca": [
+        "libs/cryptography-fca/src"
+      ],
+      "@fc/cryptography-fca/*": [
+        "libs/cryptography-fca/src/*"
+      ],
+      "@fc/cryptography-eidas": [
+        "libs/cryptography-eidas/src"
+      ],
+      "@fc/cryptography-eidas/*": [
+        "libs/cryptography-eidas/src/*"
+      ]
     }
   },
   "exclude": [

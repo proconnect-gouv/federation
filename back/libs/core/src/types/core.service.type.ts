@@ -1,12 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-
-import { IOidcIdentity } from '@fc/oidc';
-
-export type IdentityGroup = { idpId: string; idpIdentity: IOidcIdentity };
-export type ServiceGroup = {
-  spIdentity: IOidcIdentity;
+export type ComputeIdp = { idpId: string; subIdp: string };
+export type ComputeSp = {
   spId: string;
-  spRef: string;
+  entityId: string;
+  subSp: string;
+  hashSp: string;
 };

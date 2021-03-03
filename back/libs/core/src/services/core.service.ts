@@ -8,13 +8,12 @@ import {
   Configuration,
 } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
-import { CryptographyService } from '@fc/cryptography';
 import { AccountBlockedException, AccountService } from '@fc/account';
-import { Acr, IOidcIdentity } from '@fc/oidc';
+import { Acr } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
 import { AcrValues, pickAcr } from '../transforms';
-import { IdentityGroup, ServiceGroup } from '../types';
+import { ComputeSp, ComputeIdp } from '../types';
 
 @Injectable()
 export class CoreService {
@@ -22,7 +21,6 @@ export class CoreService {
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
     private readonly oidcProvider: OidcProviderService,
-    private readonly cryptography: CryptographyService,
     private readonly account: AccountService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -113,8 +111,7 @@ export class CoreService {
    * Check if an account exists and is blocked
    * @param identity
    */
-  async checkIfAccountIsBlocked(identity: IOidcIdentity): Promise<void> {
-    const identityHash = this.cryptography.computeIdentityHash(identity);
+  async checkIfAccountIsBlocked(identityHash: string): Promise<void> {
     const accountIsBlocked = await this.account.isBlocked(identityHash);
 
     if (accountIsBlocked) {
@@ -123,49 +120,41 @@ export class CoreService {
   }
 
   /**
-   * Computes hash, sub and federation entry for a given identity and provider id
+   * Computes federation entry for a given identity and provider id
    *
    * @param providerId
-   * @param identity
-   * @param federationKey?
+   * @param sub
+   * @param entityId?
    */
-  private buildInteractionParts(
-    providerId: string,
-    identity: IOidcIdentity,
-    federationKey?: string,
-  ) {
-    const key = federationKey || providerId;
-    const hash = this.cryptography.computeIdentityHash(identity);
-    const sub = this.cryptography.computeSubV1(providerId, hash);
-    const federation = { [key]: { sub } };
 
-    return { hash, sub, federation };
+  private getFederation(providerId: string, sub: string, entityId?: string) {
+    const key = entityId || providerId;
+    return { [key]: { sub } };
   }
 
   /**
    * @todo Découper cette fonction car elle commence à englober plusieurs traitements business
    * Build and persist current interaction with account service
-   * @param {Object} idp Identity provider information
-   * @param {string} idp.idpId - id of the Identity Provider
-   * @param {string} idp.idpIdentity - data from Identity Provider
-   * @param {Object} sp Service provider information
-   * @param {string} idp.spId - id of the Service Provider
-   * @param {string} idp.spIdentity - data to give to Service Provider
-   * @param {string} idp.spRef - Reference of Service Provider used to identity
+   * @param {string} spId - id of the Service Provider
+   * @param {string} entityId -
+   * @param {string} subSp - sub of the Service Provider
+   * @param {string} hashSp - hash of the Service Provider
+   * @param {string} idpId - id of the Identity Provider
+   * @param {string} subIdp - sub of the Identity Provider
    */
   async computeInteraction(
-    { idpId, idpIdentity }: IdentityGroup,
-    { spIdentity, spId, spRef }: ServiceGroup,
+    { spId, entityId, subSp, hashSp }: ComputeSp,
+    { idpId, subIdp }: ComputeIdp,
   ) {
-    const spParts = this.buildInteractionParts(spRef, spIdentity, spId);
-    const idpParts = this.buildInteractionParts(idpId, idpIdentity);
+    const spFederation = this.getFederation(spId, subSp, entityId);
+    const idpFederation = this.getFederation(idpId, subIdp);
 
     const interaction = {
       // service provider Hash is used as main identity hash
-      identityHash: spParts.hash,
+      identityHash: hashSp,
       // federation for each sides
-      idpFederation: idpParts.federation,
-      spFederation: spParts.federation,
+      idpFederation: idpFederation,
+      spFederation: spFederation,
       // Set last connection time to now
       lastConnection: new Date(),
     };
@@ -182,12 +171,6 @@ export class CoreService {
        */
       this.logger.warn('Could not persist interaction to database');
     }
-
-    // Return interaction parts avoid double computation
-    return {
-      spInteraction: spParts,
-      idpInteraction: idpParts,
-    };
   }
 
   checkIfAcrIsValid(receivedAcr: string, requestedAcr: string) {

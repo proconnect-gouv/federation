@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
@@ -6,6 +7,7 @@ import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
 import { ServiceProviderService } from '@fc/service-provider';
 import { CoreFcpEidasVerifyHandler } from './core-fcp-eidas-verify.handler';
+import { CryptographyEidasService } from '@fc/cryptography-eidas';
 
 describe('CoreFcpEidasVerifyHandler', () => {
   let service: CoreFcpEidasVerifyHandler;
@@ -80,11 +82,15 @@ describe('CoreFcpEidasVerifyHandler', () => {
     idpAcr: 'eidas3',
     idpName: 'my favorite Idp',
     idpIdentity: idpIdentityMock,
-
     spId: 'sp_id',
     spAcr: 'eidas3',
     spName: 'my great SP',
     spIdentity: spIdentityMock,
+  };
+
+  const cryptographyEidasServiceMock = {
+    computeSubV1: jest.fn(),
+    computeIdentityHash: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -97,6 +103,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
         SessionService,
         TrackingService,
         ServiceProviderService,
+        CryptographyEidasService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -111,6 +118,8 @@ describe('CoreFcpEidasVerifyHandler', () => {
       .useValue(trackingMock)
       .overrideProvider(ServiceProviderService)
       .useValue(serviceProviderMock)
+      .overrideProvider(CryptographyEidasService)
+      .useValue(cryptographyEidasServiceMock)
       .compile();
 
     service = module.get<CoreFcpEidasVerifyHandler>(CoreFcpEidasVerifyHandler);
@@ -119,9 +128,12 @@ describe('CoreFcpEidasVerifyHandler', () => {
 
     getInteractionMock.mockResolvedValue(getInteractionResultMock);
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
-    coreServiceMock.computeInteraction.mockResolvedValue(
-      computeInteractionMock,
+    cryptographyEidasServiceMock.computeIdentityHash.mockReturnValueOnce(
+      'spIdentityHash',
     );
+    cryptographyEidasServiceMock.computeSubV1
+      .mockReturnValueOnce('computedSubSp')
+      .mockReturnValueOnce('computedSubIdp');
   });
 
   it('should be defined', () => {
@@ -176,8 +188,8 @@ describe('CoreFcpEidasVerifyHandler', () => {
       expect(sessionServiceMock.patch).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.patch).toHaveBeenCalledWith(uidMock, {
         amr: ['eidas'],
-        idpIdentity: { sub: 'some idpSub' },
-        spIdentity: { sub: undefined },
+        idpIdentity: { sub: 'computedSubIdp' },
+        spIdentity: { ...idpIdentityMock, sub: 'computedSubSp' },
       });
     });
 
@@ -188,13 +200,14 @@ describe('CoreFcpEidasVerifyHandler', () => {
       expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
       expect(coreServiceMock.computeInteraction).toBeCalledWith(
         {
-          idpId: sessionDataMock.idpId,
-          idpIdentity: sessionDataMock.idpIdentity,
+          spId: sessionDataMock.spId,
+          entityId: spMock.entityId,
+          subSp: 'computedSubSp',
+          hashSp: 'spIdentityHash',
         },
         {
-          spId: sessionDataMock.spId,
-          spRef: spMock.entityId,
-          spIdentity: sessionDataMock.idpIdentity,
+          idpId: sessionDataMock.idpId,
+          subIdp: 'computedSubIdp',
         },
       );
     });
@@ -210,5 +223,48 @@ describe('CoreFcpEidasVerifyHandler', () => {
      * // Service provider usability
      * it('Should throw if service provider is not usable ', async () => {});
      */
+
+    it('should call computeIdentityHash with service provider identity on first call', async () => {
+      // When
+      await service.handle(reqMock);
+
+      // Then
+      expect(
+        cryptographyEidasServiceMock.computeIdentityHash,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        cryptographyEidasServiceMock.computeIdentityHash,
+      ).toHaveBeenCalledWith(idpIdentityMock);
+    });
+
+    it('should call computeSubV1 with entityId and rnippIdentityHash on first call', async () => {
+      // When
+      await service.handle(reqMock);
+
+      // Then
+      expect(cryptographyEidasServiceMock.computeSubV1).toHaveBeenCalledTimes(
+        2,
+      );
+      expect(cryptographyEidasServiceMock.computeSubV1).toHaveBeenNthCalledWith(
+        1,
+        spMock.entityId,
+        'spIdentityHash',
+      );
+    });
+
+    it('should call computeSubV1 with spId and idpIdentityHash on the second call', async () => {
+      // When
+      await service.handle(reqMock);
+
+      // Then
+      expect(cryptographyEidasServiceMock.computeSubV1).toHaveBeenCalledTimes(
+        2,
+      );
+      expect(cryptographyEidasServiceMock.computeSubV1).toHaveBeenNthCalledWith(
+        2,
+        sessionDataMock.spId,
+        'spIdentityHash',
+      );
+    });
   });
 });
