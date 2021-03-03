@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { validateDto, asyncFilter } from '@fc/common';
-import { validationOptions } from '@fc/config';
+import { validationOptions, ConfigService } from '@fc/config';
 import {
   ServiceProviderMetadata,
   IServiceProviderService,
@@ -9,7 +9,7 @@ import {
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { EventBus } from '@nestjs/cqrs';
-import { ServiceProviderDTO } from './dto';
+import { ServiceProviderDTO, ServiceProviderConfig } from './dto';
 import { ServiceProviderOperationTypeChangesEvent } from './events';
 import { ServiceProvider } from './schemas';
 
@@ -21,6 +21,7 @@ export class ServiceProviderService implements IServiceProviderService {
     @InjectModel('ServiceProvider')
     private readonly serviceProviderModel,
     private readonly cryptography: CryptographyService,
+    private readonly config: ConfigService,
     private readonly eventBus: EventBus,
     private readonly logger: LoggerService,
   ) {}
@@ -177,9 +178,7 @@ export class ServiceProviderService implements IServiceProviderService {
     const client_id = source.key;
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const client_secret = this.cryptography.decryptClientSecret(
-      source.client_secret,
-    );
+    const client_secret = this.decryptClientSecret(source.client_secret);
     const scope = source.scopes.join(' ');
 
     const result = {
@@ -197,5 +196,15 @@ export class ServiceProviderService implements IServiceProviderService {
     delete result.scopes;
 
     return result as ServiceProviderMetadata;
+  }
+
+  private decryptClientSecret(clientSecret: string): string {
+    const { clientSecretEcKey } = this.config.get<ServiceProviderConfig>(
+      'Cryptography',
+    );
+    return this.cryptography.decrypt(
+      clientSecretEcKey,
+      Buffer.from(clientSecret, 'base64'),
+    );
   }
 }

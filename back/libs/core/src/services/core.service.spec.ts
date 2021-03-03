@@ -2,14 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { OidcProviderService, OidcCtx } from '@fc/oidc-provider';
-import { SessionService } from '@fc/session';
-import { CryptographyService } from '@fc/cryptography';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { AccountService, AccountBlockedException } from '@fc/account';
-import { TrackingService } from '@fc/tracking';
-import { IOidcIdentity } from '@fc/oidc';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
 import { CoreService } from './core.service';
-import { IdentityGroup, ServiceGroup } from '../types';
+import { ComputeSp, ComputeIdp } from '../types';
 
 describe('CoreService', () => {
   let service: CoreService;
@@ -64,7 +61,7 @@ describe('CoreService', () => {
     sub: 'some idpSub',
   };
 
-  const cryptographyServiceMock = {
+  const cryptographyFcpServiceMock = {
     computeIdentityHash: jest.fn(),
     computeSubV1: jest.fn(),
   };
@@ -73,21 +70,21 @@ describe('CoreService', () => {
     get: jest.fn(),
   };
 
-  const trackingMock = {
-    track: jest.fn(),
-  };
-
   const sessionDataMock = {
     idpId: '42',
     idpAcr: 'eidas3',
     idpName: 'my favorite Idp',
     idpIdentity: idpIdentityMock,
-
     spId: 'sp_id',
     spAcr: 'eidas3',
     spName: 'my great SP',
     spIdentity: spIdentityMock,
   };
+
+  const entityIdMock = 'myEntityId';
+  const subSpMock = 'MockedSpSub';
+  const rnippidentityHashMock = 'rnippIdentityHashed';
+  const subIdpMock = 'MockedIdpSub';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -96,10 +93,8 @@ describe('CoreService', () => {
         LoggerService,
         ConfigService,
         OidcProviderService,
-        SessionService,
-        CryptographyService,
+        CryptographyFcpService,
         AccountService,
-        TrackingService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -108,14 +103,10 @@ describe('CoreService', () => {
       .useValue(configServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
-      .overrideProvider(CryptographyService)
-      .useValue(cryptographyServiceMock)
+      .overrideProvider(CryptographyFcpService)
+      .useValue(cryptographyFcpServiceMock)
       .overrideProvider(AccountService)
       .useValue(accountServiceMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingMock)
       .compile();
 
     configServiceMock.get.mockReturnValue({
@@ -161,192 +152,113 @@ describe('CoreService', () => {
     });
   });
 
-  describe('buildInteractionParts', () => {
-    // Given
-    const hash = Buffer.from('hashValue', 'utf-8').toString('base64');
-    const sub = 'subMock';
-    const id = 'idpIdMock';
-    const identity = ({
-      // OIDC naming convention
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      given_name: 'given_nameValue',
-      gender: 'genderValue',
-    } as unknown) as IOidcIdentity;
-
-    beforeEach(() => {
-      cryptographyServiceMock.computeIdentityHash.mockReturnValue(hash);
-    });
-
-    it('should call cryptography.computeIdentityHash', () => {
-      // When
-      service['buildInteractionParts'](id, identity);
-
-      // Then
-      expect(cryptographyServiceMock.computeIdentityHash).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(cryptographyServiceMock.computeIdentityHash).toHaveBeenCalledWith(
-        identity,
-      );
-    });
-
-    it('should call cryptography.computeSubV1', () => {
-      // When
-      service['buildInteractionParts'](id, identity);
-
-      // Then
-      expect(cryptographyServiceMock.computeSubV1).toHaveBeenCalledTimes(1);
-      expect(cryptographyServiceMock.computeSubV1).toHaveBeenCalledWith(
-        id,
-        hash,
-      );
-    });
-
-    it('should return an object containing hash, sub and federation', () => {
+  describe('getFederation', () => {
+    it('should return an object containing the provider sub, having the entityId as key if it exist', () => {
       // Given
-      cryptographyServiceMock.computeSubV1.mockReturnValue(sub);
+      const subSpMock = 'spMockedSub';
 
       // When
-      const result = service['buildInteractionParts'](id, identity);
+      const result = service['getFederation'](
+        sessionDataMock.spId,
+        subSpMock,
+        entityIdMock,
+      );
 
       // Then
-      expect(result).toEqual({
-        hash,
-        sub,
-        federation: { idpIdMock: { sub } },
-      });
+      expect(result).toEqual({ myEntityId: { sub: subSpMock } });
+    });
+
+    it('should return an object containing the provider sub, having the providerId as key if entityId does not exist', () => {
+      // Given
+      const subIdpMock = 'idpMockedSub';
+
+      // When
+      const result = service['getFederation'](
+        sessionDataMock.idpId,
+        subIdpMock,
+      );
+
+      // Then
+      expect(result).toEqual({ [sessionDataMock.idpId]: { sub: subIdpMock } });
     });
   });
 
   describe('computeInteraction', () => {
-    const spKey = Symbol('spKey');
-    const spMock = {
-      hash: 'hashValue',
-      sub: 'sub:value',
-      federation: {
-        [spKey]: 'sub:value',
-      },
+    const computeSp: ComputeSp = {
+      spId: sessionDataMock.spId,
+      entityId: entityIdMock,
+      subSp: subSpMock,
+      hashSp: rnippidentityHashMock,
     };
-    const idpKey = Symbol('idpKey');
-    const idpMock = {
-      hash: 'hashValue',
-      sub: 'sub:value',
-      federation: {
-        [idpKey]: 'sub:value',
-      },
-    };
-    let buildInteractionMock;
-
-    const identityMock: IdentityGroup = {
-      idpId: 'xxxxxxx',
-      idpIdentity: {},
-    };
-    const serviceMock: ServiceGroup = {
-      spId: 'xxxxxxx',
-      spIdentity: {},
-      spRef: 'zzzzzzzzz',
+    const computeIdp: ComputeIdp = {
+      idpId: sessionDataMock.idpId,
+      subIdp: subIdpMock,
     };
 
-    const accountMock = {
-      identityHash: 'hashValue',
-      idpFederation: {
-        [idpKey]: 'sub:value',
-      },
-      spFederation: { [spKey]: 'sub:value' },
-      lastConnection: expect.any(Date),
-    };
-
-    const resultMock = {
-      idpInteraction: {
-        federation: {
-          [idpKey]: 'sub:value',
-        },
-        hash: 'hashValue',
-        sub: 'sub:value',
-      },
-      spInteraction: {
-        federation: {
-          [spKey]: 'sub:value',
-        },
-        hash: 'hashValue',
-        sub: 'sub:value',
-      },
-    };
-
-    beforeEach(() => {
-      buildInteractionMock = jest.spyOn<CoreService, any>(
-        service,
-        'buildInteractionParts',
+    it('should call getFederation to get spFederation', async () => {
+      // Given
+      service['getFederation'] = jest.fn();
+      accountServiceMock.storeInteraction.mockResolvedValue('saved');
+      // When
+      await service.computeInteraction(computeSp, computeIdp);
+      // Then
+      expect(service['getFederation']).toHaveBeenCalledTimes(2);
+      expect(service['getFederation']).toHaveBeenNthCalledWith(
+        1,
+        sessionDataMock.spId,
+        subSpMock,
+        entityIdMock,
       );
     });
 
-    it('Should store interaction with identity and service data', async () => {
+    it('should call getFederation to get idpFederation', async () => {
       // Given
-      buildInteractionMock
-        .mockReturnValueOnce(spMock)
-        .mockReturnValueOnce(idpMock);
-
+      service['getFederation'] = jest.fn();
+      accountServiceMock.storeInteraction.mockResolvedValue('saved');
       // When
-      const result = await service['computeInteraction'](
-        identityMock,
-        serviceMock,
-      );
-
+      await service.computeInteraction(computeSp, computeIdp);
       // Then
-      expect(accountServiceMock.storeInteraction).toBeCalledTimes(1);
-      expect(accountServiceMock.storeInteraction).toBeCalledWith(accountMock);
-      expect(buildInteractionMock).toBeCalledTimes(2);
-      expect(buildInteractionMock).toHaveBeenNthCalledWith(
-        1,
-        serviceMock.spRef,
-        serviceMock.spIdentity,
-        serviceMock.spId,
-      );
-      expect(buildInteractionMock).toHaveBeenNthCalledWith(
+      expect(service['getFederation']).toHaveBeenCalledTimes(2);
+      expect(service['getFederation']).toHaveBeenNthCalledWith(
         2,
-        identityMock.idpId,
-        identityMock.idpIdentity,
+        sessionDataMock.idpId,
+        subIdpMock,
       );
-      expect(result).toStrictEqual(resultMock);
     });
 
-    it('Should compute Interaction even if account storing process failed', async () => {
+    it('should call storeInteraction with interaction object well formatted', async () => {
       // Given
-      buildInteractionMock
-        .mockReturnValueOnce(spMock)
-        .mockReturnValueOnce(idpMock);
-
-      accountServiceMock.storeInteraction.mockRejectedValueOnce(
-        new Error('Unknown Error'),
-      );
-
+      service['getFederation'] = jest
+        .fn()
+        .mockReturnValueOnce({ myEntityId: { sub: subSpMock } })
+        .mockReturnValueOnce({ [sessionDataMock.idpId]: { sub: subIdpMock } });
+      const date = new Date();
       // When
-      const result = await service['computeInteraction'](
-        identityMock,
-        serviceMock,
-      );
+      await service.computeInteraction(computeSp, computeIdp);
 
       // Then
-      expect(accountServiceMock.storeInteraction).toBeCalledTimes(1);
-      expect(accountServiceMock.storeInteraction).toBeCalledWith(accountMock);
-      expect(buildInteractionMock).toBeCalledTimes(2);
-      expect(buildInteractionMock).toHaveBeenNthCalledWith(
-        1,
-        serviceMock.spRef,
-        serviceMock.spIdentity,
-        serviceMock.spId,
-      );
-      expect(buildInteractionMock).toHaveBeenNthCalledWith(
-        2,
-        identityMock.idpId,
-        identityMock.idpIdentity,
-      );
+      expect(accountServiceMock.storeInteraction).toHaveBeenCalledTimes(1);
+      expect(accountServiceMock.storeInteraction).toHaveBeenCalledWith({
+        identityHash: rnippidentityHashMock,
+        idpFederation: { [sessionDataMock.idpId]: { sub: subIdpMock } },
+        spFederation: { myEntityId: { sub: subSpMock } },
+        lastConnection: date,
+      });
+    });
 
-      expect(loggerServiceMock.warn).toBeCalledTimes(1);
-      expect(loggerServiceMock.warn).toBeCalledWith(
-        'Could not persist interaction to database',
-      );
-      expect(result).toStrictEqual(resultMock);
+    it('should call storeInteraction with interaction object well formatted', async () => {
+      // Given
+      service['getFederation'] = jest
+        .fn()
+        .mockReturnValueOnce({ myEntityId: { sub: subSpMock } })
+        .mockReturnValueOnce({ [sessionDataMock.idpId]: { sub: subIdpMock } });
+      accountServiceMock.storeInteraction.mockRejectedValueOnce('fail!!!');
+      // When
+      try {
+        await service.computeInteraction(computeSp, computeIdp);
+      } catch (e) {
+        expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
+      }
     });
   });
 
@@ -455,19 +367,19 @@ describe('CoreService', () => {
   describe('checkIfAccountIsBlocked', () => {
     it('Should go through check if account is not blocked', async () => {
       // Given
-      const identityMock = {};
+      const identityHash = 'hashedIdentity';
       // Then
-      await service['checkIfAccountIsBlocked'](identityMock);
+      await service.checkIfAccountIsBlocked(identityHash);
 
       expect(accountServiceMock.isBlocked).toBeCalledTimes(1);
     });
     it('Should throw if account is blocked', async () => {
       // Given
       accountServiceMock.isBlocked.mockResolvedValue(true);
-      const identityMock = {};
+      const identityHash = 'hashedIdentity';
       // Then
       await expect(
-        service['checkIfAccountIsBlocked'](identityMock),
+        service.checkIfAccountIsBlocked(identityHash),
       ).rejects.toThrow(AccountBlockedException);
 
       expect(accountServiceMock.isBlocked).toBeCalledTimes(1);
@@ -477,10 +389,10 @@ describe('CoreService', () => {
       // Given
       const error = new Error('foo');
       accountServiceMock.isBlocked.mockRejectedValueOnce(error);
-      const identityMock = {};
+      const identityHash = 'hashedIdentity';
       // Then
       await expect(
-        service['checkIfAccountIsBlocked'](identityMock),
+        service.checkIfAccountIsBlocked(identityHash),
       ).rejects.toThrow(error);
 
       expect(accountServiceMock.isBlocked).toBeCalledTimes(1);
