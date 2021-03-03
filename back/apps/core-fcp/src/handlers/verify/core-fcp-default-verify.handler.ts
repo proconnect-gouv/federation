@@ -12,6 +12,7 @@ import { ServiceProviderService } from '@fc/service-provider';
 import { RnippPivotIdentity } from '@fc/rnipp';
 import { IOidcIdentity } from '@fc/oidc';
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
 
 @Injectable()
 @FeatureHandler('core-fcp-default-verify')
@@ -23,6 +24,7 @@ export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
     private readonly tracking: TrackingService,
     private readonly rnipp: RnippService,
     private readonly serviceProvider: ServiceProviderService,
+    private readonly cryptographyFcp: CryptographyFcpService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -69,20 +71,29 @@ export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
     // Identity check and normalization
     const rnippIdentity = await this.rnippCheck(idpIdentity, req);
 
-    await this.core.checkIfAccountIsBlocked(rnippIdentity);
-
     const { entityId } = await this.serviceProvider.getById(spId);
 
+    const hashSp = this.cryptographyFcp.computeIdentityHash(rnippIdentity);
+
+    await this.core.checkIfAccountIsBlocked(hashSp);
+
+    const subSp = this.cryptographyFcp.computeSubV1(entityId, hashSp);
+    const idpIdentityHash = this.cryptographyFcp.computeIdentityHash(
+      idpIdentity,
+    );
+    const subIdp = this.cryptographyFcp.computeSubV1(spId, idpIdentityHash);
+
     // Save interaction to database & get sp's sub to avoid double computation
-    const { spInteraction } = await this.core.computeInteraction(
-      {
-        idpId,
-        idpIdentity, // use identity from IdP for IdP
-      },
+    await this.core.computeInteraction(
       {
         spId,
-        spRef: entityId,
-        spIdentity: rnippIdentity, // use identity from RNIPP for SP
+        entityId,
+        subSp,
+        hashSp,
+      },
+      {
+        idpId,
+        subIdp,
       },
     );
 
@@ -92,10 +103,10 @@ export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
      *
      * We need to replace IdP's sub, by our own sub
      */
-    const spIdentity = { ...idpIdentity, sub: spInteraction.sub };
+    const spIdentity = { ...idpIdentity, sub: subSp };
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
-    const idpIdentityCleaned = { sub: idpIdentity.sub };
+    const idpIdentityCleaned = { sub: subIdp };
 
     await this.session.patch(interactionId, {
       amr: ['fc'],

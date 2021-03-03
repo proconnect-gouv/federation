@@ -15,7 +15,9 @@
       "sourceRoot": "instances/core-fca-high/src",
       "compilerOptions": {
         "tsConfigPath": "instances/core-fca-high/tsconfig.app.json",
-        "assets": ["../../../apps/core-fca/**/*.ejs"]
+        "assets": [
+          "../../../apps/core-fca/**/*.ejs"
+        ]
       }
     },
     "eidas-bridge-instance": {
@@ -189,6 +191,15 @@
       "sourceRoot": "libs/oidc-client/src",
       "compilerOptions": {
         "tsConfigPath": "libs/oidc-client/tsconfig.lib.json"
+      }
+    },
+    "cryptography-fcp": {
+      "type": "library",
+      "root": "libs/cryptography-fcp",
+      "entryFile": "index",
+      "sourceRoot": "libs/cryptography-fcp/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cryptography-fcp/tsconfig.lib.json"
       }
     },
     "cryptography": {
@@ -531,6 +542,24 @@
       "sourceRoot": "libs/notifications/src",
       "compilerOptions": {
         "tsConfigPath": "libs/notifications/tsconfig.lib.json"
+      }
+    },
+    "cryptography-fca": {
+      "type": "library",
+      "root": "libs/cryptography-fca",
+      "entryFile": "index",
+      "sourceRoot": "libs/cryptography-fca/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cryptography-fca/tsconfig.lib.json"
+      }
+    },
+    "cryptography-eidas": {
+      "type": "library",
+      "root": "libs/cryptography-eidas",
+      "entryFile": "index",
+      "sourceRoot": "libs/cryptography-eidas/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cryptography-eidas/tsconfig.lib.json"
       }
     }
   }

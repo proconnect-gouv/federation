@@ -3,11 +3,10 @@ import {
   createCipheriv,
   createDecipheriv,
   createHash,
+  BinaryToTextEncoding,
 } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
-import { IPivotIdentity } from './interfaces';
-import { CryptographyConfig } from './dto';
 import { LowEntropyArgumentException } from './exceptions';
 
 const NONCE_LENGTH = 12;
@@ -47,64 +46,17 @@ export class CryptographyService {
     return this.decrypt(key, cipher);
   }
 
-  /**
-   * Decrypt client secrect with specific key provided by configuration
-   *
-   * @param clientSecret
-   */
-  decryptClientSecret(clientSecret: string): string {
-    const { clientSecretEcKey } = this.config.get<CryptographyConfig>(
-      'Cryptography',
-    );
-    return this.decrypt(clientSecretEcKey, Buffer.from(clientSecret, 'base64'));
-  }
+  hash(
+    data: string,
+    inputEncoding: BufferEncoding = 'utf8',
+    alg = 'sha256',
+    outputDigest: BinaryToTextEncoding = 'hex',
+  ) {
+    const hash = createHash(alg);
 
-  /**
-   * Compute the identity hash
-   * Current implementation uses sha256
-   * @param pivotIdentity
-   * @returns the identity hash "hex" digested
-   */
-  computeIdentityHash(pivotIdentity: IPivotIdentity): string {
-    const hash = createHash('sha256');
+    hash.update(data, inputEncoding);
 
-    const serial =
-      pivotIdentity.given_name +
-      pivotIdentity.family_name +
-      pivotIdentity.birthdate +
-      pivotIdentity.gender +
-      pivotIdentity.birthplace +
-      pivotIdentity.birthcountry;
-
-    /**
-     * The "update" function default encoding was "binary" in NodeJS V4 when FranceConnect was starting
-     * Since changing it would cause people identity hash to change, we need to keep it as it
-     * @see https://nodejs.org/docs/latest-v4.x/api/crypto.html#crypto_hash_update_data_input_encoding
-     */
-    hash.update(serial, 'binary');
-
-    return hash.digest('base64');
-  }
-
-  /**
-   * Compute the sub v1, given an identity hash
-   * Current implementation uses Hash sha256
-   * @param providerRef the reference used to identify the provider
-   * @param identityHash the identity hash computed by calling "computeIdentityHash"
-   * @returns the sub "hex" digested and suffixed with "v1"
-   */
-  computeSubV1(providerRef: string, identityHash: string): string {
-    const { subSecretKey } = this.config.get<CryptographyConfig>(
-      'Cryptography',
-    );
-
-    const data = [providerRef, identityHash, subSecretKey];
-
-    const hash = createHash('sha256');
-
-    hash.update(data.join(''));
-
-    return `${hash.digest('hex')}v1`;
+    return hash.digest(outputDigest);
   }
 
   /**
@@ -151,7 +103,7 @@ export class CryptographyService {
    * @param cipher the cipher to decrypt
    * @returns the data decrypted
    */
-  private decrypt(key: string, cipher: Buffer): any {
+  decrypt(key: string, cipher: Buffer): any {
     if (Buffer.byteLength(cipher) <= CIPHER_HEAD_LENGTH) {
       /**
        * @TODO #138 throw a specific exception

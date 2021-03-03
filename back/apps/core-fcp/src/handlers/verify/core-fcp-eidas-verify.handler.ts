@@ -4,6 +4,8 @@ import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
 import { ServiceProviderService } from '@fc/service-provider';
+import { CryptographyEidasService } from '@fc/cryptography-eidas';
+
 @Injectable()
 @FeatureHandler('core-fcp-eidas-verify')
 export class CoreFcpEidasVerifyHandler implements IFeatureHandler {
@@ -12,6 +14,7 @@ export class CoreFcpEidasVerifyHandler implements IFeatureHandler {
     private readonly session: SessionService,
     private readonly core: CoreService,
     private readonly serviceProvider: ServiceProviderService,
+    private readonly cryptographyEidas: CryptographyEidasService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -29,16 +32,22 @@ export class CoreFcpEidasVerifyHandler implements IFeatureHandler {
     // Acr check
     this.core.checkIfAcrIsValid(idpAcr, spAcr);
 
-    // Save interaction to database & get sp's sub to avoid double computation
-    const { spInteraction } = await this.core.computeInteraction(
-      {
-        idpId,
-        idpIdentity, // use identity from IdP for IdP
-      },
+    // as spIdentity = idpIdentity, hashSp = hashIdp and is used to generate both sub
+    const hashSp = this.cryptographyEidas.computeIdentityHash(idpIdentity);
+    const subSp = this.cryptographyEidas.computeSubV1(entityId, hashSp);
+    const subIdp = this.cryptographyEidas.computeSubV1(spId, hashSp);
+
+    // Save interaction to database
+    await this.core.computeInteraction(
       {
         spId,
-        spIdentity: idpIdentity,
-        spRef: entityId,
+        entityId,
+        subSp,
+        hashSp,
+      },
+      {
+        idpId,
+        subIdp,
       },
     );
 
@@ -48,10 +57,10 @@ export class CoreFcpEidasVerifyHandler implements IFeatureHandler {
      *
      * We need to replace IdP's sub, by our own sub
      */
-    const spIdentityCleaned = { ...idpIdentity, sub: spInteraction.sub };
+    const spIdentityCleaned = { ...idpIdentity, sub: subSp };
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
-    const idpIdentityCleaned = { sub: idpIdentity.sub };
+    const idpIdentityCleaned = { sub: subIdp };
 
     await this.session.patch(interactionId, {
       amr: ['eidas'],

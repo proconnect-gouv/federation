@@ -111,9 +111,7 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
   ): IdentityProviderMetadata {
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const client_secret = this.cryptography.decryptClientSecret(
-      source.client_secret,
-    );
+    const client_secret = this.decryptClientSecret(source.client_secret);
 
     const result = {
       ...source,
@@ -127,5 +125,20 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
      * We have non blocking incompatilities.
      */
     return (result as unknown) as IdentityProviderMetadata;
+  }
+
+  /**
+   * Decrypt client secrect with specific key provided by configuration
+   *
+   * @param clientSecret
+   */
+  private decryptClientSecret(clientSecret: string): string {
+    const { clientSecretEcKey } = this.config.get<IdentityProviderEnvConfig>(
+      'Cryptography',
+    );
+    return this.cryptography.decrypt(
+      clientSecretEcKey,
+      Buffer.from(clientSecret, 'base64'),
+    );
   }
 }

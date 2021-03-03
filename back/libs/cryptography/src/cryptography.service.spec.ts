@@ -2,7 +2,6 @@ import * as crypto from 'crypto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import * as ecdsaSignaturesService from 'jose/lib/help/ecdsa_signatures';
-import { IPivotIdentity } from './interfaces';
 import { LowEntropyArgumentException } from './exceptions';
 import {
   RANDOM_MIN_ENTROPY,
@@ -39,19 +38,6 @@ describe('CryptographyService', () => {
     mockAuthTag16,
     mockCiphertext,
   ]);
-
-  const pivotIdentityMock: IPivotIdentity = {
-    // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    given_name: 'Jean Paul Henri',
-    // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    family_name: 'Dupont',
-    gender: 'male',
-    birthdate: '1970-01-01',
-    birthplace: '95277',
-    birthcountry: '99100',
-  };
 
   const mockHashDigestedHash =
     'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8';
@@ -170,25 +156,7 @@ describe('CryptographyService', () => {
     });
   });
 
-  describe('decryptClientSecret', () => {
-    it('should call decrypt with enc key from config', () => {
-      // Given
-      const clientSecretMock = 'some string';
-
-      service['decrypt'] = jest.fn();
-      // When
-      service.decryptClientSecret(clientSecretMock);
-      // Then
-      expect(configMock.get).toHaveBeenCalledTimes(1);
-      expect(service['decrypt']).toHaveBeenCalledTimes(1);
-      expect(service['decrypt']).toHaveBeenCalledWith(
-        mockEncryptKey,
-        Buffer.from(clientSecretMock, 'base64'),
-      );
-    });
-  });
-
-  describe('computeIdentityHash', () => {
+  describe('hash', () => {
     beforeEach(() => {
       jest
         .spyOn(crypto, 'createHash')
@@ -198,82 +166,108 @@ describe('CryptographyService', () => {
       mockHash.digest.mockReturnValueOnce(mockHashDigestedHash);
     });
 
-    it('should create a hash instance with sha256', () => {
+    it('should create a Hash instance with the given algorithm', () => {
+      // Given
+      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
+      const inputEncoding = 'utf8';
+      const alg = 'sha256';
+      const outputDigest = 'hex';
+
       // action
-      service.computeIdentityHash(pivotIdentityMock);
+      service.hash(data, inputEncoding, alg, outputDigest);
 
       // expect
       expect(mockCrypto.createHash).toHaveBeenCalledTimes(1);
       expect(mockCrypto.createHash).toHaveBeenCalledWith('sha256');
     });
 
-    it('should serialize the given pivot identity and hash it', () => {
-      // setup
-      const serializedPivotIdentity =
-        'Jean Paul HenriDupont1970-01-01male9527799100';
+    it('should create a Hash instance with sha256 if no algorythm is given', () => {
+      // Given
+      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
+      const inputEncoding = 'utf8';
+      const alg = undefined;
+      const outputDigest = 'hex';
 
       // action
-      service.computeIdentityHash(pivotIdentityMock);
+      service.hash(data, inputEncoding, alg, outputDigest);
+
+      // expect
+      expect(mockCrypto.createHash).toHaveBeenCalledTimes(1);
+      expect(mockCrypto.createHash).toHaveBeenCalledWith('sha256');
+    });
+
+    it('should call hash instance update with data and given input encoding', () => {
+      // Given
+      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
+      const inputEncoding = 'binary';
+      const alg = 'sha256';
+      const outputDigest = 'hex';
+
+      // action
+      service.hash(data, inputEncoding, alg, outputDigest);
 
       // expect
       expect(mockHash.update).toHaveBeenCalledTimes(1);
-      expect(mockHash.update).toHaveBeenCalledWith(
-        serializedPivotIdentity,
-        'binary',
-      );
+      expect(mockHash.update).toHaveBeenCalledWith(data, 'binary');
     });
 
-    it('should digest the hash to hex format and return the result', () => {
+    it('should call hash instance update with data and default input encoding', () => {
+      // Given
+      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
+      const inputEncoding = undefined;
+      const alg = 'sha256';
+      const outputDigest = 'hex';
+
       // action
-      const result = service.computeIdentityHash(pivotIdentityMock);
+      service.hash(data, inputEncoding, alg, outputDigest);
+
+      // expect
+      expect(mockHash.update).toHaveBeenCalledTimes(1);
+      expect(mockHash.update).toHaveBeenCalledWith(data, 'utf8');
+    });
+
+    it('should digest the hash to given format', () => {
+      // Given
+      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
+      const inputEncoding = 'utf8';
+      const alg = 'sha256';
+      const outputDigest = 'base64';
+
+      // action
+      service.hash(data, inputEncoding, alg, outputDigest);
 
       // expect
       expect(mockHash.digest).toHaveBeenCalledTimes(1);
       expect(mockHash.digest).toHaveBeenCalledWith('base64');
-      expect(result).toBe(mockHashDigestedHash);
-    });
-  });
-
-  describe('computeSubV1', () => {
-    const providerRefMock = 'providerRefMockValue';
-    const identityHashMock = 'identityHashValue';
-    beforeEach(() => {
-      jest
-        .spyOn(crypto, 'createHash')
-        .mockImplementationOnce(mockCrypto.createHash);
-      mockCrypto.createHash.mockReturnValueOnce(mockHash);
-
-      mockHash.digest.mockReturnValueOnce(mockHashDigestedHash);
     });
 
-    it('should create a Hash instance with sha256', () => {
+    it('should digest the hash to hex format', () => {
+      // Given
+      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
+      const inputEncoding = 'utf8';
+      const alg = 'sha256';
+      const outputDigest = undefined;
+
       // action
-      service.computeSubV1(providerRefMock, identityHashMock);
-
-      // expect
-      expect(mockCrypto.createHash).toHaveBeenCalledTimes(1);
-      expect(mockCrypto.createHash).toHaveBeenCalledWith('sha256');
-    });
-
-    it('should call hash instance update with identity hash', () => {
-      // setup
-      const resultMock = `${providerRefMock}${identityHashMock}${cryptographyKeyMock}`;
-      // action
-      service.computeSubV1(providerRefMock, identityHashMock);
-
-      // expect
-      expect(mockHash.update).toHaveBeenCalledTimes(1);
-      expect(mockHash.update).toHaveBeenCalledWith(resultMock);
-    });
-
-    it('should digest the hash to hex format and return the result suffixed with the sub version', () => {
-      // action
-      const result = service.computeSubV1(providerRefMock, identityHashMock);
+      service.hash(data, inputEncoding, alg, outputDigest);
 
       // expect
       expect(mockHash.digest).toHaveBeenCalledTimes(1);
       expect(mockHash.digest).toHaveBeenCalledWith('hex');
-      expect(result).toBe(`${mockHashDigestedHash}v1`);
+    });
+
+    it('should return the digested hash', () => {
+      // Given
+      const data = 'someStringToHashBuddyIfYouMay/IMeanObeyNow/FasterForest';
+      const inputEncoding = 'utf8';
+      const alg = 'sha256';
+      const outputDigest = 'hex';
+
+      // action
+      const result = service.hash(data, inputEncoding, alg, outputDigest);
+
+      // expect
+      expect(result).toEqual(mockHashDigestedHash);
     });
   });
 

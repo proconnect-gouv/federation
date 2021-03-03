@@ -15,7 +15,7 @@ import {
 import { MinistriesModule } from '@fc/ministries';
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
-import { CryptographyModule } from '@fc/cryptography';
+import { CryptographyFcaModule } from '@fc/cryptography-fca';
 import { ErrorModule } from '@fc/error';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
@@ -44,7 +44,7 @@ import { CoreFcaDefaultVerifyHandler } from './handlers';
     ErrorModule,
     MongooseModule,
     SessionModule,
-    CryptographyModule,
+    CryptographyFcaModule,
     AccountModule,
     ServiceProviderModule,
     IdentityProviderModule,
