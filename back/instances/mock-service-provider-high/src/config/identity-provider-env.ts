@@ -59,6 +59,6 @@ export default {
     //oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     revocation_endpoint_auth_method:
-      process.env.REVOCATION_ENDPOINT_AUTH_METHOD,
-  },
+      process.env.REVOCATION_ENDPOINT_AUTH_METHOD,},
+    clientSecretEcKey: process.env.CLIENT_SECRET_CIPHER_PASS,
 } as IdentityProviderEnvConfig;

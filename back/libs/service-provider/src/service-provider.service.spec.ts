@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
 import { CryptographyService } from '@fc/cryptography';
+import { ConfigService } from '@fc/config';
 import { CustomClientMetadata } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { ServiceProvider } from './schemas';
@@ -71,7 +72,7 @@ describe('ServiceProviderService', () => {
   };
 
   const cryptographyMock = {
-    decryptClientSecret: jest.fn(),
+    decrypt: jest.fn(),
   };
 
   const repositoryMock = {
@@ -85,6 +86,10 @@ describe('ServiceProviderService', () => {
   };
 
   const serviceProviderModel = getModelToken('ServiceProvider');
+
+  const configMock = {
+    get: jest.fn(),
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -101,10 +106,13 @@ describe('ServiceProviderService', () => {
         },
         LoggerService,
         EventBus,
+        ConfigService,
       ],
     })
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)
+      .overrideProvider(ConfigService)
+      .useValue(configMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .overrideProvider(EventBus)
@@ -220,11 +228,11 @@ describe('ServiceProviderService', () => {
       };
       delete expected.key;
       delete expected.scopes;
+      service['decryptClientSecret'] = jest
+        .fn()
+        .mockReturnValueOnce(expected.client_secret);
 
       // action
-      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
-        expected.client_secret,
-      );
       const result = service['legacyToOpenIdPropertyName'](
         (validServiceProviderMock._doc as unknown) as ServiceProvider,
       );
@@ -329,9 +337,9 @@ describe('ServiceProviderService', () => {
       ];
       delete expected[0].key;
       delete expected[0].scopes;
-      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
-        expected[0].client_secret,
-      );
+      service['decryptClientSecret'] = jest
+        .fn()
+        .mockReturnValueOnce(expected[0].client_secret);
 
       // action
       const result = await service.getList(true);
@@ -380,9 +388,9 @@ describe('ServiceProviderService', () => {
       ];
       delete expected[0].key;
       delete expected[0].scopes;
-      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
-        expected[0].client_secret,
-      );
+      service['decryptClientSecret'] = jest
+        .fn()
+        .mockReturnValueOnce(expected[0].client_secret);
 
       // action
       const result = await service.getList(true);
@@ -523,8 +531,9 @@ describe('ServiceProviderService', () => {
       };
       delete expected.key;
       delete expected.scopes;
-
-      cryptographyMock.decryptClientSecret.mockReturnValueOnce('client_secret');
+      service['decryptClientSecret'] = jest
+        .fn()
+        .mockReturnValueOnce('client_secret');
 
       // action
       const result = service['legacyToOpenIdPropertyName'](
@@ -533,6 +542,49 @@ describe('ServiceProviderService', () => {
 
       // expect
       expect(result).toStrictEqual(expected);
+    });
+  });
+
+  describe('decryptClientSecret', () => {
+    it('should get clientSecretEcKey from config', () => {
+      // Given
+      const clientSecretMock = 'some string';
+      const clientSecretEcKey = 'Key';
+      configMock.get.mockReturnValue({ clientSecretEcKey });
+
+      // When
+      service['decryptClientSecret'](clientSecretMock);
+      // Then
+      expect(configMock.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call decrypt with enc key from config', () => {
+      // Given
+      const clientSecretMock = 'some string';
+      const clientSecretEcKey = 'Key';
+      configMock.get.mockReturnValue({ clientSecretEcKey });
+      cryptographyMock.decrypt.mockReturnValue('totoIsDecrypted');
+      // When
+      service['decryptClientSecret'](clientSecretMock);
+      // Then
+      expect(cryptographyMock.decrypt).toHaveBeenCalledTimes(1);
+      expect(cryptographyMock.decrypt).toHaveBeenCalledWith(
+        clientSecretEcKey,
+        Buffer.from(clientSecretMock, 'base64'),
+      );
+    });
+
+    it('should return clientSecretEcKey', () => {
+      // Given
+      const clientSecretMock = 'some string';
+      const clientSecretEcKey = 'Key';
+      configMock.get.mockReturnValue({ clientSecretEcKey });
+      cryptographyMock.decrypt.mockReturnValue('totoIsDecrypted');
+
+      // When
+      const result = service['decryptClientSecret'](clientSecretMock);
+      // Then
+      expect(result).toEqual('totoIsDecrypted');
     });
   });
 });

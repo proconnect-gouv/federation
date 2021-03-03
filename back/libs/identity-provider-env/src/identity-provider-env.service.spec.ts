@@ -129,7 +129,7 @@ describe('IdentityProviderEnvService', () => {
   };
 
   const cryptographyMock = {
-    decryptClientSecret: jest.fn(),
+    decrypt: jest.fn(),
   };
 
   const configMock = {
@@ -180,11 +180,11 @@ describe('IdentityProviderEnvService', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         client_secret: 'client_secret',
       };
+      service['decryptClientSecret'] = jest
+        .fn()
+        .mockReturnValueOnce(expected.client_secret);
 
       // action
-      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
-        expected.client_secret,
-      );
       const result = service['legacyToOpenIdPropertyName'](
         validIdentityProviderMock,
       );
@@ -261,8 +261,6 @@ describe('IdentityProviderEnvService', () => {
     it('should return a list of valids identity providers', async () => {
       // setup
       configMock.get.mockReturnValueOnce(env);
-
-      // setup
       const expected = [
         {
           ...validIdentityProviderMock,
@@ -271,11 +269,11 @@ describe('IdentityProviderEnvService', () => {
           client_secret: 'client_secret',
         },
       ];
+      service['decryptClientSecret'] = jest
+        .fn()
+        .mockReturnValueOnce(expected[0].client_secret);
 
       // action
-      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
-        expected[0].client_secret,
-      );
       const result = await service.getList();
 
       // expect
@@ -358,9 +356,9 @@ describe('IdentityProviderEnvService', () => {
           ...validIdentityProviderMock,
         },
       ];
-      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
-        expected[0].client_secret,
-      );
+      service['decryptClientSecret'] = jest
+        .fn()
+        .mockReturnValueOnce(expected[0].client_secret);
 
       // action
       const result = await service.getFilteredList(['envIssuer'], false);
@@ -377,9 +375,7 @@ describe('IdentityProviderEnvService', () => {
         },
       ];
 
-      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
-        expected[0].client_secret,
-      );
+      cryptographyMock.decrypt.mockReturnValueOnce(expected[0].client_secret);
 
       // action
       const result = await service.getFilteredList(['false_uid'], false);
@@ -403,9 +399,9 @@ describe('IdentityProviderEnvService', () => {
         },
       ];
 
-      cryptographyMock.decryptClientSecret.mockReturnValueOnce(
-        expected[0].client_secret,
-      );
+      service['decryptClientSecret'] = jest
+        .fn()
+        .mockReturnValueOnce(expected[0].client_secret);
 
       // action
       const result = await service.getFilteredList(['false_uid'], true);
@@ -449,6 +445,49 @@ describe('IdentityProviderEnvService', () => {
       // Then
       expect(service.getList).toHaveBeenCalledTimes(1);
       expect(service.getList).toHaveBeenCalledWith(refresh);
+    });
+  });
+
+  describe('decryptClientSecret', () => {
+    it('should get clientSecretEcKey from config', () => {
+      // Given
+      const clientSecretMock = 'some string';
+      const clientSecretEcKey = 'Key';
+      configMock.get.mockReturnValue({ clientSecretEcKey });
+
+      // When
+      service['decryptClientSecret'](clientSecretMock);
+      // Then
+      expect(configMock.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call decrypt with enc key from config', () => {
+      // Given
+      const clientSecretMock = 'some string';
+      const clientSecretEcKey = 'Key';
+      configMock.get.mockReturnValue({ clientSecretEcKey });
+      cryptographyMock.decrypt.mockReturnValue('totoIsDecrypted');
+      // When
+      service['decryptClientSecret'](clientSecretMock);
+      // Then
+      expect(cryptographyMock.decrypt).toHaveBeenCalledTimes(1);
+      expect(cryptographyMock.decrypt).toHaveBeenCalledWith(
+        clientSecretEcKey,
+        Buffer.from(clientSecretMock, 'base64'),
+      );
+    });
+
+    it('should return clientSecretEcKey', () => {
+      // Given
+      const clientSecretMock = 'some string';
+      const clientSecretEcKey = 'Key';
+      configMock.get.mockReturnValue({ clientSecretEcKey });
+      cryptographyMock.decrypt.mockReturnValue('totoIsDecrypted');
+
+      // When
+      const result = service['decryptClientSecret'](clientSecretMock);
+      // Then
+      expect(result).toEqual('totoIsDecrypted');
     });
   });
 });

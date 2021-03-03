@@ -4,6 +4,8 @@ import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
 import { ServiceProviderService } from '@fc/service-provider';
+import { CryptographyFcaService } from '@fc/cryptography-fca';
+
 @Injectable()
 @FeatureHandler('core-fca-default-verify')
 export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
@@ -12,6 +14,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     private readonly session: SessionService,
     private readonly core: CoreService,
     private readonly serviceProvider: ServiceProviderService,
+    private readonly cryptographyFca: CryptographyFcaService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -38,24 +41,31 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     // Acr check
     this.core.checkIfAcrIsValid(idpAcr, spAcr);
 
-    await this.core.checkIfAccountIsBlocked(idpIdentity);
-
     /**
-     * @todo - what is the algorithm of the sub for fca ?
+     * @todo - what is the algorithm of the identity hash for fca ?
      *
      */
+    const hashSp = this.cryptographyFca.computeIdentityHash(idpIdentity);
+    await this.core.checkIfAccountIsBlocked(hashSp);
+
     const { entityId } = await this.serviceProvider.getById(spId);
 
+    const subSp = this.cryptographyFca.computeSubV1(entityId, hashSp);
+
+    const hashIdp = this.cryptographyFca.computeIdentityHash(idpIdentity);
+    const subIdp = this.cryptographyFca.computeSubV1(spId, hashIdp);
+
     // Save interaction to database & get sp's sub to avoid double computation
-    const { spInteraction } = await this.core.computeInteraction(
-      {
-        idpId,
-        idpIdentity, // use identity from IdP for IdP
-      },
+    await this.core.computeInteraction(
       {
         spId,
-        spRef: entityId,
-        spIdentity: idpIdentity,
+        entityId,
+        subSp,
+        hashSp,
+      },
+      {
+        idpId,
+        subIdp,
       },
     );
 
@@ -63,10 +73,10 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
      * @TODO #305 generate unique sub ?
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/305
      */
-    const spIdentityCleaned = { ...idpIdentity, sub: spInteraction.sub };
+    const spIdentityCleaned = { ...idpIdentity, sub: subSp };
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
-    const idpIdentityCleaned = { sub: idpIdentity.sub };
+    const idpIdentityCleaned = { sub: subIdp };
 
     await this.session.patch(interactionId, {
       idpIdentity: idpIdentityCleaned,
