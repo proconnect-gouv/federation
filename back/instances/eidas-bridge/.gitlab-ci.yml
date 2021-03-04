@@ -13,7 +13,7 @@ eidas-bridge:
       - back/yarn.lock
       - back/node_modules/
   before_script:
-    - if [ "$E2E" != "1" ]; then echo "E2E Skipped"; exit 0; fi;
+    # - if [ "$E2E" != "1" ]; then echo "E2E Skipped"; exit 0; fi;
     - rm -rf $FC_ROOT/fc-docker
     - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
     - shopt -s expand_aliases
@@ -25,8 +25,8 @@ eidas-bridge:
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc-docker/volumes/src; done
   script:
     - docker-stack up eidas
-    - docker-stack dep eidas
-    - docker-stack start-all
+    - docker-stack dep corev2 fip1v2 rnipp # eidas-bridge fsp1v2 are included in corev2 (monorepo)
+    - docker-stack start corev2 eidas-bridge csmr-hsm rnipp fsp1v2 fsp2v2 fsp3v2 fip1v2 fip2v2 fip6v2 fip7v2
     # ## -- Build like for prod
     #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
     #- docker-stack exec corev2 yarn build eidas-bridge
@@ -37,8 +37,8 @@ eidas-bridge:
     #- docker-stack exec corev2 yarn start:prod:eidas-bridge &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
-    - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://eidas-bridge.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
-      do echo "Waiting for eidas-bridge..." && sleep 10; done' || ()
+    - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://eidas-bridge.docker.dev-franceconnect.fr/.well-known/openid-configuration)" != "200" ]];
+      do echo "Waiting for eidas-bridge..." && sleep 10; done' || (
       (echo 'Cannot connect to eidas-bridge') &&
       (docker exec fc_eidas-bridge_1 cat /tmp/.pm2/logs/eidas-bridge-error-0.log || true) &&
       (docker exec fc_eidas-bridge_1 cat /tmp/.pm2/logs/eidas-bridge-out-0.log || true) &&
@@ -49,8 +49,12 @@ eidas-bridge:
       (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_fip1v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fip2v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fip6v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fip7v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_fsp1v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_fsp2v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fsp3v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc-rp-all:/var/log/nginx back/instances/eidas-bridge/cypress/logs || true) &&
       exit 1)
   artifacts:
