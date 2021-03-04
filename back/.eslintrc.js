@@ -24,6 +24,7 @@ module.exports = {
     },
   ],
   rules: {
+    'max-depth': ['error', { max: 2 }],
     '@typescript-eslint/naming-convention': [
       'error',
       {
