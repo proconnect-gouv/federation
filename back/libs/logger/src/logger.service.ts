@@ -62,23 +62,26 @@ export class LoggerService extends Logger {
         : this.isDevelopment);
   }
 
-  private technicalLogger(level: string, log: any, context?: string) {
-    if (this.canLog(level)) {
-      let message = log;
-      if (!this.isDev()) {
-        try {
-          message = JSON.stringify(log);
-        } catch (error) {
-          this.internalLogger(
-            nestLevelsMap.warn,
-            'could not JSON stringify a log',
-            context,
-          );
-          message = log;
-        }
-      }
-      this.internalLogger(nestLevelsMap[level], message, context);
+  private technicalLogger(level: string, log: any, context?: string): void {
+    if (!this.canLog(level)) {
+      return;
     }
+
+    let message = log;
+    if (!this.isDev()) {
+      try {
+        message = JSON.stringify(log);
+      } catch (error) {
+        this.internalLogger(
+          nestLevelsMap.warn,
+          'could not JSON stringify a log',
+          context,
+        );
+        message = log;
+      }
+    }
+
+    this.internalLogger(nestLevelsMap[level], message, context);
   }
 
   private businessLogger(level: string, log: any, context?: string) {
