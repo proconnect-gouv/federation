@@ -15,6 +15,7 @@ describe('DtoValidation', () => {
 
       class TestClass {}
       const plain = { foo: 'bar' };
+      const resultValidationOptions = undefined;
 
       // action
       getTransformed(plain, TestClass);
@@ -24,6 +25,7 @@ describe('DtoValidation', () => {
       expect(ClassTransformer.plainToClass).toHaveBeenCalledWith(
         TestClass,
         plain,
+        resultValidationOptions,
       );
     });
   });
@@ -37,6 +39,7 @@ describe('DtoValidation', () => {
       class TestClass {}
       const plain = { foo: 'bar' };
       const validationOptions = { whitelist: false };
+      const resultValidationOptions = undefined;
 
       // action
       await validateDto(plain, TestClass, validationOptions);
@@ -46,6 +49,29 @@ describe('DtoValidation', () => {
       expect(ClassTransformer.plainToClass).toHaveBeenCalledWith(
         TestClass,
         plain,
+        resultValidationOptions,
+      );
+    });
+
+    it('should call "plainToClass" from "class-transformer" through "getTransformed" call with full options', async () => {
+      // setup
+      jest.spyOn(ClassTransformer, 'plainToClass');
+      jest.spyOn(ClassValidator, 'validate').mockImplementation(async () => []);
+
+      class TestClass {}
+      const plain = { foo: 'bar' };
+      const validationOptions = { whitelist: false };
+      const transformOptions = { groups: ['hello'] };
+
+      // action
+      await validateDto(plain, TestClass, validationOptions, transformOptions);
+
+      // expect
+      expect(ClassTransformer.plainToClass).toHaveBeenCalledTimes(1);
+      expect(ClassTransformer.plainToClass).toHaveBeenCalledWith(
+        TestClass,
+        plain,
+        transformOptions,
       );
     });
 

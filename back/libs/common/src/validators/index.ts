@@ -4,3 +4,4 @@
 export * from './array-at-least-one.validator';
 export * from './is-buffer-encoding.validator';
 export * from './is-string-or-regexp.validator';
+export * from './is-safe-string.validator';

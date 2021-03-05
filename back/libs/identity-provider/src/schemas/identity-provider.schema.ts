@@ -1,5 +1,6 @@
+import { Document, Schema as SchemaNative } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { IFeatureHandlerDatabaseMap } from '@fc/feature-handler';
 
 @Schema({ strict: true, strictQuery: true, collection: 'provider' })
 export class IdentityProvider extends Document {
@@ -61,6 +62,9 @@ export class IdentityProvider extends Document {
   // oidc defined variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
   userinfo_encrypted_response_enc: string;
+
+  @Prop({ type: SchemaNative.Types.Mixed })
+  featureHandlers: IFeatureHandlerDatabaseMap;
 }
 
 export const IdentityProviderSchema = SchemaFactory.createForClass(

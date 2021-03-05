@@ -13,6 +13,7 @@
 
     "BRIDGE_ROOT_URL": "https://eidas-bridge.docker.dev-franceconnect.fr",
 
+    "IDP_NAME": "fip",
     "IDP_ROOT_URL": "https://IDP_NAME.docker.dev-franceconnect.fr",
 
     "SP1_ROOT_URL": "https://fsp1v2.docker.dev-franceconnect.fr",
@@ -20,6 +21,6 @@
 
     "WELL_KNOWN": "/.well-known/openid-configuration"
   },
-  "ignoreTestFiles": "*.util.js",
+  "ignoreTestFiles": "**/!(*.spec).js",
   "projectId": "m4rv1n"
 }

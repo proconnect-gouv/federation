@@ -1,19 +1,28 @@
 import 'reflect-metadata';
-import { plainToClass } from 'class-transformer';
+import { ClassTransformOptions, plainToClass } from 'class-transformer';
 import { validate, ValidatorOptions, ValidationError } from 'class-validator';
 
-export function getTransformed<T>(plain: object, dto: any): T {
-  return plainToClass(dto, plain);
+/**
+ * @todo Supprimer les Type<> et créer un InstanceOf<> identique mais
+ * indépendant de NestJS
+ */
+export function getTransformed<T = any>(
+  plain: object,
+  dto: any,
+  options?: ClassTransformOptions,
+): T {
+  return plainToClass(dto, plain, options);
 }
 
 export async function validateDto(
   plain: object,
   dto: any,
-  options: ValidatorOptions,
+  validatorOptions: ValidatorOptions,
+  transformOptions?: ClassTransformOptions,
 ): Promise<ValidationError[]> {
-  const object = getTransformed(plain, dto);
+  const object = getTransformed<typeof dto>(plain, dto, transformOptions);
 
-  return validate(object, options);
+  return validate(object, validatorOptions);
 }
 
 /**
@@ -48,12 +57,16 @@ function getAllPropertiesErrors(
     if (error.constraints) {
       messages = messages.concat(formatErrorMessages(error, prefix));
     }
-
-    if (error.children) {
-      messages = messages.concat(
-        getAllPropertiesErrors(error.children, `${prefix}${error.property}.`),
-      );
+    /**
+     * Required default value on children because validationError.toString required it
+     */
+    if (!error.children) {
+      error.children = [];
     }
+
+    messages = messages.concat(
+      getAllPropertiesErrors(error.children, `${prefix}${error.property}.`),
+    );
   }
 
   return messages;

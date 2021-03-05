@@ -1,14 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { EventBus } from '@nestjs/cqrs';
 import { validateDto, asyncFilter } from '@fc/common';
 import { validationOptions, ConfigService } from '@fc/config';
-import {
-  ServiceProviderMetadata,
-  IServiceProviderService,
-} from '@fc/oidc-provider';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
-import { EventBus } from '@nestjs/cqrs';
+import { IServiceProviderService, ServiceProviderMetadata } from '@fc/oidc';
 import { ServiceProviderDTO, ServiceProviderConfig } from './dto';
 import { ServiceProviderOperationTypeChangesEvent } from './events';
 import { ServiceProvider } from './schemas';
