@@ -15,7 +15,7 @@ import { IdentityProviderOperationTypeChangesEvent } from './events';
 
 @Injectable()
 export class IdentityProviderService implements IIdentityProviderService {
-  private listCache: IdentityProviderMetadata[];
+  private listCache: IdentityProviderMetadata<any>[];
 
   constructor(
     @InjectModel('IdentityProvider')
@@ -151,7 +151,9 @@ export class IdentityProviderService implements IIdentityProviderService {
   /**
    * @param refreshCache  Should we refreshCache the cache made by the service?
    */
-  async getList(refreshCache = false): Promise<IdentityProviderMetadata[]> {
+  async getList<T = any>(
+    refreshCache?: boolean,
+  ): Promise<IdentityProviderMetadata<T>[]> {
     if (refreshCache || !this.listCache) {
       this.logger.debug('Refresh cache from DB');
       const list: IdentityProvider[] = await this.findAllIdentityProvider();
@@ -181,11 +183,11 @@ export class IdentityProviderService implements IIdentityProviderService {
     return filteredProviders;
   }
 
-  async getById(
+  async getById<T = Record<string, any>>(
     id: string,
     refreshCache = false,
-  ): Promise<IdentityProviderMetadata> {
-    const providers = await this.getList(refreshCache);
+  ): Promise<IdentityProviderMetadata<T>> {
+    const providers = await this.getList<T>(refreshCache);
 
     return providers.find(({ uid }) => uid === id);
   }

@@ -104,7 +104,7 @@ describe('CoreFcaService', () => {
 
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
     coreServiceMock.storeInteraction.mockResolvedValue({ spInteraction: {} });
-    featureHandlerMock.mockResolvedValueOnce(featureHandlerServiceMock);
+    featureHandlerMock.mockReturnValueOnce(featureHandlerServiceMock);
     IdentityProviderMock.getById.mockResolvedValue(IdentityProviderResultMock);
   });
 
