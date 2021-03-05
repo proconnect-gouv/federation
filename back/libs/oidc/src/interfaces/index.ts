@@ -3,3 +3,4 @@
 // Declarative code
 export * from './identity.interface';
 export * from './oidc-error.interface';
+export * from './service-provider-service.interface';

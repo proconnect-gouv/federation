@@ -4,6 +4,8 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { Identity } from '../dto';
 
+export type IdentityMock = Identity & Record<string, any>;
+
 @Injectable()
 export class MockIdentityProviderFcaService {
   private csvdbProxy = csvdb;
@@ -56,8 +58,8 @@ export class MockIdentityProviderFcaService {
     return cleanedData;
   }
 
-  getIdentity(inputUid: string): Identity {
-    const identity: Identity = this.database.find(
+  getIdentity(inputUid: string): IdentityMock {
+    const identity: IdentityMock = this.database.find(
       ({ uid }) => uid === inputUid,
     );
 

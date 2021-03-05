@@ -13,7 +13,8 @@ import { ConfigService } from '@fc/config';
 import { SessionService } from '@fc/session';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { TrackingService } from '@fc/tracking';
-import { IServiceProviderService, OidcCtx } from './interfaces';
+import { IServiceProviderService } from '@fc/oidc';
+import { OidcCtx } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens';
 import {
   OidcProviderEvents,

@@ -3,8 +3,8 @@ import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
-import { CustomClientMetadata } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
+import { ServiceProviderMetadata } from '@fc/oidc';
 import { ServiceProvider } from './schemas';
 import { ServiceProviderService } from './service-provider.service';
 
@@ -362,7 +362,7 @@ describe('ServiceProviderService', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: 'bar',
         },
-      ] as unknown) as CustomClientMetadata[];
+      ] as unknown) as ServiceProviderMetadata[];
       service['findAllServiceProvider'] = jest.fn();
 
       // action

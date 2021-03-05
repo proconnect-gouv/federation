@@ -146,6 +146,10 @@ export function chooseIdpOnCore(idpId) {
 
   cy.get(`#select-ministry`).click();
   cy.get(`#ministry-${MINISTRY}`).click();
+  // wait for data to be injected
+  cy.get('#ministries-selects span.ant-select-selection-item').should(
+    'be.not.empty',
+  );
   cy.get(`#idp-selects`).click();
   cy.get(`#idp-${idpId}`).click();
   cy.get('#idp-go').click();
