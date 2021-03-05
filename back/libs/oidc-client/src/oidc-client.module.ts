@@ -6,7 +6,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { SessionModule, SessionService } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 import { CryptographyModule } from '@fc/cryptography';
-import { IServiceProviderService } from '@fc/oidc-provider';
+import { IServiceProviderService } from '@fc/oidc';
 import { IDENTITY_PROVIDER_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import {

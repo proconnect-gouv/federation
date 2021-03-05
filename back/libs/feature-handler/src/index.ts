@@ -6,4 +6,3 @@ export * from './interfaces';
 export * from './decorators';
 export * from './validators';
 export * from './handlers';
-export * from './dto';

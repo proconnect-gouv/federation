@@ -15,8 +15,8 @@ import { SessionService } from '@fc/session';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { IOidcIdentity } from '@fc/oidc';
 import { MockIdentityProviderFcaRoutes } from '../enums';
-import { MockIdentityProviderFcaService } from '../services';
-import { Identity, SignInDTO } from '../dto';
+import { IdentityMock, MockIdentityProviderFcaService } from '../services';
+import { SignInDTO } from '../dto';
 
 @Controller()
 export class MockIdentityProviderFcaController {
@@ -53,7 +53,7 @@ export class MockIdentityProviderFcaController {
   @Post(MockIdentityProviderFcaRoutes.INTERACTION_LOGIN)
   async getLogin(@Next() next, @Body() body: SignInDTO): Promise<void> {
     const { login, interactionId } = body;
-    const identity: Identity = await this.mockIdentityProviderFcaService.getIdentity(
+    const identity: IdentityMock = await this.mockIdentityProviderFcaService.getIdentity(
       login,
     );
 
