@@ -12,7 +12,7 @@ import { IdentityProviderEnvDTO, IdentityProviderEnvConfig } from './dto';
 
 @Injectable()
 export class IdentityProviderEnvService implements IIdentityProviderService {
-  private identityProviderCache: IdentityProviderMetadata[];
+  private identityProviderCache: IdentityProviderMetadata<any>[];
 
   constructor(
     private readonly cryptography: CryptographyService,
@@ -67,7 +67,9 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
   /**
    * @param refreshCache  Should we refreshCache the cache made by the service?
    */
-  async getList(refreshCache = false): Promise<IdentityProviderMetadata[]> {
+  async getList<T = any>(
+    refreshCache?: boolean,
+  ): Promise<IdentityProviderMetadata<T>[]> {
     if (refreshCache || !this.identityProviderCache) {
       const list: IIdentityProviderEnv[] = await this.findAllIdentityProvider();
 
@@ -75,6 +77,7 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
         this.legacyToOpenIdPropertyName.bind(this),
       );
     }
+
     return this.identityProviderCache;
   }
 
@@ -97,11 +100,11 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
     return filteredProviders;
   }
 
-  async getById(
+  async getById<T = Record<string, any>>(
     id: string,
     refreshCache = false,
-  ): Promise<IdentityProviderMetadata> {
-    const providers = await this.getList(refreshCache);
+  ): Promise<IdentityProviderMetadata<T>> {
+    const providers = await this.getList<T>(refreshCache);
 
     return providers.find(({ uid }) => uid === id);
   }

@@ -232,7 +232,6 @@ describe('CoreService', () => {
         .fn()
         .mockReturnValueOnce({ myEntityId: { sub: subSpMock } })
         .mockReturnValueOnce({ [sessionDataMock.idpId]: { sub: subIdpMock } });
-      const date = new Date();
       // When
       await service.computeInteraction(computeSp, computeIdp);
 
@@ -242,7 +241,7 @@ describe('CoreService', () => {
         identityHash: rnippidentityHashMock,
         idpFederation: { [sessionDataMock.idpId]: { sub: subIdpMock } },
         spFederation: { myEntityId: { sub: subSpMock } },
-        lastConnection: date,
+        lastConnection: expect.any(Date),
       });
     });
 

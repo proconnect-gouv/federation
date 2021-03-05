@@ -14,7 +14,7 @@ import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { IServiceProviderService } from '@fc/oidc-provider';
+import { IServiceProviderService } from '@fc/oidc';
 import { IDENTITY_PROVIDER_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from './events';
