@@ -8,6 +8,7 @@ export default {
   jwks: {
     keys: [parseJsonProperty(process.env, 'JWKS')],
   },
+  discovery: false,
   // No discovery URL for legacy core
   discoveryUrl: undefined,
   provider: {
@@ -44,18 +45,7 @@ export default {
     id_token_signed_response_alg: 'HS256',
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-
-    // oidc param name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     id_token_encrypted_response_enc: 'plain',
-    // oidc param name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-
-    // oidc param name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-
-    // oidc param name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
 
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -1,15 +1,15 @@
 import { Module, DynamicModule, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
+import { CqrsModule } from '@nestjs/cqrs';
 import { FcExceptionFilter } from '@fc/error';
 import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
+import { IServiceProviderService } from '@fc/oidc';
 import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderController } from './oidc-provider.controller';
-import { IServiceProviderService } from './interfaces';
 import { SERVICE_PROVIDER_SERVICE } from './tokens/service-provider-service.token';
 import { IsValidPromptConstraint } from './validators';
-import { CqrsModule } from '@nestjs/cqrs';
 
 @Module({})
 export class OidcProviderModule {

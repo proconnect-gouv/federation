@@ -151,7 +151,7 @@ describe('MockIdentityProviderFcaService', () => {
     });
   });
 
-  describe('getAccount', () => {
+  describe('getIdentity', () => {
     it('should return the correct idp', () => {
       // Given
       const entryA = { uid: 'entryAValue' };

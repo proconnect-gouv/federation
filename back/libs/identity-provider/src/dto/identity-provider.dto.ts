@@ -1,7 +1,6 @@
 import {
   IsBoolean,
   IsString,
-  IsObject,
   IsArray,
   IsUrl,
   MinLength,
@@ -135,6 +134,5 @@ export class IdentityProviderDTO {
   readonly revocation_endpoint_auth_method: string;
 
   @IsRegisteredHandler()
-  @IsObject()
   readonly featureHandlers: IFeatureHandlerDatabaseMap;
 }
