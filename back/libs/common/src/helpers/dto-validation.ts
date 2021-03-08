@@ -3,6 +3,11 @@ import { ClassTransformOptions, plainToClass } from 'class-transformer';
 import { validate, ValidatorOptions, ValidationError } from 'class-validator';
 import { Type } from '@nestjs/common';
 
+/**
+ * @todo #428  Supprimer les Type<> et créer un InstanceOf<> identique mais
+ * indépendant de NestJS
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/428
+ */
 export function getTransformed<T = any>(
   plain: object,
   dto: Type<any>,

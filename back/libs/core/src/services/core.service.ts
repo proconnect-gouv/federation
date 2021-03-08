@@ -240,7 +240,6 @@ export class CoreService {
   }
 
   /**
-   * @todo Découper cette fonction car elle commence à englober plusieurs traitements business
    * Build and persist current interaction with account service
    * @param {string} spId - id of the Service Provider
    * @param {string} entityId -

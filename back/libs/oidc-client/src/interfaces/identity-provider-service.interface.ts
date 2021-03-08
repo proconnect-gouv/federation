@@ -5,7 +5,8 @@ import { ClientMetadata, IssuerMetadata } from '../dto';
  * so that we do not expose our depency to `openid-client`.
  */
 /**
- * @todo améliorer le typage pour affiner l'ajout de données (FeatureHandler...)
+ * @todo #429 améliorer le typage pour affiner l'ajout de données (FeatureHandler...)
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/429
  */
 export type IdentityProviderMetadata<
   T = { [key: string]: any }

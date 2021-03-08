@@ -1,10 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { difference, intersection, union, unique } from '@fc/common';
 
-/**
- * @TODO à compléter avec les alias 'birth' et 'identite_pivot'
- * Voir également pour le rajouter dans la config d'oidc provider
- */
 const MAPPING_ALIAS_SCOPES = {
   profile: [
     'given_name',
@@ -29,7 +25,8 @@ const MAPPING_ALIAS_SCOPES = {
 };
 
 /**
- * @TODO Mettre les scopes label en base de donnée
+ * @TODO #452 Mettre les scopes label en base de donnée
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/452
  */
 const STANDARD_IDENTITY_SCOPES_LABEL = {
   openid: 'sub',

@@ -15,7 +15,8 @@ import { validateDto } from '@fc/common';
 import { EidasBridgeInvalidIdentityException } from '../exceptions';
 
 /**
- * @todo Clean the controller (create a service, generalize code, ...)
+ * @todo #412 Clean the controller (create a service, generalize code, ...)
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/412
  */
 @Controller(EidasBridgeRoutes.BASE)
 export class FrIdentityToEuController {
@@ -138,7 +139,8 @@ export class FrIdentityToEuController {
         partialEidasResponse = this.oidcToEidas.mapPartialResponseSuccess(
           identity,
           /**
-           * @todo Apply strong typing to acr values in other libs and apps
+           * @todo #412 Apply strong typing to acr values in other libs and apps
+           * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/412
            */
           acr as AcrValues,
           requestedAttributes,

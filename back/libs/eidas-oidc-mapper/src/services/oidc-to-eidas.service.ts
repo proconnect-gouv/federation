@@ -77,9 +77,10 @@ export class OidcToEidasService {
     let errorToReturn: OidcError;
 
     /**
-     * @todo An amelioration would be possible
+     * @todo #448 An amelioration would be possible
      * Temporary way to send a structured error to the node
      * Actually, this function can receive an Error instance but should only recieved an oidc one.
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/448
      */
     if (error instanceof Error) {
       errorToReturn = {

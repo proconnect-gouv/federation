@@ -26,7 +26,8 @@ import { ValidateEuropeanIdentity, Core, EidasBridgeIdentityDto } from '../dto';
 import { EidasBridgeInvalidIdentityException } from '../exceptions';
 
 /**
- * @todo Clean the controller (create a service, generalize code, ...)
+ * @todo #411 Clean the controller (create a service, generalize code, ...)
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/411
  */
 @Controller()
 export class EuIdentityToFrController {
@@ -78,7 +79,8 @@ export class EuIdentityToFrController {
   }
 
   /**
-   * @todo ajouter une interface sur l'identité au format oidc
+   * @todo #411 ajouter une interface sur l'identité au format oidc
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/411
    */
   @Post(EidasBridgeRoutes.INTERACTION_LOGIN)
   @UsePipes(new ValidationPipe({ whitelist: true }))
