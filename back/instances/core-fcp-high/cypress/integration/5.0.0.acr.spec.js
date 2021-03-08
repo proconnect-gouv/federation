@@ -175,16 +175,17 @@ describe('Acr', () => {
     cy.get('#info-acr').contains(FORCE_MAX_EIDAS);
   });
 
-  // @todo see: This section should be implemented in the IDP Mock instance (eidasLevel)
-  //
-  // it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
-  //   basicErrorScenario({
-  //     errorCode: 'test',
-  //     idpId: 'fip1v2',
-  //     eidasLevel: 'eidas1',
-  //   });
-
-  //   cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/verify`));
-  //   cy.hasError('Y020001');
-  // });
+  /** @todo #422 see: This section should be implemented in the IDP Mock instance (eidasLevel)
+  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/422
+  * it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
+  *   basicErrorScenario({
+  *     errorCode: 'test',
+  *     idpId: 'fip1v2',
+  *     eidasLevel: 'eidas1',
+  *   });
+  *
+  *   cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/verify`));
+  *   cy.hasError('Y020001');
+  * }); 
+  */
 });

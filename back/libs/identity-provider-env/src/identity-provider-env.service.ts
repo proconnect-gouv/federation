@@ -124,7 +124,8 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
     };
 
     /**
-     * @TODO Fix type issues between legacy model and `oidc-client` library
+     * @TODO #326 Fix type issues between legacy model and `oidc-client` library
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/326
      * We have non blocking incompatilities.
      */
     return (result as unknown) as IdentityProviderMetadata;

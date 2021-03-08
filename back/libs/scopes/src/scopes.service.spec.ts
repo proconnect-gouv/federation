@@ -14,8 +14,9 @@ describe('ScopesService', () => {
 
   describe('mapScopesToLabel', () => {
     /**
-     * @TODO Quand scopes label en base de donnée, modifier ce test pour récupérer
+     * @TODO #452 Quand scopes label en base de donnée, modifier ce test pour récupérer
      * les infos de la BDD
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/452
      */
     it('should return labels for scopes', async () => {
       // Setup

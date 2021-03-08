@@ -58,14 +58,15 @@ export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
     const { idpId, idpIdentity, idpAcr, spId, spAcr } = session;
 
     /**
-    * @todo - le DTO est permissif et devrait forcer les données
-      if (!idpId || !idpIdentity) {
-        throw new CoreMissingInteraction('identity provider');
-      }
-      if (!spIdentity || !spId) {
-        throw new CoreMissingInteraction('service provider');
-      }
-    */
+     * @todo #410 - le DTO est permissif et devrait forcer les données
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/410
+     * if (!idpId || !idpIdentity) {
+     *   throw new CoreMissingInteraction('identity provider');
+     * }
+     * if (!spIdentity || !spId) {
+     *   throw new CoreMissingInteraction('service provider');
+     * }
+     */
 
     // Acr check
     this.core.checkIfAcrIsValid(idpAcr, spAcr);
