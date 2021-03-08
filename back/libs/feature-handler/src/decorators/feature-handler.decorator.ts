@@ -8,10 +8,11 @@ _mapping.set(null, new FeatureHandlerNoHandler());
 
 export function FeatureHandler(key: string) {
   /**
-   * @todo type target
+   * @todo #429 type target
    * We can't achieve typing of FeatureHandlerAbstract
    * Compilation fails on handlers definition in applications
    * if we try to use an abstract class or an interface.
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/429
    */
   return function (target: any) {
     FeatureHandler.cache.set(key, target);

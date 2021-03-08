@@ -39,7 +39,9 @@ export class OidcClientUtilsService {
     const { stateLength } = await this.oidcClientConfig.get();
     const state = this.crypto.genRandomString(stateLength);
     /**
-     * @TODO specific parameter for nonce length (or rename mutual parameter)
+     * @TODO #430 specific parameter for nonce length (or rename mutual parameter)
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/430
+     * choisir entre uid et getreandomstring
      */
     const nonce = this.crypto.genRandomString(stateLength);
 
@@ -81,7 +83,8 @@ export class OidcClientUtilsService {
     } = await this.oidcClientConfig.get();
 
     /**
-     * @TODO Check why `JSONWebKeySet` entries are not compatible with `asKey` method
+     * @TODO #427 Check why `JSONWebKeySet` entries are not compatible with `asKey` method
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/427
      * Maybe we don't need this convertion?
      */
     const publicKeys = keys.map((key) => JWK.asKey(key as any).toJWK());

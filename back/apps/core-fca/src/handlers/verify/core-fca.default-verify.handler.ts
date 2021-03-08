@@ -44,8 +44,8 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     this.core.checkIfAcrIsValid(idpAcr, spAcr);
 
     /**
-     * @todo - what is the algorithm of the identity hash for fca ?
-     *
+     * @todo #305 - what is the algorithm of the identity hash for fca ?
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/305
      */
     const hashSp = this.cryptographyFca.computeIdentityHash(idpIdentity);
     await this.core.checkIfAccountIsBlocked(hashSp);
