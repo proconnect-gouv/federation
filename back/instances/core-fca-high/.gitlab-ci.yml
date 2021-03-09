@@ -10,11 +10,10 @@ core-fca-high:
     key: "${CI_PROJECT_ID}-fca"
     policy: pull-push
     paths:
-      - back/yarn.lock
       - back/node_modules/
-      - front/agent-connect/yarn.lock
       - front/agent-connect/node_modules/
   before_script:
+    - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc-docker/docker-stack halt && docker container prune -f; fi
     - rm -rf $FC_ROOT/fc-docker
     - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
     - shopt -s expand_aliases
