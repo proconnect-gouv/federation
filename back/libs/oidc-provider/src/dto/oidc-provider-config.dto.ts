@@ -303,6 +303,20 @@ class Jwks {
   readonly keys: Array<JWKECKey | JWKRSAKey>;
 }
 
+class LogoutSource {
+  /**
+   * `logoutSource` is a function.
+   * This is not something that should live in a DTO.
+   * Although this is the way `oidc-provider` library offers
+   * to implement our logout service
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#logoutsource
+   *
+   * This property is optional because it is injected by the module
+   * rather than by real configuration.
+   */
+  readonly logoutSource!: Function;
+}
+
 export class Configuration {
   @IsObject()
   @IsOptional()
@@ -421,18 +435,9 @@ export class Configuration {
   @IsOptional()
   readonly renderError?: any;
 
-  /**
-   * `logoutSource` is a function.
-   * This is not something that should live in a DTO.
-   * Although this is the way `oidc-provider` library offers
-   * to implement our logout service
-   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#logoutsource
-   *
-   * This property is optional because it is injected by the module
-   * rather than by real configuration.
-   */
-  @IsOptional()
-  readonly logoutSource?: any;
+  @ValidateNested()
+  @Type(() => LogoutSource)
+  readonly rpInitiatedLogout: LogoutSource;
 
   /**
    * `interactionUrl` is a function.
