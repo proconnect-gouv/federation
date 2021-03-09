@@ -58,7 +58,9 @@ describe(' CryptoOverrideService', () => {
     jest.resetAllMocks();
     brokerMock.send.mockReturnValue(messageMock);
     messageMock.pipe.mockReturnValue(pipeMock);
-    pipeMock.subscribe.mockImplementation((cb) => cb(brokerResponseMock));
+    pipeMock.subscribe.mockImplementation(({ next }) =>
+      next(brokerResponseMock),
+    );
     configServiceMock.get.mockReturnValue({
       payloadEncoding: 'base64',
       requestTimeout: 200,
@@ -94,6 +96,7 @@ describe(' CryptoOverrideService', () => {
       expect(brokerMock.close).toHaveBeenCalledTimes(1);
     });
   });
+
   describe('crypto.sign', () => {
     it('should call crypto Gateway High Service', async () => {
       // Given
@@ -114,56 +117,87 @@ describe(' CryptoOverrideService', () => {
     const dataMock = Buffer.from('data');
     const digestMock = 'digest';
 
-    /**
-     * @TODO #145 refactor tests according to extraction of success and failure callbacks
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/145
-     */
-    describe('sign', () => {
-      it('should return promise', async () => {
-        // When
-        const result = service.sign(keyMock, dataMock, digestMock);
+    it('should return a `Promise` in case of success', async () => {
+      // When
+      const result = service.sign(keyMock, dataMock, digestMock);
 
-        // Then
-        expect(result instanceof Promise);
+      // Then
+      expect(result instanceof Promise);
+      expect(loggerServiceMock.debug).toHaveBeenCalledTimes(2);
 
-        // Clean
-        await result;
+      // Clean
+      await result;
+    });
+
+    it('should call reject and throw a `CryptoOverrideService` exception in case of failure', async () => {
+      // Given
+      const badKeyMock = null;
+      const badDataMock = null;
+      // When
+      // Then
+      await expect(service.sign(badKeyMock, badDataMock)).rejects.toThrow(
+        CryptographyGatewayException,
+      );
+    });
+
+    it('should call signSuccess with error message', async () => {
+      // Given
+      const resolveMock = jest.fn();
+      const rejectMock = jest.fn();
+
+      // When
+      service['signSuccess'](resolveMock, rejectMock, 'ERROR');
+
+      // Then
+      expect(rejectMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should reject if response is "ERROR"', async () => {
+      // Given
+      const rejectMock = jest.fn();
+      const signSuccessMock = jest.spyOn<CryptoOverrideService, any>(
+        service,
+        'signSuccess',
+      );
+
+      // When
+      pipeMock.subscribe.mockImplementationOnce(({ next }) => {
+        const call = next.bind(service);
+        call(null, rejectMock, 'ERROR');
       });
 
-      it('should reject if response is "ERROR"', async () => {
-        // Given
-        pipeMock.subscribe.mockImplementationOnce((cb) => cb('ERROR'));
+      // Then
+      await expect(service.sign(keyMock, dataMock, digestMock)).rejects.toThrow(
+        CryptographyGatewayException,
+      );
 
-        // Then
-        await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
-          CryptographyGatewayException,
-        );
+      expect(loggerServiceMock.debug).toHaveBeenCalledTimes(2);
+      expect(signSuccessMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should reject if something turned bad', async () => {
+      // Given
+      pipeMock.subscribe.mockImplementationOnce(() => {
+        throw new CryptographyGatewayException('not good');
       });
 
-      it('should reject if something turnd bad', async () => {
-        // Given
-        pipeMock.subscribe.mockImplementationOnce(() => {
-          throw Error('not good');
-        });
+      // Then
+      await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
+        CryptographyGatewayException,
+      );
+    });
 
-        // Then
-        await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
-          CryptographyGatewayException,
-        );
-      });
+    it('should reject if observable throws', async () => {
+      // Given
+      const error = Error('not good');
+      pipeMock.subscribe.mockImplementationOnce(
+        ({ next: _success, error: failure }) => failure(error),
+      );
 
-      it('should reject if observable throws', async () => {
-        // Given
-        const error = Error('not good');
-        pipeMock.subscribe.mockImplementationOnce((_success, failure) => {
-          failure(error);
-        });
-
-        // Then
-        await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
-          CryptographyGatewayException,
-        );
-      });
+      // Then
+      await expect(service.sign(keyMock, dataMock)).rejects.toThrow(
+        CryptographyGatewayException,
+      );
     });
   });
 });
