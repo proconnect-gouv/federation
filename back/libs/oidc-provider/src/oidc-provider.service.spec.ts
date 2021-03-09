@@ -985,7 +985,9 @@ describe('OidcProviderService', () => {
       // Then
       expect(result).toHaveProperty('configuration.findAccount');
       expect(result).toHaveProperty('configuration.renderError');
-      expect(result).toHaveProperty('configuration.logoutSource');
+      expect(result).toHaveProperty(
+        'configuration.rpInitiatedLogout.logoutSource',
+      );
     });
   });
 
