@@ -277,7 +277,7 @@ describe('CoreService', () => {
     });
     it('should set prompt parameter on body', () => {
       // Given
-      const ctxMock = ({
+      const ctxMock: OidcCtx = ({
         method: 'POST',
         req: { body: {} },
       } as unknown) as OidcCtx;
@@ -285,7 +285,7 @@ describe('CoreService', () => {
       // When
       service['overrideAuthorizePrompt'](overridePrompt, ctxMock);
       // Then
-      expect(ctxMock.req['body'].prompt).toBe(overridePrompt);
+      expect(ctxMock.req.body.prompt).toBe(overridePrompt);
       expect(ctxMock.query).toBeUndefined();
     });
     it('should not do anything but log if there is no method declared', () => {
@@ -340,7 +340,7 @@ describe('CoreService', () => {
       // When
       service['overrideAuthorizeAcrValues'](allowedAcrMock, ctxMock);
       // Then
-      expect(ctxMock.req['body'].acr_values).toBe(overrideAcr);
+      expect(ctxMock.req.body.acr_values).toBe(overrideAcr);
       expect(ctxMock.query).toBeUndefined();
     });
     it('should not do anything but log if there is no method declared', () => {
