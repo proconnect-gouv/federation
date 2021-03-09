@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
@@ -91,8 +90,6 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     spName: 'my great SP',
     spIdentity: spIdentityMock,
   };
-
-  const computeInteractionMock = { spInteraction: {} };
 
   const serviceProviderMock = {
     getById: jest.fn(),

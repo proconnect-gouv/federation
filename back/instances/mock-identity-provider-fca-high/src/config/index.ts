@@ -5,7 +5,7 @@ import { MockIdentityProviderFcaConfig } from '@fc/mock-identity-provider-fca';
 import Redis from './redis';
 import Logger from './logger';
 import Session from './session';
-import Cryptography from './cryptography';
+import CryptographyFca from './cryptography-fca';
 import OidcProvider from './oidc-provider';
 import App from './app';
 import ServiceProviderEnv from './service-provider-env';
@@ -15,7 +15,7 @@ export default {
   Logger,
   Redis,
   Session,
-  Cryptography,
+  CryptographyFca,
   OidcProvider,
   ServiceProviderEnv,
 } as MockIdentityProviderFcaConfig;
