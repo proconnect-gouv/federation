@@ -137,7 +137,7 @@ export class IdentityProviderEnvService implements IIdentityProviderService {
    */
   private decryptClientSecret(clientSecret: string): string {
     const { clientSecretEcKey } = this.config.get<IdentityProviderEnvConfig>(
-      'Cryptography',
+      'IdentityProviderEnv',
     );
     return this.cryptography.decrypt(
       clientSecretEcKey,

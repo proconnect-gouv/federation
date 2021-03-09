@@ -20,10 +20,10 @@ import { AppConfig } from '@fc/app';
 import { OidcClientConfig } from '@fc/oidc-client';
 import {
   Interaction,
-  Core,
   CoreRoutes,
   CoreMissingIdentityException,
 } from '@fc/core';
+import { Core } from '../dto';
 import { CoreFcaService } from '../services';
 
 @Controller()

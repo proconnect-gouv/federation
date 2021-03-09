@@ -197,7 +197,7 @@ export class ServiceProviderService implements IServiceProviderService {
 
   private decryptClientSecret(clientSecret: string): string {
     const { clientSecretEcKey } = this.config.get<ServiceProviderConfig>(
-      'Cryptography',
+      'ServiceProvider',
     );
     return this.cryptography.decrypt(
       clientSecretEcKey,

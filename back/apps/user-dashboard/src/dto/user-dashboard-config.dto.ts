@@ -9,7 +9,6 @@ import { LoggerConfig } from '@fc/logger';
 import { SessionConfig } from '@fc/session';
 import { AppConfig } from '@fc/app';
 import { IdentityProviderEnvConfig } from '@fc/identity-provider-env';
-import { CryptographyConfig } from '@fc/cryptography';
 
 export class UserDashboardConfig {
   @IsObject()
@@ -36,11 +35,6 @@ export class UserDashboardConfig {
   @ValidateNested()
   @Type(() => OidcClientConfig)
   readonly OidcClient: OidcClientConfig;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => CryptographyConfig)
-  readonly Cryptography: CryptographyConfig;
 
   @IsObject()
   @ValidateNested()
