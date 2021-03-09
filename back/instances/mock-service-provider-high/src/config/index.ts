@@ -7,7 +7,6 @@ import Redis from './redis';
 import Logger from './logger';
 import OidcClient from './oidc-client';
 import Session from './session';
-import Cryptography from './cryptography';
 import App from './app';
 
 export default {
@@ -16,6 +15,5 @@ export default {
   Redis,
   OidcClient,
   Session,
-  Cryptography,
   IdentityProviderEnv,
 } as MockServiceProviderConfig;

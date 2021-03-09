@@ -5,23 +5,23 @@ import { IsObject, IsUrl, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 import { LoggerConfig } from '@fc/logger';
 import { OidcProviderConfig } from '@fc/oidc-provider';
+import { CryptographyFcaConfig } from '@fc/cryptography-fca';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { MongooseConfig } from '@fc/mongoose';
 import { RedisConfig } from '@fc/redis';
-import { RnippConfig } from '@fc/rnipp';
 import { SessionConfig } from '@fc/session';
 import { RabbitmqConfig } from '@fc/rabbitmq';
-import { CryptographyConfig } from '@fc/cryptography';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
-import { MailerConfig } from '@fc/mailer';
 import { AppConfig } from '@fc/app';
+import { ServiceProviderConfig } from '@fc/service-provider';
+import { IdentityProviderConfig } from '@fc/identity-provider';
 
 export class Core {
   @IsUrl()
   readonly defaultRedirectUri: string;
 }
 
-export class CoreConfig {
+export class CoreFcaConfig {
   @IsObject()
   @ValidateNested()
   @Type(() => Core)
@@ -59,11 +59,6 @@ export class CoreConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => RnippConfig)
-  readonly Rnipp: RnippConfig;
-
-  @IsObject()
-  @ValidateNested()
   @Type(() => SessionConfig)
   readonly Session: SessionConfig;
 
@@ -74,8 +69,8 @@ export class CoreConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => CryptographyConfig)
-  readonly Cryptography: CryptographyConfig;
+  @Type(() => CryptographyFcaConfig)
+  readonly CryptographyFca: CryptographyFcaConfig;
 
   @IsObject()
   @ValidateNested()
@@ -84,6 +79,11 @@ export class CoreConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => MailerConfig)
-  readonly Mailer: MailerConfig;
+  @Type(() => ServiceProviderConfig)
+  readonly ServiceProvider: ServiceProviderConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => IdentityProviderConfig)
+  readonly IdentityProvider: IdentityProviderConfig;
 }

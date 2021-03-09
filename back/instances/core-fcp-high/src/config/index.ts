@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { CoreConfig } from '@fc/core';
+import { CoreFcpConfig } from '@fc/core-fcp';
 import App from './app';
 import Logger from './logger';
 import OidcProvider from './oidc-provider';
@@ -10,10 +10,13 @@ import Mongoose from './mongoose';
 import Redis from './redis';
 import Rnipp from './rnipp';
 import CryptographyBroker from './cryptography-broker';
-import Cryptography from './cryptography';
+import CryptographyFcp from './cryptography-fcp';
+import CryptographyEidas from './cryptography-eidas';
 import Session from './session';
 import OverrideOidcProvider from './override-oidc-provider';
 import Mailer from './mailer';
+import ServiceProvider from './service-provider';
+import IdentityProvider from './identity-provider';
 
 export default {
   /**
@@ -31,8 +34,11 @@ export default {
   Redis,
   Rnipp,
   CryptographyBroker,
-  Cryptography,
+  CryptographyFcp,
+  CryptographyEidas,
   Session,
   OverrideOidcProvider,
   Mailer,
-} as CoreConfig;
+  ServiceProvider,
+  IdentityProvider,
+} as CoreFcpConfig;

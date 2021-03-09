@@ -3,7 +3,7 @@
 // Tested by DTO
 import { EidasBridgeConfig } from '@fc/eidas-bridge';
 import App from './app';
-import Cryptography from './cryptography';
+import CryptographyEidas from './cryptography-eidas';
 import IdentityProviderEnv from './identity-provider-env';
 import ServiceProviderEnv from './service-provider-env';
 import Logger from './logger';
@@ -29,7 +29,7 @@ export default {
     countryList: countryList,
   },
   App,
-  Cryptography,
+  CryptographyEidas,
   IdentityProviderEnv,
   ServiceProviderEnv,
   Logger,

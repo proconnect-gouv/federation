@@ -1,6 +1,5 @@
 import * as crypto from 'crypto';
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@fc/config';
 import * as ecdsaSignaturesService from 'jose/lib/help/ecdsa_signatures';
 import { LowEntropyArgumentException } from './exceptions';
 import {
@@ -10,10 +9,6 @@ import {
 
 describe('CryptographyService', () => {
   let service: CryptographyService;
-
-  const configMock = {
-    get: jest.fn(),
-  };
 
   const mockEncryptKey = 'p@ss p@rt0ut';
   const mockData = {
@@ -41,8 +36,6 @@ describe('CryptographyService', () => {
 
   const mockHashDigestedHash =
     'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8';
-
-  const cryptographyKeyMock = 'Méfaits accomplis...';
 
   const ecdsaSignaturesServiceMock = {
     derToJose: jest.fn(),
@@ -78,24 +71,14 @@ describe('CryptographyService', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ConfigService, CryptographyService],
-    })
-      .overrideProvider(ConfigService)
-      .useValue(configMock)
-      .compile();
+      providers: [CryptographyService],
+    }).compile();
 
     service = module.get<CryptographyService>(CryptographyService);
 
     jest
       .spyOn(ecdsaSignaturesService, 'derToJose')
       .mockImplementation(ecdsaSignaturesServiceMock.derToJose);
-
-    configMock.get.mockImplementation(() => ({
-      // Cryptography config
-      clientSecretEcKey: mockEncryptKey,
-      sessionIdLength: 42,
-      subSecretKey: cryptographyKeyMock,
-    }));
   });
 
   it('should be defined', () => {
