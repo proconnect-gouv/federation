@@ -26,7 +26,6 @@ export class CryptoOverrideService {
      * @see your main.ts file
      */
     this.registerOverride('crypto.sign');
-
     this.broker.connect();
   }
 
@@ -63,20 +62,21 @@ export class CryptoOverrideService {
    * we do not use it since signature will occur with an HSM stored key.
    * @param {Buffer} dataBuffer a serialized data
    * @param {string} digest default to sha256 (Cf. crypto.createSign)
-   * @returns {Promise<Buffer>} signed data
+   * @returns {Promise<Buffer>} Retuns a Promise with signed data or an error Exception.
    */
   async sign(
     _unusedKey: any,
     dataBuffer: Buffer,
     digest = 'sha256',
   ): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve: Function, reject: Function) => {
       const {
         payloadEncoding,
         requestTimeout,
       } = this.config.get<RabbitmqConfig>('CryptographyBroker');
 
-      this.logger.debug('Requesting signature from gateway');
+      this.logger.debug('CryptoOverrideService.sign()');
+
       try {
         // Build message
         const payload = {
@@ -85,42 +85,41 @@ export class CryptoOverrideService {
         };
 
         // Build callbacks
-        const success = this.signSuccess.bind(this, resolve, reject);
-        const failure = this.signFailure.bind(this, reject);
+        const next = this.signSuccess.bind(this, resolve, reject);
+        const error = (error: Error): void => {
+          reject(new CryptographyGatewayException(error));
+        };
 
         // Send message to gateway
         this.broker
           .send(CryptoProtocol.Commands.SIGN, payload)
           .pipe(timeout(requestTimeout))
-          .subscribe(success, failure);
+          .subscribe({
+            next,
+            error,
+          });
       } catch (error) {
-        reject(new CryptographyGatewayException(error));
+        return reject(new CryptographyGatewayException(error));
       }
     });
   }
 
   // Handle successful call
-  private signSuccess(resolve, reject, data) {
-    this.logger.debug('Received signature from gateway');
+  private signSuccess(resolve: Function, reject: Function, data: string): void {
+    this.logger.debug('CryptoOverrideService.signSuccess()');
     const { payloadEncoding } = this.config.get<RabbitmqConfig>(
       'CryptographyBroker',
     );
-
     /**
      * @TODO #146 define a more powerful mechanism
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/146
      */
     if (data === 'ERROR') {
-      return this.signFailure(
-        reject,
+      reject(
         new CryptographyGatewayException('Gateway completed with an error'),
       );
     }
-    return resolve(Buffer.from(data, payloadEncoding));
-  }
 
-  // Handle microservice failure
-  private signFailure(reject, error) {
-    reject(new CryptographyGatewayException(error));
+    resolve(Buffer.from(data, payloadEncoding));
   }
 }
