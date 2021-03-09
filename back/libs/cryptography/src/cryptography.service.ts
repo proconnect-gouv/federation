@@ -6,7 +6,6 @@ import {
   BinaryToTextEncoding,
 } from 'crypto';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@fc/config';
 import { LowEntropyArgumentException } from './exceptions';
 
 const NONCE_LENGTH = 12;
@@ -16,8 +15,6 @@ export const RANDOM_MIN_ENTROPY = 32;
 
 @Injectable()
 export class CryptographyService {
-  constructor(private readonly config: ConfigService) {}
-
   /**
    * Encrypt the given data
    * Current implementation use symetrical AES-256-GCM.

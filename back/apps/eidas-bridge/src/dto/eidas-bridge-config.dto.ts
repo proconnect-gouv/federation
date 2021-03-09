@@ -10,7 +10,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { AppConfig } from '@fc/app';
-import { CryptographyConfig } from '@fc/cryptography';
+import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
 import { IdentityProviderEnvConfig } from '@fc/identity-provider-env';
 import { ServiceProviderEnvConfig } from '@fc/service-provider-env';
 import { LoggerConfig } from '@fc/logger';
@@ -56,8 +56,8 @@ export class EidasBridgeConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => CryptographyConfig)
-  readonly Cryptography: CryptographyConfig;
+  @Type(() => CryptographyEidasConfig)
+  readonly CryptographyEidas: CryptographyEidasConfig;
 
   @IsObject()
   @ValidateNested()

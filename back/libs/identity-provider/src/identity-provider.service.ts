@@ -230,7 +230,7 @@ export class IdentityProviderService implements IIdentityProviderService {
    */
   private decryptClientSecret(clientSecret: string): string {
     const { clientSecretEcKey } = this.config.get<IdentityProviderConfig>(
-      'Cryptography',
+      'IdentityProvider',
     );
     return this.crypto.decrypt(
       clientSecretEcKey,
