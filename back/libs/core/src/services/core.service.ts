@@ -66,8 +66,8 @@ export class CoreService {
    * @param ctx
    * @param overrideValue
    */
-  private overrideAuthorizePrompt(overrideValue: string, ctx: OidcCtx) {
-    this.logger.debug('Override OIDC prompt');
+  private overrideAuthorizePrompt(overrideValue: string, ctx: OidcCtx): void {
+    this.logger.debug('CoreService.overrideAuthorizePrompt()');
     /**
      * Support both methods
      * @TODO #137 check what needs to be done if we implement pushedAuthorizationRequests
@@ -78,11 +78,7 @@ export class CoreService {
         ctx.query.prompt = overrideValue;
         break;
       case 'POST':
-        /**
-         * @TODO #167 enhance interface to allow the use of `body` property
-         * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/167
-         * */
-        ctx.req['body'].prompt = overrideValue;
+        ctx.req.body.prompt = overrideValue;
         break;
       default:
         this.logger.warn(
@@ -91,12 +87,12 @@ export class CoreService {
     }
   }
 
-  private overrideAuthorizeAcrValues(allowed: string[], ctx: OidcCtx) {
-    this.logger.debug('Override OIDC Acr Values');
+  private overrideAuthorizeAcrValues(allowed: string[], ctx: OidcCtx): void {
+    this.logger.debug('CoreService.overrideAuthorizeAcrValues()');
 
     if (['POST', 'GET'].includes(ctx.method)) {
       const data = (ctx.method === 'POST'
-        ? ctx.req['body']
+        ? ctx.req.body
         : ctx.query) as AcrValues;
       const acrValues = data.acr_values.split(/[ ]+/);
       data.acr_values = pickAcr(allowed, acrValues);
