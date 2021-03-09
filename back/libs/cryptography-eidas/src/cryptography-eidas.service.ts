@@ -38,7 +38,7 @@ export class CryptographyEidasService {
    */
   computeSubV1(providerRef: string, identityHash: string): string {
     const { subSecretKey } = this.config.get<CryptographyEidasConfig>(
-      'Cryptography',
+      'CryptographyEidas',
     );
 
     const data = [providerRef, identityHash, subSecretKey];

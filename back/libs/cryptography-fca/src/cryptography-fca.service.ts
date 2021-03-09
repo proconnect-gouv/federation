@@ -38,7 +38,7 @@ export class CryptographyFcaService {
    */
   computeSubV1(providerRef: string, identityHash: string): string {
     const { subSecretKey } = this.config.get<CryptographyFcaConfig>(
-      'Cryptography',
+      'CryptographyFca',
     );
 
     const data = [providerRef, identityHash, subSecretKey];

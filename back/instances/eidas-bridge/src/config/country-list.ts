@@ -153,5 +153,4 @@ export default [
         iso: 'UK',
         icon: '/img/flags/unitedkingdom.svg'
       }
-    
 ] 
