@@ -597,7 +597,9 @@ export class OidcProviderService {
         findAccount: this.findAccount.bind(this),
         pairwiseIdentifier: this.pairwiseIdentifier.bind(this),
         renderError: this.renderError.bind(this),
-        logoutSource: this.logoutSource.bind(this),
+        rpInitiatedLogout: {
+          logoutSource: this.logoutSource.bind(this),
+        },
         clientBasedCORS: this.clientBasedCORS.bind(this),
         interactions: { url: this.url.bind(this, prefix) },
       },
