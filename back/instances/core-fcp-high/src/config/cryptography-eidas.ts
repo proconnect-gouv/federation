@@ -1,10 +1,9 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { CryptographyConfig } from '@fc/cryptography';
+import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
 
 export default {
-  clientSecretEcKey: process.env.CLIENT_SECRET_CIPHER_PASS,
   // Core Legacy ==> use of secret cookie key
   subSecretKey: process.env.CRYPTO_SUB_SECRET,
-} as CryptographyConfig;
+} as CryptographyEidasConfig;

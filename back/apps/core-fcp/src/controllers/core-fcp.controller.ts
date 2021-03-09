@@ -25,11 +25,11 @@ import { ServiceProviderService } from '@fc/service-provider';
 import {
   Interaction,
   CsrfToken,
-  Core,
   CoreRoutes,
   CoreMissingIdentityException,
   CoreInvalidCsrfException,
 } from '@fc/core';
+import { Core } from '../dto';
 import { CoreFcpService } from '../services';
 
 @Controller()

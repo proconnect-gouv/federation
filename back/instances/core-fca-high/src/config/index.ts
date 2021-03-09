@@ -1,19 +1,19 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { CoreConfig } from '@fc/core';
+import { CoreFcaConfig } from '@fc/core-fca';
 import App from './app';
 import Logger from './logger';
 import OidcProvider from './oidc-provider';
 import OidcClient from './oidc-client';
 import Mongoose from './mongoose';
 import Redis from './redis';
-import Rnipp from './rnipp';
 import CryptographyBroker from './cryptography-broker';
-import Cryptography from './cryptography';
+import CryptographyFca from './cryptography-fca';
 import Session from './session';
+import ServiceProvider from './service-provider';
+import IdentityProvider from './identity-provider';
 import OverrideOidcProvider from './override-oidc-provider';
-import Mailer from './mailer';
 
 export default {
   /**
@@ -29,10 +29,10 @@ export default {
   OidcClient,
   Mongoose,
   Redis,
-  Rnipp,
   CryptographyBroker,
-  Cryptography,
+  CryptographyFca,
   Session,
+  ServiceProvider,
+  IdentityProvider,
   OverrideOidcProvider,
-  Mailer,
-} as CoreConfig;
+} as CoreFcaConfig;

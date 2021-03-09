@@ -8,7 +8,7 @@ import { OidcProviderConfig } from '@fc/oidc-provider';
 import { LoggerConfig } from '@fc/logger';
 import { SessionConfig } from '@fc/session';
 import { AppConfig } from '@fc/app';
-import { CryptographyConfig } from '@fc/cryptography';
+import { CryptographyFcaConfig } from '@fc/cryptography-fca';
 /**
  * Rename this librairy into a more appropriate name `adapter`, `mongo`
  * @TODO #246 ETQ Dev, j'ai des application avec un nommage précis et explicite
@@ -44,8 +44,8 @@ export class MockIdentityProviderFcaConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => CryptographyConfig)
-  readonly Cryptography: CryptographyConfig;
+  @Type(() => CryptographyFcaConfig)
+  readonly CryptographyFca: CryptographyFcaConfig;
 
   @IsObject()
   @ValidateNested()

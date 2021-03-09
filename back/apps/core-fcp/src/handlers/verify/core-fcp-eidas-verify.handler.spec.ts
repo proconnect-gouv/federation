@@ -1,4 +1,3 @@
-/* eslint-disable */
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
@@ -56,8 +55,6 @@ describe('CoreFcpEidasVerifyHandler', () => {
     fc: { interactionId: uidMock },
     ip: '123.123.123.123',
   };
-
-  const computeInteractionMock = { spInteraction: {} };
 
   const configServiceMock = {
     get: jest.fn(),
