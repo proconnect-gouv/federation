@@ -10,7 +10,6 @@ global:
     key: "${CI_PROJECT_ID}-unit"
     policy: pull-push
     paths:
-      - back/yarn.lock
       - back/node_modules/
   stage: 'Unit tests'
   script:
