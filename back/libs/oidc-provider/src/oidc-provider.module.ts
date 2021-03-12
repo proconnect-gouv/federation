@@ -1,6 +1,7 @@
 import { Module, DynamicModule, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { CqrsModule } from '@nestjs/cqrs';
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import { FcExceptionFilter } from '@fc/error';
 import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
@@ -8,7 +9,6 @@ import { TrackingModule } from '@fc/tracking';
 import { IServiceProviderService } from '@fc/oidc';
 import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderController } from './oidc-provider.controller';
-import { SERVICE_PROVIDER_SERVICE } from './tokens/service-provider-service.token';
 import { IsValidPromptConstraint } from './validators';
 
 @Module({})
@@ -26,8 +26,8 @@ export class OidcProviderModule {
     serviceProviderModule: Type<ModuleMetadata>,
   ): DynamicModule {
     const serviceProviderProvider = {
-      provide: SERVICE_PROVIDER_SERVICE,
-      useClass: serviceProviderClass,
+      provide: SERVICE_PROVIDER_SERVICE_TOKEN,
+      useExisting: serviceProviderClass,
     };
     return {
       module: OidcProviderModule,
