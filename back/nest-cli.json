@@ -130,6 +130,36 @@
         ]
       }
     },
+    "exploit-fcp-instance": {
+      "type": "application",
+      "root": "instances/exploit-fcp",
+      "entryFile": "main",
+      "sourceRoot": "instances/exploit-fcp/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/exploit-fcp/tsconfig.app.json",
+        "assets": [
+          "../../../apps/exploit-fcp/**/*.ejs",
+          "../../../apps/exploit-fcp/**/*.css",
+          "../../../apps/exploit-fcp/**/*.svg",
+          "../../../apps/exploit-fcp/**/*.png"
+        ]
+      }
+    },
+    "exploit-fca-instance": {
+      "type": "application",
+      "root": "instances/exploit-fca",
+      "entryFile": "main",
+      "sourceRoot": "instances/exploit-fca/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/exploit-fca/tsconfig.app.json",
+        "assets": [
+          "../../../apps/exploit-fca/**/*.ejs",
+          "../../../apps/exploit-fca/**/*.css",
+          "../../../apps/exploit-fca/**/*.svg",
+          "../../../apps/exploit-fca/**/*.png"
+        ]
+      }
+    },
     "rnipp": {
       "type": "library",
       "root": "libs/rnipp",
@@ -263,6 +293,24 @@
       "sourceRoot": "apps/user-dashboard/src",
       "compilerOptions": {
         "tsConfigPath": "apps/user-dashboard/tsconfig.lib.json"
+      }
+    },
+    "exploit-fcp": {
+      "type": "library",
+      "root": "apps/exploitation",
+      "entryFile": "index",
+      "sourceRoot": "apps/exploitation/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/exploitation/tsconfig.lib.json"
+      }
+    },
+    "exploit-fca": {
+      "type": "library",
+      "root": "apps/exploitation",
+      "entryFile": "index",
+      "sourceRoot": "apps/exploitation/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/exploitation/tsconfig.lib.json"
       }
     },
     "csmr-hsm": {
