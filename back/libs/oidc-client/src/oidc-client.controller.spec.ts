@@ -3,7 +3,8 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 import { ConfigService } from '@fc/config';
-import { IDENTITY_PROVIDER_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
+import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { OidcClientController } from './oidc-client.controller';
 import { OidcClientService } from './services';
 import { OidcClientIdpBlacklistedException } from './exceptions';
@@ -72,7 +73,7 @@ describe('OidcClient Controller', () => {
           useValue: identityProviderServiceMock,
         },
         {
-          provide: SERVICE_PROVIDER_SERVICE,
+          provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderServiceMock,
         },
       ],
