@@ -18,16 +18,7 @@ describe('CryptographyEidasService', () => {
     decrypt: jest.fn(),
   };
   const pivotIdentityMock: IPivotIdentity = {
-    // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    given_name: 'Jean Paul Henri',
-    // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    family_name: 'Dupont',
-    gender: 'male',
-    birthdate: '1970-01-01',
-    birthplace: '95277',
-    birthcountry: '99100',
+    sub: 'BE/FR/123456789',
   };
 
   beforeEach(async () => {
@@ -60,7 +51,7 @@ describe('CryptographyEidasService', () => {
   describe('computeIdentityHash', () => {
     it('should call cryptography service hash function with given parameters', () => {
       // Given
-      const serial = 'Jean Paul HenriDupont1970-01-01male9527799100';
+      const serial = 'BE/FR/123456789';
       const inputEncoding = 'binary';
       const alg = 'sha256';
       const ouputDigest = 'base64';
