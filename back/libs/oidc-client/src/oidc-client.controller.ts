@@ -10,12 +10,13 @@ import {
   ValidationPipe,
   UsePipes,
 } from '@nestjs/common';
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { IServiceProviderService } from '@fc/oidc';
-import { IDENTITY_PROVIDER_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
+import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from './events';
 import { RedirectToIdp, GetOidcCallback } from './dto';
@@ -33,7 +34,7 @@ export class OidcClientController {
     private readonly session: SessionService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderService,
-    @Inject(SERVICE_PROVIDER_SERVICE)
+    @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProvider: IServiceProviderService,
     private readonly tracking: TrackingService,
     private readonly config: ConfigService,
