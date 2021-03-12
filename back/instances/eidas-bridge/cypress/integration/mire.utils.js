@@ -271,7 +271,7 @@ export function basicFailureScenarioFrSpEuIdp(params = {}) {
 export function checkInformationsFrSpEuIdp() {
   cy.get('#json-output').within(() => {
     cy.contains(
-      '"sub": "e6f2d07e7a63ea44487bcce8bcd443b6d2dd9f655af550ad6dc897346c1925d9v1"',
+      '"sub": "fd12097d045e1273190b9946ed4bca822181066f2c4a1f666888fd0ed8fa5dcdv1"',
     );
     cy.contains('"given_name": "javier"');
     cy.contains('"family_name": "Garcia"');

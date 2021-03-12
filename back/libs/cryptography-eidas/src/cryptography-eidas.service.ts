@@ -17,16 +17,8 @@ export class CryptographyEidasService {
    * @param pivotIdentity
    * @returns the identity hash "hex" digested
    */
-  computeIdentityHash(pivotIdentity: IPivotIdentity): string {
-    const serial =
-      pivotIdentity.given_name +
-      pivotIdentity.family_name +
-      pivotIdentity.birthdate +
-      pivotIdentity.gender +
-      pivotIdentity.birthplace +
-      pivotIdentity.birthcountry;
-
-    return this.crypto.hash(serial, 'binary', 'sha256', 'base64');
+  computeIdentityHash({ sub }: IPivotIdentity): string {
+    return this.crypto.hash(sub, 'binary', 'sha256', 'base64');
   }
 
   /**
