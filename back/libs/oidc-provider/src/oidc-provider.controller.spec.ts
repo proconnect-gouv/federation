@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import { OidcProviderController } from './oidc-provider.controller';
-import { SERVICE_PROVIDER_SERVICE } from './tokens';
 import { AuthorizeParamsDTO, RevocationTokenParamsDTO } from './dto';
 
 describe('OidcProviderController', () => {
@@ -37,7 +37,7 @@ describe('OidcProviderController', () => {
         OidcProviderService,
         LoggerService,
         {
-          provide: SERVICE_PROVIDER_SERVICE,
+          provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderServiceMock,
         },
       ],

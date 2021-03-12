@@ -7,6 +7,7 @@ import { get } from 'lodash';
 import { Provider, KoaContextWithOIDC, ClientMetadata } from 'oidc-provider';
 import { HttpAdapterHost } from '@nestjs/core';
 import { ArgumentsHost, Inject, Injectable } from '@nestjs/common';
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import { FcExceptionFilter, FcException } from '@fc/error';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
@@ -15,7 +16,6 @@ import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { TrackingService } from '@fc/tracking';
 import { IServiceProviderService } from '@fc/oidc';
 import { OidcCtx } from './interfaces';
-import { SERVICE_PROVIDER_SERVICE } from './tokens';
 import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
@@ -51,7 +51,7 @@ export class OidcProviderService {
     @Inject(REDIS_CONNECTION_TOKEN)
     readonly redis: Redis,
     private readonly session: SessionService,
-    @Inject(SERVICE_PROVIDER_SERVICE)
+    @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProviderService: IServiceProviderService,
     private readonly exceptionFilter: FcExceptionFilter,
     private readonly tracking: TrackingService,
