@@ -3,11 +3,12 @@
 // Declarative code
 import { Module, DynamicModule, Type } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import { SessionModule, SessionService } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 import { CryptographyModule } from '@fc/cryptography';
 import { IServiceProviderService } from '@fc/oidc';
-import { IDENTITY_PROVIDER_SERVICE, SERVICE_PROVIDER_SERVICE } from './tokens';
+import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import {
   OidcClientService,
@@ -40,8 +41,8 @@ export class OidcClientModule {
           useClass: identityProvider,
         },
         {
-          provide: SERVICE_PROVIDER_SERVICE,
-          useClass: serviceProvider,
+          provide: SERVICE_PROVIDER_SERVICE_TOKEN,
+          useExisting: serviceProvider,
         },
         OidcClientService,
         SessionService,

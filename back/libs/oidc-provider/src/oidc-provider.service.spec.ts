@@ -7,12 +7,12 @@ import { LoggerService, LogLevelNames } from '@fc/logger';
 import { FcExceptionFilter } from '@fc/error';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import {
   OidcProviderEvents,
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
 } from './enums';
-import { SERVICE_PROVIDER_SERVICE } from './tokens';
 import { OidcProviderService } from './oidc-provider.service';
 import {
   OidcProviderInitialisationException,
@@ -131,7 +131,7 @@ describe('OidcProviderService', () => {
         SessionService,
         TrackingService,
         {
-          provide: SERVICE_PROVIDER_SERVICE,
+          provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderServiceMock,
         },
         {
