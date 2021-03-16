@@ -18,7 +18,6 @@ body {
 
 #notifications div {
   background-color: #f2f4ff;
-  border-radius: 8px;
   padding: 8px 16px;
   display: flex;
   align-items: flex-start;
@@ -96,11 +95,14 @@ main > h1 + h2 {
   main > h1 + h2 {
     font-size: 2rem;
   }
+  
   #notifications {
     padding: 0 16px;
   }
+
   #notifications div {
     padding: 16px;
+    border-radius: 8px;
   }
 
   #notifications p {
