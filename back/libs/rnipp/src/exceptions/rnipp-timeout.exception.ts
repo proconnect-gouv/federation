@@ -1,14 +1,17 @@
+/* istanbul ignore file */
+
+// Declarative code
+import { Description } from '@fc/error';
 import { RnippBaseException } from './';
 import { ErrorCode } from '../enums';
 
-// declarative code
-// istanbul ignore next line
+@Description('Erreur de communication avec le RNIPP (pas de réponse du RNIPP)')
 export class RnippTimeoutException extends RnippBaseException {
   public readonly code = ErrorCode.REQUEST_TIMEOUT;
+  message = 'Erreur technique';
 
   constructor(error) {
     super();
     this.originalError = error;
-    this.message = error.message;
   }
 }

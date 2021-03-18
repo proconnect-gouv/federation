@@ -1,14 +1,17 @@
+/* istanbul ignore file */
+
+// Declarative code
+import { Description } from '@fc/error';
 import { RnippBaseException } from './';
 import { ErrorCode } from '../enums';
 
-// declarative code
-// istanbul ignore next line
+@Description('Impossible de joindre le RNIPP')
 export class RnippHttpStatusException extends RnippBaseException {
   public readonly code = ErrorCode.HTTP_STATUS;
+  message = 'Une erreur est survenue dans la transmission de votre identité';
 
   constructor(error) {
     super();
     this.originalError = error;
-    this.message = error.message;
   }
 }

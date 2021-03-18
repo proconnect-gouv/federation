@@ -1,11 +1,14 @@
-import { Loggable, Trackable } from '@fc/error';
+/* istanbul ignore file */
+
+// Declarative code
+import { Description, Loggable, Trackable } from '@fc/error';
 import { RnippBaseException } from './';
 import { ErrorCode } from '../enums';
 
-// declarative code
-// istanbul ignore next line
 @Loggable(false)
 @Trackable()
+@Description("Le RNIPP n'a pas trouvé l'identité fournie")
 export class RnippNotFoundNoEchoException extends RnippBaseException {
   public readonly code = ErrorCode.NOT_FOUND_NO_ECHO;
+  message = 'Une erreur est survenue dans la transmission de votre identité';
 }
