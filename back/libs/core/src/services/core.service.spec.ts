@@ -315,12 +315,12 @@ describe('CoreService', () => {
     it('should set acr values parameter on query', () => {
       // Given
       const overrideAcr = 'boots';
-      const ctxMock = {
+      const ctxMock = ({
         method: 'GET',
         // Oidc Naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
         query: { acr_values: 'Boots' },
-      } as OidcCtx;
+      } as unknown) as OidcCtx;
 
       // When
       service['overrideAuthorizeAcrValues'](allowedAcrMock, ctxMock);

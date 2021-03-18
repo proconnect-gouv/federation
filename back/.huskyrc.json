@@ -1,5 +1,0 @@
-{
-  "hooks": {
-    "pre-commit": "yarn doc:exceptions && git add _doc/erreurs.md"
-  }
-}
