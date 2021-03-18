@@ -1,9 +1,12 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { Loggable, Description } from '@fc/error';
 import { CryptographyBaseException } from './cryptography-base.exception';
 
 @Loggable()
 @Description(
-  "Une fonction de génération d'aléa a été appelée avec un argument trop petit",
+  "Problème de configuration dans la librairie de cryptographie (Une fonction de génération d'aléa requiert une longueur minimale pour éviter des collisions)",
 )
 export class LowEntropyArgumentException extends CryptographyBaseException {
   constructor(length: number) {
