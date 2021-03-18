@@ -142,13 +142,14 @@ describe('OidcClientService', () => {
       const acr_values = 'eidas1';
       service['createOidcClient'] = createOidcClientMock;
       // When
-      await service.getAuthorizeUrl(
+      await service.getAuthorizeUrl({
         state,
         scope,
-        providerId,
+        providerUid: providerId,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
-      );
+      });
       // Then
       expect(authorizationUrlMock).toHaveBeenCalledTimes(1);
     });
@@ -164,13 +165,14 @@ describe('OidcClientService', () => {
       const acr_values = 'eidas1';
       service['createOidcClient'] = createOidcClientMock;
       // When
-      await service.getAuthorizeUrl(
+      await service.getAuthorizeUrl({
         state,
         scope,
-        providerId,
+        providerUid: providerId,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
-      );
+      });
       // Then
       expect(authorizationUrlMock).toHaveBeenCalledWith({
         prompt: 'login',
@@ -195,14 +197,15 @@ describe('OidcClientService', () => {
       const claims = '{ id_token: { amr: { essential: true } } }';
       service['createOidcClient'] = createOidcClientMock;
       // When
-      await service.getAuthorizeUrl(
+      await service.getAuthorizeUrl({
         state,
         scope,
-        providerId,
+        providerUid: providerId,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
         claims,
-      );
+      });
       // Then
       expect(authorizationUrlMock).toHaveBeenCalledWith({
         prompt: 'login',
@@ -227,13 +230,14 @@ describe('OidcClientService', () => {
       service['createOidcClient'] = createOidcClientMock;
 
       // When
-      const url = await service.getAuthorizeUrl(
+      const url = await service.getAuthorizeUrl({
         state,
         scope,
-        providerId,
+        providerUid: providerId,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
-      );
+      });
       // Then
       expect(state).toEqual('randomStateMock');
       expect(url).toBe('authorizationUrlMock Resolve Value');
