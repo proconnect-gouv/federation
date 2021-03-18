@@ -1,7 +1,8 @@
+/* istanbul ignore file */
+
+// Declarative code
 import { FcException } from '@fc/error';
 
-// declarative code
-// istanbul ignore next line
 export class CryptographyBaseException extends FcException {
   public originalError: Error;
   public readonly scope = 16;

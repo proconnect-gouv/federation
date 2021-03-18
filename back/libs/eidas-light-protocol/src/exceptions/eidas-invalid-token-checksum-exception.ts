@@ -3,10 +3,10 @@
 // declarative code
 import { Description, FcException } from '@fc/error';
 import { ErrorCode } from '../enums';
-
 @Description(
-  'La somme de contrôle du LightToken reçu est invalide. Le token a possiblement été altéré.',
+  'Problème de connexion entre le bridge eIDAS et le noeud eIDAS; contacter le service technique (La somme de contrôle du LightToken reçu est invalide. Le token a possiblement été altéré.',
 )
 export class EidasInvalidTokenChecksumException extends FcException {
+  message = 'Erreur technique';
   public readonly code = ErrorCode.INVALID_TOKEN_CHECKSUM_EXCEPTION;
 }
