@@ -15,6 +15,8 @@ export class SessionGenericService {
   private encryptionKey: string;
   private lifetime: number;
 
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     @Inject(SESSION_TOKEN_OPTIONS)
     private readonly sessionOptions: ISessionGenericOptions,

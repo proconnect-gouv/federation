@@ -9,6 +9,8 @@ import { CryptographyFcaService } from '@fc/cryptography-fca';
 @Injectable()
 @FeatureHandler('core-fca-default-verify')
 export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     private readonly logger: LoggerService,
     private readonly session: SessionService,

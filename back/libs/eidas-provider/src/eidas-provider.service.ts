@@ -18,6 +18,8 @@ export class EidasProviderService {
   private proxyServiceRequestCache;
   private proxyServiceResponseCache;
 
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
