@@ -10,7 +10,7 @@ describe('Split transform', () => {
       const doSplitFn = doSplit(separator);
 
       // action
-      const result = doSplitFn(value);
+      const result = doSplitFn({ value });
 
       // assert
       expect(result).toStrictEqual(output);
@@ -24,7 +24,7 @@ describe('Split transform', () => {
       const doSplitFn = doSplit(separator);
 
       // action
-      const result = doSplitFn(value);
+      const result = doSplitFn({ value });
 
       // assert
       expect(result).toStrictEqual(output);
@@ -38,7 +38,7 @@ describe('Split transform', () => {
       const doSplitFn = doSplit(joiner);
 
       // action
-      const result = doSplitFn(value);
+      const result = doSplitFn({ value });
 
       // assert
       expect(result).toStrictEqual(output);

@@ -1,8 +1,14 @@
-import { TransformOptions } from 'class-transformer';
-import { defaultMetadataStorage } from 'class-transformer/storage';
+import { TransformOptions, TransformFnParams } from 'class-transformer';
+/**
+ * @todo Remove this internal API coupling or make it reliable
+ * The defaultMetadataStorage is a class-transformer internal API that can be broken at any time.
+ * An issue is open on github to ask the maintainer to give a public API for this purpose,
+ * @see https://github.com/typestack/class-transformer/issues/563
+ */
+import { defaultMetadataStorage } from 'class-transformer/cjs/storage';
 
 export function doSplit(separator: string | RegExp = ' ') {
-  return (value: any) => {
+  return ({ value }: Partial<TransformFnParams>) => {
     return value !== undefined && value !== null
       ? String(value).split(separator)
       : [];
