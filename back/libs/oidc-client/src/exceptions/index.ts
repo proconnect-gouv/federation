@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 export * from './oidc-client-idp-blacklisted.exception';
 export * from './oidc-client-idp-failed-to-fetch-blacklist';
 export * from './oidc-client-provider-not-found.exception';

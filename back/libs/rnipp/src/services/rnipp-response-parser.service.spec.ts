@@ -100,7 +100,8 @@ describe('RnippResponseParserService', () => {
 
     it('should throw a "RnippHttpStatusException" with the error thrown by "parseStringPromise"', async () => {
       // setup
-      const parseStringPromiseErrorMessage = 'parseStringPromise error';
+      const parseStringPromiseErrorMessage =
+        'Une erreur est survenue dans la transmission de votre identité';
       jest.spyOn(xmlParser, 'parseStringPromise').mockRestore();
       jest
         .spyOn(xmlParser, 'parseStringPromise')
