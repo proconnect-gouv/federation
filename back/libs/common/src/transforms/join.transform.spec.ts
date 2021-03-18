@@ -10,7 +10,7 @@ describe('Join transform', () => {
       const doJoinFn = doJoin(joiner);
 
       // action
-      const result = doJoinFn(value);
+      const result = doJoinFn({ value });
 
       // assert
       expect(result).toStrictEqual(output);
@@ -24,7 +24,7 @@ describe('Join transform', () => {
       const doJoinFn = doJoin(joiner);
 
       // action
-      const result = doJoinFn(value);
+      const result = doJoinFn({ value });
 
       // assert
       expect(result).toStrictEqual(output);
@@ -38,7 +38,7 @@ describe('Join transform', () => {
       const doJoinFn = doJoin(joiner);
 
       // action
-      const result = doJoinFn(value);
+      const result = doJoinFn({ value });
 
       // assert
       expect(result).toStrictEqual(output);

@@ -2,10 +2,6 @@ import 'reflect-metadata';
 import { ClassTransformOptions, plainToClass } from 'class-transformer';
 import { validate, ValidatorOptions, ValidationError } from 'class-validator';
 
-/**
- * @todo Supprimer les Type<> et créer un InstanceOf<> identique mais
- * indépendant de NestJS
- */
 export function getTransformed<T = any>(
   plain: object,
   dto: any,
