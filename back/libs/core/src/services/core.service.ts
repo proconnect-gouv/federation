@@ -173,6 +173,10 @@ export class CoreService {
     const received = Acr[receivedAcr];
     const requested = Acr[requestedAcr];
 
+    /**
+     * @todo renvoyer des exceptions distinctes selon quel ACR est incorrect
+     * Vérifier que l'erreur au niveau FS est possible
+     */
     if (!received || !requested) {
       throw new CoreInvalidAcrException(
         `Invalid ACR parameters, expected: ${requestedAcr}, received: ${receivedAcr}`,

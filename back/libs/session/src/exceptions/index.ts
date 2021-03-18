@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 export * from './session-base.exception';
 export * from './session-bad-format.exception';
 export * from './session-not-found.exception';

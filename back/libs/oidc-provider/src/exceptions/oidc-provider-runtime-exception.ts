@@ -27,7 +27,7 @@ const nativeErrorsMap = {
    * NB: `SessionNotFound` is derived from InvalidRequest
    *     so it must be placed before InvalidRequest
    */
-  '110': RuntimeErrors.SessionNotFound,
+  '110': RuntimeErrors.SessionNotFound, // no redirect
   '111': RuntimeErrors.InvalidRequest,
   '112': RuntimeErrors.InvalidRequestUri,
   '113': RuntimeErrors.InvalidScope,
@@ -57,6 +57,12 @@ const noRedirectionList = ['106', '110', '118', '129'];
  */
 const unknwonNativeErrorCode = 100;
 
+/**
+ * @todo voir comment faire remonter ces exceptions dans la documenation automatique des erreurs
+ * Générer le code des exceptions ?
+ *
+ * @todo rendre le message affiché aux usagers spécifique à l'erreur en cours
+ */
 export class OidcProviderRuntimeException extends OidcProviderBaseException {
   public readonly code: ErrorCode;
   public redirect = true;

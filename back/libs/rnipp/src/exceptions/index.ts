@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 export * from './rnipp-base.exception';
 export * from './rnipp-deceased.exception';
 export * from './rnipp-found-only-with-marital-name.exception';
