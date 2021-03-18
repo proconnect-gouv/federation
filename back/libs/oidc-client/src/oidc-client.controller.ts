@@ -29,6 +29,8 @@ import {
 
 @Controller()
 export class OidcClientController {
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     private readonly oidcClient: OidcClientService,
     private readonly session: SessionService,
@@ -103,7 +105,7 @@ export class OidcClientController {
 
     const { state, nonce } = await this.oidcClient.buildAuthorizeParameters();
 
-    const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
+    const authorizationUrl = await this.oidcClient.getAuthorizeUrl({
       state,
       scope,
       providerUid,
@@ -112,7 +114,7 @@ export class OidcClientController {
       acr_values,
       nonce,
       claims,
-    );
+    });
 
     const { name: idpName } = await this.identityProvider.getById(providerUid);
 

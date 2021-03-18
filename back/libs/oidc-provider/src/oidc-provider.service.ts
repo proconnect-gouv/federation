@@ -44,6 +44,8 @@ export class OidcProviderService {
   private provider: Provider;
   private configuration;
 
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     private httpAdapterHost: HttpAdapterHost,
     private readonly config: ConfigService,

@@ -14,6 +14,8 @@ import { EidasBridgeRoutes } from '../enums';
  */
 @Controller(EidasBridgeRoutes.BASE)
 export class FrIdentityToEuController {
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     private readonly crypto: CryptographyService,
     private readonly logger: LoggerService,
@@ -54,25 +56,17 @@ export class FrIdentityToEuController {
 
     const oidcRequest = this.eidasToOidc.mapPartialRequest(eidasRequest);
 
-    const params = {
-      providerUid: 'envIssuer',
+    const { state, nonce } = await this.oidcClient.buildAuthorizeParameters();
+
+    const authorizationUrl = await this.oidcClient.getAuthorizeUrl({
+      state,
       scope: oidcRequest.scope.join(' '),
+      providerUid: 'envIssuer',
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: oidcRequest.acr_values,
-    };
-
-    const { state, nonce } = await this.oidcClient.buildAuthorizeParameters();
-
-    const authorizationUrl = await this.oidcClient.getAuthorizeUrl(
-      state,
-      params.scope,
-      params.providerUid,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      params.acr_values,
       nonce,
-    );
+    });
 
     const sessionId = this.session.getId(req);
     await this.session.patch(sessionId, { idpState: state, idpNonce: nonce });

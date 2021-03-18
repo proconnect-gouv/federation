@@ -29,6 +29,8 @@ import { AccessTokenParamsDTO } from './dto';
 
 @Controller()
 export class MockServiceProviderController {
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
@@ -184,14 +186,15 @@ export class MockServiceProviderController {
     const { scope, acr, claims } = oidcClientConfig;
     const { state, nonce } = await this.oidcClient.buildAuthorizeParameters();
 
-    const authorizationUrl: string = await this.oidcClient.getAuthorizeUrl(
+    const authorizationUrl: string = await this.oidcClient.getAuthorizeUrl({
       state,
       scope,
-      provider.uid,
-      acr,
+      providerUid: provider.uid,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: acr,
       nonce,
       claims,
-    );
+    });
 
     const url = new URL(authorizationUrl);
 
