@@ -15,9 +15,7 @@
       "sourceRoot": "instances/core-fca-high/src",
       "compilerOptions": {
         "tsConfigPath": "instances/core-fca-high/tsconfig.app.json",
-        "assets": [
-          "../../../apps/core-fca/**/*.ejs"
-        ]
+        "assets": ["../../../apps/core-fca/**/*.ejs"]
       }
     },
     "eidas-bridge-instance": {
@@ -82,16 +80,13 @@
       "compilerOptions": {
         "tsConfigPath": "instances/mock-service-provider-fca/tsconfig.app.json",
         "assets": [
-          "../../../apps/mock-service-provider/**/*.js",
-          "../../../apps/mock-service-provider/**/*.ejs",
-          "../../../apps/mock-service-provider/**/*.css",
-          "../../../apps/mock-service-provider/**/*.svg",
-          "../../../apps/mock-service-provider/**/*.png",
+          "../../../apps/mock-service-provider/src/css/main.css",
+          "../../../apps/mock-service-provider/src/views/error.ejs",
+          "../../../apps/mock-service-provider/src/views/success-revoke-token.ejs",
           "../../../instances/mock-service-provider-fca/**/*.js",
           "../../../instances/mock-service-provider-fca/**/*.ejs",
           "../../../instances/mock-service-provider-fca/**/*.css",
-          "../../../instances/mock-service-provider-fca/**/*.svg",
-          "../../../instances/mock-service-provider-fca/**/*.png"
+          "../../../instances/mock-service-provider-fca/**/*.svg"
         ]
       }
     },
