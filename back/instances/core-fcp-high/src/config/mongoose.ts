@@ -10,7 +10,6 @@ export default {
   hosts: process.env.FC_DB_HOSTS,
   database: process.env.FC_DB_DATABASE,
   options: {
-    replicatSet: process.env.FC_DB_REPLICASET,
     authSource: process.env.FC_DB_DATABASE,
     tls: parseBoolean(process.env.FC_DB_TLS),
     tlsInsecure: parseBoolean(process.env.FC_DB_TLS_INSECURE),

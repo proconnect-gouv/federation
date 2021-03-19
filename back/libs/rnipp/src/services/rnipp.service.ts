@@ -121,6 +121,7 @@ export class RnippService {
     return response;
   }
 
+  // eslint-disable-next-line complexity
   private checkRnippRectificationError(
     rnippCode: string,
     deceasedStatus: boolean,

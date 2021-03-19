@@ -288,7 +288,7 @@ describe('OidcClientService', () => {
     const state = 'callbackParamsState';
     const nonce = 'callbackParamsNonce';
 
-    it('should call client.callback with callbackParams', async () => {
+    it('should call extractParams with callbackParams', async () => {
       // When
       await service.getTokenSet(req, providerId, state, nonce);
       // Then
@@ -308,40 +308,13 @@ describe('OidcClientService', () => {
         },
       );
     });
-    it('should retrun resolve value of client.callback', async () => {
+    it('should return resolve value of client.callback', async () => {
       // When
       const result = await service.getTokenSet(req, providerId, state, nonce);
       // Then
       expect(result).toBe('callbackMock Resolve Value');
     });
-    it('should throw if state is not provided in url', async () => {
-      // Given
-      callbackParamsMock.mockResolvedValueOnce({
-        code: 'callbackParamsCode',
-      });
-      // Then
-      expect(
-        service.getTokenSet(req, providerId, state, nonce),
-      ).rejects.toThrow(OidcClientMissingStateException);
-    });
-    it('should throw if state in url does not match state in session', async () => {
-      // Given
-      const invalidState = 'notTheSameStateAsInRequest';
-      // Then
-      expect(
-        service.getTokenSet(req, providerId, invalidState, nonce),
-      ).rejects.toThrow(OidcClientInvalidStateException);
-    });
-    it('should throw if code is not provided in url', async () => {
-      callbackParamsMock.mockResolvedValueOnce({
-        state: 'callbackParamsState',
-      });
-      // Then
-      expect(
-        service.getTokenSet(req, providerId, state, nonce),
-      ).rejects.toThrow(OidcClientMissingCodeException);
-    });
-    it('should throw if something unexpected goes wrong in client.callback', async () => {
+    it('should throw if something unexpected goes wrong in extractParams', async () => {
       // Given
       const errorMock = new Error('lol');
       callbackMock.mockRejectedValueOnce(errorMock);
@@ -349,6 +322,43 @@ describe('OidcClientService', () => {
       expect(
         service.getTokenSet(req, providerId, state, nonce),
       ).rejects.toThrow(OidcClientRuntimeException);
+    });
+  });
+
+  describe('extractParams', () => {
+    const req = { session: { codeVerifier: 'codeVerifierValue' } };
+    const state = 'callbackParamsState';
+
+    it('should throw if code is not provided in url', async () => {
+      callbackParamsMock.mockResolvedValueOnce({
+        state: 'callbackParamsState',
+      });
+      // Then
+      expect(service['extractParams'](req, clientMock, state)).rejects.toThrow(
+        OidcClientMissingCodeException,
+      );
+    });
+    it('should throw if state is not provided in url', async () => {
+      // Given
+      callbackParamsMock.mockResolvedValueOnce({
+        code: 'callbackParamsCode',
+      });
+      // Then
+      expect(service['extractParams'](req, clientMock, state)).rejects.toThrow(
+        OidcClientMissingStateException,
+      );
+    });
+    it('should throw if state in url does not match state in session', async () => {
+      // Given
+      callbackParamsMock.mockResolvedValueOnce({
+        state: 'callbackParamsState',
+        code: 'callbackParamsCode',
+      });
+      const invalidState = 'notTheSameStateAsInRequest';
+      // Then
+      expect(
+        service['extractParams'](req, clientMock, invalidState),
+      ).rejects.toThrow(OidcClientInvalidStateException);
     });
   });
 
