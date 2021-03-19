@@ -1,12 +1,10 @@
 import * as fs from 'fs';
 import * as glob from 'glob';
-import { Type } from '@nestjs/common';
-import { ErrorService, FcException } from '@fc/error';
 import * as ejs from 'ejs';
-
-import { Description, Loggable, Trackable } from './../../decorator';
+import { Type } from '@nestjs/common';
+import { ErrorService, FcException, IExceptionDocumentation } from '@fc/error';
 import MarkdownGenerator from './markdown-generator';
-import { IExceptionDocumentation } from '@fc/error/interfaces';
+import { Description, Loggable, Trackable } from './../../decorator';
 
 export default class Runner {
   static extractException(module: {
@@ -19,11 +17,15 @@ export default class Runner {
     );
   }
 
+  static hasValidParam(param: number): boolean {
+    return typeof param === 'number' && param >= 0;
+  }
+
   static inflateException(Exception: Type<FcException>) {
     const error = new Exception(new Error());
     const { scope, code } = error;
-    const hasValidScope = typeof scope === 'number' && scope >= 0;
-    const hasValidCode = typeof code === 'number' && code >= 0;
+    const hasValidScope = Runner.hasValidParam(scope);
+    const hasValidCode = Runner.hasValidParam(code);
     const isException = hasValidScope && hasValidCode;
     if (!isException) return null;
     return error;
