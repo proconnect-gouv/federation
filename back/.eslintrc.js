@@ -23,6 +23,7 @@ module.exports = {
     },
   ],
   rules: {
+    complexity: ['error', { max: 4 }],
     'max-statements-per-line': ['error', { max: 1 }],
     'max-depth': ['error', { max: 2 }],
     '@typescript-eslint/naming-convention': [

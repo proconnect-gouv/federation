@@ -163,24 +163,6 @@ describe('CoreTrackingService', () => {
         CoreMissingContextException,
       );
     });
-    it('should throw if header is missing', () => {
-      // Given
-      const contextMock = { req: { fc: { interactionId: 'foo' } } };
-      // Then
-      expect(() => service['extractContext'](contextMock)).toThrow(
-        CoreMissingContextException,
-      );
-    });
-    it('should throw if ip is missing', () => {
-      // Given
-      const contextMock = {
-        req: { headers: {}, fc: { interactionId: 'foo' } },
-      };
-      // Then
-      expect(() => service['extractContext'](contextMock)).toThrow(
-        CoreMissingContextException,
-      );
-    });
     it('should throw if fc is missing', () => {
       // Given
       const contextMock = {
@@ -201,6 +183,27 @@ describe('CoreTrackingService', () => {
       };
       // Then
       expect(() => service['extractContext'](contextMock)).toThrow(
+        CoreMissingContextException,
+      );
+    });
+  });
+
+  describe('extractIpFromContext', () => {
+    it('should throw if header is missing', () => {
+      // Given
+      const contextMock = { req: { fc: { interactionId: 'foo' } } };
+      // Then
+      expect(() => service['extractContext'](contextMock)).toThrow(
+        CoreMissingContextException,
+      );
+    });
+    it('should throw if ip is missing', () => {
+      // Given
+      const contextMock = {
+        req: { headers: {}, fc: { interactionId: 'foo' } },
+      };
+      // Then
+      expect(() => service['extractIpFromContext'](contextMock)).toThrow(
         CoreMissingContextException,
       );
     });

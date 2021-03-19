@@ -60,6 +60,18 @@ export class SessionInterceptor implements NestInterceptor {
     return next.handle();
   }
 
+  private handleNoSessionError(signedCookies, sessionCookieName) {
+    if (!(sessionCookieName in signedCookies)) {
+      throw new SessionNoSessionCookieException();
+    }
+  }
+
+  private handleNoInteractionError(signedCookies, interactionCookieName) {
+    if (!(interactionCookieName in signedCookies)) {
+      throw new SessionNoInteractionCookieException();
+    }
+  }
+
   private async handleSession(req, res) {
     const route = req.route.path;
     const {
@@ -69,13 +81,8 @@ export class SessionInterceptor implements NestInterceptor {
 
     // Should just refresh cookies for expiration
     if (this.FrontRoutes.includes(route)) {
-      if (!(sessionCookieName in req.signedCookies)) {
-        throw new SessionNoSessionCookieException();
-      }
-
-      if (!(interactionCookieName in req.signedCookies)) {
-        throw new SessionNoInteractionCookieException();
-      }
+      this.handleNoSessionError(req.signedCookies, sessionCookieName);
+      this.handleNoInteractionError(req.signedCookies, interactionCookieName);
 
       const interactionId = req.signedCookies[interactionCookieName];
       const sessionId = req.signedCookies[sessionCookieName];

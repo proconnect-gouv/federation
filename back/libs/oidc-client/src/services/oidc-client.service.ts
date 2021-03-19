@@ -78,15 +78,7 @@ export class OidcClientService {
     return { keys: publicKeys };
   }
 
-  async getTokenSet(
-    req,
-    providerUid: string,
-    stateFromSession: string,
-    nonceFromSession?: string,
-  ): Promise<TokenSet> {
-    this.logger.debug('getTokenSet');
-    const client = await this.issuer.getClient(providerUid);
-
+  private async extractParams(req, client, stateFromSession: string) {
     /**
      * Although it is not noted as async
      * openidClient.callbackParams is and should be awaited
@@ -104,6 +96,24 @@ export class OidcClientService {
     if (receivedParams.state !== stateFromSession) {
       throw new OidcClientInvalidStateException();
     }
+
+    return receivedParams;
+  }
+
+  async getTokenSet(
+    req,
+    providerUid: string,
+    stateFromSession: string,
+    nonceFromSession?: string,
+  ): Promise<TokenSet> {
+    this.logger.debug('getTokenSet');
+    const client = await this.issuer.getClient(providerUid);
+
+    const receivedParams = await this.extractParams(
+      req,
+      client,
+      stateFromSession,
+    );
 
     try {
       // Invoke `openid-client` handler
