@@ -13,10 +13,6 @@ import { Type } from 'class-transformer';
 
 export class MongooseConfigOptions {
   @IsString()
-  @IsOptional()
-  readonly replicatSet?: string;
-
-  @IsString()
   readonly authSource: string;
 
   @IsBoolean()

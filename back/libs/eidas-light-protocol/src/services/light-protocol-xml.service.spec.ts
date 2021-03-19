@@ -1,5 +1,3 @@
-// import { mocked } from 'ts-jest/utils';
-// import { set } from 'lodash';
 import * as converter from 'xml-js';
 import { Test, TestingModule } from '@nestjs/testing';
 import {
@@ -157,9 +155,9 @@ describe('LightProtocolXmlService', () => {
       expect(tree).toStrictEqual(expectedTree);
     });
 
-    it('should call forEachPath with the parent and the callback if the parent is not a string', () => {
+    it('should call recurseOnChildBasedOnType with the parent and the callback if the parent is not a string', () => {
       // setup
-      service.forEachPath = jest.fn();
+      service.recurseOnChildBasedOnType = jest.fn();
       const parent = { Samishisa: 'Of' };
       const lastPath = 'Hitori.Botchi.Osorezuni.Ikiyou.To.Yume.Miteta';
       const tree = {};
@@ -168,10 +166,11 @@ describe('LightProtocolXmlService', () => {
       service.jsonToPathsObject(parent, lastPath, tree);
 
       // expect
-      expect(service.forEachPath).toHaveBeenCalledTimes(1);
-      expect(service.forEachPath).toHaveBeenCalledWith(
-        parent,
-        expect.any(Function),
+      expect(service.recurseOnChildBasedOnType).toHaveBeenCalledTimes(1);
+      expect(service.recurseOnChildBasedOnType).toHaveBeenCalledWith(
+        'Of',
+        'Hitori.Botchi.Osorezuni.Ikiyou.To.Yume.Miteta.Samishisa',
+        {},
       );
     });
 
@@ -298,6 +297,60 @@ describe('LightProtocolXmlService', () => {
 
       // expect
       expect(result).toStrictEqual(expectedTree);
+    });
+  });
+
+  describe('recurseOnChildBasedOnType', () => {
+    it('should set the last path with the child in the tree if the child is a string', () => {
+      // setup
+      const child = 'Whisper';
+      const lastPath = 'Hitori.Botchi.Osorezuni.Ikiyou.To.Yume';
+      const tree = {};
+
+      const expectedTree = {
+        'Hitori.Botchi.Osorezuni.Ikiyou.To.Yume': 'Whisper',
+      };
+
+      // action
+      service['recurseOnChildBasedOnType'](child, lastPath, tree);
+
+      // expect
+      expect(tree).toStrictEqual(expectedTree);
+    });
+
+    it('should set the last path with the child in the tree if the child is an object', () => {
+      // setup
+      const child = { Miteta: 'Whisper' };
+      const lastPath = 'Hitori.Botchi.Osorezuni.Ikiyou.To.Yume';
+      const tree = {};
+
+      const expectedTree = {
+        'Hitori.Botchi.Osorezuni.Ikiyou.To.Yume.Miteta': 'Whisper',
+      };
+
+      // action
+      service['recurseOnChildBasedOnType'](child, lastPath, tree);
+
+      // expect
+      expect(tree).toStrictEqual(expectedTree);
+    });
+
+    it('should set the last path with the child in the tree if the child is an array', () => {
+      // setup
+      const child = { Miteta: ['foo', 'bar'] };
+      const lastPath = 'Hitori.Botchi.Osorezuni.Ikiyou.To.Yume';
+      const tree = {};
+
+      const expectedTree = {
+        'Hitori.Botchi.Osorezuni.Ikiyou.To.Yume.Miteta.0': 'foo',
+        'Hitori.Botchi.Osorezuni.Ikiyou.To.Yume.Miteta.1': 'bar',
+      };
+
+      // action
+      service['recurseOnChildBasedOnType'](child, lastPath, tree);
+
+      // expect
+      expect(tree).toStrictEqual(expectedTree);
     });
   });
 

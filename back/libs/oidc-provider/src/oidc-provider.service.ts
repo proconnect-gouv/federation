@@ -378,6 +378,37 @@ export class OidcProviderService {
     this.provider.on(eventName, handler);
   }
 
+  private async runMiddlewareBeforePattern(
+    { step, path, pattern, ctx },
+    middleware: Function,
+  ) {
+    // run middleware BEFORE pattern occurs
+    if (step === OidcProviderMiddlewareStep.BEFORE && path === pattern) {
+      await middleware(ctx);
+    }
+  }
+
+  private async runMiddlewareAfterPattern(
+    { step, route, path, pattern, ctx },
+    middleware: Function,
+  ) {
+    // run middleware AFTER pattern occured
+    if (
+      step === OidcProviderMiddlewareStep.AFTER &&
+      /**
+       * In the post processing phase, we may also target more specific actions with ctx.oidc.route
+       * Though we can still match on the path.
+       * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pre--and-post-middlewares
+       *
+       * Since there can be no overlap between MiddlewarePatterns and Routes,
+       * we can safely use a unique function parameter (`pattern`) and test it against both values.
+       */
+      (route === pattern || path === pattern)
+    ) {
+      await middleware(ctx);
+    }
+  }
+
   /**
    * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pre--and-post-middlewares
    */
@@ -390,29 +421,18 @@ export class OidcProviderService {
       // Extract path and oidc.route from ctx
       const { path, oidc: { route = '' } = {} } = ctx;
 
-      // run middleware BEFORE pattern occurs
-      if (step === OidcProviderMiddlewareStep.BEFORE && path === pattern) {
-        await middleware(ctx);
-      }
+      await this.runMiddlewareBeforePattern(
+        { step, path, pattern, ctx },
+        middleware,
+      );
 
       // Let pattern occur
       await next();
 
-      // run middleware AFTER pattern occured
-      if (
-        step === OidcProviderMiddlewareStep.AFTER &&
-        /**
-         * In the post processing phase, we may also target more specific actions with ctx.oidc.route
-         * Though we can still match on the path.
-         * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pre--and-post-middlewares
-         *
-         * Since there can be no overlap between MiddlewarePatterns and Routes,
-         * we can safely use a unique function parameter (`pattern`) and test it against both values.
-         */
-        (route === pattern || path === pattern)
-      ) {
-        await middleware(ctx);
-      }
+      await this.runMiddlewareAfterPattern(
+        { step, route, path, pattern, ctx },
+        middleware,
+      );
     });
   }
 
