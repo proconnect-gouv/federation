@@ -83,20 +83,93 @@ export class RedisAdapter implements Adapter {
     return boundConstructor;
   }
 
-  private grantKeyFor(id: string) {
-    return `${REDIS_PREFIX}:grant:${id}`;
+  private grantKeyFor(id: string): string {
+    if (!id) {
+      return null;
+    }
+    const key = `${REDIS_PREFIX}:grant:${id}`;
+    return key;
   }
 
-  private userCodeKeyFor(userCode: string) {
-    return `${REDIS_PREFIX}:userCode:${userCode}`;
+  private userCodeKeyFor(userCode: string): string {
+    if (!userCode) {
+      return null;
+    }
+    const key = `${REDIS_PREFIX}:userCode:${userCode}`;
+    return key;
   }
 
-  private uidKeyFor(uid: string) {
-    return `${REDIS_PREFIX}:uid:${uid}`;
+  private uidKeyFor(uid: string): string {
+    if (!uid) {
+      return null;
+    }
+    const key = `${REDIS_PREFIX}:uid:${uid}`;
+    return key;
   }
 
-  private key(id: string) {
+  private key(id: string): string {
     return `${REDIS_PREFIX}:${this.contextName}:${id}`;
+  }
+
+  private parsedPayload(payload) {
+    try {
+      return JSON.parse(payload);
+    } catch (error) {
+      throw new OidcProviderParseRedisResponseException(error);
+    }
+  }
+
+  private saveKey(multi, key, data) {
+    let dataFormated: string;
+
+    try {
+      dataFormated = JSON.stringify(data);
+    } catch (error) {
+      /**
+       * Forced to throw using our helper, since `oidc-provider` catches
+       * the exception.
+       *
+       * @see OidcProviderService.throwError()
+       */
+      throw new OidcProviderStringifyPayloadForRedisException(error);
+    }
+
+    const hasContext = consumable.has(this.contextName);
+    const store = hasContext ? { payload: dataFormated } : dataFormated;
+
+    const command = hasContext ? 'hmset' : 'set';
+    (multi[command] as Function)(key, store);
+  }
+
+  private async saveGrantId(
+    multi,
+    grantId: string,
+    key: string,
+    expiresIn: number,
+  ) {
+    const grantKey = this.grantKeyFor(grantId);
+    if (!grantKey) {
+      return;
+    }
+    multi.rpush(grantKey, key);
+    // if you're seeing grant key lists growing out of acceptable proportions consider using LTRIM
+    // here to trim the list to an appropriate length
+    const ttl = await this.redis.ttl(grantKey);
+    if (expiresIn > ttl) {
+      multi.expire(grantKey, expiresIn);
+    }
+  }
+
+  private addSetAndExpireOnMulti(
+    key: string,
+    id: string,
+    expiresIn: number,
+    multi,
+  ): void {
+    if (key) {
+      multi.set(key, id);
+      multi.expire(key, expiresIn);
+    }
   }
 
   async upsert(id: string, payload: any, expiresIn: number) {
@@ -113,54 +186,20 @@ export class RedisAdapter implements Adapter {
 
     const multi = this.redis.multi();
 
-    let stringified: string;
-    try {
-      stringified = JSON.stringify(payload);
-    } catch (error) {
-      /**
-       * Forced to throw using our helper, since `oidc-provider` catches
-       * the exception.
-       *
-       * @see OidcProviderService.throwError()
-       */
-      throw new OidcProviderStringifyPayloadForRedisException(error);
-    }
-
-    const store = consumable.has(this.contextName)
-      ? { payload: stringified }
-      : stringified;
-
-    const command = consumable.has(this.contextName) ? 'hmset' : 'set';
-    (multi[command] as Function)(key, store);
+    this.saveKey(multi, key, payload);
 
     if (expiresIn) {
       multi.expire(key, expiresIn);
     }
 
     const { grantId, userCode, uid } = payload;
+    await this.saveGrantId(multi, grantId, key, expiresIn);
 
-    if (grantId) {
-      const grantKey = this.grantKeyFor(grantId);
-      multi.rpush(grantKey, key);
-      // if you're seeing grant key lists growing out of acceptable proportions consider using LTRIM
-      // here to trim the list to an appropriate length
-      const ttl = await this.redis.ttl(grantKey);
-      if (expiresIn > ttl) {
-        multi.expire(grantKey, expiresIn);
-      }
-    }
+    const userCodeKey = this.userCodeKeyFor(userCode);
+    const uidKey = this.uidKeyFor(uid);
 
-    if (userCode) {
-      const userCodeKey = this.userCodeKeyFor(userCode);
-      multi.set(userCodeKey, id);
-      multi.expire(userCodeKey, expiresIn);
-    }
-
-    if (uid) {
-      const uidKey = this.uidKeyFor(uid);
-      multi.set(uidKey, id);
-      multi.expire(uidKey, expiresIn);
-    }
+    this.addSetAndExpireOnMulti(userCodeKey, id, expiresIn, multi);
+    this.addSetAndExpireOnMulti(uidKey, id, expiresIn, multi);
 
     await multi.exec();
   }
@@ -182,12 +221,7 @@ export class RedisAdapter implements Adapter {
     const wrappedData = typeof data === 'string' ? { payload: data } : data;
     const { payload, ...rest } = wrappedData;
 
-    let parsedPayload: object;
-    try {
-      parsedPayload = JSON.parse(payload);
-    } catch (error) {
-      throw new OidcProviderParseRedisResponseException(error);
-    }
+    const parsedPayload = this.parsedPayload(payload);
 
     return {
       ...rest,

@@ -43,6 +43,29 @@ describe('Runner', () => {
     });
   });
 
+  describe('hasValidParam', () => {
+    it('Should return true if param is positive number', () => {
+      // Setup
+      const paramMock = 2;
+
+      // Action
+      const result = Runner.hasValidParam(paramMock);
+
+      // Expect
+      expect(result).toStrictEqual(true);
+    });
+    it('Should return false if param is a negative number', () => {
+      // Setup
+      const paramMock = -1;
+
+      // Action
+      const result = Runner.hasValidParam(paramMock);
+
+      // Expect
+      expect(result).toStrictEqual(false);
+    });
+  });
+
   describe('inflateException', () => {
     it('should return null if Exception has invalid scope and/or code', () => {
       // Setup

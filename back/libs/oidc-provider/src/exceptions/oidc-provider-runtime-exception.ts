@@ -65,7 +65,7 @@ const unknwonNativeErrorCode = 100;
  */
 export class OidcProviderRuntimeException extends OidcProviderBaseException {
   public readonly code: ErrorCode;
-  public redirect = true;
+  public redirect: boolean;
 
   constructor(error: Error, code?: ErrorCode) {
     super(error);
@@ -86,9 +86,7 @@ export class OidcProviderRuntimeException extends OidcProviderBaseException {
       this.code = ErrorCode.UNKNOWN;
     }
 
-    if (noRedirectionList.includes(`${this.code}`)) {
-      this.redirect = false;
-    }
+    this.redirect = !noRedirectionList.includes(`${this.code}`);
   }
 
   /**

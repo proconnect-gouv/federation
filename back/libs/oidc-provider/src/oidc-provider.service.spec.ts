@@ -789,6 +789,7 @@ describe('OidcProviderService', () => {
       const callback = jest.fn();
       const ctx = { path: OidcProviderMiddlewarePattern.USERINFO };
       const next = async () => Promise.resolve();
+      service['runMiddlewareBeforePattern'] = jest.fn();
       // When
       service.registerMiddleware(
         OidcProviderMiddlewareStep.BEFORE,
@@ -797,7 +798,7 @@ describe('OidcProviderService', () => {
       );
       providerMock.middlewares[0].call(null, ctx, next);
       // Then
-      expect(callback).toHaveBeenCalledTimes(1);
+      expect(service['runMiddlewareBeforePattern']).toHaveBeenCalledTimes(1);
     });
 
     it('should call provider use with callback function AFTER', async () => {
@@ -808,6 +809,7 @@ describe('OidcProviderService', () => {
         oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
       };
       const next = () => async () => Promise.resolve();
+      service['runMiddlewareAfterPattern'] = jest.fn();
       // When
       service.registerMiddleware(
         OidcProviderMiddlewareStep.AFTER,
@@ -816,7 +818,7 @@ describe('OidcProviderService', () => {
       );
       await providerMock.middlewares[0].call(null, ctx, next);
       // Then
-      expect(callback).toHaveBeenCalledTimes(1);
+      expect(service['runMiddlewareAfterPattern']).toHaveBeenCalledTimes(1);
     });
     it('should match on path', async () => {
       // Given
@@ -835,6 +837,149 @@ describe('OidcProviderService', () => {
       await providerMock.middlewares[0].call(null, ctx, next);
       // Then
       expect(callback).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('runMiddlewareBeforePattern', () => {
+    it('should call the callback if path param equal pattern with good step', async () => {
+      // Given
+      const callback = jest.fn();
+      const ctx = {
+        oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
+      };
+      // When
+      service['runMiddlewareBeforePattern'](
+        {
+          step: OidcProviderMiddlewareStep.BEFORE,
+          path: OidcProviderMiddlewarePattern.USERINFO,
+          pattern: OidcProviderMiddlewarePattern.USERINFO,
+          ctx,
+        },
+        callback,
+      );
+      // Then
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+    it('should not call the callback method if wrong path is send', () => {
+      // Given
+      const callback = jest.fn();
+      const ctx = {
+        oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
+      };
+      // When
+      service['runMiddlewareBeforePattern'](
+        {
+          step: OidcProviderMiddlewareStep.BEFORE,
+          path: '',
+          pattern: OidcProviderMiddlewarePattern.USERINFO,
+          ctx,
+        },
+        callback,
+      );
+      // Then
+      expect(callback).toHaveBeenCalledTimes(0);
+    });
+    it('should not call the callback method if wrong step is send', () => {
+      // Given
+      const callback = jest.fn();
+      const ctx = {
+        oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
+      };
+      // When
+      service['runMiddlewareBeforePattern'](
+        {
+          step: OidcProviderMiddlewareStep.AFTER,
+          path: OidcProviderMiddlewarePattern.USERINFO,
+          pattern: OidcProviderMiddlewarePattern.USERINFO,
+          ctx,
+        },
+        callback,
+      );
+      // Then
+      expect(callback).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('runMiddlewareAfterPattern', () => {
+    it('should call the callback if route param equal pattern with good step', async () => {
+      // Given
+      const callback = jest.fn();
+      const ctx = {
+        oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
+      };
+      // When
+      service['runMiddlewareAfterPattern'](
+        {
+          step: OidcProviderMiddlewareStep.AFTER,
+          route: OidcProviderMiddlewarePattern.USERINFO,
+          path: '',
+          pattern: OidcProviderMiddlewarePattern.USERINFO,
+          ctx,
+        },
+        callback,
+      );
+      // Then
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+    it('should call the callback if path param equal pattern with good step', async () => {
+      // Given
+      const callback = jest.fn();
+      const ctx = {
+        oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
+      };
+      // When
+      service['runMiddlewareAfterPattern'](
+        {
+          step: OidcProviderMiddlewareStep.AFTER,
+          route: '',
+          path: OidcProviderMiddlewarePattern.USERINFO,
+          pattern: OidcProviderMiddlewarePattern.USERINFO,
+          ctx,
+        },
+        callback,
+      );
+      // Then
+      expect(callback).toHaveBeenCalledTimes(1);
+    });
+    it('should not call the callback method if wrong step is send', () => {
+      // Given
+      const callback = jest.fn();
+      const ctx = {
+        oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
+      };
+      // When
+      service['runMiddlewareAfterPattern'](
+        {
+          step: OidcProviderMiddlewareStep.BEFORE,
+          route: OidcProviderMiddlewarePattern.USERINFO,
+          path: OidcProviderMiddlewarePattern.USERINFO,
+          pattern: OidcProviderMiddlewarePattern.USERINFO,
+          ctx,
+        },
+        callback,
+      );
+      // Then
+      expect(callback).toHaveBeenCalledTimes(0);
+    });
+    it('should not call the callback method if wrong path or route is send', () => {
+      // Given
+      const callback = jest.fn();
+      const ctx = {
+        oidc: { route: OidcProviderMiddlewarePattern.USERINFO },
+      };
+      // When
+      service['runMiddlewareAfterPattern'](
+        {
+          step: OidcProviderMiddlewareStep.BEFORE,
+          route: '',
+          path: '',
+          pattern: OidcProviderMiddlewarePattern.USERINFO,
+          ctx,
+        },
+        callback,
+      );
+      // Then
+      expect(callback).toHaveBeenCalledTimes(0);
     });
   });
 

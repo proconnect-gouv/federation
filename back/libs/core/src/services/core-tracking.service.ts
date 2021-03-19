@@ -47,6 +47,20 @@ export class CoreTrackingService implements IAppTrackingService {
     };
   }
 
+  private extractIpFromContext(context: IEventContext): string {
+    if (!context.req.headers) {
+      throw new CoreMissingContextException('req.headers');
+    }
+
+    const ip = context.req.headers['x-forwarded-for'];
+
+    if (!ip) {
+      throw new CoreMissingContextException("req.headers['x-forwarded-for']");
+    }
+
+    return ip;
+  }
+
   private extractContext(context: IEventContext): ICoreTrackingContext {
     /**
      * Throw rather than allow a non-loggable interaction.
@@ -56,13 +70,9 @@ export class CoreTrackingService implements IAppTrackingService {
     if (!context.req) {
       throw new CoreMissingContextException('req');
     }
-    if (!context.req.headers) {
-      throw new CoreMissingContextException('req.headers');
-    }
-    const ip = context.req.headers['x-forwarded-for'];
-    if (!ip) {
-      throw new CoreMissingContextException("req.headers['x-forwarded-for']");
-    }
+
+    const ip = this.extractIpFromContext(context);
+
     if (!context.req.fc) {
       throw new CoreMissingContextException('req.fc');
     }

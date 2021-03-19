@@ -34,22 +34,24 @@ export class LightProtocolXmlService {
     }
   }
 
-  jsonToPathsObject(parent, lastPath = '', tree = {}): IPathsObject {
+  recurseOnChildBasedOnType(child: unknown, newPath: string, tree) {
+    if (child instanceof Array) {
+      for (let i = 0; i < child.length; i++) {
+        this.jsonToPathsObject(child[i], `${newPath}.${i}`, tree);
+      }
+    } else {
+      this.jsonToPathsObject(child, newPath, tree);
+    }
+  }
+
+  jsonToPathsObject(parent: unknown, lastPath = '', tree = {}) {
     if (typeof parent === 'string') {
       tree[lastPath] = parent;
-    } else {
-      this.forEachPath(parent, (keyPath, child) => {
-        const newPath = lastPath ? `${lastPath}.${keyPath}` : keyPath;
+    } else if (parent !== null && typeof parent === 'object') {
+      Object.entries(parent).forEach(([key, child]: [string, unknown]) => {
+        const newPath = lastPath ? `${lastPath}.${key}` : key;
 
-        if (typeof child === 'string') {
-          tree[newPath] = child;
-        } else if (child instanceof Array) {
-          for (let i = 0; i < child.length; i++) {
-            this.jsonToPathsObject(child[i], `${newPath}.${i}`, tree);
-          }
-        } else if (typeof child === 'object' && child !== null) {
-          this.jsonToPathsObject(child, newPath, tree);
-        }
+        this.recurseOnChildBasedOnType(child, newPath, tree);
       });
     }
 
