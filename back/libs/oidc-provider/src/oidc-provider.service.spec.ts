@@ -1,15 +1,10 @@
-import { KoaContextWithOIDC, Provider, ClientMetadata } from 'oidc-provider';
+import * as OidcProvider from 'oidc-provider';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
-import { ConfigService } from '@fc/config';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { LoggerService, LogLevelNames } from '@fc/logger';
-import { FcExceptionFilter } from '@fc/error';
 import { SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
-import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import {
-  OidcProviderEvents,
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
 } from './enums';
@@ -20,12 +15,8 @@ import {
   OidcProviderRuntimeException,
   OidcProviderInteractionNotFoundException,
 } from './exceptions';
-import {
-  OidcProviderAuthorizationEvent,
-  OidcProviderTokenEvent,
-  OidcProviderUserinfoEvent,
-} from './events';
-import { RedisAdapter } from './adapters';
+import { OidcProviderErrorService } from './services/oidc-provider-error.service';
+import { OidcProviderConfigService } from './services/oidc-provider-config.service';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -85,10 +76,6 @@ describe('OidcProviderService', () => {
     get: jest.fn(),
   };
 
-  const trackingMock = {
-    track: jest.fn(),
-  };
-
   const useSpy = jest.fn();
 
   const providerMock = {
@@ -102,12 +89,6 @@ describe('OidcProviderService', () => {
     interactionFinished: jest.fn(),
   };
 
-  const exceptionFilterMock = {
-    catch: jest.fn(),
-  };
-
-  const unknownError = new Error();
-
   const redisMock = {
     hgetall: jest.fn(),
     get: jest.fn(),
@@ -118,40 +99,43 @@ describe('OidcProviderService', () => {
     del: jest.fn(),
   };
 
+  const oidcProviderErrorServiceMock = {
+    catchErrorEvents: jest.fn(),
+    throwError: jest.fn(),
+  };
+
+  const oidcProviderConfigServiceMock = {
+    getConfig: jest.fn(),
+    findAccount: jest.fn(),
+  };
+
   const interactionIdSymbol = Symbol('context#uid');
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        ConfigService,
-        LoggerService,
         OidcProviderService,
         HttpAdapterHost,
-        FcExceptionFilter,
-        SessionService,
-        TrackingService,
-        {
-          provide: SERVICE_PROVIDER_SERVICE_TOKEN,
-          useValue: serviceProviderServiceMock,
-        },
+        LoggerService,
         {
           provide: REDIS_CONNECTION_TOKEN,
           useValue: redisMock,
         },
+        SessionService,
+        OidcProviderErrorService,
+        OidcProviderConfigService,
       ],
     })
       .overrideProvider(HttpAdapterHost)
       .useValue(httpAdapterHostMock)
-      .overrideProvider(ConfigService)
-      .useValue(configServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(FcExceptionFilter)
-      .useValue(exceptionFilterMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(TrackingService)
-      .useValue(trackingMock)
+      .overrideProvider(OidcProviderErrorService)
+      .useValue(oidcProviderErrorServiceMock)
+      .overrideProvider(OidcProviderConfigService)
+      .useValue(oidcProviderConfigServiceMock)
       .compile();
 
     module.useLogger(loggerServiceMock);
@@ -185,6 +169,12 @@ describe('OidcProviderService', () => {
   describe('onModuleInit', () => {
     beforeEach(() => {
       // Given
+      oidcProviderConfigServiceMock.getConfig.mockReturnValueOnce(
+        configOidcProviderMock,
+      );
+      oidcProviderConfigServiceMock.getConfig.mockImplementation(() => ({
+        paramsMock: 'paramMocks',
+      }));
       service['getConfig'] = jest.fn().mockResolvedValue({
         ...configOidcProviderMock,
       });
@@ -197,7 +187,7 @@ describe('OidcProviderService', () => {
       // Then
       expect(service).toBeDefined();
       // Access to private property via []
-      expect(service['provider']).toBeInstanceOf(Provider);
+      expect(service['provider']).toBeInstanceOf(OidcProvider.Provider);
     });
 
     it('should mount oidc-provider in express', async () => {
@@ -237,8 +227,9 @@ describe('OidcProviderService', () => {
       // When
       await service.onModuleInit();
       // Then
-      expect(service['registerMiddlewares']).toHaveBeenCalledTimes(1);
-      expect(service['catchErrorEvents']).toHaveBeenCalledTimes(1);
+      expect(service['errorService']['catchErrorEvents']).toHaveBeenCalledTimes(
+        1,
+      );
     });
   });
 
@@ -258,87 +249,15 @@ describe('OidcProviderService', () => {
       // Can't use jest.spyOn() on private
       const overrideConfigurationMock = jest.fn();
       const getConfigMock = jest.fn();
-      service['overrideConfiguration'] = overrideConfigurationMock;
-      service['getConfig'] = getConfigMock;
+      service['configService'][
+        'overrideConfiguration'
+      ] = overrideConfigurationMock;
+      service['configService']['getConfig'] = getConfigMock;
       // When
       await service['reloadConfiguration']();
       // Then
       expect(getConfigMock).toHaveBeenCalledTimes(1);
       expect(overrideConfigurationMock).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('overrideConfiguration', () => {
-    it('should make the configuration method return fresh data', () => {
-      // Given
-      const configMock = {
-        foo: {
-          bar: 'bar value',
-        },
-      };
-      service['provider'] = {} as Provider;
-      // When
-      service['overrideConfiguration'](configMock);
-      const configuration = service['provider']['configuration'];
-      const result = configuration('foo.bar');
-      // Then
-      expect(result).toBe('bar value');
-    });
-
-    it('should give the latest version of data', () => {
-      // Given
-      const newerConfigMock = {
-        foo: {
-          bar: 'fresh bar value',
-        },
-      };
-      service['provider'] = ({
-        configuration: () => 'bar value',
-      } as unknown) as Provider;
-      // When
-      service['overrideConfiguration'](newerConfigMock);
-      const result = service['provider']['configuration']('foo.bar');
-      // Then
-      expect(result).toBe('fresh bar value');
-    });
-    it('should make the whole config available', () => {
-      // Given
-      const configMock = {
-        foo: {
-          bar: 'fresh bar value',
-        },
-      };
-      service['provider'] = {} as Provider;
-      // When
-      service['overrideConfiguration'](configMock);
-      const result = service['provider']['configuration']();
-      // Then
-      expect(result).toBe(configMock);
-    });
-  });
-
-  describe('getInteraction', () => {
-    it('should return the result of oidc-provider.interactionDetails()', async () => {
-      // Given
-      const reqMock = {};
-      const resMock = {};
-      const resolvedValue = Symbol('resolved value');
-      providerMock.interactionDetails.mockResolvedValueOnce(resolvedValue);
-      // When
-      const result = await service.getInteraction(reqMock, resMock);
-      // Then
-      expect(result).toBe(resolvedValue);
-    });
-    it('should throw OidcProviderRuntimeException', async () => {
-      // Given
-      const reqMock = {};
-      const resMock = {};
-      const nativeError = new Error('invalid_request');
-      providerMock.interactionDetails.mockRejectedValueOnce(nativeError);
-
-      await expect(service.getInteraction(reqMock, resMock)).rejects.toThrow(
-        OidcProviderRuntimeException,
-      );
     });
   });
 
@@ -372,327 +291,6 @@ describe('OidcProviderService', () => {
       // Then
       await expect(service.finishInteraction(reqMock, resMock)).rejects.toThrow(
         OidcProviderRuntimeException,
-      );
-    });
-  });
-
-  describe('findAccount', () => {
-    it('Should return an object with accountID', async () => {
-      // Given
-      const ctx = { not: 'altered' };
-      const sub = 'foo';
-      const identityMock = { foo: 'bar' };
-      sessionServiceMock.get.mockResolvedValueOnce({
-        spIdentity: identityMock,
-        amr: 'amr_value',
-      });
-      // When
-      const result = await service['findAccount'](ctx, sub);
-      // Then
-      expect(result).toHaveProperty('accountId');
-      expect(result.accountId).toBe('foo');
-      expect(ctx).toEqual({ not: 'altered' });
-    });
-    it('Should return an object with a claims function that returns identity', async () => {
-      // Given
-      const ctx = { not: 'altered' };
-      const sub = 'foo';
-      const identityMock = { foo: 'bar' };
-      sessionServiceMock.get.mockResolvedValueOnce({
-        spIdentity: identityMock,
-        amr: 'amr_value',
-      });
-      const result = await service['findAccount'](ctx, sub);
-      // When
-      const claimsResult = await result.claims();
-      // Then
-      expect(claimsResult).toStrictEqual({
-        foo: 'bar',
-        amr: 'amr_value',
-      });
-      expect(ctx).toEqual({ not: 'altered' });
-    });
-    it('Should call throwError if an exception is catched', async () => {
-      // Given
-      const ctx = { not: 'altered' };
-      const sub = 'foo';
-      const exception = new Error('foo');
-      sessionServiceMock.get.mockRejectedValueOnce(exception);
-      service['throwError'] = jest.fn();
-      // When
-      await service['findAccount'](ctx, sub);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledWith(ctx, exception);
-      expect(ctx).toEqual({ not: 'altered' });
-    });
-  });
-
-  describe('pairwiseIdentifier', () => {
-    it('should return second argument as is', () => {
-      // Given
-      const ctx = {};
-      const accountId = 'accountIdValue';
-      // When
-      const result = service['pairwiseIdentifier'](ctx, accountId);
-      // Then
-      expect(result).toBe(accountId);
-    });
-  });
-
-  describe('registerEvent', () => {
-    it('should call provider `in` method', () => {
-      // Given
-      const eventNameMock = OidcProviderEvents.USERINFO_ERROR;
-      const handler = jest.fn();
-      // When
-      service.registerEvent(eventNameMock, handler);
-      // Then
-      expect(providerMock.on).toHaveBeenCalledTimes(1);
-      expect(providerMock.on).toHaveBeenCalledWith(eventNameMock, handler);
-    });
-    it('should not execute handler on registration', () => {
-      // Given
-      const eventNameMock = OidcProviderEvents.USERINFO_ERROR;
-      const handler = jest.fn();
-      // When
-      service.registerEvent(eventNameMock, handler);
-      // Then
-      expect(handler).toHaveBeenCalledTimes(0);
-    });
-  });
-
-  describe('registerMiddlewares', () => {
-    it('should register some events', () => {
-      // Given
-      service.registerMiddleware = jest.fn();
-      // When
-      service['registerMiddlewares']();
-      // Then
-      expect(service.registerMiddleware).toHaveBeenCalledTimes(3);
-    });
-  });
-
-  describe('authorizationMiddleware', () => {
-    const getCtxMock = (hasError = false) => {
-      return {
-        req: {
-          headers: { 'x-forwarded-for': '123.123.123.123' },
-        },
-        oidc: {
-          isError: hasError,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          params: { client_id: 'foo', acr_values: 'eidas3' },
-        },
-        res: {},
-      };
-    };
-    it('should abort middleware execution if request if flagged as erroring', () => {
-      // Given
-      const ctxMock = getCtxMock(true);
-      service['getInteractionIdFromCtx'] = jest.fn();
-
-      // When
-      service['authorizationMiddleware'](ctxMock);
-
-      // Then
-      expect(service['getInteractionIdFromCtx']).toHaveBeenCalledTimes(0);
-      expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(0);
-      expect(sessionServiceMock.init).toHaveBeenCalledTimes(0);
-      expect(trackingMock.track).toHaveBeenCalledTimes(0);
-    });
-
-    it('should call session.init', async () => {
-      // Given
-      const ctxMock = getCtxMock();
-      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
-      sessionServiceMock.init.mockResolvedValueOnce(undefined);
-
-      // When
-      await service['authorizationMiddleware'](ctxMock);
-
-      // Then
-      expect(sessionServiceMock.init).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.init).toHaveBeenCalledWith(ctxMock.res, '42', {
-        spId: 'foo',
-        spAcr: 'eidas3',
-        spName: 'my SP',
-      });
-    });
-
-    it('should throw if the session initialization fails', async () => {
-      // Given
-      const ctxMock = getCtxMock();
-      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
-      sessionServiceMock.init.mockRejectedValueOnce(new Error('test'));
-
-      // Then
-      await expect(
-        service['authorizationMiddleware'](ctxMock),
-      ).rejects.toThrow();
-    });
-
-    it('should call publish authorization event', async () => {
-      // Given
-      const ctxMock = getCtxMock();
-      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
-      sessionServiceMock.init.mockResolvedValueOnce(undefined);
-
-      // When
-      await service['authorizationMiddleware'](ctxMock);
-
-      // Then
-      expect(trackingMock.track).toHaveBeenCalledTimes(1);
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        OidcProviderAuthorizationEvent,
-        expect.any(Object),
-      );
-    });
-  });
-
-  describe('tokenMiddleware', () => {
-    it('should publish a token event', () => {
-      // Given
-      const ctxMock = {
-        req: {
-          headers: { 'x-forwarded-for': '123.123.123.123' },
-          // oidc
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          query: { client_id: 'foo', acr_values: 'eidas3' },
-        },
-        res: {},
-      };
-      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
-      // When
-      service['tokenMiddleware'](ctxMock);
-      // Then
-      expect(trackingMock.track).toHaveBeenCalledTimes(1);
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        OidcProviderTokenEvent,
-        expect.any(Object),
-      );
-    });
-
-    it('should call throwError if getInteractionIdFromCtx throw an error', () => {
-      // Given
-      const ctxMock = { not: 'altered' };
-      service['getInteractionIdFromCtx'] = jest.fn().mockImplementation(() => {
-        throw unknownError;
-      });
-      service['throwError'] = jest.fn();
-      // When
-      service['tokenMiddleware'](ctxMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(1);
-      expect(service['throwError']).toHaveBeenCalledWith(
-        ctxMock,
-        expect.any(Error),
-      );
-    });
-
-    it('should call throwError if getIpFromCtx throw an error', () => {
-      // Given
-      const ctxMock = { not: 'altered' };
-      service['getIpFromCtx'] = jest.fn().mockImplementation(() => {
-        throw unknownError;
-      });
-      service['throwError'] = jest.fn();
-      // When
-      service['tokenMiddleware'](ctxMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(1);
-      expect(service['throwError']).toHaveBeenCalledWith(
-        ctxMock,
-        expect.any(Error),
-      );
-    });
-
-    it('should call throwError if tracking.track throw an error', () => {
-      // Given
-      const ctxMock = { not: 'altered' };
-      trackingMock.track.mockImplementation(() => {
-        throw unknownError;
-      });
-      service['throwError'] = jest.fn();
-      // When
-      service['tokenMiddleware'](ctxMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(1);
-      expect(service['throwError']).toHaveBeenCalledWith(
-        ctxMock,
-        expect.any(Error),
-      );
-    });
-  });
-
-  describe('userinfoMiddleware', () => {
-    it('should publish a token event', () => {
-      // Given
-      const ctxMock = {
-        req: {
-          headers: { 'x-forwarded-for': '123.123.123.123' },
-          // oidc
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          query: { client_id: 'foo', acr_values: 'eidas3' },
-        },
-        res: {},
-      };
-      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
-      // When
-      service['userinfoMiddleware'](ctxMock);
-      // Then
-      expect(trackingMock.track).toHaveBeenCalledTimes(1);
-      expect(trackingMock.track).toHaveBeenCalledWith(
-        OidcProviderUserinfoEvent,
-        expect.any(Object),
-      );
-    });
-
-    it('should call throwError if getInteractionIdFromCtx throw an error', () => {
-      // Given
-      const ctxMock = { not: 'altered' };
-      service['getInteractionIdFromCtx'] = jest.fn().mockImplementation(() => {
-        throw unknownError;
-      });
-      service['throwError'] = jest.fn();
-      // When
-      service['userinfoMiddleware'](ctxMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(1);
-      expect(service['throwError']).toHaveBeenCalledWith(
-        ctxMock,
-        expect.any(Error),
-      );
-    });
-
-    it('should call throwError if getIpFromCtx throw an error', () => {
-      // Given
-      const ctxMock = { not: 'altered' };
-      service['getIpFromCtx'] = jest.fn().mockImplementation(() => {
-        throw unknownError;
-      });
-      service['throwError'] = jest.fn();
-      // When
-      service['userinfoMiddleware'](ctxMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(1);
-      expect(service['throwError']).toHaveBeenCalledWith(
-        ctxMock,
-        expect.any(Error),
-      );
-    });
-
-    it('should call throwError if tracking.track throw an error', () => {
-      // Given
-      const ctxMock = { not: 'altered' };
-      trackingMock.track.mockRejectedValueOnce(unknownError);
-      service['throwError'] = jest.fn();
-      // When
-      service['userinfoMiddleware'](ctxMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(1);
-      expect(service['throwError']).toHaveBeenCalledWith(
-        ctxMock,
-        expect.any(Error),
       );
     });
   });
@@ -839,7 +437,6 @@ describe('OidcProviderService', () => {
       expect(callback).toHaveBeenCalledTimes(1);
     });
   });
-
   describe('runMiddlewareBeforePattern', () => {
     it('should call the callback if path param equal pattern with good step', async () => {
       // Given
@@ -983,191 +580,6 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('renderError', () => {
-    it('should call exceptionFilter.catch', () => {
-      // Given
-      const ctx = { res: {} } as KoaContextWithOIDC;
-      const out = '';
-      const error = new Error('foo bar');
-      // When
-      service['renderError'](ctx, out, error);
-      // Then
-      expect(exceptionFilterMock.catch).toHaveBeenCalledTimes(1);
-    });
-  });
-
-  describe('catchErrorEvents', () => {
-    it('should call register event for each error case', () => {
-      // Given
-      service.registerEvent = jest.fn();
-      const EVENT_COUNT = 17;
-      // When
-      service.catchErrorEvents();
-      // Then
-      expect(service.registerEvent).toHaveBeenCalledTimes(EVENT_COUNT);
-    });
-  });
-
-  describe('triggerError', () => {
-    it('should call throwError with OidcProviderunTimeException if error is not an FcException', () => {
-      // Given
-      const eventName = OidcProviderEvents.SESSION_SAVED;
-      const func = service['triggerError'].bind(service, eventName);
-      const ctxMock = { oidc: {} };
-      const errorMock = Error('some error');
-      service['throwError'] = jest.fn();
-      // When
-      func(ctxMock, errorMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(1);
-      expect(service['throwError']).toHaveBeenCalledWith(
-        ctxMock,
-        expect.any(OidcProviderRuntimeException),
-      );
-    });
-    it('should flag request as erroring', () => {
-      // Given
-      const eventName = OidcProviderEvents.SESSION_SAVED;
-      const func = service['triggerError'].bind(service, eventName);
-      const ctxMock = { oidc: {} };
-      const errorMock = Error('some error');
-      service['throwError'] = jest.fn();
-      // When
-      func(ctxMock, errorMock);
-      // Then
-      expect(ctxMock.oidc['isError']).toBe(true);
-    });
-    it('should call throwError with original exception if error is an FcException and does a redirection', () => {
-      // Given
-      const eventName = OidcProviderEvents.SESSION_SAVED;
-      const func = service['triggerError'].bind(service, eventName);
-      const ctxMock = { oidc: {} };
-      const errorMock = new OidcProviderInitialisationException(Error('foo'));
-      errorMock.redirect = true;
-      service['throwError'] = jest.fn();
-      // When
-      func(ctxMock, errorMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(1);
-      expect(service['throwError']).toHaveBeenCalledWith(ctxMock, errorMock);
-    });
-    it('should not call throwError with original exception if error is an FcException and does no redirection', () => {
-      // Given
-      const eventName = OidcProviderEvents.SESSION_SAVED;
-      const func = service['triggerError'].bind(service, eventName);
-      const ctxMock = { oidc: {} };
-      const errorMock = new OidcProviderInitialisationException(Error('foo'));
-      errorMock.redirect = false;
-      service['throwError'] = jest.fn();
-      // When
-      func(ctxMock, errorMock);
-      // Then
-      expect(service['throwError']).toHaveBeenCalledTimes(0);
-    });
-  });
-
-  describe('logoutSource', () => {
-    it('should call exceptionFilter.catch', () => {
-      // Given
-      const ctx = { body: '' } as KoaContextWithOIDC;
-      const form = '<form></form>';
-      const resultExpected = `<!DOCTYPE html>
-      <head>
-        <title>Logout</title>
-      </head>
-      <body>
-        <form></form>
-        <script>
-          var form = document.forms[0];
-          var input = document.createElement('input');
-          input.type = 'hidden';
-          input.name = 'logout';
-          input.value = 'yes';
-          form.appendChild(input);
-          form.submit();
-        </script>
-      </body>
-      </html>`;
-      // When
-      service['logoutSource'](ctx, form);
-      // Then
-      expect(ctx.body).toBe(resultExpected);
-    });
-  });
-
-  describe('getConfig', () => {
-    it('should call several services and concat their ouputs', async () => {
-      // Given
-      RedisAdapter.getConstructorWithDI = jest
-        .fn()
-        .mockReturnValue(redisAdapterMock);
-      // When
-      const result = await service['getConfig']();
-      // Then
-      expect(serviceProviderServiceMock.getList).toHaveBeenCalledTimes(1);
-      expect(serviceProviderServiceMock.getList).toHaveBeenCalledWith(false);
-
-      expect(RedisAdapter.getConstructorWithDI).toHaveBeenCalledTimes(1);
-      expect(RedisAdapter.getConstructorWithDI).toHaveBeenCalledWith(service);
-
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('OidcProvider');
-
-      expect(result).toMatchObject(configOidcProviderMock);
-    });
-
-    it('should pass refresh flag to serviceProvider Service', async () => {
-      // When
-      await service['getConfig'](true);
-      // Then
-      expect(serviceProviderServiceMock.getList).toHaveBeenCalledTimes(1);
-      expect(serviceProviderServiceMock.getList).toHaveBeenCalledWith(true);
-    });
-
-    it('should bind methods to config', async () => {
-      // When
-      const result = await service['getConfig'](true);
-      // Then
-      expect(result).toHaveProperty('configuration.findAccount');
-      expect(result).toHaveProperty('configuration.renderError');
-      expect(result).toHaveProperty(
-        'configuration.rpInitiatedLogout.logoutSource',
-      );
-    });
-  });
-
-  describe('clientBasedCORS', () => {
-    it('Should return false', () => {
-      // Given
-      const ctx = {} as KoaContextWithOIDC;
-      const origin = {};
-      const client = {} as ClientMetadata;
-
-      // When
-      const result = service['clientBasedCORS'](ctx, origin, client);
-
-      // Then
-      expect(result).toBeFalsy();
-    });
-  });
-
-  describe('url', () => {
-    it('Should return interaction url with prefix', async () => {
-      // Given
-      const prefix = '/prefix';
-      const ctx = ({
-        oidc: { uid: 123 },
-      } as unknown) as KoaContextWithOIDC;
-      const interaction = {};
-
-      // When
-      const result = await service['url'](prefix, ctx, interaction);
-
-      // Then
-      expect(result).toEqual('/prefix/interaction/123');
-    });
-  });
-
   describe('getHttpOptions', () => {
     const timeoutMock = 42;
     it('Should return the timeout http options', () => {
@@ -1184,6 +596,31 @@ describe('OidcProviderService', () => {
       expect(result).toStrictEqual({
         timeout: timeoutMock,
       });
+    });
+  });
+
+  describe('getInteraction', () => {
+    it('should return the result of oidc-provider.interactionDetails()', async () => {
+      // Given
+      const reqMock = {};
+      const resMock = {};
+      const resolvedValue = Symbol('resolved value');
+      providerMock.interactionDetails.mockResolvedValueOnce(resolvedValue);
+      // When
+      const result = await service.getInteraction(reqMock, resMock);
+      // Then
+      expect(result).toBe(resolvedValue);
+    });
+    it('should throw OidcProviderRuntimeException', async () => {
+      // Given
+      const reqMock = {};
+      const resMock = {};
+      const nativeError = new Error('invalid_request');
+      providerMock.interactionDetails.mockRejectedValueOnce(nativeError);
+
+      await expect(service.getInteraction(reqMock, resMock)).rejects.toThrow(
+        OidcProviderRuntimeException,
+      );
     });
   });
 });
