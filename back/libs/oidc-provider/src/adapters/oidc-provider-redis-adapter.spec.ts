@@ -1,13 +1,16 @@
 import { LoggerService } from '@fc/logger';
 import { Redis } from '@fc/redis';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { RedisAdapter, REDIS_PREFIX } from './redis.adapter';
+import {
+  OidcProviderRedisAdapter,
+  OIDC_PROVIDER_REDIS_PREFIX,
+} from './oidc-provider-redis.adapter';
 import {
   OidcProviderParseRedisResponseException,
   OidcProviderStringifyPayloadForRedisException,
 } from '../exceptions';
 
-describe('RedisAdapter', () => {
+describe('OidcProviderRedisAdapter', () => {
   let adapter;
 
   const loggerMock = ({
@@ -38,7 +41,7 @@ describe('RedisAdapter', () => {
   const testAdapterName = 'testAdapterName';
 
   beforeEach(() => {
-    adapter = new RedisAdapter(
+    adapter = new OidcProviderRedisAdapter(
       loggerMock,
       (redisMock as unknown) as Redis,
       testAdapterName,
@@ -58,7 +61,9 @@ describe('RedisAdapter', () => {
       logger: loggerMock,
       redis: redisMock,
     } as unknown) as OidcProviderService;
-    const BoundClass = RedisAdapter.getConstructorWithDI(oidcProviderService);
+    const BoundClass = OidcProviderRedisAdapter.getConstructorWithDI(
+      oidcProviderService,
+    );
 
     it('should pass controls in oidc-provider', () => {
       /**
@@ -74,7 +79,7 @@ describe('RedisAdapter', () => {
       // When
       const result = new BoundClass(nameMock);
       // Then
-      expect(result).toBeInstanceOf(RedisAdapter);
+      expect(result).toBeInstanceOf(OidcProviderRedisAdapter);
     });
     it('Should return an object having injected services', () => {
       // When
@@ -122,14 +127,14 @@ describe('RedisAdapter', () => {
       const payload = { userCode: 'userCode' };
       adapter['userCodeKeyFor'] = jest.fn();
       adapter['userCodeKeyFor'].mockReturnValue(
-        `${REDIS_PREFIX}:userCode:userCode`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:userCode:userCode`,
       );
       // When
       await adapter.upsert(idMock, payload);
       // Then
       expect(multiMock.set).toHaveBeenCalledTimes(2);
       expect(multiMock.set).toHaveBeenCalledWith(
-        `${REDIS_PREFIX}:testAdapterName:foo`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:testAdapterName:foo`,
         '{"userCode":"userCode"}',
       );
       expect(adapter['userCodeKeyFor']).toHaveBeenCalledTimes(1);
@@ -139,13 +144,15 @@ describe('RedisAdapter', () => {
       // Given
       const payload = { uid: 'uid' };
       adapter['uidKeyFor'] = jest.fn();
-      adapter['uidKeyFor'].mockReturnValue(`${REDIS_PREFIX}:uid:uid`);
+      adapter['uidKeyFor'].mockReturnValue(
+        `${OIDC_PROVIDER_REDIS_PREFIX}:uid:uid`,
+      );
       // When
       await adapter.upsert(idMock, payload);
       // Then
       expect(multiMock.set).toHaveBeenCalledTimes(2);
       expect(multiMock.set).toHaveBeenCalledWith(
-        `${REDIS_PREFIX}:testAdapterName:foo`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:testAdapterName:foo`,
         '{"uid":"uid"}',
       );
       expect(adapter['uidKeyFor']).toHaveBeenCalledTimes(1);
@@ -163,12 +170,16 @@ describe('RedisAdapter', () => {
       const EXPIRE_CALL_COUNT = 4;
       adapter['userCodeKeyFor'] = jest.fn();
       adapter['userCodeKeyFor'].mockReturnValue(
-        `${REDIS_PREFIX}:userCode:userCode`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:userCode:userCode`,
       );
       adapter['uidKeyFor'] = jest.fn();
-      adapter['uidKeyFor'].mockReturnValue(`${REDIS_PREFIX}:uid:uid`);
+      adapter['uidKeyFor'].mockReturnValue(
+        `${OIDC_PROVIDER_REDIS_PREFIX}:uid:uid`,
+      );
       adapter['grantKeyFor'] = jest.fn();
-      adapter['grantKeyFor'].mockReturnValue(`${REDIS_PREFIX}:grant:grantId`);
+      adapter['grantKeyFor'].mockReturnValue(
+        `${OIDC_PROVIDER_REDIS_PREFIX}:grant:grantId`,
+      );
       // When
       await adapter.upsert(idMock, payload, expiresIn);
       // Then
@@ -216,13 +227,15 @@ describe('RedisAdapter', () => {
       const keyMock = 'foo';
       const expiresIn = 0;
       adapter['grantKeyFor'] = jest.fn();
-      adapter['grantKeyFor'].mockReturnValue(`${REDIS_PREFIX}:grant:grantId`);
+      adapter['grantKeyFor'].mockReturnValue(
+        `${OIDC_PROVIDER_REDIS_PREFIX}:grant:grantId`,
+      );
       // When
       await adapter['saveGrantId'](multiMock, grantId, keyMock, expiresIn);
       // Then
       expect(multiMock.rpush).toHaveBeenCalledTimes(1);
       expect(multiMock.rpush).toHaveBeenCalledWith(
-        `${REDIS_PREFIX}:grant:grantId`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:grant:grantId`,
         'foo',
       );
       expect(multiMock.expire).toHaveBeenCalledTimes(0);
@@ -236,18 +249,20 @@ describe('RedisAdapter', () => {
       const keyMock = 'foo';
       const expiresIn = 6000;
       adapter['grantKeyFor'] = jest.fn();
-      adapter['grantKeyFor'].mockReturnValue(`${REDIS_PREFIX}:grant:grantId`);
+      adapter['grantKeyFor'].mockReturnValue(
+        `${OIDC_PROVIDER_REDIS_PREFIX}:grant:grantId`,
+      );
       // When
       await adapter['saveGrantId'](multiMock, grantId, keyMock, expiresIn);
       // Then
       expect(multiMock.rpush).toHaveBeenCalledTimes(1);
       expect(multiMock.rpush).toHaveBeenCalledWith(
-        `${REDIS_PREFIX}:grant:grantId`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:grant:grantId`,
         'foo',
       );
       expect(multiMock.expire).toHaveBeenCalledTimes(1);
       expect(multiMock.expire).toHaveBeenCalledWith(
-        `${REDIS_PREFIX}:grant:grantId`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:grant:grantId`,
         6000,
       );
       expect(adapter['grantKeyFor']).toHaveBeenCalledTimes(1);
@@ -269,7 +284,7 @@ describe('RedisAdapter', () => {
 
     it('should call hmset if name is in consumable var', async () => {
       // Given
-      const authorizationCodeAdapter = new RedisAdapter(
+      const authorizationCodeAdapter = new OidcProviderRedisAdapter(
         loggerMock,
         (redisMock as unknown) as Redis,
         'AuthorizationCode',
@@ -318,7 +333,7 @@ describe('RedisAdapter', () => {
       const result = adapter['uidKeyFor'](uidMock);
 
       // Then
-      expect(result).toEqual(`${REDIS_PREFIX}:uid:foo`);
+      expect(result).toEqual(`${OIDC_PROVIDER_REDIS_PREFIX}:uid:foo`);
     });
   });
 
@@ -341,7 +356,7 @@ describe('RedisAdapter', () => {
       const result = adapter['userCodeKeyFor'](codeMock);
 
       // Then
-      expect(result).toEqual(`${REDIS_PREFIX}:userCode:foo`);
+      expect(result).toEqual(`${OIDC_PROVIDER_REDIS_PREFIX}:userCode:foo`);
     });
   });
 
@@ -364,14 +379,14 @@ describe('RedisAdapter', () => {
       const result = adapter['grantKeyFor'](idMock);
 
       // Then
-      expect(result).toEqual(`${REDIS_PREFIX}:grant:foo`);
+      expect(result).toEqual(`${OIDC_PROVIDER_REDIS_PREFIX}:grant:foo`);
     });
   });
 
   describe('find', () => {
     it('should call hgetall rather than get if name is in consumable var', async () => {
       // Given
-      const authorizationCodeAdapter = new RedisAdapter(
+      const authorizationCodeAdapter = new OidcProviderRedisAdapter(
         loggerMock,
         (redisMock as unknown) as Redis,
         'AuthorizationCode',
@@ -382,7 +397,7 @@ describe('RedisAdapter', () => {
       // Then
       expect(redisMock.hgetall).toHaveBeenCalledTimes(1);
       expect(redisMock.hgetall).toHaveBeenCalledWith(
-        `${REDIS_PREFIX}:AuthorizationCode:foo`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:AuthorizationCode:foo`,
       );
       expect(redisMock.get).toHaveBeenCalledTimes(0);
     });
@@ -395,7 +410,7 @@ describe('RedisAdapter', () => {
       // Then
       expect(redisMock.get).toHaveBeenCalledTimes(1);
       expect(redisMock.get).toHaveBeenCalledWith(
-        `${REDIS_PREFIX}:testAdapterName:foo`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:testAdapterName:foo`,
       );
       expect(redisMock.hgetall).toHaveBeenCalledTimes(0);
     });
@@ -469,7 +484,9 @@ describe('RedisAdapter', () => {
       await adapter.findByUid(idMock);
       // Then
       expect(redisMock.get).toHaveBeenCalledTimes(1);
-      expect(redisMock.get).toHaveBeenCalledWith(`${REDIS_PREFIX}:uid:foo`);
+      expect(redisMock.get).toHaveBeenCalledWith(
+        `${OIDC_PROVIDER_REDIS_PREFIX}:uid:foo`,
+      );
       expect(adapter.find).toHaveBeenCalledTimes(1);
       expect(adapter.find).toHaveBeenCalledWith(redisGetResolvedValue);
     });
@@ -487,7 +504,7 @@ describe('RedisAdapter', () => {
       // Then
       expect(redisMock.get).toHaveBeenCalledTimes(1);
       expect(redisMock.get).toHaveBeenCalledWith(
-        `${REDIS_PREFIX}:userCode:foo`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:userCode:foo`,
       );
       expect(adapter.find).toHaveBeenCalledTimes(1);
       expect(adapter.find).toHaveBeenCalledWith(redisGetResolvedValue);
@@ -503,7 +520,7 @@ describe('RedisAdapter', () => {
       // Then
       expect(redisMock.del).toHaveBeenCalledTimes(1);
       expect(redisMock.del).toHaveBeenCalledWith(
-        `${REDIS_PREFIX}:testAdapterName:foo`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:testAdapterName:foo`,
       );
     });
   });
@@ -553,7 +570,7 @@ describe('RedisAdapter', () => {
       // Then
       expect(redisMock.hset).toHaveBeenCalledTimes(1);
       expect(redisMock.hset).toHaveBeenCalledWith(
-        `${REDIS_PREFIX}:testAdapterName:foo`,
+        `${OIDC_PROVIDER_REDIS_PREFIX}:testAdapterName:foo`,
         'consumed',
         expect.any(Number),
       );

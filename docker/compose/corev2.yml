@@ -569,8 +569,10 @@ services:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/postgres.env"
       - "${COMPOSE_DIR}/fc-mongo.env"
+    ports:
+      - 9247:9247
     environment:
-      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9243 exploit-fcp-instance"
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9247 exploit-fcp-instance"
       - "VIRTUAL_HOST=exploit-fcp.docker.dev-franceconnect.fr"
       - "FQDN=exploit-fcp.docker.dev-franceconnect.fr"
       # Logger
