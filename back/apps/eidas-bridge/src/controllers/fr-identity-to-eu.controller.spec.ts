@@ -268,13 +268,14 @@ describe('FrIdentityToEuController', () => {
 
       // assert
       expect(oidcClientServiceMock.getAuthorizeUrl).toHaveBeenCalledTimes(1);
-      expect(oidcClientServiceMock.getAuthorizeUrl).toHaveBeenCalledWith(
-        authorizeParametersMock.state,
-        authorizeParametersMock.scope,
-        authorizeParametersMock.providerUid,
-        authorizeParametersMock.acr_values,
-        authorizeParametersMock.nonce,
-      );
+      expect(oidcClientServiceMock.getAuthorizeUrl).toHaveBeenCalledWith({
+        state: authorizeParametersMock.state,
+        scope: authorizeParametersMock.scope,
+        providerUid: authorizeParametersMock.providerUid,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: authorizeParametersMock.acr_values,
+        nonce: authorizeParametersMock.nonce,
+      });
     });
 
     it('Should get the session id', async () => {

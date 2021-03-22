@@ -10,6 +10,7 @@ import {
   OidcClientInvalidStateException,
   OidcClientRuntimeException,
 } from '../exceptions';
+import { IGetAuthorizeUrlParams } from '../interfaces/get-authorize-url-params.interface';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';
 import { OidcClientConfigService } from './oidc-client-config.service';
 
@@ -38,16 +39,16 @@ export class OidcClientService {
     };
   }
 
-  async getAuthorizeUrl(
-    state: string,
-    scope: string,
-    providerUid: string,
+  async getAuthorizeUrl({
+    state,
+    scope,
+    providerUid,
     // acr_values is an oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    acr_values: string,
-    nonce: string,
-    claims?: string,
-  ): Promise<string> {
+    acr_values,
+    nonce,
+    claims,
+  }: IGetAuthorizeUrlParams): Promise<string> {
     const client: Client = await this.issuer.getClient(providerUid);
 
     const params = {

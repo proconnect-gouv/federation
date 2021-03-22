@@ -9,6 +9,8 @@ import { CryptographyEidasService } from '@fc/cryptography-eidas';
 @Injectable()
 @FeatureHandler('core-fcp-eidas-verify')
 export class CoreFcpEidasVerifyHandler implements IFeatureHandler {
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     private readonly logger: LoggerService,
     private readonly session: SessionService,
