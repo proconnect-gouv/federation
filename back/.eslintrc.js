@@ -26,6 +26,7 @@ module.exports = {
     complexity: ['error', { max: 4 }],
     'max-statements-per-line': ['error', { max: 1 }],
     'max-depth': ['error', { max: 2 }],
+    'max-params': ['error', { max: 4 }],
     '@typescript-eslint/naming-convention': [
       'error',
       {

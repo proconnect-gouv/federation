@@ -17,6 +17,8 @@ import { IdentityProviderOperationTypeChangesEvent } from './events';
 export class IdentityProviderService implements IIdentityProviderService {
   private listCache: IdentityProviderMetadata<any>[];
 
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     @InjectModel('IdentityProvider')
     private readonly identityProviderModel,

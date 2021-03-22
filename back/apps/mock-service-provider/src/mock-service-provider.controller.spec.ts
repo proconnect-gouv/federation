@@ -401,15 +401,15 @@ describe('MockServiceProviderController', () => {
       await controller['getInteractionParameters'](provider);
       // Then
       expect(oidcClientServiceMock.getAuthorizeUrl).toBeCalledTimes(1);
-      expect(oidcClientServiceMock.getAuthorizeUrl).toBeCalledWith(
-        stateMock,
-        scopeMock,
-        'providerUidMock',
+      expect(oidcClientServiceMock.getAuthorizeUrl).toBeCalledWith({
+        state: stateMock,
+        scope: scopeMock,
+        providerUid: 'providerUidMock',
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        'acrMock',
-        nonceMock,
-        'claimsMock',
-      );
+        acr_values: 'acrMock',
+        nonce: nonceMock,
+        claims: 'claimsMock',
+      });
     });
 
     it('should return object containing results from various calls', async () => {
