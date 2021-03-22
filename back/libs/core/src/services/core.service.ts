@@ -6,22 +6,35 @@ import {
   OidcCtx,
   OidcProviderRoutes,
   Configuration,
+  OidcProviderAuthorizationEvent,
+  OidcProviderTokenEvent,
+  OidcProviderUserinfoEvent,
 } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { AccountBlockedException, AccountService } from '@fc/account';
 import { Acr } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
+import { ServiceProviderService } from '@fc/service-provider';
+import { SessionService } from '@fc/session';
+import { IEventContext, TrackingService } from '@fc/tracking';
+import { OidcProviderErrorService } from '@fc/oidc-provider/services';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
 import { AcrValues, pickAcr } from '../transforms';
 import { ComputeSp, ComputeIdp } from '../types';
 
 @Injectable()
 export class CoreService {
+  // Dependency injection can require more than 4 parameters
+  // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
     private readonly oidcProvider: OidcProviderService,
+    private readonly oidcErrorService: OidcProviderErrorService,
     private readonly account: AccountService,
+    private readonly serviceProvider: ServiceProviderService,
+    private readonly session: SessionService,
+    private readonly tracking: TrackingService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -30,6 +43,24 @@ export class CoreService {
    * Configure hooks on oidc-provider
    */
   onModuleInit() {
+    this.registerMiddlewares();
+  }
+
+  private getEventContext(ctx): IEventContext {
+    const interactionId: string = this.oidcProvider.getInteractionIdFromCtx(
+      ctx,
+    );
+    const ip: string = this.getIpFromCtx(ctx);
+
+    const eventContext: IEventContext = {
+      fc: { interactionId },
+      headers: { 'x-forwarded-for': ip },
+    };
+
+    return eventContext;
+  }
+
+  private registerMiddlewares() {
     const { forcedPrompt } = this.config.get<OidcProviderConfig>(
       'OidcProvider',
     );
@@ -51,6 +82,81 @@ export class CoreService {
       OidcProviderRoutes.AUTHORIZATION,
       this.overrideAuthorizeAcrValues.bind(this, Array.from(acrValues)),
     );
+
+    this.oidcProvider.registerMiddleware(
+      OidcProviderMiddlewareStep.AFTER,
+      OidcProviderRoutes.AUTHORIZATION,
+      this.authorizationMiddleware.bind(this),
+    );
+
+    this.oidcProvider.registerMiddleware(
+      OidcProviderMiddlewareStep.AFTER,
+      OidcProviderRoutes.TOKEN,
+      this.tokenMiddleware.bind(this),
+    );
+
+    this.oidcProvider.registerMiddleware(
+      OidcProviderMiddlewareStep.AFTER,
+      OidcProviderRoutes.USERINFO,
+      this.userinfoMiddleware.bind(this),
+    );
+  }
+
+  private async authorizationMiddleware(ctx) {
+    /**
+     * Abort middleware if authorize is in error
+     *
+     * We do not want to start a session
+     * nor trigger authorization event for invalid requests
+     */
+    if (ctx.oidc['isError'] === true) {
+      return;
+    }
+
+    const eventContext = this.getEventContext(ctx);
+
+    const { interactionId } = eventContext.fc;
+
+    // oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { client_id: spId, acr_values: spAcr } = ctx.oidc.params;
+
+    const { name: spName } = await this.serviceProvider.getById(spId);
+
+    const sessionProperties = {
+      spId,
+      spAcr,
+      spName,
+    };
+    await this.session.init(ctx.res, interactionId, sessionProperties);
+
+    const authEventContext: IEventContext = {
+      ...eventContext,
+      spId,
+      spAcr,
+      spName,
+    };
+    this.tracking.track(OidcProviderAuthorizationEvent, authEventContext);
+  }
+
+  private tokenMiddleware(ctx) {
+    try {
+      const eventContext = this.getEventContext(ctx);
+
+      this.tracking.track(OidcProviderTokenEvent, eventContext);
+    } catch (exception) {
+      this.oidcErrorService.throwError(ctx, exception);
+    }
+  }
+
+  private userinfoMiddleware(ctx) {
+    try {
+      const eventContext = this.getEventContext(ctx);
+
+      this.tracking.track(OidcProviderUserinfoEvent, eventContext);
+    } catch (exception) {
+      this.oidcErrorService.throwError(ctx, exception);
+    }
   }
 
   /**
@@ -85,6 +191,11 @@ export class CoreService {
           `Unsupported method "${ctx.method} on /authorize endpoint". This should not happen`,
         );
     }
+  }
+
+  // Revers ingineering of PANVA library
+  getIpFromCtx(ctx): string {
+    return ctx.req.headers['x-forwarded-for'];
   }
 
   private overrideAuthorizeAcrValues(allowed: string[], ctx: OidcCtx): void {
