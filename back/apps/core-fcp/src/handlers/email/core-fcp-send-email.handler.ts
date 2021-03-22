@@ -100,10 +100,6 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
    * @returns {Promise<void>}
    */
   async handle(session: OidcSession): Promise<void> {
-    this.logger.debug(
-      'CoreFcpSendEmailHandler.handle(): ##### core-fcp-send-email',
-    );
-
     // -- email from
     const { from } = this.configMailer;
     let errors = await validateDto(from, MailFrom, validationOptions);
@@ -130,6 +126,8 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
 
     // -- email body
     const body = await this.getConnectNotificationEmailBodyContent(session);
+
+    this.logger.trace({ from, to });
 
     // -- send
     this.mailer.send({

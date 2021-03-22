@@ -1,11 +1,23 @@
+import * as os from 'os';
+import * as QuickLRU from 'quick-lru';
 import { v4 as uuidV4 } from 'uuid';
 import * as pino from 'pino';
 import { Logger, Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
-import { LogLevelNames } from './enum';
+import { LoggerLevelNames } from './enum';
 import { pinoLevelsMap, nestLevelsMap } from './log-maps.map';
 import { LoggerConfig } from './dto';
-import { IBusinessEvent } from './interfaces';
+import { ILoggerBusinessEvent, ILoggerColorParams } from './interfaces';
+import * as utils from './utils';
+import * as colors from './constants';
+
+/**
+ * /!\ CAN BE CHANGED MANUALLY /!\
+ * This variable allows the developper to display the logs
+ * either in Chrome or only in Terminal.
+ * @see chrome://inspect/#devices
+ */
+const IS_TRACE_OUTPUT = true;
 
 /**
  * For usage and good practices:
@@ -13,12 +25,26 @@ import { IBusinessEvent } from './interfaces';
  */
 @Injectable()
 export class LoggerService extends Logger {
+  /**
+   * This variable store the colors used by each
+   * libraries to display the logs in Chrome Debug Tools.
+   */
+  private libraryColors: ILoggerColorParams;
+  private containerColors: ILoggerColorParams;
+  private containerName: string;
   private externalLogger: any;
-  private isDevelopment: boolean = undefined;
+
+  /**
+   * Memorisation tool already used by Panva.
+   * @see https://www.npmjs.com/package/quick-lru
+   */
+  private cache: QuickLRU<string, any>;
 
   constructor(private readonly config: ConfigService) {
     super(null, false);
     const { level, path } = this.config.get<LoggerConfig>('Logger');
+
+    this.setContainerColors();
 
     this.externalLogger = pino(
       {
@@ -35,6 +61,8 @@ export class LoggerService extends Logger {
     if (!this.isDev()) {
       this.overrideNativeConsole();
     }
+
+    this.cache = new QuickLRU({ maxSize: 128 });
   }
 
   private getIdentifiedLog(log) {
@@ -49,6 +77,10 @@ export class LoggerService extends Logger {
   // istanbul ignore next line
   private internalLogger(level, log, context) {
     super[level](log, context);
+
+    if (this.isOutputTrace()) {
+      console[level](log, context);
+    }
   }
 
   private canLog(level: string) {
@@ -56,10 +88,11 @@ export class LoggerService extends Logger {
   }
 
   private isDev() {
-    return (this.isDevelopment =
-      this.isDevelopment === undefined
-        ? this.config.get<LoggerConfig>('Logger').isDevelopment
-        : this.isDevelopment);
+    return !!this.config.get<LoggerConfig>('Logger').isDevelopment;
+  }
+
+  private isOutputTrace() {
+    return this.isDev() && IS_TRACE_OUTPUT;
   }
 
   private technicalLogger(level: string, log: any, context?: string): void {
@@ -88,7 +121,7 @@ export class LoggerService extends Logger {
     // In order to ease the work of developers,
     // we also send business logs at trace level.
     // (This level is inoperative on environment other than dev)
-    this.trace(log, context);
+    this.trace({ log, context }, level);
 
     if (this.canLog(level)) {
       this.externalLogger[level](this.getIdentifiedLog(log));
@@ -111,52 +144,224 @@ export class LoggerService extends Logger {
     });
   }
 
-  /**
-   * Method which will never output in production
-   *
-   * @param {any} log
-   * @param {string} context
-   * @returns {void}
-   */
-  trace(log?: any, context?: string): void {
-    if (this.isDev()) {
-      this.technicalLogger(LogLevelNames.TRACE, log, context);
-    }
-  }
-
   // Alias of trace
   log(log: any, context?: string) {
-    this.trace(log, context);
+    if (this.isDev()) {
+      this.technicalLogger(LoggerLevelNames.LOG, log, context);
+    }
   }
 
   // Method that might add more info in production
   verbose(log: any, context?: string) {
-    this.technicalLogger(LogLevelNames.VERBOSE, log, context);
+    this.technicalLogger(LoggerLevelNames.VERBOSE, log, context);
   }
 
   debug(log: any, context?: string) {
-    this.technicalLogger(LogLevelNames.DEBUG, log, context);
+    this.technicalLogger(LoggerLevelNames.DEBUG, log, context);
   }
 
   info(log: any, context?: string) {
-    this.technicalLogger(LogLevelNames.INFO, log, context);
+    this.technicalLogger(LoggerLevelNames.INFO, log, context);
   }
 
   // Errors
   warn(log: any, context?: string) {
-    this.technicalLogger(LogLevelNames.WARN, log, context);
+    this.technicalLogger(LoggerLevelNames.WARN, log, context);
   }
 
   error(log: any, context?: string) {
-    this.technicalLogger(LogLevelNames.ERROR, log, context);
+    this.technicalLogger(LoggerLevelNames.ERROR, log, context);
   }
 
   fatal(log: any, context?: string) {
-    this.technicalLogger(LogLevelNames.FATAL, log, context);
+    this.technicalLogger(LoggerLevelNames.FATAL, log, context);
   }
 
   // Business logic, goes in event logs
-  businessEvent(log: IBusinessEvent, context?: string) {
-    this.businessLogger(LogLevelNames.INFO, log, context);
+  businessEvent(log: ILoggerBusinessEvent, context?: string) {
+    this.businessLogger(LoggerLevelNames.INFO, log, context);
+  }
+
+  /**
+   * Store locally the container name and transcribe its colors
+   * and store the color locally.
+   * The hostname is the container's name defined in docker-compose.
+   *
+   * @returns {void}
+   */
+  private setContainerColors(): void {
+    this.containerName = os.hostname() || 'n/a';
+    this.containerColors = utils.getColorsFromText(this.containerName);
+  }
+
+  /**
+   * Store localy all the colors that have to be used
+   * to display the current library logs in Chrome Debugger Tool.
+   *
+   * @param {ILoggerColorParams} colors
+   * @returns {void}
+   */
+  setLibraryColors(colors: ILoggerColorParams): void {
+    this.libraryColors = colors;
+  }
+
+  /**
+   * Override of `setContent()` method called by all libraries.
+   * Allow to set basic lib colors with context name.
+   *
+   * @param {string} context the lib calling the logger, Ex: 'core', 'oidc-client', ...
+   * @returns {void}
+   */
+  setContext(context: string): void {
+    super.setContext(context);
+
+    // Library name
+    let libraryName: string;
+    if (this.cache.has(context)) {
+      libraryName = this.cache.get(context);
+    } else {
+      libraryName = this.getLibraryName(context);
+      this.cache.set(context, libraryName);
+    }
+
+    // Library color
+    let color: ILoggerColorParams;
+    if (this.cache.has(libraryName)) {
+      color = this.cache.get(libraryName);
+    } else {
+      color = utils.getColorsFromText(libraryName);
+      this.cache.set(libraryName, color);
+    }
+
+    this.setLibraryColors(color);
+  }
+
+  /**
+   * Convert context string name into library name.
+   * This supposed that all the software classes are
+   * prefixed by the library name, Ex: `MyLibMyClassService`.
+   *
+   * @param {string} context Convert context string name.
+   * @returns {string} library string name.
+   */
+  private getLibraryName(context: string): string {
+    const hasContext: boolean = this.cache.has(context);
+    // we call `this.trace()` in `this.businessLogger()`
+    // without setting the context through the inherited
+    // method `this.setContext()` so we supposed that if
+    // no context is provided, it must be the `logger` library.
+    let libraryName = 'logger';
+
+    if (context) {
+      if (hasContext) {
+        libraryName = this.cache.get(context);
+      } else {
+        libraryName = utils.slugLibName(context);
+        this.cache.set(context, libraryName);
+      }
+    }
+    return libraryName;
+  }
+
+  /**
+   * Convert the array of color objects into the same array
+   * but in css sring. This array is stored in local cache to
+   * prevents multiple processing for the same 'container' or 'library'.
+   *
+   * @param {Array<ILoggerColorParams>} allColors array of object ordered:
+   *        0: time
+   *        1: container
+   *        2: library
+   *        3: class-method
+   * @returns {Array<string>} Array of css strings in the same order.
+   */
+  private getDebuggerCssColors(allColors: Array<ILoggerColorParams>): string[] {
+    return allColors.map((color: ILoggerColorParams): string => {
+      const colorHash: string = JSON.stringify(color);
+      let cssStyle: string;
+
+      if (this.cache.has(colorHash)) {
+        cssStyle = this.cache.get(colorHash);
+      } else {
+        cssStyle = utils.getStyle(color);
+        this.cache.set(colorHash, cssStyle);
+      }
+      return cssStyle;
+    });
+  }
+
+  /**
+   * Get the string metadata to display with `this.trace()`
+   * It uses `%c` to sequentialy target to the css style to apply.
+   *
+   * @param {string} dateTime, ex: `12:48 PM`
+   * @param {string} containerName, ex: `corev2`
+   * @param {string} libraryName, ex: `oidc-provider`
+   * @param {string} classMethodName, ex: `MyClass.myMethod()`
+   * @returns {string} metadata, ex: `%c[12:48 PM]%ccorev2c$oidc-provider%cMyClass.myMethod()`
+   */
+  private getDebuggerMetadata(
+    dateTime: string,
+    containerName: string,
+    libraryName: string,
+    classMethodName: string,
+  ): string {
+    return `%c[${dateTime}]%c${containerName}%c${libraryName}%c${classMethodName}()`;
+  }
+
+  /**
+   * Execute console['log'|'warn'|'error'|'debug']()
+   * in function of a log level.
+   * @warn impossible to mix color and other console method
+   * such as console['table'|'info'|'dir'...]()
+   *
+   * @param {string} logger level string name, default 'log' for `console.log`
+   * @returns {Function} console function to execute.
+   */
+  private getConsoleCommand(level: string = LoggerLevelNames.LOG): Function {
+    const levelKey: string = level.toUpperCase();
+    if (LoggerLevelNames[levelKey]) {
+      return console[LoggerLevelNames[levelKey]];
+    }
+    return console[LoggerLevelNames.LOG];
+  }
+
+  /**
+   * Method for local debuging content in Chrome.
+   * Method that will never output in production.
+   * @see chrome://inspect#devices
+   *
+   * @param {any} msg Object or message to display.
+   * @param {string} level name from `LoggerLevelNames` enum type, default: 'log' for console.log()
+   * @returns {void}
+   */
+  trace(msg?: any, level: string = LoggerLevelNames.LOG): void {
+    if (!this.isOutputTrace()) {
+      return;
+    }
+
+    const dateTime: string = utils.getDateTime();
+    const containerName: string = this.containerName;
+    const libraryName: string = this.getLibraryName(this.context);
+    const classMethodName: string = utils.getClassMethodCaller();
+
+    const metadata = this.getDebuggerMetadata(
+      dateTime,
+      containerName,
+      libraryName,
+      classMethodName,
+    );
+
+    const allColors: Array<ILoggerColorParams> = [
+      colors.loggerTimeColorsConstant,
+      this.containerColors,
+      this.libraryColors,
+      colors.loggerClassMethodColorsConstant,
+    ];
+    const loggerColors: string[] = this.getDebuggerCssColors(allColors);
+
+    const command: Function = this.getConsoleCommand(level);
+
+    command(metadata, ...loggerColors, msg);
   }
 }

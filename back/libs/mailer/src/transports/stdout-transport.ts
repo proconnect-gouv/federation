@@ -9,6 +9,11 @@ export class StdoutTransport implements Transport {
       `Printing mail to console: ${JSON.stringify(params, null, 2)}`,
     );
 
+    this.logger.trace({
+      text: 'Printing mail to console',
+      params,
+    });
+
     return Promise.resolve(true);
   }
 }

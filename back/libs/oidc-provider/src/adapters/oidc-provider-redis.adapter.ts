@@ -3,7 +3,7 @@ import { Adapter, AdapterConstructor } from 'oidc-provider';
 import { isEmpty } from 'lodash';
 import { Inject } from '@nestjs/common';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
-import { LoggerService } from '@fc/logger';
+import { LoggerService, LoggerLevelNames } from '@fc/logger';
 import {
   OidcProviderStringifyPayloadForRedisException,
   OidcProviderParseRedisResponseException,
@@ -16,7 +16,7 @@ const consumable = new Set(['AuthorizationCode', 'RefreshToken', 'DeviceCode']);
 /**
  * Prefix everything in redis.
  */
-export const REDIS_PREFIX = 'OIDC-P';
+export const OIDC_PROVIDER_REDIS_PREFIX = 'OIDC-P';
 
 /**
  * ⚠️  Warning ⚠️
@@ -37,7 +37,7 @@ export const REDIS_PREFIX = 'OIDC-P';
  * This version is roughly a copy/paste of redis example from the official repository
  * @see https://github.com/panva/node-oidc-provider/blob/master/example/adapters/redis.js
  */
-export class RedisAdapter implements Adapter {
+export class OidcProviderRedisAdapter implements Adapter {
   constructor(
     /**
      * Bound arguments
@@ -64,7 +64,7 @@ export class RedisAdapter implements Adapter {
      *
      * NB: Thoses services are privates but we need them to keep NestJs context.
      */
-    const boundConstructor = RedisAdapter.bind(
+    const boundConstructor = OidcProviderRedisAdapter.bind(
       null,
       oidcProviderService.logger,
       oidcProviderService.redis,
@@ -78,7 +78,7 @@ export class RedisAdapter implements Adapter {
      * @see https://github.com/panva/node-oidc-provider/blob/master/lib/helpers/initialize_adapter.js#L13
      * We have to forward prototype
      */
-    boundConstructor.prototype = RedisAdapter.prototype;
+    boundConstructor.prototype = OidcProviderRedisAdapter.prototype;
 
     return boundConstructor;
   }
@@ -87,7 +87,7 @@ export class RedisAdapter implements Adapter {
     if (!id) {
       return null;
     }
-    const key = `${REDIS_PREFIX}:grant:${id}`;
+    const key = `${OIDC_PROVIDER_REDIS_PREFIX}:grant:${id}`;
     return key;
   }
 
@@ -95,7 +95,7 @@ export class RedisAdapter implements Adapter {
     if (!userCode) {
       return null;
     }
-    const key = `${REDIS_PREFIX}:userCode:${userCode}`;
+    const key = `${OIDC_PROVIDER_REDIS_PREFIX}:userCode:${userCode}`;
     return key;
   }
 
@@ -103,12 +103,12 @@ export class RedisAdapter implements Adapter {
     if (!uid) {
       return null;
     }
-    const key = `${REDIS_PREFIX}:uid:${uid}`;
+    const key = `${OIDC_PROVIDER_REDIS_PREFIX}:uid:${uid}`;
     return key;
   }
 
   private key(id: string): string {
-    return `${REDIS_PREFIX}:${this.contextName}:${id}`;
+    return `${OIDC_PROVIDER_REDIS_PREFIX}:${this.contextName}:${id}`;
   }
 
   private parsedPayload(payload) {
@@ -176,7 +176,7 @@ export class RedisAdapter implements Adapter {
     this.logger.debug('Upsert');
 
     const key = this.key(id);
-    this.logger.trace('RedisAdapter.upsert()', key);
+    this.logger.trace({ id, payload, expiresIn, key });
 
     if (expiresIn && isNaN(expiresIn)) {
       throw new TypeError(
@@ -208,13 +208,14 @@ export class RedisAdapter implements Adapter {
     this.logger.debug('Find');
 
     const key = this.key(id);
-    this.logger.trace('RedisAdapter.find()', this.key(id));
 
     const command = consumable.has(this.contextName) ? 'hgetall' : 'get';
     const data = await this.redis[command](key);
 
+    this.logger.trace({ id, key, data });
+
     if (isEmpty(data)) {
-      this.logger.trace('RedisAdapter.find() > isEmpty');
+      this.logger.trace({ id, key, data }, LoggerLevelNames.WARN);
       return void 0;
     }
 
@@ -241,7 +242,7 @@ export class RedisAdapter implements Adapter {
 
   async destroy(id: string) {
     this.logger.debug('Destroy');
-    this.logger.trace('RedisAdapter.destroy()', this.key(id));
+    this.logger.trace({ id, key: this.key(id) });
 
     const key = this.key(id);
     await this.redis.del(key);
@@ -249,10 +250,10 @@ export class RedisAdapter implements Adapter {
 
   async revokeByGrantId(grantId: string) {
     this.logger.debug('RevokeByGrantId');
-    this.logger.trace(
-      'RedisAdapter.revokeByGrantId()',
-      this.grantKeyFor(grantId),
-    );
+    this.logger.trace({
+      grantId,
+      grantKey: this.grantKeyFor(grantId),
+    });
 
     const multi = this.redis.multi();
     const tokens = await this.redis.lrange(this.grantKeyFor(grantId), 0, -1);
@@ -264,7 +265,7 @@ export class RedisAdapter implements Adapter {
 
   async consume(id: string) {
     this.logger.debug('Consume');
-    this.logger.trace('RedisAdapter.consume()', this.key(id));
+    this.logger.trace({ id, key: this.key(id) });
 
     await this.redis.hset(
       this.key(id),

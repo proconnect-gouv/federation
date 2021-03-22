@@ -1,13 +1,7 @@
-export enum LogLevels {
-  TRACE = 10,
-  DEBUG = 20,
-  INFO = 30,
-  WARN = 40,
-  ERROR = 50,
-  FATAL = 60,
-}
+/* istanbul ignore file */
 
-export enum LogLevelNames {
+// declarative code
+export enum LoggerLevelNames {
   LOG = 'log',
   VERBOSE = 'verbose',
   TRACE = 'trace',

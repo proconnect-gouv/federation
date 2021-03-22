@@ -54,6 +54,7 @@ const cipherMock =
 const loggerServiceMock = {
   setContext: jest.fn(),
   debug: jest.fn(),
+  trace: jest.fn(),
 };
 
 const redisServiceMock = {
