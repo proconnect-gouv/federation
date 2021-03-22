@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
+import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcProviderController } from './oidc-provider.controller';
 import { AuthorizeParamsDTO, RevocationTokenParamsDTO } from './dto';
 
