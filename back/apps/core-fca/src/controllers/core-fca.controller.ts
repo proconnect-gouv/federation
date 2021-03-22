@@ -28,6 +28,8 @@ import { CoreFcaService } from '../services';
 
 @Controller()
 export class CoreFcaController {
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
