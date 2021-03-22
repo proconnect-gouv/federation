@@ -1,11 +1,11 @@
 import { validateDto } from '@fc/common';
 import { validationOptions } from '@fc/config';
 import { LoggerConfig } from './logger-config.dto';
-import { LogLevelNames } from '../enum';
+import { LoggerLevelNames } from '../enum';
 
 describe('LoggerConfig', () => {
   const correctObjectMock = {
-    level: LogLevelNames.INFO,
+    level: LoggerLevelNames.INFO,
     isDevelopment: true,
     path: '/dev/null',
   };

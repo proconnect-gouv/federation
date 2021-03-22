@@ -56,7 +56,7 @@ services:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/fcp-low/.env/fip1-low.env"
     ports:
-      - 9230:9230
+      - 9360:9360
     tty: true
     networks:
       - public

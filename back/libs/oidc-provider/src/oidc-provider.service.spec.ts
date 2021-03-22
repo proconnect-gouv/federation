@@ -2,7 +2,7 @@ import * as OidcProvider from 'oidc-provider';
 import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
-import { LoggerService, LogLevelNames } from '@fc/logger';
+import { LoggerService, LoggerLevelNames } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
   OidcProviderMiddlewareStep,
@@ -42,12 +42,12 @@ describe('OidcProviderService', () => {
   const configServiceMock = {
     get: jest.fn(),
   };
-  const redisAdapterMock = class AdapterMock {};
+  const oidcProviderRedisAdapterMock = class AdapterMock {};
   const configOidcProviderMock = {
     prefix: '/api',
     issuer: 'http://foo.bar',
     configuration: {
-      adapter: redisAdapterMock,
+      adapter: oidcProviderRedisAdapterMock,
       jwks: { keys: [] },
       features: {
         devInteractions: { enabled: false },
@@ -147,7 +147,7 @@ describe('OidcProviderService', () => {
         case 'Logger':
           return {
             path: '/dev/null',
-            level: LogLevelNames.TRACE,
+            level: LoggerLevelNames.TRACE,
             isDevelopment: false,
           };
       }
