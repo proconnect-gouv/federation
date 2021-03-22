@@ -27,6 +27,7 @@ import {
   EuIdentityToFrController,
 } from './controllers';
 import { EidasBridgeSession } from './dto';
+import { OidcMiddlewareService } from './services';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderEnvService,
@@ -62,8 +63,7 @@ const oidcProviderModule = OidcProviderModule.register(
     EidasClientController,
     EidasProviderController,
   ],
-  providers: [],
-  // Make `CoreFcpTrackingService` dependencies available
+  providers: [OidcMiddlewareService],
   exports: [],
 })
 export class EidasBridgeModule {}
