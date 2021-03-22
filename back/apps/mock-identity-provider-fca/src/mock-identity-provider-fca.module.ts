@@ -8,9 +8,9 @@ import {
   ServiceProviderEnvService,
 } from '@fc/service-provider-env';
 import { OidcProviderModule } from '@fc/oidc-provider';
+import { ErrorModule } from '@fc/error';
 import { MockIdentityProviderFcaController } from './controllers';
 import { MockIdentityProviderFcaService } from './services';
-import { ErrorModule } from '@fc/error';
 
 const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderEnvService,
