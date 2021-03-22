@@ -9,7 +9,6 @@ describe('Account', () => {
       errorCode: 'E000001',
       idpId,
     });
-
     cy.hasError('Y180001');
   });
 });
