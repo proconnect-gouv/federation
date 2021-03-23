@@ -9,17 +9,21 @@ import {
   Post,
   ValidationPipe,
   UsePipes,
+  Param,
 } from '@nestjs/common';
 import {
-  OidcClientService,
   OidcClientConfig,
   IdentityProviderMetadata,
+  OidcClientRoutes,
+  GetOidcCallback,
+  OidcClientService,
 } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderEnvService } from '@fc/identity-provider-env';
+import { AppConfig } from '@fc/app';
 import { MockServiceProviderRoutes } from './enums';
 import {
   MockServiceProviderTokenRevocationException,
@@ -110,7 +114,7 @@ export class MockServiceProviderController {
        */
       const providerUid = 'envIssuer';
       const { accessToken } = body;
-      await this.oidcClient.revokeToken(accessToken, providerUid);
+      await this.oidcClient.utils.revokeToken(accessToken, providerUid);
 
       return {
         titleFront: 'Mock Service Provider - Token révoqué',
@@ -133,6 +137,56 @@ export class MockServiceProviderController {
     }
   }
 
+  /**
+   * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
+   */
+  @Get(OidcClientRoutes.OIDC_CALLBACK)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getOidcCallback(
+    @Req() req,
+    @Res() res,
+    @Param() params: GetOidcCallback,
+  ) {
+    const { providerUid } = params;
+    const uid = req.fc.interactionId;
+    const { idpState, idpNonce } = await this.session.get(uid);
+
+    const tokenParams = {
+      providerUid,
+      idpState,
+      idpNonce,
+    };
+    const {
+      accessToken,
+      acr,
+      amr,
+    } = await this.oidcClient.getTokenFromProvider(tokenParams, req);
+
+    const userInfoParams = {
+      accessToken,
+      providerUid,
+    };
+
+    const identity = await this.oidcClient.getUserInfosFromProvider(
+      userInfoParams,
+      req,
+    );
+
+    const identityExchange = {
+      idpIdentity: identity,
+      idpAcr: acr,
+      amr,
+      idpAccessToken: accessToken,
+    };
+
+    this.session.patch(uid, identityExchange);
+
+    // BUSINESS: Redirect to business page
+    const { urlPrefix } = this.config.get<AppConfig>('App');
+    res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
+  }
+
   @Post(MockServiceProviderRoutes.USERINFO)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('login-callback')
@@ -145,7 +199,7 @@ export class MockServiceProviderController {
       const providerUid = 'envIssuer';
       const { accessToken } = body;
       // OIDC: call idp's /userinfo endpoint
-      const idpIdentity = await this.oidcClient.getUserInfo(
+      const idpIdentity = await this.oidcClient.utils.getUserInfo(
         accessToken,
         providerUid,
       );
@@ -184,17 +238,22 @@ export class MockServiceProviderController {
   private async getInteractionParameters(provider: IdentityProviderMetadata) {
     const oidcClientConfig = this.config.get<OidcClientConfig>('OidcClient');
     const { scope, acr, claims } = oidcClientConfig;
-    const { state, nonce } = await this.oidcClient.buildAuthorizeParameters();
-
-    const authorizationUrl: string = await this.oidcClient.getAuthorizeUrl({
+    const {
       state,
-      scope,
-      providerUid: provider.uid,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: acr,
       nonce,
-      claims,
-    });
+    } = await this.oidcClient.utils.buildAuthorizeParameters();
+
+    const authorizationUrl: string = await this.oidcClient.utils.getAuthorizeUrl(
+      {
+        state,
+        scope,
+        providerUid: provider.uid,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: acr,
+        nonce,
+        claims,
+      },
+    );
 
     const url = new URL(authorizationUrl);
 
