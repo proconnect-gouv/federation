@@ -9,11 +9,18 @@ import {
   ValidationPipe,
   UsePipes,
   Req,
+  Param,
 } from '@nestjs/common';
-import { OidcClientService } from '@fc/oidc-client';
+import {
+  GetOidcCallback,
+  OidcClientRoutes,
+  OidcClientService,
+} from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
+import { ConfigService } from '@fc/config';
+import { AppConfig } from '@fc/app';
 import { UserDashboardRoutes } from './enums';
 import {
   UserDashboardTokenRevocationException,
@@ -23,7 +30,10 @@ import { AccessTokenParamsDTO } from './dto';
 
 @Controller()
 export class UserDashboardController {
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
+    private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
     private readonly logger: LoggerService,
     private readonly session: SessionService,
@@ -78,7 +88,7 @@ export class UserDashboardController {
        */
       const providerUid = 'corev2';
       const { accessToken } = body;
-      await this.oidcClient.revokeToken(accessToken, providerUid);
+      await this.oidcClient.utils.revokeToken(accessToken, providerUid);
 
       return {
         titleFront: 'Mock Service Provider - Token révoqué',
@@ -101,6 +111,54 @@ export class UserDashboardController {
     }
   }
 
+  /**
+   * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
+   */
+  @Get(OidcClientRoutes.OIDC_CALLBACK)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getOidcCallback(
+    @Req() req,
+    @Res() res,
+    @Param() params: GetOidcCallback,
+  ) {
+    const { providerUid } = params;
+    const uid = req.fc.interactionId;
+    const { idpState, idpNonce } = await this.session.get(uid);
+
+    const tokenParams = {
+      providerUid,
+      idpState,
+      idpNonce,
+    };
+    const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
+      tokenParams,
+      req,
+    );
+
+    const userInfoParams = {
+      accessToken,
+      providerUid,
+    };
+
+    const identity = await this.oidcClient.getUserInfosFromProvider(
+      userInfoParams,
+      req,
+    );
+
+    const identityExchange = {
+      idpIdentity: identity,
+      idpAcr: acr,
+      idpAccessToken: accessToken,
+    };
+
+    this.session.patch(uid, identityExchange);
+
+    // BUSINESS: Redirect to business page
+    const { urlPrefix } = this.config.get<AppConfig>('App');
+    res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
+  }
+
   @Post(UserDashboardRoutes.USERINFO)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('login-callback')
@@ -113,7 +171,7 @@ export class UserDashboardController {
       const providerUid = 'corev2';
       const { accessToken } = body;
       // OIDC: call idp's /userinfo endpoint
-      const idpIdentity = await this.oidcClient.getUserInfo(
+      const idpIdentity = await this.oidcClient.utils.getUserInfo(
         accessToken,
         providerUid,
       );

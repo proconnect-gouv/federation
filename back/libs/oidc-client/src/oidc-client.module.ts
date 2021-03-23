@@ -12,6 +12,7 @@ import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderService } from './interfaces';
 import {
   OidcClientService,
+  OidcClientUtilsService,
   OidcClientConfigService,
   OidcClientIssuerService,
 } from './services';
@@ -44,12 +45,13 @@ export class OidcClientModule {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useExisting: serviceProvider,
         },
+        OidcClientUtilsService,
         OidcClientService,
         SessionService,
         OidcClientConfigService,
         OidcClientIssuerService,
       ],
-      exports: [OidcClientService],
+      exports: [OidcClientService, OidcClientConfigService],
       controllers: [OidcClientController],
     };
   }

@@ -17,12 +17,17 @@ import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { MinistriesService } from '@fc/ministries';
 import { AppConfig } from '@fc/app';
-import { OidcClientConfig } from '@fc/oidc-client';
 import {
   Interaction,
   CoreRoutes,
   CoreMissingIdentityException,
 } from '@fc/core';
+import {
+  GetOidcCallback,
+  OidcClientConfig,
+  OidcClientRoutes,
+  OidcClientService,
+} from '@fc/oidc-client';
 import { Core } from '../dto';
 import { CoreFcaService } from '../services';
 
@@ -39,6 +44,7 @@ export class CoreFcaController {
     private readonly core: CoreFcaService,
     private readonly session: SessionService,
     private readonly config: ConfigService,
+    private readonly oidcClient: OidcClientService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -135,5 +141,63 @@ export class CoreFcaController {
     }
 
     return this.oidcProvider.finishInteraction(req, res);
+  }
+
+  /**
+   * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
+   */
+  @Get(OidcClientRoutes.OIDC_CALLBACK)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getOidcCallback(
+    @Req() req,
+    @Res() res,
+    @Param() params: GetOidcCallback,
+  ) {
+    const { providerUid } = params;
+    const uid = req.fc.interactionId;
+    const { idpState, idpNonce, spId } = await this.session.get(uid);
+
+    await this.oidcClient.utils.checkIdpBlacklisted(spId, providerUid);
+
+    /**
+     *  @todo
+     *    author: Arnaud & Hugues
+     *    date: 23/03/2020
+     *    ticket: FC-244 (identity, DTO, Factorisation)
+     *
+     *    problem: reduce the complexity of the oidc-callback functions
+     *    action: take token and userinfo and add them together in oidc
+     */
+    const tokenParams = {
+      providerUid,
+      idpState,
+      idpNonce,
+    };
+
+    const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
+      tokenParams,
+      req,
+    );
+
+    const userInfoParams = {
+      accessToken,
+      providerUid,
+    };
+
+    const identity = await this.oidcClient.getUserInfosFromProvider(
+      userInfoParams,
+      req,
+    );
+
+    const identityExchange = {
+      idpIdentity: identity,
+      idpAcr: acr,
+      idpAccessToken: accessToken,
+    };
+    this.session.patch(uid, identityExchange);
+    // BUSINESS: Redirect to business page
+    const { urlPrefix } = this.config.get<AppConfig>('App');
+    res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
   }
 }
