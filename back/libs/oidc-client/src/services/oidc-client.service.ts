@@ -1,155 +1,94 @@
-import { JWK } from 'jose';
-import { TokenSet, Client } from 'openid-client';
+import { TokenSet } from 'openid-client';
+import { ValidatorOptions } from 'class-validator';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { CryptographyService } from '@fc/cryptography';
+import { validateDto } from '@fc/common';
+import { IEventContext, TrackingService } from '@fc/tracking';
 import { IOidcIdentity } from '@fc/oidc';
-import {
-  OidcClientMissingCodeException,
-  OidcClientMissingStateException,
-  OidcClientInvalidStateException,
-  OidcClientRuntimeException,
-} from '../exceptions';
-import { IGetAuthorizeUrlParams } from '../interfaces/get-authorize-url-params.interface';
-import { OidcClientIssuerService } from './oidc-client-issuer.service';
-import { OidcClientConfigService } from './oidc-client-config.service';
+import { OidcClientUtilsService } from './oidc-client-utils.service';
+import { OidcClientTokenEvent, OidcClientUserinfoEvent } from '../events';
+import { TokenParams, TokenResults, UserInfosParams } from '../interfaces';
+import { TokenResultDto } from '../dto';
+import { OidcClientUserinfosFailedException } from '../exceptions';
+
+const DTO_OPTIONS: ValidatorOptions = {
+  whitelist: true,
+  forbidNonWhitelisted: true,
+};
 
 @Injectable()
 export class OidcClientService {
   constructor(
     private readonly logger: LoggerService,
-    private readonly issuer: OidcClientIssuerService,
-    private readonly oidcClientConfig: OidcClientConfigService,
-    private readonly crypto: CryptographyService,
+    private readonly tracking: TrackingService,
+    public readonly utils: OidcClientUtilsService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
 
-  async buildAuthorizeParameters() {
-    const { stateLength } = await this.oidcClientConfig.get();
-    const state = this.crypto.genRandomString(stateLength);
+  async getTokenFromProvider(
+    { providerUid, idpState, idpNonce }: TokenParams,
+    context: IEventContext,
+  ): Promise<TokenResults> {
     /**
-     * @TODO specific parameter for nonce length (or rename mutual parameter)
+     * @todo #434 refacto sur getTokenSet,
+     * - ne pas renvoyer tokenSet mais directement tokenResult
+     * - inclure le DTO à la fin de getTokenSet (seul vérification de l'acces_token)
+     * - simplifier les appels de getTokenSet en (idp, les code de transfert(state, nonce), le context pour tracking)
+     * - voir commit original : 440d0a1734e0e1206b7e21781cbb0f186a93dd82
      */
-    const nonce = this.crypto.genRandomString(stateLength);
-
-    return {
-      state,
-      nonce,
-    };
-  }
-
-  async getAuthorizeUrl({
-    state,
-    scope,
-    providerUid,
-    // acr_values is an oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    acr_values,
-    nonce,
-    claims,
-  }: IGetAuthorizeUrlParams): Promise<string> {
-    const client: Client = await this.issuer.getClient(providerUid);
-
-    const params = {
-      scope,
-      state,
-      nonce,
-      claims,
-      // oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-      prompt: 'login',
-    };
-
-    return client.authorizationUrl(params);
-  }
-
-  async wellKnownKeys() {
-    const {
-      jwks: { keys },
-    } = await this.oidcClientConfig.get();
-
-    /**
-     * @TODO Check why `JSONWebKeySet` entries are not compatible with `asKey` method
-     * Maybe we don't need this convertion?
-     */
-    const publicKeys = keys.map((key) => JWK.asKey(key as any).toJWK());
-
-    return { keys: publicKeys };
-  }
-
-  private async extractParams(req, client, stateFromSession: string) {
-    /**
-     * Although it is not noted as async
-     * openidClient.callbackParams is and should be awaited
-     */
-    const receivedParams = await client.callbackParams(req);
-
-    if (!receivedParams.code) {
-      throw new OidcClientMissingCodeException();
-    }
-
-    if (!receivedParams.state) {
-      throw new OidcClientMissingStateException();
-    }
-
-    if (receivedParams.state !== stateFromSession) {
-      throw new OidcClientInvalidStateException();
-    }
-
-    return receivedParams;
-  }
-
-  async getTokenSet(
-    req,
-    providerUid: string,
-    stateFromSession: string,
-    nonceFromSession?: string,
-  ): Promise<TokenSet> {
-    this.logger.debug('getTokenSet');
-    const client = await this.issuer.getClient(providerUid);
-
-    const receivedParams = await this.extractParams(
-      req,
-      client,
-      stateFromSession,
+    // OIDC: call idp's /token endpoint
+    const tokenSet: TokenSet = await this.utils.getTokenSet(
+      context,
+      providerUid,
+      idpState,
+      idpNonce,
     );
 
-    try {
-      // Invoke `openid-client` handler
-      const tokenSet = await client.callback(
-        client.metadata.redirect_uris.join(','),
-        receivedParams,
-        {
-          state: stateFromSession,
-          nonce: nonceFromSession,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          response_type: client.metadata.response_types.join(','),
-        },
+    this.tracking.track(OidcClientTokenEvent, context);
+
+    const { access_token: accessToken } = tokenSet;
+    const { acr, amr } = tokenSet.claims();
+
+    const tokenResult = {
+      acr,
+      amr,
+      accessToken,
+    };
+
+    const errorsOutputs = await validateDto(
+      tokenResult,
+      TokenResultDto,
+      DTO_OPTIONS,
+    );
+
+    if (errorsOutputs.length) {
+      throw new Error(
+        `"${JSON.stringify(
+          tokenResult,
+        )}" input was wrong from the result at DTO validation: ${JSON.stringify(
+          errorsOutputs,
+        )}`,
       );
-
-      return tokenSet;
-    } catch (error) {
-      throw new OidcClientRuntimeException(error);
     }
+
+    return tokenResult;
   }
 
-  async revokeToken(accessToken: string, providerUid: string): Promise<void> {
-    this.logger.debug('revokeToken');
-    const client = await this.issuer.getClient(providerUid);
-
-    await client.revoke(accessToken);
-  }
-
-  async getUserInfo(
-    accessToken: string,
-    providerUid: string,
+  async getUserInfosFromProvider(
+    { accessToken, providerUid }: UserInfosParams,
+    context: IEventContext,
   ): Promise<IOidcIdentity> {
-    this.logger.debug('getUserInfo');
-    const client = await this.issuer.getClient(providerUid);
+    // OIDC: call idp's /userinfo endpoint
+    let identity: IOidcIdentity;
+    try {
+      identity = await this.utils.getUserInfo(accessToken, providerUid);
+    } catch (error) {
+      throw new OidcClientUserinfosFailedException(error);
+    }
+    this.tracking.track(OidcClientUserinfoEvent, context);
 
-    return client.userinfo(accessToken);
+    // BUSINESS: Locally store received identity
+    return identity;
   }
 }
