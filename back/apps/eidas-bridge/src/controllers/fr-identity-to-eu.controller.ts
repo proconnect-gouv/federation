@@ -56,9 +56,12 @@ export class FrIdentityToEuController {
 
     const oidcRequest = this.eidasToOidc.mapPartialRequest(eidasRequest);
 
-    const { state, nonce } = await this.oidcClient.buildAuthorizeParameters();
+    const {
+      state,
+      nonce,
+    } = await this.oidcClient.utils.buildAuthorizeParameters();
 
-    const authorizationUrl = await this.oidcClient.getAuthorizeUrl({
+    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl({
       state,
       scope: oidcRequest.scope.join(' '),
       providerUid: 'envIssuer',
@@ -101,24 +104,24 @@ export class FrIdentityToEuController {
 
         const { idpState, idpNonce } = await this.session.get(sessionId);
 
-        // OIDC: call idp's /token endpoint
-        const tokenSet = await this.oidcClient.getTokenSet(
-          req,
+        const tokenParams = {
           providerUid,
           idpState,
           idpNonce,
+        };
+        const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
+          tokenParams,
+          req,
         );
 
-        const { acr } = tokenSet.claims();
-
-        // openid defined property names
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        const { access_token: accessToken } = tokenSet;
-
-        // OIDC: call idp's /userinfo endpoint
-        const idpIdentity = await this.oidcClient.getUserInfo(
+        const userInfoParams = {
           accessToken,
           providerUid,
+        };
+
+        const identity = await this.oidcClient.getUserInfosFromProvider(
+          userInfoParams,
+          req,
         );
 
         const { requestedAttributes } = await eidasProviderSession.get(
@@ -126,7 +129,7 @@ export class FrIdentityToEuController {
         );
 
         partialEidasResponse = this.oidcToEidas.mapPartialResponseSuccess(
-          idpIdentity,
+          identity,
           /**
            * @todo Apply strong typing to acr values in other libs and apps
            */

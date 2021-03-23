@@ -5,9 +5,9 @@ import { ServiceProviderService } from '@fc/service-provider';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
 import { CoreMissingIdentityException } from '@fc/core';
 import { MinistriesService } from '@fc/ministries';
+import { OidcClientService } from '@fc/oidc-client';
 import { CoreFcaService } from '../services';
 import { CoreFcaController } from './core-fca.controller';
 
@@ -18,6 +18,14 @@ describe('CoreFcaController', () => {
   const interactionIdMock = 'interactionIdMockValue';
   const acrMock = 'acrMockValue';
   const spNameMock = 'some SP';
+  const idpStateMock = 'idpStateMockValue';
+  const idpNonceMock = 'idpNonceMock';
+
+  const req = {
+    fc: {
+      interactionId: interactionIdMock,
+    },
+  };
 
   const interactionDetailsResolved = {
     uid: Symbol('uid'),
@@ -78,6 +86,14 @@ describe('CoreFcaController', () => {
     get: jest.fn(),
   };
 
+  const oidcClientServiceMock = {
+    utils: {
+      checkIdpBlacklisted: jest.fn(),
+    },
+    getTokenFromProvider: jest.fn(),
+    getUserInfosFromProvider: jest.fn(),
+  };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [CoreFcaController],
@@ -90,7 +106,7 @@ describe('CoreFcaController', () => {
         ServiceProviderService,
         SessionService,
         ConfigService,
-        CryptographyService,
+        OidcClientService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -109,13 +125,15 @@ describe('CoreFcaController', () => {
       .useValue(sessionServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(CryptographyService)
-      .useValue(cryptographyServiceMock)
+      .overrideProvider(OidcClientService)
+      .useValue(oidcClientServiceMock)
       .compile();
 
     coreController = await app.get<CoreFcaController>(CoreFcaController);
 
     jest.resetAllMocks();
+    jest.restoreAllMocks();
+
     providerMock.interactionDetails.mockResolvedValue(
       interactionDetailsResolved,
     );
@@ -135,7 +153,10 @@ describe('CoreFcaController', () => {
       spIdentity: {},
       spName: spNameMock,
       csrfToken: randomStringMock,
+      idpState: idpStateMock,
+      idpNonce: idpNonceMock,
     });
+
     sessionServiceMock.patch.mockResolvedValueOnce(undefined);
     cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
     configServiceMock.get.mockReturnValue(appConfigMock);
@@ -163,11 +184,6 @@ describe('CoreFcaController', () => {
 
   describe('getFrontData', () => {
     // Given
-    const req = {
-      fc: {
-        interactionId: 'interactionIdMock',
-      },
-    };
     const res = {
       json: jest.fn(),
     };
@@ -282,9 +298,6 @@ describe('CoreFcaController', () => {
   describe('getVerify', () => {
     it('should call coreService', async () => {
       // Given
-      const req = {
-        fc: { interactionId: interactionIdMock },
-      };
       const res = {
         redirect: jest.fn(),
       };
@@ -295,9 +308,6 @@ describe('CoreFcaController', () => {
     });
     it('should redirect to /login URL', async () => {
       // Given
-      const req = {
-        fc: { interactionId: interactionIdMock },
-      };
       const res = {
         redirect: jest.fn(),
       };
@@ -312,9 +322,6 @@ describe('CoreFcaController', () => {
   describe('getLogin', () => {
     it('should throw an exception if no identity in session', async () => {
       // Given
-      const req = {
-        fc: { interactionId: interactionIdMock },
-      };
       const next = jest.fn();
       sessionServiceMock.get.mockResolvedValue({
         interactionId: interactionIdMock,
@@ -330,9 +337,6 @@ describe('CoreFcaController', () => {
 
     it('should call next', async () => {
       // Given
-      const req = {
-        fc: { interactionId: interactionIdMock },
-      };
       const res = {};
       // When
       await coreController.getLogin(req, res);
@@ -347,14 +351,156 @@ describe('CoreFcaController', () => {
     });
     it('should return result from controller.oidcProvider.finishInteraction()', async () => {
       // Given
-      const req = {
-        fc: { interactionId: interactionIdMock },
-      };
       const res = {};
       // When
       const result = await coreController.getLogin(req, res);
       // Then
       expect(result).toBe(interactionFinishedValue);
+    });
+  });
+
+  describe('getOidcCallback', () => {
+    let res;
+    const accessTokenMock = Symbol('accesToken');
+    const acrMock = Symbol('acr');
+    const providerUid = 'providerUidMock';
+    const identityMock = {
+      sub: '1',
+      // oidc spec defined property
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      given_name: 'given_name',
+    };
+    const tokenParamsMock = {
+      providerUid,
+      idpState: idpStateMock,
+      idpNonce: idpNonceMock,
+    };
+
+    const userInfoParamsMock = {
+      accessToken: accessTokenMock,
+      providerUid,
+    };
+
+    const identityExchangeMock = {
+      idpIdentity: identityMock,
+      idpAcr: acrMock,
+      idpAccessToken: accessTokenMock,
+    };
+    const redirectMock = `/api/v2/interaction/${interactionIdMock}/verify`;
+
+    beforeEach(() => {
+      res = {
+        redirect: jest.fn(),
+      };
+
+      oidcClientServiceMock.getTokenFromProvider.mockReturnValueOnce({
+        // oidc spec defined property
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        accessToken: accessTokenMock,
+        // oidc spec defined property
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr: acrMock,
+      });
+      oidcClientServiceMock.getUserInfosFromProvider.mockReturnValueOnce(
+        identityMock,
+      );
+      oidcClientServiceMock.utils.checkIdpBlacklisted.mockResolvedValueOnce(
+        false,
+      );
+    });
+
+    it('should call token with providerId', async () => {
+      // action
+      await coreController.getOidcCallback(req, res, {
+        providerUid,
+      });
+
+      // assert
+      expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledWith(
+        tokenParamsMock,
+        req,
+      );
+    });
+
+    it('should call userinfo with acesstoken and context', async () => {
+      // arrange
+
+      // action
+      await coreController.getOidcCallback(req, res, {
+        providerUid,
+      });
+
+      // assert
+      expect(
+        oidcClientServiceMock.getUserInfosFromProvider,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        oidcClientServiceMock.getUserInfosFromProvider,
+      ).toHaveBeenCalledWith(userInfoParamsMock, req);
+    });
+
+    it('should patch session with identity result and interaction ID', async () => {
+      // action
+      await coreController.getOidcCallback(req, res, {
+        providerUid,
+      });
+
+      // assert
+      expect(sessionServiceMock.patch).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.patch).toHaveBeenCalledWith(
+        interactionIdMock,
+        identityExchangeMock,
+      );
+    });
+
+    it('should redirect user after token and userinfo received and saved', async () => {
+      // action
+      await coreController.getOidcCallback(req, res, {
+        providerUid,
+      });
+
+      // assert
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith(redirectMock);
+    });
+
+    describe('Idp blacklisted scenario for get oidc callback', () => {
+      let isBlacklistedMock;
+      beforeEach(() => {
+        isBlacklistedMock = oidcClientServiceMock.utils.checkIdpBlacklisted;
+        isBlacklistedMock.mockReset();
+      });
+
+      it('idp is blacklisted', async () => {
+        // setup
+        const providerUid = 'foo';
+        const errorMock = new Error('New Error');
+        sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
+        isBlacklistedMock.mockRejectedValueOnce(errorMock);
+
+        // action / assert
+        await expect(() =>
+          coreController.getOidcCallback(req, res, {
+            providerUid,
+          }),
+        ).rejects.toThrow(errorMock);
+      });
+
+      it('idp is not blacklisted', async () => {
+        // setup
+        const providerUid = 'foo';
+        sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
+        isBlacklistedMock.mockReturnValueOnce(false);
+
+        // action
+        await coreController.getOidcCallback(req, res, { providerUid });
+
+        // assert
+        expect(res.redirect).toHaveBeenCalledTimes(1);
+      });
     });
   });
 });
