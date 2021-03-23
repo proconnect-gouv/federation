@@ -8,8 +8,8 @@
   "env": {
     "APP_DOMAIN": "corev2.docker.dev-franceconnect.fr",
     "APP_NAME": "corev2",
-    "LOG_FILE_PATH": "../../../../fc-docker/volumes/log/corev2.log",
-    "FC_DOCKER_PATH": "../../../../fc-docker",
+    "LOG_FILE_PATH": "../../../docker/volumes/log/corev2.log",
+    "FC_DOCKER_PATH": "../../../docker",
 
     "FC_ROOT_URL": "https://corev2.docker.dev-franceconnect.fr",
     "FC_INTERACTION_URL": "https://corev2.docker.dev-franceconnect.fr/api/v2/interaction",

@@ -12,16 +12,16 @@ eidas-bridge:
     paths:
       - back/node_modules/
   before_script:
-    - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc-docker/docker-stack halt && docker container prune -f; fi
+    - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f; fi
     - rm -rf $FC_ROOT/fc-docker
     - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
     - shopt -s expand_aliases
-    - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
+    - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
-    - ln -s $CI_PROJECT_DIR $FC_ROOT/fc-docker/volumes/src/fc
-    - ln -s $FC_ROOT/fc/front/user-dashboard $FC_ROOT/fc-docker/volumes/src/user-dashboard
-    - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc-docker/volumes/src; done
+    - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
+    - ln -s $FC_ROOT/fc/front/user-dashboard $FC_ROOT/fc/docker/volumes/src/user-dashboard
+    - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
     - docker-stack up eidas
     - docker-stack dep corev2 fip1v2 rnipp # eidas-bridge fsp1v2 are included in corev2 (monorepo)
@@ -64,5 +64,5 @@ eidas-bridge:
       - back/instances/eidas-bridge/cypress/videos
       - back/instances/eidas-bridge/cypress/logs
   after_script:
-    - bash $CI_BUILDS_DIR/france-connect/fc-docker/docker-stack halt
+    - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
     - docker container prune --force
