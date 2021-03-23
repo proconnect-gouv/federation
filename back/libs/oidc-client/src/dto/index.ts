@@ -6,3 +6,4 @@ export * from './redirect-to-idp.dto';
 export * from './get-oidc-callback.dto';
 export * from './client-metadata.dto';
 export * from './issuer-metadata.dto';
+export * from './identity-service.dto';
