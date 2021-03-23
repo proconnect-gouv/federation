@@ -19,9 +19,14 @@ import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
 import { CryptographyService } from '@fc/cryptography';
 import { NotificationsService } from '@fc/notifications';
-import { OidcClientConfig } from '@fc/oidc-client';
 import { ScopesService } from '@fc/scopes';
 import { ServiceProviderService } from '@fc/service-provider';
+import {
+  GetOidcCallback,
+  OidcClientConfig,
+  OidcClientRoutes,
+  OidcClientService,
+} from '@fc/oidc-client';
 import {
   Interaction,
   CsrfToken,
@@ -47,6 +52,7 @@ export class CoreFcpController {
     private readonly crypto: CryptographyService,
     private readonly scopes: ScopesService,
     private readonly notifications: NotificationsService,
+    private readonly oidcClient: OidcClientService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -150,7 +156,58 @@ export class CoreFcpController {
   }
 
   /**
-   * @TODO #203 ETQ dev, je crée une lib de gestion de CSRF
+   * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
+   */
+  @Get(OidcClientRoutes.OIDC_CALLBACK)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getOidcCallback(
+    @Req() req,
+    @Res() res,
+    @Param() params: GetOidcCallback,
+  ) {
+    const { providerUid } = params;
+
+    const uid = req.fc.interactionId;
+    const { idpState, idpNonce, spId } = await this.session.get(uid);
+
+    await this.oidcClient.utils.checkIdpBlacklisted(spId, providerUid);
+
+    const tokenParams = {
+      providerUid,
+      idpState,
+      idpNonce,
+    };
+    const {
+      accessToken,
+      acr,
+      amr,
+    } = await this.oidcClient.getTokenFromProvider(tokenParams, req);
+
+    const userInfoParams = {
+      accessToken,
+      providerUid,
+    };
+
+    const identity = await this.oidcClient.getUserInfosFromProvider(
+      userInfoParams,
+      req,
+    );
+
+    const identityExchange = {
+      idpIdentity: identity,
+      idpAcr: acr,
+      amr,
+      idpAccessToken: accessToken,
+    };
+    this.session.patch(uid, identityExchange);
+    // BUSINESS: Redirect to business page
+    const { urlPrefix } = this.config.get<AppConfig>('App');
+    res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
+  }
+
+  /**
+   * @TODO #203
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/203
    */
   private async generateAndStoreCsrf(interactionId: string): Promise<string> {
