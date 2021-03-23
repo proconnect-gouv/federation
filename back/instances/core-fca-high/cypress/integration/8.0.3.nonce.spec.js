@@ -11,17 +11,17 @@ describe('nonce', () => {
     cy.hasError('Y000400');
   });
 
-  it('should return an error if the nonce is too short (FC as IDP)', () => {
+  it('should return an error if the nonce is less than 1 character (FC as IDP)', () => {
     const url = getAuthorizeUrl({
-      nonce: 'nonceToShort'
+      nonce: ''
     });
     cy.visit(url, { failOnStatusCode: false });
     cy.hasError('Y000400');
   });
 
-  it('should return an error if the nonce is not only alphanumeric (FC as IDP)', () => {
+  it('should return an error if the nonce is not only ASCII (FC as IDP)', () => {
     const url = getAuthorizeUrl({
-      nonce: '@azerty123!'
+      nonce: 'éazerty123!'
     });
     cy.visit(url, { failOnStatusCode: false });
     cy.hasError('Y000400');
