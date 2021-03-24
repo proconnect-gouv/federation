@@ -33,6 +33,9 @@ class MailjetOptions {
 
 export class MailerConfig {
   @IsString()
+  readonly template: string;
+
+  @IsString()
   readonly transport: MailerType;
 
   @IsString()
