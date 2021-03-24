@@ -5,7 +5,8 @@
   "root": "instances/core-fcp-high",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "instances/core-fcp-high/tsconfig.app.json"
+    "tsConfigPath": "instances/core-fcp-high/tsconfig.app.json",
+    "assets": ["../../../instances/core-fcp-high/**/*.ejs"]
   },
   "projects": {
     "core-fca-high": {
