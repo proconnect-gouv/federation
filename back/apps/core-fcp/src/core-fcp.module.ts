@@ -45,6 +45,8 @@ import {
   CoreFcpEidasVerifyHandler,
   CoreFcpDefaultVerifyHandler,
   CoreFcpSendEmailHandler,
+  CoreFcpEidasIdentityCheckHandler,
+  CoreFcpDefaultIdentityCheckHandler,
 } from './handlers';
 
 const oidcProviderModule = OidcProviderModule.register(
@@ -97,6 +99,8 @@ const oidcProviderModule = OidcProviderModule.register(
     CoreFcpDefaultVerifyHandler,
     CoreFcpEidasVerifyHandler,
     CoreFcpSendEmailHandler,
+    CoreFcpDefaultIdentityCheckHandler,
+    CoreFcpEidasIdentityCheckHandler,
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [

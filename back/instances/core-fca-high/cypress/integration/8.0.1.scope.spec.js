@@ -46,8 +46,8 @@ describe('Scope', () => {
     checkInStringifiedJson('given_name', 'Angela Claire Louise'); // mandatory
     checkInStringifiedJson('usual_name', 'DUBOIS'); // mandatory
     checkInStringifiedJson('email', 'test@abcd.com'); // mandatory
-    checkInStringifiedJson('siret', '123abcd5612345'); // not mandatory
-    checkInStringifiedJson('siren', '12346AZER'); // not mandatory
+    checkInStringifiedJson('siret', '34329377500037'); // not mandatory
+    checkInStringifiedJson('siren', '343293775'); // not mandatory
     checkInStringifiedJson(
       'sub',
       'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',

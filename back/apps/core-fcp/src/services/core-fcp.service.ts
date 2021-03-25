@@ -3,13 +3,18 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
-import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderService } from '@fc/identity-provider';
+import { CoreFcpSendEmailHandler } from '../handlers';
 import {
-  CoreFcpDefaultVerifyHandler,
-  CoreFcpEidasVerifyHandler,
-  CoreFcpSendEmailHandler,
-} from '../handlers';
+  FeatureHandler,
+  IFeatureHandler,
+  IFeatureHandlerDatabaseMap,
+} from '@fc/feature-handler';
+import { ProcessCore } from '../enums';
+
+export type FcpFeature = {
+  featureHandlers: IFeatureHandlerDatabaseMap<ProcessCore>;
+};
 
 @Injectable()
 export class CoreFcpService {
@@ -34,13 +39,21 @@ export class CoreFcpService {
     const { interactionId } = req.fc;
 
     const { idpId } = await this.session.get(interactionId);
-    const idp = await this.identityProvider.getById(idpId);
-    const { coreVerify } = idp.featureHandlers;
 
-    const handler:
-      | CoreFcpDefaultVerifyHandler
-      | CoreFcpEidasVerifyHandler = await FeatureHandler.get(coreVerify, this);
+    const handler = await this.getFeature<void>(idpId, ProcessCore.CORE_VERIFY);
     return await handler.handle(req);
+  }
+
+  async getFeature<T>(
+    idpId: string,
+    process: ProcessCore,
+  ): Promise<IFeatureHandler<T>> {
+    this.logger.debug(`getFeature ${process} for provider: ${idpId}`);
+
+    const idp = await this.identityProvider.getById<FcpFeature>(idpId);
+    const idClass = idp.featureHandlers[process];
+
+    return FeatureHandler.get(idClass, this);
   }
 
   /**

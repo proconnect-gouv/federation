@@ -3,3 +3,4 @@
 // Declarative code
 export * from './user-dashboard-config.dto';
 export * from './access-token-params.dto';
+export * from './fc-identity.dto';

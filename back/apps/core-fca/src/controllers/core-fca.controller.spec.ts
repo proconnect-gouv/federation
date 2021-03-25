@@ -1,3 +1,4 @@
+import { mocked } from 'ts-jest/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderService } from '@fc/identity-provider';
@@ -8,8 +9,16 @@ import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
 import { MinistriesService } from '@fc/ministries';
 import { OidcClientService } from '@fc/oidc-client';
+import { validateDto } from '@fc/common';
 import { CoreFcaService } from '../services';
 import { CoreFcaController } from './core-fca.controller';
+import { OidcIdentityDto } from '../dto';
+import { CoreFcaInvalidIdentityException } from '../exceptions';
+
+jest.mock('@fc/common', () => ({
+  ...jest.requireActual('@fc/common'),
+  validateDto: jest.fn(),
+}));
 
 describe('CoreFcaController', () => {
   let coreController: CoreFcaController;
@@ -20,7 +29,9 @@ describe('CoreFcaController', () => {
   const spNameMock = 'some SP';
   const idpStateMock = 'idpStateMockValue';
   const idpNonceMock = 'idpNonceMock';
+  const providerUid = 'providerUidMock';
 
+  let res;
   const req = {
     fc: {
       interactionId: interactionIdMock,
@@ -34,6 +45,14 @@ describe('CoreFcaController', () => {
       scope: 'toto titi',
     },
   };
+
+  const identityMock = {
+    sub: '1',
+    // oidc spec defined property
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    given_name: 'given_name',
+  };
+
   const interactionFinishedValue = Symbol('interactionFinishedValue');
   const providerMock = {
     interactionDetails: jest.fn(),
@@ -360,16 +379,9 @@ describe('CoreFcaController', () => {
   });
 
   describe('getOidcCallback', () => {
-    let res;
     const accessTokenMock = Symbol('accesToken');
     const acrMock = Symbol('acr');
-    const providerUid = 'providerUidMock';
-    const identityMock = {
-      sub: '1',
-      // oidc spec defined property
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      given_name: 'given_name',
-    };
+
     const tokenParamsMock = {
       providerUid,
       idpState: idpStateMock,
@@ -388,6 +400,7 @@ describe('CoreFcaController', () => {
     };
     const redirectMock = `/api/v2/interaction/${interactionIdMock}/verify`;
 
+    let validateIdentityMock;
     beforeEach(() => {
       res = {
         redirect: jest.fn(),
@@ -404,6 +417,13 @@ describe('CoreFcaController', () => {
       oidcClientServiceMock.getUserInfosFromProvider.mockReturnValueOnce(
         identityMock,
       );
+
+      validateIdentityMock = jest.spyOn<CoreFcaController, any>(
+        coreController,
+        'validateIdentity',
+      );
+      validateIdentityMock.mockResolvedValueOnce();
+
       oidcClientServiceMock.utils.checkIdpBlacklisted.mockResolvedValueOnce(
         false,
       );
@@ -425,9 +445,7 @@ describe('CoreFcaController', () => {
       );
     });
 
-    it('should call userinfo with acesstoken and context', async () => {
-      // arrange
-
+    it('should call userinfo with acesstoken, dto and context', async () => {
       // action
       await coreController.getOidcCallback(req, res, {
         providerUid,
@@ -440,6 +458,24 @@ describe('CoreFcaController', () => {
       expect(
         oidcClientServiceMock.getUserInfosFromProvider,
       ).toHaveBeenCalledWith(userInfoParamsMock, req);
+    });
+
+    it('should failed to get identity if validation failed', async () => {
+      // arrange
+      const errorMock = new Error('Unknown Error');
+      validateIdentityMock.mockReset().mockRejectedValueOnce(errorMock);
+
+      // action
+      await expect(
+        coreController.getOidcCallback(req, res, { providerUid }),
+      ).rejects.toThrow(errorMock);
+
+      // assert
+      expect(validateIdentityMock).toHaveBeenCalledTimes(1);
+      expect(validateIdentityMock).toHaveBeenCalledWith(
+        providerUid,
+        identityMock,
+      );
     });
 
     it('should patch session with identity result and interaction ID', async () => {
@@ -501,6 +537,45 @@ describe('CoreFcaController', () => {
         // assert
         expect(res.redirect).toHaveBeenCalledTimes(1);
       });
+    });
+  });
+
+  describe('validateIdentity', () => {
+    let validateDtoMock;
+    beforeEach(() => {
+      validateDtoMock = mocked(validateDto);
+    });
+
+    it('should succeed to validate identity', async () => {
+      // arrange
+      validateDtoMock.mockResolvedValueOnce([]);
+
+      // action
+      await coreController['validateIdentity'](providerUid, identityMock);
+
+      // assert
+      expect(validateDtoMock).toHaveBeenCalledTimes(1);
+      expect(validateDtoMock).toHaveBeenCalledWith(
+        identityMock,
+        OidcIdentityDto,
+        {
+          forbidNonWhitelisted: true,
+          forbidUnknownValues: true,
+          whitelist: true,
+        },
+        { excludeExtraneousValues: true },
+      );
+    });
+
+    it('should failed to validate identity', async () => {
+      // arrange
+      validateDtoMock.mockResolvedValueOnce(['Unknown Error']);
+
+      await expect(
+        // action
+        coreController['validateIdentity'](providerUid, identityMock),
+        // assert
+      ).rejects.toThrow(CoreFcaInvalidIdentityException);
     });
   });
 });

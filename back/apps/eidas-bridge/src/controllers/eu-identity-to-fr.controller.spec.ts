@@ -1,3 +1,4 @@
+import { mocked } from 'ts-jest/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
@@ -9,7 +10,15 @@ import {
 } from '@fc/eidas';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
+import { validateDto } from '@fc/common';
+import { EidasBridgeIdentityDto } from '../dto';
+import { EidasBridgeInvalidIdentityException } from '../exceptions';
 import { EuIdentityToFrController } from './eu-identity-to-fr.controller';
+
+jest.mock('@fc/common', () => ({
+  ...jest.requireActual('@fc/common'),
+  validateDto: jest.fn(),
+}));
 
 describe('EuIdentityToFrController', () => {
   let euIdentityToFrController: EuIdentityToFrController;
@@ -29,6 +38,7 @@ describe('EuIdentityToFrController', () => {
 
   const loggerServiceMock = ({
     setContext: jest.fn(),
+    warn: jest.fn(),
   } as unknown) as LoggerService;
 
   const sessionMock = {
@@ -104,7 +114,6 @@ describe('EuIdentityToFrController', () => {
       .useValue(oidcToEidasServiceMock)
       .overrideProvider(EidasToOidcService)
       .useValue(eidasToOidcServiceMock)
-
       .compile();
 
     euIdentityToFrController = await app.get<EuIdentityToFrController>(
@@ -112,6 +121,8 @@ describe('EuIdentityToFrController', () => {
     );
 
     jest.resetAllMocks();
+    jest.restoreAllMocks();
+
     configServiceMock.get.mockReturnValue(configMock);
 
     oidcProviderServiceMock.getInteraction.mockResolvedValue(interactionMock);
@@ -237,6 +248,16 @@ describe('EuIdentityToFrController', () => {
     const buildRedirectUriErrorUrlMock = jest.fn();
     const redirectUriErrorUrlMock = 'https://redirect-uri-error.url';
 
+    let validateIdentityMock;
+    beforeEach(() => {
+      validateIdentityMock = jest.spyOn<EuIdentityToFrController, any>(
+        euIdentityToFrController,
+        'validateIdentity',
+      );
+
+      validateIdentityMock.mockResolvedValueOnce();
+    });
+
     it('should get the eidas response from the session', async () => {
       // setup
       exposedSessionMock.get.mockReturnValueOnce(successEidasMandatoryJsonMock);
@@ -333,6 +354,28 @@ describe('EuIdentityToFrController', () => {
         expect(
           eidasToOidcServiceMock.mapPartialResponseSuccess,
         ).toHaveBeenCalledWith(successEidasMandatoryJsonMock);
+      });
+
+      it('should failed if userinfos are wrong and validate identity failed', async () => {
+        // setup
+        const errorMock = new Error('Unknown Error');
+        validateIdentityMock.mockReset().mockRejectedValueOnce(errorMock);
+
+        // action
+        await expect(
+          () =>
+            euIdentityToFrController.finishInteraction(
+              req,
+              res,
+              exposedSessionMock,
+            ),
+          // expect
+        ).rejects.toThrow('Unknown Error');
+
+        expect(
+          eidasToOidcServiceMock.mapPartialResponseSuccess,
+        ).toHaveBeenCalledTimes(1);
+        expect(sessionMock.patch).toHaveBeenCalledTimes(0);
       });
 
       it('should patch the oidc session with the identity to send to the SP', async () => {
@@ -547,6 +590,54 @@ describe('EuIdentityToFrController', () => {
           oidcProviderServiceMock.finishInteraction,
         ).not.toHaveBeenCalled();
       });
+    });
+  });
+
+  describe('validateIdentity', () => {
+    let validateDtoMock;
+    let identityMock;
+    beforeEach(() => {
+      identityMock = {
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        given_name: 'given_nameValue',
+        // Oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        family_name: 'family_nameValue',
+      };
+      validateDtoMock = mocked(validateDto);
+    });
+
+    it('should succeed to validate identity', async () => {
+      // arrange
+      validateDtoMock.mockResolvedValueOnce([]);
+
+      // action
+      await euIdentityToFrController['validateIdentity'](identityMock);
+
+      // assert
+      expect(validateDtoMock).toHaveBeenCalledTimes(1);
+      expect(validateDtoMock).toHaveBeenCalledWith(
+        identityMock,
+        EidasBridgeIdentityDto,
+        {
+          forbidNonWhitelisted: true,
+          forbidUnknownValues: true,
+          whitelist: true,
+        },
+        { excludeExtraneousValues: true },
+      );
+    });
+
+    it('should failed to validate identity', async () => {
+      // arrange
+      validateDtoMock.mockResolvedValueOnce(['Unknown Error']);
+
+      await expect(
+        // action
+        euIdentityToFrController['validateIdentity'](identityMock),
+        // assert
+      ).rejects.toThrow(EidasBridgeInvalidIdentityException);
     });
   });
 

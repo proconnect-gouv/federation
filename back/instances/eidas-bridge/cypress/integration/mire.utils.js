@@ -34,9 +34,10 @@ function connectToFcIdp(fcRequest) {
   cy.get('#consent').click();
 }
 
-function configureEidasSpMockRequest(eidasRequest = {}) {
-  cy.server();
-
+/**
+ * @todo rename and refacto to use it as a autonomous function (navigateToMireFromEU)
+ */
+export function configureEidasSpMockRequest(eidasRequest = {}) {
   const request = {
     nameId: 'unspecified',
     loa: 'E',
@@ -150,7 +151,10 @@ export function checkInformationsEuSpFrIdp(params = {}) {
   });
 }
 
-function configureOidcSpMockRequest(params = {}) {
+/**
+ * @todo rename and refacto to use it as a autonomous function (navigateToMireFromFR)
+ */
+export function configureOidcSpMockRequest(params = {}) {
   const idpId = 'eidas-bridge';
   const { sp = 'SP1', method = 'GET' } = params;
 
@@ -236,8 +240,21 @@ export function basicSuccessScenarioFrSpEuIdp(params = {}) {
 
 export function basicFailureScenarioFrSpEuIdp(params = {}) {
   configureOidcSpMockRequest(params);
-
-  const { username = 'xavi', password = 'creus', loa = 'E', cancel } = params;
+  authenticateToEUIdp(params);
+}
+/**
+ * handle the authentification in the EU idp
+ * @param {*} params
+ * @returns
+ */
+export function authenticateToEUIdp(params = {}) {
+  const {
+    username = 'xavi',
+    password = 'creus',
+    loa = 'E',
+    cancel,
+    optionalAttributes = true,
+  } = params;
 
   if (cancel === 'mandatory_attributes') {
     return cy.get('#buttonCancelSlide1').click();
@@ -249,10 +266,13 @@ export function basicFailureScenarioFrSpEuIdp(params = {}) {
     return cy.get('#buttonCancelSlide2').click();
   }
 
-  cy.get('ul.toogle-switch').within(() => {
-    cy.get('li span').eq(0).click();
-    cy.get('li span').eq(1).click();
-  });
+  // depends on the list of the scopes requested
+  if (optionalAttributes) {
+    cy.get('ul.toogle-switch').within(() => {
+      cy.get('li span').eq(0).click();
+      cy.get('li span').eq(1).click();
+    });
+  }
 
   cy.get('#buttonNextSlide2').click();
 
@@ -284,4 +304,40 @@ export function checkInformationsFrSpEuIdp() {
   cy.get('#html-output').within(() => {
     cy.contains('AMR value : eidas');
   });
+}
+
+/**
+ * select the correct idp on Mire
+ * @param {*} params
+ */
+export function chooseIdp(params = {}) {
+  const { idpId = `${Cypress.env('IDP_NAME')}1v2` } = params;
+  cy.url().should(
+    'include',
+    `${Cypress.env('CORE_ROOT_URL')}/api/v2/interaction`,
+  );
+  cy.get(`#idp-${idpId}`).click();
+}
+
+/**
+ *
+ * @param {*} params
+ */
+export function authenticateToIdp(params = {}) {
+  const { login = 'test', eidasLevel, password = '123' } = params;
+
+  const baseUrl = Cypress.env('IDP_ROOT_URL').replace(
+    'IDP_NAME',
+    `${Cypress.env('IDP_NAME')}1v2`,
+  );
+
+  cy.url().should('include', `${baseUrl}/interaction`);
+  cy.get('input[name="login"]').clear().type(login);
+  cy.get('input[name="password"]').clear().type(password);
+
+  if (eidasLevel) {
+    cy.get('select[name="acr"]').select(eidasLevel);
+  }
+
+  cy.get('input[type="submit"]').click();
 }
