@@ -107,6 +107,13 @@ export class MockIdentityProviderFcaService {
       ({ uid }) => uid === inputUid,
     );
 
+    /**
+     * Allow to add unexpected value when userInfos are required
+     */
+    if (inputUid === 'E020025') {
+      identity.unknown_prop_for_test = 'shouldNotBeThere';
+    }
+
     return identity;
   }
 }

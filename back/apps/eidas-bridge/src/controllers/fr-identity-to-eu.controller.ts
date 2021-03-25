@@ -8,6 +8,11 @@ import { EidasProviderSession } from '@fc/eidas-provider';
 import { IExposedSessionServiceGeneric, Session } from '@fc/session-generic';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { EidasBridgeRoutes } from '../enums';
+import { EidasBridgeIdentityDto } from '../dto/eidas-bridge-identity.dto';
+import { ValidatorOptions } from 'class-validator';
+import { ClassTransformOptions } from 'class-transformer';
+import { validateDto } from '@fc/common';
+import { EidasBridgeInvalidIdentityException } from '../exceptions';
 
 /**
  * @todo Clean the controller (create a service, generalize code, ...)
@@ -124,6 +129,8 @@ export class FrIdentityToEuController {
           req,
         );
 
+        await this.validateIdentity(identity);
+
         const { requestedAttributes } = await eidasProviderSession.get(
           'eidasRequest',
         );
@@ -152,5 +159,26 @@ export class FrIdentityToEuController {
       url: '/eidas-provider/response-proxy',
       statusCode: 302,
     };
+  }
+
+  private async validateIdentity(identity: Partial<EidasBridgeIdentityDto>) {
+    const validatorOptions: ValidatorOptions = {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      forbidUnknownValues: true,
+    };
+    const transformOptions: ClassTransformOptions = {
+      excludeExtraneousValues: true,
+    };
+
+    const errors = await validateDto(
+      identity,
+      EidasBridgeIdentityDto,
+      validatorOptions,
+      transformOptions,
+    );
+    if (errors.length) {
+      throw new EidasBridgeInvalidIdentityException(errors);
+    }
   }
 }
