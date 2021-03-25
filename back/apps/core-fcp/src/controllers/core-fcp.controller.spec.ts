@@ -15,6 +15,8 @@ import { ScopesService } from '@fc/scopes';
 import { OidcClientService } from '@fc/oidc-client';
 import { CoreFcpController } from './core-fcp.controller';
 import { CoreFcpService } from '../services/core-fcp.service';
+import { ProcessCore } from '../enums';
+import { CoreFcpInvalidIdentityException } from '../exceptions';
 
 describe('CoreFcpController', () => {
   let coreController: CoreFcpController;
@@ -26,8 +28,17 @@ describe('CoreFcpController', () => {
   const spTitleMock = 'title SP';
   const idpStateMock = 'idpStateMockValue';
   const idpNonceMock = 'idpNonceMock';
-  const idpIdMock = Symbol('idpId');
+  const idpIdMock = 'idpIdMockValue';
+  const providerUid = 'providerUidMock';
 
+  const identityMock = {
+    sub: '1',
+    // oidc spec defined property
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    given_name: 'given_name',
+  };
+
+  let res;
   const req = {
     fc: {
       interactionId: interactionIdMock,
@@ -62,6 +73,7 @@ describe('CoreFcpController', () => {
     getConsent: jest.fn(),
     sendAuthenticationMail: jest.fn(),
     verify: jest.fn(),
+    getFeature: jest.fn(),
   };
 
   const identityProviderServiceMock = {
@@ -373,16 +385,9 @@ describe('CoreFcpController', () => {
   });
 
   describe('getOidcCallback', () => {
-    let res;
     const accessTokenMock = Symbol('accesToken');
     const amrMock = Symbol('amr');
-    const providerUid = 'providerUidMock';
-    const identityMock = {
-      sub: '1',
-      // oidc spec defined property
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      given_name: 'given_name',
-    };
+
     const tokenParamsMock = {
       providerUid,
       idpState: idpStateMock,
@@ -402,6 +407,7 @@ describe('CoreFcpController', () => {
     };
     const redirectMock = `/api/v2/interaction/${interactionIdMock}/verify`;
 
+    let validateIdentityMock;
     beforeEach(() => {
       res = {
         redirect: jest.fn(),
@@ -416,6 +422,11 @@ describe('CoreFcpController', () => {
         identityMock,
       );
 
+      validateIdentityMock = jest.spyOn<CoreFcpController, any>(
+        coreController,
+        'validateIdentity',
+      );
+      validateIdentityMock.mockResolvedValueOnce();
       oidcClientServiceMock.utils.checkIdpBlacklisted.mockResolvedValueOnce(
         false,
       );
@@ -436,7 +447,8 @@ describe('CoreFcpController', () => {
         req,
       );
     });
-    it('should call userinfo with acesstoken and context', async () => {
+
+    it('should call userinfo with acesstoken, dto and context', async () => {
       // action
       await coreController.getOidcCallback(req, res, {
         providerUid,
@@ -449,6 +461,25 @@ describe('CoreFcpController', () => {
       expect(
         oidcClientServiceMock.getUserInfosFromProvider,
       ).toHaveBeenCalledWith(userInfoParamsMock, req);
+    });
+
+    it('should failed to get identity if validation failed', async () => {
+      // arrange
+      const errorMock = new Error('Unknown Error');
+      validateIdentityMock.mockReset().mockRejectedValueOnce(errorMock);
+
+      // action
+      await expect(
+        coreController.getOidcCallback(req, res, { providerUid }),
+      ).rejects.toThrow(errorMock);
+
+      // assert
+      expect(validateIdentityMock).toHaveBeenCalledTimes(1);
+      expect(validateIdentityMock).toHaveBeenCalledWith(
+        idpIdMock,
+        providerUid,
+        identityMock,
+      );
     });
 
     it('should patch session with identity result and interaction ID', async () => {
@@ -533,6 +564,63 @@ describe('CoreFcpController', () => {
       expect(sessionServiceMock.patch).toHaveBeenCalledWith('123', {
         csrfToken: 'randomStringMockValue',
       });
+    });
+  });
+
+  describe('validateIdentity', () => {
+    let handleFnMock;
+    let handlerMock;
+    beforeEach(() => {
+      handleFnMock = jest.fn();
+      handlerMock = {
+        handle: handleFnMock,
+      };
+      coreServiceMock.getFeature.mockResolvedValueOnce(handlerMock);
+    });
+
+    it('should succeed to get the right handler to validate identity', async () => {
+      // arrange
+      handleFnMock.mockResolvedValueOnce([]);
+      // action
+      await coreController['validateIdentity'](
+        idpIdMock,
+        providerUid,
+        identityMock,
+      );
+      // expect
+      expect(coreServiceMock.getFeature).toHaveBeenCalledTimes(1);
+      expect(coreServiceMock.getFeature).toHaveBeenCalledWith(
+        idpIdMock,
+        ProcessCore.ID_CHECK,
+      );
+    });
+
+    it('should succeed validate identity from feature handler', async () => {
+      // arrange
+      handleFnMock.mockResolvedValueOnce([]);
+      // action
+      await coreController['validateIdentity'](
+        idpIdMock,
+        providerUid,
+        identityMock,
+      );
+      // expect
+      expect(handleFnMock).toHaveBeenCalledTimes(1);
+      expect(handleFnMock).toHaveBeenCalledWith(identityMock);
+    });
+    it('should failed to validate identity', async () => {
+      // arrange
+      handleFnMock.mockResolvedValueOnce(['Unknown Error']);
+
+      await expect(
+        // action
+        coreController['validateIdentity'](
+          idpIdMock,
+          providerUid,
+          identityMock,
+        ),
+        // expect
+      ).rejects.toThrow(CoreFcpInvalidIdentityException);
     });
   });
 });

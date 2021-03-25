@@ -1,13 +1,19 @@
+import { mocked } from 'ts-jest/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc-client';
-import * as validation from '@fc/common/helpers/dto-validation';
+import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { IdentityProvider } from './schemas';
 import { IdentityProviderService } from './identity-provider.service';
+
+jest.mock('@fc/common', () => ({
+  ...jest.requireActual('@fc/common'),
+  validateDto: jest.fn(),
+}));
 
 describe('IdentityProviderService', () => {
   let service: IdentityProviderService;
@@ -336,7 +342,7 @@ describe('IdentityProviderService', () => {
   describe('findAllIdentityProvider', () => {
     let validateDtoMock;
     beforeEach(() => {
-      validateDtoMock = jest.spyOn(validation, 'validateDto');
+      validateDtoMock = mocked(validateDto);
     });
 
     it('should resolve', async () => {
@@ -348,6 +354,9 @@ describe('IdentityProviderService', () => {
     });
 
     it('should have called find once', async () => {
+      // arrange
+      validateDtoMock.mockResolvedValueOnce([]);
+
       // action
       await service['findAllIdentityProvider']();
 

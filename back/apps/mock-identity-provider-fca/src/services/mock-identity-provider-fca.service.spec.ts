@@ -280,5 +280,24 @@ describe('MockIdentityProviderFcaService', () => {
       // Then
       expect(result).toBe(undefined);
     });
+
+    it('should return extra properties if user is E020025', () => {
+      // Given
+      const entryA = { uid: 'E020025' };
+      const resultMock = {
+        ...entryA,
+        // oidc naming convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        unknown_prop_for_test: 'shouldNotBeThere',
+      };
+
+      service['database'] = [entryA] as Identity[];
+      const inputUid = entryA.uid;
+      // When
+      const result = service.getIdentity(inputUid);
+
+      // Then
+      expect(result).toStrictEqual(resultMock);
+    });
   });
 });
