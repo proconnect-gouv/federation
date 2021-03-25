@@ -146,6 +146,15 @@ export class UserDashboardController {
       req,
     );
 
+    /**
+     *  @todo
+     *    author: Arnaud
+     *    date: 19/03/2020
+     *    ticket: FC-244 (identity, DTO, Mock, FS)
+     *
+     *    action: Check the data returns from FC
+     */
+
     const identityExchange = {
       idpIdentity: identity,
       idpAcr: acr,

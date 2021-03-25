@@ -1,10 +1,11 @@
 import 'reflect-metadata';
 import { ClassTransformOptions, plainToClass } from 'class-transformer';
 import { validate, ValidatorOptions, ValidationError } from 'class-validator';
+import { Type } from '@nestjs/common';
 
 export function getTransformed<T = any>(
   plain: object,
-  dto: any,
+  dto: Type<any>,
   options?: ClassTransformOptions,
 ): T {
   return plainToClass(dto, plain, options);
@@ -12,12 +13,22 @@ export function getTransformed<T = any>(
 
 export async function validateDto(
   plain: object,
-  dto: any,
+  dto: Type<any>,
   validatorOptions: ValidatorOptions,
   transformOptions?: ClassTransformOptions,
 ): Promise<ValidationError[]> {
   const object = getTransformed<typeof dto>(plain, dto, transformOptions);
 
+  /**
+   *  @todo
+   *    author: Arnaud
+   *    date: 19/03/2020
+   *    ticket: FC-244 (identity, DTO, Validate)
+   *
+   *    context: On n'utilise pas l'objet transformé !
+   *    problem: on valide l'object transformé mais on ne récupère pas l'objet transformé et donc nettoyé des inconnues
+   *    action: renvoyer un objet contenant résultat ou erreurs éventuelles.
+   */
   return validate(object, validatorOptions);
 }
 

@@ -7,8 +7,8 @@ import { IEventContext, TrackingService } from '@fc/tracking';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from '../events';
+import { MinIdentityDto, TokenResultDto } from '../dto';
 import { TokenParams, TokenResults, UserInfosParams } from '../interfaces';
-import { TokenResultDto } from '../dto';
 import { OidcClientUserinfosFailedException } from '../exceptions';
 
 const DTO_OPTIONS: ValidatorOptions = {
@@ -88,7 +88,25 @@ export class OidcClientService {
     }
     this.tracking.track(OidcClientUserinfoEvent, context);
 
-    // BUSINESS: Locally store received identity
+    const errors = await validateDto(
+      identity,
+      MinIdentityDto,
+      {
+        whitelist: true,
+      },
+      {
+        excludeExtraneousValues: true,
+      },
+    );
+
+    if (errors.length) {
+      throw new Error(
+        `"${providerUid}" doesn't provide a minimum identity information: ${JSON.stringify(
+          errors,
+        )}`,
+      );
+    }
+
     return identity;
   }
 }

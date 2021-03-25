@@ -3,7 +3,12 @@
  *
  * @see https://on.cypress.io/custom-commands
  */
-import { hasBusinessLog } from './commands';
+import {
+  hasBusinessLog,
+  hasError,
+  registerProxyURL,
+  proxyURLWasActivated,
+} from './commands';
 
 /**
  * Needed because the eidas node throws unhandled exceptions in the front javasript
@@ -16,4 +21,7 @@ Cypress.on('uncaught:exception', (err) => {
   return false;
 });
 
+Cypress.Commands.add('hasError', hasError);
 Cypress.Commands.add('hasBusinessLog', hasBusinessLog);
+Cypress.Commands.add('registerProxyURL', registerProxyURL);
+Cypress.Commands.add('proxyURLWasActivated', proxyURLWasActivated);

@@ -1,3 +1,5 @@
+import { ValidatorOptions } from 'class-validator';
+import { ClassTransformOptions } from 'class-transformer';
 import {
   Controller,
   Get,
@@ -18,8 +20,10 @@ import { IOidcIdentity, OidcError } from '@fc/oidc';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { IExposedSessionServiceGeneric, Session } from '@fc/session-generic';
 import { EidasClientSession } from '@fc/eidas-client';
+import { validateDto } from '@fc/common';
 import { EidasBridgeRoutes } from '../enums';
-import { ValidateEuropeanIdentity, Core } from '../dto';
+import { ValidateEuropeanIdentity, Core, EidasBridgeIdentityDto } from '../dto';
+import { EidasBridgeInvalidIdentityException } from '../exceptions';
 
 /**
  * @todo Clean the controller (create a service, generalize code, ...)
@@ -112,6 +116,8 @@ export class EuIdentityToFrController {
       userinfos: idpIdentity,
     } = await this.eidasToOidc.mapPartialResponseSuccess(eidasResponse);
 
+    await this.validateIdentity(idpIdentity);
+
     const spIdentity: IOidcIdentity = idpIdentity;
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
@@ -127,6 +133,32 @@ export class EuIdentityToFrController {
     });
 
     return this.oidcProvider.finishInteraction(req, res);
+  }
+
+  /**
+   * Validate the identity of userInfos.
+   * @param identity
+   */
+  private async validateIdentity(identity: Partial<EidasBridgeIdentityDto>) {
+    const validatorOptions: ValidatorOptions = {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      forbidUnknownValues: true,
+    };
+    const transformOptions: ClassTransformOptions = {
+      excludeExtraneousValues: true,
+    };
+
+    const errors = await validateDto(
+      identity,
+      EidasBridgeIdentityDto,
+      validatorOptions,
+      transformOptions,
+    );
+
+    if (errors.length) {
+      throw new EidasBridgeInvalidIdentityException(errors);
+    }
   }
 
   private buildRedirectUriErrorUrl(params, oidcError: OidcError) {
