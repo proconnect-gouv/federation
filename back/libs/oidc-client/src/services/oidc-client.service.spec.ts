@@ -1,13 +1,19 @@
+import { mocked } from 'ts-jest/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { IEventContext, TrackingService } from '@fc/tracking';
-import * as validation from '@fc/common/helpers/dto-validation';
+import { validateDto } from '@fc/common';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientService } from './oidc-client.service';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
 import { TokenParams, UserInfosParams } from '../interfaces';
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from '../events';
 import { OidcClientUserinfosFailedException } from '../exceptions';
+
+jest.mock('@fc/common', () => ({
+  ...jest.requireActual('@fc/common'),
+  validateDto: jest.fn(),
+}));
 
 describe('OidcClientService', () => {
   let service: OidcClientService;
@@ -91,7 +97,7 @@ describe('OidcClientService', () => {
 
     service = module.get<OidcClientService>(OidcClientService);
 
-    validateDtoMock = jest.spyOn(validation, 'validateDto');
+    validateDtoMock = mocked(validateDto);
   });
 
   describe('constructor', () => {
@@ -241,6 +247,21 @@ describe('OidcClientService', () => {
         // assert
       ).rejects.toThrow(OidcClientUserinfosFailedException);
 
+      expect(oidcClientUtilsServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
+    });
+
+    it('should failed if the token is wrong and DTO blocked', async () => {
+      // arrange
+      validateDtoMock.mockReset().mockReturnValueOnce([errorMock]);
+
+      // action
+      await expect(
+        () =>
+          service.getUserInfosFromProvider(userInfosParamsMock, contextMock),
+        // assert
+      ).rejects.toThrow(
+        '"providerUidMockValue" doesn\'t provide a minimum identity information: [{}]',
+      );
       expect(oidcClientUtilsServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
     });
 

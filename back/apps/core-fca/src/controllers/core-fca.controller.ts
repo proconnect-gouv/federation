@@ -28,8 +28,12 @@ import {
   OidcClientRoutes,
   OidcClientService,
 } from '@fc/oidc-client';
-import { Core } from '../dto';
+import { validateDto } from '@fc/common';
+import { Core, OidcIdentityDto } from '../dto';
 import { CoreFcaService } from '../services';
+import { CoreFcaInvalidIdentityException } from '../exceptions';
+import { ValidatorOptions } from 'class-validator';
+import { ClassTransformOptions } from 'class-transformer';
 
 @Controller()
 export class CoreFcaController {
@@ -190,6 +194,8 @@ export class CoreFcaController {
       req,
     );
 
+    await this.validateIdentity(providerUid, identity);
+
     const identityExchange = {
       idpIdentity: identity,
       idpAcr: acr,
@@ -199,5 +205,30 @@ export class CoreFcaController {
     // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');
     res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
+  }
+
+  private async validateIdentity(
+    providerUid: string,
+    identity: Partial<OidcIdentityDto>,
+  ) {
+    const validatorOptions: ValidatorOptions = {
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      forbidUnknownValues: true,
+    };
+    const transformOptions: ClassTransformOptions = {
+      excludeExtraneousValues: true,
+    };
+
+    const errors = await validateDto(
+      identity,
+      OidcIdentityDto,
+      validatorOptions,
+      transformOptions,
+    );
+
+    if (errors.length) {
+      throw new CoreFcaInvalidIdentityException(providerUid, errors);
+    }
   }
 }

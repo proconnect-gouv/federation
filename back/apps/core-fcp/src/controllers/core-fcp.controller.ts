@@ -1,3 +1,4 @@
+import { ValidationError } from 'class-validator';
 import {
   Controller,
   Post,
@@ -34,8 +35,10 @@ import {
   CoreMissingIdentityException,
   CoreInvalidCsrfException,
 } from '@fc/core';
-import { Core } from '../dto';
+import { Core, OidcIdentityDto } from '../dto';
 import { CoreFcpService } from '../services';
+import { ProcessCore } from '../enums';
+import { CoreFcpInvalidIdentityException } from '../exceptions';
 
 @Controller()
 export class CoreFcpController {
@@ -169,7 +172,7 @@ export class CoreFcpController {
     const { providerUid } = params;
 
     const uid = req.fc.interactionId;
-    const { idpState, idpNonce, spId } = await this.session.get(uid);
+    const { idpState, idpNonce, idpId, spId } = await this.session.get(uid);
 
     await this.oidcClient.utils.checkIdpBlacklisted(spId, providerUid);
 
@@ -178,6 +181,7 @@ export class CoreFcpController {
       idpState,
       idpNonce,
     };
+
     const {
       accessToken,
       acr,
@@ -194,6 +198,8 @@ export class CoreFcpController {
       req,
     );
 
+    await this.validateIdentity(idpId, providerUid, identity);
+
     const identityExchange = {
       idpIdentity: identity,
       idpAcr: acr,
@@ -204,6 +210,22 @@ export class CoreFcpController {
     // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');
     res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
+  }
+
+  private async validateIdentity(
+    idpId: string,
+    providerUid: string,
+    identity: Partial<OidcIdentityDto>,
+  ) {
+    const identityCheckHandler = await this.core.getFeature<ValidationError[]>(
+      idpId,
+      ProcessCore.ID_CHECK,
+    );
+
+    const errors = await identityCheckHandler.handle(identity);
+    if (errors.length) {
+      throw new CoreFcpInvalidIdentityException(providerUid, errors);
+    }
   }
 
   /**

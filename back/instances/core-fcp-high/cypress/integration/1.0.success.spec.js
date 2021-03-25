@@ -3,11 +3,10 @@ import {
   checkInformationsServiceProvider,
   checkInStringifiedJson,
   navigateToMire,
-  getAuthorizeUrl
+  getAuthorizeUrl,
 } from './mire.utils';
 
 describe('Successful scenarios', () => {
-
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
@@ -167,24 +166,27 @@ describe('Successful scenarios', () => {
     //TODO: find how trigger a keypress on key enter instead
     //After many tests a key press on this keys it seems that it implicitly triggers a click on the focus element
     cy.focused().click();
-    cy.location().then(({href}) => {
+    cy.location().then(({ href }) => {
       cy.get('@fc:redirectUri').should('eq', href);
-    })  
+    });
   });
 
   it('should apply box shadow when identity provider links are focused', () => {
     navigateToMire();
-    cy.get('#idp-list form').each((item)=>{
-      cy.get(item).find('div button').invoke('attr', 'disabled').then((isDisabled) => {
-        if((!isDisabled)){
-          cy.get(item).find('div button').focus();
-          cy.get(item).find('div button').should('have.css', 'box-shadow');
-          cy.get(item).find('div button').blur();
-        }
-      })
-    })
-  })
-  
+    cy.get('#idp-list form').each((item) => {
+      cy.get(item)
+        .find('div button')
+        .invoke('attr', 'disabled')
+        .then((isDisabled) => {
+          if (!isDisabled) {
+            cy.get(item).find('div button').focus();
+            cy.get(item).find('div button').should('have.css', 'box-shadow');
+            cy.get(item).find('div button').blur();
+          }
+        });
+    });
+  });
+
   it('should return to the SP with an "invalid_request" error if the query does not contain the "openid" scope', () => {
     // First visit SP home page to initialize its session.
     cy.visit(Cypress.env('SP1_ROOT_URL'));
@@ -201,15 +203,14 @@ describe('Successful scenarios', () => {
     });
 
     cy.url()
-    .should(
-      'contains',
-      `${Cypress.env(`SP1_ROOT_URL`)}/oidc-callback/envIssuer`,
-    )
-    .should(
-      'contains',
-      'error=invalid_request&error_description=openid%20scope%20must%20be%20requested%20when%20using%20the%20acr_values',
-    )
-    .should('contains', 'state=stateTraces');
+      .should(
+        'contains',
+        `${Cypress.env(`SP1_ROOT_URL`)}/oidc-callback/envIssuer`,
+      )
+      .should(
+        'contains',
+        'error=invalid_request&error_description=openid%20scope%20must%20be%20requested%20when%20using%20the%20acr_values',
+      )
+      .should('contains', 'state=stateTraces');
   });
-
 });

@@ -251,6 +251,12 @@ export function navigateToMire() {
     });
 }
 
+export function validateConsent() {
+  cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+
+  cy.get('#consent').click();
+}
+
 export function basicScenario(params) {
   const {
     idpId,
