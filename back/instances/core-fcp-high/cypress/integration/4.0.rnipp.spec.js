@@ -96,7 +96,11 @@ describe('RNIPP', () => {
       login: 'test_INVALID_COG',
     });
 
-    cy.hasError('Y010013');
+    cy.hasError('Y000007');
+    cy.contains(` Invalid identity from ${Cypress.env('IDP_NAME')}1v2`);
+    cy.contains('"isCog": ""');
+    // birthplace and address
+    cy.contains(/(?:"constraints"){2}.*?(constraints)/).should('not.exist');
   });
 
   it('should trigger error Y010015', () => {

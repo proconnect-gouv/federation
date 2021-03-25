@@ -5,3 +5,4 @@ export * from './core-fcp.module';
 export * from './controllers';
 export * from './handlers';
 export * from './dto';
+export * from './enums';

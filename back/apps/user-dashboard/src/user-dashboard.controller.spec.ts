@@ -343,7 +343,6 @@ describe('UserDashboardController', () => {
   });
 
   describe('getOidcCallback', () => {
-    let res;
     const accessTokenMock = Symbol('accesToken');
     const acrMock = Symbol('acr');
     const providerUid = 'providerUidMock';
@@ -407,7 +406,7 @@ describe('UserDashboardController', () => {
       );
     });
 
-    it('should call userinfo with acesstoken and context', async () => {
+    it('should call userinfo with acesstoken, dto and context', async () => {
       // arrange
 
       // action
