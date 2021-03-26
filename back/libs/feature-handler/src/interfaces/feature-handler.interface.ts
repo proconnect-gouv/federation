@@ -3,7 +3,8 @@
 // Declarative code
 
 /**
- * @todo améliorer le typage pour affiner l'ajout de données (FeatureHandler...)
+ * @todo #429 améliorer le typage pour affiner l'ajout de données (FeatureHandler...)
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/429
  */
 
 /**

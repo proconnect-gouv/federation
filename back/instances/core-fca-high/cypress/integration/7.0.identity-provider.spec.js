@@ -97,7 +97,8 @@ describe('Idp activation & visibility', () => {
   });
 
   /**
-   * @TODO Implement tests once feature is implemented in core-fca (front + fixture)
+   * @TODO #414 Implement tests once feature is implemented in core-fca (front + fixture)
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/414
    */
   it.skip('should display as disable "not active but visible" IdP', () => {
     // Given
@@ -116,7 +117,8 @@ describe('Idp activation & visibility', () => {
   });
 
   /**
-   * @TODO Implement tests once feature is implemented in core-fca (front + fixture)
+   * @TODO #414 Implement tests once feature is implemented in core-fca (front + fixture)
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/414
    */
   it.skip('should not do anything when click on disabled IdP', () => {
     // Given
@@ -135,7 +137,8 @@ describe('Idp activation & visibility', () => {
   });
 
   /**
-   * @TODO Implement tests once feature is implemented in core-fca (front + fixture)
+   * @TODO #414 Implement tests once feature is implemented in core-fca (front + fixture)
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/414
    */
   it.skip('should redirect when click on enabled IdP', () => {
     // Given
@@ -152,7 +155,8 @@ describe('Idp activation & visibility', () => {
   });
 
   /**
-   * @TODO Implement tests once feature is implemented in core-fca (front + fixture)
+   * @TODO #414 Implement tests once feature is implemented in core-fca (front + fixture)
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/414
    */
   it.skip('should trigger error 020017 when forging click on disabled IdP', () => {
     // Given
@@ -174,7 +178,8 @@ describe('Idp activation & visibility', () => {
   });
 
   /**
-   * @TODO Implement tests once feature is implemented in core-fca (front + fixture)
+   * @TODO #414 Implement tests once feature is implemented in core-fca (front + fixture)
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/414
    */
   it.skip('should trigger error 020019 when forging click on non existing IdP', () => {
     // Given
@@ -197,34 +202,34 @@ describe('Idp activation & visibility', () => {
     beforeEach(() => {
       cy.resetdb();
     });
-    
+
     it('should display an identity provider that has been added without an app restart needed', () => {
       const { SP_ROOT_URL } = getServiceProvider(spId);
       cy.visit(SP_ROOT_URL);
       cy.get('#get-authorize').click();
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').should('not.exist');
-      
-      cy.e2e('fca_idp_insert');   
+
+      cy.e2e('fca_idp_insert');
       cy.wait(500);
       cy.reload();
-      
+
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').contains('Idp test Inserted');
     });
-  
+
     it('should update an identity provider properties, activate it, without an app restart needed', () => {
       const { SP_ROOT_URL } = getServiceProvider(spId);
       cy.visit(SP_ROOT_URL);
-      cy.get('#get-authorize').click(); 
+      cy.get('#get-authorize').click();
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').should('not.exist');
-      
-      cy.e2e('fca_idp_insert');  
-      cy.e2e('fca_idp_update_activate');   
+
+      cy.e2e('fca_idp_insert');
+      cy.e2e('fca_idp_update_activate');
       cy.wait(500);
       cy.reload();
-      
+
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').contains('Idp test Updated, activated');
     })
@@ -232,16 +237,16 @@ describe('Idp activation & visibility', () => {
     it('should update an identity provider properties, deactivate it, without an app restart needed', () => {
       const { SP_ROOT_URL } = getServiceProvider(spId);
       cy.visit(SP_ROOT_URL);
-      cy.get('#get-authorize').click(); 
+      cy.get('#get-authorize').click();
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').should('not.exist');
-      
-      cy.e2e('fca_idp_insert');  
-      cy.e2e('fca_idp_update_activate');   
-      cy.e2e('fca_idp_update_desactivate');   
+
+      cy.e2e('fca_idp_insert');
+      cy.e2e('fca_idp_update_activate');
+      cy.e2e('fca_idp_update_desactivate');
       cy.wait(500);
       cy.reload();
-      
+
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').contains('Idp test Updated, desactivated');
     })
@@ -249,18 +254,18 @@ describe('Idp activation & visibility', () => {
     it('should remove an identity provider without an app restart needed', () => {
       const { SP_ROOT_URL } = getServiceProvider(spId);
       cy.visit(SP_ROOT_URL);
-      cy.get('#get-authorize').click(); 
+      cy.get('#get-authorize').click();
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').should('not.exist');
-      
-      cy.e2e('fca_idp_insert');   
+
+      cy.e2e('fca_idp_insert');
       cy.wait(500);
       cy.reload();
-      
+
       cy.get('#fi-search-term').type('idp test');
       cy.get('#identity-provider-search .list-unstyled').contains('Idp test Inserted');
 
-      cy.e2e('fca_idp_remove');   
+      cy.e2e('fca_idp_remove');
       cy.wait(500);
       cy.reload();
 
