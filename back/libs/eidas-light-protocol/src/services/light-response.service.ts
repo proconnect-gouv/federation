@@ -58,7 +58,7 @@ export class LightResponseService {
     pathsObject = this.lightXml.prefixProps(
       pathsObject,
       ['subjectNameIdFormat'],
-      'urn:oasis:names:tc:SAML:1.1:nameid-format:',
+      'urn:oasis:names:tc:SAML:2.0:nameid-format:',
     );
 
     // Add the namespace for statusCode, subStatusCode attribute

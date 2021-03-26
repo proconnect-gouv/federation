@@ -345,7 +345,7 @@ describe('EidasProviderService', () => {
         relayState: eidasRequestMock.relayState,
         status: partialEidasResponseMock.status,
         subject: partialEidasResponseMock.subject,
-        subjectNameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+        subjectNameIdFormat: EidasNameIdFormats.PERSISTENT,
       };
 
       // action
