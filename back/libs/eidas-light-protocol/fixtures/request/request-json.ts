@@ -12,7 +12,7 @@ export const requestJsonMock: EidasRequest = {
   id: 'Auduye7263',
   issuer: 'EIDASBridge',
   levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
-  nameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+  nameIdFormat: EidasNameIdFormats.PERSISTENT,
   providerName: 'FranceConnect',
   spType: EidasSpTypes.PUBLIC,
   relayState: 'myState',
