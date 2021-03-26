@@ -7,12 +7,12 @@ eidas-bridge:
     FC_ROOT: '$CI_BUILDS_DIR/france-connect'
     TZ: 'Europe/Paris'
   cache:
-    key: "${CI_PROJECT_ID}-eidas"
-    policy: pull-push
+    key: "${CI_PROJECT_ID}"
+    policy: pull
     paths:
       - back/node_modules/
   before_script:
-    - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f; fi
+    - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f && docker volume prune -f; fi
     - rm -rf $FC_ROOT/fc-docker
     - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
     - shopt -s expand_aliases
@@ -56,6 +56,7 @@ eidas-bridge:
       (docker cp fc_fsp3v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc-rp-all:/var/log/nginx back/instances/eidas-bridge/cypress/logs || true) &&
       exit 1)
+  interruptible: true
   artifacts:
     expire_in: 1 hrs
     when: on_failure
@@ -65,4 +66,4 @@ eidas-bridge:
       - back/instances/eidas-bridge/cypress/logs
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
-    - docker container prune --force
+    - docker container prune --force && docker volume prune -f
