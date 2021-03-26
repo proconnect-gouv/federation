@@ -1,0 +1,38 @@
+review-fca:
+  stage: 'Review'
+  image: ${DEPLOY_IMAGE}
+  tags:
+    - deploy
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - chmod og= $RECETTE_SSH_KEY
+    - ssh -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER "sh /data/fca/start $CI_COMMIT_REF_NAME $FC_DOCKER_VERSION $CI_JOB_TOKEN $CI_REGISTRY $CI_OPEN_MERGE_REQUESTS $FC_APPS_VERSION"
+  resource_group: recette
+  environment:
+    name: recette
+    url: https://recette.dev-franceconnect.fr
+    on_stop: stop-fca
+    auto_stop_in: 1 hour
+  when: manual
+
+stop-fca:
+  stage: 'Review'
+  image: ${DEPLOY_IMAGE}
+  tags:
+    - deploy
+  variables:
+    GIT_STRATEGY: none
+  script:
+    - chmod og= $RECETTE_SSH_KEY
+    - ssh -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER "sh /data/teardown fca"
+    - scp -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER:/data/fca/workspace/fc-docker/volumes/log/*.log .
+  artifacts:
+      expire_in: 1 hrs
+      paths:
+        - $CI_PROJECT_DIR
+  resource_group: recette
+  environment:
+    name: recette
+    action: stop
+  when: manual
