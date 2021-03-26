@@ -103,7 +103,7 @@ export class EidasProviderService {
       inResponseToId: eidasRequest.id,
       relayState: eidasRequest.relayState,
       subject,
-      subjectNameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+      subjectNameIdFormat: EidasNameIdFormats.PERSISTENT,
       levelOfAssurance,
       status,
       attributes,
