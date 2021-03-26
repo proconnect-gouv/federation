@@ -14,7 +14,7 @@ export const successFullJsonMock: EidasResponse = {
   ipAddress: '127.0.0.1',
   relayState: 'myState',
   subject: '0123456',
-  subjectNameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+  subjectNameIdFormat: EidasNameIdFormats.PERSISTENT,
   levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
   status: {
     failure: false,
@@ -65,7 +65,7 @@ export const lightResponseSuccessFullJsonMock: IJsonifiedLightResponseXml = {
       _text: 'myState',
     },
     subjectNameIdFormat: {
-      _text: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
+      _text: 'urn:oasis:names:tc:SAML:2.0:nameid-format:persistent',
     },
     subject: {
       _text: '0123456',
@@ -174,7 +174,7 @@ export const lightResponseSuccessFullXmlMock = `<?xml version="1.0" encoding="UT
   <issuer>https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata</issuer>
   <ipAddress>127.0.0.1</ipAddress>
   <relayState>myState</relayState>
-  <subjectNameIdFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</subjectNameIdFormat>
+  <subjectNameIdFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</subjectNameIdFormat>
   <subject>0123456</subject>
   <levelOfAssurance>http://eidas.europa.eu/LoA/substantial</levelOfAssurance>
   <status>

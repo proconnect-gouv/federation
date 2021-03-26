@@ -11,7 +11,7 @@ export const successMandatoryJsonMock: EidasResponse = {
   issuer:
     'https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata',
   subject: '0123456',
-  subjectNameIdFormat: EidasNameIdFormats.UNSPECIFIED,
+  subjectNameIdFormat: EidasNameIdFormats.PERSISTENT,
   levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
   status: {
     failure: false,
@@ -101,7 +101,7 @@ export const lightResponseSuccessMandatoryXmlMock = `<?xml version="1.0" encodin
   <id>_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u</id>
   <inResponseToId>1602861970744</inResponseToId>
   <issuer>https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata</issuer>
-  <subjectNameIdFormat>urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified</subjectNameIdFormat>
+  <subjectNameIdFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:persistent</subjectNameIdFormat>
   <subject>0123456</subject>
   <levelOfAssurance>http://eidas.europa.eu/LoA/substantial</levelOfAssurance>
   <status>
