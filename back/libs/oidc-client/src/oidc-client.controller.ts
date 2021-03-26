@@ -16,6 +16,12 @@ import { RedirectToIdp } from './dto';
 import { OidcClientRoutes } from './enums';
 import { OidcClientService } from './services';
 
+/**
+ * @TODO #446 This service provider should not be generic, When it's called with FC
+ * we have the spId in session but not when it's called with a service provder
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/446
+ */
+
 @Controller()
 export class OidcClientController {
   // Dependency injection can require more than 4 parameters
@@ -44,10 +50,7 @@ export class OidcClientController {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
     } = body;
-    /**
-     * @TODO This controller should not be generic
-     * This is a specific behaviour for FC and not for fsp*v2
-     */
+
     let serviceProviderId: string | null;
     const { interactionId } = req.fc;
     try {
