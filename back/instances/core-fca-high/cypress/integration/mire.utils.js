@@ -197,7 +197,8 @@ export function basicScenario(params) {
   cy.get('input[name="password"]').clear().type(password);
 
   /**
-   * @todo This section should be impplemented in te IDP Mock instance
+   * @todo #422 This section should be impplemented in te IDP Mock instance
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/422
    */
   //if (eidasLevel) {
   //  cy.get('select[name="acr"]').select(eidasLevel);

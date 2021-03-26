@@ -228,7 +228,8 @@ export class SessionGenericService {
    */
   private serialize(data: object): string {
     /**
-     * @todo should probably have a try/catch with custom error code
+     * @todo #415 should probably have a try/catch with custom error code
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/415
      */
     const dataString = JSON.stringify(data);
     const dataCipher = this.cryptography.encryptSymetric(
@@ -266,7 +267,8 @@ export class SessionGenericService {
    */
   private async validate(session: object): Promise<void> {
     /**
-     * @todo Add specific error code
+     * @todo #416 Add specific error code
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/416
      */
     await validateDto(session, this.sessionOptions.schema, validationOptions);
   }
