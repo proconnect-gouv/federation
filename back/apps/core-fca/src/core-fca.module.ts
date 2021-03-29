@@ -29,14 +29,15 @@ import {
   OidcProviderTokenEventHandler,
   OidcProviderUserinfoEventHandler,
 } from '@fc/core';
+import { FeatureHandlerModule } from '@fc/feature-handler';
+import { CoreFcaController, OidcProviderController } from './controllers';
+import { CoreFcaService } from './services';
+import { CoreFcaDefaultVerifyHandler } from './handlers';
+
 const oidcProviderModule = OidcProviderModule.register(
   ServiceProviderService,
   ServiceProviderModule,
 );
-import { FeatureHandlerModule } from '@fc/feature-handler';
-import { CoreFcaController } from './controllers';
-import { CoreFcaService } from './services';
-import { CoreFcaDefaultVerifyHandler } from './handlers';
 
 @Global()
 @Module({
@@ -61,7 +62,7 @@ import { CoreFcaDefaultVerifyHandler } from './handlers';
     TrackingModule.forRoot(CoreTrackingService),
     FeatureHandlerModule,
   ],
-  controllers: [CoreFcaController],
+  controllers: [CoreFcaController, OidcProviderController],
   providers: [
     CoreService,
     CoreFcaService,
