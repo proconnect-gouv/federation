@@ -25,6 +25,7 @@ import { HttpProxyModule } from '@fc/http-proxy';
 import {
   FrIdentityToEuController,
   EuIdentityToFrController,
+  OidcProviderController,
 } from './controllers';
 import { EidasBridgeSession } from './dto';
 import { OidcMiddlewareService } from './services';
@@ -62,6 +63,7 @@ const oidcProviderModule = OidcProviderModule.register(
     EuIdentityToFrController,
     EidasClientController,
     EidasProviderController,
+    OidcProviderController,
   ],
   providers: [OidcMiddlewareService],
   exports: [],
