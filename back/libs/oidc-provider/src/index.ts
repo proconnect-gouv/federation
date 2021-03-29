@@ -5,3 +5,4 @@ export * from './enums';
 export * from './dto';
 export * from './exceptions';
 export * from './events';
+export * from './validators';
