@@ -39,7 +39,7 @@ import {
 } from '@fc/core';
 import { ScopesModule } from '@fc/scopes';
 import { FeatureHandlerModule } from '@fc/feature-handler';
-import { CoreFcpController } from './controllers';
+import { CoreFcpController, OidcProviderController } from './controllers';
 import { CoreFcpService } from './services';
 import {
   CoreFcpEidasVerifyHandler,
@@ -82,7 +82,7 @@ const oidcProviderModule = OidcProviderModule.register(
     NotificationsModule,
     FeatureHandlerModule,
   ],
-  controllers: [CoreFcpController],
+  controllers: [CoreFcpController, OidcProviderController],
   providers: [
     CoreService,
     CoreTrackingService,
