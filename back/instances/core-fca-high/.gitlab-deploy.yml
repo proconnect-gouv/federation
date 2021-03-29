@@ -7,7 +7,7 @@ review-fca:
     GIT_STRATEGY: none
   script:
     - chmod og= $RECETTE_SSH_KEY
-    - ssh -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER "sh /data/fca/start $CI_COMMIT_REF_NAME $FC_DOCKER_VERSION $CI_JOB_TOKEN $CI_REGISTRY $CI_OPEN_MERGE_REQUESTS $FC_APPS_VERSION"
+    - ssh -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER "sh /data/fca/start $CI_COMMIT_REF_NAME $FC_DOCKER_VERSION $FC_APPS_VERSION $CI_JOB_TOKEN $CI_REGISTRY $CI_OPEN_MERGE_REQUESTS"
   resource_group: recette
   environment:
     name: recette
