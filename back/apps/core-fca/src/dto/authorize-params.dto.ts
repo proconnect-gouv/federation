@@ -7,7 +7,7 @@ import {
   Length,
 } from 'class-validator';
 import { Split } from '@fc/common';
-import { IsValidPrompt } from '../validators';
+import { IsValidPrompt } from '@fc/oidc-provider';
 
 /**
  * Control parameters on the authentication request.
