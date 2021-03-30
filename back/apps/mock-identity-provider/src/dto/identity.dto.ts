@@ -40,8 +40,5 @@ export class Identity {
   readonly phone: string;
 
   @IsString()
-  readonly 'chorusdt:societe': string;
-
-  @IsString()
-  readonly 'chorusdt:matricule': string;
+  readonly 'chorusdt': string;
 }
