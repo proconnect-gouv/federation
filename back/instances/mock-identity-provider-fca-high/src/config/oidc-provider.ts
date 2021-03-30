@@ -98,6 +98,8 @@ export default {
       // identity_provider: ['identity_provider'],
       'chorusdt:societe': ['chorusdt:societe'],
       'chorusdt:matricule': ['chorusdt:matricule'],
+      chorusdt: ['chorusdt:matricule','chorusdt:societe'],
+      
     },
     clientDefaults: {
       // node-oidc-provider defined key

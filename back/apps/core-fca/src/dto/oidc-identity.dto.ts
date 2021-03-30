@@ -50,12 +50,5 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
   @MaxLength(256)
   @IsOptional()
   @Expose()
-  readonly 'chorusdt:societe'?: string;
-
-  @IsSafeString()
-  @MinLength(1)
-  @MaxLength(256)
-  @IsOptional()
-  @Expose()
-  readonly 'chorusdt:matricule'?: string;
+  readonly 'chorusdt'?: string;
 }
