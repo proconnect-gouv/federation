@@ -3,7 +3,7 @@ import {
   IsUrl,
   IsOptional,
   IsArray,
-  IsAlphanumeric,
+  IsAscii,
   Length,
 } from 'class-validator';
 import { Split } from '@fc/common';
@@ -36,8 +36,8 @@ export class AuthorizeParamsDTO {
   readonly response_type: string;
 
   @IsString()
-  @IsAlphanumeric()
-  @Length(64, 64)
+  @IsAscii({ message: 'Le nonce doit être composé de caractères ASCII' })
+  @Length(1, 512)
   readonly nonce: string;
 
   @IsString()
