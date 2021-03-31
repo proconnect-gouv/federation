@@ -96,10 +96,7 @@ export default {
       // // node-oidc-provider defined key
       // // eslint-disable-next-line @typescript-eslint/naming-convention
       // identity_provider: ['identity_provider'],
-      'chorusdt:societe': ['chorusdt:societe'],
-      'chorusdt:matricule': ['chorusdt:matricule'],
       chorusdt: ['chorusdt:matricule','chorusdt:societe'],
-      
     },
     clientDefaults: {
       // node-oidc-provider defined key
