@@ -1,5 +1,3 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import * as crypto from 'crypto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
@@ -17,34 +15,324 @@ function generateMD5SumFromHTMLContent(content: string) {
   return md5;
 }
 
-function loadConnectNotificationEmailTemplateMock() {
-  const connectNotificationEmailTemplatePath = path.join(
-    __dirname,
-    '..',
-    '..',
-    '..',
-    '..',
-    '..',
-    'instances',
-    'core-fcp-high',
-    'src',
-    'views',
-    'connect-notification-email.tpl.ejs',
-  );
-  const connectNotificiationEmailTemplate = fs.readFileSync(
-    connectNotificationEmailTemplatePath,
-    'utf8',
-  );
-  return connectNotificiationEmailTemplate;
-}
+/**
+ * @TODO #471 En tant que PO je peux avoir des templates de mail différent suivant l'instance
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/471
+ */
+const template = `
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Notification de connexion à FranceConnect+</title>
+    <style type="text/css">
+      body {
+        margin: 0;
+        padding: 0;
+        min-width: 100%;
+      }
+
+      img {
+        height: auto;
+      }
+
+      .content {
+        width: 100%;
+        max-width: 580px;
+      }
+
+      table.content {
+        border-radius: 4px;
+      }
+
+      .header {
+        padding: 16px 30px 26px 30px;
+      }
+
+      .innerpadding {
+        padding: 0px 16px 0px 16px;
+      }
+
+      .innerpadding25 {
+        padding: 0px 25px 0px 25px;
+      }
+
+      .borderbottom {
+        border-bottom: 1px solid #f2eeed;
+      }
+
+      .h1,
+      .h2,
+      .bodycopy {
+        color: #494f58;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      a {
+        color: #034ea2;
+        font-family: 'Helvetica Neue', Arial, sans-serif;
+      }
+
+      strong {
+        font-weight: bold;
+      }
+
+      .h1 {
+        font-size: 33px;
+        line-height: 38px;
+        font-weight: bold;
+      }
+
+      .h2 {
+        padding: 0 0 10px 0;
+        font-size: 16px;
+        font-weight: bold;
+        font-stretch: normal;
+        font-style: normal;
+        line-height: 1.31;
+        letter-spacing: normal;
+        color: #034ea2;
+      }
+
+      .bodycopy {
+        font-size: 16px;
+        line-height: 22px;
+      }
+
+      .bold {
+        font-weight: bold;
+      }
+
+      .button {
+        border-radius: 4px;
+        background-color: #ffffff;
+        text-decoration: none;
+        padding: 20px 48px;
+      }
+
+      .button a {
+        text-decoration: none;
+      }
+    </style>
+  </head>
+
+  <body yahoo>
+    <table
+      width="100%"
+      bgcolor="#ffffff"
+      class="content"
+      align="center"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+    >
+      <tr>
+        <td>
+          <!--[if (gte mso 9)|(IE)]>
+      <table width="580" align="center" cellpadding="0" cellspacing="0" border="0">
+        <tr>
+          <td>
+    <![endif]-->
+          <table
+            class="content bottompadding50"
+            align="center"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+          >
+            <tr>
+              <td class="header">
+                <table
+                  align="center"
+                  border="0"
+                  cellpadding="0"
+                  cellspacing="0"
+                >
+                  <tr>
+                    <td height="73">
+                      <img
+                        class="fix"
+                        src="https://auth.franceconnect.gouv.fr/img/logo-fc-plus.svg"
+                        width="150"
+                        height="73"
+                        border="0"
+                        alt=""
+                      />
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td class="innerpadding">
+                <!--[if (gte mso 9)|(IE)]>
+                <table width="580" align="center" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td>
+              <![endif]-->
+                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td class="h2">
+                      Bonjour, <%= locals.givenName %> <%= locals.familyName %>.
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="bodycopy">
+                      Une connexion a eu lieu gr&acirc;ce &agrave; FranceConnect+&nbsp;:
+                    </td>
+                  </tr>
+                </table>
+
+                <!--[if (gte mso 9)|(IE)]>
+                    </td>
+                  </tr>
+              </table>
+              <![endif]-->
+              </td>
+            </tr>
+            <tr>
+              <td
+                class="innerpadding"
+                style="padding-top: 25px; padding-bottom: 25px;"
+              >
+                <!--[if (gte mso 9)|(IE)]>
+                <table width="580" align="center" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td>
+              <![endif]-->
+                <table
+                  class="content"
+                  bgcolor="#e5edf5"
+                  align="center"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="width: 100%;max-width: 580px;"
+                >
+                  <tr>
+                    <td
+                      class="bodycopy innerpadding25"
+                      style="padding-top: 25px; padding-left: 25px;"
+                    >
+                      Date :
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="bodycopy bold innerpadding25"
+                      style="padding-left: 25px;"
+                    >
+                      <strong><%= locals.today %> (heure de Paris)</strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="bodycopy innerpadding25"
+                      style="padding-top: 15px; padding-left: 25px;"
+                    >
+                      Service :
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="bodycopy bold innerpadding25"
+                      style="padding-left: 25px;"
+                    >
+                      <strong><%= locals.spName %></strong>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="bodycopy innerpadding25"
+                      style="padding-top: 15px; padding-left: 25px;"
+                    >
+                      Compte utilis&eacute;&nbsp;:
+                    </td>
+                  </tr>
+                  <tr>
+                    <td
+                      class="bodycopy bold innerpadding25"
+                      style="padding-bottom: 25px; padding-left: 25px;"
+                    >
+                      <strong><%= locals.idpName %></strong>
+                    </td>
+                  </tr>
+                </table>
+
+                <!--[if (gte mso 9)|(IE)]>
+                    </td>
+                  </tr>
+              </table>
+              <![endif]-->
+            </td>
+          </tr>
+          <tr>
+            <td class="innerpadding">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td class="bodycopy">
+                    Merci d'avoir utilis&eacute; notre service.
+                  </td>
+                </tr>
+                <tr>
+                  <td class="bodycopy bold" style="padding-top: 15px;">
+                    <strong>Si ce n'&eacute;tait pas vous,
+                    <a href="https://franceconnect.gouv.fr/faq#SECURITE" style="color: #034ea2;">cliquez ici</a></strong>.
+                  </td>
+                </tr>
+                <tr>
+                  <td class="bodycopy" style="padding-top: 15px;">
+                    Pour plus d'informations, consultez notre FAQ Usagers &agrave;
+                    l&apos;adresse suivante&nbsp;:
+                    <a href="https://franceconnect.gouv.fr/faq"
+                      style="color: #034ea2;">https://franceconnect.gouv.fr/faq</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="bodycopy" style="padding-top: 15px;">
+                    Pour toute autre question en lien avec votre d&eacute;marche, merci
+                    de contacter le support du site <%= locals.spName %>.
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td class="innerpadding" style="padding-top: 15px;">
+              <table width="100%" border="0" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td class="bodycopy">
+                    Cordialement,
+                  </td>
+                </tr>
+                <tr>
+                  <td class="bodycopy" style="padding-top: 15px;">
+                    L&#8217;&eacute;quipe FranceConnect+
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <!--[if (gte mso 9)|(IE)]>
+          </td>
+        </tr>
+    </table>
+    <![endif]-->
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
+`;
 
 describe('CoreFcpSendEmailHandler', () => {
   let service: CoreFcpSendEmailHandler;
 
   const fromMock = { email: 'address@fqdn.ext', name: 'Address' };
   const configMailerMock = {
+    template,
     from: fromMock,
-    template: loadConnectNotificationEmailTemplateMock(),
   };
 
   const loggerServiceMock = {
@@ -175,7 +463,7 @@ describe('CoreFcpSendEmailHandler', () => {
       );
       const resultMD5 = generateMD5SumFromHTMLContent(htmlContent);
       // Then
-      const expectedMD5 = '84fd049f90dde426b9ab516642a553dd';
+      const expectedMD5 = '3da3d6ccedad2514aaac2e8b7e11b734';
       expect(resultMD5).toStrictEqual(expectedMD5);
     });
   });
