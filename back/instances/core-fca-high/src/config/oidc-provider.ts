@@ -90,8 +90,8 @@ export default {
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
       belonging_population: ['belonging_population'],
-      'chorusdt:societe': ['chorusdt:societe'],
-      'chorusdt:matricule': ['chorusdt:matricule'],
+      chorusdt: ['chorusdt:matricule','chorusdt:societe'],
+
     },
     clientDefaults: {
       // node-oidc-provider defined key
