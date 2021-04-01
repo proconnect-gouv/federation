@@ -2,12 +2,12 @@
 
 // Declarative code
 import { Module } from '@nestjs/common';
-import { ErrorModule } from '@fc/error';
+import { ExceptionsModule } from '@fc/exceptions';
 import { HsmModule } from '@fc/hsm';
 import { CsmrHsmController } from './csmr-hsm.controller';
 
 @Module({
-  imports: [ErrorModule, HsmModule],
+  imports: [ExceptionsModule, HsmModule],
   controllers: [CsmrHsmController],
 })
 export class CsmrHsmModule {}

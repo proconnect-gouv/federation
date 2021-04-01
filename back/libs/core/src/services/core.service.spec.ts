@@ -16,7 +16,7 @@ import { SessionService } from '@fc/session';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { AccountService, AccountBlockedException } from '@fc/account';
 import { OidcProviderErrorService } from '@fc/oidc-provider/services/oidc-provider-error.service';
-import { ServiceProviderService } from '@fc/service-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { IEventContext, TrackingService } from '@fc/tracking';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
 import { CoreService } from './core.service';
@@ -135,7 +135,7 @@ describe('CoreService', () => {
         OidcProviderErrorService,
         CryptographyFcpService,
         AccountService,
-        ServiceProviderService,
+        ServiceProviderAdapterMongoService,
         SessionService,
         TrackingService,
       ],
@@ -152,7 +152,7 @@ describe('CoreService', () => {
       .useValue(oidcProviderErrorServiceMock)
       .overrideProvider(AccountService)
       .useValue(accountServiceMock)
-      .overrideProvider(ServiceProviderService)
+      .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)

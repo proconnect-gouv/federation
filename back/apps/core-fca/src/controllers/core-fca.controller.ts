@@ -11,8 +11,8 @@ import {
 
 import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
-import { IdentityProviderService } from '@fc/identity-provider';
-import { ServiceProviderService } from '@fc/service-provider';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { MinistriesService } from '@fc/ministries';
@@ -42,8 +42,8 @@ export class CoreFcaController {
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
-    private readonly identityProvider: IdentityProviderService,
-    private readonly serviceProvider: ServiceProviderService,
+    private readonly identityProvider: IdentityProviderAdapterMongoService,
+    private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly ministries: MinistriesService,
     private readonly core: CoreFcaService,
     private readonly session: SessionService,

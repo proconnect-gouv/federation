@@ -3,17 +3,17 @@
 // Declarative code
 import { Module, Global } from '@nestjs/common';
 import {
-  IdentityProviderEnvService,
-  IdentityProviderEnvModule,
-} from '@fc/identity-provider-env';
+  IdentityProviderAdapterEnvService,
+  IdentityProviderAdapterEnvModule,
+} from '@fc/identity-provider-adapter-env';
 import { OidcClientModule } from '@fc/oidc-client';
 import { OidcProviderModule } from '@fc/oidc-provider';
 import { SessionModule } from '@fc/session';
 import { SessionGenericModule } from '@fc/session-generic';
 import {
-  ServiceProviderEnvService,
-  ServiceProviderEnvModule,
-} from '@fc/service-provider-env';
+  ServiceProviderAdapterEnvService,
+  ServiceProviderAdapterEnvModule,
+} from '@fc/service-provider-adapter-env';
 import { CryptographyModule } from '@fc/cryptography';
 import { EidasClientController, EidasClientModule } from '@fc/eidas-client';
 import {
@@ -31,14 +31,14 @@ import { EidasBridgeSession } from './dto';
 import { OidcMiddlewareService } from './services';
 
 const oidcClientModule = OidcClientModule.register(
-  IdentityProviderEnvService,
-  IdentityProviderEnvModule,
-  ServiceProviderEnvService,
-  ServiceProviderEnvModule,
+  IdentityProviderAdapterEnvService,
+  IdentityProviderAdapterEnvModule,
+  ServiceProviderAdapterEnvService,
+  ServiceProviderAdapterEnvModule,
 );
 const oidcProviderModule = OidcProviderModule.register(
-  ServiceProviderEnvService,
-  ServiceProviderEnvModule,
+  ServiceProviderAdapterEnvService,
+  ServiceProviderAdapterEnvModule,
 );
 
 @Global()
@@ -50,9 +50,9 @@ const oidcProviderModule = OidcProviderModule.register(
     SessionGenericModule.forRoot({
       schema: EidasBridgeSession,
     }),
-    IdentityProviderEnvModule,
+    IdentityProviderAdapterEnvModule,
     HttpProxyModule,
-    ServiceProviderEnvModule,
+    ServiceProviderAdapterEnvModule,
     oidcClientModule,
     oidcProviderModule,
     CryptographyModule,

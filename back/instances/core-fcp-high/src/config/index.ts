@@ -15,8 +15,8 @@ import CryptographyEidas from './cryptography-eidas';
 import Session from './session';
 import OverrideOidcProvider from './override-oidc-provider';
 import Mailer from './mailer';
-import ServiceProvider from './service-provider';
-import IdentityProvider from './identity-provider';
+import ServiceProviderAdapterMongoConfig from './service-provider-adapter-mongo';
+import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
 
 export default {
   /**
@@ -39,6 +39,6 @@ export default {
   Session,
   OverrideOidcProvider,
   Mailer,
-  ServiceProvider,
-  IdentityProvider,
+  ServiceProviderAdapterMongoConfig,
+  IdentityProviderAdapterMongoConfig,
 } as CoreFcpConfig;

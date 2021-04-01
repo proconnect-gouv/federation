@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Description } from '@fc/error';
+import { Description } from '@fc/exceptions';
 import { OidcClientBaseException } from './oidc-client-base.exception';
 import { ErrorCode } from '../enums';
 @Description(

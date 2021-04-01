@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import {
-  MockIdentityProviderFcaModule,
-  MockIdentityProviderFcaConfig,
-} from '@fc/mock-identity-provider-fca';
+  MockIdentityProviderModule,
+  MockIdentityProviderConfig,
+} from '@fc/mock-identity-provider';
 import { ConfigModule } from '@fc/config';
 import { LoggerModule } from '@fc/logger';
 import configuration from './config';
@@ -13,12 +13,12 @@ import configuration from './config';
     ConfigModule.forRoot({
       isGlobal: true,
       config: configuration,
-      schema: MockIdentityProviderFcaConfig,
+      schema: MockIdentityProviderConfig,
     }),
     // 2. Load logger module next
     LoggerModule,
     // 3. Load other modules
-    MockIdentityProviderFcaModule,
+    MockIdentityProviderModule,
   ],
 })
 export class AppModule {}

@@ -1,14 +1,14 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { MockIdentityProviderFcaConfig } from '@fc/mock-identity-provider-fca';
+import { MockIdentityProviderConfig } from '@fc/mock-identity-provider';
 import Redis from './redis';
 import Logger from './logger';
 import Session from './session';
 import CryptographyFca from './cryptography-fca';
 import OidcProvider from './oidc-provider';
 import App from './app';
-import ServiceProviderEnv from './service-provider-env';
+import ServiceProviderAdapterEnvConfig from './service-provider-adapter-env';
 
 export default {
   App,
@@ -17,5 +17,5 @@ export default {
   Session,
   CryptographyFca,
   OidcProvider,
-  ServiceProviderEnv,
-} as MockIdentityProviderFcaConfig;
+  ServiceProviderAdapterEnvConfig,
+} as MockIdentityProviderConfig;

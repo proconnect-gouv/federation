@@ -5,18 +5,18 @@ import { Module, Global } from '@nestjs/common';
 import { OidcProviderModule } from '@fc/oidc-provider';
 import { SessionModule } from '@fc/session';
 import {
-  ServiceProviderModule,
-  ServiceProviderService,
-} from '@fc/service-provider';
+  ServiceProviderAdapterMongoModule,
+  ServiceProviderAdapterMongoService,
+} from '@fc/service-provider-adapter-mongo';
 import {
-  IdentityProviderService,
-  IdentityProviderModule,
-} from '@fc/identity-provider';
+  IdentityProviderAdapterMongoService,
+  IdentityProviderAdapterMongoModule,
+} from '@fc/identity-provider-adapter-mongo';
 import { MinistriesModule } from '@fc/ministries';
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
 import { CryptographyFcaModule } from '@fc/cryptography-fca';
-import { ErrorModule } from '@fc/error';
+import { ExceptionsModule } from '@fc/exceptions';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
 import { TrackingModule } from '@fc/tracking';
@@ -35,28 +35,28 @@ import { CoreFcaService } from './services';
 import { CoreFcaDefaultVerifyHandler } from './handlers';
 
 const oidcProviderModule = OidcProviderModule.register(
-  ServiceProviderService,
-  ServiceProviderModule,
+  ServiceProviderAdapterMongoService,
+  ServiceProviderAdapterMongoModule,
 );
 
 @Global()
 @Module({
   imports: [
-    ErrorModule,
+    ExceptionsModule,
     MongooseModule,
     SessionModule,
     CryptographyFcaModule,
     AccountModule,
-    ServiceProviderModule,
-    IdentityProviderModule,
+    ServiceProviderAdapterMongoModule,
+    IdentityProviderAdapterMongoModule,
     MinistriesModule,
     HttpProxyModule,
     oidcProviderModule,
     OidcClientModule.register(
-      IdentityProviderService,
-      IdentityProviderModule,
-      ServiceProviderService,
-      ServiceProviderModule,
+      IdentityProviderAdapterMongoService,
+      IdentityProviderAdapterMongoModule,
+      ServiceProviderAdapterMongoService,
+      ServiceProviderAdapterMongoModule,
     ),
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),

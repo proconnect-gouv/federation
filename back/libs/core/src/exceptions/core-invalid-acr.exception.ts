@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Description } from '@fc/error';
+import { Description } from '@fc/exceptions';
 import { CoreBaseException } from './core-base.exception';
 import { ErrorCode } from '../enums';
 
