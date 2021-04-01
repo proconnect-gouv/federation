@@ -7,9 +7,9 @@ import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import { SessionModule, SessionService } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 import { CryptographyModule } from '@fc/cryptography';
-import { IServiceProviderService } from '@fc/oidc';
+import { IServiceProviderAdapter } from '@fc/oidc';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
-import { IIdentityProviderService } from './interfaces';
+import { IIdentityProviderAdapter } from './interfaces';
 import {
   OidcClientService,
   OidcClientUtilsService,
@@ -21,9 +21,9 @@ import { OidcClientController } from './oidc-client.controller';
 @Module({})
 export class OidcClientModule {
   static register(
-    identityProvider: Type<IIdentityProviderService>,
+    identityProvider: Type<IIdentityProviderAdapter>,
     identityProviderModule,
-    serviceProvider: Type<IServiceProviderService>,
+    serviceProvider: Type<IServiceProviderAdapter>,
     serviceProviderModule,
   ): DynamicModule {
     return {

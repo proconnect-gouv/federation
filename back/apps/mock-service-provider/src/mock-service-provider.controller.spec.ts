@@ -4,7 +4,7 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
-import { IdentityProviderEnvService } from '@fc/identity-provider-env';
+import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
 import { MockServiceProviderController } from './mock-service-provider.controller';
 import {
   MockServiceProviderTokenRevocationException,
@@ -103,7 +103,7 @@ describe('MockServiceProviderController', () => {
         SessionService,
         CryptographyService,
         ConfigService,
-        IdentityProviderEnvService,
+        IdentityProviderAdapterEnvService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -116,7 +116,7 @@ describe('MockServiceProviderController', () => {
       .useValue(sessionMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)
-      .overrideProvider(IdentityProviderEnvService)
+      .overrideProvider(IdentityProviderAdapterEnvService)
       .useValue(identityProviderMock)
       .compile();
 

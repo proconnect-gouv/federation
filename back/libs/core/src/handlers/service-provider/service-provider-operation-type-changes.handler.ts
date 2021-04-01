@@ -2,7 +2,7 @@
 
 // Declarative code
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
-import { ServiceProviderOperationTypeChangesEvent } from '@fc/service-provider';
+import { ServiceProviderOperationTypeChangesEvent } from '@fc/service-provider-adapter-mongo';
 import { OidcProviderService } from '@fc/oidc-provider';
 
 @EventsHandler(ServiceProviderOperationTypeChangesEvent)

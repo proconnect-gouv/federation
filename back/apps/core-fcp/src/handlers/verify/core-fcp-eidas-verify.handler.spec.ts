@@ -4,7 +4,7 @@ import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
-import { ServiceProviderService } from '@fc/service-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { CoreFcpEidasVerifyHandler } from './core-fcp-eidas-verify.handler';
 import { CryptographyEidasService } from '@fc/cryptography-eidas';
 
@@ -99,7 +99,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
         LoggerService,
         SessionService,
         TrackingService,
-        ServiceProviderService,
+        ServiceProviderAdapterMongoService,
         CryptographyEidasService,
       ],
     })
@@ -113,7 +113,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
       .useValue(sessionServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
-      .overrideProvider(ServiceProviderService)
+      .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderMock)
       .overrideProvider(CryptographyEidasService)
       .useValue(cryptographyEidasServiceMock)

@@ -3,7 +3,7 @@
 // Declarative code
 import { CoreBaseException } from './core-base.exception';
 import { ErrorCode } from '../enums';
-import { Description } from '@fc/error';
+import { Description } from '@fc/exceptions';
 
 @Description(
   "Des étapes de la cinématique ont été omises (identité non disponible en session, l'usager doit redémarrer sa cinématique depuis le FS)",
