@@ -3,7 +3,7 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
 import { AccountBlockedException } from '@fc/account';
-import { ServiceProviderService } from '@fc/service-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { CryptographyFcaService } from '@fc/cryptography-fca';
 import { CoreFcaDefaultVerifyHandler } from './core-fca.default-verify.handler';
 
@@ -87,7 +87,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         CoreFcaDefaultVerifyHandler,
         SessionService,
         LoggerService,
-        ServiceProviderService,
+        ServiceProviderAdapterMongoService,
         CryptographyFcaService,
       ],
     })
@@ -97,7 +97,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(ServiceProviderService)
+      .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderMock)
       .overrideProvider(CryptographyFcaService)
       .useValue(cryptographyFcaServiceMock)

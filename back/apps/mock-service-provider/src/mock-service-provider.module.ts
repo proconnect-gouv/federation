@@ -5,29 +5,29 @@ import { Module } from '@nestjs/common';
 import { OidcClientModule } from '@fc/oidc-client';
 import { SessionModule } from '@fc/session';
 import {
-  IdentityProviderEnvService,
-  IdentityProviderEnvModule,
-} from '@fc/identity-provider-env';
-import { ErrorModule } from '@fc/error';
+  IdentityProviderAdapterEnvService,
+  IdentityProviderAdapterEnvModule,
+} from '@fc/identity-provider-adapter-env';
+import { ExceptionsModule } from '@fc/exceptions';
 import { CryptographyModule } from '@fc/cryptography';
 import {
-  ServiceProviderEnvModule,
-  ServiceProviderEnvService,
-} from '@fc/service-provider-env';
+  ServiceProviderAdapterEnvModule,
+  ServiceProviderAdapterEnvService,
+} from '@fc/service-provider-adapter-env';
 import { MockServiceProviderController } from './mock-service-provider.controller';
 
 const oidcClientModule = OidcClientModule.register(
-  IdentityProviderEnvService,
-  IdentityProviderEnvModule,
-  ServiceProviderEnvService,
-  ServiceProviderEnvModule,
+  IdentityProviderAdapterEnvService,
+  IdentityProviderAdapterEnvModule,
+  ServiceProviderAdapterEnvService,
+  ServiceProviderAdapterEnvModule,
 );
 
 @Module({
   imports: [
-    ErrorModule,
+    ExceptionsModule,
     SessionModule,
-    IdentityProviderEnvModule,
+    IdentityProviderAdapterEnvModule,
     CryptographyModule,
     oidcClientModule,
   ],

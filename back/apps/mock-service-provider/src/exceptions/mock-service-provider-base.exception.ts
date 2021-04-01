@@ -1,7 +1,8 @@
-import { FcException } from '@fc/error';
+/* istanbul ignore file */
 
-// declarative code
-// istanbul ignore next line
+// Declarative code
+
+import { FcException } from '@fc/exceptions';
 export class MockServiceProviderBaseException extends FcException {
   scope = 9;
 }

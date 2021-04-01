@@ -10,7 +10,7 @@ import { AccountBlockedException } from '@fc/account';
 import { TrackingService } from '@fc/tracking';
 import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
-import { ServiceProviderService } from '@fc/service-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { CoreFcpDefaultVerifyHandler } from './core-fcp-default-verify.handler';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 
@@ -110,7 +110,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
         SessionService,
         RnippService,
         TrackingService,
-        ServiceProviderService,
+        ServiceProviderAdapterMongoService,
         CryptographyFcpService,
       ],
     })
@@ -126,7 +126,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       .useValue(rnippServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
-      .overrideProvider(ServiceProviderService)
+      .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderMock)
       .overrideProvider(CryptographyFcpService)
       .useValue(cryptographyFcpServiceMock)

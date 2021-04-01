@@ -4,7 +4,7 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
-import { IdentityProviderService } from '@fc/identity-provider';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { CoreFcpService, FcpFeature } from './core-fcp.service';
 import { ProcessCore } from '../enums';
 
@@ -91,14 +91,14 @@ describe('CoreFcpService', () => {
         CoreFcpService,
         LoggerService,
         SessionService,
-        IdentityProviderService,
+        IdentityProviderAdapterMongoService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(IdentityProviderService)
+      .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(IdentityProviderMock)
       .overrideProvider(ModuleRef)
       .useValue(moduleRefMock)

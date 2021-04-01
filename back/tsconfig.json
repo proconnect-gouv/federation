@@ -16,11 +16,11 @@
       "@fc/rnipp/*": [
         "libs/rnipp/src/*"
       ],
-      "@fc/identity-provider": [
-        "libs/identity-provider/src"
+      "@fc/identity-provider-adapter-mongo": [
+        "libs/identity-provider-adapter-mongo/src"
       ],
-      "@fc/identity-provider/*": [
-        "libs/identity-provider/src/*"
+      "@fc/identity-provider-adapter-mongo/*": [
+        "libs/identity-provider-adapter-mongo/src/*"
       ],
       "@fc/identity": [
         "libs/identity/src"
@@ -28,11 +28,11 @@
       "@fc/identity/*": [
         "libs/identity/src/*"
       ],
-      "@fc/service-provider": [
-        "libs/service-provider/src"
+      "@fc/service-provider-adapter-mongo": [
+        "libs/service-provider-adapter-mongo/src"
       ],
-      "@fc/service-provider/*": [
-        "libs/service-provider/src/*"
+      "@fc/service-provider-adapter-mongo/*": [
+        "libs/service-provider-adapter-mongo/src/*"
       ],
       "@fc/logger": [
         "libs/logger/src"
@@ -118,11 +118,11 @@
       "@fc/config/*": [
         "libs/config/src/*"
       ],
-      "@fc/error": [
-        "libs/error/src"
+      "@fc/exceptions": [
+        "libs/exceptions/src"
       ],
-      "@fc/error/*": [
-        "libs/error/src/*"
+      "@fc/exceptions/*": [
+        "libs/exceptions/src/*"
       ],
       "@fc/ministries": [
         "libs/ministries/src"
@@ -220,23 +220,23 @@
       "@fc/app/*": [
         "libs/app/src/*"
       ],
-      "@fc/identity-provider-env": [
-        "libs/identity-provider-env/src"
+      "@fc/identity-provider-adapter-env": [
+        "libs/identity-provider-adapter-env/src"
       ],
-      "@fc/identity-provider-env/*": [
-        "libs/identity-provider-env/src/*"
+      "@fc/identity-provider-adapter-env/*": [
+        "libs/identity-provider-adapter-env/src/*"
       ],
-      "@fc/service-provider-env": [
-        "libs/service-provider-env/src"
+      "@fc/service-provider-adapter-env": [
+        "libs/service-provider-adapter-env/src"
       ],
-      "@fc/service-provider-env/*": [
-        "libs/service-provider-env/src/*"
+      "@fc/service-provider-adapter-env/*": [
+        "libs/service-provider-adapter-env/src/*"
       ],
-      "@fc/mock-identity-provider-fca": [
-        "apps/mock-identity-provider-fca/src"
+      "@fc/mock-identity-provider": [
+        "apps/mock-identity-provider/src"
       ],
-      "@fc/mock-identity-provider-fca/*": [
-        "apps/mock-identity-provider-fca/src/*"
+      "@fc/mock-identity-provider/*": [
+        "apps/mock-identity-provider/src/*"
       ],
       "@fc/eidas-light-protocol": [
         "libs/eidas-light-protocol/src"

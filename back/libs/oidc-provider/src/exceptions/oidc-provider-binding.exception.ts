@@ -3,7 +3,7 @@
 // Declarative code
 import { OidcProviderBaseException } from './oidc-provider-base.exception';
 import { ErrorCode } from '../enums';
-import { Description } from '@fc/error';
+import { Description } from '@fc/exceptions';
 
 @Description("Problème d'initialisation du wrapper oidc-provider")
 export class OidcProviderBindingException extends OidcProviderBaseException {

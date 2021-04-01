@@ -11,8 +11,8 @@ import {
 import { Type } from 'class-transformer';
 import { AppConfig } from '@fc/app';
 import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
-import { IdentityProviderEnvConfig } from '@fc/identity-provider-env';
-import { ServiceProviderEnvConfig } from '@fc/service-provider-env';
+import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
+import { ServiceProviderAdapterEnvConfig } from '@fc/service-provider-adapter-env';
 import { LoggerConfig } from '@fc/logger';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { OidcProviderConfig } from '@fc/oidc-provider';
@@ -86,8 +86,8 @@ export class EidasBridgeConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => IdentityProviderEnvConfig)
-  readonly IdentityProviderEnv: IdentityProviderEnvConfig;
+  @Type(() => IdentityProviderAdapterEnvConfig)
+  readonly IdentityProviderAdapterEnvConfig: IdentityProviderAdapterEnvConfig;
 
   @IsObject()
   @ValidateNested()
@@ -101,8 +101,8 @@ export class EidasBridgeConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => ServiceProviderEnvConfig)
-  readonly ServiceProviderEnv: ServiceProviderEnvConfig;
+  @Type(() => ServiceProviderAdapterEnvConfig)
+  readonly ServiceProviderAdapterEnvConfig: ServiceProviderAdapterEnvConfig;
 
   @IsObject()
   @ValidateNested()

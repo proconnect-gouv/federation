@@ -3,7 +3,7 @@
 // Declarative code
 import { OidcProviderBaseException } from './oidc-provider-base.exception';
 import { ErrorCode } from '../enums';
-import { Description, Loggable } from '@fc/error';
+import { Description, Loggable } from '@fc/exceptions';
 // declarative code
 // istanbul ignore next line
 @Loggable(false)
