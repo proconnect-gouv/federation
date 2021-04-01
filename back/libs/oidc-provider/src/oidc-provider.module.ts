@@ -3,9 +3,9 @@ import { Module, DynamicModule, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { RedisModule } from '@fc/redis';
 import { SessionModule } from '@fc/session';
-import { FcExceptionFilter } from '@fc/error';
+import { FcExceptionFilter } from '@fc/exceptions';
 import { TrackingModule } from '@fc/tracking';
-import { IServiceProviderService } from '@fc/oidc';
+import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderController } from './oidc-provider.controller';
@@ -24,7 +24,7 @@ export class OidcProviderModule {
   // does not need to be tested
   // istanbul ignore next
   static register(
-    serviceProviderClass: Type<IServiceProviderService>,
+    serviceProviderClass: Type<IServiceProviderAdapter>,
     serviceProviderModule: Type<ModuleMetadata>,
   ): DynamicModule {
     const serviceProviderProvider = {

@@ -14,14 +14,14 @@ import {
 } from '@nestjs/common';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
-import { IdentityProviderService } from '@fc/identity-provider';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
 import { CryptographyService } from '@fc/cryptography';
 import { NotificationsService } from '@fc/notifications';
 import { ScopesService } from '@fc/scopes';
-import { ServiceProviderService } from '@fc/service-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
   GetOidcCallback,
   OidcClientConfig,
@@ -47,8 +47,8 @@ export class CoreFcpController {
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
-    private readonly identityProvider: IdentityProviderService,
-    private readonly serviceProvider: ServiceProviderService,
+    private readonly identityProvider: IdentityProviderAdapterMongoService,
+    private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly core: CoreFcpService,
     private readonly session: SessionService,
     private readonly config: ConfigService,

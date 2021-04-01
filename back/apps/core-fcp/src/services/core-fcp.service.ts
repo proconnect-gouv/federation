@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
-import { IdentityProviderService } from '@fc/identity-provider';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { CoreFcpSendEmailHandler } from '../handlers';
 import {
   FeatureHandler,
@@ -21,7 +21,7 @@ export class CoreFcpService {
   constructor(
     private readonly logger: LoggerService,
     private readonly session: SessionService,
-    private readonly identityProvider: IdentityProviderService,
+    private readonly identityProvider: IdentityProviderAdapterMongoService,
     public readonly moduleRef: ModuleRef,
   ) {
     this.logger.setContext(this.constructor.name);

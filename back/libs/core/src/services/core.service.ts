@@ -14,7 +14,7 @@ import { LoggerService } from '@fc/logger';
 import { AccountBlockedException, AccountService } from '@fc/account';
 import { Acr } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
-import { ServiceProviderService } from '@fc/service-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
 import { IEventContext, TrackingService } from '@fc/tracking';
 import { OidcProviderErrorService } from '@fc/oidc-provider/services';
@@ -32,7 +32,7 @@ export class CoreService {
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcErrorService: OidcProviderErrorService,
     private readonly account: AccountService,
-    private readonly serviceProvider: ServiceProviderService,
+    private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly session: SessionService,
     private readonly tracking: TrackingService,
   ) {

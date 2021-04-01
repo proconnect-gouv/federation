@@ -3,14 +3,14 @@ import { ModuleRef } from '@nestjs/core';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { FeatureHandler } from '@fc/feature-handler';
-import { IdentityProviderService } from '@fc/identity-provider';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 
 @Injectable()
 export class CoreFcaService {
   constructor(
     private readonly logger: LoggerService,
     private readonly session: SessionService,
-    private readonly identityProvider: IdentityProviderService,
+    private readonly identityProvider: IdentityProviderAdapterMongoService,
     public moduleRef: ModuleRef,
   ) {
     this.logger.setContext(this.constructor.name);

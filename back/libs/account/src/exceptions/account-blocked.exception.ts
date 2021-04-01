@@ -1,4 +1,4 @@
-import { Description } from '@fc/error';
+import { Description } from '@fc/exceptions';
 import { AccountBaseException } from './account-base.exception';
 
 @Description(

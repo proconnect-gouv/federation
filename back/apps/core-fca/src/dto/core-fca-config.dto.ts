@@ -13,8 +13,8 @@ import { SessionConfig } from '@fc/session';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { AppConfig } from '@fc/app';
-import { ServiceProviderConfig } from '@fc/service-provider';
-import { IdentityProviderConfig } from '@fc/identity-provider';
+import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
+import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
 
 export class Core {
   @IsUrl()
@@ -79,11 +79,11 @@ export class CoreFcaConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => ServiceProviderConfig)
-  readonly ServiceProvider: ServiceProviderConfig;
+  @Type(() => ServiceProviderAdapterMongoConfig)
+  readonly ServiceProviderAdapterMongoConfig: ServiceProviderAdapterMongoConfig;
 
   @IsObject()
   @ValidateNested()
-  @Type(() => IdentityProviderConfig)
-  readonly IdentityProvider: IdentityProviderConfig;
+  @Type(() => IdentityProviderAdapterMongoConfig)
+  readonly IdentityProviderAdapterMongoConfig: IdentityProviderAdapterMongoConfig;
 }

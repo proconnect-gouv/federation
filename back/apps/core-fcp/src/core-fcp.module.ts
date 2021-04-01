@@ -5,18 +5,18 @@ import { Module, Global } from '@nestjs/common';
 import { OidcProviderModule } from '@fc/oidc-provider';
 import { SessionModule } from '@fc/session';
 import {
-  ServiceProviderModule,
-  ServiceProviderService,
-} from '@fc/service-provider';
+  ServiceProviderAdapterMongoModule,
+  ServiceProviderAdapterMongoService,
+} from '@fc/service-provider-adapter-mongo';
 import {
-  IdentityProviderService,
-  IdentityProviderModule,
-} from '@fc/identity-provider';
+  IdentityProviderAdapterMongoService,
+  IdentityProviderAdapterMongoModule,
+} from '@fc/identity-provider-adapter-mongo';
 import { OidcClientModule } from '@fc/oidc-client';
 import { MongooseModule } from '@fc/mongoose';
 import { CryptographyFcpModule } from '@fc/cryptography-fcp';
 import { CryptographyEidasModule } from '@fc/cryptography-eidas';
-import { ErrorModule } from '@fc/error';
+import { ExceptionsModule } from '@fc/exceptions';
 import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
@@ -50,31 +50,31 @@ import {
 } from './handlers';
 
 const oidcProviderModule = OidcProviderModule.register(
-  ServiceProviderService,
-  ServiceProviderModule,
+  ServiceProviderAdapterMongoService,
+  ServiceProviderAdapterMongoModule,
 );
 
 @Global()
 @Module({
   imports: [
-    ErrorModule,
+    ExceptionsModule,
     MongooseModule,
     SessionModule,
     RnippModule,
     CryptographyFcpModule,
     CryptographyEidasModule,
     AccountModule,
-    ServiceProviderModule,
-    IdentityProviderModule,
+    ServiceProviderAdapterMongoModule,
+    IdentityProviderAdapterMongoModule,
     HttpProxyModule,
     oidcProviderModule,
     ScopesModule,
     OverrideOidcProviderModule.register(oidcProviderModule),
     OidcClientModule.register(
-      IdentityProviderService,
-      IdentityProviderModule,
-      ServiceProviderService,
-      ServiceProviderModule,
+      IdentityProviderAdapterMongoService,
+      IdentityProviderAdapterMongoModule,
+      ServiceProviderAdapterMongoService,
+      ServiceProviderAdapterMongoModule,
     ),
     MailerModule,
     /** Inject app specific tracking service */
