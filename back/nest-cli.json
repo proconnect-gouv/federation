@@ -98,11 +98,11 @@
       "compilerOptions": {
         "tsConfigPath": "instances/mock-identity-provider-fca-high/tsconfig.app.json",
         "assets": [
-          "../../../apps/mock-identity-provider-fca/**/*.ejs",
-          "../../../apps/mock-identity-provider-fca/**/*.css",
-          "../../../apps/mock-identity-provider-fca/**/*.svg",
-          "../../../apps/mock-identity-provider-fca/**/*.png",
-          "../../../apps/mock-identity-provider-fca/**/*.csv",
+          "../../../apps/mock-identity-provider/**/*.ejs",
+          "../../../apps/mock-identity-provider/**/*.css",
+          "../../../apps/mock-identity-provider/**/*.svg",
+          "../../../apps/mock-identity-provider/**/*.png",
+          "../../../apps/mock-identity-provider/**/*.csv",
           "../../../instances/mock-identity-provider-fca-high/**/*.ejs",
           "../../../instances/mock-identity-provider-fca-high/**/*.css",
           "../../../instances/mock-identity-provider-fca-high/**/*.svg",
@@ -173,22 +173,22 @@
         "tsConfigPath": "libs/identity/tsconfig.lib.json"
       }
     },
-    "identity-provider": {
+    "identity-provider-adapter-mongo": {
       "type": "library",
-      "root": "libs/identity-provider",
+      "root": "libs/identity-provider-adapter-mongo",
       "entryFile": "index",
-      "sourceRoot": "libs/identity-provider/src",
+      "sourceRoot": "libs/identity-provider-adapter-mongo/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/identity-provider/tsconfig.lib.json"
+        "tsConfigPath": "libs/identity-provider-adapter-mongo/tsconfig.lib.json"
       }
     },
-    "service-provider": {
+    "service-provider-adapter-mongo": {
       "type": "library",
-      "root": "libs/service-provider",
+      "root": "libs/service-provider-adapter-mongo",
       "entryFile": "index",
-      "sourceRoot": "libs/service-provider/src",
+      "sourceRoot": "libs/service-provider-adapter-mongo/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/service-provider/tsconfig.lib.json"
+        "tsConfigPath": "libs/service-provider-adapter-mongo/tsconfig.lib.json"
       }
     },
     "logger": {
@@ -335,13 +335,13 @@
         "tsConfigPath": "libs/config/tsconfig.lib.json"
       }
     },
-    "error": {
+    "exceptions": {
       "type": "library",
-      "root": "libs/error",
+      "root": "libs/exceptions",
       "entryFile": "index",
-      "sourceRoot": "libs/error/src",
+      "sourceRoot": "libs/exceptions/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/error/tsconfig.lib.json"
+        "tsConfigPath": "libs/exceptions/tsconfig.lib.json"
       }
     },
     "mongoose": {
@@ -461,31 +461,31 @@
         "tsConfigPath": "apps/mock-service-provider/tsconfig.lib.json"
       }
     },
-    "mock-identity-provider-fca": {
+    "mock-identity-provider": {
       "type": "library",
-      "root": "apps/mock-identity-provider-fca",
+      "root": "apps/mock-identity-provider",
       "entryFile": "index",
-      "sourceRoot": "apps/mock-identity-provider-fca/src",
+      "sourceRoot": "apps/mock-identity-provider/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/mock-identity-provider-fca/tsconfig.lib.json"
+        "tsConfigPath": "apps/mock-identity-provider/tsconfig.lib.json"
       }
     },
-    "identity-provider-env": {
+    "identity-provider-adapter-env": {
       "type": "library",
-      "root": "libs/identity-provider-env",
+      "root": "libs/identity-provider-adapter-env",
       "entryFile": "index",
-      "sourceRoot": "libs/identity-provider-env/src",
+      "sourceRoot": "libs/identity-provider-adapter-env/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/identity-provider-env/tsconfig.lib.json"
+        "tsConfigPath": "libs/identity-provider-adapter-env/tsconfig.lib.json"
       }
     },
-    "service-provider-env": {
+    "service-provider-adapter-env": {
       "type": "library",
-      "root": "libs/service-provider-env",
+      "root": "libs/service-provider-adapter-env",
       "entryFile": "index",
-      "sourceRoot": "libs/service-provider-env/src",
+      "sourceRoot": "libs/service-provider-adapter-env/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/service-provider-env/tsconfig.lib.json"
+        "tsConfigPath": "libs/service-provider-adapter-env/tsconfig.lib.json"
       }
     },
     "tracking": {

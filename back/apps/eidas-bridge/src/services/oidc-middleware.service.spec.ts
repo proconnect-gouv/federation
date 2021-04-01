@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { ServiceProviderEnvService } from '@fc/service-provider-env';
+import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
 import { SessionService } from '@fc/session';
 import { OidcMiddlewareService } from './oidc-middleware.service';
 
@@ -40,13 +40,13 @@ describe('MockIdentityProviderFcaService', () => {
         LoggerService,
         OidcProviderService,
         OidcMiddlewareService,
-        ServiceProviderEnvService,
+        ServiceProviderAdapterEnvService,
         SessionService,
       ],
     })
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
-      .overrideProvider(ServiceProviderEnvService)
+      .overrideProvider(ServiceProviderAdapterEnvService)
       .useValue(serviceProviderEnvServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)

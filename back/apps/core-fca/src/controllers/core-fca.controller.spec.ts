@@ -1,8 +1,8 @@
 import { mocked } from 'ts-jest/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { IdentityProviderService } from '@fc/identity-provider';
-import { ServiceProviderService } from '@fc/service-provider';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
@@ -121,8 +121,8 @@ describe('CoreFcaController', () => {
         OidcProviderService,
         MinistriesService,
         CoreFcaService,
-        IdentityProviderService,
-        ServiceProviderService,
+        IdentityProviderAdapterMongoService,
+        ServiceProviderAdapterMongoService,
         SessionService,
         ConfigService,
         OidcClientService,
@@ -136,9 +136,9 @@ describe('CoreFcaController', () => {
       .useValue(ministriesServiceMock)
       .overrideProvider(CoreFcaService)
       .useValue(coreServiceMock)
-      .overrideProvider(IdentityProviderService)
+      .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderServiceMock)
-      .overrideProvider(ServiceProviderService)
+      .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)

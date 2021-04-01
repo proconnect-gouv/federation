@@ -9,7 +9,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { ServiceProviderService } from '@fc/service-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { RedisAdapter } from '../adapters';
 import { OidcProviderConfig } from '../dto';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
@@ -26,7 +26,7 @@ export class OidcProviderConfigService {
     private readonly session: SessionService,
     private readonly errorService: OidcProviderErrorService,
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
-    private readonly serviceProvider: ServiceProviderService,
+    private readonly serviceProvider: ServiceProviderAdapterMongoService,
   ) {}
 
   overrideConfiguration(configuration: object, provider: Provider): void {

@@ -12,8 +12,8 @@ import { MongooseConfig } from '@fc/mongoose';
 import { RedisConfig } from '@fc/redis';
 import { RnippConfig } from '@fc/rnipp';
 import { SessionConfig } from '@fc/session';
-import { ServiceProviderConfig } from '@fc/service-provider';
-import { IdentityProviderConfig } from '@fc/identity-provider';
+import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
+import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { MailerConfig } from '@fc/mailer';
@@ -97,11 +97,11 @@ export class CoreFcpConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => ServiceProviderConfig)
-  readonly ServiceProvider: ServiceProviderConfig;
+  @Type(() => ServiceProviderAdapterMongoConfig)
+  readonly ServiceProviderAdapterMongoConfig: ServiceProviderAdapterMongoConfig;
 
   @IsObject()
   @ValidateNested()
-  @Type(() => IdentityProviderConfig)
-  readonly IdentityProvider: IdentityProviderConfig;
+  @Type(() => IdentityProviderAdapterMongoConfig)
+  readonly IdentityProviderAdapterMongoConfig: IdentityProviderAdapterMongoConfig;
 }

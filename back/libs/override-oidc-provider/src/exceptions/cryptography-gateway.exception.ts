@@ -3,7 +3,7 @@
 // Declarative code
 import { CryptographyBaseException } from './cryptography-base.exception';
 import { ErrorCode } from '../enums';
-import { Description } from '@fc/error';
+import { Description } from '@fc/exceptions';
 
 @Description(
   'Erreur technique (communication avec le HSM), contacter le service technique',

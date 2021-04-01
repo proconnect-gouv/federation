@@ -8,7 +8,7 @@ import { RedisConfig } from '@fc/redis';
 import { LoggerConfig } from '@fc/logger';
 import { SessionConfig } from '@fc/session';
 import { AppConfig } from '@fc/app';
-import { IdentityProviderEnvConfig } from '@fc/identity-provider-env';
+import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
 
 export class UserDashboardConfig {
   @IsObject()
@@ -38,6 +38,6 @@ export class UserDashboardConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => IdentityProviderEnvConfig)
-  readonly IdentityProviderEnv: IdentityProviderEnvConfig;
+  @Type(() => IdentityProviderAdapterEnvConfig)
+  readonly IdentityProviderAdapterEnvConfig: IdentityProviderAdapterEnvConfig;
 }
