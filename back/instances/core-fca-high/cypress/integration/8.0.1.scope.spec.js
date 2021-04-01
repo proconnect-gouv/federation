@@ -124,9 +124,8 @@ describe('Scope', () => {
     cy.get('#scope_organizational_unit').click();
     cy.get('#scope_belonging_population').click();
     cy.get('#scope_phone').click();
-    cy.get('#scope_chorusdt\\:societe').click();
-    cy.get('#scope_chorusdt\\:matricule').click();
-
+    cy.get('#scope_chorusdt').click();
+ 
     // Go to FC
     cy.get('#get-authorize').click();
 
@@ -167,8 +166,7 @@ describe('Scope', () => {
         .and('include', 'organizational_unit')
         .and('include', 'belonging_population')
         .and('include', 'phone')
-        .and('include', 'chorusdt:societe')
-        .and('include', 'chorusdt:matricule');
+        .and('include', 'chorusdt')
     });
   });
 });
