@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Description, Loggable, Trackable } from '@fc/error';
+import { Description, Loggable, Trackable } from '@fc/exceptions';
 import { RnippBaseException } from './';
 import { ErrorCode } from '../enums';
 

@@ -3,7 +3,7 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
-import { ServiceProviderService } from '@fc/service-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { CryptographyEidasService } from '@fc/cryptography-eidas';
 
 @Injectable()
@@ -15,7 +15,7 @@ export class CoreFcpEidasVerifyHandler implements IFeatureHandler {
     private readonly logger: LoggerService,
     private readonly session: SessionService,
     private readonly core: CoreService,
-    private readonly serviceProvider: ServiceProviderService,
+    private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly cryptographyEidas: CryptographyEidasService,
   ) {
     this.logger.setContext(this.constructor.name);

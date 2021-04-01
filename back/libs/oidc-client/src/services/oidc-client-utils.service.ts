@@ -5,7 +5,7 @@ import { LoggerService } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
 import {
   IOidcIdentity,
-  IServiceProviderService,
+  IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
 } from '@fc/oidc';
 import {
@@ -30,7 +30,7 @@ export class OidcClientUtilsService {
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly crypto: CryptographyService,
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
-    private readonly serviceProvider: IServiceProviderService,
+    private readonly serviceProvider: IServiceProviderAdapter,
   ) {
     this.logger.setContext(this.constructor.name);
   }

@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { MockSpFcaConfig } from 'apps/mock-sp-fca/src';
-import IdentityProviderEnv from './identity-provider-env';
+import { MockIdentityProviderConfig } from '@fc/mock-identity-provider';
+import IdentityProviderAdapterEnv from './identity-provider-adapter-env';
 import Redis from './redis';
 import Logger from './logger';
 import OidcClient from './oidc-client';
@@ -17,5 +17,5 @@ export default {
   OidcClient,
   Session,
   Cryptography,
-  IdentityProviderEnv,
-} as MockSpFcaConfig;
+  IdentityProviderAdapterEnv,
+} as unknown as MockIdentityProviderConfig;

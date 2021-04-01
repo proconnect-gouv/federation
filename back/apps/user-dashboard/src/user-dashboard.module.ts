@@ -5,24 +5,24 @@ import { Module } from '@nestjs/common';
 import { OidcClientModule } from '@fc/oidc-client';
 import { SessionModule } from '@fc/session';
 import {
-  IdentityProviderEnvService,
-  IdentityProviderEnvModule,
-} from '@fc/identity-provider-env';
+  IdentityProviderAdapterEnvService,
+  IdentityProviderAdapterEnvModule,
+} from '@fc/identity-provider-adapter-env';
 import {
-  ServiceProviderEnvModule,
-  ServiceProviderEnvService,
-} from '@fc/service-provider-env';
+  ServiceProviderAdapterEnvModule,
+  ServiceProviderAdapterEnvService,
+} from '@fc/service-provider-adapter-env';
 import { UserDashboardController } from './user-dashboard.controller';
 
 const oidcClientModule = OidcClientModule.register(
-  IdentityProviderEnvService,
-  IdentityProviderEnvModule,
-  ServiceProviderEnvService,
-  ServiceProviderEnvModule,
+  IdentityProviderAdapterEnvService,
+  IdentityProviderAdapterEnvModule,
+  ServiceProviderAdapterEnvService,
+  ServiceProviderAdapterEnvModule,
 );
 
 @Module({
-  imports: [SessionModule, IdentityProviderEnvModule, oidcClientModule],
+  imports: [SessionModule, IdentityProviderAdapterEnvModule, oidcClientModule],
   controllers: [UserDashboardController],
 })
 export class UserDashboardModule {}

@@ -1,0 +1,119 @@
+import * as path from 'path';
+import csvdb from 'node-csv-query';
+import { Injectable } from '@nestjs/common';
+import { LoggerService } from '@fc/logger';
+import {
+  OidcProviderMiddlewareStep,
+  OidcProviderRoutes,
+  OidcProviderService,
+} from '@fc/oidc-provider';
+import { SessionService } from '@fc/session';
+import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
+import { Identity } from '../dto';
+
+export type IdentityMock = Identity & Record<string, any>;
+
+@Injectable()
+export class MockIdentityProviderService {
+  private csvdbProxy = csvdb;
+
+  private database: Identity[];
+
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly oidcProvider: OidcProviderService,
+    private readonly serviceProvider: ServiceProviderAdapterEnvService,
+    private readonly session: SessionService,
+  ) {
+    this.logger.setContext(this.constructor.name);
+  }
+
+  async onModuleInit() {
+    this.loadDatabase();
+
+    this.oidcProvider.registerMiddleware(
+      OidcProviderMiddlewareStep.AFTER,
+      OidcProviderRoutes.AUTHORIZATION,
+      this.authorizationMiddleware.bind(this),
+    );
+  }
+
+  private async authorizationMiddleware(ctx) {
+    /**
+     * Abort middleware if authorize is in error
+     *
+     * We do not want to start a session
+     * nor trigger authorization event for invalid requests
+     */
+    if (ctx.oidc['isError'] === true) {
+      return;
+    }
+
+    const interactionId = this.oidcProvider.getInteractionIdFromCtx(ctx);
+
+    // oidc defined variable name
+    const { client_id: spId, acr_values: spAcr } = ctx.oidc.params;
+
+    const { name: spName } = await this.serviceProvider.getById(spId);
+
+    const sessionProperties = {
+      spId,
+      spAcr,
+      spName,
+    };
+    await this.session.init(ctx.res, interactionId, sessionProperties);
+  }
+
+  private async loadDatabase(): Promise<void> {
+    /**
+     * @todo #307 Config this path
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/307
+     */
+    const databasePath = './data/database-mock.csv';
+    const absolutePath = path.join(__dirname, databasePath);
+
+    try {
+      this.logger.debug('Loading database...');
+      const data = await this.csvdbProxy(absolutePath, {
+        rtrim: true,
+      });
+
+      this.database = data.rows.map(this.removeEmptyColums);
+    } catch (error) {
+      this.logger.fatal(
+        `Failed to load CSV database, path was: ${absolutePath}`,
+      );
+      throw error;
+    }
+
+    this.logger.debug(
+      `Database loaded (${this.database.length} entries found)`,
+    );
+  }
+
+  private removeEmptyColums(data: Identity): Identity {
+    const cleanedData = {} as Identity;
+    Object.entries(data).forEach(([key, value]) => {
+      if (value && value !== '') {
+        cleanedData[key] = value;
+      }
+    });
+
+    return cleanedData;
+  }
+
+  getIdentity(inputUid: string): IdentityMock {
+    const identity: IdentityMock = this.database.find(
+      ({ uid }) => uid === inputUid,
+    );
+
+    /**
+     * Allow to add unexpected value when userInfos are required
+     */
+    if (inputUid === 'E020025') {
+      identity.unknown_prop_for_test = 'shouldNotBeThere';
+    }
+
+    return identity;
+  }
+}

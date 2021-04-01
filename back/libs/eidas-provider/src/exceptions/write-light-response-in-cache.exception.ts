@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Description } from '@fc/error';
+import { Description } from '@fc/exceptions';
 import { ErrorCode } from '../enums';
 import { EidasProviderBaseException } from './eidas-provider-base.exception';
 

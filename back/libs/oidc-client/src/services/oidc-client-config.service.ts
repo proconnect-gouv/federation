@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcClientConfig } from '../dto';
-import { IIdentityProviderService } from '../interfaces';
+import { IIdentityProviderAdapter } from '../interfaces';
 import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class OidcClientConfigService {
     readonly config: ConfigService,
     private readonly logger: LoggerService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
-    private readonly identityProvider: IIdentityProviderService,
+    private readonly identityProvider: IIdentityProviderAdapter,
   ) {
     this.logger.setContext(this.constructor.name);
   }

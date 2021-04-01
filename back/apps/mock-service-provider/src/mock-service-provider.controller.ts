@@ -22,7 +22,7 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
-import { IdentityProviderEnvService } from '@fc/identity-provider-env';
+import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
 import { AppConfig } from '@fc/app';
 import { MockServiceProviderRoutes } from './enums';
 import {
@@ -41,7 +41,7 @@ export class MockServiceProviderController {
     private readonly logger: LoggerService,
     private readonly session: SessionService,
     private readonly crypto: CryptographyService,
-    private readonly identityProvider: IdentityProviderEnvService,
+    private readonly identityProvider: IdentityProviderAdapterEnvService,
   ) {
     this.logger.setContext(this.constructor.name);
   }

@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Loggable, Description } from '@fc/error';
+import { Loggable, Description } from '@fc/exceptions';
 import { CryptographyBaseException } from './cryptography-base.exception';
 
 @Loggable()

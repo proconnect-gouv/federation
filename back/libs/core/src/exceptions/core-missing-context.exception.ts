@@ -3,7 +3,7 @@
 // Declarative code
 import { CoreBaseException } from './core-base.exception';
 import { ErrorCode } from '../enums';
-import { Description } from '@fc/error';
+import { Description } from '@fc/exceptions';
 
 @Description(
   'Il manque des informations techniques dans la requête HTTP. Cette erreur ne devrait pas se produire, contacter le service technique',

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { SessionService } from '@fc/session';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
-import { IIdentityProviderService } from './interfaces';
+import { IIdentityProviderAdapter } from './interfaces';
 import { RedirectToIdp } from './dto';
 import { OidcClientRoutes } from './enums';
 import { OidcClientService } from './services';
@@ -30,7 +30,7 @@ export class OidcClientController {
     private readonly oidcClient: OidcClientService,
     private readonly session: SessionService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
-    private readonly identityProvider: IIdentityProviderService,
+    private readonly identityProvider: IIdentityProviderAdapter,
   ) {}
   /**
    * @todo #242 get configured parameters (scope and acr)

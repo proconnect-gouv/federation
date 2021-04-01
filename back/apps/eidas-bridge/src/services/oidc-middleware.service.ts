@@ -6,14 +6,14 @@ import {
   OidcProviderService,
 } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
-import { ServiceProviderEnvService } from '@fc/service-provider-env';
+import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
 
 @Injectable()
 export class OidcMiddlewareService {
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
-    private readonly serviceProvider: ServiceProviderEnvService,
+    private readonly serviceProvider: ServiceProviderAdapterEnvService,
     private readonly session: SessionService,
   ) {
     this.logger.setContext(this.constructor.name);

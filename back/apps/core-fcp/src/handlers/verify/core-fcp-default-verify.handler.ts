@@ -8,7 +8,7 @@ import {
   RnippReceivedValidEvent,
 } from '@fc/rnipp';
 import { CoreService } from '@fc/core';
-import { ServiceProviderService } from '@fc/service-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { RnippPivotIdentity } from '@fc/rnipp';
 import { IOidcIdentity } from '@fc/oidc';
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
@@ -25,7 +25,7 @@ export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
     private readonly core: CoreService,
     private readonly tracking: TrackingService,
     private readonly rnipp: RnippService,
-    private readonly serviceProvider: ServiceProviderService,
+    private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly cryptographyFcp: CryptographyFcpService,
   ) {
     this.logger.setContext(this.constructor.name);

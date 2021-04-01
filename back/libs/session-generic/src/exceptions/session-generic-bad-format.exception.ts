@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // declarative code
-import { Description } from '@fc/error/decorator';
+import { Description } from '@fc/exceptions';
 import { ErrorCode } from '../enums';
 import { SessionGenericBaseException } from './session-generic-base.exception';
 
