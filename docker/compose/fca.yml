@@ -1,0 +1,625 @@
+version: "3.4"
+
+####################
+####################
+services:
+  stack-fca:
+    image: alpine
+    depends_on:
+      - "fca"
+      - "fca-front"
+      - "fsa1v2"
+      - "fsa2v2"
+      - "fsa3v2"
+      - "fsa4v2"
+      - "fia1v2"
+      - "fia2v2"
+      - "fia4v2"
+      - "fia5v2"
+      - "exploitation-fca"
+      - "pg-exploitation-fca"
+      - "exploit-fca"
+
+  ####################
+  # SP Mocks V2
+  ####################
+
+  fsa1v2:
+    hostname: fsa1v2
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "redis-pwd"
+      - "broker"
+      - "squid"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "sp-fca.env"
+    ports:
+      - 9231:9231
+    tty: true
+    environment:
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9231 mock-service-provider-fca"
+      - "VIRTUAL_HOST=fsa1v2.docker.dev-franceconnect.fr"
+      - 'REDIRECT_URIS=["https://fsa1v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsa1v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "CLIENT_ID=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950"
+      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      # Arbitrary DB number, default is 0 and is used by legacy core.
+      - "FC_REDIS_DB=4"
+      # Logger
+      - "EVT_LOG_FILE=/var/log/app/fsa1v2.log"
+      - "FQDN=fsa1v2.docker.dev-franceconnect.fr"
+      # Set OIDC library debugging mode: https://www.npmjs.com/package/oidc-provider#debugging
+      - "DEBUG=oidc-provider:*"
+      # OidcClient
+      - "OidcClient_SCOPE=openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt"
+      - "OidcClient_ACR=eidas1"
+      # Encryption & Algorythm
+      - "ID_TOKEN_SIGNED_RESPONSE_ALG=HS256"
+      - "USERINFO_SIGNED_RESPONSE_ALG=HS256"
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
+  fsa2v2:
+    hostname: fsa2v2
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "redis-pwd"
+      - "broker"
+      - "squid"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "sp-fca.env"
+    ports:
+      - 9232:9232
+    tty: true
+    environment:
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9232 mock-service-provider-fca"
+      - "VIRTUAL_HOST=fsa2v2.docker.dev-franceconnect.fr"
+      - 'REDIRECT_URIS=["https://fsa2v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsa2v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "CLIENT_ID=7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775"
+      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      # Arbitrary DB number, default is 0 and is used by legacy core.
+      - "FC_REDIS_DB=4"
+      # Logger
+      - "EVT_LOG_FILE=/var/log/app/fsa2v2.log"
+      - "FQDN=fsa2v2.docker.dev-franceconnect.fr"
+      # OidcClient
+      - "OidcClient_SCOPE=openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt"
+      - "OidcClient_ACR=eidas1"
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
+  fsa3v2:
+    hostname: fsa3v2
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "redis-pwd"
+      - "broker"
+      - "squid"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "sp-fca.env"
+    ports:
+      - 9233:9233
+    tty: true
+    environment:
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9233 mock-service-provider-fca"
+      - "VIRTUAL_HOST=fsa3v2.docker.dev-franceconnect.fr"
+      - 'REDIRECT_URIS=["https://fsa3v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsa3v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "CLIENT_ID=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950"
+      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      # Arbitrary DB number, default is 0 and is used by legacy core.
+      - "FC_REDIS_DB=4"
+      # Logger
+      - "EVT_LOG_FILE=/var/log/app/fsa3v2.log"
+      - "FQDN=fsa3v2.docker.dev-franceconnect.fr"
+      # OidcClient
+      - "OidcClient_SCOPE=openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt"
+      - "OidcClient_ACR=eidas1"
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
+  fsa4v2:
+    hostname: fsa4v2
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "redis-pwd"
+      - "broker"
+      - "squid"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "sp-fca.env"
+    ports:
+      - 9237:9237
+    tty: true
+    environment:
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9237 mock-service-provider-fca"
+      - "VIRTUAL_HOST=fsa4v2.docker.dev-franceconnect.fr"
+      - 'REDIRECT_URIS=["https://fsa4v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsa4v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "CLIENT_ID=6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77"
+      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      # Arbitrary DB number, default is 0 and is used by legacy core.
+      - "FC_REDIS_DB=4"
+      # Logger
+      - "EVT_LOG_FILE=/var/log/app/fsa4v2.log"
+      - "FQDN=fsa4v2.docker.dev-franceconnect.fr"
+      # OidcClient
+      - "OidcClient_SCOPE=openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt"
+      - "OidcClient_ACR=eidas1"
+      # Algorythm
+      - "ID_TOKEN_SIGNED_RESPONSE_ALG=RS256"
+      - "USERINFO_SIGNED_RESPONSE_ALG=RS256"
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
+  ####################
+  ##
+  ##   FCA
+  ##   chrome://inspect/#devices
+  ##
+  ####################
+
+  fca-front:
+    hostname: fca-front
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "squid"
+      - "fca"
+    volumes:
+      - "../volumes/src/fc/front/agent-connect:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+    environment:
+      - "API_PROXY_HOST=http://fca:3000"
+      - "API_PROXY_FOR_PATH=/api/v2"
+      - "VIRTUAL_HOST=fca-front.docker.dev-franceconnect.fr"
+      - "EVT_LOG_FILE=/var/log/app/fca-front.log"
+    networks:
+      - fc
+    command: "pm2 logs"
+
+  fca:
+    hostname: fca
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "mongo-fca"
+      - "redis-pwd"
+      - "broker"
+      - "squid"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+    ports:
+      - 9229:9229
+    tty: true
+    environment:
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9229 core-fca-high"
+      - "VIRTUAL_HOST=fca.docker.dev-franceconnect.fr"
+      - "REQUEST_TIMEOUT=6000"
+      # Set OIDC library debugging mode: https://www.npmjs.com/package/oidc-provider#debugging
+      - "DEBUG=oidc-provider:*"
+      # Session configuration
+      - "SESSION_SECRET=fAh8Seik4_ahcH-3ahth/eiG@huéfuuva=opa"
+      - "SESSION_NAME=fc_session"
+      - "SESSION_TTL=600000" # 10 minutes
+      # Proxy Configuration
+      - "GLOBAL_AGENT_HTTP_PROXY=http://squid:3128"
+      - "GLOBAL_AGENT_HTTPS_PROXY=http://squid:3128"
+      - "GLOBAL_AGENT_NO_PROXY=haproxy"
+      # Logger
+      - "EVT_LOG_FILE=/var/log/app/fca.log"
+      - "LOG_LEVEL=trace"
+      # OidcProvider
+      - "FQDN=fca.docker.dev-franceconnect.fr"
+      - "PREFIX=/api/v2"
+      ## Beware, the "kid" of "CRYPTO_SIG_ES256_PRIV_KEY" and "CRYPTO_SIG_HSM_PUB_KEY" must be the same !
+      - 'CRYPTO_SIG_ES256_PRIV_KEY={"crv":"P-256","x":"uRxO96Oqn0BEJZYua3rkM9ntzLbt_nDbq4hwSgOUomQ","y":"o9BoK63TMCGmXjOcCZbtOTmw5HdGiy5ZzY4Qo5KG638","d":"sMJDu7_nEjB0SwTKuKR8XiZPHvoUkem3rdgxP39kkfQ","kty":"EC","kid":"pkcs11:ES256:hsm","use":"sig"}'
+      - 'CRYPTO_SIG_HSM_PUB_KEY={"crv": "P-256","x": "UvVm7hq8ycQGaKle6kpzUom73IQyYINGRdzQC75AXxw","y": "yoigI3h4xjRQPEeX8GfIyR4mfioqvNIGPWp7_7x7oxk","kty": "EC", "kid": "pkcs11:ES256:hsm"}'
+
+      - 'CRYPTO_SIG_RS256_PRIV_KEY={"kty": "RSA","n": "vmTVr5evEFVha25McCxJ8D_MV_52eA6j_0VUFE-bBUWjctqXK-Xf6W1lC2e_51RmL2owzl2w4Fw90cqeBzA1S2PJJdI_ptQcnwaCiXGRUMVqLXKxOsx1zqIj69F781_Ujp7bPYMkGNlsNmsY37roOzZLCFZLIJo6o90mrjT42nTkS-lgabyBMRZu783d_W1hs0CcjcOC4Hq2jEo_DVfy1RF5qj-Cr33LJ22Co6rkWb8zZnS9PFDZBJPz1tp53Gd2V6_BGbgETFMQI9-kss9HQCaH_1VXOFNr-zg7jw-XTHxvaQHEpCkhGrusirQB1o0tf2SheVhHXDUkG2q4aVgBqxurw4YONxBQvYY0xPK-OX1jQaWnaYPmB_v7_bt9wUrL4kYqGiVw5pXZZRIOPYloNhK_p7qLTTNjS4BKgveen_Vq32HZF8sLECQorAL7nSJABd0ReZEOBUyxWZ6KbIwnhykdADV2mBKyrFP0ZDKDQQprstb0V34hYaxuYDZx5obYo0rsPl1659u5KD-s5IAYEuTitdJNT3uWLHgGqLPsd17GHMggQhSuvFIyTH1-mMG3PWF19Oqq0zuZMLw29XDjSDyNRxWauoFzaCzGvWbV2cXsBOob4iik92PPWVJw5BAy6PlK3GxB0ZlSq_Wxp3p0I33BHFxbU8LmbWnAdB-iClk","e": "AQAB","d": "Indul5MGBhbuw9v7ynK6D9v8yhEusR01YwjR57thfNrWc_xOUYwTtNYw7JejjeUheoPmwfUECBmqt0fOw85eV3-A8m_VRgYwCDnNd8QvYkfaqM-Sdep9iSKhDhemMLCwcgEf_0q2RilWBaPtpNLZJ570hlXY09YXt4JZdj_wrNtsWLGu2nVdjd1Zx9-kyDP8885GiQNTtf-A_HSUZX3-X8QCGmfU6KAFHuYcODS_kd-jFnEbsMeSAdom0kZKuTOhoM4YTueZH5gJ2_SohBYx99MB258_Ytr3OUs8vPE9moMMSB4h0vX_IC_JVHKxwn1cNyuob6cjg_W6y5vONoPQCTF7p8_S6BpTzHfxHVIIebaGd2KBqWO_WirUFZNOFa85DoQmhEw-tpKp7Ra1ckZAeBTrV2r5YwIN4YdVqfjJiuKH151-GVrbMssQeNtvCzH-QuoV5nV92D6jSjGSVUndxCcHBbLMZHr-27JW9bSVJ3LmJGR0vU5-yGZH1ViqiLNsjxBwfxD4N5Ga5MRT2e8hlyyrat3SZ8ZZ-IkoW8c4RwnUr9onk3sXCZhQOq9XESWt7HF6iJODRiDYe-AZVc4AVLAF5DPRmFKf8f3J6Rhfnyrue2qBS00DyhFyZGNbw_UaMk5tz1WYpFfcXHanZdB7LP0NnzWjGIgS-qVRaDXxNeE","p": "8gp6yLQ07LqGllcDW2uDgkfYPUO9VCZRv2Zi4gSuJfXQHCcdE9qxMMhybzERUAItcDTY78AgrT8s02B8vWVyFX7bcHrycLFoqc_jCkrIRdY1UDjdZxc-5Js-FCNVG_189yjRuvCXl43JuO2chao2m8ae7efnLA8Ka4axtI98luqcWVL5hZSeeEz6jKOo0Hk2pfgIqJABaJGhkTifhCITrH63IkwYRg4ShVTBkBFQ7IwJG2viK809LnryPtH-WPTeeaYovbo86STZwWOLPBW7KsYqcT_tRebW42PQtqNG8hmAjgLLGUMZVT1Ymdflnf7vX8UjrmYj5vpjnhM9EM0C_w","q": "yV_VAdMEyb0UrUkv1E58sQxEGaaQ982RE11-YT-R6EXOjl6kR-XmTcBWkjzI4trvfQJXi8TUlahxxGiHYgYA56GRjR-CNBot_R_oTff7VWQDHwpQTyhd33cakpdHKgNqPiQ9zYKQom4bBwf8xENKIQQ1V9khtRGsl7q4rmx7lr4oJvLe9tCGSPVGvxs5NHbZLRSiQtQkoOBQ1S2QA68nD2o7CO0-oxJ-UDEzPoWcJJhtxRysE7aJtMPcQTWKApD3Tfs5aH8KtaWhoSlkLatqKOwPcjKpJAOKjUVCDedZbjx2j4ekJyY1aCV1eRz73XjiHcFcNnPuigXffx39wtjqpw","dp": "G9MUlmoRA33V5waNvj632YxE0ZYt97SIBUbR60W6d2awy-u7LgMgB4mjjiDH6ri1XIbWwYkGuKPglVQsQuGcodf5hg68PDRI4eyiHxbFuzGK43QGD8neUw19r3b4W8ViTk-E_MaXxrZoEDhQnBUbPgExWAwmySvZeM79MtKj8f16h9JAGRkitpWy3-QYjg7BN4cyB562ar0DI9ysidYZCOVwTCMPT05i1q0Nq3AyK19V1K8sSvjHJcbAfnRJlxRfVwDBAj6crfish8zXvsqIv7wUOPyuXDDTV0SsQ7K1fzNrUegETR0nlmL9AoKNRQJ_pjTVi0D2s6DpPszbYkkPJQ","dq": "gLiFTBk7Ikl_AhWaQTe6dOHGVi8m03_PkHVe54LfHX4hvte4Y00Nnf2oWOoJ7xjLpTjuBSXYTaHStx2qDHqR8X5Rr8fITs29P-Q5dj1hpv-7DwhktXS0LLfRgIq6rpxoOTipWMhw86M2G5R7emkY5WnvPyxIY5ncnVB55OTrSzxaJitxYouAivpeMqKQOn0N7ccWwWkh0MQSZ3IscG5xpWTeP6KHO24C1_fbLcfyO2JEKI9fX2p7M9VO4U_73BAWRP6lf6pVii9J1d7Dbn336hia9wBzJdYtpofy5ThQ7iowDydBQtUlpmDranOge71drG-BJj2M6SU_692b7AUEWQ","qi": "0-TUiGRoPBWatRlzSQIvwXs5zpGn20QfgmcGQD1LWnogWG-6QwfFsRWJ78FLEK69x35hBdcyzDNC5PzvBPXatr9_bL_Fv10qwMTkFwPOuDZHEzvb3-b_L3MD4JnQ6LbT8g36scv6aEgMNt9eeugRq0bR4xba1oj2pgjfVVKiENQWPlVYZ0HKYHAwdoss4d9x0dI1g-Gl426LreDz5RmDUgzdZ3nAfdnTrLUM69RTmAUjb_GfFWvmlBesFo-npv8qNToZRWmxEClXJZQCoxnzHx29bFe6WY5Jlt3zWCmI3o6LHQx6UiMrN-B_qE4T3plK0bS_w0x-Lbp9bhPbPE9AVA"}'
+      - 'CRIPTY_SIG_RS256_PUB_KEY={"kty": "RSA","n": "vmTVr5evEFVha25McCxJ8D_MV_52eA6j_0VUFE-bBUWjctqXK-Xf6W1lC2e_51RmL2owzl2w4Fw90cqeBzA1S2PJJdI_ptQcnwaCiXGRUMVqLXKxOsx1zqIj69F781_Ujp7bPYMkGNlsNmsY37roOzZLCFZLIJo6o90mrjT42nTkS-lgabyBMRZu783d_W1hs0CcjcOC4Hq2jEo_DVfy1RF5qj-Cr33LJ22Co6rkWb8zZnS9PFDZBJPz1tp53Gd2V6_BGbgETFMQI9-kss9HQCaH_1VXOFNr-zg7jw-XTHxvaQHEpCkhGrusirQB1o0tf2SheVhHXDUkG2q4aVgBqxurw4YONxBQvYY0xPK-OX1jQaWnaYPmB_v7_bt9wUrL4kYqGiVw5pXZZRIOPYloNhK_p7qLTTNjS4BKgveen_Vq32HZF8sLECQorAL7nSJABd0ReZEOBUyxWZ6KbIwnhykdADV2mBKyrFP0ZDKDQQprstb0V34hYaxuYDZx5obYo0rsPl1659u5KD-s5IAYEuTitdJNT3uWLHgGqLPsd17GHMggQhSuvFIyTH1-mMG3PWF19Oqq0zuZMLw29XDjSDyNRxWauoFzaCzGvWbV2cXsBOob4iik92PPWVJw5BAy6PlK3GxB0ZlSq_Wxp3p0I33BHFxbU8LmbWnAdB-iClk","e": "AQAB"}'
+
+      - 'CRYPTO_ENC_LOCALE_PRIV_KEY={"e":"AQAB","n":"5OHMkVCg2xG2osiXbClpkW8YVxVeqPeQDrDZH1tiocf3S9kK1ErRP1oI1qwP3-MTZVp3O0NjO7eIkkqdogCl043vVty25KMk-lM-dAXfQFjSKBE5c2Y_mZbsvEyk885ZmEbb--S-lxZuBX1jWs574fOSsqKH5e5Mf_PjKgwZFOW0SFl6pGOp230Em5OfTbCN8AKMkw907b9DXoPocDcr3d3ZEa10f5OCI0aieTxvH5Jaq9ZMOQIj1-tTMpDecFYLO8REiQSsUp-4PLUbIBL2Iq-qwv6opkVetpiLR-wwz7e2Y_dDHCqnVHcCo_oWVFFRgKiL_dhmxFIpSkw4dc1ICQ","d":"vZepC6o9RJo8rkT44XjAYN8ky2YBPnerVe_6OrZJUnfBCowkI0xCXnbnIWPv1mZT973jTCz680mJkJzMTJi6xC4rVsmHmoblp5HzBsqibrvkgZoa-9Nz1XcmbKgUb3y7zJ7NtK97jM3gnx2JgnvONJG-L8jgR3-I0OimgHr6_8nh8Qv66at8fighlefmIp-2UVYPydKp2pi9drQAWFAYW5hgNCcmuMi8814O4hdm3zsJU6w8cwOLf2p_L3No9YonO2GcSO_ZRHqPqdj5lDwtBR2DbYAUpzOYj0FMPoG6MMM6ITK9DgHDtwVuoo6ZxI6aoAMCYZ8zehn9QuACtZZQPQ","p":"8l1JmRGOfMMxlqFaAB9sWFe29P4xIVl5Tez95Hf9qIIlcdNvrm6bep5889sMAfN3LB2NA09rwBdCPdjVT_80XgrxTsxPPOvzmxuHmHaozlkBAAgfNgIASgKaznSf8nbBkp-p6NRIc3JOCJDFopm6C43ZCexBu8or_CK554O8AMM","q":"8cJUELj52DDYoxcGsm6wIyk9QYCIRry3gxJwaHWQt4xTeX65_W27x0WVY4ZXNCIYYMxKQXN5Ud70OsdzExNHk9dn96w2cOT2tKlIixoSyDpbLsYKuQ4KlEz0S2GZJyiAT0C2N_1VlRy_OFAFmauj9SIMm3Wr3UhWa7fWRWThR0M","dp":"Rs_SzRJAG1u8hVInRZnowfb-0Z3jJOdLdeUkWThluHIuFo-8Na7DZpQf1e_OFlPYId-Qb8MorDsfc4qC6Jib6E4yKt-u1xHpXwwwFe-1anS-wg-dbt4uz3DrYh7ZDLJ95CUaM5iygmiHPCFwXQ2lOfL70tZgbkmniEdtIaNvrpk","dq":"vkXv2-l52kk3d8SbpLuxLTs71t3OY74LwME2b0B4Ub3DxQ-UWn2PGNsPJHGLGKDtBuJCXxj_Fwyes9ReIVk_MICMd0W240uRT8ccLT6sIaKsOTftIJCIiwe2Dc4Wt9cMhVOtFovwW5dweGWiwrtwI3JU8dW_Gj3gpo7duWgYVfk","qi":"Cpf7tVogmGoFr-WTWSkctb0KqNtNCY3tU__2b2GI0uW_a9TafQhU8fon4SNBPlicdAYlgO1q23tklyhGpLbw7qYgHkr-zt-v_Vfg5YP8cZYGEqW52Qjl2HeMlCCI0-38RG3wFYwXjGDZk9YW6VAWlc6i1MSLrd7NGRrwH1ZkD7U","kty":"RSA","kid":"oidc-provider:locale","use":"enc"}'
+      - 'OIDC_PROVIDER_COOKIES_KEYS=["iet7jaetheezaingahThooSiem3Oothu", "aeChoomaeyi5Jeo7Viezoh8aew8ieH3m", "JaeDahngohc3athooy1Eip2ahtei8Aep", "iu5vu5EeD4goow5eipeizequaetaxo0V"]'
+      # RNIPP
+      - "RNIPP_PROTOCOL=https"
+      - "RNIPP_HOSTNAME=rnipp.docker.dev-franceconnect.fr"
+      - "RNIPP_BASEURL=/Brpp2IdentificationComplet/individus"
+      # OidcClient
+      - "HTTPS_CLIENT_CERT=/etc/ssl/client_certs/certif-client.pem"
+      - "HTTPS_CLIENT_KEY=/etc/ssl/client_certs/certif-client.key"
+      # Mongo
+      - "FC_DB_TYPE=mongodb"
+      - "FC_DB_HOSTS=mongo-fca:27017"
+      - "FC_DB_DATABASE=corev2"
+      - "FC_DB_USER=fc"
+      - "FC_DB_PASSWORD=pass"
+      - "FC_DB_SYNCHRONIZE=false"
+      - "FC_DB_CONNECT_OPTIONS=?replicaSet=rs0"
+      - "FC_DB_TLS=true"
+      - "FC_DB_TLS_INSECURE=false"
+      - "FC_DB_TLS_CA_FILE=/etc/ssl/client_certs/ca.crt"
+      - "FC_DB_TLS_ALLOW_INVALID_HOST_NAME=false"
+      # Crypto
+      - "CLIENT_SECRET_CIPHER_PASS=JZBlwxfKnbn/RV025aw+dQxk+xoQT+Yr"
+      - "USERINFO_CRYPT_KEY=raePh3i+a4eiwieb-H5iePh6o/gheequ"
+      ## Redis
+      - "FC_REDIS_DB=4"
+      - "FC_REDIS_HOST=redis-pwd"
+      - "FC_REDIS_PORT=6379"
+      - "FC_REDIS_PASSWORD=Ivae1feiThoogahquohDei7iwie0ceeM"
+      # Arbitrary DB number, default is 0 and is used by legacy core.
+      - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
+      - "CRYPTO_BROKER_QUEUE=crypto"
+      - 'SESSION_COOKIE_SECRETS=["yahvaeJ0eiNua6te", "lidubozieKadee7w", "Eigoh6ev8xaiNoox", "veed7Oow7er5Saim"]'
+      - "CRYPTO_SUB_SECRET=e2e214022a27b939ccd70e6a7b3750254eb7da548cc5bf3e471df47ec1741a11"
+      # Mailer
+      - "MAILER=logs"
+      - "MAILER_FROM_EMAIL=ne-pas-repondre@franceconnect.gouv.fr"
+      - "MAILER_FROM_NAME=NE PAS RÉPONDRE"
+      ## Must exists even if not used
+      - "MAILJET_KEY="
+      - "MAILJET_SECRET="
+      ## Bluebird potential memory leak safe guard
+      ## @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/131
+      ## @see http://bluebirdjs.com/docs/api/promise.config.html#promise.config
+      - "BLUEBIRD_LONG_STACK_TRACES=0"
+      - "BLUEBIRD_DEBUG=0"
+    networks:
+      - fc
+      - data
+    command: "pm2 logs"
+
+  mongo-fca:
+    image: mongo:4.2
+    hostname: mongo-fca
+    volumes:
+      - "../volumes/mongo-fca/scripts:/opt/scripts"
+      - "../volumes/mongo-fca/initdb.d:/docker-entrypoint-initdb.d"
+      - "../volumes/ssl:/etc/ssl:ro"
+    environment:
+      - "MONGO_INITDB_DATABASE=corev2"
+      - "MONGO_INITDB_ROOT_USERNAME=rootAdmin"
+      - "MONGO_INITDB_ROOT_PASSWORD=pass"
+    healthcheck:
+      test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo --host mongo-fca -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase admin $${MONGO_INITDB_DATABASE} --quiet --tls --tlsCAFile /etc/ssl/ca.crt) -eq 1
+      interval: 10s
+      start_period: 30s
+    command: --replSet rs0 --enableMajorityReadConcern --tlsMode requireTLS --tlsCertificateKeyFile /etc/ssl/mongo-fca.pem --keyFile /etc/ssl/mongo.keyfile
+    networks:
+      - data
+
+  ####################
+  # IDP Mocks V2
+  ####################
+
+  fia1v2:
+    hostname: fia1v2
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "redis-pwd"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "idp-fca.env"
+    ports:
+      - 9230:9230
+    tty: true
+    environment:
+      - "PREFIX="
+      # Mongo
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9230 mock-identity-provider-fca-high"
+      - "VIRTUAL_HOST=fia1v2.docker.dev-franceconnect.fr"
+      - "ISSUER=https://fia1v2.docker.dev-franceconnect.fr"
+      - 'REDIRECT_URIS=["https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia1v2"]'
+      - "EVT_LOG_FILE=/var/log/app/fia1v2.log"
+      - "FQDN=fia1v2.docker.dev-franceconnect.fr"
+      - "CLIENT_ID=myclientidforfia1v2"
+      - "CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f"
+      - "SCOPE=openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt"
+      - "ID_TOKEN_SIGNED_RESPONSE_ALG=ES256"
+      - "ID_TOKEN_ENCRYPTED_RESPONSE_ALG=RSA-OAEP"
+      - "ID_TOKEN_ENCRYPTED_RESPONSE_ENC=A256GCM"
+      - "USERINFO_SIGNED_RESPONSE_ALG=ES256"
+      - "USERINFO_ENCRYPTED_RESPONSE_ALG=RSA-OAEP"
+      - "USERINFO_ENCRYPTED_RESPONSE_ENC=A256GCM"
+      - "OidcProvider_USE_ENCRYPTION=true"
+      # Set OIDC library debugging mode: https://www.npmjs.com/package/oidc-provider#debugging
+      - "DEBUG=oidc-provider:*"
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
+  fia2v2:
+    hostname: fia2v2
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "redis-pwd"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "idp-fca.env"
+    ports:
+      - 9234:9234
+    tty: true
+    environment:
+      - "PREFIX="
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9234 mock-identity-provider-fca-high"
+      # Mongo
+      - "VIRTUAL_HOST=fia2v2.docker.dev-franceconnect.fr"
+      - "ISSUER=https://fia2v2.docker.dev-franceconnect.fr"
+      - 'REDIRECT_URIS=["https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia2v2"]'
+      - "EVT_LOG_FILE=/var/log/app/fia2v2.log"
+      - "FQDN=fia2v2.docker.dev-franceconnect.fr"
+      - "CLIENT_ID=myclientidforfia2v2"
+      - "CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f"
+      - "SCOPE=openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt"
+      - "ID_TOKEN_SIGNED_RESPONSE_ALG=ES256"
+      - "ID_TOKEN_ENCRYPTED_RESPONSE_ALG="
+      - "ID_TOKEN_ENCRYPTED_RESPONSE_ENC="
+      - "USERINFO_SIGNED_RESPONSE_ALG=ES256"
+      - "USERINFO_ENCRYPTED_RESPONSE_ALG="
+      - "USERINFO_ENCRYPTED_RESPONSE_ENC="
+      - "OidcProvider_USE_ENCRYPTION=false"
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
+  fia4v2:
+    hostname: fia4v2
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "redis-pwd"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "idp-fca.env"
+    ports:
+      - 9235:9235
+    tty: true
+    environment:
+      - "PREFIX="
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9235 mock-identity-provider-fca-high"
+      # Mongo
+      - "VIRTUAL_HOST=fia4v2.docker.dev-franceconnect.fr"
+      - "ISSUER=https://fia4v2.docker.dev-franceconnect.fr"
+      - 'REDIRECT_URIS=["https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia4v2"]'
+      - "EVT_LOG_FILE=/var/log/app/fia4v2.log"
+      - "FQDN=fia4v2.docker.dev-franceconnect.fr"
+      - "CLIENT_ID=myclientidforfia4v2"
+      - "CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f"
+      - "SCOPE=openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt"
+      - "OidcProvider_USE_ENCRYPTION=true"
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
+  fia5v2:
+    hostname: fia5v2
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "redis-pwd"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "idp-fca.env"
+    ports:
+      - 9236:9236
+    tty: true
+    environment:
+      - "PREFIX="
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9236 mock-identity-provider-fca-high"
+      # Mongo
+      - "VIRTUAL_HOST=fia5v2.docker.dev-franceconnect.fr"
+      - "ISSUER=https://fia5v2.docker.dev-franceconnect.fr"
+      - 'REDIRECT_URIS=["https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia5v2"]'
+      - "EVT_LOG_FILE=/var/log/app/fia5v2.log"
+      - "FQDN=fia5v2.docker.dev-franceconnect.fr"
+      - "CLIENT_ID=myclientidforfia5v2"
+      - "CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f"
+      - "SCOPE=openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt"
+      - "ID_TOKEN_SIGNED_RESPONSE_ALG=RS256"
+      - "USERINFO_SIGNED_RESPONSE_ALG=RS256"
+      - "OidcProvider_USE_ENCRYPTION=true"
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
+  ####################
+  # FC-EXPLOITATION
+  ####################
+  exploitation-fca:
+    hostname: exploitation-fca
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app/fc-exploitation
+    depends_on:
+      - "pg-exploitation-fca"
+      - "mongo-fca"
+      - "squid"
+      #- "rnipp"
+    volumes:
+      - "../volumes/src/fc-apps:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "postgres.env"
+      - "fc-mongo.env"
+    environment:
+      - "PM2_CWD=/var/www/app/fc-exploitation"
+      - "PM2_SCRIPT=yarn start"
+      - "VIRTUAL_HOST=exploitation-fca.docker.dev-franceconnect.fr"
+      # Proxy Configuration
+      - "HTTPS_PROXY=http://squid:3128"
+      #DB
+      - "DB_HOST=pg-exploitation-fca"
+      - "FC_DB_TYPE=mongodb"
+      - "FC_DB_HOSTS=mongo-fca:27017"
+      - "FC_DB_DATABASE=corev2"
+      - "FC_DB_TLS=true"
+      - "FC_DB_TLS_INSECURE=false"
+      - "FC_DB_TLS_CA_FILE=/etc/ssl/client_certs/ca.crt"
+      - "FC_DB_TLS_ALLOW_INVALID_HOST_NAME=false"
+      - "CLIENT_SECRET_CIPHER_PASS=JZBlwxfKnbn/RV025aw+dQxk+xoQT+Yr"
+      #Broker
+      - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
+      - "CRYPTO_BROKER_QUEUE=crypto"
+      - "REQUEST_TIMEOUT=60"
+      #FLAG TO NOT USE HSM
+      - "USE_HSM=false"
+      # IDP default values
+      - "IDP_CORE_INSTANCE=FCA"
+
+    networks:
+      - exploitation
+      - data
+    command: "tail -f /dev/null"
+
+  pg-exploitation-fca:
+    image: postgres:11
+    environment:
+      - "POSTGRES_DB=pg-db"
+      - "POSTGRES_USER=pg-user"
+      - "POSTGRES_PASSWORD=pg-password"
+    networks:
+      - data
+
+  exploit-fca:
+    hostname: exploit-fca
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "pg-exploitation-high"
+      - "mongo4"
+      - "squid"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/.home:/home"
+      - "../volumes/log:/var/log/app"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "postgres.env"
+      - "fc-mongo.env"
+    environment:
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9243 exploit-fca-instance"
+      - "VIRTUAL_HOST=exploit-fca.docker.dev-franceconnect.fr"
+      - "FQDN=exploit-fca.docker.dev-franceconnect.fr"
+      # Logger
+      - "EVT_LOG_FILE=/var/log/app/exploit-fca.log"
+      # Proxy Configuration
+      - "HTTPS_PROXY=http://squid:3128"
+      - "DB_HOST=pg-exploitation-fca"
+      - "FC_DB_TYPE=mongodb"
+      - "FC_DB_HOSTS=mongo4:27017"
+      - "FC_DB_DATABASE=corev2"
+      - "FC_DB_TLS=true"
+      - "FC_DB_TLS_INSECURE=false"
+      - "FC_DB_TLS_CA_FILE=/etc/ssl/client_certs/ca.crt"
+      - "FC_DB_TLS_ALLOW_INVALID_HOST_NAME=false"
+      - "CLIENT_SECRET_CIPHER_PASS=JZBlwxfKnbn/RV025aw+dQxk+xoQT+Yr"
+      - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
+      - "CRYPTO_BROKER_QUEUE=crypto"
+      - "REQUEST_TIMEOUT=60"
+      - 'SESSION_COOKIE_SECRETS=["yahvaeJ0eiNua6te", "lidubozieKadee7w", "Eigoh6ev8xaiNoox", "veed7Oow7er5Saim"]'
+      - "USERINFO_CRYPT_KEY=raePh3i+a4eiwieb-H5iePh6o/gheequ"
+      #FAG USE HSM
+      - "USE_HSM=true"
+    networks:
+      - exploitation
+      - data
+    command: "tail -f /dev/null"
+    

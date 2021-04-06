@@ -1,0 +1,240 @@
+version: "3.4"
+
+####################
+####################
+services:
+  all:
+    image: alpine
+    depends_on:
+      - "rp-all"
+      - "stack-v2"
+      - "stack-fca"
+
+  ####################
+  # Shared Services
+  ####################
+
+  rp-all:
+    image: nginx:1.14.2
+    container_name: fc-rp-all
+    environment:
+      DHPARAM_GENERATION: "false"
+    depends_on:
+      - docker-gen
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ../volumes/nginx-proxy/etc:/etc/nginx/conf.d:ro
+      - ../volumes/nginx-proxy/includes:/etc/nginx/includes:ro
+      - ../volumes/nginx-proxy/public:/var/www:ro
+      - ../volumes/nginx-proxy/certs:/etc/nginx/certs:ro
+      - ../volumes/ssl:/etc/nginx/client_certs:ro
+    networks:
+      public:
+        aliases:
+          - fsp1v2.docker.dev-franceconnect.fr
+          - fsp2v2.docker.dev-franceconnect.fr
+          - fsp3v2.docker.dev-franceconnect.fr
+          - rnipp.docker.dev-franceconnect.fr
+          - ud-back.docker.dev-franceconnect.fr
+          - ud-front.docker.dev-franceconnect.fr
+          - corev2.docker.dev-franceconnect.fr
+          - fip1v2.docker.dev-franceconnect.fr
+          - fip2v2.docker.dev-franceconnect.fr
+          - fip6v2.docker.dev-franceconnect.fr
+          - fip7v2.docker.dev-franceconnect.fr
+          - fca.docker.dev-franceconnect.fr
+          - fca-front.docker.dev-franceconnect.fr
+          - fsa1v2.docker.dev-franceconnect.fr
+          - fsa2v2.docker.dev-franceconnect.fr
+          - fsa3v2.docker.dev-franceconnect.fr
+          - fsa4v2.docker.dev-franceconnect.fr
+          - exploitation-high.docker.dev-franceconnect.fr
+          - eidas-bridge.docker.dev-franceconnect.fr
+          - eidas-fr.docker.dev-franceconnect.fr
+          - eidas-be.docker.dev-franceconnect.fr
+          - fia1v2.docker.dev-franceconnect.fr
+          - fia2v2.docker.dev-franceconnect.fr
+          - fia4v2.docker.dev-franceconnect.fr
+          - fia5v2.docker.dev-franceconnect.fr
+          - exploit-fcp.docker.dev-franceconnect.fr
+          - exploit-fca.docker.dev-franceconnect.fr
+          - docker.dev-franceconnect.fr
+      fc:
+      exploitation:
+
+  docker-gen:
+    user: ${CURRENT_UID}
+    image: jwilder/docker-gen
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ../volumes/nginx-proxy/etc:/etc/nginx/conf.d
+      - ../volumes/nginx-proxy/templates:/etc/docker-gen/templates:ro
+    networks:
+      - public
+      - fc
+      - exploitation
+    command: -notify-sighup fc-rp-all -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/_current.conf
+
+  squid:
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/squid:stable
+    volumes:
+      - "../volumes/squid:/etc/squid"
+    networks:
+      - public
+      - fc
+      - exploitation
+
+  haproxy:
+    image: haproxy
+    ports:
+      - 8404:8404
+    volumes:
+      - "../volumes/haproxy:/usr/local/etc/haproxy:ro"
+    networks:
+      - public
+      - fc
+    depends_on:
+      - rp-all
+
+  elasticsearch:
+    image: elasticsearch:7.5.1
+    volumes:
+      - "../volumes/elasticsearch/data:/usr/share/elasticsearch/data"
+      - "../volumes/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
+      - "$FC_ROOT/elasticsearch/elasticsearch-snapshots:/data/elasticsearch-snapshots"
+    networks:
+      - data
+      - public
+    ports:
+      - "9200:9200"
+    environment:
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms64m -Xmx256m"
+
+  redis-pwd:
+    image: redis:5.0.3
+    command: redis-server --requirepass Ivae1feiThoogahquohDei7iwie0ceeM
+    networks:
+      - data
+
+  rnipp:
+    hostname: rnipp
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - "../volumes/src/rnipp-mock:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/.home:/home"
+    environment:
+      - "VIRTUAL_HOST=rnipp.docker.dev-franceconnect.fr"
+      - "VIRTUAL_PORT=3000"
+      - "NODE_TLS_REJECT_UNAUTHORIZED=0"
+      - "NODE_ENV=development"
+      - "PORT=3000"
+      - "PM2_SCRIPT=index.js"
+      - "PM2_CWD=/var/www/app/src"
+      - "HOME=/home"
+      - "PM2_HOME=/tmp/.pm2"
+      - "TZ=Europe/Paris"
+    networks:
+      - public
+    command: "tail -f /dev/null"
+
+  csmr-hsm:
+    hostname: csmr-hsm
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "broker"
+      - "hsm"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/csmr-hsm:/etc/hsm"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+    env_file:
+      - "base-app.env"
+    environment:
+      - "PM2_SCRIPT=yarn start csmr-hsm-high"
+      - "REQUEST_TIMEOUT=6000"
+      # Logger
+      - "EVT_LOG_FILE=/var/log/app/csmr-hsm.log"
+      # Hsm
+      - "PROTECCIO_CONF_DIR=/etc/hsm"
+      - "HSM_HOST=hsm"
+      # Locale PKCS11 library
+      #   Use libpkcs11-proxy lib for development HSM (softHSM)
+      #   Use Bull's library for production HSM
+      #
+      # - "HSM_LIB=/etc/hsm/libnethsm.so"
+      - "HSM_LIB=/etc/hsm/libpkcs11-proxy.so"
+      - "HSM_PIN=1234"
+      - "HSM_VIRTUAL_HSM_SLOT=0"
+      - "HSM_SIG_HSM_PUB_KEY_CKA_LABEL=key-prime256v1"
+      - "PKCS11_PROXY_SOCKET=tcp://hsm:5551"
+      - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
+      - "CRYPTO_BROKER_QUEUE=crypto"
+    networks:
+      - data
+    command: "pm2 logs"
+
+  csmr-hsm-prod:
+    hostname: csmr-hsm
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/csmr-hsm-high:latest
+    volumes:
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/log/:/var/log/fc-evt"
+    depends_on:
+      - "broker"
+      - "hsm"
+    environment:
+      - "REQUEST_TIMEOUT=6000"
+      # Logger
+      - "EVT_LOG_FILE=/var/log/app/csmr-hsm.log"
+      # Hsm
+      - "PROTECCIO_CONF_DIR=/etc/hsm"
+      - "HSM_HOST=hsm"
+      - "HSM_LIB=/etc/hsm/libpkcs11-proxy.so"
+      - "HSM_PIN=1234"
+      - "HSM_VIRTUAL_HSM_SLOT=0"
+      - "HSM_SIG_HSM_PUB_KEY_CKA_LABEL=key-prime256v1"
+      - "PKCS11_PROXY_SOCKET=tcp://hsm:5551"
+      - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
+      - "CRYPTO_BROKER_QUEUE=crypto"
+      - "LOG_LEVEL=info"
+    networks:
+      - data
+
+  broker:
+    # use management image for dev (management = admin UI)
+    image: rabbitmq:3.8.11-management
+    # Specify hostname to fix cluster name
+    hostname: cryptobroker
+    depends_on:
+      - "squid"
+    networks:
+      - data
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  hsm:
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/softhsm
+    networks:
+      - data
+    ports:
+      - "5551:5551"
+
+####################
+
+networks:
+  public:
+  fc:
+  exploitation:
+  data:
+  eidas:
