@@ -1,0 +1,466 @@
+#!/usr/bin/env bash
+set -e
+
+if [ -z "$FC_ROOT"  ]
+then
+  read -p "Missing FC_ROOT path. Please fill in: " FC_ROOT
+fi
+
+#### Global Functions:
+function join_by { local IFS="$1"; shift; echo "$*"; }
+
+#### Global Variables:
+DEFAULT_NODE_VERSION=v12.21.0
+DOCKER_REPOSITORY_PREFIX=gitlab.dev-franceconnect.fr:5005/france-connect/infra
+COMPOSE_FILES=$(find $FC_ROOT/fc/docker/compose -name "*.yml")
+WORKING_DIR="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
+
+# https://docs.docker.com/compose/reference/envvars/#compose_file
+COMPOSE_PATH_SEPARATOR=":"
+COMPOSE_FILE=$(join_by $COMPOSE_PATH_SEPARATOR $COMPOSE_FILES)
+export COMPOSE_PATH_SEPARATOR
+export COMPOSE_FILE
+
+# Get current uid/gid to use it within docker-compose:
+# see https://medium.com/redbubble/running-a-docker-container-as-a-non-root-user-7d2e00f8ee15
+# Modf 2020-06-04: récupération de l'id du groupe docker (nécessaire pour le conteneur 'docker-gen')
+export CURRENT_UID="$(id -u):$(grep docker /etc/group | cut -d: -f3)"
+
+# Fix node version to use
+if [ "${NODE_VERSION:-xxx}" = "xxx" ]
+then
+  NODE_VERSION=${DEFAULT_NODE_VERSION}
+fi
+export NODE_VERSION
+
+# Disable TTY on CI env
+[ $CI ] && NO_TTY=" -T" || NO_TTY=""
+
+_up() {
+  apps=${@:-none}
+  services=rp-all
+  for app in $apps
+  do
+    case "$app" in
+      eidas)
+        services="$services stack-eidas"
+        ;;
+      fca)
+        services="$services stack-fca"
+        ;;
+      rnipp)
+        services="$services rnipp"
+        ;;
+      core-v2)
+        services="$services stack-v2"
+        ;;
+      eidas-bridge)
+        services="$services eidas-bridge"
+        ;;
+      eidas-fr)
+        services="$services eidas-fr"
+        ;;
+      eidas-be)
+        services="$services eidas-be"
+        ;;
+      exploitation-fca)
+        services="$services exploitation-fca"
+        ;;
+      exploitation-high)
+        services="$services exploitation-high"
+        ;;
+      exploit-fcp)
+        services="$services exploit-fcp"
+        ;;
+      exploit-fca)
+        services="$services exploit-fca"
+        ;;
+      all)
+        services=all
+        break
+        ;;
+      *)
+        echo "Usage: $script <option>:"
+        echo "----"
+        echo "* up => Select the apps you want to up as well as their dependencies (multiple arguments allowed) :"
+        echo "  - eidas"
+        echo "  - core-v2 => all needed services to run core-v2 stack (corev2, fsp1v2, fsp2v2, fsp3v2, fip1v2, fip2v2, rnipp, haproxy, hsm, etc.)"
+        echo "  - fca => all needed services to run fca stack (corev2, fsa1v2, fsa2v2, fsa3v2, fsa4v2, fia1v2, fia2v2, fia4v2, fia5v2, hsm, etc.)"
+        echo "  - all => run all services"
+        echo "----"
+        exit 1
+        ;;
+    esac
+  done
+    echo "Starting FC Dev environment... $@"
+    _setup_mongo_keyfile
+    docker login gitlab.dev-franceconnect.fr:5005
+    cd ${WORKING_DIR} && docker-compose up -d $services
+}
+
+_setup_mongo_keyfile() {
+    keyfile="$FC_ROOT/fc/docker/volumes/ssl/mongo.keyfile"
+    owner="$(ls -n "$keyfile" | awk '{print $3}')"
+    permission="$(ls -n "$keyfile" | awk '{print $1}')"
+    if [[ ! -f "$keyfile" || "$permission" != "-rw-------" || "$owner" != "999" ]];
+    then
+      sudo rm -f $keyfile
+      sudo openssl rand -base64 756 > $keyfile
+      sudo chown 999 $FC_ROOT/fc/docker/volumes/ssl/mongo.keyfile
+      sudo chmod 600 $FC_ROOT/fc/docker/volumes/ssl/mongo.keyfile
+    fi
+}
+
+_run_prod() {
+  apps=${@:-none}
+  for app in $apps
+  do
+    case "$app" in
+      csmr-hsm-prod)
+        services="$services csmr-hsm-prod"
+        ;;
+      *)
+        echo "Usage: $script <option>:"
+        echo "----"
+        echo "* run-prod => Select the production image you want to run:"
+        echo "  - csmr-hsm-prod"
+        echo "----"
+        exit 1
+        ;;
+    esac
+  done
+    echo "Starting production image for... $@"
+    docker login gitlab.dev-franceconnect.fr:5005
+    cd ${WORKING_DIR} && docker-compose up -d $services
+}
+
+_install_dependencies() {
+  apps=${@:-fc-core}
+  for app in $apps
+  do
+    echo "Installing dependencies for [$app]:"
+    err=false
+    (cd ${WORKING_DIR} && docker-compose exec $NO_TTY $app "/opt/scripts/install.sh") || err=true
+  done
+}
+
+_test() {
+  apps=${@:-fc-core}
+  for app in $apps
+  do
+    cd ${WORKING_DIR} && docker-compose exec $NO_TTY $app "/opt/scripts/test.sh" || err=true
+  done
+}
+
+
+_e2e() {
+  app=${1:-fc-core}
+  [ $# -gt 0 ] && shift
+  case "$app" in
+    *)
+      echo "Usage: $script <option>:"
+      echo "----"
+      echo "* e2e ==> only this stack are allowed :"
+      echo "@todo Implements this"
+      echo "----"
+      exit 1
+    ;;
+  esac
+  command="open"
+  if [ "${@:-xxx}" = "run" ]
+  then
+    command='run'
+  fi
+  cd ${FC_ROOT}/${directory} && npx cypress ${command}
+}
+
+_start() {
+  apps=${@:-fc-core}
+  for app in $apps
+  do
+    echo "Starting ${app} app..."
+    cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} "/opt/scripts/start.sh" || err=true
+  done
+}
+
+_stop() {
+  apps=${@:-fc-core}
+  for app in $apps
+  do
+    echo "Stopping ${app} app..."
+    cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} "/opt/scripts/stop.sh" || err=true
+  done
+}
+
+
+_log() {
+  app=${@:-fc-core}
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} pm2 logs
+}
+
+_fixturesv2() {
+  echo "**************************************"
+  echo " Resetting fixtures in database..."
+  echo "**************************************"
+  apps=${@:-exploitation-high exploitation-fca}
+  for app in $apps
+  do
+    echo "**************************************"
+    echo "\n\nFixture for ${app} app...\n\n"
+    echo "**************************************"
+    cd ${WORKING_DIR}
+    docker-compose exec $NO_TTY ${app} yarn typeorm schema:drop
+    docker-compose exec $NO_TTY ${app} yarn migrations:run
+    docker-compose exec $NO_TTY ${app} yarn fixtures:load
+
+    cd ${FC_ROOT}/fc-apps/shared/cypress/support/ && ./db.sh ${app} create
+  done
+
+  echo "**************************************"
+  echo "\n\n\n FIXTURES DONE ! \n\n\n"
+  echo "**************************************"
+}
+
+_fixturesFca() {
+  echo "**************************************"
+  echo " Resetting fixtures in database..."
+  echo "**************************************"
+  apps="exploitation-fca"
+  for app in $apps
+  do
+    echo "**************************************"
+    echo "\n\nFixture for ${app} app...\n\n"
+    echo "**************************************"
+    cd ${WORKING_DIR}
+    docker-compose exec $NO_TTY ${app} yarn typeorm schema:drop
+    docker-compose exec $NO_TTY ${app} yarn migrations:run
+    docker-compose exec $NO_TTY ${app} yarn fixtures:load
+
+    cd ${FC_ROOT}/fc-apps/shared/cypress/support/ && ./db.sh ${app} create
+  done
+
+  echo "**************************************"
+  echo "\n\n\n FIXTURES DONE ! \n\n\n"
+  echo "**************************************"
+}
+
+_reset_db_v2() {
+  echo "Reseting Core v2 mongo database..."
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'fc' -p 'pass' --authenticationDatabase corev2 corev2 /opt/scripts/mongo-reset.js --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'fc' -p 'pass' --authenticationDatabase corev2 corev2 /docker-entrypoint-initdb.d/mongo-init-db.js --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
+}
+
+_reset_db_fca() {
+  echo "Reseting fca mongo database..."
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fca mongo -u 'fc' -p 'pass' --authenticationDatabase corev2 corev2 /opt/scripts/mongo-reset.js --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fca mongo -u 'fc' -p 'pass' --authenticationDatabase corev2 corev2 /docker-entrypoint-initdb.d/mongo-init-db.js --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
+}
+
+_idp_as_prod_v2() {
+  echo "Set idp as production ..."
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'rootAdmin' -p 'pass' --host mongo4 --tls --tlsCAFile /etc/ssl/ca.crt --authenticationDatabase admin corev2 /opt/scripts/display-idp-as-in-prod.js
+}
+
+_halt() {
+  echo "Stopping FC Dev environment..."
+  cd ${WORKING_DIR} && docker-compose stop
+}
+
+_exec() {
+  app=${1:-empty}
+[ $# -gt 0 ] && shift
+
+  case $app in
+    empty)
+      echo "Usage: docker-stack exec <container_name> <command>"
+      exit 1
+      ;;
+    *)
+      cd ${WORKING_DIR} && docker-compose exec $NO_TTY $app $@
+      ;;
+  esac
+}
+
+_mongo_shell_fca() {
+ echo "starting mongo shell..."
+  cd ${WORKING_DIR} && docker-compose exec mongo-fca mongo -u 'rootAdmin' -p 'pass' --authenticationDatabase admin corev2 --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
+}
+
+_mongo_shell_corev2() {
+ echo "starting mongo shell..."
+  cd ${WORKING_DIR} && docker-compose exec mongo4 mongo corev2 -u 'fc' -p 'pass' --authenticationDatabase corev2 --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
+}
+
+_fca_front() {
+  cd ${FC_ROOT}/fc/front/agent-connect/ && yarn install && yarn build
+  cd ${FC_ROOT}/fc/back/apps/core-fca/src/
+
+  if [ -d 'public' ]
+  then
+    rm -rf public
+  fi
+
+  mkdir public
+  cd ${FC_ROOT}/fc/front/agent-connect/
+  cp -r ${FC_ROOT}/fc/front/agent-connect/build/** ${FC_ROOT}/fc/back/apps/core-fca/src/public
+
+  if [ -e 'interaction.ejs' ]
+  then
+    rm ${FC_ROOT}/fc/back/apps/core-fca/src/views/interaction.ejs
+  fi
+
+  mv ${FC_ROOT}/fc/back/apps/core-fca/src/public/index.html ${FC_ROOT}/fc/back/apps/core-fca/src/views/interaction.ejs
+  echo ""
+  echo "L'application AgenConnect est maintenant prête à être utilisée..."
+  echo ""
+}
+
+script=$0
+action=${1:-help}
+[ $# -gt 0 ] && shift
+case "$action" in
+  checkout)
+    _checkout $@
+    ;;
+  dep|dependencies)
+    _install_dependencies $@
+    ;;
+  dep-all|dependencies-all)
+    _install_dependencies fsp1v2 fsp2v2 fsp3v2 fdp1v2 fip1v2 fip2v2 corev2 rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fsa4v2 fia1v2 fia2v2 fia4v2 fia5v2 fca fca-front csmr-hsm eidas-bridge ud-back ud-front exploitation-fca exploit-fcp exploit-fca
+    ;;
+  exec)
+    _exec $@
+    ;;
+  halt)
+    _halt
+    ;;
+  log)
+    _log $@
+    ;;
+  fixtures-v2)
+    _fixturesv2
+    ;;
+  fixtures-fca)
+    _fixturesFca
+    ;;
+  fca-front)
+    _fca_front
+    ;;
+  mongo-shell-fca)
+    _mongo_shell_fca
+    ;;
+  mongo-shell-corev2)
+    _mongo_shell_corev2
+    ;;
+  reload)
+    _start $@
+    ;;
+  reload-all)
+    _start fsp1v2 fsp2v2 fsp3v2 fsa4v2 fdp1v2 fip1v2 fip2v2 fia4v2 fia5v2 corev2 rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fia1v2 fia2v2 fca fca-front csmr-hsm eidas-bridge ud-back ud-front exploitation-fca exploit-fcp exploit-fca
+    ;;
+  reset-db-v2)
+    _reset_db_v2 $@
+    ;;
+  reset-db-fca)
+    _reset_db_fca $@
+    ;;
+  idp-as-prod-v2)
+    _idp_as_prod_v2 $@
+    ;;
+  start)
+    _start $@
+    ;;
+  start-all)
+    _start fsp1v2 fsp2v2 fsp3v2 fsa4v2 fdp1v2 fip1v2 fip2v2 fia4v2 fia5v2 corev2 rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fia1v2 fia2v2 fca fca-front csmr-hsm eidas-bridge ud-back ud-front exploitation-fca exploit-fcp exploit-fca
+    ;;
+  stop)
+    _stop $@
+    ;;
+  stop-all)
+    _stop fsp1v2 fsp2v2 fsp3v2 fsa4v2 fdp1v2 fip1v2 fip2v2 fia4v2 fia5v2 corev2 rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fia1v2 fia2v2 fca fca-front csmr-hsm eidas-bridge ud-back ud-front exploitation-fca exploit-fcp exploit-fca
+    ;;
+  test)
+    _test $@
+    ;;
+  test-all)
+    _test rnipp corev2 exploitation-high fca fca-front eidas-bridge ud-back ud-front exploitation-fca exploit-fcp exploit-fca
+    ;;
+  e2e)
+    _e2e $@
+    ;;
+  prune)
+    _halt
+    docker network prune -f && docker container prune -f
+    ;;
+  prune-all)
+    echo ""
+    echo "                                ,sS$$Ss.,sS$$Ss.,s"
+    echo "                           ,sS$''$'.ss''''$$$$$$:'    ,sSs."
+    echo "                          ;$$$$oo.$$$$l;$o$$$$'',s.   '$$$$Ss."
+    echo "                          ''$'$''$$$$'''',ss.'',S$$$$$'Ss.'$$$$$;"
+    echo "                        ,s.  $l;$$$$$$$$$$Ss.$$$$$$$o$$$;;$'''.s."
+    echo "                  ,s.,sS',sS's$s$$$$$$$$$$$$$;''$',s.'$',sS$$sS$$;"
+    echo "           ,sS$Ss.'',s. $o$$o$$$$$$$$$$$$$$$'$Ss.'$$$$ $$'$$$$'''"
+    echo "        ,s.'$$$'$';;$$;;$$$$$$$$$$$'$$$$$$$$$'$$$  ''''sS$$$',sS"
+    echo "        '''''$$o' s '$$ $$$$''''$''o$$$$$$$$'o''  ,sSS'  '''   ''."
+    echo "               ''' ''Ss.'''$oos.'oo's'''''Ss ,s'   '''            '"
+    echo "                      ''    ''''.   $ooooo$$"
+    echo "                                '   $$$$$$$$"
+    echo "                                    $$$$$$$$"
+    echo "                                    $'$$$$$$ '                ::"
+    echo "                                    $o$$$$$$              ,$:"
+    echo "                                    '''$$$''             ,$'"
+    echo "                          .sS$Ss..sS$$Ss. $$Ss.,sS$Ss.   $'"
+    echo "                          .s'$$'$$$$$$$$$$$$''sS$$$$$Ss. '  ,s'"
+    echo "                          ''o$$o$s. s sssss. '''    ''''    $'"
+    echo "                 ,s               ' $ $$$$$$        :"
+    echo "                 sS$s          #    $$$$$ $$    # ,$'"
+    echo "                 's''''Ss           $$$$$$$$     ,$'   :"
+    echo "                        ''s         $$$$$ $$    ,$' ,:"
+    echo "          .                '    .s'$$$$$$ $$ .sS ' ,$'"
+    echo "            '' s      s        s$l$';$'$$$$''s's.  $''"
+    echo "                '    ;$l    .s'$$$$$'$$$$$$$$$$$''     ,s"
+    echo "                      ''     ''o'$'''o' '  '''$$$$    ,''"
+    echo "                                              '''"
+    echo ""
+    _halt
+    docker system prune -af && docker image prune -af && docker system prune -af --volumes && docker system df && (cypress cache prune || echo "skipped cypress cache prune") && npm cache clean --force && yarn cache clean && sudo du -sh /var/cache/apt/archives && rm -Rf ${FC_ROOT}/fc/back/node_modules && rm -Rf ${FC_ROOT}/fc/front/node_modules
+    ;;
+  up)
+    _up $@
+    ;;
+  run-prod)
+    _run_prod $@
+    ;;
+  help)
+    echo "Usage: $script <option>:"
+    echo "----"
+    echo "* build [-var 'key=value'] <image_name> [<other_image_name> <...>] => build specific images"
+    echo "* dependencies [<app1> <app2> <...>] / dep [...] => install dependencies (using npm or yarn) on given nodejs applications (Ex. corev2)"
+    echo "* dependencies-all | dep-all => install dependencies (using npm or yarn) on all nodejs applications"
+    echo "* exec <container_name> <command> => exec a command inside a container"
+    echo "* halt => stop docker-compose and delete containers"
+    echo "* log [<app>] => exec pm2 logs for given instance (Ex. corev2)"
+    echo "* fixtures => drop and restore default postgres database in fc-apps"
+    echo "* mongo-shell-corev2 => open mongo4 shell for core-v2 stack"
+    echo "* reload [<app1> <app2> <...>] => (re)start given pm2 instances (Ex. corev2)"
+    echo "* reload-all => (re)start all pm2 instances"
+    echo "* reset-db-v2 => drop and restore default mongodb database for mongo corev2"
+    echo "* reset-db-fca => drop and restore default mongodb database for mongo fca"
+    echo "* start [<app1> <app2> <...>] => (re)start given pm2 instances (Ex. corev2)"
+    echo "* start-all => (re)start all pm2 instances"
+    echo "* stop [<app1> <app2> <...>] => stop given pm2 instances (Ex. corev2)"
+    echo "* stop-all => stop all pm2 instances"
+    echo "* test [<app1> <app2> <...>] => exec tests on given nodejs applications (Ex. corev2)"
+    echo "* test-all => exec tests on all nodejs applications"
+    echo "* e2e => exec e2e tests on given nodejs application (Ex. corev2)"
+    echo "* up => Select the apps you want to up (run without argument to show the lsit of apps)"
+    echo "----"
+    echo "Other commands mapped to docker-compose: see https://docs.docker.com/compose/reference/overview/"
+    echo " (example: $script ps)"
+    exit 1
+    ;;
+  *)
+    cd ${WORKING_DIR} && docker-compose $action $@
+    ;;
+esac
