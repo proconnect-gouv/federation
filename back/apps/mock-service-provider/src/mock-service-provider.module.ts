@@ -3,7 +3,7 @@
 // Declarative code
 import { Module } from '@nestjs/common';
 import { OidcClientModule } from '@fc/oidc-client';
-import { SessionModule } from '@fc/session';
+import { SessionGenericModule } from '@fc/session-generic';
 import {
   IdentityProviderAdapterEnvService,
   IdentityProviderAdapterEnvModule,
@@ -15,6 +15,7 @@ import {
   ServiceProviderAdapterEnvService,
 } from '@fc/service-provider-adapter-env';
 import { MockServiceProviderController } from './mock-service-provider.controller';
+import { MockServiceProviderSession } from './dto';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderAdapterEnvService,
@@ -26,8 +27,10 @@ const oidcClientModule = OidcClientModule.register(
 @Module({
   imports: [
     ExceptionsModule,
-    SessionModule,
     IdentityProviderAdapterEnvModule,
+    SessionGenericModule.forRoot({
+      schema: MockServiceProviderSession,
+    }),
     CryptographyModule,
     oidcClientModule,
   ],

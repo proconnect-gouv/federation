@@ -18,7 +18,6 @@ import { OidcClientConfig } from '@fc/oidc-client';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { RedisConfig } from '@fc/redis';
-import { SessionConfig } from '@fc/session';
 import { SessionGenericConfig } from '@fc/session-generic';
 import { EidasClientConfig } from '@fc/eidas-client';
 import { EidasProviderConfig } from '@fc/eidas-provider';
@@ -68,11 +67,6 @@ export class EidasBridgeConfig {
   @ValidateNested()
   @Type(() => RedisConfig)
   readonly Redis: RedisConfig;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => SessionConfig)
-  readonly Session: SessionConfig;
 
   @IsObject()
   @ValidateNested()

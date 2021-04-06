@@ -2,8 +2,8 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { Module, DynamicModule, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { RedisModule } from '@fc/redis';
-import { SessionModule } from '@fc/session';
 import { FcExceptionFilter } from '@fc/exceptions';
+import { SessionGenericModule } from '@fc/session-generic';
 import { TrackingModule } from '@fc/tracking';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
@@ -38,7 +38,7 @@ export class OidcProviderModule {
         TrackingModule.forLib(),
         serviceProviderModule,
         CqrsModule,
-        SessionModule,
+        SessionGenericModule,
       ],
       providers: [
         FcExceptionFilter,

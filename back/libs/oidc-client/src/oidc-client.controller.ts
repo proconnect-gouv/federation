@@ -1,7 +1,6 @@
 import {
   Controller,
   Get,
-  Req,
   Res,
   Body,
   Post,
@@ -9,7 +8,8 @@ import {
   ValidationPipe,
   UsePipes,
 } from '@nestjs/common';
-import { SessionService } from '@fc/session';
+import { ISessionGenericService, Session } from '@fc/session-generic';
+import { OidcClientSession } from './dto';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderAdapter } from './interfaces';
 import { RedirectToIdp } from './dto';
@@ -28,7 +28,6 @@ export class OidcClientController {
   /* eslint-disable-next-line max-params */
   constructor(
     private readonly oidcClient: OidcClientService,
-    private readonly session: SessionService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderAdapter,
   ) {}
@@ -39,8 +38,17 @@ export class OidcClientController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async redirectToIdp(
     @Res() res,
-    @Req() req,
     @Body() body: RedirectToIdp,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
   ): Promise<void> {
     const {
       scope,
@@ -52,9 +60,8 @@ export class OidcClientController {
     } = body;
 
     let serviceProviderId: string | null;
-    const { interactionId } = req.fc;
     try {
-      const { spId } = await this.session.get(interactionId);
+      const { spId } = await sessionOidc.get();
       serviceProviderId = spId;
     } catch (error) {
       serviceProviderId = null;
@@ -67,7 +74,6 @@ export class OidcClientController {
     }
 
     // TODO END
-
     const {
       state,
       nonce,
@@ -86,7 +92,7 @@ export class OidcClientController {
 
     const { name: idpName } = await this.identityProvider.getById(providerUid);
 
-    await this.session.patch(req.fc.interactionId, {
+    await sessionOidc.set({
       idpId: providerUid,
       idpName,
       idpState: state,

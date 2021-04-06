@@ -8,3 +8,4 @@ export * from './client-metadata.dto';
 export * from './issuer-metadata.dto';
 export * from './identity-service.dto';
 export * from './min-identity.dto';
+export * from './oidc-client-session.dto';

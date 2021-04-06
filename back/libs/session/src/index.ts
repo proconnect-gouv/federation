@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 export * from './session.module';
 export * from './session.service';
 export * from './dto';

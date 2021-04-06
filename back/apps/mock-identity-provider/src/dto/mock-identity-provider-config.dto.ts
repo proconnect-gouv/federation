@@ -6,8 +6,8 @@ import { Type } from 'class-transformer';
 import { RedisConfig } from '@fc/redis';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { LoggerConfig } from '@fc/logger';
-import { SessionConfig } from '@fc/session';
 import { AppConfig } from './app-config.dto';
+import { SessionGenericConfig } from '@fc/session-generic';
 /**
  * Rename this librairy into a more appropriate name `adapter`, `mongo`
  * @TODO #246 ETQ Dev, j'ai des application avec un nommage précis et explicite
@@ -38,8 +38,8 @@ export class MockIdentityProviderConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => SessionConfig)
-  readonly Session: SessionConfig;
+  @Type(() => SessionGenericConfig)
+  readonly SessionGeneric: SessionGenericConfig;
 
   @IsObject()
   @ValidateNested()

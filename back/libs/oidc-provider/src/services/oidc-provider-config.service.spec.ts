@@ -1,13 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService, LogLevelNames } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { SessionGenericService } from '@fc/session-generic';
 import Provider, { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
-import { OidcProviderConfigService } from './oidc-provider-config.service';
-import { OidcProviderErrorService } from './oidc-provider-error.service';
 import { RedisAdapter } from '../adapters';
 import { OidcProviderService } from '../oidc-provider.service';
+import { OidcProviderConfigService } from './oidc-provider-config.service';
+import { OidcProviderErrorService } from './oidc-provider-error.service';
 
 describe('OidcProviderErrorService', () => {
   let service: OidcProviderConfigService;
@@ -32,8 +32,9 @@ describe('OidcProviderErrorService', () => {
   };
 
   const sessionServiceMock = {
-    init: jest.fn(),
+    set: jest.fn(),
     get: jest.fn(),
+    getAlias: jest.fn(),
   };
 
   const errorServiceMock = {
@@ -71,7 +72,7 @@ describe('OidcProviderErrorService', () => {
         OidcProviderConfigService,
         LoggerService,
         ConfigService,
-        SessionService,
+        SessionGenericService,
         OidcProviderErrorService,
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
@@ -83,7 +84,7 @@ describe('OidcProviderErrorService', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(SessionService)
+      .overrideProvider(SessionGenericService)
       .useValue(sessionServiceMock)
       .overrideProvider(OidcProviderErrorService)
       .useValue(errorServiceMock)
@@ -110,7 +111,7 @@ describe('OidcProviderErrorService', () => {
     service['provider'] = providerMock as any;
   });
 
-  describe('overrideConfiguration', () => {
+  describe('overrideConfiguration()', () => {
     it('should make the configuration method return fresh data', () => {
       // Given
       const configMock = {
@@ -143,6 +144,7 @@ describe('OidcProviderErrorService', () => {
       // Then
       expect(result).toBe('fresh bar value');
     });
+
     it('should make the whole config available', () => {
       // Given
       const configMock = {
@@ -159,7 +161,7 @@ describe('OidcProviderErrorService', () => {
     });
   });
 
-  describe('getConfig', () => {
+  describe('getConfig()', () => {
     it('should call several services and concat their ouputs', async () => {
       // Given
       RedisAdapter.getConstructorWithDI = jest
@@ -200,7 +202,7 @@ describe('OidcProviderErrorService', () => {
     });
   });
 
-  describe('url', () => {
+  describe('url()', () => {
     it('Should return a relative interaction url with prefix', async () => {
       // Given
       const prefix = '/prefix';
@@ -217,64 +219,83 @@ describe('OidcProviderErrorService', () => {
     });
   });
 
-  describe('findAccount', () => {
+  describe('findAccount()', () => {
+    // Given
+    const contextMock = { not: 'altered' };
+    const interactionIdMock = '123ABC';
+
     it('Should return an object with accountID', async () => {
       // Given
-      const ctx = { not: 'altered' };
-      const sub = 'foo';
       const identityMock = { foo: 'bar' };
       sessionServiceMock.get.mockResolvedValueOnce({
         spIdentity: identityMock,
       });
+      sessionServiceMock.getAlias.mockResolvedValueOnce({
+        identityMock,
+      });
       // When
-      const result = await service['findAccount'](ctx, sub);
+      const result = await service['findAccount'](
+        contextMock,
+        interactionIdMock,
+      );
       // Then
       expect(result).toHaveProperty('accountId');
-      expect(result.accountId).toBe('foo');
+      expect(result.accountId).toBe(interactionIdMock);
     });
+
     it('Should not alter the context', async () => {
       // Given
-      const ctx = { not: 'altered' };
-      const sub = 'foo';
+      const identityMock = { foo: 'bar' };
+      sessionServiceMock.getAlias.mockResolvedValueOnce({
+        identityMock,
+      });
       // When
-      await service['findAccount'](ctx, sub);
+      await service['findAccount'](contextMock, interactionIdMock);
       // Then
-      expect(ctx).toEqual({ not: 'altered' });
+      expect(contextMock).toEqual({ not: 'altered' });
     });
+
     it('Should return an object with a claims function that returns identity', async () => {
       // Given
-      const ctx = { not: 'altered' };
-      const sub = 'foo';
       const identityMock = { spIdentity: { foo: 'bar' } };
       sessionServiceMock.get.mockResolvedValueOnce({
         spIdentity: identityMock,
       });
-      const result = await service['findAccount'](ctx, sub);
+      sessionServiceMock.getAlias.mockResolvedValueOnce({
+        identityMock,
+      });
+      const result = await service['findAccount'](
+        contextMock,
+        interactionIdMock,
+      );
       // When
       const claimsResult = await result.claims();
       // Then
       expect(claimsResult).toBe(identityMock);
-      expect(ctx).toEqual({ not: 'altered' });
+      expect(contextMock).toEqual({ not: 'altered' });
     });
+
     it('Should call throwError if an exception is catched', async () => {
       // Given
-      const ctx = { not: 'altered' };
-      const sub = 'foo';
+      const identityMock = { foo: 'bar' };
       const exception = new Error('foo');
       sessionServiceMock.get.mockRejectedValueOnce(exception);
       service['throwError'] = jest.fn();
+      sessionServiceMock.getAlias.mockResolvedValueOnce({
+        identityMock,
+      });
       // When
-      await service['findAccount'](ctx, sub);
+      await service['findAccount'](contextMock, interactionIdMock);
       // Then
       expect(service['errorService']['throwError']).toHaveBeenCalledWith(
-        ctx,
+        contextMock,
         exception,
       );
-      expect(ctx).toEqual({ not: 'altered' });
+      expect(contextMock).toEqual({ not: 'altered' });
     });
   });
 
-  describe('pairwiseIdentifier', () => {
+  describe('pairwiseIdentifier()', () => {
     it('should return second argument as is', () => {
       // Given
       const ctx = {};
@@ -286,7 +307,7 @@ describe('OidcProviderErrorService', () => {
     });
   });
 
-  describe('logoutSource', () => {
+  describe('logoutSource()', () => {
     it('should call exceptionFilter.catch', () => {
       // Given
       const ctx = { body: '' } as KoaContextWithOIDC;

@@ -14,11 +14,11 @@ import {
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { SessionService } from '@fc/session';
+import { OidcClientSession } from '@fc/oidc-client';
 import { ConfigService } from '@fc/config';
 import { IOidcIdentity, OidcError } from '@fc/oidc';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
-import { IExposedSessionServiceGeneric, Session } from '@fc/session-generic';
+import { ISessionGenericService, Session } from '@fc/session-generic';
 import { EidasClientSession } from '@fc/eidas-client';
 import { validateDto } from '@fc/common';
 import { EidasBridgeRoutes } from '../enums';
@@ -36,7 +36,6 @@ export class EuIdentityToFrController {
   constructor(
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
-    private readonly session: SessionService,
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcToEidas: OidcToEidasService,
     private readonly eidasToOidc: EidasToOidcService,
@@ -56,19 +55,28 @@ export class EuIdentityToFrController {
     @Req() req,
     @Res() res,
     @Session('EidasClient')
-    session: IExposedSessionServiceGeneric<EidasClientSession>,
+    sessionEidas: ISessionGenericService<EidasClientSession>,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
   ) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
     const { countryList } = await this.config.get<Core>('Core');
-    const { interactionId } = req.fc;
-    const { spName } = await this.session.get(interactionId);
+    const { spName } = await sessionOidc.get();
 
     const eidasPartialRequest = this.oidcToEidas.mapPartialRequest(
       params.scope,
       params.acr_values,
     );
 
-    await session.set('eidasPartialRequest', eidasPartialRequest);
+    await sessionEidas.set('eidasPartialRequest', eidasPartialRequest);
 
     return {
       countryList,
@@ -96,12 +104,20 @@ export class EuIdentityToFrController {
   async finishInteraction(
     @Req() req,
     @Res() res,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
     @Session('EidasClient')
-    session: IExposedSessionServiceGeneric<EidasClientSession>,
+    sessionEidas: ISessionGenericService<EidasClientSession>,
   ) {
-    const { interactionId } = req.fc;
-
-    const eidasResponse = await session.get('eidasResponse');
+    const { eidasResponse } = await sessionEidas.get();
 
     if (eidasResponse.status.failure) {
       const { params } = await this.oidcProvider.getInteraction(req, res);
@@ -123,10 +139,10 @@ export class EuIdentityToFrController {
     const spIdentity: IOidcIdentity = idpIdentity;
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
-    const idpIdentityReset = { sub: idpIdentity.sub };
+    const idpIdentityReset: IOidcIdentity = { sub: idpIdentity.sub };
 
     // Store the changes in session
-    await this.session.patch(interactionId, {
+    await sessionOidc.set({
       // Save idp identity.
       idpIdentity: idpIdentityReset,
       // Save service provider identity.
@@ -134,7 +150,8 @@ export class EuIdentityToFrController {
       spAcr: acr,
     });
 
-    return this.oidcProvider.finishInteraction(req, res);
+    const session: OidcClientSession = await sessionOidc.get();
+    return this.oidcProvider.finishInteraction(req, res, session);
   }
 
   /**

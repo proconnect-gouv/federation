@@ -13,7 +13,11 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { SessionService } from '@fc/session';
+import {
+  ISessionGenericService,
+  Session,
+  SessionGenericNotFoundException,
+} from '@fc/session-generic';
 import { ConfigService } from '@fc/config';
 import { MinistriesService } from '@fc/ministries';
 import { AppConfig } from '@fc/app';
@@ -24,9 +28,10 @@ import {
 } from '@fc/core';
 import {
   GetOidcCallback,
-  OidcClientConfig,
   OidcClientRoutes,
   OidcClientService,
+  OidcClientConfig,
+  OidcClientSession,
 } from '@fc/oidc-client';
 import { validateDto } from '@fc/common';
 import { Core, OidcIdentityDto } from '../dto';
@@ -34,6 +39,7 @@ import { CoreFcaService } from '../services';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
 import { ValidatorOptions } from 'class-validator';
 import { ClassTransformOptions } from 'class-transformer';
+import { OidcSession } from '@fc/oidc';
 
 @Controller()
 export class CoreFcaController {
@@ -46,7 +52,6 @@ export class CoreFcaController {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly ministries: MinistriesService,
     private readonly core: CoreFcaService,
-    private readonly session: SessionService,
     private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
   ) {
@@ -60,7 +65,22 @@ export class CoreFcaController {
   }
 
   @Get(CoreRoutes.FCA_FRONT_DATAS)
-  async getFrontData(@Req() req, @Res() res) {
+  async getFrontData(
+    @Req() req,
+    @Res() res,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ) {
+    const session = await sessionOidc.get();
+    if (!session) {
+      return {};
+    }
+    const { spName } = session;
     const { params } = await this.oidcProvider.getInteraction(req, res);
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -104,10 +124,6 @@ export class CoreFcaController {
       }),
     );
 
-    const { interactionId } = req.fc;
-
-    const { spName } = await this.session.get(interactionId);
-
     return res.json({
       redirectToIdentityProviderInputs,
       redirectURL: '/api/v2/redirect-to-idp',
@@ -119,14 +135,35 @@ export class CoreFcaController {
 
   @Get(CoreRoutes.INTERACTION)
   @Render('interaction')
-  async getInteraction() {
+  async getInteraction(
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ) {
+    const session = await sessionOidc.get();
+    if (!session) {
+      throw new SessionGenericNotFoundException('OidcClient');
+    }
+
     return {};
   }
 
   @Get(CoreRoutes.INTERACTION_VERIFY)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  async getVerify(@Req() req, @Res() res, @Param() _params: Interaction) {
-    await this.core.verify(req);
+  async getVerify(
+    @Res() res,
+    @Param() _params: Interaction,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ) {
+    await this.core.verify(sessionOidc);
 
     const { urlPrefix } = this.config.get<AppConfig>('App');
     res.redirect(`${urlPrefix}/login`);
@@ -137,14 +174,27 @@ export class CoreFcaController {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/185
    */
   @Get(CoreRoutes.INTERACTION_LOGIN)
-  async getLogin(@Req() req, @Res() res) {
-    const { interactionId } = req.fc;
-    const { spIdentity } = await this.session.get(interactionId);
+  async getLogin(
+    @Req() req,
+    @Res() res,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ) {
+    const { spIdentity } = await sessionOidc.get();
     if (!spIdentity) {
       throw new CoreMissingIdentityException();
     }
 
-    return this.oidcProvider.finishInteraction(req, res);
+    const session: OidcClientSession = await sessionOidc.get();
+    return this.oidcProvider.finishInteraction(req, res, session);
   }
 
   /**
@@ -157,10 +207,19 @@ export class CoreFcaController {
     @Req() req,
     @Res() res,
     @Param() params: GetOidcCallback,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
   ) {
     const { providerUid } = params;
-    const uid = req.fc.interactionId;
-    const { idpState, idpNonce, spId } = await this.session.get(uid);
+    const { idpState, idpNonce, spId, interactionId } = await sessionOidc.get();
 
     await this.oidcClient.utils.checkIdpBlacklisted(spId, providerUid);
 
@@ -196,15 +255,15 @@ export class CoreFcaController {
 
     await this.validateIdentity(providerUid, identity);
 
-    const identityExchange = {
+    const identityExchange: OidcSession = {
       idpIdentity: identity,
       idpAcr: acr,
       idpAccessToken: accessToken,
     };
-    this.session.patch(uid, identityExchange);
+    await sessionOidc.set({ ...identityExchange });
     // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');
-    res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
+    res.redirect(`${urlPrefix}/interaction/${interactionId}/verify`);
   }
 
   private async validateIdentity(

@@ -1,16 +1,19 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
-import { IExposedSessionServiceGeneric } from '../interfaces';
+import { ISessionGenericService } from '../interfaces';
 import { SessionGenericService } from '../session-generic.service';
 
 export function extractSessionFromRequest(
   moduleName: string,
   ctx: ExecutionContext,
-): IExposedSessionServiceGeneric<unknown> {
+): ISessionGenericService<unknown> {
   const request = ctx.switchToHttp().getRequest();
   const {
     sessionId,
     sessionService,
-  }: { sessionId: string; sessionService: SessionGenericService } = request;
+  }: {
+    sessionId: string;
+    sessionService: SessionGenericService;
+  } = request;
 
   const boundSessionContext = {
     sessionId,

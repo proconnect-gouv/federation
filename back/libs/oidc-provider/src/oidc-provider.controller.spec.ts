@@ -1,9 +1,25 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
+import { OidcSession } from '@fc/oidc';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcProviderController } from './oidc-provider.controller';
 import { RevocationTokenParamsDTO } from './dto';
+
+const interactionIdMock = 'interactionIdMockValue';
+const acrMock = 'acrMockValue';
+const spNameMock = 'spNameValue';
+const idpStateMock = 'idpStateMockValue';
+const idpNonceMock = 'idpNonceMock';
+
+const oidcSessionDataMock: OidcSession = {
+  interactionId: interactionIdMock,
+  spAcr: acrMock,
+  spIdentity: {},
+  spName: spNameMock,
+  idpState: idpStateMock,
+  idpNonce: idpNonceMock,
+};
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
@@ -21,6 +37,11 @@ describe('OidcProviderController', () => {
 
   const serviceProviderServiceMock = {
     isActive: jest.fn(),
+  };
+
+  const sessionServiceMock = {
+    set: jest.fn(),
+    get: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -57,7 +78,7 @@ describe('OidcProviderController', () => {
     jest.resetAllMocks();
   });
 
-  describe('getUserInfo', () => {
+  describe('getUserInfo()', () => {
     it('should call identity service', () => {
       // Given
       const next = jest.fn();
@@ -69,13 +90,14 @@ describe('OidcProviderController', () => {
     });
   });
 
-  describe('getLogin', () => {
+  describe('getLogin()', () => {
     it('should call service.finishInteraction', async () => {
       // Given
       const req = {};
       const res = {};
+      sessionServiceMock.get.mockResolvedValueOnce(oidcSessionDataMock);
       // When
-      await oidcProviderController.getLogin(req, res);
+      await oidcProviderController.getLogin(req, res, sessionServiceMock);
       // Then
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
         1,
@@ -83,11 +105,12 @@ describe('OidcProviderController', () => {
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
         req,
         res,
+        oidcSessionDataMock,
       );
     });
   });
 
-  describe('postToken', () => {
+  describe('postToken()', () => {
     it('should call next()', () => {
       // Given
       const next = jest.fn();
@@ -98,7 +121,7 @@ describe('OidcProviderController', () => {
     });
   });
 
-  describe('setEndSession', () => {
+  describe('setEndSession()', () => {
     it('should call logout service', () => {
       // Given
       const next = jest.fn();
@@ -110,7 +133,7 @@ describe('OidcProviderController', () => {
     });
   });
 
-  describe('revokeToken', () => {
+  describe('revokeToken()', () => {
     it('should call next()', () => {
       // Given
       const next = jest.fn();

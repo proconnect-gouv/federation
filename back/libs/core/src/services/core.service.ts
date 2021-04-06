@@ -12,10 +12,13 @@ import {
 } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { AccountBlockedException, AccountService } from '@fc/account';
-import { Acr } from '@fc/oidc';
+import { Acr, OidcSession } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { SessionService } from '@fc/session';
+import {
+  ISessionGenericBoundContext,
+  SessionGenericService,
+} from '@fc/session-generic';
 import { IEventContext, TrackingService } from '@fc/tracking';
 import { OidcProviderErrorService } from '@fc/oidc-provider/services';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
@@ -33,7 +36,7 @@ export class CoreService {
     private readonly oidcErrorService: OidcProviderErrorService,
     private readonly account: AccountService,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
-    private readonly session: SessionService,
+    private readonly sessionService: SessionGenericService,
     private readonly tracking: TrackingService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -117,18 +120,30 @@ export class CoreService {
 
     const { interactionId } = eventContext.fc;
 
+    const { req, res } = ctx;
+    const sessionId = await this.sessionService.reset(req, res);
+
+    // Store the binding relation between interactionId >> sessionId.
+    await this.sessionService.setAlias(interactionId, sessionId);
+
     // oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { client_id: spId, acr_values: spAcr } = ctx.oidc.params;
 
     const { name: spName } = await this.serviceProvider.getById(spId);
 
-    const sessionProperties = {
+    const sessionProperties: OidcSession = {
+      interactionId,
       spId,
       spAcr,
       spName,
     };
-    await this.session.init(ctx.res, interactionId, sessionProperties);
+
+    const sessionContext: ISessionGenericBoundContext = {
+      sessionId,
+      moduleName: 'OidcClient',
+    };
+    await this.sessionService.set(sessionContext, sessionProperties);
 
     const authEventContext: IEventContext = {
       ...eventContext,
@@ -136,6 +151,7 @@ export class CoreService {
       spAcr,
       spName,
     };
+
     this.tracking.track(OidcProviderAuthorizationEvent, authEventContext);
   }
 

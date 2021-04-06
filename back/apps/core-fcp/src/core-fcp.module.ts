@@ -3,7 +3,8 @@
 // Declarative code
 import { Module, Global } from '@nestjs/common';
 import { OidcProviderModule } from '@fc/oidc-provider';
-import { SessionModule } from '@fc/session';
+import { OidcSession } from '@fc/oidc';
+import { SessionGenericModule } from '@fc/session-generic';
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
@@ -59,7 +60,9 @@ const oidcProviderModule = OidcProviderModule.register(
   imports: [
     ExceptionsModule,
     MongooseModule,
-    SessionModule,
+    SessionGenericModule.forRoot({
+      schema: OidcSession,
+    }),
     RnippModule,
     CryptographyFcpModule,
     CryptographyEidasModule,
@@ -104,7 +107,6 @@ const oidcProviderModule = OidcProviderModule.register(
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [
-    SessionModule,
     CoreFcpDefaultVerifyHandler,
     CoreFcpEidasVerifyHandler,
     CoreFcpSendEmailHandler,

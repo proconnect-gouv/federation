@@ -1,6 +1,5 @@
 import { IsString, IsOptional, IsObject } from 'class-validator';
 import { IOidcIdentity } from '@fc/oidc';
-import { IsRegisteredHandler } from '@fc/feature-handler';
 
 export class SessionDto {
   @IsString({ each: true })
@@ -26,10 +25,6 @@ export class SessionDto {
   @IsObject()
   @IsOptional()
   readonly spIdentity?: IOidcIdentity;
-
-  @IsRegisteredHandler()
-  @IsOptional()
-  readonly spFeatureHandler?: string;
 
   @IsString()
   @IsOptional()
@@ -62,8 +57,4 @@ export class SessionDto {
   @IsString()
   @IsOptional()
   readonly idpAccessToken?: string;
-
-  @IsRegisteredHandler()
-  @IsOptional()
-  readonly idpFeatureHandler?: string;
 }

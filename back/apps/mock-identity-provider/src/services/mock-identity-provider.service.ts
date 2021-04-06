@@ -2,12 +2,16 @@ import csvdb from 'node-csv-query';
 import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
+import { OidcSession } from '@fc/oidc';
 import {
   OidcProviderMiddlewareStep,
   OidcProviderRoutes,
   OidcProviderService,
 } from '@fc/oidc-provider';
-import { SessionService } from '@fc/session';
+import {
+  ISessionGenericBoundContext,
+  SessionGenericService,
+} from '@fc/session-generic';
 import { ConfigService } from '@fc/config';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
 import { AppConfig } from '../dto';
@@ -25,7 +29,7 @@ export class MockIdentityProviderService {
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly serviceProvider: ServiceProviderAdapterEnvService,
-    private readonly session: SessionService,
+    private readonly sessionService: SessionGenericService,
     private readonly config: ConfigService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -52,19 +56,33 @@ export class MockIdentityProviderService {
       return;
     }
 
+    const { sessionId } = ctx.req;
     const interactionId = this.oidcProvider.getInteractionIdFromCtx(ctx);
+
+    // Store the binding relation between interactionId >> sessionId.
+    await this.sessionService.setAlias(interactionId, sessionId);
 
     // oidc defined variable name
     const { client_id: spId, acr_values: spAcr } = ctx.oidc.params;
 
     const { name: spName } = await this.serviceProvider.getById(spId);
 
-    const sessionProperties = {
+    const sessionProperties: OidcSession = {
+      interactionId,
       spId,
       spAcr,
       spName,
     };
-    await this.session.init(ctx.res, interactionId, sessionProperties);
+
+    const boundSessionContext: ISessionGenericBoundContext = {
+      sessionId,
+      moduleName: 'OidcClient',
+    };
+    const saveWithContext = this.sessionService.set.bind(
+      this.sessionService,
+      boundSessionContext,
+    );
+    await saveWithContext(sessionProperties);
   }
 
   private async loadDatabase(): Promise<void> {
