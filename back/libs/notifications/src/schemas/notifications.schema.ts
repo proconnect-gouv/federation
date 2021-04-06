@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 import * as mongoose from 'mongoose';
 
 export const NotificationsSchema = new mongoose.Schema(

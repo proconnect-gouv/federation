@@ -1,13 +1,13 @@
 /* istanbul ignore file */
 
-// declarative code
+// declarative code ISessionGenericService
 
 /**
  * To understand, please read the following documentation
  * @see https://www.typescriptlang.org/docs/handbook/jsdoc-supported-types.html#extends
  * @see https://www.typescriptlang.org/docs/handbook/2/indexed-access-types.html#the-keyof-type-operator
  */
-export interface IExposedSessionServiceGeneric<T> {
+export interface ISessionGenericService<T> {
   /**
    * Retrieves a part of a module session
    * @param key The key of the sub data to retrieve

@@ -4,7 +4,8 @@ import { Provider, KoaContextWithOIDC } from 'oidc-provider';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Inject, Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { OidcSession } from '@fc/oidc';
+import { OidcClientSession } from '@fc/oidc-client';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import {
   OidcProviderMiddlewareStep,
@@ -17,8 +18,10 @@ import {
   OidcProviderBindingException,
   OidcProviderInteractionNotFoundException,
 } from './exceptions';
-import { OidcProviderErrorService } from './services/oidc-provider-error.service';
-import { OidcProviderConfigService } from './services/oidc-provider-config.service';
+import {
+  OidcProviderErrorService,
+  OidcProviderConfigService,
+} from './services';
 
 @Injectable()
 export class OidcProviderService {
@@ -33,7 +36,6 @@ export class OidcProviderService {
     readonly logger: LoggerService,
     @Inject(REDIS_CONNECTION_TOKEN)
     readonly redis: Redis,
-    private readonly session: SessionService,
     private readonly errorService: OidcProviderErrorService,
     private readonly configService: OidcProviderConfigService,
   ) {
@@ -165,12 +167,16 @@ export class OidcProviderService {
    *  - lower coupling in other modules
    *  - handle exceptions
    *
-   * @param req
-   * @param res
+   * @param {any} req
+   * @param {any} res
+   * @param {OidcSession} session Object that contains the session info
    */
-  async finishInteraction(req, res) {
-    const { interactionId } = req.fc;
-    const session = await this.session.get(interactionId);
+  async finishInteraction(req: any, res: any, session: OidcSession) {
+    const {
+      interactionId: account,
+      spAcr: acr,
+      amr,
+    }: OidcClientSession = session;
     /**
      * Build Interaction results
      * For all available options, refer to `oidc-provider` documentation:
@@ -178,9 +184,9 @@ export class OidcProviderService {
      */
     const result = {
       login: {
-        account: interactionId,
-        acr: session.spAcr,
-        amr: session.amr,
+        account,
+        acr,
+        amr,
         ts: Math.floor(Date.now() / 1000),
       },
       /**

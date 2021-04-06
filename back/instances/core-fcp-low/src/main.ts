@@ -18,7 +18,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { AppConfig } from '@fc/app';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
-import { SessionConfig } from '@fc/session';
+import { SessionGenericConfig } from '@fc/session-generic';
 import { AppModule } from './app.module';
 
 // Assets path vary in dev env
@@ -90,7 +90,7 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, assetsPath, 'public'));
 
-  const { cookieSecrets } = config.get<SessionConfig>('Session');
+  const { cookieSecrets } = config.get<SessionGenericConfig>('SessionGeneric');
   app.use(CookieParser(cookieSecrets));
 
   /**

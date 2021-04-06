@@ -23,7 +23,7 @@ describe('EidasProviderController', () => {
     completeFcFailureResponse: jest.fn(),
   };
 
-  const exposedSessionMock = {
+  const sessionEidasMock = {
     get: jest.fn(),
     set: jest.fn(),
   };
@@ -82,7 +82,7 @@ describe('EidasProviderController', () => {
 
     it('should read the light-request corresponding to the token in the body from the cache', async () => {
       // action
-      await controller.requestHandler(body, exposedSessionMock);
+      await controller.requestHandler(body, sessionEidasMock);
 
       // expect
       expect(
@@ -95,7 +95,7 @@ describe('EidasProviderController', () => {
 
     it('should parse the light-request', async () => {
       // action
-      await controller.requestHandler(body, exposedSessionMock);
+      await controller.requestHandler(body, sessionEidasMock);
 
       // expect
       expect(eidasProviderServiceMock.parseLightRequest).toHaveBeenCalledTimes(
@@ -108,11 +108,11 @@ describe('EidasProviderController', () => {
 
     it('should put the eidas request in session', async () => {
       // action
-      await controller.requestHandler(body, exposedSessionMock);
+      await controller.requestHandler(body, sessionEidasMock);
 
       // expect
-      expect(exposedSessionMock.set).toHaveBeenCalledTimes(1);
-      expect(exposedSessionMock.set).toHaveBeenCalledWith(
+      expect(sessionEidasMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionEidasMock.set).toHaveBeenCalledWith(
         'eidasRequest',
         eidasRequestMock,
       );
@@ -120,7 +120,7 @@ describe('EidasProviderController', () => {
 
     it('should retrieve the redirectAfterRequestHandlingUrl from the config', async () => {
       // action
-      await controller.requestHandler(body, exposedSessionMock);
+      await controller.requestHandler(body, sessionEidasMock);
 
       // expect
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
@@ -135,7 +135,7 @@ describe('EidasProviderController', () => {
       };
 
       // action
-      const result = await controller.requestHandler(body, exposedSessionMock);
+      const result = await controller.requestHandler(body, sessionEidasMock);
 
       // expect
       expect(result).toStrictEqual(expected);
@@ -171,7 +171,7 @@ describe('EidasProviderController', () => {
 
     it('should get the proxyServiceResponseCacheUrl from the configuration', async () => {
       // action
-      await controller.responseProxy(exposedSessionMock);
+      await controller.responseProxy(sessionEidasMock);
 
       // expect
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
@@ -180,7 +180,7 @@ describe('EidasProviderController', () => {
 
     it('should prepare the light response using the eidasReponse', async () => {
       // action
-      await controller.responseProxy(exposedSessionMock);
+      await controller.responseProxy(sessionEidasMock);
 
       // expect
       expect(
@@ -193,7 +193,7 @@ describe('EidasProviderController', () => {
 
     it('should write the light-response to the cache', async () => {
       // action
-      await controller.responseProxy(exposedSessionMock);
+      await controller.responseProxy(sessionEidasMock);
 
       // expect
       expect(
@@ -213,7 +213,7 @@ describe('EidasProviderController', () => {
         proxyServiceResponseCacheUrl: configMock.proxyServiceResponseCacheUrl,
         token: formattedLightResponseMock.token,
       };
-      const result = await controller.responseProxy(exposedSessionMock);
+      const result = await controller.responseProxy(sessionEidasMock);
 
       // expect
       expect(result).toStrictEqual(expected);
@@ -228,7 +228,7 @@ describe('EidasProviderController', () => {
     };
 
     beforeEach(() => {
-      exposedSessionMock.get.mockResolvedValueOnce({
+      sessionEidasMock.get.mockResolvedValueOnce({
         eidasRequest: eidasRequestMock,
         partialEidasResponse: partialEidasResponseMock,
       });
@@ -236,16 +236,16 @@ describe('EidasProviderController', () => {
 
     it('should get the eidas request and the partial eidas response from the session', async () => {
       // action
-      await controller['getEidasResponse'](exposedSessionMock);
+      await controller['getEidasResponse'](sessionEidasMock);
 
       // expect
-      expect(exposedSessionMock.get).toHaveBeenCalledTimes(1);
-      expect(exposedSessionMock.get).toHaveBeenCalledWith();
+      expect(sessionEidasMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionEidasMock.get).toHaveBeenCalledWith();
     });
 
     it('should call completeFcSuccessResponse with the partialEidasResponse and the eidasRequest if the status failure is false', async () => {
       // action
-      await controller['getEidasResponse'](exposedSessionMock);
+      await controller['getEidasResponse'](sessionEidasMock);
 
       // expect
       expect(
@@ -263,7 +263,7 @@ describe('EidasProviderController', () => {
           failure: true,
         },
       };
-      exposedSessionMock.get.mockReset().mockResolvedValueOnce({
+      sessionEidasMock.get.mockReset().mockResolvedValueOnce({
         eidasRequest: eidasRequestMock,
         partialEidasResponse: partialFailureEidasResponseMock,
       });
@@ -276,7 +276,7 @@ describe('EidasProviderController', () => {
       );
 
       // action
-      await controller['getEidasResponse'](exposedSessionMock);
+      await controller['getEidasResponse'](sessionEidasMock);
 
       // expect
       expect(

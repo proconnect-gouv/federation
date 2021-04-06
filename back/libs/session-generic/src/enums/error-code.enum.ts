@@ -10,4 +10,7 @@
 export const enum ErrorCode {
   NOT_FOUND = 1,
   BAD_SESSION_FORMAT = 2,
+  BAD_SESSION_ALIAS = 3,
+  INVALID_SESSION = 4,
+  STORAGE_ISSUE = 5,
 }

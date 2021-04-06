@@ -93,10 +93,8 @@ describe('NotificationsService', () => {
       expect(result).not.toStrictEqual(notificationMock);
     });
 
-    xit('should return emptyNotification', async () => {
-      repositoryMock.exec = jest
-        .fn()
-        .mockResolvedValueOnce([{ isActive: false, message: 'message' }]);
+    it('should return emptyNotification', async () => {
+      repositoryMock.exec = jest.fn().mockResolvedValueOnce([]);
       // action
       const result = await service['findActiveNotifications']();
       // expect

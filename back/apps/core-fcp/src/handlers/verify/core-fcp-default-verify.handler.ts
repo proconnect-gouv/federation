@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 import {
   RnippService,
@@ -11,17 +10,19 @@ import { CoreService } from '@fc/core';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { RnippPivotIdentity } from '@fc/rnipp';
 import { IOidcIdentity } from '@fc/oidc';
-import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
+import { FeatureHandler } from '@fc/feature-handler';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
-
+import {
+  IVerifyFeatureHandlerHandleArgument,
+  IVerifyFeatureHandler,
+} from '../../interfaces';
 @Injectable()
 @FeatureHandler('core-fcp-default-verify')
-export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
+export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
   // Dependency injection can require more than 4 parameters
   /* eslint-disable-next-line max-params */
   constructor(
     private readonly logger: LoggerService,
-    private readonly session: SessionService,
     private readonly core: CoreService,
     private readonly tracking: TrackingService,
     private readonly rnipp: RnippService,
@@ -48,14 +49,14 @@ export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
    *
    * @param req
    */
-  async handle(req: any): Promise<void> {
+  async handle({
+    sessionOidc,
+    trackingContext,
+  }: IVerifyFeatureHandlerHandleArgument): Promise<void> {
     this.logger.debug('getConsent service: ##### core-fcp-default-verify');
 
-    const { interactionId } = req.fc;
-
     // Grab informations on interaction and identity
-    const session = await this.session.get(interactionId);
-    const { idpId, idpIdentity, idpAcr, spId, spAcr } = session;
+    const { idpId, idpIdentity, idpAcr, spId, spAcr } = await sessionOidc.get();
 
     /**
      * @todo #410 - le DTO est permissif et devrait forcer les données
@@ -72,7 +73,7 @@ export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
     this.core.checkIfAcrIsValid(idpAcr, spAcr);
 
     // Identity check and normalization
-    const rnippIdentity = await this.rnippCheck(idpIdentity, req);
+    const rnippIdentity = await this.rnippCheck(idpIdentity, trackingContext);
 
     const { entityId } = await this.serviceProvider.getById(spId);
 
@@ -111,7 +112,7 @@ export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
     // Delete idp identity from volatile memory but keep the sub for the business logs.
     const idpIdentityCleaned = { sub: subIdp };
 
-    await this.session.patch(interactionId, {
+    await sessionOidc.set({
       amr: ['fc'],
       idpIdentity: idpIdentityCleaned,
       spIdentity,
@@ -125,11 +126,11 @@ export class CoreFcpDefaultVerifyHandler implements IFeatureHandler {
    */
   private async rnippCheck(
     idpIdentity: IOidcIdentity,
-    req: any,
+    trackingContext: any,
   ): Promise<RnippPivotIdentity> {
-    this.tracking.track(RnippRequestedEvent, req);
+    this.tracking.track(RnippRequestedEvent, trackingContext);
     const rnippIdentity = await this.rnipp.check(idpIdentity);
-    this.tracking.track(RnippReceivedValidEvent, req);
+    this.tracking.track(RnippReceivedValidEvent, trackingContext);
 
     return rnippIdentity;
   }

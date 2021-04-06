@@ -3,7 +3,8 @@
 // Declarative code
 import { Module, Global } from '@nestjs/common';
 import { OidcProviderModule } from '@fc/oidc-provider';
-import { SessionModule } from '@fc/session';
+import { SessionGenericModule } from '@fc/session-generic';
+import { OidcSession } from '@fc/oidc';
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
@@ -44,7 +45,6 @@ const oidcProviderModule = OidcProviderModule.register(
   imports: [
     ExceptionsModule,
     MongooseModule,
-    SessionModule,
     CryptographyFcaModule,
     AccountModule,
     ServiceProviderAdapterMongoModule,
@@ -58,6 +58,9 @@ const oidcProviderModule = OidcProviderModule.register(
       ServiceProviderAdapterMongoService,
       ServiceProviderAdapterMongoModule,
     ),
+    SessionGenericModule.forRoot({
+      schema: OidcSession,
+    }),
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),
     FeatureHandlerModule,
@@ -75,6 +78,6 @@ const oidcProviderModule = OidcProviderModule.register(
     CoreFcaDefaultVerifyHandler,
   ],
   // Make `CoreTrackingService` dependencies available
-  exports: [SessionModule, CoreFcaDefaultVerifyHandler],
+  exports: [CoreFcaDefaultVerifyHandler],
 })
 export class CoreFcaModule {}

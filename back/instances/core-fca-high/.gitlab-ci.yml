@@ -7,7 +7,7 @@ core-fca-high:
     FC_ROOT: '$CI_BUILDS_DIR/france-connect'
     TZ: 'Europe/Paris'
   cache:
-    key: "${CI_PROJECT_ID}"
+    key: '${CI_PROJECT_ID}'
     policy: pull
     paths:
       - back/node_modules/

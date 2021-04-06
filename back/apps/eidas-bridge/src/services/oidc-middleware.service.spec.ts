@@ -1,8 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
+import { OidcSession } from '@fc/oidc';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
-import { SessionService } from '@fc/session';
+import {
+  ISessionGenericBoundContext,
+  SessionGenericService,
+} from '@fc/session-generic';
 import { OidcMiddlewareService } from './oidc-middleware.service';
 
 describe('MockIdentityProviderFcaService', () => {
@@ -15,10 +19,10 @@ describe('MockIdentityProviderFcaService', () => {
   };
 
   const sessionServiceMock = {
-    get: jest.fn(),
-    patch: jest.fn(),
-    delete: jest.fn(),
-    init: jest.fn(),
+    set: {
+      bind: jest.fn(),
+    },
+    setAlias: jest.fn(),
   };
 
   const serviceProviderEnvServiceMock = {
@@ -27,6 +31,9 @@ describe('MockIdentityProviderFcaService', () => {
   };
 
   const getInteractionMock = jest.fn();
+
+  const sessionIdValueMock = '42';
+  const interactionIdValueMock = '42';
 
   const oidcProviderServiceMock = {
     getInteraction: getInteractionMock,
@@ -41,14 +48,14 @@ describe('MockIdentityProviderFcaService', () => {
         OidcProviderService,
         OidcMiddlewareService,
         ServiceProviderAdapterEnvService,
-        SessionService,
+        SessionGenericService,
       ],
     })
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
       .overrideProvider(ServiceProviderAdapterEnvService)
       .useValue(serviceProviderEnvServiceMock)
-      .overrideProvider(SessionService)
+      .overrideProvider(SessionGenericService)
       .useValue(sessionServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
@@ -59,7 +66,7 @@ describe('MockIdentityProviderFcaService', () => {
     jest.resetAllMocks();
   });
 
-  describe('onModuleInit', () => {
+  describe('onModuleInit()', () => {
     it('should call loadDatabase', () => {
       // When
       service.onModuleInit();
@@ -70,20 +77,26 @@ describe('MockIdentityProviderFcaService', () => {
     });
   });
 
-  describe('authorizationMiddleware', () => {
+  describe('authorizationMiddleware()', () => {
+    const spIdMock = 'spIdValue';
+    const spNameMock = 'spNameValue';
+    const spAcrMock = 'eidas3';
+
     const getCtxMock = (hasError = false) => {
       return {
         req: {
+          sessionId: sessionIdValueMock,
           headers: { 'x-forwarded-for': '123.123.123.123' },
         },
         oidc: {
           isError: hasError,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          params: { client_id: 'foo', acr_values: 'eidas3' },
+          params: { client_id: spIdMock, acr_values: spAcrMock },
         },
         res: {},
       };
     };
+
     it('should abort middleware execution if request if flagged as erroring', () => {
       // Given
       const ctxMock = getCtxMock(true);
@@ -95,39 +108,84 @@ describe('MockIdentityProviderFcaService', () => {
       // Then
       expect(service['getInteractionIdFromCtx']).toHaveBeenCalledTimes(0);
       expect(serviceProviderEnvServiceMock.getById).toHaveBeenCalledTimes(0);
-      expect(sessionServiceMock.init).toHaveBeenCalledTimes(0);
+      expect(sessionServiceMock.set.bind).toHaveBeenCalledTimes(0);
     });
 
-    it('should call session.init', async () => {
+    it('should call session.setAlias()', async () => {
       // Given
       const ctxMock = getCtxMock();
       oidcProviderServiceMock.getInteractionIdFromCtx = jest
         .fn()
-        .mockReturnValue('42');
+        .mockReturnValue(interactionIdValueMock);
+
       serviceProviderEnvServiceMock.getById.mockReturnValueOnce({
-        name: 'my SP',
+        name: spNameMock,
       });
-      sessionServiceMock.init.mockResolvedValueOnce(undefined);
+
+      const bindedSessionService = jest.fn().mockResolvedValueOnce(undefined);
+      sessionServiceMock.set.bind.mockReturnValueOnce(bindedSessionService);
 
       // When
       await service['authorizationMiddleware'](ctxMock);
 
       // Then
-      expect(sessionServiceMock.init).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.init).toHaveBeenCalledWith(ctxMock.res, '42', {
-        spId: 'foo',
-        spAcr: 'eidas3',
-        spName: 'my SP',
+      expect(sessionServiceMock.setAlias).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.setAlias).toHaveBeenCalledWith(
+        sessionIdValueMock,
+        interactionIdValueMock,
+      );
+    });
+
+    it('should call session.set()', async () => {
+      // Given
+      const ctxMock = getCtxMock();
+      oidcProviderServiceMock.getInteractionIdFromCtx = jest
+        .fn()
+        .mockReturnValue(interactionIdValueMock);
+
+      serviceProviderEnvServiceMock.getById.mockReturnValueOnce({
+        name: spNameMock,
       });
+
+      const bindedSessionService = jest.fn().mockResolvedValueOnce(undefined);
+      sessionServiceMock.set.bind.mockReturnValueOnce(bindedSessionService);
+
+      const sessionMock: OidcSession = {
+        interactionId: interactionIdValueMock,
+        spId: spIdMock,
+        spAcr: spAcrMock,
+        spName: spNameMock,
+      };
+
+      const boundSessionContextMock: ISessionGenericBoundContext = {
+        sessionId: sessionIdValueMock,
+        moduleName: 'OidcClient',
+      };
+
+      // When
+      await service['authorizationMiddleware'](ctxMock);
+
+      // Then
+      expect(sessionServiceMock.set.bind).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set.bind).toHaveBeenCalledWith(
+        sessionServiceMock,
+        boundSessionContextMock,
+      );
+
+      expect(bindedSessionService).toHaveBeenCalledTimes(1);
+      expect(bindedSessionService).toHaveBeenCalledWith(sessionMock);
     });
 
     it('should throw if the session initialization fails', async () => {
       // Given
       const ctxMock = getCtxMock();
-      service['getInteractionIdFromCtx'] = jest.fn().mockReturnValue('42');
-      sessionServiceMock.init.mockRejectedValueOnce(new Error('test'));
+      service['getInteractionIdFromCtx'] = jest
+        .fn()
+        .mockReturnValue(interactionIdValueMock);
 
-      // Then
+      sessionServiceMock.set.bind.mockRejectedValueOnce(new Error('test'));
+
+      // When / Then
       await expect(
         service['authorizationMiddleware'](ctxMock),
       ).rejects.toThrow();

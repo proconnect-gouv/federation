@@ -1,19 +1,21 @@
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
-import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
+import { FeatureHandler } from '@fc/feature-handler';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { CryptographyEidasService } from '@fc/cryptography-eidas';
+import {
+  IVerifyFeatureHandlerHandleArgument,
+  IVerifyFeatureHandler,
+} from '../../interfaces';
 
 @Injectable()
 @FeatureHandler('core-fcp-eidas-verify')
-export class CoreFcpEidasVerifyHandler implements IFeatureHandler {
+export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
   // Dependency injection can require more than 4 parameters
   /* eslint-disable-next-line max-params */
   constructor(
     private readonly logger: LoggerService,
-    private readonly session: SessionService,
     private readonly core: CoreService,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly cryptographyEidas: CryptographyEidasService,
@@ -21,14 +23,13 @@ export class CoreFcpEidasVerifyHandler implements IFeatureHandler {
     this.logger.setContext(this.constructor.name);
   }
 
-  async handle(req: any): Promise<void> {
+  async handle({
+    sessionOidc,
+  }: IVerifyFeatureHandlerHandleArgument): Promise<void> {
     this.logger.debug('getConsent service: ##### core-fcp-eidas-verify ');
 
-    const { interactionId } = req.fc;
-
     // Grab informations on interaction and identity
-    const session = await this.session.get(interactionId);
-    const { idpId, idpIdentity, idpAcr, spId, spAcr } = session;
+    const { idpId, idpIdentity, idpAcr, spId, spAcr } = await sessionOidc.get();
     const { entityId } = await this.serviceProvider.getById(spId);
 
     // Acr check
@@ -64,7 +65,7 @@ export class CoreFcpEidasVerifyHandler implements IFeatureHandler {
     // Delete idp identity from volatile memory but keep the sub for the business logs.
     const idpIdentityCleaned = { sub: subIdp };
 
-    await this.session.patch(interactionId, {
+    await sessionOidc.set({
       amr: ['eidas'],
       idpIdentity: idpIdentityCleaned,
       spIdentity: spIdentityCleaned,

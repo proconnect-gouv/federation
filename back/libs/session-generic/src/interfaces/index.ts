@@ -1,6 +1,9 @@
 /* istanbul ignore file */
 
-// declarative code
+// declarative :code
 export * from './session-generic-options.interface';
-export * from './exposed-session-generic.interface';
-export * from './bound-session-context.interface';
+export * from './session-generic-service.interface';
+export * from './session-generic-bound-context.interface';
+export * from './session-generic-request.interface';
+export * from './session-generic-response.interface';
+export * from './session-generic-cookie-options.interface';

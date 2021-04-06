@@ -11,15 +11,17 @@ import {
   UsePipes,
   Param,
 } from '@nestjs/common';
+import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import {
   OidcClientConfig,
   IdentityProviderMetadata,
   OidcClientRoutes,
   GetOidcCallback,
   OidcClientService,
+  OidcClientSession,
 } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { ISessionGenericService, Session } from '@fc/session-generic';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
@@ -39,7 +41,6 @@ export class MockServiceProviderController {
     private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
     private readonly logger: LoggerService,
-    private readonly session: SessionService,
     private readonly crypto: CryptographyService,
     private readonly identityProvider: IdentityProviderAdapterEnvService,
   ) {
@@ -48,7 +49,18 @@ export class MockServiceProviderController {
 
   @Get()
   @Render('index')
-  async index(@Res() res) {
+  async index(
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ) {
     // Only one provider is available with `@fc/identity-provider-env`
     const [provider] = await this.identityProvider.getList();
 
@@ -56,15 +68,11 @@ export class MockServiceProviderController {
       provider,
     );
 
-    /**
-     * @TODO #179
-     * This is just a mock, so we don't bother making this configurable...
-     * We'll soon update session system to handle all this init stuff automatically anyway.
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/179
-     */
     const sessionIdLength = 32;
-    const sessionId = this.crypto.genRandomString(sessionIdLength);
-    await this.session.init(res, sessionId, {
+    const sessionId: string = this.crypto.genRandomString(sessionIdLength);
+
+    await sessionOidc.set({
+      sessionId,
       idpState: params.state,
       idpNonce: params.nonce,
     });
@@ -78,9 +86,19 @@ export class MockServiceProviderController {
 
   @Get('/interaction/:uid/verify')
   @Render('login-callback')
-  async getVerify(@Req() req) {
-    const sessionId = this.session.getId(req);
-    const session = await this.session.get(sessionId);
+  async getVerify(
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ) {
+    const session = await sessionOidc.get();
 
     return {
       ...session,
@@ -106,7 +124,12 @@ export class MockServiceProviderController {
   @Post(MockServiceProviderRoutes.REVOCATION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('success-revoke-token')
-  async revocationToken(@Res() res, @Body() body: AccessTokenParamsDTO) {
+  async revocationToken(
+    @Res()
+    res,
+    @Body()
+    body: AccessTokenParamsDTO,
+  ) {
     try {
       /**
        * @TODO #251 ETQ Dev, j'utilise une configuration pour savoir si j'utilise FC, AC, EIDAS, et avoir les valeurs de scope et acr en config et non en dur.
@@ -147,10 +170,19 @@ export class MockServiceProviderController {
     @Req() req,
     @Res() res,
     @Param() params: GetOidcCallback,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
   ) {
     const { providerUid } = params;
-    const uid = req.fc.interactionId;
-    const { idpState, idpNonce } = await this.session.get(uid);
+    const { interactionId, idpState, idpNonce } = await sessionOidc.get();
 
     const tokenParams = {
       providerUid,
@@ -168,7 +200,7 @@ export class MockServiceProviderController {
       providerUid,
     };
 
-    const identity = await this.oidcClient.getUserInfosFromProvider(
+    const identity: IOidcIdentity = await this.oidcClient.getUserInfosFromProvider(
       userInfoParams,
       req,
     );
@@ -181,18 +213,18 @@ export class MockServiceProviderController {
      *
      *    action: Check the data returns from FC
      */
-    const identityExchange = {
+    const identityExchange: OidcSession = {
       idpIdentity: identity,
       idpAcr: acr,
       amr,
       idpAccessToken: accessToken,
     };
 
-    this.session.patch(uid, identityExchange);
+    await sessionOidc.set({ ...identityExchange });
 
     // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');
-    res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
+    res.redirect(`${urlPrefix}/interaction/${interactionId}/verify`);
   }
 
   @Post(MockServiceProviderRoutes.USERINFO)

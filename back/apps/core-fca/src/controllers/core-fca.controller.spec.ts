@@ -4,11 +4,11 @@ import { LoggerService } from '@fc/logger';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { SessionService } from '@fc/session';
+import { SessionGenericNotFoundException } from '@fc/session-generic';
 import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
 import { MinistriesService } from '@fc/ministries';
-import { OidcClientService } from '@fc/oidc-client';
+import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
 import { validateDto } from '@fc/common';
 import { CoreFcaService } from '../services';
 import { CoreFcaController } from './core-fca.controller';
@@ -90,7 +90,7 @@ describe('CoreFcaController', () => {
 
   const sessionServiceMock = {
     get: jest.fn(),
-    patch: jest.fn(),
+    set: jest.fn(),
   };
 
   const randomStringMock = 'randomStringMockValue';
@@ -113,6 +113,16 @@ describe('CoreFcaController', () => {
     getUserInfosFromProvider: jest.fn(),
   };
 
+  const oidcClientSessionDataMock: OidcClientSession = {
+    interactionId: interactionIdMock,
+    csrfToken: randomStringMock,
+    spAcr: acrMock,
+    spIdentity: {},
+    spName: spNameMock,
+    idpState: idpStateMock,
+    idpNonce: idpNonceMock,
+  };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [CoreFcaController],
@@ -123,7 +133,6 @@ describe('CoreFcaController', () => {
         CoreFcaService,
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
-        SessionService,
         ConfigService,
         OidcClientService,
       ],
@@ -140,8 +149,6 @@ describe('CoreFcaController', () => {
       .useValue(identityProviderServiceMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(OidcClientService)
@@ -166,22 +173,14 @@ describe('CoreFcaController', () => {
     serviceProviderServiceMock.getById.mockResolvedValue({
       name: spNameMock,
     });
-    sessionServiceMock.get.mockResolvedValue({
-      interactionId: interactionIdMock,
-      spAcr: acrMock,
-      spIdentity: {},
-      spName: spNameMock,
-      csrfToken: randomStringMock,
-      idpState: idpStateMock,
-      idpNonce: idpNonceMock,
-    });
+    sessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
 
-    sessionServiceMock.patch.mockResolvedValueOnce(undefined);
+    sessionServiceMock.set.mockResolvedValueOnce(undefined);
     cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
     configServiceMock.get.mockReturnValue(appConfigMock);
   });
 
-  describe('getDefault', () => {
+  describe('getDefault()', () => {
     it('should redirect to configured url', () => {
       // Given
       const configuredValueMock = 'fooBar';
@@ -201,7 +200,7 @@ describe('CoreFcaController', () => {
     });
   });
 
-  describe('getFrontData', () => {
+  describe('getFrontData()', () => {
     // Given
     const res = {
       json: jest.fn(),
@@ -241,7 +240,7 @@ describe('CoreFcaController', () => {
       // Given
       jest.spyOn(oidcProviderServiceMock, 'getInteraction');
       // When
-      await coreController.getFrontData(req, res);
+      await coreController.getFrontData(req, res, sessionServiceMock);
 
       // Then
       expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledTimes(1);
@@ -250,43 +249,48 @@ describe('CoreFcaController', () => {
         res,
       );
     });
+
     it('should call config.get', async () => {
       // Given
       jest.spyOn(configServiceMock, 'get');
       // When
-      await coreController.getFrontData(req, res);
+      await coreController.getFrontData(req, res, sessionServiceMock);
 
       // Then
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
       expect(configServiceMock.get).toHaveBeenCalledWith('OidcClient');
     });
+
     it('should call identityProviderGetFilteredList', async () => {
       // When
-      await coreController.getFrontData(req, res);
+      await coreController.getFrontData(req, res, sessionServiceMock);
 
       // Then
       expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledTimes(
         1,
       );
     });
+
     it('should call session.get', async () => {
       // When
-      await coreController.getFrontData(req, res);
+      await coreController.getFrontData(req, res, sessionServiceMock);
 
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.get).toHaveBeenCalledWith(req.fc.interactionId);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith();
     });
+
     it('should call res.json', async () => {
       // When
-      await coreController.getFrontData(req, res);
+      await coreController.getFrontData(req, res, sessionServiceMock);
 
       // Then
       expect(res.json).toHaveBeenCalledTimes(1);
     });
+
     it('should return object containing needed data', async () => {
       // When
-      await coreController.getFrontData(req, res);
+      await coreController.getFrontData(req, res, sessionServiceMock);
       // Then
       const expected = expect.objectContaining({
         redirectToIdentityProviderInputs: expect.any(Object),
@@ -297,9 +301,23 @@ describe('CoreFcaController', () => {
       });
       expect(res.json).toHaveBeenCalledWith(expected);
     });
+
+    it('should return empty object if no session is found', async () => {
+      // Given
+      sessionServiceMock.get.mockResolvedValueOnce(undefined);
+
+      // When
+      const result = await coreController.getFrontData(
+        req,
+        res,
+        sessionServiceMock,
+      );
+      // Then
+      expect(result).toEqual({});
+    });
   });
 
-  describe('getInteraction', () => {
+  describe('getInteraction()', () => {
     it('should return empty object', async () => {
       // Given
       oidcProviderServiceMock.getInteraction.mockResolvedValue({
@@ -308,37 +326,48 @@ describe('CoreFcaController', () => {
         params: 'params',
       });
       // When
-      const result = await coreController.getInteraction();
+      const result = await coreController.getInteraction(sessionServiceMock);
       // Then
       expect(result).toEqual({});
     });
+
+    it('should throw if session is not found', async () => {
+      // Given
+      sessionServiceMock.get.mockResolvedValueOnce(undefined);
+      // When
+      await expect(
+        coreController.getInteraction(sessionServiceMock),
+      ).rejects.toThrow(SessionGenericNotFoundException);
+      // Then
+    });
   });
 
-  describe('getVerify', () => {
+  describe('getVerify()', () => {
     it('should call coreService', async () => {
       // Given
       const res = {
         redirect: jest.fn(),
       };
       // When
-      await coreController.getVerify(req, res, params);
+      await coreController.getVerify(res, params, sessionServiceMock);
       // Then
       expect(coreServiceMock.verify).toHaveBeenCalledTimes(1);
     });
+
     it('should redirect to /login URL', async () => {
       // Given
       const res = {
         redirect: jest.fn(),
       };
       // When
-      await coreController.getVerify(req, res, params);
+      await coreController.getVerify(res, params, sessionServiceMock);
       // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(`/api/v2/login`);
     });
   });
 
-  describe('getLogin', () => {
+  describe('getLogin()', () => {
     it('should throw an exception if no identity in session', async () => {
       // Given
       const next = jest.fn();
@@ -349,16 +378,16 @@ describe('CoreFcaController', () => {
         csrfToken: randomStringMock,
       });
       // Then
-      expect(coreController.getLogin(req, next)).rejects.toThrow(
-        CoreMissingIdentityException,
-      );
+      expect(
+        coreController.getLogin(req, next, sessionServiceMock),
+      ).rejects.toThrow(CoreMissingIdentityException);
     });
 
     it('should call next', async () => {
       // Given
       const res = {};
       // When
-      await coreController.getLogin(req, res);
+      await coreController.getLogin(req, res, sessionServiceMock);
       // Then
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
         1,
@@ -366,19 +395,25 @@ describe('CoreFcaController', () => {
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledWith(
         req,
         res,
+        oidcClientSessionDataMock,
       );
     });
+
     it('should return result from controller.oidcProvider.finishInteraction()', async () => {
       // Given
       const res = {};
       // When
-      const result = await coreController.getLogin(req, res);
+      const result = await coreController.getLogin(
+        req,
+        res,
+        sessionServiceMock,
+      );
       // Then
       expect(result).toBe(interactionFinishedValue);
     });
   });
 
-  describe('getOidcCallback', () => {
+  describe('getOidcCallback()', () => {
     const accessTokenMock = Symbol('accesToken');
     const acrMock = Symbol('acr');
 
@@ -431,9 +466,14 @@ describe('CoreFcaController', () => {
 
     it('should call token with providerId', async () => {
       // action
-      await coreController.getOidcCallback(req, res, {
-        providerUid,
-      });
+      await coreController.getOidcCallback(
+        req,
+        res,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
 
       // assert
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledTimes(
@@ -447,9 +487,14 @@ describe('CoreFcaController', () => {
 
     it('should call userinfo with acesstoken, dto and context', async () => {
       // action
-      await coreController.getOidcCallback(req, res, {
-        providerUid,
-      });
+      await coreController.getOidcCallback(
+        req,
+        res,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
 
       // assert
       expect(
@@ -467,7 +512,12 @@ describe('CoreFcaController', () => {
 
       // action
       await expect(
-        coreController.getOidcCallback(req, res, { providerUid }),
+        coreController.getOidcCallback(
+          req,
+          res,
+          { providerUid },
+          sessionServiceMock,
+        ),
       ).rejects.toThrow(errorMock);
 
       // assert
@@ -478,25 +528,32 @@ describe('CoreFcaController', () => {
       );
     });
 
-    it('should patch session with identity result and interaction ID', async () => {
+    it('should set session with identity result.', async () => {
       // action
-      await coreController.getOidcCallback(req, res, {
-        providerUid,
-      });
+      await coreController.getOidcCallback(
+        req,
+        res,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
 
       // assert
-      expect(sessionServiceMock.patch).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.patch).toHaveBeenCalledWith(
-        interactionIdMock,
-        identityExchangeMock,
-      );
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith(identityExchangeMock);
     });
 
     it('should redirect user after token and userinfo received and saved', async () => {
       // action
-      await coreController.getOidcCallback(req, res, {
-        providerUid,
-      });
+      await coreController.getOidcCallback(
+        req,
+        res,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
@@ -519,9 +576,14 @@ describe('CoreFcaController', () => {
 
         // action / assert
         await expect(() =>
-          coreController.getOidcCallback(req, res, {
-            providerUid,
-          }),
+          coreController.getOidcCallback(
+            req,
+            res,
+            {
+              providerUid,
+            },
+            sessionServiceMock,
+          ),
         ).rejects.toThrow(errorMock);
       });
 
@@ -532,7 +594,12 @@ describe('CoreFcaController', () => {
         isBlacklistedMock.mockReturnValueOnce(false);
 
         // action
-        await coreController.getOidcCallback(req, res, { providerUid });
+        await coreController.getOidcCallback(
+          req,
+          res,
+          { providerUid },
+          sessionServiceMock,
+        );
 
         // assert
         expect(res.redirect).toHaveBeenCalledTimes(1);
@@ -540,7 +607,7 @@ describe('CoreFcaController', () => {
     });
   });
 
-  describe('validateIdentity', () => {
+  describe('validateIdentity()', () => {
     let validateDtoMock;
     beforeEach(() => {
       validateDtoMock = mocked(validateDto);
