@@ -10,9 +10,9 @@ import Mongoose from './mongoose';
 import Redis from './redis';
 import CryptographyBroker from './cryptography-broker';
 import CryptographyFca from './cryptography-fca';
-import Session from './session';
 import ServiceProviderAdapterMongoConfig from './service-provider-adapter-mongo';
 import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
+import SessionGeneric from './session-generic';
 import OverrideOidcProvider from './override-oidc-provider';
 
 export default {
@@ -31,8 +31,8 @@ export default {
   Redis,
   CryptographyBroker,
   CryptographyFca,
-  Session,
   ServiceProviderAdapterMongoConfig,
   IdentityProviderAdapterMongoConfig,
+  SessionGeneric,
   OverrideOidcProvider,
 } as CoreFcaConfig;

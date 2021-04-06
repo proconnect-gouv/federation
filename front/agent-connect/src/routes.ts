@@ -16,7 +16,7 @@ const routes = [
     component: Homepage,
     exact: true,
     id: 'homepage',
-    path: '/api/v2/interaction/:interactionId',
+    path: '/api/v2/interaction/:uid',
     title: '',
   },
 ];

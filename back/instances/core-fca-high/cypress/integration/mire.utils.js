@@ -7,6 +7,8 @@ export function beforeSuccessScenario(params) {
   // FS: Click on FC button
   cy.visit(SP_ROOT_URL);
 
+  cy.clearBusinessLog();
+
   if (method === 'POST') {
     cy.get('#post-authorize').click();
   } else {

@@ -21,8 +21,10 @@ export function basicSuccessScenario(params) {
 
   // FS choice
   cy.visit(`${Cypress.env('ALL_APPS_LISTED')}`);
-  cy.url().should('include', 'https://docker.dev-franceconnect.fr/fcp.html');
+  cy.url().should('include', `${Cypress.env('ALL_APPS_LISTED')}`);
   cy.get(Cypress.env(`${sp}_ID`)).click();
+
+  cy.clearBusinessLog();
 
   if (method === 'POST') {
     cy.get('#post-authorize').click();

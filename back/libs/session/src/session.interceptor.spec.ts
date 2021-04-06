@@ -202,7 +202,7 @@ describe('SessionInterceptor', () => {
       ).rejects.toThrow();
     });
 
-    it('should call session.setCookie for both cookies if found', async () => {
+    it('should call `sessionOidc.setCookie()` for both cookies if found', async () => {
       // Given
       const req = {
         route: {
