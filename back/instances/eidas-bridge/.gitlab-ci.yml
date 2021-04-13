@@ -12,7 +12,6 @@ eidas-bridge:
     paths:
       - back/node_modules/
   before_script:
-    - echo "FC_DOCKER_VERSION=$FC_DOCKER_VERSION"
     - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f && docker volume prune -f; fi
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
