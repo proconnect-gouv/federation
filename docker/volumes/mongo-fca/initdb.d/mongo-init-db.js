@@ -301,6 +301,7 @@ const fsa = {
       "https://fsa1v2.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
     idpFilterList: ["fia3v2", "fia5v2"],
+    identityConsent: false,
   },
 
   // -- FSA - FSA2v2 - Activated - ES256 - encrypted response
@@ -351,6 +352,7 @@ const fsa = {
       "https://fsa2v2.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: false,
     idpFilterList: ["fia1v2", "fia2v2", "fia-desactive-visible", "fia5v2"],
+    identityConsent: false,
   },
 
   // -- FSA - FSA3v2 - Deactivated
@@ -400,6 +402,7 @@ const fsa = {
       "https://fsa3v2.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
     idpFilterList: [],
+    identityConsent: false,
   },
 
   // -- FSA - FSA4v2 - Activated - RS256 - encrypted response
@@ -450,6 +453,7 @@ const fsa = {
       "https://fsa4v2.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: false,
     idpFilterList: ["fia1v2", "fia2v2", "fia4v2", "fia5v2"],
+    identityConsent: false,
   },
 };
 

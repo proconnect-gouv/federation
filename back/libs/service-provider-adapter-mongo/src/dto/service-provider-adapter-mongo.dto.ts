@@ -90,4 +90,13 @@ export class ServiceProviderAdapterMongoDTO {
   @IsArray()
   @IsString({ each: true })
   idpFilterList: string[];
+
+  @IsString()
+  @IsIn(['private', 'public'], {
+    message: 'The service provider type should be specified',
+  })
+  readonly type: string;
+
+  @IsBoolean()
+  readonly identityConsent: boolean;
 }
