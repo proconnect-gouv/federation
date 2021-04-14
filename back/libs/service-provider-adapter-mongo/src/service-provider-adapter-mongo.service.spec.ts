@@ -53,6 +53,8 @@ describe('ServiceProviderAdapterMongoService', () => {
       jwks_uri: 'https://sp-site.fr/jwks-uri',
       idpFilterExclude: true,
       idpFilterList: [],
+      type: 'public',
+      identityConsent: false,
     },
   };
 
@@ -587,6 +589,71 @@ describe('ServiceProviderAdapterMongoService', () => {
       const result = service['decryptClientSecret'](clientSecretMock);
       // Then
       expect(result).toEqual('totoIsDecrypted');
+    });
+  });
+
+  describe('consentRequired', () => {
+    it('should return true if the service provider is private and consent required', () => {
+      // Given
+      const givenServiceProvider = {
+        ...validServiceProviderMock._doc,
+        type: 'private',
+        identityConsent: true,
+      };
+
+      // When
+      const result = service.consentRequired(
+        givenServiceProvider.type,
+        givenServiceProvider.identityConsent,
+      );
+
+      // Then
+      expect(result).toEqual(true);
+    });
+
+    it('should return false if the service provider is private and consent not required', () => {
+      // Given
+      const givenServiceProvider = {
+        ...validServiceProviderMock._doc,
+        type: 'private',
+      };
+
+      // When
+      const result = service.consentRequired(
+        givenServiceProvider.type,
+        givenServiceProvider.identityConsent,
+      );
+
+      // Then
+      expect(result).toEqual(false);
+    });
+
+    it('should return false if the service provider is public and consent required', () => {
+      // Given
+      const givenServiceProvider = {
+        ...validServiceProviderMock._doc,
+        identityConsent: true,
+      };
+
+      // When
+      const result = service.consentRequired(
+        givenServiceProvider.type,
+        givenServiceProvider.identityConsent,
+      );
+
+      // Then
+      expect(result).toEqual(false);
+    });
+
+    it('should return false if the service provider is public and consent not required', () => {
+      // When
+      const result = service.consentRequired(
+        validServiceProviderMock._doc.type,
+        validServiceProviderMock._doc.identityConsent,
+      );
+
+      // Then
+      expect(result).toEqual(false);
     });
   });
 });

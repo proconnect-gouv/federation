@@ -66,6 +66,12 @@ export class ServiceProvider extends Document {
 
   @Prop({ type: [String] })
   idpFilterList: string[];
+
+  @Prop({ type: String })
+  type: string;
+
+  @Prop({ type: Boolean })
+  identityConsent: boolean;
 }
 
 export const ServiceProviderSchema = SchemaFactory.createForClass(

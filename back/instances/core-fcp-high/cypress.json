@@ -10,19 +10,17 @@
     "APP_NAME": "corev2",
     "LOG_FILE_PATH": "../../../docker/volumes/log/corev2.log",
     "FC_DOCKER_PATH": "../../../docker",
-
     "FC_ROOT_URL": "https://corev2.docker.dev-franceconnect.fr",
     "FC_INTERACTION_URL": "https://corev2.docker.dev-franceconnect.fr/api/v2/interaction",
-
     "IDP_NAME": "fip",
     "IDP_ROOT_URL": "https://fip1v2.docker.dev-franceconnect.fr",
     "IDP_INTERACTION_URL": "https://fip1v2.docker.dev-franceconnect.fr/interaction",
-
     "SP1_ROOT_URL": "https://fsp1v2.docker.dev-franceconnect.fr",
     "SP1_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
     "SP2_ROOT_URL": "https://fsp2v2.docker.dev-franceconnect.fr",
     "SP2_CLIENT_ID": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
-
+    "SP5_ROOT_URL": "https://fsp5v2.docker.dev-franceconnect.fr",
+    "SP6_ROOT_URL": "https://fsp6v2.docker.dev-franceconnect.fr",
     "WELL_KNOWN": "/api/v2/.well-known/openid-configuration"
   },
   "ignoreTestFiles": "*.util.js",
