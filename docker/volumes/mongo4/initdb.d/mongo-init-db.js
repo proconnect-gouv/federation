@@ -467,6 +467,7 @@ const fsp = {
       "fip7v2",
       "idp-test-update",
     ],
+    identityConsent: false,
   },
 
   // -- FSP - FSP2v2 - Activated
@@ -520,6 +521,7 @@ const fsp = {
       "https://fsp2v2.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
     idpFilterList: ["fip7v2"],
+    identityConsent: false,
   },
 
   // -- FSP - FSP3v2 - Deactivated
@@ -572,6 +574,7 @@ const fsp = {
       "https://fsp3v2.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
     idpFilterList: ["fip1v2", "fip2v2", "eidas-bridge", "fip6v2"],
+    identityConsent: false,
   },
 
   // -- FSP - FSP4v2 - Only openid and birthdate scopes authorized
@@ -609,6 +612,119 @@ const fsp = {
       "https://fsp1v2.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
     idpFilterList: [],
+    identityConsent: false,
+  },
+
+  // -- FSP - FSP5v2 - private FSP and identity consent required
+  FSP5V2: {
+    name: "FSP - FSP5v2",
+    title: "FSP - FSP5v2 title",
+    site: "https://site.com",
+    redirect_uris: [
+      "https://fsp5v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+    ],
+    post_logout_redirect_uris: [
+      "https://fsp5v2.docker.dev-franceconnect.fr/logout-callback",
+    ],
+    client_secret:
+      "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
+    key: "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39555",
+    entityId:
+      "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39555",
+    credentialsFlow: false,
+    featureHandlers: { none: "" },
+    email: "fsp5@franceconnect.loc",
+    IPServerAddressesAndRanges: ["1.1.1.1"],
+    active: true,
+    type: "private",
+    __v: 4,
+    updatedAt: new Date("2019-04-24 17:09:17"),
+    updatedBy: "admin",
+    scopes: [
+      "openid",
+      "given_name",
+      "family_name",
+      "birthdate",
+      "gender",
+      "birthplace",
+      "birthcountry",
+      "email",
+      "preferred_username",
+      "address",
+      "phone",
+      "profile",
+      "birth",
+      "identite_pivot",
+    ],
+    id_token_signed_response_alg: "ES256",
+    id_token_encrypted_response_alg: "RSA-OAEP",
+    id_token_encrypted_response_enc: "A256GCM",
+    userinfo_signed_response_alg: "ES256",
+    userinfo_encrypted_response_alg: "RSA-OAEP",
+    userinfo_encrypted_response_enc: "A256GCM",
+    jwks_uri:
+      "https://fsp5v2.docker.dev-franceconnect.fr/client/.well-known/keys",
+    idpFilterExclude: false,
+    idpFilterList: ["fip1v2", "fip2v2", "fip3v2", "fip-desactive-visible", "eidas-bridge", "fip6v2", "fip7v2", "idp-test-update"],
+    identityConsent: true,
+    eidas: 2,
+    trustedIdentity: false,
+  },
+
+  // -- FSP - FSP6v2 - private FSP and identity consent not required 
+  FSP6V2: {
+    name: "FSP - FSP6v2",
+    title: "FSP - FSP6v2 title",
+    site: "https://site.com",
+    redirect_uris: [
+      "https://fsp6v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+    ],
+    post_logout_redirect_uris: [
+      "https://fsp6v2.docker.dev-franceconnect.fr/logout-callback",
+    ],
+    client_secret:
+      "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
+    key: "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39666",
+    entityId:
+      "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39666",
+    credentialsFlow: false,
+    featureHandlers: { none: "" },
+    email: "fsp6@franceconnect.loc",
+    IPServerAddressesAndRanges: ["1.1.1.1"],
+    active: true,
+    type: "private",
+    __v: 4,
+    updatedAt: new Date("2019-04-24 17:09:17"),
+    updatedBy: "admin",
+    scopes: [
+      "openid",
+      "given_name",
+      "family_name",
+      "birthdate",
+      "gender",
+      "birthplace",
+      "birthcountry",
+      "email",
+      "preferred_username",
+      "address",
+      "phone",
+      "profile",
+      "birth",
+      "identite_pivot",
+    ],
+    id_token_signed_response_alg: "ES256",
+    id_token_encrypted_response_alg: "RSA-OAEP",
+    id_token_encrypted_response_enc: "A256GCM",
+    userinfo_signed_response_alg: "ES256",
+    userinfo_encrypted_response_alg: "RSA-OAEP",
+    userinfo_encrypted_response_enc: "A256GCM",
+    jwks_uri:
+      "https://fsp6v2.docker.dev-franceconnect.fr/client/.well-known/keys",
+    idpFilterExclude: false,
+    idpFilterList: ["fip1v2", "fip2v2", "fip3v2", "fip-desactive-visible", "eidas-bridge", "fip6v2", "fip7v2", "idp-test-update"],
+    identityConsent: false,
+    eidas: 2,
+    trustedIdentity: false,
   },
 
   // Eidas-bridge
@@ -657,6 +773,7 @@ const fsp = {
       "https://eidas-bridge.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
     idpFilterList: ["fip6v2", "fip7v2"],
+    identityConsent: false,
   },
 };
 
@@ -696,22 +813,11 @@ db.auth("fc", "pass");
 print("Initializing App Configuration");
 
 // -- FSs ----------
-print("Initializing client: fsp1v2 - activated");
-db.client.update({ name: "fsp1v2" }, fsp.FSP1V2, { upsert: true });
-print("Initializing client: fsp2v2 - activated");
-db.client.update({ name: "fsp2v2" }, fsp.FSP2V2, { upsert: true });
-print("Initializing client: fsp3v2 - deactivated");
-db.client.update({ name: "fsp3v2" }, fsp.FSP3V2, { upsert: true });
-print(
-  "Initializing client: SP 4 - deactivated - Only openid and birthdate scopes authorized"
-);
-db.client.update(
-  { name: "SP 4 - deactivated - Only openid and birthdate scopes authorized" },
-  fsp.FSP4V2,
-  { upsert: true }
-);
-print("Initializing client: eidas-bridge - activated");
-db.client.update({ name: "eidas-bridge" }, fsp.EIDASBRIDGE, { upsert: true });
+Object.values(fsp).forEach((fs) => {
+  print(`${fs.name} > Initializing provider: ${fs.name}`);
+  db.client.update({ name: fs.name }, fs, { upsert: true });
+});
+
 
 // -- FIs ----------
 

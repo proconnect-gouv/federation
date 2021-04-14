@@ -10,6 +10,7 @@ import {
   ServiceProviderAdapterMongoDTO,
   ServiceProviderAdapterMongoConfig,
 } from './dto';
+import { Types } from './enums';
 import { ServiceProviderOperationTypeChangesEvent } from './events';
 import { ServiceProvider } from './schemas';
 
@@ -108,6 +109,8 @@ export class ServiceProviderAdapterMongoService
           jwks_uri: true,
           idpFilterExclude: true,
           idpFilterList: true,
+          type: true,
+          identityConsent: true,
         },
       )
       .exec();
@@ -211,5 +214,9 @@ export class ServiceProviderAdapterMongoService
       clientSecretEcKey,
       Buffer.from(clientSecret, 'base64'),
     );
+  }
+
+  consentRequired(type, identityConsent) {
+    return type === Types.PRIVATE && identityConsent;
   }
 }

@@ -36,6 +36,8 @@ services:
           - fsp1v2.docker.dev-franceconnect.fr
           - fsp2v2.docker.dev-franceconnect.fr
           - fsp3v2.docker.dev-franceconnect.fr
+          - fsp5v2.docker.dev-franceconnect.fr
+          - fsp6v2.docker.dev-franceconnect.fr
           - rnipp.docker.dev-franceconnect.fr
           - ud-back.docker.dev-franceconnect.fr
           - ud-front.docker.dev-franceconnect.fr
