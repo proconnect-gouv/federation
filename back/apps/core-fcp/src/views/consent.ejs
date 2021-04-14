@@ -33,8 +33,17 @@
       </section>
 
       <form method="POST" action="/api/v2/login" name="fc-consent">
-        <button type="submit" id="consent" class="content__continue">Continuer sur <%= locals.spName %></button>
-
+        <% if (locals.consentRequired) { %>
+          <div id="fc-ask-consent">
+            <input type="checkbox" id= "fc-ask-consent-checkbox" name="fc-consent-checkbox">
+            <label class="fc-ask-consent-label" for="fc-ask-consent-checkbox">
+                J'accepte que FranceConnect transmette mes données au service pour me connecter.
+            </label>
+          </div>
+          <% } %> 
+        <div>  
+         <button type="submit" id="consent" class="content__continue">Continuer sur <%= locals.spName %></button>
+        </div>
         <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
       </form>
 
@@ -44,15 +53,23 @@
         </p>
 
         <div id="openCloseMenu" class="content__details">
-          <div id="toggleOpenCloseMenu" role="button" tabindex="0" class="content-details__header">
-            <span class="close">Voir le détail des données</span>
-            <span class="open">Masquer le détail des données</span>
-          </div>
+          <% if (locals.consentRequired) { %>
+            <div class="fc-content-details-header-consent">
+              <span>Détail des données à transmettre :</span>
+            </div>
+          <% } else { %>
+            <div id="toggleOpenCloseMenu" role="button" tabindex="0" class="content-details__header">
+              <span class="close">Voir le détail des données</span>
+              <span class="open">Masquer le détail des données</span>
+            </div>
+          <% } %>
           <div class="content-details__content">
-            <p>
-              Pour confirmer votre identité, FranceConnect+ doit partager ces informations :
-            </p>
-
+            <% if (!locals.consentRequired) { %>
+              <p>
+                Pour confirmer votre identité, FranceConnect+ doit partager ces informations :
+              </p>
+            <% } %>
+        
             <ul>
               <% claims
                   .forEach(label => { %>
