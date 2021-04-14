@@ -316,12 +316,19 @@ describe('ServiceProviderAdapterMongoService', () => {
 
     it('should resolve', async () => {
       // setup
+      const legacyToOpenIdMock = jest.spyOn<
+        ServiceProviderAdapterMongoService,
+        any
+      >(service, 'legacyToOpenIdPropertyName');
+      legacyToOpenIdMock.mockImplementationOnce((data) => data);
 
       // action
       const result = service.getList(true);
 
       // expect
       expect(result).toBeInstanceOf(Promise);
+
+      await result;
     });
 
     it('should return service provider list refreshed (refresh forced)', async () => {
