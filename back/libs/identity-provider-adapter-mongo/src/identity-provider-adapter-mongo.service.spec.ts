@@ -348,11 +348,16 @@ describe('IdentityProviderAdapterMongoService', () => {
     });
 
     it('should resolve', async () => {
+      // arrange
+      validateDtoMock.mockResolvedValueOnce([]);
+
       // action
       const result = service['findAllIdentityProvider']();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
+
+      await result;
     });
 
     it('should have called find once', async () => {
@@ -429,11 +434,20 @@ describe('IdentityProviderAdapterMongoService', () => {
         );
     });
     it('should resolve', async () => {
+      // setup
+      const legacyToOpenIdMock = jest.spyOn<
+        IdentityProviderAdapterMongoService,
+        any
+      >(service, 'legacyToOpenIdPropertyName');
+      legacyToOpenIdMock.mockImplementationOnce((data) => data);
+
       // action
       const result = service.getList();
 
       // expect
       expect(result).toBeInstanceOf(Promise);
+
+      await result;
     });
 
     it('should return a list of valids identity providers', async () => {
