@@ -112,8 +112,17 @@ export class CoreFcpController {
   @Render('consent')
   async getConsent(@Req() req, @Res() res, @Param() _params: Interaction) {
     const { interactionId } = req.fc;
-    const { spIdentity: identity, spName } = await this.session.get(
+    const { spIdentity: identity, spName, spId } = await this.session.get(
       interactionId,
+    );
+
+    const {
+      type: spType,
+      identityConsent: spIdentityConsent,
+    } = await this.serviceProvider.getById(spId);
+    const consentRequired = this.serviceProvider.consentRequired(
+      spType,
+      spIdentityConsent,
     );
 
     const {
@@ -132,6 +141,7 @@ export class CoreFcpController {
       scopes,
       claims: claimsReadable,
       csrfToken,
+      consentRequired,
     };
   }
 

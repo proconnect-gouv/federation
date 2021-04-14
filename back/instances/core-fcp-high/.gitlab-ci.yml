@@ -23,7 +23,7 @@ core-fcp-high:
   script:
     - docker-stack up core-v2
     - docker-stack dep corev2
-    - docker-stack start csmr-hsm rnipp fsp1v2 fsp2v2 fip1v2 corev2
+    - docker-stack start csmr-hsm rnipp fsp1v2 fsp2v2 fsp5v2 fsp6v2 fip1v2 corev2
     # ## -- Build like for prod
     #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
     #- docker-stack exec corev2 yarn build core-fcp-high
@@ -47,6 +47,8 @@ core-fcp-high:
       (docker cp fc_fip1v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_fsp1v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_fsp2v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fsp5v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fsp6v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc-rp-all:/var/log/nginx back/instances/core-fcp-high/cypress/logs || true) &&
       exit 1)
   interruptible: true

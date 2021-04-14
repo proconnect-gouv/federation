@@ -11,6 +11,8 @@ services:
       - "fsp1v2"
       - "fsp2v2"
       - "fsp3v2"
+      - "fsp5v2"
+      - "fsp6v2"
       - "fip1v2"
       - "fip2v2"
       - "fip6v2"
@@ -153,6 +155,92 @@ services:
       - data
     command: "pm2 logs"
 
+  fsp5v2:
+    hostname: fsp5v2
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "csmr-hsm"
+      - "redis-pwd"
+      - "broker"
+      - "squid"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "sp.env"
+    ports:
+      - 9249:9249
+    tty: true
+    environment:
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9249 mock-service-provider-high"
+      - "VIRTUAL_HOST=fsp5v2.docker.dev-franceconnect.fr"
+      - 'REDIRECT_URIS=["https://fsp5v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsp5v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "CLIENT_ID=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39555"
+      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      # Arbitrary DB number, default is 0 and is used by legacy core.
+      - "FC_REDIS_DB=8"
+      # Logger
+      - "EVT_LOG_FILE=/var/log/app/fsp5v2.log"
+      # OidcProvider
+      - "FQDN=fsp5v2.docker.dev-franceconnect.fr"
+      # OidcClient
+      - "OidcClient_ACR=eidas2"
+      - "OidcClient_SCOPE=openid profile gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone birth identite_pivot"
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
+  fsp6v2:
+    hostname: fsp6v2
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "csmr-hsm"
+      - "redis-pwd"
+      - "broker"
+      - "squid"
+    volumes:
+      - "../volumes/src/fc/back:/var/www/app"
+      - "../volumes/app:/opt/scripts"
+      - "../volumes/log/:/var/log/app"
+      - "../volumes/.home:/home"
+      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+    env_file:
+      - "base-app.env"
+      - "sp.env"
+    ports:
+      - 9250:9250
+    tty: true
+    environment:
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9250 mock-service-provider-high"
+      - "VIRTUAL_HOST=fsp6v2.docker.dev-franceconnect.fr"
+      - 'REDIRECT_URIS=["https://fsp6v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsp6v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "CLIENT_ID=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39666"
+      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      # Arbitrary DB number, default is 0 and is used by legacy core.
+      - "FC_REDIS_DB=8"
+      # Logger
+      - "EVT_LOG_FILE=/var/log/app/fsp6v2.log"
+      # OidcProvider
+      - "FQDN=fsp6v2.docker.dev-franceconnect.fr"
+      # OidcClient
+      - "OidcClient_ACR=eidas2"
+      - "OidcClient_SCOPE=openid profile gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone birth identite_pivot"
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+    
   ####################
   # Core V2
   ####################
