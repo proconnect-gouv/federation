@@ -864,9 +864,11 @@ describe('CoreService', () => {
 
       service['getEventContext'] = jest.fn();
 
-      trackingMock.track.mockRejectedValueOnce(
-        service['oidcErrorService']['throwError'](ctxMock, new Error()),
-      );
+      const errorMock = new Error('Unknown Error');
+
+      trackingMock.track.mockImplementationOnce(() => {
+        throw errorMock;
+      });
       // When
       service['userinfoMiddleware'](ctxMock);
       // Then
@@ -874,7 +876,7 @@ describe('CoreService', () => {
       expect(service['oidcErrorService']['throwError']).toHaveBeenNthCalledWith(
         1,
         ctxMock,
-        expect.any(Error),
+        errorMock,
       );
     });
   });
