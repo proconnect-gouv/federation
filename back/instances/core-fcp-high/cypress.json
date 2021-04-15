@@ -15,13 +15,33 @@
     "IDP_NAME": "fip",
     "IDP_ROOT_URL": "https://fip1v2.docker.dev-franceconnect.fr",
     "IDP_INTERACTION_URL": "https://fip1v2.docker.dev-franceconnect.fr/interaction",
+
+    "SP1_ID": "#fsp1v2",
     "SP1_ROOT_URL": "https://fsp1v2.docker.dev-franceconnect.fr",
     "SP1_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
+    "SP2_ID": "#fsp2v2",
     "SP2_ROOT_URL": "https://fsp2v2.docker.dev-franceconnect.fr",
     "SP2_CLIENT_ID": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
+    "SP5_ID": "#fsp5v2",
     "SP5_ROOT_URL": "https://fsp5v2.docker.dev-franceconnect.fr",
+    "SP6_ID": "#fsp6v2",
     "SP6_ROOT_URL": "https://fsp6v2.docker.dev-franceconnect.fr",
-    "WELL_KNOWN": "/api/v2/.well-known/openid-configuration"
+
+    "WELL_KNOWN": "/api/v2/.well-known/openid-configuration",
+
+    "ALL_APPS_LISTED": "https://docker.dev-franceconnect.fr/fcp.html",
+
+    "EXPLOITATION": [{
+      "USER_NAME": "jean_patoche",
+      "USER_PASS": "georgesmoustaki",
+      "ROLE": "operator"
+    },
+    {
+      "USER_NAME": "jean_moust",
+      "USER_PASS": "georgesmoustaki",
+      "ROLE": "admin"
+    }],
+    "SECRET_TOTP": "KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD"
   },
   "ignoreTestFiles": "*.util.js",
   "projectId": "ob8yho"

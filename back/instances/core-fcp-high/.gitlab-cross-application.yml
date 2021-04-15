@@ -1,6 +1,7 @@
-core-fcp-high:
+core-fcp-high-cross-application:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
+  when: manual
   tags:
     - docker
   variables:
@@ -12,6 +13,7 @@ core-fcp-high:
     paths:
       - back/node_modules/
   before_script:
+    - echo "FC_DOCKER_VERSION=$FC_DOCKER_VERSION"
     - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f && docker volume prune -f; fi
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
@@ -19,11 +21,13 @@ core-fcp-high:
     - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
     - ln -s $FC_ROOT/fc/front/user-dashboard $FC_ROOT/fc/docker/volumes/src/user-dashboard
+    - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
     - docker-stack up core-v2
-    - docker-stack dep corev2
-    - docker-stack start csmr-hsm rnipp fsp1v2 fsp2v2 fsp5v2 fsp6v2 fip1v2 corev2
+    - docker-stack dep corev2 exploitation-high
+    - docker-stack fixtures-v2
+    - docker-stack start csmr-hsm rnipp fsp1v2 fsp2v2 fip1v2 corev2 exploitation-high
     # ## -- Build like for prod
     #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
     #- docker-stack exec corev2 yarn build core-fcp-high
@@ -40,15 +44,20 @@ core-fcp-high:
       (docker exec fc_corev2_1 cat /tmp/.pm2/logs/corev2-error-0.log || true) &&
       (docker exec fc_corev2_1 cat /tmp/.pm2/logs/corev2-out-0.log || true) &&
       exit 1)
-    - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fcp-high --spec "./back/instances/core-fcp-high/cypress/integration/!(50.0.cross-application.spec.js)" || (
+    - timeout 100 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://exploitation-high.docker.dev-franceconnect.fr/login)" != "200" ]];
+      do echo "Waiting for exploitation-high..." && sleep 10; done' ||
+      (echo 'Cannot connect to exploitation-high' &&
+      (docker exec fc_exploitation-high_1 cat /tmp/.pm2/logs/exploitation-high-error-0.log || true) &&
+      (docker exec fc_exploitation-high_1 cat /tmp/.pm2/logs/exploitation-high-out-0.log || true) &&
+      exit 1)
+    - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fcp-high -s ./back/instances/core-fcp-high/cypress/integration/50.0.cross-application.spec.js || (
       (docker cp fc_corev2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_fip1v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_fsp1v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_fsp2v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fsp5v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fsp6v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_exploitation-high_1:/var/log/nginx back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc-rp-all:/var/log/nginx back/instances/core-fcp-high/cypress/logs || true) &&
       exit 1)
   interruptible: true
