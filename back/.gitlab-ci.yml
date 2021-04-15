@@ -9,7 +9,7 @@ global:
   tags:
     - nodejs
   cache:
-    key: "${CI_PROJECT_ID}"
+    key: '${CI_PROJECT_ID}'
     policy: pull
     paths:
       - back/node_modules/
@@ -29,7 +29,7 @@ build-cache:
   tags:
     - nodejs
   cache:
-    key: "${CI_PROJECT_ID}"
+    key: '${CI_PROJECT_ID}'
     policy: push
     paths:
       - back/node_modules/
@@ -44,6 +44,7 @@ build-cache:
 
 include:
   - '/back/instances/core-fcp-high/.gitlab-ci.yml'
+  - '/back/instances/core-fcp-high/.gitlab-cross-application.yml'
   - '/back/instances/core-fca-high/.gitlab-ci.yml'
   - '/back/instances/eidas-bridge/.gitlab-ci.yml'
   - '/back/instances/core-fcp-high/.gitlab-deploy.yml'
