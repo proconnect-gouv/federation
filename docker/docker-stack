@@ -202,7 +202,7 @@ _fixturesv2() {
   echo "**************************************"
   echo " Resetting fixtures in database..."
   echo "**************************************"
-  apps=${@:-exploitation-high exploitation-fca}
+  apps="exploitation-high"
   for app in $apps
   do
     echo "**************************************"
