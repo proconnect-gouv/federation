@@ -467,7 +467,9 @@ const fsp = {
       "fip7v2",
       "idp-test-update",
     ],
-    identityConsent: false,
+    eidas : 2,
+    identityConsent : false,
+    trustedIdentity : false,
   },
 
   // -- FSP - FSP2v2 - Activated
@@ -521,7 +523,9 @@ const fsp = {
       "https://fsp2v2.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
     idpFilterList: ["fip7v2"],
-    identityConsent: false,
+    eidas : 2,
+    identityConsent : false,
+    trustedIdentity : false,
   },
 
   // -- FSP - FSP3v2 - Deactivated
