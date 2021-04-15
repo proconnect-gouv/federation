@@ -19,8 +19,10 @@ export function basicSuccessScenario(params) {
     id: Cypress.env(`${sp}_CLIENT_ID`),
   };
 
-  // FS: Click on FC button
-  cy.visit(serviceProvider.url);
+  // FS choice
+  cy.visit(`${Cypress.env('ALL_APPS_LISTED')}`);
+  cy.url().should('include', 'https://docker.dev-franceconnect.fr/fcp.html');
+  cy.get(Cypress.env(`${sp}_ID`)).click();
 
   if (method === 'POST') {
     cy.get('#post-authorize').click();
@@ -29,7 +31,6 @@ export function basicSuccessScenario(params) {
   }
 
   // FC: choose FI
-
   cy.url().should(
     'include',
     `${Cypress.env('FC_ROOT_URL')}/api/v2/interaction`,
