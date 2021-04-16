@@ -76,6 +76,7 @@ main section .section__more-info {
   color: #68737a;
   font-size: 1.5rem;
   text-decoration: none;
+  text-align: center;
 }
 
 main section .section__more-info:hover {
