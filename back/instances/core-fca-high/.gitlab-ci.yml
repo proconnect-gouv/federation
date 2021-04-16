@@ -23,8 +23,8 @@ core-fca-high:
     - ln -s $FC_ROOT/fc/front/agent-connect $FC_ROOT/fc/docker/volumes/src/agent-connect
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
-    - docker-stack fca-front &
     - docker-stack up fca
+    - docker-stack fca-front &
     - docker-stack dep fca
     - docker-stack start fsa1v2 fsa2v2 fsa4v2 fia1v2 fia2v2 fia4v2 fia5v2
     - wait
@@ -39,7 +39,7 @@ core-fca-high:
     #- docker-stack exec fca yarn start:prod:core-fca-high &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
-    - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://fca.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
+    - timeout 100 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://fca.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
       do echo "Waiting for fca..." && sleep 10; done' || (
       (echo 'Cannot connect to fca') &&
       (docker exec fc_fca_1 cat /tmp/.pm2/logs/fca-error-0.log || true) &&
