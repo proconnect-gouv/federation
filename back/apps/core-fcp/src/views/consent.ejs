@@ -20,13 +20,19 @@
         </p>
       </section>
 
-      <a href="/api/v2/login?_csrf=<%=locals.code%>" id="consent"
-        class="content__continue">Continuer sur
-        <%= locals.spName %></a>
+      <form method="POST" action="/api/v2/login" name="fc-consent">
+        <button type="submit" id="consent" class="content__continue">
+          Continuer sur <%= locals.spName %>
+        </button>
 
-      <p><% JSON.stringify(locals.identity); %></p>
+        <input type="hidden" name="_csrf" value="<%= locals.csrfToken %>" />
+      </form>
+
+    </main>
+
     <% } else { %>
     <main>
+
       <section>
         <p class="section__welcome">Bienvenue</p>
         <p role="heading" aria-level="1" class="section__identity"><%= locals.identity.given_name %> <%= locals.identity.family_name %></p>
@@ -85,8 +91,8 @@
           </div>
         </div>
       </article>
-    <% } %>
     </main>
+    <% } %>
 
     <%- include('partials/footer.ejs') %>
 
