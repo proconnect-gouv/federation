@@ -22,7 +22,7 @@ eidas-bridge:
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
     - docker-stack up eidas
-    - docker-stack dep corev2 fip1v2 rnipp # eidas-bridge fsp1v2 are included in corev2 (monorepo)
+    - docker-stack dep corev2 # eidas-bridge fsp1v2 are included in corev2 (monorepo)
     - docker-stack start corev2 eidas-bridge csmr-hsm rnipp fsp1v2 fsp2v2 fsp3v2 fip1v2 fip2v2 fip6v2 fip7v2
     # ## -- Build like for prod
     #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
@@ -34,7 +34,7 @@ eidas-bridge:
     #- docker-stack exec corev2 yarn start:prod:eidas-bridge &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
-    - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://eidas-bridge.docker.dev-franceconnect.fr/.well-known/openid-configuration)" != "200" ]];
+    - timeout 100 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://eidas-bridge.docker.dev-franceconnect.fr/.well-known/openid-configuration)" != "200" ]];
       do echo "Waiting for eidas-bridge..." && sleep 10; done' || (
       (echo 'Cannot connect to eidas-bridge') &&
       (docker exec fc_eidas-bridge_1 cat /tmp/.pm2/logs/eidas-bridge-error-0.log || true) &&
