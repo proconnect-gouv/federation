@@ -1,7 +1,8 @@
 /* istanbul ignore file */
 
 /**
- * @TODO untested
+ * @TODO #493 untested
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/493
  */
 import classnames from 'classnames';
 import React from 'react';
