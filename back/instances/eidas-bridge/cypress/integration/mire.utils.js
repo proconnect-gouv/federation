@@ -35,7 +35,8 @@ function connectToFcIdp(fcRequest) {
 }
 
 /**
- * @todo rename and refacto to use it as a autonomous function (navigateToMireFromEU)
+ * @todo #488 rename and refacto to use it as a autonomous function (navigateToMireFromFR)
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/488
  */
 export function configureEidasSpMockRequest(eidasRequest = {}) {
   const request = {
@@ -152,7 +153,8 @@ export function checkInformationsEuSpFrIdp(params = {}) {
 }
 
 /**
- * @todo rename and refacto to use it as a autonomous function (navigateToMireFromFR)
+ * @todo #488 rename and refacto to use it as a autonomous function (navigateToMireFromFR)
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/488
  */
 export function configureOidcSpMockRequest(params = {}) {
   const idpId = 'eidas-bridge';

@@ -5,7 +5,8 @@ import { MandatoryIdentityDto } from './mandatory-identity.dto';
 
 export class OidcIdentityDto extends MandatoryIdentityDto {
   /**
-   * @todo Faire un validator pour siren
+   * @todo #484 Faire un validator pour siren
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/484
    */
   @IsSafeString()
   @IsOptional()
@@ -13,7 +14,8 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
   readonly siren?: string;
 
   /**
-   * @todo Faire un validator pour siret
+   * @todo #484 Faire un validator pour siren
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/484
    */
   @IsSafeString()
   @IsOptional()
