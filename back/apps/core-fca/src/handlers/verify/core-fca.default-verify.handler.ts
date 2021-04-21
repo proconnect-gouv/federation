@@ -3,8 +3,7 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { CryptographyFcaService } from '@fc/cryptography-fca';
+import { CryptographyFcaService, IAgentIdentity } from '@fc/cryptography-fca';
 
 @Injectable()
 @FeatureHandler('core-fca-default-verify')
@@ -15,7 +14,6 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     private readonly logger: LoggerService,
     private readonly session: SessionService,
     private readonly core: CoreService,
-    private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly cryptographyFca: CryptographyFcaService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -44,26 +42,31 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     this.core.checkIfAcrIsValid(idpAcr, spAcr);
 
     /**
-     * @todo #305 - what is the algorithm of the identity hash for fca ?
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/305
+     *  @todo
+     *    author: Arnaud
+     *    date: 09/04/2020
+     *    ticket: FC-179
+     *
+     *    context: upgrade with session generic
      */
-    const hashSp = this.cryptographyFca.computeIdentityHash(idpIdentity);
-    await this.core.checkIfAccountIsBlocked(hashSp);
+    const agentIdentity = (idpIdentity as unknown) as IAgentIdentity;
 
-    const { entityId } = await this.serviceProvider.getById(spId);
+    const agentHash = this.cryptographyFca.computeIdentityHash(
+      idpId,
+      agentIdentity,
+    );
 
-    const subSp = this.cryptographyFca.computeSubV1(entityId, hashSp);
+    await this.core.checkIfAccountIsBlocked(agentHash);
 
-    const hashIdp = this.cryptographyFca.computeIdentityHash(idpIdentity);
-    const subIdp = this.cryptographyFca.computeSubV1(spId, hashIdp);
+    const subSp = this.cryptographyFca.computeSubV1(spId, agentHash);
+    const { sub: subIdp } = agentIdentity;
 
     // Save interaction to database & get sp's sub to avoid double computation
     await this.core.computeInteraction(
       {
         spId,
-        entityId,
         subSp,
-        hashSp,
+        hashSp: agentHash,
       },
       {
         idpId,
@@ -71,10 +74,6 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
       },
     );
 
-    /**
-     * @TODO #305 generate unique sub ?
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/305
-     */
     const spIdentityCleaned = { ...idpIdentity, sub: subSp };
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
