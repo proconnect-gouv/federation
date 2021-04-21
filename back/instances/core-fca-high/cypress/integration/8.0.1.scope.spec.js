@@ -130,7 +130,7 @@ describe('Scope', () => {
     cy.get('#get-authorize').click();
 
     // Choose IdP
-    cy.get(`#fi-search-term`).type('identity');
+    cy.get(`#fi-search-term`).type('ministere');
     cy.contains('Identity Provider 1 - eIDAS élevé').click();
 
     // Connect

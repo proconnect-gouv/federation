@@ -1,22 +1,9 @@
 import * as QueryString from 'querystring';
 
-/**
- * @param params
- *
- * Available params :
- *  - idpId
- *  - userName
- *  - password
- *  - sp Name of the SP, possible values: SP1, SP2
- *  - acr_values
- */
-export function basicSuccessScenario(params) {
-  const { idpId, userName, sp = 'fsa1v2', method } = params;
-  const password = params.password || '123';
+export function beforeSuccessScenario(params) {
+  const { sp = 'fsa1v2', method } = params;
 
   const { SP_ROOT_URL, SP_CLIENT_ID } = getServiceProvider(sp);
-  const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
-
   // FS: Click on FC button
   cy.visit(SP_ROOT_URL);
 
@@ -50,9 +37,27 @@ export function basicSuccessScenario(params) {
     idpName: null,
     idpAcr: null,
   });
+}
 
+/**
+ * @param params
+ *
+ * Available params :
+ *  - idpId
+ *  - userName
+ *  - password
+ *  - sp Name of the SP, possible values: SP1, SP2
+ *  - acr_values
+ */
+export function basicSuccessScenario(idpId) {
   chooseIdpOnCore(idpId);
+}
 
+export function afterSuccessScenario(params) {
+  const { sp = 'fsa1v2', idpId, userName } = params;
+  const password = params.password || '123';
+  const { SP_CLIENT_ID } = getServiceProvider(sp);
+  const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
   // FI: Authenticate
   cy.url().should('include', IDP_INTERACTION_URL);
 
@@ -137,22 +142,13 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
 }
 
 export function chooseIdpOnCore(idpId) {
-  const { MINISTRY } = getIdentityProvider(idpId);
-  // FC: choose FI
+  const { ID, MINISTRY_NAME } = getIdentityProvider(idpId);
   cy.url().should(
     'include',
     `${Cypress.env('FC_ROOT_URL')}/api/v2/interaction`,
   );
-
-  cy.get(`#select-ministry`).click();
-  cy.get(`#ministry-${MINISTRY}`).click();
-  // wait for data to be injected
-  cy.get('#ministries-selects span.ant-select-selection-item').should(
-    'be.not.empty',
-  );
-  cy.get(`#idp-selects`).click();
-  cy.get(`#idp-${idpId}`).click();
-  cy.get('#idp-go').click();
+  cy.get('#fi-search-term').type(MINISTRY_NAME);
+  cy.get(`#idp-${ID}-button`).click();
 }
 
 export function basicScenario(params) {
@@ -166,7 +162,6 @@ export function basicScenario(params) {
   const password = '123';
   const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
   const { SP_ROOT_URL } = getServiceProvider(sp);
-
   cy.visit(SP_ROOT_URL);
 
   if (overrideParams) {
