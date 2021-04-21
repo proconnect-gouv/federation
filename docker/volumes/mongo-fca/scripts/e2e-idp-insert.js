@@ -50,7 +50,7 @@ db.provider.update(
 );
 
 db.ministries.update(
-  { id: "ministry1" },
+  { id: "mock-ministere-de-la-transition-ecologique-all-fis-sort-2" },
   {
     $push: {
       identityProviders: "idp-test-update",

@@ -1,4 +1,4 @@
-import { basicSuccessScenario, checkInformations } from './mire.utils';
+import {beforeSuccessScenario, afterSuccessScenario, basicSuccessScenario, checkInformations } from './mire.utils';
 
 describe('No SSO', () => {
   // Given
@@ -19,14 +19,21 @@ describe('No SSO', () => {
   it('should require full cinematic to login another SP', () => {
     // When
     //   ...Log into SP "A"
-    basicSuccessScenario(loginInfo);
+    //
+    beforeSuccessScenario(loginInfo);
+    basicSuccessScenario(loginInfo.idpId);
+    afterSuccessScenario(loginInfo);
+
     checkInformations(userInfos);
 
     //   ...Then log  into SP "B"
-    basicSuccessScenario({
+    const params = {
       ...loginInfo,
       sp: `${Cypress.env('SP_NAME')}2v2`,
-    });
+    };
+    beforeSuccessScenario(params);
+    basicSuccessScenario(params.idpId);
+    afterSuccessScenario(params);
 
     // Then
     checkInformations(userInfos);
@@ -34,15 +41,21 @@ describe('No SSO', () => {
   it('should run the whole cinematic all the times even for the same SP', () => {
     // When
     //   ...Log into SP
-    basicSuccessScenario(loginInfo);
+    beforeSuccessScenario(loginInfo);
+    basicSuccessScenario(loginInfo.idpId);
+    afterSuccessScenario(loginInfo);
+
     checkInformations(userInfos);
     //   ...Logout from SP
     cy.get('a.nav-logout').click();
     cy.contains(
       `Vous devez vous authentifier afin d'accéder à vos données personnelles.`,
     );
+
     //   ...Log again into SP
-    basicSuccessScenario(loginInfo);
+    beforeSuccessScenario(loginInfo);
+    basicSuccessScenario(loginInfo.idpId);
+    afterSuccessScenario(loginInfo);
 
     // Then
     checkInformations(userInfos);
