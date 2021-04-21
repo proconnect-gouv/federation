@@ -8,4 +8,9 @@ export class CryptographyFcaConfig {
   @MinLength(8)
   @IsOptional()
   readonly subSecretKey: string;
+
+  @IsAscii()
+  @MinLength(8)
+  @IsOptional()
+  readonly hashSecretKey: string;
 }

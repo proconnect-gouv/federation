@@ -3,7 +3,6 @@ import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
 import { AccountBlockedException } from '@fc/account';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { CryptographyFcaService } from '@fc/cryptography-fca';
 import { CoreFcaDefaultVerifyHandler } from './core-fca.default-verify.handler';
 
@@ -18,19 +17,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
 
   const uidMock = '42';
 
-  const getInteractionResultMock = {
-    prompt: {},
-    params: {
-      // oidc param
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: 'eidas3',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: 'spId',
-    },
-    uid: uidMock,
-  };
-  const getInteractionMock = jest.fn();
-
   const coreServiceMock = {
     checkIfAccountIsBlocked: jest.fn(),
     checkIfAcrIsValid: jest.fn(),
@@ -40,7 +26,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
   const sessionServiceMock = {
     get: jest.fn(),
     patch: jest.fn(),
-    delete: jest.fn(),
   };
 
   const spIdentityMock = {
@@ -53,6 +38,10 @@ describe('CoreFcaDefaultVerifyHandler', () => {
 
   const idpIdentityMock = {
     sub: 'some idpSub',
+    // Oidc Naming convention
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    given_name: 'givenNameValue',
+    uid: 'uidValue',
   };
 
   const reqMock = {
@@ -71,10 +60,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     spIdentity: spIdentityMock,
   };
 
-  const serviceProviderMock = {
-    getById: jest.fn(),
-  };
-
   const cryptographyFcaServiceMock = {
     computeSubV1: jest.fn(),
     computeIdentityHash: jest.fn(),
@@ -83,22 +68,19 @@ describe('CoreFcaDefaultVerifyHandler', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CoreService,
         CoreFcaDefaultVerifyHandler,
-        SessionService,
         LoggerService,
-        ServiceProviderAdapterMongoService,
+        SessionService,
+        CoreService,
         CryptographyFcaService,
       ],
     })
-      .overrideProvider(CoreService)
-      .useValue(coreServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(ServiceProviderAdapterMongoService)
-      .useValue(serviceProviderMock)
+      .overrideProvider(CoreService)
+      .useValue(coreServiceMock)
       .overrideProvider(CryptographyFcaService)
       .useValue(cryptographyFcaServiceMock)
       .compile();
@@ -108,15 +90,15 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     );
 
     jest.resetAllMocks();
+    jest.restoreAllMocks();
 
-    getInteractionMock.mockResolvedValue(getInteractionResultMock);
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
-    cryptographyFcaServiceMock.computeIdentityHash
-      .mockReturnValueOnce('spIdentityHash')
-      .mockReturnValueOnce('idpIdentityHash');
-    cryptographyFcaServiceMock.computeSubV1
-      .mockReturnValueOnce('computedSubSp')
-      .mockReturnValueOnce('computedSubIdp');
+    cryptographyFcaServiceMock.computeIdentityHash.mockReturnValueOnce(
+      'spIdentityHash',
+    );
+    cryptographyFcaServiceMock.computeSubV1.mockReturnValueOnce(
+      'computedSubSp',
+    );
   });
 
   it('should be defined', () => {
@@ -124,43 +106,9 @@ describe('CoreFcaDefaultVerifyHandler', () => {
   });
 
   describe('handle', () => {
-    const spMock = {
-      key: '123456',
-      entityId: 'AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH',
-    };
-
-    beforeEach(() => {
-      serviceProviderMock.getById.mockResolvedValue(spMock);
-    });
-
     it('Should not throw if verified', async () => {
       // Then
       await expect(service.handle(reqMock)).resolves.not.toThrow();
-    });
-
-    it('Should not throw if verified', async () => {
-      // Then
-      await expect(service.handle(reqMock)).resolves.not.toThrow();
-    });
-
-    // Dependencies sevices errors
-    it('Should throw if acr is not validated', async () => {
-      // Given
-      const errorMock = new Error('my error 1');
-      coreServiceMock.checkIfAcrIsValid.mockImplementation(() => {
-        throw errorMock;
-      });
-      // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    it('Should throw if account is blocked', async () => {
-      // Given
-      const errorMock = new AccountBlockedException();
-      coreServiceMock.checkIfAccountIsBlocked.mockRejectedValueOnce(errorMock);
-
-      // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if identity provider is not usable', async () => {
@@ -171,79 +119,117 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
     });
 
-    it('Should throw if service Provider service fails', () => {
-      // Given
-      const errorMock = new Error('my error');
-      serviceProviderMock.getById.mockReset().mockRejectedValueOnce(errorMock);
-
-      // When
-      expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+    describe('Acr', () => {
+      // Dependencies services errors
+      it('Should throw if acr is not validated', async () => {
+        // Given
+        const errorMock = new Error('my error 1');
+        coreServiceMock.checkIfAcrIsValid.mockImplementation(() => {
+          throw errorMock;
+        });
+        // Then
+        await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      });
     });
 
-    it('Should throw if identity storage for service provider fails', async () => {
-      // Given
-      const errorMock = new Error('my error');
-      sessionServiceMock.patch.mockRejectedValueOnce(errorMock);
-      // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
-    });
-
-    it('Should call computeInteraction()', async () => {
-      // When
-      await service.handle(reqMock);
-      // Then
-      expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
-      expect(coreServiceMock.computeInteraction).toBeCalledWith(
-        {
-          spId: sessionDataMock.spId,
-          entityId: spMock.entityId,
-          subSp: 'computedSubSp',
-          hashSp: 'spIdentityHash',
-        },
-        {
-          idpId: sessionDataMock.idpId,
-          subIdp: 'computedSubIdp',
-        },
-      );
-    });
-
-    it('should call computeIdentityHash with idp identity on first call', async () => {
+    it('should call computeIdentityHash with idp identity and idp id', async () => {
       // When
       await service.handle(reqMock);
 
       // Then
       expect(
         cryptographyFcaServiceMock.computeIdentityHash,
-      ).toHaveBeenCalledTimes(2);
+      ).toHaveBeenCalledTimes(1);
       expect(
         cryptographyFcaServiceMock.computeIdentityHash,
-      ).toHaveBeenNthCalledWith(1, idpIdentityMock);
+      ).toHaveBeenNthCalledWith(1, sessionDataMock.idpId, idpIdentityMock);
     });
 
-    it('should call computeIdentityHash with identity given by the identity provider on the second call', async () => {
+    describe('Account', () => {
+      it('Should throw if account is blocked', async () => {
+        // Given
+        const errorMock = new AccountBlockedException();
+        coreServiceMock.checkIfAccountIsBlocked.mockRejectedValueOnce(
+          errorMock,
+        );
+
+        // Then
+        await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      });
+    });
+
+    it('Should call compute Sub for Sp based on identity hash', async () => {
       // When
       await service.handle(reqMock);
 
       // Then
-      expect(
-        cryptographyFcaServiceMock.computeIdentityHash,
-      ).toHaveBeenCalledTimes(2);
-      expect(
-        cryptographyFcaServiceMock.computeIdentityHash,
-      ).toHaveBeenNthCalledWith(2, idpIdentityMock);
-    });
-
-    it('should call computeSubV1 with entityId and rnippIdentityHash on first call', async () => {
-      // When
-      await service.handle(reqMock);
-
-      // Then
-      expect(cryptographyFcaServiceMock.computeSubV1).toHaveBeenCalledTimes(2);
+      expect(cryptographyFcaServiceMock.computeSubV1).toHaveBeenCalledTimes(1);
       expect(cryptographyFcaServiceMock.computeSubV1).toHaveBeenNthCalledWith(
         1,
-        spMock.entityId,
+        sessionDataMock.spId,
         'spIdentityHash',
       );
+    });
+
+    describe('computeInteraction', () => {
+      it('Should call computeInteraction() with sp and idp data', async () => {
+        // When
+        await service.handle(reqMock);
+        // Then
+        expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
+        expect(coreServiceMock.computeInteraction).toBeCalledWith(
+          {
+            spId: sessionDataMock.spId,
+            subSp: 'computedSubSp',
+            hashSp: 'spIdentityHash',
+          },
+          {
+            idpId: sessionDataMock.idpId,
+            subIdp: idpIdentityMock.sub,
+          },
+        );
+      });
+
+      it('Should throw an error if computeInteraction failed', async () => {
+        // Given
+        const errorMock = new Error('my error');
+        coreServiceMock.computeInteraction.mockRejectedValueOnce(errorMock);
+        // Then
+        await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      });
+    });
+
+    describe('Session patch', () => {
+      it('Should patch the session with idp and sp identity', async () => {
+        // Given
+
+        const calledMock = {
+          idpIdentity: { sub: idpIdentityMock.sub },
+          spIdentity: {
+            sub: 'computedSubSp',
+            // Oidc naming convention
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            given_name: idpIdentityMock.given_name,
+            uid: idpIdentityMock.uid,
+          },
+        };
+        // When
+        await service.handle(reqMock);
+
+        // Then
+        expect(sessionServiceMock.patch).toHaveBeenCalledTimes(1);
+        expect(sessionServiceMock.patch).toHaveBeenCalledWith(
+          uidMock,
+          calledMock,
+        );
+      });
+      it('Should throw if identity storage for service provider fails', async () => {
+        // Given
+        const errorMock = new Error('my error');
+        sessionServiceMock.patch.mockRejectedValueOnce(errorMock);
+        // Then
+        await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      });
     });
   });
 });
