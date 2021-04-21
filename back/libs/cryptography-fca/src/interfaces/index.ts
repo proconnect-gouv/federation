@@ -1,4 +1,4 @@
 /* istanbul ignore file */
 
 // Declarative code
-export { IPivotIdentity } from './pivot-identity.interface';
+export * from './agent-identity.interface';

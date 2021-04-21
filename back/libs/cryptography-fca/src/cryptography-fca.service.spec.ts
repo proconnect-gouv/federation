@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { CryptographyFcaService } from './cryptography-fca.service';
-import { IPivotIdentity } from './interfaces';
+import { IAgentIdentity } from './interfaces';
 
 describe('CryptographyFcaService', () => {
   let service: CryptographyFcaService;
@@ -12,22 +12,24 @@ describe('CryptographyFcaService', () => {
   };
   const mockEncryptKey = 'p@ss p@rt0ut';
   const cryptographyKeyMock = 'Méfaits accomplis...';
+  const cryptoHashKeyMock = 'alea jacta est';
+  const idpIdMock = 'idpIdValue';
 
   const cryptographyServiceMock = {
     hash: jest.fn(),
     decrypt: jest.fn(),
   };
-  const pivotIdentityMock: IPivotIdentity = {
+  const agentIdentityMock: IAgentIdentity = {
+    sub: '222AF4567DCB775433211',
     // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    given_name: 'Jean Paul Henri',
-    // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
+    given_name: 'Jean Paul',
+
+    // Agent Connect defined variable name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    family_name: 'Dupont',
-    gender: 'male',
-    birthdate: '1970-01-01',
-    birthplace: '95277',
-    birthcountry: '99100',
+    usual_name: 'Henri',
+    uid: 'XE3334RFFG54321ZZ2ED',
+    email: 'jean.paul@henry.com',
   };
 
   beforeEach(async () => {
@@ -50,6 +52,7 @@ describe('CryptographyFcaService', () => {
       clientSecretEcKey: mockEncryptKey,
       sessionIdLength: 42,
       subSecretKey: cryptographyKeyMock,
+      hashSecretKey: cryptoHashKeyMock,
     }));
   });
 
@@ -60,13 +63,13 @@ describe('CryptographyFcaService', () => {
   describe('computeIdentityHash', () => {
     it('should call cryptography service hash function with given parameters', () => {
       // Given
-      const serial = 'Jean Paul HenriDupont1970-01-01male9527799100';
+      const serial = 'idpIdValue' + 'XE3334RFFG54321ZZ2ED' + 'alea jacta est';
       const inputEncoding = 'binary';
       const alg = 'sha256';
       const ouputDigest = 'base64';
       cryptographyServiceMock.hash.mockReturnValueOnce('totoIsHashed');
       // action
-      const result = service.computeIdentityHash(pivotIdentityMock);
+      const result = service.computeIdentityHash(idpIdMock, agentIdentityMock);
 
       // expect
       expect(cryptographyServiceMock.hash).toHaveBeenCalledTimes(1);
@@ -94,7 +97,7 @@ describe('CryptographyFcaService', () => {
       expect(cryptographyServiceMock.hash).toHaveBeenCalledWith(
         'providerRefMockValue' + 'identityHashValue' + 'Méfaits accomplis...',
       );
-      expect(result).toEqual('totoHasASubv1');
+      expect(result).toEqual('totoHasASub');
     });
   });
 });
