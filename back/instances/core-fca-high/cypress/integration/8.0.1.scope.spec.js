@@ -27,10 +27,7 @@ describe('Scope', () => {
       failOnStatusCode: false,
     });
 
-    cy.url().should(
-      'match',
-      new RegExp(`${SP_ROOT_URL}/error`),
-    );
+    cy.url().should('match', new RegExp(`${SP_ROOT_URL}/error`));
 
     cy.get('#error-title').contains('invalid_scope');
     cy.get('#error-description').contains('requested scope is not whitelisted');
@@ -50,7 +47,7 @@ describe('Scope', () => {
     checkInStringifiedJson('siren', '343293775'); // not mandatory
     checkInStringifiedJson(
       'sub',
-      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
+      '2a22df139ea8e7a81ed542150441ece7959cb870cd3a45910d0984f4e0de7524',
     ); // mandatory
     checkInStringifiedJson('organizational_unit', 'comptabilite'); // mandatory
     checkInStringifiedJson('belonging_population', 'agent'); // not mandatory
@@ -69,7 +66,7 @@ describe('Scope', () => {
     checkInStringifiedJson('email', 'test@abcd.com'); // mandatory
     checkInStringifiedJson(
       'sub',
-      'c6a6e1847cb13dea4b8104e44b4de7b57353fc57071d28ef40800c29dc5c3c71v1',
+      'e0e18c40239dadc516017381052e74522091f1ed095143a38620feaa544997fd',
     ); // mandatory
     checkInStringifiedJson('belonging_population', undefined);
   });
@@ -92,7 +89,7 @@ describe('Scope', () => {
     checkInStringifiedJson('email', 'test@abcd.com'); // mandatory
     checkInStringifiedJson(
       'sub',
-      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
+      '2a22df139ea8e7a81ed542150441ece7959cb870cd3a45910d0984f4e0de7524',
     ); // mandatory
     checkInStringifiedJson('organizational_unit', undefined); // mandatory
     checkInStringifiedJson('belonging_population', undefined);
@@ -125,7 +122,7 @@ describe('Scope', () => {
     cy.get('#scope_belonging_population').click();
     cy.get('#scope_phone').click();
     cy.get('#scope_chorusdt').click();
- 
+
     // Go to FC
     cy.get('#get-authorize').click();
 
@@ -138,7 +135,7 @@ describe('Scope', () => {
 
     checkInStringifiedJson(
       'sub',
-      'c2a305b1162c7b0f44923049dec15ca6189ff454dde89e8a41535c291aae86f9v1',
+      '2a22df139ea8e7a81ed542150441ece7959cb870cd3a45910d0984f4e0de7524',
     );
     checkInStringifiedJson('given_name', 'Angela Claire Louise');
     checkInStringifiedJson('usual_name', 'DUBOIS');
@@ -166,7 +163,7 @@ describe('Scope', () => {
         .and('include', 'organizational_unit')
         .and('include', 'belonging_population')
         .and('include', 'phone')
-        .and('include', 'chorusdt')
+        .and('include', 'chorusdt');
     });
   });
 });

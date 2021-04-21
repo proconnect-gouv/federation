@@ -6,4 +6,5 @@ import { CryptographyFcaConfig } from '@fc/cryptography-fca';
 export default {
   // Core Legacy ==> use of secret cookie key
   subSecretKey: process.env.CRYPTO_SUB_SECRET,
+  hashSecretKey: process.env.CRYPTO_HASH_SECRET,
 } as CryptographyFcaConfig;
