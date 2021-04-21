@@ -8,8 +8,8 @@ import {
   useLocation,
 } from 'react-router-dom';
 
+import { IRoute } from '../interfaces';
 import NotFoundPage from '../pages/not-found.page';
-import { IRoute } from '../types';
 import LayoutFooter from './layout-footer';
 import LayoutHeader from './layout-header';
 

@@ -1,0 +1,16 @@
+@import '../../styles/_colors.scss';
+@import '../../styles/_variables.scss';
+
+#identity-providers-user-history {
+  .wrapper {
+    justify-content: center;
+  }
+}
+
+@media (min-width: $breakpoint-mobile) {
+  #identity-providers-user-history {
+    .wrapper {
+      justify-content: space-around;
+    }
+  }
+}
