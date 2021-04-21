@@ -1,15 +1,19 @@
-# Utiliser des données d'api local
+# Utiliser des données d'api local avec le hot reload en dev
 
 > Permet d'avoir un jeu de données bouchées et de profiter du hot-reload pour du dévelopement plus rapide
 
+- récupérer les données de l'API depuis la console
 - ajouter le fichier `/public/mock-api-data.json`
+- copier les données dans le fichier `/public/mock-api-data.json`
 - ajouter le fichier `/.env`
 
-**.env**
-
 ```
+BROWSER=none
 REACT_APP_API_MOCK_DATA_FILE=/mock-api-data.json
 ```
+
+- visiter l'URL `localhost:3000/api/v2/interaction/abcd`
+- lancer le serveur local avec la commande `yarn start`
 
 # Architecture du dossier `src`
 
