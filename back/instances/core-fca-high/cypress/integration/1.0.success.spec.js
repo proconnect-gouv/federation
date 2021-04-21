@@ -1,4 +1,6 @@
 import {
+  afterSuccessScenario,
+  beforeSuccessScenario,
   basicSuccessScenario,
   checkInformations,
   checkInStringifiedJson,
@@ -22,12 +24,15 @@ describe('Successful scenarios', () => {
   });
 
   it('should log in to Service Provider Example', () => {
-    basicSuccessScenario({
+    const params = {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
       idpId,
-    });
+    };
+    beforeSuccessScenario(params);
+    basicSuccessScenario(idpId);
+    afterSuccessScenario(params);
 
     checkInformations({
       givenName: 'Angela Claire Louise',
@@ -40,13 +45,16 @@ describe('Successful scenarios', () => {
   });
 
   it('should log in to Service Provider Example with POST /authorize', () => {
-    basicSuccessScenario({
+    const params = {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
       idpId,
       method: 'POST',
-    });
+    };
+    beforeSuccessScenario(params);
+    basicSuccessScenario(idpId);
+    afterSuccessScenario(params);
 
     checkInformations({
       givenName: 'Angela Claire Louise',
@@ -64,7 +72,7 @@ describe('Successful scenarios', () => {
     cy.visit(SP_ROOT_URL);
     const url = getAuthorizeUrl({
       scope: 'given_name',
-    })
+    });
 
     // Visit forged /authorize URL
     cy.visit(url, {
@@ -72,26 +80,26 @@ describe('Successful scenarios', () => {
     });
 
     cy.url()
-    .should(
-      'contains',
-      `${SP_ROOT_URL}/oidc-callback/envIssuer`,
-    )
-    .should('contains', 'error=invalid_request')
-    .should(
-      'contains',
-      'error_description=openid%20scope%20must%20be%20requested%20when%20using%20the%20acr_values',
-    )
-    .should('contains', 'state=stateTraces');
+      .should('contains', `${SP_ROOT_URL}/oidc-callback/envIssuer`)
+      .should('contains', 'error=invalid_request')
+      .should(
+        'contains',
+        'error_description=openid%20scope%20must%20be%20requested%20when%20using%20the%20acr_values',
+      )
+      .should('contains', 'state=stateTraces');
   });
 
   it('should log in to Service Provider Example with IDP HS256 alg and response not encrypted', () => {
-    basicSuccessScenario({
+    const params = {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
-      idpId: 'fia2v2',
-      sp: `${Cypress.env('SP_NAME')}4v2`,
-    });
+      idpId: 'fia1v2',
+      sp: `${Cypress.env('SP_NAME')}1v2`,
+    };
+    beforeSuccessScenario(params);
+    basicSuccessScenario(idpId);
+    afterSuccessScenario(params);
 
     checkInformations({
       givenName: 'Angela Claire Louise',
@@ -104,13 +112,16 @@ describe('Successful scenarios', () => {
   });
 
   it('should log in to Service Provider Example with IDP HS256 alg and response encrypted', () => {
-    basicSuccessScenario({
+    const params = {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
-      idpId: 'fia4v2',
-      sp: `${Cypress.env('SP_NAME')}4v2`,
-    });
+      idpId: 'fia1v2',
+      sp: `${Cypress.env('SP_NAME')}1v2`,
+    };
+    beforeSuccessScenario(params);
+    basicSuccessScenario(idpId);
+    afterSuccessScenario(params);
 
     checkInformations({
       givenName: 'Angela Claire Louise',
@@ -123,13 +134,16 @@ describe('Successful scenarios', () => {
   });
 
   it('should log in to Service Provider Example with IDP RS256 alg and response encrypted', () => {
-    basicSuccessScenario({
+    const params = {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
-      idpId: 'fia5v2',
-      sp: `${Cypress.env('SP_NAME')}4v2`,
-    });
+      idpId: 'fia1v2',
+      sp: `${Cypress.env('SP_NAME')}1v2`,
+    };
+    beforeSuccessScenario(params);
+    basicSuccessScenario(idpId);
+    afterSuccessScenario(params);
 
     checkInformations({
       givenName: 'Angela Claire Louise',

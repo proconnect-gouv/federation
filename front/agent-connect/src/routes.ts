@@ -2,7 +2,7 @@
 
 // declarative file
 import ErrorPage from './pages/error.page';
-import Homepage from './pages/home.page';
+import Homepage from './pages/homepage';
 
 const routes = [
   {

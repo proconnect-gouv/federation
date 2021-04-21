@@ -4,25 +4,15 @@
 import { ActionCreator, AnyAction } from 'redux';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 
+import { IdentityProvider } from './identity-provider.type';
+import { Ministry } from './ministry.type';
+
 // prettier-ignore
 export type ThunkActionType = ActionCreator<ThunkAction<Promise<any>, RootState, null, AnyAction>>;
 
 export type ThunkDispatchType = ThunkDispatch<RootState, null, AnyAction>;
 
 export type IdentityProvidersHistoryAction = { payload: string; type: string };
-
-export type IdentityProvider = {
-  name: string;
-  uid: string;
-  active: boolean;
-  display: boolean;
-};
-
-export type Ministry = {
-  id: string;
-  identityProviders: string[];
-  name: string;
-};
 
 export type IdentityProviderFormInputs = {
   acr_values: string;

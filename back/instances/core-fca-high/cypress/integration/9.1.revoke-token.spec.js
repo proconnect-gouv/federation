@@ -3,6 +3,8 @@ import {
   checkInformations,
   checkInStringifiedJson,
   getServiceProvider,
+  beforeSuccessScenario,
+  afterSuccessScenario,
 } from './mire.utils';
 
 describe('Revoke token', () => {
@@ -11,12 +13,15 @@ describe('Revoke token', () => {
   const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
 
   it('should trigger error Y030116 when token is revoked and we call userInfo endpoint', () => {
-    basicSuccessScenario({
+    const params = {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
       idpId,
-    });
+    };
+    beforeSuccessScenario(params);
+    basicSuccessScenario(idpId);
+    afterSuccessScenario(params);
 
     // Check user information
     checkInformations({
