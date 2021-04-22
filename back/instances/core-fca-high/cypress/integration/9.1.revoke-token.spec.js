@@ -7,6 +7,9 @@ import {
   afterSuccessScenario,
 } from './mire.utils';
 
+const BASIC_SUB =
+  '3c206a129b97806da2726d502f314a875053942ef9ce3650a2e48b17a1ddb191';
+
 describe('Revoke token', () => {
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
@@ -28,10 +31,7 @@ describe('Revoke token', () => {
       givenName: 'Angela Claire Louise',
       usualName: 'DUBOIS',
     });
-    checkInStringifiedJson(
-      'sub',
-      '2a22df139ea8e7a81ed542150441ece7959cb870cd3a45910d0984f4e0de7524',
-    );
+    checkInStringifiedJson('sub', BASIC_SUB);
 
     // reload userinfo with valid token
     cy.get('#reload-userinfo').click();
@@ -42,10 +42,7 @@ describe('Revoke token', () => {
       givenName: 'Angela Claire Louise',
       usualName: 'DUBOIS',
     });
-    checkInStringifiedJson(
-      'sub',
-      '2a22df139ea8e7a81ed542150441ece7959cb870cd3a45910d0984f4e0de7524',
-    );
+    checkInStringifiedJson('sub', BASIC_SUB);
 
     // revoke token
     cy.get('#revoke-token').click();
