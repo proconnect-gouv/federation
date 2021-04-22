@@ -5,6 +5,9 @@ import {
   getServiceProvider,
 } from './mire.utils';
 
+const BASIC_SUB =
+  '3c206a129b97806da2726d502f314a875053942ef9ce3650a2e48b17a1ddb191';
+
 describe('Scope', () => {
   const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
 
@@ -45,10 +48,7 @@ describe('Scope', () => {
     checkInStringifiedJson('email', 'test@abcd.com'); // mandatory
     checkInStringifiedJson('siret', '34329377500037'); // not mandatory
     checkInStringifiedJson('siren', '343293775'); // not mandatory
-    checkInStringifiedJson(
-      'sub',
-      '2a22df139ea8e7a81ed542150441ece7959cb870cd3a45910d0984f4e0de7524',
-    ); // mandatory
+    checkInStringifiedJson('sub', BASIC_SUB); // mandatory
     checkInStringifiedJson('organizational_unit', 'comptabilite'); // mandatory
     checkInStringifiedJson('belonging_population', 'agent'); // not mandatory
   });
@@ -66,7 +66,7 @@ describe('Scope', () => {
     checkInStringifiedJson('email', 'test@abcd.com'); // mandatory
     checkInStringifiedJson(
       'sub',
-      'e0e18c40239dadc516017381052e74522091f1ed095143a38620feaa544997fd',
+      '78c963ab25ba8d4777fcaca6d670dcea66665139cc581ff9f75141304ef11edf',
     ); // mandatory
     checkInStringifiedJson('belonging_population', undefined);
   });
@@ -87,10 +87,7 @@ describe('Scope', () => {
     checkInStringifiedJson('given_name', 'Angela Claire Louise'); // mandatory
     checkInStringifiedJson('usual_name', 'DUBOIS'); // mandatory
     checkInStringifiedJson('email', 'test@abcd.com'); // mandatory
-    checkInStringifiedJson(
-      'sub',
-      '2a22df139ea8e7a81ed542150441ece7959cb870cd3a45910d0984f4e0de7524',
-    ); // mandatory
+    checkInStringifiedJson('sub', BASIC_SUB); // mandatory
     checkInStringifiedJson('organizational_unit', undefined); // mandatory
     checkInStringifiedJson('belonging_population', undefined);
     checkInStringifiedJson('siren', undefined); // not mandatory
@@ -133,10 +130,7 @@ describe('Scope', () => {
     // Connect
     cy.get('form').submit();
 
-    checkInStringifiedJson(
-      'sub',
-      '2a22df139ea8e7a81ed542150441ece7959cb870cd3a45910d0984f4e0de7524',
-    );
+    checkInStringifiedJson('sub', BASIC_SUB);
     checkInStringifiedJson('given_name', 'Angela Claire Louise');
     checkInStringifiedJson('usual_name', 'DUBOIS');
     checkInStringifiedJson('email', 'test@abcd.com');
