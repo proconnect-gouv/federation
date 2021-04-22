@@ -59,8 +59,8 @@ describe('MockIdentityProviderFcaController', () => {
   const sessionIdMock = randomStringMock;
 
   const interactionMock = {
-    uid: Symbol('uidMockValue'),
-    params: Symbol('paramsMockValue'),
+    uid: 'uidMockValue',
+    params: 'paramsMockValue',
   };
 
   const sessionMockValue = {
@@ -159,6 +159,7 @@ describe('MockIdentityProviderFcaController', () => {
       });
     });
   });
+
   describe('getLogin', () => {
     const interactionId: string = interactionIdMock;
     const body = {
@@ -184,7 +185,7 @@ describe('MockIdentityProviderFcaController', () => {
       ).toHaveBeenCalledWith(body.login);
     });
 
-    it('should call next', async () => {
+    it('should call next if the identity is found', async () => {
       // Given
       const accountMock = {};
       mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
@@ -200,5 +201,22 @@ describe('MockIdentityProviderFcaController', () => {
       // Then
       expect(next).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it('should throw an error and not call "next" if the identity is not found', async () => {
+    // Given
+    mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(undefined);
+    const interactionId: string = interactionIdMock;
+    const body = {
+      interactionId,
+      login: loginMockValue,
+    };
+    const expectedError = new Error('Identity not found in database');
+
+    // When / Then
+    await expect(() => controller.getLogin(next, body)).rejects.toThrow(
+      expectedError,
+    );
+    expect(next).toHaveBeenCalledTimes(0);
   });
 });
