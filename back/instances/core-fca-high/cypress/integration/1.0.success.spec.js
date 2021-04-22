@@ -8,6 +8,9 @@ import {
   getServiceProvider,
 } from './mire.utils';
 
+const BASIC_SUB =
+  '3c206a129b97806da2726d502f314a875053942ef9ce3650a2e48b17a1ddb191';
+
 describe('Successful scenarios', () => {
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
@@ -38,10 +41,7 @@ describe('Successful scenarios', () => {
       givenName: 'Angela Claire Louise',
       usualName: 'DUBOIS',
     });
-    checkInStringifiedJson(
-      'sub',
-      '2a22df139ea8e7a81ed542150441ece7959cb870cd3a45910d0984f4e0de7524',
-    );
+    checkInStringifiedJson('sub', BASIC_SUB);
   });
 
   it('should log in to Service Provider Example with POST /authorize', () => {
@@ -60,10 +60,7 @@ describe('Successful scenarios', () => {
       givenName: 'Angela Claire Louise',
       usualName: 'DUBOIS',
     });
-    checkInStringifiedJson(
-      'sub',
-      '2a22df139ea8e7a81ed542150441ece7959cb870cd3a45910d0984f4e0de7524',
-    );
+    checkInStringifiedJson('sub', BASIC_SUB);
   });
 
   it('should return to the SP with an "invalid_request" error if the query does not contain the "openid" scope', () => {
@@ -94,11 +91,11 @@ describe('Successful scenarios', () => {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
-      idpId: 'fia1v2',
-      sp: `${Cypress.env('SP_NAME')}1v2`,
+      idpId: 'fia2v2',
+      sp: `${Cypress.env('SP_NAME')}4v2`,
     };
     beforeSuccessScenario(params);
-    basicSuccessScenario(idpId);
+    basicSuccessScenario(params.idpId);
     afterSuccessScenario(params);
 
     checkInformations({
@@ -107,7 +104,7 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      'a196ee2c7e788bce0e112cddbda6fb655a7edbcf1b21b35b28741be183b89dc2',
+      'e22b76f45ef103791cd297db7878b3d88769cc5a2e5c9b442c21200cc9e266c5',
     );
   });
 
@@ -116,11 +113,11 @@ describe('Successful scenarios', () => {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
-      idpId: 'fia1v2',
-      sp: `${Cypress.env('SP_NAME')}1v2`,
+      idpId: 'fia4v2',
+      sp: `${Cypress.env('SP_NAME')}4v2`,
     };
     beforeSuccessScenario(params);
-    basicSuccessScenario(idpId);
+    basicSuccessScenario(params.idpId);
     afterSuccessScenario(params);
 
     checkInformations({
@@ -129,7 +126,7 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      'a2f6e03b94f8bc022f2fd81bd3170f3fe7625469196d2e692e4d7e57a57d5361',
+      'f19ef7fbbeff0e10ada8fd0e26cee5b4d80c262bf880cca65c8e0cc5300584ca',
     );
   });
 
@@ -138,11 +135,11 @@ describe('Successful scenarios', () => {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
-      idpId: 'fia1v2',
-      sp: `${Cypress.env('SP_NAME')}1v2`,
+      idpId: 'fia5v2',
+      sp: `${Cypress.env('SP_NAME')}4v2`,
     };
     beforeSuccessScenario(params);
-    basicSuccessScenario(idpId);
+    basicSuccessScenario(params.idpId);
     afterSuccessScenario(params);
 
     checkInformations({
@@ -151,7 +148,7 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      '83d0a8d55426b0a397a835c2882e612d75d808ca06f47d3b79a2c1b7b24c7932',
+      'c3950ef2dbb8b84eff26ed89d472b5443ffc0571859c185114bc4c536d6a4cbf',
     );
   });
 });
