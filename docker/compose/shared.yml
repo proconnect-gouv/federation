@@ -9,6 +9,7 @@ services:
       - "rp-all"
       - "stack-v2"
       - "stack-fca"
+      - "all-fcp-low"
 
   ####################
   # Shared Services
@@ -62,6 +63,11 @@ services:
           - fia5v2.docker.dev-franceconnect.fr
           - exploit-fcp.docker.dev-franceconnect.fr
           - exploit-fca.docker.dev-franceconnect.fr
+          # FCP LOW
+          - core-fcp-low.docker.dev-franceconnect.fr
+          - fsp1-low.docker.dev-franceconnect.fr
+          - fip1-low.docker.dev-franceconnect.fr
+          # Generic
           - docker.dev-franceconnect.fr
       fc:
       exploitation:

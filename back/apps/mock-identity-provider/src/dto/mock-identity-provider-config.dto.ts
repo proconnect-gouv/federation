@@ -7,8 +7,7 @@ import { RedisConfig } from '@fc/redis';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { LoggerConfig } from '@fc/logger';
 import { SessionConfig } from '@fc/session';
-import { AppConfig } from '@fc/app';
-import { CryptographyFcaConfig } from '@fc/cryptography-fca';
+import { AppConfig } from './app-config.dto';
 /**
  * Rename this librairy into a more appropriate name `adapter`, `mongo`
  * @TODO #246 ETQ Dev, j'ai des application avec un nommage précis et explicite
@@ -41,11 +40,6 @@ export class MockIdentityProviderConfig {
   @ValidateNested()
   @Type(() => SessionConfig)
   readonly Session: SessionConfig;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => CryptographyFcaConfig)
-  readonly CryptographyFca: CryptographyFcaConfig;
 
   @IsObject()
   @ValidateNested()

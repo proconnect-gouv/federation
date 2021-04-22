@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { Identity } from '../dto';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
 import { SessionService } from '@fc/session';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { MockIdentityProviderService } from './mock-identity-provider.service';
+import { ConfigService } from '@fc/config';
 
 describe('MockIdentityProviderService', () => {
   let service: MockIdentityProviderService;
@@ -35,6 +35,10 @@ describe('MockIdentityProviderService', () => {
     getInteractionIdFromCtx: jest.fn(),
   };
 
+  const configServiceMock = {
+    get: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -43,6 +47,7 @@ describe('MockIdentityProviderService', () => {
         MockIdentityProviderService,
         ServiceProviderAdapterEnvService,
         SessionService,
+        ConfigService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -53,6 +58,8 @@ describe('MockIdentityProviderService', () => {
       .useValue(sessionServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .compile();
 
     service = module.get<MockIdentityProviderService>(
@@ -74,11 +81,20 @@ describe('MockIdentityProviderService', () => {
   });
 
   describe('loadDatabase', () => {
+    const citizenDatabasePathMock = '/eur';
+
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValueOnce({
+        configServiceMock: citizenDatabasePathMock,
+      });
+    });
+
     it('Should call csvdb library', async () => {
       // Given
       service['csvdbProxy'] = jest.fn().mockResolvedValue({
         rows: [{ foo: 'foo' }],
-      }); // When
+      });
+      // When
       await service['loadDatabase']();
       // Then
       expect(service['csvdbProxy']).toHaveBeenCalledTimes(1);
@@ -102,6 +118,7 @@ describe('MockIdentityProviderService', () => {
     it('should log error when something turns bad', async () => {
       // Given
       const errorMock = new Error();
+      // when
       service['csvdbProxy'] = jest.fn().mockRejectedValue(errorMock);
       // Then
       expect(() => service['loadDatabase']()).rejects.toThrow(errorMock);
@@ -219,12 +236,12 @@ describe('MockIdentityProviderService', () => {
   describe('removeEmptyColums', () => {
     it('should remove falsy properties', () => {
       // Given
-      const data = ({
+      const data = {
         foo: 'foovalue',
         bar: 'barvalue',
         wizz: false,
         buzz: undefined,
-      } as unknown) as Identity;
+      };
       // When
       const result = service['removeEmptyColums'](data);
       // Then
@@ -236,11 +253,11 @@ describe('MockIdentityProviderService', () => {
 
     it('should remove empty string properties', () => {
       // Given
-      const data = ({
+      const data = {
         foo: 'foovalue',
         bar: '',
         wizz: '',
-      } as unknown) as Identity;
+      };
       // When
       const result = service['removeEmptyColums'](data);
       // Then
@@ -253,51 +270,244 @@ describe('MockIdentityProviderService', () => {
   describe('getIdentity', () => {
     it('should return the correct idp', () => {
       // Given
-      const entryA = { uid: 'entryAValue' };
-      const entryB = { uid: 'entryBValue' };
-      const entryC = { uid: 'entryCValue' };
+      const entryA = { login: 'entryAValue', param: '1' };
+      const entryB = { login: 'entryBValue', param: '1' };
+      const entryC = { login: 'entryCValue', param: '1' };
+      const expected = { sub: 'entryBValue', param: '1' };
 
-      service['database'] = [entryA, entryB, entryC] as Identity[];
-      const inputUid = entryB.uid;
+      service['database'] = [entryA, entryB, entryC];
+      const inputLogin = entryB.login;
       // When
-      const result = service.getIdentity(inputUid);
+      const result = service.getIdentity(inputLogin);
 
       // Then
-      expect(result).toBe(entryB);
+      expect(result).toStrictEqual(expected);
     });
 
     it('should return undefined if not present', () => {
       // Given
-      const entryA = { uid: 'entryAValue' };
-      const entryB = { uid: 'entryBValue' };
-      const entryC = { uid: 'entryCValue' };
+      const entryA = { login: 'entryAValue', param: '1' };
+      const entryB = { login: 'entryBValue', param: '1' };
+      const entryC = { login: 'entryCValue', param: '1' };
 
-      service['database'] = [entryA, entryB, entryC] as Identity[];
-      const inputUid = 'foo';
+      service['database'] = [entryA, entryB, entryC];
+      const inputLogin = 'foo';
       // When
-      const result = service.getIdentity(inputUid);
+      const result = service.getIdentity(inputLogin);
 
       // Then
-      expect(result).toBe(undefined);
+      expect(result).toStrictEqual(undefined);
     });
+  });
 
-    it('should return extra properties if user is E020025', () => {
-      // Given
-      const entryA = { uid: 'E020025' };
-      const resultMock = {
-        ...entryA,
-        // oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        unknown_prop_for_test: 'shouldNotBeThere',
+  describe('toOidcFormat', () => {
+    it('should replace the "login" property by "sub" and return the OidcClaims', () => {
+      // setup
+      const csvObject = {
+        login: '42',
+        key: 'value',
+      };
+      const expected = {
+        sub: '42',
+        key: 'value',
       };
 
-      service['database'] = [entryA] as Identity[];
-      const inputUid = entryA.uid;
-      // When
-      const result = service.getIdentity(inputUid);
+      // action
+      const result = service['toOidcFormat'](csvObject);
 
-      // Then
-      expect(result).toStrictEqual(resultMock);
+      //expect
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('should call oidcAddressFieldPresent with the current Csv', () => {
+      // setup
+      const csvObject = {
+        login: '42',
+        key: 'value',
+      };
+      const expected = {
+        sub: '42',
+        key: 'value',
+      };
+      service['oidcAddressFieldPresent'] = jest.fn();
+
+      // action
+      service['toOidcFormat'](csvObject);
+
+      //expect
+      expect(service['oidcAddressFieldPresent']).toHaveBeenCalledTimes(1);
+      expect(service['oidcAddressFieldPresent']).toHaveBeenCalledWith(expected);
+    });
+
+    it('should not call "formatOidcAddress" if there is no address', () => {
+      // setup
+      const csvObject = {
+        login: '42',
+        key: 'value',
+      };
+      service['formatOidcAddress'] = jest.fn();
+
+      // action
+      service['toOidcFormat'](csvObject);
+
+      //expect
+      expect(service['formatOidcAddress']).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call "formatOidcAddress" with the Csv containing the sub if there is an address', () => {
+      // setup
+      const csvObject = {
+        login: '42',
+        key: 'value',
+        country: 'North Korea',
+        // oidc claim
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        postal_code: '99999',
+        locality: 'Pyongyang',
+        // oidc claim
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        street_address: '1 st street',
+      };
+      const expected = {
+        sub: '42',
+        key: 'value',
+        country: 'North Korea',
+        // oidc claim
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        postal_code: '99999',
+        locality: 'Pyongyang',
+        // oidc claim
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        street_address: '1 st street',
+      };
+      service['formatOidcAddress'] = jest.fn();
+
+      // action
+      service['toOidcFormat'](csvObject);
+
+      //expect
+      expect(service['formatOidcAddress']).toHaveBeenCalledTimes(1);
+      expect(service['formatOidcAddress']).toHaveBeenCalledWith(expected);
+    });
+
+    it('should return the OidcClaims object with the formatted address', () => {
+      // setup
+      const csvObject = {
+        login: '42',
+        key: 'value',
+        country: 'North Korea',
+        // oidc claim
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        postal_code: '99999',
+        locality: 'Pyongyang',
+        // oidc claim
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        street_address: '1 st street',
+      };
+      const expected = {
+        sub: '42',
+        key: 'value',
+        address: {
+          country: 'North Korea',
+          // oidc claim
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          postal_code: '99999',
+          locality: 'Pyongyang',
+          // oidc claim
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          street_address: '1 st street',
+        },
+      };
+
+      // action
+      const result = service['toOidcFormat'](csvObject);
+
+      //expect
+      expect(result).toStrictEqual(expected);
+    });
+
+    it('should not alter the parameter', () => {
+      // setup
+      const csvObject = {
+        login: '42',
+        key: 'value',
+      };
+      const expected = {
+        login: '42',
+        key: 'value',
+      };
+
+      // action
+      service['toOidcFormat'](csvObject);
+
+      //expect
+      expect(csvObject).toStrictEqual(expected);
+    });
+  });
+
+  describe('oidcAddressFieldPresent', () => {
+    it('should return true if the "country" field is present', () => {
+      // setup
+      const csvObject = {
+        sub: '42',
+        key: 'value',
+        country: 'North Korea',
+      };
+
+      // action
+      const result = service['oidcAddressFieldPresent'](csvObject);
+
+      // expect
+      expect(result).toBe(true);
+    });
+
+    it('should return true if the "postal_code" field is present', () => {
+      // setup
+      const csvObject = {
+        sub: '42',
+        key: 'value',
+        // oidc claim
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        postal_code: '99999',
+      };
+
+      // action
+      const result = service['oidcAddressFieldPresent'](csvObject);
+
+      // expect
+      expect(result).toBe(true);
+    });
+
+    it('should return true if the "locality" field is present', () => {
+      // setup
+      const csvObject = {
+        sub: '42',
+        key: 'value',
+        locality: 'Pyongyang',
+      };
+
+      // action
+      const result = service['oidcAddressFieldPresent'](csvObject);
+
+      // expect
+      expect(result).toBe(true);
+    });
+
+    it('should return true if the "street_address" field is present', () => {
+      // setup
+      const csvObject = {
+        sub: '42',
+        key: 'value',
+        // oidc claim
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        street_address: '1 st street',
+      };
+
+      // action
+      const result = service['oidcAddressFieldPresent'](csvObject);
+
+      // expect
+      expect(result).toBe(true);
     });
   });
 });
