@@ -15,7 +15,7 @@ import { SessionService } from '@fc/session';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { IOidcIdentity } from '@fc/oidc';
 import { MockIdentityProviderRoutes } from '../enums';
-import { IdentityMock, MockIdentityProviderService } from '../services';
+import { MockIdentityProviderService } from '../services';
 import { SignInDTO } from '../dto';
 
 @Controller()
@@ -24,7 +24,7 @@ export class MockIdentityProviderController {
     private readonly logger: LoggerService,
     private readonly session: SessionService,
     private readonly oidcProvider: OidcProviderService,
-    private readonly mockIdentityProviderFcaService: MockIdentityProviderService,
+    private readonly mockIdentityProviderService: MockIdentityProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -53,14 +53,13 @@ export class MockIdentityProviderController {
   @Post(MockIdentityProviderRoutes.INTERACTION_LOGIN)
   async getLogin(@Next() next, @Body() body: SignInDTO): Promise<void> {
     const { login, interactionId } = body;
-    const identity: IdentityMock = await this.mockIdentityProviderFcaService.getIdentity(
+    const spIdentity = (await this.mockIdentityProviderService.getIdentity(
       login,
-    );
+    )) as IOidcIdentity;
 
-    const spIdentity: IOidcIdentity = {
-      ...identity,
-      sub: identity.uid,
-    };
+    if (!spIdentity) {
+      throw new Error('Identity not found in database');
+    }
 
     // Save in session
     this.session.patch(interactionId, {
