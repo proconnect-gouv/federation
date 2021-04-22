@@ -367,6 +367,7 @@ services:
     volumes:
       - "../volumes/src/fc/back:/var/www/app"
       - "../volumes/app:/opt/scripts"
+      - "../volumes/fca-low/mocks/idp/databases:/var/databases"
       - "../volumes/log/:/var/log/app"
       - "../volumes/.home:/home"
       - "../volumes/ssl:/etc/ssl/client_certs:ro"
@@ -412,6 +413,7 @@ services:
     volumes:
       - "../volumes/src/fc/back:/var/www/app"
       - "../volumes/app:/opt/scripts"
+      - "../volumes/fca-low/mocks/idp/databases:/var/databases"
       - "../volumes/log/:/var/log/app"
       - "../volumes/.home:/home"
       - "../volumes/ssl:/etc/ssl/client_certs:ro"
@@ -455,6 +457,7 @@ services:
     volumes:
       - "../volumes/src/fc/back:/var/www/app"
       - "../volumes/app:/opt/scripts"
+      - "../volumes/fca-low/mocks/idp/databases:/var/databases"
       - "../volumes/log/:/var/log/app"
       - "../volumes/.home:/home"
       - "../volumes/ssl:/etc/ssl/client_certs:ro"
@@ -492,6 +495,7 @@ services:
     volumes:
       - "../volumes/src/fc/back:/var/www/app"
       - "../volumes/app:/opt/scripts"
+      - "../volumes/fca-low/mocks/idp/databases:/var/databases"
       - "../volumes/log/:/var/log/app"
       - "../volumes/.home:/home"
       - "../volumes/ssl:/etc/ssl/client_certs:ro"

@@ -1,5 +1,5 @@
-import * as path from 'path';
 import csvdb from 'node-csv-query';
+import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import {
@@ -8,22 +8,25 @@ import {
   OidcProviderService,
 } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
+import { ConfigService } from '@fc/config';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
-import { Identity } from '../dto';
-
-export type IdentityMock = Identity & Record<string, any>;
-
+import { AppConfig } from '../dto';
+import { Csv } from '../interfaces';
+import { OidcClaims } from '../interfaces/oidc-claims.interface';
 @Injectable()
 export class MockIdentityProviderService {
   private csvdbProxy = csvdb;
 
-  private database: Identity[];
+  private database;
 
+  // Authorized in constructors
+  // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly serviceProvider: ServiceProviderAdapterEnvService,
     private readonly session: SessionService,
+    private readonly config: ConfigService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -69,19 +72,18 @@ export class MockIdentityProviderService {
      * @todo #307 Config this path
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/307
      */
-    const databasePath = './data/database-mock.csv';
-    const absolutePath = path.join(__dirname, databasePath);
+    const { citizenDatabasePath } = this.config.get<AppConfig>('App');
 
     try {
       this.logger.debug('Loading database...');
-      const data = await this.csvdbProxy(absolutePath, {
+      const data = await this.csvdbProxy(citizenDatabasePath, {
         rtrim: true,
       });
 
       this.database = data.rows.map(this.removeEmptyColums);
     } catch (error) {
       this.logger.fatal(
-        `Failed to load CSV database, path was: ${absolutePath}`,
+        `Failed to load CSV database, path was: ${citizenDatabasePath}`,
       );
       throw error;
     }
@@ -91,8 +93,8 @@ export class MockIdentityProviderService {
     );
   }
 
-  private removeEmptyColums(data: Identity): Identity {
-    const cleanedData = {} as Identity;
+  private removeEmptyColums(data) {
+    const cleanedData = {};
     Object.entries(data).forEach(([key, value]) => {
       if (value && value !== '') {
         cleanedData[key] = value;
@@ -102,18 +104,65 @@ export class MockIdentityProviderService {
     return cleanedData;
   }
 
-  getIdentity(inputUid: string): IdentityMock {
-    const identity: IdentityMock = this.database.find(
-      ({ uid }) => uid === inputUid,
+  getIdentity(inputLogin: string) {
+    const identity: Csv = this.database.find(
+      ({ login }) => login === inputLogin,
     );
 
-    /**
-     * Allow to add unexpected value when userInfos are required
-     */
-    if (inputUid === 'E020025') {
-      identity.unknown_prop_for_test = 'shouldNotBeThere';
+    if (!identity) {
+      return;
     }
 
-    return identity;
+    return this.toOidcFormat(identity);
+  }
+
+  private toOidcFormat(identity: Csv): OidcClaims {
+    // This copy works because "Csv" type only contains strings. Beware !
+    const identityCopy = {
+      ...identity,
+    };
+
+    identityCopy.sub = identity.login;
+    delete identityCopy.login;
+
+    if (this.oidcAddressFieldPresent(identityCopy)) {
+      return this.formatOidcAddress(identityCopy) as OidcClaims;
+    }
+
+    return identityCopy as OidcClaims;
+  }
+
+  private formatOidcAddress(identity: Csv): Partial<OidcClaims> {
+    const oidcIdentity: Partial<OidcClaims> = _.omit(identity, [
+      'country',
+      'postal_code',
+      'locality',
+      'street_address',
+    ]);
+
+    // oidc parameter
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { country, postal_code, locality, street_address } = identity;
+    oidcIdentity.address = {
+      country,
+      // oidc parameter
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      postal_code,
+      locality,
+      // oidc parameter
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      street_address,
+    };
+
+    return oidcIdentity;
+  }
+
+  private oidcAddressFieldPresent(identity: Csv) {
+    return Boolean(
+      identity.country ||
+        identity.postal_code ||
+        identity.locality ||
+        identity.street_address,
+    );
   }
 }
