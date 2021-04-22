@@ -1,0 +1,61 @@
+core-fcp-low:
+  stage: 'End to end'
+  image: ${E2E_DOCKER_IMAGE}
+  tags:
+    - docker
+  variables:
+    FC_ROOT: '$CI_BUILDS_DIR/france-connect'
+    TZ: 'Europe/Paris'
+  cache:
+    key: "${CI_PROJECT_ID}"
+    policy: pull
+    paths:
+      - back/node_modules/
+  before_script:
+    - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f && docker volume prune -f; fi
+    - shopt -s expand_aliases
+    - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
+    - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
+    - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
+  script:
+    - docker-stack up all-fcp-low
+    - docker-stack dep core-fcp-low
+    - docker-stack start csmr-hsm rnipp fsp1-low fip1-low core-fcp-low
+    # ## -- Build like for prod
+    #- docker-stack exec fsp-low yarn build mock-service-provider-low
+    #- docker-stack exec core-fcp-low yarn build core-fcp-low
+    #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
+    # ## -- Launch like prod
+    #- docker-stack exec fsp1-low yarn start:prod:mock-service-provider-low &
+    #- docker-stack exec fip1-low yarn start:prod:mock-service-provider-low &
+    #- docker-stack exec core-fcp-low yarn start:prod:core-fcp-low &
+    #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
+    # Starting Cypress
+    - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
+      do echo "Waiting for core-fcp-low..." && sleep 10; done' || (
+      (echo 'Cannot connect to core-fcp-low') &&
+      (docker exec fc_core-fcp-low_1 cat /tmp/.pm2/logs/core-fcp-low-error-0.log || true) &&
+      (docker exec fc_core-fcp-low_1 cat /tmp/.pm2/logs/core-fcp-low-out-0.log || true) &&
+      exit 1)
+    - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fcp-low || (
+      (docker cp fc_core-fcp-low_1:/tmp/.pm2/logs back/instances/core-fcp-low/cypress || true) &&
+      (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/core-fcp-low/cypress || true) &&
+      (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/core-fcp-low/cypress || true) &&
+      (docker cp fc_fip1-low_1:/tmp/.pm2/logs back/instances/core-fcp-low/cypress || true) &&
+      (docker cp fc_fsp1-low_1:/tmp/.pm2/logs back/instances/core-fcp-low/cypress || true) &&
+      (docker cp fc-rp-all:/var/log/nginx back/instances/core-fcp-low/cypress/logs || true) &&
+      exit 1)
+  interruptible: true
+  artifacts:
+    expire_in: 1 hrs
+    when: on_failure
+    paths:
+      - back/instances/core-fcp-low/cypress/screenshots
+      - back/instances/core-fcp-low/cypress/videos
+      - back/instances/core-fcp-low/cypress/logs
+  after_script:
+    - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
+    - docker container prune --force && docker volume prune -f
+
