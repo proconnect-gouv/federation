@@ -3,6 +3,8 @@ eidas-bridge:
   image: ${E2E_DOCKER_IMAGE}
   tags:
     - docker
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
   variables:
     FC_ROOT: '$CI_BUILDS_DIR/france-connect'
     TZ: 'Europe/Paris'
