@@ -3,6 +3,9 @@ review-core-fcp-low:
   image: ${DEPLOY_IMAGE}
   tags:
     - deploy
+  only:
+    - merge_requests
+    - staging
   variables:
     GIT_STRATEGY: none
   script:
@@ -35,4 +38,7 @@ stop-core-fcp-low:
   environment:
     name: recette
     action: stop
+  only:
+    - merge_requests
+    - staging
   when: manual
