@@ -284,8 +284,8 @@ export class CoreService {
     const requested = Acr[requestedAcr];
 
     /**
-     * @todo renvoyer des exceptions distinctes selon quel ACR est incorrect
-     * Vérifier que l'erreur au niveau FS est possible
+     * @todo #494
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/494
      */
     if (!received || !requested) {
       throw new CoreInvalidAcrException(
