@@ -228,7 +228,8 @@ describe('CoreFcpController', () => {
 
   describe('getInteraction', () => {
     /*
-     * @Todo rework test missing assertion or not complete ones
+     * @Todo #486 rework test missing assertion or not complete ones
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/486
      */
     it('should return uid', async () => {
       // Given

@@ -1,7 +1,8 @@
 /* istanbul ignore file */
 
 /**
- * @TODO unable to mock useState from react
+ * @TODO #492 unable to mock useState from react
+ * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/492
  */
 import React, { ReactElement, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
