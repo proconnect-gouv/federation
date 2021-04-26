@@ -9,11 +9,11 @@ services:
     image: mongo:4.2
     hostname: mongo-fcp-low
     volumes:
-      - "../volumes/mongo-fcp-low/scripts:/opt/scripts"
-      - "../volumes/mongo-fcp-low/initdb.d:/docker-entrypoint-initdb.d"
-      - "../volumes/ssl:/etc/ssl:ro"
+      - "${VOLUMES_DIR}/mongo-fcp-low/scripts:/opt/scripts"
+      - "${VOLUMES_DIR}/mongo-fcp-low/initdb.d:/docker-entrypoint-initdb.d"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl:ro"
     env_file:
-      - "./fcp-low/.env/mongo-fcp-low.env"
+      - "${COMPOSE_DIR}/fcp-low/.env/mongo-fcp-low.env"
     healthcheck:
       test: test $$(mongo --host mongo-fcp-low -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase admin $${MONGO_INITDB_DATABASE} --quiet --tls --tlsCAFile /etc/ssl/ca.crt --eval "rs.status().ok || rs.initiate().ok" | tail -n 1) -eq 1
       interval: 10s

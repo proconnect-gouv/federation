@@ -12,7 +12,9 @@ function join_by { local IFS="$1"; shift; echo "$*"; }
 #### Global Variables:
 DEFAULT_NODE_VERSION=v12.20.0
 DOCKER_REPOSITORY_PREFIX=gitlab.dev-franceconnect.fr:5005/france-connect/infra
-COMPOSE_FILES=$(find $FC_ROOT/fc/docker/compose -name "*.yml")
+COMPOSE_DIR="$FC_ROOT/fc/docker/compose"
+COMPOSE_FILES=$(find $COMPOSE_DIR -name "*.yml")
+VOLUMES_DIR="$FC_ROOT/fc/docker/volumes"
 WORKING_DIR="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
 
 # https://docs.docker.com/compose/reference/envvars/#compose_file
@@ -20,6 +22,8 @@ COMPOSE_PATH_SEPARATOR=":"
 COMPOSE_FILE=$(join_by $COMPOSE_PATH_SEPARATOR $COMPOSE_FILES)
 export COMPOSE_PATH_SEPARATOR
 export COMPOSE_FILE
+export COMPOSE_DIR
+export VOLUMES_DIR
 
 # Get current uid/gid to use it within docker-compose:
 # see https://medium.com/redbubble/running-a-docker-container-as-a-non-root-user-7d2e00f8ee15
