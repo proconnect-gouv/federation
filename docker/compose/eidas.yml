@@ -25,13 +25,13 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
+      - "${COMPOSE_DIR}/base-app.env"
     ports:
       - 9243:9243
     tty: true
@@ -155,10 +155,10 @@ services:
     ports:
       - "10900:10900"
     volumes:
-      - "../volumes/eidas/conf-eidas-fr:/data/conf-eidas:ro"
-      - "../volumes/eidas/keystore-fr:/data/keystore:ro"
-      - "../volumes/log/eidas/eidas-fr:/data/log/tomcat"
-      - "../volumes/log/eidas/eidas-fr:/data/log/eidas"
+      - "${VOLUMES_DIR}/eidas/conf-eidas-fr:/data/conf-eidas:ro"
+      - "${VOLUMES_DIR}/eidas/keystore-fr:/data/keystore:ro"
+      - "${VOLUMES_DIR}/log/eidas/eidas-fr:/data/log/tomcat"
+      - "${VOLUMES_DIR}/log/eidas/eidas-fr:/data/log/eidas"
     environment:
       - "VIRTUAL_HOST=eidas-fr.docker.dev-franceconnect.fr"
       - "VIRTUAL_PORT=8080"
@@ -178,10 +178,10 @@ services:
     container_name: eidas-be
     image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/eidas:2.4
     volumes:
-      - "../volumes/eidas/conf-eidas-be:/data/conf-eidas:ro"
-      - "../volumes/eidas/keystore-be:/data/keystore:ro"
-      - "../volumes/log/eidas/eidas-be:/data/log/tomcat"
-      - "../volumes/log/eidas/eidas-be:/data/log/eidas"
+      - "${VOLUMES_DIR}/eidas/conf-eidas-be:/data/conf-eidas:ro"
+      - "${VOLUMES_DIR}/eidas/keystore-be:/data/keystore:ro"
+      - "${VOLUMES_DIR}/log/eidas/eidas-be:/data/log/tomcat"
+      - "${VOLUMES_DIR}/log/eidas/eidas-be:/data/log/eidas"
     environment:
       - "VIRTUAL_HOST=eidas-be.docker.dev-franceconnect.fr"
       - "VIRTUAL_PORT=8080"
