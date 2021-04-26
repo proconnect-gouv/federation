@@ -36,14 +36,14 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "sp.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/sp.env"
     ports:
       - 9238:9238
     tty: true
@@ -80,14 +80,14 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "sp.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/sp.env"
     ports:
       - 9239:9239
     tty: true
@@ -123,14 +123,14 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "sp.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/sp.env"
     ports:
       - 9240:9240
     tty: true
@@ -166,14 +166,14 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "sp.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/sp.env"
     ports:
       - 9249:9249
     tty: true
@@ -209,14 +209,14 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "sp.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/sp.env"
     ports:
       - 9250:9250
     tty: true
@@ -258,13 +258,13 @@ services:
       - "squid"
       - "haproxy"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
+      - "${COMPOSE_DIR}/base-app.env"
     ports:
       - 9235:9235
     tty: true
@@ -346,9 +346,9 @@ services:
     image: mongo:4.2
     hostname: mongo4
     volumes:
-      - "../volumes/mongo4/scripts:/opt/scripts"
-      - "../volumes/mongo4/initdb.d:/docker-entrypoint-initdb.d"
-      - "../volumes/ssl:/etc/ssl:ro"
+      - "${VOLUMES_DIR}/mongo4/scripts:/opt/scripts"
+      - "${VOLUMES_DIR}/mongo4/initdb.d:/docker-entrypoint-initdb.d"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl:ro"
     environment:
       - "MONGO_INITDB_DATABASE=corev2"
       - "MONGO_INITDB_ROOT_USERNAME=rootAdmin"
@@ -372,14 +372,14 @@ services:
       - "squid"
       - "rnipp"
     volumes:
-      - "../volumes/src/fc-apps:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc-apps:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "postgres.env"
-      - "fc-mongo.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/postgres.env"
+      - "${COMPOSE_DIR}/fc-mongo.env"
     environment:
       - "PM2_CWD=/var/www/app/fc-exploitation"
       - "PM2_SCRIPT=yarn start"
@@ -432,12 +432,12 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - "../volumes/src/fi-mock:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/.home:/home"
+      - "${VOLUMES_DIR}/src/fi-mock:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
     env_file:
-      - "base-app.env"
-      - "idp-fcp.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/idp-fcp.env"
     ports:
       - 9236:9236
     tty: true
@@ -461,11 +461,11 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - "../volumes/src/fi-mock:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/.home:/home"
+      - "${VOLUMES_DIR}/src/fi-mock:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
     env_file:
-      - "base-app.env"
+      - "${COMPOSE_DIR}/base-app.env"
     ports:
       - 9237:9237
     tty: true
@@ -494,12 +494,12 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - "../volumes/src/fi-mock:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/.home:/home"
+      - "${VOLUMES_DIR}/src/fi-mock:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
     env_file:
-      - "base-app.env"
-      - "idp-fcp.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/idp-fcp.env"
     ports:
       - 9241:9241
     tty: true
@@ -522,11 +522,11 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - "../volumes/src/fi-mock:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/.home:/home"
+      - "${VOLUMES_DIR}/src/fi-mock:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
     env_file:
-      - "base-app.env"
+      - "${COMPOSE_DIR}/base-app.env"
     ports:
       - 9242:9242
     tty: true
@@ -560,15 +560,15 @@ services:
       - "squid"
       - "rnipp"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/.home:/home"
-      - "../volumes/log:/var/log/app"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/log:/var/log/app"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "postgres.env"
-      - "fc-mongo.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/postgres.env"
+      - "${COMPOSE_DIR}/fc-mongo.env"
     environment:
       - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9243 exploit-fcp-instance"
       - "VIRTUAL_HOST=exploit-fcp.docker.dev-franceconnect.fr"

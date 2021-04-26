@@ -26,11 +26,11 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ../volumes/nginx-proxy/etc:/etc/nginx/conf.d:ro
-      - ../volumes/nginx-proxy/includes:/etc/nginx/includes:ro
-      - ../volumes/nginx-proxy/public:/var/www:ro
-      - ../volumes/nginx-proxy/certs:/etc/nginx/certs:ro
-      - ../volumes/ssl:/etc/nginx/client_certs:ro
+      - ${VOLUMES_DIR}/nginx-proxy/etc:/etc/nginx/conf.d:ro
+      - ${VOLUMES_DIR}/nginx-proxy/includes:/etc/nginx/includes:ro
+      - ${VOLUMES_DIR}/nginx-proxy/public:/var/www:ro
+      - ${VOLUMES_DIR}/nginx-proxy/certs:/etc/nginx/certs:ro
+      - ${VOLUMES_DIR}/ssl:/etc/nginx/client_certs:ro
     networks:
       public:
         aliases:
@@ -77,8 +77,8 @@ services:
     image: jwilder/docker-gen
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
-      - ../volumes/nginx-proxy/etc:/etc/nginx/conf.d
-      - ../volumes/nginx-proxy/templates:/etc/docker-gen/templates:ro
+      - ${VOLUMES_DIR}/nginx-proxy/etc:/etc/nginx/conf.d
+      - ${VOLUMES_DIR}/nginx-proxy/templates:/etc/docker-gen/templates:ro
     networks:
       - public
       - fc
@@ -88,7 +88,7 @@ services:
   squid:
     image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/squid:stable
     volumes:
-      - "../volumes/squid:/etc/squid"
+      - "${VOLUMES_DIR}/squid:/etc/squid"
     networks:
       - public
       - fc
@@ -99,7 +99,7 @@ services:
     ports:
       - 8404:8404
     volumes:
-      - "../volumes/haproxy:/usr/local/etc/haproxy:ro"
+      - "${VOLUMES_DIR}/haproxy:/usr/local/etc/haproxy:ro"
     networks:
       - public
       - fc
@@ -109,8 +109,8 @@ services:
   elasticsearch:
     image: elasticsearch:7.5.1
     volumes:
-      - "../volumes/elasticsearch/data:/usr/share/elasticsearch/data"
-      - "../volumes/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
+      - "${VOLUMES_DIR}/elasticsearch/data:/usr/share/elasticsearch/data"
+      - "${VOLUMES_DIR}/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
       - "$FC_ROOT/elasticsearch/elasticsearch-snapshots:/data/elasticsearch-snapshots"
     networks:
       - data
@@ -133,9 +133,9 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - "../volumes/src/rnipp-mock:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/.home:/home"
+      - "${VOLUMES_DIR}/src/rnipp-mock:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
     environment:
       - "VIRTUAL_HOST=rnipp.docker.dev-franceconnect.fr"
       - "VIRTUAL_PORT=3000"
@@ -160,13 +160,13 @@ services:
       - "broker"
       - "hsm"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/csmr-hsm:/etc/hsm"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/csmr-hsm:/etc/hsm"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
     env_file:
-      - "base-app.env"
+      - "${COMPOSE_DIR}/base-app.env"
     environment:
       - "PM2_SCRIPT=yarn start csmr-hsm-high"
       - "REQUEST_TIMEOUT=6000"
@@ -195,8 +195,8 @@ services:
     hostname: csmr-hsm
     image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/csmr-hsm-high:latest
     volumes:
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/log/:/var/log/fc-evt"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/log/:/var/log/fc-evt"
     depends_on:
       - "broker"
       - "hsm"
