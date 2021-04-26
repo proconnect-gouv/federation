@@ -10,7 +10,7 @@ fi
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
 #### Global Variables:
-DEFAULT_NODE_VERSION=v12.21.0
+DEFAULT_NODE_VERSION=v12.22.1
 DOCKER_REPOSITORY_PREFIX=gitlab.dev-franceconnect.fr:5005/france-connect/infra
 COMPOSE_DIR="$FC_ROOT/fc/docker/compose"
 COMPOSE_FILES=$(find $COMPOSE_DIR -name "*.yml")
