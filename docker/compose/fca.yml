@@ -34,14 +34,14 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "sp-fca.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/sp-fca.env"
     ports:
       - 9231:9231
     tty: true
@@ -80,14 +80,14 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "sp-fca.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/sp-fca.env"
     ports:
       - 9232:9232
     tty: true
@@ -121,14 +121,14 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "sp-fca.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/sp-fca.env"
     ports:
       - 9233:9233
     tty: true
@@ -162,14 +162,14 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "sp-fca.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/sp-fca.env"
     ports:
       - 9237:9237
     tty: true
@@ -212,13 +212,13 @@ services:
       - "squid"
       - "fca"
     volumes:
-      - "../volumes/src/fc/front/agent-connect:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/front/agent-connect:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
+      - "${COMPOSE_DIR}/base-app.env"
     environment:
       - "API_PROXY_HOST=http://fca:3000"
       - "API_PROXY_FOR_PATH=/api/v2"
@@ -239,13 +239,13 @@ services:
       - "broker"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/log:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
+      - "${COMPOSE_DIR}/base-app.env"
     ports:
       - 9229:9229
     tty: true
@@ -338,9 +338,9 @@ services:
     image: mongo:4.2
     hostname: mongo-fca
     volumes:
-      - "../volumes/mongo-fca/scripts:/opt/scripts"
-      - "../volumes/mongo-fca/initdb.d:/docker-entrypoint-initdb.d"
-      - "../volumes/ssl:/etc/ssl:ro"
+      - "${VOLUMES_DIR}/mongo-fca/scripts:/opt/scripts"
+      - "${VOLUMES_DIR}/mongo-fca/initdb.d:/docker-entrypoint-initdb.d"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl:ro"
     environment:
       - "MONGO_INITDB_DATABASE=corev2"
       - "MONGO_INITDB_ROOT_USERNAME=rootAdmin"
@@ -365,15 +365,15 @@ services:
     depends_on:
       - "redis-pwd"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/fca-low/mocks/idp/databases:/var/databases"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "idp-fca.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/idp-fca.env"
     ports:
       - 9230:9230
     tty: true
@@ -411,15 +411,15 @@ services:
     depends_on:
       - "redis-pwd"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/fca-low/mocks/idp/databases:/var/databases"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "idp-fca.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/idp-fca.env"
     ports:
       - 9234:9234
     tty: true
@@ -455,15 +455,15 @@ services:
     depends_on:
       - "redis-pwd"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/fca-low/mocks/idp/databases:/var/databases"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "idp-fca.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/idp-fca.env"
     ports:
       - 9235:9235
     tty: true
@@ -493,15 +493,15 @@ services:
     depends_on:
       - "redis-pwd"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/fca-low/mocks/idp/databases:/var/databases"
-      - "../volumes/log/:/var/log/app"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/fca-low/mocks/idp/databases:/var/databases"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "idp-fca.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/idp-fca.env"
     ports:
       - 9236:9236
     tty: true
@@ -539,14 +539,14 @@ services:
       - "squid"
       #- "rnipp"
     volumes:
-      - "../volumes/src/fc-apps:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/.home:/home"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc-apps:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "postgres.env"
-      - "fc-mongo.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/postgres.env"
+      - "${COMPOSE_DIR}/fc-mongo.env"
     environment:
       - "PM2_CWD=/var/www/app/fc-exploitation"
       - "PM2_SCRIPT=yarn start"
@@ -597,19 +597,19 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
-      - "pg-exploitation-high"
-      - "mongo4"
+      - "pg-exploitation-fca"
+      - "mongo-fca"
       - "squid"
     volumes:
-      - "../volumes/src/fc/back:/var/www/app"
-      - "../volumes/app:/opt/scripts"
-      - "../volumes/.home:/home"
-      - "../volumes/log:/var/log/app"
-      - "../volumes/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/log:/var/log/app"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
     env_file:
-      - "base-app.env"
-      - "postgres.env"
-      - "fc-mongo.env"
+      - "${COMPOSE_DIR}/base-app.env"
+      - "${COMPOSE_DIR}/postgres.env"
+      - "${COMPOSE_DIR}/fc-mongo.env"
     environment:
       - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9243 exploit-fca-instance"
       - "VIRTUAL_HOST=exploit-fca.docker.dev-franceconnect.fr"
@@ -620,7 +620,7 @@ services:
       - "HTTPS_PROXY=http://squid:3128"
       - "DB_HOST=pg-exploitation-fca"
       - "FC_DB_TYPE=mongodb"
-      - "FC_DB_HOSTS=mongo4:27017"
+      - "FC_DB_HOSTS=mongo-fca:27017"
       - "FC_DB_DATABASE=corev2"
       - "FC_DB_TLS=true"
       - "FC_DB_TLS_INSECURE=false"
