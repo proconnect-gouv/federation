@@ -1,6 +1,10 @@
 import { basicErrorScenario, basicScenario } from './mire.utils';
 
 describe('RNIPP', () => {
+  beforeEach(() => {
+    cy.clearBusinessLog();
+  });
+
   it('should trigger error Y010004', () => {
     basicErrorScenario({
       errorCode: 'E010004',

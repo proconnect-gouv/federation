@@ -9,8 +9,8 @@ import { SessionGenericBaseException } from './session-generic-base.exception';
 export class SessionBadFormatException extends SessionGenericBaseException {
   public readonly code = ErrorCode.BAD_SESSION_FORMAT;
 
-  constructor(error) {
+  constructor(error: Error) {
     super(error);
-    this.message = error;
+    this.message = 'Erreur technique';
   }
 }

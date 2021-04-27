@@ -11,7 +11,8 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { ISessionGenericService, Session } from '@fc/session-generic';
+import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { IOidcIdentity } from '@fc/oidc';
 import { MockIdentityProviderRoutes } from '../enums';
@@ -22,7 +23,6 @@ import { SignInDTO } from '../dto';
 export class MockIdentityProviderController {
   constructor(
     private readonly logger: LoggerService,
-    private readonly session: SessionService,
     private readonly oidcProvider: OidcProviderService,
     private readonly mockIdentityProviderService: MockIdentityProviderService,
   ) {
@@ -37,11 +37,25 @@ export class MockIdentityProviderController {
   @Get(MockIdentityProviderRoutes.INTERACTION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('interaction')
-  async getInteraction(@Req() req, @Res() res) {
+  async getInteraction(
+    @Req()
+    req,
+    @Res()
+    res,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
 
-    const { interactionId } = req.fc;
-    const { spName } = await this.session.get(interactionId);
+    const { spName } = await sessionOidc.get();
 
     return {
       uid,
@@ -51,8 +65,21 @@ export class MockIdentityProviderController {
   }
 
   @Post(MockIdentityProviderRoutes.INTERACTION_LOGIN)
-  async getLogin(@Next() next, @Body() body: SignInDTO): Promise<void> {
-    const { login, interactionId } = body;
+  async getLogin(
+    @Next() next,
+    @Body() body: SignInDTO,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ): Promise<void> {
+    const { login } = body;
     const spIdentity = (await this.mockIdentityProviderService.getIdentity(
       login,
     )) as IOidcIdentity;
@@ -61,8 +88,7 @@ export class MockIdentityProviderController {
       throw new Error('Identity not found in database');
     }
 
-    // Save in session
-    this.session.patch(interactionId, {
+    sessionOidc.set({
       spIdentity,
     });
 

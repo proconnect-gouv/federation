@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { AuthorizeParamsDto } from '../dto';
 import { OidcProviderController } from './oidc-provider.controller';
-import { AuthorizeParamsDTO } from '../dto';
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
@@ -21,7 +21,7 @@ describe('OidcProviderController', () => {
     it('should call next', () => {
       // Given
       const nextMock = jest.fn();
-      const queryMock = {} as AuthorizeParamsDTO;
+      const queryMock = {} as AuthorizeParamsDto;
       // When
       oidcProviderController.getAuthorize(nextMock, queryMock);
       // Then
@@ -33,7 +33,7 @@ describe('OidcProviderController', () => {
     it('should call next', () => {
       // Given
       const nextMock = jest.fn();
-      const bodyMock = {} as AuthorizeParamsDTO;
+      const bodyMock = {} as AuthorizeParamsDto;
       // When
       oidcProviderController.postAuthorize(nextMock, bodyMock);
       // Then

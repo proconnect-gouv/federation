@@ -6,7 +6,7 @@ import { Type } from 'class-transformer';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { RedisConfig } from '@fc/redis';
 import { LoggerConfig } from '@fc/logger';
-import { SessionConfig } from '@fc/session';
+import { SessionGenericConfig } from '@fc/session-generic';
 import { AppConfig } from '@fc/app';
 import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
 
@@ -28,8 +28,8 @@ export class MockServiceProviderConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => SessionConfig)
-  readonly Session: SessionConfig;
+  @Type(() => SessionGenericConfig)
+  readonly SessionGeneric: SessionGenericConfig;
 
   @IsObject()
   @ValidateNested()

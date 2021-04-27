@@ -17,7 +17,7 @@ import {
   EidasClientSession,
   ValidateEuropeanIdentity,
 } from './dto';
-import { IExposedSessionServiceGeneric, Session } from '@fc/session-generic';
+import { ISessionGenericService, Session } from '@fc/session-generic';
 
 @Controller('eidas-client')
 export class EidasClientController {
@@ -36,18 +36,19 @@ export class EidasClientController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('redirect-to-fr-node-connector')
   async redirectToFrNode(
-    @Query() query: ValidateEuropeanIdentity,
+    @Query()
+    query: ValidateEuropeanIdentity,
     @Session('EidasClient')
-    session: IExposedSessionServiceGeneric<EidasClientSession>,
+    sessionEidas: ISessionGenericService<EidasClientSession>,
   ) {
-    const eidasPartialRequest = await session.get('eidasPartialRequest');
+    const { eidasPartialRequest } = await sessionEidas.get();
 
     const eidasRequest = this.eidasClient.completeEidasRequest(
       eidasPartialRequest,
       query.country,
     );
 
-    await session.set('eidasRequest', eidasRequest);
+    await sessionEidas.set('eidasRequest', eidasRequest);
 
     const { token, lightRequest } = this.eidasClient.prepareLightRequest(
       eidasRequest,
@@ -78,7 +79,7 @@ export class EidasClientController {
   async responseHandler(
     @Body() body: ReponseHandlerDTO,
     @Session('EidasClient')
-    session: IExposedSessionServiceGeneric<EidasClientSession>,
+    sessionEidas: ISessionGenericService<EidasClientSession>,
   ) {
     const { token } = body;
 
@@ -88,7 +89,7 @@ export class EidasClientController {
 
     const eidasResponse = this.eidasClient.parseLightResponse(lightResponse);
 
-    await session.set('eidasResponse', eidasResponse);
+    await sessionEidas.set('eidasResponse', eidasResponse);
 
     const {
       redirectAfterResponseHandlingUrl,

@@ -2,22 +2,23 @@ import {
   Controller,
   Get,
   Res,
+  Req,
   Render,
   Query,
   Body,
   Post,
   ValidationPipe,
   UsePipes,
-  Req,
   Param,
 } from '@nestjs/common';
 import {
   GetOidcCallback,
   OidcClientRoutes,
   OidcClientService,
+  OidcClientSession,
 } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { ISessionGenericService, Session } from '@fc/session-generic';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
@@ -27,6 +28,7 @@ import {
   UserDashboardUserinfoException,
 } from './exceptions';
 import { AccessTokenParamsDTO } from './dto';
+import { OidcSession } from '@fc/oidc';
 
 @Controller()
 export class UserDashboardController {
@@ -36,7 +38,6 @@ export class UserDashboardController {
     private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
     private readonly logger: LoggerService,
-    private readonly session: SessionService,
     private readonly crypto: CryptographyService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -44,7 +45,18 @@ export class UserDashboardController {
 
   @Get()
   @Render('index')
-  async index(@Res() res) {
+  async index(
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ) {
     /**
      * @TODO #179
      * This is just a mock, so we don't bother making this configurable...
@@ -52,10 +64,13 @@ export class UserDashboardController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/179
      */
     const sessionIdLength = 32;
-    const sessionId = encodeURIComponent(
+    const sessionId: string = encodeURIComponent(
       this.crypto.genRandomString(sessionIdLength),
     );
-    await this.session.init(res, sessionId, { idpState: sessionId });
+    await sessionOidc.set({
+      sessionId,
+      idpState: sessionId,
+    });
 
     return {
       titleFront: 'Mock Service Provider',
@@ -121,10 +136,19 @@ export class UserDashboardController {
     @Req() req,
     @Res() res,
     @Param() params: GetOidcCallback,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
   ) {
     const { providerUid } = params;
-    const uid = req.fc.interactionId;
-    const { idpState, idpNonce } = await this.session.get(uid);
+    const { idpState, idpNonce, interactionId } = await sessionOidc.get();
 
     const tokenParams = {
       providerUid,
@@ -155,17 +179,17 @@ export class UserDashboardController {
      *    action: Check the data returns from FC
      */
 
-    const identityExchange = {
+    const identityExchange: OidcSession = {
       idpIdentity: identity,
       idpAcr: acr,
       idpAccessToken: accessToken,
     };
 
-    this.session.patch(uid, identityExchange);
+    await sessionOidc.set({ ...identityExchange });
 
     // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');
-    res.redirect(`${urlPrefix}/interaction/${uid}/verify`);
+    res.redirect(`${urlPrefix}/interaction/${interactionId}/verify`);
   }
 
   @Post(UserDashboardRoutes.USERINFO)
@@ -209,9 +233,19 @@ export class UserDashboardController {
 
   @Get(UserDashboardRoutes.VERIFY)
   @Render('login-callback')
-  async getVerify(@Req() req) {
-    const uid = req.fc.interactionId;
-    const { idpIdentity } = await this.session.get(uid);
+  async getVerify(
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ) {
+    const { idpIdentity } = await sessionOidc.get();
 
     return { idpIdentity };
   }

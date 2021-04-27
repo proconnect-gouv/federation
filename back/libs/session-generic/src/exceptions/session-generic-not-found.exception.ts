@@ -9,8 +9,8 @@ import { SessionGenericBaseException } from './session-generic-base.exception';
 export class SessionGenericNotFoundException extends SessionGenericBaseException {
   public readonly code = ErrorCode.NOT_FOUND;
 
-  constructor() {
-    super();
+  constructor(moduleName: string) {
+    super(moduleName);
     this.message = 'Session not found';
   }
 }

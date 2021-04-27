@@ -8,6 +8,7 @@ import {
   hasError,
   registerProxyURL,
   proxyURLWasActivated,
+  clearBusinessLog,
 } from './commands';
 
 /**
@@ -22,6 +23,7 @@ Cypress.on('uncaught:exception', (err) => {
 });
 
 Cypress.Commands.add('hasError', hasError);
+Cypress.Commands.add('clearBusinessLog', clearBusinessLog);
 Cypress.Commands.add('hasBusinessLog', hasBusinessLog);
 Cypress.Commands.add('registerProxyURL', registerProxyURL);
 Cypress.Commands.add('proxyURLWasActivated', proxyURLWasActivated);

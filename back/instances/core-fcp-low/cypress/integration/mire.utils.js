@@ -19,8 +19,12 @@ export function basicSuccessScenario(params) {
     id: Cypress.env(`${sp}_CLIENT_ID`),
   };
 
-  // FS: Click on FC button
-  cy.visit(serviceProvider.url);
+  // FS choice
+  cy.visit(`${Cypress.env('ALL_APPS_LISTED')}`);
+  cy.url().should('include', `${Cypress.env('ALL_APPS_LISTED')}`);
+  cy.get(Cypress.env(`${sp}_ID`)).click();
+
+  cy.clearBusinessLog();
 
   if (method === 'POST') {
     cy.get('#post-authorize').click();

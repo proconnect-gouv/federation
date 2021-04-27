@@ -6,33 +6,26 @@ import {
   CallHandler,
 } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
 import { SessionGenericConfig } from '../dto';
 import { ExcludedRoutes } from '../types';
 import { SessionGenericService } from '../session-generic.service';
+import { ISessionGenericRequest } from '../interfaces';
 
 @Injectable()
 export class SessionInterceptor implements NestInterceptor {
   private excludedRoutes: ExcludedRoutes;
-  private sessionCookieName: string;
-  private sessionIdLength: number;
 
   constructor(
     private readonly config: ConfigService,
-    private readonly cryptography: CryptographyService,
     private readonly sessionGenericService: SessionGenericService,
   ) {}
 
   onModuleInit() {
-    const {
-      sessionCookieName,
-      sessionIdLength,
-      excludedRoutes,
-    } = this.config.get<SessionGenericConfig>('SessionGeneric');
+    const { excludedRoutes } = this.config.get<SessionGenericConfig>(
+      'SessionGeneric',
+    );
 
     this.excludedRoutes = excludedRoutes;
-    this.sessionCookieName = sessionCookieName;
-    this.sessionIdLength = sessionIdLength;
   }
 
   async intercept(
@@ -49,16 +42,16 @@ export class SessionInterceptor implements NestInterceptor {
     return next.handle();
   }
 
-  private async handleSession(req, res) {
-    if (!(this.sessionCookieName in req.signedCookies)) {
-      req.sessionId = this.cryptography.genRandomString(this.sessionIdLength);
+  private async handleSession(req: ISessionGenericRequest, res) {
+    const cookieSessionId = this.sessionGenericService.getSessionIdFromCookie(
+      req,
+    );
 
-      this.setCookie(res, this.sessionCookieName, req.sessionId);
+    if (!cookieSessionId) {
+      this.sessionGenericService.init(req, res);
     } else {
-      req.sessionId = req.signedCookies[this.sessionCookieName];
+      await this.sessionGenericService.refresh(req, res);
     }
-
-    req.sessionService = this.sessionGenericService;
   }
 
   private shouldHandleSession(route: string): boolean {
@@ -71,12 +64,5 @@ export class SessionInterceptor implements NestInterceptor {
     });
 
     return !shouldExclude;
-  }
-
-  setCookie(res, name, value) {
-    const { cookieOptions } = this.config.get<SessionGenericConfig>(
-      'SessionGeneric',
-    );
-    res.cookie(name, value, cookieOptions);
   }
 }

@@ -95,6 +95,8 @@ _up() {
         echo "* up => Select the apps you want to up as well as their dependencies (multiple arguments allowed) :"
         echo "  - eidas"
         echo "  - core-v2 => all needed services to run core-v2 stack (corev2, fsp1v2, fsp2v2, fsp3v2, fsp5v2, fsp6v2, fip1v2, fip2v2, rnipp, haproxy, hsm, etc.)"
+        echo "  - min-fcp-low => up minimal needed services to run core-fcp-low fsp1-low fip1-low"
+        echo "  - all-fcp-low => up all needed services to run core-fcp-low and all other future services"
         echo "  - fca => all needed services to run fca stack (corev2, fsa1v2, fsa2v2, fsa3v2, fsa4v2, fia1v2, fia2v2, fia4v2, fia5v2, hsm, etc.)"
         echo "  - all => run all services"
         echo "----"

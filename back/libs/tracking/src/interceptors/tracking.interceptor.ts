@@ -6,9 +6,9 @@ import {
   ExecutionContext,
   CallHandler,
 } from '@nestjs/common';
-import { TrackingService } from '../tracking.service';
-import { IEventMap } from '../interfaces';
 import { LoggerService } from '@fc/logger';
+import { TrackingService } from '../tracking.service';
+import { IEventContext, IEventMap } from '../interfaces';
 
 @Injectable()
 export class TrackingInterceptor implements NestInterceptor {
@@ -30,7 +30,7 @@ export class TrackingInterceptor implements NestInterceptor {
     return next.handle().pipe(tap(this.log.bind(this, req)));
   }
 
-  private log(req) {
+  private log(req: IEventContext): void {
     const event = this.getEvent(req, this.tracking.EventsMap);
 
     if (event) {

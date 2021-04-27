@@ -8,11 +8,15 @@ import Provider, { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { RedisAdapter } from '../adapters';
-import { OidcProviderConfig } from '../dto';
+import {
+  SessionGenericService,
+  ISessionGenericBoundContext,
+} from '@fc/session-generic';
+import { OidcSession } from '@fc/oidc';
+import { OidcProviderConfig } from '@fc/oidc-provider';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
+import { RedisAdapter } from '../adapters';
 import { OidcProviderService } from '../oidc-provider.service';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
 
@@ -23,7 +27,7 @@ export class OidcProviderConfigService {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
-    private readonly session: SessionService,
+    private readonly sessionService: SessionGenericService,
     private readonly errorService: OidcProviderErrorService,
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
@@ -114,11 +118,20 @@ export class OidcProviderConfigService {
    * More documentation can be found in oidc-provider repo.
    * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#accounts
    */
-  private async findAccount(ctx, interactionId: string) {
-    this.logger.debug('OidcProviderService.findAccount()');
+  private async findAccount(ctx: any, interactionId: string) {
+    this.logger.debug('OidcProviderConfigService.findAccount()');
 
     try {
-      const { spIdentity } = await this.session.get(interactionId);
+      const sessionId: string = await this.sessionService.getAlias(
+        interactionId,
+      );
+      const boundSessionContext: ISessionGenericBoundContext = {
+        sessionId,
+        moduleName: 'OidcClient',
+      };
+      const { spIdentity }: OidcSession = await this.sessionService.get(
+        boundSessionContext,
+      );
 
       return {
         accountId: interactionId,

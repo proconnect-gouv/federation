@@ -5,6 +5,7 @@
  */
 import {
   hasBusinessLog,
+  clearBusinessLog,
   hasError,
   inConsole,
   deleteCookie,
@@ -15,6 +16,7 @@ import {
 } from './commands';
 
 Cypress.Commands.add('hasError', hasError);
+Cypress.Commands.add('clearBusinessLog', clearBusinessLog);
 Cypress.Commands.add('hasBusinessLog', hasBusinessLog);
 Cypress.Commands.add('inConsole', inConsole);
 Cypress.Commands.add('e2e', e2e);

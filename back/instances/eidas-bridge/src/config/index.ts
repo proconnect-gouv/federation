@@ -11,7 +11,6 @@ import OidcClient from './oidc-client';
 import OidcProvider from './oidc-provider';
 import OverrideOidcProvider from './override-oidc-provider';
 import Redis from './redis';
-import Session from './session';
 import SessionGeneric from './session-generic';
 import EidasClient from './eidas-client';
 import EidasProvider from './eidas-provider';
@@ -37,7 +36,6 @@ export default {
   OidcProvider,
   OverrideOidcProvider,
   Redis,
-  Session,
   SessionGeneric,
   EidasClient,
   EidasProvider,

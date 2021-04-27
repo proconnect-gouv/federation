@@ -30,7 +30,6 @@ export class OidcProviderErrorService {
   constructor(private readonly exceptionFilter: FcExceptionFilter) {}
 
   /**
-   *
    * @param {Provider} provider PANVA provider object
    *
    */
@@ -57,6 +56,7 @@ export class OidcProviderErrorService {
 
   triggerError(eventName: OidcProviderEvents, ctx: OidcCtx, error: Error) {
     let wrappedError: FcException;
+
     if (error instanceof FcException) {
       wrappedError = error;
     } else {

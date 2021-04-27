@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { SessionGenericService } from '@fc/session-generic';
 import {
   RnippService,
   RnippRequestedEvent,
@@ -10,9 +10,9 @@ import { AccountBlockedException } from '@fc/account';
 import { TrackingService } from '@fc/tracking';
 import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { CoreFcpDefaultVerifyHandler } from './core-fcp-default-verify.handler';
-import { CryptographyFcpService } from '@fc/cryptography-fcp';
 
 describe('CoreFcpDefaultVerifyHandler', () => {
   let service: CoreFcpDefaultVerifyHandler;
@@ -41,8 +41,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
   const sessionServiceMock = {
     get: jest.fn(),
-    patch: jest.fn(),
-    delete: jest.fn(),
+    set: jest.fn(),
   };
 
   const rnippServiceMock = {
@@ -107,7 +106,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
         CoreService,
         CoreFcpDefaultVerifyHandler,
         LoggerService,
-        SessionService,
+        SessionGenericService,
         RnippService,
         TrackingService,
         ServiceProviderAdapterMongoService,
@@ -120,7 +119,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       .useValue(coreServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
+      .overrideProvider(SessionGenericService)
       .useValue(sessionServiceMock)
       .overrideProvider(RnippService)
       .useValue(rnippServiceMock)
@@ -158,13 +157,20 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       key: '123456',
       entityId: 'AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH',
     };
+
+    const trackingContext = {};
+
+    const handleArgument = {
+      sessionOidc: sessionServiceMock,
+      trackingContext,
+    };
     beforeEach(() => {
       serviceProviderMock.getById.mockResolvedValue(spMock);
     });
 
     it('Should not throw if verified', async () => {
       // Then
-      await expect(service.handle(reqMock)).resolves.not.toThrow();
+      await expect(service.handle(handleArgument)).resolves.not.toThrow();
     });
 
     it('Should throw if account is blocked', async () => {
@@ -173,7 +179,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       coreServiceMock.checkIfAccountIsBlocked.mockRejectedValueOnce(errorMock);
 
       // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
     // Dependencies sevices errors
@@ -184,7 +190,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
         throw errorMock;
       });
       // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if identity provider is not usable', async () => {
@@ -192,7 +198,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       const errorMock = new Error('my error');
       sessionServiceMock.get.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if service Provider service fails', async () => {
@@ -201,7 +207,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       serviceProviderMock.getById.mockReset().mockRejectedValueOnce(errorMock);
 
       // When
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if rnipp check refuses identity', async () => {
@@ -209,23 +215,23 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       const errorMock = new Error('my error');
       rnippServiceMock.check.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if identity storage for service provider fails', async () => {
       // Given
       const errorMock = new Error('my error');
-      sessionServiceMock.patch.mockRejectedValueOnce(errorMock);
+      sessionServiceMock.set.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
-    it('Should call session patch with amr parameter', async () => {
+    it('Should call session set with amr parameter', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
       // Then
-      expect(sessionServiceMock.patch).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.patch).toHaveBeenCalledWith(uidMock, {
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith({
         amr: ['fc'],
         idpIdentity: { sub: 'computedSubIdp' },
         spIdentity: { ...idpIdentityMock, sub: 'computedSubSp' },
@@ -234,7 +240,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
     it('Should call computeInteraction()', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
       // Then
       expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
       expect(coreServiceMock.computeInteraction).toBeCalledWith(
@@ -253,7 +259,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
     it('should call computeIdentityHash with rnipp identity on first call', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
 
       // Then
       expect(
@@ -266,7 +272,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
     it('should call computeIdentityHash with identity given by the identity provider on the second call', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
 
       // Then
       expect(
@@ -279,7 +285,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
     it('should call computeSubV1 with entityId and rnippIdentityHash on first call', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
 
       // Then
       expect(cryptographyFcpServiceMock.computeSubV1).toHaveBeenCalledTimes(2);
@@ -292,7 +298,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
     it('should call computeSubV1 with spId and idpIdentityHash on the second call', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
 
       // Then
       expect(cryptographyFcpServiceMock.computeSubV1).toHaveBeenCalledTimes(2);

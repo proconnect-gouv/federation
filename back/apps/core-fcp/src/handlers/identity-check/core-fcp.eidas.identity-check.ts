@@ -14,6 +14,14 @@ export class CoreFcpEidasIdentityCheckHandler
     this.logger.setContext(this.constructor.name);
   }
 
+  /**
+   * The arguments sent to all FeatureHandler's handle() methods must be
+   * typed by a interface exteded from `IFeatureHandler`
+   * @see IVerifyFeatureHandlerHandleArgument as an exemple.
+   * @todo #FC-487
+   * @author Hugues
+   * @date 2021-16-04
+   */
   async handle(
     identity: Partial<EidasIdentityDto>,
   ): Promise<ValidationError[]> {

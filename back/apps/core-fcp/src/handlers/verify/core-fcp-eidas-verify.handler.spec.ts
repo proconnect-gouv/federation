@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { SessionGenericService } from '@fc/session-generic';
 import { TrackingService } from '@fc/tracking';
 import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
+import { CryptographyEidasService } from '@fc/cryptography-eidas';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { CoreFcpEidasVerifyHandler } from './core-fcp-eidas-verify.handler';
-import { CryptographyEidasService } from '@fc/cryptography-eidas';
 
 describe('CoreFcpEidasVerifyHandler', () => {
   let service: CoreFcpEidasVerifyHandler;
@@ -35,8 +35,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
 
   const sessionServiceMock = {
     get: jest.fn(),
-    patch: jest.fn(),
-    delete: jest.fn(),
+    set: jest.fn(),
   };
 
   const spIdentityMock = {
@@ -49,11 +48,6 @@ describe('CoreFcpEidasVerifyHandler', () => {
 
   const idpIdentityMock = {
     sub: 'some idpSub',
-  };
-
-  const reqMock = {
-    fc: { interactionId: uidMock },
-    ip: '123.123.123.123',
   };
 
   const configServiceMock = {
@@ -97,7 +91,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
         CoreService,
         CoreFcpEidasVerifyHandler,
         LoggerService,
-        SessionService,
+        SessionGenericService,
         TrackingService,
         ServiceProviderAdapterMongoService,
         CryptographyEidasService,
@@ -109,7 +103,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
       .useValue(coreServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
+      .overrideProvider(SessionGenericService)
       .useValue(sessionServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
@@ -142,13 +136,21 @@ describe('CoreFcpEidasVerifyHandler', () => {
       key: '123456',
       entityId: 'AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH',
     };
+
+    const trackingContext = {};
+
+    const handleArgument = {
+      sessionOidc: sessionServiceMock,
+      trackingContext,
+    };
+
     beforeEach(() => {
       serviceProviderMock.getById.mockResolvedValue(spMock);
     });
 
     it('Should not throw if verified', async () => {
       // Then
-      await expect(service.handle(reqMock)).resolves.not.toThrow();
+      await expect(service.handle(handleArgument)).resolves.not.toThrow();
     });
 
     // Dependencies sevices errors
@@ -159,7 +161,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
         throw errorMock;
       });
       // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if identity provider is not usable', async () => {
@@ -167,23 +169,23 @@ describe('CoreFcpEidasVerifyHandler', () => {
       const errorMock = new Error('my error');
       sessionServiceMock.get.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
     it('Should throw if identity storage for service provider fails', async () => {
       // Given
       const errorMock = new Error('my error');
-      sessionServiceMock.patch.mockRejectedValueOnce(errorMock);
+      sessionServiceMock.set.mockRejectedValueOnce(errorMock);
       // Then
-      await expect(service.handle(reqMock)).rejects.toThrow(errorMock);
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
-    it('Should call session patch with amr parameter', async () => {
+    it('Should call session set with amr parameter', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
       // Then
-      expect(sessionServiceMock.patch).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.patch).toHaveBeenCalledWith(uidMock, {
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith({
         amr: ['eidas'],
         idpIdentity: { sub: 'computedSubIdp' },
         spIdentity: { ...idpIdentityMock, sub: 'computedSubSp' },
@@ -192,7 +194,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
 
     it('Should call computeInteraction()', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
       // Then
       expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
       expect(coreServiceMock.computeInteraction).toBeCalledWith(
@@ -223,7 +225,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
 
     it('should call computeIdentityHash with service provider identity on first call', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
 
       // Then
       expect(
@@ -236,7 +238,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
 
     it('should call computeSubV1 with entityId and rnippIdentityHash on first call', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
 
       // Then
       expect(cryptographyEidasServiceMock.computeSubV1).toHaveBeenCalledTimes(
@@ -251,7 +253,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
 
     it('should call computeSubV1 with spId and idpIdentityHash on the second call', async () => {
       // When
-      await service.handle(reqMock);
+      await service.handle(handleArgument);
 
       // Then
       expect(cryptographyEidasServiceMock.computeSubV1).toHaveBeenCalledTimes(
