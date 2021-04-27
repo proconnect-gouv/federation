@@ -164,6 +164,7 @@ export function configureOidcSpMockRequest(params = {}) {
     url: Cypress.env(`${sp}_ROOT_URL`),
     id: Cypress.env(`${sp}_CLIENT_ID`),
   };
+  cy.clearBusinessLog();
 
   // FS: Click on FC button
   cy.visit(serviceProvider.url);

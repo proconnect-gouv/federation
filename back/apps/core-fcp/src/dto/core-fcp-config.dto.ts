@@ -11,9 +11,9 @@ import { OidcClientConfig } from '@fc/oidc-client';
 import { MongooseConfig } from '@fc/mongoose';
 import { RedisConfig } from '@fc/redis';
 import { RnippConfig } from '@fc/rnipp';
-import { SessionConfig } from '@fc/session';
 import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
 import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
+import { SessionGenericConfig } from '@fc/session-generic';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { MailerConfig } from '@fc/mailer';
@@ -67,8 +67,8 @@ export class CoreFcpConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => SessionConfig)
-  readonly Session: SessionConfig;
+  @Type(() => SessionGenericConfig)
+  readonly SessionGeneric: SessionGenericConfig;
 
   @IsObject()
   @ValidateNested()

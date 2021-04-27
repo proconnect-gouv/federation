@@ -1,7 +1,8 @@
 import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { SessionGenericService } from '@fc/session-generic';
+import { OidcSession } from '@fc/oidc';
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
@@ -17,12 +18,9 @@ describe('CoreFcpService', () => {
     warn: jest.fn(),
   };
 
-  const uidMock = '42';
-
   const sessionServiceMock = {
     get: jest.fn(),
-    patch: jest.fn(),
-    delete: jest.fn(),
+    set: jest.fn(),
   };
 
   const spIdentityMock = {
@@ -38,12 +36,7 @@ describe('CoreFcpService', () => {
     sub: 'some idpSub',
   };
 
-  const reqMock = {
-    fc: { interactionId: uidMock },
-    ip: '123.123.123.123',
-  };
-
-  const sessionDataMock = {
+  const sessionDataMock: OidcSession = {
     idpId: '42',
     idpAcr: 'eidas3',
     idpName: 'my favorite Idp',
@@ -69,6 +62,8 @@ describe('CoreFcpService', () => {
     getById: jest.fn(),
   };
 
+  const reqMock = {};
+
   const coreVerifyMock = 'core-fcp-default-verify';
   const authenticationEmailMock = 'core-fcp-send-email';
 
@@ -90,13 +85,13 @@ describe('CoreFcpService', () => {
       providers: [
         CoreFcpService,
         LoggerService,
-        SessionService,
         IdentityProviderAdapterMongoService,
+        SessionGenericService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
+      .overrideProvider(SessionGenericService)
       .useValue(sessionServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(IdentityProviderMock)
@@ -117,10 +112,10 @@ describe('CoreFcpService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('verify', () => {
+  describe('verify()', () => {
     it('should return a promise', async () => {
       // action
-      const result = service.verify(reqMock);
+      const result = service.verify(sessionServiceMock, reqMock);
       await result;
       // expect
       expect(result).toBeInstanceOf(Promise);
@@ -129,10 +124,10 @@ describe('CoreFcpService', () => {
     it('Should call session.get() with `interactionId`', async () => {
       // Given
       // When
-      await service.verify(reqMock);
+      await service.verify(sessionServiceMock, reqMock);
       // Then
       expect(sessionServiceMock.get).toBeCalledTimes(1);
-      expect(sessionServiceMock.get).toBeCalledWith(uidMock);
+      expect(sessionServiceMock.get).toBeCalledWith();
     });
 
     it('Should call `getFeature` to get instantiated featureHandler class', async () => {
@@ -142,7 +137,7 @@ describe('CoreFcpService', () => {
         'getFeature',
       );
       // When
-      await service.verify(reqMock);
+      await service.verify(sessionServiceMock, reqMock);
       // Then
       expect(getFeatureMock).toBeCalledTimes(1);
       expect(getFeatureMock).toBeCalledWith(
@@ -151,17 +146,21 @@ describe('CoreFcpService', () => {
       );
     });
 
-    it('Should call featureHandle.handle() with `req`', async () => {
+    it('Should call featureHandle.handle() with `sessionService`', async () => {
       // Given
+      const handlerArgument = {
+        sessionOidc: sessionServiceMock,
+        trackingContext: reqMock,
+      };
       // When
-      await service.verify(reqMock);
+      await service.verify(sessionServiceMock, reqMock);
       // Then
       expect(featureHandlerServiceMock.handle).toBeCalledTimes(1);
-      expect(featureHandlerServiceMock.handle).toBeCalledWith(reqMock);
+      expect(featureHandlerServiceMock.handle).toBeCalledWith(handlerArgument);
     });
   });
 
-  describe('getFeature', () => {
+  describe('getFeature()', () => {
     it('should return class for specific process', async () => {
       // When
       const result = await service.getFeature<FcpFeature>(
@@ -233,29 +232,19 @@ describe('CoreFcpService', () => {
     });
   });
 
-  describe('sendAuthenticationMail', () => {
+  describe('sendAuthenticationMail()', () => {
     it('should return a promise', async () => {
       // action
-      const result = service.sendAuthenticationMail(reqMock);
+      const result = service.sendAuthenticationMail(sessionDataMock);
       await result;
       // expect
       expect(result).toBeInstanceOf(Promise);
     });
 
-    it('Should call session.get() with `interactionId`', async () => {
-      // Given
-      // When
-      await service.sendAuthenticationMail(reqMock);
-      // Then
-      expect(sessionServiceMock.get).toBeCalledTimes(1);
-      expect(sessionServiceMock.get).toBeCalledWith(uidMock);
-    });
-
     it('Should call `FeatureHandler.get()` to get instantiated featureHandler class', async () => {
       // Given
       // When
-      await service.sendAuthenticationMail(reqMock);
-
+      await service.sendAuthenticationMail(sessionDataMock);
       // Then
       expect(featureHandlerGetSpy).toBeCalledTimes(1);
       expect(featureHandlerGetSpy).toBeCalledWith(
@@ -276,18 +265,18 @@ describe('CoreFcpService', () => {
         },
       });
       // When, Then
-      await expect(service.sendAuthenticationMail(reqMock)).rejects.toThrow(
-        CoreMissingAuthenticationEmailException,
-      );
+      await expect(
+        service.sendAuthenticationMail(sessionDataMock),
+      ).rejects.toThrow(CoreMissingAuthenticationEmailException);
     });
 
-    it('Should call featureHandle.handle() with `req`', async () => {
+    it('Should call featureHandle.handle() with `session`', async () => {
       // Given
       // When
-      await service.sendAuthenticationMail(reqMock);
+      await service.sendAuthenticationMail(sessionDataMock);
       // Then
       expect(featureHandlerServiceMock.handle).toBeCalledTimes(1);
-      expect(featureHandlerServiceMock.handle).toBeCalledWith(reqMock);
+      expect(featureHandlerServiceMock.handle).toBeCalledWith(sessionDataMock);
     });
   });
 });

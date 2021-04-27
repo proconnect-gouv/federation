@@ -3,5 +3,6 @@
 // Declarative code
 export interface ICoreTrackingContext {
   readonly ip: string;
+  readonly sessionId: string;
   readonly interactionId: string;
 }

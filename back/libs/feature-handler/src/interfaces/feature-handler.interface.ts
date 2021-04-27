@@ -13,5 +13,5 @@
  */
 export interface IFeatureHandler<T = any> {
   [key: string]: any;
-  handle(arg?: any): Promise<T>;
+  handle(arg?: unknown | void): Promise<T>;
 }

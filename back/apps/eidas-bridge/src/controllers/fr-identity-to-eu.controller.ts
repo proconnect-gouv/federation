@@ -1,11 +1,10 @@
-import { Controller, Get, Redirect, Res, Req, Query } from '@nestjs/common';
+import { Controller, Get, Redirect, Req, Query } from '@nestjs/common';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { AcrValues } from '@fc/oidc';
-import { OidcClientService } from '@fc/oidc-client';
-import { SessionService } from '@fc/session';
+import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
 import { EidasProviderSession } from '@fc/eidas-provider';
-import { IExposedSessionServiceGeneric, Session } from '@fc/session-generic';
+import { ISessionGenericService, Session } from '@fc/session-generic';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { EidasBridgeRoutes } from '../enums';
 import { EidasBridgeIdentityDto } from '../dto/eidas-bridge-identity.dto';
@@ -26,7 +25,6 @@ export class FrIdentityToEuController {
     private readonly crypto: CryptographyService,
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
-    private readonly session: SessionService,
     private readonly eidasToOidc: EidasToOidcService,
     private readonly oidcToEidas: OidcToEidasService,
   ) {
@@ -35,11 +33,25 @@ export class FrIdentityToEuController {
 
   @Get(EidasBridgeRoutes.INIT_SESSION)
   @Redirect()
-  async initSession(@Res() res) {
+  async initSession(
+    /**
+     * @todo Adaptation for now, correspond to the oidc-client side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ) {
     const sessionIdLength = 32;
-    const sessionId = this.crypto.genRandomString(sessionIdLength);
+    const sessionId: string = this.crypto.genRandomString(sessionIdLength);
 
-    await this.session.init(res, sessionId, { idpState: sessionId });
+    await sessionOidc.set({
+      sessionId,
+      idpState: sessionId,
+    });
 
     return {
       url: `${EidasBridgeRoutes.BASE}${EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE}`,
@@ -54,12 +66,20 @@ export class FrIdentityToEuController {
   @Get(EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE)
   @Redirect()
   async redirectToFcAuthorize(
-    @Req() req,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-client side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
     @Session('EidasProvider')
-    eidasProviderSession: IExposedSessionServiceGeneric<EidasProviderSession>,
+    sessionEidasProvider: ISessionGenericService<EidasProviderSession>,
   ) {
-    const eidasRequest = await eidasProviderSession.get('eidasRequest');
-
+    const { eidasRequest } = await sessionEidasProvider.get();
     const oidcRequest = this.eidasToOidc.mapPartialRequest(eidasRequest);
 
     const {
@@ -77,8 +97,10 @@ export class FrIdentityToEuController {
       nonce,
     });
 
-    const sessionId = this.session.getId(req);
-    await this.session.patch(sessionId, { idpState: state, idpNonce: nonce });
+    await sessionOidc.set({
+      idpState: state,
+      idpNonce: nonce,
+    });
 
     return { url: authorizationUrl, statusCode: 302 };
   }
@@ -86,10 +108,22 @@ export class FrIdentityToEuController {
   @Get(EidasBridgeRoutes.REDIRECT_TO_EIDAS_RESPONSE_PROXY)
   @Redirect()
   async redirectToEidasResponseProxy(
-    @Req() req,
-    @Query() query,
+    @Req()
+    req,
+    @Query()
+    query,
     @Session('EidasProvider')
-    eidasProviderSession: IExposedSessionServiceGeneric<EidasProviderSession>,
+    sessionEidasProvider: ISessionGenericService<EidasProviderSession>,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-client side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
   ) {
     let partialEidasResponse;
 
@@ -106,9 +140,7 @@ export class FrIdentityToEuController {
     } else {
       try {
         const providerUid = 'envIssuer';
-        const sessionId = this.session.getId(req);
-
-        const { idpState, idpNonce } = await this.session.get(sessionId);
+        const { idpState, idpNonce } = await sessionOidc.get();
 
         const tokenParams = {
           providerUid,
@@ -132,7 +164,7 @@ export class FrIdentityToEuController {
 
         await this.validateIdentity(identity);
 
-        const { requestedAttributes } = await eidasProviderSession.get(
+        const { requestedAttributes } = await sessionEidasProvider.get(
           'eidasRequest',
         );
 
@@ -152,7 +184,7 @@ export class FrIdentityToEuController {
       }
     }
 
-    await eidasProviderSession.set(
+    await sessionEidasProvider.set(
       'partialEidasResponse',
       partialEidasResponse,
     );

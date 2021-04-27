@@ -1,18 +1,19 @@
 import * as ejs from 'ejs';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
 import { ConfigService, validationOptions } from '@fc/config';
 import {
   MailerConfig,
   MailerService,
   MailTo,
+  MailFrom,
   NoEmailException,
   MailerNotificationConnectException,
   ConnectNotificationEmailParameters,
 } from '@fc/mailer';
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
 import { validateDto } from '@fc/common';
+import { OidcSession } from '@fc/oidc';
 
 @Injectable()
 @FeatureHandler('core-fcp-send-email')
@@ -22,7 +23,6 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
-    private readonly session: SessionService,
     private readonly mailer: MailerService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -31,7 +31,8 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
 
   getTodayFormattedDate(datejs: Date): string {
     const timeZone = 'Europe/Paris';
-    const locateDate = datejs.toLocaleString('fr-Fr', { timeZone });
+    // use `[]` instead of `fr-FR` to use the default local
+    const locateDate = datejs.toLocaleString([], { timeZone });
     const date = new Date(locateDate);
 
     const day = `${date.getDate()}`.padStart(2, '0');
@@ -54,9 +55,9 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
     return htmlContent;
   }
 
-  async getConnectNotificationEmailBodyContent(req: any): Promise<string> {
-    const { interactionId } = req.fc;
-    const session = await this.session.get(interactionId);
+  async getConnectNotificationEmailBodyContent(
+    session: OidcSession,
+  ): Promise<string> {
     const { idpName, spIdentity, spName } = session;
     const today = this.getTodayFormattedDate(new Date());
     const connectNotificationEmailParameters = {
@@ -83,40 +84,54 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
   }
 
   /**
+   * The arguments sent to all FeatureHandler's handle() methods must be
+   * typed by a interface exteded from `IFeatureHandler`
+   * @see IVerifyFeatureHandlerHandleArgument as an exemple.
+   * @todo #FC-487
+   * @author Hugues
+   * @date 2021-16-04
+   */
+  /**
    * Send an email to the authenticated end-user after consent.
    * If a user haven't provided a valid email, an error is thrown.
    * This validation is done here because only FCP is concerned by the validation.
    *
-   * @param {object} req Express req object
+   * @param {OidcSession} session session content.
    * @returns {Promise<void>}
    */
-  async handle(req: any): Promise<void> {
+  async handle(session: OidcSession): Promise<void> {
     this.logger.debug(
       'CoreFcpSendEmailHandler.handle(): ##### core-fcp-send-email',
     );
 
+    // -- email from
     const { from } = this.configMailer;
-    const { interactionId } = req.fc;
-    const { spName, spIdentity } = await this.session.get(interactionId);
+    let errors = await validateDto(from, MailFrom, validationOptions);
+    if (errors.length > 0) {
+      throw new NoEmailException();
+    }
+
+    // -- email to
+    const { spName, spIdentity } = session;
     const {
       email,
       given_name: givenName,
       family_name: familyName,
     } = spIdentity;
-
     const mailTo: MailTo = {
       email,
       name: `${givenName} ${familyName}`,
     };
     const to: MailTo[] = [mailTo];
-
-    const errors = await validateDto(mailTo, MailTo, validationOptions);
-
+    errors = await validateDto(mailTo, MailTo, validationOptions);
     if (errors.length > 0) {
       throw new NoEmailException();
     }
 
-    const body = await this.getConnectNotificationEmailBodyContent(req);
+    // -- email body
+    const body = await this.getConnectNotificationEmailBodyContent(session);
+
+    // -- send
     this.mailer.send({
       from,
       to,

@@ -4,6 +4,7 @@ import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { SessionGenericService } from '../session-generic.service';
 import { SessionInterceptor } from './session.interceptor';
+import { ISessionGenericRequest } from '../interfaces';
 
 describe('SessionInterceptor', () => {
   let interceptor: SessionInterceptor;
@@ -16,14 +17,14 @@ describe('SessionInterceptor', () => {
     sessionCookieName: 'sessionCookieName',
     sessionIdLength: 64,
     excludedRoutes: ['/route/66', /excluded\/.*/],
-    cookieOptions: {
-      option: 'super-size',
-    },
   };
 
   const sessionGenericServiceMock = {
     get: jest.fn(),
     set: jest.fn(),
+    init: jest.fn(),
+    refresh: jest.fn(),
+    getSessionIdFromCookie: jest.fn(),
   };
 
   const cryptographyServiceMock = {
@@ -58,7 +59,7 @@ describe('SessionInterceptor', () => {
     expect(interceptor).toBeDefined();
   });
 
-  describe('onModuleInit', () => {
+  describe('onModuleInit()', () => {
     it('should retrieves the configuration', () => {
       // action
       interceptor.onModuleInit();
@@ -77,29 +78,9 @@ describe('SessionInterceptor', () => {
         configMock.excludedRoutes,
       );
     });
-
-    it('should set the "sessionCookieName" attribute retrieved from the config', () => {
-      // action
-      interceptor.onModuleInit();
-
-      // expect
-      expect(interceptor['sessionCookieName']).toStrictEqual(
-        configMock.sessionCookieName,
-      );
-    });
-
-    it('should set the "sessionIdLength" attribute retrieved from the config', () => {
-      // action
-      interceptor.onModuleInit();
-
-      // expect
-      expect(interceptor['sessionIdLength']).toStrictEqual(
-        configMock.sessionIdLength,
-      );
-    });
   });
 
-  describe('intercept', () => {
+  describe('intercept()', () => {
     const executionContextMock = {
       switchToHttp: jest.fn(),
       getRequest: jest.fn(),
@@ -253,7 +234,7 @@ describe('SessionInterceptor', () => {
     });
   });
 
-  describe('handleSession', () => {
+  describe('handleSession()', () => {
     const resMock = {
       send: jest.fn(),
     };
@@ -265,133 +246,52 @@ describe('SessionInterceptor', () => {
       interceptor['setCookie'] = setCookieMock;
     });
 
-    describe('no session cookie found in request signed cookies', () => {
-      it('should generate a random string of sessionIdLength', async () => {
-        // setup
-        const reqMock = {
-          signedCookies: {},
-        };
+    it('should call `sessionGenericService.init()` if no session cookie found in request signed cookies', async () => {
+      // Given
+      const reqMock: ISessionGenericRequest = ({
+        signedCookies: {},
+      } as unknown) as ISessionGenericRequest;
 
-        // action
-        await interceptor['handleSession'](reqMock, resMock);
-
-        // expect
-        expect(cryptographyServiceMock.genRandomString).toHaveBeenCalledTimes(
-          1,
-        );
-        expect(cryptographyServiceMock.genRandomString).toHaveBeenCalledWith(
-          configMock.sessionIdLength,
-        );
-      });
-
-      it('should store the random string in req.sessionId', async () => {
-        // setup
-        const reqMock = {
-          signedCookies: {},
-        } as any;
-        const sessionIdMock = 'sessionId';
-        cryptographyServiceMock.genRandomString.mockReturnValueOnce(
-          sessionIdMock,
-        );
-
-        // action
-        await interceptor['handleSession'](reqMock, resMock);
-
-        // expect
-        expect(reqMock.sessionId).toStrictEqual(sessionIdMock);
-      });
-
-      it('should set a cookie with res, the session cookie name and the session id', async () => {
-        // setup
-        const reqMock = {
-          signedCookies: {},
-        } as any;
-        const sessionIdMock = 'sessionId';
-        cryptographyServiceMock.genRandomString.mockReturnValueOnce(
-          sessionIdMock,
-        );
-
-        // action
-        await interceptor['handleSession'](reqMock, resMock);
-
-        // expect
-        expect(setCookieMock).toHaveBeenCalledTimes(1);
-        expect(setCookieMock).toHaveBeenCalledWith(
-          resMock,
-          interceptor['sessionCookieName'],
-          sessionIdMock,
-        );
-      });
-
-      it('should put the session service in req.sessionService', async () => {
-        // setup
-        const reqMock = {
-          signedCookies: {},
-        } as any;
-
-        // action
-        await interceptor['handleSession'](reqMock, resMock);
-
-        // expect
-        expect(reqMock.sessionService).toStrictEqual(sessionGenericServiceMock);
-      });
+      const cookieSessionIdMock = undefined;
+      sessionGenericServiceMock.getSessionIdFromCookie.mockReturnValue(
+        cookieSessionIdMock,
+      );
+      // When
+      await interceptor['handleSession'](reqMock, resMock);
+      // Then
+      expect(sessionGenericServiceMock.refresh).toHaveBeenCalledTimes(0);
+      expect(sessionGenericServiceMock.init).toHaveBeenCalledTimes(1);
+      expect(sessionGenericServiceMock.init).toHaveBeenCalledWith(
+        reqMock,
+        resMock,
+      );
     });
 
-    describe('session cookie found in request signed cookies', () => {
-      it('should not generate a random string', async () => {
-        // setup
-        const reqMock = {
-          signedCookies: {
-            [configMock.sessionCookieName]: 'sessionId',
-          },
-        };
+    it('should call `sessionGenericService.refresh()` if cookie found in request signed cookies', async () => {
+      // Given
+      const reqCookieMock: ISessionGenericRequest = ({
+        signedCookies: {
+          [configMock.sessionCookieName]: 'sessionIdValue',
+        },
+      } as unknown) as ISessionGenericRequest;
 
-        // action
-        await interceptor['handleSession'](reqMock, resMock);
-
-        // expect
-        expect(cryptographyServiceMock.genRandomString).toHaveBeenCalledTimes(
-          0,
-        );
-      });
-
-      it('should not set a cookie', async () => {
-        // setup
-        const reqMock = {
-          signedCookies: {
-            [configMock.sessionCookieName]: 'sessionId',
-          },
-        };
-        const sessionIdMock = 'sessionId';
-        cryptographyServiceMock.genRandomString.mockReturnValueOnce(
-          sessionIdMock,
-        );
-
-        // action
-        await interceptor['handleSession'](reqMock, resMock);
-
-        // expect
-        expect(setCookieMock).toHaveBeenCalledTimes(0);
-      });
-
-      it('should put the session service in req.sessionService', async () => {
-        // setup
-        const reqMock = {
-          signedCookies: {
-            [configMock.sessionCookieName]: 'sessionId',
-          },
-        } as any;
-
-        // action
-        await interceptor['handleSession'](reqMock, resMock);
-
-        // expect
-        expect(reqMock.sessionService).toStrictEqual(sessionGenericServiceMock);
-      });
+      const cookieSessionIdMock = 'cookieSessionIdValue';
+      sessionGenericServiceMock.getSessionIdFromCookie.mockReturnValue(
+        cookieSessionIdMock,
+      );
+      // When
+      await interceptor['handleSession'](reqCookieMock, resMock);
+      // Then
+      expect(sessionGenericServiceMock.init).toHaveBeenCalledTimes(0);
+      expect(sessionGenericServiceMock.refresh).toHaveBeenCalledTimes(1);
+      expect(sessionGenericServiceMock.refresh).toHaveBeenCalledWith(
+        reqCookieMock,
+        resMock,
+      );
     });
   });
 
-  describe('shouldHandleSession', () => {
+  describe('shouldHandleSession()', () => {
     beforeEach(() => {
       interceptor.onModuleInit();
     });
@@ -427,44 +327,6 @@ describe('SessionInterceptor', () => {
 
       // expect
       expect(result).toStrictEqual(false);
-    });
-  });
-
-  describe('setCookie', () => {
-    const resMock = {
-      cookie: jest.fn(),
-    };
-    const nameMock = 'cookie';
-    const valueMock = 'monster';
-
-    beforeEach(() => {
-      interceptor.onModuleInit();
-    });
-
-    it('should get the cookies options from the config', () => {
-      // action
-      interceptor['setCookie'](resMock, nameMock, valueMock);
-
-      // expect
-      // First one is from "onModuleInit"
-      expect(configServiceMock.get).toHaveBeenCalledTimes(2);
-      expect(configServiceMock.get).toHaveBeenNthCalledWith(
-        2,
-        'SessionGeneric',
-      );
-    });
-
-    it('should call "cookie" within the response with name, value and options from the config', () => {
-      // action
-      interceptor['setCookie'](resMock, nameMock, valueMock);
-
-      // expect
-      expect(resMock.cookie).toHaveBeenCalledTimes(1);
-      expect(resMock.cookie).toHaveBeenCalledWith(
-        nameMock,
-        valueMock,
-        configMock.cookieOptions,
-      );
     });
   });
 });

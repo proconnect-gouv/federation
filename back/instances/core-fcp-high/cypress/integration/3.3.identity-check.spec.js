@@ -45,6 +45,6 @@ describe('Identity Check', () => {
 
     validateConsent();
 
-    checkInStringifiedJson('unknown_prop_for_test');
+    checkInStringifiedJson('unknown_prop_for_test_');
   });
 });

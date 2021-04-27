@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
 import { CryptographyFcaService, IAgentIdentity } from '@fc/cryptography-fca';
+import { ISessionGenericService } from '@fc/session-generic';
+import { OidcClientSession } from '@fc/oidc-client';
+import { IOidcIdentity } from '@fc/oidc';
 
 @Injectable()
 @FeatureHandler('core-fca-default-verify')
@@ -12,13 +14,20 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   /* eslint-disable-next-line max-params */
   constructor(
     private readonly logger: LoggerService,
-    private readonly session: SessionService,
     private readonly core: CoreService,
     private readonly cryptographyFca: CryptographyFcaService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
 
+  /**
+   * The arguments sent to all FeatureHandler's handle() methods must be
+   * typed by a interface exteded from `IFeatureHandler`
+   * @see IVerifyFeatureHandlerHandleArgument as an exemple.
+   * @todo #FC-487
+   * @author Hugues
+   * @date 2021-16-04
+   */
   /**
    * Main business manipulations occurs in this method
    *
@@ -29,14 +38,12 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
    *
    * @param req
    */
-  async handle(req: any): Promise<void> {
+  async handle(
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ): Promise<void> {
     this.logger.debug('getConsent service: ##### core-fca-default-verify');
 
-    const { interactionId } = req.fc;
-
-    // Grab informations on interaction and identity
-    const session = await this.session.get(interactionId);
-    const { idpId, idpIdentity, idpAcr, spId, spAcr } = session;
+    const { idpId, idpIdentity, idpAcr, spId, spAcr } = await sessionOidc.get();
 
     // Acr check
     this.core.checkIfAcrIsValid(idpAcr, spAcr);
@@ -74,12 +81,14 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
       },
     );
 
-    const spIdentityCleaned = { ...idpIdentity, sub: subSp };
+    const spIdentityCleaned: IOidcIdentity = { ...idpIdentity, sub: subSp };
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
-    const idpIdentityCleaned = { sub: subIdp };
+    const idpIdentityCleaned: IOidcIdentity = {
+      sub: idpIdentity.sub,
+    };
 
-    await this.session.patch(interactionId, {
+    await sessionOidc.set({
       idpIdentity: idpIdentityCleaned,
       spIdentity: spIdentityCleaned,
     });

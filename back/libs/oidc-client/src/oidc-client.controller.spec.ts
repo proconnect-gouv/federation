@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { SessionGenericService } from '@fc/session-generic';
 import { TrackingService } from '@fc/tracking';
 import { ConfigService } from '@fc/config';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
@@ -9,7 +9,6 @@ import { OidcClientService } from './services';
 
 describe('OidcClient Controller', () => {
   let oidcClientController: OidcClientController;
-  let req;
   let res;
 
   const oidcClientServiceMock = {
@@ -29,8 +28,7 @@ describe('OidcClient Controller', () => {
   } as unknown) as LoggerService;
 
   const sessionServiceMock = {
-    save: jest.fn(),
-    patch: jest.fn(),
+    set: jest.fn(),
     get: jest.fn(),
   };
 
@@ -63,7 +61,7 @@ describe('OidcClient Controller', () => {
       providers: [
         OidcClientService,
         LoggerService,
-        SessionService,
+        SessionGenericService,
         TrackingService,
         ConfigService,
         {
@@ -76,7 +74,7 @@ describe('OidcClient Controller', () => {
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
+      .overrideProvider(SessionGenericService)
       .useValue(sessionServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
@@ -90,10 +88,6 @@ describe('OidcClient Controller', () => {
 
     res = {
       redirect: jest.fn(),
-    };
-
-    req = {
-      fc: { interactionId: 'interactionIdMockValue' },
     };
 
     identityProviderServiceMock.getById.mockReturnValue({ name: 'foo' });
@@ -116,7 +110,7 @@ describe('OidcClient Controller', () => {
     expect(oidcClientController).toBeDefined();
   });
 
-  describe('redirectToIdp', () => {
+  describe('redirectToIdp()', () => {
     it('should call oidc-client-service for retrieve authorize url', async () => {
       // setup
       const body = {
@@ -137,7 +131,7 @@ describe('OidcClient Controller', () => {
       );
 
       // action
-      await oidcClientController.redirectToIdp(res, req, body);
+      await oidcClientController.redirectToIdp(res, body, sessionServiceMock);
 
       // assert
       expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledTimes(
@@ -167,19 +161,16 @@ describe('OidcClient Controller', () => {
       );
 
       // action
-      await oidcClientController.redirectToIdp(res, req, body);
+      await oidcClientController.redirectToIdp(res, body, sessionServiceMock);
 
       // assert
-      expect(sessionServiceMock.patch).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.patch).toHaveBeenCalledWith(
-        req.fc.interactionId,
-        {
-          idpId: body.providerUid,
-          idpName: 'foo',
-          idpState: stateMock,
-          idpNonce: nonceMock,
-        },
-      );
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith({
+        idpId: body.providerUid,
+        idpName: 'foo',
+        idpState: stateMock,
+        idpNonce: nonceMock,
+      });
     });
 
     it('should resolve even if no spId are fetchable', async () => {
@@ -198,7 +189,7 @@ describe('OidcClient Controller', () => {
       });
 
       // action
-      await oidcClientController.redirectToIdp(res, req, body);
+      await oidcClientController.redirectToIdp(res, body, sessionServiceMock);
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
@@ -218,12 +209,10 @@ describe('OidcClient Controller', () => {
       sessionServiceMock.get.mockReturnValueOnce('spId');
 
       // action
-      await oidcClientController.redirectToIdp(res, req, body);
+      await oidcClientController.redirectToIdp(res, body, sessionServiceMock);
 
       // assert
-      expect(sessionServiceMock.get).toHaveBeenLastCalledWith(
-        req.fc.interactionId,
-      );
+      expect(sessionServiceMock.get).toHaveBeenLastCalledWith();
       expect(res.redirect).toHaveBeenCalledTimes(1);
     });
 
@@ -249,11 +238,9 @@ describe('OidcClient Controller', () => {
 
         // action / assert
         await expect(() =>
-          oidcClientController.redirectToIdp(res, req, body),
+          oidcClientController.redirectToIdp(res, body, sessionServiceMock),
         ).rejects.toThrow(errorMock);
-        expect(sessionServiceMock.get).toHaveBeenLastCalledWith(
-          req.fc.interactionId,
-        );
+        expect(sessionServiceMock.get).toHaveBeenLastCalledWith();
       });
 
       it('idp is not blacklisted', async () => {
@@ -271,18 +258,16 @@ describe('OidcClient Controller', () => {
         isBlacklistedMock.mockReturnValueOnce(false);
 
         // action
-        await oidcClientController.redirectToIdp(res, req, body);
+        await oidcClientController.redirectToIdp(res, body, sessionServiceMock);
 
         // assert
-        expect(sessionServiceMock.get).toHaveBeenLastCalledWith(
-          req.fc.interactionId,
-        );
+        expect(sessionServiceMock.get).toHaveBeenLastCalledWith();
         expect(res.redirect).toHaveBeenCalledTimes(1);
       });
     });
   });
 
-  describe('getWellKnownKeys', () => {
+  describe('getWellKnownKeys()', () => {
     it('should call oidc-client-service for wellKnownKeys', async () => {
       // When
       await oidcClientController.getWellKnownKeys();

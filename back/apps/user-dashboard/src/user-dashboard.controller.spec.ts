@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { SessionGenericService } from '@fc/session-generic';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { UserDashboardController } from './user-dashboard.controller';
@@ -9,6 +9,7 @@ import {
   UserDashboardTokenRevocationException,
   UserDashboardUserinfoException,
 } from './exceptions';
+import { OidcSession } from '@fc/oidc';
 
 describe('UserDashboardController', () => {
   let controller: UserDashboardController;
@@ -38,11 +39,9 @@ describe('UserDashboardController', () => {
     error_description: 'error_description',
   };
 
-  const sessionMock = {
-    patch: jest.fn(),
+  const sessionServiceMock = {
+    set: jest.fn(),
     get: jest.fn(),
-    init: jest.fn(),
-    getId: jest.fn(),
   };
 
   const interactionIdMock = 'interactionIdMockValue';
@@ -53,6 +52,11 @@ describe('UserDashboardController', () => {
 
   const cryptographyMock = {
     genRandomString: jest.fn(),
+  };
+
+  const sessionInitMock: OidcSession = {
+    sessionId: randomStringMock,
+    idpState: randomStringMock,
   };
 
   const configMock = {
@@ -69,7 +73,7 @@ describe('UserDashboardController', () => {
         ConfigService,
         OidcClientService,
         LoggerService,
-        SessionService,
+        SessionGenericService,
         CryptographyService,
       ],
     })
@@ -79,8 +83,8 @@ describe('UserDashboardController', () => {
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionMock)
+      .overrideProvider(SessionGenericService)
+      .useValue(sessionServiceMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)
       .compile();
@@ -105,12 +109,12 @@ describe('UserDashboardController', () => {
       acr_values: 'acrMock',
     });
 
-    sessionMock.get.mockResolvedValue({
+    sessionServiceMock.get.mockResolvedValue({
       idpState: idpStateMock,
       idpNonce: idpNonceMock,
+      interactionId: interactionIdMock,
     });
 
-    sessionMock.getId.mockReturnValue(sessionIdMock);
     configMock.get.mockReturnValueOnce({
       urlPrefix: '/api/v2',
     });
@@ -121,14 +125,14 @@ describe('UserDashboardController', () => {
     expect(controller).toBeDefined();
   });
 
-  describe('index', () => {
+  describe('index()', () => {
     it('Should generate a random sessionId of 32 characters', async () => {
       // setup
-      sessionMock.init.mockResolvedValueOnce(undefined);
+      sessionServiceMock.set.mockResolvedValueOnce(undefined);
 
       // action
       const randSize = 32;
-      await controller.index(res);
+      await controller.index(sessionServiceMock);
 
       // assert
       expect(cryptographyMock.genRandomString).toHaveBeenCalledTimes(1);
@@ -137,32 +141,30 @@ describe('UserDashboardController', () => {
 
     it('Should init the session', async () => {
       // setup
-      sessionMock.init.mockResolvedValueOnce(undefined);
+      sessionServiceMock.set.mockResolvedValueOnce(undefined);
 
       // action
-      await controller.index(res);
+      await controller.index(sessionServiceMock);
 
       // assert
-      expect(sessionMock.init).toHaveBeenCalledTimes(1);
-      expect(sessionMock.init).toHaveBeenCalledWith(res, randomStringMock, {
-        idpState: randomStringMock,
-      });
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith(sessionInitMock);
     });
 
     it("Should throw if the session can't be initialized", async () => {
       // setup
-      sessionMock.init.mockRejectedValueOnce(new Error('test'));
+      sessionServiceMock.set.mockRejectedValueOnce(new Error('test'));
 
       // expect
-      await expect(controller.index(res)).rejects.toThrow();
+      await expect(controller.index(sessionServiceMock)).rejects.toThrow();
     });
 
     it('Should return front title', async () => {
       // setup
-      sessionMock.init.mockResolvedValueOnce(undefined);
+      sessionServiceMock.set.mockResolvedValueOnce(undefined);
 
       // action
-      const result = await controller.index(res);
+      const result = await controller.index(sessionServiceMock);
 
       // assert
       expect(result).toEqual({
@@ -172,13 +174,13 @@ describe('UserDashboardController', () => {
     });
   });
 
-  describe('getVerify', () => {
+  describe('getVerify()', () => {
     it('Should call session.get', async () => {
       // When
-      await controller.getVerify(req);
+      await controller.getVerify(sessionServiceMock);
       // Then
-      expect(sessionMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionMock.get).toHaveBeenCalledWith(req.fc.interactionId);
+      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith();
     });
 
     // Temporary behaviour
@@ -187,16 +189,16 @@ describe('UserDashboardController', () => {
       const sessionDataMock = {
         idpIdentity: Symbol('idpIdentity'),
       };
-      sessionMock.get.mockResolvedValue(sessionDataMock);
+      sessionServiceMock.get.mockResolvedValue(sessionDataMock);
       // When
-      const result = await controller.getVerify(req);
+      const result = await controller.getVerify(sessionServiceMock);
       // Then
       expect(result).toEqual({ idpIdentity: sessionDataMock.idpIdentity });
       expect(result.idpIdentity).toBe(sessionDataMock.idpIdentity);
     });
   });
 
-  describe('error', () => {
+  describe('error()', () => {
     it('Should return error', async () => {
       // setup
       const queryMock = {
@@ -217,7 +219,7 @@ describe('UserDashboardController', () => {
     });
   });
 
-  describe('logout', () => {
+  describe('logout()', () => {
     it('should redirect on the logout callback controller', async () => {
       // action
       await controller.logout(res);
@@ -228,7 +230,7 @@ describe('UserDashboardController', () => {
     });
   });
 
-  describe('revocationToken', () => {
+  describe('revocationToken()', () => {
     it('should display success page when token is revoked', async () => {
       // setup
       const providerUid = 'corev2';
@@ -247,6 +249,7 @@ describe('UserDashboardController', () => {
         titleFront: 'Mock Service Provider - Token révoqué',
       });
     });
+
     it('should redirect to the error page if revokeToken throw an error', async () => {
       // setup
       oidcClientServiceMock.utils.revokeToken.mockRejectedValue(oidcErrorMock);
@@ -261,6 +264,7 @@ describe('UserDashboardController', () => {
         '/error?error=error&error_description=error_description',
       );
     });
+
     it('Should throw mock service provider revoke token exception if error is not an instance of OPError', () => {
       // setup
       const unknowError = { foo: 'bar' };
@@ -274,7 +278,7 @@ describe('UserDashboardController', () => {
     });
   });
 
-  describe('retrieveUserinfo', () => {
+  describe('retrieveUserinfo()', () => {
     it('should retrieve and display userinfo on userinfo page', async () => {
       // setup
       const providerUid = 'corev2';
@@ -305,6 +309,7 @@ describe('UserDashboardController', () => {
         },
       });
     });
+
     it('should redirect to the error page if getUserInfo throw an error', async () => {
       // setup
       const body = { accessToken: 'access_token' };
@@ -319,6 +324,7 @@ describe('UserDashboardController', () => {
         '/error?error=error&error_description=error_description',
       );
     });
+
     it('Should throw mock service provider userinfo exception if error is not an instance of OPError', () => {
       // setup
       oidcClientServiceMock.utils.getUserInfo.mockRejectedValue({});
@@ -331,7 +337,7 @@ describe('UserDashboardController', () => {
     });
   });
 
-  describe('logoutCallback', () => {
+  describe('logoutCallback()', () => {
     it('should redirect on the home page', async () => {
       // action
       await controller.logoutCallback(res);
@@ -342,7 +348,7 @@ describe('UserDashboardController', () => {
     });
   });
 
-  describe('getOidcCallback', () => {
+  describe('getOidcCallback()', () => {
     const accessTokenMock = Symbol('accesToken');
     const acrMock = Symbol('acr');
     const providerUid = 'providerUidMock';
@@ -392,9 +398,14 @@ describe('UserDashboardController', () => {
 
     it('should call token with providerId', async () => {
       // action
-      await controller.getOidcCallback(req, res, {
-        providerUid,
-      });
+      await controller.getOidcCallback(
+        req,
+        res,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
 
       // assert
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledTimes(
@@ -410,9 +421,14 @@ describe('UserDashboardController', () => {
       // arrange
 
       // action
-      await controller.getOidcCallback(req, res, {
-        providerUid,
-      });
+      await controller.getOidcCallback(
+        req,
+        res,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
 
       // assert
       expect(
@@ -423,25 +439,32 @@ describe('UserDashboardController', () => {
       ).toHaveBeenCalledWith(userInfoParamsMock, req);
     });
 
-    it('should patch session with identity result and interaction ID', async () => {
+    it('should set session with identity result.', async () => {
       // action
-      await controller.getOidcCallback(req, res, {
-        providerUid,
-      });
+      await controller.getOidcCallback(
+        req,
+        res,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
 
       // assert
-      expect(sessionMock.patch).toHaveBeenCalledTimes(1);
-      expect(sessionMock.patch).toHaveBeenCalledWith(
-        interactionIdMock,
-        identityExchangeMock,
-      );
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith(identityExchangeMock);
     });
 
     it('should redirect user after token and userinfo received and saved', async () => {
       // action
-      await controller.getOidcCallback(req, res, {
-        providerUid,
-      });
+      await controller.getOidcCallback(
+        req,
+        res,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);

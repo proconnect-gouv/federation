@@ -3,7 +3,6 @@
 // Declarative code
 import { Module } from '@nestjs/common';
 import { OidcClientModule } from '@fc/oidc-client';
-import { SessionModule } from '@fc/session';
 import {
   IdentityProviderAdapterEnvService,
   IdentityProviderAdapterEnvModule,
@@ -22,7 +21,7 @@ const oidcClientModule = OidcClientModule.register(
 );
 
 @Module({
-  imports: [SessionModule, IdentityProviderAdapterEnvModule, oidcClientModule],
+  imports: [IdentityProviderAdapterEnvModule, oidcClientModule],
   controllers: [UserDashboardController],
 })
 export class UserDashboardModule {}

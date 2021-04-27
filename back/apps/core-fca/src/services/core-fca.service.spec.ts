@@ -1,7 +1,7 @@
 import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { SessionGenericService } from '@fc/session-generic';
 import { CoreService } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { FeatureHandler } from '@fc/feature-handler';
@@ -16,8 +16,6 @@ describe('CoreFcaService', () => {
     warn: jest.fn(),
   };
 
-  const uidMock = '42';
-
   const coreServiceMock = {
     checkIfAccountIsBlocked: jest.fn(),
     checkIfAcrIsValid: jest.fn(),
@@ -26,8 +24,7 @@ describe('CoreFcaService', () => {
 
   const sessionServiceMock = {
     get: jest.fn(),
-    patch: jest.fn(),
-    delete: jest.fn(),
+    set: jest.fn(),
   };
 
   const spIdentityMock = {
@@ -40,11 +37,6 @@ describe('CoreFcaService', () => {
 
   const idpIdentityMock = {
     sub: 'some idpSub',
-  };
-
-  const reqMock = {
-    fc: { interactionId: uidMock },
-    ip: '123.123.123.123',
   };
 
   const sessionDataMock = {
@@ -83,15 +75,15 @@ describe('CoreFcaService', () => {
         CoreFcaService,
         LoggerService,
         CoreService,
-        SessionService,
         IdentityProviderAdapterMongoService,
+        SessionGenericService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(CoreService)
       .useValue(coreServiceMock)
-      .overrideProvider(SessionService)
+      .overrideProvider(SessionGenericService)
       .useValue(sessionServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(IdentityProviderMock)
@@ -112,31 +104,33 @@ describe('CoreFcaService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('verify', () => {
+  describe('verify()', () => {
     it('Should call session.get() with `interactionId`', async () => {
       // Given
       // When
-      await service.verify(reqMock);
+      await service.verify(sessionServiceMock);
       // Then
       expect(sessionServiceMock.get).toBeCalledTimes(1);
-      expect(sessionServiceMock.get).toBeCalledWith(uidMock);
+      expect(sessionServiceMock.get).toBeCalledWith();
     });
 
     it('Should call `FeatureHandler.get()` to get instantiated featureHandler class', async () => {
       // Given
       // When
-      await service.verify(reqMock);
+      await service.verify(sessionServiceMock);
       // Then
       expect(featureHandlerMock).toBeCalledTimes(1);
     });
 
-    it('Should call featureHandle.handle() with `req`', async () => {
+    it('Should call featureHandle.handle() with `sessionService`', async () => {
       // Given
       // When
-      await service.verify(reqMock);
+      await service.verify(sessionServiceMock);
       // Then
       expect(featureHandlerServiceMock.handle).toBeCalledTimes(1);
-      expect(featureHandlerServiceMock.handle).toBeCalledWith(reqMock);
+      expect(featureHandlerServiceMock.handle).toBeCalledWith(
+        sessionServiceMock,
+      );
     });
   });
 });
