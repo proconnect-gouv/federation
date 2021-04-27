@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Redirect, Render } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
-import { IExposedSessionServiceGeneric, Session } from '@fc/session-generic';
+import { ISessionGenericService, Session } from '@fc/session-generic';
 import {
   RequestHandlerDTO,
   EidasProviderConfig,
@@ -24,9 +24,10 @@ export class EidasProviderController {
   @Post('/request-handler')
   @Redirect()
   async requestHandler(
-    @Body() body: RequestHandlerDTO,
+    @Body()
+    body: RequestHandlerDTO,
     @Session('EidasProvider')
-    session: IExposedSessionServiceGeneric<EidasProviderSession>,
+    sessionEidasProvider: ISessionGenericService<EidasProviderSession>,
   ) {
     const { token } = body;
 
@@ -36,7 +37,7 @@ export class EidasProviderController {
 
     const request = this.eidasProvider.parseLightRequest(lightRequest);
 
-    await session.set('eidasRequest', request);
+    await sessionEidasProvider.set('eidasRequest', request);
 
     const {
       redirectAfterRequestHandlingUrl,
@@ -49,7 +50,7 @@ export class EidasProviderController {
   @Render('redirect-to-fr-node-proxy-service')
   async responseProxy(
     @Session('EidasProvider')
-    session: IExposedSessionServiceGeneric<EidasProviderSession>,
+    session: ISessionGenericService<EidasProviderSession>,
   ) {
     const eidasReponse = await this.getEidasResponse(session);
 
@@ -70,12 +71,12 @@ export class EidasProviderController {
   }
 
   private async getEidasResponse(
-    session: IExposedSessionServiceGeneric<EidasProviderSession>,
+    sessionEidas: ISessionGenericService<EidasProviderSession>,
   ) {
     const {
       eidasRequest,
       partialEidasResponse,
-    }: EidasProviderSession = await session.get();
+    }: EidasProviderSession = await sessionEidas.get();
 
     let eidasReponse;
     if (!partialEidasResponse.status.failure) {

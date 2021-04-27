@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { ISessionGenericService } from '@fc/session-generic';
+import { OidcClientSession } from '@fc/oidc-client';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 
@@ -9,7 +10,6 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 export class CoreFcaService {
   constructor(
     private readonly logger: LoggerService,
-    private readonly session: SessionService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     public moduleRef: ModuleRef,
   ) {
@@ -21,16 +21,16 @@ export class CoreFcaService {
    *
    * @param req
    */
-  async verify(req: any): Promise<void> {
+  async verify(
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+  ): Promise<void> {
     this.logger.debug('getConsent service');
 
-    const { interactionId } = req.fc;
-
-    const { idpId } = await this.session.get(interactionId);
+    const { idpId } = await sessionOidc.get();
     const idp = await this.identityProvider.getById(idpId);
     const { coreVerify } = idp.featureHandlers;
 
     const handler = await FeatureHandler.get(coreVerify, this);
-    return await handler.handle(req);
+    await handler.handle(sessionOidc);
   }
 }

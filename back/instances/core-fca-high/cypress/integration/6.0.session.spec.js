@@ -1,6 +1,7 @@
 import {
-  basicErrorScenario,
-  basicScenario,
+  beforeSuccessScenario,
+  basicSuccessScenario,
+  afterSuccessScenario,
   getAuthorizeUrl,
   getServiceProvider,
 } from './mire.utils';
@@ -21,7 +22,7 @@ describe('Session', () => {
    * (clear only core-fca cookies ?)
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/306
    */
-  it.skip('should trigger error Y150003 (session not found)', () => {
+  it.skip('should trigger error Y190001 (session not found)', () => {
     basicErrorScenario({
       errorCode: 'test',
       idpId,
@@ -30,10 +31,10 @@ describe('Session', () => {
     cy.clearCookies();
 
     cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/login`));
-    cy.hasError('Y150003');
+    cy.hasError('Y190001');
   });
 
-  it('should trigger error Y150003 if FC session cookie not set', () => {
+  it('should trigger error Y190001 if FC session cookie not set', () => {
     const authorizeUrl = getAuthorizeUrl();
     cy.visit(authorizeUrl);
     cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
@@ -42,86 +43,7 @@ describe('Session', () => {
       cy.clearCookie('fc_session_id');
       cy.visit(interactionUrl, { failOnStatusCode: false });
       cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
-      cy.hasError('Y150003');
-    });
-  });
-
-  it('should trigger error Y150004 if FC interaction cookie not set', () => {
-    const authorizeUrl = getAuthorizeUrl();
-    cy.visit(authorizeUrl);
-    cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
-
-    cy.url().then((interactionUrl) => {
-      cy.clearCookie('fc_interaction_id');
-      cy.visit(interactionUrl, { failOnStatusCode: false });
-      cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
-      cy.hasError('Y150004');
-    });
-  });
-
-  it('should trigger error Y150001 if FC interaction cookie does not match any backend interaction', () => {
-    const authorizeUrl = getAuthorizeUrl();
-    cy.visit(authorizeUrl);
-    cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
-
-    cy.url().then((interactionUrl) => {
-      /**
-       * Forged cookie
-       * We override cookie while keeping signature...
-       *
-       * We have to get existing cookie and edit its value,
-       * otherwise it is not reconnized as a signed cookie
-       * and we get an error Y150004 which is not what we want to test here.
-       */
-      cy.getCookie('fc_interaction_id').then((cookie) => {
-        cy.setCookie(
-          'fc_interaction_id',
-          // Replace the begining of the cookie by arbitratry value
-          cookie.value.replace(/^s%3A(.){4}/, 's%3Arofl'),
-          {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'Strict',
-            domain: Cypress.env('APP_DOMAIN'),
-          },
-        );
-        cy.visit(interactionUrl, { failOnStatusCode: false });
-        cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
-        cy.hasError('Y150001');
-      });
-    });
-  });
-
-  it('should trigger error Y150005 if FC session cookie does not match found backend interaction', () => {
-    const authorizeUrl = getAuthorizeUrl();
-    cy.visit(authorizeUrl);
-    cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
-
-    cy.url().then((interactionUrl) => {
-      /**
-       * Forged cookie
-       * We override cookie while keeping signature...
-       *
-       * We have to get existing cookie and edit its value,
-       * otherwise it is not reconnized as a signed cookie
-       * and we get an error Y150004 which is not what we want to test here.
-       */
-      cy.getCookie('fc_session_id').then((cookie) => {
-        cy.setCookie(
-          'fc_session_id',
-          // Replace the begining of the cookie by arbitratry value
-          cookie.value.replace(/^s%3A(.){4}/, 's%3Arofl'),
-          {
-            httpOnly: true,
-            secure: true,
-            sameSite: 'Strict',
-            domain: Cypress.env('APP_DOMAIN'),
-          },
-        );
-        cy.visit(interactionUrl, { failOnStatusCode: false });
-        cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
-        cy.hasError('Y150005');
-      });
+      cy.hasError('Y190001');
     });
   });
 
@@ -136,17 +58,16 @@ describe('Session', () => {
   });
 
   it('should have cookie stored for IdP with the property `sameSite` value set to `lax`', () => {
-    cy.clearCookies();
-
-    basicScenario({
+    const loginInfo = {
+      userName: 'test',
+      password: '123',
+      eidasLevel: 1,
       idpId,
-      eidasLevel: 'eidas2',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2',
-      },
-    });
+    };
+
+    beforeSuccessScenario(loginInfo);
+    basicSuccessScenario(loginInfo.idpId);
+    afterSuccessScenario(loginInfo);
 
     cy.getCookie('fc_session_id').then((cookie) => {
       expect(cookie).to.have.property('sameSite', 'lax');

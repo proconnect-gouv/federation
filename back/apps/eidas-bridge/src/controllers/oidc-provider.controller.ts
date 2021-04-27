@@ -9,7 +9,7 @@ import {
   Body,
 } from '@nestjs/common';
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
-import { AuthorizeParamsDTO } from '../dto';
+import { AuthorizeParamsDto } from '../dto';
 
 @Controller()
 export class OidcProviderController {
@@ -29,7 +29,7 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  getAuthorize(@Next() next, @Query() _query: AuthorizeParamsDTO) {
+  getAuthorize(@Next() next, @Query() _query: AuthorizeParamsDto) {
     // Pass the query to oidc-provider
     return next();
   }
@@ -50,7 +50,7 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDTO) {
+  postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDto) {
     // Pass the query to oidc-provider
     return next();
   }

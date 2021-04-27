@@ -3,7 +3,7 @@
 // Tested by DTO
 import * as fs from 'fs';
 import * as path from 'path';
-import { MailerConfig } from '@fc/mailer';
+import { MailerConfig, MailFrom } from '@fc/mailer';
 
 /**
  * @TODO #471 En tant que PO je peux avoir des templates de mail différent suivant l'instance
@@ -316,6 +316,11 @@ const template = `
 </html>
 `;
 
+const from: MailFrom = {
+  email: process.env.MAILER_FROM_EMAIL,
+  name: process.env.MAILER_FROM_NAME,
+};
+
 export default {
   template: template,
   transport: process.env.MAILER,
@@ -324,8 +329,5 @@ export default {
   options: {
     proxyUrl: process.env.GLOBAL_AGENT_HTTPS_PROXY,
   },
-  from: {
-    email: process.env.MAILER_FROM_EMAIL,
-    name: process.env.MAILER_FROM_NAME,
-  },
+  from,
 } as MailerConfig;

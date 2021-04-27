@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { LoggerService, LogLevelNames } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { OidcSession } from '@fc/oidc';
 import {
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
@@ -72,7 +72,7 @@ describe('OidcProviderService', () => {
   };
 
   const sessionServiceMock = {
-    init: jest.fn(),
+    set: jest.fn(),
     get: jest.fn(),
   };
 
@@ -121,7 +121,6 @@ describe('OidcProviderService', () => {
           provide: REDIS_CONNECTION_TOKEN,
           useValue: redisMock,
         },
-        SessionService,
         OidcProviderErrorService,
         OidcProviderConfigService,
       ],
@@ -130,8 +129,6 @@ describe('OidcProviderService', () => {
       .useValue(httpAdapterHostMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
       .overrideProvider(OidcProviderErrorService)
       .useValue(oidcProviderErrorServiceMock)
       .overrideProvider(OidcProviderConfigService)
@@ -272,11 +269,16 @@ describe('OidcProviderService', () => {
       // Given
       const resolvedValue = Symbol('resolved value');
       providerMock.interactionFinished.mockResolvedValueOnce(resolvedValue);
-      sessionServiceMock.get.mockResolvedValueOnce({
+      const sessionDataMock: OidcSession = {
         spAcr: 'spAcrValue',
-      });
+      };
+      sessionServiceMock.get.mockResolvedValueOnce(sessionDataMock);
       // When
-      const result = await service.finishInteraction(reqMock, resMock);
+      const result = await service.finishInteraction(
+        reqMock,
+        resMock,
+        sessionDataMock,
+      );
       // Then
       expect(result).toBe(resolvedValue);
     });
@@ -285,13 +287,14 @@ describe('OidcProviderService', () => {
       // Given
       const nativeError = new Error('invalid_request');
       providerMock.interactionFinished.mockRejectedValueOnce(nativeError);
-      sessionServiceMock.get.mockResolvedValueOnce({
+      const sessionDataMock: OidcSession = {
         spAcr: 'spAcrValue',
-      });
+      };
+      sessionServiceMock.get.mockResolvedValueOnce(sessionDataMock);
       // Then
-      await expect(service.finishInteraction(reqMock, resMock)).rejects.toThrow(
-        OidcProviderRuntimeException,
-      );
+      await expect(
+        service.finishInteraction(reqMock, resMock, sessionDataMock),
+      ).rejects.toThrow(OidcProviderRuntimeException);
     });
   });
 

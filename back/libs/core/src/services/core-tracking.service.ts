@@ -1,4 +1,9 @@
-import { SessionService } from '@fc/session';
+import { OidcSession } from '@fc/oidc';
+import {
+  ISessionGenericBoundContext,
+  SessionGenericNotFoundException,
+  SessionGenericService,
+} from '@fc/session-generic';
 import { Injectable } from '@nestjs/common';
 import { IEvent, IEventContext, IAppTrackingService } from '@fc/tracking';
 import { ConfigService } from '@fc/config';
@@ -16,7 +21,7 @@ export class CoreTrackingService implements IAppTrackingService {
   readonly EventsMap;
 
   constructor(
-    private readonly session: SessionService,
+    private readonly sessionService: SessionGenericService,
     private readonly config: ConfigService,
   ) {
     this.EventsMap = getEventsMap(this.config.get<AppConfig>('App').urlPrefix);
@@ -26,7 +31,11 @@ export class CoreTrackingService implements IAppTrackingService {
     event: IEvent,
     context: IEventContext,
   ): Promise<ICoreTrackingLog> {
-    const { ip, interactionId } = this.extractContext(context);
+    const {
+      ip,
+      sessionId,
+      interactionId,
+    }: ICoreTrackingContext = await this.extractContext(context);
     const { step, category, event: eventName } = event;
     let data: ICoreTrackingProviders;
 
@@ -34,7 +43,7 @@ export class CoreTrackingService implements IAppTrackingService {
     if (event === this.EventsMap.FC_AUTHORIZE_INITIATED) {
       data = this.getDataFromContext(context);
     } else {
-      data = await this.getDataFromSession(interactionId);
+      data = await this.getDataFromSession(sessionId);
     }
 
     return {
@@ -61,45 +70,76 @@ export class CoreTrackingService implements IAppTrackingService {
     return ip;
   }
 
-  private extractContext(context: IEventContext): ICoreTrackingContext {
+  private async extractContext(
+    ctx: IEventContext,
+  ): Promise<ICoreTrackingContext> {
     /**
      * Throw rather than allow a non-loggable interaction.
      *
      * This should never happen and is a *real* exception, not a business one.
      */
-    if (!context.req) {
+    const { req } = ctx;
+    if (!req) {
       throw new CoreMissingContextException('req');
     }
 
-    const ip = this.extractIpFromContext(context);
+    const ip: string = this.extractIpFromContext(ctx);
+    const interactionId: string = this.getInteractionIdFromContext(ctx);
 
-    if (!context.req.fc) {
-      throw new CoreMissingContextException('req.fc');
-    }
-    if (!context.req.fc.interactionId) {
-      throw new CoreMissingContextException('req.fc.interactionId');
-    }
-    const {
-      fc: { interactionId },
-    } = context.req;
+    const sessionId: string =
+      req.sessionId || (await this.sessionService.getAlias(interactionId));
 
-    return { ip, interactionId };
+    return { ip, sessionId, interactionId };
+  }
+
+  private extractInteractionId(req) {
+    return (
+      req.fc?.interactionId ||
+      req.body?.uid ||
+      req.params?.uid ||
+      req.cookies?._interaction
+    );
+  }
+
+  private getInteractionIdFromContext({ req }: IEventContext): string {
+    const interactionId = this.extractInteractionId(req);
+
+    if (!interactionId) {
+      throw new CoreMissingContextException('interactionId missing in context');
+    }
+    return interactionId;
   }
 
   private async getDataFromSession(
-    interactionId: string,
+    sessionId: string,
   ): Promise<ICoreTrackingProviders> {
+    const boundSessionContext: ISessionGenericBoundContext = {
+      sessionId,
+      moduleName: 'OidcClient',
+    };
+
+    const boundSessionServiceGet = this.sessionService.get.bind(
+      this.sessionService,
+      boundSessionContext,
+    );
+
+    const sessionData: OidcSession = await boundSessionServiceGet();
+
+    if (!sessionData) {
+      throw new SessionGenericNotFoundException(boundSessionContext.moduleName);
+    }
+
     const {
-      spId,
-      spAcr,
-      spName,
+      spId = null,
+      spAcr = null,
+      spName = null,
       spIdentity = null,
 
       idpId = null,
       idpAcr = null,
       idpName = null,
       idpIdentity = null,
-    } = await this.session.get(interactionId);
+    } = sessionData;
 
     return {
       spId,

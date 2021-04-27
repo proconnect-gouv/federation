@@ -80,7 +80,7 @@ describe('Interaction steps discarding', () => {
       idpId,
     });
 
-    cy.getCookie('fc_interaction_id').then((cookie) => {
+    cy.getCookie('fc_session_id').then((cookie) => {
       const interactionId = cookie.value.match(/s%3A([^.]+)/).pop();
       cy.request({
         url: `${Cypress.env('FC_INTERACTION_URL')}/${interactionId}/login`,

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { SessionGenericService } from '@fc/session-generic';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { MockIdentityProviderService } from '../services';
 import { MockIdentityProviderController } from './mock-identity-provider.controller';
@@ -33,10 +33,9 @@ describe('MockIdentityProviderFcaController', () => {
     setContext: jest.fn(),
   } as unknown) as LoggerService;
 
-  const sessionMock = {
-    patch: jest.fn(),
+  const sessionServiceMock = {
+    set: jest.fn(),
     get: jest.fn(),
-    init: jest.fn(),
     getId: jest.fn(),
   };
 
@@ -74,7 +73,7 @@ describe('MockIdentityProviderFcaController', () => {
       providers: [
         OidcClientService,
         LoggerService,
-        SessionService,
+        SessionGenericService,
         OidcProviderService,
         MockIdentityProviderService,
       ],
@@ -85,8 +84,8 @@ describe('MockIdentityProviderFcaController', () => {
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
 
-      .overrideProvider(SessionService)
-      .useValue(sessionMock)
+      .overrideProvider(SessionGenericService)
+      .useValue(sessionServiceMock)
 
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
@@ -111,9 +110,9 @@ describe('MockIdentityProviderFcaController', () => {
     });
 
     oidcProviderServiceMock.getInteraction.mockResolvedValue(interactionMock);
-    sessionMock.get.mockResolvedValue(sessionMockValue);
+    sessionServiceMock.get.mockResolvedValue(sessionMockValue);
 
-    sessionMock.getId.mockReturnValue(sessionIdMock);
+    sessionServiceMock.getId.mockReturnValue(sessionIdMock);
   });
 
   it('should be defined', () => {
@@ -123,7 +122,7 @@ describe('MockIdentityProviderFcaController', () => {
   describe('index', () => {
     it('Should return some status object', async () => {
       // setup
-      sessionMock.init.mockResolvedValueOnce(undefined);
+      sessionServiceMock.set.mockResolvedValueOnce(undefined);
       // action
       const result = await controller.index();
       // assert
@@ -134,7 +133,7 @@ describe('MockIdentityProviderFcaController', () => {
   describe('getInteraction', () => {
     it('should call oidcProvider.getInteraction', async () => {
       // When
-      await controller.getInteraction(req, res);
+      await controller.getInteraction(req, res, sessionServiceMock);
       // Then
       expect(oidcProviderServiceMock.getInteraction).toBeCalledTimes(1);
       expect(oidcProviderServiceMock.getInteraction).toBeCalledWith(req, res);
@@ -142,15 +141,19 @@ describe('MockIdentityProviderFcaController', () => {
 
     it('should call session.get with interactionId', async () => {
       // When
-      await controller.getInteraction(req, res);
+      await controller.getInteraction(req, res, sessionServiceMock);
       // Then
-      expect(sessionMock.get).toBeCalledTimes(1);
-      expect(sessionMock.get).toBeCalledWith(req.fc.interactionId);
+      expect(sessionServiceMock.get).toBeCalledTimes(1);
+      expect(sessionServiceMock.get).toBeCalledWith();
     });
 
     it('should return an object with data from session and oidcProvider interaction', async () => {
       // When
-      const result = await controller.getInteraction(req, res);
+      const result = await controller.getInteraction(
+        req,
+        res,
+        sessionServiceMock,
+      );
       // Then
       expect(result).toEqual({
         uid: interactionMock.uid,
@@ -174,7 +177,7 @@ describe('MockIdentityProviderFcaController', () => {
         identityMock,
       );
       // When
-      await controller.getLogin(next, body);
+      await controller.getLogin(next, body, sessionServiceMock);
       // Then
 
       expect(
@@ -197,7 +200,7 @@ describe('MockIdentityProviderFcaController', () => {
         login: loginMockValue,
       };
       // When
-      await controller.getLogin(next, body);
+      await controller.getLogin(next, body, sessionServiceMock);
       // Then
       expect(next).toHaveBeenCalledTimes(1);
     });
@@ -214,9 +217,9 @@ describe('MockIdentityProviderFcaController', () => {
     const expectedError = new Error('Identity not found in database');
 
     // When / Then
-    await expect(() => controller.getLogin(next, body)).rejects.toThrow(
-      expectedError,
-    );
+    await expect(() =>
+      controller.getLogin(next, body, sessionServiceMock),
+    ).rejects.toThrow(expectedError);
     expect(next).toHaveBeenCalledTimes(0);
   });
 });

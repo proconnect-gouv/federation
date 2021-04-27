@@ -1,7 +1,9 @@
 import { ModuleRef } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { ISessionGenericService } from '@fc/session-generic';
+import { OidcSession } from '@fc/oidc';
+import { OidcClientSession } from '@fc/oidc-client';
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { CoreFcpSendEmailHandler } from '../handlers';
@@ -11,6 +13,7 @@ import {
   IFeatureHandlerDatabaseMap,
 } from '@fc/feature-handler';
 import { ProcessCore } from '../enums';
+import { IVerifyFeatureHandler } from '../interfaces';
 
 export type FcpFeature = {
   featureHandlers: IFeatureHandlerDatabaseMap<ProcessCore>;
@@ -20,7 +23,6 @@ export type FcpFeature = {
 export class CoreFcpService {
   constructor(
     private readonly logger: LoggerService,
-    private readonly session: SessionService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     public readonly moduleRef: ModuleRef,
   ) {
@@ -30,18 +32,23 @@ export class CoreFcpService {
   /**
    * Main business manipulations occurs in this method
    *
-   * @param {object} req
+   * @param {ISessionGenericService<OidcClientSession>} sessionOidc
    * @returns {Promise<void>}
    */
-  async verify(req: any): Promise<void> {
+  async verify(
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+    trackingContext: Record<string, any>,
+  ): Promise<void> {
     this.logger.debug('CoreFcpService.verify()');
 
-    const { interactionId } = req.fc;
+    const { idpId } = await sessionOidc.get();
 
-    const { idpId } = await this.session.get(interactionId);
+    const verifyHandler: IVerifyFeatureHandler = await this.getFeature<void>(
+      idpId,
+      ProcessCore.CORE_VERIFY,
+    );
 
-    const handler = await this.getFeature<void>(idpId, ProcessCore.CORE_VERIFY);
-    return await handler.handle(req);
+    return await verifyHandler.handle({ sessionOidc, trackingContext });
   }
 
   async getFeature<T>(
@@ -59,14 +66,13 @@ export class CoreFcpService {
   /**
    * Send an email to the authenticated end-user after consent.
    *
-   * @param {object} req Express
+   * @param {ISessionGenericService<OidcClientSession>} sessionOidc
    * @returns {Promise<void>}
    */
-  async sendAuthenticationMail(req: any): Promise<void> {
+  async sendAuthenticationMail(session: OidcSession): Promise<void> {
     this.logger.debug('CoreFcpService.sendAuthenticationMail()');
 
-    const { interactionId } = req.fc;
-    const { idpId } = await this.session.get(interactionId);
+    const { idpId } = session;
     const idp = await this.identityProvider.getById(idpId);
 
     let handler: CoreFcpSendEmailHandler;
@@ -76,6 +82,6 @@ export class CoreFcpService {
     } catch (e) {
       throw new CoreMissingAuthenticationEmailException(e);
     }
-    return handler.handle(req);
+    await handler.handle(session);
   }
 }

@@ -78,6 +78,7 @@
     "node-mailjet": "^3.3.1",
     "oidc-provider": "6.31.0",
     "openid-client": "4.4.0",
+    "otplib": "^11.0.1",
     "pino": "^6.3.2",
     "pkcs11js": "^1.0.19",
     "reflect-metadata": "^0.1.13",
@@ -85,8 +86,7 @@
     "rxjs": "^6.5.4",
     "uuid": "^8.1.0",
     "xml-js": "^1.6.11",
-    "xml2js": "^0.4.23",
-    "otplib": "^11.0.1"
+    "xml2js": "^0.4.23"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.1.2",

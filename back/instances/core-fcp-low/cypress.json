@@ -17,7 +17,10 @@
     "IDP_INTERACTION_URL": "https://fip1-low.docker.dev-franceconnect.fr/interaction",
     "SP1_ROOT_URL": "https://fsp1-low.docker.dev-franceconnect.fr",
     "SP1_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
-    "WELL_KNOWN": "/api/v2/.well-known/openid-configuration"
+    "SP1_ID": "#fsp1-low",
+    "WELL_KNOWN": "/api/v2/.well-known/openid-configuration",
+
+    "ALL_APPS_LISTED": "https://docker.dev-franceconnect.fr/fcp-low.html"
   },
   "ignoreTestFiles": "*.util.js",
   "projectId": "ob8yho"

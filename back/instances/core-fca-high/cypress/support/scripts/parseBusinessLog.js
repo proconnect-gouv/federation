@@ -40,11 +40,7 @@ async function interactionHasEvent([logFile, stringifiedTestEvent]) {
      * rather than having no match at all,
      * usefull for debuging purpose.
      */
-    const foundEvent = logs.find(
-      (log) =>
-        log.interactionId === testEvent.interactionId &&
-        log.event === testEvent.event,
-    );
+    const foundEvent = logs.find((log) => log.event === testEvent.event);
 
     if (!foundEvent) {
       console.error('Event not found');

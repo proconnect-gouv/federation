@@ -10,7 +10,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
-import { SessionConfig } from '@fc/session';
+import { SessionGenericConfig } from '@fc/session-generic';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -73,7 +73,7 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, 'public'));
 
-  const { cookieSecrets } = config.get<SessionConfig>('Session');
+  const { cookieSecrets } = config.get<SessionGenericConfig>('SessionGeneric');
   app.use(CookieParser(cookieSecrets));
 
   await app.listen(3000);
