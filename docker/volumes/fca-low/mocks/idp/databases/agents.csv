@@ -1,5 +1,5 @@
 login,uid,organizational_unit,siren,email,usual_name,given_name,belonging_population,siret,phone_number,chorusdt:societe,chorusdt:matricule
-test,1,comptabilite,343293775,test@abcd.com,DUBOIS,Angela Claire Louise,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123456
+test,1,comptabilite,343293775,test@abcd.com,DUBOIS,Angela Claire Louise,agent,34329377500037,+331-12-44-45-23,CHT,USER_AGC
 12354,2,comptabilite,343293775,test@abcd.com,Martinot,bernard,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123457
 12352,3,,343293775,test@abcd.com,Martinot,henry,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123458
 12355,3,comptabilite,,test@abcd.com,Martinot,mohamed,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123459
