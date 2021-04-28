@@ -40,7 +40,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/log/:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/sp.env"
@@ -84,7 +84,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/log:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/sp.env"
@@ -126,7 +126,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/log/:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/sp.env"
@@ -169,7 +169,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/log/:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/sp.env"
@@ -212,7 +212,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/log/:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/sp.env"
@@ -239,7 +239,7 @@ services:
       - public
       - data
     command: "pm2 logs"
-    
+
   ####################
   # Core FCP High
   ####################
@@ -261,7 +261,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/log:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
     ports:
@@ -296,8 +296,8 @@ services:
       - "RNIPP_HOSTNAME=haproxy"
       - "RNIPP_BASEURL=/Brpp2IdentificationComplet/individus"
       # OidcClient
-      - "HTTPS_CLIENT_CERT=/etc/ssl/client_certs/certif-client.pem"
-      - "HTTPS_CLIENT_KEY=/etc/ssl/client_certs/certif-client.key"
+      - "HTTPS_CLIENT_CERT=/etc/ssl/docker_host/app.crt"
+      - "HTTPS_CLIENT_KEY=/etc/ssl/docker_host/app.key"
       - "OidcClient_SCOPE=openid profile email address phone preferred_username birthplace birthcountry"
       # Mongo
       - "FC_DB_TYPE=mongodb"
@@ -310,7 +310,7 @@ services:
       - "FC_DB_REPLICASET=rs0"
       - "FC_DB_TLS=true"
       - "FC_DB_TLS_INSECURE=false"
-      - "FC_DB_TLS_CA_FILE=/etc/ssl/client_certs/ca.crt"
+      - "FC_DB_TLS_CA_FILE=/etc/ssl/docker_host/docker-stack-ca.crt"
       - "FC_DB_TLS_ALLOW_INVALID_HOST_NAME=false"
       - "IDENTITY_HASH_SALT=153a3cf1d20b1cbbcc098eaf70a6284051bc7aebd45f5bf0c811010ecf39968a"
       - "CLIENT_SECRET_CIPHER_PASS=JZBlwxfKnbn/RV025aw+dQxk+xoQT+Yr"
@@ -342,21 +342,17 @@ services:
     command: "pm2 logs"
 
   mongo4:
-    image: mongo:4.2
+    build:
+      context: "${WORKING_DIR}"
+      dockerfile: "${WORKING_DIR}/builds/mongodb/Dockerfile"
     hostname: mongo4
     volumes:
       - "${VOLUMES_DIR}/mongo4/scripts:/opt/scripts"
       - "${VOLUMES_DIR}/mongo4/initdb.d:/docker-entrypoint-initdb.d"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl:ro"
     environment:
       - "MONGO_INITDB_DATABASE=core-fcp-high"
       - "MONGO_INITDB_ROOT_USERNAME=rootAdmin"
       - "MONGO_INITDB_ROOT_PASSWORD=pass"
-    healthcheck:
-      test: test $$(echo "rs.initiate().ok || rs.status().ok" | mongo --host mongo4 -u $${MONGO_INITDB_ROOT_USERNAME} -p $${MONGO_INITDB_ROOT_PASSWORD} --authenticationDatabase admin $${MONGO_INITDB_DATABASE} --quiet --tls --tlsCAFile /etc/ssl/ca.crt) -eq 1
-      interval: 10s
-      start_period: 30s
-    command: --replSet rs0 --enableMajorityReadConcern --tlsMode requireTLS --tlsCertificateKeyFile /etc/ssl/mongo4.pem --keyFile /etc/ssl/mongo.keyfile
     networks:
       - data
 
@@ -374,7 +370,7 @@ services:
       - "${VOLUMES_DIR}/src/fc-apps:/var/www/app"
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/postgres.env"
@@ -391,7 +387,7 @@ services:
       - "FC_DB_DATABASE=core-fcp-high"
       - "FC_DB_TLS=true"
       - "FC_DB_TLS_INSECURE=false"
-      - "FC_DB_TLS_CA_FILE=/etc/ssl/client_certs/ca.crt"
+      - "FC_DB_TLS_CA_FILE=/etc/ssl/docker_host/docker-stack-ca.crt"
       - "FC_DB_TLS_ALLOW_INVALID_HOST_NAME=false"
       - "CLIENT_SECRET_CIPHER_PASS=JZBlwxfKnbn/RV025aw+dQxk+xoQT+Yr"
       - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
@@ -434,6 +430,7 @@ services:
       - "${VOLUMES_DIR}/src/fi-mock:/var/www/app"
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/idp-fcp.env"
@@ -463,6 +460,7 @@ services:
       - "${VOLUMES_DIR}/src/fi-mock:/var/www/app"
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
     ports:
@@ -496,6 +494,7 @@ services:
       - "${VOLUMES_DIR}/src/fi-mock:/var/www/app"
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/idp-fcp.env"
@@ -524,6 +523,7 @@ services:
       - "${VOLUMES_DIR}/src/fi-mock:/var/www/app"
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
     ports:
@@ -563,7 +563,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/log:/var/log/app"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/postgres.env"
@@ -584,7 +584,7 @@ services:
       - "FC_DB_DATABASE=core-fcp-high"
       - "FC_DB_TLS=true"
       - "FC_DB_TLS_INSECURE=false"
-      - "FC_DB_TLS_CA_FILE=/etc/ssl/client_certs/ca.crt"
+      - "FC_DB_TLS_CA_FILE=/etc/ssl/docker_host/docker-stack-ca.crt"
       - "FC_DB_TLS_ALLOW_INVALID_HOST_NAME=false"
       - "CLIENT_SECRET_CIPHER_PASS=JZBlwxfKnbn/RV025aw+dQxk+xoQT+Yr"
       - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
@@ -598,4 +598,3 @@ services:
       - exploitation
       - data
     command: "tail -f /dev/null"
-    
