@@ -16,7 +16,6 @@ COMPOSE_DIR="$FC_ROOT/fc/docker/compose"
 COMPOSE_FILES=$(find $COMPOSE_DIR -name "*.yml")
 VOLUMES_DIR="$FC_ROOT/fc/docker/volumes"
 WORKING_DIR="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
-
 # https://docs.docker.com/compose/reference/envvars/#compose_file
 COMPOSE_PATH_SEPARATOR=":"
 COMPOSE_FILE=$(join_by $COMPOSE_PATH_SEPARATOR $COMPOSE_FILES)
@@ -40,46 +39,46 @@ export NODE_VERSION
 
 _e2e_idp_insert() {
   echo "Insert idp in `core-fcp-high` database..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls --tlsCAFile /etc/ssl/ca.crt --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-insert.js
+  cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls  --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-insert.js
 }
 
 _e2e_idp_update_activate() {
   echo "Update idp in `core-fcp-high` database, activate idp..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls --tlsCAFile /etc/ssl/ca.crt --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-update-activate.js
+  cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls  --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-update-activate.js
 }
 
 _e2e_idp_update_desactivate() {
   echo "Update idp in `core-fcp-high` database, desactivate idp..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls --tlsCAFile /etc/ssl/ca.crt --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-update-desactivate.js
+  cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls  --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-update-desactivate.js
 }
 
 _e2e_idp_remove() {
   echo "Remove idp in `core-fcp-high` database..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls --tlsCAFile /etc/ssl/ca.crt --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-remove.js
+  cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls  --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-remove.js
 }
 
 # @todo replace `corev2` by `core-fca`
 _e2e_fca_idp_insert() {
   echo "Insert idp in `core-fca` database..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo-fca mongo -u 'fc' -p 'pass' --host mongo-fca --tls --tlsCAFile /etc/ssl/ca.crt --authenticationDatabase corev2 corev2 /opt/scripts/e2e-idp-insert.js
+  cd ${WORKING_DIR} && docker-compose exec -T mongo-fca mongo -u 'fc' -p 'pass' --host mongo-fca --tls  --authenticationDatabase corev2 corev2 /opt/scripts/e2e-idp-insert.js
 }
 
 # @todo replace `corev2` by `core-fca`
 _e2e_fca_idp_update_activate() {
   echo "Update idp in database, activate idp..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo-fca mongo -u 'fc' -p 'pass' --host mongo-fca --tls --tlsCAFile /etc/ssl/ca.crt --authenticationDatabase corev2 corev2 /opt/scripts/e2e-idp-update-activate.js
+  cd ${WORKING_DIR} && docker-compose exec -T mongo-fca mongo -u 'fc' -p 'pass' --host mongo-fca --tls  --authenticationDatabase corev2 corev2 /opt/scripts/e2e-idp-update-activate.js
 }
 
 # @todo replace `corev2` by `core-fca`
 _e2e_fca_idp_update_desactivate() {
   echo "Update idp in `core-fca` database, desactivate idp..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo-fca mongo -u 'fc' -p 'pass' --host mongo-fca --tls --tlsCAFile /etc/ssl/ca.crt --authenticationDatabase corev2 corev2 /opt/scripts/e2e-idp-update-desactivate.js
+  cd ${WORKING_DIR} && docker-compose exec -T mongo-fca mongo -u 'fc' -p 'pass' --host mongo-fca --tls  --authenticationDatabase corev2 corev2 /opt/scripts/e2e-idp-update-desactivate.js
 }
 
 # @todo replace `corev2` by `core-fca`
 _e2e_fca_idp_remove() {
   echo "Remove idp in `core-fca` database..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo-fca mongo -u 'fc' -p 'pass' --host mongo-fca --tls --tlsCAFile /etc/ssl/ca.crt --authenticationDatabase corev2 corev2 /opt/scripts/e2e-idp-remove.js
+  cd ${WORKING_DIR} && docker-compose exec -T mongo-fca mongo -u 'fc' -p 'pass' --host mongo-fca --tls  --authenticationDatabase corev2 corev2 /opt/scripts/e2e-idp-remove.js
 }
 
 
