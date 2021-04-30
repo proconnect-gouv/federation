@@ -15,7 +15,7 @@ export class FcException extends Error {
    * - 04: Data providers (DP)
    * - 05: eIDAS
    *
-   * @since core-v2 :
+   * @since core-fcp-high :
    * - 15: Identity
    * - 16 : Cryptography
    * - 17 : Consumer-HSM

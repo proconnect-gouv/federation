@@ -48,4 +48,4 @@ OU
 /weight 2
 /label ~"timebox::1j"
 /label ~"typechangement::normal-mineur" ~"♻️ Recurring"
-/label ~"Core V2"
+/label ~"Core FCP"

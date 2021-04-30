@@ -301,7 +301,9 @@ export function checkInformationsFrSpEuIdp() {
     cy.contains('"birthdate": "1964-12-31"');
     cy.contains('"gender": "male"');
     cy.contains('"birthplace": "Place of Birth"');
-    cy.contains('"iss": "https://corev2.docker.dev-franceconnect.fr/api/v2"');
+    cy.contains(
+      '"iss": "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2"',
+    );
   });
 
   cy.get('#html-output').within(() => {

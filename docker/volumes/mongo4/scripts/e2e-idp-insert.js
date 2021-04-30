@@ -39,10 +39,10 @@
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2v2",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2v2",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   }, { upsert: true});
   

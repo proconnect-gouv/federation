@@ -713,11 +713,14 @@ const ministries = [
 
 // ===============================================================
 
+/**
+ * @todo rename `corev2` into `core-fca`
+ */
 db = db.getSiblingDB("corev2");
 db.getSiblingDB("corev2").auth("fc", "pass");
 print("Initializing App Configuration");
 
-// -- FSs ----------
+// -- SPs ----------
 print("Initializing client: fsa1v2 - activated");
 db.client.update({ name: "fsa1v2" }, fsa.FSA1V2, { upsert: true });
 print("Initializing client: fsa2v2 - activated");
@@ -727,7 +730,7 @@ db.client.update({ name: "fsa3v2" }, fsa.FSA3V2, { upsert: true });
 print("Initializing client: fsa4v2 - activated");
 db.client.update({ name: "fsa4v2" }, fsa.FSA4V2, { upsert: true });
 
-// -- FIs ----------
+// -- IDPs ----------
 print("FIA > Initializing provider: fia1v2 - Activated");
 db.provider.update({ name: "fia1v2" }, fia.FIA1V2, { upsert: true });
 print("FIA > Initializing provider: fia2v2 - Activated");

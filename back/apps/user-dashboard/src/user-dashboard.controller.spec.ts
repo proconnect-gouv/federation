@@ -233,7 +233,7 @@ describe('UserDashboardController', () => {
   describe('revocationToken()', () => {
     it('should display success page when token is revoked', async () => {
       // setup
-      const providerUid = 'corev2';
+      const providerUid = 'core-fcp-high';
       const body = { accessToken: 'access_token' };
       // action
       const result = await controller.revocationToken(res, body);
@@ -281,7 +281,7 @@ describe('UserDashboardController', () => {
   describe('retrieveUserinfo()', () => {
     it('should retrieve and display userinfo on userinfo page', async () => {
       // setup
-      const providerUid = 'corev2';
+      const providerUid = 'core-fcp-high';
       const body = { accessToken: 'access_token' };
       oidcClientServiceMock.utils.getUserInfo.mockReturnValueOnce({
         sub: '1',

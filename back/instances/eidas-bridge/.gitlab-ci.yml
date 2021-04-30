@@ -22,16 +22,16 @@ eidas-bridge:
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
     - docker-stack up eidas
-    - docker-stack dep corev2 # eidas-bridge fsp1v2 are included in corev2 (monorepo)
-    - docker-stack start corev2 eidas-bridge csmr-hsm rnipp fsp1v2 fsp2v2 fsp3v2 fip1v2 fip2v2 fip6v2 fip7v2
+    - docker-stack dep core-fcp-high # eidas-bridge fsp1v2 are included in core-fcp-high (monorepo)
+    - docker-stack start core-fcp-high eidas-bridge csmr-hsm rnipp fsp1v2 fsp2v2 fsp3v2 fip1v2 fip2v2 fip6v2 fip7v2
     # ## -- Build like for prod
     #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
-    #- docker-stack exec corev2 yarn build eidas-bridge
+    #- docker-stack exec core-fcp-high yarn build eidas-bridge
     #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
     # ## -- Launch like prod
     #- docker-stack exec fsp1v2 yarn start:prod:mock-service-provider-high &
     #- docker-stack exec fsp2v2 yarn start:prod:mock-service-provider-high &
-    #- docker-stack exec corev2 yarn start:prod:eidas-bridge &
+    #- docker-stack exec core-fcp-high yarn start:prod:eidas-bridge &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
     - timeout 100 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://eidas-bridge.docker.dev-franceconnect.fr/.well-known/openid-configuration)" != "200" ]];
@@ -41,7 +41,7 @@ eidas-bridge:
       (docker exec fc_eidas-bridge_1 cat /tmp/.pm2/logs/eidas-bridge-out-0.log || true) &&
       exit 1)
     - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/eidas-bridge || (
-      (docker cp fc_corev2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_core-fcp-high_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_eidas-bridge_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&

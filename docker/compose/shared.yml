@@ -7,7 +7,7 @@ services:
     image: alpine
     depends_on:
       - "rp-all"
-      - "stack-v2"
+      - "stack-fcp-high"
       - "stack-fca"
       - "all-fcp-low"
 
@@ -42,7 +42,7 @@ services:
           - rnipp.docker.dev-franceconnect.fr
           - ud-back.docker.dev-franceconnect.fr
           - ud-front.docker.dev-franceconnect.fr
-          - corev2.docker.dev-franceconnect.fr
+          - core-fcp-high.docker.dev-franceconnect.fr
           - fip1v2.docker.dev-franceconnect.fr
           - fip2v2.docker.dev-franceconnect.fr
           - fip6v2.docker.dev-franceconnect.fr
