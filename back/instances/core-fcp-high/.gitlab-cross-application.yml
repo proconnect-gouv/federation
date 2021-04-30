@@ -24,25 +24,25 @@ core-fcp-high-cross-application:
     - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
-    - docker-stack up core-v2
-    - docker-stack dep corev2 exploitation-high
+    - docker-stack up fcp-high
+    - docker-stack dep core-fcp-high exploitation-high
     - docker-stack fixtures-v2
-    - docker-stack start csmr-hsm rnipp fsp1v2 fsp2v2 fip1v2 corev2 exploitation-high
+    - docker-stack start csmr-hsm rnipp fsp1v2 fsp2v2 fip1v2 core-fcp-high exploitation-high
     # ## -- Build like for prod
     #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
-    #- docker-stack exec corev2 yarn build core-fcp-high
+    #- docker-stack exec core-fcp-high yarn build core-fcp-high
     #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
     # ## -- Launch like prod
     #- docker-stack exec fsp1v2 yarn start:prod:mock-service-provider-high &
     #- docker-stack exec fsp2v2 yarn start:prod:mock-service-provider-high &
-    #- docker-stack exec corev2 yarn start:prod:core-fcp-high &
+    #- docker-stack exec core-fcp-high yarn start:prod:core-fcp-high &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
-    - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://corev2.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
-      do echo "Waiting for corev2..." && sleep 10; done' || (
-      (echo 'Cannot connect to corev2') &&
-      (docker exec fc_corev2_1 cat /tmp/.pm2/logs/corev2-error-0.log || true) &&
-      (docker exec fc_corev2_1 cat /tmp/.pm2/logs/corev2-out-0.log || true) &&
+    - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
+      do echo "Waiting for core-fcp-high..." && sleep 10; done' || (
+      (echo 'Cannot connect to core-fcp-high') &&
+      (docker exec fc_core-fcp-high_1 cat /tmp/.pm2/logs/core-fcp-high-error-0.log || true) &&
+      (docker exec fc_core-fcp-high_1 cat /tmp/.pm2/logs/core-fcp-high-out-0.log || true) &&
       exit 1)
     - timeout 100 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://exploitation-high.docker.dev-franceconnect.fr/login)" != "200" ]];
       do echo "Waiting for exploitation-high..." && sleep 10; done' ||
@@ -51,7 +51,7 @@ core-fcp-high-cross-application:
       (docker exec fc_exploitation-high_1 cat /tmp/.pm2/logs/exploitation-high-out-0.log || true) &&
       exit 1)
     - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fcp-high -s ./back/instances/core-fcp-high/cypress/integration/50.0.cross-application.spec.js || (
-      (docker cp fc_corev2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_core-fcp-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_fip1v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
