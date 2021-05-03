@@ -28,9 +28,8 @@ const SearchInputComponent = React.memo(
         htmlFor={name}
         label={<span className="h4 font-weight-bold">{label}</span>}
         name={name}>
-        <React.Fragment>
-          <span className="d-block text-left mb-2">6 caractéres minimum</span>
-          <Input.Search
+        <span className="d-block text-left mb-2">Veuillez taper le nom complet de votre administration</span>
+        <Input.Search
             className="text-left rounded-2"
             data-testid={name}
             enterButton={
@@ -52,7 +51,6 @@ const SearchInputComponent = React.memo(
             title={label}
             onChange={inputSearchHandler}
           />
-        </React.Fragment>
       </Form.Item>
     );
   },
