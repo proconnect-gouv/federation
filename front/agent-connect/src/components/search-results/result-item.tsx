@@ -11,7 +11,7 @@ type SearchResultsProps = {
 
 const ResultItemComponent = React.memo(
   ({ identityProvider }: SearchResultsProps): JSX.Element => {
-    const { active, name, uid } = identityProvider;
+    const { name, uid } = identityProvider;
     const formTargetURL = useSelector((state: RootState) => state.redirectURL);
 
     const redirectToIdentityProviderInputs = useSelector((state: RootState) =>
@@ -36,7 +36,6 @@ const ResultItemComponent = React.memo(
         ))}
         <button
           className="px-0 btn btn-link text-left"
-          disabled={!active}
           id={`idp-${uid}-button`}
           type="submit"
           onClick={buttonClickHandler}>

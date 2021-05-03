@@ -26,9 +26,9 @@ const SearchResultsComponent = React.memo(
               <dl key={ministryId} id={`ministry-${ministryId}-search-list`}>
                 <dt>{ministryName}</dt>
                 <dd>
-                  {identityProviders.length > 0 ? (
+                  {selected.length > 0 ? (
                     <ul className="unordered-list">
-                      {selected.map(idp => (
+                      {selected.filter(idp => idp.active).map(idp => (
                         <li key={`${ministryId}::${idp.uid}`}>
                           <ResultItem identityProvider={idp} />
                         </li>
