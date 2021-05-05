@@ -4,6 +4,7 @@ import {
   createDecipheriv,
   createHash,
   BinaryToTextEncoding,
+  Encoding,
 } from 'crypto';
 import { Injectable } from '@nestjs/common';
 import { LowEntropyArgumentException } from './exceptions';
@@ -45,7 +46,7 @@ export class CryptographyService {
 
   hash(
     data: string,
-    inputEncoding: BufferEncoding = 'utf8',
+    inputEncoding: Encoding = 'utf8',
     alg = 'sha256',
     outputDigest: BinaryToTextEncoding = 'hex',
   ) {
