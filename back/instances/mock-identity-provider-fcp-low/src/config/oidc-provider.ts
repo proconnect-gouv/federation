@@ -42,13 +42,13 @@ export default {
     cookies: {
       keys: JSON.parse(process.env.OIDC_PROVIDER_COOKIES_KEYS),
       long: {
-        maxAge: 600000, // 10 minutes
+        maxAge: parseInt(process.env.COOKIE_MAX_AGE, 10), // 20 minutes
         sameSite: 'lax',
         signed: true,
         path: '/',
       },
       short: {
-        maxAge: 600000, // 10 minutes
+        maxAge: parseInt(process.env.COOKIE_MAX_AGE, 10), // 20 minutes
         sameSite: 'lax',
         signed: true,
         path: '/',
