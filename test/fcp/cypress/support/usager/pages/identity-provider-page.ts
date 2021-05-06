@@ -1,7 +1,4 @@
-import {
-  IdentityProviderBase,
-  UserCredentials,
-} from '../../common/types/index';
+import { IdentityProviderBase, UserCredentials } from '../../common/types';
 
 export default class IdentityProviderPage {
   userNameSelector: string;
