@@ -164,6 +164,8 @@ type GrantType =
  */
 type ApplicationType = 'web' | 'native';
 
+type SigningAlgorithm = AsymmetricSigningAlgorithm | SymmetricSigningAlgorithm;
+
 class ClientDefaults {
   @IsArray()
   @IsString({ each: true })
@@ -174,7 +176,7 @@ class ClientDefaults {
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  id_token_signed_response_alg: AsymmetricSigningAlgorithm;
+  id_token_signed_response_alg: SigningAlgorithm;
 
   @IsArray()
   @IsString({ each: true })
