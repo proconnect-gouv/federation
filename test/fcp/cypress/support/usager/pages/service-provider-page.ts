@@ -3,7 +3,7 @@ import {
   Scope,
   ServiceProviderBase,
   UserDetails,
-} from '../../common/types/index';
+} from '../../common/types';
 
 const scopeAttributes = [
   'openid',
