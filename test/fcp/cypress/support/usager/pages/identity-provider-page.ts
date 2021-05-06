@@ -1,10 +1,15 @@
+import {
+  IdentityProviderBase,
+  UserCredentials,
+} from '../../common/types/index';
+
 export default class IdentityProviderPage {
   userNameSelector: string;
   passwordSelector: string;
   submitButtonSelector: string;
   originUrl: string;
 
-  constructor(args) {
+  constructor(args: IdentityProviderBase) {
     const {
       selectors: { password, submitButton, userName },
       url,
@@ -15,15 +20,15 @@ export default class IdentityProviderPage {
     this.originUrl = url;
   }
 
-  visit() {
+  visit(): void {
     cy.visit(this.originUrl);
   }
 
-  checkIsVisible() {
+  checkIsVisible(): void {
     cy.url().should('include', this.originUrl);
   }
 
-  login(userCredentials) {
+  login(userCredentials: UserCredentials): void {
     const { password, userName } = userCredentials;
     cy.get(this.userNameSelector).clear().type(userName);
     cy.get(this.passwordSelector).clear().type(password, { log: false });

@@ -1,3 +1,10 @@
+import {
+  ChainableElement,
+  Scope,
+  ServiceProviderBase,
+  UserDetails,
+} from '../../common/types/index';
+
 const scopeAttributes = [
   'openid',
   'profile',
@@ -20,7 +27,7 @@ export default class ServiceProviderPage {
   logoutButtonSelector: string;
   originUrl: string;
 
-  constructor(args) {
+  constructor(args: ServiceProviderBase) {
     const {
       selectors: { fcButton, logoutButton },
       url,
@@ -30,23 +37,23 @@ export default class ServiceProviderPage {
     this.originUrl = url;
   }
 
-  get fcButton() {
+  get fcButton(): ChainableElement {
     return cy.get(this.fcButtonSelector);
   }
 
-  get logoutButton() {
+  get logoutButton(): ChainableElement {
     return cy.get(this.logoutButtonSelector);
   }
 
-  visit() {
+  visit(): void {
     cy.visit(this.originUrl);
   }
 
-  checkIsVisible() {
+  checkIsVisible(): void {
     cy.url().should('include', this.originUrl);
   }
 
-  checkIsUserConnected(isConnected = true) {
+  checkIsUserConnected(isConnected = true): void {
     if (isConnected) {
       this.logoutButton.should('be.visible');
     } else {
@@ -54,7 +61,7 @@ export default class ServiceProviderPage {
     }
   }
 
-  setMockRequestedScope(requestedScope) {
+  setMockRequestedScope(requestedScope: Scope): void {
     scopeAttributes
       .filter((attribute) => !['openid'].includes(attribute))
       .forEach((attribute) => {
@@ -69,11 +76,14 @@ export default class ServiceProviderPage {
       });
   }
 
-  setMockRequestedAcr(acrValue) {
+  setMockRequestedAcr(acrValue: string): void {
     cy.get('#acrSelector').select(acrValue);
   }
 
-  checkMockInformationAccess(requestedScope, userDetails) {
+  checkMockInformationAccess(
+    requestedScope: Scope,
+    userDetails: UserDetails,
+  ): void {
     cy.get('#json-output')
       .invoke('text')
       .then((text) => {
