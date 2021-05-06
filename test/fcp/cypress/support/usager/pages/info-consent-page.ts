@@ -1,3 +1,5 @@
+import { ChainableElement, Scope } from '../../common/types/index';
+
 /* eslint-disable @typescript-eslint/naming-convention */
 // openid defined property names
 const IDENTITY_SCOPES_LABEL = {
@@ -14,20 +16,20 @@ const IDENTITY_SCOPES_LABEL = {
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
-export default class FcInfoSharingConsentPage {
-  get consentButton() {
+export default class InfoConsentPage {
+  get consentButton(): ChainableElement {
     return cy.get('#consent');
   }
 
-  get showDetailsToggle() {
+  get showDetailsToggle(): ChainableElement {
     return cy.get('#toggleOpenCloseMenu');
   }
 
-  checkIsVisible() {
+  checkIsVisible(): void {
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
   }
 
-  checkAnonymousScope() {
+  checkAnonymousScope(): void {
     cy.get('.section__identity').contains(
       'Vous avez été connecté de façon anonyme',
     );
@@ -36,7 +38,7 @@ export default class FcInfoSharingConsentPage {
     );
   }
 
-  checkInformationConsent(scope) {
+  checkInformationConsent(scope: Scope): void {
     const { attributes } = scope;
     this.showDetailsToggle.click();
     attributes
