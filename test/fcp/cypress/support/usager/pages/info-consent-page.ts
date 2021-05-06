@@ -1,4 +1,4 @@
-import { ChainableElement, Scope } from '../../common/types/index';
+import { ChainableElement, Scope } from '../../common/types';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 // openid defined property names
