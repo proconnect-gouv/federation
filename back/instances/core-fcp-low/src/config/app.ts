@@ -2,6 +2,6 @@
 
 // Tested by DTO
 export default {
-  name: 'FC_CORE_HIGH',
+  name: 'FC_CORE_LOW',
   urlPrefix: '/api/v2',
 };

@@ -31,7 +31,8 @@ export class IdentityProviderAdapterEnvConfig {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/143
    */
   @IsObject()
-  readonly jwks: JSONWebKeySet;
+  @IsOptional()
+  readonly jwks?: JSONWebKeySet;
 
   @IsString()
   readonly clientSecretEcKey: string;
