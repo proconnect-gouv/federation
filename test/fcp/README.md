@@ -1,10 +1,16 @@
-# poc-cypress-cucumber
+# fcp-system-testing
 
-POC of Test Framework using Cypress/Cucumber
+FCP validation with system tests implemented using a Test Framework (based on Cypress/Cucumber)
 
 ## Documentation
 
 - [BDD Framework documentation on the Wiki](https://gitlab.dev-franceconnect.fr/france-connect/documentation/-/wikis/Produits/Tests/Framework-BDD/Introduction)
+
+## Folder Structure
+
+- Features folder: [/cypress/integration](./cypress/integration)
+- Steps/Pages folder (usager): [/cypress/support/usager](./cypress/support/usager)
+- Test Data folder: [/cypress/fixtures](./cypress/fixtures)
 
 ## Scripts
 
@@ -34,20 +40,14 @@ CYPRESS_TEST_ENV=integ01 yarn start
 yarn report
 ```
 
-## Folder Structure
-
-- Features folder: [/cypress/integration](./cypress/integration)
-- Steps folder: [/cypress/support/steps](./cypress/support/steps)
-- Test Data folder: [/cypress/fixtures](./cypress/fixtures)
-
 ## Plugins VSCode
 
 ### Cucumber (Gherkin) Full Support
 
 https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete
 
-Ce plugin aide à la rédaction des scénarios dans les feature files.
-Le plugin automatiquement liste les steps implémentés lors de la rédaction des scénarios.
+This plugin provides support for writing/maintaining scenarios in the feature files.
+It automatically lists the implemented steps while editing the scenarios.
 
 ```
 {
@@ -66,12 +66,3 @@ Le plugin automatiquement liste les steps implémentés lors de la rédaction de
   ]
 }
 ```
-
-## Sources
-
-- [Install Cypress](https://docs.cypress.io/guides/getting-started/installing-cypress)
-- [TypeScript support for Cypress](https://docs.cypress.io/guides/tooling/typescript-support#Set-up-your-dev-environment)
-- [Cypress Cucumber preprocessor](https://www.npmjs.com/package/cypress-cucumber-preprocessor#typeScript-support)
-- [Cucumber HTML reporter](https://www.npmjs.com/package/cucumber-html-reporter)
-- [Framework Example](https://www.toolsqa.com/cypress/bdd-automation-framework-in-cypress/)
-- [BDD scénario en français](https://www.zenvalue.fr/post/l-utilisation-du-bdd-dans-la-discussion-autour-des-user-stories)
