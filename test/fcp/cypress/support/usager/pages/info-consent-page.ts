@@ -42,9 +42,9 @@ export default class InfoConsentPage {
     const { attributes } = scope;
     this.showDetailsToggle.click();
     attributes
-      .filter((scope) => scope in IDENTITY_SCOPES_LABEL)
-      .forEach((scope) =>
-        cy.contains(IDENTITY_SCOPES_LABEL[scope]).should('exist'),
+      .filter((attribute) => attribute in IDENTITY_SCOPES_LABEL)
+      .forEach((attribute) =>
+        cy.contains(IDENTITY_SCOPES_LABEL[attribute]).should('exist'),
       );
   }
 }
