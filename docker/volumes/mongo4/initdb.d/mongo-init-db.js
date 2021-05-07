@@ -41,10 +41,10 @@ const fip = {
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
 
@@ -91,10 +91,10 @@ const fip = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2v2",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2v2",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
 
@@ -145,10 +145,10 @@ const fip = {
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip-desactive-visible",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip-desactive-visible",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
 
@@ -196,10 +196,10 @@ const fip = {
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip4v2",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip4v2",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
 
@@ -247,10 +247,10 @@ const fip = {
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2v2",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2v2",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
 
@@ -297,10 +297,10 @@ const fip = {
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip6v2",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip6v2",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
 
@@ -345,10 +345,10 @@ const fip = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip7v2",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip7v2",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
 
@@ -396,10 +396,10 @@ const fip = {
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/eidas-bridge",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/eidas-bridge",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
 };
@@ -811,7 +811,7 @@ const accounts = {
 };
 // ===============================================================
 
-db = db.getSiblingDB("corev2");
+db = db.getSiblingDB("core-fcp-high");
 db.auth("fc", "pass");
 
 print("Initializing App Configuration");

@@ -4,7 +4,7 @@ En tant que dev,
 
 Je challenge l'architecture
 
-Afin m'assurer que l'architecture du core V2 est toujours adaptée et maintenable
+Afin m'assurer que l'architecture du core-fcp / core-fca est toujours adaptée et maintenable
 
 # Situation Actuelle
 
@@ -31,4 +31,4 @@ Pas de recette
 /weight 3
 /label ~"timebox::1j"
 /label ~"typechangement::normal-mineur" ~"♻️ Recurring"
-/label ~"Core V2"
+/label ~"Core-FCP"
