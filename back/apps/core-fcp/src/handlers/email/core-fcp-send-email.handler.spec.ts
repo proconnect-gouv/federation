@@ -341,6 +341,7 @@ describe('CoreFcpSendEmailHandler', () => {
   const loggerServiceMock = {
     setContext: jest.fn(),
     debug: jest.fn(),
+    trace: jest.fn(),
     warn: jest.fn(),
   };
 

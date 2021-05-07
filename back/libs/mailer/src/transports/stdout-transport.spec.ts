@@ -22,6 +22,7 @@ const emailParamsMock = {
 
 const loggerServiceMock = {
   debug: jest.fn(),
+  trace: jest.fn(),
 };
 
 describe('StdoutTransport', () => {

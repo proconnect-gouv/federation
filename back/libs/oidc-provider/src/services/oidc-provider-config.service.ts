@@ -16,7 +16,7 @@ import {
 import { OidcSession } from '@fc/oidc';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
-import { RedisAdapter } from '../adapters';
+import { OidcProviderRedisAdapter } from '../adapters';
 import { OidcProviderService } from '../oidc-provider.service';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
 
@@ -77,7 +77,9 @@ export class OidcProviderConfigService {
      * NB: If we want to add more services to the adapter,
      * we need add them to contructor and to pass them along here.
      */
-    const adapter = RedisAdapter.getConstructorWithDI(oidcProviderService);
+    const adapter = OidcProviderRedisAdapter.getConstructorWithDI(
+      oidcProviderService,
+    );
 
     /**
      * Get data from config file
