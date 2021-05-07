@@ -4,14 +4,14 @@
   "viewportHeight": 1000,
   "viewportWidth": 1400,
   "pageLoadTimeout": 30000,
-  "baseUrl": "https://corev2.docker.dev-franceconnect.fr",
+  "baseUrl": "https://core-fcp-high.docker.dev-franceconnect.fr",
   "env": {
-    "APP_DOMAIN": "corev2.docker.dev-franceconnect.fr",
-    "APP_NAME": "corev2",
-    "LOG_FILE_PATH": "../../../docker/volumes/log/corev2.log",
+    "APP_DOMAIN": "core-fcp-high.docker.dev-franceconnect.fr",
+    "APP_NAME": "core-fcp-high",
+    "LOG_FILE_PATH": "../../../docker/volumes/log/core-fcp-high.log",
     "FC_DOCKER_PATH": "../../../docker",
-    "FC_ROOT_URL": "https://corev2.docker.dev-franceconnect.fr",
-    "FC_INTERACTION_URL": "https://corev2.docker.dev-franceconnect.fr/api/v2/interaction",
+    "FC_ROOT_URL": "https://core-fcp-high.docker.dev-franceconnect.fr",
+    "FC_INTERACTION_URL": "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/interaction",
     "IDP_NAME": "fip",
     "IDP_ROOT_URL": "https://fip1v2.docker.dev-franceconnect.fr",
     "IDP_INTERACTION_URL": "https://fip1v2.docker.dev-franceconnect.fr/interaction",
@@ -31,16 +31,18 @@
 
     "ALL_APPS_LISTED": "https://docker.dev-franceconnect.fr/fcp.html",
 
-    "EXPLOITATION": [{
-      "USER_NAME": "jean_patoche",
-      "USER_PASS": "georgesmoustaki",
-      "ROLE": "operator"
-    },
-    {
-      "USER_NAME": "jean_moust",
-      "USER_PASS": "georgesmoustaki",
-      "ROLE": "admin"
-    }],
+    "EXPLOITATION": [
+      {
+        "USER_NAME": "jean_patoche",
+        "USER_PASS": "georgesmoustaki",
+        "ROLE": "operator"
+      },
+      {
+        "USER_NAME": "jean_moust",
+        "USER_PASS": "georgesmoustaki",
+        "ROLE": "admin"
+      }
+    ],
     "SECRET_TOTP": "KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD"
   },
   "ignoreTestFiles": "*.util.js",

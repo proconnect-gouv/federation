@@ -24,7 +24,7 @@ describe('IdentityProviderAdapterEnvService', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     discovery: true,
     discoveryUrl:
-      'https://corev2.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
+      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     id_token_signed_response_alg: 'ES256',
@@ -77,7 +77,7 @@ describe('IdentityProviderAdapterEnvService', () => {
       client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
       discovery: true,
       discoveryUrl:
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_signed_response_alg: 'ES256',

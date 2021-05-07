@@ -6,8 +6,8 @@
   "pageLoadTimeout": 30000,
   "baseUrl": "https://eidas-bridge.docker.dev-franceconnect.fr",
   "env": {
-    "CORE_LOG_FILE_PATH": "../../../docker/volumes/log/corev2.log",
-    "CORE_ROOT_URL": "https://corev2.docker.dev-franceconnect.fr",
+    "CORE_LOG_FILE_PATH": "../../../docker/volumes/log/core-fcp-high.log",
+    "CORE_ROOT_URL": "https://core-fcp-high.docker.dev-franceconnect.fr",
 
     "BE_SP_URL": "https://eidas-be.docker.dev-franceconnect.fr/SP/populateIndexPage",
 

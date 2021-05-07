@@ -1,6 +1,6 @@
-# FC Core v2
+# FC Core FCP / FCA
 
-Core & backoffice applications v2
+Core & backoffice applications
 
 ## Librairies
 

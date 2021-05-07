@@ -4,7 +4,7 @@ db.createUser({
   user: "fc",
   pwd: "pass",
   roles: [
-    { role: "dbOwner", db: "corev2" },
-    { role: "readWrite", db: "corev2" }
+    { role: "dbOwner", db: "core-fcp-high" },
+    { role: "readWrite", db: "core-fcp-high" }
   ]
 });

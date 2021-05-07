@@ -1,3 +1,6 @@
+/**
+ * @todo rename `corev2` into `core-fca`
+ */
 db = db.getSiblingDB("corev2");
 
 print("Reseting account collection...");

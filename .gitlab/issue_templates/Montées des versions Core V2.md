@@ -36,4 +36,4 @@ Sur chaque projet dev, jouer les commandes:
 /weight 3
 /label ~"timebox::1j"
 /label ~"typechangement::normal-mineur" ~"♻️ Recurring"
-/label ~"Core V2"
+/label ~"Core FCP"

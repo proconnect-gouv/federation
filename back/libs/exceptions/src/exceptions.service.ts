@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { FcException, HttpException, RpcException } from './exceptions';
 
 /**
- * Global core v2 Error prefix
+ * Global core Error prefix
  *
  * "Y" was a random choice to be different from legacy core ("E")
  * We actually ran pwgen and got the first letter.

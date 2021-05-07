@@ -101,7 +101,7 @@ export class UserDashboardController {
        * @TODO #251 ETQ Dev, j'utilise une configuration pour savoir si j'utilise FC, AC, EIDAS, et avoir les valeurs de scope et acr en config et non en dur.
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
        */
-      const providerUid = 'corev2';
+      const providerUid = 'core-fcp-high';
       const { accessToken } = body;
       await this.oidcClient.utils.revokeToken(accessToken, providerUid);
 
@@ -201,7 +201,7 @@ export class UserDashboardController {
        * @TODO #251 ETQ Dev, j'utilise une configuration pour savoir si j'utilise FC, AC, EIDAS, et avoir les valeurs de scope et acr en config et non en dur.
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
        */
-      const providerUid = 'corev2';
+      const providerUid = 'core-fcp-high';
       const { accessToken } = body;
       // OIDC: call idp's /userinfo endpoint
       const idpIdentity = await this.oidcClient.utils.getUserInfo(
