@@ -14,13 +14,13 @@ db.provider.update(
     mailto: "",
     featureHandlers: { coreVerify: "core-fca-default-verify" },
     specificText: "specific text FI 3",
-    url: "https://fip2v2.docker.dev-franceconnect.fr/",
-    statusURL: "https://fip2v2.docker.dev-franceconnect.fr/",
-    authzURL: "https://fip2v2.docker.dev-franceconnect.fr/user/authorize",
-    tokenURL: "https://fip2v2.docker.dev-franceconnect.fr/user/token",
-    userInfoURL: "https://fip2v2.docker.dev-franceconnect.fr/api/user",
+    url: "https://fia2v2.docker.dev-franceconnect.fr/",
+    statusURL: "https://fia2v2.docker.dev-franceconnect.fr/",
+    authzURL: "https://fia2v2.docker.dev-franceconnect.fr/user/authorize",
+    tokenURL: "https://fia2v2.docker.dev-franceconnect.fr/user/token",
+    userInfoURL: "https://fia2v2.docker.dev-franceconnect.fr/api/user",
     discoveryUrl:
-      "https://fip2v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://fia2v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
     clientID: "idptest",
     client_secret:
@@ -29,7 +29,7 @@ db.provider.update(
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fip2v2.docker.dev-franceconnect.fr/user/session/end",
+      "https://fia2v2.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "HS256",
     token_endpoint_auth_method: "client_secret_post",
@@ -40,10 +40,10 @@ db.provider.update(
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2v2",
+      "https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2v2",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://fca.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
   { upsert: true }

@@ -3,10 +3,10 @@ version: "3.4"
 ####################
 ####################
 services:
-  stack-v2:
+  stack-fcp-high:
     image: alpine
     depends_on:
-      - "corev2"
+      - "core-fcp-high"
       - "exploitation-high"
       - "fsp1v2"
       - "fsp2v2"
@@ -106,7 +106,6 @@ services:
       # OidcClient
       - "OidcClient_ACR=eidas2"
       - "OidcClient_SCOPE=openid profile gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone birth identite_pivot"
-
     networks:
       - public
       - data
@@ -242,11 +241,11 @@ services:
     command: "pm2 logs"
     
   ####################
-  # Core V2
+  # Core FCP High
   ####################
 
-  corev2:
-    hostname: corev2
+  core-fcp-high:
+    hostname: core-fcp-high
     image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -270,7 +269,7 @@ services:
     tty: true
     environment:
       - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9235"
-      - "VIRTUAL_HOST=corev2.docker.dev-franceconnect.fr"
+      - "VIRTUAL_HOST=core-fcp-high.docker.dev-franceconnect.fr"
       - "REQUEST_TIMEOUT=6000"
       # Set OIDC library debugging mode: https://www.npmjs.com/package/oidc-provider#debugging
       - "DEBUG=oidc-provider:*"
@@ -283,9 +282,9 @@ services:
       - "GLOBAL_AGENT_HTTPS_PROXY=http://squid:3128"
       - "GLOBAL_AGENT_NO_PROXY=haproxy"
       # Logger
-      - "EVT_LOG_FILE=/var/log/app/corev2.log"
+      - "EVT_LOG_FILE=/var/log/app/core-fcp-high.log"
       # OidcProvider
-      - "FQDN=corev2.docker.dev-franceconnect.fr"
+      - "FQDN=core-fcp-high.docker.dev-franceconnect.fr"
       - "PREFIX=/api/v2"
       ## Beware, the "kid" of "CRYPTO_SIG_FAKE_PRIV_KEY" and "CRYPTO_SIG_HSM_PUB_KEY" must be the same !
       - 'CRYPTO_SIG_FAKE_PRIV_KEY={"crv":"P-256","x":"uRxO96Oqn0BEJZYua3rkM9ntzLbt_nDbq4hwSgOUomQ","y":"o9BoK63TMCGmXjOcCZbtOTmw5HdGiy5ZzY4Qo5KG638","d":"sMJDu7_nEjB0SwTKuKR8XiZPHvoUkem3rdgxP39kkfQ","kty":"EC","kid":"pkcs11:hsm","use":"sig"}'
@@ -303,7 +302,7 @@ services:
       # Mongo
       - "FC_DB_TYPE=mongodb"
       - "FC_DB_HOSTS=mongo4:27017"
-      - "FC_DB_DATABASE=corev2"
+      - "FC_DB_DATABASE=core-fcp-high"
       - "FC_DB_USER=fc"
       - "FC_DB_PASSWORD=pass"
       - "FC_DB_SYNCHRONIZE=false"
@@ -350,7 +349,7 @@ services:
       - "${VOLUMES_DIR}/mongo4/initdb.d:/docker-entrypoint-initdb.d"
       - "${VOLUMES_DIR}/ssl:/etc/ssl:ro"
     environment:
-      - "MONGO_INITDB_DATABASE=corev2"
+      - "MONGO_INITDB_DATABASE=core-fcp-high"
       - "MONGO_INITDB_ROOT_USERNAME=rootAdmin"
       - "MONGO_INITDB_ROOT_PASSWORD=pass"
     healthcheck:
@@ -389,7 +388,7 @@ services:
       - "DB_HOST=pg-exploitation-high"
       - "FC_DB_TYPE=mongodb"
       - "FC_DB_HOSTS=mongo4:27017"
-      - "FC_DB_DATABASE=corev2"
+      - "FC_DB_DATABASE=core-fcp-high"
       - "FC_DB_TLS=true"
       - "FC_DB_TLS_INSECURE=false"
       - "FC_DB_TLS_CA_FILE=/etc/ssl/client_certs/ca.crt"
@@ -406,8 +405,8 @@ services:
       - 'IDP_DEFAULT_FEATURE_HANDLERS={ "coreVerify": "core-fcp-default-verify", "authenticationEmail": "core-fcp-send-email" }'
       - 'IDP_DEFAULT_RESPONSE_TYPES=["code"]'
       - 'IDP_DEFAULT_REVOCATION_ENDPOINT_AUTH_METHOD=client_secret_post'
-      - 'IDP_DEFAULT_REDIRECT_URIS=https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback'
-      - 'IDP_DEFAULT_POST_LOGOUT_REDIRECT_URIS=["https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp"]'
+      - 'IDP_DEFAULT_REDIRECT_URIS=https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback'
+      - 'IDP_DEFAULT_POST_LOGOUT_REDIRECT_URIS=["https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp"]'
     networks:
       - exploitation
       - data
@@ -446,7 +445,7 @@ services:
       - "SSL_CLIENT_PROTECTED_URIS=/user/token,/api/user"
       - "VIRTUAL_HOST=fip1v2.docker.dev-franceconnect.fr"
       - "ISSUER=https://fip1v2.docker.dev-franceconnect.fr"
-      - "REDIRECT_URI=https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2"
+      - "REDIRECT_URI=https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2"
       - "CLIENT_ID=09a1a257648c1742c74d6a3d84b31943"
       - "CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f"
       # Set OIDC library debugging mode: https://www.npmjs.com/package/oidc-provider#debugging
@@ -474,7 +473,7 @@ services:
       - "SSL_CLIENT_PROTECTED_URIS=/user/token,/api/user"
       - "VIRTUAL_HOST=fip2v2.docker.dev-franceconnect.fr"
       - "ISSUER=https://fip2v2.docker.dev-franceconnect.fr"
-      - "REDIRECT_URI=https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2v2"
+      - "REDIRECT_URI=https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2v2"
       - "CLIENT_ID=myclientidforfip2v2"
       - "CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f"
       - "DATABASE_PATH=/var/www/app/data"
@@ -508,7 +507,7 @@ services:
       - "SSL_CLIENT_PROTECTED_URIS=/user/token,/api/user"
       - "VIRTUAL_HOST=fip6v2.docker.dev-franceconnect.fr"
       - "ISSUER=https://fip6v2.docker.dev-franceconnect.fr"
-      - "REDIRECT_URI=https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip6v2"
+      - "REDIRECT_URI=https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip6v2"
       - "CLIENT_ID=69a1a257648c1742c74d6a3d84b31943"
       - "CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f"
       - "DATABASE_PATH=/var/www/app/data"
@@ -535,7 +534,7 @@ services:
       - "SSL_CLIENT_PROTECTED_URIS=/user/token,/api/user"
       - "VIRTUAL_HOST=fip7v2.docker.dev-franceconnect.fr"
       - "ISSUER=https://fip7v2.docker.dev-franceconnect.fr"
-      - "REDIRECT_URI=https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip7v2"
+      - "REDIRECT_URI=https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip7v2"
       - "CLIENT_ID=79a1a257648c1742c74d6a3d84b31943"
       - "CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f"
       - "DATABASE_PATH=/var/www/app/data"
@@ -582,7 +581,7 @@ services:
       - "DB_HOST=pg-exploitation-high"
       - "FC_DB_TYPE=mongodb"
       - "FC_DB_HOSTS=mongo4:27017"
-      - "FC_DB_DATABASE=corev2"
+      - "FC_DB_DATABASE=core-fcp-high"
       - "FC_DB_TLS=true"
       - "FC_DB_TLS_INSECURE=false"
       - "FC_DB_TLS_CA_FILE=/etc/ssl/client_certs/ca.crt"

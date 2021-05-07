@@ -1,4 +1,4 @@
-db = db.getSiblingDB("corev2");
+db = db.getSiblingDB("core-fcp-high");
 
 print("Reseting account collection...");
 db.account.remove({});

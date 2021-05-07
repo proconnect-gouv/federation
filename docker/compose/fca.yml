@@ -342,6 +342,7 @@ services:
       - "${VOLUMES_DIR}/mongo-fca/initdb.d:/docker-entrypoint-initdb.d"
       - "${VOLUMES_DIR}/ssl:/etc/ssl:ro"
     environment:
+      # @todo rename `corev2` into `core-fca`
       - "MONGO_INITDB_DATABASE=corev2"
       - "MONGO_INITDB_ROOT_USERNAME=rootAdmin"
       - "MONGO_INITDB_ROOT_PASSWORD=pass"

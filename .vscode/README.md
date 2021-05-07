@@ -42,7 +42,7 @@ This is the configuration to update when the repository `fi-mock` will be create
 //   "name": "FCP - FIP1v2",
 //   "type": "node",
 //   "request": "attach",
-//   "port": 9236, // <-- @see /fc-docker/compose/corev2.yml:333
+//   "port": 9236, // <-- @see /fc/docker/compose/fcp-high.yml:333
 //   "address": "localhost",
 //   "protocol": "inspector",
 //   "localRoot": "${workspaceFolder}/back",
@@ -63,7 +63,7 @@ This is the configuration to update when the repository `fi-mock` will be create
 //   "name": "FCP - FIP2v2",
 //   "type": "node",
 //   "request": "attach",
-//   "port": 9237, // <-- @see /fc-docker/compose/corev2.yml:333
+//   "port": 9237, // <-- @see /fc/docker/compose/fcp-high.yml:333
 //   "address": "localhost",
 //   "protocol": "inspector",
 //   "localRoot": "${workspaceFolder}/back",

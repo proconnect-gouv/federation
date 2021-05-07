@@ -18,13 +18,13 @@ db.provider.replaceOne(
     eidas: 3,
     mailto: "",
     specificText: "specific text impot_gouv",
-    url: "https://fip1v2.docker.dev-franceconnect.fr/",
-    statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
-    authzURL: "https://fip1v2.docker.dev-franceconnect.fr/user/authorize",
-    tokenURL: "https://fip1v2.docker.dev-franceconnect.fr/user/token",
-    userInfoURL: "https://fip1v2.docker.dev-franceconnect.fr/api/user",
+    url: "https://fip1-low.docker.dev-franceconnect.fr/",
+    statusURL: "https://fip1-low.docker.dev-franceconnect.fr/",
+    authzURL: "https://fip1-low.docker.dev-franceconnect.fr/user/authorize",
+    tokenURL: "https://fip1-low.docker.dev-franceconnect.fr/user/token",
+    userInfoURL: "https://fip1-low.docker.dev-franceconnect.fr/api/user",
     discoveryUrl:
-      "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://fip1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
     clientID: "09a1a257648c1742c74d6a3d84b31943",
     client_secret:
@@ -33,7 +33,7 @@ db.provider.replaceOne(
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fip1v2.docker.dev-franceconnect.fr/user/session/end",
+      "https://fip1-low.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "HS256",
     token_endpoint_auth_method: "client_secret_post",
@@ -44,10 +44,10 @@ db.provider.replaceOne(
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-low",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   }
 );
@@ -74,13 +74,13 @@ db.provider.replaceOne(
     eidas: 3,
     mailto: "",
     specificText: "specific text ameli",
-    url: "https://fip1v2.docker.dev-franceconnect.fr/",
-    statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
-    authzURL: "https://fip1v2.docker.dev-franceconnect.fr/user/authorize",
-    tokenURL: "https://fip1v2.docker.dev-franceconnect.fr/user/token",
-    userInfoURL: "https://fip1v2.docker.dev-franceconnect.fr/api/user",
+    url: "https://fip1-low.docker.dev-franceconnect.fr/",
+    statusURL: "https://fip1-low.docker.dev-franceconnect.fr/",
+    authzURL: "https://fip1-low.docker.dev-franceconnect.fr/user/authorize",
+    tokenURL: "https://fip1-low.docker.dev-franceconnect.fr/user/token",
+    userInfoURL: "https://fip1-low.docker.dev-franceconnect.fr/api/user",
     discoveryUrl:
-      "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://fip1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
     clientID: "09a1a257648c1742c74d6a3d84b31943",
     client_secret:
@@ -89,7 +89,7 @@ db.provider.replaceOne(
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fip1v2.docker.dev-franceconnect.fr/user/session/end",
+      "https://fip1-low.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "HS256",
     token_endpoint_auth_method: "client_secret_post",
@@ -100,10 +100,10 @@ db.provider.replaceOne(
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-low",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   }
 );
@@ -130,13 +130,13 @@ db.provider.replaceOne(
     eidas: 3,
     mailto: "",
     specificText: "specific text la_poste",
-    url: "https://fip1v2.docker.dev-franceconnect.fr/",
-    statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
-    authzURL: "https://fip1v2.docker.dev-franceconnect.fr/user/authorize",
-    tokenURL: "https://fip1v2.docker.dev-franceconnect.fr/user/token",
-    userInfoURL: "https://fip1v2.docker.dev-franceconnect.fr/api/user",
+    url: "https://fip1-low.docker.dev-franceconnect.fr/",
+    statusURL: "https://fip1-low.docker.dev-franceconnect.fr/",
+    authzURL: "https://fip1-low.docker.dev-franceconnect.fr/user/authorize",
+    tokenURL: "https://fip1-low.docker.dev-franceconnect.fr/user/token",
+    userInfoURL: "https://fip1-low.docker.dev-franceconnect.fr/api/user",
     discoveryUrl:
-      "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://fip1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
     clientID: "09a1a257648c1742c74d6a3d84b31943",
     client_secret:
@@ -145,7 +145,7 @@ db.provider.replaceOne(
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fip1v2.docker.dev-franceconnect.fr/user/session/end",
+      "https://fip1-low.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "HS256",
     token_endpoint_auth_method: "client_secret_post",
@@ -156,10 +156,10 @@ db.provider.replaceOne(
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-low",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   }
 );
@@ -186,13 +186,13 @@ db.provider.replaceOne(
     eidas: 3,
     mailto: "",
     specificText: "specific text mobile_connect",
-    url: "https://fip1v2.docker.dev-franceconnect.fr/",
-    statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
-    authzURL: "https://fip1v2.docker.dev-franceconnect.fr/user/authorize",
-    tokenURL: "https://fip1v2.docker.dev-franceconnect.fr/user/token",
-    userInfoURL: "https://fip1v2.docker.dev-franceconnect.fr/api/user",
+    url: "https://fip1-low.docker.dev-franceconnect.fr/",
+    statusURL: "https://fip1-low.docker.dev-franceconnect.fr/",
+    authzURL: "https://fip1-low.docker.dev-franceconnect.fr/user/authorize",
+    tokenURL: "https://fip1-low.docker.dev-franceconnect.fr/user/token",
+    userInfoURL: "https://fip1-low.docker.dev-franceconnect.fr/api/user",
     discoveryUrl:
-      "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://fip1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
     clientID: "09a1a257648c1742c74d6a3d84b31943",
     client_secret:
@@ -201,7 +201,7 @@ db.provider.replaceOne(
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fip1v2.docker.dev-franceconnect.fr/user/session/end",
+      "https://fip1-low.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "HS256",
     token_endpoint_auth_method: "client_secret_post",
@@ -212,10 +212,10 @@ db.provider.replaceOne(
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-low",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   }
 );
@@ -242,13 +242,13 @@ db.provider.replaceOne(
     eidas: 3,
     mailto: "",
     specificText: "specific text msa",
-    url: "https://fip1v2.docker.dev-franceconnect.fr/",
-    statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
-    authzURL: "https://fip1v2.docker.dev-franceconnect.fr/user/authorize",
-    tokenURL: "https://fip1v2.docker.dev-franceconnect.fr/user/token",
-    userInfoURL: "https://fip1v2.docker.dev-franceconnect.fr/api/user",
+    url: "https://fip1-low.docker.dev-franceconnect.fr/",
+    statusURL: "https://fip1-low.docker.dev-franceconnect.fr/",
+    authzURL: "https://fip1-low.docker.dev-franceconnect.fr/user/authorize",
+    tokenURL: "https://fip1-low.docker.dev-franceconnect.fr/user/token",
+    userInfoURL: "https://fip1-low.docker.dev-franceconnect.fr/api/user",
     discoveryUrl:
-      "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://fip1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
     clientID: "09a1a257648c1742c74d6a3d84b31943",
     client_secret:
@@ -257,7 +257,7 @@ db.provider.replaceOne(
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fip1v2.docker.dev-franceconnect.fr/user/session/end",
+      "https://fip1-low.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "HS256",
     token_endpoint_auth_method: "client_secret_post",
@@ -268,10 +268,10 @@ db.provider.replaceOne(
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-low",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   }
 );
@@ -298,13 +298,13 @@ db.provider.replaceOne(
     eidas: 3,
     mailto: "",
     specificText: "specific text alicem",
-    url: "https://fip1v2.docker.dev-franceconnect.fr/",
-    statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
-    authzURL: "https://fip1v2.docker.dev-franceconnect.fr/user/authorize",
-    tokenURL: "https://fip1v2.docker.dev-franceconnect.fr/user/token",
-    userInfoURL: "https://fip1v2.docker.dev-franceconnect.fr/api/user",
+    url: "https://fip1-low.docker.dev-franceconnect.fr/",
+    statusURL: "https://fip1-low.docker.dev-franceconnect.fr/",
+    authzURL: "https://fip1-low.docker.dev-franceconnect.fr/user/authorize",
+    tokenURL: "https://fip1-low.docker.dev-franceconnect.fr/user/token",
+    userInfoURL: "https://fip1-low.docker.dev-franceconnect.fr/api/user",
     discoveryUrl:
-      "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://fip1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
     clientID: "09a1a257648c1742c74d6a3d84b31943",
     client_secret:
@@ -313,7 +313,7 @@ db.provider.replaceOne(
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fip1v2.docker.dev-franceconnect.fr/user/session/end",
+      "https://fip1-low.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "HS256",
     token_endpoint_auth_method: "client_secret_post",
@@ -324,10 +324,10 @@ db.provider.replaceOne(
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-low",
     ],
     post_logout_redirect_uris: [
-      "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   }
 );

@@ -31,27 +31,31 @@ describe('IdentityProviderAdapterMongoService', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
       discovery: true,
-      discoveryUrl: 'https://corev2.docker.dev-franceconnect.fr/well_known_url',
+      discoveryUrl:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/well_known_url',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_signed_response_alg: 'HS256',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       post_logout_redirect_uris: [
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
       ],
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uris: [
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
       ],
-      tokenURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/token',
-      jwksURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/certs',
-      authzURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/authorize',
-      userInfoURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/userinfo',
-      url: 'https://corev2.docker.dev-franceconnect.fr',
+      tokenURL:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
+      jwksURL: 'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
+      authzURL:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
+      userInfoURL:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo',
+      url: 'https://core-fcp-high.docker.dev-franceconnect.fr',
       endSessionURL:
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
       featureHandlers: {
         coreVerify: 'core-fcp-default-verify',
         authenticationEmail: null,
@@ -97,40 +101,43 @@ describe('IdentityProviderAdapterMongoService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-      issuer: 'https://corev2.docker.dev-franceconnect.fr',
+      issuer: 'https://core-fcp-high.docker.dev-franceconnect.fr',
       discovery: true,
-      discoveryUrl: 'https://corev2.docker.dev-franceconnect.fr/well_known_url',
+      discoveryUrl:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/well_known_url',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_signed_response_alg: 'HS256',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       post_logout_redirect_uris: [
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
       ],
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uris: [
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
       ],
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      token_endpoint: 'https://corev2.docker.dev-franceconnect.fr/api/v2/token',
+      token_endpoint:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       authorization_endpoint:
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/authorize',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      jwks_uri: 'https://corev2.docker.dev-franceconnect.fr/api/v2/certs',
+      jwks_uri:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       userinfo_endpoint:
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/userinfo',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       end_session_endpoint:
-        'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       response_types: ['code'],
