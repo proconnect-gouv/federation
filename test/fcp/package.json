@@ -1,7 +1,7 @@
 {
-  "name": "poc-cypress-cucumber",
+  "name": "fcp-system-testing",
   "version": "1.0.0",
-  "description": "POC for a Test Framework using Cypress/Cucumber",
+  "description": "FCP - System Testing using Cypress/Cucumber",
   "main": "index.js",
   "dependencies": {
     "@types/cypress-cucumber-preprocessor": "^4.0.0",
