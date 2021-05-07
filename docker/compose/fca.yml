@@ -171,10 +171,10 @@ services:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/sp-fca.env"
     ports:
-      - 9237:9237
+      - 9245:9245
     tty: true
     environment:
-      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9237 mock-service-provider-fca"
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9245 mock-service-provider-fca"
       - "VIRTUAL_HOST=fsa4v2.docker.dev-franceconnect.fr"
       - 'REDIRECT_URIS=["https://fsa4v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
       - 'POST_LOGOUT_REDIRECT_URIS=["https://fsa4v2.docker.dev-franceconnect.fr/logout-callback"]'
@@ -465,11 +465,11 @@ services:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/idp-fca.env"
     ports:
-      - 9235:9235
+      - 9248:9248
     tty: true
     environment:
       - "PREFIX="
-      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9235 mock-identity-provider-fca-high"
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9248 mock-identity-provider-fca-high"
       # Mongo
       - "VIRTUAL_HOST=fia4v2.docker.dev-franceconnect.fr"
       - "ISSUER=https://fia4v2.docker.dev-franceconnect.fr"
@@ -503,11 +503,11 @@ services:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/idp-fca.env"
     ports:
-      - 9236:9236
+      - 9246:9246
     tty: true
     environment:
       - "PREFIX="
-      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9236 mock-identity-provider-fca-high"
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9246 mock-identity-provider-fca-high"
       # Mongo
       - "VIRTUAL_HOST=fia5v2.docker.dev-franceconnect.fr"
       - "ISSUER=https://fia5v2.docker.dev-franceconnect.fr"
@@ -576,7 +576,6 @@ services:
       - 'IDP_DEFAULT_REVOCATION_ENDPOINT_AUTH_METHOD=client_secret_post'
       - 'IDP_DEFAULT_REDIRECT_URIS=https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback'
       - 'IDP_DEFAULT_POST_LOGOUT_REDIRECT_URIS=["https://fca.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp"]'
-
     networks:
       - exploitation
       - data
@@ -610,8 +609,10 @@ services:
       - "${COMPOSE_DIR}/base-app.env"
       - "${COMPOSE_DIR}/postgres.env"
       - "${COMPOSE_DIR}/fc-mongo.env"
+    ports:
+      - 9251:9251
     environment:
-      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9243 exploit-fca-instance"
+      - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9251 exploit-fca-instance"
       - "VIRTUAL_HOST=exploit-fca.docker.dev-franceconnect.fr"
       - "FQDN=exploit-fca.docker.dev-franceconnect.fr"
       # Logger

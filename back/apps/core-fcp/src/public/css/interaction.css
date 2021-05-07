@@ -138,6 +138,16 @@ main > h1 + h2 {
   font-size: 1.6em;
   margin: 16px 0;
 }
+.identity-provider.overflow button {
+  flex-direction: row;
+  max-width: 400px;
+}
+
+.identity-provider.overflow .icon-container {
+  width: 60px;
+  height: 60px;
+  margin: 0 16px 0 0;
+}
 
 .identity-provider.overflow .icon-container {
   height: auto;
@@ -151,6 +161,7 @@ main > h1 + h2 {
 .identity-provider.overflow button strong{
   display: initial;
   margin: 0;
+  text-align: left;
 }
 
 @media screen and (min-width: 768px) {
@@ -167,22 +178,21 @@ main > h1 + h2 {
 }
 
 .identity-provider .icon-container {
-  width: 60px;
-  height: 60px;
-  margin: 0 16px 0 0;
+  width: 55%;
+  max-width: 155px;
+  margin-bottom: 8px;
 }
 
 .identity-provider .icon-container img {
   border-radius: 8px;
   width: 100%;
-  box-shadow: 0 0 1px 0 rgba(0, 0, 145, 0.7);
 }
 
 .identity-provider button {
   outline: none;
   width: 100%;
-  max-width: 400px;
-  padding: 16px;
+  max-width: 310px;
+  padding: 16px 12px;
   border: solid 2px transparent;
   margin: 8px 0;
   box-shadow: 0 0 3px rgba(0, 0, 145, 0.3);
@@ -196,12 +206,13 @@ main > h1 + h2 {
   color: #3e4553;
   display: flex;
   align-items: center;
+  flex-direction: column;
 }
 
 .identity-provider button span, .identity-provider button strong {
   font-size: 16px;
   display: block;
-  text-align: left;
+  text-align: center;
   color: #3e4553;
   line-height: 1.31;
 }
@@ -209,7 +220,6 @@ main > h1 + h2 {
 .identity-provider button span {
   font-weight: normal;
   margin-bottom: 5px;
-  width: 80%;
 }
 
 .identity-provider button strong {
@@ -230,6 +240,12 @@ main > h1 + h2 {
   background-color: transparent;
   box-shadow: 0 0 9px 0 #b4b4dc;
   border: solid 2px #000091;
+}
+
+@media screen and (min-width: 576px) {
+  .identity-provider button {
+    padding: 24px;
+  }
 }
 
 /** tuto section **/

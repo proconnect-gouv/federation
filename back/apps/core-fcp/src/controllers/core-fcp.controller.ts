@@ -229,8 +229,9 @@ export class CoreFcpController {
       throw new CoreMissingIdentityException();
     }
 
+    this.logger.trace({ csrf, spIdentity, csrfToken });
+
     // send the notification mail to the final user
-    this.logger.debug('Sending authentication email to the end-user');
     await this.core.sendAuthenticationMail(session);
 
     // Pass the query to `@fc/oidc-provider` controller

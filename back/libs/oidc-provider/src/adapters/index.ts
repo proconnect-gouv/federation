@@ -1,1 +1,1 @@
-export * from './redis.adapter';
+export * from './oidc-provider-redis.adapter';

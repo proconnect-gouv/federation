@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
-import { LoggerService, LogLevelNames } from '@fc/logger';
+import { LoggerService, LoggerLevelNames } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
 import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
 import { OidcClientConfigService } from './oidc-client-config.service';
@@ -57,7 +57,7 @@ describe('OidcClientConfigService', () => {
         case 'Logger':
           return {
             path: '/dev/null',
-            level: LogLevelNames.TRACE,
+            level: LoggerLevelNames.TRACE,
             isDevelopment: false,
           };
       }

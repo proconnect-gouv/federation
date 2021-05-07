@@ -7,7 +7,7 @@
  *
  * Since we have to explicitly implement the interface to do so.
  */
-export abstract class IBusinessEvent {
+export abstract class ILoggerBusinessEvent {
   readonly category: string;
   readonly event: string;
   readonly ip: string;
