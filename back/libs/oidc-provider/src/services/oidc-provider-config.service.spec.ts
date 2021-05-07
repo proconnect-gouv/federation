@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
-import { LoggerService, LogLevelNames } from '@fc/logger';
+import { LoggerService, LoggerLevelNames } from '@fc/logger';
 import { SessionGenericService } from '@fc/session-generic';
 import Provider, { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
-import { RedisAdapter } from '../adapters';
+import { OidcProviderRedisAdapter } from '../adapters';
 import { OidcProviderService } from '../oidc-provider.service';
 import { OidcProviderConfigService } from './oidc-provider-config.service';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
@@ -47,7 +47,7 @@ describe('OidcProviderErrorService', () => {
     getById: jest.fn(),
   };
 
-  const redisAdapterMock = class AdapterMock {};
+  const oidcProviderRedisAdapterMock = class AdapterMock {};
 
   const oidcProviderServiceMock = {} as OidcProviderService;
 
@@ -55,7 +55,7 @@ describe('OidcProviderErrorService', () => {
     prefix: '/api',
     issuer: 'http://foo.bar',
     configuration: {
-      adapter: redisAdapterMock,
+      adapter: oidcProviderRedisAdapterMock,
       jwks: { keys: [] },
       features: {
         devInteractions: { enabled: false },
@@ -102,7 +102,7 @@ describe('OidcProviderErrorService', () => {
         case 'Logger':
           return {
             path: '/dev/null',
-            level: LogLevelNames.TRACE,
+            level: LoggerLevelNames.TRACE,
             isDevelopment: false,
           };
       }
@@ -164,18 +164,20 @@ describe('OidcProviderErrorService', () => {
   describe('getConfig()', () => {
     it('should call several services and concat their ouputs', async () => {
       // Given
-      RedisAdapter.getConstructorWithDI = jest
+      OidcProviderRedisAdapter.getConstructorWithDI = jest
         .fn()
-        .mockReturnValue(redisAdapterMock);
+        .mockReturnValue(oidcProviderRedisAdapterMock);
       // When
       const result = await service.getConfig(oidcProviderServiceMock);
       // Then
       expect(serviceProviderServiceMock.getList).toHaveBeenCalledTimes(1);
 
-      expect(RedisAdapter.getConstructorWithDI).toHaveBeenCalledTimes(1);
-      expect(RedisAdapter.getConstructorWithDI).toHaveBeenCalledWith(
-        oidcProviderServiceMock,
-      );
+      expect(
+        OidcProviderRedisAdapter.getConstructorWithDI,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        OidcProviderRedisAdapter.getConstructorWithDI,
+      ).toHaveBeenCalledWith(oidcProviderServiceMock);
 
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
       expect(configServiceMock.get).toHaveBeenCalledWith('OidcProvider');
