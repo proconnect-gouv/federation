@@ -2,7 +2,7 @@ const fip = {
   IMPOT_GOUV: {
     uid: "impot_gouv",
     name: "impot_gouv",
-    active: true,
+    active: false,
     display: false,
     title: "Identity Provider - eIDAS élevé",
     image: "fi-impots.png",
@@ -10,6 +10,7 @@ const fip = {
     alt: "impots",
     eidas: 3,
     mailto: "",
+    featureHandlers: {},
     specificText: "specific text impot_gouv",
     url: "https://fip1v2.docker.dev-franceconnect.fr/",
     statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
@@ -19,7 +20,7 @@ const fip = {
     discoveryUrl:
       "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
-    clientID: "09a1a257648c1742c74d6a3d84b31943",
+    clientID: "544a45c93b30d8622e95b83c40111e68",
     client_secret:
       "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
     order: null,
@@ -46,7 +47,7 @@ const fip = {
   AMELI: {
     uid: "ameli",
     name: "ameli",
-    active: true,
+    active: false,
     display: false,
     title: "Identity Provider - eIDAS élevé",
     image: "fi-impots.png",
@@ -54,6 +55,7 @@ const fip = {
     alt: "impots",
     eidas: 3,
     mailto: "",
+    featureHandlers: {},
     specificText: "specific text ameli",
     url: "https://fip1v2.docker.dev-franceconnect.fr/",
     statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
@@ -63,7 +65,7 @@ const fip = {
     discoveryUrl:
       "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
-    clientID: "09a1a257648c1742c74d6a3d84b31943",
+    clientID: "3337623ab2df3292c46667d87355c68e",
     client_secret:
       "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
     order: null,
@@ -97,6 +99,7 @@ const fip = {
     imageFocus: "fi-impots.png",
     alt: "impots",
     eidas: 3,
+    featureHandlers: {},
     mailto: "",
     specificText: "specific text la_poste",
     url: "https://fip1v2.docker.dev-franceconnect.fr/",
@@ -107,7 +110,7 @@ const fip = {
     discoveryUrl:
       "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
-    clientID: "09a1a257648c1742c74d6a3d84b31943",
+    clientID: "983a50d5db62cd13ed7bd0c0ccd3df38",
     client_secret:
       "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
     order: null,
@@ -134,14 +137,15 @@ const fip = {
   MOBILE_CONNECT: {
     uid: "mobile_connect",
     name: "mobile_connect",
-    active: true,
-    display: true,
+    active: false,
+    display: false,
     title: "MobileConnect et moi",
     image: "fi-impots.png",
     imageFocus: "fi-impots.png",
     alt: "impots",
     eidas: 3,
     mailto: "",
+    featureHandlers: {},
     specificText: "specific text mobile_connect",
     url: "https://fip1v2.docker.dev-franceconnect.fr/",
     statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
@@ -151,7 +155,7 @@ const fip = {
     discoveryUrl:
       "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
-    clientID: "09a1a257648c1742c74d6a3d84b31943",
+    clientID: "177ef4be2bb3cdad02959ef0b8d7516c",
     client_secret:
       "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
     order: null,
@@ -178,7 +182,7 @@ const fip = {
   MSA: {
     uid: "msa",
     name: "msa",
-    active: true,
+    active: false,
     display: false,
     title: "Identity Provider - eIDAS élevé",
     image: "fi-impots.png",
@@ -187,6 +191,7 @@ const fip = {
     eidas: 3,
     mailto: "",
     specificText: "specific text msa",
+    featureHandlers: {},
     url: "https://fip1v2.docker.dev-franceconnect.fr/",
     statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
     authzURL: "https://fip1v2.docker.dev-franceconnect.fr/user/authorize",
@@ -195,7 +200,7 @@ const fip = {
     discoveryUrl:
       "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
-    clientID: "09a1a257648c1742c74d6a3d84b31943",
+    clientID: "c9dc3e4d99d73f41b82587c93db1bd48",
     client_secret:
       "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
     order: null,
@@ -223,13 +228,14 @@ const fip = {
     uid: "alicem",
     name: "alicem",
     active: false,
-    display: true,
+    display: false,
     title: "Identity Provider - alicem",
     image: "fi-alicem.png",
     imageFocus: "fi-impots.png",
     alt: "impots",
     eidas: 3,
     mailto: "",
+    featureHandlers: {},
     specificText: "specific text alicem",
     url: "https://fip1v2.docker.dev-franceconnect.fr/",
     statusURL: "https://fip1v2.docker.dev-franceconnect.fr/",
@@ -239,7 +245,7 @@ const fip = {
     discoveryUrl:
       "https://fip1v2.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
-    clientID: "09a1a257648c1742c74d6a3d84b31943",
+    clientID: "09a1a257648c1742c74d6a3d84b3194r",
     client_secret:
       "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
     order: null,
@@ -269,6 +275,7 @@ const fip = {
     active: true,
     display: true,
     title: "eIDAS Bridge",
+    featureHandlers: {},
     image: "demonstration_eleve.png",
     imageFocus: "demonstration_eleve_hover.png",
     alt: "eIDAS",
@@ -307,24 +314,86 @@ const fip = {
       "https://corev2.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
-}
+};
 
+const fsp = {
+  name: "FSP - FSP1v2",
+  title: "FSP - FSP1v2 title",
+  site: "https://site.com",
+  redirect_uris: [
+    "https://fsp1v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+  ],
+  post_logout_redirect_uris: [
+    "https://fsp1v2.docker.dev-franceconnect.fr/logout-callback",
+  ],
+  client_secret:
+    "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
+  key: "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
+  entityId: "a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc",
+  credentialsFlow: false,
+  featureHandlers: {},
+  email: "fsp1@franceconnect.loc",
+  IPServerAddressesAndRanges: ["1.1.1.1"],
+  active: true,
+  type: "public",
+  __v: 4,
+  updatedAt: new Date("2019-04-24 17:09:17"),
+  updatedBy: "admin",
+  scopes: [
+    "openid",
+    "given_name",
+    "family_name",
+    "birthdate",
+    "gender",
+    "birthplace",
+    "birthcountry",
+    "email",
+    "preferred_username",
+    "address",
+    "phone",
+    "profile",
+    "birth",
+    "identite_pivot",
+  ],
+  id_token_signed_response_alg: "ES256",
+  id_token_encrypted_response_alg: "RSA-OAEP",
+  id_token_encrypted_response_enc: "A256GCM",
+  userinfo_signed_response_alg: "ES256",
+  userinfo_encrypted_response_alg: "RSA-OAEP",
+  userinfo_encrypted_response_enc: "A256GCM",
+  jwks_uri:
+    "https://fsp1v2.docker.dev-franceconnect.fr/client/.well-known/keys",
+  idpFilterExclude: false,
+  idpFilterList: [
+    "fip1v2",
+    "fip2v2",
+    "fip3v2",
+    "fip-desactive-visible",
+    "eidas-bridge",
+    "fip6v2",
+    "fip7v2",
+    "idp-test-update",
+    "impot_gouv",
+    "ameli",
+    "la_poste",
+    "mobile_connect",
+    "msa",
+    "alicem",
+    "eidas-bridge",
+  ],
+  eidas: 2,
+  identityConsent: false,
+  trustedIdentity: false,
+};
 print("Remove all providers from database");
 db.provider.remove({});
 
 // -- FIs ----------
-print("IdP > Initializing provider: impot_gouv - Activated");
-db.provider.update({ name: "impot_gouv" }, fip.IMPOT_GOUV, { upsert: true });
-print("IdP > Initializing provider: ameli - Activated");
-db.provider.update({ name: "ameli" }, fip.AMELI, { upsert: true });
-print("IdP > Initializing provider: la_poste - Activated");
-db.provider.update({ name: "la_poste" }, fip.LA_POSTE, { upsert: true });
-print("IdP > Initializing provider: mobile_connect - Activated");
-db.provider.update({ name: "mobile_connect" }, fip.MOBILE_CONNECT, { upsert: true });
-print("IdP > Initializing provider: msa - Activated");
-db.provider.update({ name: "msa" }, fip.MSA, { upsert: true });
-print("IdP > Initializing provider: alicem - Activated");
-db.provider.update({ name: "alicem" }, fip.ALICEM, { upsert: true });
-print("IdP > Initializing provider: eidas-bridage - Activated");
-db.provider.update({ name: "eidas-bridge" }, fip.EIDASBRIDGE, { upsert: true });
+// add idp in sp whitelist
+Object.values(fip).forEach((fi) => {
+  print(`FIP > Initializing provider: ${fi.name} - Activated`);
+  db.provider.update({ uid: fi.uid }, fi, { upsert: true });
+});
 
+print(`${fsp.name} > Initializing provider: ${fsp.name}`);
+db.client.update({ name: fsp.name }, fsp, { upsert: true });
