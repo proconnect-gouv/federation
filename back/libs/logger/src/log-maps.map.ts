@@ -1,4 +1,4 @@
-import { LogLevels } from './enum/log-levels.enum';
+import { LoggerLevelCodes } from './enum/logger-level-codes.enum';
 
 /**
  * Map log levels between pino and nestJS
@@ -8,14 +8,14 @@ import { LogLevels } from './enum/log-levels.enum';
  *
  */
 export const pinoLevelsMap = {
-  log: LogLevels.TRACE,
-  trace: LogLevels.TRACE,
-  verbose: LogLevels.DEBUG,
-  debug: LogLevels.DEBUG,
-  info: LogLevels.INFO,
-  warn: LogLevels.WARN,
-  error: LogLevels.ERROR,
-  fatal: LogLevels.FATAL,
+  log: LoggerLevelCodes.TRACE,
+  trace: LoggerLevelCodes.TRACE,
+  verbose: LoggerLevelCodes.DEBUG,
+  debug: LoggerLevelCodes.DEBUG,
+  info: LoggerLevelCodes.INFO,
+  warn: LoggerLevelCodes.WARN,
+  error: LoggerLevelCodes.ERROR,
+  fatal: LoggerLevelCodes.FATAL,
 };
 
 export const nestLevelsMap = {

@@ -94,6 +94,9 @@ export class SessionService {
 
     const data = this.unserialize(dataCipher);
     await this.validate(data);
+
+    this.logger.trace({ key, data });
+
     return data;
   }
 

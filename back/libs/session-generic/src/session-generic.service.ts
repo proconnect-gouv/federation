@@ -118,8 +118,6 @@ export class SessionGenericService {
   private async getFullSession(
     ctx: ISessionGenericBoundContext,
   ): Promise<object> {
-    this.logger.debug('SessionGenericService.getFullSession()');
-
     const sessionKey = this.getSessionKey(ctx.sessionId);
 
     let dataCipher: string;
@@ -138,6 +136,8 @@ export class SessionGenericService {
 
     const data = this.unserialize(dataCipher);
     await this.validate(data);
+
+    this.logger.trace({ ctx, data });
 
     return data;
   }

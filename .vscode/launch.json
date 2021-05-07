@@ -148,6 +148,25 @@
       "sourceMaps": true,
     },
     {
+      "name": "FCA - FSA3v2",
+      "type": "node",
+      "request": "attach",
+      "port": 9236,
+      "address": "localhost",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-service-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
       "name": "FCP",
       "type": "node",
       "request": "attach",

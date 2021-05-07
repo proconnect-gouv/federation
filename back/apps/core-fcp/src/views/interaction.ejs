@@ -1,4 +1,4 @@
-<% const eidasBridgeProvider = locals.providers.find((p) => p.uid === 'eidas-bridge') %> 
+<% const eidasBridgeProvider = locals.providers.find((p) => p.uid === 'eidas-bridge' && p.display) %> 
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -31,7 +31,7 @@
                 <div class="identity-provider">
                   <button id="idp-<%= provider.uid %>" <%= (!provider.active)? 'disabled' : '' %>>
                     <div class="icon-container">
-                      <img src='/img/fi/<%-provider.image%>' alt="Logo de <%= provider.name %>" onerror="this.src='/img/fi/fi-placeholder.svg'" />
+                      <img src='/img/fi/<%-provider.image%>' alt="Logo de <%= provider.name %>" onerror="this.style.display='none'" />
                     </div>
                     <span id="idp-<%= provider.uid %>-title">
                       <%- (!provider.active) ? 
