@@ -72,6 +72,17 @@ export class OidcClientService {
       );
     }
 
+    this.logger.trace({
+      context,
+      providerUid,
+      idpState,
+      idpNonce,
+      acr,
+      amr,
+      accessToken,
+      tokenResult,
+    });
+
     return tokenResult;
   }
 
@@ -86,6 +97,14 @@ export class OidcClientService {
     } catch (error) {
       throw new OidcClientUserinfosFailedException(error);
     }
+
+    this.logger.trace({
+      context,
+      providerUid,
+      accessToken,
+      identity,
+    });
+
     this.tracking.track(OidcClientUserinfoEvent, context);
 
     const errors = await validateDto(

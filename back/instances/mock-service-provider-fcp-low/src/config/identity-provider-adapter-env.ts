@@ -5,9 +5,6 @@ import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-
 import { parseBoolean } from '@fc/common';
 
 export default {
-  jwks: {
-    keys: [JSON.parse(process.env.JWKS)],
-  },
   discovery: parseBoolean(process.env.DISCOVERY),
   discoveryUrl: process.env.DISCOVERY_URL,
   provider: {

@@ -60,6 +60,8 @@ export class CoreService {
       headers: { 'x-forwarded-for': ip },
     };
 
+    this.logger.trace(eventContext);
+
     return eventContext;
   }
 
@@ -189,7 +191,8 @@ export class CoreService {
    * @param overrideValue
    */
   private overrideAuthorizePrompt(overrideValue: string, ctx: OidcCtx): void {
-    this.logger.debug('CoreService.overrideAuthorizePrompt()');
+    this.logger.trace({ overrideValue, ctx });
+
     /**
      * Support both methods
      * @TODO #137 check what needs to be done if we implement pushedAuthorizationRequests
@@ -215,7 +218,7 @@ export class CoreService {
   }
 
   private overrideAuthorizeAcrValues(allowed: string[], ctx: OidcCtx): void {
-    this.logger.debug('CoreService.overrideAuthorizeAcrValues()');
+    this.logger.trace({ allowed, ctx });
 
     if (['POST', 'GET'].includes(ctx.method)) {
       const data = (ctx.method === 'POST'
@@ -280,6 +283,8 @@ export class CoreService {
       // Set last connection time to now
       lastConnection: new Date(),
     };
+
+    this.logger.trace(interaction);
 
     try {
       await this.account.storeInteraction(interaction);

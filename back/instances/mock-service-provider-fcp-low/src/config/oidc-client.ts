@@ -12,9 +12,6 @@ export default {
     // Global request timeout used for any outgoing app requests.
     timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
   },
-  jwks: {
-    keys: [JSON.parse(process.env.JWKS)],
-  },
   stateLength: 32,
 
   scope: process.env.OidcClient_SCOPE,
