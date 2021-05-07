@@ -1,4 +1,4 @@
 /* istanbul ignore file */
 
 // declarative code
-export * from './logger-config.dto';
+export * from './logger-colors.constants';
