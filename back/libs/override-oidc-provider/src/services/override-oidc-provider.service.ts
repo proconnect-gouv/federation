@@ -1,5 +1,6 @@
 import * as OidcProviderInstance from 'oidc-provider/lib/helpers/weak_cache';
 import { JWK, JWKS } from 'jose';
+import { ModuleRef } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
@@ -11,7 +12,7 @@ export class OverrideOidcProviderService {
   constructor(
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
-    private readonly oidcProvider: OidcProviderService,
+    private readonly moduleRef: ModuleRef,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -45,12 +46,19 @@ export class OverrideOidcProviderService {
     );
     const key = JWK.asKey(sigHsmPubKey);
 
-    const provider = this.oidcProvider.getProvider();
+    const oidcProvider = this.getOidcProviderService();
+
+    const provider = oidcProvider.getProvider();
 
     /** Get instance stored in `oidc-provider`'s internal weakMap */
     const instance = OidcProviderInstance(provider);
 
     /** Override keystore */
     instance.keystore = new JWKS.KeyStore([key]);
+  }
+
+  private getOidcProviderService(): OidcProviderService {
+    const allowGlobalScopeOptions = { strict: false };
+    return this.moduleRef.get(OidcProviderService, allowGlobalScopeOptions);
   }
 }

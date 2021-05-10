@@ -9,7 +9,6 @@ import OidcClient from './oidc-client';
 import Mongoose from './mongoose';
 import Redis from './redis';
 import Rnipp from './rnipp';
-import CryptographyBroker from './cryptography-broker';
 import CryptographyFcp from './cryptography-fcp';
 import CryptographyEidas from './cryptography-eidas';
 import SessionGeneric from './session-generic';
@@ -33,7 +32,6 @@ export default {
   Mongoose,
   Redis,
   Rnipp,
-  CryptographyBroker,
   CryptographyFcp,
   CryptographyEidas,
   SessionGeneric,

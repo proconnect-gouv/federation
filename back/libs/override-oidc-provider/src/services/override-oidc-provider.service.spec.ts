@@ -1,5 +1,6 @@
 import * as OidcProviderInstance from 'oidc-provider/lib/helpers/weak_cache';
 import { JWK, JWKS } from 'jose';
+import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
@@ -23,24 +24,23 @@ describe('OverrideOidcProviderService', () => {
     getProvider: jest.fn(),
   };
 
+  const moduleRefMock = {
+    get: jest.fn(),
+  };
+
   const JWKasKeyMock = jest.spyOn(JWK, 'asKey');
   const JWKSKeyStoreMock = jest.spyOn(JWKS, 'KeyStore');
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ConfigService,
-        LoggerService,
-        OidcProviderService,
-        OverrideOidcProviderService,
-      ],
+      providers: [ConfigService, LoggerService, OverrideOidcProviderService],
     })
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
-      .overrideProvider(OidcProviderService)
-      .useValue(oidcProviderMock)
+      .overrideProvider(ModuleRef)
+      .useValue(moduleRefMock)
       .compile();
 
     service = module.get<OverrideOidcProviderService>(
@@ -70,6 +70,11 @@ describe('OverrideOidcProviderService', () => {
   });
 
   describe('overrideKeystore', () => {
+    beforeEach(() => {
+      service['getOidcProviderService'] = jest
+        .fn()
+        .mockReturnValueOnce(oidcProviderMock);
+    });
     it('should create a Key object from config key', () => {
       // When
       service['overrideKeystore']();
@@ -94,6 +99,27 @@ describe('OverrideOidcProviderService', () => {
       service['overrideKeystore']();
       // Then
       expect(instanceSpy).toEqual({ keystore: ['foo'] });
+    });
+  });
+
+  describe('getOidcProviderService', () => {
+    it('should call moduleRef.get with options', () => {
+      // When
+      service['getOidcProviderService']();
+      // Then
+      expect(moduleRefMock.get).toBeCalledTimes(1);
+      expect(moduleRefMock.get).toBeCalledWith(OidcProviderService, {
+        strict: false,
+      });
+    });
+    it('should return result from moduleRef.get', () => {
+      // Given
+      const mockedReturn = Symbol('someValue');
+      moduleRefMock.get.mockReturnValueOnce(mockedReturn);
+      // When
+      const result = service['getOidcProviderService']();
+      // Then
+      expect(result).toBe(mockedReturn);
     });
   });
 });

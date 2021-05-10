@@ -8,7 +8,6 @@ import OidcProvider from './oidc-provider';
 import OidcClient from './oidc-client';
 import Mongoose from './mongoose';
 import Redis from './redis';
-import CryptographyBroker from './cryptography-broker';
 import CryptographyFca from './cryptography-fca';
 import ServiceProviderAdapterMongoConfig from './service-provider-adapter-mongo';
 import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
@@ -29,7 +28,6 @@ export default {
   OidcClient,
   Mongoose,
   Redis,
-  CryptographyBroker,
   CryptographyFca,
   ServiceProviderAdapterMongoConfig,
   IdentityProviderAdapterMongoConfig,

@@ -10,7 +10,6 @@ import { OidcClientConfig } from '@fc/oidc-client';
 import { MongooseConfig } from '@fc/mongoose';
 import { RedisConfig } from '@fc/redis';
 import { SessionGenericConfig } from '@fc/session-generic';
-import { RabbitmqConfig } from '@fc/rabbitmq';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { AppConfig } from '@fc/app';
 import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
@@ -61,11 +60,6 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => SessionGenericConfig)
   readonly SessionGeneric: SessionGenericConfig;
-
-  @IsObject()
-  @ValidateNested()
-  @Type(() => RabbitmqConfig)
-  readonly CryptographyBroker: RabbitmqConfig;
 
   @IsObject()
   @ValidateNested()
