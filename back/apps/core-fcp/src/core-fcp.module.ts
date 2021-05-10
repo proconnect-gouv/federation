@@ -21,7 +21,6 @@ import { ExceptionsModule } from '@fc/exceptions';
 import { RnippModule } from '@fc/rnipp';
 import { AccountModule } from '@fc/account';
 import { HttpProxyModule } from '@fc/http-proxy';
-import { OverrideOidcProviderModule } from '@fc/override-oidc-provider';
 import { MailerModule } from '@fc/mailer';
 import { TrackingModule } from '@fc/tracking';
 import { NotificationsModule } from '@fc/notifications';
@@ -50,11 +49,6 @@ import {
   CoreFcpDefaultIdentityCheckHandler,
 } from './handlers';
 
-const oidcProviderModule = OidcProviderModule.register(
-  ServiceProviderAdapterMongoService,
-  ServiceProviderAdapterMongoModule,
-);
-
 @Global()
 @Module({
   imports: [
@@ -70,9 +64,11 @@ const oidcProviderModule = OidcProviderModule.register(
     ServiceProviderAdapterMongoModule,
     IdentityProviderAdapterMongoModule,
     HttpProxyModule,
-    oidcProviderModule,
+    OidcProviderModule.register(
+      ServiceProviderAdapterMongoService,
+      ServiceProviderAdapterMongoModule,
+    ),
     ScopesModule,
-    OverrideOidcProviderModule.register(oidcProviderModule),
     OidcClientModule.register(
       IdentityProviderAdapterMongoService,
       IdentityProviderAdapterMongoModule,

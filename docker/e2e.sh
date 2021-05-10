@@ -20,6 +20,7 @@ WORKING_DIR="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
 # https://docs.docker.com/compose/reference/envvars/#compose_file
 COMPOSE_PATH_SEPARATOR=":"
 COMPOSE_FILE=$(join_by $COMPOSE_PATH_SEPARATOR $COMPOSE_FILES)
+export COMPOSE_PROJECT_NAME=fc
 export COMPOSE_PATH_SEPARATOR
 export COMPOSE_FILE
 export COMPOSE_DIR
