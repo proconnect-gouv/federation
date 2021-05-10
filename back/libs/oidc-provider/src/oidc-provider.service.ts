@@ -2,7 +2,7 @@ import { get } from 'lodash';
 import { HttpOptions } from 'openid-client';
 import { Provider, KoaContextWithOIDC } from 'oidc-provider';
 import { HttpAdapterHost } from '@nestjs/core';
-import { Inject, Injectable } from '@nestjs/common';
+import { Global, Inject, Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
@@ -23,6 +23,11 @@ import {
   OidcProviderConfigService,
 } from './services';
 
+/**
+ * Make service global in order to ease retrieval and override from other libraries.
+ * It is unlikely we will need multiple instances of this module any time.
+ */
+@Global()
 @Injectable()
 export class OidcProviderService {
   private ProviderProxy = Provider;
