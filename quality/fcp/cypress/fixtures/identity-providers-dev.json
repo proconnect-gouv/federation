@@ -1,0 +1,13 @@
+[
+  {
+    "idpId": "fip1v2",
+    "url": "https://fip1v2.docker.dev-franceconnect.fr/interaction",
+    "acrValues": ["eidas1"],
+    "selectors": {
+      "idpButton": "#idp-fip1v2",
+      "userName": "input[name='login']",
+      "password": "input[name='password']",
+      "submitButton": "input[type='submit']"
+    }
+  }
+]

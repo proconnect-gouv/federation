@@ -1,0 +1,7 @@
+{
+  "testFiles": "**/*.{feature,features}",
+  "env": {
+    "TEST_ENV": "dev",
+    "TAGS": "not @ignore"
+  }
+}
