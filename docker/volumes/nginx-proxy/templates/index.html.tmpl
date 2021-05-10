@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Docker Stack default virtual host</title>
+</head>
+<body>
+	<h2>Hôte virtuel par défaut de Docker Stack </h2>
+	<p>Cette page est servie par le hôte virtuel par defaut du container "rp-all".</p>
+	<p>Ci-dessous les hôtes virtuels disponibles : </p>
+	<ul>
+	{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
+	{{ $vhostContainer := $containers | first }}
+	{{ $service := index $vhostContainer.Labels "com.docker.compose.service" }}
+	  <li><a target="_blank" href="https://{{ $host }}">{{ $service }}</a></li>
+  {{ end }}
+	</ul>
+</body>
+</html>

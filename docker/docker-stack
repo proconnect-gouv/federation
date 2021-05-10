@@ -10,7 +10,7 @@ fi
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
 #### Global Variables:
-export COMPOSE_PROJECT_NAME=fc
+COMPOSE_PROJECT_NAME=fc
 DEFAULT_NODE_VERSION=v12.22.1
 DOCKER_REPOSITORY_PREFIX=gitlab.dev-franceconnect.fr:5005/france-connect/infra
 COMPOSE_DIR="$FC_ROOT/fc/docker/compose"
@@ -25,6 +25,8 @@ export COMPOSE_PATH_SEPARATOR
 export COMPOSE_FILE
 export COMPOSE_DIR
 export VOLUMES_DIR
+export COMPOSE_PROJECT_NAME
+export WORKING_DIR
 
 # Get current uid/gid to use it within docker-compose:
 # see https://medium.com/redbubble/running-a-docker-container-as-a-non-root-user-7d2e00f8ee15
@@ -106,30 +108,16 @@ _up() {
     esac
   done
     echo "Starting FC Dev environment... $@"
-    _setup_mongo_keyfile
     docker login gitlab.dev-franceconnect.fr:5005
-    cd ${WORKING_DIR} && docker-compose up -d $services
+    cd ${WORKING_DIR} && docker-compose up --build -d $services
 
-    # @todo refacto this file to have a proper environment 
+    # @todo refacto this file to have a proper environment
     if [[ $services == *"-fcp-low"* ]]; then
       # Sleep to wait for mongodb replicat initialization
       echo "Reseting database to default state..."
       sleep 10
-      docker exec fc_mongo-fcp-low_1 /opt/scripts/manage.sh --reset-db
+      docker-compose exec -T mongo-fcp-low /opt/scripts/manage.sh --reset-db
       echo "Loaded !"
-    fi
-}
-
-_setup_mongo_keyfile() {
-    keyfile="$FC_ROOT/fc/docker/volumes/ssl/mongo.keyfile"
-    owner="$(ls -n "$keyfile" | awk '{print $3}')"
-    permission="$(ls -n "$keyfile" | awk '{print $1}')"
-    if [[ ! -f "$keyfile" || "$permission" != "-rw-------" || "$owner" != "999" ]];
-    then
-      sudo rm -f $keyfile
-      sudo openssl rand -base64 756 > $keyfile
-      sudo chown 999 $FC_ROOT/fc/docker/volumes/ssl/mongo.keyfile
-      sudo chmod 600 $FC_ROOT/fc/docker/volumes/ssl/mongo.keyfile
     fi
 }
 
@@ -153,7 +141,7 @@ _run_prod() {
   done
     echo "Starting production image for... $@"
     docker login gitlab.dev-franceconnect.fr:5005
-    cd ${WORKING_DIR} && docker-compose up -d $services
+    cd ${WORKING_DIR} && docker-compose up --build -d $services
 }
 
 _install_dependencies() {
@@ -214,7 +202,6 @@ _stop() {
   done
 }
 
-
 _log() {
   app=${@:-fc-core}
   cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} pm2 logs
@@ -268,20 +255,20 @@ _fixturesFca() {
 
 _reset_db_fcp_high() {
   echo "Reseting Core FCP High mongo database..."
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/mongo-reset.js --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high core-fcp-high /docker-entrypoint-initdb.d/mongo-init-db.js --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
-} 
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/mongo-reset.js --tls
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high core-fcp-high /docker-entrypoint-initdb.d/mongo-init-db.js --tls
+}
 
 # @todo rename `corev2` into `core-fca`
 _reset_db_fca() {
   echo "Reseting Core FCA mongo database..."
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fca mongo -u 'fc' -p 'pass' --authenticationDatabase corev2 corev2 /opt/scripts/mongo-reset.js --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fca mongo -u 'fc' -p 'pass' --authenticationDatabase corev2 corev2 /docker-entrypoint-initdb.d/mongo-init-db.js --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fca mongo -u 'fc' -p 'pass' --authenticationDatabase corev2 corev2 /opt/scripts/mongo-reset.js --tls
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fca mongo -u 'fc' -p 'pass' --authenticationDatabase corev2 corev2 /docker-entrypoint-initdb.d/mongo-init-db.js --tls
 }
 
 _idp_as_prod_v2() {
   echo "Set IdP as production ..."
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'rootAdmin' -p 'pass' --host mongo4 --tls --tlsCAFile /etc/ssl/ca.crt --authenticationDatabase admin core-fcp-high /opt/scripts/display-idp-as-in-prod.js
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'rootAdmin' -p 'pass' --host mongo4 --tls  --authenticationDatabase admin core-fcp-high /opt/scripts/display-idp-as-in-prod.js
 }
 
 _halt() {
@@ -307,12 +294,12 @@ _exec() {
 # @todo rename `corev2` into `core-fca`
 _mongo_shell_fca() {
  echo "starting mongo `core-fca` database in shell..."
-  cd ${WORKING_DIR} && docker-compose exec mongo-fca mongo -u 'rootAdmin' -p 'pass' --authenticationDatabase admin corev2 --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
+  cd ${WORKING_DIR} && docker-compose exec mongo-fca mongo -u 'rootAdmin' -p 'pass' --authenticationDatabase admin corev2 --tls
 }
 
 _mongo_shell_core-fcp-high() {
  echo "starting mongo `core-fcp-high` database in shell..."
-  cd ${WORKING_DIR} && docker-compose exec mongo4 mongo core-fcp-high -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high --tls --tlsAllowInvalidCertificates --tlsAllowInvalidHostnames --tlsCAFile /etc/ssl/ca.crt
+  cd ${WORKING_DIR} && docker-compose exec mongo4 mongo core-fcp-high -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high --tls
 }
 
 _fca_front() {
@@ -363,6 +350,9 @@ case "$action" in
   log)
     _log $@
     ;;
+  compose)
+    cd ${WORKING_DIR} && docker-compose $@
+    ;;
   fixtures-v2)
     _fixturesv2
     ;;
@@ -377,6 +367,9 @@ case "$action" in
     ;;
   mongo-shell-core-fcp-high)
     _mongo_shell_core-fcp-high
+    ;;
+  reload-rp)
+    cd ${WORKING_DIR} && docker-compose kill -s SIGHUP rp-all
     ;;
   reload)
     _start $@
@@ -471,6 +464,7 @@ case "$action" in
     echo "* mongo-shell-core-fcp-high => open mongo4 shell for core-fcp-high stack"
     echo "* reload [<app1> <app2> <...>] => (re)start given pm2 instances (Ex. core-fcp-high)"
     echo "* reload-all => (re)start all pm2 instances"
+    echo "* reload-rp => reload nginx conf"
     echo "* reset-db-core-fcp-high => drop and restore default mongodb database for mongo core-fcp-high"
     echo "* reset-db-core-fcp-low => drop and restore default mongodb database for mongo core-fcp-low"
     echo "* reset-db-fca => drop and restore default mongodb database for mongo fca"
