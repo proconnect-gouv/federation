@@ -17,6 +17,7 @@ When("je m'authentifie avec succès", function () {
   const hasIDPCredentials = (credentials) => credentials.idpId === idpId;
 
   // Get the current user or default to the first user with credentials for the current IDP
+  // TODO: Create a dedicated step to use default user
   let currentUser = this.user;
   if (!currentUser) {
     currentUser = this.users.find((user) =>
