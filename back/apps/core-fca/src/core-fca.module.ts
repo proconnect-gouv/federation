@@ -34,12 +34,6 @@ import { FeatureHandlerModule } from '@fc/feature-handler';
 import { CoreFcaController, OidcProviderController } from './controllers';
 import { CoreFcaService } from './services';
 import { CoreFcaDefaultVerifyHandler } from './handlers';
-
-const oidcProviderModule = OidcProviderModule.register(
-  ServiceProviderAdapterMongoService,
-  ServiceProviderAdapterMongoModule,
-);
-
 @Global()
 @Module({
   imports: [
@@ -51,7 +45,10 @@ const oidcProviderModule = OidcProviderModule.register(
     IdentityProviderAdapterMongoModule,
     MinistriesModule,
     HttpProxyModule,
-    oidcProviderModule,
+    OidcProviderModule.register(
+      ServiceProviderAdapterMongoService,
+      ServiceProviderAdapterMongoModule,
+    ),
     OidcClientModule.register(
       IdentityProviderAdapterMongoService,
       IdentityProviderAdapterMongoModule,
