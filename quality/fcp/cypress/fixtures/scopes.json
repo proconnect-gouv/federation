@@ -1,0 +1,37 @@
+[
+  {
+    "type": "complet",
+    "attributes": [
+      "openid",
+      "profile",
+      "gender",
+      "birthdate",
+      "birthcountry",
+      "birthplace",
+      "given_name",
+      "family_name",
+      "email",
+      "preferred_username",
+      "address",
+      "phone",
+      "birth",
+      "identite_pivot"
+    ]
+  },
+  {
+    "type": "simple",
+    "attributes": [
+      "openid",
+      "gender",
+      "birthdate",
+      "birthcountry",
+      "birthplace",
+      "given_name",
+      "family_name"
+    ]
+  },
+  {
+    "type": "anonyme",
+    "attributes": ["openid"]
+  }
+]
