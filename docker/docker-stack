@@ -10,6 +10,7 @@ fi
 function join_by { local IFS="$1"; shift; echo "$*"; }
 
 #### Global Variables:
+export COMPOSE_PROJECT_NAME=fc
 DEFAULT_NODE_VERSION=v12.22.1
 DOCKER_REPOSITORY_PREFIX=gitlab.dev-franceconnect.fr:5005/france-connect/infra
 COMPOSE_DIR="$FC_ROOT/fc/docker/compose"
