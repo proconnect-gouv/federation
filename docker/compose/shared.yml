@@ -89,9 +89,7 @@ services:
     command: -config /etc/docker-gen/config
 
   squid:
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/squid:stable
-    volumes:
-      - "${VOLUMES_DIR}/squid:/etc/squid"
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/squid:4.6
     networks:
       - public
       - fc
