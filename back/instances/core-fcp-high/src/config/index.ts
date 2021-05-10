@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { CoreFcpConfig } from '@fc/core-fcp';
+import { CoreFcpHighConfig } from '../dto';
 import App from './app';
 import Logger from './logger';
 import OidcProvider from './oidc-provider';
@@ -41,4 +41,4 @@ export default {
   Mailer,
   ServiceProviderAdapterMongoConfig,
   IdentityProviderAdapterMongoConfig,
-} as CoreFcpConfig;
+} as CoreFcpHighConfig;

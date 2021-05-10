@@ -12,10 +12,8 @@ services:
     working_dir: /var/www/app
     depends_on:
       - "rnipp"
-      - "csmr-hsm"
       - "mongo-fcp-low"
       - "redis-pwd"
-      - "broker"
       - "squid"
       - "haproxy"
     volumes:
