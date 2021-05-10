@@ -26,11 +26,12 @@ services:
       - "80:80"
       - "443:443"
     volumes:
+      - ${VOLUMES_DIR}/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
       - ${VOLUMES_DIR}/nginx-proxy/etc:/etc/nginx/conf.d:ro
       - ${VOLUMES_DIR}/nginx-proxy/includes:/etc/nginx/includes:ro
       - ${VOLUMES_DIR}/nginx-proxy/public:/var/www:ro
-      - ${VOLUMES_DIR}/nginx-proxy/certs:/etc/nginx/certs:ro
-      - ${VOLUMES_DIR}/ssl:/etc/nginx/client_certs:ro
+      - ${VOLUMES_DIR}/nginx-proxy/default-vhost:/etc/nginx/html:ro
+      - ${VOLUMES_DIR}/ssl:/etc/nginx/docker_host:ro
     networks:
       public:
         aliases:
@@ -77,13 +78,15 @@ services:
     image: jwilder/docker-gen
     volumes:
       - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ${VOLUMES_DIR}/nginx-proxy/default-vhost:/etc/nginx/html
       - ${VOLUMES_DIR}/nginx-proxy/etc:/etc/nginx/conf.d
+      - ${VOLUMES_DIR}/docker-gen/config:/etc/docker-gen/config:ro
       - ${VOLUMES_DIR}/nginx-proxy/templates:/etc/docker-gen/templates:ro
     networks:
       - public
       - fc
       - exploitation
-    command: -notify-sighup fc-rp-all -watch /etc/docker-gen/templates/nginx.tmpl /etc/nginx/conf.d/_current.conf
+    command: -config /etc/docker-gen/config
 
   squid:
     image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/squid:stable
@@ -100,6 +103,7 @@ services:
       - 8404:8404
     volumes:
       - "${VOLUMES_DIR}/haproxy:/usr/local/etc/haproxy:ro"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     networks:
       - public
       - fc
@@ -139,7 +143,6 @@ services:
     environment:
       - "VIRTUAL_HOST=rnipp.docker.dev-franceconnect.fr"
       - "VIRTUAL_PORT=3000"
-      - "NODE_TLS_REJECT_UNAUTHORIZED=0"
       - "NODE_ENV=development"
       - "PORT=3000"
       - "PM2_SCRIPT=index.js"
@@ -165,6 +168,7 @@ services:
       - "${VOLUMES_DIR}/csmr-hsm:/etc/hsm"
       - "${VOLUMES_DIR}/log/:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
+      - ${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro
     env_file:
       - "${COMPOSE_DIR}/base-app.env"
     environment:
@@ -242,7 +246,22 @@ services:
 
 networks:
   public:
+    ipam:
+      config:
+        - subnet: 172.16.1.0/24
   fc:
+    ipam:
+      config:
+        - subnet: 172.16.2.0/24
   exploitation:
+    ipam:
+      config:
+        - subnet: 172.16.3.0/24
   data:
+    ipam:
+      config:
+        - subnet: 172.16.4.0/24
   eidas:
+    ipam:
+      config:
+        - subnet: 172.16.5.0/24
