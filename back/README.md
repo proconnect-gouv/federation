@@ -2,8 +2,20 @@
 
 Core & backoffice applications
 
+- [Documentation](_doc/README.md)
+
 ## Librairies
 
+- [@fc/apache-ignite](libs/apache-ignite/README.md)
+- [@fc/eidas-client](libs/eidas-client/README.md)
+- [@fc/eidas-light-protocol](libs/eidas-light-protocol/README.md)
+- [@fc/eidas-oidc-mapper](libs/eidas-oidc-mapper/README.md)
+- [@fc/eidas-provider](libs/eidas-provider/README.md)
+- [@fc/exceptions](libs/exceptions/README.md)
+- [@fc/http-proxy](libs/http-proxy/README.md)
+- [@fc/oidc-client](libs/oidc-client/README.md)
+- [@fc/oidc-provider](libs/oidc-provider/README.md)
+- [@fc/session-generic](libs/session-generic/README.md)
 - [@fc/tracking](libs/tracking/README.md)
 
 ## Applications
