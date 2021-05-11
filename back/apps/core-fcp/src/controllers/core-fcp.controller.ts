@@ -10,7 +10,7 @@ import {
   ValidationPipe,
   Param,
   Body,
-  Next,
+  Type,
 } from '@nestjs/common';
 import { OidcSession } from '@fc/oidc';
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -26,7 +26,6 @@ import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
 import { CryptographyService } from '@fc/cryptography';
 import { NotificationsService } from '@fc/notifications';
-import { ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
   GetOidcCallback,
@@ -41,11 +40,25 @@ import {
   CoreMissingIdentityException,
   CoreInvalidCsrfException,
 } from '@fc/core';
+import { TrackingService } from '@fc/tracking';
 import { Core, OidcIdentityDto } from '../dto';
 import { CoreFcpService } from '../services';
 import { ProcessCore } from '../enums';
-import { CoreFcpInvalidIdentityException } from '../exceptions';
+import {
+  CoreFcpInvalidIdentityException,
+  CoreFcpInvalidEventClassException,
+} from '../exceptions';
+import {
+  CoreFcpDatatransferConsentIdentityEvent,
+  CoreFcpDatatransferInformationAnonymousEvent,
+  CoreFcpDatatransferInformationIdentityEvent,
+} from '../events';
 
+export const datatransferEventsMap = {
+  'INFORMATION:ANONYMOUS': CoreFcpDatatransferInformationAnonymousEvent,
+  'INFORMATION:IDENTITY': CoreFcpDatatransferInformationIdentityEvent,
+  'CONSENT:IDENTITY': CoreFcpDatatransferConsentIdentityEvent,
+};
 @Controller()
 export class CoreFcpController {
   // Dependency injection can require more than 4 parameters
@@ -58,9 +71,9 @@ export class CoreFcpController {
     private readonly core: CoreFcpService,
     private readonly config: ConfigService,
     private readonly crypto: CryptographyService,
-    private readonly scopes: ScopesService,
     private readonly notifications: NotificationsService,
     private readonly oidcClient: OidcClientService,
+    private readonly tracking: TrackingService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -167,39 +180,69 @@ export class CoreFcpController {
       interactionId,
     }: OidcSession = await sessionOidc.get();
 
-    const {
-      type: spType,
-      identityConsent: spIdentityConsent,
-    } = await this.serviceProvider.getById(spId);
-    const consentRequired = this.serviceProvider.consentRequired(
-      spType,
-      spIdentityConsent,
-    );
+    const interaction = await this.oidcProvider.getInteraction(req, res);
 
-    const {
-      params: { scope },
-    } = await this.oidcProvider.getInteraction(req, res);
-    const scopes = scope.split(' ');
-
+    const scopes = await this.core.getScopesForInteraction(interaction);
+    const claims = await this.core.getClaimsLabelsForInteraction(interaction);
+    const consentRequired = await this.core.isConsentRequired(spId);
     const csrfToken = await this.generateAndStoreCsrf(sessionOidc);
-
-    const claimsReadable = await this.scopes.mapScopesToLabel(scopes);
 
     return {
       interactionId,
       identity,
       spName,
       scopes,
-      claims: claimsReadable,
+      claims,
       csrfToken,
       consentRequired,
     };
   }
 
+  private getEventClass(
+    scopes: string[],
+    consentRequired: boolean,
+  ): Type<
+    | CoreFcpDatatransferConsentIdentityEvent
+    | CoreFcpDatatransferInformationAnonymousEvent
+    | CoreFcpDatatransferInformationIdentityEvent
+  > {
+    const dataType = scopes.every((scope) => scope === 'openid')
+      ? 'ANONYMOUS'
+      : 'IDENTITY';
+    const consentOrInfo = consentRequired ? 'CONSENT' : 'INFORMATION';
+
+    const classMapKey = `${consentOrInfo}:${dataType}`;
+
+    if (!(classMapKey in datatransferEventsMap)) {
+      throw new CoreFcpInvalidEventClassException();
+    }
+
+    return datatransferEventsMap[classMapKey];
+  }
+
+  private async trackDatatransfer(
+    trackingContext,
+    interaction: any,
+    spId: string,
+  ): Promise<void> {
+    const scopes = await this.core.getScopesForInteraction(interaction);
+    const consentRequired = await this.core.isConsentRequired(spId);
+    const claims = await this.core.getClaimsForInteraction(interaction);
+
+    const eventClass = this.getEventClass(scopes, consentRequired);
+    const context = {
+      ...trackingContext,
+      claims,
+    };
+
+    this.tracking.track(eventClass, context);
+  }
+
   @Post(CoreRoutes.INTERACTION_LOGIN)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getLogin(
-    @Next() next,
+    @Req() req,
+    @Res() res,
     @Body() body: CsrfToken,
     /**
      * @todo Adaptation for now, correspond to the oidc-provider side.
@@ -219,7 +262,7 @@ export class CoreFcpController {
       throw new SessionGenericNotFoundException('OidcClient');
     }
 
-    const { spIdentity, csrfToken } = session;
+    const { spId, spIdentity, csrfToken } = session;
 
     if (csrf !== csrfToken) {
       throw new CoreInvalidCsrfException();
@@ -231,11 +274,14 @@ export class CoreFcpController {
 
     this.logger.trace({ csrf, spIdentity, csrfToken });
 
+    const interaction = await this.oidcProvider.getInteraction(req, res);
+    const trackingContext = req;
+    this.trackDatatransfer(trackingContext, interaction, spId);
+
     // send the notification mail to the final user
     await this.core.sendAuthenticationMail(session);
 
-    // Pass the query to `@fc/oidc-provider` controller
-    return next();
+    return this.oidcProvider.finishInteraction(req, res, session);
   }
 
   /**

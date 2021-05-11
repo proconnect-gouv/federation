@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { difference, intersection, union, unique } from '@fc/common';
 
 const MAPPING_ALIAS_SCOPES = {
+  openid: ['sub'],
   profile: [
     'given_name',
     'family_name',
@@ -64,8 +65,10 @@ export class ScopesService {
    * extract the unit scopes from a grouped scope (Profile -> gender,family_name...)
    * @param {*} scopes
    */
-  private extractAliasScopes(scopes): string[] {
-    return unique(scopes.flatMap((alias) => MAPPING_ALIAS_SCOPES[alias]));
+  getClaimsFromScopes(scopes): string[] {
+    return unique(
+      scopes.flatMap((alias) => MAPPING_ALIAS_SCOPES[alias] || alias),
+    );
   }
 
   /**
@@ -82,7 +85,7 @@ export class ScopesService {
     );
 
     // replace all alias scopes with their mapped scopes
-    const ungroupedScopes = this.extractAliasScopes(aliasScopes);
+    const ungroupedScopes = this.getClaimsFromScopes(aliasScopes);
 
     return { identity: identityScopes, alias: ungroupedScopes };
   }
@@ -110,7 +113,6 @@ export class ScopesService {
     }
     const scopesIdentity = this.removeOpenId(scopesParam);
     const scopes = this.flattenAllScopes(scopesIdentity);
-
     // safety to replace identity scopes by human readable label
     return scopes.map((scope) =>
       scope in STANDARD_IDENTITY_SCOPES_LABEL
