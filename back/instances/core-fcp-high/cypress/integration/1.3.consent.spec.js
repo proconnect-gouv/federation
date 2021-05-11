@@ -1,14 +1,26 @@
 describe('get user consent', () => {
+  beforeEach(() => {
+    cy.clearBusinessLog();
+  });
+
   it('should ask for user consent to pursue connexion if the service provider is private and the consent required', () => {
     cy.visit(Cypress.env('SP5_ROOT_URL'));
     cy.get('#get-authorize').click();
     cy.get('#idp-fip1v2-title').click();
     cy.get('form').submit();
-    cy.get('#fc-ask-consent').should('exist').contains("J'accepte que FranceConnect transmette mes données au service pour me connecter.");
+    cy.get('#fc-ask-consent')
+      .should('exist')
+      .contains(
+        "J'accepte que FranceConnect transmette mes données au service pour me connecter.",
+      );
     cy.get('#consent').should('be.disabled');
     cy.get('#fc-ask-consent input').check();
     cy.get('#consent').should('not.be.disabled');
     cy.get('#consent').click();
+    cy.hasBusinessLog({
+      event: 'FC_DATATRANSFER:CONSENT:IDENTITY',
+      idpId: 'fip1v2',
+    });
     cy.get('.nav-logout').click();
   });
 
@@ -19,6 +31,11 @@ describe('get user consent', () => {
     cy.get('form').submit();
     cy.get('#fc-ask-consent').should('not.exist');
     cy.get('#consent').should('not.be.disabled').click();
+
+    cy.hasBusinessLog({
+      event: 'FC_DATATRANSFER:INFORMATION:IDENTITY',
+      idpId: 'fip1v2',
+    });
     cy.get('.nav-logout').click();
   });
 
@@ -29,6 +46,10 @@ describe('get user consent', () => {
     cy.get('form').submit();
     cy.get('#fc-ask-consent').should('not.exist');
     cy.get('#consent').should('not.be.disabled').click();
+    cy.hasBusinessLog({
+      event: 'FC_DATATRANSFER:INFORMATION:IDENTITY',
+      idpId: 'fip1v2',
+    });
     cy.get('.nav-logout').click();
   });
 
@@ -53,6 +74,15 @@ describe('get user consent', () => {
     cy.get('#idp-fip1v2-title').click();
     cy.get('form').submit();
 
-    cy.get('main section .section__identity').should('exist').contains('Vous avez été connecté de façon anonyme');
-  })
-})
+    cy.get('main section .section__identity')
+      .should('exist')
+      .contains('Vous avez été connecté de façon anonyme');
+
+    cy.get('#consent').should('not.be.disabled').click();
+
+    cy.hasBusinessLog({
+      event: 'FC_DATATRANSFER:INFORMATION:ANONYMOUS',
+      idpId: 'fip1v2',
+    });
+  });
+});

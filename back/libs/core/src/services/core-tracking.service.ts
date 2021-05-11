@@ -35,7 +35,9 @@ export class CoreTrackingService implements IAppTrackingService {
       ip,
       sessionId,
       interactionId,
+      claims,
     }: ICoreTrackingContext = await this.extractContext(context);
+
     const { step, category, event: eventName } = event;
     let data: ICoreTrackingProviders;
 
@@ -52,6 +54,7 @@ export class CoreTrackingService implements IAppTrackingService {
       category,
       event: eventName,
       ip,
+      claims: claims?.join(' '),
       ...data,
     };
   }
@@ -83,13 +86,15 @@ export class CoreTrackingService implements IAppTrackingService {
       throw new CoreMissingContextException('req');
     }
 
+    const { claims } = req;
+
     const ip: string = this.extractIpFromContext(ctx);
     const interactionId: string = this.getInteractionIdFromContext(ctx);
 
     const sessionId: string =
       req.sessionId || (await this.sessionService.getAlias(interactionId));
 
-    return { ip, sessionId, interactionId };
+    return { ip, sessionId, interactionId, claims };
   }
 
   private extractInteractionId(req) {

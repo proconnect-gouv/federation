@@ -6,4 +6,8 @@ export enum ErrorCode {
   INVALID_CSRF = 5,
   MISSING_AUTHENTICATION_EMAIL = 6,
   INVALID_IDENTITY = 7,
+  /**
+   * @todo core-fcp specific error, to be moved when we remove @fc/core
+   */
+  INVALID_CONSENT_PROCESS = 8,
 }
