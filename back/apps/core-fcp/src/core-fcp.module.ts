@@ -47,6 +47,9 @@ import {
   CoreFcpSendEmailHandler,
   CoreFcpEidasIdentityCheckHandler,
   CoreFcpDefaultIdentityCheckHandler,
+  CoreFcpDatatransferInformationIdentityEventHandler,
+  CoreFcpDatatransferInformationAnonymousEventHAndler,
+  CoreFcpDatatransferConsentIdentityEventHandler,
 } from './handlers';
 
 @Global()
@@ -100,6 +103,9 @@ import {
     CoreFcpSendEmailHandler,
     CoreFcpDefaultIdentityCheckHandler,
     CoreFcpEidasIdentityCheckHandler,
+    CoreFcpDatatransferInformationIdentityEventHandler,
+    CoreFcpDatatransferInformationAnonymousEventHAndler,
+    CoreFcpDatatransferConsentIdentityEventHandler,
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [

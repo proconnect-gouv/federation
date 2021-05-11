@@ -6,6 +6,8 @@ import { OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { ScopesService } from '@fc/scopes';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { CoreFcpSendEmailHandler } from '../handlers';
 import {
   FeatureHandler,
@@ -21,10 +23,14 @@ export type FcpFeature = {
 
 @Injectable()
 export class CoreFcpService {
+  // Dependency injection can require more than 4 parameters
+  // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     public readonly moduleRef: ModuleRef,
+    private readonly scopes: ScopesService,
+    private readonly serviceProvider: ServiceProviderAdapterMongoService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -83,5 +89,49 @@ export class CoreFcpService {
       throw new CoreMissingAuthenticationEmailException(e);
     }
     await handler.handle(session);
+  }
+
+  async isConsentRequired(spId: string): Promise<boolean> {
+    const { type, identityConsent } = await this.serviceProvider.getById(spId);
+
+    const consentRequired = this.serviceProvider.consentRequired(
+      type,
+      identityConsent,
+    );
+
+    return consentRequired;
+  }
+
+  /**
+   * @todo type input, needs typing on the return of OidcProviderService.getInteraction()
+   */
+  async getClaimsLabelsForInteraction(interaction: any): Promise<string[]> {
+    const scopes = this.getScopesForInteraction(interaction);
+
+    const claims = await this.scopes.mapScopesToLabel(scopes);
+
+    return claims;
+  }
+
+  /**
+   * @todo type input, needs typing on the return of OidcProviderService.getInteraction()
+   */
+  async getClaimsForInteraction(interaction: any): Promise<string[]> {
+    const scopes = this.getScopesForInteraction(interaction);
+
+    const claims = await this.scopes.getClaimsFromScopes(scopes);
+
+    return claims;
+  }
+
+  /**
+   * @todo type input, needs typing on the return of OidcProviderService.getInteraction()
+   */
+  getScopesForInteraction(interaction: any): string[] {
+    const {
+      params: { scope },
+    } = interaction;
+    const scopes = scope.split(' ');
+    return scopes;
   }
 }
