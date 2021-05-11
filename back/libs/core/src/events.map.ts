@@ -151,21 +151,39 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       intercept: true,
     },
 
+    'FC_DATATRANSFER:INFORMATION:ANONYMOUS': {
+      step: '6.2.0',
+      category: EventsCategories.FRONT_CINEMATIC,
+      event: 'FC_DATATRANSFER:INFORMATION:ANONYMOUS',
+      exceptions: [],
+      route: `${urlPrefix}/login`,
+      intercept: false,
+    },
+
+    'FC_DATATRANSFER:INFORMATION:IDENTITY': {
+      step: '6.2.1',
+      category: EventsCategories.FRONT_CINEMATIC,
+      event: 'FC_DATATRANSFER:INFORMATION:IDENTITY',
+      exceptions: [],
+      route: `${urlPrefix}/login`,
+      intercept: false,
+    },
+
+    'FC_DATATRANSFER:CONSENT:IDENTITY': {
+      step: '6.2.2',
+      category: EventsCategories.FRONT_CINEMATIC,
+      event: 'FC_DATATRANSFER:CONSENT:IDENTITY',
+      exceptions: [],
+      route: `${urlPrefix}/login`,
+      intercept: false,
+    },
+
     FC_REDIRECTED_TO_SP: {
       step: '7.0.0',
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'FC_REDIRECTED_TO_SP',
       exceptions: [],
       route: `${urlPrefix}/login`,
-      intercept: true,
-    },
-
-    FC_CONSENTED: {
-      step: '7.1.0',
-      category: EventsCategories.FRONT_CINEMATIC,
-      event: 'FC_CONSENTED',
-      exceptions: [],
-      route: `${urlPrefix}/interaction/:uid/consent`,
       intercept: true,
     },
 

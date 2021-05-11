@@ -175,4 +175,24 @@ describe('ScopesService', () => {
       });
     });
   });
+
+  describe('getClaimsFromScopes', () => {
+    it('should return mapped claims for scope', () => {
+      // Given
+      const scopesMock = ['openid', 'phone'];
+      // When
+      const result = service.getClaimsFromScopes(scopesMock);
+      // Then
+      expect(result).toEqual(['sub', 'phone_number']);
+    });
+
+    it('should return given input if key is not in map', () => {
+      // Given
+      const scopesMock = ['openid', 'phone', 'foo'];
+      // When
+      const result = service.getClaimsFromScopes(scopesMock);
+      // Then
+      expect(result).toEqual(['sub', 'phone_number', 'foo']);
+    });
+  });
 });
