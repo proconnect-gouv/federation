@@ -34,7 +34,7 @@ core-fcp-high:
     #- docker-stack exec core-fcp-high yarn start:prod:core-fcp-high &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
-    - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
+    - timeout 120 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
       do echo "Waiting for core-fcp-high..." && sleep 10; done' || (
       (echo 'Cannot connect to core-fcp-high') &&
       (docker exec fc_core-fcp-high_1 cat /tmp/.pm2/logs/core-fcp-high-error-0.log || true) &&
