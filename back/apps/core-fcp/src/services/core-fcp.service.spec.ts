@@ -6,6 +6,8 @@ import { OidcSession } from '@fc/oidc';
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { ScopesService } from '@fc/scopes';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { CoreFcpService, FcpFeature } from './core-fcp.service';
 import { ProcessCore } from '../enums';
 
@@ -62,6 +64,16 @@ describe('CoreFcpService', () => {
     getById: jest.fn(),
   };
 
+  const scopesServiceMock = {
+    mapScopesToLabel: jest.fn(),
+    getClaimsFromScopes: jest.fn(),
+  };
+
+  const serviceProviderMock = {
+    getById: jest.fn(),
+    consentRequired: jest.fn(),
+  };
+
   const reqMock = {};
 
   const coreVerifyMock = 'core-fcp-default-verify';
@@ -87,6 +99,8 @@ describe('CoreFcpService', () => {
         LoggerService,
         IdentityProviderAdapterMongoService,
         SessionGenericService,
+        ScopesService,
+        ServiceProviderAdapterMongoService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -97,6 +111,10 @@ describe('CoreFcpService', () => {
       .useValue(IdentityProviderMock)
       .overrideProvider(ModuleRef)
       .useValue(moduleRefMock)
+      .overrideProvider(ScopesService)
+      .useValue(scopesServiceMock)
+      .overrideProvider(ServiceProviderAdapterMongoService)
+      .useValue(serviceProviderMock)
       .compile();
 
     service = module.get<CoreFcpService>(CoreFcpService);
@@ -106,6 +124,7 @@ describe('CoreFcpService', () => {
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
     featureHandlerGetSpy.mockResolvedValueOnce(featureHandlerServiceMock);
     IdentityProviderMock.getById.mockResolvedValue(IdentityProviderResultMock);
+    serviceProviderMock.getById.mockResolvedValue(serviceProviderMock);
   });
 
   it('should be defined', () => {
@@ -277,6 +296,153 @@ describe('CoreFcpService', () => {
       // Then
       expect(featureHandlerServiceMock.handle).toBeCalledTimes(1);
       expect(featureHandlerServiceMock.handle).toBeCalledWith(sessionDataMock);
+    });
+  });
+
+  describe('isConsentRequired', () => {
+    const serviceProviderDataMock = {
+      type: 'public',
+      identityConsent: false,
+    };
+    const spIdMock = 'foo';
+
+    beforeEach(() => {
+      serviceProviderMock.getById.mockResolvedValue(serviceProviderDataMock);
+    });
+
+    it('should get service provider by id', async () => {
+      // When
+      await service.isConsentRequired(spIdMock);
+      // Then
+      expect(serviceProviderMock.getById).toHaveBeenCalledTimes(1);
+      expect(serviceProviderMock.getById).toHaveBeenCalledWith(spIdMock);
+    });
+
+    it('should get consent requirement', async () => {
+      // When
+      await service.isConsentRequired(spIdMock);
+      // Then
+      expect(serviceProviderMock.consentRequired).toHaveBeenCalledTimes(1);
+      expect(serviceProviderMock.consentRequired).toHaveBeenCalledWith(
+        serviceProviderDataMock.type,
+        serviceProviderDataMock.identityConsent,
+      );
+    });
+
+    it('should return consent requirement (false)', async () => {
+      // Given
+      serviceProviderMock.consentRequired.mockReturnValue(false);
+
+      // When
+      const result = await service.isConsentRequired(spIdMock);
+      // Then
+      expect(result).toEqual(false);
+    });
+
+    it('should return consent requirement (true)', async () => {
+      // Given
+      serviceProviderMock.consentRequired.mockReturnValue(true);
+      // When
+      const result = await service.isConsentRequired(spIdMock);
+      // Then
+      expect(result).toEqual(true);
+    });
+  });
+
+  describe('getClaimsLabelsForInteraction', () => {
+    const interactionMock = {};
+    const scopesMock = ['openid', 'profile'];
+    const mapScopesToLabelResolvedValue = ['foo'];
+
+    beforeEach(() => {
+      service.getScopesForInteraction = jest.fn().mockReturnValue(scopesMock);
+      scopesServiceMock.mapScopesToLabel.mockResolvedValue(
+        mapScopesToLabelResolvedValue,
+      );
+    });
+
+    it('should get scopes from interaction', async () => {
+      // When
+      await service.getClaimsLabelsForInteraction(interactionMock);
+      // Then
+      expect(service.getScopesForInteraction).toHaveBeenCalledTimes(1);
+      expect(service.getScopesForInteraction).toHaveBeenCalledWith(
+        interactionMock,
+      );
+    });
+
+    it('should convert scope to claim labels', async () => {
+      // When
+      await service.getClaimsLabelsForInteraction(interactionMock);
+      // Then
+      expect(scopesServiceMock.mapScopesToLabel).toHaveBeenCalledTimes(1);
+      expect(scopesServiceMock.mapScopesToLabel).toHaveBeenCalledWith(
+        scopesMock,
+      );
+    });
+
+    it('should return claim labels', async () => {
+      // When
+      const result = await service.getClaimsLabelsForInteraction(
+        interactionMock,
+      );
+      // Then
+      expect(result).toBe(mapScopesToLabelResolvedValue);
+    });
+  });
+
+  describe('getClaimsForInteraction', () => {
+    const interactionMock = {};
+    const scopesMock = ['openid', 'profile'];
+    const getClaimsFromScopesResolvedValue = ['foo'];
+
+    beforeEach(() => {
+      service.getScopesForInteraction = jest.fn().mockReturnValue(scopesMock);
+      scopesServiceMock.getClaimsFromScopes.mockResolvedValue(
+        getClaimsFromScopesResolvedValue,
+      );
+    });
+
+    it('should get scopes from interaction', async () => {
+      // When
+      await service.getClaimsForInteraction(interactionMock);
+      // Then
+      expect(service.getScopesForInteraction).toHaveBeenCalledTimes(1);
+      expect(service.getScopesForInteraction).toHaveBeenCalledWith(
+        interactionMock,
+      );
+    });
+
+    it('should convert scope to claims', async () => {
+      // When
+      await service.getClaimsForInteraction(interactionMock);
+      // Then
+      expect(scopesServiceMock.getClaimsFromScopes).toHaveBeenCalledTimes(1);
+      expect(scopesServiceMock.getClaimsFromScopes).toHaveBeenCalledWith(
+        scopesMock,
+      );
+    });
+
+    it('should return claims', async () => {
+      // When
+      const result = await service.getClaimsForInteraction(interactionMock);
+      // Then
+      expect(result).toBe(getClaimsFromScopesResolvedValue);
+    });
+  });
+
+  describe('getScopesForInteraction', () => {
+    it('should return scopes extracted and parsed from interaction', () => {
+      // Given
+      const interactionMock = {
+        params: {
+          scope: 'openid profile',
+        },
+      };
+      // When
+      const result = service.getScopesForInteraction(interactionMock);
+      // Then
+      expect(result).toEqual(['openid', 'profile']);
     });
   });
 });

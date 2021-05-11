@@ -159,6 +159,11 @@ export class OidcProviderService {
    * @param req
    * @param res
    */
+  /**
+   *
+   * @todo type return (if not already done in #461)
+   * For now, the `Interaction` type from oidc-provider seems unreachable
+   */
   async getInteraction(req, res): Promise<any> {
     try {
       return await this.provider.interactionDetails(req, res);

@@ -55,6 +55,7 @@ describe('CoreTrackingService', () => {
     ip: ipMock,
     sessionId: sessionIdMock,
     interactionId: interactionIdMock,
+    claims: ['foo', 'bar'],
   };
 
   const sessionDataMock: OidcSession = {
@@ -161,11 +162,41 @@ describe('CoreTrackingService', () => {
         category: eventMock.category,
         event: eventMock.event,
         ip: ipMock,
+        claims: 'foo bar',
       };
       // When
       const result = await service.buildLog(eventMock, contextMock);
       // Then
       expect(result).toEqual(expectedResult);
+    });
+
+    it('should return object containing joined claims', async () => {
+      // Given
+      const contextMock = {
+        req: {},
+        claims: ['foo', 'bar'],
+      };
+      // When
+      const result = await service.buildLog(eventMock, contextMock);
+      // Then
+      expect(result).toEqual(expect.objectContaining({ claims: 'foo bar' }));
+    });
+
+    it('should return object without claims if none provided', async () => {
+      // Given
+      const contextMock = {
+        req: {},
+      };
+      const extractedContextMockValue = { ...extractedValueMock };
+      extractedContextMockValue.claims = undefined;
+      extractContextMock.mockReset();
+      extractContextMock.mockResolvedValueOnce(extractedContextMockValue);
+      // When
+      const result = await service.buildLog(eventMock, contextMock);
+      // Then
+      expect(result).toEqual(
+        expect.not.objectContaining({ claims: 'foo bar' }),
+      );
     });
   });
 
@@ -196,6 +227,7 @@ describe('CoreTrackingService', () => {
             _interaction: interactionIdMock,
           },
           sessionId: sessionIdMock,
+          claims: ['foo', 'bar'],
         },
       };
       // When
@@ -223,6 +255,7 @@ describe('CoreTrackingService', () => {
           cookies: {
             _interaction: interactionIdMock,
           },
+          claims: ['foo', 'bar'],
         },
         // sessionId is voluntary missing
       };
