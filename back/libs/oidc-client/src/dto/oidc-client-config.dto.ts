@@ -18,11 +18,13 @@ import { IdentityProviderMetadata } from '../interfaces';
 class HttpOptions {
   @IsString()
   @MinLength(1)
-  readonly key: string;
+  @IsOptional()
+  readonly key?: string;
 
   @IsString()
   @MinLength(1)
-  readonly cert: string;
+  @IsOptional()
+  readonly cert?: string;
 
   @IsNumber()
   readonly timeout: number;
