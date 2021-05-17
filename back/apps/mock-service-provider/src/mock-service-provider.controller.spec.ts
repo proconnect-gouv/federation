@@ -149,6 +149,7 @@ describe('MockServiceProviderController', () => {
       acr: acrMock,
       claims: claimsMock,
       urlPrefix: '/api/v2',
+      defaultAcrValue: 'eidas2',
     });
     identityProviderMock.getList.mockResolvedValue(identityProviderList);
   });
@@ -209,6 +210,19 @@ describe('MockServiceProviderController', () => {
       expect(result).toEqual(
         expect.objectContaining({
           titleFront: 'Mock Service Provider',
+        }),
+      );
+    });
+
+    it('Should return default ACR value', async () => {
+      // setup
+      sessionServiceMock.set.mockResolvedValueOnce(undefined);
+      // action
+      const result = await controller.index(sessionServiceMock);
+      // assert
+      expect(result).toEqual(
+        expect.objectContaining({
+          defaultAcrValue: 'eidas2',
         }),
       );
     });
