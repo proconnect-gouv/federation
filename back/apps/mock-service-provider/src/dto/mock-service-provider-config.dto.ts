@@ -7,8 +7,8 @@ import { OidcClientConfig } from '@fc/oidc-client';
 import { RedisConfig } from '@fc/redis';
 import { LoggerConfig } from '@fc/logger';
 import { SessionGenericConfig } from '@fc/session-generic';
-import { AppConfig } from '@fc/app';
 import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
+import { AppConfig } from './app-config.dto';
 
 export class MockServiceProviderConfig {
   @IsObject()
