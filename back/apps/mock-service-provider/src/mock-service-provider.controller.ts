@@ -61,6 +61,8 @@ export class MockServiceProviderController {
     @Session('OidcClient')
     sessionOidc: ISessionGenericService<OidcClientSession>,
   ) {
+    const { defaultAcrValue } = this.config.get('App');
+
     // Only one provider is available with `@fc/identity-provider-env`
     const [provider] = await this.identityProvider.getList();
 
@@ -81,6 +83,7 @@ export class MockServiceProviderController {
       titleFront: 'Mock Service Provider',
       params,
       authorizationUrl: authorizationUrl,
+      defaultAcrValue,
     };
   }
 
