@@ -4,6 +4,8 @@ import {
   IsObject,
   IsEmail,
   NotContains,
+  IsArray,
+  ArrayNotEmpty,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
@@ -32,8 +34,10 @@ class MailjetOptions {
 }
 
 export class MailerConfig {
-  @IsString()
-  readonly template: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @IsString({ each: true })
+  readonly templatePaths: string[];
 
   @IsString()
   readonly transport: MailerType;

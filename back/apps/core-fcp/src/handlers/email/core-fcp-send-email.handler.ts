@@ -1,4 +1,3 @@
-import * as ejs from 'ejs';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { ConfigService, validationOptions } from '@fc/config';
@@ -14,6 +13,7 @@ import {
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
 import { validateDto } from '@fc/common';
 import { OidcSession } from '@fc/oidc';
+import { EmailsTemplates } from '../../enums';
 
 @Injectable()
 @FeatureHandler('core-fcp-send-email')
@@ -45,17 +45,7 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
     return formattedDate;
   }
 
-  hydrateConnectNotificationEmailTemplate(
-    connectNotificationEmailParameters: ConnectNotificationEmailParameters,
-  ): string {
-    const { template } = this.configMailer;
-    const htmlContent = ejs.render(template, {
-      locals: connectNotificationEmailParameters,
-    });
-    return htmlContent;
-  }
-
-  async getConnectNotificationEmailBodyContent(
+  private async getConnectNotificationEmailBodyContent(
     session: OidcSession,
   ): Promise<string> {
     const { idpName, spIdentity, spName } = session;
@@ -77,9 +67,12 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
       throw new MailerNotificationConnectException();
     }
 
-    const htmlContent = this.hydrateConnectNotificationEmailTemplate(
+    const fileName = EmailsTemplates.NOTIFICATION_EMAIL;
+    const htmlContent = this.mailer.mailToSend(
+      fileName,
       connectNotificationEmailParameters,
     );
+
     return htmlContent;
   }
 
