@@ -7,3 +7,4 @@ export * from './register-proxy-url.command';
 export * from './login';
 export * from './forms';
 export * from './reset';
+export * from './logs';

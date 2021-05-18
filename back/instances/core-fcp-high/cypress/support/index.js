@@ -15,6 +15,9 @@ import {
   logout,
   formFill,
   resetMongoFC,
+  getTechnicalLogs,
+  resetTechnicalLog,
+  verifyEmailIsSent,
 } from './commands';
 import 'cypress-plugin-tab';
 
@@ -41,3 +44,6 @@ Cypress.Commands.add('resetEnv', type => {
 Cypress.Commands.add('login', login);
 Cypress.Commands.add('logout', logout);
 Cypress.Commands.add('formFill', formFill);
+Cypress.Commands.add('getTechnicalLogs', getTechnicalLogs);
+Cypress.Commands.add('verifyEmailIsSent', verifyEmailIsSent);
+Cypress.Commands.add('resetTechnicalLog', resetTechnicalLog);
