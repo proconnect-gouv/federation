@@ -1,8 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { OidcSession } from '@fc/oidc';
 import { MailjetTransport, StdoutTransport } from './transports';
 import { MailerService } from './mailer.service';
+import { TemplateService } from './template.service';
+import { TemplateNotFoundException } from './exceptions';
 
 jest.mock('./transports');
 
@@ -36,6 +39,11 @@ describe('MailerService', () => {
     debug: jest.fn(),
     error: jest.fn(),
   };
+  const templateServiceMock = {
+    readFile: jest.fn(),
+    render: jest.fn(),
+    getFilePath: jest.fn(),
+  };
 
   const MailjetTransportMock = (MailjetTransport as unknown) as jest.Mock;
   const StdoutTransportMock = (StdoutTransport as unknown) as jest.Mock;
@@ -54,12 +62,14 @@ describe('MailerService', () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ConfigService, LoggerService, MailerService],
+      providers: [ConfigService, LoggerService, MailerService, TemplateService],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(TemplateService)
+      .useValue(templateServiceMock)
       .compile();
 
     service = module.get<MailerService>(MailerService);
@@ -184,6 +194,165 @@ describe('MailerService', () => {
 
       // expect
       expect(loggerServiceMock.error).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('MailToSend', () => {
+    const configName = 'Mailer';
+    const fileName = 'file.ejs';
+    const templateToRender = 'path/exists/and/is/last';
+    const configMock = {
+      templatePaths: [
+        'path/does/not/exist',
+        'path/does/exist',
+        templateToRender,
+      ],
+    };
+    const idpIdentityMock = {
+      sub: 'some idpSub',
+    };
+    const spIdentityWithEmailMock = {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      given_name: 'Edward',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      family_name: 'TEACH',
+      email: undefined,
+    };
+    const sessionDataMock: OidcSession = {
+      idpId: '42',
+      idpAcr: 'eidas3',
+      idpName: 'my favorite Idp',
+      idpIdentity: idpIdentityMock,
+
+      spId: 'sp_id',
+      spAcr: 'eidas3',
+      spName: 'my great SP',
+      spIdentity: spIdentityWithEmailMock,
+    };
+    const connectNotificationEmailParametersMock = {
+      idpName: sessionDataMock.idpName,
+      spName: sessionDataMock.spName,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      givenName: spIdentityWithEmailMock.given_name,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      familyName: spIdentityWithEmailMock.family_name,
+      today: 'Le 01/01/2021 à 14:14',
+    };
+    const template = 'html file';
+    const html = 'Hello world';
+
+    beforeEach(async () => {
+      jest.resetAllMocks();
+      jest.restoreAllMocks();
+      jest.clearAllMocks();
+
+      configServiceMock.get.mockReturnValueOnce(configMock);
+    });
+
+    it('should call the config', async () => {
+      // GIVEN
+      templateServiceMock.getFilePath.mockReturnValueOnce(
+        configMock.templatePaths[2],
+      );
+      templateServiceMock.readFile.mockResolvedValueOnce(template);
+      templateServiceMock.render.mockReturnValueOnce(html);
+
+      // WHEN
+      await service.mailToSend(
+        fileName,
+        connectNotificationEmailParametersMock,
+      );
+
+      // THEN
+      expect(configServiceMock.get).toBeCalledTimes(1);
+      expect(configServiceMock.get).toBeCalledWith(configName);
+    });
+
+    it('should call getFilePath from templateService', async () => {
+      // GIVEN
+      templateServiceMock.getFilePath.mockReturnValueOnce(templateToRender);
+      templateServiceMock.readFile.mockResolvedValueOnce(template);
+      templateServiceMock.render.mockReturnValueOnce(html);
+
+      // WHEN
+      await service.mailToSend(
+        fileName,
+        connectNotificationEmailParametersMock,
+      );
+
+      // THEN
+      expect(templateServiceMock.getFilePath).toHaveBeenCalledTimes(1);
+      expect(templateServiceMock.getFilePath).toHaveBeenCalledWith(
+        fileName,
+        configMock.templatePaths,
+      );
+    });
+
+    it('should throw an error if the file path is not found', () => {
+      // GIVEN
+      templateServiceMock.getFilePath.mockReturnValueOnce(undefined);
+
+      // WHEN / THEN
+      expect(() =>
+        service.mailToSend(fileName, connectNotificationEmailParametersMock),
+      ).rejects.toThrow(TemplateNotFoundException);
+    });
+
+    it('should call readFile from templateService', async () => {
+      // Given
+      templateServiceMock.getFilePath.mockReturnValueOnce(templateToRender);
+      templateServiceMock.readFile.mockResolvedValueOnce(template);
+      templateServiceMock.render.mockReturnValueOnce(html);
+
+      // WHEN
+      await service.mailToSend(
+        fileName,
+        connectNotificationEmailParametersMock,
+      );
+
+      // THEN
+      expect(templateServiceMock.readFile).toHaveBeenCalledTimes(1);
+      expect(templateServiceMock.readFile).toHaveBeenCalledWith(
+        templateToRender,
+      );
+    });
+
+    it('should call render from templateService', async () => {
+      // Given
+      templateServiceMock.getFilePath.mockReturnValueOnce(templateToRender);
+      templateServiceMock.readFile.mockResolvedValueOnce(template);
+      templateServiceMock.render.mockReturnValueOnce(html);
+
+      // WHEN
+      await service.mailToSend(
+        fileName,
+        connectNotificationEmailParametersMock,
+      );
+
+      // THEN
+      expect(templateServiceMock.render).toHaveBeenCalledTimes(1);
+      expect(templateServiceMock.render).toHaveBeenCalledWith(
+        template,
+        connectNotificationEmailParametersMock,
+      );
+    });
+
+    it('should return the html to render', async () => {
+      // Given
+      templateServiceMock.getFilePath.mockReturnValueOnce(
+        configMock.templatePaths[2],
+      );
+      templateServiceMock.readFile.mockResolvedValueOnce(template);
+      templateServiceMock.render.mockReturnValueOnce(html);
+
+      // WHEN
+      const result = await service.mailToSend(
+        fileName,
+        connectNotificationEmailParametersMock,
+      );
+
+      // THEN
+      expect(result).toEqual(html);
     });
   });
 });

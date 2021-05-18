@@ -1,4 +1,3 @@
-import * as crypto from 'crypto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { SessionGenericService } from '@fc/session-generic';
@@ -12,11 +11,7 @@ import {
   MailFrom,
 } from '@fc/mailer';
 import { CoreFcpSendEmailHandler } from './core-fcp-send-email.handler';
-
-function generateMD5SumFromHTMLContent(content: string) {
-  const md5 = crypto.createHash('md5').update(content).digest('hex');
-  return md5;
-}
+import { EmailsTemplates } from '../../enums';
 
 /**
  * @TODO #471 En tant que PO je peux avoir des templates de mail différent suivant l'instance
@@ -391,6 +386,7 @@ describe('CoreFcpSendEmailHandler', () => {
   };
 
   const mailerServiceMock = {
+    mailToSend: jest.fn(),
     send: jest.fn(),
   };
 
@@ -446,24 +442,6 @@ describe('CoreFcpSendEmailHandler', () => {
     expect(configServiceMock.get).toBeCalledWith(configName);
   });
 
-  describe('hydrateConnectNotificationEmailTemplate()', () => {
-    beforeEach(() => {
-      configServiceMock.get.mockReturnValue(configMailerMock);
-      service['configMailer'] = configMailerMock;
-    });
-
-    it('hydrated content should match md5 hash (snapshot by hash)', () => {
-      // When
-      const htmlContent = service.hydrateConnectNotificationEmailTemplate(
-        connectNotificationEmailParametersMock,
-      );
-      const resultMD5 = generateMD5SumFromHTMLContent(htmlContent);
-      // Then
-      const expectedMD5 = '3da3d6ccedad2514aaac2e8b7e11b734';
-      expect(resultMD5).toStrictEqual(expectedMD5);
-    });
-  });
-
   describe('getTodayFormattedDate()', () => {
     it('should return a formatted date to be shown in email notification', () => {
       // When
@@ -482,10 +460,6 @@ describe('CoreFcpSendEmailHandler', () => {
 
   describe('getConnectNotificationEmailBodyContent()', () => {
     beforeEach(() => {
-      service[
-        'hydrateConnectNotificationEmailTemplate'
-      ] = jest.fn().mockReturnValue(`connect notification html body content`);
-
       service['getTodayFormattedDate'] = jest
         .fn()
         .mockReturnValue(connectNotificationEmailParametersMock.today);
@@ -493,7 +467,7 @@ describe('CoreFcpSendEmailHandler', () => {
 
     it('should call getTodayFormattedDate', async () => {
       // When
-      await service.getConnectNotificationEmailBodyContent(sessionDataMock);
+      await service['getConnectNotificationEmailBodyContent'](sessionDataMock);
       // Then
       expect(service.getTodayFormattedDate).toBeCalledTimes(1);
       expect(service.getTodayFormattedDate).toBeCalledWith(expect.any(Date));
@@ -509,26 +483,38 @@ describe('CoreFcpSendEmailHandler', () => {
       // When/Then
       const errorMock = new MailerNotificationConnectException();
       await expect(
-        service.getConnectNotificationEmailBodyContent(
+        service['getConnectNotificationEmailBodyContent'](
           sessionDataWithoutEmailMock,
         ),
       ).rejects.toThrow(errorMock);
     });
 
-    it('should have called hydrateConnectNotificationEmailTemplate once with parameters', async () => {
-      // Given
-      jest
-        .spyOn(service, 'hydrateConnectNotificationEmailTemplate')
-        .mockImplementation();
+    it('should call mailToSend', async () => {
       // When
-      await service.getConnectNotificationEmailBodyContent(sessionDataMock);
+      await service['getConnectNotificationEmailBodyContent'](sessionDataMock);
       // Then
-      expect(
-        service.hydrateConnectNotificationEmailTemplate,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        service.hydrateConnectNotificationEmailTemplate,
-      ).toHaveBeenCalledWith(connectNotificationEmailParametersMock);
+      expect(mailerServiceMock.mailToSend).toHaveBeenCalledTimes(1);
+      expect(mailerServiceMock.mailToSend).toHaveBeenCalledWith(
+        EmailsTemplates.NOTIFICATION_EMAIL,
+        {
+          familyName: spIdentityWithEmailMock.family_name,
+          givenName: spIdentityWithEmailMock.given_name,
+          idpName: sessionDataMock.idpName,
+          spName: sessionDataMock.spName,
+          today: connectNotificationEmailParametersMock.today,
+        },
+      );
+    });
+
+    it('should return the html content of the notification email', async () => {
+      // Given
+      mailerServiceMock.mailToSend.mockReturnValueOnce('my HTML content');
+      // When
+      const result = await service['getConnectNotificationEmailBodyContent'](
+        sessionDataMock,
+      );
+      // Then
+      expect(result).toEqual('my HTML content');
     });
   });
 
@@ -552,8 +538,10 @@ describe('CoreFcpSendEmailHandler', () => {
       // When
       await service.handle(sessionDataMock);
       // Then
-      expect(service.getConnectNotificationEmailBodyContent).toBeCalledTimes(1);
-      expect(service.getConnectNotificationEmailBodyContent).toBeCalledWith(
+      expect(service['getConnectNotificationEmailBodyContent']).toBeCalledTimes(
+        1,
+      );
+      expect(service['getConnectNotificationEmailBodyContent']).toBeCalledWith(
         sessionDataMock,
       );
     });
