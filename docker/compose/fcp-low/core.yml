@@ -33,6 +33,9 @@ services:
       - public-fcp-low
       - data
     command: "pm2 logs"
+    environment:
+    # Mailer
+      - 'MAILER_TEMPLATES_PATHS=["/var/www/app/apps/core-fcp/src/mails", "/var/www/app/instances/core-fcp-high/src/mails"]'
 
 networks:
   public-fcp-low:

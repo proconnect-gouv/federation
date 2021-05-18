@@ -4,6 +4,8 @@ import { LoggerService } from '@fc/logger';
 import { MailerConfig } from './dto';
 import { MailOptions, Transport } from './interfaces';
 import { MailjetTransport, StdoutTransport } from './transports';
+import { TemplateService } from './template.service';
+import { TemplateNotFoundException } from './exceptions';
 
 @Injectable()
 export class MailerService {
@@ -12,6 +14,7 @@ export class MailerService {
   constructor(
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
+    private readonly template: TemplateService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -37,5 +40,16 @@ export class MailerService {
     } catch (e) {
       this.logger.error(e);
     }
+  }
+
+  async mailToSend(fileName, values): Promise<string> {
+    const { templatePaths } = this.config.get<MailerConfig>('Mailer');
+    const path = this.template.getFilePath(fileName, templatePaths);
+    if (!path) {
+      throw new TemplateNotFoundException(`${fileName} not found`);
+    }
+    const template = await this.template.readFile(path);
+    const html = this.template.render(template, values);
+    return html;
   }
 }
