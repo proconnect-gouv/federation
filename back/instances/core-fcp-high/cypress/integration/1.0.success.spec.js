@@ -261,4 +261,33 @@ describe('Successful scenarios', () => {
       )
       .should('contains', 'state=stateTraces');
   });
+
+  describe('Send notification email on a successfull scenario', () => {
+    beforeEach(() => {
+      cy.resetTechnicalLog();
+    });
+
+    it('should log in to Service Provider Example and check notification email is sent', () => {
+      basicSuccessScenario({
+        userName: 'test',
+        password: '123',
+        eidasLevel: 1,
+        idpId,
+      });
+
+      checkInformationsServiceProvider({
+        gender: 'Femme',
+        givenName: 'Angela Claire Louise',
+        familyName: 'DUBOIS',
+        birthdate: '1962-08-24',
+        birthplace: '75107',
+        birthcountry: '99100',
+      });
+      checkInStringifiedJson(
+        'sub',
+        '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
+      );
+      cy.verifyEmailIsSent('Notification de connexion à FranceConnect+');
+    });
+  })
 });
