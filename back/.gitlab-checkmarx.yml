@@ -11,7 +11,7 @@ variables:
     CX_FLOW_BUG_TRACKER: "GitLab"                                  # Beware camelcase 'L' in GitLab if modified
     CX_FLOW_BUG_TRACKER_IMPL: ${CX_FLOW_BUG_TRACKER}
     CX_FLOW_EXE: "java -jar /app/cx-flow.jar"
-    CX_PROJECT: "$CI_PROJECT_NAME-$CI_COMMIT_REF_NAME"
+    CX_PROJECT: "FranceConnect-fcv2"
     CHECKMARX_VERSION: "9.3"                                       # Modified
     CHECKMARX_SETTINGS_OVERRIDE: "false"
     CHECKMARX_EXCLUDE_FILES: ""                                    # Tested with no success. It was NOT taken into account
