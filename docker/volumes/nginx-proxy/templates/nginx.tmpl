@@ -51,7 +51,7 @@ server {
 
   include includes/common.vhost.conf;
 
-{{ $proto := coalesce $vhostContainer.Env.APP_PROTO "http" }}
+{{ $proto := coalesce $vhostContainer.Env.App_PROTOCOL "http" }}
 {{ if $vhostContainer.Env.SSL_CLIENT_PROTECTED_URIS }}
   {{ range $protected_uri := split $vhostContainer.Env.SSL_CLIENT_PROTECTED_URIS "," }}
   location {{ $protected_uri }} {
@@ -64,7 +64,7 @@ server {
   {{ end }}
 {{ end }}
 
-{{ $proto := coalesce $vhostContainer.Env.APP_PROTO "http" }}
+{{ $proto := coalesce $vhostContainer.Env.App_PROTOCOL "http" }}
   location / {
     proxy_pass {{ $proto }}://{{ trim $host }};
   }
