@@ -3,6 +3,9 @@ review-fca:
   image: ${DEPLOY_IMAGE}
   tags:
     - deploy
+  only:
+    - merge_requests
+    - staging
   variables:
     GIT_STRATEGY: none
   script:
@@ -35,4 +38,7 @@ stop-fca:
   environment:
     name: recette
     action: stop
+  only:
+    - merge_requests
+    - staging
   when: manual
