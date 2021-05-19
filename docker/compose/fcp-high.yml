@@ -356,6 +356,8 @@ services:
       - "MONGO_INITDB_DATABASE=core-fcp-high"
       - "MONGO_INITDB_ROOT_USERNAME=rootAdmin"
       - "MONGO_INITDB_ROOT_PASSWORD=pass"
+    ports:
+      - "127.0.0.1:27017:27017"
     networks:
       - data
 
