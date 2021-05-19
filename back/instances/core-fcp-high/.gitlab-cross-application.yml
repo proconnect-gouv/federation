@@ -1,7 +1,10 @@
 core-fcp-high-cross-application:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
-  when: manual
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
+      when: manual
+      allow_failure: true
   tags:
     - docker
   variables:
