@@ -24,6 +24,8 @@ const assetsPath =
       '';
 
 async function bootstrap() {
+  const httpsOptions = ConfigService.getHttpsOptions();
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     /**
      * We need to handle the bodyParser ourself because of prototype pollution risk with `body-parser` library.
@@ -38,6 +40,7 @@ async function bootstrap() {
      * @see https://medium.com/intrinsic/javascript-prototype-poisoning-vulnerabilities-in-the-wild-7bc15347c96
      */
     bodyParser: false,
+    httpsOptions,
   });
 
   const config = app.get(ConfigService);
