@@ -7,11 +7,14 @@ import {
   OidcProviderRoutes,
   OidcProviderPrompt,
 } from '@fc/oidc-provider';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'OidcProvider');
 
 export default {
   forcedPrompt: [OidcProviderPrompt.LOGIN, OidcProviderPrompt.CONSENT],
-  prefix: process.env.PREFIX,
-  issuer: `https://${process.env.FQDN}${process.env.PREFIX}`,
+  prefix: env.string('PREFIX'),
+  issuer: `https://${process.env.FQDN}${env.string('PREFIX')}`,
   configuration: {
     routes: {
       authorization: OidcProviderRoutes.AUTHORIZATION,
@@ -40,7 +43,7 @@ export default {
     },
     subjectTypes: ['pairwise'],
     cookies: {
-      keys: JSON.parse(process.env.OIDC_PROVIDER_COOKIES_KEYS),
+      keys: env.json('COOKIES_KEYS'),
       long: {
         maxAge: parseInt(process.env.COOKIE_MAX_AGE, 10), // 20 minutes
         sameSite: 'lax',

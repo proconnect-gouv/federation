@@ -2,10 +2,13 @@
 
 // Tested by DTO
 import { RedisConfig } from '@fc/redis';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'Redis');
 
 export default {
-  host: process.env.FC_REDIS_HOST,
-  port: parseInt(process.env.FC_REDIS_PORT, 10),
-  password: process.env.FC_REDIS_PASSWORD,
-  db: parseInt(process.env.FC_REDIS_DB, 10),
+  host: env.string('HOST'),
+  port: env.number('PORT'),
+  password: env.string('PASSWORD'),
+  db: env.number('DB'),
 } as RedisConfig;
