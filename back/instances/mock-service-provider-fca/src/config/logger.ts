@@ -2,9 +2,12 @@
 
 // Tested by DTO
 import { LoggerConfig } from '@fc/logger';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'Logger');
 
 export default {
-  path: process.env.EVT_LOG_FILE,
-  level: process.env.LOG_LEVEL,
+  path: env.string('FILE'),
+  level: env.string('LEVEL'),
   isDevelopment: process.env.NODE_ENV === 'development',
 } as LoggerConfig;

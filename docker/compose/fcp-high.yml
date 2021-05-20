@@ -50,16 +50,16 @@ services:
     environment:
       - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9238 mock-service-provider-high"
       - "VIRTUAL_HOST=fsp1v2.docker.dev-franceconnect.fr"
-      - 'REDIRECT_URIS=["https://fsp1v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
-      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsp1v2.docker.dev-franceconnect.fr/logout-callback"]'
-      - "CLIENT_ID=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950"
-      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      - 'IdentityProviderAdapterEnv_REDIRECT_URIS=["https://fsp1v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS=["https://fsp1v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "IdentityProviderAdapterEnv_CLIENT_ID=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950"
+      - "IdentityProviderAdapterEnv_CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
       # Set OIDC library debugging mode: https://www.npmjs.com/package/oidc-provider#debugging
       - "DEBUG=oidc-provider:*"
       # Arbitrary DB number, default is 0 and is used by legacy core.
-      - "FC_REDIS_DB=4"
+      - "Redis_DB=4"
       # Logger
-      - "EVT_LOG_FILE=/var/log/app/fsp1v2.log"
+      - "Logger_FILE=/var/log/app/fsp1v2.log"
       - "FQDN=fsp1v2.docker.dev-franceconnect.fr"
       # OidcClient
       - "OidcClient_ACR=eidas2"
@@ -94,13 +94,13 @@ services:
     environment:
       - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9239 mock-service-provider-high"
       - "VIRTUAL_HOST=fsp2v2.docker.dev-franceconnect.fr"
-      - 'REDIRECT_URIS=["https://fsp2v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
-      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsp2v2.docker.dev-franceconnect.fr/logout-callback"]'
-      - "CLIENT_ID=7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775"
-      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
-      - "FC_REDIS_DB=6"
+      - 'IdentityProviderAdapterEnv_REDIRECT_URIS=["https://fsp2v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS=["https://fsp2v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "IdentityProviderAdapterEnv_CLIENT_ID=7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775"
+      - "IdentityProviderAdapterEnv_CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      - "Redis_DB=6"
       # Logger
-      - "EVT_LOG_FILE=/var/log/app/fsp2v2.log"
+      - "Logger_FILE=/var/log/app/fsp2v2.log"
       # OidcProvider
       - "FQDN=fsp2v2.docker.dev-franceconnect.fr"
       # OidcClient
@@ -136,14 +136,14 @@ services:
     environment:
       - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9240 mock-service-provider-high"
       - "VIRTUAL_HOST=fsp3v2.docker.dev-franceconnect.fr"
-      - 'REDIRECT_URIS=["https://fsp3v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
-      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsp3v2.docker.dev-franceconnect.fr/logout-callback"]'
-      - "CLIENT_ID=my-service-provider-deactivated"
-      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      - 'IdentityProviderAdapterEnv_REDIRECT_URIS=["https://fsp3v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS=["https://fsp3v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "IdentityProviderAdapterEnv_CLIENT_ID=my-service-provider-deactivated"
+      - "IdentityProviderAdapterEnv_CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
       # Arbitrary DB number, default is 0 and is used by legacy core.
-      - "FC_REDIS_DB=8"
+      - "Redis_DB=8"
       # Logger
-      - "EVT_LOG_FILE=/var/log/app/fsp3v2.log"
+      - "Logger_FILE=/var/log/app/fsp3v2.log"
       # OidcProvider
       - "FQDN=fsp3v2.docker.dev-franceconnect.fr"
       # OidcClient
@@ -179,14 +179,14 @@ services:
     environment:
       - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9249 mock-service-provider-high"
       - "VIRTUAL_HOST=fsp5v2.docker.dev-franceconnect.fr"
-      - 'REDIRECT_URIS=["https://fsp5v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
-      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsp5v2.docker.dev-franceconnect.fr/logout-callback"]'
-      - "CLIENT_ID=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39555"
-      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      - 'IdentityProviderAdapterEnv_REDIRECT_URIS=["https://fsp5v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS=["https://fsp5v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "IdentityProviderAdapterEnv_CLIENT_ID=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39555"
+      - "IdentityProviderAdapterEnv_CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
       # Arbitrary DB number, default is 0 and is used by legacy core.
-      - "FC_REDIS_DB=8"
+      - "Redis_DB=8"
       # Logger
-      - "EVT_LOG_FILE=/var/log/app/fsp5v2.log"
+      - "Logger_FILE=/var/log/app/fsp5v2.log"
       # OidcProvider
       - "FQDN=fsp5v2.docker.dev-franceconnect.fr"
       # OidcClient
@@ -222,14 +222,14 @@ services:
     environment:
       - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9250 mock-service-provider-high"
       - "VIRTUAL_HOST=fsp6v2.docker.dev-franceconnect.fr"
-      - 'REDIRECT_URIS=["https://fsp6v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
-      - 'POST_LOGOUT_REDIRECT_URIS=["https://fsp6v2.docker.dev-franceconnect.fr/logout-callback"]'
-      - "CLIENT_ID=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39666"
-      - "CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
+      - 'IdentityProviderAdapterEnv_REDIRECT_URIS=["https://fsp6v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
+      - 'IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS=["https://fsp6v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - "IdentityProviderAdapterEnv_CLIENT_ID=6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39666"
+      - "IdentityProviderAdapterEnv_CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
       # Arbitrary DB number, default is 0 and is used by legacy core.
-      - "FC_REDIS_DB=8"
+      - "Redis_DB=8"
       # Logger
-      - "EVT_LOG_FILE=/var/log/app/fsp6v2.log"
+      - "Logger_FILE=/var/log/app/fsp6v2.log"
       # OidcProvider
       - "FQDN=fsp6v2.docker.dev-franceconnect.fr"
       # OidcClient
@@ -283,65 +283,66 @@ services:
       - "GLOBAL_AGENT_HTTPS_PROXY=http://squid:3128"
       - "GLOBAL_AGENT_NO_PROXY=haproxy"
       # Logger
-      - "EVT_LOG_FILE=/var/log/app/core-fcp-high.log"
+      - "Logger_FILE=/var/log/app/core-fcp-high.log"
       # OidcProvider
       - "FQDN=core-fcp-high.docker.dev-franceconnect.fr"
-      - "PREFIX=/api/v2"
+      - "OidcProvider_PREFIX=/api/v2"
       - "App_PROTOCOL=https"
       - "App_HTTPS_SERVER_CERT=/etc/ssl/docker_host/app.crt"
       - "App_HTTPS_SERVER_KEY=/etc/ssl/docker_host/app.key"
       ## Beware, the "kid" of "CRYPTO_SIG_FAKE_PRIV_KEY" and "CRYPTO_SIG_HSM_PUB_KEY" must be the same !
-      - 'CRYPTO_SIG_FAKE_PRIV_KEY={"crv":"P-256","x":"uRxO96Oqn0BEJZYua3rkM9ntzLbt_nDbq4hwSgOUomQ","y":"o9BoK63TMCGmXjOcCZbtOTmw5HdGiy5ZzY4Qo5KG638","d":"sMJDu7_nEjB0SwTKuKR8XiZPHvoUkem3rdgxP39kkfQ","kty":"EC","kid":"pkcs11:hsm","use":"sig"}'
-      - 'CRYPTO_SIG_HSM_PUB_KEY={"crv": "P-256","x": "UvVm7hq8ycQGaKle6kpzUom73IQyYINGRdzQC75AXxw","y": "yoigI3h4xjRQPEeX8GfIyR4mfioqvNIGPWp7_7x7oxk","kty": "EC", "kid": "pkcs11:hsm"}'
-      - 'CRYPTO_ENC_LOCALE_PRIV_KEY={"e":"AQAB","n":"5OHMkVCg2xG2osiXbClpkW8YVxVeqPeQDrDZH1tiocf3S9kK1ErRP1oI1qwP3-MTZVp3O0NjO7eIkkqdogCl043vVty25KMk-lM-dAXfQFjSKBE5c2Y_mZbsvEyk885ZmEbb--S-lxZuBX1jWs574fOSsqKH5e5Mf_PjKgwZFOW0SFl6pGOp230Em5OfTbCN8AKMkw907b9DXoPocDcr3d3ZEa10f5OCI0aieTxvH5Jaq9ZMOQIj1-tTMpDecFYLO8REiQSsUp-4PLUbIBL2Iq-qwv6opkVetpiLR-wwz7e2Y_dDHCqnVHcCo_oWVFFRgKiL_dhmxFIpSkw4dc1ICQ","d":"vZepC6o9RJo8rkT44XjAYN8ky2YBPnerVe_6OrZJUnfBCowkI0xCXnbnIWPv1mZT973jTCz680mJkJzMTJi6xC4rVsmHmoblp5HzBsqibrvkgZoa-9Nz1XcmbKgUb3y7zJ7NtK97jM3gnx2JgnvONJG-L8jgR3-I0OimgHr6_8nh8Qv66at8fighlefmIp-2UVYPydKp2pi9drQAWFAYW5hgNCcmuMi8814O4hdm3zsJU6w8cwOLf2p_L3No9YonO2GcSO_ZRHqPqdj5lDwtBR2DbYAUpzOYj0FMPoG6MMM6ITK9DgHDtwVuoo6ZxI6aoAMCYZ8zehn9QuACtZZQPQ","p":"8l1JmRGOfMMxlqFaAB9sWFe29P4xIVl5Tez95Hf9qIIlcdNvrm6bep5889sMAfN3LB2NA09rwBdCPdjVT_80XgrxTsxPPOvzmxuHmHaozlkBAAgfNgIASgKaznSf8nbBkp-p6NRIc3JOCJDFopm6C43ZCexBu8or_CK554O8AMM","q":"8cJUELj52DDYoxcGsm6wIyk9QYCIRry3gxJwaHWQt4xTeX65_W27x0WVY4ZXNCIYYMxKQXN5Ud70OsdzExNHk9dn96w2cOT2tKlIixoSyDpbLsYKuQ4KlEz0S2GZJyiAT0C2N_1VlRy_OFAFmauj9SIMm3Wr3UhWa7fWRWThR0M","dp":"Rs_SzRJAG1u8hVInRZnowfb-0Z3jJOdLdeUkWThluHIuFo-8Na7DZpQf1e_OFlPYId-Qb8MorDsfc4qC6Jib6E4yKt-u1xHpXwwwFe-1anS-wg-dbt4uz3DrYh7ZDLJ95CUaM5iygmiHPCFwXQ2lOfL70tZgbkmniEdtIaNvrpk","dq":"vkXv2-l52kk3d8SbpLuxLTs71t3OY74LwME2b0B4Ub3DxQ-UWn2PGNsPJHGLGKDtBuJCXxj_Fwyes9ReIVk_MICMd0W240uRT8ccLT6sIaKsOTftIJCIiwe2Dc4Wt9cMhVOtFovwW5dweGWiwrtwI3JU8dW_Gj3gpo7duWgYVfk","qi":"Cpf7tVogmGoFr-WTWSkctb0KqNtNCY3tU__2b2GI0uW_a9TafQhU8fon4SNBPlicdAYlgO1q23tklyhGpLbw7qYgHkr-zt-v_Vfg5YP8cZYGEqW52Qjl2HeMlCCI0-38RG3wFYwXjGDZk9YW6VAWlc6i1MSLrd7NGRrwH1ZkD7U","kty":"RSA","kid":"oidc-provider:locale","use":"enc"}'
-      - 'OIDC_PROVIDER_COOKIES_KEYS=["iet7jaetheezaingahThooSiem3Oothu", "aeChoomaeyi5Jeo7Viezoh8aew8ieH3m", "JaeDahngohc3athooy1Eip2ahtei8Aep", "iu5vu5EeD4goow5eipeizequaetaxo0V"]'
+      - 'OidcProvider_CRYPTO_SIG_FAKE_PRIV_KEY={"crv":"P-256","x":"uRxO96Oqn0BEJZYua3rkM9ntzLbt_nDbq4hwSgOUomQ","y":"o9BoK63TMCGmXjOcCZbtOTmw5HdGiy5ZzY4Qo5KG638","d":"sMJDu7_nEjB0SwTKuKR8XiZPHvoUkem3rdgxP39kkfQ","kty":"EC","kid":"pkcs11:hsm","use":"sig"}'
+      - 'OverrideOidcProvider_CRYPTO_SIG_HSM_PUB_KEY={"crv": "P-256","x": "UvVm7hq8ycQGaKle6kpzUom73IQyYINGRdzQC75AXxw","y": "yoigI3h4xjRQPEeX8GfIyR4mfioqvNIGPWp7_7x7oxk","kty": "EC", "kid": "pkcs11:hsm"}'
+      - 'OidcProvider_COOKIES_KEYS=["iet7jaetheezaingahThooSiem3Oothu", "aeChoomaeyi5Jeo7Viezoh8aew8ieH3m", "JaeDahngohc3athooy1Eip2ahtei8Aep", "iu5vu5EeD4goow5eipeizequaetaxo0V"]'
       # RNIPP
-      - "RNIPP_PROTOCOL=https"
-      - "RNIPP_HOSTNAME=haproxy"
-      - "RNIPP_BASEURL=/Brpp2IdentificationComplet/individus"
+      - "Rnipp_PROTOCOL=https"
+      - "Rnipp_HOSTNAME=haproxy"
+      - "Rnipp_BASEURL=/Brpp2IdentificationComplet/individus"
       # OidcClient
-      - "HTTPS_CLIENT_CERT=/etc/ssl/docker_host/app.crt"
-      - "HTTPS_CLIENT_KEY=/etc/ssl/docker_host/app.key"
+      - "OidcClient_HTTPS_CLIENT_CERT=/etc/ssl/docker_host/app.crt"
+      - "OidcClient_HTTPS_CLIENT_KEY=/etc/ssl/docker_host/app.key"
+      - 'OidcClient_CRYPTO_ENC_LOCALE_PRIV_KEY={"e":"AQAB","n":"5OHMkVCg2xG2osiXbClpkW8YVxVeqPeQDrDZH1tiocf3S9kK1ErRP1oI1qwP3-MTZVp3O0NjO7eIkkqdogCl043vVty25KMk-lM-dAXfQFjSKBE5c2Y_mZbsvEyk885ZmEbb--S-lxZuBX1jWs574fOSsqKH5e5Mf_PjKgwZFOW0SFl6pGOp230Em5OfTbCN8AKMkw907b9DXoPocDcr3d3ZEa10f5OCI0aieTxvH5Jaq9ZMOQIj1-tTMpDecFYLO8REiQSsUp-4PLUbIBL2Iq-qwv6opkVetpiLR-wwz7e2Y_dDHCqnVHcCo_oWVFFRgKiL_dhmxFIpSkw4dc1ICQ","d":"vZepC6o9RJo8rkT44XjAYN8ky2YBPnerVe_6OrZJUnfBCowkI0xCXnbnIWPv1mZT973jTCz680mJkJzMTJi6xC4rVsmHmoblp5HzBsqibrvkgZoa-9Nz1XcmbKgUb3y7zJ7NtK97jM3gnx2JgnvONJG-L8jgR3-I0OimgHr6_8nh8Qv66at8fighlefmIp-2UVYPydKp2pi9drQAWFAYW5hgNCcmuMi8814O4hdm3zsJU6w8cwOLf2p_L3No9YonO2GcSO_ZRHqPqdj5lDwtBR2DbYAUpzOYj0FMPoG6MMM6ITK9DgHDtwVuoo6ZxI6aoAMCYZ8zehn9QuACtZZQPQ","p":"8l1JmRGOfMMxlqFaAB9sWFe29P4xIVl5Tez95Hf9qIIlcdNvrm6bep5889sMAfN3LB2NA09rwBdCPdjVT_80XgrxTsxPPOvzmxuHmHaozlkBAAgfNgIASgKaznSf8nbBkp-p6NRIc3JOCJDFopm6C43ZCexBu8or_CK554O8AMM","q":"8cJUELj52DDYoxcGsm6wIyk9QYCIRry3gxJwaHWQt4xTeX65_W27x0WVY4ZXNCIYYMxKQXN5Ud70OsdzExNHk9dn96w2cOT2tKlIixoSyDpbLsYKuQ4KlEz0S2GZJyiAT0C2N_1VlRy_OFAFmauj9SIMm3Wr3UhWa7fWRWThR0M","dp":"Rs_SzRJAG1u8hVInRZnowfb-0Z3jJOdLdeUkWThluHIuFo-8Na7DZpQf1e_OFlPYId-Qb8MorDsfc4qC6Jib6E4yKt-u1xHpXwwwFe-1anS-wg-dbt4uz3DrYh7ZDLJ95CUaM5iygmiHPCFwXQ2lOfL70tZgbkmniEdtIaNvrpk","dq":"vkXv2-l52kk3d8SbpLuxLTs71t3OY74LwME2b0B4Ub3DxQ-UWn2PGNsPJHGLGKDtBuJCXxj_Fwyes9ReIVk_MICMd0W240uRT8ccLT6sIaKsOTftIJCIiwe2Dc4Wt9cMhVOtFovwW5dweGWiwrtwI3JU8dW_Gj3gpo7duWgYVfk","qi":"Cpf7tVogmGoFr-WTWSkctb0KqNtNCY3tU__2b2GI0uW_a9TafQhU8fon4SNBPlicdAYlgO1q23tklyhGpLbw7qYgHkr-zt-v_Vfg5YP8cZYGEqW52Qjl2HeMlCCI0-38RG3wFYwXjGDZk9YW6VAWlc6i1MSLrd7NGRrwH1ZkD7U","kty":"RSA","kid":"oidc-provider:locale","use":"enc"}'
       - "OidcClient_SCOPE=openid profile email address phone preferred_username birthplace birthcountry"
       # Mongo
       - "FC_DB_TYPE=mongodb"
-      - "FC_DB_HOSTS=mongo4:27017"
-      - "FC_DB_DATABASE=core-fcp-high"
-      - "FC_DB_USER=fc"
-      - "FC_DB_PASSWORD=pass"
+      - "Mongoose_HOSTS=mongo4:27017"
+      - "Mongoose_DATABASE=core-fcp-high"
+      - "Mongoose_USER=fc"
+      - "Mongoose_PASSWORD=pass"
+      - "Mongoose_TLS=true"
+      - "Mongoose_TLS_INSECURE=false"
+      - "Mongoose_TLS_CA_FILE=/etc/ssl/docker_host/docker-stack-ca.crt"
+      - "Mongoose_TLS_ALLOW_INVALID_HOST_NAME=false"
       - "FC_DB_SYNCHRONIZE=false"
       - "FC_DB_CONNECT_OPTIONS="
       - "FC_DB_REPLICASET=rs0"
-      - "FC_DB_TLS=true"
-      - "FC_DB_TLS_INSECURE=false"
-      - "FC_DB_TLS_CA_FILE=/etc/ssl/docker_host/docker-stack-ca.crt"
-      - "FC_DB_TLS_ALLOW_INVALID_HOST_NAME=false"
       - "IDENTITY_HASH_SALT=153a3cf1d20b1cbbcc098eaf70a6284051bc7aebd45f5bf0c811010ecf39968a"
-      - "CLIENT_SECRET_CIPHER_PASS=JZBlwxfKnbn/RV025aw+dQxk+xoQT+Yr"
-      - "USERINFO_CRYPT_KEY=raePh3i+a4eiwieb-H5iePh6o/gheequ"
-      - "FC_REDIS_HOST=redis-pwd"
-      - "FC_REDIS_PORT=6379"
-      - "FC_REDIS_PASSWORD=Ivae1feiThoogahquohDei7iwie0ceeM"
+      - "AdapterMongo_CLIENT_SECRET_CIPHER_PASS=JZBlwxfKnbn/RV025aw+dQxk+xoQT+Yr"
+      - "Redis_HOST=redis-pwd"
+      - "Redis_PORT=6379"
+      - "Redis_PASSWORD=Ivae1feiThoogahquohDei7iwie0ceeM"
       # Arbitrary DB number, default is 0 and is used by legacy core.
-      - "FC_REDIS_DB=2"
-      - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
-      - "CRYPTO_BROKER_QUEUE=crypto"
-      - 'SESSION_COOKIE_SECRETS=["yahvaeJ0eiNua6te", "lidubozieKadee7w", "Eigoh6ev8xaiNoox", "veed7Oow7er5Saim"]'
-      - "CRYPTO_SUB_SECRET=9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa"
+      - "Redis_DB=2"
+      - 'CryptographyBroker_URLS=["amqp://broker:5672"]'
+      - "CryptographyBroker_QUEUE=crypto"
+      # Session
+      - "Session_USERINFO_CRYPT_KEY=raePh3i+a4eiwieb-H5iePh6o/gheequ"
+      - 'Session_COOKIE_SECRETS=["yahvaeJ0eiNua6te", "lidubozieKadee7w", "Eigoh6ev8xaiNoox", "veed7Oow7er5Saim"]'
+      - "Cryptography_CRYPTO_SUB_SECRET=9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa"
       # Mailer
-      - "MAILER=logs"
-      - "MAILER_FROM_EMAIL=ne-pas-repondre@franceconnect.gouv.fr"
-      - "MAILER_FROM_NAME=NE PAS RÉPONDRE"
+      - "Mailer_TRANSPORT=logs"
+      - "Mailer_FROM_EMAIL=ne-pas-repondre@franceconnect.gouv.fr"
+      - "Mailer_FROM_NAME=NE PAS RÉPONDRE"
       ## Must exists even if not used
-      - "MAILJET_KEY="
-      - "MAILJET_SECRET="
+      - "Mailer_MAILJET_KEY="
+      - "Mailer_MAILJET_SECRET="
       ## Bluebird potential memory leak safe guard
       ## @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/131
       ## @see http://bluebirdjs.com/docs/api/promise.config.html#promise.config
       - "BLUEBIRD_LONG_STACK_TRACES=0"
       - "BLUEBIRD_DEBUG=0"
       # Mailer
-      - 'MAILER_TEMPLATES_PATHS=["/var/www/app/apps/core-fcp/src/mails", "/var/www/app/instances/core-fcp-high/src/mails"]'
+      - 'Mailer_TEMPLATES_PATHS=["/var/www/app/apps/core-fcp/src/mails", "/var/www/app/instances/core-fcp-high/src/mails"]'
     networks:
       - fc
       - data
@@ -583,7 +584,7 @@ services:
       - "VIRTUAL_HOST=exploit-fcp.docker.dev-franceconnect.fr"
       - "FQDN=exploit-fcp.docker.dev-franceconnect.fr"
       # Logger
-      - "EVT_LOG_FILE=/var/log/app/exploit-fcp.log"
+      - "Logger_FILE=/var/log/app/exploit-fcp.log"
       # Proxy Configuration
       - "HTTPS_PROXY=http://squid:3128"
       - "DB_HOST=pg-exploitation-high"
@@ -598,8 +599,8 @@ services:
       - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
       - "CRYPTO_BROKER_QUEUE=crypto"
       - "REQUEST_TIMEOUT=60"
-      - 'SESSION_COOKIE_SECRETS=["yahvaeJ0eiNua6te", "lidubozieKadee7w", "Eigoh6ev8xaiNoox", "veed7Oow7er5Saim"]'
-      - "USERINFO_CRYPT_KEY=raePh3i+a4eiwieb-H5iePh6o/gheequ"
+      - 'Session_COOKIE_SECRETS=["yahvaeJ0eiNua6te", "lidubozieKadee7w", "Eigoh6ev8xaiNoox", "veed7Oow7er5Saim"]'
+      - "Session_USERINFO_CRYPT_KEY=raePh3i+a4eiwieb-H5iePh6o/gheequ"
       #FAG USE HSM
       - "USE_HSM=true"
     networks:

@@ -2,6 +2,9 @@
 
 // Tested by DTO
 import { OidcClientConfig } from '@fc/oidc-client';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'OidcClient');
 
 export default {
   httpOptions: {
@@ -9,7 +12,7 @@ export default {
     timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
   },
   jwks: {
-    keys: [JSON.parse(process.env.CRYPTO_ENC_LOCALE_PRIV_KEY)],
+    keys: [env.json('CRYPTO_ENC_LOCALE_PRIV_KEY')],
   },
   stateLength: 32,
   /**

@@ -5,6 +5,9 @@ import {
   SessionGenericConfig,
   ISessionGenericCookieOptions,
 } from '@fc/session-generic';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'Session');
 
 const cookieOptions: ISessionGenericCookieOptions = {
   signed: true,
@@ -12,14 +15,14 @@ const cookieOptions: ISessionGenericCookieOptions = {
   httpOnly: true,
   secure: true,
   maxAge: 600000, // 10 minutes
-  domain: process.env.FQDN,
+  domain: env.string('FQDN'),
 };
 
 export default {
-  encryptionKey: process.env.USERINFO_CRYPT_KEY,
+  encryptionKey: env.string('USERINFO_CRYPT_KEY'),
   prefix: 'MOCK-FCA-SP-SESS:',
   cookieOptions,
-  cookieSecrets: JSON.parse(process.env.SESSION_COOKIE_SECRETS),
+  cookieSecrets: env.json('COOKIE_SECRETS'),
   sessionCookieName: 'sp_session_id',
   lifetime: 600, // 10 minutes
   sessionIdLength: 64,
