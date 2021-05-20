@@ -2,21 +2,21 @@
 
 // Tested by DTO
 import { MongooseConfig } from '@fc/mongoose';
-import { parseBoolean } from '@fc/common';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'Mongoose');
 
 export default {
-  user: process.env.FC_DB_USER,
-  password: process.env.FC_DB_PASSWORD,
-  hosts: process.env.FC_DB_HOSTS,
-  database: process.env.FC_DB_DATABASE,
+  user: env.string('USER'),
+  password: env.string('PASSWORD'),
+  hosts: env.string('HOSTS'),
+  database: env.string('DATABASE'),
   options: {
-    authSource: process.env.FC_DB_DATABASE,
-    tls: parseBoolean(process.env.FC_DB_TLS),
-    tlsInsecure: parseBoolean(process.env.FC_DB_TLS_INSECURE),
-    tlsCAFile: process.env.FC_DB_TLS_CA_FILE,
-    tlsAllowInvalidHostnames: parseBoolean(
-      process.env.FC_DB_TLS_ALLOW_INVALID_HOST_NAME,
-    ),
+    authSource: env.string('DATABASE'),
+    tls: env.boolean('TLS'),
+    tlsInsecure: env.boolean('TLS_INSECURE'),
+    tlsCAFile: env.string('TLS_CA_FILE'),
+    tlsAllowInvalidHostnames: env.boolean('TLS_ALLOW_INVALID_HOST_NAME'),
     useNewUrlParser: true,
     useUnifiedTopology: true,
   },

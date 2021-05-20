@@ -7,11 +7,14 @@ import {
   OidcProviderRoutes,
   OidcProviderPrompt,
 } from '@fc/oidc-provider';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'OidcProvider');
 
 export default {
   forcedPrompt: [OidcProviderPrompt.LOGIN, OidcProviderPrompt.CONSENT],
-  prefix: process.env.PREFIX,
-  issuer: `https://${process.env.FQDN}${process.env.PREFIX}`,
+  prefix: env.string('PREFIX'),
+  issuer: `https://${process.env.FQDN}${env.string('PREFIX')}`,
   configuration: {
     routes: {
       authorization: OidcProviderRoutes.AUTHORIZATION,
@@ -40,7 +43,7 @@ export default {
     },
     subjectTypes: ['public'],
     cookies: {
-      keys: JSON.parse(process.env.OIDC_PROVIDER_COOKIES_KEYS),
+      keys: env.json('COOKIES_KEYS'),
       long: {
         maxAge: 600000, // 10 minutes
         sameSite: 'lax',
@@ -60,7 +63,7 @@ export default {
     features: {
       devInteractions: { enabled: false },
       encryption: {
-        enabled: parseBoolean(process.env.OidcProvider_USE_ENCRYPTION),
+        enabled: env.boolean('USE_ENCRYPTION'),
       },
       jwtUserinfo: { enabled: true },
       backchannelLogout: { enabled: true },
@@ -144,8 +147,8 @@ export default {
     },
     jwks: {
       keys: [
-        JSON.parse(process.env.CRYPTO_SIG_ES256_PRIV_KEY),
-        JSON.parse(process.env.CRYPTO_SIG_RS256_PRIV_KEY),
+        env.json('CRYPTO_SIG_ES256_PRIV_KEY'),
+        env.json('CRYPTO_SIG_RS256_PRIV_KEY'),
       ],
     },
 

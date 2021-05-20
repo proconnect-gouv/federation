@@ -6,11 +6,14 @@ import {
   OidcProviderRoutes,
   OidcProviderPrompt,
 } from '@fc/oidc-provider';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'OidcProvider');
 
 export default {
   forcedPrompt: [OidcProviderPrompt.LOGIN, OidcProviderPrompt.CONSENT],
-  prefix: process.env.OidcProvider_PREFIX,
-  issuer: process.env.OidcProvider_ISSUER,
+  prefix: env.string('PREFIX'),
+  issuer: env.string('ISSUER'),
   configuration: {
     routes: {
       authorization: OidcProviderRoutes.AUTHORIZATION,
@@ -39,7 +42,7 @@ export default {
     },
     subjectTypes: ['pairwise'],
     cookies: {
-      keys: JSON.parse(process.env.OIDC_PROVIDER_COOKIES_KEYS),
+      keys: env.json('COOKIES_KEYS'),
       long: {
         maxAge: 600000, // 10 minutes
         sameSite: 'lax',
@@ -147,7 +150,7 @@ export default {
       userinfoSigningAlgValues: ['ES256'],
     },
     jwks: {
-      keys: [JSON.parse(process.env.CRYPTO_SIG_FAKE_PRIV_KEY)],
+      keys: [env.json('CRYPTO_SIG_FAKE_PRIV_KEY')],
     },
 
     // Global request timeout used for any outgoing app requests.
