@@ -173,7 +173,7 @@ services:
       - "PM2_SCRIPT=yarn start csmr-hsm-high"
       - "REQUEST_TIMEOUT=6000"
       # Logger
-      - "EVT_LOG_FILE=/var/log/app/csmr-hsm.log"
+      - "Logger_FILE=/var/log/app/csmr-hsm.log"
       # Hsm
       - "PROTECCIO_CONF_DIR=/etc/hsm"
       - "HSM_HOST=hsm"
@@ -182,13 +182,13 @@ services:
       #   Use Bull's library for production HSM
       #
       # - "HSM_LIB=/etc/hsm/libnethsm.so"
-      - "HSM_LIB=/etc/hsm/libpkcs11-proxy.so"
-      - "HSM_PIN=1234"
-      - "HSM_VIRTUAL_HSM_SLOT=0"
-      - "HSM_SIG_HSM_PUB_KEY_CKA_LABEL=key-prime256v1"
+      - "Hsm_LIB=/etc/hsm/libpkcs11-proxy.so"
+      - "Hsm_PIN=1234"
+      - "Hsm_VIRTUAL_HSM_SLOT=0"
+      - "Hsm_SIG_HSM_PUB_KEY_CKA_LABEL=key-prime256v1"
       - "PKCS11_PROXY_SOCKET=tcp://hsm:5551"
-      - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
-      - "CRYPTO_BROKER_QUEUE=crypto"
+      - 'CryptographyBroker_URLS=["amqp://broker:5672"]'
+      - "CryptographyBroker_QUEUE=crypto"
     networks:
       - data
     command: "pm2 logs"
@@ -205,7 +205,7 @@ services:
     environment:
       - "REQUEST_TIMEOUT=6000"
       # Logger
-      - "EVT_LOG_FILE=/var/log/app/csmr-hsm.log"
+      - "LoggerFILE=/var/log/app/csmr-hsm.log"
       # Hsm
       - "PROTECCIO_CONF_DIR=/etc/hsm"
       - "HSM_HOST=hsm"
@@ -214,8 +214,8 @@ services:
       - "HSM_VIRTUAL_HSM_SLOT=0"
       - "HSM_SIG_HSM_PUB_KEY_CKA_LABEL=key-prime256v1"
       - "PKCS11_PROXY_SOCKET=tcp://hsm:5551"
-      - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
-      - "CRYPTO_BROKER_QUEUE=crypto"
+      - 'CryptographyBroker_URLS=["amqp://broker:5672"]'
+      - "CryptographyBroker_QUEUE=crypto"
       - "LOG_LEVEL=info"
     networks:
       - data

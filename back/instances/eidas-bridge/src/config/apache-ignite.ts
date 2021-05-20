@@ -1,5 +1,8 @@
 import { ApacheIgniteConfig } from '@fc/apache-ignite';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'ApacheIgnite');
 
 export default {
-  endpoint: process.env.ApacheIgnite_ENDPOINT,
+  endpoint: env.string('ENDPOINT'),
 } as ApacheIgniteConfig;

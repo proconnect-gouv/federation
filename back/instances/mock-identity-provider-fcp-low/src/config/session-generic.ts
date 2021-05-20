@@ -5,6 +5,9 @@ import {
   SessionGenericConfig,
   ISessionGenericCookieOptions,
 } from '@fc/session-generic';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'Session');
 
 const cookieOptions: ISessionGenericCookieOptions = {
   signed: true,
@@ -16,11 +19,11 @@ const cookieOptions: ISessionGenericCookieOptions = {
 };
 
 export default {
-  encryptionKey: process.env.USERINFO_CRYPT_KEY,
-  prefix: 'FCA-LOW-SESS:',
+  encryptionKey: env.string('USERINFO_CRYPT_KEY'),
+  prefix: 'FCP-LOW-SESS:',
   cookieOptions,
-  cookieSecrets: JSON.parse(process.env.SESSION_COOKIE_SECRETS),
-  sessionCookieName: 'mock_idp_fca_session_id',
+  cookieSecrets: env.json('COOKIE_SECRETS'),
+  sessionCookieName: 'fc_session_id',
   lifetime: 600, // 10 minutes
   sessionIdLength: 64,
   excludedRoutes: [],

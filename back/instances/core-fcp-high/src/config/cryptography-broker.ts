@@ -2,10 +2,13 @@
 
 // Tested by DTO
 import { RabbitmqConfig } from '@fc/rabbitmq';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'CryptographyBroker');
 
 export default {
-  urls: JSON.parse(process.env.CRYPTO_BROKER_URLS),
-  queue: process.env.CRYPTO_BROKER_QUEUE,
+  urls: env.json('URLS'),
+  queue: env.string('QUEUE'),
   queueOptions: {
     durable: false,
   },
