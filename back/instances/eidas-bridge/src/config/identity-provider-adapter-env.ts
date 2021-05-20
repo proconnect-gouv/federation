@@ -1,68 +1,60 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { parseBoolean } from '@fc/common';
 import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'IdentityProviderAdapterEnv');
 
 export default {
   jwks: {
-    keys: [JSON.parse(process.env.IdentityProviderEnv_JWKS)],
+    keys: [env.json('JWKS')],
   },
-  discovery: parseBoolean(process.env.IdentityProviderEnv_DISCOVERY),
-  discoveryUrl: process.env.IdentityProviderEnv_DISCOVERY_URL,
+  discovery: env.boolean('DISCOVERY'),
+  discoveryUrl: env.string('DISCOVERY_URL'),
   provider: {
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    client_id: process.env.IdentityProviderEnv_CLIENT_ID,
+    client_id: env.string('CLIENT_ID'),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    client_secret: process.env.IdentityProviderEnv_CLIENT_SECRET,
+    client_secret: env.string('CLIENT_SECRET'),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     response_types: ['code'],
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uris: JSON.parse(process.env.IdentityProviderEnv_REDIRECT_URIS),
+    redirect_uris: env.json('REDIRECT_URIS'),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    post_logout_redirect_uris: JSON.parse(
-      process.env.IdentityProviderEnv_POST_LOGOUT_REDIRECT_URIS,
-    ),
+    post_logout_redirect_uris: env.json('POST_LOGOUT_REDIRECT_URIS'),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    id_token_signed_response_alg:
-      process.env.IdentityProviderEnv_ID_TOKEN_SIGNED_RESPONSE_ALG,
+    id_token_signed_response_alg:env.string('ID_TOKEN_SIGNED_RESPONSE_ALG'),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    id_token_encrypted_response_alg:
-      process.env.IdentityProviderEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ALG,
+    id_token_encrypted_response_alg: env.string('ID_TOKEN_ENCRYPTED_RESPONSE_ALG'),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    id_token_encrypted_response_enc:
-      process.env.IdentityProviderEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC,
+    id_token_encrypted_response_enc: env.string('ID_TOKEN_ENCRYPTED_RESPONSE_ENC'),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    userinfo_signed_response_alg:
-      process.env.IdentityProviderEnv_USERINFO_SIGNED_RESPONSE_ALG,
+    userinfo_signed_response_alg: env.string('USERINFO_SIGNED_RESPONSE_ALG'),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    userinfo_encrypted_response_alg:
-      process.env.IdentityProviderEnv_USERINFO_ENCRYPTED_RESPONSE_ALG,
+    userinfo_encrypted_response_alg: env.string('USERINFO_ENCRYPTED_RESPONSE_ALG'),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    userinfo_encrypted_response_enc:
-      process.env.IdentityProviderEnv_USERINFO_ENCRYPTED_RESPONSE_ENC,
+    userinfo_encrypted_response_enc: env.string('USERINFO_ENCRYPTED_RESPONSE_ENC'),
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    jwks_uri: process.env.IdentityProviderEnv_JWKS_URI,
+    jwks_uri: env.string('JWKS_URI'),
     //oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    token_endpoint_auth_method:
-      process.env.IdentityProviderEnv_TOKEN_ENDPOINT_AUTH_METHOD,
+    token_endpoint_auth_method: env.string('TOKEN_ENDPOINT_AUTH_METHOD'),
     //oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    revocation_endpoint_auth_method:
-      process.env.IdentityProviderEnv_REVOCATION_ENDPOINT_AUTH_METHOD,
+    revocation_endpoint_auth_method: env.string('REVOCATION_ENDPOINT_AUTH_METHOD'),
   },
-  clientSecretEcKey: process.env.CLIENT_SECRET_CIPHER_PASS,
+  clientSecretEcKey: env.string('CLIENT_SECRET_CIPHER_PASS'),
 } as IdentityProviderAdapterEnvConfig;

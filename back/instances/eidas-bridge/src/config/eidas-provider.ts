@@ -1,14 +1,12 @@
 import { EidasProviderConfig } from '@fc/eidas-provider';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'EidasProvider');
 
 export default {
-  proxyServiceResponseIssuer:
-    process.env.EidasProvider_PROXY_SERVICE_RESPONSE_ISSUER,
-  proxyServiceResponseCache:
-    process.env.EidasProvider_PROXY_SERVICE_RESPONSE_CACHE,
-  proxyServiceResponseCacheUrl:
-    process.env.EidasProvider_PROXY_SERVICE_RESPONSE_URL,
-  proxyServiceRequestCache:
-    process.env.EidasProvider_PROXY_SERVICE_REQUEST_CACHE,
-  redirectAfterRequestHandlingUrl:
-    process.env.EidasProvider_REDIRECT_AFTER_REQUEST_HANDLING_URL,
+  proxyServiceResponseIssuer: env.string('PROXY_SERVICE_RESPONSE_ISSUER'),
+  proxyServiceResponseCache: env.string('PROXY_SERVICE_RESPONSE_CACHE'),
+  proxyServiceResponseCacheUrl: env.string('PROXY_SERVICE_RESPONSE_URL'),
+  proxyServiceRequestCache: env.string('PROXY_SERVICE_REQUEST_CACHE'),
+  redirectAfterRequestHandlingUrl: env.string('REDIRECT_AFTER_REQUEST_HANDLING_URL'),
 } as EidasProviderConfig;
