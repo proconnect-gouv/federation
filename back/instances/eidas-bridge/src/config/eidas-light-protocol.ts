@@ -1,13 +1,12 @@
 import { EidasLightProtocolConfig } from '@fc/eidas-light-protocol';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'EidasLightProtocol');
 
 export default {
-  lightRequestConnectorSecret:
-    process.env.EidasLightProtocol_LIGHT_REQUEST_CONNECTOR_SECRET,
-  lightRequestProxyServiceSecret:
-    process.env.EidasLightProtocol_LIGHT_REQUEST_PROXY_SERVICE_SECRET,
-  lightResponseConnectorSecret:
-    process.env.EidasLightProtocol_LIGHT_RESPONSE_CONNECTOR_SECRET,
-  lightResponseProxyServiceSecret:
-    process.env.EidasLightProtocol_LIGHT_RESPONSE_PROXY_SERVICE_SECRET,
-  maxTokenSize: parseInt(process.env.EidasLightProtocol_MAX_TOKEN_SIZE, 10),
+  lightRequestConnectorSecret: env.string('LIGHT_REQUEST_CONNECTOR_SECRET'),
+  lightRequestProxyServiceSecret:env.string('LIGHT_REQUEST_PROXY_SERVICE_SECRET'),
+  lightResponseConnectorSecret: env.string('LIGHT_RESPONSE_CONNECTOR_SECRET'),
+  lightResponseProxyServiceSecret: env.string('LIGHT_RESPONSE_PROXY_SERVICE_SECRET'),
+  maxTokenSize: env.number('MAX_TOKEN_SIZE'),
 } as EidasLightProtocolConfig;

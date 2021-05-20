@@ -1,13 +1,15 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { readFileSync } from 'fs';
 import { OidcClientConfig } from '@fc/oidc-client';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'OidcClient');
 
 export default {
   httpOptions: {
-    key: readFileSync(process.env.HTTPS_CLIENT_KEY).toString('utf8'),
-    cert: readFileSync(process.env.HTTPS_CLIENT_CERT).toString('utf8'),
+    key: env.file('HTTPS_CLIENT_KEY'),
+    cert: env.file('HTTPS_CLIENT_CERT'),
 
     // Global request timeout used for any outgoing app requests.
     timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
@@ -17,5 +19,5 @@ export default {
   },
   stateLength: 32,
 
-  scope: process.env.OidcClient_SCOPE,
+  scope: env.string('SCOPE'),
 } as OidcClientConfig;

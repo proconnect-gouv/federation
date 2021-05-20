@@ -2,11 +2,14 @@
 
 // Tested by DTO
 import { RnippConfig } from '@fc/rnipp';
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env, 'Rnipp');
 
 export default {
-  protocol: process.env.RNIPP_PROTOCOL,
-  hostname: process.env.RNIPP_HOSTNAME,
-  baseUrl: process.env.RNIPP_BASEURL,
+  protocol: env.string('PROTOCOL'),
+  hostname: env.string('HOSTNAME'),
+  baseUrl: env.string('BASEURL'),
 
   // Global request timeout used for any outgoing app requests.
   timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
