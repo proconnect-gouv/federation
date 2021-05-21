@@ -1,21 +1,11 @@
-import React, { useCallback } from 'react';
-import { Form } from 'react-final-form';
-
-import { HiddenInput } from '~components/form-inputs';
+import React from 'react';
 
 function HomePage(): JSX.Element {
   const initialValues = {
-    acr_values: 'eidas2',
-    client_id:
-      '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
-    redirect_uri: 'https://fsp1v2.docker.dev-franceconnect.fr/login-callback',
-    response_type: 'code',
     scope:
       'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone',
-    state: '<%= state %>',
+    acr_values: 'eidas1',
   };
-
-  const onSubmitHandler = useCallback(() => {}, []);
 
   return (
     <div className="container mt-5">
@@ -23,17 +13,12 @@ function HomePage(): JSX.Element {
         Vous devez vous authentifier afin d&apos;accéder à vos données
         personnelles.
       </div>
-      <Form
-        initialValues={initialValues}
-        render={({ handleSubmit, submitting }) => (
-          <form className="text-center" onSubmit={handleSubmit}>
-            <HiddenInput name="client_id" />
-            <HiddenInput name="scope" />
-            <HiddenInput name="code" />
-            <HiddenInput name="redirect_uri" />
-            <HiddenInput name="state" />
-            <HiddenInput name="acr_values" />
-            <button className="btn" disabled={submitting} type="submit">
+
+          <form className="text-center" method="post" action="https://ud-back.docker.dev-franceconnect.fr/redirect-to-idp">
+          <input type="hidden" name="scope" value={initialValues.scope} />
+          <input type="hidden" name="acr_values" value={initialValues.acr_values} />
+            <input type="hidden" name="providerUid" value="envIssuer" />
+            <button className="btn" type="submit">
               <img
                 alt="Connexion FC"
                 className="d-inline-block align-top"
@@ -41,9 +26,7 @@ function HomePage(): JSX.Element {
               />
             </button>
           </form>
-        )}
-        onSubmit={onSubmitHandler}
-      />
+
     </div>
   );
 }
