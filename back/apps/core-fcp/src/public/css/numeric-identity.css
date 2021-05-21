@@ -48,7 +48,7 @@
 }
 
 #numeric-identity #popin-close {
-  top: 0.8em;
+  top: 0.6em;
   right: 0.8em;
   padding-right: 2em;
   position: absolute;
@@ -78,16 +78,13 @@
   transform: translateY(-50%) rotate(-45deg);
 }
 
-
 #numeric-identity h1 {
   font-size: 1.5rem;
   font-weight: 800;
   color: #000091;
-  margin-top: 0.8em;
   margin-bottom: 1em;
   line-height: normal;
 }
-
 
 #numeric-identity ol.steps {
   list-style: none;
@@ -127,7 +124,7 @@
 }
 
 #numeric-identity .steps li span::before {
-  content: "!";
+  content: '!';
   margin-right: 0.2em;
   line-height: 1.4em;
   text-align: center;
@@ -136,12 +133,19 @@
   display: inline-block;
   width: 1.4em;
   position: relative;
-  font-size:.9em;
- vertical-align: middle;
-
+  font-size: 0.9em;
+  vertical-align: middle;
 }
 
 @media screen and (min-width: 576px) {
+  #numeric-identity h1 {
+    font-size: 2rem;
+  }
+
+  #numeric-identity #popin-close {
+    top: 1.6em;
+  }
+
   #numeric-identity ol.steps li::before {
     top: -0.2em;
   }
