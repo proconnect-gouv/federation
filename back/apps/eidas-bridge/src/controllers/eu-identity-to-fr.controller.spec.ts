@@ -12,7 +12,8 @@ import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { validateDto } from '@fc/common';
-import { EidasBridgeIdentityDto } from '../dto';
+import { IEidasCountryElement, EidasCountryService } from '@fc/eidas-country';
+import { AppConfig, EidasBridgeIdentityDto } from '../dto';
 import { EidasBridgeInvalidIdentityException } from '../exceptions';
 import { EuIdentityToFrController } from './eu-identity-to-fr.controller';
 
@@ -21,11 +22,30 @@ jest.mock('@fc/common', () => ({
   validateDto: jest.fn(),
 }));
 
+const countryListMock: IEidasCountryElement[] = [
+  {
+    iso: 'iso1Value',
+    name: 'name1Value',
+    icon: 'icon1Value',
+  },
+  {
+    iso: 'iso2Value',
+    name: 'name2Value',
+    icon: 'icon2Value',
+  },
+];
+const availableListMock: IEidasCountryElement['iso'][] = [
+  'iso1Value',
+  'iso2Value',
+];
+
 describe('EuIdentityToFrController', () => {
   let euIdentityToFrController: EuIdentityToFrController;
 
-  const configMock = {
+  const configMock: AppConfig = {
+    name: 'notUsedValue',
     urlPrefix: '',
+    countryIsoList: availableListMock,
   };
 
   const configServiceMock = {
@@ -86,6 +106,10 @@ describe('EuIdentityToFrController', () => {
     mapPartialResponseSuccess: jest.fn(),
   };
 
+  const eidasCountryServiceMock = {
+    getListByIso: jest.fn(),
+  };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [EuIdentityToFrController],
@@ -96,6 +120,7 @@ describe('EuIdentityToFrController', () => {
         OidcProviderService,
         OidcToEidasService,
         EidasToOidcService,
+        EidasCountryService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -110,6 +135,8 @@ describe('EuIdentityToFrController', () => {
       .useValue(oidcToEidasServiceMock)
       .overrideProvider(EidasToOidcService)
       .useValue(eidasToOidcServiceMock)
+      .overrideProvider(EidasCountryService)
+      .useValue(eidasCountryServiceMock)
       .compile();
 
     euIdentityToFrController = await app.get<EuIdentityToFrController>(
@@ -126,6 +153,11 @@ describe('EuIdentityToFrController', () => {
   });
 
   describe('getInteraction', () => {
+    beforeEach(() => {
+      eidasCountryServiceMock.getListByIso.mockResolvedValueOnce(
+        countryListMock,
+      );
+    });
     it('should call oidcProvider.getInteraction', async () => {
       // When
       await euIdentityToFrController.getInteraction(
@@ -151,7 +183,7 @@ describe('EuIdentityToFrController', () => {
 
       // Then
       expect(configServiceMock.get).toBeCalledTimes(1);
-      expect(configServiceMock.get).toBeCalledWith('Core');
+      expect(configServiceMock.get).toBeCalledWith('App');
     });
 
     it('should call session.get with interactionId', async () => {
@@ -170,10 +202,6 @@ describe('EuIdentityToFrController', () => {
 
     it('should return an object with data from session and oidcProvider interaction', async () => {
       // setup
-      const countryListMock = [{ iso: 'ATL', name: 'Atlantis' }];
-      configServiceMock.get.mockReturnValueOnce({
-        countryList: countryListMock,
-      });
 
       // action
       const result = await euIdentityToFrController.getInteraction(
@@ -190,6 +218,25 @@ describe('EuIdentityToFrController', () => {
         params: interactionMock.params,
         spName: sessionDataMock.spName,
       });
+    });
+
+    it('should throw an error if country service failed', async () => {
+      // Given
+      const errorMock = new Error('Unknown error');
+      eidasCountryServiceMock.getListByIso
+        .mockReset()
+        .mockRejectedValueOnce(errorMock);
+      // When
+
+      await expect(
+        euIdentityToFrController.getInteraction(
+          req,
+          res,
+          sessionServiceEidasMock,
+          sessionServiceOidcMock,
+          // Then
+        ),
+      ).rejects.toThrow(errorMock);
     });
   });
 

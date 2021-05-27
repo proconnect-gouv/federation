@@ -21,6 +21,14 @@ services:
       - "csmr-hsm"
       - "exploit-fcp"
 
+  stack-fcp-high-light:
+    image: alpine
+    depends_on:
+      - "core-fcp-high"
+      - "fsp1v2"
+      - "fip1v2"
+      - "rnipp"
+
   ####################
   # SP Mocks V2
   ####################

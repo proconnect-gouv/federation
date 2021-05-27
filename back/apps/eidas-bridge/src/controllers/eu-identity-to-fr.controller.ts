@@ -22,8 +22,13 @@ import { ISessionGenericService, Session } from '@fc/session-generic';
 import { EidasClientSession } from '@fc/eidas-client';
 import { validateDto } from '@fc/common';
 import { EidasBridgeRoutes } from '../enums';
-import { ValidateEuropeanIdentity, Core, EidasBridgeIdentityDto } from '../dto';
+import {
+  EidasBridgeValidateEuropeanIdentity,
+  EidasBridgeIdentityDto,
+  AppConfig,
+} from '../dto';
 import { EidasBridgeInvalidIdentityException } from '../exceptions';
+import { EidasCountryService } from '@fc/eidas-country';
 
 /**
  * @todo #411 Clean the controller (create a service, generalize code, ...)
@@ -39,6 +44,7 @@ export class EuIdentityToFrController {
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcToEidas: OidcToEidasService,
     private readonly eidasToOidc: EidasToOidcService,
+    private readonly eidasCountry: EidasCountryService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -68,7 +74,7 @@ export class EuIdentityToFrController {
     sessionOidc: ISessionGenericService<OidcClientSession>,
   ) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
-    const { countryList } = await this.config.get<Core>('Core');
+    const { countryIsoList } = await this.config.get<AppConfig>('App');
     const { spName } = await sessionOidc.get();
 
     const eidasPartialRequest = this.oidcToEidas.mapPartialRequest(
@@ -77,6 +83,8 @@ export class EuIdentityToFrController {
     );
 
     await sessionEidas.set('eidasPartialRequest', eidasPartialRequest);
+
+    const countryList = await this.eidasCountry.getListByIso(countryIsoList);
 
     return {
       countryList,
@@ -93,7 +101,9 @@ export class EuIdentityToFrController {
   @Post(EidasBridgeRoutes.INTERACTION_LOGIN)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Redirect()
-  async redirectToFrNodeConnector(@Body() body: ValidateEuropeanIdentity) {
+  async redirectToFrNodeConnector(
+    @Body() body: EidasBridgeValidateEuropeanIdentity,
+  ) {
     return {
       url: `/eidas-client/redirect-to-fr-node-connector?country=${body.country}`,
       statusCode: 302,

@@ -1,41 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <%- include('includes/head-v2') %>
+    <title>Choose your country</title>
+  </head>
 
-<head>
-  <%- include('includes/head-v2') %>
-  <title>Choose your country</title>
-</head>
-
-<body>
-  <%- include('includes/menu-v2') %>
-  <div class="page-title-container">
-      <h1>
-          From which country does your digital identity come ?
-      </h1>
-  </div>
-  <div class="container-flags">
-      <% for(let i = 0; i < locals.countryList.length; i++) {%>
-          <div class="country">
-              <form action="/<%= locals.uid %>/login" method="POST">
-                  <button id="country-<%= countryList[i].iso %>" type="submit" class="country-btn" name="country" value="<%= countryList[i].iso %>">
-                      <img 
-                        src="<%= countryList[i].icon %>" 
-                        alt="Drapeau <%= countryList[i].name %>"
-                      />
-                      <span><%= countryList[i].name %></span>
-                  </button>
-              </form>
-          </div>
-      <%}%>
-  </div>
-  <div class="ibid-container">
+  <body>
+    <%- include('includes/menu-v2') %>
+    <div class="page-title-container">
+      <h1>From which country does your digital identity come ?</h1>
+    </div>
+    <div class="container-flags">
+      <% locals.countryList.forEach(({iso, icon, name}) => {%>
+      <div class="country">
+        <form action="/<%= locals.uid %>/login" method="POST">
+          <button id="country-<%= iso %>" type="submit" class="country-btn" name="country" value="<%= iso %>">
+            <img 
+              src="<%= icon %>" 
+              alt="Drapeau <%= name %>"
+            />
+            <span><%= name %></span>
+          </button>
+        </form>
+      </div>
+      <%});%>
+    </div>
+    <div class="ibid-container">
       <p>
-        If your country is not on this list then the cross-border authentication option might not be available yet.
-          <br/>
-          <br/>
-          <a href="https://ec.europa.eu/digital-single-market/en/learn-about-eidas">Learn more about the eIDAS regulation</a>
+        If your country is not on this list then the cross-border authentication
+        option might not be available yet.<br /><br />
+        <a href="https://ec.europa.eu/digital-single-market/en/learn-about-eidas">Learn more about the eIDAS regulation</a>
       </p>
-  </div>
-  <%- include('includes/footer-v2') %>
-</body>
+    </div>
+    <%- include('includes/footer-v2') %>
+  </body>
 </html>

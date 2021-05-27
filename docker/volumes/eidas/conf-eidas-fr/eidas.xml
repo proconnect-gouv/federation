@@ -40,17 +40,17 @@
 	<entry key="service1.skew.notonorafter">0</entry>
 	<!-- the url under which service11 is publishing its metadata -->
 	<entry key="service1.metadata.url">https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ServiceMetadata</entry>
-	<entry key="service2.id">BE</entry>
+	<entry key="service2.id">CB</entry>
 	<!-- Name of the second Service -->
-	<entry key="service2.name">EIDAS-BE</entry>
+	<entry key="service2.name">EIDAS-CB</entry>
 	<!-- URL of the first Service -->
 	<entry key="service2.skew.notbefore">0</entry>
 	<entry key="service2.skew.notonorafter">0</entry>
-	<entry key="service2.metadata.url">https://eidas-be.docker.dev-franceconnect.fr/EidasNode/ServiceMetadata</entry>
+	<entry key="service2.metadata.url">https://eidas-mock.docker.dev-franceconnect.fr/EidasNode/ServiceMetadata</entry>
 
 	<!-- service -->
 	<!-- Id of this Service -->
-	<entry key="service.id">BE</entry>
+	<entry key="service.id">FR</entry>
 	<!-- Country Code of this Service -->
 	<entry key="service.countrycode">FR</entry>
 	<!-- QAALevel of this Service -->
@@ -77,7 +77,7 @@
 	<entry key="max.qaaLevel.value">4</entry>
 	<!-- New Configuration -->
 	<!-- SP's ProviderName alias could be none or the PROVIDERNAME -->
-	<entry key="SP-BE.validation">none</entry>
+	<entry key="SP-CB.validation">none</entry>
 	<entry key="SP-FR.validation">none</entry>
 
 	<!-- PLugin connector -->
@@ -154,7 +154,7 @@
 
 	<!-- Check that the citizen country code in the SAMLRequest is the same
 		than the country of the Service signing certificate -->
-	<entry key="check.citizenCertificate.serviceCertificate">true</entry>
+	<entry key="check.citizenCertificate.serviceCertificate">false</entry>
 	<!-- Feature selector for the security header added to the EidasNode -->
 	<!-- This feature once disabled, switch off the content security policy -->
 	<entry key="security.header.CSP.enabled">true</entry>
