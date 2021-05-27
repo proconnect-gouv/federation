@@ -1,10 +1,12 @@
 [
   {
     "name": "fsp1v2",
+    "mocked": true,
     "url": "https://fsp1v2.integ01.dev-franceconnect.fr",
+    "redirectUriPath": "/oidc-callback/envIssuer",
     "spId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
     "acrValue": "eidas1",
-    "scopes": ["complet", "simple"],
+    "scopes": ["tous les scopes"],
     "selectors": {
       "fcButton": "#get-authorize",
       "logoutButton": ".nav-logout"
@@ -12,10 +14,12 @@
   },
   {
     "name": "fsp2v2",
-    "url": "https://fsp2v2.integ01.dev-franceconnect.fr/",
+    "mocked": true,
+    "url": "https://fsp2v2.integ01.dev-franceconnect.fr",
+    "redirectUriPath": "/oidc-callback/envIssuer",
     "spId": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
     "acrValue": "eidas1",
-    "scopes": ["anonyme"],
+    "scopes": ["identite_pivot"],
     "selectors": {
       "fcButton": "#get-authorize",
       "logoutButton": ".nav-logout"

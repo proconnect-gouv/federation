@@ -1,5 +1,4 @@
 {
   "name": "dev",
-  "type": "mocked",
-  "fcRootUrl": "https://corev2.docker.dev-franceconnect.fr"
+  "fcRootUrl": "https://core-fcp-high.docker.dev-franceconnect.fr"
 }

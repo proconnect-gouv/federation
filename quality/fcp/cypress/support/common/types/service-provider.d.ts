@@ -1,4 +1,5 @@
 export interface ServiceProviderBase {
+  redirectUriPath: string;
   selectors: {
     fcButton: string;
     logoutButton: string;
@@ -8,10 +9,12 @@ export interface ServiceProviderBase {
 
 export interface ServiceProvider extends ServiceProviderBase {
   acrValue: string;
+  mocked: boolean;
   name: string;
-  scopes: [string];
+  scopes: string[];
 }
 
-export interface Scope {
-  attributes: [string];
+export interface ScopeContext {
+  scopes: string[];
+  type: string;
 }
