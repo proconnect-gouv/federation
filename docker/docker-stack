@@ -67,8 +67,8 @@ _up() {
       eidas-fr)
         services="$services eidas-fr"
         ;;
-      eidas-be)
-        services="$services eidas-be"
+      eidas-mock)
+        services="$services eidas-mock"
         ;;
       exploitation-fca)
         services="$services exploitation-fca"

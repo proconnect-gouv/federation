@@ -233,6 +233,8 @@
       "@fc/app": "<rootDir>/libs/app/src",
       "@fc/eidas-light-protocol/(.*)": "<rootDir>/libs/eidas-light-protocol/src/$1",
       "@fc/eidas-light-protocol": "<rootDir>/libs/eidas-light-protocol/src",
+      "@fc/eidas-country/(.*)": "<rootDir>/libs/eidas-country/src/$1",
+      "@fc/eidas-country": "<rootDir>/libs/eidas-country/src",
       "@fc/eidas-client/(.*)": "<rootDir>/libs/eidas-client/src/$1",
       "@fc/eidas-client": "<rootDir>/libs/eidas-client/src",
       "@fc/apache-ignite/(.*)": "<rootDir>/libs/apache-ignite/src/$1",

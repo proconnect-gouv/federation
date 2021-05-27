@@ -3,7 +3,6 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { ApacheIgniteService } from '@fc/apache-ignite';
 import {
-  EidasCountries,
   EidasNameIdFormats,
   EidasPartialRequest,
   EidasRequest,
@@ -15,6 +14,7 @@ import {
   LightResponseService,
 } from '@fc/eidas-light-protocol';
 import { CryptographyService } from '@fc/cryptography';
+import { EidasCountries } from '@fc/eidas-country';
 import { EidasClientConfig } from './dto';
 import {
   ReadLightResponseFromCacheException,

@@ -1,11 +1,11 @@
 import {
-  EidasCountries,
   EidasLevelOfAssurances,
   EidasNameIdFormats,
   EidasRequest,
   EidasAttributes,
   EidasSpTypes,
 } from '@fc/eidas';
+import { EidasCountries } from '@fc/eidas-country';
 
 export const requestJsonMock: EidasRequest = {
   citizenCountryCode: EidasCountries.BELGIUM,

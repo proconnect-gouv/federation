@@ -15,14 +15,6 @@ import { ConfigService } from '@fc/config';
 import { SessionGenericConfig } from '@fc/session-generic';
 import { AppModule } from './app.module';
 
-// Assets path vary in dev env
-const assetsPath =
-  process.env.NODE_ENV === 'development'
-    ? // Libs code base to take latest version
-      '../../../apps/eidas-bridge/src'
-    : // Current, directory = dist when in production mode
-      '';
-
 async function bootstrap() {
   const httpsOptions = ConfigService.getHttpsOptions();
 
@@ -83,9 +75,28 @@ async function bootstrap() {
 
   app.useLogger(logger);
   app.engine('ejs', renderFile);
-  app.set('views', [join(__dirname, assetsPath, 'views')]);
+
+  /**
+   * @todo
+   * author: Arnaud PSA
+   * Date: 11/05/2021
+   * Context: Ticket FC-470, the flags are in the lib eidas-country,
+   * so we need a better way to merge data from lib/app and instance
+   * Architecture thinking required to handle all assets automatically
+   */
+  // Current, directory = dist when in production mode
+  const assetsPath = __dirname;
+
+  app.set('views', [join(assetsPath, 'views')]);
   app.setViewEngine('ejs');
-  app.useStaticAssets(join(__dirname, assetsPath, 'public'));
+  app.useStaticAssets(join(assetsPath, 'public'));
+
+  if (process.env.NODE_ENV === 'development') {
+    // Libs code base to take latest version
+    app.useStaticAssets(
+      join(assetsPath, '../../../apps/eidas-bridge/src', 'public'),
+    );
+  }
 
   const { cookieSecrets } = config.get<SessionGenericConfig>('SessionGeneric');
   app.use(CookieParser(cookieSecrets));

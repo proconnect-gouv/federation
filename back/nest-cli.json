@@ -31,7 +31,8 @@
           "../../../apps/eidas-bridge/**/*.ejs",
           "../../../apps/eidas-bridge/**/*.css",
           "../../../apps/eidas-bridge/**/*.js",
-          "../../../apps/eidas-bridge/**/*.svg"
+          "../../../apps/eidas-bridge/**/*.svg",
+          "../../../libs/eidas-country/src/public/**/*.svg"
         ]
       }
     },
@@ -660,6 +661,15 @@
       "sourceRoot": "libs/cryptography-eidas/src",
       "compilerOptions": {
         "tsConfigPath": "libs/cryptography-eidas/tsconfig.lib.json"
+      }
+    },
+    "eidas-country": {
+      "type": "library",
+      "root": "libs/eidas-country",
+      "entryFile": "index",
+      "sourceRoot": "libs/eidas-country/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/eidas-country/tsconfig.lib.json"
       }
     }
   }

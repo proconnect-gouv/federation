@@ -5,7 +5,6 @@ import { LoggerService } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
 import {
   EidasAttributes,
-  EidasCountries,
   EidasLevelOfAssurances,
   EidasPartialRequest,
   EidasRequest,
@@ -14,6 +13,7 @@ import {
   LightRequestService,
   LightResponseService,
 } from '@fc/eidas-light-protocol';
+import { EidasCountries } from '@fc/eidas-country';
 import { EidasClientService } from './eidas-client.service';
 import {
   ReadLightResponseFromCacheException,

@@ -44,14 +44,6 @@
 	<!-- Management of the encryption activation -->
 	<entry key="encryptionActivation">encryptionConf.xml</entry>
 
-
-	<!-- If not present then no encryption will be applied on response -->
-	<entry key="responseToPointIssuer.FR">CN=eidas-connector-fr, OU=FC, O=DINUM, L=Paris, ST=France, C=FR</entry>
-	<entry key="responseToPointSerialNumber.FR">3211e891d91bf48371684f7e58fd11df79a30ece</entry>
-
-	<entry key="responseToPointIssuer.BE">CN=eidas-connector-be, OU=BC, O=BOSA, L=Bruxelles, ST=Belgique, C=BE</entry>
-	<entry key="responseToPointSerialNumber.BE">6eee7cd2a7c87db3cfb93df3394353deeefb0d7c</entry>
-
 	<!-- If not present then no decryption will be applied on response -->
 	<entry key="responseDecryptionIssuer">CN=eidas-service-fr, OU=FC, O=DINUM, L=Paris, ST=France, C=FR</entry>
 	<entry key="serialNumber">3211e891d91bf48371684f7e58fd11df79a30ecd</entry>
