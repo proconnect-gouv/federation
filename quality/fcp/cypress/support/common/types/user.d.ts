@@ -9,6 +9,7 @@ export interface UserDetails {
 }
 
 export interface User {
+  enabled: boolean;
   credentials: [UserCredentials];
   details: UserDetails;
 }
