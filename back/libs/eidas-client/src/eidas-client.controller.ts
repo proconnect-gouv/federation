@@ -15,7 +15,7 @@ import {
   ReponseHandlerDTO,
   EidasClientConfig,
   EidasClientSession,
-  ValidateEuropeanIdentity,
+  EidasClientValidateEuropeanIdentity,
 } from './dto';
 import { ISessionGenericService, Session } from '@fc/session-generic';
 
@@ -37,7 +37,7 @@ export class EidasClientController {
   @Render('redirect-to-fr-node-connector')
   async redirectToFrNode(
     @Query()
-    query: ValidateEuropeanIdentity,
+    query: EidasClientValidateEuropeanIdentity,
     @Session('EidasClient')
     sessionEidas: ISessionGenericService<EidasClientSession>,
   ) {
