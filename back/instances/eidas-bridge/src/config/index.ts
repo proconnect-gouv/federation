@@ -16,7 +16,6 @@ import EidasClient from './eidas-client';
 import EidasProvider from './eidas-provider';
 import ApacheIgnite from './apache-ignite';
 import EidasLightProtocol from './eidas-light-protocol';
-import countryList from './country-list';
 
 export default {
   /**
@@ -25,7 +24,6 @@ export default {
    */
   Core: {
     defaultRedirectUri: 'https://franceconnect.gouv.fr',
-    countryList: countryList,
   },
   App,
   CryptographyEidas,

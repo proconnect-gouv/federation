@@ -238,6 +238,12 @@
       "@fc/mock-identity-provider/*": [
         "apps/mock-identity-provider/src/*"
       ],
+      "@fc/eidas-country": [
+        "libs/eidas-country/src"
+      ],
+      "@fc/eidas-country/*": [
+        "libs/eidas-country/src/*"
+      ],
       "@fc/eidas-light-protocol": [
         "libs/eidas-light-protocol/src"
       ],

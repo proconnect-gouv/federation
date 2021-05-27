@@ -1,7 +1,6 @@
 /*istanbul ignore file*/
 
 // Declarative code
-export * from './eidas-countries.enum';
 export * from './eidas-loas.enum';
 export * from './eidas-sp-types.enum';
 export * from './eidas-attributes.enum';

@@ -1,15 +1,8 @@
 /* istanbul ignore file */
 
 // Declarative code
-import {
-  IsObject,
-  IsUrl,
-  ValidateNested,
-  IsArray,
-  IsString,
-} from 'class-validator';
+import { IsObject, IsUrl, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { AppConfig } from '@fc/app';
 import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
 import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
 import { ServiceProviderAdapterEnvConfig } from '@fc/service-provider-adapter-env';
@@ -23,25 +16,12 @@ import { EidasClientConfig } from '@fc/eidas-client';
 import { EidasProviderConfig } from '@fc/eidas-provider';
 import { ApacheIgniteConfig } from '@fc/apache-ignite';
 import { EidasLightProtocolConfig } from '@fc/eidas-light-protocol';
-
-export class CountryElement {
-  @IsString()
-  name: string;
-  @IsString()
-  iso: string;
-  @IsString()
-  icon: string;
-}
+import { AppConfig } from './app-config.dto';
 
 export class Core {
   @IsUrl()
   readonly defaultRedirectUri: string;
-  @IsArray()
-  @ValidateNested({ each: true })
-  @Type(() => CountryElement)
-  readonly countryList: CountryElement[];
 }
-
 export class EidasBridgeConfig {
   @IsObject()
   @ValidateNested()
