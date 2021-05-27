@@ -57,7 +57,7 @@ services:
           - exploitation-high.docker.dev-franceconnect.fr
           - eidas-bridge.docker.dev-franceconnect.fr
           - eidas-fr.docker.dev-franceconnect.fr
-          - eidas-be.docker.dev-franceconnect.fr
+          - eidas-mock.docker.dev-franceconnect.fr
           - fia1v2.docker.dev-franceconnect.fr
           - fia2v2.docker.dev-franceconnect.fr
           - fia4v2.docker.dev-franceconnect.fr

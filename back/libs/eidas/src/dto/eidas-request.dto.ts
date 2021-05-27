@@ -8,8 +8,8 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
+import { EidasCountries } from '@fc/eidas-country';
 import {
-  EidasCountries,
   EidasLevelOfAssurances,
   EidasNameIdFormats,
   EidasAttributes,

@@ -57,10 +57,10 @@ export function configureEidasSpMockRequest(eidasRequest = {}) {
     ...eidasRequest,
   };
 
-  cy.visit(Cypress.env('BE_SP_URL'));
+  cy.visit(Cypress.env('MOCK_EIDAS_SP_URL'));
 
   cy.get('#eidasconnector_msdd').click();
-  cy.get('#eidasconnector_msdd .enabled._msddli_').contains('BE').click();
+  cy.get('#eidasconnector_msdd .enabled._msddli_').contains('CB').click();
 
   cy.get('#citizeneidas_msdd').click();
   cy.get('#citizeneidas_msdd .enabled._msddli_').contains('FR').click();
@@ -214,7 +214,7 @@ export function configureOidcSpMockRequest(params = {}) {
     idpAcr: null, // idpAct is still null
   });
 
-  cy.get('#country-BE').click();
+  cy.get('#country-CB').click();
 }
 
 export function basicSuccessScenarioFrSpEuIdp(params = {}) {
@@ -250,6 +250,8 @@ export function basicFailureScenarioFrSpEuIdp(params = {}) {
  * @param {*} params
  * @returns
  */
+// Nécessaire pour le processus
+// eslint-disable-next-line complexity
 export function authenticateToEUIdp(params = {}) {
   const {
     username = 'xavi',
@@ -294,7 +296,7 @@ export function authenticateToEUIdp(params = {}) {
 export function checkInformationsFrSpEuIdp() {
   cy.get('#json-output').within(() => {
     cy.contains(
-      '"sub": "fd12097d045e1273190b9946ed4bca822181066f2c4a1f666888fd0ed8fa5dcdv1"',
+      '"sub": "cfc7065e4090d3df35fd72caaee82bc68ad8711f2c2e30b0c9d2f1f0eb7eadc1v1"',
     );
     cy.contains('"given_name": "javier"');
     cy.contains('"family_name": "Garcia"');
