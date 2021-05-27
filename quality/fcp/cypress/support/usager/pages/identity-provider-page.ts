@@ -25,6 +25,10 @@ export default class IdentityProviderPage {
     cy.url().should('include', this.originUrl);
   }
 
+  setMockAcrValue(acrValue: string): void {
+    cy.get('[name="acr"]').select(acrValue);
+  }
+
   login(userCredentials: UserCredentials): void {
     const { password, userName } = userCredentials;
     cy.get(this.userNameSelector).clear().type(userName);

@@ -1,8 +1,10 @@
 [
   {
     "idpId": "fip1v2",
+    "mocked": true,
+    "enabled": true,
     "url": "https://fip1v2.docker.dev-franceconnect.fr/interaction",
-    "acrValues": ["eidas1"],
+    "acrValues": ["eidas1", "eidas2", "eidas3"],
     "selectors": {
       "idpButton": "#idp-fip1v2",
       "userName": "input[name='login']",
