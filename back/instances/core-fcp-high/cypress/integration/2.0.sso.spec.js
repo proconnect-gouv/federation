@@ -1,4 +1,4 @@
-import { basicSuccessScenario, checkInformationsServiceProvider } from './mire.utils';
+import { basicSuccessScenario, basicScenario, checkInformationsServiceProvider } from './mire.utils';
 
 describe('No SSO', () => {
   // Given
@@ -27,10 +27,20 @@ describe('No SSO', () => {
     checkInformationsServiceProvider(userInfos);
 
     //   ...Then log  into SP "B"
-    basicSuccessScenario({
-      ...loginInfo,
-      sp: 'SP2',
+    basicScenario({
+      idpId: loginInfo.idpId,
+      login: loginInfo.userName,
+      start: `${Cypress.env('SP2_ROOT_URL')}`,
+      overrideParams: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
+        scope: 'openid identite_pivot'
+      }
     });
+    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
+    cy.get('#consent').click();
 
     // Then
     checkInformationsServiceProvider(userInfos);

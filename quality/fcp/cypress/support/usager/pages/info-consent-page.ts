@@ -1,18 +1,18 @@
-import { ChainableElement, Scope } from '../../common/types';
+import { ChainableElement, ScopeContext } from '../../common/types';
+import { getClaims } from '../helpers/scope-helper';
 
 /* eslint-disable @typescript-eslint/naming-convention */
-// openid defined property names
-const IDENTITY_SCOPES_LABEL = {
-  address: `Adresse postale`,
-  birthcountry: `Pays de naissance`,
-  birthdate: `Date de naissance`,
-  birthplace: `Lieu de naissance`,
-  email: `Adresse email`,
-  family_name: `Nom(s) de famille`,
-  gender: `Sexe`,
-  given_name: `Prénom(s)`,
-  phone: `Téléphone`,
-  preferred_username: `Nom d'usage`,
+const CLAIM_LABELS = {
+  address: 'Adresse postale',
+  birthcountry: 'Pays de naissance',
+  birthdate: 'Date de naissance',
+  birthplace: 'Lieu de naissance',
+  email: 'Adresse email',
+  family_name: 'Nom(s) de famille',
+  gender: 'Sexe',
+  given_name: 'Prénom(s)',
+  phone_number: 'Téléphone',
+  preferred_username: "Nom d'usage",
 };
 /* eslint-enable @typescript-eslint/naming-convention */
 
@@ -23,6 +23,10 @@ export default class InfoConsentPage {
 
   get showDetailsToggle(): ChainableElement {
     return cy.get('#toggleOpenCloseMenu');
+  }
+
+  get claimDetails(): ChainableElement {
+    return cy.get('.content-details__content ul');
   }
 
   checkIsVisible(): void {
@@ -38,13 +42,19 @@ export default class InfoConsentPage {
     );
   }
 
-  checkInformationConsent(scope: Scope): void {
-    const { attributes } = scope;
+  checkInformationConsent(scopeContext: ScopeContext): void {
+    const expectedClaims = getClaims(scopeContext).filter(
+      (claimName) => claimName !== 'sub',
+    );
     this.showDetailsToggle.click();
-    attributes
-      .filter((attribute) => attribute in IDENTITY_SCOPES_LABEL)
-      .forEach((attribute) =>
-        cy.contains(IDENTITY_SCOPES_LABEL[attribute]).should('exist'),
+    this.claimDetails.invoke('text').then((text) => {
+      const arrClaims = text.trim().split(/\s\s+/);
+      // Check all expected claims
+      expectedClaims.forEach((claimName) =>
+        expect(arrClaims).include(CLAIM_LABELS[claimName]),
       );
+      // Check no other claims
+      expect(arrClaims.length).to.equal(expectedClaims.length);
+    });
   }
 }
