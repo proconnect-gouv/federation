@@ -1,5 +1,6 @@
 export interface IdentityProviderBase {
   selectors: {
+    idpButton: string;
     password: string;
     submitButton: string;
     userName: string;
@@ -8,6 +9,8 @@ export interface IdentityProviderBase {
 }
 
 export interface IdentityProvider extends IdentityProviderBase {
-  acrValues: [string];
+  acrValues: string[];
+  enabled: boolean;
   idpId: string;
+  mocked: boolean;
 }
