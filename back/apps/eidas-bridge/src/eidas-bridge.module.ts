@@ -28,6 +28,7 @@ import {
 } from './controllers';
 import { EidasBridgeSession } from './dto';
 import { OidcMiddlewareService } from './services';
+import { EidasCountryModule } from '@fc/eidas-country';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderAdapterEnvService,
@@ -55,6 +56,7 @@ const oidcProviderModule = OidcProviderModule.register(
     oidcProviderModule,
     CryptographyModule,
     EidasOidcMapperModule,
+    EidasCountryModule,
   ],
   controllers: [
     FrIdentityToEuController,

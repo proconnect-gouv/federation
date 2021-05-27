@@ -8,6 +8,7 @@ Core & backoffice applications
 
 - [@fc/apache-ignite](libs/apache-ignite/README.md)
 - [@fc/eidas-client](libs/eidas-client/README.md)
+- [@fc/eidas-country](libs/eidas-country/README.md)
 - [@fc/eidas-light-protocol](libs/eidas-light-protocol/README.md)
 - [@fc/eidas-oidc-mapper](libs/eidas-oidc-mapper/README.md)
 - [@fc/eidas-provider](libs/eidas-provider/README.md)
