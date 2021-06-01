@@ -208,7 +208,7 @@ services:
       - "squid"
       - "fca"
     volumes:
-      - "${VOLUMES_DIR}/src/fc/front/agent-connect:/var/www/app"
+      - "${VOLUMES_DIR}/src/fc/front/apps/agent-connect:/var/www/app"
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/log/:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
@@ -320,8 +320,8 @@ services:
       # IDP default values
       - 'IDP_DEFAULT_FEATURE_HANDLERS={ "coreVerify": "core-fca-default-verify", "authenticationEmail": null }'
       - 'IDP_DEFAULT_RESPONSE_TYPES=["code"]'
-      - 'IDP_DEFAULT_REVOCATION_ENDPOINT_AUTH_METHOD=client_secret_post'
-      - 'IDP_DEFAULT_REDIRECT_URIS=https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback'
+      - "IDP_DEFAULT_REVOCATION_ENDPOINT_AUTH_METHOD=client_secret_post"
+      - "IDP_DEFAULT_REDIRECT_URIS=https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback"
       - 'IDP_DEFAULT_POST_LOGOUT_REDIRECT_URIS=["https://fca.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp"]'
     networks:
       - fc
@@ -564,8 +564,8 @@ services:
       - "IDP_CORE_INSTANCE=FCA"
       - 'IDP_DEFAULT_FEATURE_HANDLERS={ "coreVerify": "core-fca-default-verify", "authenticationEmail": null }'
       - 'IDP_DEFAULT_RESPONSE_TYPES=["code"]'
-      - 'IDP_DEFAULT_REVOCATION_ENDPOINT_AUTH_METHOD=client_secret_post'
-      - 'IDP_DEFAULT_REDIRECT_URIS=https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback'
+      - "IDP_DEFAULT_REVOCATION_ENDPOINT_AUTH_METHOD=client_secret_post"
+      - "IDP_DEFAULT_REDIRECT_URIS=https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback"
       - 'IDP_DEFAULT_POST_LOGOUT_REDIRECT_URIS=["https://fca.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp"]'
     networks:
       - exploitation

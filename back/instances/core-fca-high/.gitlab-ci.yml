@@ -2,7 +2,7 @@ core-fca-high:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"' 
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
   tags:
     - docker
   variables:
@@ -21,8 +21,8 @@ core-fca-high:
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
-    - ln -s $FC_ROOT/fc/front/user-dashboard $FC_ROOT/fc/docker/volumes/src/user-dashboard
-    - ln -s $FC_ROOT/fc/front/agent-connect $FC_ROOT/fc/docker/volumes/src/agent-connect
+    - ln -s $FC_ROOT/fc/front/apps/user-dashboard $FC_ROOT/fc/docker/volumes/src/user-dashboard
+    - ln -s $FC_ROOT/fc/front/apps/agent-connect $FC_ROOT/fc/docker/volumes/src/agent-connect
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
     - docker-stack up fca
