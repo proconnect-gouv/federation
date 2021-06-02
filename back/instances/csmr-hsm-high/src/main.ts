@@ -12,7 +12,6 @@ import configuration from './config';
 
 async function bootstrap() {
   const configOptions = {
-    isGlobal: false,
     config: configuration,
     schema: CsmrHsmConfig,
   };
@@ -22,9 +21,11 @@ async function bootstrap() {
   // Fetch broker options from config
   const options = configService.get<RabbitmqConfig>('CryptographyBroker');
 
+  const appModule = AppModule.forRoot(configService);
+
   // Create consumer
   const consumer = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
+    appModule,
     {
       transport: Transport.RMQ,
       options,

@@ -11,10 +11,25 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { SessionGenericConfig } from '@fc/session-generic';
+import { UserDashboardConfig } from '@fc/user-dashboard';
+import { AppConfig } from '@fc/app';
 import { AppModule } from './app.module';
+import config from './config';
 
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  const configService = new ConfigService({
+    config,
+    schema: UserDashboardConfig,
+  });
+  const {
+    httpsOptions: { key, cert },
+  } = configService.get<AppConfig>('App');
+
+  const appModule = AppModule.forRoot(configService);
+
+  const httpsOptions = key && cert ? { key, cert } : null;
+
+  const app = await NestFactory.create<NestExpressApplication>(appModule, {
     /**
      * We need to handle the bodyParser ourself because of prototype pollution risk with `body-parser` library.
      *
@@ -28,9 +43,9 @@ async function bootstrap() {
      * @see https://medium.com/intrinsic/javascript-prototype-poisoning-vulnerabilities-in-the-wild-7bc15347c96
      */
     bodyParser: false,
+    httpsOptions,
   });
 
-  const config = app.get(ConfigService);
   /**
    * Protect app from common risks
    * @see https://helmetjs.github.io/
@@ -81,7 +96,9 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, assetsPath, 'public'));
 
-  const { cookieSecrets } = config.get<SessionGenericConfig>('SessionGeneric');
+  const { cookieSecrets } = configService.get<SessionGenericConfig>(
+    'SessionGeneric',
+  );
   app.use(CookieParser(cookieSecrets));
 
   await app.listen(3000);
