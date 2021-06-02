@@ -46,6 +46,7 @@ describe('EuIdentityToFrController', () => {
     name: 'notUsedValue',
     urlPrefix: '',
     countryIsoList: availableListMock,
+    httpsOptions: {},
   };
 
   const configServiceMock = {

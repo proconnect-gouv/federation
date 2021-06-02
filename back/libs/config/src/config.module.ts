@@ -1,23 +1,20 @@
-import { Module, DynamicModule } from '@nestjs/common';
+import { Module, DynamicModule, Global } from '@nestjs/common';
 import { ConfigService } from './config.service';
-import { CONFIG_OPTIONS } from './tokens';
-import { IConfigOptions } from './interfaces';
 
 @Module({})
+@Global()
 export class ConfigModule {
   // does not need to be tested
   // istanbul ignore next
-  static forRoot(options: IConfigOptions): DynamicModule {
+  static forRoot(service): DynamicModule {
+    const provider = {
+      provide: ConfigService,
+      useValue: service,
+    };
+
     return {
-      global: options.isGlobal,
       module: ConfigModule,
-      providers: [
-        {
-          provide: CONFIG_OPTIONS,
-          useValue: options,
-        },
-        ConfigService,
-      ],
+      providers: [provider],
       exports: [ConfigService],
     };
   }

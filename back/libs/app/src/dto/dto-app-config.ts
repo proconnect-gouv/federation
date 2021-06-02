@@ -1,4 +1,25 @@
-import { IsString } from 'class-validator';
+/* istanbul ignore file */
+
+// Declarative code
+import { Type } from 'class-transformer';
+import {
+  IsOptional,
+  IsString,
+  MinLength,
+  ValidateNested,
+} from 'class-validator';
+
+class HttpsOptions {
+  @IsString()
+  @MinLength(1)
+  @IsOptional()
+  readonly key?: string;
+
+  @IsString()
+  @MinLength(1)
+  @IsOptional()
+  readonly cert?: string;
+}
 
 export class AppConfig {
   @IsString()
@@ -11,4 +32,8 @@ export class AppConfig {
    */
   @IsString()
   readonly urlPrefix: string;
+
+  @ValidateNested()
+  @Type(() => HttpsOptions)
+  readonly httpsOptions: HttpsOptions;
 }

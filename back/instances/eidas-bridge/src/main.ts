@@ -13,12 +13,25 @@ import { AppConfig } from '@fc/app';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { SessionGenericConfig } from '@fc/session-generic';
+import { EidasBridgeConfig } from '@fc/eidas-bridge';
 import { AppModule } from './app.module';
+import config from './config';
 
 async function bootstrap() {
-  const httpsOptions = ConfigService.getHttpsOptions();
+  const configService = new ConfigService({
+    config,
+    schema: EidasBridgeConfig,
+  });
+  const {
+    urlPrefix,
+    httpsOptions: { key, cert },
+  } = configService.get<AppConfig>('App');
 
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+  const appModule = AppModule.forRoot(configService);
+
+  const httpsOptions = key && cert ? { key, cert } : null;
+
+  const app = await NestFactory.create<NestExpressApplication>(appModule, {
     /**
      * We need to handle the bodyParser ourself because of prototype pollution risk with `body-parser` library.
      *
@@ -35,8 +48,7 @@ async function bootstrap() {
     httpsOptions,
   });
 
-  const config = app.get(ConfigService);
-  app.setGlobalPrefix(config.get<AppConfig>('App').urlPrefix);
+  app.setGlobalPrefix(urlPrefix);
   /**
    * Protect app from common risks
    * @see https://helmetjs.github.io/
@@ -98,7 +110,9 @@ async function bootstrap() {
     );
   }
 
-  const { cookieSecrets } = config.get<SessionGenericConfig>('SessionGeneric');
+  const { cookieSecrets } = configService.get<SessionGenericConfig>(
+    'SessionGeneric',
+  );
   app.use(CookieParser(cookieSecrets));
 
   /**
@@ -107,7 +121,7 @@ async function bootstrap() {
    * @see https://github.com/nestjs/nest/issues/528#issuecomment-382330137
    * @see https://github.com/nestjs/nest/issues/528#issuecomment-403212561
    */
-  useContainer(app.select(AppModule), { fallbackOnErrors: true });
+  useContainer(app.select(appModule), { fallbackOnErrors: true });
 
   await app.listen(3000);
 }
