@@ -1,5 +1,6 @@
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { parseBoolean, parseJsonProperty } from '@fc/common';
+import { IConfigParserFileOptions } from '../interfaces';
 
 export class ConfigParser {
   constructor(
@@ -32,10 +33,22 @@ export class ConfigParser {
     return parseInt(this.source[fullPath], 10);
   }
 
-  file(path: string): string {
+  file(path: string, options: IConfigParserFileOptions = {}): string {
+    const { optional } = options;
+
     const fullPath = this.getFullPath(path);
     const filePath = this.source[fullPath];
 
-    return readFileSync(filePath).toString('utf8');
+    const fileExists = existsSync(filePath);
+
+    if (fileExists) {
+      return readFileSync(filePath, 'utf-8');
+    }
+
+    if (optional) {
+      return null;
+    }
+
+    throw new Error(`file at path ${filePath} is missing`);
   }
 }

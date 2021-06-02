@@ -1,5 +1,9 @@
+/* istanbul ignore file */
+
+// Declarative code
+import { Type } from '@nestjs/common';
+
 export interface IConfigOptions {
-  isGlobal: boolean;
-  config: any;
-  schema: any;
+  config: Record<string, any>;
+  schema: Type<any>;
 }

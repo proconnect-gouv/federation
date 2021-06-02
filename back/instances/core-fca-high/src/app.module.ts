@@ -1,24 +1,24 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { LoggerModule } from '@fc/logger';
-import { ConfigModule } from '@fc/config';
-import { CoreFcaModule, CoreFcaConfig } from '@fc/core-fca';
-import configuration from './config';
+import { ConfigModule, ConfigService } from '@fc/config';
+import { CoreFcaModule } from '@fc/core-fca';
 
-@Module({
-  imports: [
-    // 1. Load config module first
-    ConfigModule.forRoot({
-      isGlobal: true,
-      config: configuration,
-      schema: CoreFcaConfig,
-    }),
-    // 2. Load logger module next
-    LoggerModule,
-    // 3. Load other modules
-    CoreFcaModule,
-  ],
-})
-export class AppModule {}
+@Module({})
+export class AppModule {
+  static forRoot(configService: ConfigService): DynamicModule {
+    return {
+      module: AppModule,
+      imports: [
+        // 1. Load config module first
+        ConfigModule.forRoot(configService),
+        // 2. Load logger module next
+        LoggerModule,
+        // 3. Load other modules
+        CoreFcaModule,
+      ],
+    };
+  }
+}
