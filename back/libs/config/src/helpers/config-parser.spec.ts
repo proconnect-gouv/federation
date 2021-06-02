@@ -1,10 +1,11 @@
 import { mocked } from 'ts-jest/utils';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { parseBoolean, parseJsonProperty } from '@fc/common';
 import { ConfigParser } from './config-parser';
 
 jest.mock('fs', () => ({
   readFileSync: jest.fn(),
+  existsSync: jest.fn(),
 }));
 
 jest.mock('@fc/common', () => ({
@@ -28,6 +29,7 @@ describe('ConfigParser', () => {
   const parseBooleanMock = mocked(parseBoolean);
   const parseJsonPropertyMock = mocked(parseJsonProperty);
   const readFileSyncMock = mocked(readFileSync);
+  const existsSyncMock = mocked(existsSync);
 
   beforeEach(() => {
     reader = new ConfigParser(configMock, prefixMock, separatorMock);
@@ -36,7 +38,6 @@ describe('ConfigParser', () => {
 
     parseBooleanMock.mockReturnValue(true);
     parseJsonPropertyMock.mockReturnValue({ fizz: 'baz' });
-    readFileSyncMock.mockReturnValue(Buffer.from('readFileSyncMockValue'));
   });
 
   describe('constructor', () => {
@@ -153,22 +154,46 @@ describe('ConfigParser', () => {
   });
 
   describe('file', () => {
+    const fileContentMock = 'fileContentMockValue';
+    beforeEach(() => {
+      readFileSyncMock.mockReturnValue(fileContentMock);
+    });
     it('should call readfilesync with given path', () => {
       // Given
       const path = 'zin';
-      // When
-      reader.file(path);
-      // Then
-      expect(readFileSyncMock).toHaveBeenCalledTimes(1);
-      expect(readFileSyncMock).toHaveBeenCalledWith('/some/path/to/read.txt');
-    });
-    it('should return result of readfilesync buffer .toString', () => {
-      // Given
-      const path = 'zin';
+      existsSyncMock.mockReturnValueOnce(true);
       // When
       const result = reader.file(path);
       // Then
-      expect(result).toBe('readFileSyncMockValue');
+      expect(existsSyncMock).toHaveBeenCalledTimes(1);
+      expect(existsSyncMock).toHaveBeenCalledWith('/some/path/to/read.txt');
+      expect(readFileSyncMock).toHaveBeenCalledTimes(1);
+      expect(readFileSyncMock).toHaveBeenCalledWith(
+        '/some/path/to/read.txt',
+        'utf-8',
+      );
+      expect(result).toBe(fileContentMock);
+    });
+    it('should return result null if file is missing and optional', () => {
+      // Given
+      const path = 'zin';
+      existsSyncMock.mockReturnValueOnce(false);
+      // When
+      const result = reader.file(path, { optional: true });
+      // Then
+      expect(result).toBe(null);
+    });
+
+    it('should throw an error if file is missing but not optional', () => {
+      // Given
+      const path = 'zin';
+      existsSyncMock.mockReturnValueOnce(false);
+
+      expect(
+        // When
+        () => reader.file(path, { optional: false }),
+        // Then
+      ).toThrow('file at path /some/path/to/read.txt is missing');
     });
   });
 });
