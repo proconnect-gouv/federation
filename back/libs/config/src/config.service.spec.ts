@@ -1,16 +1,8 @@
-import { mocked } from 'ts-jest/utils';
-import { readFileSync } from 'fs';
 import { IsNumber, IsObject } from 'class-validator';
 import { Test, TestingModule } from '@nestjs/testing';
-import { Type } from '@nestjs/common';
-import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface';
 import { ConfigService } from './config.service';
-import { CONFIG_OPTIONS } from './tokens';
 import { UnknownConfigurationNameError } from './errors';
 
-jest.mock('fs', () => ({
-  readFileSync: jest.fn(),
-}));
 class Schema {
   @IsNumber()
   readonly foo: number;
@@ -43,15 +35,14 @@ describe('ConfigService', () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
 
+    const configService = new ConfigService(options);
+
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ConfigService,
-        {
-          provide: CONFIG_OPTIONS,
-          useValue: options,
-        },
-      ],
-    }).compile();
+      providers: [ConfigService],
+    })
+      .overrideProvider(ConfigService)
+      .useValue(configService)
+      .compile();
     service = module.get<ConfigService>(ConfigService);
   });
 
@@ -139,115 +130,6 @@ describe('ConfigService', () => {
       // When
       // Then
       expect(() => service.get(paths)).toThrow(UnknownConfigurationNameError);
-    });
-  });
-
-  describe('getHttpsOptions()', () => {
-    let getHttpsMock;
-    beforeEach(() => {
-      getHttpsMock = jest.spyOn<Type<ConfigService>, any>(
-        ConfigService,
-        'getHttpsCert',
-      );
-
-      jest
-        .spyOn<Type<ConfigService>, any>(ConfigService, 'validate')
-        .mockImplementationOnce(() => {
-          return 'initially true';
-        });
-    });
-
-    afterEach(() => {
-      // clean
-      process.env.App_HTTPS_SERVER_KEY = undefined;
-      process.env.App_HTTPS_SERVER_CERT = undefined;
-    });
-
-    it('should get HTTPS options from env variable', () => {
-      // Given
-      process.env.App_HTTPS_SERVER_KEY = 'App_HTTPS_SERVER_KEYValue';
-      process.env.App_HTTPS_SERVER_CERT = 'App_HTTPS_SERVER_CERTValue';
-
-      const resultMock: HttpsOptions = {
-        key: 'keyValue',
-        cert: 'certValue',
-      };
-
-      getHttpsMock
-        .mockImplementationOnce(() => resultMock.key)
-        .mockImplementationOnce(() => resultMock.cert);
-
-      // When
-      const options = ConfigService.getHttpsOptions();
-
-      // Then
-      expect(options).toStrictEqual<HttpsOptions>(resultMock);
-    });
-
-    it('should get null if HTTPS protocol is deactivated', () => {
-      // Given
-      process.env.App_HTTPS_SERVER_KEY = '';
-      process.env.App_HTTPS_SERVER_CERT = '';
-
-      // When
-      const options = ConfigService.getHttpsOptions();
-
-      // Then
-      expect(options).toBe(null);
-      expect(getHttpsMock).not.toHaveBeenCalled();
-    });
-
-    it('should throw an error if protocol is unknown', () => {
-      // Given
-      process.env.App_HTTPS_SERVER_KEY = 'keyValue';
-      process.env.App_HTTPS_SERVER_CERT = 'certValue';
-
-      const errorMock = new Error('File Incorrect');
-      getHttpsMock.mockImplementationOnce(() => {
-        throw errorMock;
-      });
-
-      // When
-      expect(
-        () => ConfigService.getHttpsOptions(),
-        // Then
-      ).toThrow(errorMock);
-    });
-  });
-
-  describe('getHttpsCert()', () => {
-    const pathMock = '/file/should/exist/for/key.crt';
-    let readFileSyncMock: jest.Mock;
-    beforeEach(() => {
-      readFileSyncMock = mocked(readFileSync);
-    });
-    it('should get certificat at the path', () => {
-      // Given
-      const resultMock = 'certificatValue';
-      readFileSyncMock.mockReturnValueOnce(resultMock);
-
-      // When
-      const result = ConfigService['getHttpsCert'](pathMock);
-
-      // Then
-      expect(result).toBe(resultMock);
-      expect(readFileSyncMock).toBeCalledTimes(1);
-      expect(readFileSyncMock).toHaveBeenCalledWith(pathMock, 'utf-8');
-    });
-    it('should throw an error if file is known', () => {
-      // Given
-      const errorMock = new Error('File Incorrect');
-      readFileSyncMock.mockImplementationOnce(() => {
-        throw errorMock;
-      });
-
-      // When
-      expect(
-        () => ConfigService['getHttpsCert'](pathMock),
-        // Then
-      ).toThrow(
-        'No HTTPS Certificate found at path : /file/should/exist/for/key.crt',
-      );
     });
   });
 });
