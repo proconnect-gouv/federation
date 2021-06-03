@@ -36,11 +36,11 @@ build-cache:
     policy: push
     paths:
       - back/node_modules/
-      - front/agent-connect/node_modules/
+      - front/apps/agent-connect/node_modules/
   stage: 'Cache'
   script:
     - cd $CI_PROJECT_DIR/back && yarn install
-    - cd $CI_PROJECT_DIR/front/agent-connect && yarn install
+    - cd $CI_PROJECT_DIR/front/apps/agent-connect && yarn install
   interruptible: true
   rules:
     - if: '$CI_COMMIT_BRANCH == "staging"'
