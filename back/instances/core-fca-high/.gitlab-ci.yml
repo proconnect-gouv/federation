@@ -13,7 +13,7 @@ core-fca-high:
     policy: pull
     paths:
       - back/node_modules/
-      - front/agent-connect/node_modules/
+      - front/apps/agent-connect/node_modules/
   before_script:
     - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f && docker volume prune -f; fi
     - shopt -s expand_aliases
