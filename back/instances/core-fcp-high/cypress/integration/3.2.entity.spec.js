@@ -8,6 +8,8 @@ describe('Entity', () => {
   it('should have the same client Sub from 2 SP with same entityId', () => {
     basicScenario({
       idpId: 'fip1v2',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
     });
 
     // FC: Read confirmation message :D
@@ -27,6 +29,8 @@ describe('Entity', () => {
 
     basicScenario({
       idpId: 'fip1v2',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       start: `${Cypress.env('SP2_ROOT_URL')}`,
       overrideParams: {
         // eslint-disable-next-line @typescript-eslint/naming-convention

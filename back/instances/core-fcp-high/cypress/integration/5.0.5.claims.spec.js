@@ -17,7 +17,8 @@ describe('Claims', () => {
   it('should passthrough amr value from FC to Eidas, and send back this value to SP', () => {
     basicScenario({
       idpId: 'fip1v2',
-      eidasLevel: 'eidas2',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention

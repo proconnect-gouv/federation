@@ -89,6 +89,8 @@ export class OidcProviderConfigService {
       issuer,
       configuration,
       forcedPrompt,
+      knownAcrValues,
+      defaultAcrValue,
     } = this.config.get<OidcProviderConfig>('OidcProvider');
 
     /**
@@ -98,6 +100,8 @@ export class OidcProviderConfigService {
       forcedPrompt,
       prefix,
       issuer,
+      knownAcrValues,
+      defaultAcrValue,
       configuration: {
         ...configuration,
         adapter,

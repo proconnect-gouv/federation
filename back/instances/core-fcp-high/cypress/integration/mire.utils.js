@@ -1,6 +1,38 @@
 import * as QueryString from 'querystring';
 
 /**
+ *
+ * @param {*} params
+ *
+ * Available params :
+ *  - idpId
+ *  - userName
+ *  - password
+ *  - sp Name of the SP, possible values: SP1, SP2
+ *  - acr_values
+ */
+export function configureSpAndClickFc({
+  acr_values: acrValues,
+  sp = 'SP1',
+  method,
+}) {
+  // FS choice
+  cy.visit(`${Cypress.env('ALL_APPS_LISTED')}`);
+  cy.url().should('include', `${Cypress.env('ALL_APPS_LISTED')}`);
+  cy.get(Cypress.env(`${sp}_ID`)).click();
+
+  if (acrValues) {
+    cy.get('#acrSelector').select(acrValues);
+  }
+
+  if (method === 'POST') {
+    cy.get('#post-authorize').click();
+  } else {
+    cy.get('#get-authorize').click();
+  }
+}
+
+/**
  * @param params
  *
  * Available params :
@@ -11,7 +43,9 @@ import * as QueryString from 'querystring';
  *  - acr_values
  */
 export function basicSuccessScenario(params) {
-  const { idpId, userName, sp = 'SP1', method } = params;
+  cy.clearBusinessLog();
+
+  const { idpId, userName, sp = 'SP1' } = params;
   const password = params.password || '123';
 
   const serviceProvider = {
@@ -19,18 +53,7 @@ export function basicSuccessScenario(params) {
     id: Cypress.env(`${sp}_CLIENT_ID`),
   };
 
-  // FS choice
-  cy.visit(`${Cypress.env('ALL_APPS_LISTED')}`);
-  cy.url().should('include', `${Cypress.env('ALL_APPS_LISTED')}`);
-  cy.get(Cypress.env(`${sp}_ID`)).click();
-
-  cy.clearBusinessLog();
-
-  if (method === 'POST') {
-    cy.get('#post-authorize').click();
-  } else {
-    cy.get('#get-authorize').click();
-  }
+  configureSpAndClickFc(params);
 
   // FC: choose FI
   cy.url().should(
@@ -47,6 +70,7 @@ export function basicSuccessScenario(params) {
     idpName: null,
     idpAcr: null,
   });
+
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_SHOWED_IDP_CHOICE',
@@ -263,6 +287,8 @@ export function validateConsent() {
 export function basicScenario(params) {
   const {
     idpId,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    acr_values,
     login = 'test',
     // eidasLevel, see comment below
     start = Cypress.env('SP1_ROOT_URL'),
@@ -289,6 +315,9 @@ export function basicScenario(params) {
       });
     });
   } else {
+    if (acr_values) {
+      cy.get('#acrSelector').select(acr_values);
+    }
     cy.get('#post-authorize').click();
   }
 
@@ -303,12 +332,6 @@ export function basicScenario(params) {
   cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
   cy.get('input[name="login"]').clear().type(login);
   cy.get('input[name="password"]').clear().type(password);
-
-  // -- This section should be implemented in the IDP Mock instance
-  // if (eidasLevel) {
-  //   cy.get('select[name="acr"]').select(eidasLevel);
-  // }
-  // --
 
   cy.get('input[type="submit"]').click();
 }

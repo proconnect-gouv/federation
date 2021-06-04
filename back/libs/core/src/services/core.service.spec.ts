@@ -376,7 +376,9 @@ describe('CoreService', () => {
   });
 
   describe('overrideAuthorizeAcrValues()', () => {
+    const defaultAcrMock = 'eidas3';
     const allowedAcrMock = ['boots', 'clothes', 'motorcycle'];
+
     it('should set acr values parameter on query', () => {
       // Given
       const overrideAcr = 'boots';
@@ -384,11 +386,15 @@ describe('CoreService', () => {
         method: 'GET',
         // Oidc Naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        query: { acr_values: 'Boots' },
+        query: { acr_values: 'boots' },
       } as unknown) as OidcCtx;
 
       // When
-      service['overrideAuthorizeAcrValues'](allowedAcrMock, ctxMock);
+      service['overrideAuthorizeAcrValues'](
+        allowedAcrMock,
+        defaultAcrMock,
+        ctxMock,
+      );
       // Then
       expect(ctxMock.query.acr_values).toBe(overrideAcr);
       expect(ctxMock.body).toBeUndefined();
@@ -401,10 +407,14 @@ describe('CoreService', () => {
         method: 'POST',
         // Oidc Naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        req: { body: { acr_values: 'Boots' } },
+        req: { body: { acr_values: 'boots' } },
       } as unknown) as OidcCtx;
       // When
-      service['overrideAuthorizeAcrValues'](allowedAcrMock, ctxMock);
+      service['overrideAuthorizeAcrValues'](
+        allowedAcrMock,
+        defaultAcrMock,
+        ctxMock,
+      );
       // Then
       expect(ctxMock.req.body.acr_values).toBe(overrideAcr);
       expect(ctxMock.query).toBeUndefined();
@@ -414,7 +424,11 @@ describe('CoreService', () => {
       // Given
       const ctxMock = {} as OidcCtx;
       // When
-      service['overrideAuthorizeAcrValues'](allowedAcrMock, ctxMock);
+      service['overrideAuthorizeAcrValues'](
+        allowedAcrMock,
+        defaultAcrMock,
+        ctxMock,
+      );
       // Then
       expect(ctxMock).toEqual({});
       expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
@@ -424,7 +438,11 @@ describe('CoreService', () => {
       // Given
       const ctxMock = { method: 'DELETE' } as OidcCtx;
       // When
-      service['overrideAuthorizeAcrValues'](allowedAcrMock, ctxMock);
+      service['overrideAuthorizeAcrValues'](
+        allowedAcrMock,
+        defaultAcrMock,
+        ctxMock,
+      );
       // Then
       expect(ctxMock).toEqual({ method: 'DELETE' });
       expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);

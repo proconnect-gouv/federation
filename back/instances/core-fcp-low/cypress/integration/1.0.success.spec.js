@@ -22,7 +22,8 @@ describe('Successful scenarios', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas1',
       idpId,
     });
 

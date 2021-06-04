@@ -13,7 +13,7 @@ import {
   Type,
 } from '@nestjs/common';
 import { OidcSession } from '@fc/oidc';
-import { OidcProviderService } from '@fc/oidc-provider';
+import { OidcProviderService, OidcProviderConfig } from '@fc/oidc-provider';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import {
@@ -110,7 +110,21 @@ export class CoreFcpController {
     const { spName } = session;
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
-    const { client_id: clientId } = params;
+    const { client_id: clientId, acr_values: acrValues } = params;
+
+    const {
+      configuration: { acrValues: allowedAcrValues },
+    } = this.config.get<OidcProviderConfig>('OidcProvider');
+
+    const rejected = await this.core.rejectInvalidAcr(
+      acrValues,
+      allowedAcrValues,
+      { req, res },
+    );
+
+    if (rejected) {
+      return;
+    }
 
     const {
       idpFilterExclude,

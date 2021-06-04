@@ -15,6 +15,7 @@ describe('MockServiceProviderController', () => {
   let controller: MockServiceProviderController;
   let res;
   let req;
+  let query;
 
   const oidcClientServiceMock = {
     utils: {
@@ -131,6 +132,8 @@ describe('MockServiceProviderController', () => {
         interactionId: interactionIdMock,
       },
     };
+
+    query = {};
 
     oidcClientServiceMock.utils.buildAuthorizeParameters.mockReturnValue({
       state: idpStateMock,
@@ -516,11 +519,87 @@ describe('MockServiceProviderController', () => {
       );
     });
 
+    it('should call res.redirect with an error if the query contains an error', async () => {
+      // setup
+      const queryMock = {
+        error: 'toto',
+      };
+
+      // action
+      await controller.getOidcCallback(
+        req,
+        res,
+        queryMock,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
+
+      // assert
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith('/error?error=toto');
+    });
+
+    it('should call res.redirect with an error and error_description if the query contains an error and error_description', async () => {
+      // setup
+      const queryMock = {
+        error: 'toto',
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: 'toto42',
+      };
+
+      // action
+      await controller.getOidcCallback(
+        req,
+        res,
+        queryMock,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
+
+      // assert
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith(
+        '/error?error=toto&error_description=toto42',
+      );
+    });
+
+    it('should not call getTokenFromProvider if the query contains an error', async () => {
+      // setup
+      const queryMock = {
+        error: 'toto',
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: 'toto42',
+      };
+
+      // action
+      await controller.getOidcCallback(
+        req,
+        res,
+        queryMock,
+        {
+          providerUid,
+        },
+        sessionServiceMock,
+      );
+
+      // assert
+      expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledTimes(
+        0,
+      );
+    });
+
     it('should call token with providerId', async () => {
       // action
       await controller.getOidcCallback(
         req,
         res,
+        query,
         {
           providerUid,
         },
@@ -544,6 +623,7 @@ describe('MockServiceProviderController', () => {
       await controller.getOidcCallback(
         req,
         res,
+        query,
         {
           providerUid,
         },
@@ -564,6 +644,7 @@ describe('MockServiceProviderController', () => {
       await controller.getOidcCallback(
         req,
         res,
+        query,
         {
           providerUid,
         },
@@ -580,6 +661,7 @@ describe('MockServiceProviderController', () => {
       await controller.getOidcCallback(
         req,
         res,
+        query,
         {
           providerUid,
         },

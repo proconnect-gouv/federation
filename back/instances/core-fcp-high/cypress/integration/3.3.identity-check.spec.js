@@ -19,6 +19,8 @@ describe('Identity Check', () => {
     });
 
     basicScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 
@@ -37,6 +39,8 @@ describe('Identity Check', () => {
     });
 
     basicScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       login: 'E020025',
       idpId,
     });

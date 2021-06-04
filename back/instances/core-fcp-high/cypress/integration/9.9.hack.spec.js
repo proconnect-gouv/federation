@@ -26,6 +26,7 @@ describe('Interaction steps discarding', () => {
     const SP_URL = Cypress.env('SP1_ROOT_URL');
 
     cy.visit(SP_URL);
+    cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
 
     cy.url().should(
@@ -46,6 +47,8 @@ describe('Interaction steps discarding', () => {
   });
   it('should trigger error Y000005 when csrf token not matching with csrfToken in session', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'test',
       idpId,
     });
@@ -61,6 +64,8 @@ describe('Interaction steps discarding', () => {
   });
   it('should trigger error Y000005 when csrf token is empty', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'test',
       idpId,
     });
@@ -76,6 +81,8 @@ describe('Interaction steps discarding', () => {
   });
   it('should display "Not found" if we GET on /consent', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'test',
       idpId,
     });
@@ -94,6 +101,8 @@ describe('Interaction steps discarding', () => {
   });
   it('should trigger error Y000400 when csrf token is not present', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'test',
       idpId,
     });
