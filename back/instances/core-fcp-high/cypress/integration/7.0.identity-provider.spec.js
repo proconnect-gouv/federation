@@ -94,12 +94,14 @@ describe('Idp activation & visibility', () => {
 
   it('should trigger error 020019 when forging click on non existing IdP', () => {
     // Given
-    cy.visit(getAuthorizeUrl({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
-    }));
+    cy.visit(
+      getAuthorizeUrl({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
+      }),
+    );
     cy.url().should('match', mireUrl);
     // When
     cy.get(`#fs-request-${idpId}1v2`).within(() => {
@@ -122,6 +124,7 @@ describe('Idp activation & visibility', () => {
 
     it('should display an identity provider that has been added without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      cy.get('#acrSelector').select('eidas2');
       cy.get('#get-authorize').click();
       cy.get('#idp-list').contains('Idp test Inserted').should('not.exist');
 
@@ -134,6 +137,7 @@ describe('Idp activation & visibility', () => {
 
     it('should update an identity provider properties, activate it, without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      cy.get('#acrSelector').select('eidas2');
       cy.get('#get-authorize').click();
       cy.get('#idp-list').contains('Idp test Inserted').should('not.exist');
 
@@ -147,6 +151,7 @@ describe('Idp activation & visibility', () => {
 
     it('should update an identity provider properties, deactivate it, without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      cy.get('#acrSelector').select('eidas2');
       cy.get('#get-authorize').click();
       cy.get('#idp-list').contains('idp-test-update').should('not.exist');
 
@@ -168,6 +173,7 @@ describe('Idp activation & visibility', () => {
 
     it('should remove an identity provider without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
+      cy.get('#acrSelector').select('eidas2');
       cy.get('#get-authorize').click();
       cy.get('#idp-list').contains('idp-test-update').should('not.exist');
 

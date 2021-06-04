@@ -25,7 +25,8 @@ describe('Successful scenarios', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 
@@ -47,7 +48,8 @@ describe('Successful scenarios', () => {
     basicSuccessScenario({
       userName: 'test',
       password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
       method: 'POST',
     });
@@ -71,7 +73,8 @@ describe('Successful scenarios', () => {
     basicSuccessScenario({
       userName: 'test_CORSE_2A',
       password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
       method: 'POST',
     });
@@ -95,7 +98,8 @@ describe('Successful scenarios', () => {
     basicSuccessScenario({
       userName: 'test_CORSE_2B',
       password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
       method: 'POST',
     });
@@ -120,7 +124,8 @@ describe('Successful scenarios', () => {
     basicSuccessScenario({
       userName: 'étranger_présumé_né_jour',
       password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 
@@ -141,7 +146,8 @@ describe('Successful scenarios', () => {
     basicSuccessScenario({
       userName: 'étranger_présumé_né_jour_et_mois',
       password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 
@@ -177,6 +183,7 @@ describe('Successful scenarios', () => {
     cy.get('#scope_gender').click();
 
     // Go to FC
+    cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
 
     // Choose IdP
@@ -209,14 +216,18 @@ describe('Successful scenarios', () => {
   it('should navigate by tab and enter on menu link', () => {
     navigateToMire();
     cy.get('body').tab();
-    cy.focused().invoke('attr', 'href').as('fc:redirectUri');
+    cy.focused().invoke('attr', 'href');
 
     //TODO: find how trigger a keypress on key enter instead
     //After many tests a key press on this keys it seems that it implicitly triggers a click on the focus element
     cy.focused().click();
-    cy.location().then(({ href }) => {
-      cy.get('@fc:redirectUri').should('eq', href);
-    });
+    cy.url().should(
+      'contains',
+      '/error?error=access_denied&error_description=User%20auth%20aborted',
+    );
+
+    cy.get('#error-title').contains('Error: access_denied');
+    cy.get('#error-description').contains('User auth aborted');
   });
 
   it('should apply box shadow when identity provider links are focused', () => {
@@ -251,15 +262,11 @@ describe('Successful scenarios', () => {
     });
 
     cy.url()
-      .should(
-        'contains',
-        `${Cypress.env(`SP1_ROOT_URL`)}/oidc-callback/envIssuer`,
-      )
+      .should('contains', `${Cypress.env(`SP1_ROOT_URL`)}/error`)
       .should(
         'contains',
         'error=invalid_request&error_description=openid%20scope%20must%20be%20requested%20when%20using%20the%20acr_values',
-      )
-      .should('contains', 'state=stateTraces');
+      );
   });
 
   describe('Send notification email on a successfull scenario', () => {

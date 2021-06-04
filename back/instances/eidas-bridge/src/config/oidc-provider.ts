@@ -14,6 +14,8 @@ export default {
   forcedPrompt: [OidcProviderPrompt.LOGIN, OidcProviderPrompt.CONSENT],
   prefix: env.string('PREFIX'),
   issuer: env.string('ISSUER'),
+  defaultAcrValue: 'eidas3',
+  knownAcrValues: ['eidas1', 'eidas2', 'eidas3'],
   configuration: {
     routes: {
       authorization: OidcProviderRoutes.AUTHORIZATION,

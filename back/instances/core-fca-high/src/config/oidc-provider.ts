@@ -14,6 +14,8 @@ export default {
   forcedPrompt: [OidcProviderPrompt.LOGIN, OidcProviderPrompt.CONSENT],
   prefix: env.string('PREFIX'),
   issuer: `https://${process.env.FQDN}${env.string('PREFIX')}`,
+  defaultAcrValue: 'eidas1',
+  knownAcrValues: ['eidas1', 'eidas2', 'eidas3'],
   configuration: {
     routes: {
       authorization: OidcProviderRoutes.AUTHORIZATION,
@@ -72,7 +74,7 @@ export default {
       AuthorizationCode: 30, // 30 seconds
       IdToken: 60, // 1 minute
     },
-    acrValues: ['eidas1','eidas2', 'eidas3'],
+    acrValues: ['eidas1', 'eidas2', 'eidas3'],
     scopes: ['openid'],
     claims: {
       uid: ['uid'],
@@ -93,8 +95,7 @@ export default {
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
       belonging_population: ['belonging_population'],
-      chorusdt: ['chorusdt:matricule','chorusdt:societe'],
-
+      chorusdt: ['chorusdt:matricule', 'chorusdt:societe'],
     },
     clientDefaults: {
       // node-oidc-provider defined key

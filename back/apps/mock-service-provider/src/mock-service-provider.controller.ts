@@ -1,3 +1,4 @@
+import { encode } from 'querystring';
 import {
   Controller,
   Get,
@@ -167,11 +168,14 @@ export class MockServiceProviderController {
    * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
    */
+  // needed for controller
+  // eslint-disable-next-line max-params
   @Get(OidcClientRoutes.OIDC_CALLBACK)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getOidcCallback(
     @Req() req,
     @Res() res,
+    @Query() query,
     @Param() params: GetOidcCallback,
     /**
      * @todo Adaptation for now, correspond to the oidc-provider side.
@@ -184,6 +188,21 @@ export class MockServiceProviderController {
     @Session('OidcClient')
     sessionOidc: ISessionGenericService<OidcClientSession>,
   ) {
+    /**
+     * @todo Adaptation for now, we should probably find a better way to handle
+     * errors on the oidc callback on the mock.
+     * @Todo Since nodev16 should use the <URLSearchParams> API instead of querystring.encode
+     *
+     * @author Stéphane/Matthieu
+     * @date 2021-05-12
+     * @ticket FC-xxx
+     */
+    if (query.error) {
+      const errorUri = `/error?${encode(query)}`;
+
+      return res.redirect(errorUri);
+    }
+
     const { providerUid } = params;
     const { interactionId, idpState, idpNonce } = await sessionOidc.get();
 
