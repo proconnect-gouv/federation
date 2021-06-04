@@ -77,13 +77,12 @@ describe('Successful scenarios', () => {
     });
 
     cy.url()
-      .should('contains', `${SP_ROOT_URL}/oidc-callback/envIssuer`)
+      .should('contains', `${SP_ROOT_URL}/error`)
       .should('contains', 'error=invalid_request')
       .should(
         'contains',
         'error_description=openid%20scope%20must%20be%20requested%20when%20using%20the%20acr_values',
-      )
-      .should('contains', 'state=stateTraces');
+      );
   });
 
   it('should log in to Service Provider Example with IDP HS256 alg and response not encrypted', () => {

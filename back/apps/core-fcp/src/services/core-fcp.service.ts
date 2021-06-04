@@ -4,6 +4,7 @@ import { LoggerService } from '@fc/logger';
 import { ISessionGenericService } from '@fc/session-generic';
 import { OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
+import { OidcProviderService } from '@fc/oidc-provider';
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { ScopesService } from '@fc/scopes';
@@ -27,6 +28,7 @@ export class CoreFcpService {
   // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
+    private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     public readonly moduleRef: ModuleRef,
     private readonly scopes: ScopesService,
@@ -133,5 +135,23 @@ export class CoreFcpService {
     } = interaction;
     const scopes = scope.split(' ');
     return scopes;
+  }
+
+  async rejectInvalidAcr(
+    currentAcrValue: string,
+    allowedAcrValues: string[],
+    { req, res }: { req: any; res: any },
+  ): Promise<boolean> {
+    const isAllowed = allowedAcrValues.includes(currentAcrValue);
+
+    if (isAllowed) {
+      return false;
+    }
+
+    const error = 'invalid_acr';
+    const allowedAcrValuesString = allowedAcrValues.join(',');
+    const errorDescription = `acr_value is not valid, should be equal one of these values, expected ${allowedAcrValuesString}, got ${currentAcrValue}`;
+    await this.oidcProvider.abortInteraction(req, res, error, errorDescription);
+    return true;
   }
 }

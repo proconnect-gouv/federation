@@ -5,6 +5,8 @@ describe('get user consent', () => {
 
   it('should ask for user consent to pursue connexion if the service provider is private and the consent required', () => {
     cy.visit(Cypress.env('SP5_ROOT_URL'));
+
+    cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
     cy.get('#idp-fip1v2-title').click();
     cy.get('form').submit();
@@ -26,6 +28,7 @@ describe('get user consent', () => {
 
   it('should not ask for user consent to pursue connexion if the service provider is private but consent not required', () => {
     cy.visit(Cypress.env('SP6_ROOT_URL'));
+    cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
     cy.get('#idp-fip1v2-title').click();
     cy.get('form').submit();
@@ -41,6 +44,7 @@ describe('get user consent', () => {
 
   it('should not ask for user consent to pursue connexion if the service provider is public', () => {
     cy.visit(Cypress.env('SP1_ROOT_URL'));
+    cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
     cy.get('#idp-fip1v2-title').click();
     cy.get('form').submit();
@@ -69,6 +73,7 @@ describe('get user consent', () => {
     cy.get('#scope_birth').click();
     cy.get('#scope_identite_pivot').click();
     cy.get('#claim_amr').click();
+    cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
 
     cy.get('#idp-fip1v2-title').click();

@@ -41,6 +41,7 @@ describe('8.0.1 Scope', () => {
     cy.get('#scope_identite_pivot').click();
 
     // Go to FC
+    cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
 
     // Choose IdP
@@ -101,6 +102,7 @@ describe('8.0.1 Scope', () => {
       cy.get('#scope_identite_pivot').click();
 
       // Go to FC
+      cy.get('#acrSelector').select('eidas2');
       cy.get('#get-authorize').click();
 
       // Choose IdP
@@ -157,6 +159,7 @@ describe('8.0.1 Scope', () => {
       cy.get('#scope_identite_pivot').click();
 
       // Go to FC
+      cy.get('#acrSelector').select('eidas2');
       cy.get('#get-authorize').click();
 
       // Choose IdP
@@ -202,6 +205,7 @@ describe('8.0.1 Scope', () => {
       cy.get('#scope_birth').click();
 
       // Go to FC
+      cy.get('#acrSelector').select('eidas2');
       cy.get('#get-authorize').click();
 
       // Choose IdP
@@ -247,6 +251,7 @@ describe('8.0.1 Scope', () => {
       cy.get('#scope_identite_pivot').click();
 
       // Go to FC
+      cy.get('#acrSelector').select('eidas2');
       cy.get('#get-authorize').click();
 
       // Choose IdP
@@ -265,7 +270,7 @@ describe('8.0.1 Scope', () => {
       checkInStringifiedJson(
         'sub',
         '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
-        );
+      );
       checkInStringifiedJson('birthplace', undefined);
       checkInStringifiedJson('birthcountry', undefined);
       checkInStringifiedJson('email', undefined);

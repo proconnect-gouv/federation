@@ -1,9 +1,10 @@
 describe('numeric-identity-popin', () => {
   beforeEach(() => {
     cy.visit(Cypress.env(`SP1_ROOT_URL`));
+    cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
-    cy.scrollTo('bottom') 
-  })
+    cy.scrollTo('bottom');
+  });
 
   it('should open numeric identity popin', () => {
     cy.get('#tuto-numeric-identity').click();
@@ -14,7 +15,9 @@ describe('numeric-identity-popin', () => {
     cy.get('#tuto-numeric-identity').click();
     cy.contains('Comment créer son identité numérique').should('be.visible');
     cy.get('#popin-close').click();
-    cy.contains('Comment créer son identité numérique').should('not.be.visible');
+    cy.contains('Comment créer son identité numérique').should(
+      'not.be.visible',
+    );
   });
 
   it('should close numeric identity popin when clicking outside the popin', () => {
@@ -23,6 +26,8 @@ describe('numeric-identity-popin', () => {
     cy.get('#numeric-identity').click({
       force: true,
     });
-    cy.contains('Comment créer son identité numérique').should('not.be.visible');
+    cy.contains('Comment créer son identité numérique').should(
+      'not.be.visible',
+    );
   });
-})
+});
