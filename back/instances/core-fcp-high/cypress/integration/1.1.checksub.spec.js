@@ -12,7 +12,8 @@ describe('Successful Sub checks', () => {
     basicSuccessScenario({
       userName: 'test_THIBAULT',
       password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 
@@ -33,7 +34,8 @@ describe('Successful Sub checks', () => {
     basicSuccessScenario({
       userName: 'Désactivé',
       password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 
@@ -55,7 +57,8 @@ describe('Successful Sub checks', () => {
     basicSuccessScenario({
       userName: 'caractères_spéciaux',
       password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 

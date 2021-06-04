@@ -7,6 +7,8 @@ describe('RNIPP', () => {
 
   it('should trigger error Y010004', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'E010004',
       idpId: 'fip1v2',
     });
@@ -20,6 +22,8 @@ describe('RNIPP', () => {
 
   it('should trigger error Y010006', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'E010006',
       idpId: 'fip1v2',
     });
@@ -33,6 +37,8 @@ describe('RNIPP', () => {
 
   it('should trigger error Y010007', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'E010007',
       idpId: 'fip1v2',
     });
@@ -46,6 +52,8 @@ describe('RNIPP', () => {
 
   it('should trigger error Y010008', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'E010008',
       idpId: 'fip1v2',
     });
@@ -59,6 +67,8 @@ describe('RNIPP', () => {
 
   it('should trigger error Y010009', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'E010009',
       idpId: 'fip1v2',
     });
@@ -68,6 +78,8 @@ describe('RNIPP', () => {
 
   it('should trigger error Y010011', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'E010011',
       idpId: 'fip1v2',
     });
@@ -77,6 +89,8 @@ describe('RNIPP', () => {
 
   it('should trigger error Y010012', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'E010012',
       idpId: 'fip1v2',
     });
@@ -86,6 +100,8 @@ describe('RNIPP', () => {
 
   it('should trigger error Y010013', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'E010013',
       idpId: 'fip1v2',
     });
@@ -95,6 +111,8 @@ describe('RNIPP', () => {
 
   it('should trigger error Y010013 if user has an invalid COG (AAAAA)', () => {
     basicScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'E010013',
       idpId: 'fip1v2',
       login: 'test_INVALID_COG',
@@ -109,6 +127,8 @@ describe('RNIPP', () => {
 
   it('should trigger error Y010015', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'E010015',
       idpId: 'fip1v2',
     });

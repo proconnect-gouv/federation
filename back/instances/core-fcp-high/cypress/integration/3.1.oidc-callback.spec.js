@@ -38,6 +38,7 @@ function extractInteractionIdFromUrl(url) {
  */
 function prepareOidcCallbackAs(alias) {
   cy.visit(Cypress.env('SP1_ROOT_URL'));
+  cy.get('#acrSelector').select('eidas2');
   cy.get('#get-authorize').click();
   cy.get(`#idp-${Cypress.env('IDP_NAME')}1v2`).click();
   cy.url().should('contain', Cypress.env('IDP_ROOT_URL'));
@@ -78,6 +79,7 @@ function finishWithReplacedUrl(attackerUrl) {
   cy.clearCookies();
   // Start a new interaction
   cy.visit(Cypress.env('SP1_ROOT_URL'));
+  cy.get('#acrSelector').select('eidas2');
   cy.get('#get-authorize').click();
   cy.get(`#idp-${Cypress.env('IDP_NAME')}1v2`).click();
 

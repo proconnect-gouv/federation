@@ -178,6 +178,7 @@ describe('OidcProviderService', () => {
       service['registerMiddlewares'] = jest.fn();
       service['catchErrorEvents'] = jest.fn();
     });
+
     it('Should create oidc-provider instance', async () => {
       // When
       await service.onModuleInit();
@@ -218,6 +219,7 @@ describe('OidcProviderService', () => {
         OidcProviderBindingException,
       );
     });
+
     it('should call several internal initializers', async () => {
       // Given
       service['ProviderProxy'] = ProviderProxyMock;
@@ -315,6 +317,7 @@ describe('OidcProviderService', () => {
         ctxMock,
       );
     });
+
     it('should call getInteractionIdFromCtxSymbol', () => {
       // Given
       const ctxMock = { req: { url: '/somewhere' } };
@@ -421,6 +424,7 @@ describe('OidcProviderService', () => {
       // Then
       expect(service['runMiddlewareAfterPattern']).toHaveBeenCalledTimes(1);
     });
+
     it('should match on path', async () => {
       // Given
       providerMock.middlewares = [];
@@ -440,6 +444,7 @@ describe('OidcProviderService', () => {
       expect(callback).toHaveBeenCalledTimes(1);
     });
   });
+
   describe('runMiddlewareBeforePattern', () => {
     it('should call the callback if path param equal pattern with good step', async () => {
       // Given
@@ -460,6 +465,7 @@ describe('OidcProviderService', () => {
       // Then
       expect(callback).toHaveBeenCalledTimes(1);
     });
+
     it('should not call the callback method if wrong path is send', () => {
       // Given
       const callback = jest.fn();
@@ -479,6 +485,7 @@ describe('OidcProviderService', () => {
       // Then
       expect(callback).toHaveBeenCalledTimes(0);
     });
+
     it('should not call the callback method if wrong step is send', () => {
       // Given
       const callback = jest.fn();
@@ -521,6 +528,7 @@ describe('OidcProviderService', () => {
       // Then
       expect(callback).toHaveBeenCalledTimes(1);
     });
+
     it('should call the callback if path param equal pattern with good step', async () => {
       // Given
       const callback = jest.fn();
@@ -541,6 +549,7 @@ describe('OidcProviderService', () => {
       // Then
       expect(callback).toHaveBeenCalledTimes(1);
     });
+
     it('should not call the callback method if wrong step is send', () => {
       // Given
       const callback = jest.fn();
@@ -561,6 +570,7 @@ describe('OidcProviderService', () => {
       // Then
       expect(callback).toHaveBeenCalledTimes(0);
     });
+
     it('should not call the callback method if wrong path or route is send', () => {
       // Given
       const callback = jest.fn();
@@ -614,6 +624,7 @@ describe('OidcProviderService', () => {
       // Then
       expect(result).toBe(resolvedValue);
     });
+
     it('should throw OidcProviderRuntimeException', async () => {
       // Given
       const reqMock = {};
@@ -623,6 +634,47 @@ describe('OidcProviderService', () => {
 
       await expect(service.getInteraction(reqMock, resMock)).rejects.toThrow(
         OidcProviderRuntimeException,
+      );
+    });
+  });
+
+  describe('abortInteraction', () => {
+    it('Should throw if', async () => {
+      // given
+      const resMock = Symbol('mock result');
+      const reqMock = Symbol('mock request');
+      const mockErr = 'this is an error message';
+      const mockErrDescription = 'this is an error description';
+
+      const nativeError = new Error('invalid_request');
+      providerMock.interactionFinished.mockRejectedValueOnce(nativeError);
+      // then
+      await expect(
+        // when
+        service.abortInteraction(reqMock, resMock, mockErr, mockErrDescription),
+      ).rejects.toThrow(OidcProviderRuntimeException);
+    });
+
+    it('Should have called this.provider.interactionFinished with parameters', async () => {
+      // given
+      const resMock = Symbol('mock result');
+      const reqMock = Symbol('mock request');
+      const mockErr = 'this is an error message';
+      const mockErrDescription = 'this is an error description';
+
+      // when
+      service.abortInteraction(reqMock, resMock, mockErr, mockErrDescription);
+
+      // then
+      expect(providerMock.interactionFinished).toHaveBeenCalledTimes(1);
+      expect(providerMock.interactionFinished).toHaveBeenCalledWith(
+        reqMock,
+        resMock,
+        {
+          error: mockErr,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_description: mockErrDescription,
+        },
       );
     });
   });

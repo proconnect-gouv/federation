@@ -1,4 +1,8 @@
-import { basicScenario, checkInformationsConsent } from './mire.utils';
+import {
+  basicScenario,
+  configureSpAndClickFc,
+  checkInformationsConsent,
+} from './mire.utils';
 
 /**
  * @todo #242 - remove and let basic scopes
@@ -10,7 +14,6 @@ describe('Acr', () => {
   it('should access to FI when acr from SP is unique and known', () => {
     basicScenario({
       idpId: 'fip1v2',
-      eidasLevel: 'eidas2',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -27,7 +30,6 @@ describe('Acr', () => {
   it('should access to FI when acr from SP has multiple values and all are known', () => {
     basicScenario({
       idpId: 'fip1v2',
-      eidasLevel: 'eidas2',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -44,7 +46,6 @@ describe('Acr', () => {
   it('should access to FI when acr from SP has multiple values and all are known but different order', () => {
     basicScenario({
       idpId: 'fip1v2',
-      eidasLevel: 'eidas2',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -58,14 +59,15 @@ describe('Acr', () => {
     checkInformationsConsent(scope);
   });
 
-  it('should access to FI when acr from SP is multiple values but only one is known', () => {
+  it('should access to FI when acr from SP has multiple values and one is known', () => {
     basicScenario({
       idpId: 'fip1v2',
-      eidasLevel: 'eidas2',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2 eidas666 eidas1',
+        acr_values: 'eidas2 eidas666 eidas42',
         scope,
       },
     });
@@ -78,7 +80,6 @@ describe('Acr', () => {
   it('should access to FI when acr from SP is unique and not known', () => {
     basicScenario({
       idpId: 'fip1v2',
-      eidasLevel: 'eidas3',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -92,27 +93,11 @@ describe('Acr', () => {
     checkInformationsConsent(scope);
   });
 
-  it('should access to FI when acr from SP has multiple values and one is known', () => {
-    basicScenario({
-      idpId: 'fip1v2',
-      eidasLevel: 'eidas2',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2 eidas666 eidas1',
-        scope,
-      },
-    });
-
-    // FC: Read confirmation message
-    cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
-    checkInformationsConsent(scope);
-  });
-
   it('should access to FI when acr from SP has multiple values and some are known', () => {
     basicScenario({
       idpId: 'fip1v2',
-      eidasLevel: 'eidas2',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -129,7 +114,6 @@ describe('Acr', () => {
   it('should access to FI when acr from SP has multiple values and none are known', () => {
     basicScenario({
       idpId: 'fip1v2',
-      eidasLevel: 'eidas3',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -143,15 +127,16 @@ describe('Acr', () => {
     checkInformationsConsent(scope);
   });
 
-  it('should complete cinematic even when acr is to low and FC should force it to max value', () => {
-    const FORCE_MAX_EIDAS = 'eidas3';
+  it('should complete cinematic even when acr is unknown and FC should force it to max value', () => {
+    // setup
+    const MAX_EIDAS_LEVEL = 'eidas3';
+
     basicScenario({
       idpId: 'fip1v2',
-      eidasLevel: FORCE_MAX_EIDAS,
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas1',
+        acr_values: 'eidas666',
         scope,
       },
     });
@@ -172,20 +157,44 @@ describe('Acr', () => {
       ),
     );
 
-    cy.get('#info-acr').contains(FORCE_MAX_EIDAS);
+    cy.get('#info-acr').contains(MAX_EIDAS_LEVEL);
   });
 
-  /** @todo #422 see: This section should be implemented in the IDP Mock instance (eidasLevel)
-  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/422
-  * it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
-  *   basicErrorScenario({
-  *     errorCode: 'test',
-  *     idpId: 'fip1v2',
-  *     eidasLevel: 'eidas1',
-  *   });
-  *
-  *   cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/verify`));
-  *   cy.hasError('Y020001');
-  * }); 
-  */
+  it('should reject when acr from SP is known but unauthorized ', () => {
+    configureSpAndClickFc({
+      idpId: 'fip1v2',
+      // Oidc naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas1',
+    });
+
+    // FC: Read confirmation message
+    cy.url()
+      .should('contains', `${Cypress.env(`SP1_ROOT_URL`)}/error?`)
+      .should('contains', 'error=invalid_acr')
+      .should(
+        'contains',
+        'error_description=acr_value%20is%20not%20valid%2C%20should%20be%20equal%20one%20of%20these%20values%2C%20expected%20eidas2%2Ceidas3%2C%20got%20eidas1',
+      );
+
+    cy.get('#error-title').contains('Error: invalid_acr');
+    cy.get('#error-description').contains(
+      'acr_value is not valid, should be equal one of these values, expected eidas2,eidas3, got eidas1',
+    );
+  });
+
+  /**
+   * @todo #422 see: This section should be implemented in the IDP Mock instance (eidasLevel)
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/422
+   * it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
+   *   basicErrorScenario({
+   *     errorCode: 'test',
+   *     idpId: 'fip1v2',
+   *     eidasLevel: 'eidas1',
+   *   });
+   *
+   *   cy.url().should('match', new RegExp(`\/interaction\/[^/]+\/verify`));
+   *   cy.hasError('Y020001');
+   * });
+   */
 });

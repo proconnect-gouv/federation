@@ -8,6 +8,8 @@ describe('Account', () => {
     basicErrorScenario({
       errorCode: 'E000001',
       idpId,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
     });
     cy.hasError('Y180001');
   });

@@ -11,7 +11,17 @@ import * as QueryString from 'querystring';
  *  - acr_values
  */
 export function basicSuccessScenario(params) {
-  const { idpId, userName, sp = 'SP1', method } = params;
+  /**
+   * @todo le choix a été fait de ne passer de valeur par défaut à ACR_VALUES
+   * Afin de ne pas complixifier la lecture des tests, éviter de faire de l'abstraction.
+   * La function basicSuccessScenario est assez complexe ainsi et sera certainement découpée
+   * en quelque chose de plus résilien lors de la refacto des tests E2E
+   * Logique de IF prévalant sur ces paramètre par défaut
+   *
+   * @author Matthieu Lassalvy
+   * @date 03 Juin 2021
+   */
+  const { idpId, userName, sp = 'SP1', method, acr_values: acrValues } = params;
   const password = params.password || '123';
 
   const serviceProvider = {
@@ -25,6 +35,10 @@ export function basicSuccessScenario(params) {
   cy.get(Cypress.env(`${sp}_ID`)).click();
 
   cy.clearBusinessLog();
+
+  if (acrValues) {
+    cy.get('#acrSelector').select(acrValues);
+  }
 
   if (method === 'POST') {
     cy.get('#post-authorize').click();
@@ -48,6 +62,7 @@ export function basicSuccessScenario(params) {
     idpName: null,
     idpAcr: null,
   });
+
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_SHOWED_IDP_CHOICE',

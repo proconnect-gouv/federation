@@ -90,6 +90,7 @@ describe('CoreFcpController', () => {
     getClaimsForInteraction: jest.fn(),
     getClaimsLabelsForInteraction: jest.fn(),
     isConsentRequired: jest.fn(),
+    rejectInvalidAcr: jest.fn(),
   };
 
   const scopesMock = ['toto', 'titi'];
@@ -122,7 +123,9 @@ describe('CoreFcpController', () => {
 
   const appConfigMock = {
     urlPrefix: '/api/v2',
+    configuration: { acrValues: ['eidas2', 'eidas3'] },
   };
+
   const configServiceMock = {
     get: jest.fn(),
   };
@@ -220,6 +223,7 @@ describe('CoreFcpController', () => {
       interactionDetailsResolved,
     );
     coreServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
+    coreServiceMock.rejectInvalidAcr.mockResolvedValue(false);
     serviceProviderServiceMock.getById.mockResolvedValue(serviceProviderMock);
     sessionServiceMock.get.mockResolvedValueOnce(sessionDataMock);
     sessionServiceMock.set.mockResolvedValueOnce(undefined);
@@ -255,6 +259,33 @@ describe('CoreFcpController', () => {
   });
 
   describe('getInteraction()', () => {
+    /*
+     * @Todo #486 rework test missing assertion or not complete ones
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/486
+     */
+    it('should return nothing, stop interaction, when acr values are not matching', async () => {
+      // Given
+      const req = {
+        fc: { interactionId: interactionIdMock },
+      };
+      const res = {};
+      oidcProviderServiceMock.getInteraction.mockResolvedValue({
+        uid: 'uid',
+        prompt: 'prompt',
+        params: 'params',
+      });
+      coreServiceMock.rejectInvalidAcr.mockResolvedValue(true);
+      // When
+      const result = await coreController.getInteraction(
+        req,
+        res,
+        params,
+        sessionServiceMock,
+      );
+      // Then
+      expect(result).toBeUndefined();
+    });
+
     /*
      * @Todo #486 rework test missing assertion or not complete ones
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/486
