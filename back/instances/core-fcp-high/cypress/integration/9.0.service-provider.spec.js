@@ -35,15 +35,13 @@ describe('Service Provider', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: 'my-service-provider-only-openid-birthdate-scopes',
     });
+
     cy.visit(url, {
       failOnStatusCode: false,
     });
 
     cy.url()
-      .should(
-        'contains',
-        `${Cypress.env(`SP1_ROOT_URL`)}/oidc-callback/envIssuer`,
-      )
+      .should('contains', `${Cypress.env(`SP1_ROOT_URL`)}/error?`)
       .should('contains', 'error=invalid_scope')
       .should(
         'contains',

@@ -1,4 +1,8 @@
-import { basicSuccessScenario, basicScenario, checkInformationsServiceProvider } from './mire.utils';
+import {
+  basicSuccessScenario,
+  basicScenario,
+  checkInformationsServiceProvider,
+} from './mire.utils';
 
 describe('No SSO', () => {
   // Given
@@ -8,7 +12,8 @@ describe('No SSO', () => {
   const loginInfo = {
     userName: 'test',
     password: '123',
-    eidasLevel: 1,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    acr_values: 'eidas2',
     idpId,
   };
 
@@ -20,6 +25,7 @@ describe('No SSO', () => {
     birthplace: '75107',
     birthcountry: '99100',
   };
+
   it('should require full cinematic to login another SP', () => {
     // When
     //   ...Log into SP "A"
@@ -36,8 +42,8 @@ describe('No SSO', () => {
         client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
-        scope: 'openid identite_pivot'
-      }
+        scope: 'openid identite_pivot',
+      },
     });
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
     cy.get('#consent').click();
@@ -45,6 +51,7 @@ describe('No SSO', () => {
     // Then
     checkInformationsServiceProvider(userInfos);
   });
+
   it('should run the whole cinematic all the times even for the same SP', () => {
     // When
     //   ...Log into SP

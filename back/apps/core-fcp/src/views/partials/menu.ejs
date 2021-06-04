@@ -6,14 +6,14 @@
               <img id="fc-plus-logo" src="/img/logo-fc-plus.svg" alt="Logo FC Plus">
         </div>
 
-        <%if(locals.params){%>  
-         <a class="previous-link-container" href="<%= locals.params.redirect_uri %>?error=access_denied&error_decription=User%20auth%20aborted">
+        <%if(locals.params){%>
+         <a class="previous-link-container" href="<%= locals.params.redirect_uri %>?error=access_denied&error_description=User%20auth%20aborted">
           <div class="previous-link">
             <div class="previous-link-icon"></div>
             <span>Revenir sur <%= locals.spName %></span>
           </div>
         </a>
-        <%}%> 
+        <%}%>
     </div>
   </nav>
 </header>
