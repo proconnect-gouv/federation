@@ -10,6 +10,8 @@ describe('Session', () => {
 
   it('should trigger error Y190001 (no session found)', () => {
     basicErrorScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       errorCode: 'test',
       idpId,
     });

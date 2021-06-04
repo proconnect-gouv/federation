@@ -5,7 +5,6 @@ import {
   OidcProviderConfig,
   OidcCtx,
   OidcProviderRoutes,
-  Configuration,
   OidcProviderAuthorizationEvent,
   OidcProviderTokenEvent,
   OidcProviderUserinfoEvent,
@@ -66,13 +65,11 @@ export class CoreService {
   }
 
   private registerMiddlewares() {
-    const { forcedPrompt } = this.config.get<OidcProviderConfig>(
-      'OidcProvider',
-    );
-
-    const { acrValues } = this.config.get<Configuration>(
-      'OidcProvider.configuration',
-    );
+    const {
+      forcedPrompt,
+      knownAcrValues,
+      defaultAcrValue,
+    } = this.config.get<OidcProviderConfig>('OidcProvider');
 
     /** Force prompt @see overrideAuthorizePrompt header */
     this.oidcProvider.registerMiddleware(
@@ -85,7 +82,11 @@ export class CoreService {
     this.oidcProvider.registerMiddleware(
       OidcProviderMiddlewareStep.BEFORE,
       OidcProviderRoutes.AUTHORIZATION,
-      this.overrideAuthorizeAcrValues.bind(this, Array.from(acrValues)),
+      this.overrideAuthorizeAcrValues.bind(
+        this,
+        knownAcrValues,
+        defaultAcrValue,
+      ),
     );
 
     this.oidcProvider.registerMiddleware(
@@ -217,15 +218,19 @@ export class CoreService {
     return ctx.req.headers['x-forwarded-for'];
   }
 
-  private overrideAuthorizeAcrValues(allowed: string[], ctx: OidcCtx): void {
-    this.logger.trace({ allowed, ctx });
+  private overrideAuthorizeAcrValues(
+    knownAcrValues: string[],
+    defaultAcrValue: string,
+    ctx: OidcCtx,
+  ): void {
+    this.logger.trace({ knownAcrValues, ctx });
 
     if (['POST', 'GET'].includes(ctx.method)) {
-      const data = (ctx.method === 'POST'
-        ? ctx.req.body
-        : ctx.query) as AcrValues;
-      const acrValues = data.acr_values.split(/[ ]+/);
-      data.acr_values = pickAcr(allowed, acrValues);
+      const isPostMethod = ctx.method === 'POST';
+      const data = isPostMethod ? ctx.req.body : ctx.query;
+      const { acr_values: dataAcrValues } = data as AcrValues;
+      const acrValues = dataAcrValues.split(/[ ]+/);
+      data.acr_values = pickAcr(knownAcrValues, acrValues, defaultAcrValue);
     } else {
       this.logger.warn(
         `Unsupported method "${ctx.method} on /authorize endpoint". This should not happen`,

@@ -1,66 +1,67 @@
-import { pickAcr, DEFAULT_EIDAS } from './acr.transform';
+import { pickAcr } from './acr.transform';
 
 describe('eIDAS transform', () => {
+  const defaultValue = 'default_eidas_value';
   const resultMock = 'eidas2';
   const maximumValueMock = 'eidas3';
   const allowedMock = [resultMock, maximumValueMock];
 
   describe('pickAcr', () => {
     it('should return the minimum eIDAS value if value and config have common value', () => {
-      // setup
+      // given
       const value = [resultMock];
-      // action
-      const result = pickAcr(allowedMock, value);
-      // assert
+      // when
+      const result = pickAcr(allowedMock, value, defaultValue);
+      // then
       expect(result).toStrictEqual(resultMock);
     });
 
     it('should return the minimum eIDAS value if values and config have common values', () => {
-      // setup
+      // given
       const value = ['eidas2', 'eidas3'];
-      // action
-      const result = pickAcr(allowedMock, value);
-      // assert
+      // when
+      const result = pickAcr(allowedMock, value, defaultValue);
+      // then
       expect(result).toStrictEqual(resultMock);
     });
 
     it('should return the minimum eIDAS value if values and config have some common values', () => {
-      // setup
+      // given
       const value = ['eidas2', 'eidas3', 'Harry'];
-      // action
-      const result = pickAcr(allowedMock, value);
-      // assert
+      // when
+      const result = pickAcr(allowedMock, value, defaultValue);
+      // then
       expect(result).toStrictEqual(resultMock);
     });
 
     it('should return the maximum eIDAS value if values and config have not common values', () => {
-      // setup
+      // given
       const value = ['Harry', 'Hermione', 'Ron'];
-      // action
-      const result = pickAcr(allowedMock, value);
-      // assert
+      // when
+      const result = pickAcr(allowedMock, value, defaultValue);
+      // then
       expect(result).toStrictEqual(maximumValueMock);
     });
 
     it('should throw an error if value is not an array', () => {
-      // setup
+      // given
       const value = 'eidas1';
 
       expect(
         () =>
-          // action
-          pickAcr(allowedMock, (value as unknown) as string[]),
-        // assert
-      ).toThrowError('values.map is not a function');
+          // when
+          pickAcr(allowedMock, (value as unknown) as string[], defaultValue),
+        // then
+      ).toThrowError('values.filter is not a function');
     });
 
     it('should return the default eIDAS value if values are wrong and config is empty', () => {
-      // setup
+      // given
       const value = ['Harry', 'Hermione', 'Ron'];
-      // action
-      const result = pickAcr([], value);
-      // assert
-      expect(result).toStrictEqual(DEFAULT_EIDAS);
+      // when
+      const result = pickAcr([], value, defaultValue);
+      // then
+      expect(result).toStrictEqual(defaultValue);
     });
   });
 });

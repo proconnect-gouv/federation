@@ -173,6 +173,32 @@ export class OidcProviderService {
   }
 
   /**
+   * @todo Expliciter par une interface le retour d'appel à OidcProvider.interactionFinished
+   *
+   * @see #533
+   * https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/553
+   */
+  async abortInteraction(
+    req: any,
+    res: any,
+    error: string,
+    errorDescription: string,
+  ): Promise<any> {
+    try {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const result = { error, error_description: errorDescription };
+      const finished = await this.provider.interactionFinished(
+        req,
+        res,
+        result,
+      );
+      return finished;
+    } catch (error) {
+      throw new OidcProviderRuntimeException(error);
+    }
+  }
+
+  /**
    * Wrap `oidc-provider` method to
    *  - lower coupling in other modules
    *  - handle exceptions
