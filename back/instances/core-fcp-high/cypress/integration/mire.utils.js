@@ -14,7 +14,8 @@ import * as QueryString from 'querystring';
 export function configureSpAndClickFc({
   acr_values: acrValues,
   sp = 'SP1',
-  method,
+  method = 'GET',
+  scope,
 }) {
   // FS choice
   cy.visit(`${Cypress.env('ALL_APPS_LISTED')}`);
@@ -23,6 +24,10 @@ export function configureSpAndClickFc({
 
   if (acrValues) {
     cy.get('#acrSelector').select(acrValues);
+  }
+
+  if (scope) {
+    cy.get(`form[id="form${method}"] input[name="scope"]`).clear().type(scope);
   }
 
   if (method === 'POST') {
@@ -397,4 +402,26 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
  */
 export function getIdentityProvider(idpId = 'fip1v2') {
   return Cypress.env('IDP_AVAILABLES').find(({ ID }) => ID === idpId);
+}
+
+export function logout() {
+  const redirectedUrls = [];
+
+  cy.on('url:changed', (url) => {
+    redirectedUrls.push(url);
+  });
+
+  cy.get('a.nav-link.nav-logout').click();
+
+  cy.then(() => {
+    /**
+     * Since "url:changed" capture all redirected URLs and we want to check only one,
+     * we hard set the place in the array.
+     * If fc+ envolves, you may need to update the index !
+     */
+    const endSessionUrlExpectedRedirectedUrl = redirectedUrls[6];
+    expect(endSessionUrlExpectedRedirectedUrl).contain('/session/end');
+    expect(endSessionUrlExpectedRedirectedUrl).contain('id_token_hint');
+    expect(endSessionUrlExpectedRedirectedUrl).contain('state');
+  });
 }

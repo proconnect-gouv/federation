@@ -71,11 +71,26 @@ describe('OidcClientConfigService', () => {
   });
 
   describe('get', () => {
+    it('should call IdentityProviderServiceMock.getList() with refresh parameter', async () => {
+      // When
+      await service.get(true);
+      // Then
+      expect(IdentityProviderServiceMock.getList).toHaveBeenCalledTimes(1);
+      expect(IdentityProviderServiceMock.getList).toHaveBeenCalledWith(true);
+    });
+
+    it('should call configServiceMock.get() with "OidcClient"', async () => {
+      // When
+      await service.get();
+      // Then
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('OidcClient');
+    });
+
     it('should return data from identity.getList', async () => {
       // When
       const result = await service.get();
       // Then
-      expect(IdentityProviderServiceMock.getList).toHaveBeenCalled();
       expect(result).toHaveProperty('providers');
       expect(result.providers).toBe(
         'IdentityProviderServiceMock Resolve Value',

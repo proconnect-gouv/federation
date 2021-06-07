@@ -23,4 +23,5 @@ export enum ErrorCode {
   MISSING_CODE = 25,
   TOKEN_FAILED = 26,
   USERINFOS_FAILED = 27,
+  GET_END_SESSION_URL = 28,
 }

@@ -359,7 +359,8 @@ const fip = {
     name: "fip13v2",
     active: true,
     display: true,
-    title: "Identity Provider [fip13v2] - eIDAS élevé - crypted (ECDH-ES + A256GCM) - signed (ES256)",
+    title:
+      "Identity Provider [fip13v2] - eIDAS élevé - crypted (ECDH-ES + A256GCM) - signed (ES256)",
     image: "fi-mock-eleve.svg",
     imageFocus: "fi-mock-eleve.svg",
     alt: "impots",
@@ -375,7 +376,8 @@ const fip = {
     authzURL: "https://fip13v2.docker.dev-franceconnect.fr/authorize",
     tokenURL: "https://fip13v2.docker.dev-franceconnect.fr/token",
     userInfoURL: "https://fip13v2.docker.dev-franceconnect.fr/userinfo",
-    endSessionURL: "https://fip13v2.docker.dev-franceconnect.fr/user/session/end",
+    endSessionURL:
+      "https://fip13v2.docker.dev-franceconnect.fr/user/session/end",
     statusURL: "https://fip13v2.docker.dev-franceconnect.fr/",
     jwksURL: "https://fip13v2.docker.dev-franceconnect.fr/jwks",
     discoveryUrl: "",
@@ -409,7 +411,8 @@ const fip = {
     name: "fip14v2",
     active: true,
     display: true,
-    title: "Identity Provider [fip14v2] - eIDAS élevé - crypted (RSA-OAEP + A256GCM) - signed (RS256)",
+    title:
+      "Identity Provider [fip14v2] - eIDAS élevé - crypted (RSA-OAEP + A256GCM) - signed (RS256)",
     image: "fi-mock-eleve.svg",
     imageFocus: "fi-mock-eleve.svg",
     alt: "impots",
@@ -426,7 +429,8 @@ const fip = {
     authzURL: "https://fip14v2.docker.dev-franceconnect.fr/authorize",
     tokenURL: "https://fip14v2.docker.dev-franceconnect.fr/token",
     userInfoURL: "https://fip14v2.docker.dev-franceconnect.fr/userinfo",
-    endSessionURL: "https://fip14v2.docker.dev-franceconnect.fr/user/session/end",
+    endSessionURL:
+      "https://fip14v2.docker.dev-franceconnect.fr/user/session/end",
     jwksURL: "https://fip14v2.docker.dev-franceconnect.fr/jwks",
     discoveryUrl: "",
     discovery: false,
@@ -459,7 +463,8 @@ const fip = {
     name: "fip15v2",
     active: true,
     display: true,
-    title: "Identity Provider [fip15v2] - eIDAS substantiel - crypted (ECDH-ES + A256GCM) - signed (ES256)",
+    title:
+      "Identity Provider [fip15v2] - eIDAS substantiel - crypted (ECDH-ES + A256GCM) - signed (ES256)",
     image: "fi-mock-substantiel.svg",
     imageFocus: "fi-mock-substantiel.svg",
     alt: "impots",
@@ -476,7 +481,8 @@ const fip = {
     authzURL: "https://fip15v2.docker.dev-franceconnect.fr/authorize",
     tokenURL: "https://fip15v2.docker.dev-franceconnect.fr/token",
     userInfoURL: "https://fip15v2.docker.dev-franceconnect.fr/userinfo",
-    endSessionURL: "https://fip15v2.docker.dev-franceconnect.fr/user/session/end",
+    endSessionURL:
+      "https://fip15v2.docker.dev-franceconnect.fr/user/session/end",
     jwksURL: "https://fip15v2.docker.dev-franceconnect.fr/jwks",
     discoveryUrl: "",
     discovery: false,
@@ -511,7 +517,8 @@ const fip = {
     name: "fip16v2",
     active: true,
     display: true,
-    title: "Identity Provider [fip16v2] - eIDAS substantiel - crypted (RSA-OAEP + A256GCM) - signed (RS256)",
+    title:
+      "Identity Provider [fip16v2] - eIDAS substantiel - crypted (RSA-OAEP + A256GCM) - signed (RS256)",
     image: "fi-mock-substantiel.svg",
     imageFocus: "fi-mock-substantiel.svg",
     alt: "impots",
@@ -528,7 +535,8 @@ const fip = {
     authzURL: "https://fip16v2.docker.dev-franceconnect.fr/authorize",
     tokenURL: "https://fip16v2.docker.dev-franceconnect.fr/token",
     userInfoURL: "https://fip16v2.docker.dev-franceconnect.fr/userinfo",
-    endSessionURL: "https://fip16v2.docker.dev-franceconnect.fr/user/session/end",
+    endSessionURL:
+      "https://fip16v2.docker.dev-franceconnect.fr/user/session/end",
     jwksURL: "https://fip16v2.docker.dev-franceconnect.fr/jwks",
     discoveryUrl: "",
     discovery: false,
@@ -561,7 +569,8 @@ const fip = {
     name: "fip17v2",
     active: true,
     display: true,
-    title: "Identity Provider [fip17v2] - eIDAS substantiel - crypted (none) - signed (ES256)",
+    title:
+      "Identity Provider [fip17v2] - eIDAS substantiel - crypted (none) - signed (ES256)",
     image: "fi-mock-substantiel.svg",
     imageFocus: "fi-mock-substantiel.svg",
     alt: "impots",
@@ -578,7 +587,8 @@ const fip = {
     tokenURL: "https://fip17v2.docker.dev-franceconnect.fr/token",
     userInfoURL: "https://fip17v2.docker.dev-franceconnect.fr/userinfo",
     statusURL: "https://fip17v2.docker.dev-franceconnect.fr/",
-    endSessionURL: "https://fip17v2.docker.dev-franceconnect.fr/user/session/end",
+    endSessionURL:
+      "https://fip17v2.docker.dev-franceconnect.fr/user/session/end",
     jwksURL: "https://fip17v2.docker.dev-franceconnect.fr/jwks",
     discoveryUrl: "",
     discovery: false,
@@ -611,7 +621,8 @@ const fip = {
     name: "fip18v2",
     active: true,
     display: true,
-    title: "Identity Provider [fip18v2] - eIDAS faible - crypted (none) - signed (ES256)",
+    title:
+      "Identity Provider [fip18v2] - eIDAS faible - crypted (none) - signed (ES256)",
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
@@ -628,7 +639,8 @@ const fip = {
     authzURL: "https://fip18v2.docker.dev-franceconnect.fr/authorize",
     tokenURL: "https://fip18v2.docker.dev-franceconnect.fr/token",
     userInfoURL: "https://fip18v2.docker.dev-franceconnect.fr/userinfo",
-    endSessionURL: "https://fip18v2.docker.dev-franceconnect.fr/user/session/end",
+    endSessionURL:
+      "https://fip18v2.docker.dev-franceconnect.fr/user/session/end",
     jwksURL: "https://fip18v2.docker.dev-franceconnect.fr/jwks",
     discoveryUrl: "",
     discovery: false,
@@ -662,7 +674,8 @@ const fip = {
     name: "fip19v2",
     active: true,
     display: true,
-    title: "Identity Provider [fip19v2] - eIDAS faible - crypted (none) - signed (RS256)",
+    title:
+      "Identity Provider [fip19v2] - eIDAS faible - crypted (none) - signed (RS256)",
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
@@ -679,7 +692,8 @@ const fip = {
     authzURL: "https://fip19v2.docker.dev-franceconnect.fr/authorize",
     tokenURL: "https://fip19v2.docker.dev-franceconnect.fr/token",
     userInfoURL: "https://fip19v2.docker.dev-franceconnect.fr/userinfo",
-    endSessionURL: "https://fip19v2.docker.dev-franceconnect.fr/user/session/end",
+    endSessionURL:
+      "https://fip19v2.docker.dev-franceconnect.fr/user/session/end",
     jwksURL: "https://fip19v2.docker.dev-franceconnect.fr/jwks",
     discoveryUrl: "",
     discovery: false,
@@ -712,7 +726,8 @@ const fip = {
     name: "fip20v2",
     active: true,
     display: true,
-    title: "Identity Provider [fip20v2] - eIDAS faible - crypted (none) - signed (HS256)",
+    title:
+      "Identity Provider [fip20v2] - eIDAS faible - crypted (none) - signed (HS256)",
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
@@ -729,7 +744,8 @@ const fip = {
     authzURL: "https://fip20v2.docker.dev-franceconnect.fr/authorize",
     tokenURL: "https://fip20v2.docker.dev-franceconnect.fr/token",
     userInfoURL: "https://fip20v2.docker.dev-franceconnect.fr/userinfo",
-    endSessionURL: "https://fip20v2.docker.dev-franceconnect.fr/user/session/end",
+    endSessionURL:
+      "https://fip20v2.docker.dev-franceconnect.fr/user/session/end",
     jwksURL: "https://fip20v2.docker.dev-franceconnect.fr/jwks",
     discoveryUrl: "",
     discovery: false,
@@ -748,8 +764,12 @@ const fip = {
     userinfo_signed_response_alg: "HS256",
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
-    redirect_uris: ["https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip20v2",],
-    post_logout_redirect_uris: ["https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",],
+    redirect_uris: [
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip20v2",
+    ],
+    post_logout_redirect_uris: [
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+    ],
   },
 
   // -- FIPEIDAS - FIPEIDASV2 - Activated
@@ -880,7 +900,7 @@ const fsp = {
     trustedIdentity: false,
   },
 
-  // -- FSP - FSP2v2 - Activated
+  // -- FSP - FSP2v2 - Activated - no post-logout-redirect-uri
   FSP2V2: {
     name: "FSP - FSP2v2",
     title: "FSP - FSP2v2 Title",
@@ -888,9 +908,7 @@ const fsp = {
     redirect_uris: [
       "https://fsp2v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
     ],
-    post_logout_redirect_uris: [
-      "https://fsp2v2.docker.dev-franceconnect.fr/logout-callback",
-    ],
+    post_logout_redirect_uris: [],
     client_secret:
       "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
     key: "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
@@ -927,9 +945,7 @@ const fsp = {
     jwks_uri:
       "https://fsp2v2.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
-    idpFilterList: [
-      "fip7v2"
-    ],
+    idpFilterList: ["fip7v2"],
     eidas: 2,
     identityConsent: false,
     trustedIdentity: false,
@@ -984,12 +1000,7 @@ const fsp = {
     jwks_uri:
       "https://fsp3v2.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
-    idpFilterList: [
-      "fip1v2",
-      "fip2v2",
-      "eidas-bridge",
-      "fip6v2"
-    ],
+    idpFilterList: ["fip1v2", "fip2v2", "eidas-bridge", "fip6v2"],
     identityConsent: false,
   },
 
@@ -1097,14 +1108,14 @@ const fsp = {
       "fip18v2",
       "fip19v2",
       "fip20v2",
-      "idp-test-update"
+      "idp-test-update",
     ],
     identityConsent: true,
     eidas: 2,
     trustedIdentity: false,
   },
 
-  // -- FSP - FSP6v2 - private FSP and identity consent not required 
+  // -- FSP - FSP6v2 - private FSP and identity consent not required
   FSP6V2: {
     name: "FSP - FSP6v2",
     title: "FSP - FSP6v2 title",
@@ -1170,7 +1181,7 @@ const fsp = {
       "fip18v2",
       "fip19v2",
       "fip20v2",
-      "idp-test-update"
+      "idp-test-update",
     ],
     identityConsent: false,
     eidas: 2,
@@ -1222,10 +1233,7 @@ const fsp = {
     jwks_uri:
       "https://eidas-bridge.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
-    idpFilterList: [
-      "fip6v2",
-      "fip7v2"
-    ],
+    idpFilterList: ["fip6v2", "fip7v2"],
     identityConsent: false,
   },
 };
@@ -1241,8 +1249,7 @@ const accounts = {
     active: false,
     servicesProvidersFederationKeys: [
       {
-        sub:
-          "4d46585fce406a96d97cbdc7a3983aa286c85042b3276e3c09bf848c3cfc916dv1",
+        sub: "4d46585fce406a96d97cbdc7a3983aa286c85042b3276e3c09bf848c3cfc916dv1",
         clientId:
           "a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc",
       },
@@ -1270,7 +1277,6 @@ Object.values(fsp).forEach((fs) => {
   print(`${fs.name} > Initializing provider: ${fs.name}`);
   db.client.update({ name: fs.name }, fs, { upsert: true });
 });
-
 
 // -- FIs ----------
 
