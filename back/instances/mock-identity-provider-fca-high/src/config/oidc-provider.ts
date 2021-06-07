@@ -1,7 +1,6 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { parseBoolean } from '@fc/common';
 import {
   OidcProviderConfig,
   OidcProviderRoutes,
@@ -70,6 +69,7 @@ export default {
       jwtUserinfo: { enabled: true },
       backchannelLogout: { enabled: true },
       revocation: { enabled: true },
+      rpInitiatedLogout: { enabled: true },
     },
     acceptQueryParamAccessTokens: true,
     ttl: {
