@@ -60,7 +60,7 @@
 
       <section class="connect bg-light">
         <h2>Connectez-vous via FranceConnect (GET sur authorize)</h2>
-        <form action="/redirect-to-idp" method="POST">
+        <form id="formGET" action="/redirect-to-idp" method="POST">
           <input type="text" name="scope" value="" />
           <input type="text" name="acr_values" value="" />
           <input type="text" name="claims" value="" />
@@ -85,7 +85,7 @@
 
       <section class="connect bg-light">
         <h2>Connectez-vous via FranceConnect (POST sur authorize)</h2>
-        <form action="<%=locals.params.authorization_endpoint;%>" method="POST">
+        <form id="formPOST" action="<%=locals.params.authorization_endpoint;%>" method="POST">
           <input type="hidden" name="client_id" value="<%=locals.params.client_id;%>" />
           <input type="hidden" name="response_type" value="code" />
           <input type="hidden" name="redirect_uri" value="<%=locals.params.redirect_uri;%>" />

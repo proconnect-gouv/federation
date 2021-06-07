@@ -11,3 +11,4 @@ export * from './oidc-client-invalid-state.exception';
 export * from './oidc-client-runtime.exception';
 export * from './oidc-client-token-failed.exception';
 export * from './oidc-client-userinfos-failed.exception';
+export * from './oidc-client-get-end-session-url.exception';

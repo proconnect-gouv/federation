@@ -266,3 +266,25 @@ export function getServiceProvider(sp = 'fsa1v2') {
 export function getIdentityProvider(idp = 'fia1v2') {
   return Cypress.env('IDP_AVAILABLES').find(({ ID }) => ID === idp);
 }
+
+export function logout() {
+  const redirectedUrls = [];
+
+  cy.on('url:changed', (url) => {
+    redirectedUrls.push(url);
+  });
+
+  cy.get('a.nav-link.nav-logout').click();
+
+  cy.then(() => {
+    /**
+     * Since "url:changed" capture all redirected URLs and we want to check only one,
+     * we hard set the place in the array.
+     * If ac envolves, you may need to update the index !
+     */
+    const endSessionUrlExpectedRedirectedUrl = redirectedUrls[4];
+    expect(endSessionUrlExpectedRedirectedUrl).contain('/session/end');
+    expect(endSessionUrlExpectedRedirectedUrl).contain('id_token_hint');
+    expect(endSessionUrlExpectedRedirectedUrl).contain('state');
+  });
+}

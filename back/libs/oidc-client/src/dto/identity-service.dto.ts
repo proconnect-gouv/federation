@@ -1,6 +1,7 @@
 import {
   IsAlphanumeric,
   IsAscii,
+  IsJWT,
   IsOptional,
   IsString,
   MinLength,
@@ -12,6 +13,11 @@ export class TokenResultDto implements TokenResults {
   @MinLength(1)
   @IsAscii()
   readonly accessToken: string;
+
+  @IsString()
+  @MinLength(1)
+  @IsJWT()
+  readonly idToken: string;
 
   @IsString()
   @IsAlphanumeric()

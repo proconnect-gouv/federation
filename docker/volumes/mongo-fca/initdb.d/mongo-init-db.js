@@ -304,7 +304,7 @@ const fsa = {
     identityConsent: false,
   },
 
-  // -- FSA - FSA2v2 - Activated - ES256 - encrypted response
+  // -- FSA - FSA2v2 - Activated - ES256 - encrypted response - No post-logout-redirect-uri
   FSA2V2: {
     name: "FSA - FSA2v2",
     title: "FSA - FSA2v2 Title",
@@ -312,9 +312,7 @@ const fsa = {
     redirect_uris: [
       "https://fsa2v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
     ],
-    post_logout_redirect_uris: [
-      "https://fsa2v2.docker.dev-franceconnect.fr/logout-callback",
-    ],
+    post_logout_redirect_uris: [],
     client_secret:
       "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
     key: "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
@@ -468,8 +466,7 @@ const accounts = {
     active: false,
     servicesProvidersFederationKeys: [
       {
-        sub:
-          "542c3ed7454708ad75be62808c8a697a09668d5273be312f930d33817ea039e6v1",
+        sub: "542c3ed7454708ad75be62808c8a697a09668d5273be312f930d33817ea039e6v1",
         clientId:
           "a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc",
       },
@@ -512,8 +509,7 @@ const ministries = [
     id: "mock-ministere-economie-no-fis-sort-3",
     acronym: "MO3",
     sort: 3,
-    name:
-      "MOCK - Ministére de l'économie des Finances et de la Relance - NO FIS - SORT 3",
+    name: "MOCK - Ministére de l'économie des Finances et de la Relance - NO FIS - SORT 3",
     identityProviders: [],
     updatedAt: new Date("2020-12-09T12:00:00.000Z"),
     createdAt: new Date("2020-12-09T12:00:00.000Z"),
@@ -632,8 +628,7 @@ const ministries = [
     id: "MCTRCT",
     acronym: "",
     sort: 14,
-    name:
-      "Ministère de la Cohésion des territoires et des Relationsavec les collectivités territoriales",
+    name: "Ministère de la Cohésion des territoires et des Relationsavec les collectivités territoriales",
     identityProviders: [],
     updatedAt: new Date("2021-01-12T12:00:00.000Z"),
     createdAt: new Date("2021-01-12T12:00:00.000Z"),
@@ -683,8 +678,7 @@ const ministries = [
     id: "MESRI",
     acronym: "MESRI",
     sort: 19,
-    name:
-      "Ministère de l’Enseignement supérieur, de la Recherche et de l'innovation",
+    name: "Ministère de l’Enseignement supérieur, de la Recherche et de l'innovation",
     identityProviders: [],
     updatedAt: new Date("2021-01-12T12:00:00.000Z"),
     createdAt: new Date("2021-01-12T12:00:00.000Z"),
