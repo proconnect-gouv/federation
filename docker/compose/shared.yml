@@ -48,6 +48,14 @@ services:
           - fip2v2.docker.dev-franceconnect.fr
           - fip6v2.docker.dev-franceconnect.fr
           - fip7v2.docker.dev-franceconnect.fr
+          - fip13v2.docker.dev-franceconnect.fr
+          - fip14v2.docker.dev-franceconnect.fr
+          - fip15v2.docker.dev-franceconnect.fr
+          - fip16v2.docker.dev-franceconnect.fr
+          - fip17v2.docker.dev-franceconnect.fr
+          - fip18v2.docker.dev-franceconnect.fr
+          - fip19v2.docker.dev-franceconnect.fr
+          - fip20v2.docker.dev-franceconnect.fr
           - fca.docker.dev-franceconnect.fr
           - fca-front.docker.dev-franceconnect.fr
           - fsa1v2.docker.dev-franceconnect.fr

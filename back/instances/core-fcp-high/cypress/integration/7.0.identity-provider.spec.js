@@ -1,6 +1,6 @@
 import { getAuthorizeUrl } from './mire.utils';
 
-describe('Idp activation & visibility', () => {
+describe('7.0 - Idp activation & visibility', () => {
   // -- replace by either `fip` or `fia`
   const idpId = `${Cypress.env('IDP_NAME')}`;
 

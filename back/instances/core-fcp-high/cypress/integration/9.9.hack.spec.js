@@ -1,6 +1,6 @@
 import { basicErrorScenario } from './mire.utils';
 
-describe('Interaction steps discarding', () => {
+describe('9.9 - Interaction steps discarding', () => {
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 

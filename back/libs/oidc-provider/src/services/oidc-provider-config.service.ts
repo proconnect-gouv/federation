@@ -31,7 +31,9 @@ export class OidcProviderConfigService {
     private readonly errorService: OidcProviderErrorService,
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
-  ) {}
+  ) {
+    this.logger.setContext(this.constructor.name);
+  }
 
   overrideConfiguration(configuration: object, provider: Provider): void {
     /**
@@ -96,7 +98,7 @@ export class OidcProviderConfigService {
     /**
      * Build final configuration object
      */
-    return {
+    const oidcProviderConfig: OidcProviderConfig = {
       forcedPrompt,
       prefix,
       issuer,
@@ -116,6 +118,10 @@ export class OidcProviderConfigService {
         interactions: { url: this.url.bind(this, prefix) },
       },
     };
+
+    this.logger.trace({ oidcProviderConfig });
+
+    return oidcProviderConfig;
   }
 
   /**
@@ -125,7 +131,7 @@ export class OidcProviderConfigService {
    * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#accounts
    */
   private async findAccount(ctx: any, interactionId: string) {
-    this.logger.debug('OidcProviderConfigService.findAccount()');
+    this.logger.debug('OidcProviderConfigService.findAccount');
 
     try {
       const sessionId: string = await this.sessionService.getAlias(
@@ -139,12 +145,16 @@ export class OidcProviderConfigService {
         boundSessionContext,
       );
 
-      return {
+      const account = {
         accountId: interactionId,
         async claims() {
           return spIdentity;
         },
       };
+
+      this.logger.trace({ account });
+
+      return account;
     } catch (error) {
       // Hacky throw from oidc-provider
       this.errorService.throwError(ctx, error);

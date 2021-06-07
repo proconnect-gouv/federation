@@ -1,6 +1,6 @@
 import { basicErrorScenario } from './mire.utils';
 
-describe('Account', () => {
+describe('3.0 - Account', () => {
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
