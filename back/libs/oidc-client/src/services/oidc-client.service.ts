@@ -73,14 +73,16 @@ export class OidcClientService {
     }
 
     this.logger.trace({
-      context,
-      providerUid,
-      idpState,
-      idpNonce,
-      acr,
-      amr,
-      accessToken,
-      tokenResult,
+      search: {
+        context,
+        providerUid,
+        idpState,
+        idpNonce,
+        acr,
+        amr,
+        accessToken,
+        tokenResult,
+      },
     });
 
     return tokenResult;
@@ -99,10 +101,12 @@ export class OidcClientService {
     }
 
     this.logger.trace({
-      context,
-      providerUid,
-      accessToken,
-      identity,
+      search: {
+        context,
+        providerUid,
+        accessToken,
+        identity,
+      },
     });
 
     this.tracking.track(OidcClientUserinfoEvent, context);

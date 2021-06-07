@@ -1,6 +1,6 @@
 import { getAuthorizeUrl, checkInStringifiedJson } from './mire.utils';
 
-describe('8.0.1 Scope', () => {
+describe('8.0.1 - Scope', () => {
   /**
    * @TODO #197 Implement tests once feature is implemented in `oidc-client`
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/197

@@ -1,4 +1,4 @@
-describe('get user consent', () => {
+describe('1.3 - get user consent', () => {
   beforeEach(() => {
     cy.clearBusinessLog();
   });

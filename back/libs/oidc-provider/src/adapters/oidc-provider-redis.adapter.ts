@@ -176,7 +176,7 @@ export class OidcProviderRedisAdapter implements Adapter {
     this.logger.debug('Upsert');
 
     const key = this.key(id);
-    this.logger.trace({ id, payload, expiresIn, key });
+    this.logger.trace({ upsert: { id, payload, expiresIn, key } });
 
     if (expiresIn && isNaN(expiresIn)) {
       throw new TypeError(
@@ -212,11 +212,11 @@ export class OidcProviderRedisAdapter implements Adapter {
     const command = consumable.has(this.contextName) ? 'hgetall' : 'get';
     const data = await this.redis[command](key);
 
-    this.logger.trace({ id, key, data });
-
     if (isEmpty(data)) {
-      this.logger.trace({ id, key, data }, LoggerLevelNames.WARN);
+      this.logger.trace({ find: { id, key, data } }, LoggerLevelNames.WARN);
       return void 0;
+    } else {
+      this.logger.trace({ find: { id, key, data } });
     }
 
     const wrappedData = typeof data === 'string' ? { payload: data } : data;
@@ -242,7 +242,7 @@ export class OidcProviderRedisAdapter implements Adapter {
 
   async destroy(id: string) {
     this.logger.debug('Destroy');
-    this.logger.trace({ id, key: this.key(id) });
+    this.logger.trace({ destroy: { id, key: this.key(id) } });
 
     const key = this.key(id);
     await this.redis.del(key);
@@ -251,8 +251,10 @@ export class OidcProviderRedisAdapter implements Adapter {
   async revokeByGrantId(grantId: string) {
     this.logger.debug('RevokeByGrantId');
     this.logger.trace({
-      grantId,
-      grantKey: this.grantKeyFor(grantId),
+      revoke: {
+        grantId,
+        grantKey: this.grantKeyFor(grantId),
+      },
     });
 
     const multi = this.redis.multi();
@@ -265,7 +267,7 @@ export class OidcProviderRedisAdapter implements Adapter {
 
   async consume(id: string) {
     this.logger.debug('Consume');
-    this.logger.trace({ id, key: this.key(id) });
+    this.logger.trace({ consume: { id, key: this.key(id) } });
 
     await this.redis.hset(
       this.key(id),

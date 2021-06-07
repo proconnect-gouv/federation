@@ -1,7 +1,7 @@
 import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { Trackable, Loggable } from '@fc/exceptions';
 import { TrackingService } from '@fc/tracking';
-import { LoggerService } from '@fc/logger';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { FcException } from '../exceptions';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 import { ExceptionsService } from '../exceptions.service';
@@ -16,7 +16,9 @@ export class FcExceptionFilter
     protected readonly tracking: TrackingService,
   ) {
     super(logger);
+    this.logger.setContext(this.constructor.name);
   }
+
   catch(exception: FcException, host: ArgumentsHost) {
     this.logger.debug('Exception from FcException');
 
@@ -60,6 +62,8 @@ export class FcExceptionFilter
     if (exception.redirect === true) {
       return;
     }
+
+    this.logger.trace({ exception }, LoggerLevelNames.ERROR);
 
     /**
      * @todo #139 allow the exception to set the HTTP response code

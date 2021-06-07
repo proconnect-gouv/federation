@@ -1,4 +1,4 @@
-describe('numeric-identity-popin', () => {
+describe('1.2 - numeric-identity-popin', () => {
   beforeEach(() => {
     cy.visit(Cypress.env(`SP1_ROOT_URL`));
     cy.get('#acrSelector').select('eidas2');
