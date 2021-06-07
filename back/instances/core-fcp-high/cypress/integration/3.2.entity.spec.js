@@ -4,7 +4,7 @@ import { checkInStringifiedJson, basicScenario } from './mire.utils';
  * @todo #242 - remove and let basic scopes
  */
 
-describe('Entity', () => {
+describe('3.2 - Entity', () => {
   it('should have the same client Sub from 2 SP with same entityId', () => {
     basicScenario({
       idpId: 'fip1v2',
@@ -37,8 +37,8 @@ describe('Entity', () => {
         client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
-        scope: 'openid identite_pivot'
-      }
+        scope: 'openid identite_pivot',
+      },
     });
 
     // FC: Read confirmation message :D

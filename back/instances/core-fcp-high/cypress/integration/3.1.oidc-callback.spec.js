@@ -1,8 +1,9 @@
 import * as qs from 'querystring';
+import { getIdentityProvider } from './mire.utils';
 
-function getOidcCallbackUrl(interactionId, event) {
+function getOidcCallbackUrl(idpInfo, interactionId, event) {
   cy.request({
-    url: `${Cypress.env('IDP_ROOT_URL')}/interaction/${interactionId}/login`,
+    url: `${idpInfo.IDP_ROOT_URL}/interaction/${interactionId}/login`,
     method: 'POST',
     body: {
       login: 'test',
@@ -37,15 +38,19 @@ function extractInteractionIdFromUrl(url) {
  * @param {Function} next a callback function that will receive `/oidc-callback` url as parameter.
  */
 function prepareOidcCallbackAs(alias) {
+  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+
+  const idpInfo = getIdentityProvider(idpId);
+
   cy.visit(Cypress.env('SP1_ROOT_URL'));
   cy.get('#acrSelector').select('eidas2');
   cy.get('#get-authorize').click();
-  cy.get(`#idp-${Cypress.env('IDP_NAME')}1v2`).click();
-  cy.url().should('contain', Cypress.env('IDP_ROOT_URL'));
+  cy.get(`#idp-${idpId}`).click();
+  cy.url().should('contain', idpInfo.IDP_ROOT_URL);
 
   cy.url().then((url) => {
     const interactionId = extractInteractionIdFromUrl(url);
-    getOidcCallbackUrl(interactionId, 'idp:step2');
+    getOidcCallbackUrl(idpInfo, interactionId, 'idp:step2');
   });
 
   cy.get('@idp:step2')
@@ -88,52 +93,54 @@ function finishWithReplacedUrl(attackerUrl) {
   cy.hasError(`Y020022`);
 }
 
-describe('State verification', () => {
-  it('should not allow /oidc-callback with forged state param', () => {
-    prepareOidcCallbackAs('oidcCallback');
+describe('3.1 - OIDC Callback', () => {
+  describe('3.1.1 - State verification', () => {
+    it('should not allow /oidc-callback with forged state param', () => {
+      prepareOidcCallbackAs('oidcCallback');
 
-    cy.get('@oidcCallback').then(
-      finishWithReplacedParam('state', 'forgedState', 'Y020022'),
-    );
+      cy.get('@oidcCallback').then(
+        finishWithReplacedParam('state', 'forgedState', 'Y020022'),
+      );
+    });
+
+    it('should not allow /oidc-callback from another interaction', () => {
+      prepareOidcCallbackAs('oidcCallback');
+
+      cy.get('@oidcCallback').then(finishWithReplacedUrl);
+    });
+
+    it('should not allow /oidc-callback without state param', () => {
+      prepareOidcCallbackAs('oidcCallback');
+
+      cy.get('@oidcCallback').then(
+        finishWithReplacedParam('state', null, 'Y020021'),
+      );
+    });
+
+    it('should not allow /oidc-callback with empty state param', () => {
+      prepareOidcCallbackAs('oidcCallback');
+
+      cy.get('@oidcCallback').then(
+        finishWithReplacedParam('state', '', 'Y020021'),
+      );
+    });
   });
 
-  it('should not allow /oidc-callback from another interaction', () => {
-    prepareOidcCallbackAs('oidcCallback');
+  describe('3.1.2 - Code verification', () => {
+    it('should not allow /oidc-callback without code param', () => {
+      prepareOidcCallbackAs('oidcCallback');
 
-    cy.get('@oidcCallback').then(finishWithReplacedUrl);
-  });
+      cy.get('@oidcCallback').then(
+        finishWithReplacedParam('code', null, 'Y020025'),
+      );
+    });
 
-  it('should not allow /oidc-callback without state param', () => {
-    prepareOidcCallbackAs('oidcCallback');
+    it('should not allow /oidc-callback with empty code param', () => {
+      prepareOidcCallbackAs('oidcCallback');
 
-    cy.get('@oidcCallback').then(
-      finishWithReplacedParam('state', null, 'Y020021'),
-    );
-  });
-
-  it('should not allow /oidc-callback with empty state param', () => {
-    prepareOidcCallbackAs('oidcCallback');
-
-    cy.get('@oidcCallback').then(
-      finishWithReplacedParam('state', '', 'Y020021'),
-    );
-  });
-});
-
-describe('Code verification', () => {
-  it('should not allow /oidc-callback without code param', () => {
-    prepareOidcCallbackAs('oidcCallback');
-
-    cy.get('@oidcCallback').then(
-      finishWithReplacedParam('code', null, 'Y020025'),
-    );
-  });
-
-  it('should not allow /oidc-callback with empty code param', () => {
-    prepareOidcCallbackAs('oidcCallback');
-
-    cy.get('@oidcCallback').then(
-      finishWithReplacedParam('code', '', 'Y020025'),
-    );
+      cy.get('@oidcCallback').then(
+        finishWithReplacedParam('code', '', 'Y020025'),
+      );
+    });
   });
 });

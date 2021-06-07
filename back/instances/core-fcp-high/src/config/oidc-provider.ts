@@ -143,11 +143,11 @@ export default {
     whitelistedJWA: {
       authorizationEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       authorizationEncryptionEncValues: ['A256GCM'],
-      authorizationSigningAlgValues: ['ES256'],
+      authorizationSigningAlgValues: ['ES256', 'RS256', 'HS256'],
       dPoPSigningAlgValues: ['ES256'],
       idTokenEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       idTokenEncryptionEncValues: ['A256GCM'],
-      idTokenSigningAlgValues: ['ES256'],
+      idTokenSigningAlgValues: ['ES256', 'RS256', 'HS256'],
       introspectionEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       introspectionEncryptionEncValues: ['A256GCM'],
       introspectionEndpointAuthSigningAlgValues: ['ES256'],

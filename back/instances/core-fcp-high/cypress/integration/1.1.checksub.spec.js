@@ -4,7 +4,7 @@ import {
   checkInStringifiedJson,
 } from './mire.utils';
 
-describe('Successful Sub checks', () => {
+describe('1.1 - Successful Sub checks', () => {
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 

@@ -47,6 +47,7 @@ export function basicSuccessScenario(params) {
 
   const { idpId, userName, sp = 'SP1' } = params;
   const password = params.password || '123';
+  const idpInfo = getIdentityProvider(idpId);
 
   const serviceProvider = {
     url: Cypress.env(`${sp}_ROOT_URL`),
@@ -84,7 +85,7 @@ export function basicSuccessScenario(params) {
   cy.get(`#idp-${idpId}`).click();
 
   // FI: Authenticate
-  cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
+  cy.url().should('include', idpInfo.IDP_INTERACTION_URL);
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
@@ -98,7 +99,7 @@ export function basicSuccessScenario(params) {
   cy.get('input[name="login"]').clear().type(userName);
   cy.get('input[name="password"]').clear().type(password);
 
-  cy.get('input[type="submit"]').click();
+  cy.get('[type="submit"]').click();
 
   // FC: Read confirmation message :D
   cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
@@ -296,6 +297,8 @@ export function basicScenario(params) {
   } = params;
   const password = '123';
 
+  const idpInfo = getIdentityProvider(idpId);
+
   cy.visit(start);
 
   if (overrideParams) {
@@ -329,7 +332,7 @@ export function basicScenario(params) {
   cy.get(`#idp-${idpId}`).click();
 
   // FI: Authenticate
-  cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
+  cy.url().should('include', idpInfo.IDP_INTERACTION_URL);
   cy.get('input[name="login"]').clear().type(login);
   cy.get('input[name="password"]').clear().type(password);
 
@@ -380,4 +383,18 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
   }
 
   return `${baseAuthorizeUrl}?${QueryString.stringify(params)}`;
+}
+
+/**
+ * Retrieve identity provider information.
+ *
+ * @param {string} idpId, Default: 'fip1v2'
+ * @returns {Object} Ex: {
+ *                     "ID": "fip1v2",
+ *                     "IDP_ROOT_URL": "https://fip1v2.docker.dev-franceconnect.fr",
+ *                     "IDP_INTERACTION_URL": "https://fip1v2.docker.dev-franceconnect.fr/interaction"
+ *                   }
+ */
+export function getIdentityProvider(idpId = 'fip1v2') {
+  return Cypress.env('IDP_AVAILABLES').find(({ ID }) => ID === idpId);
 }

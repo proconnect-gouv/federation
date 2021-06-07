@@ -15,9 +15,7 @@
       "sourceRoot": "instances/core-fca-high/src",
       "compilerOptions": {
         "tsConfigPath": "instances/core-fca-high/tsconfig.app.json",
-        "assets": [
-          "../../../apps/core-fca/**/*.ejs"
-        ]
+        "assets": ["../../../apps/core-fca/**/*.ejs"]
       }
     },
     "eidas-bridge-instance": {
@@ -145,6 +143,26 @@
           "../../../instances/mock-identity-provider-fca-high/**/*.css",
           "../../../instances/mock-identity-provider-fca-high/**/*.svg",
           "../../../instances/mock-identity-provider-fca-high/**/*.csv"
+        ]
+      }
+    },
+    "mock-identity-provider-fcp-high": {
+      "type": "application",
+      "root": "instances/mock-identity-provider-fcp-high",
+      "entryFile": "main",
+      "sourceRoot": "instances/mock-identity-provider-fcp-high/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/mock-identity-provider-fcp-high/tsconfig.app.json",
+        "assets": [
+          "../../../apps/mock-identity-provider/**/*.ejs",
+          "../../../apps/mock-identity-provider/**/*.css",
+          "../../../apps/mock-identity-provider/**/*.svg",
+          "../../../apps/mock-identity-provider/**/*.png",
+          "../../../apps/mock-identity-provider/**/*.csv",
+          "../../../instances/mock-identity-provider-fcp-high/**/*.ejs",
+          "../../../instances/mock-identity-provider-fcp-high/**/*.css",
+          "../../../instances/mock-identity-provider-fcp-high/**/*.svg",
+          "../../../instances/mock-identity-provider-fcp-high/**/*.csv"
         ]
       }
     },

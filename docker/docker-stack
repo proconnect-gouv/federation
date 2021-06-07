@@ -389,14 +389,40 @@ case "$action" in
   start)
     _start $@
     ;;
-  start-all)
-    _start fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 fsa4v2 fdp1v2 fip1v2 fip2v2 fia4v2 fia5v2 core-fcp-high rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fia1v2 fia2v2 fca fca-front csmr-hsm eidas-bridge exploitation-fca exploit-fcp exploit-fca core-fcp-low fsp1-low fip1-low
-    ;;
   stop)
     _stop $@
     ;;
+  # -- start all up's containers (FCP and/or FCA)
+  start-all)
+    _start \
+      rnipp exploitation-high csmr-hsm ud-back ud-front \
+      fdp1v2 eidas-bridge \
+      \
+      core-fcp-high exploit-fcp core-fcp-low \
+      fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 \
+      fsp1-low \
+      fip1v2 fip2v2 fip13v2 fip14v2 fip15v2 fip16v2 fip17v2 fip18v2 fip19v2 fip20v2 \
+      fip1-low \
+      \
+      fca fca-front exploitation-fca exploit-fca \
+      fsa1v2 fsa2v2 fsa3v2 fsa4v2 \
+      fia1v2 fia2v2 fia4v2 fia5v2 \
+    ;;
+  # -- stop all up's containers (FCP and/or FCA)
   stop-all)
-    _stop fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 fsa4v2 fdp1v2 fip1v2 fip2v2 fia4v2 fia5v2 core-fcp-high rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fia1v2 fia2v2 fca fca-front csmr-hsm eidas-bridge exploitation-fca exploit-fcp exploit-fca core-fcp-low fsp1-low fip1-low
+    _stop \
+    rnipp exploitation-high csmr-hsm ud-back ud-front \
+    fdp1v2 eidas-bridge \
+    \
+    core-fcp-high exploit-fcp core-fcp-low \
+    fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 \
+    fsp1-low
+    fip1v2 fip2v2 fip13v2 fip14v2 fip15v2 fip16v2 fip17v2 fip18v2 fip19v2 fip20v2 \
+    fip1-low \
+    \
+    fca fca-front exploitation-fca exploit-fca \
+    fsa1v2 fsa2v2 fsa3v2 fsa4v2 \
+    fia1v2 fia2v2 fia4v2 fia5v2 \
     ;;
   test)
     _test $@

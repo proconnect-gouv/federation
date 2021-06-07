@@ -1,6 +1,6 @@
 import { basicErrorScenario, basicScenario } from './mire.utils';
 
-describe('RNIPP', () => {
+describe('4.0 - RNIPP', () => {
   beforeEach(() => {
     cy.clearBusinessLog();
   });

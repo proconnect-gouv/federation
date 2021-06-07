@@ -151,7 +151,13 @@ export class IdentityProviderAdapterMongoService
       return errors.length === 0;
     });
 
-    return result.map(({ _doc }) => _doc);
+    const identityProviders: IdentityProvider[] = result.map(
+      ({ _doc }) => _doc,
+    );
+
+    this.logger.trace({ identityProviders });
+
+    return identityProviders;
   }
 
   /**
@@ -165,6 +171,10 @@ export class IdentityProviderAdapterMongoService
       const list: IdentityProvider[] = await this.findAllIdentityProvider();
 
       this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
+
+      this.logger.trace({ step: 'REFRESH', list: this.listCache });
+    } else {
+      this.logger.trace({ step: 'CACHE', list: this.listCache });
     }
 
     return this.listCache;
@@ -186,6 +196,9 @@ export class IdentityProviderAdapterMongoService
 
       return blacklist ? !idpFound : idpFound;
     });
+
+    this.logger.trace({ idpList, blacklist, filteredProviders });
+
     return filteredProviders;
   }
 
@@ -195,7 +208,11 @@ export class IdentityProviderAdapterMongoService
   ): Promise<IdentityProviderMetadata<T>> {
     const providers = await this.getList<T>(refreshCache);
 
-    return providers.find(({ uid }) => uid === id);
+    const provider = providers.find(({ uid }) => uid === id);
+
+    this.logger.trace({ provider });
+
+    return provider;
   }
 
   private legacyToOpenIdPropertyName(
