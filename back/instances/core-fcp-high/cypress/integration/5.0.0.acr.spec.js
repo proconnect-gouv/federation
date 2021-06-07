@@ -10,7 +10,7 @@ import {
 const scope =
   'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
 
-describe('Acr', () => {
+describe('5.0.0 - Acr', () => {
   it('should access to FI when acr from SP is unique and known', () => {
     basicScenario({
       idpId: 'fip1v2',

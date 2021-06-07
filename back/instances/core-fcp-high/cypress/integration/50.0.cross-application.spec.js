@@ -9,7 +9,7 @@ import {
  * Exemple de test cross application pour voir la mécanique.
  * Celui-ci sera à supprimer au moment de l'implémentation de vrais tests
  */
-describe('Example Cross application e2e', () => {
+describe('50.0 - Example Cross application e2e', () => {
   afterEach(() => {
     // Remove recent update for old e2e
     cy.resetEnv('mongoFC');
