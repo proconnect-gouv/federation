@@ -1,5 +1,5 @@
 import { ChainableElement, ScopeContext } from '../../common/types';
-import { getClaims } from '../helpers/scope-helper';
+import { getClaims } from '../helpers';
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const CLAIM_LABELS = {
@@ -21,7 +21,7 @@ export default class InfoConsentPage {
     return cy.get('#consent');
   }
 
-  get showDetailsToggle(): ChainableElement {
+  get showClaimsToggle(): ChainableElement {
     return cy.get('#toggleOpenCloseMenu');
   }
 
@@ -46,7 +46,7 @@ export default class InfoConsentPage {
     const expectedClaims = getClaims(scopeContext).filter(
       (claimName) => claimName !== 'sub',
     );
-    this.showDetailsToggle.click();
+    this.showClaimsToggle.click();
     this.claimDetails.invoke('text').then((text) => {
       const arrClaims = text.trim().split(/\s\s+/);
       // Check all expected claims

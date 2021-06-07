@@ -2,9 +2,9 @@ import {
   ChainableElement,
   ScopeContext,
   ServiceProviderBase,
-  UserDetails,
+  UserClaims,
 } from '../../common/types';
-import { getClaims } from '../helpers/scope-helper';
+import { getClaims } from '../helpers';
 
 const ALL_SCOPES: Readonly<string[]> = [
   'openid',
@@ -95,7 +95,7 @@ export default class ServiceProviderPage {
 
   checkMockInformationAccess(
     requestedScope: ScopeContext,
-    userDetails: UserDetails,
+    userClaims: UserClaims,
   ): void {
     const expectedClaims = getClaims(requestedScope);
     cy.get('#json-output')
@@ -120,7 +120,7 @@ export default class ServiceProviderPage {
           .filter((claimName) => claimName !== 'sub')
           .forEach((claimName) => {
             expect(responseBody[claimName]).to.deep.equal(
-              userDetails[claimName],
+              userClaims[claimName],
             );
           });
 
