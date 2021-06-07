@@ -2,8 +2,8 @@ export interface IdentityProviderBase {
   selectors: {
     idpButton: string;
     password: string;
-    submitButton: string;
-    userName: string;
+    loginButton: string;
+    username: string;
   };
   url: string;
 }
