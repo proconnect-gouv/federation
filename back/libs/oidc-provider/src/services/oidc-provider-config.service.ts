@@ -96,6 +96,19 @@ export class OidcProviderConfigService {
     } = this.config.get<OidcProviderConfig>('OidcProvider');
 
     /**
+     * Bind callbacks to this class before passing them to oidc-provider
+     * so we can use the NestJS dependencies injection
+     */
+    const logoutSource = this.logoutSource.bind(this);
+    const postLogoutSuccessSource = this.postLogoutSuccessSource.bind(this);
+
+    const findAccount = this.findAccount.bind(this);
+    const pairwiseIdentifier = this.pairwiseIdentifier.bind(this);
+    const renderError = this.errorService.renderError.bind(this.errorService);
+    const clientBasedCORS = this.clientBasedCORS.bind(this);
+    const url = this.url.bind(this, prefix);
+
+    /**
      * Build final configuration object
      */
     const oidcProviderConfig: OidcProviderConfig = {
@@ -106,16 +119,21 @@ export class OidcProviderConfigService {
       defaultAcrValue,
       configuration: {
         ...configuration,
+        features: {
+          ...configuration.features,
+          rpInitiatedLogout: {
+            ...configuration.features.rpInitiatedLogout,
+            logoutSource,
+            postLogoutSuccessSource,
+          },
+        },
         adapter,
         clients,
-        findAccount: this.findAccount.bind(this),
-        pairwiseIdentifier: this.pairwiseIdentifier.bind(this),
-        renderError: this.errorService.renderError.bind(this.errorService),
-        rpInitiatedLogout: {
-          logoutSource: this.logoutSource.bind(this),
-        },
-        clientBasedCORS: this.clientBasedCORS.bind(this),
-        interactions: { url: this.url.bind(this, prefix) },
+        findAccount,
+        pairwiseIdentifier,
+        renderError,
+        clientBasedCORS,
+        interactions: { url },
       },
     };
 
@@ -178,14 +196,14 @@ export class OidcProviderConfigService {
 
   /**
    * More documentation can be found in oidc-provider repo
-   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#logoutsource
+   * @see https://github.com/panva/node-oidc-provider/blob/v6.x/docs/README.md#featuresrpinitiatedlogout
    * @TODO #109 Check the behaving of the page when javascript is disabled
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/109
    */
   private async logoutSource(ctx: KoaContextWithOIDC, form: any) {
     ctx.body = `<!DOCTYPE html>
       <head>
-        <title>Logout</title>
+        <title>Déconnexion</title>
       </head>
       <body>
         ${form}
@@ -198,6 +216,23 @@ export class OidcProviderConfigService {
           form.appendChild(input);
           form.submit();
         </script>
+      </body>
+      </html>`;
+  }
+
+  /**
+   * More documentation can be found in oidc-provider repo
+   * @see https://github.com/panva/node-oidc-provider/blob/v6.x/docs/README.md#featuresrpinitiatedlogout
+   * @TODO #109 Check the behaving of the page when javascript is disabled
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/109
+   */
+  private async postLogoutSuccessSource(ctx: KoaContextWithOIDC) {
+    ctx.body = `<!DOCTYPE html>
+      <head>
+        <title>Déconnexion</title>
+      </head>
+      <body>
+        <p>Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.</p>
       </body>
       </html>`;
   }

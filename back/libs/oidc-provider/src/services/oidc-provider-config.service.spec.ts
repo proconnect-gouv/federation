@@ -196,12 +196,19 @@ describe('OidcProviderErrorService', () => {
     it('should bind methods to config', async () => {
       // When
       const result = await service.getConfig(oidcProviderServiceMock);
+
       // Then
-      expect(result).toHaveProperty('configuration.findAccount');
-      expect(result).toHaveProperty('configuration.renderError');
       expect(result).toHaveProperty(
-        'configuration.rpInitiatedLogout.logoutSource',
+        'configuration.features.rpInitiatedLogout.logoutSource',
       );
+      expect(result).toHaveProperty(
+        'configuration.features.rpInitiatedLogout.postLogoutSuccessSource',
+      );
+      expect(result).toHaveProperty('configuration.findAccount');
+      expect(result).toHaveProperty('configuration.pairwiseIdentifier');
+      expect(result).toHaveProperty('configuration.renderError');
+      expect(result).toHaveProperty('configuration.clientBasedCORS');
+      expect(result).toHaveProperty('configuration.interactions.url');
     });
   });
 
@@ -317,7 +324,7 @@ describe('OidcProviderErrorService', () => {
       const form = '<form></form>';
       const resultExpected = `<!DOCTYPE html>
       <head>
-        <title>Logout</title>
+        <title>Déconnexion</title>
       </head>
       <body>
         <form></form>
@@ -332,8 +339,31 @@ describe('OidcProviderErrorService', () => {
         </script>
       </body>
       </html>`;
+
       // When
       service['logoutSource'](ctx, form);
+
+      // Then
+      expect(ctx.body).toBe(resultExpected);
+    });
+  });
+
+  describe('postLogoutSuccessSource()', () => {
+    it('should call exceptionFilter.catch', () => {
+      // Given
+      const ctx = { body: '' } as KoaContextWithOIDC;
+      const resultExpected = `<!DOCTYPE html>
+      <head>
+        <title>Déconnexion</title>
+      </head>
+      <body>
+        <p>Vous êtes bien déconnecté, vous pouvez fermer votre navigateur.</p>
+      </body>
+      </html>`;
+
+      // When
+      service['postLogoutSuccessSource'](ctx);
+
       // Then
       expect(ctx.body).toBe(resultExpected);
     });

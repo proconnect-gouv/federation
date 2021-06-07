@@ -19,12 +19,15 @@ describe('OidcClientService', () => {
   let service: OidcClientService;
   let validateDtoMock;
 
+  const postLogoutRedirectUriMock = 'https://postLogoutRedirectUriMock';
+
   const providerUidMock = 'providerUidMockValue';
   const idpStateMock = 'idpStateMockValue';
   const idpNonceMock = 'idpNonceMockValue';
   const acrMock = 'acrMockValue';
   const amrMock = ['amrMockValue'];
   const accessTokenMock = 'accessTokenMockValue';
+  const idTokenMock = 'idTokenMockValue';
 
   const contextMock: IEventContext = {
     hello: 'world',
@@ -44,13 +47,18 @@ describe('OidcClientService', () => {
   const oidcClientUtilsServiceMock = {
     getTokenSet: jest.fn(),
     getUserInfo: jest.fn(),
+    getEndSessionUrl: jest.fn(),
   };
 
   const claimsMock = jest.fn();
 
   const tokenResultMock = {
+    // oidc parameter
     // eslint-disable-next-line @typescript-eslint/naming-convention
     access_token: accessTokenMock,
+    // oidc parameter
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token: idTokenMock,
     claims: claimsMock,
   };
 
@@ -64,8 +72,10 @@ describe('OidcClientService', () => {
 
   const identityMock: IOidcIdentity = {
     sub: 'xxxxxxyyyyy1122334455667788',
+    // oidc parameter
     // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'jean-paul',
+    // oidc parameter
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'rive',
   };
@@ -117,23 +127,8 @@ describe('OidcClientService', () => {
         .mockResolvedValueOnce([]) // no errors
         .mockResolvedValueOnce([]); // no errors
     });
-    it('should get the access token', async () => {
-      // arrange
-      const resultMock = {
-        accessToken: accessTokenMock,
-        acr: acrMock,
-        amr: amrMock,
-      };
-      // action
-      const result = await service.getTokenFromProvider(
-        tokenParamsMock,
-        contextMock,
-      );
-      // assert
-      expect(result).toStrictEqual(resultMock);
-    });
 
-    it('should get the accessToken with token params', async () => {
+    it('should call getTokenSet with token params', async () => {
       // action
       await service.getTokenFromProvider(tokenParamsMock, contextMock);
       // assert
@@ -144,6 +139,23 @@ describe('OidcClientService', () => {
         idpStateMock,
         idpNonceMock,
       );
+    });
+
+    it('should get the the tokenSet from the provider', async () => {
+      // arrange
+      const resultMock = {
+        accessToken: accessTokenMock,
+        idToken: idTokenMock,
+        acr: acrMock,
+        amr: amrMock,
+      };
+      // action
+      const result = await service.getTokenFromProvider(
+        tokenParamsMock,
+        contextMock,
+      );
+      // assert
+      expect(result).toStrictEqual(resultMock);
     });
 
     /**
@@ -166,15 +178,16 @@ describe('OidcClientService', () => {
 
     it('should failed if the token is wrong and DTO blocked', async () => {
       // arrange
+      const expectedError = new Error(
+        '"{"acr":"acrMockValue","amr":["amrMockValue"],"accessToken":"accessTokenMockValue","idToken":"idTokenMockValue"}" input was wrong from the result at DTO validation: [{}]',
+      );
       validateDtoMock.mockReset().mockReturnValueOnce([errorMock]);
 
       // action
       await expect(
         () => service.getTokenFromProvider(tokenParamsMock, contextMock),
         // assert
-      ).rejects.toThrow(
-        '{"acr":"acrMockValue","amr":["amrMockValue"],"accessToken":"accessTokenMockValue"}" input was wrong from the result at DTO validation: [{}]',
-      );
+      ).rejects.toThrow(expectedError);
       expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
     });
 
@@ -274,6 +287,29 @@ describe('OidcClientService', () => {
       expect(trackingServiceMock.track).toHaveBeenCalledWith(
         OidcClientUserinfoEvent,
         contextMock,
+      );
+    });
+  });
+
+  describe('getEndSessionUrlFromProvider', () => {
+    it('should call oidcClientUtilsServiceMock.getEndSessionUrl() with given parameters', async () => {
+      // action
+      await service.getEndSessionUrlFromProvider(
+        providerUidMock,
+        idpStateMock,
+        idTokenMock,
+        postLogoutRedirectUriMock,
+      );
+
+      // assert
+      expect(oidcClientUtilsServiceMock.getEndSessionUrl).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(oidcClientUtilsServiceMock.getEndSessionUrl).toHaveBeenCalledWith(
+        providerUidMock,
+        idpStateMock,
+        idTokenMock,
+        postLogoutRedirectUriMock,
       );
     });
   });

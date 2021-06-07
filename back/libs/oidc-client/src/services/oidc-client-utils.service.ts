@@ -15,6 +15,7 @@ import {
   OidcClientTokenFailedException,
   OidcClientFailedToFetchBlacklist,
   OidcClientIdpBlacklistedException,
+  OidcClientGetEndSessionUrlException,
 } from '../exceptions';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';
 import { OidcClientConfigService } from './oidc-client-config.service';
@@ -163,7 +164,48 @@ export class OidcClientUtilsService {
     this.logger.debug('getUserInfo');
     const client = await this.issuer.getClient(providerUid);
 
-    return client.userinfo(accessToken);
+    const userInfo = await client.userinfo(accessToken);
+    this.logger.trace({ userInfo });
+
+    return userInfo;
+  }
+
+  /**
+   * Build the endSessionUrl with given parameters
+   * @param providerUid The current idp id
+   * @param stateFromSession The current state
+   * @param idTokenHint The last idToken retrieved
+   * @param postLogoutRedirectUri The url to redirect after logout
+   * @returns The endSessionUrl with all parameters (state, postLogoutRedirectUri, ...)
+   */
+  async getEndSessionUrl(
+    providerUid: string,
+    stateFromSession: string,
+    idTokenHint?: TokenSet | string,
+    postLogoutRedirectUri?: string,
+  ): Promise<string> {
+    this.logger.debug('getEndSessionUrl');
+    const client = await this.issuer.getClient(providerUid);
+
+    let endSessionUrl;
+
+    try {
+      endSessionUrl = client.endSessionUrl({
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        id_token_hint: idTokenHint,
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        post_logout_redirect_uri: postLogoutRedirectUri,
+        state: stateFromSession,
+      });
+    } catch (error) {
+      throw new OidcClientGetEndSessionUrlException(error);
+    }
+
+    this.logger.trace({ endSessionUrl });
+
+    return endSessionUrl;
   }
 
   /**

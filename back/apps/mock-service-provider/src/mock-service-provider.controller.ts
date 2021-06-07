@@ -112,8 +112,30 @@ export class MockServiceProviderController {
   }
 
   @Get(MockServiceProviderRoutes.LOGOUT)
-  async logout(@Res() res) {
-    res.redirect(MockServiceProviderRoutes.LOGOUT_CALLBACK);
+  async logout(
+    @Res() res,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */ @Session('OidcClient')
+    sessionOidc: ISessionGenericService<OidcClientSession>,
+    @Query('post_logout_redirect_uri')
+    postLogoutRedirectUri?: string,
+  ) {
+    const { idpIdToken, idpState, idpId } = await sessionOidc.get();
+
+    const endSessionUrl = await this.oidcClient.getEndSessionUrlFromProvider(
+      idpId,
+      idpState,
+      idpIdToken,
+      postLogoutRedirectUri,
+    );
+
+    res.redirect(endSessionUrl);
   }
 
   @Get(MockServiceProviderRoutes.LOGOUT_CALLBACK)
@@ -213,6 +235,7 @@ export class MockServiceProviderController {
     };
     const {
       accessToken,
+      idToken,
       acr,
       amr,
     } = await this.oidcClient.getTokenFromProvider(tokenParams, req);
@@ -240,6 +263,7 @@ export class MockServiceProviderController {
       idpAcr: acr,
       amr,
       idpAccessToken: accessToken,
+      idpIdToken: idToken,
     };
 
     await sessionOidc.set({ ...identityExchange });

@@ -20,7 +20,6 @@ describe('1.0 - Successful scenarios', () => {
       expect(response.headers.location).to.eq('https://franceconnect.gouv.fr');
     });
   });
-
   it('should log in to Service Provider Example', () => {
     basicSuccessScenario({
       userName: 'test',

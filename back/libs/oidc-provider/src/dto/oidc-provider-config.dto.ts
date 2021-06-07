@@ -22,8 +22,48 @@ import {
   ClientAuthMethod,
   SubjectTypes,
   SymmetricSigningAlgorithm,
+  KoaContextWithOIDC,
+  CanBePromise,
+  ErrorOut,
 } from 'oidc-provider';
 import { OidcProviderRoutes, OidcProviderPrompt } from '../enums';
+
+/**
+ * Since oidc-provider does not expose some callbacks signatures
+ * we generate them with a little precision than any
+ * ( through we need any for other unexposed types :'( )
+ */
+export type LogoutSourceCallback = (
+  ctx: KoaContextWithOIDC,
+  form: string,
+) => CanBePromise<void>;
+export type PostLogoutSuccessSourceCallback = (
+  ctx: KoaContextWithOIDC,
+) => CanBePromise<void>;
+export type ClientBasedCORSCallback = (
+  ctx: KoaContextWithOIDC,
+  origin: string,
+  client: any,
+) => boolean;
+export type InteractionUrlCallback = (
+  ctx: KoaContextWithOIDC,
+  interaction: any,
+) => CanBePromise<string>;
+export type FindAccountCallback = (
+  ctx: KoaContextWithOIDC,
+  sub: string,
+  token?: any,
+) => CanBePromise<any>;
+export type PairwiseIdentifierCallbacK = (
+  ctx: KoaContextWithOIDC,
+  accountId: string,
+  client: any,
+) => CanBePromise<string>;
+export type RenderErrorCallback = (
+  ctx: KoaContextWithOIDC,
+  out: ErrorOut,
+  error: any | Error,
+) => CanBePromise<void>;
 
 export class Routes {
   @IsEnum(OidcProviderRoutes)
@@ -108,6 +148,34 @@ class FeatureSetting {
   readonly enabled: boolean;
 }
 
+class LogoutSourceFeatureSetting extends FeatureSetting {
+  /**
+   * `logoutSource` is a function.
+   * This is not something that should live in a DTO.
+   * Although this is the way `oidc-provider` library offers
+   * to implement our logout service
+   * @see https://github.com/panva/node-oidc-provider/blob/v6.x/docs/README.md#featuresrpinitiatedlogout
+   *
+   * This property is optional because it is injected by the module
+   * rather than by real configuration.
+   */
+  @IsOptional()
+  readonly logoutSource?: LogoutSourceCallback;
+
+  /**
+   * `postLogoutSuccessSource` is a function.
+   * This is not something that should live in a DTO.
+   * Although this is the way `oidc-provider` library offers
+   * to implement our logout service
+   * @see https://github.com/panva/node-oidc-provider/blob/v6.x/docs/README.md#featuresrpinitiatedlogout
+   *
+   * This property is optional because it is injected by the module
+   * rather than by real configuration.
+   */
+  @IsOptional()
+  readonly postLogoutSuccessSource?: PostLogoutSuccessSourceCallback;
+}
+
 class Features {
   @ValidateNested()
   @Type(() => FeatureSetting)
@@ -134,6 +202,13 @@ class Features {
   @ValidateNested()
   @Type(() => FeatureSetting)
   readonly claimsParameter: FeatureSetting;
+
+  @ValidateNested()
+  @Type(() => LogoutSourceFeatureSetting)
+  /**
+   * @see https://github.com/panva/node-oidc-provider/blob/v6.x/docs/README.md#featuresrpinitiatedlogout
+   */
+  readonly rpInitiatedLogout: LogoutSourceFeatureSetting;
 }
 
 class Ttl {
@@ -305,18 +380,19 @@ class Jwks {
   readonly keys: Array<JWKECKey | JWKRSAKey>;
 }
 
-class LogoutSource {
+class OidcProviderInteractionConfig {
   /**
-   * `logoutSource` is a function.
+   * `interactionUrl` is a function.
    * This is not something that should live in a DTO.
    * Although this is the way `oidc-provider` library offers
    * to implement our logout service
-   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#logoutsource
+   * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#interactionsurl
    *
    * This property is optional because it is injected by the module
    * rather than by real configuration.
    */
-  readonly logoutSource!: Function;
+  @IsOptional()
+  readonly url: InteractionUrlCallback;
 }
 
 export class Configuration {
@@ -404,7 +480,7 @@ export class Configuration {
    * rather than by real configuration.
    */
   @IsOptional()
-  readonly findAccount?: any;
+  readonly findAccount?: FindAccountCallback;
 
   /**
    * pairwiseIdentifier is a function
@@ -422,7 +498,7 @@ export class Configuration {
    * rather than by real configuration.
    */
 
-  readonly pairwiseIdentifier?: any;
+  readonly pairwiseIdentifier?: PairwiseIdentifierCallbacK;
 
   /**
    * `renderError` is a function.
@@ -435,14 +511,10 @@ export class Configuration {
    * rather than by real configuration.
    */
   @IsOptional()
-  readonly renderError?: any;
-
-  @ValidateNested()
-  @Type(() => LogoutSource)
-  readonly rpInitiatedLogout: LogoutSource;
+  readonly renderError?: RenderErrorCallback;
 
   /**
-   * `interactionUrl` is a function.
+   * `interactionUrl` is an object.
    * This is not something that should live in a DTO.
    * Although this is the way `oidc-provider` library offers
    * to implement our logout service
@@ -452,7 +524,8 @@ export class Configuration {
    * rather than by real configuration.
    */
   @IsOptional()
-  readonly interactions?: any;
+  @ValidateNested()
+  readonly interactions?: OidcProviderInteractionConfig;
 
   /**
    * `clientBasedCORS` is a function.
@@ -465,7 +538,7 @@ export class Configuration {
    * rather than by real configuration.
    */
   @IsOptional()
-  readonly clientBasedCORS?: any;
+  readonly clientBasedCORS?: ClientBasedCORSCallback;
 
   @IsObject()
   @ValidateNested()
