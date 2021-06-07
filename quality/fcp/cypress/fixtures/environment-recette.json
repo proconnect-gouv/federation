@@ -1,0 +1,7 @@
+{
+  "name": "recette",
+  "allAppsUrl": "https://recette.dev-franceconnect.fr/fcp.html",
+  "exploitAppId": "exploitation-high",
+  "exploitRootUrl": "https://exploitation-high.recette.dev-franceconnect.fr",
+  "fcRootUrl": "https://core-fcp-high.recette.dev-franceconnect.fr"
+}

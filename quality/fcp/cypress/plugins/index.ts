@@ -25,6 +25,20 @@ module.exports = (on, config) => {
     ...browserify.defaultOptions,
     typescript: resolve.sync('typescript', { baseDir: config.projectRoot }),
   };
-
   on('file:preprocessor', cucumber(options));
+
+  const { env: { TEST_ENV: testEnv = '' } = {} } = config;
+  if (testEnv === 'integ01') {
+    /**
+     * On integ01 environment, the FC core, FS and FI are using different domains
+     * @link: https://docs.cypress.io/guides/guides/web-security#Same-superdomain-per-test
+     * In order to run the tests,
+     * - we need to disable the chrome web security to allow redirections to different domains
+     * @link: https://docs.cypress.io/guides/guides/web-security#Disabling-Web-Security
+     * - we need to use Cookies with samesite=none (intercept in beforeEach hook)
+     */
+    config.chromeWebSecurity = false;
+  }
+
+  return config;
 };

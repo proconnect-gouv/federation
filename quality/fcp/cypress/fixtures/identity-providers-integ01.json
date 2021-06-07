@@ -7,9 +7,9 @@
     "acrValues": ["eidas1", "eidas2", "eidas3"],
     "selectors": {
       "idpButton": "#idp-fip1v2",
-      "userName": "input[name='login']",
+      "username": "input[name='login']",
       "password": "input[name='password']",
-      "submitButton": "input[type='submit']"
+      "loginButton": "input[type='submit']"
     }
   }
 ]
