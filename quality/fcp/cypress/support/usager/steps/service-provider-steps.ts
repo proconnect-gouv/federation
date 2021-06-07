@@ -1,5 +1,9 @@
 import { Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 
+import {
+  checkFCBasicAuthorization,
+  isUsingFCBasicAuthorization,
+} from '../../common/helpers';
 import { ServiceProvider } from '../../common/types';
 import ServiceProviderPage from '../pages/service-provider-page';
 
@@ -34,6 +38,13 @@ When('je navigue sur la page fournisseur de service', function () {
     cy.wrap(currentServiceProvider).as('serviceProvider');
   }
   serviceProviderPage = new ServiceProviderPage(currentServiceProvider);
+  /**
+   * @todo Use navigateTo instead after ticket FC-548 (integ01)
+   * author: Nicolas
+   * date: 28/05/2021
+   *
+   * suggestion: navigateTo({ appId: currentServiceProvider.name, baseUrl: env.allAppsUrl });
+   */
   serviceProviderPage.visit();
 });
 
@@ -44,6 +55,10 @@ When('je clique sur le bouton FranceConnect', function () {
     serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
   }
   serviceProviderPage.fcButton.click();
+
+  if (isUsingFCBasicAuthorization()) {
+    checkFCBasicAuthorization();
+  }
 });
 
 Then('je suis redirigé vers la page fournisseur de service', function () {
@@ -59,7 +74,7 @@ Then(
   function (type) {
     if (this.serviceProvider.mocked === true) {
       const scope = this.scopes.find((scope) => scope.type === type);
-      serviceProviderPage.checkMockInformationAccess(scope, this.user.details);
+      serviceProviderPage.checkMockInformationAccess(scope, this.user.claims);
     }
   },
 );

@@ -1,15 +1,15 @@
 export interface UserCredentials {
   idpId: string;
   password: string;
-  userName: string;
+  username: string;
 }
 
-export interface UserDetails {
+export interface UserClaims {
   [key: string]: string;
 }
 
 export interface User {
   enabled: boolean;
   credentials: [UserCredentials];
-  details: UserDetails;
+  claims: UserClaims;
 }

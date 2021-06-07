@@ -4,11 +4,11 @@
     "credentials": [
       {
         "idpId": "fip1v2",
-        "userName": "test",
+        "username": "test",
         "password": "123"
       }
     ],
-    "details": {
+    "claims": {
       "gender": "female",
       "given_name": "Angela Claire Louise",
       "family_name": "DUBOIS",
