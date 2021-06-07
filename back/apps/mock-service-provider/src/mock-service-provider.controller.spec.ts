@@ -28,6 +28,7 @@ describe('MockServiceProviderController', () => {
     },
     getTokenFromProvider: jest.fn(),
     getUserInfosFromProvider: jest.fn(),
+    getEndSessionUrlFromProvider: jest.fn(),
   };
 
   const loggerServiceMock = ({
@@ -49,12 +50,14 @@ describe('MockServiceProviderController', () => {
   const interactionIdMock = 'interactionIdMockValue';
   const nonceMock = randomStringMock;
   const idpStateMock = 'idpStateMockValue';
-  const idpNonceMock = 'idpNonceMock';
+  const idpNonceMock = 'idpNonceMockValue';
+  const idpIdTokenMock = 'idpIdTokenMockValue';
 
   const sessionDataMock = {
     interactionId: interactionIdMock,
     idpNonce: idpNonceMock,
     idpState: idpStateMock,
+    idpIdToken: idpIdTokenMock,
   };
 
   const cryptographyMock = {
@@ -273,13 +276,62 @@ describe('MockServiceProviderController', () => {
   });
 
   describe('logout', () => {
+    const postLogoutRedirectUriMock = 'https://postLogoutRedirectUriMock';
+    const endSessionUrlMock = `https://endSessionUrlMockMock?id_token_hint=${idpIdTokenMock}&post_logout_redirect_uri=${postLogoutRedirectUriMock}&state=${idpStateMock}`;
+
+    beforeEach(() => {
+      sessionServiceMock.get.mockReturnValueOnce(sessionDataMock);
+      oidcClientServiceMock.getEndSessionUrlFromProvider.mockResolvedValueOnce(
+        endSessionUrlMock,
+      );
+    });
+
+    it('should call session.get() to retrieves idp current cinematic informations', async () => {
+      // action
+      await controller.logout(
+        res,
+        sessionServiceMock,
+        postLogoutRedirectUriMock,
+      );
+
+      // assert
+      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith();
+    });
+
+    it('should call clientService.getEndSessionUrlFromProvider() to build the endSessionUrl', async () => {
+      // action
+      await controller.logout(
+        res,
+        sessionServiceMock,
+        postLogoutRedirectUriMock,
+      );
+
+      // assert
+      expect(
+        oidcClientServiceMock.getEndSessionUrlFromProvider,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        oidcClientServiceMock.getEndSessionUrlFromProvider,
+      ).toHaveBeenCalledWith(
+        undefined,
+        idpStateMock,
+        idpIdTokenMock,
+        postLogoutRedirectUriMock,
+      );
+    });
+
     it('should redirect on the logout callback controller', async () => {
       // action
-      await controller.logout(res);
+      await controller.logout(
+        res,
+        sessionServiceMock,
+        postLogoutRedirectUriMock,
+      );
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/logout-callback');
+      expect(res.redirect).toHaveBeenCalledWith(endSessionUrlMock);
     });
   });
 

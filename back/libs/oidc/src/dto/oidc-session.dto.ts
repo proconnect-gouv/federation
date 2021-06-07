@@ -9,6 +9,7 @@ import {
   MaxLength,
   IsArray,
   IsObject,
+  IsJWT,
 } from 'class-validator';
 import { IOidcIdentity } from '../interfaces';
 
@@ -81,6 +82,11 @@ export class OidcSession {
   @IsString()
   @MinLength(1)
   readonly idpAccessToken?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsJWT()
+  readonly idpIdToken?: string;
 
   // == SP
 

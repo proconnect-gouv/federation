@@ -93,7 +93,7 @@ services:
       - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9232 mock-service-provider-fca"
       - "VIRTUAL_HOST=fsa2v2.docker.dev-franceconnect.fr"
       - 'IdentityProviderAdapterEnv_REDIRECT_URIS=["https://fsa2v2.docker.dev-franceconnect.fr/oidc-callback/envIssuer"]'
-      - 'IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS=["https://fsa2v2.docker.dev-franceconnect.fr/logout-callback"]'
+      - 'IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS=[]'
       - "IdentityProviderAdapterEnv_CLIENT_ID=7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775"
       - "IdentityProviderAdapterEnv_CLIENT_SECRET=+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0="
       # Arbitrary DB number, default is 0 and is used by legacy core.
