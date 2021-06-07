@@ -9,8 +9,8 @@ export interface ServiceProviderBase {
 
 export interface ServiceProvider extends ServiceProviderBase {
   acrValue: string;
-  mocked: boolean;
   name: string;
+  mocked: boolean;
   scopes: string[];
 }
 

@@ -1,24 +1,20 @@
 import { IdentityProviderBase, UserCredentials } from '../../common/types';
 
 export default class IdentityProviderPage {
-  userNameSelector: string;
+  usernameSelector: string;
   passwordSelector: string;
-  submitButtonSelector: string;
+  loginButtonSelector: string;
   originUrl: string;
 
   constructor(args: IdentityProviderBase) {
     const {
-      selectors: { password, submitButton, userName },
+      selectors: { loginButton, password, username },
       url,
     } = args;
-    this.userNameSelector = userName;
+    this.usernameSelector = username;
     this.passwordSelector = password;
-    this.submitButtonSelector = submitButton;
+    this.loginButtonSelector = loginButton;
     this.originUrl = url;
-  }
-
-  visit(): void {
-    cy.visit(this.originUrl);
   }
 
   checkIsVisible(): void {
@@ -30,9 +26,9 @@ export default class IdentityProviderPage {
   }
 
   login(userCredentials: UserCredentials): void {
-    const { password, userName } = userCredentials;
-    cy.get(this.userNameSelector).clear().type(userName);
+    const { password, username } = userCredentials;
+    cy.get(this.usernameSelector).clear().type(username);
     cy.get(this.passwordSelector).clear().type(password, { log: false });
-    cy.get(this.submitButtonSelector).click();
+    cy.get(this.loginButtonSelector).click();
   }
 }
