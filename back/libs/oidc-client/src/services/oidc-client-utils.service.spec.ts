@@ -9,6 +9,7 @@ import {
   OidcClientInvalidStateException,
   OidcClientIdpBlacklistedException,
   OidcClientTokenFailedException,
+  OidcClientGetEndSessionUrlException,
 } from '../exceptions';
 import { OidcClientConfigService } from './oidc-client-config.service';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';
@@ -16,6 +17,13 @@ import { OidcClientUtilsService } from './oidc-client-utils.service';
 
 describe('OidcClientUtilsService', () => {
   let service: OidcClientUtilsService;
+
+  const postLogoutRedirectUriMock = 'https://postLogoutRedirectUriMock';
+
+  const providerUidMock = 'providerUidMockValue';
+  const stateMock = 'stateMockValue';
+  const idTokenMock = 'idTokenMockValue';
+  const endSessionUrlWithParamsMock = `https://endSessionUrlMockMock?id_token_hint=${idTokenMock}&post_logout_redirect_uri=${postLogoutRedirectUriMock}&state=${stateMock}`;
 
   const loggerServiceMock = ({
     setContext: jest.fn(),
@@ -51,12 +59,14 @@ describe('OidcClientUtilsService', () => {
   const callbackMock = jest.fn();
   const userinfoMock = jest.fn();
   const revokeMock = jest.fn();
+  const endSessionUrlMock = jest.fn();
   const clientMock = {
     authorizationUrl: authorizationUrlMock,
     callbackParams: callbackParamsMock,
     callback: callbackMock,
     userinfo: userinfoMock,
     revoke: revokeMock,
+    endSessionUrl: endSessionUrlMock,
     metadata: {
       // oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -398,6 +408,85 @@ describe('OidcClientUtilsService', () => {
       const result = await service.getUserInfo(accessToken, providerId);
       // Then
       expect(result).toBe('userinfoMock Resolve Value');
+    });
+  });
+
+  describe('getEndSessionUrl', () => {
+    beforeEach(() => {
+      oidcClientIssuerServiceMock.getClient.mockResolvedValueOnce(clientMock);
+      clientMock.endSessionUrl.mockReturnValueOnce(endSessionUrlWithParamsMock);
+    });
+
+    it('should retrieves the client instance by calling utils.getClient()', async () => {
+      // When
+      await service.getEndSessionUrl(
+        providerUidMock,
+        stateMock,
+        idTokenMock,
+        postLogoutRedirectUriMock,
+      );
+
+      // Then
+      expect(oidcClientIssuerServiceMock.getClient).toHaveBeenCalledTimes(1);
+      expect(oidcClientIssuerServiceMock.getClient).toHaveBeenCalledWith(
+        providerUidMock,
+      );
+    });
+
+    it('should call client.endSessionUrl() with given parameters', async () => {
+      // When
+      await service.getEndSessionUrl(
+        providerUidMock,
+        stateMock,
+        idTokenMock,
+        postLogoutRedirectUriMock,
+      );
+
+      // Then
+      expect(clientMock.endSessionUrl).toHaveBeenCalledTimes(1);
+      expect(clientMock.endSessionUrl).toHaveBeenCalledWith({
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        id_token_hint: idTokenMock,
+        state: stateMock,
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        post_logout_redirect_uri: postLogoutRedirectUriMock,
+      });
+    });
+
+    it('should returns the endSessionUrl', async () => {
+      // When
+      const result = await service.getEndSessionUrl(
+        providerUidMock,
+        stateMock,
+        idTokenMock,
+        postLogoutRedirectUriMock,
+      );
+
+      // Then
+      expect(result).toStrictEqual(endSessionUrlWithParamsMock);
+    });
+
+    it('should throw an OidcClientGetEndSessionUrlException with the original error as parameter if there is an error building the endSessionUrl', async () => {
+      // given
+      const originalError = new Error('unable to build the url');
+      clientMock.endSessionUrl.mockReset().mockImplementationOnce(() => {
+        throw originalError;
+      });
+      const expectedError = new OidcClientGetEndSessionUrlException(
+        originalError,
+      );
+
+      // When / Then
+      await expect(() =>
+        service.getEndSessionUrl(
+          providerUidMock,
+          stateMock,
+          idTokenMock,
+          postLogoutRedirectUriMock,
+        ),
+      ).rejects.toThrow(expectedError);
     });
   });
 

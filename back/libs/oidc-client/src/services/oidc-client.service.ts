@@ -47,13 +47,14 @@ export class OidcClientService {
 
     this.tracking.track(OidcClientTokenEvent, context);
 
-    const { access_token: accessToken } = tokenSet;
+    const { access_token: accessToken, id_token: idToken } = tokenSet;
     const { acr, amr } = tokenSet.claims();
 
     const tokenResult = {
       acr,
       amr,
       accessToken,
+      idToken,
     };
 
     const errorsOutputs = await validateDto(
@@ -82,6 +83,7 @@ export class OidcClientService {
         amr,
         accessToken,
         tokenResult,
+        idToken,
       },
     });
 
@@ -131,5 +133,19 @@ export class OidcClientService {
     }
 
     return identity;
+  }
+
+  async getEndSessionUrlFromProvider(
+    providerUid: string,
+    stateFromSession: string,
+    idTokenHint?: TokenSet | string,
+    postLogoutRedirectUri?: string,
+  ) {
+    return this.utils.getEndSessionUrl(
+      providerUid,
+      stateFromSession,
+      idTokenHint,
+      postLogoutRedirectUri,
+    );
   }
 }

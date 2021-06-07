@@ -6,6 +6,7 @@ export type TokenParams = {
 
 export type TokenResults = {
   accessToken: string;
+  idToken: string;
   acr: string;
   amr?: string[];
 };
