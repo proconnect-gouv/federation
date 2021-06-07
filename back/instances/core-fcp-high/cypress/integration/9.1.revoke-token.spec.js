@@ -4,7 +4,7 @@ import {
   checkInStringifiedJson,
 } from './mire.utils';
 
-describe('Revoke token', () => {
+describe('9.1 - Revoke token', () => {
   it('should trigger error Y030116 when token is revoked and we call userInfo endpoint', () => {
     basicSuccessScenario({
       userName: 'test',

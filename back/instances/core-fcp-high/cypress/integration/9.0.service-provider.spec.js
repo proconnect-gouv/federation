@@ -1,6 +1,6 @@
 import { getAuthorizeUrl } from './mire.utils';
 
-describe('Service Provider', () => {
+describe('9.0 - Service Provider', () => {
   it('should trigger error Y030106 if SP is not in database', () => {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention

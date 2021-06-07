@@ -104,6 +104,8 @@ export class OidcProviderService {
       );
     }
 
+    this.logger.trace({ interactionId });
+
     return interactionId;
   }
 
@@ -235,6 +237,8 @@ export class OidcProviderService {
         rejectedClaims: [],
       },
     };
+
+    this.logger.trace({ interactionId: account, result });
 
     try {
       return await this.provider.interactionFinished(req, res, result);

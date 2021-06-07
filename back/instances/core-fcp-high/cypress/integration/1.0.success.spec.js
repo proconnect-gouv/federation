@@ -6,7 +6,7 @@ import {
   getAuthorizeUrl,
 } from './mire.utils';
 
-describe('Successful scenarios', () => {
+describe('1.0 - Successful scenarios', () => {
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
@@ -296,5 +296,5 @@ describe('Successful scenarios', () => {
       );
       cy.verifyEmailIsSent('Notification de connexion à FranceConnect+');
     });
-  })
+  });
 });

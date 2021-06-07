@@ -1,6 +1,6 @@
 import { getAuthorizeUrl } from './mire.utils';
 
-describe('Response type', () => {
+describe('8.0.2 - Response type', () => {
   it('should return to the SP with an "unsupported_response_type" error if the query contains a non registered "response_type" (id_token)', () => {
     const url = getAuthorizeUrl({
       // oidc param

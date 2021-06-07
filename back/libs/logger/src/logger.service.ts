@@ -73,11 +73,23 @@ export class LoggerService extends Logger {
     };
   }
 
-  // Proxy `super`, cause we can't mock a parent class
+  /**
+   * @param {LoggerLevelNames} level name
+   * @param {any} log
+   * @param {any} context
+   */
   // istanbul ignore next line
   private internalLogger(level, log, context) {
+    // -- Proxy `super`, cause we can't mock a parent class
     super[level](log, context);
-
+    /**
+     * @todo FC-539
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/539
+     * @author brice
+     * @date 2021-06-02
+     * Add `if (this.isOutputTrace() && log)` to prevent logs to be written
+     * two times in Chrome debugger and terminal.
+     */
     if (this.isOutputTrace()) {
       console[level](log, context);
     }

@@ -1,6 +1,6 @@
 import { getAuthorizeUrl } from './mire.utils';
 
-describe('prompt', () => {
+describe('8.0.0 - prompt', () => {
   it('should not allow prompt=none', () => {
     const url = getAuthorizeUrl({ prompt: 'none' });
     cy.visit(url, { failOnStatusCode: false });
