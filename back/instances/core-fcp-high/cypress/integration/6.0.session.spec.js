@@ -2,9 +2,10 @@ import {
   basicErrorScenario,
   basicScenario,
   getAuthorizeUrl,
+  getIdentityProvider,
 } from './mire.utils';
 
-describe('Session', () => {
+describe('6.0 - Session', () => {
   // -- replace by either `fip1v2` or `fia1v2`
   const idpId = `${Cypress.env('IDP_NAME')}1v2`;
 
@@ -84,6 +85,8 @@ describe('Session', () => {
   it('should have cookie stored for IdP with the property `sameSite` value set to `lax`', () => {
     cy.clearCookies();
 
+    const idpInfo = getIdentityProvider(idpId);
+
     basicScenario({
       idpId,
       eidasLevel: 'eidas2',
@@ -97,9 +100,7 @@ describe('Session', () => {
     cy.getCookie('fc_session_id').then((cookie) => {
       const interactionId = cookie.value.match(/s%3A([^.]+)/).pop();
       cy.request({
-        url: `${Cypress.env(
-          'IDP_ROOT_URL',
-        )}/interaction/${interactionId}/login`,
+        url: `${idpInfo.IDP_ROOT_URL}/interaction/${interactionId}/login`,
         method: 'POST',
         body: {
           login: 'test',

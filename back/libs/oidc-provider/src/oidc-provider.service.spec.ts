@@ -62,6 +62,7 @@ describe('OidcProviderService', () => {
     setContext: jest.fn(),
     verbose: jest.fn(),
     debug: jest.fn(),
+    trace: jest.fn(),
     businessEvent: jest.fn(),
   } as unknown) as LoggerService;
 

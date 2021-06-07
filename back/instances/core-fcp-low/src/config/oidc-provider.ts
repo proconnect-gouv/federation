@@ -47,13 +47,13 @@ export default {
     cookies: {
       keys: env.json('COOKIES_KEYS'),
       long: {
-        maxAge: parseInt(process.env.COOKIE_MAX_AGE, 10), // 20 minutes
+        maxAge: env.number('COOKIE_MAX_AGE'), // 20 minutes
         sameSite: 'lax',
         signed: true,
         path: '/',
       },
       short: {
-        maxAge: parseInt(process.env.COOKIE_MAX_AGE, 10), // 20 minutes
+        maxAge: env.number('COOKIE_MAX_AGE'), // 20 minutes
         sameSite: 'lax',
         signed: true,
         path: '/',
