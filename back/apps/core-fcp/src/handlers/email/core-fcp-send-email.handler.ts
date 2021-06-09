@@ -14,6 +14,7 @@ import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
 import { validateDto } from '@fc/common';
 import { OidcSession } from '@fc/oidc';
 import { EmailsTemplates } from '../../enums';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 
 @Injectable()
 @FeatureHandler('core-fcp-send-email')
@@ -24,6 +25,7 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
     private readonly mailer: MailerService,
+    private readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {
     this.logger.setContext(this.constructor.name);
     this.configMailer = this.config.get<MailerConfig>('Mailer');
@@ -48,12 +50,13 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
   private async getConnectNotificationEmailBodyContent(
     session: OidcSession,
   ): Promise<string> {
-    const { idpName, spIdentity, spName } = session;
+    const { idpId, spIdentity, spName } = session;
+    const { title: idpTitle } = await this.identityProvider.getById(idpId);
     const today = this.getTodayFormattedDate(new Date());
     const connectNotificationEmailParameters = {
       familyName: spIdentity.family_name,
       givenName: spIdentity.given_name,
-      idpName,
+      idpTitle,
       spName,
       today,
     };
@@ -126,7 +129,7 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
     this.mailer.send({
       from,
       to,
-      subject: `Connexion depuis FranceConnect sur ${spName}`,
+      subject: `Notification de connexion au service "${spName}" grâce à FranceConnect+`,
       body,
     });
   }
