@@ -268,7 +268,9 @@ describe('CoreFcpController', () => {
       const req = {
         fc: { interactionId: interactionIdMock },
       };
-      const res = {};
+      const res = {
+        render: jest.fn(),
+      };
       oidcProviderServiceMock.getInteraction.mockResolvedValue({
         uid: 'uid',
         prompt: 'prompt',
@@ -290,26 +292,31 @@ describe('CoreFcpController', () => {
      * @Todo #486 rework test missing assertion or not complete ones
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/486
      */
-    it('should return uid', async () => {
+    it('should call res.render() with the interaction templates and its values', async () => {
       // Given
       const req = {
         fc: { interactionId: interactionIdMock },
       };
-      const res = {};
+      const res = {
+        render: jest.fn(),
+      };
       oidcProviderServiceMock.getInteraction.mockResolvedValue({
         uid: 'uid',
         prompt: 'prompt',
         params: 'params',
       });
       // When
-      const result = await coreController.getInteraction(
-        req,
-        res,
-        params,
-        sessionServiceMock,
-      );
+      await coreController.getInteraction(req, res, params, sessionServiceMock);
       // Then
-      expect(result).toHaveProperty('uid');
+      expect(res.render).toHaveBeenCalledTimes(1);
+      expect(res.render).toHaveBeenCalledWith('interaction', {
+        notifications: undefined,
+        params: 'params',
+        providers: undefined,
+        scope: undefined,
+        spName: 'some SP',
+        uid: 'uid',
+      });
     });
 
     it('should throw if session is not found', async () => {
