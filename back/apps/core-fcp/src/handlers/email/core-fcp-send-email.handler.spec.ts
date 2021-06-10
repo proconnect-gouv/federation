@@ -3,6 +3,7 @@ import { LoggerService } from '@fc/logger';
 import { SessionGenericService } from '@fc/session-generic';
 import { OidcSession } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import {
   MailerNotificationConnectException,
   NoEmailException,
@@ -150,7 +151,7 @@ const template = `
                     <td height="73">
                       <img
                         class="fix"
-                        src="https://auth.franceconnect.gouv.fr/img/logo-fc-plus.svg"
+                        src="https://auth.franceconnect.gouv.fr/img/logo-fc-plus.png"
                         width="150"
                         height="73"
                         border="0"
@@ -373,6 +374,10 @@ describe('CoreFcpSendEmailHandler', () => {
     getById: jest.fn(),
   };
 
+  const identityProviderMock = {
+    getById: jest.fn(),
+  };
+
   const sessionDataMock: OidcSession = {
     idpId: '42',
     idpAcr: 'eidas3',
@@ -395,8 +400,12 @@ describe('CoreFcpSendEmailHandler', () => {
     entityId: 'AAAABBBBCCCCDDDDEEEEFFFFGGGGHHHH',
   };
 
+  const idpMock = {
+    title: 'my grea idp title',
+  };
+
   const connectNotificationEmailParametersMock = {
-    idpName: sessionDataMock.idpName,
+    idpTitle: idpMock.title,
     spName: sessionDataMock.spName,
     // eslint-disable-next-line @typescript-eslint/naming-convention
     givenName: spIdentityWithEmailMock.given_name,
@@ -416,6 +425,7 @@ describe('CoreFcpSendEmailHandler', () => {
         LoggerService,
         SessionGenericService,
         MailerService,
+        IdentityProviderAdapterMongoService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -426,6 +436,8 @@ describe('CoreFcpSendEmailHandler', () => {
       .useValue(sessionServiceMock)
       .overrideProvider(MailerService)
       .useValue(mailerServiceMock)
+      .overrideProvider(IdentityProviderAdapterMongoService)
+      .useValue(identityProviderMock)
       .compile();
 
     service = module.get<CoreFcpSendEmailHandler>(CoreFcpSendEmailHandler);
@@ -463,6 +475,17 @@ describe('CoreFcpSendEmailHandler', () => {
       service['getTodayFormattedDate'] = jest
         .fn()
         .mockReturnValue(connectNotificationEmailParametersMock.today);
+      identityProviderMock.getById.mockResolvedValueOnce(idpMock);
+    });
+
+    it('should call identity provider getById', async () => {
+      // When
+      await service['getConnectNotificationEmailBodyContent'](sessionDataMock);
+      // Then
+      expect(identityProviderMock.getById).toBeCalledTimes(1);
+      expect(identityProviderMock.getById).toBeCalledWith(
+        sessionDataMock.idpId,
+      );
     });
 
     it('should call getTodayFormattedDate', async () => {
@@ -476,8 +499,7 @@ describe('CoreFcpSendEmailHandler', () => {
     it('should throw if any parameters is not valid', async () => {
       // Given
       const sessionDataWithoutEmailMock: OidcSession = {
-        idpName: null,
-        spName: 'my great SP',
+        spName: null,
         spIdentity: spIdentityWithoutEmailMock,
       };
       // When/Then
@@ -499,7 +521,7 @@ describe('CoreFcpSendEmailHandler', () => {
         {
           familyName: spIdentityWithEmailMock.family_name,
           givenName: spIdentityWithEmailMock.given_name,
-          idpName: sessionDataMock.idpName,
+          idpTitle: idpMock.title,
           spName: sessionDataMock.spName,
           today: connectNotificationEmailParametersMock.today,
         },
@@ -555,7 +577,7 @@ describe('CoreFcpSendEmailHandler', () => {
       const expectedEmailParams = {
         body: `connect notification html body content`,
         from: fromMock,
-        subject: `Connexion depuis FranceConnect sur ${sessionDataMock.spName}`,
+        subject: `Notification de connexion au service "${sessionDataMock.spName}" grâce à FranceConnect+`,
         to: [mailTo],
       };
 
