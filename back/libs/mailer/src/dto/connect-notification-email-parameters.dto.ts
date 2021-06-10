@@ -8,7 +8,7 @@ export class ConnectNotificationEmailParameters {
   readonly givenName: string;
 
   @IsString()
-  readonly idpName: string;
+  readonly idpTitle: string;
 
   @IsString()
   readonly spName: string;
