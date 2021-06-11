@@ -4,7 +4,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CryptographyModule } from '@fc/cryptography';
 import { ServiceProviderSchema } from './schemas';
 import { ServiceProviderAdapterMongoService } from './service-provider-adapter-mongo.service';
-import { ServiceProviderCacheInvalidateHandler } from './handlers/service-provider-cache-invalidate.handlers';
+import { ServiceProviderUpdateHandler } from './handlers/service-provider-update.handlers';
 
 @Module({
   imports: [
@@ -14,10 +14,7 @@ import { ServiceProviderCacheInvalidateHandler } from './handlers/service-provid
     ]),
     CqrsModule,
   ],
-  providers: [
-    ServiceProviderAdapterMongoService,
-    ServiceProviderCacheInvalidateHandler,
-  ],
+  providers: [ServiceProviderAdapterMongoService, ServiceProviderUpdateHandler],
   exports: [ServiceProviderAdapterMongoService, MongooseModule],
 })
 export class ServiceProviderAdapterMongoModule {}

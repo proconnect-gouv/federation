@@ -1,4 +1,4 @@
 /* istanbul ignore file */
 
 // Declarative code
-export * from './service-provider-operation-type-changes.event';
+export * from './service-provider-update.event';

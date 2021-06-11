@@ -10,6 +10,7 @@ import {
 } from '../exceptions';
 /** Circular reference for type checking */
 import { OidcProviderService } from '../oidc-provider.service';
+import { IServiceProviderAdapter } from '@fc/oidc';
 
 const consumable = new Set(['AuthorizationCode', 'RefreshToken', 'DeviceCode']);
 
@@ -44,6 +45,7 @@ export class OidcProviderRedisAdapter implements Adapter {
      */
     private readonly logger: LoggerService,
     @Inject(REDIS_CONNECTION_TOKEN) private readonly redis: Redis,
+    private readonly serviceProvider: IServiceProviderAdapter,
     /**
      * Instantiation time argument,
      * must remain the last one.
@@ -58,6 +60,7 @@ export class OidcProviderRedisAdapter implements Adapter {
    */
   static getConstructorWithDI(
     oidcProviderService: OidcProviderService,
+    serviceProviderService: IServiceProviderAdapter,
   ): AdapterConstructor {
     /**
      * Bind services we want to inject from our regular NestJs service.
@@ -68,6 +71,7 @@ export class OidcProviderRedisAdapter implements Adapter {
       null,
       oidcProviderService.logger,
       oidcProviderService.redis,
+      serviceProviderService,
     );
 
     /**
@@ -204,9 +208,14 @@ export class OidcProviderRedisAdapter implements Adapter {
     await multi.exec();
   }
 
-  async find(id: string) {
-    this.logger.debug('Find');
+  private async findServiceProvider(id) {
+    const sp = await this.serviceProvider.getById(id);
 
+    this.logger.trace({ sp });
+    return sp;
+  }
+
+  private async findInRedis(id) {
     const key = this.key(id);
 
     const command = consumable.has(this.contextName) ? 'hgetall' : 'get';
@@ -228,6 +237,16 @@ export class OidcProviderRedisAdapter implements Adapter {
       ...rest,
       ...parsedPayload,
     };
+  }
+
+  async find(id: string) {
+    this.logger.debug('Find');
+
+    if (this.contextName === 'Client') {
+      return await this.findServiceProvider(id);
+    }
+
+    return await this.findInRedis(id);
   }
 
   async findByUid(uid: string) {

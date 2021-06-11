@@ -11,7 +11,7 @@ import {
   ServiceProviderAdapterMongoConfig,
 } from './dto';
 import { Types } from './enums';
-import { ServiceProviderOperationTypeChangesEvent } from './events';
+import { ServiceProviderUpdateEvent } from './events';
 import { ServiceProvider } from './schemas';
 
 @Injectable()
@@ -59,7 +59,7 @@ export class ServiceProviderAdapterMongoService
     );
 
     if (isOperationListened === true) {
-      this.eventBus.publish(new ServiceProviderOperationTypeChangesEvent());
+      this.eventBus.publish(new ServiceProviderUpdateEvent());
     }
   }
 
@@ -146,7 +146,6 @@ export class ServiceProviderAdapterMongoService
   async getList(refreshCache = false): Promise<ServiceProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
       const list: ServiceProvider[] = await this.findAllServiceProvider();
-
       this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
     }
 

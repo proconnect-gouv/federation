@@ -28,7 +28,7 @@ core-fcp-high:
     - docker-stack start \
       csmr-hsm rnipp \
       fsp1v2 fsp2v2 fsp5v2 fsp6v2 \
-      fip1v2 fip13v2 fip14v2 fip15v2 fip16v2 fip17v2 fip18v2 fip19v2 fip20v2 \
+      fip1v2 fip2v2 fip13v2 fip14v2 fip15v2 fip16v2 fip17v2 fip18v2 fip19v2 fip20v2 \
       core-fcp-high
     # ## -- Build like for prod
     #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
