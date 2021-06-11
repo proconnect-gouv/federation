@@ -86,7 +86,6 @@ export class CoreFcpController {
 
   @Get(CoreRoutes.INTERACTION)
   @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Render('interaction')
   async getInteraction(
     @Req() req,
     @Res() res,
@@ -135,14 +134,14 @@ export class CoreFcpController {
       idpFilterExclude,
     );
     const notifications = await this.notifications.getNotifications();
-    return {
+    return res.render('interaction', {
       uid,
       params,
       scope,
       providers,
       notifications,
       spName,
-    };
+    });
   }
 
   @Get(CoreRoutes.INTERACTION_VERIFY)
