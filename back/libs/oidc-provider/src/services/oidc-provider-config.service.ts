@@ -3,17 +3,15 @@
  * configuration function that relies on it.
  * @see OidcProviderService.overrideConfiguration()
  */
-import { get } from 'lodash';
-import Provider, { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
+import { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
   SessionGenericService,
   ISessionGenericBoundContext,
 } from '@fc/session-generic';
-import { OidcSession } from '@fc/oidc';
+import { IServiceProviderAdapter, OidcSession } from '@fc/oidc';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcProviderRedisAdapter } from '../adapters';
@@ -29,19 +27,14 @@ export class OidcProviderConfigService {
     private readonly config: ConfigService,
     private readonly sessionService: SessionGenericService,
     private readonly errorService: OidcProviderErrorService,
+    /**
+     * @todo remove mention of ServiceProviderAdapterMongoService
+     * We do not want to be bound to an implementation
+     */
     @Inject(SERVICE_PROVIDER_SERVICE_TOKEN)
-    private readonly serviceProvider: ServiceProviderAdapterMongoService,
+    private readonly serviceProvider: IServiceProviderAdapter,
   ) {
     this.logger.setContext(this.constructor.name);
-  }
-
-  overrideConfiguration(configuration: object, provider: Provider): void {
-    /**
-     * Use string literral because `configuration` is not exposed
-     * by Provider interface
-     */
-    provider['configuration'] = (path: string) =>
-      path ? get(configuration, path) : configuration;
   }
 
   /**
@@ -55,11 +48,6 @@ export class OidcProviderConfigService {
   async getConfig(
     oidcProviderService: OidcProviderService,
   ): Promise<OidcProviderConfig> {
-    /**
-     * Get SP's information from provided serviceProviderService
-     */
-    const clients = await this.serviceProvider.getList();
-
     /**
      * Build our memory adapter for oidc-provider
      * @see https://github.com/panva/node-oidc-provider/tree/master/docs#adapter
@@ -81,6 +69,7 @@ export class OidcProviderConfigService {
      */
     const adapter = OidcProviderRedisAdapter.getConstructorWithDI(
       oidcProviderService,
+      this.serviceProvider,
     );
 
     /**
@@ -128,7 +117,6 @@ export class OidcProviderConfigService {
           },
         },
         adapter,
-        clients,
         findAccount,
         pairwiseIdentifier,
         renderError,

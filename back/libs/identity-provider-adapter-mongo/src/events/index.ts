@@ -1,4 +1,4 @@
 /* istanbul ignore file */
 
 // Declarative code
-export * from './idendity-provider-operation-type-changes.event';
+export * from './idendity-provider-update.event';

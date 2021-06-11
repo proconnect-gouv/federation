@@ -2,12 +2,12 @@
 
 // Declarative code
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
-import { ServiceProviderOperationTypeChangesEvent } from '../events/service-provider-operation-type-changes.event';
+import { ServiceProviderUpdateEvent } from '../events/service-provider-update.event';
 import { ServiceProviderAdapterMongoService } from '../service-provider-adapter-mongo.service';
 
-@EventsHandler(ServiceProviderOperationTypeChangesEvent)
-export class ServiceProviderCacheInvalidateHandler
-  implements IEventHandler<ServiceProviderOperationTypeChangesEvent> {
+@EventsHandler(ServiceProviderUpdateEvent)
+export class ServiceProviderUpdateHandler
+  implements IEventHandler<ServiceProviderUpdateEvent> {
   constructor(
     private readonly providerService: ServiceProviderAdapterMongoService,
   ) {}

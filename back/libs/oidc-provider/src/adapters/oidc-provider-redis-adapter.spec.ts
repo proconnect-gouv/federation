@@ -39,11 +39,17 @@ describe('OidcProviderRedisAdapter', () => {
   };
 
   const testAdapterName = 'testAdapterName';
+  const ServiceProviderAdapterMock = {
+    getList: jest.fn(),
+    shouldExcludeIdp: jest.fn(),
+    getById: jest.fn(),
+  };
 
   beforeEach(() => {
     adapter = new OidcProviderRedisAdapter(
       loggerMock,
       (redisMock as unknown) as Redis,
+      ServiceProviderAdapterMock,
       testAdapterName,
     );
 
@@ -63,6 +69,7 @@ describe('OidcProviderRedisAdapter', () => {
     } as unknown) as OidcProviderService;
     const BoundClass = OidcProviderRedisAdapter.getConstructorWithDI(
       oidcProviderService,
+      ServiceProviderAdapterMock,
     );
 
     it('should pass controls in oidc-provider', () => {
@@ -287,6 +294,7 @@ describe('OidcProviderRedisAdapter', () => {
       const authorizationCodeAdapter = new OidcProviderRedisAdapter(
         loggerMock,
         (redisMock as unknown) as Redis,
+        ServiceProviderAdapterMock,
         'AuthorizationCode',
       );
       const keyMock = 'foo';
@@ -383,17 +391,59 @@ describe('OidcProviderRedisAdapter', () => {
     });
   });
 
-  describe('find', () => {
+  describe('findServiceProvider', () => {
+    it('should call serviceProvider getById', async () => {
+      // GIVEN
+      const id = 'greatId';
+
+      // WHEN
+      adapter['findServiceProvider'](id);
+
+      // THEN
+      expect(ServiceProviderAdapterMock.getById).toHaveBeenCalledTimes(1);
+      expect(ServiceProviderAdapterMock.getById).toHaveBeenCalledWith(id);
+    });
+
+    it('should call the logger', async () => {
+      // GIVEN
+      const id = 'greatId';
+      const sp = { name: 'greatFS' };
+      ServiceProviderAdapterMock.getById.mockResolvedValueOnce(sp);
+
+      // WHEN
+      await adapter['findServiceProvider'](id);
+
+      // THEN
+      expect(loggerMock.trace).toHaveBeenCalledTimes(1);
+      expect(loggerMock.trace).toHaveBeenCalledWith({ sp });
+    });
+
+    it('should return the found service provider', async () => {
+      // GIVEN
+      const id = 'greatId';
+      const sp = { name: 'greatFS' };
+      ServiceProviderAdapterMock.getById.mockResolvedValueOnce(sp);
+
+      // WHEN
+      const result = await adapter['findServiceProvider'](id);
+
+      // THEN
+      expect(result).toEqual(sp);
+    });
+  });
+
+  describe('findInRedis', () => {
     it('should call hgetall rather than get if name is in consumable var', async () => {
       // Given
       const authorizationCodeAdapter = new OidcProviderRedisAdapter(
         loggerMock,
         (redisMock as unknown) as Redis,
+        ServiceProviderAdapterMock,
         'AuthorizationCode',
       );
       const idMock = 'foo';
       // When
-      await authorizationCodeAdapter.find(idMock);
+      await authorizationCodeAdapter['findInRedis'](idMock);
       // Then
       expect(redisMock.hgetall).toHaveBeenCalledTimes(1);
       expect(redisMock.hgetall).toHaveBeenCalledWith(
@@ -402,11 +452,11 @@ describe('OidcProviderRedisAdapter', () => {
       expect(redisMock.get).toHaveBeenCalledTimes(0);
     });
 
-    it('should call get rather than hgetall if name is in consumable var', async () => {
+    it('should call get rather than hgetall if name is not in consumable var', async () => {
       // Given
       const idMock = 'foo';
       // When
-      await adapter.find(idMock);
+      await adapter['findInRedis'](idMock);
       // Then
       expect(redisMock.get).toHaveBeenCalledTimes(1);
       expect(redisMock.get).toHaveBeenCalledWith(
@@ -414,15 +464,17 @@ describe('OidcProviderRedisAdapter', () => {
       );
       expect(redisMock.hgetall).toHaveBeenCalledTimes(0);
     });
+
     it('should return undefined if response is empty', async () => {
       // Given
       const idMock = 'foo';
       redisMock.get.mockResolvedValue(null);
       // When
-      const result = await adapter.find(idMock);
+      const result = await adapter['findInRedis'](idMock);
       // Then
       expect(result).toBe(undefined);
     });
+
     it('should return an object parsed from JSON if response is a string', async () => {
       // Given
       const idMock = 'foo';
@@ -430,12 +482,13 @@ describe('OidcProviderRedisAdapter', () => {
       adapter['parsedPayload'] = jest.fn();
       adapter['parsedPayload'].mockReturnValue({ foo: 'bar' });
       // When
-      const result = await adapter.find(idMock);
+      const result = await adapter['findInRedis'](idMock);
       // Then
       expect(result).toEqual({ foo: 'bar' });
       expect(adapter['parsedPayload']).toHaveBeenCalledTimes(1);
       expect(adapter['parsedPayload']).toHaveBeenCalledWith('{"foo":"bar"}');
     });
+
     it('should return a merged object if response is an object', async () => {
       // Given
       const idMock = 'foo';
@@ -446,11 +499,48 @@ describe('OidcProviderRedisAdapter', () => {
       adapter['parsedPayload'] = jest.fn();
       adapter['parsedPayload'].mockReturnValue({ fizz: 'buzz' });
       // When
-      const result = await adapter.find(idMock);
+      const result = await adapter['findInRedis'](idMock);
       // Then
       expect(result).toEqual({ fizz: 'buzz', foo: 'bar' });
       expect(adapter['parsedPayload']).toHaveBeenCalledTimes(1);
       expect(adapter['parsedPayload']).toHaveBeenCalledWith('{"fizz":"buzz"}');
+    });
+  });
+
+  describe('find', () => {
+    const id = 'greatId';
+    it('should call the logger', async () => {
+      // WHEN
+      adapter.find(id);
+
+      // THEN
+      expect(loggerMock.debug).toHaveBeenCalledTimes(1);
+      expect(loggerMock.debug).toHaveBeenCalledWith('Find');
+    });
+
+    it('should return found Service Provider if the contextName is client', async () => {
+      // GIVEN
+      adapter['contextName'] = 'Client';
+      adapter['findServiceProvider'] = jest.fn();
+
+      // WHEN
+      adapter.find(id);
+
+      // THEN
+      expect(adapter['findServiceProvider']).toHaveBeenCalledTimes(1);
+      expect(adapter['findServiceProvider']).toHaveBeenCalledWith(id);
+    });
+
+    it('should return findInRedis if the contextName is not client', async () => {
+      // GIVEN
+      adapter['findInRedis'] = jest.fn();
+
+      // WHEN
+      adapter.find(id);
+
+      // THEN
+      expect(adapter['findInRedis']).toHaveBeenCalledTimes(1);
+      expect(adapter['findInRedis']).toHaveBeenCalledWith(id);
     });
   });
 
