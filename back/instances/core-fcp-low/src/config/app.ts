@@ -4,4 +4,5 @@
 export default {
   name: 'FC_CORE_LOW',
   urlPrefix: '/api/v2',
+  fqdn: process.env.FQDN,
 };

@@ -334,6 +334,10 @@ describe('CoreFcpSendEmailHandler', () => {
     from: fromMock,
   };
 
+  const configAppMock = {
+    fqdn: 'my-instance-domain',
+  };
+
   const loggerServiceMock = {
     setContext: jest.fn(),
     debug: jest.fn(),
@@ -412,6 +416,7 @@ describe('CoreFcpSendEmailHandler', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     familyName: spIdentityWithEmailMock.family_name,
     today: 'Le 01/01/2021 à 14:14',
+    fqdn: 'my-instance-domain',
   };
 
   beforeEach(async () => {
@@ -476,8 +481,17 @@ describe('CoreFcpSendEmailHandler', () => {
         .fn()
         .mockReturnValue(connectNotificationEmailParametersMock.today);
       identityProviderMock.getById.mockResolvedValueOnce(idpMock);
+      configServiceMock.get.mockReturnValue(configAppMock);
     });
 
+    it('should get fqdn back from app config', async () => {
+      // When
+      await service['getConnectNotificationEmailBodyContent'](sessionDataMock);
+      // Then
+      expect(configServiceMock.get).toHaveBeenCalledTimes(2);
+      expect(configServiceMock.get).toHaveBeenCalledWith('Mailer');
+      expect(configServiceMock.get).toHaveBeenCalledWith('App');
+    });
     it('should call identity provider getById', async () => {
       // When
       await service['getConnectNotificationEmailBodyContent'](sessionDataMock);
@@ -524,6 +538,7 @@ describe('CoreFcpSendEmailHandler', () => {
           idpTitle: idpMock.title,
           spName: sessionDataMock.spName,
           today: connectNotificationEmailParametersMock.today,
+          fqdn: connectNotificationEmailParametersMock.fqdn,
         },
       );
     });
