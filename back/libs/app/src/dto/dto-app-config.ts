@@ -1,4 +1,4 @@
-import { IsString } from 'class-validator';
+import { IsOptional, IsString } from 'class-validator';
 
 export class AppConfig {
   @IsString()
@@ -11,4 +11,8 @@ export class AppConfig {
    */
   @IsString()
   readonly urlPrefix: string;
+
+  @IsOptional()
+  @IsString()
+  readonly fqdn?: string;
 }
