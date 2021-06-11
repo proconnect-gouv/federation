@@ -13,7 +13,7 @@ export class ServiceProviderAdapterEnvService
       'ServiceProviderAdapterEnvConfig',
     ) as ServiceProviderMetadata;
 
-    return [configuredSp];
+    return [JSON.parse(JSON.stringify(configuredSp))];
   }
 
   async shouldExcludeIdp(spId: string, idpId: string): Promise<boolean> {

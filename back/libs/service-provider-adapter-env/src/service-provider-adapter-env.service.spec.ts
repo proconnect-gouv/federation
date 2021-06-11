@@ -101,7 +101,7 @@ describe('ServiceProviderService', () => {
       expect(result).toBeInstanceOf(Promise);
     });
 
-    it('should return service provider list)', async () => {
+    it('should return service provider list', async () => {
       const expected = [
         {
           ...validServiceProviderMock,
@@ -118,7 +118,7 @@ describe('ServiceProviderService', () => {
       const result = await service.getList();
 
       // expect
-      expect(result).toStrictEqual(expected);
+      expect(result).toEqual(JSON.parse(JSON.stringify(expected)));
     });
   });
 

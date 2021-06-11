@@ -19,3 +19,14 @@ Les parties relative à la gestion des erreurs et à la configuration on été d
 - `./services/oidc-provider-config.service.ts`
 
 La gestion des différents middlewares étant une partie métier, ces derniers ont été déplacés dans le `/lib/core/core.service.ts` à l'intérieur de la librairie core.
+
+### Le double adapter
+
+Dans le cas d'une mise à jour de base de données, le cache de service provider se met à jour.
+Ce dernier "prévient" les autres services qu'il est opérationnel et déclenche de fait une mise à jour de la configuration de oidc-provider.
+Dans cette optique, oidc-provider doit pouvoir piocher dans ce cache la liste des services providers lorsqu'il l'estime nécessaire par l'intermédiaire d'un adapter.
+Il y a deux possibilités pour récupérer l'information:
+
+- soit la liste provient de redis
+- soit la liste provient du cache de service provider
+  Donc, en fonction du contexte définit par oidc-provider, l'adapter appelera un autre adapter lui fournissant la liste correcte des données

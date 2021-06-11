@@ -2,12 +2,12 @@
 
 // Declarative code
 import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
-import { IdentityProviderOperationTypeChangesEvent } from '../events';
+import { IdentityProviderUpdateEvent } from '../events';
 import { IdentityProviderAdapterMongoService } from '../identity-provider-adapter-mongo.service';
 
-@EventsHandler(IdentityProviderOperationTypeChangesEvent)
-export class IdentityProviderOperationTypeChangesHandler
-  implements IEventHandler<IdentityProviderOperationTypeChangesEvent> {
+@EventsHandler(IdentityProviderUpdateEvent)
+export class IdentityProviderUpdateHandler
+  implements IEventHandler<IdentityProviderUpdateEvent> {
   constructor(
     private readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {}
