@@ -37,7 +37,7 @@ export class OidcClientModule {
       providers: [
         {
           provide: IDENTITY_PROVIDER_SERVICE,
-          useClass: identityProvider,
+          useExisting: identityProvider,
         },
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,

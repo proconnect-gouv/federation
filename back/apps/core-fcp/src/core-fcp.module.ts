@@ -35,7 +35,6 @@ import {
   OidcProviderTokenEventHandler,
   OidcProviderUserinfoEventHandler,
   TrackableEventHandler,
-  ServiceProviderOperationTypeChangesHandler,
 } from '@fc/core';
 import { ScopesModule } from '@fc/scopes';
 import { FeatureHandlerModule } from '@fc/feature-handler';
@@ -97,7 +96,6 @@ import {
     OidcProviderTokenEventHandler,
     OidcProviderUserinfoEventHandler,
     TrackableEventHandler,
-    ServiceProviderOperationTypeChangesHandler,
     CoreFcpDefaultVerifyHandler,
     CoreFcpEidasVerifyHandler,
     CoreFcpSendEmailHandler,

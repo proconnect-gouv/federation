@@ -135,13 +135,6 @@ export class OidcProviderService {
     return this.provider;
   }
 
-  async reloadConfiguration(): Promise<void> {
-    const configuration = await this.configService.getConfig(this);
-    this.logger.debug(`Reload oidc-provider configuration.`);
-
-    this.configService.overrideConfiguration(configuration, this.provider);
-  }
-
   /**
    * Add global request timeout
    * @see https://github.com/panva/node-oidc-provider/blob/HEAD/docs/README.md#httpoptions

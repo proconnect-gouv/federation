@@ -9,7 +9,7 @@ import { OidcProviderService } from '../oidc-provider.service';
 import { OidcProviderConfigService } from './oidc-provider-config.service';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
 
-describe('OidcProviderErrorService', () => {
+describe('OidcProviderConfigService', () => {
   let service: OidcProviderConfigService;
 
   const loggerServiceMock = ({
@@ -44,7 +44,6 @@ describe('OidcProviderErrorService', () => {
   };
 
   const serviceProviderServiceMock = {
-    getList: jest.fn(),
     getById: jest.fn(),
   };
 
@@ -112,85 +111,31 @@ describe('OidcProviderErrorService', () => {
     service['provider'] = providerMock as any;
   });
 
-  describe('overrideConfiguration()', () => {
-    it('should make the configuration method return fresh data', () => {
-      // Given
-      const configMock = {
-        foo: {
-          bar: 'bar value',
-        },
-      };
-      service['provider'] = providerMock;
-      // When
-      service.overrideConfiguration(configMock, service['provider']);
-      const configuration = service['provider']['configuration'];
-      const result = configuration('foo.bar');
-      // Then
-      expect(result).toBe('bar value');
-    });
-
-    it('should give the latest version of data', () => {
-      // Given
-      const newerConfigMock = {
-        foo: {
-          bar: 'fresh bar value',
-        },
-      };
-      service['provider'] = ({
-        configuration: () => 'bar value',
-      } as unknown) as Provider;
-      // When
-      service.overrideConfiguration(newerConfigMock, service['provider']);
-      const result = service['provider']['configuration']('foo.bar');
-      // Then
-      expect(result).toBe('fresh bar value');
-    });
-
-    it('should make the whole config available', () => {
-      // Given
-      const configMock = {
-        foo: {
-          bar: 'fresh bar value',
-        },
-      };
-      service['provider'] = providerMock;
-      // When
-      service.overrideConfiguration(configMock, service['provider']);
-      const result = service['provider']['configuration']();
-      // Then
-      expect(result).toBe(configMock);
-    });
-  });
-
   describe('getConfig()', () => {
     it('should call several services and concat their ouputs', async () => {
       // Given
       OidcProviderRedisAdapter.getConstructorWithDI = jest
         .fn()
         .mockReturnValue(oidcProviderRedisAdapterMock);
+
       // When
       const result = await service.getConfig(oidcProviderServiceMock);
-      // Then
-      expect(serviceProviderServiceMock.getList).toHaveBeenCalledTimes(1);
 
+      // Then
       expect(
         OidcProviderRedisAdapter.getConstructorWithDI,
       ).toHaveBeenCalledTimes(1);
       expect(
         OidcProviderRedisAdapter.getConstructorWithDI,
-      ).toHaveBeenCalledWith(oidcProviderServiceMock);
+      ).toHaveBeenCalledWith(
+        oidcProviderServiceMock,
+        serviceProviderServiceMock,
+      );
 
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
       expect(configServiceMock.get).toHaveBeenCalledWith('OidcProvider');
 
       expect(result).toMatchObject(configOidcProviderMock);
-    });
-
-    it('should pass refresh flag to serviceProvider Service', async () => {
-      // When
-      await service.getConfig(oidcProviderServiceMock);
-      // Then
-      expect(serviceProviderServiceMock.getList).toHaveBeenCalledTimes(1);
     });
 
     it('should bind methods to config', async () => {

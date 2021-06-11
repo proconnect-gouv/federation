@@ -14,7 +14,7 @@ import {
   IdentityProviderAdapterMongoConfig,
 } from './dto';
 import { IdentityProvider } from './schemas';
-import { IdentityProviderOperationTypeChangesEvent } from './events';
+import { IdentityProviderUpdateEvent } from './events';
 
 @Injectable()
 export class IdentityProviderAdapterMongoService
@@ -61,9 +61,8 @@ export class IdentityProviderAdapterMongoService
     const isListenedOperation: boolean = operationTypes.includes(
       stream.operationType,
     );
-
     if (isListenedOperation) {
-      this.eventBus.publish(new IdentityProviderOperationTypeChangesEvent());
+      this.eventBus.publish(new IdentityProviderUpdateEvent());
     }
   }
 
@@ -169,7 +168,6 @@ export class IdentityProviderAdapterMongoService
     if (refreshCache || !this.listCache) {
       this.logger.debug('Refresh cache from DB');
       const list: IdentityProvider[] = await this.findAllIdentityProvider();
-
       this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
 
       this.logger.trace({ step: 'REFRESH', list: this.listCache });
@@ -234,7 +232,6 @@ export class IdentityProviderAdapterMongoService
       result[oidcName] = source[legacyName];
       Reflect.deleteProperty(result, legacyName);
     });
-
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
     result.client_secret = this.decryptClientSecret(source.client_secret);
