@@ -242,25 +242,6 @@ describe('OidcProviderService', () => {
     });
   });
 
-  describe('reloadConfiguration', () => {
-    it('Should call getConfig and overrideConfiguration', async () => {
-      // Given
-      jest.useFakeTimers();
-      // Can't use jest.spyOn() on private
-      const overrideConfigurationMock = jest.fn();
-      const getConfigMock = jest.fn();
-      service['configService'][
-        'overrideConfiguration'
-      ] = overrideConfigurationMock;
-      service['configService']['getConfig'] = getConfigMock;
-      // When
-      await service['reloadConfiguration']();
-      // Then
-      expect(getConfigMock).toHaveBeenCalledTimes(1);
-      expect(overrideConfigurationMock).toHaveBeenCalledTimes(1);
-    });
-  });
-
   describe('finishInteraction', () => {
     // Given
     const reqMock = {

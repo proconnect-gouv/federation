@@ -4,7 +4,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { CryptographyModule } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
 import { IdentityProviderSchema } from './schemas';
-import { IdentityProviderOperationTypeChangesHandler } from './handlers';
+import { IdentityProviderUpdateHandler } from './handlers';
 
 @Module({
   imports: [
@@ -16,7 +16,7 @@ import { IdentityProviderOperationTypeChangesHandler } from './handlers';
   ],
   providers: [
     IdentityProviderAdapterMongoService,
-    IdentityProviderOperationTypeChangesHandler,
+    IdentityProviderUpdateHandler,
   ],
   exports: [IdentityProviderAdapterMongoService, MongooseModule],
 })

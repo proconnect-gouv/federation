@@ -52,6 +52,16 @@ _e2e_idp_update_desactivate() {
   cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls  --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-update-desactivate.js
 }
 
+_e2e_idp_update_wrong_issuer() {
+  echo "Update idp in `core-fcp-high` database, set a wrong secret idp..."
+  cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls  --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-update-wrong-issuer.js
+}
+
+_e2e_sp_update_scopes() {
+  echo "Update sp in `core-fcp-high` database, autorize fewer scopes..."
+  cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls  --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-sp-update-scopes.js
+}
+
 _e2e_idp_remove() {
   echo "Remove idp in `core-fcp-high` database..."
   cd ${WORKING_DIR} && docker-compose exec -T mongo4 mongo -u 'fc' -p 'pass' --host mongo4 --tls  --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/e2e-idp-remove.js
@@ -97,6 +107,14 @@ case "$action" in
 
   idp_update_desactivate)
     _e2e_idp_update_desactivate $@
+    ;;
+
+  idp_update_wrong_issuer)
+    _e2e_idp_update_wrong_issuer $@
+    ;;
+
+  sp_update_scopes)
+    _e2e_sp_update_scopes $@
     ;;
 
   idp_remove)
