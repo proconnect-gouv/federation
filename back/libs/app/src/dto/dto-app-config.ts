@@ -36,4 +36,8 @@ export class AppConfig {
   @ValidateNested()
   @Type(() => HttpsOptions)
   readonly httpsOptions: HttpsOptions;
+
+  @IsOptional()
+  @IsString()
+  readonly fqdn?: string;
 }

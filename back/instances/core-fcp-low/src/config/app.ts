@@ -12,5 +12,6 @@ export default {
   httpsOptions: {
     key: env.file('HTTPS_SERVER_KEY', { optional: true }),
     cert: env.file('HTTPS_SERVER_CERT', { optional: true }),
+    fqdn: process.env.FQDN,
   },
 } as AppConfig;

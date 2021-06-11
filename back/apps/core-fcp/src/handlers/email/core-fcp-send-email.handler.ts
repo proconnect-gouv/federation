@@ -13,8 +13,9 @@ import {
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
 import { validateDto } from '@fc/common';
 import { OidcSession } from '@fc/oidc';
-import { EmailsTemplates } from '../../enums';
+import { AppConfig } from '@fc/app';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { EmailsTemplates } from '../../enums';
 
 @Injectable()
 @FeatureHandler('core-fcp-send-email')
@@ -50,6 +51,7 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
   private async getConnectNotificationEmailBodyContent(
     session: OidcSession,
   ): Promise<string> {
+    const { fqdn } = this.config.get<AppConfig>('App');
     const { idpId, spIdentity, spName } = session;
     const { title: idpTitle } = await this.identityProvider.getById(idpId);
     const today = this.getTodayFormattedDate(new Date());
@@ -59,6 +61,7 @@ export class CoreFcpSendEmailHandler implements IFeatureHandler {
       idpTitle,
       spName,
       today,
+      fqdn,
     };
 
     const dtoValidationErrors = await validateDto(
