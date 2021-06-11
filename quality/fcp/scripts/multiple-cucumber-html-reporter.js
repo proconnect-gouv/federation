@@ -1,0 +1,89 @@
+/**
+ * Generate a HTML report
+ * @link https://github.com/wswebcreation/multiple-cucumber-html-reporter
+ */
+const reporter = require('multiple-cucumber-html-reporter');
+
+// Fetch Test Run Context
+
+const platform =
+  process.env.CYPRESS_PLATFORM === 'fcp-high'
+    ? 'FranceConnect+'
+    : 'FranceConnect';
+const testEnv = process.env.CYPRESS_TEST_ENV || 'docker';
+const gitBranch =
+  process.env.CI_MERGE_REQUEST_SOURCE_BRANCH_NAME ||
+  process.env.CI_COMMIT_BRANCH ||
+  '';
+const gitBuild = process.env.CI_JOB_ID || 'local';
+const version =
+  process.env.PLATFORM_VERSION || process.env.CI_COMMIT_SHORT_SHA || 'unknown';
+const device = gitBuild === 'local' ? 'Docker Local' : 'Docker GitLab';
+
+// Add metadata
+
+const reportName = `${platform} ${gitBranch} (${testEnv})`;
+
+const customData = {
+  title: 'Run info',
+  data: [
+    { label: 'Project', value: platform },
+    { label: 'Version', value: version },
+    { label: 'Branch', value: gitBranch },
+    { label: 'Environment', value: testEnv },
+    { label: 'Build', value: gitBuild },
+  ],
+};
+
+/**
+ * @todo Make browser metadata dynamic
+ * @author: Nicolas
+ * @date: 11/06/2021
+ */
+const metadata = {
+  browser: {
+    name: 'chrome',
+    version: '91',
+  },
+  device,
+  platform: {
+    name: 'linux',
+    version: 'Debian 10',
+  },
+};
+
+// Report options
+
+/*
+  All options
+  const customMetadata = options.customMetadata || false;
+  const customData = options.customData || null;
+  const style = options.overrideStyle || REPORT_STYLESHEET;
+  const customStyle = options.customStyle;
+  const disableLog = options.disableLog;
+  const openReportInBrowser = options.openReportInBrowser;
+  const reportName = options.reportName || DEFAULT_REPORT_NAME;
+  const reportPath = path.resolve(process.cwd(), options.reportPath);
+  const saveCollectedJSON = options.saveCollectedJSON;
+  const displayDuration = options.displayDuration || false;
+  const displayReportTime = options.displayReportTime || false;
+  const durationInMS = options.durationInMS || false;
+  const hideMetadata = options.hideMetadata || false;
+  const pageTitle = options.pageTitle || 'Multiple Cucumber HTML Reporter';
+  const pageFooter = options.pageFooter || false;
+  const useCDN = options.useCDN || false;
+  const staticFilePath = options.staticFilePath || false;
+*/
+
+const options = {
+  jsonDir: 'cypress/reports/cucumber',
+  reportPath: 'cypress/reports/cucumber/report.html',
+  pageTitle: reportName,
+  reportName,
+  displayDuration: true,
+  displayReportTime: true,
+  metadata,
+  customData,
+};
+
+reporter.generate(options);

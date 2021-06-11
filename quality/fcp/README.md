@@ -51,10 +51,14 @@ yarn start:high
 CYPRESS_TEST_ENV=integ01 yarn start:low
 ```
 
-### Generate/Open the Cucumber HTML report
+### Generate the Cucumber HTML report
 
 ```
-yarn report
+# Add Screenshots/Videos to the Cucumber logs
+yarn report:prepare
+
+# Generate the report
+CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=recette CI_MERGE_REQUEST_SOURCE_BRANCH_NAME=FC-513 CI_JOB_ID=123456789 PLATFORM_VERSION=1.2.3 yarn report:generate
 ```
 
 ## Plugins VSCode
