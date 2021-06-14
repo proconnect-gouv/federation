@@ -2,8 +2,9 @@
  * Add Screenshot and Video attachments to the Cucumber logs
  */
 import * as fs from 'fs';
-import * as glob from 'glob';
 import * as path from 'path';
+
+import * as glob from 'glob';
 
 // Fetch Arguments
 const [
@@ -40,11 +41,14 @@ const getFailedStepFromScenario = (cuke, scenarioName) => {
 };
 
 const addScreenshotToStep = (screenshotPath, step) => {
-  const data = fs.readFileSync(screenshotPath);
-  if (data) {
-    const base64Image = Buffer.from(data, 'binary').toString('base64');
-    step.embeddings.push({ data: base64Image, mime_type: 'image/png' });
-  }
+  const screenshotUri = screenshotPath.replace(
+    new RegExp(`^.*${screenshotsDir}`),
+    '../assets/screenshots',
+  );
+  const screenshotImage = `<img class="screenshot" src="${encodeURI(
+    screenshotUri,
+  )}" />`;
+  step.embeddings.push({ data: screenshotImage, mime_type: 'text/html' });
 };
 
 const videoContainer = (videoPath) => {

@@ -2,6 +2,8 @@
  * Generate a HTML report
  * @link https://github.com/wswebcreation/multiple-cucumber-html-reporter
  */
+import * as fs from 'fs-extra';
+
 import * as reporter from 'multiple-cucumber-html-reporter';
 
 // Fetch Test Run Context
@@ -88,3 +90,15 @@ const options = {
 };
 
 reporter.generate(options);
+
+// Move the screenshots into the assets folder
+const originFolder = 'cypress/screenshots';
+const destinationFolder = `${reportPath}/assets/screenshots`;
+fs.copy(originFolder, destinationFolder, (err) => {
+  if (err) {
+    // eslint-disable-next-line no-console
+    return console.error(err);
+  }
+  // eslint-disable-next-line no-console
+  console.log('screenshots copied!');
+});
