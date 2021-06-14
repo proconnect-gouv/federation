@@ -29,9 +29,9 @@ describe('MockIdentityProviderFcaController', () => {
     finishInteraction: jest.fn(),
   };
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const sessionServiceMock = {
     set: jest.fn(),

@@ -58,10 +58,10 @@ describe('EuIdentityToFrController', () => {
     finishInteraction: jest.fn(),
   };
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     warn: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const sessionServiceOidcMock = {
     set: jest.fn(),
@@ -511,9 +511,8 @@ describe('EuIdentityToFrController', () => {
           interactionMock,
         );
 
-        euIdentityToFrController[
-          'buildRedirectUriErrorUrl'
-        ] = buildRedirectUriErrorUrlMock;
+        euIdentityToFrController['buildRedirectUriErrorUrl'] =
+          buildRedirectUriErrorUrlMock;
       });
 
       it('should retrieves the interaction using req and res', async () => {

@@ -16,9 +16,8 @@ export class IsValidPromptConstraint extends ArrayAtLeastOneConstraint {
   configValues: OidcProviderPrompt[];
   constructor(@Inject('ConfigService') public readonly config: ConfigService) {
     super();
-    const { forcedPrompt } = this.config.get<OidcProviderConfig>(
-      'OidcProvider',
-    );
+    const { forcedPrompt } =
+      this.config.get<OidcProviderConfig>('OidcProvider');
     this.configValues = forcedPrompt;
   }
 

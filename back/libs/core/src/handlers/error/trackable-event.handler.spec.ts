@@ -7,7 +7,7 @@ describe('TrackableEventHandler', () => {
    * ETQ Dev, je regarde pourquoi on ne peut pas tester des vrais class dans JEST
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/254
    */
-  const trackingServiceMock = ({
+  const trackingServiceMock = {
     EventsMap: {
       FC_RECEIVED_DECEASED_RNIPP: {
         event: 'FC_RECEIVED_DECEASED_RNIPP',
@@ -24,7 +24,7 @@ describe('TrackableEventHandler', () => {
       },
     },
     log: jest.fn(),
-  } as unknown) as TrackingService;
+  } as unknown as TrackingService;
 
   const handler: TrackableEventHandler = new TrackableEventHandler(
     trackingServiceMock,

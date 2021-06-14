@@ -106,7 +106,7 @@ describe('ConfigService', () => {
       // Given
       const part = 42;
       // Then
-      expect(() => service.get((part as unknown) as string)).toThrow(
+      expect(() => service.get(part as unknown as string)).toThrow(
         UnknownConfigurationNameError,
       );
     });

@@ -43,9 +43,8 @@ export class LightProtocolCommonsService {
    * @returns An id as key for caching, the issuer of the token and the date of the emission of the token
    */
   parseToken(token: string, secret: string): IParsedToken {
-    const { maxTokenSize } = this.config.get<EidasLightProtocolConfig>(
-      'EidasLightProtocol',
-    );
+    const { maxTokenSize } =
+      this.config.get<EidasLightProtocolConfig>('EidasLightProtocol');
 
     if (token.length > maxTokenSize) {
       throw new EidasOversizedTokenException();
@@ -75,7 +74,7 @@ export class LightProtocolCommonsService {
    * @returns the last element
    */
   getLastElementInUrlOrUrn<T>(value: string): T {
-    return (value.split(/[:/]/).pop() as unknown) as T;
+    return value.split(/[:/]/).pop() as unknown as T;
   }
 
   /**

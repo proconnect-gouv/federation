@@ -41,9 +41,9 @@ describe('TemplateService', () => {
       jest.restoreAllMocks();
       jest.clearAllMocks();
 
-      jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce(({
+      jest.spyOn(fs.promises, 'readFile').mockResolvedValueOnce({
         html,
-      } as unknown) as string);
+      } as unknown as string);
     });
 
     it('should call readFile from fs', async () => {

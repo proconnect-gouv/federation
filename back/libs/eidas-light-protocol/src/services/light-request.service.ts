@@ -85,9 +85,8 @@ export class LightRequestService {
   }
 
   generateToken(id: string, issuer: string, date?: Date): string {
-    const {
-      lightRequestConnectorSecret,
-    } = this.config.get<EidasLightProtocolConfig>('EidasLightProtocol');
+    const { lightRequestConnectorSecret } =
+      this.config.get<EidasLightProtocolConfig>('EidasLightProtocol');
 
     return this.lightCommons.generateToken(
       id,
@@ -141,15 +140,14 @@ export class LightRequestService {
     ]);
 
     // Convert the paths object back to an inflated JSON
-    return (this.lightXml.pathsObjectToJson(
+    return this.lightXml.pathsObjectToJson(
       pathsObject,
-    ) as unknown) as EidasRequest;
+    ) as unknown as EidasRequest;
   }
 
   parseToken(token: string): IParsedToken {
-    const {
-      lightRequestProxyServiceSecret,
-    } = this.config.get<EidasLightProtocolConfig>('EidasLightProtocol');
+    const { lightRequestProxyServiceSecret } =
+      this.config.get<EidasLightProtocolConfig>('EidasLightProtocol');
 
     return this.lightCommons.parseToken(token, lightRequestProxyServiceSecret);
   }

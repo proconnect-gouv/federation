@@ -8,7 +8,8 @@ import { TrackingHandler } from '@fc/tracking';
 @EventsHandler(RnippRequestedEvent)
 export class RnippRequestedEventHandler
   extends TrackingHandler
-  implements IEventHandler<RnippRequestedEvent> {
+  implements IEventHandler<RnippRequestedEvent>
+{
   async handle(event: RnippRequestedEvent) {
     this.log(this.EventsMap.FC_REQUESTED_RNIPP, event);
   }

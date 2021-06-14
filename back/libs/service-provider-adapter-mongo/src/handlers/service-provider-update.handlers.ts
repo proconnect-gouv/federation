@@ -7,7 +7,8 @@ import { ServiceProviderAdapterMongoService } from '../service-provider-adapter-
 
 @EventsHandler(ServiceProviderUpdateEvent)
 export class ServiceProviderUpdateHandler
-  implements IEventHandler<ServiceProviderUpdateEvent> {
+  implements IEventHandler<ServiceProviderUpdateEvent>
+{
   constructor(
     private readonly providerService: ServiceProviderAdapterMongoService,
   ) {}

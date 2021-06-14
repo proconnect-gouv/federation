@@ -18,14 +18,14 @@ describe('EidasToOidcMapper', () => {
       it('should call getSub with the eidas attributes and return the sub', () => {
         // setup
         const expected = {
-          sub:
-            '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
+          sub: '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
         };
 
         // action
-        const result = AttributesToClaimsMap[EidasAttributes.PERSON_IDENTIFIER](
-          attributesMock,
-        );
+        const result =
+          AttributesToClaimsMap[EidasAttributes.PERSON_IDENTIFIER](
+            attributesMock,
+          );
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -39,9 +39,10 @@ describe('EidasToOidcMapper', () => {
         };
 
         // action
-        const result = AttributesToClaimsMap[EidasAttributes.PERSON_IDENTIFIER](
-          emptyAttributesMock,
-        );
+        const result =
+          AttributesToClaimsMap[EidasAttributes.PERSON_IDENTIFIER](
+            emptyAttributesMock,
+          );
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -54,9 +55,8 @@ describe('EidasToOidcMapper', () => {
         const expected = { gender: 'female' };
 
         // action
-        const result = AttributesToClaimsMap[EidasAttributes.GENDER](
-          attributesMock,
-        );
+        const result =
+          AttributesToClaimsMap[EidasAttributes.GENDER](attributesMock);
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -70,9 +70,8 @@ describe('EidasToOidcMapper', () => {
         };
 
         // action
-        const result = AttributesToClaimsMap[EidasAttributes.GENDER](
-          emptyAttributesMock,
-        );
+        const result =
+          AttributesToClaimsMap[EidasAttributes.GENDER](emptyAttributesMock);
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -85,9 +84,8 @@ describe('EidasToOidcMapper', () => {
         const expected = { birthdate: '1962-08-24' };
 
         // action
-        const result = AttributesToClaimsMap[EidasAttributes.DATE_OF_BIRTH](
-          attributesMock,
-        );
+        const result =
+          AttributesToClaimsMap[EidasAttributes.DATE_OF_BIRTH](attributesMock);
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -101,9 +99,10 @@ describe('EidasToOidcMapper', () => {
         };
 
         // action
-        const result = AttributesToClaimsMap[EidasAttributes.DATE_OF_BIRTH](
-          emptyAttributesMock,
-        );
+        const result =
+          AttributesToClaimsMap[EidasAttributes.DATE_OF_BIRTH](
+            emptyAttributesMock,
+          );
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -116,9 +115,8 @@ describe('EidasToOidcMapper', () => {
         const expected = { birthplace: 'Tokyo' };
 
         // action
-        const result = AttributesToClaimsMap[EidasAttributes.PLACE_OF_BIRTH](
-          attributesMock,
-        );
+        const result =
+          AttributesToClaimsMap[EidasAttributes.PLACE_OF_BIRTH](attributesMock);
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -132,9 +130,10 @@ describe('EidasToOidcMapper', () => {
         };
 
         // action
-        const result = AttributesToClaimsMap[EidasAttributes.PLACE_OF_BIRTH](
-          emptyAttributesMock,
-        );
+        const result =
+          AttributesToClaimsMap[EidasAttributes.PLACE_OF_BIRTH](
+            emptyAttributesMock,
+          );
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -149,9 +148,10 @@ describe('EidasToOidcMapper', () => {
         const expected = { given_name: 'Angela Claire Louise' };
 
         // action
-        const result = AttributesToClaimsMap[
-          EidasAttributes.CURRENT_GIVEN_NAME
-        ](attributesMock);
+        const result =
+          AttributesToClaimsMap[EidasAttributes.CURRENT_GIVEN_NAME](
+            attributesMock,
+          );
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -167,9 +167,10 @@ describe('EidasToOidcMapper', () => {
         };
 
         // action
-        const result = AttributesToClaimsMap[
-          EidasAttributes.CURRENT_GIVEN_NAME
-        ](emptyAttributesMock);
+        const result =
+          AttributesToClaimsMap[EidasAttributes.CURRENT_GIVEN_NAME](
+            emptyAttributesMock,
+          );
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -184,9 +185,10 @@ describe('EidasToOidcMapper', () => {
         const expected = { family_name: 'DUBOIS' };
 
         // action
-        const result = AttributesToClaimsMap[
-          EidasAttributes.CURRENT_FAMILY_NAME
-        ](attributesMock);
+        const result =
+          AttributesToClaimsMap[EidasAttributes.CURRENT_FAMILY_NAME](
+            attributesMock,
+          );
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -203,9 +205,10 @@ describe('EidasToOidcMapper', () => {
       };
 
       // action
-      const result = AttributesToClaimsMap[EidasAttributes.CURRENT_FAMILY_NAME](
-        emptyAttributesMock,
-      );
+      const result =
+        AttributesToClaimsMap[EidasAttributes.CURRENT_FAMILY_NAME](
+          emptyAttributesMock,
+        );
 
       // expect
       expect(result).toStrictEqual(expected);

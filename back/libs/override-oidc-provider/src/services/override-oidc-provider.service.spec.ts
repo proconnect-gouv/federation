@@ -14,10 +14,10 @@ describe('OverrideOidcProviderService', () => {
     get: jest.fn(),
   };
 
-  const loggerMock = ({
+  const loggerMock = {
     setContext: jest.fn(),
     debug: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const providerMock = {};
   const oidcProviderMock = {

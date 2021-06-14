@@ -341,7 +341,7 @@ describe('IdentityProviderAdapterMongoService', () => {
         .mockReturnValueOnce(legacyIdentityProviderMock._doc.client_secret);
       // action
       const result = service['legacyToOpenIdPropertyName'](
-        (legacyIdentityProviderMock._doc as unknown) as IdentityProvider,
+        legacyIdentityProviderMock._doc as unknown as IdentityProvider,
       );
 
       // expect
