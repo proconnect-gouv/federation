@@ -57,7 +57,7 @@ describe('TrackingHandler', () => {
   describe('log', () => {
     it('Should call TrackingService.log', () => {
       // Given
-      const eventDefinition = (Symbol('eventDef') as unknown) as IEvent;
+      const eventDefinition = Symbol('eventDef') as unknown as IEvent;
       const event = {
         req: {
           ip: 'ipMock',

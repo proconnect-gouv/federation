@@ -70,10 +70,8 @@ export class CryptoOverrideService {
     digest = 'sha256',
   ): Promise<Buffer> {
     return new Promise((resolve: Function, reject: Function) => {
-      const {
-        payloadEncoding,
-        requestTimeout,
-      } = this.config.get<RabbitmqConfig>('CryptographyBroker');
+      const { payloadEncoding, requestTimeout } =
+        this.config.get<RabbitmqConfig>('CryptographyBroker');
 
       this.logger.debug('CryptoOverrideService.sign()');
 
@@ -107,9 +105,8 @@ export class CryptoOverrideService {
   // Handle successful call
   private signSuccess(resolve: Function, reject: Function, data: string): void {
     this.logger.debug('CryptoOverrideService.signSuccess()');
-    const { payloadEncoding } = this.config.get<RabbitmqConfig>(
-      'CryptographyBroker',
-    );
+    const { payloadEncoding } =
+      this.config.get<RabbitmqConfig>('CryptographyBroker');
     /**
      * @TODO #146 define a more powerful mechanism
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/146

@@ -35,7 +35,7 @@ describe('IsSafeString', () => {
 
     it('should return false if the value is not a string', () => {
       // action
-      const result = isSafeString((42 as unknown) as string);
+      const result = isSafeString(42 as unknown as string);
 
       // expect
       expect(result).toStrictEqual(false);

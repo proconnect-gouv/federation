@@ -6,7 +6,8 @@ import { ExceptionsService } from '../exceptions.service';
 @Catch()
 export class UnhandledExceptionFilter
   extends BaseExceptionFilter
-  implements ExceptionFilter {
+  implements ExceptionFilter
+{
   constructor(private readonly logger: LoggerService) {
     super();
     this.logger.setContext(this.constructor.name);

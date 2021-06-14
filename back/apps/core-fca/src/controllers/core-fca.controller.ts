@@ -105,10 +105,8 @@ export class CoreFcaController {
     };
 
     const ministries = await this.ministries.getList();
-    const {
-      idpFilterExclude,
-      idpFilterList,
-    } = await this.serviceProvider.getById(client_id);
+    const { idpFilterExclude, idpFilterList } =
+      await this.serviceProvider.getById(client_id);
 
     const identityProvidersList = await this.identityProvider.getFilteredList(
       idpFilterList,

@@ -8,7 +8,8 @@ import { OidcIdentityDto } from '../../dto';
 @Injectable()
 @FeatureHandler('core-fcp-default-identity-check')
 export class CoreFcpDefaultIdentityCheckHandler
-  implements IFeatureHandler<ValidationError[]> {
+  implements IFeatureHandler<ValidationError[]>
+{
   constructor(public readonly logger: LoggerService) {
     this.logger.setContext(this.constructor.name);
   }

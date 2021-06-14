@@ -34,7 +34,7 @@ describe('StdoutTransport', () => {
     jest.clearAllMocks();
 
     service = new StdoutTransport(
-      (loggerServiceMock as unknown) as LoggerService,
+      loggerServiceMock as unknown as LoggerService,
     );
   });
 

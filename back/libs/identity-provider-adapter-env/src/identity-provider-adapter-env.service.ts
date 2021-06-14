@@ -15,7 +15,8 @@ import {
 
 @Injectable()
 export class IdentityProviderAdapterEnvService
-  implements IIdentityProviderAdapter {
+  implements IIdentityProviderAdapter
+{
   private identityProviderCache: IdentityProviderMetadata<any>[];
 
   constructor(
@@ -29,13 +30,10 @@ export class IdentityProviderAdapterEnvService
   private async findAllIdentityProvider(): Promise<
     IdentityProviderAdapterEnvDTO[]
   > {
-    const {
-      discoveryUrl,
-      discovery,
-      provider,
-    } = this.config.get<IdentityProviderAdapterEnvConfig>(
-      'IdentityProviderAdapterEnvConfig',
-    );
+    const { discoveryUrl, discovery, provider } =
+      this.config.get<IdentityProviderAdapterEnvConfig>(
+        'IdentityProviderAdapterEnvConfig',
+      );
 
     const configuration = [
       {
@@ -79,7 +77,8 @@ export class IdentityProviderAdapterEnvService
     refreshCache?: boolean,
   ): Promise<IdentityProviderMetadata<T>[]> {
     if (refreshCache || !this.identityProviderCache) {
-      const list: IIdentityProviderAdapterEnv[] = await this.findAllIdentityProvider();
+      const list: IIdentityProviderAdapterEnv[] =
+        await this.findAllIdentityProvider();
 
       this.identityProviderCache = list.map(
         this.legacyToOpenIdPropertyName.bind(this),
@@ -136,7 +135,7 @@ export class IdentityProviderAdapterEnvService
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/326
      * We have non blocking incompatilities.
      */
-    return (result as unknown) as IdentityProviderMetadata;
+    return result as unknown as IdentityProviderMetadata;
   }
 
   /**
@@ -145,11 +144,10 @@ export class IdentityProviderAdapterEnvService
    * @param clientSecret
    */
   private decryptClientSecret(clientSecret: string): string {
-    const {
-      clientSecretEcKey,
-    } = this.config.get<IdentityProviderAdapterEnvConfig>(
-      'IdentityProviderAdapterEnvConfig',
-    );
+    const { clientSecretEcKey } =
+      this.config.get<IdentityProviderAdapterEnvConfig>(
+        'IdentityProviderAdapterEnvConfig',
+      );
     return this.cryptography.decrypt(
       clientSecretEcKey,
       Buffer.from(clientSecret, 'base64'),

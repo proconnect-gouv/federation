@@ -12,21 +12,21 @@ import { OidcProviderErrorService } from './oidc-provider-error.service';
 describe('OidcProviderErrorService', () => {
   let service: OidcProviderErrorService;
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     verbose: jest.fn(),
     debug: jest.fn(),
     trace: jest.fn(),
     businessEvent: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
-  const providerMock = ({
+  const providerMock = {
     middlewares: [],
     use: jest.fn(),
     on: jest.fn(),
     interactionDetails: jest.fn(),
     interactionFinished: jest.fn(),
-  } as unknown) as Provider;
+  } as unknown as Provider;
 
   const exceptionFilterMock = {
     catch: jest.fn(),

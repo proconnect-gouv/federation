@@ -33,12 +33,12 @@ describe('OidcClientService', () => {
     hello: 'world',
   };
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     trace: jest.fn(),
     debug: jest.fn(),
     businessEvent: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const trackingServiceMock = {
     track: jest.fn(),

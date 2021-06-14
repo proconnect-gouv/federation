@@ -8,7 +8,8 @@ import { TrackingHandler } from '@fc/tracking';
 @EventsHandler(OidcProviderAuthorizationEvent)
 export class OidcProviderAuthorizationEventHandler
   extends TrackingHandler
-  implements IEventHandler<OidcProviderAuthorizationEvent> {
+  implements IEventHandler<OidcProviderAuthorizationEvent>
+{
   async handle(event: OidcProviderAuthorizationEvent) {
     this.log(this.EventsMap.FC_AUTHORIZE_INITIATED, event);
   }

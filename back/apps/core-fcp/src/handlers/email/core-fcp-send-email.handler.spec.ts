@@ -561,9 +561,9 @@ describe('CoreFcpSendEmailHandler', () => {
       configServiceMock.get.mockReturnValue(configMailerMock);
       service['configMailer'] = configMailerMock;
 
-      service[
-        'getConnectNotificationEmailBodyContent'
-      ] = jest.fn().mockReturnValue(`connect notification html body content`);
+      service['getConnectNotificationEmailBodyContent'] = jest
+        .fn()
+        .mockReturnValue(`connect notification html body content`);
     });
 
     it('should not throw if email is sent', async () => {

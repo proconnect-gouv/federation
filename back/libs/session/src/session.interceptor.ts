@@ -74,10 +74,8 @@ export class SessionInterceptor implements NestInterceptor {
 
   private async handleSession(req, res) {
     const route = req.route.path;
-    const {
-      sessionCookieName,
-      interactionCookieName,
-    } = this.config.get<SessionConfig>('Session');
+    const { sessionCookieName, interactionCookieName } =
+      this.config.get<SessionConfig>('Session');
 
     // Should just refresh cookies for expiration
     if (this.FrontRoutes.includes(route)) {

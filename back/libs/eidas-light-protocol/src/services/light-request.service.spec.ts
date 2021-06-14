@@ -517,13 +517,10 @@ describe('LightRequestService', () => {
       expect(lightXmlServiceMock.stripUrlAndUrnForProps).toHaveBeenCalledTimes(
         1,
       );
-      expect(
-        lightXmlServiceMock.stripUrlAndUrnForProps,
-      ).toHaveBeenCalledWith(pathsObject, [
-        'levelOfAssurance',
-        'nameIdFormat',
-        'requestedAttributes',
-      ]);
+      expect(lightXmlServiceMock.stripUrlAndUrnForProps).toHaveBeenCalledWith(
+        pathsObject,
+        ['levelOfAssurance', 'nameIdFormat', 'requestedAttributes'],
+      );
     });
 
     it('should call lowerCaseFirstCharForProps with the return of the stripUrlAndUrnForProps call to lowercase the first character of requested attributes', () => {

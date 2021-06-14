@@ -49,9 +49,8 @@ export class CoreService {
   }
 
   private getEventContext(ctx): IEventContext {
-    const interactionId: string = this.oidcProvider.getInteractionIdFromCtx(
-      ctx,
-    );
+    const interactionId: string =
+      this.oidcProvider.getInteractionIdFromCtx(ctx);
     const ip: string = this.getIpFromCtx(ctx);
 
     const eventContext: IEventContext = {
@@ -65,11 +64,8 @@ export class CoreService {
   }
 
   private registerMiddlewares() {
-    const {
-      forcedPrompt,
-      knownAcrValues,
-      defaultAcrValue,
-    } = this.config.get<OidcProviderConfig>('OidcProvider');
+    const { forcedPrompt, knownAcrValues, defaultAcrValue } =
+      this.config.get<OidcProviderConfig>('OidcProvider');
 
     /** Force prompt @see overrideAuthorizePrompt header */
     this.oidcProvider.registerMiddleware(

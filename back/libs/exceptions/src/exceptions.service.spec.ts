@@ -78,9 +78,8 @@ describe('ExceptionsService', () => {
       exception.scope = 2;
       exception.code = 23;
       // When
-      const result = ExceptionsService.getExceptionCodeFor<FcException>(
-        exception,
-      );
+      const result =
+        ExceptionsService.getExceptionCodeFor<FcException>(exception);
       // Then
       expect(result).toBe('Y020023');
     });
@@ -88,9 +87,8 @@ describe('ExceptionsService', () => {
       // Given
       const exception = new HttpException('Not found', 404);
       // When
-      const result = ExceptionsService.getExceptionCodeFor<HttpException>(
-        exception,
-      );
+      const result =
+        ExceptionsService.getExceptionCodeFor<HttpException>(exception);
       // Then
       expect(result).toBe('Y000404');
     });
@@ -98,9 +96,8 @@ describe('ExceptionsService', () => {
       // Given
       const exception = new RpcException('Foo');
       // When
-      const result = ExceptionsService.getExceptionCodeFor<RpcException>(
-        exception,
-      );
+      const result =
+        ExceptionsService.getExceptionCodeFor<RpcException>(exception);
       // Then
       expect(result).toBe('Y000000');
     });

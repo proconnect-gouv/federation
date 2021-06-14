@@ -74,6 +74,5 @@ export class ServiceProvider extends Document {
   identityConsent: boolean;
 }
 
-export const ServiceProviderSchema = SchemaFactory.createForClass(
-  ServiceProvider,
-);
+export const ServiceProviderSchema =
+  SchemaFactory.createForClass(ServiceProvider);

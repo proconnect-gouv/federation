@@ -8,9 +8,8 @@ import { ClientMetadata, IssuerMetadata } from '../dto';
  * @todo #429 améliorer le typage pour affiner l'ajout de données (FeatureHandler...)
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/429
  */
-export type IdentityProviderMetadata<
-  T = { [key: string]: any }
-> = ClientMetadata & IssuerMetadata & T;
+export type IdentityProviderMetadata<T = { [key: string]: any }> =
+  ClientMetadata & IssuerMetadata & T;
 
 export interface IIdentityProviderAdapter {
   getList<T = Record<string, any>>(

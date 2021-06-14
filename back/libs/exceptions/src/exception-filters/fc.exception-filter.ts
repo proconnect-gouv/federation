@@ -10,7 +10,8 @@ import { TrackableEvent } from '../events/trackable.event';
 @Catch(FcException)
 export class FcExceptionFilter
   extends FcBaseExceptionFilter
-  implements ExceptionFilter {
+  implements ExceptionFilter
+{
   constructor(
     protected readonly logger: LoggerService,
     protected readonly tracking: TrackingService,

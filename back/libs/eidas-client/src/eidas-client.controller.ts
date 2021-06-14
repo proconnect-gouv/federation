@@ -50,18 +50,16 @@ export class EidasClientController {
 
     await sessionEidas.set('eidasRequest', eidasRequest);
 
-    const { token, lightRequest } = this.eidasClient.prepareLightRequest(
-      eidasRequest,
-    );
+    const { token, lightRequest } =
+      this.eidasClient.prepareLightRequest(eidasRequest);
 
     await this.eidasClient.writeLightRequestInCache(
       eidasRequest.id,
       lightRequest,
     );
 
-    const { connectorRequestCacheUrl } = this.config.get<EidasClientConfig>(
-      'EidasClient',
-    );
+    const { connectorRequestCacheUrl } =
+      this.config.get<EidasClientConfig>('EidasClient');
 
     return {
       connectorRequestCacheUrl,
@@ -91,9 +89,8 @@ export class EidasClientController {
 
     await sessionEidas.set('eidasResponse', eidasResponse);
 
-    const {
-      redirectAfterResponseHandlingUrl,
-    } = this.config.get<EidasClientConfig>('EidasClient');
+    const { redirectAfterResponseHandlingUrl } =
+      this.config.get<EidasClientConfig>('EidasClient');
 
     return { url: redirectAfterResponseHandlingUrl, statusCode: 302 };
   }

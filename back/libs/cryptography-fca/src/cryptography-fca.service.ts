@@ -19,9 +19,8 @@ export class CryptographyFcaService {
    * @returns the identity hash "hex" digested
    */
   computeIdentityHash(idpId: string, { uid }: IAgentIdentity): string {
-    const { hashSecretKey } = this.config.get<CryptographyFcaConfig>(
-      'CryptographyFca',
-    );
+    const { hashSecretKey } =
+      this.config.get<CryptographyFcaConfig>('CryptographyFca');
 
     const serial = idpId + uid + hashSecretKey;
 
@@ -36,9 +35,8 @@ export class CryptographyFcaService {
    * @returns the sub "hex" digested"
    */
   computeSubV1(providerRef: string, identityHash: string): string {
-    const { subSecretKey } = this.config.get<CryptographyFcaConfig>(
-      'CryptographyFca',
-    );
+    const { subSecretKey } =
+      this.config.get<CryptographyFcaConfig>('CryptographyFca');
 
     const data = [providerRef, identityHash, subSecretKey];
 
