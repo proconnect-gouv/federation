@@ -10,7 +10,8 @@ import { ExceptionsService } from '../exceptions.service';
 @Catch(HttpException)
 export class HttpExceptionFilter
   extends FcBaseExceptionFilter
-  implements ExceptionFilter {
+  implements ExceptionFilter
+{
   catch(exception: HttpException, host: ArgumentsHost) {
     this.logger.debug('Exception from HttpException');
 

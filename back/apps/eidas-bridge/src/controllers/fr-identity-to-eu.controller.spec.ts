@@ -32,9 +32,9 @@ describe('FrIdentityToEuController', () => {
     getUserInfosFromProvider: jest.fn(),
   };
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const eidasToOidcServiceMock = {
     mapPartialRequest: jest.fn(),
@@ -206,9 +206,8 @@ describe('FrIdentityToEuController', () => {
       sessionServiceEidasMock.get.mockResolvedValueOnce({
         eidasRequest: eidasRequestMock,
       });
-      eidasToOidcServiceMock.mapPartialRequest = mapPartialRequestMock.mockReturnValueOnce(
-        oidcRequestMock,
-      );
+      eidasToOidcServiceMock.mapPartialRequest =
+        mapPartialRequestMock.mockReturnValueOnce(oidcRequestMock);
       oidcClientServiceMock.utils.getAuthorizeUrl.mockReturnValueOnce(
         authorizeUrlMock,
       );
@@ -396,12 +395,13 @@ describe('FrIdentityToEuController', () => {
         };
 
         // action
-        const result = await frIdentityToEuController.redirectToEidasResponseProxy(
-          req,
-          query,
-          sessionServiceEidasMock,
-          sessionServiceOidcMock,
-        );
+        const result =
+          await frIdentityToEuController.redirectToEidasResponseProxy(
+            req,
+            query,
+            sessionServiceEidasMock,
+            sessionServiceOidcMock,
+          );
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -576,12 +576,13 @@ describe('FrIdentityToEuController', () => {
         };
 
         // action
-        const result = await frIdentityToEuController.redirectToEidasResponseProxy(
-          req,
-          query,
-          sessionServiceEidasMock,
-          sessionServiceOidcMock,
-        );
+        const result =
+          await frIdentityToEuController.redirectToEidasResponseProxy(
+            req,
+            query,
+            sessionServiceEidasMock,
+            sessionServiceOidcMock,
+          );
 
         // expect
         expect(result).toStrictEqual(expected);

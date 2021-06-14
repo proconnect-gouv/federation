@@ -45,10 +45,8 @@ export class EidasClientService {
    * connectorResponseCache -> read the provider country response from the FR Node
    */
   onModuleInit(): void {
-    const {
-      connectorRequestCache,
-      connectorResponseCache,
-    } = this.config.get<EidasClientConfig>('EidasClient');
+    const { connectorRequestCache, connectorResponseCache } =
+      this.config.get<EidasClientConfig>('EidasClient');
 
     this.logger.debug(
       `Accessing caches ${connectorRequestCache} and ${connectorResponseCache}...`,
@@ -93,9 +91,8 @@ export class EidasClientService {
    * @returns The light-request token and the light-request as an XML
    */
   prepareLightRequest(requested: EidasRequest) {
-    const { connectorRequestIssuer } = this.config.get<EidasClientConfig>(
-      'EidasClient',
-    );
+    const { connectorRequestIssuer } =
+      this.config.get<EidasClientConfig>('EidasClient');
     const token = this.lightRequest.generateToken(
       requested.id,
       connectorRequestIssuer,

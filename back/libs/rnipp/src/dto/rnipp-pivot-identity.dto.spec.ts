@@ -10,7 +10,7 @@ describe('RnippPivotIdentity', () => {
 
       // action
       const valid = RnippPivotIdentity.shouldValidateBirthplace(
-        (instanceMock as unknown) as RnippPivotIdentity,
+        instanceMock as unknown as RnippPivotIdentity,
       );
 
       // assert
@@ -25,7 +25,7 @@ describe('RnippPivotIdentity', () => {
 
       // action
       const valid = RnippPivotIdentity.shouldValidateBirthplace(
-        (instanceMock as unknown) as RnippPivotIdentity,
+        instanceMock as unknown as RnippPivotIdentity,
       );
 
       // assert

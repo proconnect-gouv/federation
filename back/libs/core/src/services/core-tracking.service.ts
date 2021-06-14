@@ -31,12 +31,8 @@ export class CoreTrackingService implements IAppTrackingService {
     event: IEvent,
     context: IEventContext,
   ): Promise<ICoreTrackingLog> {
-    const {
-      ip,
-      sessionId,
-      interactionId,
-      claims,
-    }: ICoreTrackingContext = await this.extractContext(context);
+    const { ip, sessionId, interactionId, claims }: ICoreTrackingContext =
+      await this.extractContext(context);
 
     const { step, category, event: eventName } = event;
     let data: ICoreTrackingProviders;

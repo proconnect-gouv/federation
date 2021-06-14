@@ -5,7 +5,8 @@ import { ServiceProviderAdapterEnvConfig } from './dto';
 
 @Injectable()
 export class ServiceProviderAdapterEnvService
-  implements IServiceProviderAdapter {
+  implements IServiceProviderAdapter
+{
   constructor(private readonly config: ConfigService) {}
 
   async getList(): Promise<ServiceProviderMetadata[]> {

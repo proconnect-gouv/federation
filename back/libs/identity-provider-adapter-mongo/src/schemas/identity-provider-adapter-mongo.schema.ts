@@ -67,6 +67,5 @@ export class IdentityProvider extends Document {
   featureHandlers: IFeatureHandlerDatabaseMap;
 }
 
-export const IdentityProviderSchema = SchemaFactory.createForClass(
-  IdentityProvider,
-);
+export const IdentityProviderSchema =
+  SchemaFactory.createForClass(IdentityProvider);

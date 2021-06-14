@@ -21,20 +21,20 @@ describe('TrackingInterceptor', () => {
     getRequest: jest.fn(),
   };
 
-  const contextMock = ({
+  const contextMock = {
     switchToHttp: () => httpContextMock,
-  } as unknown) as ExecutionContext;
+  } as unknown as ExecutionContext;
 
   const reqMock = {
     ip: '123.123.123.123',
     fc: { interactionId: '42' },
   };
 
-  const eventsMock = ({
+  const eventsMock = {
     foo: { route: '/foo', intercept: true },
     bar: { route: '/bar', intercept: true },
     wizz: { route: '/wizz', intercept: false },
-  } as unknown) as IEventMap;
+  } as unknown as IEventMap;
 
   const nextMock = {
     handle: jest.fn(),

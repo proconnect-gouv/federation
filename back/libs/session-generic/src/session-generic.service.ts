@@ -92,9 +92,8 @@ export class SessionGenericService {
     req: ISessionGenericRequest,
     res: ISessionGenericResponse,
   ): Promise<string> {
-    const { lifetime } = this.config.get<SessionGenericConfig>(
-      'SessionGeneric',
-    );
+    const { lifetime } =
+      this.config.get<SessionGenericConfig>('SessionGeneric');
 
     const sessionId: string = this.getSessionIdFromCookie(req);
 
@@ -224,9 +223,8 @@ export class SessionGenericService {
     ctx: ISessionGenericBoundContext,
     data: object,
   ): Promise<boolean> {
-    const { lifetime } = this.config.get<SessionGenericConfig>(
-      'SessionGeneric',
-    );
+    const { lifetime } =
+      this.config.get<SessionGenericConfig>('SessionGeneric');
     const key = this.getSessionKey(ctx.sessionId);
 
     const serialized = this.serialize(data);
@@ -242,12 +240,10 @@ export class SessionGenericService {
   }
 
   init(req: ISessionGenericRequest, res: ISessionGenericResponse): string {
-    const { sessionIdLength } = this.config.get<SessionGenericConfig>(
-      'SessionGeneric',
-    );
-    const sessionId: string = this.cryptography.genRandomString(
-      sessionIdLength,
-    );
+    const { sessionIdLength } =
+      this.config.get<SessionGenericConfig>('SessionGeneric');
+    const sessionId: string =
+      this.cryptography.genRandomString(sessionIdLength);
 
     this.setCookies(res, sessionId);
     this.bindToRequest(req, sessionId);
@@ -268,9 +264,8 @@ export class SessionGenericService {
   }
 
   getSessionIdFromCookie(req: ISessionGenericRequest): string | undefined {
-    const { sessionCookieName } = this.config.get<SessionGenericConfig>(
-      'SessionGeneric',
-    );
+    const { sessionCookieName } =
+      this.config.get<SessionGenericConfig>('SessionGeneric');
 
     return req.signedCookies[sessionCookieName];
   }
@@ -286,10 +281,8 @@ export class SessionGenericService {
   }
 
   private setCookies(res: ISessionGenericResponse, sessionId: string): void {
-    const {
-      sessionCookieName,
-      cookieOptions,
-    } = this.config.get<SessionGenericConfig>('SessionGeneric');
+    const { sessionCookieName, cookieOptions } =
+      this.config.get<SessionGenericConfig>('SessionGeneric');
 
     res.cookie(sessionCookieName, sessionId, cookieOptions);
     /**
@@ -315,9 +308,8 @@ export class SessionGenericService {
    * @returns encrypted string representation of <data>
    */
   private serialize(data: object): string {
-    const { encryptionKey } = this.config.get<SessionGenericConfig>(
-      'SessionGeneric',
-    );
+    const { encryptionKey } =
+      this.config.get<SessionGenericConfig>('SessionGeneric');
     /**
      * @todo #415 should probably have a try/catch with custom error code
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/415
@@ -391,9 +383,8 @@ export class SessionGenericService {
    * @returns {RedisQueryResult[]>}
    */
   async setAlias(key: string, value: string): Promise<RedisQueryResult[]> {
-    const { lifetime } = this.config.get<SessionGenericConfig>(
-      'SessionGeneric',
-    );
+    const { lifetime } =
+      this.config.get<SessionGenericConfig>('SessionGeneric');
     const multi = this.redis.multi();
 
     multi.set(key, value);

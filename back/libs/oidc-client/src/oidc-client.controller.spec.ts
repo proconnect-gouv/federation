@@ -20,12 +20,12 @@ describe('OidcClient Controller', () => {
     },
   };
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     verbose: jest.fn(),
     debug: jest.fn(),
     businessEvent: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const sessionServiceMock = {
     set: jest.fn(),
@@ -82,9 +82,8 @@ describe('OidcClient Controller', () => {
       .useValue(configServiceMock)
       .compile();
 
-    oidcClientController = module.get<OidcClientController>(
-      OidcClientController,
-    );
+    oidcClientController =
+      module.get<OidcClientController>(OidcClientController);
 
     res = {
       redirect: jest.fn(),
@@ -219,7 +218,8 @@ describe('OidcClient Controller', () => {
     describe('Idp blacklisted scenario for redirect to idp', () => {
       let isBlacklistedMock;
       beforeEach(() => {
-        isBlacklistedMock = oidcClientServiceMock.utils.checkIdpBlacklisted = jest.fn();
+        isBlacklistedMock = oidcClientServiceMock.utils.checkIdpBlacklisted =
+          jest.fn();
       });
       it('idp is blacklisted', async () => {
         // setup

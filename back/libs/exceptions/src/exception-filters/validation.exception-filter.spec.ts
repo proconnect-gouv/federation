@@ -4,11 +4,11 @@ import { ValidationException, FcException } from '../exceptions';
 
 describe('ValidationExceptionFilter', () => {
   let exceptionFilter: ValidationExceptionFilter;
-  const loggerMock = ({
+  const loggerMock = {
     debug: jest.fn(),
     error: jest.fn(),
     setContext: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const resMock: any = {};
   resMock.render = jest.fn().mockReturnValue(resMock);

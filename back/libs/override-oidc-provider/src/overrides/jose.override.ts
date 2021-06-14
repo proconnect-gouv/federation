@@ -30,6 +30,5 @@ OverrideCode.wrap(JwsSerializer, 'compact', 'JWS.compact');
  * OverrideCode does not handle this special case for us
  * so we need to bind the property ourselves
  */
-JwsSerializer.compact.validate = OverrideCode.getOriginal(
-  'JWS.compact',
-).validate;
+JwsSerializer.compact.validate =
+  OverrideCode.getOriginal('JWS.compact').validate;

@@ -27,7 +27,7 @@ describe('mongooseProvider', () => {
     it('should call config and return a mongo connection uri', () => {
       // When
       const result = buildConnectionString(
-        (configMock as unknown) as ConfigService,
+        configMock as unknown as ConfigService,
       );
       // Then
       expect(configMock.get).toHaveBeenCalledTimes(1);
@@ -39,9 +39,7 @@ describe('mongooseProvider', () => {
   describe('buildFactoryParams', () => {
     it('should return the result from buildConnexion string and config options', () => {
       // When
-      const result = buildFactoryParams(
-        (configMock as unknown) as ConfigService,
-      );
+      const result = buildFactoryParams(configMock as unknown as ConfigService);
       // Then
       expect(result).toEqual({
         uri: connectionStringMock,

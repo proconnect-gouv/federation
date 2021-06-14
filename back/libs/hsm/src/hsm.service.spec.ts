@@ -81,7 +81,7 @@ describe('HsmService', () => {
     jest.restoreAllMocks();
 
     jest.spyOn(pkcs11js, 'PKCS11').mockImplementation(function mockPkcs11() {
-      return (mockPkcs11Instance as unknown) as pkcs11js.PKCS11;
+      return mockPkcs11Instance as unknown as pkcs11js.PKCS11;
     });
 
     jest.spyOn(crypto, 'createHash');

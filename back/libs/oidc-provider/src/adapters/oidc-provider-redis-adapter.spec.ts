@@ -13,11 +13,11 @@ import {
 describe('OidcProviderRedisAdapter', () => {
   let adapter;
 
-  const loggerMock = ({
+  const loggerMock = {
     setContext: jest.fn(),
     debug: jest.fn(),
     trace: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const redisMock = {
     hgetall: jest.fn(),
@@ -48,7 +48,7 @@ describe('OidcProviderRedisAdapter', () => {
   beforeEach(() => {
     adapter = new OidcProviderRedisAdapter(
       loggerMock,
-      (redisMock as unknown) as Redis,
+      redisMock as unknown as Redis,
       ServiceProviderAdapterMock,
       testAdapterName,
     );
@@ -63,10 +63,10 @@ describe('OidcProviderRedisAdapter', () => {
   describe('getConstructorWithDI', () => {
     // Given
     const nameMock = 'foo';
-    const oidcProviderService = ({
+    const oidcProviderService = {
       logger: loggerMock,
       redis: redisMock,
-    } as unknown) as OidcProviderService;
+    } as unknown as OidcProviderService;
     const BoundClass = OidcProviderRedisAdapter.getConstructorWithDI(
       oidcProviderService,
       ServiceProviderAdapterMock,
@@ -293,7 +293,7 @@ describe('OidcProviderRedisAdapter', () => {
       // Given
       const authorizationCodeAdapter = new OidcProviderRedisAdapter(
         loggerMock,
-        (redisMock as unknown) as Redis,
+        redisMock as unknown as Redis,
         ServiceProviderAdapterMock,
         'AuthorizationCode',
       );
@@ -437,7 +437,7 @@ describe('OidcProviderRedisAdapter', () => {
       // Given
       const authorizationCodeAdapter = new OidcProviderRedisAdapter(
         loggerMock,
-        (redisMock as unknown) as Redis,
+        redisMock as unknown as Redis,
         ServiceProviderAdapterMock,
         'AuthorizationCode',
       );

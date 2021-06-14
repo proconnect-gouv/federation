@@ -34,9 +34,8 @@ describe('OidcToEidasMapper', () => {
         const expected = [claims.sub];
 
         // action
-        const result = ClaimsToAttributesMap[EidasAttributes.PERSON_IDENTIFIER](
-          claims,
-        );
+        const result =
+          ClaimsToAttributesMap[EidasAttributes.PERSON_IDENTIFIER](claims);
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -55,9 +54,8 @@ describe('OidcToEidasMapper', () => {
         const expected = claims.given_name.split(' ');
 
         // action
-        const result = ClaimsToAttributesMap[
-          EidasAttributes.CURRENT_GIVEN_NAME
-        ](claims);
+        const result =
+          ClaimsToAttributesMap[EidasAttributes.CURRENT_GIVEN_NAME](claims);
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -76,9 +74,8 @@ describe('OidcToEidasMapper', () => {
         const expected = [claims.preferred_username];
 
         // action
-        const result = ClaimsToAttributesMap[
-          EidasAttributes.CURRENT_FAMILY_NAME
-        ](claims);
+        const result =
+          ClaimsToAttributesMap[EidasAttributes.CURRENT_FAMILY_NAME](claims);
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -116,9 +113,8 @@ describe('OidcToEidasMapper', () => {
         const expected = [claims.family_name];
 
         // action
-        const result = ClaimsToAttributesMap[EidasAttributes.BIRTH_NAME](
-          claims,
-        );
+        const result =
+          ClaimsToAttributesMap[EidasAttributes.BIRTH_NAME](claims);
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -137,9 +133,8 @@ describe('OidcToEidasMapper', () => {
         const expected = [claims.birthdate];
 
         // action
-        const result = ClaimsToAttributesMap[EidasAttributes.DATE_OF_BIRTH](
-          claims,
-        );
+        const result =
+          ClaimsToAttributesMap[EidasAttributes.DATE_OF_BIRTH](claims);
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -148,8 +143,7 @@ describe('OidcToEidasMapper', () => {
       it('should return the birthdate within claims as an Array replacing the "-00" for presumed born day by "-01"', () => {
         // setup
         const claimsPresumedBornDay = {
-          sub:
-            '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
+          sub: '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
           gender: 'female',
           birthdate: '1962-08-00',
           birthcountry: '99100',
@@ -180,8 +174,7 @@ describe('OidcToEidasMapper', () => {
         // setup
         // setup
         const claimsPresumedBornDayMonth = {
-          sub:
-            '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
+          sub: '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
           gender: 'female',
           birthdate: '1962-00-00',
           birthcountry: '99100',
@@ -212,8 +205,7 @@ describe('OidcToEidasMapper', () => {
         // setup
         // setup
         const claimsPresumedBornDayMonth = {
-          sub:
-            '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
+          sub: '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
           gender: 'female',
           birthcountry: '99100',
           birthplace: '75107',
@@ -252,9 +244,8 @@ describe('OidcToEidasMapper', () => {
         const expected = [claims.birthplace];
 
         // action
-        const result = ClaimsToAttributesMap[EidasAttributes.PLACE_OF_BIRTH](
-          claims,
-        );
+        const result =
+          ClaimsToAttributesMap[EidasAttributes.PLACE_OF_BIRTH](claims);
 
         // expect
         expect(result).toStrictEqual(expected);
@@ -263,8 +254,7 @@ describe('OidcToEidasMapper', () => {
       it('should return the birthcopuntry within claims as an Array if there is no birthplace within claims ', () => {
         // setup
         const claimsWithoutBirthplace = {
-          sub:
-            '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
+          sub: '57770c28716497d912e64399024b0d70acd9f7e325198f04df29ce0d0572d50fv2',
           gender: 'female',
           birthdate: '1962-08-24',
           birthcountry: '99217',

@@ -28,9 +28,8 @@ export class SessionService {
   }
 
   onModuleInit() {
-    const { prefix, cryptographyKey } = this.config.get<SessionConfig>(
-      'Session',
-    );
+    const { prefix, cryptographyKey } =
+      this.config.get<SessionConfig>('Session');
 
     this.prefix = prefix;
     this.cryptoKey = cryptographyKey;
@@ -149,11 +148,8 @@ export class SessionService {
   }
 
   async init(res, interactionId, properties): Promise<void> {
-    const {
-      interactionCookieName,
-      sessionCookieName,
-      sessionIdLength,
-    } = this.config.get<SessionConfig>('Session');
+    const { interactionCookieName, sessionCookieName, sessionIdLength } =
+      this.config.get<SessionConfig>('Session');
 
     const sessionId = this.cryptography.genRandomString(sessionIdLength);
 

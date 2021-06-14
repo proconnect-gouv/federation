@@ -12,21 +12,21 @@ import { OidcProviderErrorService } from './oidc-provider-error.service';
 describe('OidcProviderConfigService', () => {
   let service: OidcProviderConfigService;
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     verbose: jest.fn(),
     debug: jest.fn(),
     trace: jest.fn(),
     businessEvent: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
-  const providerMock = ({
+  const providerMock = {
     middlewares: [],
     use: jest.fn(),
     on: jest.fn(),
     interactionDetails: jest.fn(),
     interactionFinished: jest.fn(),
-  } as unknown) as Provider;
+  } as unknown as Provider;
 
   const configServiceMock = {
     get: jest.fn(),
@@ -161,9 +161,9 @@ describe('OidcProviderConfigService', () => {
     it('Should return a relative interaction url with prefix', async () => {
       // Given
       const prefix = '/prefix';
-      const ctx = ({
+      const ctx = {
         oidc: { uid: 123 },
-      } as unknown) as KoaContextWithOIDC;
+      } as unknown as KoaContextWithOIDC;
       const interaction = {};
 
       // When

@@ -50,7 +50,7 @@ describe('eIDAS transform', () => {
       expect(
         () =>
           // when
-          pickAcr(allowedMock, (value as unknown) as string[], defaultValue),
+          pickAcr(allowedMock, value as unknown as string[], defaultValue),
         // then
       ).toThrowError('values.filter is not a function');
     });

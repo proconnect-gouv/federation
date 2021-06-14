@@ -340,10 +340,10 @@ describe('CoreService', () => {
 
     it('should set prompt parameter on body', () => {
       // Given
-      const ctxMock: OidcCtx = ({
+      const ctxMock: OidcCtx = {
         method: 'POST',
         req: { body: {} },
-      } as unknown) as OidcCtx;
+      } as unknown as OidcCtx;
       const overridePrompt = 'test';
       // When
       service['overrideAuthorizePrompt'](overridePrompt, ctxMock);
@@ -382,12 +382,12 @@ describe('CoreService', () => {
     it('should set acr values parameter on query', () => {
       // Given
       const overrideAcr = 'boots';
-      const ctxMock = ({
+      const ctxMock = {
         method: 'GET',
         // Oidc Naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
         query: { acr_values: 'boots' },
-      } as unknown) as OidcCtx;
+      } as unknown as OidcCtx;
 
       // When
       service['overrideAuthorizeAcrValues'](
@@ -403,12 +403,12 @@ describe('CoreService', () => {
     it('should set acr values parameter on body', () => {
       // Given
       const overrideAcr = 'boots';
-      const ctxMock = ({
+      const ctxMock = {
         method: 'POST',
         // Oidc Naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
         req: { body: { acr_values: 'boots' } },
-      } as unknown) as OidcCtx;
+      } as unknown as OidcCtx;
       // When
       service['overrideAuthorizeAcrValues'](
         allowedAcrMock,
@@ -794,9 +794,8 @@ describe('CoreService', () => {
       service['getInteractionIdFromCtx'] = jest
         .fn()
         .mockReturnValue(interactionIdValueMock);
-      service[
-        'bindFunctionMock'
-      ] = sessionServiceMock.set.mockRejectedValueOnce(new Error('test'));
+      service['bindFunctionMock'] =
+        sessionServiceMock.set.mockRejectedValueOnce(new Error('test'));
 
       // Then
       await expect(

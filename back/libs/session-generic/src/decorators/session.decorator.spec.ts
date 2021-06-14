@@ -34,7 +34,7 @@ describe('extractSessionFromRequest', () => {
     // action
     extractSessionFromRequest(
       moduleNameMock,
-      (executionCtxMock as unknown) as ExecutionContext,
+      executionCtxMock as unknown as ExecutionContext,
     );
 
     // expect
@@ -48,7 +48,7 @@ describe('extractSessionFromRequest', () => {
     // action
     extractSessionFromRequest(
       moduleNameMock,
-      (executionCtxMock as unknown) as ExecutionContext,
+      executionCtxMock as unknown as ExecutionContext,
     );
 
     // expect
@@ -63,7 +63,7 @@ describe('extractSessionFromRequest', () => {
     // action
     extractSessionFromRequest(
       moduleNameMock,
-      (executionCtxMock as unknown) as ExecutionContext,
+      executionCtxMock as unknown as ExecutionContext,
     );
 
     // expect
@@ -83,7 +83,7 @@ describe('extractSessionFromRequest', () => {
 
     const result = extractSessionFromRequest(
       moduleNameMock,
-      (executionCtxMock as unknown) as ExecutionContext,
+      executionCtxMock as unknown as ExecutionContext,
     );
 
     // expect

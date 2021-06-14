@@ -11,7 +11,8 @@ import { ExceptionsService } from '../exceptions.service';
 @Catch(RpcException)
 export class RpcExceptionFilter
   extends FcBaseExceptionFilter
-  implements ExceptionFilter {
+  implements ExceptionFilter
+{
   catch(exception: RpcException): Observable<any> {
     this.logger.debug('Exception from RpcException');
 

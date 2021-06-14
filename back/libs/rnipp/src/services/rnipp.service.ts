@@ -64,9 +64,8 @@ export class RnippService {
   }
 
   private buildRequestUrl(identity: IPivotIdentity): string {
-    const { protocol, hostname, baseUrl } = this.configService.get<RnippConfig>(
-      'Rnipp',
-    );
+    const { protocol, hostname, baseUrl } =
+      this.configService.get<RnippConfig>('Rnipp');
 
     const params = {
       rechercheType: 'S',
