@@ -29,9 +29,9 @@ describe('UserDashboardController', () => {
     getUserInfosFromProvider: jest.fn(),
   };
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const oidcErrorMock = {
     error: 'error',

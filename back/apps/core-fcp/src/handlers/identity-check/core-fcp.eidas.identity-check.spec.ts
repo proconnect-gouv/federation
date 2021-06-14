@@ -13,10 +13,10 @@ jest.mock('@fc/common', () => ({
 describe('CoreFcpEidasIdentityCheckHandler', () => {
   let service: CoreFcpEidasIdentityCheckHandler;
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     debug: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const identityMock = {
     sub: '1',

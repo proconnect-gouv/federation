@@ -42,9 +42,9 @@ describe('SessionInterceptor', () => {
     getRequest: jest.fn(),
   };
 
-  const contextMock = ({
+  const contextMock = {
     switchToHttp: () => httpContextMock,
-  } as unknown) as ExecutionContext;
+  } as unknown as ExecutionContext;
 
   const reqMock = {};
   const resMock = {};

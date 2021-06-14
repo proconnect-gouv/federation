@@ -58,11 +58,11 @@ describe('EidasProviderService', () => {
     put: jest.fn(),
   };
 
-  const eidasRequestMock = ({
+  const eidasRequestMock = {
     id: 'waikiki-violet-35-bfi',
     relayState: 'relayState',
     levelOfAssurance: 'levelOfAssurance',
-  } as unknown) as EidasRequest;
+  } as unknown as EidasRequest;
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -406,10 +406,10 @@ describe('EidasProviderService', () => {
 
   describe('prepareLightResponse', () => {
     const proxyServiceResponseIssuer = 'proxyServiceResponseIssuer';
-    const responseMock = ({
+    const responseMock = {
       id: 'id',
       state: 'state',
-    } as unknown) as EidasResponse;
+    } as unknown as EidasResponse;
 
     beforeEach(() => {
       configServiceMock.get.mockReturnValueOnce({

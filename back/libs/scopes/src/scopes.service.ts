@@ -75,9 +75,10 @@ export class ScopesService {
    * Utils to separate alias from group of scopes and get the final scopes
    * @param {Array} scopes
    */
-  private extractAllScopes(
-    scopes: string[],
-  ): { identity: string[]; alias: string[] } {
+  private extractAllScopes(scopes: string[]): {
+    identity: string[];
+    alias: string[];
+  } {
     // extract alias scopes
     const [identityScopes, aliasScopes] = this.seperate(
       scopes,

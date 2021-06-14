@@ -9,16 +9,16 @@ jest.mock('@fc/exceptions/decorator/trackable.decorator');
 
 describe('FcExceptionFilter', () => {
   let exceptionFilter: FcExceptionFilter;
-  const loggerMock = ({
+  const loggerMock = {
     trace: jest.fn(),
     debug: jest.fn(),
     warn: jest.fn(),
     setContext: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
-  const trackingMock = ({
+  const trackingMock = {
     track: jest.fn(),
-  } as unknown) as TrackingService;
+  } as unknown as TrackingService;
 
   const resMock: any = {};
   resMock.render = jest.fn().mockReturnValue(resMock);

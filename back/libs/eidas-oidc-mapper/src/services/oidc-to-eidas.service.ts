@@ -27,9 +27,8 @@ export class OidcToEidasService {
     requestedScopes: string,
     acr: AcrValues,
   ): EidasPartialRequest {
-    const requestedAttributesSet: Set<EidasAttributes> = this.mapScopesToRequestedAttributes(
-      requestedScopes.split(' '),
-    );
+    const requestedAttributesSet: Set<EidasAttributes> =
+      this.mapScopesToRequestedAttributes(requestedScopes.split(' '));
     const requestedAttributes = Array.from(requestedAttributesSet);
 
     return {
@@ -148,9 +147,8 @@ export class OidcToEidasService {
     requestedAttribute: EidasAttributes,
   ) {
     if (ClaimsToAttributesMap[requestedAttribute]) {
-      attributes[requestedAttribute] = ClaimsToAttributesMap[
-        requestedAttribute
-      ](claims);
+      attributes[requestedAttribute] =
+        ClaimsToAttributesMap[requestedAttribute](claims);
     }
 
     return attributes;

@@ -519,15 +519,16 @@ describe('LightResponseService', () => {
       expect(lightXmlServiceMock.stripUrlAndUrnForProps).toHaveBeenCalledTimes(
         1,
       );
-      expect(
-        lightXmlServiceMock.stripUrlAndUrnForProps,
-      ).toHaveBeenCalledWith(pathsObject, [
-        'levelOfAssurance',
-        'subjectNameIdFormat',
-        'definition',
-        'statusCode',
-        'subStatusCode',
-      ]);
+      expect(lightXmlServiceMock.stripUrlAndUrnForProps).toHaveBeenCalledWith(
+        pathsObject,
+        [
+          'levelOfAssurance',
+          'subjectNameIdFormat',
+          'definition',
+          'statusCode',
+          'subStatusCode',
+        ],
+      );
     });
 
     it('should call lowerCaseFirstCharForProps with the return of the stripUrlAndUrnForProps call to lowercase the first character of definition', () => {
@@ -820,9 +821,9 @@ describe('LightResponseService', () => {
     it('should call forEachPath from the light protocol xml library with a paths object and the callback returned by getDissociateDefinitionsAndValuesForPath', () => {
       // setup
       const mockCallback = jest.fn();
-      service[
-        'getDissociateDefinitionsAndValuesForPath'
-      ] = jest.fn().mockReturnValueOnce(mockCallback);
+      service['getDissociateDefinitionsAndValuesForPath'] = jest
+        .fn()
+        .mockReturnValueOnce(mockCallback);
 
       // action
       service['dissociateDefinitionsAndValues'](pathsObject);
@@ -988,9 +989,9 @@ describe('LightResponseService', () => {
     it('should call forEachPath from the light protocol xml library with a paths object and the callback returned by getMapValuesToDefinitionForPath', () => {
       // setup
       const mockCallback = jest.fn();
-      service[
-        'getMapValuesToDefinitionForPath'
-      ] = jest.fn().mockReturnValueOnce(mockCallback);
+      service['getMapValuesToDefinitionForPath'] = jest
+        .fn()
+        .mockReturnValueOnce(mockCallback);
 
       // action
       service['mapValuesToDefinition'](pathsObject);

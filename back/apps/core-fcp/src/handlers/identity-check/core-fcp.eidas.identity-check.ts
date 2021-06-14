@@ -9,7 +9,8 @@ import { EidasIdentityDto } from '../../dto';
 @Injectable()
 @FeatureHandler('core-fcp-eidas-identity-check')
 export class CoreFcpEidasIdentityCheckHandler
-  implements IFeatureHandler<ValidationError[]> {
+  implements IFeatureHandler<ValidationError[]>
+{
   constructor(private readonly logger: LoggerService) {
     this.logger.setContext(this.constructor.name);
   }

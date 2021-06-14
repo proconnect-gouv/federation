@@ -16,7 +16,8 @@ import { ServiceProvider } from './schemas';
 
 @Injectable()
 export class ServiceProviderAdapterMongoService
-  implements IServiceProviderAdapter {
+  implements IServiceProviderAdapter
+{
   private listCache: ServiceProviderMetadata[];
 
   // Dependency injection can require more than 4 parameters
@@ -204,11 +205,10 @@ export class ServiceProviderAdapterMongoService
   }
 
   private decryptClientSecret(clientSecret: string): string {
-    const {
-      clientSecretEcKey,
-    } = this.config.get<ServiceProviderAdapterMongoConfig>(
-      'ServiceProviderAdapterMongoConfig',
-    );
+    const { clientSecretEcKey } =
+      this.config.get<ServiceProviderAdapterMongoConfig>(
+        'ServiceProviderAdapterMongoConfig',
+      );
     return this.cryptography.decrypt(
       clientSecretEcKey,
       Buffer.from(clientSecret, 'base64'),

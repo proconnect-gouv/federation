@@ -110,7 +110,7 @@ describe('SessionInterceptor', () => {
 
       // action
       await interceptor.intercept(
-        (executionContextMock as unknown) as ExecutionContext,
+        executionContextMock as unknown as ExecutionContext,
         nextMock,
       );
 
@@ -127,7 +127,7 @@ describe('SessionInterceptor', () => {
 
       // action
       await interceptor.intercept(
-        (executionContextMock as unknown) as ExecutionContext,
+        executionContextMock as unknown as ExecutionContext,
         nextMock,
       );
 
@@ -142,7 +142,7 @@ describe('SessionInterceptor', () => {
 
       // action
       await interceptor.intercept(
-        (executionContextMock as unknown) as ExecutionContext,
+        executionContextMock as unknown as ExecutionContext,
         nextMock,
       );
 
@@ -159,7 +159,7 @@ describe('SessionInterceptor', () => {
 
       // action
       await interceptor.intercept(
-        (executionContextMock as unknown) as ExecutionContext,
+        executionContextMock as unknown as ExecutionContext,
         nextMock,
       );
 
@@ -176,7 +176,7 @@ describe('SessionInterceptor', () => {
 
       // action
       await interceptor.intercept(
-        (executionContextMock as unknown) as ExecutionContext,
+        executionContextMock as unknown as ExecutionContext,
         nextMock,
       );
 
@@ -194,7 +194,7 @@ describe('SessionInterceptor', () => {
 
       // action
       await interceptor.intercept(
-        (executionContextMock as unknown) as ExecutionContext,
+        executionContextMock as unknown as ExecutionContext,
         nextMock,
       );
 
@@ -209,7 +209,7 @@ describe('SessionInterceptor', () => {
 
       // action
       await interceptor.intercept(
-        (executionContextMock as unknown) as ExecutionContext,
+        executionContextMock as unknown as ExecutionContext,
         nextMock,
       );
 
@@ -224,7 +224,7 @@ describe('SessionInterceptor', () => {
 
       // action
       await interceptor.intercept(
-        (executionContextMock as unknown) as ExecutionContext,
+        executionContextMock as unknown as ExecutionContext,
         nextMock,
       );
 
@@ -248,9 +248,9 @@ describe('SessionInterceptor', () => {
 
     it('should call `sessionGenericService.init()` if no session cookie found in request signed cookies', async () => {
       // Given
-      const reqMock: ISessionGenericRequest = ({
+      const reqMock: ISessionGenericRequest = {
         signedCookies: {},
-      } as unknown) as ISessionGenericRequest;
+      } as unknown as ISessionGenericRequest;
 
       const cookieSessionIdMock = undefined;
       sessionGenericServiceMock.getSessionIdFromCookie.mockReturnValue(
@@ -269,11 +269,11 @@ describe('SessionInterceptor', () => {
 
     it('should call `sessionGenericService.refresh()` if cookie found in request signed cookies', async () => {
       // Given
-      const reqCookieMock: ISessionGenericRequest = ({
+      const reqCookieMock: ISessionGenericRequest = {
         signedCookies: {
           [configMock.sessionCookieName]: 'sessionIdValue',
         },
-      } as unknown) as ISessionGenericRequest;
+      } as unknown as ISessionGenericRequest;
 
       const cookieSessionIdMock = 'cookieSessionIdValue';
       sessionGenericServiceMock.getSessionIdFromCookie.mockReturnValue(

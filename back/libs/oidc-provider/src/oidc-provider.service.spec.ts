@@ -58,13 +58,13 @@ describe('OidcProviderService', () => {
     },
   };
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     verbose: jest.fn(),
     debug: jest.fn(),
     trace: jest.fn(),
     businessEvent: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const serviceProviderListMock = [{ name: 'my SP' }];
   const serviceProviderServiceMock = {

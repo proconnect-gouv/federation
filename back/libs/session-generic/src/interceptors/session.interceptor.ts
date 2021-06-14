@@ -21,9 +21,8 @@ export class SessionInterceptor implements NestInterceptor {
   ) {}
 
   onModuleInit() {
-    const { excludedRoutes } = this.config.get<SessionGenericConfig>(
-      'SessionGeneric',
-    );
+    const { excludedRoutes } =
+      this.config.get<SessionGenericConfig>('SessionGeneric');
 
     this.excludedRoutes = excludedRoutes;
   }
@@ -43,9 +42,8 @@ export class SessionInterceptor implements NestInterceptor {
   }
 
   private async handleSession(req: ISessionGenericRequest, res) {
-    const cookieSessionId = this.sessionGenericService.getSessionIdFromCookie(
-      req,
-    );
+    const cookieSessionId =
+      this.sessionGenericService.getSessionIdFromCookie(req);
 
     if (!cookieSessionId) {
       this.sessionGenericService.init(req, res);

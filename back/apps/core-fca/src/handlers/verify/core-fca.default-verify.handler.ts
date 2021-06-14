@@ -56,7 +56,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
      *
      *    context: upgrade with session generic
      */
-    const agentIdentity = (idpIdentity as unknown) as IAgentIdentity;
+    const agentIdentity = idpIdentity as unknown as IAgentIdentity;
 
     const agentHash = this.cryptographyFca.computeIdentityHash(
       idpId,

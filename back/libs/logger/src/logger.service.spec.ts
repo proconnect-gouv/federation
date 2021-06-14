@@ -103,9 +103,9 @@ describe('LoggerService', () => {
   };
 
   let configMock = { isDevelopment: true };
-  const configServiceMock = ({
+  const configServiceMock = {
     get: () => configMock,
-  } as unknown) as ConfigService;
+  } as unknown as ConfigService;
 
   const getConfiguredMockedService = (config: any): LoggerService => {
     configMock = config;

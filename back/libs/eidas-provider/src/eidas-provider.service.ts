@@ -37,10 +37,8 @@ export class EidasProviderService {
    * proxyServiceResponseCache -> write the FranceConnect response to the FR Node
    */
   onModuleInit(): void {
-    const {
-      proxyServiceRequestCache,
-      proxyServiceResponseCache,
-    } = this.config.get<EidasProviderConfig>('EidasProvider');
+    const { proxyServiceRequestCache, proxyServiceResponseCache } =
+      this.config.get<EidasProviderConfig>('EidasProvider');
 
     this.logger.debug(
       `Accessing caches ${proxyServiceRequestCache} and ${proxyServiceResponseCache}...`,
@@ -140,9 +138,8 @@ export class EidasProviderService {
    * @returns The light-response token and the light-response as an XML
    */
   prepareLightResponse(response: EidasResponse) {
-    const { proxyServiceResponseIssuer } = this.config.get<EidasProviderConfig>(
-      'EidasProvider',
-    );
+    const { proxyServiceResponseIssuer } =
+      this.config.get<EidasProviderConfig>('EidasProvider');
     const token = this.lightResponse.generateToken(
       response.id,
       proxyServiceResponseIssuer,

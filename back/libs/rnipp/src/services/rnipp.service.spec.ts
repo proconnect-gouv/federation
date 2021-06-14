@@ -233,11 +233,11 @@ describe('RnippService', () => {
       );
 
       service['checkCitizenStatusError'] = jest.fn();
-      service[
-        'checkRnippRectificationError'
-      ] = jest.fn().mockImplementationOnce(() => {
-        throw new FcException('checkRnippRectificationError');
-      });
+      service['checkRnippRectificationError'] = jest
+        .fn()
+        .mockImplementationOnce(() => {
+          throw new FcException('checkRnippRectificationError');
+        });
 
       // action
       try {
@@ -582,9 +582,9 @@ describe('RnippService', () => {
   describe('checkRnippHttpError', () => {
     it('should throw a "RnippTimeoutException" error if the AxiosError code equals "ETIMEDOUT"', async () => {
       // setup
-      const axiosErrorMock = ({
+      const axiosErrorMock = {
         code: 'ETIMEDOUT',
-      } as unknown) as AxiosError;
+      } as unknown as AxiosError;
 
       // action
       try {
@@ -600,9 +600,9 @@ describe('RnippService', () => {
 
     it('should throw a "RnippTimeoutException" error if the AxiosError code equals "ECONNABORTED"', async () => {
       // setup
-      const axiosErrorMock = ({
+      const axiosErrorMock = {
         code: 'ECONNABORTED',
-      } as unknown) as AxiosError;
+      } as unknown as AxiosError;
 
       // action
       try {
@@ -618,9 +618,9 @@ describe('RnippService', () => {
 
     it('should throw a "RnippTimeoutException" error if the AxiosError code equals "ECONNRESET"', async () => {
       // setup
-      const axiosErrorMock = ({
+      const axiosErrorMock = {
         code: 'ECONNRESET',
-      } as unknown) as AxiosError;
+      } as unknown as AxiosError;
 
       // action
       try {
@@ -636,9 +636,9 @@ describe('RnippService', () => {
 
     it('should throw a "RnippHttpStatusException" error if the AxiosError code is not a "timeout"', async () => {
       // setup
-      const axiosErrorMock = ({
+      const axiosErrorMock = {
         code: 'ETOTO',
-      } as unknown) as AxiosError;
+      } as unknown as AxiosError;
 
       // action
       try {

@@ -285,10 +285,10 @@ describe('EidasClientService', () => {
 
   describe('prepareLightRequest', () => {
     const connectorRequestIssuer = 'connectorRequestIssuer';
-    const requestMock = ({
+    const requestMock = {
       id: 'id',
       state: 'state',
-    } as unknown) as EidasRequest;
+    } as unknown as EidasRequest;
 
     beforeEach(() => {
       configServiceMock.get.mockReturnValueOnce({

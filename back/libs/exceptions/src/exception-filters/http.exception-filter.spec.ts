@@ -5,11 +5,11 @@ import { HttpException } from '../exceptions';
 
 describe('HttpExceptionFilter', () => {
   let exceptionFilter: HttpExceptionFilter;
-  const loggerMock = ({
+  const loggerMock = {
     debug: jest.fn(),
     warn: jest.fn(),
     setContext: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const resMock: any = {};
   resMock.render = jest.fn().mockReturnValue(resMock);
