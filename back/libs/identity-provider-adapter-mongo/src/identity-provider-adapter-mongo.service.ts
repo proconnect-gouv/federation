@@ -18,7 +18,8 @@ import { IdentityProviderUpdateEvent } from './events';
 
 @Injectable()
 export class IdentityProviderAdapterMongoService
-  implements IIdentityProviderAdapter {
+  implements IIdentityProviderAdapter
+{
   private listCache: IdentityProviderMetadata<any>[];
 
   // Dependency injection can require more than 4 parameters
@@ -241,7 +242,7 @@ export class IdentityProviderAdapterMongoService
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/326
      * We have non blocking incompatilities.
      */
-    return (result as unknown) as IdentityProviderMetadata;
+    return result as unknown as IdentityProviderMetadata;
   }
 
   /**
@@ -250,11 +251,10 @@ export class IdentityProviderAdapterMongoService
    * @param clientSecret
    */
   private decryptClientSecret(clientSecret: string): string {
-    const {
-      clientSecretEcKey,
-    } = this.config.get<IdentityProviderAdapterMongoConfig>(
-      'IdentityProviderAdapterMongoConfig',
-    );
+    const { clientSecretEcKey } =
+      this.config.get<IdentityProviderAdapterMongoConfig>(
+        'IdentityProviderAdapterMongoConfig',
+      );
     return this.crypto.decrypt(
       clientSecretEcKey,
       Buffer.from(clientSecret, 'base64'),

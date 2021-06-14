@@ -93,7 +93,7 @@ describe('ConfigParser', () => {
       const path = 'baz';
       const parseBooleanMockReturnValue = Symbol('true');
       parseBooleanMock.mockReturnValue(
-        (parseBooleanMockReturnValue as unknown) as boolean,
+        parseBooleanMockReturnValue as unknown as boolean,
       );
       // When
       const result = reader.boolean(path);
@@ -121,7 +121,7 @@ describe('ConfigParser', () => {
       const path = 'baz';
       const parseJsonPropertyMockReturnValue = Symbol('someobject');
       parseJsonPropertyMock.mockReturnValue(
-        (parseJsonPropertyMockReturnValue as unknown) as object,
+        parseJsonPropertyMockReturnValue as unknown as object,
       );
       // When
       const result = reader.json(path);

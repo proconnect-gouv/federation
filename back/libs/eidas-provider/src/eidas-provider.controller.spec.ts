@@ -160,9 +160,8 @@ describe('EidasProviderController', () => {
     };
 
     beforeEach(() => {
-      controller[
-        'getEidasResponse'
-      ] = getEidasSessionMock.mockResolvedValueOnce(eidasResponseMock);
+      controller['getEidasResponse'] =
+        getEidasSessionMock.mockResolvedValueOnce(eidasResponseMock);
 
       eidasProviderServiceMock.prepareLightResponse.mockReturnValueOnce(
         formattedLightResponseMock,

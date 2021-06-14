@@ -20,7 +20,7 @@ describe('IsValidPromptConstraint', () => {
       forcedPrompt: resultsMock,
     });
     constraint = new IsValidPromptConstraint(
-      (configMock as unknown) as ConfigService,
+      configMock as unknown as ConfigService,
     );
   });
 

@@ -12,18 +12,18 @@ import { OidcClientIssuerService } from './oidc-client-issuer.service';
 describe('OidcClientIssuerService', () => {
   let service: OidcClientIssuerService;
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     trace: jest.fn(),
     debug: jest.fn(),
     businessEvent: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const oidcClientConfigServiceMock = {
     get: jest.fn(),
   };
 
-  const issuerProxyMock = (jest.fn() as unknown) as Issuer<Client>;
+  const issuerProxyMock = jest.fn() as unknown as Issuer<Client>;
   issuerProxyMock['discover'] = jest.fn();
 
   const idpMetadataMock = {
@@ -201,21 +201,21 @@ describe('OidcClientIssuerService', () => {
 
   describe('getIdpMetadata', () => {
     // Given
-    const providerMock1 = ({
+    const providerMock1 = {
       name: 'provider1',
       uid: 'p1',
       active: true,
-    } as unknown) as ClientMetadata;
-    const providerMock2 = ({
+    } as unknown as ClientMetadata;
+    const providerMock2 = {
       name: 'provider2',
       uid: 'p2',
       active: true,
-    } as unknown) as ClientMetadata;
-    const providerMock3 = ({
+    } as unknown as ClientMetadata;
+    const providerMock3 = {
       name: 'provider3',
       uid: 'p3',
       active: false,
-    } as unknown) as ClientMetadata;
+    } as unknown as ClientMetadata;
     const providers = [providerMock1, providerMock2, providerMock3];
 
     it('should return provider in config', async () => {

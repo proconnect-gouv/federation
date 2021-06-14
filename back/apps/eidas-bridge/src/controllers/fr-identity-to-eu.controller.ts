@@ -82,10 +82,8 @@ export class FrIdentityToEuController {
     const { eidasRequest } = await sessionEidasProvider.get();
     const oidcRequest = this.eidasToOidc.mapPartialRequest(eidasRequest);
 
-    const {
-      state,
-      nonce,
-    } = await this.oidcClient.utils.buildAuthorizeParameters();
+    const { state, nonce } =
+      await this.oidcClient.utils.buildAuthorizeParameters();
 
     const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl({
       state,
@@ -178,9 +176,8 @@ export class FrIdentityToEuController {
           requestedAttributes,
         );
       } catch (error) {
-        partialEidasResponse = this.oidcToEidas.mapPartialResponseFailure(
-          error,
-        );
+        partialEidasResponse =
+          this.oidcToEidas.mapPartialResponseFailure(error);
       }
     }
 

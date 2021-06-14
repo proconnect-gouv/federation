@@ -125,10 +125,8 @@ export class CoreFcpController {
       return;
     }
 
-    const {
-      idpFilterExclude,
-      idpFilterList,
-    } = await this.serviceProvider.getById(clientId);
+    const { idpFilterExclude, idpFilterList } =
+      await this.serviceProvider.getById(clientId);
     const providers = await this.identityProvider.getFilteredList(
       idpFilterList,
       idpFilterExclude,
@@ -319,13 +317,8 @@ export class CoreFcpController {
     sessionOidc: ISessionGenericService<OidcClientSession>,
   ) {
     const { providerUid } = params;
-    const {
-      interactionId,
-      idpId,
-      idpState,
-      idpNonce,
-      spId,
-    } = await sessionOidc.get();
+    const { interactionId, idpId, idpState, idpNonce, spId } =
+      await sessionOidc.get();
 
     await this.oidcClient.utils.checkIdpBlacklisted(spId, providerUid);
 
@@ -335,11 +328,8 @@ export class CoreFcpController {
       idpNonce,
     };
 
-    const {
-      accessToken,
-      acr,
-      amr,
-    } = await this.oidcClient.getTokenFromProvider(tokenParams, req);
+    const { accessToken, acr, amr } =
+      await this.oidcClient.getTokenFromProvider(tokenParams, req);
 
     const userInfoParams = {
       accessToken,

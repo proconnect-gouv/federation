@@ -8,7 +8,8 @@ import { CoreFcpDatatransferConsentIdentityEvent } from '../events';
 @EventsHandler(CoreFcpDatatransferConsentIdentityEvent)
 export class CoreFcpDatatransferConsentIdentityEventHandler
   extends TrackingHandler
-  implements IEventHandler<CoreFcpDatatransferConsentIdentityEvent> {
+  implements IEventHandler<CoreFcpDatatransferConsentIdentityEvent>
+{
   async handle(event: CoreFcpDatatransferConsentIdentityEvent) {
     this.log(this.EventsMap['FC_DATATRANSFER:CONSENT:IDENTITY'], event);
   }

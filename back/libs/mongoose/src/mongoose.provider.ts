@@ -16,9 +16,8 @@ export const mongooseProvider = MongooseModule.forRootAsync({
 });
 
 export function buildConnectionString(config: ConfigService) {
-  const { user, password, hosts, database } = config.get<MongooseConfig>(
-    'Mongoose',
-  );
+  const { user, password, hosts, database } =
+    config.get<MongooseConfig>('Mongoose');
 
   return `mongodb://${user}:` + `${password}@` + `${hosts}/` + `${database}`;
 }

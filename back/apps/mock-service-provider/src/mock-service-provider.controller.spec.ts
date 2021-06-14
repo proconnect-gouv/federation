@@ -31,9 +31,9 @@ describe('MockServiceProviderController', () => {
     getEndSessionUrlFromProvider: jest.fn(),
   };
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const oidcErrorMock = {
     error: 'error',
@@ -454,7 +454,8 @@ describe('MockServiceProviderController', () => {
   });
 
   describe('getInteractionParameters', () => {
-    const provider = (identityProviderList[0] as unknown) as IdentityProviderMetadata;
+    const provider =
+      identityProviderList[0] as unknown as IdentityProviderMetadata;
     const urlMock = 'https://somewhere.com/foo';
 
     beforeEach(() => {

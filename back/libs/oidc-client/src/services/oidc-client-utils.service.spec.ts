@@ -25,12 +25,12 @@ describe('OidcClientUtilsService', () => {
   const idTokenMock = 'idTokenMockValue';
   const endSessionUrlWithParamsMock = `https://endSessionUrlMockMock?id_token_hint=${idTokenMock}&post_logout_redirect_uri=${postLogoutRedirectUriMock}&state=${stateMock}`;
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     trace: jest.fn(),
     debug: jest.fn(),
     businessEvent: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const IdentityProviderServiceMock = { getList: jest.fn() };
 

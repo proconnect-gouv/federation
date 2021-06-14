@@ -4,11 +4,11 @@ import { RpcException } from '../exceptions';
 
 describe('RpcExceptionFilter', () => {
   let exceptionFilter: RpcExceptionFilter;
-  const loggerMock = ({
+  const loggerMock = {
     debug: jest.fn(),
     warn: jest.fn(),
     setContext: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const resMock: any = {};
   resMock.render = jest.fn().mockReturnValue(resMock);

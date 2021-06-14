@@ -4,11 +4,11 @@ import { UnhandledExceptionFilter } from './unhandled.exception-filter';
 
 describe(' UnhandledExceptionFilter', () => {
   let exceptionFilter: UnhandledExceptionFilter;
-  const loggerMock = ({
+  const loggerMock = {
     debug: jest.fn(),
     error: jest.fn(),
     setContext: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const resMock: any = {};
   resMock.render = jest.fn().mockReturnValue(resMock);

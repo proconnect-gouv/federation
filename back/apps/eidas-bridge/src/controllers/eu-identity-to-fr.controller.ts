@@ -139,10 +139,8 @@ export class EuIdentityToFrController {
       return res.redirect(this.buildRedirectUriErrorUrl(params, oidcError));
     }
 
-    const {
-      acr,
-      userinfos: idpIdentity,
-    } = await this.eidasToOidc.mapPartialResponseSuccess(eidasResponse);
+    const { acr, userinfos: idpIdentity } =
+      await this.eidasToOidc.mapPartialResponseSuccess(eidasResponse);
 
     await this.validateIdentity(idpIdentity);
 

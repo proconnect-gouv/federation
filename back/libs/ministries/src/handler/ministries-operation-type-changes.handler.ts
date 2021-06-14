@@ -7,7 +7,8 @@ import { MinistriesService } from '../ministries.service';
 
 @EventsHandler(MinistriesOperationTypeChangesEvent)
 export class MinistriesOperationTypeChangesHandler
-  implements IEventHandler<MinistriesOperationTypeChangesEvent> {
+  implements IEventHandler<MinistriesOperationTypeChangesEvent>
+{
   constructor(private readonly minstriesService: MinistriesService) {}
 
   public async handle(): Promise<void> {
