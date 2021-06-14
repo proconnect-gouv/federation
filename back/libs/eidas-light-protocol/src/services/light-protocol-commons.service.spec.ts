@@ -54,9 +54,9 @@ describe('LightProtocolCommonsService', () => {
   describe('generateToken', () => {
     const formatMock = jest.fn();
     beforeEach(() => {
-      mocked(moment, true).mockReturnValueOnce(({
+      mocked(moment, true).mockReturnValueOnce({
         format: formatMock,
-      } as unknown) as moment.Moment);
+      } as unknown as moment.Moment);
 
       formatMock.mockReturnValueOnce(date);
 
@@ -110,9 +110,9 @@ describe('LightProtocolCommonsService', () => {
     it('should create a base64 encoded light request with the issuer, id, date, and the signature', () => {
       // setup
       const formatMock = jest.fn().mockReturnValueOnce(date);
-      mocked(moment, true).mockReturnValueOnce(({
+      mocked(moment, true).mockReturnValueOnce({
         format: formatMock,
-      } as unknown) as moment.Moment);
+      } as unknown as moment.Moment);
 
       // action
       const result = service.generateToken(id, issuer, secretMock);
@@ -135,14 +135,14 @@ describe('LightProtocolCommonsService', () => {
         .mockReturnValueOnce(tokenDigestMock);
 
       toDateMock.mockReturnValueOnce(fakeDate);
-      mocked(moment, true).mockReturnValueOnce(({
+      mocked(moment, true).mockReturnValueOnce({
         toDate: toDateMock,
-      } as unknown) as moment.Moment);
+      } as unknown as moment.Moment);
 
       toStringMock.mockReturnValueOnce(decodedTokenMock);
       jest
         .spyOn(Buffer, 'from')
-        .mockReturnValueOnce(({ toString: toStringMock } as unknown) as Buffer);
+        .mockReturnValueOnce({ toString: toStringMock } as unknown as Buffer);
     });
 
     it('sould retrieve the maxTokenSize from the config', () => {
@@ -236,9 +236,9 @@ describe('LightProtocolCommonsService', () => {
     beforeEach(() => {
       mockFormat.mockReturnValueOnce(date);
 
-      mocked(moment, true).mockReturnValueOnce(({
+      mocked(moment, true).mockReturnValueOnce({
         format: mockFormat,
-      } as unknown) as moment.Moment);
+      } as unknown as moment.Moment);
     });
 
     it('should create a base64 digested sha256 signature hash with id, issuer, mockSecret, date and lightRequestSecret in this order', () => {
@@ -248,10 +248,10 @@ describe('LightProtocolCommonsService', () => {
       const expectedDigest = 'base64';
       const mockUpdate = jest.fn();
       const mockDigest = jest.fn();
-      jest.spyOn(crypto, 'createHash').mockReturnValueOnce(({
+      jest.spyOn(crypto, 'createHash').mockReturnValueOnce({
         update: mockUpdate,
         digest: mockDigest,
-      } as unknown) as crypto.Hash);
+      } as unknown as crypto.Hash);
 
       // action
       service.generateToken(id, issuer, secretMock);

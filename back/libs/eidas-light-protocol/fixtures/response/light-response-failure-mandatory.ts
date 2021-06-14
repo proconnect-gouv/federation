@@ -11,28 +11,30 @@ export const failureMandatoryJsonMock: EidasResponse = {
   },
 };
 
-export const lightResponseFailureMandatoryJsonMock: IJsonifiedLightResponseXml = {
-  _declaration: {
-    _attributes: { version: '1.0', encoding: 'UTF-8', standalone: 'yes' },
-  },
-  lightResponse: {
-    id: {
-      _text: '_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u',
+export const lightResponseFailureMandatoryJsonMock: IJsonifiedLightResponseXml =
+  {
+    _declaration: {
+      _attributes: { version: '1.0', encoding: 'UTF-8', standalone: 'yes' },
     },
-    inResponseToId: {
-      _text: '1602861970744',
-    },
-    issuer: {
-      _text:
-        'https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata',
-    },
-    status: {
-      failure: {
-        _text: 'true',
+    lightResponse: {
+      id: {
+        _text:
+          '_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u',
+      },
+      inResponseToId: {
+        _text: '1602861970744',
+      },
+      issuer: {
+        _text:
+          'https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata',
+      },
+      status: {
+        failure: {
+          _text: 'true',
+        },
       },
     },
-  },
-};
+  };
 
 export const lightResponseFailureMandatoryXmlMock = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <lightResponse>

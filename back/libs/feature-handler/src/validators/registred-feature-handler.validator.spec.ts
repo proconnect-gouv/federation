@@ -30,7 +30,7 @@ describe('IsRegisteredFeatureHandler', () => {
 
     it('should return false if input is a string', () => {
       // Given
-      const input = ('some String' as unknown) as any;
+      const input = 'some String' as unknown as any;
       const validator = new IsRegisteredFeatureHandlerConstraint();
       // When
       const result = validator.validate(input);
@@ -40,7 +40,7 @@ describe('IsRegisteredFeatureHandler', () => {
 
     it('should return false if input is a number', () => {
       // Given
-      const input = (42 as unknown) as any;
+      const input = 42 as unknown as any;
       const validator = new IsRegisteredFeatureHandlerConstraint();
       // When
       const result = validator.validate(input);

@@ -45,8 +45,8 @@ describe('MailerService', () => {
     getFilePath: jest.fn(),
   };
 
-  const MailjetTransportMock = (MailjetTransport as unknown) as jest.Mock;
-  const StdoutTransportMock = (StdoutTransport as unknown) as jest.Mock;
+  const MailjetTransportMock = MailjetTransport as unknown as jest.Mock;
+  const StdoutTransportMock = StdoutTransport as unknown as jest.Mock;
 
   const mailjetMailerInstanceMock = {
     send: jest.fn(),

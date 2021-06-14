@@ -70,7 +70,7 @@ describe('TrackingService', () => {
           constructorSpy(...arg);
         }
       }
-      const context = (Symbol('context') as unknown) as IEventContext;
+      const context = Symbol('context') as unknown as IEventContext;
       // When
       service.track(EventClassMock, context);
       // Then
@@ -85,7 +85,7 @@ describe('TrackingService', () => {
           constructorSpy(arg);
         }
       }
-      const context = (Symbol('context') as unknown) as IEventContext;
+      const context = Symbol('context') as unknown as IEventContext;
       // When
       service.track(EventClassMock, context);
       // Then
@@ -99,8 +99,8 @@ describe('TrackingService', () => {
   describe('log', () => {
     it('should call injected appTrackingService.buildLog method', async () => {
       // Given
-      const eventMock = (Symbol('eventMock') as unknown) as IEvent;
-      const contextMock = (Symbol('contextMock') as unknown) as IEventContext;
+      const eventMock = Symbol('eventMock') as unknown as IEvent;
+      const contextMock = Symbol('contextMock') as unknown as IEventContext;
       // When
       await service.log(eventMock, contextMock);
       // Then
@@ -112,8 +112,8 @@ describe('TrackingService', () => {
     });
     it('should call logger.businessEvent method with result from appTrackingService.buildLog method', async () => {
       // Given
-      const eventMock = (Symbol('eventMock') as unknown) as IEvent;
-      const contextMock = (Symbol('contextMock') as unknown) as IEventContext;
+      const eventMock = Symbol('eventMock') as unknown as IEvent;
+      const contextMock = Symbol('contextMock') as unknown as IEventContext;
       const messageMock = Symbol('messageMock');
       appTrackingMock.buildLog.mockResolvedValueOnce(messageMock);
       // When

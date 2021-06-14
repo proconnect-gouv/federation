@@ -93,9 +93,8 @@ describe('OidcToEidasService', () => {
     const splittedScopes = requestedScopesMock.split(' ');
 
     beforeEach(() => {
-      service[
-        'mapScopesToRequestedAttributes'
-      ] = mapScopesToRequestedAttributesMock;
+      service['mapScopesToRequestedAttributes'] =
+        mapScopesToRequestedAttributesMock;
 
       mapScopesToRequestedAttributesMock.mockReturnValueOnce(
         requestedAttributesMock,
@@ -129,9 +128,8 @@ describe('OidcToEidasService', () => {
     const mapRequestedAttributesFromClaimsMock = jest.fn();
 
     beforeEach(() => {
-      service[
-        'mapRequestedAttributesFromClaims'
-      ] = mapRequestedAttributesFromClaimsMock;
+      service['mapRequestedAttributesFromClaims'] =
+        mapRequestedAttributesFromClaimsMock;
     });
 
     it('should map the attributes with the claims and the requestedAttributes', () => {
@@ -235,11 +233,10 @@ describe('OidcToEidasService', () => {
     };
 
     beforeEach(() => {
-      service[
-        'getClaimsBoundedClaimsToAttributesReducer'
-      ] = getClaimsBoundedClaimsToAttributesReducerMock.mockReturnValueOnce(
-        mockReducer,
-      );
+      service['getClaimsBoundedClaimsToAttributesReducer'] =
+        getClaimsBoundedClaimsToAttributesReducerMock.mockReturnValueOnce(
+          mockReducer,
+        );
     });
 
     it('should get the reducer bounded with the given claims', () => {
@@ -291,9 +288,8 @@ describe('OidcToEidasService', () => {
 
     it('should return the claimsToAttributesReducer bounded function', () => {
       // action
-      const result = service['getClaimsBoundedClaimsToAttributesReducer'](
-        claimsMock,
-      );
+      const result =
+        service['getClaimsBoundedClaimsToAttributesReducer'](claimsMock);
 
       // expect
       expect(result).toBeInstanceOf(Function);
@@ -391,9 +387,8 @@ describe('OidcToEidasService', () => {
       reduceMock.mockReturnValueOnce(expected);
 
       // action
-      const result = service['mapScopesToRequestedAttributes'](
-        emptyOidcScopesMock,
-      );
+      const result =
+        service['mapScopesToRequestedAttributes'](emptyOidcScopesMock);
 
       // expect
       expect(result).toStrictEqual(expected);

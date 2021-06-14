@@ -74,10 +74,8 @@ export class OidcClientController {
     }
 
     // TODO END
-    const {
-      state,
-      nonce,
-    } = await this.oidcClient.utils.buildAuthorizeParameters();
+    const { state, nonce } =
+      await this.oidcClient.utils.buildAuthorizeParameters();
 
     const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl({
       state,

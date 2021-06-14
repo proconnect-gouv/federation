@@ -8,7 +8,8 @@ import { TrackingHandler } from '@fc/tracking';
 @EventsHandler(OidcProviderUserinfoEvent)
 export class OidcProviderUserinfoEventHandler
   extends TrackingHandler
-  implements IEventHandler<OidcProviderUserinfoEvent> {
+  implements IEventHandler<OidcProviderUserinfoEvent>
+{
   async handle(event: OidcProviderUserinfoEvent) {
     this.log(this.EventsMap.SP_REQUESTED_FC_USERINFO, event);
   }

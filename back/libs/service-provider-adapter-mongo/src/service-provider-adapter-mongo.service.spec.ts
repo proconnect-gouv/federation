@@ -238,7 +238,7 @@ describe('ServiceProviderAdapterMongoService', () => {
 
       // action
       const result = service['legacyToOpenIdPropertyName'](
-        (validServiceProviderMock._doc as unknown) as ServiceProvider,
+        validServiceProviderMock._doc as unknown as ServiceProvider,
       );
 
       // expect
@@ -362,7 +362,7 @@ describe('ServiceProviderAdapterMongoService', () => {
 
     it('should return service provider list if serviceProviderListCache is not defined', async () => {
       // setup
-      service['listCache'] = ([
+      service['listCache'] = [
         {
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -373,7 +373,7 @@ describe('ServiceProviderAdapterMongoService', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: 'bar',
         },
-      ] as unknown) as ServiceProviderMetadata[];
+      ] as unknown as ServiceProviderMetadata[];
       service['findAllServiceProvider'] = jest.fn();
 
       // action
@@ -548,7 +548,7 @@ describe('ServiceProviderAdapterMongoService', () => {
 
       // action
       const result = service['legacyToOpenIdPropertyName'](
-        (validServiceProviderMock._doc as unknown) as ServiceProvider,
+        validServiceProviderMock._doc as unknown as ServiceProvider,
       );
 
       // expect

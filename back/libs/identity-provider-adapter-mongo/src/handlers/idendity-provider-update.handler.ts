@@ -7,7 +7,8 @@ import { IdentityProviderAdapterMongoService } from '../identity-provider-adapte
 
 @EventsHandler(IdentityProviderUpdateEvent)
 export class IdentityProviderUpdateHandler
-  implements IEventHandler<IdentityProviderUpdateEvent> {
+  implements IEventHandler<IdentityProviderUpdateEvent>
+{
   constructor(
     private readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {}

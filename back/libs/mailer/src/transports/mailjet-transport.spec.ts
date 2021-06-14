@@ -67,7 +67,7 @@ describe('MailjetTransport', () => {
     jest.spyOn(mailjet, 'connect').mockReturnValueOnce(mailjetInstanceMock);
 
     service = new MailjetTransport(
-      (configServiceMock as unknown) as ConfigService,
+      configServiceMock as unknown as ConfigService,
     );
   });
 

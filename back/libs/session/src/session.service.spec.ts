@@ -20,11 +20,11 @@ jest.mock('@fc/common');
 describe('SessionService', () => {
   let service: SessionService;
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     trace: jest.fn(),
     debug: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   const configServiceMock = {
     get: jest.fn(),
@@ -210,10 +210,10 @@ describe('SessionService', () => {
 
   describe('store', () => {
     const key = 'key';
-    const dataMock = ({
+    const dataMock = {
       interactionId: 'bar',
       idpId: '1337',
-    } as unknown) as ISession;
+    } as unknown as ISession;
 
     it('should call serialize with dataMock', async () => {
       // Given
@@ -289,10 +289,10 @@ describe('SessionService', () => {
     it('should throw if data is invalid', async () => {
       // Given
       const validationErrorMock = [
-        ({ toString: () => 'Error 1' } as any) as ValidationError,
-        ({ toString: () => 'Error 2' } as any) as ValidationError,
+        { toString: () => 'Error 1' } as any as ValidationError,
+        { toString: () => 'Error 2' } as any as ValidationError,
       ];
-      const dataMock = ({ foo: 'bar' } as unknown) as ISession;
+      const dataMock = { foo: 'bar' } as unknown as ISession;
       const validateDtoMock = mocked(validateDto, true);
       validateDtoMock.mockResolvedValueOnce(validationErrorMock);
 
@@ -432,7 +432,7 @@ describe('SessionService', () => {
       };
       service.get = jest.fn().mockResolvedValueOnce(originalSession);
       service.save = jest.fn().mockResolvedValueOnce(undefined);
-      const input = ({ b: 'C' } as unknown) as ISession;
+      const input = { b: 'C' } as unknown as ISession;
 
       // When
       await service.patch(key, input);
@@ -453,7 +453,7 @@ describe('SessionService', () => {
       };
       service.get = jest.fn().mockResolvedValueOnce(originalSession);
       service.save = jest.fn().mockRejectedValueOnce(new Error('test'));
-      const input = ({ b: 'C' } as unknown) as ISession;
+      const input = { b: 'C' } as unknown as ISession;
 
       // Then
       await expect(service.patch(key, input)).rejects.toThrow();

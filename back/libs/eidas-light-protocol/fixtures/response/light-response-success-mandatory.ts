@@ -24,77 +24,79 @@ export const successMandatoryJsonMock: EidasResponse = {
   },
 };
 
-export const lightResponseSuccessMandatoryJsonMock: IJsonifiedLightResponseXml = {
-  _declaration: {
-    _attributes: { version: '1.0', encoding: 'UTF-8', standalone: 'yes' },
-  },
-  lightResponse: {
-    id: {
-      _text: '_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u',
+export const lightResponseSuccessMandatoryJsonMock: IJsonifiedLightResponseXml =
+  {
+    _declaration: {
+      _attributes: { version: '1.0', encoding: 'UTF-8', standalone: 'yes' },
     },
-    inResponseToId: {
-      _text: '1602861970744',
-    },
-    issuer: {
-      _text:
-        'https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata',
-    },
-    subjectNameIdFormat: {
-      _text: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
-    },
-    subject: {
-      _text: '0123456',
-    },
-    levelOfAssurance: {
-      _text: 'http://eidas.europa.eu/LoA/substantial',
-    },
-    status: {
-      failure: {
-        _text: 'false',
+    lightResponse: {
+      id: {
+        _text:
+          '_BmPONbKyIB64fyNTQoyzZr_r5pXeyDGwUTS-bfo_zzhb_.Us9f.XZE2.mcqyM1u',
+      },
+      inResponseToId: {
+        _text: '1602861970744',
+      },
+      issuer: {
+        _text:
+          'https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata',
+      },
+      subjectNameIdFormat: {
+        _text: 'urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified',
+      },
+      subject: {
+        _text: '0123456',
+      },
+      levelOfAssurance: {
+        _text: 'http://eidas.europa.eu/LoA/substantial',
+      },
+      status: {
+        failure: {
+          _text: 'false',
+        },
+      },
+      attributes: {
+        attribute: [
+          {
+            definition: {
+              _text:
+                'http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier',
+            },
+            value: {
+              _text: 'BE/FR/12345',
+            },
+          },
+          {
+            definition: {
+              _text:
+                'http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName',
+            },
+            value: {
+              _text: 'Garcia',
+            },
+          },
+          {
+            definition: {
+              _text:
+                'http://eidas.europa.eu/attributes/naturalperson/CurrentGivenName',
+            },
+            value: {
+              _text: 'javier',
+            },
+          },
+          {
+            definition: {
+              _text:
+                'http://eidas.europa.eu/attributes/naturalperson/DateOfBirth',
+            },
+            value: {
+              _text: '1964-12-31',
+            },
+          },
+        ],
       },
     },
-    attributes: {
-      attribute: [
-        {
-          definition: {
-            _text:
-              'http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier',
-          },
-          value: {
-            _text: 'BE/FR/12345',
-          },
-        },
-        {
-          definition: {
-            _text:
-              'http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName',
-          },
-          value: {
-            _text: 'Garcia',
-          },
-        },
-        {
-          definition: {
-            _text:
-              'http://eidas.europa.eu/attributes/naturalperson/CurrentGivenName',
-          },
-          value: {
-            _text: 'javier',
-          },
-        },
-        {
-          definition: {
-            _text:
-              'http://eidas.europa.eu/attributes/naturalperson/DateOfBirth',
-          },
-          value: {
-            _text: '1964-12-31',
-          },
-        },
-      ],
-    },
-  },
-};
+  };
 
 export const lightResponseSuccessMandatoryXmlMock = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <lightResponse>

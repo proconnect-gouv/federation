@@ -143,7 +143,7 @@ describe('RnippResponseParserService', () => {
     it('should extract the "rnippCode" attribute from the parsed XML by calling "getXmlAttribute"', () => {
       // action
       service['extractXmlAttributes'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
       );
 
       // expect
@@ -158,7 +158,7 @@ describe('RnippResponseParserService', () => {
     it('should extract the "deceased" attribute from the parsed XML by calling "getDeceasedStateAttribute"', () => {
       // action
       service['extractXmlAttributes'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
       );
 
       // expect
@@ -172,7 +172,7 @@ describe('RnippResponseParserService', () => {
     it('should extract the "gender" attribute from the parsed XML by calling "getGenderFromParsedXml"', () => {
       // action
       service['extractXmlAttributes'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
       );
 
       // expect
@@ -186,7 +186,7 @@ describe('RnippResponseParserService', () => {
     it('should extract the "family_name" attribute from the parsed XML by calling "getXmlAttribute"', () => {
       // action
       service['extractXmlAttributes'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
       );
 
       // expect
@@ -201,7 +201,7 @@ describe('RnippResponseParserService', () => {
     it('should extract the "given_name" attribute from the parsed XML by calling "getGivenNamesAttribute"', () => {
       // action
       service['extractXmlAttributes'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
       );
 
       // expect
@@ -215,7 +215,7 @@ describe('RnippResponseParserService', () => {
     it('should extract the "birthdate" attribute from the parsed XML by calling "getXmlAttribute"', () => {
       // action
       service['extractXmlAttributes'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
       );
 
       // expect
@@ -230,7 +230,7 @@ describe('RnippResponseParserService', () => {
     it('should extract the "birthplace" attribute from the parsed XML by calling "getXmlAttribute"', () => {
       // action
       service['extractXmlAttributes'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
       );
 
       // expect
@@ -245,7 +245,7 @@ describe('RnippResponseParserService', () => {
     it('should extract the "birthcountry" attribute from the parsed XML by calling "getBirthcountryAttribute"', () => {
       // action
       service['extractXmlAttributes'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
       );
 
       // expect
@@ -260,7 +260,7 @@ describe('RnippResponseParserService', () => {
     it('should return the status of the citizen', () => {
       // action
       const result = service['extractXmlAttributes'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
       );
 
       // expect
@@ -279,7 +279,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       const result = service['extractXmlAttributes'](
-        (rnippNotFoundResponseParsed as unknown) as JSON,
+        rnippNotFoundResponseParsed as unknown as JSON,
       );
 
       // expect
@@ -295,7 +295,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       service['getGenderFromParsedXml'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.GENDER,
       );
 
@@ -312,7 +312,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       const result = service['getGenderFromParsedXml'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.GENDER,
       );
 
@@ -325,7 +325,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       const result = service['getGenderFromParsedXml'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.GENDER,
       );
 
@@ -338,7 +338,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       const result = service['getGenderFromParsedXml'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.GENDER,
       );
 
@@ -351,7 +351,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       const result = service['getGenderFromParsedXml'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.GENDER,
       );
 
@@ -368,7 +368,7 @@ describe('RnippResponseParserService', () => {
     it('should call "_.get" with the parsed XML, the path to follow in the parsed XML and the default "defaultValue"', () => {
       // action
       service['getXmlAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.RNIPP_CODE,
       );
 
@@ -387,7 +387,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       service['getXmlAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.RNIPP_CODE,
         defaultValue,
       );
@@ -404,7 +404,7 @@ describe('RnippResponseParserService', () => {
     it('should return the result of "_.get" call', () => {
       // action
       const result = service['getXmlAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.RNIPP_CODE,
       );
 
@@ -423,7 +423,7 @@ describe('RnippResponseParserService', () => {
     it('should call "getXmlAttribute" with the parsed XML, the path to follow in the parsed XML and "[]" as default value', () => {
       // action
       service['getGivenNamesAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.GIVEN_NAME,
       );
 
@@ -439,7 +439,7 @@ describe('RnippResponseParserService', () => {
     it('should return the "joined" result of "getXmlAttribute"', () => {
       // action
       const result = service['getGivenNamesAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.GIVEN_NAME,
       );
 
@@ -456,7 +456,7 @@ describe('RnippResponseParserService', () => {
     it('should call "getXmlAttribute" with the parsed XML, the path to follow in the parsed XML and "false" as default value', () => {
       // action
       service['getDeceasedStateAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.DECEASED,
       );
 
@@ -475,7 +475,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       const result = service['getDeceasedStateAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.DECEASED,
       );
 
@@ -489,7 +489,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       const result = service['getDeceasedStateAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.DECEASED,
       );
 
@@ -509,7 +509,7 @@ describe('RnippResponseParserService', () => {
     it('should call "getXmlAttribute" with the parsed XML, first the "birthplace" path, second with the "birthcountry"', () => {
       // action
       service['getBirthcountryAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.BIRTH_PLACE,
         RnippXmlSelectors.BIRTH_COUNTRY,
       );
@@ -531,7 +531,7 @@ describe('RnippResponseParserService', () => {
     it('should return the "birthcountry" cog if found', () => {
       // action
       const result = service['getBirthcountryAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.BIRTH_PLACE,
         RnippXmlSelectors.BIRTH_COUNTRY,
       );
@@ -548,7 +548,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       const result = service['getBirthcountryAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.BIRTH_PLACE,
         RnippXmlSelectors.BIRTH_COUNTRY,
       );
@@ -565,7 +565,7 @@ describe('RnippResponseParserService', () => {
 
       // action
       const result = service['getBirthcountryAttribute'](
-        (rnippCorrectResponseParsed as unknown) as JSON,
+        rnippCorrectResponseParsed as unknown as JSON,
         RnippXmlSelectors.BIRTH_PLACE,
         RnippXmlSelectors.BIRTH_COUNTRY,
       );

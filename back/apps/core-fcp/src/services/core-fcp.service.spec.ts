@@ -252,7 +252,7 @@ describe('CoreFcpService', () => {
         () =>
           service.getFeature<FcpFeature>(
             sessionDataMock.idpId,
-            ('Tzeentch' as unknown) as ProcessCore,
+            'Tzeentch' as unknown as ProcessCore,
           ),
         // Then
       ).rejects.toThrow(errorMock);

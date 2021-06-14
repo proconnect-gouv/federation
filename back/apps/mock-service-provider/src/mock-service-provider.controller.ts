@@ -233,22 +233,16 @@ export class MockServiceProviderController {
       idpState,
       idpNonce,
     };
-    const {
-      accessToken,
-      idToken,
-      acr,
-      amr,
-    } = await this.oidcClient.getTokenFromProvider(tokenParams, req);
+    const { accessToken, idToken, acr, amr } =
+      await this.oidcClient.getTokenFromProvider(tokenParams, req);
 
     const userInfoParams = {
       accessToken,
       providerUid,
     };
 
-    const identity: IOidcIdentity = await this.oidcClient.getUserInfosFromProvider(
-      userInfoParams,
-      req,
-    );
+    const identity: IOidcIdentity =
+      await this.oidcClient.getUserInfosFromProvider(userInfoParams, req);
 
     /**
      *  @todo
@@ -324,13 +318,11 @@ export class MockServiceProviderController {
   private async getInteractionParameters(provider: IdentityProviderMetadata) {
     const oidcClientConfig = this.config.get<OidcClientConfig>('OidcClient');
     const { scope, acr, claims } = oidcClientConfig;
-    const {
-      state,
-      nonce,
-    } = await this.oidcClient.utils.buildAuthorizeParameters();
+    const { state, nonce } =
+      await this.oidcClient.utils.buildAuthorizeParameters();
 
-    const authorizationUrl: string = await this.oidcClient.utils.getAuthorizeUrl(
-      {
+    const authorizationUrl: string =
+      await this.oidcClient.utils.getAuthorizeUrl({
         state,
         scope,
         providerUid: provider.uid,
@@ -338,8 +330,7 @@ export class MockServiceProviderController {
         acr_values: acr,
         nonce,
         claims,
-      },
-    );
+      });
 
     const url = new URL(authorizationUrl);
 

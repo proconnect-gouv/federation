@@ -82,9 +82,8 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     await this.core.checkIfAccountIsBlocked(hashSp);
 
     const subSp = this.cryptographyFcp.computeSubV1(entityId, hashSp);
-    const idpIdentityHash = this.cryptographyFcp.computeIdentityHash(
-      idpIdentity,
-    );
+    const idpIdentityHash =
+      this.cryptographyFcp.computeIdentityHash(idpIdentity);
     const subIdp = this.cryptographyFcp.computeSubV1(spId, idpIdentityHash);
 
     // Save interaction to database & get sp's sub to avoid double computation

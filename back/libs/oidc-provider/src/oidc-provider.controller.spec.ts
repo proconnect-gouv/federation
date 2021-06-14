@@ -44,12 +44,12 @@ describe('OidcProviderController', () => {
     get: jest.fn(),
   };
 
-  const loggerServiceMock = ({
+  const loggerServiceMock = {
     setContext: jest.fn(),
     verbose: jest.fn(),
     businessEvent: jest.fn(),
     debug: jest.fn(),
-  } as unknown) as LoggerService;
+  } as unknown as LoggerService;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({

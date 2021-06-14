@@ -39,9 +39,8 @@ export class EidasProviderController {
 
     await sessionEidasProvider.set('eidasRequest', request);
 
-    const {
-      redirectAfterRequestHandlingUrl,
-    } = this.config.get<EidasProviderConfig>('EidasProvider');
+    const { redirectAfterRequestHandlingUrl } =
+      this.config.get<EidasProviderConfig>('EidasProvider');
 
     return { url: redirectAfterRequestHandlingUrl, statusCode: 302 };
   }
@@ -54,18 +53,16 @@ export class EidasProviderController {
   ) {
     const eidasReponse = await this.getEidasResponse(session);
 
-    const { token, lightResponse } = this.eidasProvider.prepareLightResponse(
-      eidasReponse,
-    );
+    const { token, lightResponse } =
+      this.eidasProvider.prepareLightResponse(eidasReponse);
 
     await this.eidasProvider.writeLightResponseInCache(
       eidasReponse.id,
       lightResponse,
     );
 
-    const {
-      proxyServiceResponseCacheUrl,
-    } = this.config.get<EidasProviderConfig>('EidasProvider');
+    const { proxyServiceResponseCacheUrl } =
+      this.config.get<EidasProviderConfig>('EidasProvider');
 
     return { proxyServiceResponseCacheUrl, token };
   }
@@ -73,10 +70,8 @@ export class EidasProviderController {
   private async getEidasResponse(
     sessionEidas: ISessionGenericService<EidasProviderSession>,
   ) {
-    const {
-      eidasRequest,
-      partialEidasResponse,
-    }: EidasProviderSession = await sessionEidas.get();
+    const { eidasRequest, partialEidasResponse }: EidasProviderSession =
+      await sessionEidas.get();
 
     let eidasReponse;
     if (!partialEidasResponse.status.failure) {

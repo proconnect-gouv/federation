@@ -5,7 +5,8 @@ import { TrackableEvent } from '@fc/exceptions';
 @EventsHandler(TrackableEvent)
 export class TrackableEventHandler
   extends TrackingHandler
-  implements IEventHandler<TrackableEvent> {
+  implements IEventHandler<TrackableEvent>
+{
   async handle(event: TrackableEvent) {
     const { context } = event;
     const eventFromMap = this.getEventFromMap(context);

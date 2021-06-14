@@ -80,13 +80,13 @@ const ctxMock: ISessionGenericBoundContext = {
   moduleName: 'Columbus',
 };
 
-const reqMock: ISessionGenericRequest = ({
+const reqMock: ISessionGenericRequest = {
   sessionId: ctxMock.sessionId,
   sessionService: undefined,
   signedCookies: {
     [configMock.sessionCookieName]: ctxMock.sessionId,
   },
-} as unknown) as ISessionGenericRequest;
+} as unknown as ISessionGenericRequest;
 
 const resMock: ISessionGenericResponse = {
   cookie: jest.fn(),
@@ -178,9 +178,8 @@ describe('SessionGenericService', () => {
     const getModuleMock = jest.fn();
 
     beforeEach(() => {
-      service['getFullSession'] = getFullSessionMock.mockResolvedValueOnce(
-        fullSessionMock,
-      );
+      service['getFullSession'] =
+        getFullSessionMock.mockResolvedValueOnce(fullSessionMock);
       service['getByKey'] = getByKeyMock.mockReturnValueOnce(
         fullSessionMock.Columbus.science,
       );
@@ -277,9 +276,8 @@ describe('SessionGenericService', () => {
     };
 
     beforeEach(() => {
-      service['getFullSession'] = getFullSessionMock.mockResolvedValueOnce(
-        fullSessionMock,
-      );
+      service['getFullSession'] =
+        getFullSessionMock.mockResolvedValueOnce(fullSessionMock);
       service['setByKey'] = setByKeyMock;
       service['setModule'] = setModuleMock;
       service['save'] = saveMock;
