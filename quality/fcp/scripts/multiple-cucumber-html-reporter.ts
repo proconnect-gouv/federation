@@ -2,7 +2,7 @@
  * Generate a HTML report
  * @link https://github.com/wswebcreation/multiple-cucumber-html-reporter
  */
-const reporter = require('multiple-cucumber-html-reporter');
+import * as reporter from 'multiple-cucumber-html-reporter';
 
 // Fetch Test Run Context
 
@@ -23,9 +23,9 @@ const device = gitBuild === 'local' ? 'Docker Local' : 'Docker GitLab';
 // Add metadata
 
 const reportName = `${platform} ${gitBranch} (${testEnv})`;
+const reportPath = 'cypress/reports/cucumber/report.html';
 
 const customData = {
-  title: 'Run info',
   data: [
     { label: 'Project', value: platform },
     { label: 'Version', value: version },
@@ -33,6 +33,7 @@ const customData = {
     { label: 'Environment', value: testEnv },
     { label: 'Build', value: gitBuild },
   ],
+  title: 'Run info',
 };
 
 /**
@@ -76,14 +77,14 @@ const metadata = {
 */
 
 const options = {
-  jsonDir: 'cypress/reports/cucumber',
-  reportPath: 'cypress/reports/cucumber/report.html',
-  pageTitle: reportName,
-  reportName,
+  customData,
   displayDuration: true,
   displayReportTime: true,
+  jsonDir: 'cypress/reports/cucumber',
   metadata,
-  customData,
+  pageTitle: reportName,
+  reportName,
+  reportPath,
 };
 
 reporter.generate(options);

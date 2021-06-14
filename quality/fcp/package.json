@@ -25,6 +25,7 @@
     "eslint-plugin-sort-destructure-keys": "^1.3.5",
     "eslint-plugin-sort-keys-fix": "^1.1.1",
     "eslint-plugin-typescript-sort-keys": "^1.6.0",
+    "fs-extra": "^10.0.0",
     "multiple-cucumber-html-reporter": "^1.18.0",
     "prettier": "^2.3.0"
   },
@@ -35,8 +36,8 @@
     "test:low": "yarn clean && npx cypress-tags run --env 'TAGS=not @ignoreLow and not @fcpHigh' --config-file cypress-fcp-low.json",
     "start:high": "cypress open --config-file cypress-fcp-high.json",
     "start:low": "cypress open --config-file cypress-fcp-low.json",
-    "report:prepare": "node ./scripts/prepare-cucumber-logs",
-    "report:generate": "node ./scripts/multiple-cucumber-html-reporter"
+    "report:prepare": "ts-node ./scripts/prepare-cucumber-logs",
+    "report:generate": "ts-node ./scripts/multiple-cucumber-html-reporter"
   },
   "keywords": [
     "Cypress",

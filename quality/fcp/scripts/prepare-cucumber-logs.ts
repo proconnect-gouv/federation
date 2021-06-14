@@ -1,17 +1,18 @@
 /**
  * Add Screenshot and Video attachments to the Cucumber logs
  */
-const fs = require('fs');
-const glob = require('glob');
-const path = require('path');
+import * as fs from 'fs';
+import * as glob from 'glob';
+import * as path from 'path';
 
 // Fetch Arguments
-
-const args = process.argv;
-
-const cucumberJsonDir = args[2] || './cypress/reports/cucumber';
-const screenshotsDir = args[3] || './cypress/screenshots';
-const videosDir = args[4] || './cypress/videos';
+const [
+  ,
+  ,
+  cucumberJsonDir = './cypress/reports/cucumber',
+  screenshotsDir = './cypress/screenshots',
+  videosDir = './cypress/videos',
+] = process.argv;
 
 // Init
 
@@ -28,8 +29,6 @@ const videosPath = path.join(__dirname, '..', videosDir);
  * Returns the failed step or null
  */
 const getFailedStepFromScenario = (cuke, scenarioName) => {
-  console.log(scenarioName);
-  console.log(cuke);
   const myScenario = cuke.elements.find((e) => e.name === scenarioName);
   const myStep = myScenario.steps.find(
     (step) => step.result.status !== 'passed',
@@ -53,7 +52,9 @@ const videoContainer = (videoPath) => {
   <a href="#video" data-toggle="collapse" class="collapsed">+ Show Video</a>
   <div id="video" class="scenario-step-collapse collapse" aria-expanded="false" style="height: 0px;">
     <div class="info">
-      <video controls="" width="500"><source type="video/mp4" src="${videoPath}"></video>
+      <video controls="" width="500"><source type="video/mp4" src="${encodeURI(
+        videoPath,
+      )}"></video>
     </div>
   </div>`;
   return videoHTML;
@@ -91,9 +92,9 @@ const screenshots = glob
   .sync(`${screenshotsPath}/**/*.png`)
   .map((screenshotPath) => {
     return {
+      feature: path.basename(path.dirname(screenshotPath)),
       screenshotName: path.basename(screenshotPath),
       screenshotPath,
-      feature: path.basename(path.dirname(screenshotPath)),
     };
   });
 
