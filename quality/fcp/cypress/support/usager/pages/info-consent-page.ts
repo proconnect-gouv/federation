@@ -54,7 +54,10 @@ export default class InfoConsentPage {
         expect(arrClaims).include(CLAIM_LABELS[claimName]),
       );
       // Check no other claims
-      expect(arrClaims.length).to.equal(expectedClaims.length);
+      expect(arrClaims.length).to.equal(
+        expectedClaims.length,
+        `The claims count should be ${expectedClaims.length}`,
+      );
     });
   }
 }

@@ -9,29 +9,46 @@ FCP validation with system tests implemented using a Test Framework (based on Cy
 ## Folder Structure
 
 - Features folder: [/cypress/integration](./cypress/integration)
+- Steps/Pages folder (exploitation): [/cypress/support/exploitation](./cypress/support/exploitation)
 - Steps/Pages folder (usager): [/cypress/support/usager](./cypress/support/usager)
 - Test Data folder: [/cypress/fixtures](./cypress/fixtures)
+
+## Environment Variables
+
+| Environment Variable | Description                       | Comment                                      |
+| -------------------- | --------------------------------- | -------------------------------------------- |
+| PLATFORM             | Platform under test               | `fcp-high` or `fcp-low`                      |
+| TEST_ENV             | Test environment                  | `docker` or `recette`, etc.                  |
+| TAGS                 | Tags expression                   | `not @ignoreLow and not @fcpHigh`            |
+| EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/preprod              |
+| EXPLOIT_ADMIN_PASS   | Exploitation admin password       | needed only for integ01/preprod              |
+| EXPLOIT_ADMIN_TOTP   | Exploitation admin totp secret    | needed only for integ01/preprod              |
+| EXPLOIT_USER_NAME    | Exploitation operator username    | needed only for integ01/preprod              |
+| EXPLOIT_USER_PASS    | Exploitation operator password    | needed only for integ01/preprod              |
+| EXPLOIT_USER_TOTP    | Exploitation operator totp secret | needed only for integ01/preprod              |
+| FC_ACCESS_USER       | FranceConnect network username    | needed on recette/integ01 outside FC network |
+| FC_ACCESS_PASS       | FranceConnect network password    | needed on recette/integ01 outside FC network |
 
 ## Scripts
 
 ### Run the Cypress test in the terminal (deleting previous results)
 
 ```
-# Run Cypress against dev environment
-yarn test
+# Run Cypress on fcpLow against docker environment
+yarn test:low
 
-# Run Cypress against integ01 environment
-CYPRESS_TEST_ENV=integ01 yarn test
+# Run Cypress on fcpHigh against integ01 environment
+CYPRESS_TEST_ENV=integ01 yarn test:high
 ```
 
 ### Open Cypress window
 
 ```
-# Run Cypress against dev environment
-yarn start
+# Run Cypress on fcpHigh against docker environment
+yarn start:high
 
-# Run Cypress against integ01 environment
-CYPRESS_TEST_ENV=integ01 yarn start
+# Run Cypress on fcpLow against integ01 environment
+CYPRESS_TEST_ENV=integ01 yarn start:low
 ```
 
 ### Generate/Open the Cucumber HTML report

@@ -16,15 +16,25 @@
 /**
  * @type {Cypress.PluginConfig}
  */
-const browserify = require('@cypress/browserify-preprocessor');
-const cucumber = require('cypress-cucumber-preprocessor').default;
-const resolve = require('resolve');
+import * as browserify from '@cypress/browserify-preprocessor';
+import cucumber from 'cypress-cucumber-preprocessor';
+import * as processFixtureTemplate from 'cypress-template-fixtures';
+import * as resolve from 'resolve';
+
+import { getFixturePath } from './fixture-plugin';
 
 module.exports = (on, config) => {
+  processFixtureTemplate(on, config);
+
   const options = {
     ...browserify.defaultOptions,
     typescript: resolve.sync('typescript', { baseDir: config.projectRoot }),
   };
+
+  on('task', {
+    getFixturePath,
+  });
+
   on('file:preprocessor', cucumber(options));
 
   const { env: { TEST_ENV: testEnv = '' } = {} } = config;
