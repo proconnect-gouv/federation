@@ -1,2 +1,3 @@
-yarn.lock
 cypress/reports
+node_modules
+yarn.lock

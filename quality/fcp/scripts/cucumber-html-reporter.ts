@@ -1,4 +1,4 @@
-import { generate } from 'cucumber-html-reporter';
+import * as reporter from 'cucumber-html-reporter';
 
 interface Options {
   brandTitle?: string;
@@ -33,4 +33,4 @@ const options: Options = {
   theme: 'bootstrap',
 };
 
-generate(options);
+reporter.generate(options);
