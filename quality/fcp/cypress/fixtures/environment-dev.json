@@ -1,7 +1,0 @@
-{
-  "name": "dev",
-  "allAppsUrl": "https://docker.dev-franceconnect.fr/fcp.html",
-  "exploitAppId": "exploitation-high",
-  "exploitRootUrl": "https://exploitation-high.docker.dev-franceconnect.fr",
-  "fcRootUrl": "https://core-fcp-high.docker.dev-franceconnect.fr"
-}

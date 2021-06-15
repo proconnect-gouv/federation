@@ -1,0 +1,7 @@
+{
+  "name": "{{TEST_ENV}}",
+  "allAppsUrl": "https://{{TEST_ENV}}.dev-franceconnect.fr/fcp.html",
+  "exploitAppId": "exploitation-high",
+  "exploitRootUrl": "https://exploitation-high.{{TEST_ENV}}.dev-franceconnect.fr",
+  "fcRootUrl": "https://core-fcp-high.{{TEST_ENV}}.dev-franceconnect.fr"
+}

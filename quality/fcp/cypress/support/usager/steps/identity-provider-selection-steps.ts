@@ -13,9 +13,8 @@ When(
   /^je choisis un fournisseur d'identité (actif|désactivé)$/,
   function (status) {
     const isEnabled = status === 'actif';
-    const currentIdentityProvider: IdentityProvider = this.identityProviders.find(
-      (provider) => provider.enabled === isEnabled,
-    );
+    const currentIdentityProvider: IdentityProvider =
+      this.identityProviders.find((provider) => provider.enabled === isEnabled);
     cy.wrap(currentIdentityProvider).as('identityProvider');
     cy.get(currentIdentityProvider.selectors.idpButton).click();
   },

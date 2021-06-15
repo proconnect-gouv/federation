@@ -36,7 +36,7 @@ const aliasScopesClaims = {
 export const getClaims = (scopeContext: ScopeContext): string[] => {
   const { scopes } = scopeContext;
   const claims = scopes
-    .map((scope) =>
+    .map((scope: string): string =>
       aliasScopesClaims[scope] ? aliasScopesClaims[scope] : scope,
     )
     .flat();
