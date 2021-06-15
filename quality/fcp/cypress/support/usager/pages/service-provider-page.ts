@@ -112,7 +112,10 @@ export default class ServiceProviderPage {
           sub: /^[0-9a-f]{64}v1$/,
         };
         Object.keys(mandatoryData).forEach((key) =>
-          expect(responseBody[key]).to.match(mandatoryData[key]),
+          expect(responseBody[key]).to.match(
+            mandatoryData[key],
+            `${key} should be present.`,
+          ),
         );
 
         // Check expected claims (except sub)
@@ -121,6 +124,9 @@ export default class ServiceProviderPage {
           .forEach((claimName) => {
             expect(responseBody[claimName]).to.deep.equal(
               userClaims[claimName],
+              `The claim ${claimName} should be ${JSON.stringify(
+                userClaims[claimName],
+              )}`,
             );
           });
 
@@ -128,7 +134,10 @@ export default class ServiceProviderPage {
         const extraClaimsName = Object.keys(responseBody).filter(
           (key) => !mandatoryData[key] && !expectedClaims.includes(key),
         );
-        expect(extraClaimsName).to.deep.equal([]);
+        expect(extraClaimsName).to.deep.equal(
+          [],
+          'No extra claims should be sent.',
+        );
       });
   }
 

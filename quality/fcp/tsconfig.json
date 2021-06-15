@@ -2,10 +2,10 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "lib": ["ES2020", "dom"],
-    "module": "ES2020",
+    "module": "commonjs",
     "moduleResolution": "node",
     "target": "ES2020",
-    "types": ["cypress"]
+    "types": ["cypress", "node"]
   },
   "include": ["**/*.ts"]
 }

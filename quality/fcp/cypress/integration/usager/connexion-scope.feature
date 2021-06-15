@@ -45,6 +45,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et je suis connecté
     Et le fournisseur de service a accès aux informations du scope "anonyme"
 
+  @ignoreLow
   Scénario: Connexion d'un usager - erreur FS non habilité pour ce scope
     Etant donné que le fournisseur de service est habilité à demander le scope "identite_pivot"
     Et que le fournisseur de service requiert l'accès aux informations du scope "address"

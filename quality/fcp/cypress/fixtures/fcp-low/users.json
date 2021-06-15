@@ -3,7 +3,7 @@
     "enabled": true,
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-low",
         "username": "test",
         "password": "123"
       }
@@ -20,7 +20,6 @@
       "phone_number": "123456789",
       "address": {
         "country": "France",
-        "formatted": "France Paris 75107 20 avenue de Ségur",
         "locality": "Paris",
         "postal_code": "75107",
         "street_address": "20 avenue de Ségur"
