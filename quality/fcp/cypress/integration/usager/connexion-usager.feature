@@ -5,7 +5,7 @@ Fonctionnalité: Connexion Usager
   je veux me connecter en utilisant un fournisseur d'identité
   afin d'accéder à mon service
 
-  @fcpLow @ignore
+  @fcpLow
   Scénario: Connexion d'un usager - identification niveau faible
     Etant donné que le fournisseur de service requiert l'accès aux informations du scope "identite_pivot"
     Et que je navigue sur la page fournisseur de service
