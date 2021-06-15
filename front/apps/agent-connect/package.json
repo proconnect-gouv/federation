@@ -4,9 +4,6 @@
   "private": true,
   "author": "",
   "license": "MIT",
-  "engines": {
-    "node": "^12.13.1"
-  },
   "browserslist": {
     "production": [
       ">0.2%",
