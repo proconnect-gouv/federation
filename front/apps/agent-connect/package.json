@@ -5,7 +5,7 @@
   "author": "",
   "license": "MIT",
   "engines": {
-    "node": "^12.13.1"
+    "node": "^14.17.0"
   },
   "browserslist": {
     "production": [
