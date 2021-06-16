@@ -23,19 +23,25 @@ variables:
     CX_FLOW_FILTER_CWE: ""
     CX_FLOW_FILTER_STATUS: ""
     CX_FLOW_FILTER_STATE: ""
-    CX_FLOW_ENABLED_VULNERABILITY_SCANNERS: sast
+    CX_FLOW_ENABLED_VULNERABILITY_SCANNERS: "sast,sca"
+    CX_FLOW_COMMENT_SCRIPT: "Checkmarx_comment.groovy"
     CX_TEAM: "CxServer"                                             # Modified
     CX_FLOW_BREAK_BUILD: "false"
-    SCA_FILTER_SEVERITY: ""
+    SCA_FILTER_SEVERITY: "High"
     SCA_FILTER_SCORE: ""
     SCA_THRESHOLDS_SCORE: ""
-    SCA_TEAM: ""
+    SCA_TEAM: "CxServer"
     GITLAB_BLOCK_MERGE: "false"
     GITLAB_ERROR_MERGE: "false"
     # The exclude file/folders must be written as regexp as they are interpreted by Java.
+    SCA_TENANT: "dinum-sca"
+    SCA_USERNAME: "gitlab"
+    SCA_PASSWORD: ${SCA_PASSWORD}
+    SCA_APPURL: "https://eu.sca.checkmarx.net"
+    SCA_APIURL: "https://eu.api-sca.checkmarx.net"
+    SCA_ACCESSCONTROLURL: "https://eu.platform.checkmarx.net"
 
     PARAMS: --gitlab.api-url=https://gitlab.dev-franceconnect.fr/api/v4/ --cx-flow.zip-exclude=\.git/.*,/docker/.*,.*/cypress/.*,.*\.spec\.ts
-
 
 #
 #         The "checkmarx-scan" service creates issues on gitlab after a scan, reporting errors found based on the severity level.
@@ -99,6 +105,6 @@ checkmarx-scan-mr:
           --branch="${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" 
           --project-id="${CI_PROJECT_ID}" 
           --merge-id="${CI_MERGE_REQUEST_IID}" 
-          --spring.profiles.active="${CX_FLOW_ENABLED_VULNERABILITY_SCANNERS}" 
+          --spring.profiles.active="${CX_FLOW_ENABLED_VULNERABILITY_SCANNERS}"
           --f=. 
           ${PARAMS}
