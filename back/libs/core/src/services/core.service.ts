@@ -122,9 +122,6 @@ export class CoreService {
     const { req, res } = ctx;
     const sessionId = await this.sessionService.reset(req, res);
 
-    // Store the binding relation between interactionId >> sessionId.
-    await this.sessionService.setAlias(interactionId, sessionId);
-
     // oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { client_id: spId, acr_values: spAcr } = ctx.oidc.params;

@@ -65,7 +65,6 @@ describe('CoreService', () => {
   const sessionServiceMock = {
     get: jest.fn(),
     set: jest.fn(),
-    setAlias: jest.fn(),
     reset: jest.fn(),
   };
 
@@ -742,21 +741,6 @@ describe('CoreService', () => {
       // Then
       expect(sessionServiceMock.reset).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.reset).toHaveBeenCalledWith(reqMock, resMock);
-    });
-
-    it('should call session.setAlias()', async () => {
-      // Given
-      const ctxMock = getCtxMock();
-      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
-      // When
-      await service['authorizationMiddleware'](ctxMock);
-
-      // Then
-      expect(sessionServiceMock.setAlias).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.setAlias).toHaveBeenCalledWith(
-        interactionIdValueMock,
-        sessionIdMockValue,
-      );
     });
 
     it('should call session.set()', async () => {

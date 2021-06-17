@@ -17,6 +17,7 @@ import {
   ISessionGenericService,
   Session,
   SessionGenericNotFoundException,
+  SessionGenericService,
 } from '@fc/session-generic';
 import { ConfigService } from '@fc/config';
 import { MinistriesService } from '@fc/ministries';
@@ -54,6 +55,7 @@ export class CoreFcaController {
     private readonly core: CoreFcaService,
     private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
+    private readonly sessionService: SessionGenericService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -190,6 +192,12 @@ export class CoreFcaController {
     if (!spIdentity) {
       throw new CoreMissingIdentityException();
     }
+
+    /**
+     * We need to set an alias with the sub since later (findAccount) we do not have access
+     * to the sessionId, nor the interactionId.
+     */
+    await this.sessionService.setAlias(spIdentity.sub, req.sessionId);
 
     const session: OidcClientSession = await sessionOidc.get();
     return this.oidcProvider.finishInteraction(req, res, session);

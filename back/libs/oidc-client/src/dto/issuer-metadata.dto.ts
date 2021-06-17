@@ -93,11 +93,6 @@ export class IssuerMetadata {
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly revocation_endpoint_auth_methods_supported: string[];
-
-  @IsString()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly revocation_endpoint_auth_signing_alg_values_supported: string[];
 
   @IsString()

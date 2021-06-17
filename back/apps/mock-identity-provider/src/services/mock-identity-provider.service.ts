@@ -59,9 +59,6 @@ export class MockIdentityProviderService {
     const { sessionId } = ctx.req;
     const interactionId = this.oidcProvider.getInteractionIdFromCtx(ctx);
 
-    // Store the binding relation between interactionId >> sessionId.
-    await this.sessionService.setAlias(interactionId, sessionId);
-
     // oidc defined variable name
     const { client_id: spId, acr_values: spAcr } = ctx.oidc.params;
 

@@ -121,9 +121,6 @@ export class IdentityProviderAdapterMongoService
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_endpoint_auth_method: true,
-          // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          revocation_endpoint_auth_method: true,
           featureHandlers: true,
         },
       )
