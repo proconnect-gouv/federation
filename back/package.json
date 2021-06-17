@@ -47,9 +47,9 @@
   },
   "resolutions": {
     "cookie-signature": "1.1.0",
-    "jose": "2.0.4",
     "superagent": "6.1.0",
-    "superagent-proxy": "2.1.0"
+    "superagent-proxy": "2.1.0",
+    "openid-client/**/jose": "2.0.5"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.7",
@@ -69,17 +69,18 @@
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
     "deep-freeze": "^0.0.1",
-    "global-agent": "^2.2.0",
-    "helmet": "^4.6.0",
-    "ioredis": "^4.27.2",
-    "jose": "2.0.4",
+    "global-agent": "^2.1.12",
+    "helmet": "^4.1.0",
+    "ioredis": "^4.16.2",
+    "jose": "3.12.3",
+    "jose-openid-client": "npm:jose@2.0.5",
     "lodash": "^4.17.15",
     "moment": "^2.24.0",
     "mongoose": "^5.11.17",
     "node-csv-query": "^0.1.0",
     "node-mailjet": "^3.3.1",
-    "oidc-provider": "6.31.0",
-    "openid-client": "4.4.0",
+    "oidc-provider": "7.4.0",
+    "openid-client": "4.7.4",
     "otplib": "^12.0.1",
     "pino": "^6.3.2",
     "pkcs11js": "^1.0.19",
@@ -103,6 +104,7 @@
     "@types/lodash": "^4.14.162",
     "@types/mongoose": "^5.10.3",
     "@types/node": "^15.0.2",
+    "@types/oidc-provider": "7.2.1",
     "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "@typescript-eslint/parser": "^4.22.1",
@@ -151,6 +153,7 @@
       "<rootDir>/libs/"
     ],
     "moduleNameMapper": {
+      "^jose/(.*)$": "<rootDir>/node_modules/jose/dist/node/cjs/$1",
       "@fc/core-fca/(.*)": "<rootDir>/apps/core-fca/src/$1",
       "@fc/core-fca": "<rootDir>/apps/core-fca/src",
       "@fc/user-dashboard/(.*)": "<rootDir>/apps/user-dashboard/src/$1",

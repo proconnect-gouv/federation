@@ -11,7 +11,7 @@ import { IdentityProvider } from './schemas';
 import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
 
 jest.mock('@fc/common', () => ({
-  ...jest.requireActual('@fc/common'),
+  ...(jest.requireActual('@fc/common') as any),
   validateDto: jest.fn(),
 }));
 
@@ -66,9 +66,6 @@ describe('IdentityProviderAdapterMongoService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       token_endpoint_auth_method: 'client_secret_post',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      revocation_endpoint_auth_method: 'client_secret_post',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_encrypted_response_alg: 'RSA-OAEP',
@@ -144,9 +141,6 @@ describe('IdentityProviderAdapterMongoService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       token_endpoint_auth_method: 'client_secret_post',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      revocation_endpoint_auth_method: 'client_secret_post',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_encrypted_response_alg: 'RSA-OAEP',

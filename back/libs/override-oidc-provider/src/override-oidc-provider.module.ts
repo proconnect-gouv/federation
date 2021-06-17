@@ -1,22 +1,18 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { RabbitmqModule } from '@fc/rabbitmq';
-import { OidcProviderModule } from '@fc/oidc-provider';
-import {
-  OverrideOidcProviderService,
-  JoseOverrideService,
-  CryptoOverrideService,
-} from './services';
+import { OverrideOidcProviderService, CryptoOverrideService } from './services';
 
-@Module({
-  imports: [OidcProviderModule, RabbitmqModule.registerFor('Cryptography')],
-  providers: [
-    OverrideOidcProviderService,
-    JoseOverrideService,
-    CryptoOverrideService,
-  ],
-  exports: [OverrideOidcProviderService],
-})
-export class OverrideOidcProviderModule {}
+@Module({})
+export class OverrideOidcProviderModule {
+  static register(oidcProviderModule: DynamicModule): DynamicModule {
+    return {
+      module: OverrideOidcProviderModule,
+      imports: [oidcProviderModule, RabbitmqModule.registerFor('Cryptography')],
+      providers: [OverrideOidcProviderService, CryptoOverrideService],
+      exports: [OverrideOidcProviderService],
+    };
+  }
+}

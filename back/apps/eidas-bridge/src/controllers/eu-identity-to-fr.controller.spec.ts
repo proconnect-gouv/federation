@@ -18,7 +18,7 @@ import { EidasBridgeInvalidIdentityException } from '../exceptions';
 import { EuIdentityToFrController } from './eu-identity-to-fr.controller';
 
 jest.mock('@fc/common', () => ({
-  ...jest.requireActual('@fc/common'),
+  ...(jest.requireActual('@fc/common') as any),
   validateDto: jest.fn(),
 }));
 
@@ -111,6 +111,10 @@ describe('EuIdentityToFrController', () => {
     getListByIso: jest.fn(),
   };
 
+  const sessionGenericServiceMock = {
+    setAlias: jest.fn(),
+  };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [EuIdentityToFrController],
@@ -122,6 +126,7 @@ describe('EuIdentityToFrController', () => {
         OidcToEidasService,
         EidasToOidcService,
         EidasCountryService,
+        SessionGenericService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -138,6 +143,8 @@ describe('EuIdentityToFrController', () => {
       .useValue(eidasToOidcServiceMock)
       .overrideProvider(EidasCountryService)
       .useValue(eidasCountryServiceMock)
+      .overrideProvider(SessionGenericService)
+      .useValue(sessionGenericServiceMock)
       .compile();
 
     euIdentityToFrController = await app.get<EuIdentityToFrController>(

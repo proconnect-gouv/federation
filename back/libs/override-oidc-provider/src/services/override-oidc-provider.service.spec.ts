@@ -1,11 +1,14 @@
+import { mocked } from 'ts-jest/utils';
 import * as OidcProviderInstance from 'oidc-provider/lib/helpers/weak_cache';
-import { JWK, JWKS } from 'jose';
+import * as KeyStore from 'oidc-provider/lib/helpers/keystore.js';
 import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { OverrideOidcProviderService } from './override-oidc-provider.service';
+
+jest.mock('oidc-provider/lib/helpers/keystore.js');
 
 describe('OverrideOidcProviderService', () => {
   let service: OverrideOidcProviderService;
@@ -28,8 +31,7 @@ describe('OverrideOidcProviderService', () => {
     get: jest.fn(),
   };
 
-  const JWKasKeyMock = jest.spyOn(JWK, 'asKey');
-  const JWKSKeyStoreMock = jest.spyOn(JWKS, 'KeyStore');
+  const KeyStoreMock = mocked(KeyStore);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -48,8 +50,6 @@ describe('OverrideOidcProviderService', () => {
     );
 
     jest.resetAllMocks();
-    JWKasKeyMock.mockImplementation((value: any) => value);
-    JWKSKeyStoreMock.mockImplementation((value: any) => value);
     oidcProviderMock.getProvider.mockReturnValue(providerMock);
     configMock.get.mockReturnValue({ sigHsmPubKey: 'foo' });
   });
@@ -76,27 +76,29 @@ describe('OverrideOidcProviderService', () => {
         .mockReturnValueOnce(oidcProviderMock);
     });
     it('should create a Key object from config key', () => {
-      // When
-      service['overrideKeystore']();
-      // Then
-      expect(JWKasKeyMock).toHaveBeenCalledTimes(1);
-      expect(JWKasKeyMock).toHaveBeenCalledWith('foo');
-    });
-    it('should create as keystore with built key', () => {
       // Given
-      const keyMock: any = Symbol('keyMock');
-      JWKasKeyMock.mockReturnValueOnce(keyMock);
+      KeyStoreMock.mockImplementationOnce(function (value: any) {
+        return value;
+      });
+
       // When
       service['overrideKeystore']();
+
       // Then
-      expect(JWKSKeyStoreMock).toHaveBeenCalledTimes(1);
-      expect(JWKSKeyStoreMock).toHaveBeenCalledWith([keyMock]);
+      expect(KeyStoreMock).toHaveBeenCalledTimes(1);
+      expect(KeyStoreMock).toHaveBeenCalledWith(['foo']);
     });
+
     it('should affect the keystore to provider instance', () => {
       // Given
       const instanceSpy = OidcProviderInstance(providerMock);
+      KeyStoreMock.mockImplementationOnce(function (value: any) {
+        return value;
+      });
+
       // When
       service['overrideKeystore']();
+
       // Then
       expect(instanceSpy).toEqual({ keystore: ['foo'] });
     });

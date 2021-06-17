@@ -5,9 +5,6 @@ import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-
 import { parseJsonProperty } from '@fc/common';
 
 export default {
-  jwks: {
-    keys: [parseJsonProperty(process.env, 'JWKS')],
-  },
   discovery: false,
   // No discovery URL for legacy core
   discoveryUrl: undefined,
@@ -52,10 +49,6 @@ export default {
     jwks_uri: process.env.JWKS_URI,
     //oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    token_endpoint_auth_method: process.env.TOKEN_ENDPOINT_AUTH_METHOD,
-    //oidc param name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    revocation_endpoint_auth_method:
-      process.env.REVOCATION_ENDPOINT_AUTH_METHOD,},
+    token_endpoint_auth_method: process.env.TOKEN_ENDPOINT_AUTH_METHOD,},
     clientSecretEcKey: process.env.CLIENT_SECRET_CIPHER_PASS,
 } as IdentityProviderAdapterEnvConfig;

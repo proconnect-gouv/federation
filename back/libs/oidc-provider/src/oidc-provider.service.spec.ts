@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { HttpAdapterHost } from '@nestjs/core';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { LoggerService, LoggerLevelNames } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
+import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import {
   OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
@@ -17,6 +17,7 @@ import {
 } from './exceptions';
 import { OidcProviderErrorService } from './services/oidc-provider-error.service';
 import { OidcProviderConfigService } from './services/oidc-provider-config.service';
+import { OidcProviderGrantService } from './services/oidc-provider-grant.service';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
@@ -110,7 +111,10 @@ describe('OidcProviderService', () => {
     findAccount: jest.fn(),
   };
 
-  const interactionIdSymbol = Symbol('context#uid');
+  const oidcProviderGrantServiceMock = {
+    generateGrant: jest.fn(),
+    saveGrant: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -124,6 +128,7 @@ describe('OidcProviderService', () => {
         },
         OidcProviderErrorService,
         OidcProviderConfigService,
+        OidcProviderGrantService,
       ],
     })
       .overrideProvider(HttpAdapterHost)
@@ -134,6 +139,8 @@ describe('OidcProviderService', () => {
       .useValue(oidcProviderErrorServiceMock)
       .overrideProvider(OidcProviderConfigService)
       .useValue(oidcProviderConfigServiceMock)
+      .overrideProvider(OidcProviderGrantService)
+      .useValue(oidcProviderGrantServiceMock)
       .compile();
 
     module.useLogger(loggerServiceMock);
@@ -252,9 +259,13 @@ describe('OidcProviderService', () => {
     it('should return the result of oidc-provider.interactionFinished()', async () => {
       // Given
       const resolvedValue = Symbol('resolved value');
+
       providerMock.interactionFinished.mockResolvedValueOnce(resolvedValue);
       const sessionDataMock: OidcSession = {
         spAcr: 'spAcrValue',
+        spIdentity: {
+          sub: 'subValue',
+        },
       };
       sessionServiceMock.get.mockResolvedValueOnce(sessionDataMock);
       // When
@@ -267,12 +278,78 @@ describe('OidcProviderService', () => {
       expect(result).toBe(resolvedValue);
     });
 
+    it('should finish interaction with grant', async () => {
+      // Given
+      const spAcrMock = 'spAcrValue';
+      const interactionIdMock = 'interactionIdValue';
+      const amrValueMock = ['amrValue'];
+      const spIdentityMock = {
+        sub: 'subValue',
+      } as IOidcIdentity;
+
+      const sessionDataMock: OidcSession = {
+        spAcr: spAcrMock,
+        amr: amrValueMock,
+        interactionId: interactionIdMock,
+        spIdentity: spIdentityMock,
+      };
+      sessionServiceMock.get.mockResolvedValueOnce(sessionDataMock);
+
+      const grantMock = Symbol('grant');
+      const grantIdMock = Symbol('grantIdMock');
+      oidcProviderGrantServiceMock.generateGrant.mockResolvedValueOnce(
+        grantMock,
+      );
+      oidcProviderGrantServiceMock.saveGrant.mockResolvedValueOnce(grantIdMock);
+
+      const resultMock = {
+        consent: {
+          grantId: grantIdMock,
+        },
+        login: {
+          accountId: spIdentityMock.sub,
+          acr: spAcrMock,
+          amr: amrValueMock,
+          ts: expect.any(Number),
+          remember: false,
+        },
+      };
+      providerMock.interactionFinished.mockResolvedValueOnce('ignoredValue');
+      // When
+      await service.finishInteraction(reqMock, resMock, sessionDataMock);
+
+      // Then
+      expect(oidcProviderGrantServiceMock.generateGrant).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(oidcProviderGrantServiceMock.generateGrant).toHaveBeenCalledWith(
+        service.getProvider(),
+        reqMock,
+        resMock,
+        spIdentityMock.sub,
+      );
+      expect(oidcProviderGrantServiceMock.saveGrant).toHaveBeenCalledTimes(1);
+      expect(oidcProviderGrantServiceMock.saveGrant).toHaveBeenCalledWith(
+        grantMock,
+      );
+
+      expect(providerMock.interactionFinished).toHaveBeenCalledTimes(1);
+      expect(providerMock.interactionFinished).toHaveBeenCalledWith(
+        reqMock,
+        resMock,
+        resultMock,
+      );
+    });
+
     it('should throw OidcProviderRuntimeException', async () => {
       // Given
       const nativeError = new Error('invalid_request');
       providerMock.interactionFinished.mockRejectedValueOnce(nativeError);
       const sessionDataMock: OidcSession = {
         spAcr: 'spAcrValue',
+        spIdentity: {
+          sub: 'subValue',
+        },
       };
       sessionServiceMock.get.mockResolvedValueOnce(sessionDataMock);
       // Then
@@ -283,72 +360,51 @@ describe('OidcProviderService', () => {
   });
 
   describe('getInteractionIdFromCtx', () => {
-    it('should call getInteractionIdFromCtxEntities', () => {
-      // Given
-      const ctxMock = { req: { url: '/token' } };
-      service['getInteractionIdFromCtxEntities'] = jest
-        .fn()
-        .mockReturnValue('42');
-      // When
-      service['getInteractionIdFromCtx'](ctxMock);
-      // Then
-      expect(service['getInteractionIdFromCtxEntities']).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(service['getInteractionIdFromCtxEntities']).toHaveBeenCalledWith(
-        ctxMock,
-      );
-    });
-
     it('should call getInteractionIdFromCtxSymbol', () => {
       // Given
-      const ctxMock = { req: { url: '/somewhere' } };
-      service['getInteractionIdFromCtxSymbol'] = jest
-        .fn()
-        .mockReturnValue('42');
+      const ctxMock = {
+        req: { url: '/token' },
+        oidc: {
+          entities: {
+            Grant: {
+              accountId: 'accountIdValue',
+            },
+          },
+        },
+      };
       // When
-      service['getInteractionIdFromCtx'](ctxMock);
+      const result = service['getInteractionIdFromCtx'](ctxMock);
       // Then
-      expect(service['getInteractionIdFromCtxSymbol']).toHaveBeenCalledTimes(1);
-      expect(service['getInteractionIdFromCtxSymbol']).toHaveBeenCalledWith(
-        ctxMock,
-      );
+
+      expect(result).toEqual('accountIdValue');
     });
+
+    it('should get id from context with /userinfo', () => {
+      // Given
+      const ctxMock = {
+        req: { url: '/userinfo' },
+        oidc: {
+          entities: {
+            Account: {
+              accountId: 'accountIdValue',
+            },
+          },
+        },
+      };
+      // When
+      const result = service['getInteractionIdFromCtx'](ctxMock);
+      // Then
+
+      expect(result).toEqual('accountIdValue');
+    });
+
     it('should throw', () => {
       // Given
       const ctxMock = { req: { url: '/somewhere' } };
-      service['getInteractionIdFromCtxSymbol'] = jest
-        .fn()
-        .mockReturnValue(undefined);
-
-      // Then
+      // When
       expect(() => service['getInteractionIdFromCtx'](ctxMock)).toThrow(
         OidcProviderInteractionNotFoundException,
       );
-    });
-  });
-
-  describe('getInteractionIdFromCtxSymbol', () => {
-    it('should retrieve interactionId symbol key', () => {
-      // Given
-      const ctxMock = { oidc: { [interactionIdSymbol]: '42' } };
-      // When
-      const result = service['getInteractionIdFromCtxSymbol'](ctxMock);
-      // Then
-      expect(result).toBe('42');
-    });
-  });
-
-  describe('getInteractionIdFromCtxEntities', () => {
-    it('should retrieve interactionId from entities', () => {
-      // Given
-      const ctxMock = {
-        oidc: { entities: { Account: { accountId: '42' } } },
-      };
-      // When
-      const result = service['getInteractionIdFromCtxEntities'](ctxMock);
-      // Then
-      expect(result).toBe('42');
     });
   });
 
@@ -599,7 +655,12 @@ describe('OidcProviderService', () => {
       // Given
       const reqMock = {};
       const resMock = {};
-      const resolvedValue = Symbol('resolved value');
+      const resolvedValue = {
+        prompt: {
+          name: Symbol('name'),
+          reasons: Symbol('reasons'),
+        },
+      };
       providerMock.interactionDetails.mockResolvedValueOnce(resolvedValue);
       // When
       const result = await service.getInteraction(reqMock, resMock);
