@@ -12,6 +12,7 @@ import { OidcProviderController } from './oidc-provider.controller';
 import { IsValidPromptConstraint } from './validators';
 import { OidcProviderErrorService } from './services/oidc-provider-error.service';
 import { OidcProviderConfigService } from './services/oidc-provider-config.service';
+import { OidcProviderGrantService } from './services/oidc-provider-grant.service';
 
 @Module({})
 export class OidcProviderModule {
@@ -47,6 +48,7 @@ export class OidcProviderModule {
         IsValidPromptConstraint,
         OidcProviderErrorService,
         OidcProviderConfigService,
+        OidcProviderGrantService,
       ],
       exports: [
         OidcProviderService,

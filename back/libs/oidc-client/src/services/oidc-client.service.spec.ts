@@ -11,7 +11,7 @@ import { OidcClientTokenEvent, OidcClientUserinfoEvent } from '../events';
 import { OidcClientUserinfosFailedException } from '../exceptions';
 
 jest.mock('@fc/common', () => ({
-  ...jest.requireActual('@fc/common'),
+  ...(jest.requireActual('@fc/common') as any),
   validateDto: jest.fn(),
 }));
 

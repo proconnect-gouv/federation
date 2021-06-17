@@ -1,5 +1,11 @@
+/**
+ * @TODO update Jose version to 3.X
+ * For now openid-client panva's library does not support jose 3.X but
+ * it will be available in a neer future. So once it's done we just
+ * need to remove this hack in the package.json
+ */
+import { JWK } from 'jose-openid-client';
 import { Test, TestingModule } from '@nestjs/testing';
-import { JWK } from 'jose';
 import { LoggerService } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';

@@ -4,7 +4,10 @@ import { LoggerService } from '@fc/logger';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { SessionGenericNotFoundException } from '@fc/session-generic';
+import {
+  SessionGenericNotFoundException,
+  SessionGenericService,
+} from '@fc/session-generic';
 import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
 import { MinistriesService } from '@fc/ministries';
@@ -16,7 +19,7 @@ import { OidcIdentityDto } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
 
 jest.mock('@fc/common', () => ({
-  ...jest.requireActual('@fc/common'),
+  ...(jest.requireActual('@fc/common') as any),
   validateDto: jest.fn(),
 }));
 
@@ -91,6 +94,7 @@ describe('CoreFcaController', () => {
   const sessionServiceMock = {
     get: jest.fn(),
     set: jest.fn(),
+    setAlias: jest.fn(),
   };
 
   const randomStringMock = 'randomStringMockValue';
@@ -123,6 +127,10 @@ describe('CoreFcaController', () => {
     idpNonce: idpNonceMock,
   };
 
+  const sessionGenericServieMock: SessionGenericService = {
+    setAlias: jest.fn(),
+  } as unknown as SessionGenericService;
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [CoreFcaController],
@@ -135,6 +143,7 @@ describe('CoreFcaController', () => {
         ServiceProviderAdapterMongoService,
         ConfigService,
         OidcClientService,
+        SessionGenericService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -153,6 +162,8 @@ describe('CoreFcaController', () => {
       .useValue(configServiceMock)
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
+      .overrideProvider(SessionGenericService)
+      .useValue(sessionGenericServieMock)
       .compile();
 
     coreController = await app.get<CoreFcaController>(CoreFcaController);
