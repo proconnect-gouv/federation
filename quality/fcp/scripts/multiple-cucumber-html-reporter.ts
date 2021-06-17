@@ -19,7 +19,7 @@ const gitBranch =
   '';
 const gitBuild = process.env.CI_JOB_ID || 'local';
 const version =
-  process.env.PLATFORM_VERSION || process.env.CI_COMMIT_SHORT_SHA || 'unknown';
+  process.env.APP_VERSION || process.env.CI_COMMIT_SHORT_SHA || 'unknown';
 const device = gitBuild === 'local' ? 'Docker Local' : 'Docker GitLab';
 
 // Add metadata

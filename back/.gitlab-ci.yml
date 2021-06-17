@@ -1,57 +1,59 @@
 stages:
-  - 'Unit tests'
-  - 'End to end'
-  - 'Checkmarx'
-  - 'Cache'
-  - 'Review'
+  # - 'Unit tests'
+  # - 'End to end'
+  # - 'Checkmarx'
+  # - 'Cache'
+  # - 'Review'
+  - 'Post-deploy'
 
-global:
-  image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
-  tags:
-    - nodejs
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
-  cache:
-    key: '${CI_PROJECT_ID}'
-    policy: pull
-    paths:
-      - back/node_modules/
-  stage: 'Unit tests'
-  script:
-    - cd back/
-    - yarn install
-    - yarn lint
-    - yarn prettier
-    - yarn test --coverage
-    - ./scripts/coverage.sh
-  coverage: '/Global coverage is: \[([\d\.]+)%\]/'
-  interruptible: true
+# global:
+#   image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+#   tags:
+#     - nodejs
+#   rules:
+#     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
+#   cache:
+#     key: '${CI_PROJECT_ID}'
+#     policy: pull
+#     paths:
+#       - back/node_modules/
+#   stage: 'Unit tests'
+#   script:
+#     - cd back/
+#     - yarn install
+#     - yarn lint
+#     - yarn prettier
+#     - yarn test --coverage
+#     - ./scripts/coverage.sh
+#   coverage: '/Global coverage is: \[([\d\.]+)%\]/'
+#   interruptible: true
 
-build-cache:
-  image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
-  tags:
-    - nodejs
-  cache:
-    key: '${CI_PROJECT_ID}'
-    policy: push
-    paths:
-      - back/node_modules/
-      - front/apps/agent-connect/node_modules/
-  stage: 'Cache'
-  script:
-    - cd $CI_PROJECT_DIR/back && yarn install
-    - cd $CI_PROJECT_DIR/front/apps/agent-connect && yarn install
-  interruptible: true
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "staging"'
+# build-cache:
+#   image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+#   tags:
+#     - nodejs
+#   cache:
+#     key: '${CI_PROJECT_ID}'
+#     policy: push
+#     paths:
+#       - back/node_modules/
+#       - front/apps/agent-connect/node_modules/
+#   stage: 'Cache'
+#   script:
+#     - cd $CI_PROJECT_DIR/back && yarn install
+#     - cd $CI_PROJECT_DIR/front/apps/agent-connect && yarn install
+#   interruptible: true
+#   rules:
+#     - if: '$CI_COMMIT_BRANCH == "staging"'
 
 include:
-  - '/back/instances/core-fcp-high/.gitlab-ci.yml'
-  - '/back/instances/core-fcp-high/.gitlab-cross-application.yml'
-  - '/back/instances/core-fca-high/.gitlab-ci.yml'
-  - '/back/instances/eidas-bridge/.gitlab-ci.yml'
-  - '/back/instances/core-fcp-low/.gitlab-ci.yml'
-  - '/back/instances/core-fcp-high/.gitlab-deploy.yml'
-  - '/back/instances/core-fcp-low/.gitlab-deploy.yml'
-  - '/back/instances/core-fca-high/.gitlab-deploy.yml'
-  - '/back/.gitlab-checkmarx.yml'
+  # - '/back/instances/core-fcp-high/.gitlab-ci.yml'
+  # - '/back/instances/core-fcp-high/.gitlab-cross-application.yml'
+  # - '/back/instances/core-fca-high/.gitlab-ci.yml'
+  # - '/back/instances/eidas-bridge/.gitlab-ci.yml'
+  # - '/back/instances/core-fcp-low/.gitlab-ci.yml'
+  # - '/back/instances/core-fcp-high/.gitlab-deploy.yml'
+  # - '/back/instances/core-fcp-low/.gitlab-deploy.yml'
+  # - '/back/instances/core-fca-high/.gitlab-deploy.yml'
+  - '/back/instances/core-fcp-high/.gitlab-post-deploy.yml'
+  # - '/back/.gitlab-checkmarx.yml'
