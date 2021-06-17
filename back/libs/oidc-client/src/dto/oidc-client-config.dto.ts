@@ -11,7 +11,13 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
-import { JSONWebKeySet } from 'jose';
+/**
+ * @TODO update Jose version to 3.X
+ * For now openid-client panva's library does not support jose 3.X but
+ * it will be available in a neer future. So once it's done we just
+ * need to remove this hack in the package.json
+ */
+import { JSONWebKeySet } from 'jose-openid-client';
 import { Type } from 'class-transformer';
 import { IdentityProviderMetadata } from '../interfaces';
 
@@ -42,9 +48,11 @@ export class OidcClientConfig {
   /**
    * @TODO #143 validate the structure of JSONWebKeySet
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/143
+   * When oidc-client will be using v3+ of jose feel free to replace it
+   * by { keys: Keylike[] } type instead.
    */
-  @IsObject()
   @IsOptional()
+  @IsObject()
   readonly jwks?: JSONWebKeySet;
 
   @IsNumber()

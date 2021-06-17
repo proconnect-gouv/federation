@@ -1,5 +1,6 @@
 import * as OidcProviderInstance from 'oidc-provider/lib/helpers/weak_cache';
-import { JWK, JWKS } from 'jose';
+import { KeyLike } from 'crypto';
+import * as KeyStore from 'oidc-provider/lib/helpers/keystore.js';
 import { ModuleRef } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
@@ -44,7 +45,7 @@ export class OverrideOidcProviderService {
     const { sigHsmPubKey } = this.config.get<OverrideOidcProviderConfig>(
       'OverrideOidcProvider',
     );
-    const key = JWK.asKey(sigHsmPubKey);
+    const key = sigHsmPubKey as KeyLike;
 
     const oidcProvider = this.getOidcProviderService();
 
@@ -54,7 +55,7 @@ export class OverrideOidcProviderService {
     const instance = OidcProviderInstance(provider);
 
     /** Override keystore */
-    instance.keystore = new JWKS.KeyStore([key]);
+    instance.keystore = new KeyStore([key]);
   }
 
   private getOidcProviderService(): OidcProviderService {

@@ -110,6 +110,7 @@ describe('CoreFcpController', () => {
   const sessionServiceMock = {
     get: jest.fn(),
     set: jest.fn(),
+    setAlias: jest.fn(),
   };
 
   const randomStringMock = 'randomStringMockValue';

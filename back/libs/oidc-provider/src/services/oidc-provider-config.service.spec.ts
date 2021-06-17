@@ -1,8 +1,8 @@
+import { Provider, ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService, LoggerLevelNames } from '@fc/logger';
 import { SessionGenericService } from '@fc/session-generic';
-import Provider, { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import { OidcProviderRedisAdapter } from '../adapters';
 import { OidcProviderService } from '../oidc-provider.service';
@@ -112,7 +112,7 @@ describe('OidcProviderConfigService', () => {
   });
 
   describe('getConfig()', () => {
-    it('should call several services and concat their ouputs', async () => {
+    it('should call several services and concat their outputs', async () => {
       // Given
       OidcProviderRedisAdapter.getConstructorWithDI = jest
         .fn()
@@ -136,6 +136,17 @@ describe('OidcProviderConfigService', () => {
       expect(configServiceMock.get).toHaveBeenCalledWith('OidcProvider');
 
       expect(result).toMatchObject(configOidcProviderMock);
+    });
+
+    it('should return false to pkce output if we pass two empty objects', async () => {
+      // Given
+      OidcProviderRedisAdapter.getConstructorWithDI = jest
+        .fn()
+        .mockReturnValue(oidcProviderRedisAdapterMock);
+      // When
+      const result = await service.getConfig(oidcProviderServiceMock);
+      const pkceResult = result.configuration.pkce.required({}, {});
+      expect(pkceResult).toEqual(false);
     });
 
     it('should bind methods to config', async () => {
@@ -162,9 +173,15 @@ describe('OidcProviderConfigService', () => {
       // Given
       const prefix = '/prefix';
       const ctx = {
-        oidc: { uid: 123 },
+        oidc: {
+          entities: {
+            interaction: {
+              uid: 123,
+            },
+          },
+        },
       } as unknown as KoaContextWithOIDC;
-      const interaction = {};
+      const { interaction } = ctx.oidc.entities;
 
       // When
       const result = await service['url'](prefix, ctx, interaction);

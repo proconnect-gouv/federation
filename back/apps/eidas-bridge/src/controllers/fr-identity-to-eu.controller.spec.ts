@@ -13,7 +13,7 @@ import { EidasBridgeIdentityDto } from '../dto';
 import { FrIdentityToEuController } from './fr-identity-to-eu.controller';
 
 jest.mock('@fc/common', () => ({
-  ...jest.requireActual('@fc/common'),
+  ...(jest.requireActual('@fc/common') as any),
   validateDto: jest.fn(),
 }));
 

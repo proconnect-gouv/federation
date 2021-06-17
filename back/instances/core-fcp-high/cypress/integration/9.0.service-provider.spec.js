@@ -45,7 +45,7 @@ describe('9.0 - Service Provider', () => {
       .should('contains', 'error=invalid_scope')
       .should(
         'contains',
-        'error_description=requested%20scope%20is%20not%20whitelisted',
+        'error_description=requested%20scope%20is%20not%20allowed',
       )
       .should('contains', 'scope=gender')
       .should('contains', 'state=stateTraces');

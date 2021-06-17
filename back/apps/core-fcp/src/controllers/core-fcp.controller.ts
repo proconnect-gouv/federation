@@ -20,6 +20,7 @@ import {
   ISessionGenericService,
   Session,
   SessionGenericNotFoundException,
+  SessionGenericService,
 } from '@fc/session-generic';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ConfigService } from '@fc/config';
@@ -74,6 +75,7 @@ export class CoreFcpController {
     private readonly notifications: NotificationsService,
     private readonly oidcClient: OidcClientService,
     private readonly tracking: TrackingService,
+    private readonly sessionService: SessionGenericService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -287,10 +289,16 @@ export class CoreFcpController {
 
     const interaction = await this.oidcProvider.getInteraction(req, res);
     const trackingContext = req;
-    this.trackDatatransfer(trackingContext, interaction, spId);
+    await this.trackDatatransfer(trackingContext, interaction, spId);
 
     // send the notification mail to the final user
     await this.core.sendAuthenticationMail(session);
+
+    /**
+     * We need to set an alias with the sub since later (findAccount) we do not have access
+     * to the sessionId, nor the interactionId.
+     */
+    await this.sessionService.setAlias(spIdentity.sub, req.sessionId);
 
     return this.oidcProvider.finishInteraction(req, res, session);
   }

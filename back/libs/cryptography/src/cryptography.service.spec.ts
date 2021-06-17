@@ -1,6 +1,5 @@
 import * as crypto from 'crypto';
 import { Test, TestingModule } from '@nestjs/testing';
-import * as ecdsaSignaturesService from 'jose/lib/help/ecdsa_signatures';
 import { LowEntropyArgumentException } from './exceptions';
 import {
   RANDOM_MIN_ENTROPY,
@@ -37,10 +36,6 @@ describe('CryptographyService', () => {
   const mockHashDigestedHash =
     'f7bc83f430538424b13298e6aa6fb143ef4d59a14946175997479dbc2d1a3cd8';
 
-  const ecdsaSignaturesServiceMock = {
-    derToJose: jest.fn(),
-  };
-
   const mockCrypto = {
     randomBytes: jest.fn(),
     createHash: jest.fn(),
@@ -75,10 +70,6 @@ describe('CryptographyService', () => {
     }).compile();
 
     service = module.get<CryptographyService>(CryptographyService);
-
-    jest
-      .spyOn(ecdsaSignaturesService, 'derToJose')
-      .mockImplementation(ecdsaSignaturesServiceMock.derToJose);
   });
 
   it('should be defined', () => {
