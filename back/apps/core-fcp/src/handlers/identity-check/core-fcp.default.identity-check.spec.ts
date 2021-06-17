@@ -6,7 +6,7 @@ import { validateDto } from '@fc/common';
 import { CoreFcpDefaultIdentityCheckHandler } from './core-fcp.default.identity-check';
 
 jest.mock('@fc/common', () => ({
-  ...jest.requireActual('@fc/common'),
+  ...(jest.requireActual('@fc/common') as any),
   validateDto: jest.fn(),
 }));
 

@@ -46,9 +46,6 @@ describe('IdentityProviderAdapterEnvService', () => {
     token_endpoint_auth_method: 'client_secret_post',
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    revocation_endpoint_auth_method: 'client_secret_post',
-    // oidc param name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     id_token_encrypted_response_alg: 'RSA-OAEP',
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -97,9 +94,6 @@ describe('IdentityProviderAdapterEnvService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       token_endpoint_auth_method: 'client_secret_post',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      revocation_endpoint_auth_method: 'client_secret_post',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_encrypted_response_alg: 'RSA-OAEP',

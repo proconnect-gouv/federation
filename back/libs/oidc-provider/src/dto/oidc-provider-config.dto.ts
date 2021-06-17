@@ -12,7 +12,6 @@ import {
   IsIn,
 } from 'class-validator';
 import { Type } from 'class-transformer';
-import { JWKECKey, JWKRSAKey } from 'jose';
 import {
   AdapterConstructor,
   EncryptionEncValues,
@@ -25,6 +24,12 @@ import {
   KoaContextWithOIDC,
   CanBePromise,
   ErrorOut,
+  AllClientMetadata,
+  TTLFunction,
+  SigningAlgorithmWithNone,
+  SigningAlgorithm,
+  JWK,
+  PKCEMethods,
 } from 'oidc-provider';
 import { OidcProviderRoutes, OidcProviderPrompt } from '../enums';
 
@@ -47,7 +52,7 @@ export type ClientBasedCORSCallback = (
 ) => boolean;
 export type InteractionUrlCallback = (
   ctx: KoaContextWithOIDC,
-  interaction: any,
+  interaction: unknown,
 ) => CanBePromise<string>;
 export type FindAccountCallback = (
   ctx: KoaContextWithOIDC,
@@ -116,9 +121,6 @@ export class Routes {
 type SameSite = 'strict' | 'lax' | 'none';
 
 class CookiesOptions {
-  @IsNumber()
-  readonly maxAge: number;
-
   @IsString()
   readonly sameSite: SameSite;
 
@@ -201,81 +203,37 @@ class Features {
   @IsOptional()
   @ValidateNested()
   @Type(() => FeatureSetting)
-  readonly claimsParameter: FeatureSetting;
+  readonly claimsParameter?: FeatureSetting;
 
+  @IsOptional()
   @ValidateNested()
   @Type(() => LogoutSourceFeatureSetting)
   /**
    * @see https://github.com/panva/node-oidc-provider/blob/v6.x/docs/README.md#featuresrpinitiatedlogout
    */
-  readonly rpInitiatedLogout: LogoutSourceFeatureSetting;
+  readonly rpInitiatedLogout?: LogoutSourceFeatureSetting;
 }
 
 class Ttl {
   @IsNumber()
-  readonly AccessToken: number;
+  readonly AccessToken: TTLFunction<unknown> | number;
 
   @IsNumber()
-  readonly AuthorizationCode: number;
+  readonly AuthorizationCode: TTLFunction<unknown> | number;
 
   @IsNumber()
-  readonly IdToken: number;
+  readonly IdToken: TTLFunction<unknown> | number;
+
+  @IsNumber()
+  readonly Interaction: TTLFunction<unknown> | number;
+
+  @IsNumber()
+  readonly Session: TTLFunction<unknown> | number;
+
+  [key: string]: unknown;
 }
 
-/** Non exhaustive
- * @see https://tools.ietf.org/html/rfc6749#page-73
- * @see https://oauth.net/2/grant-types/
- */
-type GrantType =
-  | 'authorization_code'
-  | 'refresh_token'
-  | 'device_code'
-  | 'client_credentials'
-  | 'password';
-
-/**
- * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#pkce
- * @see https://github.com/panva/node-oidc-provider/blob/950c21d909b84c9de915ed30cff4d6f1f7cc95f7/types/index.d.ts#L72
- */
-type ApplicationType = 'web' | 'native';
-
-type SigningAlgorithm = AsymmetricSigningAlgorithm | SymmetricSigningAlgorithm;
-
-class ClientDefaults {
-  @IsArray()
-  @IsString({ each: true })
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  grant_types: GrantType[];
-
-  @IsString()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  id_token_signed_response_alg: SigningAlgorithm;
-
-  @IsArray()
-  @IsString({ each: true })
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  response_types: ResponseType[];
-
-  @IsString()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  application_type: ApplicationType;
-
-  @IsString()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  token_endpoint_auth_method: ClientAuthMethod;
-
-  @IsString()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  revocation_endpoint_auth_method: ClientAuthMethod;
-}
-
-class WhitelistedJWA {
+class EnabledJWA {
   @IsArray()
   @IsString({ each: true })
   authorizationEncryptionAlgValues: EncryptionAlgValues[];
@@ -377,7 +335,7 @@ class Jwks {
    * @TODO #143 properly validate keys
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/143
    */
-  readonly keys: Array<JWKECKey | JWKRSAKey>;
+  readonly keys: Array<unknown>;
 }
 
 class OidcProviderInteractionConfig {
@@ -394,6 +352,333 @@ class OidcProviderInteractionConfig {
   @IsOptional()
   readonly url: InteractionUrlCallback;
 }
+
+class AllClientMetadataValidator implements AllClientMetadata {
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly client_id?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly redirect_uris?: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly grant_types?: string[];
+
+  @IsArray()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly response_types?: ResponseType[];
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly application_type?: 'web' | 'native';
+
+  @IsNumber()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly client_id_issued_at?: number;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly client_name?: string;
+
+  @IsNumber()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly client_secret_expires_at?: number;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly client_secret?: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly client_uri?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly contacts?: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly default_acr_values?: string[];
+
+  @IsNumber()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly default_max_age?: number;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly id_token_signed_response_alg?: SigningAlgorithmWithNone;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly initiate_login_uri?: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly jwks_uri?: string;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly jwks?: { keys: JWK[] };
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly logo_uri?: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly policy_uri?: string;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly post_logout_redirect_uris?: string[];
+
+  @IsBoolean()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly require_auth_time?: boolean;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly scope?: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly sector_identifier_uri?: string;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly subject_type?: SubjectTypes;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly token_endpoint_auth_method?: ClientAuthMethod;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly tos_uri?: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly tls_client_auth_subject_dn?: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly tls_client_auth_san_dns?: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly tls_client_auth_san_uri?: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly tls_client_auth_san_ip?: string;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly tls_client_auth_san_email?: string;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly token_endpoint_auth_signing_alg?: SigningAlgorithm;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly userinfo_signed_response_alg?: SigningAlgorithmWithNone;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly introspection_signed_response_alg?: SigningAlgorithmWithNone;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly introspection_encrypted_response_alg?: EncryptionAlgValues;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly introspection_encrypted_response_enc?: EncryptionEncValues;
+
+  @IsBoolean()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly backchannel_logout_session_required?: boolean;
+
+  @IsString()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly backchannel_logout_uri?: string;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly request_object_signing_alg?: SigningAlgorithmWithNone;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly request_object_encryption_alg?: EncryptionAlgValues;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly request_object_encryption_enc?: EncryptionEncValues;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly request_uris?: string[];
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly id_token_encrypted_response_alg?: EncryptionAlgValues;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly id_token_encrypted_response_enc?: EncryptionEncValues;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly userinfo_encrypted_response_alg?: EncryptionAlgValues;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly userinfo_encrypted_response_enc?: EncryptionEncValues;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly authorization_signed_response_alg?: SigningAlgorithm;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly authorization_encrypted_response_alg?: EncryptionAlgValues;
+
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly authorization_encrypted_response_enc?: EncryptionEncValues;
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly web_message_uris?: string[];
+
+  @IsBoolean()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly tls_client_certificate_bound_access_tokens?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly require_signed_request_object?: boolean;
+
+  @IsBoolean()
+  @IsOptional()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly require_pushed_authorization_requests?: boolean;
+
+  [key: string]: unknown;
+}
+
+export class Pkce {
+  readonly methods: PKCEMethods[];
+
+  readonly required: (ctx, client) => boolean;
+}
+
+/** Non exhaustive
+ * @see https://tools.ietf.org/html/rfc6749#page-73
+ * @see https://oauth.net/2/grant-types/
+ */
+type GrantType =
+  | 'authorization_code'
+  | 'refresh_token'
+  | 'device_code'
+  | 'client_credentials'
+  | 'password';
 
 export class Configuration {
   @IsObject()
@@ -439,8 +724,8 @@ export class Configuration {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => ClientDefaults)
-  readonly clientDefaults: ClientDefaults;
+  @Type(() => AllClientMetadataValidator)
+  readonly clientDefaults: AllClientMetadataValidator;
 
   @IsArray()
   @IsString({ each: true })
@@ -455,8 +740,8 @@ export class Configuration {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => WhitelistedJWA)
-  readonly whitelistedJWA: WhitelistedJWA;
+  @Type(() => EnabledJWA)
+  readonly enabledJWA: EnabledJWA;
 
   /**
    * clients is not loaded from real configuration
@@ -540,7 +825,6 @@ export class Configuration {
   @IsOptional()
   readonly clientBasedCORS?: ClientBasedCORSCallback;
 
-  @IsObject()
   @ValidateNested()
   @Type(() => Jwks)
   @IsOptional()
@@ -552,6 +836,9 @@ export class Configuration {
 
   @IsNumber()
   readonly timeout: number;
+
+  @IsOptional()
+  readonly pkce?: Pkce;
 }
 
 export class OidcProviderConfig {

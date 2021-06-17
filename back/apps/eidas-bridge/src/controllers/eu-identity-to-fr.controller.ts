@@ -18,7 +18,11 @@ import { OidcClientSession } from '@fc/oidc-client';
 import { ConfigService } from '@fc/config';
 import { IOidcIdentity, OidcError } from '@fc/oidc';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
-import { ISessionGenericService, Session } from '@fc/session-generic';
+import {
+  ISessionGenericService,
+  Session,
+  SessionGenericService,
+} from '@fc/session-generic';
 import { EidasClientSession } from '@fc/eidas-client';
 import { validateDto } from '@fc/common';
 import { EidasBridgeRoutes } from '../enums';
@@ -45,6 +49,7 @@ export class EuIdentityToFrController {
     private readonly oidcToEidas: OidcToEidasService,
     private readonly eidasToOidc: EidasToOidcService,
     private readonly eidasCountry: EidasCountryService,
+    private readonly sessionService: SessionGenericService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -145,6 +150,12 @@ export class EuIdentityToFrController {
     await this.validateIdentity(idpIdentity);
 
     const spIdentity: IOidcIdentity = idpIdentity;
+
+    /**
+     * We need to set an alias with the sub since later (findAccount) we do not have access
+     * to the sessionId, nor the interactionId.
+     */
+    await this.sessionService.setAlias(spIdentity.sub, req.sessionId);
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
     const idpIdentityReset: IOidcIdentity = { sub: idpIdentity.sub };

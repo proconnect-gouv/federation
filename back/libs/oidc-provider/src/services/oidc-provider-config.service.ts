@@ -1,8 +1,3 @@
-/**
- * We sadly need `lodash` to override node-oid-provider
- * configuration function that relies on it.
- * @see OidcProviderService.overrideConfiguration()
- */
 import { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
@@ -122,6 +117,10 @@ export class OidcProviderConfigService {
         renderError,
         clientBasedCORS,
         interactions: { url },
+        pkce: {
+          methods: ['S256'],
+          required: () => false,
+        },
       },
     };
 
@@ -143,10 +142,12 @@ export class OidcProviderConfigService {
       const sessionId: string = await this.sessionService.getAlias(
         interactionId,
       );
+
       const boundSessionContext: ISessionGenericBoundContext = {
         sessionId,
         moduleName: 'OidcClient',
       };
+
       const { spIdentity }: OidcSession = await this.sessionService.get(
         boundSessionContext,
       );
@@ -239,9 +240,9 @@ export class OidcProviderConfigService {
    */
   private async url(
     prefix: string,
-    ctx: KoaContextWithOIDC,
-    _interaction: unknown,
+    _ctx: KoaContextWithOIDC,
+    interaction: any,
   ) {
-    return `${prefix}/interaction/${ctx.oidc.uid}`;
+    return `${prefix}/interaction/${interaction.uid}`;
   }
 }

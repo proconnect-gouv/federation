@@ -98,11 +98,6 @@ export class ClientMetadata {
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly revocation_endpoint_auth_method: ClientAuthMethod;
-
-  @IsString()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly token_endpoint_auth_signing_alg: string;
 
   @IsString()

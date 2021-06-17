@@ -1,6 +1,10 @@
 import { get } from 'lodash';
 import { HttpOptions } from 'openid-client';
-import { Provider, KoaContextWithOIDC } from 'oidc-provider';
+import {
+  Provider,
+  KoaContextWithOIDC,
+  InteractionResults,
+} from 'oidc-provider';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Global, Inject, Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
@@ -22,6 +26,13 @@ import {
   OidcProviderErrorService,
   OidcProviderConfigService,
 } from './services';
+import { OidcProviderGrantService } from './services/oidc-provider-grant.service';
+
+const PATHS = {
+  [OidcProviderRoutes.TOKEN]: 'oidc.entities.Grant.accountId',
+  [OidcProviderRoutes.USERINFO]: 'oidc.entities.Account.accountId',
+};
+const DEFAULT_PATH = 'oidc.entities.Interaction.uid';
 
 /**
  * Make service global in order to ease retrieval and override from other libraries.
@@ -43,6 +54,7 @@ export class OidcProviderService {
     readonly redis: Redis,
     private readonly errorService: OidcProviderErrorService,
     private readonly configService: OidcProviderConfigService,
+    private readonly grantService: OidcProviderGrantService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -73,7 +85,7 @@ export class OidcProviderService {
       /**
        * @see https://github.com/panva/node-oidc-provider/blob/main/docs/README.md#mounting-oidc-provider
        */
-      this.httpAdapterHost.httpAdapter.use(prefix, this.provider.callback);
+      this.httpAdapterHost.httpAdapter.use(prefix, this.provider.callback());
     } catch (error) {
       throw new OidcProviderBindingException(error);
     }
@@ -83,17 +95,8 @@ export class OidcProviderService {
 
   // Reverse engineering of PANVA library
   getInteractionIdFromCtx(ctx) {
-    let interactionId: string;
-
-    switch (ctx.req.url) {
-      case OidcProviderRoutes.TOKEN:
-      case OidcProviderRoutes.USERINFO:
-        interactionId = this.getInteractionIdFromCtxEntities(ctx);
-        break;
-      default:
-        interactionId = this.getInteractionIdFromCtxSymbol(ctx);
-        break;
-    }
+    const path = PATHS[ctx.req.url] || DEFAULT_PATH;
+    const interactionId = get(ctx, path);
 
     if (!interactionId) {
       throw new OidcProviderInteractionNotFoundException(
@@ -104,23 +107,6 @@ export class OidcProviderService {
     this.logger.trace({ interactionId });
 
     return interactionId;
-  }
-
-  getInteractionIdFromCtxEntities(ctx) {
-    return get(ctx, 'oidc.entities.Account.accountId');
-  }
-
-  /**
-   * `oidc-provider stores the interaction id in a key that is a symbol.
-   */
-  private getInteractionIdFromCtxSymbol(ctx) {
-    const symbolStringRepresentation = 'Symbol(context#uid)';
-
-    const interactionIdSymbol = Object.getOwnPropertySymbols(ctx.oidc).find(
-      (symbol) => symbol.toString() === symbolStringRepresentation,
-    );
-
-    return ctx.oidc[interactionIdSymbol];
   }
 
   /**
@@ -158,7 +144,18 @@ export class OidcProviderService {
    */
   async getInteraction(req, res): Promise<any> {
     try {
-      return await this.provider.interactionDetails(req, res);
+      const interactionDetail = await this.provider.interactionDetails(
+        req,
+        res,
+      );
+
+      this.logger.trace({
+        text: 'Interaction Type',
+        interactionType: interactionDetail.prompt.name,
+        interactionReason: interactionDetail.prompt.reasons,
+      });
+
+      return interactionDetail;
     } catch (error) {
       throw new OidcProviderRuntimeException(error);
     }
@@ -200,22 +197,29 @@ export class OidcProviderService {
    * @param {OidcSession} session Object that contains the session info
    */
   async finishInteraction(req: any, res: any, session: OidcSession) {
-    const {
-      interactionId: account,
-      spAcr: acr,
-      amr,
-    }: OidcClientSession = session;
+    const { spAcr: acr, amr, spIdentity }: OidcClientSession = session;
     /**
      * Build Interaction results
      * For all available options, refer to `oidc-provider` documentation:
      * @see https://github.com/panva/node-oidc-provider/blob/master/docs/README.md#user-flows
      */
+
+    const grant = await this.grantService.generateGrant(
+      this.provider,
+      req,
+      res,
+      spIdentity.sub,
+    );
+
+    const grantId = await this.grantService.saveGrant(grant);
+
     const result = {
       login: {
-        account,
-        acr,
         amr,
+        acr,
+        accountId: spIdentity.sub,
         ts: Math.floor(Date.now() / 1000),
+        remember: false,
       },
       /**
        * We need to return this information, it will always be empty arrays
@@ -223,12 +227,9 @@ export class OidcProviderService {
        * it's an "all or nothing" consent.
        */
       consent: {
-        rejectedScopes: [],
-        rejectedClaims: [],
+        grantId,
       },
-    };
-
-    this.logger.trace({ interactionId: account, result });
+    } as InteractionResults;
 
     try {
       return await this.provider.interactionFinished(req, res, result);
