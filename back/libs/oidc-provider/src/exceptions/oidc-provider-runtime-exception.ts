@@ -35,7 +35,7 @@ const nativeErrorsMap = {
   '115': RuntimeErrors.InvalidTarget,
   '116': RuntimeErrors.InvalidToken,
   '117': RuntimeErrors.LoginRequired,
-  '118': RuntimeErrors.RedirectUriMismatch, // no redirect
+  '118': RuntimeErrors.InvalidRedirectUri, // no redirect
   '119': RuntimeErrors.RegistrationNotSupported,
   '120': RuntimeErrors.RequestNotSupported,
   '121': RuntimeErrors.RequestUriNotSupported,

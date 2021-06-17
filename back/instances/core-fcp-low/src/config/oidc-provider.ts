@@ -47,13 +47,11 @@ export default {
     cookies: {
       keys: env.json('COOKIES_KEYS'),
       long: {
-        maxAge: env.number('COOKIE_MAX_AGE'), // 20 minutes
         sameSite: 'lax',
         signed: true,
         path: '/',
       },
       short: {
-        maxAge: env.number('COOKIE_MAX_AGE'), // 20 minutes
         sameSite: 'lax',
         signed: true,
         path: '/',
@@ -78,6 +76,8 @@ export default {
       AccessToken: 60, // 1 minute
       AuthorizationCode: 30, // 30 seconds
       IdToken: 60, // 1 minute
+      Interaction: 600, // 10 minutes
+      Session: 600, // 10 minutes
     },
     acrValues: ['eidas1'],
     scopes: ['openid'],
@@ -136,15 +136,12 @@ export default {
       token_endpoint_auth_method: 'client_secret_post',
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      revocation_endpoint_auth_method: 'client_secret_post',
-      // node-oidc-provider defined key
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       application_type: 'web',
     },
     responseTypes: ['code'],
     revocationEndpointAuthMethods: ['client_secret_post', 'private_key_jwt'],
     tokenEndpointAuthMethods: ['client_secret_post', 'private_key_jwt'],
-    whitelistedJWA: {
+    enabledJWA: {
       authorizationEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       authorizationEncryptionEncValues: ['A256GCM'],
       authorizationSigningAlgValues: ['ES256', 'RS256', 'HS256'],
@@ -164,6 +161,12 @@ export default {
       userinfoEncryptionAlgValues: ['ECDH-ES', 'RSA-OAEP'],
       userinfoEncryptionEncValues: ['A256GCM'],
       userinfoSigningAlgValues: ['ES256', 'RS256', 'HS256'],
+    },
+    jwks: {
+      keys: [
+        env.json('CRYPTO_SIG_ES256_PRIV_KEY'),
+        env.json('CRYPTO_SIG_RS256_PRIV_KEY'),
+      ],
     },
 
     // Global request timeout used for any outgoing app requests.

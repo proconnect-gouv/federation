@@ -1,4 +1,10 @@
-import { JWK } from 'jose';
+/**
+ * @TODO update Jose version to 3.X
+ * For now openid-client panva's library does not support jose 3.X but
+ * it will be available in a neer future. So once it's done we just
+ * need to remove this hack in the package.json
+ */
+import { JWK } from 'jose-openid-client';
 import { TokenSet, Client } from 'openid-client';
 import { Inject, Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
@@ -88,6 +94,7 @@ export class OidcClientUtilsService {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/427
      * Maybe we don't need this convertion?
      */
+
     const publicKeys = keys.map((key) => JWK.asKey(key as any).toJWK());
 
     return { keys: publicKeys };

@@ -1,9 +1,11 @@
-import { AnyClientMetadata } from 'oidc-provider';
+import { AllClientMetadata } from 'oidc-provider';
 
-export interface CustomClientMetadata extends AnyClientMetadata {
+export interface CustomClientMetadata extends AllClientMetadata {
   active: boolean;
   name: string;
   entityId: string;
+  idpFilterExclude: boolean;
+  idpFilterList: string[];
 }
 
 /**

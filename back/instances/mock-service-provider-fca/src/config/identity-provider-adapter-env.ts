@@ -7,9 +7,6 @@ import { ConfigParser } from '@fc/config';
 const env = new ConfigParser(process.env, 'IdentityProviderAdapterEnv');
 
 export default {
-  jwks: {
-    keys: [JSON.parse(process.env.JWKS)],
-  },
   discovery: env.boolean('DISCOVERY'),
   discoveryUrl: env.string('DISCOVERY_URL'),
   provider: {
@@ -52,9 +49,6 @@ export default {
     //oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     token_endpoint_auth_method: env.string('TOKEN_ENDPOINT_AUTH_METHOD'),
-    //oidc param name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    revocation_endpoint_auth_method: env.string('REVOCATION_ENDPOINT_AUTH_METHOD'),
   },
   clientSecretEcKey: env.string('CLIENT_SECRET_CIPHER_PASS'),
 } as IdentityProviderAdapterEnvConfig;

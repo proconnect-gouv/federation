@@ -30,3 +30,25 @@ Il y a deux possibilités pour récupérer l'information:
 - soit la liste provient de redis
 - soit la liste provient du cache de service provider
   Donc, en fonction du contexte définit par oidc-provider, l'adapter appelera un autre adapter lui fournissant la liste correcte des données
+
+  ## Mise à jour en version 7.X
+
+  ### Types et interfaces
+
+  - Les types de la librairie de oidc-provider ne sont plus exportés en interne de la librairie mais avec un @types/oidc-provider
+  - L'interface `AnyClientMetadata` a été remplacée au profit de `AllClientMetadata`
+  - Oidc-provider utilise la version 3.X de jose. Cette version se rapproche au maximum des types de la librairie Crypto (ex: KeyLike)
+
+  ### Oidc configuration
+
+  - Les valeurs d'expiration de la session et de l'interaction dans la configuration ne sont plus stockées dans les cookies via le paramètre `maxAge` de `long` et `short` mais dans un objet `ttl` via les paramètres `Interaction` et `Session` (en secondes).
+  - Oidc-provider 7.X a besoin d'un paramètre Pkce dans sa configuration.
+  - Le paramètre `revocation_endpoint_auth_method` a été supprimé de la configuration.
+  - Le paramètre `whitelistedJWA` a été remplacé au profit de `enabledJWA`.
+
+  ### Autres modifications apportées
+
+  - Les fonctions `encodeBuffer() derToJose() JWS.compact()` ont été passées en asynchrone donc plus besoin de les overrider
+  - Lors de sa sauvegarde dans le Redis notre id de session est maintenant enregistré avec le sub de l'utilisateur en clé pour qu'il puisse être récupéré dans l'ensemble de la cinématique utilisateur
+  - L'interaction ID est stocké dans `oidc.entities.Interaction.uid` à part pour la route TOKEN où elle se trouve ici `oidc.entities.Grant.accountId` ou la route USERINFO où elle se trouve là `oidc.entities.Account.accountId`.
+  - La fonction `finishInteraction()` dans le `oidc-provider.service.ts` doit maintenant retourner un `grantId` dans l'object `consent`. Celui-ci est généré par le nouveau `oidc-provider-grant.service.ts`.

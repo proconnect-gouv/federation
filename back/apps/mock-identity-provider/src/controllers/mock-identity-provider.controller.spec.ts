@@ -37,6 +37,7 @@ describe('MockIdentityProviderFcaController', () => {
     set: jest.fn(),
     get: jest.fn(),
     getId: jest.fn(),
+    setAlias: jest.fn(),
   };
 
   const oidcProviderServiceMock = {
@@ -177,7 +178,7 @@ describe('MockIdentityProviderFcaController', () => {
         identityMock,
       );
       // When
-      await controller.getLogin(next, body, sessionServiceMock);
+      await controller.getLogin(next, req, body, sessionServiceMock);
       // Then
 
       expect(
@@ -200,7 +201,7 @@ describe('MockIdentityProviderFcaController', () => {
         login: loginMockValue,
       };
       // When
-      await controller.getLogin(next, body, sessionServiceMock);
+      await controller.getLogin(next, req, body, sessionServiceMock);
       // Then
       expect(next).toHaveBeenCalledTimes(1);
     });
@@ -218,7 +219,7 @@ describe('MockIdentityProviderFcaController', () => {
 
     // When / Then
     await expect(() =>
-      controller.getLogin(next, body, sessionServiceMock),
+      controller.getLogin(next, req, body, sessionServiceMock),
     ).rejects.toThrow(expectedError);
     expect(next).toHaveBeenCalledTimes(0);
   });

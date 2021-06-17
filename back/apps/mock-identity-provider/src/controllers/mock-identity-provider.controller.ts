@@ -11,7 +11,11 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
-import { ISessionGenericService, Session } from '@fc/session-generic';
+import {
+  ISessionGenericService,
+  Session,
+  SessionGenericService,
+} from '@fc/session-generic';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { IOidcIdentity } from '@fc/oidc';
@@ -25,6 +29,7 @@ export class MockIdentityProviderController {
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly mockIdentityProviderService: MockIdentityProviderService,
+    private readonly sessionService: SessionGenericService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -67,6 +72,7 @@ export class MockIdentityProviderController {
   @Post(MockIdentityProviderRoutes.INTERACTION_LOGIN)
   async getLogin(
     @Next() next,
+    @Req() req,
     @Body() body: SignInDTO,
     /**
      * @todo Adaptation for now, correspond to the oidc-provider side.
@@ -87,6 +93,12 @@ export class MockIdentityProviderController {
     if (!spIdentity) {
       throw new Error('Identity not found in database');
     }
+
+    /**
+     * We need to set an alias with the sub since later (findAccount) we do not have access
+     * to the sessionId, nor the interactionId.
+     */
+    await this.sessionService.setAlias(spIdentity.sub, req.sessionId);
 
     sessionOidc.set({
       spIdentity,
