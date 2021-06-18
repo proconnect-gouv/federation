@@ -15,7 +15,6 @@ const aliasScopesClaims = {
     'family_name',
     'gender',
     'given_name',
-    'preferred_username',
   ],
   openid: ['sub'],
   phone: ['phone_number'],

@@ -12,8 +12,6 @@
       "family_name",
       "email",
       "preferred_username",
-      "address",
-      "phone",
       "birth",
       "identite_pivot"
     ]
@@ -47,8 +45,8 @@
     "scopes": ["openid", "profile", "inconnu"]
   },
   {
-    "type": "address",
-    "scopes": ["openid", "address"]
+    "type": "email",
+    "scopes": ["openid", "email"]
   },
   {
     "type": "birth",

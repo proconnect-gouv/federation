@@ -8,8 +8,7 @@ const MAPPING_ALIAS_SCOPES = {
     'family_name',
     'birthdate',
     'gender',
-    'birthplace',
-    'birthcountry',
+    'preferred_username',
   ],
   phone: ['phone_number'],
   birth: ['birthplace', 'birthcountry'],
@@ -17,7 +16,6 @@ const MAPPING_ALIAS_SCOPES = {
   identite_pivot: [
     'given_name',
     'family_name',
-    'preferred_username',
     'birthdate',
     'gender',
     'birthplace',
