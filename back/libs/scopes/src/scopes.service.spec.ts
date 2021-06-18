@@ -53,9 +53,27 @@ describe('ScopesService', () => {
       expect(results).toEqual(resultsMock);
     });
 
-    it('should return labels for alias scopes', async () => {
+    it('should return labels for profile scope', async () => {
       // Setup
       const scopesParamMock = ['profile'];
+      const resultsMock = [
+        'Prénom(s)',
+        'Nom(s) de famille',
+        'Date de naissance',
+        'Sexe',
+        "Nom d'usage",
+      ];
+
+      // Action
+      const results = await service.mapScopesToLabel(scopesParamMock);
+
+      // Expect
+      expect(results).toEqual(resultsMock);
+    });
+
+    it('should return labels for identite_pivot scope', async () => {
+      // Setup
+      const scopesParamMock = ['identite_pivot'];
       const resultsMock = [
         'Prénom(s)',
         'Nom(s) de famille',
@@ -64,6 +82,18 @@ describe('ScopesService', () => {
         'Lieu de naissance',
         'Pays de naissance',
       ];
+
+      // Action
+      const results = await service.mapScopesToLabel(scopesParamMock);
+
+      // Expect
+      expect(results).toEqual(resultsMock);
+    });
+
+    it('should return labels for birth scope', async () => {
+      // Setup
+      const scopesParamMock = ['birth'];
+      const resultsMock = ['Lieu de naissance', 'Pays de naissance'];
 
       // Action
       const results = await service.mapScopesToLabel(scopesParamMock);
@@ -131,8 +161,7 @@ describe('ScopesService', () => {
         'Nom(s) de famille',
         'Date de naissance',
         'Sexe',
-        'Lieu de naissance',
-        'Pays de naissance',
+        "Nom d'usage",
       ];
 
       // Action
@@ -163,8 +192,7 @@ describe('ScopesService', () => {
           'Prénom(s)',
           'Nom(s) de famille',
           'Date de naissance',
-          'Lieu de naissance',
-          'Pays de naissance',
+          "Nom d'usage",
         ];
 
         // Action
