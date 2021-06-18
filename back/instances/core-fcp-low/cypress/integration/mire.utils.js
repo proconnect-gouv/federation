@@ -276,6 +276,16 @@ export function validateConsent() {
   cy.get('#consent').click();
 }
 
+export function authenticateWithIdp(params = {}) {
+  const { login, password = '123' } = params;
+  // FI: Authenticate
+  cy.url().should('include', Cypress.env('IDP_INTERACTION_URL'));
+  cy.get('input[name="login"]').clear().type(login);
+  cy.get('input[name="password"]').clear().type(password);
+
+  cy.get('button').click();
+}
+
 export function basicScenario(params) {
   const {
     idpId,

@@ -4,26 +4,19 @@
     "credentials": [
       {
         "idpId": "fip1-low",
-        "username": "test",
+        "username": "avec_nom_dusage",
         "password": "123"
       }
     ],
     "claims": {
-      "gender": "female",
-      "given_name": "Angela Claire Louise",
-      "family_name": "DUBOIS",
-      "preferred_username": "",
-      "birthdate": "1962-08-24",
-      "birthplace": "75107",
+      "gender": "male",
+      "given_name": "Pierre",
+      "family_name": "MERCIER",
+      "preferred_username": "DUBOIS",
+      "birthdate": "1969-03-17",
+      "birthplace": "95277",
       "birthcountry": "99100",
-      "email": "wossewodda-3728@yopmail.com",
-      "phone_number": "123456789",
-      "address": {
-        "country": "France",
-        "locality": "Paris",
-        "postal_code": "75107",
-        "street_address": "20 avenue de Ségur"
-      }
+      "email": "ymmyffarapp-1777@yopmail.com"
     }
   }
 ]
