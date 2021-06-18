@@ -1,3 +1,7 @@
+# Coder sur FranceConnect / AgentConnect
+
+[Les règles à respecter](./_doc/CONTRIBUTE.md)
+
 # Back
 
 [Documentation du backend](./back/_doc/README.md)
@@ -9,4 +13,3 @@
 # Docker
 
 [Documentation docker-stack](./docker/_doc/README.md)
-
