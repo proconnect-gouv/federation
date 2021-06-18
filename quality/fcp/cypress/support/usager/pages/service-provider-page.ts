@@ -142,7 +142,7 @@ export default class ServiceProviderPage {
   }
 
   checkMockErrorCallback(): void {
-    cy.url().should('include', `${this.originUrl}${this.redirectUriPath}`);
+    cy.url().should('include', `${this.originUrl}/error`);
   }
 
   checkMockErrorCode(errorCode: string): void {
