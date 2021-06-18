@@ -15,7 +15,7 @@ quality-core-fcp-high:
   artifacts:
     expire_in: 1 hrs
     paths:
-      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/report.html
+      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
   environment:
     name: integ01
     url: https://auth.integ01.dev-franceconnect.fr
