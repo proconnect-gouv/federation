@@ -290,6 +290,24 @@ export function validateConsent() {
   cy.get('#consent').click();
 }
 
+export function authenticateWithIdp(params = {}) {
+  const { login, password = '123', idpId = 'fip1v2' } = params;
+
+  const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
+  // FI: Authenticate
+  cy.url().should('include', IDP_INTERACTION_URL);
+  cy.get('input[name="login"]').clear().type(login);
+  cy.get('input[name="password"]').clear().type(password);
+
+  // -- This section should be implemented in the IDP Mock instance
+  // if (eidasLevel) {
+  //   cy.get('select[name="acr"]').select(eidasLevel);
+  // }
+  // --
+
+  cy.get('[type="submit"]').click();
+}
+
 export function basicScenario(params) {
   const {
     idpId,
