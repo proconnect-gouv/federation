@@ -4,3 +4,9 @@ export const CryptoProtocol = {
     RANDOM: 'CRYPTO_RANDOM',
   },
 };
+
+export const TracksProtocol = {
+  Commands: {
+    GET: 'TRACKS_GET',
+  },
+};
