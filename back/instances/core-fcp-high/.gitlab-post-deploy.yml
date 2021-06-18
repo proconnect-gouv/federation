@@ -7,6 +7,12 @@ quality-core-fcp-high:
   #   - tags
   # à activer une fois fini
   script:
+  # Install chrome as https://github.com/cypress-io/cypress-docker-images/blob/master/browsers/node14.16.0-chrome90-ff88/Dockerfile 
+    - wget -O /usr/src/google-chrome-stable_current_amd64.deb "http://dl.google.com/linux/chrome/deb/pool/main/g/google-chrome-stable/google-chrome-stable_91.0.4472.114-1_amd64.deb"
+    - dpkg -i /usr/src/google-chrome-stable_current_amd64.deb
+    - apt-get install -f -y
+    - rm -f /usr/src/google-chrome-stable_current_amd64.deb
+    - google-chrome --version
     - cd quality/fcp
     - yarn install
     - CYPRESS_TEST_ENV=integ01 yarn test:high:chrome-desktop || true
