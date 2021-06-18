@@ -25,7 +25,6 @@ Fonctionnalité: Connexion Usager - Scope
     | tous les scopes           |
     | profile sans alias        |
     | identite_pivot sans alias |
-    | address                   |
     | birth                     |
     | profile                   |
     | identite_pivot            |
@@ -48,12 +47,12 @@ Fonctionnalité: Connexion Usager - Scope
   @ignoreLow
   Scénario: Connexion d'un usager - erreur FS non habilité pour ce scope
     Etant donné que le fournisseur de service est habilité à demander le scope "identite_pivot"
-    Et que le fournisseur de service requiert l'accès aux informations du scope "address"
+    Et que le fournisseur de service requiert l'accès aux informations du scope "email"
     Et que je navigue sur la page fournisseur de service
     Quand je clique sur le bouton FranceConnect
     Alors je suis redirigé vers la page erreur du fournisseur de service
     Et le titre de l'erreur fournisseur de service est "invalid_scope"
-    Et la description de l'erreur fournisseur de service est "requested scope is not whitelisted"
+    Et la description de l'erreur fournisseur de service est "requested scope is not allowed"
 
   Scénario: Connexion d'un usager - attribut scope inconnu ignoré
     Etant donné que le fournisseur de service requiert l'accès aux informations des scopes "profile avec scope inconnu"
