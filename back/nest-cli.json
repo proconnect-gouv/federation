@@ -231,6 +231,15 @@
         ]
       }
     },
+    "csmr-tracks-instance": {
+      "type": "application",
+      "root": "instances/csmr-tracks",
+      "entryFile": "main",
+      "sourceRoot": "instances/csmr-tracks/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/csmr-tracks/tsconfig.app.json"
+      }
+    },
     "rnipp": {
       "type": "library",
       "root": "libs/rnipp",
@@ -391,6 +400,15 @@
       "sourceRoot": "apps/csmr-hsm/src",
       "compilerOptions": {
         "tsConfigPath": "apps/csmr-hsm/tsconfig.lib.json"
+      }
+    },
+    "csmr-tracks": {
+      "type": "library",
+      "root": "apps/csmr-tracks",
+      "entryFile": "index",
+      "sourceRoot": "apps/csmr-tracks/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/csmr-tracks/tsconfig.lib.json"
       }
     },
     "common": {
