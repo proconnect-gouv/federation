@@ -11,7 +11,7 @@ quality-core-fcp-high:
     - yarn install
     - CYPRESS_TEST_ENV=integ01 yarn test:high || true
     - yarn report:prepare
-    - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=integ01 CI_MERGE_REQUEST_SOURCE_BRANCH_NAME=$CI_OPEN_MERGE_REQUESTS CI_JOB_ID=$CI_JOB_ID APP_VERSION=$CI_COMMIT_BRANCH yarn report:generate
+    - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=integ01 yarn report:generate
   artifacts:
     expire_in: 1 hrs
     paths:

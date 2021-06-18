@@ -6,6 +6,12 @@ import * as fs from 'fs-extra';
 
 import * as reporter from 'multiple-cucumber-html-reporter';
 
+const reportPath = 'cypress/reports/cucumber/html-report';
+const gitLabProjectUrl =
+  'https://gitlab.dev-franceconnect.fr/france-connect/fc';
+const gitLabJobUrl = `${gitLabProjectUrl}/-/jobs/`;
+const gitLabMergeRequestUrl = `${gitLabProjectUrl}/-/merge_requests/`;
+
 // Fetch Test Run Context
 
 const platform =
@@ -13,27 +19,33 @@ const platform =
     ? 'FranceConnect+'
     : 'FranceConnect';
 const testEnv = process.env.CYPRESS_TEST_ENV || 'docker';
-const gitBranch =
-  process.env.CI_MERGE_REQUEST_SOURCE_BRANCH_NAME ||
-  process.env.CI_COMMIT_BRANCH ||
-  '';
+const gitBranch = process.env.CI_COMMIT_BRANCH || '';
+const gitCommit = process.env.CI_COMMIT_SHORT_SHA || '';
+const gitMergeRequest = process.env.CI_OPEN_MERGE_REQUESTS || 'N/A';
 const gitBuild = process.env.CI_JOB_ID || 'local';
-const version =
-  process.env.APP_VERSION || process.env.CI_COMMIT_SHORT_SHA || 'unknown';
 const device = gitBuild === 'local' ? 'Docker Local' : 'Docker GitLab';
 
 // Add metadata
 
 const reportName = `${platform} ${gitBranch} (${testEnv})`;
-const reportPath = 'cypress/reports/cucumber/report.html';
 
+const gitMergeRequestId = gitMergeRequest.split('!').pop();
+const gitMergeRequestLink =
+  gitMergeRequest === 'N/A'
+    ? 'N/A'
+    : `<a href="${gitLabMergeRequestUrl}${gitMergeRequestId}">${gitMergeRequest}</a>`;
+const gitBuildLink =
+  gitBuild === 'local'
+    ? gitBuild
+    : `<a href="${gitLabJobUrl}${gitBuild}">${gitBuild}</a>`;
 const customData = {
   data: [
     { label: 'Project', value: platform },
-    { label: 'Version', value: version },
-    { label: 'Branch', value: gitBranch },
     { label: 'Environment', value: testEnv },
-    { label: 'Build', value: gitBuild },
+    { label: 'Branch', value: gitBranch },
+    { label: 'Commit', value: gitCommit },
+    { label: 'Merge Request', value: gitMergeRequestLink },
+    { label: 'Build', value: gitBuildLink },
   ],
   title: 'Run info',
 };
