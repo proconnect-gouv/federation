@@ -9,6 +9,17 @@ import ServiceProviderPage from '../pages/service-provider-page';
 
 let serviceProviderPage: ServiceProviderPage;
 
+Given(/j'utilise le fournisseur de service "([^"]+)"/, function (description) {
+  cy.log('this.serviceProviders', JSON.stringify(this.serviceProviders));
+
+  const currentServiceProvider = this.serviceProviders.find(
+    (serviceProvider: ServiceProvider) =>
+      serviceProvider.description === description,
+  );
+  expect(currentServiceProvider).to.exist;
+  cy.wrap(currentServiceProvider).as('serviceProvider');
+});
+
 Given(
   /le fournisseur de service est habilité à demander les? scopes? "([^"]+)"/,
   function (type) {
@@ -24,6 +35,20 @@ Given(
   },
 );
 
+Given(
+  /le fournisseur de service requiert un niveau de sécurité "([^"]+)"/,
+  function (acrValue) {
+    this.serviceProvider.acrValue = acrValue;
+  },
+);
+
+Given(
+  'le fournisseur de service se connecte à FranceConnect via la méthode {string}',
+  function (method: 'post' | 'get') {
+    this.serviceProvider.method = method;
+  },
+);
+
 When('je navigue sur la page fournisseur de service', function () {
   let currentServiceProvider: ServiceProvider = this.serviceProvider;
   // Get service provider matching the prerequisites
@@ -31,8 +56,8 @@ When('je navigue sur la page fournisseur de service', function () {
     const supportedScopeType: string =
       this.supportedScopeType ?? 'tous les scopes';
     currentServiceProvider = this.serviceProviders.find(
-      (serviceProvide: ServiceProvider) =>
-        serviceProvide.scopes.includes(supportedScopeType),
+      (serviceProvider: ServiceProvider) =>
+        serviceProvider.scopes.includes(supportedScopeType),
     );
     expect(currentServiceProvider).to.exist;
     cy.wrap(currentServiceProvider).as('serviceProvider');
@@ -53,8 +78,10 @@ When('je clique sur le bouton FranceConnect', function () {
   if (this.serviceProvider.mocked === true) {
     serviceProviderPage.setMockRequestedScope(this.requestedScope);
     serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
+    serviceProviderPage.clickMockFcButton(this.serviceProvider.method);
+  } else {
+    serviceProviderPage.fcButton.click();
   }
-  serviceProviderPage.fcButton.click();
 
   if (isUsingFCBasicAuthorization()) {
     checkFCBasicAuthorization();
@@ -76,6 +103,13 @@ Then(
       const scope = this.scopes.find((scope) => scope.type === type);
       serviceProviderPage.checkMockInformationAccess(scope, this.user.claims);
     }
+  },
+);
+
+Then(
+  'la cinématique a utilisé le niveau de sécurité {string}',
+  function (acrValue) {
+    serviceProviderPage.checkMockAcrValue(acrValue);
   },
 );
 
