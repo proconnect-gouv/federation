@@ -29,7 +29,7 @@ stop-core-fcp-high:
   script:
     - chmod og= $RECETTE_SSH_KEY
     - ssh -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER "sh /data/teardown core-fcp-high"
-    - scp -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER:/data/core-fcp-high/workspace/fc/docker/volumes/log/*.log .
+    - scp -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER:/data/fcp-high/workspace/fc/docker/volumes/log/*.log .
   artifacts:
     expire_in: 1 hrs
     paths:
