@@ -9,9 +9,11 @@ export interface ServiceProviderBase {
 
 export interface ServiceProvider extends ServiceProviderBase {
   acrValue: string;
-  name: string;
+  method: 'post' | 'get';
   mocked: boolean;
+  name: string;
   scopes: string[];
+  description: string;
 }
 
 export interface ScopeContext {

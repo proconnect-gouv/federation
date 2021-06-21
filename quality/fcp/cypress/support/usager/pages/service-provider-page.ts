@@ -65,7 +65,11 @@ export default class ServiceProviderPage {
     }
   }
 
-  setMockRequestedScope(scopeContext: ScopeContext): void {
+  setMockRequestedScope(scopeContext?: ScopeContext): void {
+    if (!scopeContext) {
+      return;
+    }
+
     const { scopes: requestedScopes } = scopeContext;
 
     ALL_SCOPES.filter((scope) => 'openid' !== scope).forEach((scope) => {
@@ -90,7 +94,14 @@ export default class ServiceProviderPage {
   }
 
   setMockRequestedAcr(acrValue: string): void {
-    cy.get('#acrSelector').select(acrValue);
+    cy.get('input[name="acr_values"]').each(($el) => {
+      cy.wrap($el).clear().type(acrValue);
+    });
+  }
+
+  clickMockFcButton(formMethod: 'get' | 'post'): void {
+    const buttonName = `#${formMethod}-authorize`;
+    cy.get(buttonName).click();
   }
 
   checkMockInformationAccess(
@@ -141,23 +152,28 @@ export default class ServiceProviderPage {
       });
   }
 
+  checkMockAcrValue(acrValue: string): void {
+    cy.get('[id="info-acr"] strong').contains(acrValue);
+  }
+
   checkMockErrorCallback(): void {
-    cy.url().should('include', `${this.originUrl}/error`);
+    const errorCallbackURL = `${this.originUrl}/error`;
+    cy.url().should('include', errorCallbackURL);
   }
 
   checkMockErrorCode(errorCode: string): void {
+    const encodedError = encodeURIComponent(errorCode);
     cy.url().should(
       'match',
-      new RegExp(`(?<=[&|?])error=${encodeURI(errorCode)}(?=&|$)`),
+      new RegExp(`(?<=[&|?])error=${encodedError}(?=&|$)`),
     );
   }
 
   checkMockErrorDescription(errorDescription: string): void {
+    const encodedDescription = encodeURIComponent(errorDescription);
     cy.url().should(
       'match',
-      new RegExp(
-        `(?<=[&|?])error_description=${encodeURI(errorDescription)}(?=&|$)`,
-      ),
+      new RegExp(`(?<=[&|?])error_description=${encodedDescription}(?=&|$)`),
     );
   }
 }
