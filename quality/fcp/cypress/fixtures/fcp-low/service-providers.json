@@ -10,6 +10,8 @@
     "selectors": {
       "fcButton": "#get-authorize",
       "logoutButton": ".nav-logout"
-    }
+    },
+    "method": "get",
+    "description": "par défaut"
   }
 ]
