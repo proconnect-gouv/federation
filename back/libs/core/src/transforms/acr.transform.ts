@@ -3,29 +3,22 @@
 export type AcrValues = Partial<{ acr_values: any }>;
 
 export function pickAcr(
-  allowed: string[],
-  values: string[],
-  defaultAcr: string,
+  knownAcrValues: string[],
+  acrValues: string[],
+  defaultAcrValue: string,
 ): string {
-  if (!allowed.length) {
-    return defaultAcr;
-  }
-
   /**
-   * @note Items inside `allowed` parameter (eidas levels)
+   * @note Items inside `knownAcrValues` parameter (eidas levels)
    * should be ordered from weakest to strongest
    */
-  const intersection = values.filter((acr) => allowed.includes(acr));
+  const intersection = knownAcrValues.filter((acr) => acrValues.includes(acr));
+
   const hasCommonValues = Boolean(intersection.length);
-  if (hasCommonValues) {
-    const lowestEidasValue = intersection.shift();
-    return lowestEidasValue;
+  if (!hasCommonValues) {
+    // acrValues are not known
+    return defaultAcrValue;
   }
 
-  /**
-   * Array.from() is necessary to copy the array since allowed is a parameter
-   * We do not want to mutate the given parameters
-   */
-  const highestEidasValue = Array.from(allowed).pop();
-  return highestEidasValue;
+  const lowestEidasValue = intersection.shift();
+  return lowestEidasValue;
 }
