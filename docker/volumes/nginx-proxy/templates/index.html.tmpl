@@ -11,10 +11,12 @@
 	<p>Ci-dessous les hôtes virtuels disponibles : </p>
 	<ul>
 	{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
-	{{ $vhostContainer := $containers | first }}
-	{{ $service := index $vhostContainer.Labels "com.docker.compose.service" }}
-	  <li><a target="_blank" href="https://{{ $host }}">{{ $service }}</a></li>
-  {{ end }}
+	{{ range $container := $containers }}
+	{{ $service := index $container.Labels "com.docker.compose.service" }}
+	{{ $location := coalesce $container.Env.VIRTUAL_HOST_PATH "/" }}
+	  <li><a target="_blank" href="https://{{ $host }}{{ $location }}">{{ $service }}</a></li>
+  	{{ end }}
+	{{ end }}
 	</ul>
 </body>
 </html>
