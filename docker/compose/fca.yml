@@ -19,6 +19,7 @@ services:
       - "exploitation-fca"
       - "pg-exploitation-fca"
       - "exploit-fca"
+      - "exploit-fca-front"
 
   ####################
   # SP Mocks V2
@@ -605,6 +606,7 @@ services:
     environment:
       - "PM2_SCRIPT=yarn start:dev --debug=0.0.0.0:9251 exploit-fca-instance"
       - "VIRTUAL_HOST=exploit-fca.docker.dev-franceconnect.fr"
+      - "VIRTUAL_HOST_PATH=/api"
       - "FQDN=exploit-fca.docker.dev-franceconnect.fr"
       # Logger
       - "Logger_FILE=/var/log/app/exploit-fca.log"
@@ -624,6 +626,34 @@ services:
       - "Session_USERINFO_CRYPT_KEY=raePh3i+a4eiwieb-H5iePh6o/gheequ"
       #FAG USE HSM
       - "USE_HSM=true"
+    networks:
+      - exploitation
+      - data
+    command: "tail -f /dev/null"
+
+  exploit-fca-front:
+    hostname: exploit-fca-front
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "squid"
+      - "exploit-fca"
+    volumes:
+      - "${VOLUMES_DIR}/src/fc/front/apps/exploit-fca:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+    env_file:
+      - "${COMPOSE_DIR}/base-app.env"
+    environment:
+      - "EVT_LOG_FILE=/var/log/app/exploit-fca-front.log"
+      - "FQDN=exploit-fca.docker.dev-franceconnect.fr"
+      - "PM2_CWD=/var/www/app"
+      - "PM2_SCRIPT=yarn start"
+      - "VIRTUAL_HOST=exploit-fca.docker.dev-franceconnect.fr"
+      - "VIRTUAL_HOST_PATH=/"
     networks:
       - exploitation
       - data

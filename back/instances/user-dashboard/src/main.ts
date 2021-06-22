@@ -22,6 +22,7 @@ async function bootstrap() {
     schema: UserDashboardConfig,
   });
   const {
+    urlPrefix,
     httpsOptions: { key, cert },
   } = configService.get<AppConfig>('App');
 
@@ -50,6 +51,7 @@ async function bootstrap() {
    * Protect app from common risks
    * @see https://helmetjs.github.io/
    */
+  app.setGlobalPrefix(urlPrefix);
   app.use(helmet());
   app.use(
     helmet.contentSecurityPolicy({
