@@ -100,7 +100,7 @@ _up() {
         echo "  - fcp-high => all needed services to run `stack-fcp-high` (core-fcp-high, fsp1v2, fsp2v2, fsp3v2, fsp5v2, fsp6v2, fip1v2, fip2v2, rnipp, haproxy, hsm, etc.)"
         echo "  - min-fcp-low => up minimal needed services to run core-fcp-low fsp1-low fip1-low"
         echo "  - all-fcp-low => up all needed services to run core-fcp-low and all other future services"
-        echo "  - fca => all needed services to run fca stack (fca, fsa1v2, fsa2v2, fsa3v2, fsa4v2, fia1v2, fia2v2, fia4v2, fia5v2, hsm, etc.)"
+        echo "  - fca => all needed services to run fca stack (fca, fsa[n]v2, fia[n]v2, exploit, hsm, etc.)"
         echo "  - all => run all services"
         echo "----"
         exit 1
@@ -339,7 +339,7 @@ case "$action" in
     _install_dependencies $@
     ;;
   dep-all|dependencies-all)
-    _install_dependencies fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 fdp1v2 fip1v2 fip2v2 core-fcp-high rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fsa4v2 fia1v2 fia2v2 fia4v2 fia5v2 fca fca-front csmr-hsm eidas-bridge exploitation-fca exploit-fcp exploit-fca core-fcp-low fsp1-low fip1-low
+    _install_dependencies fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 fdp1v2 fip1v2 fip2v2 core-fcp-high rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fsa4v2 fia1v2 fia2v2 fia4v2 fia5v2 fca fca-front csmr-hsm eidas-bridge exploitation-fca exploit-fcp exploit-fca exploit-fca-front core-fcp-low fsp1-low fip1-low
     ;;
   exec)
     _exec $@
@@ -375,7 +375,7 @@ case "$action" in
     _start $@
     ;;
   reload-all)
-    _start fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 fsa4v2 fdp1v2 fip1v2 fip2v2 fia4v2 fia5v2 core-fcp-high rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fia1v2 fia2v2 fca fca-front csmr-hsm eidas-bridge exploitation-fca exploit-fcp exploit-fca core-fcp-low fsp1-low fip1-low
+    _start fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 fsa4v2 fdp1v2 fip1v2 fip2v2 fia4v2 fia5v2 core-fcp-high rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fia1v2 fia2v2 fca fca-front csmr-hsm eidas-bridge exploitation-fca exploit-fcp exploit-fca exploit-fca-front core-fcp-low fsp1-low fip1-low
     ;;
   reset-db-core-fcp-high)
     _reset_db_fcp_high $@
@@ -428,7 +428,7 @@ case "$action" in
     _test $@
     ;;
   test-all)
-    _test rnipp core-fcp-high exploitation-high fca fca-front eidas-bridge exploitation-fca exploit-fcp exploit-fca core-fcp-low fsp1-low fip1-low
+    _test rnipp core-fcp-high exploitation-high fca fca-front eidas-bridge exploitation-fca exploit-fcp exploit-fca exploit-fca-front core-fcp-low fsp1-low fip1-low
     ;;
   e2e)
     _e2e $@
@@ -469,7 +469,7 @@ case "$action" in
     echo "                                              '''"
     echo ""
     _halt
-    docker system prune -af && docker image prune -af && docker system prune -af --volumes && docker system df && (cypress cache prune || echo "skipped cypress cache prune") && npm cache clean --force && yarn cache clean && sudo du -sh /var/cache/apt/archives && rm -Rf ${FC_ROOT}/fc/back/node_modules && cd ${FC_ROOT}/fc/front/apps && find . -name "node_modules" -type d -prune -exec rm -rf '{}' + 
+    docker system prune -af && docker image prune -af && docker system prune -af --volumes && docker system df && (cypress cache prune || echo "skipped cypress cache prune") && npm cache clean --force && yarn cache clean && sudo du -sh /var/cache/apt/archives && rm -Rf ${FC_ROOT}/fc/back/node_modules && cd ${FC_ROOT}/fc/front/apps && find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
     ;;
   up)
     _up $@
