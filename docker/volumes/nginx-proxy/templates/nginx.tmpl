@@ -18,23 +18,27 @@ ssl_dhparam /etc/nginx/dhparam/dhparam.pem;
 {{ end }}
 
 {{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
-{{ $vhostContainer := $containers | first }}
-
 {{ $host := trim $host }}
 
 ### {{ $host }}
 
-upstream {{ $host }} {
+{{ range $container := $containers }}
+
+{{ $upstream := trim (print $container.Name ".docker.dev-franceconnect.fr") }}
+
+upstream {{ $upstream }} {
 {{ range $knownNetwork := $CurrentContainer.Networks }}
-  {{ range $containerNetwork := $vhostContainer.Networks }}
+  {{ range $containerNetwork := $container.Networks }}
     {{ if (and (ne $containerNetwork.Name "ingress") (or (eq $knownNetwork.Name $containerNetwork.Name) (eq $knownNetwork.Name "host"))) }}
-      {{ $port := coalesce $vhostContainer.Env.VIRTUAL_PORT "80" }}
-      {{ $address := where $vhostContainer.Addresses "Port" $port | first }}
-      {{ template "upstream" (dict "Container" $vhostContainer "Address" $containerNetwork.IP "Port" $port) }}
+      {{ $port := coalesce $container.Env.VIRTUAL_PORT "80" }}
+      {{ $address := where $container.Addresses "Port" $port | first }}
+      {{ template "upstream" (dict "Container" $container "Address" $containerNetwork.IP "Port" $port) }}
     {{ end }}
   {{ end }}
 {{ end }}
 }
+{{ end }}
+
 
 server {
   listen {{ $external_http_port }};
@@ -51,22 +55,28 @@ server {
 
   include includes/common.vhost.conf;
 
-{{ $proto := coalesce $vhostContainer.Env.App_PROTOCOL "http" }}
-{{ if $vhostContainer.Env.SSL_CLIENT_PROTECTED_URIS }}
-  {{ range $protected_uri := split $vhostContainer.Env.SSL_CLIENT_PROTECTED_URIS "," }}
+{{ range $container := $containers }}
+
+{{ $upstream := trim (print $container.Name ".docker.dev-franceconnect.fr") }}
+{{ $proto := coalesce $container.Env.App_PROTOCOL "http" }}
+
+{{ if $container.Env.SSL_CLIENT_PROTECTED_URIS }}
+  {{ range $protected_uri := split $container.Env.SSL_CLIENT_PROTECTED_URIS "," }}
   location {{ $protected_uri }} {
     # URL protégée : requiert certificat client valide.
     if ($ssl_client_verify != "SUCCESS") {
       return 403;
     }
-    proxy_pass {{ $proto }}://{{ trim $host }};
+    proxy_pass {{ $proto }}://{{ $upstream }};
   }
   {{ end }}
 {{ end }}
 
-{{ $proto := coalesce $vhostContainer.Env.App_PROTOCOL "http" }}
-  location / {
-    proxy_pass {{ $proto }}://{{ trim $host }};
+{{ $location := coalesce $container.Env.VIRTUAL_HOST_PATH "/" }}
+  location {{ $location }} {
+    proxy_pass {{ $proto }}://{{ $upstream }};
   }
+{{ end }}
+
 }
 {{ end }}

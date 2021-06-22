@@ -72,6 +72,7 @@ services:
           - fia5v2.docker.dev-franceconnect.fr
           - exploit-fcp.docker.dev-franceconnect.fr
           - exploit-fca.docker.dev-franceconnect.fr
+          - exploit-fca-front.docker.dev-franceconnect.fr
           # FCP LOW
           - core-fcp-low.docker.dev-franceconnect.fr
           - fsp1-low.docker.dev-franceconnect.fr
