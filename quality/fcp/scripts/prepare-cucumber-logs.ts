@@ -31,6 +31,9 @@ const videosPath = path.join(__dirname, '..', videosDir);
  */
 const getFailedStepFromScenario = (cuke, scenarioName) => {
   const myScenario = cuke.elements.find((e) => e.name === scenarioName);
+  if (!myScenario) {
+    return null;
+  }
   const myStep = myScenario.steps.find(
     (step) => step.result.status !== 'passed',
   );
@@ -89,6 +92,7 @@ videos.forEach((videoPath) => {
   const videoLink = videoContainer(videoPath);
   const featureDescription = `${cukeMap[featureName][0].description}\n<br />${videoLink}`;
   cukeMap[featureName][0].description = featureDescription;
+  console.log(featureDescription);
 });
 
 // Retrieve all Cypress screenshots
