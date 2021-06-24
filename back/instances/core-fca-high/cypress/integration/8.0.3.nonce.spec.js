@@ -32,10 +32,10 @@ describe('nonce', () => {
     const url = getAuthorizeUrl();
     cy.visit(url);
 
-    cy.intercept(`${IDP_ROOT_URL}/authorize`).as('getIdp');
+    cy.intercept(`${IDP_ROOT_URL}/authorize?*`).as('getIdp');
 
     chooseIdpOnCore('fia1v2');
-    cy.wait('@getIdp').then(({request: { url }}) => {
+    cy.wait('@getIdp').then(({ request: { url } }) => {
       const nonceIsDefined = url.includes('nonce');
       expect(nonceIsDefined).to.be.true;
     });

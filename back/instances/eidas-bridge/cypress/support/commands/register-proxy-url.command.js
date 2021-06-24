@@ -43,7 +43,6 @@ export function registerProxyURL(glob, params = {}) {
 
         req.reply();
       },
-      { log: false },
     )
     .as(STEP_KEY);
 }
