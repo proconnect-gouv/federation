@@ -6,7 +6,7 @@ function interceptAuthorizeToCheckParams() {
    * exists in its environment :
    * ${Cypress.env('CORE_ROOT_URL')}/api/v2/authorize/:uid
    */
-  cy.intercept(`${Cypress.env('CORE_ROOT_URL')}/api/v2/authorize?`).as(
+  cy.intercept(`${Cypress.env('CORE_ROOT_URL')}/api/v2/authorize?*`).as(
     'authorizeQuery',
   );
 }

@@ -13,7 +13,7 @@ describe('Identity Check', () => {
   it('should failed when userInfos AgentConnect have missing claims returned from IdP', () => {
     // hack to ask missing scope
     const { IDP_ROOT_URL } = getIdentityProvider();
-    cy.registerProxyURL(`${IDP_ROOT_URL}/authorize?`, {
+    cy.registerProxyURL(`${IDP_ROOT_URL}/authorize?*`, {
       // email missing voluntary
       scope: scopes.replace('email', ''),
     });
@@ -33,7 +33,7 @@ describe('Identity Check', () => {
 
   it('should success when userInfos AgentConnect have also an unknown claims from IdP', () => {
     const { IDP_ROOT_URL } = getIdentityProvider();
-    cy.registerProxyURL(`${IDP_ROOT_URL}/authorize?`, {
+    cy.registerProxyURL(`${IDP_ROOT_URL}/authorize?*`, {
       scope: `${scopes} unknown_prop_for_test`,
     });
 
