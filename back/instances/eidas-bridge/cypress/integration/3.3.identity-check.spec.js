@@ -27,7 +27,7 @@ describe('Identity Check', () => {
     it('should failed when userInfos FC+ have missing claims returned from IdP FR', () => {
       // hack to ask missing scope
 
-      cy.registerProxyURL(`${baseUrl}/user/authorize?`, {
+      cy.registerProxyURL(`${baseUrl}/user/authorize?*`, {
         // email missing voluntary
         scope: SCOPES_FR.replace('email', ''),
       });
@@ -50,7 +50,7 @@ describe('Identity Check', () => {
     });
 
     it('should success when userInfos FC+ have also an unknown claims from IdP FR', () => {
-      cy.registerProxyURL(`${baseUrl}/user/authorize?`, {
+      cy.registerProxyURL(`${baseUrl}/user/authorize?*`, {
         scope: `${SCOPES_FULL} unknown_prop_for_test`,
       });
 
@@ -88,7 +88,7 @@ describe('Identity Check', () => {
     const baseUrl = Cypress.env('BRIDGE_ROOT_URL');
 
     it('should failed when userInfos FC+ have missing claims returned from IdP EU', () => {
-      cy.registerProxyURL(`${baseUrl}/authorize?`, {
+      cy.registerProxyURL(`${baseUrl}/authorize?*`, {
         scope: SCOPES_EIDAS.replace('family_name', ''),
       });
 
@@ -105,7 +105,7 @@ describe('Identity Check', () => {
     });
 
     it('should success when userInfos FC+ have also an unknown claims from IdP EU', () => {
-      cy.registerProxyURL(`${baseUrl}/authorize?`, {
+      cy.registerProxyURL(`${baseUrl}/authorize?*`, {
         scope: `${SCOPES_FULL} unknown_prop_for_test`,
       });
 
