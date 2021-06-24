@@ -92,7 +92,6 @@ videos.forEach((videoPath) => {
   const videoLink = videoContainer(videoPath);
   const featureDescription = `${cukeMap[featureName][0].description}\n<br />${videoLink}`;
   cukeMap[featureName][0].description = featureDescription;
-  console.log(featureDescription);
 });
 
 // Retrieve all Cypress screenshots

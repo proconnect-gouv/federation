@@ -106,11 +106,13 @@ reporter.generate(options);
 // Move the screenshots into the assets folder
 const originFolder = 'cypress/screenshots';
 const destinationFolder = `${reportPath}/assets/screenshots`;
-fs.copy(originFolder, destinationFolder, (err) => {
-  if (err) {
+if (fs.existsSync(originFolder)) {
+  fs.copy(originFolder, destinationFolder, (err) => {
+    if (err) {
+      // eslint-disable-next-line no-console
+      return console.error(err);
+    }
     // eslint-disable-next-line no-console
-    return console.error(err);
-  }
-  // eslint-disable-next-line no-console
-  console.log('screenshots copied!');
-});
+    console.log('screenshots copied!');
+  });
+}
