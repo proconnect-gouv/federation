@@ -1,4 +1,4 @@
-quality-core-fcp-high:
+quality-core-fcp-high-release:
   stage: 'Post-deploy'
   image: ${E2E_DOCKER_IMAGE}
   tags:
@@ -8,7 +8,7 @@ quality-core-fcp-high:
   script:
     - cd quality/fcp
     - yarn install
-    - CYPRESS_TEST_ENV=integ01 yarn test:high:chrome-desktop || true
+    - CYPRESS_TEST_ENV=integ01 yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || true
     - yarn report:prepare
     - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=integ01 yarn report:generate
   artifacts:
