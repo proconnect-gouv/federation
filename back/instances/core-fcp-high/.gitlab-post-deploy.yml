@@ -3,9 +3,8 @@ quality-core-fcp-high:
   image: ${E2E_DOCKER_IMAGE}
   tags:
     - docker
-  # only:
-  #   - tags
-  # à activer une fois fini
+  only:
+    - tags
   script:
     - cd quality/fcp
     - yarn install
