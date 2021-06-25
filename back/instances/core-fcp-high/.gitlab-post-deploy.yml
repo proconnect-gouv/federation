@@ -8,9 +8,10 @@ quality-core-fcp-high-release:
   script:
     - cd quality/fcp
     - yarn install
-    - CYPRESS_TEST_ENV=integ01 yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || true
+    - CYPRESS_TEST_ENV=integ01 yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=integ01 yarn report:generate
+    - exit $RETURN_CODE
   artifacts:
     expire_in: 1 hrs
     paths:

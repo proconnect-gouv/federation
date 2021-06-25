@@ -52,11 +52,13 @@ quality-core-fcp-high-recette:
     - merge_requests
     - staging
   script:
+    - unset EXPLOIT_USER_NAME && unset EXPLOIT_USER_PASS && unset EXPLOIT_USER_TOTP
     - cd quality/fcp
     - yarn install
-    - CYPRESS_TEST_ENV=recette yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || true
+    - CYPRESS_TEST_ENV=recette yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=recette yarn report:generate
+    - exit $RETURN_CODE
   resource_group: recette
   artifacts:
     expire_in: 1 hrs
