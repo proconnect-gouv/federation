@@ -31,6 +31,7 @@
   },
   "scripts": {
     "clean": "rm -rf ./cypress/reports/cucumber && rm -rf ./cypress/screenshots && rm -rf ./cypress/videos",
+    "prettier": "prettier -c \"{cypress,scripts}/**/*.ts\" --config .prettierrc",
     "lint": "eslint \"{cypress,scripts}/**/*.ts\"",
     "test:high:base": "npx cypress-tags run --env 'TAGS=not @ignoreHigh and not @fcpLow' --config-file cypress-fcp-high.json -c video=${CYPRESS_VIDEO}",
     "test:high:chrome-desktop": "yarn test:high:base --browser chrome --headless",
