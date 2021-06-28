@@ -44,13 +44,15 @@ const getFailedStepFromScenario = (cuke, scenarioName) => {
 };
 
 const addScreenshotToStep = (screenshotPath, step) => {
-  const screenshotUri = screenshotPath.replace(
-    new RegExp(`^.*${screenshotsDir}`),
-    '../assets/screenshots',
-  );
-  const screenshotImage = `<img class="screenshot" src="${encodeURI(
-    screenshotUri,
-  )}" />`;
+  const regExp = new RegExp(`^(?:.*${screenshotsDir})(.*/)([^/]*)$`);
+  const found = regExp.exec(screenshotPath);
+  if (!found) {
+    return;
+  }
+  const [, screenshotFolder, screenshotName] = found;
+  const encodedPath = `../assets/screenshots${encodeURI(screenshotFolder)}\
+${encodeURIComponent(screenshotName)}`;
+  const screenshotImage = `<img class="screenshot" src="${encodedPath}" />`;
   step.embeddings.push({ data: screenshotImage, mime_type: 'text/html' });
 };
 
