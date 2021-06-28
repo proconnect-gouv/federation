@@ -30,6 +30,7 @@ describe('RnippService', () => {
   const loggerMock = {
     setContext: jest.fn(),
     debug: jest.fn(),
+    trace: jest.fn(),
   };
 
   const configServiceMock = {
