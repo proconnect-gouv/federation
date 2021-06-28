@@ -90,7 +90,7 @@ export class LoggerService extends Logger {
      * Add `if (this.isOutputTrace() && log)` to prevent logs to be written
      * two times in Chrome debugger and terminal.
      */
-    if (this.isOutputTrace()) {
+    if (this.isOutputTrace() && log && context) {
       console[level](log, context);
     }
   }
