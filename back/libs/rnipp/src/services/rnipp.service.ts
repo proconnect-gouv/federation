@@ -60,6 +60,8 @@ export class RnippService {
     this.checkRnippRectificationError(rnippCode, deceased);
 
     this.logger.debug('Return RNIPP identity');
+
+    this.logger.trace({ rnipp: { citizenStatus, errors } });
     return rnippIdentity;
   }
 
@@ -79,7 +81,11 @@ export class RnippService {
       ),
     };
 
-    return `${protocol}://${hostname}${baseUrl}?${stringify(params)}`;
+    const url = `${protocol}://${hostname}${baseUrl}?${stringify(params)}`;
+
+    this.logger.trace({ params, url });
+
+    return url;
   }
 
   private formatSexe(gender: string): string {

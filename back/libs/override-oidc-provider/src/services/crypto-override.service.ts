@@ -2,7 +2,7 @@ import { timeout } from 'rxjs/operators';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 import { CryptoProtocol } from '@fc/microservices';
 import { OverrideCode } from '../helpers';
@@ -74,6 +74,7 @@ export class CryptoOverrideService {
         this.config.get<RabbitmqConfig>('CryptographyBroker');
 
       this.logger.debug('CryptoOverrideService.sign()');
+      this.logger.trace({ sign: { payloadEncoding, requestTimeout } });
 
       try {
         // Build message
@@ -112,6 +113,10 @@ export class CryptoOverrideService {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/146
      */
     if (data === 'ERROR') {
+      this.logger.trace(
+        { error: { data, payloadEncoding } },
+        LoggerLevelNames.WARN,
+      );
       reject(
         new CryptographyGatewayException('Gateway completed with an error'),
       );
