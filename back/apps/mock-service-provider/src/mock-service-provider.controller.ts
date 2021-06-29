@@ -12,6 +12,7 @@ import {
   UsePipes,
   Param,
 } from '@nestjs/common';
+import { AppConfig } from '@fc/app';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import {
   OidcClientConfig,
@@ -21,12 +22,11 @@ import {
   OidcClientService,
   OidcClientSession,
 } from '@fc/oidc-client';
-import { LoggerService } from '@fc/logger';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { ISessionGenericService, Session } from '@fc/session-generic';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
-import { AppConfig } from '@fc/app';
 import { MockServiceProviderRoutes } from './enums';
 import {
   MockServiceProviderTokenRevocationException,
@@ -80,15 +80,23 @@ export class MockServiceProviderController {
       idpNonce: params.nonce,
     });
 
-    return {
+    const response = {
       titleFront: 'Mock Service Provider',
       params,
       authorizationUrl: authorizationUrl,
       defaultAcrValue,
     };
+
+    this.logger.trace({
+      route: '/',
+      method: 'GET',
+      response,
+    });
+
+    return response;
   }
 
-  @Get('/interaction/:uid/verify')
+  @Get(MockServiceProviderRoutes.VERIFY)
   @Render('login-callback')
   async getVerify(
     /**
@@ -104,11 +112,20 @@ export class MockServiceProviderController {
   ) {
     const session = await sessionOidc.get();
 
-    return {
+    const response = {
       ...session,
       accessToken: session.idpAccessToken,
       titleFront: 'Mock Service Provider - Login Callback',
     };
+
+    this.logger.trace({
+      route: MockServiceProviderRoutes.VERIFY,
+      method: 'GET',
+      name: 'MockServiceProviderRoutes.VERIFY',
+      response,
+    });
+
+    return response;
   }
 
   @Get(MockServiceProviderRoutes.LOGOUT)
@@ -121,7 +138,8 @@ export class MockServiceProviderController {
      * @author Hugues
      * @date 2021-04-16
      * @ticket FC-xxx
-     */ @Session('OidcClient')
+     */
+    @Session('OidcClient')
     sessionOidc: ISessionGenericService<OidcClientSession>,
     @Query('post_logout_redirect_uri')
     postLogoutRedirectUri?: string,
@@ -135,6 +153,13 @@ export class MockServiceProviderController {
       postLogoutRedirectUri,
     );
 
+    this.logger.trace({
+      route: MockServiceProviderRoutes.LOGOUT,
+      method: 'GET',
+      name: 'MockServiceProviderRoutes.LOGOUT',
+      redirect: endSessionUrl,
+    });
+
     res.redirect(endSessionUrl);
   }
 
@@ -143,7 +168,15 @@ export class MockServiceProviderController {
     /**
      * @TODO #192 ETQ Dev, je complète la session pendant la cinématique des mocks
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/192
-     * */
+     */
+
+    this.logger.trace({
+      route: MockServiceProviderRoutes.LOGOUT_CALLBACK,
+      method: 'GET',
+      name: 'MockServiceProviderRoutes.LOGOUT_CALLBACK',
+      redirect: '/',
+    });
+
     return res.redirect('/');
   }
 
@@ -156,6 +189,7 @@ export class MockServiceProviderController {
     @Body()
     body: AccessTokenParamsDTO,
   ) {
+    let response;
     try {
       /**
        * @TODO #251 ETQ Dev, j'utilise une configuration pour savoir si j'utilise FC, AC, EIDAS, et avoir les valeurs de scope et acr en config et non en dur.
@@ -165,11 +199,12 @@ export class MockServiceProviderController {
       const { accessToken } = body;
       await this.oidcClient.utils.revokeToken(accessToken, providerUid);
 
-      return {
+      response = {
         titleFront: 'Mock Service Provider - Token révoqué',
         accessToken,
       };
     } catch (e) {
+      this.logger.trace({ e }, LoggerLevelNames.WARN);
       /**
        * @params e.error : error return by panva lib
        * @params e.error_description : error description return by panva lib
@@ -178,12 +213,23 @@ export class MockServiceProviderController {
        * when we try to revoke the token : 'MockServiceProviderTokenRevocationException'
        */
       if (e.error && e.error_description) {
-        return res.redirect(
-          `/error?error=${e.error}&error_description=${e.error_description}`,
-        );
+        const redirect = `/error?error=${e.error}&error_description=${e.error_description}`;
+
+        this.logger.trace({ redirect }, LoggerLevelNames.WARN);
+
+        return res.redirect(redirect);
       }
       throw new MockServiceProviderTokenRevocationException(e);
     }
+
+    this.logger.trace({
+      route: MockServiceProviderRoutes.REVOCATION,
+      method: 'POST',
+      name: 'MockServiceProviderRoutes.REVOCATION',
+      response,
+    });
+
+    return response;
   }
 
   /**
@@ -222,6 +268,8 @@ export class MockServiceProviderController {
     if (query.error) {
       const errorUri = `/error?${encode(query)}`;
 
+      this.logger.trace({ query, errorUri }, LoggerLevelNames.WARN);
+
       return res.redirect(errorUri);
     }
 
@@ -245,12 +293,12 @@ export class MockServiceProviderController {
       await this.oidcClient.getUserInfosFromProvider(userInfoParams, req);
 
     /**
-     *  @todo
-     *    author: Arnaud
-     *    date: 19/03/2020
-     *    ticket: FC-244 (identity, DTO, Mock, FS)
+     * @todo
+     *    action: Check the data returns from FC.
      *
-     *    action: Check the data returns from FC
+     * @author Arnaud
+     * @date 19/03/2020
+     * @ticket FC-244 (identity, DTO, Mock, FS)
      */
     const identityExchange: OidcSession = {
       idpIdentity: identity,
@@ -264,13 +312,24 @@ export class MockServiceProviderController {
 
     // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');
-    res.redirect(`${urlPrefix}/interaction/${interactionId}/verify`);
+    const url = `${urlPrefix}/interaction/${interactionId}/verify`;
+
+    this.logger.trace({
+      route: OidcClientRoutes.OIDC_CALLBACK,
+      method: 'GET',
+      name: 'OidcClientRoutes.OIDC_CALLBACK',
+      identityExchange,
+      redirect: url,
+    });
+
+    res.redirect(url);
   }
 
   @Post(MockServiceProviderRoutes.USERINFO)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('login-callback')
   async retrieveUserinfo(@Res() res, @Body() body: AccessTokenParamsDTO) {
+    let response;
     try {
       /**
        * @TODO #251 ETQ Dev, j'utilise une configuration pour savoir si j'utilise FC, AC, EIDAS, et avoir les valeurs de scope et acr en config et non en dur.
@@ -284,12 +343,13 @@ export class MockServiceProviderController {
         providerUid,
       );
 
-      return {
+      response = {
         titleFront: 'Mock Service Provider - Userinfo',
         accessToken,
         idpIdentity,
       };
     } catch (e) {
+      this.logger.trace({ e }, LoggerLevelNames.WARN);
       /**
        * @params e.error : error return by panva lib
        * @params e.error_description : error description return by panva lib
@@ -298,21 +358,41 @@ export class MockServiceProviderController {
        * when we try to receive userinfo : 'MockServiceProviderUserinfoException'
        */
       if (e.error && e.error_description) {
-        return res.redirect(
-          `/error?error=${e.error}&error_description=${e.error_description}`,
-        );
+        const redirect = `/error?error=${e.error}&error_description=${e.error_description}`;
+
+        this.logger.trace({ redirect }, LoggerLevelNames.WARN);
+
+        return res.redirect(redirect);
       }
       throw new MockServiceProviderUserinfoException(e);
     }
+
+    this.logger.trace({
+      route: MockServiceProviderRoutes.USERINFO,
+      method: 'POST',
+      name: 'MockServiceProviderRoutes.USERINFO',
+      response,
+    });
+
+    return response;
   }
 
   @Get(MockServiceProviderRoutes.ERROR)
   @Render('error')
   async error(@Query() query) {
-    return {
+    const response = {
       titleFront: "Mock service provider - Erreur lors de l'authentification",
       ...query,
     };
+
+    this.logger.trace({
+      route: MockServiceProviderRoutes.ERROR,
+      method: 'GET',
+      name: 'MockServiceProviderRoutes.ERROR',
+      response,
+    });
+
+    return response;
   }
 
   private async getInteractionParameters(provider: IdentityProviderMetadata) {

@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 
 // Declarative code
+import { Description } from '@fc/exceptions';
 import { OidcClientBaseException } from './oidc-client-base.exception';
 import { ErrorCode } from '../enums';
-import { Description } from '@fc/exceptions';
 
 @Description(
   "La requête reçue au retour du FI n'est pas valide (state invalide), recommencer la cinématique depuis le FS",

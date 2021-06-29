@@ -8,11 +8,16 @@ import {
   ValidationPipe,
   Body,
 } from '@nestjs/common';
+import { LoggerService } from '@fc/logger';
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
 import { AuthorizeParamsDto } from '../dto';
 
 @Controller()
 export class OidcProviderController {
+  constructor(private readonly logger: LoggerService) {
+    this.logger.setContext(this.constructor.name);
+  }
+
   /**
    * Authorize route via HTTP GET
    * Authorization endpoint MUST support GET method
@@ -30,6 +35,12 @@ export class OidcProviderController {
     }),
   )
   getAuthorize(@Next() next, @Query() _query: AuthorizeParamsDto) {
+    this.logger.trace({
+      route: OidcProviderRoutes.AUTHORIZATION,
+      method: 'GET',
+      name: 'OidcProviderRoutes.AUTHORIZATION',
+      query: _query,
+    });
     // Pass the query to oidc-provider
     return next();
   }
@@ -51,6 +62,12 @@ export class OidcProviderController {
     }),
   )
   postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDto) {
+    this.logger.trace({
+      route: OidcProviderRoutes.AUTHORIZATION,
+      method: 'POST',
+      name: 'OidcProviderRoutes.AUTHORIZATION',
+      body: _body,
+    });
     // Pass the query to oidc-provider
     return next();
   }

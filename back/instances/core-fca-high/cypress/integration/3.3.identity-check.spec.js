@@ -24,7 +24,7 @@ describe('Identity Check', () => {
 
     cy.proxyURLWasActivated();
 
-    cy.hasError('Y000007');
+    cy.hasError('Y000006');
     cy.contains(` Invalid identity from ${Cypress.env('IDP_NAME')}1v2`);
     cy.contains('"isEmail": "email must be an email"');
     // only one error

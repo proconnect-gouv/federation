@@ -12,7 +12,7 @@ import {
   Post,
   Body,
 } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ConfigService } from '@fc/config';
@@ -91,12 +91,21 @@ export class EuIdentityToFrController {
 
     const countryList = await this.eidasCountry.getListByIso(countryIsoList);
 
-    return {
+    const response = {
       countryList,
       uid,
       params,
       spName,
     };
+
+    this.logger.trace({
+      route: EidasBridgeRoutes.INTERACTION,
+      method: 'GET',
+      name: 'EidasBridgeRoutes.INTERACTION',
+      response,
+    });
+
+    return response;
   }
 
   /**
@@ -109,10 +118,19 @@ export class EuIdentityToFrController {
   async redirectToFrNodeConnector(
     @Body() body: EidasBridgeValidateEuropeanIdentity,
   ) {
-    return {
+    const response = {
       url: `/eidas-client/redirect-to-fr-node-connector?country=${body.country}`,
       statusCode: 302,
     };
+
+    this.logger.trace({
+      route: EidasBridgeRoutes.INTERACTION_LOGIN,
+      method: 'POST',
+      name: 'EidasBridgeRoutes.INTERACTION_LOGIN',
+      response,
+    });
+
+    return response;
   }
 
   @Get(EidasBridgeRoutes.FINISH_FC_INTERACTION)
@@ -159,18 +177,27 @@ export class EuIdentityToFrController {
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
     const idpIdentityReset: IOidcIdentity = { sub: idpIdentity.sub };
-
-    // Store the changes in session
-    await sessionOidc.set({
+    const session = {
       // Save idp identity.
       idpIdentity: idpIdentityReset,
       // Save service provider identity.
       spIdentity,
       spAcr: acr,
+    };
+
+    // Store the changes in session
+    await sessionOidc.set(session);
+
+    const sessionClient: OidcClientSession = await sessionOidc.get();
+
+    this.logger.trace({
+      route: EidasBridgeRoutes.FINISH_FC_INTERACTION,
+      method: 'GET',
+      name: 'EidasBridgeRoutes.FINISH_FC_INTERACTION',
+      session,
     });
 
-    const session: OidcClientSession = await sessionOidc.get();
-    return this.oidcProvider.finishInteraction(req, res, session);
+    return this.oidcProvider.finishInteraction(req, res, sessionClient);
   }
 
   /**
@@ -195,6 +222,7 @@ export class EuIdentityToFrController {
     );
 
     if (errors.length) {
+      this.logger.trace({ errors }, LoggerLevelNames.WARN);
       throw new EidasBridgeInvalidIdentityException(errors);
     }
   }

@@ -81,7 +81,22 @@ describe('Idp activation & visibility', () => {
     );
   });
 
-
+  it('should trigger error Y190007 if the CSRF token is not valid', () => {
+    // Given
+    cy.visit(getAuthorizeUrl());
+    cy.url().should('match', mireUrl);
+    cy.get('#fi-search-term').type(
+      'MOCK - Ministére de la transition écologique - ALL FIS - SORT 2',
+    );
+    cy.get(`#fca-search-idp-${idpId}1v2 > input[name="csrfToken"]`)
+      // Reset CSRF form value
+      .invoke('attr', 'value', 'INVALID-CSRF-VALUE');
+    // When
+    cy.get(`#idp-${idpId}1v2-button`).click();
+    // Then
+    cy.url().should('contain', '/api/v2/redirect-to-idp');
+    cy.hasError('Y190007');
+  });
 
   it('should redirect when click on enabled IdP', () => {
     cy.visit(getAuthorizeUrl());

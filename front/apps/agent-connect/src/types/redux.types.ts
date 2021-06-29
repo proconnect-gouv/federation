@@ -19,6 +19,7 @@ export type IdentityProviderFormInputs = {
   redirectUriServiceProvider: string;
   response_type: string;
   scope: string;
+  csrfToken: string;
 };
 
 export type RootState = {
@@ -28,4 +29,5 @@ export type RootState = {
   serviceProviderName: string;
   identityProvidersHistory: string[];
   redirectToIdentityProviderInputs: IdentityProviderFormInputs;
+  csrfToken: string;
 };

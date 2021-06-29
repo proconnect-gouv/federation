@@ -17,6 +17,7 @@ describe('9.9 - Interaction steps discarding', () => {
     );
     cy.hasError('Y150003');
   });
+
   /**
    * @TODO #252
    * ETQ Dev, je vérifie la pertinence des tests cypress
@@ -45,7 +46,8 @@ describe('9.9 - Interaction steps discarding', () => {
       cy.hasError('Y000004');
     });
   });
-  it('should trigger error Y000005 when csrf token not matching with csrfToken in session', () => {
+
+  it('should trigger error Y190006 when csrf token not matching with csrfToken in session', () => {
     basicErrorScenario({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
@@ -60,9 +62,10 @@ describe('9.9 - Interaction steps discarding', () => {
     cy.get('#consent').click();
 
     cy.url().should('match', new RegExp(`\/login`));
-    cy.hasError('Y000005');
+    cy.hasError('Y190006');
   });
-  it('should trigger error Y000005 when csrf token is empty', () => {
+
+  it('should trigger error Y190006 when csrf token is empty', () => {
     basicErrorScenario({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
@@ -77,8 +80,9 @@ describe('9.9 - Interaction steps discarding', () => {
     cy.get('#consent').click();
 
     cy.url().should('match', new RegExp(`\/login`));
-    cy.hasError('Y000005');
+    cy.hasError('Y190006');
   });
+
   it('should display "Not found" if we GET on /consent', () => {
     basicErrorScenario({
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -99,6 +103,7 @@ describe('9.9 - Interaction steps discarding', () => {
       });
     });
   });
+
   it('should trigger error Y000400 when csrf token is not present', () => {
     basicErrorScenario({
       // eslint-disable-next-line @typescript-eslint/naming-convention
