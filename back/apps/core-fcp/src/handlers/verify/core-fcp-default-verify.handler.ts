@@ -10,6 +10,7 @@ import { CoreService } from '@fc/core';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { RnippPivotIdentity } from '@fc/rnipp';
 import { IOidcIdentity } from '@fc/oidc';
+import { OidcClientSession } from '@fc/oidc-client';
 import { FeatureHandler } from '@fc/feature-handler';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import {
@@ -110,12 +111,15 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
     const idpIdentityCleaned = { sub: subIdp };
-
-    await sessionOidc.set({
+    const session: OidcClientSession = {
       amr: ['fc'],
       idpIdentity: idpIdentityCleaned,
       spIdentity,
-    });
+    };
+
+    this.logger.trace({ session });
+
+    await sessionOidc.set(session);
   }
 
   /**
@@ -130,6 +134,8 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     this.tracking.track(RnippRequestedEvent, trackingContext);
     const rnippIdentity = await this.rnipp.check(idpIdentity);
     this.tracking.track(RnippReceivedValidEvent, trackingContext);
+
+    this.logger.trace({ rnippIdentity });
 
     return rnippIdentity;
   }

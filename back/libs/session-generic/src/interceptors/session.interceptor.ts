@@ -8,7 +8,7 @@ import {
 import { ConfigService } from '@fc/config';
 import { SessionGenericConfig } from '../dto';
 import { ExcludedRoutes } from '../types';
-import { SessionGenericService } from '../session-generic.service';
+import { SessionGenericService } from '../services';
 import { ISessionGenericRequest } from '../interfaces';
 
 @Injectable()

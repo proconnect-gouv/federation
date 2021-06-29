@@ -2,7 +2,7 @@
 
 // declarative code
 import { Request } from 'express';
-import { SessionGenericService } from '../session-generic.service';
+import { SessionGenericService } from '../services';
 
 export interface ISessionGenericRequest extends Request {
   sessionId: string;

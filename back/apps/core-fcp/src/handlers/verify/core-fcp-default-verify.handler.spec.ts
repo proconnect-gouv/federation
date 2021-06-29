@@ -21,6 +21,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     setContext: jest.fn(),
     debug: jest.fn(),
     warn: jest.fn(),
+    trace: jest.fn(),
   };
 
   const uidMock = '42';

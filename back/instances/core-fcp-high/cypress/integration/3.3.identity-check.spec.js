@@ -29,7 +29,7 @@ describe('3.3 - Identity Check', () => {
 
     cy.proxyURLWasActivated();
 
-    cy.hasError('Y000007');
+    cy.hasError('Y000006');
     cy.contains(` Invalid identity from ${idpId}`);
     cy.contains('"isEmail": "email must be an email"');
     // only one error

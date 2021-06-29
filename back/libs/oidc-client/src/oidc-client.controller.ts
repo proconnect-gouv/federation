@@ -8,7 +8,13 @@ import {
   ValidationPipe,
   UsePipes,
 } from '@nestjs/common';
-import { ISessionGenericService, Session } from '@fc/session-generic';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
+import {
+  ISessionGenericService,
+  Session,
+  SessionGenericCsrfService,
+  SessionGenericInvalidCsrfSelectIdpException,
+} from '@fc/session-generic';
 import { OidcClientSession } from './dto';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderAdapter } from './interfaces';
@@ -27,10 +33,15 @@ export class OidcClientController {
   // Dependency injection can require more than 4 parameters
   /* eslint-disable-next-line max-params */
   constructor(
+    private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
     @Inject(IDENTITY_PROVIDER_SERVICE)
     private readonly identityProvider: IIdentityProviderAdapter,
-  ) {}
+    private readonly csrfService: SessionGenericCsrfService,
+  ) {
+    this.logger.setContext(this.constructor.name);
+  }
+
   /**
    * @todo #242 get configured parameters (scope and acr)
    */
@@ -57,6 +68,7 @@ export class OidcClientController {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
+      csrfToken,
     } = body;
 
     let serviceProviderId: string | null;
@@ -64,8 +76,18 @@ export class OidcClientController {
       const { spId } = await sessionOidc.get();
       serviceProviderId = spId;
     } catch (error) {
+      this.logger.trace({ error }, LoggerLevelNames.WARN);
       serviceProviderId = null;
     }
+
+    // -- control if the CSRF provided is the same as the one previously saved in session.
+    try {
+      await this.csrfService.validate(sessionOidc, csrfToken);
+    } catch (error) {
+      this.logger.trace({ error }, LoggerLevelNames.WARN);
+      throw new SessionGenericInvalidCsrfSelectIdpException(error);
+    }
+
     if (serviceProviderId) {
       await this.oidcClient.utils.checkIdpBlacklisted(
         serviceProviderId,
@@ -89,12 +111,23 @@ export class OidcClientController {
     });
 
     const { name: idpName } = await this.identityProvider.getById(providerUid);
-
-    await sessionOidc.set({
+    const session: OidcClientSession = {
       idpId: providerUid,
       idpName,
       idpState: state,
       idpNonce: nonce,
+    };
+
+    await sessionOidc.set(session);
+
+    this.logger.trace({
+      route: OidcClientRoutes.REDIRECT_TO_IDP,
+      method: 'POST',
+      name: 'OidcClientRoutes.REDIRECT_TO_IDP',
+      body,
+      res,
+      session,
+      redirect: authorizationUrl,
     });
 
     res.redirect(authorizationUrl);
@@ -108,6 +141,11 @@ export class OidcClientController {
    */
   @Get(OidcClientRoutes.WELL_KNOWN_KEYS)
   async getWellKnownKeys() {
+    this.logger.trace({
+      route: OidcClientRoutes.WELL_KNOWN_KEYS,
+      method: 'GET',
+      name: 'OidcClientRoutes.WELL_KNOWN_KEYS',
+    });
     return this.oidcClient.utils.wellKnownKeys();
   }
 }

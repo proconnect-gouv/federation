@@ -1,12 +1,14 @@
 import { mocked } from 'ts-jest/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
+import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { OidcProviderService } from '@fc/oidc-provider';
 import {
   SessionGenericNotFoundException,
   SessionGenericService,
+  SessionGenericCsrfService,
 } from '@fc/session-generic';
 import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
@@ -97,6 +99,12 @@ describe('CoreFcaController', () => {
     setAlias: jest.fn(),
   };
 
+  const sessionGenericCsrfServiceMock = {
+    get: jest.fn(),
+    save: jest.fn(),
+    validate: jest.fn(),
+  };
+
   const randomStringMock = 'randomStringMockValue';
   const cryptographyServiceMock = {
     genRandomString: jest.fn(),
@@ -141,9 +149,11 @@ describe('CoreFcaController', () => {
         CoreFcaService,
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
+        CryptographyService,
         ConfigService,
         OidcClientService,
         SessionGenericService,
+        SessionGenericCsrfService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -158,12 +168,16 @@ describe('CoreFcaController', () => {
       .useValue(identityProviderServiceMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderServiceMock)
+      .overrideProvider(CryptographyService)
+      .useValue(cryptographyServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
       .overrideProvider(SessionGenericService)
       .useValue(sessionGenericServieMock)
+      .overrideProvider(SessionGenericCsrfService)
+      .useValue(sessionGenericCsrfServiceMock)
       .compile();
 
     coreController = await app.get<CoreFcaController>(CoreFcaController);
@@ -189,6 +203,9 @@ describe('CoreFcaController', () => {
     sessionServiceMock.set.mockResolvedValueOnce(undefined);
     cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
     configServiceMock.get.mockReturnValue(appConfigMock);
+
+    sessionGenericCsrfServiceMock.get.mockReturnValueOnce(randomStringMock);
+    sessionGenericCsrfServiceMock.save.mockResolvedValueOnce(true);
   });
 
   describe('getDefault()', () => {
@@ -247,7 +264,7 @@ describe('CoreFcaController', () => {
       identityProviderServiceMock.getFilteredList.mockResolvedValueOnce(idps);
     });
 
-    it('should call oidcProvider.getInteraction', async () => {
+    it('should call `oidcProvider.getInteraction()`', async () => {
       // Given
       jest.spyOn(oidcProviderServiceMock, 'getInteraction');
       // When
@@ -261,7 +278,7 @@ describe('CoreFcaController', () => {
       );
     });
 
-    it('should call config.get', async () => {
+    it('should call `config.get()`', async () => {
       // Given
       jest.spyOn(configServiceMock, 'get');
       // When
@@ -282,7 +299,7 @@ describe('CoreFcaController', () => {
       );
     });
 
-    it('should call session.get', async () => {
+    it('should call `session.get()`', async () => {
       // When
       await coreController.getFrontData(req, res, sessionServiceMock);
 
@@ -291,7 +308,20 @@ describe('CoreFcaController', () => {
       expect(sessionServiceMock.get).toHaveBeenCalledWith();
     });
 
-    it('should call res.json', async () => {
+    it('should call `this.csrfService.get()` and this.csrfService.save()', async () => {
+      // When
+      await coreController.getFrontData(req, res, sessionServiceMock);
+      // Then
+      expect(sessionGenericCsrfServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionGenericCsrfServiceMock.get).toHaveBeenCalledWith();
+      expect(sessionGenericCsrfServiceMock.save).toHaveBeenCalledTimes(1);
+      expect(sessionGenericCsrfServiceMock.save).toHaveBeenCalledWith(
+        sessionServiceMock,
+        randomStringMock,
+      );
+    });
+
+    it('should call `res.json()`', async () => {
       // When
       await coreController.getFrontData(req, res, sessionServiceMock);
 

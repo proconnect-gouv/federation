@@ -8,7 +8,7 @@ import { CryptographyModule } from '@fc/cryptography';
 import { SESSION_TOKEN_OPTIONS } from './tokens';
 import { SessionInterceptor } from './interceptors';
 import { ISessionGenericOptions } from './interfaces';
-import { SessionGenericService } from './session-generic.service';
+import { SessionGenericCsrfService, SessionGenericService } from './services';
 
 @Module({})
 export class SessionGenericModule {
@@ -27,8 +27,14 @@ export class SessionGenericModule {
           useClass: SessionInterceptor,
         },
         SessionGenericService,
+        SessionGenericCsrfService,
       ],
-      exports: [SessionGenericService, RedisModule, CryptographyModule],
+      exports: [
+        SessionGenericService,
+        SessionGenericCsrfService,
+        RedisModule,
+        CryptographyModule,
+      ],
     };
   }
 }

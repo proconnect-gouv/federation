@@ -4,16 +4,15 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { OidcProviderService } from '@fc/oidc-provider';
 import {
-  SessionGenericNotFoundException,
   SessionGenericService,
+  SessionGenericCsrfService,
+  SessionGenericNotFoundException,
+  SessionGenericInvalidCsrfConsentException,
 } from '@fc/session-generic';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { NotificationsService } from '@fc/notifications';
-import {
-  CoreMissingIdentityException,
-  CoreInvalidCsrfException,
-} from '@fc/core';
+import { CoreMissingIdentityException } from '@fc/core';
 import { OidcClientService } from '@fc/oidc-client';
 import { TrackingService } from '@fc/tracking';
 import { OidcSession } from '@fc/oidc';
@@ -113,6 +112,12 @@ describe('CoreFcpController', () => {
     setAlias: jest.fn(),
   };
 
+  const sessionGenericCsrfServiceMock = {
+    get: jest.fn(),
+    save: jest.fn(),
+    validate: jest.fn(),
+  };
+
   const randomStringMock = 'randomStringMockValue';
   const cryptographyServiceMock = {
     genRandomString: jest.fn(),
@@ -150,7 +155,7 @@ describe('CoreFcpController', () => {
     track: jest.fn(),
   };
 
-  const csrfMock = 'myGreatCSRF';
+  const csrfMock = 'csrfMockValue';
 
   const sessionDataMock: OidcSession = {
     interactionId: interactionIdMock,
@@ -184,6 +189,7 @@ describe('CoreFcpController', () => {
         NotificationsService,
         OidcClientService,
         TrackingService,
+        SessionGenericCsrfService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -210,9 +216,13 @@ describe('CoreFcpController', () => {
       .useValue(oidcClientServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingServiceMock)
+      .overrideProvider(SessionGenericCsrfService)
+      .useValue(sessionGenericCsrfServiceMock)
       .compile();
 
     coreController = await app.get<CoreFcpController>(CoreFcpController);
+
+    configServiceMock.get.mockReturnValue(appConfigMock);
 
     providerMock.interactionDetails.mockResolvedValue(
       interactionDetailsResolved,
@@ -223,20 +233,24 @@ describe('CoreFcpController', () => {
     oidcProviderServiceMock.getInteraction.mockResolvedValue(
       interactionDetailsResolved,
     );
-    coreServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
-    coreServiceMock.rejectInvalidAcr.mockResolvedValue(false);
     serviceProviderServiceMock.getById.mockResolvedValue(serviceProviderMock);
+
     sessionServiceMock.get.mockResolvedValueOnce(sessionDataMock);
     sessionServiceMock.set.mockResolvedValueOnce(undefined);
-    cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
-    configServiceMock.get.mockReturnValue(appConfigMock);
 
+    cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
+
+    coreServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
+    coreServiceMock.rejectInvalidAcr.mockResolvedValue(false);
     coreServiceMock.getClaimsForInteraction.mockResolvedValue(claimsMock);
+    coreServiceMock.getScopesForInteraction.mockResolvedValue(scopesMock);
+    coreServiceMock.isConsentRequired.mockResolvedValue(true);
     coreServiceMock.getClaimsLabelsForInteraction.mockResolvedValue(
       claimsLabelMock,
     );
-    coreServiceMock.getScopesForInteraction.mockResolvedValue(scopesMock);
-    coreServiceMock.isConsentRequired.mockResolvedValue(true);
+
+    sessionGenericCsrfServiceMock.get.mockReturnValueOnce(csrfMock);
+    sessionGenericCsrfServiceMock.save.mockResolvedValueOnce(true);
   });
 
   describe('getDefault()', () => {
@@ -317,6 +331,7 @@ describe('CoreFcpController', () => {
         scope: undefined,
         spName: 'some SP',
         uid: 'uid',
+        csrfToken: csrfMock,
       });
     });
 
@@ -356,7 +371,7 @@ describe('CoreFcpController', () => {
     });
   });
 
-  describe('getEventClass', () => {
+  describe('getEventClass()', () => {
     // Given
     const scopesMock = ['openid', 'profile'];
     const consentRequiredMock = false;
@@ -407,7 +422,7 @@ describe('CoreFcpController', () => {
     });
   });
 
-  describe('trackDatatransfer', () => {
+  describe('trackDatatransfer()', () => {
     // Given
     const contextMock = {};
     const interactionMock = {};
@@ -497,12 +512,6 @@ describe('CoreFcpController', () => {
   });
 
   describe('getConsent()', () => {
-    beforeEach(() => {
-      coreController['generateAndStoreCsrf'] = jest
-        .fn()
-        .mockResolvedValueOnce(csrfMock);
-    });
-
     it('should get data from session', async () => {
       // Given
       const reqMock = {};
@@ -573,9 +582,12 @@ describe('CoreFcpController', () => {
         sessionServiceMock,
       );
       // Then
-      expect(coreController['generateAndStoreCsrf']).toHaveBeenCalledTimes(1);
-      expect(coreController['generateAndStoreCsrf']).toHaveBeenCalledWith(
+      expect(sessionGenericCsrfServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionGenericCsrfServiceMock.get).toHaveBeenCalledWith();
+      expect(sessionGenericCsrfServiceMock.save).toHaveBeenCalledTimes(1);
+      expect(sessionGenericCsrfServiceMock.save).toHaveBeenCalledWith(
         sessionServiceMock,
+        csrfMock,
       );
     });
 
@@ -633,13 +645,28 @@ describe('CoreFcpController', () => {
       ).rejects.toThrow(CoreMissingIdentityException);
     });
 
-    it('should throw an exception if csrf not match with csrfToken in session', async () => {
+    it('should throw an exception `SessionGenericInvalidCsrfConsentException` if the CSRF token is not valid', async () => {
       // Given
-      const body = { _csrf: 'csrfNotMatchingCsrfTokenInSession' };
+      const csrfTokenBodyMock = 'invalidCsrfTokenValue';
+      const csrfTokenSessionMock = randomStringMock;
+      const body = { _csrf: csrfTokenBodyMock };
+      sessionServiceMock.get.mockReset().mockResolvedValue({
+        interactionId: interactionIdMock,
+        spAcr: acrMock,
+        spName: spNameMock,
+        csrfToken: csrfTokenSessionMock,
+      });
+      sessionGenericCsrfServiceMock.validate
+        .mockReset()
+        .mockImplementation(() => {
+          throw new Error(
+            'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+          );
+        });
       // Then
       await expect(
         coreController.getLogin(req, res, body, sessionServiceMock),
-      ).rejects.toThrow(CoreInvalidCsrfException);
+      ).rejects.toThrow(SessionGenericInvalidCsrfConsentException);
     });
 
     it('should send an email notification to the end user by calling core.sendAuthenticationMail', async () => {
@@ -859,29 +886,6 @@ describe('CoreFcpController', () => {
 
         // assert
         expect(res.redirect).toHaveBeenCalledTimes(1);
-      });
-    });
-  });
-
-  describe('generateAndStoreCsrf()', () => {
-    it('should return the csrfToken', async () => {
-      // Given
-      // When
-      const result = await coreController['generateAndStoreCsrf'](
-        sessionServiceMock,
-      );
-      // Then
-      expect(result).toBe('randomStringMockValue');
-    });
-
-    it('should set the sessions', async () => {
-      // Given
-      // When
-      await coreController['generateAndStoreCsrf'](sessionServiceMock);
-      // Then
-      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set).toHaveBeenCalledWith({
-        csrfToken: 'randomStringMockValue',
       });
     });
   });
