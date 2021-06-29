@@ -5,11 +5,10 @@ export enum ErrorCode {
   INVALID_ACR = 2,
   MISSING_CONTEXT = 3,
   MISSING_IDENTITY = 4,
-  INVALID_CSRF = 5,
-  MISSING_AUTHENTICATION_EMAIL = 6,
-  INVALID_IDENTITY = 7,
+  MISSING_AUTHENTICATION_EMAIL = 5,
+  INVALID_IDENTITY = 6,
   /**
    * @todo core-fcp specific error, to be moved when we remove @fc/core
    */
-  INVALID_CONSENT_PROCESS = 8,
+  INVALID_CONSENT_PROCESS = 7,
 }

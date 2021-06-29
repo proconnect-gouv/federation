@@ -108,12 +108,16 @@ describe('OidcClientUtilsService', () => {
     })
       .overrideProvider(OidcClientIssuerService)
       .useValue(oidcClientIssuerServiceMock)
+
       .overrideProvider(OidcClientConfigService)
       .useValue(oidcClientConfigServiceMock)
+
       .overrideProvider(CryptographyService)
       .useValue(cryptoServiceMock)
+
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+
       .compile();
 
     service = module.get<OidcClientUtilsService>(OidcClientUtilsService);
@@ -150,13 +154,13 @@ describe('OidcClientUtilsService', () => {
     cryptoServiceMock.genRandomString.mockReturnValue(randomStringMock);
   });
 
-  describe('constructor', () => {
+  describe('constructor()', () => {
     it('should be defined', () => {
       expect(service).toBeDefined();
     });
   });
 
-  describe('getAuthorizeUrl', () => {
+  describe('getAuthorizeUrl()', () => {
     it('should call authorizationUrl', async () => {
       // Given
       const state = 'someState';
@@ -270,7 +274,7 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('wellKnownKeys', () => {
+  describe('wellKnownKeys()', () => {
     it('should return keys', async () => {
       // Given
       const JwkKeyMock = {
@@ -293,7 +297,7 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('buildAuthorizeParameters', () => {
+  describe('buildAuthorizeParameters()', () => {
     it('should call crypto to generate state', async () => {
       // When
       const result = await service.buildAuthorizeParameters();
@@ -312,7 +316,7 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('getTokenSet', () => {
+  describe('getTokenSet()', () => {
     const req = { session: { codeVerifier: 'codeVerifierValue' } };
     const providerId = 'foo';
     const state = 'callbackParamsState';
@@ -338,12 +342,14 @@ describe('OidcClientUtilsService', () => {
         },
       );
     });
+
     it('should return resolve value of client.callback', async () => {
       // When
       const result = await service.getTokenSet(req, providerId, state, nonce);
       // Then
       expect(result).toBe('callbackMock Resolve Value');
     });
+
     it('should throw if something unexpected goes wrong in extractParams', async () => {
       // Given
       const errorMock = new Error('lol');
@@ -355,7 +361,7 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('extractParams', () => {
+  describe('extractParams()', () => {
     const req = { session: { codeVerifier: 'codeVerifierValue' } };
     const state = 'callbackParamsState';
 
@@ -392,7 +398,7 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('revokeToken', () => {
+  describe('revokeToken()', () => {
     it('should call client.revoke', async () => {
       // Given
       const accessToken = 'accessTokenValue';
@@ -404,7 +410,7 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('getUserInfo', () => {
+  describe('getUserInfo()', () => {
     it('should return client.userinfo result', async () => {
       // Given
       const accessToken = 'accessTokenValue';
@@ -417,7 +423,7 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('getEndSessionUrl', () => {
+  describe('getEndSessionUrl()', () => {
     beforeEach(() => {
       oidcClientIssuerServiceMock.getClient.mockResolvedValueOnce(clientMock);
       clientMock.endSessionUrl.mockReturnValueOnce(endSessionUrlWithParamsMock);
@@ -496,7 +502,7 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
-  describe('checkIdpBlacklisted', () => {
+  describe('checkIdpBlacklisted()', () => {
     it('should return OidcClientRuntimeException isIdpBlacklist throw an error', async () => {
       // setup
       const errorMock = new Error('Unknown Error');

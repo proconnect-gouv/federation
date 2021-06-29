@@ -33,7 +33,7 @@ const IdentityProviderCardContentComponent = React.memo(
           'shadow-primary': active,
         })}>
         <div className="mb-2">Mon compte</div>
-        <form action={formTargetURL} method="POST">
+        <form action={formTargetURL} id={`fca-history-idp-${uid}`} method="POST">
           {redirectToIdentityProviderInputs.map(([inputKey, inputValue]) => (
             <input
               key={inputKey}

@@ -31,6 +31,7 @@ describe('MockIdentityProviderFcaController', () => {
 
   const loggerServiceMock = {
     setContext: jest.fn(),
+    trace: jest.fn(),
   } as unknown as LoggerService;
 
   const sessionServiceMock = {
@@ -81,19 +82,14 @@ describe('MockIdentityProviderFcaController', () => {
     })
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
-
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-
       .overrideProvider(SessionGenericService)
       .useValue(sessionServiceMock)
-
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
-
       .overrideProvider(MockIdentityProviderService)
       .useValue(mockIdentityProviderFcaServiceMock)
-
       .compile();
 
     controller = module.get<MockIdentityProviderController>(

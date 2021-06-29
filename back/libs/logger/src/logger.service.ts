@@ -276,6 +276,29 @@ export class LoggerService extends Logger {
   }
 
   /**
+   * Try to estimate if the classMethod isfrom a specific type
+   * to returns the coresponding color object.
+   *
+   * @param {string} classMethodName, Ex: 'myClassController.myMethod()'
+   * @returns {ILoggerColorParams}
+   */
+  private getClassMethodColor(classMethodName: string): ILoggerColorParams {
+    const {
+      loggerColorClassCategoryEnum: categories,
+      loggerClassMethodColorsConstant: methodColors,
+    } = colors;
+    const categoryClassName = Object.keys(categories).find((cat) =>
+      classMethodName.includes(`${cat}.`),
+    );
+    const BACKGROUND_COLOR =
+      categories[categoryClassName] || methodColors.BACKGROUND_COLOR;
+    return {
+      ...methodColors,
+      BACKGROUND_COLOR,
+    };
+  }
+
+  /**
    * Convert the array of color objects into the same array
    * but in css sring. This array is stored in local cache to
    * prevents multiple processing for the same 'container' or 'library'.
@@ -318,7 +341,7 @@ export class LoggerService extends Logger {
     libraryName: string,
     classMethodName: string,
   ): string {
-    return `%c[${dateTime}]%c${containerName}%c${libraryName}%c${classMethodName}()`;
+    return `%c${dateTime}%c${containerName}%c${libraryName}%c${classMethodName}()`;
   }
 
   /**
@@ -368,7 +391,7 @@ export class LoggerService extends Logger {
       colors.loggerTimeColorsConstant,
       this.containerColors,
       this.libraryColors,
-      colors.loggerClassMethodColorsConstant,
+      this.getClassMethodColor(classMethodName),
     ];
     const loggerColors: string[] = this.getDebuggerCssColors(allColors);
 

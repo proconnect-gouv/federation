@@ -13,4 +13,6 @@ export const enum ErrorCode {
   BAD_SESSION_ALIAS = 3,
   INVALID_SESSION = 4,
   STORAGE_ISSUE = 5,
+  INVALID_CSRF_CONSENT = 6,
+  INVALID_CSRF_SELECT_IDP = 7,
 }

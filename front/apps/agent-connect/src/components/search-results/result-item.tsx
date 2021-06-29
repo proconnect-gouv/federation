@@ -25,7 +25,7 @@ const ResultItemComponent = React.memo(
     }, [uid, dispatch]);
 
     return (
-      <form action={formTargetURL} aria-label="form" method="POST">
+      <form action={formTargetURL} aria-label="form" id={`fca-search-idp-${uid}`} method="POST">
         {redirectToIdentityProviderInputs.map(([inputKey, inputValue]) => (
           <input
             key={inputKey}

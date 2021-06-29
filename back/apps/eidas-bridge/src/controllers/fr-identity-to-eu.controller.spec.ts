@@ -34,6 +34,7 @@ describe('FrIdentityToEuController', () => {
 
   const loggerServiceMock = {
     setContext: jest.fn(),
+    trace: jest.fn(),
   } as unknown as LoggerService;
 
   const eidasToOidcServiceMock = {

@@ -1,6 +1,6 @@
 import { createParamDecorator, ExecutionContext } from '@nestjs/common';
 import { ISessionGenericService } from '../interfaces';
-import { SessionGenericService } from '../session-generic.service';
+import { SessionGenericService } from '../services';
 
 export function extractSessionFromRequest(
   moduleName: string,
