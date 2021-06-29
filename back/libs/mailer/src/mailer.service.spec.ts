@@ -38,6 +38,7 @@ describe('MailerService', () => {
     setContext: jest.fn(),
     debug: jest.fn(),
     error: jest.fn(),
+    trace: jest.fn(),
   };
   const templateServiceMock = {
     readFile: jest.fn(),

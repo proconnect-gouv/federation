@@ -42,6 +42,7 @@ export class CryptoOverrideService {
    */
   private ['crypto.sign'](nodeAlg: string, payload, key) {
     this.logger.debug('Run override for crypto.sign');
+    this.logger.trace({ nodeAlg, payload, key });
     /**
      * Return a wrapper compatible with usage mae by `JOSE`:
      * Jose inernally makes call to native crypto createSign
@@ -98,6 +99,7 @@ export class CryptoOverrideService {
             error,
           });
       } catch (error) {
+        this.logger.trace({ error }, LoggerLevelNames.WARN);
         return reject(new CryptographyGatewayException(error));
       }
     });
@@ -105,7 +107,7 @@ export class CryptoOverrideService {
 
   // Handle successful call
   private signSuccess(resolve: Function, reject: Function, data: string): void {
-    this.logger.debug('CryptoOverrideService.signSuccess()');
+    this.logger.debug('CryptoOverrideService.signSuccess');
     const { payloadEncoding } =
       this.config.get<RabbitmqConfig>('CryptographyBroker');
     /**
@@ -121,6 +123,8 @@ export class CryptoOverrideService {
         new CryptographyGatewayException('Gateway completed with an error'),
       );
     }
+
+    this.logger.trace({ data, payloadEncoding });
 
     resolve(Buffer.from(data, payloadEncoding));
   }

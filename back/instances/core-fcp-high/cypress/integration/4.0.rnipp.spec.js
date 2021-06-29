@@ -118,7 +118,7 @@ describe('4.0 - RNIPP', () => {
       login: 'test_INVALID_COG',
     });
 
-    cy.hasError('Y000007');
+    cy.hasError('Y000006');
     cy.contains(` Invalid identity from ${Cypress.env('IDP_NAME')}1v2`);
     cy.contains('"isCog": ""');
     // birthplace and address

@@ -1,6 +1,9 @@
+import { ValidatorOptions } from 'class-validator';
+import { ClassTransformOptions } from 'class-transformer';
 import { Controller, Get, Redirect, Req, Query } from '@nestjs/common';
+import { validateDto } from '@fc/common';
 import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { AcrValues } from '@fc/oidc';
 import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
 import { EidasProviderSession } from '@fc/eidas-provider';
@@ -8,9 +11,6 @@ import { ISessionGenericService, Session } from '@fc/session-generic';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { EidasBridgeRoutes } from '../enums';
 import { EidasBridgeIdentityDto } from '../dto/eidas-bridge-identity.dto';
-import { ValidatorOptions } from 'class-validator';
-import { ClassTransformOptions } from 'class-transformer';
-import { validateDto } from '@fc/common';
 import { EidasBridgeInvalidIdentityException } from '../exceptions';
 
 /**
@@ -53,10 +53,19 @@ export class FrIdentityToEuController {
       idpState: sessionId,
     });
 
-    return {
+    const response = {
       url: `${EidasBridgeRoutes.BASE}${EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE}`,
       statusCode: 302,
     };
+
+    this.logger.trace({
+      route: EidasBridgeRoutes.INIT_SESSION,
+      method: 'GET',
+      name: 'EidasBridgeRoutes.INIT_SESSION',
+      response,
+    });
+
+    return response;
   }
 
   /**
@@ -100,7 +109,16 @@ export class FrIdentityToEuController {
       idpNonce: nonce,
     });
 
-    return { url: authorizationUrl, statusCode: 302 };
+    const response = { url: authorizationUrl, statusCode: 302 };
+
+    this.logger.trace({
+      route: EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE,
+      method: 'GET',
+      name: 'EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE',
+      response,
+    });
+
+    return response;
   }
 
   @Get(EidasBridgeRoutes.REDIRECT_TO_EIDAS_RESPONSE_PROXY)
@@ -129,6 +147,7 @@ export class FrIdentityToEuController {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { error, error_description } = query;
     if (error) {
+      this.logger.trace({ error }, LoggerLevelNames.WARN);
       partialEidasResponse = this.oidcToEidas.mapPartialResponseFailure({
         error,
         // oidc param name
@@ -176,6 +195,7 @@ export class FrIdentityToEuController {
           requestedAttributes,
         );
       } catch (error) {
+        this.logger.trace({ error }, LoggerLevelNames.WARN);
         partialEidasResponse =
           this.oidcToEidas.mapPartialResponseFailure(error);
       }
@@ -186,10 +206,19 @@ export class FrIdentityToEuController {
       partialEidasResponse,
     );
 
-    return {
+    const response = {
       url: '/eidas-provider/response-proxy',
       statusCode: 302,
     };
+
+    this.logger.trace({
+      route: EidasBridgeRoutes.REDIRECT_TO_EIDAS_RESPONSE_PROXY,
+      method: 'GET',
+      name: 'EidasBridgeRoutes.REDIRECT_TO_EIDAS_RESPONSE_PROXY',
+      response,
+    });
+
+    return response;
   }
 
   private async validateIdentity(identity: Partial<EidasBridgeIdentityDto>) {

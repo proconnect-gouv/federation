@@ -224,9 +224,9 @@ export class OidcProviderRedisAdapter implements Adapter {
     if (isEmpty(data)) {
       this.logger.trace({ find: { id, key, data } }, LoggerLevelNames.WARN);
       return void 0;
-    } else {
-      this.logger.trace({ find: { id, key, data } });
     }
+
+    this.logger.trace({ find: { id, key, data } });
 
     const wrappedData = typeof data === 'string' ? { payload: data } : data;
     const { payload, ...rest } = wrappedData;

@@ -19,6 +19,7 @@ describe('CoreFcpService', () => {
     setContext: jest.fn(),
     debug: jest.fn(),
     warn: jest.fn(),
+    trace: jest.fn(),
   };
 
   const oidcProviderServiceMock = {

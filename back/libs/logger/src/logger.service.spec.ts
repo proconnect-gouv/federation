@@ -4,8 +4,8 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from './logger.service';
 import { LoggerLevelNames } from './enum';
 import { ILoggerColorParams } from './interfaces';
-import * as utils from './utils';
 import { nestLevelsMap } from './log-maps.map';
+import * as utils from './utils';
 
 jest.mock('os');
 jest.mock('uuid');
@@ -15,7 +15,7 @@ const dateTimeMock = 'timeValue';
 const containerNameMock = 'containerValue';
 const libraryNameMock = 'libraryNameValue';
 const classMethodNameMock = 'classMethodNameValue';
-const metadataMock = `%c[${dateTimeMock}]%c${containerNameMock}%c${libraryNameMock}%c${classMethodNameMock}()`;
+const metadataMock = `%c${dateTimeMock}%c${containerNameMock}%c${libraryNameMock}%c${classMethodNameMock}()`;
 
 let getColorsFromTextSpy;
 
@@ -43,6 +43,12 @@ const libraryColorMock: ILoggerColorParams = {
 const classMethodColorsMock: ILoggerColorParams = {
   BACKGROUND_COLOR: '#EAEAEA',
   TEXT_COLOR: '#222',
+};
+const loggerSpecificClassColorsMock = {
+  Controller: '#88A9FC',
+  Adapter: '#F4D746',
+  Handler: '#8ddd8d',
+  ExceptionFilter: '#E29191',
 };
 
 // array of all color's object.
@@ -374,12 +380,15 @@ describe('LoggerService', () => {
   });
 
   describe('businessEvent()', () => {
+    let classColorMock;
     it('should call both loggers when in dev mode + trace level', () => {
       // Given
       const service = getConfiguredMockedService(configs.dev.trace);
       jest
         .spyOn<any, any>(service, 'getConsoleCommand')
         .mockReturnValue(console.log);
+      classColorMock = jest.spyOn<any, any>(service, 'getClassMethodColor');
+      classColorMock.mockReturnValue(loggerSpecificClassColorsMock);
       // When
       service.businessEvent(businessEventMock);
       // Then
@@ -393,6 +402,8 @@ describe('LoggerService', () => {
       jest
         .spyOn<any, any>(service, 'getConsoleCommand')
         .mockReturnValue(console.log);
+      classColorMock = jest.spyOn<any, any>(service, 'getClassMethodColor');
+      classColorMock.mockReturnValue(loggerSpecificClassColorsMock);
       // When
       service.businessEvent(businessEventMock);
       // Then
@@ -406,6 +417,8 @@ describe('LoggerService', () => {
       jest
         .spyOn<any, any>(service, 'getConsoleCommand')
         .mockReturnValue(console.log);
+      classColorMock = jest.spyOn<any, any>(service, 'getClassMethodColor');
+      classColorMock.mockReturnValue(loggerSpecificClassColorsMock);
       // When
       service.businessEvent(businessEventMock);
       // Then
@@ -419,6 +432,8 @@ describe('LoggerService', () => {
       jest
         .spyOn<any, any>(service, 'getConsoleCommand')
         .mockReturnValue(console.log);
+      classColorMock = jest.spyOn<any, any>(service, 'getClassMethodColor');
+      classColorMock.mockReturnValue(loggerSpecificClassColorsMock);
       // When
       service.businessEvent(businessEventMock);
       // Then
@@ -432,6 +447,8 @@ describe('LoggerService', () => {
       jest
         .spyOn<any, any>(service, 'getConsoleCommand')
         .mockReturnValue(console.log);
+      classColorMock = jest.spyOn<any, any>(service, 'getClassMethodColor');
+      classColorMock.mockReturnValue(loggerSpecificClassColorsMock);
       // When
       service['businessLogger'](LoggerLevelNames.TRACE, 'businessEvent');
       // Then
@@ -449,6 +466,8 @@ describe('LoggerService', () => {
       jest
         .spyOn<any, any>(service, 'getConsoleCommand')
         .mockReturnValue(console.log);
+      classColorMock = jest.spyOn<any, any>(service, 'getClassMethodColor');
+      classColorMock.mockReturnValue(loggerSpecificClassColorsMock);
       // When
       service.businessEvent(businessEventMock);
       // Then
@@ -550,6 +569,32 @@ describe('LoggerService', () => {
       service['setLibraryColors'](libraryColorMock);
       // Then
       expect(service['libraryColors']).toBe(libraryColorMock);
+    });
+  });
+
+  describe('getClassMethodColor()', () => {
+    it('should return a specific color object if a `Controller` class type is detected', () => {
+      // Given
+      const currentClassNameMock = 'Controller';
+      const classMethodNameMock = 'classNameValueController.mockMethod()';
+      const service = getConfiguredMockedService(configs.dev.log);
+      // When
+      const result = service['getClassMethodColor'](classMethodNameMock);
+      // Then
+      expect(result).toStrictEqual({
+        ...classMethodColorsMock,
+        BACKGROUND_COLOR: loggerSpecificClassColorsMock[currentClassNameMock],
+      });
+    });
+
+    it('should return a standard color for a specified class type', () => {
+      // Given
+      const classMethodNameMock = 'classNameValueService.mockMethod()';
+      const service = getConfiguredMockedService(configs.dev.log);
+      // When
+      const result = service['getClassMethodColor'](classMethodNameMock);
+      // Then
+      expect(result).toStrictEqual(classMethodColorsMock);
     });
   });
 
@@ -701,7 +746,6 @@ describe('LoggerService', () => {
     let getDebuggerMetadataSpy;
 
     let consoleLogSpy;
-    let consoleTableSpy;
     let consoleWarnSpy;
 
     let service;
@@ -739,7 +783,6 @@ describe('LoggerService', () => {
       getConsoleCommandSpy = jest.spyOn<any, any>(service, 'getConsoleCommand');
 
       consoleLogSpy = jest.spyOn<any, any>(console, 'log');
-      consoleTableSpy = jest.spyOn<any, any>(console, 'table');
       consoleWarnSpy = jest.spyOn<any, any>(console, 'warn');
 
       service['libraryColors'] = libraryColorMock;
@@ -752,7 +795,6 @@ describe('LoggerService', () => {
       service.trace(contextObjectMock);
       // Then
       expect(consoleLogSpy).toHaveBeenCalledTimes(0);
-      expect(consoleTableSpy).toHaveBeenCalledTimes(0);
       expect(consoleWarnSpy).toHaveBeenCalledTimes(0);
     });
 
