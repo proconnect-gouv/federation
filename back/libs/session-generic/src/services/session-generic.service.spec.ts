@@ -5,19 +5,19 @@ import { ConfigService, validationOptions } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { CryptographyService } from '@fc/cryptography';
-import { SESSION_TOKEN_OPTIONS } from './tokens';
+import { SESSION_TOKEN_OPTIONS } from '../tokens';
 import { SessionGenericService } from './session-generic.service';
 import {
   ISessionGenericBoundContext,
   ISessionGenericRequest,
   ISessionGenericResponse,
   ISessionGenericCookieOptions,
-} from './interfaces';
+} from '../interfaces';
 import {
   SessionBadFormatException,
   SessionBadAliasException,
   SessionGenericStorageException,
-} from './exceptions';
+} from '../exceptions';
 
 jest.mock('@fc/common');
 
@@ -34,6 +34,7 @@ const cookieOptionsMock: ISessionGenericCookieOptions = {
   sameSite: 'Lax',
   domain: 'domainValue',
 };
+
 const configMock = {
   prefix: 'MOCK::SESS::',
   lifetime: 42,

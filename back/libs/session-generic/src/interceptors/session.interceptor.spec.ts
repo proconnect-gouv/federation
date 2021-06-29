@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext } from '@nestjs/common';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
-import { SessionGenericService } from '../session-generic.service';
-import { SessionInterceptor } from './session.interceptor';
+import { SessionGenericService } from '../services';
 import { ISessionGenericRequest } from '../interfaces';
+import { SessionInterceptor } from './session.interceptor';
 
 describe('SessionInterceptor', () => {
   let interceptor: SessionInterceptor;

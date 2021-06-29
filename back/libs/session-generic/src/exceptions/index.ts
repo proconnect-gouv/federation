@@ -7,3 +7,5 @@ export * from './session-generic-bad-format.exception';
 export * from './session-generic-bad-alias.exception';
 export * from './session-generic-invalid-session.exception';
 export * from './session-generic-storage.exception';
+export * from './session-generic-invalid-csrf-consent.exception';
+export * from './session-generic-invalid-csrf-select-idp.exception';

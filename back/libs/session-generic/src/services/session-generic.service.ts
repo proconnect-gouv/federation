@@ -9,14 +9,14 @@ import {
   ISessionGenericOptions,
   ISessionGenericRequest,
   ISessionGenericResponse,
-} from './interfaces';
-import { SESSION_TOKEN_OPTIONS } from './tokens';
-import { SessionGenericConfig } from './dto';
+} from '../interfaces';
+import { SESSION_TOKEN_OPTIONS } from '../tokens';
+import { SessionGenericConfig } from '../dto';
 import {
   SessionBadFormatException,
   SessionBadAliasException,
   SessionGenericStorageException,
-} from './exceptions';
+} from '../exceptions';
 
 export type RedisQueryResult = [Error | null, any];
 

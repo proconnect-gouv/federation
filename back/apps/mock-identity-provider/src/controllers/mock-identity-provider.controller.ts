@@ -10,15 +10,15 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import {
   ISessionGenericService,
   Session,
   SessionGenericService,
 } from '@fc/session-generic';
+import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { IOidcIdentity } from '@fc/oidc';
 import { MockIdentityProviderRoutes } from '../enums';
 import { MockIdentityProviderService } from '../services';
 import { SignInDTO } from '../dto';
@@ -36,7 +36,16 @@ export class MockIdentityProviderController {
 
   @Get(MockIdentityProviderRoutes.INDEX)
   async index() {
-    return { status: 'ok' };
+    const response = { status: 'ok' };
+
+    this.logger.trace({
+      route: MockIdentityProviderRoutes.INDEX,
+      method: 'GET',
+      name: 'MockIdentityProviderRoutes.INDEX',
+      response,
+    });
+
+    return response;
   }
 
   @Get(MockIdentityProviderRoutes.INTERACTION)
@@ -62,11 +71,20 @@ export class MockIdentityProviderController {
 
     const { spName } = await sessionOidc.get();
 
-    return {
+    const response = {
       uid,
       params,
       spName,
     };
+
+    this.logger.trace({
+      route: MockIdentityProviderRoutes.INTERACTION,
+      method: 'GET',
+      name: 'MockIdentityProviderRoutes.INTERACTION',
+      response,
+    });
+
+    return response;
   }
 
   @Post(MockIdentityProviderRoutes.INTERACTION_LOGIN)
@@ -91,6 +109,7 @@ export class MockIdentityProviderController {
     )) as IOidcIdentity;
 
     if (!spIdentity) {
+      this.logger.trace({ spIdentity }, LoggerLevelNames.WARN);
       throw new Error('Identity not found in database');
     }
 
@@ -101,6 +120,13 @@ export class MockIdentityProviderController {
     await this.sessionService.setAlias(spIdentity.sub, req.sessionId);
 
     sessionOidc.set({
+      spIdentity,
+    });
+
+    this.logger.trace({
+      route: MockIdentityProviderRoutes.INTERACTION_LOGIN,
+      method: 'POST',
+      name: 'MockIdentityProviderRoutes.INTERACTION_LOGIN',
       spIdentity,
     });
 

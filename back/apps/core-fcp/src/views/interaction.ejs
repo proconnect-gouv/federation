@@ -27,7 +27,7 @@
           <h2><%= locals.spName %></h2>
           <div id="idp-list" class="main__providers">
             <% locals.providers.filter(p => p.display).filter(p => p.uid !== 'eidas-bridge').forEach(provider => { %>
-              <form  method="POST" action="/api/v2/redirect-to-idp" id="fs-request-<%= provider.uid %>"name="fs-request">
+              <form  method="POST" action="/api/v2/redirect-to-idp" id="fs-request-<%= provider.uid %>" name="fs-request">
                 <div class="identity-provider">
                   <button id="idp-<%= provider.uid %>" <%= (!provider.active)? 'disabled' : '' %>>
                     <div class="icon-container">
@@ -45,6 +45,7 @@
                 <input type="hidden" name="uid" id="uid" value="<%= locals.uid %>" />
                 <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
                 <input type="hidden" name="scope" value="<%= locals.scope %>" />
+                <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
               </form>
             <% }) %>
 
@@ -66,6 +67,7 @@
               <input type="hidden" name="uid" id="uid" value="<%= locals.uid %>" />
               <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
               <input type="hidden" name="scope" value="<%= locals.scope %>" />
+              <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
             </form>
           <% } %>
           

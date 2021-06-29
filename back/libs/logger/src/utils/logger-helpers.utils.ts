@@ -5,9 +5,11 @@
  */
 export const getDateTime: Function = (): string =>
   new Date().toLocaleTimeString([], {
-    hour: '2-digit',
-    minute: '2-digit',
+    hour: 'numeric',
+    minute: 'numeric',
+    second: 'numeric',
     timeZone: 'Europe/Paris',
+    hour12: false,
   });
 
 /**

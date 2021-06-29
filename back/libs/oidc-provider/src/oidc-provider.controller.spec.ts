@@ -49,6 +49,7 @@ describe('OidcProviderController', () => {
     verbose: jest.fn(),
     businessEvent: jest.fn(),
     debug: jest.fn(),
+    trace: jest.fn(),
   } as unknown as LoggerService;
 
   beforeEach(async () => {

@@ -2,7 +2,7 @@
 
 // Declarative code
 export * from './session-generic.module';
-export * from './session-generic.service';
+export * from './services';
 export { SessionGenericConfig } from './dto';
 export {
   ISessionGenericService,
@@ -10,4 +10,8 @@ export {
   ISessionGenericCookieOptions,
 } from './interfaces';
 export { Session } from './decorators';
-export { SessionGenericNotFoundException } from './exceptions';
+export {
+  SessionGenericNotFoundException,
+  SessionGenericInvalidCsrfConsentException,
+  SessionGenericInvalidCsrfSelectIdpException,
+} from './exceptions';

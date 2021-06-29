@@ -37,7 +37,6 @@ export class MockIdentityProviderService {
 
   async onModuleInit() {
     this.loadDatabase();
-
     this.oidcProvider.registerMiddleware(
       OidcProviderMiddlewareStep.AFTER,
       OidcProviderRoutes.AUTHORIZATION,

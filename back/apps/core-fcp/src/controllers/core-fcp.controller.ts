@@ -14,19 +14,28 @@ import {
 } from '@nestjs/common';
 import { OidcSession } from '@fc/oidc';
 import { OidcProviderService, OidcProviderConfig } from '@fc/oidc-provider';
-import { LoggerService } from '@fc/logger';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import {
   ISessionGenericService,
   Session,
+  SessionGenericCsrfService,
+  SessionGenericInvalidCsrfConsentException,
   SessionGenericNotFoundException,
   SessionGenericService,
 } from '@fc/session-generic';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
+import {
+  Interaction,
+  CsrfToken,
+  CoreRoutes,
+  CoreMissingIdentityException,
+} from '@fc/core';
 import { CryptographyService } from '@fc/cryptography';
 import { NotificationsService } from '@fc/notifications';
+import { TrackingService } from '@fc/tracking';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
   GetOidcCallback,
@@ -34,14 +43,6 @@ import {
   OidcClientRoutes,
   OidcClientService,
 } from '@fc/oidc-client';
-import {
-  Interaction,
-  CsrfToken,
-  CoreRoutes,
-  CoreMissingIdentityException,
-  CoreInvalidCsrfException,
-} from '@fc/core';
-import { TrackingService } from '@fc/tracking';
 import { Core, OidcIdentityDto } from '../dto';
 import { CoreFcpService } from '../services';
 import { ProcessCore } from '../enums';
@@ -76,6 +77,7 @@ export class CoreFcpController {
     private readonly oidcClient: OidcClientService,
     private readonly tracking: TrackingService,
     private readonly sessionService: SessionGenericService,
+    private readonly csrfService: SessionGenericCsrfService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -83,6 +85,14 @@ export class CoreFcpController {
   @Get(CoreRoutes.DEFAULT)
   getDefault(@Res() res) {
     const { defaultRedirectUri } = this.config.get<Core>('Core');
+
+    this.logger.trace({
+      route: CoreRoutes.DEFAULT,
+      method: 'GET',
+      name: 'CoreRoutes.DEFAULT',
+      redirect: defaultRedirectUri,
+    });
+
     res.redirect(301, defaultRedirectUri);
   }
 
@@ -124,24 +134,44 @@ export class CoreFcpController {
     );
 
     if (rejected) {
+      this.logger.trace(
+        { rejected, acrValues, allowedAcrValues },
+        LoggerLevelNames.WARN,
+      );
       return;
     }
 
     const { idpFilterExclude, idpFilterList } =
       await this.serviceProvider.getById(clientId);
+
     const providers = await this.identityProvider.getFilteredList(
       idpFilterList,
       idpFilterExclude,
     );
+
+    // -- generate and store in session the CSRF token
+    const csrfToken = this.csrfService.get();
+    await this.csrfService.save(sessionOidc, csrfToken);
+
     const notifications = await this.notifications.getNotifications();
-    return res.render('interaction', {
+    const response = {
       uid,
       params,
       scope,
       providers,
       notifications,
       spName,
+      csrfToken,
+    };
+
+    this.logger.trace({
+      route: CoreRoutes.INTERACTION,
+      method: 'GET',
+      name: 'CoreRoutes.INTERACTION',
+      response,
     });
+
+    return res.render('interaction', response);
   }
 
   @Get(CoreRoutes.INTERACTION_VERIFY)
@@ -165,7 +195,16 @@ export class CoreFcpController {
     await this.core.verify(sessionOidc, req);
 
     const { urlPrefix } = this.config.get<AppConfig>('App');
-    res.redirect(`${urlPrefix}/interaction/${interactionId}/consent`);
+    const url = `${urlPrefix}/interaction/${interactionId}/consent`;
+
+    this.logger.trace({
+      route: CoreRoutes.INTERACTION_VERIFY,
+      method: 'GET',
+      name: 'CoreRoutes.INTERACTION_VERIFY',
+      redirect: url,
+    });
+
+    res.redirect(url);
   }
 
   @Get(CoreRoutes.INTERACTION_CONSENT)
@@ -198,9 +237,12 @@ export class CoreFcpController {
     const scopes = await this.core.getScopesForInteraction(interaction);
     const claims = await this.core.getClaimsLabelsForInteraction(interaction);
     const consentRequired = await this.core.isConsentRequired(spId);
-    const csrfToken = await this.generateAndStoreCsrf(sessionOidc);
 
-    return {
+    // -- generate and store in session the CSRF token
+    const csrfToken = await this.csrfService.get();
+    await this.csrfService.save(sessionOidc, csrfToken);
+
+    const response = {
       interactionId,
       identity,
       spName,
@@ -209,6 +251,15 @@ export class CoreFcpController {
       csrfToken,
       consentRequired,
     };
+
+    this.logger.trace({
+      route: CoreRoutes.INTERACTION_CONSENT,
+      method: 'GET',
+      name: 'CoreRoutes.INTERACTION_CONSENT',
+      response,
+    });
+
+    return response;
   }
 
   private getEventClass(
@@ -268,24 +319,28 @@ export class CoreFcpController {
     @Session('OidcClient')
     sessionOidc: ISessionGenericService<OidcClientSession>,
   ) {
-    const { _csrf: csrf } = body;
+    const { _csrf: csrfToken } = body;
     const session: OidcSession = await sessionOidc.get();
 
     if (!session) {
       throw new SessionGenericNotFoundException('OidcClient');
     }
 
-    const { spId, spIdentity, csrfToken } = session;
+    const { spId, spIdentity } = session;
 
-    if (csrf !== csrfToken) {
-      throw new CoreInvalidCsrfException();
+    try {
+      await this.csrfService.validate(sessionOidc, csrfToken);
+    } catch (error) {
+      this.logger.trace({ error }, LoggerLevelNames.WARN);
+      throw new SessionGenericInvalidCsrfConsentException(error);
     }
 
     if (!spIdentity) {
+      this.logger.trace({ spIdentity }, LoggerLevelNames.WARN);
       throw new CoreMissingIdentityException();
     }
 
-    this.logger.trace({ csrf, spIdentity, csrfToken });
+    this.logger.trace({ csrfToken, spIdentity });
 
     const interaction = await this.oidcProvider.getInteraction(req, res);
     const trackingContext = req;
@@ -299,6 +354,13 @@ export class CoreFcpController {
      * to the sessionId, nor the interactionId.
      */
     await this.sessionService.setAlias(spIdentity.sub, req.sessionId);
+
+    this.logger.trace({
+      route: CoreRoutes.INTERACTION_LOGIN,
+      method: 'POST',
+      name: 'CoreRoutes.INTERACTION_LOGIN',
+      data: { req, res, session },
+    });
 
     return this.oidcProvider.finishInteraction(req, res, session);
   }
@@ -361,7 +423,16 @@ export class CoreFcpController {
 
     // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');
-    res.redirect(`${urlPrefix}/interaction/${interactionId}/verify`);
+    const url = `${urlPrefix}/interaction/${interactionId}/verify`;
+
+    this.logger.trace({
+      route: OidcClientRoutes.OIDC_CALLBACK,
+      method: 'GET',
+      name: 'OidcClientRoutes.OIDC_CALLBACK',
+      redirect: url,
+    });
+
+    res.redirect(url);
   }
 
   private async validateIdentity(
@@ -376,20 +447,8 @@ export class CoreFcpController {
 
     const errors = await identityCheckHandler.handle(identity);
     if (errors.length) {
+      this.logger.trace({ errors }, LoggerLevelNames.WARN);
       throw new CoreFcpInvalidIdentityException(providerUid, errors);
     }
-  }
-
-  /**
-   * @TODO #203
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/203
-   */
-  private async generateAndStoreCsrf(
-    sessionOidc: ISessionGenericService<OidcClientSession>,
-  ): Promise<string> {
-    const csrfTokenLength = 32;
-    const csrfToken: string = this.crypto.genRandomString(csrfTokenLength);
-    await sessionOidc.set({ csrfToken: csrfToken });
-    return csrfToken;
   }
 }
