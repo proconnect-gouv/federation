@@ -132,15 +132,19 @@ const addVideoLinks = (
   cukeMap: { [key: string]: IJsonFeature },
 ): void => {
   // For each Cypress video (local execution)
-  glob.sync(`${videosDirPath}/**/*.mp4`).forEach((videoPath) => {
-    const featureName = path.basename(videoPath, '.mp4');
-    if (cukeMap[featureName]) {
+  glob
+    .sync(`${videosDirPath}/**/*.mp4`)
+    .map((videoPath) => ({
+      featureName: path.basename(videoPath, '.mp4'),
+      videoPath,
+    }))
+    .filter(({ featureName }) => !!cukeMap[featureName])
+    .forEach(({ featureName, videoPath }) => {
       // Append the description with the video link
       const videoLink = videoContainer(videoPath);
       const featureDescription = `${cukeMap[featureName].description}\n<br />${videoLink}`;
       cukeMap[featureName].description = featureDescription;
-    }
-  });
+    });
 };
 
 /**
@@ -157,15 +161,13 @@ const addScreenshotLinks = (
     .sync(`${screenshotsDirPath}/**/*.png`)
     .map((screenshotPath) => {
       return {
-        feature: path.basename(path.dirname(screenshotPath)),
+        featureName: path.basename(path.dirname(screenshotPath)),
         screenshotName: path.basename(screenshotPath),
         screenshotPath,
       };
     })
-    .forEach(({ feature, screenshotName, screenshotPath }) => {
-      if (!cukeMap[feature]) {
-        return;
-      }
+    .filter(({ featureName }) => !!cukeMap[featureName])
+    .forEach(({ featureName, screenshotName, screenshotPath }) => {
       const scenarioName = screenshotName
         .match(/--\s(.+).png/)[1]
         .replace('(failed)', '')
@@ -173,7 +175,10 @@ const addScreenshotLinks = (
         .trim();
 
       // Add the screenshot to the failed step
-      const myStep = getFailedStepFromScenario(cukeMap[feature], scenarioName);
+      const myStep = getFailedStepFromScenario(
+        cukeMap[featureName],
+        scenarioName,
+      );
       if (myStep) {
         addScreenshotToStep(screenshotPath, myStep);
       }
