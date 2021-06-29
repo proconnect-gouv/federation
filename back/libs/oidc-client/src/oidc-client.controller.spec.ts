@@ -1,6 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import {
+  SessionGenericCsrfService,
+  SessionGenericInvalidCsrfSelectIdpException,
+  SessionGenericService,
+} from '@fc/session-generic';
 import { TrackingService } from '@fc/tracking';
 import { ConfigService } from '@fc/config';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
@@ -17,6 +21,7 @@ describe('OidcClient Controller', () => {
       wellKnownKeys: jest.fn(),
       buildAuthorizeParameters: jest.fn(),
       checkIdpBlacklisted: jest.fn(),
+      checkCsrfTokenValidity: jest.fn(),
     },
   };
 
@@ -25,11 +30,18 @@ describe('OidcClient Controller', () => {
     verbose: jest.fn(),
     debug: jest.fn(),
     businessEvent: jest.fn(),
+    trace: jest.fn(),
   } as unknown as LoggerService;
 
-  const sessionServiceMock = {
+  const sessionGenericServiceMock = {
     set: jest.fn(),
     get: jest.fn(),
+  };
+
+  const sessionGenericCsrfServiceMock = {
+    get: jest.fn(),
+    save: jest.fn(),
+    validate: jest.fn(),
   };
 
   const identityProviderServiceMock = {
@@ -43,6 +55,7 @@ describe('OidcClient Controller', () => {
   const appConfigMock = {
     urlPrefix: '/api/v2',
   };
+
   const configServiceMock = {
     get: () => appConfigMock,
   };
@@ -62,6 +75,7 @@ describe('OidcClient Controller', () => {
         OidcClientService,
         LoggerService,
         SessionGenericService,
+        SessionGenericCsrfService,
         TrackingService,
         ConfigService,
         {
@@ -72,14 +86,22 @@ describe('OidcClient Controller', () => {
     })
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
+
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+
       .overrideProvider(SessionGenericService)
-      .useValue(sessionServiceMock)
+      .useValue(sessionGenericServiceMock)
+
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
+
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+
+      .overrideProvider(SessionGenericCsrfService)
+      .useValue(sessionGenericCsrfServiceMock)
+
       .compile();
 
     oidcClientController =
@@ -90,7 +112,7 @@ describe('OidcClient Controller', () => {
     };
 
     identityProviderServiceMock.getById.mockReturnValue({ name: 'foo' });
-    sessionServiceMock.get.mockResolvedValue({
+    sessionGenericServiceMock.get.mockResolvedValue({
       idpState: stateMock,
       idpNonce: nonceMock,
     });
@@ -103,6 +125,8 @@ describe('OidcClient Controller', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'acrMock',
     });
+
+    sessionGenericCsrfServiceMock.save.mockResolvedValueOnce(true);
   });
 
   it('should be defined', () => {
@@ -120,6 +144,7 @@ describe('OidcClient Controller', () => {
         acr_values: 'eidas3',
         claims: 'json_stringified',
         nonce: nonceMock,
+        csrfToken: 'csrfMockValue',
       };
 
       const mockedoidcClientService =
@@ -130,7 +155,11 @@ describe('OidcClient Controller', () => {
       );
 
       // action
-      await oidcClientController.redirectToIdp(res, body, sessionServiceMock);
+      await oidcClientController.redirectToIdp(
+        res,
+        body,
+        sessionGenericServiceMock,
+      );
 
       // assert
       expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledTimes(
@@ -150,6 +179,7 @@ describe('OidcClient Controller', () => {
         acr_values: 'eidas3',
         claims: 'json_stringified',
         nonce: nonceMock,
+        csrfToken: 'csrfMockValue',
       };
 
       const mockedoidcClientService =
@@ -160,11 +190,15 @@ describe('OidcClient Controller', () => {
       );
 
       // action
-      await oidcClientController.redirectToIdp(res, body, sessionServiceMock);
+      await oidcClientController.redirectToIdp(
+        res,
+        body,
+        sessionGenericServiceMock,
+      );
 
       // assert
-      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set).toHaveBeenCalledWith({
+      expect(sessionGenericServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionGenericServiceMock.set).toHaveBeenCalledWith({
         idpId: body.providerUid,
         idpName: 'foo',
         idpState: stateMock,
@@ -182,19 +216,55 @@ describe('OidcClient Controller', () => {
         acr_values: 'eidas3',
         nonce: nonceMock,
         claims: 'any_formatted_json_string',
+        csrfToken: 'csrfMockValue',
       };
-      sessionServiceMock.get.mockImplementationOnce(() => {
+      sessionGenericServiceMock.get.mockImplementationOnce(() => {
         throw new Error();
       });
 
       // action
-      await oidcClientController.redirectToIdp(res, body, sessionServiceMock);
+      await oidcClientController.redirectToIdp(
+        res,
+        body,
+        sessionGenericServiceMock,
+      );
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
     });
 
     it('should throw an error because idp is blacklisted', async () => {
+      // Given
+      const csrfTokenBody = 'invalidCsrfMockValue';
+      const body = {
+        scope: 'openid',
+        providerUid: providerIdMock,
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: 'eidas3',
+        nonce: nonceMock,
+        claims: 'any_formatted_json_string',
+        csrfToken: csrfTokenBody,
+      };
+      sessionGenericServiceMock.get.mockReturnValueOnce('spId');
+      sessionGenericCsrfServiceMock.validate
+        .mockReset()
+        .mockImplementation(() => {
+          throw new Error(
+            'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+          );
+        });
+      // When/Then
+      await expect(
+        oidcClientController.redirectToIdp(
+          res,
+          body,
+          sessionGenericServiceMock,
+        ),
+      ).rejects.toThrow(SessionGenericInvalidCsrfSelectIdpException);
+    });
+
+    it('should throw an error if the two CSRF tokens (provided in request and previously stored in session) are not the same.', async () => {
       // setup
       const body = {
         scope: 'openid',
@@ -204,14 +274,19 @@ describe('OidcClient Controller', () => {
         acr_values: 'eidas3',
         nonce: nonceMock,
         claims: 'any_formatted_json_string',
+        csrfToken: 'csrfMockValue',
       };
-      sessionServiceMock.get.mockReturnValueOnce('spId');
+      sessionGenericServiceMock.get.mockReturnValueOnce('spId');
 
       // action
-      await oidcClientController.redirectToIdp(res, body, sessionServiceMock);
+      await oidcClientController.redirectToIdp(
+        res,
+        body,
+        sessionGenericServiceMock,
+      );
 
       // assert
-      expect(sessionServiceMock.get).toHaveBeenLastCalledWith();
+      expect(sessionGenericServiceMock.get).toHaveBeenLastCalledWith();
       expect(res.redirect).toHaveBeenCalledTimes(1);
     });
 
@@ -221,6 +296,7 @@ describe('OidcClient Controller', () => {
         isBlacklistedMock = oidcClientServiceMock.utils.checkIdpBlacklisted =
           jest.fn();
       });
+
       it('idp is blacklisted', async () => {
         // setup
         const body = {
@@ -231,16 +307,23 @@ describe('OidcClient Controller', () => {
           acr_values: 'eidas3',
           nonce: nonceMock,
           claims: 'any_formatted_json_string',
+          csrfToken: 'csrfMockValue',
         };
         const errorMock = new Error('New Error');
-        sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
+        sessionGenericServiceMock.get.mockReturnValueOnce({
+          spId: 'spIdValue',
+        });
         isBlacklistedMock.mockRejectedValueOnce(errorMock);
 
         // action / assert
         await expect(() =>
-          oidcClientController.redirectToIdp(res, body, sessionServiceMock),
+          oidcClientController.redirectToIdp(
+            res,
+            body,
+            sessionGenericServiceMock,
+          ),
         ).rejects.toThrow(errorMock);
-        expect(sessionServiceMock.get).toHaveBeenLastCalledWith();
+        expect(sessionGenericServiceMock.get).toHaveBeenLastCalledWith();
       });
 
       it('idp is not blacklisted', async () => {
@@ -253,15 +336,22 @@ describe('OidcClient Controller', () => {
           acr_values: 'eidas3',
           nonce: nonceMock,
           claims: 'any_formatted_json_string',
+          csrfToken: 'csrfMockValue',
         };
-        sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
+        sessionGenericServiceMock.get.mockReturnValueOnce({
+          spId: 'spIdValue',
+        });
         isBlacklistedMock.mockReturnValueOnce(false);
 
         // action
-        await oidcClientController.redirectToIdp(res, body, sessionServiceMock);
+        await oidcClientController.redirectToIdp(
+          res,
+          body,
+          sessionGenericServiceMock,
+        );
 
         // assert
-        expect(sessionServiceMock.get).toHaveBeenLastCalledWith();
+        expect(sessionGenericServiceMock.get).toHaveBeenLastCalledWith();
         expect(res.redirect).toHaveBeenCalledTimes(1);
       });
     });

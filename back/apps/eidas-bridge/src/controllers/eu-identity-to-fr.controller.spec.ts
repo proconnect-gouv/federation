@@ -61,6 +61,7 @@ describe('EuIdentityToFrController', () => {
   const loggerServiceMock = {
     setContext: jest.fn(),
     warn: jest.fn(),
+    trace: jest.fn(),
   } as unknown as LoggerService;
 
   const sessionServiceOidcMock = {

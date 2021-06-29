@@ -1,6 +1,6 @@
 import { ModuleRef } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { ISessionGenericService } from '@fc/session-generic';
 import { OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
@@ -47,7 +47,7 @@ export class CoreFcpService {
     sessionOidc: ISessionGenericService<OidcClientSession>,
     trackingContext: Record<string, any>,
   ): Promise<void> {
-    this.logger.debug('CoreFcpService.verify()');
+    this.logger.debug('CoreFcpService.verify');
 
     const { idpId } = await sessionOidc.get();
 
@@ -55,6 +55,8 @@ export class CoreFcpService {
       idpId,
       ProcessCore.CORE_VERIFY,
     );
+
+    this.logger.trace({ idpId, trackingContext });
 
     return await verifyHandler.handle({ sessionOidc, trackingContext });
   }
@@ -67,6 +69,8 @@ export class CoreFcpService {
 
     const idp = await this.identityProvider.getById<FcpFeature>(idpId);
     const idClass = idp.featureHandlers[process];
+
+    this.logger.trace({ idp, idClass });
 
     return FeatureHandler.get(idClass, this);
   }
@@ -87,9 +91,13 @@ export class CoreFcpService {
     try {
       const { authenticationEmail } = idp.featureHandlers;
       handler = await FeatureHandler.get(authenticationEmail, this);
-    } catch (e) {
-      throw new CoreMissingAuthenticationEmailException(e);
+    } catch (error) {
+      this.logger.trace({ error }, LoggerLevelNames.WARN);
+      throw new CoreMissingAuthenticationEmailException(error);
     }
+
+    this.logger.trace({ idpId, idp });
+
     await handler.handle(session);
   }
 
@@ -100,6 +108,8 @@ export class CoreFcpService {
       type,
       identityConsent,
     );
+
+    this.logger.trace({ consentRequired });
 
     return consentRequired;
   }
@@ -112,6 +122,8 @@ export class CoreFcpService {
 
     const claims = await this.scopes.mapScopesToLabel(scopes);
 
+    this.logger.trace({ interaction, claims });
+
     return claims;
   }
 
@@ -122,6 +134,8 @@ export class CoreFcpService {
     const scopes = this.getScopesForInteraction(interaction);
 
     const claims = await this.scopes.getClaimsFromScopes(scopes);
+
+    this.logger.trace({ interaction, claims });
 
     return claims;
   }
@@ -134,6 +148,9 @@ export class CoreFcpService {
       params: { scope },
     } = interaction;
     const scopes = scope.split(' ');
+
+    this.logger.trace({ interaction, scopes });
+
     return scopes;
   }
 
@@ -145,13 +162,21 @@ export class CoreFcpService {
     const isAllowed = allowedAcrValues.includes(currentAcrValue);
 
     if (isAllowed) {
+      this.logger.trace({ isAllowed, currentAcrValue, allowedAcrValues });
       return false;
     }
 
     const error = 'invalid_acr';
     const allowedAcrValuesString = allowedAcrValues.join(',');
     const errorDescription = `acr_value is not valid, should be equal one of these values, expected ${allowedAcrValuesString}, got ${currentAcrValue}`;
+
     await this.oidcProvider.abortInteraction(req, res, error, errorDescription);
+
+    this.logger.trace(
+      { isAllowed, currentAcrValue, allowedAcrValues },
+      LoggerLevelNames.WARN,
+    );
+
     return true;
   }
 }

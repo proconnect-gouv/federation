@@ -7,13 +7,14 @@
 import { JWK } from 'jose-openid-client';
 import { TokenSet, Client } from 'openid-client';
 import { Inject, Injectable } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import {
   IOidcIdentity,
   IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
 } from '@fc/oidc';
+import { IGetAuthorizeUrlParams } from '../interfaces';
 import {
   OidcClientMissingCodeException,
   OidcClientMissingStateException,
@@ -25,7 +26,6 @@ import {
 } from '../exceptions';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';
 import { OidcClientConfigService } from './oidc-client-config.service';
-import { IGetAuthorizeUrlParams } from '../interfaces/get-authorize-url-params.interface';
 
 @Injectable()
 export class OidcClientUtilsService {
@@ -51,11 +51,14 @@ export class OidcClientUtilsService {
      * choisir entre uid et getreandomstring
      */
     const nonce = this.crypto.genRandomString(stateLength);
-
-    return {
+    const params = {
       state,
       nonce,
     };
+
+    this.logger.trace({ params });
+
+    return params;
   }
 
   async getAuthorizeUrl({
@@ -80,6 +83,8 @@ export class OidcClientUtilsService {
       acr_values,
       prompt: 'login',
     };
+
+    this.logger.trace({ params });
 
     return client.authorizationUrl(params);
   }
@@ -137,9 +142,10 @@ export class OidcClientUtilsService {
       stateFromSession,
     );
 
+    let tokenSet: TokenSet;
     try {
       // Invoke `openid-client` handler
-      const tokenSet = await client.callback(
+      tokenSet = await client.callback(
         client.metadata.redirect_uris.join(','),
         receivedParams,
         {
@@ -150,16 +156,21 @@ export class OidcClientUtilsService {
           response_type: client.metadata.response_types.join(','),
         },
       );
-
-      return tokenSet;
     } catch (error) {
+      this.logger.trace({ error }, LoggerLevelNames.WARN);
       throw new OidcClientTokenFailedException(error);
     }
+
+    this.logger.trace({ tokenSet });
+
+    return tokenSet;
   }
 
   async revokeToken(accessToken: string, providerUid: string): Promise<void> {
     this.logger.debug('revokeToken');
     const client = await this.issuer.getClient(providerUid);
+
+    this.logger.trace({ accessToken, providerUid });
 
     await client.revoke(accessToken);
   }
@@ -172,18 +183,20 @@ export class OidcClientUtilsService {
     const client = await this.issuer.getClient(providerUid);
 
     const userInfo = await client.userinfo(accessToken);
-    this.logger.trace({ userInfo });
+
+    this.logger.trace({ accessToken, providerUid, userInfo });
 
     return userInfo;
   }
 
   /**
-   * Build the endSessionUrl with given parameters
-   * @param providerUid The current idp id
-   * @param stateFromSession The current state
-   * @param idTokenHint The last idToken retrieved
-   * @param postLogoutRedirectUri The url to redirect after logout
-   * @returns The endSessionUrl with all parameters (state, postLogoutRedirectUri, ...)
+   * Build the endSessionUrl with given parameters.
+   *
+   * @param {string} providerUid The current idp id
+   * @param {string} stateFromSession The current state
+   * @param {TokenSet | string} idTokenHint The last idToken retrieved
+   * @param {string} postLogoutRedirectUri The url to redirect after logout
+   * @returns {Promise<string>} The endSessionUrl with all parameters (state, postLogoutRedirectUri, ...)
    */
   async getEndSessionUrl(
     providerUid: string,
@@ -207,32 +220,39 @@ export class OidcClientUtilsService {
         state: stateFromSession,
       });
     } catch (error) {
+      this.logger.trace({ error }, LoggerLevelNames.WARN);
       throw new OidcClientGetEndSessionUrlException(error);
     }
 
-    this.logger.trace({ endSessionUrl });
+    this.logger.trace({ providerUid, endSessionUrl });
 
     return endSessionUrl;
   }
 
   /**
    * Method to check if
-   * an identity provider is blacklisted or whitelisted
-   * @param spId service provider ID
-   * @param idpId identity provider ID
-   * @returns {boolean}
+   * an identity provider is blacklisted or whitelisted.
+   *
+   * @param {string} spId service provider ID
+   * @param {string} idpId identity provider ID
+   * @returns {Promise<boolean>}
    */
   async checkIdpBlacklisted(spId: string, idpId: string): Promise<boolean> {
     let isIdpExcluded = false;
     try {
       isIdpExcluded = await this.serviceProvider.shouldExcludeIdp(spId, idpId);
     } catch (error) {
+      this.logger.trace({ error }, LoggerLevelNames.WARN);
       throw new OidcClientFailedToFetchBlacklist(error);
     }
 
     if (isIdpExcluded) {
+      this.logger.trace({ isIdpExcluded }, LoggerLevelNames.WARN);
       throw new OidcClientIdpBlacklistedException(spId, idpId);
     }
+
+    this.logger.trace({ check: { spId, idpId, isIdpExcluded } });
+
     return false;
   }
 }

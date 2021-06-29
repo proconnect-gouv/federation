@@ -18,4 +18,9 @@ export class RedirectToIdp {
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly acr_values: string;
+
+  @IsString()
+  @IsAscii()
+  @IsOptional()
+  readonly csrfToken: string;
 }
