@@ -4,8 +4,8 @@
   "description": "FCP - System Testing using Cypress/Cucumber",
   "main": "index.js",
   "dependencies": {
+    "@cucumber/cucumber": "^7.3.0",
     "@types/cypress-cucumber-preprocessor": "^4.0.0",
-    "cucumber-html-reporter": "^5.4.0",
     "cypress": "^7.5.0",
     "cypress-cucumber-preprocessor": "^4.1.2",
     "cypress-template-fixtures": "^1.0.3",
