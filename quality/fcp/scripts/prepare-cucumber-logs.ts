@@ -42,10 +42,7 @@ const getFailedStepFromScenario = (
   const myScenario = cuke.elements.find(
     (e) => e.name.replace(/"/g, '') === scenarioName,
   );
-  if (!myScenario) {
-    return undefined;
-  }
-  const myStep = myScenario.steps.find(
+  const myStep = myScenario?.steps.find(
     (step) => step.result.status !== 'passed',
   );
   return myStep;
