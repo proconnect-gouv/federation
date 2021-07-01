@@ -1,3 +1,6 @@
+import { PassThrough } from 'stream';
+import { CsvParserStream, parseFile, Row } from '@fast-csv/parse';
+import { mocked } from 'ts-jest/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
@@ -9,6 +12,8 @@ import {
 import { OidcProviderService } from '@fc/oidc-provider';
 import { MockIdentityProviderService } from './mock-identity-provider.service';
 import { ConfigService } from '@fc/config';
+
+jest.mock('@fast-csv/parse');
 
 describe('MockIdentityProviderService', () => {
   let service: MockIdentityProviderService;
@@ -43,6 +48,13 @@ describe('MockIdentityProviderService', () => {
 
   const configServiceMock = {
     get: jest.fn(),
+  };
+
+  const citizenDatabasePathMock = '/eur';
+  const fastCsvOptsMock = {
+    trim: true,
+    ignoreEmpty: true,
+    headers: true,
   };
 
   beforeEach(async () => {
@@ -87,91 +99,73 @@ describe('MockIdentityProviderService', () => {
   });
 
   describe('loadDatabase()', () => {
-    const citizenDatabasePathMock = '/eur';
+    const csvMock = [
+      { property1: '1', property2: '2', property3: '3', property4: '4' },
+      { property1: '5', property2: '6', property3: '7', property4: '8' },
+    ];
 
     beforeEach(() => {
       configServiceMock.get.mockReturnValueOnce({
-        configServiceMock: citizenDatabasePathMock,
+        citizenDatabasePath: citizenDatabasePathMock,
       });
+      service['parseCsv'] = jest.fn().mockResolvedValueOnce(csvMock);
     });
 
-    it('Should call csvdb library', async () => {
-      // Given
-      service['csvdbProxy'] = jest.fn().mockResolvedValue({
-        rows: [{ foo: 'foo' }],
-      });
+    it('should get citizenDatabasePath from App config', async () => {
       // When
       await service['loadDatabase']();
+
       // Then
-      expect(service['csvdbProxy']).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('App');
     });
 
-    it('should log debug when everything works fine', async () => {
-      // Given
-      service['csvdbProxy'] = jest.fn().mockResolvedValue({
-        rows: [{ foo: 'foo' }],
-      });
+    it('should call parseCsv() with citizenDatabasePath, trim, ignoreEmpty and headers', async () => {
       // When
       await service['loadDatabase']();
+
       // Then
-      expect(loggerMock.debug).toHaveBeenCalledTimes(2);
-      expect(loggerMock.debug).toHaveBeenCalledWith('Loading database...');
-      expect(loggerMock.debug).toHaveBeenCalledWith(
-        'Database loaded (1 entries found)',
+      expect(service['parseCsv']).toHaveBeenCalledTimes(1);
+      expect(service['parseCsv']).toHaveBeenCalledWith(
+        citizenDatabasePathMock,
+        fastCsvOptsMock,
       );
+    });
+
+    it('should filter out the empty keys in CSV entry', async () => {
+      // Given
+      const csvWithEmptyMock = [
+        { property1: '1', property2: '2', property3: '', property4: '4' },
+        { property1: '', property2: '6', property3: '7', property4: '8' },
+      ];
+      const expected = [
+        { property1: '1', property2: '2', property4: '4' },
+        { property2: '6', property3: '7', property4: '8' },
+      ];
+      service['parseCsv'] = jest.fn().mockResolvedValueOnce(csvWithEmptyMock);
+
+      // When
+      await service['loadDatabase']();
+
+      // Then
+      expect(service['database']).toStrictEqual(expected);
+    });
+
+    it('should store the result of filtered parseCsv() call into service.database', async () => {
+      // When
+      await service['loadDatabase']();
+
+      // Then
+      expect(service['database']).toStrictEqual(csvMock);
     });
 
     it('should log error when something turns bad', async () => {
       // Given
       const errorMock = new Error();
-      // when
-      service['csvdbProxy'] = jest.fn().mockRejectedValue(errorMock);
-      // Then
-      expect(() => service['loadDatabase']()).rejects.toThrow(errorMock);
-    });
+      service['parseCsv'] = jest.fn().mockRejectedValueOnce(errorMock);
 
-    it('should call removeEmptyColumns', async () => {
-      // Given
-      const dataMock = {
-        rows: [{ foo: 'foo1' }, { foo: 'bar1' }],
-      };
-      const NUMBER_OF_CALLS = dataMock.rows.length;
-      service['csvdbProxy'] = jest.fn().mockResolvedValue(dataMock);
-      service['removeEmptyColums'] = jest.fn();
-
-      // When
-      await service['loadDatabase']();
-      // Then
-      expect(service['removeEmptyColums']).toHaveBeenCalledTimes(
-        NUMBER_OF_CALLS,
-      );
-      expect(service['removeEmptyColums']).toHaveBeenNthCalledWith(
-        1,
-        dataMock.rows[0],
-        0,
-        dataMock.rows,
-      );
-      expect(service['removeEmptyColums']).toHaveBeenNthCalledWith(
-        2,
-        dataMock.rows[1],
-        1,
-        dataMock.rows,
-      );
-    });
-
-    it('should set data to result of removeEmptyColumns', async () => {
-      // Given
-      const dataMock = {
-        rows: [{ foo: 'foo' }],
-      };
-      const cleanedMock = [{}];
-      service['csvdbProxy'] = jest.fn().mockResolvedValue(dataMock);
-      service['removeEmptyColums'] = jest.fn().mockReturnValue(cleanedMock);
-
-      // When
-      await service['loadDatabase']();
-      // Then
-      expect(service['database']).toEqual([cleanedMock]);
+      // When / Then
+      await expect(service['loadDatabase']()).rejects.toThrow(errorMock);
     });
   });
 
@@ -263,40 +257,6 @@ describe('MockIdentityProviderService', () => {
       await expect(
         service['authorizationMiddleware'](ctxMock),
       ).rejects.toThrow();
-    });
-  });
-
-  describe('removeEmptyColums()', () => {
-    it('should remove falsy properties', () => {
-      // Given
-      const data = {
-        foo: 'foovalue',
-        bar: 'barvalue',
-        wizz: false,
-        buzz: undefined,
-      };
-      // When
-      const result = service['removeEmptyColums'](data);
-      // Then
-      expect(result).toEqual({
-        foo: 'foovalue',
-        bar: 'barvalue',
-      });
-    });
-
-    it('should remove empty string properties', () => {
-      // Given
-      const data = {
-        foo: 'foovalue',
-        bar: '',
-        wizz: '',
-      };
-      // When
-      const result = service['removeEmptyColums'](data);
-      // Then
-      expect(result).toEqual({
-        foo: 'foovalue',
-      });
     });
   });
 
@@ -541,6 +501,69 @@ describe('MockIdentityProviderService', () => {
 
       // expect
       expect(result).toBe(true);
+    });
+  });
+
+  describe('parseCsv()', () => {
+    const parseFileMock = mocked(parseFile);
+    let streamMock;
+
+    beforeEach(() => {
+      streamMock = new PassThrough();
+      parseFileMock.mockReturnValueOnce(
+        streamMock as CsvParserStream<Row<any>, Row<any>>,
+      );
+    });
+
+    it('should call parseFile() with citizenDatabasePathMock and fastCsvOptsMock', async () => {
+      // Given
+      streamMock.end();
+
+      // When
+      await service['parseCsv'](citizenDatabasePathMock, fastCsvOptsMock);
+
+      // Then
+      expect(parseFileMock).toHaveBeenCalledTimes(1);
+      expect(parseFileMock).toHaveBeenCalledWith(
+        citizenDatabasePathMock,
+        fastCsvOptsMock,
+      );
+    });
+
+    it('should resolve with rows passed through "data" event emission', async () => {
+      // Given
+      const rowsMock = [
+        ['1', '2', '3', '4'],
+        ['5', '6', '7', '8'],
+      ];
+      const csvPromise = service['parseCsv'](
+        citizenDatabasePathMock,
+        fastCsvOptsMock,
+      );
+      streamMock.emit('data', rowsMock[0]);
+      streamMock.emit('data', rowsMock[1]);
+      streamMock.end();
+
+      // When
+      const result = await csvPromise;
+
+      // Then
+      expect(result).toStrictEqual(rowsMock);
+      streamMock.destroy();
+    });
+
+    it('should reject with error passed through "error" event emission', async () => {
+      // Given
+      const errorMock = new Error('HAHA !');
+      const csvPromise = service['parseCsv'](
+        citizenDatabasePathMock,
+        fastCsvOptsMock,
+      );
+      streamMock.emit('error', errorMock);
+
+      // When / Then
+      await expect(() => csvPromise).rejects.toThrow(errorMock);
+      streamMock.destroy();
     });
   });
 });

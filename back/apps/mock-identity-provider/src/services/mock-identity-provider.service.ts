@@ -1,4 +1,4 @@
-import csvdb from 'node-csv-query';
+import { parseFile, ParserOptionsArgs } from '@fast-csv/parse';
 import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
@@ -17,11 +17,10 @@ import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-e
 import { AppConfig } from '../dto';
 import { Csv } from '../interfaces';
 import { OidcClaims } from '../interfaces/oidc-claims.interface';
+
 @Injectable()
 export class MockIdentityProviderService {
-  private csvdbProxy = csvdb;
-
-  private database;
+  private database: Csv[];
 
   // Authorized in constructors
   // eslint-disable-next-line max-params
@@ -90,11 +89,21 @@ export class MockIdentityProviderService {
 
     try {
       this.logger.debug('Loading database...');
-      const data = await this.csvdbProxy(citizenDatabasePath, {
-        rtrim: true,
+
+      const database = await this.parseCsv(citizenDatabasePath, {
+        trim: true,
+        ignoreEmpty: true,
+        headers: true,
       });
 
-      this.database = data.rows.map(this.removeEmptyColums);
+      // remove empty properties
+      database.forEach((entry) => {
+        Object.keys(entry).forEach(
+          (key) => entry[key] === '' && delete entry[key],
+        );
+      });
+
+      this.database = database;
     } catch (error) {
       this.logger.fatal(
         `Failed to load CSV database, path was: ${citizenDatabasePath}`,
@@ -105,17 +114,6 @@ export class MockIdentityProviderService {
     this.logger.debug(
       `Database loaded (${this.database.length} entries found)`,
     );
-  }
-
-  private removeEmptyColums(data) {
-    const cleanedData = {};
-    Object.entries(data).forEach(([key, value]) => {
-      if (value && value !== '') {
-        cleanedData[key] = value;
-      }
-    });
-
-    return cleanedData;
   }
 
   getIdentity(inputLogin: string) {
@@ -178,5 +176,19 @@ export class MockIdentityProviderService {
         identity.locality ||
         identity.street_address,
     );
+  }
+
+  private async parseCsv(
+    file: string,
+    opts: ParserOptionsArgs,
+  ): Promise<Csv[]> {
+    const rows: Csv[] = [];
+
+    return new Promise((resolve, reject) => {
+      parseFile(file, opts)
+        .on('error', reject)
+        .on('data', (data) => rows.push(data))
+        .on('end', () => resolve(rows));
+    });
   }
 }
