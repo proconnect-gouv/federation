@@ -1,9 +1,10 @@
 stages:
-  - 'Unit tests'
+  - 'UT/Lint/Coverage'
   - 'End to end'
   - 'Checkmarx'
   - 'Cache'
   - 'Review'
+  - 'Post-deploy'
 
 global:
   image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
@@ -16,7 +17,7 @@ global:
     policy: pull
     paths:
       - back/node_modules/
-  stage: 'Unit tests'
+  stage: 'UT/Lint/Coverage'
   script:
     - cd back/
     - yarn install
@@ -25,6 +26,26 @@ global:
     - yarn test --coverage
     - ./scripts/coverage.sh
   coverage: '/Global coverage is: \[([\d\.]+)%\]/'
+  interruptible: true
+
+quality:
+  image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+  tags:
+    - nodejs
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
+  cache:
+    key: '${CI_PROJECT_ID}'
+    policy: pull
+    paths:
+      - quality/fcp/node_modules/
+  stage: 'UT/Lint/Coverage'
+  script:
+    - cd quality/fcp
+    - yarn install
+    - yarn lint
+    - yarn prettier
+    - yarn tsc --noEmit
   interruptible: true
 
 build-cache:
@@ -54,4 +75,5 @@ include:
   - '/back/instances/core-fcp-high/.gitlab-deploy.yml'
   - '/back/instances/core-fcp-low/.gitlab-deploy.yml'
   - '/back/instances/core-fca-high/.gitlab-deploy.yml'
+  - '/back/instances/core-fcp-high/.gitlab-post-deploy.yml'
   - '/back/.gitlab-checkmarx.yml'
