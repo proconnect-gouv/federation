@@ -51,10 +51,14 @@ yarn start:high
 CYPRESS_TEST_ENV=integ01 yarn start:low
 ```
 
-### Generate/Open the Cucumber HTML report
+### Generate the Cucumber HTML report
 
 ```
-yarn report
+# Add Screenshots/Videos to the Cucumber logs
+yarn report:prepare
+
+# Generate the report
+CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=integ01 yarn report:generate
 ```
 
 ## Plugins VSCode
@@ -75,7 +79,7 @@ It automatically lists the implemented steps while editing the scenarios.
   "cucumberautocomplete.customParameters": [
   ],
   "cucumberautocomplete.steps": [
-    "cypress/support/**/steps/*.ts"
+    "quality/fcp/cypress/support/**/steps/*.ts"
   ],
   "cucumberautocomplete.strictGherkinCompletion": false,
   "cSpell.userWords": [

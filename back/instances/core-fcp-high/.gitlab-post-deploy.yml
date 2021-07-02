@@ -1,0 +1,22 @@
+quality-core-fcp-high-release:
+  stage: 'Post-deploy'
+  image: ${E2E_DOCKER_IMAGE}
+  tags:
+    - docker
+  only:
+    - tags
+  script:
+    - cd quality/fcp
+    - yarn install
+    - CYPRESS_TEST_ENV=integ01 yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn report:prepare
+    - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=integ01 yarn report:generate
+    - exit $RETURN_CODE
+  artifacts:
+    expire_in: 1 hrs
+    paths:
+      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
+  environment:
+    name: integ01
+    url: https://auth.integ01.dev-franceconnect.fr
+  when: manual
