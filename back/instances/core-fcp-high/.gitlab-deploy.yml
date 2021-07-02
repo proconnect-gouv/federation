@@ -42,3 +42,29 @@ stop-core-fcp-high:
     - merge_requests
     - staging
   when: manual
+
+quality-core-fcp-high-recette:
+  stage: 'Review'
+  image: ${E2E_DOCKER_IMAGE}
+  tags:
+    - docker
+  only:
+    - merge_requests
+    - staging
+  script:
+    - unset EXPLOIT_USER_NAME && unset EXPLOIT_USER_PASS && unset EXPLOIT_USER_TOTP
+    - cd quality/fcp
+    - yarn install
+    - CYPRESS_TEST_ENV=recette yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn report:prepare
+    - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=recette yarn report:generate
+    - exit $RETURN_CODE
+  resource_group: recette
+  artifacts:
+    expire_in: 1 hrs
+    paths:
+      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
+  environment:
+    name: recette
+    url: https://recette.dev-franceconnect.fr
+  when: manual
