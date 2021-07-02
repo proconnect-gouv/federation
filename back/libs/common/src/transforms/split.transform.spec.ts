@@ -30,12 +30,26 @@ describe('Split transform', () => {
       expect(result).toStrictEqual(output);
     });
 
-    it('should return undefined if the input value is undefined', () => {
+    it('should return [] if the input value is undefined', () => {
       // setup
-      const joiner = undefined;
+      const separator = undefined;
       const value = undefined;
       const output = [];
-      const doSplitFn = doSplit(joiner);
+      const doSplitFn = doSplit(separator);
+
+      // action
+      const result = doSplitFn({ value });
+
+      // assert
+      expect(result).toStrictEqual(output);
+    });
+
+    it('should return [] if the value is not a string', () => {
+      //setup
+      const separator = ' ';
+      const value = 42;
+      const output = [];
+      const doSplitFn = doSplit(separator);
 
       // action
       const result = doSplitFn({ value });
