@@ -9,9 +9,7 @@ import { defaultMetadataStorage } from 'class-transformer/cjs/storage';
 
 export function doSplit(separator: string | RegExp = ' ') {
   return ({ value }: Partial<TransformFnParams>) => {
-    return value !== undefined && value !== null
-      ? String(value).split(separator)
-      : [];
+    return typeof value === 'string' ? String(value).split(separator) : [];
   };
 }
 
