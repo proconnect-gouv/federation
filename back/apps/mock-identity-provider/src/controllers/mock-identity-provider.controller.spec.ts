@@ -34,7 +34,7 @@ describe('MockIdentityProviderFcaController', () => {
     trace: jest.fn(),
   } as unknown as LoggerService;
 
-  const sessionServiceMock = {
+  const oidcClientSessionServiceMock = {
     set: jest.fn(),
     get: jest.fn(),
     getId: jest.fn(),
@@ -64,10 +64,7 @@ describe('MockIdentityProviderFcaController', () => {
     params: 'paramsMockValue',
   };
 
-  const sessionMockValue = {
-    spName: Symbol('spNameMockValue'),
-    spAcr: acrMock,
-  };
+  const spNameMock = Symbol('spNameMockValue');
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -85,7 +82,7 @@ describe('MockIdentityProviderFcaController', () => {
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(SessionGenericService)
-      .useValue(sessionServiceMock)
+      .useValue(oidcClientSessionServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
       .overrideProvider(MockIdentityProviderService)
@@ -107,9 +104,9 @@ describe('MockIdentityProviderFcaController', () => {
     });
 
     oidcProviderServiceMock.getInteraction.mockResolvedValue(interactionMock);
-    sessionServiceMock.get.mockResolvedValue(sessionMockValue);
+    oidcClientSessionServiceMock.get.mockResolvedValue(spNameMock);
 
-    sessionServiceMock.getId.mockReturnValue(sessionIdMock);
+    oidcClientSessionServiceMock.getId.mockReturnValue(sessionIdMock);
   });
 
   it('should be defined', () => {
@@ -119,7 +116,7 @@ describe('MockIdentityProviderFcaController', () => {
   describe('index', () => {
     it('Should return some status object', async () => {
       // setup
-      sessionServiceMock.set.mockResolvedValueOnce(undefined);
+      oidcClientSessionServiceMock.set.mockResolvedValueOnce(undefined);
       // action
       const result = await controller.index();
       // assert
@@ -128,20 +125,53 @@ describe('MockIdentityProviderFcaController', () => {
   });
 
   describe('getInteraction', () => {
+    const appSessionServiceMock = {
+      get: jest.fn(),
+      set: jest.fn(),
+    };
+    const finalSpIdMock = 'abcdefghijklmnopqrstuvwxyz0123456789';
+
+    beforeEach(() => {
+      appSessionServiceMock.get.mockResolvedValueOnce(finalSpIdMock);
+    });
+
     it('should call oidcProvider.getInteraction', async () => {
       // When
-      await controller.getInteraction(req, res, sessionServiceMock);
+      await controller.getInteraction(
+        req,
+        res,
+        oidcClientSessionServiceMock,
+        appSessionServiceMock,
+      );
       // Then
       expect(oidcProviderServiceMock.getInteraction).toBeCalledTimes(1);
       expect(oidcProviderServiceMock.getInteraction).toBeCalledWith(req, res);
     });
 
-    it('should call session.get with interactionId', async () => {
+    it('should call oidcClientSessionServiceMock.get with spName', async () => {
       // When
-      await controller.getInteraction(req, res, sessionServiceMock);
+      await controller.getInteraction(
+        req,
+        res,
+        oidcClientSessionServiceMock,
+        appSessionServiceMock,
+      );
       // Then
-      expect(sessionServiceMock.get).toBeCalledTimes(1);
-      expect(sessionServiceMock.get).toBeCalledWith();
+      expect(oidcClientSessionServiceMock.get).toBeCalledTimes(1);
+      expect(oidcClientSessionServiceMock.get).toBeCalledWith('spName');
+    });
+
+    it('should call appSessionServiceMock.get with finalspId', async () => {
+      // When
+      await controller.getInteraction(
+        req,
+        res,
+        oidcClientSessionServiceMock,
+        appSessionServiceMock,
+      );
+      // Then
+      expect(appSessionServiceMock.get).toBeCalledTimes(1);
+      expect(appSessionServiceMock.get).toBeCalledWith('finalSpId');
     });
 
     it('should return an object with data from session and oidcProvider interaction', async () => {
@@ -149,13 +179,15 @@ describe('MockIdentityProviderFcaController', () => {
       const result = await controller.getInteraction(
         req,
         res,
-        sessionServiceMock,
+        oidcClientSessionServiceMock,
+        appSessionServiceMock,
       );
       // Then
       expect(result).toEqual({
         uid: interactionMock.uid,
         params: interactionMock.params,
-        spName: sessionMockValue.spName,
+        spName: spNameMock,
+        finalSpId: finalSpIdMock,
       });
     });
   });
@@ -174,7 +206,7 @@ describe('MockIdentityProviderFcaController', () => {
         identityMock,
       );
       // When
-      await controller.getLogin(next, req, body, sessionServiceMock);
+      await controller.getLogin(next, req, body, oidcClientSessionServiceMock);
       // Then
 
       expect(
@@ -197,7 +229,7 @@ describe('MockIdentityProviderFcaController', () => {
         login: loginMockValue,
       };
       // When
-      await controller.getLogin(next, req, body, sessionServiceMock);
+      await controller.getLogin(next, req, body, oidcClientSessionServiceMock);
       // Then
       expect(next).toHaveBeenCalledTimes(1);
     });
@@ -215,7 +247,7 @@ describe('MockIdentityProviderFcaController', () => {
 
     // When / Then
     await expect(() =>
-      controller.getLogin(next, req, body, sessionServiceMock),
+      controller.getLogin(next, req, body, oidcClientSessionServiceMock),
     ).rejects.toThrow(expectedError);
     expect(next).toHaveBeenCalledTimes(0);
   });

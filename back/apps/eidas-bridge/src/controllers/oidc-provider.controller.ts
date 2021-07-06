@@ -34,12 +34,12 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  getAuthorize(@Next() next, @Query() _query: AuthorizeParamsDto) {
+  getAuthorize(@Next() next, @Query() query: AuthorizeParamsDto) {
     this.logger.trace({
       route: OidcProviderRoutes.AUTHORIZATION,
       method: 'GET',
       name: 'OidcProviderRoutes.AUTHORIZATION',
-      query: _query,
+      query,
     });
     // Pass the query to oidc-provider
     return next();
@@ -61,12 +61,12 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDto) {
+  postAuthorize(@Next() next, @Body() body: AuthorizeParamsDto) {
     this.logger.trace({
       route: OidcProviderRoutes.AUTHORIZATION,
       method: 'POST',
       name: 'OidcProviderRoutes.AUTHORIZATION',
-      body: _body,
+      body,
     });
     // Pass the query to oidc-provider
     return next();

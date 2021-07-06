@@ -16,7 +16,6 @@ import {
   OidcClientConfigService,
   OidcClientIssuerService,
 } from './services';
-import { OidcClientController } from './oidc-client.controller';
 
 @Module({})
 export class OidcClientModule {
@@ -51,7 +50,6 @@ export class OidcClientModule {
         OidcClientIssuerService,
       ],
       exports: [OidcClientService, OidcClientConfigService],
-      controllers: [OidcClientController],
     };
   }
 }

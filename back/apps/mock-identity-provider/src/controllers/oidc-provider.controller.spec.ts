@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { AuthorizeParamsDto } from '../dto';
+import { ISessionGenericService } from '@fc/session-generic';
+import { AppSession, AuthorizeParamsDto } from '../dto';
 import { OidcProviderController } from './oidc-provider.controller';
 
 const loggerServiceMock = {
@@ -10,6 +11,10 @@ const loggerServiceMock = {
 
 describe('OidcProviderController', () => {
   let oidcProviderController: OidcProviderController;
+
+  const appSessionServiceMock = {
+    set: jest.fn(),
+  } as unknown as ISessionGenericService<AppSession>;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -28,12 +33,42 @@ describe('OidcProviderController', () => {
   });
 
   describe('getAuthorize()', () => {
-    it('should call next', () => {
+    it('should set the finalSpId into the session', async () => {
+      // Given
+      const nextMock = jest.fn();
+      const queryMock = {
+        // Parameter should be like an openid one because it is in the same url
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        sp_id: 'abcdefghijklmnopqrstuvwxyz0123456789',
+      } as AuthorizeParamsDto;
+
+      // When
+      await oidcProviderController.getAuthorize(
+        nextMock,
+        queryMock,
+        appSessionServiceMock,
+      );
+
+      // Then
+      expect(appSessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(appSessionServiceMock.set).toHaveBeenCalledWith(
+        'finalSpId',
+        queryMock.sp_id,
+      );
+    });
+
+    it('should call next', async () => {
       // Given
       const nextMock = jest.fn();
       const queryMock = {} as AuthorizeParamsDto;
+
       // When
-      oidcProviderController.getAuthorize(nextMock, queryMock);
+      await oidcProviderController.getAuthorize(
+        nextMock,
+        queryMock,
+        appSessionServiceMock,
+      );
+
       // Then
       expect(nextMock).toHaveReturnedTimes(1);
     });

@@ -19,9 +19,9 @@ import {
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
+import { AppSession, SignInDTO } from '../dto';
 import { MockIdentityProviderRoutes } from '../enums';
 import { MockIdentityProviderService } from '../services';
-import { SignInDTO } from '../dto';
 
 @Controller()
 export class MockIdentityProviderController {
@@ -66,15 +66,18 @@ export class MockIdentityProviderController {
      */
     @Session('OidcClient')
     sessionOidc: ISessionGenericService<OidcClientSession>,
+    @Session('App') appSession: ISessionGenericService<AppSession>,
   ) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
 
-    const { spName } = await sessionOidc.get();
+    const spName = await sessionOidc.get('spName');
+    const finalSpId = await appSession.get('finalSpId');
 
     const response = {
       uid,
       params,
       spName,
+      finalSpId,
     };
 
     this.logger.trace({

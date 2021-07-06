@@ -4,39 +4,30 @@ import {
   Res,
   Body,
   Post,
-  Inject,
   ValidationPipe,
   UsePipes,
 } from '@nestjs/common';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
+import {
+  OidcClientRoutes,
+  OidcClientService,
+  OidcClientSession,
+  RedirectToIdp,
+} from '@fc/oidc-client';
 import {
   ISessionGenericService,
   Session,
   SessionGenericCsrfService,
   SessionGenericInvalidCsrfSelectIdpException,
 } from '@fc/session-generic';
-import { OidcClientSession } from './dto';
-import { IDENTITY_PROVIDER_SERVICE } from './tokens';
-import { IIdentityProviderAdapter } from './interfaces';
-import { RedirectToIdp } from './dto';
-import { OidcClientRoutes } from './enums';
-import { OidcClientService } from './services';
-
-/**
- * @TODO #446 This service provider should not be generic, When it's called with FC
- * we have the spId in session but not when it's called with a service provder
- * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/446
- */
 
 @Controller()
 export class OidcClientController {
-  // Dependency injection can require more than 4 parameters
-  /* eslint-disable-next-line max-params */
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
-    @Inject(IDENTITY_PROVIDER_SERVICE)
-    private readonly identityProvider: IIdentityProviderAdapter,
+    private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly csrfService: SessionGenericCsrfService,
   ) {
     this.logger.setContext(this.constructor.name);
