@@ -7,12 +7,12 @@ import {
 } from '@fc/session-generic';
 import { TrackingService } from '@fc/tracking';
 import { ConfigService } from '@fc/config';
-import { IDENTITY_PROVIDER_SERVICE } from './tokens';
+import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
+import { OidcClientService } from '@fc/oidc-client';
 import { OidcClientController } from './oidc-client.controller';
-import { OidcClientService } from './services';
 
 describe('OidcClient Controller', () => {
-  let oidcClientController: OidcClientController;
+  let controller: OidcClientController;
   let res;
 
   const oidcClientServiceMock = {
@@ -78,34 +78,26 @@ describe('OidcClient Controller', () => {
         SessionGenericCsrfService,
         TrackingService,
         ConfigService,
-        {
-          provide: IDENTITY_PROVIDER_SERVICE,
-          useValue: identityProviderServiceMock,
-        },
+        IdentityProviderAdapterEnvService,
       ],
     })
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
-
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-
       .overrideProvider(SessionGenericService)
       .useValue(sessionGenericServiceMock)
-
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
-
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-
       .overrideProvider(SessionGenericCsrfService)
       .useValue(sessionGenericCsrfServiceMock)
-
+      .overrideProvider(IdentityProviderAdapterEnvService)
+      .useValue(identityProviderServiceMock)
       .compile();
 
-    oidcClientController =
-      module.get<OidcClientController>(OidcClientController);
+    controller = module.get<OidcClientController>(OidcClientController);
 
     res = {
       redirect: jest.fn(),
@@ -130,7 +122,7 @@ describe('OidcClient Controller', () => {
   });
 
   it('should be defined', () => {
-    expect(oidcClientController).toBeDefined();
+    expect(controller).toBeDefined();
   });
 
   describe('redirectToIdp()', () => {
@@ -147,26 +139,60 @@ describe('OidcClient Controller', () => {
         csrfToken: 'csrfMockValue',
       };
 
-      const mockedoidcClientService =
-        'https://my-authentication-openid-url.com';
+      const authorizeUrlMock = 'https://my-authentication-openid-url.com';
 
       oidcClientServiceMock.utils.getAuthorizeUrl.mockReturnValueOnce(
-        mockedoidcClientService,
+        authorizeUrlMock,
       );
 
+      const expectedGetAuthorizeCallParameter = {
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: 'eidas3',
+        claims: 'json_stringified',
+        nonce: 'nonceMock',
+        providerUid: 'providerIdMockValue',
+        scope: 'openid',
+        state: 'stateMock',
+      };
+
       // action
-      await oidcClientController.redirectToIdp(
-        res,
-        body,
-        sessionGenericServiceMock,
-      );
+      await controller.redirectToIdp(res, body, sessionGenericServiceMock);
 
       // assert
       expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledTimes(
         1,
       );
+      expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledWith(
+        expectedGetAuthorizeCallParameter,
+      );
+    });
+
+    it('should call res.redirect() with the authorizeUrl', async () => {
+      // setup
+      const body = {
+        scope: 'openid',
+        providerUid: providerIdMock,
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: 'eidas3',
+        claims: 'json_stringified',
+        nonce: nonceMock,
+        csrfToken: 'csrfMockValue',
+      };
+
+      const authorizeUrlMock = 'https://my-authentication-openid-url.com';
+
+      oidcClientServiceMock.utils.getAuthorizeUrl.mockReturnValueOnce(
+        authorizeUrlMock,
+      );
+
+      // action
+      await controller.redirectToIdp(res, body, sessionGenericServiceMock);
+
+      // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith(mockedoidcClientService);
+      expect(res.redirect).toHaveBeenCalledWith(authorizeUrlMock);
     });
 
     it('should store state and nonce in session', async () => {
@@ -182,19 +208,14 @@ describe('OidcClient Controller', () => {
         csrfToken: 'csrfMockValue',
       };
 
-      const mockedoidcClientService =
-        'https://my-authentication-openid-url.com';
+      const authorizeUrlMock = 'https://my-authentication-openid-url.com';
 
       oidcClientServiceMock.utils.getAuthorizeUrl.mockReturnValueOnce(
-        mockedoidcClientService,
+        authorizeUrlMock,
       );
 
       // action
-      await oidcClientController.redirectToIdp(
-        res,
-        body,
-        sessionGenericServiceMock,
-      );
+      await controller.redirectToIdp(res, body, sessionGenericServiceMock);
 
       // assert
       expect(sessionGenericServiceMock.set).toHaveBeenCalledTimes(1);
@@ -223,11 +244,7 @@ describe('OidcClient Controller', () => {
       });
 
       // action
-      await oidcClientController.redirectToIdp(
-        res,
-        body,
-        sessionGenericServiceMock,
-      );
+      await controller.redirectToIdp(res, body, sessionGenericServiceMock);
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
@@ -256,11 +273,7 @@ describe('OidcClient Controller', () => {
         });
       // When/Then
       await expect(
-        oidcClientController.redirectToIdp(
-          res,
-          body,
-          sessionGenericServiceMock,
-        ),
+        controller.redirectToIdp(res, body, sessionGenericServiceMock),
       ).rejects.toThrow(SessionGenericInvalidCsrfSelectIdpException);
     });
 
@@ -279,11 +292,7 @@ describe('OidcClient Controller', () => {
       sessionGenericServiceMock.get.mockReturnValueOnce('spId');
 
       // action
-      await oidcClientController.redirectToIdp(
-        res,
-        body,
-        sessionGenericServiceMock,
-      );
+      await controller.redirectToIdp(res, body, sessionGenericServiceMock);
 
       // assert
       expect(sessionGenericServiceMock.get).toHaveBeenLastCalledWith();
@@ -317,11 +326,7 @@ describe('OidcClient Controller', () => {
 
         // action / assert
         await expect(() =>
-          oidcClientController.redirectToIdp(
-            res,
-            body,
-            sessionGenericServiceMock,
-          ),
+          controller.redirectToIdp(res, body, sessionGenericServiceMock),
         ).rejects.toThrow(errorMock);
         expect(sessionGenericServiceMock.get).toHaveBeenLastCalledWith();
       });
@@ -344,11 +349,7 @@ describe('OidcClient Controller', () => {
         isBlacklistedMock.mockReturnValueOnce(false);
 
         // action
-        await oidcClientController.redirectToIdp(
-          res,
-          body,
-          sessionGenericServiceMock,
-        );
+        await controller.redirectToIdp(res, body, sessionGenericServiceMock);
 
         // assert
         expect(sessionGenericServiceMock.get).toHaveBeenLastCalledWith();
@@ -360,7 +361,7 @@ describe('OidcClient Controller', () => {
   describe('getWellKnownKeys()', () => {
     it('should call oidc-client-service for wellKnownKeys', async () => {
       // When
-      await oidcClientController.getWellKnownKeys();
+      await controller.getWellKnownKeys();
       // Then
       expect(oidcClientServiceMock.utils.wellKnownKeys).toHaveBeenCalledTimes(
         1,

@@ -27,12 +27,12 @@ import { ISessionGenericService, Session } from '@fc/session-generic';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
-import { MockServiceProviderRoutes } from './enums';
+import { MockServiceProviderRoutes } from '../enums';
 import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
-} from './exceptions';
-import { AccessTokenParamsDTO } from './dto';
+} from '../exceptions';
+import { AccessTokenParamsDTO } from '../dto';
 
 @Controller()
 export class MockServiceProviderController {
