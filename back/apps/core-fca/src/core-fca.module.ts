@@ -31,7 +31,11 @@ import {
   OidcProviderUserinfoEventHandler,
 } from '@fc/core';
 import { FeatureHandlerModule } from '@fc/feature-handler';
-import { CoreFcaController, OidcProviderController } from './controllers';
+import {
+  CoreFcaController,
+  OidcClientController,
+  OidcProviderController,
+} from './controllers';
 import { CoreFcaService } from './services';
 import { CoreFcaDefaultVerifyHandler } from './handlers';
 @Global()
@@ -62,7 +66,11 @@ import { CoreFcaDefaultVerifyHandler } from './handlers';
     TrackingModule.forRoot(CoreTrackingService),
     FeatureHandlerModule,
   ],
-  controllers: [CoreFcaController, OidcProviderController],
+  controllers: [
+    CoreFcaController,
+    OidcClientController,
+    OidcProviderController,
+  ],
   providers: [
     CoreService,
     CoreFcaService,

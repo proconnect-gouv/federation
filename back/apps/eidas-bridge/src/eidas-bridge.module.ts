@@ -2,6 +2,7 @@
 
 // Declarative code
 import { Module, Global } from '@nestjs/common';
+import { EidasCountryModule } from '@fc/eidas-country';
 import {
   IdentityProviderAdapterEnvService,
   IdentityProviderAdapterEnvModule,
@@ -25,10 +26,10 @@ import {
   FrIdentityToEuController,
   EuIdentityToFrController,
   OidcProviderController,
+  OidcClientController,
 } from './controllers';
 import { EidasBridgeSession } from './dto';
 import { OidcMiddlewareService } from './services';
-import { EidasCountryModule } from '@fc/eidas-country';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderAdapterEnvService,
@@ -63,6 +64,7 @@ const oidcProviderModule = OidcProviderModule.register(
     EuIdentityToFrController,
     EidasClientController,
     EidasProviderController,
+    OidcClientController,
     OidcProviderController,
   ],
   providers: [OidcMiddlewareService],

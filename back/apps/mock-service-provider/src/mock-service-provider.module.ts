@@ -14,7 +14,10 @@ import {
   ServiceProviderAdapterEnvModule,
   ServiceProviderAdapterEnvService,
 } from '@fc/service-provider-adapter-env';
-import { MockServiceProviderController } from './mock-service-provider.controller';
+import {
+  OidcClientController,
+  MockServiceProviderController,
+} from './controllers';
 import { MockServiceProviderSession } from './dto';
 
 const oidcClientModule = OidcClientModule.register(
@@ -34,6 +37,6 @@ const oidcClientModule = OidcClientModule.register(
     CryptographyModule,
     oidcClientModule,
   ],
-  controllers: [MockServiceProviderController],
+  controllers: [OidcClientController, MockServiceProviderController],
 })
 export class MockServiceProviderModule {}

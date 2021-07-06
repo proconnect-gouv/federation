@@ -10,7 +10,8 @@ import {
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
-import { AuthorizeParamsDto } from '../dto';
+import { ISessionGenericService, Session } from '@fc/session-generic';
+import { AppSession, AuthorizeParamsDto } from '../dto';
 
 @Controller()
 export class OidcProviderController {
@@ -34,13 +35,20 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  getAuthorize(@Next() next, @Query() _query: AuthorizeParamsDto) {
+  async getAuthorize(
+    @Next() next,
+    @Query() query: AuthorizeParamsDto,
+    @Session('App') appSession: ISessionGenericService<AppSession>,
+  ) {
     this.logger.trace({
       route: OidcProviderRoutes.AUTHORIZATION,
       method: 'GET',
       name: 'OidcProviderRoutes.AUTHORIZATION',
-      query: _query,
+      query,
     });
+
+    await appSession.set('finalSpId', query.sp_id);
+
     // Pass the query to oidc-provider
     return next();
   }
@@ -61,12 +69,12 @@ export class OidcProviderController {
       forbidNonWhitelisted: true,
     }),
   )
-  postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDto) {
+  postAuthorize(@Next() next, @Body() body: AuthorizeParamsDto) {
     this.logger.trace({
       route: OidcProviderRoutes.AUTHORIZATION,
       method: 'POST',
       name: 'OidcProviderRoutes.AUTHORIZATION',
-      body: _body,
+      body,
     });
     // Pass the query to oidc-provider
     return next();

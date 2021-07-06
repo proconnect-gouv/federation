@@ -8,12 +8,12 @@ import {
 } from '@fc/service-provider-adapter-env';
 import { OidcProviderModule } from '@fc/oidc-provider';
 import { ExceptionsModule } from '@fc/exceptions';
-import { OidcSession } from '@fc/oidc';
 import { SessionGenericModule } from '@fc/session-generic';
 import {
   MockIdentityProviderController,
   OidcProviderController,
 } from './controllers';
+import { MockIdentityProviderSession } from './dto';
 import { MockIdentityProviderService } from './services';
 
 const oidcProviderModule = OidcProviderModule.register(
@@ -26,7 +26,7 @@ const oidcProviderModule = OidcProviderModule.register(
     ExceptionsModule,
     ServiceProviderAdapterEnvModule,
     SessionGenericModule.forRoot({
-      schema: OidcSession,
+      schema: MockIdentityProviderSession,
     }),
     oidcProviderModule,
   ],
