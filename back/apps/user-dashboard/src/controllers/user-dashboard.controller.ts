@@ -22,13 +22,13 @@ import { ISessionGenericService, Session } from '@fc/session-generic';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
-import { UserDashboardRoutes } from './enums';
+import { OidcSession } from '@fc/oidc';
+import { UserDashboardRoutes } from '../enums';
 import {
   UserDashboardTokenRevocationException,
   UserDashboardUserinfoException,
-} from './exceptions';
-import { AccessTokenParamsDTO } from './dto';
-import { OidcSession } from '@fc/oidc';
+} from '../exceptions';
+import { AccessTokenParamsDTO } from '../dto';
 
 @Controller()
 export class UserDashboardController {
