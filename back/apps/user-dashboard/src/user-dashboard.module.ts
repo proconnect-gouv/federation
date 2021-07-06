@@ -13,7 +13,7 @@ import {
 } from '@fc/service-provider-adapter-env';
 import { OidcSession } from '@fc/oidc';
 import { SessionGenericModule } from '@fc/session-generic';
-import { UserDashboardController } from './user-dashboard.controller';
+import { UserDashboardController } from './controllers';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderAdapterEnvService,

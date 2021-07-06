@@ -38,7 +38,11 @@ import {
 } from '@fc/core';
 import { ScopesModule } from '@fc/scopes';
 import { FeatureHandlerModule } from '@fc/feature-handler';
-import { CoreFcpController, OidcProviderController } from './controllers';
+import {
+  CoreFcpController,
+  OidcClientController,
+  OidcProviderController,
+} from './controllers';
 import { CoreFcpService } from './services';
 import {
   CoreFcpEidasVerifyHandler,
@@ -83,7 +87,11 @@ import {
     NotificationsModule,
     FeatureHandlerModule,
   ],
-  controllers: [CoreFcpController, OidcProviderController],
+  controllers: [
+    CoreFcpController,
+    OidcClientController,
+    OidcProviderController,
+  ],
   providers: [
     CoreService,
     CoreTrackingService,
