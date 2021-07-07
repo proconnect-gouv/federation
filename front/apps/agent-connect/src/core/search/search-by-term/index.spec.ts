@@ -1,3 +1,4 @@
+// eslint-disable-next-line
 import jsonMock from './__mocks__/search-by-term.json';
 import searchByTerm from './index';
 
@@ -17,7 +18,7 @@ describe('searchByTerm', () => {
     expect(result).toStrictEqual([]);
   });
 
-  xdescribe('Search with a ministere keywords', () => {
+  describe.skip('Search with a ministere keywords', () => {
     it('return a list of matches by a term', () => {
       // given
       const term = 'DéFEnse';
@@ -113,7 +114,7 @@ describe('searchByTerm', () => {
     });
   });
 
-  xdescribe('Search with identity provider keywords', () => {
+  describe.skip('Search with identity provider keywords', () => {
     it('return a list of matches by a term', () => {
       // given
       const term = 'gendarmerie';

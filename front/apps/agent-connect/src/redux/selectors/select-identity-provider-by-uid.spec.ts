@@ -8,7 +8,7 @@ const identityProviders = [
 ];
 
 describe('selectIdentityProviderByUID', () => {
-  it('should return a identity provider with an uid ', () => {
+  it('should return a identity provider with an uid', () => {
     // setup
     const state = {
       identityProviders,

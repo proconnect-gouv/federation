@@ -2,14 +2,13 @@ import './card.scss';
 
 import { Collapse } from 'antd';
 import classnames from 'classnames';
-import React from 'react';
 
+import { CardInterface } from './card.interface';
 import CardContentAutorisation, {
   AUTHORISATION_LABEL_TYPE,
 } from './card-content-autorisation';
 import CardContentScopes from './card-content-scopes';
 import CardHeader from './card-header';
-import { CardInterface } from './card.interface';
 
 function TraceCard({
   data,

@@ -1,4 +1,3 @@
-import React from 'react';
 import { mocked } from 'ts-jest/utils';
 
 import { removeIdentityProvider } from '../../redux/actions';

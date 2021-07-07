@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+
+# ------------------------
+#
+# Description
+# ---
+# Cleanup de toutes les dependances des sous projets
+# Les sous projets sont definis dans ./package.json { workspaces: [...] }
+#
+# Usage
+# ---
+# $ yarn cleanup
+#
+# ------------------------
+
+# recupere les sous projets definis dans le main ./package.json
+APPS=$(
+  PKG=$(cat package.json)
+  node -pe 'JSON.parse(process.argv[1]).workspaces.packages.join(" ")' "$PKG"
+)
+
+echo "Start cleanup project dependencies"
+
+# ---- SUB PROJECTS ----
+# iterate through workspaces
+for FOLDER in $APPS
+do
+  rm -rf "./$FOLDER/node_modules"
+  rm -rf "./$FOLDER/yarn-error.log"
+  rm -rf "./$FOLDER/yarn.lock"
+  rm -rf "./$FOLDER/package-lock.json"
+done
+
+# ---- MAIN PROJECT ----
+rm -rf "./node_modules"
+rm -rf "./yarn-error.log"
+rm -rf "./yarn.lock"
+rm -rf "./package-lock.json"
+
+echo "End cleanup project dependencies"
+
+exit 0

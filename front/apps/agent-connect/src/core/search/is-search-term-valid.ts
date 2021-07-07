@@ -3,7 +3,7 @@ const isSearchTermValid = (term: string | undefined): boolean => {
     return false;
   }
   const trimmed = term.trim();
-  return trimmed !== '' ;
+  return trimmed !== '';
 };
 
 export default isSearchTermValid;

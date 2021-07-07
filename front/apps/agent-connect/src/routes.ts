@@ -3,6 +3,7 @@
 // declarative file
 import ErrorPage from './pages/error.page';
 import Homepage from './pages/homepage';
+import NotFoundPage from './pages/not-found.page';
 
 const routes = [
   {
@@ -18,6 +19,13 @@ const routes = [
     id: 'homepage',
     path: '/api/v2/interaction/:uid',
     title: '',
+  },
+  {
+    component: NotFoundPage,
+    exact: true,
+    id: 'homepage',
+    path: '*',
+    title: '404',
   },
 ];
 

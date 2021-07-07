@@ -3,8 +3,6 @@
 /**
  * Not yet implemented
  */
-import React from 'react';
-
 function NotFoundPage(): JSX.Element {
   return (
     <div className="container">

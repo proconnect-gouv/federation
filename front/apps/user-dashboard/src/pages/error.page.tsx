@@ -1,5 +1,3 @@
-import React from 'react';
-
 function ErrorPage(): JSX.Element {
   return (
     <div className="container">

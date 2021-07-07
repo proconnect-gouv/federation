@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { renderWithRedux } from '../../testUtils';
 import ServiceProviderName from './sp-name';
 

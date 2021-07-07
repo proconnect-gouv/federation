@@ -1,7 +1,7 @@
 import { RootState } from '../../types';
 import { selectIdentityProviderInputs } from './select-identity-provider-inputs';
 
-const rootState = ({
+const rootState = {
   identityProvidersHistory: [],
   ministries: [],
   redirectToIdentityProviderInputs: {
@@ -14,7 +14,7 @@ const rootState = ({
   },
   redirectURL: '',
   serviceProviderName: '',
-} as unknown) as RootState;
+} as unknown as RootState;
 
 describe('selectIdentityProviderInputs', () => {
   it('should return an array of array from Object.entries [key, value]', () => {
