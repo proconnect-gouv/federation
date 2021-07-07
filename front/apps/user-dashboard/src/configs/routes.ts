@@ -1,5 +1,6 @@
 import ErrorPage from '../pages/error.page';
 import Homepage from '../pages/home.page';
+import NotFoundPage from '../pages/not-found.page';
 import TracesPage from '../pages/traces.page';
 
 const routes = [
@@ -20,6 +21,12 @@ const routes = [
     exact: true,
     path: '/',
     title: 'User Dashboard',
+  },
+  {
+    component: NotFoundPage,
+    exact: true,
+    path: '*',
+    title: '404',
   },
 ];
 

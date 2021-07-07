@@ -1,5 +1,3 @@
-import React from 'react';
-
 interface SubmitButtonProps {
   isDisabled?: boolean;
   label?: string;

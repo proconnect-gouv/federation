@@ -1,5 +1,4 @@
 import { DateTime } from 'luxon';
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { CardInterfaceBase } from './card.interface';

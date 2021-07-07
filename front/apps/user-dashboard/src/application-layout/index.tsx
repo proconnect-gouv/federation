@@ -1,4 +1,3 @@
-import React from 'react';
 import { Helmet } from 'react-helmet';
 import {
   matchPath,
@@ -10,26 +9,21 @@ import {
 
 import routes from '../configs/routes';
 import { IRoute } from '../interfaces';
-import NotFoundPage from '../pages/not-found.page';
 import LayoutFooter from './layout-footer';
 import LayoutHeader from './layout-header';
 
-const getDocumentTitle = (obj: IRoute) => {
-  return `${obj && obj.title ? `${obj.title} - ` : ''}`;
-};
+const getDocumentTitle = (obj: IRoute) =>
+  `${obj && obj.title ? `${obj.title} - ` : ''}`;
 
 const getCurrentRouteObjectByPath = (
   entries: IRoute[],
   locationPathname: string
-) => {
-  return (
-    (entries &&
-      entries.filter(
-        obj => obj && matchPath(locationPathname, obj as RouteProps)
-      )[0]) ||
-    null
-  );
-};
+) =>
+  (entries &&
+    entries.filter(
+      obj => obj && matchPath(locationPathname, obj as RouteProps)
+    )[0]) ||
+  null;
 
 function ApplicationLayout(): JSX.Element {
   const { pathname } = useLocation();
@@ -48,7 +42,6 @@ function ApplicationLayout(): JSX.Element {
           {routes.map(route => (
             <Route {...route} key={route.path} />
           ))}
-          <Route component={NotFoundPage} path="*" title="404" />
         </Switch>
       </div>
       <LayoutFooter />

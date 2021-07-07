@@ -9,7 +9,6 @@
     https://github.com/jsdom/jsdom/issues/1937#issuecomment-526162324
 
 **************************************************** */
-import React from 'react';
 import { mocked } from 'ts-jest/utils';
 
 import { choosenIdentityProvider } from '../../redux/actions';

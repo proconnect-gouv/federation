@@ -12,27 +12,25 @@ import IdentityProvidersUserHistory from './idp-user-history';
 import Search from './search';
 import ServiceProviderName from './sp-name';
 
-const HomePage = React.memo(
-  (): JSX.Element => {
-    const identityProvidersHistory = useSelector(
-      (state: RootState) => state.identityProvidersHistory,
-    );
+const HomePage = React.memo((): JSX.Element => {
+  const identityProvidersHistory = useSelector(
+    (state: RootState) => state.identityProvidersHistory,
+  );
 
-    const showUserHistory = identityProvidersHistory?.length > 0;
+  const showUserHistory = identityProvidersHistory?.length > 0;
 
-    return (
-      <FCAApiContext>
-        <React.Fragment>
-          <ServiceProviderName />
-          {showUserHistory && (
-            <IdentityProvidersUserHistory items={identityProvidersHistory} />
-          )}
-          <Search />
-        </React.Fragment>
-      </FCAApiContext>
-    );
-  },
-);
+  return (
+    <FCAApiContext>
+      <React.Fragment>
+        <ServiceProviderName />
+        {showUserHistory && (
+          <IdentityProvidersUserHistory items={identityProvidersHistory} />
+        )}
+        <Search />
+      </React.Fragment>
+    </FCAApiContext>
+  );
+});
 
 HomePage.displayName = 'HomePage';
 

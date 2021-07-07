@@ -43,7 +43,7 @@ describe('useSearch', () => {
     const { result } = renderHook(() => useSearch());
     // then
     expect(result.current.results).toStrictEqual([]);
-    expect(result.current.searchTerm).toEqual(undefined);
+    expect(result.current.searchTerm).toBeUndefined();
     expect(typeof result.current.onFormChange).toBe('function');
   });
 

@@ -26,9 +26,7 @@ export const removeUnusedIdentityProviders = (
   identityProviders: IdentityProvider[],
 ) => {
   const groupedIDs = identityProviders.map(({ uid }) => uid);
-  const nextState = previousState.filter(id => {
-    return groupedIDs.includes(id);
-  });
+  const nextState = previousState.filter(id => groupedIDs.includes(id));
   return nextState;
 };
 
