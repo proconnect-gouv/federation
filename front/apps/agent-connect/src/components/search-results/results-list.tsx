@@ -28,11 +28,13 @@ const SearchResultsComponent = React.memo(
                 <dd>
                   {selected.length > 0 ? (
                     <ul className="unordered-list">
-                      {selected.filter(idp => idp.active).map(idp => (
-                        <li key={`${ministryId}::${idp.uid}`}>
-                          <ResultItem identityProvider={idp} />
-                        </li>
-                      ))}
+                      {selected
+                        .filter(idp => idp.active)
+                        .map(idp => (
+                          <li key={`${ministryId}::${idp.uid}`}>
+                            <ResultItem identityProvider={idp} />
+                          </li>
+                        ))}
                     </ul>
                   ) : (
                     <p className="bg-blue-cornflower font-5 p-2 my-2">

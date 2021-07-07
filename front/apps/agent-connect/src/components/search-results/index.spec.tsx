@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { render, renderWithRedux } from '../../testUtils';
 import SearchResults from './index';
 
@@ -41,21 +39,6 @@ describe('SearchResults', () => {
     const { container } = render(<SearchResults {...props} />);
     // then
     expect(container.innerHTML).toBe('');
-  });
-
-  it('should render a warning string if term result is defined but has no results', () => {
-    // given
-    const props = {
-      results: [],
-      term: 'nothing',
-    };
-    // when
-    const { getByText } = render(<SearchResults {...props} />);
-    const textElement = getByText(
-      "Aucun fournisseur d'identités n'a été trouvé",
-    );
-    // then
-    expect(textElement).toBeInTheDocument();
   });
 
   it('should render a warning string if term result is defined but has no results', () => {

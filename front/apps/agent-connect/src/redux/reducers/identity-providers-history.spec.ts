@@ -110,7 +110,7 @@ describe('addIdentityProviderToHistory', () => {
     expect(result).not.toStrictEqual(expected);
   });
 
-  it('should return an array with a max length of 3 ', () => {
+  it('should return an array with a max length of 3', () => {
     const name = 'mock-name';
     const previousState = ['mock-1', 'mock-2', 'mock-3', 'mock-4'];
     const result = addIdentityProviderToHistory(previousState, name);

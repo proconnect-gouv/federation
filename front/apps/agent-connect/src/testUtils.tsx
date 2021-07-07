@@ -15,12 +15,15 @@
  - Permet de d'injecter des valeurs de tests pour le store redux
 
 */
+/* eslint
+  import/no-extraneous-dependencies: 0
+*/
 import {
   render as rtlRender,
   RenderOptions,
   RenderResult,
 } from '@testing-library/react';
-import React, { ReactElement } from 'react';
+import { ReactElement } from 'react';
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
 

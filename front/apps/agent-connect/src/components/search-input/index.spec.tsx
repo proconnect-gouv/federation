@@ -1,6 +1,5 @@
 import { fireEvent, render } from '@testing-library/react';
 import { Form } from 'antd';
-import React from 'react';
 
 import SearchInput from './index';
 
