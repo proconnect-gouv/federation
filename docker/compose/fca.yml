@@ -209,7 +209,7 @@ services:
       - "squid"
       - "fca"
     volumes:
-      - "${VOLUMES_DIR}/src/fc/front/apps/agent-connect:/var/www/app"
+      - "${VOLUMES_DIR}/src/fc/front:/var/www/app"
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/log/:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
@@ -640,7 +640,7 @@ services:
       - "squid"
       - "exploit-fca"
     volumes:
-      - "${VOLUMES_DIR}/src/fc/front/apps/exploit-fca:/var/www/app"
+      - "${VOLUMES_DIR}/src/fc/front:/var/www/app"
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/log:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"

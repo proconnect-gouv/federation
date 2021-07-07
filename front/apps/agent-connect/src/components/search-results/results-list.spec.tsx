@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { renderWithRedux } from '../../testUtils';
 import SearchResultsList from './results-list';
 
@@ -39,7 +37,7 @@ const props = {
   ],
 };
 
-describe.only('SearchResultsList', () => {
+describe('SearchResultsList', () => {
   it('should render ministries names', () => {
     const { getByText } = renderWithRedux(<SearchResultsList {...props} />, {
       initialState: { identityProviders },

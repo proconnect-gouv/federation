@@ -305,7 +305,7 @@ _mongo_shell_core-fcp-high() {
 _fca_front() {
   cd ${WORKING_DIR}
   docker-compose exec $NO_TTY fca-front yarn install
-  docker-compose exec $NO_TTY fca-front yarn build
+  docker-compose exec $NO_TTY fca-front yarn build:fca
   cd ${FC_ROOT}/fc/back/apps/core-fca/src/
 
   if [ -d 'public' ]

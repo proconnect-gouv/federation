@@ -1,5 +1,4 @@
 import { fireEvent, render } from '@testing-library/react';
-import React from 'react';
 
 import SearchFormComponent from './index';
 
@@ -34,8 +33,8 @@ describe('SearchFormComponent', () => {
     const inputElement = getByTestId('fi-search-term');
     fireEvent.change(inputElement, { target: { value: 'mock search value' } });
     // then
-    expect(props.onChange).toBeCalledTimes(1);
-    expect(props.onChange).toBeCalledWith('mock search value');
+    expect(props.onChange).toHaveBeenCalledTimes(1);
+    expect(props.onChange).toHaveBeenCalledWith('mock search value');
   });
 
   it('should call callback parameters when submitting form', () => {
@@ -54,7 +53,7 @@ describe('SearchFormComponent', () => {
     const submitButton = getByTestId('fi-search-term-submit-button');
     submitButton.click();
     // then
-    expect(props.onChange).toBeCalledTimes(1);
-    expect(props.onChange).toBeCalledWith('mock search value submit');
+    expect(props.onChange).toHaveBeenCalledTimes(1);
+    expect(props.onChange).toHaveBeenCalledWith('mock search value submit');
   });
 });

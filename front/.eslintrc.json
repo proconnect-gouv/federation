@@ -17,10 +17,8 @@
     "jest"
   ],
   "extends": [
-    "react-app",
     "airbnb-typescript",
     "prettier",
-    "prettier/react",
     "plugin:jest/recommended",
     "plugin:jest/style"
   ],
