@@ -16,6 +16,7 @@
  * @param {string} API_PROXY_FOR_PATH the path for which the proxy is applied
  *  ie. `/api`
  */
+// eslint-disable-next-line import/no-extraneous-dependencies
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const { API_PROXY_FOR_PATH, API_PROXY_HOST } = process.env;

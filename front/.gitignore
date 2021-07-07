@@ -1,5 +1,6 @@
-# Created by https://www.toptal.com/opers/gitignore/api/macos,node,react,linux,windows
-# Edit at https://www.toptal.com/opers/gitignore?templates=macos,node,react,linux,windows
+
+# Created by https://www.toptal.com/developers/gitignore/api/windows,linux,macos,node,react
+# Edit at https://www.toptal.com/developers/gitignore?templates=windows,linux,macos,node,react
 
 ### Linux ###
 *~
@@ -24,6 +25,7 @@
 
 # Icon must end with two \r
 Icon
+
 
 # Thumbnails
 ._*
@@ -52,6 +54,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
+.pnpm-debug.log*
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -87,11 +90,9 @@ build/Release
 # Dependency directories
 node_modules/
 jspm_packages/
-.pnp
-.pnp.js
 
-# TypeScript v1 declaration files
-typings/
+# Snowpack dependency directory (https://snowpack.dev/)
+web_modules/
 
 # TypeScript cache
 *.tsbuildinfo
@@ -120,7 +121,7 @@ typings/
 # dotenv environment variables file
 .env
 .env.test
-.env*.local
+.env.production
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -128,6 +129,7 @@ typings/
 
 # Next.js build output
 .next
+out
 
 # Nuxt.js build / generate output
 .nuxt
@@ -156,6 +158,13 @@ dist
 
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
+
+# yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
 
 ### react ###
 .DS_*
@@ -196,7 +205,26 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/macos,node,react,linux,windows
+# End of https://www.toptal.com/developers/gitignore/api/windows,linux,macos,node,react
+
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 ## FranceConnect specific
 

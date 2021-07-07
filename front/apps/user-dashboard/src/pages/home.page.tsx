@@ -1,5 +1,3 @@
-import React from 'react';
-
 function HomePage(): JSX.Element {
   const initialValues = {
     acr_values: 'eidas1',
@@ -13,7 +11,6 @@ function HomePage(): JSX.Element {
         Vous devez vous authentifier afin d&apos;accéder à vos données
         personnelles.
       </div>
-
       <form
         action="https://ud.docker.dev-franceconnect.fr/api/redirect-to-idp"
         aria-label="form"

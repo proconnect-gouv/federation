@@ -1,5 +1,3 @@
-import React from 'react';
-
 import * as useSearchHook from '../../hooks/use-search.hook';
 import { renderWithRedux } from '../../testUtils';
 import SearchComponent from './search';
