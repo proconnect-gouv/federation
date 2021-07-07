@@ -1,4 +1,6 @@
-# Utiliser des données d'api local avec le hot reload en dev
+# AGENT CONNECT
+
+## Utiliser des données d'api local avec le hot reload en dev
 
 > Permet d'avoir un jeu de données bouchées et de profiter du hot-reload pour du dévelopement plus rapide
 
@@ -45,10 +47,6 @@ REACT_APP_API_MOCK_DATA_FILE=/mock-api-data.json
 - fichier des constantes globales à l'application
 
 **src/redux**
-
-# KISS
-
-Le dossier contient des templates de fichier
 
 # Bootstrap
 

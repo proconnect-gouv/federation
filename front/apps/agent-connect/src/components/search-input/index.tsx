@@ -28,29 +28,31 @@ const SearchInputComponent = React.memo(
         htmlFor={name}
         label={<span className="h4 font-weight-bold">{label}</span>}
         name={name}>
-        <span className="d-block text-left mb-2">Veuillez taper le nom complet de votre administration</span>
+        <span className="d-block text-left mb-2">
+          Veuillez taper le nom complet de votre administration
+        </span>
         <Input.Search
-            className="text-left rounded-2"
-            data-testid={name}
-            enterButton={
-              <Button
-                data-testid={`${name}-submit-button`}
-                htmlType="submit"
-                type="primary">
-                <IoMdSearch
-                  className="text-white align-middle mr-2 mb-1"
-                  role="img"
-                />
-                <b>Rechercher</b>
-              </Button>
-            }
-            id={name}
-            name={name}
-            placeholder={placeholder}
-            size="large"
-            title={label}
-            onChange={inputSearchHandler}
-          />
+          className="text-left rounded-2"
+          data-testid={name}
+          enterButton={
+            <Button
+              data-testid={`${name}-submit-button`}
+              htmlType="submit"
+              type="primary">
+              <IoMdSearch
+                className="text-white align-middle mr-2 mb-1"
+                role="img"
+              />
+              <b>Rechercher</b>
+            </Button>
+          }
+          id={name}
+          name={name}
+          placeholder={placeholder}
+          size="large"
+          title={label}
+          onChange={inputSearchHandler}
+        />
       </Form.Item>
     );
   },

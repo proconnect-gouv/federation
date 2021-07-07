@@ -1,5 +1,3 @@
-import React from 'react';
-
 function HeaderComponent(): JSX.Element {
   return (
     <header className="d-flex flex-row justify-content-between align-items-center py-3 mb-5">

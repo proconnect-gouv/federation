@@ -1,4 +1,3 @@
-import React from 'react';
 import { Helmet } from 'react-helmet';
 import {
   matchPath,
@@ -9,7 +8,6 @@ import {
 } from 'react-router-dom';
 
 import { IRoute } from '../interfaces';
-import NotFoundPage from '../pages/not-found.page';
 import LayoutFooter from './layout-footer';
 import LayoutHeader from './layout-header';
 
@@ -51,7 +49,6 @@ function ApplicationLayout({ routes }: ApplicationLayoutProps): JSX.Element {
           {routes.map(route => (
             <Route {...route} key={route.id} />
           ))}
-          <Route component={NotFoundPage} path="*" title="404" />
         </Switch>
       </div>
       <LayoutFooter />
