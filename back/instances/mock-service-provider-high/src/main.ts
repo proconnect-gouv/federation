@@ -4,7 +4,7 @@
 import { join } from 'path';
 import * as helmet from 'helmet';
 import * as CookieParser from 'cookie-parser';
-import { urlencoded } from 'body-parser';
+import { urlencoded } from 'express';
 import { renderFile } from 'ejs';
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
@@ -98,9 +98,8 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, assetsPath, 'public'));
 
-  const { cookieSecrets } = configService.get<SessionGenericConfig>(
-    'SessionGeneric',
-  );
+  const { cookieSecrets } =
+    configService.get<SessionGenericConfig>('SessionGeneric');
   app.use(CookieParser(cookieSecrets));
 
   await app.listen(3000);
