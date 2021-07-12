@@ -10,6 +10,7 @@ export interface IdentityProviderBase {
 
 export interface IdentityProvider extends IdentityProviderBase {
   acrValues: string[];
+  description: string;
   enabled: boolean;
   idpId: string;
   mocked: boolean;

@@ -10,9 +10,10 @@ Fonctionnalité: Connexion Usager - Scope
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que je choisis un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité actif
+    Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec un compte actif
+    Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent aux scopes "<scopeType>"
     Et j'accepte de transmettre mes informations au fournisseur de service
@@ -34,9 +35,10 @@ Fonctionnalité: Connexion Usager - Scope
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que je choisis un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité actif
+    Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec un compte actif
+    Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et aucune information demandée par le fournisseur de service pour le scope "anonyme"
     Et j'accepte de transmettre mes informations au fournisseur de service
@@ -46,7 +48,7 @@ Fonctionnalité: Connexion Usager - Scope
 
   @ignoreLow
   Scénario: Connexion d'un usager - erreur FS non habilité pour ce scope
-    Etant donné que le fournisseur de service est habilité à demander le scope "identite_pivot"
+    Etant donné que j'utilise le fournisseur de service "habilité à demander le scope identite_pivot"
     Et que le fournisseur de service requiert l'accès aux informations du scope "email"
     Et que je navigue sur la page fournisseur de service
     Quand je clique sur le bouton FranceConnect
@@ -59,9 +61,10 @@ Fonctionnalité: Connexion Usager - Scope
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que je choisis un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité actif
+    Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec un compte actif
+    Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent aux scopes "profile"
     Et j'accepte de transmettre mes informations au fournisseur de service

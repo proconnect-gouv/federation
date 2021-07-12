@@ -416,6 +416,7 @@ services:
       - 'CRYPTO_BROKER_URLS=["amqp://broker:5672"]'
       - "CRYPTO_BROKER_QUEUE=crypto"
       - "REQUEST_TIMEOUT=60"
+      - "RNIPP_HOSTNAME=rnipp.docker.dev-franceconnect.fr"
       # FLAG USE HSM
       - "USE_HSM=true"
       # IDP default values

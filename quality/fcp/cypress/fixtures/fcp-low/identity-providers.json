@@ -1,6 +1,7 @@
 [
   {
     "idpId": "fip1-low",
+    "description": "par défaut",
     "mocked": true,
     "enabled": true,
     "url": "https://fip1-low.{{TEST_ENV}}.dev-franceconnect.fr/interaction",

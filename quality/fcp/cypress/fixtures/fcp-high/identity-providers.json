@@ -1,6 +1,7 @@
 [
   {
     "idpId": "fip1v2",
+    "description": "par défaut",
     "mocked": true,
     "enabled": true,
     "url": "https://fip1v2.{{TEST_ENV}}.dev-franceconnect.fr/interaction",
@@ -9,7 +10,7 @@
       "idpButton": "#idp-fip1v2",
       "username": "input[name='login']",
       "password": "input[name='password']",
-      "loginButton": "input[type='submit']"
+      "loginButton": "[type='submit']"
     }
   }
 ]
