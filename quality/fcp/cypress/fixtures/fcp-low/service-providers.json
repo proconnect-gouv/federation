@@ -1,6 +1,7 @@
 [
   {
     "name": "fsp1-low",
+    "description": "par défaut",
     "mocked": true,
     "url": "https://fsp1-low.{{TEST_ENV}}.dev-franceconnect.fr",
     "redirectUriPath": "/oidc-callback/envIssuer",
@@ -11,7 +12,6 @@
       "fcButton": "#get-authorize",
       "logoutButton": ".nav-logout"
     },
-    "method": "get",
-    "description": "par défaut"
+    "authorizeHttpMethod": "get"
   }
 ]

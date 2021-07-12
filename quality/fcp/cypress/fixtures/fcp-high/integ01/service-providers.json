@@ -1,6 +1,7 @@
 [
   {
     "name": "fsp1v2",
+    "description": "par défaut",
     "mocked": true,
     "url": "https://fsp1v2.integ01.fcp.fournisseur-de-service.fr",
     "redirectUriPath": "/oidc-callback/envIssuer",
@@ -11,11 +12,11 @@
       "fcButton": "#get-authorize",
       "logoutButton": ".nav-logout"
     },
-    "method": "get",
-    "description": "par défaut"
+    "authorizeHttpMethod": "get"
   },
   {
     "name": "fsp2v2",
+    "description": "habilité à demander le scope identite_pivot",
     "mocked": true,
     "url": "https://fsp2v2.integ01.fcp.fournisseur-de-service.fr",
     "redirectUriPath": "/oidc-callback/envIssuer",
@@ -26,7 +27,6 @@
       "fcButton": "#get-authorize",
       "logoutButton": ".nav-logout"
     },
-    "method": "get",
-    "description": "avec scope restreint"
+    "authorizeHttpMethod": "get"
   }
 ]

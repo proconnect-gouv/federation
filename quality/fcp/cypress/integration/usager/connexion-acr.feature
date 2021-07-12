@@ -14,9 +14,10 @@ Fonctionnalité: Connexion ACR
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que je choisis un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité actif
+    Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec un compte actif
+    Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent au scope "tous les scopes"
     Et j'accepte de transmettre mes informations au fournisseur de service
@@ -61,9 +62,10 @@ Fonctionnalité: Connexion ACR
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que je choisis un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité actif
+    Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec un compte actif
+    Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent au scope "tous les scopes"
     Et j'accepte de transmettre mes informations au fournisseur de service
