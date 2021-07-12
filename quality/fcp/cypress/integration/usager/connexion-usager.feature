@@ -11,9 +11,10 @@ Fonctionnalité: Connexion Usager
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que je choisis un fournisseur d'identité avec "eidas1"
+    Et que j'utilise un fournisseur d'identité avec "eidas1"
+    Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec un compte actif
+    Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent au scope "identite_pivot"
     Et j'accepte de transmettre mes informations au fournisseur de service
@@ -27,9 +28,10 @@ Fonctionnalité: Connexion Usager
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que je choisis un fournisseur d'identité avec "eidas3"
+    Et que j'utilise un fournisseur d'identité avec "eidas3"
+    Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec un compte actif
+    Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent au scope "identite_pivot"
     Et j'accepte de transmettre mes informations au fournisseur de service

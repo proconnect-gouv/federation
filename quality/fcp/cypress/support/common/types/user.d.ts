@@ -10,6 +10,7 @@ export interface UserClaims {
 
 export interface User {
   enabled: boolean;
-  credentials: [UserCredentials];
   claims: UserClaims;
+  credentials: [UserCredentials];
+  criteria: string[];
 }
