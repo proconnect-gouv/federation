@@ -9,7 +9,7 @@ describe('8.0.2 - Response type', () => {
     });
 
     cy.request({ url, followRedirect: false }).then((resp) => {
-      expect(resp.status).to.eq(302);
+      expect(resp.status).to.eq(303);
       expect(resp.redirectedToUrl).to.equals(
         `${Cypress.env(
           'SP1_ROOT_URL',
@@ -26,7 +26,7 @@ describe('8.0.2 - Response type', () => {
     });
 
     cy.request({ url, followRedirect: false }).then((resp) => {
-      expect(resp.status).to.eq(302);
+      expect(resp.status).to.eq(303);
       expect(resp.redirectedToUrl).to.equals(
         `${Cypress.env(
           'SP1_ROOT_URL',
@@ -43,7 +43,7 @@ describe('8.0.2 - Response type', () => {
     });
 
     cy.request({ url, followRedirect: false }).then((resp) => {
-      expect(resp.status).to.eq(302);
+      expect(resp.status).to.eq(303);
       expect(resp.redirectedToUrl).to.equals(
         `${Cypress.env(
           'SP1_ROOT_URL',
@@ -60,7 +60,7 @@ describe('8.0.2 - Response type', () => {
     });
 
     cy.request({ url, followRedirect: false }).then((resp) => {
-      expect(resp.status).to.eq(302);
+      expect(resp.status).to.eq(303);
       expect(resp.redirectedToUrl).to.equals(
         `${Cypress.env(
           'SP1_ROOT_URL',
@@ -77,7 +77,7 @@ describe('8.0.2 - Response type', () => {
     });
 
     cy.request({ url, followRedirect: false }).then((resp) => {
-      expect(resp.status).to.eq(302);
+      expect(resp.status).to.eq(303);
       expect(resp.redirectedToUrl).to.equals(
         `${Cypress.env(
           'SP1_ROOT_URL',

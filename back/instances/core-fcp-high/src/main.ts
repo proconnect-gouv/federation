@@ -9,7 +9,7 @@
 import '@fc/override-oidc-provider/overrides';
 import * as helmet from 'helmet';
 import * as CookieParser from 'cookie-parser';
-import { urlencoded } from 'body-parser';
+import { urlencoded } from 'express';
 import { renderFile } from 'ejs';
 import { join } from 'path';
 import { useContainer } from 'class-validator';
@@ -105,9 +105,8 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, assetsPath, 'public'));
 
-  const { cookieSecrets } = configService.get<SessionGenericConfig>(
-    'SessionGeneric',
-  );
+  const { cookieSecrets } =
+    configService.get<SessionGenericConfig>('SessionGeneric');
   app.use(CookieParser(cookieSecrets));
 
   /**
