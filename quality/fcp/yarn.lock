@@ -1027,6 +1027,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-14.14.37.tgz#a3dd8da4eb84a996c36e331df98d82abd76b516e"
   integrity sha512-XYmBiy+ohOR4Lh5jE379fV2IU+6Jn4g5qASinhitfyO71b/sCo6MKsMLF5tc7Zf2CE8hViVQyYSobJNke8OvUw==
 
+"@types/node@^14.17.4":
+  version "14.17.4"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.17.4.tgz#218712242446fc868d0e007af29a4408c7765bc0"
+  integrity sha512-8kQ3+wKGRNN0ghtEn7EGps/B8CzuBz1nXZEIGGLP2GnwbqYn4dbTs7k+VKLTq1HvZLRCIDtN3Snx1Ege8B7L5A==
+
 "@types/sinonjs__fake-timers@^6.0.2":
   version "6.0.2"
   resolved "https://registry.yarnpkg.com/@types/sinonjs__fake-timers/-/sinonjs__fake-timers-6.0.2.tgz#3a84cf5ec3249439015e14049bd3161419bf9eae"
@@ -2318,6 +2323,11 @@ cypress-template-fixtures@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/cypress-template-fixtures/-/cypress-template-fixtures-1.0.3.tgz#a99fe1a75fbc5dc9b451e5dd86c40e9c5065d326"
   integrity sha512-bg9GerhraPfVBHGha2dbkmOLXLzaMM1Qvj/40tVBISKy22nNAK6of59/qC8AgH2oeks0VWcu8Oox5f2yxTCbew==
+
+cypress-xpath@^1.6.2:
+  version "1.6.2"
+  resolved "https://registry.yarnpkg.com/cypress-xpath/-/cypress-xpath-1.6.2.tgz#e9d44c3ab694fefa8608f1d977e3e389647f10d3"
+  integrity sha512-mtwJPl840GQPGtb480fKR5vDIcijBHhAVwby5/AIPIT/UVT7UJhM2L42/R+venR7N01I0PoOJErb6UiMbCyUxg==
 
 cypress@^7.5.0:
   version "7.5.0"
