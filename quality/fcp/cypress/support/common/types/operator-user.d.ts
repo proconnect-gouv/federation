@@ -1,4 +1,4 @@
-export interface ExploitUserData {
+export interface OperatorUserData {
   password: string;
   role: string;
   secretTotp: string;

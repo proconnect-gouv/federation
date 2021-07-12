@@ -1,6 +1,7 @@
 [
   {
     "enabled": true,
+    "criteria": ["par défaut"],
     "credentials": [
       {
         "idpId": "fip1-low",
