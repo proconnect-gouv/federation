@@ -2,7 +2,6 @@
 
 // Declarative code
 import { Module } from '@nestjs/common';
-
 import { mongooseProvider } from './mongoose.provider';
 
 @Module({

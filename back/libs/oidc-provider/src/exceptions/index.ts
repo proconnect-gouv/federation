@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 export * from './oidc-provider-binding.exception';
 export * from './oidc-provider-initialisation.exception';
 export * from './oidc-provider-parse-redis-response.exception';
