@@ -10,7 +10,7 @@ describe('Update cache', () => {
     // purposefully corrupting the BDD so that we make the kinematics fail
     cy.e2e('idp_update_wrong_issuer');
 
-    cy.get('#idp-fip2v2').click();
+    cy.get('#idp-fip2-high').click();
     cy.get('form').submit();
     cy.url().should('includes', Cypress.env('FC_ROOT_URL'));
 

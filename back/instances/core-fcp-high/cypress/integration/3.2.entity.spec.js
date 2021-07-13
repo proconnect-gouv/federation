@@ -7,7 +7,7 @@ import { checkInStringifiedJson, basicScenario } from './mire.utils';
 describe('3.2 - Entity', () => {
   it('should have the same client Sub from 2 SP with same entityId', () => {
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
     });
@@ -28,7 +28,7 @@ describe('3.2 - Entity', () => {
     });
 
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       start: `${Cypress.env('SP2_ROOT_URL')}`,

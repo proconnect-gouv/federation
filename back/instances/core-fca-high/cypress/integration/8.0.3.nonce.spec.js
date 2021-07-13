@@ -28,13 +28,13 @@ describe('nonce', () => {
   });
 
   it('should send the nonce through the authorize url (FC as FS)', () => {
-    const { IDP_ROOT_URL } = getIdentityProvider(`${Cypress.env('IDP_NAME')}1v2`);
+    const { IDP_ROOT_URL } = getIdentityProvider(`${Cypress.env('IDP_NAME')}1-low`);
     const url = getAuthorizeUrl();
     cy.visit(url);
 
     cy.intercept(`${IDP_ROOT_URL}/authorize?*`).as('getIdp');
 
-    chooseIdpOnCore('fia1v2');
+    chooseIdpOnCore('fia1-low');
     cy.wait('@getIdp').then(({ request: { url } }) => {
       const nonceIsDefined = url.includes('nonce');
       expect(nonceIsDefined).to.be.true;

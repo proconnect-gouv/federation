@@ -1,0 +1,11 @@
+version: "3.4"
+
+####################
+####################
+services:
+  pg-exploitation-high:
+    image: postgres:11
+    env_file:
+      - "${COMPOSE_DIR}/fcp-high/.env/postgres.env"
+    networks:
+      - data

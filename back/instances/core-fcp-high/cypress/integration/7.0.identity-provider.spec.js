@@ -13,8 +13,8 @@ describe('7.0 - Idp activation & visibility', () => {
     // Then
     cy.get('#idp-list').within(() => {
       // Visibles idps
-      cy.get(`button#idp-${idpId}1v2`).should('exist');
-      cy.get(`button#idp-${idpId}2v2`).should('exist');
+      cy.get(`button#idp-${idpId}1-high`).should('exist');
+      cy.get(`button#idp-${idpId}2-high`).should('exist');
       cy.get(`button#idp-${idpId}-desactive-visible`).should('exist');
       // Invisibles idps
       cy.get(`button#idp-${idpId}-desactive-invisible`).should('not.exist');
@@ -29,8 +29,8 @@ describe('7.0 - Idp activation & visibility', () => {
     // Then
     cy.get('#idp-list').within(() => {
       // Enabled idps
-      cy.get(`button#idp-${idpId}1v2`).should('not.be.disabled');
-      cy.get(`button#idp-${idpId}2v2`).should('not.be.disabled');
+      cy.get(`button#idp-${idpId}1-high`).should('not.be.disabled');
+      cy.get(`button#idp-${idpId}2-high`).should('not.be.disabled');
       // Disabled idps
       cy.get(`button#idp-${idpId}-desactive-visible`).should('be.disabled');
     });
@@ -43,10 +43,10 @@ describe('7.0 - Idp activation & visibility', () => {
     // Then
     cy.get('#idp-list').within(() => {
       // Control that title is set
-      cy.get(`#idp-${idpId}1v2-title`).should('exist');
+      cy.get(`#idp-${idpId}1-high-title`).should('exist');
       cy.get(`#idp-${idpId}-desactive-visible-title`).should('exist');
       // Control that the right text is set
-      cy.get(`#idp-${idpId}1v2-title`).contains(
+      cy.get(`#idp-${idpId}1-high-title`).contains(
         'J’utilise l’application Identity Provider - eIDAS élevé - discov - crypt',
       );
       cy.get(`#idp-${idpId}-desactive-visible-title`).contains(
@@ -72,9 +72,9 @@ describe('7.0 - Idp activation & visibility', () => {
     cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
     // When
-    cy.get(`#idp-list button#idp-${idpId}1v2`).click();
+    cy.get(`#idp-list button#idp-${idpId}1-high`).click();
     // Then
-    cy.url().should('match', new RegExp(`^https://${idpId}1v2.+$`));
+    cy.url().should('match', new RegExp(`^https://${idpId}1-high.+$`));
   });
 
   it('should trigger error 020017 when forging click on disabled IdP', () => {
@@ -104,13 +104,13 @@ describe('7.0 - Idp activation & visibility', () => {
     );
     cy.url().should('match', mireUrl);
     // When
-    cy.get(`#fs-request-${idpId}1v2`).within(() => {
+    cy.get(`#fs-request-${idpId}1-high`).within(() => {
       cy.get('input[name="providerUid"]').invoke(
         'attr',
         'value',
         'random-non-exisitig-IdP',
       );
-      cy.get(`button#idp-${idpId}1v2`).click();
+      cy.get(`button#idp-${idpId}1-high`).click();
     });
     // Then
     cy.url().should('contain', '/api/v2/redirect-to-idp');
@@ -121,11 +121,11 @@ describe('7.0 - Idp activation & visibility', () => {
     // Given
     cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
-    cy.get(`#fs-request-${idpId}1v2 > input[name="csrfToken"]`)
+    cy.get(`#fs-request-${idpId}1-high > input[name="csrfToken"]`)
       // Reset CSRF form value
       .invoke('attr', 'value', 'INVALID-CSRF-VALUE');
     // When
-    cy.get(`#idp-list button#idp-${idpId}1v2`).click();
+    cy.get(`#idp-list button#idp-${idpId}1-high`).click();
     // Then
     cy.url().should('contain', '/api/v2/redirect-to-idp');
     cy.hasError('Y190007');

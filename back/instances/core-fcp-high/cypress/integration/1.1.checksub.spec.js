@@ -5,8 +5,8 @@ import {
 } from './mire.utils';
 
 describe('1.1 - Successful Sub checks', () => {
-  // -- replace by either `fip1v2` or `fia1v2`
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  // -- replace by either `fip1-high` or `fia1-low`
+  const idpId = `${Cypress.env('IDP_NAME')}1-high`;
 
   it('should check the correct sub for Thibault TABLE', () => {
     basicSuccessScenario({

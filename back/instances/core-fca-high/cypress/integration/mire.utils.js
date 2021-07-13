@@ -1,7 +1,7 @@
 import * as QueryString from 'querystring';
 
 export function beforeSuccessScenario(params) {
-  const { sp = 'fsa1v2', method } = params;
+  const { sp = 'fsa1-low', method } = params;
 
   const { SP_ROOT_URL, SP_CLIENT_ID } = getServiceProvider(sp);
   // FS: Click on FC button
@@ -56,7 +56,7 @@ export function basicSuccessScenario(idpId) {
 }
 
 export function afterSuccessScenario(params) {
-  const { sp = 'fsa1v2', idpId, userName } = params;
+  const { sp = 'fsa1-low', idpId, userName } = params;
   const password = params.password || '123';
   const { SP_CLIENT_ID } = getServiceProvider(sp);
   const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
@@ -158,7 +158,7 @@ export function basicScenario(params) {
     idpId,
     login = 'test',
     // eidasLevel, see comment below
-    sp = 'fsa1v2',
+    sp = 'fsa1-low',
     overrideParams,
   } = params;
   const password = '123';
@@ -215,7 +215,7 @@ export function basicErrorScenario(params) {
 }
 
 export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
-  const { SP_CLIENT_ID, SP_ROOT_URL } = getServiceProvider('fsa1v2');
+  const { SP_CLIENT_ID, SP_ROOT_URL } = getServiceProvider('fsa1-low');
   const baseAuthorizeUrl = '/api/v2/authorize';
   const baseAuthorizeParams = {
     // oidc param
@@ -255,7 +255,7 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
  * Retrieve service provider information
  * @param {*} sp : service provider identifier
  */
-export function getServiceProvider(sp = 'fsa1v2') {
+export function getServiceProvider(sp = 'fsa1-low') {
   return Cypress.env('SP_AVAILABLES').find(({ ID }) => ID === sp);
 }
 
@@ -263,7 +263,7 @@ export function getServiceProvider(sp = 'fsa1v2') {
  * Retrieve service provider information
  * @param {*} idp : identity provider uid
  */
-export function getIdentityProvider(idp = 'fia1v2') {
+export function getIdentityProvider(idp = 'fia1-low') {
   return Cypress.env('IDP_AVAILABLES').find(({ ID }) => ID === idp);
 }
 
