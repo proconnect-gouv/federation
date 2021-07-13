@@ -1,10 +1,10 @@
+import { v4 as uuid } from 'uuid';
 import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { LoggerService } from '@fc/logger';
-import { IInteraction } from './interfaces';
-import { Account } from './schemas';
-import { v4 as uuid } from 'uuid';
+import { IInteraction } from '../interfaces';
+import { Account } from '../schemas';
 
 @Injectable()
 export class AccountService {
@@ -33,7 +33,8 @@ export class AccountService {
   /**
    * Save interaction to database
    *
-   * @param interaction
+   * @param {IInteraction} interaction
+   * @returns {Promise<void>}
    */
   async storeInteraction(interaction: IInteraction): Promise<void> {
     this.logger.debug('Save interaction to database');
@@ -51,8 +52,8 @@ export class AccountService {
    *  - preserved if provider is different
    *  - updated when provider is the same (though sub should not change)
    *
-   * @param interaction
-   * @returns an up to date account object
+   * @param {IInteraction} interaction
+   * @returns {Promise<Account>} an up-to-date `Account` object
    */
   private async getAccountWithInteraction(
     interaction: IInteraction,
@@ -80,6 +81,27 @@ export class AccountService {
     // Update last connection timestamp
     account.lastConnection = interaction.lastConnection;
     account.id = interaction.id || uuid();
+
+    return account;
+  }
+
+  /**
+   * Get an `Account` object from an `identityHash`.
+   * It throw an error if the account is not found.
+   *
+   * @see CryptographyFcpService.computeIdentityHash()
+   * @param {string} identityHash
+   * @returns {Promise<Account>}
+   */
+  async getAccountByIdentityHash(identityHash: string): Promise<Account> {
+    this.logger.debug(`Recherche d'un compte avec via son hash`);
+    const account: Account = await this.model.findOne({ identityHash });
+
+    if (!account) {
+      return { id: null } as Account;
+    }
+
+    this.logger.trace({ account });
 
     return account;
   }

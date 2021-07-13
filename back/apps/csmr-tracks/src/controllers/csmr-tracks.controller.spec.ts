@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { CsmrTracksController } from './csmr-tracks.controller';
-import { CsmrTracksService } from './csmr-tracks.service';
+import { CsmrTracksService } from '../services/csmr-tracks.service';
 
 describe('CsmrTracksController', () => {
   let controller: CsmrTracksController;
@@ -14,6 +14,11 @@ describe('CsmrTracksController', () => {
 
   const csmrTracksMock = {
     getList: jest.fn(),
+  };
+
+  const payloadMock = {
+    pattern: 'SOME_PATTERN',
+    data: {},
   };
 
   beforeEach(async () => {
@@ -30,19 +35,26 @@ describe('CsmrTracksController', () => {
     controller = app.get<CsmrTracksController>(CsmrTracksController);
   });
 
-  describe('getTracks', () => {
-    it('should return result of CsmrTracksService.getList', async () => {
+  describe('getTracks()', () => {
+    it('Should return result of CsmrTracksService.getList()', async () => {
       // Given
-      const payloadMock = {
-        pattern: 'SOME_PATTERN',
-        data: {},
-      };
       const expected = 'some string';
       csmrTracksMock.getList.mockResolvedValueOnce(expected);
       // When
       const result = await controller.getTracks(payloadMock);
       // Then
       expect(result).toEqual(expected);
+    });
+
+    it('Should return an empty array if an error is throwed by csmrTracks.getList()', async () => {
+      // Given
+      csmrTracksMock.getList.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      // When
+      const result = await controller.getTracks(payloadMock);
+      // Then
+      expect(result).toEqual([]);
     });
   });
 });

@@ -2,12 +2,25 @@
 
 // Declarative code
 import { Module } from '@nestjs/common';
-import { CsmrTracksController } from './csmr-tracks.controller';
-import { CsmrTracksService } from './csmr-tracks.service';
+import { ElasticsearchModule } from '@fc/elasticsearch';
+import { MongooseModule } from '@fc/mongoose';
+import { ExceptionsModule } from '@fc/exceptions';
+import { LoggerModule } from '@fc/logger';
+import { AccountModule } from '@fc/account';
+import { CryptographyFcpModule } from '@fc/cryptography-fcp';
+import { CsmrTracksController } from './controllers';
+import { CsmrTracksElasticsearchService, CsmrTracksService } from './services';
 
 @Module({
-  imports: [],
+  imports: [
+    ExceptionsModule,
+    MongooseModule,
+    LoggerModule,
+    ElasticsearchModule.register(),
+    AccountModule,
+    CryptographyFcpModule,
+  ],
   controllers: [CsmrTracksController],
-  providers: [CsmrTracksService],
+  providers: [CsmrTracksService, CsmrTracksElasticsearchService],
 })
 export class CsmrTracksModule {}

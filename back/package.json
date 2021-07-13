@@ -53,9 +53,11 @@
     "openid-client/**/jose": "2.0.5"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^7.13.0",
     "@nestjs/common": "^7.0.7",
     "@nestjs/core": "^7.0.7",
     "@nestjs/cqrs": "^7.0.0",
+    "@nestjs/elasticsearch": "^7.1.0",
     "@nestjs/microservices": "^7.0.7",
     "@nestjs/mongoose": "^7.0.1",
     "@nestjs/platform-express": "^7.0.7",
@@ -76,6 +78,7 @@
     "jose": "^3.12.2",
     "jose-openid-client": "npm:jose@^2.0.5",
     "lodash": "^4.17.15",
+    "luxon": "^1.27.0",
     "moment": "^2.24.0",
     "mongoose": "^5.11.17",
     "node-mailjet": "^3.3.1",
@@ -258,7 +261,9 @@
       "@fc/feature-handler/(.*)": "<rootDir>/libs/feature-handler/src/$1",
       "@fc/feature-handler": "<rootDir>/libs/feature-handler/src",
       "@fc/exploitation/(.*)": "<rootDir>/apps/exploitation/src/$1",
-      "@fc/exploitation": "<rootDir>/apps/exploitation/src"
+      "@fc/exploitation": "<rootDir>/apps/exploitation/src",
+      "@fc/elasticsearch/(.*)": "<rootDir>/libs/elasticsearch/src/$1",
+      "@fc/elasticsearch": "<rootDir>/libs/elasticsearch/src"
     },
     "preset": "ts-jest"
   }
