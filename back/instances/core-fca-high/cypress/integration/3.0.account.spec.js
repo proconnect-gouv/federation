@@ -5,8 +5,8 @@ import { basicErrorScenario } from './mire.utils';
  * ce test n'a aucun intérêt sur FCA, on ne bloque aucun agent sur le core
  */
 describe.skip('Account', () => {
-  // -- replace by either `fip1v2` or `fia1v2`
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  // -- replace by either `fip1-high` or `fia1-low`
+  const idpId = `${Cypress.env('IDP_NAME')}1-low`;
 
   it('should trigger error Y180001 (user blocked)', () => {
     basicErrorScenario({

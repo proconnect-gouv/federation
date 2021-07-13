@@ -1,0 +1,265 @@
+// == FI
+const fia = {
+    // -- FIA - FIA1-LOW - Activated
+    "FIA1-LOW": {
+      uid: "fia1-low",
+      name: "fia1-low",
+      active: true,
+      display: true,
+      title: "Identity Provider 1 - eIDAS élevé",
+      image: "fi-mock-eleve.svg",
+      imageFocus: "fi-mock-eleve.svg",
+      alt: "impots",
+      eidas: 3,
+      mailto: "",
+      featureHandlers: {
+        coreVerify: "core-fca-default-verify",
+        authenticationEmail: null,
+      },
+      specificText: "specific text fia1-low",
+      url: "https://fia1-low.docker.dev-franceconnect.fr/",
+      statusURL: "https://fia1-low.docker.dev-franceconnect.fr/",
+      authzURL: "https://fia1-low.docker.dev-franceconnect.fr/user/authorize",
+      tokenURL: "https://fia1-low.docker.dev-franceconnect.fr/user/token",
+      userInfoURL: "https://fia1-low.docker.dev-franceconnect.fr/api/user",
+      discoveryUrl:
+        "https://fia1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      discovery: true,
+      clientID: "myclientidforfia1-low",
+      client_secret:
+        "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+      order: null,
+      updatedAt: new Date("2019-04-24 17:09:17"),
+      updatedBy: "admin",
+      endSessionURL:
+        "https://fia1-low.docker.dev-franceconnect.fr/user/session/end",
+      response_types: ["code"],
+      id_token_signed_response_alg: "ES256",
+      token_endpoint_auth_method: "client_secret_post",
+      revocation_endpoint_auth_method: "client_secret_post",
+      id_token_encrypted_response_alg: "RSA-OAEP",
+      id_token_encrypted_response_enc: "A256GCM",
+      userinfo_signed_response_alg: "ES256",
+      userinfo_encrypted_response_alg: "RSA-OAEP",
+      userinfo_encrypted_response_enc: "A256GCM",
+      redirect_uris: [
+        "https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia1-low",
+      ],
+      post_logout_redirect_uris: [
+        "https://fca.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      ],
+    },
+  
+    // -- FIA - FIA2-LOW - Activated
+    "FIA2-LOW": {
+      uid: "fia2-low",
+      name: "fia2-low",
+      active: true,
+      display: true,
+      title: "Identity Provider 2 - eIDAS substanciel",
+      image: "fi-mock-substantiel.svg",
+      imageFocus: "fi-mock-substantiel.svg",
+      alt: "impots",
+      eidas: 2,
+      mailto: "",
+      featureHandlers: {
+        coreVerify: "core-fca-default-verify",
+        authenticationEmail: null,
+      },
+      specificText: "specific text fia2-low",
+      url: "https://fia2-low.docker.dev-franceconnect.fr/",
+      statusURL: "https://fia2-low.docker.dev-franceconnect.fr/",
+      authzURL: "https://fia2-low.docker.dev-franceconnect.fr/user/authorize",
+      tokenURL: "https://fia2-low.docker.dev-franceconnect.fr/user/token",
+      userInfoURL: "https://fia2-low.docker.dev-franceconnect.fr/api/user",
+      discoveryUrl:
+        "https://fia2-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      discovery: true,
+      clientID: "myclientidforfia2-low",
+      client_secret:
+        "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+      order: null,
+      updatedAt: new Date("2019-04-24 17:09:17"),
+      updatedBy: "admin",
+      endSessionURL:
+        "https://fia2-low.docker.dev-franceconnect.fr/user/session/end",
+      response_types: ["code"],
+      id_token_signed_response_alg: "ES256",
+      token_endpoint_auth_method: "client_secret_post",
+      revocation_endpoint_auth_method: "client_secret_post",
+      id_token_encrypted_response_alg: "",
+      id_token_encrypted_response_enc: "",
+      userinfo_signed_response_alg: "ES256",
+      userinfo_encrypted_response_alg: "",
+      userinfo_encrypted_response_enc: "",
+      redirect_uris: [
+        "https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia2-low",
+      ],
+      post_logout_redirect_uris: [
+        "https://fca.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      ],
+    },
+  
+    // -- FIA - FIA3-LOW - Deactivated but visible
+    "FIA3-LOW": {
+      uid: "fia-desactive-visible",
+      name: "fia3-low",
+      active: false,
+      display: true,
+      title: "Identity Provider 3 (désactivé)- eIDAS faible",
+      image: "fi-mock-faible.svg",
+      imageFocus: "fi-mock-faible.svg",
+      alt: "impots",
+      eidas: 1,
+      mailto: "",
+      featureHandlers: {
+        coreVerify: "core-fca-default-verify",
+        authenticationEmail: null,
+      },
+      specificText: "specific text fia3-low",
+      url: "https://fia3-low.docker.dev-franceconnect.fr/",
+      statusURL: "https://fia3-low.docker.dev-franceconnect.fr/",
+      authzURL: "https://fia3-low.docker.dev-franceconnect.fr/user/authorize",
+      tokenURL: "https://fia3-low.docker.dev-franceconnect.fr/user/token",
+      userInfoURL: "https://fia3-low.docker.dev-franceconnect.fr/api/user",
+      discoveryUrl:
+        "https://fia3-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      discovery: true,
+      clientID: "myclientidforfia3-low",
+      client_secret:
+        "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+      order: null,
+      updatedAt: new Date("2019-04-24 17:09:17"),
+      updatedBy: "admin",
+      endSessionURL:
+        "https://fia3-low.docker.dev-franceconnect.fr/user/session/end",
+      response_types: ["code"],
+      id_token_signed_response_alg: "ES256",
+      token_endpoint_auth_method: "client_secret_post",
+      revocation_endpoint_auth_method: "client_secret_post",
+      id_token_encrypted_response_alg: "",
+      id_token_encrypted_response_enc: "",
+      userinfo_signed_response_alg: "ES256",
+      userinfo_encrypted_response_alg: "",
+      userinfo_encrypted_response_enc: "",
+      redirect_uris: [
+        "https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia3-low",
+      ],
+      post_logout_redirect_uris: [
+        "https://fca.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      ],
+    },
+  
+    // -- FIA - FIA4-LOW - Activated - HS256
+    "FIA4-LOW": {
+      uid: "fia4-low",
+      name: "fia4-low",
+      active: true,
+      display: true,
+      title: "Identity Provider 4 - eIDAS élevé - HS256",
+      image: "fi-mock-eleve.svg",
+      imageFocus: "fi-mock-eleve.svg",
+      alt: "impots",
+      eidas: 3,
+      featureHandlers: {
+        coreVerify: "core-fca-default-verify",
+        authenticationEmail: null,
+      },
+      mailto: "",
+      specificText: "specific text fia4-low",
+      url: "https://fia4-low.docker.dev-franceconnect.fr/",
+      statusURL: "https://fia4-low.docker.dev-franceconnect.fr/",
+      authzURL: "https://fia4-low.docker.dev-franceconnect.fr/user/authorize",
+      tokenURL: "https://fia4-low.docker.dev-franceconnect.fr/user/token",
+      userInfoURL: "https://fia4-low.docker.dev-franceconnect.fr/api/user",
+      discoveryUrl:
+        "https://fia4-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      discovery: true,
+      clientID: "myclientidforfia4-low",
+      client_secret:
+        "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+      order: null,
+      updatedAt: new Date("2019-04-24 17:09:17"),
+      updatedBy: "admin",
+      endSessionURL:
+        "https://fia4-low.docker.dev-franceconnect.fr/user/session/end",
+      response_types: ["code"],
+      id_token_signed_response_alg: "HS256",
+      token_endpoint_auth_method: "client_secret_post",
+      revocation_endpoint_auth_method: "client_secret_post",
+      id_token_encrypted_response_alg: "RSA-OAEP",
+      id_token_encrypted_response_enc: "A256GCM",
+      userinfo_signed_response_alg: "HS256",
+      userinfo_encrypted_response_alg: "RSA-OAEP",
+      userinfo_encrypted_response_enc: "A256GCM",
+      redirect_uris: [
+        "https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia4-low",
+      ],
+      post_logout_redirect_uris: [
+        "https://fca.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      ],
+    },
+  
+    // -- FIA - FIA5-LOW - activated - RS256
+    "FIA5-LOW": {
+      uid: "fia5-low",
+      name: "fia5-low",
+      active: true,
+      display: true,
+      title: "Identity Provider 5 - eIDAS élevé - RS256",
+      image: "fi-mock-eleve.svg",
+      imageFocus: "fi-mock-eleve.svg",
+      alt: "impots",
+      eidas: 3,
+      featureHandlers: {
+        coreVerify: "core-fca-default-verify",
+        authenticationEmail: null,
+      },
+      mailto: "",
+      specificText: "specific text fia5-low",
+      url: "https://fia5-low.docker.dev-franceconnect.fr/",
+      statusURL: "https://fia5-low.docker.dev-franceconnect.fr/",
+      authzURL: "https://fia5-low.docker.dev-franceconnect.fr/user/authorize",
+      tokenURL: "https://fia5-low.docker.dev-franceconnect.fr/user/token",
+      userInfoURL: "https://fia5-low.docker.dev-franceconnect.fr/api/user",
+      discoveryUrl:
+        "https://fia5-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      discovery: true,
+      clientID: "myclientidforfia5-low",
+      client_secret:
+        "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+      order: null,
+      updatedAt: new Date("2019-04-24 17:09:17"),
+      updatedBy: "admin",
+      endSessionURL:
+        "https://fia5-low.docker.dev-franceconnect.fr/user/session/end",
+      response_types: ["code"],
+      id_token_signed_response_alg: "RS256",
+      token_endpoint_auth_method: "client_secret_post",
+      revocation_endpoint_auth_method: "client_secret_post",
+      id_token_encrypted_response_alg: "RSA-OAEP",
+      id_token_encrypted_response_enc: "A256GCM",
+      userinfo_signed_response_alg: "RS256",
+      userinfo_encrypted_response_alg: "RSA-OAEP",
+      userinfo_encrypted_response_enc: "A256GCM",
+      redirect_uris: [
+        "https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia5-low",
+      ],
+      post_logout_redirect_uris: [
+        "https://fca.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      ],
+    },
+};
+
+// -- IDPs ----------
+print("FIA > Initializing provider: fia1-low - Activated");
+db.provider.update({ name: "fia1-low" }, fia["FIA1-LOW"], { upsert: true });
+print("FIA > Initializing provider: fia2-low - Activated");
+db.provider.update({ name: "fia2-low" }, fia["FIA2-LOW"], { upsert: true });
+print("FIA > Initializing provider: fia3-low - Activated");
+db.provider.update({ name: "fia3-low" }, fia["FIA3-LOW"], { upsert: true });
+print("FIP > Initializing provider: fia4-low - Activated");
+db.provider.update({ name: "fia4-low" }, fia["FIA4-LOW"], { upsert: true });
+print("FIP > Initializing provider: fia5-low - Activated");
+db.provider.update({ name: "fia5-low" }, fia["FIA5-LOW"], { upsert: true });
+

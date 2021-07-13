@@ -16,7 +16,7 @@ const claims = JSON.stringify({
 describe('5.0.5 - Claims', () => {
   it('should passthrough amr value from FC to Eidas, and send back this value to SP', () => {
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       overrideParams: {

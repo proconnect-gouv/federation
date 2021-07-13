@@ -58,7 +58,7 @@ describe('8.0.1 - Scope', () => {
     cy.get('#get-authorize').click();
 
     // Choose IdP
-    cy.get(`#idp-fip1v2`).click();
+    cy.get(`#idp-fip1-high`).click();
 
     // Login
     authenticateWithIdp({
@@ -121,7 +121,7 @@ describe('8.0.1 - Scope', () => {
       cy.get('#get-authorize').click();
 
       // Choose IdP
-      cy.get(`#idp-fip1v2`).click();
+      cy.get(`#idp-fip1-high`).click();
 
       // Login
       authenticateWithIdp({
@@ -180,7 +180,7 @@ describe('8.0.1 - Scope', () => {
       cy.get('#get-authorize').click();
 
       // Choose IdP
-      cy.get(`#idp-fip1v2`).click();
+      cy.get(`#idp-fip1-high`).click();
 
       // Login
       authenticateWithIdp({
@@ -228,7 +228,7 @@ describe('8.0.1 - Scope', () => {
       cy.get('#get-authorize').click();
 
       // Choose IdP
-      cy.get(`#idp-fip1v2`).click();
+      cy.get(`#idp-fip1-high`).click();
 
       // Login
       authenticateWithIdp({
@@ -276,7 +276,7 @@ describe('8.0.1 - Scope', () => {
       cy.get('#get-authorize').click();
 
       // Choose IdP
-      cy.get(`#idp-fip1v2`).click();
+      cy.get(`#idp-fip1-high`).click();
 
       // Login
       authenticateWithIdp({

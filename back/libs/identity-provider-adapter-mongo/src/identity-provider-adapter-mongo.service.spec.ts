@@ -44,7 +44,7 @@ describe('IdentityProviderAdapterMongoService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uris: [
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-high',
       ],
       tokenURL:
         'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
@@ -113,7 +113,7 @@ describe('IdentityProviderAdapterMongoService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uris: [
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-high',
       ],
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention

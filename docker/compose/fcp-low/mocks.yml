@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   ####################
-  # SP Mocks V2
+  # SP Mocks
   ####################
 
   fsp1-low:

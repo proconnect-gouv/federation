@@ -11,7 +11,7 @@ describe('9.1 - Revoke token', () => {
       password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
 
     // Check user information
