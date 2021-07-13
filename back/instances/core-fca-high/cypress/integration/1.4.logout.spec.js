@@ -9,12 +9,12 @@ import {
 } from './mire.utils';
 
 describe('RP Initiated logout scenarios', () => {
-  // -- replace by either `fip1v2` or `fia1v2`
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  // -- replace by either `fip1-high` or `fia1-low`
+  const idpId = `${Cypress.env('IDP_NAME')}1-low`;
 
   it('should log out from FC+ with post logout redirect uri', () => {
     const SUB =
-      '3c206a129b97806da2726d502f314a875053942ef9ce3650a2e48b17a1ddb191';
+      '9aeda75d9da1edba7051a7d16e413a72d5206f16cf68c5872dd4894558dde16a';
 
     const params = {
       userName: 'test',
@@ -34,18 +34,18 @@ describe('RP Initiated logout scenarios', () => {
 
     logout();
 
-    const { SP_ROOT_URL } = getServiceProvider('fsa1v2');
+    const { SP_ROOT_URL } = getServiceProvider('fsa1-low');
     cy.url().should('include', `${SP_ROOT_URL}/`);
   });
 
   it('should log out from FC+ without post logout redirect uri', () => {
     const SUB =
-      'f0aad5368ab513bac252935ebe2b595e254211879abb530b142069dd082ff4aa';
+      '85cd916363d19e8b77ea6e7caf7977381b8c5db6505195a5efd02d57e6087f3b';
 
     const params = {
       userName: 'test',
       password: '123',
-      sp: 'fsa2v2',
+      sp: 'fsa2-low',
       idpId,
     };
 

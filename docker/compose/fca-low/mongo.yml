@@ -1,0 +1,20 @@
+version: "3.4"
+
+####################
+####################
+services:
+  mongo-fca-low:
+    build:
+      context: "${WORKING_DIR}"
+      dockerfile: "${WORKING_DIR}/builds/mongodb/Dockerfile"
+    hostname: mongo-fca-low
+    volumes:
+      - "${VOLUMES_DIR}/mongo-fca-low/scripts:/opt/scripts"
+      - "${VOLUMES_DIR}/mongo-fca-low/initdb.d:/docker-entrypoint-initdb.d"
+    environment:
+      # @todo rename `corev2` into `core-fca`
+      - "MONGO_INITDB_DATABASE=corev2"
+      - "MONGO_INITDB_ROOT_USERNAME=rootAdmin"
+      - "MONGO_INITDB_ROOT_PASSWORD=pass"
+    networks:
+      - data

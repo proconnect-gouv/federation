@@ -7,7 +7,7 @@ import {
 describe('Idp activation & visibility', () => {
   // -- replace by either `fip` or `fia`
   const idpId = `${Cypress.env('IDP_NAME')}`;
-  const { IDP_INTERACTION_URL } = getIdentityProvider(`${idpId}1v2`);
+  const { IDP_INTERACTION_URL } = getIdentityProvider(`${idpId}1-low`);
 
   const mireUrl = new RegExp('/interaction/[^/]+');
 
@@ -18,7 +18,7 @@ describe('Idp activation & visibility', () => {
       'MOCK - Ministére de la transition écologique - ALL FIS - SORT 2',
     );
     cy.get(
-      '#identity-provider-search input[name="providerUid"][value="fia1v2"]',
+      '#identity-provider-search input[name="providerUid"][value="fia1-low"]',
     ).should('exist');
   });
 
@@ -31,7 +31,7 @@ describe('Idp activation & visibility', () => {
     );
 
     cy.get(
-      '#identity-provider-search input[name="providerUid"][value="fia1v2"]',
+      '#identity-provider-search input[name="providerUid"][value="fia1-low"]',
     ).should('exist');
 
     cy.contains('Identity Provider 1 - eIDAS élevé').click();
@@ -45,7 +45,7 @@ describe('Idp activation & visibility', () => {
     cy.get('#fi-search-term').type('mock - ministére de la');
 
     cy.get(
-      '#identity-provider-search input[name="providerUid"][value="fia1v2"]',
+      '#identity-provider-search input[name="providerUid"][value="fia1-low"]',
     ).should('exist');
 
     cy.contains('Identity Provider 1 - eIDAS élevé').click();
@@ -59,7 +59,7 @@ describe('Idp activation & visibility', () => {
     cy.get('#fi-search-term').type('mock - ministere de la');
 
     cy.get(
-      '#identity-provider-search input[name="providerUid"][value="fia1v2"]',
+      '#identity-provider-search input[name="providerUid"][value="fia1-low"]',
     ).should('exist');
 
     cy.contains('Identity Provider 1 - eIDAS élevé').click();
@@ -88,11 +88,11 @@ describe('Idp activation & visibility', () => {
     cy.get('#fi-search-term').type(
       'MOCK - Ministére de la transition écologique - ALL FIS - SORT 2',
     );
-    cy.get(`#fca-search-idp-${idpId}1v2 > input[name="csrfToken"]`)
+    cy.get(`#fca-search-idp-${idpId}1-low > input[name="csrfToken"]`)
       // Reset CSRF form value
       .invoke('attr', 'value', 'INVALID-CSRF-VALUE');
     // When
-    cy.get(`#idp-${idpId}1v2-button`).click();
+    cy.get(`#idp-${idpId}1-low-button`).click();
     // Then
     cy.url().should('contain', '/api/v2/redirect-to-idp');
     cy.hasError('Y190007');
@@ -105,20 +105,20 @@ describe('Idp activation & visibility', () => {
       'MOCK - Ministére de la transition écologique - ALL FIS - SORT 2',
     );
     cy.get(
-      '#identity-provider-search input[name="providerUid"][value="fia1v2"]',
+      '#identity-provider-search input[name="providerUid"][value="fia1-low"]',
     )
       .first()
       .next()
       .click();
     cy.url().should(
       'contain',
-      getIdentityProvider('fia1v2').IDP_INTERACTION_URL,
+      getIdentityProvider('fia1-low').IDP_INTERACTION_URL,
     );
   });
 
   // TODO -> find how to update ministry
   describe('No app restart needed', () => {
-    const spId = `${Cypress.env('SP_NAME')}1v2`;
+    const spId = `${Cypress.env('SP_NAME')}1-low`;
 
     beforeEach(() => {
       cy.resetdb();

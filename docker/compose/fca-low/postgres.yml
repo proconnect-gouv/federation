@@ -1,0 +1,13 @@
+version: "3.4"
+
+####################
+####################
+services:
+  pg-exploitation-fca:
+    image: postgres:11
+    environment:
+      - "POSTGRES_DB=pg-db"
+      - "POSTGRES_USER=pg-user"
+      - "POSTGRES_PASSWORD=pg-password"
+    networks:
+      - data

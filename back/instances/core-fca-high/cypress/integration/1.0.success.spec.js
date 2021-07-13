@@ -9,11 +9,11 @@ import {
 } from './mire.utils';
 
 const BASIC_SUB =
-  '3c206a129b97806da2726d502f314a875053942ef9ce3650a2e48b17a1ddb191';
+  '9aeda75d9da1edba7051a7d16e413a72d5206f16cf68c5872dd4894558dde16a';
 
 describe('Successful scenarios', () => {
-  // -- replace by either `fip1v2` or `fia1v2`
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  // -- replace by either `fip1-high` or `fia1-low`
+  const idpId = `${Cypress.env('IDP_NAME')}1-low`;
 
   it('should redirect to FC website', () => {
     cy.request({
@@ -64,7 +64,7 @@ describe('Successful scenarios', () => {
   });
 
   it('should return to the SP with an "invalid_request" error if the query does not contain the "openid" scope', () => {
-    const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
+    const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1-low`);
     // First visit SP home page to initialize its session.
     cy.visit(SP_ROOT_URL);
     const url = getAuthorizeUrl({
@@ -90,8 +90,8 @@ describe('Successful scenarios', () => {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
-      idpId: 'fia2v2',
-      sp: `${Cypress.env('SP_NAME')}4v2`,
+      idpId: 'fia2-low',
+      sp: `${Cypress.env('SP_NAME')}4-low`,
     };
     beforeSuccessScenario(params);
     basicSuccessScenario(params.idpId);
@@ -103,7 +103,7 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      'e22b76f45ef103791cd297db7878b3d88769cc5a2e5c9b442c21200cc9e266c5',
+      'e7c818d230bf4974c052d381273754e71aab72a31b35b6b2f4dec8909d5034f2',
     );
   });
 
@@ -112,8 +112,8 @@ describe('Successful scenarios', () => {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
-      idpId: 'fia4v2',
-      sp: `${Cypress.env('SP_NAME')}4v2`,
+      idpId: 'fia4-low',
+      sp: `${Cypress.env('SP_NAME')}4-low`,
     };
     beforeSuccessScenario(params);
     basicSuccessScenario(params.idpId);
@@ -125,7 +125,7 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      'f19ef7fbbeff0e10ada8fd0e26cee5b4d80c262bf880cca65c8e0cc5300584ca',
+      'b2f17952c6bcf540023532988374d12ca1a79559b298e9625fec8d93c85a5b2e',
     );
   });
 
@@ -134,8 +134,8 @@ describe('Successful scenarios', () => {
       userName: 'test',
       password: '123',
       eidasLevel: 1,
-      idpId: 'fia5v2',
-      sp: `${Cypress.env('SP_NAME')}4v2`,
+      idpId: 'fia5-low',
+      sp: `${Cypress.env('SP_NAME')}4-low`,
     };
     beforeSuccessScenario(params);
     basicSuccessScenario(params.idpId);
@@ -147,7 +147,7 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      'c3950ef2dbb8b84eff26ed89d472b5443ffc0571859c185114bc4c536d6a4cbf',
+      'e4acbd0edaf64d5a12e85586c91445b4ef5fbf1d744bdfc3ed46910b536d510c',
     );
   });
 });

@@ -1,7 +1,7 @@
 import { checkInStringifiedJson, basicScenario } from './mire.utils';
 
 describe('Entity', () => {
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  const idpId = `${Cypress.env('IDP_NAME')}1-low`;
 
   it('should have the same client Sub from 2 SP with same entityId', () => {
     basicScenario({
@@ -19,7 +19,7 @@ describe('Entity', () => {
 
     basicScenario({
       idpId,
-      sp: `${Cypress.env('SP_NAME')}1v2`,
+      sp: `${Cypress.env('SP_NAME')}1-low`,
     });
 
     // return to FS

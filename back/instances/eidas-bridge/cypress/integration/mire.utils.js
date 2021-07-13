@@ -318,7 +318,7 @@ export function checkInformationsFrSpEuIdp() {
  * @param {*} params
  */
 export function chooseIdp(params = {}) {
-  const { idpId = `${Cypress.env('IDP_NAME')}1v2` } = params;
+  const { idpId = `${Cypress.env('IDP_NAME')}1-high` } = params;
   cy.url().should(
     'include',
     `${Cypress.env('CORE_ROOT_URL')}/api/v2/interaction`,
@@ -335,7 +335,7 @@ export function authenticateToIdp(params = {}) {
 
   const baseUrl = Cypress.env('IDP_ROOT_URL').replace(
     'IDP_NAME',
-    `${Cypress.env('IDP_NAME')}1v2`,
+    `${Cypress.env('IDP_NAME')}1-high`,
   );
 
   cy.url().should('include', `${baseUrl}/interaction`);

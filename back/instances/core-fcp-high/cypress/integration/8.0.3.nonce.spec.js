@@ -24,7 +24,7 @@ describe('8.0.3 - nonce', () => {
   });
 
   it('should send the nonce through the authorize url (FC as FS)', () => {
-    const idpId = 'fip1v2';
+    const idpId = 'fip1-high';
     const idpInfo = getIdentityProvider(idpId);
 
     const url = getAuthorizeUrl();

@@ -31,12 +31,12 @@ describe('IdentityProviderAdapterEnvService', () => {
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     post_logout_redirect_uris: [
-      'https://fsp1v2.docker.dev-franceconnect.fr/logout-callback',
+      'https://fsp1-high.docker.dev-franceconnect.fr/logout-callback',
     ],
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     redirect_uris: [
-      'https://fsp1v2.docker.dev-franceconnect.fr/login-callback',
+      'https://fsp1-high.docker.dev-franceconnect.fr/login-callback',
     ],
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -61,7 +61,7 @@ describe('IdentityProviderAdapterEnvService', () => {
     userinfo_signed_response_alg: 'ES256',
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    jwks_uri: 'https://fsp1v2.docker.dev-franceconnect.fr/jwks_uri',
+    jwks_uri: 'https://fsp1-high.docker.dev-franceconnect.fr/jwks_uri',
   };
 
   const env = {
@@ -81,12 +81,12 @@ describe('IdentityProviderAdapterEnvService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       post_logout_redirect_uris: [
-        'https://fsp1v2.docker.dev-franceconnect.fr/logout-callback',
+        'https://fsp1-high.docker.dev-franceconnect.fr/logout-callback',
       ],
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uris: [
-        'https://fsp1v2.docker.dev-franceconnect.fr/login-callback',
+        'https://fsp1-high.docker.dev-franceconnect.fr/login-callback',
       ],
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -111,7 +111,7 @@ describe('IdentityProviderAdapterEnvService', () => {
       userinfo_signed_response_alg: 'ES256',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      jwks_uri: 'https://fsp1v2.docker.dev-franceconnect.fr/jwks_uri',
+      jwks_uri: 'https://fsp1-high.docker.dev-franceconnect.fr/jwks_uri',
     },
   };
 

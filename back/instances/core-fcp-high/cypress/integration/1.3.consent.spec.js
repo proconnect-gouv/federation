@@ -8,7 +8,7 @@ describe('1.3 - get user consent', () => {
 
     cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
-    cy.get('#idp-fip1v2-title').click();
+    cy.get('#idp-fip1-high-title').click();
     cy.get('form').submit();
     cy.get('#fc-ask-consent')
       .should('exist')
@@ -21,7 +21,7 @@ describe('1.3 - get user consent', () => {
     cy.get('#consent').click();
     cy.hasBusinessLog({
       event: 'FC_DATATRANSFER:CONSENT:IDENTITY',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
     cy.get('.nav-logout').click();
   });
@@ -30,14 +30,14 @@ describe('1.3 - get user consent', () => {
     cy.visit(Cypress.env('SP6_ROOT_URL'));
     cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
-    cy.get('#idp-fip1v2-title').click();
+    cy.get('#idp-fip1-high-title').click();
     cy.get('form').submit();
     cy.get('#fc-ask-consent').should('not.exist');
     cy.get('#consent').should('not.be.disabled').click();
 
     cy.hasBusinessLog({
       event: 'FC_DATATRANSFER:INFORMATION:IDENTITY',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
     cy.get('.nav-logout').click();
   });
@@ -46,13 +46,13 @@ describe('1.3 - get user consent', () => {
     cy.visit(Cypress.env('SP1_ROOT_URL'));
     cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
-    cy.get('#idp-fip1v2-title').click();
+    cy.get('#idp-fip1-high-title').click();
     cy.get('form').submit();
     cy.get('#fc-ask-consent').should('not.exist');
     cy.get('#consent').should('not.be.disabled').click();
     cy.hasBusinessLog({
       event: 'FC_DATATRANSFER:INFORMATION:IDENTITY',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
     cy.get('.nav-logout').click();
   });
@@ -76,7 +76,7 @@ describe('1.3 - get user consent', () => {
     cy.get('#acrSelector').select('eidas2');
     cy.get('#get-authorize').click();
 
-    cy.get('#idp-fip1v2-title').click();
+    cy.get('#idp-fip1-high-title').click();
     cy.get('form').submit();
 
     cy.get('main section .section__identity')
@@ -87,7 +87,7 @@ describe('1.3 - get user consent', () => {
 
     cy.hasBusinessLog({
       event: 'FC_DATATRANSFER:INFORMATION:ANONYMOUS',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
   });
 });

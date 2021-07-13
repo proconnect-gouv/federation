@@ -1,7 +1,7 @@
 import { beforeSuccessScenario, chooseIdpOnCore } from './mire.utils';
 
 describe('Identity Provider', () => {
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  const idpId = `${Cypress.env('IDP_NAME')}1-low`;
 
   it('should transmit the client_id of the SP that want to use AgentConnect', () => {
     const params = {
