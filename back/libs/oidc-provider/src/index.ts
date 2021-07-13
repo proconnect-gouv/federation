@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 export * from './oidc-provider.module';
 export * from './oidc-provider.service';
 export * from './interfaces';
