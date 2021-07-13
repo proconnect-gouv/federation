@@ -1,10 +1,11 @@
+import * as uuid from 'uuid';
 import { mocked } from 'ts-jest/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { LoggerService } from '@fc/logger';
 import { AccountService } from './account.service';
-import { IInteraction } from './interfaces';
-import * as uuid from 'uuid';
+import { IInteraction } from '../interfaces';
+import { Account } from '../schemas';
 
 jest.mock('uuid');
 
@@ -14,6 +15,7 @@ describe('AccountService', () => {
   const loggerMock = {
     setContext: jest.fn(),
     debug: jest.fn(),
+    trace: jest.fn(),
   };
 
   const accountModel = getModelToken('Account');
@@ -60,7 +62,7 @@ describe('AccountService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('storeInteraction', () => {
+  describe('storeInteraction()', () => {
     // Given
     const identityHash = 'my identityHash';
     const interactionMock = { identityHash } as IInteraction;
@@ -105,7 +107,7 @@ describe('AccountService', () => {
     });
   });
 
-  describe('getAccountWithInteraction', () => {
+  describe('getAccountWithInteraction()', () => {
     const identityHash = 'my identityHash mock';
     const id = 'mock-id';
     const newInteractionMock = {
@@ -134,6 +136,7 @@ describe('AccountService', () => {
         lastConnection: new Date('2020-05-01'),
       });
     });
+
     it('should return an object with idp and sp arrays when an account exists', async () => {
       // Given
       const databaseInteractionMock = {
@@ -193,7 +196,8 @@ describe('AccountService', () => {
       });
     });
   });
-  describe('isBlocked', () => {
+
+  describe('isBlocked()', () => {
     const identityHash = 'my identityHash mock';
     it('should request with condition active = false', async () => {
       // When
@@ -205,6 +209,7 @@ describe('AccountService', () => {
         active: false,
       });
     });
+
     it('should return false if no blocked record found', async () => {
       // Given
       findOneSpy.mockResolvedValueOnce(null);
@@ -213,6 +218,7 @@ describe('AccountService', () => {
       // Then
       expect(result).toBe(false);
     });
+
     it('should return true if  blocked record found', async () => {
       // Given
       findOneSpy.mockResolvedValueOnce({});
@@ -220,6 +226,39 @@ describe('AccountService', () => {
       const result = await service.isBlocked(identityHash);
       // Then
       expect(result).toBe(true);
+    });
+  });
+
+  describe('getAccountByIdentityHash()', () => {
+    it('Should return an `Account` object from an `identityHash`', async () => {
+      // Given
+      const identityHashMock = 'identityHashMockValue';
+      const accountMock: Account = {
+        createdAt: new Date(),
+        id: '0001',
+        updatedAt: new Date(),
+        lastConnection: new Date(),
+        identityHash: identityHashMock,
+        active: true,
+        idpFederation: {},
+        spFederation: {},
+      } as Account;
+      findOneSpy.mockResolvedValueOnce(accountMock);
+      // When
+      const account = service['getAccountByIdentityHash'](identityHashMock);
+      // Then
+      await expect(account).resolves.toBe(accountMock);
+    });
+
+    it('Should return an empty Account object if no account have been found.', async () => {
+      // Given
+      const identityHashMock = 'identityHashMockValue';
+      const accountMock: Account = { id: null } as Account;
+      findOneSpy.mockResolvedValueOnce(null);
+      // When
+      const account = service['getAccountByIdentityHash'](identityHashMock);
+      // Then
+      await expect(account).resolves.toEqual(accountMock);
     });
   });
 });
