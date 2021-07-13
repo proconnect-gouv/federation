@@ -37,9 +37,9 @@ Press the button configure and add the localhosts:
 
 This is the configuration to update when the repository `fi-mock` will be created within `fc`/apps
 
-// -- FCP - FIP1v2
+// -- FCP - FIP1-HIGH
 // {
-//   "name": "FCP - FIP1v2",
+//   "name": "FCP - FIP1-HIGH",
 //   "type": "node",
 //   "request": "attach",
 //   "port": 9236, // <-- @see /fc/docker/compose/fcp-high.yml:333
@@ -58,9 +58,9 @@ This is the configuration to update when the repository `fi-mock` will be create
 //   "sourceMaps": true,
 // },
 
-// -- FCP - FIP2v2
+// -- FCP - FIP2-HIGH
 // {
-//   "name": "FCP - FIP2v2",
+//   "name": "FCP - FIP2-HIGH",
 //   "type": "node",
 //   "request": "attach",
 //   "port": 9237, // <-- @see /fc/docker/compose/fcp-high.yml:333

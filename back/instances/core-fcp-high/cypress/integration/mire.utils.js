@@ -291,7 +291,7 @@ export function validateConsent() {
 }
 
 export function authenticateWithIdp(params = {}) {
-  const { login, password = '123', idpId = 'fip1v2' } = params;
+  const { login, password = '123', idpId = 'fip1-high' } = params;
 
   const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
   // FI: Authenticate
@@ -411,14 +411,14 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
 /**
  * Retrieve identity provider information.
  *
- * @param {string} idpId, Default: 'fip1v2'
+ * @param {string} idpId, Default: 'fip1-high'
  * @returns {Object} Ex: {
- *                     "ID": "fip1v2",
- *                     "IDP_ROOT_URL": "https://fip1v2.docker.dev-franceconnect.fr",
- *                     "IDP_INTERACTION_URL": "https://fip1v2.docker.dev-franceconnect.fr/interaction"
+ *                     "ID": "fip1-high",
+ *                     "IDP_ROOT_URL": "https://fip1-high.docker.dev-franceconnect.fr",
+ *                     "IDP_INTERACTION_URL": "https://fip1-high.docker.dev-franceconnect.fr/interaction"
  *                   }
  */
-export function getIdentityProvider(idpId = 'fip1v2') {
+export function getIdentityProvider(idpId = 'fip1-high') {
   return Cypress.env('IDP_AVAILABLES').find(({ ID }) => ID === idpId);
 }
 

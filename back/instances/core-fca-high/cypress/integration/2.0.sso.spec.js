@@ -2,8 +2,8 @@ import {beforeSuccessScenario, afterSuccessScenario, basicSuccessScenario, check
 
 describe('No SSO', () => {
   // Given
-  // -- replace by either `fip1v2` or `fia1v2`
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  // -- replace by either `fip1-high` or `fia1-low`
+  const idpId = `${Cypress.env('IDP_NAME')}1-low`;
 
   const loginInfo = {
     userName: 'test',
@@ -29,7 +29,7 @@ describe('No SSO', () => {
     //   ...Then log  into SP "B"
     const params = {
       ...loginInfo,
-      sp: `${Cypress.env('SP_NAME')}2v2`,
+      sp: `${Cypress.env('SP_NAME')}2-low`,
     };
     beforeSuccessScenario(params);
     basicSuccessScenario(params.idpId);

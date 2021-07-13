@@ -24,15 +24,15 @@ eidas-bridge:
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
     - docker-stack up eidas
-    - docker-stack dep core-fcp-high # eidas-bridge fsp1v2 are included in core-fcp-high (monorepo)
-    - docker-stack start core-fcp-high eidas-bridge csmr-hsm rnipp fsp1v2 fsp2v2 fsp3v2 fip1v2 fip2v2 fip6v2 fip7v2
+    - docker-stack dep core-fcp-high # eidas-bridge fsp1-high are included in core-fcp-high (monorepo)
+    - docker-stack start core-fcp-high eidas-bridge csmr-hsm rnipp fsp1-high fsp2-high fsp3-high fip1-high fip2-high fip6-high fip7-high
     # ## -- Build like for prod
-    #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
+    #- docker-stack exec fsp1-high yarn build mock-service-provider-high # Will build for fsp2-high as well
     #- docker-stack exec core-fcp-high yarn build eidas-bridge
     #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
     # ## -- Launch like prod
-    #- docker-stack exec fsp1v2 yarn start:prod:mock-service-provider-high &
-    #- docker-stack exec fsp2v2 yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsp1-high yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsp2-high yarn start:prod:mock-service-provider-high &
     #- docker-stack exec core-fcp-high yarn start:prod:eidas-bridge &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
@@ -47,13 +47,13 @@ eidas-bridge:
       (docker cp fc_eidas-bridge_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
-      (docker cp fc_fip1v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
-      (docker cp fc_fip2v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
-      (docker cp fc_fip6v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
-      (docker cp fc_fip7v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
-      (docker cp fc_fsp1v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
-      (docker cp fc_fsp2v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
-      (docker cp fc_fsp3v2_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fip1-high_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fip2-high_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fip6-high_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fip7-high_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fsp1-high_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fsp2-high_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
+      (docker cp fc_fsp3-high_1:/tmp/.pm2/logs back/instances/eidas-bridge/cypress || true) &&
       (docker cp fc-rp-all:/var/log/nginx back/instances/eidas-bridge/cypress/logs || true) &&
       exit 1)
   interruptible: true

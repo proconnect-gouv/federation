@@ -10,9 +10,9 @@
       "name": "FCA - ALL",
       "configurations": [
         "FCA", 
-        "FCA - FIA1v2", 
+        "FCA - FIA1-LOW", 
         "FCA - FIA2v2", 
-        "FCA - FSA1v2",
+        "FCA - FSA1-LOW",
         "FCA - FSA2v2",
         "FCA - FSA3v2",
       ],
@@ -21,7 +21,7 @@
       "name": "FCP - ALL",
       "configurations": [
         "FCP",
-        "FCP - FSP1v2",
+        "FCP - FSP1-HIGH",
         "FCP - FSP2v2",
         "FCP - FSP3v2",
         "FCP - Eidas-Bridge",
@@ -54,7 +54,7 @@
       "sourceMaps": true,
     },
     {
-      "name": "FCA - FIA1v2",
+      "name": "FCA - FIA1-LOW",
       "type": "node",
       "request": "attach",
       "port": 9230,
@@ -91,7 +91,7 @@
       "sourceMaps": true,
     },
     {
-      "name": "FCA - FSA1v2",
+      "name": "FCA - FSA1-LOW",
       "type": "node",
       "request": "attach",
       "port": 9231,
@@ -186,7 +186,7 @@
       "sourceMaps": true,
     },
     {
-      "name": "FCP - FSP1v2",
+      "name": "FCP - FSP1-HIGH",
       "type": "node",
       "request": "attach",
       "port": 9238,

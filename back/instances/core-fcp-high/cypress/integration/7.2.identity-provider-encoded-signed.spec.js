@@ -5,8 +5,8 @@ import {
 } from './mire.utils';
 
 describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () => {
-  it('should complete a workcycle for [fip13v2] : eIDAS élevé - crypted (ECDH-ES + A256GCM) - signed (ES256)', () => {
-    const idpId = 'fip13v2';
+  it('should complete a workcycle for [fip13-high] : eIDAS élevé - crypted (ECDH-ES + A256GCM) - signed (ES256)', () => {
+    const idpId = 'fip13-high';
 
     basicSuccessScenario({
       userName: 'test',
@@ -30,8 +30,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
     );
   });
 
-  it('should complete a workcycle for [fip14v2] : eIDAS élevé - crypted (RSA-OAEP + A256GCM) - signed (RS256)', () => {
-    const idpId = 'fip14v2';
+  it('should complete a workcycle for [fip14-high] : eIDAS élevé - crypted (RSA-OAEP + A256GCM) - signed (RS256)', () => {
+    const idpId = 'fip14-high';
 
     basicSuccessScenario({
       userName: 'test',
@@ -55,8 +55,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
     );
   });
 
-  it('should complete a workcycle for [fip15v2] : eIDAS substantiel - crypted (ECDH-ES + A256GCM) - signed (ES256)', () => {
-    const idpId = 'fip15v2';
+  it('should complete a workcycle for [fip15-high] : eIDAS substantiel - crypted (ECDH-ES + A256GCM) - signed (ES256)', () => {
+    const idpId = 'fip15-high';
 
     basicSuccessScenario({
       userName: 'test',
@@ -80,8 +80,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
     );
   });
 
-  it('should complete a workcycle for [fip16v2] : eIDAS substantiel - crypted (RSA-OAEP + A256GCM) - signed (RS256)', () => {
-    const idpId = 'fip16v2';
+  it('should complete a workcycle for [fip16-high] : eIDAS substantiel - crypted (RSA-OAEP + A256GCM) - signed (RS256)', () => {
+    const idpId = 'fip16-high';
 
     basicSuccessScenario({
       userName: 'test',
@@ -105,8 +105,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
     );
   });
 
-  it('should complete a workcycle for [fip17v2] : eIDAS substantiel - crypted (none) - signed (ES256)', () => {
-    const idpId = 'fip17v2';
+  it('should complete a workcycle for [fip17-high] : eIDAS substantiel - crypted (none) - signed (ES256)', () => {
+    const idpId = 'fip17-high';
 
     basicSuccessScenario({
       userName: 'test',
@@ -130,8 +130,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
     );
   });
 
-  it('should complete a workcycle for [fip18v2] : eIDAS faible - crypted (none) - signed (ES256)', () => {
-    const idpId = 'fip18v2';
+  it('should complete a workcycle for [fip18-high] : eIDAS faible - crypted (none) - signed (ES256)', () => {
+    const idpId = 'fip18-high';
 
     basicSuccessScenario({
       userName: 'test',
@@ -155,8 +155,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
     );
   });
 
-  it('should complete a workcycle for [fip19v2] : eIDAS faible - crypted (none) - signed (RS256)', () => {
-    const idpId = 'fip19v2';
+  it('should complete a workcycle for [fip19-high] : eIDAS faible - crypted (none) - signed (RS256)', () => {
+    const idpId = 'fip19-high';
 
     basicSuccessScenario({
       userName: 'test',
@@ -180,8 +180,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
     );
   });
 
-  it('should complete a workcycle for [fip20v2] : eIDAS faible - crypted (none) - signed (HS256)', () => {
-    const idpId = 'fip20v2';
+  it('should complete a workcycle for [fip20-high] : eIDAS faible - crypted (none) - signed (HS256)', () => {
+    const idpId = 'fip20-high';
 
     basicSuccessScenario({
       userName: 'test',

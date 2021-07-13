@@ -7,8 +7,8 @@ import {
 } from './mire.utils';
 
 describe('Session', () => {
-  // -- replace by either `fip1v2` or `fia1v2`
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  // -- replace by either `fip1-high` or `fia1-low`
+  const idpId = `${Cypress.env('IDP_NAME')}1-low`;
 
   /**
    * @TODO #306 Backport this test from core-fcp :
@@ -48,7 +48,7 @@ describe('Session', () => {
   });
 
   it('should have two cookies stored for SP with the property `sameSite` value set to `lax`', () => {
-    const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
+    const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1-low`);
     cy.visit(SP_ROOT_URL);
     cy.getCookies()
       .should('have.length', 2)
