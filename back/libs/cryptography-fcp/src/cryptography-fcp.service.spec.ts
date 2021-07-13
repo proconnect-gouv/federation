@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
 import { CryptographyFcpService } from './cryptography-fcp.service';
 import { IPivotIdentity } from './interfaces';
 
@@ -10,6 +11,13 @@ describe('CryptographyFcpService', () => {
   const configMock = {
     get: jest.fn(),
   };
+
+  const loggerMock = {
+    setContext: jest.fn(),
+    debug: jest.fn(),
+    trace: jest.fn(),
+  };
+
   const mockEncryptKey = 'p@ss p@rt0ut';
   const cryptographyKeyMock = 'Méfaits accomplis...';
 
@@ -17,6 +25,7 @@ describe('CryptographyFcpService', () => {
     hash: jest.fn(),
     decrypt: jest.fn(),
   };
+
   const pivotIdentityMock: IPivotIdentity = {
     // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -35,8 +44,15 @@ describe('CryptographyFcpService', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CryptographyService, ConfigService, CryptographyFcpService],
+      providers: [
+        LoggerService,
+        CryptographyService,
+        ConfigService,
+        CryptographyFcpService,
+      ],
     })
+      .overrideProvider(LoggerService)
+      .useValue(loggerMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
       .overrideProvider(CryptographyService)

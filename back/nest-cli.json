@@ -15,7 +15,9 @@
       "sourceRoot": "instances/core-fca-high/src",
       "compilerOptions": {
         "tsConfigPath": "instances/core-fca-high/tsconfig.app.json",
-        "assets": ["../../../apps/core-fca/**/*.ejs"]
+        "assets": [
+          "../../../apps/core-fca/**/*.ejs"
+        ]
       }
     },
     "eidas-bridge-instance": {
@@ -706,6 +708,15 @@
       "sourceRoot": "libs/eidas-country/src",
       "compilerOptions": {
         "tsConfigPath": "libs/eidas-country/tsconfig.lib.json"
+      }
+    },
+    "elasticsearch": {
+      "type": "library",
+      "root": "libs/elasticsearch",
+      "entryFile": "index",
+      "sourceRoot": "libs/elasticsearch/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/elasticsearch/tsconfig.lib.json"
       }
     }
   }
