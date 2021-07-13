@@ -1,0 +1,36 @@
+version: "3.4"
+
+####################
+####################
+services:
+  ####################
+  ##
+  ##   FCA
+  ##   chrome://inspect/#devices
+  ##
+  ####################
+
+  fca-front:
+    hostname: fca-front
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "squid"
+      - "fca"
+    volumes:
+      - "${VOLUMES_DIR}/src/fc/front:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+    env_file:
+      - "${COMPOSE_DIR}/shared/.env/base-app.env"
+    environment:
+      - "API_PROXY_HOST=http://fca:3000"
+      - "API_PROXY_FOR_PATH=/api/v2"
+      - "VIRTUAL_HOST=fca-front.docker.dev-franceconnect.fr"
+      - "EVT_LOG_FILE=/var/log/app/fca-front.log"
+    networks:
+      - fc
+    command: "pm2 logs"

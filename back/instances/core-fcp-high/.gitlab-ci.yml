@@ -23,20 +23,20 @@ core-fcp-high:
     - ln -s $FC_ROOT/fc/front/apps/user-dashboard $FC_ROOT/fc/docker/volumes/src/user-dashboard
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
-    - docker-stack up fcp-high
+    - docker-stack up all-fcp-high
     - docker-stack dep core-fcp-high
     - docker-stack start \
       csmr-hsm rnipp \
-      fsp1v2 fsp2v2 fsp5v2 fsp6v2 \
-      fip1v2 fip2v2 fip13v2 fip14v2 fip15v2 fip16v2 fip17v2 fip18v2 fip19v2 fip20v2 \
+      fsp1-high fsp2-high fsp5-high fsp6-high \
+      fip1-high fip2-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
       core-fcp-high
     # ## -- Build like for prod
-    #- docker-stack exec fsp1v2 yarn build mock-service-provider-high # Will build for fsp2v2 as well
+    #- docker-stack exec fsp1-high yarn build mock-service-provider-high # Will build for fsp2-high as well
     #- docker-stack exec core-fcp-high yarn build core-fcp-high
     #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
     # ## -- Launch like prod
-    #- docker-stack exec fsp1v2 yarn start:prod:mock-service-provider-high &
-    #- docker-stack exec fsp2v2 yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsp1-high yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsp2-high yarn start:prod:mock-service-provider-high &
     #- docker-stack exec core-fcp-high yarn start:prod:core-fcp-high &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
@@ -50,19 +50,19 @@ core-fcp-high:
       (docker cp fc_core-fcp-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fip1v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fip13v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fip14v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fip15v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fip16v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fip17v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fip18v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fip19v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fip20v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fsp1v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fsp2v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fsp5v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fsp6v2_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fip1-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fip13-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fip14-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fip15-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fip16-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fip17-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fip18-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fip19-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fip20-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fsp1-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fsp2-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fsp5-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
+      (docker cp fc_fsp6-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc-rp-all:/var/log/nginx back/instances/core-fcp-high/cypress/logs || true) &&
       exit 1)
   interruptible: true

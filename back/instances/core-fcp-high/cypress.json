@@ -16,76 +16,76 @@
     "IDP_NAME": "fip",
     "IDP_AVAILABLES": [
       {
-        "ID": "fip1v2",
-        "IDP_ROOT_URL": "https://fip1v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip1v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip1-high",
+        "IDP_ROOT_URL": "https://fip1-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip1-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip2v2",
-        "IDP_ROOT_URL": "https://fip2v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip2v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip2-high",
+        "IDP_ROOT_URL": "https://fip2-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip2-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip6v2",
-        "IDP_ROOT_URL": "https://fip6v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip6v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip6-high",
+        "IDP_ROOT_URL": "https://fip6-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip6-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip7v2",
-        "IDP_ROOT_URL": "https://fip7v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip7v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip7-high",
+        "IDP_ROOT_URL": "https://fip7-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip7-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip13v2",
-        "IDP_ROOT_URL": "https://fip13v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip13v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip13-high",
+        "IDP_ROOT_URL": "https://fip13-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip13-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip14v2",
-        "IDP_ROOT_URL": "https://fip14v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip14v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip14-high",
+        "IDP_ROOT_URL": "https://fip14-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip14-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip15v2",
-        "IDP_ROOT_URL": "https://fip15v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip15v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip15-high",
+        "IDP_ROOT_URL": "https://fip15-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip15-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip16v2",
-        "IDP_ROOT_URL": "https://fip16v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip16v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip16-high",
+        "IDP_ROOT_URL": "https://fip16-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip16-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip17v2",
-        "IDP_ROOT_URL": "https://fip17v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip17v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip17-high",
+        "IDP_ROOT_URL": "https://fip17-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip17-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip18v2",
-        "IDP_ROOT_URL": "https://fip18v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip18v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip18-high",
+        "IDP_ROOT_URL": "https://fip18-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip18-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip19v2",
-        "IDP_ROOT_URL": "https://fip19v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip19v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip19-high",
+        "IDP_ROOT_URL": "https://fip19-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip19-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip20v2",
-        "IDP_ROOT_URL": "https://fip20v2.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip20v2.docker.dev-franceconnect.fr/interaction"
+        "ID": "fip20-high",
+        "IDP_ROOT_URL": "https://fip20-high.docker.dev-franceconnect.fr",
+        "IDP_INTERACTION_URL": "https://fip20-high.docker.dev-franceconnect.fr/interaction"
       }
     ],
-    "SP1_ID": "#fsp1v2",
-    "SP1_ROOT_URL": "https://fsp1v2.docker.dev-franceconnect.fr",
+    "SP1_ID": "#fsp1-high",
+    "SP1_ROOT_URL": "https://fsp1-high.docker.dev-franceconnect.fr",
     "SP1_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
-    "SP2_ID": "#fsp2v2",
-    "SP2_ROOT_URL": "https://fsp2v2.docker.dev-franceconnect.fr",
+    "SP2_ID": "#fsp2-high",
+    "SP2_ROOT_URL": "https://fsp2-high.docker.dev-franceconnect.fr",
     "SP2_CLIENT_ID": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
-    "SP5_ID": "#fsp5v2",
-    "SP5_ROOT_URL": "https://fsp5v2.docker.dev-franceconnect.fr",
-    "SP6_ID": "#fsp6v2",
-    "SP6_ROOT_URL": "https://fsp6v2.docker.dev-franceconnect.fr",
+    "SP5_ID": "#fsp5-high",
+    "SP5_ROOT_URL": "https://fsp5-high.docker.dev-franceconnect.fr",
+    "SP6_ID": "#fsp6-high",
+    "SP6_ROOT_URL": "https://fsp6-high.docker.dev-franceconnect.fr",
     "WELL_KNOWN": "/api/v2/.well-known/openid-configuration",
     "ALL_APPS_LISTED": "https://docker.dev-franceconnect.fr/fcp.html",
     "EXPLOITATION": [

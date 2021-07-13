@@ -6,12 +6,12 @@ describe('ServiceProviderService', () => {
   let service: ServiceProviderAdapterEnvService;
 
   const validServiceProviderMock = {
-    name: 'FSA - FSA1v2',
-    title: 'FSA - FSA1v2 - TITLE',
+    name: 'FSA - FSA1-LOW',
+    title: 'FSA - FSA1-LOW - TITLE',
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
     redirect_uris: [
-      'https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia1v2',
+      'https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia1-low',
     ],
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention

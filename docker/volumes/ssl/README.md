@@ -30,8 +30,8 @@ basicConstraints = CA:FALSE
 
 [alt_names]
 DNS.1 = mongo
-DNS.2 = mongo4
-DNS.3 = mongo-fca
+DNS.2 = mongo-fcp-high
+DNS.3 = mongo-fca-low
 DNS.4 = mongo-fcp-low
 DNS.5 = localhost
 IP.1  = 127.0.0.1
@@ -43,7 +43,8 @@ IP.1  = 127.0.0.1
 ## Générer la CSR (Certificate Signing Request)
 
 ```shell
-> openssl req -new -key app.key -out requests/mongo.csr -config requests/mongo-req.conf
+> openssl genpkey -algorithm RSA -out mongo.key
+> openssl req -new -key mongo.key -out requests/mongo.csr -config requests/mongo-req.conf
 ```
 
 ## Signer la CSR
@@ -72,7 +73,7 @@ Par convention nous les mettrons dans un fichier `pem`.
 
 Par exemple avec mongoDB:
 ```shell
-> cat mongo.crt mongo.key >> mongo.pem
+> cat mongo.crt mongo.key > mongo.pem
 ```
 Le certificat est utilisé dans `docker/builds/mongodb/Dockerfile`.
 

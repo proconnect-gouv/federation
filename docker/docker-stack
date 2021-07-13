@@ -52,14 +52,20 @@ _up() {
       eidas)
         services="$services stack-eidas"
         ;;
-      fca)
-        services="$services stack-fca"
+      min-fca-low)
+        services="$services min-fca-low"
+        ;;
+      all-fca-low)
+        services="$services all-fca-low"
         ;;
       rnipp)
         services="$services rnipp"
         ;;
-      fcp-high)
-        services="$services stack-fcp-high"
+      all-fcp-high)
+        services="$services all-fcp-high"
+        ;;
+      min-fcp-high)
+        services="$services min-fcp-high"
         ;;
       eidas-bridge)
         services="$services eidas-bridge"
@@ -97,7 +103,8 @@ _up() {
         echo "----"
         echo "* up => Select the apps you want to up as well as their dependencies (multiple arguments allowed) :"
         echo "  - eidas"
-        echo "  - fcp-high => all needed services to run `stack-fcp-high` (core-fcp-high, fsp1v2, fsp2v2, fsp3v2, fsp5v2, fsp6v2, fip1v2, fip2v2, rnipp, haproxy, hsm, etc.)"
+        echo "  - min-fcp-high => up minimal needed services to run `fcp-high` (core-fcp-high, fsp1-high, fip1-high, etc.)"
+        echo "  - all-fcp-high => all needed services to run `fcp-high` (core-fcp-high, fsp1-high, fsp2-high, fsp3-high, fsp5-high, fsp6-high, fip1-high, fip2-high, rnipp, haproxy, hsm, etc.)"
         echo "  - min-fcp-low => up minimal needed services to run core-fcp-low fsp1-low fip1-low"
         echo "  - all-fcp-low => up all needed services to run core-fcp-low and all other future services"
         echo "  - fca => all needed services to run fca stack (fca, fsa[n]v2, fia[n]v2, exploit, hsm, etc.)"
@@ -111,14 +118,38 @@ _up() {
     docker login gitlab.dev-franceconnect.fr:5005
     cd ${WORKING_DIR} && docker-compose up --build -d $services
 
-    # @todo refacto this file to have a proper environment
-    if [[ $services == *"-fcp-low"* ]]; then
-      # Sleep to wait for mongodb replicat initialization
-      echo "Reseting database to default state..."
-      sleep 10
-      docker-compose exec -T mongo-fcp-low /opt/scripts/manage.sh --reset-db
-      echo "Loaded !"
-    fi
+    case $services in
+      *"-fcp-low"*)
+        # Sleep to wait for mongodb replicat initialization
+        echo "Reseting database to default state..."
+        echo $services
+        sleep 10
+        docker-compose exec -T mongo-fcp-low /opt/scripts/manage.sh --reset-db
+        echo "Loaded !"
+        ;;
+      *"-fcp-high"*)
+        # Sleep to wait for mongodb replicat initialization
+        echo "Reseting database to default state..."
+        sleep 10
+        docker-compose exec -T mongo-fcp-high /opt/scripts/manage.sh --reset-db
+        echo "Loaded !"
+        ;;
+      *"-fca-low"*)
+        # Sleep to wait for mongodb replicat initialization
+        echo "Reseting database to default state..."
+        sleep 10
+        docker-compose exec -T mongo-fca-low /opt/scripts/manage.sh --reset-db
+        echo "Loaded !"
+        ;;
+      *"-eidas"*)
+        # Sleep to wait for mongodb replicat initialization
+        echo "Reseting database to default state..."
+        echo $services
+        sleep 10
+        docker-compose exec -T mongo-fcp-high /opt/scripts/manage.sh --reset-db
+        echo "Loaded !"
+        ;;
+    esac
 }
 
 _run_prod() {
@@ -255,20 +286,18 @@ _fixturesFca() {
 
 _reset_db_fcp_high() {
   echo "Reseting Core FCP High mongo database..."
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high core-fcp-high /opt/scripts/mongo-reset.js --tls
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high core-fcp-high /docker-entrypoint-initdb.d/mongo-init-db.js --tls
+  cd ${WORKING_DIR} && docker-compose exec -T mongo-fcp-high /opt/scripts/manage.sh --reset-db
 }
 
 # @todo rename `corev2` into `core-fca`
 _reset_db_fca() {
   echo "Reseting Core FCA mongo database..."
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fca mongo -u 'fc' -p 'pass' --authenticationDatabase corev2 corev2 /opt/scripts/mongo-reset.js --tls
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fca mongo -u 'fc' -p 'pass' --authenticationDatabase corev2 corev2 /docker-entrypoint-initdb.d/mongo-init-db.js --tls
+  cd ${WORKING_DIR} && docker-compose exec -T mongo-fca-low /opt/scripts/manage.sh --reset-db
 }
 
 _idp_as_prod_v2() {
   echo "Set IdP as production ..."
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo4 mongo -u 'rootAdmin' -p 'pass' --host mongo4 --tls  --authenticationDatabase admin core-fcp-high /opt/scripts/display-idp-as-in-prod.js
+  cd ${WORKING_DIR} && docker-compose exec -T mongo-fcp-high /opt/scripts/manage.sh --reset-db=display-idp-as-in-prod
 }
 
 _halt() {
@@ -294,12 +323,12 @@ _exec() {
 # @todo rename `corev2` into `core-fca`
 _mongo_shell_fca() {
  echo "starting mongo `core-fca` database in shell..."
-  cd ${WORKING_DIR} && docker-compose exec mongo-fca mongo -u 'rootAdmin' -p 'pass' --authenticationDatabase admin corev2 --tls
+  cd ${WORKING_DIR} && docker-compose exec mongo-fca-low mongo -u 'rootAdmin' -p 'pass' --authenticationDatabase admin corev2 --tls
 }
 
 _mongo_shell_core-fcp-high() {
  echo "starting mongo `core-fcp-high` database in shell..."
-  cd ${WORKING_DIR} && docker-compose exec mongo4 mongo core-fcp-high -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high --tls
+  cd ${WORKING_DIR} && docker-compose exec mongo-fcp-high mongo core-fcp-high -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high --tls
 }
 
 _fca_front() {
@@ -339,7 +368,7 @@ case "$action" in
     _install_dependencies $@
     ;;
   dep-all|dependencies-all)
-    _install_dependencies fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 fdp1v2 fip1v2 fip2v2 core-fcp-high rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fsa4v2 fia1v2 fia2v2 fia4v2 fia5v2 fca fca-front csmr-hsm eidas-bridge exploitation-fca exploit-fcp exploit-fca exploit-fca-front core-fcp-low fsp1-low fip1-low
+    _install_dependencies fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fdp1v2 fip1-high fip2-high core-fcp-high rnipp exploitation-high fsa1-low fsa2-low fsa3-low fsa4-low fia1-low fia2-low fia4-low fia5-low fca fca-front csmr-hsm eidas-bridge exploitation-fca exploit-fcp exploit-fca exploit-fca-front core-fcp-low fsp1-low fip1-low
     ;;
   exec)
     _exec $@
@@ -375,7 +404,7 @@ case "$action" in
     _start $@
     ;;
   reload-all)
-    _start fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 fsa4v2 fdp1v2 fip1v2 fip2v2 fia4v2 fia5v2 core-fcp-high rnipp exploitation-high fsa1v2 fsa2v2 fsa3v2 fia1v2 fia2v2 fca fca-front csmr-hsm eidas-bridge exploitation-fca exploit-fcp exploit-fca exploit-fca-front core-fcp-low fsp1-low fip1-low
+    _start fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fsa4-low fdp1v2 fip1-high fip2-high fia4-low fia5-low core-fcp-high rnipp exploitation-high fsa1-low fsa2-low fsa3-low fia1-low fia2-low fca fca-front csmr-hsm eidas-bridge exploitation-fca exploit-fcp exploit-fca exploit-fca-front core-fcp-low fsp1-low fip1-low
     ;;
   reset-db-core-fcp-high)
     _reset_db_fcp_high $@
@@ -399,14 +428,14 @@ case "$action" in
       fdp1v2 eidas-bridge \
       \
       core-fcp-high exploit-fcp core-fcp-low \
-      fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 \
+      fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high \
       fsp1-low \
-      fip1v2 fip2v2 fip13v2 fip14v2 fip15v2 fip16v2 fip17v2 fip18v2 fip19v2 fip20v2 \
+      fip1-high fip2-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
       fip1-low \
       \
       fca fca-front exploitation-fca exploit-fca \
-      fsa1v2 fsa2v2 fsa3v2 fsa4v2 \
-      fia1v2 fia2v2 fia4v2 fia5v2 \
+      fsa1-low fsa2-low fsa3-low fsa4-low \
+      fia1-low fia2-low fia4-low fia5-low \
     ;;
   # -- stop all up's containers (FCP and/or FCA)
   stop-all)
@@ -415,14 +444,14 @@ case "$action" in
     fdp1v2 eidas-bridge \
     \
     core-fcp-high exploit-fcp core-fcp-low \
-    fsp1v2 fsp2v2 fsp3v2 fsp5v2 fsp6v2 \
+    fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high \
     fsp1-low \
-    fip1v2 fip2v2 fip13v2 fip14v2 fip15v2 fip16v2 fip17v2 fip18v2 fip19v2 fip20v2 \
+    fip1-high fip2-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
     fip1-low \
     \
     fca fca-front exploitation-fca exploit-fca \
-    fsa1v2 fsa2v2 fsa3v2 fsa4v2 \
-    fia1v2 fia2v2 fia4v2 fia5v2 \
+    fsa1-low fsa2-low fsa3-low fsa4-low \
+    fia1-low fia2-low fia4-low fia5-low \
     ;;
   test)
     _test $@
@@ -487,7 +516,7 @@ case "$action" in
     echo "* halt => stop docker-compose and delete containers"
     echo "* log [<app>] => exec pm2 logs for given instance (Ex. core-fcp-high)"
     echo "* fixtures => drop and restore default postgres database in fc-apps"
-    echo "* mongo-shell-core-fcp-high => open mongo4 shell for core-fcp-high stack"
+    echo "* mongo-shell-core-fcp-high => open mongo-fcp-high shell for core-fcp-high stack"
     echo "* reload [<app1> <app2> <...>] => (re)start given pm2 instances (Ex. core-fcp-high)"
     echo "* reload-all => (re)start all pm2 instances"
     echo "* reload-rp => reload nginx conf"

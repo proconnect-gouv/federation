@@ -8,8 +8,8 @@ const scope =
   'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
 
 describe('Acr', () => {
-  // -- replace by either `fip1v2` or `fia1v2`
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  // -- replace by either `fip1-high` or `fia1-low`
+  const idpId = `${Cypress.env('IDP_NAME')}1-low`;
 
   it('should access to FI when acr from SP is unique and known', () => {
     basicScenario({
@@ -120,7 +120,7 @@ describe('Acr', () => {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/311
    */
   it.skip('should complete cinematic even when acr is to low and FC should force it to max value', () => {
-    const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
+    const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1-low`);
     const FORCE_MAX_EIDAS = 'eidas3';
     basicScenario({
       idpId,

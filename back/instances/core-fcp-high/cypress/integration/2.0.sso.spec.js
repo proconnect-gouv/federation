@@ -6,8 +6,8 @@ import {
 
 describe('2.0 - No SSO', () => {
   // Given
-  // -- replace by either `fip1v2` or `fia1v2`
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  // -- replace by either `fip1-high` or `fia1-low`
+  const idpId = `${Cypress.env('IDP_NAME')}1-high`;
 
   const loginInfo = {
     userName: 'test',
