@@ -6,10 +6,10 @@ import {
 } from './mire.utils';
 
 const BASIC_SUB =
-  '3c206a129b97806da2726d502f314a875053942ef9ce3650a2e48b17a1ddb191';
+  '9aeda75d9da1edba7051a7d16e413a72d5206f16cf68c5872dd4894558dde16a';
 
 describe('Scope', () => {
-  const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
+  const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1-low`);
 
   /**
    * @TODO #197 Implement tests once feature is implemented in `oidc-client`
@@ -40,7 +40,7 @@ describe('Scope', () => {
     cy.visit(`${SP_ROOT_URL}`);
 
     cy.get('#post-authorize').click();
-    chooseIdpOnCore('fia1v2');
+    chooseIdpOnCore('fia1-low');
     cy.get('button[type=submit]').click();
 
     checkInStringifiedJson('given_name', 'Angela Claire Louise'); // mandatory
@@ -57,7 +57,7 @@ describe('Scope', () => {
     cy.visit(`${SP_ROOT_URL}`);
 
     cy.get('#post-authorize').click();
-    chooseIdpOnCore('fia1v2');
+    chooseIdpOnCore('fia1-low');
     cy.get('#login').clear().type('12551');
     cy.get('button[type=submit]').click();
 
@@ -66,7 +66,7 @@ describe('Scope', () => {
     checkInStringifiedJson('email', 'test@abcd.com'); // mandatory
     checkInStringifiedJson(
       'sub',
-      '78c963ab25ba8d4777fcaca6d670dcea66665139cc581ff9f75141304ef11edf',
+      'af37dcbf9d81106b9a8731b284da17e56c075eeae5c5aa2fb8df76923010e9f0',
     ); // mandatory
     checkInStringifiedJson('belonging_population', undefined);
   });
@@ -81,7 +81,7 @@ describe('Scope', () => {
     cy.get('#scope_phone').click();
 
     cy.get('#post-authorize').click();
-    chooseIdpOnCore('fia1v2');
+    chooseIdpOnCore('fia1-low');
     cy.get('button[type=submit]').click();
 
     checkInStringifiedJson('given_name', 'Angela Claire Louise'); // mandatory
@@ -100,7 +100,7 @@ describe('Scope', () => {
     cy.get('#scope_email').click();
 
     cy.get('#post-authorize').click();
-    chooseIdpOnCore('fia1v2');
+    chooseIdpOnCore('fia1-low');
     cy.get('button[type=submit]').click();
 
     checkInStringifiedJson('given_name', 'Angela Claire Louise'); // mandatory

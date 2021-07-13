@@ -20,15 +20,15 @@ describe('50.0 - Example Cross application e2e', () => {
     const mockConfig = {
       totp: true,
     };
-    const spName = 'FSP - FSP1v2';
+    const spName = 'FSP - FSP1-HIGH';
     const serviceProviderUpdated = {
-      name: 'FSP - FSP1v2 - modified',
+      name: 'FSP - FSP1-HIGH - modified',
     };
-    const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+    const idpId = `${Cypress.env('IDP_NAME')}1-high`;
     const { USER_NAME } = getUserInfoByRole(role.OPERATOR);
 
     // Action
-    // Update fsp1v2 name
+    // Update fsp1-high name
     connectToExploitation(role.OPERATOR);
 
     cy.contains(spName).should('be.visible').click();
@@ -40,7 +40,7 @@ describe('50.0 - Example Cross application e2e', () => {
 
     cy.logout(USER_NAME);
 
-    // Cinematic with fsp1v2 modified
+    // Cinematic with fsp1-high modified
     basicSuccessScenario({
       userName: 'test',
       password: '123',

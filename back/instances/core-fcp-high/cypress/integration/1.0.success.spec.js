@@ -7,8 +7,8 @@ import {
 } from './mire.utils';
 
 describe('1.0 - Successful scenarios', () => {
-  // -- replace by either `fip1v2` or `fia1v2`
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  // -- replace by either `fip1-high` or `fia1-high`
+  const idpId = `${Cypress.env('IDP_NAME')}1-high`;
 
   it('should redirect to FC website', () => {
     cy.request({
@@ -186,7 +186,7 @@ describe('1.0 - Successful scenarios', () => {
     cy.get('#get-authorize').click();
 
     // Choose IdP
-    cy.get(`#idp-fip1v2`).click();
+    cy.get(`#idp-fip1-high`).click();
 
     // Login
     cy.get('input[type=submit]').click();

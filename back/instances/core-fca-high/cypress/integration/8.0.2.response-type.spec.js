@@ -1,7 +1,7 @@
 import { getAuthorizeUrl, getServiceProvider } from './mire.utils';
 
 describe('Response type', () => {
-  const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1v2`);
+  const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1-low`);
 
   it('should return to the SP with an "unsupported_response_type" error if the query contains a non registered "response_type" (id_token)', () => {
     const url = getAuthorizeUrl({

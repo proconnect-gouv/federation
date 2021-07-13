@@ -9,7 +9,7 @@ describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
   it('should connect the female user', () => {
     basicSuccessScenarioEuSpFrIdp({
       logWith: {
-        idpId: 'fip1v2',
+        idpId: 'fip1-high',
       },
     });
     checkInformationsEuSpFrIdp();
@@ -18,7 +18,7 @@ describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
   it('should connect the male user', () => {
     basicSuccessScenarioEuSpFrIdp({
       logWith: {
-        idpId: 'fip1v2',
+        idpId: 'fip1-high',
         login: 'plusieurs_prénoms_3',
       },
     });
@@ -42,7 +42,7 @@ describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
   it('should connect the user with special characters', () => {
     basicSuccessScenarioEuSpFrIdp({
       logWith: {
-        idpId: 'fip1v2',
+        idpId: 'fip1-high',
         login: 'caractères_spéciaux',
       },
     });
@@ -66,7 +66,7 @@ describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
   it('should connect the user with composed first name', () => {
     basicSuccessScenarioEuSpFrIdp({
       logWith: {
-        idpId: 'fip1v2',
+        idpId: 'fip1-high',
         login: 'prénom_composé',
       },
     });
@@ -90,7 +90,7 @@ describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
   it('should connect the user with family name over 50 characters', () => {
     basicSuccessScenarioEuSpFrIdp({
       logWith: {
-        idpId: 'fip1v2',
+        idpId: 'fip1-high',
         login: 'nom_50+_caractères',
       },
     });
@@ -120,7 +120,7 @@ describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
   it('should connect the user not born in France presumed day', () => {
     basicSuccessScenarioEuSpFrIdp({
       logWith: {
-        idpId: 'fip1v2',
+        idpId: 'fip1-high',
         login: 'étranger_présumé_né_jour',
       },
     });
@@ -150,7 +150,7 @@ describe('Successful scenarios (FR Citizen / EU Service Provider)', () => {
   it('should connect the user not born in France presumed day and month', () => {
     basicSuccessScenarioEuSpFrIdp({
       logWith: {
-        idpId: 'fip1v2',
+        idpId: 'fip1-high',
         login: 'étranger_présumé_né_jour_et_mois',
       },
     });

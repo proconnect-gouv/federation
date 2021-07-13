@@ -11,9 +11,9 @@ describe('7.1 - Idp whitelist & blacklist', () => {
     cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
     // When
-    cy.get(`#fs-request-${idpId}1v2`).within(() => {
-      cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip4v2');
-      cy.get(`button#idp-${idpId}1v2`).click();
+    cy.get(`#fs-request-${idpId}1-high`).within(() => {
+      cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip4-high');
+      cy.get(`button#idp-${idpId}1-high`).click();
     });
     // Then
     cy.url().should('contain', '/api/v2/redirect-to-idp');
@@ -32,9 +32,9 @@ describe('7.1 - Idp whitelist & blacklist', () => {
     );
     cy.url().should('match', mireUrl);
     // When
-    cy.get(`#fs-request-${idpId}1v2`).within(() => {
-      cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip7v2');
-      cy.get(`button#idp-${idpId}1v2`).click();
+    cy.get(`#fs-request-${idpId}1-high`).within(() => {
+      cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip7-high');
+      cy.get(`button#idp-${idpId}1-high`).click();
     });
     // Then
     cy.url().should('contain', '/api/v2/redirect-to-idp');
@@ -47,10 +47,10 @@ describe('7.1 - Idp whitelist & blacklist', () => {
     // Then
     cy.get('#idp-list').within(() => {
       // Enabled idps
-      cy.get(`button#idp-${idpId}1v2`).should('not.be.disabled');
-      cy.get(`button#idp-${idpId}2v2`).should('not.be.disabled');
-      cy.get(`button#idp-${idpId}6v2`).should('not.be.disabled');
-      cy.get(`button#idp-${idpId}7v2`).should('not.be.disabled');
+      cy.get(`button#idp-${idpId}1-high`).should('not.be.disabled');
+      cy.get(`button#idp-${idpId}2-high`).should('not.be.disabled');
+      cy.get(`button#idp-${idpId}6-high`).should('not.be.disabled');
+      cy.get(`button#idp-${idpId}7-high`).should('not.be.disabled');
       // Disabled idps
       cy.get(`button#idp-${idpId}-desactive-visible`).should('be.disabled');
     });
@@ -68,9 +68,9 @@ describe('7.1 - Idp whitelist & blacklist', () => {
     // Then
     cy.get('#idp-list').within(() => {
       // Enabled idps
-      cy.get(`button#idp-${idpId}1v2`).should('not.be.disabled');
-      cy.get(`button#idp-${idpId}2v2`).should('not.be.disabled');
-      cy.get(`button#idp-${idpId}6v2`).should('not.be.disabled');
+      cy.get(`button#idp-${idpId}1-high`).should('not.be.disabled');
+      cy.get(`button#idp-${idpId}2-high`).should('not.be.disabled');
+      cy.get(`button#idp-${idpId}6-high`).should('not.be.disabled');
       // Disabled idps
       cy.get(`button#idp-${idpId}-desactive-visible`).should('be.disabled');
     });

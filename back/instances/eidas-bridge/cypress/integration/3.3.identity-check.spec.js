@@ -21,7 +21,7 @@ describe('Identity Check', () => {
   describe('Sp from EU to idp from FR >', () => {
     const baseUrl = Cypress.env('IDP_ROOT_URL').replace(
       'IDP_NAME',
-      `${Cypress.env('IDP_NAME')}1v2`,
+      `${Cypress.env('IDP_NAME')}1-high`,
     );
 
     it('should failed when userInfos FC+ have missing claims returned from IdP FR', () => {
@@ -33,7 +33,7 @@ describe('Identity Check', () => {
       });
 
       const params = {
-        idpId: `${Cypress.env('IDP_NAME')}1v2`,
+        idpId: `${Cypress.env('IDP_NAME')}1-high`,
       };
 
       configureEidasSpMockRequest();
@@ -43,7 +43,7 @@ describe('Identity Check', () => {
       cy.proxyURLWasActivated();
 
       cy.hasError('Y000006');
-      cy.contains(` Invalid identity from ${Cypress.env('IDP_NAME')}1v2`);
+      cy.contains(` Invalid identity from ${Cypress.env('IDP_NAME')}1-high`);
       cy.contains('"isEmail": "email must be an email"');
       // only one error
       cy.contains(/(?:"constraints"){1}.*?(constraints)/).should('not.exist');
@@ -56,7 +56,7 @@ describe('Identity Check', () => {
 
       basicSuccessScenarioEuSpFrIdp({
         logWith: {
-          idpId: `${Cypress.env('IDP_NAME')}1v2`,
+          idpId: `${Cypress.env('IDP_NAME')}1-high`,
           login: 'E020025',
         },
       });

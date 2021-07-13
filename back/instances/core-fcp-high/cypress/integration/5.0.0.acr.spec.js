@@ -13,7 +13,7 @@ const scope =
 describe('5.0.0 - Acr', () => {
   it('should access to FI when acr from SP is unique and known', () => {
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -29,7 +29,7 @@ describe('5.0.0 - Acr', () => {
 
   it('should access to FI when acr from SP has multiple values and all are known', () => {
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -45,7 +45,7 @@ describe('5.0.0 - Acr', () => {
 
   it('should access to FI when acr from SP has multiple values and all are known but different order', () => {
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -61,7 +61,7 @@ describe('5.0.0 - Acr', () => {
 
   it('should access to FI when acr from SP has multiple values and one is known', () => {
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       overrideParams: {
@@ -79,7 +79,7 @@ describe('5.0.0 - Acr', () => {
 
   it('should access to FI when acr from SP is unique and not known', () => {
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -95,7 +95,7 @@ describe('5.0.0 - Acr', () => {
 
   it('should access to FI when acr from SP has multiple values and some are known', () => {
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       overrideParams: {
@@ -113,7 +113,7 @@ describe('5.0.0 - Acr', () => {
 
   it('should access to FI when acr from SP has multiple values and none are known', () => {
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -132,7 +132,7 @@ describe('5.0.0 - Acr', () => {
     const MAX_EIDAS_LEVEL = 'eidas3';
 
     basicScenario({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       overrideParams: {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -162,7 +162,7 @@ describe('5.0.0 - Acr', () => {
 
   it('should reject when acr from SP is known but unauthorized ', () => {
     configureSpAndClickFc({
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       // Oidc naming convention
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas1',
@@ -189,7 +189,7 @@ describe('5.0.0 - Acr', () => {
    * it('should trigger error Y020001 when acr from IdP is lower than asked', () => {
    *   basicErrorScenario({
    *     errorCode: 'test',
-   *     idpId: 'fip1v2',
+   *     idpId: 'fip1-high',
    *     eidasLevel: 'eidas1',
    *   });
    *

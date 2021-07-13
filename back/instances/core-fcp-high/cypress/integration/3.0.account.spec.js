@@ -1,8 +1,8 @@
 import { basicErrorScenario } from './mire.utils';
 
 describe('3.0 - Account', () => {
-  // -- replace by either `fip1v2` or `fia1v2`
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  // -- replace by either `fip1-high` or `fia1-low`
+  const idpId = `${Cypress.env('IDP_NAME')}1-high`;
 
   it('should trigger error Y180001 (user blocked)', () => {
     basicErrorScenario({

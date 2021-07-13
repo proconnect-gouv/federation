@@ -25,19 +25,19 @@ core-fca-high:
     - ln -s $FC_ROOT/fc/front/apps/agent-connect $FC_ROOT/fc/docker/volumes/src/agent-connect
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
-    - docker-stack up fca
+    - docker-stack up all-fca-low
     - docker-stack fca-front &
     - docker-stack dep fca
-    - docker-stack start fsa1v2 fsa2v2 fsa4v2 fia1v2 fia2v2 fia4v2 fia5v2
+    - docker-stack start fsa1-low fsa2-low fsa4-low fia1-low fia2-low fia4-low fia5-low
     - wait
     - docker-stack start fca fca-front
     # ## -- Build like for prod
-    #- docker-stack exec fsa1v2 yarn build mock-service-provider-high # Will build for fsa2v2 as well
+    #- docker-stack exec fsa1-low yarn build mock-service-provider-high # Will build for fsa2-low as well
     #- docker-stack exec fca yarn build core-fca-high
     #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
     # ## -- Launch like prod
-    #- docker-stack exec fsa1v2 yarn start:prod:mock-service-provider-high &
-    #- docker-stack exec fsa2v2 yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsa1-low yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsa2-low yarn start:prod:mock-service-provider-high &
     #- docker-stack exec fca yarn start:prod:core-fca-high &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
@@ -49,13 +49,13 @@ core-fca-high:
       exit 1)
     - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fca-high || (
       (docker cp fc_fca_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
-      (docker cp fc_fia1v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
-      (docker cp fc_fia2v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
-      (docker cp fc_fia4v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
-      (docker cp fc_fia5v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
-      (docker cp fc_fsa1v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
-      (docker cp fc_fsa2v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
-      (docker cp fc_fsa4v2_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fia1-low_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fia2-low_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fia4-low_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fia5-low_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fsa1-low_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fsa2-low_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
+      (docker cp fc_fsa4-low_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
       (docker cp fc_fca-front_1:/tmp/.pm2/logs back/instances/core-fca-high/cypress || true) &&
       (docker cp fc-rp-all:/var/log/nginx back/instances/core-fca-high/cypress/logs || true) &&
       exit 1)

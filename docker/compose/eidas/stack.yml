@@ -1,0 +1,12 @@
+version: "3.4"
+
+####################
+####################
+services:
+  stack-eidas:
+    image: alpine
+    depends_on:
+      - "all-fcp-high"
+      - "eidas-bridge"
+      - "eidas-fr"
+      - "eidas-mock"

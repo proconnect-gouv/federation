@@ -4,7 +4,7 @@
     "criteria": ["par défaut"],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "avec_nom_dusage",
         "password": "123"
       }

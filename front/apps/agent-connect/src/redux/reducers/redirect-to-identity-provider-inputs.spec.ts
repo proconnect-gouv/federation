@@ -38,7 +38,7 @@ describe('redirectToIdentityProviderInputs', () => {
           redirectToIdentityProviderInputs: {
             acr_values: 'eidas2',
             redirectUriServiceProvider:
-              'https://fsa1v2.docker.dev-franceconnect.fr/login-callback',
+              'https://fsa1-low.docker.dev-franceconnect.fr/login-callback',
             response_type: 'code',
             scope:
               'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address usual_name siret organizational_unit',
@@ -50,7 +50,7 @@ describe('redirectToIdentityProviderInputs', () => {
       expect(result).toStrictEqual({
         acr_values: 'eidas2',
         redirectUriServiceProvider:
-          'https://fsa1v2.docker.dev-franceconnect.fr/login-callback',
+          'https://fsa1-low.docker.dev-franceconnect.fr/login-callback',
         response_type: 'code',
         scope:
           'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address usual_name siret organizational_unit',

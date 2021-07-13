@@ -38,7 +38,7 @@ function extractInteractionIdFromUrl(url) {
  * @param {Function} next a callback function that will receive `/oidc-callback` url as parameter.
  */
 function prepareOidcCallbackAs(alias) {
-  const idpId = `${Cypress.env('IDP_NAME')}1v2`;
+  const idpId = `${Cypress.env('IDP_NAME')}1-high`;
 
   const idpInfo = getIdentityProvider(idpId);
 
@@ -86,7 +86,7 @@ function finishWithReplacedUrl(attackerUrl) {
   cy.visit(Cypress.env('SP1_ROOT_URL'));
   cy.get('#acrSelector').select('eidas2');
   cy.get('#get-authorize').click();
-  cy.get(`#idp-${Cypress.env('IDP_NAME')}1v2`).click();
+  cy.get(`#idp-${Cypress.env('IDP_NAME')}1-high`).click();
 
   // Use url from previous interaction
   cy.visit(attackerUrl, { failOnStatusCode: false });

@@ -10,13 +10,13 @@ describe('4.0 - RNIPP', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       errorCode: 'E010004',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
 
     cy.hasError('Y010004');
     cy.hasBusinessLog({
       event: 'FC_RECEIVED_INVALID_RNIPP',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
   });
 
@@ -25,13 +25,13 @@ describe('4.0 - RNIPP', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       errorCode: 'E010006',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
 
     cy.hasError('Y010006');
     cy.hasBusinessLog({
       event: 'FC_RECEIVED_INVALID_RNIPP',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
   });
 
@@ -40,13 +40,13 @@ describe('4.0 - RNIPP', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       errorCode: 'E010007',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
 
     cy.hasError('Y010007');
     cy.hasBusinessLog({
       event: 'FC_RECEIVED_INVALID_RNIPP',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
   });
 
@@ -55,13 +55,13 @@ describe('4.0 - RNIPP', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       errorCode: 'E010008',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
 
     cy.hasError('Y010008');
     cy.hasBusinessLog({
       event: 'FC_RECEIVED_INVALID_RNIPP',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
   });
 
@@ -70,7 +70,7 @@ describe('4.0 - RNIPP', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       errorCode: 'E010009',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
 
     cy.hasError('Y010009');
@@ -81,7 +81,7 @@ describe('4.0 - RNIPP', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       errorCode: 'E010011',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
 
     cy.hasError('Y010011');
@@ -92,7 +92,7 @@ describe('4.0 - RNIPP', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       errorCode: 'E010012',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
 
     cy.hasError('Y010012');
@@ -103,7 +103,7 @@ describe('4.0 - RNIPP', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       errorCode: 'E010013',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
 
     cy.hasError('Y010013');
@@ -114,12 +114,12 @@ describe('4.0 - RNIPP', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       errorCode: 'E010013',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
       login: 'test_INVALID_COG',
     });
 
     cy.hasError('Y000006');
-    cy.contains(` Invalid identity from ${Cypress.env('IDP_NAME')}1v2`);
+    cy.contains(` Invalid identity from ${Cypress.env('IDP_NAME')}1-high`);
     cy.contains('"isCog": ""');
     // birthplace and address
     cy.contains(/(?:"constraints"){2}.*?(constraints)/).should('not.exist');
@@ -130,13 +130,13 @@ describe('4.0 - RNIPP', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       errorCode: 'E010015',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
 
     cy.hasError('Y010015');
     cy.hasBusinessLog({
       event: 'FC_RECEIVED_DECEASED_RNIPP',
-      idpId: 'fip1v2',
+      idpId: 'fip1-high',
     });
   });
 });
