@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 export * from './oidc-provider-middleware-pattern.enum';
 export * from './oidc-provider-middleware-step.enum';
 export * from './error-code.enum';
