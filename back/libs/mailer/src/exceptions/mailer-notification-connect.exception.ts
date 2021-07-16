@@ -2,9 +2,12 @@ import { Description } from '@fc/exceptions';
 import { MailerBaseException } from './mailer-base.exception';
 
 @Description(
-  `Un utilisateur s'est connecté à FranceConnect, il recoit un mail lui notifiant une nouvelle connection à un de ses comptes. Si l'envoi de cet mail de notification échoue, cette exception sera levée.`,
+  "Une erreur s'est produite lors de l'envoi du mail de notification. Cela peut être dû à des données obligatoires manquantes dans l'identité de l'usager ( given_name, family_name ), des données manquantes en session ( nom du FS ou du FI ), date du jour ou la configuration. Vérifier les données de l'utilisateur. Si les données sont bien présentes, contacter le support N3.",
 )
 export class MailerNotificationConnectException extends MailerBaseException {
   code = 2;
-  message = 'Bad or Missing connection notification email parameters';
+
+  constructor() {
+    super('Une erreur technique est survenue, veuillez contacter le support.');
+  }
 }

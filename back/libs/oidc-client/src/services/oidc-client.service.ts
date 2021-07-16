@@ -99,7 +99,7 @@ export class OidcClientService {
     try {
       identity = await this.utils.getUserInfo(accessToken, providerUid);
     } catch (error) {
-      throw new OidcClientUserinfosFailedException(error);
+      throw new OidcClientUserinfosFailedException();
     }
 
     this.logger.trace({

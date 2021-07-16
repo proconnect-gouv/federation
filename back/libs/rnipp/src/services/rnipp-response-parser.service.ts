@@ -20,7 +20,7 @@ export class RnippResponseParserService {
     try {
       json = await xmlParser.parseStringPromise(xmlData, options);
     } catch (error) {
-      throw new RnippHttpStatusException(error);
+      throw new RnippHttpStatusException();
     }
 
     return this.extractXmlAttributes(json);

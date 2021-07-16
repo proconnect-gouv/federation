@@ -46,7 +46,7 @@ export class MailerService {
     const { templatePaths } = this.config.get<MailerConfig>('Mailer');
     const path = this.template.getFilePath(fileName, templatePaths);
     if (!path) {
-      throw new TemplateNotFoundException(`${fileName} not found`);
+      throw new TemplateNotFoundException();
     }
     const template = await this.template.readFile(path);
     const html = this.template.render(template, values);

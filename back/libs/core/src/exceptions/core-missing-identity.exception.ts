@@ -10,5 +10,10 @@ import { Description } from '@fc/exceptions';
 )
 export class CoreMissingIdentityException extends CoreBaseException {
   code = ErrorCode.MISSING_IDENTITY;
-  message = 'Erreur technique, veuillez refaire votre connexion à partir du FS';
+
+  constructor() {
+    super(
+      'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+    );
+  }
 }

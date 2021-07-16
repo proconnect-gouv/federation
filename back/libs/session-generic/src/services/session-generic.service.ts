@@ -123,7 +123,7 @@ export class SessionGenericService {
     try {
       dataCipher = await this.redis.get(sessionKey);
     } catch (error) {
-      throw new SessionGenericStorageException(error);
+      throw new SessionGenericStorageException();
     }
 
     /**
@@ -338,7 +338,7 @@ export class SessionGenericService {
     try {
       return JSON.parse(dataString);
     } catch (error) {
-      throw new SessionBadFormatException(error);
+      throw new SessionBadFormatException();
     }
   }
 
@@ -403,7 +403,7 @@ export class SessionGenericService {
    */
   async getAlias(key: string): Promise<string> {
     if (!key) {
-      throw new SessionBadAliasException(new Error('Session get alias error'));
+      throw new SessionBadAliasException();
     }
     const multi = this.redis.multi();
 

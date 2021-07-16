@@ -6,15 +6,12 @@ import { ErrorCode } from '../enums';
 import { EidasProviderBaseException } from './eidas-provider-base.exception';
 
 @Description(
-  "Problème de connexion entre le bridge eidas et le noeud eidas contacter le SN3 (Impossible d'écrire la LightResponse dans le cache ApacheIgnite. Le cache est probablement injoignable.)",
+  "Il y a un problème de connexion entre le bridge eIDAS et le noeud eIDAS. Il est impossible d'écrire la 'LightResponse' dans le cache ApacheIgnite. Le cache est probablement injoignable. Contacter le support N3",
 )
 export class WriteLightResponseInCacheException extends EidasProviderBaseException {
   public readonly code = ErrorCode.WRITE_LIGHT_RESPONSE_IN_CACHE;
-  message = 'Erreur technique';
 
-  constructor(error) {
-    super(error);
-    this.originalError = error;
-    this.message = error.message;
+  constructor() {
+    super('Une erreur technique est survenue, veuillez contacter le support.');
   }
 }

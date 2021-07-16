@@ -6,13 +6,18 @@ import { ErrorCode } from '../enums';
 import { Description } from '@fc/exceptions';
 
 @Description(
-  'Il manque des informations techniques dans la requête HTTP. Cette erreur ne devrait pas se produire, contacter le service technique',
+  "La requête HTTP n'est pas valide, FranceConnect+ n'a pas pu la traiter car il manque des élements obligatoires ( headers, ... ). Cette erreur ne devrait pas se produire, contacter le service technique",
 )
 export class CoreMissingContextException extends CoreBaseException {
   code = ErrorCode.MISSING_CONTEXT;
-  message = "Erreur technique non communiquée à l'usager";
 
-  constructor(field: string) {
-    super(`Missing information in context: ${field}`);
+  /* eslint-disable @typescript-eslint/no-unused-vars */
+  constructor(param: string) {
+    // param désactivé car pas utilisé dans le message usager.
+    // En revanche il est passé dans le code et laissé en param ici
+    // car il sera potentiellement utilisé pour le message pour les développeurs
+    super(
+      'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+    );
   }
 }

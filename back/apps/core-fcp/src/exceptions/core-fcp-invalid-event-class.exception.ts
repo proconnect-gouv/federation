@@ -9,9 +9,12 @@ import { CoreBaseException, ErrorCode } from '@fc/core';
  * between core-fcp and core-fca.
  */
 @Description(
-  'Une méthode de consentement illogique a été configuré pour le FS, typiquement consentement requis + connexion anonyme',
+  'La configuration du FS concernant le consentement demandé est incorrect ( un consentement est demandé sur une connexion anonyme, ... ). Contacter le support N3.',
 )
 export class CoreFcpInvalidEventClassException extends CoreBaseException {
   code = ErrorCode.INVALID_CONSENT_PROCESS;
-  message = 'Erreur technique';
+
+  constructor() {
+    super('Une erreur technique est survenue, veuillez contacter le support.');
+  }
 }

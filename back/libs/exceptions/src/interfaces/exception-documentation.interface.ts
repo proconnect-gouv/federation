@@ -6,4 +6,6 @@ export interface IExceptionDocumentation {
   loggable: boolean;
   trackable: boolean;
   description: string;
+  path: string;
+  exception: string;
 }

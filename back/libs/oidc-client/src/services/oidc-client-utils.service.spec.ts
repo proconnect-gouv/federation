@@ -480,15 +480,12 @@ describe('OidcClientUtilsService', () => {
       expect(result).toStrictEqual(endSessionUrlWithParamsMock);
     });
 
-    it('should throw an OidcClientGetEndSessionUrlException with the original error as parameter if there is an error building the endSessionUrl', async () => {
+    it('should throw an OidcClientGetEndSessionUrlException', async () => {
       // given
-      const originalError = new Error('unable to build the url');
       clientMock.endSessionUrl.mockReset().mockImplementationOnce(() => {
-        throw originalError;
+        throw new Error('Unknown Error');
       });
-      const expectedError = new OidcClientGetEndSessionUrlException(
-        originalError,
-      );
+      const expectedError = new OidcClientGetEndSessionUrlException();
 
       // When / Then
       await expect(() =>
@@ -505,7 +502,9 @@ describe('OidcClientUtilsService', () => {
   describe('checkIdpBlacklisted()', () => {
     it('should return OidcClientRuntimeException isIdpBlacklist throw an error', async () => {
       // setup
-      const errorMock = new Error('Unknown Error');
+      const errorMock = new Error(
+        'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+      );
       // action
       serviceProviderServiceMock.shouldExcludeIdp.mockRejectedValueOnce(
         errorMock,
@@ -519,7 +518,7 @@ describe('OidcClientUtilsService', () => {
 
     it('should throw OidcClientIdpBlacklistedException because identity provider is blacklisted', async () => {
       // setup
-      const errorMock = new OidcClientIdpBlacklistedException('spId', 'idpId');
+      const errorMock = new OidcClientIdpBlacklistedException();
       // action
       serviceProviderServiceMock.shouldExcludeIdp.mockReturnValueOnce(true);
 

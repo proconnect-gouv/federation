@@ -9,7 +9,7 @@ import {
   OidcProviderTokenEvent,
   OidcProviderUserinfoEvent,
 } from '@fc/oidc-provider';
-import { LoggerService } from '@fc/logger';
+import { LoggerService, LoggerLevelNames } from '@fc/logger';
 import { AccountBlockedException, AccountService } from '@fc/account';
 import { Acr, OidcSession } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
@@ -307,15 +307,19 @@ export class CoreService {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/494
      */
     if (!received || !requested) {
-      throw new CoreInvalidAcrException(
-        `Invalid ACR parameters, expected: ${requestedAcr}, received: ${receivedAcr}`,
+      this.logger.trace(
+        { error: 'received or requested ACR missing' },
+        LoggerLevelNames.WARN,
       );
+      throw new CoreInvalidAcrException();
     }
 
     if (received < requested) {
-      throw new CoreLowAcrException(
-        `Low ACR: expected ${requestedAcr} but received ${receivedAcr}`,
+      this.logger.trace(
+        { error: 'received ACR lower than requested' },
+        LoggerLevelNames.WARN,
       );
+      throw new CoreLowAcrException();
     }
   }
 }
