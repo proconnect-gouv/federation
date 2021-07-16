@@ -17,14 +17,6 @@ import { SessionGenericConfig } from '@fc/session-generic';
 import { AppModule } from './app.module';
 import config from './config';
 
-// Assets path vary in dev env
-const assetsPath =
-  process.env.NODE_ENV === 'development'
-    ? // Libs code base to take latest version
-      '../../../apps/core-fca/src'
-    : // Current, directory = dist when in production mode
-      '';
-
 async function bootstrap() {
   const configService = new ConfigService({
     config,
@@ -32,6 +24,8 @@ async function bootstrap() {
   });
   const {
     urlPrefix,
+    assetsPaths,
+    viewsPaths,
     httpsOptions: { key, cert },
   } = configService.get<AppConfig>('App');
 
@@ -95,9 +89,13 @@ async function bootstrap() {
 
   app.useLogger(logger);
   app.engine('ejs', renderFile);
-  app.set('views', [join(__dirname, assetsPath, 'views')]);
+  app.set('views', viewsPaths.map((viewsPath) => {
+    return join(__dirname, viewsPath, 'views');
+  }));
   app.setViewEngine('ejs');
-  app.useStaticAssets(join(__dirname, assetsPath, 'public'));
+  assetsPaths.forEach((assetsPath) => {
+    app.useStaticAssets(join(__dirname, assetsPath, 'public'));
+  });
 
   const { cookieSecrets } =
     configService.get<SessionGenericConfig>('SessionGeneric');
