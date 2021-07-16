@@ -1,15 +1,19 @@
 /* istanbul ignore file */
 
 // Declarative code
+import { Description } from '@fc/exceptions';
 import { OidcClientBaseException } from './oidc-client-base.exception';
 import { ErrorCode } from '../enums';
 
+@Description(
+  "La requête reçue au retour du FI n'est pas valide (le code d'autorisation est présent mais n'est pas reconnu par le FI), recommencer la cinématique depuis le FS. Si le problème persiste, contacter le support N3",
+)
 export class OidcClientTokenFailedException extends OidcClientBaseException {
   code = ErrorCode.TOKEN_FAILED;
 
-  constructor(error) {
-    super();
-    this.originalError = error;
-    this.message = error.message;
+  constructor() {
+    super(
+      'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+    );
   }
 }

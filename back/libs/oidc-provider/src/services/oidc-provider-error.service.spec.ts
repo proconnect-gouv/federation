@@ -107,7 +107,7 @@ describe('OidcProviderErrorService', () => {
       const eventName = OidcProviderEvents.SESSION_SAVED;
       const func = service['triggerError'].bind(service, eventName);
       const ctxMock = { oidc: {} };
-      const errorMock = new OidcProviderInitialisationException(Error('foo'));
+      const errorMock = new OidcProviderInitialisationException();
       errorMock.redirect = true;
       service['throwError'] = jest.fn();
       // When
@@ -121,7 +121,7 @@ describe('OidcProviderErrorService', () => {
       const eventName = OidcProviderEvents.SESSION_SAVED;
       const func = service['triggerError'].bind(service, eventName);
       const ctxMock = { oidc: {} };
-      const errorMock = new OidcProviderInitialisationException(Error('foo'));
+      const errorMock = new OidcProviderInitialisationException();
       errorMock.redirect = false;
       service['throwError'] = jest.fn();
       // When

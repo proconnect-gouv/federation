@@ -9,39 +9,60 @@ import {
 } from '@fc/exceptions';
 import MarkdownGenerator from './markdown-generator';
 import { Description, Loggable, Trackable } from '../../decorator';
+import {
+  ExceptionClass,
+  PathAndException,
+  PathAndInstantiatedException,
+} from '../../types';
+
+/**
+ * @todo Refacto le runner
+ * @author Olivier
+ * @date 2021-07-02
+ */
 
 export default class Runner {
-  static extractException(module: {
-    [key: string]: {
-      new (...args: any[]): any;
-    };
-  }): Type<FcException> {
-    return Object.values(module).find(
+  static extractException(args: {
+    path: string;
+    module: ExceptionClass;
+  }): PathAndException {
+    const Exception: Type<FcException> = Object.values(args.module).find(
       (property) => property.prototype instanceof FcException,
     );
+    return { path: args.path, Exception };
   }
 
   static hasValidParam(param: number): boolean {
     return typeof param === 'number' && param >= 0;
   }
 
-  static inflateException(Exception: Type<FcException>) {
+  static inflateException({
+    path,
+    Exception,
+  }: PathAndException): PathAndInstantiatedException {
     const error = new Exception(new Error());
     const { scope, code } = error;
     const hasValidScope = Runner.hasValidParam(scope);
     const hasValidCode = Runner.hasValidParam(code);
     const isException = hasValidScope && hasValidCode;
     if (!isException) return null;
-    return error;
+    return { path, error };
   }
 
-  static buildException(errorInstance: FcException): IExceptionDocumentation {
-    const { scope, code, message } = errorInstance;
-
+  static buildException({
+    path,
+    error,
+  }: PathAndInstantiatedException): IExceptionDocumentation {
+    const {
+      scope,
+      code,
+      message,
+      constructor: { name: exception },
+    } = error;
     const errorCode = ExceptionsService.getCode(scope, code);
-    const loggable = Loggable.isLoggable(errorInstance);
-    const trackable = Trackable.isTrackable(errorInstance);
-    const description = Description.getDescription(errorInstance);
+    const loggable = Loggable.isLoggable(error);
+    const trackable = Trackable.isTrackable(error);
+    const description = Description.getDescription(error);
 
     const data = {
       scope,
@@ -51,7 +72,10 @@ export default class Runner {
       loggable,
       trackable,
       description,
+      path,
+      exception,
     };
+
     return data;
   }
 
@@ -62,8 +86,9 @@ export default class Runner {
     const modules = await Promise.all(infos);
 
     return modules
+      .map((module, index) => ({ path: paths[index], module }))
       .map(Runner.extractException)
-      .filter(Boolean)
+      .filter(({ Exception }) => Boolean(Exception))
       .map(Runner.inflateException)
       .filter(Boolean)
       .map(Runner.buildException);
@@ -92,9 +117,12 @@ export default class Runner {
     const paths = Runner.getExceptionsFilesPath();
     const loaded = await Runner.loadExceptions(paths);
     const markdown = MarkdownGenerator.generate(loaded);
-
     const inputFile = `${__dirname}/view/erreurs.ejs`;
-    const page = await Runner.renderFile(inputFile, { markdown });
+    const projectRootPath = '../';
+    const page = await Runner.renderFile(inputFile, {
+      markdown,
+      projectRootPath,
+    });
     fs.writeFileSync('_doc/erreurs.md', page);
   }
 }

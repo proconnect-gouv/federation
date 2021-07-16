@@ -119,7 +119,7 @@ export class OidcProviderRedisAdapter implements Adapter {
     try {
       return JSON.parse(payload);
     } catch (error) {
-      throw new OidcProviderParseRedisResponseException(error);
+      throw new OidcProviderParseRedisResponseException();
     }
   }
 
@@ -135,7 +135,7 @@ export class OidcProviderRedisAdapter implements Adapter {
        *
        * @see OidcProviderService.throwError()
        */
-      throw new OidcProviderStringifyPayloadForRedisException(error);
+      throw new OidcProviderStringifyPayloadForRedisException();
     }
 
     const hasContext = consumable.has(this.contextName);

@@ -5,12 +5,15 @@ import { Description } from '@fc/exceptions';
 import { ErrorCode } from '../enums';
 import { SessionGenericBaseException } from './session-generic-base.exception';
 
-@Description('La Session présente une erreur de format de données')
+@Description(
+  "Les éléments présents dans la session de l'utilisateur ne sont pas valides. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3",
+)
 export class SessionBadFormatException extends SessionGenericBaseException {
   public readonly code = ErrorCode.BAD_SESSION_FORMAT;
 
-  constructor(error: Error) {
-    super(error);
-    this.message = 'Erreur technique';
+  constructor() {
+    super(
+      'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
+    );
   }
 }

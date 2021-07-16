@@ -158,7 +158,7 @@ export class OidcClientUtilsService {
       );
     } catch (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
-      throw new OidcClientTokenFailedException(error);
+      throw new OidcClientTokenFailedException();
     }
 
     this.logger.trace({ tokenSet });
@@ -221,7 +221,7 @@ export class OidcClientUtilsService {
       });
     } catch (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
-      throw new OidcClientGetEndSessionUrlException(error);
+      throw new OidcClientGetEndSessionUrlException();
     }
 
     this.logger.trace({ providerUid, endSessionUrl });
@@ -243,12 +243,12 @@ export class OidcClientUtilsService {
       isIdpExcluded = await this.serviceProvider.shouldExcludeIdp(spId, idpId);
     } catch (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
-      throw new OidcClientFailedToFetchBlacklist(error);
+      throw new OidcClientFailedToFetchBlacklist();
     }
 
     if (isIdpExcluded) {
       this.logger.trace({ isIdpExcluded }, LoggerLevelNames.WARN);
-      throw new OidcClientIdpBlacklistedException(spId, idpId);
+      throw new OidcClientIdpBlacklistedException();
     }
 
     this.logger.trace({ check: { spId, idpId, isIdpExcluded } });

@@ -1,14 +1,17 @@
+import { Description } from '@fc/exceptions';
+import { CryptographyBaseException } from './cryptography-base.exception';
+import { ErrorCode } from '../enums';
+
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyBaseException } from './cryptography-base.exception';
-import { ErrorCode } from '../enums';
-import { Description } from '@fc/exceptions';
-
 @Description(
-  'Erreur technique (communication avec le HSM), contacter le service technique',
+  "Il y a un problème de communication avec le HSM. L'application est inutilisable pour tous les usagers. Contacter le support N3 en urgence.",
 )
 export class CryptographyGatewayException extends CryptographyBaseException {
   public readonly code = ErrorCode.GATEWAY;
-  message = 'Erreur technique';
+
+  constructor() {
+    super('Une erreur technique est survenue, veuillez contacter le support.');
+  }
 }

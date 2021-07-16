@@ -358,7 +358,7 @@ export class CoreFcaController {
 
     if (errors.length) {
       this.logger.trace({ errors }, LoggerLevelNames.WARN);
-      throw new CoreFcaInvalidIdentityException(providerUid, errors);
+      throw new CoreFcaInvalidIdentityException();
     }
 
     this.logger.trace({ validate: { providerUid, identity } });
