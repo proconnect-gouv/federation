@@ -57,6 +57,8 @@ describe('MarkdownGenerator', () => {
           description: 'any',
           trackable: false,
           loggable: false,
+          path: 'path/to/file.exception.ts',
+          exception: 'notWorkingBuddy',
         },
         {
           errorCode: 'Y0201',
@@ -66,6 +68,8 @@ describe('MarkdownGenerator', () => {
           description: 'any',
           trackable: false,
           loggable: false,
+          path: 'path/to/file.exception.ts',
+          exception: 'notWorkingBuddy',
         },
       ];
       const result = MarkdownGenerator.generate(errors);
@@ -79,6 +83,8 @@ describe('MarkdownGenerator', () => {
             description: 'any',
             trackable: false,
             loggable: false,
+            path: 'path/to/file.exception.ts',
+            exception: 'notWorkingBuddy',
           },
         ],
         [
@@ -90,6 +96,8 @@ describe('MarkdownGenerator', () => {
             description: 'any',
             trackable: false,
             loggable: false,
+            path: 'path/to/file.exception.ts',
+            exception: 'notWorkingBuddy',
           },
         ],
       ];

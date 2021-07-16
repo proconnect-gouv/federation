@@ -11,5 +11,10 @@ import { ErrorCode } from '../enums';
 export class CoreInvalidAcrException extends CoreBaseException {
   scope = 2; // identity provider scope
   code = ErrorCode.INVALID_ACR;
-  message = 'Invalid ACR';
+
+  constructor() {
+    super(
+      "Le niveau de sécurité demandé par votre démarche ou utilisé pour vous authentifier n'est pas supporté par la plateforme. Veuillez contacter le support.",
+    );
+  }
 }

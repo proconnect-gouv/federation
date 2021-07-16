@@ -1,15 +1,19 @@
 /* istanbul ignore file */
 
 // Declarative code
+import { Description } from '@fc/exceptions';
 import { OidcClientBaseException } from './oidc-client-base.exception';
 import { ErrorCode } from '../enums';
 
+@Description(
+  "Une erreur est survenue lors de la récupération des données d'identité aurès du FI. Recommencer la cinématique depuis le FS. Si le problème persiste, contacter le support N3",
+)
 export class OidcClientUserinfosFailedException extends OidcClientBaseException {
   code = ErrorCode.USERINFOS_FAILED;
 
-  constructor(error) {
-    super();
-    this.originalError = error;
-    this.message = error.message;
+  constructor() {
+    super(
+      'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+    );
   }
 }

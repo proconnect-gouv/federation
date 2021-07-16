@@ -77,7 +77,7 @@ export class OidcProviderService {
       });
       this.provider.proxy = true;
     } catch (error) {
-      throw new OidcProviderInitialisationException(error);
+      throw new OidcProviderInitialisationException();
     }
 
     this.logger.debug('Mouting oidc-provider middleware');
@@ -87,7 +87,7 @@ export class OidcProviderService {
        */
       this.httpAdapterHost.httpAdapter.use(prefix, this.provider.callback());
     } catch (error) {
-      throw new OidcProviderBindingException(error);
+      throw new OidcProviderBindingException();
     }
 
     this.errorService.catchErrorEvents(this.provider);
@@ -99,9 +99,7 @@ export class OidcProviderService {
     const interactionId = get(ctx, path);
 
     if (!interactionId) {
-      throw new OidcProviderInteractionNotFoundException(
-        'Could not find interactionId in ctx.oidc',
-      );
+      throw new OidcProviderInteractionNotFoundException();
     }
 
     this.logger.trace({ interactionId });

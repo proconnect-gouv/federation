@@ -25,8 +25,7 @@ describe('Identity Check', () => {
     cy.proxyURLWasActivated();
 
     cy.hasError('Y000006');
-    cy.contains(` Invalid identity from ${Cypress.env('IDP_NAME')}1-low`);
-    cy.contains('"isEmail": "email must be an email"');
+    cy.contains(`Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous`);
     // only one error
     cy.contains(/(?:"constraints"){1}.*?(constraints)/).should('not.exist');
   });

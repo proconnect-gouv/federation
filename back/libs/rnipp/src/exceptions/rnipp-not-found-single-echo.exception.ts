@@ -12,5 +12,10 @@ import { ErrorCode } from '../enums';
 )
 export class RnippNotFoundSingleEchoException extends RnippBaseException {
   public readonly code = ErrorCode.NOT_FOUND_SINGLE_ECHO;
-  message = 'Une erreur est survenue dans la transmission de votre identité';
+
+  constructor() {
+    super(
+      'Une erreur est survenue dans la transmission de votre identité. Fermez l’onglet de votre navigateur et reconnectez-vous.',
+    );
+  }
 }

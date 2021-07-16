@@ -158,17 +158,17 @@ export class RnippService {
       case 'ETIMEDOUT':
       case 'ECONNABORTED':
       case 'ECONNRESET':
-        throw new RnippTimeoutException(error);
+        throw new RnippTimeoutException();
     }
 
-    throw new RnippHttpStatusException(error);
+    throw new RnippHttpStatusException();
   }
 
   private checkCitizenStatusError(errors: ValidationError[]) {
     const formattedDtoError = getDtoErrors(errors);
 
     if (formattedDtoError) {
-      throw new RnippCitizenStatusFormatException(formattedDtoError);
+      throw new RnippCitizenStatusFormatException();
     }
   }
 }

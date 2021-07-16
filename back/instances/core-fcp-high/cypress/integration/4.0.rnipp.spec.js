@@ -119,8 +119,7 @@ describe('4.0 - RNIPP', () => {
     });
 
     cy.hasError('Y000006');
-    cy.contains(` Invalid identity from ${Cypress.env('IDP_NAME')}1-high`);
-    cy.contains('"isCog": ""');
+    cy.contains(`Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous`);
     // birthplace and address
     cy.contains(/(?:"constraints"){2}.*?(constraints)/).should('not.exist');
   });

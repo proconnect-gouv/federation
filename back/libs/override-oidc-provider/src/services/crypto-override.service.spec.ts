@@ -178,7 +178,7 @@ describe(' CryptoOverrideService', () => {
     it('should reject if something turned bad', async () => {
       // Given
       pipeMock.subscribe.mockImplementationOnce(() => {
-        throw new CryptographyGatewayException('not good');
+        throw new CryptographyGatewayException();
       });
 
       // Then

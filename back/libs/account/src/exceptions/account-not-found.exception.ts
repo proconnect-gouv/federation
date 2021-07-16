@@ -13,6 +13,7 @@ export class AccountNotFoundException extends AccountBaseException {
 
   constructor(error?: Error) {
     super(error);
-    this.message = 'Erreur technique.';
+    this.message =
+      'Une erreur technique est survenue, veuillez contacter le support.';
   }
 }
