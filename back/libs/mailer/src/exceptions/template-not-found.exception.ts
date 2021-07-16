@@ -5,9 +5,12 @@ import { Description } from '@fc/exceptions';
 import { MailerBaseException } from './mailer-base.exception';
 
 @Description(
-  `Un utilisateur s'est connecté à FranceConnect, il devrait recevoir un mail lui notifiant une nouvelle connection à un de ses comptes. Si le template de cet email n'est pas trouvé, cette exception sera levée`,
+  "Le modèle de mail n'est pas présent. Il faut contacter d'urgence le support N3 car aucun mail ne peut partir.",
 )
 export class TemplateNotFoundException extends MailerBaseException {
   code = 3;
-  message = 'No template found';
+
+  constructor() {
+    super('Une erreur technique est survenue, veuillez contacter le support.');
+  }
 }

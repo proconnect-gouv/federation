@@ -6,7 +6,7 @@ import { ErrorCode } from '../enums';
 import { SessionGenericBaseException } from './session-generic-base.exception';
 
 @Description(
-  'La page de consentement a été appelée sans avoir validé le jeton CSRF (redirection vers le FS)',
+  "La page de consentement a été appelée sans avoir effectué les étapes de la cinématique. L'utilisateur doit redémarrer sa cinématique en respectant les étapes de cette dernière. Il s'agit d'une protection contre des attaques qui seraient destinées à sauter des étapes. Il se peut que l'utilisateur ait lancé des cinématiques en parallèle dans plusieurs onglets, dans ce cas il faut fermer tous les onglets du navigateur et relancer la cinématique.",
 )
 export class SessionGenericInvalidCsrfConsentException extends SessionGenericBaseException {
   public readonly code = ErrorCode.INVALID_CSRF_CONSENT;

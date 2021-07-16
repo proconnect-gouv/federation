@@ -122,7 +122,7 @@ export class UserDashboardController {
           `/error?error=${e.error}&error_description=${e.error_description}`,
         );
       }
-      throw new UserDashboardTokenRevocationException(e);
+      throw new UserDashboardTokenRevocationException();
     }
   }
 
@@ -227,7 +227,7 @@ export class UserDashboardController {
           `/error?error=${e.error}&error_description=${e.error_description}`,
         );
       }
-      throw new UserDashboardUserinfoException(e);
+      throw new UserDashboardUserinfoException();
     }
   }
 

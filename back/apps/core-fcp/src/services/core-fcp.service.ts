@@ -93,7 +93,7 @@ export class CoreFcpService {
       handler = await FeatureHandler.get(authenticationEmail, this);
     } catch (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
-      throw new CoreMissingAuthenticationEmailException(error);
+      throw new CoreMissingAuthenticationEmailException();
     }
 
     this.logger.trace({ idpId, idp });

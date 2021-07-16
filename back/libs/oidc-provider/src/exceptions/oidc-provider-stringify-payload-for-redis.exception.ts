@@ -6,9 +6,14 @@ import { ErrorCode } from '../enums';
 import { OidcProviderBaseException } from './oidc-provider-base.exception';
 
 @Description(
-  "Erreur technique, recommencer la cinématique et contacter le service technique si l'erreur persiste",
+  "Une erreur est survenue lors de l'enregistrement de données dans la session de l'utilisateur. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3",
 )
 export class OidcProviderStringifyPayloadForRedisException extends OidcProviderBaseException {
   public readonly code = ErrorCode.STRINGIFY_FOR_REDIS;
-  message = 'Erreur technique, recommencez la cinématique';
+
+  constructor() {
+    super(
+      'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+    );
+  }
 }

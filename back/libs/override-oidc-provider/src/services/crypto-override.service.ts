@@ -87,7 +87,8 @@ export class CryptoOverrideService {
         // Build callbacks
         const next = this.signSuccess.bind(this, resolve, reject);
         const error = (error: Error): void => {
-          reject(new CryptographyGatewayException(error));
+          this.logger.trace({ error }, LoggerLevelNames.WARN);
+          reject(new CryptographyGatewayException());
         };
 
         // Send message to gateway
@@ -100,7 +101,7 @@ export class CryptoOverrideService {
           });
       } catch (error) {
         this.logger.trace({ error }, LoggerLevelNames.WARN);
-        return reject(new CryptographyGatewayException(error));
+        return reject(new CryptographyGatewayException());
       }
     });
   }
@@ -119,9 +120,7 @@ export class CryptoOverrideService {
         { error: { data, payloadEncoding } },
         LoggerLevelNames.WARN,
       );
-      reject(
-        new CryptographyGatewayException('Gateway completed with an error'),
-      );
+      reject(new CryptographyGatewayException());
     }
 
     this.logger.trace({ data, payloadEncoding });
