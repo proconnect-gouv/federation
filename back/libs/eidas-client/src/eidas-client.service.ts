@@ -119,7 +119,7 @@ export class EidasClientService {
     try {
       await this.connectorRequestCache.put(id, lightRequest);
     } catch (e) {
-      throw new WriteLightRequestInCacheException(e);
+      throw new WriteLightRequestInCacheException();
     }
   }
 
@@ -135,7 +135,7 @@ export class EidasClientService {
     try {
       return await this.connectorResponseCache.get(id);
     } catch (e) {
-      throw new ReadLightResponseFromCacheException(e);
+      throw new ReadLightResponseFromCacheException();
     }
   }
 

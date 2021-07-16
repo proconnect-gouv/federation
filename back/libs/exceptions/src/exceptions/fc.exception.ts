@@ -16,10 +16,17 @@ export class FcException extends Error {
    * - 05: eIDAS
    *
    * @since core-fcp-high :
-   * - 15: Identity
-   * - 16 : Cryptography
-   * - 17 : Consumer-HSM
-   * - 18 : Account
+   * @since core-v2:
+   * - 06: eIDAS Client
+   * - 07: eIDAS Provider
+   * - 09: Mock Service Providers (Mock SP)
+   * - 15: Legacy session
+   * - 16: Cryptography
+   * - 17: Consumer-HSM
+   * - 18: Account
+   * - 19: Session Generic
+   * - 27: Mailer
+   * - 80: Exceptions
    */
   public scope: number;
 

@@ -17,29 +17,17 @@ describe('Runner', () => {
     jest.restoreAllMocks();
   });
 
+  const path = '/my/file/is/here.exception.ts';
   describe('extractException', () => {
-    it('Should return the Class extending FcException from a module', () => {
+    it('Should return the path of the exception and the Class extending FcException from a module', () => {
       // Setup
       const MockAbstractFunction = jest.fn();
       class MockException extends FcException {}
       const module = { MockException, MockAbstractFunction };
       // Actions
-      const result = Runner.extractException(module);
+      const result = Runner.extractException({ path, module });
       // Expect
-      expect(result).toStrictEqual(MockException);
-    });
-  });
-
-  describe('buildException', () => {
-    it('Should return the Class extending FcException from a module', () => {
-      // Setup
-      const MockAbstractFunction = jest.fn();
-      class MockException extends FcException {}
-      const module = { MockException, MockAbstractFunction };
-      // Actions
-      const result = Runner.extractException(module);
-      // Expect
-      expect(result).toStrictEqual(MockException);
+      expect(result).toStrictEqual({ path, Exception: MockException });
     });
   });
 
@@ -72,31 +60,40 @@ describe('Runner', () => {
       const expected = null;
       // Actions
       class MockException extends FcException {}
-      const result = Runner.inflateException(MockException);
+      const result = Runner.inflateException({
+        path,
+        Exception: MockException,
+      });
       // Expect
       expect(result).toStrictEqual(expected);
     });
 
-    it('should return an instance of Error if Exception has valid scope and code', () => {
+    it('should return the path of the error and an instance of Error if Exception has valid scope and code', () => {
       // Actions
       class MockException extends FcException {
         public code = 1;
         public scope = 1;
       }
-      const result = Runner.inflateException(MockException);
+      const result = Runner.inflateException({
+        path,
+        Exception: MockException,
+      });
       // Expect
-      expect(result instanceof Error).toBe(true);
+      expect(result).toStrictEqual({ path, error: expect.any(FcException) });
     });
 
-    it('should return an instance of Error if Exception has valid scope = 0 and code = 0', () => {
+    it('should return the path of the error and an instance of Error if Exception has valid scope = 0 and code = 0', () => {
       // Actions
       class MockException extends FcException {
         public code = 0;
         public scope = 0;
       }
-      const result = Runner.inflateException(MockException);
+      const result = Runner.inflateException({
+        path,
+        Exception: MockException,
+      });
       // Expect
-      expect(result instanceof Error).toBe(true);
+      expect(result).toStrictEqual({ path, error: expect.any(FcException) });
     });
   });
 
@@ -157,6 +154,8 @@ describe('Runner', () => {
           loggable: true,
           trackable: false,
           description: 'N/A',
+          path: paths[0],
+          exception: 'ImportFixture',
         },
         {
           scope: 2,
@@ -166,6 +165,8 @@ describe('Runner', () => {
           loggable: true,
           trackable: false,
           description: 'N/A',
+          path: paths[1],
+          exception: 'ImportFixture',
         },
       ]);
     });
@@ -239,12 +240,15 @@ describe('Runner', () => {
     });
 
     it('Should call renderFile with generate result', async () => {
+      // Setup
+      const projectRootPath = '../';
       // Actions
       await Runner.run();
       // Expect
       expect(Runner.renderFile).toHaveBeenCalledTimes(1);
       expect(Runner.renderFile).toHaveBeenCalledWith(expect.any(String), {
         markdown: markdownGenerateResult,
+        projectRootPath,
       });
     });
 

@@ -72,7 +72,7 @@ export class EidasProviderService {
       const lightRequest = await this.proxyServiceRequestCache.get(id);
       return lightRequest;
     } catch (e) {
-      throw new ReadLightRequestFromCacheException(e);
+      throw new ReadLightRequestFromCacheException();
     }
   }
 
@@ -166,7 +166,7 @@ export class EidasProviderService {
     try {
       await this.proxyServiceResponseCache.put(id, lightResponse);
     } catch (e) {
-      throw new WriteLightResponseInCacheException(e);
+      throw new WriteLightResponseInCacheException();
     }
   }
 }

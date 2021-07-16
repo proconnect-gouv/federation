@@ -238,7 +238,7 @@ export class FrIdentityToEuController {
       transformOptions,
     );
     if (errors.length) {
-      throw new EidasBridgeInvalidIdentityException(errors);
+      throw new EidasBridgeInvalidIdentityException();
     }
   }
 }

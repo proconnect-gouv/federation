@@ -223,7 +223,7 @@ export class EuIdentityToFrController {
 
     if (errors.length) {
       this.logger.trace({ errors }, LoggerLevelNames.WARN);
-      throw new EidasBridgeInvalidIdentityException(errors);
+      throw new EidasBridgeInvalidIdentityException();
     }
   }
 
