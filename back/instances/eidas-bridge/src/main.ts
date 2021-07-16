@@ -24,6 +24,8 @@ async function bootstrap() {
   });
   const {
     urlPrefix,
+    assetsPaths,
+    viewsPaths,
     httpsOptions: { key, cert },
   } = configService.get<AppConfig>('App');
 
@@ -87,28 +89,13 @@ async function bootstrap() {
 
   app.useLogger(logger);
   app.engine('ejs', renderFile);
-
-  /**
-   * @todo
-   * author: Arnaud PSA
-   * Date: 11/05/2021
-   * Context: Ticket FC-470, the flags are in the lib eidas-country,
-   * so we need a better way to merge data from lib/app and instance
-   * Architecture thinking required to handle all assets automatically
-   */
-  // Current, directory = dist when in production mode
-  const assetsPath = __dirname;
-
-  app.set('views', [join(assetsPath, 'views')]);
+  app.set('views', viewsPaths.map((viewsPath) => {
+    return join(__dirname, viewsPath, 'views');
+  }));
   app.setViewEngine('ejs');
-  app.useStaticAssets(join(assetsPath, 'public'));
-
-  if (process.env.NODE_ENV === 'development') {
-    // Libs code base to take latest version
-    app.useStaticAssets(
-      join(assetsPath, '../../../apps/eidas-bridge/src', 'public'),
-    );
-  }
+  assetsPaths.forEach((assetsPath) => {
+    app.useStaticAssets(join(__dirname, assetsPath, 'public'));
+  });
 
   const { cookieSecrets } =
     configService.get<SessionGenericConfig>('SessionGeneric');

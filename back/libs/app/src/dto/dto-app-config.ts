@@ -3,6 +3,7 @@
 // Declarative code
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsOptional,
   IsString,
   MinLength,
@@ -40,4 +41,14 @@ export class AppConfig {
   @IsOptional()
   @IsString()
   readonly fqdn?: string;
+
+  @IsOptional()
+  @IsString({ each: true })
+  @IsArray()
+  readonly assetsPaths?: string[];
+
+  @IsOptional()
+  @IsString({ each: true })
+  @IsArray()
+  readonly viewsPaths?: string[];
 }
