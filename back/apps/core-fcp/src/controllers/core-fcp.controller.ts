@@ -448,7 +448,7 @@ export class CoreFcpController {
     const errors = await identityCheckHandler.handle(identity);
     if (errors.length) {
       this.logger.trace({ errors }, LoggerLevelNames.WARN);
-      throw new CoreFcpInvalidIdentityException(providerUid, errors);
+      throw new CoreFcpInvalidIdentityException();
     }
   }
 }

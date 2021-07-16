@@ -5,8 +5,15 @@ import { Description } from '@fc/exceptions';
 import { OidcClientBaseException } from './oidc-client-base.exception';
 import { ErrorCode } from '../enums';
 
-@Description('Erreur techique dans le protocole OIDC, contacter SN3 (FC > FI)')
+@Description(
+  'Une erreur technique dans le protocole OpenId Connect, contacter le support N3',
+)
 export class OidcClientRuntimeException extends OidcClientBaseException {
   code = ErrorCode.RUNTIME;
-  message = 'Erreur technique';
+
+  constructor() {
+    super(
+      'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+    );
+  }
 }

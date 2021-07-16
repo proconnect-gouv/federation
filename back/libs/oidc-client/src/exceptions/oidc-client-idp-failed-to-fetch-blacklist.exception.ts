@@ -6,10 +6,10 @@ import { OidcClientBaseException } from './oidc-client-base.exception';
 import { ErrorCode } from '../enums';
 
 @Description(
-  "La requête reçue au retour du FI n'est pas valide (state invalide), recommencer la cinématique depuis le FS. si le problème persiste, contacter le support N3",
+  "La liste de fournisseur d'identité autorisés pour ce FS n'a pas pu être récupérée. L'utilisateur doit recommencer sa cinématique. Si le problème persiste, contacter le support N3",
 )
-export class OidcClientInvalidStateException extends OidcClientBaseException {
-  code = ErrorCode.INVALID_STATE;
+export class OidcClientFailedToFetchBlacklist extends OidcClientBaseException {
+  code = ErrorCode.BLACLIST_OR_WHITELIST_CHECK_FAILED;
 
   constructor() {
     super(

@@ -219,7 +219,7 @@ export class MockServiceProviderController {
 
         return res.redirect(redirect);
       }
-      throw new MockServiceProviderTokenRevocationException(e);
+      throw new MockServiceProviderTokenRevocationException();
     }
 
     this.logger.trace({
@@ -364,7 +364,7 @@ export class MockServiceProviderController {
 
         return res.redirect(redirect);
       }
-      throw new MockServiceProviderUserinfoException(e);
+      throw new MockServiceProviderUserinfoException();
     }
 
     this.logger.trace({

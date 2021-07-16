@@ -37,11 +37,11 @@ export class OidcClientIssuerService {
     );
 
     if (!idpMetadata) {
-      throw new OidcClientProviderNotFoundException(issuerId);
+      throw new OidcClientProviderNotFoundException();
     }
 
     if (!idpMetadata.active) {
-      throw new OidcClientProviderDisabledException(issuerId);
+      throw new OidcClientProviderDisabledException();
     }
 
     return idpMetadata;

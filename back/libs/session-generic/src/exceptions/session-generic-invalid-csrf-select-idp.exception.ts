@@ -6,7 +6,7 @@ import { ErrorCode } from '../enums';
 import { SessionGenericBaseException } from './session-generic-base.exception';
 
 @Description(
-  "L'utilisateur a lancé deux cinématiques en parallèle dans différents onglet. L'utilisateur doit redémarrer sa cinématique. Si cela persiste, contacter le support N3",
+  "La page de consentement a été appelée sans avoir effectué les étapes de la cinématique. L'utilisateur doit redémarrer sa cinématique en respectant les étapes de cette dernière. Il s'agit d'une protection contre des attaques qui seraient destinées à sauter des étapes. Il se peut que l'utilisateur ait lancé des cinématiques en parallèle dans plusieurs onglets, dans ce cas il faut fermer tous les onglets du navigateur et relancer la cinématique.",
 )
 export class SessionGenericInvalidCsrfSelectIdpException extends SessionGenericBaseException {
   public readonly code = ErrorCode.INVALID_CSRF_SELECT_IDP;
