@@ -1,7 +1,9 @@
 [
   {
     "enabled": true,
-    "criteria": ["par défaut"],
+    "criteria": [
+      "par défaut"
+    ],
     "credentials": [
       {
         "idpId": "fip1-high",
@@ -22,10 +24,35 @@
   },
   {
     "enabled": true,
-    "criteria": ["non trouvé avec un echo RNIPP"],
+    "criteria": [
+      "pour le test de désactivation"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
+        "username": "test_THIBAULT",
+        "password": "123"
+      }
+    ],
+    "claims": {
+      "gender": "male",
+      "given_name": "THIBAULT",
+      "family_name": "TABLE",
+      "preferred_username": "",
+      "birthdate": "1991-02-13",
+      "birthplace": "75116",
+      "birthcountry": "99100",
+      "email": "iffikeppano-9064@yopmail.com"
+    }
+  },
+  {
+    "enabled": true,
+    "criteria": [
+      "non trouvé avec un echo RNIPP"
+    ],
+    "credentials": [
+      {
+        "idpId": "fip1-high",
         "username": "E010004",
         "password": "123"
       }
@@ -43,10 +70,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["non trouvé avec plusieurs echos RNIPP"],
+    "criteria": [
+      "non trouvé avec plusieurs echos RNIPP"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "E010006",
         "password": "123"
       }
@@ -64,10 +93,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["non trouvé avec aucun echo RNIPP"],
+    "criteria": [
+      "non trouvé avec aucun echo RNIPP"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "E010008",
         "password": "123"
       }
@@ -85,10 +116,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["avec erreur RNIPP mauvaise requête"],
+    "criteria": [
+      "avec erreur RNIPP mauvaise requête"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "E010009",
         "password": "123"
       }
@@ -106,10 +139,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["avec erreur RNIPP mauvais format"],
+    "criteria": [
+      "avec erreur RNIPP mauvais format"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "E010012",
         "password": "123"
       }
@@ -127,10 +162,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["sans nom de famille"],
+    "criteria": [
+      "sans nom de famille"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "E010013",
         "password": "123"
       }
@@ -147,10 +184,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["avec date de naissance erronée"],
+    "criteria": [
+      "avec date de naissance erronée"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "E010014",
         "password": "123"
       }
@@ -167,10 +206,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["décédé"],
+    "criteria": [
+      "décédé"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "E010015",
         "password": "123"
       }
@@ -187,10 +228,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["décédée"],
+    "criteria": [
+      "décédée"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "E010016",
         "password": "123"
       }
@@ -207,10 +250,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["né en Corse"],
+    "criteria": [
+      "né en Corse"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "test_CLEMENT",
         "password": "123"
       }
@@ -228,10 +273,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["présumé né jour"],
+    "criteria": [
+      "présumé né jour"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "étranger_présumé_né_jour",
         "password": "123"
       }
@@ -249,10 +296,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["présumé né jour et mois"],
+    "criteria": [
+      "présumé né jour et mois"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "étranger_présumé_né_jour_et_mois",
         "password": "123"
       }
@@ -270,10 +319,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["né en Algérie"],
+    "criteria": [
+      "né en Algérie"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "naissance_Algérie",
         "password": "123"
       }
@@ -291,10 +342,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["né dans l'Aisne"],
+    "criteria": [
+      "né dans l'Aisne"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "dep_moins_dix",
         "password": "123"
       }
@@ -312,11 +365,13 @@
   },
   {
     "enabled": true,
-    "criteria": ["désactivé"],
+    "criteria": [
+      "désactivé"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
-        "username": "Désactivé",
+        "idpId": "fip1-high",
+        "username": "E000001",
         "password": "123"
       }
     ],
@@ -333,10 +388,12 @@
   },
   {
     "enabled": true,
-    "criteria": ["pour le test de dernière connexion"],
+    "criteria": [
+      "pour le test de dernière connexion"
+    ],
     "credentials": [
       {
-        "idpId": "fip1v2",
+        "idpId": "fip1-high",
         "username": "test_ALAIN",
         "password": "123"
       }
@@ -354,7 +411,9 @@
   },
   {
     "enabled": true,
-    "criteria": ["n'ayant jamais utilisé FranceConnect"],
+    "criteria": [
+      "n'ayant jamais utilisé FranceConnect"
+    ],
     "credentials": [],
     "claims": {
       "gender": "male",

@@ -1,10 +1,15 @@
 [
   {
     "idpId": "fip1-high",
+    "description": "par défaut",
     "mocked": true,
     "enabled": true,
     "url": "https://fip1-high.{{TEST_ENV}}.dev-franceconnect.fr/interaction",
-    "acrValues": ["eidas1", "eidas2", "eidas3"],
+    "acrValues": [
+      "eidas1",
+      "eidas2",
+      "eidas3"
+    ],
     "selectors": {
       "idpButton": "#idp-fip1-high",
       "username": "input[name='login']",
