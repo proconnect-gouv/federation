@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 import { CoreService } from '@fc/core';
 import { ConfigService } from '@fc/config';
@@ -91,7 +91,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
         CoreService,
         CoreFcpEidasVerifyHandler,
         LoggerService,
-        SessionGenericService,
+        SessionService,
         TrackingService,
         ServiceProviderAdapterMongoService,
         CryptographyEidasService,
@@ -103,7 +103,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
       .useValue(coreServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)

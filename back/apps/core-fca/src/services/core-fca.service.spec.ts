@@ -1,7 +1,7 @@
 import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { FeatureHandler } from '@fc/feature-handler';
@@ -76,14 +76,14 @@ describe('CoreFcaService', () => {
         LoggerService,
         CoreService,
         IdentityProviderAdapterMongoService,
-        SessionGenericService,
+        SessionService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(CoreService)
       .useValue(coreServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(IdentityProviderMock)

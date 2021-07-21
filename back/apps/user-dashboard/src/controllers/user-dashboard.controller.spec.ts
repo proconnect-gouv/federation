@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { OidcSession } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import {
@@ -73,7 +73,7 @@ describe('UserDashboardController', () => {
         ConfigService,
         OidcClientService,
         LoggerService,
-        SessionGenericService,
+        SessionService,
         CryptographyService,
       ],
     })
@@ -83,7 +83,7 @@ describe('UserDashboardController', () => {
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)

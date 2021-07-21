@@ -6,10 +6,10 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { OidcProviderService } from '@fc/oidc-provider';
 import {
-  SessionGenericNotFoundException,
-  SessionGenericService,
-  SessionGenericCsrfService,
-} from '@fc/session-generic';
+  SessionNotFoundException,
+  SessionService,
+  SessionCsrfService,
+} from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
 import { MinistriesService } from '@fc/ministries';
@@ -99,7 +99,7 @@ describe('CoreFcaController', () => {
     setAlias: jest.fn(),
   };
 
-  const sessionGenericCsrfServiceMock = {
+  const sessionCsrfServiceMock = {
     get: jest.fn(),
     save: jest.fn(),
     validate: jest.fn(),
@@ -135,9 +135,9 @@ describe('CoreFcaController', () => {
     idpNonce: idpNonceMock,
   };
 
-  const sessionGenericServieMock: SessionGenericService = {
+  const sessionServieMock: SessionService = {
     setAlias: jest.fn(),
-  } as unknown as SessionGenericService;
+  } as unknown as SessionService;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -152,8 +152,8 @@ describe('CoreFcaController', () => {
         CryptographyService,
         ConfigService,
         OidcClientService,
-        SessionGenericService,
-        SessionGenericCsrfService,
+        SessionService,
+        SessionCsrfService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -174,10 +174,10 @@ describe('CoreFcaController', () => {
       .useValue(configServiceMock)
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
-      .overrideProvider(SessionGenericService)
-      .useValue(sessionGenericServieMock)
-      .overrideProvider(SessionGenericCsrfService)
-      .useValue(sessionGenericCsrfServiceMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServieMock)
+      .overrideProvider(SessionCsrfService)
+      .useValue(sessionCsrfServiceMock)
       .compile();
 
     coreController = await app.get<CoreFcaController>(CoreFcaController);
@@ -204,8 +204,8 @@ describe('CoreFcaController', () => {
     cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
     configServiceMock.get.mockReturnValue(appConfigMock);
 
-    sessionGenericCsrfServiceMock.get.mockReturnValueOnce(randomStringMock);
-    sessionGenericCsrfServiceMock.save.mockResolvedValueOnce(true);
+    sessionCsrfServiceMock.get.mockReturnValueOnce(randomStringMock);
+    sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
   });
 
   describe('getDefault()', () => {
@@ -312,10 +312,10 @@ describe('CoreFcaController', () => {
       // When
       await coreController.getFrontData(req, res, sessionServiceMock);
       // Then
-      expect(sessionGenericCsrfServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionGenericCsrfServiceMock.get).toHaveBeenCalledWith();
-      expect(sessionGenericCsrfServiceMock.save).toHaveBeenCalledTimes(1);
-      expect(sessionGenericCsrfServiceMock.save).toHaveBeenCalledWith(
+      expect(sessionCsrfServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionCsrfServiceMock.get).toHaveBeenCalledWith();
+      expect(sessionCsrfServiceMock.save).toHaveBeenCalledTimes(1);
+      expect(sessionCsrfServiceMock.save).toHaveBeenCalledWith(
         sessionServiceMock,
         randomStringMock,
       );
@@ -378,7 +378,7 @@ describe('CoreFcaController', () => {
       // When
       await expect(
         coreController.getInteraction(sessionServiceMock),
-      ).rejects.toThrow(SessionGenericNotFoundException);
+      ).rejects.toThrow(SessionNotFoundException);
       // Then
     });
   });

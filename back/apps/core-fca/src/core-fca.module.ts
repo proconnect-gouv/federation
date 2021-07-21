@@ -3,7 +3,7 @@
 // Declarative code
 import { Module, Global } from '@nestjs/common';
 import { OidcProviderModule } from '@fc/oidc-provider';
-import { SessionGenericModule } from '@fc/session-generic';
+import { SessionModule } from '@fc/session';
 import { OidcSession } from '@fc/oidc';
 import {
   ServiceProviderAdapterMongoModule,
@@ -59,7 +59,7 @@ import { CoreFcaDefaultVerifyHandler } from './handlers';
       ServiceProviderAdapterMongoService,
       ServiceProviderAdapterMongoModule,
     ),
-    SessionGenericModule.forRoot({
+    SessionModule.forRoot({
       schema: OidcSession,
     }),
     /** Inject app specific tracking service */

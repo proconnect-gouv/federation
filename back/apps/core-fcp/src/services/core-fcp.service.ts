@@ -1,7 +1,7 @@
 import { ModuleRef } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import { ISessionGenericService } from '@fc/session-generic';
+import { ISessionService } from '@fc/session';
 import { OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -40,11 +40,11 @@ export class CoreFcpService {
   /**
    * Main business manipulations occurs in this method
    *
-   * @param {ISessionGenericService<OidcClientSession>} sessionOidc
+   * @param {ISessionService<OidcClientSession>} sessionOidc
    * @returns {Promise<void>}
    */
   async verify(
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
     trackingContext: Record<string, any>,
   ): Promise<void> {
     this.logger.debug('CoreFcpService.verify');
@@ -78,7 +78,7 @@ export class CoreFcpService {
   /**
    * Send an email to the authenticated end-user after consent.
    *
-   * @param {ISessionGenericService<OidcClientSession>} sessionOidc
+   * @param {ISessionService<OidcClientSession>} sessionOidc
    * @returns {Promise<void>}
    */
   async sendAuthenticationMail(session: OidcSession): Promise<void> {

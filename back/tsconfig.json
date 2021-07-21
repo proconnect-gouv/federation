@@ -76,8 +76,6 @@
       "@fc/oidc/*": ["libs/oidc/src/*"],
       "@fc/http-proxy": ["libs/http-proxy/src"],
       "@fc/http-proxy/*": ["libs/http-proxy/src/*"],
-      "@fc/session-generic": ["libs/session-generic/src"],
-      "@fc/session-generic/*": ["libs/session-generic/src/*"],
       "@fc/session": ["libs/session/src"],
       "@fc/session/*": ["libs/session/src/*"],
       "@fc/override-oidc-provider": ["libs/override-oidc-provider/src"],

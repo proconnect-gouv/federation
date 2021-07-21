@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
-import { ISessionGenericService, Session } from '@fc/session-generic';
+import { ISessionService, Session } from '@fc/session';
 import { AppSession, AuthorizeParamsDto } from '../dto';
 
 @Controller()
@@ -38,7 +38,7 @@ export class OidcProviderController {
   async getAuthorize(
     @Next() next,
     @Query() query: AuthorizeParamsDto,
-    @Session('App') appSession: ISessionGenericService<AppSession>,
+    @Session('App') appSession: ISessionService<AppSession>,
   ) {
     this.logger.trace({
       route: OidcProviderRoutes.AUTHORIZATION,

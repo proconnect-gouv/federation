@@ -23,7 +23,7 @@ import {
   OidcClientSession,
 } from '@fc/oidc-client';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import { ISessionGenericService, Session } from '@fc/session-generic';
+import { ISessionService, Session } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
@@ -60,7 +60,7 @@ export class MockServiceProviderController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { defaultAcrValue } = this.config.get('App');
 
@@ -108,7 +108,7 @@ export class MockServiceProviderController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const session = await sessionOidc.get();
 
@@ -140,7 +140,7 @@ export class MockServiceProviderController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
     @Query('post_logout_redirect_uri')
     postLogoutRedirectUri?: string,
   ) {
@@ -254,7 +254,7 @@ export class MockServiceProviderController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     /**
      * @todo Adaptation for now, we should probably find a better way to handle
