@@ -1,10 +1,11 @@
 /* istanbul ignore file */
 
-// Declarative code
+// declarative code
 export * from './session-base.exception';
-export * from './session-bad-format.exception';
 export * from './session-not-found.exception';
-export * from './session-no-interaction-cookie.exception';
-export * from './session-no-session-cookie.exception';
-export * from './session-bad-session-id.exception';
-export * from './session-bad-data.exception';
+export * from './session-bad-format.exception';
+export * from './session-bad-alias.exception';
+export * from './session-invalid-session.exception';
+export * from './session-storage.exception';
+export * from './session-invalid-csrf-consent.exception';
+export * from './session-invalid-csrf-select-idp.exception';

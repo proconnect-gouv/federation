@@ -11,11 +11,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import {
-  ISessionGenericService,
-  Session,
-  SessionGenericService,
-} from '@fc/session-generic';
+import { ISessionService, Session, SessionService } from '@fc/session';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -29,7 +25,7 @@ export class MockIdentityProviderController {
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly mockIdentityProviderService: MockIdentityProviderService,
-    private readonly sessionService: SessionGenericService,
+    private readonly sessionService: SessionService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -65,8 +61,8 @@ export class MockIdentityProviderController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
-    @Session('App') appSession: ISessionGenericService<AppSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
+    @Session('App') appSession: ISessionService<AppSession>,
   ) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
 
@@ -104,7 +100,7 @@ export class MockIdentityProviderController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
     const { login } = body;
     const spIdentity = (await this.mockIdentityProviderService.getIdentity(

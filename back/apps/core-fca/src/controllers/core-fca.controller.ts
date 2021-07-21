@@ -15,12 +15,12 @@ import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
-  ISessionGenericService,
+  ISessionService,
   Session,
-  SessionGenericCsrfService,
-  SessionGenericNotFoundException,
-  SessionGenericService,
-} from '@fc/session-generic';
+  SessionCsrfService,
+  SessionNotFoundException,
+  SessionService,
+} from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { MinistriesService } from '@fc/ministries';
 import { AppConfig } from '@fc/app';
@@ -55,8 +55,8 @@ export class CoreFcaController {
     private readonly core: CoreFcaService,
     private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
-    private readonly sessionService: SessionGenericService,
-    private readonly csrfService: SessionGenericCsrfService,
+    private readonly sessionService: SessionService,
+    private readonly csrfService: SessionCsrfService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -83,7 +83,7 @@ export class CoreFcaController {
      * without a direct dependance like now
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const session = await sessionOidc.get();
     if (!session) {
@@ -160,7 +160,7 @@ export class CoreFcaController {
   @Render('interaction')
   async getInteraction(
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const session = await sessionOidc.get();
     if (!session) {
@@ -168,7 +168,7 @@ export class CoreFcaController {
         { route: CoreRoutes.INTERACTION },
         LoggerLevelNames.WARN,
       );
-      throw new SessionGenericNotFoundException('OidcClient');
+      throw new SessionNotFoundException('OidcClient');
     }
 
     this.logger.trace({
@@ -195,7 +195,7 @@ export class CoreFcaController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     await this.core.verify(sessionOidc);
 
@@ -229,7 +229,7 @@ export class CoreFcaController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { spIdentity } = await sessionOidc.get();
     if (!spIdentity) {
@@ -276,7 +276,7 @@ export class CoreFcaController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { providerUid } = params;
     const { idpState, idpNonce, spId, interactionId } = await sessionOidc.get();

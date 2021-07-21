@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import {
   RnippService,
   RnippRequestedEvent,
@@ -107,7 +107,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
         CoreService,
         CoreFcpDefaultVerifyHandler,
         LoggerService,
-        SessionGenericService,
+        SessionService,
         RnippService,
         TrackingService,
         ServiceProviderAdapterMongoService,
@@ -120,7 +120,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       .useValue(coreServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(RnippService)
       .useValue(rnippServiceMock)

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import { OidcClientSession } from '@fc/oidc-client';
-import { ISessionGenericService, Session } from '@fc/session-generic';
+import { ISessionService, Session } from '@fc/session';
 import { RevocationTokenParamsDTO } from './dto';
 import { OidcProviderRoutes } from './enums';
 import { OidcProviderService } from './oidc-provider.service';
@@ -39,7 +39,7 @@ export class OidcProviderController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
     const session: OidcClientSession = await sessionOidc.get();
 

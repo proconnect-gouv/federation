@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { MockIdentityProviderService } from '../services';
 import { MockIdentityProviderController } from './mock-identity-provider.controller';
@@ -72,7 +72,7 @@ describe('MockIdentityProviderFcaController', () => {
       providers: [
         OidcClientService,
         LoggerService,
-        SessionGenericService,
+        SessionService,
         OidcProviderService,
         MockIdentityProviderService,
       ],
@@ -81,7 +81,7 @@ describe('MockIdentityProviderFcaController', () => {
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(oidcClientSessionServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)

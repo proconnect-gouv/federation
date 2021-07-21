@@ -2,10 +2,7 @@ import { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import {
-  SessionGenericService,
-  ISessionGenericBoundContext,
-} from '@fc/session-generic';
+import { SessionService, ISessionBoundContext } from '@fc/session';
 import { IServiceProviderAdapter, OidcSession } from '@fc/oidc';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
@@ -20,7 +17,7 @@ export class OidcProviderConfigService {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
-    private readonly sessionService: SessionGenericService,
+    private readonly sessionService: SessionService,
     private readonly errorService: OidcProviderErrorService,
     /**
      * @todo remove mention of ServiceProviderAdapterMongoService
@@ -143,7 +140,7 @@ export class OidcProviderConfigService {
         interactionId,
       );
 
-      const boundSessionContext: ISessionGenericBoundContext = {
+      const boundSessionContext: ISessionBoundContext = {
         sessionId,
         moduleName: 'OidcClient',
       };

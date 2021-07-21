@@ -17,7 +17,7 @@ import {
   EidasClientSession,
   EidasClientValidateEuropeanIdentity,
 } from './dto';
-import { ISessionGenericService, Session } from '@fc/session-generic';
+import { ISessionService, Session } from '@fc/session';
 
 @Controller('eidas-client')
 export class EidasClientController {
@@ -39,7 +39,7 @@ export class EidasClientController {
     @Query()
     query: EidasClientValidateEuropeanIdentity,
     @Session('EidasClient')
-    sessionEidas: ISessionGenericService<EidasClientSession>,
+    sessionEidas: ISessionService<EidasClientSession>,
   ) {
     const { eidasPartialRequest } = await sessionEidas.get();
 
@@ -77,7 +77,7 @@ export class EidasClientController {
   async responseHandler(
     @Body() body: ReponseHandlerDTO,
     @Session('EidasClient')
-    sessionEidas: ISessionGenericService<EidasClientSession>,
+    sessionEidas: ISessionService<EidasClientSession>,
   ) {
     const { token } = body;
 

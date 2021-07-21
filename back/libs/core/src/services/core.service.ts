@@ -14,10 +14,7 @@ import { AccountBlockedException, AccountService } from '@fc/account';
 import { Acr, OidcSession } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import {
-  ISessionGenericBoundContext,
-  SessionGenericService,
-} from '@fc/session-generic';
+import { ISessionBoundContext, SessionService } from '@fc/session';
 import { IEventContext, TrackingService } from '@fc/tracking';
 import { OidcProviderErrorService } from '@fc/oidc-provider/services';
 import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
@@ -35,7 +32,7 @@ export class CoreService {
     private readonly oidcErrorService: OidcProviderErrorService,
     private readonly account: AccountService,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
-    private readonly sessionService: SessionGenericService,
+    private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -135,7 +132,7 @@ export class CoreService {
       spName,
     };
 
-    const sessionContext: ISessionGenericBoundContext = {
+    const sessionContext: ISessionBoundContext = {
       sessionId,
       moduleName: 'OidcClient',
     };

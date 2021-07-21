@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CryptographyService } from '@fc/cryptography';
 import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { AcrValues } from '@fc/oidc';
 import { EidasAttributes } from '@fc/eidas';
@@ -99,7 +99,7 @@ describe('FrIdentityToEuController', () => {
       providers: [
         OidcClientService,
         LoggerService,
-        SessionGenericService,
+        SessionService,
         CryptographyService,
         EidasToOidcService,
         OidcToEidasService,
@@ -109,7 +109,7 @@ describe('FrIdentityToEuController', () => {
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceOidcMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)

@@ -11,7 +11,7 @@ import Redis from './redis';
 import CryptographyFca from './cryptography-fca';
 import ServiceProviderAdapterMongoConfig from './service-provider-adapter-mongo';
 import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
-import SessionGeneric from './session-generic';
+import Session from './session';
 import OverrideOidcProvider from './override-oidc-provider';
 
 export default {
@@ -31,6 +31,6 @@ export default {
   CryptographyFca,
   ServiceProviderAdapterMongoConfig,
   IdentityProviderAdapterMongoConfig,
-  SessionGeneric,
+  Session,
   OverrideOidcProvider,
 } as CoreFcaConfig;

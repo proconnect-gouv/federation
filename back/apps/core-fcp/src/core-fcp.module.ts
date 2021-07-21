@@ -4,7 +4,7 @@
 import { Module, Global } from '@nestjs/common';
 import { OidcProviderModule } from '@fc/oidc-provider';
 import { OidcSession } from '@fc/oidc';
-import { SessionGenericModule } from '@fc/session-generic';
+import { SessionModule } from '@fc/session';
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
@@ -60,7 +60,7 @@ import {
   imports: [
     ExceptionsModule,
     MongooseModule,
-    SessionGenericModule.forRoot({
+    SessionModule.forRoot({
       schema: OidcSession,
     }),
     RnippModule,

@@ -1,9 +1,9 @@
 import { OidcSession } from '@fc/oidc';
 import {
-  ISessionGenericBoundContext,
-  SessionGenericNotFoundException,
-  SessionGenericService,
-} from '@fc/session-generic';
+  ISessionBoundContext,
+  SessionNotFoundException,
+  SessionService,
+} from '@fc/session';
 import { Injectable } from '@nestjs/common';
 import { IEvent, IEventContext, IAppTrackingService } from '@fc/tracking';
 import { ConfigService } from '@fc/config';
@@ -21,7 +21,7 @@ export class CoreTrackingService implements IAppTrackingService {
   readonly EventsMap;
 
   constructor(
-    private readonly sessionService: SessionGenericService,
+    private readonly sessionService: SessionService,
     private readonly config: ConfigService,
   ) {
     this.EventsMap = getEventsMap(this.config.get<AppConfig>('App').urlPrefix);
@@ -114,7 +114,7 @@ export class CoreTrackingService implements IAppTrackingService {
   private async getDataFromSession(
     sessionId: string,
   ): Promise<ICoreTrackingProviders> {
-    const boundSessionContext: ISessionGenericBoundContext = {
+    const boundSessionContext: ISessionBoundContext = {
       sessionId,
       moduleName: 'OidcClient',
     };
@@ -127,7 +127,7 @@ export class CoreTrackingService implements IAppTrackingService {
     const sessionData: OidcSession = await boundSessionServiceGet();
 
     if (!sessionData) {
-      throw new SessionGenericNotFoundException(boundSessionContext.moduleName);
+      throw new SessionNotFoundException(boundSessionContext.moduleName);
     }
 
     const {

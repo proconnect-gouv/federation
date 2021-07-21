@@ -12,7 +12,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import { LoggerService } from '@fc/logger';
 import { MockIdentityProviderConfig } from '@fc/mock-identity-provider';
 import { ConfigService } from '@fc/config';
-import { SessionGenericConfig } from '@fc/session-generic';
+import { SessionConfig } from '@fc/session';
 import { AppModule } from './app.module';
 import config from './config';
 import { AppConfig } from '@fc/app';
@@ -90,7 +90,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, 'public'));
 
   const { cookieSecrets } =
-    configService.get<SessionGenericConfig>('SessionGeneric');
+    configService.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));
 
   /**

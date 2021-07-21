@@ -2,11 +2,11 @@
 
 // Declarative code
 import { OidcClientSession } from '@fc/oidc-client';
-import { ISessionGenericService } from '@fc/session-generic';
+import { ISessionService } from '@fc/session';
 import { IFeatureHandler } from '@fc/feature-handler';
 
 export interface IVerifyFeatureHandlerHandleArgument {
-  sessionOidc: ISessionGenericService<OidcClientSession>;
+  sessionOidc: ISessionService<OidcClientSession>;
   trackingContext: Record<string, any>;
 }
 export interface IVerifyFeatureHandler extends IFeatureHandler {
