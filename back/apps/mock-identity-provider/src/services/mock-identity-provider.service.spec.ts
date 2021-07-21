@@ -5,10 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
-import {
-  ISessionGenericBoundContext,
-  SessionGenericService,
-} from '@fc/session-generic';
+import { ISessionBoundContext, SessionService } from '@fc/session';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { MockIdentityProviderService } from './mock-identity-provider.service';
 import { ConfigService } from '@fc/config';
@@ -64,7 +61,7 @@ describe('MockIdentityProviderService', () => {
         OidcProviderService,
         MockIdentityProviderService,
         ServiceProviderAdapterEnvService,
-        SessionGenericService,
+        SessionService,
         ConfigService,
       ],
     })
@@ -72,7 +69,7 @@ describe('MockIdentityProviderService', () => {
       .useValue(oidcProviderServiceMock)
       .overrideProvider(ServiceProviderAdapterEnvService)
       .useValue(serviceProviderEnvServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
@@ -218,7 +215,7 @@ describe('MockIdentityProviderService', () => {
       const bindedSessionService = jest.fn().mockResolvedValueOnce(undefined);
       sessionServiceMock.set.bind.mockReturnValueOnce(bindedSessionService);
 
-      const boundSessionContextMock: ISessionGenericBoundContext = {
+      const boundSessionContextMock: ISessionBoundContext = {
         sessionId: sessionIdValueMock,
         moduleName: 'OidcClient',
       };

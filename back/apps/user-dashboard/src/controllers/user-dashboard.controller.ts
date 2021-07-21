@@ -18,7 +18,7 @@ import {
   OidcClientSession,
 } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
-import { ISessionGenericService, Session } from '@fc/session-generic';
+import { ISessionService, Session } from '@fc/session';
 import { CryptographyService } from '@fc/cryptography';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
@@ -55,7 +55,7 @@ export class UserDashboardController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     /**
      * @TODO #179
@@ -145,7 +145,7 @@ export class UserDashboardController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { providerUid } = params;
     const { idpState, idpNonce, interactionId } = await sessionOidc.get();
@@ -243,7 +243,7 @@ export class UserDashboardController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { idpIdentity } = await sessionOidc.get();
 

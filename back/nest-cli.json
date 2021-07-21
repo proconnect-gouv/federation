@@ -512,15 +512,6 @@
         "tsConfigPath": "libs/http-proxy/tsconfig.lib.json"
       }
     },
-    "session-generic": {
-      "type": "library",
-      "root": "libs/session-generic",
-      "entryFile": "index",
-      "sourceRoot": "libs/session-generic/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/session-generic/tsconfig.lib.json"
-      }
-    },
     "session": {
       "type": "library",
       "root": "libs/session",

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import { OidcSession } from '@fc/oidc';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
@@ -428,7 +428,7 @@ describe('CoreFcpSendEmailHandler', () => {
         ConfigService,
         CoreFcpSendEmailHandler,
         LoggerService,
-        SessionGenericService,
+        SessionService,
         MailerService,
         IdentityProviderAdapterMongoService,
       ],
@@ -437,7 +437,7 @@ describe('CoreFcpSendEmailHandler', () => {
       .useValue(configServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(MailerService)
       .useValue(mailerServiceMock)
