@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
+// declarative code
 import {
   IsString,
   Length,
@@ -13,6 +14,7 @@ import {
   Min,
 } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsStringOrRegExp } from '@fc/common';
 
 export class CookieOptions {
   @IsBoolean()
@@ -35,6 +37,7 @@ export class CookieOptions {
   @IsString()
   readonly domain: string;
 }
+
 export class SessionConfig {
   /**
    * @TODO #151 evaluate the opportunity to use keyObjects
@@ -43,7 +46,7 @@ export class SessionConfig {
    */
   @IsString()
   @Length(32, 32)
-  readonly cryptographyKey: string;
+  readonly encryptionKey: string;
 
   @IsString()
   @MinLength(2)
@@ -59,14 +62,6 @@ export class SessionConfig {
   @IsArray()
   readonly cookieSecrets: string[];
 
-  /**
-   * @TODO #149 this is not a generic need
-   * see how to refactor this... (low priority)
-   * https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/149
-   */
-  @IsString()
-  readonly interactionCookieName: string;
-
   @IsNumber()
   @IsPositive()
   readonly lifetime: number;
@@ -74,4 +69,8 @@ export class SessionConfig {
   @IsNumber()
   @Min(32)
   readonly sessionIdLength: number;
+
+  @IsArray()
+  @IsStringOrRegExp({ each: true })
+  readonly excludedRoutes: (string | RegExp)[];
 }

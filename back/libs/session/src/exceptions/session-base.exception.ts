@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 
-// Declarative code
+// declarative code
 import { FcException } from '@fc/exceptions';
 
 export class SessionBaseException extends FcException {
   public originalError: Error;
-  public readonly scope = 15;
+  public readonly scope = 19;
 }

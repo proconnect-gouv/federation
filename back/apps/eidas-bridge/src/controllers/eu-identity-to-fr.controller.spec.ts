@@ -2,7 +2,7 @@ import { mocked } from 'ts-jest/utils';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import {
   EidasLevelOfAssurances,
   EidasNameIdFormats,
@@ -112,7 +112,7 @@ describe('EuIdentityToFrController', () => {
     getListByIso: jest.fn(),
   };
 
-  const sessionGenericServiceMock = {
+  const sessionServiceMock = {
     setAlias: jest.fn(),
   };
 
@@ -122,19 +122,19 @@ describe('EuIdentityToFrController', () => {
       providers: [
         ConfigService,
         LoggerService,
-        SessionGenericService,
+        SessionService,
         OidcProviderService,
         OidcToEidasService,
         EidasToOidcService,
         EidasCountryService,
-        SessionGenericService,
+        SessionService,
       ],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceOidcMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
@@ -144,8 +144,8 @@ describe('EuIdentityToFrController', () => {
       .useValue(eidasToOidcServiceMock)
       .overrideProvider(EidasCountryService)
       .useValue(eidasCountryServiceMock)
-      .overrideProvider(SessionGenericService)
-      .useValue(sessionGenericServiceMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
       .compile();
 
     euIdentityToFrController = await app.get<EuIdentityToFrController>(

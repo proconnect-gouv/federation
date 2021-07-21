@@ -6,7 +6,7 @@ import { CqrsModule } from '@nestjs/cqrs';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import { TrackingModule } from '@fc/tracking';
 import { CryptographyModule } from '@fc/cryptography';
-import { SessionGenericModule } from '@fc/session-generic';
+import { SessionModule } from '@fc/session';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 import { IIdentityProviderAdapter } from './interfaces';
@@ -33,7 +33,7 @@ export class OidcClientModule {
         CryptographyModule,
         CqrsModule,
         TrackingModule.forLib(),
-        SessionGenericModule,
+        SessionModule,
       ],
       providers: [
         {

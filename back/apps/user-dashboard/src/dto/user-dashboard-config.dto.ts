@@ -6,7 +6,7 @@ import { Type } from 'class-transformer';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { RedisConfig } from '@fc/redis';
 import { LoggerConfig } from '@fc/logger';
-import { SessionGenericConfig } from '@fc/session-generic';
+import { SessionConfig } from '@fc/session';
 import { AppConfig } from '@fc/app';
 import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
 
@@ -28,8 +28,8 @@ export class UserDashboardConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => SessionGenericConfig)
-  readonly SessionGeneric: SessionGenericConfig;
+  @Type(() => SessionConfig)
+  readonly Session: SessionConfig;
 
   @IsObject()
   @ValidateNested()

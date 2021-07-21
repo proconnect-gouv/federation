@@ -16,11 +16,11 @@ import {
   RedirectToIdp,
 } from '@fc/oidc-client';
 import {
-  ISessionGenericService,
+  ISessionService,
   Session,
-  SessionGenericCsrfService,
-  SessionGenericInvalidCsrfSelectIdpException,
-} from '@fc/session-generic';
+  SessionCsrfService,
+  SessionInvalidCsrfSelectIdpException,
+} from '@fc/session';
 
 @Controller()
 export class OidcClientController {
@@ -28,7 +28,7 @@ export class OidcClientController {
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
     private readonly identityProvider: IdentityProviderAdapterEnvService,
-    private readonly csrfService: SessionGenericCsrfService,
+    private readonly csrfService: SessionCsrfService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -50,7 +50,7 @@ export class OidcClientController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
     const {
       scope,
@@ -76,7 +76,7 @@ export class OidcClientController {
       await this.csrfService.validate(sessionOidc, csrfToken);
     } catch (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
-      throw new SessionGenericInvalidCsrfSelectIdpException(error);
+      throw new SessionInvalidCsrfSelectIdpException(error);
     }
 
     if (serviceProviderId) {

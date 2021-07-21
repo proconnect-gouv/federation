@@ -18,11 +18,7 @@ import { OidcClientSession } from '@fc/oidc-client';
 import { ConfigService } from '@fc/config';
 import { IOidcIdentity, OidcError } from '@fc/oidc';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
-import {
-  ISessionGenericService,
-  Session,
-  SessionGenericService,
-} from '@fc/session-generic';
+import { ISessionService, Session, SessionService } from '@fc/session';
 import { EidasClientSession } from '@fc/eidas-client';
 import { validateDto } from '@fc/common';
 import { EidasBridgeRoutes } from '../enums';
@@ -49,7 +45,7 @@ export class EuIdentityToFrController {
     private readonly oidcToEidas: OidcToEidasService,
     private readonly eidasToOidc: EidasToOidcService,
     private readonly eidasCountry: EidasCountryService,
-    private readonly sessionService: SessionGenericService,
+    private readonly sessionService: SessionService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -66,7 +62,7 @@ export class EuIdentityToFrController {
     @Req() req,
     @Res() res,
     @Session('EidasClient')
-    sessionEidas: ISessionGenericService<EidasClientSession>,
+    sessionEidas: ISessionService<EidasClientSession>,
     /**
      * @todo Adaptation for now, correspond to the oidc-provider side.
      * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
@@ -76,7 +72,7 @@ export class EuIdentityToFrController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { uid, params } = await this.oidcProvider.getInteraction(req, res);
     const { countryIsoList } = await this.config.get<AppConfig>('App');
@@ -146,9 +142,9 @@ export class EuIdentityToFrController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
     @Session('EidasClient')
-    sessionEidas: ISessionGenericService<EidasClientSession>,
+    sessionEidas: ISessionService<EidasClientSession>,
   ) {
     const { eidasResponse } = await sessionEidas.get();
 

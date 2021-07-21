@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import { CoreService } from '@fc/core';
 import { AccountBlockedException } from '@fc/account';
 import { CryptographyFcaService } from '@fc/cryptography-fca';
@@ -62,7 +62,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoreFcaDefaultVerifyHandler,
-        SessionGenericService,
+        SessionService,
         LoggerService,
         CoreService,
         CryptographyFcaService,
@@ -70,7 +70,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(CoreService)
       .useValue(coreServiceMock)

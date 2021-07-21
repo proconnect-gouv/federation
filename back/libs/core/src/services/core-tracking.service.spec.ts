@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import {
-  ISessionGenericBoundContext,
-  SessionGenericNotFoundException,
-  SessionGenericService,
-} from '@fc/session-generic';
+  ISessionBoundContext,
+  SessionNotFoundException,
+  SessionService,
+} from '@fc/session';
 import { OidcSession } from '@fc/oidc';
 import { IEventContext } from '@fc/tracking';
 import { ConfigService } from '@fc/config';
@@ -72,9 +72,9 @@ describe('CoreTrackingService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CoreTrackingService, SessionGenericService, ConfigService],
+      providers: [CoreTrackingService, SessionService, ConfigService],
     })
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
@@ -437,7 +437,7 @@ describe('CoreTrackingService', () => {
   describe('getDataFromSession()', () => {
     it('should call session.get', async () => {
       // Given
-      const boundSessionContextMock: ISessionGenericBoundContext = {
+      const boundSessionContextMock: ISessionBoundContext = {
         sessionId: sessionIdMock,
         moduleName: 'OidcClient',
       };
@@ -460,7 +460,7 @@ describe('CoreTrackingService', () => {
       // Then
       await expect(
         service['getDataFromSession'](sessionIdMock),
-      ).rejects.toThrow(SessionGenericNotFoundException);
+      ).rejects.toThrow(SessionNotFoundException);
     });
 
     it('Should return partial data from session.get', async () => {

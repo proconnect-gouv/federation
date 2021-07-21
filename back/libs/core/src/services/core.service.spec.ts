@@ -12,10 +12,7 @@ import {
   OidcProviderTokenEvent,
   OidcProviderUserinfoEvent,
 } from '@fc/oidc-provider';
-import {
-  ISessionGenericBoundContext,
-  SessionGenericService,
-} from '@fc/session-generic';
+import { ISessionBoundContext, SessionService } from '@fc/session';
 import { OidcSession } from '@fc/oidc';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { AccountService, AccountBlockedException } from '@fc/account';
@@ -153,7 +150,7 @@ describe('CoreService', () => {
         CryptographyFcpService,
         AccountService,
         ServiceProviderAdapterMongoService,
-        SessionGenericService,
+        SessionService,
         TrackingService,
       ],
     })
@@ -171,7 +168,7 @@ describe('CoreService', () => {
       .useValue(accountServiceMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
@@ -749,7 +746,7 @@ describe('CoreService', () => {
 
       service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
 
-      const boundSessionContextMock: ISessionGenericBoundContext = {
+      const boundSessionContextMock: ISessionBoundContext = {
         sessionId: sessionIdMockValue,
         moduleName: 'OidcClient',
       };
