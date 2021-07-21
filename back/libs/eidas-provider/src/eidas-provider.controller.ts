@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Post, Redirect, Render } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
-import { ISessionGenericService, Session } from '@fc/session-generic';
+import { ISessionService, Session } from '@fc/session';
 import {
   RequestHandlerDTO,
   EidasProviderConfig,
@@ -27,7 +27,7 @@ export class EidasProviderController {
     @Body()
     body: RequestHandlerDTO,
     @Session('EidasProvider')
-    sessionEidasProvider: ISessionGenericService<EidasProviderSession>,
+    sessionEidasProvider: ISessionService<EidasProviderSession>,
   ) {
     const { token } = body;
 
@@ -49,7 +49,7 @@ export class EidasProviderController {
   @Render('redirect-to-fr-node-proxy-service')
   async responseProxy(
     @Session('EidasProvider')
-    session: ISessionGenericService<EidasProviderSession>,
+    session: ISessionService<EidasProviderSession>,
   ) {
     const eidasReponse = await this.getEidasResponse(session);
 
@@ -68,7 +68,7 @@ export class EidasProviderController {
   }
 
   private async getEidasResponse(
-    sessionEidas: ISessionGenericService<EidasProviderSession>,
+    sessionEidas: ISessionService<EidasProviderSession>,
   ) {
     const { eidasRequest, partialEidasResponse }: EidasProviderSession =
       await sessionEidas.get();

@@ -9,7 +9,7 @@ import { CryptographyFcaConfig } from '@fc/cryptography-fca';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { MongooseConfig } from '@fc/mongoose';
 import { RedisConfig } from '@fc/redis';
-import { SessionGenericConfig } from '@fc/session-generic';
+import { SessionConfig } from '@fc/session';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { AppConfig } from '@fc/app';
 import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
@@ -58,8 +58,8 @@ export class CoreFcaConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => SessionGenericConfig)
-  readonly SessionGeneric: SessionGenericConfig;
+  @Type(() => SessionConfig)
+  readonly Session: SessionConfig;
 
   @IsObject()
   @ValidateNested()

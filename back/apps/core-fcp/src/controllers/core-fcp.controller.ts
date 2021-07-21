@@ -17,13 +17,13 @@ import { OidcProviderService, OidcProviderConfig } from '@fc/oidc-provider';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import {
-  ISessionGenericService,
+  ISessionService,
   Session,
-  SessionGenericCsrfService,
-  SessionGenericInvalidCsrfConsentException,
-  SessionGenericNotFoundException,
-  SessionGenericService,
-} from '@fc/session-generic';
+  SessionCsrfService,
+  SessionInvalidCsrfConsentException,
+  SessionNotFoundException,
+  SessionService,
+} from '@fc/session';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ConfigService } from '@fc/config';
 import { AppConfig } from '@fc/app';
@@ -76,8 +76,8 @@ export class CoreFcpController {
     private readonly notifications: NotificationsService,
     private readonly oidcClient: OidcClientService,
     private readonly tracking: TrackingService,
-    private readonly sessionService: SessionGenericService,
-    private readonly csrfService: SessionGenericCsrfService,
+    private readonly sessionService: SessionService,
+    private readonly csrfService: SessionCsrfService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -111,11 +111,11 @@ export class CoreFcpController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const session = await sessionOidc.get();
     if (!session) {
-      throw new SessionGenericNotFoundException('OidcClient');
+      throw new SessionNotFoundException('OidcClient');
     }
 
     const { spName } = session;
@@ -189,7 +189,7 @@ export class CoreFcpController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { interactionId } = await sessionOidc.get();
     await this.core.verify(sessionOidc, req);
@@ -223,7 +223,7 @@ export class CoreFcpController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const {
       spIdentity: identity,
@@ -317,13 +317,13 @@ export class CoreFcpController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { _csrf: csrfToken } = body;
     const session: OidcSession = await sessionOidc.get();
 
     if (!session) {
-      throw new SessionGenericNotFoundException('OidcClient');
+      throw new SessionNotFoundException('OidcClient');
     }
 
     const { spId, spIdentity } = session;
@@ -332,7 +332,7 @@ export class CoreFcpController {
       await this.csrfService.validate(sessionOidc, csrfToken);
     } catch (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
-      throw new SessionGenericInvalidCsrfConsentException(error);
+      throw new SessionInvalidCsrfConsentException(error);
     }
 
     if (!spIdentity) {
@@ -384,7 +384,7 @@ export class CoreFcpController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { providerUid } = params;
     const { interactionId, idpId, idpState, idpNonce, spId } =

@@ -2,21 +2,39 @@
 
 // Declarative code
 import { APP_INTERCEPTOR } from '@nestjs/core';
-import { Module } from '@nestjs/common';
+import { DynamicModule, Module } from '@nestjs/common';
 import { RedisModule } from '@fc/redis';
 import { CryptographyModule } from '@fc/cryptography';
-import { SessionService } from './session.service';
-import { SessionInterceptor } from './session.interceptor';
+import { SESSION_TOKEN_OPTIONS } from './tokens';
+import { SessionInterceptor } from './interceptors';
+import { ISessionOptions } from './interfaces';
+import { SessionCsrfService, SessionService } from './services';
 
-@Module({
-  imports: [RedisModule, CryptographyModule],
-  providers: [
-    SessionService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: SessionInterceptor,
-    },
-  ],
-  exports: [SessionService, RedisModule, CryptographyModule],
-})
-export class SessionModule {}
+@Module({})
+export class SessionModule {
+  static forRoot(options: ISessionOptions): DynamicModule {
+    return {
+      global: true,
+      module: SessionModule,
+      imports: [RedisModule, CryptographyModule],
+      providers: [
+        {
+          provide: SESSION_TOKEN_OPTIONS,
+          useValue: options,
+        },
+        {
+          provide: APP_INTERCEPTOR,
+          useClass: SessionInterceptor,
+        },
+        SessionService,
+        SessionCsrfService,
+      ],
+      exports: [
+        SessionService,
+        SessionCsrfService,
+        RedisModule,
+        CryptographyModule,
+      ],
+    };
+  }
+}

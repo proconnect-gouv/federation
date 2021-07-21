@@ -7,7 +7,7 @@ import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { AcrValues } from '@fc/oidc';
 import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
 import { EidasProviderSession } from '@fc/eidas-provider';
-import { ISessionGenericService, Session } from '@fc/session-generic';
+import { ISessionService, Session } from '@fc/session';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { EidasBridgeRoutes } from '../enums';
 import { EidasBridgeIdentityDto } from '../dto/eidas-bridge-identity.dto';
@@ -43,7 +43,7 @@ export class FrIdentityToEuController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const sessionIdLength = 32;
     const sessionId: string = this.crypto.genRandomString(sessionIdLength);
@@ -84,9 +84,9 @@ export class FrIdentityToEuController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
     @Session('EidasProvider')
-    sessionEidasProvider: ISessionGenericService<EidasProviderSession>,
+    sessionEidasProvider: ISessionService<EidasProviderSession>,
   ) {
     const { eidasRequest } = await sessionEidasProvider.get();
     const oidcRequest = this.eidasToOidc.mapPartialRequest(eidasRequest);
@@ -129,7 +129,7 @@ export class FrIdentityToEuController {
     @Query()
     query,
     @Session('EidasProvider')
-    sessionEidasProvider: ISessionGenericService<EidasProviderSession>,
+    sessionEidasProvider: ISessionService<EidasProviderSession>,
     /**
      * @todo Adaptation for now, correspond to the oidc-client side.
      * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
@@ -139,7 +139,7 @@ export class FrIdentityToEuController {
      * @ticket FC-xxx
      */
     @Session('OidcClient')
-    sessionOidc: ISessionGenericService<OidcClientSession>,
+    sessionOidc: ISessionService<OidcClientSession>,
   ) {
     let partialEidasResponse;
 

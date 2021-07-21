@@ -6,10 +6,7 @@ import {
   OidcProviderService,
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
-import {
-  ISessionGenericBoundContext,
-  SessionGenericService,
-} from '@fc/session-generic';
+import { ISessionBoundContext, SessionService } from '@fc/session';
 import { OidcSession } from '@fc/oidc';
 
 @Injectable()
@@ -18,7 +15,7 @@ export class OidcMiddlewareService {
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly serviceProvider: ServiceProviderAdapterEnvService,
-    private readonly sessionService: SessionGenericService,
+    private readonly sessionService: SessionService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -60,7 +57,7 @@ export class OidcMiddlewareService {
       spName,
     };
 
-    const boundSessionContext: ISessionGenericBoundContext = {
+    const boundSessionContext: ISessionBoundContext = {
       sessionId,
       moduleName: 'OidcClient',
     };

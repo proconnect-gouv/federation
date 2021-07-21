@@ -10,7 +10,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
-import { SessionGenericConfig } from '@fc/session-generic';
+import { SessionConfig } from '@fc/session';
 import {
   AppConfig,
   MockServiceProviderConfig,
@@ -91,7 +91,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, 'public'));
 
   const { cookieSecrets } =
-    configService.get<SessionGenericConfig>('SessionGeneric');
+    configService.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));
 
   await app.listen(3000);

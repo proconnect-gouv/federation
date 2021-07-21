@@ -16,7 +16,7 @@ Core & backoffice applications
 - [@fc/http-proxy](libs/http-proxy/README.md)
 - [@fc/oidc-client](libs/oidc-client/README.md)
 - [@fc/oidc-provider](libs/oidc-provider/README.md)
-- [@fc/session-generic](libs/session-generic/README.md)
+- [@fc/session](libs/session/README.md)
 - [@fc/tracking](libs/tracking/README.md)
 
 ## Applications

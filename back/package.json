@@ -228,8 +228,6 @@
       "@fc/oidc": "<rootDir>/libs/oidc/src",
       "@fc/http-proxy/(.*)": "<rootDir>/libs/http-proxy/src/$1",
       "@fc/http-proxy": "<rootDir>/libs/http-proxy/src",
-      "@fc/session-generic/(.*)": "<rootDir>/libs/session-generic/src/$1",
-      "@fc/session-generic": "<rootDir>/libs/session-generic/src",
       "@fc/session/(.*)": "<rootDir>/libs/session/src/$1",
       "@fc/session": "<rootDir>/libs/session/src",
       "@fc/override-oidc-provider/(.*)": "<rootDir>/libs/override-oidc-provider/src/$1",

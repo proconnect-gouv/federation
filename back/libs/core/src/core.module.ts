@@ -3,14 +3,14 @@
 // Declarative code
 import { Module } from '@nestjs/common';
 import { ServiceProviderAdapterMongoModule } from '@fc/service-provider-adapter-mongo';
-import { SessionGenericModule } from '@fc/session-generic';
+import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 import { CoreService } from './services';
 
 @Module({
   imports: [
     ServiceProviderAdapterMongoModule,
-    SessionGenericModule,
+    SessionModule,
     TrackingModule.forLib(),
   ],
   providers: [CoreService],

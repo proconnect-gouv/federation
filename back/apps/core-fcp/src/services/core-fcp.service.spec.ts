@@ -1,7 +1,7 @@
 import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import { OidcSession } from '@fc/oidc';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
@@ -105,7 +105,7 @@ describe('CoreFcpService', () => {
         LoggerService,
         OidcProviderService,
         IdentityProviderAdapterMongoService,
-        SessionGenericService,
+        SessionService,
         ScopesService,
         ServiceProviderAdapterMongoService,
       ],
@@ -114,7 +114,7 @@ describe('CoreFcpService', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(IdentityProviderMock)
