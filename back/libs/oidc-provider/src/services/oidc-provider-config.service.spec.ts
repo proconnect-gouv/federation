@@ -2,7 +2,7 @@ import { Provider, ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService, LoggerLevelNames } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 import { OidcProviderRedisAdapter } from '../adapters';
 import { OidcProviderService } from '../oidc-provider.service';
@@ -72,7 +72,7 @@ describe('OidcProviderConfigService', () => {
         OidcProviderConfigService,
         LoggerService,
         ConfigService,
-        SessionGenericService,
+        SessionService,
         OidcProviderErrorService,
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
@@ -84,7 +84,7 @@ describe('OidcProviderConfigService', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(OidcProviderErrorService)
       .useValue(errorServiceMock)

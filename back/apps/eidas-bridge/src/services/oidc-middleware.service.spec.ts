@@ -3,10 +3,7 @@ import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
-import {
-  ISessionGenericBoundContext,
-  SessionGenericService,
-} from '@fc/session-generic';
+import { ISessionBoundContext, SessionService } from '@fc/session';
 import { OidcMiddlewareService } from './oidc-middleware.service';
 
 describe('MockIdentityProviderFcaService', () => {
@@ -48,14 +45,14 @@ describe('MockIdentityProviderFcaService', () => {
         OidcProviderService,
         OidcMiddlewareService,
         ServiceProviderAdapterEnvService,
-        SessionGenericService,
+        SessionService,
       ],
     })
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
       .overrideProvider(ServiceProviderAdapterEnvService)
       .useValue(serviceProviderEnvServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
@@ -157,7 +154,7 @@ describe('MockIdentityProviderFcaService', () => {
         spName: spNameMock,
       };
 
-      const boundSessionContextMock: ISessionGenericBoundContext = {
+      const boundSessionContextMock: ISessionBoundContext = {
         sessionId: sessionIdValueMock,
         moduleName: 'OidcClient',
       };

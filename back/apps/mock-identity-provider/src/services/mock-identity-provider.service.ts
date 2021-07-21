@@ -8,10 +8,7 @@ import {
   OidcProviderRoutes,
   OidcProviderService,
 } from '@fc/oidc-provider';
-import {
-  ISessionGenericBoundContext,
-  SessionGenericService,
-} from '@fc/session-generic';
+import { ISessionBoundContext, SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
 import { AppConfig } from '../dto';
@@ -28,7 +25,7 @@ export class MockIdentityProviderService {
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly serviceProvider: ServiceProviderAdapterEnvService,
-    private readonly sessionService: SessionGenericService,
+    private readonly sessionService: SessionService,
     private readonly config: ConfigService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -69,7 +66,7 @@ export class MockIdentityProviderService {
       spName,
     };
 
-    const boundSessionContext: ISessionGenericBoundContext = {
+    const boundSessionContext: ISessionBoundContext = {
       sessionId,
       moduleName: 'OidcClient',
     };

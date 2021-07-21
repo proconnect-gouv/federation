@@ -4,11 +4,11 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { OidcProviderService } from '@fc/oidc-provider';
 import {
-  SessionGenericService,
-  SessionGenericCsrfService,
-  SessionGenericNotFoundException,
-  SessionGenericInvalidCsrfConsentException,
-} from '@fc/session-generic';
+  SessionService,
+  SessionCsrfService,
+  SessionNotFoundException,
+  SessionInvalidCsrfConsentException,
+} from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { NotificationsService } from '@fc/notifications';
@@ -112,7 +112,7 @@ describe('CoreFcpController', () => {
     setAlias: jest.fn(),
   };
 
-  const sessionGenericCsrfServiceMock = {
+  const sessionCsrfServiceMock = {
     get: jest.fn(),
     save: jest.fn(),
     validate: jest.fn(),
@@ -183,13 +183,13 @@ describe('CoreFcpController', () => {
         CoreFcpService,
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
-        SessionGenericService,
+        SessionService,
         ConfigService,
         CryptographyService,
         NotificationsService,
         OidcClientService,
         TrackingService,
-        SessionGenericCsrfService,
+        SessionCsrfService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -202,7 +202,7 @@ describe('CoreFcpController', () => {
       .useValue(identityProviderServiceMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
@@ -216,8 +216,8 @@ describe('CoreFcpController', () => {
       .useValue(oidcClientServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingServiceMock)
-      .overrideProvider(SessionGenericCsrfService)
-      .useValue(sessionGenericCsrfServiceMock)
+      .overrideProvider(SessionCsrfService)
+      .useValue(sessionCsrfServiceMock)
       .compile();
 
     coreController = await app.get<CoreFcpController>(CoreFcpController);
@@ -249,8 +249,8 @@ describe('CoreFcpController', () => {
       claimsLabelMock,
     );
 
-    sessionGenericCsrfServiceMock.get.mockReturnValueOnce(csrfMock);
-    sessionGenericCsrfServiceMock.save.mockResolvedValueOnce(true);
+    sessionCsrfServiceMock.get.mockReturnValueOnce(csrfMock);
+    sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
   });
 
   describe('getDefault()', () => {
@@ -341,7 +341,7 @@ describe('CoreFcpController', () => {
       // When
       await expect(
         coreController.getInteraction(req, res, params, sessionServiceMock),
-      ).rejects.toThrow(SessionGenericNotFoundException);
+      ).rejects.toThrow(SessionNotFoundException);
       // Then
     });
   });
@@ -582,10 +582,10 @@ describe('CoreFcpController', () => {
         sessionServiceMock,
       );
       // Then
-      expect(sessionGenericCsrfServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionGenericCsrfServiceMock.get).toHaveBeenCalledWith();
-      expect(sessionGenericCsrfServiceMock.save).toHaveBeenCalledTimes(1);
-      expect(sessionGenericCsrfServiceMock.save).toHaveBeenCalledWith(
+      expect(sessionCsrfServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionCsrfServiceMock.get).toHaveBeenCalledWith();
+      expect(sessionCsrfServiceMock.save).toHaveBeenCalledTimes(1);
+      expect(sessionCsrfServiceMock.save).toHaveBeenCalledWith(
         sessionServiceMock,
         csrfMock,
       );
@@ -627,7 +627,7 @@ describe('CoreFcpController', () => {
       // Then
       await expect(
         coreController.getLogin(req, res, body, sessionServiceMock),
-      ).rejects.toThrow(SessionGenericNotFoundException);
+      ).rejects.toThrow(SessionNotFoundException);
     });
 
     it('should throw an exception if no identity in session', async () => {
@@ -645,7 +645,7 @@ describe('CoreFcpController', () => {
       ).rejects.toThrow(CoreMissingIdentityException);
     });
 
-    it('should throw an exception `SessionGenericInvalidCsrfConsentException` if the CSRF token is not valid', async () => {
+    it('should throw an exception `SessionInvalidCsrfConsentException` if the CSRF token is not valid', async () => {
       // Given
       const csrfTokenBodyMock = 'invalidCsrfTokenValue';
       const csrfTokenSessionMock = randomStringMock;
@@ -656,17 +656,15 @@ describe('CoreFcpController', () => {
         spName: spNameMock,
         csrfToken: csrfTokenSessionMock,
       });
-      sessionGenericCsrfServiceMock.validate
-        .mockReset()
-        .mockImplementation(() => {
-          throw new Error(
-            'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
-          );
-        });
+      sessionCsrfServiceMock.validate.mockReset().mockImplementation(() => {
+        throw new Error(
+          'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+        );
+      });
       // Then
       await expect(
         coreController.getLogin(req, res, body, sessionServiceMock),
-      ).rejects.toThrow(SessionGenericInvalidCsrfConsentException);
+      ).rejects.toThrow(SessionInvalidCsrfConsentException);
     });
 
     it('should send an email notification to the end user by calling core.sendAuthenticationMail', async () => {

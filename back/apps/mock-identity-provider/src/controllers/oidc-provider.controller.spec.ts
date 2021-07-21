@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
-import { ISessionGenericService } from '@fc/session-generic';
+import { ISessionService } from '@fc/session';
 import { AppSession, AuthorizeParamsDto } from '../dto';
 import { OidcProviderController } from './oidc-provider.controller';
 
@@ -14,7 +14,7 @@ describe('OidcProviderController', () => {
 
   const appSessionServiceMock = {
     set: jest.fn(),
-  } as unknown as ISessionGenericService<AppSession>;
+  } as unknown as ISessionService<AppSession>;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({

@@ -3,7 +3,7 @@ import { LoggerService } from '@fc/logger';
 import { CoreService } from '@fc/core';
 import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
 import { CryptographyFcaService, IAgentIdentity } from '@fc/cryptography-fca';
-import { ISessionGenericService } from '@fc/session-generic';
+import { ISessionService } from '@fc/session';
 import { OidcClientSession } from '@fc/oidc-client';
 import { IOidcIdentity } from '@fc/oidc';
 
@@ -38,9 +38,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
    *
    * @param req
    */
-  async handle(
-    sessionOidc: ISessionGenericService<OidcClientSession>,
-  ): Promise<void> {
+  async handle(sessionOidc: ISessionService<OidcClientSession>): Promise<void> {
     this.logger.debug('getConsent service: ##### core-fca-default-verify');
 
     const { idpId, idpIdentity, idpAcr, spId, spAcr } = await sessionOidc.get();

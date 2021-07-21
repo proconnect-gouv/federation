@@ -13,7 +13,7 @@ import { RedisConfig } from '@fc/redis';
 import { RnippConfig } from '@fc/rnipp';
 import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
 import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
-import { SessionGenericConfig } from '@fc/session-generic';
+import { SessionConfig } from '@fc/session';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { MailerConfig } from '@fc/mailer';
 import { AppConfig } from '@fc/app';
@@ -66,8 +66,8 @@ export class CoreFcpConfig {
 
   @IsObject()
   @ValidateNested()
-  @Type(() => SessionGenericConfig)
-  readonly SessionGeneric: SessionGenericConfig;
+  @Type(() => SessionConfig)
+  readonly Session: SessionConfig;
 
   @IsObject()
   @ValidateNested()

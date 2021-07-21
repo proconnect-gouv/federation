@@ -12,7 +12,7 @@ import Rnipp from './rnipp';
 import CryptographyBroker from './cryptography-broker';
 import CryptographyFcp from './cryptography-fcp';
 import CryptographyEidas from './cryptography-eidas';
-import SessionGeneric from './session-generic';
+import Session from './session';
 import OverrideOidcProvider from './override-oidc-provider';
 import Mailer from './mailer';
 import ServiceProviderAdapterMongoConfig from './service-provider-adapter-mongo';
@@ -36,7 +36,7 @@ export default {
   CryptographyBroker,
   CryptographyFcp,
   CryptographyEidas,
-  SessionGeneric,
+  Session,
   OverrideOidcProvider,
   Mailer,
   ServiceProviderAdapterMongoConfig,

@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { IdentityProviderMetadata, OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
-import { SessionGenericService } from '@fc/session-generic';
+import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
@@ -103,7 +103,7 @@ describe('MockServiceProviderController', () => {
       providers: [
         OidcClientService,
         LoggerService,
-        SessionGenericService,
+        SessionService,
         CryptographyService,
         ConfigService,
         IdentityProviderAdapterEnvService,
@@ -115,7 +115,7 @@ describe('MockServiceProviderController', () => {
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionGenericService)
+      .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)

@@ -9,7 +9,7 @@ import {
 } from '@fc/identity-provider-adapter-env';
 import { OidcClientModule } from '@fc/oidc-client';
 import { OidcProviderModule } from '@fc/oidc-provider';
-import { SessionGenericModule } from '@fc/session-generic';
+import { SessionModule } from '@fc/session';
 import {
   ServiceProviderAdapterEnvService,
   ServiceProviderAdapterEnvModule,
@@ -47,7 +47,7 @@ const oidcProviderModule = OidcProviderModule.register(
   imports: [
     EidasClientModule,
     EidasProviderModule,
-    SessionGenericModule.forRoot({
+    SessionModule.forRoot({
       schema: EidasBridgeSession,
     }),
     IdentityProviderAdapterEnvModule,
