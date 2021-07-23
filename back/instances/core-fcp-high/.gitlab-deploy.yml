@@ -62,6 +62,7 @@ quality-core-fcp-high-recette:
   resource_group: recette
   artifacts:
     expire_in: 1 hrs
+    when: always
     paths:
       - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
   environment:
