@@ -1,8 +1,10 @@
-core-fcp-low:
+quality-core-fcp-low-docker:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
+      when: manual
+      allow_failure: false
   tags:
     - docker
   variables:
@@ -40,23 +42,18 @@ core-fcp-low:
       (docker exec fc_core-fcp-low_1 cat /tmp/.pm2/logs/core-fcp-low-error-0.log || true) &&
       (docker exec fc_core-fcp-low_1 cat /tmp/.pm2/logs/core-fcp-low-out-0.log || true) &&
       exit 1)
-    - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fcp-low || (
-      (docker cp fc_core-fcp-low_1:/tmp/.pm2/logs back/instances/core-fcp-low/cypress || true) &&
-      (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/core-fcp-low/cypress || true) &&
-      (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/core-fcp-low/cypress || true) &&
-      (docker cp fc_fip1-low_1:/tmp/.pm2/logs back/instances/core-fcp-low/cypress || true) &&
-      (docker cp fc_fsp1-low_1:/tmp/.pm2/logs back/instances/core-fcp-low/cypress || true) &&
-      (docker cp fc-rp-all:/var/log/nginx back/instances/core-fcp-low/cypress/logs || true) &&
-      exit 1)
+    - cd $CI_PROJECT_DIR/quality/fcp
+    - yarn install
+    - CYPRESS_TEST_ENV=docker yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn report:prepare
+    - CYPRESS_PLATFORM=fcp-low CYPRESS_TEST_ENV=docker yarn report:generate
+    - exit $RETURN_CODE
   interruptible: true
   artifacts:
     expire_in: 1 hrs
-    when: on_failure
+    when: always
     paths:
-      - back/instances/core-fcp-low/cypress/screenshots
-      - back/instances/core-fcp-low/cypress/videos
-      - back/instances/core-fcp-low/cypress/logs
+      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
     - docker container prune --force && docker volume prune -f
-

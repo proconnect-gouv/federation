@@ -14,6 +14,7 @@ quality-core-fcp-high-release:
     - exit $RETURN_CODE
   artifacts:
     expire_in: 1 hrs
+    when: always
     paths:
       - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
   environment:
