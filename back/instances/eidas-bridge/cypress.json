@@ -21,6 +21,6 @@
 
     "WELL_KNOWN": "/.well-known/openid-configuration"
   },
-  "ignoreTestFiles": "**/!(*.spec).js",
+  "ignoreTestFiles": "*.utils.js",
   "projectId": "m4rv1n"
 }

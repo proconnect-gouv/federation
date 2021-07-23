@@ -46,7 +46,7 @@ core-fcp-high:
       (docker exec fc_core-fcp-high_1 cat /tmp/.pm2/logs/core-fcp-high-error-0.log || true) &&
       (docker exec fc_core-fcp-high_1 cat /tmp/.pm2/logs/core-fcp-high-out-0.log || true) &&
       exit 1)
-    - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fcp-high --spec "./back/instances/core-fcp-high/cypress/integration/!(50.0.cross-application.spec.js)" || (
+    - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fcp-high || (
       (docker cp fc_core-fcp-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
       (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&

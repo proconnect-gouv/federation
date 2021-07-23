@@ -102,6 +102,6 @@
     ],
     "SECRET_TOTP": "KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD"
   },
-  "ignoreTestFiles": "*.util.js",
+  "ignoreTestFiles": "*.utils.js",
   "projectId": "ob8yho"
 }
