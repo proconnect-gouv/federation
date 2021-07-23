@@ -22,6 +22,6 @@
 
     "ALL_APPS_LISTED": "https://docker.dev-franceconnect.fr/fcp-low.html"
   },
-  "ignoreTestFiles": "*.util.js",
+  "ignoreTestFiles": "*.utils.js",
   "projectId": "ob8yho"
 }

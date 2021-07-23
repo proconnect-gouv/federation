@@ -1,10 +1,10 @@
-core-fcp-high-cross-application:
+quality-core-fcp-high-docker:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
       when: manual
-      allow_failure: true
+      allow_failure: false
   tags:
     - docker
   variables:
@@ -27,7 +27,7 @@ core-fcp-high-cross-application:
     - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
-    - docker-stack up fcp-high
+    - docker-stack up all-fcp-high
     - docker-stack dep core-fcp-high exploitation-high
     - docker-stack fixtures-v2
     - docker-stack start csmr-hsm rnipp fsp1-high fsp2-high fip1-high core-fcp-high exploitation-high
@@ -53,24 +53,18 @@ core-fcp-high-cross-application:
       (docker exec fc_exploitation-high_1 cat /tmp/.pm2/logs/exploitation-high-error-0.log || true) &&
       (docker exec fc_exploitation-high_1 cat /tmp/.pm2/logs/exploitation-high-out-0.log || true) &&
       exit 1)
-    - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/core-fcp-high -s ./back/instances/core-fcp-high/cypress/integration/50.0.cross-application.spec.js || (
-      (docker cp fc_core-fcp-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_csmr-hsm_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_rnipp_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fip1-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fsp1-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_fsp2-high_1:/tmp/.pm2/logs back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc_exploitation-high_1:/var/log/nginx back/instances/core-fcp-high/cypress || true) &&
-      (docker cp fc-rp-all:/var/log/nginx back/instances/core-fcp-high/cypress/logs || true) &&
-      exit 1)
+    - cd $CI_PROJECT_DIR/quality/fcp
+    - yarn install
+    - CYPRESS_TEST_ENV=docker yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn report:prepare
+    - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=docker yarn report:generate
+    - exit $RETURN_CODE
   interruptible: true
   artifacts:
     expire_in: 1 hrs
-    when: on_failure
+    when: always
     paths:
-      - back/instances/core-fcp-high/cypress/screenshots
-      - back/instances/core-fcp-high/cypress/videos
-      - back/instances/core-fcp-high/cypress/logs
+      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
     - docker container prune --force && docker volume prune -f

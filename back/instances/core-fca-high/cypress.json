@@ -68,6 +68,6 @@
 
     "WELL_KNOWN": "/api/v2/.well-known/openid-configuration"
   },
-  "ignoreTestFiles": "*.util.js",
+  "ignoreTestFiles": "*.utils.js",
   "projectId": "ob8yho"
 }
