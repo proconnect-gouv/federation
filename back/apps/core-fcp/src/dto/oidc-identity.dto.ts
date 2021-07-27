@@ -97,7 +97,7 @@ export class OidcIdentityDto extends MinIdentityDto {
   @Expose()
   readonly email: string;
 
-  @IsAscii()
+  @IsSafeString()
   @IsOptional()
   @Expose()
   // oidc naming convention
