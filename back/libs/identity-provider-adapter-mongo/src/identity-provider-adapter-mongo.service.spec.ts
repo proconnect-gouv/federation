@@ -4,11 +4,15 @@ import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
-import { IdentityProviderMetadata } from '@fc/oidc-client';
+import { IdentityProviderMetadata } from '@fc/oidc';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { IdentityProvider } from './schemas';
 import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
+import {
+  DiscoveryIdpAdapterMongoDTO,
+  IdentityProviderAdapterMongoDTO,
+} from './dto';
 
 jest.mock('@fc/common', () => ({
   ...(jest.requireActual('@fc/common') as any),
@@ -30,9 +34,7 @@ describe('IdentityProviderAdapterMongoService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-      discovery: true,
-      discoveryUrl:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/well_known_url',
+      discovery: false,
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_signed_response_alg: 'HS256',
@@ -68,6 +70,91 @@ describe('IdentityProviderAdapterMongoService', () => {
       token_endpoint_auth_method: 'client_secret_post',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      revocation_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_encrypted_response_alg: 'RSA-OAEP',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_encrypted_response_enc: 'A256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_encrypted_response_alg: 'RSA-OAEP',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_encrypted_response_enc: 'A256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_signed_response_alg: 'HS256',
+    },
+  };
+
+  const legacyToOpenIdPropertyNameOutputMock = {
+    _doc: {
+      uid: 'uid',
+      name: 'provider1',
+      title: 'provider 1',
+      active: true,
+      display: false,
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: 'clientID',
+      image: 'provider1.png',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+      discovery: false,
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_signed_response_alg: 'HS256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      post_logout_redirect_uris: [
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
+      ],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      redirect_uris: [
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-high',
+      ],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_endpoint:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      jwks_uri:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      authorization_endpoint:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_endpoint:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      issuer: 'https://core-fcp-high.docker.dev-franceconnect.fr',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      end_session_endpoint:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
+      featureHandlers: {
+        coreVerify: 'core-fcp-default-verify',
+        authenticationEmail: null,
+      },
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      response_types: ['code'],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      revocation_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_encrypted_response_alg: 'RSA-OAEP',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -92,70 +179,75 @@ describe('IdentityProviderAdapterMongoService', () => {
       active: true,
       display: false,
       image: 'provider1.png',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: 'clientID',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-      issuer: 'https://core-fcp-high.docker.dev-franceconnect.fr',
-      discovery: true,
-      discoveryUrl:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/well_known_url',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      id_token_signed_response_alg: 'HS256',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      post_logout_redirect_uris: [
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
-      ],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      redirect_uris: [
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-high',
-      ],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      token_endpoint:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      authorization_endpoint:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      jwks_uri:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_endpoint:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      end_session_endpoint:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      response_types: ['code'],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      token_endpoint_auth_method: 'client_secret_post',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      id_token_encrypted_response_alg: 'RSA-OAEP',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      id_token_encrypted_response_enc: 'A256GCM',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_encrypted_response_alg: 'RSA-OAEP',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_encrypted_response_enc: 'A256GCM',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_signed_response_alg: 'HS256',
+      discovery: false,
+      client: {
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: 'clientID',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        post_logout_redirect_uris: [
+          'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
+        ],
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        redirect_uris: [
+          'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-high',
+        ],
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        response_types: ['code'],
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        id_token_signed_response_alg: 'HS256',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_endpoint_auth_method: 'client_secret_post',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        revocation_endpoint_auth_method: 'client_secret_post',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        id_token_encrypted_response_alg: 'RSA-OAEP',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        id_token_encrypted_response_enc: 'A256GCM',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        userinfo_encrypted_response_alg: 'RSA-OAEP',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        userinfo_encrypted_response_enc: 'A256GCM',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        userinfo_signed_response_alg: 'HS256',
+      },
+      issuer: {
+        issuer: 'https://core-fcp-high.docker.dev-franceconnect.fr',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        token_endpoint:
+          'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/token',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        authorization_endpoint:
+          'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        jwks_uri:
+          'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/certs',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        userinfo_endpoint:
+          'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/userinfo',
+        // oidc param name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        end_session_endpoint:
+          'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
+      },
       featureHandlers: {
         coreVerify: 'core-fcp-default-verify',
         authenticationEmail: null,
@@ -244,13 +336,24 @@ describe('IdentityProviderAdapterMongoService', () => {
   });
 
   describe('onModuleInit', () => {
-    it('should call initOperationTypeWatcher', () => {
+    beforeEach(() => {
       // Given
       service['initOperationTypeWatcher'] = jest.fn();
+      service['getList'] = jest.fn();
+    });
+    it('should call initOperationTypeWatcher', async () => {
       // When
-      service.onModuleInit();
+      await service.onModuleInit();
       // Then
       expect(service['initOperationTypeWatcher']).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call getList', async () => {
+      // When
+      await service.onModuleInit();
+      // Then
+      expect(service['getList']).toHaveBeenCalledTimes(1);
+      expect(service['getList']).toHaveBeenCalledWith();
     });
   });
 
@@ -336,6 +439,18 @@ describe('IdentityProviderAdapterMongoService', () => {
       // action
       const result = service['legacyToOpenIdPropertyName'](
         legacyIdentityProviderMock._doc as unknown as IdentityProvider,
+      );
+
+      // expect
+      expect(result).toEqual(validIdentityProviderMock._doc);
+    });
+  });
+
+  describe('toPanvaFormat', () => {
+    it('should return an object with data for FC and properties issuer and client for panva', () => {
+      // action
+      const result = service['toPanvaFormat'](
+        legacyToOpenIdPropertyNameOutputMock._doc as unknown,
       );
 
       // expect
@@ -454,20 +569,26 @@ describe('IdentityProviderAdapterMongoService', () => {
 
     it('should return a list of valids identity providers', async () => {
       // setup
+      // change client_id and client_secret in validIdentityProviderMock
       const expected = [
-        {
-          ...validIdentityProviderMock._doc,
-          // oidc param name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id: 'clientID',
-          // oidc param name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_secret: 'client_secret',
-        },
+        Object.assign(validIdentityProviderMock._doc, {
+          client: Object.assign(
+            {
+              // oidc param name
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              client_id: 'clientID',
+              // oidc param name
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              client_secret: 'client_secret',
+            },
+            validIdentityProviderMock._doc.client,
+          ),
+        }),
       ];
+
       service['decryptClientSecret'] = jest
         .fn()
-        .mockReturnValueOnce(expected[0].client_secret);
+        .mockReturnValueOnce(expected[0].client.client_secret);
 
       // action
       const result = await service.getList();
@@ -592,14 +713,18 @@ describe('IdentityProviderAdapterMongoService', () => {
       // Given
       service['listCache'] = [
         {
-          // oidc param name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id: 'foo',
+          client: {
+            // oidc param name
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            client_id: 'foo',
+          },
         } as IdentityProviderMetadata,
         {
-          // oidc param name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id: 'bar',
+          client: {
+            // oidc param name
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            client_id: 'bar',
+          },
         } as IdentityProviderMetadata,
       ];
       service['findAllIdentityProvider'] = jest.fn();
@@ -688,6 +813,28 @@ describe('IdentityProviderAdapterMongoService', () => {
       const result = service['decryptClientSecret'](clientSecretMock);
       // Then
       expect(result).toEqual('totoIsDecrypted');
+    });
+  });
+
+  describe('getIdentityProviderDTO', () => {
+    it('should return discovery identity provider DTO', () => {
+      // Given
+      const discovery = true;
+
+      // When
+      const result = service['getIdentityProviderDTO'](discovery);
+      // Then
+      expect(result).toBe(DiscoveryIdpAdapterMongoDTO);
+    });
+
+    it('should return identity provider DTO', () => {
+      // Given
+      const discovery = false;
+
+      // When
+      const result = service['getIdentityProviderDTO'](discovery);
+      // Then
+      expect(result).toBe(IdentityProviderAdapterMongoDTO);
     });
   });
 });

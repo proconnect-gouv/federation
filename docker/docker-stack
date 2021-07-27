@@ -331,6 +331,11 @@ _mongo_shell_core-fcp-high() {
   cd ${WORKING_DIR} && docker-compose exec mongo-fcp-high mongo core-fcp-high -u 'fc' -p 'pass' --authenticationDatabase core-fcp-high --tls
 }
 
+_mongo_shell_core-fcp-low() {
+ echo "starting mongo `core-fcp-low` database in shell..."
+  cd ${WORKING_DIR} && docker-compose exec mongo-fcp-low mongo core-fcp-low -u 'fc' -p 'pass' --authenticationDatabase core-fcp-low --tls
+}
+
 _fca_front() {
   cd ${WORKING_DIR}
   docker-compose exec $NO_TTY fca-front yarn install
@@ -396,6 +401,9 @@ case "$action" in
     ;;
   mongo-shell-core-fcp-high)
     _mongo_shell_core-fcp-high
+    ;;
+  mongo-shell-core-fcp-low)
+    _mongo_shell_core-fcp-low
     ;;
   reload-rp)
     cd ${WORKING_DIR} && docker-compose kill -s SIGHUP rp-all

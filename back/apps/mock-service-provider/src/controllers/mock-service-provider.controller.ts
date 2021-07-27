@@ -14,9 +14,9 @@ import {
 } from '@nestjs/common';
 import { AppConfig } from '@fc/app';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
+import { IdentityProviderMetadata } from '@fc/oidc';
 import {
   OidcClientConfig,
-  IdentityProviderMetadata,
   OidcClientRoutes,
   GetOidcCallback,
   OidcClientService,
@@ -418,10 +418,10 @@ export class MockServiceProviderController {
       params: {
         // oidc name
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        redirect_uri: provider.redirect_uris[0],
+        redirect_uri: provider.client.redirect_uris[0],
         // oidc name
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id: provider.client_id,
+        client_id: provider.client.client_id,
         uid: provider.uid,
         state,
         scope,

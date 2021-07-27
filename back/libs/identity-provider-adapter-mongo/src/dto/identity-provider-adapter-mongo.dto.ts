@@ -8,21 +8,24 @@ import {
   IsUrl,
   MinLength,
   NotContains,
-  ValidateIf,
   IsOptional,
+  Validate,
+  IsIn,
 } from 'class-validator';
 import {
   IFeatureHandlerDatabaseMap,
   IsRegisteredHandler,
 } from '@fc/feature-handler';
+import { ResponseTypes } from '@fc/oidc';
+import { JwksUriValidator } from './jwksuri.validator';
 
-export class IdentityProviderAdapterMongoDTO {
-  @IsString()
-  @IsOptional()
-  readonly url: string;
-
+export class MetadataIdpAdapterMongoDTO {
   @IsString()
   readonly uid: string;
+
+  @IsUrl()
+  @IsOptional()
+  readonly url: string;
 
   @IsString()
   readonly name: string;
@@ -40,43 +43,14 @@ export class IdentityProviderAdapterMongoDTO {
   @IsBoolean()
   readonly display: boolean;
 
+  @IsRegisteredHandler()
+  readonly featureHandlers: IFeatureHandlerDatabaseMap;
+
+  /**
+   * CLIENT METADATA
+   */
   @IsString()
   readonly clientID: string;
-
-  @IsString()
-  @MinLength(32)
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly client_secret: string;
-
-  @IsString()
-  @IsOptional()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly authzURL: string;
-
-  @IsString()
-  @IsOptional()
-  readonly tokenURL: string;
-
-  @IsString()
-  @IsOptional()
-  readonly userInfoURL: string;
-
-  @IsString()
-  @IsOptional()
-  readonly endSessionURL: string;
-
-  @IsString()
-  @IsOptional()
-  readonly jwksURL: string;
-
-  @IsBoolean()
-  readonly discovery: boolean;
-
-  @ValidateIf((o) => o.dicovery)
-  @IsUrl()
-  readonly discoveryUrl: string;
 
   @IsArray()
   @IsUrl({}, { each: true })
@@ -91,25 +65,16 @@ export class IdentityProviderAdapterMongoDTO {
   readonly post_logout_redirect_uris: string[];
 
   @IsArray()
+  @IsIn(Object.values(ResponseTypes), { each: true })
   @IsString({ each: true })
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly response_types: string[];
+  readonly response_types: ResponseTypes[];
 
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly id_token_signed_response_alg: string;
-
-  @IsString()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly id_token_encrypted_response_alg: string;
-
-  @IsString()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly id_token_encrypted_response_enc: string;
+  readonly revocation_endpoint_auth_method: string;
 
   @IsString()
   // openid defined property names
@@ -129,8 +94,56 @@ export class IdentityProviderAdapterMongoDTO {
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly id_token_signed_response_alg: string;
+
+  @IsString()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly id_token_encrypted_response_alg: string;
+
+  @IsString()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly id_token_encrypted_response_enc: string;
+
+  @IsString()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly token_endpoint_auth_method: string;
 
-  @IsRegisteredHandler()
-  readonly featureHandlers: IFeatureHandlerDatabaseMap;
+  @IsString()
+  @MinLength(32)
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly client_secret: string;
+
+  // issuer metadata
+  @IsString()
+  @IsOptional()
+  readonly endSessionURL: string;
+
+  @IsBoolean()
+  readonly discovery: boolean;
+}
+
+export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
+  @IsUrl()
+  readonly discoveryUrl: string;
+}
+
+export class IdentityProviderAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {
+  @IsOptional()
+  @Validate(JwksUriValidator)
+  readonly jwksURL: string | undefined;
+
+  @IsString()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly authzURL: string;
+
+  @IsString()
+  readonly tokenURL: string;
+
+  @IsString()
+  readonly userInfoURL: string;
 }

@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Type } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { validateDto, asyncFilter } from '@fc/common';
 import { validationOptions, ConfigService } from '@fc/config';
 import {
+  ClientMetadata,
   IdentityProviderMetadata,
-  IIdentityProviderAdapter,
-} from '@fc/oidc-client';
+  IssuerMetadata,
+} from '@fc/oidc';
+import { IIdentityProviderAdapter } from '@fc/oidc-client';
 import { CryptographyService } from '@fc/cryptography';
 import { EventBus } from '@nestjs/cqrs';
 import { LoggerService } from '@fc/logger';
 import {
-  IdentityProviderAdapterMongoDTO,
+  IdentityProviderAdapterMongoDTO as NoDiscoveryIdoAdapterMongoDTO,
   IdentityProviderAdapterMongoConfig,
+  DiscoveryIdpAdapterMongoDTO,
 } from './dto';
 import { IdentityProvider } from './schemas';
 import { IdentityProviderUpdateEvent } from './events';
 
+const CLIENT_METADATA = [
+  'client_id',
+  'client_secret',
+  'post_logout_redirect_uris',
+  'redirect_uris',
+  'response_types',
+  'id_token_signed_response_alg',
+  'token_endpoint_auth_method',
+  'revocation_endpoint_auth_method',
+  'id_token_encrypted_response_alg',
+  'id_token_encrypted_response_enc',
+  'userinfo_encrypted_response_alg',
+  'userinfo_encrypted_response_enc',
+  'userinfo_signed_response_alg',
+];
+
+const ISSUER_METADATA = [
+  'issuer',
+  'token_endpoint',
+  'authorization_endpoint',
+  'jwks_uri',
+  'userinfo_endpoint',
+  'end_session_endpoint',
+];
 @Injectable()
 export class IdentityProviderAdapterMongoService
   implements IIdentityProviderAdapter
 {
-  private listCache: IdentityProviderMetadata<any>[];
+  private listCache: IdentityProviderMetadata[];
 
   // Dependency injection can require more than 4 parameters
   /* eslint-disable-next-line max-params */
@@ -38,6 +65,9 @@ export class IdentityProviderAdapterMongoService
   async onModuleInit() {
     this.initOperationTypeWatcher();
     this.logger.debug('Initializing identity-provider');
+
+    // Warm up cache and shows up excluded IdPs
+    await this.getList();
   }
 
   private initOperationTypeWatcher(): void {
@@ -121,28 +151,23 @@ export class IdentityProviderAdapterMongoService
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           token_endpoint_auth_method: true,
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          revocation_endpoint_auth_method: true,
           featureHandlers: true,
         },
       )
       .exec();
 
     const result: any = await asyncFilter(rawResult, async ({ _doc }) => {
-      const errors = await validateDto(
-        _doc,
-        IdentityProviderAdapterMongoDTO,
-        validationOptions,
-      );
+      const dto = this.getIdentityProviderDTO(_doc.discovery);
+      const errors = await validateDto(_doc, dto, validationOptions);
 
       if (errors.length > 0) {
         this.logger.warn(
-          `"${
-            _doc.uid
-          }" was excluded from the result at DTO validation. ${JSON.stringify(
-            errors,
-            null,
-            2,
-          )}`,
+          `"${_doc.uid}" was excluded from the result at DTO validation.`,
         );
+        this.logger.trace({ errors });
       }
 
       return errors.length === 0;
@@ -160,9 +185,7 @@ export class IdentityProviderAdapterMongoService
   /**
    * @param refreshCache  Should we refreshCache the cache made by the service?
    */
-  async getList<T = any>(
-    refreshCache?: boolean,
-  ): Promise<IdentityProviderMetadata<T>[]> {
+  async getList(refreshCache?: boolean): Promise<IdentityProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
       this.logger.debug('Refresh cache from DB');
       const list: IdentityProvider[] = await this.findAllIdentityProvider();
@@ -179,7 +202,7 @@ export class IdentityProviderAdapterMongoService
   /**
    * Method triggered when you want to filter identity providers
    * from service providers's whitelist/blacklist
-   * @param idpList  list of identity providers's clientId
+   * @param idpList  list of identity providers's clientID
    * @param isBlackListed  boolean false = blacklist true = whitelist
    */
   async getFilteredList(
@@ -198,11 +221,11 @@ export class IdentityProviderAdapterMongoService
     return filteredProviders;
   }
 
-  async getById<T = Record<string, any>>(
+  async getById(
     id: string,
     refreshCache = false,
-  ): Promise<IdentityProviderMetadata<T>> {
-    const providers = await this.getList<T>(refreshCache);
+  ): Promise<IdentityProviderMetadata> {
+    const providers = await this.getList(refreshCache);
 
     const provider = providers.find(({ uid }) => uid === id);
 
@@ -239,7 +262,26 @@ export class IdentityProviderAdapterMongoService
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/326
      * We have non blocking incompatilities.
      */
-    return result as unknown as IdentityProviderMetadata;
+    return this.toPanvaFormat(result);
+  }
+
+  private toPanvaFormat(result: unknown): IdentityProviderMetadata {
+    const panvaFormatted = {
+      client: {} as ClientMetadata,
+      issuer: {} as IssuerMetadata,
+    };
+
+    Object.entries(result).forEach(([key, value]) => {
+      if (CLIENT_METADATA.includes(key)) {
+        panvaFormatted.client[key] = value;
+      } else if (ISSUER_METADATA.includes(key)) {
+        panvaFormatted.issuer[key] = value;
+      } else {
+        panvaFormatted[key] = value;
+      }
+    });
+
+    return panvaFormatted as IdentityProviderMetadata;
   }
 
   /**
@@ -256,5 +298,13 @@ export class IdentityProviderAdapterMongoService
       clientSecretEcKey,
       Buffer.from(clientSecret, 'base64'),
     );
+  }
+
+  private getIdentityProviderDTO(
+    discovery: boolean,
+  ): Type<DiscoveryIdpAdapterMongoDTO | NoDiscoveryIdoAdapterMongoDTO> {
+    return discovery
+      ? DiscoveryIdpAdapterMongoDTO
+      : NoDiscoveryIdoAdapterMongoDTO;
   }
 }
