@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { IdentityProviderMetadata, OidcClientService } from '@fc/oidc-client';
+import { IdentityProviderMetadata } from '@fc/oidc';
+import { OidcClientService } from '@fc/oidc-client';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 import { ConfigService } from '@fc/config';
@@ -76,15 +77,78 @@ describe('MockServiceProviderController', () => {
     getList: jest.fn(),
   };
 
-  const identityProviderList = [
-    {
+  const identityProviderMinimum = {
+    client: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uris: ['https://foo.bar.com/buz'],
       uid: 'providerUidMock',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: 'mock client_id',
     },
-  ];
+  };
+
+  const identityProviderFull = {
+    uid: 'providerUidMock',
+    title: 'envIssuer Title',
+    name: 'envIssuer',
+    display: true,
+    active: true,
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    discovery: true,
+    discoveryUrl:
+      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
+    issuer: {
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      jwks_uri: 'https://fsp1v2.docker.dev-franceconnect.fr/jwks_uri',
+    },
+    client: {
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: 'mock client_id',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_signed_response_alg: 'ES256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      post_logout_redirect_uris: [
+        'https://fsp1v2.docker.dev-franceconnect.fr/logout-callback',
+      ],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      redirect_uris: ['https://foo.bar.com/buz'],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      response_types: ['code'],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      revocation_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_encrypted_response_alg: 'RSA-OAEP',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_encrypted_response_enc: 'A256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_encrypted_response_alg: 'RSA-OAEP',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_encrypted_response_enc: 'A256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_signed_response_alg: 'ES256',
+    },
+  };
+
+  const identityProviderList = [identityProviderMinimum, identityProviderFull];
 
   const interactionParametersMock = {
     authorizationUrl: 'authorizationUrl',
@@ -455,8 +519,7 @@ describe('MockServiceProviderController', () => {
   });
 
   describe('getInteractionParameters', () => {
-    const provider =
-      identityProviderList[0] as unknown as IdentityProviderMetadata;
+    const provider = identityProviderFull as IdentityProviderMetadata;
     const urlMock = 'https://somewhere.com/foo';
 
     beforeEach(() => {
@@ -499,12 +562,7 @@ describe('MockServiceProviderController', () => {
 
     it('should return object containing results from various calls', async () => {
       // Given
-      const {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        redirect_uris,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id,
-      } = identityProviderList[0];
+      const idp = identityProviderMinimum;
       // When
       const result = await controller['getInteractionParameters'](provider);
       // Then
@@ -516,12 +574,12 @@ describe('MockServiceProviderController', () => {
           acr: 'acrMock',
           claims: 'claimsMock',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          redirect_uri: redirect_uris[0],
+          redirect_uri: idp.client.redirect_uris[0],
           scope: scopeMock,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           authorization_endpoint: 'https://somewhere.com/foo',
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id,
+          client_id: idp.client.client_id,
         },
         authorizationUrl: urlMock,
       });

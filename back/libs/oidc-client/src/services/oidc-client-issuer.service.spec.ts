@@ -26,6 +26,74 @@ describe('OidcClientIssuerService', () => {
   const issuerProxyMock = jest.fn() as unknown as Issuer<Client>;
   issuerProxyMock['discover'] = jest.fn();
 
+  const idpMetadataIssuerMock = {
+    issuer: 'https://corev2.docker.dev-franceconnect.fr',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    token_endpoint: 'https://corev2.docker.dev-franceconnect.fr/api/v2/token',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    authorization_endpoint:
+      'https://corev2.docker.dev-franceconnect.fr/api/v2/authorize',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    jwks_uri: 'https://corev2.docker.dev-franceconnect.fr/api/v2/certs',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    userinfo_endpoint:
+      'https://corev2.docker.dev-franceconnect.fr/api/v2/userinfo',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    end_session_endpoint:
+      'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
+  };
+
+  const idpMetadataClientMock = {
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    client_id: 'clientID',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    post_logout_redirect_uris: [
+      'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
+    ],
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    redirect_uris: [
+      'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
+    ],
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    response_types: ['code'],
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_signed_response_alg: 'HS256',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    token_endpoint_auth_method: 'client_secret_post',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    revocation_endpoint_auth_method: 'client_secret_post',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_encrypted_response_alg: 'RSA-OAEP',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_encrypted_response_enc: 'A256GCM',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    userinfo_encrypted_response_alg: 'RSA-OAEP',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    userinfo_encrypted_response_enc: 'A256GCM',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    userinfo_signed_response_alg: 'HS256',
+  };
+
   const idpMetadataMock = {
     jwks: [],
     httpOtions: {},
@@ -44,6 +112,8 @@ describe('OidcClientIssuerService', () => {
         discoveryUrl: 'mock well-known url',
       },
     ],
+    client: idpMetadataClientMock,
+    issuer: idpMetadataIssuerMock,
     discovery: true,
     discoveryUrl: 'mock well-known url',
   };
@@ -103,7 +173,7 @@ describe('OidcClientIssuerService', () => {
       // Then
       expect(issuerMock.Client).toHaveBeenCalledTimes(1);
       expect(issuerMock.Client).toHaveBeenCalledWith(
-        idpMetadataMock,
+        idpMetadataClientMock,
         idpMetadataMock.jwks,
       );
     });
@@ -181,6 +251,7 @@ describe('OidcClientIssuerService', () => {
         idpMetadataMock.discoveryUrl,
       );
     });
+
     it('should instantiate IssuerProxy', async () => {
       // Given
       const issuerId = 'foo';
@@ -195,7 +266,9 @@ describe('OidcClientIssuerService', () => {
       await service['getIssuer'](issuerId);
       // Then
       expect(service['IssuerProxy']).toHaveBeenCalledTimes(1);
-      expect(service['IssuerProxy']).toHaveBeenCalledWith(noDiscoveryMetadata);
+      expect(service['IssuerProxy']).toHaveBeenCalledWith(
+        idpMetadataIssuerMock,
+      );
     });
   });
 

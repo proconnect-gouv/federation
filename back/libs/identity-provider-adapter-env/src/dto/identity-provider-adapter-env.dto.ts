@@ -121,6 +121,11 @@ export class IdentityProviderAdapterEnvDTO {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly token_endpoint_auth_method: string;
 
+  @IsString()
+  // openid defined property names
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly revocation_endpoint_auth_method: string;
+
   @IsUrl()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention

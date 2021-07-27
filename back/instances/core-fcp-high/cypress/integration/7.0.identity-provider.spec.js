@@ -1,6 +1,10 @@
 import { getAuthorizeUrl } from './mire.utils';
 
 describe('7.0 - Idp activation & visibility', () => {
+  before(() => {
+    cy.resetdb();
+  });
+
   // -- replace by either `fip` or `fia`
   const idpId = `${Cypress.env('IDP_NAME')}`;
 
@@ -47,7 +51,7 @@ describe('7.0 - Idp activation & visibility', () => {
       cy.get(`#idp-${idpId}-desactive-visible-title`).should('exist');
       // Control that the right text is set
       cy.get(`#idp-${idpId}1-high-title`).contains(
-        'J’utilise l’application Identity Provider - eIDAS élevé - discov - crypt',
+        'J’utilise l’application IDP1 - Identity Provider - eIDAS élevé - nodiscov - crypt',
       );
       cy.get(`#idp-${idpId}-desactive-visible-title`).contains(
         'FI désactivé mais visible est actuellement indisponible',
@@ -75,6 +79,66 @@ describe('7.0 - Idp activation & visibility', () => {
     cy.get(`#idp-list button#idp-${idpId}1-high`).click();
     // Then
     cy.url().should('match', new RegExp(`^https://${idpId}1-high.+$`));
+  });
+
+  it('should redirect when click on enabled IdP with discovery', () => {
+    // Given
+    cy.visit(getAuthorizeUrl());
+    cy.url().should('match', mireUrl);
+    // When
+    cy.get(`#idp-list button#idp-${idpId}8-high`).click();
+    // Then
+    cy.url().should('match', new RegExp(`^https://${idpId}1-high.+$`));
+  });
+
+  it('should not display an enabled IdP with discovery url but no discovery parameter', () => {
+    // Given
+    cy.visit(getAuthorizeUrl());
+    cy.url().should('match', mireUrl);
+    // Then
+    cy.get(`#idp-list button#idp-${idpId}7-high`).should('not.exist');
+  });
+
+  it('should not display an enabled IdP with discovery but no discovery url', () => {
+    // Given
+    cy.visit(getAuthorizeUrl());
+    cy.url().should('match', mireUrl);
+    // Then
+    cy.get(`#idp-list button#idp-${idpId}9-high`).should('not.exist');
+  });
+
+  it('should not display an enabled IdP with discovery and forbidden parameters', () => {
+    // Given
+    cy.visit(getAuthorizeUrl());
+    cy.url().should('match', mireUrl);
+    // Then
+    cy.get(`#idp-list button#idp-${idpId}10-high`).should('not.exist');
+  });
+
+  it('should redirect when click on enabled IdP with jwksUrl and right config', () => {
+    // Given
+    cy.visit(getAuthorizeUrl());
+    cy.url().should('match', mireUrl);
+    // When
+    cy.get(`#idp-list button#idp-${idpId}11-high`).click();
+    // Then
+    cy.url().should('match', new RegExp(`^https://${idpId}1-high.+$`));
+  });
+
+  it('should not display an enabled IdP with jwksUrl and wrong config', () => {
+    // Given
+    cy.visit(getAuthorizeUrl());
+    cy.url().should('match', mireUrl);
+    // Then
+    cy.get(`#idp-list button#idp-${idpId}12-high`).should('not.exist');
+  });
+
+  it('should not display an enabled IdP without discovery and missing parameters', () => {
+    // Given
+    cy.visit(getAuthorizeUrl());
+    cy.url().should('match', mireUrl);
+    // Then
+    cy.get(`#idp-list button#idp-${idpId}13bis-high`).should('not.exist');
   });
 
   it('should trigger error 020017 when forging click on disabled IdP', () => {
