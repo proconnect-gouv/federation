@@ -16,9 +16,6 @@ db.provider.update(
     specificText: "specific text FI 3",
     url: "https://fia2-low.docker.dev-franceconnect.fr/",
     statusURL: "https://fia2-low.docker.dev-franceconnect.fr/",
-    authzURL: "https://fia2-low.docker.dev-franceconnect.fr/user/authorize",
-    tokenURL: "https://fia2-low.docker.dev-franceconnect.fr/user/token",
-    userInfoURL: "https://fia2-low.docker.dev-franceconnect.fr/api/user",
     discoveryUrl:
       "https://fia2-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,

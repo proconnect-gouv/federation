@@ -105,7 +105,7 @@ services:
       - exploitation
 
   haproxy:
-    image: haproxy
+    image: haproxy:2.3
     ports:
       - 8404:8404
     volumes:

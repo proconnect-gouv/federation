@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
-import { IdentityProviderMetadata } from '@fc/oidc-client';
+import { IdentityProviderMetadata } from '@fc/oidc';
 import { IdentityProviderAdapterEnvService } from './identity-provider-adapter-env.service';
 
 describe('IdentityProviderAdapterEnvService', () => {
@@ -46,6 +46,9 @@ describe('IdentityProviderAdapterEnvService', () => {
     token_endpoint_auth_method: 'client_secret_post',
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
+    revocation_endpoint_auth_method: 'client_secret_post',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     id_token_encrypted_response_alg: 'RSA-OAEP',
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -62,6 +65,69 @@ describe('IdentityProviderAdapterEnvService', () => {
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     jwks_uri: 'https://fsp1-high.docker.dev-franceconnect.fr/jwks_uri',
+  };
+
+  const toPanvaFormatMock = {
+    uid: 'envIssuer',
+    title: 'envIssuer Title',
+    name: 'envIssuer',
+    display: true,
+    active: true,
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    discovery: true,
+    discoveryUrl:
+      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
+    issuer: {
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      jwks_uri: 'https://fsp1-high.docker.dev-franceconnect.fr/jwks_uri',
+    },
+    client: {
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: 'client_id',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_signed_response_alg: 'ES256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      post_logout_redirect_uris: [
+        'https://fsp1-high.docker.dev-franceconnect.fr/logout-callback',
+      ],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      redirect_uris: [
+        'https://fsp1-high.docker.dev-franceconnect.fr/login-callback',
+      ],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      response_types: ['code'],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      revocation_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_encrypted_response_alg: 'RSA-OAEP',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_encrypted_response_enc: 'A256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_encrypted_response_alg: 'RSA-OAEP',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_encrypted_response_enc: 'A256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_signed_response_alg: 'ES256',
+    },
   };
 
   const env = {
@@ -94,6 +160,9 @@ describe('IdentityProviderAdapterEnvService', () => {
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       token_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      revocation_endpoint_auth_method: 'client_secret_post',
       // oidc param name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_encrypted_response_alg: 'RSA-OAEP',
@@ -168,15 +237,9 @@ describe('IdentityProviderAdapterEnvService', () => {
   describe('legacyToOpenIdPropertyName', () => {
     it('should return identity provider with change legacy property name by openid property name', () => {
       // setup
-      const expected = {
-        ...validIdentityProviderMock,
-        // oidc param name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_secret: 'client_secret',
-      };
       service['decryptClientSecret'] = jest
         .fn()
-        .mockReturnValueOnce(expected.client_secret);
+        .mockReturnValueOnce(toPanvaFormatMock.client.client_secret);
 
       // action
       const result = service['legacyToOpenIdPropertyName'](
@@ -184,7 +247,7 @@ describe('IdentityProviderAdapterEnvService', () => {
       );
 
       // expect
-      expect(result).toEqual(expected);
+      expect(result).toEqual(toPanvaFormatMock);
     });
   });
 
@@ -255,23 +318,17 @@ describe('IdentityProviderAdapterEnvService', () => {
     it('should return a list of valids identity providers', async () => {
       // setup
       configMock.get.mockReturnValueOnce(env);
-      const expected = [
-        {
-          ...validIdentityProviderMock,
-          // oidc param name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_secret: 'client_secret',
-        },
-      ];
+      const expected = toPanvaFormatMock;
+
       service['decryptClientSecret'] = jest
         .fn()
-        .mockReturnValueOnce(expected[0].client_secret);
+        .mockReturnValueOnce(expected.client.client_secret);
 
       // action
       const result = await service.getList();
 
       // expect
-      expect(result).toEqual(expected);
+      expect(result).toEqual([expected]);
     });
 
     it('should call findAll method if refreshCache is true', async () => {
@@ -310,14 +367,18 @@ describe('IdentityProviderAdapterEnvService', () => {
       // Given
       service['identityProviderCache'] = [
         {
-          // oidc param name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id: 'foo',
+          client: {
+            // oidc param name
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            client_id: 'foo',
+          },
         } as IdentityProviderMetadata,
         {
-          // oidc param name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          client_id: 'bar',
+          client: {
+            // oidc param name
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            client_id: 'bar',
+          },
         } as IdentityProviderMetadata,
       ];
       service['findAllIdentityProvider'] = jest.fn();

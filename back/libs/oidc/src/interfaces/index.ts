@@ -4,3 +4,4 @@
 export * from './identity.interface';
 export * from './oidc-error.interface';
 export * from './service-provider-adapter.interface';
+export * from './identity-provider.interface';
