@@ -4,6 +4,16 @@
 
 Cette libraire sert à encapsuler la libraire tierce [node-openid-client](https://github.com/panva/node-openid-client).
 
+## Règles de validation d'un IdP
+
+### IdP avec discovery
+
+Si l'IdP a le discovery activé alors le paramètre discoveryUrl doit être présent et il ne doit pas y avoir de paramètres de configuration.
+
+### IdP avec discovery avec jwksURL
+
+Si l'IdP n'a pas le discovery activé alors le paramètre discoveryUrl doit être absent et les paramètres de configuration doivent d'êtres présents. En cas de présence d'un paramètre jwksURL, le discovery doit être désactivé et les algos de signature ne doivent pas être symétriques (HS256, HS512).
+
 ## Utilisation d'un certificat client
 
 Pour que le client openid fournisse un certificat client au fournisseur d'identité, renseigner les variables suivantes dans la [configuration de la librairie](src/dto/oidc-client-config.dto.ts) avec le chemin vers les fichiers contenant le certificat client et sa clé :
@@ -18,12 +28,16 @@ export default {
     //...
   },
   //...
-};
+};)
 ```
 
 Version nouvelle config (#391)
 
 ```typescript
+import { ConfigParser } from '@fc/config';
+
+const env = new ConfigParser(process.env,'Https');
+
 export default {
   //...
   httpOptions: {

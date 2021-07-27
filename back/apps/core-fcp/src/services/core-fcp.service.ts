@@ -67,7 +67,7 @@ export class CoreFcpService {
   ): Promise<IFeatureHandler<T>> {
     this.logger.debug(`getFeature ${process} for provider: ${idpId}`);
 
-    const idp = await this.identityProvider.getById<FcpFeature>(idpId);
+    const idp = await this.identityProvider.getById(idpId);
     const idClass = idp.featureHandlers[process];
 
     this.logger.trace({ idp, idClass });

@@ -24,10 +24,6 @@ db.provider.replaceOne(
     },
     specificText: "specific text fip1-low",
     url: "https://fip1-low.docker.dev-franceconnect.fr/",
-    statusURL: "https://fip1-low.docker.dev-franceconnect.fr/",
-    authzURL: "https://fip1-low.docker.dev-franceconnect.fr/user/authorize",
-    tokenURL: "https://fip1-low.docker.dev-franceconnect.fr/user/token",
-    userInfoURL: "https://fip1-low.docker.dev-franceconnect.fr/api/user",
     discoveryUrl:
       "https://fip1-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
@@ -37,8 +33,6 @@ db.provider.replaceOne(
     order: null,
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
-    endSessionURL:
-      "https://fip1-low.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "HS256",
     token_endpoint_auth_method: "client_secret_post",

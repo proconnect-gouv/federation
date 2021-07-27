@@ -19,7 +19,7 @@ import {
  */
 import { JSONWebKeySet } from 'jose-openid-client';
 import { Type } from 'class-transformer';
-import { IdentityProviderMetadata } from '../interfaces';
+import { IdentityProviderMetadata } from '@fc/oidc';
 
 class HttpOptions {
   @IsString()
