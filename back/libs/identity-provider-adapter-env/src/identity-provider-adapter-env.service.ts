@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import {
-  IIdentityProviderAdapter,
+  ClientMetadata,
+  IssuerMetadata,
   IdentityProviderMetadata,
-} from '@fc/oidc-client';
+} from '@fc/oidc';
+import { IIdentityProviderAdapter } from '@fc/oidc-client';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { asyncFilter, validateDto } from '@fc/common';
@@ -13,11 +15,35 @@ import {
   IdentityProviderAdapterEnvConfig,
 } from './dto';
 
+const CLIENT_METADATA = [
+  'client_id',
+  'client_secret',
+  'post_logout_redirect_uris',
+  'redirect_uris',
+  'response_types',
+  'id_token_signed_response_alg',
+  'token_endpoint_auth_method',
+  'revocation_endpoint_auth_method',
+  'id_token_encrypted_response_alg',
+  'id_token_encrypted_response_enc',
+  'userinfo_encrypted_response_alg',
+  'userinfo_encrypted_response_enc',
+  'userinfo_signed_response_alg',
+];
+
+const ISSUER_METADATA = [
+  'issuer',
+  'token_endpoint',
+  'authorization_endpoint',
+  'jwks_uri',
+  'userinfo_endpoint',
+  'end_session_endpoint',
+];
 @Injectable()
 export class IdentityProviderAdapterEnvService
   implements IIdentityProviderAdapter
 {
-  private identityProviderCache: IdentityProviderMetadata<any>[];
+  private identityProviderCache: IdentityProviderMetadata[];
 
   constructor(
     private readonly cryptography: CryptographyService,
@@ -73,9 +99,7 @@ export class IdentityProviderAdapterEnvService
   /**
    * @param refreshCache  Should we refreshCache the cache made by the service?
    */
-  async getList<T = any>(
-    refreshCache?: boolean,
-  ): Promise<IdentityProviderMetadata<T>[]> {
+  async getList(refreshCache?: boolean): Promise<IdentityProviderMetadata[]> {
     if (refreshCache || !this.identityProviderCache) {
       const list: IIdentityProviderAdapterEnv[] =
         await this.findAllIdentityProvider();
@@ -91,7 +115,7 @@ export class IdentityProviderAdapterEnvService
   /**
    * Method triggered when you want to filter identity providers
    * from service providers's whitelist/blacklist
-   * @param idpList  list of identity providers's clientId
+   * @param idpList  list of identity providers's clientID
    * @param isBlackListed  boolean false = blacklist true = whitelist
    */
   async getFilteredList(
@@ -107,11 +131,11 @@ export class IdentityProviderAdapterEnvService
     return filteredProviders;
   }
 
-  async getById<T = Record<string, any>>(
+  async getById(
     id: string,
     refreshCache = false,
-  ): Promise<IdentityProviderMetadata<T>> {
-    const providers = await this.getList<T>(refreshCache);
+  ): Promise<IdentityProviderMetadata> {
+    const providers = await this.getList(refreshCache);
 
     return providers.find(({ uid }) => uid === id);
   }
@@ -135,7 +159,26 @@ export class IdentityProviderAdapterEnvService
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/merge_requests/326
      * We have non blocking incompatilities.
      */
-    return result as unknown as IdentityProviderMetadata;
+    return this.toPanvaFormat(result);
+  }
+
+  private toPanvaFormat(result: unknown): IdentityProviderMetadata {
+    const panvaFormatted = {
+      client: {} as ClientMetadata,
+      issuer: {} as IssuerMetadata,
+    };
+
+    Object.entries(result).forEach(([key, value]) => {
+      if (CLIENT_METADATA.includes(key)) {
+        panvaFormatted.client[key] = value;
+      } else if (ISSUER_METADATA.includes(key)) {
+        panvaFormatted.issuer[key] = value;
+      } else {
+        panvaFormatted[key] = value;
+      }
+    });
+
+    return panvaFormatted as IdentityProviderMetadata;
   }
 
   /**

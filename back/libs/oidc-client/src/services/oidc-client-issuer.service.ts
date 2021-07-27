@@ -1,12 +1,12 @@
 import { Issuer, Client, custom } from 'openid-client';
 import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
+import { IdentityProviderMetadata } from '@fc/oidc';
 import {
   OidcClientProviderNotFoundException,
   OidcClientProviderDisabledException,
 } from '../exceptions';
 import { OidcClientConfigService } from './oidc-client-config.service';
-import { IdentityProviderMetadata } from '../interfaces';
 
 @Injectable()
 export class OidcClientIssuerService {
@@ -65,15 +65,16 @@ export class OidcClientIssuerService {
       return issuer;
     }
 
-    return new this.IssuerProxy(idpMetadata);
+    return new this.IssuerProxy(idpMetadata.issuer);
   }
 
   public async getClient(issuerId: string): Promise<Client> {
     const idpMetadata = await this.getIdpMetadata(issuerId);
+
     const issuer = await this.getIssuer(issuerId);
     const { jwks, httpOptions } = await this.config.get();
 
-    const client = new issuer.Client(idpMetadata, jwks);
+    const client = new issuer.Client(idpMetadata.client, jwks);
 
     client[custom.http_options] = this.getHttpOptions.bind(this, httpOptions);
     return client;

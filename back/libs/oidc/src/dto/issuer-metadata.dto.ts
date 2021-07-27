@@ -105,4 +105,9 @@ export class IssuerMetadata {
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly mtls_endpoint_aliases: MtlsEndpointAliases;
+
+  /**
+   * Wildcard needed to be compatible with `openid-client` internal interface
+   */
+  [key: string]: unknown;
 }

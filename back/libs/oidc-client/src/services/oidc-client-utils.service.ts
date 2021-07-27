@@ -135,7 +135,6 @@ export class OidcClientUtilsService {
   ): Promise<TokenSet> {
     this.logger.debug('getTokenSet');
     const client = await this.issuer.getClient(providerUid);
-
     const receivedParams = await this.extractParams(
       req,
       client,
