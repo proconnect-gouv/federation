@@ -1,6 +1,10 @@
 import { getAuthorizeUrl } from './mire.utils';
 
 describe('7.1 - Idp whitelist & blacklist', () => {
+  before(() => {
+    cy.resetdb();
+  });
+
   // -- replace by either `fip` or `fia`
   const idpId = `${Cypress.env('IDP_NAME')}`;
 
@@ -50,7 +54,6 @@ describe('7.1 - Idp whitelist & blacklist', () => {
       cy.get(`button#idp-${idpId}1-high`).should('not.be.disabled');
       cy.get(`button#idp-${idpId}2-high`).should('not.be.disabled');
       cy.get(`button#idp-${idpId}6-high`).should('not.be.disabled');
-      cy.get(`button#idp-${idpId}7-high`).should('not.be.disabled');
       // Disabled idps
       cy.get(`button#idp-${idpId}-desactive-visible`).should('be.disabled');
     });

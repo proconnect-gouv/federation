@@ -1,9 +1,9 @@
 db.provider.update(
-  { _id: ObjectId("5eedbcb60c59aa5a1f1a56e3") },
+  { uid: "fia2-low" },
   {
     $set: {
       title: "Idp test Updated, activated",
       active: true,
-    }
+    },
   }
-)
+);
