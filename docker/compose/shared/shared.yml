@@ -56,8 +56,8 @@ services:
           - fip18-high.docker.dev-franceconnect.fr
           - fip19-high.docker.dev-franceconnect.fr
           - fip20-high.docker.dev-franceconnect.fr
-          - fca.docker.dev-franceconnect.fr
-          - fca-front.docker.dev-franceconnect.fr
+          - core-fca-low.docker.dev-franceconnect.fr
+          - fca-low-front.docker.dev-franceconnect.fr
           - fsa1-low.docker.dev-franceconnect.fr
           - fsa2-low.docker.dev-franceconnect.fr
           - fsa3-low.docker.dev-franceconnect.fr
@@ -71,8 +71,8 @@ services:
           - fia4-low.docker.dev-franceconnect.fr
           - fia5-low.docker.dev-franceconnect.fr
           - exploit-fcp.docker.dev-franceconnect.fr
-          - exploit-fca.docker.dev-franceconnect.fr
-          - exploit-fca-front.docker.dev-franceconnect.fr
+          - exploit-fca-low.docker.dev-franceconnect.fr
+          - exploit-fca-low-front.docker.dev-franceconnect.fr
           # FCP LOW
           - core-fcp-low.docker.dev-franceconnect.fr
           - fsp1-low.docker.dev-franceconnect.fr

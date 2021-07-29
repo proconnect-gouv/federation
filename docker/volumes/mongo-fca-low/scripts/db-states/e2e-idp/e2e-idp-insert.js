@@ -37,10 +37,10 @@ db.provider.update(
     userinfo_encrypted_response_alg: "RSA-OAEP",
     userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
-      "https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2-high",
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip2-high",
     ],
     post_logout_redirect_uris: [
-      "https://fca.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
   { upsert: true }
