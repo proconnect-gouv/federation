@@ -6,16 +6,16 @@ services:
   min-fca-low:
     image: alpine
     depends_on:
-      - "fca"
-      - "fca-front"
+      - "core-fca-low"
+      - "fca-low-front"
       - "fsa1-low"
       - "fia1-low"
       
   all-fca-low:
     image: alpine
     depends_on:
-      - "fca"
-      - "fca-front"
+      - "core-fca-low"
+      - "fca-low-front"
       - "fsa1-low"
       - "fsa2-low"
       - "fsa3-low"
@@ -24,7 +24,7 @@ services:
       - "fia2-low"
       - "fia4-low"
       - "fia5-low"
-      - "exploitation-fca"
-      - "pg-exploitation-fca"
-      - "exploit-fca"
-      - "exploit-fca-front"
+      - "exploitation-fca-low"
+      - "pg-exploitation-fca-low"
+      - "exploit-fca-low"
+      - "exploit-fca-low-front"
