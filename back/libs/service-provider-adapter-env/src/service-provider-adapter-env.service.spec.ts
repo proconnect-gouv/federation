@@ -11,12 +11,12 @@ describe('ServiceProviderService', () => {
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
     redirect_uris: [
-      'https://fca.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia1-low',
+      'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia1-low',
     ],
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
     post_logout_redirect_uris: [
-      'https://fca.docker.dev-franceconnect.fr/logout-callback',
+      'https://core-fca-low.docker.dev-franceconnect.fr/logout-callback',
     ],
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -52,7 +52,7 @@ describe('ServiceProviderService', () => {
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
     jwks_uri:
-      'https://fca.docker.dev-franceconnect.fr/api/v2/client/.well-known/keys',
+      'https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/.well-known/keys',
   };
 
   const configMock = {

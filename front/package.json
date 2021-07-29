@@ -54,7 +54,7 @@
   },
   "scripts": {
     "start:ud": "cd apps/user-dashboard && yarn start",
-    "build:fca": "./scripts/yarn-build-libs agent-connect",
+    "build:fca-low-front": "./scripts/yarn-build-libs agent-connect",
     "build": "./scripts/yarn-build-libs",
     "cleanup": "./scripts/yarn-cleanup"
   }
