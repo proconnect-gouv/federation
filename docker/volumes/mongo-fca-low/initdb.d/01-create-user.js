@@ -4,10 +4,7 @@ db.createUser({
   user: "fc",
   pwd: "pass",
   roles: [
-    /**
-     * @todo rename `corev2` into `core-fca`
-     */
-    { role: "dbOwner", db: "corev2" },
-    { role: "readWrite", db: "corev2" }
+    { role: "dbOwner", db: "core-fca-low" },
+    { role: "readWrite", db: "core-fca-low" }
   ]
 });
