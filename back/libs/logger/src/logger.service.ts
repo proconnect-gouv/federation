@@ -330,10 +330,10 @@ export class LoggerService extends Logger {
    * It uses `%c` to sequentialy target to the css style to apply.
    *
    * @param {string} dateTime, ex: `12:48 PM`
-   * @param {string} containerName, ex: `corev2`
+   * @param {string} containerName, ex: `core-fcp-high`
    * @param {string} libraryName, ex: `oidc-provider`
    * @param {string} classMethodName, ex: `MyClass.myMethod()`
-   * @returns {string} metadata, ex: `%c[12:48 PM]%ccorev2c$oidc-provider%cMyClass.myMethod()`
+   * @returns {string} metadata, ex: `%c[12:48 PM]%ccore-fcp-highc$oidc-provider%cMyClass.myMethod()`
    */
   private getDebuggerMetadata(
     dateTime: string,
