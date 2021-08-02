@@ -3,22 +3,19 @@ import { Then, When } from 'cypress-cucumber-preprocessor/steps';
 import {
   checkFCBasicAuthorization,
   isUsingFCBasicAuthorization,
+  navigateTo,
 } from '../../common/helpers';
+import { ServiceProvider } from '../../common/types';
 import ServiceProviderPage from '../pages/service-provider-page';
 
 let serviceProviderPage: ServiceProviderPage;
 
 When('je navigue sur la page fournisseur de service', function () {
-  expect(this.serviceProvider).to.exist;
-  serviceProviderPage = new ServiceProviderPage(this.serviceProvider);
-  /**
-   * @todo Use navigateTo instead after ticket FC-548 (integ01)
-   * author: Nicolas
-   * date: 28/05/2021
-   *
-   * suggestion: navigateTo({ appId: currentServiceProvider.name, baseUrl: env.allAppsUrl });
-   */
-  serviceProviderPage.visit();
+  const { allAppsUrl } = this.env;
+  const currentServiceProvider: ServiceProvider = this.serviceProvider;
+  expect(currentServiceProvider).to.exist;
+  serviceProviderPage = new ServiceProviderPage(currentServiceProvider);
+  navigateTo({ appId: currentServiceProvider.name, baseUrl: allAppsUrl });
 });
 
 When('je clique sur le bouton FranceConnect', function () {

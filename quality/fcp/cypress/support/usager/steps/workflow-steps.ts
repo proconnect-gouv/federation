@@ -1,6 +1,12 @@
 import { When } from 'cypress-cucumber-preprocessor/steps';
 
-import { IdentityProvider, ServiceProvider, User } from '../../common/types';
+import { navigateTo, User } from '../../common/helpers';
+import {
+  Environment,
+  IdentityProvider,
+  ServiceProvider,
+  UserCredentials,
+} from '../../common/types';
 import IdentityProviderPage from '../pages/identity-provider-page';
 import IdentityProviderSelectionPage from '../pages/identity-provider-selection-page';
 import InfoConsentPage from '../pages/info-consent-page';
@@ -8,13 +14,14 @@ import ServiceProviderPage from '../pages/service-provider-page';
 import TechnicalErrorPage from '../pages/technical-error-page';
 
 const connectionWorkflow = (
+  { allAppsUrl }: Environment,
   serviceProvider: ServiceProvider,
   identityProvider: IdentityProvider,
   user: User,
   expectSuccess: boolean,
 ): void => {
+  navigateTo({ appId: serviceProvider.name, baseUrl: allAppsUrl });
   const serviceProviderPage = new ServiceProviderPage(serviceProvider);
-  serviceProviderPage.visit();
   serviceProviderPage.fcButton.click();
 
   const identityProviderSelectionPage = new IdentityProviderSelectionPage();
@@ -22,9 +29,10 @@ const connectionWorkflow = (
   identityProviderSelectionPage.getIdpButton(identityProvider.idpId).click();
 
   const identityProviderPage = new IdentityProviderPage(identityProvider);
-  const credentials = user.credentials.find(
-    (credentials) => credentials.idpId === identityProvider.idpId,
+  const credentials: UserCredentials = user.getCredentials(
+    identityProvider.idpId,
   );
+  expect(credentials).to.exist;
   identityProviderPage.login(credentials);
 
   if (expectSuccess) {
@@ -38,10 +46,12 @@ const connectionWorkflow = (
 };
 
 When("l'usager peut se connecter à FranceConnect", function () {
+  expect(this.env).to.exist;
   expect(this.serviceProvider).to.exist;
   expect(this.identityProvider).to.exist;
   expect(this.user).to.exist;
   connectionWorkflow(
+    this.env,
     this.serviceProvider,
     this.identityProvider,
     this.user,
@@ -54,6 +64,7 @@ When("l'usager ne peut pas se connecter à FranceConnect", function () {
   expect(this.identityProvider).to.exist;
   expect(this.user).to.exist;
   connectionWorkflow(
+    this.env,
     this.serviceProvider,
     this.identityProvider,
     this.user,

@@ -6,7 +6,7 @@
     ],
     "credentials": [
       {
-        "idpId": "fip1-low",
+        "idpId": "default",
         "username": "avec_nom_dusage",
         "password": "123"
       }
