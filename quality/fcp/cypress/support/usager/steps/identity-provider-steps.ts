@@ -1,6 +1,7 @@
 import { Then, When } from 'cypress-cucumber-preprocessor/steps';
 
-import { User, UserCredentials } from '../../common/types';
+import { User } from '../../common/helpers';
+import { UserCredentials } from '../../common/types';
 import IdentityProviderPage from '../pages/identity-provider-page';
 
 let identityProviderPage: IdentityProviderPage;
@@ -18,9 +19,7 @@ When("je m'authentifie avec succès", function () {
 
   const currentUser: User = this.user;
   const { idpId } = this.identityProvider;
-  const hasIDPCredentials = (credentials: UserCredentials): boolean =>
-    credentials.idpId === idpId;
-
-  const userCredentials = currentUser.credentials.find(hasIDPCredentials);
+  const userCredentials: UserCredentials = currentUser.getCredentials(idpId);
+  expect(userCredentials).to.exist;
   identityProviderPage.login(userCredentials);
 });

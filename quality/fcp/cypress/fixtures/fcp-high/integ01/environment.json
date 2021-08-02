@@ -1,6 +1,6 @@
 {
   "name": "integ01",
-  "allAppsUrl": "https://integ01.dev-franceconnect.fr/fcp.html",
+  "allAppsUrl": "https://docker.dev-franceconnect.fr/integ01/fcp.html",
   "exploitAppId": "exploitation-high",
   "exploitRootUrl": "https://fc-exploitation-v2.integ01.dev-franceconnect.fr",
   "fcRootUrl": "https://auth.integ01.dev-franceconnect.fr"
