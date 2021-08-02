@@ -49,6 +49,9 @@ _up() {
   for app in $apps
   do
     case "$app" in
+      rp-all)
+        services="rp-all"
+        ;;
       eidas)
         services="$services stack-eidas"
         ;;
