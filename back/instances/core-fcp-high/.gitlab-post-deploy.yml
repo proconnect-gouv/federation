@@ -5,7 +5,20 @@ quality-core-fcp-high-release:
     - docker
   only:
     - tags
+  when: manual
+  environment:
+    name: integ01
+    url: https://auth.integ01.dev-franceconnect.fr
+  variables:
+    FC_ROOT: '$CI_BUILDS_DIR/france-connect'
+  before_script:
+    - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f && docker volume prune -f; fi
+    - shopt -s expand_aliases
+    - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
+  # Build the nginx proxy to access /integ01/fcp.html
+    - docker-stack up rp-all
     - cd quality/fcp
     - yarn install
     - CYPRESS_TEST_ENV=integ01 yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
@@ -16,8 +29,7 @@ quality-core-fcp-high-release:
     expire_in: 1 hrs
     when: always
     paths:
-      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
-  environment:
-    name: integ01
-    url: https://auth.integ01.dev-franceconnect.fr
-  when: manual
+      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report  
+  after_script:
+    - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
+    - docker container prune --force && docker volume prune -f

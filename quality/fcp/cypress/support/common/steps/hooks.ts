@@ -7,7 +7,7 @@ import {
   getDefaultUser,
   isUsingFCBasicAuthorization,
 } from '../helpers';
-import { IdentityProvider, ServiceProvider, User } from '../types';
+import { IdentityProvider, ServiceProvider, UserData } from '../types';
 
 const setFixtureContext = (
   fixture: string,
@@ -40,7 +40,7 @@ beforeEach(function () {
   cy.get<IdentityProvider[]>('@identityProviders').then((identityProviders) => {
     getDefaultIdentityProvider(identityProviders);
   });
-  cy.get<User[]>('@users').then((users) => {
+  cy.get<UserData[]>('@users').then((users) => {
     getDefaultUser(users);
   });
 

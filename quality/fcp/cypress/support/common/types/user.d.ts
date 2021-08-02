@@ -8,7 +8,7 @@ export interface UserClaims {
   [key: string]: string;
 }
 
-export interface User {
+export interface UserData {
   enabled: boolean;
   claims: UserClaims;
   credentials: [UserCredentials];

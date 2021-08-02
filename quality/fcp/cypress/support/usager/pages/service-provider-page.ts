@@ -49,10 +49,6 @@ export default class ServiceProviderPage {
     return cy.get(this.logoutButtonSelector);
   }
 
-  visit(): void {
-    cy.visit(this.originUrl);
-  }
-
   checkIsVisible(): void {
     cy.url().should('include', this.originUrl);
   }
