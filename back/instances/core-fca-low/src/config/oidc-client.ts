@@ -20,6 +20,7 @@ export default {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/215
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/216
    */
-  scope:
-    'openid uid given_name usual_name email siren siret organizational_unit belonging_population phone chorusdt',
+  scope: env.string('SCOPE'),
+  // Toogle Financial Grade API
+  fapi: env.boolean('FAPI'),
 } as OidcClientConfig;
