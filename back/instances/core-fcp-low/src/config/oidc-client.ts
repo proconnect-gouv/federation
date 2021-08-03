@@ -23,4 +23,6 @@ export default {
    * @see https://openid.net/specs/openid-connect-basic-1_0.html#Scopes
    */
   scope: env.string('SCOPE'),
+  // Toogle Financial Grade API
+  fapi: env.boolean('FAPI'),
 } as OidcClientConfig;

@@ -52,6 +52,13 @@ export default {
 
 Dans la configuration du client oidc, s'assurer de ne pas préciser d'algorithme et d'encodage de chiffrement (une chaîne vide fait l'affaire si on est obligé de passer le paramètre)
 
+## Activation du Financial grade API (FAPI)
+
+La librairie [node-openid-client](https://github.com/panva/node-openid-client) supporte le niveau FAPI qui ajoute [quelques comportements spécifiques](https://github.com/panva/node-openid-client/blob/main/docs/README.md#issuerfapiclient) de sécurité.
+
+Pour activer cette option, le paramètre de configuration dans l'application est `fapi` (boolean).  
+Au niveau de variables d'environnement, le paramètre est OidcClient_FAPI (booléen interprété par [parseBoolean](../common/src/helpers/parse-boolean.ts))
+
 ## Version de Jose :warning:
 
 Depuis la nouvelle version de Oidc-provider les verions de jose qui sont en dépendence de oidc-provider et oidc-client ont divergées. Oidc-client utilise une version 2.X.

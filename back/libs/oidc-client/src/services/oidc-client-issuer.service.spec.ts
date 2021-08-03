@@ -116,6 +116,7 @@ describe('OidcClientIssuerService', () => {
     issuer: idpMetadataIssuerMock,
     discovery: true,
     discoveryUrl: 'mock well-known url',
+    fapi: false,
   };
 
   beforeEach(async () => {
@@ -143,6 +144,26 @@ describe('OidcClientIssuerService', () => {
   describe('constructor', () => {
     it('should be defined', () => {
       expect(service).toBeDefined();
+    });
+  });
+
+  describe('getClientClass', () => {
+    it('should return "Client"', async () => {
+      // Given
+      oidcClientConfigServiceMock.get.mockResolvedValueOnce({ fapi: false });
+      // When
+      const result = await service['getClientClass']();
+      // Then
+      expect(result).toBe('Client');
+    });
+
+    it('should return "FAPIClient"', async () => {
+      // Given
+      oidcClientConfigServiceMock.get.mockResolvedValueOnce({ fapi: true });
+      // When
+      const result = await service['getClientClass']();
+      // Then
+      expect(result).toBe('FAPIClient');
     });
   });
 
@@ -179,10 +200,21 @@ describe('OidcClientIssuerService', () => {
     });
 
     it('should call config', async () => {
+      // Given
+      service['getClientClass'] = jest.fn().mockResolvedValue('Client'); // Inhibate getClientClass own calls
       // When
       await service.getClient(issuerId);
       // Then
       expect(oidcClientConfigServiceMock.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call getClientClass', async () => {
+      // Given
+      service['getClientClass'] = jest.fn().mockResolvedValue('Client');
+      // When
+      await service.getClient(issuerId);
+      // Then
+      expect(service['getClientClass']).toHaveBeenCalledTimes(1);
     });
 
     it('should return created client instance', async () => {
