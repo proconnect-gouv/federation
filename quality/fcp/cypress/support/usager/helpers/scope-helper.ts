@@ -29,6 +29,12 @@ const aliasScopesClaims = {
 
 const DEFAULT_SCOPE_TYPE = 'tous les scopes';
 
+/**
+ * Get the scope context matching the type
+ * @param {ScopeContext[]} scopes array of all the scope contexts from the fixtures
+ * @param {string} type type of scope context
+ * @returns a scope context with a type and array of scopes
+ */
 export const getScopeByType = (
   scopes: ScopeContext[],
   type: string,
@@ -40,6 +46,11 @@ export const getScopeByType = (
   return scopeContext;
 };
 
+/**
+ * Get the default scope context
+ * @param {ScopeContext[]} scopes array of all the scope contexts from the fixtures
+ * @returns the default scope context
+ */
 export const getDefaultScope = (scopes: ScopeContext[]): ScopeContext => {
   return getScopeByType(scopes, DEFAULT_SCOPE_TYPE);
 };
