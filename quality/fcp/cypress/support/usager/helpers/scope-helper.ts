@@ -27,6 +27,23 @@ const aliasScopesClaims = {
   ],
 };
 
+const DEFAULT_SCOPE_TYPE = 'tous les scopes';
+
+export const getScopeByType = (
+  scopes: ScopeContext[],
+  type: string,
+): ScopeContext => {
+  const scopeContext: ScopeContext = scopes.find(
+    (scope) => scope.type === type,
+  );
+  expect(scopeContext, `No scope matches the type '${type}'`).to.exist;
+  return scopeContext;
+};
+
+export const getDefaultScope = (scopes: ScopeContext[]): ScopeContext => {
+  return getScopeByType(scopes, DEFAULT_SCOPE_TYPE);
+};
+
 /**
  * Get the claims matching the scopes
  * @param scopeContext scope context requested by the service provider
