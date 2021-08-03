@@ -6,6 +6,7 @@ import {
   OidcClientProviderNotFoundException,
   OidcClientProviderDisabledException,
 } from '../exceptions';
+import { OidcClientClass } from '../enums';
 import { OidcClientConfigService } from './oidc-client-config.service';
 
 @Injectable()
@@ -68,13 +69,21 @@ export class OidcClientIssuerService {
     return new this.IssuerProxy(idpMetadata.issuer);
   }
 
+  private async getClientClass(): Promise<OidcClientClass> {
+    const { fapi } = await this.config.get();
+    const clientClass = fapi ? OidcClientClass.FAPI : OidcClientClass.STANDARD;
+
+    return clientClass;
+  }
+
   public async getClient(issuerId: string): Promise<Client> {
     const idpMetadata = await this.getIdpMetadata(issuerId);
 
     const issuer = await this.getIssuer(issuerId);
     const { jwks, httpOptions } = await this.config.get();
+    const clientClass = await this.getClientClass();
 
-    const client = new issuer.Client(idpMetadata.client, jwks);
+    const client = new issuer[clientClass](idpMetadata.client, jwks);
 
     client[custom.http_options] = this.getHttpOptions.bind(this, httpOptions);
     return client;
