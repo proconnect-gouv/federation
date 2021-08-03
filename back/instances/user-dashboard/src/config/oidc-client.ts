@@ -16,4 +16,11 @@ export default {
     keys: [JSON.parse(process.env.JWKS)],
   },
   stateLength: 32,
+  // Toogle Financial Grade API
+
+  /**
+   * @TODO migrate User Dashboard to ConfigParser
+   * This must be done while giving US its own stack.
+   */
+  fapi: false,
 } as OidcClientConfig;
