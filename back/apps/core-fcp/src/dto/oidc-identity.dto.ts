@@ -3,7 +3,6 @@
 // Declarative code
 import { Expose, Type } from 'class-transformer';
 import {
-  IsAscii,
   IsEmail,
   IsEnum,
   IsObject,
