@@ -1,4 +1,4 @@
-# Library Session
+# Library eIDAS OIDC mapper
 
 ## Objective
 
