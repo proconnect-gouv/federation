@@ -26,6 +26,10 @@ class ConnectionWorkflow {
     this.serviceProvider = serviceProvider;
   }
 
+  /**
+   * Navigate to the service provider and setup the ServiceProviderPage
+   * @returns l'instance de ConnectionWorkflow
+   */
   init(): ConnectionWorkflow {
     navigateTo({
       appId: this.serviceProvider.name,
@@ -35,16 +39,30 @@ class ConnectionWorkflow {
     return this;
   }
 
+  /**
+   * Set the scopes based on the scope context
+   * @param {ScopeContext} scopeContext scope context to be used by the Workflow
+   * @returns the current ConnectionWorkflow instance
+   */
   withScope(scopeContext: ScopeContext): ConnectionWorkflow {
     this.serviceProviderPage.setMockRequestedScope(scopeContext);
     return this;
   }
 
+  /**
+   * Start the connection clicking on the FranceConnect button
+   * @returns the current ConnectionWorkflow instance
+   */
   start(): ConnectionWorkflow {
     this.serviceProviderPage.fcButton.click();
     return this;
   }
 
+  /**
+   * Select the identity provider in the identity providers list
+   * @param {IdentityProvider} identityProvider the identity provider to select
+   * @returns the current ConnectionWorkflow instance
+   */
   selectIdentityProvider(
     identityProvider: IdentityProvider,
   ): ConnectionWorkflow {
@@ -55,6 +73,11 @@ class ConnectionWorkflow {
     return this;
   }
 
+  /**
+   * Log the user in on the identity provider page
+   * @param {User} user user with its credentials
+   * @returns the current ConnectionWorkflow instance
+   */
   login(user: User): ConnectionWorkflow {
     const identityProviderPage = new IdentityProviderPage(
       this.identityProvider,
@@ -67,17 +90,27 @@ class ConnectionWorkflow {
     return this;
   }
 
+  /**
+   * Check that the technical error page is displayed
+   */
   checkError(): void {
     const technicalErrorPage = new TechnicalErrorPage();
     technicalErrorPage.checkIsVisible();
   }
 
+  /**
+   * Accept the sharing of the user information to the service provider
+   * @returns the current ConnectionWorkflow instance
+   */
   consent(): ConnectionWorkflow {
     const infoConsent = new InfoConsentPage();
     infoConsent.consentButton.click();
     return this;
   }
 
+  /**
+   * Check that the user is connected on the service provider page
+   */
   checkConnected(): void {
     this.serviceProviderPage.checkIsUserConnected();
   }
