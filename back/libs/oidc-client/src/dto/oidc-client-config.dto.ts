@@ -10,6 +10,7 @@ import {
   Min,
   IsString,
   MinLength,
+  IsBoolean,
 } from 'class-validator';
 /**
  * @TODO update Jose version to 3.X
@@ -70,4 +71,7 @@ export class OidcClientConfig {
   @IsString()
   @IsOptional()
   readonly claims?: string;
+
+  @IsBoolean()
+  readonly fapi: boolean;
 }
