@@ -88,11 +88,7 @@ When("l'usager peut se connecter à FranceConnect", function () {
   expect(this.serviceProvider).to.exist;
   expect(this.identityProvider).to.exist;
   expect(this.user).to.exist;
-  const connectionWorkflow = new ConnectionWorkflow(
-    this.env,
-    this.serviceProvider,
-  );
-  connectionWorkflow
+  new ConnectionWorkflow(this.env, this.serviceProvider)
     .init()
     .withScope(getDefaultScope(this.scopes))
     .start()
@@ -107,11 +103,7 @@ When("l'usager ne peut pas se connecter à FranceConnect", function () {
   expect(this.serviceProvider).to.exist;
   expect(this.identityProvider).to.exist;
   expect(this.user).to.exist;
-  const connectionWorkflow = new ConnectionWorkflow(
-    this.env,
-    this.serviceProvider,
-  );
-  connectionWorkflow
+  new ConnectionWorkflow(this.env, this.serviceProvider)
     .init()
     .withScope(getDefaultScope(this.scopes))
     .start()
