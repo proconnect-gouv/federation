@@ -1,5 +1,6 @@
 import { Given } from 'cypress-cucumber-preprocessor/steps';
 
+import { getScopeByType } from '../../usager/helpers';
 import { getServiceProviderByDescription } from '../helpers';
 
 Given("j'utilise le fournisseur de service {string}", function (description) {
@@ -9,7 +10,7 @@ Given("j'utilise le fournisseur de service {string}", function (description) {
 Given(
   /le fournisseur de service requiert l'accès aux informations (?:du|des) scopes? "([^"]+)"/,
   function (type) {
-    const scope = this.scopes.find((scope) => scope.type === type);
+    const scope = getScopeByType(this.scopes, type);
     cy.wrap(scope).as('requestedScope');
   },
 );
