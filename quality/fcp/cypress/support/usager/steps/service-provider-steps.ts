@@ -6,6 +6,7 @@ import {
   navigateTo,
 } from '../../common/helpers';
 import { ServiceProvider } from '../../common/types';
+import { getScopeByType } from '../helpers';
 import ServiceProviderPage from '../pages/service-provider-page';
 
 let serviceProviderPage: ServiceProviderPage;
@@ -47,7 +48,7 @@ Then(
   /le fournisseur de service a accès aux informations (?:du|des) scopes? "([^"]+)"/,
   function (type) {
     if (this.serviceProvider.mocked === true) {
-      const scope = this.scopes.find((scope) => scope.type === type);
+      const scope = getScopeByType(this.scopes, type);
       serviceProviderPage.checkMockInformationAccess(scope, this.user.claims);
     }
   },
