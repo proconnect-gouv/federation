@@ -7,19 +7,19 @@
     "credentials": [
       {
         "idpId": "default",
-        "username": "avec_nom_dusage",
+        "username": "bdd_default",
         "password": "123"
       }
     ],
     "claims": {
-      "gender": "male",
-      "given_name": "Pierre",
-      "family_name": "MERCIER",
-      "preferred_username": "DUBOIS",
-      "birthdate": "1969-03-17",
-      "birthplace": "95277",
+      "gender": "female",
+      "given_name": "Jeanne",
+      "family_name": "DURAND",
+      "preferred_username": "MARTIN",
+      "birthdate": "1962-08-24",
+      "birthplace": "75107",
       "birthcountry": "99100",
-      "email": "ymmyffarapp-1777@yopmail.com"
+      "email": "x1_bdd_default@yopmail.com"
     }
   }
 ]
