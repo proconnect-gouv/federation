@@ -11,3 +11,6 @@ nom_prénom_long,DELALALALANDE,,Emmanuel Alexandre Nicolas,male,holisadduppe-596
 sans_nom_naissance,,,Anne-Laure Angélique,female,nepocajapp-8174@yopmail.com,123456789,1992-08-12,75103,99100,France,75107,Paris,20 avenue de Ségur
 moins_18_ans,CHAMPION,,Alice Juliette,female,tonegellaf-0100@yopmail.com,123456789,2003-11-02,44109,99100,France,75107,Paris,20 avenue de Ségur
 naissance_Algérie,MARTIN,,Vincent Guillaume,male,senossammab-2430@yopmail.com,123456789,1963-12-05,,99352,France,75107,Paris,20 avenue de Ségur
+bdd_default,DURAND,MARTIN,Jeanne,female,x1_bdd_default@yopmail.com,,1962-08-24,75107,99100,,,,
+bdd_last_connection,DULAC,,Angela Claire Louise,female,x1_bdd_last_connection@yopmail.com,,1962-08-24,75107,99100,,,,
+bdd_enable_disable,DUPOND,,François,male,x1_bdd_enable_disable@yopmail.com,,1962-08-24,75107,99100,,,,
