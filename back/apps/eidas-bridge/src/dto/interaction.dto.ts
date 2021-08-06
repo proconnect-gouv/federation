@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsString, Length, IsAscii } from 'class-validator';
+import { IsAscii, IsString, Length } from 'class-validator';
 
 export class Interaction {
   @IsString()

@@ -1,15 +1,19 @@
-import { mocked } from 'ts-jest/utils';
-import { Test, TestingModule } from '@nestjs/testing';
 import { CryptographyService } from '@fc/cryptography';
-import { OidcClientService } from '@fc/oidc-client';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
-import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
-import { AcrValues } from '@fc/oidc';
-import { EidasAttributes } from '@fc/eidas';
+
+import { mocked } from 'ts-jest/utils';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { validateDto } from '@fc/common';
-import { EidasBridgeInvalidIdentityException } from '../exceptions';
+import { EidasAttributes } from '@fc/eidas';
+import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
+import { LoggerService } from '@fc/logger';
+import { AcrValues } from '@fc/oidc';
+import { OidcClientService } from '@fc/oidc-client';
+import { SessionService } from '@fc/session';
+
 import { EidasBridgeIdentityDto } from '../dto';
+import { EidasBridgeInvalidIdentityException } from '../exceptions';
 import { FrIdentityToEuController } from './fr-identity-to-eu.controller';
 
 jest.mock('@fc/common', () => ({

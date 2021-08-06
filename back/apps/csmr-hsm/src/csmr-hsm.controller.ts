@@ -1,13 +1,15 @@
 import { Controller, UsePipes, ValidationPipe } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { LoggerService } from '@fc/logger';
+
 import { ConfigService } from '@fc/config';
-import { RabbitmqConfig } from '@fc/rabbitmq';
 import { ValidationException } from '@fc/exceptions';
-import { CryptoProtocol } from '@fc/microservices';
 import { HsmService } from '@fc/hsm';
-import { SignPayloadDto, RandomPayloadDto } from './dto';
-import { CsmrHsmSignException, CsmrHsmRandomException } from './exceptions';
+import { LoggerService } from '@fc/logger';
+import { CryptoProtocol } from '@fc/microservices';
+import { RabbitmqConfig } from '@fc/rabbitmq';
+
+import { RandomPayloadDto, SignPayloadDto } from './dto';
+import { CsmrHsmRandomException, CsmrHsmSignException } from './exceptions';
 
 const BROKER_NAME = 'CryptographyBroker';
 

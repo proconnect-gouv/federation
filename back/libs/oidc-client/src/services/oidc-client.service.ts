@@ -1,15 +1,18 @@
-import { TokenSet } from 'openid-client';
 import { ValidatorOptions } from 'class-validator';
+import { TokenSet } from 'openid-client';
+
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
+
 import { validateDto } from '@fc/common';
-import { IEventContext, TrackingService } from '@fc/tracking';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
-import { OidcClientUtilsService } from './oidc-client-utils.service';
-import { OidcClientTokenEvent, OidcClientUserinfoEvent } from '../events';
+import { IEventContext, TrackingService } from '@fc/tracking';
+
 import { MinIdentityDto, TokenResultDto } from '../dto';
-import { TokenParams, TokenResults, UserInfosParams } from '../interfaces';
+import { OidcClientTokenEvent, OidcClientUserinfoEvent } from '../events';
 import { OidcClientUserinfosFailedException } from '../exceptions';
+import { TokenParams, TokenResults, UserInfosParams } from '../interfaces';
+import { OidcClientUtilsService } from './oidc-client-utils.service';
 
 const DTO_OPTIONS: ValidatorOptions = {
   whitelist: true,

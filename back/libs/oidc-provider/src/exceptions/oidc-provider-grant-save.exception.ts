@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { OidcProviderBaseException } from './oidc-provider-base.exception';
+
 import { ErrorCode } from '../enums';
+import { OidcProviderBaseException } from './oidc-provider-base.exception';
 
 @Description('Problème de sauvegarde du grant. Contacter le support N3')
 export class OidcProviderGrantSaveException extends OidcProviderBaseException {

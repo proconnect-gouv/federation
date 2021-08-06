@@ -2,12 +2,13 @@
 
 // Declarative code
 import { UserDashboardConfig } from '@fc/user-dashboard';
+
+import App from './app';
 import IdentityProviderAdapterEnvConfig from './identity-provider-adapter-env';
-import Redis from './redis';
 import Logger from './logger';
 import OidcClient from './oidc-client';
+import Redis from './redis';
 import Session from './session';
-import App from './app';
 
 export default {
   App,

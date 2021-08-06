@@ -2,6 +2,7 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
+
 import { ErrorCode } from '../enums';
 import { OidcProviderBaseException } from './oidc-provider-base.exception';
 

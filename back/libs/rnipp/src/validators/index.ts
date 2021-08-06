@@ -1,2 +1,2 @@
-export * from './is-rnipp-birthdate.validator';
 export * from './is-cog.validator';
+export * from './is-rnipp-birthdate.validator';

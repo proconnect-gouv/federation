@@ -2,6 +2,7 @@
 
 // Declarative code
 import { Module } from '@nestjs/common';
+
 import { HsmService } from './hsm.service';
 
 @Module({

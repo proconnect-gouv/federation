@@ -2,6 +2,7 @@
 
 // Declarative code
 import { Module } from '@nestjs/common';
+
 import { EidasToOidcService, OidcToEidasService } from './services';
 
 @Module({

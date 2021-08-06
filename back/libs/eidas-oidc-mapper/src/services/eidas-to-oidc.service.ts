@@ -1,3 +1,5 @@
+import { Injectable } from '@nestjs/common';
+
 import {
   EidasAttributes,
   EidasRequest,
@@ -5,11 +7,11 @@ import {
   EidasResponseAttributes,
 } from '@fc/eidas';
 import { IOidcIdentity, OidcError } from '@fc/oidc';
-import { Injectable } from '@nestjs/common';
+
 import {
-  RequestedAttributesToScopesMap,
   AttributesToClaimsMap,
   LevelOfAssurancesToAcrValueMap,
+  RequestedAttributesToScopesMap,
 } from '../mappers';
 
 @Injectable()

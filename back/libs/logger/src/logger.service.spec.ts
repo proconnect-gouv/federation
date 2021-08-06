@@ -1,10 +1,12 @@
 import * as os from 'os';
 import * as uuid from 'uuid';
+
 import { ConfigService } from '@fc/config';
-import { LoggerService } from './logger.service';
+
 import { LoggerLevelNames } from './enum';
 import { ILoggerColorParams } from './interfaces';
 import { nestLevelsMap } from './log-maps.map';
+import { LoggerService } from './logger.service';
 import * as utils from './utils';
 
 jest.mock('os');

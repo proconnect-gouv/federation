@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+
 import { difference, intersection, union, unique } from '@fc/common';
 
 const MAPPING_ALIAS_SCOPES = {

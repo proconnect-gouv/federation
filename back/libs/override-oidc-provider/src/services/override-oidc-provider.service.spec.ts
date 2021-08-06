@@ -1,11 +1,14 @@
-import { mocked } from 'ts-jest/utils';
-import * as OidcProviderInstance from 'oidc-provider/lib/helpers/weak_cache';
 import * as KeyStore from 'oidc-provider/lib/helpers/keystore.js';
+import * as OidcProviderInstance from 'oidc-provider/lib/helpers/weak_cache';
+import { mocked } from 'ts-jest/utils';
+
 import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
+
 import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
+
 import { OverrideOidcProviderService } from './override-oidc-provider.service';
 
 jest.mock('oidc-provider/lib/helpers/keystore.js');

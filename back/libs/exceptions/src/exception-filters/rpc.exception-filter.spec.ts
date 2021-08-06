@@ -1,6 +1,7 @@
 import { LoggerService } from '@fc/logger';
-import { RpcExceptionFilter } from './rpc.exception-filter';
+
 import { RpcException } from '../exceptions';
+import { RpcExceptionFilter } from './rpc.exception-filter';
 
 describe('RpcExceptionFilter', () => {
   let exceptionFilter: RpcExceptionFilter;

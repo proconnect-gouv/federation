@@ -1,17 +1,17 @@
 /* istanbul ignore file */
 
 // Declarative code
-export * from './session.module';
-export * from './services';
+export { Session } from './decorators';
 export { SessionConfig } from './dto';
 export {
-  ISessionService,
-  ISessionBoundContext,
-  ISessionCookieOptions,
-} from './interfaces';
-export { Session } from './decorators';
-export {
-  SessionNotFoundException,
   SessionInvalidCsrfConsentException,
   SessionInvalidCsrfSelectIdpException,
+  SessionNotFoundException,
 } from './exceptions';
+export {
+  ISessionBoundContext,
+  ISessionCookieOptions,
+  ISessionService,
+} from './interfaces';
+export * from './services';
+export * from './session.module';

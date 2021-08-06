@@ -1,4 +1,5 @@
 import { Loggable } from './loggable.decorator';
+
 describe('Loggable', () => {
   describe('isLoggable', () => {
     it('should log true by default', () => {

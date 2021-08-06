@@ -1,4 +1,5 @@
 import { ConfigService } from '@fc/config';
+
 import { buildConnectionString, buildFactoryParams } from './mongoose.provider';
 
 describe('mongooseProvider', () => {

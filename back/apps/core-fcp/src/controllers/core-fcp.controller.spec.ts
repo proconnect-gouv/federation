@@ -1,33 +1,36 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { OidcProviderService } from '@fc/oidc-provider';
-import {
-  SessionService,
-  SessionCsrfService,
-  SessionNotFoundException,
-  SessionInvalidCsrfConsentException,
-} from '@fc/session';
-import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
-import { NotificationsService } from '@fc/notifications';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
-import { OidcClientService } from '@fc/oidc-client';
-import { TrackingService } from '@fc/tracking';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
+import { NotificationsService } from '@fc/notifications';
 import { OidcSession } from '@fc/oidc';
-import { CoreFcpController } from './core-fcp.controller';
-import { CoreFcpService } from '../services/core-fcp.service';
-import { ProcessCore } from '../enums';
+import { OidcClientService } from '@fc/oidc-client';
+import { OidcProviderService } from '@fc/oidc-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
-  CoreFcpInvalidEventClassException,
-  CoreFcpInvalidIdentityException,
-} from '../exceptions';
+  SessionCsrfService,
+  SessionInvalidCsrfConsentException,
+  SessionNotFoundException,
+  SessionService,
+} from '@fc/session';
+import { TrackingService } from '@fc/tracking';
+
+import { ProcessCore } from '../enums';
 import {
   CoreFcpDatatransferConsentIdentityEvent,
   CoreFcpDatatransferInformationAnonymousEvent,
   CoreFcpDatatransferInformationIdentityEvent,
 } from '../events';
+import {
+  CoreFcpInvalidEventClassException,
+  CoreFcpInvalidIdentityException,
+} from '../exceptions';
+import { CoreFcpService } from '../services/core-fcp.service';
+import { CoreFcpController } from './core-fcp.controller';
 
 describe('CoreFcpController', () => {
   let coreController: CoreFcpController;

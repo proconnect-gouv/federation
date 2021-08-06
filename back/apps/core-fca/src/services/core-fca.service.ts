@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
-import { LoggerService } from '@fc/logger';
-import { ISessionService } from '@fc/session';
-import { OidcClientSession } from '@fc/oidc-client';
+
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
+import { OidcClientSession } from '@fc/oidc-client';
+import { ISessionService } from '@fc/session';
 
 @Injectable()
 export class CoreFcaService {

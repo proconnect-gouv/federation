@@ -1,6 +1,8 @@
-import { IsSafeString } from '@fc/common';
 import { Expose } from 'class-transformer';
 import { IsAscii, IsOptional, MaxLength, MinLength } from 'class-validator';
+
+import { IsSafeString } from '@fc/common';
+
 import { MandatoryIdentityDto } from './mandatory-identity.dto';
 
 export class OidcIdentityDto extends MandatoryIdentityDto {

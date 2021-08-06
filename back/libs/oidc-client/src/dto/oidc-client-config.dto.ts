@@ -1,16 +1,17 @@
 /* istanbul ignore file */
 
 // Declarative code
+import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsNumber,
   IsObject,
-  ValidateNested,
   IsOptional,
-  Min,
   IsString,
+  Min,
   MinLength,
-  IsBoolean,
+  ValidateNested,
 } from 'class-validator';
 /**
  * @TODO update Jose version to 3.X
@@ -19,7 +20,7 @@ import {
  * need to remove this hack in the package.json
  */
 import { JSONWebKeySet } from 'jose-openid-client';
-import { Type } from 'class-transformer';
+
 import { IdentityProviderMetadata } from '@fc/oidc';
 
 class HttpOptions {

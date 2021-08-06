@@ -1,14 +1,17 @@
-import { PassThrough } from 'stream';
 import { CsvParserStream, parseFile, Row } from '@fast-csv/parse';
+import { PassThrough } from 'stream';
 import { mocked } from 'ts-jest/utils';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
+import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
 import { ISessionBoundContext, SessionService } from '@fc/session';
-import { OidcProviderService } from '@fc/oidc-provider';
+
 import { MockIdentityProviderService } from './mock-identity-provider.service';
-import { ConfigService } from '@fc/config';
 
 jest.mock('@fast-csv/parse');
 

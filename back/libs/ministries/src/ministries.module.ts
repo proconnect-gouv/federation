@@ -1,11 +1,12 @@
 /* istanbul ignore file */
 
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { CqrsModule } from '@nestjs/cqrs';
-import { MinistriesSchema } from './schemas';
-import { MinistriesService } from './ministries.service';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { MinistriesOperationTypeChangesHandler } from './handler';
+import { MinistriesService } from './ministries.service';
+import { MinistriesSchema } from './schemas';
 
 @Module({
   imports: [

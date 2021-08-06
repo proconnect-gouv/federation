@@ -1,5 +1,6 @@
-import { ModuleMetadata } from '@nestjs/common/interfaces';
 import * as Redis from 'ioredis';
+
+import { ModuleMetadata } from '@nestjs/common/interfaces';
 
 export type Redis = Redis.Redis;
 

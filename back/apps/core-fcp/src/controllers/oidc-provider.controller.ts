@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   Next,
@@ -6,10 +7,11 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
-  Body,
 } from '@nestjs/common';
+
 import { LoggerService } from '@fc/logger';
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
+
 import { AuthorizeParamsDto } from '../dto';
 
 @Controller()

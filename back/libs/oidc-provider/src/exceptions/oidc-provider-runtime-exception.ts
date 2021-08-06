@@ -1,6 +1,7 @@
-import { OidcProviderBaseException } from './oidc-provider-base.exception';
-import { ErrorCode } from '../enums';
 import { errors as RuntimeErrors } from 'oidc-provider';
+
+import { ErrorCode } from '../enums';
+import { OidcProviderBaseException } from './oidc-provider-base.exception';
 
 /**
  * Mapping between oidc-provider error classes

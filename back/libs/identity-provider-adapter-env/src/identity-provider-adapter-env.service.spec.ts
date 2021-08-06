@@ -1,8 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
+
 import { IdentityProviderAdapterEnvService } from './identity-provider-adapter-env.service';
 
 describe('IdentityProviderAdapterEnvService', () => {

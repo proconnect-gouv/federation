@@ -1,15 +1,16 @@
+import { plainToClass } from 'class-transformer';
 import {
-  ValidatorOptions,
-  isString,
   isObject,
+  isString,
   validateSync,
+  ValidatorOptions,
 } from 'class-validator';
 import * as deepFreeze from 'deep-freeze';
-import { plainToClass } from 'class-transformer';
+
 import { Injectable } from '@nestjs/common';
-import { IConfigOptions } from './interfaces';
 
 import { UnknownConfigurationNameError } from './errors';
+import { IConfigOptions } from './interfaces';
 
 export const validationOptions: ValidatorOptions = {
   skipMissingProperties: false,

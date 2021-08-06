@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Description } from '@fc/exceptions';
 import { CoreBaseException, ErrorCode } from '@fc/core';
+import { Description } from '@fc/exceptions';
 /**
  * @todo do not extend class from @fc/core, use a specific BaseException instead
  * This might be done while removing @fc/core altogether in favor of a light code duplication

@@ -1,7 +1,8 @@
 import { DynamicModule, Module } from '@nestjs/common';
-import { MockIdentityProviderModule } from '@fc/mock-identity-provider';
+
 import { ConfigModule, ConfigService } from '@fc/config';
 import { LoggerModule } from '@fc/logger';
+import { MockIdentityProviderModule } from '@fc/mock-identity-provider';
 
 @Module({})
 export class AppModule {

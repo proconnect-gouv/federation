@@ -1,5 +1,6 @@
-import { Module, HttpModule } from '@nestjs/common';
-import { RnippService, RnippResponseParserService } from './services';
+import { HttpModule, Module } from '@nestjs/common';
+
+import { RnippResponseParserService, RnippService } from './services';
 
 @Module({
   imports: [HttpModule],

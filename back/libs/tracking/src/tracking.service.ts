@@ -1,13 +1,15 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
+
 import { LoggerService } from '@fc/logger';
+
+import { APP_TRACKING_SERVICE } from './app-tracking-service.token';
 import {
+  IAppTrackingService,
   IEvent,
   IEventContext,
   IEventMap,
-  IAppTrackingService,
 } from './interfaces';
-import { APP_TRACKING_SERVICE } from './app-tracking-service.token';
 
 @Injectable()
 export class TrackingService {

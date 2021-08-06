@@ -1,5 +1,6 @@
 import { LoggerService } from '@fc/logger';
-import { Transport, MailOptions } from '../interfaces';
+
+import { MailOptions, Transport } from '../interfaces';
 
 export class StdoutTransport implements Transport {
   constructor(private readonly logger: LoggerService) {}

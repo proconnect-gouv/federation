@@ -2,10 +2,11 @@
 
 // Tested by DTO
 import { CsmrTracksConfig } from '@fc/csmr-tracks';
-import Logger from './logger';
-import TracksBroker from './tracks-broker';
+
 import Elasticsearch from './elasticsearch';
+import Logger from './logger';
 import Mongoose from './mongoose';
+import TracksBroker from './tracks-broker';
 
 export default {
   Logger,

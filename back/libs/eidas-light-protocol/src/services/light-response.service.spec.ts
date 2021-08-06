@@ -1,14 +1,17 @@
 import * as _ from 'lodash';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
+
 import {
-  successFullJsonMock,
   lightResponseSuccessFullXmlMock,
+  successFullJsonMock,
 } from '../../fixtures';
 import { EidasJsonToXmlException } from '../exceptions';
-import { LightResponseService } from './light-response.service';
 import { LightProtocolCommonsService } from './light-protocol-commons.service';
 import { LightProtocolXmlService } from './light-protocol-xml.service';
+import { LightResponseService } from './light-response.service';
 
 describe('LightResponseService', () => {
   let service: LightResponseService;

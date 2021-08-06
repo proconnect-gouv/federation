@@ -1,4 +1,5 @@
 import { Trackable } from './trackable.decorator';
+
 describe('Trackable', () => {
   describe('isTrackable', () => {
     it('should log true by default', () => {

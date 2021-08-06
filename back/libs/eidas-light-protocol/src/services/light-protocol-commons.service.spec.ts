@@ -1,11 +1,15 @@
-import { mocked } from 'ts-jest/utils';
 import * as crypto from 'crypto';
+
 import * as moment from 'moment';
+import { mocked } from 'ts-jest/utils';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
+
 import {
-  EidasOversizedTokenException,
   EidasInvalidTokenChecksumException,
+  EidasOversizedTokenException,
 } from '../exceptions';
 import { LightProtocolCommonsService } from './light-protocol-commons.service';
 

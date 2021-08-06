@@ -12,10 +12,11 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
+
+import { IsSafeString } from '@fc/common';
 import { MinIdentityDto } from '@fc/oidc-client';
 import { Genders } from '@fc/rnipp';
 import { IsCog } from '@fc/rnipp/validators';
-import { IsSafeString } from '@fc/common';
 
 const COG_FRANCE = '99100';
 

@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
 import { CryptographyService } from '@fc/cryptography';
+
+import { Injectable } from '@nestjs/common';
+
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import { ISessionService } from '@fc/session';
 import { OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
+import { ISessionService } from '@fc/session';
 
 /**
  * @todo Pouvoir utiliser une fonctionnalité anti-CSRF simplement et en évitant de dupliquer du code et les tests liés.
