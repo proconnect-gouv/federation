@@ -1,4 +1,4 @@
-import { IsArray, IsIn, IsOptional, IsString, IsNumber } from 'class-validator';
+import { IsArray, IsIn, IsNumber, IsOptional, IsString } from 'class-validator';
 
 /**
  * Options for NestJs's RabbitMQ module

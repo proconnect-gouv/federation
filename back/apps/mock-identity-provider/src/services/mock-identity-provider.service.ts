@@ -1,6 +1,9 @@
 import { parseFile, ParserOptionsArgs } from '@fast-csv/parse';
 import * as _ from 'lodash';
+
 import { Injectable } from '@nestjs/common';
+
+import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
@@ -8,9 +11,9 @@ import {
   OidcProviderRoutes,
   OidcProviderService,
 } from '@fc/oidc-provider';
-import { ISessionBoundContext, SessionService } from '@fc/session';
-import { ConfigService } from '@fc/config';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
+import { ISessionBoundContext, SessionService } from '@fc/session';
+
 import { AppConfig } from '../dto';
 import { Csv } from '../interfaces';
 import { OidcClaims } from '../interfaces/oidc-claims.interface';

@@ -1,14 +1,15 @@
 import { LoggerService } from '@fc/logger';
-import { Redis } from '@fc/redis';
 import { OidcProviderService } from '@fc/oidc-provider';
-import {
-  OidcProviderRedisAdapter,
-  OIDC_PROVIDER_REDIS_PREFIX,
-} from './oidc-provider-redis.adapter';
+import { Redis } from '@fc/redis';
+
 import {
   OidcProviderParseRedisResponseException,
   OidcProviderStringifyPayloadForRedisException,
 } from '../exceptions';
+import {
+  OIDC_PROVIDER_REDIS_PREFIX,
+  OidcProviderRedisAdapter,
+} from './oidc-provider-redis.adapter';
 
 describe('OidcProviderRedisAdapter', () => {
   let adapter;

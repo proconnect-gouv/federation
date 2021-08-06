@@ -1,21 +1,24 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsObject, IsUrl, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
 import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
+
+import { Type } from 'class-transformer';
+import { IsObject, IsUrl, ValidateNested } from 'class-validator';
+
+import { ApacheIgniteConfig } from '@fc/apache-ignite';
+import { EidasClientConfig } from '@fc/eidas-client';
+import { EidasLightProtocolConfig } from '@fc/eidas-light-protocol';
+import { EidasProviderConfig } from '@fc/eidas-provider';
 import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
-import { ServiceProviderAdapterEnvConfig } from '@fc/service-provider-adapter-env';
 import { LoggerConfig } from '@fc/logger';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { RedisConfig } from '@fc/redis';
+import { ServiceProviderAdapterEnvConfig } from '@fc/service-provider-adapter-env';
 import { SessionConfig } from '@fc/session';
-import { EidasClientConfig } from '@fc/eidas-client';
-import { EidasProviderConfig } from '@fc/eidas-provider';
-import { ApacheIgniteConfig } from '@fc/apache-ignite';
-import { EidasLightProtocolConfig } from '@fc/eidas-light-protocol';
+
 import { AppConfig } from './app-config.dto';
 
 export class Core {

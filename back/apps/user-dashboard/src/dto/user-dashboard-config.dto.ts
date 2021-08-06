@@ -1,14 +1,15 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsObject, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { OidcClientConfig } from '@fc/oidc-client';
-import { RedisConfig } from '@fc/redis';
-import { LoggerConfig } from '@fc/logger';
-import { SessionConfig } from '@fc/session';
+import { IsObject, ValidateNested } from 'class-validator';
+
 import { AppConfig } from '@fc/app';
 import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
+import { LoggerConfig } from '@fc/logger';
+import { OidcClientConfig } from '@fc/oidc-client';
+import { RedisConfig } from '@fc/redis';
+import { SessionConfig } from '@fc/session';
 
 export class UserDashboardConfig {
   @IsObject()

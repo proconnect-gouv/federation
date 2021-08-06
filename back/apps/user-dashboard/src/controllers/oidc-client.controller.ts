@@ -1,12 +1,13 @@
 import {
+  Body,
   Controller,
   Get,
-  Res,
-  Body,
   Post,
-  ValidationPipe,
+  Res,
   UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
+
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import {

@@ -1,11 +1,14 @@
-import * as uuid from 'uuid';
 import { mocked } from 'ts-jest/utils';
-import { Test, TestingModule } from '@nestjs/testing';
+import * as uuid from 'uuid';
+
 import { getModelToken } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { LoggerService } from '@fc/logger';
-import { AccountService } from './account.service';
+
 import { IInteraction } from '../interfaces';
 import { Account } from '../schemas';
+import { AccountService } from './account.service';
 
 jest.mock('uuid');
 

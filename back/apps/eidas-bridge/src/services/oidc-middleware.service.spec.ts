@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
 import { ISessionBoundContext, SessionService } from '@fc/session';
+
 import { OidcMiddlewareService } from './oidc-middleware.service';
 
 describe('MockIdentityProviderFcaService', () => {

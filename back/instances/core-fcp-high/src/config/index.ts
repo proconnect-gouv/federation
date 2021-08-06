@@ -1,22 +1,23 @@
 /* istanbul ignore file */
 
 // Tested by DTO
+import CryptographyBroker from './cryptography-broker';
+import CryptographyEidas from './cryptography-eidas';
+import CryptographyFcp from './cryptography-fcp';
+
 import { CoreFcpHighConfig } from '../dto';
 import App from './app';
+import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
 import Logger from './logger';
-import OidcProvider from './oidc-provider';
-import OidcClient from './oidc-client';
+import Mailer from './mailer';
 import Mongoose from './mongoose';
+import OidcClient from './oidc-client';
+import OidcProvider from './oidc-provider';
+import OverrideOidcProvider from './override-oidc-provider';
 import Redis from './redis';
 import Rnipp from './rnipp';
-import CryptographyBroker from './cryptography-broker';
-import CryptographyFcp from './cryptography-fcp';
-import CryptographyEidas from './cryptography-eidas';
-import Session from './session';
-import OverrideOidcProvider from './override-oidc-provider';
-import Mailer from './mailer';
 import ServiceProviderAdapterMongoConfig from './service-provider-adapter-mongo';
-import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
+import Session from './session';
 
 export default {
   /**

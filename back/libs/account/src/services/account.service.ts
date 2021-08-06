@@ -1,8 +1,11 @@
-import { v4 as uuid } from 'uuid';
 import { Model } from 'mongoose';
+import { v4 as uuid } from 'uuid';
+
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+
 import { LoggerService } from '@fc/logger';
+
 import { IInteraction } from '../interfaces';
 import { Account } from '../schemas';
 

@@ -1,5 +1,6 @@
-import { TrackableEventHandler } from './trackable-event.handler';
 import { TrackingService } from '@fc/tracking';
+
+import { TrackableEventHandler } from './trackable-event.handler';
 
 describe('TrackableEventHandler', () => {
   /**

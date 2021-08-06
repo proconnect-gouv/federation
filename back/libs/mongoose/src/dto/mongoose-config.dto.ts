@@ -1,15 +1,15 @@
 /* istanbul ignore file */
 
 // Declarative code
+import { Type } from 'class-transformer';
 import {
+  IsBoolean,
   IsNotEmpty,
   IsObject,
+  IsOptional,
   IsString,
   ValidateNested,
-  IsBoolean,
-  IsOptional,
 } from 'class-validator';
-import { Type } from 'class-transformer';
 
 export class MongooseConfigOptions {
   @IsString()

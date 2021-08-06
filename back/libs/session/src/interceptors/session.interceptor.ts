@@ -1,15 +1,18 @@
 import { Observable } from 'rxjs';
+
 import {
+  CallHandler,
+  ExecutionContext,
   Injectable,
   NestInterceptor,
-  ExecutionContext,
-  CallHandler,
 } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
+
 import { SessionConfig } from '../dto';
-import { ExcludedRoutes } from '../types';
-import { SessionService } from '../services';
 import { ISessionRequest } from '../interfaces';
+import { SessionService } from '../services';
+import { ExcludedRoutes } from '../types';
 
 @Injectable()
 export class SessionInterceptor implements NestInterceptor {

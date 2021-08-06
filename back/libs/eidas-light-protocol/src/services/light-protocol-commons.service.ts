@@ -1,7 +1,11 @@
 import { createHash } from 'crypto';
+
 import * as moment from 'moment';
+
 import { Injectable } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
+
 import { EidasLightProtocolConfig } from '../dto';
 import {
   EidasInvalidTokenChecksumException,

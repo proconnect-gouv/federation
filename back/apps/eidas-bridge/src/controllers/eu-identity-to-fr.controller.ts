@@ -1,34 +1,37 @@
-import { ValidatorOptions } from 'class-validator';
 import { ClassTransformOptions } from 'class-transformer';
+import { ValidatorOptions } from 'class-validator';
+
 import {
+  Body,
   Controller,
   Get,
-  Render,
+  Post,
   Redirect,
-  Res,
+  Render,
   Req,
+  Res,
   UsePipes,
   ValidationPipe,
-  Post,
-  Body,
 } from '@nestjs/common';
-import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import { OidcProviderService } from '@fc/oidc-provider';
-import { OidcClientSession } from '@fc/oidc-client';
-import { ConfigService } from '@fc/config';
-import { IOidcIdentity, OidcError } from '@fc/oidc';
-import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
-import { ISessionService, Session, SessionService } from '@fc/session';
-import { EidasClientSession } from '@fc/eidas-client';
+
 import { validateDto } from '@fc/common';
-import { EidasBridgeRoutes } from '../enums';
-import {
-  EidasBridgeValidateEuropeanIdentity,
-  EidasBridgeIdentityDto,
-  AppConfig,
-} from '../dto';
-import { EidasBridgeInvalidIdentityException } from '../exceptions';
+import { ConfigService } from '@fc/config';
+import { EidasClientSession } from '@fc/eidas-client';
 import { EidasCountryService } from '@fc/eidas-country';
+import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
+import { IOidcIdentity, OidcError } from '@fc/oidc';
+import { OidcClientSession } from '@fc/oidc-client';
+import { OidcProviderService } from '@fc/oidc-provider';
+import { ISessionService, Session, SessionService } from '@fc/session';
+
+import {
+  AppConfig,
+  EidasBridgeIdentityDto,
+  EidasBridgeValidateEuropeanIdentity,
+} from '../dto';
+import { EidasBridgeRoutes } from '../enums';
+import { EidasBridgeInvalidIdentityException } from '../exceptions';
 
 /**
  * @todo #411 Clean the controller (create a service, generalize code, ...)

@@ -1,7 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CryptographyService } from '@fc/cryptography';
-import { ConfigService } from '@fc/config';
 import { CryptographyFcaService } from './cryptography-fca.service';
+import { CryptographyService } from '@fc/cryptography';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
+
 import { IAgentIdentity } from './interfaces';
 
 describe('CryptographyFcaService', () => {

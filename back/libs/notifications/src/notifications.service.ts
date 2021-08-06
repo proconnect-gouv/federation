@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+
 import { INotifications } from './interfaces';
+
 @Injectable()
 export class NotificationsService {
   constructor(

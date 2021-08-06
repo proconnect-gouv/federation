@@ -3,6 +3,7 @@
 // Declarative code
 import { Expose } from 'class-transformer';
 import { IsEnum, IsOptional, MaxLength, MinLength } from 'class-validator';
+
 import { IsSafeString } from '@fc/common';
 import { EidasGenders } from '@fc/eidas-oidc-mapper';
 import { MinIdentityDto } from '@fc/oidc-client';

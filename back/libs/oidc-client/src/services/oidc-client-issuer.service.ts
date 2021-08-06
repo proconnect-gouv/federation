@@ -1,12 +1,15 @@
-import { Issuer, Client, custom } from 'openid-client';
+import { Client, custom, Issuer } from 'openid-client';
+
 import { Injectable } from '@nestjs/common';
+
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
-import {
-  OidcClientProviderNotFoundException,
-  OidcClientProviderDisabledException,
-} from '../exceptions';
+
 import { OidcClientClass } from '../enums';
+import {
+  OidcClientProviderDisabledException,
+  OidcClientProviderNotFoundException,
+} from '../exceptions';
 import { OidcClientConfigService } from './oidc-client-config.service';
 
 @Injectable()

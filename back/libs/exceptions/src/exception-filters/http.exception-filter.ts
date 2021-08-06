@@ -1,11 +1,12 @@
 import {
-  ExceptionFilter,
-  Catch,
-  HttpException,
   ArgumentsHost,
+  Catch,
+  ExceptionFilter,
+  HttpException,
 } from '@nestjs/common';
-import { FcBaseExceptionFilter } from './fc-base.exception-filter';
+
 import { ExceptionsService } from '../exceptions.service';
+import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
 @Catch(HttpException)
 export class HttpExceptionFilter

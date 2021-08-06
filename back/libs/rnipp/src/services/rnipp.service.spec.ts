@@ -1,24 +1,26 @@
 import { AxiosError } from 'axios';
+
 import { HttpService } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
 import { FcException } from '@fc/exceptions';
-import { RnippResponseCodes, Genders } from '../enums';
+import { LoggerService } from '@fc/logger';
+
+import { Genders, RnippResponseCodes } from '../enums';
 import {
-  RnippHttpStatusException,
-  RnippNotFoundSingleEchoException,
-  RnippNotFoundMultipleEchoException,
-  RnippFoundOnlyWithMaritalNameException,
-  RnippNotFoundNoEchoException,
-  RnippRejectedBadRequestException,
-  RnippDeceasedException,
-  RnippTimeoutException,
   RnippCitizenStatusFormatException,
+  RnippDeceasedException,
+  RnippFoundOnlyWithMaritalNameException,
+  RnippHttpStatusException,
+  RnippNotFoundMultipleEchoException,
+  RnippNotFoundNoEchoException,
+  RnippNotFoundSingleEchoException,
+  RnippRejectedBadRequestException,
+  RnippTimeoutException,
 } from '../exceptions';
-import { RnippResponseParserService } from './rnipp-response-parser.service';
 import { RnippService } from './rnipp.service';
+import { RnippResponseParserService } from './rnipp-response-parser.service';
 
 describe('RnippService', () => {
   let service: RnippService;

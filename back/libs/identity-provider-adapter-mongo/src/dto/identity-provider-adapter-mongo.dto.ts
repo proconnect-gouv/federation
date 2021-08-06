@@ -2,21 +2,23 @@
 
 // Declarative code
 import {
-  IsBoolean,
-  IsString,
   IsArray,
+  IsBoolean,
+  IsIn,
+  IsOptional,
+  IsString,
   IsUrl,
   MinLength,
   NotContains,
-  IsOptional,
   Validate,
-  IsIn,
 } from 'class-validator';
+
 import {
   IFeatureHandlerDatabaseMap,
   IsRegisteredHandler,
 } from '@fc/feature-handler';
 import { ResponseTypes } from '@fc/oidc';
+
 import { JwksUriValidator } from './jwksuri.validator';
 
 export class MetadataIdpAdapterMongoDTO {

@@ -1,11 +1,15 @@
-import * as OidcProviderInstance from 'oidc-provider/lib/helpers/weak_cache';
 import { KeyLike } from 'crypto';
+
 import * as KeyStore from 'oidc-provider/lib/helpers/keystore.js';
-import { ModuleRef } from '@nestjs/core';
+import * as OidcProviderInstance from 'oidc-provider/lib/helpers/weak_cache';
+
 import { Injectable } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
+
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
+
 import { OverrideOidcProviderConfig } from '../dto';
 
 @Injectable()

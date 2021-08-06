@@ -1,8 +1,10 @@
 import { Observable, throwError } from 'rxjs';
-import { ExceptionFilter, Catch } from '@nestjs/common';
+
+import { Catch, ExceptionFilter } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { FcBaseExceptionFilter } from './fc-base.exception-filter';
+
 import { ExceptionsService } from '../exceptions.service';
+import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
 /**
  * Generic RPC exception filter

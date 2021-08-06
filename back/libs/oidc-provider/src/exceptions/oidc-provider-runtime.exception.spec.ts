@@ -1,4 +1,5 @@
 import { errors } from 'oidc-provider';
+
 import { OidcProviderRuntimeException } from './oidc-provider-runtime-exception';
 
 describe('OidcProviderRuntimeException', () => {

@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { OidcClientBaseException } from './oidc-client-base.exception';
+
 import { ErrorCode } from '../enums';
+import { OidcClientBaseException } from './oidc-client-base.exception';
 
 @Description(
   "La requête reçue au retour du FI n'est pas valide (state invalide), recommencer la cinématique depuis le FS. si le problème persiste, contacter le support N3",

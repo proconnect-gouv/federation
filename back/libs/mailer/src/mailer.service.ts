@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+
 import { MailerConfig } from './dto';
-import { MailOptions, Transport } from './interfaces';
-import { MailjetTransport, StdoutTransport } from './transports';
-import { TemplateService } from './template.service';
 import { TemplateNotFoundException } from './exceptions';
+import { MailOptions, Transport } from './interfaces';
+import { TemplateService } from './template.service';
+import { MailjetTransport, StdoutTransport } from './transports';
 
 @Injectable()
 export class MailerService {

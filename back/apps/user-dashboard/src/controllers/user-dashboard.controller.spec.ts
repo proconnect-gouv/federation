@@ -1,10 +1,13 @@
+import { CryptographyService } from '@fc/cryptography';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
-import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { CryptographyService } from '@fc/cryptography';
-import { ConfigService } from '@fc/config';
+
 import {
   UserDashboardTokenRevocationException,
   UserDashboardUserinfoException,

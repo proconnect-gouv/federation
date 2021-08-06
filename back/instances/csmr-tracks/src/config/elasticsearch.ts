@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { ElasticsearchConfig } from '@fc/elasticsearch';
 import { ConfigParser } from '@fc/config';
+import { ElasticsearchConfig } from '@fc/elasticsearch';
 
 const env = new ConfigParser(process.env, 'Elasticsearch');
 

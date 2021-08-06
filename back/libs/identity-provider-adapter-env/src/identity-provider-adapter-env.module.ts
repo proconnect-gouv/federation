@@ -1,8 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Module } from '@nestjs/common';
 import { CryptographyModule } from '@fc/cryptography';
+
+import { Module } from '@nestjs/common';
+
 import { IdentityProviderAdapterEnvService } from './identity-provider-adapter-env.service';
 
 @Module({

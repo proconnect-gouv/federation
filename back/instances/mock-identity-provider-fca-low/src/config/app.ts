@@ -2,8 +2,8 @@
 
 // Tested by DTO
 
-import { AppConfig } from '@fc/mock-identity-provider';
 import { ConfigParser } from '@fc/config';
+import { AppConfig } from '@fc/mock-identity-provider';
 
 const env = new ConfigParser(process.env, 'App');
 

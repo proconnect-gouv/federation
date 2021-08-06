@@ -1,13 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AcrValues, OidcError } from '@fc/oidc';
-import { LoggerService } from '@fc/logger';
-import { OidcToEidasService } from './oidc-to-eidas.service';
+
 import {
   EidasAttributes,
   EidasLevelOfAssurances,
   EidasStatusCodes,
   EidasSubStatusCodes,
 } from '@fc/eidas';
+import { LoggerService } from '@fc/logger';
+import { AcrValues, OidcError } from '@fc/oidc';
+
+import { OidcToEidasService } from './oidc-to-eidas.service';
 
 describe('OidcToEidasService', () => {
   let service: OidcToEidasService;

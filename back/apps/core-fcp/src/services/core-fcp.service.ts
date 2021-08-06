@@ -1,21 +1,23 @@
-import { ModuleRef } from '@nestjs/core';
 import { Injectable } from '@nestjs/common';
-import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import { ISessionService } from '@fc/session';
-import { OidcSession } from '@fc/oidc';
-import { OidcClientSession } from '@fc/oidc-client';
-import { OidcProviderService } from '@fc/oidc-provider';
+import { ModuleRef } from '@nestjs/core';
+
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { ScopesService } from '@fc/scopes';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { CoreFcpSendEmailHandler } from '../handlers';
 import {
   FeatureHandler,
   IFeatureHandler,
   IFeatureHandlerDatabaseMap,
 } from '@fc/feature-handler';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
+import { OidcSession } from '@fc/oidc';
+import { OidcClientSession } from '@fc/oidc-client';
+import { OidcProviderService } from '@fc/oidc-provider';
+import { ScopesService } from '@fc/scopes';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
+import { ISessionService } from '@fc/session';
+
 import { ProcessCore } from '../enums';
+import { CoreFcpSendEmailHandler } from '../handlers';
 import { IVerifyFeatureHandler } from '../interfaces';
 
 export type FcpFeature = {

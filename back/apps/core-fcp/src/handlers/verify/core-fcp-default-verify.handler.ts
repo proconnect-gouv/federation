@@ -1,22 +1,26 @@
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
+
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
-import { TrackingService } from '@fc/tracking';
-import {
-  RnippService,
-  RnippRequestedEvent,
-  RnippReceivedValidEvent,
-} from '@fc/rnipp';
+
 import { CoreService } from '@fc/core';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { RnippPivotIdentity } from '@fc/rnipp';
+import { FeatureHandler } from '@fc/feature-handler';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
-import { FeatureHandler } from '@fc/feature-handler';
-import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import {
-  IVerifyFeatureHandlerHandleArgument,
+  RnippPivotIdentity,
+  RnippReceivedValidEvent,
+  RnippRequestedEvent,
+  RnippService,
+} from '@fc/rnipp';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
+import { TrackingService } from '@fc/tracking';
+
+import {
   IVerifyFeatureHandler,
+  IVerifyFeatureHandlerHandleArgument,
 } from '../../interfaces';
+
 @Injectable()
 @FeatureHandler('core-fcp-default-verify')
 export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {

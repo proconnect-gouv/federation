@@ -2,6 +2,7 @@
 
 // Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
 import { RnippReceivedValidEvent } from '@fc/rnipp';
 import { TrackingHandler } from '@fc/tracking';
 

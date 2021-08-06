@@ -1,8 +1,12 @@
-import { mocked } from 'ts-jest/utils';
 import * as fs from 'fs';
+
 import * as ejs from 'ejs';
-import { OidcSession } from '@fc/oidc';
+import { mocked } from 'ts-jest/utils';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { OidcSession } from '@fc/oidc';
+
 import { TemplateService } from './template.service';
 
 jest.mock('ejs');

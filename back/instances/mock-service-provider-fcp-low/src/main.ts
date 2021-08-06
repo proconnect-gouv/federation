@@ -2,21 +2,25 @@
 
 // Not to be tested
 import { join } from 'path';
-import * as helmet from 'helmet';
+
 import * as CookieParser from 'cookie-parser';
-import { urlencoded } from 'express';
 import { renderFile } from 'ejs';
+import { urlencoded } from 'express';
+import * as helmet from 'helmet';
+
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
-import { LoggerService } from '@fc/logger';
+
 import { ConfigService } from '@fc/config';
-import { SessionConfig } from '@fc/session';
-import { AppModule } from './app.module';
-import config from './config';
+import { LoggerService } from '@fc/logger';
 import {
   AppConfig,
   MockServiceProviderConfig,
 } from '@fc/mock-service-provider';
+import { SessionConfig } from '@fc/session';
+
+import { AppModule } from './app.module';
+import config from './config';
 
 async function bootstrap() {
   const configService = new ConfigService({
@@ -98,8 +102,7 @@ async function bootstrap() {
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, assetsPath, 'public'));
 
-  const { cookieSecrets } =
-    configService.get<SessionConfig>('Session');
+  const { cookieSecrets } = configService.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));
 
   await app.listen(3000);

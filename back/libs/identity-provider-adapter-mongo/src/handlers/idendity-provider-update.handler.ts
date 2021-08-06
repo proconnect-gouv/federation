@@ -1,7 +1,8 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
 import { IdentityProviderUpdateEvent } from '../events';
 import { IdentityProviderAdapterMongoService } from '../identity-provider-adapter-mongo.service';
 

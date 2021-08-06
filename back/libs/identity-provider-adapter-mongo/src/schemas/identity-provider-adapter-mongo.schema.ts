@@ -1,5 +1,7 @@
 import { Document, Schema as SchemaNative } from 'mongoose';
+
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+
 import { IFeatureHandlerDatabaseMap } from '@fc/feature-handler';
 
 @Schema({ strict: true, strictQuery: true, collection: 'provider' })

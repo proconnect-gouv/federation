@@ -1,27 +1,28 @@
-import {
-  OidcProviderMiddlewareStep,
-  OidcProviderRoutes,
-} from '@fc/oidc-provider';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
+
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
+
+import { AccountBlockedException, AccountService } from '@fc/account';
 import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
+import { OidcSession } from '@fc/oidc';
 import {
-  OidcProviderService,
   OidcCtx,
   OidcProviderAuthorizationEvent,
+  OidcProviderMiddlewareStep,
+  OidcProviderRoutes,
+  OidcProviderService,
   OidcProviderTokenEvent,
   OidcProviderUserinfoEvent,
 } from '@fc/oidc-provider';
-import { ISessionBoundContext, SessionService } from '@fc/session';
-import { OidcSession } from '@fc/oidc';
-import { CryptographyFcpService } from '@fc/cryptography-fcp';
-import { AccountService, AccountBlockedException } from '@fc/account';
 import { OidcProviderErrorService } from '@fc/oidc-provider/services/oidc-provider-error.service';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
+import { ISessionBoundContext, SessionService } from '@fc/session';
 import { IEventContext, TrackingService } from '@fc/tracking';
-import { CoreLowAcrException, CoreInvalidAcrException } from '../exceptions';
+
+import { CoreInvalidAcrException, CoreLowAcrException } from '../exceptions';
+import { ComputeIdp, ComputeSp } from '../types';
 import { CoreService } from './core.service';
-import { ComputeSp, ComputeIdp } from '../types';
 
 describe('CoreService', () => {
   let service: CoreService;

@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/mongoose';
-import { validateDto, asyncFilter } from '@fc/common';
-import { validationOptions } from '@fc/config';
 import { EventBus } from '@nestjs/cqrs';
+import { InjectModel } from '@nestjs/mongoose';
+
+import { asyncFilter, validateDto } from '@fc/common';
+import { validationOptions } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+
 import { MinistriesDTO } from './dto';
 import { MinistriesOperationTypeChangesEvent } from './events';
 
