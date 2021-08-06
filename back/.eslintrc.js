@@ -20,7 +20,13 @@ module.exports = {
     project: './*/tsconfig.json',
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint/eslint-plugin', 'simple-import-sort', 'import'],
+  plugins: [
+    '@typescript-eslint/eslint-plugin',
+    'sort-destructure-keys',
+    'sort-keys-fix',
+    'simple-import-sort',
+    'import',
+  ],
   root: true,
   rules: {
     '@typescript-eslint/ban-types': [
@@ -91,5 +97,12 @@ module.exports = {
       },
     ],
     'sort-imports': 'off',
+    'sort-destructure-keys/sort-destructure-keys': 1,
+    'sort-keys': [
+      1,
+      'asc',
+      { caseSensitive: true, minKeys: 2, natural: false },
+    ],
+    'sort-keys-fix/sort-keys-fix': 1,
   },
 };
