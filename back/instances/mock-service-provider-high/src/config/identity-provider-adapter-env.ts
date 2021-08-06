@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
 import { ConfigParser } from '@fc/config';
+import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
 
 const env = new ConfigParser(process.env, 'IdentityProviderAdapterEnv');
 

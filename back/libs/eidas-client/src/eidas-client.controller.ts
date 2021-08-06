@@ -3,21 +3,23 @@ import {
   Controller,
   Get,
   Post,
-  Render,
   Query,
+  Redirect,
+  Render,
   UsePipes,
   ValidationPipe,
-  Redirect,
 } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
-import { EidasClientService } from './eidas-client.service';
+import { ISessionService, Session } from '@fc/session';
+
 import {
-  ReponseHandlerDTO,
   EidasClientConfig,
   EidasClientSession,
   EidasClientValidateEuropeanIdentity,
+  ReponseHandlerDTO,
 } from './dto';
-import { ISessionService, Session } from '@fc/session';
+import { EidasClientService } from './eidas-client.service';
 
 @Controller('eidas-client')
 export class EidasClientController {

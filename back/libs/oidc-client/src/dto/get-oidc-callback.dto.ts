@@ -1,4 +1,4 @@
-import { IsString, IsAscii } from 'class-validator';
+import { IsAscii, IsString } from 'class-validator';
 
 export class GetOidcCallback {
   @IsString()

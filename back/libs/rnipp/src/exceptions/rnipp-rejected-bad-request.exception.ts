@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { RnippBaseException } from './';
+
 import { ErrorCode } from '../enums';
+import { RnippBaseException } from './';
 
 @Description(
   "Erreur de communication avec le RNIPP (demande rejetée par le RNIPP). L'utilisateur doit redémarrer sa cinématique. Si cela persiste, contacter le support N3",

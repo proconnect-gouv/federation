@@ -1,10 +1,11 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsSafeString } from '@fc/common';
-import { MinIdentityDto } from '@fc/oidc-client';
 import { Expose } from 'class-transformer';
 import { IsAscii, IsEmail, MaxLength, MinLength } from 'class-validator';
+
+import { IsSafeString } from '@fc/common';
+import { MinIdentityDto } from '@fc/oidc-client';
 
 export class MandatoryIdentityDto extends MinIdentityDto {
   @IsSafeString()

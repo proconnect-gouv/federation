@@ -1,6 +1,7 @@
 import { Description } from '@fc/exceptions';
-import { MockServiceProviderBaseException } from './mock-service-provider-base.exception';
+
 import { ErrorCode } from '../enums';
+import { MockServiceProviderBaseException } from './mock-service-provider-base.exception';
 
 // declarative code
 // istanbul ignore next line

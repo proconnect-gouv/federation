@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
 import { ConfigParser } from '@fc/config';
+import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
 
 const env = new ConfigParser(process.env, 'AdapterMongo');
 

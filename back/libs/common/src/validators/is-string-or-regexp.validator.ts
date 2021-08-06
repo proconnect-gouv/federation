@@ -1,4 +1,4 @@
-import { ValidationOptions, ValidateBy, isString } from 'class-validator';
+import { isString, ValidateBy, ValidationOptions } from 'class-validator';
 
 export const IS_STRING_OR_REGEXP = 'IsStringOrRegExp';
 

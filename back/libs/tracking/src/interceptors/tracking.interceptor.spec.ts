@@ -1,6 +1,8 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { ExecutionContext } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { LoggerService } from '@fc/logger';
+
 import { IEventMap } from '../interfaces';
 import { TrackingService } from '../tracking.service';
 import { TrackingInterceptor } from './tracking.interceptor';

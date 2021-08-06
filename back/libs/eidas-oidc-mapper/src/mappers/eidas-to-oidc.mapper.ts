@@ -1,10 +1,10 @@
 import _ = require('lodash');
-import { AcrValues, IOidcIdentity } from '@fc/oidc';
 import {
   EidasAttributes,
   EidasLevelOfAssurances,
   EidasResponseAttributes,
 } from '@fc/eidas';
+import { AcrValues, IOidcIdentity } from '@fc/oidc';
 
 export const LevelOfAssurancesToAcrValueMap = {
   [EidasLevelOfAssurances.LOW]: AcrValues.EIDAS1,

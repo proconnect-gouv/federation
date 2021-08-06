@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Description } from '@fc/exceptions';
 import { CoreBaseException, ErrorCode } from '@fc/core';
+import { Description } from '@fc/exceptions';
 
 @Description(
   "La session de l'utilisateur ne contient pas les informations attendes sur l'usager au retour du fournisseur d'identité. L'utilisateur doit redémarrer sa cinématique. Si cela persiste, contacter le support N3",

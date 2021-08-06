@@ -1,17 +1,20 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
-import {
-  RnippService,
-  RnippRequestedEvent,
-  RnippReceivedValidEvent,
-} from '@fc/rnipp';
-import { AccountBlockedException } from '@fc/account';
-import { TrackingService } from '@fc/tracking';
-import { CoreService } from '@fc/core';
-import { ConfigService } from '@fc/config';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { AccountBlockedException } from '@fc/account';
+import { ConfigService } from '@fc/config';
+import { CoreService } from '@fc/core';
+import { LoggerService } from '@fc/logger';
+import {
+  RnippReceivedValidEvent,
+  RnippRequestedEvent,
+  RnippService,
+} from '@fc/rnipp';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
+import { SessionService } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
+
 import { CoreFcpDefaultVerifyHandler } from './core-fcp-default-verify.handler';
 
 describe('CoreFcpDefaultVerifyHandler', () => {

@@ -2,12 +2,13 @@
 
 // Declarative code
 import { MockIdentityProviderConfig } from '@fc/mock-identity-provider';
-import Redis from './redis';
-import Logger from './logger';
-import Session from './session';
-import OidcProvider from './oidc-provider';
+
 import App from './app';
+import Logger from './logger';
+import OidcProvider from './oidc-provider';
+import Redis from './redis';
 import ServiceProviderAdapterEnvConfig from './service-provider-adapter-env';
+import Session from './session';
 
 export default {
   App,

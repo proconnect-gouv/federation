@@ -3,21 +3,21 @@
 // Declarative code
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
   IsEnum,
   IsIP,
   IsObject,
   IsOptional,
   IsString,
-  IsArray,
   MinLength,
   ValidateNested,
 } from 'class-validator';
 
 import {
-  EidasStatusCodes,
-  EidasNameIdFormats,
   EidasLevelOfAssurances,
+  EidasNameIdFormats,
+  EidasStatusCodes,
   EidasSubStatusCodes,
 } from '../enums';
 

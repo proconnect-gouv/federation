@@ -1,8 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { OidcClientService } from '@fc/oidc-client';
+
 import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
+import { SessionService } from '@fc/session';
+
 import { MockIdentityProviderService } from '../services';
 import { MockIdentityProviderController } from './mock-identity-provider.controller';
 

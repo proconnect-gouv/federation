@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
 import { IServiceProviderAdapter, ServiceProviderMetadata } from '@fc/oidc';
+
 import { ServiceProviderAdapterEnvConfig } from './dto';
 
 @Injectable()

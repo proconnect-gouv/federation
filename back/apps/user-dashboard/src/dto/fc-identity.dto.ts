@@ -1,9 +1,6 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsSafeString } from '@fc/common';
-import { MinIdentityDto } from '@fc/oidc-client';
-import { Genders } from '@fc/rnipp';
 import { Type } from 'class-transformer';
 import {
   IsAscii,
@@ -17,6 +14,10 @@ import {
   ValidateIf,
   ValidateNested,
 } from 'class-validator';
+
+import { IsSafeString } from '@fc/common';
+import { MinIdentityDto } from '@fc/oidc-client';
+import { Genders } from '@fc/rnipp';
 
 const COG_FRANCE = '99100';
 

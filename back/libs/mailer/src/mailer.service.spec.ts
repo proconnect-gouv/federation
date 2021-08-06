@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
-import { MailjetTransport, StdoutTransport } from './transports';
+
+import { TemplateNotFoundException } from './exceptions';
 import { MailerService } from './mailer.service';
 import { TemplateService } from './template.service';
-import { TemplateNotFoundException } from './exceptions';
+import { MailjetTransport, StdoutTransport } from './transports';
 
 jest.mock('./transports');
 

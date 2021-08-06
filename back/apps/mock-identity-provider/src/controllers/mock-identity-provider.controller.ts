@@ -2,19 +2,21 @@ import {
   Body,
   Controller,
   Get,
+  Next,
   Post,
   Render,
-  Next,
   Req,
   Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
+
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import { ISessionService, Session, SessionService } from '@fc/session';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
+import { ISessionService, Session, SessionService } from '@fc/session';
+
 import { AppSession, SignInDTO } from '../dto';
 import { MockIdentityProviderRoutes } from '../enums';
 import { MockIdentityProviderService } from '../services';

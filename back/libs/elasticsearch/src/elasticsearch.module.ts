@@ -2,9 +2,12 @@
 
 // Declarative code
 import { ClientOptions } from '@elastic/elasticsearch';
-import { Module, DynamicModule } from '@nestjs/common';
+
+import { DynamicModule, Module } from '@nestjs/common';
 import { ElasticsearchModule as EsModule } from '@nestjs/elasticsearch';
-import { ConfigService, ConfigModule } from '@fc/config';
+
+import { ConfigModule, ConfigService } from '@fc/config';
+
 import { ElasticsearchConfig } from './dto';
 
 export { ElasticsearchService } from '@nestjs/elasticsearch';

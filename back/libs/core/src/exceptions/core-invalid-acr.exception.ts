@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { CoreBaseException } from './core-base.exception';
+
 import { ErrorCode } from '../enums';
+import { CoreBaseException } from './core-base.exception';
 
 @Description(
   `Le niveau eidas demandé par le FS ou renvoyé par le FI n'est pas supporté par la plateforme`,

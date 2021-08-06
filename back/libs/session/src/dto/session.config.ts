@@ -1,19 +1,20 @@
 /* istanbul ignore file */
 
 // declarative code
+import { Type } from 'class-transformer';
 import {
-  IsString,
-  Length,
-  MinLength,
+  IsArray,
   IsBoolean,
   IsIn,
   IsNumber,
-  ValidateNested,
-  IsArray,
   IsPositive,
+  IsString,
+  Length,
   Min,
+  MinLength,
+  ValidateNested,
 } from 'class-validator';
-import { Type } from 'class-transformer';
+
 import { IsStringOrRegExp } from '@fc/common';
 
 export class CookieOptions {

@@ -1,4 +1,5 @@
 import { ConfigService } from '@fc/config';
+
 import { IsValidPromptConstraint } from './prompt.validator';
 
 describe('IsValidPromptConstraint', () => {

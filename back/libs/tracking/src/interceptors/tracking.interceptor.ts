@@ -1,14 +1,17 @@
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
+
 import {
+  CallHandler,
+  ExecutionContext,
   Injectable,
   NestInterceptor,
-  ExecutionContext,
-  CallHandler,
 } from '@nestjs/common';
+
 import { LoggerService } from '@fc/logger';
-import { TrackingService } from '../tracking.service';
+
 import { IEventContext, IEventMap } from '../interfaces';
+import { TrackingService } from '../tracking.service';
 
 @Injectable()
 export class TrackingInterceptor implements NestInterceptor {

@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { RnippBaseException } from './';
+
 import { ErrorCode } from '../enums';
+import { RnippBaseException } from './';
 
 @Description("Erreur technique lors de l'appel RNIPP, contacter le support N3")
 export class RnippCitizenStatusFormatException extends RnippBaseException {

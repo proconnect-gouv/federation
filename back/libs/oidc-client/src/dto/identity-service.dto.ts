@@ -6,6 +6,7 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
+
 import { TokenResults } from '../interfaces';
 
 export class TokenResultDto implements TokenResults {

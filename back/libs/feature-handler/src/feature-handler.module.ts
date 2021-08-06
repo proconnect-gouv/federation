@@ -1,8 +1,8 @@
 /* istanbul ignore file */
-import { FeatureHandlerNoHandler } from './handlers';
-
 // Declarative code
 import { Module } from '@nestjs/common';
+
+import { FeatureHandlerNoHandler } from './handlers';
 
 @Module({
   imports: [],

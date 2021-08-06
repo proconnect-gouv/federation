@@ -1,11 +1,14 @@
-import { pick } from 'lodash';
-import { Injectable } from '@nestjs/common';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
 import { ApiResponse } from '@elastic/elasticsearch';
 import { Search } from '@elastic/elasticsearch/api/requestParams';
-import { ElasticsearchConfig } from '@fc/elasticsearch';
+import { pick } from 'lodash';
+
+import { Injectable } from '@nestjs/common';
+import { ElasticsearchService } from '@nestjs/elasticsearch';
+
 import { ConfigService } from '@fc/config';
+import { ElasticsearchConfig } from '@fc/elasticsearch';
 import { LoggerService } from '@fc/logger';
+
 import { ICsmrTracksInputTrack, ICsmrTracksOutputTrack } from '../interfaces';
 
 /**

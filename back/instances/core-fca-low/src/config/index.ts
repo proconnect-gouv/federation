@@ -1,18 +1,20 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { CoreFcaConfig } from '@fc/core-fca';
-import App from './app';
-import Logger from './logger';
-import OidcProvider from './oidc-provider';
-import OidcClient from './oidc-client';
-import Mongoose from './mongoose';
-import Redis from './redis';
 import CryptographyFca from './cryptography-fca';
-import ServiceProviderAdapterMongoConfig from './service-provider-adapter-mongo';
+
+import { CoreFcaConfig } from '@fc/core-fca';
+
+import App from './app';
 import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
-import Session from './session';
+import Logger from './logger';
+import Mongoose from './mongoose';
+import OidcClient from './oidc-client';
+import OidcProvider from './oidc-provider';
 import OverrideOidcProvider from './override-oidc-provider';
+import Redis from './redis';
+import ServiceProviderAdapterMongoConfig from './service-provider-adapter-mongo';
+import Session from './session';
 
 export default {
   /**

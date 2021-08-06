@@ -1,5 +1,6 @@
-import { ExceptionFilter, Catch } from '@nestjs/common';
-import { ValidationException, FcException } from '../exceptions';
+import { Catch, ExceptionFilter } from '@nestjs/common';
+
+import { FcException, ValidationException } from '../exceptions';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
 
 @Catch(ValidationException)

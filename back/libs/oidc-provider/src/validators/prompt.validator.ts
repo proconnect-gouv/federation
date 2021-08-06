@@ -1,12 +1,15 @@
 import {
-  ValidationOptions,
   ValidateBy,
-  ValidatorConstraint,
   ValidationArguments,
+  ValidationOptions,
+  ValidatorConstraint,
 } from 'class-validator';
+
 import { Inject, Injectable } from '@nestjs/common';
+
 import { ArrayAtLeastOneConstraint } from '@fc/common';
 import { ConfigService } from '@fc/config';
+
 import { OidcProviderConfig } from '../dto';
 import { OidcProviderPrompt } from '../enums';
 

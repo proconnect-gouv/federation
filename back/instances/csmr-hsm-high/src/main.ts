@@ -2,11 +2,13 @@
 
 // Not to be tested
 import { NestFactory } from '@nestjs/core';
-import { Transport, MicroserviceOptions } from '@nestjs/microservices';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+
 import { ConfigService } from '@fc/config';
+import { CsmrHsmConfig } from '@fc/csmr-hsm';
 import { HsmService } from '@fc/hsm';
 import { RabbitmqConfig } from '@fc/rabbitmq';
-import { CsmrHsmConfig } from '@fc/csmr-hsm';
+
 import { AppModule } from './app.module';
 import configuration from './config';
 

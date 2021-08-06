@@ -1,9 +1,10 @@
-import { RabbitmqModule } from './rabbitmq.module';
 import {
   ClientProxy,
   ClientProxyFactory,
   Transport,
 } from '@nestjs/microservices';
+
+import { RabbitmqModule } from './rabbitmq.module';
 
 describe('RabbitmqModule', () => {
   const configServiceMock = {

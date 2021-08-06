@@ -2,15 +2,16 @@
 
 // Declarative code
 import {
-  IsString,
-  IsAscii,
-  MinLength,
-  IsOptional,
-  MaxLength,
   IsArray,
-  IsObject,
+  IsAscii,
   IsJWT,
+  IsObject,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
+
 import { IOidcIdentity } from '../interfaces';
 
 export class OidcSession {

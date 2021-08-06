@@ -1,6 +1,6 @@
 import {
-  getDateTime,
   getClassMethodCaller,
+  getDateTime,
   slugLibName,
 } from './logger-helpers.utils';
 

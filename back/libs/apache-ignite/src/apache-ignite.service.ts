@@ -1,7 +1,10 @@
 import * as IgniteClient from 'apache-ignite-client';
+
 import { Injectable } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+
 import { ApacheIgniteConfig } from './dto';
 
 const { ObjectType, IgniteClientConfiguration, STATE } = IgniteClient;

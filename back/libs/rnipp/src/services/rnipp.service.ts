@@ -1,14 +1,17 @@
-import { AxiosResponse, AxiosError } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
+import { ValidationError } from 'class-validator';
 import { stringify } from 'querystring';
-import { Injectable, HttpService } from '@nestjs/common';
-import { validateDto, getDtoErrors } from '@fc/common';
+
+import { HttpService, Injectable } from '@nestjs/common';
+
+import { getDtoErrors, validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { IPivotIdentity } from '../interfaces';
-import { RnippResponseParserService } from './rnipp-response-parser.service';
-import { RnippResponseCodes, Genders } from '../enums';
-import { RnippConfig, CitizenStatus } from '../dto';
+
+import { CitizenStatus, RnippConfig } from '../dto';
+import { Genders, RnippResponseCodes } from '../enums';
 import {
+  RnippCitizenStatusFormatException,
   RnippDeceasedException,
   RnippFoundOnlyWithMaritalNameException,
   RnippHttpStatusException,
@@ -17,9 +20,9 @@ import {
   RnippNotFoundSingleEchoException,
   RnippRejectedBadRequestException,
   RnippTimeoutException,
-  RnippCitizenStatusFormatException,
 } from '../exceptions';
-import { ValidationError } from 'class-validator';
+import { IPivotIdentity } from '../interfaces';
+import { RnippResponseParserService } from './rnipp-response-parser.service';
 
 @Injectable()
 export class RnippService {

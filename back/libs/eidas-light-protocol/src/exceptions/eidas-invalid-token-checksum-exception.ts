@@ -2,7 +2,9 @@
 
 // declarative code
 import { Description, FcException } from '@fc/exceptions';
+
 import { ErrorCode } from '../enums';
+
 @Description(
   'Problème de connexion entre le bridge eIDAS et le noeud eIDAS; contacter le service technique (La somme de contrôle du LightToken reçu est invalide. Le token a possiblement été altéré.',
 )

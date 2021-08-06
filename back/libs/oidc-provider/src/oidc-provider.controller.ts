@@ -1,17 +1,19 @@
 import {
+  Body,
   Controller,
   Get,
   Next,
   Post,
-  UsePipes,
-  ValidationPipe,
-  Body,
   Req,
   Res,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
+
 import { LoggerService } from '@fc/logger';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ISessionService, Session } from '@fc/session';
+
 import { RevocationTokenParamsDTO } from './dto';
 import { OidcProviderRoutes } from './enums';
 import { OidcProviderService } from './oidc-provider.service';

@@ -1,21 +1,23 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { EidasBridgeConfig } from '@fc/eidas-bridge';
-import App from './app';
 import CryptographyEidas from './cryptography-eidas';
+
+import { EidasBridgeConfig } from '@fc/eidas-bridge';
+
+import ApacheIgnite from './apache-ignite';
+import App from './app';
+import EidasClient from './eidas-client';
+import EidasLightProtocol from './eidas-light-protocol';
+import EidasProvider from './eidas-provider';
 import IdentityProviderAdapterEnvConfig from './identity-provider-adapter-env';
-import ServiceProviderAdapterEnvConfig from './service-provider-adapter-env';
 import Logger from './logger';
 import OidcClient from './oidc-client';
 import OidcProvider from './oidc-provider';
 import OverrideOidcProvider from './override-oidc-provider';
 import Redis from './redis';
+import ServiceProviderAdapterEnvConfig from './service-provider-adapter-env';
 import Session from './session';
-import EidasClient from './eidas-client';
-import EidasProvider from './eidas-provider';
-import ApacheIgnite from './apache-ignite';
-import EidasLightProtocol from './eidas-light-protocol';
 
 export default {
   /**

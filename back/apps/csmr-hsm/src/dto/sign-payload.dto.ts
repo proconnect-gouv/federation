@@ -1,4 +1,5 @@
 import { IsString } from 'class-validator';
+
 import { SignatureDigest } from '../enums';
 
 export class SignPayloadDto {

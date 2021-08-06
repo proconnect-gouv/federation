@@ -2,12 +2,12 @@
 
 // Tested by DTO
 import { parseBoolean } from '@fc/common';
+import { ConfigParser } from '@fc/config';
 import {
   OidcProviderConfig,
-  OidcProviderRoutes,
   OidcProviderPrompt,
+  OidcProviderRoutes,
 } from '@fc/oidc-provider';
-import { ConfigParser } from '@fc/config';
 
 const env = new ConfigParser(process.env, 'OidcProvider');
 

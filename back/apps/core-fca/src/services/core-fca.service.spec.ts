@@ -1,10 +1,12 @@
 import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { CoreService } from '@fc/core';
+import { FeatureHandler } from '@fc/feature-handler';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { CoreService } from '@fc/core';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { FeatureHandler } from '@fc/feature-handler';
+
 import { CoreFcaService } from './core-fca.service';
 
 describe('CoreFcaService', () => {

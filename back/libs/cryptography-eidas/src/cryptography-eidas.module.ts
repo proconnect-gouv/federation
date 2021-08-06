@@ -1,8 +1,9 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Module } from '@nestjs/common';
 import { CryptographyEidasService } from './cryptography-eidas.service';
+
+import { Module } from '@nestjs/common';
 
 @Module({
   providers: [CryptographyEidasService],

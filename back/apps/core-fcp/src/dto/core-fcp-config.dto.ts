@@ -1,22 +1,24 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsObject, IsUrl, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-import { CryptographyFcpConfig } from '@fc/cryptography-fcp';
 import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
+import { CryptographyFcpConfig } from '@fc/cryptography-fcp';
+
+import { Type } from 'class-transformer';
+import { IsObject, IsUrl, ValidateNested } from 'class-validator';
+
+import { AppConfig } from '@fc/app';
+import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
 import { LoggerConfig } from '@fc/logger';
-import { OidcProviderConfig } from '@fc/oidc-provider';
-import { OidcClientConfig } from '@fc/oidc-client';
+import { MailerConfig } from '@fc/mailer';
 import { MongooseConfig } from '@fc/mongoose';
+import { OidcClientConfig } from '@fc/oidc-client';
+import { OidcProviderConfig } from '@fc/oidc-provider';
+import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
 import { RedisConfig } from '@fc/redis';
 import { RnippConfig } from '@fc/rnipp';
 import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
-import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
 import { SessionConfig } from '@fc/session';
-import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
-import { MailerConfig } from '@fc/mailer';
-import { AppConfig } from '@fc/app';
 
 export class Core {
   @IsUrl()

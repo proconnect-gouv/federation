@@ -1,7 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@fc/config';
-import { LoggerService, LoggerLevelNames } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
+
 import { IDENTITY_PROVIDER_SERVICE } from '../tokens';
 import { OidcClientConfigService } from './oidc-client-config.service';
 

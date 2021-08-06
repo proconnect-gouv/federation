@@ -2,6 +2,7 @@
 
 // Tested by DTO
 import { readFileSync } from 'fs';
+
 import { OidcClientConfig } from '@fc/oidc-client';
 
 export default {

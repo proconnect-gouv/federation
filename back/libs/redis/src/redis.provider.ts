@@ -1,8 +1,9 @@
 /* istanbul ignore file */
 
-import { RedisFactoryModule } from './redis.core-module';
 import { ConfigModule, ConfigService } from '@fc/config';
+
 import { RedisConfig } from './dto';
+import { RedisFactoryModule } from './redis.core-module';
 
 const redisProvider = RedisFactoryModule.forRootAsync({
   imports: [ConfigModule],

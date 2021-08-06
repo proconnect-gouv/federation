@@ -1,15 +1,16 @@
 /* istanbul ignore file */
 
 import { DynamicModule, Module, Provider } from '@nestjs/common';
+
 import {
   RedisModuleAsyncOptions,
   RedisModuleOptions,
 } from './interfaces/redis.interfaces';
-import { createRedisConnection } from './redis.utils';
 import {
-  REDIS_MODULE_OPTIONS_TOKEN,
   REDIS_MODULE_CONNECTION_TOKEN,
+  REDIS_MODULE_OPTIONS_TOKEN,
 } from './redis.constants';
+import { createRedisConnection } from './redis.utils';
 
 @Module({})
 export class RedisFactoryModule {

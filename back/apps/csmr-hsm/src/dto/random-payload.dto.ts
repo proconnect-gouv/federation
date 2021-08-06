@@ -1,4 +1,5 @@
-import { Min, Max } from 'class-validator';
+import { Max, Min } from 'class-validator';
+
 import { IsBufferEncoding } from '@fc/common';
 
 export class RandomPayloadDto {

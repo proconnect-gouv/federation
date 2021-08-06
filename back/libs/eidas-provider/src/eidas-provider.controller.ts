@@ -1,10 +1,12 @@
 import { Body, Controller, Get, Post, Redirect, Render } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
 import { ISessionService, Session } from '@fc/session';
+
 import {
-  RequestHandlerDTO,
   EidasProviderConfig,
   EidasProviderSession,
+  RequestHandlerDTO,
 } from './dto';
 import { EidasProviderService } from './eidas-provider.service';
 

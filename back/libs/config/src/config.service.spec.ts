@@ -1,5 +1,7 @@
 import { IsNumber, IsObject } from 'class-validator';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from './config.service';
 import { UnknownConfigurationNameError } from './errors';
 

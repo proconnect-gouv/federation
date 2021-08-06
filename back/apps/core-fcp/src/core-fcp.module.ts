@@ -1,59 +1,62 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Module, Global } from '@nestjs/common';
-import { OidcProviderModule } from '@fc/oidc-provider';
-import { OidcSession } from '@fc/oidc';
-import { SessionModule } from '@fc/session';
-import {
-  ServiceProviderAdapterMongoModule,
-  ServiceProviderAdapterMongoService,
-} from '@fc/service-provider-adapter-mongo';
-import {
-  IdentityProviderAdapterMongoService,
-  IdentityProviderAdapterMongoModule,
-} from '@fc/identity-provider-adapter-mongo';
-import { OidcClientModule } from '@fc/oidc-client';
-import { MongooseModule } from '@fc/mongoose';
-import { CryptographyFcpModule } from '@fc/cryptography-fcp';
 import { CryptographyEidasModule } from '@fc/cryptography-eidas';
-import { ExceptionsModule } from '@fc/exceptions';
-import { RnippModule } from '@fc/rnipp';
+import { CryptographyFcpModule } from '@fc/cryptography-fcp';
+
+import { Global, Module } from '@nestjs/common';
+
 import { AccountModule } from '@fc/account';
-import { HttpProxyModule } from '@fc/http-proxy';
-import { MailerModule } from '@fc/mailer';
-import { TrackingModule } from '@fc/tracking';
-import { NotificationsModule } from '@fc/notifications';
 import {
   CoreService,
   CoreTrackingService,
   OidcClientTokenEventHandler,
-  UserinfoEventHandler,
-  RnippRequestedEventHandler,
-  RnippReceivedValidEventHandler,
   OidcProviderAuthorizationEventHandler,
   OidcProviderTokenEventHandler,
   OidcProviderUserinfoEventHandler,
+  RnippReceivedValidEventHandler,
+  RnippRequestedEventHandler,
   TrackableEventHandler,
+  UserinfoEventHandler,
 } from '@fc/core';
-import { ScopesModule } from '@fc/scopes';
+import { ExceptionsModule } from '@fc/exceptions';
 import { FeatureHandlerModule } from '@fc/feature-handler';
+import { HttpProxyModule } from '@fc/http-proxy';
+import {
+  IdentityProviderAdapterMongoModule,
+  IdentityProviderAdapterMongoService,
+} from '@fc/identity-provider-adapter-mongo';
+import { MailerModule } from '@fc/mailer';
+import { MongooseModule } from '@fc/mongoose';
+import { NotificationsModule } from '@fc/notifications';
+import { OidcSession } from '@fc/oidc';
+import { OidcClientModule } from '@fc/oidc-client';
+import { OidcProviderModule } from '@fc/oidc-provider';
+import { RnippModule } from '@fc/rnipp';
+import { ScopesModule } from '@fc/scopes';
+import {
+  ServiceProviderAdapterMongoModule,
+  ServiceProviderAdapterMongoService,
+} from '@fc/service-provider-adapter-mongo';
+import { SessionModule } from '@fc/session';
+import { TrackingModule } from '@fc/tracking';
+
 import {
   CoreFcpController,
   OidcClientController,
   OidcProviderController,
 } from './controllers';
-import { CoreFcpService } from './services';
 import {
-  CoreFcpEidasVerifyHandler,
-  CoreFcpDefaultVerifyHandler,
-  CoreFcpSendEmailHandler,
-  CoreFcpEidasIdentityCheckHandler,
-  CoreFcpDefaultIdentityCheckHandler,
-  CoreFcpDatatransferInformationIdentityEventHandler,
-  CoreFcpDatatransferInformationAnonymousEventHAndler,
   CoreFcpDatatransferConsentIdentityEventHandler,
+  CoreFcpDatatransferInformationAnonymousEventHAndler,
+  CoreFcpDatatransferInformationIdentityEventHandler,
+  CoreFcpDefaultIdentityCheckHandler,
+  CoreFcpDefaultVerifyHandler,
+  CoreFcpEidasIdentityCheckHandler,
+  CoreFcpEidasVerifyHandler,
+  CoreFcpSendEmailHandler,
 } from './handlers';
+import { CoreFcpService } from './services';
 
 @Global()
 @Module({

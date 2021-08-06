@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { RabbitmqConfig } from '@fc/rabbitmq';
 import { ConfigParser } from '@fc/config';
+import { RabbitmqConfig } from '@fc/rabbitmq';
 
 const env = new ConfigParser(process.env, 'CryptographyBroker');
 

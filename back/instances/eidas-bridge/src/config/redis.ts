@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { RedisConfig } from '@fc/redis';
 import { ConfigParser } from '@fc/config';
+import { RedisConfig } from '@fc/redis';
 
 const env = new ConfigParser(process.env, 'Redis');
 

@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
 import { parseJsonProperty } from '@fc/common';
+import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
 
 export default {
   discovery: false,
