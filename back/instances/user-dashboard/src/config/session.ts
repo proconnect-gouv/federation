@@ -1,10 +1,7 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import {
-  SessionConfig,
-  ISessionCookieOptions,
-} from '@fc/session';
+import { ISessionCookieOptions, SessionConfig } from '@fc/session';
 
 const cookieOptions: ISessionCookieOptions = {
   signed: true,

@@ -1,20 +1,22 @@
+import { Injectable } from '@nestjs/common';
+
+import { AppConfig } from '@fc/app';
+import { ConfigService } from '@fc/config';
 import { OidcSession } from '@fc/oidc';
 import {
   ISessionBoundContext,
   SessionNotFoundException,
   SessionService,
 } from '@fc/session';
-import { Injectable } from '@nestjs/common';
-import { IEvent, IEventContext, IAppTrackingService } from '@fc/tracking';
-import { ConfigService } from '@fc/config';
-import { AppConfig } from '@fc/app';
+import { IAppTrackingService, IEvent, IEventContext } from '@fc/tracking';
+
 import { getEventsMap } from '../events.map';
+import { CoreMissingContextException } from '../exceptions';
 import {
+  ICoreTrackingContext,
   ICoreTrackingLog,
   ICoreTrackingProviders,
-  ICoreTrackingContext,
 } from '../interfaces';
-import { CoreMissingContextException } from '../exceptions';
 
 @Injectable()
 export class CoreTrackingService implements IAppTrackingService {

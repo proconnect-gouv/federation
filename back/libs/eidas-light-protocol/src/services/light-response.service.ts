@@ -1,12 +1,16 @@
 import * as _ from 'lodash';
+
 import { Injectable } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
 import { EidasResponse } from '@fc/eidas';
-import { IParsedToken, IPathsObject } from '../interfaces';
-import { EidasJsonToXmlException } from '../exceptions';
+
 import { EidasLightProtocolConfig } from '../dto';
+import { EidasJsonToXmlException } from '../exceptions';
+import { IParsedToken, IPathsObject } from '../interfaces';
 import { LightProtocolCommonsService } from './light-protocol-commons.service';
 import { LightProtocolXmlService } from './light-protocol-xml.service';
+
 @Injectable()
 export class LightResponseService {
   constructor(

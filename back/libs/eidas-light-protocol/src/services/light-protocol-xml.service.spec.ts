@@ -1,8 +1,10 @@
 import * as converter from 'xml-js';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
 import {
-  lightResponseSuccessFullXmlMock,
   lightResponseSuccessFullJsonMock,
+  lightResponseSuccessFullXmlMock,
 } from '../../fixtures';
 import {
   EidasJsonToXmlException,

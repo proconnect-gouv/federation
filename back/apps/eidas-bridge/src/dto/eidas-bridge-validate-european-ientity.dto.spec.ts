@@ -1,6 +1,7 @@
-import { EidasBridgeValidateEuropeanIdentity } from './eidas-bridge-validate-european-identity.dto';
 import { validateDto } from '@fc/common';
 import { EidasCountries } from '@fc/eidas-country';
+
+import { EidasBridgeValidateEuropeanIdentity } from './eidas-bridge-validate-european-identity.dto';
 
 describe('Eidas bridge countries DTO', () => {
   const validationOptions = {

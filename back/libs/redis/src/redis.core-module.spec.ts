@@ -1,5 +1,5 @@
-import { RedisFactoryModule } from './redis.core-module';
 import { REDIS_MODULE_OPTIONS_TOKEN } from './redis.constants';
+import { RedisFactoryModule } from './redis.core-module';
 
 describe('RedisFactoryModule', () => {
   const config: any = {

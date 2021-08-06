@@ -1,14 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
+import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
 import { LoggerService } from '@fc/logger';
+import { OidcClientService } from '@fc/oidc-client';
 import {
   SessionCsrfService,
   SessionInvalidCsrfSelectIdpException,
   SessionService,
 } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
-import { ConfigService } from '@fc/config';
-import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
-import { OidcClientService } from '@fc/oidc-client';
+
 import { OidcClientController } from './oidc-client.controller';
 
 describe('OidcClient Controller', () => {

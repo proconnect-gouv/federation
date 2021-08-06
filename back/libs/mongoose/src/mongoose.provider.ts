@@ -1,6 +1,9 @@
 import * as mongoose from 'mongoose';
+
 import { MongooseModule } from '@nestjs/mongoose';
+
 import { ConfigModule, ConfigService } from '@fc/config';
+
 import { MongooseConfig } from './dto';
 
 /**

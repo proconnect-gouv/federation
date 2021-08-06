@@ -1,19 +1,23 @@
 /* istanbul ignore file */
 
 // Not to be tested
-import * as helmet from 'helmet';
-import * as CookieParser from 'cookie-parser';
-import { urlencoded } from 'express';
-import { renderFile } from 'ejs';
 import { join } from 'path';
+
 import { useContainer } from 'class-validator';
+import * as CookieParser from 'cookie-parser';
+import { renderFile } from 'ejs';
+import { urlencoded } from 'express';
+import * as helmet from 'helmet';
+
 import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
+
 import { AppConfig } from '@fc/app';
-import { LoggerService } from '@fc/logger';
 import { ConfigService } from '@fc/config';
 import { CoreFcaConfig } from '@fc/core-fca';
+import { LoggerService } from '@fc/logger';
 import { SessionConfig } from '@fc/session';
+
 import { AppModule } from './app.module';
 import config from './config';
 
@@ -89,16 +93,18 @@ async function bootstrap() {
 
   app.useLogger(logger);
   app.engine('ejs', renderFile);
-  app.set('views', viewsPaths.map((viewsPath) => {
-    return join(__dirname, viewsPath, 'views');
-  }));
+  app.set(
+    'views',
+    viewsPaths.map((viewsPath) => {
+      return join(__dirname, viewsPath, 'views');
+    }),
+  );
   app.setViewEngine('ejs');
   assetsPaths.forEach((assetsPath) => {
     app.useStaticAssets(join(__dirname, assetsPath, 'public'));
   });
 
-  const { cookieSecrets } =
-    configService.get<SessionConfig>('Session');
+  const { cookieSecrets } = configService.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));
 
   /**

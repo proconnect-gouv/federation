@@ -1,10 +1,14 @@
 import { ClassTransformOptions } from 'class-transformer';
 import { ValidationError, ValidatorOptions } from 'class-validator';
+
 import { Injectable } from '@nestjs/common';
-import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
+
 import { validateDto } from '@fc/common';
+import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger';
+
 import { OidcIdentityDto } from '../../dto';
+
 @Injectable()
 @FeatureHandler('core-fcp-default-identity-check')
 export class CoreFcpDefaultIdentityCheckHandler

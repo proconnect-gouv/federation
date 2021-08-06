@@ -1,9 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { OidcProviderBaseException } from './oidc-provider-base.exception';
-import { ErrorCode } from '../enums';
 import { Description, Loggable } from '@fc/exceptions';
+
+import { ErrorCode } from '../enums';
+import { OidcProviderBaseException } from './oidc-provider-base.exception';
 // declarative code
 // istanbul ignore next line
 @Loggable(false)

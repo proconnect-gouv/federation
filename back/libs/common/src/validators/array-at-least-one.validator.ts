@@ -1,7 +1,7 @@
 import {
-  ValidationOptions,
   ValidateBy,
   ValidationArguments,
+  ValidationOptions,
 } from 'class-validator';
 
 export const ARRAY_AT_LEAST_ONE = 'ArrayAtLeastOne';

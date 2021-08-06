@@ -1,6 +1,7 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { NotificationsService } from './notifications.service';
 import { getModelToken } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { NotificationsService } from './notifications.service';
 
 const repositoryMock = {
   findOne: jest.fn(),

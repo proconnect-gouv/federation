@@ -1,18 +1,20 @@
-import { CqrsModule } from '@nestjs/cqrs';
-import { Module, DynamicModule, Type } from '@nestjs/common';
+import { DynamicModule, Module, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
-import { RedisModule } from '@fc/redis';
+import { CqrsModule } from '@nestjs/cqrs';
+
 import { FcExceptionFilter } from '@fc/exceptions';
-import { SessionModule } from '@fc/session';
-import { TrackingModule } from '@fc/tracking';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
-import { OidcProviderService } from './oidc-provider.service';
+import { RedisModule } from '@fc/redis';
+import { SessionModule } from '@fc/session';
+import { TrackingModule } from '@fc/tracking';
+
 import { OidcProviderController } from './oidc-provider.controller';
-import { IsValidPromptConstraint } from './validators';
-import { OidcProviderErrorService } from './services/oidc-provider-error.service';
+import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderConfigService } from './services/oidc-provider-config.service';
+import { OidcProviderErrorService } from './services/oidc-provider-error.service';
 import { OidcProviderGrantService } from './services/oidc-provider-grant.service';
+import { IsValidPromptConstraint } from './validators';
 
 @Module({})
 export class OidcProviderModule {

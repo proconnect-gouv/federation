@@ -1,7 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
-import { Account, AccountNotFoundException, AccountService } from '@fc/account';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { Account, AccountNotFoundException, AccountService } from '@fc/account';
+import { LoggerService } from '@fc/logger';
+
 import { CsrmTracksNoTracksException } from '../exceptions';
 import { CsmrTracksService } from './csmr-tracks.service';
 import { CsmrTracksElasticsearchService } from './csmr-tracks-elasticsearch.service';

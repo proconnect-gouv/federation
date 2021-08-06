@@ -1,5 +1,6 @@
-import { createRedisConnection } from './redis.utils';
 import * as Redis from 'ioredis';
+
+import { createRedisConnection } from './redis.utils';
 
 jest.mock('ioredis');
 

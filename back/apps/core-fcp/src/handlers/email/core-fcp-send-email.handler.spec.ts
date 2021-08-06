@@ -1,18 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
-import { OidcSession } from '@fc/oidc';
+
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
 import {
   MailerNotificationConnectException,
-  NoEmailException,
   MailerService,
-  MailTo,
   MailFrom,
+  MailTo,
+  NoEmailException,
 } from '@fc/mailer';
-import { CoreFcpSendEmailHandler } from './core-fcp-send-email.handler';
+import { OidcSession } from '@fc/oidc';
+import { SessionService } from '@fc/session';
+
 import { EmailsTemplates } from '../../enums';
+import { CoreFcpSendEmailHandler } from './core-fcp-send-email.handler';
 
 /**
  * @TODO #471 En tant que PO je peux avoir des templates de mail différent suivant l'instance

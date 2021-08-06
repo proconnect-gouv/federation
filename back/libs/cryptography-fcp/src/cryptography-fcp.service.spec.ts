@@ -1,8 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { CryptographyFcpService } from './cryptography-fcp.service';
 import { CryptographyService } from '@fc/cryptography';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { CryptographyFcpService } from './cryptography-fcp.service';
+
 import { IPivotIdentity } from './interfaces';
 
 describe('CryptographyFcpService', () => {

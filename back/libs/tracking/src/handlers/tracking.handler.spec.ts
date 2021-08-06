@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { IEvent } from '../interfaces';
 import { TrackingService } from '../tracking.service';
 import { TrackingHandler } from './tracking.handler';
-import { IEvent } from '../interfaces';
 
 describe('TrackingHandler', () => {
   let handler: TrackingHandler;

@@ -1,9 +1,12 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { ExecutionContext } from '@nestjs/common';
 import { CryptographyService } from '@fc/cryptography';
+
+import { ExecutionContext } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
-import { SessionService } from '../services';
+
 import { ISessionRequest } from '../interfaces';
+import { SessionService } from '../services';
 import { SessionInterceptor } from './session.interceptor';
 
 describe('SessionInterceptor', () => {

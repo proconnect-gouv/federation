@@ -1,14 +1,17 @@
 import { mocked } from 'ts-jest/utils';
+
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
-import { IEventContext, TrackingService } from '@fc/tracking';
+
 import { validateDto } from '@fc/common';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
-import { OidcClientService } from './oidc-client.service';
-import { OidcClientUtilsService } from './oidc-client-utils.service';
-import { TokenParams, UserInfosParams } from '../interfaces';
+import { IEventContext, TrackingService } from '@fc/tracking';
+
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from '../events';
 import { OidcClientUserinfosFailedException } from '../exceptions';
+import { TokenParams, UserInfosParams } from '../interfaces';
+import { OidcClientService } from './oidc-client.service';
+import { OidcClientUtilsService } from './oidc-client-utils.service';
 
 jest.mock('@fc/common', () => ({
   ...(jest.requireActual('@fc/common') as any),

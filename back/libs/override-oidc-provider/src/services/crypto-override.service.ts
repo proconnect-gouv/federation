@@ -1,12 +1,15 @@
 import { timeout } from 'rxjs/operators';
+
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+
 import { ConfigService } from '@fc/config';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import { RabbitmqConfig } from '@fc/rabbitmq';
 import { CryptoProtocol } from '@fc/microservices';
-import { OverrideCode } from '../helpers';
+import { RabbitmqConfig } from '@fc/rabbitmq';
+
 import { CryptographyGatewayException } from '../exceptions';
+import { OverrideCode } from '../helpers';
 
 @Injectable()
 export class CryptoOverrideService {

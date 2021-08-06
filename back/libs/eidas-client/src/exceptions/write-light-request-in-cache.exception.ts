@@ -2,6 +2,7 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
+
 import { ErrorCode } from '../enum';
 import { EidasClientBaseException } from './eidas-client-base.exception';
 

@@ -1,24 +1,28 @@
-import { mocked } from 'ts-jest/utils';
-import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { OidcProviderService } from '@fc/oidc-provider';
-import {
-  SessionNotFoundException,
-  SessionService,
-  SessionCsrfService,
-} from '@fc/session';
+
+import { mocked } from 'ts-jest/utils';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
 import { MinistriesService } from '@fc/ministries';
 import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
-import { validateDto } from '@fc/common';
-import { CoreFcaService } from '../services';
-import { CoreFcaController } from './core-fca.controller';
+import { OidcProviderService } from '@fc/oidc-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
+import {
+  SessionCsrfService,
+  SessionNotFoundException,
+  SessionService,
+} from '@fc/session';
+
 import { OidcIdentityDto } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
+import { CoreFcaService } from '../services';
+import { CoreFcaController } from './core-fca.controller';
 
 jest.mock('@fc/common', () => ({
   ...(jest.requireActual('@fc/common') as any),

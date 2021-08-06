@@ -1,18 +1,37 @@
-import { ValidatorOptions } from 'class-validator';
 import { ClassTransformOptions } from 'class-transformer';
+import { ValidatorOptions } from 'class-validator';
+
 import {
   Controller,
   Get,
+  Param,
   Render,
   Req,
   Res,
   UsePipes,
   ValidationPipe,
-  Param,
 } from '@nestjs/common';
-import { OidcProviderService } from '@fc/oidc-provider';
-import { LoggerLevelNames, LoggerService } from '@fc/logger';
+
+import { AppConfig } from '@fc/app';
+import { validateDto } from '@fc/common';
+import { ConfigService } from '@fc/config';
+import {
+  CoreMissingIdentityException,
+  CoreRoutes,
+  Interaction,
+} from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
+import { MinistriesService } from '@fc/ministries';
+import { OidcSession } from '@fc/oidc';
+import {
+  GetOidcCallback,
+  OidcClientConfig,
+  OidcClientRoutes,
+  OidcClientService,
+  OidcClientSession,
+} from '@fc/oidc-client';
+import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
   ISessionService,
@@ -21,26 +40,10 @@ import {
   SessionNotFoundException,
   SessionService,
 } from '@fc/session';
-import { ConfigService } from '@fc/config';
-import { MinistriesService } from '@fc/ministries';
-import { AppConfig } from '@fc/app';
-import { validateDto } from '@fc/common';
-import {
-  Interaction,
-  CoreRoutes,
-  CoreMissingIdentityException,
-} from '@fc/core';
-import { OidcSession } from '@fc/oidc';
-import {
-  GetOidcCallback,
-  OidcClientRoutes,
-  OidcClientService,
-  OidcClientConfig,
-  OidcClientSession,
-} from '@fc/oidc-client';
+
 import { Core, OidcIdentityDto } from '../dto';
-import { CoreFcaService } from '../services';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
+import { CoreFcaService } from '../services';
 
 @Controller()
 export class CoreFcaController {

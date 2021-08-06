@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { OidcClientBaseException } from './oidc-client-base.exception';
+
 import { ErrorCode } from '../enums';
+import { OidcClientBaseException } from './oidc-client-base.exception';
 
 @Description(
   "Impossible de récupérer l'url de déconnexion du FI, probablement dû à une erreur de configuration du FI. Contacter le support N3",

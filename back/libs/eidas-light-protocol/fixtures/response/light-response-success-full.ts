@@ -4,6 +4,7 @@ import {
   EidasResponse,
   EidasStatusCodes,
 } from '@fc/eidas';
+
 import { IJsonifiedLightResponseXml } from '../../src/interfaces';
 
 export const successFullJsonMock: EidasResponse = {

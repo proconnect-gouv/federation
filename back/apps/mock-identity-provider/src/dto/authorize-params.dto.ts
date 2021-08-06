@@ -1,11 +1,12 @@
 import {
+  IsAlphanumeric,
+  IsArray,
+  IsOptional,
   IsString,
   IsUrl,
-  IsOptional,
-  IsArray,
-  IsAlphanumeric,
   Length,
 } from 'class-validator';
+
 import { Split } from '@fc/common';
 import { IsValidPrompt } from '@fc/oidc-provider';
 

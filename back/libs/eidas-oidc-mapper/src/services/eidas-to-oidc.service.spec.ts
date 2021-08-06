@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AcrValues } from '@fc/oidc';
+
 import {
   EidasAttributes,
   EidasLevelOfAssurances,
@@ -7,6 +7,8 @@ import {
   EidasStatusCodes,
   EidasSubStatusCodes,
 } from '@fc/eidas';
+import { AcrValues } from '@fc/oidc';
+
 import { EidasToOidcService } from './eidas-to-oidc.service';
 
 describe('EidasToOidcService', () => {

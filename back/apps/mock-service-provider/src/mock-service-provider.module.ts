@@ -1,22 +1,25 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Module } from '@nestjs/common';
-import { OidcClientModule } from '@fc/oidc-client';
-import { SessionModule } from '@fc/session';
-import {
-  IdentityProviderAdapterEnvService,
-  IdentityProviderAdapterEnvModule,
-} from '@fc/identity-provider-adapter-env';
-import { ExceptionsModule } from '@fc/exceptions';
 import { CryptographyModule } from '@fc/cryptography';
+
+import { Module } from '@nestjs/common';
+
+import { ExceptionsModule } from '@fc/exceptions';
+import {
+  IdentityProviderAdapterEnvModule,
+  IdentityProviderAdapterEnvService,
+} from '@fc/identity-provider-adapter-env';
+import { OidcClientModule } from '@fc/oidc-client';
 import {
   ServiceProviderAdapterEnvModule,
   ServiceProviderAdapterEnvService,
 } from '@fc/service-provider-adapter-env';
+import { SessionModule } from '@fc/session';
+
 import {
-  OidcClientController,
   MockServiceProviderController,
+  OidcClientController,
 } from './controllers';
 import { MockServiceProviderSession } from './dto';
 

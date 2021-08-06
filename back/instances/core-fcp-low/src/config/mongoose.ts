@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { MongooseConfig } from '@fc/mongoose';
 import { ConfigParser } from '@fc/config';
+import { MongooseConfig } from '@fc/mongoose';
 
 const env = new ConfigParser(process.env, 'Mongoose');
 

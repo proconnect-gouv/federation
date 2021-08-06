@@ -9,9 +9,10 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { MinIdentityDto } from '@fc/oidc-client';
-import { EidasGenders } from '@fc/eidas-oidc-mapper';
+
 import { IsSafeString } from '@fc/common';
+import { EidasGenders } from '@fc/eidas-oidc-mapper';
+import { MinIdentityDto } from '@fc/oidc-client';
 
 export class EidasIdentityDto extends MinIdentityDto {
   @IsSafeString()

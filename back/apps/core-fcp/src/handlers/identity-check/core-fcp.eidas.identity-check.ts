@@ -1,9 +1,12 @@
-import { ValidationError, ValidatorOptions } from 'class-validator';
 import { ClassTransformOptions } from 'class-transformer';
-import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
+import { ValidationError, ValidatorOptions } from 'class-validator';
+
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
+
 import { validateDto } from '@fc/common';
+import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
+import { LoggerService } from '@fc/logger';
+
 import { EidasIdentityDto } from '../../dto';
 
 @Injectable()

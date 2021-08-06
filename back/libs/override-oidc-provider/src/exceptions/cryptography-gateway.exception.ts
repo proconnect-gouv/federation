@@ -1,5 +1,7 @@
-import { Description } from '@fc/exceptions';
 import { CryptographyBaseException } from './cryptography-base.exception';
+
+import { Description } from '@fc/exceptions';
+
 import { ErrorCode } from '../enums';
 
 /* istanbul ignore file */

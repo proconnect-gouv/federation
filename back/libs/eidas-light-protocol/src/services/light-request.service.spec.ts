@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigModule, ConfigService } from '@fc/config';
+
 import { lightRequestXmlMock, requestJsonMock } from '../../fixtures';
 import { EidasJsonToXmlException } from '../exceptions';
 import { LightProtocolCommonsService } from './light-protocol-commons.service';

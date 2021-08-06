@@ -2,6 +2,7 @@
 
 // Declarative code
 import { Type } from '@nestjs/common';
+
 import { FcException } from '@fc/exceptions';
 
 export interface IEvent {

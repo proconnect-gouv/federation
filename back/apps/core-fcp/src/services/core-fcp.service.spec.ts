@@ -1,16 +1,18 @@
 import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
-import { OidcSession } from '@fc/oidc';
-import { OidcProviderService } from '@fc/oidc-provider';
+
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
+import { OidcSession } from '@fc/oidc';
+import { OidcProviderService } from '@fc/oidc-provider';
 import { ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { CoreFcpService, FcpFeature } from './core-fcp.service';
+import { SessionService } from '@fc/session';
+
 import { ProcessCore } from '../enums';
+import { CoreFcpService, FcpFeature } from './core-fcp.service';
 
 describe('CoreFcpService', () => {
   let service: CoreFcpService;

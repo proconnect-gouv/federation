@@ -2,9 +2,10 @@
 
 // Declarative code
 import { DynamicModule, Module } from '@nestjs/common';
-import { LoggerModule } from '@fc/logger';
+
 import { ConfigModule, ConfigService } from '@fc/config';
 import { CsmrHsmModule } from '@fc/csmr-hsm';
+import { LoggerModule } from '@fc/logger';
 
 @Module({})
 export class AppModule {

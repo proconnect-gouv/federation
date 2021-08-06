@@ -1,16 +1,18 @@
+import { isEmpty } from 'lodash';
 import { Adapter, AdapterConstructor } from 'oidc-provider';
 
-import { isEmpty } from 'lodash';
 import { Inject } from '@nestjs/common';
+
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
+import { IServiceProviderAdapter } from '@fc/oidc';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
-import { LoggerService, LoggerLevelNames } from '@fc/logger';
+
 import {
-  OidcProviderStringifyPayloadForRedisException,
   OidcProviderParseRedisResponseException,
+  OidcProviderStringifyPayloadForRedisException,
 } from '../exceptions';
 /** Circular reference for type checking */
 import { OidcProviderService } from '../oidc-provider.service';
-import { IServiceProviderAdapter } from '@fc/oidc';
 
 const consumable = new Set(['AuthorizationCode', 'RefreshToken', 'DeviceCode']);
 

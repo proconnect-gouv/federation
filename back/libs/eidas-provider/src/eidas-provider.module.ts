@@ -2,10 +2,12 @@
 
 // Declarative code
 import { Module } from '@nestjs/common';
+
 import { ApacheIgniteModule } from '@fc/apache-ignite';
 import { EidasLightProtocolModule } from '@fc/eidas-light-protocol';
-import { EidasProviderService } from './eidas-provider.service';
+
 import { EidasProviderController } from './eidas-provider.controller';
+import { EidasProviderService } from './eidas-provider.service';
 
 @Module({
   imports: [ApacheIgniteModule, EidasLightProtocolModule],

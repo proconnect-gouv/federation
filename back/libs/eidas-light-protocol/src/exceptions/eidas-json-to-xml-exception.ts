@@ -2,8 +2,10 @@
 
 // declarative code
 import { Description } from '@fc/exceptions';
+
 import { ErrorCode } from '../enums';
 import { EidasBaseException } from './eidas-base-exception';
+
 @Description(
   "Problème de connexion entre le bridge eIDAS et le noeud eIDAS; contacter le service technique (Le JSON reçu n'a pas pu être converti en XML. La structure est invalide ou il manque des éléments essentiels.)",
 )

@@ -1,21 +1,26 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Module, DynamicModule, Type } from '@nestjs/common';
-import { CqrsModule } from '@nestjs/cqrs';
-import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
-import { TrackingModule } from '@fc/tracking';
 import { CryptographyModule } from '@fc/cryptography';
+
+import { DynamicModule, Module, Type } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+
+import {
+  IServiceProviderAdapter,
+  SERVICE_PROVIDER_SERVICE_TOKEN,
+} from '@fc/oidc';
 import { SessionModule } from '@fc/session';
-import { IServiceProviderAdapter } from '@fc/oidc';
-import { IDENTITY_PROVIDER_SERVICE } from './tokens';
+import { TrackingModule } from '@fc/tracking';
+
 import { IIdentityProviderAdapter } from './interfaces';
 import {
-  OidcClientService,
-  OidcClientUtilsService,
   OidcClientConfigService,
   OidcClientIssuerService,
+  OidcClientService,
+  OidcClientUtilsService,
 } from './services';
+import { IDENTITY_PROVIDER_SERVICE } from './tokens';
 
 @Module({})
 export class OidcClientModule {

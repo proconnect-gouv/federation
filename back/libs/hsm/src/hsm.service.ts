@@ -1,9 +1,13 @@
 import { createHash } from 'crypto';
+
 import * as pkcs11js from 'pkcs11js';
+
 import { Injectable } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
-import { SignatureDigest, Pkcs11Error } from './enums';
+
 import { HsmConfig } from './dto';
+import { Pkcs11Error, SignatureDigest } from './enums';
 
 /**
  *  Support EC key prime field up to 521 bits

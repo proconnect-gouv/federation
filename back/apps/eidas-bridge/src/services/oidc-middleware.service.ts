@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
+
 import { LoggerService } from '@fc/logger';
+import { OidcSession } from '@fc/oidc';
 import {
   OidcProviderMiddlewareStep,
   OidcProviderRoutes,
@@ -7,7 +9,6 @@ import {
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
 import { ISessionBoundContext, SessionService } from '@fc/session';
-import { OidcSession } from '@fc/oidc';
 
 @Injectable()
 export class OidcMiddlewareService {

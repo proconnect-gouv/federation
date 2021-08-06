@@ -2,7 +2,8 @@
 
 // Declarative code
 import { IsArray, IsEnum, IsString } from 'class-validator';
-import { EidasLevelOfAssurances, EidasAttributes } from '../enums';
+
+import { EidasAttributes, EidasLevelOfAssurances } from '../enums';
 
 export class EidasPartialRequest {
   @IsString()

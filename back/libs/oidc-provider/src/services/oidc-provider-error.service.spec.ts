@@ -1,7 +1,10 @@
 import { KoaContextWithOIDC, Provider } from 'oidc-provider';
+
 import { LoggerService } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { FcExceptionFilter } from '@fc/exceptions';
+
 import { OidcProviderEvents } from '../enums';
 import {
   OidcProviderInitialisationException,

@@ -3,6 +3,7 @@ import {
   EidasStatusCodes,
   EidasSubStatusCodes,
 } from '@fc/eidas';
+
 import { IJsonifiedLightResponseXml } from '../../src/interfaces';
 
 export const failureFullJsonMock: EidasResponse = {

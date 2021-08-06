@@ -1,15 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
+import { OidcSession } from '@fc/oidc';
 import {
   ISessionBoundContext,
   SessionNotFoundException,
   SessionService,
 } from '@fc/session';
-import { OidcSession } from '@fc/oidc';
 import { IEventContext } from '@fc/tracking';
-import { ConfigService } from '@fc/config';
-import { CoreTrackingService } from './core-tracking.service';
+
 import { CoreMissingContextException } from '../exceptions';
 import { ICoreTrackingContext } from '../interfaces';
+import { CoreTrackingService } from './core-tracking.service';
 
 describe('CoreTrackingService', () => {
   let service: CoreTrackingService;

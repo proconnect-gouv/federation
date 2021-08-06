@@ -1,13 +1,15 @@
 import * as _ from 'lodash';
 import * as xmlParser from 'xml2js';
+
 import { Test } from '@nestjs/testing';
+
 import {
   rnippCorectResponseXml,
   rnippCorrectResponseParsed,
   rnippNotFoundResponseParsed,
 } from '../../fixtures';
+import { Genders, RnippResponseCodes, RnippXmlSelectors } from '../enums';
 import { RnippHttpStatusException } from '../exceptions';
-import { RnippXmlSelectors, RnippResponseCodes, Genders } from '../enums';
 import { RnippResponseParserService } from './rnipp-response-parser.service';
 
 describe('RnippResponseParserService', () => {

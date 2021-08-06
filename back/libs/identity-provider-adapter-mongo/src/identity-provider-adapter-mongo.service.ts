@@ -1,23 +1,26 @@
+import { CryptographyService } from '@fc/cryptography';
+
 import { Injectable, Type } from '@nestjs/common';
+import { EventBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
-import { validateDto, asyncFilter } from '@fc/common';
-import { validationOptions, ConfigService } from '@fc/config';
+
+import { asyncFilter, validateDto } from '@fc/common';
+import { ConfigService, validationOptions } from '@fc/config';
+import { LoggerService } from '@fc/logger';
 import {
   ClientMetadata,
   IdentityProviderMetadata,
   IssuerMetadata,
 } from '@fc/oidc';
 import { IIdentityProviderAdapter } from '@fc/oidc-client';
-import { CryptographyService } from '@fc/cryptography';
-import { EventBus } from '@nestjs/cqrs';
-import { LoggerService } from '@fc/logger';
+
 import {
-  IdentityProviderAdapterMongoDTO as NoDiscoveryIdoAdapterMongoDTO,
-  IdentityProviderAdapterMongoConfig,
   DiscoveryIdpAdapterMongoDTO,
+  IdentityProviderAdapterMongoConfig,
+  IdentityProviderAdapterMongoDTO as NoDiscoveryIdoAdapterMongoDTO,
 } from './dto';
-import { IdentityProvider } from './schemas';
 import { IdentityProviderUpdateEvent } from './events';
+import { IdentityProvider } from './schemas';
 
 const CLIENT_METADATA = [
   'client_id',

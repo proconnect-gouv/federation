@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { EidasBridgeBaseException } from './eidas-bridge-base.exception';
+
 import { ErrorCode } from '../enums';
+import { EidasBridgeBaseException } from './eidas-bridge-base.exception';
 
 @Description(
   "Le niveau de garantie eIDAS renvoyé par le bridge n'est pas suffisant par rapport à la demande du FS. Contacter le support N3",

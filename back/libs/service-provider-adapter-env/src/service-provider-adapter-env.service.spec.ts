@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
+
 import { ServiceProviderAdapterEnvService } from './service-provider-adapter-env.service';
 
 describe('ServiceProviderService', () => {

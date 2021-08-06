@@ -8,11 +8,13 @@ import {
   IsString,
   MinLength,
 } from 'class-validator';
+
 import { EidasCountries } from '@fc/eidas-country';
+
 import {
+  EidasAttributes,
   EidasLevelOfAssurances,
   EidasNameIdFormats,
-  EidasAttributes,
   EidasSpTypes,
 } from '../enums';
 

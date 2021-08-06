@@ -1,6 +1,9 @@
-import { mocked } from 'ts-jest/utils';
 import { existsSync, readFileSync } from 'fs';
+
+import { mocked } from 'ts-jest/utils';
+
 import { parseBoolean, parseJsonProperty } from '@fc/common';
+
 import { ConfigParser } from './config-parser';
 
 jest.mock('fs', () => ({

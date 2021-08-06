@@ -1,6 +1,8 @@
 import { lowerFirst, set, upperFirst } from 'lodash';
 import { json2xml, xml2json } from 'xml-js';
+
 import { Injectable } from '@nestjs/common';
+
 import {
   EidasJsonToXmlException,
   EidasXmlToJsonException,

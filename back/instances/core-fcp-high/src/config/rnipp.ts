@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { RnippConfig } from '@fc/rnipp';
 import { ConfigParser } from '@fc/config';
+import { RnippConfig } from '@fc/rnipp';
 
 const env = new ConfigParser(process.env, 'Rnipp');
 

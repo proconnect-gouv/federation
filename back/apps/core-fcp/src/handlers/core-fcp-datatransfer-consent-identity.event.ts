@@ -2,7 +2,9 @@
 
 // Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
 import { TrackingHandler } from '@fc/tracking';
+
 import { CoreFcpDatatransferConsentIdentityEvent } from '../events';
 
 @EventsHandler(CoreFcpDatatransferConsentIdentityEvent)

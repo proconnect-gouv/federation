@@ -1,12 +1,14 @@
 import {
-  randomBytes,
+  BinaryToTextEncoding,
   createCipheriv,
   createDecipheriv,
   createHash,
-  BinaryToTextEncoding,
   Encoding,
+  randomBytes,
 } from 'crypto';
+
 import { Injectable } from '@nestjs/common';
+
 import { LowEntropyArgumentException } from './exceptions';
 
 const NONCE_LENGTH = 12;

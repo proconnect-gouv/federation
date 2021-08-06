@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
 import * as _ from 'lodash';
 import * as xmlParser from 'xml2js';
-import { RnippResponseCodes, RnippXmlSelectors, Genders } from '../enums';
+
+import { Injectable } from '@nestjs/common';
+
 import { CitizenStatus } from '../dto';
+import { Genders, RnippResponseCodes, RnippXmlSelectors } from '../enums';
 import { RnippHttpStatusException } from '../exceptions';
 
 const FRANCE_COG = '99100';

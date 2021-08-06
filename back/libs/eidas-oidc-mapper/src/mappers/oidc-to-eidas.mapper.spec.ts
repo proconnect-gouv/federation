@@ -1,5 +1,7 @@
 import * as _ from 'lodash';
+
 import { EidasAttributes } from '@fc/eidas';
+
 import { ClaimsToAttributesMap } from './oidc-to-eidas.mapper';
 
 describe('OidcToEidasMapper', () => {

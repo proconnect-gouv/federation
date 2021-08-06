@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { OidcClientBaseException } from './oidc-client-base.exception';
+
 import { ErrorCode } from '../enums';
+import { OidcClientBaseException } from './oidc-client-base.exception';
 
 @Description(
   'Une erreur technique dans le protocole OpenId Connect, contacter le support N3',

@@ -1,12 +1,15 @@
+import { CryptographyEidasService } from '@fc/cryptography-eidas';
+
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
+
 import { CoreService } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
+import { LoggerService } from '@fc/logger';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { CryptographyEidasService } from '@fc/cryptography-eidas';
+
 import {
-  IVerifyFeatureHandlerHandleArgument,
   IVerifyFeatureHandler,
+  IVerifyFeatureHandlerHandleArgument,
 } from '../../interfaces';
 
 @Injectable()

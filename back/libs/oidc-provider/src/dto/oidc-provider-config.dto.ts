@@ -1,37 +1,38 @@
 /* istanbul ignore file */
 
-import {
-  IsString,
-  IsArray,
-  IsObject,
-  IsBoolean,
-  ValidateNested,
-  IsOptional,
-  IsNumber,
-  IsEnum,
-  IsIn,
-} from 'class-validator';
 import { Type } from 'class-transformer';
 import {
+  IsArray,
+  IsBoolean,
+  IsEnum,
+  IsIn,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import {
   AdapterConstructor,
-  EncryptionEncValues,
-  EncryptionAlgValues,
-  ResponseType,
+  AllClientMetadata,
   AsymmetricSigningAlgorithm,
+  CanBePromise,
   ClientAuthMethod,
+  EncryptionAlgValues,
+  EncryptionEncValues,
+  ErrorOut,
+  JWK,
+  KoaContextWithOIDC,
+  PKCEMethods,
+  ResponseType,
+  SigningAlgorithm,
+  SigningAlgorithmWithNone,
   SubjectTypes,
   SymmetricSigningAlgorithm,
-  KoaContextWithOIDC,
-  CanBePromise,
-  ErrorOut,
-  AllClientMetadata,
   TTLFunction,
-  SigningAlgorithmWithNone,
-  SigningAlgorithm,
-  JWK,
-  PKCEMethods,
 } from 'oidc-provider';
-import { OidcProviderRoutes, OidcProviderPrompt } from '../enums';
+
+import { OidcProviderPrompt, OidcProviderRoutes } from '../enums';
 
 /**
  * Since oidc-provider does not expose some callbacks signatures

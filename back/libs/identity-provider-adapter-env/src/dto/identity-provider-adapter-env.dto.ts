@@ -1,8 +1,8 @@
 import {
+  IsArray,
   IsBoolean,
   IsOptional,
   IsString,
-  IsArray,
   IsUrl,
   MinLength,
 } from 'class-validator';

@@ -1,13 +1,16 @@
 /* istanbul ignore file */
 
 // Declarative code
+import { CryptographyFcpModule } from '@fc/cryptography-fcp';
+
 import { Module } from '@nestjs/common';
+
+import { AccountModule } from '@fc/account';
 import { ElasticsearchModule } from '@fc/elasticsearch';
-import { MongooseModule } from '@fc/mongoose';
 import { ExceptionsModule } from '@fc/exceptions';
 import { LoggerModule } from '@fc/logger';
-import { AccountModule } from '@fc/account';
-import { CryptographyFcpModule } from '@fc/cryptography-fcp';
+import { MongooseModule } from '@fc/mongoose';
+
 import { CsmrTracksController } from './controllers';
 import { CsmrTracksElasticsearchService, CsmrTracksService } from './services';
 

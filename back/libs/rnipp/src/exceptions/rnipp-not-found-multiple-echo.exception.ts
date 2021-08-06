@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description, Loggable, Trackable } from '@fc/exceptions';
-import { RnippBaseException } from './';
+
 import { ErrorCode } from '../enums';
+import { RnippBaseException } from './';
 
 // declarative code
 // istanbul ignore next line

@@ -1,9 +1,12 @@
-import { Provider, ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
+import { ClientMetadata, KoaContextWithOIDC, Provider } from 'oidc-provider';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
-import { LoggerService, LoggerLevelNames } from '@fc/logger';
-import { SessionService } from '@fc/session';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
+import { SessionService } from '@fc/session';
+
 import { OidcProviderRedisAdapter } from '../adapters';
 import { OidcProviderService } from '../oidc-provider.service';
 import { OidcProviderConfigService } from './oidc-provider-config.service';
