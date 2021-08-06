@@ -1,9 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CoreBaseException } from './core-base.exception';
-import { ErrorCode } from '../enums';
 import { Description } from '@fc/exceptions';
+
+import { ErrorCode } from '../enums';
+import { CoreBaseException } from './core-base.exception';
 
 @Description(
   "La requête HTTP n'est pas valide, FranceConnect+ n'a pas pu la traiter car il manque des élements obligatoires ( headers, ... ). Cette erreur ne devrait pas se produire, contacter le service technique",

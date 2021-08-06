@@ -1,15 +1,18 @@
 import * as os from 'os';
+import * as pino from 'pino';
 import * as QuickLRU from 'quick-lru';
 import { v4 as uuidV4 } from 'uuid';
-import * as pino from 'pino';
-import { Logger, Injectable } from '@nestjs/common';
+
+import { Injectable, Logger } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
-import { LoggerLevelNames } from './enum';
-import { pinoLevelsMap, nestLevelsMap } from './log-maps.map';
-import { LoggerConfig } from './dto';
-import { ILoggerBusinessEvent, ILoggerColorParams } from './interfaces';
-import * as utils from './utils';
+
 import * as colors from './constants';
+import { LoggerConfig } from './dto';
+import { LoggerLevelNames } from './enum';
+import { ILoggerBusinessEvent, ILoggerColorParams } from './interfaces';
+import { nestLevelsMap, pinoLevelsMap } from './log-maps.map';
+import * as utils from './utils';
 
 /**
  * /!\ CAN BE CHANGED MANUALLY /!\

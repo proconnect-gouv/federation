@@ -1,9 +1,11 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { EventBus } from '@nestjs/cqrs';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { LoggerService } from '@fc/logger';
-import { TrackingService } from './tracking.service';
+
 import { APP_TRACKING_SERVICE } from './app-tracking-service.token';
 import { IEvent, IEventContext } from './interfaces';
+import { TrackingService } from './tracking.service';
 
 describe('TrackingService', () => {
   let service: TrackingService;

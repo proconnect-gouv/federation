@@ -1,7 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { CryptographyService } from '@fc/cryptography';
-import { ConfigService } from '@fc/config';
 import { CryptographyEidasService } from './cryptography-eidas.service';
+import { CryptographyService } from '@fc/cryptography';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
+
 import { IPivotIdentity } from './interfaces';
 
 describe('CryptographyEidasService', () => {

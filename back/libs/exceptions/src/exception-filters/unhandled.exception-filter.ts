@@ -1,6 +1,8 @@
+import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
-import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
+
 import { LoggerService } from '@fc/logger';
+
 import { ExceptionsService } from '../exceptions.service';
 
 @Catch()

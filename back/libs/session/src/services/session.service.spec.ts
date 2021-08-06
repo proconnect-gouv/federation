@@ -1,23 +1,27 @@
+import { CryptographyService } from '@fc/cryptography';
+
 import { mocked } from 'ts-jest/utils';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
-import { CryptographyService } from '@fc/cryptography';
-import { SESSION_TOKEN_OPTIONS } from '../tokens';
-import { SessionService } from './session.service';
+
 import {
-  ISessionBoundContext,
-  ISessionRequest,
-  ISessionResponse,
-  ISessionCookieOptions,
-} from '../interfaces';
-import {
-  SessionBadFormatException,
   SessionBadAliasException,
+  SessionBadFormatException,
   SessionStorageException,
 } from '../exceptions';
+import {
+  ISessionBoundContext,
+  ISessionCookieOptions,
+  ISessionRequest,
+  ISessionResponse,
+} from '../interfaces';
+import { SESSION_TOKEN_OPTIONS } from '../tokens';
+import { SessionService } from './session.service';
 
 jest.mock('@fc/common');
 

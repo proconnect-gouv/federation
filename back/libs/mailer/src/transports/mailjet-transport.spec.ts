@@ -1,5 +1,7 @@
 import * as mailjet from 'node-mailjet';
+
 import { ConfigService } from '@fc/config';
+
 import { MailjetTransport } from './mailjet-transport';
 
 const configMock = {

@@ -1,4 +1,5 @@
 import { ValidationArguments } from 'class-validator';
+
 import { JwksUriValidator } from './jwksuri.validator';
 
 describe('JwksUriValidator', () => {

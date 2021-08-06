@@ -3,6 +3,7 @@
 // Declarative code
 import { ErrorCode } from '@fc/core';
 import { Description } from '@fc/exceptions';
+
 import { EidasBridgeBaseException } from './eidas-bridge-base.exception';
 
 @Description(

@@ -1,9 +1,13 @@
 import * as crypto from 'crypto';
+
 import * as pkcs11js from 'pkcs11js';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
-import { HsmService } from './hsm.service';
+
 import { SignatureDigest } from './enums';
+import { HsmService } from './hsm.service';
 
 /**
  *  Support EC key prime field up to 521 bits

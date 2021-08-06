@@ -2,12 +2,12 @@
 
 // Declarative code
 import {
-  IsOptional,
-  IsObject,
-  IsUrl,
   IsBoolean,
-  ValidateIf,
+  IsObject,
+  IsOptional,
   IsString,
+  IsUrl,
+  ValidateIf,
 } from 'class-validator';
 import { ClientMetadata } from 'openid-client';
 

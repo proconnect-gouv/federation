@@ -1,5 +1,7 @@
-import { LoggerService } from '@fc/logger';
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { LoggerService } from '@fc/logger';
+
 import { OidcProviderGrantSaveException } from '../exceptions';
 import { OidcProviderGrantService } from './oidc-provider-grant.service';
 

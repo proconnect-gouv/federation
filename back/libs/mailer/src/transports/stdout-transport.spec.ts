@@ -1,5 +1,6 @@
-import { StdoutTransport } from './stdout-transport';
 import { LoggerService } from '@fc/logger';
+
+import { StdoutTransport } from './stdout-transport';
 
 const emailParamsMock = {
   subject: 'subject',

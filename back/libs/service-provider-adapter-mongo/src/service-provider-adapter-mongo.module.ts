@@ -1,10 +1,12 @@
-import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
-import { CqrsModule } from '@nestjs/cqrs';
 import { CryptographyModule } from '@fc/cryptography';
+
+import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import { MongooseModule } from '@nestjs/mongoose';
+
+import { ServiceProviderUpdateHandler } from './handlers/service-provider-update.handlers';
 import { ServiceProviderSchema } from './schemas';
 import { ServiceProviderAdapterMongoService } from './service-provider-adapter-mongo.service';
-import { ServiceProviderUpdateHandler } from './handlers/service-provider-update.handlers';
 
 @Module({
   imports: [

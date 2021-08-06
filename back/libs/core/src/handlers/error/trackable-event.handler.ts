@@ -1,6 +1,7 @@
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
-import { TrackingHandler } from '@fc/tracking';
+
 import { TrackableEvent } from '@fc/exceptions';
+import { TrackingHandler } from '@fc/tracking';
 
 @EventsHandler(TrackableEvent)
 export class TrackableEventHandler

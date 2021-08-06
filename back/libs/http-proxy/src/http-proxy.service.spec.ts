@@ -1,8 +1,11 @@
 import * as globalAgent from 'global-agent';
-import { Test, TestingModule } from '@nestjs/testing';
-import { HttpProxyService } from './http-proxy.service';
-import { LoggerService } from '@fc/logger';
+
 import { HttpService } from '@nestjs/common';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { LoggerService } from '@fc/logger';
+
+import { HttpProxyService } from './http-proxy.service';
 
 jest.mock('global-agent');
 

@@ -1,9 +1,12 @@
 import * as fs from 'fs';
-import * as glob from 'glob';
+
 import * as ejs from 'ejs';
+import * as glob from 'glob';
+
 import { FcException } from '@fc/exceptions';
-import Runner from './runner';
+
 import MarkdownGenerator from './markdown-generator';
+import Runner from './runner';
 
 jest.mock('fs');
 jest.mock('console');

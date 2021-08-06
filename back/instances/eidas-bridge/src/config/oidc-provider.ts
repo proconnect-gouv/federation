@@ -1,12 +1,12 @@
 /* istanbul ignore file */
 
 // Tested by DTO
+import { ConfigParser } from '@fc/config';
 import {
   OidcProviderConfig,
-  OidcProviderRoutes,
   OidcProviderPrompt,
+  OidcProviderRoutes,
 } from '@fc/oidc-provider';
-import { ConfigParser } from '@fc/config';
 
 const env = new ConfigParser(process.env, 'OidcProvider');
 

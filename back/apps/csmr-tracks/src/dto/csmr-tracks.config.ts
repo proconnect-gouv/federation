@@ -1,12 +1,13 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsObject, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { LoggerConfig } from '@fc/logger';
-import { RabbitmqConfig } from '@fc/rabbitmq';
+import { IsObject, ValidateNested } from 'class-validator';
+
 import { ElasticsearchConfig } from '@fc/elasticsearch';
+import { LoggerConfig } from '@fc/logger';
 import { MongooseConfig } from '@fc/mongoose';
+import { RabbitmqConfig } from '@fc/rabbitmq';
 
 export class CsmrTracksConfig {
   @IsObject()

@@ -1,7 +1,8 @@
-import { Injectable, HttpService } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
-
 import { bootstrap } from 'global-agent';
+
+import { HttpService, Injectable } from '@nestjs/common';
+
+import { LoggerService } from '@fc/logger';
 
 @Injectable()
 export class HttpProxyService {

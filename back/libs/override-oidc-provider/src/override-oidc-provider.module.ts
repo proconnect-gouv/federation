@@ -2,8 +2,10 @@
 
 // Declarative code
 import { DynamicModule, Module } from '@nestjs/common';
+
 import { RabbitmqModule } from '@fc/rabbitmq';
-import { OverrideOidcProviderService, CryptoOverrideService } from './services';
+
+import { CryptoOverrideService, OverrideOidcProviderService } from './services';
 
 @Module({})
 export class OverrideOidcProviderModule {

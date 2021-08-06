@@ -2,6 +2,7 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
+
 import { MailerBaseException } from './mailer-base.exception';
 
 @Description(

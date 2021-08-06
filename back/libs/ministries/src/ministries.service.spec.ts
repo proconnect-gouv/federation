@@ -1,8 +1,9 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
+import { Test, TestingModule } from '@nestjs/testing';
 
 import { LoggerService } from '@fc/logger';
-import { EventBus } from '@nestjs/cqrs';
+
 import { MinistriesService } from './ministries.service';
 
 describe('MinistriesService', () => {

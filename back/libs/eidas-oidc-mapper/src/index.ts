@@ -2,5 +2,5 @@
 
 // Declarative code
 export * from './eidas-oidc-mapper.module';
-export * from './services';
 export * from './enums';
+export * from './services';

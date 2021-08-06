@@ -1,22 +1,25 @@
 import * as OidcProvider from 'oidc-provider';
-import { Test, TestingModule } from '@nestjs/testing';
+
 import { HttpAdapterHost } from '@nestjs/core';
-import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
-import { LoggerService, LoggerLevelNames } from '@fc/logger';
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
+import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
+
 import {
-  OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
+  OidcProviderMiddlewareStep,
 } from './enums';
-import { OidcProviderService } from './oidc-provider.service';
 import {
-  OidcProviderInitialisationException,
   OidcProviderBindingException,
-  OidcProviderRuntimeException,
+  OidcProviderInitialisationException,
   OidcProviderInteractionNotFoundException,
+  OidcProviderRuntimeException,
 } from './exceptions';
-import { OidcProviderErrorService } from './services/oidc-provider-error.service';
+import { OidcProviderService } from './oidc-provider.service';
 import { OidcProviderConfigService } from './services/oidc-provider-config.service';
+import { OidcProviderErrorService } from './services/oidc-provider-error.service';
 import { OidcProviderGrantService } from './services/oidc-provider-grant.service';
 
 describe('OidcProviderService', () => {

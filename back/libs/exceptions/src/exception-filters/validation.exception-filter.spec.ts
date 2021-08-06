@@ -1,6 +1,7 @@
 import { LoggerService } from '@fc/logger';
+
+import { FcException, ValidationException } from '../exceptions';
 import { ValidationExceptionFilter } from './validation.exception-filter';
-import { ValidationException, FcException } from '../exceptions';
 
 describe('ValidationExceptionFilter', () => {
   let exceptionFilter: ValidationExceptionFilter;

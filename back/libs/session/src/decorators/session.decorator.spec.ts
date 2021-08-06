@@ -1,4 +1,5 @@
 import { ExecutionContext } from '@nestjs/common';
+
 import { extractSessionFromRequest } from './session.decorator';
 
 describe('extractSessionFromRequest', () => {

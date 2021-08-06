@@ -1,10 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
 import { ClientMetadata } from 'oidc-provider';
 import { Client, custom, Issuer } from 'openid-client';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { LoggerService } from '@fc/logger';
+
 import {
-  OidcClientProviderNotFoundException,
   OidcClientProviderDisabledException,
+  OidcClientProviderNotFoundException,
 } from '../exceptions';
 import { OidcClientConfigService } from './oidc-client-config.service';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';

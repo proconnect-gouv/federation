@@ -1,7 +1,10 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
+
 import { SessionCsrfService } from './session-csrf.service';
 
 const interactionIdMock = 'interactionIdMockValue';

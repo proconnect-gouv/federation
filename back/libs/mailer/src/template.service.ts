@@ -1,5 +1,7 @@
-import { promises as fsAsync, existsSync } from 'fs';
+import { existsSync, promises as fsAsync } from 'fs';
+
 import * as ejs from 'ejs';
+
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

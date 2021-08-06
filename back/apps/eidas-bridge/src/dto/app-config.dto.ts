@@ -1,6 +1,7 @@
+import { ArrayNotEmpty, IsArray, IsEnum } from 'class-validator';
+
 import { AppConfig as AppGenericConfig } from '@fc/app';
 import { EidasCountries } from '@fc/eidas-country';
-import { ArrayNotEmpty, IsArray, IsEnum } from 'class-validator';
 
 export class AppConfig extends AppGenericConfig {
   @IsArray()

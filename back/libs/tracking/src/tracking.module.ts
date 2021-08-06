@@ -1,13 +1,14 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Module, DynamicModule, Type } from '@nestjs/common';
+import { DynamicModule, Module, Type } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { CqrsModule } from '@nestjs/cqrs';
-import { TrackingService } from './tracking.service';
+
+import { APP_TRACKING_SERVICE } from './app-tracking-service.token';
 import { TrackingInterceptor } from './interceptors';
 import { IAppTrackingService } from './interfaces';
-import { APP_TRACKING_SERVICE } from './app-tracking-service.token';
+import { TrackingService } from './tracking.service';
 
 @Module({})
 export class TrackingModule {

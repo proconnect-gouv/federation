@@ -1,5 +1,5 @@
-import { ILoggerColorParams } from '../interfaces';
 import * as colors from '../constants';
+import { ILoggerColorParams } from '../interfaces';
 import * as utils from './logger-colors.utils';
 
 describe('stringToColor()', () => {

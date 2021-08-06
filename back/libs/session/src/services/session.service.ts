@@ -1,9 +1,18 @@
-import { Inject, Injectable } from '@nestjs/common';
-import { ConfigService, validationOptions } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
+
+import { Inject, Injectable } from '@nestjs/common';
+
+import { validateDto } from '@fc/common';
+import { ConfigService, validationOptions } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
-import { validateDto } from '@fc/common';
+
+import { SessionConfig } from '../dto';
+import {
+  SessionBadAliasException,
+  SessionBadFormatException,
+  SessionStorageException,
+} from '../exceptions';
 import {
   ISessionBoundContext,
   ISessionOptions,
@@ -11,12 +20,6 @@ import {
   ISessionResponse,
 } from '../interfaces';
 import { SESSION_TOKEN_OPTIONS } from '../tokens';
-import { SessionConfig } from '../dto';
-import {
-  SessionBadFormatException,
-  SessionBadAliasException,
-  SessionStorageException,
-} from '../exceptions';
 
 export type RedisQueryResult = [Error | null, any];
 

@@ -1,4 +1,5 @@
 import { EidasAttributes } from '@fc/eidas';
+
 import { AttributesToClaimsMap } from './eidas-to-oidc.mapper';
 
 describe('EidasToOidcMapper', () => {

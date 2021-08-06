@@ -1,11 +1,14 @@
+import { CryptographyService } from '@fc/cryptography';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
+import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
+import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
-import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
-import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
-import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
+
 import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,

@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { OidcClientBaseException } from './oidc-client-base.exception';
+
 import { ErrorCode } from '../enums';
+import { OidcClientBaseException } from './oidc-client-base.exception';
 
 @Description(
   "Le FI n'existe pas, si le problème persiste, contacter le support N3",

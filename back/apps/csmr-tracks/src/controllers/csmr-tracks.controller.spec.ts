@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { LoggerService } from '@fc/logger';
-import { CsmrTracksController } from './csmr-tracks.controller';
+
 import { CsmrTracksService } from '../services/csmr-tracks.service';
+import { CsmrTracksController } from './csmr-tracks.controller';
 
 describe('CsmrTracksController', () => {
   let controller: CsmrTracksController;

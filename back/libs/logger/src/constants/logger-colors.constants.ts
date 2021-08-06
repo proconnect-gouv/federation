@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // declarative code
-import { ILoggerColorParams, ILoggerColorConstant } from '../interfaces';
+import { ILoggerColorConstant, ILoggerColorParams } from '../interfaces';
 
 export const loggerTimeColorsConstant: ILoggerColorParams = {
   BACKGROUND_COLOR: '#555',

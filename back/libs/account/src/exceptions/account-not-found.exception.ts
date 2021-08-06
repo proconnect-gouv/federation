@@ -2,6 +2,7 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
+
 import { ErrorCode } from '../enums';
 import { AccountBaseException } from './account-base.exception';
 

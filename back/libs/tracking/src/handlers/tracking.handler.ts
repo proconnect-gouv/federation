@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { TrackingService } from '../tracking.service';
+
 import { IEvent, IEventContext, IEventMap } from '../interfaces';
+import { TrackingService } from '../tracking.service';
 
 @Injectable()
 export abstract class TrackingHandler {

@@ -1,11 +1,14 @@
 import { ClientMetadata, KoaContextWithOIDC } from 'oidc-provider';
-import { Injectable, Inject } from '@nestjs/common';
+
+import { Inject, Injectable } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { SessionService, ISessionBoundContext } from '@fc/session';
 import { IServiceProviderAdapter, OidcSession } from '@fc/oidc';
-import { OidcProviderConfig } from '@fc/oidc-provider';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
+import { OidcProviderConfig } from '@fc/oidc-provider';
+import { ISessionBoundContext, SessionService } from '@fc/session';
+
 import { OidcProviderRedisAdapter } from '../adapters';
 import { OidcProviderService } from '../oidc-provider.service';
 import { OidcProviderErrorService } from './oidc-provider-error.service';

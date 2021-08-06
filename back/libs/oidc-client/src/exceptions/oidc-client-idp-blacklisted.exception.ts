@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { OidcClientBaseException } from './oidc-client-base.exception';
+
 import { ErrorCode } from '../enums';
+import { OidcClientBaseException } from './oidc-client-base.exception';
 
 @Description(
   "Le fournisseur d'identité utilisé par l'usager n'est pas autorisé pour ce FS. Cela peut se produire uniquement lorsque l'on a ajouté le FI dans la blacklist du FS. L'utilisateur doit recommencer sa cinématique. Si le problème persiste, contacter le support N3",

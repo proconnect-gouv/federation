@@ -1,2 +1,2 @@
-export * from './rabbitmq.module';
 export * from './dto';
+export * from './rabbitmq.module';

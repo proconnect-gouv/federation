@@ -1,13 +1,13 @@
-import {
-  IsString,
-  ValidateNested,
-  IsObject,
-  IsEmail,
-  NotContains,
-  IsArray,
-  ArrayNotEmpty,
-} from 'class-validator';
 import { Type } from 'class-transformer';
+import {
+  ArrayNotEmpty,
+  IsArray,
+  IsEmail,
+  IsObject,
+  IsString,
+  NotContains,
+  ValidateNested,
+} from 'class-validator';
 
 type MailerType = 'logs' | 'mailjet';
 

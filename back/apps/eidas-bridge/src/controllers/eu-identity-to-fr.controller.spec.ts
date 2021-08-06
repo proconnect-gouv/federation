@@ -1,18 +1,21 @@
 import { mocked } from 'ts-jest/utils';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger';
-import { SessionService } from '@fc/session';
 import {
   EidasLevelOfAssurances,
   EidasNameIdFormats,
   EidasResponse,
 } from '@fc/eidas';
+import { EidasCountryService, IEidasCountryElement } from '@fc/eidas-country';
+import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
+import { LoggerService } from '@fc/logger';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
-import { validateDto } from '@fc/common';
-import { IEidasCountryElement, EidasCountryService } from '@fc/eidas-country';
+import { SessionService } from '@fc/session';
+
 import { AppConfig, EidasBridgeIdentityDto } from '../dto';
 import { EidasBridgeInvalidIdentityException } from '../exceptions';
 import { EuIdentityToFrController } from './eu-identity-to-fr.controller';
