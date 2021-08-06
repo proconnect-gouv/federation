@@ -4,28 +4,32 @@
  * it will be available in a neer future. So once it's done we just
  * need to remove this hack in the package.json
  */
-import { JWK } from 'jose-openid-client';
-import { TokenSet, Client } from 'openid-client';
-import { Inject, Injectable } from '@nestjs/common';
 import { CryptographyService } from '@fc/cryptography';
+
+import { JWK } from 'jose-openid-client';
+import { Client, TokenSet } from 'openid-client';
+
+import { Inject, Injectable } from '@nestjs/common';
+
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import {
   IOidcIdentity,
   IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
 } from '@fc/oidc';
-import { IGetAuthorizeUrlParams } from '../interfaces';
+
 import {
+  OidcClientFailedToFetchBlacklist,
+  OidcClientGetEndSessionUrlException,
+  OidcClientIdpBlacklistedException,
+  OidcClientInvalidStateException,
   OidcClientMissingCodeException,
   OidcClientMissingStateException,
-  OidcClientInvalidStateException,
   OidcClientTokenFailedException,
-  OidcClientFailedToFetchBlacklist,
-  OidcClientIdpBlacklistedException,
-  OidcClientGetEndSessionUrlException,
 } from '../exceptions';
-import { OidcClientIssuerService } from './oidc-client-issuer.service';
+import { IGetAuthorizeUrlParams } from '../interfaces';
 import { OidcClientConfigService } from './oidc-client-config.service';
+import { OidcClientIssuerService } from './oidc-client-issuer.service';
 
 @Injectable()
 export class OidcClientUtilsService {

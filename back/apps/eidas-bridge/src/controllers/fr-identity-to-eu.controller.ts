@@ -1,16 +1,20 @@
-import { ValidatorOptions } from 'class-validator';
-import { ClassTransformOptions } from 'class-transformer';
-import { Controller, Get, Redirect, Req, Query } from '@nestjs/common';
-import { validateDto } from '@fc/common';
 import { CryptographyService } from '@fc/cryptography';
+
+import { ClassTransformOptions } from 'class-transformer';
+import { ValidatorOptions } from 'class-validator';
+
+import { Controller, Get, Query, Redirect, Req } from '@nestjs/common';
+
+import { validateDto } from '@fc/common';
+import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
+import { EidasProviderSession } from '@fc/eidas-provider';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { AcrValues } from '@fc/oidc';
 import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
-import { EidasProviderSession } from '@fc/eidas-provider';
 import { ISessionService, Session } from '@fc/session';
-import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
-import { EidasBridgeRoutes } from '../enums';
+
 import { EidasBridgeIdentityDto } from '../dto/eidas-bridge-identity.dto';
+import { EidasBridgeRoutes } from '../enums';
 import { EidasBridgeInvalidIdentityException } from '../exceptions';
 
 /**

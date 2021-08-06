@@ -1,19 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import {
-  ClientMetadata,
-  IssuerMetadata,
-  IdentityProviderMetadata,
-} from '@fc/oidc';
-import { IIdentityProviderAdapter } from '@fc/oidc-client';
 import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
+
+import { Injectable } from '@nestjs/common';
+
 import { asyncFilter, validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
-import { IIdentityProviderAdapterEnv } from './interfaces';
+import { LoggerService } from '@fc/logger';
 import {
-  IdentityProviderAdapterEnvDTO,
+  ClientMetadata,
+  IdentityProviderMetadata,
+  IssuerMetadata,
+} from '@fc/oidc';
+import { IIdentityProviderAdapter } from '@fc/oidc-client';
+
+import {
   IdentityProviderAdapterEnvConfig,
+  IdentityProviderAdapterEnvDTO,
 } from './dto';
+import { IIdentityProviderAdapterEnv } from './interfaces';
 
 const CLIENT_METADATA = [
   'client_id',

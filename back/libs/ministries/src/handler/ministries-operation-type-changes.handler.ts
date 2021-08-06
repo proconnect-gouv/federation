@@ -1,7 +1,8 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
 import { MinistriesOperationTypeChangesEvent } from '../events';
 import { MinistriesService } from '../ministries.service';
 

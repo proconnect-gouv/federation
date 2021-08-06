@@ -1,30 +1,33 @@
 import { get } from 'lodash';
-import { HttpOptions } from 'openid-client';
 import {
-  Provider,
-  KoaContextWithOIDC,
   InteractionResults,
+  KoaContextWithOIDC,
+  Provider,
 } from 'oidc-provider';
-import { HttpAdapterHost } from '@nestjs/core';
+import { HttpOptions } from 'openid-client';
+
 import { Global, Inject, Injectable } from '@nestjs/common';
+import { HttpAdapterHost } from '@nestjs/core';
+
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
+
 import {
-  OidcProviderMiddlewareStep,
   OidcProviderMiddlewarePattern,
+  OidcProviderMiddlewareStep,
   OidcProviderRoutes,
 } from './enums';
 import {
-  OidcProviderInitialisationException,
-  OidcProviderRuntimeException,
   OidcProviderBindingException,
+  OidcProviderInitialisationException,
   OidcProviderInteractionNotFoundException,
+  OidcProviderRuntimeException,
 } from './exceptions';
 import {
-  OidcProviderErrorService,
   OidcProviderConfigService,
+  OidcProviderErrorService,
 } from './services';
 import { OidcProviderGrantService } from './services/oidc-provider-grant.service';
 

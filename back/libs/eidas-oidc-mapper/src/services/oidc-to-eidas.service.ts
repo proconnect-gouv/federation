@@ -1,6 +1,7 @@
 import * as _ from 'lodash';
+
 import { Injectable } from '@nestjs/common';
-import { OidcError, AcrValues } from '@fc/oidc';
+
 import {
   EidasAttributes,
   EidasPartialRequest,
@@ -10,12 +11,14 @@ import {
   EidasSubStatusCodes,
 } from '@fc/eidas';
 import { LoggerService } from '@fc/logger';
+import { AcrValues, OidcError } from '@fc/oidc';
+
+import { IOidcIdentity } from '../interfaces';
 import {
-  ScopesToRequestedAttributesMap,
   AcrValuesToLevelOfAssurancesMap,
   ClaimsToAttributesMap,
+  ScopesToRequestedAttributesMap,
 } from '../mappers';
-import { IOidcIdentity } from '../interfaces';
 
 @Injectable()
 export class OidcToEidasService {

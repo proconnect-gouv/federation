@@ -1,38 +1,41 @@
+import { CryptographyService } from '@fc/cryptography';
+
 import { encode } from 'querystring';
+
 import {
+  Body,
   Controller,
   Get,
-  Res,
-  Req,
-  Render,
-  Query,
-  Body,
-  Post,
-  ValidationPipe,
-  UsePipes,
   Param,
+  Post,
+  Query,
+  Render,
+  Req,
+  Res,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
+
 import { AppConfig } from '@fc/app';
-import { IOidcIdentity, OidcSession } from '@fc/oidc';
-import { IdentityProviderMetadata } from '@fc/oidc';
+import { ConfigService } from '@fc/config';
+import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
+import { IdentityProviderMetadata, IOidcIdentity, OidcSession } from '@fc/oidc';
 import {
+  GetOidcCallback,
   OidcClientConfig,
   OidcClientRoutes,
-  GetOidcCallback,
   OidcClientService,
   OidcClientSession,
 } from '@fc/oidc-client';
-import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { ISessionService, Session } from '@fc/session';
-import { CryptographyService } from '@fc/cryptography';
-import { ConfigService } from '@fc/config';
-import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
+
+import { AccessTokenParamsDTO } from '../dto';
 import { MockServiceProviderRoutes } from '../enums';
 import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
 } from '../exceptions';
-import { AccessTokenParamsDTO } from '../dto';
 
 @Controller()
 export class MockServiceProviderController {

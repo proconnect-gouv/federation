@@ -1,4 +1,4 @@
-import { ValidationOptions, Matches, matches } from 'class-validator';
+import { Matches, matches, ValidationOptions } from 'class-validator';
 
 const SAFE_STRING_REGEX = /^[^.*?{}()|[\]\t\r\n\\]*$/;
 

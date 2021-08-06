@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { OidcProviderBaseException } from './oidc-provider-base.exception';
+
 import { ErrorCode } from '../enums';
+import { OidcProviderBaseException } from './oidc-provider-base.exception';
 
 @Description(
   'Les données enregistrées dans la session utilisateurs sont corrompues, il faut recommencer la cinématique. Si le problème persiste, contacter le support N3',

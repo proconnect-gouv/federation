@@ -1,6 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { LoggerService } from '@fc/logger';
 import { ISessionService } from '@fc/session';
+
 import { AppSession, AuthorizeParamsDto } from '../dto';
 import { OidcProviderController } from './oidc-provider.controller';
 

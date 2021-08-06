@@ -1,7 +1,8 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Module, HttpModule } from '@nestjs/common';
+import { HttpModule, Module } from '@nestjs/common';
+
 import { HttpProxyService } from './http-proxy.service';
 
 @Module({

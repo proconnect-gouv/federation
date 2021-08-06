@@ -1,21 +1,42 @@
+import { CryptographyService } from '@fc/cryptography';
+
 import { ValidationError } from 'class-validator';
+
 import {
+  Body,
   Controller,
-  Post,
   Get,
+  Param,
+  Post,
   Render,
   Req,
   Res,
+  Type,
   UsePipes,
   ValidationPipe,
-  Param,
-  Body,
-  Type,
 } from '@nestjs/common';
-import { OidcSession } from '@fc/oidc';
-import { OidcProviderService, OidcProviderConfig } from '@fc/oidc-provider';
-import { LoggerLevelNames, LoggerService } from '@fc/logger';
+
+import { AppConfig } from '@fc/app';
+import { ConfigService } from '@fc/config';
+import {
+  CoreMissingIdentityException,
+  CoreRoutes,
+  CsrfToken,
+  Interaction,
+} from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
+import { NotificationsService } from '@fc/notifications';
+import { OidcSession } from '@fc/oidc';
+import {
+  GetOidcCallback,
+  OidcClientConfig,
+  OidcClientRoutes,
+  OidcClientService,
+  OidcClientSession,
+} from '@fc/oidc-client';
+import { OidcProviderConfig, OidcProviderService } from '@fc/oidc-provider';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
   ISessionService,
   Session,
@@ -24,37 +45,20 @@ import {
   SessionNotFoundException,
   SessionService,
 } from '@fc/session';
-import { OidcClientSession } from '@fc/oidc-client';
-import { ConfigService } from '@fc/config';
-import { AppConfig } from '@fc/app';
-import {
-  Interaction,
-  CsrfToken,
-  CoreRoutes,
-  CoreMissingIdentityException,
-} from '@fc/core';
-import { CryptographyService } from '@fc/cryptography';
-import { NotificationsService } from '@fc/notifications';
 import { TrackingService } from '@fc/tracking';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import {
-  GetOidcCallback,
-  OidcClientConfig,
-  OidcClientRoutes,
-  OidcClientService,
-} from '@fc/oidc-client';
+
 import { Core, OidcIdentityDto } from '../dto';
-import { CoreFcpService } from '../services';
 import { ProcessCore } from '../enums';
-import {
-  CoreFcpInvalidIdentityException,
-  CoreFcpInvalidEventClassException,
-} from '../exceptions';
 import {
   CoreFcpDatatransferConsentIdentityEvent,
   CoreFcpDatatransferInformationAnonymousEvent,
   CoreFcpDatatransferInformationIdentityEvent,
 } from '../events';
+import {
+  CoreFcpInvalidEventClassException,
+  CoreFcpInvalidIdentityException,
+} from '../exceptions';
+import { CoreFcpService } from '../services';
 
 export const datatransferEventsMap = {
   'INFORMATION:ANONYMOUS': CoreFcpDatatransferInformationAnonymousEvent,

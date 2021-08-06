@@ -1,7 +1,8 @@
 import { validateDto } from '@fc/common';
 import { validationOptions } from '@fc/config';
-import { LoggerConfig } from './logger-config.dto';
+
 import { LoggerLevelNames } from '../enum';
+import { LoggerConfig } from './logger-config.dto';
 
 describe('LoggerConfig', () => {
   const correctObjectMock = {

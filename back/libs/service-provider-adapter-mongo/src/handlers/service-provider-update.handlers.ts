@@ -1,8 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IEventHandler, EventsHandler } from '@nestjs/cqrs';
+import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
 import { LoggerService } from '@fc/logger';
+
 import { ServiceProviderUpdateEvent } from '../events/service-provider-update.event';
 import { ServiceProviderAdapterMongoService } from '../service-provider-adapter-mongo.service';
 

@@ -1,11 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import {
-  SessionConfig,
-  ISessionCookieOptions,
-} from '@fc/session';
 import { ConfigParser } from '@fc/config';
+import { ISessionCookieOptions, SessionConfig } from '@fc/session';
 
 const env = new ConfigParser(process.env, 'Session');
 

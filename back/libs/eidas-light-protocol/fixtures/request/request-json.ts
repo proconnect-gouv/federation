@@ -1,8 +1,8 @@
 import {
+  EidasAttributes,
   EidasLevelOfAssurances,
   EidasNameIdFormats,
   EidasRequest,
-  EidasAttributes,
   EidasSpTypes,
 } from '@fc/eidas';
 import { EidasCountries } from '@fc/eidas-country';

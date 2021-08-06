@@ -2,6 +2,7 @@
 
 // Declarative code
 import { KeyLike } from 'crypto';
+
 import { IsObject } from 'class-validator';
 
 export class OverrideOidcProviderConfig {

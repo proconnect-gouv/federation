@@ -1,6 +1,8 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+
 import { OidcClientConfig } from '../dto';
 import { IIdentityProviderAdapter } from '../interfaces';
 import { IDENTITY_PROVIDER_SERVICE } from '../tokens';

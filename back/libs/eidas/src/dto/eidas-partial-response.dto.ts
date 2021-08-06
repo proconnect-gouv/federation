@@ -11,7 +11,8 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator';
-import { EidasNameIdFormats, EidasLevelOfAssurances } from '../enums';
+
+import { EidasLevelOfAssurances, EidasNameIdFormats } from '../enums';
 import {
   EidasResponseAttributes,
   EidasResponseStatus,

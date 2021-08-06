@@ -1,10 +1,10 @@
 import {
-  IsBoolean,
-  IsString,
   IsArray,
+  IsBoolean,
+  IsIn,
+  IsString,
   IsUrl,
   MinLength,
-  IsIn,
 } from 'class-validator';
 
 const SUPPORTED_SIG_ALG = ['ES256', 'RS256', 'HS256'];

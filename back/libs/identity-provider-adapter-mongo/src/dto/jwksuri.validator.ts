@@ -1,9 +1,10 @@
 import {
+  isURL,
+  ValidationArguments,
   ValidatorConstraint,
   ValidatorConstraintInterface,
-  ValidationArguments,
-  isURL,
 } from 'class-validator';
+
 import { MetadataIdpAdapterMongoDTO } from './identity-provider-adapter-mongo.dto';
 
 const symetricAlgs = ['HS256', 'HS512'];

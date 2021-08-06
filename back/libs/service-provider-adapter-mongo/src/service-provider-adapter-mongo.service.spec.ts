@@ -1,10 +1,13 @@
-import { Test, TestingModule } from '@nestjs/testing';
+import { CryptographyService } from '@fc/cryptography';
+
 import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
-import { CryptographyService } from '@fc/cryptography';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { ServiceProviderMetadata } from '@fc/oidc';
+
 import { ServiceProvider } from './schemas';
 import { ServiceProviderAdapterMongoService } from './service-provider-adapter-mongo.service';
 

@@ -4,18 +4,22 @@
  * it will be available in a neer future. So once it's done we just
  * need to remove this hack in the package.json
  */
-import { JWK } from 'jose-openid-client';
-import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
 import { CryptographyService } from '@fc/cryptography';
+
+import { JWK } from 'jose-openid-client';
+
+import { Test, TestingModule } from '@nestjs/testing';
+
+import { LoggerService } from '@fc/logger';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
+
 import {
-  OidcClientMissingStateException,
-  OidcClientMissingCodeException,
-  OidcClientInvalidStateException,
-  OidcClientIdpBlacklistedException,
-  OidcClientTokenFailedException,
   OidcClientGetEndSessionUrlException,
+  OidcClientIdpBlacklistedException,
+  OidcClientInvalidStateException,
+  OidcClientMissingCodeException,
+  OidcClientMissingStateException,
+  OidcClientTokenFailedException,
 } from '../exceptions';
 import { OidcClientConfigService } from './oidc-client-config.service';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';

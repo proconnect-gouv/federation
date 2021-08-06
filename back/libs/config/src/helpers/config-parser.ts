@@ -1,5 +1,7 @@
 import { existsSync, readFileSync } from 'fs';
+
 import { parseBoolean, parseJsonProperty } from '@fc/common';
+
 import { IConfigParserFileOptions } from '../interfaces';
 
 export class ConfigParser {

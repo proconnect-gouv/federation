@@ -1,4 +1,4 @@
-import { IsString, IsAscii, IsOptional } from 'class-validator';
+import { IsAscii, IsOptional, IsString } from 'class-validator';
 
 export class RedirectToIdp {
   @IsString()

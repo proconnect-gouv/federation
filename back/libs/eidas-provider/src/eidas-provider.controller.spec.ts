@@ -1,5 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
+
 import { EidasProviderController } from './eidas-provider.controller';
 import { EidasProviderService } from './eidas-provider.service';
 

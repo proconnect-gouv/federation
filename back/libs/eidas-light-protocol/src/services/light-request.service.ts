@@ -1,10 +1,13 @@
 import * as _ from 'lodash';
+
 import { Injectable } from '@nestjs/common';
+
 import { ConfigService } from '@fc/config';
 import { EidasRequest } from '@fc/eidas';
+
+import { EidasLightProtocolConfig } from '../dto';
 import { EidasJsonToXmlException } from '../exceptions';
 import { IParsedToken } from '../interfaces';
-import { EidasLightProtocolConfig } from '../dto';
 import { LightProtocolCommonsService } from './light-protocol-commons.service';
 import { LightProtocolXmlService } from './light-protocol-xml.service';
 

@@ -1,9 +1,10 @@
 import {
-  ValidateBy,
-  ValidationOptions,
   arrayContains,
   isObject,
+  ValidateBy,
+  ValidationOptions,
 } from 'class-validator';
+
 import { FeatureHandler } from '../decorators';
 import { IFeatureHandlerDatabaseMap } from '../interfaces';
 

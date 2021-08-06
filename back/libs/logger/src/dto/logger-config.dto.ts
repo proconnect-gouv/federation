@@ -1,4 +1,5 @@
-import { IsEnum, IsBoolean, IsString, IsNotEmpty } from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsString } from 'class-validator';
+
 import { LoggerLevelNames } from '../enum';
 
 export class LoggerConfig {

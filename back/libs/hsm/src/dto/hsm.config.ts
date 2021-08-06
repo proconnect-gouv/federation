@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsString, IsNumber, Min } from 'class-validator';
+import { IsNumber, IsString, Min } from 'class-validator';
 
 export class HsmConfig {
   @IsString()

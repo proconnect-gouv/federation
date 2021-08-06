@@ -1,6 +1,7 @@
 import { Description } from '@fc/exceptions';
-import { UserDashboardBaseException } from './user-dashboard-base.exception';
+
 import { ErrorCode } from '../enums';
+import { UserDashboardBaseException } from './user-dashboard-base.exception';
 
 /**
  * @todo

@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
+
 import { EidasAttributes, EidasLevelOfAssurances } from '@fc/eidas';
 import { AcrValues } from '@fc/oidc';
+
 import { OidcScopes } from '../enums';
 
 /**

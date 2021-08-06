@@ -1,8 +1,11 @@
 import { mocked } from 'ts-jest/utils';
+
 import { Test, TestingModule } from '@nestjs/testing';
-import { LoggerService } from '@fc/logger';
-import { OidcIdentityDto } from '@fc/core-fcp/dto';
+
 import { validateDto } from '@fc/common';
+import { OidcIdentityDto } from '@fc/core-fcp/dto';
+import { LoggerService } from '@fc/logger';
+
 import { CoreFcpDefaultIdentityCheckHandler } from './core-fcp.default.identity-check';
 
 jest.mock('@fc/common', () => ({

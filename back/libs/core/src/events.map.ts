@@ -1,12 +1,13 @@
-import { IEventMap } from '@fc/tracking';
-import { EventsCategories } from './enums';
 import {
   RnippDeceasedException,
+  RnippFoundOnlyWithMaritalNameException,
   RnippNotFoundMultipleEchoException,
   RnippNotFoundNoEchoException,
   RnippNotFoundSingleEchoException,
-  RnippFoundOnlyWithMaritalNameException,
 } from '@fc/rnipp';
+import { IEventMap } from '@fc/tracking';
+
+import { EventsCategories } from './enums';
 
 export function getEventsMap(urlPrefix: string): IEventMap {
   return {

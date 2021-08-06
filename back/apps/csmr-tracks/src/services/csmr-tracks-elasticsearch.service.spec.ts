@@ -1,9 +1,12 @@
 import { Search } from '@elastic/elasticsearch/api/requestParams';
+
+import { ElasticsearchService } from '@nestjs/elasticsearch';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { ConfigService } from '@fc/config';
 import { ElasticsearchConfig } from '@fc/elasticsearch';
 import { LoggerService } from '@fc/logger';
-import { ElasticsearchService } from '@nestjs/elasticsearch';
-import { Test, TestingModule } from '@nestjs/testing';
+
 import { ICsmrTracksInputTrack, ICsmrTracksOutputTrack } from '../interfaces';
 import { CsmrTracksElasticsearchService } from './csmr-tracks-elasticsearch.service';
 

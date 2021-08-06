@@ -1,20 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { LoggerService } from '@fc/logger';
-import { ConfigService, validationOptions } from '@fc/config';
-import {
-  MailerConfig,
-  MailerService,
-  MailTo,
-  MailFrom,
-  NoEmailException,
-  MailerNotificationConnectException,
-  ConnectNotificationEmailParameters,
-} from '@fc/mailer';
-import { IFeatureHandler, FeatureHandler } from '@fc/feature-handler';
-import { validateDto } from '@fc/common';
-import { OidcSession } from '@fc/oidc';
+
 import { AppConfig } from '@fc/app';
+import { validateDto } from '@fc/common';
+import { ConfigService, validationOptions } from '@fc/config';
+import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
+import {
+  ConnectNotificationEmailParameters,
+  MailerConfig,
+  MailerNotificationConnectException,
+  MailerService,
+  MailFrom,
+  MailTo,
+  NoEmailException,
+} from '@fc/mailer';
+import { OidcSession } from '@fc/oidc';
+
 import { EmailsTemplates } from '../../enums';
 
 @Injectable()

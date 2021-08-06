@@ -1,13 +1,15 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsObject, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
+import { IsObject, ValidateNested } from 'class-validator';
+
+import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
+import { LoggerConfig } from '@fc/logger';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { RedisConfig } from '@fc/redis';
-import { LoggerConfig } from '@fc/logger';
 import { SessionConfig } from '@fc/session';
-import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
+
 import { AppConfig } from './app-config.dto';
 
 export class MockServiceProviderConfig {

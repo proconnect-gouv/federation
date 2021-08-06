@@ -2,6 +2,7 @@
 
 // Tested by DTO
 import { CryptographyFcaConfig } from '@fc/cryptography-fca';
+
 import { ConfigParser } from '@fc/config';
 
 const env = new ConfigParser(process.env, 'CryptographyFca');

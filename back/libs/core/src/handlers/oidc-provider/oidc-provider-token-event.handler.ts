@@ -2,6 +2,7 @@
 
 // Declarative code
 import { EventsHandler, IEventHandler } from '@nestjs/cqrs';
+
 import { OidcProviderTokenEvent } from '@fc/oidc-provider';
 import { TrackingHandler } from '@fc/tracking';
 

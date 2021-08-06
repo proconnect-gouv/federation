@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { AppConfig } from '@fc/eidas-bridge';
 import { ConfigParser } from '@fc/config';
+import { AppConfig } from '@fc/eidas-bridge';
 
 const env = new ConfigParser(process.env, 'App');
 

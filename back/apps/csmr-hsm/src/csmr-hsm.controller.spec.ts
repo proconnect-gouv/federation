@@ -1,7 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
 import { HsmService, SignatureDigest } from '@fc/hsm';
 import { LoggerService } from '@fc/logger';
-import { ConfigService } from '@fc/config';
+
 import { CsmrHsmController } from './csmr-hsm.controller';
 
 describe('CsmrHsmController', () => {

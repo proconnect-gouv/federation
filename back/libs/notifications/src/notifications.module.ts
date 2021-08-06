@@ -2,10 +2,11 @@
 
 // Declarative code
 import { Module } from '@nestjs/common';
-import { MongooseModule } from '@nestjs/mongoose';
 import { CqrsModule } from '@nestjs/cqrs';
-import { NotificationsSchema } from './schemas';
+import { MongooseModule } from '@nestjs/mongoose';
+
 import { NotificationsService } from './notifications.service';
+import { NotificationsSchema } from './schemas';
 
 @Module({
   imports: [

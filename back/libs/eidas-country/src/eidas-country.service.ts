@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { IEidasCountryElement } from './interfaces';
+
 import { eidasCountryListData } from './data';
+import { IEidasCountryElement } from './interfaces';
 
 // For test purpose
 export interface EidasCountryServiceInterface {

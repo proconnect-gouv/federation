@@ -1,18 +1,22 @@
+import { CryptographyService } from '@fc/cryptography';
+
 import { mocked } from 'ts-jest/utils';
-import { Test, TestingModule } from '@nestjs/testing';
+
 import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
-import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
-import { IdentityProviderMetadata } from '@fc/oidc';
+import { Test, TestingModule } from '@nestjs/testing';
+
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { IdentityProvider } from './schemas';
-import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
+import { LoggerService } from '@fc/logger';
+import { IdentityProviderMetadata } from '@fc/oidc';
+
 import {
   DiscoveryIdpAdapterMongoDTO,
   IdentityProviderAdapterMongoDTO,
 } from './dto';
+import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
+import { IdentityProvider } from './schemas';
 
 jest.mock('@fc/common', () => ({
   ...(jest.requireActual('@fc/common') as any),

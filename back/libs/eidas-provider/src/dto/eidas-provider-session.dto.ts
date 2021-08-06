@@ -3,6 +3,7 @@
 // Declarative code
 import { Type } from 'class-transformer';
 import { IsObject, ValidateNested } from 'class-validator';
+
 import { EidasPartialResponse, EidasRequest } from '@fc/eidas';
 
 export class EidasProviderSession {

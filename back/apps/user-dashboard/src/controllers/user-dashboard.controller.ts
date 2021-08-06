@@ -1,34 +1,37 @@
+import { CryptographyService } from '@fc/cryptography';
+
 import {
+  Body,
   Controller,
   Get,
-  Res,
-  Req,
-  Render,
-  Query,
-  Body,
-  Post,
-  ValidationPipe,
-  UsePipes,
   Param,
+  Post,
+  Query,
+  Render,
+  Req,
+  Res,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
+
+import { AppConfig } from '@fc/app';
+import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
+import { OidcSession } from '@fc/oidc';
 import {
   GetOidcCallback,
   OidcClientRoutes,
   OidcClientService,
   OidcClientSession,
 } from '@fc/oidc-client';
-import { LoggerService } from '@fc/logger';
 import { ISessionService, Session } from '@fc/session';
-import { CryptographyService } from '@fc/cryptography';
-import { ConfigService } from '@fc/config';
-import { AppConfig } from '@fc/app';
-import { OidcSession } from '@fc/oidc';
+
+import { AccessTokenParamsDTO } from '../dto';
 import { UserDashboardRoutes } from '../enums';
 import {
   UserDashboardTokenRevocationException,
   UserDashboardUserinfoException,
 } from '../exceptions';
-import { AccessTokenParamsDTO } from '../dto';
 
 @Controller()
 export class UserDashboardController {

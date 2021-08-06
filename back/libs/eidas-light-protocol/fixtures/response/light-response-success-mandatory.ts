@@ -3,6 +3,7 @@ import {
   EidasNameIdFormats,
   EidasResponse,
 } from '@fc/eidas';
+
 import { IJsonifiedLightResponseXml } from '../../src/interfaces';
 
 export const successMandatoryJsonMock: EidasResponse = {

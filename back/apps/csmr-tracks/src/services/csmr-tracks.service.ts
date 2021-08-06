@@ -1,10 +1,13 @@
-import { Injectable } from '@nestjs/common';
-import { IOidcIdentity } from '@fc/oidc';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
+
+import { Injectable } from '@nestjs/common';
+
 import { Account, AccountNotFoundException, AccountService } from '@fc/account';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import { ICsmrTracksOutputTrack } from '../interfaces';
+import { IOidcIdentity } from '@fc/oidc';
+
 import { CsrmTracksNoTracksException } from '../exceptions';
+import { ICsmrTracksOutputTrack } from '../interfaces';
 import { CsmrTracksElasticsearchService } from './csmr-tracks-elasticsearch.service';
 
 @Injectable()

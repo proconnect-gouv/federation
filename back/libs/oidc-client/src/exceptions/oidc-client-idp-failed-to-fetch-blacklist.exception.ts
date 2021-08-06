@@ -2,8 +2,9 @@
 
 // Declarative code
 import { Description } from '@fc/exceptions';
-import { OidcClientBaseException } from './oidc-client-base.exception';
+
 import { ErrorCode } from '../enums';
+import { OidcClientBaseException } from './oidc-client-base.exception';
 
 @Description(
   "La liste de fournisseur d'identité autorisés pour ce FS n'a pas pu être récupérée. L'utilisateur doit recommencer sa cinématique. Si le problème persiste, contacter le support N3",

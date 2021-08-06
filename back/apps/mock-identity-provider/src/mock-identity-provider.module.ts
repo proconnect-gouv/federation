@@ -2,13 +2,15 @@
 
 // Declarative code
 import { Module } from '@nestjs/common';
+
+import { ExceptionsModule } from '@fc/exceptions';
+import { OidcProviderModule } from '@fc/oidc-provider';
 import {
   ServiceProviderAdapterEnvModule,
   ServiceProviderAdapterEnvService,
 } from '@fc/service-provider-adapter-env';
-import { OidcProviderModule } from '@fc/oidc-provider';
-import { ExceptionsModule } from '@fc/exceptions';
 import { SessionModule } from '@fc/session';
+
 import {
   MockIdentityProviderController,
   OidcProviderController,

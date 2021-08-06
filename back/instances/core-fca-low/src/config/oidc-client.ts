@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { OidcClientConfig } from '@fc/oidc-client';
 import { ConfigParser } from '@fc/config';
+import { OidcClientConfig } from '@fc/oidc-client';
 
 const env = new ConfigParser(process.env, 'OidcClient');
 

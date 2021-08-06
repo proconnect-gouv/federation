@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 
 // Declarative code
+import { IFeatureHandler } from '@fc/feature-handler';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ISessionService } from '@fc/session';
-import { IFeatureHandler } from '@fc/feature-handler';
 
 export interface IVerifyFeatureHandlerHandleArgument {
   sessionOidc: ISessionService<OidcClientSession>;

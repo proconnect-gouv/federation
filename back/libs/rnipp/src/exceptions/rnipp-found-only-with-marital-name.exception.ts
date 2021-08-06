@@ -1,9 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Loggable, Trackable, Description } from '@fc/exceptions';
-import { RnippBaseException } from './';
+import { Description, Loggable, Trackable } from '@fc/exceptions';
+
 import { ErrorCode } from '../enums';
+import { RnippBaseException } from './';
 
 @Loggable(false)
 @Trackable()

@@ -1,7 +1,8 @@
 // Needed to use the "spyOn" method of jest
 import * as ClassTransformer from 'class-transformer';
 import * as ClassValidator from 'class-validator';
-import { validateDto, getDtoErrors, getTransformed } from './dto-validation';
+
+import { getDtoErrors, getTransformed, validateDto } from './dto-validation';
 
 describe('DtoValidation', () => {
   beforeEach(() => {

@@ -1,11 +1,14 @@
+import { CryptographyEidasService } from '@fc/cryptography-eidas';
+
 import { Test, TestingModule } from '@nestjs/testing';
+
+import { ConfigService } from '@fc/config';
+import { CoreService } from '@fc/core';
 import { LoggerService } from '@fc/logger';
+import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
-import { CoreService } from '@fc/core';
-import { ConfigService } from '@fc/config';
-import { CryptographyEidasService } from '@fc/cryptography-eidas';
-import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
+
 import { CoreFcpEidasVerifyHandler } from './core-fcp-eidas-verify.handler';
 
 describe('CoreFcpEidasVerifyHandler', () => {

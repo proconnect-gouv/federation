@@ -1,19 +1,21 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsObject, IsUrl, ValidateNested } from 'class-validator';
-import { Type } from 'class-transformer';
-import { LoggerConfig } from '@fc/logger';
-import { OidcProviderConfig } from '@fc/oidc-provider';
 import { CryptographyFcaConfig } from '@fc/cryptography-fca';
-import { OidcClientConfig } from '@fc/oidc-client';
-import { MongooseConfig } from '@fc/mongoose';
-import { RedisConfig } from '@fc/redis';
-import { SessionConfig } from '@fc/session';
-import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
+
+import { Type } from 'class-transformer';
+import { IsObject, IsUrl, ValidateNested } from 'class-validator';
+
 import { AppConfig } from '@fc/app';
-import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
 import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
+import { LoggerConfig } from '@fc/logger';
+import { MongooseConfig } from '@fc/mongoose';
+import { OidcClientConfig } from '@fc/oidc-client';
+import { OidcProviderConfig } from '@fc/oidc-provider';
+import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
+import { RedisConfig } from '@fc/redis';
+import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-mongo';
+import { SessionConfig } from '@fc/session';
 
 export class Core {
   @IsUrl()
