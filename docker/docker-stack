@@ -52,9 +52,12 @@ _up() {
       rp-all)
         services="rp-all"
         ;;
-      eidas)
-        services="$services stack-eidas"
-        ;;
+      all-eidas-high)
+        services="$services all-eidas-high"
+      ;;
+      min-eidas-high)
+        services="$services min-eidas-high"
+      ;;
       min-fca-low)
         services="$services min-fca-low"
         ;;
@@ -108,9 +111,10 @@ _up() {
         echo "Usage: $script <option>:"
         echo "----"
         echo "* up => Select the apps you want to up as well as their dependencies (multiple arguments allowed) :"
-        echo "  - eidas"
-        echo "  - min-fcp-high => up minimal needed services to run `fcp-high` (core-fcp-high, fsp1-high, fip1-high, etc.)"
-        echo "  - all-fcp-high => all needed services to run `fcp-high` (core-fcp-high, fsp1-high, fsp2-high, fsp3-high, fsp5-high, fsp6-high, fip1-high, fip2-high, rnipp, haproxy, hsm, etc.)"
+        echo "  - min-eidas-high => up minimal needed services to run eidas (min-fcp-high + eidas)"
+        echo "  - all-eidas-high => all needed services to run eidas (all-fcp-high + eidas)"
+        echo "  - min-fcp-high => up minimal needed services to run fcp-high (core-fcp-high, fsp1-high, fip1-high, etc.)"
+        echo "  - all-fcp-high => all needed services to run fcp-high (core-fcp-high, fsp1-high, fsp2-high, fsp3-high, fsp5-high, fsp6-high, fip1-high, fip2-high, rnipp, haproxy, hsm, etc.)"
         echo "  - min-fcp-low => up minimal needed services to run core-fcp-low fsp1-low fip1-low"
         echo "  - all-fcp-low => up all needed services to run core-fcp-low and all other future services"
         echo "  - min-fca-low => up minimal needed services to run core-fca-low fsa1-low fia1-low"
