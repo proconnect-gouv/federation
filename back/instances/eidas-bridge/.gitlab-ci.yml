@@ -23,7 +23,7 @@ eidas-bridge:
     - ln -s $FC_ROOT/fc/front/apps/user-dashboard $FC_ROOT/fc/docker/volumes/src/user-dashboard
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
   script:
-    - docker-stack up eidas
+    - docker-stack up all-eidas-high
     - docker-stack dep core-fcp-high # eidas-bridge fsp1-high are included in core-fcp-high (monorepo)
     - docker-stack start core-fcp-high eidas-bridge csmr-hsm rnipp fsp1-high fsp2-high fsp3-high fip1-high fip2-high fip6-high fip7-high
     # ## -- Build like for prod
