@@ -82,6 +82,9 @@ _up() {
       exploitation-fca-low)
         services="$services exploitation-fca-low"
         ;;
+      exploit-fcp-high-front)
+        services="$services exploit-fcp-high-front"
+        ;;
       exploitation-high)
         services="$services exploitation-high"
         ;;
@@ -375,7 +378,7 @@ case "$action" in
     _install_dependencies $@
     ;;
   dep-all|dependencies-all)
-    _install_dependencies fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fdp1v2 fip1-high fip2-high core-fcp-high rnipp exploitation-high fsa1-low fsa2-low fsa3-low fsa4-low fia1-low fia2-low fia4-low fia5-low core-fca-low fca-low-front csmr-hsm eidas-bridge exploitation-fca-low exploit-fcp exploit-fca-low exploit-fca-low-front core-fcp-low fsp1-low fip1-low
+    _install_dependencies fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fdp1v2 fip1-high fip2-high core-fcp-high rnipp exploitation-high fsa1-low fsa2-low fsa3-low fsa4-low fia1-low fia2-low fia4-low fia5-low core-fca-low fca-low-front csmr-hsm eidas-bridge exploitation-fca-low exploit-fcp exploit-fca-low exploit-fca-low-front core-fcp-low fsp1-low fip1-low exploit-fcp-high-front
     ;;
   exec)
     _exec $@
@@ -442,6 +445,7 @@ case "$action" in
       fsp1-low \
       fip1-high fip2-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
       fip1-low \
+      exploit-fcp-high-front \
       \
       core-fca-low fca-low-front exploitation-fca-low exploit-fca-low \
       fsa1-low fsa2-low fsa3-low fsa4-low \
@@ -458,6 +462,7 @@ case "$action" in
     fsp1-low \
     fip1-high fip2-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
     fip1-low \
+    exploit-fcp-high-front \
     \
     core-fca-low fca-low-front exploitation-fca-low exploit-fca-low \
     fsa1-low fsa2-low fsa3-low fsa4-low \
