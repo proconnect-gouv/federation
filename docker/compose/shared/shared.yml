@@ -73,6 +73,7 @@ services:
           - exploit-fcp.docker.dev-franceconnect.fr
           - exploit-fca-low.docker.dev-franceconnect.fr
           - exploit-fca-low-front.docker.dev-franceconnect.fr
+          - exploit-fcp-high-front.docker.dev-franceconnect.fr
           # FCP LOW
           - core-fcp-low.docker.dev-franceconnect.fr
           - fsp1-low.docker.dev-franceconnect.fr

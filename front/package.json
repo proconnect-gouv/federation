@@ -10,7 +10,8 @@
   "workspaces": {
     "packages": [
       "apps/agent-connect",
-      "apps/exploit-fca",
+      "apps/exploit-fca-low",
+      "apps/exploit-fcp-high",
       "apps/user-dashboard"
     ],
     "nohoist": [
@@ -54,6 +55,8 @@
   },
   "scripts": {
     "start:ud": "cd apps/user-dashboard && yarn start",
+    "start:exploit-fcp-high": "cd apps/exploit-fcp-high && yarn start",
+    "start:exploit-fca-low": "cd apps/exploit-fca-low && yarn start",
     "build:fca-low-front": "./scripts/yarn-build-libs agent-connect",
     "build": "./scripts/yarn-build-libs",
     "cleanup": "./scripts/yarn-cleanup"
