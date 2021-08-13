@@ -197,7 +197,7 @@ export function checkInformationsConsent(scopes) {
   const IDENTITY_SCOPES_LABEL = {
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    family_name: `Nom(s) de famille`,
+    family_name: `Nom de naissance`,
     gender: `Sexe`,
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -238,7 +238,7 @@ export function checkInformationsServiceProvider(identity) {
   cy.get('#html-output').within(() => {
     cy.contains(`Sexe : ${gender}`);
     cy.contains(`Prénom(s) : ${givenName}`);
-    cy.contains(`Nom(s) : ${familyName}`);
+    cy.contains(`Nom de naissance : ${familyName}`);
     cy.contains(`Nom d'usage : ${preferredUsername}`);
     cy.contains(`Date de naissance : ${birthdate}`);
 
