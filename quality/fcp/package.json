@@ -44,7 +44,7 @@
     "test:low:chrome-desktop": "yarn test:low:base --browser chrome --headless",
     "test:low:chrome-mobile": "yarn test:low:base --browser chrome --headless --config viewportWidth=320,viewportHeight=568",
     "test:low": "yarn clean && yarn test:low:base",
-    "start:high": "cypress open --config-file cypress-fcp-high.json",
+    "start:high": "npx cypress open --config-file cypress-fcp-high.json",
     "start:low": "cypress open --config-file cypress-fcp-low.json",
     "report:prepare": "ts-node ./scripts/prepare-cucumber-logs",
     "report:generate": "ts-node ./scripts/multiple-cucumber-html-reporter"
