@@ -35,7 +35,7 @@ function TracesPage(): JSX.Element {
         id: uuid(),
         list: [
           'Prénoms',
-          'Nom de famille',
+          'Nom de naissance',
           'Nom d’usage',
           'Date de naissance',
           'Civilité',
@@ -67,7 +67,7 @@ function TracesPage(): JSX.Element {
         id: uuid(),
         list: [
           'Prénoms',
-          'Nom de famille',
+          'Nom de naissance',
           'Nom d’usage',
           'Date de naissance',
           'Civilité',
@@ -83,7 +83,7 @@ function TracesPage(): JSX.Element {
         id: uuid(),
         list: [
           'Prénoms',
-          'Nom de famille',
+          'Nom de naissance',
           'Nom d’usage',
           'Date de naissance',
           'Civilité',

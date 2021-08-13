@@ -41,7 +41,7 @@ describe('ScopesService', () => {
         'Lieu de naissance',
         'Date de naissance',
         'Prénom(s)',
-        'Nom(s) de famille',
+        'Nom de naissance',
         'Sexe',
         "Nom d'usage",
         'Téléphone',
@@ -59,7 +59,7 @@ describe('ScopesService', () => {
       const scopesParamMock = ['profile'];
       const resultsMock = [
         'Prénom(s)',
-        'Nom(s) de famille',
+        'Nom de naissance',
         'Date de naissance',
         'Sexe',
         "Nom d'usage",
@@ -77,7 +77,7 @@ describe('ScopesService', () => {
       const scopesParamMock = ['identite_pivot'];
       const resultsMock = [
         'Prénom(s)',
-        'Nom(s) de famille',
+        'Nom de naissance',
         'Date de naissance',
         'Sexe',
         'Lieu de naissance',
@@ -159,7 +159,7 @@ describe('ScopesService', () => {
       const queryMock = ['openid', 'given_name', 'profile'];
       const resultsMock = [
         'Prénom(s)',
-        'Nom(s) de famille',
+        'Nom de naissance',
         'Date de naissance',
         'Sexe',
         "Nom d'usage",
@@ -191,7 +191,7 @@ describe('ScopesService', () => {
         const resultsMock = [
           'Sexe',
           'Prénom(s)',
-          'Nom(s) de famille',
+          'Nom de naissance',
           'Date de naissance',
           "Nom d'usage",
         ];
