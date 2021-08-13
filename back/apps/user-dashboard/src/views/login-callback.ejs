@@ -23,7 +23,7 @@
             <% if (locals.idpIdentity) { %>
             <p>Civilité : <strong><%= locals.idpIdentity.gender === 'female' ? 'Femme' : 'Homme'; %></strong></p>
             <p>Prénom(s) : <strong><%=locals.idpIdentity.given_name%></strong></p>
-            <p>Nom(s) : <strong><%=locals.idpIdentity.family_name%></strong></p>
+            <p>Nom de naissance : <strong><%=locals.idpIdentity.family_name%></strong></p>
             <p>Nom d'usage : <strong><%= (locals.idpIdentity.preferred_username) ? locals.idpIdentity.preferred_username : '/';%></strong>
             </p>
             <p>Date de naissance : <strong><%=locals.idpIdentity.birthdate%></strong></p>

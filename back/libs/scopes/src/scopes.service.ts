@@ -34,7 +34,7 @@ const STANDARD_IDENTITY_SCOPES_LABEL = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   given_name: `Prénom(s)`,
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  family_name: `Nom(s) de famille`,
+  family_name: `Nom de naissance`,
   // eslint-disable-next-line @typescript-eslint/naming-convention
   preferred_username: `Nom d'usage`,
   birthdate: `Date de naissance`,

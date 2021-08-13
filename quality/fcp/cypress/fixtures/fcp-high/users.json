@@ -163,7 +163,7 @@
   {
     "enabled": true,
     "criteria": [
-      "sans nom de famille"
+      "sans nom de naissance"
     ],
     "credentials": [
       {
