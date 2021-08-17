@@ -55,28 +55,27 @@ server {
 
   include includes/common.vhost.conf;
 
-{{ range $container := $containers }}
+  {{ range $container := $containers }}
 
-{{ $upstream := trim (print $container.Name ".docker.dev-franceconnect.fr") }}
-{{ $proto := coalesce $container.Env.App_PROTOCOL "http" }}
+    {{ $upstream := trim (print $container.Name ".docker.dev-franceconnect.fr") }}
+    {{ $proto := coalesce $container.Env.App_PROTOCOL "http" }}
 
-{{ if $container.Env.SSL_CLIENT_PROTECTED_URIS }}
-  {{ range $protected_uri := split $container.Env.SSL_CLIENT_PROTECTED_URIS "," }}
-  location {{ $protected_uri }} {
-    # URL protégée : requiert certificat client valide.
-    if ($ssl_client_verify != "SUCCESS") {
-      return 403;
+    {{ if $container.Env.SSL_CLIENT_PROTECTED_URIS }}
+      {{ range $protected_uri := split $container.Env.SSL_CLIENT_PROTECTED_URIS "," }}
+      location {{ $protected_uri }} {
+        # URL protégée : requiert certificat client valide.
+        if ($ssl_client_verify != "SUCCESS") {
+          return 403;
+        }
+        proxy_pass {{ $proto }}://{{ $upstream }};
+      }
+      {{ end }}
+    {{ end }}
+
+    {{ $location := coalesce $container.Env.VIRTUAL_HOST_PATH "/" }}
+    location {{ $location }} {
+      proxy_pass {{ $proto }}://{{ $upstream }};
     }
-    proxy_pass {{ $proto }}://{{ $upstream }};
-  }
   {{ end }}
-{{ end }}
-
-{{ $location := coalesce $container.Env.VIRTUAL_HOST_PATH "/" }}
-  location {{ $location }} {
-    proxy_pass {{ $proto }}://{{ $upstream }};
-  }
-{{ end }}
-
 }
 {{ end }}
