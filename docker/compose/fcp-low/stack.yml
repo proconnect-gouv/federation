@@ -1,4 +1,4 @@
-version: "3.4"
+version: '3.4'
 
 services:
   ####################
@@ -8,9 +8,9 @@ services:
   min-fcp-low:
     image: alpine
     depends_on:
-      - "core-fcp-low"
-      - "fsp1-low"
-      - "fip1-low"
+      - 'core-fcp-low'
+      - 'fsp1-low'
+      - 'fip1-low'
 
   ####################
   # ALL FCP LOW
@@ -19,7 +19,6 @@ services:
   all-fcp-low:
     image: alpine
     depends_on:
-      - "core-fcp-low"
-      - "fsp1-low"
-      - "fip1-low"
-
+      - 'core-fcp-low'
+      - 'fsp1-low'
+      - 'fip1-low'

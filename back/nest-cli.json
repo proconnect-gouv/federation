@@ -203,18 +203,22 @@
         ]
       }
     },
-    "exploit-fcp-instance": {
+    "exploit-fcp-high-instance": {
       "type": "application",
-      "root": "instances/exploit-fcp",
+      "root": "instances/exploit-fcp-high",
       "entryFile": "main",
-      "sourceRoot": "instances/exploit-fcp/src",
+      "sourceRoot": "instances/exploit-fcp-high/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/exploit-fcp/tsconfig.app.json",
+        "tsConfigPath": "instances/exploit-fcp-high/tsconfig.app.json",
         "assets": [
-          "../../../apps/exploit-fcp/**/*.ejs",
-          "../../../apps/exploit-fcp/**/*.css",
-          "../../../apps/exploit-fcp/**/*.svg",
-          "../../../apps/exploit-fcp/**/*.png"
+          "../../../apps/exploitation/**/*.ejs",
+          "../../../apps/exploitation/**/*.css",
+          "../../../apps/exploitation/**/*.svg",
+          "../../../apps/exploitation/**/*.png",
+          "../../../instances/exploit-fcp-high/**/*.ejs",
+          "../../../instances/exploit-fcp-high/**/*.css",
+          "../../../instances/exploit-fcp-high/**/*.svg",
+          "../../../instances/exploit-fcp-high/**/*.png"
         ]
       }
     },
@@ -226,10 +230,14 @@
       "compilerOptions": {
         "tsConfigPath": "instances/exploit-fca-low/tsconfig.app.json",
         "assets": [
-          "../../../apps/exploit-fca-low/**/*.ejs",
-          "../../../apps/exploit-fca-low/**/*.css",
-          "../../../apps/exploit-fca-low/**/*.svg",
-          "../../../apps/exploit-fca-low/**/*.png"
+          "../../../apps/exploitation/**/*.ejs",
+          "../../../apps/exploitation/**/*.css",
+          "../../../apps/exploitation/**/*.svg",
+          "../../../apps/exploitation/**/*.png",
+          "../../../instances/exploit-fca-low/**/*.ejs",
+          "../../../instances/exploit-fca-low/**/*.css",
+          "../../../instances/exploit-fca-low/**/*.svg",
+          "../../../instances/exploit-fca-low/**/*.png"
         ]
       }
     },
