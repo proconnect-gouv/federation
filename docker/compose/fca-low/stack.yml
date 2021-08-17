@@ -1,4 +1,4 @@
-version: "3.4"
+version: '3.4'
 
 ####################
 ####################
@@ -6,25 +6,31 @@ services:
   min-fca-low:
     image: alpine
     depends_on:
-      - "core-fca-low"
-      - "fca-low-front"
-      - "fsa1-low"
-      - "fia1-low"
-      
+      - 'core-fca-low'
+      - 'fca-low-front'
+      - 'fsa1-low'
+      - 'fia1-low'
+
+  exploit-fca-low:
+    image: alpine
+    depends_on:
+      - 'exploit-fca-low-back'
+      - 'exploit-fca-low-front'
+
   all-fca-low:
     image: alpine
     depends_on:
-      - "core-fca-low"
-      - "fca-low-front"
-      - "fsa1-low"
-      - "fsa2-low"
-      - "fsa3-low"
-      - "fsa4-low"
-      - "fia1-low"
-      - "fia2-low"
-      - "fia4-low"
-      - "fia5-low"
-      - "exploitation-fca-low"
-      - "pg-exploitation-fca-low"
-      - "exploit-fca-low"
-      - "exploit-fca-low-front"
+      - 'core-fca-low'
+      - 'fca-low-front'
+      - 'fsa1-low'
+      - 'fsa2-low'
+      - 'fsa3-low'
+      - 'fsa4-low'
+      - 'fia1-low'
+      - 'fia2-low'
+      - 'fia4-low'
+      - 'fia5-low'
+      - 'exploitation-fca-low'
+      - 'pg-exploitation-fca-low'
+      - 'exploit-fca-low-back'
+      - 'exploit-fca-low-front'

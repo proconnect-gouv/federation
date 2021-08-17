@@ -12,7 +12,7 @@
     "build:csmr-hsm-high": "nest build csmr-hsm-high",
     "build:eidas-bridge": "nest build eidas-bridge-instance",
     "build:exploit-fcp": "nest build exploit-fcp-instance",
-    "build:exploit-fca-low": "nest build exploit-fca-instance",
+    "build:exploit-fca-low": "nest build exploit-fca-low-instance",
     "build:mock-service-provider-fcp-low": "nest build mock-service-provider-fcp-low",
     "build:mock-service-provider-high": "nest build mock-service-provider-high",
     "build:mock-identity-provider-fcp-high": "nest build mock-identity-provider-fcp-high",

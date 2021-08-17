@@ -61,6 +61,9 @@ _up() {
       min-fca-low)
         services="$services min-fca-low"
         ;;
+      exploit-fca-low)
+        services="$services exploit-fca-low"
+        ;;
       all-fca-low)
         services="$services all-fca-low"
         ;;
@@ -72,6 +75,9 @@ _up() {
         ;;
       min-fcp-high)
         services="$services min-fcp-high"
+        ;;
+      exploit-fcp-high)
+        services="$services exploit-fcp-high"
         ;;
       eidas-bridge)
         services="$services eidas-bridge"
@@ -88,14 +94,17 @@ _up() {
       exploit-fcp-high-front)
         services="$services exploit-fcp-high-front"
         ;;
+      exploit-fcp-high-back)
+        services="$services exploit-fcp-high-back"
+        ;;
       exploitation-high)
         services="$services exploitation-high"
         ;;
-      exploit-fcp)
-        services="$services exploit-fcp"
+      exploit-fca-low-front)
+        services="$services exploit-fca-low-front"
         ;;
-      exploit-fca-low)
-        services="$services exploit-fca-low"
+      exploit-fca-low-back)
+        services="$services exploit-fca-low-back"
         ;;
       min-fcp-low)
         services="$services min-fcp-low"
@@ -115,9 +124,11 @@ _up() {
         echo "  - all-eidas-high => all needed services to run eidas (all-fcp-high + eidas)"
         echo "  - min-fcp-high => up minimal needed services to run fcp-high (core-fcp-high, fsp1-high, fip1-high, etc.)"
         echo "  - all-fcp-high => all needed services to run fcp-high (core-fcp-high, fsp1-high, fsp2-high, fsp3-high, fsp5-high, fsp6-high, fip1-high, fip2-high, rnipp, haproxy, hsm, etc.)"
+        echo "  - exploit-fcp-high => up minimal needed services to run the FranceConnect High fc-apps"
         echo "  - min-fcp-low => up minimal needed services to run core-fcp-low fsp1-low fip1-low"
         echo "  - all-fcp-low => up all needed services to run core-fcp-low and all other future services"
         echo "  - min-fca-low => up minimal needed services to run core-fca-low fsa1-low fia1-low"
+        echo "  - exploit-fca-low => up minimal needed services to run the Agentconnect Low fc-apps"
         echo "  - all-fca-low => all needed services to run fca-low stack (core-fca-low, fsa[n]-low, fia[n]-low, exploit, hsm, etc.)"
         echo "  - all => run all services"
         echo "----"
@@ -382,7 +393,11 @@ case "$action" in
     _install_dependencies $@
     ;;
   dep-all|dependencies-all)
-    _install_dependencies fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fdp1v2 fip1-high fip2-high core-fcp-high rnipp exploitation-high fsa1-low fsa2-low fsa3-low fsa4-low fia1-low fia2-low fia4-low fia5-low core-fca-low fca-low-front csmr-hsm eidas-bridge exploitation-fca-low exploit-fcp exploit-fca-low exploit-fca-low-front core-fcp-low fsp1-low fip1-low exploit-fcp-high-front
+    _install_dependencies fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fdp1v2 fip1-high \
+      fip2-high core-fcp-high rnipp exploitation-high fsa1-low fsa2-low fsa3-low fsa4-low \
+      fia1-low fia2-low fia4-low fia5-low core-fca-low fca-low-front csmr-hsm eidas-bridge \
+      exploitation-fca-low exploit-fcp-high-back exploit-fca-low-back core-fcp-low \
+      fsp1-low fip1-low exploit-fcp-high-front exploit-fca-low-front \
     ;;
   exec)
     _exec $@
@@ -421,7 +436,7 @@ case "$action" in
     _start $@
     ;;
   reload-all)
-    _start fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fsa4-low fdp1v2 fip1-high fip2-high fia4-low fia5-low core-fcp-high rnipp exploitation-high fsa1-low fsa2-low fsa3-low fia1-low fia2-low core-fca-low fca-low-front csmr-hsm eidas-bridge exploitation-fca-low exploit-fcp exploit-fca-low exploit-fca-low-front core-fcp-low fsp1-low fip1-low
+    _start fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fsa4-low fdp1v2 fip1-high fip2-high fia4-low fia5-low core-fcp-high rnipp exploitation-high fsa1-low fsa2-low fsa3-low fia1-low fia2-low core-fca-low fca-low-front csmr-hsm eidas-bridge exploitation-fca-low exploit-fcp-high-back exploit-fcp-high-front exploit-fca-low-back exploit-fca-low-front core-fcp-low fsp1-low fip1-low
     ;;
   reset-db-core-fcp-high)
     _reset_db_fcp_high $@
@@ -444,14 +459,14 @@ case "$action" in
       rnipp exploitation-high csmr-hsm ud-back ud-front \
       fdp1v2 eidas-bridge \
       \
-      core-fcp-high exploit-fcp core-fcp-low \
+      core-fcp-high exploit-fcp-high-back core-fcp-low \
       fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high \
       fsp1-low \
       fip1-high fip2-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
       fip1-low \
-      exploit-fcp-high-front \
+      exploit-fcp-high-front exploit-fca-low-front \
       \
-      core-fca-low fca-low-front exploitation-fca-low exploit-fca-low \
+      core-fca-low fca-low-front exploitation-fca-low exploit-fca-low-back \
       fsa1-low fsa2-low fsa3-low fsa4-low \
       fia1-low fia2-low fia4-low fia5-low \
     ;;
@@ -461,14 +476,14 @@ case "$action" in
     rnipp exploitation-high csmr-hsm ud-back ud-front \
     fdp1v2 eidas-bridge \
     \
-    core-fcp-high exploit-fcp core-fcp-low \
+    core-fcp-high exploit-fcp-high-back core-fcp-low \
     fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high \
     fsp1-low \
     fip1-high fip2-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
     fip1-low \
     exploit-fcp-high-front \
     \
-    core-fca-low fca-low-front exploitation-fca-low exploit-fca-low \
+    core-fca-low fca-low-front exploitation-fca-low exploit-fca-low-back exploit-fca-low-front \
     fsa1-low fsa2-low fsa3-low fsa4-low \
     fia1-low fia2-low fia4-low fia5-low \
     ;;
@@ -476,7 +491,7 @@ case "$action" in
     _test $@
     ;;
   test-all)
-    _test rnipp core-fcp-high exploitation-high core-fca-low fca-low-front eidas-bridge exploitation-fca-low exploit-fcp exploit-fca-low exploit-fca-low-front core-fcp-low fsp1-low fip1-low
+    _test rnipp core-fcp-high exploitation-high core-fca-low fca-low-front eidas-bridge exploitation-fca-low exploit-fcp-high-back exploit-fca-low-back exploit-fca-low-front core-fcp-low fsp1-low fip1-low
     ;;
   e2e)
     _e2e $@
