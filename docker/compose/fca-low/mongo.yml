@@ -1,4 +1,4 @@
-version: "3.4"
+version: '3.4'
 
 ####################
 ####################
@@ -6,12 +6,12 @@ services:
   mongo-fca-low:
     hostname: mongo-fca-low
     build:
-      context: "${WORKING_DIR}"
-      dockerfile: "${WORKING_DIR}/builds/mongodb/Dockerfile"
+      context: '${WORKING_DIR}'
+      dockerfile: '${WORKING_DIR}/builds/mongodb/Dockerfile'
     volumes:
-      - "${VOLUMES_DIR}/mongo-fca-low/scripts:/opt/scripts"
-      - "${VOLUMES_DIR}/mongo-fca-low/initdb.d:/docker-entrypoint-initdb.d"
+      - '${VOLUMES_DIR}/mongo-fca-low/scripts:/opt/scripts'
+      - '${VOLUMES_DIR}/mongo-fca-low/initdb.d:/docker-entrypoint-initdb.d'
     env_file:
-      - "${COMPOSE_DIR}/fca-low/.env/mongo-fca-low.env"
+      - '${COMPOSE_DIR}/fca-low/.env/mongo-fca-low.env'
     networks:
       - data
