@@ -1,7 +1,7 @@
 {
-  "name": "fcp-system-testing",
+  "name": "fca-system-testing",
   "version": "1.0.0",
-  "description": "FCP - System Testing using Cypress/Cucumber",
+  "description": "FCA - System Testing using Cypress/Cucumber",
   "private": true,
   "keywords": [
     "Cypress",
@@ -12,16 +12,11 @@
     "clean": "rm -rf cypress/fixtures.out && rm -rf cypress/reports && rm -rf cypress/screenshots && rm -rf cypress/videos",
     "prettier": "prettier -c \"{cypress,scripts}/**/*.ts\" --config ../.prettierrc",
     "lint": "eslint \"{cypress,scripts}/**/*.ts\"",
-    "test:high:base": "cypress-tags run --env TAGS='not @ignoreHigh and not @fcpLow' --config-file cypress-fcp-high.json",
-    "test:high:chrome-desktop": "yarn test:high:base --browser chrome --headless",
-    "test:high:chrome-mobile": "yarn test:high:base --browser chrome --headless --config viewportWidth=320,viewportHeight=568",
-    "test:high": "yarn clean && yarn test:high:base",
-    "test:low:base": "cypress-tags run --env TAGS='not @ignoreLow and not @fcpHigh' --config-file cypress-fcp-low.json",
+    "test:low:base": "cypress-tags run --env TAGS='not @ignore' --config-file cypress-fca-low.json",
     "test:low:chrome-desktop": "yarn test:low:base --browser chrome --headless",
     "test:low:chrome-mobile": "yarn test:low:base --browser chrome --headless --config viewportWidth=320,viewportHeight=568",
     "test:low": "yarn clean && yarn test:low:base",
-    "start:high": "cypress open --config-file cypress-fcp-high.json",
-    "start:low": "cypress open --config-file cypress-fcp-low.json",
+    "start:low": "cypress open --config-file cypress-fca-low.json",
     "report:prepare": "ts-node ../scripts/prepare-cucumber-logs",
     "report:generate": "ts-node ../scripts/multiple-cucumber-html-reporter"
   }

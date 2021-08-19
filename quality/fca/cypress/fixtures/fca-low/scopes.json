@@ -1,0 +1,26 @@
+[
+  {
+    "type": "tous les scopes",
+    "scopes": [
+      "openid",
+      "uid",
+      "given_name",
+      "usual_name",
+      "email",
+      "siren",
+      "siret",
+      "organizational_unit",
+      "belonging_population",
+      "phone",
+      "chorusdt"
+    ]
+  },
+  {
+    "type": "email",
+    "scopes": ["openid", "email"]
+  },
+  {
+    "type": "anonyme",
+    "scopes": ["openid"]
+  }
+]
