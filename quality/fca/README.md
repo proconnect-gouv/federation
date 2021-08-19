@@ -1,0 +1,89 @@
+# fca-system-testing
+
+FCA validation with system tests implemented using a Test Framework (based on Cypress/Cucumber)
+
+## Documentation
+
+- [BDD Framework documentation on the Wiki](https://gitlab.dev-franceconnect.fr/france-connect/documentation/-/wikis/Produits/Tests/Framework-BDD/Introduction)
+
+## Folder Structure
+
+- Features folder: [/cypress/integration](./cypress/integration)
+- Steps/Pages folder (exploitation): [/cypress/support/exploitation](./cypress/support/exploitation)
+- Steps/Pages folder (usager): [/cypress/support/usager](./cypress/support/usager)
+- Test Data folder: [/cypress/fixtures](./cypress/fixtures)
+
+## Environment Variables
+
+| Environment Variable | Description                       | Comment                                      |
+| -------------------- | --------------------------------- | -------------------------------------------- |
+| PLATFORM             | Platform under test               | `fca-low`                                    |
+| TEST_ENV             | Test environment                  | `docker` or `recette`, etc.                  |
+| TAGS                 | Tags expression                   | `not @ignore`                                |
+| EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/preprod              |
+| EXPLOIT_ADMIN_PASS   | Exploitation admin password       | needed only for integ01/preprod              |
+| EXPLOIT_ADMIN_TOTP   | Exploitation admin totp secret    | needed only for integ01/preprod              |
+| EXPLOIT_USER_NAME    | Exploitation operator username    | needed only for integ01/preprod              |
+| EXPLOIT_USER_PASS    | Exploitation operator password    | needed only for integ01/preprod              |
+| EXPLOIT_USER_TOTP    | Exploitation operator totp secret | needed only for integ01/preprod              |
+| FC_ACCESS_USER       | FranceConnect network username    | needed on recette/integ01 outside FC network |
+| FC_ACCESS_PASS       | FranceConnect network password    | needed on recette/integ01 outside FC network |
+
+## Scripts
+
+### Run the Cypress test in the terminal (deleting previous results)
+
+```
+# Run Cypress on fcaLow against docker environment
+yarn test:low
+
+# Run Cypress on fcaLow against integ01 environment
+CYPRESS_TEST_ENV=integ01 yarn test:low
+```
+
+### Open Cypress window
+
+```
+# Run Cypress on fcaLow against docker environment
+yarn start:low
+
+# Run Cypress on fcaLow against integ01 environment
+CYPRESS_TEST_ENV=integ01 yarn start:low
+```
+
+### Generate the Cucumber HTML report
+
+```
+# Add Screenshots/Videos to the Cucumber logs
+yarn report:prepare
+
+# Generate the report
+CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=integ01 yarn report:generate
+```
+
+## Plugins VSCode
+
+### Cucumber (Gherkin) Full Support
+
+https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomplete
+
+This plugin provides support for writing/maintaining scenarios in the feature files.
+It automatically lists the implemented steps while editing the scenarios.
+
+```
+{
+  "cSpell.language": "en,fr",
+  "cSpell.enableFiletypes": [
+    "feature"
+  ],
+  "cucumberautocomplete.customParameters": [
+  ],
+  "cucumberautocomplete.steps": [
+    "quality/fca/cypress/support/**/steps/*.ts"
+  ],
+  "cucumberautocomplete.strictGherkinCompletion": false,
+  "cSpell.userWords": [
+    "Etant"
+  ]
+}
+```

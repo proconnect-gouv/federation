@@ -4,28 +4,25 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
+import * as glob from 'glob';
 
 import {
   IJsonFeature,
   IJsonStep,
 } from '@cucumber/cucumber/lib/formatter/json_formatter';
-import * as glob from 'glob';
 
 // Fetch Arguments
 const [
   ,
   ,
-  cucumberJsonDir = './cypress/reports/cucumber',
-  screenshotsDir = './cypress/screenshots',
-  videosDir = './cypress/videos',
+  cucumberDirPath = 'cypress/reports/cucumber',
+  screenshotsPath = 'cypress/screenshots',
+  videosPath = 'cypress/videos',
 ] = process.argv;
 
 // Init
 const cucumberMap: { [key: string]: IJsonFeature } = {};
 const cucumberFileMap: { [key: string]: string } = {};
-const cucumberDirPath = path.join(__dirname, '..', cucumberJsonDir);
-const screenshotsPath = path.join(__dirname, '..', screenshotsDir);
-const videosPath = path.join(__dirname, '..', videosDir);
 
 // Functions
 
@@ -54,7 +51,7 @@ const getFailedStepFromScenario = (
  * @param {IJsonStep} step step to add the screenshot
  */
 const addScreenshotToStep = (screenshotPath: string, step: IJsonStep): void => {
-  const regExp = new RegExp(`^(?:.*${screenshotsDir})(.*/)([^/]*)$`);
+  const regExp = new RegExp(`^(?:.*${screenshotsPath})(.*/)([^/]*)$`);
   const found = regExp.exec(screenshotPath);
   if (!found) {
     return;
@@ -133,12 +130,12 @@ const addVideoLinks = (
     .sync(`${videosDirPath}/**/*.mp4`)
     .map((videoPath) => ({
       featureName: path.basename(videoPath, '.mp4'),
-      videoPath,
+      videoAbsolutePath: path.resolve(videoPath),
     }))
     .filter(({ featureName }) => !!cukeMap[featureName])
-    .forEach(({ featureName, videoPath }) => {
+    .forEach(({ featureName, videoAbsolutePath }) => {
       // Append the description with the video link
-      const videoLink = videoContainer(videoPath);
+      const videoLink = videoContainer(videoAbsolutePath);
       const featureDescription = `${cukeMap[featureName].description}\n<br />${videoLink}`;
       cukeMap[featureName].description = featureDescription;
     });

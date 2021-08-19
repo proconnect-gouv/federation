@@ -29,6 +29,13 @@
     "no-console": 2,
     "@typescript-eslint/explicit-module-boundary-types": 2,
     "@typescript-eslint/camelcase": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
     "import/first": 2,
     "import/newline-after-import": 2,
     "import/no-duplicates": 2,
@@ -45,7 +52,7 @@
           // CSS... Side effect imports.
           ["^\\u0000"],
           // NodeJS packages
-          ["fs", "path", "crypto"],
+          ["^fs$", "^path$", "^crypto$", "^fs-extra$", "^glob$"],
           // Things that start with a letter
           ["^@?\\w"],
           //

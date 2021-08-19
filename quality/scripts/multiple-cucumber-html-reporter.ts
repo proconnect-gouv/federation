@@ -6,18 +6,28 @@ import * as fs from 'fs-extra';
 
 import * as reporter from 'multiple-cucumber-html-reporter';
 
-const reportPath = 'cypress/reports/cucumber/html-report';
 const gitLabProjectUrl =
   'https://gitlab.dev-franceconnect.fr/france-connect/fc';
 const gitLabJobUrl = `${gitLabProjectUrl}/-/jobs/`;
 const gitLabMergeRequestUrl = `${gitLabProjectUrl}/-/merge_requests/`;
 
+// Fetch Arguments
+const [
+  ,
+  ,
+  projectDir = '.',
+  reportPath = `${projectDir}/cypress/reports/cucumber/html-report`,
+] = process.argv;
+
 // Fetch Test Run Context
 
-const platform =
-  process.env.CYPRESS_PLATFORM === 'fcp-high'
-    ? 'FranceConnect+'
-    : 'FranceConnect';
+const platformName = {
+  'fca-low': 'AgentConnect',
+  'fcp-high': 'FranceConnect+',
+  'fcp-low': 'FranceConnect',
+};
+
+const platform = platformName[process.env.CYPRESS_PLATFORM] || 'N/A';
 const testEnv = process.env.CYPRESS_TEST_ENV || 'docker';
 const gitBranch = process.env.CI_COMMIT_REF_NAME || '';
 const gitCommit = process.env.CI_COMMIT_SHORT_SHA || '';
@@ -94,7 +104,7 @@ const options = {
   customData,
   displayDuration: true,
   displayReportTime: true,
-  jsonDir: 'cypress/reports/cucumber',
+  jsonDir: `${projectDir}/cypress/reports/cucumber`,
   metadata,
   pageTitle: reportName,
   reportName,
@@ -104,7 +114,7 @@ const options = {
 reporter.generate(options);
 
 // Move the screenshots into the assets folder
-const originFolder = 'cypress/screenshots';
+const originFolder = `${projectDir}/cypress/screenshots`;
 const destinationFolder = `${reportPath}/assets/screenshots`;
 if (fs.existsSync(originFolder)) {
   fs.copy(originFolder, destinationFolder, (err) => {
