@@ -112,6 +112,10 @@ _up() {
       all-fcp-low)
         services="$services all-fcp-low"
         ;;
+      mongo-fcp-high)
+        # Needed for user dashboard, do not start rp-all
+        services="mongo-fcp-high"
+        ;;
       all)
         services=all
         break
