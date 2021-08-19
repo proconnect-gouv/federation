@@ -9,7 +9,7 @@
       "changeProcessCWD": true
     },
     {
-      "directory": "quality/fcp",
+      "directory": "quality",
       "changeProcessCWD": true
     }
   ]

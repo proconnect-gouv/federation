@@ -41,7 +41,7 @@ quality:
       - quality/fcp/node_modules/
   stage: 'UT/Lint/Coverage'
   script:
-    - cd quality/fcp
+    - cd quality
     - yarn install
     - yarn lint
     - yarn prettier
