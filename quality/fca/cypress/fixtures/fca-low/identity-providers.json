@@ -1,0 +1,18 @@
+[
+  {
+    "idpId": "fia1-low",
+    "description": "par défaut",
+    "ministry": "MOCK - Ministére de la transition écologique - ALL FIS - SORT 2",
+    "title": "Identity Provider 1 - eIDAS élevé",
+    "mocked": true,
+    "enabled": true,
+    "url": "https://fia1-low.{{TEST_ENV}}.dev-franceconnect.fr/interaction",
+    "acrValues": ["eidas3"],
+    "selectors": {
+      "idpButton": "#idp-fia1-low",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "button[type='submit']"
+    }
+  }
+]

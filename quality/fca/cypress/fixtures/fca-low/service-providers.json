@@ -1,0 +1,19 @@
+[
+  {
+    "name": "fsa1-low",
+    "description": "par défaut",
+    "mocked": true,
+    "url": "https://fsa1-low.{{TEST_ENV}}.dev-franceconnect.fr",
+    "redirectUriPath": "/oidc-callback/envIssuer",
+    "clientId": "",
+    "acrValue": "eidas1",
+    "scopes": [
+      "tous les scopes"
+    ],
+    "selectors": {
+      "fcButton": "#get-authorize",
+      "logoutButton": ".nav-logout"
+    },
+    "authorizeHttpMethod": "get"
+  }
+]
