@@ -55,9 +55,7 @@ beforeEach(function () {
 
     // Setup interceptions to override set-cookie samesite values
     const crossDomains = {
-      FC: 'dev-franceconnect.fr',
-      FI: 'fournisseur-d-identite.fr',
-      FS: 'fournisseur-de-service.fr',
+      AC: 'dev-agentconnect.fr',
     };
     disableSameSiteLax(crossDomains);
   }
