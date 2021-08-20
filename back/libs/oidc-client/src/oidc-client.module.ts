@@ -1,11 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyModule } from '@fc/cryptography';
-
 import { DynamicModule, Module, Type } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 
+import { CryptographyModule } from '@fc/cryptography';
 import {
   IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,

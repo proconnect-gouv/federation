@@ -1,11 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyModule } from '@fc/cryptography';
-
 import { DynamicModule, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 
+import { CryptographyModule } from '@fc/cryptography';
 import { RedisModule } from '@fc/redis';
 
 import { SessionInterceptor } from './interceptors';

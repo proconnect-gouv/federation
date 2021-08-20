@@ -1,9 +1,8 @@
-import { CryptographyFcaService } from '@fc/cryptography-fca';
-
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AccountBlockedException } from '@fc/account';
 import { CoreService } from '@fc/core';
+import { CryptographyFcaService } from '@fc/cryptography-fca';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 

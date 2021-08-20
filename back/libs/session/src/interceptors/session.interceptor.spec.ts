@@ -1,9 +1,8 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { ExecutionContext } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 
 import { ISessionRequest } from '../interfaces';
 import { SessionService } from '../services';

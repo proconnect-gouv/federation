@@ -1,9 +1,8 @@
-import { CryptographyEidasService } from '@fc/cryptography-eidas';
-
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { CoreService } from '@fc/core';
+import { CryptographyEidasService } from '@fc/cryptography-eidas';
 import { LoggerService } from '@fc/logger';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';

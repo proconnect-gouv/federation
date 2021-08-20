@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyFcaService } from './cryptography-fca.service';
-
 import { Module } from '@nestjs/common';
+
+import { CryptographyFcaService } from './cryptography-fca.service';
 
 @Module({
   providers: [CryptographyFcaService],

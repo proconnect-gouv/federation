@@ -1,8 +1,7 @@
-import { CryptographyFcpService } from '@fc/cryptography-fcp';
-
 import { Injectable } from '@nestjs/common';
 
 import { Account, AccountNotFoundException, AccountService } from '@fc/account';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 

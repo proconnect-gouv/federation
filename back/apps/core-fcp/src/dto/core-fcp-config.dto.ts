@@ -1,13 +1,12 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
-import { CryptographyFcpConfig } from '@fc/cryptography-fcp';
-
 import { Type } from 'class-transformer';
 import { IsObject, IsUrl, ValidateNested } from 'class-validator';
 
 import { AppConfig } from '@fc/app';
+import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
+import { CryptographyFcpConfig } from '@fc/cryptography-fcp';
 import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
 import { LoggerConfig } from '@fc/logger';
 import { MailerConfig } from '@fc/mailer';

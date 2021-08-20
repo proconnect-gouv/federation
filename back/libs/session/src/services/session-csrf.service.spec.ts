@@ -1,7 +1,6 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 

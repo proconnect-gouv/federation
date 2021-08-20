@@ -1,5 +1,3 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { ValidationError } from 'class-validator';
 
 import {
@@ -24,6 +22,7 @@ import {
   CsrfToken,
   Interaction,
 } from '@fc/core';
+import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';

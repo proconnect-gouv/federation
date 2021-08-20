@@ -1,5 +1,3 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import {
   Body,
   Controller,
@@ -16,6 +14,7 @@ import {
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
