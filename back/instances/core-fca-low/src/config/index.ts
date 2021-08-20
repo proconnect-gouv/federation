@@ -1,11 +1,10 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import CryptographyFca from './cryptography-fca';
-
 import { CoreFcaConfig } from '@fc/core-fca';
 
 import App from './app';
+import CryptographyFca from './cryptography-fca';
 import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
 import Logger from './logger';
 import Mongoose from './mongoose';

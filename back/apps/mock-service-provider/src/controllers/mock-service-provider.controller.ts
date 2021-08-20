@@ -1,5 +1,3 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { encode } from 'querystring';
 
 import {
@@ -18,6 +16,7 @@ import {
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata, IOidcIdentity, OidcSession } from '@fc/oidc';

@@ -1,11 +1,11 @@
-import {
-  CryptographyService,
-  RANDOM_MIN_ENTROPY,
-} from './cryptography.service';
 import * as crypto from 'crypto';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import {
+  CryptographyService,
+  RANDOM_MIN_ENTROPY,
+} from './cryptography.service';
 import { LowEntropyArgumentException } from './exceptions';
 
 describe('CryptographyService', () => {

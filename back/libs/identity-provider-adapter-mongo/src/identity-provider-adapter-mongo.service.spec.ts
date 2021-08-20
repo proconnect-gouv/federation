@@ -1,5 +1,3 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { mocked } from 'ts-jest/utils';
 
 import { EventBus } from '@nestjs/cqrs';
@@ -8,6 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
 

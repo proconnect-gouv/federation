@@ -4,12 +4,11 @@
  * it will be available in a neer future. So once it's done we just
  * need to remove this hack in the package.json
  */
-import { CryptographyService } from '@fc/cryptography';
-
 import { JWK } from 'jose-openid-client';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc';
 

@@ -1,11 +1,10 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { mocked } from 'ts-jest/utils';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 

@@ -1,12 +1,11 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import CryptographyEidas from './cryptography-eidas';
-
 import { EidasBridgeConfig } from '@fc/eidas-bridge';
 
 import ApacheIgnite from './apache-ignite';
 import App from './app';
+import CryptographyEidas from './cryptography-eidas';
 import EidasClient from './eidas-client';
 import EidasLightProtocol from './eidas-light-protocol';
 import EidasProvider from './eidas-provider';

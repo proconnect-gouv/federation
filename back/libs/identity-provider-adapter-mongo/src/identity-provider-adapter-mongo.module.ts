@@ -1,8 +1,8 @@
-import { CryptographyModule } from '@fc/cryptography';
-
 import { Module } from '@nestjs/common';
 import { CqrsModule } from '@nestjs/cqrs';
 import { MongooseModule } from '@nestjs/mongoose';
+
+import { CryptographyModule } from '@fc/cryptography';
 
 import { IdentityProviderUpdateHandler } from './handlers';
 import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';

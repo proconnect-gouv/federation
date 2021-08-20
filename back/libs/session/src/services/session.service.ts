@@ -1,9 +1,8 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { Inject, Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 

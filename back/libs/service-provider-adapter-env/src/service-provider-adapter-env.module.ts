@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyModule } from '@fc/cryptography';
-
 import { Module } from '@nestjs/common';
+
+import { CryptographyModule } from '@fc/cryptography';
 
 import { ServiceProviderAdapterEnvService } from './service-provider-adapter-env.service';
 
