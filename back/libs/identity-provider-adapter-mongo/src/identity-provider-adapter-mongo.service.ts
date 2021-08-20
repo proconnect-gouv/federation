@@ -1,11 +1,10 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { Injectable, Type } from '@nestjs/common';
 import { EventBus } from '@nestjs/cqrs';
 import { InjectModel } from '@nestjs/mongoose';
 
 import { asyncFilter, validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import {
   ClientMetadata,

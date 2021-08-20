@@ -1,11 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyFcpModule } from '@fc/cryptography-fcp';
-
 import { Module } from '@nestjs/common';
 
 import { AccountModule } from '@fc/account';
+import { CryptographyFcpModule } from '@fc/cryptography-fcp';
 import { ElasticsearchModule } from '@fc/elasticsearch';
 import { ExceptionsModule } from '@fc/exceptions';
 import { LoggerModule } from '@fc/logger';

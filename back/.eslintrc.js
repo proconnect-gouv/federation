@@ -83,7 +83,7 @@ module.exports = {
           ['^\\u0000'],
           // NodeJS packages/libraries
           // +more si besoin
-          ['fs', 'path', 'crypto'],
+          ['^fs$', '^path$', '^crypto$'],
           // Things that start with a letter
           ['^@?\\w'],
           //
@@ -97,12 +97,5 @@ module.exports = {
       },
     ],
     'sort-imports': 'off',
-    'sort-destructure-keys/sort-destructure-keys': 1,
-    'sort-keys': [
-      1,
-      'asc',
-      { caseSensitive: true, minKeys: 2, natural: false },
-    ],
-    'sort-keys-fix/sort-keys-fix': 1,
   },
 };

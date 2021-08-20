@@ -1,9 +1,8 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
+import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';

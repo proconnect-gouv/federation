@@ -1,10 +1,9 @@
-import { CryptographyEidasConfig } from './dto/cryptography-eidas-config';
-import { CryptographyService } from '@fc/cryptography';
-
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 
+import { CryptographyEidasConfig } from './dto/cryptography-eidas-config';
 import { IPivotIdentity } from './interfaces/pivot-identity.interface';
 
 @Injectable()
