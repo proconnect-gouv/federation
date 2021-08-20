@@ -1,5 +1,3 @@
-import { CryptoOverrideService } from './crypto-override.service';
-
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
@@ -7,6 +5,7 @@ import { LoggerService } from '@fc/logger';
 
 import { CryptographyGatewayException } from '../exceptions';
 import { OverrideCode } from '../helpers';
+import { CryptoOverrideService } from './crypto-override.service';
 
 describe(' CryptoOverrideService', () => {
   let service: CryptoOverrideService;

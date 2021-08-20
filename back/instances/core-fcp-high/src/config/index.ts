@@ -1,12 +1,11 @@
 /* istanbul ignore file */
 
 // Tested by DTO
+import { CoreFcpHighConfig } from '../dto';
+import App from './app';
 import CryptographyBroker from './cryptography-broker';
 import CryptographyEidas from './cryptography-eidas';
 import CryptographyFcp from './cryptography-fcp';
-
-import { CoreFcpHighConfig } from '../dto';
-import App from './app';
 import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
 import Logger from './logger';
 import Mailer from './mailer';

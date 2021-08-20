@@ -1,9 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { CryptographyFcpConfig } from '@fc/cryptography-fcp';
-
 import { ConfigParser } from '@fc/config';
+import { CryptographyFcpConfig } from '@fc/cryptography-fcp';
 
 const env = new ConfigParser(process.env, 'Cryptography');
 

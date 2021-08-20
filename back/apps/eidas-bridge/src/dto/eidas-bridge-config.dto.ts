@@ -1,12 +1,11 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
-
 import { Type } from 'class-transformer';
 import { IsObject, IsUrl, ValidateNested } from 'class-validator';
 
 import { ApacheIgniteConfig } from '@fc/apache-ignite';
+import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
 import { EidasClientConfig } from '@fc/eidas-client';
 import { EidasLightProtocolConfig } from '@fc/eidas-light-protocol';
 import { EidasProviderConfig } from '@fc/eidas-provider';

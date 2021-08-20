@@ -1,12 +1,11 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyFcaConfig } from '@fc/cryptography-fca';
-
 import { Type } from 'class-transformer';
 import { IsObject, IsUrl, ValidateNested } from 'class-validator';
 
 import { AppConfig } from '@fc/app';
+import { CryptographyFcaConfig } from '@fc/cryptography-fca';
 import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
 import { LoggerConfig } from '@fc/logger';
 import { MongooseConfig } from '@fc/mongoose';
