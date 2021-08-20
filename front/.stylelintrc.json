@@ -21,6 +21,7 @@
           "extend",
           "function",
           "if",
+          "import",
           "include",
           "mixin",
           "return",
