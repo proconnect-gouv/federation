@@ -18,6 +18,9 @@
       "**/husky"
     ]
   },
+  "resolutions": {
+    "**/**/marked": "^2.0.0"
+  },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^12.0.0",
@@ -31,6 +34,8 @@
     "@typescript-eslint/eslint-plugin": "^4.4.0",
     "@typescript-eslint/parser": "^4.4.0",
     "cypress": "^7.6.0",
+    "docsify": "^4.12.1",
+    "docsify-cli": "^4.4.3",
     "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-airbnb-typescript": "^12.0.0",
@@ -59,6 +64,7 @@
     "start:exploit-fca-low": "cd apps/exploit-fca-low && yarn start",
     "build:fca-low-front": "./scripts/yarn-build-libs agent-connect",
     "build": "./scripts/yarn-build-libs",
+    "docs": "docsify serve ./libs/styleguide",
     "cleanup": "./scripts/yarn-cleanup"
   }
 }
