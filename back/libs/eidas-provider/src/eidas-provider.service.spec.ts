@@ -1,9 +1,8 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApacheIgniteService } from '@fc/apache-ignite';
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 import {
   EidasAttributes,
   EidasLevelOfAssurances,

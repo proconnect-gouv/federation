@@ -1,10 +1,9 @@
-import { CryptographyFcaConfig } from './dto/cryptography-fca-config';
-import { CryptographyService } from '@fc/cryptography';
-
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 
+import { CryptographyFcaConfig } from './dto/cryptography-fca-config';
 import { IAgentIdentity } from './interfaces';
 
 @Injectable()

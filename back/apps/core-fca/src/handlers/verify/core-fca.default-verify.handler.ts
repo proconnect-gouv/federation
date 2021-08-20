@@ -1,8 +1,7 @@
-import { CryptographyFcaService, IAgentIdentity } from '@fc/cryptography-fca';
-
 import { Injectable } from '@nestjs/common';
 
 import { CoreService } from '@fc/core';
+import { CryptographyFcaService, IAgentIdentity } from '@fc/cryptography-fca';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';

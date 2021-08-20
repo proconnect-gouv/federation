@@ -1,11 +1,10 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { ClassTransformOptions } from 'class-transformer';
 import { ValidatorOptions } from 'class-validator';
 
 import { Controller, Get, Query, Redirect, Req } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
+import { CryptographyService } from '@fc/cryptography';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { EidasProviderSession } from '@fc/eidas-provider';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';

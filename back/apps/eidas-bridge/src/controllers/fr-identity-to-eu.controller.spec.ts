@@ -1,10 +1,9 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { mocked } from 'ts-jest/utils';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
+import { CryptographyService } from '@fc/cryptography';
 import { EidasAttributes } from '@fc/eidas';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { LoggerService } from '@fc/logger';

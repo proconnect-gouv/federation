@@ -1,7 +1,8 @@
-import { CryptographyFcpService } from './cryptography-fcp.service';
+import { Module } from '@nestjs/common';
+
 import { CryptographyService } from '@fc/cryptography';
 
-import { Module } from '@nestjs/common';
+import { CryptographyFcpService } from './cryptography-fcp.service';
 
 @Module({
   imports: [CryptographyService],
