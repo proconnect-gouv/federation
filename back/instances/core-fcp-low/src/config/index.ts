@@ -1,12 +1,11 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import CryptographyEidas from './cryptography-eidas';
-import CryptographyFcp from './cryptography-fcp';
-
 import { CoreFcpConfig } from '@fc/core-fcp';
 
 import App from './app';
+import CryptographyEidas from './cryptography-eidas';
+import CryptographyFcp from './cryptography-fcp';
 import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
 import Logger from './logger';
 import Mailer from './mailer';

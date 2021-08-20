@@ -1,5 +1,3 @@
-import { CryptographyService } from '@fc/cryptography';
-
 import { mocked } from 'ts-jest/utils';
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -7,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
+import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { MinistriesService } from '@fc/ministries';

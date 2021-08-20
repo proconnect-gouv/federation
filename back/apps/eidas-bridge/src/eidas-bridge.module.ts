@@ -1,10 +1,9 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyModule } from '@fc/cryptography';
-
 import { Global, Module } from '@nestjs/common';
 
+import { CryptographyModule } from '@fc/cryptography';
 import { EidasClientController, EidasClientModule } from '@fc/eidas-client';
 import { EidasCountryModule } from '@fc/eidas-country';
 import { EidasOidcMapperModule } from '@fc/eidas-oidc-mapper';

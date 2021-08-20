@@ -1,11 +1,10 @@
-import { CryptographyFcpConfig } from './dto/cryptography-fcp-config';
-import { CryptographyService } from '@fc/cryptography';
-
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 
+import { CryptographyFcpConfig } from './dto/cryptography-fcp-config';
 import { IPivotIdentity } from './interfaces/pivot-identity.interface';
 
 @Injectable()

@@ -1,9 +1,6 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { CryptographyEidasModule } from '@fc/cryptography-eidas';
-import { CryptographyFcpModule } from '@fc/cryptography-fcp';
-
 import { Global, Module } from '@nestjs/common';
 
 import { AccountModule } from '@fc/account';
@@ -19,6 +16,8 @@ import {
   TrackableEventHandler,
   UserinfoEventHandler,
 } from '@fc/core';
+import { CryptographyEidasModule } from '@fc/cryptography-eidas';
+import { CryptographyFcpModule } from '@fc/cryptography-fcp';
 import { ExceptionsModule } from '@fc/exceptions';
 import { FeatureHandlerModule } from '@fc/feature-handler';
 import { HttpProxyModule } from '@fc/http-proxy';

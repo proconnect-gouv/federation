@@ -1,8 +1,7 @@
-import { CryptographyFcpService } from '@fc/cryptography-fcp';
-
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Account, AccountNotFoundException, AccountService } from '@fc/account';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { LoggerService } from '@fc/logger';
 
 import { CsrmTracksNoTracksException } from '../exceptions';
