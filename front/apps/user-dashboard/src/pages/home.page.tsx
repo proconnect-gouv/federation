@@ -7,7 +7,7 @@ function HomePage(): JSX.Element {
 
   return (
     <div className="container mt-5">
-      <div className="text-center text-danger">
+      <div aria-level={1} className="text-center text-danger" role="heading">
         Vous devez vous authentifier afin d&apos;accéder à vos données
         personnelles.
       </div>

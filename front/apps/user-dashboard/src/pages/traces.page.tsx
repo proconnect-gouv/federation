@@ -1,7 +1,7 @@
 import { v4 as uuid } from 'uuid';
 
-import { CardInterface } from '~components/traces/card/card.interface';
-import TraceCardList from '~components/traces/list/card-list';
+import { CardInterface } from '../components/traces/card/card.interface';
+import TraceCardList from '../components/traces/list/card-list';
 
 function TracesPage(): JSX.Element {
   const TRACE_LIST = [
