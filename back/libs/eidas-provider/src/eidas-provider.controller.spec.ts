@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
 
 import { EidasProviderController } from './eidas-provider.controller';
 import { EidasProviderService } from './eidas-provider.service';
@@ -16,13 +17,19 @@ describe('EidasProviderController', () => {
     get: jest.fn(),
   };
 
+  const loggerServiceMock = {
+    debug: jest.fn(),
+    setContext: jest.fn(),
+    trace: jest.fn(),
+  };
+
   const eidasProviderServiceMock = {
-    prepareLightResponse: jest.fn(),
-    writeLightResponseInCache: jest.fn(),
-    readLightRequestFromCache: jest.fn(),
-    parseLightRequest: jest.fn(),
-    completeFcSuccessResponse: jest.fn(),
     completeFcFailureResponse: jest.fn(),
+    completeFcSuccessResponse: jest.fn(),
+    parseLightRequest: jest.fn(),
+    prepareLightResponse: jest.fn(),
+    readLightRequestFromCache: jest.fn(),
+    writeLightResponseInCache: jest.fn(),
   };
 
   const sessionEidasMock = {
@@ -32,8 +39,8 @@ describe('EidasProviderController', () => {
 
   const eidasRequestMock = {
     id: 'id',
-    relayState: 'relayState',
     levelOfAssurance: 'levelOfAssurance',
+    relayState: 'relayState',
   };
 
   beforeEach(async () => {
@@ -43,8 +50,10 @@ describe('EidasProviderController', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EidasProviderController],
-      providers: [ConfigService, EidasProviderService],
+      providers: [LoggerService, ConfigService, EidasProviderService],
     })
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(EidasProviderService)
@@ -58,6 +67,7 @@ describe('EidasProviderController', () => {
 
   it('should be defined', () => {
     expect(controller).toBeDefined();
+    expect(loggerServiceMock.setContext).toHaveBeenCalledTimes(1);
   });
 
   /**
@@ -132,8 +142,8 @@ describe('EidasProviderController', () => {
     it('should return the redirectAfterRequestHandlingUrl with a 302 statusCode', async () => {
       // setup
       const expected = {
-        url: configMock.redirectAfterRequestHandlingUrl,
         statusCode: 302,
+        url: configMock.redirectAfterRequestHandlingUrl,
       };
 
       // action
@@ -156,9 +166,9 @@ describe('EidasProviderController', () => {
       ...partialEidasResponseMock,
     };
     const formattedLightResponseMock = {
-      token: 'IlNhYmF0b24gLSBUaGUgTG9zdCBCYXR0YWxpb24iIC0+IExpc3Rlbg==',
       lightResponse:
         "<LightResponse>If you believe, you'll see</LightResponse>",
+      token: 'IlNhYmF0b24gLSBUaGUgTG9zdCBCYXR0YWxpb24iIC0+IExpc3Rlbg==',
     };
 
     beforeEach(() => {

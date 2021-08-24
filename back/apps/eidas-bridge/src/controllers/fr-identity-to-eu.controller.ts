@@ -52,20 +52,20 @@ export class FrIdentityToEuController {
     const sessionId: string = this.crypto.genRandomString(sessionIdLength);
 
     await sessionOidc.set({
-      sessionId,
       idpState: sessionId,
+      sessionId,
     });
 
     const response = {
-      url: `${EidasBridgeRoutes.BASE}${EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE}`,
       statusCode: 302,
+      url: `${EidasBridgeRoutes.BASE}${EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE}`,
     };
 
     this.logger.trace({
-      route: EidasBridgeRoutes.INIT_SESSION,
       method: 'GET',
       name: 'EidasBridgeRoutes.INIT_SESSION',
       response,
+      route: EidasBridgeRoutes.INIT_SESSION,
     });
 
     return response;
@@ -94,31 +94,31 @@ export class FrIdentityToEuController {
     const { eidasRequest } = await sessionEidasProvider.get();
     const oidcRequest = this.eidasToOidc.mapPartialRequest(eidasRequest);
 
-    const { state, nonce } =
+    const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
     const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl({
-      state,
-      scope: oidcRequest.scope.join(' '),
-      providerUid: 'envIssuer',
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: oidcRequest.acr_values,
       nonce,
+      providerUid: 'envIssuer',
+      scope: oidcRequest.scope.join(' '),
+      state,
     });
 
     await sessionOidc.set({
-      idpState: state,
       idpNonce: nonce,
+      idpState: state,
     });
 
-    const response = { url: authorizationUrl, statusCode: 302 };
+    const response = { statusCode: 302, url: authorizationUrl };
 
     this.logger.trace({
-      route: EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE,
       method: 'GET',
       name: 'EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE',
       response,
+      route: EidasBridgeRoutes.REDIRECT_TO_FC_AUTORIZE,
     });
 
     return response;
@@ -160,12 +160,12 @@ export class FrIdentityToEuController {
     } else {
       try {
         const providerUid = 'envIssuer';
-        const { idpState, idpNonce } = await sessionOidc.get();
+        const { idpNonce, idpState } = await sessionOidc.get();
 
         const tokenParams = {
-          providerUid,
-          idpState,
           idpNonce,
+          idpState,
+          providerUid,
         };
         const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
           tokenParams,
@@ -188,7 +188,7 @@ export class FrIdentityToEuController {
           'eidasRequest',
         );
 
-        partialEidasResponse = this.oidcToEidas.mapPartialResponseSuccess(
+        partialEidasResponse = await this.oidcToEidas.mapPartialResponseSuccess(
           identity,
           /**
            * @todo #412 Apply strong typing to acr values in other libs and apps
@@ -210,15 +210,15 @@ export class FrIdentityToEuController {
     );
 
     const response = {
-      url: '/eidas-provider/response-proxy',
       statusCode: 302,
+      url: '/eidas-provider/response-proxy',
     };
 
     this.logger.trace({
-      route: EidasBridgeRoutes.REDIRECT_TO_EIDAS_RESPONSE_PROXY,
       method: 'GET',
       name: 'EidasBridgeRoutes.REDIRECT_TO_EIDAS_RESPONSE_PROXY',
       response,
+      route: EidasBridgeRoutes.REDIRECT_TO_EIDAS_RESPONSE_PROXY,
     });
 
     return response;
@@ -226,9 +226,9 @@ export class FrIdentityToEuController {
 
   private async validateIdentity(identity: Partial<EidasBridgeIdentityDto>) {
     const validatorOptions: ValidatorOptions = {
-      whitelist: true,
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
+      whitelist: true,
     };
     const transformOptions: ClassTransformOptions = {
       excludeExtraneousValues: true,

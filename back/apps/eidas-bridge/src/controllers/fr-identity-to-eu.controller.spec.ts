@@ -24,15 +24,15 @@ describe('FrIdentityToEuController', () => {
   let frIdentityToEuController: FrIdentityToEuController;
 
   const oidcClientServiceMock = {
+    getTokenFromProvider: jest.fn(),
+    getUserInfosFromProvider: jest.fn(),
     utils: {
+      buildAuthorizeParameters: jest.fn(),
       getAuthorizeUrl: jest.fn(),
       getTokenSet: jest.fn(),
       getUserInfo: jest.fn(),
       wellKnownKeys: jest.fn(),
-      buildAuthorizeParameters: jest.fn(),
     },
-    getTokenFromProvider: jest.fn(),
-    getUserInfosFromProvider: jest.fn(),
   };
 
   const loggerServiceMock = {
@@ -45,14 +45,14 @@ describe('FrIdentityToEuController', () => {
   };
 
   const oidcToEidasServiceMock = {
-    mapPartialResponseSuccess: jest.fn(),
     mapPartialResponseFailure: jest.fn(),
+    mapPartialResponseSuccess: jest.fn(),
   };
 
   const sessionServiceOidcMock = {
-    set: jest.fn(),
     get: jest.fn(),
     getId: jest.fn(),
+    set: jest.fn(),
   };
 
   const sessionServiceEidasMock = {
@@ -130,12 +130,12 @@ describe('FrIdentityToEuController', () => {
     jest.restoreAllMocks();
 
     oidcClientServiceMock.utils.buildAuthorizeParameters.mockReturnValue({
-      state: stateMock,
-      scope: scopeMock,
-      providerUid: providerUidMock,
       // oidc parameter
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: acrMock,
+      providerUid: providerUidMock,
+      scope: scopeMock,
+      state: stateMock,
     });
 
     sessionServiceOidcMock.get.mockResolvedValue(sessionMockValue);
@@ -168,16 +168,16 @@ describe('FrIdentityToEuController', () => {
       // assert
       expect(sessionServiceOidcMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceOidcMock.set).toHaveBeenCalledWith({
-        sessionId: randomStringMock,
         idpState: randomStringMock,
+        sessionId: randomStringMock,
       });
     });
 
     it('should return the redirect url with a 302 status code', async () => {
       // setup
       const expected = {
-        url: '/oidc-client/redirect-to-fc-authorize',
         statusCode: 302,
+        url: '/oidc-client/redirect-to-fc-authorize',
       };
 
       // action
@@ -193,8 +193,8 @@ describe('FrIdentityToEuController', () => {
   describe('redirectToFcAuthorize()', () => {
     const eidasRequestMock = {
       id: 'id',
-      relayState: 'relayState',
       levelOfAssurance: 'levelOfAssurance',
+      relayState: 'relayState',
     };
     const oidcRequestMock = {
       // oidc parameter
@@ -265,13 +265,13 @@ describe('FrIdentityToEuController', () => {
 
     it('Should call oidc-client-service for retrieve authorize url', async () => {
       const authorizeParametersMock = {
-        state: 'state',
-        scope: oidcRequestMock.scope.join(' '),
-        providerUid: 'envIssuer',
         // acr_values is an oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: oidcRequestMock.acr_values,
         nonce: idpNonceMock,
+        providerUid: 'envIssuer',
+        scope: oidcRequestMock.scope.join(' '),
+        state: 'state',
       };
       oidcClientServiceMock.utils.buildAuthorizeParameters.mockResolvedValueOnce(
         authorizeParametersMock,
@@ -289,12 +289,12 @@ describe('FrIdentityToEuController', () => {
         1,
       );
       expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledWith({
-        state: authorizeParametersMock.state,
-        scope: authorizeParametersMock.scope,
-        providerUid: authorizeParametersMock.providerUid,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: authorizeParametersMock.acr_values,
         nonce: authorizeParametersMock.nonce,
+        providerUid: authorizeParametersMock.providerUid,
+        scope: authorizeParametersMock.scope,
+        state: authorizeParametersMock.state,
       });
     });
 
@@ -417,17 +417,17 @@ describe('FrIdentityToEuController', () => {
       const requestedAttributesMock = [EidasAttributes.PERSON_IDENTIFIER];
 
       const tokenParamsMock = {
-        providerUid: providerUidMock,
-        idpState: idpStateMock,
         idpNonce: idpNonceMock,
+        idpState: idpStateMock,
+        providerUid: providerUidMock,
       };
 
       let accessTokenMock;
       let validateIdentityMock;
       beforeEach(() => {
         sessionServiceOidcMock.get.mockResolvedValueOnce({
-          idpState: idpStateMock,
           idpNonce: idpNonceMock,
+          idpState: idpStateMock,
         });
         sessionServiceEidasMock.get.mockResolvedValueOnce({
           requestedAttributes: requestedAttributesMock,
@@ -552,7 +552,7 @@ describe('FrIdentityToEuController', () => {
             failure: false,
           },
         };
-        oidcToEidasServiceMock.mapPartialResponseSuccess.mockReturnValueOnce(
+        oidcToEidasServiceMock.mapPartialResponseSuccess.mockResolvedValueOnce(
           eidasPartialResponseMock,
         );
 
@@ -677,10 +677,10 @@ describe('FrIdentityToEuController', () => {
       identityMock = {
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        given_name: 'given_nameValue',
+        family_name: 'family_nameValue',
         // Oidc naming convention
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        family_name: 'family_nameValue',
+        given_name: 'given_nameValue',
       };
       validateDtoMock = mocked(validateDto);
     });

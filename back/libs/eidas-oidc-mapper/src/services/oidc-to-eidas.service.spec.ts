@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { CogService } from '@fc/cog';
 import {
   EidasAttributes,
   EidasLevelOfAssurances,
@@ -15,26 +16,34 @@ describe('OidcToEidasService', () => {
   let service: OidcToEidasService;
 
   const loggerServiceMock = {
+    debug: jest.fn(),
     error: jest.fn(),
     setContext: jest.fn(),
+    trace: jest.fn(),
+  };
+
+  const eidasCogServiceMock = {
+    injectLabelsForCogs: jest.fn(),
   };
 
   const claimsMock = {
-    sub: 'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2',
-    gender: 'female',
-    birthdate: '1962-08-24',
     birthcountry: '99100',
+    birthdate: '1962-08-24',
     birthplace: '75107',
-    // oidc parameter
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    given_name: 'Angela Claire Louise',
-    // oidc parameter
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    family_name: 'DUBOIS',
     email: 'wossewodda-3728@yopmail.com',
     // oidc parameter
     // eslint-disable-next-line @typescript-eslint/naming-convention
+    family_name: 'DUBOIS',
+    gender: 'female',
+    // oidc parameter
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    given_name: 'Angela Claire Louise',
+
+    // oidc parameter
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     preferred_username: 'DUMEUBLE',
+
+    sub: 'b155a2129530e5fd3f6b95275b6da72a99ea1a486b8b33148abb4a62ddfb3609v2',
   };
 
   const requestedAttributesMock = [
@@ -66,10 +75,12 @@ describe('OidcToEidasService', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [OidcToEidasService, LoggerService],
+      providers: [OidcToEidasService, LoggerService, CogService],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(CogService)
+      .useValue(eidasCogServiceMock)
       .compile();
 
     service = module.get<OidcToEidasService>(OidcToEidasService);
@@ -129,14 +140,19 @@ describe('OidcToEidasService', () => {
   describe('mapPartialResponseSuccess', () => {
     const mapRequestedAttributesFromClaimsMock = jest.fn();
 
+    const cogMock = 'La meilleur ville du monde';
     beforeEach(() => {
       service['mapRequestedAttributesFromClaims'] =
         mapRequestedAttributesFromClaimsMock;
+      mapRequestedAttributesFromClaimsMock.mockReturnValueOnce(
+        partialSuccessResponseMock.attributes,
+      );
+      eidasCogServiceMock.injectLabelsForCogs.mockResolvedValueOnce([cogMock]);
     });
 
-    it('should map the attributes with the claims and the requestedAttributes', () => {
+    it('should map the attributes with the claims and the requestedAttributes', async () => {
       // action
-      service.mapPartialResponseSuccess(
+      await service.mapPartialResponseSuccess(
         claimsMock,
         acrMock,
         requestedAttributesMock,
@@ -150,14 +166,9 @@ describe('OidcToEidasService', () => {
       );
     });
 
-    it('should return the partial response', () => {
-      // setup
-      mapRequestedAttributesFromClaimsMock.mockReturnValueOnce(
-        partialSuccessResponseMock.attributes,
-      );
-
+    it('should return the partial response', async () => {
       // action
-      const result = service.mapPartialResponseSuccess(
+      const result = await service.mapPartialResponseSuccess(
         claimsMock,
         acrMock,
         requestedAttributesMock,
@@ -165,6 +176,36 @@ describe('OidcToEidasService', () => {
 
       // expect
       expect(result).toStrictEqual(partialSuccessResponseMock);
+      expect(eidasCogServiceMock.injectLabelsForCogs).toHaveBeenCalledTimes(0);
+    });
+
+    it('should return the partial response with cogs updated', async () => {
+      // setup
+      const placeOfBirth = ['75011'];
+
+      const { attributes } = partialSuccessResponseMock;
+
+      mapRequestedAttributesFromClaimsMock.mockReset().mockReturnValueOnce({
+        ...attributes,
+        placeOfBirth,
+      });
+      const cogTransformed = {
+        [EidasAttributes.PLACE_OF_BIRTH]: [cogMock],
+      };
+      // action
+      const result = await service.mapPartialResponseSuccess(
+        claimsMock,
+        acrMock,
+        requestedAttributesMock,
+      );
+
+      // expect
+      expect(eidasCogServiceMock.injectLabelsForCogs).toHaveBeenCalledTimes(1);
+      expect(eidasCogServiceMock.injectLabelsForCogs).toHaveBeenCalledWith(
+        placeOfBirth,
+      );
+      expect(result.attributes).toHaveProperty(EidasAttributes.PLACE_OF_BIRTH);
+      expect(result.attributes).toMatchObject(cogTransformed);
     });
   });
 
