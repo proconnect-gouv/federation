@@ -1,6 +1,10 @@
 import 'reflect-metadata';
 
-import { ClassTransformOptions, plainToClass } from 'class-transformer';
+import {
+  classToPlain,
+  ClassTransformOptions,
+  plainToClass,
+} from 'class-transformer';
 import { validate, ValidationError, ValidatorOptions } from 'class-validator';
 
 import { Type } from '@nestjs/common';
@@ -37,6 +41,29 @@ export async function validateDto(
    *    action: renvoyer un objet contenant résultat ou erreurs éventuelles.
    */
   return validate(object, validatorOptions);
+}
+
+/**
+ * function to transform and validate raw data.
+ * @param plain Data to transform and validate
+ * @param dto the Dto to validate and transform data
+ * @param validatorOptions options for the validator process
+ * @param transformOptions options for the transform process
+ * @returns
+ */
+export async function filteredByDto<T = any>(
+  plain: object,
+  dto: Type<T>,
+  validatorOptions: ValidatorOptions,
+  transformOptions?: ClassTransformOptions,
+): Promise<{ errors: ValidationError[]; result: T }> {
+  const data = getTransformed<typeof dto>(plain, dto, transformOptions);
+  const errors = await validate(data, validatorOptions);
+  if (errors.length) {
+    return { errors, result: null };
+  }
+  const result = classToPlain(data) as T;
+  return { errors, result };
 }
 
 /**

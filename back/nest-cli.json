@@ -700,6 +700,15 @@
         "tsConfigPath": "libs/cryptography-eidas/tsconfig.lib.json"
       }
     },
+    "cog": {
+      "type": "library",
+      "root": "libs/cog",
+      "entryFile": "index",
+      "sourceRoot": "libs/cog/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/cog/tsconfig.lib.json"
+      }
+    },
     "eidas-country": {
       "type": "library",
       "root": "libs/eidas-country",
@@ -716,6 +725,15 @@
       "sourceRoot": "libs/elasticsearch/src",
       "compilerOptions": {
         "tsConfigPath": "libs/elasticsearch/tsconfig.lib.json"
+      }
+    },
+    "csv": {
+      "type": "library",
+      "root": "libs/csv",
+      "entryFile": "index",
+      "sourceRoot": "libs/csv/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/csv/tsconfig.lib.json"
       }
     }
   }

@@ -129,7 +129,11 @@
       "@fc/cryptography-eidas": ["libs/cryptography-eidas/src"],
       "@fc/cryptography-eidas/*": ["libs/cryptography-eidas/src/*"],
       "@fc/elasticsearch": ["libs/elasticsearch/src"],
-      "@fc/elasticsearch/*": ["libs/elasticsearch/src/*"]
+      "@fc/elasticsearch/*": ["libs/elasticsearch/src/*"],
+      "@fc/csv": ["libs/csv/src"],
+      "@fc/csv/*": ["libs/csv/src/*"],
+      "@fc/cog": ["libs/cog/src"],
+      "@fc/cog/*": ["libs/cog/src/*"]
     }
   },
   "exclude": ["node_modules", "dist"]
