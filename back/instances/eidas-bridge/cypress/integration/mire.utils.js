@@ -132,7 +132,10 @@ export function checkInformationsEuSpFrIdp(params = {}) {
         value:
           '[FR/BE/082aef8c0d31e99d83d910879a4fcdd8610d571f07ce5610440b3a0161f6e393v1]',
       },
-      { name: 'PlaceOfBirth', value: '[75107]' },
+      {
+        name: 'PlaceOfBirth',
+        value: '[Paris 7e Arrondissement - 75107, FRANCE (FR)]',
+      },
     ],
   } = params;
 

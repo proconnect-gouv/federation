@@ -1,13 +1,13 @@
 import {
-  configureOidcSpMockRequest,
-  configureEidasSpMockRequest,
-  chooseIdp,
   authenticateToEUIdp,
   authenticateToIdp,
-  checkInformationsEuSpFrIdp,
-  checkInformationsFrSpEuIdp,
   basicSuccessScenarioEuSpFrIdp,
   basicSuccessScenarioFrSpEuIdp,
+  checkInformationsEuSpFrIdp,
+  checkInformationsFrSpEuIdp,
+  chooseIdp,
+  configureEidasSpMockRequest,
+  configureOidcSpMockRequest,
 } from './mire.utils';
 
 const SCOPES_FR =
@@ -43,7 +43,9 @@ describe('Identity Check', () => {
       cy.proxyURLWasActivated();
 
       cy.hasError('Y000006');
-      cy.contains(`Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous`);
+      cy.contains(
+        `Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous`,
+      );
       // only one error
       cy.contains(/(?:"constraints"){1}.*?(constraints)/).should('not.exist');
     });
@@ -73,7 +75,10 @@ describe('Identity Check', () => {
           value:
             '[FR/BE/cb9c1f5e5313a460114433a71b42511a194b996da1a3716a8d6c892a1d4307c3v1]',
         },
-        { name: 'PlaceOfBirth', value: '[75112]' },
+        {
+          name: 'PlaceOfBirth',
+          value: '[Paris 12e Arrondissement - 75112, FRANCE (FR)]',
+        },
       ];
       checkInformationsEuSpFrIdp({ expectedIdentity });
 
@@ -97,7 +102,9 @@ describe('Identity Check', () => {
       authenticateToEUIdp({ optionalAttributes: false });
 
       cy.hasError('Y000006');
-      cy.contains(`Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous`);
+      cy.contains(
+        `Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous`,
+      );
       // only one error
       cy.contains(/(?:"constraints"){1}.*?(constraints)/).should('not.exist');
     });

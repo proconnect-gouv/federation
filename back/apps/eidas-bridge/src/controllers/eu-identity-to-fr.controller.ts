@@ -162,7 +162,7 @@ export class EuIdentityToFrController {
     }
 
     const { acr, userinfos: idpIdentity } =
-      await this.eidasToOidc.mapPartialResponseSuccess(eidasResponse);
+      this.eidasToOidc.mapPartialResponseSuccess(eidasResponse);
 
     await this.validateIdentity(idpIdentity);
 

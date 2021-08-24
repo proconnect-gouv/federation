@@ -2,11 +2,17 @@
 import * as ClassTransformer from 'class-transformer';
 import * as ClassValidator from 'class-validator';
 
-import { getDtoErrors, getTransformed, validateDto } from './dto-validation';
+import {
+  filteredByDto,
+  getDtoErrors,
+  getTransformed,
+  validateDto,
+} from './dto-validation';
 
 describe('DtoValidation', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
   });
 
   describe('getTransformed', () => {
@@ -142,6 +148,155 @@ describe('DtoValidation', () => {
     });
   });
 
+  describe('filteredByDto', () => {
+    it('should call "plainToClass" and "classToPlain" from "class-transformer"', async () => {
+      // setup
+      class TestClass {}
+      const plain = { foo: 'bar' };
+      const validationOptions = { whitelist: false };
+      const resultValidationOptions = undefined;
+
+      jest.spyOn(ClassTransformer, 'plainToClass').mockReturnValueOnce(plain);
+      jest.spyOn(ClassValidator, 'validate').mockResolvedValueOnce([]);
+      // the spyOn choose the wrong classToPlain definition :(
+      jest
+        .spyOn(ClassTransformer, 'classToPlain')
+        .mockReturnValueOnce(plain as any);
+
+      // action
+      const result = await filteredByDto(plain, TestClass, validationOptions);
+
+      // expect
+      expect(result).toEqual({ errors: [], result: plain });
+      expect(ClassTransformer.plainToClass).toHaveBeenCalledTimes(1);
+      expect(ClassTransformer.plainToClass).toHaveBeenCalledWith(
+        TestClass,
+        plain,
+        resultValidationOptions,
+      );
+      expect(ClassTransformer.classToPlain).toHaveBeenCalledTimes(1);
+      expect(ClassTransformer.classToPlain).toHaveBeenCalledWith(plain);
+    });
+
+    it('should call "plainToClass" and "classToPlain" from "class-transformer" with full options', async () => {
+      // setup
+      class TestClass {}
+      const plain = { foo: 'bar' };
+      const validationOptions = { whitelist: false };
+      const transformOptions = { groups: ['hello'] };
+
+      jest.spyOn(ClassTransformer, 'plainToClass');
+      jest.spyOn(ClassValidator, 'validate').mockResolvedValueOnce([]);
+      // the spyOn choose the wrong classToPlain definition :(
+      jest
+        .spyOn(ClassTransformer, 'classToPlain')
+        .mockReturnValueOnce(plain as any);
+
+      // action
+      const result = await filteredByDto(
+        plain,
+        TestClass,
+        validationOptions,
+        transformOptions,
+      );
+
+      // expect
+      expect(result).toEqual({ errors: [], result: plain });
+      expect(ClassTransformer.plainToClass).toHaveBeenCalledTimes(1);
+      expect(ClassTransformer.plainToClass).toHaveBeenCalledWith(
+        TestClass,
+        plain,
+        transformOptions,
+      );
+      expect(ClassTransformer.classToPlain).toHaveBeenCalledTimes(1);
+      expect(ClassTransformer.classToPlain).toHaveBeenCalledWith(plain);
+    });
+
+    it('should call "validate" from "class-validator" with given Dto', async () => {
+      // setup
+      jest.spyOn(ClassValidator, 'validate');
+
+      class TestClass {}
+      const plain = { foo: 'bar' };
+      const validationOptions = { whitelist: false };
+
+      // action
+      await filteredByDto(plain, TestClass, validationOptions);
+
+      // expect
+      expect(ClassValidator.validate).toHaveBeenCalledTimes(1);
+      expect(ClassValidator.validate).toHaveBeenCalledWith(
+        plain,
+        validationOptions,
+      );
+    });
+
+    it('should return data if no error is found', async () => {
+      // setup
+
+      class TestClass {}
+      const plain = { foo: 'bar' };
+      const validationOptions = { whitelist: false };
+
+      jest.spyOn(ClassTransformer, 'plainToClass');
+      jest.spyOn(ClassValidator, 'validate').mockResolvedValue([]);
+      // the spyOn choose the wrong classToPlain definition :(
+      jest
+        .spyOn(ClassTransformer, 'classToPlain')
+        .mockReturnValueOnce(plain as any);
+
+      // action
+      const { errors, result } = await filteredByDto(
+        plain,
+        TestClass,
+        validationOptions,
+      );
+
+      // expect
+      expect(errors).toBeInstanceOf(Array);
+      expect(errors.length).toStrictEqual(0);
+      expect(result).toEqual(plain);
+    });
+
+    it('should return the "validate" call result', async () => {
+      // setup
+      const validateResult = [
+        {
+          children: [],
+          constraints: {
+            Bar: 'oops !',
+            Rab: 'oops too !',
+          },
+          property: 'foo',
+        },
+      ];
+
+      class TestClass {}
+      const plain = { foo: 'bar' };
+      const validationOptions = { whitelist: false };
+
+      jest.spyOn(ClassTransformer, 'plainToClass');
+      jest.spyOn(ClassValidator, 'validate').mockResolvedValue(validateResult);
+      // the spyOn choose the wrong classToPlain definition :(
+      const classToPlainMock = jest
+        .spyOn(ClassTransformer, 'classToPlain')
+        .mockReturnValueOnce(plain as any);
+
+      // action
+      const { errors, result } = await filteredByDto(
+        plain,
+        TestClass,
+        validationOptions,
+      );
+
+      // expect
+      expect(errors).toBeInstanceOf(Array);
+      expect(errors.length).toStrictEqual(1);
+      expect(errors).toMatchObject(validateResult);
+      expect(result).toEqual(null);
+      expect(classToPlainMock).toHaveBeenCalledTimes(0);
+    });
+  });
   describe('getAllPropertiesErrors', () => {
     it('should return "null" if no error is found', () => {
       // setup
