@@ -321,7 +321,7 @@ describe('EuIdentityToFrController', () => {
       sessionServiceEidasMock.get.mockResolvedValue({
         eidasResponse: successEidasMandatoryJsonMock,
       });
-      eidasToOidcServiceMock.mapPartialResponseSuccess.mockResolvedValue(
+      eidasToOidcServiceMock.mapPartialResponseSuccess.mockReturnValue(
         successOidcJson,
       );
 
@@ -343,7 +343,7 @@ describe('EuIdentityToFrController', () => {
         sessionServiceEidasMock.get.mockResolvedValueOnce({
           eidasResponse: successEidasMandatoryJsonMock,
         });
-        eidasToOidcServiceMock.mapPartialResponseSuccess.mockResolvedValueOnce(
+        eidasToOidcServiceMock.mapPartialResponseSuccess.mockReturnValueOnce(
           successOidcJson,
         );
       });
