@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 
 import { Injectable } from '@nestjs/common';
 
+import { CogService } from '@fc/cog';
 import {
   EidasAttributes,
   EidasPartialRequest,
@@ -22,7 +23,10 @@ import {
 
 @Injectable()
 export class OidcToEidasService {
-  constructor(private readonly logger: LoggerService) {
+  constructor(
+    private readonly logger: LoggerService,
+    private readonly eidasCog: CogService,
+  ) {
     logger.setContext(this.constructor.name);
   }
 
@@ -30,10 +34,14 @@ export class OidcToEidasService {
     requestedScopes: string,
     acr: AcrValues,
   ): EidasPartialRequest {
+    this.logger.debug('mapPartialRequest()');
+
+    const scopes = requestedScopes.split(' ');
     const requestedAttributesSet: Set<EidasAttributes> =
-      this.mapScopesToRequestedAttributes(requestedScopes.split(' '));
+      this.mapScopesToRequestedAttributes(scopes);
     const requestedAttributes = Array.from(requestedAttributesSet);
 
+    this.logger.trace({ requestedAttributes, requestedScopes });
     return {
       levelOfAssurance: AcrValuesToLevelOfAssurancesMap[acr],
       requestedAttributes,
@@ -48,24 +56,37 @@ export class OidcToEidasService {
    * @param requestedAttributes The eIDAS requested attributes
    * @return A partial eidas response
    */
-  mapPartialResponseSuccess(
+  async mapPartialResponseSuccess(
     claims: Partial<IOidcIdentity>,
     acr: AcrValues,
     requestedAttributes: EidasAttributes[],
-  ): Partial<EidasResponse> {
+  ): Promise<Partial<EidasResponse>> {
+    this.logger.debug('mapPartialResponseSuccess()');
     const attributes = this.mapRequestedAttributesFromClaims(
       claims,
       requestedAttributes,
     );
 
+    // Adapt COG for European user.
+    const cogs = attributes[EidasAttributes.PLACE_OF_BIRTH];
+    if (cogs && cogs.length) {
+      attributes[EidasAttributes.PLACE_OF_BIRTH] =
+        await this.eidasCog.injectLabelsForCogs(cogs);
+    }
+
+    const subject = claims.sub;
+    const levelOfAssurance = AcrValuesToLevelOfAssurancesMap[acr];
+
+    this.logger.trace({ attributes, levelOfAssurance, subject });
+
     return {
-      subject: claims.sub,
-      levelOfAssurance: AcrValuesToLevelOfAssurancesMap[acr],
+      attributes,
+      levelOfAssurance,
       status: {
         failure: false,
         statusCode: EidasStatusCodes.SUCCESS,
       },
-      attributes,
+      subject,
     };
   }
 
@@ -101,8 +122,8 @@ export class OidcToEidasService {
       status: {
         failure: true,
         statusCode: EidasStatusCodes.RESPONDER,
-        subStatusCode: EidasSubStatusCodes.AUTHN_FAILED,
         statusMessage: `[${errorToReturn.error}]: ${errorToReturn.error_description}`,
+        subStatusCode: EidasSubStatusCodes.AUTHN_FAILED,
       },
     };
   }

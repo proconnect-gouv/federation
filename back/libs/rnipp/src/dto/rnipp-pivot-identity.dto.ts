@@ -1,7 +1,9 @@
 import { IsEnum, IsString, MinLength, ValidateIf } from 'class-validator';
 
+import { IsCog } from '@fc/cog';
+
 import { Genders } from '../enums';
-import { IsCog, IsRnippBirthdate } from '../validators';
+import { IsRnippBirthdate } from '../validators';
 
 const COG_FRANCE = '99100';
 

@@ -7,6 +7,7 @@ import {
   EidasStatusCodes,
   EidasSubStatusCodes,
 } from '@fc/eidas';
+import { LoggerService } from '@fc/logger';
 import { AcrValues } from '@fc/oidc';
 
 import { EidasToOidcService } from './eidas-to-oidc.service';
@@ -42,18 +43,29 @@ describe('EidasToOidcService', () => {
     [EidasAttributes.CURRENT_GIVEN_NAME]: ['Jean'],
   };
 
+  const loggerServiceMock = {
+    debug: jest.fn(),
+    setContext: jest.fn(),
+    trace: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
+    jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [EidasToOidcService],
-    }).compile();
+      providers: [EidasToOidcService, LoggerService],
+    })
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
+      .compile();
 
     service = module.get<EidasToOidcService>(EidasToOidcService);
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+    expect(loggerServiceMock.setContext).toHaveBeenCalledTimes(1);
   });
 
   describe('mapPartialRequest', () => {
@@ -93,13 +105,13 @@ describe('EidasToOidcService', () => {
 
   describe('mapPartialResponseSuccess', () => {
     const EidasResponseMock = {
-      levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
       attributes: {
         [EidasAttributes.PERSON_IDENTIFIER]: ['0123456789'],
         [EidasAttributes.CURRENT_GIVEN_NAME]: ['Jean'],
         [EidasAttributes.CURRENT_FAMILY_NAME]: ['Eude'],
         [EidasAttributes.DATE_OF_BIRTH]: ['1998-02-03'],
       },
+      levelOfAssurance: EidasLevelOfAssurances.SUBSTANTIAL,
     } as unknown as EidasResponse;
 
     const mapAttributesToClaimsMock = jest.fn();
@@ -122,14 +134,17 @@ describe('EidasToOidcService', () => {
     it('should return the corresponding oidc claims and the acr', () => {
       // setup
       const claimsMock = {
-        sub: '0123456789',
-        // oidc parameter
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        given_name: 'Jean',
+        birthdate: '1998-02-03',
+
         // oidc parameter
         // eslint-disable-next-line @typescript-eslint/naming-convention
         family_name: 'Eude',
-        birthdate: '1998-02-03',
+
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        given_name: 'Jean',
+
+        sub: '0123456789',
       };
       const acrMock = AcrValues.EIDAS2;
       mapAttributesToClaimsMock.mockReturnValueOnce(claimsMock);
@@ -149,8 +164,8 @@ describe('EidasToOidcService', () => {
     const eidasResponse = {
       status: {
         statusCode: EidasStatusCodes.SUCCESS,
-        subStatusCode: EidasSubStatusCodes.AUTHN_FAILED,
         statusMessage: 'This is a message',
+        subStatusCode: EidasSubStatusCodes.AUTHN_FAILED,
       },
     } as EidasResponse;
 
