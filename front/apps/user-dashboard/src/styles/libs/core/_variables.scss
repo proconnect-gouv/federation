@@ -1,0 +1,15 @@
+$body-width: 100vw !default;
+$font-marianne: arial, sans-serif;
+$body-font-size: 16px !default;
+$rem-baseline: $body-font-size;
+$FontSizes: (8, 9, 12, 14, 18, 24, 32, 48) !default;
+$Spacings: (1, 2, 4, 8, 12, 15, 10, 22, 24, 32, 40, 56, 64, 80) !default;
+$LinesHeight: (12, 20, 24, 32, 48, 56, 64, 72) !default;
+$breakpoints-xs: 320px !default; // Mobile
+$breakpoints-sm: 576px !default;
+$breakpoints-md: 768px !default; // Tablet
+$breakpoints-lg: 1024px !default; // Desktop
+$breakpoints-xl: 1248px !default; // Desktop Extra Large
+$breakpoint-tablet: $breakpoints-md;
+$breakpoint-desktop: $breakpoints-lg;
+$breakpoint-desktop-xl: $breakpoints-xl;
