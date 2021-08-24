@@ -1,4 +1,4 @@
-@import '~styles/_colors.scss';
+@import '../_colors.scss';
 
 .ant-collapse-header {
   padding-top: 25px !important;
@@ -19,8 +19,8 @@
 
   &:hover {
     .custom-inner-icon {
-      font-weight: bold;
       color: $primary !important;
+      font-weight: bold;
     }
   }
 }

@@ -1,4 +1,4 @@
-import './card-header.scss';
+import '../../../styles/card/card-header.scss';
 
 import classnames from 'classnames';
 import { DateTime } from 'luxon';
@@ -27,7 +27,7 @@ function CardHeaderComponent({ data, type }: CardInterfaceBase): JSX.Element {
       <div
         className={classnames(
           'badge custom-badge text-white p-2 rounded-sm font-weight-bold text-uppercase position-absolute d-flex align-items-center h5 justify-content-center t-0 h30 ',
-          getBadgeColorClassname(type)
+          getBadgeColorClassname(type),
         )}>
         {type}
       </div>

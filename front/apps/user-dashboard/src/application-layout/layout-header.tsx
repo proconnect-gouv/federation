@@ -1,15 +1,37 @@
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-import HeaderLogo from './layout-header-logo';
+import {
+  LogoAgentConnect,
+  LogoFranceConnect,
+  LogoFranceConnectPlus,
+  LogoMarianne,
+} from '../assets/logos';
 
-function HeaderComponent(): JSX.Element {
-  return (
-    <header className="container d-flex flex-row justify-content-between align-items-center py-3">
-      <span />
-      <HeaderLogo />
-      <Link to="/mes-connexions">Mes connexions</Link>
+type LayoutHeaderProps = {
+  // @TODO move to fc/front/libs
+  type: 'agentconnect' | 'franceconnect' | 'franceconnectplus';
+};
+
+const LayoutHeaderComponent = React.memo(
+  // @TODO move to fc/front/libs
+  ({ type }: LayoutHeaderProps): JSX.Element => (
+    <header className="shadow-bottom mb40" role="banner">
+      <div className="content-wrapper-lg px16 py24">
+        <Link
+          className="flex-columns flex-start items-center"
+          title="AgentConnect - Retour à l'accueil"
+          to="/">
+          <LogoMarianne className="mr40" />
+          {type === 'agentconnect' && <LogoAgentConnect />}
+          {type === 'franceconnect' && <LogoFranceConnect />}
+          {type === 'franceconnectplus' && <LogoFranceConnectPlus />}
+        </Link>
+      </div>
     </header>
-  );
-}
+  ),
+);
 
-export default HeaderComponent;
+LayoutHeaderComponent.displayName = 'LayoutHeaderComponent';
+
+export default LayoutHeaderComponent;
