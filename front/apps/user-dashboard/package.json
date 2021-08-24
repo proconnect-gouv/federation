@@ -19,6 +19,7 @@
     ]
   },
   "devDependencies": {
+    "@testing-library/react": "^12.0.0",
     "@types/lodash.get": "^4.4.6",
     "@types/luxon": "^1.25.0",
     "@types/react-helmet": "^6.1.0",
@@ -33,7 +34,6 @@
     "bootstrap": "^5.0.2",
     "classnames": "^2.2.6",
     "final-form": "^4.20.1",
-    "link-module-alias": "^1.2.0",
     "lodash.get": "^4.4.2",
     "luxon": "^1.25.0",
     "react": "^17.0.1",
@@ -41,23 +41,21 @@
     "react-final-form": "^6.5.1",
     "react-helmet": "^6.1.0",
     "react-icons": "^4.2.0",
+    "react-jss": "^10.7.1",
+    "react-responsive": "^9.0.0-beta.3",
     "react-router-dom": "^5.2.0",
     "redux-devtools-extension": "^2.13.9",
     "slugify": "^1.4.5",
     "uuid": "^8.3.1"
   },
   "scripts": {
-    "postinstall": "link-module-alias",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "test:cov": "react-scripts test  --coverage --watchAll=false",
     "format": "prettier --write ./src/**/*.ts{,x}",
-    "lint": "eslint ./src/**/*.ts{,x}",
+    "lint": "yarn lint:css && yarn lint:js",
+    "lint:js": "eslint ./src/**/*.ts{,x}",
     "lint:css": "stylelint ./src/styles/**/*.{css,scss}"
-  },
-  "_moduleAliases": {
-    "~styles": "src/styles",
-    "~components": "src/components"
   }
 }

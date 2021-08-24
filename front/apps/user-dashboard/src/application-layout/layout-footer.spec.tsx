@@ -1,14 +1,14 @@
 import { render } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 
-import LayoutFooter from './layout-footer';
+import LayoutFooter from './index';
 
 describe('LayoutFooter', () => {
   it('should contains "En savoir plus" link', () => {
     const { getByText } = render(
       <MemoryRouter>
         <LayoutFooter />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const linkElement = getByText(/En savoir plus sur FranceConnect/i);
     expect(linkElement).toBeInTheDocument();
@@ -18,7 +18,7 @@ describe('LayoutFooter', () => {
     const { getByText } = render(
       <MemoryRouter>
         <LayoutFooter />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const linkElement = getByText(/CGU/i);
     expect(linkElement).toBeInTheDocument();
@@ -28,7 +28,7 @@ describe('LayoutFooter', () => {
     const { getByText } = render(
       <MemoryRouter>
         <LayoutFooter />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const linkElement = getByText(/Foire aux questions/i);
     expect(linkElement).toBeInTheDocument();
@@ -38,7 +38,7 @@ describe('LayoutFooter', () => {
     const { getByText } = render(
       <MemoryRouter>
         <LayoutFooter />
-      </MemoryRouter>
+      </MemoryRouter>,
     );
     const linkElement = getByText(/Vous êtes un aidant professionnel/i);
     expect(linkElement).toBeInTheDocument();

@@ -1,4 +1,4 @@
-import './card.scss';
+import '../../../styles/card/card.scss';
 
 import { Collapse } from 'antd';
 import classnames from 'classnames';
@@ -23,7 +23,7 @@ function TraceCard({
       {...props}
       key={String(index)}
       className={classnames(
-        'border-bottom-0 rounded position-relative border-light is-blue-shadow custom-card-border use-pointer mb-5 cursor-pointer custom-animate-inner-icon'
+        'border-bottom-0 rounded position-relative border-light is-blue-shadow custom-card-border use-pointer mb-5 cursor-pointer custom-animate-inner-icon',
       )}
       header={<CardHeader data={data} type={type} />}>
       {isConnexionType && <CardContentAutorisation data={data} type={type} />}
