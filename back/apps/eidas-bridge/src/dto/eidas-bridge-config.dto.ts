@@ -5,6 +5,7 @@ import { Type } from 'class-transformer';
 import { IsObject, IsUrl, ValidateNested } from 'class-validator';
 
 import { ApacheIgniteConfig } from '@fc/apache-ignite';
+import { CogConfig } from '@fc/cog';
 import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
 import { EidasClientConfig } from '@fc/eidas-client';
 import { EidasLightProtocolConfig } from '@fc/eidas-light-protocol';
@@ -34,6 +35,11 @@ export class EidasBridgeConfig {
   @ValidateNested()
   @Type(() => AppConfig)
   readonly App: AppConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CogConfig)
+  readonly Cog: CogConfig;
 
   @IsObject()
   @ValidateNested()

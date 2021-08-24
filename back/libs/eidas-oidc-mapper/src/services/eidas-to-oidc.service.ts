@@ -6,6 +6,7 @@ import {
   EidasResponse,
   EidasResponseAttributes,
 } from '@fc/eidas';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity, OidcError } from '@fc/oidc';
 
 import {
@@ -16,6 +17,9 @@ import {
 
 @Injectable()
 export class EidasToOidcService {
+  constructor(private readonly logger: LoggerService) {
+    logger.setContext(this.constructor.name);
+  }
   /**
    * Takes eIDAS requested attributes and level of assurance to return oidc
    * scope and acr_values
@@ -25,12 +29,13 @@ export class EidasToOidcService {
    * @return The oidc scope and acr_values
    */
   mapPartialRequest({
-    requestedAttributes,
     levelOfAssurance,
+    requestedAttributes,
   }: Partial<EidasRequest>) {
     const scopeSet = this.mapRequestedAttributesToScopes(requestedAttributes);
     const scope = Array.from(scopeSet);
 
+    this.logger.trace({ requestedAttributes, scope });
     return {
       // oidc claim
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -39,7 +44,7 @@ export class EidasToOidcService {
     };
   }
 
-  mapPartialResponseSuccess({ levelOfAssurance, attributes }: EidasResponse) {
+  mapPartialResponseSuccess({ attributes, levelOfAssurance }: EidasResponse) {
     return {
       // oidc claim
       // eslint-disable-next-line @typescript-eslint/naming-convention

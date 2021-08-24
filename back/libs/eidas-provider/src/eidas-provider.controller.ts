@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, Redirect, Render } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
 import { ISessionService, Session } from '@fc/session';
 
 import {
@@ -13,9 +14,12 @@ import { EidasProviderService } from './eidas-provider.service';
 @Controller('eidas-provider')
 export class EidasProviderController {
   constructor(
+    private readonly logger: LoggerService,
     private readonly config: ConfigService,
     private readonly eidasProvider: EidasProviderService,
-  ) {}
+  ) {
+    this.logger.setContext(this.constructor.name);
+  }
 
   /**
    * Temporary controller to handle the request
@@ -44,7 +48,7 @@ export class EidasProviderController {
     const { redirectAfterRequestHandlingUrl } =
       this.config.get<EidasProviderConfig>('EidasProvider');
 
-    return { url: redirectAfterRequestHandlingUrl, statusCode: 302 };
+    return { statusCode: 302, url: redirectAfterRequestHandlingUrl };
   }
 
   @Get('/response-proxy')
@@ -55,7 +59,7 @@ export class EidasProviderController {
   ) {
     const eidasReponse = await this.getEidasResponse(session);
 
-    const { token, lightResponse } =
+    const { lightResponse, token } =
       this.eidasProvider.prepareLightResponse(eidasReponse);
 
     await this.eidasProvider.writeLightResponseInCache(
@@ -72,8 +76,12 @@ export class EidasProviderController {
   private async getEidasResponse(
     sessionEidas: ISessionService<EidasProviderSession>,
   ) {
+    this.logger.debug('getEidasResponse()');
+
     const { eidasRequest, partialEidasResponse }: EidasProviderSession =
       await sessionEidas.get();
+
+    this.logger.trace({ partialEidasResponse });
 
     let eidasReponse;
     if (!partialEidasResponse.status.failure) {
