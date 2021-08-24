@@ -1,4 +1,5 @@
-import '~styles/index.scss';
+import './styles/index.scss';
+import './styles/libs/index.scss';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -12,5 +13,5 @@ ReactDOM.render(
       <ApplicationLayout />
     </BrowserRouter>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );
