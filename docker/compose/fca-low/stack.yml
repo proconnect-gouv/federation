@@ -31,6 +31,6 @@ services:
       - 'fia4-low'
       - 'fia5-low'
       - 'exploitation-fca-low'
-      - 'pg-exploitation-fca-low'
+      - 'pg-exploit-fca-low'
       - 'exploit-fca-low-back'
       - 'exploit-fca-low-front'

@@ -402,6 +402,7 @@ case "$action" in
       fia1-low fia2-low fia4-low fia5-low core-fca-low fca-low-front csmr-hsm eidas-bridge \
       exploitation-fca-low exploit-fcp-high-back exploit-fca-low-back core-fcp-low \
       fsp1-low fip1-low exploit-fcp-high-front exploit-fca-low-front \
+      exploit-fcp-high-fi-mock exploit-fca-low-fi-mock \
     ;;
   exec)
     _exec $@
@@ -440,7 +441,7 @@ case "$action" in
     _start $@
     ;;
   reload-all)
-    _start fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fsa4-low fdp1v2 fip1-high fip2-high fia4-low fia5-low core-fcp-high rnipp exploitation-high fsa1-low fsa2-low fsa3-low fia1-low fia2-low core-fca-low fca-low-front csmr-hsm eidas-bridge exploitation-fca-low exploit-fcp-high-back exploit-fcp-high-front exploit-fca-low-back exploit-fca-low-front core-fcp-low fsp1-low fip1-low
+    _start fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fsa4-low fdp1v2 fip1-high fip2-high fia4-low fia5-low core-fcp-high rnipp exploitation-high fsa1-low fsa2-low fsa3-low fia1-low fia2-low core-fca-low fca-low-front csmr-hsm eidas-bridge exploitation-fca-low exploit-fcp-high-back exploit-fcp-high-front exploit-fca-low-back exploit-fca-low-front exploit-fcp-high-fi-mock exploit-fca-low-fi-mock core-fcp-low fsp1-low fip1-low
     ;;
   reset-db-core-fcp-high)
     _reset_db_fcp_high $@
@@ -471,6 +472,7 @@ case "$action" in
       exploit-fcp-high-front exploit-fca-low-front \
       \
       core-fca-low fca-low-front exploitation-fca-low exploit-fca-low-back \
+      exploit-fcp-high-fi-mock exploit-fca-low-fi-mock \
       fsa1-low fsa2-low fsa3-low fsa4-low \
       fia1-low fia2-low fia4-low fia5-low \
     ;;
@@ -488,6 +490,7 @@ case "$action" in
     exploit-fcp-high-front \
     \
     core-fca-low fca-low-front exploitation-fca-low exploit-fca-low-back exploit-fca-low-front \
+    exploit-fcp-high-fi-mock exploit-fca-low-fi-mock \
     fsa1-low fsa2-low fsa3-low fsa4-low \
     fia1-low fia2-low fia4-low fia5-low \
     ;;
@@ -495,7 +498,7 @@ case "$action" in
     _test $@
     ;;
   test-all)
-    _test rnipp core-fcp-high exploitation-high core-fca-low fca-low-front eidas-bridge exploitation-fca-low exploit-fcp-high-back exploit-fca-low-back exploit-fca-low-front core-fcp-low fsp1-low fip1-low
+    _test rnipp core-fcp-high exploitation-high core-fca-low fca-low-front eidas-bridge exploitation-fca-low exploit-fcp-high-back exploit-fca-low-back exploit-fca-low-front exploit-fcp-high-fi-mock exploit-fca-low-fi-mock core-fcp-low fsp1-low fip1-low
     ;;
   e2e)
     _e2e $@
