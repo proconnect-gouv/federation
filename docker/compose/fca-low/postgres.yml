@@ -3,7 +3,7 @@ version: '3.4'
 ####################
 ####################
 services:
-  pg-exploitation-fca-low:
+  pg-exploit-fca-low:
     image: postgres:11
     environment:
       - 'POSTGRES_DB=pg-db'
