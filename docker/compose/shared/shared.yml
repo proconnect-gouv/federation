@@ -70,8 +70,6 @@ services:
           - fia2-low.docker.dev-franceconnect.fr
           - fia4-low.docker.dev-franceconnect.fr
           - fia5-low.docker.dev-franceconnect.fr
-          - exploit-fcp-high.docker.dev-franceconnect.fr
-          - exploit-fca-low.docker.dev-franceconnect.fr
           # FCP LOW
           - core-fcp-low.docker.dev-franceconnect.fr
           - fsp1-low.docker.dev-franceconnect.fr
@@ -80,7 +78,11 @@ services:
           - docker.dev-franceconnect.fr
       fc:
       exploitation:
-
+        aliases:
+          - exploit-fcp-high.docker.dev-franceconnect.fr
+          - exploit-fca-low.docker.dev-franceconnect.fr
+          - exploit-fcp-high-fi-mock.docker.dev-franceconnect.fr
+          - exploit-fca-low-fi-mock.docker.dev-franceconnect.fr
   docker-gen:
     user: ${CURRENT_UID}
     image: jwilder/docker-gen
