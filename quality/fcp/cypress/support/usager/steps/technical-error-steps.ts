@@ -13,6 +13,6 @@ Then("le code d'erreur est {string}", function (errorCode) {
   checkErrorCode(errorCode);
 });
 
-Then('le numméro de session FranceConnect est affichée', function () {
+Then('le numéro de session FranceConnect est affiché', function () {
   checkSessionNumberVisible();
 });

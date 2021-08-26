@@ -1,12 +1,10 @@
 /**
- * Adds response interceptions to replace SameSite=Lax cookie attributes by none
+ * Adds response interceptions to force SameSite cookie attributes by none
  * on the domains provided, as browsers would skip Set-Cookie headers with SameSite=Lax
  * initiated in Cypress iFrame.
  * @param domains domains used for the cross applications tests
  */
-export const disableSameSiteLax = (domains: {
-  [key: string]: string;
-}): void => {
+export const forceSameSiteNone = (domains: { [key: string]: string }): void => {
   Object.keys(domains).forEach((key) => {
     const excludeExtensions = '(?<!.css)(?<!.js)(?<!.png)(?<!.svg)(?<!.woff2)';
     const domainRegExp = new RegExp(`.*${domains[key]}.*${excludeExtensions}$`);
@@ -14,17 +12,17 @@ export const disableSameSiteLax = (domains: {
       req.on('response', (res) => {
         const cookies = res.headers['set-cookie'];
         if (Array.isArray(cookies)) {
-          const setCookieHeaders = cookies.map((strCookie) =>
-            strCookie.replace(/samesite=lax/i, 'samesite=none'),
-          );
-          /**
-           * @todo Review headers typing in Cypress after their Cookie API refactoring
-           * @link: https://github.com/cypress-io/cypress/issues/14368
-           * @link: https://github.com/cypress-io/cypress/issues/16734
-           * author: Nicolas Legeay
-           * date: 31/05/2021
-           */
-          // @ts-expect-error headers type in Cypress is wrongly { [key: string]: string }
+          const setCookieHeaders = cookies.map((strCookie) => {
+            // Force SameSite value to none
+            if (strCookie.match(/samesite/i)) {
+              return strCookie.replace(
+                /samesite=(lax|strict)/i,
+                'samesite=none',
+              );
+            }
+            // Use SameSite none by default if not set
+            return strCookie.concat(';samesite=none;secure');
+          });
           res.headers['set-cookie'] = setCookieHeaders;
         }
       });

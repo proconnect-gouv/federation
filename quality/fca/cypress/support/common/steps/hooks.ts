@@ -1,7 +1,7 @@
 import {
   addFCBasicAuthorization,
   clearAllCookies,
-  disableSameSiteLax,
+  forceSameSiteNone,
   getDefaultIdentityProvider,
   getDefaultServiceProvider,
   getDefaultUser,
@@ -56,8 +56,9 @@ beforeEach(function () {
     // Setup interceptions to override set-cookie samesite values
     const crossDomains = {
       AC: 'dev-agentconnect.fr',
+      Osmose: 'bacasable-prep-osmose.jaliosagora.com',
     };
-    disableSameSiteLax(crossDomains);
+    forceSameSiteNone(crossDomains);
   }
 });
 
