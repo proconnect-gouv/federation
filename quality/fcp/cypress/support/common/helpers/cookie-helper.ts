@@ -15,16 +15,8 @@ export const disableSameSiteLax = (domains: {
         const cookies = res.headers['set-cookie'];
         if (Array.isArray(cookies)) {
           const setCookieHeaders = cookies.map((strCookie) =>
-            strCookie.replace(/samesite=lax/i, 'samesite=none'),
+            strCookie.replace(/samesite=(lax|strict)/i, 'samesite=none'),
           );
-          /**
-           * @todo Review headers typing in Cypress after their Cookie API refactoring
-           * @link: https://github.com/cypress-io/cypress/issues/14368
-           * @link: https://github.com/cypress-io/cypress/issues/16734
-           * author: Nicolas Legeay
-           * date: 31/05/2021
-           */
-          // @ts-expect-error headers type in Cypress is wrongly { [key: string]: string }
           res.headers['set-cookie'] = setCookieHeaders;
         }
       });

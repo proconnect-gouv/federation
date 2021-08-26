@@ -18,16 +18,16 @@ When('je navigue sur la page fournisseur de service', function () {
   navigateTo({ appId: currentServiceProvider.name, baseUrl: allAppsUrl });
 });
 
-When('je clique sur le bouton FranceConnect', function () {
+When('je clique sur le bouton AgentConnect', function () {
   // Setup the requested scope and eidas on mocked environment
   if (this.serviceProvider.mocked === true) {
     serviceProviderPage.setMockRequestedScope(this.requestedScope);
     serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
-    serviceProviderPage.clickMockFcButton(
+    serviceProviderPage.clickMockfcaButton(
       this.serviceProvider.authorizeHttpMethod,
     );
   } else {
-    serviceProviderPage.fcButton.click();
+    serviceProviderPage.fcaButton.click();
   }
 
   if (isUsingFCBasicAuthorization()) {
