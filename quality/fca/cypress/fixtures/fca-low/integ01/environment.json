@@ -1,0 +1,7 @@
+{
+  "name": "integ01",
+  "allAppsUrl": "https://docker.dev-franceconnect.fr/integ01/fca.html",
+  "exploitAppId": "exploitation-fca-low",
+  "exploitRootUrl": "https://fc-exploitation.integ01.dev-agentconnect.fr",
+  "fcaRootUrl": "https://fca.integ01.dev-agentconnect.fr"
+}

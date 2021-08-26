@@ -7,7 +7,7 @@
     "mocked": true,
     "enabled": true,
     "url": "https://fia1-low.{{TEST_ENV}}.dev-franceconnect.fr/interaction",
-    "acrValues": ["eidas3"],
+    "acrValues": ["eidas1"],
     "selectors": {
       "idpButton": "#idp-fia1-low",
       "username": "input[name='login']",

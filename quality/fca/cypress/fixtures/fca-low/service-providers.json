@@ -11,7 +11,7 @@
       "tous les scopes"
     ],
     "selectors": {
-      "fcButton": "#get-authorize",
+      "fcaButton": "#get-authorize",
       "logoutButton": ".nav-logout"
     },
     "authorizeHttpMethod": "get"
