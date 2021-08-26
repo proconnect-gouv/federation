@@ -2,6 +2,6 @@ export interface Environment {
   allAppsUrl: string;
   exploitAppId: string;
   exploitRootUrl: string;
-  fcRootUrl: string;
+  fcaRootUrl: string;
   name: string;
 }
