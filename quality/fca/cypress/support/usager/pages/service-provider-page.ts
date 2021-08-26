@@ -21,7 +21,7 @@ const ALL_SCOPES: Readonly<string[]> = [
 ];
 
 export default class ServiceProviderPage {
-  fcButtonSelector: string;
+  fcaButtonSelector: string;
   logoutButtonSelector: string;
   originUrl: string;
   redirectUriPath: string;
@@ -29,17 +29,17 @@ export default class ServiceProviderPage {
   constructor(args: ServiceProviderBase) {
     const {
       redirectUriPath,
-      selectors: { fcButton, logoutButton },
+      selectors: { fcaButton, logoutButton },
       url,
     } = args;
-    this.fcButtonSelector = fcButton;
+    this.fcaButtonSelector = fcaButton;
     this.logoutButtonSelector = logoutButton;
     this.originUrl = url;
     this.redirectUriPath = redirectUriPath;
   }
 
-  get fcButton(): ChainableElement {
-    return cy.get(this.fcButtonSelector);
+  get fcaButton(): ChainableElement {
+    return cy.get(this.fcaButtonSelector);
   }
 
   get logoutButton(): ChainableElement {
@@ -92,7 +92,7 @@ export default class ServiceProviderPage {
     });
   }
 
-  clickMockFcButton(formMethod: 'get' | 'post'): void {
+  clickMockfcaButton(formMethod: 'get' | 'post'): void {
     const buttonName = `#${formMethod}-authorize`;
     cy.get(buttonName).click();
   }

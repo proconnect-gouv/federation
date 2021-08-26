@@ -22,7 +22,7 @@ Given(
 );
 
 Given(
-  'le fournisseur de service se connecte à FranceConnect via la méthode {string}',
+  'le fournisseur de service se connecte à AgentConnect via la méthode {string}',
   function (authorizeHttpMethod: 'post' | 'get') {
     this.serviceProvider.authorizeHttpMethod = authorizeHttpMethod;
   },
