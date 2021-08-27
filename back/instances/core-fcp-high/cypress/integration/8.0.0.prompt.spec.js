@@ -4,12 +4,12 @@ describe('8.0.0 - prompt', () => {
   it('should not allow prompt=none', () => {
     const url = getAuthorizeUrl({ prompt: 'none' });
     cy.visit(url, { failOnStatusCode: false });
-    cy.hasError('Y000400');
+    cy.hasError('Y030007');
   });
   it('should not allow prompt=select_account', () => {
     const url = getAuthorizeUrl({ prompt: 'select_account' });
     cy.visit(url, { failOnStatusCode: false });
-    cy.hasError('Y000400');
+    cy.hasError('Y030007');
   });
   it('should allow prompt=login', () => {
     const url = getAuthorizeUrl({ prompt: 'login' });

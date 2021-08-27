@@ -27,8 +27,8 @@ describe('CoreService', () => {
   let service: CoreService;
 
   const loggerServiceMock = {
-    setContext: jest.fn(),
     debug: jest.fn(),
+    setContext: jest.fn(),
     trace: jest.fn(),
     warn: jest.fn(),
   };
@@ -36,7 +36,6 @@ describe('CoreService', () => {
   const uidMock = '42';
 
   const getInteractionResultMock = {
-    prompt: {},
     params: {
       // oidc param
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -44,6 +43,7 @@ describe('CoreService', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: 'spId',
     },
+    prompt: {},
     uid: uidMock,
   };
 
@@ -51,8 +51,8 @@ describe('CoreService', () => {
 
   const oidcProviderServiceMock = {
     getInteraction: getInteractionMock,
-    registerMiddleware: jest.fn(),
     getInteractionIdFromCtx: jest.fn(),
+    registerMiddleware: jest.fn(),
   };
 
   const oidcProviderErrorServiceMock = {
@@ -61,21 +61,22 @@ describe('CoreService', () => {
 
   const sessionServiceMock = {
     get: jest.fn(),
-    set: jest.fn(),
     reset: jest.fn(),
+    set: jest.fn(),
   };
 
   const accountServiceMock = {
-    storeInteraction: jest.fn(),
     isBlocked: jest.fn(),
+    storeInteraction: jest.fn(),
   };
 
   const spIdentityMock = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    given_name: 'Edward',
+    email: 'eteach@fqdn.ext',
+
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
-    email: 'eteach@fqdn.ext',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    given_name: 'Edward',
   };
 
   const idpIdentityMock = {
@@ -92,14 +93,14 @@ describe('CoreService', () => {
   };
 
   const sessionDataMock: OidcSession = {
-    idpId: '42',
     idpAcr: 'eidas3',
-    idpName: 'my favorite Idp',
+    idpId: '42',
     idpIdentity: idpIdentityMock,
-    spId: 'sp_id',
+    idpName: 'my favorite Idp',
     spAcr: 'eidas3',
-    spName: 'my great SP',
+    spId: 'sp_id',
     spIdentity: spIdentityMock,
+    spName: 'my great SP',
   };
 
   const interactionIdValueMock = '42';
@@ -116,17 +117,17 @@ describe('CoreService', () => {
   };
 
   const serviceProviderServiceMock = {
-    getList: jest.fn(),
     getById: jest.fn(),
+    getList: jest.fn(),
   };
 
   const configurationMock = {
-    routes: { authorization: '/foo' },
     cookies: {
       long: {
         maxAge: cookieMaxAgeValueMock,
       },
     },
+    routes: { authorization: '/foo' },
   };
 
   const unknownError = new Error('Unknown Error');
@@ -175,10 +176,12 @@ describe('CoreService', () => {
       .compile();
 
     configServiceMock.get.mockReturnValue({
-      forcedPrompt: ['testprompt'],
-      configuration: configurationMock,
       // OidcProvider.configuration
       acrValues: ['Boots', 'Motorcycles', 'Glasses'],
+
+      configuration: configurationMock,
+
+      forcedPrompt: ['testprompt'],
     });
 
     service = module.get<CoreService>(CoreService);
@@ -243,10 +246,10 @@ describe('CoreService', () => {
 
   describe('computeInteraction()', () => {
     const computeSp: ComputeSp = {
-      spId: sessionDataMock.spId,
       entityId: entityIdMock,
-      subSp: subSpMock,
       hashSp: rnippidentityHashMock,
+      spId: sessionDataMock.spId,
+      subSp: subSpMock,
     };
     const computeIdp: ComputeIdp = {
       idpId: sessionDataMock.idpId,
@@ -298,8 +301,8 @@ describe('CoreService', () => {
       expect(accountServiceMock.storeInteraction).toHaveBeenCalledWith({
         identityHash: rnippidentityHashMock,
         idpFederation: { [sessionDataMock.idpId]: { sub: subIdpMock } },
-        spFederation: { myEntityId: { sub: subSpMock } },
         lastConnection: expect.any(Date),
+        spFederation: { myEntityId: { sub: subSpMock } },
       });
     });
 
@@ -641,7 +644,7 @@ describe('CoreService', () => {
       service['registerMiddlewares']();
       // Then
       expect(oidcProviderServiceMock.registerMiddleware).toHaveBeenCalledTimes(
-        5,
+        6,
       );
     });
 
@@ -685,20 +688,20 @@ describe('CoreService', () => {
     const spIdMock = 'spIdValue';
     const spAcrMock = 'eidas3';
     const reqMock = {
-      sessionId: sessionIdMockValue,
       headers: { 'x-forwarded-for': '123.123.123.123' },
+      sessionId: sessionIdMockValue,
     };
     const resMock = {};
 
     const getCtxMock = (hasError = false) => {
       return {
-        req: reqMock,
-        res: resMock,
         oidc: {
           isError: hasError,
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          params: { client_id: spIdMock, acr_values: spAcrMock },
+          params: { acr_values: spAcrMock, client_id: spIdMock },
         },
+        req: reqMock,
+        res: resMock,
       };
     };
 
@@ -747,14 +750,14 @@ describe('CoreService', () => {
       service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
 
       const boundSessionContextMock: ISessionBoundContext = {
-        sessionId: sessionIdMockValue,
         moduleName: 'OidcClient',
+        sessionId: sessionIdMockValue,
       };
 
       const sessionPropertiesMock = {
         interactionId: interactionIdValueMock,
-        spId: spIdMock,
         spAcr: spAcrMock,
+        spId: spIdMock,
         spName: spNameMock,
       };
 
@@ -801,8 +804,8 @@ describe('CoreService', () => {
 
       const authEventContextMock: IEventContext = {
         ...eventCtxMock,
-        spId: spIdMock,
         spAcr: spAcrMock,
+        spId: spIdMock,
         spName: spNameMock,
       };
       // When
@@ -832,7 +835,7 @@ describe('CoreService', () => {
           headers: { 'x-forwarded-for': '123.123.123.123' },
           // oidc
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          query: { client_id: 'foo', acr_values: 'eidas3' },
+          query: { acr_values: 'eidas3', client_id: 'foo' },
         },
         res: {},
       };
@@ -912,7 +915,7 @@ describe('CoreService', () => {
           headers: { 'x-forwarded-for': '123.123.123.123' },
           // oidc
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          query: { client_id: 'foo', acr_values: 'eidas3' },
+          query: { acr_values: 'eidas3', client_id: 'foo' },
         },
         res: {},
       };
@@ -980,6 +983,46 @@ describe('CoreService', () => {
         ctxMock,
         errorMock,
       );
+    });
+  });
+
+  describe('resetCookie', () => {
+    it('should set cookies to nothing if cookies do not exist', () => {
+      // Given
+      const ctxMock: any = {
+        req: { headers: { foo: 'bar' } },
+      };
+
+      // When
+      service['resetCookies'](ctxMock);
+
+      // Then
+      expect(ctxMock).toEqual({
+        req: { headers: { foo: 'bar', cookie: '' } },
+      });
+    });
+
+    it('should set cookies to nothing if cookies exist', () => {
+      // Given
+      const ctxMock: any = {
+        req: {
+          headers: {
+            cookie: {
+              _interaction: '123',
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              session_id: 'test',
+            },
+          },
+        },
+      };
+
+      // When
+      service['resetCookies'](ctxMock);
+
+      // Then
+      expect(ctxMock).toEqual({
+        req: { headers: { cookie: '' } },
+      });
     });
   });
 });

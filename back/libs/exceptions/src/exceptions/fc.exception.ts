@@ -20,11 +20,10 @@ export class FcException extends Error {
    * - 06: eIDAS Client
    * - 07: eIDAS Provider
    * - 09: Mock Service Providers (Mock SP)
-   * - 15: Legacy session
    * - 16: Cryptography
    * - 17: Consumer-HSM
    * - 18: Account
-   * - 19: Session Generic
+   * - 19: Session
    * - 27: Mailer
    * - 80: Exceptions
    */

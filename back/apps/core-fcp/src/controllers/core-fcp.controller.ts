@@ -60,9 +60,9 @@ import {
 import { CoreFcpService } from '../services';
 
 export const datatransferEventsMap = {
+  'CONSENT:IDENTITY': CoreFcpDatatransferConsentIdentityEvent,
   'INFORMATION:ANONYMOUS': CoreFcpDatatransferInformationAnonymousEvent,
   'INFORMATION:IDENTITY': CoreFcpDatatransferInformationIdentityEvent,
-  'CONSENT:IDENTITY': CoreFcpDatatransferConsentIdentityEvent,
 };
 @Controller()
 export class CoreFcpController {
@@ -90,10 +90,10 @@ export class CoreFcpController {
     const { defaultRedirectUri } = this.config.get<Core>('Core');
 
     this.logger.trace({
-      route: CoreRoutes.DEFAULT,
       method: 'GET',
       name: 'CoreRoutes.DEFAULT',
       redirect: defaultRedirectUri,
+      route: CoreRoutes.DEFAULT,
     });
 
     res.redirect(301, defaultRedirectUri);
@@ -122,9 +122,9 @@ export class CoreFcpController {
     }
 
     const { spName } = session;
-    const { uid, params } = await this.oidcProvider.getInteraction(req, res);
+    const { params, uid } = await this.oidcProvider.getInteraction(req, res);
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
-    const { client_id: clientId, acr_values: acrValues } = params;
+    const { acr_values: acrValues, client_id: clientId } = params;
 
     const {
       configuration: { acrValues: allowedAcrValues },
@@ -138,7 +138,7 @@ export class CoreFcpController {
 
     if (rejected) {
       this.logger.trace(
-        { rejected, acrValues, allowedAcrValues },
+        { acrValues, allowedAcrValues, rejected },
         LoggerLevelNames.WARN,
       );
       return;
@@ -158,20 +158,20 @@ export class CoreFcpController {
 
     const notifications = await this.notifications.getNotifications();
     const response = {
-      uid,
-      params,
-      scope,
-      providers,
-      notifications,
-      spName,
       csrfToken,
+      notifications,
+      params,
+      providers,
+      scope,
+      spName,
+      uid,
     };
 
     this.logger.trace({
-      route: CoreRoutes.INTERACTION,
       method: 'GET',
       name: 'CoreRoutes.INTERACTION',
       response,
+      route: CoreRoutes.INTERACTION,
     });
 
     return res.render('interaction', response);
@@ -201,10 +201,10 @@ export class CoreFcpController {
     const url = `${urlPrefix}/interaction/${interactionId}/consent`;
 
     this.logger.trace({
-      route: CoreRoutes.INTERACTION_VERIFY,
       method: 'GET',
       name: 'CoreRoutes.INTERACTION_VERIFY',
       redirect: url,
+      route: CoreRoutes.INTERACTION_VERIFY,
     });
 
     res.redirect(url);
@@ -229,10 +229,10 @@ export class CoreFcpController {
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const {
+      interactionId,
+      spId,
       spIdentity: identity,
       spName,
-      spId,
-      interactionId,
     }: OidcSession = await sessionOidc.get();
 
     const interaction = await this.oidcProvider.getInteraction(req, res);
@@ -246,20 +246,20 @@ export class CoreFcpController {
     await this.csrfService.save(sessionOidc, csrfToken);
 
     const response = {
-      interactionId,
-      identity,
-      spName,
-      scopes,
       claims,
-      csrfToken,
       consentRequired,
+      csrfToken,
+      identity,
+      interactionId,
+      scopes,
+      spName,
     };
 
     this.logger.trace({
-      route: CoreRoutes.INTERACTION_CONSENT,
       method: 'GET',
       name: 'CoreRoutes.INTERACTION_CONSENT',
       response,
+      route: CoreRoutes.INTERACTION_CONSENT,
     });
 
     return response;
@@ -359,10 +359,10 @@ export class CoreFcpController {
     await this.sessionService.setAlias(spIdentity.sub, req.sessionId);
 
     this.logger.trace({
-      route: CoreRoutes.INTERACTION_LOGIN,
+      data: { req, res, session },
       method: 'POST',
       name: 'CoreRoutes.INTERACTION_LOGIN',
-      data: { req, res, session },
+      route: CoreRoutes.INTERACTION_LOGIN,
     });
 
     return this.oidcProvider.finishInteraction(req, res, session);
@@ -390,15 +390,15 @@ export class CoreFcpController {
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { providerUid } = params;
-    const { interactionId, idpId, idpState, idpNonce, spId } =
+    const { idpId, idpNonce, idpState, interactionId, spId } =
       await sessionOidc.get();
 
     await this.oidcClient.utils.checkIdpBlacklisted(spId, providerUid);
 
     const tokenParams = {
-      providerUid,
-      idpState,
       idpNonce,
+      idpState,
+      providerUid,
     };
 
     const { accessToken, acr, amr } =
@@ -417,10 +417,10 @@ export class CoreFcpController {
     await this.validateIdentity(idpId, providerUid, identity);
 
     const identityExchange: OidcSession = {
-      idpIdentity: identity,
-      idpAcr: acr,
       amr,
       idpAccessToken: accessToken,
+      idpAcr: acr,
+      idpIdentity: identity,
     };
     sessionOidc.set({ ...identityExchange });
 
@@ -429,10 +429,10 @@ export class CoreFcpController {
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;
 
     this.logger.trace({
-      route: OidcClientRoutes.OIDC_CALLBACK,
       method: 'GET',
       name: 'OidcClientRoutes.OIDC_CALLBACK',
       redirect: url,
+      route: OidcClientRoutes.OIDC_CALLBACK,
     });
 
     res.redirect(url);

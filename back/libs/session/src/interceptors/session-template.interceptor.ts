@@ -13,28 +13,42 @@ import { SessionConfig } from '@fc/session';
 
 import { extractSessionFromRequest } from '../decorators';
 import { ITemplateExposed } from '../interfaces';
+import { SessionService } from '../services';
+import { ExcludedRoutes } from '../types';
 
 @Injectable()
 export class SessionTemplateInterceptor implements NestInterceptor {
-  templateExposed: ITemplateExposed;
+  private templateExposed: ITemplateExposed;
+  private excludedRoutes: ExcludedRoutes;
 
   constructor(
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
+    private readonly sessionService: SessionService,
   ) {
     this.logger.setContext(this.constructor.name);
 
-    const { templateExposed } = this.config.get<SessionConfig>('Session');
+    const { templateExposed, excludedRoutes } =
+      this.config.get<SessionConfig>('Session');
     this.templateExposed = templateExposed;
+    this.excludedRoutes = excludedRoutes;
   }
+
   async intercept(
     context: ExecutionContext,
     next: CallHandler,
   ): Promise<Observable<any>> {
-    const res = context.switchToHttp().getResponse();
     this.logger.trace('SessionTemplateInterceptor');
 
-    if (this.templateExposed) {
+    const res = context.switchToHttp().getResponse();
+    const req = context.switchToHttp().getRequest();
+
+    const isHandleSession = this.sessionService.shouldHandleSession(
+      req.route.path,
+      this.excludedRoutes,
+    );
+
+    if (this.templateExposed && isHandleSession) {
       const sessionParts = await this.getSessionParts(
         this.templateExposed,
         context,
