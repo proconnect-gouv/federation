@@ -24,4 +24,7 @@ export default {
   lifetime: 600, // 10 minutes
   sessionIdLength: 64,
   excludedRoutes: [],
+  templateExposed: {
+    OidcClient: { spId: true, spName: true },
+  },
 } as SessionConfig;

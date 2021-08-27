@@ -7,6 +7,8 @@ import {
   IsBoolean,
   IsIn,
   IsNumber,
+  IsObject,
+  IsOptional,
   IsPositive,
   IsString,
   Length,
@@ -16,6 +18,8 @@ import {
 } from 'class-validator';
 
 import { IsStringOrRegExp } from '@fc/common';
+
+import { ITemplateExposed } from '../interfaces';
 
 export class CookieOptions {
   @IsBoolean()
@@ -74,4 +78,8 @@ export class SessionConfig {
   @IsArray()
   @IsStringOrRegExp({ each: true })
   readonly excludedRoutes: (string | RegExp)[];
+
+  @IsObject()
+  @IsOptional()
+  readonly templateExposed?: ITemplateExposed;
 }
