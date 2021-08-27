@@ -13,7 +13,14 @@
             <span>Revenir sur <%= locals.spName %></span>
           </div>
         </a>
-        <%}%>
+        <%} else if (locals.session && locals.session.OidcClient) { %>
+          <a class="previous-link-container" href="/api/v2/redirect-to-sp-with-error?error=<%= code %>&error_description=<%= message %>">
+            <div class="previous-link">
+              <div class="previous-link-icon"></div>
+              <span>Revenir sur <%= locals.session.OidcClient.spName %></span>
+            </div>
+          </a>
+       <% }%>
     </div>
   </nav>
 </header>
