@@ -31,8 +31,8 @@
               Informations à nous transmettre dans le mail pour faciliter la prise en charge de votre demande :
             </p>
             <% if(locals.code){%><p id="error-code"><strong>Code d'erreur : </strong><%= locals.code %></p><%}%> 
-            <% if(locals.id){%><p><strong>ID : </strong><%= locals.id %></p><%}%> 
-            <% if(locals.message){%><p><strong>Message : </strong><%= locals.message %></p><%}%> 
+            <% if(locals.id){%><p id="error-id"><strong>ID : </strong><%= locals.id %></p><%}%> 
+            <% if(locals.message){%><p id="error-message"><strong>Message : </strong><%= locals.message %></p><%}%> 
           </div>
         </main>
       </div>

@@ -88,7 +88,7 @@ module.exports = {
           ['^@?\\w'],
           //
           ['^@nestjs'],
-          ['^@fc'],
+          ['^@fc\/'],
           // Anything not matched in another group.
           ['^'],
           // Relative imports.
