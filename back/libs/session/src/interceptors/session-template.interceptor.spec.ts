@@ -8,6 +8,7 @@ import { LoggerService } from '@fc/logger';
 
 import { extractSessionFromRequest } from '../decorators';
 import { SessionConfig } from '../dto';
+import { SessionService } from '../services';
 import { SessionTemplateInterceptor } from './session-template.interceptor';
 
 jest.mock('../decorators', () => ({
@@ -23,14 +24,27 @@ const configServiceMock = {
   get: jest.fn(),
 };
 
+const sessionServiceMock = {
+  get: jest.fn(),
+  set: jest.fn(),
+  shouldHandleSession: jest.fn(),
+};
+
 async function genInterceptor() {
   const module: TestingModule = await Test.createTestingModule({
-    providers: [SessionTemplateInterceptor, ConfigService, LoggerService],
+    providers: [
+      SessionTemplateInterceptor,
+      ConfigService,
+      LoggerService,
+      SessionService,
+    ],
   })
     .overrideProvider(ConfigService)
     .useValue(configServiceMock)
     .overrideProvider(LoggerService)
     .useValue(loggerServiceMock)
+    .overrideProvider(SessionService)
+    .useValue(sessionServiceMock)
     .compile();
 
   const interceptor = module.get<SessionTemplateInterceptor>(
@@ -50,6 +64,12 @@ describe('SessionTemplateInterceptor', () => {
     },
   };
 
+  const reqMock = {
+    route: {
+      path: {},
+    },
+  };
+
   const oidcClientMock = { foo: true, bar: true };
 
   const configMock: Partial<SessionConfig> = {
@@ -62,11 +82,6 @@ describe('SessionTemplateInterceptor', () => {
   const sessionMock = {
     spId: 'mockSpId',
     spName: 'mockSpName',
-  };
-
-  const sessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
   };
 
   const httpContextMock = {
@@ -87,6 +102,7 @@ describe('SessionTemplateInterceptor', () => {
 
     configServiceMock.get.mockReturnValue(configMock);
     httpContextMock.getResponse.mockReturnValue(resMock);
+    httpContextMock.getRequest.mockReturnValue(reqMock);
     sessionServiceMock.get.mockResolvedValue(sessionMock);
     extractSessionFromRequestMock.mockReturnValue(sessionServiceMock);
   });
@@ -100,8 +116,43 @@ describe('SessionTemplateInterceptor', () => {
   });
 
   describe('intercept', () => {
-    it('should call next.handle()', async () => {
+    it('should check if it should handle the session for this route', async () => {
+      // setup
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(false);
+      interceptor = await genInterceptor();
+
+      // action
+      await interceptor.intercept(contextMock, nextMock);
+
+      // expect
+      expect(sessionServiceMock.shouldHandleSession).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.shouldHandleSession).toHaveBeenCalledWith(
+        reqMock.route.path,
+        configMock.excludedRoutes,
+      );
+    });
+
+    it('should call next.handle() if no handle session', async () => {
       // Given
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(false);
+      interceptor = await genInterceptor();
+      interceptor['getSessionParts'] = jest.fn();
+
+      // When
+      await interceptor.intercept(contextMock, nextMock);
+
+      // Then
+      expect(loggerServiceMock.trace).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.trace).toHaveBeenCalledWith(
+        'SessionTemplateInterceptor',
+      );
+      expect(interceptor['getSessionParts']).toHaveBeenCalledTimes(0);
+      expect(nextMock.handle).toHaveBeenCalledTimes(1);
+    });
+
+    it('should call next.handle() if no config provided', async () => {
+      // Given
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(true);
       configServiceMock.get.mockReset().mockReturnValue({});
       interceptor = await genInterceptor();
       interceptor['getSessionParts'] = jest.fn();
@@ -120,6 +171,7 @@ describe('SessionTemplateInterceptor', () => {
 
     it('should call getSessionParts before next.handle()', async () => {
       // Given
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(true);
       interceptor = await genInterceptor();
       interceptor['getSessionParts'] = jest.fn();
 

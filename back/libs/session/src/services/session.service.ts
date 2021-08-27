@@ -19,6 +19,7 @@ import {
   ISessionResponse,
 } from '../interfaces';
 import { SESSION_TOKEN_OPTIONS } from '../tokens';
+import { ExcludedRoutes } from '../types';
 
 export type RedisQueryResult = [Error | null, any];
 
@@ -249,6 +250,8 @@ export class SessionService {
     const sessionId = this.getSessionIdFromCookie(req);
     const sessionKey = this.getSessionKey(sessionId);
 
+    res.locals.session = {};
+
     await this.redis.del(sessionKey);
 
     return this.init(req, res);
@@ -271,7 +274,7 @@ export class SessionService {
   }
 
   private setCookies(res: ISessionResponse, sessionId: string): void {
-    const { sessionCookieName, cookieOptions } =
+    const { cookieOptions, sessionCookieName } =
       this.config.get<SessionConfig>('Session');
 
     res.cookie(sessionCookieName, sessionId, cookieOptions);
@@ -400,5 +403,17 @@ export class SessionService {
     const results: RedisQueryResult[] = await multi.exec();
     const value: string = results[0][1];
     return value;
+  }
+
+  shouldHandleSession(route: string, excludedRoutes: ExcludedRoutes): boolean {
+    const shouldExclude = excludedRoutes.find((excludedRoute: any) => {
+      if (excludedRoute instanceof RegExp) {
+        return excludedRoute.test(route);
+      }
+
+      return excludedRoute === route;
+    });
+
+    return !shouldExclude;
   }
 }

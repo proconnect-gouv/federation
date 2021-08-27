@@ -3,6 +3,7 @@
 
 | Code | Message utilisateur | Description |
 |---|---|---|
+| [Y000001](../apps/core-fcp/src/exceptions/core-fcp-failed-abort-session.exception.ts "CoreFcpFailedAbortSessionException") | Erreur technique | Le système a échoué à terminer la session avant une redirection vers le Fournisseur de Service | 
 | [Y000003](../libs/core/src/exceptions/core-missing-context.exception.ts "CoreMissingContextException") | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous. | La requête HTTP n&#39;est pas valide, FranceConnect+ n&#39;a pas pu la traiter car il manque des élements obligatoires ( headers, ... ). Cette erreur ne devrait pas se produire, contacter le service technique | 
 | [Y000004](../libs/core/src/exceptions/core-missing-identity.exception.ts "CoreMissingIdentityException") | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous. | Des étapes de la cinématique ont été omises (identité non disponible en session, l&#39;usager doit redémarrer sa cinématique depuis le FS) | 
 | [Y000005](../libs/core/src/exceptions/core-missing-authentication-email.exception.ts "CoreMissingAuthenticationEmailException") | Une erreur technique est survenue, veuillez contacter le support | Un problème de configuration concernant l&#39;envoi du mail de notification est survenue. Contacter le support N3 de toute urgence. | 
@@ -44,6 +45,7 @@
 | [Y030004](../libs/oidc-provider/src/exceptions/oidc-provider-binding.exception.ts "OidcProviderBindingException") | Une erreur technique est survenue, veuillez contacter le support. | Problème lors de l&#39;initialisation de la plateforme lié au wrapper oidc-provider. La plateforme ne fonctionne pas, contacter en urgence le support N3. | 
 | [Y030005](../libs/oidc-provider/src/exceptions/oidc-provider-stringify-payload-for-redis.exception.ts "OidcProviderStringifyPayloadForRedisException") | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous. | Une erreur est survenue lors de l&#39;enregistrement de données dans la session de l&#39;utilisateur. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3 | 
 | [Y030006](../libs/oidc-provider/src/exceptions/oidc-provider-parse-redis-response.exception.ts "OidcProviderParseRedisResponseException") | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous. | Les données enregistrées dans la session utilisateurs sont corrompues, il faut recommencer la cinématique. Si le problème persiste, contacter le support N3 | 
+| [Y030007](../libs/oidc-provider/src/exceptions/oidc-provider-authorize-params.exception.ts "OidcProviderAuthorizeParamsException") | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous. | Un ou plusieurs `params` de la route `authorize` n&#39;a/ont pas été validé par le DTO | 
 | [Y030025](../libs/oidc-provider/src/exceptions/oidc-provider-interaction-no-found.exception.ts "OidcProviderInteractionNotFoundException") | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous. | L&#39;identifiant de cinématique ( interactionId ) n&#39;existe plus, cela peut être dû à une durée de session trop longue, ou une manipulation de cet identifiant par l&#39;utilisateur.  Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3 | 
 | [Y030026](../libs/oidc-provider/src/exceptions/oidc-provider-grant-save.exception.ts "OidcProviderGrantSaveException") | Une erreur technique est survenue, veuillez contacter le support. | Problème de sauvegarde du grant. Contacter le support N3 | 
 
@@ -74,19 +76,11 @@
 
 | Code | Message utilisateur | Description |
 |---|---|---|
-| [Y150001](../libs/session/src/exceptions/session-not-found.exception.ts "SessionNotFoundException") | Session not found | Erreur émise lorsque l&#39;usager n&#39;a plus de session, probablement une fenêtre restée ouverte au delà des 10 minutes. | 
-| [Y150002](../libs/session/src/exceptions/session-bad-format.exception.ts "SessionBadFormatException") |  | N/A | 
-| [Y150003](../libs/session/src/exceptions/session-no-session-cookie.exception.ts "SessionNoSessionCookieException") | Should have a session cookie (timed out or wrong entry page) | N/A | 
-| [Y150004](../libs/session/src/exceptions/session-no-interaction-cookie.exception.ts "SessionNoInteractionCookieException") | Should have an interaction cookie (timed out or wrong entry page) | N/A | 
-| [Y150005](../libs/session/src/exceptions/session-bad-session-id.exception.ts "SessionBadSessionIdException") | Bad Session id | N/A | 
-| [Y150006](../libs/session/src/exceptions/session-bad-data.exception.ts "SessionBadDataException") | Error | N/A | 
-
-| Code | Message utilisateur | Description |
-|---|---|---|
 | [Y160001](../libs/override-oidc-provider/src/exceptions/cryptography-gateway.exception.ts "CryptographyGatewayException") |  | Il y a un problème de communication avec le HSM. L&#39;application est inutilisable pour tous les usagers. Contacter le support N3 en urgence. | 
 
 | Code | Message utilisateur | Description |
 |---|---|---|
+| [Y170000](../libs/csv/src/exceptions/csv-parsing.exception.ts "CsvParsingException") | Une erreur technique est survenue, veuillez contacter le support. | Problème d&#39;extraction des données CSV | 
 | [Y170001](../apps/csmr-hsm/src/exceptions/csmr-hsm-sign.exception.ts "CsmrHsmSignException") |  | Une erreur s&#39;est produite lors de la signature d&#39;un token par le HSM. Contacter le support N3. Cette erreur n&#39;est normalement pas remontée aux utilisateurs | 
 | [Y170002](../apps/csmr-hsm/src/exceptions/csmr-hsm-random.exception.ts "CsmrHsmRandomException") | Une erreur technique est survenue, veuillez contacter le support. | Une erreur s&#39;est produite lors de la génération d&#39;un aléa par le HSM. Contacter le support N3. Cette erreur n&#39;est normalement pas remontée aux utilisateurs | 
 

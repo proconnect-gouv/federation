@@ -4,7 +4,7 @@ describe('8.0.3 - nonce', () => {
   it('should return an error if the nonce is not provided (FC as IDP)', () => {
     const url = getAuthorizeUrl({}, 'nonce');
     cy.visit(url, { failOnStatusCode: false });
-    cy.hasError('Y000400');
+    cy.hasError('Y030007');
   });
 
   it('should return an error if the nonce is too short (FC as IDP)', () => {
@@ -12,7 +12,7 @@ describe('8.0.3 - nonce', () => {
       nonce: 'nonceToShort',
     });
     cy.visit(url, { failOnStatusCode: false });
-    cy.hasError('Y000400');
+    cy.hasError('Y030007');
   });
 
   it('should return an error if the nonce is not only alphanumeric (FC as IDP)', () => {
@@ -20,7 +20,7 @@ describe('8.0.3 - nonce', () => {
       nonce: '@azerty123!',
     });
     cy.visit(url, { failOnStatusCode: false });
-    cy.hasError('Y000400');
+    cy.hasError('Y030007');
   });
 
   it('should send the nonce through the authorize url (FC as FS)', () => {

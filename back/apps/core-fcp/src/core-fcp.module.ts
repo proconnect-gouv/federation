@@ -4,6 +4,7 @@
 import { Global, Module } from '@nestjs/common';
 
 import { AccountModule } from '@fc/account';
+import { AppModule } from '@fc/app';
 import {
   CoreService,
   CoreTrackingService,
@@ -28,7 +29,6 @@ import {
 import { MailerModule } from '@fc/mailer';
 import { MongooseModule } from '@fc/mongoose';
 import { NotificationsModule } from '@fc/notifications';
-import { OidcSession } from '@fc/oidc';
 import { OidcClientModule } from '@fc/oidc-client';
 import { OidcProviderModule } from '@fc/oidc-provider';
 import { RnippModule } from '@fc/rnipp';
@@ -45,6 +45,7 @@ import {
   OidcClientController,
   OidcProviderController,
 } from './controllers';
+import { CoreFcpSession } from './dto';
 import {
   CoreFcpDatatransferConsentIdentityEventHandler,
   CoreFcpDatatransferInformationAnonymousEventHAndler,
@@ -63,7 +64,7 @@ import { CoreFcpService } from './services';
     ExceptionsModule,
     MongooseModule,
     SessionModule.forRoot({
-      schema: OidcSession,
+      schema: CoreFcpSession,
     }),
     RnippModule,
     CryptographyFcpModule,
@@ -88,6 +89,7 @@ import { CoreFcpService } from './services';
     TrackingModule.forRoot(CoreTrackingService),
     NotificationsModule,
     FeatureHandlerModule,
+    AppModule,
   ],
   controllers: [
     CoreFcpController,

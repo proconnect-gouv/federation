@@ -63,8 +63,14 @@ export class CoreService {
   }
 
   private registerMiddlewares() {
-    const { forcedPrompt, knownAcrValues, defaultAcrValue } =
+    const { defaultAcrValue, forcedPrompt, knownAcrValues } =
       this.config.get<OidcProviderConfig>('OidcProvider');
+
+    this.oidcProvider.registerMiddleware(
+      OidcProviderMiddlewareStep.BEFORE,
+      OidcProviderRoutes.AUTHORIZATION,
+      this.resetCookies.bind(this),
+    );
 
     /** Force prompt @see overrideAuthorizePrompt header */
     this.oidcProvider.registerMiddleware(
@@ -123,27 +129,27 @@ export class CoreService {
 
     // oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    const { client_id: spId, acr_values: spAcr } = ctx.oidc.params;
+    const { acr_values: spAcr, client_id: spId } = ctx.oidc.params;
 
     const { name: spName } = await this.serviceProvider.getById(spId);
 
     const sessionProperties: OidcSession = {
       interactionId,
-      spId,
       spAcr,
+      spId,
       spName,
     };
 
     const sessionContext: ISessionBoundContext = {
-      sessionId,
       moduleName: 'OidcClient',
+      sessionId,
     };
     await this.sessionService.set(sessionContext, sessionProperties);
 
     const authEventContext: IEventContext = {
       ...eventContext,
-      spId,
       spAcr,
+      spId,
       spName,
     };
 
@@ -171,6 +177,15 @@ export class CoreService {
   }
 
   /**
+   * Force cookies to be reset to prevent panva from keeping
+   * a session open if you use several service provider in a row
+   * @param ctx
+   */
+  private resetCookies(ctx: OidcCtx): void {
+    ctx.req.headers.cookie = '';
+  }
+
+  /**
    * Override authorize request `prompt` parameter.
    * We only support 'login' and 'consent' and enforce those.
    *
@@ -184,7 +199,7 @@ export class CoreService {
    * @param overrideValue
    */
   private overrideAuthorizePrompt(overrideValue: string, ctx: OidcCtx): void {
-    this.logger.trace({ overrideValue, ctx });
+    this.logger.trace({ ctx, overrideValue });
 
     /**
      * Support both methods
@@ -215,7 +230,7 @@ export class CoreService {
     defaultAcrValue: string,
     ctx: OidcCtx,
   ): void {
-    this.logger.trace({ knownAcrValues, ctx });
+    this.logger.trace({ ctx, knownAcrValues });
 
     if (['POST', 'GET'].includes(ctx.method)) {
       const isPostMethod = ctx.method === 'POST';
@@ -265,7 +280,7 @@ export class CoreService {
    * @param {string} subIdp - sub of the Identity Provider
    */
   async computeInteraction(
-    { spId, entityId, subSp, hashSp }: ComputeSp,
+    { entityId, hashSp, spId, subSp }: ComputeSp,
     { idpId, subIdp }: ComputeIdp,
   ) {
     const spFederation = this.getFederation(spId, subSp, entityId);
@@ -276,9 +291,9 @@ export class CoreService {
       identityHash: hashSp,
       // federation for each sides
       idpFederation: idpFederation,
-      spFederation: spFederation,
       // Set last connection time to now
       lastConnection: new Date(),
+      spFederation: spFederation,
     };
 
     this.logger.trace(interaction);
