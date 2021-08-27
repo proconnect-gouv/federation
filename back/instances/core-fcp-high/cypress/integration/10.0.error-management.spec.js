@@ -7,6 +7,7 @@ import {
 
 describe('10.0 - Error Management', () => {
   const idpId = `${Cypress.env('IDP_NAME')}1-high`;
+  const mireUrl = new RegExp('/interaction/[^/]+');
 
   it('should not have link to error management after wrong client_id in authorize', () => {
     const url = getAuthorizeUrl({
@@ -122,4 +123,24 @@ describe('10.0 - Error Management', () => {
 
     cy.get('.previous-link').should('not.exist');
   });
+
+  it('shoudld redirect to the good sp if we are already a locals session defined', () => {
+    // Initialize a session with sp1 information
+    cy.visit(getAuthorizeUrl());
+    cy.url().should('match', mireUrl);
+
+
+    // Generate error on authorize
+    const url = getAuthorizeUrl({
+      // Oidc convention name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: 'random-bad-client-id'
+    })
+    cy.visit(url, {
+      failOnStatusCode: false,
+    });
+    cy.hasError('Y030106');
+
+    cy.get('.previous-link').should('not.exist');
+  })
 });

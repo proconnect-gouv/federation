@@ -1,6 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
+export * from './oidc-provider-authorize-params.exception';
 export * from './oidc-provider-binding.exception';
 export * from './oidc-provider-grant-save.exception';
 export * from './oidc-provider-initialisation.exception';

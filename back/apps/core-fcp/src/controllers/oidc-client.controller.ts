@@ -54,13 +54,13 @@ export class OidcClientController {
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
     const {
-      scope,
-      claims,
-      providerUid,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
+      claims,
       csrfToken,
+      providerUid,
+      scope,
     } = body;
 
     let serviceProviderId: string | null;
@@ -88,38 +88,38 @@ export class OidcClientController {
     }
 
     // TODO END
-    const { state, nonce } =
+    const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
     const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl({
-      state,
-      scope,
-      providerUid,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
-      nonce,
       claims,
+      nonce,
+      providerUid,
+      scope,
+      state,
     });
 
     const { name: idpName } = await this.identityProvider.getById(providerUid);
     const session: OidcClientSession = {
       idpId: providerUid,
       idpName,
-      idpState: state,
       idpNonce: nonce,
+      idpState: state,
     };
 
     await sessionOidc.set(session);
 
     this.logger.trace({
-      route: OidcClientRoutes.REDIRECT_TO_IDP,
+      body,
       method: 'POST',
       name: 'OidcClientRoutes.REDIRECT_TO_IDP',
-      body,
-      res,
-      session,
       redirect: authorizationUrl,
+      res,
+      route: OidcClientRoutes.REDIRECT_TO_IDP,
+      session,
     });
 
     res.redirect(authorizationUrl);
@@ -134,9 +134,9 @@ export class OidcClientController {
   @Get(OidcClientRoutes.WELL_KNOWN_KEYS)
   async getWellKnownKeys() {
     this.logger.trace({
-      route: OidcClientRoutes.WELL_KNOWN_KEYS,
       method: 'GET',
       name: 'OidcClientRoutes.WELL_KNOWN_KEYS',
+      route: OidcClientRoutes.WELL_KNOWN_KEYS,
     });
     return this.oidcClient.utils.wellKnownKeys();
   }
