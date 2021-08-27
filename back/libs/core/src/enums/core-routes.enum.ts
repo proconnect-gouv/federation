@@ -6,4 +6,5 @@ export enum CoreRoutes {
   INTERACTION_CONSENT = '/interaction/:uid/consent',
   INTERACTION_LOGIN = '/login',
   JWKS_URI = '/jwks',
+  REDIRECT_TO_SP_WITH_ERROR = '/redirect-to-sp-with-error',
 }
