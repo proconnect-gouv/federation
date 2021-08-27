@@ -1,3 +1,5 @@
+import { ValidatorOptions } from 'class-validator';
+
 import {
   Body,
   Controller,
@@ -11,19 +13,31 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
+import { validateDto } from '@fc/common';
 import { CoreRoutes } from '@fc/core';
-import { LoggerService } from '@fc/logger';
-import { OidcProviderService } from '@fc/oidc-provider';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
+import {
+  OidcProviderAuthorizeParamsException,
+  OidcProviderService,
+} from '@fc/oidc-provider';
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
+import { SessionService } from '@fc/session';
 
 import { AuthorizeParamsDto, ErrorParamsDto } from '../dto';
 import { CoreFcpFailedAbortSessionException } from '../exceptions';
+
+const validatorOptions: ValidatorOptions = {
+  forbidNonWhitelisted: true,
+  forbidUnknownValues: true,
+  whitelist: true,
+};
 
 @Controller()
 export class OidcProviderController {
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
+    private readonly sessionService: SessionService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -37,20 +51,33 @@ export class OidcProviderController {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/144
    */
   @Get(OidcProviderRoutes.AUTHORIZATION)
-  @UsePipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  )
-  getAuthorize(@Next() next, @Query() query: AuthorizeParamsDto) {
+  async getAuthorize(
+    @Req() req,
+    @Res() res,
+    @Next() next,
+    @Query() query: AuthorizeParamsDto,
+  ) {
     this.logger.trace({
-      route: OidcProviderRoutes.AUTHORIZATION,
       method: 'GET',
       name: 'OidcProviderRoutes.AUTHORIZATION',
       query,
+      route: OidcProviderRoutes.AUTHORIZATION,
     });
+
+    // Initializes a new session local
+    this.sessionService.reset(req, res);
+
+    const errors = await validateDto(
+      query,
+      AuthorizeParamsDto,
+      validatorOptions,
+    );
+
+    if (errors.length) {
+      this.logger.trace({ errors }, LoggerLevelNames.WARN);
+      throw new OidcProviderAuthorizeParamsException();
+    }
+
     // Pass the query to oidc-provider
     return next();
   }
@@ -64,20 +91,33 @@ export class OidcProviderController {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/144
    */
   @Post(OidcProviderRoutes.AUTHORIZATION)
-  @UsePipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  )
-  postAuthorize(@Next() next, @Body() body: AuthorizeParamsDto) {
+  async postAuthorize(
+    @Req() req,
+    @Res() res,
+    @Next() next,
+    @Body() body: AuthorizeParamsDto,
+  ) {
     this.logger.trace({
-      route: OidcProviderRoutes.AUTHORIZATION,
+      body,
       method: 'POST',
       name: 'OidcProviderRoutes.AUTHORIZATION',
-      body,
+      route: OidcProviderRoutes.AUTHORIZATION,
     });
+
+    // Initializes a new session local
+    this.sessionService.reset(req, res);
+
+    const errors = await validateDto(
+      body,
+      AuthorizeParamsDto,
+      validatorOptions,
+    );
+
+    if (errors.length) {
+      this.logger.trace({ errors }, LoggerLevelNames.WARN);
+      throw new OidcProviderAuthorizeParamsException();
+    }
+
     // Pass the query to oidc-provider
     return next();
   }

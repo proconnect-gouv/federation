@@ -3,7 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
+import { LoggerService } from '@fc/logger';
 
+import { SessionConfig } from '../dto';
 import { ISessionRequest } from '../interfaces';
 import { SessionService } from '../services';
 import { SessionInterceptor } from './session.interceptor';
@@ -15,7 +17,11 @@ describe('SessionInterceptor', () => {
     get: jest.fn(),
   };
 
-  const configMock = {
+  const loggerServiceMock = {
+    setContext: jest.fn(),
+  };
+
+  const configMock: Partial<SessionConfig> = {
     sessionCookieName: 'sessionCookieName',
     sessionIdLength: 64,
     excludedRoutes: ['/route/66', /excluded\/.*/],
@@ -27,6 +33,7 @@ describe('SessionInterceptor', () => {
     init: jest.fn(),
     refresh: jest.fn(),
     getSessionIdFromCookie: jest.fn(),
+    shouldHandleSession: jest.fn(),
   };
 
   const cryptographyServiceMock = {
@@ -39,6 +46,7 @@ describe('SessionInterceptor', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SessionInterceptor,
+        LoggerService,
         ConfigService,
         CryptographyService,
         SessionService,
@@ -46,6 +54,8 @@ describe('SessionInterceptor', () => {
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(CryptographyService)
@@ -59,6 +69,7 @@ describe('SessionInterceptor', () => {
 
   it('should be defined', () => {
     expect(interceptor).toBeDefined();
+    expect(loggerServiceMock.setContext).toHaveBeenCalledTimes(1);
   });
 
   describe('onModuleInit()', () => {
@@ -97,18 +108,16 @@ describe('SessionInterceptor', () => {
       handle: jest.fn(),
     };
     const handleSessionMock = jest.fn();
-    const shouldHandleSessionMock = jest.fn();
 
     beforeEach(() => {
       executionContextMock.switchToHttp.mockReturnValue(executionContextMock);
       executionContextMock.getRequest.mockReturnValueOnce(reqMock);
       interceptor['handleSession'] = handleSessionMock;
-      interceptor['shouldHandleSession'] = shouldHandleSessionMock;
     });
 
     it('should retieve the request from the execution context', async () => {
       // setup
-      shouldHandleSessionMock.mockReturnValueOnce(false);
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(false);
 
       // action
       await interceptor.intercept(
@@ -125,7 +134,8 @@ describe('SessionInterceptor', () => {
 
     it('should check if it should handle the session for this route', async () => {
       // setup
-      shouldHandleSessionMock.mockReturnValueOnce(false);
+      interceptor.onModuleInit();
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(false);
 
       // action
       await interceptor.intercept(
@@ -134,13 +144,16 @@ describe('SessionInterceptor', () => {
       );
 
       // expect
-      expect(shouldHandleSessionMock).toHaveBeenCalledTimes(1);
-      expect(shouldHandleSessionMock).toHaveBeenCalledWith(reqMock.route.path);
+      expect(sessionServiceMock.shouldHandleSession).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.shouldHandleSession).toHaveBeenCalledWith(
+        reqMock.route.path,
+        configMock.excludedRoutes,
+      );
     });
 
     it('should not get the response from the execution context if it should not handle the session', async () => {
       // setup
-      shouldHandleSessionMock.mockReturnValueOnce(false);
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(false);
 
       // action
       await interceptor.intercept(
@@ -157,7 +170,7 @@ describe('SessionInterceptor', () => {
 
     it('should get the response from the execution context if it should handle the session', async () => {
       // setup
-      shouldHandleSessionMock.mockReturnValueOnce(true);
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(true);
 
       // action
       await interceptor.intercept(
@@ -174,7 +187,7 @@ describe('SessionInterceptor', () => {
 
     it('should not call handleSession if it should not handle the session', async () => {
       // setup
-      shouldHandleSessionMock.mockReturnValueOnce(false);
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(false);
 
       // action
       await interceptor.intercept(
@@ -188,7 +201,7 @@ describe('SessionInterceptor', () => {
 
     it('should call handleSession with req and res if it should handle the session', async () => {
       // setup
-      shouldHandleSessionMock.mockReturnValueOnce(true);
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(true);
       const resMock = {
         send: jest.fn(),
       };
@@ -207,7 +220,7 @@ describe('SessionInterceptor', () => {
 
     it('should call the next handler if it should the handle session', async () => {
       // setup
-      shouldHandleSessionMock.mockReturnValueOnce(true);
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(true);
 
       // action
       await interceptor.intercept(
@@ -222,7 +235,7 @@ describe('SessionInterceptor', () => {
 
     it('should call the next handler if it should not handle the session', async () => {
       // setup
-      shouldHandleSessionMock.mockReturnValueOnce(false);
+      sessionServiceMock.shouldHandleSession.mockReturnValueOnce(false);
 
       // action
       await interceptor.intercept(
@@ -287,45 +300,6 @@ describe('SessionInterceptor', () => {
         reqCookieMock,
         resMock,
       );
-    });
-  });
-
-  describe('shouldHandleSession()', () => {
-    beforeEach(() => {
-      interceptor.onModuleInit();
-    });
-
-    it('should return true for a route that does not match any exluded route', () => {
-      // setup
-      const route = '/cause/I/was/on/the/road/all/the/livelong/day';
-
-      // action
-      const result = interceptor['shouldHandleSession'](route);
-
-      // expect
-      expect(result).toStrictEqual(true);
-    });
-
-    it('should return false for a route that match a RegExp in the excluded routes', () => {
-      // setup
-      const route = '/route/excluded/69';
-
-      // action
-      const result = interceptor['shouldHandleSession'](route);
-
-      // expect
-      expect(result).toStrictEqual(false);
-    });
-
-    it('should return false for a route that match exactly a string in the excluded routes', () => {
-      // setup
-      const route = '/route/66';
-
-      // action
-      const result = interceptor['shouldHandleSession'](route);
-
-      // expect
-      expect(result).toStrictEqual(false);
     });
   });
 });
