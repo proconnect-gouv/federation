@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
+import { LoggerService } from '@fc/logger';
 
 import { SessionConfig } from '../dto';
 import { ISessionRequest } from '../interfaces';
@@ -19,9 +20,12 @@ export class SessionInterceptor implements NestInterceptor {
   private excludedRoutes: ExcludedRoutes;
 
   constructor(
+    private readonly logger: LoggerService,
     private readonly config: ConfigService,
     private readonly sessionService: SessionService,
-  ) {}
+  ) {
+    this.logger.setContext(this.constructor.name);
+  }
 
   onModuleInit() {
     const { excludedRoutes } = this.config.get<SessionConfig>('Session');
@@ -34,8 +38,12 @@ export class SessionInterceptor implements NestInterceptor {
     next: CallHandler,
   ): Promise<Observable<unknown>> {
     const req = context.switchToHttp().getRequest();
+    const isHandleSession = this.sessionService.shouldHandleSession(
+      req.route.path,
+      this.excludedRoutes,
+    );
 
-    if (this.shouldHandleSession(req.route.path)) {
+    if (isHandleSession) {
       const res = context.switchToHttp().getResponse();
       await this.handleSession(req, res);
     }
@@ -51,17 +59,5 @@ export class SessionInterceptor implements NestInterceptor {
     } else {
       await this.sessionService.refresh(req, res);
     }
-  }
-
-  private shouldHandleSession(route: string): boolean {
-    const shouldExclude = this.excludedRoutes.find((excludedRoute) => {
-      if (excludedRoute instanceof RegExp) {
-        return excludedRoute.test(route);
-      }
-
-      return excludedRoute === route;
-    });
-
-    return !shouldExclude;
   }
 }

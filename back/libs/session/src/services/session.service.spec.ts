@@ -30,20 +30,20 @@ const sessionOptions = {
 };
 
 const cookieOptionsMock: ISessionCookieOptions = {
-  signed: true,
+  domain: 'domainValue',
   httpOnly: true,
-  secure: true,
   maxAge: 42,
   sameSite: 'Lax',
-  domain: 'domainValue',
+  secure: true,
+  signed: true,
 };
 
 const configMock = {
-  prefix: 'MOCK::SESS::',
-  lifetime: 42,
+  cookieOptions: cookieOptionsMock,
   encryptionKey:
     'U3VyICJBbW9uZyBVcyIsIEJlbmphbWluIGVzdCBzb3V2ZW50IGwnaW1wb3N0ZXVyIDsp',
-  cookieOptions: cookieOptionsMock,
+  lifetime: 42,
+  prefix: 'MOCK::SESS::',
   sessionCookieName: 'sessionCookieNameValue',
   sessionIdLength: 42,
 };
@@ -56,32 +56,32 @@ const cipherMock =
   'VGhlIGZpcnN0IHJlc2lkZW50IGNyZXcsIEV4cGVkaXRpb24gMSwgYXJyaXZlZCBpbiBOb3ZlbWJlciAyMDAwIG9uIFNveXV6IFRNLTMxLiBBdCB0aGUgZW5kIG9mIHRoZSBmaXJzdCBkYXkgb24gdGhlIHN0YXRpb24sIGFzdHJvbmF1dCBCaWxsIFNoZXBoZXJkIHJlcXVlc3RlZCB0aGUgdXNlIG9mIHRoZSByYWRpbyBjYWxsIHNpZ24gIkFscGhhIiwgd2hpY2ggaGUgYW5kIGNvc21vbmF1dCBLcmlrYWxldiBwcmVmZXJyZWQgdG8gdGhlIG1vcmUgY3VtYmVyc29tZSAiSW50ZXJuYXRpb25hbCBTcGFjZSBTdGF0aW9uIi4=';
 
 const loggerServiceMock = {
-  setContext: jest.fn(),
   debug: jest.fn(),
+  setContext: jest.fn(),
   trace: jest.fn(),
 };
 
 const redisServiceMock = {
-  get: jest.fn(),
-  set: jest.fn(),
   del: jest.fn(),
-  expire: jest.fn(),
   exec: jest.fn(),
+  expire: jest.fn(),
+  get: jest.fn(),
   multi: jest.fn(),
+  set: jest.fn(),
 };
 
 const cryptographyServiceMock = {
-  encryptSymetric: jest.fn(),
   decryptSymetric: jest.fn(),
+  encryptSymetric: jest.fn(),
   genRandomString: jest.fn(),
 };
 
 const randomStringMockValue = 'some random string value';
 
 const ctxMock: ISessionBoundContext = {
+  moduleName: 'Columbus',
   sessionId:
     'VGhlIHNwYWNlIHN0YXRpb24gaXMgbG9jYXRlZCBpbiBvcmJpdCBhcm91bmQgdGhlIEVhcnRoIGF0IGFuIGFsdGl0dWRlIG9mIGFwcHJveGltYXRlbHkgNDEwIGttICgyNTAgbWkp',
-  moduleName: 'Columbus',
 };
 
 const reqMock: ISessionRequest = {
@@ -94,19 +94,14 @@ const reqMock: ISessionRequest = {
 
 const resMock: ISessionResponse = {
   cookie: jest.fn(),
+  locals: { session: {} },
 };
 
 const sessionKeyMock = `${configMock.prefix}::${ctxMock.sessionId}`;
 
 const fullSessionMock = {
-  Zarya: {
-    cargo: 'block',
-  },
-  Unity: {
-    connecting: 'Node 1',
-  },
-  Zvezda: {
-    service: 3,
+  Columbus: {
+    science: '4all',
   },
   Destiny: {
     primaryOperator: 'U.S. Lab',
@@ -114,11 +109,17 @@ const fullSessionMock = {
   Harmony: {
     connecting: 'Node 2',
   },
-  Columbus: {
-    science: '4all',
-  },
   Kiboo: {
     science: 'japan',
+  },
+  Unity: {
+    connecting: 'Node 1',
+  },
+  Zarya: {
+    cargo: 'block',
+  },
+  Zvezda: {
+    service: 3,
   },
 };
 
@@ -429,8 +430,8 @@ describe('SessionService', () => {
     const unserializeMock = jest.fn();
     const validateMock = jest.fn();
     const ctxMock: ISessionBoundContext = {
-      sessionId: 'sessionId',
       moduleName: 'moduleName',
+      sessionId: 'sessionId',
     };
 
     beforeEach(() => {
@@ -545,8 +546,8 @@ describe('SessionService', () => {
     it('should return undefined if the moduleName key is not found', () => {
       // setup
       const ctxMock: ISessionBoundContext = {
-        sessionId: 'sessionId',
         moduleName: 'moduleName',
+        sessionId: 'sessionId',
       };
 
       // action
@@ -563,8 +564,8 @@ describe('SessionService', () => {
     it('should return the value for the given key if the module exists in session', () => {
       // setup
       const ctxMock: ISessionBoundContext = {
-        sessionId: 'sessionId',
         moduleName: 'Destiny',
+        sessionId: 'sessionId',
       };
 
       // action
@@ -583,8 +584,8 @@ describe('SessionService', () => {
     it('should return undefined if the moduleName in context is not found', () => {
       // setup
       const ctxMock: ISessionBoundContext = {
-        sessionId: 'sessionId',
         moduleName: 'moduleName',
+        sessionId: 'sessionId',
       };
 
       // action
@@ -597,8 +598,8 @@ describe('SessionService', () => {
     it('should return the module for the moduleName in context', () => {
       // setup
       const ctxMock: ISessionBoundContext = {
-        sessionId: 'sessionId',
         moduleName: 'Destiny',
+        sessionId: 'sessionId',
       };
 
       // action
@@ -616,8 +617,8 @@ describe('SessionService', () => {
         JSON.stringify(fullSessionMock),
       );
       const ctxMock: ISessionBoundContext = {
-        sessionId: 'sessionId',
         moduleName: 'Nauka',
+        sessionId: 'sessionId',
       };
       const keyMock = 'research';
       const dataMock = '2021';
@@ -638,8 +639,8 @@ describe('SessionService', () => {
         JSON.stringify(fullSessionMock),
       );
       const ctxMock: ISessionBoundContext = {
-        sessionId: 'sessionId',
         moduleName: 'Columbus',
+        sessionId: 'sessionId',
       };
       const keyMock = 'research';
       const dataMock = 'ESA';
@@ -663,8 +664,8 @@ describe('SessionService', () => {
         JSON.stringify(fullSessionMock),
       );
       const ctxMock: ISessionBoundContext = {
-        sessionId: 'sessionId',
         moduleName: 'Nauka',
+        sessionId: 'sessionId',
       };
       const keyMock = 'research';
       const dataMock = '2021';
@@ -685,8 +686,8 @@ describe('SessionService', () => {
         JSON.stringify(fullSessionMock),
       );
       const ctxMock: ISessionBoundContext = {
-        sessionId: 'sessionId',
         moduleName: 'Columbus',
+        sessionId: 'sessionId',
       };
       const keyMock = 'research';
       const dataMock = 'ESA';
@@ -709,8 +710,8 @@ describe('SessionService', () => {
   describe('save()', () => {
     const serializeMock = jest.fn();
     const ctxMock: ISessionBoundContext = {
-      sessionId: 'sessionId',
       moduleName: 'moduleName',
+      sessionId: 'sessionId',
     };
 
     beforeEach(() => {
@@ -1126,6 +1127,44 @@ describe('SessionService', () => {
         'duplicate-cookie-value',
         configMock.cookieOptions,
       );
+    });
+  });
+
+  describe('shouldHandleSession()', () => {
+    it('should return true for a route that does not match any exluded route', () => {
+      // setup
+      const route = '/cause/I/was/on/the/road/all/the/livelong/day';
+      const excludedRoutes = ['/route/66'];
+
+      // action
+      const result = service['shouldHandleSession'](route, excludedRoutes);
+
+      // expect
+      expect(result).toStrictEqual(true);
+    });
+
+    it('should return false for a route that match a RegExp in the excluded routes', () => {
+      // setup
+      const route = '/route/excluded/69';
+      const excludedRoutes = [/excluded\/.*/];
+
+      // action
+      const result = service['shouldHandleSession'](route, excludedRoutes);
+
+      // expect
+      expect(result).toStrictEqual(false);
+    });
+
+    it('should return false for a route that match exactly a string in the excluded routes', () => {
+      // setup
+      const route = '/route/66';
+      const excludedRoutes = ['/route/66'];
+
+      // action
+      const result = service['shouldHandleSession'](route, excludedRoutes);
+
+      // expect
+      expect(result).toStrictEqual(false);
     });
   });
 });
