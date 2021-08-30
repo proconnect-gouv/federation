@@ -213,7 +213,9 @@ describe('1.0 - Successful scenarios', () => {
   });
 
   it('should navigate by tab and enter on menu link', () => {
-    navigateToMire();
+    const url = getAuthorizeUrl();
+    cy.visit(url);
+
     cy.get('body').tab();
     cy.focused().invoke('attr', 'href');
 
@@ -222,7 +224,7 @@ describe('1.0 - Successful scenarios', () => {
     cy.focused().click();
     cy.url().should(
       'contains',
-      '/error?error=access_denied&error_description=User%20auth%20aborted',
+      '/error?error=access_denied&error_description=User%20auth%20aborted&state=stateTraces',
     );
 
     cy.get('#error-title').contains('Error: access_denied');
