@@ -20,13 +20,7 @@ module.exports = {
     project: './*/tsconfig.json',
     sourceType: 'module',
   },
-  plugins: [
-    '@typescript-eslint/eslint-plugin',
-    'sort-destructure-keys',
-    'sort-keys-fix',
-    'simple-import-sort',
-    'import',
-  ],
+  plugins: ['@typescript-eslint/eslint-plugin', 'simple-import-sort', 'import'],
   root: true,
   rules: {
     '@typescript-eslint/ban-types': [
@@ -88,7 +82,7 @@ module.exports = {
           ['^@?\\w'],
           //
           ['^@nestjs'],
-          ['^@fc\/'],
+          ['^@fc/'],
           // Anything not matched in another group.
           ['^'],
           // Relative imports.
