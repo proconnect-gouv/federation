@@ -185,7 +185,7 @@ const fsa = {
       "siren",
       "siret",
       "usual_name",
-      "belonging_population",
+      // "belonging_population", <-- Removed to test "requested scope not allowed"
       "chorusdt",
     ],
     id_token_signed_response_alg: "RS256",

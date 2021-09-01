@@ -1,13 +1,26 @@
 import * as QueryString from 'querystring';
 
 export function beforeSuccessScenario(params) {
-  const { sp = 'fsa1-low', method } = params;
+  const { method, scopes, sp = 'fsa1-low' } = params;
 
-  const { SP_ROOT_URL, SP_CLIENT_ID } = getServiceProvider(sp);
+  const { SP_CLIENT_ID, SP_ROOT_URL } = getServiceProvider(sp);
   // FS: Click on FC button
   cy.visit(SP_ROOT_URL);
 
   cy.clearBusinessLog();
+
+  if (Array.isArray(scopes)) {
+    const scopeValue = scopes.join(' ');
+    /**
+     * @todo Use a single form on the FS mock to start a connection
+     * @author Nicolas Legeay
+     * date: 24/08/2021
+     */
+    // Update both scope input for GET/POST methods
+    cy.get('input[name="scope"]').each(($el) => {
+      cy.wrap($el).clear().type(scopeValue);
+    });
+  }
 
   if (method === 'POST') {
     cy.get('#post-authorize').click();
@@ -24,20 +37,20 @@ export function beforeSuccessScenario(params) {
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_AUTHORIZE_INITIATED',
-    spId: SP_CLIENT_ID,
-    spAcr: params.acr_values,
+    idpAcr: null,
     idpId: null,
     idpName: null,
-    idpAcr: null,
+    spAcr: params.acr_values,
+    spId: SP_CLIENT_ID,
   });
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_SHOWED_IDP_CHOICE',
-    spId: SP_CLIENT_ID,
-    spAcr: params.acr_values,
+    idpAcr: null,
     idpId: null,
     idpName: null,
-    idpAcr: null,
+    spAcr: params.acr_values,
+    spId: SP_CLIENT_ID,
   });
 }
 
@@ -56,7 +69,7 @@ export function basicSuccessScenario(idpId) {
 }
 
 export function afterSuccessScenario(params) {
-  const { sp = 'fsa1-low', idpId, userName } = params;
+  const { idpId, sp = 'fsa1-low', userName } = params;
   const password = params.password || '123';
   const { SP_CLIENT_ID } = getServiceProvider(sp);
   const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
@@ -66,10 +79,10 @@ export function afterSuccessScenario(params) {
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'IDP_CHOSEN',
-    spId: SP_CLIENT_ID,
-    spAcr: params.acr_values,
-    idpId, // idpId is set
     idpAcr: null, // idpAct is still null
+    idpId, // idpId is set
+    spAcr: params.acr_values, 
+    spId: SP_CLIENT_ID,
   });
 
   cy.get('input[name="login"]').clear().type(userName);
@@ -79,46 +92,46 @@ export function afterSuccessScenario(params) {
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_REQUESTED_IDP_TOKEN',
-    spId: SP_CLIENT_ID,
-    spAcr: params.acr_values,
-    idpId, // idpId is now set
     idpAcr: null, // idpAcr is still null
+    idpId, // idpId is now set    
+    spAcr: params.acr_values, 
+    spId: SP_CLIENT_ID, 
   });
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_REQUESTED_IDP_USERINFO',
-    spId: SP_CLIENT_ID,
-    spAcr: params.acr_values,
-    idpId,
     idpAcr: null, // idpAcr is still null
+    idpId,
+    spAcr: params.acr_values,
+    spId: SP_CLIENT_ID,
   });
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_REDIRECTED_TO_SP',
-    spId: SP_CLIENT_ID,
-    spAcr: params.acr_values,
-    idpId,
     idpAcr: params.acr_values,
+    idpId,
+    spAcr: params.acr_values,
+    spId: SP_CLIENT_ID,
   });
 
   cy.hasBusinessLog({
     category: 'BACK_CINEMATIC',
     event: 'SP_REQUESTED_FC_TOKEN',
-    spId: SP_CLIENT_ID,
-    spAcr: params.acr_values,
-    idpId,
     idpAcr: params.acr_values,
+    idpId,
+    spAcr: params.acr_values,
+    spId: SP_CLIENT_ID,
   });
 
   cy.hasBusinessLog({
     category: 'BACK_CINEMATIC',
     event: 'SP_REQUESTED_FC_USERINFO',
-    spId: SP_CLIENT_ID,
-    spAcr: params.acr_values,
-    idpId,
     idpAcr: params.acr_values,
+    idpId,
+    spAcr: params.acr_values,
+    spId: SP_CLIENT_ID,
   });
 }
 
@@ -158,8 +171,8 @@ export function basicScenario(params) {
     idpId,
     login = 'test',
     // eidasLevel, see comment below
-    sp = 'fsa1-low',
     overrideParams,
+    sp = 'fsa1-low',
   } = params;
   const password = '123';
   const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
@@ -176,8 +189,8 @@ export function basicScenario(params) {
         // Direct call to FC with custom params
         const controlUrl = getAuthorizeUrl({
           ...overrideParams,
-          state: $state,
           nonce: $nonce,
+          state: $state,
         });
         cy.visit(controlUrl);
       });
@@ -220,19 +233,19 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
   const baseAuthorizeParams = {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    client_id: `${SP_CLIENT_ID}`,
-    scope: 'openid gender family_name',
+    acr_values: 'eidas3',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    response_type: 'code',
+    client_id: `${SP_CLIENT_ID}`,
+    nonce: 'nonceThatRespectsTheLengthWhichIsDefinedInTheDTOForKinematicWork',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     redirect_uri: `${SP_ROOT_URL}/oidc-callback/envIssuer`,
-    state: 'stateTraces',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    acr_values: 'eidas3',
-    nonce: 'nonceThatRespectsTheLengthWhichIsDefinedInTheDTOForKinematicWork',
+    response_type: 'code',
+    scope: 'openid gender family_name',
+    state: 'stateTraces',
   };
   const params = {
     ...baseAuthorizeParams,

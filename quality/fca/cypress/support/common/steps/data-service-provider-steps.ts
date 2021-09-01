@@ -15,6 +15,14 @@ Given(
 );
 
 Given(
+  /le fournisseur de service a configuré sa requête authorize avec (?:un scope|des scopes) "([^"]+)"/,
+  function (type) {
+    const scope = this.scopes.find((scope) => scope.type === type);
+    cy.wrap(scope).as('requestedScope');
+  },
+);
+
+Given(
   'le fournisseur de service requiert un niveau de sécurité {string}',
   function (acrValue) {
     this.serviceProvider.acrValue = acrValue;
