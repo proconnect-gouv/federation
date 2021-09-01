@@ -14,7 +14,7 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { validateDto } from '@fc/common';
+import { PartialExcept, validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { EidasClientSession } from '@fc/eidas-client';
 import { EidasCountryService } from '@fc/eidas-country';
@@ -175,7 +175,9 @@ export class EuIdentityToFrController {
     await this.sessionService.setAlias(spIdentity.sub, req.sessionId);
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
-    const idpIdentityReset: IOidcIdentity = { sub: idpIdentity.sub };
+    const idpIdentityReset: PartialExcept<IOidcIdentity, 'sub'> = {
+      sub: idpIdentity.sub,
+    };
     const session = {
       // Save idp identity.
       idpIdentity: idpIdentityReset,

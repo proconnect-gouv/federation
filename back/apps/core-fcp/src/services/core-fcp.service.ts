@@ -2,11 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
-import {
-  FeatureHandler,
-  IFeatureHandler,
-  IFeatureHandlerDatabaseMap,
-} from '@fc/feature-handler';
+import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
@@ -19,10 +15,6 @@ import { ISessionService } from '@fc/session';
 import { ProcessCore } from '../enums';
 import { CoreFcpSendEmailHandler } from '../handlers';
 import { IVerifyFeatureHandler } from '../interfaces';
-
-export type FcpFeature = {
-  featureHandlers: IFeatureHandlerDatabaseMap<ProcessCore>;
-};
 
 @Injectable()
 export class CoreFcpService {
@@ -47,13 +39,13 @@ export class CoreFcpService {
    */
   async verify(
     sessionOidc: ISessionService<OidcClientSession>,
-    trackingContext: Record<string, any>,
+    trackingContext: Record<string, unknown>,
   ): Promise<void> {
     this.logger.debug('CoreFcpService.verify');
 
     const { idpId } = await sessionOidc.get();
 
-    const verifyHandler: IVerifyFeatureHandler = await this.getFeature<void>(
+    const verifyHandler = await this.getFeature<IVerifyFeatureHandler>(
       idpId,
       ProcessCore.CORE_VERIFY,
     );
@@ -63,10 +55,10 @@ export class CoreFcpService {
     return await verifyHandler.handle({ sessionOidc, trackingContext });
   }
 
-  async getFeature<T>(
+  async getFeature<T extends IFeatureHandler>(
     idpId: string,
     process: ProcessCore,
-  ): Promise<IFeatureHandler<T>> {
+  ): Promise<T> {
     this.logger.debug(`getFeature ${process} for provider: ${idpId}`);
 
     const idp = await this.identityProvider.getById(idpId);
@@ -74,7 +66,7 @@ export class CoreFcpService {
 
     this.logger.trace({ idp, idClass });
 
-    return FeatureHandler.get(idClass, this);
+    return FeatureHandler.get<T>(idClass, this);
   }
 
   /**
@@ -92,7 +84,10 @@ export class CoreFcpService {
     let handler: CoreFcpSendEmailHandler;
     try {
       const { authenticationEmail } = idp.featureHandlers;
-      handler = await FeatureHandler.get(authenticationEmail, this);
+      handler = await FeatureHandler.get<CoreFcpSendEmailHandler>(
+        authenticationEmail,
+        this,
+      );
     } catch (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
       throw new CoreMissingAuthenticationEmailException();

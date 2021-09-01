@@ -4,7 +4,6 @@ import { CoreService } from '@fc/core';
 import { CryptographyFcaService, IAgentIdentity } from '@fc/cryptography-fca';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger';
-import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ISessionService } from '@fc/session';
 
@@ -80,16 +79,16 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
       },
     );
 
-    const spIdentityCleaned: IOidcIdentity = { ...idpIdentity, sub: subSp };
+    const spIdentity = { ...idpIdentity, sub: subSp };
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
-    const idpIdentityCleaned: IOidcIdentity = {
+    const idpIdentityCleaned = {
       sub: idpIdentity.sub,
     };
 
     await sessionOidc.set({
       idpIdentity: idpIdentityCleaned,
-      spIdentity: spIdentityCleaned,
+      spIdentity: spIdentity,
     });
   }
 }

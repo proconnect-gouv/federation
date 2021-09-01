@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { RequiredExcept } from '@fc/common';
 import { CoreService } from '@fc/core';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { FeatureHandler } from '@fc/feature-handler';
@@ -77,7 +78,10 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     this.core.checkIfAcrIsValid(idpAcr, spAcr);
 
     // Identity check and normalization
-    const rnippIdentity = await this.rnippCheck(idpIdentity, trackingContext);
+    const rnippIdentity = await this.rnippCheck(
+      idpIdentity as IOidcIdentity,
+      trackingContext,
+    );
 
     const { entityId } = await this.serviceProvider.getById(spId);
 
@@ -86,8 +90,9 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     await this.core.checkIfAccountIsBlocked(hashSp);
 
     const subSp = this.cryptographyFcp.computeSubV1(entityId, hashSp);
-    const idpIdentityHash =
-      this.cryptographyFcp.computeIdentityHash(idpIdentity);
+    const idpIdentityHash = this.cryptographyFcp.computeIdentityHash(
+      idpIdentity as IOidcIdentity,
+    );
     const subIdp = this.cryptographyFcp.computeSubV1(spId, idpIdentityHash);
 
     // Save interaction to database & get sp's sub to avoid double computation
@@ -131,7 +136,10 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
    * @param req
    */
   private async rnippCheck(
-    idpIdentity: IOidcIdentity,
+    idpIdentity: RequiredExcept<
+      IOidcIdentity,
+      'sub' | 'email' | 'phone_number' | 'preferred_username'
+    >,
     trackingContext: any,
   ): Promise<RnippPivotIdentity> {
     this.tracking.track(RnippRequestedEvent, trackingContext);

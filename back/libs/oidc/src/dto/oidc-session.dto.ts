@@ -12,6 +12,8 @@ import {
   MinLength,
 } from 'class-validator';
 
+import { PartialExcept } from '@fc/common';
+
 import { IOidcIdentity } from '../interfaces';
 
 export class OidcSession {
@@ -72,7 +74,7 @@ export class OidcSession {
    */
   @IsOptional()
   @IsObject()
-  readonly idpIdentity?: IOidcIdentity;
+  readonly idpIdentity?: PartialExcept<IOidcIdentity, 'sub'> | IOidcIdentity;
 
   @IsOptional()
   @IsString()
@@ -121,5 +123,5 @@ export class OidcSession {
    */
   @IsOptional()
   @IsObject()
-  readonly spIdentity?: IOidcIdentity;
+  readonly spIdentity?: PartialExcept<IOidcIdentity, 'sub'>;
 }

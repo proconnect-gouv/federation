@@ -14,7 +14,7 @@ import {
 } from 'class-validator';
 
 import {
-  IFeatureHandlerDatabaseMap,
+  IFeatureHandlerDatabase,
   IsRegisteredHandler,
 } from '@fc/feature-handler';
 import { ResponseTypes } from '@fc/oidc';
@@ -46,7 +46,7 @@ export class MetadataIdpAdapterMongoDTO {
   readonly display: boolean;
 
   @IsRegisteredHandler()
-  readonly featureHandlers: IFeatureHandlerDatabaseMap;
+  readonly featureHandlers: IFeatureHandlerDatabase;
 
   /**
    * CLIENT METADATA
