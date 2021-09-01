@@ -1,4 +1,4 @@
-<% const eidasBridgeProvider = locals.providers.find((p) => p.uid === 'eidas-bridge' && p.display) %> 
+<% const eidasBridgeProvider = locals.providers.find((p) => p.uid === 'eidas-bridge' && p.display) %>
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -10,19 +10,19 @@
   </head>
   <body>
     <%- include('partials/menu.ejs'); %>
-    <% if(locals.notifications){ %> 
-    <div id="notifications"> 
+    <% if(locals.notifications){ %>
+    <div id="notifications">
       <div>
         <p>
           <img src="/img/warning.svg" alt="icone de mise en garde"/>
-            <%- locals.notifications.message %> 
+            <%- locals.notifications.message %>
         </p>
       </div>
     </div>
-    <% } %> 
+    <% } %>
     <div id="mire">
       <div class="content">
-        <main>    
+        <main>
           <h1>Je choisis un moyen pour me connecter sur:</h1>
           <h2><%= locals.spName %></h2>
           <div id="idp-list" class="main__providers">
@@ -34,8 +34,8 @@
                       <img src='/img/fi/<%-provider.image%>' alt="Logo de <%= provider.name %>" onerror="this.style.display='none'" />
                     </div>
                     <span id="idp-<%= provider.uid %>-title">
-                      <%- (!provider.active) ? 
-                        `<strong>${provider.title}</strong> est actuellement indisponible` : 
+                      <%- (!provider.active) ?
+                        `<strong>${provider.title}</strong> est actuellement indisponible` :
                         `J’utilise l’application <strong>${provider.title}</strong>`;
                       %>
                     </span>
@@ -50,7 +50,7 @@
             <% }) %>
 
             <% if(eidasBridgeProvider) {%>
-              <span id="or-label">or</span>
+              <span id="or-label" lang="en">or</span>
               <form method="POST" action="/api/v2/redirect-to-idp" id="fs-request-<%= eidasBridgeProvider.uid %>" name="fs-request">
               <div class="identity-provider overflow">
                 <button
@@ -58,7 +58,7 @@
                   <div class="icon-container">
                     <img src='/img/fi/fi-europe.svg' alt="Logo de <%= eidasBridgeProvider.name %>"/>
                   </div>
-                  <span>
+                  <span lang="en">
                     Sign in with <strong>a digital identity from another European country</strong>
                   </span>
                 </button>
@@ -70,7 +70,7 @@
               <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
             </form>
           <% } %>
-          
+
           </div>
           <div class="tuto-container">
             <h3>Pourquoi je ne retrouve pas mes comptes habituels ?</h3>
@@ -81,7 +81,7 @@
               <img src="/img/logo-mcm.svg" alt="Logo Mobile connect et moi" />
             </div>
             <p>
-              FranceConnect+ est la nouvelle solution FranceConnect qui vous permet d’accéder à encore plus de démarches en ligne. 
+              FranceConnect+ est la nouvelle solution FranceConnect qui vous permet d’accéder à encore plus de démarches en ligne.
               Le service auquel vous souhaitez accéder nécessite l’utilisation d’un compte ayant un niveau de sécurité plus élevé.
             </p>
             <a href="/" id="tuto-numeric-identity">
