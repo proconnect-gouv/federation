@@ -1,5 +1,4 @@
 export interface ServiceProviderBase {
-  redirectUriPath: string;
   selectors: {
     fcaButton: string;
     logoutButton: string;
@@ -12,7 +11,6 @@ export interface ServiceProvider extends ServiceProviderBase {
   authorizeHttpMethod: 'post' | 'get';
   mocked: boolean;
   name: string;
-  scopes: string[];
   description: string;
 }
 

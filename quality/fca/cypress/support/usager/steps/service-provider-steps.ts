@@ -23,7 +23,7 @@ When('je clique sur le bouton AgentConnect', function () {
   if (this.serviceProvider.mocked === true) {
     serviceProviderPage.setMockRequestedScope(this.requestedScope);
     serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
-    serviceProviderPage.clickMockfcaButton(
+    serviceProviderPage.clickMockFcaButton(
       this.serviceProvider.authorizeHttpMethod,
     );
   } else {

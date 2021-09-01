@@ -4,12 +4,19 @@
     "description": "par défaut",
     "mocked": true,
     "url": "https://fsa1-low.{{TEST_ENV}}.dev-franceconnect.fr",
-    "redirectUriPath": "/oidc-callback/envIssuer",
-    "clientId": "",
     "acrValue": "eidas1",
-    "scopes": [
-      "tous les scopes"
-    ],
+    "selectors": {
+      "fcaButton": "#get-authorize",
+      "logoutButton": ".nav-logout"
+    },
+    "authorizeHttpMethod": "get"
+  },
+  {
+    "name": "fsa4-low",
+    "description": "non habilité à demander le scope belonging_population",
+    "mocked": true,
+    "url": "https://fsa4-low.{{TEST_ENV}}.dev-franceconnect.fr",
+    "acrValue": "eidas1",
     "selectors": {
       "fcaButton": "#get-authorize",
       "logoutButton": ".nav-logout"
