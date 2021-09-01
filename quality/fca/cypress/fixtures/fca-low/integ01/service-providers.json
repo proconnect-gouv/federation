@@ -4,12 +4,19 @@
     "description": "par défaut",
     "mocked": true,
     "url": "https://fsa1v2.integ01.dev-agentconnect.fr",
-    "redirectUriPath": "/oidc-callback/envIssuer",
-    "clientId": "",
     "acrValue": "eidas1",
-    "scopes": [
-      "tous les scopes"
-    ],
+    "selectors": {
+      "fcaButton": "#get-authorize",
+      "logoutButton": ".nav-logout"
+    },
+    "authorizeHttpMethod": "get"
+  },
+  {
+    "name": "fsa3v2",
+    "description": "non habilité à demander le scope belonging_population",
+    "mocked": true,
+    "url": "https://fsa3v2.integ01.dev-agentconnect.fr",
+    "acrValue": "eidas1",
     "selectors": {
       "fcaButton": "#get-authorize",
       "logoutButton": ".nav-logout"
@@ -21,12 +28,7 @@
     "description": "osmose",
     "mocked": false,
     "url": "https://bacasable-prep-osmose.jaliosagora.com",
-    "redirectUriPath": "/plugins/AgentConnectPlugin/jsp/accallback.jsp",
-    "clientId": "",
     "acrValue": "eidas1",
-    "scopes": [
-      "tous les scopes"
-    ],
     "selectors": {
       "fcaButton": ".ac-authentication img",
       "logoutButton": "#main-sidebar-opener"
