@@ -7,11 +7,12 @@ import { ISessionService } from '@fc/session';
 
 export interface IVerifyFeatureHandlerHandleArgument {
   sessionOidc: ISessionService<OidcClientSession>;
-  trackingContext: Record<string, any>;
+  trackingContext: Record<string, unknown>;
 }
-export interface IVerifyFeatureHandler extends IFeatureHandler {
+export interface IVerifyFeatureHandler
+  extends IFeatureHandler<void, IVerifyFeatureHandlerHandleArgument> {
   /**
    * Override default handler.handle argument type
    */
-  handle(arg: IVerifyFeatureHandlerHandleArgument): Promise<void>;
+  handle(options: IVerifyFeatureHandlerHandleArgument): Promise<void>;
 }

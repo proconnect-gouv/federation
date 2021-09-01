@@ -9,6 +9,7 @@ import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { MinistriesService } from '@fc/ministries';
+import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
@@ -132,7 +133,7 @@ describe('CoreFcaController', () => {
     interactionId: interactionIdMock,
     csrfToken: randomStringMock,
     spAcr: acrMock,
-    spIdentity: {},
+    spIdentity: {} as IOidcIdentity,
     spName: spNameMock,
     idpState: idpStateMock,
     idpNonce: idpNonceMock,

@@ -1,52 +1,58 @@
+import { ModuleRef } from '@nestjs/core';
+
+import { Instantiable } from '@fc/common';
+
+import {
+  FeatureHandlerEmptyException,
+  FeatureHandlerUnregisteredException,
+} from '../exceptions';
 import { FeatureHandlerNoHandler } from '../handlers';
+import { IFeatureHandler } from '../interfaces';
+import { isNotValidFeatureHandlerKey } from '../utils';
 
-const _mapping = new Map<string, any>();
+// Register all Class used for Feature in apps
+const internalMapping = new Map<string, Instantiable<IFeatureHandler>>();
 
-// We need to assign the `null` value assigned to the `FeatureHandlerNoHandler()` class
-// to create the corelation between the `null` value set in the database for no action to execute.
-_mapping.set(null, new FeatureHandlerNoHandler());
-
-export function FeatureHandler(key: string) {
-  /**
-   * @todo #429 type target
-   * We can't achieve typing of FeatureHandlerAbstract
-   * Compilation fails on handlers definition in applications
-   * if we try to use an abstract class or an interface.
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/429
-   */
-  return function (target: any) {
-    FeatureHandler.cache.set(key, target);
+/**
+ * Decorator to register class
+ * @param key {string} key to register the Feature
+ */
+export function FeatureHandler<K extends string>(
+  key: K,
+): <TFunction extends Instantiable<IFeatureHandler>>(
+  target: TFunction,
+) => void | TFunction {
+  return (target) => {
+    internalMapping.set(key, target);
     return target;
   };
 }
-
-// For Unit test purpose
-FeatureHandler.cache = _mapping;
 
 /**
  * Retrieve the instatiated class of a given feature handler key.
  *
  * @param {string} key Unique feature handler mapped name.
- * @param {any} ctx context given by the parent caller, usally = this.
- * @returns {class} Instatiated class
+ * @param {object} ctx context given by te parent caller, usally = this.
+ * @returns {IFeatureHandler} Instatiated class with IFeatureHandler
  */
-FeatureHandler.get = function (key: string, ctx: any): any {
-  switch (key) {
-    //If the database contain an `undefined` feature handler value,
-    //it is probably a database error.
-    case undefined:
-      throw new Error();
 
-    //If the Feature Handler defined in the database is `null` or an empty string,
-    //a handler class is returned with an empty handle() method.
-    case '':
-    case null:
-      return new FeatureHandlerNoHandler();
-
-    default:
-      const klass = FeatureHandler.cache.get(key);
-      return ctx.moduleRef.get(klass);
+FeatureHandler.get = function <T extends IFeatureHandler>(
+  key: string,
+  ctx: { moduleRef: ModuleRef },
+): T {
+  if (isNotValidFeatureHandlerKey(key)) {
+    throw new FeatureHandlerEmptyException();
   }
+
+  if (key === null) {
+    return new FeatureHandlerNoHandler() as T;
+  }
+
+  const klass = internalMapping.get(key);
+  if (!klass) {
+    throw new FeatureHandlerUnregisteredException();
+  }
+  return ctx.moduleRef.get(klass);
 };
 
 /**
@@ -55,5 +61,10 @@ FeatureHandler.get = function (key: string, ctx: any): any {
  * @returns {Array<string>}
  */
 FeatureHandler.getAll = function (): Array<string> {
-  return Array.from(FeatureHandler.cache.keys());
+  return Array.from(internalMapping.keys());
 };
+
+FeatureHandler.getInternalMappingForTestingPurposes =
+  function (): typeof internalMapping {
+    return internalMapping;
+  };

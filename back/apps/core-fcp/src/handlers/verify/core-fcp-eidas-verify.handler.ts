@@ -4,6 +4,7 @@ import { CoreService } from '@fc/core';
 import { CryptographyEidasService } from '@fc/cryptography-eidas';
 import { FeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger';
+import { IOidcIdentity } from '@fc/oidc';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 
 import {
@@ -38,7 +39,9 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
     this.core.checkIfAcrIsValid(idpAcr, spAcr);
 
     // as spIdentity = idpIdentity, hashSp = hashIdp and is used to generate both sub
-    const hashSp = this.cryptographyEidas.computeIdentityHash(idpIdentity);
+    const hashSp = this.cryptographyEidas.computeIdentityHash(
+      idpIdentity as IOidcIdentity,
+    );
     const subSp = this.cryptographyEidas.computeSubV1(entityId, hashSp);
     const subIdp = this.cryptographyEidas.computeSubV1(spId, hashSp);
 
