@@ -4,8 +4,8 @@ import { Description, Loggable } from '../decorator';
 @Description()
 export class FcException extends Error {
   /**
-   * Inform about wich module triggered the error
-   * Each module should avec a unique id
+   * Inform about which module triggered the error
+   * Each module should have a unique id
    *
    * Legacy codes:
    * - 00: Core
@@ -24,6 +24,7 @@ export class FcException extends Error {
    * - 17: Consumer-HSM
    * - 18: Account
    * - 19: Session
+   * - 20: Feature Handler
    * - 27: Mailer
    * - 80: Exceptions
    */
@@ -32,7 +33,7 @@ export class FcException extends Error {
   /**
    * Unique id for the error being reported
    * @see https://confluence.kaliop.net/display/FC/Codes+erreurs+des+applications
-   * @TODO #140 derivat the above documentaiton from the code it self?
+   * @TODO #140 derivate the above documentation from the code itself?
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/140
    */
   public code: number;

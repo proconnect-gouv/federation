@@ -72,11 +72,11 @@ describe('CoreService', () => {
 
   const spIdentityMock = {
     email: 'eteach@fqdn.ext',
-
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Edward',
+    sub: '42',
   };
 
   const idpIdentityMock = {

@@ -5,7 +5,6 @@
  * Identity provider database collection.
  */
 
-export type IFeatureHandlerDatabaseMap<T extends string = string> = Record<
-  T,
-  string
->;
+export interface IFeatureHandlerDatabase {
+  [key: string]: string | null;
+}

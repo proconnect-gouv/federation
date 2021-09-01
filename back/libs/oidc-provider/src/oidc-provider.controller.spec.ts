@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { PartialExcept } from '@fc/common';
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
+import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcProviderService } from '@fc/oidc-provider';
 
@@ -17,7 +18,7 @@ const idpNonceMock = 'idpNonceMock';
 const oidcSessionDataMock: OidcSession = {
   interactionId: interactionIdMock,
   spAcr: acrMock,
-  spIdentity: {},
+  spIdentity: {} as PartialExcept<IOidcIdentity, 'sub'>,
   spName: spNameMock,
   idpState: idpStateMock,
   idpNonce: idpNonceMock,

@@ -4,15 +4,16 @@ import { ValidationError, ValidatorOptions } from 'class-validator';
 import { Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
-import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
+import { FeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger';
 
 import { EidasIdentityDto } from '../../dto';
+import { IIdentityCheckFeatureHandler } from '../../interfaces';
 
 @Injectable()
 @FeatureHandler('core-fcp-eidas-identity-check')
 export class CoreFcpEidasIdentityCheckHandler
-  implements IFeatureHandler<ValidationError[]>
+  implements IIdentityCheckFeatureHandler
 {
   constructor(private readonly logger: LoggerService) {
     this.logger.setContext(this.constructor.name);

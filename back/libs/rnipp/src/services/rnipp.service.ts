@@ -4,7 +4,7 @@ import { stringify } from 'querystring';
 
 import { HttpService, Injectable } from '@nestjs/common';
 
-import { getDtoErrors, validateDto } from '@fc/common';
+import { getDtoErrors, RequiredExcept, validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
@@ -68,7 +68,12 @@ export class RnippService {
     return rnippIdentity;
   }
 
-  private buildRequestUrl(identity: IPivotIdentity): string {
+  private buildRequestUrl(
+    identity: RequiredExcept<
+      IPivotIdentity,
+      'sub' | 'email' | 'phone_number' | 'preferred_username'
+    >,
+  ): string {
     const { protocol, hostname, baseUrl } =
       this.configService.get<RnippConfig>('Rnipp');
 

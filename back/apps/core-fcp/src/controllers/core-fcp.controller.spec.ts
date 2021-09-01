@@ -6,7 +6,7 @@ import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
-import { OidcSession } from '@fc/oidc';
+import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
@@ -50,7 +50,7 @@ describe('CoreFcpController', () => {
     // oidc spec defined property
     // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'given_name',
-  };
+  } as IOidcIdentity;
 
   let res;
   const req = {
@@ -165,7 +165,7 @@ describe('CoreFcpController', () => {
 
     spAcr: acrMock,
     spId: spIdMock,
-    spIdentity: {},
+    spIdentity: {} as IOidcIdentity,
     spName: spNameMock,
 
     idpId: idpIdMock,

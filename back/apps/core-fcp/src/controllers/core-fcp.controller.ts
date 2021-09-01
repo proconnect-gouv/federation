@@ -1,5 +1,3 @@
-import { ValidationError } from 'class-validator';
-
 import {
   Body,
   Controller,
@@ -57,6 +55,7 @@ import {
   CoreFcpInvalidEventClassException,
   CoreFcpInvalidIdentityException,
 } from '../exceptions';
+import { IIdentityCheckFeatureHandler } from '../interfaces';
 import { CoreFcpService } from '../services';
 
 export const datatransferEventsMap = {
@@ -441,12 +440,13 @@ export class CoreFcpController {
   private async validateIdentity(
     idpId: string,
     providerUid: string,
-    identity: Partial<OidcIdentityDto>,
+    identity: OidcIdentityDto,
   ) {
-    const identityCheckHandler = await this.core.getFeature<ValidationError[]>(
-      idpId,
-      ProcessCore.ID_CHECK,
-    );
+    const identityCheckHandler =
+      await this.core.getFeature<IIdentityCheckFeatureHandler>(
+        idpId,
+        ProcessCore.ID_CHECK,
+      );
 
     const errors = await identityCheckHandler.handle(identity);
     if (errors.length) {

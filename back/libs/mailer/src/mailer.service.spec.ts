@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { PartialExcept } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
+import { IOidcIdentity, OidcSession } from '@fc/oidc';
 
 import { TemplateNotFoundException } from './exceptions';
 import { MailerService } from './mailer.service';
@@ -213,8 +214,9 @@ describe('MailerService', () => {
     };
     const idpIdentityMock = {
       sub: 'some idpSub',
-    };
+    } as PartialExcept<IOidcIdentity, 'sub'>;
     const spIdentityWithEmailMock = {
+      sub: 'some spSub',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       given_name: 'Edward',
       // eslint-disable-next-line @typescript-eslint/naming-convention

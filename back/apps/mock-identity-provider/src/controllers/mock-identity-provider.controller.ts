@@ -12,7 +12,6 @@ import {
 } from '@nestjs/common';
 
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ISessionService, Session, SessionService } from '@fc/session';
@@ -105,9 +104,9 @@ export class MockIdentityProviderController {
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
     const { login } = body;
-    const spIdentity = (await this.mockIdentityProviderService.getIdentity(
+    const spIdentity = await this.mockIdentityProviderService.getIdentity(
       login,
-    )) as IOidcIdentity;
+    );
 
     if (!spIdentity) {
       this.logger.trace({ spIdentity }, LoggerLevelNames.WARN);

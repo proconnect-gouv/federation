@@ -184,7 +184,7 @@ export class OidcClientUtilsService {
     this.logger.debug('getUserInfo');
     const client = await this.issuer.getClient(providerUid);
 
-    const userInfo = await client.userinfo(accessToken);
+    const userInfo = (await client.userinfo(accessToken)) as IOidcIdentity;
 
     this.logger.trace({ accessToken, providerUid, userInfo });
 

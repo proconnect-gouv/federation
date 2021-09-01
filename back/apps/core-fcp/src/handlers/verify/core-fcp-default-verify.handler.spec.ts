@@ -1,10 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AccountBlockedException } from '@fc/account';
+import { RequiredExcept } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CoreService } from '@fc/core';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { LoggerService } from '@fc/logger';
+import { IOidcIdentity } from '@fc/oidc';
 import {
   RnippReceivedValidEvent,
   RnippRequestedEvent,
@@ -57,7 +59,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
     email: 'eteach@fqdn.ext',
-  };
+  } as RequiredExcept<IOidcIdentity, 'sub' | 'email'>;
 
   const idpIdentityMock = {
     sub: 'some idpSub',
