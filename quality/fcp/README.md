@@ -29,6 +29,19 @@ FCP validation with system tests implemented using a Test Framework (based on Cy
 | FC_ACCESS_USER       | FranceConnect network username    | needed on recette/integ01 outside FC network |
 | FC_ACCESS_PASS       | FranceConnect network password    | needed on recette/integ01 outside FC network |
 
+## Cross Domain Testing
+
+On integ01 environment, the FranceConnect, FS and FI websites are using different domains.
+In order to run tests with Cypress,
+
+- we need to navigate to the different URLs via a unique page listing all the websites URLs
+  - [Read more about Same superdomain per test](https://docs.cypress.io/guides/guides/web-security#Same-superdomain-per-test)
+- we need to disable the chrome web security to allow redirections to different domains
+  - [Read more about Disabling Web Security](https://docs.cypress.io/guides/guides/web-security#Set-chromeWebSecurity-to-false)
+- we need to use Cookies with samesite=none (intercept in beforeEach hook)
+  - [beforeEach hook](./cypress/support/common/steps/hooks.ts)
+  - [Read more about SameSite cookie attribute](https://developer.mozilla.org/fr/docs/Web/HTTP/Headers/Set-Cookie/SameSite)
+
 ## Scripts
 
 ### Run the Cypress test in the terminal (deleting previous results)

@@ -1,7 +1,7 @@
 import {
   afterSuccessScenario,
-  beforeSuccessScenario,
   basicSuccessScenario,
+  beforeSuccessScenario,
   checkInformations,
   checkInStringifiedJson,
   getAuthorizeUrl,
@@ -14,12 +14,19 @@ const BASIC_SUB =
 describe('Successful scenarios', () => {
   // -- replace by either `fip1-high` or `fia1-low`
   const idpId = `${Cypress.env('IDP_NAME')}1-low`;
+  const mandatoryScopes = [
+    "uid",
+    "openid",
+    "given_name",
+    "email",
+    "usual_name",
+  ];
 
   it('should redirect to FC website', () => {
     cy.request({
-      url: `${Cypress.env('FC_ROOT_URL')}/api/v2`,
-      method: 'GET',
       followRedirect: false,
+      method: 'GET',
+      url: `${Cypress.env('FC_ROOT_URL')}/api/v2`,
     }).then((response) => {
       expect(response.status).to.eq(301);
       expect(response.headers.location).to.eq('https://franceconnect.gouv.fr');
@@ -28,10 +35,10 @@ describe('Successful scenarios', () => {
 
   it('should log in to Service Provider Example', () => {
     const params = {
-      userName: 'test',
-      password: '123',
       eidasLevel: 1,
       idpId,
+      password: '123',
+      userName: 'test',
     };
     beforeSuccessScenario(params);
     basicSuccessScenario(idpId);
@@ -46,11 +53,11 @@ describe('Successful scenarios', () => {
 
   it('should log in to Service Provider Example with POST /authorize', () => {
     const params = {
-      userName: 'test',
-      password: '123',
       eidasLevel: 1,
       idpId,
       method: 'POST',
+      password: '123',
+      userName: 'test',
     };
     beforeSuccessScenario(params);
     basicSuccessScenario(idpId);
@@ -87,11 +94,12 @@ describe('Successful scenarios', () => {
 
   it('should log in to Service Provider Example with IDP HS256 alg and response not encrypted', () => {
     const params = {
-      userName: 'test',
-      password: '123',
       eidasLevel: 1,
       idpId: 'fia2-low',
+      password: '123',
+      scopes: mandatoryScopes,
       sp: `${Cypress.env('SP_NAME')}4-low`,
+      userName: 'test',
     };
     beforeSuccessScenario(params);
     basicSuccessScenario(params.idpId);
@@ -109,11 +117,12 @@ describe('Successful scenarios', () => {
 
   it('should log in to Service Provider Example with IDP HS256 alg and response encrypted', () => {
     const params = {
-      userName: 'test',
-      password: '123',
       eidasLevel: 1,
       idpId: 'fia4-low',
+      password: '123',
+      scopes: mandatoryScopes,
       sp: `${Cypress.env('SP_NAME')}4-low`,
+      userName: 'test',
     };
     beforeSuccessScenario(params);
     basicSuccessScenario(params.idpId);
@@ -131,11 +140,12 @@ describe('Successful scenarios', () => {
 
   it('should log in to Service Provider Example with IDP RS256 alg and response encrypted', () => {
     const params = {
-      userName: 'test',
-      password: '123',
       eidasLevel: 1,
       idpId: 'fia5-low',
+      password: '123',
+      scopes: mandatoryScopes,
       sp: `${Cypress.env('SP_NAME')}4-low`,
+      userName: 'test',
     };
     beforeSuccessScenario(params);
     basicSuccessScenario(params.idpId);
