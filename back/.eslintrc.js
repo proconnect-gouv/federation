@@ -14,6 +14,12 @@ module.exports = {
       files: ['**/*.ejs'],
       rules: {},
     },
+    {
+      files: ['**/*.spec.ts', '**/cypress/*'],
+      rules: {
+        'max-nested-callbacks': 'off',
+      },
+    },
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
@@ -91,5 +97,6 @@ module.exports = {
       },
     ],
     'sort-imports': 'off',
+    'max-nested-callbacks': ['error', { max: 1 }],
   },
 };
