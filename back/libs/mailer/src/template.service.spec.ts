@@ -5,7 +5,8 @@ import { mocked } from 'ts-jest/utils';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { OidcSession } from '@fc/oidc';
+import { PartialExcept } from '@fc/common';
+import { IOidcIdentity, OidcSession } from '@fc/oidc';
 
 import { TemplateService } from './template.service';
 
@@ -83,7 +84,7 @@ describe('TemplateService', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       family_name: 'TEACH',
       email: undefined,
-    };
+    } as PartialExcept<IOidcIdentity, 'sub'>;
     const sessionDataMock: OidcSession = {
       idpId: '42',
       idpAcr: 'eidas3',

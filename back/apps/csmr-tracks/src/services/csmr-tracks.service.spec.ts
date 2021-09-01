@@ -3,12 +3,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Account, AccountNotFoundException, AccountService } from '@fc/account';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { LoggerService } from '@fc/logger';
+import { IOidcIdentity } from '@fc/oidc';
 
 import { CsrmTracksNoTracksException } from '../exceptions';
 import { CsmrTracksService } from './csmr-tracks.service';
 import { CsmrTracksElasticsearchService } from './csmr-tracks-elasticsearch.service';
 
-const identityMock = {};
+const identityMock = {} as IOidcIdentity;
 const identityHashMock = 'identityHashMockValue';
 const accountMock: Account = {
   id: '42',

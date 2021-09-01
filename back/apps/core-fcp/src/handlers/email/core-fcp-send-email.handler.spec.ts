@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { PartialExcept } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -10,7 +11,7 @@ import {
   MailTo,
   NoEmailException,
 } from '@fc/mailer';
-import { OidcSession } from '@fc/oidc';
+import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { SessionService } from '@fc/session';
 
 import { EmailsTemplates } from '../../enums';
@@ -353,6 +354,7 @@ describe('CoreFcpSendEmailHandler', () => {
   };
 
   const spIdentityWithEmailMock = {
+    sub: '42',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Edward',
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -366,7 +368,7 @@ describe('CoreFcpSendEmailHandler', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
     email: undefined,
-  };
+  } as PartialExcept<IOidcIdentity, 'sub'>;
 
   const idpIdentityMock = {
     sub: 'some idpSub',

@@ -21,7 +21,9 @@ import { EmailsTemplates } from '../../enums';
 
 @Injectable()
 @FeatureHandler('core-fcp-send-email')
-export class CoreFcpSendEmailHandler implements IFeatureHandler {
+export class CoreFcpSendEmailHandler
+  implements IFeatureHandler<void, OidcSession>
+{
   private configMailer;
 
   constructor(

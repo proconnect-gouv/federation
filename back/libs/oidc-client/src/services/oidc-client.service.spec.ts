@@ -2,7 +2,7 @@ import { mocked } from 'ts-jest/utils';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { validateDto } from '@fc/common';
+import { PartialExcept, validateDto } from '@fc/common';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { IEventContext, TrackingService } from '@fc/tracking';
@@ -73,7 +73,7 @@ describe('OidcClientService', () => {
     idpNonce: idpNonceMock,
   };
 
-  const identityMock: IOidcIdentity = {
+  const identityMock: PartialExcept<IOidcIdentity, 'sub'> = {
     sub: 'xxxxxxyyyyy1122334455667788',
     // oidc parameter
     // eslint-disable-next-line @typescript-eslint/naming-convention

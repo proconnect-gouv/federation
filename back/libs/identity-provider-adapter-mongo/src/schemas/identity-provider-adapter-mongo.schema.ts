@@ -2,7 +2,7 @@ import { Document, Schema as SchemaNative } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-import { IFeatureHandlerDatabaseMap } from '@fc/feature-handler';
+import { IFeatureHandlerDatabase } from '@fc/feature-handler';
 
 @Schema({ strict: true, strictQuery: true, collection: 'provider' })
 export class IdentityProvider extends Document {
@@ -66,7 +66,7 @@ export class IdentityProvider extends Document {
   userinfo_encrypted_response_enc: string;
 
   @Prop({ type: SchemaNative.Types.Mixed })
-  featureHandlers: IFeatureHandlerDatabaseMap;
+  featureHandlers: IFeatureHandlerDatabase;
 }
 
 export const IdentityProviderSchema =

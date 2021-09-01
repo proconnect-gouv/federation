@@ -111,7 +111,7 @@ export class EidasToOidcService {
 
     return attributesKeys.reduce(
       this.getClaimsBoundedAttributesToClaimsReducer(attributes),
-      {},
+      {} as IOidcIdentity,
     );
   }
 

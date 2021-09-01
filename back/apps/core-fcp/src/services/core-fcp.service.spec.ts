@@ -1,18 +1,20 @@
 import { ModuleRef } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { PartialExcept } from '@fc/common';
 import { CoreMissingAuthenticationEmailException } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
+import { IdentityProviderMetadata, IOidcIdentity, OidcSession } from '@fc/oidc';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
 
 import { ProcessCore } from '../enums';
-import { CoreFcpService, FcpFeature } from './core-fcp.service';
+import { IVerifyFeatureHandler } from '../interfaces';
+import { CoreFcpService } from './core-fcp.service';
 
 describe('CoreFcpService', () => {
   let service: CoreFcpService;
@@ -40,11 +42,11 @@ describe('CoreFcpService', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
     email: 'eteach@fqdn.ext',
-  };
+  } as IOidcIdentity;
 
   const idpIdentityMock = {
     sub: 'some idpSub',
-  };
+  } as PartialExcept<IOidcIdentity, 'sub'>;
 
   const sessionDataMock: OidcSession = {
     idpId: '42',
@@ -89,13 +91,13 @@ describe('CoreFcpService', () => {
 
   const idpIdentityCheckMock = 'core-fcp-eidas-identity-check';
 
-  const IdentityProviderResultMock: FcpFeature = {
+  const identityProviderResultMock = {
     featureHandlers: {
       coreVerify: coreVerifyMock,
       authenticationEmail: authenticationEmailMock,
       idpIdentityCheck: idpIdentityCheckMock,
     },
-  };
+  } as unknown as IdentityProviderMetadata;
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -134,7 +136,7 @@ describe('CoreFcpService', () => {
 
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
     featureHandlerGetSpy.mockResolvedValueOnce(featureHandlerServiceMock);
-    IdentityProviderMock.getById.mockResolvedValue(IdentityProviderResultMock);
+    IdentityProviderMock.getById.mockResolvedValue(identityProviderResultMock);
     serviceProviderMock.getById.mockResolvedValue(serviceProviderMock);
   });
 
@@ -193,7 +195,7 @@ describe('CoreFcpService', () => {
   describe('getFeature()', () => {
     it('should return class for specific process', async () => {
       // When
-      const result = await service.getFeature<FcpFeature>(
+      const result = await service.getFeature<IVerifyFeatureHandler>(
         sessionDataMock.idpId,
         ProcessCore.ID_CHECK,
       );
@@ -203,7 +205,7 @@ describe('CoreFcpService', () => {
 
     it('should have called log when feature is required', async () => {
       // When
-      const result = await service.getFeature<FcpFeature>(
+      const result = await service.getFeature<IVerifyFeatureHandler>(
         sessionDataMock.idpId,
         ProcessCore.ID_CHECK,
       );
@@ -217,7 +219,7 @@ describe('CoreFcpService', () => {
 
     it('should have search idp when feature is required', async () => {
       // When
-      const result = await service.getFeature<FcpFeature>(
+      const result = await service.getFeature<IVerifyFeatureHandler>(
         sessionDataMock.idpId,
         ProcessCore.ID_CHECK,
       );
@@ -231,7 +233,7 @@ describe('CoreFcpService', () => {
 
     it('should have extract class from class id when feature is required', async () => {
       // When
-      const result = await service.getFeature<FcpFeature>(
+      const result = await service.getFeature<IVerifyFeatureHandler>(
         sessionDataMock.idpId,
         ProcessCore.ID_CHECK,
       );
@@ -239,7 +241,7 @@ describe('CoreFcpService', () => {
       expect(result).toBeDefined();
       expect(featureHandlerGetSpy).toHaveBeenCalledTimes(1);
       expect(featureHandlerGetSpy).toHaveBeenCalledWith(
-        IdentityProviderResultMock.featureHandlers.idpIdentityCheck,
+        identityProviderResultMock.featureHandlers.idpIdentityCheck,
         service,
       );
     });
@@ -253,7 +255,7 @@ describe('CoreFcpService', () => {
       // When
       await expect(
         () =>
-          service.getFeature<FcpFeature>(
+          service.getFeature<IVerifyFeatureHandler>(
             sessionDataMock.idpId,
             'Tzeentch' as unknown as ProcessCore,
           ),

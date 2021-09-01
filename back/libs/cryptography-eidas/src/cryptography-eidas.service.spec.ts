@@ -19,7 +19,7 @@ describe('CryptographyEidasService', () => {
     hash: jest.fn(),
     decrypt: jest.fn(),
   };
-  const pivotIdentityMock: IPivotIdentity = {
+  const pivotIdentityMock: Pick<IPivotIdentity, 'sub'> = {
     sub: 'BE/FR/123456789',
   };
 

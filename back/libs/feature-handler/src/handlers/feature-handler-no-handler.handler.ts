@@ -7,8 +7,8 @@ import { IFeatureHandler } from '../interfaces';
  * where no action is specified in the database, Ex: featureHandlers: { ... actionName: null, ... }
  */
 @Injectable()
-export class FeatureHandlerNoHandler implements IFeatureHandler {
-  async handle(): Promise<void> {
+export class FeatureHandlerNoHandler implements IFeatureHandler<null, void> {
+  async handle() {
     return null;
   }
 }

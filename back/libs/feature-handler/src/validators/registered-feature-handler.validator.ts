@@ -3,19 +3,35 @@ import {
   isObject,
   ValidateBy,
   ValidationOptions,
+  ValidatorConstraintInterface,
 } from 'class-validator';
 
 import { FeatureHandler } from '../decorators';
-import { IFeatureHandlerDatabaseMap } from '../interfaces';
+import { IFeatureHandlerDatabase } from '../interfaces';
+import { isNotValidFeatureHandlerKey } from '../utils';
 
-export class IsRegisteredFeatureHandlerConstraint {
-  validate(value: IFeatureHandlerDatabaseMap): boolean {
+export class IsRegisteredFeatureHandlerConstraint
+  implements ValidatorConstraintInterface
+{
+  validate(value: IFeatureHandlerDatabase): boolean {
     if (!isObject(value)) {
       return false;
     }
+
     const handlerNames = Object.values(value);
+    if (handlerNames.some(isNotValidFeatureHandlerKey)) {
+      return false;
+    }
+
+    const filterHandler = handlerNames.filter(Boolean);
     const registredHandlers = FeatureHandler.getAll();
-    return arrayContains(registredHandlers, handlerNames);
+
+    return arrayContains(registredHandlers, filterHandler);
+  }
+
+  defaultMessage(): string {
+    const registredHandlers = FeatureHandler.getAll();
+    return `property should be in [${registredHandlers.toString()}]`;
   }
 }
 

@@ -1,8 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { PartialExcept } from '@fc/common';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
+import { IOidcIdentity, OidcSession } from '@fc/oidc';
 
 import { SessionCsrfService } from './session-csrf.service';
 
@@ -39,7 +40,7 @@ const sessionDataMock: OidcSession = {
 
   spAcr: acrMock,
   spId: spIdMock,
-  spIdentity: {},
+  spIdentity: {} as PartialExcept<IOidcIdentity, 'sub'>,
   spName: spNameMock,
 
   idpId: idpIdMock,

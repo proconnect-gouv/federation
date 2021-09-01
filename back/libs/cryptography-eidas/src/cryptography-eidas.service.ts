@@ -19,7 +19,7 @@ export class CryptographyEidasService {
    * @param pivotIdentity
    * @returns the identity hash "hex" digested
    */
-  computeIdentityHash({ sub }: IPivotIdentity): string {
+  computeIdentityHash({ sub }: Pick<IPivotIdentity, 'sub'>): string {
     return this.crypto.hash(sub, 'binary', 'sha256', 'base64');
   }
 
