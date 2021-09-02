@@ -22,7 +22,7 @@
     "test:low": "yarn clean && yarn test:low:base",
     "start:high": "cypress open --config-file cypress-fcp-high.json",
     "start:low": "cypress open --config-file cypress-fcp-low.json",
-    "report:prepare": "ts-node ../scripts/prepare-cucumber-logs",
+    "report:prepare": "ts-node ../scripts/prepare-cucumber-logs && rm -f cypress/reports/cucumber/empty.cucumber.json",
     "report:generate": "ts-node ../scripts/multiple-cucumber-html-reporter"
   }
 }

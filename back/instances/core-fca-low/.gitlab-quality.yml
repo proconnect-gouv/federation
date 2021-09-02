@@ -1,0 +1,71 @@
+quality-fca-low-docker:
+  stage: 'End to end'
+  image: ${E2E_DOCKER_IMAGE}
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
+      when: manual
+      allow_failure: false
+  tags:
+    - docker
+  variables:
+    FC_ROOT: '$CI_BUILDS_DIR/france-connect'
+    TZ: 'Europe/Paris'
+  cache:
+    key: '${CI_PROJECT_ID}'
+    policy: pull
+    paths:
+      - back/node_modules/
+      - front/apps/agent-connect/node_modules/
+  before_script:
+    - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f && docker volume prune -f; fi
+    - shopt -s expand_aliases
+    - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
+    - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
+    - ln -s $FC_ROOT/fc/front/apps/agent-connect $FC_ROOT/fc/docker/volumes/src/agent-connect
+    - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
+    - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
+  script:
+    - docker-stack up all-fca-low
+    - docker-stack fca-low-front
+    - docker-stack dep core-fca-low exploitation-fca-low
+    - docker-stack fixtures-fca-low
+    - docker-stack start exploitation-fca-low 
+    - docker-stack start fsa1-low fsa2-low fsa4-low fia1-low fia2-low fia4-low fia5-low
+    - docker-stack start core-fca-low fca-low-front
+    # ## -- Build like for prod
+    #- docker-stack exec fsa1-low yarn build mock-service-provider-fca-low # Will build for fsa2-low as well
+    #- docker-stack exec fca yarn build core-fca-low
+    # ## -- Launch like prod
+    #- docker-stack exec fsa1-low yarn start:prod:mock-service-provider-fca-low &
+    #- docker-stack exec fsa2-low yarn start:prod:mock-service-provider-fca-low &
+    #- docker-stack exec fca yarn start:prod:core-fca-low &
+    # Starting Cypress
+    - timeout 120 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fca-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
+      do echo "Waiting for core-fca-low..." && sleep 10; done' || (
+      (echo 'Cannot connect to core-fca-low') &&
+      (docker exec fc_core-fca-low_1 cat /tmp/.pm2/logs/core-fca-low-error-0.log || true) &&
+      (docker exec fc_core-fca-low_1 cat /tmp/.pm2/logs/core-fca-low-out-0.log || true) &&
+      exit 1)
+    - timeout 100 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://exploitation-fca-low.docker.dev-franceconnect.fr/login)" != "200" ]];
+      do echo "Waiting for exploitation-fca-low..." && sleep 10; done' ||
+      (echo 'Cannot connect to exploitation-fca-low' &&
+      (docker exec fc_exploitation-fca-low_1 cat /tmp/.pm2/logs/exploitation-fca-low-error-0.log || true) &&
+      (docker exec fc_exploitation-fca-low_1 cat /tmp/.pm2/logs/exploitation-fca-low-out-0.log || true) &&
+      exit 1)
+    - cd $CI_PROJECT_DIR/quality/fca
+    - yarn install
+    - CYPRESS_TEST_ENV=docker yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn report:prepare
+    - CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=docker yarn report:generate
+    - exit $RETURN_CODE
+  interruptible: true
+  artifacts:
+    expire_in: 1 hrs
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/quality/fca/cypress/reports/cucumber/html-report
+  after_script:
+    - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
+    - docker container prune --force && docker volume prune -f

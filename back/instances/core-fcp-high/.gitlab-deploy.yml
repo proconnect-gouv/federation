@@ -43,7 +43,7 @@ stop-core-fcp-high:
     - staging
   when: manual
 
-quality-core-fcp-high-recette:
+quality-fcp-high-recette:
   stage: 'Review'
   image: ${E2E_DOCKER_IMAGE}
   tags:
