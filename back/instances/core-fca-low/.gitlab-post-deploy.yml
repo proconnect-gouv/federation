@@ -1,4 +1,4 @@
-quality-fcp-high-release:
+quality-fca-low-release:
   stage: 'Post-deploy'
   image: ${E2E_DOCKER_IMAGE}
   tags:
@@ -8,10 +8,10 @@ quality-fcp-high-release:
   when: manual
   environment:
     name: integ01
-    url: https://auth.integ01.dev-franceconnect.fr
+    url: https://fca.integ01.dev-agentconnect.fr
   variables:
     FC_ROOT: '$CI_BUILDS_DIR/france-connect'
-    CYPRESS_PLATFORM: 'fcp-high'
+    CYPRESS_PLATFORM: 'fca-low'
     CYPRESS_TEST_ENV: 'integ01'
   before_script:
     - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f && docker volume prune -f; fi
@@ -19,13 +19,13 @@ quality-fcp-high-release:
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
   script:
-  # Build the nginx proxy to access /integ01/fcp.html
+  # Build the nginx proxy to access /integ01/fca.html
     - docker-stack up rp-all
-    - cd quality/fcp
+    - cd quality/fca
     - yarn install
-    - export CYPRESS_EXPLOIT_USER_PASS=$EXPLOIT_FCP_HIGH_PWD
-    - export CYPRESS_EXPLOIT_USER_TOTP=$EXPLOIT_FCP_HIGH_TOTP
-    - yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - export CYPRESS_EXPLOIT_USER_PASS=$EXPLOIT_FCA_LOW_INT_PWD
+    - export CYPRESS_EXPLOIT_USER_TOTP=$EXPLOIT_FCA_LOW_INT_TOTP
+    - yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - yarn report:generate
     - exit $RETURN_CODE
@@ -33,7 +33,7 @@ quality-fcp-high-release:
     expire_in: 1 hrs
     when: always
     paths:
-      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report  
+      - $CI_PROJECT_DIR/quality/fca/cypress/reports/cucumber/html-report  
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
     - docker container prune --force && docker volume prune -f
