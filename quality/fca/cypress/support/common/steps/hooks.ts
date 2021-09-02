@@ -1,3 +1,5 @@
+import { Before } from 'cypress-cucumber-preprocessor/steps';
+
 import {
   addFCBasicAuthorization,
   clearAllCookies,
@@ -8,6 +10,17 @@ import {
   isUsingFCBasicAuthorization,
 } from '../helpers';
 import { IdentityProvider, ServiceProvider, UserData } from '../types';
+
+const skipTest = (): void => {
+  /**
+   * @todo: Use the plug-in cypress-skip-test once migrated to Cypress 8
+   * @author: Nicolas Legeay
+   * @link https://github.com/cypress-io/cypress-skip-test
+   * date: 18/08/2021
+   */
+  // @ts-expect-error "cy.state" is not in the "cy" type
+  cy.state('runnable').ctx.skip();
+};
 
 const setFixtureContext = (
   fixture: string,
@@ -74,4 +87,16 @@ afterEach(function () {
   delete this.identityProvider;
   delete this.user;
   delete this.operatorUser;
+});
+
+Before({ tags: '@ignoreDocker' }, function () {
+  if (['docker', 'recette'].includes(Cypress.env('TEST_ENV'))) {
+    skipTest();
+  }
+});
+
+Before({ tags: '@ignoreInteg01' }, function () {
+  if (Cypress.env('TEST_ENV') === 'integ01') {
+    skipTest();
+  }
 });
