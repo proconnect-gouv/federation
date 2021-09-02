@@ -46,5 +46,5 @@ export class MockIdentityProviderConfig {
   @IsObject()
   @ValidateNested()
   @Type(() => ServiceProviderAdapterEnvConfig)
-  readonly ServiceProviderAdapterEnvConfig: ServiceProviderAdapterEnvConfig;
+  readonly ServiceProviderAdapterEnv: ServiceProviderAdapterEnvConfig;
 }

@@ -75,10 +75,10 @@ export class CoreFcaConfig {
   @IsObject()
   @ValidateNested()
   @Type(() => ServiceProviderAdapterMongoConfig)
-  readonly ServiceProviderAdapterMongoConfig: ServiceProviderAdapterMongoConfig;
+  readonly ServiceProviderAdapterMongo: ServiceProviderAdapterMongoConfig;
 
   @IsObject()
   @ValidateNested()
   @Type(() => IdentityProviderAdapterMongoConfig)
-  readonly IdentityProviderAdapterMongoConfig: IdentityProviderAdapterMongoConfig;
+  readonly IdentityProviderAdapterMongo: IdentityProviderAdapterMongoConfig;
 }
