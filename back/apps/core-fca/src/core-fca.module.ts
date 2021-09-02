@@ -23,7 +23,6 @@ import {
 } from '@fc/identity-provider-adapter-mongo';
 import { MinistriesModule } from '@fc/ministries';
 import { MongooseModule } from '@fc/mongoose';
-import { OidcSession } from '@fc/oidc';
 import { OidcClientModule } from '@fc/oidc-client';
 import { OidcProviderModule } from '@fc/oidc-provider';
 import {
@@ -38,6 +37,7 @@ import {
   OidcClientController,
   OidcProviderController,
 } from './controllers';
+import { CoreFcaSession } from './dto';
 import { CoreFcaDefaultVerifyHandler } from './handlers';
 import { CoreFcaService } from './services';
 
@@ -63,7 +63,7 @@ import { CoreFcaService } from './services';
       ServiceProviderAdapterMongoModule,
     ),
     SessionModule.forRoot({
-      schema: OidcSession,
+      schema: CoreFcaSession,
     }),
     /** Inject app specific tracking service */
     TrackingModule.forRoot(CoreTrackingService),
