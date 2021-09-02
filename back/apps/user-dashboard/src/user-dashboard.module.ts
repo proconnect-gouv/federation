@@ -7,7 +7,6 @@ import {
   IdentityProviderAdapterEnvModule,
   IdentityProviderAdapterEnvService,
 } from '@fc/identity-provider-adapter-env';
-import { OidcSession } from '@fc/oidc';
 import { OidcClientModule } from '@fc/oidc-client';
 import {
   ServiceProviderAdapterEnvModule,
@@ -16,6 +15,7 @@ import {
 import { SessionModule } from '@fc/session';
 
 import { UserDashboardController } from './controllers';
+import { UserDashboardSession } from './dto';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderAdapterEnvService,
@@ -28,7 +28,7 @@ const oidcClientModule = OidcClientModule.register(
   imports: [
     IdentityProviderAdapterEnvModule,
     oidcClientModule,
-    SessionModule.forRoot({ schema: OidcSession }),
+    SessionModule.forRoot({ schema: UserDashboardSession }),
   ],
   controllers: [UserDashboardController],
 })
