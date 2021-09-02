@@ -13,7 +13,7 @@ export class ServiceProviderAdapterEnvService
 
   async getList(): Promise<ServiceProviderMetadata[]> {
     const configuredSp = this.config.get<ServiceProviderAdapterEnvConfig>(
-      'ServiceProviderAdapterEnvConfig',
+      'ServiceProviderAdapterEnv',
     ) as ServiceProviderMetadata;
 
     return [JSON.parse(JSON.stringify(configuredSp))];

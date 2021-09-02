@@ -69,7 +69,7 @@ export class EidasBridgeConfig {
   @IsObject()
   @ValidateNested()
   @Type(() => IdentityProviderAdapterEnvConfig)
-  readonly IdentityProviderAdapterEnvConfig: IdentityProviderAdapterEnvConfig;
+  readonly IdentityProviderAdapterEnv: IdentityProviderAdapterEnvConfig;
 
   @IsObject()
   @ValidateNested()
@@ -84,7 +84,7 @@ export class EidasBridgeConfig {
   @IsObject()
   @ValidateNested()
   @Type(() => ServiceProviderAdapterEnvConfig)
-  readonly ServiceProviderAdapterEnvConfig: ServiceProviderAdapterEnvConfig;
+  readonly ServiceProviderAdapterEnv: ServiceProviderAdapterEnvConfig;
 
   @IsObject()
   @ValidateNested()
