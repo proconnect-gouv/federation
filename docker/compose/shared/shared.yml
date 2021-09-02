@@ -35,6 +35,7 @@ services:
     networks:
       public:
         aliases:
+          # FCP HIGH
           - fsp1-high.docker.dev-franceconnect.fr
           - fsp2-high.docker.dev-franceconnect.fr
           - fsp3-high.docker.dev-franceconnect.fr
@@ -56,24 +57,29 @@ services:
           - fip18-high.docker.dev-franceconnect.fr
           - fip19-high.docker.dev-franceconnect.fr
           - fip20-high.docker.dev-franceconnect.fr
+          # FCP LOW
+          - core-fcp-low.docker.dev-franceconnect.fr
+          - fsp1-low.docker.dev-franceconnect.fr
+          - fip1-low.docker.dev-franceconnect.fr
+          # FCA LOW
           - core-fca-low.docker.dev-franceconnect.fr
           - fca-low-front.docker.dev-franceconnect.fr
           - fsa1-low.docker.dev-franceconnect.fr
           - fsa2-low.docker.dev-franceconnect.fr
           - fsa3-low.docker.dev-franceconnect.fr
           - fsa4-low.docker.dev-franceconnect.fr
-          - exploitation-high.docker.dev-franceconnect.fr
-          - eidas-bridge.docker.dev-franceconnect.fr
-          - eidas-fr.docker.dev-franceconnect.fr
-          - eidas-mock.docker.dev-franceconnect.fr
           - fia1-low.docker.dev-franceconnect.fr
           - fia2-low.docker.dev-franceconnect.fr
           - fia4-low.docker.dev-franceconnect.fr
           - fia5-low.docker.dev-franceconnect.fr
-          # FCP LOW
-          - core-fcp-low.docker.dev-franceconnect.fr
-          - fsp1-low.docker.dev-franceconnect.fr
-          - fip1-low.docker.dev-franceconnect.fr
+          # EIDAS
+          - eidas-bridge.docker.dev-franceconnect.fr
+          - eidas-fr.docker.dev-franceconnect.fr
+          - eidas-mock.docker.dev-franceconnect.fr
+          # Aliases to access exploitation from test runner
+          # TODO: Move those aliases to exploitation network once runner workaround found
+          - exploitation-fca-low.docker.dev-franceconnect.fr
+          - exploitation-high.docker.dev-franceconnect.fr
           # Generic
           - docker.dev-franceconnect.fr
       fc:

@@ -1,4 +1,4 @@
-quality-core-fcp-low-docker:
+quality-fcp-low-docker:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:
