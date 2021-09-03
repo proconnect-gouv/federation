@@ -40,6 +40,7 @@ describe('OidcClientService', () => {
     setContext: jest.fn(),
     trace: jest.fn(),
     debug: jest.fn(),
+    error: jest.fn(),
     businessEvent: jest.fn(),
   } as unknown as LoggerService;
 
