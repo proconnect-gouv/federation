@@ -20,7 +20,7 @@ export class ServiceProviderUpdateHandler
   }
 
   public async handle(): Promise<void> {
-    this.logger.trace({});
+    this.logger.trace({ action: 'handled' });
     this.providerService.getList(true);
   }
 }

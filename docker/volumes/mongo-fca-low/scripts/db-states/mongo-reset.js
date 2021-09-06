@@ -12,8 +12,8 @@ db.client.remove({});
 print("Reseting provider collection");
 db.provider.remove({});
 
-print("Reseting scopelabels collection");
-db.scopelabels.remove({});
+print("Reseting scopes collection");
+db.scopes.remove({});
 
 print('Reseting ministries collection...');
 db.ministries.remove({});
