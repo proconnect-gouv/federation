@@ -5,7 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { asyncFilter, validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { IServiceProviderAdapter, ServiceProviderMetadata } from '@fc/oidc';
 
 import {
@@ -31,7 +31,9 @@ export class ServiceProviderAdapterMongoService
     private readonly config: ConfigService,
     private readonly eventBus: EventBus,
     private readonly logger: LoggerService,
-  ) {}
+  ) {
+    this.logger.setContext(this.constructor.name);
+  }
 
   async onModuleInit() {
     this.initOperationTypeWatcher();
@@ -128,6 +130,7 @@ export class ServiceProviderAdapterMongoService
       );
 
       if (errors.length > 0) {
+        this.logger.trace({ errors }, LoggerLevelNames.WARN);
         this.logger.warn(
           `"${name}" was excluded from the result at DTO validation :${JSON.stringify(
             errors,
@@ -148,21 +151,32 @@ export class ServiceProviderAdapterMongoService
    */
   async getList(refreshCache = false): Promise<ServiceProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
+      this.logger.debug('Refresh cache from DB');
       const list: ServiceProvider[] = await this.findAllServiceProvider();
       this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
+
+      this.logger.trace({ step: 'REFRESH', list, listCache: this.listCache });
+    } else {
+      this.logger.trace({ step: 'CACHE', listCache: this.listCache });
     }
 
     return this.listCache;
   }
 
   async getById(
-    id: string,
+    spId: string,
     refreshCache = false,
   ): Promise<ServiceProviderMetadata> {
     const list = await this.getList(refreshCache);
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    return list.find(({ client_id: dbId }) => dbId === id);
+    const serviceProvider: ServiceProviderMetadata = list.find(
+      ({ client_id: dbId }) => dbId === spId,
+    );
+
+    this.logger.trace({ spId, refreshCache, serviceProvider });
+
+    return serviceProvider;
   }
 
   /**

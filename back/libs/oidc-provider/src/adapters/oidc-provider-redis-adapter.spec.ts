@@ -407,16 +407,16 @@ describe('OidcProviderRedisAdapter', () => {
 
     it('should call the logger', async () => {
       // GIVEN
-      const id = 'greatId';
+      const spId = 'greatId';
       const sp = { name: 'greatFS' };
       ServiceProviderAdapterMock.getById.mockResolvedValueOnce(sp);
 
       // WHEN
-      await adapter['findServiceProvider'](id);
+      await adapter['findServiceProvider'](spId);
 
       // THEN
       expect(loggerMock.trace).toHaveBeenCalledTimes(1);
-      expect(loggerMock.trace).toHaveBeenCalledWith({ sp });
+      expect(loggerMock.trace).toHaveBeenCalledWith({ spId, sp });
     });
 
     it('should return the found service provider', async () => {
