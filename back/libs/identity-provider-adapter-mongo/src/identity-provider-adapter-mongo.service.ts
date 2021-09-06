@@ -193,7 +193,7 @@ export class IdentityProviderAdapterMongoService
       const list: IdentityProvider[] = await this.findAllIdentityProvider();
       this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
 
-      this.logger.trace({ step: 'REFRESH', list: this.listCache });
+      this.logger.trace({ step: 'REFRESH', list, listCache: this.listCache });
     } else {
       this.logger.trace({ step: 'CACHE', list: this.listCache });
     }

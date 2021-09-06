@@ -73,6 +73,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     setContext: jest.fn(),
     warn: jest.fn(),
     debug: jest.fn(),
+    trace: jest.fn(),
   };
 
   const cryptographyMock = {
