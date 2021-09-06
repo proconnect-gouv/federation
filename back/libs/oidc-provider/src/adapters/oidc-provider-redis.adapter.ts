@@ -210,14 +210,14 @@ export class OidcProviderRedisAdapter implements Adapter {
     await multi.exec();
   }
 
-  private async findServiceProvider(id) {
-    const sp = await this.serviceProvider.getById(id);
+  private async findServiceProvider(spId: string) {
+    const sp = await this.serviceProvider.getById(spId);
 
-    this.logger.trace({ sp });
+    this.logger.trace({ spId, sp });
     return sp;
   }
 
-  private async findInRedis(id) {
+  private async findInRedis(id: string) {
     const key = this.key(id);
 
     const command = consumable.has(this.contextName) ? 'hgetall' : 'get';
