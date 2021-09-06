@@ -79,9 +79,10 @@ export class CsvService<T> implements RepositoryInterface<T> {
   async find(filters: { [key: string]: string }): Promise<T | null> {
     const criteria = Object.entries(filters);
 
-    const result = this.collection.find((row) =>
-      criteria.every(([key, value]) => key in row && row[key] == value),
-    );
+    const result = this.collection.find((row) => {
+      const search = ([key, value]) => key in row && row[key] == value;
+      return criteria.every(search);
+    });
     return (result as T) || null;
   }
 }
