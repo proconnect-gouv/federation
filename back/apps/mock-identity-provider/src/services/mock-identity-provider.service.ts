@@ -98,9 +98,8 @@ export class MockIdentityProviderService {
 
       // remove empty properties
       database.forEach((entry) => {
-        Object.keys(entry).forEach(
-          (key) => entry[key] === '' && delete entry[key],
-        );
+        const cleaner = (key) => entry[key] === '' && delete entry[key];
+        Object.keys(entry).forEach(cleaner);
       });
 
       this.database = database;

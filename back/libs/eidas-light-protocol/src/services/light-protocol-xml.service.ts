@@ -175,11 +175,9 @@ export class LightProtocolXmlService {
       ([keyPath, value]: [string, unknown]) => {
         const newPaths: string[][] = callback(keyPath, value) || [];
 
-        newPaths.forEach(([newKeyPath, newValue]) => {
-          if (newKeyPath && newValue) {
-            newPathsObject[newKeyPath] = newValue;
-          }
-        });
+        const cleaner = ([newKeyPath, newValue]) => newKeyPath && newValue;
+        const newPathsData = Object.fromEntries(newPaths.filter(cleaner));
+        Object.assign(newPathsObject, newPathsData);
       },
     );
 
