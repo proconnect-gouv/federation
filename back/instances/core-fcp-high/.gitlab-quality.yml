@@ -3,43 +3,40 @@ quality-fcp-high-docker:
   image: ${E2E_DOCKER_IMAGE}
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
-      when: manual
-      allow_failure: false
   tags:
-    - docker
+    - cypress
   variables:
-    FC_ROOT: '$CI_BUILDS_DIR/france-connect'
     TZ: 'Europe/Paris'
   cache:
     key: '${CI_PROJECT_ID}'
     policy: pull
     paths:
       - back/node_modules/
+      - quality/node_modules/
   before_script:
-    - echo "FC_DOCKER_VERSION=$FC_DOCKER_VERSION"
-    - if [ "$(docker ps -a -q -f name=^fc-rp-all)" ]; then bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt && docker container prune -f && docker volume prune -f; fi
+    - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
+    - echo "FC_APPS_VERSION=$FC_APPS_VERSION"
+    - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
+    - rm -rf $FC_ROOT/fc-apps
+    - git clone -b $FC_APPS_VERSION https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $FC_ROOT/fc-apps
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
     - ln -s $FC_ROOT/fc/front/apps/user-dashboard $FC_ROOT/fc/docker/volumes/src/user-dashboard
     - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
-    - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do ln -s $mock $FC_ROOT/fc/docker/volumes/src; done
+    - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
+    - cd $CI_PROJECT_DIR/quality/fcp && yarn install
+    - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do cd $mock && git fetch && git checkout -f origin/master && git clean -df && echo "Installing depedencies for $(/usr/bin/basename $mock)" && npm install; ln -sfn $mock $FC_ROOT/fc/docker/volumes/src; done
+    - wait
+    - cd $CI_PROJECT_DIR
   script:
     - docker-stack up all-fcp-high
-    - docker-stack dep core-fcp-high exploitation-high
+    - docker exec fc_core-fcp-high_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
+    - docker-stack dep core-fcp-high
     - docker-stack fixtures-v2
     - docker-stack start csmr-hsm rnipp fsp1-high fsp2-high fip1-high core-fcp-high exploitation-high
-    # ## -- Build like for prod
-    #- docker-stack exec fsp1-high yarn build mock-service-provider-fcp-high # Will build for fsp2-high as well
-    #- docker-stack exec core-fcp-high yarn build core-fcp-high
-    #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
-    # ## -- Launch like prod
-    #- docker-stack exec fsp1-high yarn start:prod:mock-service-provider-fcp-high &
-    #- docker-stack exec fsp2-high yarn start:prod:mock-service-provider-fcp-high &
-    #- docker-stack exec core-fcp-high yarn start:prod:core-fcp-high &
-    #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
     - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
       do echo "Waiting for core-fcp-high..." && sleep 10; done' || (
@@ -54,7 +51,6 @@ quality-fcp-high-docker:
       (docker exec fc_exploitation-high_1 cat /tmp/.pm2/logs/exploitation-high-out-0.log || true) &&
       exit 1)
     - cd $CI_PROJECT_DIR/quality/fcp
-    - yarn install
     - CYPRESS_TEST_ENV=docker yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=docker yarn report:generate
