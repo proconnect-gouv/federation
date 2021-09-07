@@ -1,0 +1,92 @@
+// @TODO a supprimer une fois la lib dsfr partagée entre les apps front
+
+.mr8 {
+  margin-right: 8px;
+}
+
+.is-block {
+  display: block;
+}
+
+.flex-columns {
+  display: flex;
+  flex-direction: row;
+}
+
+.items-center {
+  align-items: center;
+}
+
+a.no-underline {
+  text-decoration: none;
+}
+
+.bg-blue-france-100 {
+  background-color: #f2f2f9;
+}
+
+.is-blue-agentconnect {
+  color: #0579ee;
+}
+
+.fr-display-xs {
+  font-size: 2.5rem;
+  line-height: 3rem;
+}
+
+h1 {
+  font-size: 2rem;
+  line-height: 2.5rem;
+}
+
+.content-wrapper-sm {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.my32 {
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+}
+
+.mb32 {
+  margin-bottom: 2rem;
+}
+
+.px120 {
+  padding-left: 7.5rem;
+  padding-right: 7.5rem;
+}
+
+.fr-text-lg {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+.p24 {
+  padding: 1.5rem;
+}
+
+.no-no-padding {
+  padding: 0 !important;
+}
+
+@media (min-width: 768px) {
+  .fr-display-xs {
+    font-size: 3rem;
+    line-height: 3.5rem;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+    line-height: 3rem;
+  }
+
+  .content-wrapper-sm {
+    max-width: 792px;
+  }
+  .fr-text-lg {
+    font-size: 1.25rem;
+    line-height: 2rem;
+  }
+}
