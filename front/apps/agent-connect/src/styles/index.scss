@@ -1,3 +1,5 @@
+// ----------------- DESIGN SYSTEM
+@import '_dsfr.scss';
 // ----------------- VARIABLES
 @import '_variables.scss';
 @import '_colors.scss';
@@ -10,12 +12,7 @@
 @import './helpers';
 @import './vendors';
 @import './fonts/montserrat';
-
-*,
-input,
-textarea {
-  font-family: 'Montserrat', sans-serif;
-}
+@import './fonts/marianne';
 
 body,
 html,
