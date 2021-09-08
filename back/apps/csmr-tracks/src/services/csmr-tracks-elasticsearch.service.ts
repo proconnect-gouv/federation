@@ -74,16 +74,6 @@ export class CsmrTracksElasticsearchService {
 
     const rawTracks = response.body.hits.hits as ICsmrTracksInputTrack[];
     const tracks = this.getFormatedTracks(rawTracks);
-    const { value: total } = response.body.hits.total;
-
-    this.logger.trace({
-      accountId,
-      response,
-      rawTracks,
-      tracks,
-      total,
-    });
-
     return tracks;
   }
 
@@ -97,8 +87,12 @@ export class CsmrTracksElasticsearchService {
   private getFormatedTracks(
     rawTracks: ICsmrTracksInputTrack[],
   ): ICsmrTracksOutputTrack[] {
-    return rawTracks.map((track) =>
-      pick(track._source, TRACK_PROPERTIES),
-    ) as ICsmrTracksOutputTrack[];
+    const filteredProperties = rawTracks.map((track) => {
+      const trackId = track._id;
+      const source = track._source;
+      const properties = pick(source, TRACK_PROPERTIES);
+      return { ...properties, trackId };
+    }) as ICsmrTracksOutputTrack[];
+    return filteredProperties;
   }
 }

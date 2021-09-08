@@ -13,6 +13,7 @@
  *   spAcr: 'eidas1',
  *   country: 'FR',
  *   city: 'Paris',
+ *   trackId: 'any-unique-track-index-identifier-string-from-ES',
  * }
  */
 export interface ICsmrTracksOutputTrack {
@@ -24,4 +25,5 @@ export interface ICsmrTracksOutputTrack {
   spAcr: string;
   country: string;
   city: string;
+  trackId: string;
 }

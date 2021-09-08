@@ -1,10 +1,7 @@
 /* istanbul ignore file */
 
 // Not to be tested
-import { join } from 'path';
-
 import * as CookieParser from 'cookie-parser';
-import { renderFile } from 'ejs';
 import { urlencoded } from 'express';
 import * as helmet from 'helmet';
 
@@ -26,13 +23,13 @@ async function bootstrap() {
     schema: UserDashboardConfig,
   });
   const {
+    httpsOptions: { cert, key },
     urlPrefix,
-    httpsOptions: { key, cert },
   } = configService.get<AppConfig>('App');
 
   const appModule = AppModule.forRoot(configService);
 
-  const httpsOptions = key && cert ? { key, cert } : null;
+  const httpsOptions = key && cert ? { cert, key } : null;
 
   const app = await NestFactory.create<NestExpressApplication>(appModule, {
     /**
@@ -61,14 +58,15 @@ async function bootstrap() {
     helmet.contentSecurityPolicy({
       directives: {
         defaultSrc: ["'self'"],
+
+        scriptSrc: ["'self'", "'unsafe-inline'"],
         /**
          * Allow inline CSS and JS
          * @TODO #168 remove this header once the UI is properly implemented
          * to forbid the use of inline CSS or JS
          * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/168
          */
-        styleSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
-        scriptSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
+        styleSrc: ["'self'", "'unsafe-inline'"],
       },
     }),
   );
@@ -88,19 +86,6 @@ async function bootstrap() {
 
   const logger = await app.resolve(LoggerService);
   app.useLogger(logger);
-
-  // Assets path vary in dev env
-  const assetsPath =
-    process.env.NODE_ENV === 'development'
-      ? // Libs code base to take latest version
-        '../../../apps/user-dashboard/src'
-      : // Current, directory = dist when in production mode
-        '';
-
-  app.engine('ejs', renderFile);
-  app.set('views', [join(__dirname, assetsPath, 'views')]);
-  app.setViewEngine('ejs');
-  app.useStaticAssets(join(__dirname, assetsPath, 'public'));
 
   const { cookieSecrets } = configService.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));

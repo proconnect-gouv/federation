@@ -32,16 +32,36 @@ const elasticQueryMock: Search = {
   },
 };
 
+const singleTrackMock = {
+  event: 'eventMockValue',
+  date: 'dateMockValue',
+  accountId: 'accountIdValue',
+  spId: 'spIdMockValue',
+  spName: 'spNameMockValue',
+  spAcr: 'spAcrMockValue',
+  country: 'countryMockValue',
+  city: 'cityMockValue',
+};
+
+const sampleTracksInputMock: ICsmrTracksInputTrack[] = [
+  {
+    _index: 'fc_tracks',
+    _type: '_doc',
+    _id: 'any-unique-track-index-identifier-string-from-ES',
+    _score: 1.0,
+    extraAttribute: '!!!!!!!!!!!!',
+    _source: {
+      ...singleTrackMock,
+      extraValue: '==============',
+      otherExtraValue: '---------',
+    },
+  } as ICsmrTracksInputTrack,
+];
+
 const sampleTracksOutputMock: ICsmrTracksOutputTrack[] = [
   {
-    event: 'eventMockValue',
-    date: 'dateMockValue',
-    accountId: 'accountIdValue',
-    spId: 'spIdMockValue',
-    spName: 'spNameMockValue',
-    spAcr: 'spAcrMockValue',
-    country: 'countryMockValue',
-    city: 'cityMockValue',
+    ...singleTrackMock,
+    trackId: 'any-unique-track-index-identifier-string-from-ES',
   },
 ];
 
@@ -52,7 +72,7 @@ const configServiceMock = {
 const elasticResponseMock = {
   body: {
     hits: {
-      hits: sampleTracksOutputMock,
+      hits: [{ ...singleTrackMock }],
       total: {
         value: 1,
       },
@@ -162,28 +182,6 @@ describe('CsmrTracksElasticsearchService', () => {
 
   describe('getFormatedTracks()', () => {
     it('Should format the data from Elasticsearch format into `ICsmrTracksOutputTrack` format', () => {
-      // Given
-      const sampleTracksInputMock: ICsmrTracksInputTrack[] = [
-        {
-          _index: 'fc_tracks',
-          _type: '_doc',
-          _id: 'kpAkdnoBub7RTlGdmpzI',
-          _score: 1.0,
-          extraAttribute: '!!!!!!!!!!!!',
-          _source: {
-            event: 'eventMockValue',
-            date: 'dateMockValue',
-            accountId: 'accountIdValue',
-            spId: 'spIdMockValue',
-            spName: 'spNameMockValue',
-            spAcr: 'spAcrMockValue',
-            country: 'countryMockValue',
-            city: 'cityMockValue',
-            extraValue: '==============',
-            otherExtraValue: '---------',
-          },
-        } as ICsmrTracksInputTrack,
-      ];
       // When
       const formatedData = service['getFormatedTracks'](sampleTracksInputMock);
       // Then

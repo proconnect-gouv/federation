@@ -56,17 +56,18 @@ export class CsmrTracksController {
     );
 
     try {
-      tracks = await this.csmrTracks.getList(payload);
+      const { identity } = payload;
+      tracks = await this.csmrTracks.getList(identity);
     } catch (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
       tracks = [];
     }
 
     this.logger.trace({
-      patern: TracksProtocol.Commands.GET,
-      name: 'TracksProtocol.Commands.GET',
       input: { payload },
+      name: 'TracksProtocol.Commands.GET',
       output: { tracks },
+      patern: TracksProtocol.Commands.GET,
     });
 
     return tracks;
