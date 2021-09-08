@@ -1,9 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import { Account, AccountNotFoundException, AccountService } from '@fc/account';
-import { CryptographyFcpService } from '@fc/cryptography-fcp';
+import { CryptographyFcpService, IPivotIdentity } from '@fc/cryptography-fcp';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
-import { IOidcIdentity } from '@fc/oidc';
 
 import { CsrmTracksNoTracksException } from '../exceptions';
 import { ICsmrTracksOutputTrack } from '../interfaces';
@@ -20,7 +19,7 @@ export class CsmrTracksService {
     this.logger.setContext(this.constructor.name);
   }
 
-  async getList(identity: IOidcIdentity): Promise<ICsmrTracksOutputTrack[]> {
+  async getList(identity: IPivotIdentity): Promise<ICsmrTracksOutputTrack[]> {
     const identityHash = this.cryptographyFcp.computeIdentityHash(identity);
 
     // -- search account in Mongo from its identityHash
@@ -43,7 +42,7 @@ export class CsmrTracksService {
       throw new CsrmTracksNoTracksException();
     }
 
-    this.logger.trace({ identity, identityHash, accountId: id, tracks });
+    this.logger.trace({ accountId: id, identity, identityHash, tracks });
 
     return tracks;
   }

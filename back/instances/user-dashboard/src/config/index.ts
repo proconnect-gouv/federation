@@ -9,12 +9,14 @@ import Logger from './logger';
 import OidcClient from './oidc-client';
 import Redis from './redis';
 import Session from './session';
+import TracksBroker from './tracks-broker';
 
 export default {
   App,
-  Logger,
-  Redis,
-  OidcClient,
-  Session,
   IdentityProviderAdapterEnvConfig,
+  Logger,
+  OidcClient,
+  Redis,
+  Session,
+  TracksBroker,
 } as UserDashboardConfig;

@@ -1,0 +1,18 @@
+/**
+ * Tailles exprimées en pourcentage
+ *
+ * Usage
+ * .w33 -> width 33%
+ *
+ */
+@mixin width ($value) {
+  @include rem(width, $value);
+}
+
+@each $size in $WIDTHS {
+  $percentValue: ($size * 1%);
+
+  .w#{$size} {
+    @include width($percentValue);
+  }
+}

@@ -2,7 +2,10 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
+  Render,
+  Req,
   Res,
   UsePipes,
   ValidationPipe,
@@ -10,7 +13,9 @@ import {
 
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
+import { OidcSession } from '@fc/oidc';
 import {
+  GetOidcCallback,
   OidcClientRoutes,
   OidcClientService,
   OidcClientSession,
@@ -23,8 +28,13 @@ import {
   SessionInvalidCsrfSelectIdpException,
 } from '@fc/session';
 
+import { AccessTokenParamsDTO } from '../dto';
+import { UserDashboardBackRoutes, UserDashboardFrontRoutes } from '../enums';
+import { UserDashboardTokenRevocationException } from '../exceptions';
+
 @Controller()
 export class OidcClientController {
+  // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
@@ -54,23 +64,14 @@ export class OidcClientController {
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
     const {
-      scope,
-      claims,
-      providerUid,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
+      claims,
       csrfToken,
+      providerUid,
+      scope,
     } = body;
-
-    let serviceProviderId: string | null;
-    try {
-      const { spId } = await sessionOidc.get();
-      serviceProviderId = spId;
-    } catch (error) {
-      this.logger.trace({ error }, LoggerLevelNames.WARN);
-      serviceProviderId = null;
-    }
 
     // -- control if the CSRF provided is the same as the one previously saved in session.
     try {
@@ -80,46 +81,39 @@ export class OidcClientController {
       throw new SessionInvalidCsrfSelectIdpException(error);
     }
 
-    if (serviceProviderId) {
-      await this.oidcClient.utils.checkIdpBlacklisted(
-        serviceProviderId,
-        providerUid,
-      );
-    }
-
     // TODO END
-    const { state, nonce } =
+    const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
     const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl({
-      state,
-      scope,
-      providerUid,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
-      nonce,
       claims,
+      nonce,
+      providerUid,
+      scope,
+      state,
     });
 
     const { name: idpName } = await this.identityProvider.getById(providerUid);
     const session: OidcClientSession = {
       idpId: providerUid,
       idpName,
-      idpState: state,
       idpNonce: nonce,
+      idpState: state,
     };
 
     await sessionOidc.set(session);
 
     this.logger.trace({
-      route: OidcClientRoutes.REDIRECT_TO_IDP,
+      body,
       method: 'POST',
       name: 'OidcClientRoutes.REDIRECT_TO_IDP',
-      body,
-      res,
-      session,
       redirect: authorizationUrl,
+      res,
+      route: OidcClientRoutes.REDIRECT_TO_IDP,
+      session,
     });
 
     res.redirect(authorizationUrl);
@@ -134,10 +128,123 @@ export class OidcClientController {
   @Get(OidcClientRoutes.WELL_KNOWN_KEYS)
   async getWellKnownKeys() {
     this.logger.trace({
-      route: OidcClientRoutes.WELL_KNOWN_KEYS,
       method: 'GET',
       name: 'OidcClientRoutes.WELL_KNOWN_KEYS',
+      route: OidcClientRoutes.WELL_KNOWN_KEYS,
     });
     return this.oidcClient.utils.wellKnownKeys();
+  }
+
+  @Get(UserDashboardBackRoutes.LOGOUT)
+  async logout(@Res() res) {
+    res.redirect(UserDashboardBackRoutes.LOGOUT_CALLBACK);
+  }
+
+  @Get(UserDashboardBackRoutes.LOGOUT_CALLBACK)
+  async logoutCallback(@Res() res) {
+    /**
+     * @TODO #192 ETQ Dev, je complète la session pendant la cinématique des mocks
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/192
+     * */
+    return res.redirect('/');
+  }
+
+  @Post(UserDashboardBackRoutes.REVOCATION)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Render('success-revoke-token')
+  async revocationToken(@Res() res, @Body() body: AccessTokenParamsDTO) {
+    try {
+      /**
+       * @TODO #251 ETQ Dev, j'utilise une configuration pour savoir si j'utilise FC, AC, EIDAS, et avoir les valeurs de scope et acr en config et non en dur.
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/251
+       */
+      const providerUid = 'core-fcp-high';
+      const { accessToken } = body;
+      await this.oidcClient.utils.revokeToken(accessToken, providerUid);
+
+      return {
+        accessToken,
+        titleFront: 'Mock Service Provider - Token révoqué',
+      };
+    } catch (e) {
+      /**
+       * @params e.error : error return by panva lib
+       * @params e.error_description : error description return by panva lib
+       *
+       * If exception is not return by panva, we throw our custom class exception
+       * when we try to revoke the token : 'MockServiceProviderTokenRevocationException'
+       */
+      if (e.error && e.error_description) {
+        return res.redirect(
+          `/error?error=${e.error}&error_description=${e.error_description}`,
+        );
+      }
+      throw new UserDashboardTokenRevocationException();
+    }
+  }
+
+  /**
+   * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
+   */
+  @Get(OidcClientRoutes.OIDC_CALLBACK)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  async getOidcCallback(
+    @Req() req,
+    @Res() res,
+    @Param() params: GetOidcCallback,
+    /**
+     * @todo Adaptation for now, correspond to the oidc-provider side.
+     * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
+     * without a direct dependance like now.
+     * @author Hugues
+     * @date 2021-04-16
+     * @ticket FC-xxx
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+  ) {
+    const session = await sessionOidc.get();
+    const { providerUid } = params;
+    const { idpNonce, idpState } = session;
+
+    const tokenParams = {
+      idpNonce,
+      idpState,
+      providerUid,
+    };
+    const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
+      tokenParams,
+      req,
+    );
+
+    const userInfoParams = {
+      accessToken,
+      providerUid,
+    };
+
+    const identity = await this.oidcClient.getUserInfosFromProvider(
+      userInfoParams,
+      req,
+    );
+
+    /**
+     *  @todo
+     *    author: Arnaud
+     *    date: 19/03/2020
+     *    ticket: FC-244 (identity, DTO, Mock, FS)
+     *
+     *    action: Check the data returns from FC
+     */
+
+    const identityExchange: OidcSession = {
+      idpAccessToken: accessToken,
+      idpAcr: acr,
+      idpIdentity: identity,
+    };
+
+    await sessionOidc.set({ ...identityExchange });
+
+    res.redirect(UserDashboardFrontRoutes.MES_TRACES);
   }
 }

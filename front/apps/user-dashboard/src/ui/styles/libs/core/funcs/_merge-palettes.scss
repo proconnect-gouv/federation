@@ -1,0 +1,7 @@
+@function merge-palettes($palettes...) {
+  $merged: map-merge((), $PALETTE);
+  @each $palette in $palettes {
+    $merged: map-merge($merged, $palette);
+  }
+  @return $merged;
+}

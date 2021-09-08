@@ -228,8 +228,10 @@ $RECYCLE.BIN/
 
 ## FranceConnect specific
 
-build/
-.env.development
 cypress/snapshots
 cypress/screenshots
-public/mock-api-data.json
+apps/**/build
+apps/**/public/*.mock.json
+
+# ignore all apps/yarn.lock
+apps/**/*.yarn.lock

@@ -1,19 +1,88 @@
-# USER DASHBOARD
+# FC/USER-DASHBOARD
 
-- [Librairie d'icones (Remix Icons)](https://react-icons.github.io/react-icons/icons?name=ri)
+## Developemment Docker
 
-#### Development (local)
+```bash
+docker-stack-legacy up ud
+docker-stack-legacy dep-all
+docker-stack-legacy start-all
+# https://ud.docker.dev-franceconnect.fr/
+```
 
-**required**
+#### Ajouter des Fixtures dans la base ES
+
+```sh
+# connection au container
+docker exec -it fc_csmr-tracks_1 /bin/bash
+cd apps/csmr-tracks/fixtures
+
+# check si les variables globales existent
+echo $Elasticsearch_TRACKS_INDEX
+
+# lancer le script
+node --trace-warnings ./scripts/populate-account-traces.script.js
+```
+
+#### Se connecter avec l'user
+
+> Utilisateur : `Angela Louise Dubois`<br>
+> Login Utilisateur : `test`<br>
+> Mot de Passe : `123`<br>
+
+## Developpement Local
+
+#### Lancer l'application
+
+> Uniquement pour des besoins UI/UX
+
+Ajouter un fichier `.env` à la racine du dossier `user-dashboard`
 
 ```bash
 # fc/front/apps/user-dashboard/.env
-API_PROXY_HOST=http://ud-back:3000
-API_PROXY_FOR_PATH=/.well-known
+API_PROXY_HOST=http://www.acme.org
+API_PROXY_FOR_PATH=/acme
+REACT_APP_MOCK_USER_INFOS=/user.mock.json
+REACT_APP_MOCK_TRACES=/traces.mock.json
 ```
 
-**Démarrer en mode Hot-Reload**
+Ajouter le fichier `user.mock.json` dans le dossier `user-dashboard/public`
+
+```json
+{
+  "userInfos": {
+    "givenName": "Elmer",
+    "familyName": "Fudd"
+  }
+}
+```
+
+Ajouter le fichier `traces.mock.json` dans le dossier `user-dashboard/public`
+
+```json
+[
+  {
+    "accountId": "any-unique-identifier-string-(n)",
+    "city": "Acme City",
+    "country": "Acme Country",
+    "date": "2011-10-05T14:48:00.000Z",
+    "event": "FC_REQUESTED_IDP_USERINFO",
+    "spAcr": "eidas1",
+    "spId": "00-(n)",
+    "spName": "Acme Service Provider",
+    "trackId": "trackId-(n)"
+  }
+]
+```
+
+Lancer la commande locale
 
 ```bash
+# fc/front/apps/user-dashboard
 yarn start
+```
+
+Naviguer sur
+
+```bash
+http://localhost:3000/mes-connexions
 ```
