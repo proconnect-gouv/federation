@@ -61,7 +61,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     this.logger.debug('getConsent service: ##### core-fcp-default-verify');
 
     // Grab informations on interaction and identity
-    const { idpId, idpIdentity, idpAcr, spId, spAcr } = await sessionOidc.get();
+    const { idpAcr, idpId, idpIdentity, spAcr, spId } = await sessionOidc.get();
 
     /**
      * @todo #410 - le DTO est permissif et devrait forcer les données
@@ -98,10 +98,10 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     // Save interaction to database & get sp's sub to avoid double computation
     await this.core.computeInteraction(
       {
-        spId,
         entityId,
-        subSp,
         hashSp,
+        spId,
+        subSp,
       },
       {
         idpId,

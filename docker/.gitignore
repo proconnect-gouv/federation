@@ -7,3 +7,6 @@ volumes/log/eidas/eidas-fr/*
 !volumes/log/eidas/eidas-fr/.gitkeep
 volumes/log/eidas/eidas-mock/*
 !volumes/log/eidas/eidas-mock/.gitkeep
+
+!compose/**/.env
+!compose/**/*.env

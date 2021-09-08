@@ -1,11 +1,13 @@
-import './styles/index.scss';
-import './styles/libs/index.scss';
+import './ui/styles/index.scss';
 
+import { Settings } from 'luxon';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 
-import ApplicationLayout from './application-layout';
+import ApplicationLayout from './ui/application-layout';
+
+Settings.defaultLocale = 'fr';
 
 ReactDOM.render(
   <React.StrictMode>
