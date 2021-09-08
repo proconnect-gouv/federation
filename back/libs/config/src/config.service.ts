@@ -1,11 +1,7 @@
 import { plainToClass } from 'class-transformer';
-import {
-  isObject,
-  isString,
-  validateSync,
-  ValidatorOptions,
-} from 'class-validator';
+import { isString, validateSync, ValidatorOptions } from 'class-validator';
 import * as deepFreeze from 'deep-freeze';
+import * as lodash from 'lodash';
 
 import { Injectable } from '@nestjs/common';
 
@@ -13,10 +9,10 @@ import { UnknownConfigurationNameError } from './errors';
 import { IConfigOptions } from './interfaces';
 
 export const validationOptions: ValidatorOptions = {
+  forbidNonWhitelisted: true,
+  forbidUnknownValues: true,
   skipMissingProperties: false,
   whitelist: true,
-  forbidUnknownValues: true,
-  forbidNonWhitelisted: true,
 };
 
 @Injectable()
@@ -48,20 +44,12 @@ export class ConfigService {
    * @param paths
    */
   get<T extends any>(paths): T {
-    if (!isString(paths) || paths.length === 0) {
-      throw new UnknownConfigurationNameError(
-        `Asked unknown configuration: <${paths}>`,
-      );
+    const isValidPaths = isString(paths) && paths.length > 0;
+    const config = lodash.get(this.configuration, paths, null);
+    if (!isValidPaths || !config) {
+      const msg = `Asked unknown configuration: <${paths}>`;
+      throw new UnknownConfigurationNameError(msg);
     }
-
-    return paths.split('.').reduce((current, next) => {
-      if (isObject(current) && next in current) {
-        return current[next];
-      }
-
-      throw new UnknownConfigurationNameError(
-        `Asked unknown configuration: <${next}>`,
-      );
-    }, this.configuration);
+    return config;
   }
 }

@@ -8,6 +8,7 @@ import { AppConfig } from '@fc/app';
 import { IdentityProviderAdapterEnvConfig } from '@fc/identity-provider-adapter-env';
 import { LoggerConfig } from '@fc/logger';
 import { OidcClientConfig } from '@fc/oidc-client';
+import { RabbitmqConfig } from '@fc/rabbitmq';
 import { RedisConfig } from '@fc/redis';
 import { SessionConfig } from '@fc/session';
 
@@ -41,4 +42,9 @@ export class UserDashboardConfig {
   @ValidateNested()
   @Type(() => IdentityProviderAdapterEnvConfig)
   readonly IdentityProviderAdapterEnvConfig: IdentityProviderAdapterEnvConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => RabbitmqConfig)
+  readonly TracksBroker: RabbitmqConfig;
 }

@@ -1,15 +1,26 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { Account, AccountNotFoundException, AccountService } from '@fc/account';
-import { CryptographyFcpService } from '@fc/cryptography-fcp';
+import { CryptographyFcpService, IPivotIdentity } from '@fc/cryptography-fcp';
 import { LoggerService } from '@fc/logger';
-import { IOidcIdentity } from '@fc/oidc';
 
 import { CsrmTracksNoTracksException } from '../exceptions';
 import { CsmrTracksService } from './csmr-tracks.service';
 import { CsmrTracksElasticsearchService } from './csmr-tracks-elasticsearch.service';
 
-const identityMock = {} as IOidcIdentity;
+const identityMock = {
+  // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  given_name: 'Jean Paul Henri',
+  // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  family_name: 'Dupont',
+  gender: 'male',
+  birthdate: '1970-01-01',
+  birthplace: '95277',
+  birthcountry: '99100',
+} as IPivotIdentity;
+
 const identityHashMock = 'identityHashMockValue';
 const accountMock: Account = {
   id: '42',

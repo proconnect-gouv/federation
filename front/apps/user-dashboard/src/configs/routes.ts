@@ -1,7 +1,7 @@
-import ErrorPage from '../pages/error.page';
-import Homepage from '../pages/home.page';
-import NotFoundPage from '../pages/not-found.page';
-import TracesPage from '../pages/traces.page';
+import NotFoundPage from '../ui/pages/404.page';
+import ErrorPage from '../ui/pages/error.page';
+import Homepage from '../ui/pages/home.page';
+import TracesPage from '../ui/pages/traces/page';
 
 const routes = [
   {
@@ -13,7 +13,7 @@ const routes = [
   {
     component: TracesPage,
     exact: true,
-    path: '/mes-connexions',
+    path: '/history',
     title: 'User Dashboard - Traces',
   },
   {

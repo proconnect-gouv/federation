@@ -17,7 +17,6 @@ describe('ConfigService', () => {
   let service: ConfigService;
   const options = {
     config: {
-      foo: 42,
       I: {
         swear: {
           my: {
@@ -29,6 +28,7 @@ describe('ConfigService', () => {
           },
         },
       },
+      foo: 42,
     },
     schema: Schema,
   };
@@ -88,6 +88,7 @@ describe('ConfigService', () => {
       // Then
       expect(config).toBe(options.config.foo);
     });
+
     it('should return asked part of config based on dot paths', () => {
       //Given
       const paths = 'I.swear.my.intentions.are.bad';
@@ -96,14 +97,16 @@ describe('ConfigService', () => {
       const config = service.get(paths);
 
       // Then
-      expect(config).toBe(options.config.I.swear.my.intentions.are.bad);
+      expect(config).toBe('Harry');
     });
+
     it('should throw if path is not part of config', () => {
       // Given
       const part = 'bar';
       // Then
       expect(() => service.get(part)).toThrow(UnknownConfigurationNameError);
     });
+
     it('should throw if path is not a string', () => {
       // Given
       const part = 42;
@@ -112,6 +115,7 @@ describe('ConfigService', () => {
         UnknownConfigurationNameError,
       );
     });
+
     it('should throw if path is undefined', () => {
       // Given
       const part = undefined;
@@ -125,6 +129,7 @@ describe('ConfigService', () => {
       // Then
       expect(() => service.get(part)).toThrow(UnknownConfigurationNameError);
     });
+
     it("should throw if paths don't exist in config", () => {
       // Given
       const paths = 'I.swear.my.intentions.are.bad.harry.potter';
