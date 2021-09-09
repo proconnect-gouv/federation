@@ -7,5 +7,5 @@ import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-
 const env = new ConfigParser(process.env, 'AdapterMongo');
 
 export default {
-  clientSecretEcKey: env.string('CLIENT_SECRET_CIPHER_PASS'),
+  clientSecretEncryptKey: env.string('CLIENT_SECRET_CIPHER_PASS'),
 } as ServiceProviderAdapterMongoConfig;

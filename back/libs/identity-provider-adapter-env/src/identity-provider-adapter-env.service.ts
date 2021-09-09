@@ -189,12 +189,12 @@ export class IdentityProviderAdapterEnvService
    * @param clientSecret
    */
   private decryptClientSecret(clientSecret: string): string {
-    const { clientSecretEcKey } =
+    const { clientSecretEncryptKey } =
       this.config.get<IdentityProviderAdapterEnvConfig>(
         'IdentityProviderAdapterEnvConfig',
       );
     return this.cryptography.decrypt(
-      clientSecretEcKey,
+      clientSecretEncryptKey,
       Buffer.from(clientSecret, 'base64'),
     );
   }

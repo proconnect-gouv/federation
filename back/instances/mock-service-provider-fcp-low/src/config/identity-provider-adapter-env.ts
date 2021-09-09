@@ -63,5 +63,5 @@ export default {
       'REVOCATION_ENDPOINT_AUTH_METHOD',
     ),
   },
-  clientSecretEcKey: env.string('CLIENT_SECRET_CIPHER_PASS'),
+  clientSecretEncryptKey: env.string('CLIENT_SECRET_CIPHER_PASS'),
 } as IdentityProviderAdapterEnvConfig;
