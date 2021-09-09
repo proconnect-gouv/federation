@@ -15,7 +15,7 @@ module.exports = {
       rules: {},
     },
     {
-      files: ['**/*.spec.ts', '**/cypress/*'],
+      files: ['**/*.spec.ts', '**/*.spec.js'],
       rules: {
         'max-nested-callbacks': 'off',
       },
