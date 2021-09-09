@@ -26,5 +26,5 @@ export class IdentityProviderAdapterEnvConfig {
   readonly discoveryUrl: string;
 
   @IsString()
-  readonly clientSecretEcKey: string;
+  readonly clientSecretEncryptKey: string;
 }
