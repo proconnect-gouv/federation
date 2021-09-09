@@ -51,7 +51,7 @@ describe('CryptographyFcaService', () => {
 
     configMock.get.mockImplementation(() => ({
       // Cryptography config
-      clientSecretEcKey: mockEncryptKey,
+      clientSecretEncryptKey: mockEncryptKey,
       sessionIdLength: 42,
       subSecretKey: cryptographyKeyMock,
       hashSecretKey: cryptoHashKeyMock,
