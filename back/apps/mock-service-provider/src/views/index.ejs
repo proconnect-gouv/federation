@@ -8,7 +8,7 @@
     <%- include('includes/menu') %>
     <section class="welcome">
       <div class="container text-center">
-        <h1>Bienvenue sur le démonstrateur de fournisseur de service</h1>
+        <h1>Bienvenue sur le démonstrateur de fournisseur de service FCP</h1>
       </div>
     </section>
 
@@ -65,20 +65,13 @@
           <input type="text" name="acr_values" value="" />
           <input type="text" name="claims" value="" />
           <input type="text" name="providerUid" value="<%=locals.params.uid%>" />
-
           <div class="btn no-pad">
             <button
               id="get-authorize"
               type="submit"
               class="btn no-pad hidden-btn"
               role="button"
-            >
-            <img
-                src="/img/FCboutons-10.svg"
-                alt="Connexion FC"
-                class="d-inline-block align-top"
-              />
-            </button>
+            ></button>
           </div>
         </form>
       </section>
@@ -94,19 +87,14 @@
           <input type="text" name="acr_values" value="" />
           <input type="text" name="claims" value="" />
           <input type="text" name="scope" value="" />
-
-          <button
-            id="post-authorize"
-            type="submit"
-            class="btn no-pad hidden-btn"
-            role="button"
-          >
-            <img
-              src="/img/FCboutons-10.svg"
-              alt="Connexion FC"
-              class="d-inline-block align-top"
-            />
-
+          <div class="btn no-pad">
+            <button
+              id="post-authorize"
+              type="submit"
+              class="btn no-pad hidden-btn"
+              role="button"
+            ></button>
+        </div>
         </form>
       </section>
     </div>

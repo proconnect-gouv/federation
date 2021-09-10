@@ -17,7 +17,7 @@ export default {
     keys: [JSON.parse(process.env.JWKS)],
   },
   stateLength: 32,
-  // Toogle Financial Grade API
+  // Toggle Financial Grade API
 
   /**
    * @TODO migrate User Dashboard to ConfigParser
