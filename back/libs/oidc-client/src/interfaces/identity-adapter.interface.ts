@@ -1,7 +1,10 @@
 export type TokenParams = {
-  providerUid: string;
-  idpState: string;
-  idpNonce: string;
+  state: string;
+  nonce: string;
+};
+
+export type ExtraTokenParams = {
+  [key: string]: string;
 };
 
 export type TokenResults = {

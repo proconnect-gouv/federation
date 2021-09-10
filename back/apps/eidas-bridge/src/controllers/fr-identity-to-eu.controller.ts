@@ -163,11 +163,11 @@ export class FrIdentityToEuController {
         const { idpNonce, idpState } = await sessionOidc.get();
 
         const tokenParams = {
-          idpNonce,
-          idpState,
-          providerUid,
+          state: idpState,
+          nonce: idpNonce,
         };
         const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
+          providerUid,
           tokenParams,
           req,
         );

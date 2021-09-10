@@ -395,13 +395,12 @@ export class CoreFcpController {
     await this.oidcClient.utils.checkIdpBlacklisted(spId, providerUid);
 
     const tokenParams = {
-      idpNonce,
-      idpState,
-      providerUid,
+      state: idpState,
+      nonce: idpNonce,
     };
 
     const { accessToken, acr, amr } =
-      await this.oidcClient.getTokenFromProvider(tokenParams, req);
+      await this.oidcClient.getTokenFromProvider(providerUid, tokenParams, req);
 
     const userInfoParams = {
       accessToken,

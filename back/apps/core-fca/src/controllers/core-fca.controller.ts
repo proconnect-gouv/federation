@@ -296,14 +296,21 @@ export class CoreFcaController {
      *  @ticket FC-244 (identity, DTO, Factorisation)
      */
     const tokenParams = {
-      providerUid,
-      idpState,
-      idpNonce,
+      state: idpState,
+      nonce: idpNonce,
+    };
+
+    const extraParams = {
+      // OIDC inspired variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      sp_id: spId,
     };
 
     const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
+      providerUid,
       tokenParams,
       req,
+      extraParams,
     );
 
     const userInfoParams = {

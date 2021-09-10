@@ -7,7 +7,7 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
-import { OidcClientService } from '@fc/oidc-client';
+import { OidcClientService, TokenParams } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
@@ -702,10 +702,9 @@ describe('CoreFcpController', () => {
     const accessTokenMock = Symbol('accesToken');
     const amrMock = Symbol('amr');
 
-    const tokenParamsMock = {
-      providerUid,
-      idpState: idpStateMock,
-      idpNonce: idpNonceMock,
+    const tokenParamsMock: TokenParams = {
+      state: idpStateMock,
+      nonce: idpNonceMock,
     };
 
     const userInfoParamsMock = {
@@ -762,6 +761,7 @@ describe('CoreFcpController', () => {
         1,
       );
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledWith(
+        providerUid,
         tokenParamsMock,
         req,
       );
