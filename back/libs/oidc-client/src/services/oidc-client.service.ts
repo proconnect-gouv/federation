@@ -11,7 +11,12 @@ import { IEventContext, TrackingService } from '@fc/tracking';
 import { MinIdentityDto, TokenResultDto } from '../dto';
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from '../events';
 import { OidcClientUserinfosFailedException } from '../exceptions';
-import { TokenParams, TokenResults, UserInfosParams } from '../interfaces';
+import {
+  ExtraTokenParams,
+  TokenParams,
+  TokenResults,
+  UserInfosParams,
+} from '../interfaces';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
 
 const DTO_OPTIONS: ValidatorOptions = {
@@ -30,8 +35,10 @@ export class OidcClientService {
   }
 
   async getTokenFromProvider(
-    { providerUid, idpState, idpNonce }: TokenParams,
+    providerUid: string,
+    params: TokenParams,
     context: IEventContext,
+    extraParams?: ExtraTokenParams,
   ): Promise<TokenResults> {
     /**
      * @todo #434 refacto sur getTokenSet,
@@ -44,8 +51,8 @@ export class OidcClientService {
     const tokenSet: TokenSet = await this.utils.getTokenSet(
       context,
       providerUid,
-      idpState,
-      idpNonce,
+      params,
+      extraParams,
     );
 
     this.tracking.track(OidcClientTokenEvent, context);
@@ -80,8 +87,7 @@ export class OidcClientService {
       search: {
         context,
         providerUid,
-        idpState,
-        idpNonce,
+        params,
         acr,
         amr,
         accessToken,

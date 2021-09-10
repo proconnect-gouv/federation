@@ -8,7 +8,7 @@ import { EidasAttributes } from '@fc/eidas';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { LoggerService } from '@fc/logger';
 import { AcrValues } from '@fc/oidc';
-import { OidcClientService } from '@fc/oidc-client';
+import { OidcClientService, TokenParams } from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
 
 import { EidasBridgeIdentityDto } from '../dto';
@@ -416,10 +416,10 @@ describe('FrIdentityToEuController', () => {
       const query = {};
       const requestedAttributesMock = [EidasAttributes.PERSON_IDENTIFIER];
 
-      const tokenParamsMock = {
-        idpNonce: idpNonceMock,
-        idpState: idpStateMock,
-        providerUid: providerUidMock,
+      const providerUid = providerUidMock;
+      const tokenParamsMock: TokenParams = {
+        nonce: idpNonceMock,
+        state: idpStateMock,
       };
 
       let accessTokenMock;
@@ -475,6 +475,7 @@ describe('FrIdentityToEuController', () => {
         ).toHaveBeenCalledTimes(1);
 
         expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledWith(
+          providerUid,
           tokenParamsMock,
           req,
         );

@@ -599,9 +599,8 @@ describe('MockServiceProviderController', () => {
       given_name: 'given_name',
     };
     const tokenParamsMock = {
-      providerUid,
-      idpState: idpStateMock,
-      idpNonce: idpNonceMock,
+      state: idpStateMock,
+      nonce: idpNonceMock,
     };
 
     const userInfoParamsMock = {
@@ -725,6 +724,7 @@ describe('MockServiceProviderController', () => {
         1,
       );
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledWith(
+        providerUid,
         tokenParamsMock,
         req,
       );
