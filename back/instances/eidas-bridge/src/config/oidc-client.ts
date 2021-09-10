@@ -20,6 +20,6 @@ export default {
   stateLength: 32,
   // Do not ask for scope since they are built at run time.
 
-  // Toogle Financial Grade API
+  // Toggle Financial Grade API
   fapi: env.boolean('FAPI'),
 } as OidcClientConfig;

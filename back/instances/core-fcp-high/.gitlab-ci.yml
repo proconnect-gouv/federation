@@ -31,12 +31,12 @@ core-fcp-high:
       fip1-high fip2-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
       core-fcp-high
     # ## -- Build like for prod
-    #- docker-stack exec fsp1-high yarn build mock-service-provider-high # Will build for fsp2-high as well
+    #- docker-stack exec fsp1-high yarn build mock-service-provider-fcp-high # Will build for fsp2-high as well
     #- docker-stack exec core-fcp-high yarn build core-fcp-high
     #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
     # ## -- Launch like prod
-    #- docker-stack exec fsp1-high yarn start:prod:mock-service-provider-high &
-    #- docker-stack exec fsp2-high yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsp1-high yarn start:prod:mock-service-provider-fcp-high &
+    #- docker-stack exec fsp2-high yarn start:prod:mock-service-provider-fcp-high &
     #- docker-stack exec core-fcp-high yarn start:prod:core-fcp-high &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress

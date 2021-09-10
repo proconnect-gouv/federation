@@ -32,12 +32,12 @@ quality-fcp-high-docker:
     - docker-stack fixtures-v2
     - docker-stack start csmr-hsm rnipp fsp1-high fsp2-high fip1-high core-fcp-high exploitation-high
     # ## -- Build like for prod
-    #- docker-stack exec fsp1-high yarn build mock-service-provider-high # Will build for fsp2-high as well
+    #- docker-stack exec fsp1-high yarn build mock-service-provider-fcp-high # Will build for fsp2-high as well
     #- docker-stack exec core-fcp-high yarn build core-fcp-high
     #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
     # ## -- Launch like prod
-    #- docker-stack exec fsp1-high yarn start:prod:mock-service-provider-high &
-    #- docker-stack exec fsp2-high yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsp1-high yarn start:prod:mock-service-provider-fcp-high &
+    #- docker-stack exec fsp2-high yarn start:prod:mock-service-provider-fcp-high &
     #- docker-stack exec core-fcp-high yarn start:prod:core-fcp-high &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress

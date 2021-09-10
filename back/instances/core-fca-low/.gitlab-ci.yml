@@ -32,12 +32,12 @@ core-fca-low:
     - wait
     - docker-stack start core-fca-low fca-low-front
     # ## -- Build like for prod
-    #- docker-stack exec fsa1-low yarn build mock-service-provider-high # Will build for fsa2-low as well
+    #- docker-stack exec fsa1-low yarn build mock-service-provider-fcp-high # Will build for fsa2-low as well
     #- docker-stack exec fca yarn build core-fca-low
     #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
     # ## -- Launch like prod
-    #- docker-stack exec fsa1-low yarn start:prod:mock-service-provider-high &
-    #- docker-stack exec fsa2-low yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsa1-low yarn start:prod:mock-service-provider-fcp-high &
+    #- docker-stack exec fsa2-low yarn start:prod:mock-service-provider-fcp-high &
     #- docker-stack exec fca yarn start:prod:core-fca-low &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress

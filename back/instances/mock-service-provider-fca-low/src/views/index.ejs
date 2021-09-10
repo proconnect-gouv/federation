@@ -8,7 +8,7 @@
     <%- include('includes/menu') %>
     <section class="welcome">
       <div class="container text-center">
-        <h1>Bienvenue sur le démonstrateur de fournisseur de service</h1>
+        <h1>Bienvenue sur le démonstrateur de fournisseur de service FCA</h1>
       </div>
     </section>
 
@@ -21,24 +21,17 @@
       <form id="scopes">
         <h2>Scopes</h2>
         <% locals.params.scope.split(' ').forEach(elem => { %>
-          <div class="scope-input-wrapper">
-            <input
-              id="scope_<%=elem%>"
-              type="checkbox"
-              name="selected-scope"
-              value="<%=elem%>"
-              checked
-              onChange="updateScope()"
-              <%= (elem === 'openid' ? 'disabled' : '') %>
-            />
-            <label for="scope_<%=elem%>"><%=elem%></label>
-          </div>
+        <div class="scope-input-wrapper">
+          <input id="scope_<%=elem%>" type="checkbox" name="selected-scope"
+          value="<%=elem%>" checked onChange="updateScope()" <%= (elem === 'openid' ? 'disabled' : '') %> />
+          <label for="scope_<%=elem%>"><%=elem%></label>
+        </div>
         <% }) %>
 
         <h2>ACR</h2>
         <select name="acr" id="acrSelector" onChange="updateAcr()">
           <% ['eidas1', 'eidas2', 'eidas3'].forEach(acr => { %>
-            <option value="<%=acr%>"><%=acr%></option>
+          <option value="<%=acr%>"><%=acr%></option>
           <% }) %>
         </select>
       </form>
@@ -48,21 +41,18 @@
         <form action="/redirect-to-idp" method="POST">
           <input type="text" name="scope" value="" />
           <input type="text" name="acr_values" value="" />
-          <input type="text" name="providerUid" value="<%=locals.params.uid%>" />
-
+          <input
+            type="text"
+            name="providerUid"
+            value="<%=locals.params.uid%>"
+          />
           <div class="btn no-pad">
             <button
               id="get-authorize"
               type="submit"
               class="btn no-pad hidden-btn"
               role="button"
-            >
-            <img
-                src="/img/ac-btn@3x.svg"
-                alt="Connexion AC"
-                class="d-inline-block align-top"
-              />
-            </button>
+            ></button>
           </div>
         </form>
       </section>
@@ -70,26 +60,29 @@
       <section class="connect bg-light">
         <h2>Connectez-vous via AgentConnect (POST sur authorize)</h2>
         <form action="<%=locals.params.authorization_endpoint;%>" method="POST">
-          <input type="hidden" name="client_id" value="<%=locals.params.client_id;%>" />
+          <input
+            type="hidden"
+            name="client_id"
+            value="<%=locals.params.client_id;%>"
+          />
           <input type="hidden" name="response_type" value="code" />
-          <input type="hidden" name="redirect_uri" value="<%=locals.params.redirect_uri;%>" />
+          <input
+            type="hidden"
+            name="redirect_uri"
+            value="<%=locals.params.redirect_uri;%>"
+          />
           <input type="hidden" name="state" value="<%=locals.params.state;%>" />
           <input type="hidden" name="nonce" value="<%=locals.params.nonce;%>" />
           <input type="text" name="acr_values" value="" />
           <input type="text" name="scope" value="" />
-
-          <button
-            id="post-authorize"
-            type="submit"
-            class="btn no-pad hidden-btn"
-            role="button"
-          >
-            <img
-              src="/img/ac-btn@3x.svg"
-              alt="Connexion AC"
-              class="d-inline-block align-top"
-            />
-
+          <div class="btn no-pad">
+            <button
+              id="post-authorize"
+              type="submit"
+              class="btn no-pad hidden-btn"
+              role="button"
+            ></button>
+          </div>
         </form>
       </section>
     </div>
@@ -114,9 +107,11 @@
 
       function updateAcr() {
         const acr = document.getElementById('acrSelector').value;
-        document.querySelectorAll('input[name="acr_values"]').forEach((elem) => {
-          elem.value = acr;
-        });
+        document
+          .querySelectorAll('input[name="acr_values"]')
+          .forEach((elem) => {
+            elem.value = acr;
+          });
       }
 
       updateAcr();

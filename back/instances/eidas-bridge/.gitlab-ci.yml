@@ -27,12 +27,12 @@ eidas-bridge:
     - docker-stack dep core-fcp-high # eidas-bridge fsp1-high are included in core-fcp-high (monorepo)
     - docker-stack start core-fcp-high eidas-bridge csmr-hsm rnipp fsp1-high fsp2-high fsp3-high fip1-high fip2-high fip6-high fip7-high
     # ## -- Build like for prod
-    #- docker-stack exec fsp1-high yarn build mock-service-provider-high # Will build for fsp2-high as well
+    #- docker-stack exec fsp1-high yarn build mock-service-provider-fcp-high # Will build for fsp2-high as well
     #- docker-stack exec core-fcp-high yarn build eidas-bridge
     #- docker-stack exec csmr-hsm yarn build csmr-hsm-high
     # ## -- Launch like prod
-    #- docker-stack exec fsp1-high yarn start:prod:mock-service-provider-high &
-    #- docker-stack exec fsp2-high yarn start:prod:mock-service-provider-high &
+    #- docker-stack exec fsp1-high yarn start:prod:mock-service-provider-fcp-high &
+    #- docker-stack exec fsp2-high yarn start:prod:mock-service-provider-fcp-high &
     #- docker-stack exec core-fcp-high yarn start:prod:eidas-bridge &
     #- docker-stack exec csmr-hsm yarn start:prod:csmr-hsm-high &
     # Starting Cypress
