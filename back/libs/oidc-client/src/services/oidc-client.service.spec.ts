@@ -9,7 +9,7 @@ import { IEventContext, TrackingService } from '@fc/tracking';
 
 import { OidcClientTokenEvent, OidcClientUserinfoEvent } from '../events';
 import { OidcClientUserinfosFailedException } from '../exceptions';
-import { TokenParams, UserInfosParams } from '../interfaces';
+import { ExtraTokenParams, TokenParams, UserInfosParams } from '../interfaces';
 import { OidcClientService } from './oidc-client.service';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
 
@@ -69,9 +69,12 @@ describe('OidcClientService', () => {
   const errorMock = new Error('Unknown Error');
 
   const tokenParamsMock: TokenParams = {
-    providerUid: providerUidMock,
-    idpState: idpStateMock,
-    idpNonce: idpNonceMock,
+    state: idpStateMock,
+    nonce: idpNonceMock,
+  };
+
+  const extraParamsMock: ExtraTokenParams = {
+    foo: 'bar',
   };
 
   const identityMock: PartialExcept<IOidcIdentity, 'sub'> = {
@@ -134,14 +137,19 @@ describe('OidcClientService', () => {
 
     it('should call getTokenSet with token params', async () => {
       // action
-      await service.getTokenFromProvider(tokenParamsMock, contextMock);
+      await service.getTokenFromProvider(
+        providerUidMock,
+        tokenParamsMock,
+        contextMock,
+        extraParamsMock,
+      );
       // assert
       expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
       expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledWith(
         contextMock,
         providerUidMock,
-        idpStateMock,
-        idpNonceMock,
+        tokenParamsMock,
+        extraParamsMock,
       );
     });
 
@@ -155,6 +163,7 @@ describe('OidcClientService', () => {
       };
       // action
       const result = await service.getTokenFromProvider(
+        providerUidMock,
         tokenParamsMock,
         contextMock,
       );
@@ -171,7 +180,12 @@ describe('OidcClientService', () => {
       validateDtoMock.mockReset().mockReturnValueOnce([errorMock]);
       // action
       await expect(
-        () => service.getTokenFromProvider(tokenParamsMock, contextMock),
+        () =>
+          service.getTokenFromProvider(
+            providerUidMock,
+            tokenParamsMock,
+            contextMock,
+          ),
         // assert
       ).rejects.toThrow(
         '"{"providerUid":"providerUidMockValue","idpState":"idpStateMockValue","idpNonce":"idpNonceMockValue"}" input was wrong from the result at DTO validation: [{}]',
@@ -189,7 +203,12 @@ describe('OidcClientService', () => {
 
       // action
       await expect(
-        () => service.getTokenFromProvider(tokenParamsMock, contextMock),
+        () =>
+          service.getTokenFromProvider(
+            providerUidMock,
+            tokenParamsMock,
+            contextMock,
+          ),
         // assert
       ).rejects.toThrow(expectedError);
       expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
@@ -197,7 +216,11 @@ describe('OidcClientService', () => {
 
     it('should track the token event', async () => {
       // action
-      await service.getTokenFromProvider(tokenParamsMock, contextMock);
+      await service.getTokenFromProvider(
+        providerUidMock,
+        tokenParamsMock,
+        contextMock,
+      );
 
       // assert
       expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
@@ -210,6 +233,7 @@ describe('OidcClientService', () => {
     it('should get claims from token', async () => {
       // action
       const { acr } = await service.getTokenFromProvider(
+        providerUidMock,
         tokenParamsMock,
         contextMock,
       );

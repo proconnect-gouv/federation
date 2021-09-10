@@ -87,4 +87,26 @@ describe('OidcProviderController', () => {
       expect(nextMock).toHaveReturnedTimes(1);
     });
   });
+
+  describe('postToken()', () => {
+    it('should call next', () => {
+      // Given
+      const nextMock = jest.fn();
+      const bodyMock = {} as AuthorizeParamsDto;
+      // When
+      oidcProviderController.postToken(nextMock, bodyMock);
+      // Then
+      expect(nextMock).toHaveReturnedTimes(1);
+    });
+
+    it('should call logger.trace', () => {
+      // Given
+      const nextMock = jest.fn();
+      const bodyMock = {} as AuthorizeParamsDto;
+      // When
+      oidcProviderController.postToken(nextMock, bodyMock);
+      // Then
+      expect(loggerServiceMock.trace).toHaveBeenCalledTimes(1);
+    });
+  });
 });

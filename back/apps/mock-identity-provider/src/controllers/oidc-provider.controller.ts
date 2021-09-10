@@ -42,6 +42,12 @@ export class OidcProviderController {
     @Query() query: AuthorizeParamsDto,
     @Session('App') appSession: ISessionService<AppSession>,
   ) {
+    // OIDC inspired variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { sp_id = '' } = query;
+    const msg = JSON.stringify(['/authorize', 'sp_id', sp_id]);
+    this.logger.trace({ msg });
+
     this.logger.trace({
       route: OidcProviderRoutes.AUTHORIZATION,
       method: 'GET',
@@ -72,6 +78,12 @@ export class OidcProviderController {
     }),
   )
   postAuthorize(@Next() next, @Body() body: AuthorizeParamsDto) {
+    // OIDC inspired variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { sp_id = '' } = body;
+    const msg = JSON.stringify(['/authorize', 'sp_id', sp_id]);
+    this.logger.trace({ msg });
+
     this.logger.trace({
       route: OidcProviderRoutes.AUTHORIZATION,
       method: 'POST',
@@ -79,6 +91,23 @@ export class OidcProviderController {
       body,
     });
     // Pass the query to oidc-provider
+    return next();
+  }
+
+  /**
+   * This controller is used to make information available for testing purpose
+   * by logging needed info.
+   *
+   * It then forward the request to `next` controller, in this case `oidc-provider`.
+   */
+  @Post(OidcProviderRoutes.TOKEN)
+  postToken(@Next() next, @Body() body) {
+    // OIDC inspired variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { sp_id = '' } = body;
+    const msg = JSON.stringify(['/token', 'sp_id', sp_id]);
+    this.logger.trace({ msg });
+
     return next();
   }
 }

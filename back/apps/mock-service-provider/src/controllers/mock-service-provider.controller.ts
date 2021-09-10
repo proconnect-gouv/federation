@@ -279,12 +279,11 @@ export class MockServiceProviderController {
     const { interactionId, idpState, idpNonce } = await sessionOidc.get();
 
     const tokenParams = {
-      providerUid,
-      idpState,
-      idpNonce,
+      state: idpState,
+      nonce: idpNonce,
     };
     const { accessToken, idToken, acr, amr } =
-      await this.oidcClient.getTokenFromProvider(tokenParams, req);
+      await this.oidcClient.getTokenFromProvider(providerUid, tokenParams, req);
 
     const userInfoParams = {
       accessToken,

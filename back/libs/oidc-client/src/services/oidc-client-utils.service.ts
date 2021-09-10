@@ -5,7 +5,7 @@
  * need to remove this hack in the package.json
  */
 import { JWK } from 'jose-openid-client';
-import { Client, TokenSet } from 'openid-client';
+import { CallbackExtras, Client, TokenSet } from 'openid-client';
 
 import { Inject, Injectable } from '@nestjs/common';
 
@@ -26,7 +26,11 @@ import {
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
 } from '../exceptions';
-import { IGetAuthorizeUrlParams } from '../interfaces';
+import {
+  ExtraTokenParams,
+  IGetAuthorizeUrlParams,
+  TokenParams,
+} from '../interfaces';
 import { OidcClientConfigService } from './oidc-client-config.service';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';
 
@@ -130,33 +134,39 @@ export class OidcClientUtilsService {
     return receivedParams;
   }
 
+  private buildExtraParameters(extraParams: ExtraTokenParams): CallbackExtras {
+    if (extraParams) {
+      return { exchangeBody: extraParams };
+    }
+
+    return {};
+  }
+
   async getTokenSet(
     req,
     providerUid: string,
-    stateFromSession: string,
-    nonceFromSession?: string,
+    params: TokenParams,
+    extraParams?: ExtraTokenParams,
   ): Promise<TokenSet> {
     this.logger.debug('getTokenSet');
     const client = await this.issuer.getClient(providerUid);
-    const receivedParams = await this.extractParams(
-      req,
-      client,
-      stateFromSession,
-    );
+    const { state } = params;
+    const receivedParams = await this.extractParams(req, client, state);
 
     let tokenSet: TokenSet;
+
     try {
       // Invoke `openid-client` handler
       tokenSet = await client.callback(
         client.metadata.redirect_uris.join(','),
         receivedParams,
         {
-          state: stateFromSession,
-          nonce: nonceFromSession,
+          ...params,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           response_type: client.metadata.response_types.join(','),
         },
+        this.buildExtraParameters(extraParams),
       );
     } catch (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);

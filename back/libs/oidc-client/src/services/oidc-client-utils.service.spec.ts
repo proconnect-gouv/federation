@@ -20,6 +20,7 @@ import {
   OidcClientMissingStateException,
   OidcClientTokenFailedException,
 } from '../exceptions';
+import { TokenParams } from '../interfaces';
 import { OidcClientConfigService } from './oidc-client-config.service';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';
 import { OidcClientUtilsService } from './oidc-client-utils.service';
@@ -319,15 +320,44 @@ describe('OidcClientUtilsService', () => {
     });
   });
 
+  describe('buildExtraParameters', () => {
+    it('should return empty object', () => {
+      // Given
+      const parametersMock = undefined;
+      const expected = {};
+      // When
+      const result = service['buildExtraParameters'](parametersMock);
+      // Then
+      expect(result).toEqual(expected);
+    });
+
+    it('should return object with argument in exchangeBody property', () => {
+      // Given
+      const parametersMock = { foo: 'bar' };
+      const expected = { exchangeBody: parametersMock };
+      // When
+      const result = service['buildExtraParameters'](parametersMock);
+      // Then
+      expect(result).toEqual(expected);
+    });
+  });
+
   describe('getTokenSet()', () => {
     const req = { session: { codeVerifier: 'codeVerifierValue' } };
     const providerId = 'foo';
-    const state = 'callbackParamsState';
-    const nonce = 'callbackParamsNonce';
+    const params: TokenParams = {
+      state: 'callbackParamsState',
+      nonce: 'callbackParamsNonce',
+    };
 
     it('should call extractParams with callbackParams', async () => {
+      // Given
+      const extraParamsMockedReturn = { mock: 'value' };
+      service['buildExtraParameters'] = jest
+        .fn()
+        .mockReturnValue(extraParamsMockedReturn);
       // When
-      await service.getTokenSet(req, providerId, state, nonce);
+      await service.getTokenSet(req, providerId, params);
       // Then
       expect(callbackMock).toHaveBeenCalled();
       expect(callbackMock).toHaveBeenCalledWith(
@@ -343,12 +373,13 @@ describe('OidcClientUtilsService', () => {
           state: 'callbackParamsState',
           nonce: 'callbackParamsNonce',
         },
+        extraParamsMockedReturn,
       );
     });
 
     it('should return resolve value of client.callback', async () => {
       // When
-      const result = await service.getTokenSet(req, providerId, state, nonce);
+      const result = await service.getTokenSet(req, providerId, params);
       // Then
       expect(result).toBe('callbackMock Resolve Value');
     });
@@ -358,9 +389,9 @@ describe('OidcClientUtilsService', () => {
       const errorMock = new Error('lol');
       callbackMock.mockRejectedValueOnce(errorMock);
       // Then
-      expect(
-        service.getTokenSet(req, providerId, state, nonce),
-      ).rejects.toThrow(OidcClientTokenFailedException);
+      expect(service.getTokenSet(req, providerId, params)).rejects.toThrow(
+        OidcClientTokenFailedException,
+      );
     });
   });
 
