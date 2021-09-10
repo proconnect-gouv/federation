@@ -206,14 +206,14 @@ export class OidcClientController {
   ) {
     const session = await sessionOidc.get();
     const { providerUid } = params;
-    const { idpNonce, idpState } = session;
+    const { idpNonce: nonce, idpState: state } = session;
 
     const tokenParams = {
-      idpNonce,
-      idpState,
-      providerUid,
+      nonce,
+      state,
     };
     const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
+      providerUid,
       tokenParams,
       req,
     );

@@ -10,7 +10,11 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { LoggerService } from '@fc/logger';
 import { MinistriesService } from '@fc/ministries';
 import { IOidcIdentity } from '@fc/oidc';
-import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
+import {
+  OidcClientService,
+  OidcClientSession,
+  TokenParams,
+} from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
@@ -35,6 +39,7 @@ describe('CoreFcaController', () => {
   const params = { uid: 'abcdefghijklmnopqrstuvwxyz0123456789' };
   const interactionIdMock = 'interactionIdMockValue';
   const acrMock = 'acrMockValue';
+  const spIdMock = 'spIdMockValue';
   const spNameMock = 'some SP';
   const idpStateMock = 'idpStateMockValue';
   const idpNonceMock = 'idpNonceMock';
@@ -132,6 +137,7 @@ describe('CoreFcaController', () => {
   const oidcClientSessionDataMock: OidcClientSession = {
     interactionId: interactionIdMock,
     csrfToken: randomStringMock,
+    spId: spIdMock,
     spAcr: acrMock,
     spIdentity: {} as IOidcIdentity,
     spName: spNameMock,
@@ -462,10 +468,9 @@ describe('CoreFcaController', () => {
     const accessTokenMock = Symbol('accesToken');
     const acrMock = Symbol('acr');
 
-    const tokenParamsMock = {
-      providerUid,
-      idpState: idpStateMock,
-      idpNonce: idpNonceMock,
+    const tokenParamsMock: TokenParams = {
+      state: idpStateMock,
+      nonce: idpNonceMock,
     };
 
     const userInfoParamsMock = {
@@ -525,8 +530,12 @@ describe('CoreFcaController', () => {
         1,
       );
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledWith(
+        providerUid,
         tokenParamsMock,
         req,
+        // OIDC inspired parameter name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { sp_id: spIdMock },
       );
     });
 

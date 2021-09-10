@@ -328,9 +328,8 @@ describe('OidcClient Controller', () => {
     };
 
     const tokenParamsMock = {
-      idpNonce: idpNonceMock,
-      idpState: idpStateMock,
-      providerUid,
+      nonce: idpNonceMock,
+      state: idpStateMock,
     };
 
     const userInfoParamsMock = {
@@ -380,6 +379,7 @@ describe('OidcClient Controller', () => {
         1,
       );
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledWith(
+        providerUid,
         tokenParamsMock,
         req,
       );
