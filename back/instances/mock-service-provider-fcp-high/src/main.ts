@@ -28,12 +28,14 @@ async function bootstrap() {
     schema: MockServiceProviderConfig,
   });
   const {
-    httpsOptions: { key, cert },
+    assetsPaths,
+    httpsOptions: { cert, key },
+    viewsPaths,
   } = configService.get<AppConfig>('App');
 
   const appModule = AppModule.forRoot(configService);
 
-  const httpsOptions = key && cert ? { key, cert } : null;
+  const httpsOptions = key && cert ? { cert, key } : null;
 
   const app = await NestFactory.create<NestExpressApplication>(appModule, {
     /**
@@ -89,18 +91,15 @@ async function bootstrap() {
   const logger = await app.resolve(LoggerService);
   app.useLogger(logger);
 
-  // Assets path vary in dev env
-  const assetsPath =
-    process.env.NODE_ENV === 'development'
-      ? // Libs code base to take latest version
-        '../../../apps/mock-service-provider/src'
-      : // Current, directory = dist when in production mode
-        '';
-
   app.engine('ejs', renderFile);
-  app.set('views', [join(__dirname, assetsPath, 'views')]);
+  app.set(
+    'views',
+    viewsPaths.map((path) => join(__dirname, path, 'views')),
+  );
   app.setViewEngine('ejs');
-  app.useStaticAssets(join(__dirname, assetsPath, 'public'));
+  assetsPaths.forEach((path) => {
+    app.useStaticAssets(join(__dirname, path, 'public'));
+  });
 
   const { cookieSecrets } = configService.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));

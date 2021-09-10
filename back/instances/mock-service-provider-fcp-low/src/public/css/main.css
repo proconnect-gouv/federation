@@ -40,3 +40,17 @@ select {
   border: 1px solid #ccc;
   background-color: #eee;
 }
+
+#get-authorize,
+#post-authorize {
+  background-image: url('/img/FCboutons-10.svg');
+  width: 232px;
+  height: 62px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+#get-authorize:hover,
+#post-authorize:hover {
+  background-image: url('/img/FCboutons-10-hover.svg');
+}

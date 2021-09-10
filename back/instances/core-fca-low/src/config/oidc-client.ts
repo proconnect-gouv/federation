@@ -21,6 +21,6 @@ export default {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/216
    */
   scope: env.string('SCOPE'),
-  // Toogle Financial Grade API
+  // Toggle Financial Grade API
   fapi: env.boolean('FAPI'),
 } as OidcClientConfig;
