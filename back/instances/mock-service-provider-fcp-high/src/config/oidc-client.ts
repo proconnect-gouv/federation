@@ -7,9 +7,11 @@ import { OidcClientConfig } from '@fc/oidc-client';
 const env = new ConfigParser(process.env, 'OidcClient');
 
 export default {
+  // Toggle Financial Grade API
+  fapi: env.boolean('FAPI'),
   httpOptions: {
-    key: env.file('HTTPS_CLIENT_KEY'),
     cert: env.file('HTTPS_CLIENT_CERT'),
+    key: env.file('HTTPS_CLIENT_KEY'),
 
     // Global request timeout used for any outgoing app requests.
     timeout: parseInt(process.env.REQUEST_TIMEOUT, 10),
@@ -17,9 +19,6 @@ export default {
   jwks: {
     keys: [JSON.parse(process.env.JWKS)],
   },
-  stateLength: 32,
-
   scope: env.string('SCOPE'),
-  // Toogle Financial Grade API
-  fapi: env.boolean('FAPI'),
+  stateLength: 32,
 } as OidcClientConfig;

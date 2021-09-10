@@ -8,7 +8,6 @@ import { MockServiceProviderModule } from '@fc/mock-service-provider';
 export class AppModule {
   static forRoot(configService: ConfigService): DynamicModule {
     return {
-      module: AppModule,
       imports: [
         // 1. Load config module first
         ConfigModule.forRoot(configService),
@@ -17,6 +16,7 @@ export class AppModule {
         // 3. Load other modules
         MockServiceProviderModule,
       ],
+      module: AppModule,
     };
   }
 }

@@ -7,7 +7,7 @@ import { LoggerConfig } from '@fc/logger';
 const env = new ConfigParser(process.env, 'Logger');
 
 export default {
-  path: env.string('FILE'),
-  level: env.string('LEVEL'),
   isDevelopment: process.env.NODE_ENV === 'development',
+  level: env.string('LEVEL'),
+  path: env.string('FILE'),
 } as LoggerConfig;

@@ -22,18 +22,20 @@ import { SessionConfig } from '@fc/session';
 import { AppModule } from './app.module';
 import config from './config';
 
+// eslint-disable-next-line complexity
 async function bootstrap() {
   const configService = new ConfigService({
     config,
     schema: MockServiceProviderConfig,
   });
   const {
+    assetsPaths,
     httpsOptions: { key, cert },
   } = configService.get<AppConfig>('App');
 
   const appModule = AppModule.forRoot(configService);
 
-  const httpsOptions = key && cert ? { key, cert } : null;
+  const httpsOptions = key && cert ? { cert, key } : null;
 
   const app = await NestFactory.create<NestExpressApplication>(appModule, {
     /**
@@ -67,8 +69,8 @@ async function bootstrap() {
          * to forbid the use of inline CSS or JS
          * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/168
          */
-        styleSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
         scriptSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
+        styleSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
       },
     }),
   );
@@ -90,9 +92,20 @@ async function bootstrap() {
   app.useLogger(logger);
 
   app.engine('ejs', renderFile);
+
+  // appConfig.viewsPaths &&
+  //   app.set(
+  //     'views',
+  //     appConfig.viewsPaths.map((path) => join(__dirname, path, 'views')),
+  //   );
   app.set('views', [join(__dirname, 'views')]);
+
   app.setViewEngine('ejs');
-  app.useStaticAssets(join(__dirname, 'public'));
+
+  assetsPaths &&
+    assetsPaths.forEach((path) => {
+      app.useStaticAssets(join(__dirname, path, 'public'));
+    });
 
   const { cookieSecrets } = configService.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));
