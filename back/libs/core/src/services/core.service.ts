@@ -312,10 +312,7 @@ export class CoreService {
     }
   }
 
-  checkIfAcrIsValid(receivedAcr: string, requestedAcr: string) {
-    const received = Acr[receivedAcr];
-    const requested = Acr[requestedAcr];
-
+  checkIfAcrIsValid(received: string, requested: string): void {
     /**
      * @todo #494
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/494
@@ -328,12 +325,25 @@ export class CoreService {
       throw new CoreInvalidAcrException();
     }
 
-    if (received < requested) {
+    if (!this.isAcrValid(received, requested)) {
       this.logger.trace(
         { error: 'received ACR lower than requested' },
         LoggerLevelNames.WARN,
       );
       throw new CoreLowAcrException();
     }
+  }
+
+  /**
+   * Acr level is high enough to respect provider requirements
+   * @param source Acr given from the user
+   * @param target Acr given from the Idp
+   * @returns
+   */
+  isAcrValid(source: string, target: string): boolean {
+    const sourceAcr = Acr[source];
+    const targetAcr = Acr[target];
+
+    return sourceAcr >= targetAcr;
   }
 }

@@ -4,12 +4,12 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { IFeatureHandlerDatabase } from '@fc/feature-handler';
 
-@Schema({ strict: true, strictQuery: true, collection: 'provider' })
+@Schema({ collection: 'provider', strict: true, strictQuery: true })
 export class IdentityProvider extends Document {
   @Prop({ type: String })
   name: string;
 
-  @Prop({ type: String, index: true })
+  @Prop({ index: true, type: String })
   clientID: string;
 
   @Prop({ type: String })
@@ -67,6 +67,9 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: SchemaNative.Types.Mixed })
   featureHandlers: IFeatureHandlerDatabase;
+
+  @Prop({ type: Number })
+  eidas: number;
 }
 
 export const IdentityProviderSchema =
