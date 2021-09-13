@@ -60,6 +60,7 @@
   },
   "scripts": {
     "start:ud": "cd apps/user-dashboard && yarn start",
+    "start:fca": "cd apps/agent-connect && yarn start",
     "start:exploit-fcp-high": "cd apps/exploit-fcp-high && yarn start",
     "start:exploit-fca-low": "cd apps/exploit-fca-low && yarn start",
     "start:styleguide": "docsify serve ./libs/styleguide",
