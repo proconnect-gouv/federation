@@ -4,6 +4,7 @@
 export { Session } from './decorators';
 export { SessionConfig } from './dto';
 export {
+  SessionBadFormatException,
   SessionInvalidCsrfConsentException,
   SessionInvalidCsrfSelectIdpException,
   SessionNotFoundException,
