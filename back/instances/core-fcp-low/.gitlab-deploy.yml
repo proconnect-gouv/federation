@@ -1,8 +1,8 @@
-review-core-fcp-low:
+review-fcp-low:
   stage: 'Review'
   image: ${DEPLOY_IMAGE}
   tags:
-    - deploy
+    - recette
   only:
     - merge_requests
     - staging
@@ -12,18 +12,19 @@ review-core-fcp-low:
     - chmod og= $RECETTE_SSH_KEY
     - ssh -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER "sh /data/fcp-low/start $CI_COMMIT_REF_NAME $FC_APPS_VERSION $CI_JOB_TOKEN $CI_REGISTRY $CI_OPEN_MERGE_REQUESTS"
   resource_group: recette
+  dependencies: []
   environment:
     name: recette
     url: https://recette.dev-franceconnect.fr
-    on_stop: stop-core-fcp-low
+    on_stop: stop-fcp-low
     auto_stop_in: 1 hour
   when: manual
 
-stop-core-fcp-low:
+stop-fcp-low:
   stage: 'Review'
   image: ${DEPLOY_IMAGE}
   tags:
-    - deploy
+    - recette
   variables:
     GIT_STRATEGY: none
   script:
@@ -35,6 +36,7 @@ stop-core-fcp-low:
       paths:
         - $CI_PROJECT_DIR
   resource_group: recette
+  dependencies: []
   environment:
     name: recette
     action: stop
