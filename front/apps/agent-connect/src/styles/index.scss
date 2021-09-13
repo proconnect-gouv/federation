@@ -1,5 +1,3 @@
-// ----------------- DESIGN SYSTEM
-@import '_dsfr.scss';
 // ----------------- VARIABLES
 @import '_variables.scss';
 @import '_colors.scss';
@@ -13,6 +11,15 @@
 @import './vendors';
 @import './fonts/montserrat';
 @import './fonts/marianne';
+
+// @TODO a supprimer apres que la lib DSFR ai été partagé
+@import './dsfr';
+
+*,
+input,
+textarea {
+  font-family: 'Montserrat', sans-serif;
+}
 
 body,
 html,

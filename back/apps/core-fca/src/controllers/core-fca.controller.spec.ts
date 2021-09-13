@@ -18,6 +18,7 @@ import {
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
+  SessionBadFormatException,
   SessionCsrfService,
   SessionNotFoundException,
   SessionService,
@@ -238,6 +239,76 @@ describe('CoreFcaController', () => {
     });
   });
 
+  describe('getFrontHistoryBackURL()', () => {
+    // Given
+    const res = { json: jest.fn() };
+
+    it('should call `session.get()`', async () => {
+      // when
+      await coreController.getFrontHistoryBackURL(req, res, sessionServiceMock);
+      // then
+      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith();
+    });
+
+    it('should return a SessionBadFormatException if no session is found', async () => {
+      // given
+      sessionServiceMock.get.mockResolvedValueOnce(undefined);
+      // then
+      expect(
+        coreController.getFrontHistoryBackURL(req, res, sessionServiceMock),
+      ).rejects.toThrow(SessionBadFormatException);
+    });
+
+    it('should return a SessionBadFormatException session do not contains spName', async () => {
+      // given
+      sessionServiceMock.get.mockResolvedValueOnce({});
+      // then
+      expect(
+        coreController.getFrontHistoryBackURL(req, res, sessionServiceMock),
+      ).rejects.toThrow(SessionBadFormatException);
+    });
+
+    it('should call `oidcProvider.getInteraction()`', async () => {
+      // Given
+      jest.spyOn(oidcProviderServiceMock, 'getInteraction');
+      // when
+      await coreController.getFrontHistoryBackURL(req, res, sessionServiceMock);
+      // then
+      expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledTimes(1);
+      expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledWith(
+        req,
+        res,
+      );
+    });
+
+    it('should call `res.json()`', async () => {
+      // given
+      oidcProviderServiceMock.getInteraction.mockResolvedValueOnce({
+        params: {
+          state: 'mocked state',
+          // Oidc name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          redirect_uri: 'https://youre-redirected',
+        },
+      });
+      // when
+      await coreController.getFrontHistoryBackURL(req, res, sessionServiceMock);
+      // then
+      expect(res.json).toHaveBeenCalledTimes(1);
+      expect(res.json).toHaveBeenCalledWith({
+        spName: 'some SP',
+        redirectURIQuery: {
+          state: 'mocked state',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_description: 'User auth aborted',
+          error: 'access_denied',
+        },
+        redirectURI: 'https://youre-redirected',
+      });
+    });
+  });
+
   describe('getFrontData()', () => {
     // Given
     const res = {
@@ -353,18 +424,22 @@ describe('CoreFcaController', () => {
       expect(res.json).toHaveBeenCalledWith(expected);
     });
 
-    it('should return empty object if no session is found', async () => {
-      // Given
+    it('should return a SessionBadFormatException if no session is found', async () => {
+      // given
       sessionServiceMock.get.mockResolvedValueOnce(undefined);
+      // then
+      expect(
+        coreController.getFrontData(req, res, sessionServiceMock),
+      ).rejects.toThrow(SessionBadFormatException);
+    });
 
-      // When
-      const result = await coreController.getFrontData(
-        req,
-        res,
-        sessionServiceMock,
-      );
-      // Then
-      expect(result).toEqual({});
+    it('should return a SessionBadFormatException session do not contains spName', async () => {
+      // given
+      sessionServiceMock.get.mockResolvedValueOnce({});
+      // then
+      expect(
+        coreController.getFrontData(req, res, sessionServiceMock),
+      ).rejects.toThrow(SessionBadFormatException);
     });
   });
 

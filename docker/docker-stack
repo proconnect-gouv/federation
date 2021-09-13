@@ -562,6 +562,7 @@ case "$action" in
     echo "Usage: $script <option>:"
     echo "----"
     echo "* build [-var 'key=value'] <image_name> [<other_image_name> <...>] => build specific images"
+    echo "* fca-low-front build de l'application front FCA (react)"
     echo "* dependencies [<app1> <app2> <...>] / dep [...] => install dependencies (using npm or yarn) on given nodejs applications (Ex. core-fcp-high)"
     echo "* dependencies-all | dep-all => install dependencies (using npm or yarn) on all nodejs applications"
     echo "* exec <container_name> <command> => exec a command inside a container"
