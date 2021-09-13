@@ -54,18 +54,18 @@ describe('CoreFcaController', () => {
   };
 
   const interactionDetailsResolved = {
-    uid: Symbol('uid'),
-    prompt: Symbol('prompt'),
     params: {
       scope: 'toto titi',
     },
+    prompt: Symbol('prompt'),
+    uid: Symbol('uid'),
   };
 
   const identityMock = {
-    sub: '1',
     // oidc spec defined property
     // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'given_name',
+    sub: '1',
   };
 
   const interactionFinishedValue = Symbol('interactionFinishedValue');
@@ -75,13 +75,13 @@ describe('CoreFcaController', () => {
   };
 
   const oidcProviderServiceMock = {
-    getInteraction: jest.fn(),
     finishInteraction: jest.fn(),
+    getInteraction: jest.fn(),
   };
 
   const loggerServiceMock = {
-    setContext: jest.fn(),
     debug: jest.fn(),
+    setContext: jest.fn(),
     trace: jest.fn(),
   } as unknown as LoggerService;
 
@@ -95,8 +95,8 @@ describe('CoreFcaController', () => {
   };
 
   const identityProviderServiceMock = {
-    getList: jest.fn(),
     getFilteredList: jest.fn(),
+    getList: jest.fn(),
   };
 
   const serviceProviderServiceMock = {
@@ -128,22 +128,22 @@ describe('CoreFcaController', () => {
   };
 
   const oidcClientServiceMock = {
+    getTokenFromProvider: jest.fn(),
+    getUserInfosFromProvider: jest.fn(),
     utils: {
       checkIdpBlacklisted: jest.fn(),
     },
-    getTokenFromProvider: jest.fn(),
-    getUserInfosFromProvider: jest.fn(),
   };
 
   const oidcClientSessionDataMock: OidcClientSession = {
-    interactionId: interactionIdMock,
     csrfToken: randomStringMock,
     spId: spIdMock,
+    idpNonce: idpNonceMock,
+    idpState: idpStateMock,
+    interactionId: interactionIdMock,
     spAcr: acrMock,
     spIdentity: {} as IOidcIdentity,
     spName: spNameMock,
-    idpState: idpStateMock,
-    idpNonce: idpNonceMock,
   };
 
   const sessionServieMock: SessionService = {
@@ -321,8 +321,8 @@ describe('CoreFcaController', () => {
     const ministries = [
       {
         id: 'mock-ministry-id',
-        name: 'mocked ministry',
         identityProviders: ['12345'],
+        name: 'mocked ministry',
       },
     ];
 
@@ -415,10 +415,10 @@ describe('CoreFcaController', () => {
       await coreController.getFrontData(req, res, sessionServiceMock);
       // Then
       const expected = expect.objectContaining({
+        identityProviders: expect.any(Array),
+        ministries: expect.any(Array),
         redirectToIdentityProviderInputs: expect.any(Object),
         redirectURL: expect.any(String),
-        ministries: expect.any(Array),
-        identityProviders: expect.any(Array),
         serviceProviderName: expect.any(String),
       });
       expect(res.json).toHaveBeenCalledWith(expected);
@@ -447,9 +447,9 @@ describe('CoreFcaController', () => {
     it('should return empty object', async () => {
       // Given
       oidcProviderServiceMock.getInteraction.mockResolvedValue({
-        uid: 'uid',
-        prompt: 'prompt',
         params: 'params',
+        prompt: 'prompt',
+        uid: 'uid',
       });
       // When
       const result = await coreController.getInteraction(sessionServiceMock);
@@ -498,10 +498,10 @@ describe('CoreFcaController', () => {
       // Given
       const next = jest.fn();
       sessionServiceMock.get.mockResolvedValue({
+        csrfToken: randomStringMock,
         interactionId: interactionIdMock,
         spAcr: acrMock,
         spName: spNameMock,
-        csrfToken: randomStringMock,
       });
       // Then
       expect(
@@ -554,9 +554,9 @@ describe('CoreFcaController', () => {
     };
 
     const identityExchangeMock = {
-      idpIdentity: identityMock,
-      idpAcr: acrMock,
       idpAccessToken: accessTokenMock,
+      idpAcr: acrMock,
+      idpIdentity: identityMock,
     };
     const redirectMock = `/api/v2/interaction/${interactionIdMock}/verify`;
 

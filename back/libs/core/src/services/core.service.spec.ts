@@ -485,24 +485,21 @@ describe('CoreService', () => {
   });
 
   describe('checkIfAcrIsValid()', () => {
-    it('should throw if received is not valid', () => {
-      // Given
-      const received = 'someInvalidString';
-      const requested = 'eidas2';
-      // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
-      // Then
-      expect(call).toThrow(CoreInvalidAcrException);
+    let isAcrValidMock: jest.SpyInstance;
+    beforeEach(() => {
+      isAcrValidMock = jest.spyOn<CoreService, any>(service, 'isAcrValid');
+      isAcrValidMock.mockReturnValueOnce(true);
     });
 
-    it('should throw if requested is not valid', () => {
+    it('should succeed if acr value is accepted', () => {
       // Given
       const received = 'eidas3';
-      const requested = 'someInvalidString';
+      const requested = 'eidas3';
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const call = () => service.checkIfAcrIsValid(received, requested);
       // Then
-      expect(call).toThrow(CoreInvalidAcrException);
+      expect(call).not.toThrow();
+      expect(loggerServiceMock.trace).not.toHaveBeenCalled();
     });
 
     it('should throw if requested is empty', () => {
@@ -513,6 +510,7 @@ describe('CoreService', () => {
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
+      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if received is empty', () => {
@@ -523,6 +521,8 @@ describe('CoreService', () => {
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
+
+      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if requested is undefined', () => {
@@ -533,6 +533,8 @@ describe('CoreService', () => {
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
+
+      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if received is undefined', () => {
@@ -543,6 +545,8 @@ describe('CoreService', () => {
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
+
+      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if requested is null', () => {
@@ -553,6 +557,8 @@ describe('CoreService', () => {
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
+
+      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if received is null', () => {
@@ -563,16 +569,34 @@ describe('CoreService', () => {
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
+
+      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
     });
 
-    it('should throw if received is lower than requested (1 vs 2)', () => {
+    it('should throw if acr is not valid', () => {
       // Given
+      isAcrValidMock.mockReset().mockReturnValueOnce(false);
+
       const received = 'eidas1';
       const requested = 'eidas2';
       // When
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).toThrow(CoreLowAcrException);
+      expect(isAcrValidMock).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.trace).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('isAcrValid', () => {
+    it('should throw if received is lower than requested (1 vs 2)', () => {
+      // Given
+      const received = 'eidas1';
+      const requested = 'eidas2';
+      // When
+      const result = service.isAcrValid(received, requested);
+      // Then
+      expect(result).toStrictEqual(false);
     });
 
     it('should throw if received is lower than requested (2 vs 3)', () => {
@@ -580,59 +604,59 @@ describe('CoreService', () => {
       const received = 'eidas2';
       const requested = 'eidas3';
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const result = service.isAcrValid(received, requested);
       // Then
-      expect(call).toThrow(CoreLowAcrException);
+      expect(result).toStrictEqual(false);
     });
 
-    it('should not throw if received is equal to requested for level eidas1', () => {
+    it('should succeed if received is equal to requested for level eidas1', () => {
       // Given
       const received = 'eidas1';
       const requested = 'eidas1';
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const result = service.isAcrValid(received, requested);
       // Then
-      expect(call).not.toThrow();
+      expect(result).toStrictEqual(true);
     });
 
-    it('should not throw if received is equal to requested for level eidas2', () => {
+    it('should succeed if received is equal to requested for level eidas2', () => {
       // Given
       const received = 'eidas2';
       const requested = 'eidas2';
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const result = service.isAcrValid(received, requested);
       // Then
-      expect(call).not.toThrow();
+      expect(result).toStrictEqual(true);
     });
 
-    it('should not throw if received is equal to requested for level eidas3', () => {
+    it('should succeed if received is equal to requested for level eidas3', () => {
       // Given
       const received = 'eidas3';
       const requested = 'eidas3';
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const result = service.isAcrValid(received, requested);
       // Then
-      expect(call).not.toThrow();
+      expect(result).toStrictEqual(true);
     });
 
-    it('should not throw if received is higher then requested (2 vs 1)', () => {
+    it('should succeed if received is higher then requested (2 vs 1)', () => {
       // Given
       const received = 'eidas2';
       const requested = 'eidas1';
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const result = service.isAcrValid(received, requested);
       // Then
-      expect(call).not.toThrow();
+      expect(result).toStrictEqual(true);
     });
 
-    it('should not throw if received is higher then requested (3 vs 2)', () => {
+    it('should succeed if received is higher then requested (3 vs 2)', () => {
       // Given
       const received = 'eidas3';
       const requested = 'eidas2';
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const result = service.isAcrValid(received, requested);
       // Then
-      expect(call).not.toThrow();
+      expect(result).toStrictEqual(true);
     });
   });
 

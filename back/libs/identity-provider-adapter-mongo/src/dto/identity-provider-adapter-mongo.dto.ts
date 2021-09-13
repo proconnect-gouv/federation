@@ -5,6 +5,7 @@ import {
   IsArray,
   IsBoolean,
   IsIn,
+  IsNumber,
   IsOptional,
   IsString,
   IsUrl,
@@ -51,6 +52,9 @@ export class MetadataIdpAdapterMongoDTO {
   /**
    * CLIENT METADATA
    */
+  @IsNumber()
+  readonly eidas: number;
+
   @IsString()
   readonly clientID: string;
 

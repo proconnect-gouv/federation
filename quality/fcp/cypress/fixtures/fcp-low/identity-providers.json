@@ -5,7 +5,9 @@
     "mocked": true,
     "enabled": true,
     "url": "https://fip1-low.{{TEST_ENV}}.dev-franceconnect.fr/interaction",
-    "acrValues": ["eidas1"],
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "HS256",
     "selectors": {
       "idpButton": "#idp-fip1-low",
       "username": "input[name='login']",
