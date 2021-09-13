@@ -69,10 +69,10 @@ export class CoreFcaController {
   getDefault(@Res() res) {
     const { defaultRedirectUri } = this.config.get<Core>('Core');
     this.logger.trace({
-      route: CoreRoutes.DEFAULT,
       method: 'GET',
       name: 'CoreRoutes.DEFAULT',
       redirect: defaultRedirectUri,
+      route: CoreRoutes.DEFAULT,
     });
     res.redirect(301, defaultRedirectUri);
   }
@@ -137,32 +137,32 @@ export class CoreFcaController {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uri,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       response_type,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id,
     } = params;
 
     const redirectToIdentityProviderInputs = {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
+      csrfToken,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uri,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       response_type,
       scope,
-      csrfToken,
     };
 
     const ministries = await this.ministries.getList();
     const { idpFilterExclude, idpFilterList } =
       await this.serviceProvider.getById(client_id);
 
-    const identityProvidersList = await this.identityProvider.getFilteredList(
-      idpFilterList,
-      idpFilterExclude,
-    );
+    const identityProvidersList = await this.identityProvider.getFilteredList({
+      blacklist: idpFilterExclude,
+      idpList: idpFilterList,
+    });
 
     const identityProviders = identityProvidersList.map(
       ({ active, display, title, uid }) => ({
@@ -174,18 +174,18 @@ export class CoreFcaController {
     );
 
     const jsonResponse = {
+      identityProviders,
+      ministries,
       redirectToIdentityProviderInputs,
       redirectURL: '/api/v2/redirect-to-idp',
-      ministries,
-      identityProviders,
       serviceProviderName: spName,
     };
 
     this.logger.trace({
-      route: CoreRoutes.FCA_FRONT_DATAS,
       method: 'GET',
       name: 'CoreRoutes.FCA_FRONT_DATAS',
       response: jsonResponse,
+      route: CoreRoutes.FCA_FRONT_DATAS,
     });
 
     return res.json(jsonResponse);
@@ -207,9 +207,9 @@ export class CoreFcaController {
     }
 
     this.logger.trace({
-      route: CoreRoutes.INTERACTION,
       method: 'GET',
       name: 'CoreRoutes.INTERACTION',
+      route: CoreRoutes.INTERACTION,
       session,
     });
 
@@ -238,10 +238,10 @@ export class CoreFcaController {
     const url = `${urlPrefix}/login`;
 
     this.logger.trace({
-      route: CoreRoutes.INTERACTION_VERIFY,
       method: 'GET',
       name: 'CoreRoutes.INTERACTION_VERIFY',
       redirect: url,
+      route: CoreRoutes.INTERACTION_VERIFY,
     });
 
     res.redirect(url);
@@ -282,9 +282,9 @@ export class CoreFcaController {
     await this.sessionService.setAlias(spIdentity.sub, req.sessionId);
 
     this.logger.trace({
-      route: CoreRoutes.INTERACTION_LOGIN,
       method: 'GET',
       name: 'CoreRoutes.INTERACTION_LOGIN',
+      route: CoreRoutes.INTERACTION_LOGIN,
       spIdentity,
     });
 
@@ -314,7 +314,7 @@ export class CoreFcaController {
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { providerUid } = params;
-    const { idpState, idpNonce, spId, interactionId } = await sessionOidc.get();
+    const { idpNonce, idpState, interactionId, spId } = await sessionOidc.get();
 
     await this.oidcClient.utils.checkIdpBlacklisted(spId, providerUid);
 
@@ -358,9 +358,9 @@ export class CoreFcaController {
     await this.validateIdentity(providerUid, identity);
 
     const identityExchange: OidcSession = {
-      idpIdentity: identity,
-      idpAcr: acr,
       idpAccessToken: accessToken,
+      idpAcr: acr,
+      idpIdentity: identity,
     };
     await sessionOidc.set({ ...identityExchange });
 
@@ -369,10 +369,10 @@ export class CoreFcaController {
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;
 
     this.logger.trace({
-      route: OidcClientRoutes.OIDC_CALLBACK,
       method: 'GET',
       name: 'OidcClientRoutes.OIDC_CALLBACK',
       redirect: url,
+      route: OidcClientRoutes.OIDC_CALLBACK,
     });
 
     res.redirect(url);
@@ -383,9 +383,9 @@ export class CoreFcaController {
     identity: Partial<OidcIdentityDto>,
   ): Promise<boolean> {
     const validatorOptions: ValidatorOptions = {
-      whitelist: true,
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
+      whitelist: true,
     };
     const transformOptions: ClassTransformOptions = {
       excludeExtraneousValues: true,
@@ -403,7 +403,7 @@ export class CoreFcaController {
       throw new CoreFcaInvalidIdentityException();
     }
 
-    this.logger.trace({ validate: { providerUid, identity } });
+    this.logger.trace({ validate: { identity, providerUid } });
     return true;
   }
 }

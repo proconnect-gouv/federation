@@ -5,7 +5,7 @@
     "mocked": true,
     "enabled": true,
     "url": "https://fip1v2.{{TEST_ENV}}.fcp.fournisseur-d-identite.fr/interaction",
-    "acrValues": ["eidas1", "eidas2", "eidas3"],
+    "acrValue": "eidas3",
     "selectors": {
       "idpButton": "#idp-fip1v2",
       "username": "input[name='login']",

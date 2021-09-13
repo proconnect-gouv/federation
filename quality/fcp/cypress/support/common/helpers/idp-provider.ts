@@ -1,18 +1,28 @@
 import { IdentityProvider } from '../../common/types';
 
 const DEFAULT_IDP_DESCRIPTION = 'par défaut';
+type IdentityProviderAttributesFilter = {
+  acrValue?: string;
+  encryption?: string;
+  signature?: string;
+  enabled?: boolean;
+};
 
-export const getIdentityProviderByAcrValue = (
+export const getIdentityProviderByAttributes = (
   identityProviders: IdentityProvider[],
-  acrValue: string,
+  filters: IdentityProviderAttributesFilter,
 ): IdentityProvider => {
-  const identityProvider: IdentityProvider = identityProviders.find(
-    (identityProvider) =>
-      identityProvider.acrValues.includes(acrValue) && identityProvider.enabled,
+  const attrFilters = { ...filters };
+  attrFilters.enabled ??= true;
+  const search = Object.entries(attrFilters).filter(
+    ([, value]) => value !== undefined && value !== null,
+  );
+  const identityProvider: IdentityProvider = identityProviders.find((idp) =>
+    search.every(([attribute, value]) => idp[attribute] === value),
   );
   expect(
     identityProvider,
-    `No active identity provider has acrValue ${acrValue}`,
+    `No active identity provider has ${JSON.stringify(search, null, 2)}`,
   ).to.exist;
   cy.wrap(identityProvider).as('identityProvider');
   return identityProvider;

@@ -11,6 +11,16 @@ Then(
   },
 );
 
+Then(
+  /^le fournisseur d'identité (est|n'est pas) affiché dans la mire$/,
+  function (text) {
+    const isVisible = text === 'est';
+    identityProviderSelectionPage
+      .getIdpButton(this.identityProvider.idpId)
+      .should(isVisible ? 'be.visible' : 'not.exist');
+  },
+);
+
 When("je clique sur le fournisseur d'identité", function () {
   expect(this.identityProvider).to.exist;
   identityProviderSelectionPage

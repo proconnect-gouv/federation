@@ -19,6 +19,7 @@ import {
   IdentityProviderAdapterMongoDTO as NoDiscoveryIdoAdapterMongoDTO,
 } from './dto';
 import { IdentityProviderUpdateEvent } from './events';
+import { FilteringOptions } from './interfaces';
 import { IdentityProvider } from './schemas';
 
 const CLIENT_METADATA = [
@@ -105,30 +106,17 @@ export class IdentityProviderAdapterMongoService
         {},
         {
           _id: false,
-          uid: true,
-          name: true,
-          image: true,
-          issuer: true,
-          url: true,
-          title: true,
           active: true,
-          display: true,
+          authzURL: true,
           clientID: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: true,
           discovery: true,
           discoveryUrl: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          redirect_uris: true,
-          authzURL: true,
-          tokenURL: true,
-          userInfoURL: true,
-          jwksURL: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          post_logout_redirect_uris: true,
+          display: true,
+          eidas: true,
+          featureHandlers: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           id_token_encrypted_response_alg: true,
@@ -137,7 +125,31 @@ export class IdentityProviderAdapterMongoService
           id_token_encrypted_response_enc: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          userinfo_signed_response_alg: true,
+          id_token_signed_response_alg: true,
+          image: true,
+          issuer: true,
+          jwksURL: true,
+          name: true,
+          // oidc defined variable name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          post_logout_redirect_uris: true,
+          // oidc defined variable name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          redirect_uris: true,
+          // oidc defined variable name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          response_types: true,
+          // openid defined property names
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          revocation_endpoint_auth_method: true,
+          title: true,
+          tokenURL: true,
+          // oidc defined variable name
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          token_endpoint_auth_method: true,
+          uid: true,
+          url: true,
+          userInfoURL: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_encrypted_response_alg: true,
@@ -146,17 +158,7 @@ export class IdentityProviderAdapterMongoService
           userinfo_encrypted_response_enc: true,
           // oidc defined variable name
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          response_types: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          id_token_signed_response_alg: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          token_endpoint_auth_method: true,
-          // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          revocation_endpoint_auth_method: true,
-          featureHandlers: true,
+          userinfo_signed_response_alg: true,
         },
       )
       .exec();
@@ -195,7 +197,7 @@ export class IdentityProviderAdapterMongoService
 
       this.logger.trace({ step: 'REFRESH', list, listCache: this.listCache });
     } else {
-      this.logger.trace({ step: 'CACHE', list: this.listCache });
+      this.logger.trace({ list: this.listCache, step: 'CACHE' });
     }
 
     return this.listCache;
@@ -208,17 +210,20 @@ export class IdentityProviderAdapterMongoService
    * @param isBlackListed  boolean false = blacklist true = whitelist
    */
   async getFilteredList(
-    idpList: string[],
-    blacklist: boolean,
+    options: FilteringOptions,
   ): Promise<IdentityProviderMetadata[]> {
     const providers = await this.getList();
+    const { blacklist, idpList } = options;
+
+    /*
+      Blacklist/Whitelist filter (if blacklist is false, 
+      idpList contains a list of whitelisted idp, not a blacklist)
+    */
     const filteredProviders = providers.filter(({ uid }) => {
       const idpFound = idpList.includes(uid);
-
       return blacklist ? !idpFound : idpFound;
     });
-
-    this.logger.trace({ idpList, blacklist, filteredProviders });
+    this.logger.trace({ blacklist, filteredProviders });
 
     return filteredProviders;
   }
@@ -240,16 +245,21 @@ export class IdentityProviderAdapterMongoService
     source: IdentityProvider,
   ): IdentityProviderMetadata {
     const mapping = {
-      clientID: 'client_id',
-      tokenURL: 'token_endpoint',
+      // Oidc provider properties
       authzURL: 'authorization_endpoint',
-      userInfoURL: 'userinfo_endpoint',
-      jwksURL: 'jwks_uri',
-      url: 'issuer',
+      clientID: 'client_id',
       endSessionURL: 'end_session_endpoint',
+      jwksURL: 'jwks_uri',
+      tokenURL: 'token_endpoint',
+      url: 'issuer',
+      userInfoURL: 'userinfo_endpoint',
+      // Business properties
+      eidas: 'maxAuthorizedAcr',
     };
 
-    const result = { ...source };
+    const result: Partial<IdentityProvider & IdentityProviderMetadata> = {
+      ...source,
+    };
 
     Object.entries(mapping).forEach(([legacyName, oidcName]) => {
       result[oidcName] = source[legacyName];
@@ -258,6 +268,7 @@ export class IdentityProviderAdapterMongoService
     // openid defined property names
     // eslint-disable-next-line @typescript-eslint/naming-convention
     result.client_secret = this.decryptClientSecret(source.client_secret);
+    result.maxAuthorizedAcr = `eidas${source['eidas']}`;
 
     /**
      * @TODO #326 Fix type issues between legacy model and `oidc-client` library

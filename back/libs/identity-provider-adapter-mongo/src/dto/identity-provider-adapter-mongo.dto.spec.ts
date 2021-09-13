@@ -12,46 +12,47 @@ const DTO_VALIDATION_OPTIONS = {
 
 describe('Identity Provider (Data Transfer Object)', () => {
   const metaDataIdPAdapterMongoMock = {
-    uid: 'uid',
-    url: 'https://corev2.docker.dev-franceconnect.fr',
-    name: 'provider1',
-    image: 'provider1.png',
-    title: 'provider 1',
     active: true,
-    display: false,
-    featureHandlers: {},
     clientID: 'clientID',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+    discovery: false,
+    display: false,
+    eidas: 2,
     endSessionURL:
       'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
+    featureHandlers: {},
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uris: [
-      'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
-    ],
+    id_token_encrypted_response_alg: 'RSA-OAEP',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_encrypted_response_enc: 'A256GCM',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_signed_response_alg: 'RS512',
+    image: 'provider1.png',
+    name: 'provider1',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     post_logout_redirect_uris: [
       'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
     ],
     // eslint-disable-next-line @typescript-eslint/naming-convention
+    redirect_uris: [
+      'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
+    ],
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     response_types: ['code'],
     // eslint-disable-next-line @typescript-eslint/naming-convention
     revocation_endpoint_auth_method: 'client_secret_post',
-    discovery: false,
+    title: 'provider 1',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    token_endpoint_auth_method: 'client_secret_post',
+    uid: 'uid',
+    url: 'https://corev2.docker.dev-franceconnect.fr',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     userinfo_encrypted_response_alg: 'RSA-OAEP',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     userinfo_encrypted_response_enc: 'A256GCM',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     userinfo_signed_response_alg: 'RS512',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    id_token_signed_response_alg: 'RS512',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    token_endpoint_auth_method: 'client_secret_post',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    id_token_encrypted_response_alg: 'RSA-OAEP',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    id_token_encrypted_response_enc: 'A256GCM',
   };
 
   const discoveryIdpAdapterMongoMock = {
@@ -62,9 +63,9 @@ describe('Identity Provider (Data Transfer Object)', () => {
 
   const identityProviderAdapterMongoMock = {
     ...discoveryIdpAdapterMongoMock,
+    authzURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/authorize',
     discovery: false,
     jwksURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/jwksURL',
-    authzURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/authorize',
     tokenURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/token',
     userInfoURL: 'https://corev2.docker.dev-franceconnect.fr/api/v2/userinfo',
   };
@@ -109,9 +110,9 @@ describe('Identity Provider (Data Transfer Object)', () => {
       const dto = Object.assign(identityProviderAdapterMongoMock, {
         discovery: true,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        userinfo_signed_response_alg: 'HS512',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token_signed_response_alg: 'HS512',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        userinfo_signed_response_alg: 'HS512',
       });
       delete dto.jwksURL;
 
