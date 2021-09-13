@@ -36,6 +36,7 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import {
   ISessionService,
   Session,
+  SessionBadFormatException,
   SessionCsrfService,
   SessionNotFoundException,
   SessionService,
@@ -76,6 +77,39 @@ export class CoreFcaController {
     res.redirect(301, defaultRedirectUri);
   }
 
+  @Get(CoreRoutes.FCA_FRONT_HISTORY_BACK_URL)
+  async getFrontHistoryBackURL(
+    @Req() req,
+    @Res() res,
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+  ) {
+    // @TODO a refacto
+    // avec une methode private et en éclatant le controller `getFrontData`
+    // afin de réduire la taille de ce fichier > 400 lignes
+    const { spName } = (await sessionOidc.get()) || {};
+    if (!spName) {
+      throw new SessionBadFormatException();
+    }
+
+    const { params } = await this.oidcProvider.getInteraction(req, res);
+    const { redirect_uri: redirectURI, state } = params;
+
+    const redirectURIQuery = {
+      state,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      error_description: 'User auth aborted',
+      error: 'access_denied',
+    };
+
+    const jsonResponse = {
+      spName,
+      redirectURIQuery,
+      redirectURI,
+    };
+    return res.json(jsonResponse);
+  }
+
   @Get(CoreRoutes.FCA_FRONT_DATAS)
   async getFrontData(
     @Req() req,
@@ -88,11 +122,10 @@ export class CoreFcaController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
-    const session = await sessionOidc.get();
-    if (!session) {
-      return {};
+    const { spName } = (await sessionOidc.get()) || {};
+    if (!spName) {
+      throw new SessionBadFormatException();
     }
-    const { spName } = session;
     const { params } = await this.oidcProvider.getInteraction(req, res);
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
@@ -100,7 +133,6 @@ export class CoreFcaController {
     const csrfToken = this.csrfService.get();
     await this.csrfService.save(sessionOidc, csrfToken);
 
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
