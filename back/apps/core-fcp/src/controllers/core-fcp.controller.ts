@@ -17,10 +17,10 @@ import { ConfigService } from '@fc/config';
 import {
   CoreMissingIdentityException,
   CoreRoutes,
+  CoreService,
   CsrfToken,
   Interaction,
 } from '@fc/core';
-import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
@@ -74,12 +74,12 @@ export class CoreFcpController {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly core: CoreFcpService,
     private readonly config: ConfigService,
-    private readonly crypto: CryptographyService,
     private readonly notifications: NotificationsService,
     private readonly oidcClient: OidcClientService,
     private readonly tracking: TrackingService,
     private readonly sessionService: SessionService,
     private readonly csrfService: SessionCsrfService,
+    private readonly coreService: CoreService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -146,9 +146,14 @@ export class CoreFcpController {
     const { idpFilterExclude, idpFilterList } =
       await this.serviceProvider.getById(clientId);
 
-    const providers = await this.identityProvider.getFilteredList(
-      idpFilterList,
-      idpFilterExclude,
+    const providers = await this.identityProvider.getFilteredList({
+      blacklist: idpFilterExclude,
+      idpList: idpFilterList,
+    });
+
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const authorizedProviders = providers.filter(({ maxAuthorizedAcr }) =>
+      this.coreService.isAcrValid(maxAuthorizedAcr, acrValues),
     );
 
     // -- generate and store in session the CSRF token
@@ -160,7 +165,7 @@ export class CoreFcpController {
       csrfToken,
       notifications,
       params,
-      providers,
+      providers: authorizedProviders,
       scope,
       spName,
       uid,

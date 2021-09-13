@@ -1,8 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { CoreMissingIdentityException } from '@fc/core';
-import { CryptographyService } from '@fc/cryptography';
+import { CoreMissingIdentityException, CoreService } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
@@ -46,10 +45,10 @@ describe('CoreFcpController', () => {
   const providerUid = 'providerUidMock';
 
   const identityMock = {
-    sub: '1',
     // oidc spec defined property
     // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'given_name',
+    sub: '1',
   } as IOidcIdentity;
 
   let res;
@@ -60,11 +59,11 @@ describe('CoreFcpController', () => {
   };
 
   const interactionDetailsResolved = {
-    uid: Symbol('uid'),
-    prompt: Symbol('prompt'),
     params: {
       scope: 'toto titi',
     },
+    prompt: Symbol('prompt'),
+    uid: Symbol('uid'),
   };
   const interactionFinishedValue = Symbol('interactionFinishedValue');
   const providerMock = {
@@ -73,25 +72,29 @@ describe('CoreFcpController', () => {
   };
 
   const oidcProviderServiceMock = {
-    getInteraction: jest.fn(),
     finishInteraction: jest.fn(),
+    getInteraction: jest.fn(),
   };
 
   const loggerServiceMock = {
-    setContext: jest.fn(),
     debug: jest.fn(),
+    setContext: jest.fn(),
     trace: jest.fn(),
   } as unknown as LoggerService;
 
   const coreServiceMock = {
-    sendAuthenticationMail: jest.fn(),
-    verify: jest.fn(),
-    getFeature: jest.fn(),
-    getScopesForInteraction: jest.fn(),
     getClaimsForInteraction: jest.fn(),
     getClaimsLabelsForInteraction: jest.fn(),
+    getFeature: jest.fn(),
+    getScopesForInteraction: jest.fn(),
     isConsentRequired: jest.fn(),
     rejectInvalidAcr: jest.fn(),
+    sendAuthenticationMail: jest.fn(),
+    verify: jest.fn(),
+  };
+
+  const libCoreServiceMock = {
+    isAcrValid: jest.fn(),
   };
 
   const scopesMock = ['toto', 'titi'];
@@ -99,13 +102,13 @@ describe('CoreFcpController', () => {
   const claimsLabelMock = ['F o o', 'B a r'];
 
   const identityProviderServiceMock = {
-    getList: jest.fn(),
     getFilteredList: jest.fn(),
+    getList: jest.fn(),
   };
 
   const serviceProviderServiceMock = {
-    getById: jest.fn(),
     consentRequired: jest.fn(),
+    getById: jest.fn(),
   };
 
   const sessionServiceMock = {
@@ -121,17 +124,14 @@ describe('CoreFcpController', () => {
   };
 
   const randomStringMock = 'randomStringMockValue';
-  const cryptographyServiceMock = {
-    genRandomString: jest.fn(),
-  };
 
   const notificationsServiceMock = {
     getNotifications: jest.fn(),
   };
 
   const appConfigMock = {
-    urlPrefix: '/api/v2',
     configuration: { acrValues: ['eidas2', 'eidas3'] },
+    urlPrefix: '/api/v2',
   };
 
   const configServiceMock = {
@@ -139,18 +139,18 @@ describe('CoreFcpController', () => {
   };
 
   const oidcClientServiceMock = {
+    getTokenFromProvider: jest.fn(),
+    getUserInfosFromProvider: jest.fn(),
     utils: {
       checkIdpBlacklisted: jest.fn(),
     },
-    getTokenFromProvider: jest.fn(),
-    getUserInfosFromProvider: jest.fn(),
   };
 
   const serviceProviderMock = {
+    identityConsent: false,
     name: spNameMock,
     title: spTitleMock,
     type: 'public',
-    identityConsent: false,
   };
 
   const trackingServiceMock = {
@@ -160,17 +160,16 @@ describe('CoreFcpController', () => {
   const csrfMock = 'csrfMockValue';
 
   const sessionDataMock: OidcSession = {
-    interactionId: interactionIdMock,
     csrfToken: randomStringMock,
+    idpId: idpIdMock,
+    idpNonce: idpNonceMock,
+    idpState: idpStateMock,
+    interactionId: interactionIdMock,
 
     spAcr: acrMock,
     spId: spIdMock,
     spIdentity: {} as IOidcIdentity,
     spName: spNameMock,
-
-    idpId: idpIdMock,
-    idpState: idpStateMock,
-    idpNonce: idpNonceMock,
   };
 
   beforeEach(async () => {
@@ -183,11 +182,11 @@ describe('CoreFcpController', () => {
         LoggerService,
         OidcProviderService,
         CoreFcpService,
+        CoreService,
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
         SessionService,
         ConfigService,
-        CryptographyService,
         NotificationsService,
         OidcClientService,
         TrackingService,
@@ -200,6 +199,8 @@ describe('CoreFcpController', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(CoreFcpService)
       .useValue(coreServiceMock)
+      .overrideProvider(CoreService)
+      .useValue(libCoreServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderServiceMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
@@ -208,8 +209,6 @@ describe('CoreFcpController', () => {
       .useValue(sessionServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(CryptographyService)
-      .useValue(cryptographyServiceMock)
       .overrideProvider(NotificationsService)
       .useValue(notificationsServiceMock)
       .overrideProvider(NotificationsService)
@@ -239,8 +238,6 @@ describe('CoreFcpController', () => {
 
     sessionServiceMock.get.mockResolvedValueOnce(sessionDataMock);
     sessionServiceMock.set.mockResolvedValueOnce(undefined);
-
-    cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
 
     coreServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
     coreServiceMock.rejectInvalidAcr.mockResolvedValue(false);
@@ -280,7 +277,7 @@ describe('CoreFcpController', () => {
      * @Todo #486 rework test missing assertion or not complete ones
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/486
      */
-    it('should return nothing, stop interaction, when acr values are not matching', async () => {
+    it('should return nothing, stop interaction, when acr value is not an allowedAcrValue', async () => {
       // Given
       const req = {
         fc: { interactionId: interactionIdMock },
@@ -289,9 +286,9 @@ describe('CoreFcpController', () => {
         render: jest.fn(),
       };
       oidcProviderServiceMock.getInteraction.mockResolvedValue({
-        uid: 'uid',
-        prompt: 'prompt',
         params: 'params',
+        prompt: 'prompt',
+        uid: 'uid',
       });
       coreServiceMock.rejectInvalidAcr.mockResolvedValue(true);
       // When
@@ -314,26 +311,112 @@ describe('CoreFcpController', () => {
       const req = {
         fc: { interactionId: interactionIdMock },
       };
+
       const res = {
         render: jest.fn(),
       };
+
+      const idpFilterExclude = true;
+
+      const idpFilterList = [
+        {
+          maxAuthorizedAcr: 'eidas1',
+          name: 'idp2',
+          uid: 'idp2',
+        },
+        {
+          maxAuthorizedAcr: 'eidas2',
+          name: 'idp3',
+          uid: 'idp3',
+        },
+        {
+          maxAuthorizedAcr: 'eidas3',
+          name: 'idp4',
+          uid: 'idp4',
+        },
+      ];
+
       oidcProviderServiceMock.getInteraction.mockResolvedValue({
+        params: {
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          acr_values: 'eidas2',
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          client_id: '1234567890',
+        },
         uid: 'uid',
-        prompt: 'prompt',
-        params: 'params',
       });
+
+      configServiceMock.get.mockReturnValue({
+        configuration: {
+          acrValues: ['eidas2', 'eidas3'],
+        },
+      });
+
+      coreServiceMock.rejectInvalidAcr.mockResolvedValue(false);
+
+      serviceProviderServiceMock.getById.mockResolvedValueOnce({
+        idpFilterExclude,
+        idpFilterList,
+      });
+
+      identityProviderServiceMock.getFilteredList.mockResolvedValueOnce(
+        idpFilterList,
+      );
+
+      libCoreServiceMock.isAcrValid
+        .mockReturnValueOnce(false)
+        .mockReturnValueOnce(true)
+        .mockReturnValueOnce(true);
+
+      const expectedProviders = [idpFilterList[1], idpFilterList[2]];
       // When
       await coreController.getInteraction(req, res, params, sessionServiceMock);
       // Then
+      expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(1);
+      expect(serviceProviderServiceMock.getById).toHaveBeenCalledWith(
+        '1234567890',
+      );
+      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledWith({
+        blacklist: idpFilterExclude,
+        idpList: idpFilterList,
+      });
+      expect(libCoreServiceMock.isAcrValid).toHaveBeenCalledTimes(3);
+      expect(libCoreServiceMock.isAcrValid).toHaveBeenNthCalledWith(
+        1,
+        idpFilterList[0].maxAuthorizedAcr,
+        'eidas2',
+      );
+      expect(libCoreServiceMock.isAcrValid).toHaveBeenNthCalledWith(
+        2,
+        idpFilterList[1].maxAuthorizedAcr,
+        'eidas2',
+      );
+      expect(libCoreServiceMock.isAcrValid).toHaveBeenNthCalledWith(
+        3,
+        idpFilterList[2].maxAuthorizedAcr,
+        'eidas2',
+      );
       expect(res.render).toHaveBeenCalledTimes(1);
       expect(res.render).toHaveBeenCalledWith('interaction', {
+        csrfToken: csrfMock,
         notifications: undefined,
-        params: 'params',
-        providers: undefined,
+        params: {
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          acr_values: 'eidas2',
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          client_id: '1234567890',
+        },
+        providers: expectedProviders,
         scope: undefined,
         spName: 'some SP',
         uid: 'uid',
-        csrfToken: csrfMock,
       });
     });
 
@@ -610,13 +693,13 @@ describe('CoreFcpController', () => {
       );
       // Then
       expect(result).toStrictEqual({
-        csrfToken: csrfMock,
-        interactionId: interactionIdMock,
-        identity: {},
-        scopes: scopesMock,
         claims: claimsLabelMock,
-        spName: spNameMock,
         consentRequired: true,
+        csrfToken: csrfMock,
+        identity: {},
+        interactionId: interactionIdMock,
+        scopes: scopesMock,
+        spName: spNameMock,
       });
     });
   });
@@ -636,10 +719,10 @@ describe('CoreFcpController', () => {
       // Given
       const body = { _csrf: randomStringMock };
       sessionServiceMock.get.mockReset().mockResolvedValue({
+        csrfToken: randomStringMock,
         interactionId: interactionIdMock,
         spAcr: acrMock,
         spName: spNameMock,
-        csrfToken: randomStringMock,
       });
       // Then
       await expect(
@@ -653,10 +736,10 @@ describe('CoreFcpController', () => {
       const csrfTokenSessionMock = randomStringMock;
       const body = { _csrf: csrfTokenBodyMock };
       sessionServiceMock.get.mockReset().mockResolvedValue({
+        csrfToken: csrfTokenSessionMock,
         interactionId: interactionIdMock,
         spAcr: acrMock,
         spName: spNameMock,
-        csrfToken: csrfTokenSessionMock,
       });
       sessionCsrfServiceMock.validate.mockReset().mockImplementation(() => {
         throw new Error(
@@ -714,9 +797,9 @@ describe('CoreFcpController', () => {
 
     const identityExchangeMock = {
       amr: amrMock,
-      idpIdentity: identityMock,
-      idpAcr: acrMock,
       idpAccessToken: accessTokenMock,
+      idpAcr: acrMock,
+      idpIdentity: identityMock,
     };
     const redirectMock = `/api/v2/interaction/${interactionIdMock}/verify`;
 

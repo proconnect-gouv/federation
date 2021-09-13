@@ -1,7 +1,7 @@
 import { Given } from 'cypress-cucumber-preprocessor/steps';
 
 import {
-  getIdentityProviderByAcrValue,
+  getIdentityProviderByAttributes,
   getIdentityProviderByDescription,
 } from '../helpers';
 
@@ -18,5 +18,16 @@ Given(
 );
 
 Given("j'utilise un fournisseur d'identité avec {string}", function (acrValue) {
-  getIdentityProviderByAcrValue(this.identityProviders, acrValue);
+  getIdentityProviderByAttributes(this.identityProviders, { acrValue });
 });
+
+Given(
+  /^j'utilise un fournisseur d'identité supportant "([^"]*)"(?: avec chiffrement "([^"]*)" et signature "([^"]*)")?$/,
+  function (acrValue, encryption, signature) {
+    getIdentityProviderByAttributes(this.identityProviders, {
+      acrValue,
+      encryption,
+      signature,
+    });
+  },
+);
