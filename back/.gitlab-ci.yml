@@ -6,10 +6,14 @@ stages:
   - 'Review'
   - 'Post-deploy'
 
+variables:
+  FC_ROOT: '$CI_BUILDS_DIR/france-connect'
+  PROXY_EXPLOITATION: "http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT"
+
 global:
   image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
   tags:
-    - nodejs
+    - node
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
   cache:
@@ -31,14 +35,14 @@ global:
 quality:
   image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
   tags:
-    - nodejs
+    - node
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
   cache:
     key: '${CI_PROJECT_ID}'
     policy: pull
     paths:
-      - quality/fcp/node_modules/
+      - quality/node_modules/
   stage: 'UT/Lint/Coverage'
   script:
     - cd quality
@@ -51,17 +55,20 @@ quality:
 build-cache:
   image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
   tags:
-    - nodejs
+    - node
   cache:
     key: '${CI_PROJECT_ID}'
     policy: push
     paths:
       - back/node_modules/
+      - front/node_modules/
+      - quality/node_modules/
       - front/apps/agent-connect/node_modules/
   stage: 'Cache'
   script:
     - cd $CI_PROJECT_DIR/back && yarn install
-    - cd $CI_PROJECT_DIR/front/apps/agent-connect && yarn install
+    - cd $CI_PROJECT_DIR/front && yarn install
+    - cd $CI_PROJECT_DIR/quality && yarn install
   interruptible: true
   rules:
     - if: '$CI_COMMIT_BRANCH == "staging"'

@@ -10,7 +10,7 @@ variables:
 
     CX_FLOW_BUG_TRACKER: "GitLab"                                  # Beware camelcase 'L' in GitLab if modified
     CX_FLOW_BUG_TRACKER_IMPL: ${CX_FLOW_BUG_TRACKER}
-    CX_FLOW_EXE: "java -jar /app/cx-flow.jar"
+    CX_FLOW_EXE: "java -Dhttp.proxyHost=${EXPLOITATION_PROXY_HOST} -Dhttp.proxyPort=${EXPLOITATION_PROXY_PORT} -Dhttps.proxyHost=${EXPLOITATION_PROXY_HOST} -Dhttps.proxyPort=${EXPLOITATION_PROXY_PORT} -jar /app/cx-flow.jar"
     CX_PROJECT: "FranceConnect-fcv2"
     CHECKMARX_VERSION: "9.3"                                       # Modified
     CHECKMARX_SETTINGS_OVERRIDE: "false"
@@ -52,7 +52,7 @@ variables:
 # checkmarx-scan:
 #   stage: Checkmarx
 #   tags:
-#     - checkmarx
+#     - checkmarx-scan
 #   rules:
 #     - if: '$CX_FLOW_BUG_TRACKER != "GitLabDashboard" && $CI_COMMIT_BRANCH == "master"'
 #   image:
@@ -88,7 +88,7 @@ checkmarx-scan-mr:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       allow_failure: true
   tags:
-    - checkmarx
+    - checkmarx-scan
   image:   
     name: checkmarx/${CHECKMARX_DOCKER_IMAGE}
     entrypoint: ['']
