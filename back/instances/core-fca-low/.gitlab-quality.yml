@@ -15,6 +15,7 @@ quality-fca-low-docker:
       - front/node_modules/
       - front/apps/agent-connect/node_modules/
       - quality/node_modules/
+      - $CYPRESS_CACHE_FOLDER
   before_script:
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - echo "FC_APPS_VERSION=$FC_APPS_VERSION"

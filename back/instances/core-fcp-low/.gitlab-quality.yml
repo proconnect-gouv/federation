@@ -13,6 +13,7 @@ quality-fcp-low-docker:
     paths:
       - back/node_modules/
       - quality/node_modules/
+      - $CYPRESS_CACHE_FOLDER
   before_script:
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
     - shopt -s expand_aliases
