@@ -9,6 +9,7 @@ stages:
 variables:
   FC_ROOT: '$CI_BUILDS_DIR/france-connect'
   PROXY_EXPLOITATION: "http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT"
+  CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
 global:
   image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
@@ -64,6 +65,7 @@ build-cache:
       - front/node_modules/
       - quality/node_modules/
       - front/apps/agent-connect/node_modules/
+      - $CYPRESS_CACHE_FOLDER
   stage: 'Cache'
   script:
     - cd $CI_PROJECT_DIR/back && yarn install
