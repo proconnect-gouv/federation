@@ -486,6 +486,7 @@ case "$action" in
       core-fca-low fca-low-front exploitation-fca-low exploit-fca-low-back \
       exploit-fcp-high-fi-mock exploit-fca-low-fi-mock \
       fsa1-low fsa2-low fsa3-low fsa4-low \
+      fia1-low fia2-low fia4-low fia5-low \
     ;;
   # -- stop all up's containers (FCP and/or FCA)
   stop-all)
