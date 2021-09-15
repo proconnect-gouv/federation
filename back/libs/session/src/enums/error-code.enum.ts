@@ -15,4 +15,5 @@ export const enum ErrorCode {
   STORAGE_ISSUE = 5,
   INVALID_CSRF_CONSENT = 6,
   INVALID_CSRF_SELECT_IDP = 7,
+  BAD_STRINGIFY = 8,
 }
