@@ -3,13 +3,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger';
+import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 
 import { SessionConfig } from '../dto';
 import {
   SessionBadAliasException,
   SessionBadFormatException,
+  SessionBadStringifyException,
   SessionStorageException,
 } from '../exceptions';
 import {
@@ -306,7 +307,14 @@ export class SessionService {
      * @todo #415 should probably have a try/catch with custom error code
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/415
      */
-    const dataString = JSON.stringify(data);
+
+    let dataString;
+    try {
+      dataString = JSON.stringify(data);
+    } catch (error) {
+      this.logger.trace(error, LoggerLevelNames.ERROR);
+      throw new SessionBadStringifyException();
+    }
     const dataCipher = this.cryptography.encryptSymetric(
       encryptionKey,
       dataString,
