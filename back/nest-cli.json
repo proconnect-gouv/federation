@@ -93,7 +93,8 @@
           "../../../instances/mock-service-provider-fcp-high/**/*.js",
           "../../../instances/mock-service-provider-fcp-high/**/*.ejs",
           "../../../instances/mock-service-provider-fcp-high/**/*.css",
-          "../../../instances/mock-service-provider-fcp-high/**/*.svg"
+          "../../../instances/mock-service-provider-fcp-high/**/*.svg",
+          "../../../instances/mock-service-provider-fcp-high/**/*.png"
         ]
       }
     },
@@ -115,7 +116,8 @@
           "../../../instances/mock-service-provider-fca-low/**/*.js",
           "../../../instances/mock-service-provider-fca-low/**/*.ejs",
           "../../../instances/mock-service-provider-fca-low/**/*.css",
-          "../../../instances/mock-service-provider-fca-low/**/*.svg"
+          "../../../instances/mock-service-provider-fca-low/**/*.svg",
+          "../../../instances/mock-service-provider-fca-low/**/*.png"
         ]
       }
     },
@@ -137,7 +139,8 @@
           "../../../instances/mock-service-provider-fcp-low/**/*.js",
           "../../../instances/mock-service-provider-fcp-low/**/*.ejs",
           "../../../instances/mock-service-provider-fcp-low/**/*.css",
-          "../../../instances/mock-service-provider-fcp-low/**/*.svg"
+          "../../../instances/mock-service-provider-fcp-low/**/*.svg",
+          "../../../instances/mock-service-provider-fcp-low/**/*.png"
         ]
       }
     },
@@ -157,7 +160,8 @@
           "../../../instances/mock-identity-provider-fca-low/**/*.ejs",
           "../../../instances/mock-identity-provider-fca-low/**/*.css",
           "../../../instances/mock-identity-provider-fca-low/**/*.svg",
-          "../../../instances/mock-identity-provider-fca-low/**/*.csv"
+          "../../../instances/mock-identity-provider-fca-low/**/*.csv",
+          "../../../instances/mock-identity-provider-fca-low/**/*.png"
         ]
       }
     },
@@ -177,7 +181,8 @@
           "../../../instances/mock-identity-provider-fcp-high/**/*.ejs",
           "../../../instances/mock-identity-provider-fcp-high/**/*.css",
           "../../../instances/mock-identity-provider-fcp-high/**/*.svg",
-          "../../../instances/mock-identity-provider-fcp-high/**/*.csv"
+          "../../../instances/mock-identity-provider-fcp-high/**/*.csv",
+          "../../../instances/mock-identity-provider-fcp-high/**/*.png"
         ]
       }
     },
@@ -197,7 +202,8 @@
           "../../../instances/mock-identity-provider-fcp-low/**/*.ejs",
           "../../../instances/mock-identity-provider-fcp-low/**/*.css",
           "../../../instances/mock-identity-provider-fcp-low/**/*.svg",
-          "../../../instances/mock-identity-provider-fcp-low/**/*.csv"
+          "../../../instances/mock-identity-provider-fcp-low/**/*.csv",
+          "../../../instances/mock-identity-provider-fcp-low/**/*.png"
         ]
       }
     },
