@@ -11,6 +11,7 @@ import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import {
   SessionBadAliasException,
   SessionBadFormatException,
+  SessionBadStringifyException,
   SessionStorageException,
 } from '../exceptions';
 import {
@@ -59,6 +60,7 @@ const loggerServiceMock = {
   debug: jest.fn(),
   setContext: jest.fn(),
   trace: jest.fn(),
+  error: jest.fn(),
 };
 
 const redisServiceMock = {
@@ -836,6 +838,36 @@ describe('SessionService', () => {
 
       // expect
       expect(result).toStrictEqual(cipherMock);
+    });
+
+    it('should fail to stringify data because a circular reference was found', () => {
+      const errorMock = {
+        data: 42,
+        error: null,
+      };
+      errorMock.error = errorMock;
+      // setup
+      expect(
+        // action
+        () => service['serialize'](errorMock),
+        // expect
+      ).toThrow(SessionBadStringifyException);
+      expect(loggerServiceMock.trace).toHaveBeenCalledTimes(1);
+      expect(cryptographyServiceMock.encryptSymetric).toHaveBeenCalledTimes(0);
+    });
+
+    it('should fail to stringify data because a bigInt was found', () => {
+      const errorMock = BigInt(
+        '0b11111111111111111111111111111111111111111111111111111',
+      ) as unknown as object;
+      // setup
+      expect(
+        // action
+        () => service['serialize'](errorMock),
+        // expect
+      ).toThrow(SessionBadStringifyException);
+      expect(loggerServiceMock.trace).toHaveBeenCalledTimes(1);
+      expect(cryptographyServiceMock.encryptSymetric).toHaveBeenCalledTimes(0);
     });
   });
 
