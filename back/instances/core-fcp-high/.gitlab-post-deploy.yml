@@ -31,7 +31,7 @@ quality-fcp-high-release:
     - cd $CI_PROJECT_DIR/quality/fcp
     - export CYPRESS_EXPLOIT_USER_PASS=$EXPLOIT_FCP_HIGH_PWD
     - export CYPRESS_EXPLOIT_USER_TOTP=$EXPLOIT_FCP_HIGH_TOTP
-    - yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn test:high:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - yarn report:generate
     - exit $RETURN_CODE

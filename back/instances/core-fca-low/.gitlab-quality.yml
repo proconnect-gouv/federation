@@ -56,7 +56,7 @@ quality-fca-low-docker:
       (docker exec fc_exploitation-fca-low_1 cat /tmp/.pm2/logs/exploitation-fca-low-out-0.log || true) &&
       exit 1)
     - cd $CI_PROJECT_DIR/quality/fca
-    - CYPRESS_TEST_ENV=docker yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - CYPRESS_TEST_ENV=docker yarn test:low:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=docker yarn report:generate
     - exit $RETURN_CODE

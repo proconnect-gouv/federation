@@ -4,4 +4,6 @@ export interface Environment {
   exploitRootUrl: string;
   fcRootUrl: string;
   name: string;
+  udAppId?: string;
+  udRootUrl?: string;
 }

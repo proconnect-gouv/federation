@@ -66,7 +66,7 @@ quality-fca-low-recette:
   script:
     - unset EXPLOIT_USER_NAME && unset EXPLOIT_USER_PASS && unset EXPLOIT_USER_TOTP
     - cd quality/fca && yarn install
-    - CYPRESS_TEST_ENV=recette yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - CYPRESS_TEST_ENV=recette yarn test:low:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=recette yarn report:generate
     - exit $RETURN_CODE

@@ -1,6 +1,7 @@
 {
   "pluginsFile": "./cypress/plugins/index.ts",
   "testFiles": "**/*.{feature,features}",
+  "baseUrl": "https://docker.dev-franceconnect.fr",
   "env": {
     "PLATFORM": "fcp-high",
     "TEST_ENV": "docker",
