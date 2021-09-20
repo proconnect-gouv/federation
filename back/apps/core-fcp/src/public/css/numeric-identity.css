@@ -78,7 +78,7 @@
   transform: translateY(-50%) rotate(-45deg);
 }
 
-#numeric-identity h1 {
+#numeric-identity h2 {
   font-size: 1.5rem;
   font-weight: 800;
   color: #000091;
@@ -138,7 +138,7 @@
 }
 
 @media screen and (min-width: 576px) {
-  #numeric-identity h1 {
+  #numeric-identity h2 {
     font-size: 2rem;
   }
 

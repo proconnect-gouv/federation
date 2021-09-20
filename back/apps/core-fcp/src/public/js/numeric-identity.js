@@ -1,19 +1,30 @@
-// Popin opening and closing handling
+// PopIn opening and closing handling
 (function () {
   const openNumericIdentity = document.getElementById('tuto-numeric-identity');
-  const numericIdentityPopin = document.getElementById('numeric-identity');
+  const numericIdentityPopIn = document.getElementById('numeric-identity');
   const interactionOverflow = document.querySelector('body');
 
-  openNumericIdentity.addEventListener('click', (e) => {
-    e.preventDefault();
-    numericIdentityPopin.classList.add('show');
-    interactionOverflow.style.overflow = 'hidden';
-  }, true);
+  const CLASS_CSS_SHOW = 'show';
 
-  numericIdentityPopin.addEventListener('click', (e) => {
-    if (e.target.id !== '') {
-      numericIdentityPopin.classList.remove('show');
+  const openPopIn = (e) => {
+    e.preventDefault();
+    numericIdentityPopIn.classList.add(CLASS_CSS_SHOW);
+    interactionOverflow.style.overflow = 'hidden';
+  }
+
+  const closePopIn = (e) => {
+    e.preventDefault();
+      numericIdentityPopIn.classList.remove(CLASS_CSS_SHOW);
       interactionOverflow.style.overflow = 'auto';
-    }
-  }, true);  
+  }
+
+  const closePopInEsc = (e) => {
+      if(e.key === "Escape"){
+        closePopIn(e)
+      }
+  }
+
+  openNumericIdentity.addEventListener('click', openPopIn, true);
+  numericIdentityPopIn.addEventListener('click', closePopIn, true); 
+  document.addEventListener('keydown',closePopInEsc, true ); 
 })();
