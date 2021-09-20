@@ -31,7 +31,7 @@ quality-fca-low-release:
     - cd $CI_PROJECT_DIR/quality/fca
     - export CYPRESS_EXPLOIT_USER_PASS=$EXPLOIT_FCA_LOW_INT_PWD
     - export CYPRESS_EXPLOIT_USER_TOTP=$EXPLOIT_FCA_LOW_INT_TOTP
-    - yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn test:low:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - yarn report:generate
     - exit $RETURN_CODE

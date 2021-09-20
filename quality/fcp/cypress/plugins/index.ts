@@ -21,6 +21,7 @@ import * as processFixtureTemplate from 'cypress-template-fixtures';
 import * as resolve from 'resolve';
 
 import { getFixturePath } from './fixture-plugin';
+import { addTracks } from './tracks-plugin';
 
 module.exports = (on, config) => {
   processFixtureTemplate(on, config);
@@ -31,6 +32,7 @@ module.exports = (on, config) => {
   };
 
   on('task', {
+    addTracks,
     getFixturePath,
   });
 

@@ -131,6 +131,22 @@ When("l'usager peut se connecter à FranceConnect", function () {
     .checkConnected();
 });
 
+When('je me connecte à FranceConnect', function () {
+  expect(this.env).to.exist;
+  expect(this.serviceProvider).to.exist;
+  expect(this.identityProvider).to.exist;
+  expect(this.user).to.exist;
+  const scopes = getDefaultScope(this.scopes);
+  new ConnectionWorkflow(this.env, this.serviceProvider)
+    .init()
+    .withScope(scopes)
+    .start()
+    .selectIdentityProvider(this.identityProvider)
+    .login(this.user)
+    .consent()
+    .checkConnected();
+});
+
 When("l'usager ne peut pas se connecter à FranceConnect", function () {
   expect(this.env).to.exist;
   expect(this.serviceProvider).to.exist;
