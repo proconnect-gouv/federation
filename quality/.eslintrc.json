@@ -40,6 +40,13 @@
     "import/newline-after-import": 2,
     "import/no-duplicates": 2,
     "linebreak-style": "off",
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
     "padding-line-between-statements": [
       2,
       { "blankLine": "always", "prev": ["function"], "next": "*" }

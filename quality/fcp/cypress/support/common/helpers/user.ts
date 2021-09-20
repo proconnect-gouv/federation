@@ -51,4 +51,12 @@ export class User implements UserData {
     }
     return idpCredentials;
   }
+
+  get fullName(): string {
+    const { claims = {} } = this;
+    const { family_name, given_name, preferred_username } = claims;
+
+    const lastName = preferred_username || family_name;
+    return [given_name, lastName].join(' ').trim();
+  }
 }

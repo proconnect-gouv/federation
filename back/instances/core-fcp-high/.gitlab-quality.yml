@@ -52,7 +52,7 @@ quality-fcp-high-docker:
       (docker exec fc_exploitation-high_1 cat /tmp/.pm2/logs/exploitation-high-out-0.log || true) &&
       exit 1)
     - cd $CI_PROJECT_DIR/quality/fcp
-    - CYPRESS_TEST_ENV=docker yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - CYPRESS_TEST_ENV=docker yarn test:high:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=docker yarn report:generate
     - exit $RETURN_CODE
