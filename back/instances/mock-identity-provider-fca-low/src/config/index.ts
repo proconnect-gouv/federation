@@ -7,7 +7,7 @@ import App from './app';
 import Logger from './logger';
 import OidcProvider from './oidc-provider';
 import Redis from './redis';
-import ServiceProviderAdapterEnvConfig from './service-provider-adapter-env';
+import ServiceProviderAdapterEnv from './service-provider-adapter-env';
 import Session from './session';
 
 export default {
@@ -16,5 +16,5 @@ export default {
   Redis,
   Session,
   OidcProvider,
-  ServiceProviderAdapterEnvConfig,
+  ServiceProviderAdapterEnv,
 } as MockIdentityProviderConfig;

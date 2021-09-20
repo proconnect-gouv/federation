@@ -60,7 +60,7 @@ export class IdentityProviderAdapterEnvService
   > {
     const { discoveryUrl, discovery, provider } =
       this.config.get<IdentityProviderAdapterEnvConfig>(
-        'IdentityProviderAdapterEnvConfig',
+        'IdentityProviderAdapterEnv',
       );
 
     const configuration = [
@@ -191,7 +191,7 @@ export class IdentityProviderAdapterEnvService
   private decryptClientSecret(clientSecret: string): string {
     const { clientSecretEncryptKey } =
       this.config.get<IdentityProviderAdapterEnvConfig>(
-        'IdentityProviderAdapterEnvConfig',
+        'IdentityProviderAdapterEnv',
       );
     return this.cryptography.decrypt(
       clientSecretEncryptKey,
