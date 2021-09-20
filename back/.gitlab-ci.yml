@@ -82,6 +82,7 @@ include:
   - '/back/instances/core-fca-low/.gitlab-post-deploy.yml'
   - '/back/instances/core-fcp-high/.gitlab-ci.yml'
   - '/back/instances/core-fcp-high/.gitlab-quality.yml'
+  - '/back/instances/core-fcp-high/.gitlab-quality-ud.yml'
   - '/back/instances/core-fcp-high/.gitlab-deploy.yml'
   - '/back/instances/core-fcp-high/.gitlab-post-deploy.yml'
   - '/back/instances/core-fcp-low/.gitlab-ci.yml'
