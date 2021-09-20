@@ -305,7 +305,7 @@ export class IdentityProviderAdapterMongoService
   private decryptClientSecret(clientSecret: string): string {
     const { clientSecretEncryptKey } =
       this.config.get<IdentityProviderAdapterMongoConfig>(
-        'IdentityProviderAdapterMongoConfig',
+        'IdentityProviderAdapterMongo',
       );
     return this.crypto.decrypt(
       clientSecretEncryptKey,

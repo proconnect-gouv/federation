@@ -41,7 +41,7 @@ export class UserDashboardConfig {
   @IsObject()
   @ValidateNested()
   @Type(() => IdentityProviderAdapterEnvConfig)
-  readonly IdentityProviderAdapterEnvConfig: IdentityProviderAdapterEnvConfig;
+  readonly IdentityProviderAdapterEnv: IdentityProviderAdapterEnvConfig;
 
   @IsObject()
   @ValidateNested()

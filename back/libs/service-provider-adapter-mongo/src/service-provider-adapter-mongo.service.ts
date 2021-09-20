@@ -223,7 +223,7 @@ export class ServiceProviderAdapterMongoService
   private decryptClientSecret(clientSecret: string): string {
     const { clientSecretEncryptKey } =
       this.config.get<ServiceProviderAdapterMongoConfig>(
-        'ServiceProviderAdapterMongoConfig',
+        'ServiceProviderAdapterMongo',
       );
     return this.cryptography.decrypt(
       clientSecretEncryptKey,

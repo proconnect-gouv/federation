@@ -6,7 +6,7 @@ import App from './app';
 import CryptographyBroker from './cryptography-broker';
 import CryptographyEidas from './cryptography-eidas';
 import CryptographyFcp from './cryptography-fcp';
-import IdentityProviderAdapterMongoConfig from './identity-provider-adapter-mongo';
+import IdentityProviderAdapterMongo from './identity-provider-adapter-mongo';
 import Logger from './logger';
 import Mailer from './mailer';
 import Mongoose from './mongoose';
@@ -15,7 +15,7 @@ import OidcProvider from './oidc-provider';
 import OverrideOidcProvider from './override-oidc-provider';
 import Redis from './redis';
 import Rnipp from './rnipp';
-import ServiceProviderAdapterMongoConfig from './service-provider-adapter-mongo';
+import ServiceProviderAdapterMongo from './service-provider-adapter-mongo';
 import Session from './session';
 
 export default {
@@ -39,6 +39,6 @@ export default {
   Session,
   OverrideOidcProvider,
   Mailer,
-  ServiceProviderAdapterMongoConfig,
-  IdentityProviderAdapterMongoConfig,
+  ServiceProviderAdapterMongo,
+  IdentityProviderAdapterMongo,
 } as CoreFcpHighConfig;

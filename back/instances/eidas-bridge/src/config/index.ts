@@ -10,13 +10,13 @@ import CryptographyEidas from './cryptography-eidas';
 import EidasClient from './eidas-client';
 import EidasLightProtocol from './eidas-light-protocol';
 import EidasProvider from './eidas-provider';
-import IdentityProviderAdapterEnvConfig from './identity-provider-adapter-env';
+import IdentityProviderAdapterEnv from './identity-provider-adapter-env';
 import Logger from './logger';
 import OidcClient from './oidc-client';
 import OidcProvider from './oidc-provider';
 import OverrideOidcProvider from './override-oidc-provider';
 import Redis from './redis';
-import ServiceProviderAdapterEnvConfig from './service-provider-adapter-env';
+import ServiceProviderAdapterEnv from './service-provider-adapter-env';
 import Session from './session';
 
 export default {
@@ -34,12 +34,12 @@ export default {
   EidasClient,
   EidasLightProtocol,
   EidasProvider,
-  IdentityProviderAdapterEnvConfig,
+  IdentityProviderAdapterEnv,
   Logger,
   OidcClient,
   OidcProvider,
   OverrideOidcProvider,
   Redis,
-  ServiceProviderAdapterEnvConfig,
+  ServiceProviderAdapterEnv,
   Session,
 } as EidasBridgeConfig;
