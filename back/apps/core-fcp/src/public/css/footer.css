@@ -5,6 +5,9 @@
 
 #footer a {
   color: #fff;
+}
+
+#footer li {
   font-size: 15px;
   text-decoration: none;
   border-right: solid 1px #fff;
@@ -13,11 +16,11 @@
   line-height: 2;
 }
 
-#footer a:hover {
+#footer li:hover {
   text-decoration: underline;
 }
 
-#footer a:last-child {
+#footer li:last-child {
   border-right: none;
 }
 
@@ -25,6 +28,10 @@
   padding: 40px 16px;
   display: flex;
   flex-wrap: wrap;
+}
+
+.footer-nav ul {
+  display: flex;
 }
 
 @media screen and (min-width: 576px) {
