@@ -8,7 +8,6 @@ services:
   ####################
   eidas-mock:
     hostname: eidas-mock
-    container_name: eidas-mock
     build:
       context: '${WORKING_DIR}'
       dockerfile: '${WORKING_DIR}/builds/eidas/Dockerfile'

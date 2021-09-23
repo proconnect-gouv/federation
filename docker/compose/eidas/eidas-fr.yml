@@ -8,7 +8,6 @@ services:
   ####################
   eidas-fr:
     hostname: eidas-fr
-    container_name: eidas-fr
     build:
       context: '${WORKING_DIR}'
       dockerfile: '${WORKING_DIR}/builds/eidas/Dockerfile'
