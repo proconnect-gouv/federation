@@ -43,6 +43,6 @@
 
     <!--  If not present then no decryption will be applied on response -->
     <entry key="responseDecryptionIssuer">CN=eidas-connector-fr, OU=FC, O=DINUM, L=Paris, ST=France, C=FR</entry>
-    <entry key="serialNumber">3211e891d91bf48371684f7e58fd11df79a30ece</entry>
+    <entry key="serialNumber">2917c52e79a629fcc647a230f8b428797d177b5a</entry>
 
 </properties>

@@ -42,14 +42,14 @@
 	<entry key="keyStorePassword">local-demo</entry>
 	<entry key="keyPassword">local-demo</entry>
 	<entry key="issuer">CN=eidas-connector-fr, OU=FC, O=DINUM, L=Paris, ST=France, C=FR</entry>
-	<entry key="serialNumber">3211e891d91bf48371684f7e58fd11df79a30ece</entry>
+	<entry key="serialNumber">2917c52e79a629fcc647a230f8b428797d177b5a</entry>
 	<entry key="keyStoreType">JKS</entry>
 
 	<entry key="metadata.keyStorePath">../keystore/keystore-eidas-metadata-fr.jks</entry>
 	<entry key="metadata.keyStorePassword">local-demo</entry>
 	<entry key="metadata.keyPassword">local-demo</entry>
 	<entry key="metadata.issuer">CN=eidas-metadata-fr, OU=FC, O=DINUM, L=Paris, ST=France, C=FR</entry>
-	<entry key="metadata.serialNumber">3211e891d91bf48371684f7e58fd11df79a30ecf</entry>
+	<entry key="metadata.serialNumber">2917c52e79a629fcc647a230f8b428797d177b58</entry>
 	<entry key="metadata.keyStoreType">JKS</entry>
 
 </properties>
