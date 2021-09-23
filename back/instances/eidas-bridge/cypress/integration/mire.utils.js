@@ -130,7 +130,7 @@ export function checkInformationsEuSpFrIdp(params = {}) {
       {
         name: 'PersonIdentifier',
         value:
-          '[FR/BE/082aef8c0d31e99d83d910879a4fcdd8610d571f07ce5610440b3a0161f6e393v1]',
+          '[FR/UK/082aef8c0d31e99d83d910879a4fcdd8610d571f07ce5610440b3a0161f6e393v1]',
       },
       {
         name: 'PlaceOfBirth',
