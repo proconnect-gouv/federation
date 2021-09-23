@@ -73,7 +73,7 @@ describe('Identity Check', () => {
         {
           name: 'PersonIdentifier',
           value:
-            '[FR/BE/cb9c1f5e5313a460114433a71b42511a194b996da1a3716a8d6c892a1d4307c3v1]',
+            '[FR/UK/cb9c1f5e5313a460114433a71b42511a194b996da1a3716a8d6c892a1d4307c3v1]',
         },
         {
           name: 'PlaceOfBirth',

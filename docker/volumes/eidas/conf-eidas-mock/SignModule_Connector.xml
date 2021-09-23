@@ -29,15 +29,6 @@
 
 	<entry key="signature.algorithm">http://www.w3.org/2001/04/xmldsig-more#rsa-sha512</entry>
 
-	<!-- List of incoming Signature algorithms white list separated by ; (default all)
-         http://www.w3.org/2001/04/xmldsig-more#rsa-sha256;
-         http://www.w3.org/2001/04/xmldsig-more#rsa-sha384;
-         http://www.w3.org/2001/04/xmldsig-more#rsa-sha512;
-         http://www.w3.org/2001/04/xmldsig-more#rsa-ripemd160;
-         http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha256;
-         http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384;
-         http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512 -->
-
 	<entry key="signature.algorithm.whitelist">
        		 http://www.w3.org/2001/04/xmldsig-more#rsa-sha256;
              http://www.w3.org/2001/04/xmldsig-more#rsa-sha384;
@@ -46,19 +37,20 @@
              http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha384;
             http://www.w3.org/2001/04/xmldsig-more#ecdsa-sha512
 	</entry>
+	
 	<entry key="response.sign.assertions">true</entry>
 	<entry key="keyStorePath">../keystore/keystore-eidas-connector-mock.jks</entry>
 	<entry key="keyStorePassword">local-demo</entry>
 	<entry key="keyPassword">local-demo</entry>
-	<entry key="issuer">CN=eidas-connector-be, OU=BC, O=BOSA, L=Bruxelles, ST=Belgique, C=BE</entry>
-	<entry key="serialNumber">6eee7cd2a7c87db3cfb93df3394353deeefb0d7c</entry>
+	<entry key="issuer">CN=eidas-connector-mock, OU=MOCK, O=MOCK, L=MOCK, ST=MOCK, C=UK</entry>
+	<entry key="serialNumber">65f73a5997e7993f58ddbc8c01dda0bcbac948d3</entry>
 	<entry key="keyStoreType">JKS</entry>
 
 	<entry key="metadata.keyStorePath">../keystore/keystore-eidas-metadata-mock.jks</entry>
 	<entry key="metadata.keyStorePassword">local-demo</entry>
 	<entry key="metadata.keyPassword">local-demo</entry>
-	<entry key="metadata.issuer">CN=eidas-metadata-be, OU=BC, O=BOSA, L=Bruxelles, ST=Belgique, C=BE</entry>
-	<entry key="metadata.serialNumber">6eee7cd2a7c87db3cfb93df3394353deeefb0d7d</entry>
+	<entry key="metadata.issuer">CN=eidas-metadata-mock, OU=MOCK, O=MOCK, L=MOCK, ST=MOCK, C=UK</entry>
+	<entry key="metadata.serialNumber">65f73a5997e7993f58ddbc8c01dda0bcbac948d1</entry>
 	<entry key="metadata.keyStoreType">JKS</entry>
 
 </properties>
