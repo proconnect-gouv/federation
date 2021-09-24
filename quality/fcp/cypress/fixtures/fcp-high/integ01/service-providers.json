@@ -1,7 +1,7 @@
 [
   {
     "name": "fsp1v2",
-    "description": "par défaut",
+    "descriptions": ["par défaut"],
     "mocked": true,
     "url": "https://fsp1v2.integ01.fcp.fournisseur-de-service.fr",
     "redirectUriPath": "/oidc-callback/envIssuer",
@@ -18,7 +18,10 @@
   },
   {
     "name": "fsp2v2",
-    "description": "habilité à demander le scope identite_pivot",
+    "descriptions": [
+      "habilité à demander le scope identite_pivot",
+      "Fournisseur de service sans whitelist"
+    ],
     "mocked": true,
     "url": "https://fsp2v2.integ01.fcp.fournisseur-de-service.fr",
     "redirectUriPath": "/oidc-callback/envIssuer",

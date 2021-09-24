@@ -77,40 +77,47 @@ export class MetadataIdpAdapterMongoDTO {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly response_types: ResponseTypes[];
 
+  @IsOptional()
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly revocation_endpoint_auth_method: string;
+  readonly revocation_endpoint_auth_method?: string;
 
+  @IsOptional()
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly userinfo_signed_response_alg: string;
+  readonly userinfo_signed_response_alg?: string;
 
+  @IsOptional()
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly userinfo_encrypted_response_alg: string;
+  readonly userinfo_encrypted_response_alg?: string;
 
+  @IsOptional()
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly userinfo_encrypted_response_enc: string;
+  readonly userinfo_encrypted_response_enc?: string;
 
+  @IsOptional()
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly id_token_signed_response_alg: string;
+  readonly id_token_signed_response_alg?: string;
 
+  @IsOptional()
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly id_token_encrypted_response_alg: string;
+  readonly id_token_encrypted_response_alg?: string;
 
+  @IsOptional()
   @IsString()
   // openid defined property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly id_token_encrypted_response_enc: string;
+  readonly id_token_encrypted_response_enc?: string;
 
   @IsString()
   // openid defined property names
