@@ -1,7 +1,7 @@
 [
   {
     "name": "fsp1-high",
-    "description": "par défaut",
+    "descriptions": ["par défaut"],
     "mocked": true,
     "url": "https://fsp1-high.{{TEST_ENV}}.dev-franceconnect.fr",
     "redirectUriPath": "/oidc-callback/envIssuer",
@@ -18,7 +18,10 @@
   },
   {
     "name": "fsp2-high",
-    "description": "habilité à demander le scope identite_pivot",
+    "descriptions": [
+      "habilité à demander le scope identite_pivot",
+      "fournisseur de service sans whitelist"
+    ],
     "mocked": true,
     "url": "https://fsp2-high.{{TEST_ENV}}.dev-franceconnect.fr",
     "redirectUriPath": "/oidc-callback/envIssuer",

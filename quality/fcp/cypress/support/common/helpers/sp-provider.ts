@@ -7,7 +7,7 @@ export const getServiceProviderByDescription = (
   description: string,
 ): ServiceProvider => {
   const serviceProvider: ServiceProvider = serviceProviders.find(
-    (serviceProvider) => serviceProvider.description === description,
+    (serviceProvider) => serviceProvider.descriptions.includes(description),
   );
   expect(
     serviceProvider,

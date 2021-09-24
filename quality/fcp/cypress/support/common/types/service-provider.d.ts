@@ -13,7 +13,7 @@ export interface ServiceProvider extends ServiceProviderBase {
   mocked: boolean;
   name: string;
   scopes: string[];
-  description: string;
+  descriptions: string[];
 }
 
 export interface ScopeContext {
