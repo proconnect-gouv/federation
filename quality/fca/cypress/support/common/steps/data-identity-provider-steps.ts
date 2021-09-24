@@ -1,7 +1,7 @@
 import { Given } from 'cypress-cucumber-preprocessor/steps';
 
 import {
-  getIdentityProviderByAcrValue,
+  getIdentityProviderByAttributes,
   getIdentityProviderByDescription,
 } from '../helpers';
 
@@ -17,6 +17,17 @@ Given(
   },
 );
 
-Given("j'utilise un fournisseur d'identité avec {string}", function (acrValue) {
-  getIdentityProviderByAcrValue(this.identityProviders, acrValue);
-});
+Given(
+  "j'utilise un fournisseur d'identité avec niveau de sécurité {string} et signature {string}",
+  function (acrValue, signature) {
+    const identityProvider = getIdentityProviderByAttributes(
+      this.identityProviders,
+      {
+        acrValue,
+        enabled: true,
+        signature,
+      },
+    );
+    cy.log(`J'utilise le fournisseur d'identité ${identityProvider.idpId}`);
+  },
+);

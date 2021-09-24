@@ -120,15 +120,9 @@ describe('Scope', () => {
     cy.get('#scope_phone').click();
     cy.get('#scope_chorusdt').click();
 
-    // Go to FC
     cy.get('#get-authorize').click();
-
-    // Choose IdP
-    cy.get(`#fi-search-term`).type('ministere');
-    cy.contains('Identity Provider 1 - eIDAS élevé').click();
-
-    // Connect
-    cy.get('form').submit();
+    chooseIdpOnCore('fia1-low');
+    cy.get('button[type=submit]').click();
 
     checkInStringifiedJson('sub', BASIC_SUB);
     checkInStringifiedJson('given_name', 'Angela Claire Louise');

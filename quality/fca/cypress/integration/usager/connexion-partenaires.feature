@@ -5,7 +5,7 @@ Fonctionnalité: Connexion Partenaires
   je veux me connecter en utilisant un fournisseur d'identité partenaire
   afin d'accéder à mon service
 
-  @ignoreDocker
+  @ignoreDocker @ignore
   Scénario: Connexion d'un usager - Osmose avec FI mock
     Etant donné que j'utilise le fournisseur de service "osmose"
     Et que je navigue sur la page fournisseur de service
