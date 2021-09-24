@@ -3,13 +3,51 @@
     "idpId": "fia1-low",
     "description": "par défaut",
     "ministry": "MOCK - Ministére de la transition écologique - ALL FIS - SORT 2",
-    "title": "Identity Provider 1 - eIDAS élevé",
+    "title": "Identity Provider 1 - eIDAS faible - ES256",
     "mocked": true,
     "enabled": true,
     "url": "https://fia1-low.{{TEST_ENV}}.dev-franceconnect.fr/interaction",
-    "acrValues": ["eidas1"],
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "ES256",
     "selectors": {
       "idpButton": "#idp-fia1-low",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "button[type='submit']"
+    }
+  },
+  {
+    "idpId": "fia2-low",
+    "description": "FI eidas1 avec signature RS256",
+    "ministry": "MOCK - Ministére de la transition écologique - ALL FIS - SORT 2",
+    "title": "Identity Provider 2 - eIDAS faible - RS256",
+    "mocked": true,
+    "enabled": true,
+    "url": "https://fia2-low.{{TEST_ENV}}.dev-franceconnect.fr/interaction",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "RS256",
+    "selectors": {
+      "idpButton": "#idp-fia2-low",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "button[type='submit']"
+    }
+  },
+  {
+    "idpId": "fia4-low",
+    "description": "FI eidas1 avec signature HS256",
+    "ministry": "MOCK - Ministére de la mer - E2E - SORT 4",
+    "title": "Identity Provider 4 - eIDAS faible - HS256",
+    "mocked": true,
+    "enabled": true,
+    "url": "https://fia4-low.{{TEST_ENV}}.dev-franceconnect.fr/interaction",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "HS256",
+    "selectors": {
+      "idpButton": "#idp-fia4-low",
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"

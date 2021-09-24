@@ -3,13 +3,51 @@
     "idpId": "fia1v2",
     "description": "par défaut",
     "ministry": "Démonstration",
-    "title": "Identity Provider 1 - HS256 - encrypted",
+    "title": "Identity Provider 1 - HS256",
     "mocked": true,
     "enabled": true,
     "url": "https://fia1v2.integ01.dev-agentconnect.fr/interaction",
-    "acrValues": ["eidas1"],
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "HS256",
     "selectors": {
       "idpButton": "#idp-fia1v2",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "button[type='submit']"
+    }
+  },
+  {
+    "idpId": "fia2v2",
+    "description": "FI eidas1 avec signature ES256",
+    "ministry": "Démonstration",
+    "title": "Identity Provider 2 - ES256",
+    "mocked": true,
+    "enabled": true,
+    "url": "https://fia2v2.integ01.dev-agentconnect.fr/interaction",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "ES256",
+    "selectors": {
+      "idpButton": "#idp-fia2v2",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "button[type='submit']"
+    }
+  },
+  {
+    "idpId": "fia3v2",
+    "description": "FI eidas1 avec signature RS256",
+    "ministry": "Démonstration",
+    "title": "Identity Provider 3 - RS256",
+    "mocked": true,
+    "enabled": true,
+    "url": "https://fia3v2.integ01.dev-agentconnect.fr/interaction",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "RS256",
+    "selectors": {
+      "idpButton": "#idp-fia3v2",
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"

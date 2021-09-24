@@ -92,10 +92,10 @@ describe('Successful scenarios', () => {
       );
   });
 
-  it('should log in to Service Provider Example with IDP HS256 alg and response not encrypted', () => {
+  it('should log in to Service Provider Example with IDP ES256 signature', () => {
     const params = {
       eidasLevel: 1,
-      idpId: 'fia2-low',
+      idpId: 'fia1-low',
       password: '123',
       scopes: mandatoryScopes,
       sp: `${Cypress.env('SP_NAME')}4-low`,
@@ -111,11 +111,11 @@ describe('Successful scenarios', () => {
     });
     checkInStringifiedJson(
       'sub',
-      'e7c818d230bf4974c052d381273754e71aab72a31b35b6b2f4dec8909d5034f2',
+      '890409e7e18d6a0f888864e79667c51a5d0431275b45fb587843227710d3df21',
     );
   });
 
-  it('should log in to Service Provider Example with IDP HS256 alg and response encrypted', () => {
+  it('should log in to Service Provider Example with IDP HS256 signature', () => {
     const params = {
       eidasLevel: 1,
       idpId: 'fia4-low',
@@ -138,7 +138,7 @@ describe('Successful scenarios', () => {
     );
   });
 
-  it('should log in to Service Provider Example with IDP RS256 alg and response encrypted', () => {
+  it('should log in to Service Provider Example with IDP RS256 signature', () => {
     const params = {
       eidasLevel: 1,
       idpId: 'fia5-low',
