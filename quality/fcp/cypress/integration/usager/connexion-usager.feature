@@ -11,7 +11,7 @@ Etant donné que le fournisseur de service requiert l'accès aux informations du
 Et que je navigue sur la page fournisseur de service
 Et que je clique sur le bouton FranceConnect
 Et que je suis redirigé vers la page sélection du fournisseur d'identité
-Et que j'utilise un fournisseur d'identité avec "eidas1"
+Et que j'utilise un fournisseur d'identité avec niveau de sécurité "eidas1"
 Et que je clique sur le fournisseur d'identité
 Et que je suis redirigé vers la page login du fournisseur d'identité
 Quand je m'authentifie avec succès
@@ -28,7 +28,7 @@ Etant donné que le fournisseur de service requiert l'accès aux informations du
 Et que je navigue sur la page fournisseur de service
 Et que je clique sur le bouton FranceConnect
 Et que je suis redirigé vers la page sélection du fournisseur d'identité
-Et que j'utilise un fournisseur d'identité avec "eidas3"
+Et que j'utilise un fournisseur d'identité avec niveau de sécurité "eidas3"
 Et que je clique sur le fournisseur d'identité
 Et que je suis redirigé vers la page login du fournisseur d'identité
 Quand je m'authentifie avec succès

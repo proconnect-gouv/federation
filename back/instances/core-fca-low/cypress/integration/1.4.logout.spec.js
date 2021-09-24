@@ -12,7 +12,7 @@ describe('RP Initiated logout scenarios', () => {
   // -- replace by either `fip1-high` or `fia1-low`
   const idpId = `${Cypress.env('IDP_NAME')}1-low`;
 
-  it('should log out from FC+ with post logout redirect uri', () => {
+  it('should log out from AgentConnect with post logout redirect uri', () => {
     const SUB =
       '9aeda75d9da1edba7051a7d16e413a72d5206f16cf68c5872dd4894558dde16a';
 
@@ -38,7 +38,7 @@ describe('RP Initiated logout scenarios', () => {
     cy.url().should('include', `${SP_ROOT_URL}/`);
   });
 
-  it('should log out from FC+ without post logout redirect uri', () => {
+  it('should log out from AgentConnect without post logout redirect uri', () => {
     const SUB =
       '85cd916363d19e8b77ea6e7caf7977381b8c5db6505195a5efd02d57e6087f3b';
 

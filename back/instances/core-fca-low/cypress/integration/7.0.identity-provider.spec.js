@@ -1,22 +1,20 @@
 import {
   getAuthorizeUrl,
-  getServiceProvider,
   getIdentityProvider,
+  getServiceProvider,
 } from './mire.utils';
 
 describe('Idp activation & visibility', () => {
   // -- replace by either `fip` or `fia`
   const idpId = `${Cypress.env('IDP_NAME')}`;
-  const { IDP_INTERACTION_URL } = getIdentityProvider(`${idpId}1-low`);
+  const { IDP_INTERACTION_URL, MINISTRY_NAME, TITLE } = getIdentityProvider(`${idpId}1-low`);
 
   const mireUrl = new RegExp('/interaction/[^/]+');
 
   it('should display active and visible IdP', () => {
     cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
-    cy.get('#fi-search-term').type(
-      'MOCK - Ministére de la transition écologique - ALL FIS - SORT 2',
-    );
+    cy.get('#fi-search-term').type(MINISTRY_NAME);
     cy.get(
       '#identity-provider-search input[name="providerUid"][value="fia1-low"]',
     ).should('exist');
@@ -26,15 +24,13 @@ describe('Idp activation & visibility', () => {
     cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
 
-    cy.get('#fi-search-term').type(
-      'MOCK - Ministére de la transition écologique - ALL FIS - SORT 2',
-    );
+    cy.get('#fi-search-term').type(MINISTRY_NAME);
 
     cy.get(
       '#identity-provider-search input[name="providerUid"][value="fia1-low"]',
     ).should('exist');
 
-    cy.contains('Identity Provider 1 - eIDAS élevé').click();
+    cy.contains(TITLE).click();
     cy.url().should('include', IDP_INTERACTION_URL);
   });
 
@@ -48,7 +44,7 @@ describe('Idp activation & visibility', () => {
       '#identity-provider-search input[name="providerUid"][value="fia1-low"]',
     ).should('exist');
 
-    cy.contains('Identity Provider 1 - eIDAS élevé').click();
+    cy.contains(TITLE).click();
     cy.url().should('include', IDP_INTERACTION_URL);
   });
 
@@ -62,7 +58,7 @@ describe('Idp activation & visibility', () => {
       '#identity-provider-search input[name="providerUid"][value="fia1-low"]',
     ).should('exist');
 
-    cy.contains('Identity Provider 1 - eIDAS élevé').click();
+    cy.contains(TITLE).click();
     cy.url().should('include', IDP_INTERACTION_URL);
   });
 
@@ -128,9 +124,7 @@ describe('Idp activation & visibility', () => {
       const { SP_ROOT_URL } = getServiceProvider(spId);
       cy.visit(SP_ROOT_URL);
       cy.get('#get-authorize').click();
-      cy.get('#fi-search-term').type(
-        'MOCK - Ministére de la transition écologique - ALL FIS - SORT 2',
-      );
+      cy.get('#fi-search-term').type(MINISTRY_NAME);
       cy.get('#identity-provider-search').should(
         'not.contain',
         'Idp test Updated, activated',
@@ -150,9 +144,7 @@ describe('Idp activation & visibility', () => {
       const { SP_ROOT_URL } = getServiceProvider(spId);
       cy.visit(SP_ROOT_URL);
       cy.get('#get-authorize').click();
-      cy.get('#fi-search-term').type(
-        'MOCK - Ministére de la transition écologique - ALL FIS - SORT 2',
-      );
+      cy.get('#fi-search-term').type(MINISTRY_NAME);
       cy.get('#identity-provider-search').should(
         'not.contain',
         'Idp test Inserted',
@@ -166,9 +158,7 @@ describe('Idp activation & visibility', () => {
       cy.wait(500);
       cy.reload();
 
-      cy.get('#fi-search-term').type(
-        'MOCK - Ministére de la transition écologique - ALL FIS - SORT 2',
-      );
+      cy.get('#fi-search-term').type(MINISTRY_NAME);
       cy.get('#identity-provider-search').should(
         'not.contain',
         'Idp test Inserted',
