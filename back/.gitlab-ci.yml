@@ -4,6 +4,7 @@ stages:
   - 'Checkmarx'
   - 'Cache'
   - 'Review'
+  - 'Build'
   - 'Post-deploy'
 
 variables:
@@ -12,7 +13,7 @@ variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
 global:
-  image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+  image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
   tags:
     - node
   rules:
@@ -34,7 +35,7 @@ global:
   interruptible: true
 
 quality:
-  image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+  image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
   tags:
     - node
   rules:
@@ -54,7 +55,7 @@ quality:
   interruptible: true
 
 build-cache:
-  image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+  image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
   tags:
     - node
   cache:
@@ -71,6 +72,7 @@ build-cache:
     - cd $CI_PROJECT_DIR/back && yarn install
     - cd $CI_PROJECT_DIR/front && yarn install
     - cd $CI_PROJECT_DIR/quality && yarn install
+  dependencies: []
   interruptible: true
   rules:
     - if: '$CI_COMMIT_BRANCH == "staging"'
@@ -79,14 +81,17 @@ include:
   - '/back/instances/core-fca-low/.gitlab-ci.yml'
   - '/back/instances/core-fca-low/.gitlab-quality.yml'
   - '/back/instances/core-fca-low/.gitlab-deploy.yml'
+  - '/back/instances/core-fca-low/.gitlab-build.yml'
   - '/back/instances/core-fca-low/.gitlab-post-deploy.yml'
   - '/back/instances/core-fcp-high/.gitlab-ci.yml'
   - '/back/instances/core-fcp-high/.gitlab-quality.yml'
   - '/back/instances/core-fcp-high/.gitlab-quality-ud.yml'
   - '/back/instances/core-fcp-high/.gitlab-deploy.yml'
+  - '/back/instances/core-fcp-high/.gitlab-build.yml'
   - '/back/instances/core-fcp-high/.gitlab-post-deploy.yml'
   - '/back/instances/core-fcp-low/.gitlab-ci.yml'
   - '/back/instances/core-fcp-low/.gitlab-quality.yml'
   - '/back/instances/core-fcp-low/.gitlab-deploy.yml'
   - '/back/instances/eidas-bridge/.gitlab-ci.yml'
+  - '/back/instances/eidas-bridge/.gitlab-build.yml'
   - '/back/.gitlab-checkmarx.yml'
