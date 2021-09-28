@@ -12,7 +12,7 @@ services:
 
   fca-low-front:
     hostname: fca-low-front
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:

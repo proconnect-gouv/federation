@@ -107,7 +107,7 @@ services:
     command: -config /etc/docker-gen/config
 
   squid:
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/squid:4.6
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/squid:4.6
     networks:
       - public
       - fc
@@ -149,7 +149,7 @@ services:
 
   rnipp:
     hostname: rnipp
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -172,7 +172,7 @@ services:
 
   csmr-hsm:
     hostname: csmr-hsm
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -213,7 +213,7 @@ services:
 
   csmr-hsm-prod:
     hostname: csmr-hsm
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/csmr-hsm-high:latest
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/csmr-hsm-high:latest
     volumes:
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/log/:/var/log/fc-evt'
@@ -252,7 +252,7 @@ services:
       - '15672:15672'
 
   hsm:
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/softhsm
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/softhsm
     networks:
       - data
     ports:
@@ -260,7 +260,7 @@ services:
 
   styleguide:
     hostname: styleguide
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/infra/nodejs:${NODE_VERSION}-dev
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
