@@ -56,7 +56,7 @@ body {
 
 main {
   padding: 16px 16px 80px;
-  min-height: calc(100vh - (95px + 136px))
+  min-height: calc(100vh - (95px + 136px));
 }
 
 main > h1 {
@@ -81,10 +81,11 @@ main > h1 + h2 {
 
 @media screen and (min-width: 576px) {
   main {
-    min-height: calc(100vh - (95px + 117px))  
+    min-height: calc(100vh - (95px + 117px));
   }
 
-  main > h2, main > h1 {
+  main > h2,
+  main > h1 {
     text-align: center;
   }
 
@@ -95,7 +96,7 @@ main > h1 + h2 {
   main > h1 + h2 {
     font-size: 2rem;
   }
-  
+
   #notifications {
     padding: 0 16px;
   }
@@ -128,7 +129,6 @@ main > h1 + h2 {
   }
 }
 
-
 /** Identity providers [Overflow] **/
 #or-label {
   text-align: center;
@@ -143,22 +143,15 @@ main > h1 + h2 {
   max-width: 400px;
 }
 
-.identity-provider.overflow .icon-container {
+.identity-provider.overflow img {
+  border-radius: 0;
   width: 60px;
   height: 60px;
   margin: 0 16px 0 0;
 }
 
-.identity-provider.overflow .icon-container {
-  height: auto;
-}
-
-.identity-provider.overflow .icon-container img {
-  border-radius: 0;
-}
-
 .identity-provider.overflow button span,
-.identity-provider.overflow button strong{
+.identity-provider.overflow button strong {
   display: initial;
   margin: 0;
   text-align: left;
@@ -177,15 +170,12 @@ main > h1 + h2 {
   justify-content: center;
 }
 
-.identity-provider .icon-container {
+.identity-provider img {
+  border-radius: 8px;
+  width: 100%;
   width: 55%;
   max-width: 155px;
   margin-bottom: 8px;
-}
-
-.identity-provider .icon-container img {
-  border-radius: 8px;
-  width: 100%;
 }
 
 .identity-provider button {
@@ -209,7 +199,8 @@ main > h1 + h2 {
   flex-direction: column;
 }
 
-.identity-provider button span, .identity-provider button strong {
+.identity-provider button span,
+.identity-provider button strong {
   font-size: 16px;
   display: block;
   text-align: center;
@@ -298,7 +289,8 @@ main > h1 + h2 {
   cursor: not-allowed;
 }
 
-.tuto-container button:hover, .tuto-container a:focus button {
+.tuto-container button:hover,
+.tuto-container a:focus button {
   background-color: #000091;
   color: #fff;
   text-transform: underline;
@@ -308,7 +300,7 @@ main > h1 + h2 {
   .tuto-container {
     text-align: center;
   }
-  
+
   .tuto-container .logos-container {
     display: flex;
   }
