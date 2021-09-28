@@ -1,0 +1,74 @@
+core-fca-low-build:
+  stage: 'Build'
+  image: ${BUILD_IMAGE}
+  tags:
+    - build
+  only:
+    - tags
+  when: manual
+  environment:
+    name: build
+  variables:
+    GIT_STRATEGY: none
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    RELEASE_VERSION: ${CI_COMMIT_REF_NAME}
+  services:
+    - name: docker:19.03.12-dind
+      command: ["--experimental"]
+  before_script:
+    - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
+    - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
+  script:
+    - cd $FC_ROOT/fc-docker
+    - ./build.sh core-fca-low $RELEASE_VERSION
+
+mock-service-provider-fca-low-build:
+  stage: 'Build'
+  image: ${BUILD_IMAGE}
+  tags:
+    - build
+  only:
+    - tags
+  when: manual
+  environment:
+    name: build
+  variables:
+    GIT_STRATEGY: none
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    RELEASE_VERSION: ${CI_COMMIT_REF_NAME}
+  services:
+    - name: docker:19.03.12-dind
+      command: ["--experimental"]
+  before_script:
+    - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
+    - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
+  script:
+    - cd $FC_ROOT/fc-docker
+    - ./build.sh mock-service-provider-fca-low $RELEASE_VERSION
+
+mock-identity-provider-fca-low-build:
+  stage: 'Build'
+  image: ${BUILD_IMAGE}
+  tags:
+    - build
+  only:
+    - tags
+  when: manual
+  environment:
+    name: build
+  variables:
+    GIT_STRATEGY: none
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+    RELEASE_VERSION: ${CI_COMMIT_REF_NAME}
+  services:
+    - name: docker:19.03.12-dind
+      command: ["--experimental"]
+  before_script:
+    - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
+    - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
+  script:
+    - cd $FC_ROOT/fc-docker
+    - ./build.sh mock-identity-provider-fca-low $RELEASE_VERSION
