@@ -1,16 +1,14 @@
-@import '../../styles/_colors.scss';
-@import '../../styles/_variables.scss';
+@import '@fc/dsfr/styles.scss';
 
-#identity-providers-user-history {
-  .wrapper {
-    justify-content: center;
-  }
+.identiy-provider-card {
+  max-width: 260px;
+  width: 100%;
 }
 
-@media (min-width: $breakpoint-mobile) {
+@media (min-width: $breakpoints-sm) {
   #identity-providers-user-history {
     .wrapper {
-      justify-content: space-around;
+      justify-content: center;
     }
   }
 }

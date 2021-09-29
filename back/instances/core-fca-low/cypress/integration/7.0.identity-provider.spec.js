@@ -7,7 +7,9 @@ import {
 describe('Idp activation & visibility', () => {
   // -- replace by either `fip` or `fia`
   const idpId = `${Cypress.env('IDP_NAME')}`;
-  const { IDP_INTERACTION_URL, MINISTRY_NAME, TITLE } = getIdentityProvider(`${idpId}1-low`);
+  const { IDP_INTERACTION_URL, MINISTRY_NAME, TITLE } = getIdentityProvider(
+    `${idpId}1-low`,
+  );
 
   const mireUrl = new RegExp('/interaction/[^/]+');
 
@@ -72,7 +74,7 @@ describe('Idp activation & visibility', () => {
       'not.exist',
     );
 
-    cy.contains("Aucun fournisseur d'identités n'a été trouvé").should(
+    cy.contains("Aucun fournisseur d'identité n'a été trouvé").should(
       'be.visible',
     );
   });

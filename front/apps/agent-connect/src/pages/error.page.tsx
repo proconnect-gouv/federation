@@ -15,13 +15,15 @@ const ErrorPage = () => {
         className={classnames('is-blue-agentconnect', {
           'text-center': !isMobile,
           'text-left': isMobile,
-        })}>
+        })}
+      >
         Une erreur est survenue lors de la connexion.
       </h1>
       <div
         className={classnames('content-wrapper-sm my32 px120 fr-text-lg', {
           'no-no-padding': isMobile,
-        })}>
+        })}
+      >
         <p className="mb32">Description de l’erreur :</p>
         <p className="mb32">
           Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
