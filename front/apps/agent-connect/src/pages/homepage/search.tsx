@@ -12,7 +12,7 @@ const SearchComponent = React.memo((): JSX.Element => {
   const { onFormChange, results, searchTerm } = useSearch();
 
   return (
-    <div className="row text-center mb-8" id="identity-provider-search">
+    <div className="row mb-8" id="identity-provider-search">
       <SearchForm
         label="Je recherche mon administration"
         onChange={onFormChange}

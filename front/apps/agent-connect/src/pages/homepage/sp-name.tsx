@@ -3,6 +3,7 @@
 /**
  * Tested with cypress snapshots
  */
+import classnames from 'classnames';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
@@ -15,8 +16,10 @@ const ServiceProviderNameComponent = React.memo((): JSX.Element => {
 
   return (
     <section className="row mt-5 mb-5 text-center">
-      <p className="h4 col-12">Je choisis un compte pour me connecter sur</p>
-      <h1 className="col-12 text-center font-weight-bold text-primary">
+      <h4 className="mt8 mx120 mb16">
+        Je choisis un compte pour me connecter sur
+      </h4>
+      <h1 style={{ color: '#1890ff' }}>
         <span>{serviceProviderName}</span>
       </h1>
     </section>

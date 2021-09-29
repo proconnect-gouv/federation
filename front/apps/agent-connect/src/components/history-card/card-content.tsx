@@ -25,15 +25,13 @@ const IdentityProviderCardContentComponent = React.memo(
     );
 
     return (
-      <div
-        className={classnames('rounded py-4 mb-2', {
-          border: active,
-          'border-primary': active,
-          disabled: !active,
-          'shadow-primary': active,
-        })}>
-        <div className="mb-2">Mon compte</div>
-        <form action={formTargetURL} id={`fca-history-idp-${uid}`} method="POST">
+      <div className={classnames('flex-center rounded p24 m4 card-wrapper')}>
+        <div className="mb8 form-title">Mon compte</div>
+        <form
+          action={formTargetURL}
+          id={`fca-history-idp-${uid}`}
+          method="POST"
+        >
           {redirectToIdentityProviderInputs.map(([inputKey, inputValue]) => (
             <input
               key={inputKey}
@@ -42,10 +40,7 @@ const IdentityProviderCardContentComponent = React.memo(
               type="hidden"
             />
           ))}
-          <button
-            className="btn btn-link title text-uppercase text-primary font-32"
-            disabled={!active}
-            type="submit">
+          <button className="form-button" disabled={!active} type="submit">
             {name}
           </button>
         </form>

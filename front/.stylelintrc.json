@@ -15,6 +15,7 @@
       true,
       {
         "ignoreAtRules": [
+          "debug",
           "each",
           "else",
           "elseif",
@@ -25,7 +26,8 @@
           "include",
           "mixin",
           "return",
-          "use"
+          "use",
+          "while"
         ]
       }
     ]

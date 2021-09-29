@@ -1,16 +1,5 @@
-/* istanbul ignore file */
-
-import { LoadingOutlined } from '@ant-design/icons';
-import { Spin } from 'antd';
-
-const antIcon = <LoadingOutlined spin style={{ fontSize: 48 }} />;
-
 function SpinLoaderComponent(): JSX.Element {
-  return (
-    <div className="text-center">
-      <Spin indicator={antIcon} />
-    </div>
-  );
+  return <div className="text-center">Chargement...</div>;
 }
 
 SpinLoaderComponent.displayName = 'SpinLoaderComponent';

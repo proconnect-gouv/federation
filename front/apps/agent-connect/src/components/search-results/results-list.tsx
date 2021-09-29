@@ -1,8 +1,10 @@
 import React from 'react';
+
 import { useSelector } from 'react-redux';
 
 import { Ministry, RootState } from '../../types';
 import ResultItem from './result-item';
+import './results-list.scss';
 
 type SearchResultsProps = {
   results: Ministry[];
@@ -15,19 +17,29 @@ const SearchResultsComponent = React.memo(
     );
     return (
       <div
-        className="offset-md-1 col-md-10 col-12 text-left"
-        id="identity-provider-result">
+        className="content-wrapper-md v-align-middle"
+        id="identity-provider-result"
+      >
         {results.map(
           ({ id: ministryId, identityProviders: idps, name: ministryName }) => {
             const selected = identityProviders.filter(idp =>
               idps.includes(idp.uid),
             );
             return (
-              <dl key={ministryId} id={`ministry-${ministryId}-search-list`}>
-                <dt>{ministryName}</dt>
-                <dd>
+              <dl
+                key={ministryId}
+                id={`ministry-${ministryId}-search-list`}
+                style={{
+                  marginTop: '0',
+                  marginBottom: '1rem',
+                }}
+              >
+                <dt className="m8 mt4 ministry-name text-center">
+                  {ministryName}
+                </dt>
+                <dd className="my16 ml24 fi-name">
                   {selected.length > 0 ? (
-                    <ul className="unordered-list">
+                    <ul>
                       {selected
                         .filter(idp => idp.active)
                         .map(idp => (
@@ -37,7 +49,9 @@ const SearchResultsComponent = React.memo(
                         ))}
                     </ul>
                   ) : (
-                    <p className="bg-blue-cornflower font-5 p-2 my-2">
+                    <p
+                      className="font-5 p24 my2 text-center"
+                      style={{ backgroundColor: '#e6f3ff' }} >
                       Cette administration n&apos;est pas encore reliée à
                       AgentConnect pour cette application
                     </p>

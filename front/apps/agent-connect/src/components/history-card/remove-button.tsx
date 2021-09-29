@@ -19,10 +19,7 @@ const RemoveButtonComponent = React.memo(
     }, [dispatch, uid]);
 
     return (
-      <button
-        className="btn btn-link font-12 text-charcoal"
-        type="button"
-        onClick={onClickRemoveButton}>
+      <button className="m16" type="button" onClick={onClickRemoveButton}>
         Retirer de cette liste
       </button>
     );
