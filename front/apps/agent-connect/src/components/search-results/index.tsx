@@ -3,6 +3,7 @@ import React from 'react';
 import { isSearchTermValid } from '../../core/search';
 import { Ministry } from '../../types';
 import ResultsList from './results-list';
+import './results-list.scss';
 
 type SearchResultsProps = {
   term: string | undefined;
@@ -20,8 +21,8 @@ const SearchResultsComponent = ({
     <React.Fragment>
       {hasResults && <ResultsList results={results} />}
       {showNoSearchResults && (
-        <div className="col-10 offset-1 text-left">
-          Aucun fournisseur d&apos;identités n&apos;a été trouvé
+        <div className="m20 text-center">
+          Aucun fournisseur d&apos;identité n&apos;a été trouvé
         </div>
       )}
     </React.Fragment>

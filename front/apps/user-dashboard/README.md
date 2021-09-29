@@ -35,10 +35,9 @@ node --trace-warnings ./scripts/populate-account-traces.script.js
 
 > Uniquement pour des besoins UI/UX
 
-Ajouter un fichier `.env` à la racine du dossier `user-dashboard`
+Ajouter un fichier `.env.development.local` à la racine du dossier `user-dashboard`
 
 ```bash
-# fc/front/apps/user-dashboard/.env
 API_PROXY_HOST=http://www.acme.org
 API_PROXY_FOR_PATH=/acme
 REACT_APP_MOCK_USER_INFOS=/user.mock.json
@@ -61,15 +60,37 @@ Ajouter le fichier `traces.mock.json` dans le dossier `user-dashboard/public`
 ```json
 [
   {
-    "accountId": "any-unique-identifier-string-(n)",
+    "accountId": "any-unique-identifier-string-1",
+    "city": "Acme City",
+    "country": "Acme Country",
+    "date": "2011-10-06T14:48:00.000Z",
+    "event": "FC_REQUESTED_IDP_USERINFO",
+    "spAcr": "eidas1",
+    "spId": "00-1",
+    "spName": "Acme Service Provider",
+    "trackId": "trackId-1"
+  },
+  {
+    "accountId": "any-unique-identifier-string-2",
     "city": "Acme City",
     "country": "Acme Country",
     "date": "2011-10-05T14:48:00.000Z",
-    "event": "FC_REQUESTED_IDP_USERINFO",
+    "event": "not_relevant_event",
     "spAcr": "eidas1",
-    "spId": "00-(n)",
+    "spId": "00-2",
     "spName": "Acme Service Provider",
-    "trackId": "trackId-(n)"
+    "trackId": "trackId-2"
+  },
+  {
+    "accountId": "any-unique-identifier-string-3",
+    "city": "Acme City",
+    "country": "Acme Country",
+    "date": "2012-10-05T14:48:00.000Z",
+    "event": "SP_REQUESTED_FC_USERINFO",
+    "spAcr": "eidas1",
+    "spId": "00-2",
+    "spName": "Acme Service Provider",
+    "trackId": "trackId-3"
   }
 ]
 ```

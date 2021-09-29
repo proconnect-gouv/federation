@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { choosenIdentityProvider } from '../../redux/actions';
 import { selectIdentityProviderInputs } from '../../redux/selectors';
 import { IdentityProvider, RootState } from '../../types';
+import './result-item.scss';
 
 type SearchResultsProps = {
   identityProvider: IdentityProvider;
@@ -25,7 +26,12 @@ const ResultItemComponent = React.memo(
     }, [uid, dispatch]);
 
     return (
-      <form action={formTargetURL} aria-label="form" id={`fca-search-idp-${uid}`} method="POST">
+      <form
+        action={formTargetURL}
+        aria-label="form"
+        id={`fca-search-idp-${uid}`}
+        method="POST"
+      >
         {redirectToIdentityProviderInputs.map(([inputKey, inputValue]) => (
           <input
             key={inputKey}
@@ -35,10 +41,11 @@ const ResultItemComponent = React.memo(
           />
         ))}
         <button
-          className="px-0 btn btn-link text-left"
+          className="button-style"
           id={`idp-${uid}-button`}
           type="submit"
-          onClick={buttonClickHandler}>
+          onClick={buttonClickHandler}
+        >
           {name}
         </button>
       </form>

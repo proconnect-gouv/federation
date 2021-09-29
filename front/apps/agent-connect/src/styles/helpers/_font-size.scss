@@ -1,8 +1,0 @@
-@use "rem" as *;
-
-@each $size in $fontsizes {
-  $pixelValue: ($size * 1px);
-  .font-#{$size} {
-    font-size: rem($pixelValue);
-  }
-}

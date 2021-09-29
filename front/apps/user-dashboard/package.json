@@ -1,10 +1,41 @@
 {
-  "name": "react-user-dashboard",
+  "name": "@fc/user-dashboard",
   "version": "0.1.0",
   "private": true,
-  "engines": {
-    "node": "^14.17.0",
-    "npm": "DO-NOT-USE-NPM"
+  "dependencies": {
+    "luxon": "^2.0.2",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.3.0"
+  },
+  "devDependencies": {
+    "react-refresh-typescript": "^2.0.2",
+    "react-scripts": "4.0.3",
+    "typescript": "^4.1.2",
+    "@craco/craco": "^6.2.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@types/jest": "^26.0.15",
+    "@types/node": "^12.0.0",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
+    "@types/react-router-dom": "^5.1.8",
+    "react-app-rewire-alias": "^1.0.3",
+    "react-app-rewired": "^2.1.8",
+    "type-fest": "^2.2.0"
+  },
+  "scripts": {
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "browserslist": {
     "production": [
@@ -17,41 +48,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {
-    "@testing-library/react": "^12.0.0",
-    "@types/lodash.get": "^4.4.6",
-    "@types/luxon": "^1.25.0",
-    "@types/react-helmet": "^6.1.0",
-    "@types/uuid": "^8.3.0",
-    "http-proxy-middleware": "^2.0.0",
-    "node-sass": "^6.0.1",
-    "react-scripts": "^4.0.3",
-    "typescript": "^4.3.4"
-  },
-  "dependencies": {
-    "axios": "^0.21.1",
-    "classnames": "^2.2.6",
-    "final-form": "^4.20.1",
-    "luxon": "^1.25.0",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1",
-    "react-final-form": "^6.5.1",
-    "react-helmet": "^6.1.0",
-    "react-icons": "^4.2.0",
-    "react-jss": "^10.7.1",
-    "react-responsive": "^9.0.0-beta.3",
-    "react-router-dom": "^5.2.0",
-    "redux-devtools-extension": "^2.13.9"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "test:cov": "react-scripts test  --coverage --watchAll=false",
-    "format": "prettier --write ./src/**/*.ts{,x}",
-    "lint": "yarn lint:css && yarn lint:js",
-    "lint:js": "eslint ./src/**/*.ts{,x}",
-    "lint:css": "stylelint ./src/styles/**/*.{css,scss}"
   }
 }
