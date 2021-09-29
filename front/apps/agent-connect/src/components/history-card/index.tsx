@@ -19,7 +19,7 @@ const IdentityProviderHistoryCardComponent = React.memo(
     );
 
     return (
-      <div className="flex-column text-center mx-2 mx-lg-3 mb-3 identiy-provider-card">
+      <div className="flex-column text-center m16 identiy-provider-card">
         {identityProvider && (
           <React.Fragment>
             <CardContent identityProvider={identityProvider} />

@@ -13,30 +13,10 @@
 #
 # ------------------------
 
-# recupere les sous projets definis dans le main ./package.json
-APPS=$(
-  PKG=$(cat package.json)
-  node -pe 'JSON.parse(process.argv[1]).workspaces.packages.join(" ")' "$PKG"
-)
+echo "Cleanup project dependencies"
 
-echo "Start cleanup project dependencies"
+echo "Removing node_modules"
+find . -maxdepth 3 -type d -name node_modules | xargs -i rm -rf {}
 
-# ---- SUB PROJECTS ----
-# iterate through workspaces
-for FOLDER in $APPS
-do
-  rm -rf "./$FOLDER/node_modules"
-  rm -rf "./$FOLDER/yarn-error.log"
-  rm -rf "./$FOLDER/yarn.lock"
-  rm -rf "./$FOLDER/package-lock.json"
-done
-
-# ---- MAIN PROJECT ----
-rm -rf "./node_modules"
-rm -rf "./yarn-error.log"
-rm -rf "./yarn.lock"
-rm -rf "./package-lock.json"
-
-echo "End cleanup project dependencies"
-
-exit 0
+echo "Removing package manager generated files"
+find . -maxdepth 3 -type f -regextype posix-extended -iregex '.*(yarn-error.log|yarn.lock|package-lock.json)' | xargs -i rm {}

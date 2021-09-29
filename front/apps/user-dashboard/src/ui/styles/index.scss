@@ -1,18 +1,12 @@
-// ----------------- CUSTOM
-@import './libs/index.scss';
-@import './_styles.scss';
-
 body,
 html,
 #root {
-  @extend .use-marianne;
-
   height: 100%;
   min-height: 100%;
 }
 
 #root {
-  display:flex;
+  display: flex;
   flex-direction: column;
   justify-content: space-between;
 }
