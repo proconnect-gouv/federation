@@ -21,14 +21,13 @@ When('je navigue sur la page fournisseur de service', function () {
 When('je clique sur le bouton AgentConnect', function () {
   // Setup the requested scope and eidas on mocked environment
   if (this.serviceProvider.mocked === true) {
-    serviceProviderPage.setMockRequestedScope(this.requestedScope);
-    serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
-    serviceProviderPage.clickMockFcaButton(
+    serviceProviderPage.setMockAuthorizeHttpMethod(
       this.serviceProvider.authorizeHttpMethod,
     );
-  } else {
-    serviceProviderPage.fcaButton.click();
+    serviceProviderPage.setMockRequestedScope(this.requestedScope);
+    serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
   }
+  serviceProviderPage.fcaButton.click();
 
   if (isUsingFCBasicAuthorization()) {
     checkFCBasicAuthorization();

@@ -1,4 +1,8 @@
-import { getAuthorizeUrl } from './mire.utils';
+import {
+  getAuthorizeUrl,
+  setFSAuthorizeAcr,
+  submitFSAuthorizeForm,
+} from './mire.utils';
 
 describe('7.0 - Idp activation & visibility', () => {
   before(() => {
@@ -202,8 +206,8 @@ describe('7.0 - Idp activation & visibility', () => {
 
     it('should display an identity provider that has been added without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
-      cy.get('#acrSelector').select('eidas2');
-      cy.get('#get-authorize').click();
+      setFSAuthorizeAcr('eidas2');
+      submitFSAuthorizeForm();
       cy.get('#idp-list').contains('Idp test Inserted').should('not.exist');
 
       cy.e2e('idp_insert');
@@ -215,8 +219,8 @@ describe('7.0 - Idp activation & visibility', () => {
 
     it('should update an identity provider properties, activate it, without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
-      cy.get('#acrSelector').select('eidas2');
-      cy.get('#get-authorize').click();
+      setFSAuthorizeAcr('eidas2');
+      submitFSAuthorizeForm();
       cy.get('#idp-list').contains('Idp test Inserted').should('not.exist');
 
       cy.e2e('idp_insert');
@@ -229,8 +233,8 @@ describe('7.0 - Idp activation & visibility', () => {
 
     it('should update an identity provider properties, deactivate it, without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
-      cy.get('#acrSelector').select('eidas2');
-      cy.get('#get-authorize').click();
+      setFSAuthorizeAcr('eidas2');
+      submitFSAuthorizeForm();
       cy.get('#idp-list').contains('idp-test-update').should('not.exist');
 
       cy.e2e('idp_insert');
@@ -251,8 +255,8 @@ describe('7.0 - Idp activation & visibility', () => {
 
     it('should remove an identity provider without an app restart needed', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
-      cy.get('#acrSelector').select('eidas2');
-      cy.get('#get-authorize').click();
+      setFSAuthorizeAcr('eidas2');
+      submitFSAuthorizeForm();
       cy.get('#idp-list').contains('idp-test-update').should('not.exist');
 
       cy.e2e('idp_insert');

@@ -1,4 +1,4 @@
-import { checkInStringifiedJson, basicScenario } from './mire.utils';
+import { basicScenario, checkInStringifiedJson } from './mire.utils';
 
 /**
  * @todo #242 - remove and let basic scopes
@@ -7,9 +7,11 @@ import { checkInStringifiedJson, basicScenario } from './mire.utils';
 describe('3.2 - Entity', () => {
   it('should have the same client Sub from 2 SP with same entityId', () => {
     basicScenario({
+      sp: 'SP1',
       idpId: 'fip1-high',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
+      userName: 'test',
     });
 
     // FC: Read confirmation message :D
@@ -28,17 +30,12 @@ describe('3.2 - Entity', () => {
     });
 
     basicScenario({
+      sp: 'SP2',
       idpId: 'fip1-high',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
-      start: `${Cypress.env('SP2_ROOT_URL')}`,
-      overrideParams: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
-        scope: 'openid identite_pivot',
-      },
+      scopes: ['openid', 'identite_pivot'],
+      userName: 'test',
     });
 
     // FC: Read confirmation message :D

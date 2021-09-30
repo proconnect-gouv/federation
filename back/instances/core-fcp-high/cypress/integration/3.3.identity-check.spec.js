@@ -1,12 +1,20 @@
 import {
   basicScenario,
-  validateConsent,
   checkInStringifiedJson,
   getIdentityProvider,
+  validateConsent,
 } from './mire.utils';
 
-const scopes =
-  'openid given_name family_name gender birthdate birthplace birthcountry email';
+const scopes = [
+  'openid',
+  'given_name',
+  'family_name',
+  'gender',
+  'birthdate',
+  'birthplace',
+  'birthcountry',
+  'email'
+];
 
 // -- replace by either `fip1-high` or `fia1-low`
 const idpId = `${Cypress.env('IDP_NAME')}1-high`;
@@ -16,14 +24,16 @@ const idpInfo = getIdentityProvider(idpId);
 describe('3.3 - Identity Check', () => {
   it('should failed when userInfos FC+ have missing claims returned from IdP FR', () => {
     // hack to ask missing scope
+    const scopesWithoutEmail = scopes.filter((scope) => scope !== 'email');
     cy.registerProxyURL(`${idpInfo.IDP_ROOT_URL}/user/authorize?*`, {
       // email missing voluntary
-      scope: scopes.replace('email', ''),
+      scope: scopesWithoutEmail.join(' '),
     });
 
     basicScenario({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
+      scopes,
       idpId,
     });
 
@@ -37,14 +47,15 @@ describe('3.3 - Identity Check', () => {
 
   it('should success when userInfos FC+ have also an unknown claims from IdP FR', () => {
     cy.registerProxyURL(`${idpInfo.IDP_ROOT_URL}/user/authorize?*`, {
-      scope: `${scopes} unknown_prop_for_test`,
+      scope: `${scopes.join(' ')} unknown_prop_for_test`,
     });
 
     basicScenario({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
-      login: 'E020025',
+      scopes,
       idpId,
+      userName: 'E020025',
     });
 
     cy.proxyURLWasActivated();

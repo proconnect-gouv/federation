@@ -1,3 +1,7 @@
+import {
+  submitFSAuthorizeForm,
+} from './mire.utils';
+
 describe('Update cache', () => {
   beforeEach(() => {
     cy.resetdb();
@@ -5,7 +9,7 @@ describe('Update cache', () => {
 
   it('should retrieve updated idp in database automatically, when redirecting to idp, without restarting the app', () => {
     cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
-    cy.get('#get-authorize').click();
+    submitFSAuthorizeForm();
 
     // purposefully corrupting the BDD so that we make the kinematics fail
     cy.e2e('idp_update_wrong_issuer');
@@ -24,7 +28,7 @@ describe('Update cache', () => {
     // purposefully corrupting the BDD so that we make the kinematics fail
     cy.e2e('sp_update_scopes');
 
-    cy.get('#get-authorize').click();
+    submitFSAuthorizeForm();
 
     cy.url().should('includes', Cypress.env('SP1_ROOT_URL'));
 

@@ -155,6 +155,18 @@ export function checkInformationsEuSpFrIdp(params = {}) {
   });
 }
 
+export function setFSAuthorizeMethod(method) {
+  if (typeof method !== 'string') {
+    throw new Error('method must be a string');
+  }
+  const methodValue = method.toLowerCase() === 'post' ? 'post' : 'get';
+  cy.get('#httpMethod').select(methodValue);
+}
+
+export function submitFSAuthorizeForm() {
+  cy.get('#call-authorize-button').click();
+}
+
 /**
  * @todo #488 rename and refacto to use it as a autonomous function (navigateToMireFromFR)
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/488
@@ -172,11 +184,8 @@ export function configureOidcSpMockRequest(params = {}) {
   // FS: Click on FC button
   cy.visit(serviceProvider.url);
 
-  if (method === 'POST') {
-    cy.get('#post-authorize').click();
-  } else {
-    cy.get('#get-authorize').click();
-  }
+  setFSAuthorizeMethod(method);
+  submitFSAuthorizeForm()
 
   // FC: choose FI
 

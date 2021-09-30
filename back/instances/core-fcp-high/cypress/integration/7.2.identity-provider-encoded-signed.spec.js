@@ -10,8 +10,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
 
     basicSuccessScenario({
       userName: 'test',
-      password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 
@@ -35,8 +35,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
 
     basicSuccessScenario({
       userName: 'test',
-      password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 
@@ -60,8 +60,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
 
     basicSuccessScenario({
       userName: 'test',
-      password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 
@@ -85,8 +85,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
 
     basicSuccessScenario({
       userName: 'test',
-      password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 
@@ -110,8 +110,8 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
 
     basicSuccessScenario({
       userName: 'test',
-      password: '123',
-      eidasLevel: 1,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
       idpId,
     });
 

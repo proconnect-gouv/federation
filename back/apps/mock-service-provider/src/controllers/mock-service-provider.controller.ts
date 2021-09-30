@@ -78,6 +78,7 @@ export class MockServiceProviderController {
 
     await sessionOidc.set({
       sessionId,
+      idpId: provider.uid,
       idpState: params.state,
       idpNonce: params.nonce,
     });

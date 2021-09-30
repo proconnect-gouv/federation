@@ -1,8 +1,13 @@
+import {
+  setFSAuthorizeAcr,
+  submitFSAuthorizeForm,
+} from './mire.utils';
+
 describe('1.2 - numeric-identity-popin', () => {
   beforeEach(() => {
     cy.visit(Cypress.env(`SP1_ROOT_URL`));
-    cy.get('#acrSelector').select('eidas2');
-    cy.get('#get-authorize').click();
+    setFSAuthorizeAcr('eidas2');
+    submitFSAuthorizeForm();
     cy.scrollTo('bottom');
   });
 

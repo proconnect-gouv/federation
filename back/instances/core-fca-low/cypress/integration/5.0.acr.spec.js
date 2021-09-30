@@ -4,8 +4,19 @@ import {
   getServiceProvider,
 } from './mire.utils';
 
-const scope =
-  'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
+const scope = [
+  'openid',
+  'gender',
+  'birthdate',
+  'birthcountry',
+  'birthplace',
+  'given_name',
+  'family_name',
+  'email',
+  'preferred_username',
+  'address',
+  'phone'
+];
 
 describe('Acr', () => {
   // -- replace by either `fip1-high` or `fia1-low`

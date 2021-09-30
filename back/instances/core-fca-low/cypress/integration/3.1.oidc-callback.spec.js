@@ -3,6 +3,7 @@ import {
   chooseIdpOnCore,
   getServiceProvider,
   getIdentityProvider,
+  submitFSAuthorizeForm
 } from './mire.utils';
 
 function getOidcCallbackUrl(interactionId, event) {
@@ -49,7 +50,7 @@ function prepareOidcCallbackAs(alias) {
   const { IDP_ROOT_URL } = getIdentityProvider(`${Cypress.env('IDP_NAME')}1-low`);
 
   cy.visit(SP_ROOT_URL);
-  cy.get('#get-authorize').click();
+  submitFSAuthorizeForm();
   
   chooseIdpOnCore(`${Cypress.env('IDP_NAME')}1-low`);
 
@@ -92,7 +93,7 @@ function finishWithReplacedUrl(attackerUrl) {
   // Start a new interaction
   const { SP_ROOT_URL } = getServiceProvider(`${Cypress.env('SP_NAME')}1-low`);
   cy.visit(SP_ROOT_URL);
-  cy.get('#get-authorize').click();
+  submitFSAuthorizeForm();
   
   chooseIdpOnCore(`${Cypress.env('IDP_NAME')}1-low`);
 

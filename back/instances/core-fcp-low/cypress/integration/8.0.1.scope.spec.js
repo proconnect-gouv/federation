@@ -1,6 +1,9 @@
 import {
   authenticateWithIdp,
   checkInStringifiedJson,
+  setFSAuthorizeAcr,
+  setFSAuthorizeScope,
+  submitFSAuthorizeForm,
   validateConsent,
 } from './mire.utils';
 
@@ -11,16 +14,27 @@ describe('8.0.1 Scope', () => {
     it('should send back all corresponding claims when aliases are not checked', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
-      // Disable aliases
-      cy.get('#scope_profile').click();
-      cy.get('#scope_birth').click();
-      cy.get('#scope_identite_pivot').click();
+      // All scopes but aliases
+      const scopes = [
+        'openid',
+        'gender',
+        'birthdate',
+        'birthcountry',
+        'birthplace',
+        'given_name',
+        'family_name',
+        'email',
+        'preferred_username',
+        'address',
+        'phone',
+      ];
+      setFSAuthorizeScope(scopes);
 
       // Eidas
-      cy.get('#acrSelector').select(acrValue);
+      setFSAuthorizeAcr(acrValue);
 
       // Go to FC
-      cy.get('#get-authorize').click();
+      submitFSAuthorizeForm();
 
       // Choose IdP
       cy.get(`#idp-fip1-low`).click();
@@ -63,24 +77,17 @@ describe('8.0.1 Scope', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
       // We select only birth
-      cy.get('#scope_profile').click();
-      cy.get('#scope_gender').click();
-      cy.get('#scope_birthdate').click();
-      cy.get('#scope_birthcountry').click();
-      cy.get('#scope_birthplace').click();
-      cy.get('#scope_given_name').click();
-      cy.get('#scope_family_name').click();
-      cy.get('#scope_email').click();
-      cy.get('#scope_preferred_username').click();
-      cy.get('#scope_address').click();
-      cy.get('#scope_phone').click();
-      cy.get('#scope_identite_pivot').click();
+      const scopes = [
+        'openid',
+        'birth',
+      ];
+      setFSAuthorizeScope(scopes);
 
       // Eidas
-      cy.get('#acrSelector').select(acrValue);
+      setFSAuthorizeAcr(acrValue);
 
       // Go to FC
-      cy.get('#get-authorize').click();
+      submitFSAuthorizeForm();
 
       // Choose IdP
       cy.get(`#idp-fip1-low`).click();
@@ -113,24 +120,17 @@ describe('8.0.1 Scope', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
       // We select only identite_pivot
-      cy.get('#scope_profile').click();
-      cy.get('#scope_gender').click();
-      cy.get('#scope_birthdate').click();
-      cy.get('#scope_birthcountry').click();
-      cy.get('#scope_birthplace').click();
-      cy.get('#scope_given_name').click();
-      cy.get('#scope_family_name').click();
-      cy.get('#scope_email').click();
-      cy.get('#scope_preferred_username').click();
-      cy.get('#scope_address').click();
-      cy.get('#scope_phone').click();
-      cy.get('#scope_birth').click();
+      const scopes = [
+        'openid',
+        'identite_pivot',
+      ];
+      setFSAuthorizeScope(scopes);
 
       // Eidas
-      cy.get('#acrSelector').select(acrValue);
+      setFSAuthorizeAcr(acrValue);
 
       // Go to FC
-      cy.get('#get-authorize').click();
+      submitFSAuthorizeForm();
 
       // Choose IdP
       cy.get(`#idp-fip1-low`).click();
@@ -163,24 +163,17 @@ describe('8.0.1 Scope', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
       // We select only profile
-      cy.get('#scope_gender').click();
-      cy.get('#scope_birthdate').click();
-      cy.get('#scope_birthcountry').click();
-      cy.get('#scope_birthplace').click();
-      cy.get('#scope_given_name').click();
-      cy.get('#scope_family_name').click();
-      cy.get('#scope_email').click();
-      cy.get('#scope_preferred_username').click();
-      cy.get('#scope_address').click();
-      cy.get('#scope_phone').click();
-      cy.get('#scope_birth').click();
-      cy.get('#scope_identite_pivot').click();
+      const scopes = [
+        'openid',
+        'profile',
+      ];
+      setFSAuthorizeScope(scopes);
 
       // Eidas
-      cy.get('#acrSelector').select(acrValue);
+      setFSAuthorizeAcr(acrValue);
 
       // Go to FC
-      cy.get('#get-authorize').click();
+      submitFSAuthorizeForm();
 
       // Choose IdP
       cy.get(`#idp-fip1-low`).click();
