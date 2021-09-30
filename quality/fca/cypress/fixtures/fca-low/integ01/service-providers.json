@@ -6,7 +6,7 @@
     "url": "https://fsa1v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
     "selectors": {
-      "fcaButton": "#get-authorize",
+      "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
     },
     "authorizeHttpMethod": "get"
@@ -18,7 +18,7 @@
     "url": "https://fsa3v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
     "selectors": {
-      "fcaButton": "#get-authorize",
+      "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
     },
     "authorizeHttpMethod": "get"

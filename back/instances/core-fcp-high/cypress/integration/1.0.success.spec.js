@@ -1,9 +1,10 @@
 import {
+  basicScenario,
   basicSuccessScenario,
   checkInformationsServiceProvider,
   checkInStringifiedJson,
-  navigateToMire,
   getAuthorizeUrl,
+  navigateToMire,
 } from './mire.utils';
 
 describe('1.0 - Successful scenarios', () => {
@@ -23,7 +24,6 @@ describe('1.0 - Successful scenarios', () => {
   it('should log in to Service Provider Example', () => {
     basicSuccessScenario({
       userName: 'test',
-      password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       idpId,
@@ -46,7 +46,6 @@ describe('1.0 - Successful scenarios', () => {
   it('should log in to Service Provider Example with POST /authorize', () => {
     basicSuccessScenario({
       userName: 'test',
-      password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       idpId,
@@ -71,7 +70,6 @@ describe('1.0 - Successful scenarios', () => {
   it('should log in to Service Provider, an user born in Corse 2A', () => {
     basicSuccessScenario({
       userName: 'test_CORSE_2A',
-      password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       idpId,
@@ -96,7 +94,6 @@ describe('1.0 - Successful scenarios', () => {
   it('should log in to Service Provider, an user born in Corse 2B', () => {
     basicSuccessScenario({
       userName: 'test_CORSE_2B',
-      password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       idpId,
@@ -122,7 +119,6 @@ describe('1.0 - Successful scenarios', () => {
   it('should log in to Service Provider Example a "présumé né jour"', () => {
     basicSuccessScenario({
       userName: 'étranger_présumé_né_jour',
-      password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       idpId,
@@ -144,7 +140,6 @@ describe('1.0 - Successful scenarios', () => {
   it('should log in to Service Provider Example a "présumé né jour et mois"', () => {
     basicSuccessScenario({
       userName: 'étranger_présumé_né_jour_et_mois',
-      password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       idpId,
@@ -167,29 +162,17 @@ describe('1.0 - Successful scenarios', () => {
     cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
     // Disable scopes
-    cy.get('#scope_profile').click();
-    cy.get('#scope_given_name').click();
-    cy.get('#scope_family_name').click();
-    cy.get('#scope_email').click();
-    cy.get('#scope_preferred_username').click();
-    cy.get('#scope_address').click();
-    cy.get('#scope_phone').click();
-    cy.get('#scope_identite_pivot').click();
-    cy.get('#scope_birthdate').click();
-    cy.get('#scope_birthplace').click();
-    cy.get('#scope_birthcountry').click();
-    cy.get('#scope_birth').click();
-    cy.get('#scope_gender').click();
+    const scopes = [
+      'openid'
+    ];
 
-    // Go to FC
-    cy.get('#acrSelector').select('eidas2');
-    cy.get('#get-authorize').click();
-
-    // Choose IdP
-    cy.get(`#idp-fip1-high`).click();
-
-    // Login
-    cy.get('input[type=submit]').click();
+    basicScenario({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
+      scopes,
+      idpId,
+      userName: 'test',
+    });
 
     // Consent
     cy.get('main section').should(
@@ -278,8 +261,8 @@ describe('1.0 - Successful scenarios', () => {
     it('should log in to Service Provider Example and check notification email is sent', () => {
       basicSuccessScenario({
         userName: 'test',
-        password: '123',
-        eidasLevel: 1,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: 'eidas2',
         idpId,
       });
 

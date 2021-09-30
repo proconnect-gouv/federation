@@ -1,5 +1,32 @@
 import * as QueryString from 'querystring';
 
+export function setFSAuthorizeMethod(method) {
+  if (typeof method !== 'string') {
+    throw new Error('method must be a string');
+  }
+  const methodValue = method.toLowerCase() === 'post' ? 'post' : 'get';
+  cy.get('#httpMethod').select(methodValue);
+}
+
+export function setFSAuthorizeScope(scopes) {
+  if (!Array.isArray(scopes)) {
+    throw new Error('scopes must be an Array');
+  }
+  const scopeValues = scopes.join(' ');
+  cy.get('#scope').clear().type(scopeValues);
+}
+
+export function setFSAuthorizeAcr(acr) {
+  if (typeof acr !== 'string') {
+    throw new Error('acr must be a string');
+  }
+  cy.get('#acrValues').clear().type(acr);
+}
+
+export function submitFSAuthorizeForm() {
+  cy.get('#call-authorize-button').click();
+}
+
 /**
  * @param params
  *
@@ -37,14 +64,12 @@ export function basicSuccessScenario(params) {
   cy.clearBusinessLog();
 
   if (acrValues) {
-    cy.get('#acrSelector').select(acrValues);
+    setFSAuthorizeAcr(acrValues);
   }
-
-  if (method === 'POST') {
-    cy.get('#post-authorize').click();
-  } else {
-    cy.get('#get-authorize').click();
+  if (method) {
+    setFSAuthorizeMethod(method);
   }
+  submitFSAuthorizeForm();
 
   // FC: choose FI
 
@@ -292,31 +317,21 @@ export function basicScenario(params) {
     login = 'test',
     // eidasLevel, see comment below
     start = Cypress.env('SP1_ROOT_URL'),
-    overrideParams,
+    overrideParams = {},
   } = params;
   const password = '123';
 
   cy.visit(start);
 
-  if (overrideParams) {
-    // Steal the state to finish the cinematic
-    cy.get('input[name=state]').invoke('val').as('url:state');
-    cy.get('input[name=nonce]').invoke('val').as('url:nonce');
-
-    cy.get('@url:nonce').then(($nonce) => {
-      cy.get('@url:state').then(($state) => {
-        // Direct call to FC with custom params
-        const controlUrl = getAuthorizeUrl({
-          ...overrideParams,
-          state: $state,
-          nonce: $nonce,
-        });
-        cy.visit(controlUrl);
-      });
-    });
-  } else {
-    cy.get('#post-authorize').click();
+  const { method = 'GET', scope, acr_values: acrValues } = overrideParams;
+  setFSAuthorizeMethod(method);
+  if (scope) {
+    setFSAuthorizeScope(scope);
   }
+  if (acrValues) {
+    setFSAuthorizeAcr(acrValues);
+  }
+  submitFSAuthorizeForm();
 
   // FC: choose FI
   cy.url().should(

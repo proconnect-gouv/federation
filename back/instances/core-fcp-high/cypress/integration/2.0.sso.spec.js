@@ -1,6 +1,6 @@
 import {
-  basicSuccessScenario,
   basicScenario,
+  basicSuccessScenario,
   checkInformationsServiceProvider,
 } from './mire.utils';
 
@@ -11,7 +11,6 @@ describe('2.0 - No SSO', () => {
 
   const loginInfo = {
     userName: 'test',
-    password: '123',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values: 'eidas2',
     idpId,
@@ -34,16 +33,9 @@ describe('2.0 - No SSO', () => {
 
     //   ...Then log  into SP "B"
     basicScenario({
-      idpId: loginInfo.idpId,
-      login: loginInfo.userName,
-      start: `${Cypress.env('SP2_ROOT_URL')}`,
-      overrideParams: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
-        scope: 'openid identite_pivot',
-      },
+      ...loginInfo,
+      sp: 'SP2',
+      scopes: ['openid','identite_pivot'],
     });
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
     cy.get('#consent').click();

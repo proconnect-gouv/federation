@@ -2,6 +2,7 @@ import {
   getAuthorizeUrl,
   getIdentityProvider,
   getServiceProvider,
+  submitFSAuthorizeForm,
 } from './mire.utils';
 
 describe('Idp activation & visibility', () => {
@@ -125,7 +126,7 @@ describe('Idp activation & visibility', () => {
     it('should update an identity provider properties, activate it, without an app restart needed', () => {
       const { SP_ROOT_URL } = getServiceProvider(spId);
       cy.visit(SP_ROOT_URL);
-      cy.get('#get-authorize').click();
+      submitFSAuthorizeForm();
       cy.get('#fi-search-term').type(MINISTRY_NAME);
       cy.get('#identity-provider-search').should(
         'not.contain',
@@ -145,7 +146,7 @@ describe('Idp activation & visibility', () => {
     it('should remove an identity provider without an app restart needed', () => {
       const { SP_ROOT_URL } = getServiceProvider(spId);
       cy.visit(SP_ROOT_URL);
-      cy.get('#get-authorize').click();
+      submitFSAuthorizeForm();
       cy.get('#fi-search-term').type(MINISTRY_NAME);
       cy.get('#identity-provider-search').should(
         'not.contain',

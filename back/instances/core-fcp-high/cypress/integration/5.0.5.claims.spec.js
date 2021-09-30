@@ -1,10 +1,24 @@
-import { basicScenario, checkInformationsServiceProvider } from './mire.utils';
+import { 
+  basicScenario,
+  checkInformationsServiceProvider
+} from './mire.utils';
 
 /**
  * @todo #242 - remove and let basic scopes
  */
-const scope =
-  'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
+ const scopes = [
+  'openid',
+  'gender',
+  'birthdate',
+  'birthcountry',
+  'birthplace',
+  'given_name',
+  'family_name',
+  'email',
+  'preferred_username',
+  'address',
+  'phone',
+];
 
 const claims = JSON.stringify({
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -19,13 +33,8 @@ describe('5.0.5 - Claims', () => {
       idpId: 'fip1-high',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2',
-        scope,
-        claims,
-      },
+      scopes,
+      claims,
     });
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
     cy.get('#consent').click();

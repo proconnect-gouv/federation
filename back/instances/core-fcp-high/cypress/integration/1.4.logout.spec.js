@@ -12,7 +12,6 @@ describe('RP Initiated logout scenarios', () => {
   it('should log out from FC+ with post logout redirect uri', () => {
     basicSuccessScenario({
       userName: 'test',
-      password: '123',
       idpId,
     });
 
@@ -36,10 +35,17 @@ describe('RP Initiated logout scenarios', () => {
   });
 
   it('should log out from FC+ without post logout redirect uri', () => {
+    const scopes = [
+      'openid',
+      'gender',
+      'given_name',
+      'family_name',
+      'birth',
+      'birthdate',
+    ];
     basicSuccessScenario({
       userName: 'test',
-      password: '123',
-      scope: 'openid gender given_name family_name birth birthdate',
+      scopes,
       sp: 'SP2',
       idpId,
     });
