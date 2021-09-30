@@ -1,5 +1,10 @@
 import * as qs from 'querystring';
-import { getIdentityProvider } from './mire.utils';
+
+import {
+  getIdentityProvider,
+  setFSAuthorizeAcr,
+  submitFSAuthorizeForm,
+} from './mire.utils';
 
 function getOidcCallbackUrl(idpInfo, interactionId, event) {
   cy.request({
@@ -43,8 +48,8 @@ function prepareOidcCallbackAs(alias) {
   const idpInfo = getIdentityProvider(idpId);
 
   cy.visit(Cypress.env('SP1_ROOT_URL'));
-  cy.get('#acrSelector').select('eidas2');
-  cy.get('#get-authorize').click();
+  setFSAuthorizeAcr('eidas2');
+  submitFSAuthorizeForm();
   cy.get(`#idp-${idpId}`).click();
   cy.url().should('contain', idpInfo.IDP_ROOT_URL);
 
@@ -84,8 +89,8 @@ function finishWithReplacedUrl(attackerUrl) {
   cy.clearCookies();
   // Start a new interaction
   cy.visit(Cypress.env('SP1_ROOT_URL'));
-  cy.get('#acrSelector').select('eidas2');
-  cy.get('#get-authorize').click();
+  setFSAuthorizeAcr('eidas2');
+  submitFSAuthorizeForm();
   cy.get(`#idp-${Cypress.env('IDP_NAME')}1-high`).click();
 
   // Use url from previous interaction

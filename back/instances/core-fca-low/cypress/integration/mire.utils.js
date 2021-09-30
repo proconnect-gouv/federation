@@ -1,5 +1,32 @@
 import * as QueryString from 'querystring';
 
+export function setFSAuthorizeMethod(method) {
+  if (typeof method !== 'string') {
+    throw new Error('method must be a string');
+  }
+  const methodValue = method.toLowerCase() === 'post' ? 'post' : 'get';
+  cy.get('#httpMethod').select(methodValue);
+}
+
+export function setFSAuthorizeScope(scopes) {
+  if (!Array.isArray(scopes)) {
+    throw new Error('scopes must be an Array');
+  }
+  const scopeValues = scopes.join(' ');
+  cy.get('#scope').clear().type(scopeValues);
+}
+
+export function setFSAuthorizeAcr(acr) {
+  if (typeof acr !== 'string') {
+    throw new Error('acr must be a string');
+  }
+  cy.get('#acrValues').clear().type(acr);
+}
+
+export function submitFSAuthorizeForm() {
+  cy.get('#call-authorize-button').click();
+}
+
 export function beforeSuccessScenario(params) {
   const { method, scopes, sp = 'fsa1-low' } = params;
 
@@ -9,24 +36,13 @@ export function beforeSuccessScenario(params) {
 
   cy.clearBusinessLog();
 
-  if (Array.isArray(scopes)) {
-    const scopeValue = scopes.join(' ');
-    /**
-     * @todo Use a single form on the FS mock to start a connection
-     * @author Nicolas Legeay
-     * date: 24/08/2021
-     */
-    // Update both scope input for GET/POST methods
-    cy.get('input[name="scope"]').each(($el) => {
-      cy.wrap($el).clear().type(scopeValue);
-    });
+  if (scopes) {
+    setFSAuthorizeScope(scopes);
   }
-
-  if (method === 'POST') {
-    cy.get('#post-authorize').click();
-  } else {
-    cy.get('#get-authorize').click();
+  if (method) {
+    setFSAuthorizeMethod(method);
   }
+  submitFSAuthorizeForm();
 
   // FC: choose FI
   cy.url().should(
@@ -171,7 +187,7 @@ export function basicScenario(params) {
     idpId,
     login = 'test',
     // eidasLevel, see comment below
-    overrideParams,
+    overrideParams= {},
     sp = 'fsa1-low',
   } = params;
   const password = '123';
@@ -179,25 +195,15 @@ export function basicScenario(params) {
   const { SP_ROOT_URL } = getServiceProvider(sp);
   cy.visit(SP_ROOT_URL);
 
-  if (overrideParams) {
-    // Steal the state to finish the cinematic
-    cy.get('input[name=state]').invoke('val').as('url:state');
-    cy.get('input[name=nonce]').invoke('val').as('url:nonce');
-
-    cy.get('@url:nonce').then(($nonce) => {
-      cy.get('@url:state').then(($state) => {
-        // Direct call to FC with custom params
-        const controlUrl = getAuthorizeUrl({
-          ...overrideParams,
-          nonce: $nonce,
-          state: $state,
-        });
-        cy.visit(controlUrl);
-      });
-    });
-  } else {
-    cy.get('#post-authorize').click();
+  const { method = 'GET', scope, acr_values: acrValues } = overrideParams;
+  setFSAuthorizeMethod(method);
+  if (scope) {
+    setFSAuthorizeScope(scope);
   }
+  if (acrValues) {
+    setFSAuthorizeAcr(acrValues);
+  }
+  submitFSAuthorizeForm();
 
   chooseIdpOnCore(idpId);
 

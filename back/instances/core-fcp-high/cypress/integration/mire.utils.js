@@ -1,57 +1,96 @@
 import * as QueryString from 'querystring';
 
+export function setFSAuthorizeMethod(method) {
+  if (typeof method !== 'string') {
+    throw new Error('method must be a string');
+  }
+  const methodValue = method.toLowerCase() === 'post' ? 'post' : 'get';
+  cy.get('#httpMethod').select(methodValue);
+}
+
+export function setFSAuthorizeScope(scopes) {
+  if (!Array.isArray(scopes)) {
+    throw new Error('scopes must be an Array');
+  }
+  const scopeValues = scopes.join(' ');
+  cy.get('#scope').clear().type(scopeValues);
+}
+
+export function setFSAuthorizeAcr(acr) {
+  if (typeof acr !== 'string') {
+    throw new Error('acr must be a string');
+  }
+  cy.get('#acrValues').clear().type(acr);
+}
+
+export function setFSAuthorizeClaims(claims) {
+  if (typeof claims !== 'string') {
+    throw new Error('claims must be a string');
+  }
+  cy.get('#claims').clear().type(claims, {parseSpecialCharSequences: false});
+}
+
+export function submitFSAuthorizeForm() {
+  cy.get('#call-authorize-button').click();
+}
+
 /**
  *
  * @param {*} params
  *
  * Available params :
- *  - idpId
- *  - userName
- *  - password
- *  - sp Name of the SP, possible values: SP1, SP2
  *  - acr_values
+ *  - claims
+ *  - method 'GET' or 'POST'
+ *  - sp Name of the SP, possible values: SP1, SP2
+ *  - scopes, array containing of scopes
  */
 export function configureSpAndClickFc({
   acr_values: acrValues,
-  sp = 'SP1',
+  claims,
   method = 'GET',
-  scope,
+  sp = 'SP1',
+  scopes,
 }) {
   // FS choice
   cy.visit(`${Cypress.env('ALL_APPS_LISTED')}`);
   cy.url().should('include', `${Cypress.env('ALL_APPS_LISTED')}`);
   cy.get(Cypress.env(`${sp}_ID`)).click();
 
+  setFSAuthorizeMethod(method);
+  if (scopes) {
+    setFSAuthorizeScope(scopes);
+  }
   if (acrValues) {
-    cy.get('#acrSelector').select(acrValues);
+    setFSAuthorizeAcr(acrValues);
   }
-
-  if (scope) {
-    cy.get(`form[id="form${method}"] input[name="scope"]`).clear().type(scope);
+  if (claims) {
+    setFSAuthorizeClaims(claims);
   }
-
-  if (method === 'POST') {
-    cy.get('#post-authorize').click();
-  } else {
-    cy.get('#get-authorize').click();
-  }
+  submitFSAuthorizeForm();
 }
 
 /**
  * @param params
  *
  * Available params :
- *  - idpId
- *  - userName
- *  - password
- *  - sp Name of the SP, possible values: SP1, SP2
  *  - acr_values
+ *  - idpId
+ *  - method 'GET' or 'POST'
+ *  - userName
+ *  - scopes Array of scopes
+ *  - sp Name of the SP, possible values: SP1, SP2
  */
 export function basicSuccessScenario(params) {
   cy.clearBusinessLog();
 
-  const { idpId, userName, sp = 'SP1' } = params;
-  const password = params.password || '123';
+  const {
+    acr_values: acrValues,
+    idpId,
+    userName,
+    sp = 'SP1'
+  } = params;
+  const password = '123';
   const idpInfo = getIdentityProvider(idpId);
 
   const serviceProvider = {
@@ -71,7 +110,7 @@ export function basicSuccessScenario(params) {
     category: 'FRONT_CINEMATIC',
     event: 'FC_AUTHORIZE_INITIATED',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId: null,
     idpName: null,
     idpAcr: null,
@@ -81,7 +120,7 @@ export function basicSuccessScenario(params) {
     category: 'FRONT_CINEMATIC',
     event: 'FC_SHOWED_IDP_CHOICE',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId: null,
     idpName: null,
     idpAcr: null,
@@ -96,7 +135,7 @@ export function basicSuccessScenario(params) {
     category: 'FRONT_CINEMATIC',
     event: 'IDP_CHOSEN',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId, // idpId is set
     idpAcr: null, // idpAct is still null
   });
@@ -113,7 +152,7 @@ export function basicSuccessScenario(params) {
     category: 'FRONT_CINEMATIC',
     event: 'FC_REQUESTED_IDP_TOKEN',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId, // idpId is now set
     idpAcr: null, // idpAcr is still null
   });
@@ -122,7 +161,7 @@ export function basicSuccessScenario(params) {
     category: 'FRONT_CINEMATIC',
     event: 'FC_REQUESTED_IDP_USERINFO',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId,
     idpAcr: null, // idpAcr is still null
   });
@@ -131,7 +170,7 @@ export function basicSuccessScenario(params) {
     category: 'FRONT_CINEMATIC',
     event: 'FC_REQUESTED_RNIPP',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId,
     idpAcr: params.acr_values, // idpAcr is set
   });
@@ -140,27 +179,27 @@ export function basicSuccessScenario(params) {
     category: 'FRONT_CINEMATIC',
     event: 'FC_RECEIVED_VALID_RNIPP',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId,
-    idpAcr: params.acr_values,
+    idpAcr: acrValues,
   });
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_VERIFIED',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId,
-    idpAcr: params.acr_values,
+    idpAcr: acrValues,
   });
 
   cy.hasBusinessLog({
     category: 'FRONT_CINEMATIC',
     event: 'FC_SHOWED_CONSENT',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId,
-    idpAcr: params.acr_values,
+    idpAcr: acrValues,
   });
 
   cy.get('#consent').click();
@@ -169,30 +208,34 @@ export function basicSuccessScenario(params) {
     category: 'FRONT_CINEMATIC',
     event: 'FC_REDIRECTED_TO_SP',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId,
-    idpAcr: params.acr_values,
+    idpAcr: acrValues,
   });
 
   cy.hasBusinessLog({
     category: 'BACK_CINEMATIC',
     event: 'SP_REQUESTED_FC_TOKEN',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId,
-    idpAcr: params.acr_values,
+    idpAcr: acrValues,
   });
 
   cy.hasBusinessLog({
     category: 'BACK_CINEMATIC',
     event: 'SP_REQUESTED_FC_USERINFO',
     spId: serviceProvider.id,
-    spAcr: params.acr_values,
+    spAcr: acrValues,
     idpId,
-    idpAcr: params.acr_values,
+    idpAcr: acrValues,
   });
 }
 
+/**
+ * Check whether the scopes are present in the consent page
+ * @param {string[]} scopes array of scopes
+ */
 export function checkInformationsConsent(scopes) {
   const IDENTITY_SCOPES_LABEL = {
     // openid defined property names
@@ -215,8 +258,7 @@ export function checkInformationsConsent(scopes) {
 
   cy.get('#toggleOpenCloseMenu').click();
 
-  const scopesArray = scopes.split(' ');
-  scopesArray
+  scopes
     .filter((scope) => scope in IDENTITY_SCOPES_LABEL)
     .forEach((scope) =>
       cy.contains(IDENTITY_SCOPES_LABEL[scope]).should('exist'),
@@ -291,12 +333,12 @@ export function validateConsent() {
 }
 
 export function authenticateWithIdp(params = {}) {
-  const { login, password = '123', idpId = 'fip1-high' } = params;
+  const { userName, password = '123', idpId = 'fip1-high' } = params;
 
   const { IDP_INTERACTION_URL } = getIdentityProvider(idpId);
   // FI: Authenticate
   cy.url().should('include', IDP_INTERACTION_URL);
-  cy.get('input[name="login"]').clear().type(login);
+  cy.get('input[name="login"]').clear().type(userName);
   cy.get('input[name="password"]').clear().type(password);
 
   // -- This section should be implemented in the IDP Mock instance
@@ -308,44 +350,29 @@ export function authenticateWithIdp(params = {}) {
   cy.get('[type="submit"]').click();
 }
 
+/**
+ * @param params
+ *
+ * Available params :
+ *  - acr_values
+ *  - claims
+ *  - idpId
+ *  - method 'GET' or 'POST'
+ *  - userName
+ *  - scopes Array of scopes
+ *  - sp Name of the SP, possible values: SP1, SP2
+ */
 export function basicScenario(params) {
   const {
-    idpId,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    acr_values,
-    login = 'test',
-    // eidasLevel, see comment below
-    start = Cypress.env('SP1_ROOT_URL'),
-    overrideParams,
+    idpId,
+    userName = 'test',
   } = params;
   const password = '123';
 
   const idpInfo = getIdentityProvider(idpId);
 
-  cy.visit(start);
-
-  if (overrideParams) {
-    // Steal the state to finish the cinematic
-    cy.get('input[name=state]').invoke('val').as('url:state');
-    cy.get('input[name=nonce]').invoke('val').as('url:nonce');
-
-    cy.get('@url:nonce').then(($nonce) => {
-      cy.get('@url:state').then(($state) => {
-        // Direct call to FC with custom params
-        const controlUrl = getAuthorizeUrl({
-          ...overrideParams,
-          state: $state,
-          nonce: $nonce,
-        });
-        cy.visit(controlUrl);
-      });
-    });
-  } else {
-    if (acr_values) {
-      cy.get('#acrSelector').select(acr_values);
-    }
-    cy.get('#post-authorize').click();
-  }
+  configureSpAndClickFc(params);
 
   // FC: choose FI
   cy.url().should(
@@ -356,7 +383,7 @@ export function basicScenario(params) {
 
   // FI: Authenticate
   cy.url().should('include', idpInfo.IDP_INTERACTION_URL);
-  cy.get('input[name="login"]').clear().type(login);
+  cy.get('input[name="login"]').clear().type(userName);
   cy.get('input[name="password"]').clear().type(password);
 
   cy.get('input[type="submit"]').click();
@@ -367,7 +394,7 @@ export function basicErrorScenario(params) {
   Reflect.deleteProperty(params, 'errorCode');
   basicScenario({
     ...params,
-    login: errorCode,
+    userName: errorCode,
   });
 }
 

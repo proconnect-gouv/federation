@@ -8,7 +8,6 @@ describe('9.1 - Revoke token', () => {
   it('should trigger error Y030116 when token is revoked and we call userInfo endpoint', () => {
     basicSuccessScenario({
       userName: 'test',
-      password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       idpId: 'fip1-high',

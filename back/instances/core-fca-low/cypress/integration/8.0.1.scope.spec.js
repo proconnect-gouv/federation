@@ -3,6 +3,9 @@ import {
   checkInStringifiedJson,
   getAuthorizeUrl,
   getServiceProvider,
+  setFSAuthorizeMethod,
+  submitFSAuthorizeForm,
+  setFSAuthorizeScope,
 } from './mire.utils';
 
 const BASIC_SUB =
@@ -39,7 +42,8 @@ describe('Scope', () => {
   it('should send back all mandatory fields and all non mandatory created fields', () => {
     cy.visit(`${SP_ROOT_URL}`);
 
-    cy.get('#post-authorize').click();
+    setFSAuthorizeMethod('post');
+    submitFSAuthorizeForm();
     chooseIdpOnCore('fia1-low');
     cy.get('button[type=submit]').click();
 
@@ -56,7 +60,8 @@ describe('Scope', () => {
   it('should work even if a non mandatory scope, not existing for the agent, is claimed', () => {
     cy.visit(`${SP_ROOT_URL}`);
 
-    cy.get('#post-authorize').click();
+    setFSAuthorizeMethod('post');
+    submitFSAuthorizeForm();
     chooseIdpOnCore('fia1-low');
     cy.get('#login').clear().type('12551');
     cy.get('button[type=submit]').click();
@@ -74,13 +79,17 @@ describe('Scope', () => {
   it('should not return optional claims not asked by scope', () => {
     cy.visit(`${SP_ROOT_URL}`);
 
-    cy.get('#scope_siren').click();
-    cy.get('#scope_siret').click();
-    cy.get('#scope_belonging_population').click();
-    cy.get('#scope_organizational_unit').click();
-    cy.get('#scope_phone').click();
+    // No optional scopes
+    const scopes = [
+      'openid',
+      'given_name',
+      'usual_name',
+      'email',
+    ];
+    setFSAuthorizeScope(scopes);
 
-    cy.get('#post-authorize').click();
+    setFSAuthorizeMethod('post');
+    submitFSAuthorizeForm();
     chooseIdpOnCore('fia1-low');
     cy.get('button[type=submit]').click();
 
@@ -97,9 +106,16 @@ describe('Scope', () => {
   it('should not return mandatory claims not asked by scope', () => {
     cy.visit(`${SP_ROOT_URL}`);
 
-    cy.get('#scope_email').click();
+    // No email scope
+    const scopes = [
+      'openid',
+      'given_name',
+      'usual_name',
+    ];
+    setFSAuthorizeScope(scopes);
 
-    cy.get('#post-authorize').click();
+    setFSAuthorizeMethod('post');
+    submitFSAuthorizeForm();
     chooseIdpOnCore('fia1-low');
     cy.get('button[type=submit]').click();
 
@@ -112,15 +128,15 @@ describe('Scope', () => {
     cy.visit(`${SP_ROOT_URL}`);
 
     // Disable aliases
-    cy.get('#scope_uid').click();
-    cy.get('#scope_siren').click();
-    cy.get('#scope_siret').click();
-    cy.get('#scope_organizational_unit').click();
-    cy.get('#scope_belonging_population').click();
-    cy.get('#scope_phone').click();
-    cy.get('#scope_chorusdt').click();
+    const scopes = [
+      'openid',
+      'given_name',
+      'usual_name',
+      'email',
+    ];
+    setFSAuthorizeScope(scopes);
 
-    cy.get('#get-authorize').click();
+    submitFSAuthorizeForm();
     chooseIdpOnCore('fia1-low');
     cy.get('button[type=submit]').click();
 

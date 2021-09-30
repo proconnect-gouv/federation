@@ -1,5 +1,4 @@
 import {
-  basicErrorScenario,
   basicScenario,
   getAuthorizeUrl,
   getIdentityProvider,
@@ -105,11 +104,11 @@ describe('10.0 - Error Management', () => {
   });
 
   it('should redirect to Sp if the session failed', () => {
-    basicErrorScenario({
+    basicScenario({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
-      errorCode: 'test',
       idpId,
+      userName: 'test',
     });
 
     cy.clearCookies();
