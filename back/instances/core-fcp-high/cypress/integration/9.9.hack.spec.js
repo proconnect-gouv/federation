@@ -1,4 +1,8 @@
-import { basicErrorScenario } from './mire.utils';
+import {
+  basicErrorScenario,
+  setFSAuthorizeAcr,
+  submitFSAuthorizeForm,
+} from './mire.utils';
 
 describe('9.9 - Interaction steps discarding', () => {
   // -- replace by either `fip1-high` or `fia1-low`
@@ -27,8 +31,8 @@ describe('9.9 - Interaction steps discarding', () => {
     const SP_URL = Cypress.env('SP1_ROOT_URL');
 
     cy.visit(SP_URL);
-    cy.get('#acrSelector').select('eidas2');
-    cy.get('#get-authorize').click();
+    setFSAuthorizeAcr('eidas2');
+    submitFSAuthorizeForm();
 
     cy.url().should(
       'include',

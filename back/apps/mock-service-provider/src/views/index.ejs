@@ -5,15 +5,16 @@
     <title><%= locals.titleFront %></title>
   </head>
   <body>
-    <%- include('includes/menu') %>
-    <section class="welcome">
-      <div class="container text-center">
-        <h1>Bienvenue sur le démonstrateur de fournisseur de service FCP</h1>
-      </div>
-    </section>
+    <header>
+      <%- include('includes/menu') %>
+      <section class="welcome">
+        <div class="container text-center">
+          <h1>Bienvenue sur le démonstrateur de fournisseur de service FCP</h1>
+        </div>
+      </section>
+    </header>
 
-    <div class="container">
-      <br />
+    <main class="container">
       <div class="text-center text-danger">
         Vous devez vous authentifier afin d'accéder à vos données personnelles.
       </div>
@@ -51,53 +52,77 @@
         <% }) %>
 
         <h2>ACR</h2>
-        <select name="acr" id="acrSelector" onChange="updateAcr()">
+        <select name="acr" id="acrSelector" aria-label="ACR Value" onChange="updateAcr()">
           <% ['eidas1', 'eidas2', 'eidas3'].forEach(acr => { %>
             <option value="<%=acr%>" <%= (locals.defaultAcrValue && locals.defaultAcrValue === acr) ? "selected" : "" %>><%=acr%></option>
           <% }) %>
         </select>
       </form>
 
-      <section class="connect bg-light">
-        <h2>Connectez-vous via FranceConnect (GET sur authorize)</h2>
-        <form id="formGET" action="/redirect-to-idp" method="POST">
-          <input type="text" name="scope" value="" />
-          <input type="text" name="acr_values" value="" />
-          <input type="text" name="claims" value="" />
-          <input type="text" name="providerUid" value="<%=locals.params.uid%>" />
-          <div class="btn no-pad">
+      <form id="authorizeForm" action="<%=locals.params.authorization_endpoint;%>" method="get">
+        <section class="connect bg-light">
+          <h2>Connectez-vous via FranceConnect</h2>
+          
+          <div class="form-group row">
+            <label class="col-2 col-form-label" for="httpMethod">Http Method : </label>
+            <div class="col-10">
+              <select id="httpMethod" onChange="changeHttpMethod();">
+                <option value="get" selected>GET</option>
+                <option value="post">POST</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-2 col-form-label" for="scope"> Scopes : </label>
+            <div class="col-10">
+              <input id="scope" name="scope" type="text" value="" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-2 col-form-label" for="acrValues"> ACR values : </label>
+            <div class="col-10">
+              <input id="acrValues" name="acr_values" type="text" value="" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-2 col-form-label" for="claims"> Claims : </label>
+            <div class="col-10">
+              <input id="claims" name="claims" type="text" value="" class="form-control" />
+            </div>
+          </div>
+
+          <div class="btn d-flex justify-content-center">
             <button
-              id="get-authorize"
+              id="call-authorize-button"
               type="submit"
               class="btn no-pad hidden-btn"
-              role="button"
+              aria-label="Connexion à FranceConnect"
             ></button>
           </div>
-        </form>
-      </section>
+        </section>
 
-      <section class="connect bg-light">
-        <h2>Connectez-vous via FranceConnect (POST sur authorize)</h2>
-        <form id="formPOST" action="<%=locals.params.authorization_endpoint;%>" method="POST">
-          <input type="hidden" name="client_id" value="<%=locals.params.client_id;%>" />
+        <section id="moreOptions" class="connect bg-light">
+          <h3>Options avancées</h3>
+
+          <div class="form-group row">
+            <label class="col-2 col-form-label" for="clientId"> Client Id : </label>
+            <div class="col-10">
+              <input id="clientId" type="text" name="client_id" value="<%=locals.params.client_id;%>" class="form-control" />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label class="col-2 col-form-label" for="redirectUri"> Redirect URI : </label>
+            <div class="col-10">
+              <input id="redirectUri" type="text" name="redirect_uri" value="<%=locals.params.redirect_uri;%>" class="form-control" />
+            </div>
+          </div>
+          <input type="hidden" name="prompt" value="login" />
           <input type="hidden" name="response_type" value="code" />
-          <input type="hidden" name="redirect_uri" value="<%=locals.params.redirect_uri;%>" />
           <input type="hidden" name="state" value="<%=locals.params.state;%>" />
           <input type="hidden" name="nonce" value="<%=locals.params.nonce;%>" />
-          <input type="text" name="acr_values" value="" />
-          <input type="text" name="claims" value="" />
-          <input type="text" name="scope" value="" />
-          <div class="btn no-pad">
-            <button
-              id="post-authorize"
-              type="submit"
-              class="btn no-pad hidden-btn"
-              role="button"
-            ></button>
-        </div>
-        </form>
-      </section>
-    </div>
+        </section>
+      </form>
+    </main>
 
     <%- include('includes/footer') %>
     <script>
@@ -112,9 +137,7 @@
 
       function updateScope() {
         const scope = getScopes();
-        document
-          .querySelectorAll('input[name=scope]')
-          .forEach((elem) => (elem.value = scope));
+        document.getElementById('scope').value = scope;
       }
 
       function transformClaimsToJsonString (claims) {
@@ -133,18 +156,17 @@
         const claims = getClaims();
         const claimsAreValid = claims && claims.length > 0;
         const json = !claimsAreValid ? '' : transformClaimsToJsonString(claims);
-        const selector = 'input[name=claims]';
-        const elements = document.querySelectorAll(selector);
-        elements.forEach((elem) => {
-          elem.value = json;
-        });
+        document.getElementById('claims').value = json;
       }
 
       function updateAcr() {
         const acr = document.getElementById('acrSelector').value;
-        document.querySelectorAll('input[name="acr_values"]').forEach((elem) => {
-          elem.value = acr;
-        });
+        document.getElementById('acrValues').value = acr;
+      }
+
+      function changeHttpMethod() {
+        const httpMethod = document.getElementById('httpMethod').value;
+        document.forms['authorizeForm'].method = httpMethod;
       }
 
       updateAcr();

@@ -1,5 +1,4 @@
 import {
-  basicErrorScenario,
   basicScenario,
   getAuthorizeUrl,
   getIdentityProvider,
@@ -10,11 +9,11 @@ describe('6.0 - Session', () => {
   const idpId = `${Cypress.env('IDP_NAME')}1-high`;
 
   it('should trigger error Y190001 (no session found)', () => {
-    basicErrorScenario({
+    basicScenario({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
-      errorCode: 'test',
       idpId,
+      userName: 'test',
     });
 
     cy.clearCookies();
@@ -89,12 +88,10 @@ describe('6.0 - Session', () => {
 
     basicScenario({
       idpId,
-      eidasLevel: 'eidas2',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2',
-      },
+      // Oidc naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
+      userName: 'test',
     });
 
     cy.getCookie('fc_session_id').then((cookie) => {

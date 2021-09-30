@@ -6,7 +6,7 @@
     "url": "https://fsa1-low.{{TEST_ENV}}.dev-franceconnect.fr",
     "acrValue": "eidas1",
     "selectors": {
-      "fcaButton": "#get-authorize",
+      "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
     },
     "authorizeHttpMethod": "get"
@@ -18,7 +18,7 @@
     "url": "https://fsa4-low.{{TEST_ENV}}.dev-franceconnect.fr",
     "acrValue": "eidas1",
     "selectors": {
-      "fcaButton": "#get-authorize",
+      "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
     },
     "authorizeHttpMethod": "get"

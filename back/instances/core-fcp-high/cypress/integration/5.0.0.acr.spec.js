@@ -1,130 +1,123 @@
 import {
   basicScenario,
-  configureSpAndClickFc,
   checkInformationsConsent,
+  configureSpAndClickFc,
 } from './mire.utils';
 
 /**
  * @todo #242 - remove and let basic scopes
  */
-const scope =
-  'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone';
+const scopes = [
+  'openid',
+  'gender',
+  'birthdate',
+  'birthcountry',
+  'birthplace',
+  'given_name',
+  'family_name',
+  'email',
+  'preferred_username',
+  'address',
+  'phone',
+];
 
 describe('5.0.0 - Acr', () => {
   it('should access to FI when acr from SP is unique and known', () => {
     basicScenario({
       idpId: 'fip1-high',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2',
-        scope,
-      },
+      // Oidc naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
+      scopes,
     });
 
     // FC: Read confirmation message
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
-    checkInformationsConsent(scope);
+    checkInformationsConsent(scopes);
   });
 
   it('should access to FI when acr from SP has multiple values and all are known', () => {
     basicScenario({
       idpId: 'fip1-high',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2 eidas3',
-        scope,
-      },
+      // Oidc naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2 eidas3',
+      scopes,
     });
 
     // FC: Read confirmation message
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
-    checkInformationsConsent(scope);
+    checkInformationsConsent(scopes);
   });
 
   it('should access to FI when acr from SP has multiple values and all are known but different order', () => {
     basicScenario({
       idpId: 'fip1-high',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas3 eidas2',
-        scope,
-      },
+      // Oidc naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas3 eidas2',
+      scopes,
     });
 
     // FC: Read confirmation message
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
-    checkInformationsConsent(scope);
+    checkInformationsConsent(scopes);
   });
 
   it('should access to FI when acr from SP has multiple values and one is known', () => {
     basicScenario({
       idpId: 'fip1-high',
+      // Oidc naming convention
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: 'eidas2',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2 eidas666 eidas42',
-        scope,
-      },
+      acr_values: 'eidas2 eidas666 eidas42',
+      scopes,
     });
 
     // FC: Read confirmation message
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
-    checkInformationsConsent(scope);
+    checkInformationsConsent(scopes);
   });
 
   it('should access to FI when acr from SP is unique and not known', () => {
     basicScenario({
       idpId: 'fip1-high',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas666',
-        scope,
-      },
+      // Oidc naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas666',
+      scopes,
     });
 
     // FC: Read confirmation message
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
-    checkInformationsConsent(scope);
+    checkInformationsConsent(scopes);
   });
 
   it('should access to FI when acr from SP has multiple values and some are known', () => {
     basicScenario({
       idpId: 'fip1-high',
+      // Oidc naming convention
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: 'eidas2',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2 eidas666 eidas3',
-        scope,
-      },
+      acr_values: 'eidas2 eidas666 eidas3',
+      scopes,
     });
 
     // FC: Read confirmation message
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
-    checkInformationsConsent(scope);
+    checkInformationsConsent(scopes);
   });
 
   it('should access to FI when acr from SP has multiple values and none are known', () => {
     basicScenario({
       idpId: 'fip1-high',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas28 eidas666 eidas42',
-        scope,
-      },
+      // Oidc naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas28 eidas666 eidas42',
+      scopes,
     });
 
     // FC: Read confirmation message
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
-    checkInformationsConsent(scope);
+    checkInformationsConsent(scopes);
   });
 
   it('should complete cinematic even when acr is unknown and FC should force it to max value', () => {
@@ -133,17 +126,15 @@ describe('5.0.0 - Acr', () => {
 
     basicScenario({
       idpId: 'fip1-high',
-      overrideParams: {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas666',
-        scope,
-      },
+      // Oidc naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas666',
+      scopes,
     });
 
     // FC: Read confirmation message :D
     cy.url().should('match', /\/api\/v2\/interaction\/[0-9a-z_-]+\/consent/i);
-    checkInformationsConsent(scope);
+    checkInformationsConsent(scopes);
 
     // FC: validate consent
     cy.get('#consent').click();

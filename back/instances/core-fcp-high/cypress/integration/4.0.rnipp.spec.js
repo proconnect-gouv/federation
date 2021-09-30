@@ -113,9 +113,8 @@ describe('4.0 - RNIPP', () => {
     basicScenario({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
-      errorCode: 'E010013',
       idpId: 'fip1-high',
-      login: 'test_INVALID_COG',
+      userName: 'test_INVALID_COG',
     });
 
     cy.hasError('Y000006');

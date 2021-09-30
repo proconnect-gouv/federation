@@ -11,7 +11,6 @@ describe('1.1 - Successful Sub checks', () => {
   it('should check the correct sub for Thibault TABLE', () => {
     basicSuccessScenario({
       userName: 'test_THIBAULT',
-      password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       idpId,
@@ -33,7 +32,6 @@ describe('1.1 - Successful Sub checks', () => {
   it('should check the correct sub for Mélanie DUPLANTY (Désactivé)', () => {
     basicSuccessScenario({
       userName: 'Désactivé',
-      password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       idpId,
@@ -56,7 +54,6 @@ describe('1.1 - Successful Sub checks', () => {
   it('should check the correct sub for Joëlle Françoise DUBINÔRE (caractères spéciaux)', () => {
     basicSuccessScenario({
       userName: 'caractères_spéciaux',
-      password: '123',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',
       idpId,

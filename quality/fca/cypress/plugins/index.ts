@@ -36,7 +36,12 @@ module.exports = (on, config) => {
 
   on('file:preprocessor', cucumber(options));
 
-  const { env: { TEST_ENV: testEnv = '' } = {} } = config;
+  const { env: { TEST_ENV: testEnv = '', BASE_URLS: baseUrls = {} } = {} } =
+    config;
+  // Override the baseUrl if present in the config
+  if (baseUrls[testEnv]) {
+    config.baseUrl = baseUrls[testEnv];
+  }
   if (testEnv === 'integ01') {
     /**
      * On integ01 environment, the FC core, FS and FI are using different domains

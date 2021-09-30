@@ -22,14 +22,13 @@ When('je navigue sur la page fournisseur de service', function () {
 When('je clique sur le bouton FranceConnect', function () {
   // Setup the requested scope and eidas on mocked environment
   if (this.serviceProvider.mocked === true) {
-    serviceProviderPage.setMockRequestedScope(this.requestedScope);
-    serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
-    serviceProviderPage.clickMockFcButton(
+    serviceProviderPage.setMockAuthorizeHttpMethod(
       this.serviceProvider.authorizeHttpMethod,
     );
-  } else {
-    serviceProviderPage.fcButton.click();
+    serviceProviderPage.setMockRequestedScope(this.requestedScope);
+    serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
   }
+  serviceProviderPage.fcButton.click();
 
   if (isUsingFCBasicAuthorization()) {
     checkFCBasicAuthorization();

@@ -1,3 +1,9 @@
+import {
+  configureSpAndClickFc,
+  setFSAuthorizeAcr,
+  submitFSAuthorizeForm,
+} from './mire.utils';
+
 describe('1.3 - get user consent', () => {
   beforeEach(() => {
     cy.clearBusinessLog();
@@ -6,8 +12,8 @@ describe('1.3 - get user consent', () => {
   it('should ask for user consent to pursue connexion if the service provider is private and the consent required', () => {
     cy.visit(Cypress.env('SP5_ROOT_URL'));
 
-    cy.get('#acrSelector').select('eidas2');
-    cy.get('#get-authorize').click();
+    setFSAuthorizeAcr('eidas2');
+    submitFSAuthorizeForm();
     cy.get('#idp-fip1-high-title').click();
     cy.get('form').submit();
     cy.get('#fc-ask-consent')
@@ -28,8 +34,8 @@ describe('1.3 - get user consent', () => {
 
   it('should not ask for user consent to pursue connexion if the service provider is private but consent not required', () => {
     cy.visit(Cypress.env('SP6_ROOT_URL'));
-    cy.get('#acrSelector').select('eidas2');
-    cy.get('#get-authorize').click();
+    setFSAuthorizeAcr('eidas2');
+    submitFSAuthorizeForm();
     cy.get('#idp-fip1-high-title').click();
     cy.get('form').submit();
     cy.get('#fc-ask-consent').should('not.exist');
@@ -44,8 +50,8 @@ describe('1.3 - get user consent', () => {
 
   it('should not ask for user consent to pursue connexion if the service provider is public', () => {
     cy.visit(Cypress.env('SP1_ROOT_URL'));
-    cy.get('#acrSelector').select('eidas2');
-    cy.get('#get-authorize').click();
+    setFSAuthorizeAcr('eidas2');
+    submitFSAuthorizeForm();
     cy.get('#idp-fip1-high-title').click();
     cy.get('form').submit();
     cy.get('#fc-ask-consent').should('not.exist');
@@ -58,23 +64,18 @@ describe('1.3 - get user consent', () => {
   });
 
   it('should create an anonymous connexion if only openid is required as scope', () => {
-    cy.visit(Cypress.env('SP1_ROOT_URL'));
-    cy.get('#scope_profile').click();
-    cy.get('#scope_gender').click();
-    cy.get('#scope_birthdate').click();
-    cy.get('#scope_birthcountry').click();
-    cy.get('#scope_birthplace').click();
-    cy.get('#scope_given_name').click();
-    cy.get('#scope_family_name').click();
-    cy.get('#scope_email').click();
-    cy.get('#scope_preferred_username').click();
-    cy.get('#scope_address').click();
-    cy.get('#scope_phone').click();
-    cy.get('#scope_birth').click();
-    cy.get('#scope_identite_pivot').click();
-    cy.get('#claim_amr').click();
-    cy.get('#acrSelector').select('eidas2');
-    cy.get('#get-authorize').click();
+    // Anonymous scope
+    const scopes = [
+      'openid'
+    ];
+
+    configureSpAndClickFc({
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
+      sp: 'SP1',
+      method: 'GET',
+      scopes,
+    });
 
     cy.get('#idp-fip1-high-title').click();
     cy.get('form').submit();

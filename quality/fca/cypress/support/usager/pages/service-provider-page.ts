@@ -6,20 +6,6 @@ import {
 } from '../../common/types';
 import { getClaims } from '../helpers';
 
-const ALL_SCOPES: Readonly<string[]> = [
-  'openid',
-  'uid',
-  'given_name',
-  'usual_name',
-  'email',
-  'siren',
-  'siret',
-  'organizational_unit',
-  'belonging_population',
-  'phone',
-  'chorusdt',
-];
-
 export default class ServiceProviderPage {
   fcaButtonSelector: string;
   logoutButtonSelector: string;
@@ -55,67 +41,23 @@ export default class ServiceProviderPage {
     }
   }
 
+  setMockAuthorizeHttpMethod(formMethod: 'get' | 'post'): void {
+    cy.get('#httpMethod').select(formMethod);
+  }
+
   setMockRequestedScope(scopeContext?: ScopeContext): void {
-    if (!scopeContext) {
-      return;
-    }
-
-    const { scopes: requestedScopes } = scopeContext;
-
-    if (requestedScopes.length === 0) {
-      /**
-       * @todo Need refactor after FC-532 fusion of 2 forms on FS mock page
-       * author: Nicolas
-       * date: 12/05/2021
-       */
-      cy.get('input[name="scope"]').first().clear();
-      return;
-    }
-
-    ALL_SCOPES.filter((scope) => 'openid' !== scope).forEach((scope) => {
-      const isRequested = requestedScopes.includes(scope);
-      if (isRequested) {
-        cy.get(`#scope_${scope}`).check();
-      } else {
-        cy.get(`#scope_${scope}`).uncheck();
+    if (scopeContext) {
+      cy.get('input[name="scope"]').clear();
+      const { scopes = [] } = scopeContext;
+      const scopeValue = scopes.join(' ');
+      if (scopeValue) {
+        cy.get('input[name="scope"]').type(scopeValue);
       }
-    });
-    // Add extra scope directly in the text input
-    requestedScopes
-      .filter((scope) => !ALL_SCOPES.includes(scope))
-      .forEach((scope) => {
-        /**
-         * @todo Need refactor after FC-532 fusion of 2 forms on FS mock page
-         * author: Nicolas
-         * date: 12/05/2021
-         */
-        cy.get('input[name="scope"]').first().type(` ${scope}`);
-      });
-    // Remove openid scope if not included
-    if (!requestedScopes.includes('openid')) {
-      cy.get('input[name="scope"]')
-        .invoke('val')
-        .then((scopeValue) => {
-          const newScopeValue = `${scopeValue}`.replace('openid', '').trim();
-          cy.get('input[name="scope"]').first().clear().type(newScopeValue);
-        });
     }
   }
 
   setMockRequestedAcr(acrValue: string): void {
-    /**
-     * @todo Need refactor after FC-532 fusion of 2 forms on FS mock page
-     * author: Nicolas
-     * date: 12/05/2021
-     */
-    cy.get('input[name="acr_values"]').each(($el) => {
-      cy.wrap($el).clear().type(acrValue);
-    });
-  }
-
-  clickMockFcaButton(formMethod: 'get' | 'post'): void {
-    const buttonName = `#${formMethod}-authorize`;
-    cy.get(buttonName).click();
+    cy.get('input[name="acr_values"]').clear().type(acrValue);
   }
 
   checkMockInformationAccess(

@@ -11,7 +11,7 @@
       "tous les scopes"
     ],
     "selectors": {
-      "fcButton": "#get-authorize",
+      "fcButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
     },
     "authorizeHttpMethod": "get"
@@ -31,7 +31,7 @@
       "identite_pivot"
     ],
     "selectors": {
-      "fcButton": "#get-authorize",
+      "fcButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
     },
     "authorizeHttpMethod": "get"
