@@ -550,7 +550,7 @@ case "$action" in
     echo "                                              '''"
     echo ""
     _halt
-    docker system prune -af && docker image prune -af && docker system prune -af --volumes && docker system df && (cypress cache prune || echo "skipped cypress cache prune") && npm cache clean --force && yarn cache clean && sudo du -sh /var/cache/apt/archives && rm -Rf ${FC_ROOT}/fc/back/node_modules && cd ${FC_ROOT}/fc/front/apps && find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
+    docker system prune -af && docker image prune -af && docker system prune -af --volumes && docker system df && (cypress cache prune || echo "skipped cypress cache prune") && npm cache clean --force && yarn cache clean && sudo du -sh /var/cache/apt/archives && cd ${FC_ROOT} && find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
     ;;
   up)
     _up $@
