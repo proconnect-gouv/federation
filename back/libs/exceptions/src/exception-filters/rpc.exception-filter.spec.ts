@@ -1,3 +1,4 @@
+import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
 import { RpcException } from '../exceptions';
@@ -9,14 +10,21 @@ describe('RpcExceptionFilter', () => {
     debug: jest.fn(),
     warn: jest.fn(),
     setContext: jest.fn(),
+    trace: jest.fn(),
   } as unknown as LoggerService;
+
+  const apiOutputContentTypeValueMock = 'html';
+  const configServiceMock = {} as unknown as ConfigService;
+  configServiceMock.get = jest.fn().mockReturnValue({
+    apiOutputContentType: apiOutputContentTypeValueMock,
+  });
 
   const resMock: any = {};
   resMock.render = jest.fn().mockReturnValue(resMock);
   resMock.status = jest.fn().mockReturnValue(resMock);
 
   beforeEach(() => {
-    exceptionFilter = new RpcExceptionFilter(loggerMock);
+    exceptionFilter = new RpcExceptionFilter(configServiceMock, loggerMock);
     jest.resetAllMocks();
   });
 

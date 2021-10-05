@@ -1,5 +1,7 @@
 import { ArgumentsHost } from '@nestjs/common';
 
+import { ApiErrorMessage, ApiErrorParams, ApiHttpResponseCode } from '@fc/app';
+import { ConfigService } from '@fc/config';
 import { Loggable, Trackable } from '@fc/exceptions';
 import { LoggerService } from '@fc/logger';
 import { TrackingService } from '@fc/tracking';
@@ -12,22 +14,30 @@ jest.mock('@fc/exceptions/decorator/trackable.decorator');
 
 describe('FcExceptionFilter', () => {
   let exceptionFilter: FcExceptionFilter;
-  const loggerMock = {
+
+  const loggerServiceMock = {
     trace: jest.fn(),
     debug: jest.fn(),
     warn: jest.fn(),
     setContext: jest.fn(),
   } as unknown as LoggerService;
 
-  const trackingMock = {
+  const trackingServiceMock = {
     track: jest.fn(),
   } as unknown as TrackingService;
 
   const resMock: any = {};
   resMock.render = jest.fn().mockReturnValue(resMock);
+  resMock.json = jest.fn().mockReturnValue(resMock);
   resMock.status = jest.fn().mockReturnValue(resMock);
 
   const reqMock: any = {};
+
+  const errorValueMock: ApiErrorMessage = {
+    code: 'codeValueMock',
+    id: 'idValueMock',
+    message: 'messageValueMock',
+  };
 
   const argumentHostMock = {
     switchToHttp: () => ({
@@ -36,12 +46,26 @@ describe('FcExceptionFilter', () => {
     }),
   } as ArgumentsHost;
 
+  const configServiceMock = {
+    get: jest.fn(),
+  };
+
   beforeEach(() => {
-    exceptionFilter = new FcExceptionFilter(loggerMock, trackingMock);
     jest.resetAllMocks();
+    jest.restoreAllMocks();
+
+    exceptionFilter = new FcExceptionFilter(
+      configServiceMock as unknown as ConfigService,
+      loggerServiceMock,
+      trackingServiceMock,
+    );
+
+    configServiceMock.get.mockReturnValue({
+      apiOutputContentType: 'html',
+    });
   });
 
-  describe('getStackTraceArray', () => {
+  describe('getStackTraceArray()', () => {
     it('should return stack trace as an array', () => {
       // Given
       const stackMock = ['line1', 'line2', 'line3'];
@@ -92,7 +116,8 @@ describe('FcExceptionFilter', () => {
       expect(result).toEqual(stackMok);
     });
   });
-  describe('catch', () => {
+
+  describe('catch()', () => {
     const STUB_ERROR_SCOPE = 2;
     const STUB_ERROR_CODE = 3;
 
@@ -104,7 +129,7 @@ describe('FcExceptionFilter', () => {
       // When
       exceptionFilter.catch(exception, argumentHostMock);
       // Then
-      expect(loggerMock.warn).toHaveBeenCalledWith(
+      expect(loggerServiceMock.warn).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'FcException',
           code: 'Y020003',
@@ -122,7 +147,7 @@ describe('FcExceptionFilter', () => {
       // When
       exceptionFilter.catch(exception, argumentHostMock);
       // Then
-      expect(loggerMock.warn).toHaveBeenCalledWith(
+      expect(loggerServiceMock.warn).toHaveBeenCalledWith(
         expect.objectContaining({
           type: 'FcException',
           code: 'Y020003',
@@ -196,7 +221,7 @@ describe('FcExceptionFilter', () => {
       // When
       exceptionFilter.catch(exception, argumentHostMock);
       // Then
-      expect(trackingMock.track).toHaveBeenCalledTimes(0);
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(0);
       expect(resMock.render).toHaveBeenCalled();
     });
 
@@ -211,7 +236,7 @@ describe('FcExceptionFilter', () => {
       // When
       exceptionFilter.catch(exception, argumentHostMock);
       // Then
-      expect(trackingMock.track).toHaveBeenCalledTimes(0);
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(0);
       expect(resMock.render).toHaveBeenCalled();
 
       spy.mockRestore();
@@ -228,8 +253,8 @@ describe('FcExceptionFilter', () => {
       // When
       exceptionFilter.catch(exception, argumentHostMock);
       // Then
-      expect(trackingMock.track).toHaveBeenCalledTimes(1);
-      expect(trackingMock.track).toHaveBeenCalledWith(TrackableEvent, {
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
+      expect(trackingServiceMock.track).toHaveBeenCalledWith(TrackableEvent, {
         req: expect.any(Object),
         exception: expect.any(FcException),
       });
@@ -239,7 +264,7 @@ describe('FcExceptionFilter', () => {
     });
   });
 
-  describe('ArgumentHostAdapter', () => {
+  describe('ArgumentHostAdapter()', () => {
     it('should provide a fake argument adapter with switchToHttp method', () => {
       // Given
       const ctx = { res: {}, req: {} };
@@ -249,6 +274,7 @@ describe('FcExceptionFilter', () => {
       expect(result).toBeDefined();
       expect(typeof result.switchToHttp).toBe('function');
     });
+
     it('should provide a fake argument adapter with a getResponse method in response to switchToHttp', () => {
       // Given
       const ctx = { res: {} };
@@ -260,6 +286,7 @@ describe('FcExceptionFilter', () => {
       expect(result).toBeDefined();
       expect(result).toBe(ctx.res);
     });
+
     it('should provide a fake argument adapter with a getRequest method in response to switchToHttp', () => {
       // Given
       const ctx = { req: {} };
@@ -270,6 +297,68 @@ describe('FcExceptionFilter', () => {
       // Then
       expect(result).toBeDefined();
       expect(result).toBe(ctx.req);
+    });
+  });
+
+  describe('errorOutput()', () => {
+    it('should return an error in JSON if the `apiOutputContentType` value is set to `json`', () => {
+      // Given
+      configServiceMock.get.mockReturnValue({
+        apiOutputContentType: 'json',
+      });
+      const httpErrorCodeValueMock = 500;
+      const exceptionParam: ApiErrorParams = {
+        res: resMock,
+        error: errorValueMock,
+        httpResponseCode: httpErrorCodeValueMock,
+      };
+      // When
+      exceptionFilter['errorOutput'](exceptionParam);
+      // Then
+      expect(resMock.json).toHaveBeenCalledTimes(1);
+      expect(resMock.json).toHaveBeenCalledWith({
+        code: 'codeValueMock',
+        id: 'idValueMock',
+        message: 'messageValueMock',
+      });
+    });
+
+    it('should return an error through `res.render` if the `apiOutputContentType` value is set to `html`', () => {
+      // Given
+      const httpErrorCodeValueMock = ApiHttpResponseCode.ERROR_CODE_NONE;
+      const exceptionParam: ApiErrorParams = {
+        res: resMock,
+        error: errorValueMock,
+        httpResponseCode: httpErrorCodeValueMock,
+      };
+      const errorValueReturnedMock: ApiErrorMessage = {
+        code: 'codeValueMock',
+        id: 'idValueMock',
+        message: 'messageValueMock',
+      };
+      // When
+      exceptionFilter['errorOutput'](exceptionParam);
+      // Then
+      expect(resMock.render).toHaveBeenCalledTimes(1);
+      expect(resMock.render).toHaveBeenCalledWith(
+        'error',
+        expect.objectContaining(errorValueReturnedMock),
+      );
+    });
+
+    it('should return a 500 error code if the status is set to `true`', () => {
+      // Given
+      const httpErrorCodeValueMock = 500;
+      const exceptionParam: ApiErrorParams = {
+        res: resMock,
+        error: errorValueMock,
+        httpResponseCode: httpErrorCodeValueMock,
+      };
+      // When
+      exceptionFilter['errorOutput'](exceptionParam);
+      // Then
+      expect(resMock.status).toHaveBeenCalledTimes(1);
+      expect(resMock.status).toHaveBeenCalledWith(500);
     });
   });
 });

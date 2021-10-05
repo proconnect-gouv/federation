@@ -4,11 +4,14 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsIn,
   IsOptional,
   IsString,
   MinLength,
   ValidateNested,
 } from 'class-validator';
+
+import { ApiContentType } from '../enums';
 
 class HttpsOptions {
   @IsString()
@@ -51,4 +54,7 @@ export class AppConfig {
   @IsString({ each: true })
   @IsArray()
   readonly viewsPaths?: string[];
+
+  @IsIn([ApiContentType.HTML, ApiContentType.JSON])
+  readonly apiOutputContentType: string;
 }
