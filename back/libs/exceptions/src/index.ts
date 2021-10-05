@@ -1,3 +1,7 @@
+/* istanbul ignore file */
+
+// Declarative code
+export * from '../../app/src/enums';
 export * from './decorator';
 export * from './events';
 export * from './exception-filters';

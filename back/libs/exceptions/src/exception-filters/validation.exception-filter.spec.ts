@@ -1,3 +1,4 @@
+import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
 import { FcException, ValidationException } from '../exceptions';
@@ -9,18 +10,28 @@ describe('ValidationExceptionFilter', () => {
     debug: jest.fn(),
     error: jest.fn(),
     setContext: jest.fn(),
+    trace: jest.fn(),
   } as unknown as LoggerService;
+
+  const apiOutputContentTypeValueMock = 'html';
+  const configServiceMock = {} as unknown as ConfigService;
+  configServiceMock.get = jest.fn().mockReturnValue({
+    apiOutputContentType: apiOutputContentTypeValueMock,
+  });
 
   const resMock: any = {};
   resMock.render = jest.fn().mockReturnValue(resMock);
   resMock.status = jest.fn().mockReturnValue(resMock);
 
   beforeEach(() => {
-    exceptionFilter = new ValidationExceptionFilter(loggerMock);
+    exceptionFilter = new ValidationExceptionFilter(
+      configServiceMock,
+      loggerMock,
+    );
     jest.resetAllMocks();
   });
 
-  describe('catch', () => {
+  describe('catch()', () => {
     it('should log validation errors', () => {
       // Given
       const errors = [];

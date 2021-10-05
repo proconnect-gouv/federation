@@ -1,10 +1,12 @@
 import { ArgumentsHost, Catch, ExceptionFilter } from '@nestjs/common';
 
+import { ApiErrorMessage, ApiErrorParams, ApiHttpResponseCode } from '@fc/app';
+import { ConfigService } from '@fc/config';
 import { Loggable, Trackable } from '@fc/exceptions';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { TrackingService } from '@fc/tracking';
 
-import { TrackableEvent } from '../events/trackable.event';
+import { TrackableEvent } from '../events';
 import { FcException } from '../exceptions';
 import { ExceptionsService } from '../exceptions.service';
 import { FcBaseExceptionFilter } from './fc-base.exception-filter';
@@ -15,10 +17,11 @@ export class FcExceptionFilter
   implements ExceptionFilter
 {
   constructor(
+    protected readonly config: ConfigService,
     protected readonly logger: LoggerService,
     protected readonly tracking: TrackingService,
   ) {
-    super(logger);
+    super(config, logger);
     this.logger.setContext(this.constructor.name);
   }
 
@@ -68,12 +71,15 @@ export class FcExceptionFilter
 
     this.logger.trace({ exception }, LoggerLevelNames.ERROR);
 
-    /**
-     * @todo #139 allow the exception to set the HTTP response code
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/139
-     */
-    res.status(500);
-    res.render('error', { code, id, message });
+    const httpErrorCode: number = ApiHttpResponseCode.ERROR_CODE_500;
+    const errorMessage: ApiErrorMessage = { code, id, message };
+    const exceptionParam: ApiErrorParams = {
+      res,
+      error: errorMessage,
+      httpResponseCode: httpErrorCode,
+    };
+
+    return this.errorOutput(exceptionParam);
   }
 
   /**

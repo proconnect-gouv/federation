@@ -8,6 +8,7 @@ import { ConfigParser } from '@fc/config';
 const env = new ConfigParser(process.env, 'App');
 
 export default {
+  apiOutputContentType: env.string('API_OUTPUT_CONTENT_TYPE'),
   name: 'USER_DASHBOARD',
   urlPrefix: '/api',
   httpsOptions: {
