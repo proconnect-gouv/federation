@@ -6,7 +6,7 @@ import EVENTS from '../events';
 
 export const loadGetAuthorizeUrl: ThunkActionType =
   () =>
-  async (dispatch: ThunkDispatchType): Promise<any> => {
+  async (dispatch: ThunkDispatchType): Promise<void> => {
     dispatch(loadingStarted());
     const url = '/api/oidc-client/get-authorize-url';
     const { data: authorizeUrl } = await axios.get(url);

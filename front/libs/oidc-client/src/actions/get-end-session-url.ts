@@ -4,21 +4,15 @@ import { ThunkActionType, ThunkDispatchType } from '@fc/state-management';
 import { loadingCompleted, loadingStarted } from '@fc/loading';
 import EVENTS from '../events';
 
-export const loadUserInfos: ThunkActionType =
+export const loadGetEndSessionUrl: ThunkActionType =
   () =>
   async (dispatch: ThunkDispatchType): Promise<void> => {
     dispatch(loadingStarted());
-    const url = '/api/oidc-client/load-user-infos';
-    const {
-      data: { connected, userinfos },
-    } = await axios.get(url);
-
+    const url = '/api/oidc-client/get-end-session-url';
+    const { data: endSessionUrl } = await axios.get(url);
     dispatch({
-      payload: {
-        connected,
-        userinfos,
-      },
-      type: EVENTS.USER_INFOS_LOADED,
+      payload: endSessionUrl,
+      type: EVENTS.GET_END_SESSION_UPDATED,
     });
     dispatch(loadingCompleted());
   };

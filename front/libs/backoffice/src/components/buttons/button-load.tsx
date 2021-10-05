@@ -1,5 +1,5 @@
 import { ButtonEventType } from '@fc/oidc-client';
-import './index.scss';
+import './button-load.scss';
 
 type LoadButtonProps = {
   onClick: ButtonEventType;
