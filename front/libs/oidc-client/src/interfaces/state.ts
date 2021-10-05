@@ -8,5 +8,6 @@ export interface UserInfosState {
 
 export interface RootState {
   authorizeUrl: string;
+  endSessionUrl: string;
   userInfos: UserInfosState;
 }
