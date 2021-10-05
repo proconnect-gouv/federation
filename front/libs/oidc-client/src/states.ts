@@ -6,6 +6,10 @@ const states = {
     blacklist: true,
     defaultValue: '#',
   },
+  endSessionUrl: {
+    blacklist: true,
+    defaultValue: '#',
+  },
   userInfos: {
     blacklist: true,
     defaultValue: {
