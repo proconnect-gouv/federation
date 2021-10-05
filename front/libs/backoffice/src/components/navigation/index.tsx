@@ -1,7 +1,9 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 import { RouteItem } from '@fc/routing';
+import { RootState } from '@fc/oidc-client';
 
 import {
   filterRouteHasOrderProperty,
@@ -10,25 +12,31 @@ import {
 
 import './index.scss';
 
+import { LoginButtonComponent, LogoutButtonComponent } from '../buttons';
+
 type NavigationProps = {
   routes: RouteItem[];
 };
 
 export const NavigationComponent = React.memo(({ routes }: NavigationProps) => {
+  const { connected } = useSelector((_: RootState) => _.userInfos);
+
   return (
-    <div
+    <nav
       className="navigation flex-columns flex-around items-center"
       id="navigation"
+      role="navigation"
     >
       {routes
         .filter(filterRouteHasOrderProperty)
         .sort(sortNavigationRouteByOrder)
-        .map(item => (
+        .map((item) => (
           <NavLink key={item.id} className="button p12" to={item.path}>
             {item.label}
           </NavLink>
         ))}
-    </div>
+      {!connected ? <LoginButtonComponent /> : <LogoutButtonComponent />}
+    </nav>
   );
 });
 

@@ -7,6 +7,8 @@ const userInfos = (state = defaultValue, { payload, type }: Action) => {
   switch (type) {
     case EVENTS.USER_INFOS_LOADED:
       return payload;
+    case EVENTS.DELETE_SESSION:
+      return null;
     default:
       return state;
   }
