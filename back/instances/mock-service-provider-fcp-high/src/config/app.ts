@@ -7,6 +7,7 @@ import { AppConfig } from '@fc/mock-service-provider';
 const env = new ConfigParser(process.env, 'App');
 
 export default {
+  apiOutputContentType: env.string('API_OUTPUT_CONTENT_TYPE'),
   assetsPaths: env.json('ASSETS_PATHS'),
   defaultAcrValue: process.env.OidcClient_ACR,
   httpsOptions: {

@@ -7,6 +7,7 @@ import { ConfigParser } from '@fc/config';
 const env = new ConfigParser(process.env, 'App');
 
 export default {
+  apiOutputContentType: env.string('API_OUTPUT_CONTENT_TYPE'),
   name: 'FC_CORE_LOW',
   urlPrefix: '/api/v2',
   assetsPaths: env.json('ASSETS_PATHS'),
