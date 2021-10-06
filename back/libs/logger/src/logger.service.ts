@@ -3,7 +3,7 @@ import * as pino from 'pino';
 import * as QuickLRU from 'quick-lru';
 import { v4 as uuidV4 } from 'uuid';
 
-import { Injectable, Logger } from '@nestjs/common';
+import { ConsoleLogger, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 
@@ -27,7 +27,7 @@ const IS_TRACE_OUTPUT = true;
  * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/wikis/Logger
  */
 @Injectable()
-export class LoggerService extends Logger {
+export class LoggerService extends ConsoleLogger {
   /**
    * This variable store the colors used by each
    * libraries to display the logs in Chrome Debug Tools.
@@ -44,7 +44,7 @@ export class LoggerService extends Logger {
   private cache: QuickLRU<string, any>;
 
   constructor(private readonly config: ConfigService) {
-    super(null, false);
+    super(null);
     const { level, path } = this.config.get<LoggerConfig>('Logger');
 
     this.setContainerColors();

@@ -3,9 +3,13 @@ import { useEffect, useState } from 'react';
 
 import { ButtonFranceConnectComponent } from '../../components';
 
+interface csrfResponseData {
+  csrfToken: string;
+}
+
 function HomePage(): JSX.Element {
   const [mounted, setMounted] = useState(false);
-  const [csrf, setCsrf] = useState(undefined);
+  const [csrf, setCsrf] = useState<string>();
 
   const initialValues = {
     acr_values: 'eidas1',
@@ -16,12 +20,13 @@ function HomePage(): JSX.Element {
   useEffect(() => {
     if (!mounted) {
       setMounted(true);
-      axios({
-        method: 'get',
-        url: 'https://ud.docker.dev-franceconnect.fr/api/csrf-token',
-      }).then(response => {
-        setCsrf(response.data.csrfToken);
-      });
+      axios
+        .get<csrfResponseData>(
+          'https://ud.docker.dev-franceconnect.fr/api/csrf-token',
+        )
+        .then((response) => {
+          setCsrf(response.data.csrfToken);
+        });
     }
   }, [mounted]);
 

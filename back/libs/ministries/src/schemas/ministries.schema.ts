@@ -13,6 +13,5 @@ export const MinistriesSchema = new mongoose.Schema(
     // Mongoose add 's' at the end of the collection name without this argument
     collection: 'ministries',
     strict: true,
-    strictQuery: true,
   },
 );

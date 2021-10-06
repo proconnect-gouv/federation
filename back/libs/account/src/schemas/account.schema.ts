@@ -6,7 +6,6 @@ import { IFederation } from '../interfaces';
 
 @Schema({
   strict: true,
-  strictQuery: true,
   collection: 'account',
   timestamps: true,
 })
