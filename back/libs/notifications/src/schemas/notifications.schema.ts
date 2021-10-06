@@ -16,7 +16,6 @@ export const NotificationsSchema = new mongoose.Schema(
     // Mongoose add 's' at the end of the collection name without this argument
     collection: 'notifications',
     strict: true,
-    strictQuery: true,
     timestamps: true,
   },
 );

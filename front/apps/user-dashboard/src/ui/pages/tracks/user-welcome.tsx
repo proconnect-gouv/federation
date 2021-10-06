@@ -5,6 +5,14 @@ import { TracksConfig } from '../../../config';
 
 import './user-welcome.scss';
 
+interface userInfos {
+  familyName: string;
+  givenName: string;
+}
+interface userInfosResponseData {
+  userInfos: userInfos;
+}
+
 export const UserWelcomeComponent = () => {
   const isMounted = useRef(false);
   const [userInfos, setUserInfos] = useState({
@@ -15,12 +23,11 @@ export const UserWelcomeComponent = () => {
   useEffect(() => {
     if (!isMounted.current) {
       isMounted.current = true;
-      axios({
-        method: 'get',
-        url: TracksConfig.API_ROUTE_USER_INFOS,
-      }).then(response => {
-        setUserInfos(response.data.userInfos);
-      });
+      axios
+        .get<userInfosResponseData>(TracksConfig.API_ROUTE_USER_INFOS)
+        .then((response) => {
+          setUserInfos(response.data.userInfos);
+        });
     }
   });
 
