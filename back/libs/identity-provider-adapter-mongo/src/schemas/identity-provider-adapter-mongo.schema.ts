@@ -4,7 +4,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 import { IFeatureHandlerDatabase } from '@fc/feature-handler';
 
-@Schema({ collection: 'provider', strict: true, strictQuery: true })
+@Schema({ collection: 'provider', strict: true })
 export class IdentityProvider extends Document {
   @Prop({ type: String })
   name: string;

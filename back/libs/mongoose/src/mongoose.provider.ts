@@ -1,16 +1,8 @@
-import * as mongoose from 'mongoose';
-
 import { MongooseModule } from '@nestjs/mongoose';
 
 import { ConfigModule, ConfigService } from '@fc/config';
 
 import { MongooseConfig } from './dto';
-
-/**
- * Prevent use of depreciated index management
- * @see https://mongoosejs.com/docs/deprecations.html#ensureindex
- */
-mongoose.set('useCreateIndex', true);
 
 export const mongooseProvider = MongooseModule.forRootAsync({
   imports: [ConfigModule],
