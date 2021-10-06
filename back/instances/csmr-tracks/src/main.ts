@@ -34,8 +34,7 @@ async function bootstrap() {
   );
 
   // Launch consumer
-  consumer.listen(() =>
-    console.log(`Consumer is listening on queue "${options.queue}"`),
-  );
+  await consumer.listen();
+  console.log(`Consumer is listening on queue "${options.queue}"`);
 }
 bootstrap();

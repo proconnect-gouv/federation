@@ -2,7 +2,7 @@ import { Document } from 'mongoose';
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
-@Schema({ strict: true, strictQuery: true, collection: 'client' })
+@Schema({ strict: true, collection: 'client' })
 export class ServiceProvider extends Document {
   @Prop({ type: String })
   name: string;

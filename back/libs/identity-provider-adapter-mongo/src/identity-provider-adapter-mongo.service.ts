@@ -78,10 +78,7 @@ export class IdentityProviderAdapterMongoService
     this.logger.debug(
       `Provider's database OperationType watcher initialization.`,
     );
-    watch.driverChangeStream.cursor.on(
-      'data',
-      this.operationTypeWatcher.bind(this),
-    );
+    watch.on('change', this.operationTypeWatcher.bind(this));
   }
 
   /**

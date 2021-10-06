@@ -361,9 +361,7 @@ describe('IdentityProviderAdapterMongoService', () => {
   describe('initOperationTypeWatcher', () => {
     it('should call initOperationTypeWatcher', () => {
       // Given
-      const streamMock = {
-        driverChangeStream: { cursor: { on: jest.fn() } },
-      };
+      const streamMock = { on: jest.fn() };
       repositoryMock.watch = jest.fn().mockReturnValueOnce(streamMock);
       // When
       service['initOperationTypeWatcher']();

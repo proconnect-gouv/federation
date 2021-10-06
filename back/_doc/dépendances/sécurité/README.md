@@ -1,19 +1,24 @@
-# Sécurité des dépendances
+# Problèmes liés aux versions des node_modules
 
+Cette section liste les problèmes liés aux versions des node_modules.
+
+Elle indique les contre-mesures qui ont dû être prises pour pallier les problèmes remontés.
 ## bluebird
 
 Voir [bluebird](./bluebird.md).
 
-## cookie-parser
+## cookie-signature
 
-Voir [cookie-parser](./cookie-parser.md).
+Voir [cookie-signature](./cookie-signature.md).
+## body-parser
 
-# Problèmes liés aux versions des node_modules
+Voir [body-parser](./body-parser.md).
 
-Cette section liste les problèmes liées aux version des node_modules.
 
-Elle indique les contres mesures qui ont du être prises pour palier au problème remonté.
+## Faux positifs Checkmarx
 
-## node-mailjet
+En plus des éléments évoqués précédement, les paquets suivants sont détectés comme vulnérables par checkmarx mais ne sont pas réellement problématiques car utilisés uniquement en dépendance de développement.
 
-Voir [node-mailjet](./node-mailjet.md).
+* marked@1.2.9 (outil de génération de documentation)
+* browserslist
+* ansi-regex
