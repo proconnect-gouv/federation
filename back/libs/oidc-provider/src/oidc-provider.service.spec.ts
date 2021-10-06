@@ -366,7 +366,7 @@ describe('OidcProviderService', () => {
     it('should call getInteractionIdFromCtxSymbol', () => {
       // Given
       const ctxMock = {
-        req: { url: '/token' },
+        req: { _parsedUrl: { pathname: '/token' } },
         oidc: {
           entities: {
             Grant: {
@@ -385,7 +385,7 @@ describe('OidcProviderService', () => {
     it('should get id from context with /userinfo', () => {
       // Given
       const ctxMock = {
-        req: { url: '/userinfo' },
+        req: { _parsedUrl: { pathname: '/userinfo' } },
         oidc: {
           entities: {
             Account: {
@@ -403,7 +403,7 @@ describe('OidcProviderService', () => {
 
     it('should throw', () => {
       // Given
-      const ctxMock = { req: { url: '/somewhere' } };
+      const ctxMock = { req: { _parsedUrl: { pathname: '/somewhere' } } };
       // When
       expect(() => service['getInteractionIdFromCtx'](ctxMock)).toThrow(
         OidcProviderInteractionNotFoundException,

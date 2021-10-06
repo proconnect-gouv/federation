@@ -98,7 +98,7 @@ export class OidcProviderService {
 
   // Reverse engineering of PANVA library
   getInteractionIdFromCtx(ctx) {
-    const path = PATHS[ctx.req.url] || DEFAULT_PATH;
+    const path = PATHS[ctx.req._parsedUrl.pathname] || DEFAULT_PATH;
     const interactionId = get(ctx, path);
 
     if (!interactionId) {
