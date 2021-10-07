@@ -1,3 +1,5 @@
+import * as crypto from 'crypto';
+
 import { parseFile, ParserOptionsArgs } from '@fast-csv/parse';
 import * as _ from 'lodash';
 
@@ -133,7 +135,11 @@ export class MockIdentityProviderService {
       ...identity,
     };
 
-    identityCopy.sub = identity.login;
+    const sub = crypto
+      .createHash('sha256')
+      .update(identity.login)
+      .digest('hex');
+    identityCopy.sub = sub;
     delete identityCopy.login;
 
     if (this.oidcAddressFieldPresent(identityCopy)) {
