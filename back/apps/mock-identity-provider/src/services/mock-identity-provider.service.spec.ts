@@ -266,7 +266,11 @@ describe('MockIdentityProviderService', () => {
       const entryA = { login: 'entryAValue', param: '1' };
       const entryB = { login: 'entryBValue', param: '1' };
       const entryC = { login: 'entryCValue', param: '1' };
-      const expected = { sub: 'entryBValue', param: '1' };
+      const expected = {
+        // sha256 hash of 'entryBValue'
+        sub: '4673cf1ea2bd90252f368d9eb3237f2e0f1669e695e03e432e9715606d89fb69',
+        param: '1',
+      };
 
       service['database'] = [entryA, entryB, entryC];
       const inputLogin = entryB.login;
@@ -301,7 +305,8 @@ describe('MockIdentityProviderService', () => {
         key: 'value',
       };
       const expected = {
-        sub: '42',
+        // sha256 hash of '42'
+        sub: '73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049',
         key: 'value',
       };
 
@@ -319,7 +324,8 @@ describe('MockIdentityProviderService', () => {
         key: 'value',
       };
       const expected = {
-        sub: '42',
+        // sha256 hash of '42'
+        sub: '73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049',
         key: 'value',
       };
       service['oidcAddressFieldPresent'] = jest.fn();
@@ -362,7 +368,8 @@ describe('MockIdentityProviderService', () => {
         street_address: '1 st street',
       };
       const expected = {
-        sub: '42',
+        // sha256 hash of '42'
+        sub: '73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049',
         key: 'value',
         country: 'North Korea',
         // oidc claim
@@ -398,7 +405,8 @@ describe('MockIdentityProviderService', () => {
         street_address: '1 st street',
       };
       const expected = {
-        sub: '42',
+        // sha256 hash of '42'
+        sub: '73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049',
         key: 'value',
         address: {
           country: 'North Korea',

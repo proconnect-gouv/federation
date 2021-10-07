@@ -25,6 +25,9 @@ When('je clique sur le bouton FranceConnect', function () {
     serviceProviderPage.setMockAuthorizeHttpMethod(
       this.serviceProvider.authorizeHttpMethod,
     );
+    serviceProviderPage.setMockRequestedAmr(
+      this.serviceProvider.claims.includes('amr'),
+    );
     serviceProviderPage.setMockRequestedScope(this.requestedScope);
     serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
   }
@@ -59,6 +62,14 @@ Then(
     serviceProviderPage.checkMockAcrValue(acrValue);
   },
 );
+
+Then("la cinématique a renvoyé l'amr {string}", function (amrValue) {
+  serviceProviderPage.checkMockAmrValue(amrValue);
+});
+
+Then("la cinématique n'a pas renvoyé d'amr", function () {
+  serviceProviderPage.checkMockAmrValue('N/A');
+});
 
 Then(
   'je suis redirigé vers la page erreur du fournisseur de service',
