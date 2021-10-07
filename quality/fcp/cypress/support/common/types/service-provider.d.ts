@@ -10,6 +10,7 @@ export interface ServiceProviderBase {
 export interface ServiceProvider extends ServiceProviderBase {
   acrValue: string;
   authorizeHttpMethod: 'post' | 'get';
+  claims: string[];
   mocked: boolean;
   name: string;
   scopes: string[];

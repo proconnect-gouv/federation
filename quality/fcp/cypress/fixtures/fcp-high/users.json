@@ -262,8 +262,8 @@
     ],
     "claims": {
       "gender": "male",
-      "given_name": "Jean",
-      "family_name": "FLEURET",
+      "given_name": "CLEMENT",
+      "family_name": "CORSE",
       "preferred_username": "",
       "birthdate": "1991-02-12",
       "birthplace": "2A115",
@@ -447,5 +447,18 @@
       "birthcountry": "99100",
       "email": "wossewodda-3728@yopmail.com"
     }
+  },
+  {
+    "enabled": true,
+    "criteria": [
+      "avec un COG invalide"
+    ],
+    "credentials": [
+      {
+        "idpId": "default",
+        "username": "test_INVALID_COG",
+        "password": "123"
+      }
+    ]
   }
 ]
