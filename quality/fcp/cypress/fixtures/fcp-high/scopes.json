@@ -41,10 +41,6 @@
     ]
   },
   {
-    "type": "profile avec scope inconnu",
-    "scopes": ["openid", "profile", "inconnu"]
-  },
-  {
     "type": "email",
     "scopes": ["openid", "email"]
   },
@@ -57,11 +53,24 @@
     "scopes": ["openid", "profile"]
   },
   {
+    "type": "profile avec scope inconnu",
+    "scopes": ["openid", "profile", "inconnu"]
+  },
+  {
+    "type": "profile sans openid",
+    "scopes": ["profile"]
+  },
+  {
     "type": "identite_pivot",
     "scopes": ["openid", "identite_pivot"]
   },
   {
     "type": "anonyme",
     "scopes": ["openid"]
+  },
+  {
+    "type": "vide",
+    "scopes": [
+    ]
   }
 ]

@@ -7,6 +7,9 @@
     "redirectUriPath": "/oidc-callback/envIssuer",
     "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
     "acrValue": "eidas1",
+    "claims": [
+      "amr"
+    ],
     "scopes": [
       "tous les scopes"
     ],
