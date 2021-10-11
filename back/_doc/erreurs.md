@@ -78,6 +78,7 @@
 | Code | Message utilisateur | Description |
 |---|---|---|
 | [Y160001](../libs/override-oidc-provider/src/exceptions/cryptography-gateway.exception.ts "CryptographyGatewayException") |  | Il y a un problème de communication avec le HSM. L&#39;application est inutilisable pour tous les usagers. Contacter le support N3 en urgence. | 
+| [Y160003](../libs/override-oidc-provider/src/exceptions/cryptography-invalid-payload-format.exception.ts "CryptographyInvalidPayloadFormatException") |  | Il y a un problème dans le format du payload à signer (on attend du Uint8Array, on reçoit autre chose). L&#39;application est inutilisable pour tous les usagers. Contacter le support N3 en urgence. | 
 
 | Code | Message utilisateur | Description |
 |---|---|---|
