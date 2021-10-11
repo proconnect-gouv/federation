@@ -8,7 +8,10 @@ import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { CryptoProtocol } from '@fc/microservices';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 
-import { CryptographyGatewayException } from '../exceptions';
+import {
+  CryptographyGatewayException,
+  CryptographyInvalidPayloadFormatException,
+} from '../exceptions';
 import { OverrideCode } from '../helpers';
 
 @Injectable()
@@ -43,9 +46,14 @@ export class CryptoOverrideService {
   /**
    * Use our own sign library
    */
-  private ['crypto.sign'](nodeAlg: string, payload, key) {
+  private ['crypto.sign'](nodeAlg: string, payload: Uint8Array, key: unknown) {
     this.logger.debug('Run override for crypto.sign');
     this.logger.trace({ nodeAlg, payload, key });
+
+    if (!(payload instanceof Uint8Array)) {
+      throw new CryptographyInvalidPayloadFormatException();
+    }
+
     /**
      * Return a wrapper compatible with usage mae by `JOSE`:
      * Jose inernally makes call to native crypto createSign
@@ -57,7 +65,7 @@ export class CryptoOverrideService {
      * Current version
      * @see https://github.com/panva/jose/blob/master/lib/jwa/ecdsa.js#L28
      */
-    return this.sign(key, payload, nodeAlg);
+    return this.sign(key, Buffer.from(payload), nodeAlg);
   }
 
   /**
