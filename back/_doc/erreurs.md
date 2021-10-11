@@ -72,11 +72,13 @@
 | [Y090002](../apps/user-dashboard/src/exceptions/user-dashboard-token-revocation.exception.ts "UserDashboardTokenRevocationException") | Une erreur s&#39;est produite lors de la fermeture de votre session, fermez l’onglet de votre navigateur et reconnectez-vous. Si le problème persiste, contacter le support. | Une erreur s&#39;est produite lors de la révocation d&#39;un token par le userdashboard. Le token a dû expirer avec révocation. Si le problème persiste, contacter le support N3. | 
 | [Y090003](../apps/mock-service-provider/src/exceptions/mock-service-provider-userinfo.exception.ts "MockServiceProviderUserinfoException") | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous. Si le problème persiste, contacter le support. | Une erreur s&#39;est produite lors de la récupération des données utilisateurs depuis un FS de démo. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3 | 
 | [Y090003](../apps/user-dashboard/src/exceptions/user-dashboard-userinfo.exception.ts "UserDashboardUserinfoException") | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous. Si le problème persiste, contacter le support. | Une erreur s&#39;est produite lors de la récupération des données utilisateurs depuis le userdashboard. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3 | 
+| [Y090004](../apps/user-dashboard/src/exceptions/user-dashboard-tracks-response.exception.ts "UserDashboardTracksResponseException") |  | N/A | 
 | [Y090006](../apps/user-dashboard/src/exceptions/user-dashboard-invalid-identity.exception.ts "UserDashboardInvalidIdentityException") | Ne semble pas utilisée - UserDashboard | Ne semble pas utilisée - UserDashboard | 
 
 | Code | Message utilisateur | Description |
 |---|---|---|
 | [Y160001](../libs/override-oidc-provider/src/exceptions/cryptography-gateway.exception.ts "CryptographyGatewayException") |  | Il y a un problème de communication avec le HSM. L&#39;application est inutilisable pour tous les usagers. Contacter le support N3 en urgence. | 
+| [Y160003](../libs/override-oidc-provider/src/exceptions/cryptography-invalid-payload-format.exception.ts "CryptographyInvalidPayloadFormatException") |  | Il y a un problème dans le format du payload à signer (on attend du Uint8Array, on reçoit autre chose). L&#39;application est inutilisable pour tous les usagers. Contacter le support N3 en urgence. | 
 
 | Code | Message utilisateur | Description |
 |---|---|---|

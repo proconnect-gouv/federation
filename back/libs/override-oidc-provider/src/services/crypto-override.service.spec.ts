@@ -3,11 +3,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
-import { CryptographyGatewayException } from '../exceptions';
+import {
+  CryptographyGatewayException,
+  CryptographyInvalidPayloadFormatException,
+} from '../exceptions';
 import { OverrideCode } from '../helpers';
 import { CryptoOverrideService } from './crypto-override.service';
 
-describe(' CryptoOverrideService', () => {
+describe('CryptoOverrideService', () => {
   let service: CryptoOverrideService;
 
   const configServiceMock = {
@@ -103,13 +106,26 @@ describe(' CryptoOverrideService', () => {
     it('should call crypto Gateway High Service', async () => {
       // Given
       const alg = 'alg';
-      const payload = Symbol('payload');
+      const payload = new Uint8Array([0, 42, 42, 0]);
       const key = Symbol('key');
       service.sign = jest.fn();
       // When
       await service['crypto.sign'](alg, payload, key);
       // Then
-      expect(service.sign).toHaveBeenCalledWith(key, payload, alg);
+      expect(service.sign).toHaveBeenCalledWith(key, Buffer.from(payload), alg);
+    });
+
+    it('should throw a CryptographyInvalidPayloadFormatException if the payload is not a Uint8Array', async () => {
+      // Given
+      const alg = 'alg';
+      const payload = '1, 2, 3, 4, 5';
+      const key = Symbol('key');
+      service.sign = jest.fn();
+
+      // When / Then
+      await expect(() =>
+        service['crypto.sign'](alg, payload as unknown as Uint8Array, key),
+      ).toThrow(CryptographyInvalidPayloadFormatException);
     });
   });
 
