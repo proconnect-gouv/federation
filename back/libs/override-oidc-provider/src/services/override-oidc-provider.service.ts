@@ -23,12 +23,11 @@ export class OverrideOidcProviderService {
   }
 
   onApplicationBootstrap() {
-    this.logger.debug('Override public signing key');
-    this.overrideKeystore();
+    this.overrideJwksResponse();
   }
 
   /**
-   * Override oidc-povider's Keystore with our public key from HSM
+   * Override oidc-povider's JwksResponse with our public key from HSM
    *
    * This allow us to make `oidc-provider` to use the HSM provided public key
    * to check self issued signature (usefull on logout cinematic)
@@ -44,7 +43,7 @@ export class OverrideOidcProviderService {
    * The weakMap is acceed with a helper exported and used as `instance` in `oidc-provider` codebase.
    * To give more context, we prefixed the name in this module.
    */
-  private overrideKeystore() {
+  private overrideJwksResponse() {
     /** Grab HSM public sig key from configuration */
     const { sigHsmPubKey } = this.config.get<OverrideOidcProviderConfig>(
       'OverrideOidcProvider',
@@ -58,8 +57,11 @@ export class OverrideOidcProviderService {
     /** Get instance stored in `oidc-provider`'s internal weakMap */
     const instance = OidcProviderInstance(provider);
 
-    /** Override keystore */
-    instance.keystore = new KeyStore([key]);
+    const fakePrivKey = { ...(key as object), d: 'not-a-private' };
+    instance.keystore = new KeyStore([fakePrivKey]);
+
+    /** Override jwksResponse */
+    instance.jwksResponse = { keys: [key] };
   }
 
   private getOidcProviderService(): OidcProviderService {
