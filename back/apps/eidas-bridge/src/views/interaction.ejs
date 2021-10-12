@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+  <head role="banner">
     <%- include('includes/head-v2') %>
     <title>Choose your country</title>
   </head>
 
-  <body>
+  <body role="main">
     <%- include('includes/menu-v2') %>
     <div class="page-title-container">
       <h1>From which country does your digital identity come ?</h1>
@@ -17,7 +17,7 @@
           <button id="country-<%= iso %>" type="submit" class="country-btn" name="country" value="<%= iso %>">
             <img
               src="<%= icon %>"
-              alt="Drapeau <%= name %>"
+              alt=""
             />
             <span><%= name %></span>
           </button>
