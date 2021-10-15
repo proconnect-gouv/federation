@@ -269,6 +269,15 @@
         "tsConfigPath": "instances/csmr-tracks/tsconfig.app.json"
       }
     },
+    "rie-bridge-proxy-instance": {
+      "type": "application",
+      "root": "instances/rie-bridge-proxy",
+      "entryFile": "main",
+      "sourceRoot": "instances/rie-bridge-proxy/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/rie-bridge-proxy/tsconfig.app.json"
+      }
+    },
     "rnipp": {
       "type": "library",
       "root": "libs/rnipp",
@@ -753,6 +762,15 @@
       "sourceRoot": "libs/csv/src",
       "compilerOptions": {
         "tsConfigPath": "libs/csv/tsconfig.lib.json"
+      }
+    },
+    "rie-bridge-proxy": {
+      "type": "library",
+      "root": "apps/rie-bridge-proxy",
+      "entryFile": "index",
+      "sourceRoot": "apps/rie-bridge-proxy/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/rie-bridge-proxy/tsconfig.lib.json"
       }
     }
   }

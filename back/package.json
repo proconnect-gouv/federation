@@ -11,6 +11,7 @@
     "build:core-fcp-high": "nest build core-fcp-high",
     "build:csmr-hsm-high": "nest build csmr-hsm-high",
     "build:eidas-bridge": "nest build eidas-bridge-instance",
+    "build:rie-bridge-proxy": "nest build rie-bridge-proxy-instance",
     "build:exploit-fcp": "nest build exploit-fcp-instance",
     "build:exploit-fca-low": "nest build exploit-fca-low-instance",
     "build:mock-service-provider-fcp-low": "nest build mock-service-provider-fcp-low",
@@ -44,6 +45,7 @@
     "test:e2e:core-fcp-low": "cypress run -P instances/core-fcp-low",
     "test:e2e:core-fcp-high": "cypress run -P instances/core-fcp-high",
     "test:e2e:eidas-bridge": "cypress run -P instances/eidas-bridge",
+    "test:e2e:rie-bridge-proxy": "cypress run -P instances/rie-bridge-proxy",
     "doc:api": "typedoc",
     "doc:exceptions": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/exceptions/src/cli/export-exceptions"
   },
@@ -265,7 +267,9 @@
       "@fc/elasticsearch/(.*)": "<rootDir>/libs/elasticsearch/src/$1",
       "@fc/elasticsearch": "<rootDir>/libs/elasticsearch/src",
       "@fc/csv/(.*)": "<rootDir>/libs/csv/src/$1",
-      "@fc/csv": "<rootDir>/libs/csv/src"
+      "@fc/csv": "<rootDir>/libs/csv/src",
+      "@fc/rie-bridge-proxy/(.*)": "<rootDir>/apps/rie-bridge-proxy/src/$1",
+      "@fc/rie-bridge-proxy": "<rootDir>/apps/rie-bridge-proxy/src"
     },
     "preset": "ts-jest"
   }
