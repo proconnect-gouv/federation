@@ -22,6 +22,7 @@ services:
     depends_on:
       - 'core-fca-low'
       - 'fca-low-front'
+      - 'rie-bridge-proxy'
       - 'fsa1-low'
       - 'fsa2-low'
       - 'fsa3-low'
@@ -34,3 +35,9 @@ services:
       - 'pg-exploit-fca-low'
       - 'exploit-fca-low-back'
       - 'exploit-fca-low-front'
+
+  hybridge-fca-low:
+    image: alpine
+    depends_on:
+      - 'min-fca-low'
+      - 'rie-bridge-proxy'

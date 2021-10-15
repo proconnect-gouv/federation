@@ -133,7 +133,9 @@
       "@fc/csv": ["libs/csv/src"],
       "@fc/csv/*": ["libs/csv/src/*"],
       "@fc/cog": ["libs/cog/src"],
-      "@fc/cog/*": ["libs/cog/src/*"]
+      "@fc/cog/*": ["libs/cog/src/*"],
+      "@fc/rie-bridge-proxy": ["apps/rie-bridge-proxy/src"],
+      "@fc/rie-bridge-proxy/*": ["apps/rie-bridge-proxy/src/*"]
     }
   },
   "exclude": ["node_modules", "dist"]
