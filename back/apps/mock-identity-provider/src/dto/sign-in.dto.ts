@@ -9,4 +9,7 @@ export class SignInDTO {
 
   @IsString()
   login: string;
+
+  @IsString()
+  acr: string;
 }

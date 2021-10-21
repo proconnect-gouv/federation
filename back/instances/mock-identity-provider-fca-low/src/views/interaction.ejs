@@ -37,6 +37,10 @@
               <span>Mot de passe</span>
               <input type="password" name="password" id="password" value="" />
             </label>
+            <label for="acr">
+              <span>Niveau de sécurité (acr_values)</span>
+              <input type="text" name="acr" id="acr" value="<%= locals.params.acr_values %>" />
+            </label>    
             <button type="submit">Envoyer</button>
           </form>
         </div>

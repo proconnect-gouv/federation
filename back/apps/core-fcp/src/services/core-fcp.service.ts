@@ -7,7 +7,6 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
-import { OidcProviderService } from '@fc/oidc-provider';
 import { ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService } from '@fc/session';
@@ -22,7 +21,6 @@ export class CoreFcpService {
   // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
-    private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     public readonly moduleRef: ModuleRef,
     private readonly scopes: ScopesService,
@@ -149,31 +147,5 @@ export class CoreFcpService {
     this.logger.trace({ interaction, scopes });
 
     return scopes;
-  }
-
-  async rejectInvalidAcr(
-    currentAcrValue: string,
-    allowedAcrValues: string[],
-    { req, res }: { req: any; res: any },
-  ): Promise<boolean> {
-    const isAllowed = allowedAcrValues.includes(currentAcrValue);
-
-    if (isAllowed) {
-      this.logger.trace({ isAllowed, currentAcrValue, allowedAcrValues });
-      return false;
-    }
-
-    const error = 'invalid_acr';
-    const allowedAcrValuesString = allowedAcrValues.join(',');
-    const errorDescription = `acr_value is not valid, should be equal one of these values, expected ${allowedAcrValuesString}, got ${currentAcrValue}`;
-
-    await this.oidcProvider.abortInteraction(req, res, error, errorDescription);
-
-    this.logger.trace(
-      { isAllowed, currentAcrValue, allowedAcrValues },
-      LoggerLevelNames.WARN,
-    );
-
-    return true;
   }
 }

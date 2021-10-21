@@ -15,7 +15,7 @@
       <img
         class="header-logo"
         src="/img/logo@3x.svg"
-        alt="FranceConnect+ - application de démonstration"
+        alt="FranceConnect - application de démonstration"
       />
       <div id="container">
         <div class="inner">
@@ -36,6 +36,10 @@
             <label for="password">
               <span>Mot de passe</span>
               <input type="password" name="password" id="password" value="" />
+            </label>
+            <label for="acr">
+              <span>Niveau de sécurité (acr_values)</span>
+              <input type="text" name="acr" id="acr" value="<%= locals.params.acr_values %>" />
             </label>
             <button type="submit">Envoyer</button>
           </form>

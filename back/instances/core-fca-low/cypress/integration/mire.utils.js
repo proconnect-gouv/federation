@@ -97,7 +97,7 @@ export function afterSuccessScenario(params) {
     event: 'IDP_CHOSEN',
     idpAcr: null, // idpAct is still null
     idpId, // idpId is set
-    spAcr: params.acr_values, 
+    spAcr: params.acr_values,
     spId: SP_CLIENT_ID,
   });
 
@@ -109,9 +109,9 @@ export function afterSuccessScenario(params) {
     category: 'FRONT_CINEMATIC',
     event: 'FC_REQUESTED_IDP_TOKEN',
     idpAcr: null, // idpAcr is still null
-    idpId, // idpId is now set    
-    spAcr: params.acr_values, 
-    spId: SP_CLIENT_ID, 
+    idpId, // idpId is now set
+    spAcr: params.acr_values,
+    spId: SP_CLIENT_ID,
   });
 
   cy.hasBusinessLog({
@@ -187,7 +187,7 @@ export function basicScenario(params) {
     idpId,
     login = 'test',
     // eidasLevel, see comment below
-    overrideParams= {},
+    overrideParams = {},
     sp = 'fsa1-low',
   } = params;
   const password = '123';
@@ -239,7 +239,7 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
   const baseAuthorizeParams = {
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    acr_values: 'eidas3',
+    acr_values: 'eidas1',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_id: `${SP_CLIENT_ID}`,

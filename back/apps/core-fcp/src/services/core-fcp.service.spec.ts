@@ -7,7 +7,6 @@ import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata, IOidcIdentity, OidcSession } from '@fc/oidc';
-import { OidcProviderService } from '@fc/oidc-provider';
 import { ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
@@ -24,10 +23,6 @@ describe('CoreFcpService', () => {
     debug: jest.fn(),
     warn: jest.fn(),
     trace: jest.fn(),
-  };
-
-  const oidcProviderServiceMock = {
-    abortInteraction: jest.fn(),
   };
 
   const sessionServiceMock = {
@@ -107,7 +102,6 @@ describe('CoreFcpService', () => {
       providers: [
         CoreFcpService,
         LoggerService,
-        OidcProviderService,
         IdentityProviderAdapterMongoService,
         SessionService,
         ScopesService,
@@ -116,8 +110,6 @@ describe('CoreFcpService', () => {
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(OidcProviderService)
-      .useValue(oidcProviderServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
@@ -456,57 +448,6 @@ describe('CoreFcpService', () => {
       const result = service.getScopesForInteraction(interactionMock);
       // Then
       expect(result).toEqual(['openid', 'profile']);
-    });
-  });
-
-  describe('rejectInvalidAcr()', () => {
-    it('should return false if allowedAcrValues contains current acr value', async () => {
-      // when
-      const result = await service.rejectInvalidAcr(
-        'any_eidas_level',
-        ['any_eidas_level'],
-        { res: {}, req: {} },
-      );
-      // then
-      expect(result).toBeFalsy();
-    });
-
-    it('should return true if allowedAcrValues do not contains current acr value', async () => {
-      // when
-      const result = await service.rejectInvalidAcr(
-        'acr_value_not_contained',
-        ['any_eidas_level1', 'any_eidas_level2'],
-        { res: {}, req: {} },
-      );
-      // then
-      expect(result).toBeTruthy();
-    });
-
-    it('should should have called oidcProvider.abortInteraction() with params', async () => {
-      const res = Symbol('ctx.res');
-      const req = Symbol('ctx.res');
-      const currentAcrValue = 'acr_value_not_contained';
-      const allowedAcrValues = ['any_eidas_level1', 'any_eidas_level2'].join(
-        ',',
-      );
-
-      const error = 'invalid_acr';
-      const errorDescription = `acr_value is not valid, should be equal one of these values, expected ${allowedAcrValues}, got ${currentAcrValue}`;
-
-      // when
-      await service.rejectInvalidAcr(
-        'acr_value_not_contained',
-        ['any_eidas_level1', 'any_eidas_level2'],
-        { res, req },
-      );
-      // then
-      expect(oidcProviderServiceMock.abortInteraction).toHaveBeenCalledTimes(1);
-      expect(oidcProviderServiceMock.abortInteraction).toHaveBeenCalledWith(
-        req,
-        res,
-        error,
-        errorDescription,
-      );
     });
   });
 });
