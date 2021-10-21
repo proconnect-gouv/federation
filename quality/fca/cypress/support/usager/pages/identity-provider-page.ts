@@ -22,7 +22,7 @@ export default class IdentityProviderPage {
   }
 
   setMockAcrValue(acrValue: string): void {
-    cy.get('[name="acr"]').select(acrValue);
+    cy.get('[name="acr"]').clear().type(acrValue);
   }
 
   login(userCredentials: UserCredentials): void {

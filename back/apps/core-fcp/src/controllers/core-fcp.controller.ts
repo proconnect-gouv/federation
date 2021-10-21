@@ -129,7 +129,7 @@ export class CoreFcpController {
       configuration: { acrValues: allowedAcrValues },
     } = this.config.get<OidcProviderConfig>('OidcProvider');
 
-    const rejected = await this.core.rejectInvalidAcr(
+    const rejected = await this.coreService.rejectInvalidAcr(
       acrValues,
       allowedAcrValues,
       { req, res },

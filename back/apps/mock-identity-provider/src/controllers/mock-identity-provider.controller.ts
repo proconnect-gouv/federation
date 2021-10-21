@@ -103,7 +103,7 @@ export class MockIdentityProviderController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
-    const { login } = body;
+    const { login, acr } = body;
     const spIdentity = await this.mockIdentityProviderService.getIdentity(
       login,
     );
@@ -113,6 +113,7 @@ export class MockIdentityProviderController {
       throw new Error('Identity not found in database');
     }
 
+    const spAcr = acr;
     /**
      * We need to set an alias with the sub since later (findAccount) we do not have access
      * to the sessionId, nor the interactionId.
@@ -120,6 +121,7 @@ export class MockIdentityProviderController {
     await this.sessionService.setAlias(spIdentity.sub, req.sessionId);
 
     sessionOidc.set({
+      spAcr,
       spIdentity,
     });
 

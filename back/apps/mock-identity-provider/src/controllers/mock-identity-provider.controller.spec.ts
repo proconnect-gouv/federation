@@ -199,6 +199,7 @@ describe('MockIdentityProviderFcaController', () => {
     const body = {
       login: loginMockValue,
       interactionId,
+      acr: acrMock,
     };
 
     it('should call service.getIdentity()', async () => {
@@ -219,6 +220,22 @@ describe('MockIdentityProviderFcaController', () => {
       ).toHaveBeenCalledWith(body.login);
     });
 
+    it('should store identity and acr in session', async () => {
+      // Given
+      const identityMock = {};
+      mockIdentityProviderFcaServiceMock.getIdentity.mockResolvedValue(
+        identityMock,
+      );
+      // When
+      await controller.getLogin(next, req, body, oidcClientSessionServiceMock);
+      // Then
+      expect(oidcClientSessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(oidcClientSessionServiceMock.set).toHaveBeenCalledWith({
+        spIdentity: identityMock,
+        spAcr: acrMock,
+      });
+    });
+
     it('should call next if the identity is found', async () => {
       // Given
       const accountMock = {};
@@ -229,6 +246,7 @@ describe('MockIdentityProviderFcaController', () => {
       const body = {
         interactionId,
         login: loginMockValue,
+        acr: acrMock,
       };
       // When
       await controller.getLogin(next, req, body, oidcClientSessionServiceMock);
@@ -244,6 +262,7 @@ describe('MockIdentityProviderFcaController', () => {
     const body = {
       interactionId,
       login: loginMockValue,
+      acr: acrMock,
     };
     const expectedError = new Error('Identity not found in database');
 

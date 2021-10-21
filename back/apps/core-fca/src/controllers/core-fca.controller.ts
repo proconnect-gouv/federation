@@ -18,6 +18,7 @@ import { ConfigService } from '@fc/config';
 import {
   CoreMissingIdentityException,
   CoreRoutes,
+  CoreService,
   Interaction,
 } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
@@ -31,7 +32,7 @@ import {
   OidcClientService,
   OidcClientSession,
 } from '@fc/oidc-client';
-import { OidcProviderService } from '@fc/oidc-provider';
+import { OidcProviderConfig, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
   ISessionService,
@@ -61,6 +62,7 @@ export class CoreFcaController {
     private readonly oidcClient: OidcClientService,
     private readonly sessionService: SessionService,
     private readonly csrfService: SessionCsrfService,
+    private readonly coreService: CoreService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -194,6 +196,8 @@ export class CoreFcaController {
   @Get(CoreRoutes.INTERACTION)
   @Render('interaction')
   async getInteraction(
+    @Req() req,
+    @Res() res,
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
@@ -212,6 +216,27 @@ export class CoreFcaController {
       route: CoreRoutes.INTERACTION,
       session,
     });
+    const { params } = await this.oidcProvider.getInteraction(req, res);
+
+    const { acr_values: acrValues } = params;
+
+    const {
+      configuration: { acrValues: allowedAcrValues },
+    } = this.config.get<OidcProviderConfig>('OidcProvider');
+
+    const rejected = await this.coreService.rejectInvalidAcr(
+      acrValues,
+      allowedAcrValues,
+      { req, res },
+    );
+
+    if (rejected) {
+      this.logger.trace(
+        { acrValues, allowedAcrValues, rejected },
+        LoggerLevelNames.WARN,
+      );
+      return;
+    }
 
     return {};
   }
@@ -373,6 +398,7 @@ export class CoreFcaController {
       name: 'OidcClientRoutes.OIDC_CALLBACK',
       redirect: url,
       route: OidcClientRoutes.OIDC_CALLBACK,
+      identityExchange,
     });
 
     res.redirect(url);

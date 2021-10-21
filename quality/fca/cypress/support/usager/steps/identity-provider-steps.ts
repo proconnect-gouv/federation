@@ -14,6 +14,13 @@ Then(
   },
 );
 
+When(
+  "le fournisseur d'identité garantit un niveau de sécurité {string}",
+  function (acr) {
+    identityProviderPage.setMockAcrValue(acr);
+  },
+);
+
 When("je m'authentifie avec succès", function () {
   expect(this.user).to.exist;
 
