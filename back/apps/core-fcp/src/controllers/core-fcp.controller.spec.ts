@@ -88,12 +88,12 @@ describe('CoreFcpController', () => {
     getFeature: jest.fn(),
     getScopesForInteraction: jest.fn(),
     isConsentRequired: jest.fn(),
-    rejectInvalidAcr: jest.fn(),
     sendAuthenticationMail: jest.fn(),
     verify: jest.fn(),
   };
 
   const libCoreServiceMock = {
+    rejectInvalidAcr: jest.fn(),
     isAcrValid: jest.fn(),
   };
 
@@ -240,13 +240,13 @@ describe('CoreFcpController', () => {
     sessionServiceMock.set.mockResolvedValueOnce(undefined);
 
     coreServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
-    coreServiceMock.rejectInvalidAcr.mockResolvedValue(false);
     coreServiceMock.getClaimsForInteraction.mockResolvedValue(claimsMock);
     coreServiceMock.getScopesForInteraction.mockResolvedValue(scopesMock);
     coreServiceMock.isConsentRequired.mockResolvedValue(true);
     coreServiceMock.getClaimsLabelsForInteraction.mockResolvedValue(
       claimsLabelMock,
     );
+    libCoreServiceMock.rejectInvalidAcr.mockResolvedValue(false);
 
     sessionCsrfServiceMock.get.mockReturnValueOnce(csrfMock);
     sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
@@ -290,7 +290,7 @@ describe('CoreFcpController', () => {
         prompt: 'prompt',
         uid: 'uid',
       });
-      coreServiceMock.rejectInvalidAcr.mockResolvedValue(true);
+      libCoreServiceMock.rejectInvalidAcr.mockResolvedValue(true);
       // When
       const result = await coreController.getInteraction(
         req,
@@ -354,7 +354,7 @@ describe('CoreFcpController', () => {
         },
       });
 
-      coreServiceMock.rejectInvalidAcr.mockResolvedValue(false);
+      libCoreServiceMock.rejectInvalidAcr.mockResolvedValue(false);
 
       serviceProviderServiceMock.getById.mockResolvedValueOnce({
         idpFilterExclude,

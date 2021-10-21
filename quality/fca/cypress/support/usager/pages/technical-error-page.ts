@@ -1,12 +1,14 @@
 export default class TechnicalErrorPage {
   checkIsVisible(): void {
-    cy.get('h1.main-title').contains(
-      'Une erreur technique est survenue lors de la connexion.',
-    );
+    cy.get('h1').contains('Erreur');
   }
 
   checkErrorCode(errorCode: string): void {
-    cy.get('#error-code').contains(errorCode);
+    cy.get('pre').contains(`code : ${errorCode}`);
+  }
+
+  checkErrorMessage(errorMessage: string): void {
+    cy.get('pre').contains(`message: ${errorMessage}`);
   }
 
   checkSessionNumberVisible(): void {

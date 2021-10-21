@@ -53,6 +53,7 @@ describe('CoreService', () => {
     getInteraction: getInteractionMock,
     getInteractionIdFromCtx: jest.fn(),
     registerMiddleware: jest.fn(),
+    abortInteraction: jest.fn(),
   };
 
   const oidcProviderErrorServiceMock = {
@@ -1047,6 +1048,57 @@ describe('CoreService', () => {
       expect(ctxMock).toEqual({
         req: { headers: { cookie: '' } },
       });
+    });
+  });
+
+  describe('rejectInvalidAcr()', () => {
+    it('should return false if allowedAcrValues contains current acr value', async () => {
+      // when
+      const result = await service.rejectInvalidAcr(
+        'any_eidas_level',
+        ['any_eidas_level'],
+        { res: {}, req: {} },
+      );
+      // then
+      expect(result).toBeFalsy();
+    });
+
+    it('should return true if allowedAcrValues do not contains current acr value', async () => {
+      // when
+      const result = await service.rejectInvalidAcr(
+        'acr_value_not_contained',
+        ['any_eidas_level1', 'any_eidas_level2'],
+        { res: {}, req: {} },
+      );
+      // then
+      expect(result).toBeTruthy();
+    });
+
+    it('should should have called oidcProvider.abortInteraction() with params', async () => {
+      const res = Symbol('ctx.res');
+      const req = Symbol('ctx.res');
+      const currentAcrValue = 'acr_value_not_contained';
+      const allowedAcrValues = ['any_eidas_level1', 'any_eidas_level2'].join(
+        ',',
+      );
+
+      const error = 'invalid_acr';
+      const errorDescription = `acr_value is not valid, should be equal one of these values, expected ${allowedAcrValues}, got ${currentAcrValue}`;
+
+      // when
+      await service.rejectInvalidAcr(
+        'acr_value_not_contained',
+        ['any_eidas_level1', 'any_eidas_level2'],
+        { res, req },
+      );
+      // then
+      expect(oidcProviderServiceMock.abortInteraction).toHaveBeenCalledTimes(1);
+      expect(oidcProviderServiceMock.abortInteraction).toHaveBeenCalledWith(
+        req,
+        res,
+        error,
+        errorDescription,
+      );
     });
   });
 });

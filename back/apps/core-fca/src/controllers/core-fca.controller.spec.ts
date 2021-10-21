@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { CoreMissingIdentityException } from '@fc/core';
+import { CoreMissingIdentityException, CoreService } from '@fc/core';
 import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -90,6 +90,11 @@ describe('CoreFcaController', () => {
     verify: jest.fn(),
   };
 
+  const libCoreServiceMock = {
+    rejectInvalidAcr: jest.fn(),
+    isAcrValid: jest.fn(),
+  };
+
   const ministriesServiceMock = {
     getList: jest.fn(),
   };
@@ -121,6 +126,7 @@ describe('CoreFcaController', () => {
   };
 
   const appConfigMock = {
+    configuration: { acrValues: ['eidas1'] },
     urlPrefix: '/api/v2',
   };
   const configServiceMock = {
@@ -158,6 +164,7 @@ describe('CoreFcaController', () => {
         OidcProviderService,
         MinistriesService,
         CoreFcaService,
+        CoreService,
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
         CryptographyService,
@@ -175,6 +182,8 @@ describe('CoreFcaController', () => {
       .useValue(ministriesServiceMock)
       .overrideProvider(CoreFcaService)
       .useValue(coreServiceMock)
+      .overrideProvider(CoreService)
+      .useValue(libCoreServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderServiceMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
@@ -206,6 +215,8 @@ describe('CoreFcaController', () => {
       interactionDetailsResolved,
     );
     coreServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
+    libCoreServiceMock.rejectInvalidAcr.mockResolvedValue(false);
+
     serviceProviderServiceMock.getById.mockResolvedValue({
       name: spNameMock,
     });
@@ -444,6 +455,34 @@ describe('CoreFcaController', () => {
   });
 
   describe('getInteraction()', () => {
+    /*
+     * @Todo #486 rework test missing assertion or not complete ones
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/486
+     */
+    it('should return nothing, stop interaction, when acr value is not an allowedAcrValue', async () => {
+      // Given
+      const req = {
+        fc: { interactionId: interactionIdMock },
+      };
+      const res = {
+        render: jest.fn(),
+      };
+      oidcProviderServiceMock.getInteraction.mockResolvedValue({
+        params: 'params',
+        prompt: 'prompt',
+        uid: 'uid',
+      });
+      libCoreServiceMock.rejectInvalidAcr.mockResolvedValue(true);
+      // When
+      const result = await coreController.getInteraction(
+        req,
+        res,
+        sessionServiceMock,
+      );
+      // Then
+      expect(result).toBeUndefined();
+    });
+
     it('should return empty object', async () => {
       // Given
       oidcProviderServiceMock.getInteraction.mockResolvedValue({
@@ -452,7 +491,11 @@ describe('CoreFcaController', () => {
         uid: 'uid',
       });
       // When
-      const result = await coreController.getInteraction(sessionServiceMock);
+      const result = await coreController.getInteraction(
+        req,
+        res,
+        sessionServiceMock,
+      );
       // Then
       expect(result).toEqual({});
     });
@@ -462,7 +505,7 @@ describe('CoreFcaController', () => {
       sessionServiceMock.get.mockResolvedValueOnce(undefined);
       // When
       await expect(
-        coreController.getInteraction(sessionServiceMock),
+        coreController.getInteraction(req, res, sessionServiceMock),
       ).rejects.toThrow(SessionNotFoundException);
       // Then
     });
