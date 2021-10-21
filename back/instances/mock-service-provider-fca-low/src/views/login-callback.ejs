@@ -69,6 +69,8 @@
                   <%= label %> : <strong><%= transform(locals.idpIdentity[key]) %></strong>
                 </p>
               <% }); %>
+              <p id="info-acr">ACR value : <strong><%= locals.idpAcr %></strong></p>
+
             <% } else { %>
             <p class="col d-flex justify-content-center">
               Vous devez vous authentifier afin d'accéder à vos données personnelles.

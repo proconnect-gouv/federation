@@ -346,4 +346,30 @@ export class CoreService {
 
     return sourceAcr >= targetAcr;
   }
+
+  async rejectInvalidAcr(
+    currentAcrValue: string,
+    allowedAcrValues: string[],
+    { req, res }: { req: any; res: any },
+  ): Promise<boolean> {
+    const isAllowed = allowedAcrValues.includes(currentAcrValue);
+
+    if (isAllowed) {
+      this.logger.trace({ isAllowed, currentAcrValue, allowedAcrValues });
+      return false;
+    }
+
+    const error = 'invalid_acr';
+    const allowedAcrValuesString = allowedAcrValues.join(',');
+    const errorDescription = `acr_value is not valid, should be equal one of these values, expected ${allowedAcrValuesString}, got ${currentAcrValue}`;
+
+    await this.oidcProvider.abortInteraction(req, res, error, errorDescription);
+
+    this.logger.trace(
+      { isAllowed, currentAcrValue, allowedAcrValues },
+      LoggerLevelNames.WARN,
+    );
+
+    return true;
+  }
 }
