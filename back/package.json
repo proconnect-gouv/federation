@@ -43,7 +43,7 @@
     "test:mutate": "stryker run",
     "test:e2e:core-fca-low": "cypress run -P instances/core-fca-low",
     "test:e2e:core-fcp-low": "cypress run -P instances/core-fcp-low",
-    "test:e2e:core-fcp-high": "cypress run -P instances/core-fcp-high",
+    "test:e2e:core-fcp-high:visu": "cypress open -P instances/core-fcp-high",
     "test:e2e:eidas-bridge": "cypress run -P instances/eidas-bridge",
     "test:e2e:rie-bridge-proxy": "cypress run -P instances/rie-bridge-proxy",
     "doc:api": "typedoc",

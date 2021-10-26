@@ -55,7 +55,7 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
     );
   });
 
-  it('should complete a workcycle for [fip15-high] : eIDAS substantiel - crypted (ECDH-ES + A256GCM) - signed (ES256)', () => {
+  it('should complete a workcycle for [fip15-high] : eIDAS substantiel - crypted (RSA-OAEP + A256GCM) - signed (ES256)', () => {
     const idpId = 'fip15-high';
 
     basicSuccessScenario({
@@ -80,7 +80,7 @@ describe('7.2 - IdP work cycle for [eidas level] [encryption] [signature]', () =
     );
   });
 
-  it('should complete a workcycle for [fip16-high] : eIDAS substantiel - crypted (RSA-OAEP + A256GCM) - signed (RS256)', () => {
+  it('should complete a workcycle for [fip16-high] : eIDAS substantiel - crypted (ECDH-ES + A256GCM) - signed (RS256)', () => {
     const idpId = 'fip16-high';
 
     basicSuccessScenario({

@@ -58,7 +58,6 @@ mkdir -p $FC_ROOT && cd $FC_ROOT
 # The mains repositories
 git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc.git
 git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/rnipp-mock.git
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fi-mock.git
 
 # User website, not needed most of the time
 git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/usagers.git
@@ -75,7 +74,6 @@ git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc-apps.git
 cd $FC_ROOT/fc/docker/volumes/src
 ln -s $FC_ROOT/fc
 ln -s $FC_ROOT/rnipp-mock
-ln -s $FC_ROOT/fi-mock
 
 ln -s $FC_ROOT/fc-apps
 

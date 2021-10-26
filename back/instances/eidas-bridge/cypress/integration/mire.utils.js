@@ -29,7 +29,7 @@ function connectToFcIdp(fcRequest) {
   cy.get('input[name="login"]').clear().type(login);
   cy.get('input[name="password"]').clear().type(password);
 
-  cy.get('input[type="submit"]').click();
+  cy.get('button[type="submit"]').click();
 
   cy.get('#consent').click();
 }
@@ -358,5 +358,5 @@ export function authenticateToIdp(params = {}) {
     cy.get('select[name="acr"]').select(eidasLevel);
   }
 
-  cy.get('input[type="submit"]').click();
+  cy.get('button[type="submit"]').click();
 }
