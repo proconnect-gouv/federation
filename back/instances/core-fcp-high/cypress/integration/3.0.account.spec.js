@@ -6,7 +6,7 @@ describe('3.0 - Account', () => {
 
   it('should trigger error Y180001 (user blocked)', () => {
     basicErrorScenario({
-      errorCode: 'E000001',
+      errorCode: 'Y180001',
       idpId,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas2',

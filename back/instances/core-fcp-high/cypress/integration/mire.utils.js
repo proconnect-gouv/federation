@@ -386,7 +386,7 @@ export function basicScenario(params) {
   cy.get('input[name="login"]').clear().type(userName);
   cy.get('input[name="password"]').clear().type(password);
 
-  cy.get('input[type="submit"]').click();
+  cy.get('[type="submit"]').click();
 }
 
 export function basicErrorScenario(params) {

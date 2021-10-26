@@ -143,20 +143,15 @@ services:
       - data
     command: 'pm2 logs'
 
-  ####################
-  # IDP Mocks V1 and V2
-  # @TODO replace V1 by V2 app instanciation.
-  # fip1 > fip12 = V1 >> based on app from another repo `../../..fi-mock`
-  # fip13 > fip20 = V2 >> based on app from `../instances/mock-identity-provider-fcp-high`
-  ####################
-
   fip1-high:
     hostname: fip1-high
     image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
+      - '${VOLUMES_DIR}/src/fc/back:/var/www/app'
+      - '${VOLUMES_DIR}/fcp-high/mocks/idp/databases:/var/databases'
+      - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
@@ -168,6 +163,7 @@ services:
     tty: true
     networks:
       - public
+      - data
     command: 'pm2 logs'
 
   fip2-high:
@@ -176,7 +172,9 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
+      - '${VOLUMES_DIR}/src/fc/back:/var/www/app'
+      - '${VOLUMES_DIR}/fcp-high/mocks/idp/databases:/var/databases'
+      - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
@@ -188,6 +186,7 @@ services:
     tty: true
     networks:
       - public
+      - data
     command: 'pm2 logs'
 
   fip6-high:
@@ -196,7 +195,9 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
-      - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
+      - '${VOLUMES_DIR}/src/fc/back:/var/www/app'
+      - '${VOLUMES_DIR}/fcp-high/mocks/idp/databases:/var/databases'
+      - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
       - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
@@ -208,26 +209,7 @@ services:
     tty: true
     networks:
       - public
-    command: 'pm2 logs'
-
-  fip7-high:
-    hostname: fip7-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    volumes:
-      - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
-    env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/fcp-high/.env/fip7-high.env'
-    ports:
-      - 9242:9242
-    tty: true
-    networks:
-      - public
+      - data
     command: 'pm2 logs'
 
   fip13-high:

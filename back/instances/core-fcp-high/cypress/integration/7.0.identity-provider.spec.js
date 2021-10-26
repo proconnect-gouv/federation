@@ -23,10 +23,10 @@ describe('7.0 - Idp activation & visibility', () => {
       // Visibles idps
       cy.get(`button#idp-${idpId}1-high`).should('exist');
       cy.get(`button#idp-${idpId}2-high`).should('exist');
-      cy.get(`button#idp-${idpId}-desactive-visible`).should('exist');
+      cy.get(`button#idp-${idpId}3-desactive-visible`).should('exist');
       // Invisibles idps
-      cy.get(`button#idp-${idpId}-desactive-invisible`).should('not.exist');
-      cy.get(`button#idp-${idpId}-active-invisible`).should('not.exist');
+      cy.get(`button#idp-${idpId}4-desactive-invisible`).should('not.exist');
+      cy.get(`button#idp-${idpId}5-active-invisible`).should('not.exist');
     });
   });
 
@@ -40,7 +40,7 @@ describe('7.0 - Idp activation & visibility', () => {
       cy.get(`button#idp-${idpId}1-high`).should('not.be.disabled');
       cy.get(`button#idp-${idpId}2-high`).should('not.be.disabled');
       // Disabled idps
-      cy.get(`button#idp-${idpId}-desactive-visible`).should('be.disabled');
+      cy.get(`button#idp-${idpId}3-desactive-visible`).should('be.disabled');
     });
   });
 
@@ -52,12 +52,12 @@ describe('7.0 - Idp activation & visibility', () => {
     cy.get('#idp-list').within(() => {
       // Control that title is set
       cy.get(`#idp-${idpId}1-high-title`).should('exist');
-      cy.get(`#idp-${idpId}-desactive-visible-title`).should('exist');
+      cy.get(`#idp-${idpId}3-desactive-visible-title`).should('exist');
       // Control that the right text is set
       cy.get(`#idp-${idpId}1-high-title`).contains(
         'J’utilise l’application IDP1 - Identity Provider - eIDAS élevé - nodiscov - crypt',
       );
-      cy.get(`#idp-${idpId}-desactive-visible-title`).contains(
+      cy.get(`#idp-${idpId}3-desactive-visible-title`).contains(
         'FI désactivé mais visible est actuellement indisponible',
       );
     });
@@ -68,7 +68,7 @@ describe('7.0 - Idp activation & visibility', () => {
     cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
     // When
-    cy.get(`#idp-list button#idp-${idpId}-desactive-visible`).click({
+    cy.get(`#idp-list button#idp-${idpId}3-desactive-visible`).click({
       force: true,
     });
     // Then
@@ -150,7 +150,7 @@ describe('7.0 - Idp activation & visibility', () => {
     cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
     // When
-    cy.get(`#idp-list button#idp-${idpId}-desactive-visible`)
+    cy.get(`#idp-list button#idp-${idpId}3-desactive-visible`)
       // Remove the disabled attribute
       .invoke('attr', 'disabled', false)
       .click();

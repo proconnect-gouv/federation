@@ -371,7 +371,6 @@ const fsp = {
     "fip-desactive-visible",
     "eidas-bridge",
     "fip6-high",
-    "fip7-high",
     "idp-test-update",
     "impot_gouv",
     "ameli",
