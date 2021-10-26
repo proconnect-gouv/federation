@@ -30,7 +30,7 @@ describe('8.0.3 - nonce', () => {
     const url = getAuthorizeUrl();
     cy.visit(url);
 
-    cy.intercept(`${idpInfo.IDP_ROOT_URL}/user/authorize*`).as('getIdp');
+    cy.intercept(`${idpInfo.IDP_ROOT_URL}/authorize*`).as('getIdp');
 
     cy.get(`#idp-${idpId}`).click();
     cy.wait('@getIdp').then(({ request: { url } }) => {

@@ -417,6 +417,7 @@ describe('MockIdentityProviderService', () => {
           // oidc claim
           // eslint-disable-next-line @typescript-eslint/naming-convention
           street_address: '1 st street',
+          formatted: 'North Korea Pyongyang 99999 1 st street',
         },
       };
 

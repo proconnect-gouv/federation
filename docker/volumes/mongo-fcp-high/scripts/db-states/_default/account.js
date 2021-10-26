@@ -2,25 +2,21 @@
 const accounts = [
     // -- User Account already desactivated for tests purposes
     {
-      id: "E000001",
-      identityHash: "FBazvqZ/4W7b76RmlV86MH9HNzVkofupYc74cHgInnQ=",
+      id: "Y180001",
+      identityHash: "X5SdAu/G7jgltChquZKbuXpRYkCgWGhd3K1sMefoHzQ=",
       updatedAt: new Date("2019-12-11T12:16:26.931Z"),
       createdAt: new Date("2019-12-11T11:16:23.540Z"),
       active: false,
-      servicesProvidersFederationKeys: [
-        {
-          sub: "4d46585fce406a96d97cbdc7a3983aa286c85042b3276e3c09bf848c3cfc916dv1",
-          clientId:
-            "a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc",
-        },
-      ],
-      federationKeys: [
-        {
-          clientId: "fip1-high",
-          sub: "fim55",
-          matchRNIPP: false,
-        },
-      ],
+      idpFederation : {
+        "fip1-high" : {
+          sub : "523936b6acf099298298878742e972adbfde3f482bce71bd58490081a4df2fb8v1"
+        }
+      },
+      spFederation : {
+        a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc : {
+          sub : "d431e61c3bb64eba755d9ea52c0d6de3d2e9e9e482b099797cdd87e406e0ee54v1"
+        }
+      },
       __v: 1,
       noDisplayConfirmation: false,
     },

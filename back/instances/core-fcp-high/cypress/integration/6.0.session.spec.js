@@ -94,25 +94,14 @@ describe('6.0 - Session', () => {
       userName: 'test',
     });
 
-    cy.getCookie('fc_session_id').then((cookie) => {
-      const interactionId = cookie.value.match(/s%3A([^.]+)/).pop();
-      cy.request({
-        url: `${idpInfo.IDP_ROOT_URL}/interaction/${interactionId}/login`,
-        method: 'POST',
-        body: {
-          login: 'test',
-          password: '123',
-          acr: 'eidas2',
-        },
-        form: true,
-        followRedirect: false,
-      })
-        .as('idp:step1')
-        .then(() => {
-          cy.getCookie('fc_session_id').then((cookie) => {
-            expect(cookie).to.have.property('sameSite', 'lax');
-          });
+    cy.request({
+      url: `${idpInfo.IDP_ROOT_URL}`,
+      method: 'GET',
+    })
+      .then(() => {
+        cy.getCookie('fc_session_id').then((cookie) => {
+          expect(cookie).to.have.property('sameSite', 'lax');
         });
-    });
+      });
   });
 });

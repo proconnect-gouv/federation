@@ -169,6 +169,7 @@ export class MockIdentityProviderService {
       // oidc parameter
       // eslint-disable-next-line @typescript-eslint/naming-convention
       street_address,
+      formatted: `${country} ${locality} ${postal_code} ${street_address}`,
     };
 
     return oidcIdentity;

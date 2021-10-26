@@ -36,7 +36,7 @@ describe('10.0 - Error Management', () => {
 
   it('should redirect to Sp after Idp crashed', () => {
     const idpInfo = getIdentityProvider(idpId);
-    cy.registerProxyURL(`${idpInfo.IDP_ROOT_URL}/user/authorize?*`, {
+    cy.registerProxyURL(`${idpInfo.IDP_ROOT_URL}/authorize?*`, {
       scope: 'openid first_name',
     });
 
@@ -75,7 +75,7 @@ describe('10.0 - Error Management', () => {
     );
   });
 
-  it('should redirect to Sp if we select an invalid Idp', () => {
+  it('should redirect to Sp if we select an blacklisted Idp', () => {
     const url = getAuthorizeUrl();
     cy.visit(url);
 
@@ -87,9 +87,9 @@ describe('10.0 - Error Management', () => {
       cy.get(`button#idp-${idpId}`).click();
     });
 
-    cy.hasError('Y020019');
+    cy.hasError('Y020023');
     cy.get('#error-message').contains(
-      'Ce fournisseur d\'identité est inconnu',
+      'Le fournisseur d\'identité que vous avez choisi n\'est pas autorisé pour effectuer votre démarche.',
     );
 
     cy.get('.previous-link').should('exist');
@@ -99,7 +99,7 @@ describe('10.0 - Error Management', () => {
 
     cy.url().should(
       'contains',
-      '/error?error=Y020019&error_description=Ce%20fournisseur%20d%27identit%C3%A9%20est%20inconnu&state=stateTraces',
+      '/error?error=Y020023&error_description=Le%20fournisseur%20d%27identit%C3%A9%20que%20vous%20avez%20choisi%20n%27est%20pas%20autoris%C3%A9%20pour%20effectuer%20votre%20d%C3%A9marche.&state=',
     );
   });
 

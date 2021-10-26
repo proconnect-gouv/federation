@@ -34,7 +34,6 @@ services:
       - 'fip1-high'
       - 'fip2-high'
       - 'fip6-high'
-      - 'fip7-high'
       - 'fip13-high'
       - 'fip14-high'
       - 'fip15-high'

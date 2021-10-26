@@ -55,7 +55,7 @@ describe('7.1 - Idp whitelist & blacklist', () => {
       cy.get(`button#idp-${idpId}2-high`).should('not.be.disabled');
       cy.get(`button#idp-${idpId}6-high`).should('not.be.disabled');
       // Disabled idps
-      cy.get(`button#idp-${idpId}-desactive-visible`).should('be.disabled');
+      cy.get(`button#idp-${idpId}3-desactive-visible`).should('be.disabled');
     });
   });
 
@@ -75,7 +75,7 @@ describe('7.1 - Idp whitelist & blacklist', () => {
       cy.get(`button#idp-${idpId}2-high`).should('not.be.disabled');
       cy.get(`button#idp-${idpId}6-high`).should('not.be.disabled');
       // Disabled idps
-      cy.get(`button#idp-${idpId}-desactive-visible`).should('be.disabled');
+      cy.get(`button#idp-${idpId}3-desactive-visible`).should('be.disabled');
     });
   });
 });
