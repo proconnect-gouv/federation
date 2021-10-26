@@ -11,6 +11,7 @@ export interface OidcAddress {
   // oidc claim
   // eslint-disable-next-line @typescript-eslint/naming-convention
   street_address: string;
+  formatted: string;
 }
 
 export interface OidcClaims {

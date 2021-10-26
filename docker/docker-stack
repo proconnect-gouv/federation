@@ -132,7 +132,7 @@ _up() {
         echo "  - min-eidas-high => up minimal needed services to run eidas (min-fcp-high + eidas)"
         echo "  - all-eidas-high => all needed services to run eidas (all-fcp-high + eidas)"
         echo "  - min-fcp-high => up minimal needed services to run fcp-high (core-fcp-high, fsp1-high, fip1-high, etc.)"
-        echo "  - all-fcp-high => all needed services to run fcp-high (core-fcp-high, fsp1-high, fsp2-high, fsp3-high, fsp5-high, fsp6-high, fip1-high, fip2-high, rnipp, haproxy, hsm, etc.)"
+        echo "  - all-fcp-high => all needed services to run fcp-high (core-fcp-high, fsp1-high, fsp2-high, fsp3-high, fsp5-high, fsp6-high, fip1-high, fip2-high, fip6-high, rnipp, haproxy, hsm, etc.)"
         echo "  - exploit-fcp-high => up minimal needed services to run the FranceConnect High fc-apps"
         echo "  - min-fcp-low => up minimal needed services to run core-fcp-low fsp1-low fip1-low"
         echo "  - all-fcp-low => up all needed services to run core-fcp-low and all other future services"
@@ -460,7 +460,7 @@ case "$action" in
     ;;
   reload-all)
     _start fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high fsa4-low \
-    fdp1v2 fip1-high fip2-high fia4-low fia5-low core-fcp-high rnipp exploitation-high \
+    fdp1v2 fip1-high fip2-high fip6-high fia4-low fia5-low core-fcp-high rnipp exploitation-high \
     fsa1-low fsa2-low fsa3-low fia1-low fia2-low core-fca-low fca-low-front csmr-hsm \
     eidas-bridge exploitation-fca-low exploit-fcp-high-back exploit-fcp-high-front \
     exploit-fca-low-back exploit-fca-low-front exploit-fcp-high-fi-mock rie-bridge-proxy \
@@ -490,7 +490,7 @@ case "$action" in
       core-fcp-high exploit-fcp-high-back core-fcp-low \
       fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high \
       fsp1-low \
-      fip1-high fip2-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
+      fip1-high fip2-high fip6-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
       fip1-low \
       exploit-fcp-high-front exploit-fca-low-front \
       \
@@ -508,7 +508,7 @@ case "$action" in
     core-fcp-high exploit-fcp-high-back core-fcp-low \
     fsp1-high fsp2-high fsp3-high fsp5-high fsp6-high \
     fsp1-low \
-    fip1-high fip2-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
+    fip1-high fip2-high fip6-high fip13-high fip14-high fip15-high fip16-high fip17-high fip18-high fip19-high fip20-high \
     fip1-low \
     exploit-fcp-high-front \
     \

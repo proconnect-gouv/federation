@@ -165,10 +165,7 @@ describe('8.0.1 - Scope', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
       // We select only birth
-      const scopes = [
-        'openid',
-        'birth',
-      ];
+      const scopes = ['openid', 'birth'];
 
       configureSpAndClickFc({
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -209,10 +206,7 @@ describe('8.0.1 - Scope', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
       // We select only identite_pivot
-      const scopes = [
-        'openid',
-        'identite_pivot',
-      ];
+      const scopes = ['openid', 'identite_pivot'];
 
       configureSpAndClickFc({
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -253,10 +247,7 @@ describe('8.0.1 - Scope', () => {
       cy.visit(`${Cypress.env('SP1_ROOT_URL')}`);
 
       // We select only profile
-      const scopes = [
-        'openid',
-        'profile',
-      ];
+      const scopes = ['openid', 'profile'];
 
       configureSpAndClickFc({
         // eslint-disable-next-line @typescript-eslint/naming-convention

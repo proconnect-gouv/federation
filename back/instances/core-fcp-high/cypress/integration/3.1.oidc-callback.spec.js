@@ -6,9 +6,9 @@ import {
   submitFSAuthorizeForm,
 } from './mire.utils';
 
-function getOidcCallbackUrl(idpInfo, interactionId, event) {
+function getOidcCallbackUrl(idpInfo, event) {
   cy.request({
-    url: `${idpInfo.IDP_ROOT_URL}/interaction/${interactionId}/login`,
+    url: `${idpInfo.IDP_ROOT_URL}/login`,
     method: 'POST',
     body: {
       login: 'test',
@@ -28,16 +28,6 @@ function getOidcCallbackUrl(idpInfo, interactionId, event) {
 }
 
 /**
- * InteractionId is the last and only path part.
- * It might be folowwed by a question mark.
- * @param {string} url
- * @return {string}
- */
-function extractInteractionIdFromUrl(url) {
-  return url.split('/').pop().replace('?', '');
-}
-
-/**
  * Run an interaction until the idp callback is triggered
  *
  * @param {Function} next a callback function that will receive `/oidc-callback` url as parameter.
@@ -53,10 +43,7 @@ function prepareOidcCallbackAs(alias) {
   cy.get(`#idp-${idpId}`).click();
   cy.url().should('contain', idpInfo.IDP_ROOT_URL);
 
-  cy.url().then((url) => {
-    const interactionId = extractInteractionIdFromUrl(url);
-    getOidcCallbackUrl(idpInfo, interactionId, 'idp:step2');
-  });
+  getOidcCallbackUrl(idpInfo, 'idp:step2');
 
   cy.get('@idp:step2')
     .then((response) => response.headers.location)

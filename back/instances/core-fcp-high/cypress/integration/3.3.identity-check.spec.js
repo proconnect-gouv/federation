@@ -25,7 +25,7 @@ describe('3.3 - Identity Check', () => {
   it('should failed when userInfos FC+ have missing claims returned from IdP FR', () => {
     // hack to ask missing scope
     const scopesWithoutEmail = scopes.filter((scope) => scope !== 'email');
-    cy.registerProxyURL(`${idpInfo.IDP_ROOT_URL}/user/authorize?*`, {
+    cy.registerProxyURL(`${idpInfo.IDP_ROOT_URL}/authorize?*`, {
       // email missing voluntary
       scope: scopesWithoutEmail.join(' '),
     });
@@ -46,7 +46,7 @@ describe('3.3 - Identity Check', () => {
   });
 
   it('should success when userInfos FC+ have also an unknown claims from IdP FR', () => {
-    cy.registerProxyURL(`${idpInfo.IDP_ROOT_URL}/user/authorize?*`, {
+    cy.registerProxyURL(`${idpInfo.IDP_ROOT_URL}/authorize?*`, {
       scope: `${scopes.join(' ')} unknown_prop_for_test`,
     });
 
@@ -55,7 +55,6 @@ describe('3.3 - Identity Check', () => {
       acr_values: 'eidas2',
       scopes,
       idpId,
-      userName: 'E020025',
     });
 
     cy.proxyURLWasActivated();

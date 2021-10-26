@@ -8,5 +8,4 @@ export enum EidasBridgeRoutes {
   INTERACTION_LOGIN = '/:uid/login',
   FINISH_FC_INTERACTION = '/interaction/oidc/finish',
   REDIRECT_TO_EIDAS_RESPONSE_PROXY = '/redirect-to-eidas-response-proxy',
-  USER_AUTHORIZE = '/user/authorize',
 }
