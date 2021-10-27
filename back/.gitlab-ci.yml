@@ -1,5 +1,5 @@
 stages:
-  - 'UT/Lint/Coverage'
+  - 'Code quality'
   - 'End to end'
   - 'Checkmarx'
   - 'Cache'
@@ -14,44 +14,36 @@ variables:
 
 global:
   image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+  stage: 'Code quality'
   tags:
     - node
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
+    - if: '$CI_PIPELINE_SOURCE != "merge_request_event" && $CI_COMMIT_BRANCH != "staging"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH == "staging"'
   cache:
     key: '${CI_PROJECT_ID}'
     policy: pull
     paths:
       - back/node_modules/
-  stage: 'UT/Lint/Coverage'
+      - quality/node_modules/
   script:
+    # Back folder
     - cd back/
     - yarn install
     - yarn lint
     - yarn prettier
     - yarn test --coverage
     - ./scripts/coverage.sh
-  coverage: '/Global coverage is: \[([\d\.]+)%\]/'
-  interruptible: true
-
-quality:
-  image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
-  tags:
-    - node
-  rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
-  cache:
-    key: '${CI_PROJECT_ID}'
-    policy: pull
-    paths:
-      - quality/node_modules/
-  stage: 'UT/Lint/Coverage'
-  script:
-    - cd quality
+    # Quality folder
+    - cd $CI_PROJECT_DIR/quality
     - yarn install
     - yarn lint
     - yarn prettier
     - yarn tsc --noEmit
+  coverage: '/Global coverage is: \[([\d\.]+)%\]/'
   interruptible: true
 
 build-cache:
