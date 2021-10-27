@@ -128,7 +128,7 @@ services:
       - rp-all
 
   elasticsearch:
-    image: elasticsearch:7.5.1
+    image: elasticsearch:7.9.2
     volumes:
       - '${VOLUMES_DIR}/elasticsearch/data:/usr/share/elasticsearch/data'
       - '${VOLUMES_DIR}/elasticsearch/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml'
