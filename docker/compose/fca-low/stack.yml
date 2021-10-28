@@ -39,5 +39,9 @@ services:
   hybridge-fca-low:
     image: alpine
     depends_on:
-      - 'min-fca-low'
-      - 'rie-bridge-proxy'
+      - core-fca-low
+      - fca-low-front
+      - fsa1-low
+      - rie-bridge-proxy
+      - fia-llng-low
+      - openldap
