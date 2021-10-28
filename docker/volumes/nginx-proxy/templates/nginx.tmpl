@@ -17,10 +17,7 @@
 ssl_dhparam /etc/nginx/dhparam/dhparam.pem;
 {{ end }}
 
-{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
-{{ $host := trim $host }}
-
-### {{ $host }}
+{{ range $host, $containers := groupBy $ "Env.VIRTUAL_HOST" }}
 
 {{ range $container := $containers }}
 
@@ -38,6 +35,13 @@ upstream {{ $upstream }} {
 {{ end }}
 }
 {{ end }}
+{{ end }}
+
+{{ range $host, $containers := groupByMulti $ "Env.VIRTUAL_HOST" "," }}
+{{ $host := trim $host }}
+
+### {{ $host }}
+
 
 
 server {

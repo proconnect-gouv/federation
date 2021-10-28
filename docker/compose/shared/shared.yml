@@ -85,6 +85,9 @@ services:
           # Generic
           - docker.dev-franceconnect.fr
       fc:
+      rie:
+        aliases:
+          - auth.llng.docker.dev-franceconnect.fr
       exploitation:
         aliases:
           - exploit-fcp-high.docker.dev-franceconnect.fr
@@ -105,6 +108,7 @@ services:
       - public
       - fc
       - exploitation
+      - rie
     command: -config /etc/docker-gen/config
 
   squid:
@@ -280,6 +284,11 @@ services:
       - fc
     command: 'pm2 logs'
 
+  openldap:
+    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/openldap:0.2
+    networks:
+    - rie
+
 ####################
 
 networks:
@@ -303,3 +312,7 @@ networks:
     ipam:
       config:
         - subnet: 172.16.5.0/24
+  rie:
+    ipam:
+      config:
+        - subnet: 172.16.6.0/24

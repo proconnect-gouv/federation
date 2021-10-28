@@ -5,7 +5,7 @@ const ministries = [
       acronym: "MO1",
       sort: 2,
       name: "MOCK - Ministére de la transition écologique - ALL FIS - SORT 2",
-      identityProviders: ["fia1-low", "fia2-low", "fia-desactive-visible"],
+      identityProviders: ["fia1-low", "fia2-low", "fia-desactive-visible", "fia-llng-low"],
       updatedAt: new Date("2020-12-09T12:00:00.000Z"),
       createdAt: new Date("2020-12-09T12:00:00.000Z"),
       __v: 1,

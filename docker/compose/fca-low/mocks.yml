@@ -211,6 +211,16 @@ services:
       - data
     command: 'pm2 logs'
 
+  fia-llng-low:
+    image: coudot/lemonldap-ng:2.0.13
+    volumes:
+      - "${VOLUMES_DIR}/llng/scripts/:/scripts:ro"
+      - "${VOLUMES_DIR}/llng/llng-conf.json:/llng-conf.json:ro"
+    env_file:
+      - '${COMPOSE_DIR}/fca-low/.env/fia-llng-low.env'
+    networks:
+      - rie
+
   # Remove this mock when we have something to connect to with exploit apps
   exploit-fca-low-fi-mock:
     hostname: exploit-fca-low-fi-mock
