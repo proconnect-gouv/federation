@@ -14,7 +14,12 @@
 	{{ range $container := $containers }}
 	{{ $service := index $container.Labels "com.docker.compose.service" }}
 	{{ $location := coalesce $container.Env.VIRTUAL_HOST_PATH "/" }}
-	  <li><a target="_blank" href="https://{{ $host }}{{ $location }}">{{ $service }}</a></li>
+	  {{ $subdomain := split $host "." | first }}
+	  <li>
+	  	<a target="_blank" href="https://{{ $host }}">
+		  {{ $service }} {{ if not (eq $service $subdomain) }} - {{ $subdomain }}{{ end }}
+		</a>
+	  </li>
   	{{ end }}
 	{{ end }}
 	</ul>

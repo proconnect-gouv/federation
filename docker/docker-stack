@@ -12,6 +12,7 @@ function join_by { local IFS="$1"; shift; echo "$*"; }
 #### Global Variables:
 COMPOSE_PROJECT_NAME=fc
 DEFAULT_NODE_VERSION=v14.18.1
+DOCKER_REPOSITORY_PREFIX=gitlab.dev-franceconnect.fr:5005/france-connect/infra
 COMPOSE_DIR="$FC_ROOT/fc/docker/compose"
 COMPOSE_FILES=$(find $COMPOSE_DIR -name "*.yml")
 VOLUMES_DIR="$FC_ROOT/fc/docker/volumes"
@@ -139,7 +140,7 @@ _up() {
         echo "  - min-fca-low => up minimal needed services to run core-fca-low fsa1-low fia1-low"
         echo "  - exploit-fca-low => up minimal needed services to run the Agentconnect Low fc-apps"
         echo "  - all-fca-low => all needed services to run fca-low stack (core-fca-low, fsa[n]-low, fia[n]-low, exploit, hsm, etc.)"
-        echo "  - hybridge-fca-low => up minimal needed services to run core-fca-low fca-low-front rie-bridge-proxy fsa1-low"
+        echo "  - hybridge-fca-low => up minimal needed services to run core-fca-low fca-low-front rie-bridge-proxy fsa1-low Lemon-ldap"
         echo "  - all => run all services"
         echo "----"
         exit 1
@@ -151,6 +152,17 @@ _up() {
     cd ${WORKING_DIR} && docker-compose up --build -d $services
 
     case $services in
+      *"hybridge-"*)
+        # Sleep to wait for configuration initialization
+        echo "Restore LemonLDAP configuration"
+        sleep 10
+        cd ${WORKING_DIR} && docker-compose exec fia-llng-low bash /scripts/init.sh
+        # Sleep to wait for mongodb replicat initialization
+        echo "Reseting database to default state..."
+        sleep 10
+        docker-compose exec -T mongo-fca-low /opt/scripts/manage.sh --reset-db
+        echo "Loaded !"
+        ;;
       *"-fcp-low"*)
         # Sleep to wait for mongodb replicat initialization
         echo "Reseting database to default state..."
@@ -428,6 +440,9 @@ case "$action" in
   log)
     _log $@
     ;;
+  llng-configure)
+    cd ${WORKING_DIR} && docker-compose exec fia-llng-low bash /scripts/init.sh
+    ;;
   compose)
     cd ${WORKING_DIR} && docker-compose $@
     ;;
@@ -581,6 +596,7 @@ case "$action" in
     echo "* dependencies-all | dep-all => install dependencies (using npm or yarn) on all nodejs applications"
     echo "* exec <container_name> <command> => exec a command inside a container"
     echo "* halt => stop docker-compose and delete containers"
+    echo "* llng-configure => Restore LemonLDAP configuration from ./docker/volumes/llng/llng-conf.json dump file"
     echo "* log [<app>] => exec pm2 logs for given instance (Ex. core-fcp-high)"
     echo "* fixtures => drop and restore default postgres database in fc-apps"
     echo "* mongo-shell-core-fcp-high => open mongo-fcp-high shell for core-fcp-high stack"

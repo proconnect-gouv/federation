@@ -234,6 +234,52 @@ const fia = {
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
+
+  // -- 
+  "FIA-LLNG-LOW": {
+    uid: "fia-llng-low",
+    name: "LemonLDAP::ng",
+    active: true,
+    display: true,
+    title: "Identity Provider LemonLDAP",
+    image: "fi-mock-eleve.svg",
+    imageFocus: "fi-mock-eleve.svg",
+    alt: "llng",
+    eidas: 1,
+    featureHandlers: {
+      coreVerify: "core-fca-default-verify",
+      authenticationEmail: null,
+    },
+    mailto: "",
+    specificText: "specific text llng",
+    url: "https://auth.llng.docker.dev-franceconnect.fr",
+    discoveryUrl:
+      "https://auth.llng.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+    discovery: true,
+    clientID: "myclientidforllng",
+    client_secret:
+      "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+    order: null,
+    updatedAt: new Date("2019-04-24 17:09:17"),
+    updatedBy: "admin",
+    endSessionURL:
+      "https://auth.llng.docker.dev-franceconnect.fr/user/session/end",
+    response_types: ["code"],
+    id_token_signed_response_alg: "RS256",
+    token_endpoint_auth_method: "client_secret_post",
+    revocation_endpoint_auth_method: "client_secret_post",
+    id_token_encrypted_response_alg: "",
+    id_token_encrypted_response_enc: "A256GCM",
+    userinfo_signed_response_alg: "RS256",
+    userinfo_encrypted_response_alg: "",
+    userinfo_encrypted_response_enc: "RS256",
+    redirect_uris: [
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia-llng-low",
+    ],
+    post_logout_redirect_uris: [
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+    ],
+  },
 };
 
 // -- IDPs ----------
@@ -247,3 +293,6 @@ print("FIP > Initializing provider: fia4-low - Activated");
 db.provider.update({ name: "fia4-low" }, fia["FIA4-LOW"], { upsert: true });
 print("FIP > Initializing provider: fia5-low - Activated");
 db.provider.update({ name: "fia5-low" }, fia["FIA5-LOW"], { upsert: true });
+print("FIA > Initializing provider: llng - Activated");
+db.provider.update({ name: "LemonLDAP-ng" }, fia["FIA-LLNG-LOW"], { upsert: true });
+
