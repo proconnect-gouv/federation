@@ -430,6 +430,7 @@ case "$action" in
       exploitation-fca-low exploit-fcp-high-back exploit-fca-low-back core-fcp-low \
       fsp1-low fip1-low exploit-fcp-high-front exploit-fca-low-front rie-bridge-proxy \
       exploit-fcp-high-fi-mock exploit-fca-low-fi-mock \
+      csmr-rie
     ;;
   exec)
     _exec $@
@@ -480,6 +481,7 @@ case "$action" in
     eidas-bridge exploitation-fca-low exploit-fcp-high-back exploit-fcp-high-front \
     exploit-fca-low-back exploit-fca-low-front exploit-fcp-high-fi-mock rie-bridge-proxy \
     exploit-fca-low-fi-mock core-fcp-low fsp1-low fip1-low \
+    csmr-rie
     ;;
   reset-db-core-fcp-high)
     _reset_db_fcp_high $@
@@ -513,6 +515,7 @@ case "$action" in
       exploit-fcp-high-fi-mock exploit-fca-low-fi-mock \
       fsa1-low fsa2-low fsa3-low fsa4-low \
       fia1-low fia2-low fia4-low fia5-low \
+      csmr-rie
     ;;
   # -- stop all up's containers (FCP and/or FCA)
   stop-all)
@@ -538,7 +541,8 @@ case "$action" in
   test-all)
     _test rnipp core-fcp-high exploitation-high core-fca-low fca-low-front eidas-bridge \
     exploitation-fca-low exploit-fcp-high-back exploit-fca-low-back exploit-fca-low-front \
-    exploit-fcp-high-fi-mock exploit-fca-low-fi-mock core-fcp-low fsp1-low fip1-low rie-bridge-proxy
+    exploit-fcp-high-fi-mock exploit-fca-low-fi-mock core-fcp-low fsp1-low fip1-low rie-bridge-proxy \
+    csmr-rie
     ;;
   e2e)
     _e2e $@

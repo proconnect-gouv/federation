@@ -22,7 +22,6 @@ services:
     depends_on:
       - 'core-fca-low'
       - 'fca-low-front'
-      - 'rie-bridge-proxy'
       - 'fsa1-low'
       - 'fsa2-low'
       - 'fsa3-low'
@@ -35,13 +34,16 @@ services:
       - 'pg-exploit-fca-low'
       - 'exploit-fca-low-back'
       - 'exploit-fca-low-front'
+      ### RIE
+      - 'rie-bridge-proxy'
+      - 'csmr-rie'
 
   hybridge-fca-low:
     image: alpine
     depends_on:
-      - core-fca-low
-      - fca-low-front
-      - fsa1-low
-      - rie-bridge-proxy
-      - fia-llng-low
-      - openldap
+      - 'min-fca-low'
+      - 'fia-llng-low'
+      - 'openldap'
+      ### RIE
+      - 'rie-bridge-proxy'
+      - 'csmr-rie'
