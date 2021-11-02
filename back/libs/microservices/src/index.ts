@@ -10,3 +10,9 @@ export const TracksProtocol = {
     GET: 'TRACKS_GET',
   },
 };
+
+export const HttpProxyProtocol = {
+  Commands: {
+    HTTP_PROXY: 'HTTP_PROXY',
+  },
+};
