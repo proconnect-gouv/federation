@@ -772,6 +772,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/rie-bridge-proxy/tsconfig.lib.json"
       }
+    },
+    "csmr-http-proxy": {
+      "type": "library",
+      "root": "apps/csmr-http-proxy",
+      "entryFile": "index",
+      "sourceRoot": "apps/csmr-http-proxy/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/csmr-http-proxy/tsconfig.app.json"
+      }
+    },
+    "csmr-rie": {
+      "type": "application",
+      "root": "instances/csmr-rie",
+      "entryFile": "main",
+      "sourceRoot": "instances/csmr-rie/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/csmr-rie/tsconfig.app.json"
+      }
     }
   }
 }
