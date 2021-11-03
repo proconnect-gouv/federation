@@ -41,7 +41,7 @@ variables:
     SCA_APIURL: "https://eu.api-sca.checkmarx.net"
     SCA_ACCESSCONTROLURL: "https://eu.platform.checkmarx.net"
 
-    PARAMS: --gitlab.api-url=https://gitlab.dev-franceconnect.fr/api/v4/ --cx-flow.zip-exclude=\.git/.*,/docker/.*,.*/cypress/.*,.*\.spec\.ts
+    PARAMS: --gitlab.api-url=https://gitlab.dev-franceconnect.fr/api/v4/ --cx-flow.zip-exclude=\.git/.*,docker/.*,.*\.min\.js,.*/cypress/.*,.*\.spec\.ts
 
 #
 #         The "checkmarx-scan" service creates issues on gitlab after a scan, reporting errors found based on the severity level.
