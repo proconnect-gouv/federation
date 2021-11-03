@@ -21,6 +21,10 @@ export default class IdentityProviderPage {
     cy.url().should('include', this.originUrl);
   }
 
+  checkIsNotVisible(): void {
+    cy.url().should('not.include', this.originUrl);
+  }
+
   setMockAcrValue(acrValue: string): void {
     cy.get('[name="acr"]').select(acrValue);
   }

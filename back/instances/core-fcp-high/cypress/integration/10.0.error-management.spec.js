@@ -76,14 +76,19 @@ describe('10.0 - Error Management', () => {
   });
 
   it('should redirect to Sp if we select an blacklisted Idp', () => {
-    const url = getAuthorizeUrl();
+    const url = getAuthorizeUrl({ 
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: `${Cypress.env('SP5_CLIENT_ID')}`,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      redirect_uri: `${Cypress.env('SP5_ROOT_URL')}/oidc-callback/envIssuer`,
+    });
     cy.visit(url);
 
     /**
      * intentionally blacklisted to create a false error
      */
     cy.get(`#fs-request-${idpId}`).within(() => {
-      cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip7-high');
+      cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip8-high');
       cy.get(`button#idp-${idpId}`).click();
     });
 
@@ -93,7 +98,7 @@ describe('10.0 - Error Management', () => {
     );
 
     cy.get('.previous-link').should('exist');
-    cy.get('.previous-link').contains('Revenir sur FSP - FSP1-HIGH');
+    cy.get('.previous-link').contains('Revenir sur FSP - FSP5-HIGH');
 
     cy.get('.previous-link').click();
 

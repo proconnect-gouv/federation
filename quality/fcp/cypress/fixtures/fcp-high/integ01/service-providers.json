@@ -1,12 +1,14 @@
 [
   {
     "name": "fsp1v2",
-    "descriptions": ["par défaut"],
+    "descriptions": [
+      "par défaut"
+    ],
     "mocked": true,
     "url": "https://fsp1v2.integ01.fcp.fournisseur-de-service.fr",
     "redirectUriPath": "/oidc-callback/envIssuer",
     "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
-    "acrValue": "eidas3",
+    "acrValue": "eidas2",
     "claims": [
       "amr"
     ],
@@ -23,7 +25,7 @@
     "name": "fsp2v2",
     "descriptions": [
       "habilité à demander le scope identite_pivot",
-      "Fournisseur de service sans whitelist"
+      "avec une whitelist de FI"
     ],
     "mocked": true,
     "url": "https://fsp2v2.integ01.fcp.fournisseur-de-service.fr",

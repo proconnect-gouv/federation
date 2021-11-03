@@ -24,8 +24,8 @@ Given(
       this.identityProviders,
       {
         acrValue,
-        enabled: true,
         signature,
+        usable: true,
       },
     );
     cy.log(`J'utilise le fournisseur d'identité ${identityProvider.idpId}`);

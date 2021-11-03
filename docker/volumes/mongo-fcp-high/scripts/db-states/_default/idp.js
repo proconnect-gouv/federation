@@ -248,7 +248,7 @@ const fip = {
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
-  // -- FIP - FIP6-HIGH - Activated and invisible
+  // -- FIP - FIP6-HIGH
   "FIP6-HIGH": {
     uid: "fip6-high",
     name: "fip6-high",
@@ -298,7 +298,7 @@ const fip = {
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
-  // -- FIP - FIP7-HIGH - blacklisted
+  // -- FIP - FIP7-HIGH - no discovery attribute
   // use fip1 urls to avoid the generation of a container
   "FIP7-HIGH": {
     uid: "fip7-high",
@@ -320,7 +320,7 @@ const fip = {
     specificText: "specific text fip7-high",
     url: "https://fip1-high.docker.dev-franceconnect.fr",
     statusURL: "https://fip1-high.docker.dev-franceconnect.fr/",
-    discovery: true,
+    // discovery: true,
     discoveryUrl:
       "https://fip1-high.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     response_types: ["code"],
@@ -345,8 +345,10 @@ const fip = {
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
-  // -- FIP - FIP8-HIGH
+  // -- FIP - FIP8-HIGH - blacklisted
   // use fip1 urls to avoid the generation of a container
+  // Blacklisted by FSP2
+  // Absent of FSP5 whitelist
   "FIP8-HIGH": {
     uid: "fip8-high",
     name: "fip8-high",
@@ -392,7 +394,7 @@ const fip = {
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
-  // -- FIP - FIP9-HIGH
+  // -- FIP - FIP9-HIGH - no discovery url
   // use fip1 urls to avoid the generation of a container
   "FIP9-HIGH": {
     uid: "fip9-high",
@@ -415,6 +417,8 @@ const fip = {
     url: "https://fip1-high.docker.dev-franceconnect.fr",
     statusURL: "https://fip1-high.docker.dev-franceconnect.fr/",
     discovery: true,
+    // discoveryUrl:
+    //  "https://fip1-high.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     response_types: ["code"],
     clientID: "09a1a257648c1742c74d6a3d84b31943",
     client_secret:
@@ -437,7 +441,7 @@ const fip = {
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
-  // -- FIP - FIP10-HIGH
+  // -- FIP - FIP10-HIGH - invalid parameter
   // use fip1 urls to avoid the generation of a container
   "FIP10-HIGH": {
     uid: "fip10-high",

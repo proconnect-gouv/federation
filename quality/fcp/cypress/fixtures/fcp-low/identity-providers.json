@@ -1,9 +1,12 @@
 [
   {
     "idpId": "fip1-low",
-    "description": "par défaut",
+    "descriptions": [
+      "par défaut",
+      "actif"
+    ],
     "mocked": true,
-    "enabled": true,
+    "usable": true,
     "url": "https://fip1-low.{{TEST_ENV}}.dev-franceconnect.fr/interaction",
     "acrValue": "eidas1",
     "encryption": "",

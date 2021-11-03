@@ -1,9 +1,9 @@
 #language: fr
 @usager @connexionUsager
 Fonctionnalité: Connexion Usager
-  En tant qu'usager d'un fournisseur de service,
-  je veux me connecter en utilisant un fournisseur d'identité
-  afin d'accéder à mon service
+  # En tant qu'usager d'un fournisseur de service,
+  # je veux me connecter en utilisant un fournisseur d'identité
+  # afin d'accéder à mon service
 
   Scénario: Connexion d'un usager - recherche FI par ministère
     Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
@@ -35,7 +35,7 @@ Fonctionnalité: Connexion Usager
     Et le fournisseur de service a accès aux informations des scopes "obligatoires"
 
     Exemples:
-    | signature |
-    | ES256     |
-    | HS256     |
-    | RS256     |
+      | signature |
+      | ES256     |
+      | HS256     |
+      | RS256     |

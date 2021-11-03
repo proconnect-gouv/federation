@@ -1,16 +1,87 @@
 [
   {
     "idpId": "fip1v2",
-    "description": "par défaut",
+    "descriptions": [
+      "par défaut",
+      "actif",
+      "whitelisté"
+    ],
     "mocked": true,
-    "enabled": true,
-    "url": "https://fip1v2.{{TEST_ENV}}.fcp.fournisseur-d-identite.fr/interaction",
+    "usable": true,
+    "url": "https://fip1v2.integ01.fcp.fournisseur-d-identite.fr/interaction",
     "acrValue": "eidas3",
     "selectors": {
       "idpButton": "#idp-fip1v2",
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "[type='submit']"
+    }
+  },
+  {
+    "idpId": "fip-desactive-visible",
+    "descriptions": ["désactivé et visible"],
+    "mocked": true,
+    "usable": false,
+    "url": "https://fip-desactive-visible.integ01.fcp.fournisseur-d-identite.fr/interaction",
+    "acrValue": "eidas3",
+    "encryption": "RSA-OAEP,A256GCM",
+    "signature": "HS256",
+    "selectors": {
+      "idpButton": "#idp-fip-desactive-visible",
+      "username": "",
+      "password": "",
+      "loginButton": ""
+    }
+  },
+  {
+    "idpId": "fip-desactive-invisible",
+    "descriptions": ["désactivé et non visible"],
+    "mocked": true,
+    "usable": false,
+    "url": "https://fip-desactive-invisible.integ01.fcp.fournisseur-d-identite.fr/interaction",
+    "acrValue": "eidas3",
+    "encryption": "RSA-OAEP,A256GCM",
+    "signature": "ES256",
+    "selectors": {
+      "idpButton": "#idp-fip-desactive-invisible",
+      "username": "",
+      "password": "",
+      "loginButton": ""
+    }
+  },
+  {
+    "idpId": "fip-active-invisible",
+    "descriptions": ["actif et non visible"],
+    "mocked": true,
+    "usable": false,
+    "url": "https://fip-active-invisible.integ01.fcp.fournisseur-d-identite.fr/interaction",
+    "acrValue": "eidas3",
+    "encryption": "RSA-OAEP,A256GCM",
+    "signature": "ES256",
+    "selectors": {
+      "idpButton": "#idp-fip-active-invisible",
+      "username": "",
+      "password": "",
+      "loginButton": ""
+    }
+  },
+  {
+    "idpId": "lin",
+    "descriptions": [
+      "l'identité numérique La Poste",
+      "non whitelisté"
+    ],
+    "mocked": false,
+    "usable": true,
+    "url": "https://integration.compte.laposte.fr",
+    "acrValue": "eidas3",
+    "encryption": "",
+    "signature": "ES256",
+    "selectors": {
+      "idpButton": "#idp-lin",
+      "username": "input[name='_username']",
+      "password": "input[name='_password']",
+      "loginButton": "#validate-button"
     }
   }
 ]
