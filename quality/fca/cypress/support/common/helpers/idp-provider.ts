@@ -5,7 +5,7 @@ type IdentityProviderAttributesFilter = {
   acrValue?: string;
   encryption?: string;
   signature?: string;
-  enabled?: boolean;
+  usable?: boolean;
 };
 
 export const getIdentityProviderByAttributes = (
@@ -13,7 +13,7 @@ export const getIdentityProviderByAttributes = (
   filters: IdentityProviderAttributesFilter,
 ): IdentityProvider => {
   const attrFilters = { ...filters };
-  attrFilters.enabled ??= true;
+  attrFilters.usable ??= true;
   const search = Object.entries(attrFilters).filter(
     ([, value]) => value !== undefined && value !== null,
   );

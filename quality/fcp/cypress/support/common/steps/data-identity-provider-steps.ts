@@ -10,9 +10,8 @@ Given("j'utilise le fournisseur d'identité {string}", function (description) {
 });
 
 Given(
-  /^j'utilise un fournisseur d'identité (actif|désactivé)$/,
-  function (status) {
-    const description = status === 'actif' ? 'par défaut' : 'désactivé';
+  /^j'utilise (?:le|un) fournisseur d'identité "([^"]+)"$/,
+  function (description) {
     getIdentityProviderByDescription(this.identityProviders, description);
   },
 );

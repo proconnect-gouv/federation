@@ -13,7 +13,7 @@ export interface IdentityProvider extends IdentityProviderBase {
   encryption: string;
   signature: string;
   description: string;
-  enabled: boolean;
+  usable: boolean;
   idpId: string;
   mocked: boolean;
   title: string;

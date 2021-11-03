@@ -7,10 +7,15 @@ import IdentityProviderPage from '../pages/identity-provider-page';
 let identityProviderPage: IdentityProviderPage;
 
 Then(
-  "je suis redirigé vers la page login du fournisseur d'identité",
-  function () {
+  /^je (suis|ne suis pas) redirigé vers la page login du fournisseur d'identité$/,
+  function (text) {
+    const expectVisible = text === 'suis';
     identityProviderPage = new IdentityProviderPage(this.identityProvider);
-    identityProviderPage.checkIsVisible();
+    if (expectVisible) {
+      identityProviderPage.checkIsVisible();
+    } else {
+      identityProviderPage.checkIsNotVisible();
+    }
   },
 );
 

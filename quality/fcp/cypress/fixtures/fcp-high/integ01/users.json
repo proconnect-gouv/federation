@@ -253,6 +253,7 @@
       "gender": "male",
       "given_name": "CLEMENT",
       "family_name": "CORSE",
+      "preferred_username": "",
       "birthdate": "1991-02-12",
       "birthplace": "2A115",
       "birthcountry": "99100",
@@ -275,6 +276,8 @@
       "gender": "male",
       "given_name": "Jean",
       "family_name": "FLEURET",
+      "preferred_username": "",
+      "birthplace": "",
       "birthdate": "1992-11-00",
       "birthcountry": "99217",
       "email": "jean-fleuret@yopmail.com"
@@ -296,6 +299,8 @@
       "gender": "male",
       "given_name": "Jean",
       "family_name": "TARGE",
+      "preferred_username": "",
+      "birthplace": "",
       "birthdate": "1992-00-00",
       "birthcountry": "99217",
       "email": "jean-targe@yopmail.com"
