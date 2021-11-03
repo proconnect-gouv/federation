@@ -5,6 +5,7 @@ stages:
   - 'Cache'
   - 'Review'
   - 'Build'
+  - 'Tag'
   - 'Post-deploy'
 
 variables:
