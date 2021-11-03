@@ -1,16 +1,16 @@
 #language: fr
 @usager @connexionScope
 Fonctionnalité: Connexion Usager - Scope
-  En tant qu'usager d'un fournisseur de service,
-  je veux me connecter en utilisant un fournisseur d'identité
-  afin de communiquer certaines informations personnelles au fournisseur de service
+  # En tant qu'usager d'un fournisseur de service,
+  # je veux me connecter en utilisant un fournisseur d'identité
+  # afin de communiquer certaines informations personnelles au fournisseur de service
 
   Plan du Scénario: Connexion d'un usager - scope <scopeType>
     Etant donné que le fournisseur de service requiert l'accès aux informations des scopes "<scopeType>"
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que j'utilise un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité "actif"
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès
@@ -22,20 +22,20 @@ Fonctionnalité: Connexion Usager - Scope
     Et le fournisseur de service a accès aux informations des scopes "<scopeType>"
 
     Exemples:
-    | scopeType                 |
-    | tous les scopes           |
-    | profile sans alias        |
-    | identite_pivot sans alias |
-    | birth                     |
-    | profile                   |
-    | identite_pivot            |
+      | scopeType                 |
+      | tous les scopes           |
+      | profile sans alias        |
+      | identite_pivot sans alias |
+      | birth                     |
+      | profile                   |
+      | identite_pivot            |
 
   Scénario: Connexion d'un usager - scope anonyme
     Etant donné que le fournisseur de service requiert l'accès aux informations du scope "anonyme"
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que j'utilise un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité "actif"
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès
@@ -51,7 +51,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que j'utilise un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité "actif"
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès

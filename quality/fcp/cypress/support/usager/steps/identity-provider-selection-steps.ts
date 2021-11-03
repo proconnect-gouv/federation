@@ -21,9 +21,19 @@ Then(
   },
 );
 
+Then(
+  /^le fournisseur d'identité est (actif|désactivé) dans la mire$/,
+  function (state) {
+    const isEnabled = state === 'actif';
+    identityProviderSelectionPage
+      .getIdpButton(this.identityProvider.idpId)
+      .should(isEnabled ? 'be.enabled' : 'be.disabled');
+  },
+);
+
 When("je clique sur le fournisseur d'identité", function () {
   expect(this.identityProvider).to.exist;
   identityProviderSelectionPage
     .getIdpButton(this.identityProvider.idpId)
-    .click();
+    .click({ force: true });
 });

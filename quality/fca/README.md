@@ -83,20 +83,28 @@ https://marketplace.visualstudio.com/items?itemName=alexkrechik.cucumberautocomp
 This plugin provides support for writing/maintaining scenarios in the feature files.
 It automatically lists the implemented steps while editing the scenarios.
 
+In order to setup the VSCode extension for FCA, you can either open the workspace from the `/quality/fca` folder or copy the following settings in your VSCode User settings.
+
 ```
 {
-  "cSpell.language": "en,fr",
-  "cSpell.enableFiletypes": [
-    "feature"
-  ],
-  "cucumberautocomplete.customParameters": [
-  ],
-  "cucumberautocomplete.steps": [
-    "quality/fca/cypress/support/**/steps/*.ts"
-  ],
+  "cucumberautocomplete.customParameters": [],
+  "cucumberautocomplete.steps": ["quality/fca/cypress/support/**/steps/*.ts"],
   "cucumberautocomplete.strictGherkinCompletion": false,
-  "cSpell.userWords": [
-    "Etant"
-  ]
+  "cucumberautocomplete.formatConfOverride": {
+    "Fonctionnalité": 0,
+    "Contexte": 1,
+    "Scénario": 1,
+    "Plan du Scénario:": 1,
+    "Etant donné que": 2,
+    "Et que": 2,
+    "Quand": 2,
+    "Alors": 2,
+    "Et": 2,
+    "Exemples:": 2,
+    "\\*": 2,
+    "\\|": 3,
+    "#": "relative",
+    "@": "relative"
+  }
 }
 ```

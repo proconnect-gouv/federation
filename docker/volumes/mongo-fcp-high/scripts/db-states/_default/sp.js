@@ -50,35 +50,15 @@ const fsp = {
     userinfo_encrypted_response_enc: "A256GCM",
     jwks_uri:
       "https://fsp1-high.docker.dev-franceconnect.fr/client/.well-known/keys",
-    idpFilterExclude: false,
-    idpFilterList: [
-      "fip1-high",
-      "fip2-high",
-      "fip3-desactive-visible",
-      "fip4-desactive-invisible",
-      "eidas-bridge",
-      "fip6-high",
-      "fip8-high",
-      "fip9-high",
-      "fip10-high",
-      "fip11-high",
-      "fip12-high",
-      "fip13-high",
-      "fip14-high",
-      "fip15-high",
-      "fip16-high",
-      "fip17-high",
-      "fip18-high",
-      "fip19-high",
-      "fip20-high",
-      "idp-test-update",
-    ],
+    idpFilterExclude: true,
+    idpFilterList: [],
     eidas: 2,
     identityConsent: false,
     trustedIdentity: false,
   },
 
   // -- FSP - FSP2v2 - Activated - no post-logout-redirect-uri
+  // using blacklist including fip8-high
   "FSP2-HIGH": {
     name: "FSP - FSP2v2",
     title: "FSP - FSP2v2 Title",
@@ -123,7 +103,7 @@ const fsp = {
     jwks_uri:
       "https://fsp2-high.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
-    idpFilterList: ["fip7-high"],
+    idpFilterList: ["fip8-high"],
     eidas: 2,
     identityConsent: false,
     trustedIdentity: false,
@@ -178,7 +158,7 @@ const fsp = {
     jwks_uri:
       "https://fsp3-high.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
-    idpFilterList: ["fip1-high", "fip2-high", "eidas-bridge", "fip6-high"],
+    idpFilterList: [],
     identityConsent: false,
   },
 
@@ -220,10 +200,11 @@ const fsp = {
     identityConsent: false,
   },
 
-  // -- FSP - FSP5v2 - private FSP and identity consent required
+  // -- FSP - FSP5-HIGH - private FSP and identity consent required
+  // using whitelist not including fip8-high
   "FSP5-HIGH": {
-    name: "FSP - FSP5v2",
-    title: "FSP - FSP5v2 title",
+    name: "FSP - FSP5-HIGH",
+    title: "FSP - FSP5-HIGH title",
     site: "https://site.com",
     redirect_uris: [
       "https://fsp5-high.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
@@ -271,12 +252,19 @@ const fsp = {
       "https://fsp5-high.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: false,
     idpFilterList: [
+      "eidas-bridge",
       "fip1-high",
       "fip2-high",
-      "fip3-high",
       "fip3-desactive-visible",
-      "eidas-bridge",
+      "fip4-desactive-invisible",
+      "fip5-active-invisible",
       "fip6-high",
+      "fip7-high",
+      // "fip8-high", not whitelisted
+      "fip9-high",
+      "fip10-high",
+      "fip11-high",
+      "fip12-high",
       "fip13-high",
       "fip14-high",
       "fip15-high",
@@ -341,24 +329,8 @@ const fsp = {
     userinfo_encrypted_response_enc: "A256GCM",
     jwks_uri:
       "https://fsp6-high.docker.dev-franceconnect.fr/client/.well-known/keys",
-    idpFilterExclude: false,
-    idpFilterList: [
-      "fip1-high",
-      "fip2-high",
-      "fip3-high",
-      "fip3-desactive-visible",
-      "eidas-bridge",
-      "fip6-high",
-      "fip13-high",
-      "fip14-high",
-      "fip15-high",
-      "fip16-high",
-      "fip17-high",
-      "fip18-high",
-      "fip19-high",
-      "fip20-high",
-      "idp-test-update",
-    ],
+    idpFilterExclude: true,
+    idpFilterList: [],
     identityConsent: false,
     eidas: 2,
     trustedIdentity: false,
@@ -409,7 +381,7 @@ const fsp = {
     jwks_uri:
       "https://eidas-bridge.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
-    idpFilterList: ["fip7-high", "fip6-high"],
+    idpFilterList: ["fip6-high", "fip8-high"],
     identityConsent: false,
   },
 };
