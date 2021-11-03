@@ -31,11 +31,6 @@
         "IDP_INTERACTION_URL": "https://fip6-high.docker.dev-franceconnect.fr/interaction"
       },
       {
-        "ID": "fip7-high",
-        "IDP_ROOT_URL": "https://fip7-high.docker.dev-franceconnect.fr",
-        "IDP_INTERACTION_URL": "https://fip7-high.docker.dev-franceconnect.fr/interaction"
-      },
-      {
         "ID": "fip13-high",
         "IDP_ROOT_URL": "https://fip13-high.docker.dev-franceconnect.fr",
         "IDP_INTERACTION_URL": "https://fip13-high.docker.dev-franceconnect.fr/interaction"
@@ -84,6 +79,7 @@
     "SP2_CLIENT_ID": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
     "SP5_ID": "#fsp5-high",
     "SP5_ROOT_URL": "https://fsp5-high.docker.dev-franceconnect.fr",
+    "SP5_CLIENT_ID": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39555",
     "SP6_ID": "#fsp6-high",
     "SP6_ROOT_URL": "https://fsp6-high.docker.dev-franceconnect.fr",
     "WELL_KNOWN": "/api/v2/.well-known/openid-configuration",

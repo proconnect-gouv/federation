@@ -12,11 +12,18 @@ describe('7.1 - Idp whitelist & blacklist', () => {
 
   it('should trigger error 020023 when forging click on non existing IdP in whitelist', () => {
     // Given
-    cy.visit(getAuthorizeUrl());
+    cy.visit(
+      getAuthorizeUrl({ 
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: `${Cypress.env('SP5_CLIENT_ID')}`,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        redirect_uri: `${Cypress.env('SP5_ROOT_URL')}/oidc-callback/envIssuer`,
+      })
+    );
     cy.url().should('match', mireUrl);
     // When
     cy.get(`#fs-request-${idpId}1-high`).within(() => {
-      cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip4-high');
+      cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip8-high');
       cy.get(`button#idp-${idpId}1-high`).click();
     });
     // Then
@@ -37,7 +44,7 @@ describe('7.1 - Idp whitelist & blacklist', () => {
     cy.url().should('match', mireUrl);
     // When
     cy.get(`#fs-request-${idpId}1-high`).within(() => {
-      cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip7-high');
+      cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip8-high');
       cy.get(`button#idp-${idpId}1-high`).click();
     });
     // Then
@@ -46,7 +53,14 @@ describe('7.1 - Idp whitelist & blacklist', () => {
   });
 
   it('should display only whitelisted idps', () => {
-    cy.visit(getAuthorizeUrl());
+    cy.visit(
+      getAuthorizeUrl({ 
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: `${Cypress.env('SP5_CLIENT_ID')}`,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        redirect_uri: `${Cypress.env('SP5_ROOT_URL')}/oidc-callback/envIssuer`,
+      })
+    );
     cy.url().should('match', mireUrl);
     // Then
     cy.get('#idp-list').within(() => {
@@ -56,17 +70,20 @@ describe('7.1 - Idp whitelist & blacklist', () => {
       cy.get(`button#idp-${idpId}6-high`).should('not.be.disabled');
       // Disabled idps
       cy.get(`button#idp-${idpId}3-desactive-visible`).should('be.disabled');
+      // Not visible because not in whitelist
+      cy.get(`button#idp-${idpId}8-high`).should('not.exist');
     });
   });
 
   it('should display non blacklisted idps', () => {
-    const overrideParams = {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
-    };
-    cy.visit(getAuthorizeUrl(overrideParams));
+    cy.visit(
+      getAuthorizeUrl({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
+      })
+    );
     cy.url().should('match', mireUrl);
     // Then
     cy.get('#idp-list').within(() => {
@@ -76,6 +93,8 @@ describe('7.1 - Idp whitelist & blacklist', () => {
       cy.get(`button#idp-${idpId}6-high`).should('not.be.disabled');
       // Disabled idps
       cy.get(`button#idp-${idpId}3-desactive-visible`).should('be.disabled');
+      // Not visible because in blacklist
+      cy.get(`button#idp-${idpId}8-high`).should('not.exist');
     });
   });
 });

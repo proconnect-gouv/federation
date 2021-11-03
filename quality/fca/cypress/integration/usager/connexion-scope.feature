@@ -1,9 +1,9 @@
 #language: fr
 @usager @connexionScope
 Fonctionnalité: Connexion Usager - Scope
-  En tant qu'usager d'un fournisseur de service,
-  je veux me connecter en utilisant un fournisseur d'identité
-  afin de communiquer certaines informations personnelles au fournisseur de service
+  # En tant qu'usager d'un fournisseur de service,
+  # je veux me connecter en utilisant un fournisseur d'identité
+  # afin de communiquer certaines informations personnelles au fournisseur de service
 
   Plan du Scénario: Connexion d'un usager - scope <scopeType>
     Etant donné que le fournisseur de service requiert l'accès aux informations des scopes "<scopeType>"
@@ -20,14 +20,14 @@ Fonctionnalité: Connexion Usager - Scope
     Et le fournisseur de service a accès aux informations des scopes "<scopeType>"
 
     Exemples:
-    | scopeType                                  |
-    | tous les scopes                            |
-    | obligatoires                               |
-    | obligatoires et siren/siret                |
-    | obligatoires et organizational_unit/phone  |
-    | obligatoires et belonging_population       |
-    | email                                      |
-    | chorusdt                                   |
+      | scopeType                                 |
+      | tous les scopes                           |
+      | obligatoires                              |
+      | obligatoires et siren/siret               |
+      | obligatoires et organizational_unit/phone |
+      | obligatoires et belonging_population      |
+      | email                                     |
+      | chorusdt                                  |
 
   Scénario: Connexion d'un usager - scope anonyme
     Etant donné que le fournisseur de service requiert l'accès aux informations du scope "anonyme"
