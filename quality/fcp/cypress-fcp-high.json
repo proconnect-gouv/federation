@@ -6,6 +6,7 @@
     "BASE_URLS": {
       "recette": "https://recette.dev-franceconnect.fr"
     },
+    "LOG_FILE_PATH": "../../docker/volumes/log/core-fcp-high.log",
     "PLATFORM": "fcp-high",
     "TEST_ENV": "docker",
     "TAGS": "not @ignoreHigh and not @fcpLow",

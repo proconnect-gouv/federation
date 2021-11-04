@@ -16,7 +16,7 @@ Fonctionnalité: Connexion Usager - Scope
     Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent aux scopes "<scopeType>"
-    Et j'accepte de transmettre mes informations au fournisseur de service
+    Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté
     Et le fournisseur de service a accès aux informations des scopes "<scopeType>"
@@ -40,8 +40,8 @@ Fonctionnalité: Connexion Usager - Scope
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
-    Et aucune information demandée par le fournisseur de service pour le scope "anonyme"
-    Et j'accepte de transmettre mes informations au fournisseur de service
+    Et aucune information n'est demandée par le fournisseur de service pour le scope "anonyme"
+    Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté
     Et le fournisseur de service a accès aux informations du scope "anonyme"
@@ -57,7 +57,7 @@ Fonctionnalité: Connexion Usager - Scope
     Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent aux scopes "profile"
-    Et j'accepte de transmettre mes informations au fournisseur de service
+    Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté
     Et le fournisseur de service a accès aux informations des scopes "profile"

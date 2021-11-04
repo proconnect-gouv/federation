@@ -3,6 +3,7 @@ import { Before } from 'cypress-cucumber-preprocessor/steps';
 import {
   addFCBasicAuthorization,
   clearAllCookies,
+  clearBusinessLog,
   disableSameSiteLax,
   getDefaultIdentityProvider,
   getDefaultServiceProvider,
@@ -61,7 +62,9 @@ beforeEach(function () {
     addFCBasicAuthorization();
   }
 
-  if (testEnv === 'integ01') {
+  if (testEnv === 'docker') {
+    clearBusinessLog();
+  } else if (testEnv === 'integ01') {
     // Avoid cookies side-effect by clearing cookies on all domains
     clearAllCookies();
 

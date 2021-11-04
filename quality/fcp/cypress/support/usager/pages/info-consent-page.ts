@@ -17,6 +17,10 @@ const CLAIM_LABELS = {
 /* eslint-enable @typescript-eslint/naming-convention */
 
 export default class InfoConsentPage {
+  get consentCheckbox(): ChainableElement {
+    return cy.get('#fc-ask-consent-checkbox');
+  }
+
   get consentButton(): ChainableElement {
     return cy.get('#consent');
   }
@@ -42,11 +46,25 @@ export default class InfoConsentPage {
     );
   }
 
-  checkInformationConsent(scopeContext: ScopeContext): void {
+  checkInformationConsent(
+    scopeContext: ScopeContext,
+    explicitConsent: boolean,
+  ): void {
     const expectedClaims = getClaims(scopeContext).filter(
       (claimName) => claimName !== 'sub',
     );
-    this.showClaimsToggle.click();
+
+    if (!explicitConsent) {
+      // Information page: Use the toggle to display the claims
+      this.showClaimsToggle.should('be.visible');
+      this.claimDetails.should('not.be.visible');
+      this.showClaimsToggle.click();
+    } else {
+      // Consent page: Claims displayed without toggle
+      this.showClaimsToggle.should('not.exist');
+    }
+
+    this.claimDetails.should('be.visible');
     this.claimDetails.invoke('text').then((text) => {
       const arrClaims = text.trim().split(/\s\s+/);
       // Check all expected claims
