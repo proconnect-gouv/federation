@@ -21,6 +21,7 @@ import * as processFixtureTemplate from 'cypress-template-fixtures';
 import * as resolve from 'resolve';
 
 import { getFixturePath } from './fixture-plugin';
+import { clearBusinessLog, hasBusinessLog } from './log-plugin';
 import { addTracks } from './tracks-plugin';
 
 module.exports = (on, config) => {
@@ -33,7 +34,9 @@ module.exports = (on, config) => {
 
   on('task', {
     addTracks,
+    clearBusinessLog,
     getFixturePath,
+    hasBusinessLog,
   });
 
   on('file:preprocessor', cucumber(options));

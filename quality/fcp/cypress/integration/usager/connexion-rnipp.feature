@@ -17,7 +17,7 @@ Fonctionnalité: Connexion Usager - RNIPP
     Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent aux scopes "tous les scopes"
-    Et j'accepte de transmettre mes informations au fournisseur de service
+    Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté
     Et le fournisseur de service a accès aux informations des scopes "tous les scopes"
