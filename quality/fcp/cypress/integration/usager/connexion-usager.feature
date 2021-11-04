@@ -17,7 +17,7 @@ Fonctionnalité: Connexion Usager
     Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent au scope "identite_pivot"
-    Et j'accepte de transmettre mes informations au fournisseur de service
+    Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté
     Et le fournisseur de service a accès aux informations du scope "identite_pivot"
@@ -34,7 +34,7 @@ Fonctionnalité: Connexion Usager
     Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent au scope "identite_pivot"
-    Et j'accepte de transmettre mes informations au fournisseur de service
+    Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté
     Et le fournisseur de service a accès aux informations du scope "identite_pivot"
@@ -48,7 +48,7 @@ Fonctionnalité: Connexion Usager
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
-    Et j'accepte de transmettre mes informations au fournisseur de service
+    Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté
     Et la cinématique a renvoyé l'amr "fc"
@@ -62,7 +62,7 @@ Fonctionnalité: Connexion Usager
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
-    Et j'accepte de transmettre mes informations au fournisseur de service
+    Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté
     Et la cinématique n'a pas renvoyé d'amr

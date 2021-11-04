@@ -37,7 +37,11 @@ quality-fcp-high-docker:
     - docker exec fc_core-fcp-high_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker-stack dep core-fcp-high
     - docker-stack fixtures-v2
-    - docker-stack start csmr-hsm rnipp fsp1-high fsp2-high fsp5-high fip1-high core-fcp-high exploitation-high
+    - docker-stack start \
+      csmr-hsm rnipp exploitation-high \
+      fsp1-high fsp2-high fsp5-high fsp6-high \
+      fip1-high \
+      core-fcp-high
     # Starting Cypress
     - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
       do echo "Waiting for core-fcp-high..." && sleep 10; done' || (

@@ -2,7 +2,8 @@
   {
     "name": "fsp1v2",
     "descriptions": [
-      "par défaut"
+      "par défaut",
+      "public"
     ],
     "mocked": true,
     "url": "https://fsp1v2.integ01.fcp.fournisseur-de-service.fr",
@@ -25,6 +26,7 @@
     "name": "fsp2v2",
     "descriptions": [
       "habilité à demander le scope identite_pivot",
+      "privé avec consentement obligatoire",
       "avec une whitelist de FI"
     ],
     "mocked": true,
@@ -38,6 +40,7 @@
     "scopes": [
       "identite_pivot"
     ],
+    "explicitConsent": true,
     "selectors": {
       "fcButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
