@@ -19,7 +19,7 @@ Fonctionnalité: Connexion ACR
     Quand je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
     Et les informations demandées par le fournisseur de service correspondent au scope "tous les scopes"
-    Et j'accepte de transmettre mes informations au fournisseur de service
+    Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté
     Et la cinématique a utilisé le niveau de sécurité "<actualAcr>"

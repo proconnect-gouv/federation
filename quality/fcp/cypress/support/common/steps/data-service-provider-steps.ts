@@ -4,7 +4,7 @@ import { getScopeByType } from '../../usager/helpers';
 import { getServiceProviderByDescription } from '../helpers';
 
 Given(
-  /^j'utilise (?:le|un) fournisseur de service "([^"]+)"$/,
+  /^j'utilise (?:un|le) fournisseur de service "([^"]+)"$/,
   function (description) {
     getServiceProviderByDescription(this.serviceProviders, description);
   },
