@@ -26,7 +26,11 @@ http://localhost:15672/#/queues/%2F/rie
 {
   "pattern": "HTTP_PROXY",
   "data": {
-    "foo": "bar"
+    "headers": {
+      "bar": "world"
+    },
+    "method": "get",
+    "url": "https://www.test.com/token"
   }
 }
 ```
