@@ -113,6 +113,8 @@ services:
 
   squid:
     image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/squid:4.6
+    extra_hosts:
+      - auth.llng.docker.dev-franceconnect.fr:172.16.1.254
     networks:
       - public
       - fc

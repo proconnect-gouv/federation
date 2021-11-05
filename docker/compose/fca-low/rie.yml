@@ -9,6 +9,19 @@ services:
   ##
   ####################
 
+  rp-bridge-proxy:
+    image: nginx:1.14.2
+    volumes:
+      - ${VOLUMES_DIR}/nginx-proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ${VOLUMES_DIR}/nginx-proxy/includes:/etc/nginx/includes:ro
+      - ${VOLUMES_DIR}/rp-bridge-proxy/:/etc/nginx/conf.d:ro
+      - ${VOLUMES_DIR}/ssl:/etc/nginx/docker_host:ro
+    networks:
+      public:
+        ipv4_address: 172.16.1.254
+    depends_on:
+      - rie-bridge-proxy
+
   rie-bridge-proxy:
     hostname: rie-bridge-proxy
     image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
