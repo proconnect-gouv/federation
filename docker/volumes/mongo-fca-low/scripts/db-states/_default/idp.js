@@ -263,7 +263,7 @@ const fia = {
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://auth.llng.docker.dev-franceconnect.fr/user/session/end",
+      "https://auth.llng.docker.dev-franceconnect.fr/oauth2/logout",
     response_types: ["code"],
     id_token_signed_response_alg: "RS256",
     token_endpoint_auth_method: "client_secret_post",
