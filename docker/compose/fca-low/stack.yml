@@ -35,6 +35,7 @@ services:
       - 'exploit-fca-low-back'
       - 'exploit-fca-low-front'
       ### RIE
+      - 'rp-bridge-proxy'
       - 'rie-bridge-proxy'
       - 'csmr-rie'
 
@@ -45,5 +46,6 @@ services:
       - 'fia-llng-low'
       - 'openldap'
       ### RIE
+      - 'rp-bridge-proxy'
       - 'rie-bridge-proxy'
       - 'csmr-rie'
