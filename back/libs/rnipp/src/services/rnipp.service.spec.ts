@@ -1,6 +1,8 @@
 import { AxiosError } from 'axios';
+import { lastValueFrom } from 'rxjs';
+import { mocked } from 'ts-jest/utils';
 
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
@@ -21,6 +23,8 @@ import {
 } from '../exceptions';
 import { RnippService } from './rnipp.service';
 import { RnippResponseParserService } from './rnipp-response-parser.service';
+
+jest.mock('rxjs');
 
 describe('RnippService', () => {
   let service: RnippService;
@@ -370,23 +374,23 @@ describe('RnippService', () => {
 
     it('should transform the "Observable" of "Http.get" result to a "Promise"', async () => {
       // setup
-      axiosResponseMock.toPromise.mockResolvedValueOnce(
-        axiosResponseResolvedMock,
-      );
+      const lastValueMock = mocked(lastValueFrom);
+      lastValueMock.mockResolvedValueOnce(axiosResponseResolvedMock);
       httpServiceMock.get.mockReturnValue(axiosResponseMock);
 
       // action
       const result = service['callRnipp'](requestUrlMock);
 
-      expect(axiosResponseMock.toPromise).toHaveBeenCalledTimes(1);
+      await result;
+      expect(lastValueMock).toHaveBeenCalledTimes(1);
+      expect(lastValueMock).toHaveBeenCalledWith(axiosResponseMock);
       expect(result).toBeInstanceOf(Promise);
     });
 
     it('should resolve to the axiosResponseMock', async () => {
       // setup
-      axiosResponseMock.toPromise.mockResolvedValueOnce(
-        axiosResponseResolvedMock,
-      );
+      const lastValueMock = mocked(lastValueFrom);
+      lastValueMock.mockResolvedValueOnce(axiosResponseResolvedMock);
       httpServiceMock.get.mockReturnValue(axiosResponseMock);
 
       // action
@@ -395,38 +399,29 @@ describe('RnippService', () => {
       expect(result).toStrictEqual(axiosResponseResolvedMock);
     });
 
-    it('should catch the exception thrown by "httpServiceMock.get.toPromise" and call "checkRnippHttpError" with the error', async () => {
+    it('should catch the exception thrown by "lastValueMock" and call "checkRnippHttpError" with the error', async () => {
       // setup
+      const lastValueMock = mocked(lastValueFrom);
       const axiosErrorMock = new Error('Nani ?');
-      axiosResponseMock.toPromise.mockImplementationOnce(() => {
-        throw axiosErrorMock;
-      });
+      lastValueMock.mockRejectedValueOnce(axiosErrorMock);
       httpServiceMock.get.mockReturnValue(axiosResponseMock);
-      const checkRnippErrorMock = new Error('私は海賊王になります。');
-      service['checkRnippHttpError'] = jest.fn().mockImplementationOnce(() => {
-        throw checkRnippErrorMock;
-      });
+      service['checkRnippHttpError'] = jest.fn();
 
       // action
-      try {
-        await service['callRnipp'](requestUrlMock);
-      } catch (e) {
-        expect(service['checkRnippHttpError']).toHaveBeenCalledTimes(1);
-        expect(service['checkRnippHttpError']).toHaveBeenCalledWith(
-          axiosErrorMock,
-        );
-      }
+      await service['callRnipp'](requestUrlMock);
 
       // expect
-      expect.hasAssertions();
+      expect(service['checkRnippHttpError']).toHaveBeenCalledTimes(1);
+      expect(service['checkRnippHttpError']).toHaveBeenCalledWith(
+        axiosErrorMock,
+      );
     });
 
     it('should not catch the exception thrown by "checkRnippHttpError"', async () => {
       // setup
+      const lastValueMock = mocked(lastValueFrom);
       const axiosErrorMock = new Error('Nani ?');
-      axiosResponseMock.toPromise.mockImplementationOnce(() => {
-        throw axiosErrorMock;
-      });
+      lastValueMock.mockRejectedValueOnce(axiosErrorMock);
       httpServiceMock.get.mockReturnValue(axiosResponseMock);
       const checkRnippErrorMock = new Error('私は海賊王になります。');
       service['checkRnippHttpError'] = jest.fn().mockImplementationOnce(() => {

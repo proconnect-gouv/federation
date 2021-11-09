@@ -17,7 +17,7 @@ export const validationOptions: ValidatorOptions = {
 
 @Injectable()
 export class ConfigService {
-  private readonly configuration: any;
+  private readonly configuration: unknown;
 
   constructor({ config, schema }: IConfigOptions) {
     ConfigService.validate(config, schema);
@@ -43,7 +43,7 @@ export class ConfigService {
    * Specify type in order to have static binding while using returned object
    * @param paths
    */
-  get<T extends any>(paths): T {
+  get<T>(paths: string): T {
     const isValidPaths = isString(paths) && paths.length > 0;
     const config = lodash.get(this.configuration, paths, null);
     if (!isValidPaths || !config) {

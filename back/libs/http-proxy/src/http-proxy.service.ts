@@ -1,6 +1,7 @@
 import { bootstrap } from 'global-agent';
 
-import { HttpService, Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@fc/logger';
 
