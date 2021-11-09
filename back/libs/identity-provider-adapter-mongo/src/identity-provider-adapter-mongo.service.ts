@@ -97,7 +97,7 @@ export class IdentityProviderAdapterMongoService
     }
   }
 
-  private async findAllIdentityProvider(): Promise<IdentityProvider[]> {
+  private async findAllIdentityProvider(): Promise<IdentityProviderMetadata[]> {
     const rawResult = await this.identityProviderModel
       .find(
         {},
@@ -158,24 +158,23 @@ export class IdentityProviderAdapterMongoService
           userinfo_signed_response_alg: true,
         },
       )
-      .exec();
+      .lean();
 
-    const result: any = await asyncFilter(rawResult, async ({ _doc }) => {
-      const dto = this.getIdentityProviderDTO(_doc.discovery);
-      const errors = await validateDto(_doc, dto, validationOptions);
+    const identityProviders = await asyncFilter<IdentityProviderMetadata[]>(
+      rawResult,
+      async (doc: IdentityProviderMetadata) => {
+        const dto = this.getIdentityProviderDTO(doc.discovery);
+        const errors = await validateDto(doc, dto, validationOptions);
 
-      if (errors.length > 0) {
-        this.logger.warn(
-          `"${_doc.uid}" was excluded from the result at DTO validation.`,
-        );
-        this.logger.trace({ errors });
-      }
+        if (errors.length > 0) {
+          this.logger.warn(
+            `"${doc.uid}" was excluded from the result at DTO validation.`,
+          );
+          this.logger.trace({ errors });
+        }
 
-      return errors.length === 0;
-    });
-
-    const identityProviders: IdentityProvider[] = result.map(
-      ({ _doc }) => _doc,
+        return errors.length === 0;
+      },
     );
 
     this.logger.trace({ identityProviders });
@@ -189,7 +188,7 @@ export class IdentityProviderAdapterMongoService
   async getList(refreshCache?: boolean): Promise<IdentityProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
       this.logger.debug('Refresh cache from DB');
-      const list: IdentityProvider[] = await this.findAllIdentityProvider();
+      const list = await this.findAllIdentityProvider();
       this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
 
       this.logger.trace({ step: 'REFRESH', list, listCache: this.listCache });
@@ -295,7 +294,7 @@ export class IdentityProviderAdapterMongoService
   }
 
   /**
-   * Decrypt client secrect with specific key provided by configuration
+   * Decrypt client secret with specific key provided by configuration
    *
    * @param clientSecret
    */
