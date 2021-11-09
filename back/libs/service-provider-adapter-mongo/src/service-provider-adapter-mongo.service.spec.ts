@@ -14,57 +14,51 @@ describe('ServiceProviderAdapterMongoService', () => {
   let service: ServiceProviderAdapterMongoService;
 
   const validServiceProviderMock = {
-    _doc: {
-      key: '987654321987654321987654321987654',
-      entityId: '123456789101112131415161718192021',
-      active: true,
-      name: 'foo',
-      title: 'title',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_secret: "This is an encrypted string, don't ask !",
-      scopes: ['openid', 'profile'],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      redirect_uris: ['https://sp-site.fr/redirect_uris'],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      post_logout_redirect_uris: [
-        'https://sp-site.fr/post_logout_redirect_uris',
-      ],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      id_token_signed_response_alg: 'ES256',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      id_token_encrypted_response_alg: 'RS256',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      id_token_encrypted_response_enc: 'AES256GCM',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_encrypted_response_alg: 'RS256',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_encrypted_response_enc: 'AES256GCM',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_signed_response_alg: 'ES256',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      jwks_uri: 'https://sp-site.fr/jwks-uri',
-      idpFilterExclude: true,
-      idpFilterList: [],
-      type: 'public',
-      identityConsent: false,
-    },
+    key: '987654321987654321987654321987654',
+    entityId: '123456789101112131415161718192021',
+    active: true,
+    name: 'foo',
+    title: 'title',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    client_secret: "This is an encrypted string, don't ask !",
+    scopes: ['openid', 'profile'],
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    redirect_uris: ['https://sp-site.fr/redirect_uris'],
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    post_logout_redirect_uris: ['https://sp-site.fr/post_logout_redirect_uris'],
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_signed_response_alg: 'ES256',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_encrypted_response_alg: 'RS256',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    id_token_encrypted_response_enc: 'AES256GCM',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    userinfo_encrypted_response_alg: 'RS256',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    userinfo_encrypted_response_enc: 'AES256GCM',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    userinfo_signed_response_alg: 'ES256',
+    // oidc param name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    jwks_uri: 'https://sp-site.fr/jwks-uri',
+    idpFilterExclude: true,
+    idpFilterList: [],
+    type: 'public',
+    identityConsent: false,
   };
 
   const invalidServiceProviderMock = {
-    _doc: {
-      ...validServiceProviderMock._doc,
-      active: 'NOT_A_BOOLEAN',
-    },
+    ...validServiceProviderMock,
+    active: 'NOT_A_BOOLEAN',
   };
 
   const serviceProviderListMock = [validServiceProviderMock];
@@ -82,7 +76,7 @@ describe('ServiceProviderAdapterMongoService', () => {
 
   const repositoryMock = {
     find: jest.fn(),
-    exec: jest.fn(),
+    lean: jest.fn(),
     watch: jest.fn(),
   };
 
@@ -129,7 +123,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     );
 
     repositoryMock.find.mockReturnValueOnce(repositoryMock);
-    repositoryMock.exec.mockResolvedValueOnce(serviceProviderListMock);
+    repositoryMock.lean.mockResolvedValueOnce(serviceProviderListMock);
   });
 
   it('should be defined', () => {
@@ -222,14 +216,14 @@ describe('ServiceProviderAdapterMongoService', () => {
     it('should return service provider with change legacy property name by openid property name', () => {
       // setup
       const expected = {
-        ...validServiceProviderMock._doc,
+        ...validServiceProviderMock,
         // oidc param name
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id: validServiceProviderMock._doc.key,
+        client_id: validServiceProviderMock.key,
         // oidc param name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         client_secret: 'client_secret',
-        scope: validServiceProviderMock._doc.scopes.join(' '),
+        scope: validServiceProviderMock.scopes.join(' '),
       };
       delete expected.key;
       delete expected.scopes;
@@ -239,7 +233,7 @@ describe('ServiceProviderAdapterMongoService', () => {
 
       // action
       const result = service['legacyToOpenIdPropertyName'](
-        validServiceProviderMock._doc as unknown as ServiceProvider,
+        validServiceProviderMock as unknown as ServiceProvider,
       );
 
       // expect
@@ -268,19 +262,17 @@ describe('ServiceProviderAdapterMongoService', () => {
       const result = await service['findAllServiceProvider']();
 
       // expect
-      expect(result).toStrictEqual(
-        serviceProviderListMock.map(({ _doc }) => _doc),
-      );
+      expect(result).toStrictEqual(serviceProviderListMock);
     });
 
-    it('should log a warning if an entry is exluded by the DTO', async () => {
+    it('should log a warning if an entry is excluded by the DTO', async () => {
       // setup
       const invalidServiceProviderListMock = [
         validServiceProviderMock,
         invalidServiceProviderMock,
       ];
 
-      repositoryMock.exec = jest
+      repositoryMock.lean = jest
         .fn()
         .mockResolvedValueOnce(invalidServiceProviderListMock);
 
@@ -291,14 +283,14 @@ describe('ServiceProviderAdapterMongoService', () => {
       expect(loggerMock.warn).toHaveBeenCalledTimes(1);
     });
 
-    it('should filter out any entry exluded by the DTO', async () => {
+    it('should filter out any entry excluded by the DTO', async () => {
       // setup
       const invalidServiceProviderListMock = [
         validServiceProviderMock,
         invalidServiceProviderMock,
       ];
 
-      repositoryMock.exec = jest
+      repositoryMock.lean = jest
         .fn()
         .mockResolvedValueOnce(invalidServiceProviderListMock);
 
@@ -306,7 +298,7 @@ describe('ServiceProviderAdapterMongoService', () => {
       const result = await service['findAllServiceProvider']();
 
       // expect
-      expect(result).toEqual(serviceProviderListMock.map(({ _doc }) => _doc));
+      expect(result).toEqual(serviceProviderListMock);
     });
   });
 
@@ -314,7 +306,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     beforeEach(() => {
       service['findAllServiceProvider'] = jest
         .fn()
-        .mockResolvedValueOnce(serviceProviderListMock.map(({ _doc }) => _doc));
+        .mockResolvedValueOnce(serviceProviderListMock);
     });
 
     it('should resolve', async () => {
@@ -337,7 +329,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     it('should return service provider list refreshed (refresh forced)', async () => {
       const expected = [
         {
-          ...validServiceProviderMock._doc,
+          ...validServiceProviderMock,
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: '987654321987654321987654321987654',
@@ -388,7 +380,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     it('should return service provider list with the cached version', async () => {
       const expected = [
         {
-          ...validServiceProviderMock._doc,
+          ...validServiceProviderMock,
           // oidc param name
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: '987654321987654321987654321987654',
@@ -532,7 +524,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     it('should return service provider with change legacy property name by openid property name', () => {
       // setup
       const expected = {
-        ...validServiceProviderMock._doc,
+        ...validServiceProviderMock,
         // oidc param name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         client_id: '987654321987654321987654321987654',
@@ -549,7 +541,7 @@ describe('ServiceProviderAdapterMongoService', () => {
 
       // action
       const result = service['legacyToOpenIdPropertyName'](
-        validServiceProviderMock._doc as unknown as ServiceProvider,
+        validServiceProviderMock as unknown as ServiceProvider,
       );
 
       // expect
@@ -604,7 +596,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     it('should return true if the service provider is private and consent required', () => {
       // Given
       const givenServiceProvider = {
-        ...validServiceProviderMock._doc,
+        ...validServiceProviderMock,
         type: 'private',
         identityConsent: true,
       };
@@ -622,7 +614,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     it('should return false if the service provider is private and consent not required', () => {
       // Given
       const givenServiceProvider = {
-        ...validServiceProviderMock._doc,
+        ...validServiceProviderMock,
         type: 'private',
       };
 
@@ -639,7 +631,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     it('should return false if the service provider is public and consent required', () => {
       // Given
       const givenServiceProvider = {
-        ...validServiceProviderMock._doc,
+        ...validServiceProviderMock,
         identityConsent: true,
       };
 
@@ -656,8 +648,8 @@ describe('ServiceProviderAdapterMongoService', () => {
     it('should return false if the service provider is public and consent not required', () => {
       // When
       const result = service.consentRequired(
-        validServiceProviderMock._doc.type,
-        validServiceProviderMock._doc.identityConsent,
+        validServiceProviderMock.type,
+        validServiceProviderMock.identityConsent,
       );
 
       // Then
