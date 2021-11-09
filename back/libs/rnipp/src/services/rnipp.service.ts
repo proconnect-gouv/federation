@@ -1,8 +1,10 @@
 import { AxiosError, AxiosResponse } from 'axios';
 import { ValidationError } from 'class-validator';
 import { stringify } from 'querystring';
+import { lastValueFrom } from 'rxjs';
 
-import { HttpService, Injectable } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
+import { Injectable } from '@nestjs/common';
 
 import { getDtoErrors, RequiredExcept, validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
@@ -120,14 +122,14 @@ export class RnippService {
     return birthplace || birthcountry;
   }
 
-  private async callRnipp(requestUrl: string): Promise<AxiosResponse> {
+  private async callRnipp(requestUrl: string): Promise<AxiosResponse<string>> {
     let response;
     const { timeout } = this.configService.get<RnippConfig>('Rnipp');
 
     try {
-      response = await this.httpService
-        .get(requestUrl, { timeout })
-        .toPromise();
+      response = await lastValueFrom(
+        this.httpService.get(requestUrl, { timeout }),
+      );
     } catch (error) {
       this.checkRnippHttpError(error);
     }

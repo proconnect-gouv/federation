@@ -1,6 +1,6 @@
 import * as globalAgent from 'global-agent';
 
-import { HttpService } from '@nestjs/common';
+import { HttpService } from '@nestjs/axios';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { LoggerService } from '@fc/logger';

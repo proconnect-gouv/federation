@@ -65,7 +65,7 @@ export class ServiceProviderAdapterMongoService
     }
   }
 
-  private async findAllServiceProvider(): Promise<ServiceProvider[]> {
+  private async findAllServiceProvider(): Promise<ServiceProviderMetadata[]> {
     const rawResult = await this.serviceProviderModel
       .find(
         {
@@ -115,32 +115,35 @@ export class ServiceProviderAdapterMongoService
           identityConsent: true,
         },
       )
-      .exec();
+      .lean();
 
-    const result: any = await asyncFilter(rawResult, async ({ _doc }) => {
-      const { name } = _doc;
+    const serviceProviders = await asyncFilter<ServiceProviderMetadata[]>(
+      rawResult,
+      async (doc: ServiceProviderMetadata) => {
+        const { name } = doc;
 
-      const errors = await validateDto(
-        _doc,
-        ServiceProviderAdapterMongoDTO,
-        validationOptions,
-      );
-
-      if (errors.length > 0) {
-        this.logger.trace({ errors }, LoggerLevelNames.WARN);
-        this.logger.warn(
-          `"${name}" was excluded from the result at DTO validation :${JSON.stringify(
-            errors,
-            null,
-            2,
-          )}`,
+        const errors = await validateDto(
+          doc,
+          ServiceProviderAdapterMongoDTO,
+          validationOptions,
         );
-      }
 
-      return errors.length === 0;
-    });
+        if (errors.length > 0) {
+          this.logger.trace({ errors }, LoggerLevelNames.WARN);
+          this.logger.warn(
+            `"${name}" was excluded from the result at DTO validation :${JSON.stringify(
+              errors,
+              null,
+              2,
+            )}`,
+          );
+        }
 
-    return result.map(({ _doc }) => _doc);
+        return errors.length === 0;
+      },
+    );
+
+    return serviceProviders;
   }
 
   /**
@@ -149,7 +152,7 @@ export class ServiceProviderAdapterMongoService
   async getList(refreshCache = false): Promise<ServiceProviderMetadata[]> {
     if (refreshCache || !this.listCache) {
       this.logger.debug('Refresh cache from DB');
-      const list: ServiceProvider[] = await this.findAllServiceProvider();
+      const list = await this.findAllServiceProvider();
       this.listCache = list.map(this.legacyToOpenIdPropertyName.bind(this));
 
       this.logger.trace({ step: 'REFRESH', list, listCache: this.listCache });

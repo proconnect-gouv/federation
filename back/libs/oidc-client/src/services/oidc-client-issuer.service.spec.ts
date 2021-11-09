@@ -160,13 +160,13 @@ describe('OidcClientIssuerService', () => {
       expect(result).toBe('Client');
     });
 
-    it('should return "FAPIClient"', async () => {
+    it('should return "FAPI1Client"', async () => {
       // Given
       oidcClientConfigServiceMock.get.mockResolvedValueOnce({ fapi: true });
       // When
       const result = await service['getClientClass']();
       // Then
-      expect(result).toBe('FAPIClient');
+      expect(result).toBe('FAPI1Client');
     });
   });
 
@@ -241,7 +241,7 @@ describe('OidcClientIssuerService', () => {
       const options = {};
       // When
       const client = await service.getClient(issuerId);
-      const result = client[custom.http_options](options);
+      const result = client[custom.http_options]({} as URL, options);
       // Then
       expect(result).toBe(getHttpOptionsReturnValue);
     });
@@ -250,14 +250,18 @@ describe('OidcClientIssuerService', () => {
   describe('getHttpOptions', () => {
     it('should return fusion from config and input', () => {
       // Given
-      const givenOptions = { foo: 'bar' };
-      const configOptions = { fizz: 'buzz' };
+      const givenOptions = { auth: 'bar' };
+      const configOptions = { servername: 'buzz' };
       // When
-      const result = service['getHttpOptions'](configOptions, givenOptions);
+      const result = service['getHttpOptions'](
+        configOptions,
+        {} as URL,
+        givenOptions,
+      );
       // Then
       expect(result).toEqual({
-        foo: 'bar',
-        fizz: 'buzz',
+        auth: 'bar',
+        servername: 'buzz',
       });
     });
   });
