@@ -1,7 +1,11 @@
 [
   {
     "idpId": "fia1v2",
-    "description": "par défaut",
+    "descriptions": [
+      "par défaut",
+      "whitelisté",
+      "non blacklisté"
+    ],
     "ministry": "Démonstration",
     "title": "Identity Provider 1 - HS256",
     "mocked": true,
@@ -19,7 +23,7 @@
   },
   {
     "idpId": "fia2v2",
-    "description": "FI eidas1 avec signature ES256",
+    "descriptions": ["FI eidas1 avec signature ES256"],
     "ministry": "Démonstration",
     "title": "Identity Provider 2 - ES256",
     "mocked": true,
@@ -37,7 +41,12 @@
   },
   {
     "idpId": "fia3v2",
-    "description": "FI eidas1 avec signature RS256",
+    "descriptions": [
+      "FI eidas1 avec signature RS256",
+      "actif",
+      "non whitelisté",
+      "blacklisté"
+    ],
     "ministry": "Démonstration",
     "title": "Identity Provider 3 - RS256",
     "mocked": true,
@@ -51,6 +60,51 @@
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
+    }
+  },
+  {
+    "idpId": "fia4-desactive-visible",
+    "descriptions": ["désactivé et visible"],
+    "ministry": "Démonstration",
+    "title": "Identity Provider 4 - désactivé et visible",
+    "mocked": true,
+    "usable": false,
+    "url": "https://fia4-desactive-visible.integ01.dev-agentconnect.fr/interaction",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "ES256",
+    "selectors": {
+      "idpButton": "#idp-fia4-desactive-visible"
+    }
+  },
+  {
+    "idpId": "fia5-active-invisible",
+    "descriptions": ["actif et non visible"],
+    "ministry": "Démonstration",
+    "title": "Identity Provider 5 - activé et invisible",
+    "mocked": true,
+    "usable": false,
+    "url": "https://fia5-active-invisible.integ01.dev-agentconnect.fr/interaction",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "ES256",
+    "selectors": {
+      "idpButton": "#idp-fia5-active-invisible"
+    }
+  },
+  {
+    "idpId": "fia6-desactive-invisible",
+    "descriptions": ["désactivé et non visible"],
+    "ministry": "Démonstration",
+    "title": "Identity Provider 6 - désactivé et invisible",
+    "mocked": true,
+    "usable": false,
+    "url": "https://fia6-desactive-invisible.integ01.dev-agentconnect.fr/interaction",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "ES256",
+    "selectors": {
+      "idpButton": "#idp-fia6-desactive-invisible"
     }
   }
 ]

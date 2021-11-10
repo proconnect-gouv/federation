@@ -96,8 +96,8 @@ const fia = {
 
   // -- FIA - FIA3-LOW - Deactivated but visible
   "FIA3-LOW": {
-    uid: "fia-desactive-visible",
-    name: "fia3-low",
+    uid: "fia3-desactive-visible",
+    name: "fia3-desactive-visible",
     active: false,
     display: true,
     title: "Identity Provider 3 (désactivé)- eIDAS faible",
@@ -235,7 +235,101 @@ const fia = {
     ],
   },
 
-  // -- 
+  // -- FIA - FIA6-LOW - Activated but not visible
+  "FIA6-LOW": {
+    uid: "fia6-active-invisible",
+    name: "fia6-active-invisible",
+    active: true,
+    display: false,
+    title: "Identity Provider 6 (non visible)- eIDAS faible",
+    image: "fi-mock-faible.svg",
+    imageFocus: "fi-mock-faible.svg",
+    alt: "impots",
+    eidas: 1,
+    mailto: "",
+    featureHandlers: {
+      coreVerify: "core-fca-default-verify",
+      authenticationEmail: null,
+    },
+    specificText: "specific text fia6-low",
+    url: "https://fia6-low.docker.dev-franceconnect.fr/",
+    statusURL: "https://fia6-low.docker.dev-franceconnect.fr/",
+    discoveryUrl:
+      "https://fia6-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+    discovery: true,
+    clientID: "myclientidforfia3-low",
+    client_secret:
+      "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+    order: null,
+    updatedAt: new Date("2019-04-24 17:09:17"),
+    updatedBy: "admin",
+    endSessionURL:
+      "https://fia6-low.docker.dev-franceconnect.fr/user/session/end",
+    response_types: ["code"],
+    id_token_signed_response_alg: "ES256",
+    token_endpoint_auth_method: "client_secret_post",
+    revocation_endpoint_auth_method: "client_secret_post",
+    id_token_encrypted_response_alg: "",
+    id_token_encrypted_response_enc: "",
+    userinfo_signed_response_alg: "ES256",
+    userinfo_encrypted_response_alg: "",
+    userinfo_encrypted_response_enc: "",
+    redirect_uris: [
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia6-low",
+    ],
+    post_logout_redirect_uris: [
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+    ],
+  },
+
+  // -- FIA - FIA7-LOW - Deactivated and not visible
+  "FIA7-LOW": {
+    uid: "fia7-desactive-invisible",
+    name: "fia7-desactive-invisible",
+    active: false,
+    display: false,
+    title: "Identity Provider 7 (désactivé et non visible)- eIDAS faible",
+    image: "fi-mock-faible.svg",
+    imageFocus: "fi-mock-faible.svg",
+    alt: "impots",
+    eidas: 1,
+    mailto: "",
+    featureHandlers: {
+      coreVerify: "core-fca-default-verify",
+      authenticationEmail: null,
+    },
+    specificText: "specific text fia7-low",
+    url: "https://fia7-low.docker.dev-franceconnect.fr/",
+    statusURL: "https://fia7-low.docker.dev-franceconnect.fr/",
+    discoveryUrl:
+      "https://fia7-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+    discovery: true,
+    clientID: "myclientidforfia3-low",
+    client_secret:
+      "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+    order: null,
+    updatedAt: new Date("2019-04-24 17:09:17"),
+    updatedBy: "admin",
+    endSessionURL:
+      "https://fia7-low.docker.dev-franceconnect.fr/user/session/end",
+    response_types: ["code"],
+    id_token_signed_response_alg: "ES256",
+    token_endpoint_auth_method: "client_secret_post",
+    revocation_endpoint_auth_method: "client_secret_post",
+    id_token_encrypted_response_alg: "",
+    id_token_encrypted_response_enc: "",
+    userinfo_signed_response_alg: "ES256",
+    userinfo_encrypted_response_alg: "",
+    userinfo_encrypted_response_enc: "",
+    redirect_uris: [
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia7-low",
+    ],
+    post_logout_redirect_uris: [
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+    ],
+  },
+
+  // -- FIA using LemonLDAP 
   "FIA-LLNG-LOW": {
     uid: "fia-llng-low",
     name: "LemonLDAP::ng",
@@ -293,6 +387,9 @@ print("FIP > Initializing provider: fia4-low - Activated");
 db.provider.update({ name: "fia4-low" }, fia["FIA4-LOW"], { upsert: true });
 print("FIP > Initializing provider: fia5-low - Activated");
 db.provider.update({ name: "fia5-low" }, fia["FIA5-LOW"], { upsert: true });
+print("FIP > Initializing provider: fia6-low - Activated");
+db.provider.update({ name: "fia6-low" }, fia["FIA6-LOW"], { upsert: true });
+print("FIP > Initializing provider: fia7-low - Activated");
+db.provider.update({ name: "fia7-low" }, fia["FIA7-LOW"], { upsert: true });
 print("FIA > Initializing provider: llng - Activated");
 db.provider.update({ name: "LemonLDAP-ng" }, fia["FIA-LLNG-LOW"], { upsert: true });
-

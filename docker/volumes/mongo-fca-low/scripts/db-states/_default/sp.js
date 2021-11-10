@@ -96,7 +96,7 @@ const fsa = {
     jwks_uri:
       "https://fsa2-low.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: false,
-    idpFilterList: ["fia1-low", "fia2-low", "fia-desactive-visible", "fia5-low"],
+    idpFilterList: ["fia1-low", "fia2-low", "fia3-desactive-visible", "fia5-low"],
     identityConsent: false,
   },
 

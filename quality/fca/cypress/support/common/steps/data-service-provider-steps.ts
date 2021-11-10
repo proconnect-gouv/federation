@@ -2,12 +2,19 @@ import { Given } from 'cypress-cucumber-preprocessor/steps';
 
 import { getServiceProviderByDescription } from '../helpers';
 
-Given("j'utilise le fournisseur de service {string}", function (description) {
-  getServiceProviderByDescription(this.serviceProviders, description);
-});
+Given(
+  /^j'utilise (?:un|le) fournisseur de service "([^"]+)"$/,
+  function (description) {
+    const { name } = getServiceProviderByDescription(
+      this.serviceProviders,
+      description,
+    );
+    cy.log(`j'utilise le fournisseur de service ${name}`);
+  },
+);
 
 Given(
-  /le fournisseur de service requiert l'accès aux informations (?:du|des) scopes? "([^"]+)"/,
+  /^le fournisseur de service requiert l'accès aux informations (?:du|des) scopes? "([^"]+)"$/,
   function (type) {
     const scope = this.scopes.find((scope) => scope.type === type);
     cy.wrap(scope).as('requestedScope');
@@ -15,7 +22,7 @@ Given(
 );
 
 Given(
-  /le fournisseur de service a configuré sa requête authorize avec (?:un scope|des scopes) "([^"]+)"/,
+  /^le fournisseur de service a configuré sa requête authorize avec (?:un scope|des scopes) "([^"]+)"$/,
   function (type) {
     const scope = this.scopes.find((scope) => scope.type === type);
     cy.wrap(scope).as('requestedScope');

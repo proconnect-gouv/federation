@@ -33,7 +33,7 @@ export const getIdentityProviderByDescription = (
   description: string,
 ): IdentityProvider => {
   const identityProvider: IdentityProvider = identityProviders.find(
-    (identityProvider) => identityProvider.description === description,
+    (identityProvider) => identityProvider.descriptions.includes(description),
   );
   expect(
     identityProvider,
