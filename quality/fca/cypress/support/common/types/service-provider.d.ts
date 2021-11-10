@@ -11,7 +11,7 @@ export interface ServiceProvider extends ServiceProviderBase {
   authorizeHttpMethod: 'post' | 'get';
   mocked: boolean;
   name: string;
-  description: string;
+  descriptions: string[];
 }
 
 export interface ScopeContext {
