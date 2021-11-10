@@ -12,7 +12,7 @@ export interface IdentityProvider extends IdentityProviderBase {
   acrValue: string;
   encryption: string;
   signature: string;
-  description: string;
+  descriptions: string[];
   usable: boolean;
   idpId: string;
   mocked: boolean;

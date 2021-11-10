@@ -1,7 +1,7 @@
 [
   {
     "name": "fsa1v2",
-    "description": "par défaut",
+    "descriptions": ["par défaut"],
     "mocked": true,
     "url": "https://fsa1v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
@@ -12,8 +12,23 @@
     "authorizeHttpMethod": "get"
   },
   {
+    "name": "fsa2v2",
+    "descriptions": ["avec une whitelist de FI"],
+    "mocked": true,
+    "url": "https://fsa2v2.integ01.dev-agentconnect.fr",
+    "acrValue": "eidas1",
+    "selectors": {
+      "fcaButton": "#call-authorize-button",
+      "logoutButton": ".nav-logout"
+    },
+    "authorizeHttpMethod": "get"
+  },
+  {
     "name": "fsa3v2",
-    "description": "non habilité à demander le scope belonging_population",
+    "descriptions": [
+      "non habilité à demander le scope belonging_population",
+      "avec une blacklist de FI"
+    ],
     "mocked": true,
     "url": "https://fsa3v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
@@ -25,7 +40,7 @@
   },
   {
     "name": "osmose",
-    "description": "osmose",
+    "descriptions": ["osmose"],
     "mocked": false,
     "url": "https://bacasable-prep-osmose.jaliosagora.com",
     "acrValue": "eidas1",
