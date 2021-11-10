@@ -5,29 +5,25 @@ import {
   getIdentityProviderByDescription,
 } from '../helpers';
 
-Given("j'utilise le fournisseur d'identité {string}", function (description) {
-  getIdentityProviderByDescription(this.identityProviders, description);
-});
-
 Given(
-  /^j'utilise un fournisseur d'identité (actif|désactivé)$/,
-  function (status) {
-    const description = status === 'actif' ? 'par défaut' : 'désactivé';
-    getIdentityProviderByDescription(this.identityProviders, description);
+  /^j'utilise (?:un|le) fournisseur d'identité "([^"]+)"$/,
+  function (description) {
+    const { idpId } = getIdentityProviderByDescription(
+      this.identityProviders,
+      description,
+    );
+    cy.log(`j'utilise le fournisseur d'identité ${idpId}`);
   },
 );
 
 Given(
   "j'utilise un fournisseur d'identité avec niveau de sécurité {string} et signature {string}",
   function (acrValue, signature) {
-    const identityProvider = getIdentityProviderByAttributes(
-      this.identityProviders,
-      {
-        acrValue,
-        signature,
-        usable: true,
-      },
-    );
-    cy.log(`J'utilise le fournisseur d'identité ${identityProvider.idpId}`);
+    const { idpId } = getIdentityProviderByAttributes(this.identityProviders, {
+      acrValue,
+      signature,
+      usable: true,
+    });
+    cy.log(`j'utilise le fournisseur d'identité ${idpId}`);
   },
 );

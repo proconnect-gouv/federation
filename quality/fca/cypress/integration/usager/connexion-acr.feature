@@ -13,7 +13,7 @@ Fonctionnalité: Connexion Usager - Acr
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que j'utilise un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité "actif"
     Et que je cherche le fournisseur d'identité par son ministère
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
@@ -56,7 +56,7 @@ Fonctionnalité: Connexion Usager - Acr
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que j'utilise un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité "actif"
     Et que je cherche le fournisseur d'identité par son ministère
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
@@ -80,7 +80,7 @@ Fonctionnalité: Connexion Usager - Acr
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que j'utilise un fournisseur d'identité actif
+    Et que j'utilise un fournisseur d'identité "actif"
     Et que je cherche le fournisseur d'identité par son ministère
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
