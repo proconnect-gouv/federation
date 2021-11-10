@@ -169,6 +169,7 @@ services:
       - 'NODE_ENV=development'
       - 'PORT=3000'
       - 'PM2_SCRIPT=index.js'
+      - 'PM2_CI_SCRIPT=index.js'
       - 'PM2_CWD=/var/www/app/src'
       - 'HOME=/home'
       - 'PM2_HOME=/tmp/.pm2'
@@ -196,6 +197,7 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
     environment:
       - 'PM2_SCRIPT=yarn start csmr-hsm-high'
+      - 'PM2_CI_SCRIPT=yarn start csmr-hsm-high'
       - 'REQUEST_TIMEOUT=6000'
       # Logger
       - 'Logger_FILE=/var/log/app/csmr-hsm.log'
