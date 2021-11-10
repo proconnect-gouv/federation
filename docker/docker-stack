@@ -268,6 +268,15 @@ _start() {
   done
 }
 
+_start_ci() {
+  apps=${@:-fc-core}
+  for app in $apps
+  do
+    echo "Starting ${app} app..."
+    cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} "/opt/scripts/start-ci.sh" || err=true
+  done
+}
+
 _stop() {
   apps=${@:-fc-core}
   for app in $apps
@@ -494,6 +503,9 @@ case "$action" in
     ;;
   start)
     _start $@
+    ;;
+  start-ci)
+    _start_ci $@
     ;;
   stop)
     _stop $@

@@ -1,7 +1,7 @@
 // Path to script
 const EXEC_TOOL_PATH = './cypress/support/scripts/readLog.js';
 const LOG_FILE_PATH = '../../../docker/volumes/log/';
-const LOG_FILE_EXT = '-0.log';
+const LOG_FILE_EXT = '.log';
 
 export function hasLog(app, input) {
   const stringifiedEvent = window.btoa(input);
