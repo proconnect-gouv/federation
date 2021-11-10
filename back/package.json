@@ -24,6 +24,7 @@
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\" \"instances/**/*.ts\"",
     "start": "nest start",
     "start:dev": "NODE_ENV=development nest start --watch",
+    "start:ci": "NODE_ENV=development nest start",
     "start:prod:core-fca-low": "node dist/instances/core-fca-low/main.js > /tmp/.pm2/logs/fca-out-0.log 2> /tmp/.pm2/logs/fca-error-0.log",
     "start:prod:core-fcp-low": "node dist/instances/core-fcp-low/main.js > /tmp/.pm2/logs/core-fcp-low-out-0.log 2> /tmp/.pm2/logs/core-fcp-low-error-0.log",
     "start:prod:core-fcp-high": "node dist/instances/core-fcp-high/main.js > /tmp/.pm2/logs/core-fcp-high-out-0.log 2> /tmp/.pm2/logs/core-fcp-high-error-0.log",
