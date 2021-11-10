@@ -246,10 +246,11 @@ services:
       - data
 
   broker:
-    # use management image for dev (management = admin UI)
-    image: rabbitmq:3.8.11-management
+    build:
+      context: '${WORKING_DIR}'
+      dockerfile: '${WORKING_DIR}/builds/broker/Dockerfile'
     # Specify hostname to fix cluster name
-    hostname: cryptobroker
+    hostname: broker
     depends_on:
       - 'squid'
     networks:
