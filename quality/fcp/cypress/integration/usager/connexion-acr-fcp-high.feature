@@ -26,13 +26,15 @@ Fonctionnalité: Connexion ACR
     Et le fournisseur de service a accès aux informations du scope "tous les scopes"
 
     Exemples:
-      | acrValues      | method | actualAcr |
-      | eidas2         | get    | eidas2    |
-      | eidas2         | post   | eidas2    |
-      | eidas3         | get    | eidas3    |
-      | eidas3         | post   | eidas3    |
-      | niveau_inconnu | post   | eidas3    |
-      | eidas2 eidas3  | get    | eidas2    |
+      | acrValues             | method | actualAcr |
+      | eidas2                | get    | eidas2    |
+      | eidas2                | post   | eidas2    |
+      | eidas3                | get    | eidas3    |
+      | eidas3                | post   | eidas3    |
+      | eidas2 niveau_inconnu | get    | eidas2    |
+      | niveau_inconnu        | post   | eidas3    |
+      | eidas3 eidas2         | post   | eidas2    |
+      | eidas2 eidas3         | get    | eidas2    |
 
   Plan du Scénario: Connexion ACR - FCP high - identification niveau non autorisé "<acrValues>" (méthode <method>)
     Etant donné que j'utilise le fournisseur de service "par défaut"

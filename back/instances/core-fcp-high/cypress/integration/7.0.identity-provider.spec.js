@@ -14,36 +14,6 @@ describe('7.0 - Idp activation & visibility', () => {
 
   const mireUrl = new RegExp('/interaction/[^/]+');
 
-  it('should display active and visible IdP', () => {
-    // Given
-    cy.visit(getAuthorizeUrl());
-    cy.url().should('match', mireUrl);
-    // Then
-    cy.get('#idp-list').within(() => {
-      // Visibles idps
-      cy.get(`button#idp-${idpId}1-high`).should('exist');
-      cy.get(`button#idp-${idpId}2-high`).should('exist');
-      cy.get(`button#idp-${idpId}3-desactive-visible`).should('exist');
-      // Invisibles idps
-      cy.get(`button#idp-${idpId}4-desactive-invisible`).should('not.exist');
-      cy.get(`button#idp-${idpId}5-active-invisible`).should('not.exist');
-    });
-  });
-
-  it('should display as disable "not active but visible" IdP', () => {
-    // Given
-    cy.visit(getAuthorizeUrl());
-    cy.url().should('match', mireUrl);
-    // Then
-    cy.get('#idp-list').within(() => {
-      // Enabled idps
-      cy.get(`button#idp-${idpId}1-high`).should('not.be.disabled');
-      cy.get(`button#idp-${idpId}2-high`).should('not.be.disabled');
-      // Disabled idps
-      cy.get(`button#idp-${idpId}3-desactive-visible`).should('be.disabled');
-    });
-  });
-
   it('should display the right title either for activated or disabled IdPs', () => {
     // Given
     cy.visit(getAuthorizeUrl());
@@ -61,28 +31,6 @@ describe('7.0 - Idp activation & visibility', () => {
         'FI désactivé mais visible est actuellement indisponible',
       );
     });
-  });
-
-  it('should not do anything when click on disabled IdP', () => {
-    // Given
-    cy.visit(getAuthorizeUrl());
-    cy.url().should('match', mireUrl);
-    // When
-    cy.get(`#idp-list button#idp-${idpId}3-desactive-visible`).click({
-      force: true,
-    });
-    // Then
-    cy.url().should('match', mireUrl);
-  });
-
-  it('should redirect when click on enabled IdP', () => {
-    // Given
-    cy.visit(getAuthorizeUrl());
-    cy.url().should('match', mireUrl);
-    // When
-    cy.get(`#idp-list button#idp-${idpId}1-high`).click();
-    // Then
-    cy.url().should('match', new RegExp(`^https://${idpId}1-high.+$`));
   });
 
   it('should redirect when click on enabled IdP with discovery', () => {
