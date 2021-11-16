@@ -9,7 +9,11 @@ import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { EidasProviderSession } from '@fc/eidas-provider';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { AcrValues } from '@fc/oidc';
-import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
+import {
+  OidcClientConfigService,
+  OidcClientService,
+  OidcClientSession,
+} from '@fc/oidc-client';
 import { ISessionService, Session } from '@fc/session';
 
 import { EidasBridgeIdentityDto } from '../dto/eidas-bridge-identity.dto';
@@ -27,6 +31,7 @@ export class FrIdentityToEuController {
   constructor(
     private readonly crypto: CryptographyService,
     private readonly logger: LoggerService,
+    private readonly oidcClientConfig: OidcClientConfigService,
     private readonly oidcClient: OidcClientService,
     private readonly eidasToOidc: EidasToOidcService,
     private readonly oidcToEidas: OidcToEidasService,
@@ -51,8 +56,11 @@ export class FrIdentityToEuController {
     const sessionIdLength = 32;
     const sessionId: string = this.crypto.genRandomString(sessionIdLength);
 
+    const { stateLength } = await this.oidcClientConfig.get();
+    const idpState: string = this.crypto.genRandomString(stateLength);
+
     await sessionOidc.set({
-      idpState: sessionId,
+      idpState,
       sessionId,
     });
 
