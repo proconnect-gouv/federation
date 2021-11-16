@@ -8,7 +8,11 @@ import { EidasAttributes } from '@fc/eidas';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { LoggerService } from '@fc/logger';
 import { AcrValues } from '@fc/oidc';
-import { OidcClientService, TokenParams } from '@fc/oidc-client';
+import {
+  OidcClientConfigService,
+  OidcClientService,
+  TokenParams,
+} from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
 
 import { EidasBridgeIdentityDto } from '../dto';
@@ -33,6 +37,10 @@ describe('FrIdentityToEuController', () => {
       getUserInfo: jest.fn(),
       wellKnownKeys: jest.fn(),
     },
+  };
+
+  const oidcClientConfigServiceMock = {
+    get: jest.fn(),
   };
 
   const loggerServiceMock = {
@@ -101,6 +109,7 @@ describe('FrIdentityToEuController', () => {
       controllers: [FrIdentityToEuController],
       providers: [
         OidcClientService,
+        OidcClientConfigService,
         LoggerService,
         SessionService,
         CryptographyService,
@@ -110,6 +119,8 @@ describe('FrIdentityToEuController', () => {
     })
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
+      .overrideProvider(OidcClientConfigService)
+      .useValue(oidcClientConfigServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
@@ -145,22 +156,47 @@ describe('FrIdentityToEuController', () => {
   });
 
   describe('initSession', () => {
-    it('Should generate a random sessionId of 32 characters', async () => {
+    beforeEach(() => {
+      oidcClientConfigServiceMock.get.mockReturnValue({ stateLength: 32 });
+    });
+
+    it('should call oidc config', async () => {
       // setup
       sessionServiceOidcMock.set.mockResolvedValueOnce(undefined);
 
       // action
+      await frIdentityToEuController.initSession(sessionServiceOidcMock);
+
+      // assertion
+      expect(oidcClientConfigServiceMock.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should generate a random sessionId and state of 32 characters', async () => {
+      // setup
+      sessionServiceOidcMock.set.mockResolvedValueOnce(undefined);
       const randSize = 32;
+
+      // action
       await frIdentityToEuController.initSession(sessionServiceOidcMock);
 
       // assert
-      expect(cryptographyMock.genRandomString).toHaveBeenCalledTimes(1);
-      expect(cryptographyMock.genRandomString).toHaveBeenCalledWith(randSize);
+      expect(cryptographyMock.genRandomString).toHaveBeenCalledTimes(2);
+      expect(cryptographyMock.genRandomString).toHaveBeenNthCalledWith(
+        1,
+        randSize,
+      );
+      expect(cryptographyMock.genRandomString).toHaveBeenNthCalledWith(
+        2,
+        randSize,
+      );
     });
 
     it('Should init the session', async () => {
       // setup
       sessionServiceOidcMock.set.mockResolvedValueOnce(undefined);
+      cryptographyMock.genRandomString
+        .mockReturnValueOnce('random1')
+        .mockReturnValueOnce('random2');
 
       // action
       await frIdentityToEuController.initSession(sessionServiceOidcMock);
@@ -168,8 +204,8 @@ describe('FrIdentityToEuController', () => {
       // assert
       expect(sessionServiceOidcMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceOidcMock.set).toHaveBeenCalledWith({
-        idpState: randomStringMock,
-        sessionId: randomStringMock,
+        idpState: 'random2',
+        sessionId: 'random1',
       });
     });
 
