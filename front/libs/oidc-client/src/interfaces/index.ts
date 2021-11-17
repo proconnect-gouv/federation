@@ -1,5 +1,6 @@
 /* istanbul ignore file */
 
 // declarative file
-export * from './native';
-export * from './state';
+export * from './oidc-client.config';
+export * from './userinfos.interface';
+export * from './user.interface';

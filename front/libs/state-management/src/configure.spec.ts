@@ -1,8 +1,7 @@
 import * as redux from 'redux';
 import * as reduxPersist from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 
-import mockReducers from '../../../configs/reducers';
-import mockStates from '../../../configs/states';
 import bindMiddlewares from './bind-middlewares';
 import configure from './configure';
 import getInitialState from './get-initial-state';
@@ -11,16 +10,37 @@ import getPersistLists from './get-persist-lists';
 jest.mock('redux');
 jest.mock('redux-persist');
 jest.mock('redux-persist/lib/storage');
-jest.mock('../../../configs/reducers');
-jest.mock('../../../configs/states');
 jest.mock('./bind-middlewares');
 jest.mock('./get-persist-lists');
 jest.mock('./get-initial-state');
 
 const mockPersistKey = expect.any(String);
 
+const mockReducers = {
+  mockReducer1: jest.fn(),
+  mockReducer2: jest.fn(),
+  mockReducer3: jest.fn(),
+};
+
+const mockStates = {
+  mockState1: {
+    blacklist: true,
+    defaultValue: ['default', 'value', '1'],
+  },
+  mockState2: {
+    blacklist: true,
+    defaultValue: 'default value 2',
+  },
+  mockState3: {
+    blacklist: false,
+    defaultValue: 3,
+  },
+};
+
 describe('configure', () => {
-  beforeEach(() => {});
+  beforeEach(() => {
+    jest.resetAllMocks();
+  });
 
   it('should have called getInitialState method', () => {
     // when

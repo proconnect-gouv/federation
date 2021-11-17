@@ -1,4 +1,4 @@
-import { NavigationItem } from '@fc/oidc-client';
+import { NavigationItem } from '@fc/routing';
 
 import {
   filterRouteHasOrderProperty,
@@ -13,6 +13,7 @@ const routes = [
     label: 'mock',
     order: 1,
     path: '/mock/:id',
+    exact: false,
   },
   {
     // eslint-disable-next-line react/display-name

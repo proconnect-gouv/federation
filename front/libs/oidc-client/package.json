@@ -17,6 +17,7 @@
     "@types/react-dom": "^17.0.0"
   },
   "main": "src/index.ts",
+  "exports": { "./": "./src/"},
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",

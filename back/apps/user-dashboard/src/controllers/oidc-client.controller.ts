@@ -11,11 +11,13 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
+import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
   GetOidcCallback,
+  OidcClientConfig,
   OidcClientRoutes,
   OidcClientService,
   OidcClientSession,
@@ -40,6 +42,7 @@ export class OidcClientController {
     private readonly oidcClient: OidcClientService,
     private readonly identityProvider: IdentityProviderAdapterEnvService,
     private readonly csrfService: SessionCsrfService,
+    private readonly config: ConfigService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -63,15 +66,13 @@ export class OidcClientController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
-    const {
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-      claims,
-      csrfToken,
-      providerUid,
-      scope,
-    } = body;
+    // acr_values is an oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { acr: acr_values, scope } =
+      this.config.get<OidcClientConfig>('OidcClient');
+    const { csrfToken } = body;
+
+    const providerUid = 'envIssuer';
 
     // -- control if the CSRF provided is the same as the one previously saved in session.
     try {
@@ -89,7 +90,6 @@ export class OidcClientController {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
-      claims,
       nonce,
       providerUid,
       scope,

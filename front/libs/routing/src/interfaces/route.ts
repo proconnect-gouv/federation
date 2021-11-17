@@ -10,13 +10,16 @@ export type RouteMap = {
   [key: string]: RoutePath;
 };
 
-export type NavigationItem = {
-  component: FunctionComponent;
-  id?: string;
-  path: RoutePath;
+export type NavigationOptions = {
   order?: number;
   label?: string;
   exact?: boolean;
+};
+
+export type NavigationItem = NavigationOptions & {
+  component: FunctionComponent;
+  id?: string;
+  path: RoutePath;
 };
 
 export type RouteItem = NavigationItem & RouteProps;

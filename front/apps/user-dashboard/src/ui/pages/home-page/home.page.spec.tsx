@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import Homepage from './index';
+import Homepage from './home.page';
 
 describe('Homepage', () => {
   beforeEach(() => {
