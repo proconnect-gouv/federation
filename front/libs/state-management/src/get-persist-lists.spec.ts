@@ -1,8 +1,21 @@
-import mockStates from '../../../configs/states';
 import getPersistLists from './get-persist-lists';
 
-jest.mock('../../../configs/states');
 jest.mock('redux-persist/lib/storage');
+
+const mockStates = {
+  mockState1: {
+    blacklist: true,
+    defaultValue: ['default', 'value', '1'],
+  },
+  mockState2: {
+    blacklist: true,
+    defaultValue: 'default value 2',
+  },
+  mockState3: {
+    blacklist: false,
+    defaultValue: 3,
+  },
+};
 
 describe('getPersistLists', () => {
   beforeEach(() => {});

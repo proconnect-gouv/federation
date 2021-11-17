@@ -8,6 +8,8 @@ import classnames from 'classnames';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
+import { RedirectToIdpFormComponent } from '@fc/oidc-client';
+
 import { selectIdentityProviderInputs } from '../../redux/selectors';
 import { IdentityProvider, RootState } from '../../types';
 
@@ -19,7 +21,6 @@ const IdentityProviderCardContentComponent = React.memo(
   ({ identityProvider }: IdentityProviderCardProps): JSX.Element => {
     const { active, name, uid } = identityProvider;
 
-    const formTargetURL = useSelector((state: RootState) => state.redirectURL);
     const redirectToIdentityProviderInputs = useSelector((state: RootState) =>
       selectIdentityProviderInputs(state, uid),
     );
@@ -27,11 +28,7 @@ const IdentityProviderCardContentComponent = React.memo(
     return (
       <div className={classnames('flex-center rounded p24 m4 card-wrapper')}>
         <div className="mb8 form-title">Mon compte</div>
-        <form
-          action={formTargetURL}
-          id={`fca-history-idp-${uid}`}
-          method="POST"
-        >
+        <RedirectToIdpFormComponent id={`fca-history-idp-${uid}`}>
           {redirectToIdentityProviderInputs.map(([inputKey, inputValue]) => (
             <input
               key={inputKey}
@@ -43,7 +40,7 @@ const IdentityProviderCardContentComponent = React.memo(
           <button className="form-button" disabled={!active} type="submit">
             {name}
           </button>
-        </form>
+        </RedirectToIdpFormComponent>
       </div>
     );
   },

@@ -1,13 +1,15 @@
 /* istanbul ignore file */
 
 // declarative file
+import { HOMEPAGE_PATH, NOTFOUND_PATH } from './constants';
+
 export const notfound = {
   // eslint-disable-next-line react/display-name
   component: () => <div />,
   id: 'mock-notfound',
   label: 'mock-notfound',
   order: 1,
-  path: '/*',
+  path: NOTFOUND_PATH,
 };
 
 export const homepage = {
@@ -16,7 +18,7 @@ export const homepage = {
   id: 'mock-homepage',
   label: 'mock-homepage',
   order: 1,
-  path: '/',
+  path: HOMEPAGE_PATH,
 };
 
 export const generics = [

@@ -1,3 +1,3 @@
-export * from './application-layout';
+export * from './application';
 export * from './components';
 export * from './pages';

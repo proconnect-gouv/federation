@@ -1,5 +1,5 @@
 import { LayoutConfig } from '@fc/dsfr';
-import { LogoFranceConnectComponent } from '../ui/components/logo-france-connect';
+import { LogoFranceConnectComponent } from '../ui/components/logo-france-connect/logo-france-connect.component';
 
 const Layout: LayoutConfig = {
   bottomLinks: [

@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ReturnButtonComponent } from '../return-button';
 
 import { LogoMarianneComponent } from '../logo-marianne';
 
@@ -8,12 +7,14 @@ type LayoutHeaderProps = {
   // @TODO move to fc/front/libs
   logo: React.FunctionComponent;
   title: string;
+  returnButton?: React.FunctionComponent;
 };
 
 export const LayoutHeaderComponent = React.memo(
   // @TODO move to fc/front/libs
-  ({ logo, title }: LayoutHeaderProps): JSX.Element => {
+  ({ logo, title, returnButton }: LayoutHeaderProps): JSX.Element => {
     const Logo = logo;
+    const ReturnButton = returnButton;
     return (
       <header className="shadow-bottom mb40" role="banner">
         <div className="is-flex content-wrapper-lg px8 py12">
@@ -25,7 +26,7 @@ export const LayoutHeaderComponent = React.memo(
             <LogoMarianneComponent className="mr40" />
             <Logo />
           </Link>
-          <ReturnButtonComponent />
+          {ReturnButton && <ReturnButton />}
         </div>
       </header>
     );

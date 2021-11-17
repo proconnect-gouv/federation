@@ -1,9 +1,0 @@
-{
-  "coveragePathIgnorePatterns": [
-    "<rootDir>/src/testUtils.tsx",
-    "<rootDir>/src/_tests_utils/*",
-    "<rootDir>/src/react-app-env.d.ts",
-    "<rootDir>/src/setupProxy.ts",
-    "<rootDir>/src/setupTests.ts"
-  ]
-}
