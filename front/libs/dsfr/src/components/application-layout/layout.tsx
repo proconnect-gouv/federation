@@ -1,5 +1,3 @@
-import { RouteItem } from '@fc/routing';
-import React from 'react';
 import { Helmet } from 'react-helmet';
 import {
   matchPath,
@@ -9,12 +7,12 @@ import {
   useLocation,
 } from 'react-router-dom';
 
-// import routes from '../../configs/routes';
+import { RouteItem } from '@fc/routing';
+
+import '../../index.scss';
 import { LayoutFooterComponent } from './footer';
 import { LayoutHeaderComponent } from './header';
-
 import { ApplicationLayoutProps } from './props.interface';
-import '../../index.scss';
 
 const getDocumentTitle = (obj: RouteItem) =>
   `${obj && obj.label ? `${obj.label} - ` : ''}`;

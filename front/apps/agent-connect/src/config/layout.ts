@@ -1,5 +1,6 @@
 import { LayoutConfig } from '@fc/dsfr';
 import { LogoAgentConnectComponent } from '../components/logo-agent-connect';
+import { ReturnButtonComponent } from '../components/return-button';
 
 const Layout: LayoutConfig = {
   bottomLinks: [
@@ -35,6 +36,7 @@ const Layout: LayoutConfig = {
   footerLinkTitle: 'Agent connect',
 
   logo: LogoAgentConnectComponent,
+  returnButton: ReturnButtonComponent,
 };
 
 export default Layout;

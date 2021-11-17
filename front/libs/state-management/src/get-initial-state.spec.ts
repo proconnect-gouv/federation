@@ -1,7 +1,19 @@
-import mockStates from '../../../configs/states';
 import getInitialState from './get-initial-state';
 
-jest.mock('../../../configs/states');
+const mockStates = {
+  mockState1: {
+    blacklist: true,
+    defaultValue: ['default', 'value', '1'],
+  },
+  mockState2: {
+    blacklist: true,
+    defaultValue: 'default value 2',
+  },
+  mockState3: {
+    blacklist: false,
+    defaultValue: 3,
+  },
+};
 
 describe('getInitialState', () => {
   beforeEach(() => {});

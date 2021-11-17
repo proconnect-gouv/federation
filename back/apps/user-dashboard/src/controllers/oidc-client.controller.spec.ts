@@ -73,7 +73,7 @@ describe('OidcClient Controller', () => {
   };
 
   const configServiceMock = {
-    get: () => appConfigMock,
+    get: jest.fn(),
   };
 
   const providerIdMock = 'providerIdMockValue';
@@ -137,6 +137,7 @@ describe('OidcClient Controller', () => {
       state: idpStateMock,
     });
 
+    configServiceMock.get.mockReturnValue(appConfigMock);
     sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
   });
 
@@ -148,15 +149,13 @@ describe('OidcClient Controller', () => {
     it('should call oidc-client-service for retrieve authorize url', async () => {
       // setup
       const body = {
-        // oidc param
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas3',
-        claims: 'json_stringified',
         csrfToken: 'csrfMockValue',
-        nonce: idpNonceMock,
-        providerUid: providerIdMock,
-        scope: 'openid',
       };
+
+      configServiceMock.get.mockReturnValueOnce({
+        acr: 'eidas3',
+        scope: 'openid',
+      });
 
       const authorizeUrlMock = 'https://my-authentication-openid-url.com';
 
@@ -168,9 +167,8 @@ describe('OidcClient Controller', () => {
         // oidc parameter
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
-        claims: 'json_stringified',
         nonce: idpNonceMock,
-        providerUid: 'providerIdMockValue',
+        providerUid: 'envIssuer',
         scope: 'openid',
         state: idpStateMock,
       };
@@ -190,15 +188,13 @@ describe('OidcClient Controller', () => {
     it('should call res.redirect() with the authorizeUrl', async () => {
       // setup
       const body = {
-        // oidc param
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas3',
-        claims: 'json_stringified',
         csrfToken: 'csrfMockValue',
-        nonce: idpNonceMock,
-        providerUid: providerIdMock,
-        scope: 'openid',
       };
+
+      configServiceMock.get.mockReturnValueOnce({
+        acr: 'eidas3',
+        scope: 'openid',
+      });
 
       const authorizeUrlMock = 'https://my-authentication-openid-url.com';
 
@@ -217,15 +213,13 @@ describe('OidcClient Controller', () => {
     it('should store state and nonce in session', async () => {
       // setup
       const body = {
-        // oidc param
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas3',
-        claims: 'json_stringified',
         csrfToken: 'csrfMockValue',
-        nonce: idpNonceMock,
-        providerUid: providerIdMock,
-        scope: 'openid',
       };
+
+      configServiceMock.get.mockResolvedValue({
+        acr: 'eidas3',
+        scope: 'openid',
+      });
 
       const authorizeUrlMock = 'https://my-authentication-openid-url.com';
 
@@ -239,7 +233,7 @@ describe('OidcClient Controller', () => {
       // assert
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.set).toHaveBeenCalledWith({
-        idpId: body.providerUid,
+        idpId: 'envIssuer',
         idpName: 'foo',
         idpNonce: idpNonceMock,
         idpState: idpStateMock,
