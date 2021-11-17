@@ -1,4 +1,6 @@
-export * from './actions';
+/* istanbul ignore file */
+
+// declarative file
+export * from './components';
 export * from './interfaces';
-export * from './reducers';
-export { default as OidcClientStates } from './states';
+export * from './hooks';

@@ -24,4 +24,7 @@ export default {
    * This must be done while giving US its own stack.
    */
   fapi: false,
+  scope:
+    'openid gender birthdate birthcountry birthplace given_name family_name email preferred_username address phone',
+  acr: 'eidas1',
 } as OidcClientConfig;

@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { renderWithRedux } from '../../testUtils';
 import IdentityProvidersUserHistory from './idp-user-history';
 

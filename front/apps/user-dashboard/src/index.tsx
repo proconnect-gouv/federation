@@ -1,19 +1,7 @@
-import { Settings } from 'luxon';
-import React from 'react';
+/* istanbul ignore file */
+
+// declarative file
 import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
+import { Application } from './ui/application';
 
-import { ApplicationLayout } from './ui/application-layout';
-
-import { routes } from './config/routes';
-
-Settings.defaultLocale = 'fr';
-
-ReactDOM.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <ApplicationLayout routes={routes()} />
-    </BrowserRouter>
-  </React.StrictMode>,
-  document.getElementById('root'),
-);
+ReactDOM.render(<Application />, document.getElementById('root'));

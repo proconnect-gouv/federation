@@ -3,7 +3,6 @@
 /**
  * Tested with cypress snapshots
  */
-import classnames from 'classnames';
 import React from 'react';
 import { useSelector } from 'react-redux';
 
