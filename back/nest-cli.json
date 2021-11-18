@@ -278,6 +278,15 @@
         "tsConfigPath": "instances/rie-bridge-proxy/tsconfig.app.json"
       }
     },
+    "user-preferences-fcp-high": {
+      "type": "application",
+      "root": "instances/user-preferences-fcp-high",
+      "entryFile": "main",
+      "sourceRoot": "instances/user-preferences-fcp-high/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/user-preferences-fcp-high/tsconfig.app.json"
+      }
+    },
     "rnipp": {
       "type": "library",
       "root": "libs/rnipp",
