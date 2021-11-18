@@ -275,7 +275,9 @@
       "@fc/csv/(.*)": "<rootDir>/libs/csv/src/$1",
       "@fc/csv": "<rootDir>/libs/csv/src",
       "@fc/rie-bridge-proxy/(.*)": "<rootDir>/apps/rie-bridge-proxy/src/$1",
-      "@fc/rie-bridge-proxy": "<rootDir>/apps/rie-bridge-proxy/src"
+      "@fc/rie-bridge-proxy": "<rootDir>/apps/rie-bridge-proxy/src",
+      "@fc/user-preferences-fcp/(.*)": "<rootDir>/apps/user-preferences-fcp/src/$1",
+      "@fc/user-preferences-fcp": "<rootDir>/apps/user-preferences-fcp/src"
     },
     "preset": "ts-jest"
   }

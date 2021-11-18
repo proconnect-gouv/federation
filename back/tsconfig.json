@@ -137,7 +137,9 @@
       "@fc/cog": ["libs/cog/src"],
       "@fc/cog/*": ["libs/cog/src/*"],
       "@fc/rie-bridge-proxy": ["apps/rie-bridge-proxy/src"],
-      "@fc/rie-bridge-proxy/*": ["apps/rie-bridge-proxy/src/*"]
+      "@fc/rie-bridge-proxy/*": ["apps/rie-bridge-proxy/src/*"],
+      "@fc/user-preferences-fcp": ["apps/user-preferences-fcp/src"],
+      "@fc/user-preferences-fcp/*": ["apps/user-preferences-fcp/src/*"]
     }
   },
   "exclude": ["node_modules", "dist"]
