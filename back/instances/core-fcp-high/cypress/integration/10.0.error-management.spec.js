@@ -80,7 +80,7 @@ describe('10.0 - Error Management', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: `${Cypress.env('SP5_CLIENT_ID')}`,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      redirect_uri: `${Cypress.env('SP5_ROOT_URL')}/oidc-callback/envIssuer`,
+      redirect_uri: `${Cypress.env('SP5_ROOT_URL')}/oidc-callback`,
     });
     cy.visit(url);
 

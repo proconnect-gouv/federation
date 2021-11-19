@@ -16,5 +16,5 @@ export type TokenResults = {
 
 export type UserInfosParams = {
   accessToken: string;
-  providerUid: string;
+  idpId: string;
 };

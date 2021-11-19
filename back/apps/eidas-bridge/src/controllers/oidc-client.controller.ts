@@ -56,7 +56,7 @@ export class OidcClientController {
     const {
       scope,
       claims,
-      providerUid,
+      providerUid: idpId,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
@@ -81,10 +81,7 @@ export class OidcClientController {
     }
 
     if (serviceProviderId) {
-      await this.oidcClient.utils.checkIdpBlacklisted(
-        serviceProviderId,
-        providerUid,
-      );
+      await this.oidcClient.utils.checkIdpBlacklisted(serviceProviderId, idpId);
     }
 
     // TODO END
@@ -94,7 +91,7 @@ export class OidcClientController {
     const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl({
       state,
       scope,
-      providerUid,
+      idpId,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
@@ -102,9 +99,9 @@ export class OidcClientController {
       claims,
     });
 
-    const { name: idpName } = await this.identityProvider.getById(providerUid);
+    const { name: idpName } = await this.identityProvider.getById(idpId);
     const session: OidcClientSession = {
-      idpId: providerUid,
+      idpId,
       idpName,
       idpState: state,
       idpNonce: nonce,

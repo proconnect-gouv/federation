@@ -12,7 +12,7 @@ describe('7.1 Idp whitelist & blacklist', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: `${SP_CLIENT_ID}`,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      redirect_uri: `${SP_ROOT_URL}/oidc-callback/envIssuer`,
+      redirect_uri: `${SP_ROOT_URL}/oidc-callback`,
     }));
     cy.url().should('match', mireUrl);
 
@@ -81,7 +81,7 @@ describe('7.1 Idp whitelist & blacklist', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: `${SP_CLIENT_ID}`,
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      redirect_uri: `${SP_ROOT_URL}/oidc-callback/envIssuer`,
+      redirect_uri: `${SP_ROOT_URL}/oidc-callback`,
     }));
     cy.url().should('match', mireUrl);
     // When
