@@ -134,7 +134,7 @@ describe('OidcClient Controller', () => {
       controller['appendSpIdToAuthorizeUrl'] = jest.fn();
     });
 
-    it('should call oidc-client-service for retrieve authorize url', async () => {
+    it('should call oidc-client-service to retrieve authorize url', async () => {
       // setup
       const body = {
         scope: 'openid',
@@ -159,7 +159,7 @@ describe('OidcClient Controller', () => {
         acr_values: 'eidas3',
         claims: 'json_stringified',
         nonce: 'nonceMock',
-        providerUid: 'providerIdMockValue',
+        idpId: 'providerIdMockValue',
         scope: 'openid',
         state: 'stateMock',
       };

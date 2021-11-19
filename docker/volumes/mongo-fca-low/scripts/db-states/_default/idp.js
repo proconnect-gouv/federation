@@ -40,7 +40,7 @@ const fia = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia1-low",
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
@@ -134,7 +134,7 @@ const fia = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia3-low",
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
@@ -181,7 +181,7 @@ const fia = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia4-low",
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
@@ -228,7 +228,7 @@ const fia = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia5-low",
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
@@ -275,7 +275,7 @@ const fia = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia6-low",
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
@@ -322,7 +322,7 @@ const fia = {
     userinfo_encrypted_response_alg: "",
     userinfo_encrypted_response_enc: "",
     redirect_uris: [
-      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback/fia7-low",
+      "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",

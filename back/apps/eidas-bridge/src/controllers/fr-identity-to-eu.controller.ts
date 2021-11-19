@@ -1,10 +1,12 @@
 import { ClassTransformOptions } from 'class-transformer';
 import { ValidatorOptions } from 'class-validator';
+import { Request } from 'express';
 
 import { Controller, Get, Query, Redirect, Req } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
 import { CryptographyService } from '@fc/cryptography';
+import { EidasResponse } from '@fc/eidas';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { EidasProviderSession } from '@fc/eidas-provider';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
@@ -14,10 +16,14 @@ import {
   OidcClientService,
   OidcClientSession,
 } from '@fc/oidc-client';
-import { ISessionService, Session } from '@fc/session';
+import {
+  ISessionService,
+  Session,
+  SessionNotFoundException,
+} from '@fc/session';
 
 import { EidasBridgeIdentityDto } from '../dto/eidas-bridge-identity.dto';
-import { EidasBridgeRoutes } from '../enums';
+import { EidasBridgeRoutes, IDP_ID } from '../enums';
 import { EidasBridgeInvalidIdentityException } from '../exceptions';
 
 /**
@@ -62,6 +68,7 @@ export class FrIdentityToEuController {
     await sessionOidc.set({
       idpState,
       sessionId,
+      idpId: IDP_ID,
     });
 
     const response = {
@@ -110,7 +117,7 @@ export class FrIdentityToEuController {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: oidcRequest.acr_values,
       nonce,
-      providerUid: 'envIssuer',
+      idpId: IDP_ID,
       scope: oidcRequest.scope.join(' '),
       state,
     });
@@ -167,43 +174,10 @@ export class FrIdentityToEuController {
       });
     } else {
       try {
-        const providerUid = 'envIssuer';
-        const { idpNonce, idpState } = await sessionOidc.get();
-
-        const tokenParams = {
-          state: idpState,
-          nonce: idpNonce,
-        };
-        const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
-          providerUid,
-          tokenParams,
+        partialEidasResponse = await this.handleOidcCallbackAuthCode(
           req,
-        );
-
-        const userInfoParams = {
-          accessToken,
-          providerUid,
-        };
-
-        const identity = await this.oidcClient.getUserInfosFromProvider(
-          userInfoParams,
-          req,
-        );
-
-        await this.validateIdentity(identity);
-
-        const { requestedAttributes } = await sessionEidasProvider.get(
-          'eidasRequest',
-        );
-
-        partialEidasResponse = await this.oidcToEidas.mapPartialResponseSuccess(
-          identity,
-          /**
-           * @todo #412 Apply strong typing to acr values in other libs and apps
-           * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/412
-           */
-          acr as AcrValues,
-          requestedAttributes,
+          sessionOidc,
+          sessionEidasProvider,
         );
       } catch (error) {
         this.logger.trace({ error }, LoggerLevelNames.WARN);
@@ -230,6 +204,59 @@ export class FrIdentityToEuController {
     });
 
     return response;
+  }
+
+  private async handleOidcCallbackAuthCode(
+    req: Request,
+    sessionOidc: ISessionService<OidcClientSession>,
+    sessionEidasProvider: ISessionService<EidasProviderSession>,
+  ): Promise<Partial<EidasResponse>> {
+    const session = await sessionOidc.get();
+
+    if (!session) {
+      throw new SessionNotFoundException('OidcClient');
+    }
+
+    const { idpId, idpNonce, idpState } = session;
+
+    const tokenParams = {
+      state: idpState,
+      nonce: idpNonce,
+    };
+    const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
+      idpId,
+      tokenParams,
+      req,
+    );
+
+    const userInfoParams = {
+      accessToken,
+      idpId,
+    };
+
+    const identity = await this.oidcClient.getUserInfosFromProvider(
+      userInfoParams,
+      req,
+    );
+
+    await this.validateIdentity(identity);
+
+    const { requestedAttributes } = await sessionEidasProvider.get(
+      'eidasRequest',
+    );
+
+    const partialEidasResponse =
+      await this.oidcToEidas.mapPartialResponseSuccess(
+        identity,
+        /**
+         * @todo #412 Apply strong typing to acr values in other libs and apps
+         * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/412
+         */
+        acr as AcrValues,
+        requestedAttributes,
+      );
+
+    return partialEidasResponse;
   }
 
   private async validateIdentity(identity: Partial<EidasBridgeIdentityDto>) {

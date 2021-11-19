@@ -115,7 +115,7 @@ describe('OidcClient Controller', () => {
       state: stateMock,
       nonce: nonceMock,
       scope: 'scopeMock',
-      providerUid: providerIdMock,
+      idpId: providerIdMock,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'acrMock',
     });
@@ -153,7 +153,7 @@ describe('OidcClient Controller', () => {
         acr_values: 'eidas3',
         claims: 'json_stringified',
         nonce: 'nonceMock',
-        providerUid: 'providerIdMockValue',
+        idpId: 'providerIdMockValue',
         scope: 'openid',
         state: 'stateMock',
       };

@@ -6,8 +6,7 @@ const fsp = {
     title: "FSP - FSP1-high title",
     site: "https://site.com",
     redirect_uris: [
-      "https://fsp1-high.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
-      // "https://fsp1-high.docker.dev-franceconnect.fr/data-callback",
+      "https://fsp1-high.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsp1-high.docker.dev-franceconnect.fr/logout-callback",
@@ -64,7 +63,7 @@ const fsp = {
     title: "FSP - FSP2v2 Title",
     site: "https://site.com",
     redirect_uris: [
-      "https://fsp2-high.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+      "https://fsp2-high.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [],
     client_secret:
@@ -115,7 +114,7 @@ const fsp = {
     title: "Service Provider Example 3 deactivated Title",
     site: "https://site.com",
     redirect_uris: [
-      "https://fsp3-high.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+      "https://fsp3-high.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsp3-high.docker.dev-franceconnect.fr/logout-callback",
@@ -168,7 +167,7 @@ const fsp = {
     title: "SP 4 - deactivated Title",
     site: "https://site.com",
     redirect_uris: [
-      "https://fsp1-high.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+      "https://fsp1-high.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsp1-high.docker.dev-franceconnect.fr/logout-callback",
@@ -207,7 +206,7 @@ const fsp = {
     title: "FSP - FSP5-HIGH title",
     site: "https://site.com",
     redirect_uris: [
-      "https://fsp5-high.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+      "https://fsp5-high.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsp5-high.docker.dev-franceconnect.fr/logout-callback",
@@ -286,7 +285,7 @@ const fsp = {
     title: "FSP - FSP6v2 title",
     site: "https://site.com",
     redirect_uris: [
-      "https://fsp6-high.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+      "https://fsp6-high.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsp6-high.docker.dev-franceconnect.fr/logout-callback",

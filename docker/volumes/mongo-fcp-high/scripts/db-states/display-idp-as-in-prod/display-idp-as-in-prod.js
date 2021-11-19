@@ -321,7 +321,7 @@ const fsp = {
   title: "FSP - FSP1-HIGH title",
   site: "https://site.com",
   redirect_uris: [
-    "https://fsp1-high.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+    "https://fsp1-high.docker.dev-franceconnect.fr/oidc-callback",
   ],
   post_logout_redirect_uris: [
     "https://fsp1-high.docker.dev-franceconnect.fr/logout-callback",

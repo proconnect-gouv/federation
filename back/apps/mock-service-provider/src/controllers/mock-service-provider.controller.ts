@@ -4,7 +4,6 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Post,
   Query,
   Render,
@@ -21,13 +20,16 @@ import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata, IOidcIdentity, OidcSession } from '@fc/oidc';
 import {
-  GetOidcCallback,
   OidcClientConfig,
   OidcClientRoutes,
   OidcClientService,
   OidcClientSession,
 } from '@fc/oidc-client';
-import { ISessionService, Session } from '@fc/session';
+import {
+  ISessionService,
+  Session,
+  SessionNotFoundException,
+} from '@fc/session';
 
 import { AccessTokenParamsDTO } from '../dto';
 import { MockServiceProviderRoutes } from '../enums';
@@ -242,12 +244,10 @@ export class MockServiceProviderController {
   // needed for controller
   // eslint-disable-next-line max-params
   @Get(OidcClientRoutes.OIDC_CALLBACK)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
   async getOidcCallback(
     @Req() req,
     @Res() res,
     @Query() query,
-    @Param() params: GetOidcCallback,
     /**
      * @todo Adaptation for now, correspond to the oidc-provider side.
      * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
@@ -276,19 +276,24 @@ export class MockServiceProviderController {
       return res.redirect(errorUri);
     }
 
-    const { providerUid } = params;
-    const { interactionId, idpState, idpNonce } = await sessionOidc.get();
+    const session: OidcSession = await sessionOidc.get();
+
+    if (!session) {
+      throw new SessionNotFoundException('OidcClient');
+    }
+
+    const { idpId, idpNonce, idpState, interactionId } = session;
 
     const tokenParams = {
       state: idpState,
       nonce: idpNonce,
     };
     const { accessToken, idToken, acr, amr } =
-      await this.oidcClient.getTokenFromProvider(providerUid, tokenParams, req);
+      await this.oidcClient.getTokenFromProvider(idpId, tokenParams, req);
 
     const userInfoParams = {
       accessToken,
-      providerUid,
+      idpId,
     };
 
     const identity: IOidcIdentity =
@@ -407,7 +412,7 @@ export class MockServiceProviderController {
       await this.oidcClient.utils.getAuthorizeUrl({
         state,
         scope,
-        providerUid: provider.uid,
+        idpId: provider.uid,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: acr,
         nonce,

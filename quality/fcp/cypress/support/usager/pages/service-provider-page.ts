@@ -10,18 +10,15 @@ export default class ServiceProviderPage {
   fcButtonSelector: string;
   logoutButtonSelector: string;
   originUrl: string;
-  redirectUriPath: string;
 
   constructor(args: ServiceProviderBase) {
     const {
-      redirectUriPath,
       selectors: { fcButton, logoutButton },
       url,
     } = args;
     this.fcButtonSelector = fcButton;
     this.logoutButtonSelector = logoutButton;
     this.originUrl = url;
-    this.redirectUriPath = redirectUriPath;
   }
 
   get fcButton(): ChainableElement {

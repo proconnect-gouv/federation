@@ -6,7 +6,7 @@ const fsa = {
     title: "FSA - FSA1-LOW Title",
     site: "https://site.com",
     redirect_uris: [
-      "https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+      "https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsa1-low.docker.dev-franceconnect.fr/logout-callback",
@@ -57,7 +57,7 @@ const fsa = {
     title: "FSA - FSA2-LOW Title",
     site: "https://site.com",
     redirect_uris: [
-      "https://fsa2-low.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+      "https://fsa2-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [],
     client_secret:
@@ -106,7 +106,7 @@ const fsa = {
     title: "FSA - FSA3-LOW Title",
     site: "https://site.com",
     redirect_uris: [
-      "https://fsa3-low.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+      "https://fsa3-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsa3-low.docker.dev-franceconnect.fr/logout-callback",
@@ -156,7 +156,7 @@ const fsa = {
     title: "FSA - FSA4-LOW Title",
     site: "https://site.com",
     redirect_uris: [
-      "https://fsa4-low.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+      "https://fsa4-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsa4-low.docker.dev-franceconnect.fr/logout-callback",

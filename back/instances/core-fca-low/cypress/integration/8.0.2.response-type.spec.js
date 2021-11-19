@@ -13,7 +13,7 @@ describe('Response type', () => {
     cy.request({ url, followRedirect: false }).then((resp) => {
       expect(resp.status).to.eq(303);
       expect(resp.redirectedToUrl).to.equals(
-        `${SP_ROOT_URL}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        `${SP_ROOT_URL}/oidc-callback#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -28,7 +28,7 @@ describe('Response type', () => {
     cy.request({ url, followRedirect: false }).then((resp) => {
       expect(resp.status).to.eq(303);
       expect(resp.redirectedToUrl).to.equals(
-        `${SP_ROOT_URL}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        `${SP_ROOT_URL}/oidc-callback#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -43,7 +43,7 @@ describe('Response type', () => {
     cy.request({ url, followRedirect: false }).then((resp) => {
       expect(resp.status).to.eq(303);
       expect(resp.redirectedToUrl).to.equals(
-        `${SP_ROOT_URL}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        `${SP_ROOT_URL}/oidc-callback#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -58,7 +58,7 @@ describe('Response type', () => {
     cy.request({ url, followRedirect: false }).then((resp) => {
       expect(resp.status).to.eq(303);
       expect(resp.redirectedToUrl).to.equals(
-        `${SP_ROOT_URL}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        `${SP_ROOT_URL}/oidc-callback#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -73,7 +73,7 @@ describe('Response type', () => {
     cy.request({ url, followRedirect: false }).then((resp) => {
       expect(resp.status).to.eq(303);
       expect(resp.redirectedToUrl).to.equals(
-        `${SP_ROOT_URL}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        `${SP_ROOT_URL}/oidc-callback#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
