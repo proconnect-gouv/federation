@@ -71,14 +71,14 @@ export class OidcClientUtilsService {
   async getAuthorizeUrl({
     state,
     scope,
-    providerUid,
+    idpId,
     // acr_values is an oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values,
     nonce,
     claims,
   }: IGetAuthorizeUrlParams): Promise<string> {
-    const client: Client = await this.issuer.getClient(providerUid);
+    const client: Client = await this.issuer.getClient(idpId);
 
     const params = {
       scope,
@@ -144,12 +144,12 @@ export class OidcClientUtilsService {
 
   async getTokenSet(
     req,
-    providerUid: string,
+    ipdId: string,
     params: TokenParams,
     extraParams?: ExtraTokenParams,
   ): Promise<TokenSet> {
     this.logger.debug('getTokenSet');
-    const client = await this.issuer.getClient(providerUid);
+    const client = await this.issuer.getClient(ipdId);
     const { state } = params;
     const receivedParams = await this.extractParams(req, client, state);
 
@@ -178,25 +178,25 @@ export class OidcClientUtilsService {
     return tokenSet;
   }
 
-  async revokeToken(accessToken: string, providerUid: string): Promise<void> {
+  async revokeToken(accessToken: string, idpId: string): Promise<void> {
     this.logger.debug('revokeToken');
-    const client = await this.issuer.getClient(providerUid);
+    const client = await this.issuer.getClient(idpId);
 
-    this.logger.trace({ accessToken, providerUid });
+    this.logger.trace({ accessToken, idpId });
 
     await client.revoke(accessToken);
   }
 
   async getUserInfo(
     accessToken: string,
-    providerUid: string,
+    idpId: string,
   ): Promise<IOidcIdentity> {
     this.logger.debug('getUserInfo');
-    const client = await this.issuer.getClient(providerUid);
+    const client = await this.issuer.getClient(idpId);
 
     const userInfo = (await client.userinfo(accessToken)) as IOidcIdentity;
 
-    this.logger.trace({ accessToken, providerUid, userInfo });
+    this.logger.trace({ accessToken, idpId, userInfo });
 
     return userInfo;
   }
@@ -204,20 +204,20 @@ export class OidcClientUtilsService {
   /**
    * Build the endSessionUrl with given parameters.
    *
-   * @param {string} providerUid The current idp id
+   * @param {string} idpId The current idp id
    * @param {string} stateFromSession The current state
    * @param {TokenSet | string} idTokenHint The last idToken retrieved
    * @param {string} postLogoutRedirectUri The url to redirect after logout
    * @returns {Promise<string>} The endSessionUrl with all parameters (state, postLogoutRedirectUri, ...)
    */
   async getEndSessionUrl(
-    providerUid: string,
+    idpId: string,
     stateFromSession: string,
     idTokenHint?: TokenSet | string,
     postLogoutRedirectUri?: string,
   ): Promise<string> {
     this.logger.debug('getEndSessionUrl');
-    const client = await this.issuer.getClient(providerUid);
+    const client = await this.issuer.getClient(idpId);
 
     let endSessionUrl;
 
@@ -236,7 +236,7 @@ export class OidcClientUtilsService {
       throw new OidcClientGetEndSessionUrlException();
     }
 
-    this.logger.trace({ providerUid, endSessionUrl });
+    this.logger.trace({ idpId, endSessionUrl });
 
     return endSessionUrl;
   }

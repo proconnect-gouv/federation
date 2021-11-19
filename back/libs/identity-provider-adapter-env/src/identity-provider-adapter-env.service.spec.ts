@@ -5,13 +5,68 @@ import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
 
+import { IdentityProvider } from './enums';
 import { IdentityProviderAdapterEnvService } from './identity-provider-adapter-env.service';
 
 describe('IdentityProviderAdapterEnvService', () => {
   let service: IdentityProviderAdapterEnvService;
 
+  const env = {
+    provider: {
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: 'client_id',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
+      discovery: true,
+      discoveryUrl:
+        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_signed_response_alg: 'ES256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      post_logout_redirect_uris: [
+        'https://fsp1-high.docker.dev-franceconnect.fr/logout-callback',
+      ],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      redirect_uris: [
+        'https://fsp1-high.docker.dev-franceconnect.fr/login-callback',
+      ],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      response_types: ['code'],
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      revocation_endpoint_auth_method: 'client_secret_post',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_encrypted_response_alg: 'RSA-OAEP',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      id_token_encrypted_response_enc: 'A256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_encrypted_response_alg: 'RSA-OAEP',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_encrypted_response_enc: 'A256GCM',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      userinfo_signed_response_alg: 'ES256',
+      // oidc param name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      jwks_uri: 'https://fsp1-high.docker.dev-franceconnect.fr/jwks_uri',
+    },
+  };
+
   const validIdentityProviderMock = {
-    uid: 'envIssuer',
+    uid: IdentityProvider.IDP_ID,
     name: 'envIssuer',
     title: 'envIssuer Title',
     active: true,
@@ -132,60 +187,6 @@ describe('IdentityProviderAdapterEnvService', () => {
     },
   };
 
-  const env = {
-    provider: {
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: 'client_id',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-      discovery: true,
-      discoveryUrl:
-        'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      id_token_signed_response_alg: 'ES256',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      post_logout_redirect_uris: [
-        'https://fsp1-high.docker.dev-franceconnect.fr/logout-callback',
-      ],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      redirect_uris: [
-        'https://fsp1-high.docker.dev-franceconnect.fr/login-callback',
-      ],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      response_types: ['code'],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      token_endpoint_auth_method: 'client_secret_post',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      revocation_endpoint_auth_method: 'client_secret_post',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      id_token_encrypted_response_alg: 'RSA-OAEP',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      id_token_encrypted_response_enc: 'A256GCM',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_encrypted_response_alg: 'RSA-OAEP',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_encrypted_response_enc: 'A256GCM',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      userinfo_signed_response_alg: 'ES256',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      jwks_uri: 'https://fsp1-high.docker.dev-franceconnect.fr/jwks_uri',
-    },
-  };
-
   const identityProviderListMock = [validIdentityProviderMock];
 
   const loggerMock = {
@@ -227,8 +228,7 @@ describe('IdentityProviderAdapterEnvService', () => {
     );
 
     configMock.get.mockReturnValue({
-      discoveryUrl: 'discoveryUrl',
-      provider: 'provider',
+      provider: env.provider,
     });
   });
 
@@ -281,7 +281,7 @@ describe('IdentityProviderAdapterEnvService', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         jwks_uri: 'not an url',
       };
-      configMock.get.mockReturnValueOnce(invalidEnvMock);
+      configMock.get.mockReturnValueOnce({ provider: invalidEnvMock });
 
       // action
       await service['findAllIdentityProvider']();
@@ -298,7 +298,9 @@ describe('IdentityProviderAdapterEnvService', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         not_validated: 'by DTO',
       };
-      configMock.get.mockReturnValueOnce(invalidEnvMock);
+      configMock.get.mockReturnValueOnce({
+        provider: invalidEnvMock,
+      });
 
       // action
       await service['findAllIdentityProvider']();

@@ -375,7 +375,7 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
     response_type: 'code',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uri: `${Cypress.env('SP1_ROOT_URL')}/oidc-callback/envIssuer`,
+    redirect_uri: `${Cypress.env('SP1_ROOT_URL')}/oidc-callback`,
     state: 'stateTraces',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention

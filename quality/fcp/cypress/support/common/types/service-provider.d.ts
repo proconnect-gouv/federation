@@ -1,5 +1,4 @@
 export interface ServiceProviderBase {
-  redirectUriPath: string;
   selectors: {
     fcButton: string;
     logoutButton: string;

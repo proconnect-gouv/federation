@@ -1,10 +1,13 @@
 import { ClassTransformOptions } from 'class-transformer';
 import { ValidatorOptions } from 'class-validator';
+import { encode } from 'querystring';
 
 import {
   Controller,
   Get,
   Param,
+  Query,
+  Redirect,
   Render,
   Req,
   Res,
@@ -317,6 +320,29 @@ export class CoreFcaController {
     return this.oidcProvider.finishInteraction(req, res, session);
   }
 
+  @Get(OidcClientRoutes.OIDC_CALLBACK_LEGACY)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @Redirect()
+  async getLegacyOidcCallback(
+    @Query() query,
+    @Param() params: GetOidcCallback,
+  ) {
+    const { urlPrefix } = this.config.get<AppConfig>('App');
+
+    const response = {
+      statusCode: 302,
+      url: `${urlPrefix}${OidcClientRoutes.OIDC_CALLBACK}?${encode(query)}`,
+    };
+
+    this.logger.trace({
+      method: 'GET',
+      name: 'OidcClientRoutes.OIDC_CALLBACK_LEGACY',
+      providerUid: params.providerUid,
+    });
+
+    return response;
+  }
+
   /**
    * @TODO #308 ETQ DEV je veux éviter que deux appels Http soient réalisés au lieu d'un à la discovery Url dans le cadre d'oidc client
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
@@ -326,7 +352,6 @@ export class CoreFcaController {
   async getOidcCallback(
     @Req() req,
     @Res() res,
-    @Param() params: GetOidcCallback,
     /**
      * @todo Adaptation for now, correspond to the oidc-provider side.
      * Named "OidcClient" because we need a future shared session between our libs oidc-provider and oidc-client
@@ -338,10 +363,15 @@ export class CoreFcaController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
-    const { providerUid } = params;
-    const { idpNonce, idpState, interactionId, spId } = await sessionOidc.get();
+    const session: OidcSession = await sessionOidc.get();
 
-    await this.oidcClient.utils.checkIdpBlacklisted(spId, providerUid);
+    if (!session) {
+      throw new SessionNotFoundException('OidcClient');
+    }
+
+    const { idpId, idpNonce, idpState, interactionId, spId } = session;
+
+    await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
 
     /**
      *  @todo
@@ -364,7 +394,7 @@ export class CoreFcaController {
     };
 
     const { accessToken, acr } = await this.oidcClient.getTokenFromProvider(
-      providerUid,
+      idpId,
       tokenParams,
       req,
       extraParams,
@@ -372,7 +402,7 @@ export class CoreFcaController {
 
     const userInfoParams = {
       accessToken,
-      providerUid,
+      idpId,
     };
 
     const identity = await this.oidcClient.getUserInfosFromProvider(
@@ -380,7 +410,7 @@ export class CoreFcaController {
       req,
     );
 
-    await this.validateIdentity(providerUid, identity);
+    await this.validateIdentity(idpId, identity);
 
     const identityExchange: OidcSession = {
       idpAccessToken: accessToken,
@@ -405,7 +435,7 @@ export class CoreFcaController {
   }
 
   private async validateIdentity(
-    providerUid: string,
+    idpId: string,
     identity: Partial<OidcIdentityDto>,
   ): Promise<boolean> {
     const validatorOptions: ValidatorOptions = {
@@ -429,7 +459,7 @@ export class CoreFcaController {
       throw new CoreFcaInvalidIdentityException();
     }
 
-    this.logger.trace({ validate: { identity, providerUid } });
+    this.logger.trace({ validate: { identity, idpId } });
     return true;
   }
 }

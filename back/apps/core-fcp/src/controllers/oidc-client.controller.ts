@@ -59,7 +59,7 @@ export class OidcClientController {
       acr_values,
       claims,
       csrfToken,
-      providerUid,
+      providerUid: idpId,
       scope,
     } = body;
 
@@ -81,10 +81,7 @@ export class OidcClientController {
     }
 
     if (serviceProviderId) {
-      await this.oidcClient.utils.checkIdpBlacklisted(
-        serviceProviderId,
-        providerUid,
-      );
+      await this.oidcClient.utils.checkIdpBlacklisted(serviceProviderId, idpId);
     }
 
     // TODO END
@@ -97,14 +94,14 @@ export class OidcClientController {
       acr_values,
       claims,
       nonce,
-      providerUid,
+      idpId,
       scope,
       state,
     });
 
-    const { name: idpName } = await this.identityProvider.getById(providerUid);
+    const { name: idpName } = await this.identityProvider.getById(idpId);
     const session: OidcClientSession = {
-      idpId: providerUid,
+      idpId,
       idpName,
       idpNonce: nonce,
       idpState: state,

@@ -246,7 +246,7 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
     nonce: 'nonceThatRespectsTheLengthWhichIsDefinedInTheDTOForKinematicWork',
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uri: `${SP_ROOT_URL}/oidc-callback/envIssuer`,
+    redirect_uri: `${SP_ROOT_URL}/oidc-callback`,
     // oidc param
     // eslint-disable-next-line @typescript-eslint/naming-convention
     response_type: 'code',

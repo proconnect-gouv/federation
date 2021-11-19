@@ -1,3 +1,4 @@
+import { encode } from 'querystring';
 import { mocked } from 'ts-jest/utils';
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -34,6 +35,10 @@ jest.mock('@fc/common', () => ({
   validateDto: jest.fn(),
 }));
 
+jest.mock('querystring', () => ({
+  encode: jest.fn(),
+}));
+
 describe('CoreFcaController', () => {
   let coreController: CoreFcaController;
 
@@ -44,12 +49,19 @@ describe('CoreFcaController', () => {
   const spNameMock = 'some SP';
   const idpStateMock = 'idpStateMockValue';
   const idpNonceMock = 'idpNonceMock';
-  const providerUid = 'providerUidMock';
+  const idpIdMock = 'idpIdMockValue';
 
   let res;
   const req = {
     fc: {
       interactionId: interactionIdMock,
+    },
+    query: {
+      firstQueryParam: 'first',
+      secondQueryParam: 'second',
+    },
+    params: {
+      providerUid: 'secretProviderUid',
     },
   };
 
@@ -144,6 +156,7 @@ describe('CoreFcaController', () => {
   const oidcClientSessionDataMock: OidcClientSession = {
     csrfToken: randomStringMock,
     spId: spIdMock,
+    idpId: idpIdMock,
     idpNonce: idpNonceMock,
     idpState: idpStateMock,
     interactionId: interactionIdMock,
@@ -155,6 +168,8 @@ describe('CoreFcaController', () => {
   const sessionServieMock: SessionService = {
     setAlias: jest.fn(),
   } as unknown as SessionService;
+
+  const queryStringEncodeMock = mocked(encode);
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -582,6 +597,41 @@ describe('CoreFcaController', () => {
     });
   });
 
+  describe('getLegacyOidcCallback', () => {
+    it('should extract urlPrefix from app config', async () => {
+      // When
+      await coreController.getLegacyOidcCallback(req.query, req.params);
+      // Then
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('App');
+    });
+
+    it('should build redirect url with encode from querystring', async () => {
+      // When
+      await coreController.getLegacyOidcCallback(req.query, req.params);
+      // Then
+      expect(queryStringEncodeMock).toHaveBeenCalledTimes(1);
+      expect(queryStringEncodeMock).toHaveBeenCalledWith(req.query);
+    });
+
+    it('should redrect to the built oidc callback url', async () => {
+      // Given
+      const queryMock = 'first-query-param=first&second-query-param=second';
+      queryStringEncodeMock.mockReturnValueOnce(queryMock);
+      const redirectOidcCallbackUrl = `${appConfigMock.urlPrefix}/oidc-callback?${queryMock}`;
+      // When
+      const result = await coreController.getLegacyOidcCallback(
+        req.query,
+        req.params,
+      );
+      // Then
+      expect(result).toEqual({
+        statusCode: 302,
+        url: redirectOidcCallbackUrl,
+      });
+    });
+  });
+
   describe('getOidcCallback()', () => {
     const accessTokenMock = Symbol('accesToken');
     const acrMock = Symbol('acr');
@@ -593,7 +643,7 @@ describe('CoreFcaController', () => {
 
     const userInfoParamsMock = {
       accessToken: accessTokenMock,
-      providerUid,
+      idpId: idpIdMock,
     };
 
     const identityExchangeMock = {
@@ -632,23 +682,29 @@ describe('CoreFcaController', () => {
       );
     });
 
+    it('should throw an exception if the oidc session is not defined', async () => {
+      // setup
+      sessionServiceMock.get.mockReset().mockResolvedValueOnce(undefined);
+
+      // action
+      await expect(
+        coreController.getOidcCallback(req, res, sessionServiceMock),
+      ).rejects.toThrow(SessionNotFoundException);
+
+      // assert
+      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+    });
+
     it('should call token with providerId', async () => {
       // action
-      await coreController.getOidcCallback(
-        req,
-        res,
-        {
-          providerUid,
-        },
-        sessionServiceMock,
-      );
+      await coreController.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledTimes(
         1,
       );
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledWith(
-        providerUid,
+        idpIdMock,
         tokenParamsMock,
         req,
         // OIDC inspired parameter name
@@ -659,14 +715,7 @@ describe('CoreFcaController', () => {
 
     it('should call userinfo with acesstoken, dto and context', async () => {
       // action
-      await coreController.getOidcCallback(
-        req,
-        res,
-        {
-          providerUid,
-        },
-        sessionServiceMock,
-      );
+      await coreController.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
       expect(
@@ -684,32 +733,20 @@ describe('CoreFcaController', () => {
 
       // action
       await expect(
-        coreController.getOidcCallback(
-          req,
-          res,
-          { providerUid },
-          sessionServiceMock,
-        ),
+        coreController.getOidcCallback(req, res, sessionServiceMock),
       ).rejects.toThrow(errorMock);
 
       // assert
       expect(validateIdentityMock).toHaveBeenCalledTimes(1);
       expect(validateIdentityMock).toHaveBeenCalledWith(
-        providerUid,
+        idpIdMock,
         identityMock,
       );
     });
 
     it('should set session with identity result.', async () => {
       // action
-      await coreController.getOidcCallback(
-        req,
-        res,
-        {
-          providerUid,
-        },
-        sessionServiceMock,
-      );
+      await coreController.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
@@ -718,14 +755,7 @@ describe('CoreFcaController', () => {
 
     it('should redirect user after token and userinfo received and saved', async () => {
       // action
-      await coreController.getOidcCallback(
-        req,
-        res,
-        {
-          providerUid,
-        },
-        sessionServiceMock,
-      );
+      await coreController.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
@@ -741,37 +771,23 @@ describe('CoreFcaController', () => {
 
       it('idp is blacklisted', async () => {
         // setup
-        const providerUid = 'foo';
         const errorMock = new Error('New Error');
         sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
         isBlacklistedMock.mockRejectedValueOnce(errorMock);
 
         // action / assert
         await expect(() =>
-          coreController.getOidcCallback(
-            req,
-            res,
-            {
-              providerUid,
-            },
-            sessionServiceMock,
-          ),
+          coreController.getOidcCallback(req, res, sessionServiceMock),
         ).rejects.toThrow(errorMock);
       });
 
       it('idp is not blacklisted', async () => {
         // setup
-        const providerUid = 'foo';
         sessionServiceMock.get.mockReturnValueOnce({ spId: 'spIdValue' });
         isBlacklistedMock.mockReturnValueOnce(false);
 
         // action
-        await coreController.getOidcCallback(
-          req,
-          res,
-          { providerUid },
-          sessionServiceMock,
-        );
+        await coreController.getOidcCallback(req, res, sessionServiceMock);
 
         // assert
         expect(res.redirect).toHaveBeenCalledTimes(1);
@@ -790,7 +806,7 @@ describe('CoreFcaController', () => {
       validateDtoMock.mockResolvedValueOnce([]);
 
       // action
-      await coreController['validateIdentity'](providerUid, identityMock);
+      await coreController['validateIdentity'](idpIdMock, identityMock);
 
       // assert
       expect(validateDtoMock).toHaveBeenCalledTimes(1);
@@ -812,7 +828,7 @@ describe('CoreFcaController', () => {
 
       await expect(
         // action
-        coreController['validateIdentity'](providerUid, identityMock),
+        coreController['validateIdentity'](idpIdMock, identityMock),
         // assert
       ).rejects.toThrow(CoreFcaInvalidIdentityException);
     });

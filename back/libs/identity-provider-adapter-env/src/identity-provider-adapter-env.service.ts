@@ -15,6 +15,7 @@ import {
   IdentityProviderAdapterEnvConfig,
   IdentityProviderAdapterEnvDTO,
 } from './dto';
+import { IdentityProvider } from './enums';
 import { IIdentityProviderAdapterEnv } from './interfaces';
 
 const CLIENT_METADATA = [
@@ -65,7 +66,7 @@ export class IdentityProviderAdapterEnvService
 
     const configuration = [
       {
-        uid: 'envIssuer',
+        uid: IdentityProvider.IDP_ID,
         name: 'envIssuer',
         title: 'envIssuer Title',
         active: true,

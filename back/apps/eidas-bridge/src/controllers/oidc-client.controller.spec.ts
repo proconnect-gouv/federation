@@ -153,7 +153,7 @@ describe('OidcClient Controller', () => {
         acr_values: 'eidas3',
         claims: 'json_stringified',
         nonce: 'nonceMock',
-        providerUid: 'providerIdMockValue',
+        idpId: 'providerIdMockValue',
         scope: 'openid',
         state: 'stateMock',
       };

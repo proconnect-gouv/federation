@@ -12,7 +12,7 @@ db.client.replaceOne(
     eidas: "eidas2",
     site: "https://fsp1-low.docker.dev-franceconnect.fr/login",
     redirect_uris: [
-      "https://fsp1-low.docker.dev-franceconnect.fr/oidc-callback/envIssuer",
+      "https://fsp1-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://fsp1-low.docker.dev-franceconnect.fr/logout-callback",

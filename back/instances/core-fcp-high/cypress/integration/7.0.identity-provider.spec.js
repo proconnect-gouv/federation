@@ -115,7 +115,7 @@ describe('7.0 - Idp activation & visibility', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         client_id: `${Cypress.env('SP2_CLIENT_ID')}`,
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback/envIssuer`,
+        redirect_uri: `${Cypress.env('SP2_ROOT_URL')}/oidc-callback`,
       }),
     );
     cy.url().should('match', mireUrl);
