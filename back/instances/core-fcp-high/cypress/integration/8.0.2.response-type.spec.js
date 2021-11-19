@@ -13,7 +13,7 @@ describe('8.0.2 - Response type', () => {
       expect(resp.redirectedToUrl).to.equals(
         `${Cypress.env(
           'SP1_ROOT_URL',
-        )}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        )}/oidc-callback#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -30,7 +30,7 @@ describe('8.0.2 - Response type', () => {
       expect(resp.redirectedToUrl).to.equals(
         `${Cypress.env(
           'SP1_ROOT_URL',
-        )}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        )}/oidc-callback#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -47,7 +47,7 @@ describe('8.0.2 - Response type', () => {
       expect(resp.redirectedToUrl).to.equals(
         `${Cypress.env(
           'SP1_ROOT_URL',
-        )}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        )}/oidc-callback#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -64,7 +64,7 @@ describe('8.0.2 - Response type', () => {
       expect(resp.redirectedToUrl).to.equals(
         `${Cypress.env(
           'SP1_ROOT_URL',
-        )}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        )}/oidc-callback#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });
@@ -81,7 +81,7 @@ describe('8.0.2 - Response type', () => {
       expect(resp.redirectedToUrl).to.equals(
         `${Cypress.env(
           'SP1_ROOT_URL',
-        )}/oidc-callback/envIssuer#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
+        )}/oidc-callback#error=unsupported_response_type&error_description=unsupported%20response_type%20requested&state=stateTraces`,
       );
     });
   });

@@ -24,7 +24,7 @@ describe('OidcClientService', () => {
 
   const postLogoutRedirectUriMock = 'https://postLogoutRedirectUriMock';
 
-  const providerUidMock = 'providerUidMockValue';
+  const idpIdMock = 'idpIdMockValue';
   const idpStateMock = 'idpStateMockValue';
   const idpNonceMock = 'idpNonceMockValue';
   const acrMock = 'acrMockValue';
@@ -89,7 +89,7 @@ describe('OidcClientService', () => {
 
   const userInfosParamsMock: UserInfosParams = {
     accessToken: accessTokenMock,
-    providerUid: providerUidMock,
+    idpId: idpIdMock,
   };
 
   beforeEach(async () => {
@@ -138,7 +138,7 @@ describe('OidcClientService', () => {
     it('should call getTokenSet with token params', async () => {
       // action
       await service.getTokenFromProvider(
-        providerUidMock,
+        idpIdMock,
         tokenParamsMock,
         contextMock,
         extraParamsMock,
@@ -147,7 +147,7 @@ describe('OidcClientService', () => {
       expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
       expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledWith(
         contextMock,
-        providerUidMock,
+        idpIdMock,
         tokenParamsMock,
         extraParamsMock,
       );
@@ -163,7 +163,7 @@ describe('OidcClientService', () => {
       };
       // action
       const result = await service.getTokenFromProvider(
-        providerUidMock,
+        idpIdMock,
         tokenParamsMock,
         contextMock,
       );
@@ -181,11 +181,7 @@ describe('OidcClientService', () => {
       // action
       await expect(
         () =>
-          service.getTokenFromProvider(
-            providerUidMock,
-            tokenParamsMock,
-            contextMock,
-          ),
+          service.getTokenFromProvider(idpIdMock, tokenParamsMock, contextMock),
         // assert
       ).rejects.toThrow(
         '"{"providerUid":"providerUidMockValue","idpState":"idpStateMockValue","idpNonce":"idpNonceMockValue"}" input was wrong from the result at DTO validation: [{}]',
@@ -204,11 +200,7 @@ describe('OidcClientService', () => {
       // action
       await expect(
         () =>
-          service.getTokenFromProvider(
-            providerUidMock,
-            tokenParamsMock,
-            contextMock,
-          ),
+          service.getTokenFromProvider(idpIdMock, tokenParamsMock, contextMock),
         // assert
       ).rejects.toThrow(expectedError);
       expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
@@ -217,7 +209,7 @@ describe('OidcClientService', () => {
     it('should track the token event', async () => {
       // action
       await service.getTokenFromProvider(
-        providerUidMock,
+        idpIdMock,
         tokenParamsMock,
         contextMock,
       );
@@ -233,7 +225,7 @@ describe('OidcClientService', () => {
     it('should get claims from token', async () => {
       // action
       const { acr } = await service.getTokenFromProvider(
-        providerUidMock,
+        idpIdMock,
         tokenParamsMock,
         contextMock,
       );
@@ -271,7 +263,7 @@ describe('OidcClientService', () => {
       expect(oidcClientUtilsServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
       expect(oidcClientUtilsServiceMock.getUserInfo).toHaveBeenCalledWith(
         accessTokenMock,
-        providerUidMock,
+        idpIdMock,
       );
     });
 
@@ -301,7 +293,7 @@ describe('OidcClientService', () => {
           service.getUserInfosFromProvider(userInfosParamsMock, contextMock),
         // assert
       ).rejects.toThrow(
-        '"providerUidMockValue" doesn\'t provide a minimum identity information: [{}]',
+        '"idpIdMockValue" doesn\'t provide a minimum identity information: [{}]',
       );
       expect(oidcClientUtilsServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
     });
@@ -323,7 +315,7 @@ describe('OidcClientService', () => {
     it('should call oidcClientUtilsServiceMock.getEndSessionUrl() with given parameters', async () => {
       // action
       await service.getEndSessionUrlFromProvider(
-        providerUidMock,
+        idpIdMock,
         idpStateMock,
         idTokenMock,
         postLogoutRedirectUriMock,
@@ -334,7 +326,7 @@ describe('OidcClientService', () => {
         1,
       );
       expect(oidcClientUtilsServiceMock.getEndSessionUrl).toHaveBeenCalledWith(
-        providerUidMock,
+        idpIdMock,
         idpStateMock,
         idTokenMock,
         postLogoutRedirectUriMock,

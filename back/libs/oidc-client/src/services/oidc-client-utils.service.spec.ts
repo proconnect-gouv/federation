@@ -179,7 +179,7 @@ describe('OidcClientUtilsService', () => {
       await service.getAuthorizeUrl({
         state,
         scope,
-        providerUid: providerId,
+        idpId: providerId,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
@@ -202,7 +202,7 @@ describe('OidcClientUtilsService', () => {
       await service.getAuthorizeUrl({
         state,
         scope,
-        providerUid: providerId,
+        idpId: providerId,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
@@ -234,7 +234,7 @@ describe('OidcClientUtilsService', () => {
       await service.getAuthorizeUrl({
         state,
         scope,
-        providerUid: providerId,
+        idpId: providerId,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
@@ -267,7 +267,7 @@ describe('OidcClientUtilsService', () => {
       const url = await service.getAuthorizeUrl({
         state,
         scope,
-        providerUid: providerId,
+        idpId: providerId,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,

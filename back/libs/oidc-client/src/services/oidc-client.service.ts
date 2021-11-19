@@ -35,7 +35,7 @@ export class OidcClientService {
   }
 
   async getTokenFromProvider(
-    providerUid: string,
+    idpId: string,
     params: TokenParams,
     context: IEventContext,
     extraParams?: ExtraTokenParams,
@@ -50,7 +50,7 @@ export class OidcClientService {
     // OIDC: call idp's /token endpoint
     const tokenSet: TokenSet = await this.utils.getTokenSet(
       context,
-      providerUid,
+      idpId,
       params,
       extraParams,
     );
@@ -86,7 +86,7 @@ export class OidcClientService {
     this.logger.trace({
       search: {
         context,
-        providerUid,
+        idpId,
         params,
         acr,
         amr,
@@ -100,13 +100,13 @@ export class OidcClientService {
   }
 
   async getUserInfosFromProvider(
-    { accessToken, providerUid }: UserInfosParams,
+    { accessToken, idpId }: UserInfosParams,
     context: IEventContext,
   ): Promise<IOidcIdentity> {
     // OIDC: call idp's /userinfo endpoint
     let identity: IOidcIdentity;
     try {
-      identity = await this.utils.getUserInfo(accessToken, providerUid);
+      identity = await this.utils.getUserInfo(accessToken, idpId);
     } catch (error) {
       this.logger.error(error, 'getUserInfo');
       /**
@@ -122,7 +122,7 @@ export class OidcClientService {
     this.logger.trace({
       search: {
         context,
-        providerUid,
+        idpId,
         accessToken,
         identity,
       },
@@ -143,7 +143,7 @@ export class OidcClientService {
 
     if (errors.length) {
       throw new Error(
-        `"${providerUid}" doesn't provide a minimum identity information: ${JSON.stringify(
+        `"${idpId}" doesn't provide a minimum identity information: ${JSON.stringify(
           errors,
         )}`,
       );
@@ -153,13 +153,13 @@ export class OidcClientService {
   }
 
   async getEndSessionUrlFromProvider(
-    providerUid: string,
+    ipdId: string,
     stateFromSession: string,
     idTokenHint?: TokenSet | string,
     postLogoutRedirectUri?: string,
   ) {
     return this.utils.getEndSessionUrl(
-      providerUid,
+      ipdId,
       stateFromSession,
       idTokenHint,
       postLogoutRedirectUri,

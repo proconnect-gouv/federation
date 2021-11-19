@@ -9,7 +9,32 @@ import {
 describe('1.0 - Successful scenarios', () => {
   // -- replace by either `fip1-high` or `fia1-high`
   const idpId = `${Cypress.env('IDP_NAME')}1-high`;
+  const idpId2 = `${Cypress.env('IDP_NAME')}2-high`;
 
+  // For tests purposes, fip2 is configured with an oidc callback having
+  // providerUid as a parameter
+  // @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/467
+  it('should log in to Service Provider Example using legacyOidcCallback', () => {
+    basicSuccessScenario({
+      userName: 'test',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values: 'eidas2',
+      idpId: idpId2,
+    });
+
+    checkInformationsServiceProvider({
+      gender: 'Femme',
+      givenName: 'Angela Claire Louise',
+      familyName: 'DUBOIS',
+      birthdate: '1962-08-24',
+      birthplace: '75107',
+      birthcountry: '99100',
+    });
+    checkInStringifiedJson(
+      'sub',
+      '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
+    );
+  });
   it('should redirect to FC website', () => {
     cy.request({
       url: `${Cypress.env('FC_ROOT_URL')}/api/v2`,

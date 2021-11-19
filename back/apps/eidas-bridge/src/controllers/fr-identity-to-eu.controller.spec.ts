@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import { mocked } from 'ts-jest/utils';
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -13,9 +14,10 @@ import {
   OidcClientService,
   TokenParams,
 } from '@fc/oidc-client';
-import { SessionService } from '@fc/session';
+import { SessionNotFoundException, SessionService } from '@fc/session';
 
 import { EidasBridgeIdentityDto } from '../dto';
+import { IDP_ID } from '../enums';
 import { EidasBridgeInvalidIdentityException } from '../exceptions';
 import { FrIdentityToEuController } from './fr-identity-to-eu.controller';
 
@@ -76,7 +78,6 @@ describe('FrIdentityToEuController', () => {
 
   const interactionIdMock = 'interactionIdMockValue';
   const acrMock = 'eidas2';
-  const scopeMock = 'scopeMock';
   const providerUidMock = 'envIssuer';
   const randomStringMock = 'randomStringMockValue';
   const stateMock = randomStringMock;
@@ -89,7 +90,9 @@ describe('FrIdentityToEuController', () => {
   };
 
   const sessionMockValue = {
-    spName: Symbol('spNameMockValue'),
+    idpId: providerUidMock,
+    idpNonce: idpNonceMock,
+    idpState: idpStateMock,
   };
 
   const req = {
@@ -102,7 +105,7 @@ describe('FrIdentityToEuController', () => {
     params: {
       uid: '1234456',
     },
-  };
+  } as unknown as Request;
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -141,11 +144,7 @@ describe('FrIdentityToEuController', () => {
     jest.restoreAllMocks();
 
     oidcClientServiceMock.utils.buildAuthorizeParameters.mockReturnValue({
-      // oidc parameter
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: acrMock,
-      providerUid: providerUidMock,
-      scope: scopeMock,
+      nonce: idpNonceMock,
       state: stateMock,
     });
 
@@ -204,6 +203,7 @@ describe('FrIdentityToEuController', () => {
       // assert
       expect(sessionServiceOidcMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceOidcMock.set).toHaveBeenCalledWith({
+        idpId: IDP_ID,
         idpState: 'random2',
         sessionId: 'random1',
       });
@@ -299,13 +299,13 @@ describe('FrIdentityToEuController', () => {
       ).toHaveBeenCalledWith();
     });
 
-    it('Should call oidc-client-service for retrieve authorize url', async () => {
+    it('Should call oidc-client-service to retrieve authorize url', async () => {
       const authorizeParametersMock = {
         // acr_values is an oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: oidcRequestMock.acr_values,
         nonce: idpNonceMock,
-        providerUid: 'envIssuer',
+        idpId: IDP_ID,
         scope: oidcRequestMock.scope.join(' '),
         state: 'state',
       };
@@ -328,7 +328,7 @@ describe('FrIdentityToEuController', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: authorizeParametersMock.acr_values,
         nonce: authorizeParametersMock.nonce,
-        providerUid: authorizeParametersMock.providerUid,
+        idpId: authorizeParametersMock.idpId,
         scope: authorizeParametersMock.scope,
         state: authorizeParametersMock.state,
       });
@@ -347,6 +347,7 @@ describe('FrIdentityToEuController', () => {
       expect(sessionServiceOidcMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceOidcMock.set).toHaveBeenCalledWith({
         idpState: stateMock,
+        idpNonce: idpNonceMock,
       });
     });
 
@@ -452,12 +453,6 @@ describe('FrIdentityToEuController', () => {
       const query = {};
       const requestedAttributesMock = [EidasAttributes.PERSON_IDENTIFIER];
 
-      const providerUid = providerUidMock;
-      const tokenParamsMock: TokenParams = {
-        nonce: idpNonceMock,
-        state: idpStateMock,
-      };
-
       let accessTokenMock;
       let validateIdentityMock;
       beforeEach(() => {
@@ -481,176 +476,6 @@ describe('FrIdentityToEuController', () => {
           'validateIdentity',
         );
         validateIdentityMock.mockResolvedValueOnce();
-      });
-
-      it('should get the session with the session id', async () => {
-        // action
-        await frIdentityToEuController.redirectToEidasResponseProxy(
-          req,
-          query,
-          sessionServiceEidasMock,
-          sessionServiceOidcMock,
-        );
-
-        // expect
-        expect(sessionServiceOidcMock.get).toHaveBeenCalledTimes(1);
-        expect(sessionServiceOidcMock.get).toHaveBeenCalledWith();
-      });
-
-      it('should get the token set from the idp', async () => {
-        // action
-        await frIdentityToEuController.redirectToEidasResponseProxy(
-          req,
-          query,
-          sessionServiceEidasMock,
-          sessionServiceOidcMock,
-        );
-
-        expect(
-          oidcClientServiceMock.getTokenFromProvider,
-        ).toHaveBeenCalledTimes(1);
-
-        expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledWith(
-          providerUid,
-          tokenParamsMock,
-          req,
-        );
-      });
-
-      it('should get userInfo from token response', async () => {
-        const userInfoParamsMock = {
-          accessToken: accessTokenMock,
-          providerUid: providerUidMock,
-        };
-
-        // action
-        await frIdentityToEuController.redirectToEidasResponseProxy(
-          req,
-          query,
-          sessionServiceEidasMock,
-          sessionServiceOidcMock,
-        );
-
-        // expect
-        expect(
-          oidcClientServiceMock.getUserInfosFromProvider,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          oidcClientServiceMock.getUserInfosFromProvider,
-        ).toHaveBeenCalledWith(userInfoParamsMock, req);
-      });
-
-      it('should get the eidas request from the session for userinfo', async () => {
-        // action
-        await frIdentityToEuController.redirectToEidasResponseProxy(
-          req,
-          query,
-          sessionServiceEidasMock,
-          sessionServiceOidcMock,
-        );
-
-        // expect
-        expect(sessionServiceEidasMock.get).toHaveBeenCalledTimes(1);
-        expect(sessionServiceEidasMock.get).toHaveBeenCalledWith(
-          'eidasRequest',
-        );
-      });
-
-      it('should call mapPartialResponseSuccess with the idp identity, the idp acr and the requested eidas attributes', async () => {
-        // setup
-        const userInfosMock = {
-          sub: 'sub',
-        };
-        oidcClientServiceMock.getUserInfosFromProvider.mockResolvedValueOnce(
-          userInfosMock,
-        );
-
-        // action
-        await frIdentityToEuController.redirectToEidasResponseProxy(
-          req,
-          query,
-          sessionServiceEidasMock,
-          sessionServiceOidcMock,
-        );
-
-        // expect
-        expect(
-          oidcToEidasServiceMock.mapPartialResponseSuccess,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          oidcToEidasServiceMock.mapPartialResponseSuccess,
-        ).toHaveBeenCalledWith(userInfosMock, acrMock, requestedAttributesMock);
-      });
-
-      it('should set the session with the eidas partial reponse', async () => {
-        // setup
-        const eidasPartialResponseMock = {
-          status: {
-            failure: false,
-          },
-        };
-        oidcToEidasServiceMock.mapPartialResponseSuccess.mockResolvedValueOnce(
-          eidasPartialResponseMock,
-        );
-
-        // action
-        await frIdentityToEuController.redirectToEidasResponseProxy(
-          req,
-          query,
-          sessionServiceEidasMock,
-          sessionServiceOidcMock,
-        );
-
-        // expect
-        expect(sessionServiceEidasMock.set).toHaveBeenCalledTimes(1);
-        expect(sessionServiceEidasMock.set).toHaveBeenCalledWith(
-          'partialEidasResponse',
-          eidasPartialResponseMock,
-        );
-      });
-
-      it('should return the eidas client response proxy url alongside a 302 status code', async () => {
-        // setup
-        const expected = {
-          statusCode: 302,
-          url: '/eidas-provider/response-proxy',
-        };
-
-        // action
-        const result =
-          await frIdentityToEuController.redirectToEidasResponseProxy(
-            req,
-            query,
-            sessionServiceEidasMock,
-            sessionServiceOidcMock,
-          );
-
-        // expect
-        expect(result).toStrictEqual(expected);
-      });
-
-      it('should call mapPartialResponseFailure with the error if an oidc call rejects', async () => {
-        // setup
-        const errorMock = new Error('oops');
-        oidcClientServiceMock.getUserInfosFromProvider.mockRejectedValueOnce(
-          errorMock,
-        );
-
-        // action
-        await frIdentityToEuController.redirectToEidasResponseProxy(
-          req,
-          query,
-          sessionServiceEidasMock,
-          sessionServiceOidcMock,
-        );
-
-        // expect
-        expect(
-          oidcToEidasServiceMock.mapPartialResponseFailure,
-        ).toHaveBeenCalledTimes(1);
-        expect(
-          oidcToEidasServiceMock.mapPartialResponseFailure,
-        ).toHaveBeenCalledWith(errorMock);
       });
 
       it('should set the session with the eidas partial failure reponse if an oidc call rejects', async () => {
@@ -704,6 +529,145 @@ describe('FrIdentityToEuController', () => {
           oidcToEidasServiceMock.mapPartialResponseFailure,
         ).toHaveBeenCalledWith(errorMock);
       });
+    });
+  });
+
+  describe('handleOidcCallbackAuthCode', () => {
+    const requestedAttributesMock = [EidasAttributes.PERSON_IDENTIFIER];
+
+    const tokenParamsMock: TokenParams = {
+      nonce: idpNonceMock,
+      state: idpStateMock,
+    };
+
+    let accessTokenMock;
+    let validateIdentityMock;
+    beforeEach(() => {
+      sessionServiceEidasMock.get.mockResolvedValueOnce({
+        requestedAttributes: requestedAttributesMock,
+      });
+
+      accessTokenMock = Symbol('accessTokenMock');
+
+      oidcClientServiceMock.getTokenFromProvider.mockResolvedValueOnce({
+        accessToken: accessTokenMock,
+        acr: acrMock,
+      });
+
+      validateIdentityMock = jest.spyOn<FrIdentityToEuController, any>(
+        frIdentityToEuController,
+        'validateIdentity',
+      );
+      validateIdentityMock.mockResolvedValueOnce();
+    });
+
+    it('should throw an exception if the oidc session is not defined', async () => {
+      // setup
+      sessionServiceOidcMock.get.mockReset().mockResolvedValueOnce(undefined);
+
+      // action
+      await expect(
+        frIdentityToEuController['handleOidcCallbackAuthCode'](
+          req,
+          sessionServiceOidcMock,
+          sessionServiceEidasMock,
+        ),
+      ).rejects.toThrow(SessionNotFoundException);
+
+      // assert
+      expect(sessionServiceOidcMock.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should get the session with the session id', async () => {
+      // action
+      await frIdentityToEuController['handleOidcCallbackAuthCode'](
+        req,
+        sessionServiceOidcMock,
+        sessionServiceEidasMock,
+      );
+
+      // expect
+      expect(sessionServiceOidcMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceOidcMock.get).toHaveBeenCalledWith();
+    });
+
+    it('should get the token set from the idp', async () => {
+      // action
+      await frIdentityToEuController['handleOidcCallbackAuthCode'](
+        req,
+        sessionServiceOidcMock,
+        sessionServiceEidasMock,
+      );
+
+      expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledTimes(
+        1,
+      );
+
+      expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledWith(
+        sessionMockValue.idpId,
+        tokenParamsMock,
+        req,
+      );
+    });
+
+    it('should get userInfo from token response', async () => {
+      const userInfoParamsMock = {
+        accessToken: accessTokenMock,
+        idpId: sessionMockValue.idpId,
+      };
+
+      // action
+      await frIdentityToEuController['handleOidcCallbackAuthCode'](
+        req,
+        sessionServiceOidcMock,
+        sessionServiceEidasMock,
+      );
+
+      // expect
+      expect(
+        oidcClientServiceMock.getUserInfosFromProvider,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        oidcClientServiceMock.getUserInfosFromProvider,
+      ).toHaveBeenCalledWith(userInfoParamsMock, req);
+    });
+
+    it('should get the eidas request from the session for userinfo', async () => {
+      // action
+      await frIdentityToEuController['handleOidcCallbackAuthCode'](
+        req,
+        sessionServiceOidcMock,
+        sessionServiceEidasMock,
+      );
+
+      // expect
+      expect(sessionServiceEidasMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceEidasMock.get).toHaveBeenCalledWith('eidasRequest');
+    });
+
+    it('should call mapPartialResponseSuccess with the idp identity, the idp acr and the requested eidas attributes', async () => {
+      // setup
+      const userInfosMock = {
+        sub: 'sub',
+      };
+      oidcClientServiceMock.getUserInfosFromProvider.mockResolvedValueOnce(
+        userInfosMock,
+      );
+
+      // action
+      await frIdentityToEuController['handleOidcCallbackAuthCode'](
+        req,
+        sessionServiceOidcMock,
+        sessionServiceEidasMock,
+      );
+
+      // expect
+      expect(
+        oidcToEidasServiceMock.mapPartialResponseSuccess,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        oidcToEidasServiceMock.mapPartialResponseSuccess,
+      ).toHaveBeenCalledWith(userInfosMock, acrMock, requestedAttributesMock);
     });
   });
 
