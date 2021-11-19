@@ -1,4 +1,4 @@
-core-fca-low-build:
+.base-build:
   stage: 'Build'
   image: ${BUILD_IMAGE}
   tags:
@@ -18,57 +18,86 @@ core-fca-low-build:
       command: ["--experimental"]
   before_script:
     - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
+    - rm -rf $FC_ROOT/fc-docker
     - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
   script:
     - cd $FC_ROOT/fc-docker
-    - ./build.sh core-fca-low $RELEASE_VERSION
+    - ./build.sh $APP $RELEASE_VERSION
+    - echo -e "\e[1;34m$MSG $RELEASE_VERSION\e[0m"
 
-mock-service-provider-fca-low-build:
-  stage: 'Build'
+.base-tag-to-prod:
+  stage: 'Tag'
   image: ${BUILD_IMAGE}
   tags:
     - build
-  only:
-    - tags
-  when: manual
-  environment:
-    name: build
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_NAME =~ /RC.$/
+      when: manual
+      allow_failure: false
   variables:
     GIT_STRATEGY: none
     DOCKER_HOST: tcp://docker:2375
     DOCKER_TLS_CERTDIR: ""
-    RELEASE_VERSION: ${CI_COMMIT_REF_NAME}
+    PATCH_VERSION: 0
+    RELEASE_VERSION: $CI_COMMIT_REF_NAME
+    DOCKER_CLI_EXPERIMENTAL: enabled
   services:
     - name: docker:19.03.12-dind
       command: ["--experimental"]
   before_script:
     - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
-    - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
+    - PROD_RELEASE_VERSION=${RELEASE_VERSION::-3}.${PATCH_VERSION}
   script:
-    - cd $FC_ROOT/fc-docker
-    - ./build.sh mock-service-provider-fca-low $RELEASE_VERSION
+    - while docker manifest inspect $INFRA_REGISTRY/$DOCKER_IMAGE:$PROD_RELEASE_VERSION; [[ $? -eq 0 ]];
+      do PATCH_VERSION=$((PATCH_VERSION+1)); PROD_RELEASE_VERSION=${RELEASE_VERSION::-3}.${PATCH_VERSION}; done
+    - export PROD_RELEASE_VERSION
+    - docker pull $INFRA_REGISTRY/$DOCKER_IMAGE:$RELEASE_VERSION
+    - docker tag $INFRA_REGISTRY/$DOCKER_IMAGE:$RELEASE_VERSION $INFRA_REGISTRY/$DOCKER_IMAGE:$PROD_RELEASE_VERSION
+    - docker push $INFRA_REGISTRY/$DOCKER_IMAGE:$PROD_RELEASE_VERSION
+    - echo -e "\e[1;34m$MSG $PROD_RELEASE_VERSION\e[0m"
+    - >
+      curl -s -X POST --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" "https://gitlab.dev-franceconnect.fr/api/v4/projects/${CI_PROJECT_ID}/repository/tags?tag_name=${PROD_RELEASE_VERSION}&ref=${RELEASE_VERSION}"
+  environment:
+    name: build
 
-mock-identity-provider-fca-low-build:
-  stage: 'Build'
-  image: ${BUILD_IMAGE}
-  tags:
-    - build
-  only:
-    - tags
-  when: manual
-  environment:
-    name: build
+fca/core-build-image:
+  extends: .base-build
   variables:
-    GIT_STRATEGY: none
-    DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
-    RELEASE_VERSION: ${CI_COMMIT_REF_NAME}
-  services:
-    - name: docker:19.03.12-dind
-      command: ["--experimental"]
-  before_script:
-    - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
-    - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
-  script:
-    - cd $FC_ROOT/fc-docker
-    - ./build.sh mock-identity-provider-fca-low $RELEASE_VERSION
+    APP: core-fca-low
+    MSG: "environments/nubo01-fca-integ/group_vars/all/versions.yml\nenvironments/nubo12-fca-integ/group_vars/all/versions.yml\nfca_core_version:"
+
+fca/core-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: core-fca-low
+    MSG: "environments/nubo01-fca-prod/group_vars/all/versions.yml\nenvironments/nubo12-fca-prod/group_vars/all/versions.yml\nfca_core_version:"
+  needs:
+    - job: fca/core-build-image
+
+fca/fsa1v2-build-image:
+  extends: .base-build
+  variables:
+    APP: mock-service-provider-fca-low
+    MSG: "environments/nubo01-fca-integ/group_vars/all/versions.yml\nenvironments/nubo12-fca-integ/group_vars/all/versions.yml\nfca_sp_version:"
+
+fca/fsa1v2-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: mock-service-provider-fca-low
+    MSG: "environments/nubo01-fca-prod/group_vars/all/versions.yml\nenvironments/nubo12-fca-prod/group_vars/all/versions.yml\nfca_sp_version:"
+  needs:
+    - job: fca/fsa1v2-build-image
+
+fca/fia1v2-build-image:
+  extends: .base-build
+  variables:
+    APP: mock-identity-provider-fca-low
+    MSG: "environments/nubo01-fca-integ/group_vars/all/versions.yml\nenvironments/nubo12-fca-integ/group_vars/all/versions.yml\nfca_idp_version:"
+
+fca/fia1v2-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: mock-identity-provider-fca-low
+    MSG: "environments/nubo01-fca-prod/group_vars/all/versions.yml\nenvironments/nubo12-fca-prod/group_vars/all/versions.yml\nfca_idp_version:"
+  needs:
+    - job: fca/fia1v2-build-image
