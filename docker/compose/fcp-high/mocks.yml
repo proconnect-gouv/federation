@@ -9,7 +9,7 @@ services:
 
   fsp1-high:
     hostname: fsp1-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -37,7 +37,7 @@ services:
 
   fsp2-high:
     hostname: fsp2-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -64,7 +64,7 @@ services:
 
   fsp3-high:
     hostname: fsp3-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -91,7 +91,7 @@ services:
 
   fsp5-high:
     hostname: fsp5-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -118,7 +118,7 @@ services:
 
   fsp6-high:
     hostname: fsp6-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -145,7 +145,7 @@ services:
 
   fip1-high:
     hostname: fip1-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -168,7 +168,7 @@ services:
 
   fip2-high:
     hostname: fip2-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -191,7 +191,7 @@ services:
 
   fip6-high:
     hostname: fip6-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -214,7 +214,7 @@ services:
 
   fip13-high:
     hostname: fip13-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -237,7 +237,7 @@ services:
 
   fip14-high:
     hostname: fip14-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -260,7 +260,7 @@ services:
 
   fip15-high:
     hostname: fip15-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -283,7 +283,7 @@ services:
 
   fip16-high:
     hostname: fip16-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -306,7 +306,7 @@ services:
 
   fip17-high:
     hostname: fip17-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -329,7 +329,7 @@ services:
 
   fip18-high:
     hostname: fip18-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -352,7 +352,7 @@ services:
 
   fip19-high:
     hostname: fip19-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -375,7 +375,7 @@ services:
 
   fip20-high:
     hostname: fip20-high
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -399,7 +399,7 @@ services:
   # Remove this mock when we have something to connect to with exploit apps
   exploit-fcp-high-fi-mock:
     hostname: exploit-fcp-high-fi-mock
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:

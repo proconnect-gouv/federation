@@ -1,15 +1,15 @@
 # Local docker environment
-	
+
 ## Description
 
 This directory contains everything to run a local FranceConnect or AgentConnect stack. This local environment is as close as possible to the other distant ones (proxy, rp, a virtual HSM ...). Be careful not to launch too many containers as it could take too much resources (we are working on that).
 
 ## Content
 
-- The core applications (core-*) which are the main applications of FranceConnect (FC), AgentConnect (AC) and FranceConnect+ (FC+).
-- The back office applications (exploitation-*) used to manage the projects.
-- The identities providers mocks (fip-* for FC and FC+, fia-* for AC).
-- The services providers mocks (fsp-* for FC and FC+, fsa-* for AC).
+- The core applications (core-\*) which are the main applications of FranceConnect (FC), AgentConnect (AC) and FranceConnect+ (FC+).
+- The back office applications (exploitation-\*) used to manage the projects.
+- The identities providers mocks (fip-_ for FC and FC+, fia-_ for AC).
+- The services providers mocks (fsp-_ for FC and FC+, fsa-_ for AC).
 - The user websites for [FC / FC+](https://franceconnect.gouv.fr) and [AC](https://agentconnect.gouv.fr).
 - The eIDAS applications which are used for european interoperability.
 - All softwares needed alongside those apps to make the stack work (MongoDB, Redis, SoftHSM, NginX, Squid, Elasticsearch, ...).
@@ -46,27 +46,44 @@ export COMPOSE_HTTP_TIMEOUT=200
 # Makes cypress aware of root path, not having to create relative path from e2E test file
 export CYPRESS_FC_ROOT=$FC_ROOT
 
+# Setup the docker registry url
+export FC_DOCKER_REGISTRY=france-connect-docker-registry-url
+
 # Alias for the docker-stack command (you can add it to your "~/.bash_aliases" if you prefer but don't forget to set the variables before the .bash_aliases sourcing in your .bashrc 😉) :
 alias docker-stack=$FC_ROOT/fc/docker/docker-stack
 ```
 
 - Clone every needed repository
 
-```bash
-mkdir -p $FC_ROOT && cd $FC_ROOT
+  - If you are an internal developer
 
-# The mains repositories
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc.git
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/rnipp-mock.git
+  ```bash
+  mkdir -p $FC_ROOT && cd $FC_ROOT
 
-# User website, not needed most of the time
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/usagers.git
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/usagers-fca.git
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/formulaire-usagers.git
+  # The mains repositories
+  git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc.git
+  git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/rnipp-mock.git
 
-# Old backoffice apps (DEPRECATED)
-git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc-apps.git
-```
+  # User website, not needed most of the time
+  git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/usagers.git
+  git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/usagers-fca.git
+  git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/formulaire-usagers.git
+
+  # Old backoffice apps (DEPRECATED)
+  git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc-apps.git
+  ```
+
+  - If you are an external developer
+
+  ```bash
+  mkdir -p $FC_ROOT && cd $FC_ROOT
+
+  # The mains repositories
+  git clone git@github.com:france-connect/sources.git fc
+  git clone git@github.com:france-connect/sources.git/rnipp-mock.git
+
+  # ⚠️ You currently does not have access to others repositories listen below
+  ```
 
 - Link the cloned repository in the docker volumes
 
