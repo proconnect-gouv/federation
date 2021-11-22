@@ -5,7 +5,7 @@ version: '3.4'
 services:
   core-fca-low:
     hostname: core-fca-low
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:

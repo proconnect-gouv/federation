@@ -32,9 +32,17 @@ Les objectifs visés sont:
 
 # Changelog des standards
 
+## V0.4
+
+- Ajout des licences pour l'open-source
+
+## V0.3
+
+- Ajout de documentation technique
+
 ## V0.2
 
-- Ajout d'un fichier "CONTRIBUTING.md" pour la gestion de la vie de la doc et du projet
+- Ajout d'un fichier `CONTRIBUTING.md` pour la gestion de la vie de la doc et du projet
 - Corrections et précision de l'introduction à la contribution
 - Ajout d'un changelog permettant de suivre l'évolution des standards
 
