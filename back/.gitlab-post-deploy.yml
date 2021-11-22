@@ -1,0 +1,26 @@
+publish-sources:
+  stage: 'Post-deploy'
+  image:
+    name: alpine/git
+    entrypoint: [""]
+  tags:
+    - publish
+  only:
+    - tags
+  when: manual
+  script:
+    - rm -rf $CI_BUILDS_DIR/france-connect/sources
+    - git clone -b main --depth 1 https://${GITHUB_TOKEN}@github.com/france-connect/sources.git $CI_BUILDS_DIR/france-connect/sources
+    - cd $CI_BUILDS_DIR/france-connect/sources
+    - git rm -rf  .
+    - cat $GITHUB_EXCLUDE_FILE > .git/info/exclude
+    - git config user.email "open-source@franceconnect.gouv.fr"
+    - git config user.name "France Connect"
+    - cp -R $CI_PROJECT_DIR/* .
+    - sed -i "s/ssh:\/\/git@gitlab.dev-franceconnect.fr:2222\/france-connect/\<france-connect-repository\>/g" docker/_doc/docker-stack.md
+    - git add .
+    - git commit -m "$CI_COMMIT_REF_NAME"
+    - git push origin main
+  dependencies: []
+  environment:
+    name: github

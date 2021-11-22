@@ -112,7 +112,7 @@ services:
     command: -config /etc/docker-gen/config
 
   squid:
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/squid:4.6
+    image: ${FC_DOCKER_REGISTRY}/squid:4.6
     extra_hosts:
       - auth.llng.docker.dev-franceconnect.fr:172.16.1.254
     networks:
@@ -156,7 +156,7 @@ services:
 
   rnipp:
     hostname: rnipp
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     volumes:
@@ -180,7 +180,7 @@ services:
 
   csmr-hsm:
     hostname: csmr-hsm
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -222,7 +222,7 @@ services:
 
   csmr-hsm-prod:
     hostname: csmr-hsm
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/csmr-hsm-high:latest
+    image: ${FC_DOCKER_REGISTRY}/csmr-hsm-high:latest
     volumes:
       - '${VOLUMES_DIR}/log/:/var/log/app'
       - '${VOLUMES_DIR}/log/:/var/log/fc-evt'
@@ -262,7 +262,7 @@ services:
       - '15672:15672'
 
   hsm:
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/softhsm
+    image: ${FC_DOCKER_REGISTRY}/softhsm
     networks:
       - data
     ports:
@@ -270,7 +270,7 @@ services:
 
   styleguide:
     hostname: styleguide
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -290,7 +290,7 @@ services:
     command: 'pm2 logs'
 
   openldap:
-    image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/openldap:0.2
+    image: ${FC_DOCKER_REGISTRY}/openldap:0.2
     networks:
     - rie
 

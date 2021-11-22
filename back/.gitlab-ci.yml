@@ -14,7 +14,7 @@ variables:
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
 global:
-  image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+  image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
   stage: 'Code quality'
   tags:
     - node
@@ -48,7 +48,7 @@ global:
   interruptible: true
 
 build-cache:
-  image: gitlab.dev-franceconnect.fr:5005/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+  image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
   tags:
     - node
   cache:
@@ -84,3 +84,4 @@ include:
   - '/back/instances/eidas-bridge/.gitlab-build.yml'
   - '/back/instances/user-dashboard/.gitlab-ci.yml'
   - '/back/.gitlab-checkmarx.yml'
+  - '/back/.gitlab-post-deploy.yml'

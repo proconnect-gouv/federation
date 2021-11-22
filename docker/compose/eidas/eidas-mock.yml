@@ -11,6 +11,8 @@ services:
     build:
       context: '${WORKING_DIR}'
       dockerfile: '${WORKING_DIR}/builds/eidas/Dockerfile'
+      args:
+        FC_DOCKER_REGISTRY: ${FC_DOCKER_REGISTRY}
     volumes:
       - '${VOLUMES_DIR}/eidas/conf-eidas-mock:/data/conf-eidas:ro'
       - '${VOLUMES_DIR}/eidas/keystore-mock:/data/keystore:ro'
