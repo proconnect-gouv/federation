@@ -11,6 +11,8 @@ services:
     build:
       context: '${WORKING_DIR}'
       dockerfile: '${WORKING_DIR}/builds/eidas/Dockerfile'
+      args:
+        FC_DOCKER_REGISTRY: ${FC_DOCKER_REGISTRY}
     ports:
       - '10900:10900'
     volumes:
