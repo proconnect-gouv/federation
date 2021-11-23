@@ -15,11 +15,13 @@ const SearchResultsComponent = React.memo(
     const identityProviders = useSelector(
       (_: RootState) => _.identityProviders,
     );
+
     return (
       <div
-        className="content-wrapper-md v-align-middle"
+        className="v-align-middle text-left content-wrapper-md"
         id="identity-provider-result"
       >
+        <h4 className="is-bold is-blue-agentconnect px16 mb16 fr-text-lg">Résultats</h4>
         {results.map(
           ({ id: ministryId, identityProviders: idps, name: ministryName }) => {
             const selected = identityProviders.filter(idp =>
@@ -29,17 +31,14 @@ const SearchResultsComponent = React.memo(
               <dl
                 key={ministryId}
                 id={`ministry-${ministryId}-search-list`}
-                style={{
-                  marginTop: '0',
-                  marginBottom: '1rem',
-                }}
+                className="mb48"
               >
-                <dt className="m8 mt4 ministry-name text-center">
+                <dt className="mx16 mb8 fr-text-lg ministry-name">
                   {ministryName}
                 </dt>
-                <dd className="my16 ml24 fi-name">
+                <dd className="mx16 fr-text fi-name">
                   {selected.length > 0 ? (
-                    <ul>
+                    <ul className="pl32">
                       {selected
                         .filter(idp => idp.active)
                         .map(idp => (
@@ -50,8 +49,7 @@ const SearchResultsComponent = React.memo(
                     </ul>
                   ) : (
                     <p
-                      className="font-5 p24 my2 text-center"
-                      style={{ backgroundColor: '#e6f3ff' }} >
+                      className="font-5 my2" >
                       Cette administration n&apos;est pas encore reliée à
                       AgentConnect pour cette application
                     </p>

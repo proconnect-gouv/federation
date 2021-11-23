@@ -9,10 +9,10 @@ export const LogoAgentConnectComponent = ({
 }: LogoAgentConnectProps) => (
   <div className={className}>
     <img
-      alt="marianne hexagonale agentconnect"
-      height="auto"
       src={LogoSVG}
-      width="140"
+      alt="marianne hexagonale agentconnect"
+      width="96"
+      height="54"
     />
   </div>
 );
