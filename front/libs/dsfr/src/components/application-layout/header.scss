@@ -1,0 +1,7 @@
+@import '../../core/funcs/pixel-to-rem';
+
+.header {
+  @include rem(height, 90px);
+  @include rem(margin-bottom, 80px);
+  position: relative;
+}
