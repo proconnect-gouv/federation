@@ -1,3 +1,6 @@
+import { lastValueFrom } from 'rxjs';
+import { mocked } from 'ts-jest/utils';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
@@ -5,11 +8,15 @@ import { LoggerService } from '@fc/logger';
 import { TracksProtocol } from '@fc/microservices';
 import { IOidcIdentity } from '@fc/oidc';
 
-import { UserDashboardTracksResponseException } from '../exceptions';
+import { TracksResponseException } from '../exceptions';
 import { TracksService } from './tracks.service';
+
+jest.mock('rxjs');
 
 describe('TracksService', () => {
   let service: TracksService;
+
+  const lastValueFromMock = mocked(lastValueFrom);
 
   const loggerServiceMock = {
     debug: jest.fn(),
@@ -33,9 +40,7 @@ describe('TracksService', () => {
     pipe: jest.fn(),
   };
 
-  const pipeMock = {
-    subscribe: jest.fn(),
-  };
+  const pipeMock = {};
   const brokerResponseMock = 'brokerResponseMock';
 
   beforeEach(async () => {
@@ -68,9 +73,7 @@ describe('TracksService', () => {
 
     brokerMock.send.mockReturnValue(messageMock);
     messageMock.pipe.mockReturnValue(pipeMock);
-    pipeMock.subscribe.mockImplementation(({ next }) =>
-      next(brokerResponseMock),
-    );
+    lastValueFromMock.mockResolvedValue(brokerResponseMock);
   });
 
   it('should be defined', () => {
@@ -110,21 +113,17 @@ describe('TracksService', () => {
     it('should reject when the rabbitmq response has failed', async () => {
       // Given
       const rejectedValueMock = 'rejectedValueMock';
-      pipeMock.subscribe.mockImplementationOnce(({ error }) =>
-        error(rejectedValueMock),
-      );
+      lastValueFromMock.mockRejectedValueOnce(rejectedValueMock);
       // When / Then
       await expect(service.getList(identityMock)).rejects.toThrow(
-        UserDashboardTracksResponseException,
+        TracksResponseException,
       );
     });
 
     it('should resolve when the rabbitmq response is successful', async () => {
       // Given
       const resolvedValueMock = 'resolvedValueMock';
-      pipeMock.subscribe.mockImplementationOnce(({ next }) =>
-        next(resolvedValueMock),
-      );
+      lastValueFromMock.mockResolvedValueOnce(resolvedValueMock);
       // When
       const result = await service.getList(identityMock);
       // Then
