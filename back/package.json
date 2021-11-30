@@ -283,7 +283,9 @@
       "@fc/tracks-data-provider/(.*)": "<rootDir>/apps/tracks-data-provider/src/$1",
       "@fc/tracks-data-provider": "<rootDir>/apps/tracks-data-provider/src",
       "^@fc/data-provider-core-auth(|/.*)$": "<rootDir>/libs/data-provider-core-auth/src/$1",
-      "^@fc/tracks(|/.*)$": "<rootDir>/libs/tracks/src/$1"
+      "^@fc/tracks(|/.*)$": "<rootDir>/libs/tracks/src/$1",
+      "@fc/rie/(.*)": "<rootDir>/libs/rie/src/$1",
+      "@fc/rie": "<rootDir>/libs/rie/src"
     },
     "preset": "ts-jest"
   }

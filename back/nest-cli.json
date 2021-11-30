@@ -835,6 +835,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/tracks/tsconfig.lib.json"
       }
+    },
+    "rie": {
+      "type": "library",
+      "root": "libs/rie",
+      "entryFile": "index",
+      "sourceRoot": "libs/rie/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/rie/tsconfig.lib.json"
+      }
     }
   }
 }

@@ -2,7 +2,7 @@
 
 // Not to be tested
 import { useContainer } from 'class-validator';
-import { urlencoded } from 'express';
+import { text } from 'express';
 import * as helmet from 'helmet';
 
 import { NestFactory } from '@nestjs/core';
@@ -86,7 +86,7 @@ async function bootstrap() {
    * Desactivate extended "qs" parser to prevent prototype pollution hazard.
    * @see body-parser.md in the project doc folder for further informations.
    */
-  app.use(urlencoded({ extended: false }));
+  app.use(text({ type: 'application/x-www-form-urlencoded' }));
 
   const logger = await app.resolve(LoggerService);
 
