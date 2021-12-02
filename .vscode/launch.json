@@ -7,7 +7,7 @@
   ],
   "compounds": [
     {
-      "name": "FCA - ALL",
+      "name": "FCA-LOW - ALL",
       "configurations": [
         "FCA - CORE-LOW", 
         "FCA - FIA1-LOW", 
@@ -18,13 +18,23 @@
       ],
     },
     {
-      "name": "FCP - ALL",
+      "name": "FCP-HIGH - ALL",
       "configurations": [
         "FCP - CORE-HIGH",
         "FCP - FSP1-HIGH",
         "FCP - FSP2-HIGH",
         "FCP - FSP3-HIGH",
         "FCP - Eidas-Bridge",
+      ],
+    },
+    {
+      "name": "FCP-LOW - ALL",
+      "configurations": [
+        "FCP - CORE-LOW",
+        "FCP - FSP1-LOW",
+        "FCP - FIP1-LOW",
+        "FCP - FIP2-LOW",
+        "FCP - FIP3-LOW",
       ],
     },
   ],
@@ -176,7 +186,7 @@
       "protocol": "inspector",
       "localRoot": "${workspaceFolder}/back",
       "remoteRoot": "/var/www/app",
-      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-service-provider/**/*.js"],
+      "outFiles": ["${workspaceFolder}/back/dist/apps/core-fcp/**/*.js"],
       "skipFiles": [
         "${workspaceFolder}/back/node_modules/**/*.js",
         "<node_internals>/**/*.js"
@@ -258,6 +268,98 @@
       ],
       "cwd": "${workspaceFolder}/back",
       "internalConsoleOptions": "openOnFirstSessionStart",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCP - CORE-LOW",
+      "type": "node",
+      "request": "attach",
+      "port": 9300,
+      "address": "localhost",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/core-fcp/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCP - FSP1-LOW",
+      "type": "node",
+      "request": "attach",
+      "port": 9301,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "internalConsoleOptions": "openOnFirstSessionStart",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-service-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCP - FIP1-LOW",
+      "type": "node",
+      "request": "attach",
+      "port": 9321,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-identity-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCP - FIP2-LOW",
+      "type": "node",
+      "request": "attach",
+      "port": 9322,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-identity-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
+      "restart": true,
+      "sourceMaps": true,
+    },
+    {
+      "name": "FCP - FIP3-LOW",
+      "type": "node",
+      "request": "attach",
+      "port": 9323,
+      "address": "localhost",
+      "protocol": "inspector",
+      "localRoot": "${workspaceFolder}/back",
+      "remoteRoot": "/var/www/app",
+      "outFiles": ["${workspaceFolder}/back/dist/apps/mock-identity-provider/**/*.js"],
+      "skipFiles": [
+        "${workspaceFolder}/back/node_modules/**/*.js",
+        "<node_internals>/**/*.js"
+      ],
+      "cwd": "${workspaceFolder}/back",
       "restart": true,
       "sourceMaps": true,
     },
