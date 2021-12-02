@@ -1,17 +1,17 @@
 #language: fr
-@usager @connexionChiffrage
-Fonctionnalité: Connexion avec chiffrage
+@usager @connexionChiffrement @fcpHigh
+Fonctionnalité: Connexion avec chiffrement
   # En tant qu'usager d'un fournisseur de service,
-  # je veux me connecter à un FI en utilisant du chiffrage
+  # je veux me connecter à un FI en utilisant du chiffrement
   # afin d'accéder à mon service
 
-  @fcpHigh
-  Plan du Scénario: Connexion avec chiffrage - FI <acrValue> avec <encodage> et signature <signature>
+  @ignoreInteg01
+  Plan du Scénario: Connexion avec chiffrement - FCP high - FI <acrValues> avec chiffrement "<encoding>" et signature "<signature>"
     Etant donné que le fournisseur de service requiert l'accès aux informations du scope "identite_pivot"
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que j'utilise un fournisseur d'identité supportant "<acrValues>" avec chiffrement "<encoding>" et signature "<signature>"
+    Et que j'utilise un fournisseur d'identité avec niveau de sécurité "<acrValues>", chiffrement "<encoding>" et signature "<signature>"
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès

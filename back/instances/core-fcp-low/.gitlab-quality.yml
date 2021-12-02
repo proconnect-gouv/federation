@@ -28,7 +28,7 @@ quality-fcp-low-docker:
     - docker-stack up all-fcp-low
     - docker exec fc_core-fcp-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker-stack dep core-fcp-low
-    - docker-stack start rnipp fsp1-low fip1-low core-fcp-low
+    - docker-stack start rnipp fsp1-low fip1-low fip2-low fip3-low core-fcp-low
     # Starting Cypress
     - timeout 60 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
       do echo "Waiting for core-fcp-low..." && sleep 10; done' || (
