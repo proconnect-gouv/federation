@@ -751,10 +751,10 @@
   dependencies:
     becke-ch--regex--s0-0-v1--base--pl--lib "^1.4.0"
 
-"@cucumber/cucumber@^7.3.0":
-  version "7.3.0"
-  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-7.3.0.tgz#28af3b24770579429c42338119596bd7da75163f"
-  integrity sha512-+kz+SCPKgS9eVv41+LESlFHmJulbrLyMk5yXPIrt6RD9pgmrzKrkc+ZWH4Cz3V1lYCuqqRmh9XQQ5PfMoveSkg==
+"@cucumber/cucumber@^7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@cucumber/cucumber/-/cucumber-7.3.1.tgz#1339abc92044f865043eceb2993da15cee0cd255"
+  integrity sha512-x1+/AvouZy205ZvfYbeEVat5aBAj4EeLt9TZfD7pO9j+tQ3W6uxSuDB1TKfxAXFU3WYrswor0CXoJBYOIZhzMw==
   dependencies:
     "@cucumber/create-meta" "^5.0.0"
     "@cucumber/cucumber-expressions" "^12.1.1"
