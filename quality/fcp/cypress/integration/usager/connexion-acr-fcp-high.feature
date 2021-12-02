@@ -62,7 +62,7 @@ Fonctionnalité: Connexion ACR
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que j'utilise un fournisseur d'identité supportant "eidas3"
+    Et que j'utilise un fournisseur d'identité avec niveau de sécurité "eidas3"
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Et que le fournisseur d'identité garantit un niveau de sécurité "<idpAcr>"
@@ -88,7 +88,7 @@ Fonctionnalité: Connexion ACR
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
-    Et que j'utilise un fournisseur d'identité supportant "eidas3"
+    Et que j'utilise un fournisseur d'identité avec niveau de sécurité "eidas3"
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Et que le fournisseur d'identité garantit un niveau de sécurité "<idpAcr>"
