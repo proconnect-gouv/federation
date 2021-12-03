@@ -21,7 +21,7 @@ const SearchResultsComponent = React.memo(
         className="v-align-middle text-left content-wrapper-md"
         id="identity-provider-result"
       >
-        <h4 className="is-bold is-blue-agentconnect px16 mb16 fr-text-lg">Résultats</h4>
+        <h4 className="is-bold is-blue-agentconnect px16 mb16 fr-text-lg">Résultats&nbsp;:</h4>
         {results.map(
           ({ id: ministryId, identityProviders: idps, name: ministryName }) => {
             const selected = identityProviders.filter(idp =>
@@ -31,7 +31,7 @@ const SearchResultsComponent = React.memo(
               <dl
                 key={ministryId}
                 id={`ministry-${ministryId}-search-list`}
-                className="mb48"
+                className="ministry-result mb32"
               >
                 <dt className="mx16 mb8 fr-text-lg ministry-name">
                   {ministryName}
@@ -50,7 +50,7 @@ const SearchResultsComponent = React.memo(
                   ) : (
                     <p
                       className="font-5 my2" >
-                      Cette administration n&apos;est pas encore reliée à
+                      Cette administration n’est pas encore reliée à
                       AgentConnect pour cette application
                     </p>
                   )}

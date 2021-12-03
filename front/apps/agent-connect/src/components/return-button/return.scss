@@ -1,8 +1,13 @@
 @import '@fc/dsfr/styles.scss';
 @import '@fc/dsfr/core/funcs/pixel-to-rem';
 
-.button {
+a.button {
   font-size: 14px;
+
+  &:hover {
+    color: $blue-agentconnect;
+    text-decoration: underline;
+  }
 
   &.is-mobile {
     @include rem(height, 40px);

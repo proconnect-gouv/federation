@@ -5,7 +5,7 @@
  */
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { RiQuestionFill as QuestionIcon } from 'react-icons/ri'
+import { RiQuestionFill as QuestionIcon } from 'react-icons/ri';
 
 import FCAApiContext from '../../components/fca-api-context';
 import { RootState } from '../../types';
@@ -29,7 +29,18 @@ const HomePage = React.memo((): JSX.Element => {
         )}
         <Search />
         <div className="mt48">
-          <a href="https://agentconnect.gouv.fr/faq" className="is-g600 flex-columns flex-center items-center"><QuestionIcon color={'#0579EE'} size={"20"} role={"img"} className="mr4" /> J'ai besoin d'aide</a>
+          <a
+            href="https://agentconnect.gouv.fr/aide"
+            className="is-g600 flex-columns flex-center items-center"
+          >
+            <QuestionIcon
+              color="#0579EE"
+              size="20"
+              role="img"
+              className="mr4"
+            />
+            J’ai besoin d’aide
+          </a>
         </div>
       </React.Fragment>
     </FCAApiContext>
