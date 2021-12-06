@@ -6,7 +6,7 @@ type LogoMarianneProps = {
 
 export const LogoMarianneComponent = ({ className }: LogoMarianneProps) => (
   <div className={className}>
-    <img src={LogoSVG} alt="république francaise" className="logo-marianne mr24" width="73" height="66" />
+    <img src={LogoSVG} alt="république francaise" className="logo-marianne" />
   </div>
 );
 

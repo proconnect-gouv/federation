@@ -36,11 +36,11 @@ const SearchFormComponent = React.memo(
 
     return (
       <div>
-        <h3 className="fs20 is-bold mx16 mb8">
+        <h3 className={classNames("fs20 is-bold mx16", { "mb8": !gtTablet })}>
           Je recherche mon administration
         </h3>
         <form onSubmit={onSubmitSearchForm}>
-          <label htmlFor="fi-search-term" className="mx16 mb16 fr-text">
+          <label htmlFor="fi-search-term" className="mx16 mb16 fr-text is-g600">
             Veuillez taper le nom complet de votre administration
           </label>
           <p className="flex-columns px16 mb16 is-block search-form">
@@ -49,11 +49,11 @@ const SearchFormComponent = React.memo(
               className="search-input px16 py8 flex-1"
               id="fi-search-term"
               name="fi-search-term"
-              placeholder="ex: ministère de la mer, ministère de..."
+              placeholder="ex&nbsp;:&nbsp;ministère de la mer, ministère de..."
               type="text"
               onChange={onInputChangeHandler}
             />
-            <button type="submit" className={classNames("search-button is-white bg-blue-agentconnect fr-text-lg", { "pl32": gtTablet})}>
+            <button type="submit" className={classNames("search-button is-white bg-blue-agentconnect fr-text-lg", { "pl32": gtTablet })}>
               <SearchIcon  role={"img"} />
               {gtTablet && <span className="pl12 pr32 py12">Rechercher</span>}
             </button>
