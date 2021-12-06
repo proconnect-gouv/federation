@@ -37,6 +37,7 @@ user-dashboard:
     # Setup ElasticSearch
     - echo "localhost elasticsearch" >> /etc/hosts
     - cp -R /var/www/elasticsearch/data/ $FC_ROOT/fc-docker/volumes/elasticsearch/
+    - mv /var/www/GeoLite2-City.mmdb $FC_ROOT/fc-docker/volumes/maxmind/database/GeoLite2-City/
     - chown -R 1000:0 $FC_ROOT/fc-docker/volumes/elasticsearch/data/
   script:
     # Up the docker-stack with minimal requirement
