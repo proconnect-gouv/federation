@@ -19,10 +19,10 @@ const ServiceProviderNameComponent = React.memo((): JSX.Element => {
 
   return (
     <section className={classNames("row", { "text-center": gtTablet})}>
-      <h1 className="fs32 mx16 mb16">
+      <h1 className={classNames("mx16 mb16", { "fs28": gtTablet, "fr-text-lg": !gtTablet })}>
         Je choisis un compte pour me connecter sur
       </h1>
-      <h2 className="fs40 is-extra-bold is-blue-agentconnect mx16 mb32">
+      <h2 className={classNames("is-extra-bold is-blue-agentconnect mx16", { "fs40 mb64": gtTablet, "fs32 mb40": !gtTablet })}>
         <span>{serviceProviderName}</span>
       </h2>
     </section>

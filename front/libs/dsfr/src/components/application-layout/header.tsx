@@ -28,7 +28,7 @@ export const LayoutHeaderComponent = React.memo(
             title={title}
             to="/"
           >
-            <LogoMarianneComponent />
+            <LogoMarianneComponent className="mr40" />
             <Logo />
           </Link>
           {ReturnButton && gtTablet && <ReturnButton />}
