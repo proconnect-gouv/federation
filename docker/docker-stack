@@ -57,6 +57,9 @@ _up() {
       min-eidas-high)
         services="$services min-eidas-high"
       ;;
+      lemon-ldap)
+        services="$services lemon-ldap"
+        ;;
       hybridge-fca-low)
         services="$services hybridge-fca-low"
         ;;
@@ -139,6 +142,7 @@ _up() {
         echo "  - min-fca-low => up minimal needed services to run core-fca-low fsa1-low fia1-low"
         echo "  - exploit-fca-low => up minimal needed services to run the Agentconnect Low fc-apps"
         echo "  - all-fca-low => all needed services to run fca-low stack (core-fca-low, fsa[n]-low, fia[n]-low, exploit, hsm, etc.)"
+        echo "  - lemon-ldap => up needed services to run lemon-ldap and to access his manager"
         echo "  - hybridge-fca-low => up minimal needed services to run core-fca-low fca-low-front rie-bridge-proxy fsa1-low Lemon-ldap"
         echo "  - all => run all services"
         echo "----"
@@ -151,6 +155,12 @@ _up() {
     cd ${WORKING_DIR} && docker-compose up --build -d $services
 
     case $services in
+      *"lemon-ldap"*)
+        # Sleep to wait for configuration initialization
+        echo "Restore LemonLDAP configuration"
+        cd ${WORKING_DIR} && docker-compose exec fia-llng-low bash /scripts/init.sh
+        echo "Loaded !"
+        ;;
       *"hybridge-"*)
         # Sleep to wait for configuration initialization
         echo "Restore LemonLDAP configuration"
