@@ -2,8 +2,8 @@
 
 // Declarative code
 export interface BridgeResponse {
-  data: unknown;
+  data: string;
   status: number;
-  message?: string;
+  statusText: string;
   headers: object;
 }

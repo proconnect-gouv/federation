@@ -7,7 +7,7 @@ import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
-import { BridgeResponseDto } from '../dto';
+import { BridgeProtocolDto } from '../dto';
 import {
   RieBrokerProxyMissingVariableException,
   RieBrokerProxyRabbitmqException,
@@ -155,7 +155,7 @@ describe('BrokerProxyService', () => {
         expect(validateDtoMock).toHaveBeenCalledTimes(1);
         expect(validateDtoMock).toHaveBeenCalledWith(
           axiosResponseResolvedMock,
-          BridgeResponseDto,
+          BridgeProtocolDto,
           validatorOptions,
         );
       });
@@ -198,7 +198,7 @@ describe('BrokerProxyService', () => {
       ).rejects.toThrow(RieBrokerProxyMissingVariableException);
       expect(loggerServiceMock.trace).toHaveBeenCalledTimes(1);
       expect(loggerServiceMock.trace).toHaveBeenCalledWith({
-        dtoValidationErrors: [{ property: 'invalid param' }],
+        dtoProtocolErrors: [{ property: 'invalid param' }],
       });
     });
 
@@ -256,12 +256,12 @@ describe('BrokerProxyService', () => {
       const method = 'POST';
 
       const expected = {
+        data: undefined,
         headers: {
           host: 'foo.fr',
           'x-forwarded-proto': 'https',
         },
         method: 'POST',
-        data: null,
         url: 'https://foo.fr/bizz/bud',
       };
 
