@@ -1,14 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import {
-  IsDefined,
-  IsNotEmpty,
-  IsNumber,
-  IsObject,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsNumber, IsObject, IsString } from 'class-validator';
 
 import { BridgeResponse, ValidateHttpHeaders } from '@fc/rie';
 
@@ -17,8 +10,7 @@ export class BridgeResponseDto implements BridgeResponse {
   readonly status: number;
 
   @IsString()
-  @IsOptional()
-  readonly message?: string;
+  readonly statusText: string;
 
   @IsObject()
   @ValidateHttpHeaders()
@@ -28,7 +20,6 @@ export class BridgeResponseDto implements BridgeResponse {
    * this parameter is voluntary abstract.
    * the proxy is not in charge to validate the exactness of the data itself
    */
-  @IsDefined()
-  @IsNotEmpty()
-  readonly data: unknown;
+  @IsString()
+  readonly data: string;
 }
