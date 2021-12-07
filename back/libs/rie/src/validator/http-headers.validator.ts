@@ -1,21 +1,15 @@
 import {
   isAscii,
   isObject,
-  maxLength,
   ValidateBy,
   ValidationOptions,
 } from 'class-validator';
 
 export const VALIDATE_HTTP_HEADERS = 'ValidateHttpHeaders';
 
-export const MAX_LENGTH = 1024;
-
 export function isHttpHeaders(values: object) {
   const params = Object.entries(values);
-  const check = params.every(
-    ([key, value]) =>
-      isAscii(key) && isAscii(value) && maxLength(value, MAX_LENGTH),
-  );
+  const check = params.every(([key, value]) => isAscii(key) && isAscii(value));
   return check;
 }
 export class ValidateHttpHeadersConstraint {

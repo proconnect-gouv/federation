@@ -8,9 +8,9 @@ import { ConfigService, validationOptions } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { HttpProxyProtocol } from '@fc/microservices';
 import { RabbitmqConfig } from '@fc/rabbitmq';
-import { BridgePayload, BridgeResponse } from '@fc/rie';
+import { BridgePayload, BridgeProtocol } from '@fc/rie';
 
-import { BridgeResponseDto } from '../dto';
+import { BridgeProtocolDto } from '../dto/bridge-protocol.dto';
 import {
   RieBrokerProxyMissingVariableException,
   RieBrokerProxyRabbitmqException,
@@ -40,8 +40,8 @@ export class BrokerProxyService {
     method: string,
     headers,
     body?: string,
-  ): Promise<BridgeResponse> {
-    let idpResponse: BridgeResponse;
+  ): Promise<BridgeProtocol<object>> {
+    let idpResponse: BridgeProtocol<object>;
     const message = this.createMessage(originalUrl, method, headers, body);
     const { requestTimeout } =
       this.config.get<RabbitmqConfig>('BridgeProxyBroker');
@@ -59,14 +59,14 @@ export class BrokerProxyService {
       throw new RieBrokerProxyRabbitmqException();
     }
 
-    const dtoValidationErrors = await validateDto(
+    const dtoProtocolErrors = await validateDto(
       idpResponse,
-      BridgeResponseDto,
+      BridgeProtocolDto,
       validationOptions,
     );
 
-    if (dtoValidationErrors.length) {
-      this.logger.trace({ dtoValidationErrors });
+    if (dtoProtocolErrors.length) {
+      this.logger.trace({ dtoProtocolErrors });
       throw new RieBrokerProxyMissingVariableException();
     }
 
@@ -86,11 +86,10 @@ export class BrokerProxyService {
     originalUrl: string,
     method: string,
     headers,
-    body?: string,
+    data?: string,
   ): BridgePayload {
     const { host, 'x-forwarded-proto': xForwardedProto } = headers;
     const url = `${xForwardedProto}://${host}${originalUrl}`;
-    const data = body ? body : null;
 
     return {
       headers,
