@@ -10,10 +10,10 @@ stages:
 
 variables:
   FC_ROOT: '$CI_BUILDS_DIR/france-connect'
-  PROXY_EXPLOITATION: "http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT"
+  PROXY_EXPLOITATION: 'http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT'
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
 
-global:
+back:
   image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
   stage: 'Code quality'
   tags:
@@ -37,7 +37,7 @@ global:
     - yarn lint
     - yarn prettier
     - yarn test --coverage
-    - ./scripts/coverage.sh
+    - ../coverage.sh
     # Quality folder
     - cd $CI_PROJECT_DIR/quality
     - yarn install
