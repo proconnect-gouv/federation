@@ -1,0 +1,31 @@
+variables:
+  FC_ROOT: '$CI_BUILDS_DIR/france-connect'
+  PROXY_EXPLOITATION: 'http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT'
+
+front:
+  image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+  stage: 'Code quality'
+  tags:
+    - node
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "merge_request_event" && $CI_COMMIT_BRANCH != "staging"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH == "staging"'
+  cache:
+    key: '${CI_PROJECT_ID}'
+    policy: pull
+    paths:
+      - front/node_modules/
+  script:
+    # Back folder
+    - cd front/
+    - yarn install
+    - yarn test --coverage
+    - yarn prettier
+    - yarn lint
+    - ../coverage.sh
+    # - yarn tsc --noEmit
+  coverage: '/Global coverage is: \[([\d\.]+)%\]/'
+  interruptible: true
