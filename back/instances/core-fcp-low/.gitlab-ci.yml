@@ -49,6 +49,9 @@ fcp-low:
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp
+    # Run Visual BDD tests and abort if failed
+    - CYPRESS_TEST_ENV=docker yarn test:low:snapshot -c video=${CYPRESS_VIDEO}
+    # Run Functional BDD tests
     - CYPRESS_TEST_ENV=docker yarn test:low:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - CYPRESS_PLATFORM=fcp-low CYPRESS_TEST_ENV=docker yarn report:generate
@@ -71,6 +74,7 @@ fcp-low:
       - $CI_PROJECT_DIR/back/instances/core-fcp-low/cypress/videos
       - $CI_PROJECT_DIR/back/instances/core-fcp-low/cypress/logs
       - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
+      - $CI_PROJECT_DIR/quality/fcp/cypress/snapshots/diff
       - $CI_PROJECT_DIR/artifacts-logs
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
