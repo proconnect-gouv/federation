@@ -4,8 +4,8 @@ import { lastValueFrom } from 'rxjs';
 import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 
+import { BridgePayload, BridgeResponse } from '@fc/hybridge-http-proxy';
 import { LoggerService } from '@fc/logger';
-import { BridgePayload, BridgeResponse } from '@fc/rie';
 
 @Injectable()
 export class CsmrHttpProxyService {
