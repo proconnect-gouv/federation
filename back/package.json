@@ -12,7 +12,7 @@
     "build:csmr-hsm-high": "nest build csmr-hsm-high",
     "build:csmr-rie": "nest build csmr-rie",
     "build:eidas-bridge": "nest build eidas-bridge-instance",
-    "build:rie-bridge-proxy": "nest build rie-bridge-proxy-instance",
+    "build:bridge-http-proxy": "nest build bridge-http-proxy-rie-instance",
     "build:tracks-data-provider": "nest build tracks-data-provider-instance",
     "build:exploit-fcp": "nest build exploit-fcp-instance",
     "build:exploit-fca-low": "nest build exploit-fca-low-instance",
@@ -50,7 +50,7 @@
     "test:e2e:core-fcp-low": "cypress run -P instances/core-fcp-low",
     "test:e2e:core-fcp-high:visu": "cypress open -P instances/core-fcp-high",
     "test:e2e:eidas-bridge": "cypress run -P instances/eidas-bridge",
-    "test:e2e:rie-bridge-proxy": "cypress run -P instances/rie-bridge-proxy",
+    "test:e2e:bridge-http-proxy-rie": "cypress run -P instances/bridge-http-proxy-rie",
     "doc:api": "typedoc",
     "doc:exceptions": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/exceptions/src/cli/export-exceptions"
   },
@@ -276,16 +276,16 @@
       "@fc/elasticsearch": "<rootDir>/libs/elasticsearch/src",
       "@fc/csv/(.*)": "<rootDir>/libs/csv/src/$1",
       "@fc/csv": "<rootDir>/libs/csv/src",
-      "@fc/rie-bridge-proxy/(.*)": "<rootDir>/apps/rie-bridge-proxy/src/$1",
-      "@fc/rie-bridge-proxy": "<rootDir>/apps/rie-bridge-proxy/src",
+      "@fc/bridge-http-proxy/(.*)": "<rootDir>/apps/bridge-http-proxy/src/$1",
+      "@fc/bridge-http-proxy": "<rootDir>/apps/bridge-http-proxy/src",
       "@fc/user-preferences-fcp/(.*)": "<rootDir>/apps/user-preferences-fcp/src/$1",
       "@fc/user-preferences-fcp": "<rootDir>/apps/user-preferences-fcp/src",
       "@fc/tracks-data-provider/(.*)": "<rootDir>/apps/tracks-data-provider/src/$1",
       "@fc/tracks-data-provider": "<rootDir>/apps/tracks-data-provider/src",
       "^@fc/data-provider-core-auth(|/.*)$": "<rootDir>/libs/data-provider-core-auth/src/$1",
       "^@fc/tracks(|/.*)$": "<rootDir>/libs/tracks/src/$1",
-      "@fc/rie/(.*)": "<rootDir>/libs/rie/src/$1",
-      "@fc/rie": "<rootDir>/libs/rie/src"
+      "@fc/hybridge-http-proxy/(.*)": "<rootDir>/libs/hybridge-http-proxy/src/$1",
+      "@fc/hybridge-http-proxy": "<rootDir>/libs/hybridge-http-proxy/src"
     },
     "preset": "ts-jest"
   }

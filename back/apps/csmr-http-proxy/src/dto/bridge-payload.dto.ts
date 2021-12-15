@@ -4,7 +4,7 @@
 import { Transform } from 'class-transformer';
 import { IsIn, IsObject, IsOptional, IsString, IsUrl } from 'class-validator';
 
-import { BridgePayload, ValidateHttpHeaders } from '@fc/rie';
+import { BridgePayload, ValidateHttpHeaders } from '@fc/hybridge-http-proxy';
 
 export class BridgePayloadDto implements BridgePayload {
   @IsUrl()

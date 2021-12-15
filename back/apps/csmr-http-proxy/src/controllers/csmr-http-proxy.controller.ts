@@ -2,14 +2,14 @@ import { Controller, UsePipes, ValidationPipe } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
 import { ValidationException } from '@fc/exceptions';
-import { LoggerService } from '@fc/logger';
-import { HttpProxyProtocol } from '@fc/microservices';
 import {
   BridgeError,
   BridgeProtocol,
   BridgeResponse,
   MessageType,
-} from '@fc/rie';
+} from '@fc/hybridge-http-proxy';
+import { LoggerService } from '@fc/logger';
+import { HttpProxyProtocol } from '@fc/microservices';
 
 import { BridgePayloadDto } from '../dto';
 import { CsmrHttpProxyService } from '../services';
