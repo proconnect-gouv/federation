@@ -37,7 +37,7 @@ services:
       ### Hybridge
       - 'lemon-ldap'
       - 'rp-bridge-proxy'
-      - 'rie-bridge-proxy'
+      - 'bridge-proxy-rie'
       - 'csmr-rie'
 
   lemon-ldap:
@@ -51,7 +51,7 @@ services:
     depends_on:
       - 'min-fca-low'
       - 'rp-bridge-proxy'
-      - 'rie-bridge-proxy'
+      - 'bridge-proxy-rie'
       ### RIE
       - 'lemon-ldap'
       - 'csmr-rie'
