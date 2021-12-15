@@ -1,12 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LoggerService } from '@fc/logger';
 import {
   BridgeError,
   BridgeProtocol,
   BridgeResponse,
   MessageType,
-} from '@fc/rie';
+} from '@fc/hybridge-http-proxy';
+import { LoggerService } from '@fc/logger';
 
 import { BridgePayloadDto } from '../dto';
 import { CsmrHttpProxyService } from '../services';
