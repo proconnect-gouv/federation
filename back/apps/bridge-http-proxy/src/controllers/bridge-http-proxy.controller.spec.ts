@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 
 import { ValidationError } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';

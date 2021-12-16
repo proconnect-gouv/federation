@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 
 import * as ejs from 'ejs';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
