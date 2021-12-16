@@ -13,8 +13,7 @@
   },
   "devDependencies": {
     "@types/react-helmet": "^6.1.0",
-    "@types/react-responsive": "^8.0.4",
-    "sass": "^1.41.0"
+    "@types/react-responsive": "^8.0.4"
   },
   "main": "src/index.ts",
   "files": [
