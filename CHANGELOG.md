@@ -4,6 +4,23 @@
 
 **🔈 The odd versions are not released into production.**
 
+## v3.73.0 & v3.74.0 (🎄 No production deployments, deployments are frozen for festivities 🎄)
+
+### Fixes
+
+- [AgentConnect] Some apps / libs names have been changed to better reflect their functions
+
+### Hardening & QA
+
+- The NPM dependencies have been upgraded
+- The units tests / linter and prettier of the front-end applications have been added to the CI (internal)
+- Visual regressions are now watched through screenshot automatic testing
+
+### Not yet in production (futures apps / features)
+
+- [AgentConnect / Docker dev-stack] Add a Lemon LDAP IdP to the docker dev-stack
+- [AgentConnect] Now AgentConnect can do a whole cinematic using rabbitMQ broker to connect to another isolated network
+
 ## v3.71.0 & v3.72.0
 
 ### Features
