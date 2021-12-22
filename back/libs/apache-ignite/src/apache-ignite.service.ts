@@ -33,16 +33,17 @@ export class ApacheIgniteService {
   /**
    * Connect to the apache ignite server defined in the configuration and the
    * client initialized by the constructor
-   * @returns A promise that resolves when the cache is connected
    */
-  async onModuleInit(): Promise<unknown> {
+  async onModuleInit(): Promise<void> {
     const { endpoint } = this.config.get<ApacheIgniteConfig>('ApacheIgnite');
 
     this.logger.debug('Connecting to apache-ignite cache...');
 
-    return this.igniteClient.connect(
+    await this.igniteClient.connect(
       new ApacheIgniteService.IgniteClientConfigurationProxy(endpoint),
     );
+
+    this.setIgniteClientKeepAlive();
   }
 
   /**
@@ -90,5 +91,15 @@ export class ApacheIgniteService {
         this.logger.debug(reason);
       }
     }
+  }
+
+  /**
+   * This is used to prevent the disconnection of the ignite client socket in production.
+   */
+  private setIgniteClientKeepAlive(enable = true, initialDelay = 1500): void {
+    this.igniteClient?._socket?._socket?._socket?.setKeepAlive(
+      enable,
+      initialDelay,
+    );
   }
 }
