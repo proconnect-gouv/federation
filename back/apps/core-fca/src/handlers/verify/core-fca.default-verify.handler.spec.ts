@@ -223,6 +223,9 @@ describe('CoreFcaDefaultVerifyHandler', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           given_name: idpIdentityMock.given_name,
           uid: idpIdentityMock.uid,
+          // AgentConnect claims naming convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          idp_id: sessionDataMock.idpId,
         },
         accountId: accountIdMock,
       };

@@ -79,7 +79,13 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
       },
     );
 
-    const spIdentity = { ...idpIdentity, sub: subSp };
+    const spIdentity = {
+      ...idpIdentity,
+      sub: subSp,
+      // AgentConnect claims naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      idp_id: idpId,
+    };
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
     const idpIdentityCleaned = {

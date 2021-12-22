@@ -97,6 +97,9 @@ export default {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       belonging_population: ['belonging_population'],
       chorusdt: ['chorusdt:matricule', 'chorusdt:societe'],
+      // AgentConnect claims naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      idp_id: ['idp_id'],
     },
     clientDefaults: {
       // node-oidc-provider defined key
