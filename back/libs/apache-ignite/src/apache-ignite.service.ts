@@ -96,7 +96,10 @@ export class ApacheIgniteService {
   /**
    * This is used to prevent the disconnection of the ignite client socket in production.
    */
-  private setIgniteClientKeepAlive(enable = true, initialDelay = 1500): void {
+  private setIgniteClientKeepAlive(
+    enable = true,
+    initialDelay = 1500000,
+  ): void {
     this.igniteClient?._socket?._socket?._socket?.setKeepAlive(
       enable,
       initialDelay,
