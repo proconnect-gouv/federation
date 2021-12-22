@@ -15,3 +15,4 @@ db.scopes.update({ scope: "organizational_unit", }, { scope: "organizational_uni
 db.scopes.update({ scope: "belonging_population",}, { scope: "belonging_population",  fd: "IDENTITY", label: "", __v: 0, }, { upsert: true, });
 db.scopes.update({ scope: "phone",               }, { scope: "phone",                 fd: "IDENTITY", label: "", __v: 0, }, { upsert: true, });
 db.scopes.update({ scope: "chorusdt",            }, { scope: "chorusdt",              fd: "IDENTITY", label: "", __v: 0, }, { upsert: true, });
+db.scopes.update({ scope: "idp_id",              }, { scope: "idp_id",                fd: "IDENTITY", label: "", __v: 0, }, { upsert: true, });

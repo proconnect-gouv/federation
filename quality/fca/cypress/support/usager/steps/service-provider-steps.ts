@@ -6,6 +6,7 @@ import {
   navigateTo,
 } from '../../common/helpers';
 import { ServiceProvider } from '../../common/types';
+import { getClaims } from '../helpers/scope-helper';
 import ServiceProviderPage from '../pages/service-provider-page';
 
 let serviceProviderPage: ServiceProviderPage;
@@ -47,7 +48,18 @@ Then(
   function (type) {
     if (this.serviceProvider.mocked === true) {
       const scope = this.scopes.find((scope) => scope.type === type);
-      serviceProviderPage.checkMockInformationAccess(scope, this.user.claims);
+      serviceProviderPage.checkMandatoryData();
+
+      const expectedClaims: string[] = getClaims(scope);
+
+      // Dynamic claims
+      const claims = this.user.claims;
+      if (expectedClaims.includes('idpId')) {
+        claims.idpId = this.identityProvider.idpId;
+      }
+
+      serviceProviderPage.checkExpectedUserClaims(expectedClaims, claims);
+      serviceProviderPage.checkNoExtraClaims(expectedClaims);
     }
   },
 );

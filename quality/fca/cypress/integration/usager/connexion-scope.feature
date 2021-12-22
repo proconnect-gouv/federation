@@ -26,6 +26,7 @@ Fonctionnalité: Connexion Usager - Scope
       | obligatoires et siren/siret               |
       | obligatoires et organizational_unit/phone |
       | obligatoires et belonging_population      |
+      | obligatoires et idp_id                    |
       | email                                     |
       | chorusdt                                  |
 
