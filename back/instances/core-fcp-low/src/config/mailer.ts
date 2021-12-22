@@ -18,10 +18,12 @@ const from: MailFrom = {
 export default {
   templatePaths: env.json('TEMPLATES_PATHS'),
   transport: env.string('TRANSPORT'),
-  key: env.string('MAILJET_KEY'),
-  secret: env.string('MAILJET_SECRET'),
   options: {
     proxyUrl: process.env.GLOBAL_AGENT_HTTPS_PROXY,
+    host: env.string('HOST'),
+    port: env.number('PORT'),
+    ignoreTLS: env.boolean('IGNORE_TLS'),
+    secure: env.boolean('SECURE'),
   },
   from,
 } as MailerConfig;

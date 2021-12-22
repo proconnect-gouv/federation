@@ -3,11 +3,12 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
-import { MailerConfig } from './dto';
-import { TemplateNotFoundException } from './exceptions';
-import { MailOptions, Transport } from './interfaces';
+import { MailerConfig } from '../dto';
+import { TemplateNotFoundException } from '../exceptions';
+import { MailOptions, Transport } from '../interfaces';
+import { StdoutTransport } from '../transports';
+import { SmtpService } from './smtp.service';
 import { TemplateService } from './template.service';
-import { MailjetTransport, StdoutTransport } from './transports';
 
 @Injectable()
 export class MailerService {
@@ -17,6 +18,7 @@ export class MailerService {
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly template: TemplateService,
+    private readonly smtp: SmtpService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -25,8 +27,8 @@ export class MailerService {
     const { transport } = this.config.get<MailerConfig>('Mailer');
 
     switch (transport) {
-      case 'mailjet':
-        this.transport = new MailjetTransport(this.config);
+      case 'smtp':
+        this.transport = this.smtp;
         break;
       case 'logs':
         this.transport = new StdoutTransport(this.logger);

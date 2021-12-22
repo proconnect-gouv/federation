@@ -1,3 +1,5 @@
+import { mocked } from 'jest-mock';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialExcept } from '@fc/common';
@@ -5,12 +7,13 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 
-import { TemplateNotFoundException } from './exceptions';
+import { TemplateNotFoundException } from '../exceptions';
+import { StdoutTransport } from '../transports';
 import { MailerService } from './mailer.service';
+import { SmtpService } from './smtp.service';
 import { TemplateService } from './template.service';
-import { MailjetTransport, StdoutTransport } from './transports';
 
-jest.mock('./transports');
+jest.mock('../transports');
 
 describe('MailerService', () => {
   let service: MailerService;
@@ -48,25 +51,24 @@ describe('MailerService', () => {
     render: jest.fn(),
     getFilePath: jest.fn(),
   };
-
-  const MailjetTransportMock = MailjetTransport as unknown as jest.Mock;
-  const StdoutTransportMock = StdoutTransport as unknown as jest.Mock;
-
-  const mailjetMailerInstanceMock = {
+  const smtpServiceMock = {
     send: jest.fn(),
   };
 
-  const stdoutMailerInstanceMock = {
-    send: jest.fn(),
-  };
+  const StdoutTransportMock = mocked(StdoutTransport);
 
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
-    jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [ConfigService, LoggerService, MailerService, TemplateService],
+      providers: [
+        ConfigService,
+        LoggerService,
+        MailerService,
+        TemplateService,
+        SmtpService,
+      ],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
@@ -74,6 +76,8 @@ describe('MailerService', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(TemplateService)
       .useValue(templateServiceMock)
+      .overrideProvider(SmtpService)
+      .useValue(smtpServiceMock)
       .compile();
 
     service = module.get<MailerService>(MailerService);
@@ -93,14 +97,6 @@ describe('MailerService', () => {
   });
 
   describe('onModuleInit', () => {
-    beforeEach(() => {
-      // clear the mocks from the onModuleInit call of the service instanciation
-      jest.clearAllMocks();
-
-      MailjetTransportMock.mockReturnValueOnce(mailjetMailerInstanceMock);
-      StdoutTransportMock.mockReturnValueOnce(stdoutMailerInstanceMock);
-    });
-
     it('should get the mailer mode from the config', () => {
       // setup
       const configName = 'Mailer';
@@ -115,7 +111,7 @@ describe('MailerService', () => {
       expect(configServiceMock.get).toBeCalledWith(configName);
     });
 
-    it('should instanciate the StdoutTransport with the logger instance if mailer is "logs"', () => {
+    it('should create instance of the StdoutTransport with the logger instance if mailer is "logs"', () => {
       // setup
       const configMock = { transport: 'logs' };
       configServiceMock.get.mockReturnValueOnce(configMock);
@@ -128,17 +124,16 @@ describe('MailerService', () => {
       expect(StdoutTransportMock).toBeCalledWith(loggerServiceMock);
     });
 
-    it('should instanciate the MailjetTransport with the logger instance if mailer is "mailjet"', () => {
+    it('should set the transport to SMPT if MailerConfig equal "smtp"', () => {
       // setup
-      const configMock = { transport: 'mailjet' };
+      const configMock = { transport: 'smtp' };
       configServiceMock.get.mockReturnValueOnce(configMock);
 
       // action
       service.onModuleInit();
 
       // expect
-      expect(MailjetTransportMock).toBeCalledTimes(1);
-      expect(MailjetTransportMock).toBeCalledWith(configServiceMock);
+      expect(service['transport']).toBe(smtpServiceMock);
     });
 
     it('should throw an error if mailer is unknown', () => {
@@ -152,7 +147,6 @@ describe('MailerService', () => {
         service.onModuleInit();
       } catch (e) {
         // expect
-        expect(MailjetTransportMock).toBeCalledTimes(0);
         expect(StdoutTransportMock).toBeCalledTimes(0);
 
         expect(e).toBeInstanceOf(Error);
