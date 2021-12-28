@@ -635,6 +635,7 @@ describe('CoreFcaController', () => {
   describe('getOidcCallback()', () => {
     const accessTokenMock = Symbol('accesToken');
     const acrMock = Symbol('acr');
+    const amrMock = Symbol('amr');
 
     const tokenParamsMock: TokenParams = {
       state: idpStateMock,
@@ -650,6 +651,7 @@ describe('CoreFcaController', () => {
       idpAccessToken: accessTokenMock,
       idpAcr: acrMock,
       idpIdentity: identityMock,
+      amr: amrMock,
     };
     const redirectMock = `/api/v2/interaction/${interactionIdMock}/verify`;
 
@@ -666,6 +668,7 @@ describe('CoreFcaController', () => {
         // oidc spec defined property
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr: acrMock,
+        amr: amrMock,
       });
       oidcClientServiceMock.getUserInfosFromProvider.mockReturnValueOnce(
         identityMock,

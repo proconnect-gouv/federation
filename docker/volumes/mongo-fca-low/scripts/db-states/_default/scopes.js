@@ -16,3 +16,4 @@ db.scopes.update({ scope: "belonging_population",}, { scope: "belonging_populati
 db.scopes.update({ scope: "phone",               }, { scope: "phone",                 fd: "IDENTITY", label: "", __v: 0, }, { upsert: true, });
 db.scopes.update({ scope: "chorusdt",            }, { scope: "chorusdt",              fd: "IDENTITY", label: "", __v: 0, }, { upsert: true, });
 db.scopes.update({ scope: "idp_id",              }, { scope: "idp_id",                fd: "IDENTITY", label: "", __v: 0, }, { upsert: true, });
+db.scopes.update({ scope: "idp_acr",             }, { scope: "idp_acr",               fd: "IDENTITY", label: "", __v: 0, }, { upsert: true, });
