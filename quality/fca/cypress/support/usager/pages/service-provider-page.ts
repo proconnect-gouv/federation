@@ -66,6 +66,14 @@ export default class ServiceProviderPage {
     cy.get('input[name="acr_values"]').clear().type(acrValue);
   }
 
+  setMockRequestedAmr(isRequested: boolean): void {
+    if (isRequested) {
+      cy.get('#claim_amr').check();
+    } else {
+      cy.get('#claim_amr').uncheck();
+    }
+  }
+
   getUserInfo(): Cypress.Chainable<unknown> {
     return cy
       .get('#json')
@@ -79,6 +87,10 @@ export default class ServiceProviderPage {
 
   checkMockAcrValue(acrValue: string): void {
     cy.get('[id="info-acr"] strong').contains(acrValue);
+  }
+
+  checkMockAmrValue(amrValue: string): void {
+    cy.get('[id="info-amr"] strong').contains(amrValue);
   }
 
   checkMockErrorCallback(): void {

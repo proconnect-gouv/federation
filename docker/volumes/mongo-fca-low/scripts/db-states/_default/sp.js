@@ -38,6 +38,7 @@ const fsa = {
       "belonging_population",
       "chorusdt",
       "idp_id",
+      "idp_acr",
     ],
     id_token_signed_response_alg: "HS256",
     id_token_encrypted_response_alg: "",
