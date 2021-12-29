@@ -8,18 +8,11 @@
     "apps/*",
     "libs/*"
   ],
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not op_mini all"
+  ],
   "scripts": {
     "start:ud": "cd apps/user-dashboard && yarn start",
     "start:fca": "cd apps/agent-connect && yarn start",
