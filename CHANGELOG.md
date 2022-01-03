@@ -4,6 +4,25 @@
 
 **🔈 The odd versions are not released into production.**
 
+## v3.75.0 & v3.76.0 🎉 Happy new year ! 🎉
+
+### Features
+
+- [AgentConnect] 
+  - A new scope and a new claim `idp_id` are now available for the SP to know which IdP was used by the agent
+  - A new scope and a new claim `idp_acr` are now available for the SP to know which acr value was sent by the Idp
+  - A new claim `amr` is now available for the SP to know which authentication method was used
+  - Change browserlist configuration
+- [FranceConnect+] The mailer library use now SMTP instead of API
+
+### Fixes
+
+- [FranceConnect+] Lowering the length constrains of the `nonce` parametter
+
+- [eIDASBridge]
+  - The bridge now sends a "KeepAlive" packet to prevent the firewall from severing the connection of the FR Node to the Apache Ignite Cache
+  - Remove unused variable `sessionId` to use the one from the session library
+
 ## v3.73.0 & v3.74.0 (🎄 No production deployments, deployments are frozen for festivities 🎄)
 
 ### Fixes
