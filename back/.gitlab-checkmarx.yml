@@ -6,8 +6,7 @@
 
 variables:
   CHECKMARX_DOCKER_IMAGE:
-    'cx-flow:57d4c6c' # TODO : utilisation d'une image spécifique liée au bug https://github.com/checkmarx-ltd/cx-flow/issues/655
-    # A remplacer par une image "latest"
+    'cx-flow:latest'
 
   CX_FLOW_BUG_TRACKER: 'GitLab' # Beware camelcase 'L' in GitLab if modified
   CX_FLOW_BUG_TRACKER_IMPL: ${CX_FLOW_BUG_TRACKER}
