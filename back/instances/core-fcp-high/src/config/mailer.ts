@@ -17,7 +17,6 @@ export default {
     proxyUrl: process.env.GLOBAL_AGENT_HTTPS_PROXY,
     host: env.string('HOST'),
     port: env.number('PORT'),
-    ignoreTLS: env.boolean('IGNORE_TLS'),
     secure: env.boolean('SECURE'),
   },
   from,
