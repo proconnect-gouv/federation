@@ -10,7 +10,6 @@ import {
   IsNumber,
   IsObject,
   IsString,
-  IsUrl,
   NotContains,
   ValidateIf,
   ValidateNested,
@@ -38,14 +37,11 @@ class SmtpOptions {
   @IsString()
   readonly proxyUrl: string;
 
-  @IsUrl()
+  @IsString()
   readonly host: string;
 
   @IsNumber()
   readonly port: number;
-
-  @IsBoolean()
-  readonly ignoreTLS: boolean;
 
   @IsBoolean()
   readonly secure: boolean;
