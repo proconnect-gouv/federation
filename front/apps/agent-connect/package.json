@@ -59,7 +59,7 @@
   },
   "scripts": {
     "start": "../../scripts/yarn-start agent-connect",
-    "build": "../../scripts/yarn-start agent-connect"
+    "build": "../../scripts/yarn-build agent-connect"
   },
   "browserslist": [
     ">0.2%",
