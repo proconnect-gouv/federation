@@ -5,6 +5,8 @@
     "mocked": true,
     "url": "https://fsa1v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
+    "claims": [
+    ],
     "selectors": {
       "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
@@ -17,6 +19,8 @@
     "mocked": true,
     "url": "https://fsa2v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
+    "claims": [
+    ],
     "selectors": {
       "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
@@ -32,6 +36,8 @@
     "mocked": true,
     "url": "https://fsa3v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
+    "claims": [
+    ],
     "selectors": {
       "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
@@ -44,6 +50,8 @@
     "mocked": false,
     "url": "https://bacasable-prep-osmose.jaliosagora.com",
     "acrValue": "eidas1",
+    "claims": [
+    ],
     "selectors": {
       "fcaButton": ".ac-authentication img",
       "logoutButton": "#main-sidebar-opener"
