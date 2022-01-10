@@ -101,3 +101,31 @@ fca/fia1v2-tag-to-prod-image:
     MSG: "environments/nubo01-fca-prod/group_vars/all/versions.yml\nenvironments/nubo12-fca-prod/group_vars/all/versions.yml\nfca_idp_version:"
   needs:
     - job: fca/fia1v2-build-image
+
+fca/csmr-rie-build-image:
+  extends: .base-build
+  variables:
+    APP: csmr-rie
+    MSG: "environments/nubo01-fca-integ/group_vars/all/versions.yml\ncsmr_rie_version:"
+
+fca/csmr-rie-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: csmr-rie
+    MSG: "environments/nubo01-fca-prod/group_vars/all/versions.yml\ncsmr_rie_version:"
+  needs:
+    - job: fca/csmr-rie-build-image
+
+fca/bridge-http-proxy-rie-build-image:
+  extends: .base-build
+  variables:
+    APP: bridge-http-proxy-rie
+    MSG: "environments/nubo12-fca-integ/group_vars/all/versions.yml\nbridge_http_proxy_rie_version:"
+
+fca/bridge-http-proxy-rie-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: bridge-http-proxy-rie
+    MSG: "environments/nubo12-fca-prod/group_vars/all/versions.yml\nbridge_http_proxy_rie_version:"
+  needs:
+    - job: fca/bridge-http-proxy-rie-build-image
