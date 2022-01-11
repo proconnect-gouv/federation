@@ -121,6 +121,7 @@ services:
       - public
       - fc
       - exploitation
+      - rie
 
   haproxy:
     image: haproxy:2.3
