@@ -21,6 +21,7 @@ import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
 import * as processFixtureTemplate from 'cypress-template-fixtures';
 import * as resolve from 'resolve';
 
+import { log, table } from './console-log-plugin';
 import { getFixturePath } from './fixture-plugin';
 import { clearBusinessLog, hasBusinessLog } from './log-plugin';
 import { addTracks } from './tracks-plugin';
@@ -39,6 +40,8 @@ module.exports = (on, config) => {
     clearBusinessLog,
     getFixturePath,
     hasBusinessLog,
+    log,
+    table,
   });
 
   on('file:preprocessor', cucumber(options));
