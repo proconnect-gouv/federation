@@ -1,3 +1,5 @@
+import { IncomingMessage } from 'http';
+
 import { Inject, Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
@@ -11,6 +13,7 @@ import {
   SessionBadAliasException,
   SessionBadFormatException,
   SessionBadStringifyException,
+  SessionNoSessionIdException,
   SessionStorageException,
 } from '../exceptions';
 import {
@@ -18,6 +21,7 @@ import {
   ISessionOptions,
   ISessionRequest,
   ISessionResponse,
+  ISessionService,
 } from '../interfaces';
 import { SESSION_TOKEN_OPTIONS } from '../tokens';
 import { ExcludedRoutes } from '../types';
@@ -38,6 +42,37 @@ export class SessionService {
     private readonly cryptography: CryptographyService,
   ) {
     this.logger.setContext(this.constructor.name);
+  }
+
+  static getBoundedSession<T = unknown>(
+    req: IncomingMessage,
+    moduleName: string,
+  ): ISessionService<T> {
+    const {
+      sessionId,
+      sessionService,
+    }: {
+      sessionId: string;
+      sessionService: SessionService;
+    } = req as ISessionRequest;
+
+    if (!sessionId) {
+      throw new SessionNoSessionIdException();
+    }
+
+    const boundSessionContext: ISessionBoundContext = {
+      sessionId,
+      moduleName,
+    };
+
+    /**
+     * The binding occurs to force the "set" and "get" operations within the
+     * current module (set by the decorator used in a controller)
+     */
+    return {
+      get: sessionService.get.bind(sessionService, boundSessionContext),
+      set: sessionService.set.bind(sessionService, boundSessionContext),
+    };
   }
 
   /**

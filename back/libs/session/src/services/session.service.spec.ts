@@ -1,3 +1,4 @@
+import { IncomingMessage } from 'http';
 import { mocked } from 'jest-mock';
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -12,6 +13,7 @@ import {
   SessionBadAliasException,
   SessionBadFormatException,
   SessionBadStringifyException,
+  SessionNoSessionIdException,
   SessionStorageException,
 } from '../exceptions';
 import {
@@ -88,7 +90,10 @@ const ctxMock: ISessionBoundContext = {
 
 const reqMock: ISessionRequest = {
   sessionId: ctxMock.sessionId,
-  sessionService: undefined,
+  sessionService: {
+    get: jest.fn(),
+    set: jest.fn(),
+  },
   signedCookies: {
     [configMock.sessionCookieName]: ctxMock.sessionId,
   },
@@ -176,6 +181,79 @@ describe('SessionService', () => {
     // expect
     expect(loggerServiceMock.setContext).toHaveBeenCalledTimes(1);
     expect(loggerServiceMock.setContext).toHaveBeenCalledWith('SessionService');
+  });
+
+  describe('getBoundedSession', () => {
+    const moduleNameMock = 'MockSession';
+
+    it('should throw a "SessionNoSessionIdException" if there is no sessionId in req', () => {
+      // setup
+      const reqMock = {} as IncomingMessage;
+
+      // action / expect
+      expect(() =>
+        SessionService.getBoundedSession(reqMock, moduleNameMock),
+      ).toThrowError(SessionNoSessionIdException);
+    });
+
+    it('should return bind "get" and "set" functions with the right context', () => {
+      // setup
+      interface MockSession {
+        foo: number;
+        bar: string;
+      }
+      const reqMock = {
+        sessionId: 'sessionId',
+        sessionService: service,
+      } as ISessionRequest;
+      reqMock.sessionService.get.bind = jest.fn().mockReturnValueOnce('get');
+      reqMock.sessionService.set.bind = jest.fn().mockReturnValueOnce('set');
+
+      // action
+      SessionService.getBoundedSession<MockSession>(
+        reqMock as unknown as IncomingMessage,
+        moduleNameMock,
+      );
+
+      // expect
+      expect(reqMock.sessionService.get.bind).toHaveBeenCalledTimes(1);
+      expect(reqMock.sessionService.get.bind).toHaveBeenCalledWith(service, {
+        sessionId: reqMock.sessionId,
+        moduleName: moduleNameMock,
+      });
+      expect(reqMock.sessionService.set.bind).toHaveBeenCalledTimes(1);
+      expect(reqMock.sessionService.set.bind).toHaveBeenCalledWith(service, {
+        sessionId: reqMock.sessionId,
+        moduleName: moduleNameMock,
+      });
+    });
+
+    it('should return "get" and "set" functions (mocked as string for the test)', () => {
+      // setup
+      const boundedServiceMock = {
+        get: 'get',
+        set: 'set',
+      };
+      interface MockSession {
+        foo: number;
+        bar: string;
+      }
+      const reqMock = {
+        sessionId: 'sessionId',
+        sessionService: service,
+      } as ISessionRequest;
+      reqMock.sessionService.get.bind = jest.fn().mockReturnValueOnce('get');
+      reqMock.sessionService.set.bind = jest.fn().mockReturnValueOnce('set');
+
+      // action
+      const boundedService = SessionService.getBoundedSession<MockSession>(
+        reqMock as unknown as IncomingMessage,
+        moduleNameMock,
+      );
+
+      // expect
+      expect(boundedService).toStrictEqual(boundedServiceMock);
+    });
   });
 
   describe('get()', () => {
