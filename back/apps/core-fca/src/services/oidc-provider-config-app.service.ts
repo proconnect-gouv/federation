@@ -1,8 +1,9 @@
-import { KoaContextWithOIDC } from 'oidc-provider';
-
-import { Injectable } from '@nestjs/common';
+import { Injectable } from '@nested/common';
+import { KoaContextWithOIDC } from 'odic-provider';
 
 import { LoggerService } from '@fc/logger';
+import { OidcClientSession } from '@fc/oidc-client';
+import { SessionService } from '@fc/session';
 
 @Injectable()
 export class OidcProviderConfigAppService {
@@ -19,19 +20,20 @@ export class OidcProviderConfigAppService {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/issues/109
    */
   async logoutSource(ctx: KoaContextWithOIDC, form: any) {
+    const boundedSession = SessionService.getBoundedSession<OidcClientSession>(ctx.req, 'OidcClient');
+    boundedSession.set('oidcProviderLogoutForm', form);
+
     ctx.body = `<!DOCTYPE html>
         <head>
-          <title>Déconnexion</title>
+          <title>Déconnexion du FI</title>
         </head>
         <body>
-          ${form}
+          <form method="POST" action="/api/v2/client/disconnect-from-idp">
+            <p>Si vous n'êtes pas redirigé automatiquement, merci de cliquer sur ce bouton afin de finaliser votre déconnexion</p>
+            <button type="submit">Continuer</button>
+          </form>
           <script>
             var form = document.forms[0];
-            var input = document.createElement('input');
-            input.type = 'hidden';
-            input.name = 'logout';
-            input.value = 'yes';
-            form.appendChild(input);
             form.submit();
           </script>
         </body>

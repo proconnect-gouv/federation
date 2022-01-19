@@ -142,6 +142,11 @@ export class OidcClientController {
     });
     return this.oidcClient.utils.wellKnownKeys();
   }
+  
+  @Post('/client/disconnect-from-idp')
+  async logoutFromIdp() {
+    return 'almost disconnected'
+  }
 
   /**
    * Append the sp_id query param to the authorize url
@@ -157,4 +162,5 @@ export class OidcClientController {
   ): string {
     return `${authorizationUrl}&sp_id=${serviceProviderId}`;
   }
+
 }
