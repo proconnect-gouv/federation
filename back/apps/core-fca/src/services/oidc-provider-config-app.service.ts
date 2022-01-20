@@ -8,7 +8,9 @@ import { IOidcProviderConfigAppService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 
 @Injectable()
-export class OidcProviderConfigAppService implements IOidcProviderConfigAppService {
+export class OidcProviderConfigAppService
+  implements IOidcProviderConfigAppService
+{
   // Dependency injection can require more than 4 parameters
   // eslint-disable-next-line max-params
   constructor(private readonly logger: LoggerService) {

@@ -158,14 +158,12 @@ export class OidcClientController {
         idpState,
         idpIdToken,
       );
-
     return res.redirect(endSessionUrl);
   }
 
   @Get('/client/logout-callback')
   @Render('oidc-provider-logout-form')
-  async redirectAfterFILogout(
-    @Res() res,
+  async redirectAfterIdpLogout(
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ) {

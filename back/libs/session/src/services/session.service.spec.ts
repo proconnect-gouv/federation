@@ -1194,6 +1194,39 @@ describe('SessionService', () => {
     });
   });
 
+  describe('destroy()', () => {
+    beforeEach(() => {
+      service['getSessionIdFromCookie'] = jest
+        .fn()
+        .mockReturnValue(reqMock.sessionId);
+      service['getSessionKey'] = jest.fn().mockReturnValueOnce(sessionKeyMock);
+      service['init'] = jest.fn().mockResolvedValue(randomStringMockValue);
+    });
+    it('should call getSessionIdFromCookie', async () => {
+      // When
+      await service.destroy(reqMock, resMock);
+      // Then
+      expect(service['getSessionIdFromCookie']).toHaveBeenCalledTimes(1);
+      expect(service['getSessionIdFromCookie']).toHaveBeenCalledWith(reqMock);
+    });
+
+    it('should call getSessionKey', async () => {
+      // When
+      await service.destroy(reqMock, resMock);
+      // Then
+      expect(service['getSessionKey']).toHaveBeenCalledTimes(1);
+      expect(service['getSessionKey']).toHaveBeenCalledWith(reqMock.sessionId);
+    });
+
+    it('should call redis.del', async () => {
+      // When
+      await service.destroy(reqMock, resMock);
+      // Then
+      expect(redisServiceMock.del).toBeCalledTimes(1);
+      expect(redisServiceMock.del).toBeCalledWith(sessionKeyMock);
+    });
+  });
+
   describe('getSessionIdFromCookie()', () => {
     it('should get sessionCookieName from config', () => {
       // When
