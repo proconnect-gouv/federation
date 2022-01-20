@@ -2,7 +2,7 @@
 
 // Declarative code
 import { Expose } from 'class-transformer';
-import { IsEnum, IsOptional, MaxLength, MinLength } from 'class-validator';
+import { IsAscii, IsEnum, IsOptional, MaxLength, MinLength } from 'class-validator';
 
 import { IsSafeString } from '@fc/common';
 import { EidasGenders } from '@fc/eidas-oidc-mapper';
@@ -35,7 +35,7 @@ export class EidasBridgeIdentityDto extends MinIdentityDto {
   @Expose()
   readonly gender?: string;
 
-  @IsSafeString()
+  @IsAscii()
   @IsOptional()
   @Expose()
   readonly birthplace?: string;
@@ -47,3 +47,5 @@ export class EidasBridgeIdentityDto extends MinIdentityDto {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly preferred_username?: string;
 }
+
+
