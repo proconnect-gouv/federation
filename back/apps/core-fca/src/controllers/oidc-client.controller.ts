@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Render,
   Res,
   UsePipes,
   ValidationPipe,
@@ -142,10 +143,35 @@ export class OidcClientController {
     });
     return this.oidcClient.utils.wellKnownKeys();
   }
-  
+
   @Post('/client/disconnect-from-idp')
-  async logoutFromIdp() {
-    return 'almost disconnected'
+  async logoutFromIdp(
+    @Res() res,
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+  ) {
+    const { idpIdToken, idpState, idpId } = await sessionOidc.get();
+
+    const endSessionUrl: string =
+      await this.oidcClient.getEndSessionUrlFromProvider(
+        idpId,
+        idpState,
+        idpIdToken,
+      );
+
+    return res.redirect(endSessionUrl);
+  }
+
+  @Get('/client/logout-callback')
+  @Render('oidc-provider-logout-form')
+  async redirectAfterFILogout(
+    @Res() res,
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+  ) {
+    const { oidcProviderLogoutForm } = await sessionOidc.get();
+
+    return { oidcProviderLogoutForm };
   }
 
   /**
@@ -162,5 +188,4 @@ export class OidcClientController {
   ): string {
     return `${authorizationUrl}&sp_id=${serviceProviderId}`;
   }
-
 }
