@@ -4,6 +4,7 @@ import {
   Get,
   Post,
   Render,
+  Req,
   Res,
   UsePipes,
   ValidationPipe,
@@ -22,15 +23,19 @@ import {
   Session,
   SessionCsrfService,
   SessionInvalidCsrfSelectIdpException,
+  SessionService,
 } from '@fc/session';
 
 @Controller()
 export class OidcClientController {
+  // Dependency injection can require more than 4 parameters
+  // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly csrfService: SessionCsrfService,
+    private readonly sessionService: SessionService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -164,10 +169,14 @@ export class OidcClientController {
   @Get('/client/logout-callback')
   @Render('oidc-provider-logout-form')
   async redirectAfterIdpLogout(
+    @Req() req,
+    @Res() res,
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { oidcProviderLogoutForm } = await sessionOidc.get();
+    
+    await this.sessionService.destroy(req, res);
 
     return { oidcProviderLogoutForm };
   }

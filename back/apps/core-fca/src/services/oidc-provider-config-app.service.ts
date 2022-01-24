@@ -35,9 +35,7 @@ export class OidcProviderConfigAppService
           <title>Déconnexion du FI</title>
         </head>
         <body>
-          <p>Si vous n'êtes pas redirigé automatiquement, merci de cliquer sur ce bouton afin de finaliser votre déconnexion</p>
           <form method="POST" action="/api/v2/client/disconnect-from-idp">
-            <button type="submit">Continuer</button>
           </form>
           <script>
             var form = document.forms[0];
