@@ -175,7 +175,7 @@ export class OidcClientController {
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { oidcProviderLogoutForm } = await sessionOidc.get();
-    
+
     await this.sessionService.destroy(req, res);
 
     return { oidcProviderLogoutForm };

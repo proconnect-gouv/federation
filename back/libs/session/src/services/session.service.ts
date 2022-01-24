@@ -293,7 +293,7 @@ export class SessionService {
     return this.init(req, res);
   }
 
-  async destroy(req: ISessionRequest, res: ISessionResponse ) {
+  async destroy(req: ISessionRequest, res: ISessionResponse) {
     const sessionId = this.getSessionIdFromCookie(req);
     const sessionKey = this.getSessionKey(sessionId);
 

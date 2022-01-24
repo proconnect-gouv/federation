@@ -481,11 +481,15 @@ describe('OidcClient Controller', () => {
       // Then
       expect(sessionServiceMock.destroy).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.destroy).toHaveBeenCalledWith(req, res);
-    })
+    });
 
     it('should return oidcProviderLogoutForm', async () => {
       // When
-      const result = await controller.redirectAfterIdpLogout(req, res, sessionServiceMock);
+      const result = await controller.redirectAfterIdpLogout(
+        req,
+        res,
+        sessionServiceMock,
+      );
 
       // Then
       expect(result).toEqual({
