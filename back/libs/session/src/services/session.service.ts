@@ -296,8 +296,10 @@ export class SessionService {
   async destroy(req: ISessionRequest, res: ISessionResponse) {
     const sessionId = this.getSessionIdFromCookie(req);
     const sessionKey = this.getSessionKey(sessionId);
+    const { sessionCookieName } = this.config.get<SessionConfig>('Session');
 
     res.locals.session = {};
+    res.clearCookie(sessionCookieName);
 
     return await this.redis.del(sessionKey);
   }

@@ -36,7 +36,7 @@ Then("je suis déconnecté du fournisseur d'identité", function () {
     .should('eq', 200);
 });
 
-Then('la session FC est détruite', function () {
+Then('la session AgentConnect est détruite', function () {
   cy.wait('@fca:sessionEndConfirm')
     .then((intercept) => {
       cy.log(intercept.request.url);

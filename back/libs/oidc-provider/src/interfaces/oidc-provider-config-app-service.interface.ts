@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
+// Declarative code
 import { KoaContextWithOIDC } from 'oidc-provider';
 
-// Declarative code
 export interface IOidcProviderConfigAppService {
   logoutSource(ctx: KoaContextWithOIDC, form: string);
   postLogoutSuccessSource(ctx: KoaContextWithOIDC);
