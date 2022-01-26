@@ -149,12 +149,17 @@ export class OidcClientController {
     return this.oidcClient.utils.wellKnownKeys();
   }
 
-  @Post('/client/disconnect-from-idp')
+  @Post(OidcClientRoutes.DISCONNECT_FROM_IDP)
   async logoutFromIdp(
     @Res() res,
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
+    this.logger.trace({
+      route: OidcClientRoutes.DISCONNECT_FROM_IDP,
+      method: 'POST',
+      name: 'OidcClientRoutes.DISCONNECT_FROM_IDP',
+    });
     const { idpIdToken, idpState, idpId } = await sessionOidc.get();
 
     const endSessionUrl: string =
@@ -163,10 +168,11 @@ export class OidcClientController {
         idpState,
         idpIdToken,
       );
+
     return res.redirect(endSessionUrl);
   }
 
-  @Get('/client/logout-callback')
+  @Get(OidcClientRoutes.CLIENT_LOGOUT_CALLBACK)
   @Render('oidc-provider-logout-form')
   async redirectAfterIdpLogout(
     @Req() req,
