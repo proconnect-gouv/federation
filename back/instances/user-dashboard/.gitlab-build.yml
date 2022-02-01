@@ -1,0 +1,24 @@
+.base-build-front:
+  stage: 'Build Front'
+  image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+  tags:
+    - build
+  only:
+    - tags
+  when: manual
+  environment:
+    name: build
+  variables:
+    PACKAGE: ${APP}-${CI_COMMIT_REF_NAME}.tar.gz
+  script:
+    - yarn install
+    - cd front/apps/$APP
+    - yarn build --production
+    - tar zcvf ${CI_PROJECT_DIR}/front/apps/$APP/build/dist/${PACKAGE} -C ${CI_PROJECT_DIR}/front/apps/${APP}/build/ .
+    - >
+      curl --header "PRIVATE-TOKEN: $PRIVATE_TOKEN" --upload-file ${CI_PROJECT_DIR}/front/apps/$APP/build/dist/${PACKAGE} "${INFRA_PACKAGE_REGISTRY}/${APP}/${CI_COMMIT_REF_NAME}/${ARCHIVE_NAME}"
+
+user-dashboard/build-front:
+  extends: .base-build-front
+  variables:
+    APP: user-dashboard
