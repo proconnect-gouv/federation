@@ -5,6 +5,7 @@ stages:
   - 'Cache'
   - 'Review'
   - 'Build'
+  - 'Build Front'
   - 'Tag'
   - 'Post-deploy'
 
@@ -83,5 +84,6 @@ include:
   - '/back/instances/core-fcp-low/.gitlab-deploy.yml'
   - '/back/instances/eidas-bridge/.gitlab-build.yml'
   - '/back/instances/user-dashboard/.gitlab-ci.yml'
+  - '/back/instances/user-dashboard/.gitlab-build.yml'
   - '/back/.gitlab-checkmarx.yml'
   - '/back/.gitlab-post-deploy.yml'
