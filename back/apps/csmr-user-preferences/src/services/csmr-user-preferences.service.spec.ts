@@ -11,6 +11,7 @@ import { CsmrUserPreferencesService } from './csmr-user-preferences.service';
 
 describe('CsmrUserPreferencesService', () => {
   let service: CsmrUserPreferencesService;
+  let preferencesMock;
 
   const identityMock = {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -25,12 +26,13 @@ describe('CsmrUserPreferencesService', () => {
   const identityHashMock = 'identityHashMockValue';
   const accountMock: Account = {
     id: '42',
-    idpSettings: {
+    preferences: {
       updatedAt: new Date(),
-      includeList: ['bar'],
+      identityProviderList: ['bar'],
+      isExcludeList: false,
     },
   } as Account;
-  const includeListMock = ['bar'];
+  const idpListMock = ['bar'];
   const identityProviderMetadataMock = [
     {
       uid: 'foo',
@@ -82,10 +84,18 @@ describe('CsmrUserPreferencesService', () => {
       isChecked: true,
     },
   ];
+  const createAccountPreferencesIdpListResultMock = {
+    isExcludeList: false,
+    identityProviderList: ['bar'],
+  };
   const updatedAccount = {
     ...accountMock,
-    idpSettings: { updatedAt: Date.now(), includeList: includeListMock },
-  };
+    preferences: {
+      updatedAt: new Date(),
+      identityProviderList: idpListMock,
+      isExcludeList: true,
+    },
+  } as Account;
 
   const loggerServiceMock = {
     setContext: jest.fn(),
@@ -95,7 +105,7 @@ describe('CsmrUserPreferencesService', () => {
 
   const accountServiceMock = {
     getAccountByIdentityHash: jest.fn(),
-    updateIdpSettings: jest.fn(),
+    updatePreferences: jest.fn(),
   };
 
   const cryptographyFcpServiceMock = {
@@ -107,6 +117,8 @@ describe('CsmrUserPreferencesService', () => {
   };
 
   const formatUserIdpSettingsListMock = jest.fn();
+
+  const createAccountPreferencesIdpListMock = jest.fn();
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -136,12 +148,16 @@ describe('CsmrUserPreferencesService', () => {
   describe('formatUserIdpSettingsList', () => {
     it('should return a formatted identity provider list with isCheck field', () => {
       // Given
-      const includeList = ['foo'];
+      preferencesMock = {
+        updatedAt: new Date(),
+        isExcludeList: false,
+        identityProviderList: ['foo'],
+      };
 
       // When
       const idpSettingsList = service.formatUserIdpSettingsList(
         identityProviderMetadataMock,
-        includeList,
+        preferencesMock,
       );
 
       // Then
@@ -167,9 +183,12 @@ describe('CsmrUserPreferencesService', () => {
 
     it('should filter idp we should not display', () => {
       // Given
-      const includeList = ['foo'];
+      preferencesMock = {
+        updatedAt: new Date(),
+        isExcludeList: false,
+        identityProviderList: ['foo'],
+      };
       const metadataMock = [
-        ...identityProviderMetadataMock,
         {
           uid: 'foo',
           title: 'foo Title',
@@ -179,12 +198,106 @@ describe('CsmrUserPreferencesService', () => {
           active: true,
           discovery: true,
         },
+        identityProviderMetadataMock[1],
       ] as IdentityProviderMetadata[];
 
       // When
       const idpSettingsList = service.formatUserIdpSettingsList(
         metadataMock,
-        includeList,
+        preferencesMock,
+      );
+
+      // Then
+      expect(idpSettingsList).toEqual([
+        {
+          uid: 'bar',
+          title: 'bar Title',
+          name: 'Bar',
+          image: 'bar.png',
+          active: true,
+          isChecked: false,
+        },
+      ]);
+    });
+
+    it('should return an identity provider list with isCheck set to true if identity provider list is empty', () => {
+      // Given
+      preferencesMock = {
+        updatedAt: new Date(),
+        isExcludeList: false,
+        identityProviderList: [],
+      };
+
+      // When
+      const idpSettingsList = service.formatUserIdpSettingsList(
+        identityProviderMetadataMock,
+        preferencesMock,
+      );
+
+      // Then
+      expect(idpSettingsList).toEqual([
+        {
+          uid: 'foo',
+          title: 'foo Title',
+          name: 'Foo',
+          image: 'foo.png',
+          active: true,
+          isChecked: true,
+        },
+        {
+          uid: 'bar',
+          title: 'bar Title',
+          name: 'Bar',
+          image: 'bar.png',
+          active: true,
+          isChecked: true,
+        },
+      ]);
+    });
+
+    it('should return an identity provider list with isCheck set to true if preferences have not been set by user', () => {
+      // Given
+      preferencesMock = undefined;
+
+      // When
+      const idpSettingsList = service.formatUserIdpSettingsList(
+        identityProviderMetadataMock,
+        preferencesMock,
+      );
+
+      // Then
+      expect(idpSettingsList).toEqual([
+        {
+          uid: 'foo',
+          title: 'foo Title',
+          name: 'Foo',
+          image: 'foo.png',
+          active: true,
+          isChecked: true,
+        },
+        {
+          uid: 'bar',
+          title: 'bar Title',
+          name: 'Bar',
+          image: 'bar.png',
+          active: true,
+          isChecked: true,
+        },
+      ]);
+    });
+
+    it('should return an identity provider list for inclusive list', () => {
+      // Given
+      preferencesMock = {
+        updatedAt: new Date(),
+        isExcludeList: false,
+        identityProviderList: ['foo'],
+      };
+
+      // When
+      const idpSettingsList = service.formatUserIdpSettingsList(
+        identityProviderMetadataMock,
+        preferencesMock,
       );
 
       // Then
@@ -208,14 +321,18 @@ describe('CsmrUserPreferencesService', () => {
       ]);
     });
 
-    it('should return an identity provider list with isCheck set to true if includeList is empty', () => {
+    it('should return an identity provider list for exclusive list', () => {
       // Given
-      const includeList = [];
+      preferencesMock = {
+        updatedAt: new Date(),
+        isExcludeList: true,
+        identityProviderList: ['foo'],
+      };
 
       // When
       const idpSettingsList = service.formatUserIdpSettingsList(
         identityProviderMetadataMock,
-        includeList,
+        preferencesMock,
       );
 
       // Then
@@ -226,7 +343,7 @@ describe('CsmrUserPreferencesService', () => {
           name: 'Foo',
           image: 'foo.png',
           active: true,
-          isChecked: true,
+          isChecked: false,
         },
         {
           uid: 'bar',
@@ -238,36 +355,45 @@ describe('CsmrUserPreferencesService', () => {
         },
       ]);
     });
+  });
 
-    it('should return an identity provider list with isCheck set to true if includeList is not defined', () => {
+  describe('createAccountPreferencesIdpList', () => {
+    it('should return an inclusive idp list if future idp are disabled', () => {
       // Given
-      const includeList = undefined;
+      const identityProviderUids = ['one', 'two', 'three', 'four'];
+      const idpList = ['one', 'two'];
 
       // When
-      const idpSettingsList = service.formatUserIdpSettingsList(
-        identityProviderMetadataMock,
-        includeList,
+      const idpPreferences = service.createAccountPreferencesIdpList(
+        idpList,
+        false,
+        identityProviderUids,
       );
 
       // Then
-      expect(idpSettingsList).toEqual([
-        {
-          uid: 'foo',
-          title: 'foo Title',
-          name: 'Foo',
-          image: 'foo.png',
-          active: true,
-          isChecked: true,
-        },
-        {
-          uid: 'bar',
-          title: 'bar Title',
-          name: 'Bar',
-          image: 'bar.png',
-          active: true,
-          isChecked: true,
-        },
-      ]);
+      expect(idpPreferences).toEqual({
+        isExcludeList: false,
+        identityProviderList: idpList,
+      });
+    });
+
+    it('should return a list that exclude idp if future idp are enabled', () => {
+      // Given
+      const identityProviderUids = ['one', 'two', 'three', 'four'];
+      const idpList = ['one', 'two'];
+
+      // When
+      const idpPreferences = service.createAccountPreferencesIdpList(
+        idpList,
+        true,
+        identityProviderUids,
+      );
+
+      // Then
+      expect(idpPreferences).toEqual({
+        isExcludeList: true,
+        identityProviderList: ['three', 'four'],
+      });
     });
   });
 
@@ -349,7 +475,7 @@ describe('CsmrUserPreferencesService', () => {
       expect(formatUserIdpSettingsListMock).toHaveBeenCalledTimes(1);
       expect(formatUserIdpSettingsListMock).toHaveBeenCalledWith(
         identityProviderMetadataMock,
-        accountMock.idpSettings.includeList,
+        accountMock.preferences,
       );
     });
   });
@@ -362,7 +488,7 @@ describe('CsmrUserPreferencesService', () => {
       cryptographyFcpServiceMock.computeIdentityHash.mockReturnValueOnce(
         identityHashMock,
       );
-      accountServiceMock.updateIdpSettings.mockResolvedValueOnce(
+      accountServiceMock.updatePreferences.mockResolvedValueOnce(
         updatedAccount,
       );
       identityProviderServiceMock.getList.mockResolvedValueOnce(
@@ -372,13 +498,19 @@ describe('CsmrUserPreferencesService', () => {
         formatUserIdpSettingsListMock.mockReturnValueOnce(
           formatUserIdpSettingsListResultMock,
         );
+
+      service.createAccountPreferencesIdpList =
+        createAccountPreferencesIdpListMock.mockReturnValueOnce(
+          createAccountPreferencesIdpListResultMock,
+        );
     });
 
     it('Should return identity provider metadata with updated data', async () => {
       // Given / When
       const updatedIdpSettings = await service.setIdpSettings(
         identityMock,
-        includeListMock,
+        idpListMock,
+        false,
       );
       // Then
       expect(updatedIdpSettings).toEqual(formatUserIdpSettingsListResultMock);
@@ -386,14 +518,14 @@ describe('CsmrUserPreferencesService', () => {
 
     it('Should get the metadata idp list', async () => {
       // Given / When
-      await service.setIdpSettings(identityMock, includeListMock);
+      await service.setIdpSettings(identityMock, idpListMock, false);
       // Then
       expect(identityProviderServiceMock.getList).toHaveBeenCalledTimes(1);
     });
 
     it('Should compute the identityHash from the identity', async () => {
       // Given / When
-      await service.setIdpSettings(identityMock, includeListMock);
+      await service.setIdpSettings(identityMock, idpListMock, false);
       // Then
       expect(
         cryptographyFcpServiceMock.computeIdentityHash,
@@ -405,46 +537,52 @@ describe('CsmrUserPreferencesService', () => {
 
     it('should throw CsmrUserPreferencesIdpNotFoundException if identity provider in parameter is not found in listing', async () => {
       // Given
-      const includeList = ['idp_not_exists'];
+      const idpList = ['idp_not_exists'];
       const idpNotFoundMock = new CsmrUserPreferencesIdpNotFoundException();
       // When
       await expect(
-        service.setIdpSettings(identityMock, includeList),
+        service.setIdpSettings(identityMock, idpList, false),
       ).rejects.toThrow(idpNotFoundMock);
     });
 
-    it('Should update account from identity hash and an idpList and get the updated account', async () => {
-      // Given / When
-      await service.setIdpSettings(identityMock, includeListMock);
+    it('should create the correct account preferences in order to use it in update method', async () => {
+      // Given
+      const uids = identityProviderMetadataMock.map((idp) => idp.uid);
+      const allowFutureIdp = false;
+      // When
+      await service.setIdpSettings(identityMock, idpListMock, allowFutureIdp);
       // Then
-      expect(accountServiceMock.updateIdpSettings).toBeCalledWith(
-        identityHashMock,
-        includeListMock,
+      expect(createAccountPreferencesIdpListMock).toBeCalledWith(
+        idpListMock,
+        allowFutureIdp,
+        uids,
       );
-      expect(accountServiceMock.updateIdpSettings).toHaveBeenCalledTimes(1);
+      expect(createAccountPreferencesIdpListMock).toHaveBeenCalledTimes(1);
     });
 
-    it('Should throw an error `AccountNotFoundException` if no account found for an `identityHash`', async () => {
+    it('Should update account from identity hash and the account preferences generated and get the updated account', async () => {
       // Given
-      const accountEmptyMock = { id: null };
-      const noAccountMock = new AccountNotFoundException();
-      accountServiceMock.updateIdpSettings
-        .mockReset()
-        .mockResolvedValueOnce(accountEmptyMock);
-      // When / Then
-      await expect(
-        service.setIdpSettings(identityMock, includeListMock),
-      ).rejects.toThrow(noAccountMock);
+      const { isExcludeList, identityProviderList } =
+        createAccountPreferencesIdpListResultMock;
+      // When
+      await service.setIdpSettings(identityMock, idpListMock, false);
+      // Then
+      expect(accountServiceMock.updatePreferences).toBeCalledWith(
+        identityHashMock,
+        identityProviderList,
+        isExcludeList,
+      );
+      expect(accountServiceMock.updatePreferences).toHaveBeenCalledTimes(1);
     });
 
     it('should format metadata in order to clean data and add a "isCheck" property', async () => {
       // Given / When
-      await service.setIdpSettings(identityMock, includeListMock);
+      await service.setIdpSettings(identityMock, idpListMock, false);
       // Then
       expect(formatUserIdpSettingsListMock).toHaveBeenCalledTimes(1);
       expect(formatUserIdpSettingsListMock).toHaveBeenCalledWith(
         identityProviderMetadataMock,
-        includeListMock,
+        updatedAccount.preferences,
       );
     });
   });

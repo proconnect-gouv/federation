@@ -52,11 +52,12 @@ describe('CsmrUserPreferencesController', () => {
     identity: identityMock,
   };
 
-  const includeListMock = ['foo'];
+  const idpListMock = ['foo'];
   const setIdpSettingsPayloadMock: SetIdpSettingsPayloadDto = {
     identity: identityMock,
     idpSettings: {
-      includeList: includeListMock,
+      idpList: idpListMock,
+      allowFutureIdp: false,
     },
   };
 
@@ -137,7 +138,7 @@ describe('CsmrUserPreferencesController', () => {
       validationDtoMock = mocked(validateDto);
     });
 
-    it('should return result of csmrUserPreferencesService.getIdpSettings()', async () => {
+    it('should return result of csmrUserPreferencesService.setIdpSettings()', async () => {
       // Given
       validationDtoMock.mockResolvedValueOnce([]);
       csmrUserPreferencesMock.setIdpSettings.mockResolvedValueOnce(
@@ -151,7 +152,7 @@ describe('CsmrUserPreferencesController', () => {
       expect(result).toBe(formatUserIdpSettingsListResultMock);
     });
 
-    it('should return `ERROR` if error on csmrUserPreferencesService.getIdpSettings() occurs', async () => {
+    it('should return `ERROR` if error on csmrUserPreferencesService.setIdpSettings() occurs', async () => {
       // Given
       validationDtoMock.mockResolvedValueOnce([]);
       csmrUserPreferencesMock.setIdpSettings.mockRejectedValueOnce(

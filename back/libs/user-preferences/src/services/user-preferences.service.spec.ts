@@ -8,6 +8,7 @@ import { LoggerService } from '@fc/logger';
 import { UserPreferencesProtocol } from '@fc/microservices';
 import { IOidcIdentity } from '@fc/oidc';
 
+import { IdpSettingsDto } from '../dto';
 import {
   GetUserPreferencesConsumerErrorException,
   GetUserPreferencesResponseException,
@@ -48,8 +49,9 @@ describe('UserPreferencesService', () => {
   const pipeMock = {};
   const brokerResponseMock = 'brokerResponseMock';
 
-  const idpSettingsMock = {
-    includeList: ['foo', 'bar'],
+  const idpSettingsMock: IdpSettingsDto = {
+    idpList: ['foo', 'bar'],
+    allowFutureIdp: false,
   };
 
   beforeEach(async () => {
