@@ -81,7 +81,8 @@ export class CsmrUserPreferencesController {
     try {
       updatedIdpSettings = await this.userPreferencesCsmr.setIdpSettings(
         identity,
-        idpSettings.includeList,
+        idpSettings.idpList,
+        idpSettings.allowFutureIdp,
       );
     } catch (error) {
       this.logger.trace({ error });

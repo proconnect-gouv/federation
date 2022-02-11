@@ -2,7 +2,13 @@
 
 // Declarative code
 import { Type } from 'class-transformer';
-import { IsArray, IsAscii, IsObject, ValidateNested } from 'class-validator';
+import {
+  IsArray,
+  IsAscii,
+  IsBoolean,
+  IsObject,
+  ValidateNested,
+} from 'class-validator';
 
 import { IPivotIdentity } from '@fc/cryptography-fcp';
 
@@ -11,7 +17,10 @@ import { OidcIdentityDto } from '../interfaces';
 class IdpSettingsDto {
   @IsAscii({ each: true })
   @IsArray()
-  readonly includeList: string[];
+  readonly idpList: string[];
+
+  @IsBoolean()
+  readonly allowFutureIdp: boolean;
 }
 
 export class GetIdpSettingsPayloadDto {

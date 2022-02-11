@@ -117,11 +117,11 @@ export class UserDashboardController {
       throw new UnauthorizedException();
     }
     const { idpIdentity } = session;
-    const { includeList } = body;
+    const { idpList, allowFutureIdp } = body;
 
     const preferences = this.userPreferences.setUserPreferencesList(
       idpIdentity,
-      { includeList },
+      { idpList, allowFutureIdp },
     );
 
     return preferences;

@@ -65,7 +65,8 @@ describe('UserDashboardController', () => {
   };
 
   const updatePreferencesBodyMock = {
-    includeList: [],
+    idpList: [],
+    allowFutureIdp: false,
   };
 
   beforeEach(async () => {
