@@ -1,14 +1,16 @@
-/* istanbul ignore file */
-
-/**
- * Not yet implemented
- */
 import './error.scss';
+
+import React from 'react';
 
 import classnames from 'classnames';
 import { useMediaQuery } from 'react-responsive';
+import { IError } from '../../types/error.type';
 
-export const ErrorPage = () => {
+interface ErrorComponentProps {
+  errors: IError;
+}
+
+export const ErrorComponent = React.memo(({ errors }: ErrorComponentProps) => {
   const gtTablet = useMediaQuery({ query: '(min-width: 768px)' });
 
   return (
@@ -21,12 +23,11 @@ export const ErrorPage = () => {
         Une erreur est survenue lors de la connexion.
       </h1>
       <div className="content-error my32 px16 fr-text-lg">
-        <p className="mb32">Description de l’erreur :</p>
-        <p className="mb32">
-          Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
-          ipsum Lorem ipsum Lorem ipsum
+        <p className="mb32 is-bold">Description de l’erreur :</p>
+        <p className="mb32" id="error-message">
+          {errors.message}
         </p>
-        <p className="mb32">Que faire ? </p>
+        <p className="mb32 is-bold">Que faire ? </p>
         <p className="mb32">
           Fermez l’onglet de votre navigateur et reconnectez-vous en cliquant sur le bouton
           AgentConnect.
@@ -37,14 +38,16 @@ export const ErrorPage = () => {
             Informations à nous transmettre dans le mail pour faciliter la prise en charge de votre
             demande :
           </p>
-          <p>
-            <strong>Code d’erreur :</strong> 04515
+          <p id="error-code">
+            <strong>Code d’erreur :</strong> {errors.code}
           </p>
           <p>
-            <strong>ID :</strong> 2558632862785
+            <strong>ID :</strong> {errors.id}
           </p>
         </div>
       </div>
     </div>
   );
-};
+});
+
+ErrorComponent.displayName = 'ErrorComponent';
