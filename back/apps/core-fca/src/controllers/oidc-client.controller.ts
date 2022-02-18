@@ -3,19 +3,23 @@ import {
   Controller,
   Get,
   Post,
+  Req,
   Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
+import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import {
+  OidcClientConfig,
   OidcClientRoutes,
   OidcClientService,
   OidcClientSession,
   RedirectToIdp,
 } from '@fc/oidc-client';
+import { OidcProviderService } from '@fc/oidc-provider';
 import {
   ISessionService,
   Session,
@@ -25,11 +29,15 @@ import {
 
 @Controller()
 export class OidcClientController {
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
+    private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly csrfService: SessionCsrfService,
+    private readonly oidcProvider: OidcProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -40,6 +48,7 @@ export class OidcClientController {
   @Post(OidcClientRoutes.REDIRECT_TO_IDP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async redirectToIdp(
+    @Req() req,
     @Res() res,
     @Body() body: RedirectToIdp,
     /**
@@ -53,15 +62,7 @@ export class OidcClientController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
-    const {
-      scope,
-      claims,
-      providerUid: idpId,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-      csrfToken,
-    } = body;
+    const { providerUid: idpId, csrfToken } = body;
 
     let serviceProviderId: string | null;
     try {
@@ -71,6 +72,15 @@ export class OidcClientController {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
       serviceProviderId = null;
     }
+
+    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
+    const { params } = await this.oidcProvider.getInteraction(req, res);
+
+    const {
+      // oidc parameter
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values,
+    } = params;
 
     // -- control if the CSRF provided is the same as the one previously saved in session.
     try {
@@ -96,7 +106,6 @@ export class OidcClientController {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
       nonce,
-      claims,
     });
 
     const authorizationUrlWithSpId = this.appendSpIdToAuthorizeUrl(
