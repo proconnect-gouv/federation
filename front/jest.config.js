@@ -1,13 +1,20 @@
 module.exports = {
   collectCoverageFrom: [
+    'apps/**/*.@(ts|tsx)',
     'libs/**/*.@(ts|tsx)',
-    // @TODO le ignore de '/apps/agent-connect/' est temporaire, à supprimer
-    'apps/!(agent-connect)/**/*.@(ts|tsx)',
     '!**/*.d.ts',
     '!**/setupTests.ts',
+    '!**/setupProxy.ts',
+    '!**/__fixtures__/*',
+    '!**/__mocks__/*',
+    '!tests-utils/*',
   ],
   coverageDirectory: './coverage',
   moduleNameMapper: {
+    '@fc/agent-connect-history': '<rootDir>/libs/agent-connect-history/src',
+    '@fc/agent-connect-history/(.*)': '<rootDir>/libs/agent-connect-history/src/$1',
+    '@fc/agent-connect-search': '<rootDir>/libs/agent-connect-search/src',
+    '@fc/agent-connect-search/(.*)': '<rootDir>/libs/agent-connect-search/src/$1',
     '@fc/backoffice': '<rootDir>/libs/backoffice/src',
     '@fc/backoffice/(.*)': '<rootDir>/libs/backoffice/src/$1',
     '@fc/common': '<rootDir>/libs/common/src',
@@ -39,8 +46,7 @@ module.exports = {
   roots: ['<rootDir>/apps/', '<rootDir>/libs/'],
   setupFilesAfterEnv: ['<rootDir>/setupTests.ts'],
   testEnvironment: 'jest-environment-jsdom',
-  // @TODO le ignore de '/apps/agent-connect/' est temporaire, à supprimer
-  testPathIgnorePatterns: ['/node_modules/', '/cypress/', '/apps/agent-connect/'],
+  testPathIgnorePatterns: ['/node_modules/', '/cypress/'],
   transform: {
     '^.+\\.jsx?$': 'babel-jest',
     '^.+\\.svg$': 'jest-svg-transformer',

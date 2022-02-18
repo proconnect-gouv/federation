@@ -4,7 +4,9 @@
     "descriptions": [
       "par défaut",
       "whitelisté",
-      "non blacklisté"
+      "non blacklisté",
+      "rattaché à un ministère avec plusieurs FI",
+      "rattaché à plusieurs ministères"
     ],
     "ministry": "Démonstration",
     "title": "Identity Provider 1 - HS256",

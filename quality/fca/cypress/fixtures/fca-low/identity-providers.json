@@ -3,7 +3,9 @@
     "idpId": "fia1-low",
     "descriptions": [
       "par défaut",
-      "actif"
+      "actif",
+      "rattaché à un ministère avec plusieurs FI",
+      "rattaché à plusieurs ministères"
     ],
     "ministry": "MOCK - Ministére de la transition écologique - ALL FIS - SORT 2",
     "title": "Identity Provider 1 - eIDAS faible - ES256",
