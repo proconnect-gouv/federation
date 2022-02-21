@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Render,
   Req,
   Res,
   UsePipes,
@@ -25,6 +26,7 @@ import {
   Session,
   SessionCsrfService,
   SessionInvalidCsrfSelectIdpException,
+  SessionService,
 } from '@fc/session';
 
 @Controller()
@@ -38,6 +40,7 @@ export class OidcClientController {
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly csrfService: SessionCsrfService,
     private readonly oidcProvider: OidcProviderService,
+    private readonly sessionService: SessionService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -150,6 +153,44 @@ export class OidcClientController {
       name: 'OidcClientRoutes.WELL_KNOWN_KEYS',
     });
     return this.oidcClient.utils.wellKnownKeys();
+  }
+
+  @Post(OidcClientRoutes.DISCONNECT_FROM_IDP)
+  async logoutFromIdp(
+    @Res() res,
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+  ) {
+    this.logger.trace({
+      route: OidcClientRoutes.DISCONNECT_FROM_IDP,
+      method: 'POST',
+      name: 'OidcClientRoutes.DISCONNECT_FROM_IDP',
+    });
+    const { idpIdToken, idpState, idpId } = await sessionOidc.get();
+
+    const endSessionUrl: string =
+      await this.oidcClient.getEndSessionUrlFromProvider(
+        idpId,
+        idpState,
+        idpIdToken,
+      );
+
+    return res.redirect(endSessionUrl);
+  }
+
+  @Get(OidcClientRoutes.CLIENT_LOGOUT_CALLBACK)
+  @Render('oidc-provider-logout-form')
+  async redirectAfterIdpLogout(
+    @Req() req,
+    @Res() res,
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+  ) {
+    const { oidcProviderLogoutForm } = await sessionOidc.get();
+
+    await this.sessionService.destroy(req, res);
+
+    return { oidcProviderLogoutForm };
   }
 
   /**
