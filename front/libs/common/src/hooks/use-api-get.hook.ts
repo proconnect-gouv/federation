@@ -4,7 +4,7 @@
 // AppContext + useApiGet should be merged
 // the axios wrapper might not be a hook but a function
 import axios from 'axios';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 interface UseApiGetOptionsInterface {
@@ -19,6 +19,7 @@ export const useApiGet = <T>(
   callback?: Function,
 ) => {
   const history = useHistory();
+  const isMounted = useRef(false);
   const [data, setData] = useState<T>(undefined as unknown as T);
 
   const fetchData = useCallback(async () => {
@@ -38,7 +39,10 @@ export const useApiGet = <T>(
   }, [endpoint, errorPath, history, callback]);
 
   useEffect(() => {
-    fetchData();
+    if (!isMounted.current) {
+      isMounted.current = true;
+      fetchData();
+    }
   }, [fetchData]);
 
   return data;
