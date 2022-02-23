@@ -8,6 +8,10 @@ import { useReturnButton } from './use-return-button.hook';
 jest.mock('./use-return-button.hook');
 
 describe('ReturnButtonComponent', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should have called useMediaQuery with tablet responsive query', () => {
     // then
     render(<ReturnButtonComponent />);

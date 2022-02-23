@@ -39,7 +39,9 @@
       "@fc/agent-connect-history": ["../../libs/agent-connect-history/src"],
       "@fc/agent-connect-history/*": ["../../libs/agent-connect-history/src/*"],
       "@fc/agent-connect-search": ["../../libs/agent-connect-search/src"],
-      "@fc/agent-connect-search/*": ["../../libs/agent-connect-search/src/*"]
+      "@fc/agent-connect-search/*": ["../../libs/agent-connect-search/src/*"],
+      "@fc/user-preferences": ["../../libs/user-preferences/src"],
+      "@fc/user-preferences/*": ["../../libs/user-preferences/src/*"]
     }
   }
 }
