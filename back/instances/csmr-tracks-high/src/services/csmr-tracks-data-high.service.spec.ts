@@ -44,8 +44,39 @@ describe('CsmrTracksHighDataService', () => {
     const indexMock = 'indexMockValue';
     const accountIdMock = 'accountIdMockValue';
     const requestMock = {
-      body: { query: { match: { accountId: 'accountIdMockValue' } } },
-      index: 'indexMockValue',
+      index: indexMock,
+      body: {
+        from: 0,
+        sort: [{ date: { order: 'desc' } }],
+        query: {
+          bool: {
+            must: [
+              { match: { accountId: accountIdMock } },
+              { range: { date: { gte: 'now-6M/d', lt: 'now' } } },
+              {
+                bool: {
+                  should: [
+                    {
+                      bool: {
+                        must: [{ match: { event: 'FC_VERIFIED' } }],
+                      },
+                    },
+                    {
+                      bool: {
+                        must: [
+                          {
+                            match: { event: 'FC_DATATRANSFER:CONSENTIDENTITY' },
+                          },
+                        ],
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
     };
     it('should format request with accountId and index', () => {
       const request = service.formatQuery(indexMock, accountIdMock);

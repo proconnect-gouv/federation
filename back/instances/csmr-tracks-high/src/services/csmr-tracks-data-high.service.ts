@@ -4,10 +4,11 @@ import { pick } from 'lodash';
 import { Injectable } from '@nestjs/common';
 
 import { IAppTracksDataService } from '@fc/csmr-tracks';
+import { formatMultiMatchGroupES } from '@fc/elasticsearch';
 import { LoggerService } from '@fc/logger';
 import { ICsmrTracksOutputTrack } from '@fc/tracks';
 
-import { ICsmrTracksInputHigh } from '../interfaces';
+import { ICsmrTracksHighTracks, ICsmrTracksInputHigh } from '../interfaces';
 
 /**
  * Array of available track's object attributes
@@ -25,6 +26,15 @@ const TRACK_PROPERTIES = [
 
 export const PLATFORM = 'FranceConnect+';
 
+const ACTIONS_TO_INCLUDE: Partial<ICsmrTracksHighTracks>[] = [
+  {
+    event: 'FC_VERIFIED',
+  },
+  {
+    event: 'FC_DATATRANSFER:CONSENTIDENTITY',
+  },
+];
+
 @Injectable()
 export class CsmrTracksHighDataService implements IAppTracksDataService {
   constructor(protected readonly logger: LoggerService) {
@@ -32,16 +42,35 @@ export class CsmrTracksHighDataService implements IAppTracksDataService {
   }
 
   formatQuery(index: string, accountId: string): Search {
+    const includes = formatMultiMatchGroupES(ACTIONS_TO_INCLUDE);
+
+    const criteria = [
+      { match: { accountId } },
+      {
+        range: {
+          date: {
+            gte: 'now-6M/d',
+            lt: 'now',
+          },
+        },
+      },
+      includes,
+    ];
+
     const query: Search = {
       index,
       body: {
+        from: 0,
+        sort: [{ date: { order: 'desc' } }],
         query: {
-          match: {
-            accountId,
+          bool: {
+            must: criteria,
           },
         },
       },
     };
+
+    this.logger.trace({ query });
 
     return query;
   }
