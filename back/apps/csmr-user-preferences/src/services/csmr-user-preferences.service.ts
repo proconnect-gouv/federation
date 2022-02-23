@@ -39,6 +39,10 @@ export class CsmrUserPreferencesService {
 
         return {
           uid,
+          // @NOTE la propriete name est un héritage du legacy
+          // Elle peut être utilisée par les tests BDD
+          // Elle ne doit pas être utilisée autrement
+          // Car il s'agit d'une valeur définie par l'utilisateur
           name,
           image,
           title,

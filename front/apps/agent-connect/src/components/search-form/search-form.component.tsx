@@ -38,7 +38,7 @@ export const SearchFormComponent: React.FC<SearchFormComponentProps> = React.mem
                 htmlFor="fi-search-term">
                 Veuillez taper le nom complet de votre administration
               </label>
-              <p className="flex-columns px16 mb16 is-block search-form">
+              <div className="flex-columns px16 mb16 is-block search-form">
                 <Field
                   className="search-input px16 py8 flex-1"
                   component="input"
@@ -48,15 +48,9 @@ export const SearchFormComponent: React.FC<SearchFormComponentProps> = React.mem
                   placeholder="ex : ministère de la mer, ministère de..."
                   type="text"
                 />
-                <OnChange name="fi-search-term">
-                  {(value) => {
-                    // @NOTE do not shortcut, will breaks TU
-                    // OnChange is not mocked
-                    onSearch(value);
-                  }}
-                </OnChange>
+                <OnChange name="fi-search-term">{onSearch}</OnChange>
                 <SearchSubmitButtonComponent disabled={submitting || pristine} />
-              </p>
+              </div>
             </form>
           )}
           onSubmit={(values) => {

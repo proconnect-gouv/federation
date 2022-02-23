@@ -8,6 +8,10 @@ jest.mock('../components/user-history/user-history.component');
 jest.mock('../components/service-provider-name/service-provider-name.component');
 
 describe('HomePage', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('should have the help button', () => {
     // when
     const { getByText } = render(<HomePage />);
