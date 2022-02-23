@@ -4,6 +4,7 @@ import { isString } from 'class-validator';
 import { Injectable } from '@nestjs/common';
 
 import { IAppTracksDataService } from '@fc/csmr-tracks';
+import { formatMultiMatchGroupES } from '@fc/elasticsearch';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
@@ -14,7 +15,6 @@ import {
   CsmrTracksUnknownActionException,
   CsmrTracksUnknownSpException,
 } from '../exceptions';
-import { formatMultiMatchGroupES } from '../helpers';
 import { ICsmrTracksInputLegacy, ICsmrTracksLegacyTrack } from '../interfaces';
 
 export const PLATFORM = 'FranceConnect';
