@@ -13,7 +13,7 @@ interface UserPreferencesComponentProps {
 
 export const UserPreferencesComponent: React.FC<UserPreferencesComponentProps> = React.memo(
   ({ options }: UserPreferencesComponentProps) => {
-    const { commit, formValues, identityProviders, submitWithSuccess } =
+    const { commit, formValues, submitWithSuccess, userPreferences } =
       useUserPreferencesApi(options);
 
     return (
@@ -26,8 +26,8 @@ export const UserPreferencesComponent: React.FC<UserPreferencesComponentProps> =
           return (
             <UserPreferencesFormComponent
               canNotSubmit={canNotSubmit}
-              identityProviders={identityProviders}
               showNotification={showNotification}
+              userPreferences={userPreferences}
               onSubmit={handleSubmit}
             />
           );

@@ -9,38 +9,83 @@ import { UserPreferencesFormComponent } from './user-preferences-form.component'
 jest.mock('../hooks');
 jest.mock('./services-list.component');
 
-const identityProvidersMock = [expect.any(Object), expect.any(Object)];
+const userPreferencesMock = {
+  allowFutureIdp: false,
+  idpList: [expect.any(Object), expect.any(Object)],
+};
 
 describe('UserPreferencesFormComponent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('should ServicesListComponent have been called with params', () => {
+  it('should call ServicesListComponent with params', () => {
     // when
     render(
       <UserPreferencesFormComponent
         canNotSubmit
-        identityProviders={identityProvidersMock}
         showNotification={false}
+        userPreferences={userPreferencesMock}
         onSubmit={jest.fn()}
       />,
     );
     // then
     expect(ServicesListComponent).toHaveBeenCalledTimes(1);
     expect(ServicesListComponent).toHaveBeenCalledWith(
-      { identityProviders: identityProvidersMock },
+      { identityProviders: userPreferencesMock.idpList },
       {},
     );
   });
 
-  it('should FieldCheckboxComponent have been called with params', () => {
+  it('should not call ServicesListComponent when idpList is empty', () => {
     // when
     render(
       <UserPreferencesFormComponent
         canNotSubmit
-        identityProviders={identityProvidersMock}
         showNotification={false}
+        userPreferences={{ allowFutureIdp: false, idpList: [] }}
+        onSubmit={jest.fn()}
+      />,
+    );
+    // then
+    expect(ServicesListComponent).not.toHaveBeenCalled();
+  });
+
+  it('should not call ServicesListComponent when userPreferences.idpList is not defined', () => {
+    // when
+    render(
+      <UserPreferencesFormComponent
+        canNotSubmit
+        showNotification={false}
+        userPreferences={{ allowFutureIdp: false, idpList: undefined }}
+        onSubmit={jest.fn()}
+      />,
+    );
+    // then
+    expect(ServicesListComponent).not.toHaveBeenCalled();
+  });
+
+  it('should not call ServicesListComponent when userPreferences is not defined', () => {
+    // when
+    render(
+      <UserPreferencesFormComponent
+        canNotSubmit
+        showNotification={false}
+        userPreferences={undefined}
+        onSubmit={jest.fn()}
+      />,
+    );
+    // then
+    expect(ServicesListComponent).not.toHaveBeenCalled();
+  });
+
+  it('should call FieldCheckboxComponent with params', () => {
+    // when
+    render(
+      <UserPreferencesFormComponent
+        canNotSubmit
+        showNotification={false}
+        userPreferences={userPreferencesMock}
         onSubmit={jest.fn()}
       />,
     );
@@ -56,13 +101,13 @@ describe('UserPreferencesFormComponent', () => {
     );
   });
 
-  it('should ButtonSimpleComponent have been called with params, can not submit', () => {
+  it('should call ButtonSimpleComponent with params, can not submit', () => {
     // when
     render(
       <UserPreferencesFormComponent
         canNotSubmit
-        identityProviders={identityProvidersMock}
         showNotification={false}
+        userPreferences={userPreferencesMock}
         onSubmit={jest.fn()}
       />,
     );
@@ -79,13 +124,13 @@ describe('UserPreferencesFormComponent', () => {
     );
   });
 
-  it('should ButtonSimpleComponent have been called with params, can submit', () => {
+  it('should call ButtonSimpleComponent with params, can submit', () => {
     // when
     render(
       <UserPreferencesFormComponent
         canNotSubmit={false}
-        identityProviders={identityProvidersMock}
         showNotification={false}
+        userPreferences={userPreferencesMock}
         onSubmit={jest.fn()}
       />,
     );
@@ -102,13 +147,13 @@ describe('UserPreferencesFormComponent', () => {
     );
   });
 
-  it('should have been a notification when user submit form', () => {
+  it('should send a notification when user submit form', () => {
     // when
     const { getByText } = render(
       <UserPreferencesFormComponent
         canNotSubmit
         showNotification
-        identityProviders={identityProvidersMock}
+        userPreferences={userPreferencesMock}
         onSubmit={jest.fn()}
       />,
     );

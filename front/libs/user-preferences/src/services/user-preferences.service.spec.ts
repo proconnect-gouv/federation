@@ -1,4 +1,3 @@
-// import { FormValues, Service } from '../interfaces';
 import { UserPreferencesService } from './user-preferences.service';
 
 describe('UserPreferencesService', () => {
@@ -53,51 +52,67 @@ describe('UserPreferencesService', () => {
 
   describe('parseFormData', () => {
     // given
-    const services = [
-      {
-        active: false,
-        image: undefined,
-        isChecked: false,
-        name: 'name-mock-1',
-        title: 'title-mock',
-        uid: 'uid-mock-1',
-      },
-      {
-        active: false,
-        image: undefined,
-        isChecked: true,
-        name: 'name-mock-2',
-        title: 'title-mock',
-        uid: 'uid-mock-2',
-      },
-      {
-        active: false,
-        image: undefined,
-        isChecked: false,
-        name: 'name-mock-3',
-        title: 'title-mock',
-        uid: 'uid-mock-3',
-      },
-      {
-        active: false,
-        image: undefined,
-        isChecked: true,
-        name: 'name-mock-4',
-        title: 'title-mock',
-        uid: 'uid-mock-4',
-      },
-    ];
+    const userPreferences = {
+      allowFutureIdp: true,
+      idpList: [
+        {
+          active: false,
+          image: undefined,
+          isChecked: false,
+          name: 'name-mock-1',
+          title: 'title-mock',
+          uid: 'uid-mock-1',
+        },
+        {
+          active: false,
+          image: undefined,
+          isChecked: true,
+          name: 'name-mock-2',
+          title: 'title-mock',
+          uid: 'uid-mock-2',
+        },
+        {
+          active: false,
+          image: undefined,
+          isChecked: false,
+          name: 'name-mock-3',
+          title: 'title-mock',
+          uid: 'uid-mock-3',
+        },
+        {
+          active: false,
+          image: undefined,
+          isChecked: true,
+          name: 'name-mock-4',
+          title: 'title-mock',
+          uid: 'uid-mock-4',
+        },
+      ],
+    };
 
-    it('should allowFutureIdp always return true', () => {
+    it('should return allowFutureIdp as true', () => {
       // when
-      const result = UserPreferencesService.parseFormData(services);
+      const result = UserPreferencesService.parseFormData({
+        ...userPreferences,
+        allowFutureIdp: true,
+      });
       // then
       expect(result).toStrictEqual(expect.objectContaining({ allowFutureIdp: true }));
     });
 
+    it('should return allowFutureIdp as false', () => {
+      // when
+      const result = UserPreferencesService.parseFormData({
+        ...userPreferences,
+        allowFutureIdp: false,
+      });
+      // then
+      expect(result).toStrictEqual(expect.objectContaining({ allowFutureIdp: false }));
+    });
+
     it('should return a parsed list of services', () => {
       // when
-      const result = UserPreferencesService.parseFormData(services);
+      const result = UserPreferencesService.parseFormData(userPreferences);
       // then
       expect(result).toStrictEqual(
         expect.objectContaining({

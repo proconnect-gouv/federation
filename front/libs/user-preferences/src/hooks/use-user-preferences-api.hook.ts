@@ -3,11 +3,11 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useApiGet } from '@fc/common';
 
-import { FormValues, Service, UserPreferencesConfig } from '../interfaces';
+import { FormValues, UserPreferencesConfig, UserPreferencesData } from '../interfaces';
 import { UserPreferencesService } from '../services';
 
 export const useUserPreferencesApi = (options: UserPreferencesConfig) => {
-  const identityProviders: Service[] | undefined = useApiGet({
+  const userPreferences: UserPreferencesData = useApiGet({
     endpoint: options.API_ROUTE_USER_PREFERENCES,
   });
 
@@ -42,11 +42,22 @@ export const useUserPreferencesApi = (options: UserPreferencesConfig) => {
   );
 
   useEffect(() => {
-    if (identityProviders && !formValues) {
-      const values = UserPreferencesService.parseFormData(identityProviders);
+    if (userPreferences && !formValues) {
+      // @NOTE
+      // executed at first render only
+      // when
+      // if initial userPreferences has already been loaded
+      // and if form values has not yet been set
+      const values = UserPreferencesService.parseFormData(userPreferences);
       setFormValues(values);
     }
-  }, [identityProviders, formValues]);
+  }, [userPreferences, formValues]);
 
-  return { commit, formValues, identityProviders, submitErrors, submitWithSuccess };
+  return {
+    commit,
+    formValues,
+    submitErrors,
+    submitWithSuccess,
+    userPreferences,
+  };
 };
