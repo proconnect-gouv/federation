@@ -1,4 +1,4 @@
-import { FormValues, Service } from '../interfaces';
+import { FormValues, UserPreferencesData } from '../interfaces';
 
 interface UserPreferencesServiceInterface {
   allowFutureIdp: boolean;
@@ -17,11 +17,13 @@ export class UserPreferencesService {
     return formData;
   }
 
-  static parseFormData(services: Service[]): FormValues {
-    const idpList = services.reduce((acc, { isChecked, uid }) => {
-      const next = { ...acc, [uid]: isChecked };
-      return next;
-    }, {});
-    return { allowFutureIdp: true, idpList };
+  static parseFormData({ allowFutureIdp, idpList }: UserPreferencesData): FormValues {
+    const list =
+      idpList &&
+      idpList.reduce((acc, { isChecked, uid }) => {
+        const next = { ...acc, [uid]: isChecked };
+        return next;
+      }, {});
+    return { allowFutureIdp, idpList: list };
   }
 }

@@ -17,32 +17,35 @@ describe('useUserPreferencesApi', () => {
   // given
   const options = { API_ROUTE_USER_PREFERENCES: 'any-route' };
 
-  const identityProviders = [
-    {
-      active: false,
-      image: 'any-image',
-      isChecked: false,
-      name: 'any-name-1',
-      title: 'any-title',
-      uid: 'any-uid-1',
-    },
-    {
-      active: false,
-      image: 'any-image',
-      isChecked: true,
-      name: 'any-name-2',
-      title: 'any-title',
-      uid: 'any-uid-2',
-    },
-    {
-      active: false,
-      image: 'any-image',
-      isChecked: false,
-      name: 'any-name-3',
-      title: 'any-title',
-      uid: 'any-uid-3',
-    },
-  ];
+  const userPreferences = {
+    allowFutureIdp: false,
+    idpList: [
+      {
+        active: false,
+        image: 'any-image',
+        isChecked: false,
+        name: 'any-name-1',
+        title: 'any-title',
+        uid: 'any-uid-1',
+      },
+      {
+        active: false,
+        image: 'any-image',
+        isChecked: true,
+        name: 'any-name-2',
+        title: 'any-title',
+        uid: 'any-uid-2',
+      },
+      {
+        active: false,
+        image: 'any-image',
+        isChecked: false,
+        name: 'any-name-3',
+        title: 'any-title',
+        uid: 'any-uid-3',
+      },
+    ],
+  };
 
   const idpList = {
     'uid-mock-1': false,
@@ -52,7 +55,7 @@ describe('useUserPreferencesApi', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mocked(useApiGet).mockReturnValue(identityProviders);
+    mocked(useApiGet).mockReturnValue(userPreferences);
   });
 
   it('should return an object with default values at first render', () => {
@@ -64,21 +67,21 @@ describe('useUserPreferencesApi', () => {
     expect(result.current).toStrictEqual({
       commit: expect.any(Function),
       formValues: undefined,
-      identityProviders: undefined,
       submitErrors: undefined,
       submitWithSuccess: false,
+      userPreferences: undefined,
     });
   });
 
-  it('should call UserPreferencesService.parseFormData when identityProviders are defined but none formValues', () => {
+  it('should call UserPreferencesService.parseFormData when userPreferences are defined but none formValues', () => {
     // when
     renderHook(() => useUserPreferencesApi(options));
     // then
     expect(UserPreferencesService.parseFormData).toHaveBeenCalledTimes(1);
-    expect(UserPreferencesService.parseFormData).toHaveBeenCalledWith(identityProviders);
+    expect(UserPreferencesService.parseFormData).toHaveBeenCalledWith(userPreferences);
   });
 
-  it('should return formValues when identityProviders are defined at first render', () => {
+  it('should return formValues when userPreferences are defined at first render', () => {
     // given
     mocked(UserPreferencesService.parseFormData).mockReturnValueOnce({
       allowFutureIdp: true,
@@ -93,9 +96,9 @@ describe('useUserPreferencesApi', () => {
         allowFutureIdp: true,
         idpList,
       },
-      identityProviders,
       submitErrors: undefined,
       submitWithSuccess: false,
+      userPreferences,
     });
   });
 
@@ -163,9 +166,9 @@ describe('useUserPreferencesApi', () => {
     expect(result.current).toStrictEqual({
       commit: expect.any(Function),
       formValues: dataValueMock,
-      identityProviders: expect.any(Array),
       submitErrors: undefined,
       submitWithSuccess: true,
+      userPreferences: { allowFutureIdp: false, idpList: expect.any(Object) },
     });
     // reset
     parseFormDataMock.mockReset();
@@ -186,9 +189,9 @@ describe('useUserPreferencesApi', () => {
     expect(result.current).toStrictEqual({
       commit: expect.any(Function),
       formValues: undefined,
-      identityProviders: expect.any(Array),
       submitErrors: errorMock,
       submitWithSuccess: false,
+      userPreferences: { allowFutureIdp: false, idpList: expect.any(Object) },
     });
   });
 });

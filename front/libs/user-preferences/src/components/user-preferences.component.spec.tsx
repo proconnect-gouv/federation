@@ -13,20 +13,23 @@ jest.mock('./user-preferences-form.component');
 
 const optionsMock = { API_ROUTE_USER_PREFERENCES: 'any-endpoint' };
 const commitMock = jest.fn();
-const identityProvidersMock = [expect.any(Object), expect.any(Object)];
 const initialValuesMock = { allowFutureIdp: false, idpList: expect.any(Object) };
 const userPreferencesMock = {
+  allowFutureIdp: false,
+  idpList: [expect.any(Object), expect.any(Object)],
+};
+const hookResultMock = {
   commit: commitMock,
   formValues: initialValuesMock,
-  identityProviders: identityProvidersMock,
   submitErrors: undefined,
   submitWithSuccess: false,
+  userPreferences: userPreferencesMock,
 };
 
 describe('UserPreferencesComponent', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    mocked(useUserPreferencesApi).mockReturnValue(userPreferencesMock);
+    mocked(useUserPreferencesApi).mockReturnValue(hookResultMock);
   });
 
   it('should useUserPreferencesApi have been called', () => {
@@ -37,7 +40,7 @@ describe('UserPreferencesComponent', () => {
     expect(useUserPreferencesApi).toHaveBeenCalledWith(optionsMock);
   });
 
-  it('should call UserPreferencesComponent with params', () => {
+  it('should call UserPreferencesComponent with defined params', () => {
     // given
     const formSpy = jest.spyOn(ReactFinalForm, 'Form');
     // when
@@ -59,9 +62,9 @@ describe('UserPreferencesComponent', () => {
     expect(UserPreferencesFormComponent).toHaveBeenCalledWith(
       {
         canNotSubmit: true,
-        identityProviders: identityProvidersMock,
         onSubmit: expect.any(Function),
         showNotification: false,
+        userPreferences: userPreferencesMock,
       },
       {},
     );

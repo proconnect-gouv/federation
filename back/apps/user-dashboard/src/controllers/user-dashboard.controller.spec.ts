@@ -275,7 +275,13 @@ describe('UserDashboardController', () => {
       // When
       const result = await controller.getUserPreferences(sessionServiceMock);
       // Then
-      expect(result).toBe(resolvedValueMock);
+      expect(result).toStrictEqual({
+        idpList: resolvedValueMock,
+        // @NOTE should be updated
+        // this has been set temporarily,
+        // mocked for the front user dashboard app needs
+        allowFutureIdp: true,
+      });
     });
   });
 
@@ -335,7 +341,10 @@ describe('UserDashboardController', () => {
         sessionServiceMock,
       );
       // Then
-      expect(result).toBe(resolvedValueMock);
+      expect(result).toStrictEqual({
+        idpList: resolvedValueMock,
+        allowFutureIdp: updatePreferencesBodyMock.allowFutureIdp,
+      });
     });
   });
 });
