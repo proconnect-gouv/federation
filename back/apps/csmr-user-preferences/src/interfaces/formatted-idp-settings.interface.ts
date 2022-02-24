@@ -15,7 +15,12 @@ import { IdentityProviderMetadata } from '@fc/oidc';
  *   isChecked: true
  * }
  */
-export type IIdpSettings = Pick<
+export type IFormattedIdpList = Pick<
   IdentityProviderMetadata,
   'uid' | 'name' | 'image' | 'title' | 'active'
 > & { isChecked: boolean };
+
+export interface IFormattedIdpSettings {
+  allowFutureIdp: boolean;
+  idpList: IFormattedIdpList[];
+}

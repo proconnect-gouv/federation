@@ -12,7 +12,7 @@ import {
 
 import { IPivotIdentity } from '@fc/cryptography-fcp';
 
-import { OidcIdentityDto } from '../interfaces';
+import { OidcIdentityDto } from '../dto';
 
 class IdpSettingsDto {
   @IsAscii({ each: true })

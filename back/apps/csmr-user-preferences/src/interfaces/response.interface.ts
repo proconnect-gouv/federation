@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IIdpSettings } from './csmr-user-preferences-idp-settings.interface';
+import { IFormattedIdpSettings } from './formatted-idp-settings.interface';
 
 /**
  * This format is used by csmr-user-preferences controllers
@@ -23,4 +23,4 @@ import { IIdpSettings } from './csmr-user-preferences-idp-settings.interface';
  *   isChecked: false
  * }]
  */
-export type IIdpSettingsResponse = IIdpSettings | 'ERROR';
+export type IFormattedIdpSettingsResponse = IFormattedIdpSettings | 'ERROR';
