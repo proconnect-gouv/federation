@@ -14,7 +14,7 @@ import { OidcClientSession } from '@fc/oidc-client';
 import { ISessionService, Session, SessionCsrfService } from '@fc/session';
 import { TracksService } from '@fc/tracks';
 import {
-  UserPreferencesDto,
+  FormattedIdpSettingDto,
   UserPreferencesService,
 } from '@fc/user-preferences';
 
@@ -92,10 +92,7 @@ export class UserDashboardController {
   async getUserPreferences(
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
-  ): Promise<{
-    idpList: UserPreferencesDto[];
-    allowFutureIdp: boolean;
-  }> {
+  ): Promise<FormattedIdpSettingDto> {
     const session = await sessionOidc.get();
     if (!session) {
       throw new UnauthorizedException();
@@ -106,13 +103,7 @@ export class UserDashboardController {
       idpIdentity,
     );
 
-    return {
-      idpList: preferences,
-      // @NOTE should be updated
-      // this has been set temporarily,
-      // mocked for the front user dashboard app needs
-      allowFutureIdp: true,
-    };
+    return preferences;
   }
 
   @Post(UserDashboardBackRoutes.USER_PREFERENCES)
@@ -121,10 +112,7 @@ export class UserDashboardController {
     @Body() body: UserPreferencesBodyDto,
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
-  ): Promise<{
-    idpList: UserPreferencesDto[];
-    allowFutureIdp: boolean;
-  }> {
+  ): Promise<FormattedIdpSettingDto> {
     const session = await sessionOidc.get();
     if (!session) {
       throw new UnauthorizedException();
@@ -137,9 +125,6 @@ export class UserDashboardController {
       { idpList, allowFutureIdp },
     );
 
-    return {
-      idpList: preferences,
-      allowFutureIdp,
-    };
+    return preferences;
   }
 }
