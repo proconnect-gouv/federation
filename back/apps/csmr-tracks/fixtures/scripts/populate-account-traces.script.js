@@ -1,13 +1,80 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { DateTime } = require('luxon');
 const { Client } = require('@elastic/elasticsearch');
+const ejs = require('ejs');
+const path = require('path');
+
 const datamock = require('../mocks/account-traces.mock');
 const placeholders = require('../enums/placeholders.enum');
+const findFilesInDir = require('./helpers/findFilesInDir');
 
 const ELASTIC_TRACKS_INDEX = process.env.Elasticsearch_TRACKS_INDEX;
 const ELASTIC_NODES = JSON.parse(process.env.Elasticsearch_NODES);
 const ELASTIC_USERNAME = process.env.Elasticsearch_USERNAME;
 const ELASTIC_PASSWORD = process.env.Elasticsearch_PASSWORD;
+
+// help to trace false logs generated in ES
+const TRACE_MARK = '::mock::';
+
+function track(...data) {
+  // eslint-disable-next-line no-console
+  console.log(' * ', ...data);
+}
+
+// eslint-disable-next-line complexity
+function extractDates(sequences) {
+  let dates;
+  try {
+    // either a comma-separated string or a JSON array
+    const values = /^\[.*\]$/.test(sequences)
+      ? JSON.parse(sequences)
+      : sequences.split(',');
+
+    dates = values.map((value) =>
+      DateTime.fromISO(value, { zone: 'utc' }).startOf('day'),
+    );
+
+    const areDates = dates.every((date) => date.isValid);
+    if (!areDates) {
+      throw new Error(`Invalid dates in sequences: ${sequences}`);
+    }
+  } catch (error) {
+    throw new Error(
+      `Sequences param must be a JSON array or comma-seperated dates: ${error.message}`,
+    );
+  }
+
+  // Default value
+  if (!dates.length) {
+    dates = [DateTime.now().toUTC().startOf('day')];
+  }
+  return dates;
+}
+
+async function buildEventsFromLogs(id, raw) {
+  const logs = raw
+    .split('\n')
+    .filter(Boolean)
+    .map((log) => JSON.parse(log))
+    .filter(({ accountId }) => accountId === id)
+    .map((event) => ({
+      ...event,
+      '@version': TRACE_MARK, // traceur
+    }));
+  return logs;
+}
+
+function datesFromLimit(month = 6) {
+  const now = DateTime.now().toUTC();
+  const justBeforeNow = now.minus({ day: 1 });
+  const justBefore = now.minus({ month }).plus({ day: 1 });
+  const justAfter = now.minus({ month }).minus({ day: 1 });
+  const dates = [justBeforeNow, justBefore, justAfter].map((date) =>
+    date.toISODate(),
+  );
+
+  return dates;
+}
 
 /**
  * Start the populate script by instantiating the class:
@@ -28,6 +95,20 @@ class PopulateAccountTraces {
       this.initElasticsearchClient();
 
       const formatedDatamock = this.getFormatedMockData();
+
+      /**
+       * @todo connect the new schema of data to the saving process.
+       *
+       * Author: Arnaud
+       * Date: 24/02/2022
+       */
+      const accountId = 'test_TRACE_USER';
+      const sequences = JSON.stringify(datesFromLimit(6));
+      const generatedDataMock = await this.generateMockData(
+        accountId,
+        sequences,
+      );
+      track('Generated mocks: ', generatedDataMock);
 
       await this.deleteIndex();
       await this.setIndex();
@@ -93,6 +174,35 @@ class PopulateAccountTraces {
     });
 
     return formatedDataMock;
+  }
+
+  async generateMockData(accountId, sequences = '[]') {
+    track('Extract dates from request');
+    const dates = extractDates(sequences);
+
+    const directory = path.join(__dirname, '..', `/mocks`);
+    track(`Grab standard cinematic to mock in directory: ${directory}`);
+    const paths = findFilesInDir(directory, /.*mock$/);
+
+    track(`Prepare mock order for ${dates.join(',')}`);
+    const orders = dates.map((date, index) => [
+      date.toMillis(),
+      paths[index % paths.length],
+    ]);
+
+    track(`Render ${orders.length} group of mocks`);
+    const jobs = orders.map(([time, mock]) =>
+      ejs.renderFile(mock, { accountId, time }),
+    );
+    const data = await Promise.all(jobs);
+
+    track(`Join ${data.length} group of generated mocks`);
+    const raw = data.join('\n');
+
+    track('Parse logs from source');
+    const logs = await buildEventsFromLogs(accountId, raw);
+
+    return logs;
   }
 
   async deleteIndex() {
