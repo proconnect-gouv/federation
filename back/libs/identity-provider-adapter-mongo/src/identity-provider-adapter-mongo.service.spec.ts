@@ -451,6 +451,9 @@ describe('IdentityProviderAdapterMongoService', () => {
     let validateDtoMock;
     beforeEach(() => {
       validateDtoMock = mocked(validateDto);
+      configMock.get.mockReturnValueOnce({
+        disableIdpValidationOnLegacy: false,
+      });
     });
 
     it('should resolve', async () => {
@@ -477,6 +480,20 @@ describe('IdentityProviderAdapterMongoService', () => {
       expect(repositoryMock.find).toHaveBeenCalledTimes(1);
     });
 
+    it('should get the configuration', async () => {
+      // setup
+      validateDtoMock.mockResolvedValueOnce([]);
+
+      // action
+      await service['findAllIdentityProvider']();
+
+      // expect
+      expect(configMock.get).toHaveBeenCalledTimes(1);
+      expect(configMock.get).toHaveBeenCalledWith(
+        'IdentityProviderAdapterMongo',
+      );
+    });
+
     it('should return result of type list', async () => {
       // setup
       validateDtoMock.mockResolvedValueOnce([]);
@@ -486,6 +503,20 @@ describe('IdentityProviderAdapterMongoService', () => {
 
       // expect
       expect(result).toEqual([legacyIdentityProviderMock]);
+    });
+
+    it('should not call validateDto if the config "disableIdpValidationOnLegacy" is set to "true"', async () => {
+      // setup
+      validateDtoMock.mockResolvedValueOnce(['there is an error']);
+      configMock.get
+        .mockReset()
+        .mockReturnValueOnce({ disableIdpValidationOnLegacy: true });
+
+      // action
+      await service['findAllIdentityProvider']();
+
+      // expect
+      expect(validateDtoMock).toHaveBeenCalledTimes(0);
     });
 
     it('should log a warning if an entry is excluded by the DTO', async () => {
