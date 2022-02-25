@@ -8,4 +8,5 @@ const env = new ConfigParser(process.env, 'AdapterMongo');
 
 export default {
   clientSecretEncryptKey: env.string('CLIENT_SECRET_CIPHER_PASS'),
+  decryptClientSecretFeature: env.boolean('DECRYPT_CLIENT_SECRET_FEATURE'),
 } as IdentityProviderAdapterMongoConfig;

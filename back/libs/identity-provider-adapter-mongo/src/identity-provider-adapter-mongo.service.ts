@@ -299,10 +299,15 @@ export class IdentityProviderAdapterMongoService
    * @param clientSecret
    */
   private decryptClientSecret(clientSecret: string): string {
-    const { clientSecretEncryptKey } =
+    const { clientSecretEncryptKey, decryptClientSecretFeature } =
       this.config.get<IdentityProviderAdapterMongoConfig>(
         'IdentityProviderAdapterMongo',
       );
+
+    if (!decryptClientSecretFeature) {
+      return null;
+    }
+
     return this.crypto.decrypt(
       clientSecretEncryptKey,
       Buffer.from(clientSecret, 'base64'),
