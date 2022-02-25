@@ -3,9 +3,6 @@ const { DateTime } = require('luxon');
 const { Client } = require('@elastic/elasticsearch');
 const ejs = require('ejs');
 const path = require('path');
-
-const dataMock = require('../tracks/account-traces.mock');
-const placeholders = require('../enums/placeholders.enum');
 const findFilesInDir = require('./helpers/find-files-in-dir');
 
 const ELASTIC_TRACKS_INDEX = process.env.Elasticsearch_TRACKS_INDEX;
@@ -84,18 +81,10 @@ function datesFromLimit(month = 6) {
  */
 class PopulateAccountTraces {
   esClient;
-  mock;
-
-  constructor(data) {
-    this.mock = data;
-  }
 
   async run() {
     try {
       this.initElasticsearchClient();
-
-      const formatedDatamock = this.getFormatedMockData();
-
       /**
        * @todo connect the new schema of data to the saving process.
        *
@@ -113,9 +102,7 @@ class PopulateAccountTraces {
 
       debug('Generated mocks: ', generatedDataMock);
 
-      await this.deleteIndex();
-      await this.setIndex();
-      await this.save(formatedDatamock);
+      await this.save(generatedDataMock);
 
       await this.displayData();
     } catch (error) {
@@ -147,38 +134,6 @@ class PopulateAccountTraces {
     });
   }
 
-  /**
-   * Replace placeholders from data-mock by up-to-date info.
-   *
-   * @see https://moment.github.io/luxon/docs/class/src/datetime.js~DateTime.html#instance-method-plus
-   * @returns {ICsmrTracksOutputTrack[]}
-   */
-  getFormatedMockData() {
-    const formatedDataMock = this.mock.map((el) => {
-      switch (el.date) {
-        // -- expired date
-        case placeholders.MORE_THAN_6_MONTHS:
-          el.date = DateTime.now().minus({
-            month: this.getRandomBetween(7, 11),
-          });
-          break;
-        // -- valid date
-        case placeholders.LESS_THAN_6_MONTHS:
-          el.date = DateTime.now().minus({
-            month: this.getRandomBetween(1, 5),
-          });
-          break;
-      }
-      return el;
-    });
-
-    console.log('PopulateAccountTraces.getFormatedMockData()', {
-      formatedDataMock,
-    });
-
-    return formatedDataMock;
-  }
-
   async generateMockData(accountId, sequences = '[]') {
     debug('Extract dates from request');
     const dates = extractDates(sequences);
@@ -206,43 +161,6 @@ class PopulateAccountTraces {
     const logs = await buildEventsFromLogs(accountId, raw);
 
     return logs;
-  }
-
-  async deleteIndex() {
-    try {
-      await this.esClient.indices.delete({
-        index: ELASTIC_TRACKS_INDEX,
-      });
-    } catch (error) {
-      console.warn('PopulateAccountTraces.deleteIndex().catch()', error);
-    }
-  }
-
-  async setIndex() {
-    try {
-      await this.esClient.indices.create(
-        {
-          index: ELASTIC_TRACKS_INDEX,
-          body: {
-            mappings: {
-              properties: {
-                event: { type: 'keyword' },
-                spId: { type: 'text' },
-                date: { type: 'date' },
-                accountId: { type: 'keyword' },
-                spName: { type: 'text' },
-                spAcr: { type: 'keyword' },
-                country: { type: 'keyword' },
-                city: { type: 'keyword' },
-              },
-            },
-          },
-        },
-        { ignore: [400] },
-      );
-    } catch (error) {
-      console.warn('PopulateAccountTraces.setIndex().catch()', error);
-    }
   }
 
   /**
@@ -274,18 +192,6 @@ class PopulateAccountTraces {
             errors: bulkResponse.errors,
           });
         }
-      }
-
-      // -- control if the dataMock have been correctly imported.
-      const { body: total } = await this.esClient.count({
-        index: ELASTIC_TRACKS_INDEX,
-      });
-      if (total.count !== this.mock.length) {
-        console.warn('PopulateAccountTraces.save()', {
-          error: 'All mocks were not imported',
-          count: total.count,
-          dataMockLength: this.mock.length,
-        });
       }
     } catch (error) {
       console.warn('PopulateAccountTraces.save().catch()', error);
@@ -322,4 +228,4 @@ class PopulateAccountTraces {
   }
 }
 
-new PopulateAccountTraces(dataMock).run();
+new PopulateAccountTraces().run();
