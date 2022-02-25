@@ -160,9 +160,25 @@ export class IdentityProviderAdapterMongoService
       )
       .lean();
 
+    const { disableIdpValidationOnLegacy } =
+      this.config.get<IdentityProviderAdapterMongoConfig>(
+        'IdentityProviderAdapterMongo',
+      );
+
     const identityProviders = await asyncFilter<IdentityProviderMetadata[]>(
       rawResult,
       async (doc: IdentityProviderMetadata) => {
+        /**
+         * @todo see issue #902
+         * A DTO should validate the IdPs even with legacy format
+         */
+        if (disableIdpValidationOnLegacy) {
+          this.logger.warn(
+            `"${doc.uid}": Skipping DTO validation due to legacy IdP mode.`,
+          );
+          return true;
+        }
+
         const dto = this.getIdentityProviderDTO(doc.discovery);
         const errors = await validateDto(doc, dto, validationOptions);
 
