@@ -36,7 +36,7 @@ export type multiMatchEsCriteria = andCriteria | orCriteria;
  *
  * @see look at the UT will help to understand to complex structure
  */
-export function formatMultiMatchGroupES(
+export function formatMultiMatchGroup(
   list = [],
   mandatory = false,
 ): multiMatchEsCriteria {

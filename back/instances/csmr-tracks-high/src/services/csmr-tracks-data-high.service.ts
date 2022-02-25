@@ -4,7 +4,7 @@ import { pick } from 'lodash';
 import { Injectable } from '@nestjs/common';
 
 import { IAppTracksDataService } from '@fc/csmr-tracks';
-import { formatMultiMatchGroupES } from '@fc/elasticsearch';
+import { formatMultiMatchGroup } from '@fc/elasticsearch';
 import { LoggerService } from '@fc/logger';
 import { ICsmrTracksOutputTrack } from '@fc/tracks';
 
@@ -26,12 +26,18 @@ const TRACK_PROPERTIES = [
 
 export const PLATFORM = 'FranceConnect+';
 
-const ACTIONS_TO_INCLUDE: Partial<ICsmrTracksHighTracks>[] = [
+const EVENTS_TO_INCLUDE: Partial<ICsmrTracksHighTracks>[] = [
   {
     event: 'FC_VERIFIED',
   },
   {
     event: 'FC_DATATRANSFER:CONSENTIDENTITY',
+  },
+  {
+    event: 'FC_DATATRANSFER:CONSENT:DATA',
+  },
+  {
+    event: 'DP_REQUESTED_FC_CHECKTOKEN',
   },
 ];
 
@@ -42,7 +48,7 @@ export class CsmrTracksHighDataService implements IAppTracksDataService {
   }
 
   formatQuery(index: string, accountId: string): Search {
-    const includes = formatMultiMatchGroupES(ACTIONS_TO_INCLUDE);
+    const includes = formatMultiMatchGroup(EVENTS_TO_INCLUDE);
 
     const criteria = [
       { match: { accountId } },

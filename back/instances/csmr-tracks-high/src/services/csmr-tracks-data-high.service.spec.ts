@@ -70,6 +70,24 @@ describe('CsmrTracksHighDataService', () => {
                         ],
                       },
                     },
+                    {
+                      bool: {
+                        must: [
+                          {
+                            match: { event: 'FC_DATATRANSFER:CONSENT:DATA' },
+                          },
+                        ],
+                      },
+                    },
+                    {
+                      bool: {
+                        must: [
+                          {
+                            match: { event: 'DP_REQUESTED_FC_CHECKTOKEN' },
+                          },
+                        ],
+                      },
+                    },
                   ],
                 },
               },
@@ -84,7 +102,7 @@ describe('CsmrTracksHighDataService', () => {
     });
   });
 
-  describe('formattedTracks', () => {
+  describe('formattedTracks()', () => {
     it('should format tracks from raw tracks', async () => {
       const rawTracksMock: ICsmrTracksInputHigh[] = [
         {

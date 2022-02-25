@@ -1,6 +1,6 @@
 import * as query from './elasticsearch.helper';
 
-describe('formatMultiMatchGroupES()', () => {
+describe('formatMultiMatchGroup()', () => {
   const includeList = [
     {
       key: 'key1',
@@ -29,7 +29,7 @@ describe('formatMultiMatchGroupES()', () => {
     };
 
     // When
-    const request = query.formatMultiMatchGroupES(undefined);
+    const request = query.formatMultiMatchGroup(undefined);
     // Then
     expect(request).toStrictEqual(resultMock);
   });
@@ -107,7 +107,7 @@ describe('formatMultiMatchGroupES()', () => {
     };
 
     // When
-    const request = query.formatMultiMatchGroupES(includeList, true);
+    const request = query.formatMultiMatchGroup(includeList, true);
     // Then
     expect(request).toStrictEqual(resultMock);
   });
@@ -185,7 +185,7 @@ describe('formatMultiMatchGroupES()', () => {
       },
     };
     // When
-    const request = query.formatMultiMatchGroupES(includeList);
+    const request = query.formatMultiMatchGroup(includeList);
     // Then
     expect(request).toStrictEqual(resultMock);
   });

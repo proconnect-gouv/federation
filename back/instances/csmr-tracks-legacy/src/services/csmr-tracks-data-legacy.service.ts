@@ -4,7 +4,7 @@ import { isString } from 'class-validator';
 import { Injectable } from '@nestjs/common';
 
 import { IAppTracksDataService } from '@fc/csmr-tracks';
-import { formatMultiMatchGroupES } from '@fc/elasticsearch';
+import { formatMultiMatchGroup } from '@fc/elasticsearch';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
@@ -73,7 +73,7 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
   }
 
   formatQuery(index: string, accountId: string): Search {
-    const includes = formatMultiMatchGroupES(ACTIONS_TO_INCLUDE);
+    const includes = formatMultiMatchGroup(ACTIONS_TO_INCLUDE);
 
     const criteria = [
       { match: { accountId } },
