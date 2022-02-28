@@ -22,3 +22,5 @@ test,1,comptabilite,343293775,test@abcd.com,DUBOIS,Angela Claire Louise,agent,34
 E000001,20,error 2,error3,error@error.com,error 4,error 5,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123476
 E020025,21,comptabilite,343293775,test@abcd.com,Martinot,Didier,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123464
 Marjorie.Martin,22,ministère de la transition écologique,343293775,m.martin@transition-ecologique.gouv.fr,Martin,Marjorie,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123464
+Edmee.Martinot,23,ministère de la culture,343293775,edmee.martinot.ext@culture.gouv.fr,Martinot,Edmee,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123477
+Brunot.Martinot,24,ministère de la culture,343293775,brunot.martinot.ext@culture.gouv.fr,Martinot,Bruno,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123478
