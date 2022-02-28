@@ -4,6 +4,32 @@
 
 **🔈 The odd versions are not released into production.**
 
+## v3.83.0 & v3.84.0
+
+### Features
+
+- [AgentConnect]
+  - Research now works with the IdP name and not only the administration name
+  - Disconnection from AgentConnect now propagated to the IdP
+
+### Fixes
+
+- [eIDASBridge] Updated the DTO rules to match the european XML schema
+- [Changelog v3.82] Added the missing changelog of the previous version
+
+### Hardening & QA
+
+- [ElasticSearch] Added authentication
+- [FranceConnect] Configured a dedicated mock user to test the connection history log and to avoid conflicts with other tests)
+
+### Not yet in production (futures apps / features)
+
+- [User Dashboard]
+  - The interface to enable / disable an IdP has been implemented
+  - Fix database architecture for IdP settings
+  - The application does not need anymore the secret to decrypt the IdPs' client secrets
+  - The application is now connected to the legacy database instead of FC+ one
+
 ## v3.81.0 & v3.82.0
 
 ### Features
