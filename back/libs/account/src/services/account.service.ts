@@ -120,11 +120,11 @@ export class AccountService {
     identityHash: string,
     identityProviderList: string[],
     isExcludeList: boolean,
-  ): Promise<Account> {
+  ): Promise<Pick<Account, 'id' | 'preferences'>> {
     this.logger.debug(
       `Update account preferences ${identityHash} with ${identityProviderList} (isExcludeList: ${isExcludeList})`,
     );
-    const updatedAccount = await this.model.findOneAndUpdate(
+    const accountBeforeUpdate = await this.model.findOneAndUpdate(
       { identityHash },
       {
         preferences: {
@@ -135,14 +135,22 @@ export class AccountService {
           },
         },
       },
-      { new: true },
     );
-    this.logger.trace({ updatedAccount });
 
-    if (!updatedAccount) {
+    if (!accountBeforeUpdate) {
       throw new AccountNotFoundException();
     }
 
-    return updatedAccount;
+    this.logger.trace({
+      id: accountBeforeUpdate.id,
+      IdpSettingsBeforeUpdate: accountBeforeUpdate.preferences?.idpSettings,
+      newPreferences: {
+        identityProviderList,
+        isExcludeList,
+      },
+    });
+
+    const { id, preferences } = accountBeforeUpdate;
+    return { id, preferences };
   }
 }
