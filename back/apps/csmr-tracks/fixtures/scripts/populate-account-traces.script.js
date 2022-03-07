@@ -4,7 +4,7 @@ const { Client } = require('@elastic/elasticsearch');
 const ejs = require('ejs');
 const path = require('path');
 
-const datamock = require('../mocks/account-traces.mock');
+const datamock = require('../tracks/account-traces.mock');
 const placeholders = require('../enums/placeholders.enum');
 const findFilesInDir = require('./helpers/findFilesInDir');
 
@@ -16,7 +16,7 @@ const ELASTIC_PASSWORD = process.env.Elasticsearch_PASSWORD;
 // help to trace false logs generated in ES
 const TRACE_MARK = '::mock::';
 
-function track(...data) {
+function debug(...data) {
   // eslint-disable-next-line no-console
   console.log(' * ', ...data);
 }
@@ -104,11 +104,14 @@ class PopulateAccountTraces {
        */
       const accountId = 'test_TRACE_USER';
       const sequences = JSON.stringify(datesFromLimit(6));
+      debug('Mock requested for', accountId, ' at ', sequences);
+
       const generatedDataMock = await this.generateMockData(
         accountId,
         sequences,
       );
-      track('Generated mocks: ', generatedDataMock);
+
+      debug('Generated mocks: ', generatedDataMock);
 
       await this.deleteIndex();
       await this.setIndex();
@@ -177,29 +180,29 @@ class PopulateAccountTraces {
   }
 
   async generateMockData(accountId, sequences = '[]') {
-    track('Extract dates from request');
+    debug('Extract dates from request');
     const dates = extractDates(sequences);
 
     const directory = path.join(__dirname, '..', `/mocks`);
-    track(`Grab standard cinematic to mock in directory: ${directory}`);
+    debug(`Grab standard cinematic to mock in directory: ${directory}`);
     const paths = findFilesInDir(directory, /.*mock$/);
 
-    track(`Prepare mock order for ${dates.join(',')}`);
+    debug(`Prepare mock order for ${dates.join(',')}`);
     const orders = dates.map((date, index) => [
       date.toMillis(),
       paths[index % paths.length],
     ]);
 
-    track(`Render ${orders.length} group of mocks`);
+    debug(`Render ${orders.length} group of mocks`);
     const jobs = orders.map(([time, mock]) =>
       ejs.renderFile(mock, { accountId, time }),
     );
     const data = await Promise.all(jobs);
 
-    track(`Join ${data.length} group of generated mocks`);
+    debug(`Join ${data.length} group of generated mocks`);
     const raw = data.join('\n');
 
-    track('Parse logs from source');
+    debug('Parse logs from source');
     const logs = await buildEventsFromLogs(accountId, raw);
 
     return logs;
