@@ -19,6 +19,9 @@ import { ICsmrTracksInputLegacy, ICsmrTracksLegacyTrack } from '../interfaces';
 
 export const PLATFORM = 'FranceConnect';
 
+const SIX_MONTHS_AGO = 'now-6M/d';
+const NOW = 'now';
+
 export const LEGACY_SCOPES_SEPARATOR = ', ';
 
 const EVENT_MAPPING = {
@@ -76,12 +79,12 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
     const includes = formatMultiMatchGroup(ACTIONS_TO_INCLUDE);
 
     const criteria = [
-      { match: { accountId } },
+      { term: { accountId } },
       {
         range: {
           time: {
-            gte: 'now-6M/d',
-            lt: 'now',
+            gte: SIX_MONTHS_AGO,
+            lt: NOW,
           },
         },
       },

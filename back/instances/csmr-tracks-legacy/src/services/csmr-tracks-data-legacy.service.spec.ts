@@ -10,6 +10,7 @@ import {
   CsmrTracksUnknownActionException,
   CsmrTracksUnknownSpException,
 } from '../exceptions';
+import { accountQueryMock } from '../fixtures';
 import { ICsmrTracksInputLegacy, ICsmrTracksLegacyTrack } from '../interfaces';
 import { CsmrTracksLegacyDataService } from './csmr-tracks-data-legacy.service';
 
@@ -69,72 +70,12 @@ describe('CsmrTracksLegacyDataService', () => {
   describe('formatQuery()', () => {
     const indexMock = 'indexMockValue';
     const accountIdMock = 'accountIdMockValue';
-    const requestMock = {
-      index: 'indexMockValue',
-      body: {
-        from: 0,
-        sort: [{ time: { order: 'desc' } }],
-        query: {
-          bool: {
-            must: [
-              { match: { accountId: 'accountIdMockValue' } },
-              { range: { time: { gte: 'now-6M/d', lt: 'now' } } },
-              {
-                bool: {
-                  should: [
-                    {
-                      bool: {
-                        must: [
-                          { match: { action: 'authentication' } },
-                          // Legacy naming
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          { match: { type_action: 'initial' } },
-                        ],
-                      },
-                    },
-                    {
-                      bool: {
-                        must: [
-                          { match: { action: 'consent' } },
-                          // Legacy naming
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          { match: { type_action: 'demandeIdentity' } },
-                        ],
-                      },
-                    },
-                    {
-                      bool: {
-                        must: [
-                          { match: { action: 'consent' } },
-                          // Legacy naming
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          { match: { type_action: 'demandeData' } },
-                        ],
-                      },
-                    },
-                    {
-                      bool: {
-                        must: [
-                          { match: { action: 'checkedToken' } },
-                          // Legacy naming
-                          // eslint-disable-next-line @typescript-eslint/naming-convention
-                          { match: { type_action: 'verification' } },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        },
-      },
-    };
+
     it('should format request with accountId and index', () => {
       // Given / when
       const request = service.formatQuery(indexMock, accountIdMock);
       // Then
-      expect(request).toStrictEqual(requestMock);
+      expect(request).toStrictEqual(accountQueryMock);
     });
   });
 

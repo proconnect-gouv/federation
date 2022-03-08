@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import { ICsmrTracksOutputTrack } from '@fc/tracks';
 
+import { accountQueryMock } from '../fixtures';
 import { ICsmrTracksInputHigh } from '../interfaces';
 import { CsmrTracksHighDataService } from './csmr-tracks-data-high.service';
 
@@ -41,64 +42,11 @@ describe('CsmrTracksHighDataService', () => {
   });
 
   describe('formatQuery()', () => {
-    const indexMock = 'indexMockValue';
-    const accountIdMock = 'accountIdMockValue';
-    const requestMock = {
-      index: indexMock,
-      body: {
-        from: 0,
-        sort: [{ date: { order: 'desc' } }],
-        query: {
-          bool: {
-            must: [
-              { match: { accountId: accountIdMock } },
-              { range: { date: { gte: 'now-6M/d', lt: 'now' } } },
-              {
-                bool: {
-                  should: [
-                    {
-                      bool: {
-                        must: [{ match: { event: 'FC_VERIFIED' } }],
-                      },
-                    },
-                    {
-                      bool: {
-                        must: [
-                          {
-                            match: { event: 'FC_DATATRANSFER:CONSENTIDENTITY' },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      bool: {
-                        must: [
-                          {
-                            match: { event: 'FC_DATATRANSFER:CONSENT:DATA' },
-                          },
-                        ],
-                      },
-                    },
-                    {
-                      bool: {
-                        must: [
-                          {
-                            match: { event: 'DP_REQUESTED_FC_CHECKTOKEN' },
-                          },
-                        ],
-                      },
-                    },
-                  ],
-                },
-              },
-            ],
-          },
-        },
-      },
-    };
     it('should format request with accountId and index', () => {
+      const indexMock = 'indexMockValue';
+      const accountIdMock = 'accountIdMockValue';
       const request = service.formatQuery(indexMock, accountIdMock);
-      expect(request).toStrictEqual(requestMock);
+      expect(request).toStrictEqual(accountQueryMock);
     });
   });
 
