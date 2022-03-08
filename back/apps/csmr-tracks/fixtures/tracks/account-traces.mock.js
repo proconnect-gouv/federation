@@ -5,8 +5,18 @@ const accountId = 'test_TRACE_USER';
 let count = 0;
 const datamock = [
   {
-    event: 'FC_REQUESTED_IDP_USERINFO',
+    event: 'FC_DATATRANSFER:CONSENTIDENTITY',
     date: placeholders.MORE_THAN_6_MONTHS,
+    accountId,
+    spId: `00${++count}`,
+    spName: 'NotNotAppear',
+    spAcr: 'eidas1',
+    country: 'FR',
+    city: 'Paris',
+  },
+  {
+    event: 'FC_DATATRANSFER:CONSENTIDENTITY',
+    date: placeholders.LESS_THAN_6_MONTHS,
     accountId,
     spId: `00${++count}`,
     spName: 'Engie',
@@ -15,7 +25,7 @@ const datamock = [
     city: 'Paris',
   },
   {
-    event: 'not_relevant_event',
+    event: 'FC_DATATRANSFER:CONSENT:DATA',
     date: placeholders.LESS_THAN_6_MONTHS,
     accountId,
     spId: `00${++count}`,
@@ -25,7 +35,7 @@ const datamock = [
     city: 'Paris',
   },
   {
-    event: 'SP_REQUESTED_FC_USERINFO',
+    event: 'FC_VERIFIED',
     date: placeholders.LESS_THAN_6_MONTHS,
     accountId,
     spId: `00${++count}`,

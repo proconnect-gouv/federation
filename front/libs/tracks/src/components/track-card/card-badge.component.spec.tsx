@@ -5,9 +5,7 @@ import { TrackCardBadgeComponent } from './card-badge.component';
 describe('TrackCardBadgeComponent', () => {
   it('should always render a FranceConnect badge', () => {
     // given
-    const { getByText } = render(
-      <TrackCardBadgeComponent fromFcPlus={false} type="SP_REQUESTED_FC_USERINFO" />,
-    );
+    const { getByText } = render(<TrackCardBadgeComponent fromFcPlus={false} type="FC_VERIFIED" />);
     // when
     const element = getByText('FranceConnect');
     // then
@@ -18,9 +16,7 @@ describe('TrackCardBadgeComponent', () => {
 
   it('render a FranceConnectPlus badge', () => {
     // given
-    const { getByText } = render(
-      <TrackCardBadgeComponent fromFcPlus type="SP_REQUESTED_FC_USERINFO" />,
-    );
+    const { getByText } = render(<TrackCardBadgeComponent fromFcPlus type="FC_VERIFIED" />);
     // when
     const element = getByText('FranceConnect+');
     // then
@@ -29,10 +25,19 @@ describe('TrackCardBadgeComponent', () => {
     expect(element.parentElement).toHaveClass('bg-blue-agentconnect');
   });
 
-  it('should always render the SP_REQUESTED_FC_USERINFO badge', () => {
+  it('should always render the FC_VERIFIED badge', () => {
+    // given
+    const { getByText } = render(<TrackCardBadgeComponent fromFcPlus type="FC_VERIFIED" />);
+    // when
+    const element = getByText('Connexion');
+    // then
+    expect(element).toBeInTheDocument();
+  });
+
+  it('should always render the FC_DATATRANSFER:CONSENTIDENTITY badge', () => {
     // given
     const { getByText } = render(
-      <TrackCardBadgeComponent fromFcPlus type="SP_REQUESTED_FC_USERINFO" />,
+      <TrackCardBadgeComponent fromFcPlus type="FC_DATATRANSFER:CONSENTIDENTITY" />,
     );
     // when
     const element = getByText('Autorisation');
@@ -40,20 +45,11 @@ describe('TrackCardBadgeComponent', () => {
     expect(element).toBeInTheDocument();
   });
 
-  it('should always render the FC_REQUESTED_IDP_USERINFO badge', () => {
+  it('should always render the FC_DATATRANSFER:CONSENT:DATA badge', () => {
     // given
     const { getByText } = render(
-      <TrackCardBadgeComponent fromFcPlus type="FC_REQUESTED_IDP_USERINFO" />,
+      <TrackCardBadgeComponent fromFcPlus type="FC_DATATRANSFER:CONSENT:DATA" />,
     );
-    // when
-    const element = getByText('Connexion');
-    // then
-    expect(element).toBeInTheDocument();
-  });
-
-  it('should always render the NOT_RELEVANT_EVENT badge', () => {
-    // given
-    const { getByText } = render(<TrackCardBadgeComponent fromFcPlus type="not_relevant_event" />);
     // when
     const element = getByText('Échange de Données');
     // then

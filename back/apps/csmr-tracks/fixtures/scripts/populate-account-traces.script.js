@@ -229,7 +229,7 @@ class PopulateAccountTraces {
                 event: { type: 'keyword' },
                 spId: { type: 'text' },
                 date: { type: 'date' },
-                accountId: { type: 'text' },
+                accountId: { type: 'keyword' },
                 spName: { type: 'text' },
                 spAcr: { type: 'keyword' },
                 country: { type: 'keyword' },

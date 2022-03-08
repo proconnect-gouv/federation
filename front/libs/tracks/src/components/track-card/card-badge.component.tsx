@@ -11,20 +11,20 @@ import {
 import { Badges } from '../../interfaces';
 
 const TYPE_CONFIG = {
-  FC_REQUESTED_IDP_USERINFO: {
-    Icon: UserIcon,
-    backgroundColor: '#66a1e4',
-    label: 'Connexion',
-  },
-  NOT_RELEVANT_EVENT: {
+  'FC_DATATRANSFER:CONSENT:DATA': {
     Icon: ArrowsIcon,
     backgroundColor: '#f4a381',
     label: 'Échange de Données',
   },
-  SP_REQUESTED_FC_USERINFO: {
+  'FC_DATATRANSFER:CONSENTIDENTITY': {
     Icon: CheckIcon,
     backgroundColor: '#40d496',
     label: 'Autorisation',
+  },
+  FC_VERIFIED: {
+    Icon: UserIcon,
+    backgroundColor: '#66a1e4',
+    label: 'Connexion',
   },
 } as Badges;
 
