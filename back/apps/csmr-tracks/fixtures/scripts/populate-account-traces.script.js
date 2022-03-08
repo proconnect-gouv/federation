@@ -6,7 +6,7 @@ const path = require('path');
 
 const datamock = require('../tracks/account-traces.mock');
 const placeholders = require('../enums/placeholders.enum');
-const findFilesInDir = require('./helpers/findFilesInDir');
+const findFilesInDir = require('./helpers/find-files-in-dir');
 
 const ELASTIC_TRACKS_INDEX = process.env.Elasticsearch_TRACKS_INDEX;
 const ELASTIC_NODES = JSON.parse(process.env.Elasticsearch_NODES);
@@ -183,7 +183,7 @@ class PopulateAccountTraces {
     debug('Extract dates from request');
     const dates = extractDates(sequences);
 
-    const directory = path.join(__dirname, '..', `/mocks`);
+    const directory = path.join(__dirname, '..', `/tracks`);
     debug(`Grab standard cinematic to mock in directory: ${directory}`);
     const paths = findFilesInDir(directory, /.*mock.ejs$/);
 
