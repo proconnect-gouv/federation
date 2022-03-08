@@ -185,7 +185,7 @@ class PopulateAccountTraces {
 
     const directory = path.join(__dirname, '..', `/mocks`);
     debug(`Grab standard cinematic to mock in directory: ${directory}`);
-    const paths = findFilesInDir(directory, /.*mock$/);
+    const paths = findFilesInDir(directory, /.*mock.ejs$/);
 
     debug(`Prepare mock order for ${dates.join(',')}`);
     const orders = dates.map((date, index) => [

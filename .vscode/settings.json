@@ -11,7 +11,8 @@
     {
       "directory": "quality",
       "changeProcessCWD": true
-    },
+    }
   ],
-  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" }
+  "[typescriptreact]": { "editor.defaultFormatter": "esbenp.prettier-vscode" },
+  "prettier.ignorePath": "**/.prettierignore"
 }
