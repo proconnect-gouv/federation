@@ -48,7 +48,7 @@ export function formatMultiMatchGroup(
         // then spreading the code into sub-function
         // eslint-disable-next-line max-nested-callbacks
         fields.map((field) => ({
-          match: Object.fromEntries([field]),
+          term: Object.fromEntries([field]),
         })),
       ),
     );

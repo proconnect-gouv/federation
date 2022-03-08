@@ -42,12 +42,12 @@ describe('formatMultiMatchGroup()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key1',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar1',
                   },
                 },
@@ -58,12 +58,12 @@ describe('formatMultiMatchGroup()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key2',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar3',
                   },
                 },
@@ -74,12 +74,12 @@ describe('formatMultiMatchGroup()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key3',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar3',
                   },
                 },
@@ -90,12 +90,12 @@ describe('formatMultiMatchGroup()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key4',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar4',
                   },
                 },
@@ -121,12 +121,12 @@ describe('formatMultiMatchGroup()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key1',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar1',
                   },
                 },
@@ -137,12 +137,12 @@ describe('formatMultiMatchGroup()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key2',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar3',
                   },
                 },
@@ -153,12 +153,12 @@ describe('formatMultiMatchGroup()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key3',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar3',
                   },
                 },
@@ -169,12 +169,12 @@ describe('formatMultiMatchGroup()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key4',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar4',
                   },
                 },

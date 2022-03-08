@@ -26,6 +26,9 @@ const TRACK_PROPERTIES = [
 
 export const PLATFORM = 'FranceConnect+';
 
+const SIX_MONTHS_AGO = 'now-6M/d';
+const NOW = 'now';
+
 const EVENTS_TO_INCLUDE: Partial<ICsmrTracksHighTracks>[] = [
   {
     event: 'FC_VERIFIED',
@@ -51,12 +54,12 @@ export class CsmrTracksHighDataService implements IAppTracksDataService {
     const includes = formatMultiMatchGroup(EVENTS_TO_INCLUDE);
 
     const criteria = [
-      { match: { accountId } },
+      { term: { accountId } },
       {
         range: {
           date: {
-            gte: 'now-6M/d',
-            lt: 'now',
+            gte: SIX_MONTHS_AGO,
+            lt: NOW,
           },
         },
       },
