@@ -3,7 +3,12 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { useApiGet } from '@fc/common';
 
-import { FormValues, UserPreferencesConfig, UserPreferencesData } from '../interfaces';
+import {
+  FormValues,
+  IGetCsrfTokenResponse,
+  UserPreferencesConfig,
+  UserPreferencesData,
+} from '../interfaces';
 import { UserPreferencesService } from '../services';
 
 export const useUserPreferencesApi = (options: UserPreferencesConfig) => {
@@ -28,17 +33,28 @@ export const useUserPreferencesApi = (options: UserPreferencesConfig) => {
   }, []);
 
   const commit = useCallback(
-    ({ allowFutureIdp, idpList }) => {
+    async ({ allowFutureIdp, idpList }) => {
+      const {
+        data: { csrfToken },
+      } = await axios.get<IGetCsrfTokenResponse>(options.API_ROUTE_CSRF_TOKEN);
+
       const data = UserPreferencesService.encodeFormData({
         allowFutureIdp,
+        csrfToken,
         idpList,
       });
+
       return axios
         .post(options.API_ROUTE_USER_PREFERENCES, data)
         .then(commitSuccessHandler)
         .catch(commitErrorHandler);
     },
-    [commitSuccessHandler, commitErrorHandler, options.API_ROUTE_USER_PREFERENCES],
+    [
+      commitSuccessHandler,
+      commitErrorHandler,
+      options.API_ROUTE_CSRF_TOKEN,
+      options.API_ROUTE_USER_PREFERENCES,
+    ],
   );
 
   useEffect(() => {
