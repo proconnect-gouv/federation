@@ -1,10 +1,11 @@
+stages:
+  - 'Build Front'
+
 .base-build-front:
   stage: 'Build Front'
   image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
   tags:
     - build
-  only:
-    - tags
   when: manual
   environment:
     name: build
