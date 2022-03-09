@@ -287,7 +287,10 @@
       "entryFile": "main",
       "sourceRoot": "instances/csmr-user-preferences-high/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/csmr-user-preferences-high/tsconfig.app.json"
+        "tsConfigPath": "instances/csmr-user-preferences-high/tsconfig.app.json",
+        "assets": [
+          "../../../instances/csmr-user-preferences-high/**/*.ejs"
+        ]
       }
     },
     "tracks-data-provider-instance": {
