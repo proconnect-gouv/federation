@@ -13,7 +13,7 @@ import { Account } from '../schemas';
 export class AccountService {
   constructor(
     private readonly logger: LoggerService,
-    @InjectModel('Account') private model: Model<any>,
+    @InjectModel('Account') private model: Model<Account>,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -102,11 +102,7 @@ export class AccountService {
     const account: Account = await this.model.findOne({ identityHash });
     this.logger.trace({ account });
 
-    if (!account) {
-      return { id: null } as Account;
-    }
-
-    return account;
+    return account || ({ id: null } as Account);
   }
 
   /**
