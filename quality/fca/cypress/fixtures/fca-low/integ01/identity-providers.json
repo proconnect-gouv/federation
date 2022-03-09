@@ -2,17 +2,17 @@
   {
     "idpId": "fia1v2",
     "descriptions": [
+      "actif",
       "par défaut",
       "whitelisté",
       "non blacklisté",
-      "rattaché à un ministère avec plusieurs FI",
-      "rattaché à plusieurs ministères"
+      "rattaché à un ministère avec plusieurs FI"
     ],
     "ministry": "Démonstration",
     "title": "Identity Provider 1 - HS256",
     "mocked": true,
     "usable": true,
-    "url": "https://fia1v2.integ01.dev-agentconnect.fr/interaction",
+    "url": "https://fia1v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "HS256",
@@ -30,7 +30,7 @@
     "title": "Identity Provider 2 - ES256",
     "mocked": true,
     "usable": true,
-    "url": "https://fia2v2.integ01.dev-agentconnect.fr/interaction",
+    "url": "https://fia2v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "ES256",
@@ -45,7 +45,6 @@
     "idpId": "fia3v2",
     "descriptions": [
       "FI eidas1 avec signature RS256",
-      "actif",
       "non whitelisté",
       "blacklisté"
     ],
@@ -53,7 +52,7 @@
     "title": "Identity Provider 3 - RS256",
     "mocked": true,
     "usable": true,
-    "url": "https://fia3v2.integ01.dev-agentconnect.fr/interaction",
+    "url": "https://fia3v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "RS256",
@@ -71,7 +70,7 @@
     "title": "Identity Provider 4 - désactivé et visible",
     "mocked": true,
     "usable": false,
-    "url": "https://fia4-desactive-visible.integ01.dev-agentconnect.fr/interaction",
+    "url": "https://fia4-desactive-visible.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "ES256",
@@ -86,7 +85,7 @@
     "title": "Identity Provider 5 - activé et invisible",
     "mocked": true,
     "usable": false,
-    "url": "https://fia5-active-invisible.integ01.dev-agentconnect.fr/interaction",
+    "url": "https://fia5-active-invisible.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "ES256",
@@ -101,12 +100,30 @@
     "title": "Identity Provider 6 - désactivé et invisible",
     "mocked": true,
     "usable": false,
-    "url": "https://fia6-desactive-invisible.integ01.dev-agentconnect.fr/interaction",
+    "url": "https://fia6-desactive-invisible.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "ES256",
     "selectors": {
       "idpButton": "#idp-fia6-desactive-invisible"
+    }
+  },
+  {
+    "idpId": "cerbere",
+    "descriptions": ["rattaché à plusieurs ministères"],
+    "ministry": "Ministère de la Transition écologique",
+    "title": "Cerbère",
+    "mocked": false,
+    "usable": true,
+    "url": "https://authentification.recette.din.developpement-durable.gouv.fr",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "RS256",
+    "selectors": {
+      "idpButton": "#idp-cerbere-button",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "button[type='submit']"
     }
   }
 ]
