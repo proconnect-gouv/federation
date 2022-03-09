@@ -105,7 +105,7 @@ fc+/fsp1v2-tag-to-prod-image:
 fc+/csmr-hsm-build-image:
   extends: .base-build
   variables:
-    APP: csmr-hsm
+    APP: csmr-hsm-high
     MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_hsm_version:"
 
 fc+/csmr-hsm-tag-to-prod-image:
