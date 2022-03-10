@@ -42,7 +42,7 @@ fcp-and-eidas-high:
     - docker-stack dep core-fcp-high
     - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
     - cd $CI_PROJECT_DIR/quality/fcp && yarn install
-    - docker-stack fixtures-v2
+    - docker-stack fixtures-fcp-high
     - cd $CI_PROJECT_DIR
     # Start the NodeJS apps
     - docker-stack start-ci \
