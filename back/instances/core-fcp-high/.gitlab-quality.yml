@@ -36,7 +36,7 @@ quality-fcp-high-docker:
     - docker-stack up all-fcp-high
     - docker exec fc_core-fcp-high_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker-stack dep core-fcp-high
-    - docker-stack fixtures-v2
+    - docker-stack fixtures-fcp-high
     - docker-stack start \
       csmr-hsm rnipp exploitation-high \
       fsp1-high fsp2-high fsp5-high fsp6-high \

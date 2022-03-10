@@ -37,7 +37,7 @@ fcp-low:
     - cd $CI_PROJECT_DIR/quality/fcp && yarn install
     - cd $CI_PROJECT_DIR
     # Start the NodeJS apps
-    - docker-stack start rnipp fsp1-low fip1-low fip2-low fip3-low core-fcp-low
+    - docker-stack start rnipp fsp1-low fsp2-low fip1-low fip2-low fip3-low core-fcp-low
     # Ensure the required apps are running
     - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
       do echo "Waiting for core-fcp-low..." && sleep 10; done' || (
