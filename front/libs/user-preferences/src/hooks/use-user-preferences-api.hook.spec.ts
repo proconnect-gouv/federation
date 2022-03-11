@@ -112,7 +112,7 @@ describe('useUserPreferencesApi', () => {
       expect(result.current).toStrictEqual({
         commit: expect.any(Function),
         formValues: {
-          allowFutureIdp: true,
+          allowFutureIdp: false,
           idpList,
         },
         submitErrors: undefined,
@@ -122,6 +122,11 @@ describe('useUserPreferencesApi', () => {
     });
 
     it('should call UserPreferencesService.encodeFormData when commit is called with params', async () => {
+      // given
+      mocked(UserPreferencesService.parseFormData).mockReturnValueOnce({
+        allowFutureIdp: true,
+        idpList,
+      });
       // when
       const { result, waitForNextUpdate } = renderHook(() => useUserPreferencesApi(options));
       act(() => {
@@ -131,7 +136,7 @@ describe('useUserPreferencesApi', () => {
       await waitForNextUpdate();
       expect(UserPreferencesService.encodeFormData).toHaveBeenCalledTimes(1);
       expect(UserPreferencesService.encodeFormData).toHaveBeenCalledWith({
-        allowFutureIdp: false,
+        allowFutureIdp: true,
         csrfToken,
         idpList,
       });
@@ -139,6 +144,10 @@ describe('useUserPreferencesApi', () => {
 
     it('should call axios.post when commit is called with params', async () => {
       // given
+      mocked(UserPreferencesService.parseFormData).mockReturnValueOnce({
+        allowFutureIdp: true,
+        idpList,
+      });
       const dataMock = new URLSearchParams();
       dataMock.append('allowFutureIdp', 'true');
       dataMock.append('idpList', 'idplistmock');
@@ -157,16 +166,19 @@ describe('useUserPreferencesApi', () => {
     it('should resolve axios.post and return formValues', async () => {
       // given
       const checkedSymbol = Symbol('checked');
-      const dataValueMock = [
-        {
-          active: false,
-          image: 'any-image',
-          isChecked: checkedSymbol,
-          name: 'any-name-1',
-          title: 'any-title',
-          uid: 'any-uid-1',
-        },
-      ];
+      const dataValueMock = {
+        allowFutureIdp: false,
+        idpList: [
+          {
+            active: false,
+            image: 'any-image',
+            isChecked: checkedSymbol,
+            name: 'any-name-1',
+            title: 'any-title',
+            uid: 'any-uid-1',
+          },
+        ],
+      };
       const parseFormDataMock = mocked(UserPreferencesService.parseFormData).mockImplementation(
         (v) => v as unknown as FormValues,
       );
@@ -185,11 +197,16 @@ describe('useUserPreferencesApi', () => {
       await waitForNextUpdate();
       expect(axios.post).toHaveBeenCalledTimes(1);
       expect(UserPreferencesService.encodeFormData).toHaveBeenCalledTimes(1);
+      expect(UserPreferencesService.encodeFormData).toHaveBeenCalledWith({
+        allowFutureIdp: true,
+        csrfToken: 'csrfTokenMockValue',
+        idpList: expect.any(Object),
+      });
       expect(UserPreferencesService.parseFormData).toHaveBeenCalledTimes(2);
       expect(UserPreferencesService.parseFormData).toHaveBeenNthCalledWith(2, dataValueMock);
       expect(result.current).toStrictEqual({
         commit: expect.any(Function),
-        formValues: dataValueMock,
+        formValues: { ...dataValueMock, allowFutureIdp: !dataValueMock.allowFutureIdp },
         submitErrors: undefined,
         submitWithSuccess: true,
         userPreferences: { allowFutureIdp: false, idpList: expect.any(Object) },
@@ -200,6 +217,10 @@ describe('useUserPreferencesApi', () => {
 
     it('should reject axios.post and return errored values', async () => {
       // given
+      mocked(UserPreferencesService.parseFormData).mockReturnValueOnce({
+        allowFutureIdp: true,
+        idpList,
+      });
       const errorMock = new Error('any-error');
       mocked(axios.post).mockRejectedValueOnce(errorMock);
       // when
@@ -212,7 +233,10 @@ describe('useUserPreferencesApi', () => {
       await waitForNextUpdate();
       expect(result.current).toStrictEqual({
         commit: expect.any(Function),
-        formValues: undefined,
+        formValues: {
+          allowFutureIdp: false,
+          idpList,
+        },
         submitErrors: errorMock,
         submitWithSuccess: false,
         userPreferences: { allowFutureIdp: false, idpList: expect.any(Object) },
