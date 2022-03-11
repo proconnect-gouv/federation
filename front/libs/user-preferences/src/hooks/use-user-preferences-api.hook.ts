@@ -26,8 +26,8 @@ export const useUserPreferencesApi = (options: UserPreferencesConfig) => {
   }, []);
 
   const commitSuccessHandler = useCallback(({ data }) => {
-    const values = UserPreferencesService.parseFormData(data);
-    setFormValues(values);
+    const { allowFutureIdp, idpList } = UserPreferencesService.parseFormData(data);
+    setFormValues({ allowFutureIdp: !allowFutureIdp, idpList });
     setSubmitErrors(undefined);
     setSubmitWithSuccess(true);
   }, []);
@@ -39,7 +39,7 @@ export const useUserPreferencesApi = (options: UserPreferencesConfig) => {
       } = await axios.get<IGetCsrfTokenResponse>(options.API_ROUTE_CSRF_TOKEN);
 
       const data = UserPreferencesService.encodeFormData({
-        allowFutureIdp,
+        allowFutureIdp: !allowFutureIdp,
         csrfToken,
         idpList,
       });
@@ -64,8 +64,8 @@ export const useUserPreferencesApi = (options: UserPreferencesConfig) => {
       // when
       // if initial userPreferences has already been loaded
       // and if form values has not yet been set
-      const values = UserPreferencesService.parseFormData(userPreferences);
-      setFormValues(values);
+      const { allowFutureIdp, idpList } = UserPreferencesService.parseFormData(userPreferences);
+      setFormValues({ allowFutureIdp: !allowFutureIdp, idpList });
     }
   }, [userPreferences, formValues]);
 
