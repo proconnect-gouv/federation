@@ -4,7 +4,7 @@ const { Client } = require('@elastic/elasticsearch');
 const ejs = require('ejs');
 const path = require('path');
 
-const datamock = require('../tracks/account-traces.mock');
+const dataMock = require('../tracks/account-traces.mock');
 const placeholders = require('../enums/placeholders.enum');
 const findFilesInDir = require('./helpers/find-files-in-dir');
 
@@ -86,8 +86,8 @@ class PopulateAccountTraces {
   esClient;
   mock;
 
-  constructor(datamock) {
-    this.mock = datamock;
+  constructor(data) {
+    this.mock = data;
   }
 
   async run() {
@@ -276,7 +276,7 @@ class PopulateAccountTraces {
         }
       }
 
-      // -- control if the datamock have been correctly imported.
+      // -- control if the dataMock have been correctly imported.
       const { body: total } = await this.esClient.count({
         index: ELASTIC_TRACKS_INDEX,
       });
@@ -284,7 +284,7 @@ class PopulateAccountTraces {
         console.warn('PopulateAccountTraces.save()', {
           error: 'All mocks were not imported',
           count: total.count,
-          datamockLength: this.mock.length,
+          dataMockLength: this.mock.length,
         });
       }
     } catch (error) {
@@ -322,4 +322,4 @@ class PopulateAccountTraces {
   }
 }
 
-new PopulateAccountTraces(datamock).run();
+new PopulateAccountTraces(dataMock).run();
