@@ -23,8 +23,8 @@ export const LEGACY_SCOPES_SEPARATOR = ', ';
 
 const EVENT_MAPPING = {
   'authentication/initial': 'FC_VERIFIED',
-  'consent/demandeIdentity': 'FC_DATATRANSFER:CONSENT:IDENTITY',
-  'consent/demandeData': 'FC_DATATRANSFER:CONSENT:DATA',
+  'consent/demandeIdentity': 'FC_DATATRANSFER_CONSENT_IDENTITY',
+  'consent/demandeData': 'FC_DATATRANSFER_CONSENT_DATA',
   'checkedToken/verification': 'DP_REQUESTED_FC_CHECKTOKEN',
 };
 
