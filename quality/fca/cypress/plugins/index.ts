@@ -21,6 +21,7 @@ import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
 import * as processFixtureTemplate from 'cypress-template-fixtures';
 import * as resolve from 'resolve';
 
+import { log, table } from './console-log-plugin';
 import { getFixturePath } from './fixture-plugin';
 
 module.exports = (on, config) => {
@@ -34,6 +35,8 @@ module.exports = (on, config) => {
 
   on('task', {
     getFixturePath,
+    log,
+    table,
   });
 
   on('file:preprocessor', cucumber(options));
