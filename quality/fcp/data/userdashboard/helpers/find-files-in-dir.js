@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { existsSync, lstatSync, readdirSync } = require('fs');
 const { join } = require('path');
 
@@ -9,7 +8,6 @@ const { join } = require('path');
  * @param  {RegExp} filter       Extension name, e.g: '.html'
  * @return {Array}               Result files with path string in an array
  */
-// eslint-disable-next-line complexity
 function findFilesInDir(startPath, regExp) {
   if (!existsSync(startPath)) {
     throw new Error(`Unknown directory at path : ${startPath}`);
