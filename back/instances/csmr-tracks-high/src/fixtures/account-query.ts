@@ -1,13 +1,25 @@
+/* istanbul ignore file */
+
+// Declarative code
 export const accountQueryMock = {
   index: 'indexMockValue',
   body: {
     from: 0,
-    sort: [{ date: { order: 'desc' } }],
+    sort: [
+      {
+        date: {
+          order: 'desc',
+          // official ElasticSearch params
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          unmapped_type: 'keyword',
+        },
+      },
+    ],
     query: {
       bool: {
         must: [
           { term: { accountId: 'accountIdMockValue' } },
-          { range: { date: { gte: 'now-6M/d', lt: 'now' } } },
+          { range: { time: { gte: 'now-6M/d', lt: 'now' } } },
           {
             bool: {
               should: [

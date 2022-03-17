@@ -57,7 +57,7 @@ export class CsmrTracksHighDataService implements IAppTracksDataService {
       { term: { accountId } },
       {
         range: {
-          date: {
+          time: {
             gte: SIX_MONTHS_AGO,
             lt: NOW,
           },
@@ -70,7 +70,9 @@ export class CsmrTracksHighDataService implements IAppTracksDataService {
       index,
       body: {
         from: 0,
-        sort: [{ date: { order: 'desc' } }],
+        // ElasticSearch params name unmapped_type
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        sort: [{ date: { order: 'desc', unmapped_type: 'keyword' } }],
         query: {
           bool: {
             must: criteria,
