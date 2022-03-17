@@ -178,7 +178,7 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
   }
 
   async transformTrack(source: ICsmrTracksLegacyTrack) {
-    const time = DateTime.fromISO(source.time).toMillis();
+    const time = DateTime.fromISO(source.time, { zone: 'utc' }).toMillis();
     const { fi: idpName } = source;
 
     const spAcr = this.getAcrValue(source);

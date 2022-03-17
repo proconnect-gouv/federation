@@ -13,7 +13,7 @@
     "build:csmr-rie": "nest build csmr-rie",
     "build:csmr-tracks-high": "nest build csmr-tracks-high",
     "build:csmr-tracks-legacy": "nest build csmr-tracks-legacy",
-    "build:csmr-aggregate-tracks": "nest build csmr-aggregate-tracks",
+    "build:csmr-aggregate-tracks": "nest build csmr-aggregate-tracks-instance",
     "build:eidas-bridge": "nest build eidas-bridge-instance",
     "build:bridge-http-proxy-rie": "nest build bridge-http-proxy-rie-instance",
     "build:tracks-data-provider": "nest build tracks-data-provider-instance",
