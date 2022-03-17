@@ -1,12 +1,14 @@
+import { DateTime } from 'luxon';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { CsmrTracksTransformTracksFailedException } from '@fc/csmr-tracks';
 import { LoggerService } from '@fc/logger';
 import { ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ICsmrTracksOutputTrack } from '@fc/tracks';
 
 import {
-  CsmrTracksTransformTracksFailedException,
   CsmrTracksUnknownActionException,
   CsmrTracksUnknownSpException,
 } from '../exceptions';
@@ -355,17 +357,18 @@ describe('CsmrTracksLegacyDataService', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         fs_label: 'fsLabelValue',
         eidas: 'eidas1',
-        time: '19/02/2022',
+        time: '2022-10-02',
       };
 
       const resultMock = {
         city: 'Pirate',
         claims: ['sub', 'given_name', 'gender'],
         country: 'PR',
-        date: '19/02/2022',
+        time: 1664661600000,
         event: 'FC_VERIFIED',
         spAcr: 'eidas1',
         spName: 'fsLabelValue',
+        idpName: 'fiValue',
       };
 
       // When
@@ -400,7 +403,7 @@ describe('CsmrTracksLegacyDataService', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           fs_label: 'fsLabelValue',
           eidas: 'eidas2',
-          time: '21/02/2022',
+          time: '2022-02-21',
         },
       },
       {
@@ -424,7 +427,7 @@ describe('CsmrTracksLegacyDataService', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           fs_label: 'fsLabelValue',
           eidas: 'eidas2',
-          time: '21/02/2022',
+          time: '2022-02-21',
         },
       },
       {
@@ -448,7 +451,7 @@ describe('CsmrTracksLegacyDataService', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           fs_label: 'fsLabelValue',
           eidas: 'eidas3',
-          time: '30/02/2022',
+          time: '2022-02-28',
         },
       },
     ];
@@ -459,31 +462,23 @@ describe('CsmrTracksLegacyDataService', () => {
 
     it('should format tracks from raw tracks', async () => {
       // Given
-      transformTrackMock.mockImplementation(({ eidas, time, name }) => {
-        return Promise.resolve({
-          spAcr: eidas,
-          date: time,
-          spName: name,
-        });
-      });
-
       const tracksOutputMock: Partial<ICsmrTracksOutputTrack>[] = [
         {
-          date: '21/02/2022',
+          time: 1645398000000,
           spName: 'nameValue',
           platform: 'FranceConnect',
           spAcr: 'eidas2',
           trackId: 'id1',
         },
         {
-          date: '21/02/2022',
+          time: 1645398000000,
           spName: 'nameValue',
           platform: 'FranceConnect',
           spAcr: 'eidas2',
           trackId: 'id2',
         },
         {
-          date: '30/02/2022',
+          time: 1646002800000,
           spName: 'nameValue',
           platform: 'FranceConnect',
           spAcr: 'eidas3',
@@ -491,10 +486,27 @@ describe('CsmrTracksLegacyDataService', () => {
         },
       ];
 
+      transformTrackMock
+        .mockResolvedValueOnce(tracksOutputMock[0])
+        .mockResolvedValueOnce(tracksOutputMock[1])
+        .mockResolvedValueOnce(tracksOutputMock[2]);
+
       // When
       const tracks = await service.formattedTracks(rawTracksMock);
       // Then
       expect(tracks).toStrictEqual(tracksOutputMock);
+      expect(transformTrackMock).toHaveBeenNthCalledWith(
+        1,
+        rawTracksMock[0]._source,
+      );
+      expect(transformTrackMock).toHaveBeenNthCalledWith(
+        2,
+        rawTracksMock[1]._source,
+      );
+      expect(transformTrackMock).toHaveBeenNthCalledWith(
+        3,
+        rawTracksMock[2]._source,
+      );
     });
 
     it('should throw an exception if tracks transforming failed', async () => {

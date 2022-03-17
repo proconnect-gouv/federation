@@ -1,9 +1,13 @@
 import { Search } from '@elastic/elasticsearch/api/requestParams';
 import { isString } from 'class-validator';
+import { DateTime } from 'luxon';
 
 import { Injectable } from '@nestjs/common';
 
-import { IAppTracksDataService } from '@fc/csmr-tracks';
+import {
+  CsmrTracksTransformTracksFailedException,
+  IAppTracksDataService,
+} from '@fc/csmr-tracks';
 import { formatMultiMatchGroup } from '@fc/elasticsearch';
 import { LoggerLevelNames, LoggerService } from '@fc/logger';
 import { ScopesService } from '@fc/scopes';
@@ -11,7 +15,6 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import { ICsmrTracksOutputTrack } from '@fc/tracks';
 
 import {
-  CsmrTracksTransformTracksFailedException,
   CsmrTracksUnknownActionException,
   CsmrTracksUnknownSpException,
 } from '../exceptions';
@@ -175,7 +178,8 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
   }
 
   async transformTrack(source: ICsmrTracksLegacyTrack) {
-    const date = source.time;
+    const time = DateTime.fromISO(source.time).toMillis();
+    const { fi: idpName } = source;
 
     const spAcr = this.getAcrValue(source);
     const event = this.getEventFromAction(source);
@@ -185,9 +189,10 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
 
     const output: OutputTrack = {
       event,
-      date,
+      time,
       spName,
       spAcr,
+      idpName,
       country,
       city,
       claims,
@@ -199,7 +204,8 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
 
   /**
    * Get formated tracks reduced to their strict elements.
-   * Elasticsearch adds extra attributes to stored data that are not required.
+   * Elasticsearch adds extra attributes to stored data
+   * that are not required.
    */
   async formattedTracks(
     rawTracks: ICsmrTracksInputLegacy[],
@@ -217,6 +223,8 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
     );
     try {
       const tracks = await Promise.all(filteredProperties);
+
+      this.logger.trace({ tracks });
 
       return tracks;
     } catch (error) {
