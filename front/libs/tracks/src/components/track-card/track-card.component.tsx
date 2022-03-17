@@ -21,7 +21,8 @@ export const TrackCardComponent = React.memo(({ options, track }: TrackCardProps
     setOpened(next);
   }, [opened]);
 
-  const { city, claims, country, datetime, event, platform, spAcr, spName, trackId } = track;
+  const { city, claims, country, datetime, event, idpName, platform, spAcr, spName, trackId } =
+    track;
 
   /**
    * @todo #820
@@ -59,6 +60,7 @@ export const TrackCardComponent = React.memo(({ options, track }: TrackCardProps
         claims={claims}
         country={country}
         datetime={datetime}
+        idpName={idpName}
         opened={opened}
         spAcr={spAcr}
       />

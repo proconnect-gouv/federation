@@ -26,12 +26,13 @@ describe('TrackCardComponent', () => {
     city: 'mock-city',
     claims: ['claims1', 'claims2'],
     country: 'mock-country',
-    date: '2021-10-01T00:00:00.000+01:00',
     datetime: DateTime.fromObject({ day: 1, month: 10, year: 2021 }, { zone: 'Europe/Paris' }),
     event: 'mock-event',
+    idpName: 'mock-idpName',
     platform: 'FranceConnect',
     spAcr: 'eidas1' as keyof typeof EidasToLabel,
     spName: 'mock-spname',
+    time: 1633042800000, // '2021-10-01T00:00:00.000+01:00'
     trackId: 'mock-track-id',
   };
 
@@ -82,6 +83,7 @@ describe('TrackCardComponent', () => {
           claims: ['claims1', 'claims2'],
           country: 'mock-country',
           datetime: track.datetime,
+          idpName: track.idpName,
           opened: false,
           spAcr: track.spAcr,
         },
