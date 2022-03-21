@@ -5,9 +5,7 @@ const datamock = require('../mocks/account-traces.mock');
 const placeholders = require('../enums/placeholders.enum');
 
 const ELASTIC_TRACKS_INDEX = process.env.Elasticsearch_TRACKS_INDEX;
-const ELASTIC_PROTOCOL = process.env.Elasticsearch_PROTOCOL;
-const ELASTIC_HOST = process.env.Elasticsearch_HOST;
-const ELASTIC_PORT = process.env.Elasticsearch_PORT;
+const ELASTIC_NODES = JSON.parse(process.env.Elasticsearch_NODES);
 const ELASTIC_USERNAME = process.env.Elasticsearch_USERNAME;
 const ELASTIC_PASSWORD = process.env.Elasticsearch_PASSWORD;
 
@@ -55,12 +53,12 @@ class PopulateAccountTraces {
    * @returns {void}
    */
   initElasticsearchClient() {
-    const host = `${ELASTIC_PROTOCOL}://${ELASTIC_HOST}:${ELASTIC_PORT}`;
-    if (!(ELASTIC_PROTOCOL && ELASTIC_HOST && ELASTIC_PORT)) {
+    const [host] = ELASTIC_NODES || [];
+    if (!Array.isArray(ELASTIC_NODES) || !ELASTIC_NODES[0]) {
       throw new Error(`Problem with connection params: ${host}`);
     }
     this.esClient = new Client({
-      node: host,
+      nodes: ELASTIC_NODES,
       auth: { username: ELASTIC_USERNAME, password: ELASTIC_PASSWORD },
     });
   }
