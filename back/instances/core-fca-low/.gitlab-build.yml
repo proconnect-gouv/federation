@@ -143,6 +143,12 @@ fca/bridge-http-proxy-rie-build-image:
     APP: bridge-http-proxy-rie
     MSG: "environments/nubo12-fca-integ/group_vars/all/versions.yml\nbridge_http_proxy_rie_version:"
 
+fca/bridge-http-proxy-rie-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: bridge-http-proxy-rie
+    MSG: "environments/nubo12-fca-prod/group_vars/all/versions.yml\nbridge_http_proxy_rie_version:"
+
 fca/build-front:
   extends: .base-build-front
   variables:
