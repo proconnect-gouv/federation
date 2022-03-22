@@ -9,7 +9,7 @@ export default {
   // No discovery URL for legacy core
   discoveryUrl: undefined,
   provider: {
-    issuer: 'https://fcp.docker.dev-franceconnect.fr',
+    issuer: process.env.ISSUER,
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_id: process.env.CLIENT_ID,
