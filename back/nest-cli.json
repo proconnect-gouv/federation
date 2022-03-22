@@ -30,6 +30,7 @@
           "../../../apps/eidas-bridge/**/*.css",
           "../../../apps/eidas-bridge/**/*.js",
           "../../../apps/eidas-bridge/**/*.svg",
+          "../../../apps/eidas-bridge/**/*.woff2",
           "../../../libs/eidas-country/src/public/**/*.svg"
         ]
       }
@@ -45,7 +46,8 @@
           "../../../apps/core-fcp/**/*.ejs",
           "../../../apps/core-fcp/**/*.css",
           "../../../apps/core-fcp/**/*.js",
-          "../../../apps/core-fcp/**/*.svg"
+          "../../../apps/core-fcp/**/*.svg",
+          "../../../apps/core-fcp/**/*.woff2"
         ]
       }
     },
@@ -62,6 +64,7 @@
           "../../../apps/core-fcp/**/*.js",
           "../../../apps/core-fcp/**/*.svg",
           "../../../apps/core-fcp/**/*.png",
+          "../../../apps/core-fcp/**/*.woff2",
           "**/*.ejs"
         ]
       }
