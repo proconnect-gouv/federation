@@ -874,6 +874,33 @@
       "compilerOptions": {
         "tsConfigPath": "instances/csmr-tracks-legacy/tsconfig.app.json"
       }
+    },
+    "partners": {
+      "type": "library",
+      "root": "apps/partners",
+      "entryFile": "index",
+      "sourceRoot": "apps/partners/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/partners/tsconfig.lib.json"
+      }
+    },
+    "partners-fcp": {
+      "type": "application",
+      "root": "instances/partners-fcp",
+      "entryFile": "main",
+      "sourceRoot": "instances/partners-fcp/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/partners-fcp/tsconfig.app.json"
+      }
+    },
+    "partners-fca": {
+      "type": "application",
+      "root": "instances/partners-fca",
+      "entryFile": "main",
+      "sourceRoot": "instances/partners-fca/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/partners-fca/tsconfig.app.json"
+      }
     }
   }
 }

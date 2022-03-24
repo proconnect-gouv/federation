@@ -297,7 +297,8 @@
       "@fc/hybridge-http-proxy": "<rootDir>/libs/hybridge-http-proxy/src",
       "@fc/user-preferences/(.*)": "<rootDir>/libs/user-preferences/src/$1",
       "@fc/user-preferences": "<rootDir>/libs/user-preferences/src",
-      "^@fc/csmr-aggregate-tracks(|/.*)$": "<rootDir>/apps/csmr-aggregate-tracks/src/$1"
+      "^@fc/csmr-aggregate-tracks(|/.*)$": "<rootDir>/apps/csmr-aggregate-tracks/src/$1",
+      "^@fc/partners(|/.*)$": "<rootDir>/apps/partners/src/$1"
     },
     "preset": "ts-jest"
   }
