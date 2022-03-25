@@ -179,6 +179,16 @@ export function getEventsMap(urlPrefix: string): IEventMap {
       intercept: false,
     },
 
+    // Not implemented yet
+    FC_DATATRANSFER_CONSENT_DATA: {
+      step: '6.2.3',
+      category: EventsCategories.FRONT_CINEMATIC,
+      event: 'FC_DATATRANSFER_CONSENT_DATA',
+      exceptions: [],
+      route: `${urlPrefix}/login`,
+      intercept: false,
+    },
+
     FC_REDIRECTED_TO_SP: {
       step: '7.0.0',
       category: EventsCategories.FRONT_CINEMATIC,
