@@ -49,6 +49,7 @@ user-dashboard:
     - docker-stack exec ud-front yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack exec ud-back yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack dep ud-front ud-back
+    - docker-stack reset-stats
     # Start the NodeJS apps
     - docker-stack start fc-core
       fip1 fsp1 fsp3 rnipp

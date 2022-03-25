@@ -24,11 +24,12 @@ import * as resolve from 'resolve';
 import { log, table } from './console-log-plugin';
 import { getFixturePath } from './fixture-plugin';
 import { clearBusinessLog, hasBusinessLog } from './log-plugin';
-import { addTracks, addTracksLegacy } from './tracks-plugin';
+import { tracksBuilder } from './tracks-plugin';
 
-module.exports = (on, config) => {
+module.exports = (on, config: Cypress.PluginConfigOptions) => {
   processFixtureTemplate(on, config);
   addMatchImageSnapshotPlugin(on, config);
+  tracksBuilder(on, config);
 
   const options = {
     ...browserify.defaultOptions,
@@ -36,8 +37,6 @@ module.exports = (on, config) => {
   };
 
   on('task', {
-    addTracks,
-    addTracksLegacy,
     clearBusinessLog,
     getFixturePath,
     hasBusinessLog,

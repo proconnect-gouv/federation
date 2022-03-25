@@ -1,6 +1,6 @@
 import * as query from './elasticsearch.helper';
 
-describe('formatMultiMatchGroupES()', () => {
+describe('formatMultiMatchGroup()', () => {
   const includeList = [
     {
       key: 'key1',
@@ -29,7 +29,7 @@ describe('formatMultiMatchGroupES()', () => {
     };
 
     // When
-    const request = query.formatMultiMatchGroupES(undefined);
+    const request = query.formatMultiMatchGroup(undefined);
     // Then
     expect(request).toStrictEqual(resultMock);
   });
@@ -42,12 +42,12 @@ describe('formatMultiMatchGroupES()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key1',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar1',
                   },
                 },
@@ -58,12 +58,12 @@ describe('formatMultiMatchGroupES()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key2',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar3',
                   },
                 },
@@ -74,12 +74,12 @@ describe('formatMultiMatchGroupES()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key3',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar3',
                   },
                 },
@@ -90,12 +90,12 @@ describe('formatMultiMatchGroupES()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key4',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar4',
                   },
                 },
@@ -107,7 +107,7 @@ describe('formatMultiMatchGroupES()', () => {
     };
 
     // When
-    const request = query.formatMultiMatchGroupES(includeList, true);
+    const request = query.formatMultiMatchGroup(includeList, true);
     // Then
     expect(request).toStrictEqual(resultMock);
   });
@@ -121,12 +121,12 @@ describe('formatMultiMatchGroupES()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key1',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar1',
                   },
                 },
@@ -137,12 +137,12 @@ describe('formatMultiMatchGroupES()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key2',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar3',
                   },
                 },
@@ -153,12 +153,12 @@ describe('formatMultiMatchGroupES()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key3',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar3',
                   },
                 },
@@ -169,12 +169,12 @@ describe('formatMultiMatchGroupES()', () => {
             bool: {
               must: [
                 {
-                  match: {
+                  term: {
                     key: 'key4',
                   },
                 },
                 {
-                  match: {
+                  term: {
                     foo: 'bar4',
                   },
                 },
@@ -185,7 +185,7 @@ describe('formatMultiMatchGroupES()', () => {
       },
     };
     // When
-    const request = query.formatMultiMatchGroupES(includeList);
+    const request = query.formatMultiMatchGroup(includeList);
     // Then
     expect(request).toStrictEqual(resultMock);
   });
