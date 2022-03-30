@@ -44,7 +44,7 @@
     - GENERATE_SOURCEMAP=false yarn build --production
     - tar zcvf ${CI_PROJECT_DIR}/${PACKAGE} -C ${CI_PROJECT_DIR}/front/apps/${APP}/build/ .
     - >
-      curl --header "JOB-TOKEN:$CI_JOB_TOKEN" --upload-file ${CI_PROJECT_DIR}/${PACKAGE} "${INFRA_PACKAGE_REGISTRY}/${APP}/${CI_COMMIT_REF_NAME}/${ARCHIVE_NAME}"
+      curl --header "JOB-TOKEN:$CI_JOB_TOKEN" --upload-file ${CI_PROJECT_DIR}/${PACKAGE} "${INFRA_PACKAGE_REGISTRY}/${APP}/${CI_COMMIT_REF_NAME}/${PACKAGE}"
 
 .base-tag-to-prod:
   stage: 'Tag'
@@ -148,6 +148,8 @@ fca/bridge-http-proxy-rie-tag-to-prod-image:
   variables:
     DOCKER_IMAGE: bridge-http-proxy-rie
     MSG: "environments/nubo12-fca-prod/group_vars/all/versions.yml\nbridge_http_proxy_rie_version:"
+  needs:
+    - job: fca/bridge-http-proxy-rie-build-image
 
 fca/build-front:
   extends: .base-build-front
