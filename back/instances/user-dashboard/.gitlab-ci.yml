@@ -41,7 +41,6 @@ user-dashboard:
     - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do cd $mock && git fetch && git checkout -f origin/master && git clean -df && echo "Installing depedencies for $(/usr/bin/basename $mock)" && npm install; ln -sfn $mock $FC_ROOT/fc-docker/volumes/src; done
     # Setup ElasticSearch
-    - echo "localhost elasticsearch" >> /etc/hosts
     - cp -R /var/www/elasticsearch/data/ $FC_ROOT/fc-docker/volumes/elasticsearch/
     - mv /var/www/GeoLite2-City.mmdb $FC_ROOT/fc-docker/volumes/maxmind/database/GeoLite2-City/
     - chown -R 1000:0 $FC_ROOT/fc-docker/volumes/elasticsearch/data/
@@ -55,7 +54,6 @@ user-dashboard:
     - docker-stack exec ud-front yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack exec ud-back yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack dep ud-front ud-back
-    - docker-stack reset-stats
     - docker-stack fixtures fc-exploitation
     # Start mongo-fcp-high to retrieve FC+ AccountIds for the log history
     - $FC_ROOT/fc/docker/docker-stack up mongo-fcp-high
