@@ -403,28 +403,6 @@
   {
     "enabled": true,
     "criteria": [
-      "pour les tests de traces"
-    ],
-    "credentials": [
-      {
-        "idpId": "default",
-        "username": "test",
-        "password": "123"
-      }
-    ],
-    "claims": {
-      "gender": "female",
-      "given_name": "Angela Claire Louise",
-      "family_name": "DUBOIS",
-      "birthdate": "1962-08-24",
-      "birthplace": "75107",
-      "birthcountry": "99100",
-      "email": "wossewodda-3728@yopmail.com"
-    }
-  },
-  {
-    "enabled": true,
-    "criteria": [
       "avec un COG invalide"
     ],
     "credentials": [

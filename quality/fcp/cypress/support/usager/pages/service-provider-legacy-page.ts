@@ -7,15 +7,18 @@ import {
 import { getClaims } from '../helpers';
 
 export default class ServiceProviderPage {
+  clientId: string;
   fcButtonSelector: string;
   logoutButtonSelector: string;
   originUrl: string;
 
   constructor(args: ServiceProviderBase) {
     const {
+      clientId,
       selectors: { fcButton, logoutButton },
       url,
     } = args;
+    this.clientId = clientId;
     this.fcButtonSelector = fcButton;
     this.logoutButtonSelector = logoutButton;
     this.originUrl = url;
@@ -38,31 +41,32 @@ export default class ServiceProviderPage {
     this.logoutButton.should(state);
   }
 
-  setMockAuthorizeHttpMethod(formMethod: 'get' | 'post'): void {
-    cy.get('#httpMethod').select(formMethod);
+  callAuthorize(
+    fcRootUrl: string,
+    scopeContext: ScopeContext,
+    acrValues: string,
+  ): void {
+    const { scopes = [] } = scopeContext;
+
+    const qs = {
+      acr_values: acrValues,
+      client_id: this.clientId,
+      nonce: 'noncefortestsBDD',
+      redirect_uri: `${this.originUrl}/login-callback`,
+      response_type: 'code',
+      scope: Array.isArray(scopes) ? scopes.join(' ') : scopes,
+      state: 'testsBDD',
+    };
+
+    cy.visit(`${fcRootUrl}/api/v1/authorize`, {
+      failOnStatusCode: false,
+      qs,
+    });
   }
 
-  setMockRequestedScope(scopeContext?: ScopeContext): void {
-    if (scopeContext) {
-      cy.get('input[name="scope"]').clear();
-      const { scopes = [] } = scopeContext;
-      const scopeValue = scopes.join(' ');
-      if (scopeValue) {
-        cy.get('input[name="scope"]').type(scopeValue);
-      }
-    }
-  }
-
-  setMockRequestedAcr(acrValue: string): void {
-    cy.get('input[name="acr_values"]').clear().type(acrValue);
-  }
-
-  setMockRequestedAmr(isRequested: boolean): void {
-    if (isRequested) {
-      cy.get('#claim_amr').check();
-    } else {
-      cy.get('#claim_amr').uncheck();
-    }
+  logout(): void {
+    this.logoutButton.click();
+    cy.get('#fconnect-access .logout a').click();
   }
 
   checkMockInformationAccess(
@@ -77,10 +81,6 @@ export default class ServiceProviderPage {
 
         // Check mandatory data
         const mandatoryData = {
-          aud: /^\w+$/,
-          exp: /^\d+/,
-          iat: /^\d+/,
-          iss: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
           sub: /^[0-9a-f]{64}v1$/,
         };
         Object.keys(mandatoryData).forEach((key) =>
@@ -114,15 +114,11 @@ export default class ServiceProviderPage {
   }
 
   checkMockAcrValue(acrValue: string): void {
-    cy.get('[id="info-acr"] strong').contains(acrValue);
-  }
-
-  checkMockAmrValue(amrValue: string): void {
-    cy.get('[id="info-amr"] strong').contains(amrValue);
+    cy.get('#info-acr').contains(acrValue);
   }
 
   checkMockErrorCallback(): void {
-    const errorCallbackURL = `${this.originUrl}/error`;
+    const errorCallbackURL = `${this.originUrl}/login-callback?`;
     cy.url().should('include', errorCallbackURL);
   }
 
@@ -135,10 +131,16 @@ export default class ServiceProviderPage {
   }
 
   checkMockErrorDescription(errorDescription: string): void {
-    const encodedDescription = encodeURIComponent(errorDescription);
     cy.url().should(
       'match',
-      new RegExp(`(?<=[&|?])error_description=${encodedDescription}(?=&|$)`),
+      new RegExp(`(?<=[&|?])error_description=${errorDescription}(?=&|$)`),
     );
+  }
+
+  checkMockErrorDescriptionWithScopes(scopes: string[]): void {
+    const errorDescription = `Requested+scope+%22${scopes.join(
+      '+',
+    )}%22.%0AScope+authorized`;
+    cy.url().should('include', `error_description=${errorDescription}`);
   }
 }

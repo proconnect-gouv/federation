@@ -1,4 +1,4 @@
-import { When } from 'cypress-cucumber-preprocessor/steps';
+import { Then, When } from 'cypress-cucumber-preprocessor/steps';
 
 import { navigateTo, User } from '../../common/helpers';
 import {
@@ -10,20 +10,29 @@ import {
 } from '../../common/types';
 import { getDefaultScope } from '../helpers';
 import IdentityProviderPage from '../pages/identity-provider-page';
-import IdentityProviderSelectionPage from '../pages/identity-provider-selection-page';
-import InfoConsentPage from '../pages/info-consent-page';
-import ServiceProviderPage from '../pages/service-provider-page';
-import TechnicalErrorPage from '../pages/technical-error-page';
+import {
+  IdentityProviderSelectionPage,
+  InfoConsentPage,
+  TechnicalErrorPage,
+} from '../pages/legacy-pages';
+import ServiceProviderPage from '../pages/service-provider-legacy-page';
 
 class ConnectionWorkflow {
   allAppsUrl: string;
+  fcRootUrl: string;
   serviceProvider: ServiceProvider;
   identityProvider: IdentityProvider;
   serviceProviderPage: ServiceProviderPage;
+  scopeContext: ScopeContext;
 
-  constructor({ allAppsUrl }: Environment, serviceProvider: ServiceProvider) {
+  constructor(
+    { allAppsUrl, fcRootUrl }: Environment,
+    serviceProvider: ServiceProvider,
+  ) {
     this.allAppsUrl = allAppsUrl;
+    this.fcRootUrl = fcRootUrl;
     this.serviceProvider = serviceProvider;
+    this.serviceProviderPage = new ServiceProviderPage(this.serviceProvider);
   }
 
   /**
@@ -35,7 +44,6 @@ class ConnectionWorkflow {
       appId: this.serviceProvider.name,
       baseUrl: this.allAppsUrl,
     });
-    this.serviceProviderPage = new ServiceProviderPage(this.serviceProvider);
     return this;
   }
 
@@ -45,7 +53,7 @@ class ConnectionWorkflow {
    * @returns the current ConnectionWorkflow instance
    */
   withScope(scopeContext: ScopeContext): ConnectionWorkflow {
-    this.serviceProviderPage.setMockRequestedScope(scopeContext);
+    this.scopeContext = scopeContext;
     return this;
   }
 
@@ -54,7 +62,12 @@ class ConnectionWorkflow {
    * @returns the current ConnectionWorkflow instance
    */
   start(): ConnectionWorkflow {
-    this.serviceProviderPage.fcButton.click();
+    const DEFAULT_ACR_VALUES = 'eidas1';
+    this.serviceProviderPage.callAuthorize(
+      this.fcRootUrl,
+      this.scopeContext,
+      DEFAULT_ACR_VALUES,
+    );
     return this;
   }
 
@@ -68,8 +81,9 @@ class ConnectionWorkflow {
   ): ConnectionWorkflow {
     this.identityProvider = identityProvider;
     const identityProviderSelectionPage = new IdentityProviderSelectionPage();
-    identityProviderSelectionPage.checkIsVisible();
-    identityProviderSelectionPage.getIdpButton(identityProvider.idpId).click();
+    identityProviderSelectionPage
+      .getIdpButton(this.identityProvider.name)
+      .click();
     return this;
   }
 
@@ -111,12 +125,17 @@ class ConnectionWorkflow {
   /**
    * Check that the user is connected on the service provider page
    */
-  checkConnected(): void {
+  checkConnected(): this {
     this.serviceProviderPage.checkIsUserConnected();
+    return this;
+  }
+
+  logout(): void {
+    this.serviceProviderPage.logout();
   }
 }
 
-When(/^l'usager peut se connecter à FranceConnect$/, function () {
+When("l'usager peut se connecter à FranceConnect Legacy", function () {
   expect(this.env).to.exist;
   expect(this.serviceProvider).to.exist;
   expect(this.identityProvider).to.exist;
@@ -128,10 +147,11 @@ When(/^l'usager peut se connecter à FranceConnect$/, function () {
     .selectIdentityProvider(this.identityProvider)
     .login(this.user)
     .consent()
-    .checkConnected();
+    .checkConnected()
+    .logout();
 });
 
-When(/^je me connecte à FranceConnect$/, function () {
+When('je me connecte à FranceConnect Legacy', function () {
   expect(this.env).to.exist;
   expect(this.serviceProvider).to.exist;
   expect(this.identityProvider).to.exist;
@@ -147,7 +167,24 @@ When(/^je me connecte à FranceConnect$/, function () {
     .checkConnected();
 });
 
-When(/^l'usager ne peut pas se connecter à FranceConnect$/, function () {
+When(
+  "je me connecte au fournisseur d'identité via FranceConnect Legacy",
+  function () {
+    expect(this.env).to.exist;
+    expect(this.serviceProvider).to.exist;
+    expect(this.identityProvider).to.exist;
+    expect(this.user).to.exist;
+    const scopes = getDefaultScope(this.scopes);
+    new ConnectionWorkflow(this.env, this.serviceProvider)
+      .init()
+      .withScope(scopes)
+      .start()
+      .selectIdentityProvider(this.identityProvider)
+      .login(this.user);
+  },
+);
+
+When("l'usager ne peut pas se connecter à FranceConnect Legacy", function () {
   expect(this.env).to.exist;
   expect(this.serviceProvider).to.exist;
   expect(this.identityProvider).to.exist;
@@ -160,3 +197,12 @@ When(/^l'usager ne peut pas se connecter à FranceConnect$/, function () {
     .login(this.user)
     .checkError();
 });
+
+Then(
+  'je suis connecté sur la page du fournisseur de service Legacy',
+  function () {
+    expect(this.env).to.exist;
+    expect(this.serviceProvider).to.exist;
+    new ConnectionWorkflow(this.env, this.serviceProvider).checkConnected();
+  },
+);
