@@ -1,6 +1,7 @@
 [
   {
     "idpId": "fip1v2",
+    "name": "fip1v2",
     "descriptions": [
       "par défaut",
       "actif",
@@ -19,6 +20,7 @@
   },
   {
     "idpId": "fip-desactive-visible",
+    "name": "fip-desactive-visible",
     "descriptions": ["désactivé et visible"],
     "mocked": true,
     "usable": false,
@@ -35,6 +37,7 @@
   },
   {
     "idpId": "fip-desactive-invisible",
+    "name": "fip-desactive-invisible",
     "descriptions": ["désactivé et non visible"],
     "mocked": true,
     "usable": false,
@@ -51,6 +54,7 @@
   },
   {
     "idpId": "fip-active-invisible",
+    "name": "fip-active-invisible",
     "descriptions": ["actif et non visible"],
     "mocked": true,
     "usable": false,
@@ -67,6 +71,7 @@
   },
   {
     "idpId": "lin",
+    "name": "lin",
     "descriptions": [
       "l'identité numérique La Poste",
       "non whitelisté"
