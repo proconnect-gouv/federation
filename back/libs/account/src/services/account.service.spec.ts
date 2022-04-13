@@ -278,6 +278,7 @@ describe('AccountService', () => {
       const accountBeforeUpdate = {
         id: accountMock.id,
         preferences: accountMock.preferences,
+        updatedAt: Date.now(),
       };
       findOneAndUpdateSpy.mockResolvedValueOnce(accountMock);
 
