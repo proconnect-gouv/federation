@@ -116,11 +116,11 @@ export class AccountService {
     identityHash: string,
     identityProviderList: string[],
     isExcludeList: boolean,
-  ): Promise<Pick<Account, 'id' | 'preferences'> & { updatedAt: number }> {
+  ): Promise<Pick<Account, 'id' | 'preferences'> & { updatedAt: Date }> {
     this.logger.debug(
       `Update account preferences ${identityHash} with ${identityProviderList} (isExcludeList: ${isExcludeList})`,
     );
-    const updatedAt = Date.now();
+    const updatedAt = new Date();
     const accountBeforeUpdate = await this.model.findOneAndUpdate(
       { identityHash },
       {
