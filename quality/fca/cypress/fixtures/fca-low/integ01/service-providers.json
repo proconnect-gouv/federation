@@ -31,7 +31,8 @@
     "name": "fsa3v2",
     "descriptions": [
       "non habilité à demander le scope belonging_population",
-      "avec une blacklist de FI"
+      "avec une blacklist de FI",
+      "non habilité à demander le claim amr"
     ],
     "mocked": true,
     "url": "https://fsa3v2.integ01.dev-agentconnect.fr",
