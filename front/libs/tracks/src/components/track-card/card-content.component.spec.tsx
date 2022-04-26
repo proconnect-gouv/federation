@@ -19,7 +19,7 @@ describe('TrackCardContentComponent', () => {
         claims={claimsMock}
         country="countryMock"
         datetime={date}
-        idpName="idpNameValue"
+        idpLabel="idpLabelValue"
         opened={false}
         spAcr="eidas1"
       />,
@@ -42,7 +42,7 @@ describe('TrackCardContentComponent', () => {
         claims={claimsMock}
         country="countryMock"
         datetime={date}
-        idpName="idpNameValue"
+        idpLabel="idpLabelValue"
         opened={opened}
         spAcr="eidas1"
       />,
@@ -66,7 +66,7 @@ describe('TrackCardContentComponent', () => {
         claims={claimsMock}
         country="countryMock"
         datetime={date}
-        idpName="idpNameValue"
+        idpLabel="idpLabelValue"
         opened={opened}
         spAcr="eidas1"
       />,
@@ -89,7 +89,7 @@ describe('TrackCardContentComponent', () => {
         claims={claimsMock}
         country="countryMock"
         datetime={date}
-        idpName="idpNameValue"
+        idpLabel="idpLabelValue"
         opened={false}
         spAcr="eidas1"
       />,
@@ -109,7 +109,7 @@ describe('TrackCardContentComponent', () => {
         claims={claimsMock}
         country="countryMock"
         datetime={date}
-        idpName="idpNameValue"
+        idpLabel="idpLabelValue"
         opened={false}
         spAcr="eidas1"
       />,
@@ -129,7 +129,7 @@ describe('TrackCardContentComponent', () => {
         claims={claimsMock}
         country="countryMock"
         datetime={date}
-        idpName="idpNameValue"
+        idpLabel="idpLabelValue"
         opened={false}
         spAcr="eidas1"
       />,
@@ -155,7 +155,7 @@ describe('TrackCardContentComponent', () => {
         claims={claimsMock}
         country="countryMock"
         datetime={date}
-        idpName="idpNameValue"
+        idpLabel="idpLabelValue"
         opened={false}
         spAcr="eidas1"
       />,
@@ -181,14 +181,14 @@ describe('TrackCardContentComponent', () => {
         claims={claimsMock}
         country="countryMock"
         datetime={date}
-        idpName="idpNameValue"
+        idpLabel="idpLabelValue"
         opened={false}
         spAcr="eidas1"
       />,
     );
     // when
     const labelElement = getByText('Via le compte :');
-    const valueElement = getByText('idpNameValue');
+    const valueElement = getByText('idpLabelValue');
     const lastElement = labelElement.parentNode?.lastElementChild;
     const firstElement = labelElement.parentNode?.firstElementChild;
     // then
@@ -207,7 +207,7 @@ describe('TrackCardContentComponent', () => {
         claims={claimsMock}
         country="countryMock"
         datetime={date}
-        idpName="idpNameValue"
+        idpLabel="idpLabelValue"
         opened={false}
         spAcr="eidas1"
       />,
@@ -237,7 +237,7 @@ describe('TrackCardContentComponent', () => {
         claims={claimsMock}
         country="countryMock"
         datetime={date}
-        idpName="idpNameValue"
+        idpLabel="idpLabelValue"
         opened={false}
         spAcr="eidas1"
       />,

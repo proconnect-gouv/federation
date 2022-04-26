@@ -158,7 +158,12 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
 
   async transformTrack(source: ICsmrTracksLegacyTrack) {
     const time = DateTime.fromISO(source.time, { zone: 'utc' }).toMillis();
-    const { fi: idpName, fs_label: spName } = source;
+    /**
+     * @todo should change fi to fiLabel to get the correct data in idp Label
+     * Author: Arnaud
+     * Date: 06/04/2022
+     */
+    const { fi: idpLabel, fs_label: spLabel } = source;
 
     const spAcr = this.getAcrValue(source);
     const event = this.getEventFromAction(source);
@@ -168,9 +173,9 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
     const output: OutputTrack = {
       event,
       time,
-      spName,
+      spLabel,
       spAcr,
-      idpName,
+      idpLabel,
       country,
       city,
       claims,

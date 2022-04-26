@@ -295,8 +295,8 @@ describe('CsmrTracksLegacyDataService', () => {
         time: 1664668800000,
         event: 'FC_VERIFIED',
         spAcr: 'eidas1',
-        spName: 'fsLabelValue',
-        idpName: 'fiValue',
+        spLabel: 'fsLabelValue',
+        idpLabel: 'fiValue',
       };
 
       // When
@@ -393,24 +393,27 @@ describe('CsmrTracksLegacyDataService', () => {
       const tracksOutputMock: Partial<ICsmrTracksOutputTrack>[] = [
         {
           time: 1645398000000,
-          spName: 'nameValue',
+          spLabel: 'nameValue',
           platform: 'FranceConnect',
           spAcr: 'eidas2',
           trackId: 'id1',
+          idpLabel: 'idpLabelValue',
         },
         {
           time: 1645398000000,
-          spName: 'nameValue',
+          spLabel: 'nameValue',
           platform: 'FranceConnect',
           spAcr: 'eidas2',
           trackId: 'id2',
+          idpLabel: 'idpLabelValue',
         },
         {
           time: 1646002800000,
-          spName: 'nameValue',
+          spLabel: 'nameValue',
           platform: 'FranceConnect',
           spAcr: 'eidas3',
           trackId: 'id3',
+          idpLabel: 'idpLabelValue',
         },
       ];
 

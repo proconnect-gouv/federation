@@ -22,7 +22,7 @@ type TraceCardContentProps = {
   city: string;
   country: string;
   claims: string[] | null;
-  idpName: string;
+  idpLabel: string;
 };
 
 export const TrackCardContentComponent = React.memo(
@@ -32,7 +32,7 @@ export const TrackCardContentComponent = React.memo(
     claims,
     country,
     datetime,
-    idpName,
+    idpLabel,
     opened,
     spAcr,
   }: TraceCardContentProps) => {
@@ -43,6 +43,8 @@ export const TrackCardContentComponent = React.memo(
         aria-hidden={!opened}
         className={classnames('details', 'fr-text', {
           mt16: opened,
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'no-display': !opened,
         })}
         id={accessibleId}
@@ -67,7 +69,7 @@ export const TrackCardContentComponent = React.memo(
             <li>
               <span>Via le compte&nbsp;:&nbsp;</span>
               <br />
-              <b>{idpName}</b>
+              <b>{idpLabel}</b>
             </li>
 
             <li>

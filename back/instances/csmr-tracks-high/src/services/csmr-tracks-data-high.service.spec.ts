@@ -1,9 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { ConfigService } from '@fc/config';
 import { CsmrTracksTransformTracksFailedException } from '@fc/csmr-tracks';
 import { LoggerService } from '@fc/logger-legacy';
 import { ICsmrTracksOutputTrack } from '@fc/tracks';
 
+import { IdpMappings } from '../dto';
 import { accountQueryMock } from '../fixtures';
 import { ICsmrTracksHighTrack, ICsmrTracksInputHigh } from '../interfaces';
 import { CsmrTracksHighDataService } from './csmr-tracks-data-high.service';
@@ -17,15 +19,27 @@ describe('CsmrTracksHighDataService', () => {
     setContext: jest.fn(),
   } as unknown as LoggerService;
 
+  const configMock = {
+    get: jest.fn(),
+  };
+
+  const configDataMock: Partial<IdpMappings> = {
+    mappings: {
+      fiTest: 'fiTestValue',
+    },
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CsmrTracksHighDataService, LoggerService],
+      providers: [CsmrTracksHighDataService, LoggerService, ConfigService],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(ConfigService)
+      .useValue(configMock)
       .compile();
 
     service = module.get<CsmrTracksHighDataService>(CsmrTracksHighDataService);
@@ -108,9 +122,53 @@ describe('CsmrTracksHighDataService', () => {
     });
   });
 
+  describe('getIdpLabel', () => {
+    beforeEach(() => {
+      configMock.get.mockReturnValueOnce(configDataMock);
+    });
+
+    it('should return idpLabel if data exist on source', () => {
+      // Given
+      const sourceMock = {
+        idpLabel: 'idpLabelValue',
+      } as unknown as ICsmrTracksHighTrack;
+
+      // When
+      const label = service['getIdpLabel'](sourceMock);
+
+      // Then
+      expect(label).toEqual('idpLabelValue');
+    });
+    it('should return mapping value from idpName if idpLabel was missing', () => {
+      // Given
+      const sourceMock = {
+        idpName: 'fiTest',
+      } as unknown as ICsmrTracksHighTrack;
+
+      // When
+      const label = service['getIdpLabel'](sourceMock);
+
+      // Then
+      expect(label).toEqual('fiTestValue');
+    });
+    it('should return idpName value if neither idpLabel and idpName mappings are unavailable', () => {
+      // Given
+      const sourceMock = {
+        idpName: 'idpNameValue',
+      } as unknown as ICsmrTracksHighTrack;
+
+      // When
+      const label = service['getIdpLabel'](sourceMock);
+
+      // Then
+      expect(label).toEqual('idpNameValue');
+    });
+  });
+
   describe('transformTrack()', () => {
     let getClaimsGroupsMock: jest.SpyInstance;
     let getGeoFromIpMock: jest.SpyInstance;
+    let getIdpLabelMock: jest.SpyInstance;
 
     const claimsMock = ['sub', 'given_name', 'gender'];
     const geoIpDataMock = {
@@ -130,6 +188,13 @@ describe('CsmrTracksHighDataService', () => {
         'getGeoFromIp',
       );
       getGeoFromIpMock.mockResolvedValueOnce(geoIpDataMock);
+
+      getIdpLabelMock = jest.spyOn<CsmrTracksHighDataService, any>(
+        service,
+        'getIdpLabel',
+      );
+
+      getIdpLabelMock.mockImplementation(({ idpLabel }) => idpLabel);
     });
 
     it('should transform source to track data', async () => {
@@ -139,6 +204,7 @@ describe('CsmrTracksHighDataService', () => {
         step: 'stepValue',
         idpId: 'idpIdValue',
         idpAcr: 'idpAcrValue',
+        idpLabel: 'idpLabelValue',
 
         ip: '172.168.2.2',
         accountId: 'accountIdValue',
@@ -165,8 +231,8 @@ describe('CsmrTracksHighDataService', () => {
         time: 1664661600000,
         event: 'FC_VERIFIED',
         spAcr: 'eidas1',
-        spName: 'spNameValue',
-        idpName: 'idpNameValue',
+        spLabel: 'spNameValue',
+        idpLabel: 'idpLabelValue',
       };
 
       // When
@@ -187,6 +253,7 @@ describe('CsmrTracksHighDataService', () => {
         step: 'stepValue',
         idpId: 'idpIdValue',
         idpAcr: 'idpAcrValue',
+        idpLabel: 'idpLabelValue',
 
         ip: '172.168.2.2',
         accountId: 'accountIdValue',
@@ -257,10 +324,10 @@ describe('CsmrTracksHighDataService', () => {
         city: 'cityValue',
         claims: null,
         country: 'countryValue',
-        idpName: 'idpNameValue',
+        idpLabel: 'idpLabelValue',
         platform: 'FranceConnect+',
         spAcr: 'eidas1',
-        spName: 'spNameValue',
+        spLabel: 'spNameValue',
         trackId: 'xxzxzxzd4z5dz5',
       };
 

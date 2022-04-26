@@ -1,10 +1,11 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { CsmrTracksConfig } from '@fc/csmr-tracks';
 
+import { CsmrTracksHighConfig } from '../dto';
 import Elasticsearch from './elasticsearch';
 import Logger from './logger';
+import IdpMappings from './mappings';
 import Mongoose from './mongoose';
 import TracksBroker from './tracks-broker';
 
@@ -13,4 +14,5 @@ export default {
   Mongoose,
   TracksBroker,
   Elasticsearch,
-} as CsmrTracksConfig;
+  IdpMappings,
+} as CsmrTracksHighConfig;
