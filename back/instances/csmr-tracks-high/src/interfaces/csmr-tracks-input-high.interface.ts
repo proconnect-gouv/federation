@@ -15,6 +15,7 @@ export interface ICsmrTracksHighTrack {
   readonly idpId: string;
   readonly idpAcr: string;
   readonly idpName: string;
+  readonly idpLabel?: string;
 
   /** User informations */
   readonly ip: string;

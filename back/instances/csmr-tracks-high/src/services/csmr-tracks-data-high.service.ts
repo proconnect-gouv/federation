@@ -2,6 +2,7 @@ import { Search } from '@elastic/elasticsearch/api/requestParams';
 
 import { Injectable } from '@nestjs/common';
 
+import { ConfigService } from '@fc/config';
 import {
   CsmrTracksTransformTracksFailedException,
   IAppTracksDataService,
@@ -9,6 +10,7 @@ import {
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { ICsmrTracksOutputTrack } from '@fc/tracks';
 
+import { IdpMappings } from '../dto';
 import { ICsmrTracksHighTrack, ICsmrTracksInputHigh } from '../interfaces';
 
 export const PLATFORM = 'FranceConnect+';
@@ -39,7 +41,10 @@ interface GeoIp {
 
 @Injectable()
 export class CsmrTracksHighDataService implements IAppTracksDataService {
-  constructor(protected readonly logger: LoggerService) {
+  constructor(
+    protected readonly logger: LoggerService,
+    protected readonly config: ConfigService,
+  ) {
     this.logger.setContext(this.constructor.name);
   }
 
@@ -107,21 +112,33 @@ export class CsmrTracksHighDataService implements IAppTracksDataService {
     };
   }
 
-  async transformTrack(source: ICsmrTracksHighTrack) {
-    const { event, time, spName, spAcr, idpName } = source;
+  private getIdpLabel({ idpLabel, idpName }: ICsmrTracksHighTrack): string {
+    const { mappings } = this.config.get<IdpMappings>('IdpMappings');
 
+    return idpLabel || mappings[idpName] || idpName;
+  }
+
+  async transformTrack(source: ICsmrTracksHighTrack) {
+    /**
+     * @todo should change spName to spLabel to get the correct data in sp label
+     * Author: Arnaud
+     * Date: 06/04/2022
+     */
+    const { event, time, spName: spLabel, spAcr } = source;
+
+    const idpLabel = this.getIdpLabel(source);
     const claims = this.getClaimsGroups(source);
     const { country, city } = await this.getGeoFromIp(source);
 
     const output: OutputTrack = {
       event,
       time,
-      spName,
+      spLabel,
       spAcr,
       country,
       city,
       claims,
-      idpName,
+      idpLabel,
     };
 
     this.logger.trace({ source, output });
