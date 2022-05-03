@@ -9,66 +9,33 @@ import {
   IAppTracksDataService,
 } from '@fc/csmr-tracks';
 import { formatMultiMatchGroup } from '@fc/elasticsearch';
+import { GeoipMaxmindService } from '@fc/geoip-maxmind';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { ScopesService } from '@fc/scopes';
 import { ICsmrTracksOutputTrack } from '@fc/tracks';
 
+import {
+  ACTIONS_TO_INCLUDE,
+  EVENT_MAPPING,
+  LEGACY_SCOPES_SEPARATOR,
+  NOW,
+  PLATFORM,
+  SIX_MONTHS_AGO,
+} from '../constants';
 import { CsmrTracksUnknownActionException } from '../exceptions';
-import { ICsmrTracksInputLegacy, ICsmrTracksLegacyTrack } from '../interfaces';
-
-export const PLATFORM = 'FranceConnect';
-
-const SIX_MONTHS_AGO = 'now-6M/d';
-const NOW = 'now';
-
-export const LEGACY_SCOPES_SEPARATOR = ', ';
-
-const EVENT_MAPPING = {
-  'authentication/initial': 'FC_VERIFIED',
-  'consent/demandeIdentity': 'FC_DATATRANSFER_CONSENT_IDENTITY',
-  'consent/demandeData': 'FC_DATATRANSFER_CONSENT_DATA',
-  'checkedToken/verification': 'DP_REQUESTED_FC_CHECKTOKEN',
-};
-
-const ACTIONS_TO_INCLUDE: Partial<ICsmrTracksLegacyTrack>[] = [
-  {
-    action: 'authentication',
-    // Legacy property name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    type_action: 'initial',
-  },
-  {
-    action: 'consent',
-    // Legacy property name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    type_action: 'demandeIdentity',
-  },
-  {
-    action: 'consent',
-    // Legacy property name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    type_action: 'demandeData',
-  },
-  {
-    action: 'checkedToken',
-    // Legacy property name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    type_action: 'verification',
-  },
-];
-
-type OutputTrack = Omit<ICsmrTracksOutputTrack, 'platform' | 'trackId'>;
-
-interface GeoIp {
-  country: string;
-  city: string;
-}
+import {
+  ICsmrTracksExtractedData,
+  ICsmrTracksInputLegacy,
+  ICsmrTracksLegacyTrack,
+  IGeo,
+} from '../interfaces';
 
 @Injectable()
 export class CsmrTracksLegacyDataService implements IAppTracksDataService {
   constructor(
     private readonly logger: LoggerService,
     private readonly scopes: ScopesService,
+    private readonly geoip: GeoipMaxmindService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -138,17 +105,22 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
     return claims.includes('sub') ? claims : [...claims, 'sub'];
   }
 
-  private async getGeoFromIp({
-    userIp: _,
-  }: ICsmrTracksLegacyTrack): Promise<GeoIp> {
-    /**
-     * @todo add GeoIp management here
-     *
-     * Arnaud PSA: 07/02/2022
-     */
+  private getGeoFromIp({ userIp, source }: ICsmrTracksLegacyTrack): IGeo {
+    this.logger.debug('getGeoFromIp from csmr-tracks-data-legacy service');
+
+    let country: string;
+    let city: string;
+
+    if (source?.geo) {
+      city = source.geo.city_name || source.geo.region_name;
+      country = source.geo.country_iso_code;
+    } else {
+      city = this.geoip.getCityName(userIp);
+      country = this.geoip.getCountryIsoCode(userIp);
+    }
     return {
-      country: 'FR',
-      city: 'Paris',
+      country,
+      city,
     };
   }
 
@@ -170,7 +142,7 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
     const claims = this.getClaimsGroups(source);
     const { country, city } = await this.getGeoFromIp(source);
 
-    const output: OutputTrack = {
+    const output: ICsmrTracksExtractedData = {
       event,
       time,
       spLabel,

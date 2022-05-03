@@ -4,6 +4,7 @@
 
 import { CsmrTracksHighConfig } from '../dto';
 import Elasticsearch from './elasticsearch';
+import GeoipMaxmind from './geoip-maxmind';
 import Logger from './logger';
 import IdpMappings from './mappings';
 import Mongoose from './mongoose';
@@ -13,6 +14,7 @@ export default {
   Logger,
   Mongoose,
   TracksBroker,
+  GeoipMaxmind,
   Elasticsearch,
   IdpMappings,
 } as CsmrTracksHighConfig;

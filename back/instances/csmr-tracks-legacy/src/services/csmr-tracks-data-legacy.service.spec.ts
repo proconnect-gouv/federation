@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { CsmrTracksTransformTracksFailedException } from '@fc/csmr-tracks';
+import { GeoipMaxmindService } from '@fc/geoip-maxmind';
 import { LoggerService } from '@fc/logger-legacy';
 import { ScopesService } from '@fc/scopes';
 import { ICsmrTracksOutputTrack } from '@fc/tracks';
@@ -12,6 +13,11 @@ import { CsmrTracksLegacyDataService } from './csmr-tracks-data-legacy.service';
 
 describe('CsmrTracksLegacyDataService', () => {
   let service: CsmrTracksLegacyDataService;
+
+  const geoipMaxmindServiceMock = {
+    getCityName: jest.fn(),
+    getCountryIsoCode: jest.fn(),
+  };
 
   const loggerMock = {
     debug: jest.fn(),
@@ -28,8 +34,15 @@ describe('CsmrTracksLegacyDataService', () => {
     jest.resetAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CsmrTracksLegacyDataService, LoggerService, ScopesService],
+      providers: [
+        CsmrTracksLegacyDataService,
+        GeoipMaxmindService,
+        LoggerService,
+        ScopesService,
+      ],
     })
+      .overrideProvider(GeoipMaxmindService)
+      .useValue(geoipMaxmindServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .overrideProvider(ScopesService)
@@ -199,15 +212,41 @@ describe('CsmrTracksLegacyDataService', () => {
   });
 
   describe('getGeoFromIp()', () => {
-    /**
-     * @todo add GeoIp management here
-     *
-     * Arnaud PSA: 07/02/2022
-     */
-    it('should return country and city from userIp', async () => {
+    it('should return undefined country and city name if geo object is emtpy', async () => {
       // Given
       const sourceMock = {
         userIp: '172.16.156.25',
+        source: {
+          geo: {},
+        },
+      } as unknown as ICsmrTracksLegacyTrack;
+
+      const resultMock = {
+        country: undefined,
+        city: undefined,
+      };
+      // When
+      const geoIp = await service['getGeoFromIp'](sourceMock);
+      // Then
+      expect(geoIp).toStrictEqual(resultMock);
+      expect(geoipMaxmindServiceMock.getCityName).toBeCalledTimes(0);
+      expect(geoipMaxmindServiceMock.getCountryIsoCode).toBeCalledTimes(0);
+    });
+
+    it('should return country and city from geopoint data', async () => {
+      // Given
+      const sourceMock = {
+        userIp: '172.16.156.25',
+        source: {
+          geo: {
+            // geopoint naming
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            city_name: 'Paris',
+            // geopoint naming
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            country_iso_code: 'FR',
+          },
+        },
       } as unknown as ICsmrTracksLegacyTrack;
 
       const resultMock = {
@@ -218,6 +257,90 @@ describe('CsmrTracksLegacyDataService', () => {
       const geoIp = await service['getGeoFromIp'](sourceMock);
       // Then
       expect(geoIp).toStrictEqual(resultMock);
+      expect(geoipMaxmindServiceMock.getCityName).toBeCalledTimes(0);
+      expect(geoipMaxmindServiceMock.getCountryIsoCode).toBeCalledTimes(0);
+    });
+
+    it('should return country and city from geopoint data even if city_name is not defined', async () => {
+      // Given
+      const sourceMock = {
+        userIp: '172.16.156.25',
+        source: {
+          geo: {
+            // geopoint naming
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            region_name: 'Ile-de-France',
+            // geopoint naming
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            country_iso_code: 'FR',
+          },
+        },
+      } as unknown as ICsmrTracksLegacyTrack;
+
+      const resultMock = {
+        country: 'FR',
+        city: 'Ile-de-France',
+      };
+      // When
+      const geoIp = await service['getGeoFromIp'](sourceMock);
+      // Then
+      expect(geoIp).toStrictEqual(resultMock);
+      expect(geoipMaxmindServiceMock.getCityName).toBeCalledTimes(0);
+      expect(geoipMaxmindServiceMock.getCountryIsoCode).toBeCalledTimes(0);
+    });
+
+    it('should return country and city name from local database through geoip service', async () => {
+      // Given
+      const sourceMock = {
+        userIp: '172.16.156.25',
+      } as unknown as ICsmrTracksLegacyTrack;
+
+      geoipMaxmindServiceMock.getCityName.mockReturnValueOnce('Paris');
+      geoipMaxmindServiceMock.getCountryIsoCode.mockReturnValueOnce('FR');
+
+      const resultMock = {
+        country: 'FR',
+        city: 'Paris',
+      };
+      // When
+      const geoIp = await service['getGeoFromIp'](sourceMock);
+      // Then
+      expect(geoIp).toStrictEqual(resultMock);
+      expect(geoipMaxmindServiceMock.getCityName).toBeCalledTimes(1);
+      expect(geoipMaxmindServiceMock.getCityName).toBeCalledWith(
+        '172.16.156.25',
+      );
+      expect(geoipMaxmindServiceMock.getCountryIsoCode).toBeCalledTimes(1);
+      expect(geoipMaxmindServiceMock.getCountryIsoCode).toBeCalledWith(
+        '172.16.156.25',
+      );
+    });
+
+    it('should return undefined country and city name if geoip service return undefined variable', async () => {
+      // Given
+      const sourceMock = {
+        userIp: '172.16.156.25',
+      } as unknown as ICsmrTracksLegacyTrack;
+
+      geoipMaxmindServiceMock.getCityName.mockReturnValueOnce(undefined);
+      geoipMaxmindServiceMock.getCountryIsoCode.mockReturnValueOnce(undefined);
+
+      const resultMock = {
+        country: undefined,
+        city: undefined,
+      };
+      // When
+      const geoIp = await service['getGeoFromIp'](sourceMock);
+      // Then
+      expect(geoIp).toStrictEqual(resultMock);
+      expect(geoipMaxmindServiceMock.getCityName).toBeCalledTimes(1);
+      expect(geoipMaxmindServiceMock.getCityName).toBeCalledWith(
+        '172.16.156.25',
+      );
+      expect(geoipMaxmindServiceMock.getCountryIsoCode).toBeCalledTimes(1);
+      expect(geoipMaxmindServiceMock.getCountryIsoCode).toBeCalledWith(
+        '172.16.156.25',
+      );
     });
   });
 
