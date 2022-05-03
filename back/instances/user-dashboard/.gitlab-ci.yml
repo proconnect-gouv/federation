@@ -76,6 +76,9 @@ user-dashboard:
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp
     - yarn install
+    # Run Visual BDD tests and abort if failed
+    - CYPRESS_TEST_ENV=docker yarn test:ud:snapshot
+    # Run Functional BDD tests
     - CYPRESS_TEST_ENV=docker yarn test:ud -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - CYPRESS_PLATFORM=fcp-legacy CYPRESS_TEST_ENV=docker yarn report:generate
@@ -89,6 +92,7 @@ user-dashboard:
     when: always
     paths:
       - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
+      - $CI_PROJECT_DIR/quality/fcp/cypress/snapshots/diff
       - $CI_PROJECT_DIR/artifacts-logs
   after_script:
     - bash $FC_ROOT/fc-docker/docker-stack halt && docker rm -f fc_mongo-fcp-high_1
