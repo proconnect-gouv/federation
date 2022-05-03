@@ -5,6 +5,7 @@ import { Type } from 'class-transformer';
 import { IsObject, ValidateNested } from 'class-validator';
 
 import { ElasticsearchConfig } from '@fc/elasticsearch';
+import { GeoipMaxmindConfig } from '@fc/geoip-maxmind';
 import { LoggerConfig } from '@fc/logger-legacy';
 import { MongooseConfig } from '@fc/mongoose';
 import { RabbitmqConfig } from '@fc/rabbitmq';
@@ -29,4 +30,9 @@ export class CsmrTracksConfig {
   @ValidateNested()
   @Type(() => MongooseConfig)
   readonly Mongoose: MongooseConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => GeoipMaxmindConfig)
+  readonly GeoipMaxmind: GeoipMaxmindConfig;
 }
