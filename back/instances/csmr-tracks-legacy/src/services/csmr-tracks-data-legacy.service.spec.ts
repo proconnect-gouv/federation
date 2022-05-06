@@ -26,7 +26,7 @@ describe('CsmrTracksLegacyDataService', () => {
   };
 
   const scopesMock = {
-    getClaimsFromScopes: jest.fn(),
+    getRawClaimsFromScopes: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -127,15 +127,15 @@ describe('CsmrTracksLegacyDataService', () => {
 
       const resultMock = ['gender', 'family_name', 'birthdate', 'birthplace'];
 
-      scopesMock.getClaimsFromScopes.mockReturnValueOnce(resultMock);
+      scopesMock.getRawClaimsFromScopes.mockReturnValueOnce(resultMock);
 
       // When
       const claims = service['getClaimsGroups'](sourceMock);
 
       // Then
       expect(claims).toStrictEqual([...resultMock, 'sub']);
-      expect(scopesMock.getClaimsFromScopes).toHaveBeenCalledTimes(1);
-      expect(scopesMock.getClaimsFromScopes).toHaveBeenCalledWith([
+      expect(scopesMock.getRawClaimsFromScopes).toHaveBeenCalledTimes(1);
+      expect(scopesMock.getRawClaimsFromScopes).toHaveBeenCalledWith([
         'gender',
         'family_name',
         'birth',
@@ -156,15 +156,15 @@ describe('CsmrTracksLegacyDataService', () => {
         'birthplace',
       ];
 
-      scopesMock.getClaimsFromScopes.mockReturnValueOnce(resultMock);
+      scopesMock.getRawClaimsFromScopes.mockReturnValueOnce(resultMock);
 
       // When
       const claims = service['getClaimsGroups'](sourceMock);
 
       // Then
       expect(claims).toStrictEqual(resultMock);
-      expect(scopesMock.getClaimsFromScopes).toHaveBeenCalledTimes(1);
-      expect(scopesMock.getClaimsFromScopes).toHaveBeenCalledWith([
+      expect(scopesMock.getRawClaimsFromScopes).toHaveBeenCalledTimes(1);
+      expect(scopesMock.getRawClaimsFromScopes).toHaveBeenCalledWith([
         'gender',
         'family_name',
         'birth',

@@ -9,6 +9,7 @@ import { GeoipMaxmindConfig } from '@fc/geoip-maxmind';
 import { LoggerConfig } from '@fc/logger-legacy';
 import { MongooseConfig } from '@fc/mongoose';
 import { RabbitmqConfig } from '@fc/rabbitmq';
+import { ScopesConfig } from '@fc/scopes';
 
 export class CsmrTracksConfig {
   @IsObject()
@@ -20,6 +21,11 @@ export class CsmrTracksConfig {
   @ValidateNested()
   @Type(() => RabbitmqConfig)
   readonly TracksBroker: RabbitmqConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => ScopesConfig)
+  readonly Scopes: ScopesConfig;
 
   @IsObject()
   @ValidateNested()

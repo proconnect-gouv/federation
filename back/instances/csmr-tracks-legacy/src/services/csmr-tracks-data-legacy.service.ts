@@ -98,7 +98,7 @@ export class CsmrTracksLegacyDataService implements IAppTracksDataService {
     }
 
     const list = scopes.split(LEGACY_SCOPES_SEPARATOR);
-    const claims = this.scopes.getClaimsFromScopes(list);
+    const claims = this.scopes.getRawClaimsFromScopes(list);
 
     // the core-legacy logs intentionally remove sub in traces
     // we need it back.
