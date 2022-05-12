@@ -4,6 +4,8 @@
   "exploitAppId": "exploitation",
   "exploitRootUrl": "https://fc-exploitation.{{TEST_ENV}}.dev-franceconnect.fr",
   "fcRootUrl": "https://fcp.{{TEST_ENV}}.dev-franceconnect.fr",
+  "supportAppId": "support",
+  "supportRootUrl": "https://fc-support.{{TEST_ENV}}.dev-franceconnect.fr",
   "udAppId": "ud-home",
   "udRootUrl": "https://ud.{{TEST_ENV}}.dev-franceconnect.fr"
 }

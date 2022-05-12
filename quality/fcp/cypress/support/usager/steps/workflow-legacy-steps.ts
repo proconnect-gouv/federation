@@ -138,6 +138,24 @@ class ConnectionWorkflow {
 When("l'usager peut se connecter à FranceConnect Legacy", function () {
   expect(this.env).to.exist;
   expect(this.serviceProvider).to.exist;
+  expect(this.scopes).to.exist;
+  expect(this.identityProvider).to.exist;
+  expect(this.user).to.exist;
+  new ConnectionWorkflow(this.env, this.serviceProvider)
+    .init()
+    .withScope(getDefaultScope(this.scopes))
+    .start()
+    .selectIdentityProvider(this.identityProvider)
+    .login(this.user)
+    .consent()
+    .checkConnected()
+    .logout();
+});
+
+When("j'ai fait une cinématique FranceConnect Legacy", function () {
+  expect(this.env).to.exist;
+  expect(this.serviceProvider).to.exist;
+  expect(this.scopes).to.exist;
   expect(this.identityProvider).to.exist;
   expect(this.user).to.exist;
   new ConnectionWorkflow(this.env, this.serviceProvider)
@@ -154,6 +172,7 @@ When("l'usager peut se connecter à FranceConnect Legacy", function () {
 When('je me connecte à FranceConnect Legacy', function () {
   expect(this.env).to.exist;
   expect(this.serviceProvider).to.exist;
+  expect(this.scopes).to.exist;
   expect(this.identityProvider).to.exist;
   expect(this.user).to.exist;
   const scopes = getDefaultScope(this.scopes);
@@ -172,6 +191,7 @@ When(
   function () {
     expect(this.env).to.exist;
     expect(this.serviceProvider).to.exist;
+    expect(this.scopes).to.exist;
     expect(this.identityProvider).to.exist;
     expect(this.user).to.exist;
     const scopes = getDefaultScope(this.scopes);
@@ -187,6 +207,7 @@ When(
 When("l'usager ne peut pas se connecter à FranceConnect Legacy", function () {
   expect(this.env).to.exist;
   expect(this.serviceProvider).to.exist;
+  expect(this.scopes).to.exist;
   expect(this.identityProvider).to.exist;
   expect(this.user).to.exist;
   new ConnectionWorkflow(this.env, this.serviceProvider)

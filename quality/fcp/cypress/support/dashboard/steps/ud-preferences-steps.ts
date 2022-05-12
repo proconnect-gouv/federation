@@ -62,7 +62,7 @@ When(
 );
 
 When(
-  /^je décide (d'autoriser|de bloquer) les nouveaux fournisseurs d'identité par défaut$/,
+  /^je décide (d'autoriser|de bloquer) les futurs fournisseurs d'identité par défaut$/,
   function (text) {
     if (text === "d'autoriser") {
       udPreferencesPage.blockFutureIdpCheckbox.uncheck();
