@@ -54,7 +54,7 @@ user-dashboard:
     - docker-stack exec ud-front yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack exec ud-back yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack dep ud-front ud-back
-    - docker-stack fixtures fc-exploitation
+    - docker-stack fixtures fc-exploitation fc-support
     # Start mongo-fcp-high to retrieve FC+ AccountIds for the log history
     - $FC_ROOT/fc/docker/docker-stack up mongo-fcp-high
     # Start the NodeJS apps
@@ -63,7 +63,7 @@ user-dashboard:
       ud-back ud-front
       csmr-tracks-high csmr-tracks-legacy csmr-aggregate-tracks
       csmr-user-preferences-high
-      fc-exploitation
+      fc-exploitation fc-support
     # Ensure the required apps are running
     - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://ud.docker.dev-franceconnect.fr)" != "200" ]];
       do echo "Waiting for ud-front..." && sleep 10; done' || (
