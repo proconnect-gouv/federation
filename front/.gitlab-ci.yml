@@ -14,10 +14,17 @@ front:
       when: manual
     - if: '$CI_COMMIT_BRANCH == "staging"'
   cache:
-    key: '${CI_PROJECT_ID}'
+    key: ${ CACHE_KEY }
     policy: pull
     paths:
+      # Front
       - front/node_modules/
+      - front/apps/agent-connect/node_modules/
+      - front/apps/exploit-fca-low/node_modules/
+      - front/apps/exploit-fcp-high/node_modules/
+      - front/apps/partners-fca/node_modules/
+      - front/apps/partners-fcp/node_modules/
+      - front/apps/user-dashboard/node_modules/
   script:
     # Back folder
     - cd front/

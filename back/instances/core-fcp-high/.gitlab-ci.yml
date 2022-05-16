@@ -9,11 +9,29 @@ fcp-and-eidas-high:
   variables:
     TZ: 'Europe/Paris'
   cache:
-    key: '${CI_PROJECT_ID}'
+    key: ${ CACHE_KEY }
     policy: pull
     paths:
+      # Back
       - back/node_modules/
+      # Front
+      - front/node_modules/
+      - front/apps/agent-connect/node_modules/
+      - front/apps/exploit-fca-low/node_modules/
+      - front/apps/exploit-fcp-high/node_modules/
+      - front/apps/partners-fca/node_modules/
+      - front/apps/partners-fcp/node_modules/
+      - front/apps/user-dashboard/node_modules/
+      # Quality
       - quality/node_modules/
+      # Fc-apps
+      - cache/fc-apps/fc-exploitation/node_modules/
+      - cache/fc-apps/fc-stats/node_modules/
+      - cache/fc-apps/fc-support/node_modules/
+      - cache/fc-apps/fc-workers/node_modules/
+      - cache/fc-apps/node_modules/
+      - cache/fc-apps/shared/node_modules/
+      # Cypress
       - $CYPRESS_CACHE_FOLDER
   before_script:
     # Ensure a clean docker environnement
@@ -40,6 +58,7 @@ fcp-and-eidas-high:
     - docker-stack up all-eidas-high
     - docker exec fc_core-fcp-high_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker-stack dep core-fcp-high
+    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/
     - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
     - cd $CI_PROJECT_DIR/quality/fcp && yarn install
     - docker-stack fixtures-fcp-high

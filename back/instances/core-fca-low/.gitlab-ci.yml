@@ -9,13 +9,29 @@ fca-low:
   variables:
     TZ: 'Europe/Paris'
   cache:
-    key: '${CI_PROJECT_ID}'
+    key: ${ CACHE_KEY }
     policy: pull
     paths:
+      # Back
       - back/node_modules/
+      # Front
       - front/node_modules/
       - front/apps/agent-connect/node_modules/
+      - front/apps/exploit-fca-low/node_modules/
+      - front/apps/exploit-fcp-high/node_modules/
+      - front/apps/partners-fca/node_modules/
+      - front/apps/partners-fcp/node_modules/
+      - front/apps/user-dashboard/node_modules/
+      # Quality
       - quality/node_modules/
+      # Fc-apps
+      - cache/fc-apps/fc-exploitation/node_modules/
+      - cache/fc-apps/fc-stats/node_modules/
+      - cache/fc-apps/fc-support/node_modules/
+      - cache/fc-apps/fc-workers/node_modules/
+      - cache/fc-apps/node_modules/
+      - cache/fc-apps/shared/node_modules/
+      # Cypress
       - $CYPRESS_CACHE_FOLDER
   before_script:
     # Ensure a clean docker environnement
@@ -43,6 +59,7 @@ fca-low:
     - docker exec fc_fca-low-front_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker-stack fca-low-front
     - docker-stack dep core-fca-low
+    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/
     - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
     - cd $CI_PROJECT_DIR/quality/fca && yarn install
     - docker-stack fixtures-fca-low

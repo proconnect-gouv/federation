@@ -9,13 +9,30 @@ user-dashboard:
   variables:
     TZ: 'Europe/Paris'
   cache:
-    key: '${CI_PROJECT_ID}'
+    key: ${ CACHE_KEY }
     policy: pull
     paths:
+      # Back
       - back/node_modules/
+      # Front
       - front/node_modules/
+      - front/apps/agent-connect/node_modules/
+      - front/apps/exploit-fca-low/node_modules/
+      - front/apps/exploit-fcp-high/node_modules/
+      - front/apps/partners-fca/node_modules/
+      - front/apps/partners-fcp/node_modules/
       - front/apps/user-dashboard/node_modules/
+      # Quality
       - quality/node_modules/
+      # Fc-apps
+      - cache/fc-apps/fc-exploitation/node_modules/
+      - cache/fc-apps/fc-stats/node_modules/
+      - cache/fc-apps/fc-support/node_modules/
+      - cache/fc-apps/fc-workers/node_modules/
+      - cache/fc-apps/node_modules/
+      - cache/fc-apps/shared/node_modules/
+      # Cypress
+      - $CYPRESS_CACHE_FOLDER
   before_script:
     # Ensure a clean docker environnement
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
@@ -46,9 +63,11 @@ user-dashboard:
     - chown -R 1000:0 $FC_ROOT/fc-docker/volumes/elasticsearch/data/
   script:
     # Up the docker-stack with minimal requirement
+    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/
     - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
-    - cd $FC_LEGACY_ROOT
-    - yarn install
+    - rsync -a $CI_PROJECT_DIR/cache/core-legacy/ $FC_LEGACY_ROOT/
+    - cd $FC_LEGACY_ROOT && yarn install
+    - cp -r $FC_LEGACY_ROOT/projects/fc/fc-commons $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
     - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
     - docker-stack up all-v1
     - docker-stack exec ud-front yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION

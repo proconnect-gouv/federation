@@ -26,7 +26,7 @@ back:
       when: manual
     - if: '$CI_COMMIT_BRANCH == "staging"'
   cache:
-    key: '${CI_PROJECT_ID}'
+    key: ${ CACHE_KEY }
     policy: pull
     paths:
       - back/node_modules/
@@ -53,19 +53,44 @@ build-cache:
   tags:
     - node
   cache:
-    key: '${CI_PROJECT_ID}'
+    key: ${ CACHE_KEY }
     policy: push
     paths:
+      # Back
       - back/node_modules/
+      # Front
       - front/node_modules/
-      - quality/node_modules/
       - front/apps/agent-connect/node_modules/
+      - front/apps/exploit-fca-low/node_modules/
+      - front/apps/exploit-fcp-high/node_modules/
+      - front/apps/partners-fca/node_modules/
+      - front/apps/partners-fcp/node_modules/
+      - front/apps/user-dashboard/node_modules/
+      # Quality
+      - quality/node_modules/
+      # Fc-apps
+      - cache/fc-apps/fc-exploitation/node_modules/
+      - cache/fc-apps/fc-stats/node_modules/
+      - cache/fc-apps/fc-support/node_modules/
+      - cache/fc-apps/fc-workers/node_modules/
+      - cache/fc-apps/node_modules/
+      - cache/fc-apps/shared/node_modules/
+      # core-legacy
+      - cache/core-legacy/node_modules/
+      - cache/core-legacy/projects/fc/core/node_modules/
+      - cache/core-legacy/projects/fc/fc-commons/node_modules/
+      - cache/core-legacy/projects/partenaires/node_modules/
+      # Cypress cache
       - $CYPRESS_CACHE_FOLDER
   stage: 'Cache'
   script:
     - cd $CI_PROJECT_DIR/back && yarn install
     - cd $CI_PROJECT_DIR/front && yarn install
     - cd $CI_PROJECT_DIR/quality && yarn install
+    - git clone -b $FC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $CI_PROJECT_DIR/cache/fc-apps
+    - cd $CI_PROJECT_DIR/cache/fc-apps && yarn install
+    - git clone -b $FC_LEGACY_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/core-legacy.git $CI_PROJECT_DIR/cache/core-legacy
+    - cd $CI_PROJECT_DIR/cache/core-legacy && yarn install
   dependencies: []
   interruptible: true
   rules:

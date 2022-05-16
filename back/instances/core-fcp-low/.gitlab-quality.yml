@@ -8,11 +8,22 @@ quality-fcp-low-docker:
   variables:
     TZ: 'Europe/Paris'
   cache:
-    key: "${CI_PROJECT_ID}"
+    key: ${ CACHE_KEY }
     policy: pull
     paths:
+      # Back
       - back/node_modules/
+      # Front
+      - front/node_modules/
+      - front/apps/agent-connect/node_modules/
+      - front/apps/exploit-fca-low/node_modules/
+      - front/apps/exploit-fcp-high/node_modules/
+      - front/apps/partners-fca/node_modules/
+      - front/apps/partners-fcp/node_modules/
+      - front/apps/user-dashboard/node_modules/
+      # Quality
       - quality/node_modules/
+      # Cypress
       - $CYPRESS_CACHE_FOLDER
   before_script:
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
