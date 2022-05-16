@@ -13,7 +13,7 @@ quality-fcp-high-release:
     CYPRESS_PLATFORM: 'fcp-high'
     CYPRESS_TEST_ENV: 'integ01'
   cache:
-    key: "${CI_PROJECT_ID}"
+    key: ${ CACHE_KEY }
     policy: pull
     paths:
       - quality/node_modules/

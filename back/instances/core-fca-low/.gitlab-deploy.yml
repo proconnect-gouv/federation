@@ -54,7 +54,7 @@ quality-fca-low-recette:
     - merge_requests
     - staging
   cache:
-    key: "${CI_PROJECT_ID}"
+    key: ${ CACHE_KEY }
     policy: pull
     paths:
       - quality/node_modules/
