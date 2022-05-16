@@ -3,6 +3,7 @@
 // declarative file
 import { LayoutConfig } from '@fc/dsfr';
 
+// @NOTE Use instead svg logo from libs/DSFR
 import { LogoFranceConnectComponent } from '../ui/components/logo-france-connect';
 
 export const Layout: LayoutConfig = {
