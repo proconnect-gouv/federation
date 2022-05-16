@@ -20,8 +20,9 @@ describe('HomePage', () => {
   });
 
   it('should match the snapshot', () => {
+    // when
     const { container } = render(<HomePage />);
-
-    expect(container.firstChild).toMatchSnapshot();
+    // then
+    expect(container).toMatchSnapshot();
   });
 });

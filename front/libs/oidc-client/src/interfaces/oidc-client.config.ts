@@ -8,6 +8,7 @@ export interface OidcClientConfig {
     endSessionUrl?: string;
     getEndSessionUrl?: string;
     getUserInfos: string;
+    returnButtonUrl?: string;
   };
   csrf?: string;
 }

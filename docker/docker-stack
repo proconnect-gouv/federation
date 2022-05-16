@@ -317,15 +317,6 @@ _log() {
   cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} pm2 logs
 }
 
-_styleguide() {
-  echo "**************************************"
-  echo " Starting Styleguide..."
-  echo "**************************************"
-  cd ${WORKING_DIR} && docker-compose up --build -d styleguide
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY styleguide "/opt/scripts/install.sh" || err=true
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY styleguide "/opt/scripts/start.sh" || err=true
-}
-
 _fixtures_fcp_high() {
   echo "**************************************"
   echo " Resetting fixtures in database..."
@@ -458,7 +449,7 @@ case "$action" in
   dep|dependencies)
     _install_dependencies $@
     ;;
-  dep-all|dependencies-all)  
+  dep-all|dependencies-all)
     _install_dependencies $RUNNING_CONTAINERS
     ;;
   exec)
@@ -475,9 +466,6 @@ case "$action" in
     ;;
   compose)
     cd ${WORKING_DIR} && docker-compose $@
-    ;;
-  styleguide)
-    _styleguide
     ;;
   fixtures-fcp-high)
     _fixtures_fcp_high

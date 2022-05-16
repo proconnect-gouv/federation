@@ -83,8 +83,6 @@ services:
           # TODO: Move those aliases to exploitation network once runner workaround found
           - exploitation-fca-low.docker.dev-franceconnect.fr
           - exploitation-high.docker.dev-franceconnect.fr
-          # Documentation
-          - styleguide.docker.dev-franceconnect.fr
           # Generic
           - docker.dev-franceconnect.fr
       fc:
@@ -274,27 +272,6 @@ services:
       - data
     ports:
       - '5551:5551'
-
-  styleguide:
-    hostname: styleguide
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      - 'rp-all'
-      - 'squid'
-    volumes:
-      - '${VOLUMES_DIR}/src/fc/front:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/log/:/var/log/app'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
-    env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/shared/.env/styleguide.env'
-    networks:
-      - fc
-    command: 'pm2 logs'
 
   openldap:
     image: ${FC_DOCKER_REGISTRY}/openldap:0.2
