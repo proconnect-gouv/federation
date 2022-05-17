@@ -14,7 +14,7 @@ front:
       when: manual
     - if: '$CI_COMMIT_BRANCH == "staging"'
   cache:
-    key: ${ CACHE_KEY }
+    key: ${CACHE_KEY}
     policy: pull
     paths:
       # Front

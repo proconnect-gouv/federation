@@ -9,7 +9,7 @@ fcp-low:
   variables:
     TZ: 'Europe/Paris'
   cache:
-    key: ${ CACHE_KEY }
+    key: ${CACHE_KEY}
     policy: pull
     paths:
       # Back
