@@ -1,4 +1,4 @@
-version: '3.4'
+version: '2.4'
 
 ####################
 ####################
@@ -153,11 +153,62 @@ services:
       - 'ES_JAVA_OPTS=-Xms64m -Xmx256m'
 
   redis-pwd:
-    image: redis:5.0.3
+    image: redis:5.0.14
     command: redis-server --requirepass Ivae1feiThoogahquohDei7iwie0ceeM
     networks:
       - data
       - rie
+
+  redis-cluster-master:
+    image: "bitnami/redis:5.0.14"
+    env_file:
+      - ${COMPOSE_DIR}/shared/.env/redis.env
+    environment:
+      - REDIS_REPLICATION_MODE=master
+    healthcheck:
+      test: redis-cli -a $${REDIS_PASSWORD} role | grep master
+      interval: 2s
+      start_period: 5s
+    networks:
+      - data
+
+  redis-cluster-replica:
+    image: "bitnami/redis:5.0.14"
+    env_file:
+      - ${COMPOSE_DIR}/shared/.env/redis.env
+    environment:
+      - REDIS_REPLICATION_MODE=slave
+      - REDIS_MASTER_HOST=redis-cluster-master
+      - REDIS_MASTER_PORT_NUMBER=6379
+    healthcheck:
+      test: redis-cli -a $${REDIS_PASSWORD} role | grep slave
+      interval: 2s
+      start_period: 5s
+    depends_on:
+      - redis-cluster-master
+    networks:
+      - data
+
+  redis-sentinel:
+    image: "bitnami/redis-sentinel:5.0.14"
+    scale: 3
+    env_file:
+      - ${COMPOSE_DIR}/shared/.env/redis.env
+    environment:
+      - REDIS_SENTINEL_QUORUM=2
+      - REDIS_MASTER_SET=fc_core_v2
+      - REDIS_MASTER_HOST=redis-cluster-master
+      - REDIS_SENTINEL_DOWN_AFTER_MILLISECONDS=1000
+      - REDIS_SENTINEL_FAILOVER_TIMEOUT=2000
+    healthcheck:
+      test: redis-cli -p 26379 ping
+      interval: 2s
+      start_period: 5s
+    depends_on:
+      - redis-cluster-master
+      - redis-cluster-replica
+    networks:
+      - data
 
   rnipp:
     hostname: rnipp
