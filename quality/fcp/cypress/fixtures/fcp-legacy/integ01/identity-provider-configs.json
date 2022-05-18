@@ -1,0 +1,27 @@
+{
+  "fiLegacy": {
+    "name": "fip4_fi-legacy",
+    "title": "FI Legacy pour les tests automatisés",
+    "issuer": "https://fournisseur-d-identite.dev-franceconnect.fr/user/authorise",
+    "jwksUrl": "https://issuer.fr/jwks",
+    "authorizationUrl": "https://fournisseur-d-identite.dev-franceconnect.fr/user/authorize",
+    "tokenUrl": "https://fournisseur-d-identite.dev-franceconnect.fr/user/token",
+    "userInfoUrl": "https://fournisseur-d-identite.dev-franceconnect.fr/api/user",
+    "logoutUrl": "https://fournisseur-d-identite.dev-franceconnect.fr/user/session/end",
+    "statusUrl": "https://fournisseur-d-identite.dev-franceconnect.fr",
+    "discovery": "false",
+    "clientId": "5612e79ecc8683b8d386994c01835cae",
+    "client_secret": "1a16d131bbbdea98131c178630c4d67d",
+    "messageToDisplayWhenInactive": "Disponible prochainement",
+    "redirectionTargetWhenInactive": "",
+    "alt": "FI Legacy",
+    "image": "fi-eidas-1.png",
+    "imageFocus": "fi-eidas-1.png",
+    "trustedIdentity": "false",
+    "eidas": 1,
+    "order": 1,
+    "emails": "fip4_fi-legacy@yopmail.com",
+    "specificText": "Veuillez fournir une capture d'écran de votre page de profil !",
+    "token_endpoint_auth_method": "client_secret_post"
+  }
+}

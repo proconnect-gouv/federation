@@ -1,0 +1,54 @@
+quality-user-dashboard-release:
+  stage: 'Post-deploy'
+  image: ${E2E_DOCKER_IMAGE}
+  tags:
+    - cypress
+  only:
+    - tags
+  when: manual
+  environment:
+    name: integ01
+    url: https://fcp.integ01.dev-franceconnect.fr
+  variables:
+    CYPRESS_PLATFORM: 'fcp-legacy'
+    CYPRESS_TEST_ENV: 'integ01'
+    CYPRESS_EXPLOIT_USER_NAME: $EXPLOIT_FCP_LEGACY_USER
+    CYPRESS_EXPLOIT_USER_PASS: $EXPLOIT_FCP_LEGACY_PWD
+    CYPRESS_EXPLOIT_USER_TOTP: $EXPLOIT_FCP_LEGACY_TOTP
+    CYPRESS_SUPPORT_USER_NAME: $SUPPORT_FCP_LEGACY_USER
+    CYPRESS_SUPPORT_USER_PASS: $SUPPORT_FCP_LEGACY_PWD
+    CYPRESS_SUPPORT_USER_TOTP: $SUPPORT_FCP_LEGACY_TOTP
+  cache:
+    key: ${ CACHE_KEY }
+    policy: pull
+    paths:
+      - quality/node_modules/
+  before_script:
+    - echo "FC_DOCKER_VERSION=$FC_DOCKER_VERSION"
+    - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
+    - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
+    - shopt -s expand_aliases
+    - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    # Shallow clone depth 1 fc-docker repository
+    - rm -rf $FC_ROOT/fc-docker
+    - git clone -b $FC_DOCKER_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker  --single-branch
+    - cd $CI_PROJECT_DIR/quality/fcp && yarn install
+    - cd $CI_PROJECT_DIR
+  script:
+  # Build the nginx proxy to access /integ01/fcp-legacy.html
+    - docker-stack up rp-all
+    - cd $CI_PROJECT_DIR/quality/fcp
+    - yarn test:ud -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn report:prepare
+    - yarn report:generate
+    - exit $RETURN_CODE
+  dependencies: []
+  artifacts:
+    expire_in: 1 hrs
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
+  after_script:
+    - bash $CI_BUILDS_DIR/france-connect/fc-docker/docker-stack halt
+    - docker container prune -f && docker volume prune -f

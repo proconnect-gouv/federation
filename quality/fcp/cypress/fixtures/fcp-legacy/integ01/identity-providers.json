@@ -1,0 +1,59 @@
+[
+  {
+    "idpId": "fip1",
+    "name": "identity-provider-example-faible",
+    "descriptions": [
+      "par défaut",
+      "actif"
+    ],
+    "mocked": true,
+    "usable": true,
+    "url": "https://fournisseur-d-identite.dev-franceconnect.fr",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "HS256",
+    "selectors": {
+      "idpButton": "#fi-identity-provider-example-faible",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "[type='submit']"
+    }
+  },
+  {
+    "idpId": "fip2",
+    "name": "identity-provider-example-substantiel",
+    "descriptions": [
+      "pour le test de préférences FI"
+    ],
+    "mocked": true,
+    "usable": true,
+    "url": "https://fournisseur-d-identite.dev-franceconnect.fr",
+    "acrValue": "eidas2",
+    "encryption": "",
+    "signature": "HS256",
+    "selectors": {
+      "idpButton": "#fi-identity-provider-example-substantiel",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "[type='submit']"
+    }
+  },
+  {
+    "idpId": "fip3",
+    "name": "identity-provider-example",
+    "descriptions": [
+    ],
+    "mocked": true,
+    "usable": true,
+    "url": "https://fournisseur-d-identite.dev-franceconnect.fr",
+    "acrValue": "eidas3",
+    "encryption": "",
+    "signature": "HS256",
+    "selectors": {
+      "idpButton": "#fi-identity-provider-example",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "[type='submit']"
+    }
+  }
+]

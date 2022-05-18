@@ -43,6 +43,7 @@ beforeEach(function () {
   setFixtureContext('environment.json', pathArray, 'env');
   setFixtureContext('service-providers.json', pathArray, 'serviceProviders');
   setFixtureContext('identity-providers.json', pathArray, 'identityProviders');
+  setFixtureContext('identity-provider-configs.json', pathArray, 'idpConfigs');
   setFixtureContext('scopes.json', pathArray, 'scopes');
   setFixtureContext('users.json', pathArray, 'users');
 

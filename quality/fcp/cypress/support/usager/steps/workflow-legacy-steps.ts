@@ -17,7 +17,7 @@ import {
 } from '../pages/legacy-pages';
 import ServiceProviderPage from '../pages/service-provider-legacy-page';
 
-class ConnectionWorkflow {
+export class ConnectionWorkflow {
   allAppsUrl: string;
   fcRootUrl: string;
   serviceProvider: ServiceProvider;
@@ -63,11 +63,20 @@ class ConnectionWorkflow {
    */
   start(): ConnectionWorkflow {
     const DEFAULT_ACR_VALUES = 'eidas1';
-    this.serviceProviderPage.callAuthorize(
+    this.serviceProviderPage.startLogin(
       this.fcRootUrl,
       this.scopeContext,
       DEFAULT_ACR_VALUES,
     );
+    return this;
+  }
+
+  /**
+   * Check whether the IDP selection page is displayed
+   */
+  checkIdpSelectionPageDisplayed(): ConnectionWorkflow {
+    const identityProviderSelectionPage = new IdentityProviderSelectionPage();
+    identityProviderSelectionPage.checkIsVisible();
     return this;
   }
 
@@ -81,9 +90,7 @@ class ConnectionWorkflow {
   ): ConnectionWorkflow {
     this.identityProvider = identityProvider;
     const identityProviderSelectionPage = new IdentityProviderSelectionPage();
-    identityProviderSelectionPage
-      .getIdpButton(this.identityProvider.name)
-      .click();
+    identityProviderSelectionPage.getIdpButton(this.identityProvider).click();
     return this;
   }
 
