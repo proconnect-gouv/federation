@@ -1,5 +1,4 @@
 import * as os from 'os';
-import * as pino from 'pino';
 import * as QuickLRU from 'quick-lru';
 import { v4 as uuidV4 } from 'uuid';
 
@@ -7,12 +6,15 @@ import { ConsoleLogger, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 
-import * as colors from './constants';
-import { LoggerConfig } from './dto';
-import { LoggerLevelNames } from './enum';
-import { ILoggerBusinessEvent, ILoggerColorParams } from './interfaces';
-import { nestLevelsMap, pinoLevelsMap } from './log-maps.map';
-import * as utils from './utils';
+import * as colors from '../constants';
+import { LoggerConfig } from '../dto';
+import { LoggerLevelNames } from '../enum';
+import { ILoggerBusinessEvent, ILoggerColorParams } from '../interfaces';
+import { nestLevelsMap, pinoLevelsMap } from '../log-maps.map';
+import * as utils from '../utils';
+import { PinoService } from './pino.service';
+
+export const LOG_METHODS = ['log', 'error', 'debug', 'info', 'warn'];
 
 /**
  * /!\ CAN BE CHANGED MANUALLY /!\
@@ -20,7 +22,7 @@ import * as utils from './utils';
  * either in Chrome or only in Terminal.
  * @see chrome://inspect/#devices
  */
-const IS_TRACE_OUTPUT = true;
+export const IS_TRACE_OUTPUT = true;
 
 /**
  * For usage and good practices:
@@ -35,7 +37,6 @@ export class LoggerService extends ConsoleLogger {
   private libraryColors: ILoggerColorParams;
   private containerColors: ILoggerColorParams;
   private containerName: string;
-  private externalLogger: any;
 
   /**
    * Memorisation tool already used by Panva.
@@ -43,29 +44,19 @@ export class LoggerService extends ConsoleLogger {
    */
   private cache: QuickLRU<string, any>;
 
-  constructor(private readonly config: ConfigService) {
+  constructor(
+    private readonly config: ConfigService,
+    private readonly adapter: PinoService,
+  ) {
     super(null);
-    const { level, path } = this.config.get<LoggerConfig>('Logger');
-
     this.setContainerColors();
+    this.cache = new QuickLRU({ maxSize: 128 });
+  }
 
-    this.externalLogger = pino(
-      {
-        formatters: {
-          level(label: string, _number: number) {
-            return { level: label };
-          },
-        },
-        level: pinoLevelsMap[level],
-      },
-      pino.destination(path),
-    );
-
+  onModuleInit() {
     if (!this.isDev()) {
       this.overrideNativeConsole();
     }
-
-    this.cache = new QuickLRU({ maxSize: 128 });
   }
 
   private getIdentifiedLog(log) {
@@ -99,7 +90,7 @@ export class LoggerService extends ConsoleLogger {
   }
 
   private canLog(level: string) {
-    return pinoLevelsMap[this.externalLogger.level] <= pinoLevelsMap[level];
+    return this.adapter.level <= pinoLevelsMap[level];
   }
 
   private isDev() {
@@ -125,7 +116,6 @@ export class LoggerService extends ConsoleLogger {
           'could not JSON stringify a log',
           context,
         );
-        message = log;
       }
     }
 
@@ -139,15 +129,15 @@ export class LoggerService extends ConsoleLogger {
     this.trace({ log, context }, level);
 
     if (this.canLog(level)) {
-      this.externalLogger[level](this.getIdentifiedLog(log));
+      const identifiedLog = this.getIdentifiedLog(log);
+      this.adapter.transport[level](identifiedLog);
     }
   }
 
   private overrideNativeConsole() {
-    const methods = ['log', 'error', 'debug', 'info', 'warn'];
     const context = 'Native Console';
 
-    methods.forEach((method) => {
+    LOG_METHODS.forEach((method) => {
       /**
        * @TODO #257
        * Attention les objects crash :
@@ -221,6 +211,21 @@ export class LoggerService extends ConsoleLogger {
   }
 
   /**
+   * Generate Color from Library name and cache it
+   * @param {string} name name of the library
+   * @returns {ILoggerColorParams}
+   */
+  private getColorsFromLibrary(name: string): ILoggerColorParams {
+    let color = this.cache.get(name) as ILoggerColorParams;
+    if (!color) {
+      color = utils.getColorsFromText(name);
+      this.cache.set(name, color);
+    }
+
+    return color;
+  }
+
+  /**
    * Override of `setContent()` method called by all libraries.
    * Allow to set basic lib colors with context name.
    *
@@ -231,22 +236,10 @@ export class LoggerService extends ConsoleLogger {
     super.setContext(context);
 
     // Library name
-    let libraryName: string;
-    if (this.cache.has(context)) {
-      libraryName = this.cache.get(context);
-    } else {
-      libraryName = this.getLibraryName(context);
-      this.cache.set(context, libraryName);
-    }
+    const libraryName = this.getLibraryName(context);
 
     // Library color
-    let color: ILoggerColorParams;
-    if (this.cache.has(libraryName)) {
-      color = this.cache.get(libraryName);
-    } else {
-      color = utils.getColorsFromText(libraryName);
-      this.cache.set(libraryName, color);
-    }
+    const color = this.getColorsFromLibrary(libraryName);
 
     this.setLibraryColors(color);
   }
@@ -259,22 +252,21 @@ export class LoggerService extends ConsoleLogger {
    * @param {string} context Convert context string name.
    * @returns {string} library string name.
    */
-  private getLibraryName(context: string): string {
-    const hasContext: boolean = this.cache.has(context);
-    // we call `this.trace()` in `this.businessLogger()`
-    // without setting the context through the inherited
-    // method `this.setContext()` so we supposed that if
-    // no context is provided, it must be the `logger` library.
-    let libraryName = 'logger';
-
-    if (context) {
-      if (hasContext) {
-        libraryName = this.cache.get(context);
-      } else {
-        libraryName = utils.slugLibName(context);
-        this.cache.set(context, libraryName);
-      }
+  private getLibraryName(context?: string): string {
+    if (!context) {
+      // we call `this.trace()` in `this.businessLogger()`
+      // without setting the context through the inherited
+      // method `this.setContext()` so we supposed that if
+      // no context is provided, it must be the `logger` library.
+      return 'logger';
     }
+
+    let libraryName = this.cache.get(context);
+    if (!libraryName) {
+      libraryName = utils.slugLibName(context);
+      this.cache.set(context, libraryName);
+    }
+
     return libraryName;
   }
 
@@ -316,11 +308,8 @@ export class LoggerService extends ConsoleLogger {
   private getDebuggerCssColors(allColors: Array<ILoggerColorParams>): string[] {
     return allColors.map((color: ILoggerColorParams): string => {
       const colorHash: string = JSON.stringify(color);
-      let cssStyle: string;
-
-      if (this.cache.has(colorHash)) {
-        cssStyle = this.cache.get(colorHash);
-      } else {
+      let cssStyle = this.cache.get(colorHash);
+      if (!cssStyle) {
         cssStyle = utils.getStyle(color);
         this.cache.set(colorHash, cssStyle);
       }
@@ -396,6 +385,7 @@ export class LoggerService extends ConsoleLogger {
       this.libraryColors,
       this.getClassMethodColor(classMethodName),
     ];
+
     const loggerColors: string[] = this.getDebuggerCssColors(allColors);
 
     const command: Function = this.getConsoleCommand(level);
