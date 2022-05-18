@@ -1,0 +1,11 @@
+{
+  "name": "integ01",
+  "allAppsUrl": "https://docker.dev-franceconnect.fr/integ01/fcp-legacy.html",
+  "fcRootUrl": "https://fcp.integ01.dev-franceconnect.fr",
+  "exploitAppId": "exploitation",
+  "exploitRootUrl": "https://fc-exploitation.integ01.dev-franceconnect.fr",
+  "supportAppId": "support",
+  "supportRootUrl": "https://fc-support.integ01.dev-franceconnect.fr",
+  "udAppId": "ud-home",
+  "udRootUrl": "https://tableaudebord.integ01.dev-franceconnect.fr"
+}

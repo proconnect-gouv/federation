@@ -8,7 +8,7 @@ Fonctionnalité: Préférences FI - Support
   Scénario: Préférences FI - Support - usager n'ayant jamais utilisé FranceConnect
     Etant donné que j'utilise un compte usager "n'ayant jamais utilisé FranceConnect"
     Et que je navigue sur la page login du support
-    Et que je me connecte au support en tant que "exploitant"
+    Et que je me connecte au support en tant que "support"
     Quand j'effectue un redressement RNIPP pour l'usager
     Alors le numéro de ticket support est affiché
     Et les informations RNIPP de l'usager sont affichées
@@ -20,7 +20,7 @@ Fonctionnalité: Préférences FI - Support
     Etant donné que j'utilise un compte usager "sans préférence FI"
     Et que j'ai fait une cinématique FranceConnect Legacy
     Et que je navigue sur la page login du support
-    Et que je me connecte au support en tant que "exploitant"
+    Et que je me connecte au support en tant que "support"
     Et que je navigue vers la page redressement RNIPP
     Quand j'effectue un redressement RNIPP pour l'usager
     Alors le numéro de ticket support est affiché
@@ -43,7 +43,7 @@ Fonctionnalité: Préférences FI - Support
     Et que j'enregistre mes réglages d'accès
     Et que je me déconnecte du dashboard usager
     Et que je navigue sur la page login du support
-    Et que je me connecte au support en tant que "exploitant"
+    Et que je me connecte au support en tant que "support"
     Et que je navigue vers la page redressement RNIPP
     Quand j'effectue un redressement RNIPP pour l'usager "pour le test de préférences FI"
     Alors le numéro de ticket support est affiché
@@ -66,7 +66,7 @@ Fonctionnalité: Préférences FI - Support
     Et que j'enregistre mes réglages d'accès
     Et que je me déconnecte du dashboard usager
     Et que je navigue sur la page login du support
-    Et que je me connecte au support en tant que "exploitant"
+    Et que je me connecte au support en tant que "support"
     Et que je navigue vers la page redressement RNIPP
     Quand j'effectue un redressement RNIPP pour l'usager "pour le test de préférences FI"
     Alors le numéro de ticket support est affiché
@@ -89,7 +89,7 @@ Fonctionnalité: Préférences FI - Support
     Et que j'enregistre mes réglages d'accès
     Et que je me déconnecte du dashboard usager
     Et que je navigue sur la page login du support
-    Et que je me connecte au support en tant que "exploitant"
+    Et que je me connecte au support en tant que "support"
     Et que je navigue vers la page redressement RNIPP
     Quand j'effectue un redressement RNIPP pour l'usager "pour le test de préférences FI"
     Alors le numéro de ticket support est affiché
