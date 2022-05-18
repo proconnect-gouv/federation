@@ -467,6 +467,11 @@ case "$action" in
   compose)
     cd ${WORKING_DIR} && docker-compose $@
     ;;
+  log-rotate)
+    echo "Send SIGUSR2 to core-fcp-high app..."
+    cd ${WORKING_DIR} && docker-compose exec core-fcp-high pkill -SIGUSR2 -f '/usr/bin/node -r source-map-support/register --inspect=0.0.0.0:9235 /var/www/app/dist/instances/core-fcp-high/main'
+    echo "... Signal done"
+    ;;
   fixtures-fcp-high)
     _fixtures_fcp_high
     ;;
@@ -602,6 +607,7 @@ case "$action" in
     echo "* test-all => exec tests on all nodejs applications"
     echo "* e2e => exec e2e tests on given nodejs application (Ex. core-fcp-high)"
     echo "* up => Select the apps you want to up (run without argument to show the lsit of apps)"
+    echo "* log-rotate => Send SIGUSR2 signal to node process (core-fcp-high only)"
     echo "----"
     echo "Other commands mapped to docker-compose: see https://docs.docker.com/compose/reference/overview/"
     echo " (example: $script ps)"
