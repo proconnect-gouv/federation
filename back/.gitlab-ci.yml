@@ -26,7 +26,7 @@ back:
       when: manual
     - if: '$CI_COMMIT_BRANCH == "staging"'
   cache:
-    key: ${ CACHE_KEY }
+    key: ${CACHE_KEY}
     policy: pull
     paths:
       - back/node_modules/
@@ -53,7 +53,7 @@ build-cache:
   tags:
     - node
   cache:
-    key: ${ CACHE_KEY }
+    key: ${CI_PROJECT_ID}
     policy: push
     paths:
       # Back
