@@ -36,8 +36,8 @@ describe('LayoutHeaderMenuComponent', () => {
     // when
     const { container } = render(
       <LayoutHeaderMenuComponent
-        familyName="any-familyName-mock"
-        givenName="any-givenName-mock"
+        firstname="any-firstname-mock"
+        lastname="any-lastname-mock"
         opened={false}
         onClose={onCloseMock}
       />,
@@ -53,8 +53,8 @@ describe('LayoutHeaderMenuComponent', () => {
     const { container } = render(
       <LayoutHeaderMenuComponent
         opened
-        familyName="any-familyName-mock"
-        givenName="any-givenName-mock"
+        firstname="any-firstname-mock"
+        lastname="any-lastname-mock"
         onClose={onCloseMock}
       />,
     );
@@ -69,8 +69,8 @@ describe('LayoutHeaderMenuComponent', () => {
     render(
       <LayoutHeaderMenuComponent
         opened
-        familyName="any-familyName-mock"
-        givenName="any-givenName-mock"
+        firstname="any-firstname-mock"
+        lastname="any-lastname-mock"
         onClose={onCloseMock}
       />,
     );
@@ -78,9 +78,9 @@ describe('LayoutHeaderMenuComponent', () => {
     expect(LayoutHeaderToolsComponent).toHaveBeenCalledTimes(1);
     expect(LayoutHeaderToolsComponent).toHaveBeenCalledWith(
       {
-        familyName: 'any-familyName-mock',
-        givenName: 'any-givenName-mock',
+        firstname: 'any-firstname-mock',
         isModalMenu: true,
+        lastname: 'any-lastname-mock',
       },
       {},
     );
@@ -93,8 +93,8 @@ describe('LayoutHeaderMenuComponent', () => {
     const { container } = render(
       <LayoutHeaderMenuComponent
         opened
-        familyName="any-familyName-mock"
-        givenName="any-givenName-mock"
+        firstname="any-firstname-mock"
+        lastname="any-lastname-mock"
         navigationItems={navigationItemsMock}
         onClose={onCloseMock}
       />,
@@ -110,8 +110,8 @@ describe('LayoutHeaderMenuComponent', () => {
     render(
       <LayoutHeaderMenuComponent
         opened
-        familyName="any-familyName-mock"
-        givenName="any-givenName-mock"
+        firstname="any-firstname-mock"
+        lastname="any-lastname-mock"
         navigationItems={navigationItemsMock}
         onClose={onCloseMock}
       />,

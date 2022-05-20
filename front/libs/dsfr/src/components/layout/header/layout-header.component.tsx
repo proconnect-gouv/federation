@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 
-import { UserInfosContext, UserInterface } from '@fc/oidc-client';
+import { AccountContext, AccountInterface } from '@fc/account';
 import { AppContext, AppContextInterface } from '@fc/state-management';
 
 import { LayoutHeaderMobileBurgerButton } from './layout-header-mobile-burger.button';
@@ -14,19 +14,19 @@ export const LayoutHeaderComponent = React.memo(() => {
   const [mobileMenuOpened, setMobileMenuOpened] = useState(false);
   const ltDesktop = useMediaQuery({ query: '(max-width: 992px)' });
 
-  const { connected, ready, userinfos } = useContext<UserInterface>(UserInfosContext);
-  const isUserConnected = connected && ready;
+  const { connected, ready, userinfos } = useContext<AccountInterface>(AccountContext);
 
-  // oidc spec defined property
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const givenName = userinfos?.given_name;
-  // oidc spec defined property
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  const familyName = userinfos?.family_name;
+  const isUserConnected = connected && ready;
+  const firstname = userinfos?.firstname;
+  const lastname = userinfos?.lastname;
 
   const { state } = useContext<AppContextInterface>(AppContext);
   const { logo, navigationItems } = state.config.Layout;
-  const { returnButtonUrl } = state.config.OidcClient.endpoints;
+  // @TODO testing implies splitting the function into a private
+  // it seems to be useless till should be refactored with the global config for front apps
+  // @SEE https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/984
+  /* istanbul ignore next */
+  const { returnButtonUrl } = state.config?.OidcClient?.endpoints || {};
 
   /* @NOTE can not be mocked without a native re-implementation */
   /* istanbul ignore next */
@@ -60,10 +60,10 @@ export const LayoutHeaderComponent = React.memo(() => {
                   - user's givenname/familyname
                   - the return button (desktop only) */}
                 <LayoutHeaderToolsComponent
-                  familyName={familyName}
-                  givenName={givenName}
+                  firstname={firstname}
                   isDesktopViewport={!ltDesktop}
                   isModalMenu={false}
+                  lastname={lastname}
                 />
               </div>
             </div>
@@ -74,15 +74,18 @@ export const LayoutHeaderComponent = React.memo(() => {
           // - Mobile modal menu
           // - Desktop pages navigation bar (inline menu)
           <LayoutHeaderMenuComponent
-            familyName={familyName}
-            givenName={givenName}
+            firstname={firstname}
+            lastname={lastname}
             navigationItems={navigationItems}
             opened={mobileMenuOpened}
             onClose={toggleMobileMenu}
           />
         )}
       </header>
-      {ltDesktop && <ReturnButtonComponent isMobileViewport url={returnButtonUrl} />}
+      {/* @TODO refacto OidcClient */}
+      {ltDesktop && returnButtonUrl && (
+        <ReturnButtonComponent isMobileViewport url={returnButtonUrl} />
+      )}
     </React.Fragment>
   );
 });

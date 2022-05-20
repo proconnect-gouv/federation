@@ -13,8 +13,8 @@ describe('LayoutHeaderToolsAccountComponent', () => {
     const { container } = render(
       <LayoutHeaderToolsAccountComponent
         isMobile
-        familyName="any-familyName-mock"
-        givenName="any-givenName-mock"
+        firstname="any-firstname-mock"
+        lastname="any-lastname-mock"
       />,
     );
     // then
@@ -25,39 +25,39 @@ describe('LayoutHeaderToolsAccountComponent', () => {
     // when
     const { container } = render(
       <LayoutHeaderToolsAccountComponent
-        familyName="any-familyName-mock"
-        givenName="any-givenName-mock"
+        firstname="any-firstname-mock"
         isMobile={false}
+        lastname="any-lastname-mock"
       />,
     );
     // then
     expect(container).toMatchSnapshot();
   });
 
-  it('should render familyName', () => {
+  it('should render lastname', () => {
     // when
     const { getByText } = render(
       <LayoutHeaderToolsAccountComponent
         isMobile
-        familyName="any-familyName-mock"
-        givenName="any-givenName-mock"
+        firstname="any-firstname-mock"
+        lastname="any-lastname-mock"
       />,
     );
-    const element = getByText(/any-givenName-mock/);
+    const element = getByText(/any-lastname-mock/);
     // then
     expect(element).toBeInTheDocument();
   });
 
-  it('should render givenName', () => {
+  it('should render firstname', () => {
     // when
     const { getByText } = render(
       <LayoutHeaderToolsAccountComponent
         isMobile
-        familyName="any-familyName-mock"
-        givenName="any-givenName-mock"
+        firstname="any-firstname-mock"
+        lastname="any-lastname-mock"
       />,
     );
-    const element = getByText(/any-familyName-mock/);
+    const element = getByText(/any-firstname-mock/);
     // then
     expect(element).toBeInTheDocument();
   });

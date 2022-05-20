@@ -12,6 +12,30 @@ exports[`LayoutHeaderToolsComponent should match the snapshot 1`] = `
 </div>
 `;
 
+exports[`LayoutHeaderToolsComponent should match the snapshot, when OidcClient is not defined 1`] = `
+<div>
+  <div
+    class="fr-header__menu-links"
+  >
+    <ul
+      class="fr-btns-group"
+    />
+  </div>
+</div>
+`;
+
+exports[`LayoutHeaderToolsComponent should match the snapshot, when OidcClient.endpoints is not defined 1`] = `
+<div>
+  <div
+    class="fr-header__menu-links"
+  >
+    <ul
+      class="fr-btns-group"
+    />
+  </div>
+</div>
+`;
+
 exports[`LayoutHeaderToolsComponent should match the snapshot, when all props and config are defined 1`] = `
 <div>
   <div

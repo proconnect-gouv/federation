@@ -6,9 +6,9 @@ exports[`LayoutHeaderToolsAccountComponent should match the snapshot, when isMob
     class="fr-btn fr-fi-account-line"
     data-testid="layout-header-tools-account-component-desktop"
   >
-    any-givenName-mock
+    any-firstname-mock
      
-    any-familyName-mock
+    any-lastname-mock
   </span>
 </div>
 `;
@@ -19,9 +19,9 @@ exports[`LayoutHeaderToolsAccountComponent should match the snapshot, when isMob
     class="fr-btn fr-fi-account-line"
     data-testid="layout-header-tools-account-component-mobile"
   >
-    any-givenName-mock
+    any-firstname-mock
      
-    any-familyName-mock
+    any-lastname-mock
   </span>
 </div>
 `;
