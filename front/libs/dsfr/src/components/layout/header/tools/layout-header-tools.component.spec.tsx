@@ -20,6 +20,7 @@ describe('LayoutHeaderToolsComponent', () => {
     // given
     const appContextConfigMock = {
       config: {
+        // @TODO refacto OidcClient
         OidcClient: { endpoints: { endSessionUrl: undefined, returnButtonUrl: undefined } },
       },
     };
@@ -33,10 +34,44 @@ describe('LayoutHeaderToolsComponent', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should match the snapshot, when OidcClient is not defined', () => {
+    // given
+    const appContextConfigMock = {
+      config: {},
+    };
+    // when
+    const { container } = render(
+      <AppContextProvider value={appContextConfigMock}>
+        <LayoutHeaderToolsComponent isModalMenu />
+      </AppContextProvider>,
+    );
+    // then
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match the snapshot, when OidcClient.endpoints is not defined', () => {
+    // given
+    const appContextConfigMock = {
+      config: {
+        // @TODO refacto OidcClient
+        OidcClient: {},
+      },
+    };
+    // when
+    const { container } = render(
+      <AppContextProvider value={appContextConfigMock}>
+        <LayoutHeaderToolsComponent isModalMenu />
+      </AppContextProvider>,
+    );
+    // then
+    expect(container).toMatchSnapshot();
+  });
+
   it('should match the snapshot, when isModalMenu is true', () => {
     // given
     const appContextConfigMock = {
       config: {
+        // @TODO refacto OidcClient
         OidcClient: { endpoints: { endSessionUrl: undefined, returnButtonUrl: undefined } },
       },
     };
@@ -55,6 +90,7 @@ describe('LayoutHeaderToolsComponent', () => {
     const appContextConfigMock = {
       config: {
         OidcClient: {
+          // @TODO refacto OidcClient
           endpoints: { endSessionUrl: undefined, returnButtonUrl: expect.any(String) },
         },
       },
@@ -74,6 +110,7 @@ describe('LayoutHeaderToolsComponent', () => {
     const appContextConfigMock = {
       config: {
         OidcClient: {
+          // @TODO refacto OidcClient
           endpoints: { endSessionUrl: undefined, returnButtonUrl: expect.any(String) },
         },
       },
@@ -81,10 +118,7 @@ describe('LayoutHeaderToolsComponent', () => {
     // when
     const { container } = render(
       <AppContextProvider value={appContextConfigMock}>
-        <LayoutHeaderToolsComponent
-          familyName="any-familyName-mock"
-          givenName="any-givenName-mock"
-        />
+        <LayoutHeaderToolsComponent firstname="any-firstname-mock" lastname="any-lastname-mock" />
       </AppContextProvider>,
     );
     // then
@@ -96,6 +130,7 @@ describe('LayoutHeaderToolsComponent', () => {
     const appContextConfigMock = {
       config: {
         OidcClient: {
+          // @TODO refacto OidcClient
           endpoints: { endSessionUrl: expect.any(String), returnButtonUrl: expect.any(String) },
         },
       },
@@ -103,10 +138,7 @@ describe('LayoutHeaderToolsComponent', () => {
     // when
     const { container } = render(
       <AppContextProvider value={appContextConfigMock}>
-        <LayoutHeaderToolsComponent
-          familyName="any-familyName-mock"
-          givenName="any-givenName-mock"
-        />
+        <LayoutHeaderToolsComponent firstname="any-firstname-mock" lastname="any-lastname-mock" />
       </AppContextProvider>,
     );
     // then
@@ -120,6 +152,7 @@ describe('LayoutHeaderToolsComponent', () => {
         OidcClient: {
           endpoints: {
             endSessionUrl: 'any-endSessionUrl-mock',
+            // @TODO refacto OidcClient
             returnButtonUrl: expect.any(String),
           },
         },
@@ -128,10 +161,7 @@ describe('LayoutHeaderToolsComponent', () => {
     // when
     render(
       <AppContextProvider value={appContextConfigMock}>
-        <LayoutHeaderToolsComponent
-          familyName="any-familyName-mock"
-          givenName="any-givenName-mock"
-        />
+        <LayoutHeaderToolsComponent firstname="any-firstname-mock" lastname="any-lastname-mock" />
       </AppContextProvider>,
     );
     // then
@@ -152,6 +182,7 @@ describe('LayoutHeaderToolsComponent', () => {
         OidcClient: {
           endpoints: {
             endSessionUrl: 'any-endSessionUrl-mock',
+            // @TODO refacto OidcClient
             returnButtonUrl: expect.any(String),
           },
         },
@@ -162,8 +193,8 @@ describe('LayoutHeaderToolsComponent', () => {
       <AppContextProvider value={appContextConfigMock}>
         <LayoutHeaderToolsComponent
           isModalMenu
-          familyName="any-familyName-mock"
-          givenName="any-givenName-mock"
+          firstname="any-firstname-mock"
+          lastname="any-lastname-mock"
         />
       </AppContextProvider>,
     );
@@ -183,6 +214,7 @@ describe('LayoutHeaderToolsComponent', () => {
     const appContextConfigMock = {
       config: {
         OidcClient: {
+          // @TODO refacto OidcClient
           endpoints: { endSessionUrl: expect.any(String), returnButtonUrl: expect.any(String) },
         },
       },
@@ -193,8 +225,8 @@ describe('LayoutHeaderToolsComponent', () => {
         <LayoutHeaderToolsComponent
           isDesktopViewport
           isModalMenu
-          familyName="any-familyName-mock"
-          givenName="any-givenName-mock"
+          firstname="any-firstname-mock"
+          lastname="any-lastname-mock"
         />
       </AppContextProvider>,
     );
@@ -206,25 +238,23 @@ describe('LayoutHeaderToolsComponent', () => {
     // given
     const appContextConfigMock = {
       config: {
+        // @TODO refacto OidcClient
         OidcClient: { endpoints: { endSessionUrl: undefined, returnButtonUrl: undefined } },
       },
     };
     // when
     render(
       <AppContextProvider value={appContextConfigMock}>
-        <LayoutHeaderToolsComponent
-          familyName="any-familyName-mock"
-          givenName="any-givenName-mock"
-        />
+        <LayoutHeaderToolsComponent firstname="any-firstname-mock" lastname="any-lastname-mock" />
       </AppContextProvider>,
     );
     // then
     expect(LayoutHeaderToolsAccountComponent).toHaveBeenCalledTimes(1);
     expect(LayoutHeaderToolsAccountComponent).toHaveBeenCalledWith(
       {
-        familyName: 'any-familyName-mock',
-        givenName: 'any-givenName-mock',
+        firstname: 'any-firstname-mock',
         isMobile: false,
+        lastname: 'any-lastname-mock',
       },
       {},
     );
@@ -234,6 +264,7 @@ describe('LayoutHeaderToolsComponent', () => {
     // given
     const appContextConfigMock = {
       config: {
+        // @TODO refacto OidcClient
         OidcClient: { endpoints: { endSessionUrl: undefined, returnButtonUrl: undefined } },
       },
     };
@@ -242,8 +273,8 @@ describe('LayoutHeaderToolsComponent', () => {
       <AppContextProvider value={appContextConfigMock}>
         <LayoutHeaderToolsComponent
           isModalMenu
-          familyName="any-familyName-mock"
-          givenName="any-givenName-mock"
+          firstname="any-firstname-mock"
+          lastname="any-lastname-mock"
         />
       </AppContextProvider>,
     );
@@ -251,9 +282,9 @@ describe('LayoutHeaderToolsComponent', () => {
     expect(LayoutHeaderToolsAccountComponent).toHaveBeenCalledTimes(1);
     expect(LayoutHeaderToolsAccountComponent).toHaveBeenCalledWith(
       {
-        familyName: 'any-familyName-mock',
-        givenName: 'any-givenName-mock',
+        firstname: 'any-firstname-mock',
         isMobile: true,
+        lastname: 'any-lastname-mock',
       },
       {},
     );
@@ -264,6 +295,7 @@ describe('LayoutHeaderToolsComponent', () => {
     const appContextConfigMock = {
       config: {
         OidcClient: {
+          // @TODO refacto OidcClient
           endpoints: { endSessionUrl: undefined, returnButtonUrl: 'any-returnButtonUrl-mock' },
         },
       },
@@ -277,5 +309,20 @@ describe('LayoutHeaderToolsComponent', () => {
     // then
     expect(ReturnButtonComponent).toHaveBeenCalledTimes(1);
     expect(ReturnButtonComponent).toHaveBeenCalledWith({ url: 'any-returnButtonUrl-mock' }, {});
+  });
+
+  it('should not call ReturnButtonComponent when OidcClient is undefined', () => {
+    // given
+    const appContextConfigMock = {
+      config: {},
+    };
+    // when
+    render(
+      <AppContextProvider value={appContextConfigMock}>
+        <LayoutHeaderToolsComponent isDesktopViewport />
+      </AppContextProvider>,
+    );
+    // then
+    expect(ReturnButtonComponent).not.toHaveBeenCalled();
   });
 });

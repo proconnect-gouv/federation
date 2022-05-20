@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fc/account": "^0.1.0",
     "@fc/common": "^0.1.0",
     "@fc/oidc-client": "^0.1.0",
     "@fc/state-management": "^0.1.0",

@@ -111,5 +111,7 @@ include:
   - '/back/instances/user-dashboard/.gitlab-ci.yml'
   - '/back/instances/user-dashboard/.gitlab-build.yml'
   - '/back/instances/user-dashboard/.gitlab-post-deploy.yml'
+  - '/back/instances/partners-fcp/.gitlab-ci.yml'
+  - '/back/instances/partners-fca/.gitlab-ci.yml'
   - '/back/.gitlab-checkmarx.yml'
   - '/back/.gitlab-post-deploy.yml'

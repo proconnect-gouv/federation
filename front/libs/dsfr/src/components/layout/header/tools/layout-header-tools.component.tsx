@@ -8,18 +8,22 @@ import { LayoutHeaderToolsAccountComponent } from './layout-header-tools-account
 import { LayoutHeaderToolsLogoutButton } from './layout-header-tools-logout.button';
 
 interface LayoutHeaderToolsComponentProps {
-  familyName?: string;
+  lastname?: string;
   isModalMenu?: boolean;
   isDesktopViewport?: boolean;
-  givenName?: string;
+  firstname?: string;
 }
 
 export const LayoutHeaderToolsComponent: React.FC<LayoutHeaderToolsComponentProps> = React.memo(
-  ({ familyName, givenName, isDesktopViewport, isModalMenu }: LayoutHeaderToolsComponentProps) => {
+  ({ firstname, isDesktopViewport, isModalMenu, lastname }: LayoutHeaderToolsComponentProps) => {
     const { state } = useContext(AppContext);
-    const { endSessionUrl, returnButtonUrl } = state.config.OidcClient.endpoints;
+    // @TODO testing implies splitting the function into a private
+    // it seems to be useless till should be refactored with the global config for front apps
+    // @SEE https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/984
+    /* istanbul ignore next */
+    const { endSessionUrl, returnButtonUrl } = state.config?.OidcClient?.endpoints || {};
 
-    const isConnected = !!(givenName && familyName);
+    const isConnected = !!(firstname && lastname);
 
     return (
       <div
@@ -32,13 +36,14 @@ export const LayoutHeaderToolsComponent: React.FC<LayoutHeaderToolsComponentProp
           'fr-header__tools-links': !isModalMenu,
         })}>
         <ul className="fr-btns-group">
+          {/* @TODO refacto OidcClient */}
           {isDesktopViewport && returnButtonUrl && <ReturnButtonComponent url={returnButtonUrl} />}
           {isConnected && (
             <li>
               <LayoutHeaderToolsAccountComponent
-                familyName={familyName}
-                givenName={givenName}
+                firstname={firstname}
                 isMobile={isModalMenu || false}
+                lastname={lastname}
               />
             </li>
           )}
@@ -57,10 +62,10 @@ export const LayoutHeaderToolsComponent: React.FC<LayoutHeaderToolsComponentProp
 );
 
 LayoutHeaderToolsComponent.defaultProps = {
-  familyName: undefined,
-  givenName: undefined,
+  firstname: undefined,
   isDesktopViewport: false,
   isModalMenu: false,
+  lastname: undefined,
 };
 
 LayoutHeaderToolsComponent.displayName = 'LayoutHeaderToolsComponent';

@@ -37,9 +37,6 @@ exports[`LayoutHeaderComponent should match the snapshot 1`] = `
       </div>
     </div>
   </header>
-  <div>
-    ReturnButtonComponent
-  </div>
 </div>
 `;
 
@@ -86,8 +83,5 @@ exports[`LayoutHeaderComponent should match the snapshot, when user is connected
       LayoutHeaderMenuComponent
     </div>
   </header>
-  <div>
-    ReturnButtonComponent
-  </div>
 </div>
 `;

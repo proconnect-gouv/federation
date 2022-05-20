@@ -9,12 +9,12 @@ interface LayoutHeaderMenuComponentProps {
   opened: boolean;
   onClose: MouseEventHandler<HTMLButtonElement>;
   navigationItems?: NavigationLink[];
-  familyName: string | undefined;
-  givenName: string | undefined;
+  lastname: string | undefined;
+  firstname: string | undefined;
 }
 
 export const LayoutHeaderMenuComponent: React.FC<LayoutHeaderMenuComponentProps> = React.memo(
-  ({ familyName, givenName, navigationItems, onClose, opened }: LayoutHeaderMenuComponentProps) => (
+  ({ firstname, lastname, navigationItems, onClose, opened }: LayoutHeaderMenuComponentProps) => (
     <div
       aria-labelledby="burger-button-mobile-menu"
       className={classnames('fr-header__menu fr-modal', {
@@ -30,7 +30,7 @@ export const LayoutHeaderMenuComponent: React.FC<LayoutHeaderMenuComponentProps>
           onClick={onClose}>
           Fermer
         </button>
-        <LayoutHeaderToolsComponent isModalMenu familyName={familyName} givenName={givenName} />
+        <LayoutHeaderToolsComponent isModalMenu firstname={firstname} lastname={lastname} />
         {navigationItems?.length && (
           <LayoutHeaderNavigationComponent navigationItems={navigationItems} />
         )}
