@@ -53,7 +53,7 @@ _get_running_containers() {
     # Quick dirty trick to not match any legacy container in CI
     # This will get all running containers ($RUNNING_CONTAINERS) and match them against the container list from docker-compose (which is for sure not containing legacy containers)
     # Objective is to use the $COMPOSE_PROJECT_NAME later.
-    _ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS=`comm -12 <(docker-compose ps | tail -n +3 | awk '{print $1}' | sed 's/^fc_//' | sed 's/_.$//' | tr ' ' '\n' | sort) <(echo $RUNNING_CONTAINERS | tr ' ' '\n' | sort)`
+    _ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS=`comm -12 <(docker-compose ps --services --filter "status=running" | sort) <(echo $RUNNING_CONTAINERS | tr ' ' '\n' | sort)`
   fi
 }
 
