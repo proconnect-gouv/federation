@@ -53,7 +53,7 @@ _get_running_containers() {
     # Quick dirty trick to not match any legacy container in CI
     # This will get all running containers ($RUNNING_CONTAINERS) and match them against the container list from docker-compose (which is for sure not containing legacy containers)
     # Objective is to use the $COMPOSE_PROJECT_NAME later.
-    _ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS=`comm -12 <(docker-compose ps | tail -n +3 | awk '{print $1}' | sed 's/^fc_//' | sed 's/_.$//' | tr ' ' '\n' | sort) <(echo $RUNNING_CONTAINERS | tr ' ' '\n' | sort)`
+    _ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS=`comm -12 <(docker-compose ps --services --filter "status=running" | sort) <(echo $RUNNING_CONTAINERS | tr ' ' '\n' | sort)`
   fi
 }
 
@@ -180,9 +180,12 @@ _up() {
     docker pull registry.gitlab.dev-franceconnect.fr/france-connect/fc-docker/nodejs:${DEFAULT_NODE_VERSION}-dev
     cd ${WORKING_DIR} && docker-compose up --build -d $services
 
-    echo "Installing node modules..."
     _get_running_containers
-    _install_dependencies $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+    if [ "${_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS:-xxx}" != "xxx" ]
+    then
+      echo "Installing node modules..."
+      _install_dependencies $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+    fi
 
     case $services in
       *"lemon-ldap"*)
@@ -271,7 +274,7 @@ _run_prod() {
 }
 
 _install_dependencies() {
-  apps=${@:-core-fcp-high}
+  apps=${@:-no-container}
   for app in $apps
   do
     echo "Installing dependencies for [$app]:"
@@ -286,7 +289,7 @@ _install_dependencies() {
 }
 
 _test() {
-  apps=${@:-core-fcp-high}
+  apps=${@:-no-container}
   for app in $apps
   do
     cd ${WORKING_DIR} && docker-compose exec $NO_TTY $app "/opt/scripts/test.sh" || err=true
@@ -295,7 +298,7 @@ _test() {
 
 
 _e2e() {
-  app=${1:-core-fcp-high}
+  app=${1:-no-container}
   [ $# -gt 0 ] && shift
   case "$app" in
     *)
@@ -316,7 +319,7 @@ _e2e() {
 }
 
 _start() {
-  apps=${@:-core-fcp-high}
+  apps=${@:-no-container}
   for app in $apps
   do
     echo "Starting ${app} app..."
@@ -325,7 +328,7 @@ _start() {
 }
 
 _start_ci() {
-  apps=${@:-core-fcp-high}
+  apps=${@:-no-container}
   for app in $apps
   do
     echo "Starting ${app} app..."
@@ -334,7 +337,7 @@ _start_ci() {
 }
 
 _stop() {
-  apps=${@:-core-fcp-high}
+  apps=${@:-no-container}
   for app in $apps
   do
     echo "Stopping ${app} app..."
@@ -343,7 +346,7 @@ _stop() {
 }
 
 _log() {
-  app=${@:-core-fcp-high}
+  app=${@:-no-container}
   cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} pm2 logs
 }
 
