@@ -36,6 +36,9 @@ fcp-and-eidas-high:
   before_script:
     # Ensure a clean docker environnement
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
+    - echo '+++++++++++++++'
+    - docker ps -aq
+    - echo '+++++++++++++++'
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack

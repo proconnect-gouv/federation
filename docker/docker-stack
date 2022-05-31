@@ -59,6 +59,14 @@ _get_running_containers() {
 
 _get_running_containers
 
+echo '-------------------------- $NODEJS_CONTAINERS'
+echo $NODEJS_CONTAINERS
+echo '-------------------------- $RUNNING_CONTAINERS'
+echo $RUNNING_CONTAINERS
+echo '-------------------------- $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS'
+echo $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+echo '--------------------------'
+
 _up() {
   apps=${@:-none}
   services=rp-all
@@ -179,6 +187,14 @@ _up() {
     docker login ${FC_DOCKER_REGISTRY}
     docker pull registry.gitlab.dev-franceconnect.fr/france-connect/fc-docker/nodejs:${DEFAULT_NODE_VERSION}-dev
     cd ${WORKING_DIR} && docker-compose up --build -d $services
+
+    echo '-------------------------- $NODEJS_CONTAINERS'
+    echo $NODEJS_CONTAINERS
+    echo '-------------------------- $RUNNING_CONTAINERS'
+    echo $RUNNING_CONTAINERS
+    echo '-------------------------- $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS'
+    echo $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+    echo '--------------------------'
 
     echo "Installing node modules..."
     _get_running_containers
