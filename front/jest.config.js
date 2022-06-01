@@ -42,9 +42,10 @@ module.exports = {
      * to handle raw imports of those files in components definitions and would crash
      * while attempting to interpret such import as javascript or typescript.
      * @see https://create-react-app.dev/docs/adding-a-stylesheet/
+     * @see https://jestjs.io/docs/webpack#mocking-css-modules
      */
-    '\\.(scss|css)$': '<rootDir>/__mocks__/styleMock.js',
-    '\\.svg$': '<rootDir>/__mocks__/svgrMock.js',
+     '\\.(css|scss)$': 'identity-obj-proxy',
+     '\\.svg$': '<rootDir>/__mocks__/svgrMock.js',
   },
   preset: 'ts-jest',
   roots: ['<rootDir>/apps/', '<rootDir>/libs/'],

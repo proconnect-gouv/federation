@@ -7,7 +7,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a desktop v
     id="page-container"
   >
     <h1
-      class="fr-h3 fr-mb-2w fr-text--bold"
+      class="title fr-h3 fr-mb-2w fr-text--bold"
     >
       Pourquoi gérer mes accès dans FranceConnect ?
     </h1>
@@ -29,7 +29,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a desktop v
       </strong>
     </p>
     <p
-      class="fr-h6 fr-mt-4w fr-mb-2w fr-text--bold"
+      class="title fr-h6 fr-mt-4w fr-mb-2w fr-text--bold"
     >
       En images :
     </p>
@@ -37,7 +37,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a desktop v
       class="flex-wrapper flex-between"
     >
       <div
-        class="fr-mb-5w"
+        class="tutoriel fr-mb-5w"
       >
         <strong
           class="fr-text--md is-block fr-mb-1w"
@@ -52,7 +52,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a desktop v
         />
       </div>
       <div
-        class="fr-mb-5w"
+        class="tutoriel fr-mb-5w"
       >
         <strong
           class="fr-text--md is-block fr-mb-1w"
@@ -67,7 +67,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a desktop v
         />
       </div>
       <div
-        class=""
+        class="tutoriel"
       >
         <strong
           class="fr-text--md is-block fr-mb-1w"
@@ -82,7 +82,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a desktop v
         />
       </div>
       <div
-        class=""
+        class="tutoriel"
       >
         <strong
           class="fr-text--md is-block fr-mb-1w"
@@ -111,7 +111,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a mobile vi
     id="page-container"
   >
     <h1
-      class="fr-h3 fr-mb-2w fr-text--bold"
+      class="title fr-h3 fr-mb-2w fr-text--bold"
     >
       Pourquoi gérer mes accès dans FranceConnect ?
     </h1>
@@ -133,7 +133,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a mobile vi
       </strong>
     </p>
     <p
-      class="fr-h6 fr-mt-4w fr-mb-2w fr-text--bold"
+      class="title fr-h6 fr-mt-4w fr-mb-2w fr-text--bold"
     >
       En images :
     </p>
@@ -141,7 +141,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a mobile vi
       class="flex-wrapper flex-between"
     >
       <div
-        class="fr-mb-5w"
+        class="tutoriel fr-mb-5w"
       >
         <strong
           class="fr-text--md is-block fr-mb-1w"
@@ -156,7 +156,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a mobile vi
         />
       </div>
       <div
-        class="fr-mb-5w"
+        class="tutoriel fr-mb-5w"
       >
         <strong
           class="fr-text--md is-block fr-mb-1w"
@@ -171,7 +171,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a mobile vi
         />
       </div>
       <div
-        class=""
+        class="tutoriel"
       >
         <strong
           class="fr-text--md is-block fr-mb-1w"
@@ -186,7 +186,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a mobile vi
         />
       </div>
       <div
-        class=""
+        class="tutoriel"
       >
         <strong
           class="fr-text--md is-block fr-mb-1w"
