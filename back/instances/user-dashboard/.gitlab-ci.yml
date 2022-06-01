@@ -63,10 +63,11 @@ user-dashboard:
     - chown -R 1000:0 $FC_ROOT/fc-docker/volumes/elasticsearch/data/
   script:
     # Up the docker-stack with minimal requirement
-    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/
+    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
     - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
-    - rsync -a $CI_PROJECT_DIR/cache/core-legacy/ $FC_LEGACY_ROOT/
+    - rsync -a $CI_PROJECT_DIR/cache/core-legacy/ $FC_LEGACY_ROOT/ || true
     - cd $FC_LEGACY_ROOT && yarn install
+    - rm -rf $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
     - cp -r $FC_LEGACY_ROOT/projects/fc/fc-commons $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
     - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
     - docker-stack up all-v1

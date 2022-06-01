@@ -44,7 +44,7 @@ quality-fca-low-docker:
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
     - ln -s $FC_ROOT/fc/front/apps/agent-connect $FC_ROOT/fc/docker/volumes/src/agent-connect
     - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
-    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/
+    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
     - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
     - cd $CI_PROJECT_DIR/quality/fca && yarn install
     - cd $CI_PROJECT_DIR

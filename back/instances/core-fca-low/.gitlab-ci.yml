@@ -59,7 +59,7 @@ fca-low:
     - docker exec fc_fca-low-front_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker-stack fca-low-front
     - docker-stack dep core-fca-low
-    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/
+    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
     - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
     - cd $CI_PROJECT_DIR/quality/fca && yarn install
     - docker-stack fixtures-fca-low
