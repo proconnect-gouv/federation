@@ -53,11 +53,9 @@ _get_running_containers() {
     # Quick dirty trick to not match any legacy container in CI
     # This will get all running containers ($RUNNING_CONTAINERS) and match them against the container list from docker-compose (which is for sure not containing legacy containers)
     # Objective is to use the $COMPOSE_PROJECT_NAME later.
-    _ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS=`comm -12 <(docker-compose ps | tail -n +3 | awk '{print $1}' | sed 's/^fc_//' | sed 's/_.$//' | tr ' ' '\n' | sort) <(echo $RUNNING_CONTAINERS | tr ' ' '\n' | sort)`
+    _ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS=`comm -12 <(docker-compose ps --services --filter "status=running" | sort) <(echo $RUNNING_CONTAINERS | tr ' ' '\n' | sort)`
   fi
 }
-
-_get_running_containers
 
 _up() {
   apps=${@:-none}
@@ -180,9 +178,12 @@ _up() {
     docker pull registry.gitlab.dev-franceconnect.fr/france-connect/fc-docker/nodejs:${DEFAULT_NODE_VERSION}-dev
     cd ${WORKING_DIR} && docker-compose up --build -d $services
 
-    echo "Installing node modules..."
     _get_running_containers
-    _install_dependencies $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+    if [ "${_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS:-xxx}" != "xxx" ]
+    then
+      echo "Installing node modules..."
+      _install_dependencies $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+    fi
 
     case $services in
       *"lemon-ldap"*)
@@ -199,7 +200,7 @@ _up() {
         # Sleep to wait for mongodb replicat initialization
         echo "Reseting database to default state..."
         sleep 10
-        docker-compose exec -T mongo-fca-low /opt/scripts/manage.sh --reset-db
+        docker-compose exec $NO_TTY mongo-fca-low /opt/scripts/manage.sh --reset-db
         echo "Loaded !"
         ;;
       *"-fcp-low"*)
@@ -207,21 +208,21 @@ _up() {
         echo "Reseting database to default state..."
         echo $services
         sleep 10
-        docker-compose exec -T mongo-fcp-low /opt/scripts/manage.sh --reset-db
+        docker-compose exec $NO_TTY mongo-fcp-low /opt/scripts/manage.sh --reset-db
         echo "Loaded !"
         ;;
       *"-fcp-high"*)
         # Sleep to wait for mongodb replicat initialization
         echo "Reseting database to default state..."
         sleep 10
-        docker-compose exec -T mongo-fcp-high /opt/scripts/manage.sh --reset-db
+        docker-compose exec $NO_TTY mongo-fcp-high /opt/scripts/manage.sh --reset-db
         echo "Loaded !"
         ;;
       *"-fca-low"*)
         # Sleep to wait for mongodb replicat initialization
         echo "Reseting database to default state..."
         sleep 10
-        docker-compose exec -T mongo-fca-low /opt/scripts/manage.sh --reset-db
+        docker-compose exec $NO_TTY mongo-fca-low /opt/scripts/manage.sh --reset-db
         echo "Loaded !"
         ;;
       *"-eidas"*)
@@ -229,7 +230,7 @@ _up() {
         echo "Reseting database to default state..."
         echo $services
         sleep 10
-        docker-compose exec -T mongo-fcp-high /opt/scripts/manage.sh --reset-db
+        docker-compose exec $NO_TTY mongo-fcp-high /opt/scripts/manage.sh --reset-db
         echo "Loaded !"
         ;;
       *"partners-fca"*)
@@ -271,7 +272,7 @@ _run_prod() {
 }
 
 _install_dependencies() {
-  apps=${@:-core-fcp-high}
+  apps=${@:-no-container}
   for app in $apps
   do
     echo "Installing dependencies for [$app]:"
@@ -286,7 +287,7 @@ _install_dependencies() {
 }
 
 _test() {
-  apps=${@:-core-fcp-high}
+  apps=${@:-no-container}
   for app in $apps
   do
     cd ${WORKING_DIR} && docker-compose exec $NO_TTY $app "/opt/scripts/test.sh" || err=true
@@ -295,7 +296,7 @@ _test() {
 
 
 _e2e() {
-  app=${1:-core-fcp-high}
+  app=${1:-no-container}
   [ $# -gt 0 ] && shift
   case "$app" in
     *)
@@ -316,7 +317,7 @@ _e2e() {
 }
 
 _start() {
-  apps=${@:-core-fcp-high}
+  apps=${@:-no-container}
   for app in $apps
   do
     echo "Starting ${app} app..."
@@ -325,7 +326,7 @@ _start() {
 }
 
 _start_ci() {
-  apps=${@:-core-fcp-high}
+  apps=${@:-no-container}
   for app in $apps
   do
     echo "Starting ${app} app..."
@@ -334,7 +335,7 @@ _start_ci() {
 }
 
 _stop() {
-  apps=${@:-core-fcp-high}
+  apps=${@:-no-container}
   for app in $apps
   do
     echo "Stopping ${app} app..."
@@ -343,7 +344,7 @@ _stop() {
 }
 
 _log() {
-  app=${@:-core-fcp-high}
+  app=${@:-no-container}
   cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} pm2 logs
 }
 
@@ -395,17 +396,17 @@ _fixtures_fca_low() {
 
 _reset_db_fcp_high() {
   echo "Reseting Core FCP High mongo database..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo-fcp-high /opt/scripts/manage.sh --reset-db
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fcp-high /opt/scripts/manage.sh --reset-db
 }
 
 _reset_db_core_fca_low() {
   echo "Reseting Core FCA LOW mongo database..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo-fca-low /opt/scripts/manage.sh --reset-db
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fca-low /opt/scripts/manage.sh --reset-db
 }
 
 _idp_as_prod_v2() {
   echo "Set IdP as production ..."
-  cd ${WORKING_DIR} && docker-compose exec -T mongo-fcp-high /opt/scripts/manage.sh --reset-db=display-idp-as-in-prod
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fcp-high /opt/scripts/manage.sh --reset-db=display-idp-as-in-prod
 }
 
 _halt() {
@@ -492,6 +493,7 @@ case "$action" in
     _install_dependencies $@
     ;;
   dep-all|dependencies-all)
+    _get_running_containers
     _install_dependencies $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
     ;;
   exec)
@@ -539,6 +541,7 @@ case "$action" in
     _start $@
     ;;
   reload-all)
+    _get_running_containers
     _start $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
     ;;
   reset-db-core-fcp-high)
@@ -561,16 +564,19 @@ case "$action" in
     ;;
   # -- start all up's containers (FCP and/or FCA)
   start-all)
+    _get_running_containers
     _start $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
     ;;
   # -- stop all up's containers (FCP and/or FCA)
   stop-all)
+    _get_running_containers
     _stop $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
     ;;
   test)
     _test $@
     ;;
   test-all)
+    _get_running_containers
     _test $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
     ;;
   e2e)
