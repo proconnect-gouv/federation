@@ -8,12 +8,16 @@ module.exports = {
     '!**/__fixtures__/*',
     '!**/__mocks__/*',
     '!tests-utils/*',
+    '!.storybook/*',
+    '!**/*.stories.tsx',
   ],
   coverageDirectory: './coverage',
   moduleNameMapper: {
     '@fc/agent-connect-history': '<rootDir>/libs/agent-connect-history/src',
     '@fc/agent-connect-history/(.*)': '<rootDir>/libs/agent-connect-history/src/$1',
+    '@fc/account': '<rootDir>/libs/account/src',
     '@fc/agent-connect-search': '<rootDir>/libs/agent-connect-search/src',
+    '@fc/account/(.*)': '<rootDir>/libs/account/src/$1',
     '@fc/agent-connect-search/(.*)': '<rootDir>/libs/agent-connect-search/src/$1',
     '@fc/backoffice': '<rootDir>/libs/backoffice/src',
     '@fc/backoffice/(.*)': '<rootDir>/libs/backoffice/src/$1',
@@ -35,8 +39,6 @@ module.exports = {
     '@fc/tracks/(.*)': '<rootDir>/libs/tracks/src/$1',
     '@fc/user-preferences': '<rootDir>/libs/user-preferences/src',
     '@fc/user-preferences/(.*)': '<rootDir>/libs/user-preferences/src/$1',
-    '@fc/account': '<rootDir>/libs/account/src',
-    '@fc/account/(.*)': '<rootDir>/libs/account/src/$1',
     /**
      * Mock images and SCSS import as jest does not have the "magic" webpack has
      * to handle raw imports of those files in components definitions and would crash
