@@ -145,6 +145,9 @@ _up() {
       partners-fcp)
         services="$services partners-fcp"
         ;;
+      min-storybook)
+        services="$services min-storybook"
+        ;;
       all)
         services=all
         break
@@ -167,6 +170,7 @@ _up() {
         echo "  - hybridge-fca-low => up minimal needed services to run core-fca-low fca-low-front bridge-proxy-rie fsa1-low lemon-ldap"
         echo "  - partners-fca => up minimal needed services to run partners fca front and back"
         echo "  - partners-fcp => up minimal needed services to run partners fcp front and back"
+        echo "  - min-storybook => up minimal needed services to run storybook"
         echo "  - all => run all services"
         echo "----"
         exit 1
@@ -394,6 +398,18 @@ _fixtures_fca_low() {
   echo "**************************************"
 }
 
+_storybook() {
+  echo "**************************************"
+  echo " Up and Start Storybook..."
+  echo "**************************************"
+  cd ${WORKING_DIR} && docker-compose up storybook
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY storybook "/opt/scripts/install.sh" || err=true
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY storybook "/opt/scripts/start.sh" || err=true
+  echo "**************************************"
+  echo "\n\n\n Storybook DONE ! \n\n\n"
+  echo "**************************************"
+}
+
 _reset_db_fcp_high() {
   echo "Reseting Core FCP High mongo database..."
   cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fcp-high /opt/scripts/manage.sh --reset-db
@@ -600,6 +616,9 @@ case "$action" in
   fixtures-partners-fca)
     _fixtures-partners "partners-fca-back"
     ;;
+  storybook)
+    _storybook
+    ;;
   prune)
     _halt
     docker network prune -f && docker container prune -f
@@ -681,6 +700,7 @@ case "$action" in
     echo "migrations-generate-partners-fca \"$1\" => generates a new migration on the container partners-fca-back having the name timestamp-first parameter"
     echo "fixtures-partners-fcp => runs fixtures on the container partners-fcp-back"
     echo "fixtures-partners-fca => runs fixtures on the container partners-fca-back"
+    echo "storybook => up and start storybook container"
     echo "----"
     echo "Other commands mapped to docker-compose: see https://docs.docker.com/compose/reference/overview/"
     echo " (example: $script ps)"

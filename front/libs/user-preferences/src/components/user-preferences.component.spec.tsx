@@ -3,7 +3,6 @@ import { mocked } from 'ts-jest/utils';
 
 import { useUserPreferencesApi } from '../hooks';
 import { UserPreferencesComponent } from './user-preferences.component';
-import { UserPreferencesFormComponent } from './user-preferences-form.component';
 
 jest.mock('react-final-form');
 jest.mock('../hooks');
@@ -48,21 +47,5 @@ describe('UserPreferencesComponent', () => {
     // then
     expect(useUserPreferencesApi).toHaveBeenCalledTimes(1);
     expect(useUserPreferencesApi).toHaveBeenCalledWith(optionsMock);
-  });
-
-  it.skip('should call UserPreferencesFormComponent with default params', () => {
-    // when
-    render(<UserPreferencesComponent options={optionsMock} />);
-    // then
-    expect(UserPreferencesFormComponent).toHaveBeenCalledTimes(1);
-    expect(UserPreferencesFormComponent).toHaveBeenCalledWith(
-      {
-        canNotSubmit: expect.any(Boolean),
-        onSubmit: expect.any(Function),
-        showNotification: false,
-        userPreferences: userPreferencesMock,
-      },
-      {},
-    );
   });
 });
