@@ -79,7 +79,7 @@ user-dashboard:
     - $FC_ROOT/fc/docker/docker-stack up mongo-fcp-high
     # Start the NodeJS apps
     - docker-stack start fc-core
-      fsp1 fsp3 fip1 fip3 fip4 rnipp
+      fsp1 fsp3 fip1 fip3 fip4 rnipp fdp1
       ud-back ud-front
       csmr-tracks-high csmr-tracks-legacy csmr-aggregate-tracks
       csmr-user-preferences-high
