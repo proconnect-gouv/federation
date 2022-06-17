@@ -31,12 +31,12 @@ export const UserPreferencesFormComponent: React.FC<UserPreferencesFormComponent
         id="UserPreferencesFormComponent"
         onSubmit={onSubmit}>
         <h2 className={classnames(styles.title, 'fr-h3 fr-mt-5w')}>
-          <b>Vos réglages&nbsp;:</b>
+          <b>Mes réglages&nbsp;:</b>
         </h2>
         <p className="fr-mt-2w">
-          Attention&nbsp;:&nbsp;<u>Vous devez avoir au moins un compte autorisé</u> pour continuer à
-          utiliser FranceConnect. Nous vous conseillons de ne bloquer que les comptes que vous
-          n’utilisez pas.
+          Attention&nbsp;:&nbsp;<strong>Vous devez avoir au moins un compte autorisé</strong> pour
+          continuer à utiliser FranceConnect. Nous vous conseillons de ne bloquer que les comptes
+          que vous n’utilisez pas.
         </p>
         {showServicesList && <ServicesListComponent identityProviders={userPreferences.idpList} />}
         <p className="fr-mt-5w">

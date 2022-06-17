@@ -10,16 +10,16 @@ exports[`UserPreferencesFormComponent should match the snapshot, display into a 
       class="title fr-h3 fr-mt-5w"
     >
       <b>
-        Vos réglages :
+        Mes réglages :
       </b>
     </h2>
     <p
       class="fr-mt-2w"
     >
       Attention : 
-      <u>
+      <strong>
         Vous devez avoir au moins un compte autorisé
-      </u>
+      </strong>
        pour continuer à utiliser FranceConnect. Nous vous conseillons de ne bloquer que les comptes que vous n’utilisez pas.
     </p>
     <div>
@@ -59,16 +59,16 @@ exports[`UserPreferencesFormComponent should match the snapshot, display into a 
       class="title fr-h3 fr-mt-5w"
     >
       <b>
-        Vos réglages :
+        Mes réglages :
       </b>
     </h2>
     <p
       class="fr-mt-2w"
     >
       Attention : 
-      <u>
+      <strong>
         Vous devez avoir au moins un compte autorisé
-      </u>
+      </strong>
        pour continuer à utiliser FranceConnect. Nous vous conseillons de ne bloquer que les comptes que vous n’utilisez pas.
     </p>
     <div>

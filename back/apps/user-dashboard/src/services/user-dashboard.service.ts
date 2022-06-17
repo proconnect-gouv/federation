@@ -112,7 +112,7 @@ export class UserDashboardService {
     this.mailer.send({
       from,
       to,
-      subject: `Notification de mise à jour de votre configuration FI FC+`,
+      subject: `Modification de vos accès dans FranceConnect`,
       body,
     });
   }

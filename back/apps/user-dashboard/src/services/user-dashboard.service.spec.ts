@@ -293,7 +293,7 @@ describe('UserDashboardService', () => {
             name: `${userInfo.givenName} ${userInfo.familyName}`,
           },
         ],
-        subject: `Notification de mise à jour de votre configuration FI FC+`,
+        subject: `Modification de vos accès dans FranceConnect`,
         body: getIdpConfigUpdateEmailBodyContentMock,
       });
     });

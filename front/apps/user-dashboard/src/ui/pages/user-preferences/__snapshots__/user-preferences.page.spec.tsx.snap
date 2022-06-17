@@ -14,7 +14,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a desktop v
     <p
       class="is-normal fr-mb-5v"
     >
-      Pour mieux contrôler votre usage de FranceConnect et vous protéger en cas de vols de vos identifiants, vous pouvez bloquer l’utilisation des comptes que vous n’utilisez pas. 
+      Pour mieux contrôler votre usage de FranceConnect et vous protéger en cas de vol de vos identifiants, vous pouvez bloquer l’utilisation des comptes que vous n’utilisez pas. 
       <strong>
         Ils seront toujours visibles sur la page de sélection de compte mais FranceConnect empêchera la connexion d’aboutir. 
       </strong>
@@ -118,7 +118,7 @@ exports[`UserPreferencesPage should match the snapshot, display into a mobile vi
     <p
       class="is-normal fr-mb-5v"
     >
-      Pour mieux contrôler votre usage de FranceConnect et vous protéger en cas de vols de vos identifiants, vous pouvez bloquer l’utilisation des comptes que vous n’utilisez pas. 
+      Pour mieux contrôler votre usage de FranceConnect et vous protéger en cas de vol de vos identifiants, vous pouvez bloquer l’utilisation des comptes que vous n’utilisez pas. 
       <strong>
         Ils seront toujours visibles sur la page de sélection de compte mais FranceConnect empêchera la connexion d’aboutir. 
       </strong>
