@@ -21,27 +21,32 @@ describe('UserPreferencesComponent', () => {
     allowFutureIdp: false,
     idpList: [expect.any(Object), expect.any(Object)],
   };
+  const validateHandlerMock = jest.fn();
   const hookResultMock = {
     commit: commitMock,
     formValues: initialValuesMock,
     submitErrors: undefined,
     submitWithSuccess: false,
     userPreferences: userPreferencesMock,
+    validateHandler: validateHandlerMock,
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
-    mocked(useUserPreferencesApi).mockReturnValue(hookResultMock);
   });
 
   it('should match the snapshot', () => {
+    // given
+    mocked(useUserPreferencesApi).mockReturnValue(hookResultMock);
     // when
     const { container } = render(<UserPreferencesComponent options={optionsMock} />);
     // then
     expect(container).toMatchSnapshot();
   });
 
-  it('should useUserPreferencesApi have been called', () => {
+  it('should have called useUserPreferencesApi', () => {
+    // given
+    mocked(useUserPreferencesApi).mockReturnValue(hookResultMock);
     // when
     render(<UserPreferencesComponent options={optionsMock} />);
     // then
