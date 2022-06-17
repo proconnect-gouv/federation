@@ -18,4 +18,15 @@ export const Sizes = {
   SMALL: 'sm',
 };
 
+export const AlertTypes = {
+  ERROR: 'error',
+  INFO: 'info',
+  SUCCESS: 'success',
+  WARNING: 'warning',
+};
+
+export const AlertMessageComponent = jest.fn(() => <div>AlertMessageComponent</div>);
+
+export const Alert = jest.fn(() => <div>Alert</div>);
+
 export { ButtonTypes, IconPlacement, Priorities } from '@fc/dsfr';
