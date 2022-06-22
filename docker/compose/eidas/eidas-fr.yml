@@ -24,6 +24,7 @@ services:
       - 'TZ=Europe/Paris'
       - 'JAVA_OPTS=-Xms1G -Xmx1G'
       - 'LOG_LEVEL=INFO'
+      - 'IGNITE_WORK_DIR=/data'
     networks:
       - eidas
       - public
