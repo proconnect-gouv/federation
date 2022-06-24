@@ -402,40 +402,20 @@ describe('LightProtocolXmlService', () => {
     });
   });
 
-  describe('addDeclarationFields', () => {
+  describe('addNewKeyValueFields', () => {
     const pathsObject = {
       pouet: 'pouet',
     };
 
-    it('should add the declaration fields to the path object', () => {
+    it('should add the key and value fields to the path object', () => {
       // action
-      const result = service.addDeclarationFields(pathsObject);
+      const result = service.addNewKeyValueFields(pathsObject, 'foo', 'bar');
 
       // expect
       expect(result).toStrictEqual({
-        // XML field
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        '_declaration._attributes.encoding': 'UTF-8',
-        // XML field
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        '_declaration._attributes.standalone': 'yes',
-        // XML field
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        '_declaration._attributes.version': '1.0',
+        foo: 'bar',
         pouet: 'pouet',
       });
-    });
-
-    it('should not a affect the paths object', () => {
-      const originalPathsObject = {
-        pouet: 'pouet',
-      };
-
-      // action
-      service.addDeclarationFields(pathsObject);
-
-      // expect
-      expect(pathsObject).toStrictEqual(originalPathsObject);
     });
   });
 

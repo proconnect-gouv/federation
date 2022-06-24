@@ -71,17 +71,16 @@ export class LightProtocolXmlService {
     );
   }
 
-  addDeclarationFields(pathsObject: IPathsObject): IPathsObject {
+  addNewKeyValueFields(
+    pathsObject: IPathsObject,
+    key: string,
+    value: string,
+  ): IPathsObject {
+    const object = new Object();
+    object[key] = value;
+
     return {
-      // Necessary for XML header
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      '_declaration._attributes.version': '1.0',
-      // Necessary for XML header
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      '_declaration._attributes.encoding': 'UTF-8',
-      // Necessary for XML header
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      '_declaration._attributes.standalone': 'yes',
+      ...object,
       ...pathsObject,
     };
   }
