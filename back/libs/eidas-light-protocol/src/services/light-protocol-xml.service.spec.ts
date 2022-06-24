@@ -900,4 +900,38 @@ describe('LightProtocolXmlService', () => {
       expect(cb).not.toHaveBeenCalledWith('notOkToIter', 21);
     });
   });
+
+  describe('addFailureStatus', () => {
+    it('', () => {
+      // Given
+      const pathsObject = {
+        'lightResponse.status.statusCode': 'Success',
+      };
+
+      // When
+      const result = service.addFailureStatus(pathsObject);
+
+      // Then
+      expect(result).toStrictEqual({
+        'lightResponse.status.failure': 'false',
+        'lightResponse.status.statusCode': 'Success',
+      });
+    });
+
+    it('', () => {
+      // Given
+      const pathsObject = {
+        'lightResponse.status.statusCode': 'Error',
+      };
+
+      // When
+      const result = service.addFailureStatus(pathsObject);
+
+      // Then
+      expect(result).toStrictEqual({
+        'lightResponse.status.failure': 'true',
+        'lightResponse.status.statusCode': 'Error',
+      });
+    });
+  });
 });

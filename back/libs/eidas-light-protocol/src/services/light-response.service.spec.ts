@@ -29,7 +29,6 @@ describe('LightResponseService', () => {
   const lightXmlServiceMock = {
     jsonToPathsObject: jest.fn(),
     replaceInPaths: jest.fn(),
-    addDeclarationFields: jest.fn(),
     upperCaseFirstCharForProps: jest.fn(),
     prefixProps: jest.fn(),
     pathsObjectToJson: jest.fn(),
@@ -39,6 +38,8 @@ describe('LightResponseService', () => {
     stripUrlAndUrnForProps: jest.fn(),
     lowerCaseFirstCharForProps: jest.fn(),
     forEachPath: jest.fn(),
+    addFailureStatus: jest.fn(),
+    addNewKeyValueFields: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -177,25 +178,11 @@ describe('LightResponseService', () => {
       );
     });
 
-    it('should call addDeclarationFields with the path object returned by the second call of replaceInPaths to add XML declaration fields', () => {
+    it('should call prefixProps with the path object returned by the second call of replaceInPaths to add XML declaration fields', () => {
       // setup
       lightXmlServiceMock.replaceInPaths
         .mockReturnValueOnce({})
         .mockReturnValueOnce(pathsObject);
-
-      // action
-      service.formatResponse(successFullJsonMock);
-
-      // assertion
-      expect(lightXmlServiceMock.addDeclarationFields).toHaveBeenCalledTimes(1);
-      expect(lightXmlServiceMock.addDeclarationFields).toHaveBeenCalledWith(
-        pathsObject,
-      );
-    });
-
-    it('should call prefixProps with the path object returned by upperCaseFirstCharForProps to add the namespace for subjectNameIdFormat attribute', () => {
-      // setup
-      lightXmlServiceMock.addDeclarationFields.mockReturnValueOnce(pathsObject);
 
       // action
       service.formatResponse(successFullJsonMock);
@@ -210,11 +197,25 @@ describe('LightResponseService', () => {
       );
     });
 
-    it('should call prefixProps with the path object returned by the second call of prefixProps to add the namespace for statusCode, subStatusCode attribute', () => {
+    it('should call addFailureStatus with the path object returned by the first call of prefixProps to inflate the attributes element', () => {
       // setup
       lightXmlServiceMock.prefixProps
         .mockReturnValueOnce({})
         .mockReturnValueOnce(pathsObject);
+
+      // action
+      service.formatResponse(successFullJsonMock);
+
+      // assertion
+      expect(lightXmlServiceMock.addFailureStatus).toHaveBeenCalledTimes(1);
+      expect(lightXmlServiceMock.addFailureStatus).toHaveBeenCalledWith(
+        pathsObject,
+      );
+    });
+
+    it('should call prefixProps with the path object returned by the second call of addFailureStatus to add the namespace for statusCode, subStatusCode attribute', () => {
+      // setup
+      lightXmlServiceMock.addFailureStatus.mockReturnValueOnce(pathsObject);
 
       // action
       service.formatResponse(successFullJsonMock);
@@ -270,9 +271,86 @@ describe('LightResponseService', () => {
       );
     });
 
-    it('should call pathsObjectToJson with the path object returned by the third replaceInPaths call to convert the paths object back to an inflated JSON', () => {
+    it('should call addNewKeyValueFields with the path object returned by the third replaceInPaths call to convert the paths object back to an inflated JSON', () => {
       // setup
       lightXmlServiceMock.replaceInPaths
+        .mockReturnValueOnce({})
+        .mockReturnValueOnce({})
+        .mockReturnValueOnce(pathsObject);
+
+      // action
+      service.formatResponse(successFullJsonMock);
+
+      // assertion
+      expect(lightXmlServiceMock.addNewKeyValueFields).toHaveBeenCalledTimes(4);
+      expect(lightXmlServiceMock.addNewKeyValueFields).toHaveBeenNthCalledWith(
+        1,
+        pathsObject,
+        'lightResponse._attributes.xmlns',
+        'http://cef.eidas.eu/LightResponse',
+      );
+    });
+
+    it('should call addNewKeyValueFields with the path object returned by the first addNewKeyValueFields call to convert the paths object back to an inflated JSON', () => {
+      // setup
+      lightXmlServiceMock.addNewKeyValueFields.mockReturnValueOnce(pathsObject);
+
+      // action
+      service.formatResponse(successFullJsonMock);
+
+      // assertion
+      expect(lightXmlServiceMock.addNewKeyValueFields).toHaveBeenCalledTimes(4);
+      expect(lightXmlServiceMock.addNewKeyValueFields).toHaveBeenNthCalledWith(
+        2,
+        pathsObject,
+        '_declaration._attributes.standalone',
+        'yes',
+      );
+    });
+
+    it('should call addNewKeyValueFields with the path object returned by the second addNewKeyValueFields call to convert the paths object back to an inflated JSON', () => {
+      // setup
+      lightXmlServiceMock.addNewKeyValueFields
+        .mockReturnValueOnce({})
+        .mockReturnValueOnce(pathsObject);
+
+      // action
+      service.formatResponse(successFullJsonMock);
+
+      // assertion
+      expect(lightXmlServiceMock.addNewKeyValueFields).toHaveBeenCalledTimes(4);
+      expect(lightXmlServiceMock.addNewKeyValueFields).toHaveBeenNthCalledWith(
+        3,
+        pathsObject,
+        '_declaration._attributes.encoding',
+        'UTF-8',
+      );
+    });
+
+    it('should call addNewKeyValueFields with the path object returned by the thirth addNewKeyValueFields call to convert the paths object back to an inflated JSON', () => {
+      // setup
+      lightXmlServiceMock.addNewKeyValueFields
+        .mockReturnValueOnce({})
+        .mockReturnValueOnce({})
+        .mockReturnValueOnce(pathsObject);
+
+      // action
+      service.formatResponse(successFullJsonMock);
+
+      // assertion
+      expect(lightXmlServiceMock.addNewKeyValueFields).toHaveBeenCalledTimes(4);
+      expect(lightXmlServiceMock.addNewKeyValueFields).toHaveBeenNthCalledWith(
+        4,
+        pathsObject,
+        '_declaration._attributes.version',
+        '1.0',
+      );
+    });
+
+    it('should call pathsObjectToJson with the path object returned by the fourth addNewKeyValueFields call to convert the paths object back to an inflated JSON', () => {
+      // setup
+      lightXmlServiceMock.addNewKeyValueFields
+        .mockReturnValueOnce({})
         .mockReturnValueOnce({})
         .mockReturnValueOnce({})
         .mockReturnValueOnce(pathsObject);

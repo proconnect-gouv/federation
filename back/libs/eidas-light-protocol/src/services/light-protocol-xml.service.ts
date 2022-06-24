@@ -161,6 +161,20 @@ export class LightProtocolXmlService {
     return final;
   }
 
+  addFailureStatus(pathsObject: IPathsObject): IPathsObject {
+    if (pathsObject['lightResponse.status.statusCode'] === 'Success') {
+      return {
+        'lightResponse.status.failure': 'false',
+        ...pathsObject,
+      };
+    } else {
+      return {
+        'lightResponse.status.failure': 'true',
+        ...pathsObject,
+      };
+    }
+  }
+
   replaceInPaths(pathsObject: IPathsObject, from: string | RegExp, to: string) {
     return this.forEachPath(pathsObject, (keyPath, value) => {
       return [[keyPath.replace(from, to), value]];
