@@ -87,7 +87,7 @@ export class LightResponseService {
     );
 
     // Add XML metadata response fields
-    pathsObject = this.lightXml.addNewKeyValueFields(
+    pathsObject = this.lightXml.upsertNodeToPathObject(
       pathsObject,
       'lightResponse._attributes.xmlns',
       'http://cef.eidas.eu/LightResponse',
@@ -97,21 +97,21 @@ export class LightResponseService {
      * Pay attention to the order of the headers in the construction of an XML
      */
     // Add XML declaration fields: 3th position
-    pathsObject = this.lightXml.addNewKeyValueFields(
+    pathsObject = this.lightXml.upsertNodeToPathObject(
       pathsObject,
       '_declaration._attributes.standalone',
       'yes',
     );
 
     // Add XML declaration fields: 2nd position
-    pathsObject = this.lightXml.addNewKeyValueFields(
+    pathsObject = this.lightXml.upsertNodeToPathObject(
       pathsObject,
       '_declaration._attributes.encoding',
       'UTF-8',
     );
 
     // Add XML declaration fields: 1st position
-    pathsObject = this.lightXml.addNewKeyValueFields(
+    pathsObject = this.lightXml.upsertNodeToPathObject(
       pathsObject,
       '_declaration._attributes.version',
       '1.0',

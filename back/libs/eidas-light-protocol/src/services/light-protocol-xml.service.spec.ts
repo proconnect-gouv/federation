@@ -402,14 +402,14 @@ describe('LightProtocolXmlService', () => {
     });
   });
 
-  describe('addNewKeyValueFields', () => {
+  describe('upsertNodeToPathObject', () => {
     const pathsObject = {
       pouet: 'pouet',
     };
 
-    it('should add the key and value fields to the path object', () => {
+    it('should add the given node and value in the path object', () => {
       // action
-      const result = service.addNewKeyValueFields(pathsObject, 'foo', 'bar');
+      const result = service.upsertNodeToPathObject(pathsObject, 'foo', 'bar');
 
       // expect
       expect(result).toStrictEqual({
@@ -902,7 +902,7 @@ describe('LightProtocolXmlService', () => {
   });
 
   describe('addFailureStatus', () => {
-    it('', () => {
+    it('should add the node failure with false value if statusCode is Success', () => {
       // Given
       const pathsObject = {
         'lightResponse.status.statusCode': 'Success',
@@ -918,7 +918,7 @@ describe('LightProtocolXmlService', () => {
       });
     });
 
-    it('', () => {
+    it('should add the node failure with true value if statusCode is Error', () => {
       // Given
       const pathsObject = {
         'lightResponse.status.statusCode': 'Error',

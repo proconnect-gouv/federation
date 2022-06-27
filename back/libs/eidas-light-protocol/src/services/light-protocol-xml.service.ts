@@ -71,16 +71,13 @@ export class LightProtocolXmlService {
     );
   }
 
-  addNewKeyValueFields(
+  upsertNodeToPathObject(
     pathsObject: IPathsObject,
-    key: string,
+    node: string,
     value: string,
   ): IPathsObject {
-    const object = new Object();
-    object[key] = value;
-
     return {
-      ...object,
+      [node]: value,
       ...pathsObject,
     };
   }
