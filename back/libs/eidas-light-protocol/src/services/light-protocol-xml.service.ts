@@ -71,14 +71,29 @@ export class LightProtocolXmlService {
     );
   }
 
+  addDeclarationFields(pathsObject: IPathsObject): IPathsObject {
+    return {
+      // Necessary for XML header
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      '_declaration._attributes.version': '1.0',
+      // Necessary for XML header
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      '_declaration._attributes.encoding': 'UTF-8',
+      // Necessary for XML header
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      '_declaration._attributes.standalone': 'yes',
+      ...pathsObject,
+    };
+  }
+
   upsertNodeToPathObject(
     pathsObject: IPathsObject,
     node: string,
     value: string,
   ): IPathsObject {
     return {
-      [node]: value,
       ...pathsObject,
+      [node]: value,
     };
   }
 
@@ -161,13 +176,13 @@ export class LightProtocolXmlService {
   addFailureStatus(pathsObject: IPathsObject): IPathsObject {
     if (pathsObject['lightResponse.status.statusCode'] === 'Success') {
       return {
-        'lightResponse.status.failure': 'false',
         ...pathsObject,
+        'lightResponse.status.failure': 'false',
       };
     } else {
       return {
-        'lightResponse.status.failure': 'true',
         ...pathsObject,
+        'lightResponse.status.failure': 'true',
       };
     }
   }

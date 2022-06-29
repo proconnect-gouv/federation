@@ -34,6 +34,9 @@ export class LightRequestService {
       'lightRequest.',
     );
 
+    // Add XML declaration fields
+    pathsObject = this.lightXml.addDeclarationFields(pathsObject);
+
     // Inflate the requestedAttributes element
     pathsObject = this.lightXml.replaceInPaths(
       pathsObject,
@@ -79,30 +82,6 @@ export class LightRequestService {
       pathsObject,
       'lightRequest._attributes.xmlns',
       'http://cef.eidas.eu/LightRequest',
-    );
-
-    /**
-     * Pay attention to the order of the headers in the construction of an XML
-     */
-    // Add XML declaration fields: 3th position
-    pathsObject = this.lightXml.upsertNodeToPathObject(
-      pathsObject,
-      '_declaration._attributes.standalone',
-      'yes',
-    );
-
-    // Add XML declaration fields: 2nd position
-    pathsObject = this.lightXml.upsertNodeToPathObject(
-      pathsObject,
-      '_declaration._attributes.encoding',
-      'UTF-8',
-    );
-
-    // Add XML declaration fields: 1st position
-    pathsObject = this.lightXml.upsertNodeToPathObject(
-      pathsObject,
-      '_declaration._attributes.version',
-      '1.0',
     );
 
     // Convert the paths object back to an inflated JSON

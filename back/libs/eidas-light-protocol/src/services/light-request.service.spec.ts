@@ -24,6 +24,7 @@ describe('LightRequestService', () => {
   const lightXmlServiceMock = {
     jsonToPathsObject: jest.fn(),
     replaceInPaths: jest.fn(),
+    addDeclarationFields: jest.fn(),
     upperCaseFirstCharForProps: jest.fn(),
     prefixProps: jest.fn(),
     pathsObjectToJson: jest.fn(),
@@ -101,9 +102,23 @@ describe('LightRequestService', () => {
       );
     });
 
-    it('should call replaceInPaths with the path object returned by the first replaceInPaths to add the "lightRequest" key)', () => {
+    it('should call addDeclarationFields with the path object returned by replaceInPaths to add XML declaration fields', () => {
       // setup
       lightXmlServiceMock.replaceInPaths.mockReturnValueOnce(pathsObject);
+
+      // action
+      service.formatRequest(requestJsonMock);
+
+      // assertion
+      expect(lightXmlServiceMock.addDeclarationFields).toHaveBeenCalledTimes(1);
+      expect(lightXmlServiceMock.addDeclarationFields).toHaveBeenCalledWith(
+        pathsObject,
+      );
+    });
+
+    it('should call replaceInPaths with the path object returned by addDeclarationFields to add the "lightRequest" key)', () => {
+      // setup
+      lightXmlServiceMock.addDeclarationFields.mockReturnValueOnce(pathsObject);
 
       // action
       service.formatRequest(requestJsonMock);
@@ -223,95 +238,20 @@ describe('LightRequestService', () => {
 
       // assertion
       expect(lightXmlServiceMock.upsertNodeToPathObject).toHaveBeenCalledTimes(
-        4,
-      );
-      expect(
-        lightXmlServiceMock.upsertNodeToPathObject,
-      ).toHaveBeenNthCalledWith(
         1,
+      );
+      expect(lightXmlServiceMock.upsertNodeToPathObject).toHaveBeenCalledWith(
         pathsObject,
         'lightRequest._attributes.xmlns',
         'http://cef.eidas.eu/LightRequest',
       );
     });
 
-    it('should call upsertNodeToPathObject with the path object returned by the upsertNodeToPathObject call to convert the paths object back to an inflated JSON', () => {
+    it('should call pathsObjectToJson with the path object returned by upsertNodeToPathObject call to convert the paths object back to an inflated JSON', () => {
       // setup
       lightXmlServiceMock.upsertNodeToPathObject.mockReturnValueOnce(
         pathsObject,
       );
-
-      // action
-      service.formatRequest(requestJsonMock);
-
-      // assertion
-      expect(lightXmlServiceMock.upsertNodeToPathObject).toHaveBeenCalledTimes(
-        4,
-      );
-      expect(
-        lightXmlServiceMock.upsertNodeToPathObject,
-      ).toHaveBeenNthCalledWith(
-        2,
-        pathsObject,
-        '_declaration._attributes.standalone',
-        'yes',
-      );
-    });
-
-    it('should call upsertNodeToPathObject with the path object returned by second the upsertNodeToPathObject call to convert the paths object back to an inflated JSON', () => {
-      // setup
-      lightXmlServiceMock.upsertNodeToPathObject
-        .mockReturnValueOnce({})
-        .mockReturnValueOnce(pathsObject);
-
-      // action
-      service.formatRequest(requestJsonMock);
-
-      // assertion
-      expect(lightXmlServiceMock.upsertNodeToPathObject).toHaveBeenCalledTimes(
-        4,
-      );
-      expect(
-        lightXmlServiceMock.upsertNodeToPathObject,
-      ).toHaveBeenNthCalledWith(
-        3,
-        pathsObject,
-        '_declaration._attributes.encoding',
-        'UTF-8',
-      );
-    });
-
-    it('should call upsertNodeToPathObject with the path object returned by tirth the upsertNodeToPathObject call to convert the paths object back to an inflated JSON', () => {
-      // setup
-      lightXmlServiceMock.upsertNodeToPathObject
-        .mockReturnValueOnce({})
-        .mockReturnValueOnce({})
-        .mockReturnValueOnce(pathsObject);
-
-      // action
-      service.formatRequest(requestJsonMock);
-
-      // assertion
-      expect(lightXmlServiceMock.upsertNodeToPathObject).toHaveBeenCalledTimes(
-        4,
-      );
-      expect(
-        lightXmlServiceMock.upsertNodeToPathObject,
-      ).toHaveBeenNthCalledWith(
-        4,
-        pathsObject,
-        '_declaration._attributes.version',
-        '1.0',
-      );
-    });
-
-    it('should call pathsObjectToJson with the path object returned by the fourth upsertNodeToPathObject call to convert the paths object back to an inflated JSON', () => {
-      // setup
-      lightXmlServiceMock.upsertNodeToPathObject
-        .mockReturnValueOnce({})
-        .mockReturnValueOnce({})
-        .mockReturnValueOnce({})
-        .mockReturnValueOnce(pathsObject);
 
       // action
       service.formatRequest(requestJsonMock);

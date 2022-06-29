@@ -402,6 +402,43 @@ describe('LightProtocolXmlService', () => {
     });
   });
 
+  describe('addDeclarationFields', () => {
+    const pathsObject = {
+      pouet: 'pouet',
+    };
+
+    it('should add the declaration fields to the path object', () => {
+      // action
+      const result = service.addDeclarationFields(pathsObject);
+
+      // expect
+      expect(result).toStrictEqual({
+        // XML field
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        '_declaration._attributes.encoding': 'UTF-8',
+        // XML field
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        '_declaration._attributes.standalone': 'yes',
+        // XML field
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        '_declaration._attributes.version': '1.0',
+        pouet: 'pouet',
+      });
+    });
+
+    it('should not a affect the paths object', () => {
+      const originalPathsObject = {
+        pouet: 'pouet',
+      };
+
+      // action
+      service.addDeclarationFields(pathsObject);
+
+      // expect
+      expect(pathsObject).toStrictEqual(originalPathsObject);
+    });
+  });
+
   describe('upsertNodeToPathObject', () => {
     const pathsObject = {
       pouet: 'pouet',
@@ -415,6 +452,20 @@ describe('LightProtocolXmlService', () => {
       expect(result).toStrictEqual({
         foo: 'bar',
         pouet: 'pouet',
+      });
+    });
+
+    it('should override the paths object', () => {
+      // action
+      const result = service.upsertNodeToPathObject(
+        pathsObject,
+        'pouet',
+        'pas pouet',
+      );
+
+      // expect
+      expect(result).toStrictEqual({
+        pouet: 'pas pouet',
       });
     });
   });
@@ -922,6 +973,23 @@ describe('LightProtocolXmlService', () => {
       // Given
       const pathsObject = {
         'lightResponse.status.statusCode': 'Error',
+      };
+
+      // When
+      const result = service.addFailureStatus(pathsObject);
+
+      // Then
+      expect(result).toStrictEqual({
+        'lightResponse.status.failure': 'true',
+        'lightResponse.status.statusCode': 'Error',
+      });
+    });
+
+    it('should overirde the node failure with true value if statusCode is Error and failure at false', () => {
+      // Given
+      const pathsObject = {
+        'lightResponse.status.statusCode': 'Error',
+        'lightResponse.status.failure': 'false',
       };
 
       // When
