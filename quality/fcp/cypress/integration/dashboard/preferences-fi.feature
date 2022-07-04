@@ -122,3 +122,12 @@ Fonctionnalité: Préférences FI
     Alors le message d'erreur "au moins un FI doit être autorisé" n'est pas affiché
     Et le bouton "enregistrer mes réglages" est actif
     Et je me déconnecte du dashboard usager
+
+  Scénario: Préférences FI - Aidants Connect ne doit pas être configurable
+    Etant donné que j'utilise un compte usager "pour le test de préférences FI"
+    Et que je navigue sur la page d'accueil du dashboard usager
+    Et que je me connecte au dashboard usager
+    Et que je suis redirigé vers la page historique du dashboard usager
+    Quand je clique sur le lien vers la page gestion des accès du dashboard usager
+    Alors je suis sur la page gestion des accès du dashboard usager
+    Et le fournisseur d'identité "aidants-connect-mock" n'est pas présent dans la liste

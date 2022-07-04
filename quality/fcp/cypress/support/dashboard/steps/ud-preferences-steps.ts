@@ -115,3 +115,15 @@ When("j'enregistre mes réglages d'accès", function () {
   udPreferencesPage.getSaveButton().click();
   udPreferencesPage.checkIsUpdateNotificationDisplayed();
 });
+
+Then(
+  /^le fournisseur d'identité "([^"]+)" (est|n'est pas) présent dans la liste$/,
+  function (idpName, state) {
+    const exist = state === 'est';
+
+    udPreferencesPage
+      .getIdentityProviderSetting(idpName)
+      .getComponent()
+      .should(exist ? 'be.visible' : 'not.exist');
+  },
+);

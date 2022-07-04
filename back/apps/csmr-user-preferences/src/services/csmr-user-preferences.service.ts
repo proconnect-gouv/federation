@@ -6,11 +6,13 @@ import {
   IIdpSettings,
 } from '@fc/account';
 import { PartialExcept } from '@fc/common';
+import { ConfigService } from '@fc/config';
 import { CryptographyFcpService, IPivotIdentity } from '@fc/cryptography-fcp';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { IdentityProviderMetadata, IOidcIdentity } from '@fc/oidc';
 
+import { AppConfig } from '../dto';
 import { CsmrUserPreferencesIdpNotFoundException } from '../exceptions';
 import {
   IFormattedIdpList,
@@ -26,6 +28,7 @@ export class CsmrUserPreferencesService {
   // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
+    private readonly config: ConfigService,
     private readonly account: AccountService,
     private readonly cryptographyFcp: CryptographyFcpService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
@@ -104,7 +107,7 @@ export class CsmrUserPreferencesService {
       throw new AccountNotFoundException();
     }
 
-    const idpList = await this.identityProvider.getList();
+    const idpList = await this.getIdentityProviderList();
 
     const formattedIdpSettings = this.formatUserIdpSettingsList(
       idpList,
@@ -129,7 +132,7 @@ export class CsmrUserPreferencesService {
   ): Promise<ISetIdpSettingsPayload> {
     this.logger.debug(`Identity received : ${identity}`);
 
-    const idpList = await this.identityProvider.getList();
+    const idpList = await this.getIdentityProviderList();
     const idpUids = idpList.map((idp) => idp.uid);
     const inputIdpAllExistsInDatabase = inputIdpList.every((idpUid) =>
       idpUids.includes(idpUid),
@@ -225,5 +228,16 @@ export class CsmrUserPreferencesService {
       ({ uid, isChecked }) => previousMap[uid] !== isChecked,
     );
     return result;
+  }
+
+  private async getIdentityProviderList(): Promise<IdentityProviderMetadata[]> {
+    const { aidantsConnectUid } = this.config.get<AppConfig>('App');
+
+    const idpList = await this.identityProvider.getList();
+    const filteredIdpList = idpList.filter(
+      ({ uid }) => uid !== aidantsConnectUid,
+    );
+
+    return filteredIdpList;
   }
 }
