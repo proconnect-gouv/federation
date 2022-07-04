@@ -96,6 +96,10 @@ class IdentityProviderSetting {
     return `li[data-testid="service-component-${this.name}"]`;
   }
 
+  getComponent() {
+    return cy.get(this.getIdpSettingSelector());
+  }
+
   getImage() {
     return cy.get(
       `${this.getIdpSettingSelector()} [class*="ServiceComponent-image"]`,
