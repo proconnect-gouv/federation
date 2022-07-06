@@ -40,10 +40,8 @@ describe('UserDashboardController', () => {
     set: jest.fn(),
   };
 
-  const interactionIdMock = 'interactionIdMockValue';
   const randomStringMock = 'randomStringMockValue';
   const idpStateMock = 'idpStateMockValue';
-  const idpNonceMock = 'idpNonceMock';
   const identityMock = {
     email: 'email@email.fr',
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -124,12 +122,7 @@ describe('UserDashboardController', () => {
       state: idpStateMock,
     });
 
-    sessionServiceMock.get.mockResolvedValue({
-      idpNonce: idpNonceMock,
-      idpState: idpStateMock,
-      interactionId: interactionIdMock,
-      idpIdentity: identityMock,
-    });
+    sessionServiceMock.get.mockResolvedValue(identityMock);
 
     configMock.get.mockReturnValueOnce({
       payloadEncoding: 'base64',
@@ -182,6 +175,7 @@ describe('UserDashboardController', () => {
       await controller.getUserTraces(sessionServiceMock);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith('idpIdentity');
     });
 
     it('should throw UnauthorizedException if no session', async () => {
@@ -221,6 +215,7 @@ describe('UserDashboardController', () => {
       await controller.getUserInfos(sessionServiceMock);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith('idpIdentity');
     });
 
     it('should throw UnauthorizedException if no session', async () => {
@@ -234,21 +229,14 @@ describe('UserDashboardController', () => {
 
     it('should return an object with familyName givenName props', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValueOnce({
-        idpIdentity: {
-          // eslint-disable-next-line
-          family_name: 'dubois',
-          // eslint-disable-next-line
-          given_name: 'angela',
-        },
-      });
+      sessionServiceMock.get.mockResolvedValueOnce(identityMock);
       // When
       const { firstname, lastname } = await controller.getUserInfos(
         sessionServiceMock,
       );
       // Then
-      expect(firstname).toStrictEqual('angela');
-      expect(lastname).toStrictEqual('dubois');
+      expect(firstname).toStrictEqual(identityMock.given_name);
+      expect(lastname).toStrictEqual(identityMock.family_name);
     });
   });
 
@@ -258,6 +246,7 @@ describe('UserDashboardController', () => {
       await controller.getUserPreferences(sessionServiceMock);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith('idpIdentity');
     });
 
     it('should throw UnauthorizedException if no session', async () => {
@@ -331,6 +320,7 @@ describe('UserDashboardController', () => {
       );
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith('idpIdentity');
     });
 
     it('should throw UnauthorizedException if no session', async () => {
