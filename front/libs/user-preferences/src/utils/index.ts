@@ -1,4 +1,4 @@
 /* istanbul ignore file */
 
 // declarative file
-export * from './alert-message.component';
+export * from './user-preferences-form.util';

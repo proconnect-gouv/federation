@@ -340,7 +340,7 @@ describe('CsmrUserPreferencesService', () => {
             isChecked: true,
           },
         ],
-        allowFutureIdp: false,
+        allowFutureIdp: true,
       };
 
       // When

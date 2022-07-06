@@ -23,8 +23,7 @@ import {
 
 @Injectable()
 export class CsmrUserPreferencesService {
-  private configMailer;
-
+  // Dependency injection can require more than 4 parameters
   // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
@@ -39,7 +38,13 @@ export class CsmrUserPreferencesService {
   formatUserIdpSettingsList(
     identityProvidersMetadata: IdentityProviderMetadata[],
     settings: IIdpSettings = {
-      isExcludeList: false,
+      /**
+       * By default we want to authorize all future idp,
+       * therefore exclude all those who would be present in the list (equivalent to a blacklist)
+       * For more examples
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/blob/staging/back/apps/csmr-user-preferences/README.md
+       **/
+      isExcludeList: true,
       list: [],
     },
   ): IFormattedIdpSettings {
