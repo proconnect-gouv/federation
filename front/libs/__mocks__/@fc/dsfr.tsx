@@ -25,8 +25,6 @@ export const AlertTypes = {
   WARNING: 'warning',
 };
 
-export const AlertMessageComponent = jest.fn(() => <div>AlertMessageComponent</div>);
-
-export const Alert = jest.fn(() => <div>Alert</div>);
+export const AlertComponent = jest.fn(() => <div>Alert</div>);
 
 export { ButtonTypes, IconPlacement, Priorities } from '@fc/dsfr';
