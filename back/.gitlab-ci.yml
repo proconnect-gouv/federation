@@ -81,7 +81,7 @@ build-cache:
       - cache/core-legacy/projects/fc/fc-commons/node_modules/
       - cache/core-legacy/projects/partenaires/node_modules/
       # Cypress cache
-      - $CYPRESS_CACHE_FOLDER
+      - cache/Cypress
   stage: 'Cache'
   script:
     - cd $CI_PROJECT_DIR/back && yarn install
@@ -91,6 +91,7 @@ build-cache:
     - cd $CI_PROJECT_DIR/cache/fc-apps && yarn install
     - git clone -b $FC_LEGACY_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/core-legacy.git $CI_PROJECT_DIR/cache/core-legacy
     - cd $CI_PROJECT_DIR/cache/core-legacy && yarn install
+    - npx cypress${CYPRESS_VERSION} install
   dependencies: []
   interruptible: true
   rules:

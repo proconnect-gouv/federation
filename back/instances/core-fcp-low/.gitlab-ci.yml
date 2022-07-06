@@ -81,12 +81,12 @@ fcp-low:
     expire_in: 1 hrs
     when: always
     paths:
-      - $CI_PROJECT_DIR/back/instances/core-fcp-low/cypress/screenshots
-      - $CI_PROJECT_DIR/back/instances/core-fcp-low/cypress/videos
-      - $CI_PROJECT_DIR/back/instances/core-fcp-low/cypress/logs
-      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
-      - $CI_PROJECT_DIR/quality/fcp/cypress/snapshots/diff
-      - $CI_PROJECT_DIR/artifacts-logs
+      - back/instances/core-fcp-low/cypress/screenshots
+      - back/instances/core-fcp-low/cypress/videos
+      - back/instances/core-fcp-low/cypress/logs
+      - quality/fcp/cypress/reports/cucumber/html-report
+      - quality/fcp/cypress/snapshots/diff
+      - artifacts-logs
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
     - docker container prune -f && docker volume prune -f && docker network prune -f
