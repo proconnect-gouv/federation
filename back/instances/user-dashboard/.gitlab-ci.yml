@@ -113,11 +113,11 @@ user-dashboard:
     expire_in: 1 hrs
     when: always
     paths:
-      - $CI_PROJECT_DIR/artifacts-logs
-      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
-      - $CI_PROJECT_DIR/quality/fcp/cypress/screenshots
-      - $CI_PROJECT_DIR/quality/fcp/cypress/snapshots/diff
-      - $CI_PROJECT_DIR/quality/fcp/cypress/videos
+      - artifacts-logs
+      - quality/fcp/cypress/reports/cucumber/html-report
+      - quality/fcp/cypress/screenshots
+      - quality/fcp/cypress/snapshots/diff
+      - quality/fcp/cypress/videos
   after_script:
     - bash $FC_ROOT/fc-docker/docker-stack halt && docker rm -f fc_mongo-fcp-high_1
     - docker container prune -f && docker volume prune -f && docker network prune -f

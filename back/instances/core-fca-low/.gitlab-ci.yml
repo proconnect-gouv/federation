@@ -107,12 +107,12 @@ fca-low:
     expire_in: 1 hrs
     when: always
     paths:
-      - $CI_PROJECT_DIR/back/instances/core-fca-low/cypress/screenshots
-      - $CI_PROJECT_DIR/back/instances/core-fca-low/cypress/videos
-      - $CI_PROJECT_DIR/back/instances/core-fca-low/cypress/logs
-      - $CI_PROJECT_DIR/quality/fca/cypress/reports/cucumber/html-report
-      - $CI_PROJECT_DIR/quality/fca/cypress/snapshots/diff
-      - $CI_PROJECT_DIR/artifacts-logs
+      - back/instances/core-fca-low/cypress/screenshots
+      - back/instances/core-fca-low/cypress/videos
+      - back/instances/core-fca-low/cypress/logs
+      - quality/fca/cypress/reports/cucumber/html-report
+      - quality/fca/cypress/snapshots/diff
+      - artifacts-logs
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
     - docker container prune -f && docker volume prune -f && docker network prune -f

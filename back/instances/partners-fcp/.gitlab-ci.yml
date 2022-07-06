@@ -62,8 +62,8 @@ partner-fcp:
     expire_in: 1 hrs
     when: always
     paths:
-      - $CI_PROJECT_DIR/quality/partners/cypress/reports/cucumber/html-report
-      - $CI_PROJECT_DIR/artifacts-logs
+      - quality/partners/cypress/reports/cucumber/html-report
+      - artifacts-logs
   after_script:
     - bash $FC_ROOT/fc/docker/docker-stack halt
     - docker container prune -f && docker volume prune -f && docker network prune -f
