@@ -188,11 +188,15 @@ When("j'enregistre mes réglages d'accès", function () {
 
 Then(
   /^le fournisseur d'identité "([^"]+)" (est|n'est pas) présent dans la liste$/,
-  function (idpName, state) {
+  function (description, state) {
     const exist = state === 'est';
+    const { name } = getIdentityProviderByDescription(
+      this.identityProviders,
+      description,
+    );
 
     udPreferencesPage
-      .getIdentityProviderSetting(idpName)
+      .getIdentityProviderSetting(name)
       .getComponent()
       .should(exist ? 'be.visible' : 'not.exist');
   },

@@ -55,5 +55,22 @@
       "password": "input[name='password']",
       "loginButton": "[type='submit']"
     }
+  },
+  {
+    "idpId": "aidants-connect-mock",
+    "name": "Aidants Connect",
+    "descriptions": ["Aidants Connect"],
+    "mocked": true,
+    "usable": true,
+    "url": "https://aidants-connect-mock.{{TEST_ENV}}.dev-franceconnect.fr",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "HS256",
+    "selectors": {
+      "idpButton": ".footer-container li:nth-child(4) a",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "[type='submit']"
+    }
   }
 ]
