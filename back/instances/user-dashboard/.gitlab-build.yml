@@ -66,11 +66,11 @@
   variables:
     GIT_STRATEGY: none
     DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
+    DOCKER_TLS_CERTDIR: ''
     RELEASE_VERSION: ${CI_COMMIT_REF_NAME}
   services:
     - name: docker:19.03.12-dind
-      command: ["--experimental"]
+      command: ['--experimental']
   before_script:
     - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
     - rm -rf $FC_ROOT/fc-docker
@@ -92,13 +92,13 @@
   variables:
     GIT_STRATEGY: none
     DOCKER_HOST: tcp://docker:2375
-    DOCKER_TLS_CERTDIR: ""
+    DOCKER_TLS_CERTDIR: ''
     PATCH_VERSION: 0
     RELEASE_VERSION: $CI_COMMIT_REF_NAME
     DOCKER_CLI_EXPERIMENTAL: enabled
   services:
     - name: docker:19.03.12-dind
-      command: ["--experimental"]
+      command: ['--experimental']
   before_script:
     - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
     - PROD_RELEASE_VERSION=${RELEASE_VERSION::-3}.${PATCH_VERSION}
@@ -157,47 +157,19 @@ ud/tracks-data-provider-tag-to-prod-image:
   needs:
     - job: ud/tracks-data-provider-build-image
 
-ud/csmr-tracks-high-build-image:
+ud/csmr-tracks-build-image:
   extends: .base-build
   variables:
-    APP: csmr-tracks-high
-    MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_tracks_high_version:"
+    APP: csmr-tracks
+    MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_tracks_version:"
 
-ud/csmr-tracks-high-tag-to-prod-image:
+ud/csmr-tracks-tag-to-prod-image:
   extends: .base-tag-to-prod
   variables:
-    DOCKER_IMAGE: csmr-tracks-high
-    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_tracks_high_version:"
+    DOCKER_IMAGE: csmr-tracks
+    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_tracks_version:"
   needs:
-    - job: ud/csmr-tracks-high-build-image
-
-ud/csmr-tracks-legacy-build-image:
-  extends: .base-build
-  variables:
-    APP: csmr-tracks-legacy
-    MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_tracks_legacy_version:"
-
-ud/csmr-tracks-legacy-tag-to-prod-image:
-  extends: .base-tag-to-prod
-  variables:
-    DOCKER_IMAGE: csmr-tracks-legacy
-    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_tracks_legacy_version:"
-  needs:
-    - job: ud/csmr-tracks-legacy-build-image
-
-ud/csmr-aggregate-tracks-build-image:
-  extends: .base-build
-  variables:
-    APP: csmr-aggregate-tracks
-    MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_aggregate_tracks_version:"
-
-ud/csmr-aggregate-tracks-tag-to-prod-image:
-  extends: .base-tag-to-prod
-  variables:
-    DOCKER_IMAGE: csmr-aggregate-tracks
-    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_aggregate_tracks_version:"
-  needs:
-    - job: ud/csmr-aggregate-tracks-build-image
+    - job: ud/csmr-tracks-build-image
 
 ud/csmr-user-preferences-high-build-image:
   extends: .base-build
@@ -212,3 +184,17 @@ ud/csmr-user-preferences-high-tag-to-prod-image:
     MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_user_preferences_version:"
   needs:
     - job: ud/csmr-user-preferences-high-build-image
+
+ud/csmr-account-build-image:
+  extends: .base-build
+  variables:
+    APP: csmr-account
+    MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_account_version:"
+
+ud/csmr-account-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: csmr-account
+    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_account_version:"
+  needs:
+    - job: ud/csmr-account-build-image
