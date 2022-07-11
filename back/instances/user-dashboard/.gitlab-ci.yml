@@ -81,7 +81,7 @@ user-dashboard:
     - docker-stack start fc-core
       fsp1 fsp3 fip1 fip3 fip4 aidants-connect-mock rnipp fdp1
       ud-back ud-front
-      csmr-tracks-high csmr-tracks-legacy csmr-aggregate-tracks
+      csmr-tracks csmr-account-high csmr-account-legacy
       csmr-user-preferences-high
       fc-exploitation fc-support
     # Ensure the required apps are running

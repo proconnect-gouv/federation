@@ -4,11 +4,13 @@ import {
   Get,
   Injectable,
   Post,
+  Query,
   UnauthorizedException,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
+import { FSA } from '@fc/common';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
 import {
@@ -23,9 +25,9 @@ import {
   UserPreferencesService,
 } from '@fc/user-preferences';
 
-import { UserPreferencesBodyDto } from '../dto/user-preferences-body.dto';
+import { GetUserTracesQueryDto, UserPreferencesBodyDto } from '../dto';
 import { UserDashboardBackRoutes } from '../enums';
-import { UserDashboardService } from '../services/user-dashboard.service';
+import { UserDashboardService } from '../services';
 
 @Injectable()
 @Controller()
@@ -54,20 +56,26 @@ export class UserDashboardController {
   }
 
   @Get(UserDashboardBackRoutes.TRACKS)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
   async getUserTraces(
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
-  ): Promise<unknown> {
-    this.logger.debug('getUserTraces()');
+    @Query() query: GetUserTracesQueryDto,
+  ): Promise<FSA> {
+    this.logger.debug(`getUserTraces() with ${query}`);
     const idpIdentity = await sessionOidc.get('idpIdentity');
     if (!idpIdentity) {
       throw new UnauthorizedException();
     }
 
     this.logger.trace({ idpIdentity });
-    const tracks = await this.tracks.getList(idpIdentity);
+    const tracks = await this.tracks.getList(idpIdentity, query);
     this.logger.trace({ tracks });
-    return tracks;
+
+    return {
+      type: 'TRACKS_DATA',
+      ...tracks,
+    };
   }
 
   @Get(UserDashboardBackRoutes.USER_INFOS)
