@@ -31,7 +31,7 @@ quality-fca-low-docker:
       - cache/fc-apps/node_modules/
       - cache/fc-apps/shared/node_modules/
       # Cypress
-      - $CYPRESS_CACHE_FOLDER
+      - cache/Cypress
   before_script:
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - echo "FC_APPS_VERSION=$FC_APPS_VERSION"
@@ -82,7 +82,7 @@ quality-fca-low-docker:
     expire_in: 1 hrs
     when: always
     paths:
-      - $CI_PROJECT_DIR/quality/fca/cypress/reports/cucumber/html-report
+      - quality/fca/cypress/reports/cucumber/html-report
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
     - docker container prune --force && docker volume prune -f
