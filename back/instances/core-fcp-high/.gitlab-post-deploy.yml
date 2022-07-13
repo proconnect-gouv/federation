@@ -40,4 +40,4 @@ quality-fcp-high-release:
     expire_in: 1 hrs
     when: always
     paths:
-      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
+      - quality/fcp/cypress/reports/cucumber/html-report

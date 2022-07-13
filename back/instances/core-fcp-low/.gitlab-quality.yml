@@ -24,7 +24,7 @@ quality-fcp-low-docker:
       # Quality
       - quality/node_modules/
       # Cypress
-      - $CYPRESS_CACHE_FOLDER
+      - cache/Cypress
   before_script:
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
     - shopt -s expand_aliases
@@ -57,7 +57,7 @@ quality-fcp-low-docker:
     expire_in: 1 hrs
     when: always
     paths:
-      - $CI_PROJECT_DIR/quality/fcp/cypress/reports/cucumber/html-report
+      - quality/fcp/cypress/reports/cucumber/html-report
   after_script:
     - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
     - docker container prune --force && docker volume prune -f
