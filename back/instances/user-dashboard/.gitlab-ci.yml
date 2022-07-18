@@ -70,13 +70,11 @@ user-dashboard:
     - rm -rf $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
     - cp -r $FC_LEGACY_ROOT/projects/fc/fc-commons $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
     - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
-    - docker-stack up all-v1
+    - docker-stack up bdd-ud
     - docker-stack exec ud-front yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack exec ud-back yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack dep ud-front ud-back
     - docker-stack fixtures fc-exploitation fc-support
-    # Start mongo-fcp-high to retrieve FC+ AccountIds for the log history
-    - $FC_ROOT/fc/docker/docker-stack up mongo-fcp-high
     # Start the NodeJS apps
     - docker-stack start fc-core
       fsp1 fsp3 fip1 fip3 fip4 aidants-connect-mock rnipp fdp1
