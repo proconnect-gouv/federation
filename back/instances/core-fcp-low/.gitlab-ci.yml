@@ -42,7 +42,7 @@ fcp-low:
     - cd $CI_PROJECT_DIR
   script:
     # Up the docker-stack with minimal requirement
-    - docker-stack up all-fcp-low
+    - docker-stack up bdd-fcp-low
     - docker exec fc_core-fcp-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker-stack dep core-fcp-low
     - cd $CI_PROJECT_DIR/quality/fcp && yarn install
