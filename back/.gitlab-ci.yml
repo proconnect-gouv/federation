@@ -108,6 +108,7 @@ include:
   - '/back/instances/core-fcp-high/.gitlab-post-deploy.yml'
   - '/back/instances/core-fcp-low/.gitlab-ci.yml'
   - '/back/instances/core-fcp-low/.gitlab-deploy.yml'
+  - '/back/instances/eidas-bridge/.gitlab-ci.yml'
   - '/back/instances/eidas-bridge/.gitlab-build.yml'
   - '/back/instances/user-dashboard/.gitlab-ci.yml'
   - '/back/instances/user-dashboard/.gitlab-build.yml'

@@ -54,7 +54,7 @@ fca-low:
     - cd $CI_PROJECT_DIR
   script:
     # Up the docker-stack with minimal requirement
-    - docker-stack up all-fca-low
+    - docker-stack up bdd-fca-low
     - docker exec fc_core-fca-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker exec fc_fca-low-front_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker-stack fca-low-front
