@@ -24,7 +24,7 @@ eidas-bridge:
       # Quality
       - quality/node_modules/
       # Cypress
-      - $CYPRESS_CACHE_FOLDER
+      - cache/Cypress
   before_script:
     # Ensure a clean docker environnement
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
