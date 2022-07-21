@@ -1,9 +1,9 @@
 import { act, render } from '@testing-library/react';
 import * as H from 'history';
+import { mocked } from 'jest-mock';
 import { DateTime } from 'luxon';
 import React from 'react';
 import * as ReactRouterDom from 'react-router-dom';
-import { mocked } from 'ts-jest/utils';
 
 import { PaginationComponent } from '@fc/dsfr';
 import { renderWithRouter } from '@fc/tests-utils';
