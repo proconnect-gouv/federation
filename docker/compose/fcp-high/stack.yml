@@ -71,3 +71,5 @@ services:
       - "csmr-hsm"
       - "exploit-fcp-high-back"
       - "exploit-fcp-high-front"
+      # --
+      - "maildev"
