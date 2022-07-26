@@ -48,11 +48,14 @@ export class CsmrTracksFormatterService {
   private extractDataFromFields(
     docs: SearchHit<ICsmrTracksFieldsRawData>[],
   ): ICsmrTracksData[] {
-    const extractFn = (fields: ICsmrTracksFieldsRawData): ICsmrTracksData =>
-      Object.fromEntries(Object.entries(fields).map((field) => field.flat()));
+    const extractFn = (_id, fields: ICsmrTracksFieldsRawData): ICsmrTracksData => {
+      return {
+        trackId: _id, ...Object.fromEntries(Object.entries(fields).map((field) => field.flat()))
+      };
+    };
 
-    const data = docs.map(({ fields }) =>
-      extractFn(fields as ICsmrTracksFieldsRawData),
+    const data = docs.map(({ _id, fields }) =>
+      extractFn(_id, fields as ICsmrTracksFieldsRawData),
     );
     this.logger.trace({ fields: data });
     return data;
