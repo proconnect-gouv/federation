@@ -32,7 +32,7 @@ fcp-high:
       - cache/fc-apps/node_modules/
       - cache/fc-apps/shared/node_modules/
       # Cypress
-      - $CYPRESS_CACHE_FOLDER
+      - cache/Cypress
   before_script:
     # Ensure a clean docker environnement
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
