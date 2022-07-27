@@ -1,7 +1,7 @@
 [
   {
-    "idpId": "fip1v2",
-    "name": "fip1v2",
+    "idpId": "fip1",
+    "name": "fip1",
     "descriptions": [
       "par défaut",
       "actif",
@@ -12,7 +12,7 @@
     "url": "https://fip1v2.integ01.fcp.fournisseur-d-identite.fr/interaction",
     "acrValue": "eidas3",
     "selectors": {
-      "idpButton": "#idp-fip1v2",
+      "idpButton": "#idp-fip1",
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "[type='submit']"
