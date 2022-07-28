@@ -503,7 +503,7 @@ _migrations-partners() {
 }
 
 _migrations-generate-partners() {
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY $1 yarn typeorm:migrations-generate -n $2
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY $1 yarn typeorm:migrations-generate $2
 }
 
 _fixtures-partners() {
