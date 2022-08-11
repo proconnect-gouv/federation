@@ -24,4 +24,12 @@ export default class UdMenuComponent {
       'Gérer mes accès',
     );
   }
+
+  getOpenMobileMenuButton(): ChainableElement {
+    return cy.get('#burger-button-mobile-menu');
+  }
+
+  getPreferencesMobileLink(): ChainableElement {
+    return cy.get('#layout-header-menu-modal a[title="Gérer mes accès"]');
+  }
 }
