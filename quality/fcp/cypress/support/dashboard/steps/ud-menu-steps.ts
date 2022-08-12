@@ -24,12 +24,6 @@ When(
 When(
   'je clique sur le lien vers la page gestion des accès du dashboard usager',
   function () {
-    // Intercept used when waiting for the load of the /preferences
-    cy.intercept({
-      method: 'GET',
-      url: '/api/user-preferences',
-    }).as('UD:UserPreferences');
-
     udMenuComponent.getPreferencesLink().click();
   },
 );
