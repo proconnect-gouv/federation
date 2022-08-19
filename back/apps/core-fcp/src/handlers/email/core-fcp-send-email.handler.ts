@@ -43,12 +43,12 @@ export class CoreFcpSendEmailHandler
     const date = new Date(locateDate);
 
     const day = `${date.getDate()}`.padStart(2, '0');
-    const month = `${date.getMonth() + 1}`.padStart(2, '0');
+    const month = date.toLocaleString('fr-FR', { month: 'long' });
     const year = date.getFullYear();
     const hours = `${date.getHours()}`.padStart(2, '0');
     const minutes = `${date.getMinutes()}`.padStart(2, '0');
 
-    const formattedDate = `Le ${day}/${month}/${year} à ${hours}:${minutes}`;
+    const formattedDate = `le ${day} ${month} ${year} à ${hours}:${minutes}`;
     return formattedDate;
   }
 
