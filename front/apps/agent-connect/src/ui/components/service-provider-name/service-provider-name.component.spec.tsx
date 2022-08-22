@@ -23,33 +23,37 @@ describe('ServiceProviderNameComponent', () => {
   it('should have call useMediaQuery with tablet responsive query', () => {
     // when
     render(<ServiceProviderNameComponent />);
+
     // then
     expect(useMediaQuery).toHaveBeenNthCalledWith(1, { query: '(min-width: 768px)' });
   });
 
   it('should have a section title', () => {
-    // then
+    // when
     const { getByText } = render(<ServiceProviderNameComponent />);
     const element = getByText('Je choisis un compte pour me connecter sur');
-    // when
+
+    // then
     expect(element).toBeInTheDocument();
   });
 
   it('should have a serviceProviderName label', () => {
-    // then
+    // when
     const { getByText } = render(
       <AgentConnectSearchContext.Provider value={agentConnectSearchContextMock}>
         <ServiceProviderNameComponent />
       </AgentConnectSearchContext.Provider>,
     );
     const element = getByText('Service provider name mock');
-    // when
+
+    // then
     expect(element).toBeInTheDocument();
   });
 
   it('should match the snapshot for a desktop viewport', () => {
     // when
     const { container } = render(<ServiceProviderNameComponent />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -57,8 +61,10 @@ describe('ServiceProviderNameComponent', () => {
   it('should match the snapshot for a tablet viewport', () => {
     // given
     mocked(useMediaQuery).mockReturnValueOnce(false);
+
     // when
     const { container } = render(<ServiceProviderNameComponent />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -66,6 +72,7 @@ describe('ServiceProviderNameComponent', () => {
   it('should have called useMediaQuery with tablet responsive query', () => {
     // then
     render(<ServiceProviderNameComponent />);
+
     // when
     expect(useMediaQuery).toHaveBeenNthCalledWith(1, { query: '(min-width: 768px)' });
   });

@@ -18,8 +18,10 @@ describe('UserPreferencesPage', () => {
   it('should match the snapshot, display into a desktop viewport', () => {
     // given
     mocked(useMediaQuery).mockReturnValueOnce(true);
+
     // when
     const { container } = render(<UserPreferencesPage />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -27,8 +29,10 @@ describe('UserPreferencesPage', () => {
   it('should match the snapshot, display into a mobile viewport', () => {
     // given
     mocked(useMediaQuery).mockReturnValueOnce(false);
+
     // when
     const { container } = render(<UserPreferencesPage />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -36,6 +40,7 @@ describe('UserPreferencesPage', () => {
   it('should call UserPreferencesComponent with props', () => {
     // when
     render(<UserPreferencesPage />);
+
     // then
     expect(UserPreferencesComponent).toHaveBeenCalledTimes(1);
     expect(UserPreferencesComponent).toHaveBeenCalledWith(

@@ -40,8 +40,10 @@ describe('UserPreferencesComponent', () => {
   it('should match the snapshot', () => {
     // given
     mocked(useUserPreferencesApi).mockReturnValue(hookResultMock);
+
     // when
     const { container } = render(<UserPreferencesComponent options={optionsMock} />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -52,8 +54,10 @@ describe('UserPreferencesComponent', () => {
       ...hookResultMock,
       userPreferences: null as unknown as UserPreferencesData,
     });
+
     // when
     render(<UserPreferencesComponent options={optionsMock} />);
+
     // then
     expect(Form).toHaveBeenCalledTimes(0);
   });
@@ -64,8 +68,10 @@ describe('UserPreferencesComponent', () => {
       ...hookResultMock,
       userPreferences: {} as unknown as UserPreferencesData,
     });
+
     // when
     render(<UserPreferencesComponent options={optionsMock} />);
+
     // then
     expect(Form).toHaveBeenCalledTimes(0);
   });
@@ -76,8 +82,10 @@ describe('UserPreferencesComponent', () => {
       ...hookResultMock,
       userPreferences: { allowFutureIdp: false, idpList: undefined },
     });
+
     // when
     render(<UserPreferencesComponent options={optionsMock} />);
+
     // then
     expect(Form).toHaveBeenCalledTimes(0);
   });
@@ -88,8 +96,10 @@ describe('UserPreferencesComponent', () => {
       ...hookResultMock,
       userPreferences: { ...userPreferencesMock, idpList: [] },
     });
+
     // when
     render(<UserPreferencesComponent options={optionsMock} />);
+
     // then
     expect(Form).toHaveBeenCalledTimes(0);
   });
@@ -97,8 +107,10 @@ describe('UserPreferencesComponent', () => {
   it('should have called useUserPreferencesApi', () => {
     // given
     mocked(useUserPreferencesApi).mockReturnValue(hookResultMock);
+
     // when
     render(<UserPreferencesComponent options={optionsMock} />);
+
     // then
     expect(useUserPreferencesApi).toHaveBeenCalledTimes(1);
     expect(useUserPreferencesApi).toHaveBeenCalledWith(optionsMock);

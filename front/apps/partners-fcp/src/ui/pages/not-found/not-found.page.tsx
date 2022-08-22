@@ -1,5 +1,5 @@
 export const NotFoundPage = () => (
-  <div className="content-wrapper-lg text-center fr-mt-8w" id="page-container">
+  <div className="fr-container text-center fr-mt-8w">
     <h1 className="text-center">404 - Not Found</h1>
   </div>
 );

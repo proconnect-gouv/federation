@@ -47,6 +47,7 @@ describe('ServiceComponent', () => {
     const { container } = render(<ServiceComponent service={serviceMock} />, {
       wrapper: Wrapper,
     });
+
     // then
     expect(container.firstChild).toMatchSnapshot();
   });
@@ -59,6 +60,7 @@ describe('ServiceComponent', () => {
     const { container } = render(<ServiceComponent service={serviceMock} />, {
       wrapper: Wrapper,
     });
+
     // then
     expect(container.firstChild).toMatchSnapshot();
   });
@@ -68,6 +70,7 @@ describe('ServiceComponent', () => {
     render(<ServiceComponent service={serviceMock} />, {
       wrapper: Wrapper,
     });
+
     // then
     expect(ServiceImageComponent).toHaveBeenCalledTimes(1);
     expect(ServiceImageComponent).toHaveBeenCalledWith(
@@ -82,6 +85,7 @@ describe('ServiceComponent', () => {
       wrapper: Wrapper,
     });
     const element = getByTestId('form-wrapper').firstChild;
+
     // then
     expect(element).toHaveClass('disabled');
     expect(ServiceImageComponent).toHaveBeenCalledTimes(1);
@@ -98,6 +102,7 @@ describe('ServiceComponent', () => {
       { wrapper: Wrapper },
     );
     const element = getByTestId('form-wrapper').firstChild;
+
     // then
     expect(element).not.toHaveClass('disabled');
     expect(ServiceImageComponent).toHaveBeenCalledTimes(1);
@@ -112,6 +117,7 @@ describe('ServiceComponent', () => {
     render(<ServiceComponent service={serviceMock} />, {
       wrapper: Wrapper,
     });
+
     // then
     expect(ToggleInput).toHaveBeenCalledTimes(1);
     expect(ToggleInput).toHaveBeenCalledWith(
@@ -130,6 +136,7 @@ describe('ServiceComponent', () => {
     render(<ServiceComponent service={serviceMock} />, {
       wrapper: Wrapper,
     });
+
     // then
     expect(OnChange).toHaveBeenCalledTimes(1);
     expect(OnChange).toHaveBeenCalledWith(

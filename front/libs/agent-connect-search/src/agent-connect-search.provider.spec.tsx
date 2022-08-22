@@ -48,6 +48,7 @@ describe('AgentConnectSearchProvider', () => {
   it('should have called useApiGet with url', async () => {
     // when
     render(<Wrapper />);
+
     // then
     expect(useApiGet).toHaveBeenCalledTimes(1);
     expect(useApiGet).toHaveBeenCalledWith(expect.objectContaining({ endpoint: 'any-url-mock' }));
@@ -56,6 +57,7 @@ describe('AgentConnectSearchProvider', () => {
   it('should have called useApiGet with errorPath', async () => {
     // when
     render(<Wrapper />);
+
     // then
     expect(useApiGet).toHaveBeenCalledTimes(1);
     expect(useApiGet).toHaveBeenCalledWith(
@@ -68,6 +70,7 @@ describe('api has not yet been called', () => {
   it('should have called Consumer with default values only once', async () => {
     // when
     render(<Wrapper />);
+
     // then
     expect(contextCallback).toHaveBeenCalledTimes(1);
     expect(contextCallback).toHaveBeenNthCalledWith(1, defaultContextValues);
@@ -75,12 +78,13 @@ describe('api has not yet been called', () => {
 });
 
 describe('api has been called', () => {
-  // given
-
   it('should have called AgentConnectSearchService initialize', async () => {
+    // given
     mocked(useApiGet).mockReturnValueOnce(apiReturnValue);
+
     // when
     render(<Wrapper />);
+
     // then
     expect(AgentConnectSearchService.initialize).toHaveBeenCalledTimes(1);
     expect(AgentConnectSearchService.initialize).toHaveBeenNthCalledWith(
@@ -93,8 +97,10 @@ describe('api has been called', () => {
   it('should have called AgentConnectSearchContext.Consumer with value only twice', async () => {
     // given
     mocked(useApiGet).mockReturnValueOnce(apiReturnValue);
+
     // when
     render(<Wrapper />);
+
     // then
     expect(contextCallback).toHaveBeenCalledTimes(2);
     expect(contextCallback).toHaveBeenNthCalledWith(1, defaultContextValues);
@@ -118,6 +124,7 @@ describe('when user start a search', () => {
       const { getByTestId } = render(<Wrapper />);
       const button = getByTestId('valid-button');
       fireEvent.click(button);
+
       // then
       expect(button).toBeInTheDocument();
       expect(contextCallback).toHaveBeenCalledTimes(1);
@@ -129,10 +136,12 @@ describe('when user start a search', () => {
     it('should call AgentConnectSearchService.search', async () => {
       // given
       mocked(useApiGet).mockReturnValueOnce(apiReturnValue);
+
       // when
       const { getByTestId } = render(<Wrapper />);
       const button = getByTestId('valid-button');
       fireEvent.click(button);
+
       // then
       expect(button).toBeInTheDocument();
       expect(AgentConnectSearchService.search).toHaveBeenCalledTimes(1);
@@ -142,10 +151,12 @@ describe('when user start a search', () => {
     it('should call AgentConnectSearchService.search with empty string', async () => {
       // given
       mocked(useApiGet).mockReturnValueOnce(apiReturnValue);
+
       // when
       const { getByTestId } = render(<Wrapper />);
       const button = getByTestId('invalid-button');
       fireEvent.click(button);
+
       // then
       expect(button).toBeInTheDocument();
       expect(AgentConnectSearchService.search).toHaveBeenCalledTimes(1);
@@ -156,10 +167,12 @@ describe('when user start a search', () => {
       // given
       mocked(useApiGet).mockReturnValueOnce(apiReturnValue);
       mocked(AgentConnectSearchService.search).mockReturnValueOnce([searchResults]);
+
       // when
       const { getByTestId } = render(<Wrapper />);
       const button = getByTestId('valid-button');
       fireEvent.click(button);
+
       // then
       expect(button).toBeInTheDocument();
       expect(contextCallback).toHaveBeenCalledTimes(3);

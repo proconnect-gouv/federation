@@ -7,7 +7,14 @@ exports[`HomePage should match snapshot when session is expired 1`] = `
     id="page-container"
   >
     <div>
-      Alert
+      <div>
+        AlertComponent
+      </div>
+      <div>
+        <p>
+          Votre session a expiré, veuillez vous reconnecter
+        </p>
+      </div>
     </div>
     <h1
       class="title fr-mb-5w"

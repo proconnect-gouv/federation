@@ -28,6 +28,7 @@ describe('UserHistoryCardContentComponent', () => {
   it('should have called useMediaQuery with tablet responsive query', () => {
     // then
     render(<UserHistoryCardContentComponent identityProvider={expect.any(Object)} />);
+
     // when
     expect(useMediaQuery).toHaveBeenNthCalledWith(1, { query: '(min-width: 768px)' });
   });
@@ -35,10 +36,12 @@ describe('UserHistoryCardContentComponent', () => {
   it('should match the snapshot for a tablet viewport', () => {
     // given
     mocked(useMediaQuery).mockReturnValueOnce(false);
+
     // when
     const { container } = render(
       <UserHistoryCardContentComponent identityProvider={expect.any(Object)} />,
     );
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -48,6 +51,7 @@ describe('UserHistoryCardContentComponent', () => {
     const { container } = render(
       <UserHistoryCardContentComponent identityProvider={expect.any(Object)} />,
     );
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -58,6 +62,7 @@ describe('UserHistoryCardContentComponent', () => {
       <UserHistoryCardContentComponent identityProvider={expect.any(Object)} />,
     );
     const element = getByText('Mon compte');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -70,11 +75,13 @@ describe('UserHistoryCardContentComponent', () => {
       name: 'idp-mock-name',
       uid: 'idp-mock-uid',
     };
+
     // when
     const { getByText } = render(
       <UserHistoryCardContentComponent identityProvider={identityProvider} />,
     );
     const element = getByText('idp-mock-name');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -87,12 +94,14 @@ describe('UserHistoryCardContentComponent', () => {
       name: 'idp-mock-name',
       uid: 'idp-mock-uid',
     };
+
     // when
     render(
       <AgentConnectSearchContext.Provider value={agentConnectSearchContextMock}>
         <UserHistoryCardContentComponent identityProvider={identityProvider} />
       </AgentConnectSearchContext.Provider>,
     );
+
     // then
     expect(RedirectToIdpFormComponent).toHaveBeenCalledTimes(1);
     expect(RedirectToIdpFormComponent).toHaveBeenCalledWith(

@@ -12,20 +12,22 @@ describe('SearchResultComponent', () => {
   });
 
   it('should have called useAddToUserHistory with uid props', () => {
-    // then
-    render(<SearchResultComponent csrfToken="csrf-token-mock" name="name-mock" uid="uid-mock" />);
     // when
+    render(<SearchResultComponent csrfToken="csrf-token-mock" name="name-mock" uid="uid-mock" />);
+
+    // then
     expect(useAddToUserHistory).toHaveBeenCalledTimes(1);
     expect(useAddToUserHistory).toHaveBeenCalledWith('uid-mock');
   });
 
   it('should have a submit button', () => {
-    // then
+    // when
     const { getByRole } = render(
       <SearchResultComponent csrfToken="csrf-token-mock" name="name-mock" uid="uid-mock" />,
     );
     const button = getByRole('button');
-    // when
+
+    // then
     expect(button).toBeInTheDocument();
   });
 
@@ -33,13 +35,15 @@ describe('SearchResultComponent', () => {
     // given
     const addToUserHistoryMock = jest.fn();
     mocked(useAddToUserHistory).mockImplementation(() => addToUserHistoryMock);
-    // then
+
+    // when
     const { getByRole } = render(
       <SearchResultComponent csrfToken="csrf-token-mock" name="name-mock" uid="uid-mock" />,
     );
     const button = getByRole('button');
     fireEvent.click(button);
-    // when
+
+    // then
     expect(button).toBeInTheDocument();
     expect(addToUserHistoryMock).toHaveBeenCalledTimes(1);
   });
@@ -50,9 +54,11 @@ describe('SearchResultComponent', () => {
     const nameMock = 'name-mock';
     const csrfTokenMock = 'csrf-token-mock';
     mocked(RedirectToIdpFormComponent).mockReturnValueOnce(<div />);
-    // then
-    render(<SearchResultComponent csrfToken={csrfTokenMock} name={nameMock} uid={uidMock} />);
+
     // when
+    render(<SearchResultComponent csrfToken={csrfTokenMock} name={nameMock} uid={uidMock} />);
+
+    // then
     expect(RedirectToIdpFormComponent).toHaveBeenCalledTimes(1);
     expect(RedirectToIdpFormComponent).toHaveBeenCalledWith(
       {

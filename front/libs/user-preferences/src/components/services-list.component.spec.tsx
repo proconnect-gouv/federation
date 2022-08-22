@@ -13,6 +13,7 @@ describe('ServicesListComponent', () => {
   it('should match the snapshot', () => {
     // when
     const { container } = render(<ServicesListComponent identityProviders={[]} />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -37,8 +38,10 @@ describe('ServicesListComponent', () => {
         uid: 'any-uid-2',
       },
     ];
+
     // when
     render(<ServicesListComponent identityProviders={identityProviders} />);
+
     // then
     expect(ServiceComponent).toHaveBeenCalledTimes(2);
     expect(ServiceComponent).toHaveBeenNthCalledWith(1, { service: identityProviders[0] }, {});

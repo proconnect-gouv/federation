@@ -16,6 +16,7 @@ describe('SearchResultsComponent', () => {
   it('should have called useSearchResults', () => {
     // when
     render(<SearchResultsComponent />);
+
     // then
     expect(useSearchResults).toHaveBeenCalledTimes(1);
   });
@@ -27,9 +28,11 @@ describe('SearchResultsComponent', () => {
       showNoResults: true,
       showResults: false,
     });
+
     // when
     const { getByText } = render(<SearchResultsComponent />);
     const element = getByText('Aucun fournisseur d’identité n’a été trouvé');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -41,8 +44,10 @@ describe('SearchResultsComponent', () => {
       showNoResults: false,
       showResults: false,
     });
+
     // when
     const { getByText } = render(<SearchResultsComponent />);
+
     // then
     expect(() => {
       getByText('Aucun fournisseur d’identité n’a été trouvé');
@@ -57,8 +62,10 @@ describe('SearchResultsComponent', () => {
       showNoResults: false,
       showResults: true,
     });
+
     // when
     render(<SearchResultsComponent />);
+
     // then
     expect(SearchResultsListComponent).toHaveBeenCalledTimes(1);
     expect(SearchResultsListComponent).toHaveBeenCalledWith({ results: searchResultsMock }, {});

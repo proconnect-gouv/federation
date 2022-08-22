@@ -15,9 +15,11 @@ describe('UserHistoryCardRemoveButtonComponent', () => {
   it('should display a specific label', () => {
     // given
     const uid = 'mock-uid';
+
     // when
     const { getByText } = render(<UserHistoryCardRemoveButtonComponent uid={uid} />);
     const element = getByText('Supprimer de cette liste');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -25,8 +27,10 @@ describe('UserHistoryCardRemoveButtonComponent', () => {
   it('should call useRemoveFromUserHistory at first render', () => {
     // given
     const uid = 'mock-uid';
+
     // when
     render(<UserHistoryCardRemoveButtonComponent uid={uid} />);
+
     // then
     expect(useRemoveFromUserHistory).toHaveBeenCalledTimes(1);
     expect(useRemoveFromUserHistory).toHaveBeenCalledWith(uid);
@@ -37,10 +41,12 @@ describe('UserHistoryCardRemoveButtonComponent', () => {
     const uid = 'mock-uid';
     const removeFromUserHistoryMock = jest.fn();
     mocked(useRemoveFromUserHistory).mockReturnValue(removeFromUserHistoryMock);
+
     // when
     const { getByTestId } = render(<UserHistoryCardRemoveButtonComponent uid={uid} />);
     const button = getByTestId('remove-button');
     fireEvent.click(button);
+
     // then
     expect(removeFromUserHistoryMock).toHaveBeenCalledTimes(1);
   });

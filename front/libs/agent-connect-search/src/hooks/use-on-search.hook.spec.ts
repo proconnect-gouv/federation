@@ -13,6 +13,7 @@ describe('useOnSearch', () => {
   it('should return a function', () => {
     // when
     const { result } = renderWithContext(useOnSearch, AgentConnectSearchContext);
+
     // then
     expect(result.current).toBeInstanceOf(Function);
   });
@@ -20,6 +21,7 @@ describe('useOnSearch', () => {
   it('should setSearchTerm have been called only once with the last user inputs after 3 successive calls', async () => {
     // given
     const setSearchTermMock = jest.fn((value) => value);
+
     // when
     const { result } = renderWithContext(useOnSearch, AgentConnectSearchContext, {
       setSearchTerm: setSearchTermMock,
@@ -36,6 +38,7 @@ describe('useOnSearch', () => {
     // @NOTE la valeur n'a pas vocation a être modifié
     // il s'agit d'un logique utilisateur, temps de saisie/touche
     const timeout = DEBOUNCE_DELAY_MS * 3;
+
     // then
     await waitFor(
       () => {
@@ -49,6 +52,7 @@ describe('useOnSearch', () => {
   it('should setSearchTerm with a string when value is a string', async () => {
     // given
     const setSearchTermMock = jest.fn((value) => value);
+
     // when
     const { result } = renderWithContext(useOnSearch, AgentConnectSearchContext, {
       setSearchTerm: setSearchTermMock,
@@ -56,6 +60,7 @@ describe('useOnSearch', () => {
     // label HTML name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     result.current('call with an string');
+
     // then
     await waitFor(() => {
       expect(setSearchTermMock).toHaveBeenCalledTimes(1);
@@ -66,6 +71,7 @@ describe('useOnSearch', () => {
   it('should setSearchTerm with a string when value is an object', async () => {
     // given
     const setSearchTermMock = jest.fn((value) => value);
+
     // when
     const { result } = renderWithContext(useOnSearch, AgentConnectSearchContext, {
       setSearchTerm: setSearchTermMock,
@@ -73,6 +79,7 @@ describe('useOnSearch', () => {
     // label HTML name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     result.current({ 'fi-search-term': 'call with an object' });
+
     // then
     await waitFor(() => {
       expect(setSearchTermMock).toHaveBeenCalledTimes(1);

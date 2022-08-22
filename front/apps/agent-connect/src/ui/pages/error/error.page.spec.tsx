@@ -15,6 +15,7 @@ describe('ErrorPage', () => {
   it('should render the NotFoundComponent when window.appError is undefined', () => {
     // when
     render(<ErrorPage />);
+
     // then
     expect(NotFoundComponent).toHaveBeenCalledTimes(1);
   });
@@ -23,8 +24,10 @@ describe('ErrorPage', () => {
     // given
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (window as any).appError = 'something';
+
     // when
     render(<ErrorPage />);
+
     // then
     expect(ErrorComponent).toHaveBeenCalledTimes(1);
     expect(ErrorComponent).toHaveBeenCalledWith({ errors: 'something' }, {});

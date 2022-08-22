@@ -130,7 +130,19 @@ exports[`UserPreferencesFormComponent should match the snapshot, display into a 
       ServicesListComponent
     </div>
     <div>
-      Alert
+      <div>
+        AlertComponent
+      </div>
+      <div>
+        <p
+          class="fr-alert__title"
+        >
+          Attention, vous devez avoir au moins un compte autorisé pour continuer à utiliser FranceConnect.
+        </p>
+        <p>
+          Veuillez choisir au moins un compte autorisé pour pouvoir enregistrer vos réglages.
+        </p>
+      </div>
     </div>
     <p
       class="fr-mt-5w"
@@ -289,7 +301,19 @@ exports[`UserPreferencesFormComponent should match the snapshot, display into a 
       ServicesListComponent
     </div>
     <div>
-      Alert
+      <div>
+        AlertComponent
+      </div>
+      <div>
+        <p
+          class="fr-alert__title"
+        >
+          Attention, vous devez avoir au moins un compte autorisé pour continuer à utiliser FranceConnect.
+        </p>
+        <p>
+          Veuillez choisir au moins un compte autorisé pour pouvoir enregistrer vos réglages.
+        </p>
+      </div>
     </div>
     <p
       class="fr-mt-5w"

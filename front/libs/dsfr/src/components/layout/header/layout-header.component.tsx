@@ -8,6 +8,7 @@ import { LayoutHeaderMobileBurgerButton } from './layout-header-mobile-burger.bu
 import { LayoutHeaderLogosComponent } from './logos';
 import { LayoutHeaderMenuComponent } from './menu';
 import { ReturnButtonComponent } from './return-button';
+import { LayoutHeaderServiceComponent } from './service/layout-header-service.component';
 import { LayoutHeaderToolsComponent } from './tools';
 
 export const LayoutHeaderComponent = React.memo(() => {
@@ -21,7 +22,7 @@ export const LayoutHeaderComponent = React.memo(() => {
   const lastname = userinfos?.lastname;
 
   const { state } = useContext<AppContextInterface>(AppContext);
-  const { logo, navigationItems } = state.config.Layout;
+  const { logo, navigationItems, service } = state.config.Layout;
   // @TODO testing implies splitting the function into a private
   // it seems to be useless till should be refactored with the global config for front apps
   // @SEE https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/984
@@ -54,6 +55,7 @@ export const LayoutHeaderComponent = React.memo(() => {
                     />
                   )}
                 </div>
+                {service && <LayoutHeaderServiceComponent service={service} />}
               </div>
               <div className="fr-header__tools">
                 {/* @NOTE Used to show

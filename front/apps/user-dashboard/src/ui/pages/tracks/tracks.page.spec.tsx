@@ -20,6 +20,7 @@ describe('TracksPage', () => {
   it('should match the snapshot', () => {
     // when
     const { container } = render(<TracksPage />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -27,6 +28,7 @@ describe('TracksPage', () => {
   it('should call IntroductionComponent', () => {
     // when
     render(<TracksPage />);
+
     // then
     expect(IntroductionComponent).toHaveBeenCalled();
   });
@@ -34,6 +36,7 @@ describe('TracksPage', () => {
   it('should called TracksListComponent', () => {
     // when
     render(<TracksPage />);
+
     // then
     expect(TracksListComponent).toHaveBeenCalled();
   });

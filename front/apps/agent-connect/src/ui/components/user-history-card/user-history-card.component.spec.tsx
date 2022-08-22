@@ -17,17 +17,20 @@ describe('UserHistoryCardComponent', () => {
   };
 
   it('should have the class user-history-card', () => {
-    // then
-    const { container } = render(<UserHistoryCardComponent item={identityProviderMock} />);
     // when
+    const { container } = render(<UserHistoryCardComponent item={identityProviderMock} />);
+
+    // then
     expect(container.firstChild).toHaveClass('user-history-card');
   });
 
   it('should have called UserHistoryCardRemoveButtonComponent', () => {
     // given
     mocked(UserHistoryCardRemoveButtonComponent).mockClear();
+
     // when
     render(<UserHistoryCardComponent item={identityProviderMock} />);
+
     // then
     expect(UserHistoryCardRemoveButtonComponent).toHaveBeenCalledTimes(1);
     expect(UserHistoryCardRemoveButtonComponent).toHaveBeenCalledWith(
@@ -39,8 +42,10 @@ describe('UserHistoryCardComponent', () => {
   it('should have called UserHistoryCardContentComponent', () => {
     // given
     mocked(UserHistoryCardContentComponent).mockClear();
+
     // when
     render(<UserHistoryCardComponent item={identityProviderMock} />);
+
     // then
     expect(UserHistoryCardContentComponent).toHaveBeenCalledTimes(1);
     expect(UserHistoryCardContentComponent).toHaveBeenCalledWith(

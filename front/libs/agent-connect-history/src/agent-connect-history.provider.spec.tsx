@@ -24,6 +24,7 @@ describe('AgentConnectHistoryProvider', () => {
   it('should have called useLocalStorage twice at first render', () => {
     // when
     render(<Wrapper />);
+
     // then
     expect(useLocalStorage).toHaveBeenCalledTimes(1);
     expect(useLocalStorage).toHaveBeenCalledWith('any-local-storage-uniq-key');
@@ -32,6 +33,7 @@ describe('AgentConnectHistoryProvider', () => {
   it('should have called contextCallback with default values', () => {
     // when
     render(<Wrapper />);
+
     // then
     expect(contextCallback).toHaveBeenCalledTimes(1);
     expect(contextCallback).toHaveBeenNthCalledWith(1, {
@@ -48,8 +50,10 @@ describe('AgentConnectHistoryProvider', () => {
       get: jest.fn(() => ['idp-1', 'idp-2']),
       set: jest.fn(),
     });
+
     // when
     render(<Wrapper />);
+
     // then
     expect(contextCallback).toHaveBeenCalledTimes(1);
     expect(contextCallback).toHaveBeenNthCalledWith(1, {

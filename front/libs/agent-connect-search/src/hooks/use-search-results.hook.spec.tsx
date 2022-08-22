@@ -36,8 +36,10 @@ describe('useSearchResults', () => {
       searchResults: [expect.any({}), expect.any({})],
       setSearchTerm: jest.fn(),
     };
+
     // when
     const { result } = renderWithContext(useSearchResults, AgentConnectSearchContext, props);
+
     // then
     expect(result.current).toStrictEqual({
       searchResults: [expect.any({}), expect.any({})],
@@ -54,8 +56,10 @@ describe('useSearchResults', () => {
       searchResults: [searchResults],
       setSearchTerm: jest.fn(),
     };
+
     // when
     const { result } = renderWithContext(useSearchResults, AgentConnectSearchContext, props);
+
     // then
     expect(result.current).toStrictEqual({
       searchResults: [searchResults],

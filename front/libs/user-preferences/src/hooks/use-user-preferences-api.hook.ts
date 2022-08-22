@@ -2,13 +2,9 @@ import axios, { AxiosError, AxiosResponse } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 
 import { useApiGet } from '@fc/common';
+import { GetCsrfTokenResponse } from '@fc/http-client';
 
-import {
-  FormValues,
-  IGetCsrfTokenResponse,
-  UserPreferencesConfig,
-  UserPreferencesData,
-} from '../interfaces';
+import { FormValues, UserPreferencesConfig, UserPreferencesData } from '../interfaces';
 import { UserPreferencesService, UserPreferencesServiceInterface } from '../services';
 
 export const validateHandlerCallback = ({ idpList }: Pick<FormValues, 'idpList'>) => {
@@ -54,7 +50,7 @@ export const useUserPreferencesApi = (options: UserPreferencesConfig) => {
     }: Pick<UserPreferencesServiceInterface, 'allowFutureIdp' | 'idpList'>) => {
       const {
         data: { csrfToken },
-      } = await axios.get<IGetCsrfTokenResponse>(options.API_ROUTE_CSRF_TOKEN);
+      } = await axios.get<GetCsrfTokenResponse>(options.API_ROUTE_CSRF_TOKEN);
 
       const data = UserPreferencesService.encodeFormData({
         allowFutureIdp,

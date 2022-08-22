@@ -39,16 +39,19 @@ describe('Application', () => {
   it('should render child component', () => {
     // Given
     const { getByText } = render(<Application />);
-    // When
+
+    // when
     const testValue = getByText('ApplicationLayoutMock mockReturnValue');
-    // Then
+
+    // then
     expect(testValue).toBeInTheDocument();
   });
 
   it('should call AccountProviderMock with config', () => {
-    // Given
+    // when
     render(<Application />);
-    // Then
+
+    // then
     expect(AccountProviderMock).toHaveBeenCalledWith(
       expect.objectContaining({
         config: AppConfig.Account,
@@ -58,9 +61,10 @@ describe('Application', () => {
   });
 
   it('should call AppContextProvider with config', () => {
-    // Given
+    // when
     render(<Application />);
-    // Then
+
+    // then
     expect(AppContextProviderMock).toHaveBeenCalledWith(
       expect.objectContaining({
         value: { config: AppConfig },

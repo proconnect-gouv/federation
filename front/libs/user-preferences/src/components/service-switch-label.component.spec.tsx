@@ -15,6 +15,7 @@ describe('ServiceSwitchLabelComponent', () => {
     const prefixElement = getByText(/La connexion pour votre compte/);
     const titleElement = getByText(/any-service/);
     const stateElement = getByText(/est actuellement bloquée./);
+
     // then
     expect(prefixElement).toBeInTheDocument();
     expect(titleElement).toBeInTheDocument();
@@ -29,6 +30,7 @@ describe('ServiceSwitchLabelComponent', () => {
     const prefixElement = getByText(/La connexion pour votre compte/);
     const titleElement = getByText(/any-service/);
     const stateElement = getByText(/est actuellement autorisée./);
+
     // then
     expect(prefixElement).toBeInTheDocument();
     expect(titleElement).toBeInTheDocument();

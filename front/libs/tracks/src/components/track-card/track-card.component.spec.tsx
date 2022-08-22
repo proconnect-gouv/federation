@@ -64,6 +64,7 @@ describe('TrackCardComponent', () => {
     it('should match snapshot, with default props', () => {
       // when
       const { container } = render(<TrackCardComponent options={options} track={track} />);
+
       // then
       expect(container).toMatchSnapshot();
     });
@@ -71,8 +72,10 @@ describe('TrackCardComponent', () => {
     it('should render an accessible button element at container top level', () => {
       // given
       const { getByTestId } = render(<TrackCardComponent options={options} track={track} />);
+
       // when
       const element = getByTestId(`${track.platform}-${track.trackId}`);
+
       // then
       expect(element).toBeInTheDocument();
       expect(element.tagName).toStrictEqual('BUTTON');
@@ -82,8 +85,9 @@ describe('TrackCardComponent', () => {
     });
 
     it('should have called card badge component', () => {
-      // given
+      // when
       render(<TrackCardComponent options={options} track={track} />);
+
       // then
       expect(TrackCardBadgeComponent).toHaveBeenCalled();
       expect(TrackCardBadgeComponent).toHaveBeenCalledWith(
@@ -93,8 +97,9 @@ describe('TrackCardComponent', () => {
     });
 
     it('should have called card header component', () => {
-      // given
+      // when
       render(<TrackCardComponent options={options} track={track} />);
+
       // then
       expect(TrackCardHeaderComponent).toHaveBeenCalled();
       expect(TrackCardHeaderComponent).toHaveBeenCalledWith(
@@ -109,8 +114,9 @@ describe('TrackCardComponent', () => {
     });
 
     it('should have called card content component', () => {
-      // given
+      // when
       render(<TrackCardComponent options={options} track={track} />);
+
       // then
       expect(TrackCardContentComponent).toHaveBeenCalled();
       expect(TrackCardContentComponent).toHaveBeenCalledWith(
@@ -143,6 +149,7 @@ describe('TrackCardComponent', () => {
       );
       // when
       const element = getByTestId(`${track.platform}-${track.trackId}`);
+
       // then
       expect(element).toBeInTheDocument();
     });
@@ -165,8 +172,10 @@ describe('TrackCardComponent', () => {
   it('When user clicks the button, should toggle the card content (expand)', () => {
     // given
     const { getByTestId } = render(<TrackCardComponent options={options} track={track} />);
+
     // when
     const element = getByTestId(`${track.platform}-${track.trackId}`);
+
     // then
     userEvent.click(element);
     expect(element.getAttribute('aria-expanded')).toStrictEqual('true');
@@ -180,7 +189,7 @@ describe('TrackCardComponent', () => {
       expect.objectContaining({ opened: true }),
       {},
     );
-    // then
+
     userEvent.click(element);
     expect(element.getAttribute('aria-expanded')).toStrictEqual('false');
     expect(TrackCardHeaderComponent).toHaveBeenCalled();
