@@ -22,8 +22,10 @@ describe('usePaginatedTracks', () => {
   it('should return tracks with default params at first render', async () => {
     // given
     mocked(axios.get).mockResolvedValue(getTracksResponse);
+
     // when
     const { result } = renderHook(() => usePaginatedTracks(options));
+
     // then
     await waitFor(() => {
       expect(result.current).toStrictEqual({
@@ -41,6 +43,7 @@ describe('usePaginatedTracks', () => {
     it('should call axios.get with formatted endpoint based on query params', async () => {
       // given
       mocked(axios.get).mockResolvedValue(getTracksResponse);
+
       // when
       renderHook(() => usePaginatedTracks(options));
       act(() => {
@@ -48,6 +51,7 @@ describe('usePaginatedTracks', () => {
           search: '?size=2&offset=30',
         } as Location);
       });
+
       // then
       await waitFor(() => {
         expect(axios.get).toHaveBeenCalledTimes(2);
@@ -68,8 +72,10 @@ describe('usePaginatedTracks', () => {
       mocked(useLocation).mockReturnValueOnce({
         search: '?size=2&offset=30',
       } as Location);
+
       // when
       const { result } = renderHook(() => usePaginatedTracks(options));
+
       // then
       await waitFor(() => {
         expect(result.current).toStrictEqual({
@@ -83,8 +89,10 @@ describe('usePaginatedTracks', () => {
       // given
       const errorMock = new Error('error');
       mocked(axios.get).mockRejectedValueOnce(errorMock);
+
       // when
       const { result } = renderHook(() => usePaginatedTracks(options));
+
       // then
       await waitFor(() => {
         expect(result.current).toStrictEqual({

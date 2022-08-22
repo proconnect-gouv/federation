@@ -23,6 +23,7 @@ describe('UserPreferencesService', () => {
         csrfToken,
         idpList,
       });
+
       // then
       expect(result).toBeInstanceOf(URLSearchParams);
     });
@@ -30,12 +31,14 @@ describe('UserPreferencesService', () => {
     it('should call URLSearchParams.append atleast 2 times with idpList param', () => {
       // given
       const appendSpy = jest.spyOn(URLSearchParams.prototype, 'append');
+
       // when
       UserPreferencesService.encodeFormData({
         allowFutureIdp: false,
         csrfToken,
         idpList,
       });
+
       // then
       expect(appendSpy).toHaveBeenNthCalledWith(1, 'idpList', 'uidMock2');
       expect(appendSpy).toHaveBeenNthCalledWith(2, 'idpList', 'uidMock4');
@@ -44,19 +47,20 @@ describe('UserPreferencesService', () => {
     it('should call URLSearchParams.append 1 times with allowFutureIdp param', () => {
       // given
       const appendSpy = jest.spyOn(URLSearchParams.prototype, 'append');
+
       // when
       UserPreferencesService.encodeFormData({
         allowFutureIdp: false,
         csrfToken,
         idpList: {},
       });
+
       // then
       expect(appendSpy).toHaveBeenNthCalledWith(1, 'allowFutureIdp', 'false');
     });
   });
 
   describe('parseFormData', () => {
-    // given
     const userPreferences = {
       allowFutureIdp: true,
       idpList: [
@@ -101,6 +105,7 @@ describe('UserPreferencesService', () => {
         ...userPreferences,
         allowFutureIdp: true,
       });
+
       // then
       expect(result).toStrictEqual(expect.objectContaining({ allowFutureIdp: true }));
     });
@@ -111,6 +116,7 @@ describe('UserPreferencesService', () => {
         ...userPreferences,
         allowFutureIdp: false,
       });
+
       // then
       expect(result).toStrictEqual(expect.objectContaining({ allowFutureIdp: false }));
     });
@@ -118,6 +124,7 @@ describe('UserPreferencesService', () => {
     it('should return a parsed list of services', () => {
       // when
       const result = UserPreferencesService.parseFormData(userPreferences);
+
       // then
       expect(result).toStrictEqual(
         expect.objectContaining({

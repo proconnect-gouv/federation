@@ -54,6 +54,7 @@ describe('ConnexionComponent', () => {
         options={options}
       />,
     );
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -68,10 +69,12 @@ describe('ConnexionComponent', () => {
         options={options}
       />,
     );
+
     // when
     const element = getByText(
       'Vous avez autorisé la transmission de données personnelles à ce service le :',
     );
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -86,8 +89,10 @@ describe('ConnexionComponent', () => {
         options={options}
       />,
     );
+
     // when
     const element = getByText('Des données ont été transmises à ce service le :');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -102,10 +107,12 @@ describe('ConnexionComponent', () => {
         options={options}
       />,
     );
+
     // when
     const element = getByText(
       /^Vous avez autorisé le service à récupérer les données suivantes depuis .+/,
     );
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -120,8 +127,10 @@ describe('ConnexionComponent', () => {
         options={options}
       />,
     );
+
     // when
     const element = getByText(/^Le service a récupéré les données suivantes depuis .+/);
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -136,8 +145,10 @@ describe('ConnexionComponent', () => {
         options={options}
       />,
     );
+
     // when
     const elements = container.getElementsByTagName('li');
+
     // then
     expect(elements).toHaveLength(2);
   });

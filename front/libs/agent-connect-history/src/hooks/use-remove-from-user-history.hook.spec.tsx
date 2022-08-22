@@ -16,12 +16,14 @@ describe('useRemoveFromUserHistory', () => {
   it('should have returned a function', () => {
     // given
     const idpIdMock = 'idp-2';
+
     // when
     const { result } = renderWithContext(
       () => useRemoveFromUserHistory(idpIdMock),
       AgentConnectHistoryContext,
       contextValuesMock,
     );
+
     // then
     expect(result.current).toBeInstanceOf(Function);
   });
@@ -29,6 +31,7 @@ describe('useRemoveFromUserHistory', () => {
   it('should have called context setUserHistory', () => {
     // given
     const idpIdMock = 'idp-2';
+
     // when
     const { result } = renderWithContext(
       () => useRemoveFromUserHistory(idpIdMock),
@@ -36,6 +39,7 @@ describe('useRemoveFromUserHistory', () => {
       contextValuesMock,
     );
     result.current();
+
     // then
     expect(setUserHistoryMock).toHaveBeenCalledTimes(1);
     expect(setUserHistoryMock).toHaveBeenNthCalledWith(1, ['idp-1', 'idp-3']);
@@ -44,6 +48,7 @@ describe('useRemoveFromUserHistory', () => {
   it('should have called context setUserHistory 4 times but return the same value', () => {
     // given
     const idpIdMock = 'idp-2';
+
     // when
     const { result } = renderWithContext(
       () => useRemoveFromUserHistory(idpIdMock),
@@ -54,6 +59,7 @@ describe('useRemoveFromUserHistory', () => {
     result.current();
     result.current();
     result.current();
+
     // then
     expect(setUserHistoryMock).toHaveBeenCalledTimes(4);
     expect(setUserHistoryMock).toHaveBeenNthCalledWith(1, ['idp-1', 'idp-3']);

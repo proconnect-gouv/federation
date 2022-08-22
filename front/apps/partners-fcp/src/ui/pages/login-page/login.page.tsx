@@ -1,12 +1,12 @@
 /* istanbul ignore file */
 
 // @TODO should be reimplemented while login feature
-import axios from 'axios';
 import React, { useCallback, useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { AccountContext, AccountInterface } from '@fc/account';
 import { SimpleButton } from '@fc/dsfr';
+import * as HttpClientService from '@fc/http-client';
 
 interface LoginCredentialsInterface {
   email: string;
@@ -16,13 +16,6 @@ interface LoginCredentialsInterface {
 interface DataInterface {
   data: LoginCredentialsInterface;
 }
-
-const encodeFormData = ({ email, password }: LoginCredentialsInterface) => {
-  const formData = new URLSearchParams();
-  formData.append('email', email.toString());
-  formData.append('password', password.toString());
-  return formData;
-};
 
 export const LoginPage = React.memo(() => {
   const [email, setEmail] = useState<string>('');
@@ -38,18 +31,19 @@ export const LoginPage = React.memo(() => {
     [updateAccount, history],
   );
 
-  const onApiError = useCallback(() => {
+  const onApiError = useCallback((err: Error) => {
     // eslint-disable-next-line no-console
-    console.log('error');
+    console.log('LoginPage.onApiError', err);
   }, []);
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data: LoginCredentialsInterface = { email, password };
-    const dataEncoded = encodeFormData(data);
-
-    axios.post('/api/login', dataEncoded).then(onApiSuccess).catch(onApiError);
-  };
+  const onSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      const credentials = { email, password };
+      HttpClientService.post('/api/login', credentials).then(onApiSuccess).catch(onApiError);
+    },
+    [email, password, onApiError, onApiSuccess],
+  );
 
   const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) =>
     setEmail(event.target.value);
@@ -58,7 +52,7 @@ export const LoginPage = React.memo(() => {
     setPassword(event.target.value);
 
   return (
-    <div className="content-wrapper-lg text-center fr-mt-8w" id="page-container">
+    <div className="fr-container text-center fr-mt-8w">
       <form onSubmit={onSubmit}>
         <div className="input-group">
           <label htmlFor="email">Email</label>

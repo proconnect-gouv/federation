@@ -18,6 +18,7 @@ describe('ErrorComponent', () => {
   it('should have call useMediaQuery with params', () => {
     // when
     render(<ErrorComponent errors={errorMock} />);
+
     // then
     expect(useMediaQuery).toHaveBeenCalledTimes(1);
     expect(useMediaQuery).toHaveBeenCalledWith({ query: '(min-width: 768px)' });
@@ -26,8 +27,10 @@ describe('ErrorComponent', () => {
   it('should match the snapshot for a desktop viewport', () => {
     // given
     mocked(useMediaQuery).mockReturnValueOnce(true);
+
     // when
     const { container } = render(<ErrorComponent errors={errorMock} />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -37,6 +40,7 @@ describe('ErrorComponent', () => {
     mocked(useMediaQuery).mockReturnValueOnce(false);
     // when
     const { container } = render(<ErrorComponent errors={errorMock} />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -45,6 +49,7 @@ describe('ErrorComponent', () => {
     // when
     const { getByText } = render(<ErrorComponent errors={errorMock} />);
     const element = getByText('any-error-message');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -53,6 +58,7 @@ describe('ErrorComponent', () => {
     // when
     const { getByText } = render(<ErrorComponent errors={errorMock} />);
     const element = getByText('any-error-code');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -61,6 +67,7 @@ describe('ErrorComponent', () => {
     // when
     const { getByText } = render(<ErrorComponent errors={errorMock} />);
     const element = getByText('any-error-id');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -69,6 +76,7 @@ describe('ErrorComponent', () => {
     // when
     const { getByText } = render(<ErrorComponent errors={errorMock} />);
     const element = getByText('Une erreur est survenue lors de la connexion.');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -77,6 +85,7 @@ describe('ErrorComponent', () => {
     // when
     const { getByText } = render(<ErrorComponent errors={errorMock} />);
     const element = getByText('Description de l’erreur :');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -85,6 +94,7 @@ describe('ErrorComponent', () => {
     // when
     const { getByText } = render(<ErrorComponent errors={errorMock} />);
     const element = getByText('Que faire ?');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -95,6 +105,7 @@ describe('ErrorComponent', () => {
     const element = getByText(
       'Fermez l’onglet de votre navigateur et reconnectez-vous en cliquant sur le bouton AgentConnect.',
     );
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -103,6 +114,7 @@ describe('ErrorComponent', () => {
     // when
     const { getByText } = render(<ErrorComponent errors={errorMock} />);
     const element = getByText('Contactez le support de votre service si le problème persiste.');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -113,6 +125,7 @@ describe('ErrorComponent', () => {
     const element = getByText(
       'Informations à nous transmettre dans le mail pour faciliter la prise en charge de votre demande :',
     );
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -121,6 +134,7 @@ describe('ErrorComponent', () => {
     // when
     const { getByText } = render(<ErrorComponent errors={errorMock} />);
     const element = getByText('Code d’erreur :');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -129,6 +143,7 @@ describe('ErrorComponent', () => {
     // when
     const { getByText } = render(<ErrorComponent errors={errorMock} />);
     const element = getByText('ID :');
+
     // then
     expect(element).toBeInTheDocument();
   });

@@ -13,6 +13,7 @@ describe('ErrorPage', () => {
   it('should match the snapshot', () => {
     // when
     const { container } = render(<ErrorPage />);
+
     // expect
     expect(container).toMatchSnapshot();
   });

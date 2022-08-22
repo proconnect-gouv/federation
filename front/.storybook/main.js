@@ -30,17 +30,9 @@ module.exports = {
     };
 
     config.module.rules.push({
-      test: /\.module\.(scss|sass)$/,
-      use: [
-        require.resolve('style-loader'),
-        {
-          loader: require.resolve('css-loader'),
-          options: {
-            importLoaders: 2,
-          },
-        },
-        require.resolve('sass-loader'),
-      ],
+      test: /(\.module)?\.(scss|sass)$/,
+      use: ['style-loader', 'css-loader?modules&importLoaders', 'sass-loader'],
+      include: path.resolve(__dirname, '../'),
     });
 
     return config;

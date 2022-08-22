@@ -12,8 +12,10 @@ describe('NotFoundComponent', () => {
   it('should match the snapshot, in a desktop viewport', () => {
     // given
     mocked(useMediaQuery).mockReturnValueOnce(true);
+
     // when
     const { container } = render(<NotFoundComponent />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -21,8 +23,10 @@ describe('NotFoundComponent', () => {
   it('should match the snapshot, in a mobile viewport', () => {
     // given
     mocked(useMediaQuery).mockReturnValueOnce(false);
+
     // when
     const { container } = render(<NotFoundComponent />);
+
     // then
     expect(container).toMatchSnapshot();
   });

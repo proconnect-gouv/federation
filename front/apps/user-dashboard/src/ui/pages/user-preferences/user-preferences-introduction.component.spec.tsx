@@ -14,8 +14,10 @@ describe('UserPreferencesIntroductionComponent', () => {
   it('should match snapshot on mobile', () => {
     // Given
     mocked(useMediaQuery).mockReturnValueOnce(false).mockReturnValueOnce(false);
+
     // When
     const { container } = render(<UserPreferencesIntroductionComponent />);
+
     // Then
     expect(container).toMatchSnapshot();
   });
@@ -23,8 +25,10 @@ describe('UserPreferencesIntroductionComponent', () => {
   it('should match snapshot on tablet', () => {
     // Given
     mocked(useMediaQuery).mockReturnValueOnce(true).mockReturnValueOnce(false);
+
     // When
     const { container } = render(<UserPreferencesIntroductionComponent />);
+
     // Then
     expect(container).toMatchSnapshot();
   });
@@ -32,8 +36,10 @@ describe('UserPreferencesIntroductionComponent', () => {
   it('should match snapshot on desktop', () => {
     // Given
     mocked(useMediaQuery).mockReturnValueOnce(true).mockReturnValueOnce(true);
+
     // When
     const { container } = render(<UserPreferencesIntroductionComponent />);
+
     // Then
     expect(container).toMatchSnapshot();
   });

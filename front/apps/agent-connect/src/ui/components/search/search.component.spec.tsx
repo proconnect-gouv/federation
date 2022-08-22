@@ -17,6 +17,7 @@ describe('SearchComponent', () => {
   it('should have call useMediaQuery with tablet responsive query', () => {
     // when
     render(<SearchComponent />);
+
     // then
     expect(useMediaQuery).toHaveBeenCalledTimes(1);
     expect(useMediaQuery).toHaveBeenCalledWith({ query: '(min-width: 768px)' });
@@ -25,6 +26,7 @@ describe('SearchComponent', () => {
   it('should match the snapshot for a desktop viewport', () => {
     // when
     const { container } = render(<SearchComponent />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -34,6 +36,7 @@ describe('SearchComponent', () => {
     mocked(useMediaQuery).mockReturnValueOnce(false);
     // when
     const { container } = render(<SearchComponent />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -41,6 +44,7 @@ describe('SearchComponent', () => {
   it('should have render SearchFormComponent mock', () => {
     // when
     render(<SearchComponent />);
+
     // then
     expect(SearchFormComponent).toHaveBeenCalledTimes(1);
   });
@@ -48,6 +52,7 @@ describe('SearchComponent', () => {
   it('should have render SearchResultsComponent mock', () => {
     // when
     render(<SearchComponent />);
+
     // then
     expect(SearchResultsComponent).toHaveBeenCalledTimes(1);
   });

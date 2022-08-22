@@ -35,6 +35,7 @@ describe('ConnectionComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -51,8 +52,10 @@ describe('ConnectionComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // when
     const elements = container.getElementsByTagName('li');
+
     // then
     expect(elements).toHaveLength(4);
   });
@@ -69,8 +72,10 @@ describe('ConnectionComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // when
     const elements = container.getElementsByTagName('li');
+
     // then
     expect(elements).toHaveLength(3);
     expect(queryByText('Localisation :')).not.toBeInTheDocument();
@@ -89,11 +94,13 @@ describe('ConnectionComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // when
     const labelElement = getByText('Une connexion à ce service a eu lieu le :');
     const valueElement = getByText('01/10/2021 à 06:32 (heure de Paris)');
     const lastElement = labelElement.parentNode?.lastElementChild;
     const firstElement = labelElement.parentNode?.firstElementChild;
+
     // then
     expect(labelElement).toBeInTheDocument();
     expect(valueElement).toBeInTheDocument();
@@ -113,11 +120,13 @@ describe('ConnectionComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // when
     const labelElement = getByText('Localisation :');
     const valueElement = getByText('cityMock (countryMock)');
     const lastElement = labelElement.parentNode?.lastElementChild;
     const firstElement = labelElement.parentNode?.firstElementChild;
+
     // then
     expect(labelElement).toBeInTheDocument();
     expect(valueElement).toBeInTheDocument();
@@ -137,11 +146,13 @@ describe('ConnectionComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // when
     const labelElement = getByText('Localisation :');
     const valueElement = getByText('cityMock');
     const lastElement = labelElement.parentNode?.lastElementChild;
     const firstElement = labelElement.parentNode?.firstElementChild;
+
     // then
     expect(labelElement).toBeInTheDocument();
     expect(valueElement).toBeInTheDocument();
@@ -161,11 +172,13 @@ describe('ConnectionComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // when
     const labelElement = getByText('Localisation :');
     const valueElement = getByText('(countryMock)');
     const lastElement = labelElement.parentNode?.lastElementChild;
     const firstElement = labelElement.parentNode?.firstElementChild;
+
     // then
     expect(labelElement).toBeInTheDocument();
     expect(valueElement).toBeInTheDocument();
@@ -185,11 +198,13 @@ describe('ConnectionComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // when
     const labelElement = getByText('Via le compte :');
     const valueElement = getByText('idpLabelValue');
     const lastElement = labelElement.parentNode?.lastElementChild;
     const firstElement = labelElement.parentNode?.firstElementChild;
+
     // then
     expect(labelElement).toBeInTheDocument();
     expect(valueElement).toBeInTheDocument();
@@ -209,10 +224,12 @@ describe('ConnectionComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // when
     const labelElement = getByText('Niveau de garantie eIDAS :');
     const valueElement = getByText('Faible');
     const firstElement = labelElement.parentNode?.firstElementChild;
+
     // then
     expect(labelElement).toBeInTheDocument();
     expect(valueElement).toBeInTheDocument();

@@ -13,6 +13,7 @@ describe('TrackCardBadgeComponent', () => {
     const { container } = render(
       <TrackCardBadgeComponent fromFcPlus={false} type={CinematicEvents.FC_VERIFIED} />,
     );
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -22,8 +23,10 @@ describe('TrackCardBadgeComponent', () => {
     const { getByText } = render(
       <TrackCardBadgeComponent fromFcPlus={false} type={CinematicEvents.FC_VERIFIED} />,
     );
+
     // when
     const element = getByText('FranceConnect');
+
     // then
     expect(element).toBeInTheDocument();
     expect(element).toHaveClass('badgeFranceConnect');
@@ -35,8 +38,10 @@ describe('TrackCardBadgeComponent', () => {
     const { getByText } = render(
       <TrackCardBadgeComponent fromFcPlus type={CinematicEvents.FC_VERIFIED} />,
     );
+
     // when
     const element = getByText('FranceConnect+');
+
     // then
     expect(element).toBeInTheDocument();
     expect(element).toHaveClass('badgeFranceConnectPlus');
@@ -48,8 +53,10 @@ describe('TrackCardBadgeComponent', () => {
     const { getByText } = render(
       <TrackCardBadgeComponent fromFcPlus type={CinematicEvents.FC_VERIFIED} />,
     );
+
     // when
     const element = getByText('Connexion');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -62,8 +69,10 @@ describe('TrackCardBadgeComponent', () => {
         type={CinematicEvents.FC_DATATRANSFER_CONSENT_IDENTITY}
       />,
     );
+
     // when
     const element = getByText('Autorisation');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -73,8 +82,10 @@ describe('TrackCardBadgeComponent', () => {
     const { getByText } = render(
       <TrackCardBadgeComponent fromFcPlus type={CinematicEvents.FC_DATATRANSFER_CONSENT_DATA} />,
     );
+
     // when
     const element = getByText('Autorisation');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -84,15 +95,18 @@ describe('TrackCardBadgeComponent', () => {
     const { getByText } = render(
       <TrackCardBadgeComponent fromFcPlus type={CinematicEvents.DP_REQUESTED_FC_CHECKTOKEN} />,
     );
+
     // when
     const element = getByText('Échange de Données');
+
     // then
     expect(element).toBeInTheDocument();
   });
 
   it('should not render any type badge', () => {
-    // given
+    // when
     const { getByTestId } = render(<TrackCardBadgeComponent fromFcPlus type={undefined} />);
+
     // then
     expect(() => getByTestId('badge')).toThrow();
   });

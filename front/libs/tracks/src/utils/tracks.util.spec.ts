@@ -84,6 +84,7 @@ describe('groupTracksByMonth', () => {
   it('doit retourner une track dans un seul groupe', () => {
     // when
     const results = groupTracksByMonth(configMock)([], track1, 0);
+
     // then
     expect(results).toHaveLength(1);
     expect(results[0][1].tracks).toHaveLength(1);
@@ -94,8 +95,10 @@ describe('groupTracksByMonth', () => {
   it('doit retourner deux tracks dans un seul groupe', () => {
     // given
     const tracks = [track1, track2];
+
     // when
     const results = tracks.reduce(groupTracksByMonth(configMock), []);
+
     // then
     expect(results).toHaveLength(1);
     expect(results[0][1].tracks).toHaveLength(2);
@@ -107,8 +110,10 @@ describe('groupTracksByMonth', () => {
   it('doit retourner trois tracks dans deux groupes (2|1)', () => {
     // given
     const tracks = [track1, track2, track3];
+
     // when
     const results = tracks.reduce(groupTracksByMonth(configMock), []);
+
     // then
     expect(results).toHaveLength(2);
     // first group
@@ -127,8 +132,10 @@ describe('orderGroupByKeyAsc', () => {
   it('doit retourner un tableau ordonner par la clé unique (timestamp)', () => {
     // given
     const sortable = [[456, {}] as TrackList, [789, {}] as TrackList, [123, {}] as TrackList];
+
     // when
     const result = sortable.sort(orderGroupByKeyAsc);
+
     // then
     expect(result).toStrictEqual([
       [789, {}],
@@ -149,8 +156,10 @@ describe('orderTracksByDateDesc', () => {
       // 2011-09-01T14:48:00.000Z
       { time: 1314888480000 } as EnhancedTrack,
     ];
+
     // when
     const result = sortable.sort(orderTracksByDateDesc);
+
     // then
     expect(result).toStrictEqual([
       { time: 1317912480000 },
@@ -164,6 +173,7 @@ describe('transformTrackToEnhanced', () => {
   it('doit retourner un objet avec une propriéte datetime de type luxon', () => {
     // when
     const result = transformTrackToEnhanced(track1);
+
     // then
     expect(result).toStrictEqual({
       ...track1,
@@ -184,8 +194,10 @@ describe('groupByDataProviderReducer', () => {
         label: 'Provider Label',
       },
     };
+
     // When
     const result = groupByDataProviderReducer(accMock, claimMock);
+
     // Then
     expect(result).toEqual({
       providerKey: {
@@ -201,8 +213,10 @@ describe('groupByDataProvider', () => {
     // Given
     const claimsMock = [] as IRichClaim[];
     claimsMock.reduce = jest.fn();
+
     // When
     groupByDataProvider(claimsMock);
+
     // Then
     expect(claimsMock.reduce).toHaveBeenCalledTimes(1);
     expect(claimsMock.reduce).toHaveBeenCalledWith(groupByDataProviderReducer, expect.any(Object));
@@ -213,8 +227,10 @@ describe('groupByDataProvider', () => {
     const claimsMock = [] as IRichClaim[];
     const claimsReduceMockedReturn = Symbol('claimsReduceMockedReturnValue');
     claimsMock.reduce = jest.fn().mockReturnValue(claimsReduceMockedReturn);
+
     // When
     const result = groupByDataProvider(claimsMock);
+
     // Then
     expect(result).toBe(claimsReduceMockedReturn);
   });

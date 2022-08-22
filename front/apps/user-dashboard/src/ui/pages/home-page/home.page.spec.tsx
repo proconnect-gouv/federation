@@ -35,6 +35,7 @@ describe('HomePage', () => {
   it('should match the snapshot, when csrf token is defined', () => {
     // given
     useApiGetMock.mockReturnValueOnce({ csrfToken: 'any-string' });
+
     // when
     const { container } = render(
       <AxiosErrorCatcherContext.Provider value={axiosErrorCatcherMock}>
@@ -80,6 +81,7 @@ describe('HomePage', () => {
     );
     // when
     const element = getByRole('heading');
+
     // then
     expect(element).toBeInTheDocument();
     expect(element).toHaveTextContent(
@@ -112,6 +114,7 @@ describe('HomePage', () => {
   it('should have called RedirectToIdpFormComponent when csrf is truthy', () => {
     // given
     useApiGetMock.mockReturnValueOnce({ csrfToken: 'any-string' });
+
     // when
     render(
       <AxiosErrorCatcherContext.Provider value={axiosErrorCatcherMock}>
@@ -125,6 +128,7 @@ describe('HomePage', () => {
   it('should have called FranceConnectButton when csrf is truthy', () => {
     // given
     useApiGetMock.mockReturnValueOnce({ csrfToken: 'any-string' });
+
     // when
     render(
       <AxiosErrorCatcherContext.Provider value={axiosErrorCatcherMock}>
@@ -144,6 +148,7 @@ describe('HomePage', () => {
     );
     // when
     const element = getByTestId('paragraph');
+
     // then
     expect(element).toBeInTheDocument();
     expect(element).toHaveTextContent(

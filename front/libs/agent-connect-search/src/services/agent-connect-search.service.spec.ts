@@ -171,8 +171,10 @@ describe('SearchService', () => {
     it('should call storeRawData', () => {
       // Given
       const spy = jest.spyOn(AgentConnectSearchService, 'storeRawData');
+
       // When
       AgentConnectSearchService.initialize(ministriesMock, identityProvidersMock);
+
       // Then
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(ministriesMock, identityProvidersMock);
@@ -184,8 +186,10 @@ describe('SearchService', () => {
       jest
         .spyOn(AgentConnectSearchService, 'storeRawData')
         .mockReturnValueOnce(storeRawDataReturnMock);
+
       // When
       AgentConnectSearchService.initialize(ministriesMock, identityProvidersMock);
+
       // Then
       expect(AgentConnectSearchService.RAW_DATA).toBe(storeRawDataReturnMock);
     });
@@ -193,8 +197,10 @@ describe('SearchService', () => {
     it('should call prepareSearchDataBase', () => {
       // Given
       const spy = jest.spyOn(AgentConnectSearchService, 'prepareSearchDataBase');
+
       // When
       AgentConnectSearchService.initialize(ministriesMock, identityProvidersMock);
+
       // Then
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(ministriesMock, identityProvidersMock);
@@ -207,14 +213,15 @@ describe('SearchService', () => {
       jest
         .spyOn(AgentConnectSearchService, 'prepareSearchDataBase')
         .mockReturnValueOnce(prepareSearchDataBaseReturnMock);
+
       // When
       AgentConnectSearchService.initialize(ministriesMock, identityProvidersMock);
+
       // Then
       expect(AgentConnectSearchService.SEARCHABLES).toBe(prepareSearchDataBaseReturnMock);
     });
 
     it('should instantiate Fuse', () => {
-      // Given
       // When
       AgentConnectSearchService.initialize(ministriesMock, identityProvidersMock);
 
@@ -234,6 +241,7 @@ describe('SearchService', () => {
         ministriesMock,
         identityProvidersMock,
       );
+
       // Then
       expect(result).toStrictEqual(baseExpected);
     });
@@ -244,12 +252,14 @@ describe('SearchService', () => {
       // Given
       const accumulatorMock: Searchable[] = [];
       const ministryMock = ministriesMock[0];
+
       // When
       const result = AgentConnectSearchService.searchableReducer(
         accumulatorMock,
         ministryMock,
         identityProvidersMock,
       );
+
       // Then
       expect(result).toBeInstanceOf(Array);
       expect(result).toHaveLength(ministryMock.identityProviders.length);
@@ -259,12 +269,14 @@ describe('SearchService', () => {
       // Given
       const accumulatorMock: Searchable[] = [];
       const ministryMock = ministriesMock[2];
+
       // When
       const result = AgentConnectSearchService.searchableReducer(
         accumulatorMock,
         ministryMock,
         identityProvidersMock,
       );
+
       // Then
       expect(result).toBeInstanceOf(Array);
       expect(result).toHaveLength(1);
@@ -275,12 +287,14 @@ describe('SearchService', () => {
       // Given
       const accumulatorMock: Searchable[] = [];
       const ministryMock = ministriesMock[0];
+
       // When
       const result = AgentConnectSearchService.searchableReducer(
         accumulatorMock,
         ministryMock,
         identityProvidersMock,
       );
+
       // Then
       expect(result[0]).toStrictEqual(baseExpected[0]);
       expect(result[1]).toStrictEqual(baseExpected[1]);
@@ -291,6 +305,7 @@ describe('SearchService', () => {
     it('should return hashmap of ministries and identity providers', () => {
       // When
       const result = AgentConnectSearchService.storeRawData(ministriesMock, identityProvidersMock);
+
       // Then
       expect(result).toStrictEqual(payloadEntitiesMock);
     });
@@ -317,11 +332,13 @@ describe('SearchService', () => {
           refIndex: 3,
         },
       ];
+
       // When
       const result = AgentConnectSearchService.formatSearchResults(
         rawResultsMock,
         payloadEntitiesMock,
       );
+
       // Then
       expect(result).toStrictEqual(baseSearchResults);
     });
@@ -337,6 +354,7 @@ describe('SearchService', () => {
 
       // When
       AgentConnectSearchService.search(termMock);
+
       // Then
       expect(AgentConnectSearchService.FUSE_INSTANCE.search).toHaveBeenCalledTimes(1);
       expect(AgentConnectSearchService.FUSE_INSTANCE.search).toHaveBeenCalledWith(termMock);
@@ -354,6 +372,7 @@ describe('SearchService', () => {
 
       // When
       AgentConnectSearchService.search(termMock);
+
       // Then
       expect(spy).toHaveBeenCalledTimes(1);
       expect(spy).toHaveBeenCalledWith(searchResultMock, AgentConnectSearchService.RAW_DATA);
@@ -374,6 +393,7 @@ describe('SearchService', () => {
 
       // When
       const result = AgentConnectSearchService.search(termMock);
+
       // Then
       expect(result).toBe(formattedResultMock);
     });

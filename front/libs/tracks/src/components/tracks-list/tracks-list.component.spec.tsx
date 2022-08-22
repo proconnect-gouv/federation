@@ -78,6 +78,7 @@ describe('TracksListComponent', () => {
   it('should match snapshot', () => {
     // when
     const { container } = render(<TracksListComponent options={options} />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -109,15 +110,18 @@ describe('TracksListComponent', () => {
         type: 'application',
       },
     });
+
     // when
     const { container } = render(<TracksListComponent options={options} />);
+
     // then
     expect(container).toMatchSnapshot();
   });
 
   it('should have called usePaginatedTracks hook', () => {
-    // given
+    // when
     render(<TracksListComponent options={options} />);
+
     // then
     expect(usePaginatedTracksMock).toHaveBeenCalled();
   });
@@ -143,16 +147,19 @@ describe('TracksListComponent', () => {
       submitErrors: undefined,
       tracks: tracksWithNullishEntries,
     });
+
     // When
     render(<TracksListComponent options={options} />);
+
     // Then
     expect(transformTrackToEnhanced).toHaveBeenNthCalledWith(1, nonNullish1, 0, filteredPayload);
     expect(transformTrackToEnhanced).toHaveBeenNthCalledWith(2, nonNullish2, 1, filteredPayload);
   });
 
   it('should have called transformTrackToEnhanced', () => {
-    // given
+    // when
     render(<TracksListComponent options={options} />);
+
     // then
     expect(transformTrackToEnhanced).toHaveBeenCalled();
     expect(transformTrackToEnhanced).toHaveBeenNthCalledWith(1, payloadMock[0], 0, payloadMock);
@@ -160,15 +167,17 @@ describe('TracksListComponent', () => {
   });
 
   it('should have called orderGroupByKeyAsc', () => {
-    // given
+    // when
     render(<TracksListComponent options={options} />);
+
     // then
     expect(orderGroupByKeyAsc).toHaveBeenCalled();
   });
 
   it('should have called TracksGroupComponent', () => {
-    // given
+    // when
     render(<TracksListComponent options={options} />);
+
     // then
     expect(TracksGroupComponent).toHaveBeenCalled();
     expect(TracksGroupComponent).toHaveBeenNthCalledWith(
@@ -197,8 +206,10 @@ describe('TracksListComponent', () => {
       submitErrors: undefined,
       tracks: { ...tracksMock, payload: undefined },
     });
+
     // when
     render(<TracksListComponent options={options} />);
+
     // then
     expect(transformTrackToEnhanced).not.toHaveBeenCalled();
     expect(orderGroupByKeyAsc).not.toHaveBeenCalled();
@@ -220,6 +231,7 @@ describe('TracksListComponent', () => {
     renderWithRouter(<TracksListComponent options={options} />);
 
     const callback = useCallbackMock.mock.calls[0][0];
+
     // when
     act(() => {
       callback(indexMock);

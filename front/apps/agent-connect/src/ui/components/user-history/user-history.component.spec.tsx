@@ -18,7 +18,7 @@ describe('UserHistoryComponent', () => {
     // when
     const { getByTestId } = render(<UserHistoryComponent />);
     const element = getByTestId('title');
-    // expect
+    // then
     expect(element).toBeInTheDocument();
     expect(element.innerHTML).toStrictEqual('J’utilise à nouveau');
   });
@@ -26,8 +26,11 @@ describe('UserHistoryComponent', () => {
   it('should not render the title of the section', () => {
     // given
     mocked(useUserHistory).mockReturnValueOnce([]);
+
     // when
     const { getByTestId } = render(<UserHistoryComponent />);
+
+    // then
     expect(() => {
       getByTestId('title');
     }).toThrow();
@@ -36,29 +39,34 @@ describe('UserHistoryComponent', () => {
   it('should have called useUserHistory hook', () => {
     // when
     render(<UserHistoryComponent />);
-    // expect
+
+    // then
     expect(useUserHistory).toHaveBeenCalled();
   });
 
   it('should render a list of history card (4)', () => {
     // given
     mocked(UserHistoryCardComponent).mockClear();
+
     // when
     render(<UserHistoryComponent />);
-    // expect
+
+    // then
     expect(UserHistoryCardComponent).toHaveBeenCalledTimes(4);
   });
 
   it('should have called useMediaQuery hook', () => {
     // when
     render(<UserHistoryComponent />);
-    // expect
+
+    // then
     expect(useMediaQuery).toHaveBeenCalledWith({ query: '(min-width: 768px)' });
   });
 
   it('should match the snapshot for a desktop viewport', () => {
     // when
     const { container } = render(<UserHistoryComponent />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -66,8 +74,10 @@ describe('UserHistoryComponent', () => {
   it('should match the snapshot for a tablet viewport', () => {
     // given
     mocked(useMediaQuery).mockReturnValueOnce(false);
+
     // when
     const { container } = render(<UserHistoryComponent />);
+
     // then
     expect(container).toMatchSnapshot();
   });

@@ -22,6 +22,7 @@ describe('SearchFormComponent', () => {
   it('should have called useMediaQuery', () => {
     // when
     render(<SearchFormComponent />);
+
     // then
     expect(useMediaQuery).toHaveBeenCalledTimes(1);
     expect(useMediaQuery).toHaveBeenNthCalledWith(1, { query: '(min-width: 768px)' });
@@ -30,8 +31,10 @@ describe('SearchFormComponent', () => {
   it('should match the snapshot for a desktop viewport', () => {
     // given
     mocked(useMediaQuery).mockReturnValueOnce(true);
+
     // when
     const { container } = render(<SearchFormComponent />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -39,8 +42,10 @@ describe('SearchFormComponent', () => {
   it('should match the snapshot for a tablet viewport', () => {
     // given
     mocked(useMediaQuery).mockReturnValueOnce(false);
+
     // when
     const { container } = render(<SearchFormComponent />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -49,6 +54,7 @@ describe('SearchFormComponent', () => {
     // when
     const { getByText } = render(<SearchFormComponent />);
     const element = getByText('Je recherche mon administration');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -61,8 +67,10 @@ describe('SearchFormComponent', () => {
     mocked(useOnSearch).mockReturnValueOnce(
       onSearchMock as unknown as DebouncedFunc<(value: string) => void>,
     );
+
     // when
     render(<SearchFormComponent formData={formDataMock} />);
+
     // then
     expect(Form).toHaveBeenCalledTimes(1);
     expect(Form).toHaveBeenCalledWith(
@@ -78,6 +86,7 @@ describe('SearchFormComponent', () => {
     // when
     const { getByTestId } = render(<SearchFormComponent />);
     const element = getByTestId('search-form');
+
     // then
     expect(element).toBeInTheDocument();
   });
@@ -86,6 +95,7 @@ describe('SearchFormComponent', () => {
     // when
     const { getByTestId } = render(<SearchFormComponent />);
     const element = getByTestId('input-label');
+
     // then
     expect(element).toBeInTheDocument();
     expect(element).toHaveAttribute('for', 'fi-search-term');
@@ -97,6 +107,7 @@ describe('SearchFormComponent', () => {
   it('should call react-final-form Field with params', () => {
     // when
     render(<SearchFormComponent />);
+
     // then
     expect(Field).toHaveBeenCalledTimes(1);
     expect(Field).toHaveBeenCalledWith(
@@ -108,6 +119,7 @@ describe('SearchFormComponent', () => {
   it('should call SearchBarComponent', () => {
     // when
     render(<SearchFormComponent />);
+
     // then
     expect(SearchBarComponent).toHaveBeenCalledTimes(1);
     expect(SearchBarComponent).toHaveBeenCalledWith(
@@ -127,8 +139,10 @@ describe('SearchFormComponent', () => {
     mocked(useOnSearch).mockReturnValueOnce(
       onSearchMock as unknown as DebouncedFunc<(value: string) => void>,
     );
+
     // when
     render(<SearchFormComponent />);
+
     // then
     expect(OnChange).toHaveBeenCalledTimes(1);
     expect(OnChange).toHaveBeenCalledWith({ children: onSearchMock, name: 'fi-search-term' }, {});

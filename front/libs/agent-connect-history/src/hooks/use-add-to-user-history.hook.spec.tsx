@@ -31,12 +31,14 @@ describe('addToUserHistory', () => {
   it('should have returned a function', () => {
     // given
     const idpIdMock = 'idp-4';
+
     // when
     const { result } = renderWithContext(
       () => useAddToUserHistory(idpIdMock),
       AgentConnectHistoryContext,
       contextValuesMock,
     );
+
     // then
     expect(result.current).toBeInstanceOf(Function);
   });
@@ -44,6 +46,7 @@ describe('addToUserHistory', () => {
   it('should have called context useLocalStorage.get', () => {
     // given
     const idpIdMock = 'idp-4';
+
     // when
     const { result } = renderWithContext(
       () => useAddToUserHistory(idpIdMock),
@@ -51,6 +54,7 @@ describe('addToUserHistory', () => {
       contextValuesMock,
     );
     result.current();
+
     // then
     expect(getMock).toHaveBeenCalledTimes(1);
     expect(getMock).toHaveBeenNthCalledWith(1, 'identityProviders');
@@ -59,6 +63,7 @@ describe('addToUserHistory', () => {
   it('should have called context useLocalStorage.set', () => {
     // given
     const idpIdMock = 'idp-4';
+
     // when
     const { result } = renderWithContext(
       () => useAddToUserHistory(idpIdMock),
@@ -66,6 +71,7 @@ describe('addToUserHistory', () => {
       contextValuesMock,
     );
     result.current();
+
     // then
     expect(setMock).toHaveBeenCalledTimes(1);
     expect(setMock).toHaveBeenNthCalledWith(1, { identityProviders: ['idp-4', 'idp-3', 'idp-2'] });
@@ -74,6 +80,7 @@ describe('addToUserHistory', () => {
   it('should have called context useLocalStorage.set 4 times with the same value', () => {
     // given
     const idpIdMock = 'idp-4';
+
     // when
     const { result } = renderWithContext(
       () => useAddToUserHistory(idpIdMock),
@@ -84,6 +91,7 @@ describe('addToUserHistory', () => {
     result.current();
     result.current();
     result.current();
+
     // then
     expect(setMock).toHaveBeenCalledTimes(4);
     expect(setMock).toHaveBeenNthCalledWith(1, { identityProviders: ['idp-4', 'idp-3', 'idp-2'] });
@@ -100,6 +108,7 @@ describe('addToUserHistory', () => {
       get: jest.fn(() => [idpIdMock, 'idp-3', 'idp-2']),
       set: setMock,
     });
+
     // when
     const { result } = renderWithContext(
       () => useAddToUserHistory(idpIdMock),
@@ -110,6 +119,7 @@ describe('addToUserHistory', () => {
     result.current();
     result.current();
     result.current();
+
     // then
     expect(setMock).toHaveBeenCalledTimes(0);
   });
@@ -122,6 +132,7 @@ describe('addToUserHistory', () => {
       get: jest.fn(() => undefined),
       set: setMock,
     });
+
     // when
     const { result } = renderWithContext(
       () => useAddToUserHistory(idpIdMock),
@@ -132,6 +143,7 @@ describe('addToUserHistory', () => {
     result.current();
     result.current();
     result.current();
+
     // then
     expect(setMock).toHaveBeenCalledTimes(4);
     expect(setMock).toHaveBeenNthCalledWith(1, { identityProviders: ['idp-4'] });

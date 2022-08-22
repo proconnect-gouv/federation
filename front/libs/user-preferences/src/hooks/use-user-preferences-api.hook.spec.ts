@@ -3,8 +3,9 @@ import axios, { AxiosResponse } from 'axios';
 import { mocked } from 'jest-mock';
 
 import { useApiGet } from '@fc/common';
+import { GetCsrfTokenResponse } from '@fc/http-client';
 
-import { FormValues, IGetCsrfTokenResponse } from '../interfaces';
+import { FormValues } from '../interfaces';
 import { UserPreferencesService } from '../services/user-preferences.service';
 import { useUserPreferencesApi, validateHandlerCallback } from './use-user-preferences-api.hook';
 
@@ -58,7 +59,7 @@ describe('useUserPreferencesApi', () => {
     data: {
       csrfToken,
     },
-  } as unknown as AxiosResponse<IGetCsrfTokenResponse>;
+  } as unknown as AxiosResponse<GetCsrfTokenResponse>;
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -73,8 +74,10 @@ describe('useUserPreferencesApi', () => {
     it('should return an object with default values at first render', () => {
       // given
       mocked(useApiGet).mockReturnValue(undefined);
+
       // when
       const { result } = renderHook(() => useUserPreferencesApi(options));
+
       // then
       expect(result.current).toStrictEqual({
         commit: expect.any(Function),
@@ -115,6 +118,7 @@ describe('useUserPreferencesApi', () => {
       });
       // when
       const { result } = renderHook(() => useUserPreferencesApi(options));
+
       // then
       expect(result.current).toStrictEqual({
         commit: expect.any(Function),
@@ -135,11 +139,13 @@ describe('useUserPreferencesApi', () => {
         allowFutureIdp: false,
         idpList,
       });
+
       // when
       const { result } = renderHook(() => useUserPreferencesApi(options));
       act(() => {
         result.current.commit({ allowFutureIdp: false, idpList });
       });
+
       // then
       await waitFor(() => {
         expect(UserPreferencesService.encodeFormData).toHaveBeenCalledTimes(1);
@@ -161,11 +167,13 @@ describe('useUserPreferencesApi', () => {
       dataMock.append('allowFutureIdp', 'true');
       dataMock.append('idpList', 'idplistmock');
       mocked(UserPreferencesService.encodeFormData).mockReturnValueOnce(dataMock);
+
       // when
       const { result } = renderHook(() => useUserPreferencesApi(options));
       act(() => {
         result.current.commit({ allowFutureIdp: false, idpList });
       });
+
       // then
       await waitFor(() => {
         expect(axios.post).toHaveBeenCalledTimes(1);
@@ -193,16 +201,18 @@ describe('useUserPreferencesApi', () => {
         (v) => v as unknown as FormValues,
       );
       mocked(axios.post).mockResolvedValueOnce({ data: dataValueMock });
+
       /**
        * @todo review tests format and delimiters
        * (multiple // when, expects in when)
        */
       // when
       const { result } = renderHook(() => useUserPreferencesApi(options));
-      // when
+
       act(() => {
         result.current.commit({ allowFutureIdp: false, idpList: expect.any(Object) });
       });
+
       // then
       await waitFor(() => {
         expect(axios.post).toHaveBeenCalledTimes(1);
@@ -235,12 +245,14 @@ describe('useUserPreferencesApi', () => {
       });
       const errorMock = new Error('any-error');
       mocked(axios.post).mockRejectedValueOnce(errorMock);
+
       // when
       const { result } = renderHook(() => useUserPreferencesApi(options));
-      // when
+
       act(() => {
         result.current.commit({ allowFutureIdp: false, idpList: expect.any(Object) });
       });
+
       // then
       await waitFor(() => {
         expect(result.current).toStrictEqual({
@@ -269,8 +281,10 @@ describe('useUserPreferencesApi', () => {
       const returnValueIfFormHasErrors = {
         idpList: 'error',
       };
+
       // when
       const result = validateHandlerCallback(idpListAllUnchecked);
+
       // then
       expect(result).toEqual(returnValueIfFormHasErrors);
     });
@@ -278,6 +292,7 @@ describe('useUserPreferencesApi', () => {
     it('should no errors if idpList has checked idps', () => {
       // when
       const result = validateHandlerCallback({ idpList: { ...idpList } });
+
       // then
       expect(result).toBeUndefined();
     });

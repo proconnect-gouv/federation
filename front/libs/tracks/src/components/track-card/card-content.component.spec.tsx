@@ -65,6 +65,7 @@ describe('TrackCardContentComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -85,6 +86,7 @@ describe('TrackCardContentComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -108,6 +110,7 @@ describe('TrackCardContentComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // Then
     expect(ConnectionComponent).toHaveBeenCalledTimes(1);
 
@@ -143,6 +146,7 @@ describe('TrackCardContentComponent', () => {
         spAcr="eidas1"
       />,
     );
+
     // Then
     expect(ClaimsComponent).toHaveBeenCalledTimes(1);
 

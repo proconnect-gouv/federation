@@ -13,12 +13,14 @@ describe('useUserHistory', () => {
   it('should have return default values', () => {
     // given
     const identityProviders: IdentityProvider[] = [];
+
     // when
     const { result } = renderWithContext(
       () => useUserHistory(identityProviders),
       AgentConnectHistoryContext,
       contextValuesMock,
     );
+
     // then
     expect(result.current).toHaveLength(0);
   });
@@ -26,6 +28,7 @@ describe('useUserHistory', () => {
   it('should have return only once with default values', () => {
     // given
     const identityProviders: IdentityProvider[] = [];
+
     // when
     const { rerender, result } = renderWithContext(
       () => useUserHistory(identityProviders),
@@ -36,6 +39,7 @@ describe('useUserHistory', () => {
     rerender();
     rerender();
     rerender();
+
     // then
     expect(result.current).toHaveLength(0);
   });
@@ -62,12 +66,14 @@ describe('useUserHistory', () => {
         uid: 'idp-uid-mock-3',
       },
     ];
+
     // when
     const { result } = renderWithContext(
       () => useUserHistory(identityProviders),
       AgentConnectHistoryContext,
       contextValuesMock,
     );
+
     // then
     expect(result.current).toHaveLength(2);
     expect(result.current).toStrictEqual([

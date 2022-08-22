@@ -20,6 +20,7 @@ describe('ServiceImageComponent', () => {
   it('should match the snapshot', () => {
     // when
     const { container } = render(<ServiceImageComponent service={serviceMock} />);
+
     // then
     expect(container).toMatchSnapshot();
   });
@@ -28,6 +29,7 @@ describe('ServiceImageComponent', () => {
     // when
     const { container, getByText } = render(<ServiceImageComponent service={serviceMock} />);
     const element = getByText('title-mock');
+
     // then
     expect(container).toMatchSnapshot();
     expect(element).toBeInTheDocument();
@@ -37,11 +39,13 @@ describe('ServiceImageComponent', () => {
   it('should show an image', () => {
     // given
     const servicesMockWithImage = { ...serviceMock, image: 'image.mock' };
+
     // when
     const { container, getByAltText } = render(
       <ServiceImageComponent service={servicesMockWithImage} />,
     );
     const element = getByAltText(`fournisseur d'identité title-mock`);
+
     // then
     expect(container).toMatchSnapshot();
     expect(element).toBeInTheDocument();
@@ -51,11 +55,13 @@ describe('ServiceImageComponent', () => {
   it('should be in a disabled state', () => {
     // given
     const servicesMockWithImage = { ...serviceMock, image: 'image.mock' };
+
     // when
     const { container } = render(
       <ServiceImageComponent disabled service={servicesMockWithImage} />,
     );
     const wrapper = container.firstChild;
+
     // then
     expect(container).toMatchSnapshot();
     expect(wrapper).toHaveClass('disabled');
