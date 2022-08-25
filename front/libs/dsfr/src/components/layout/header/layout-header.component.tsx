@@ -1,9 +1,11 @@
+import classnames from 'classnames';
 import React, { useCallback, useContext, useState } from 'react';
 import { useMediaQuery } from 'react-responsive';
 
 import { AccountContext, AccountInterface } from '@fc/account';
 import { AppContext, AppContextInterface } from '@fc/state-management';
 
+import styles from './layout-header.module.scss';
 import { LayoutHeaderMobileBurgerButton } from './layout-header-mobile-burger.button';
 import { LayoutHeaderLogosComponent } from './logos';
 import { LayoutHeaderMenuComponent } from './menu';
@@ -39,7 +41,7 @@ export const LayoutHeaderComponent = React.memo(() => {
 
   return (
     <React.Fragment>
-      <header className="fr-header" role="banner">
+      <header className={classnames(styles.banner, 'fr-header')} role="banner">
         <div className="fr-header__body">
           <div className="fr-container">
             <div className="fr-header__body-row">
