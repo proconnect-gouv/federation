@@ -329,6 +329,7 @@ describe('CoreFcpSendEmailHandler', () => {
 
   const configAppMock = {
     fqdn: 'my-instance-domain',
+    udFqdn: 'my-ud-instance-domain',
   };
 
   const loggerServiceMock = {
@@ -407,6 +408,7 @@ describe('CoreFcpSendEmailHandler', () => {
     spName: sessionDataMock.spName,
     today: 'le 01 janvier 2021 à 14:14',
     fqdn: 'my-instance-domain',
+    udFqdn: 'my-ud-instance-domain',
   };
 
   beforeEach(async () => {
@@ -482,6 +484,35 @@ describe('CoreFcpSendEmailHandler', () => {
       expect(configServiceMock.get).toHaveBeenCalledWith('Mailer');
       expect(configServiceMock.get).toHaveBeenCalledWith('App');
     });
+
+    it('should throw error dto if fqdn is not defined', async () => {
+      // Given
+      const errorMock = new MailerNotificationConnectException();
+      const configAppMockWithoutUdFqdn = {
+        udFqdn: 'my-ud-instance-domain',
+      };
+      configServiceMock.get.mockReturnValue(configAppMockWithoutUdFqdn);
+
+      // When / Then
+      await expect(
+        service['getConnectNotificationEmailBodyContent'](sessionDataMock),
+      ).rejects.toThrow(errorMock);
+    });
+
+    it('should throw error dto if udFqdn is not defined', async () => {
+      // Given
+      const errorMock = new MailerNotificationConnectException();
+      const configAppMockWithoutUdFqdn = {
+        fqdn: 'my-instance-domain',
+      };
+      configServiceMock.get.mockReturnValue(configAppMockWithoutUdFqdn);
+
+      // When / Then
+      await expect(
+        service['getConnectNotificationEmailBodyContent'](sessionDataMock),
+      ).rejects.toThrow(errorMock);
+    });
+
     it('should call identity provider getById', async () => {
       // When
       await service['getConnectNotificationEmailBodyContent'](sessionDataMock);
@@ -527,6 +558,7 @@ describe('CoreFcpSendEmailHandler', () => {
           spName: sessionDataMock.spName,
           today: connectNotificationEmailParametersMock.today,
           fqdn: connectNotificationEmailParametersMock.fqdn,
+          udFqdn: connectNotificationEmailParametersMock.udFqdn,
         },
       );
     });
