@@ -1,0 +1,15 @@
+include: '/back/.gitlab-build-template.yml'
+
+ud/csmr-account-build-image:
+  extends: .base-build
+  variables:
+    APP: csmr-account
+    MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_account_version:"
+
+ud/csmr-account-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: csmr-account
+    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_account_version:"
+  needs:
+    - job: ud/csmr-account-build-image
