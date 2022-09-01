@@ -6,7 +6,7 @@
   "license": "MIT",
   "scripts": {
     "build": "nest build",
-    "build:core-fca-low": "./scripts/start-fca-low.sh",
+    "build:core-fca-low": "nest build core-fca-low",
     "build:core-fcp-low": "nest build core-fcp-low",
     "build:core-fcp-high": "nest build core-fcp-high",
     "build:csmr-hsm-high": "nest build csmr-hsm-high",

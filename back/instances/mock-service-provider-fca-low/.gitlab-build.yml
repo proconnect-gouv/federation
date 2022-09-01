@@ -1,0 +1,13 @@
+fca/fsa1v2-build-image:
+  extends: .base-build
+  variables:
+    APP: mock-service-provider-fca-low
+    MSG: "environments/nubo01-fca-integ/group_vars/all/versions.yml\nenvironments/nubo12-fca-integ/group_vars/all/versions.yml\nfca_sp_version:"
+
+fca/fsa1v2-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: mock-service-provider-fca-low
+    MSG: "environments/nubo01-fca-prod/group_vars/all/versions.yml\nenvironments/nubo12-fca-prod/group_vars/all/versions.yml\nfca_sp_version:"
+  needs:
+    - job: fca/fsa1v2-build-image

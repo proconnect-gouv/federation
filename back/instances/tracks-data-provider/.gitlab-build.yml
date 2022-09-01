@@ -1,0 +1,15 @@
+include: '/back/.gitlab-build-template.yml'
+
+ud/tracks-data-provider-build-image:
+  extends: .base-build
+  variables:
+    APP: tracks-data-provider
+    MSG: "environments/pa4-integ/group_vars/all/versions.yml\ntracks_data_provider_version:"
+
+ud/tracks-data-provider-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: tracks-data-provider
+    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ntracks_data_provider_version:"
+  needs:
+    - job: ud/tracks-data-provider-build-image
