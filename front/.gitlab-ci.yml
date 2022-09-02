@@ -1,5 +1,4 @@
 variables:
-  FC_ROOT: '$CI_BUILDS_DIR/france-connect'
   PROXY_EXPLOITATION: 'http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT'
 
 front:
@@ -26,7 +25,7 @@ front:
       - front/instances/partners-fcp/node_modules/
       - front/instances/user-dashboard/node_modules/
   script:
-    # Back folder
+    # front folder
     - cd front/
     - yarn install
     - yarn test --coverage
@@ -36,3 +35,6 @@ front:
     # - yarn tsc --noEmit
   coverage: '/Global coverage is: \[([\d\.]+)%\]/'
   interruptible: true
+
+include:
+  - 'front/instances/**/.gitlab-build.yml'

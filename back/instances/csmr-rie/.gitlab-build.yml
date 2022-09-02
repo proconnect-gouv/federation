@@ -1,0 +1,15 @@
+include: '/back/.gitlab-build-template.yml'
+
+fca/csmr-rie-build-image:
+  extends: .base-build
+  variables:
+    APP: csmr-rie
+    MSG: "environments/nubo01-fca-integ/group_vars/all/versions.yml\ncsmr_rie_version:"
+
+fca/csmr-rie-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: csmr-rie
+    MSG: "environments/nubo01-fca-prod/group_vars/all/versions.yml\ncsmr_rie_version:"
+  needs:
+    - job: fca/csmr-rie-build-image
