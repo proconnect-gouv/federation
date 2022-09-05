@@ -15,12 +15,12 @@ eidas-bridge:
       - back/node_modules/
       # Front
       - front/node_modules/
-      - front/apps/agent-connect/node_modules/
-      - front/apps/exploit-fca-low/node_modules/
-      - front/apps/exploit-fcp-high/node_modules/
-      - front/apps/partners-fca/node_modules/
-      - front/apps/partners-fcp/node_modules/
-      - front/apps/user-dashboard/node_modules/
+      - front/instances/agent-connect/node_modules/
+      - front/instances/exploit-fca-low/node_modules/
+      - front/instances/exploit-fcp-high/node_modules/
+      - front/instances/partners-fca/node_modules/
+      - front/instances/partners-fcp/node_modules/
+      - front/instances/user-dashboard/node_modules/
       # Quality
       - quality/node_modules/
       # Cypress
@@ -35,7 +35,7 @@ eidas-bridge:
     - RETURN_CODE=0
     # Bind sources in docker volumes
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
-    - ln -s $FC_ROOT/fc/front/apps/user-dashboard $FC_ROOT/fc/docker/volumes/src/user-dashboard
+    - ln -s $FC_ROOT/fc/front/instances/user-dashboard $FC_ROOT/fc/docker/volumes/src/user-dashboard
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do cd $mock && git fetch && git checkout -f origin/master && git clean -df && echo "Installing depedencies for $(/usr/bin/basename $mock)" && npm install; ln -sfn $mock $FC_ROOT/fc/docker/volumes/src; done
     # Return to project directory 
     - wait

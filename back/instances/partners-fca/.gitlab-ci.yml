@@ -14,7 +14,7 @@ partner-fca:
     paths:
       - back/node_modules/
       - front/node_modules/
-      - front/apps/partners-fca/node_modules/
+      - front/instances/partners-fca/node_modules/
       - quality/node_modules/
   before_script:
     # Ensure a clean docker environnement
