@@ -1,0 +1,15 @@
+include: '/back/.gitlab-build-template.yml'
+
+ud/csmr-user-preferences-high-build-image:
+  extends: .base-build
+  variables:
+    APP: csmr-user-preferences-high
+    MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_user_preferences_version:"
+
+ud/csmr-user-preferences-high-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: csmr-user-preferences-high
+    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_user_preferences_version:"
+  needs:
+    - job: ud/csmr-user-preferences-high-build-image
