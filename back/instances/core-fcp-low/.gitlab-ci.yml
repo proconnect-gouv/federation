@@ -16,12 +16,12 @@ fcp-low:
       - back/node_modules/
       # Front
       - front/node_modules/
-      - front/apps/agent-connect/node_modules/
-      - front/apps/exploit-fca-low/node_modules/
-      - front/apps/exploit-fcp-high/node_modules/
-      - front/apps/partners-fca/node_modules/
-      - front/apps/partners-fcp/node_modules/
-      - front/apps/user-dashboard/node_modules/
+      - front/instances/agent-connect/node_modules/
+      - front/instances/exploit-fca-low/node_modules/
+      - front/instances/exploit-fcp-high/node_modules/
+      - front/instances/partners-fca/node_modules/
+      - front/instances/partners-fcp/node_modules/
+      - front/instances/user-dashboard/node_modules/
       # Quality
       - quality/node_modules/
       # Cypress

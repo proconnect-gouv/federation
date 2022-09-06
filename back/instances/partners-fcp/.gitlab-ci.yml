@@ -14,7 +14,7 @@ partner-fcp:
     paths:
       - back/node_modules/
       - front/node_modules/
-      - front/apps/partners-fcp/node_modules/
+      - front/instances/partners-fcp/node_modules/
       - quality/node_modules/
   before_script:
     # Ensure a clean docker environnement
