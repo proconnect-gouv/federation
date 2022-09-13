@@ -25,17 +25,10 @@ partner-fca:
     - RETURN_CODE=0
     # Bind sources in docker volumes
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
-    # Return to project directory
-    - wait
-    - cd $CI_PROJECT_DIR
   script:
     # Up the docker-stack with minimal requirement
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker-stack up partners-fca
-    - docker exec fc_partners-fca-front_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
-    - docker exec fc_partners-fca-back_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
-    - docker-stack dep partners-fca-front partners-fca-back
-    - docker-stack migrations-partners-fca
     # Start the NodeJS apps
     - docker-stack start-ci partners-fca-front partners-fca-back
     # Ensure the required apps are running
