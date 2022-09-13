@@ -1,0 +1,15 @@
+include: '/front/.gitlab-build-template.yml'
+
+partners-fca/build-front:
+  extends: .base-build-front
+  variables:
+    APP: partners-fca
+    MSG: "environments/nubo01-fca-integ/group_vars/all/versions.yml\nenvironments/nubo12-fca-integ/group_vars/all/versions.yml\npartners_front_version:"
+
+partners-fca/tag-front-to-prod:
+  extends: .base-tag-front-to-prod
+  variables:
+    APP: partners-fca
+    MSG: "environments/nubo01-fca-prod/group_vars/all/versions.yml\nenvironments/nubo12-fca-prod/group_vars/all/versions.yml\npartners_front_version:"
+  needs:
+    - job: partners-fca/build-front
