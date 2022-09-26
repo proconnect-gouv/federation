@@ -3,15 +3,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { IPaginationResult } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger-legacy';
-import {
-  SessionCsrfService,
-  SessionInvalidCsrfSelectIdpException,
-} from '@fc/session';
+import { SessionCsrfService } from '@fc/session';
 import { TrackDto, TracksService } from '@fc/tracks';
-import { FormattedIdpDto, UserPreferencesService } from '@fc/user-preferences';
 
 import { GetUserTracesQueryDto } from '../dto';
-import { UserDashboardService } from '../services';
 import { UserDashboardController } from './user-dashboard.controller';
 
 describe('UserDashboardController', () => {
@@ -69,25 +64,10 @@ describe('UserDashboardController', () => {
     getList: jest.fn(),
   };
 
-  const userPreferencesMock = {
-    getUserPreferencesList: jest.fn(),
-    setUserPreferencesList: jest.fn(),
-  };
-
   const sendMock = { send: jest.fn() };
 
   const resMock = {
     status: jest.fn(),
-  };
-
-  const updatePreferencesBodyMock = {
-    idpList: [],
-    csrfToken: 'csrfTokenMockValue',
-    allowFutureIdp: false,
-  };
-
-  const userDashboardServiceMock = {
-    sendMail: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -101,8 +81,6 @@ describe('UserDashboardController', () => {
         LoggerService,
         SessionCsrfService,
         TracksService,
-        UserPreferencesService,
-        UserDashboardService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -113,10 +91,6 @@ describe('UserDashboardController', () => {
       .useValue(sessionGenericCsrfServiceMock)
       .overrideProvider(TracksService)
       .useValue(tracksServiceMock)
-      .overrideProvider(UserPreferencesService)
-      .useValue(userPreferencesMock)
-      .overrideProvider(UserDashboardService)
-      .useValue(userDashboardServiceMock)
       .compile();
 
     controller = module.get<UserDashboardController>(UserDashboardController);
@@ -293,176 +267,5 @@ describe('UserDashboardController', () => {
       expect(firstname).toStrictEqual(identityMock.given_name);
       expect(lastname).toStrictEqual(identityMock.family_name);
     });
-  });
-
-  describe('getUserPreferences', () => {
-    it('should fetch session', async () => {
-      // When
-      await controller.getUserPreferences(resMock, sessionServiceMock);
-      // Then
-      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.get).toHaveBeenCalledWith('idpIdentity');
-    });
-
-    it('should return a 401 if no session', async () => {
-      // Given
-      resMock.status.mockReturnValue(sendMock);
-      sessionServiceMock.get.mockResolvedValueOnce(undefined);
-      // When
-      await controller.getUserPreferences(resMock, sessionServiceMock);
-      // Then
-      expect(resMock.status).toHaveBeenCalledTimes(1);
-      expect(resMock.status).toHaveBeenCalledWith(401);
-      expect(sendMock.send).toHaveBeenCalledTimes(1);
-      expect(sendMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
-    });
-
-    it('should call userPreferences.getUserPreferencesList', async () => {
-      // When
-      await controller.getUserPreferences(resMock, sessionServiceMock);
-      // Then
-      expect(userPreferencesMock.getUserPreferencesList).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(userPreferencesMock.getUserPreferencesList).toHaveBeenCalledWith(
-        identityMock,
-      );
-    });
-
-    it('should return userPreferences.getUserPreferencesList', async () => {
-      // Given
-      const formattedIdpSettingsMock: Partial<FormattedIdpDto> = {
-        uid: 'uid',
-        isChecked: true,
-      };
-      const resolvedUserPreferencesMock = {
-        idpList: formattedIdpSettingsMock,
-        allowFutureIdp: true,
-      };
-      userPreferencesMock.getUserPreferencesList.mockResolvedValueOnce(
-        resolvedUserPreferencesMock,
-      );
-      // When
-      const result = await controller.getUserPreferences(
-        resMock,
-        sessionServiceMock,
-      );
-      // Then
-      expect(result).toStrictEqual({
-        idpList: formattedIdpSettingsMock,
-        allowFutureIdp: true,
-      });
-    });
-  });
-
-  describe('updateUserPreferences', () => {
-    const formattedIdpSettingsMock: Partial<FormattedIdpDto> = {
-      uid: 'uid',
-      isChecked: false,
-    };
-
-    const resolvedUserPreferencesMock = {
-      idpList: formattedIdpSettingsMock,
-      allowFutureIdp: false,
-      updatedIdpSettingsList: formattedIdpSettingsMock,
-      hasAllowFutureIdpChanged: true,
-      updatedAt: 'updatedAt',
-    };
-
-    it('should fetch session', async () => {
-      // Given
-      userPreferencesMock.setUserPreferencesList.mockResolvedValueOnce(
-        resolvedUserPreferencesMock,
-      );
-
-      // When
-      await controller.updateUserPreferences(
-        resMock,
-        updatePreferencesBodyMock,
-        sessionServiceMock,
-      );
-      // Then
-      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.get).toHaveBeenCalledWith('idpIdentity');
-    });
-
-    it('should return a 401 if no session', async () => {
-      // Given
-      resMock.status.mockReturnValue(sendMock);
-      sessionServiceMock.get.mockResolvedValueOnce(undefined);
-      // When
-      await controller.updateUserPreferences(
-        resMock,
-        updatePreferencesBodyMock,
-        sessionServiceMock,
-      );
-      // Then
-      expect(resMock.status).toHaveBeenCalledTimes(1);
-      expect(resMock.status).toHaveBeenCalledWith(401);
-      expect(sendMock.send).toHaveBeenCalledTimes(1);
-      expect(sendMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
-    });
-
-    it('should call userPreferences.setUserPreferencesList', async () => {
-      // Given
-      const { allowFutureIdp, idpList } = updatePreferencesBodyMock;
-      const expectedServicedArguments = { allowFutureIdp, idpList };
-
-      userPreferencesMock.setUserPreferencesList.mockResolvedValueOnce(
-        resolvedUserPreferencesMock,
-      );
-
-      // When
-      await controller.updateUserPreferences(
-        resMock,
-        updatePreferencesBodyMock,
-        sessionServiceMock,
-      );
-      // Then
-      expect(userPreferencesMock.setUserPreferencesList).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(userPreferencesMock.setUserPreferencesList).toHaveBeenCalledWith(
-        identityMock,
-        expectedServicedArguments,
-      );
-    });
-
-    it('should return userPreferences.setUserPreferencesList', async () => {
-      // Given
-      userPreferencesMock.setUserPreferencesList.mockResolvedValueOnce(
-        resolvedUserPreferencesMock,
-      );
-      // When
-      const result = await controller.updateUserPreferences(
-        resMock,
-        updatePreferencesBodyMock,
-        sessionServiceMock,
-      );
-      // Then
-      expect(result).toStrictEqual({
-        idpList: formattedIdpSettingsMock,
-        allowFutureIdp: updatePreferencesBodyMock.allowFutureIdp,
-        updatedIdpSettingsList: formattedIdpSettingsMock,
-        hasAllowFutureIdpChanged: true,
-        updatedAt: 'updatedAt',
-      });
-    });
-  });
-
-  it('should fail if csrfToken is invalid', async () => {
-    // Given
-    sessionGenericCsrfServiceMock.validate.mockImplementationOnce(() => {
-      throw new Error();
-    });
-
-    // Then / When
-    await expect(
-      controller.updateUserPreferences(
-        resMock,
-        updatePreferencesBodyMock,
-        sessionServiceMock,
-      ),
-    ).rejects.toThrow(SessionInvalidCsrfSelectIdpException);
   });
 });

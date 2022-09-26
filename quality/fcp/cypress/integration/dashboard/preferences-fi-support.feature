@@ -30,6 +30,7 @@ Fonctionnalité: Préférences FI - Support
     Et la date de dernière connexion est affichée
     Et les préférences FI de l'usager ne sont pas affichées
 
+  @ignore
   Scénario: Préférences FI - Support - FI bloqué - futur FI autorisé
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que je navigue sur la page d'accueil du dashboard usager
@@ -55,6 +56,7 @@ Fonctionnalité: Préférences FI - Support
     Et le statut des futurs fournisseurs d'identité dans support est "autorisés"
     Et le statut du fournisseur d'identité "pour le test de préférences FI" dans support est "bloqué"
 
+  @ignore
   Scénario: Préférences FI - Support - FI autorisé - futur FI bloqué
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que je navigue sur la page d'accueil du dashboard usager
@@ -78,6 +80,7 @@ Fonctionnalité: Préférences FI - Support
     Et le statut des futurs fournisseurs d'identité dans support est "bloqués"
     Et le statut du fournisseur d'identité "pour le test de préférences FI" dans support est "autorisé"
 
+  @ignore
   Scénario: Préférences FI - Support - FI autorisé - futur FI autorisé
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que je navigue sur la page d'accueil du dashboard usager
