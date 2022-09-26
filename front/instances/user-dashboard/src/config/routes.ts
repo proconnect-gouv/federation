@@ -9,7 +9,7 @@ import {
   UnauthedRouteComponent,
 } from '@fc/routing';
 
-import { ErrorPage, HomePage, NotFoundPage, TracksPage, UserPreferencesPage } from '../ui/pages';
+import { ErrorPage, HomePage, NotFoundPage, TracksPage } from '../ui/pages';
 
 export const routes = registerRoutes([
   { component: NotFoundPage, path: NOTFOUND_PATH },
@@ -23,13 +23,6 @@ export const routes = registerRoutes([
     label: 'Mon tableau de bord - Historique',
     order: 2,
     path: '/history',
-    routing: { authRedirect: '/', authWrapper: AuthedRouteComponent },
-  },
-  {
-    component: UserPreferencesPage,
-    label: 'Mon tableau de bord - Mes Accès',
-    order: 2,
-    path: '/preferences',
     routing: { authRedirect: '/', authWrapper: AuthedRouteComponent },
   },
   {

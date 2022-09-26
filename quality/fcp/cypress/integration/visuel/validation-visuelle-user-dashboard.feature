@@ -25,6 +25,7 @@ Fonctionnalité: Validation Visuelle - User Dashboard
       | tablet landscape |
       | desktop          |
 
+  @ignore
   Plan du Scénario: Validation Visuelle - Préférences FI sur <device>
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que j'utilise un navigateur web sur "<device>"
@@ -40,6 +41,7 @@ Fonctionnalité: Validation Visuelle - User Dashboard
       | tablet landscape |
       | desktop          |
 
+  @ignore
   Scénario: Validation Visuelle - Préférences FI sur mobile
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que j'utilise un navigateur web sur "mobile"

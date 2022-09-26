@@ -41,10 +41,5 @@ export const Layout: LayoutConfig = {
       href: '/history',
       label: 'Mon historique de connexion',
     },
-    {
-      a11y: 'Gérer mes accès',
-      href: '/preferences',
-      label: 'Gérer mes accès',
-    },
   ],
 };

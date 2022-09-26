@@ -24,6 +24,7 @@ Fonctionnalité: Connexion User Dashboard
     Et le message d'alerte "session expirée" n'est pas affiché
     Et je ne suis plus connecté au dashboard usager avec FranceConnect
 
+  @ignore
   Scénario: User Dashboard - Déconnexion depuis la page gestion des accès
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que je navigue sur la page d'accueil du dashboard usager
@@ -59,6 +60,7 @@ Fonctionnalité: Connexion User Dashboard
     Et le message d'alerte "session expirée" n'est pas affiché
     Et je ne suis plus connecté au dashboard usager avec FranceConnect
 
+  @ignore
   Scénario: User Dashboard - Clic sur le lien vers la page historique après expiration de session
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que je navigue sur la page d'accueil du dashboard usager
@@ -71,6 +73,7 @@ Fonctionnalité: Connexion User Dashboard
     Et le message d'alerte "session expirée" est affiché
     Et je ne suis plus connecté au dashboard usager avec FranceConnect
 
+  @ignore
   Scénario: User Dashboard - Clic sur le lien vers la page gestion des accès après expiration de session
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que je navigue sur la page d'accueil du dashboard usager
@@ -82,6 +85,7 @@ Fonctionnalité: Connexion User Dashboard
     Et le message d'alerte "session expirée" est affiché
     Et je ne suis plus connecté au dashboard usager avec FranceConnect
 
+  @ignore
   Scénario: User Dashboard - Enregistre mes préférences FI après expiration de session
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que je navigue sur la page d'accueil du dashboard usager
@@ -110,7 +114,7 @@ Fonctionnalité: Connexion User Dashboard
     Et je ne suis plus connecté au dashboard usager avec FranceConnect
 
   # Scénario à implémenter dans FC-1072
-  @ignore 
+  @ignore
   Scénario: User Dashboard - Connexion après expiration de session
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que je navigue sur la page d'accueil du dashboard usager

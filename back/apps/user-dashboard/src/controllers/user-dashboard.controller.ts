@@ -1,10 +1,8 @@
 import {
-  Body,
   Controller,
   Get,
   HttpStatus,
   Injectable,
-  Post,
   Query,
   Res,
   UsePipes,
@@ -14,22 +12,12 @@ import {
 import { FSA } from '@fc/common';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
-import {
-  ISessionService,
-  Session,
-  SessionCsrfService,
-  SessionInvalidCsrfSelectIdpException,
-} from '@fc/session';
+import { ISessionService, Session, SessionCsrfService } from '@fc/session';
 import { TracksService } from '@fc/tracks';
-import {
-  FormattedIdpSettingDto,
-  UserPreferencesService,
-} from '@fc/user-preferences';
 
-import { GetUserTracesQueryDto, UserPreferencesBodyDto } from '../dto';
+import { GetUserTracesQueryDto } from '../dto';
 import { UserDashboardBackRoutes } from '../enums';
 import { HttpErrorResponse } from '../interfaces';
-import { UserDashboardService } from '../services';
 
 @Injectable()
 @Controller()
@@ -39,8 +27,6 @@ export class UserDashboardController {
     private readonly logger: LoggerService,
     private readonly csrfService: SessionCsrfService,
     private readonly tracks: TracksService,
-    private readonly userPreferences: UserPreferencesService,
-    private readonly userDashboard: UserDashboardService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -102,90 +88,5 @@ export class UserDashboardController {
 
     this.logger.trace({ firstname, lastname });
     return { firstname, lastname };
-  }
-
-  @Get(UserDashboardBackRoutes.USER_PREFERENCES)
-  async getUserPreferences(
-    @Res({ passthrough: true }) res,
-    @Session('OidcClient')
-    sessionOidc: ISessionService<OidcClientSession>,
-  ): Promise<FormattedIdpSettingDto | HttpErrorResponse> {
-    const idpIdentity = await sessionOidc.get('idpIdentity');
-    if (!idpIdentity) {
-      return res.status(HttpStatus.UNAUTHORIZED).send({
-        code: 'INVALID_SESSION',
-      });
-    }
-
-    const preferences = await this.userPreferences.getUserPreferencesList(
-      idpIdentity,
-    );
-
-    return preferences;
-  }
-
-  @Post(UserDashboardBackRoutes.USER_PREFERENCES)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  async updateUserPreferences(
-    @Res({ passthrough: true }) res,
-    @Body() body: UserPreferencesBodyDto,
-    @Session('OidcClient')
-    sessionOidc: ISessionService<OidcClientSession>,
-  ): Promise<FormattedIdpSettingDto | HttpErrorResponse> {
-    const idpIdentity = await sessionOidc.get('idpIdentity');
-    if (!idpIdentity) {
-      return res.status(HttpStatus.UNAUTHORIZED).send({
-        code: 'INVALID_SESSION',
-      });
-    }
-
-    const { csrfToken, idpList, allowFutureIdp } = body;
-
-    // -- control if the CSRF provided is the same as the one previously saved in session.
-    try {
-      await this.csrfService.validate(sessionOidc, csrfToken);
-    } catch (error) {
-      this.logger.trace({ error });
-
-      throw new SessionInvalidCsrfSelectIdpException(error);
-    }
-
-    const preferences = await this.userPreferences.setUserPreferencesList(
-      idpIdentity,
-      { idpList, allowFutureIdp },
-    );
-
-    const {
-      email,
-      given_name: givenName,
-      family_name: familyName,
-    } = idpIdentity;
-
-    const {
-      idpList: formattedIdpSettingsList,
-      allowFutureIdp: updatedAllowFutureIdp,
-      updatedIdpSettingsList,
-      hasAllowFutureIdpChanged,
-      updatedAt,
-    } = preferences;
-
-    if (email) {
-      await this.userDashboard.sendMail(
-        {
-          email,
-          givenName,
-          familyName,
-        },
-        {
-          formattedIdpSettingsList,
-          updatedIdpSettingsList,
-          hasAllowFutureIdpChanged,
-          allowFutureIdp: updatedAllowFutureIdp,
-          updatedAt,
-        },
-      );
-    }
-
-    return preferences;
   }
 }
