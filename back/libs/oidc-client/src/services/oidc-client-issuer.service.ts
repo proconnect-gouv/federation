@@ -14,6 +14,8 @@ import {
 } from '../exceptions';
 import { OidcClientConfigService } from './oidc-client-config.service';
 
+let DIRTY_DISCOVERY_DEBUG_INCREMENT = 0;
+
 @Injectable()
 export class OidcClientIssuerService {
   private IssuerProxy = Issuer;
@@ -70,7 +72,19 @@ export class OidcClientIssuerService {
        * @TODO #142 handle network failure with specific Exception / error code
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/142
        */
-      const issuer = await this.IssuerProxy.discover(idpMetadata.discoveryUrl);
+
+      let issuer;
+      try {
+        DIRTY_DISCOVERY_DEBUG_INCREMENT++;
+        issuer = await this.IssuerProxy.discover(
+          idpMetadata.discoveryUrl +
+            '?track=' +
+            DIRTY_DISCOVERY_DEBUG_INCREMENT,
+        );
+      } catch (error) {
+        this.logger.error({ error, DIRTY_DISCOVERY_DEBUG_INCREMENT });
+        throw error;
+      }
 
       return issuer;
     }
