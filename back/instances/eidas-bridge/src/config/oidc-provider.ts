@@ -74,6 +74,7 @@ export default {
       IdToken: 60, // 1 minute
       Interaction: 600, // 10 minutes
       Session: 600, // 10 minutes
+      Grant: 60, // 1 minute
     },
     acrValues: ['eidas2', 'eidas3'],
     scopes: ['openid'],

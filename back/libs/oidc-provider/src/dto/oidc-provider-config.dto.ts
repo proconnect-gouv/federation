@@ -231,6 +231,9 @@ class Ttl {
   @IsNumber()
   readonly Session: TTLFunction<unknown> | number;
 
+  @IsNumber()
+  readonly Grant: TTLFunction<unknown> | number;
+
   [key: string]: unknown;
 }
 

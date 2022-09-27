@@ -74,6 +74,7 @@ export default {
       AccessToken: 60, // 1 minute
       AuthorizationCode: 30, // 30 seconds
       IdToken: 60, // 1 minute
+      Grant: 60, // 1 minute
       Interaction: env.number('COOKIE_MAX_AGE'), // 20 minutes
       Session: env.number('COOKIE_MAX_AGE'), // 20 minutes
     },
