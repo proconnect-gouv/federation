@@ -161,7 +161,7 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/fcp-high/.env/fip1-high.env'
     ports:
-      - 9236:9236
+      - 9259:9259
     tty: true
     networks:
       - public
