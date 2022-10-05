@@ -434,7 +434,7 @@ export class CoreFcpController {
       idpAcr: acr,
       idpIdentity: identity,
     };
-    sessionOidc.set({ ...identityExchange });
+    await sessionOidc.set({ ...identityExchange });
 
     // BUSINESS: Redirect to business page
     const { urlPrefix } = this.config.get<AppConfig>('App');
