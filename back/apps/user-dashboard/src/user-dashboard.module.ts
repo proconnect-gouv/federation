@@ -23,12 +23,21 @@ import {
   SessionModule,
   SessionTemplateMiddleware,
 } from '@fc/session';
+import { TrackingModule } from '@fc/tracking';
 import { TracksModule } from '@fc/tracks';
 import { UserPreferencesModule } from '@fc/user-preferences';
 
 import { OidcClientController, UserDashboardController } from './controllers';
 import { UserDashboardSession } from './dto';
-import { UserDashboardService } from './services';
+import {
+  DisplayedUserPreferencesEventHandler,
+  DisplayedUserTracksEventHandler,
+  TrackableEventHandler,
+  UpdatedUserPreferencesEventHandler,
+  UpdatedUserPreferencesFutureIdpEventHandler,
+  UpdatedUserPreferencesIdpEventHandler,
+} from './handlers';
+import { UserDashboardService, UserDashboardTrackingService } from './services';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderAdapterEnvService,
@@ -46,11 +55,20 @@ const oidcClientModule = OidcClientModule.register(
     IdentityProviderAdapterEnvModule,
     oidcClientModule,
     SessionModule.forRoot({ schema: UserDashboardSession }),
+    TrackingModule.forRoot(UserDashboardTrackingService),
     TracksModule,
     UserPreferencesModule,
     MailerModule,
   ],
-  providers: [UserDashboardService],
+  providers: [
+    UserDashboardService,
+    DisplayedUserPreferencesEventHandler,
+    DisplayedUserTracksEventHandler,
+    TrackableEventHandler,
+    UpdatedUserPreferencesEventHandler,
+    UpdatedUserPreferencesIdpEventHandler,
+    UpdatedUserPreferencesFutureIdpEventHandler,
+  ],
 })
 export class UserDashboardModule {
   constructor(private readonly config: ConfigService) {}

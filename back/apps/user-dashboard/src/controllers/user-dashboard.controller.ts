@@ -1,3 +1,6 @@
+import { Request } from 'express';
+import { v4 as uuid } from 'uuid';
+
 import {
   Body,
   Controller,
@@ -6,13 +9,15 @@ import {
   Injectable,
   Post,
   Query,
+  Req,
   Res,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
-import { FSA } from '@fc/common';
+import { FSA, PartialExcept } from '@fc/common';
 import { LoggerService } from '@fc/logger-legacy';
+import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import {
   ISessionService,
@@ -20,6 +25,7 @@ import {
   SessionCsrfService,
   SessionInvalidCsrfSelectIdpException,
 } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
 import { TracksService } from '@fc/tracks';
 import {
   FormattedIdpSettingDto,
@@ -28,6 +34,13 @@ import {
 
 import { GetUserTracesQueryDto, UserPreferencesBodyDto } from '../dto';
 import { UserDashboardBackRoutes } from '../enums';
+import {
+  DisplayedUserPreferencesEvent,
+  DisplayedUserTracksEvent,
+  UpdatedUserPreferencesEvent,
+  UpdatedUserPreferencesFutureIdpEvent,
+  UpdatedUserPreferencesIdpEvent,
+} from '../events';
 import { HttpErrorResponse } from '../interfaces';
 import { UserDashboardService } from '../services';
 
@@ -38,6 +51,7 @@ export class UserDashboardController {
   constructor(
     private readonly logger: LoggerService,
     private readonly csrfService: SessionCsrfService,
+    private readonly tracking: TrackingService,
     private readonly tracks: TracksService,
     private readonly userPreferences: UserPreferencesService,
     private readonly userDashboard: UserDashboardService,
@@ -60,7 +74,8 @@ export class UserDashboardController {
   @Get(UserDashboardBackRoutes.TRACKS)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getUserTraces(
-    @Res({ passthrough: true }) res,
+    @Req() req: Request,
+    @Res() res,
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
     @Query() query: GetUserTracesQueryDto,
@@ -73,19 +88,24 @@ export class UserDashboardController {
       });
     }
 
+    this.tracking.track(DisplayedUserTracksEvent, {
+      req,
+      identity: idpIdentity,
+    });
+
     this.logger.trace({ idpIdentity });
     const tracks = await this.tracks.getList(idpIdentity, query);
     this.logger.trace({ tracks });
 
-    return {
+    return res.json({
       type: 'TRACKS_DATA',
       ...tracks,
-    };
+    });
   }
 
   @Get(UserDashboardBackRoutes.USER_INFOS)
   async getUserInfos(
-    @Res({ passthrough: true }) res,
+    @Res() res,
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<{ firstname: string; lastname: string } | HttpErrorResponse> {
@@ -101,12 +121,13 @@ export class UserDashboardController {
     const lastname = idpIdentity?.family_name;
 
     this.logger.trace({ firstname, lastname });
-    return { firstname, lastname };
+    return res.json({ firstname, lastname });
   }
 
   @Get(UserDashboardBackRoutes.USER_PREFERENCES)
   async getUserPreferences(
-    @Res({ passthrough: true }) res,
+    @Req() req: Request,
+    @Res() res,
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<FormattedIdpSettingDto | HttpErrorResponse> {
@@ -117,17 +138,23 @@ export class UserDashboardController {
       });
     }
 
+    this.tracking.track(DisplayedUserPreferencesEvent, {
+      req,
+      identity: idpIdentity,
+    });
+
     const preferences = await this.userPreferences.getUserPreferencesList(
       idpIdentity,
     );
 
-    return preferences;
+    return res.json(preferences);
   }
 
   @Post(UserDashboardBackRoutes.USER_PREFERENCES)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async updateUserPreferences(
-    @Res({ passthrough: true }) res,
+    @Req() req: Request,
+    @Res() res,
     @Body() body: UserPreferencesBodyDto,
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
@@ -154,6 +181,8 @@ export class UserDashboardController {
       idpIdentity,
       { idpList, allowFutureIdp },
     );
+
+    this.trackUserPreferenceChange(req, preferences, idpIdentity);
 
     const {
       email,
@@ -186,6 +215,50 @@ export class UserDashboardController {
       );
     }
 
-    return preferences;
+    return res.json(preferences);
+  }
+
+  private trackUserPreferenceChange(
+    req: Request,
+    formattedIdpSetting: FormattedIdpSettingDto,
+    identity: IOidcIdentity | PartialExcept<IOidcIdentity, 'sub'>,
+  ) {
+    const { hasAllowFutureIdpChanged } = formattedIdpSetting;
+    const { futureAllowedNewValue, list } =
+      this.userDashboard.formatUserPreferenceChangeTrackLog(
+        formattedIdpSetting,
+      );
+
+    // Common id for all events in this changeset
+    const changeSetId = uuid();
+
+    // Global change tracking
+    this.tracking.track(UpdatedUserPreferencesEvent, {
+      req,
+      changeSetId,
+      hasAllowFutureIdpChanged,
+      idpLength: list.length,
+      identity,
+    });
+
+    // Futures Idp changes tracking
+    if (hasAllowFutureIdpChanged) {
+      this.tracking.track(UpdatedUserPreferencesFutureIdpEvent, {
+        req,
+        identity,
+        futureAllowedNewValue,
+        changeSetId,
+      });
+    }
+
+    // Individual Idp changes tracking
+    list.forEach((idpChanges) => {
+      this.tracking.track(UpdatedUserPreferencesIdpEvent, {
+        req,
+        idpChanges,
+        identity,
+        changeSetId,
+      });
+    });
   }
 }
