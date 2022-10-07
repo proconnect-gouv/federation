@@ -1,3 +1,6 @@
+import { Request } from 'express';
+import { v4 as uuid } from 'uuid';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { IPaginationResult } from '@fc/common';
@@ -7,12 +10,24 @@ import {
   SessionCsrfService,
   SessionInvalidCsrfSelectIdpException,
 } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
 import { TrackDto, TracksService } from '@fc/tracks';
-import { FormattedIdpDto, UserPreferencesService } from '@fc/user-preferences';
+import {
+  FormattedIdpDto,
+  FormattedIdpSettingDto,
+  UserPreferencesService,
+} from '@fc/user-preferences';
 
 import { GetUserTracesQueryDto } from '../dto';
+import {
+  UpdatedUserPreferencesEvent,
+  UpdatedUserPreferencesFutureIdpEvent,
+  UpdatedUserPreferencesIdpEvent,
+} from '../events';
 import { UserDashboardService } from '../services';
 import { UserDashboardController } from './user-dashboard.controller';
+
+jest.mock('uuid');
 
 describe('UserDashboardController', () => {
   let controller: UserDashboardController;
@@ -29,6 +44,8 @@ describe('UserDashboardController', () => {
       wellKnownKeys: jest.fn(),
     },
   };
+
+  const uuidMockedValue = 'uuid-v4-Mocked-Value';
 
   const loggerServiceMock = {
     debug: jest.fn(),
@@ -49,6 +66,7 @@ describe('UserDashboardController', () => {
     given_name: 'givenName',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'familyName',
+    sub: 'identityMock.sub value',
   };
 
   const sessionGenericCsrfServiceMock = {
@@ -78,7 +96,10 @@ describe('UserDashboardController', () => {
 
   const resMock = {
     status: jest.fn(),
+    json: jest.fn(),
   };
+
+  const reqMock = {} as Request;
 
   const updatePreferencesBodyMock = {
     idpList: [],
@@ -88,6 +109,16 @@ describe('UserDashboardController', () => {
 
   const userDashboardServiceMock = {
     sendMail: jest.fn(),
+    formatUserPreferenceChangeTrackLog: jest.fn(),
+  };
+
+  const formatUserPreferenceChangeTrackLogReturnValue = {
+    futureAllowedNewValue: false,
+    list: [],
+  };
+
+  const trackingService = {
+    track: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -101,6 +132,7 @@ describe('UserDashboardController', () => {
         LoggerService,
         SessionCsrfService,
         TracksService,
+        TrackingService,
         UserPreferencesService,
         UserDashboardService,
       ],
@@ -113,6 +145,8 @@ describe('UserDashboardController', () => {
       .useValue(sessionGenericCsrfServiceMock)
       .overrideProvider(TracksService)
       .useValue(tracksServiceMock)
+      .overrideProvider(TrackingService)
+      .useValue(trackingService)
       .overrideProvider(UserPreferencesService)
       .useValue(userPreferencesMock)
       .overrideProvider(UserDashboardService)
@@ -137,6 +171,14 @@ describe('UserDashboardController', () => {
       urlPrefix: '/api/v2',
     });
     cryptographyMock.genRandomString.mockReturnValue(randomStringMock);
+
+    resMock.json.mockImplementationOnce((arg) => arg);
+
+    userDashboardServiceMock.formatUserPreferenceChangeTrackLog.mockReturnValueOnce(
+      formatUserPreferenceChangeTrackLogReturnValue,
+    );
+
+    jest.mocked(uuid).mockReturnValueOnce(uuidMockedValue);
   });
 
   it('should be defined', () => {
@@ -214,7 +256,12 @@ describe('UserDashboardController', () => {
 
     it('should fetch session', async () => {
       // When
-      await controller.getUserTraces(resMock, sessionServiceMock, queryMock);
+      await controller.getUserTraces(
+        reqMock,
+        resMock,
+        sessionServiceMock,
+        queryMock,
+      );
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.get).toHaveBeenCalledWith('idpIdentity');
@@ -225,7 +272,12 @@ describe('UserDashboardController', () => {
       resMock.status.mockReturnValue(sendMock);
       sessionServiceMock.get.mockResolvedValueOnce(undefined);
       // When
-      await controller.getUserTraces(resMock, sessionServiceMock, queryMock);
+      await controller.getUserTraces(
+        reqMock,
+        resMock,
+        sessionServiceMock,
+        queryMock,
+      );
       // Then
       expect(resMock.status).toHaveBeenCalledTimes(1);
       expect(resMock.status).toHaveBeenCalledWith(401);
@@ -235,7 +287,12 @@ describe('UserDashboardController', () => {
 
     it('should call tracks.getList', async () => {
       // When
-      await controller.getUserTraces(resMock, sessionServiceMock, queryMock);
+      await controller.getUserTraces(
+        reqMock,
+        resMock,
+        sessionServiceMock,
+        queryMock,
+      );
       // Then
       expect(tracksServiceMock.getList).toHaveBeenCalledTimes(1);
       expect(tracksServiceMock.getList).toHaveBeenCalledWith(
@@ -247,6 +304,7 @@ describe('UserDashboardController', () => {
     it('should return tracks.getList', async () => {
       // When
       const result = await controller.getUserTraces(
+        reqMock,
         resMock,
         sessionServiceMock,
         queryMock,
@@ -298,7 +356,7 @@ describe('UserDashboardController', () => {
   describe('getUserPreferences', () => {
     it('should fetch session', async () => {
       // When
-      await controller.getUserPreferences(resMock, sessionServiceMock);
+      await controller.getUserPreferences(reqMock, resMock, sessionServiceMock);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.get).toHaveBeenCalledWith('idpIdentity');
@@ -309,7 +367,7 @@ describe('UserDashboardController', () => {
       resMock.status.mockReturnValue(sendMock);
       sessionServiceMock.get.mockResolvedValueOnce(undefined);
       // When
-      await controller.getUserPreferences(resMock, sessionServiceMock);
+      await controller.getUserPreferences(reqMock, resMock, sessionServiceMock);
       // Then
       expect(resMock.status).toHaveBeenCalledTimes(1);
       expect(resMock.status).toHaveBeenCalledWith(401);
@@ -319,7 +377,7 @@ describe('UserDashboardController', () => {
 
     it('should call userPreferences.getUserPreferencesList', async () => {
       // When
-      await controller.getUserPreferences(resMock, sessionServiceMock);
+      await controller.getUserPreferences(reqMock, resMock, sessionServiceMock);
       // Then
       expect(userPreferencesMock.getUserPreferencesList).toHaveBeenCalledTimes(
         1,
@@ -344,6 +402,7 @@ describe('UserDashboardController', () => {
       );
       // When
       const result = await controller.getUserPreferences(
+        reqMock,
         resMock,
         sessionServiceMock,
       );
@@ -369,6 +428,10 @@ describe('UserDashboardController', () => {
       updatedAt: 'updatedAt',
     };
 
+    beforeEach(() => {
+      controller['trackUserPreferenceChange'] = jest.fn();
+    });
+
     it('should fetch session', async () => {
       // Given
       userPreferencesMock.setUserPreferencesList.mockResolvedValueOnce(
@@ -377,6 +440,7 @@ describe('UserDashboardController', () => {
 
       // When
       await controller.updateUserPreferences(
+        reqMock,
         resMock,
         updatePreferencesBodyMock,
         sessionServiceMock,
@@ -392,6 +456,7 @@ describe('UserDashboardController', () => {
       sessionServiceMock.get.mockResolvedValueOnce(undefined);
       // When
       await controller.updateUserPreferences(
+        reqMock,
         resMock,
         updatePreferencesBodyMock,
         sessionServiceMock,
@@ -414,6 +479,7 @@ describe('UserDashboardController', () => {
 
       // When
       await controller.updateUserPreferences(
+        reqMock,
         resMock,
         updatePreferencesBodyMock,
         sessionServiceMock,
@@ -435,6 +501,7 @@ describe('UserDashboardController', () => {
       );
       // When
       const result = await controller.updateUserPreferences(
+        reqMock,
         resMock,
         updatePreferencesBodyMock,
         sessionServiceMock,
@@ -448,21 +515,151 @@ describe('UserDashboardController', () => {
         updatedAt: 'updatedAt',
       });
     });
-  });
 
-  it('should fail if csrfToken is invalid', async () => {
-    // Given
-    sessionGenericCsrfServiceMock.validate.mockImplementationOnce(() => {
-      throw new Error();
-    });
+    it('should call trackUserPreferenceChange', async () => {
+      // Given
 
-    // Then / When
-    await expect(
-      controller.updateUserPreferences(
+      userPreferencesMock.setUserPreferencesList.mockResolvedValueOnce(
+        resolvedUserPreferencesMock,
+      );
+
+      // When
+      await controller.updateUserPreferences(
+        reqMock,
         resMock,
         updatePreferencesBodyMock,
         sessionServiceMock,
-      ),
-    ).rejects.toThrow(SessionInvalidCsrfSelectIdpException);
+      );
+      // Then
+      expect(controller['trackUserPreferenceChange']).toHaveBeenCalledTimes(1);
+      expect(controller['trackUserPreferenceChange']).toHaveBeenCalledWith(
+        reqMock,
+        resolvedUserPreferencesMock,
+        identityMock,
+      );
+    });
+
+    it('should fail if csrfToken is invalid', async () => {
+      // Given
+      sessionGenericCsrfServiceMock.validate.mockImplementationOnce(() => {
+        throw new Error();
+      });
+
+      // Then / When
+      await expect(
+        controller.updateUserPreferences(
+          reqMock,
+          resMock,
+          updatePreferencesBodyMock,
+          sessionServiceMock,
+        ),
+      ).rejects.toThrow(SessionInvalidCsrfSelectIdpException);
+    });
+  });
+
+  describe('trackUserPreferenceChange', () => {
+    // Given
+    const formattedIdpSettingsMock = {
+      hasAllowFutureIdpChanged: true,
+    } as unknown as FormattedIdpSettingDto;
+
+    const formatUserPreferenceChangeTrackLogReturnValue = {
+      list: [Symbol('idpChanges1'), Symbol('idpChanges2')],
+      futureAllowedNewValue: false,
+    };
+
+    beforeEach(() => {
+      userDashboardServiceMock.formatUserPreferenceChangeTrackLog
+        .mockReset()
+        .mockReturnValueOnce(formatUserPreferenceChangeTrackLogReturnValue);
+    });
+
+    it('should call userDashboard.formatUserPreferenceChangeTrackLog()', () => {
+      // When
+      controller['trackUserPreferenceChange'](
+        reqMock,
+        formattedIdpSettingsMock,
+        identityMock,
+      );
+      // Then
+      expect(
+        controller['userDashboard'].formatUserPreferenceChangeTrackLog,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        controller['userDashboard'].formatUserPreferenceChangeTrackLog,
+      ).toHaveBeenCalledWith(formattedIdpSettingsMock);
+    });
+
+    it('should call tracking.track() for global event', () => {
+      // When
+      controller['trackUserPreferenceChange'](
+        reqMock,
+        formattedIdpSettingsMock,
+        identityMock,
+      );
+      // Then
+      expect(controller['tracking'].track).toHaveBeenCalledTimes(4);
+      expect(controller['tracking'].track).toHaveBeenNthCalledWith(
+        1,
+        UpdatedUserPreferencesEvent,
+        {
+          req: reqMock,
+          changeSetId: uuidMockedValue,
+          idpLength: 2,
+          hasAllowFutureIdpChanged: true,
+          identity: identityMock,
+        },
+      );
+    });
+
+    it('should call tracking.track() for future idp change', () => {
+      // When
+      controller['trackUserPreferenceChange'](
+        reqMock,
+        formattedIdpSettingsMock,
+        identityMock,
+      );
+      // Then
+      expect(controller['tracking'].track).toHaveBeenNthCalledWith(
+        2,
+        UpdatedUserPreferencesFutureIdpEvent,
+        {
+          req: reqMock,
+          changeSetId: uuidMockedValue,
+          futureAllowedNewValue: false,
+          identity: identityMock,
+        },
+      );
+    });
+
+    it('should call tracking.track() for each changed idp', () => {
+      // When
+      controller['trackUserPreferenceChange'](
+        reqMock,
+        formattedIdpSettingsMock,
+        identityMock,
+      );
+      // Then
+      expect(controller['tracking'].track).toHaveBeenNthCalledWith(
+        3,
+        UpdatedUserPreferencesIdpEvent,
+        {
+          req: reqMock,
+          changeSetId: uuidMockedValue,
+          idpChanges: formatUserPreferenceChangeTrackLogReturnValue.list[0],
+          identity: identityMock,
+        },
+      );
+      expect(controller['tracking'].track).toHaveBeenNthCalledWith(
+        4,
+        UpdatedUserPreferencesIdpEvent,
+        {
+          req: reqMock,
+          changeSetId: uuidMockedValue,
+          idpChanges: formatUserPreferenceChangeTrackLogReturnValue.list[1],
+          identity: identityMock,
+        },
+      );
+    });
   });
 });
