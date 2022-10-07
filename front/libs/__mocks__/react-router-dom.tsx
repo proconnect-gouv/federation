@@ -2,7 +2,7 @@ const actualModule = jest.requireActual('react-router-dom');
 
 module.exports = {
   ...actualModule,
-  Link: jest.fn(({ children }) => <div>{children}</div>),
+  Link: jest.fn(({ children }) => <span>{children}</span>),
   NavLink: jest.fn(({ children }) => <div>{children}</div>),
   Navigate: jest.fn(() => <div>ReactRouterDom Navigate Component</div>),
   Outlet: jest.fn(() => <div>ReactRouterDom Outlet Component</div>),

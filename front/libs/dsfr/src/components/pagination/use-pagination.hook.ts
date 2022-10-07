@@ -30,7 +30,7 @@ export const usePagination = ({
 
   const paginationChangeHandler = useCallback(
     (nextPage: number) => {
-      const nextOffset = nextPage * pagination.size;
+      const nextOffset = nextPage * size;
       onPageClick(nextOffset);
       scrollToTop();
     },

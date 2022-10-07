@@ -5,9 +5,9 @@ exports[`ServiceProvidersDetailsHeaderComponent should match the snapshot 1`] = 
   <div
     class="fr-mb-2w"
   >
-    <div>
+    <span>
       ServiceProvidersDetailsPage.returnButton
-    </div>
+    </span>
   </div>
   <div>
     BadgeComponent

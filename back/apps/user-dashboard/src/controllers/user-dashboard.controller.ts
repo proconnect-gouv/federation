@@ -41,7 +41,11 @@ import {
   UpdatedUserPreferencesFutureIdpEvent,
   UpdatedUserPreferencesIdpEvent,
 } from '../events';
-import { HttpErrorResponse } from '../interfaces';
+import {
+  HttpErrorResponse,
+  OidcIdentityInterface,
+  UserInfosInterface,
+} from '../interfaces';
 import { UserDashboardService } from '../services';
 
 @Injectable()
@@ -108,20 +112,35 @@ export class UserDashboardController {
     @Res() res,
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
-  ): Promise<{ firstname: string; lastname: string } | HttpErrorResponse> {
+  ): Promise<UserInfosInterface | HttpErrorResponse> {
     this.logger.debug('getUserInfos()');
-    const idpIdentity = await sessionOidc.get('idpIdentity');
+    /**
+     * @Todo find better way to define interface
+     * Author: Emmanuel Maravilha
+     */
+    const idpIdentity = (await sessionOidc.get(
+      'idpIdentity',
+    )) as OidcIdentityInterface;
     if (!idpIdentity) {
       return res.status(HttpStatus.UNAUTHORIZED).send({
         code: 'INVALID_SESSION',
       });
     }
 
-    const firstname = idpIdentity?.given_name;
-    const lastname = idpIdentity?.family_name;
+    const {
+      given_name: firstname,
+      family_name: lastname,
+      idp_id: idpId,
+    } = idpIdentity;
 
-    this.logger.trace({ firstname, lastname });
-    return res.json({ firstname, lastname });
+    const userInfos = {
+      firstname,
+      lastname,
+      idpId,
+    };
+
+    this.logger.trace({ userInfos });
+    return res.json(userInfos);
   }
 
   @Get(UserDashboardBackRoutes.USER_PREFERENCES)
@@ -131,7 +150,13 @@ export class UserDashboardController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<FormattedIdpSettingDto | HttpErrorResponse> {
-    const idpIdentity = await sessionOidc.get('idpIdentity');
+    /**
+     * @Todo find better way to define interface
+     * Author: Emmanuel Maravilha
+     */
+    const idpIdentity = (await sessionOidc.get(
+      'idpIdentity',
+    )) as OidcIdentityInterface;
     if (!idpIdentity) {
       return res.status(HttpStatus.UNAUTHORIZED).send({
         code: 'INVALID_SESSION',
@@ -142,9 +167,12 @@ export class UserDashboardController {
       req,
       identity: idpIdentity,
     });
+    // idp_id has been removed because it is not necessary to pass it to the consumer
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { idp_id: _idpId, ...identityFiltered } = idpIdentity;
 
     const preferences = await this.userPreferences.getUserPreferencesList(
-      idpIdentity,
+      identityFiltered,
     );
 
     return res.json(preferences);
@@ -152,6 +180,7 @@ export class UserDashboardController {
 
   @Post(UserDashboardBackRoutes.USER_PREFERENCES)
   @UsePipes(new ValidationPipe({ whitelist: true }))
+  // eslint-disable-next-line complexity
   async updateUserPreferences(
     @Req() req: Request,
     @Res() res,
@@ -159,7 +188,13 @@ export class UserDashboardController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<FormattedIdpSettingDto | HttpErrorResponse> {
-    const idpIdentity = await sessionOidc.get('idpIdentity');
+    /**
+     * @Todo find better way to define interface
+     * Author: Emmanuel Maravilha
+     */
+    const idpIdentity = (await sessionOidc.get(
+      'idpIdentity',
+    )) as OidcIdentityInterface;
     if (!idpIdentity) {
       return res.status(HttpStatus.UNAUTHORIZED).send({
         code: 'INVALID_SESSION',
@@ -167,6 +202,20 @@ export class UserDashboardController {
     }
 
     const { csrfToken, idpList, allowFutureIdp } = body;
+
+    const {
+      email,
+      given_name: givenName,
+      family_name: familyName,
+      idp_id: lastUsedIdpId,
+    } = idpIdentity;
+
+    const containsSelectedIdp = idpList.includes(lastUsedIdpId);
+    if (!containsSelectedIdp) {
+      return res.status(HttpStatus.CONFLICT).send({
+        code: 'CONFLICT',
+      });
+    }
 
     // -- control if the CSRF provided is the same as the one previously saved in session.
     try {
@@ -177,18 +226,16 @@ export class UserDashboardController {
       throw new SessionInvalidCsrfSelectIdpException(error);
     }
 
+    // idp_id has been removed because it is not necessary to pass it to the consumer
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { idp_id: _idpId, ...identityFiltered } = idpIdentity;
+
     const preferences = await this.userPreferences.setUserPreferencesList(
-      idpIdentity,
+      identityFiltered,
       { idpList, allowFutureIdp },
     );
 
     this.trackUserPreferenceChange(req, preferences, idpIdentity);
-
-    const {
-      email,
-      given_name: givenName,
-      family_name: familyName,
-    } = idpIdentity;
 
     const {
       idpList: formattedIdpSettingsList,
