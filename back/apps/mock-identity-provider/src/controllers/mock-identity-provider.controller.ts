@@ -109,7 +109,7 @@ export class MockIdentityProviderController {
 
     const spAcr = acr;
 
-    sessionOidc.set({
+    await sessionOidc.set({
       spAcr,
       spIdentity,
       amr: ['pwd'],
