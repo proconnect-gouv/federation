@@ -18,6 +18,7 @@ module.exports = {
     pathname: '',
   })),
   useNavigate: jest.fn(() => jest.fn()),
+  useParams: jest.fn(),
 };
 
 export {};

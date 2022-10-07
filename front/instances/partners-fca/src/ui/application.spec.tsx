@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { mocked } from 'jest-mock';
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 
 import { AccountProvider } from '@fc/account';
 import { ConfigService } from '@fc/config';
