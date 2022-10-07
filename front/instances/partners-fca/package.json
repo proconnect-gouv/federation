@@ -1,5 +1,5 @@
 {
-  "name": "@fc/partners-fca",
+  "name": "@fc/partners-fca-instance",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

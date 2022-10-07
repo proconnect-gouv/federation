@@ -7,7 +7,15 @@ import { Route, Routes } from 'react-router-dom';
 import { ApplicationLayout } from '@fc/dsfr';
 import { AuthedRoute, UnauthedRoute } from '@fc/routing';
 
-import { ErrorPage, HomePage, NotFoundPage, TracksPage, UserPreferencesPage } from './pages';
+import {
+  Error409Component,
+  ErrorGenericComponent,
+  ErrorPage,
+  HomePage,
+  NotFoundPage,
+  TracksPage,
+  UserPreferencesPage,
+} from './pages';
 
 export const ApplicationRoutes = React.memo(() => (
   <Routes>
@@ -19,7 +27,10 @@ export const ApplicationRoutes = React.memo(() => (
       <Route element={<UnauthedRoute fallbackPath="/history" />}>
         <Route index element={<HomePage />} />
       </Route>
-      <Route element={<ErrorPage />} path="error" />
+      <Route element={<ErrorPage />} path="error">
+        <Route index element={<ErrorGenericComponent />} />
+        <Route element={<Error409Component />} path="409" />
+      </Route>
       <Route element={<NotFoundPage />} path="*" />
     </Route>
   </Routes>

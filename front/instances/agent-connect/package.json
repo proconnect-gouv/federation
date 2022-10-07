@@ -1,5 +1,5 @@
 {
-  "name": "@fc/agent-connect",
+  "name": "@fc/agent-connect-instance",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

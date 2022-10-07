@@ -42,6 +42,7 @@
     "idpId": "fip3",
     "name": "identity-provider-example",
     "descriptions": [
+      "distinct"
     ],
     "mocked": true,
     "usable": true,

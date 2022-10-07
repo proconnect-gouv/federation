@@ -1,4 +1,5 @@
 import { Request } from 'express';
+import { mocked } from 'jest-mock';
 import { v4 as uuid } from 'uuid';
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -24,6 +25,7 @@ import {
   UpdatedUserPreferencesFutureIdpEvent,
   UpdatedUserPreferencesIdpEvent,
 } from '../events';
+import { UserInfosInterface } from '../interfaces';
 import { UserDashboardService } from '../services';
 import { UserDashboardController } from './user-dashboard.controller';
 
@@ -67,6 +69,8 @@ describe('UserDashboardController', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'familyName',
     sub: 'identityMock.sub value',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    idp_id: '8dfc4080-c90d-4234-969b-f6c961de3e90',
   };
 
   const sessionGenericCsrfServiceMock = {
@@ -92,17 +96,16 @@ describe('UserDashboardController', () => {
     setUserPreferencesList: jest.fn(),
   };
 
-  const sendMock = { send: jest.fn() };
-
   const resMock = {
     status: jest.fn(),
     json: jest.fn(),
+    send: jest.fn(),
   };
 
   const reqMock = {} as Request;
 
   const updatePreferencesBodyMock = {
-    idpList: [],
+    idpList: ['8dfc4080-c90d-4234-969b-f6c961de3e90'],
     csrfToken: 'csrfTokenMockValue',
     allowFutureIdp: false,
   };
@@ -179,6 +182,7 @@ describe('UserDashboardController', () => {
     );
 
     jest.mocked(uuid).mockReturnValueOnce(uuidMockedValue);
+    mocked(resMock.status).mockReturnValue(resMock);
   });
 
   it('should be defined', () => {
@@ -269,7 +273,6 @@ describe('UserDashboardController', () => {
 
     it('should return a 401 if no session', async () => {
       // Given
-      resMock.status.mockReturnValue(sendMock);
       sessionServiceMock.get.mockResolvedValueOnce(undefined);
       // When
       await controller.getUserTraces(
@@ -281,8 +284,8 @@ describe('UserDashboardController', () => {
       // Then
       expect(resMock.status).toHaveBeenCalledTimes(1);
       expect(resMock.status).toHaveBeenCalledWith(401);
-      expect(sendMock.send).toHaveBeenCalledTimes(1);
-      expect(sendMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
+      expect(resMock.send).toHaveBeenCalledTimes(1);
+      expect(resMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
     });
 
     it('should call tracks.getList', async () => {
@@ -328,28 +331,28 @@ describe('UserDashboardController', () => {
 
     it('should return a 401 if no session', async () => {
       // Given
-      resMock.status.mockReturnValue(sendMock);
       sessionServiceMock.get.mockResolvedValueOnce(undefined);
       // When
       await controller.getUserInfos(resMock, sessionServiceMock);
       // Then
       expect(resMock.status).toHaveBeenCalledTimes(1);
       expect(resMock.status).toHaveBeenCalledWith(401);
-      expect(sendMock.send).toHaveBeenCalledTimes(1);
-      expect(sendMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
+      expect(resMock.send).toHaveBeenCalledTimes(1);
+      expect(resMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
     });
 
-    it('should return an object with familyName givenName props', async () => {
+    it('should return an object with familyName, givenName and idp used for the connection props', async () => {
       // Given
       sessionServiceMock.get.mockResolvedValueOnce(identityMock);
       // When
-      const { firstname, lastname } = (await controller.getUserInfos(
+      const { firstname, lastname, idpId } = (await controller.getUserInfos(
         resMock,
         sessionServiceMock,
-      )) as { firstname: string; lastname: string };
+      )) as UserInfosInterface;
       // Then
       expect(firstname).toStrictEqual(identityMock.given_name);
       expect(lastname).toStrictEqual(identityMock.family_name);
+      expect(idpId).toStrictEqual('8dfc4080-c90d-4234-969b-f6c961de3e90');
     });
   });
 
@@ -364,18 +367,20 @@ describe('UserDashboardController', () => {
 
     it('should return a 401 if no session', async () => {
       // Given
-      resMock.status.mockReturnValue(sendMock);
       sessionServiceMock.get.mockResolvedValueOnce(undefined);
       // When
       await controller.getUserPreferences(reqMock, resMock, sessionServiceMock);
       // Then
       expect(resMock.status).toHaveBeenCalledTimes(1);
       expect(resMock.status).toHaveBeenCalledWith(401);
-      expect(sendMock.send).toHaveBeenCalledTimes(1);
-      expect(sendMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
+      expect(resMock.send).toHaveBeenCalledTimes(1);
+      expect(resMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
     });
 
     it('should call userPreferences.getUserPreferencesList', async () => {
+      // Given
+      const { idp_id: _idpId, ...identityWithoutIdpIdMock } = identityMock;
+
       // When
       await controller.getUserPreferences(reqMock, resMock, sessionServiceMock);
       // Then
@@ -383,7 +388,7 @@ describe('UserDashboardController', () => {
         1,
       );
       expect(userPreferencesMock.getUserPreferencesList).toHaveBeenCalledWith(
-        identityMock,
+        identityWithoutIdpIdMock,
       );
     });
 
@@ -452,7 +457,6 @@ describe('UserDashboardController', () => {
 
     it('should return a 401 if no session', async () => {
       // Given
-      resMock.status.mockReturnValue(sendMock);
       sessionServiceMock.get.mockResolvedValueOnce(undefined);
       // When
       await controller.updateUserPreferences(
@@ -464,12 +468,39 @@ describe('UserDashboardController', () => {
       // Then
       expect(resMock.status).toHaveBeenCalledTimes(1);
       expect(resMock.status).toHaveBeenCalledWith(401);
-      expect(sendMock.send).toHaveBeenCalledTimes(1);
-      expect(sendMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
+      expect(resMock.send).toHaveBeenCalledTimes(1);
+      expect(resMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
+    });
+
+    it('should return a 409 if user tried to disable the idp currently used for the connection', async () => {
+      // Given
+      const preferencesBodyMock = {
+        ...updatePreferencesBodyMock,
+        idpList: ['dd61da8c-758a-4cc9-acb9-999d7c13df9a'],
+      };
+
+      userPreferencesMock.setUserPreferencesList.mockResolvedValueOnce(
+        resolvedUserPreferencesMock,
+      );
+
+      // When
+      await controller.updateUserPreferences(
+        reqMock,
+        resMock,
+        preferencesBodyMock,
+        sessionServiceMock,
+      );
+
+      // Then
+      expect(resMock.status).toHaveBeenCalledTimes(1);
+      expect(resMock.status).toHaveBeenCalledWith(409);
+      expect(resMock.send).toHaveBeenCalledTimes(1);
+      expect(resMock.send).toHaveBeenCalledWith({ code: 'CONFLICT' });
     });
 
     it('should call userPreferences.setUserPreferencesList', async () => {
       // Given
+      const { idp_id: _idpId, ...identityWithoutIdpIdMock } = identityMock;
       const { allowFutureIdp, idpList } = updatePreferencesBodyMock;
       const expectedServicedArguments = { allowFutureIdp, idpList };
 
@@ -489,7 +520,7 @@ describe('UserDashboardController', () => {
         1,
       );
       expect(userPreferencesMock.setUserPreferencesList).toHaveBeenCalledWith(
-        identityMock,
+        identityWithoutIdpIdMock,
         expectedServicedArguments,
       );
     });

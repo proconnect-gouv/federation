@@ -1,5 +1,5 @@
 {
-  "name": "@fc/user-dashboard",
+  "name": "@fc/user-dashboard-instance",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -9,6 +9,7 @@
     "@fc/tracks": "^0.1.0",
     "@fc/state-management": "^0.1.0",
     "@fc/oidc-client": "^0.1.0",
+    "@fc/user-dashboard": "^0.1.0",
     "@fc/user-preferences": "^0.1.0",
     "luxon": "^2.2.0",
     "react": "^18.2.0",

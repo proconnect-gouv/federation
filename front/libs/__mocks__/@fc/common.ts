@@ -13,6 +13,8 @@ export const useLocalStorage = jest.fn(() => ({
 }));
 
 export enum HttpStatusCode {
+  FORBIDDEN = 403,
+  CONFLICT = 409,
   UNAUTHORIZED = 401,
 }
 
