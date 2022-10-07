@@ -5,7 +5,11 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 
 import { ApplicationLayout } from '@fc/dsfr';
-import { ServiceProvidersPage } from '@fc/partners';
+import {
+  ServiceProvidersDetailsEditPage,
+  ServiceProvidersDetailsViewPage,
+  ServiceProvidersPage,
+} from '@fc/partners';
 
 import { ErrorPage, HomePage, LoginPage, NotFoundPage } from './pages';
 
@@ -15,7 +19,13 @@ export const ApplicationRoutes = React.memo(() => (
       <Route index element={<HomePage />} />
       <Route element={<LoginPage />} path="login" />
       <Route element={<ErrorPage />} path="error" />
-      <Route element={<ServiceProvidersPage />} path="service-providers" />
+      <Route path="service-providers">
+        <Route index element={<ServiceProvidersPage />} />
+        <Route path=":id">
+          <Route element={<ServiceProvidersDetailsEditPage />} path="edit" />
+          <Route element={<ServiceProvidersDetailsViewPage />} path="view" />
+        </Route>
+      </Route>
       <Route element={<NotFoundPage />} path="*" />
     </Route>
   </Routes>

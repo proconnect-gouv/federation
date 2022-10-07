@@ -1,9 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 
 import { AppModule } from '@fc/app';
+import { ConfigService } from '@fc/config';
 import { ExceptionsModule } from '@fc/exceptions';
 import { HttpProxyModule } from '@fc/http-proxy';
 import {
@@ -16,7 +17,12 @@ import {
   ServiceProviderAdapterEnvModule,
   ServiceProviderAdapterEnvService,
 } from '@fc/service-provider-adapter-env';
-import { SessionModule } from '@fc/session';
+import {
+  SessionConfig,
+  SessionMiddleware,
+  SessionModule,
+  SessionTemplateMiddleware,
+} from '@fc/session';
 import { TracksModule } from '@fc/tracks';
 import { UserPreferencesModule } from '@fc/user-preferences';
 
@@ -46,4 +52,15 @@ const oidcClientModule = OidcClientModule.register(
   ],
   providers: [UserDashboardService],
 })
-export class UserDashboardModule {}
+export class UserDashboardModule {
+  constructor(private readonly config: ConfigService) {}
+
+  configure(consumer: MiddlewareConsumer) {
+    const { excludedRoutes } = this.config.get<SessionConfig>('Session');
+
+    consumer
+      .apply(SessionMiddleware, SessionTemplateMiddleware)
+      .exclude(...excludedRoutes)
+      .forRoutes('*');
+  }
+}

@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 import { mocked } from 'jest-mock';
-import { ReactElement } from 'react';
+import React, { ReactElement } from 'react';
 
 import { AccountProvider } from '@fc/account';
 import { ConfigService } from '@fc/config';
@@ -26,10 +26,10 @@ jest.mock('./application.routes', () => ({
   ApplicationRoutes: jest.fn(() => <div>ApplicationRoutes</div>),
 }));
 
-describe('HomePage', () => {
+describe('Application', () => {
   const StoreProviderMock = mocked(StoreProvider);
-  const AppContextProviderMock = mocked(AppContextProvider);
   const ApplicationRoutesMock = mocked(ApplicationRoutes);
+  const AppContextProviderMock = mocked(AppContextProvider);
 
   beforeEach(() => {
     jest.clearAllMocks();
@@ -47,8 +47,13 @@ describe('HomePage', () => {
 
   it('@TODO only for development purpose test if console mock has been called', () => {
     // @TODO to be removed when FCA/FCP implementation is done
+    // given
     const consoleMock = jest.spyOn(console, 'warn').mockImplementation();
+
+    // when
     onErrorHandler(new Error('Randow Banana Error'));
+
+    // then
     expect(consoleMock).toHaveBeenCalled();
   });
 
