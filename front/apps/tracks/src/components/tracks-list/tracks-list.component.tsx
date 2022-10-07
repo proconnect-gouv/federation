@@ -12,7 +12,7 @@ export type TracksListComponentProps = {
   options: TracksConfig;
 };
 
-const NUMBER_OF_PAGES_SHOWN_INTO_NAVIGATION = 5;
+const NUMBER_OF_PAGES_SHOWN_INTO_NAVIGATION = 3;
 
 export const TracksListComponent = React.memo(({ options }: TracksListComponentProps) => {
   const navigate = useNavigate();

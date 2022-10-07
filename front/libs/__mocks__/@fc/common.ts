@@ -15,3 +15,7 @@ export const useLocalStorage = jest.fn(() => ({
 export enum HttpStatusCode {
   UNAUTHORIZED = 401,
 }
+
+export const useScrollTo = jest.fn(() => ({
+  scrollToTop: jest.fn(),
+}));
