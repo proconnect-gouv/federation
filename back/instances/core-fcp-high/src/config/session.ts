@@ -2,6 +2,7 @@
 
 // Tested by DTO
 import { ConfigParser } from '@fc/config';
+import {OidcClientRoutes} from "@fc/oidc-client";
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 import { ISessionCookieOptions, SessionConfig } from '@fc/session';
 
@@ -26,7 +27,10 @@ export default {
   sessionCookieName: 'fc_session_id',
   lifetime: 600, // 10 minutes
   sessionIdLength: 64,
-  excludedRoutes: [`${prefix}${OidcProviderRoutes.AUTHORIZATION}`],
+  excludedRoutes: [
+    `${prefix}${OidcProviderRoutes.AUTHORIZATION}`,
+    `${prefix}${OidcClientRoutes.WELL_KNOWN_KEYS}`
+  ],
   templateExposed: {
     OidcClient: { spId: true, spName: true },
   },
