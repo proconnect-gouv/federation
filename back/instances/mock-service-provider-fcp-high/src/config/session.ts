@@ -23,5 +23,5 @@ export default {
   sessionCookieName: 'sp_session_id',
   lifetime: 600, // 10 minutes
   sessionIdLength: 64,
-  excludedRoutes: [],
+  excludedRoutes: ["/client/.well-known/keys"],
 } as SessionConfig;
