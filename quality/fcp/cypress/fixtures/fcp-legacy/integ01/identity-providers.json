@@ -2,6 +2,7 @@
   {
     "idpId": "fip1",
     "name": "identity-provider-example-faible",
+    "title": "Démonstration - faible",
     "descriptions": [
       "par défaut",
       "actif"
@@ -22,6 +23,7 @@
   {
     "idpId": "fip2",
     "name": "identity-provider-example-substantiel",
+    "title": "Démonstration - substantiel",
     "descriptions": [
       "pour le test de préférences FI"
     ],
@@ -41,6 +43,7 @@
   {
     "idpId": "fip3",
     "name": "identity-provider-example",
+    "title": "Démonstration - élevé",
     "descriptions": [
       "distinct"
     ],
@@ -60,6 +63,7 @@
   {
     "idpId": "aidants-connect-mock",
     "name": "Aidants Connect",
+    "title": "Aidants Connect",
     "descriptions": ["Aidants Connect"],
     "mocked": true,
     "usable": true,
