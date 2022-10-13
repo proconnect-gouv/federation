@@ -2,6 +2,7 @@
   {
     "idpId": "fip1",
     "name": "fip1",
+    "title": "Identity Provider - eIDAS élevé - discov - crypt",
     "descriptions": [
       "par défaut",
       "actif",
@@ -21,6 +22,7 @@
   {
     "idpId": "fip-desactive-visible",
     "name": "fip-desactive-visible",
+    "title": "FI désactivé mais visible",
     "descriptions": ["désactivé et visible"],
     "mocked": true,
     "usable": false,
@@ -38,6 +40,7 @@
   {
     "idpId": "fip-desactive-invisible",
     "name": "fip-desactive-invisible",
+    "title": "FI désactivé invisible",
     "descriptions": ["désactivé et non visible"],
     "mocked": true,
     "usable": false,
@@ -55,6 +58,7 @@
   {
     "idpId": "fip-active-invisible",
     "name": "fip-active-invisible",
+    "title": "FI activé mais invisible",
     "descriptions": ["actif et non visible"],
     "mocked": true,
     "usable": false,
@@ -72,6 +76,7 @@
   {
     "idpId": "lin",
     "name": "lin",
+    "title": "L'identité Numérique La Poste",
     "descriptions": [
       "l'identité numérique La Poste",
       "non whitelisté"
