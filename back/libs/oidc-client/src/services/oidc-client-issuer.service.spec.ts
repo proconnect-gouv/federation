@@ -12,8 +12,14 @@ import {
 import { OidcClientConfigService } from './oidc-client-config.service';
 import { OidcClientIssuerService } from './oidc-client-issuer.service';
 
+jest.mock('openid-client');
+
 describe('OidcClientIssuerService', () => {
   let service: OidcClientIssuerService;
+
+  const customMock = jest.mocked(custom);
+
+  customMock.setHttpOptionsDefaults = jest.fn();
 
   const loggerServiceMock = {
     setContext: jest.fn(),
@@ -99,7 +105,7 @@ describe('OidcClientIssuerService', () => {
 
   const idpMetadataMock = {
     jwks: [],
-    httpOtions: {},
+    httpOptions: {},
     providers: [
       {
         uid: 'idpUidMock',
@@ -234,35 +240,13 @@ describe('OidcClientIssuerService', () => {
       // Given
       const clientInstanceMock = {};
       issuerMock.Client.mockReturnValue(clientInstanceMock);
-      const getHttpOptionsReturnValue = Symbol('getHttpOptionsReturnValue');
-      service['getHttpOptions'] = jest
-        .fn()
-        .mockReturnValue(getHttpOptionsReturnValue);
-      const options = {};
       // When
-      const client = await service.getClient(issuerId);
-      const result = client[custom.http_options]({} as URL, options);
+      await service.getClient(issuerId);
       // Then
-      expect(result).toBe(getHttpOptionsReturnValue);
-    });
-  });
-
-  describe('getHttpOptions', () => {
-    it('should return fusion from config and input', () => {
-      // Given
-      const givenOptions = { auth: 'bar' };
-      const configOptions = { servername: 'buzz' };
-      // When
-      const result = service['getHttpOptions'](
-        configOptions,
-        {} as URL,
-        givenOptions,
+      expect(customMock.setHttpOptionsDefaults).toHaveBeenCalledTimes(1);
+      expect(customMock.setHttpOptionsDefaults).toHaveBeenCalledWith(
+        idpMetadataMock.httpOptions,
       );
-      // Then
-      expect(result).toEqual({
-        auth: 'bar',
-        servername: 'buzz',
-      });
     });
   });
 

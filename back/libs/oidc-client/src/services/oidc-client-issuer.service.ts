@@ -1,6 +1,5 @@
-import * as https from 'https';
 import { JWK } from 'jose';
-import { Client, custom, HttpOptions, Issuer } from 'openid-client';
+import { Client, custom, Issuer } from 'openid-client';
 
 import { Injectable } from '@nestjs/common';
 
@@ -23,14 +22,6 @@ export class OidcClientIssuerService {
     private readonly config: OidcClientConfigService,
   ) {
     this.logger.setContext(this.constructor.name);
-  }
-
-  private getHttpOptions(
-    configOptions: Omit<https.RequestOptions, keyof URL>,
-    _url: URL,
-    givenOptions: Omit<https.RequestOptions, keyof URL>,
-  ): HttpOptions {
-    return { ...givenOptions, ...configOptions };
   }
 
   /**
@@ -96,7 +87,9 @@ export class OidcClientIssuerService {
       idpMetadata.client,
       jwks as { keys: JWK[] },
     );
-    client[custom.http_options] = this.getHttpOptions.bind(this, httpOptions);
+
+    custom.setHttpOptionsDefaults(httpOptions);
+
     return client;
   }
 }
