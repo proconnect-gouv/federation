@@ -92,6 +92,7 @@
     "class-validator": "^0.13.1",
     "cookie-parser": "^1.4.5",
     "deep-freeze": "^0.0.1",
+    "elastic-apm-node": "^3.39.0",
     "fast-csv": "^4.3.6",
     "global-agent": "^3.0.0",
     "helmet": "^5.0.2",
