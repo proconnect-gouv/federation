@@ -16,16 +16,16 @@
 ### Hardening & QA
 
 - [UserDashboard]
-  - Added BDD tests to validate the notification sent when you change your IdPs preferences
+  - Added BDD tests to validate the notification sent when the IdPs preferences are changed
 - [SupportForm]
-  - Added platform name to the form to differentiate FC from FC+
+  - Added platform name to the contact form to differentiate FC from FC+
 - Added cache control on metadata routes
 - Updated local stack app certificates
 
 ### Not yet in production (futures apps / features)
 
 - [PartnerDashboard]
-  - Moved services providers components into partners directory
+  - Moved "service providers" components into the partners directory
 
 ## v3.115 && v3.116.0
 
@@ -36,13 +36,13 @@
   - Removed unused "phone_number" and "address" claims
 - [UserDashboard]
   - Added business logs
-  - Now you can't block the IdP you are currently using
+  - Prevented users from blocking the currently used IdP
 
 ### Not yet in production (futures apps / features)
 
 - [PartnerDashboard]
-  - Add pagination viewport mobile
-  - Add view to display services providers details
+  - Added pagination on mobile viewport
+  - Added service providers details page
 
 ## v3.113 && v3.114.0 
 
