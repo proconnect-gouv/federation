@@ -4,6 +4,46 @@
 
 **🔈 The odd versions are not released into production.**
 
+## v3.117 && v3.118.0
+
+### Features
+
+- [FranceConnect+]
+  - Added link to support form when an error occurs
+- [eIDASBridge]
+  - Sub is now pairwised with the service provider country code
+
+### Hardening & QA
+
+- [UserDashboard]
+  - Added BDD tests to validate the notification sent when you change your IdPs preferences
+- [SupportForm]
+  - Added platform name to the form to differentiate FC from FC+
+- Added cache control on metadata routes
+- Updated local stack app certificates
+
+### Not yet in production (futures apps / features)
+
+- [PartnerDashboard]
+  - Moved services providers components into partners directory
+
+## v3.115 && v3.116.0
+
+### Hardening & QA
+
+- Updated react-router-dom to v6
+- [FranceConnect+]
+  - Removed unused "phone_number" and "address" claims
+- [UserDashboard]
+  - Added business logs
+  - Now you can't block the IdP you are currently using
+
+### Not yet in production (futures apps / features)
+
+- [PartnerDashboard]
+  - Add pagination viewport mobile
+  - Add view to display services providers details
+
 ## v3.113 && v3.114.0 
 
 - [FranceConnect+]  
