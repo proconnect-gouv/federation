@@ -88,7 +88,7 @@ export class CryptoOverrideService {
 
       this.logger.debug('CryptoOverrideService.sign()');
       this.logger.trace({ sign: { payloadEncoding, requestTimeout } });
-      let span = apm.startSpan('CryptoOverrideService.sign');
+      const span = apm.startSpan('CryptoOverrideService.sign');
 
       try {
         // Build message
@@ -98,7 +98,7 @@ export class CryptoOverrideService {
         };
 
         // Build callbacks
-        const next = this.signSuccess.bind(this, resolve, reject);
+        const next = this.signSuccess.bind(this, resolve, reject, span);
         const error = (error: Error): void => {
           this.logger.trace({ error }, LoggerLevelNames.WARN);
           reject(new CryptographyGatewayException());
@@ -115,19 +115,16 @@ export class CryptoOverrideService {
       } catch (error) {
         this.logger.trace({ error }, LoggerLevelNames.WARN);
         return reject(new CryptographyGatewayException());
-      } finally {
-        if (span) {
-          span.end();
-        }
       }
     });
   }
 
   // Handle successful call
-  private signSuccess(resolve: Function, reject: Function, data: string): void {
+  private signSuccess(resolve: Function, reject: Function, span, data: string): void {
     this.logger.debug('CryptoOverrideService.signSuccess');
     const { payloadEncoding } =
       this.config.get<RabbitmqConfig>('CryptographyBroker');
+    span.end();
     /**
      * @TODO #146 define a more powerful mechanism
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/146
@@ -141,7 +138,6 @@ export class CryptoOverrideService {
     }
 
     this.logger.trace({ data, payloadEncoding });
-
     resolve(Buffer.from(data, payloadEncoding));
   }
 }
