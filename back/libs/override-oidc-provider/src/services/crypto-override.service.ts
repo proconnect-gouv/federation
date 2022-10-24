@@ -13,6 +13,7 @@ import {
   CryptographyInvalidPayloadFormatException,
 } from '../exceptions';
 import { OverrideCode } from '../helpers';
+import * as apm from "elastic-apm-node";
 
 @Injectable()
 export class CryptoOverrideService {
@@ -87,6 +88,7 @@ export class CryptoOverrideService {
 
       this.logger.debug('CryptoOverrideService.sign()');
       this.logger.trace({ sign: { payloadEncoding, requestTimeout } });
+      let span = apm.startSpan('CryptoOverrideService.sign');
 
       try {
         // Build message
@@ -113,6 +115,10 @@ export class CryptoOverrideService {
       } catch (error) {
         this.logger.trace({ error }, LoggerLevelNames.WARN);
         return reject(new CryptographyGatewayException());
+      } finally {
+        if (span) {
+          span.end();
+        }
       }
     });
   }
