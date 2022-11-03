@@ -28,7 +28,7 @@
 	<entry key="connector.metadata.url">https://eidas-fr.docker.dev-franceconnect.fr/EidasNode/ConnectorMetadata</entry>
 
     <entry key="service.LoA">
-        http://eidas.europa.eu/LoA/high;http://eidas.europa.eu/LoA/substantial;
+        http://eidas.europa.eu/LoA/substantial;
     </entry>
 
     <!-- METADATA configuration -->
