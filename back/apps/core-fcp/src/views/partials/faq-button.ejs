@@ -1,4 +1,4 @@
-<% if (locals.config.Core?.supportFormCodes?.includes(locals.code)) { %>
+<% if (locals.config?.Core?.supportFormCodes?.includes(locals.code)) { %>
 
   <%
   const sp_name = locals.session.OidcClient?.spName || locals.spName;
