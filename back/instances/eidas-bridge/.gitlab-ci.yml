@@ -41,6 +41,9 @@ eidas-bridge:
     - wait
     - cd $CI_PROJECT_DIR
   script:
+    # Install Cypress on the runner and fetch node_modules
+    - cd $CI_PROJECT_DIR/back
+    - yarn install
     # Up the docker-stack with minimal requirement
     - docker-stack up min-eidas-high
     - docker exec fc_core-fcp-high_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
@@ -63,7 +66,7 @@ eidas-bridge:
       exit 1)
     # Starting Cypress E2E checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting E2E checks"
-    - npx cypress${CYPRESS_VERSION} run -c video=${CYPRESS_VIDEO} -P back/instances/eidas-bridge || RETURN_CODE=1
+    - yarn test:e2e:eidas-bridge -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     # Extract logs in case of failure
     - if [ $RETURN_CODE -ne 0 ]; then $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh && (docker cp fc-rp-all:/var/log/nginx /tmp/artifacts-logs || echo "[fc-rp-all] No NginX logs found"); fi
     - exit $RETURN_CODE
