@@ -196,6 +196,7 @@ describe('OidcClientUtilsService', () => {
       // oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const acr_values = 'eidas1';
+      const prompt = 'login';
       service['createOidcClient'] = createOidcClientMock;
       // When
       await service.getAuthorizeUrl({
@@ -205,10 +206,11 @@ describe('OidcClientUtilsService', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
+        prompt,
       });
       // Then
       expect(authorizationUrlMock).toHaveBeenCalledWith({
-        prompt: 'login',
+        prompt,
         state,
         scope,
         // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -228,6 +230,7 @@ describe('OidcClientUtilsService', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       const acr_values = 'eidas1';
       const claims = '{ id_token: { amr: { essential: true } } }';
+      const prompt = 'login';
       service['createOidcClient'] = createOidcClientMock;
       // When
       await service.getAuthorizeUrl({
@@ -238,10 +241,11 @@ describe('OidcClientUtilsService', () => {
         acr_values,
         nonce,
         claims,
+        prompt,
       });
       // Then
       expect(authorizationUrlMock).toHaveBeenCalledWith({
-        prompt: 'login',
+        prompt,
         state,
         scope,
         // eslint-disable-next-line @typescript-eslint/naming-convention
