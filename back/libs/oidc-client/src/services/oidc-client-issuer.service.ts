@@ -1,7 +1,7 @@
 import { JWK } from 'jose';
 import { Client, custom, Issuer } from 'openid-client';
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 
 import { LoggerService } from '@fc/logger-legacy';
 import { IdentityProviderMetadata } from '@fc/oidc';
@@ -14,7 +14,7 @@ import {
 import { OidcClientConfigService } from './oidc-client-config.service';
 
 @Injectable()
-export class OidcClientIssuerService {
+export class OidcClientIssuerService implements OnModuleInit {
   private IssuerProxy = Issuer;
 
   constructor(
@@ -22,6 +22,14 @@ export class OidcClientIssuerService {
     private readonly config: OidcClientConfigService,
   ) {
     this.logger.setContext(this.constructor.name);
+  }
+
+  async onModuleInit() {
+    const { httpOptions } = await this.config.get();
+
+    this.logger.trace('Initializing oidc-client');
+
+    custom.setHttpOptionsDefaults(httpOptions);
   }
 
   /**
@@ -80,15 +88,13 @@ export class OidcClientIssuerService {
     const idpMetadata = await this.getIdpMetadata(issuerId);
 
     const issuer = await this.getIssuer(issuerId);
-    const { jwks, httpOptions } = await this.config.get();
+    const { jwks } = await this.config.get();
     const clientClass = await this.getClientClass();
 
     const client = new issuer[clientClass](
       idpMetadata.client,
       jwks as { keys: JWK[] },
     );
-
-    custom.setHttpOptionsDefaults(httpOptions);
 
     return client;
   }

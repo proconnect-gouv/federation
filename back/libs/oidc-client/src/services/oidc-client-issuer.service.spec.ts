@@ -156,6 +156,30 @@ describe('OidcClientIssuerService', () => {
     });
   });
 
+  describe('onModuleInit', () => {
+    it('should set httpOptions on client', async () => {
+      // When
+      await service.onModuleInit();
+
+      // Then
+      expect(customMock.setHttpOptionsDefaults).toHaveBeenCalledTimes(1);
+      expect(customMock.setHttpOptionsDefaults).toHaveBeenCalledWith(
+        idpMetadataMock.httpOptions,
+      );
+    });
+
+    it('should log', async () => {
+      // When
+      await service.onModuleInit();
+
+      // Then
+      expect(loggerServiceMock.trace).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.trace).toHaveBeenCalledWith(
+        'Initializing oidc-client',
+      );
+    });
+  });
+
   describe('getClientClass', () => {
     it('should return "Client"', async () => {
       // Given
@@ -234,19 +258,6 @@ describe('OidcClientIssuerService', () => {
       const result = await service.getClient(issuerId);
       // Then
       expect(result).toBe(clientInstanceMock);
-    });
-
-    it('should set httpOptions on client', async () => {
-      // Given
-      const clientInstanceMock = {};
-      issuerMock.Client.mockReturnValue(clientInstanceMock);
-      // When
-      await service.getClient(issuerId);
-      // Then
-      expect(customMock.setHttpOptionsDefaults).toHaveBeenCalledTimes(1);
-      expect(customMock.setHttpOptionsDefaults).toHaveBeenCalledWith(
-        idpMetadataMock.httpOptions,
-      );
     });
   });
 
