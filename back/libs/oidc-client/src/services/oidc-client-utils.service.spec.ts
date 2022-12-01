@@ -540,7 +540,7 @@ describe('OidcClientUtilsService', () => {
     it('should return OidcClientRuntimeException isIdpBlacklist throw an error', async () => {
       // setup
       const errorMock = new Error(
-        'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
+        'Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter.',
       );
       // action
       serviceProviderServiceMock.shouldExcludeIdp.mockRejectedValueOnce(
