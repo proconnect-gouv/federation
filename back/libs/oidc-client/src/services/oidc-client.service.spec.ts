@@ -5,9 +5,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PartialExcept, validateDto } from '@fc/common';
 import { LoggerService } from '@fc/logger-legacy';
 import { IOidcIdentity } from '@fc/oidc';
-import { IEventContext, TrackingService } from '@fc/tracking';
+import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
-import { OidcClientTokenEvent, OidcClientUserinfoEvent } from '../events';
 import { OidcClientUserinfosFailedException } from '../exceptions';
 import { ExtraTokenParams, TokenParams, UserInfosParams } from '../interfaces';
 import { OidcClientService } from './oidc-client.service';
@@ -32,7 +31,7 @@ describe('OidcClientService', () => {
   const accessTokenMock = 'accessTokenMockValue';
   const idTokenMock = 'idTokenMockValue';
 
-  const contextMock: IEventContext = {
+  const contextMock: TrackedEventContextInterface = {
     hello: 'world',
   };
 
@@ -206,22 +205,6 @@ describe('OidcClientService', () => {
       expect(oidcClientUtilsServiceMock.getTokenSet).toHaveBeenCalledTimes(1);
     });
 
-    it('should track the token event', async () => {
-      // action
-      await service.getTokenFromProvider(
-        idpIdMock,
-        tokenParamsMock,
-        contextMock,
-      );
-
-      // assert
-      expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
-      expect(trackingServiceMock.track).toHaveBeenCalledWith(
-        OidcClientTokenEvent,
-        contextMock,
-      );
-    });
-
     it('should get claims from token', async () => {
       // action
       const { acr } = await service.getTokenFromProvider(
@@ -296,18 +279,6 @@ describe('OidcClientService', () => {
         '"idpIdMockValue" doesn\'t provide a minimum identity information: [{}]',
       );
       expect(oidcClientUtilsServiceMock.getUserInfo).toHaveBeenCalledTimes(1);
-    });
-
-    it('should track the userinfos event', async () => {
-      // action
-      await service.getUserInfosFromProvider(userInfosParamsMock, contextMock);
-
-      // assert
-      expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
-      expect(trackingServiceMock.track).toHaveBeenCalledWith(
-        OidcClientUserinfoEvent,
-        contextMock,
-      );
     });
   });
 

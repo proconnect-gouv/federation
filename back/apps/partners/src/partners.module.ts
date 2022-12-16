@@ -47,7 +47,7 @@ export class PartnersModule {
     return {
       module: PartnersModule,
       imports: [
-        ExceptionsModule,
+        ExceptionsModule.withoutTracking(),
         AppModule,
         PostgresModule,
         PartnerAccountModule,

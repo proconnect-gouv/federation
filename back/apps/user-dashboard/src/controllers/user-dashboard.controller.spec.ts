@@ -20,11 +20,6 @@ import {
 } from '@fc/user-preferences';
 
 import { GetUserTracesQueryDto } from '../dto';
-import {
-  UpdatedUserPreferencesEvent,
-  UpdatedUserPreferencesFutureIdpEvent,
-  UpdatedUserPreferencesIdpEvent,
-} from '../events';
 import { UserInfosInterface } from '../interfaces';
 import { UserDashboardService } from '../services';
 import { UserDashboardController } from './user-dashboard.controller';
@@ -122,6 +117,11 @@ describe('UserDashboardController', () => {
 
   const trackingService = {
     track: jest.fn(),
+    TrackedEventsMap: {
+      UPDATED_USER_PREFERENCES: {},
+      UPDATED_USER_PREFERENCES_FUTURE_IDP: {},
+      UPDATED_USER_PREFERENCES_IDP: {},
+    },
   };
 
   beforeEach(async () => {
@@ -632,7 +632,7 @@ describe('UserDashboardController', () => {
       expect(controller['tracking'].track).toHaveBeenCalledTimes(4);
       expect(controller['tracking'].track).toHaveBeenNthCalledWith(
         1,
-        UpdatedUserPreferencesEvent,
+        trackingService.TrackedEventsMap.UPDATED_USER_PREFERENCES,
         {
           req: reqMock,
           changeSetId: uuidMockedValue,
@@ -653,7 +653,7 @@ describe('UserDashboardController', () => {
       // Then
       expect(controller['tracking'].track).toHaveBeenNthCalledWith(
         2,
-        UpdatedUserPreferencesFutureIdpEvent,
+        trackingService.TrackedEventsMap.UPDATED_USER_PREFERENCES_FUTURE_IDP,
         {
           req: reqMock,
           changeSetId: uuidMockedValue,
@@ -673,7 +673,7 @@ describe('UserDashboardController', () => {
       // Then
       expect(controller['tracking'].track).toHaveBeenNthCalledWith(
         3,
-        UpdatedUserPreferencesIdpEvent,
+        trackingService.TrackedEventsMap.UPDATED_USER_PREFERENCES_IDP,
         {
           req: reqMock,
           changeSetId: uuidMockedValue,
@@ -683,7 +683,7 @@ describe('UserDashboardController', () => {
       );
       expect(controller['tracking'].track).toHaveBeenNthCalledWith(
         4,
-        UpdatedUserPreferencesIdpEvent,
+        trackingService.TrackedEventsMap.UPDATED_USER_PREFERENCES_IDP,
         {
           req: reqMock,
           changeSetId: uuidMockedValue,
