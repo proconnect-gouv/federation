@@ -53,6 +53,7 @@
     "typeorm:migrations-run": "ts-node ./node_modules/typeorm/cli.js -d ./typeorm.config.ts migration:run",
     "typeorm:migrations-generate": "ts-node ./node_modules/typeorm/cli.js -d ./typeorm.config.ts migration:generate",
     "typeorm:fixtures:load": "./scripts/fixtures-load.sh",
+    "typeorm:fixtures:reset-config-test": "./scripts/fixtures-reset-config-test.sh",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -274,6 +275,7 @@
       "^@fc/partner-datapass(|/.*)$": "<rootDir>/libs/partner-datapass/src/$1",
       "^@fc/partner-organisation(|/.*)$": "<rootDir>/libs/partner-organisation/src/$1",
       "^@fc/partner-service-provider(|/.*)$": "<rootDir>/libs/partner-service-provider/src/$1",
+      "^@fc/partner-service-provider-configuration(|/.*)$": "<rootDir>/libs/partner-service-provider-configuration/src/$1",
       "^@fc/access-control(|/.*)$": "<rootDir>/libs/access-control/src/$1"
     },
     "preset": "ts-jest"

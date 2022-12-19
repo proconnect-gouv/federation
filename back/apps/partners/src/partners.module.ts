@@ -18,10 +18,15 @@ import { ConfigService } from '@fc/config';
 import { ExceptionsModule } from '@fc/exceptions';
 import { PartnerAccountModule } from '@fc/partner-account';
 import { PartnerServiceProviderModule } from '@fc/partner-service-provider';
+import { PartnerServiceProviderConfigurationModule } from '@fc/partner-service-provider-configuration';
 import { PostgresModule } from '@fc/postgres';
 import { SessionConfig, SessionMiddleware, SessionModule } from '@fc/session';
 
-import { AccountController, ServiceProviderController } from './controllers';
+import {
+  AccountController,
+  ServiceProviderConfigurationController,
+  ServiceProviderController,
+} from './controllers';
 import { PartnersSession } from './dto';
 import { PartnersService } from './services';
 
@@ -52,11 +57,16 @@ export class PartnersModule {
         PostgresModule,
         PartnerAccountModule,
         PartnerServiceProviderModule,
+        PartnerServiceProviderConfigurationModule,
         SessionModule.forRoot({ schema: PartnersSession }),
         AccessControlModule.withRolesHandler(handler),
       ],
       providers: [PartnersService],
-      controllers: [AccountController, ServiceProviderController],
+      controllers: [
+        AccountController,
+        ServiceProviderController,
+        ServiceProviderConfigurationController,
+      ],
     };
   }
 }

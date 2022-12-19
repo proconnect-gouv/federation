@@ -1,4 +1,3 @@
-import { mocked } from 'jest-mock';
 import { encode } from 'querystring';
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -169,7 +168,7 @@ describe('CoreFcaController', () => {
     setAlias: jest.fn(),
   } as unknown as SessionService;
 
-  const queryStringEncodeMock = mocked(encode);
+  const queryStringEncodeMock = jest.mocked(encode);
 
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
@@ -815,7 +814,7 @@ describe('CoreFcaController', () => {
   describe('validateIdentity()', () => {
     let validateDtoMock;
     beforeEach(() => {
-      validateDtoMock = mocked(validateDto);
+      validateDtoMock = jest.mocked(validateDto);
     });
 
     it('should succeed to validate identity', async () => {
