@@ -1,5 +1,4 @@
 import { Request } from 'express';
-import { mocked } from 'jest-mock';
 import { v4 as uuid } from 'uuid';
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -182,7 +181,7 @@ describe('UserDashboardController', () => {
     );
 
     jest.mocked(uuid).mockReturnValueOnce(uuidMockedValue);
-    mocked(resMock.status).mockReturnValue(resMock);
+    jest.mocked(resMock.status).mockReturnValue(resMock);
   });
 
   it('should be defined', () => {

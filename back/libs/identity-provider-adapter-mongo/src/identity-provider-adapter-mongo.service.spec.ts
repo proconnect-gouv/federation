@@ -1,5 +1,3 @@
-import { mocked } from 'jest-mock';
-
 import { EventBus } from '@nestjs/cqrs';
 import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
@@ -450,7 +448,7 @@ describe('IdentityProviderAdapterMongoService', () => {
   describe('findAllIdentityProvider', () => {
     let validateDtoMock;
     beforeEach(() => {
-      validateDtoMock = mocked(validateDto);
+      validateDtoMock = jest.mocked(validateDto);
       configMock.get.mockReturnValueOnce({
         disableIdpValidationOnLegacy: false,
       });

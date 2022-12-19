@@ -1,5 +1,3 @@
-import { mocked } from 'jest-mock';
-
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialExcept, validateDto } from '@fc/common';
@@ -113,7 +111,7 @@ describe('OidcClientService', () => {
 
     service = module.get<OidcClientService>(OidcClientService);
 
-    validateDtoMock = mocked(validateDto);
+    validateDtoMock = jest.mocked(validateDto);
   });
 
   describe('constructor', () => {

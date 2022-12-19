@@ -1,6 +1,5 @@
 import diacritics from 'diacritics';
 import Fuse from 'fuse.js';
-import { mocked } from 'jest-mock';
 
 import {
   IdentityProvider,
@@ -17,7 +16,7 @@ import {
 jest.mock('fuse.js');
 
 describe('SearchService', () => {
-  const fuseMock = mocked(Fuse);
+  const fuseMock = jest.mocked(Fuse);
 
   const identityProvidersMock: IdentityProvider[] = [
     {
@@ -160,7 +159,6 @@ describe('SearchService', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
     jest.restoreAllMocks();
 
     AgentConnectSearchService.FUSE_INSTANCE = {
