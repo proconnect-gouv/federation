@@ -23,15 +23,15 @@ import {
 } from '@fc/oidc-client';
 import { OidcProviderConfig, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import {
-  ISessionService,
-  Session,
-  SessionCsrfService,
-  SessionNotFoundException,
-} from '@fc/session';
+import { ISessionService, Session, SessionCsrfService } from '@fc/session';
 import { TrackedEventContextInterface } from '@fc/tracking';
 
-import { CoreConfig } from '../dto';
+import {
+  CoreConfig,
+  GetConsentSessionDto,
+  GetVerifySessionDto,
+  InteractionSessionDto,
+} from '../dto';
 import { CoreFcpService, CoreService } from '../services';
 
 @Controller()
@@ -78,13 +78,12 @@ export class CoreFcpController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient')
+    @Session('OidcClient', InteractionSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const session = await sessionOidc.get();
-    if (!session) {
-      throw new SessionNotFoundException('OidcClient');
-    }
+
+    this.logger.trace({ session });
 
     const { spName } = session;
     const { params, uid } = await this.oidcProvider.getInteraction(req, res);
@@ -158,16 +157,10 @@ export class CoreFcpController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient')
+    @Session('OidcClient', GetVerifySessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
-    const session: OidcSession = await sessionOidc.get();
-
-    if (!session) {
-      throw new SessionNotFoundException('OidcClient');
-    }
-
-    const { idpId, interactionId, spId } = session;
+    const { idpId, interactionId, spId } = await sessionOidc.get();
 
     await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
 
@@ -199,7 +192,7 @@ export class CoreFcpController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient')
+    @Session('OidcClient', GetConsentSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const {

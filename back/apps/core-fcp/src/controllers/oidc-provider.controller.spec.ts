@@ -12,7 +12,6 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import {
   SessionCsrfService,
   SessionInvalidCsrfConsentException,
-  SessionNotFoundException,
   SessionService,
 } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
@@ -529,16 +528,6 @@ describe('OidcProviderController', () => {
   });
 
   describe('getLogin()', () => {
-    it('should throw an exception if no session', async () => {
-      // Given
-      const body = { _csrf: randomStringMock };
-      sessionServiceMock.get.mockReset().mockResolvedValue(undefined);
-      // Then
-      await expect(
-        oidcProviderController.getLogin(req, res, body, sessionServiceMock),
-      ).rejects.toThrow(SessionNotFoundException);
-    });
-
     it('should throw an exception if no identity in session', async () => {
       // Given
       const body = { _csrf: randomStringMock };

@@ -33,11 +33,14 @@ import {
   Session,
   SessionCsrfService,
   SessionInvalidCsrfSelectIdpException,
-  SessionNotFoundException,
 } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
-import { OidcIdentityDto } from '../dto';
+import {
+  GetOidcCallbackSessionDto,
+  OidcIdentityDto,
+  RedirectToIdpSessionDto,
+} from '../dto';
 import { ProcessCore } from '../enums';
 import { CoreFcpInvalidIdentityException } from '../exceptions';
 import { IIdentityCheckFeatureHandler } from '../interfaces';
@@ -72,7 +75,7 @@ export class OidcClientController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient')
+    @Session('OidcClient', RedirectToIdpSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
     const {
@@ -196,19 +199,13 @@ export class OidcClientController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient')
+    @Session('OidcClient', GetOidcCallbackSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
-    const session: OidcSession = await sessionOidc.get();
-    this.logger.trace({ tracking: this.tracking });
-
-    if (!session) {
-      throw new SessionNotFoundException('OidcClient');
-    }
+    const { idpId, idpNonce, idpState, interactionId } =
+      await sessionOidc.get();
 
     this.tracking.track(this.tracking.TrackedEventsMap.IDP_CALLEDBACK, { req });
-
-    const { idpId, idpNonce, idpState, interactionId } = session;
 
     const tokenParams = {
       state: idpState,

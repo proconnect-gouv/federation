@@ -8,11 +8,7 @@ import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import {
-  SessionCsrfService,
-  SessionNotFoundException,
-  SessionService,
-} from '@fc/session';
+import { SessionCsrfService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
 import { CoreService } from '../services';
@@ -398,29 +394,9 @@ describe('CoreFcpController', () => {
         uid: 'uid',
       });
     });
-
-    it('should throw if session is not found', async () => {
-      // Given
-      sessionServiceMock.get.mockReset().mockResolvedValueOnce(undefined);
-      // When
-      await expect(
-        coreController.getInteraction(req, res, params, sessionServiceMock),
-      ).rejects.toThrow(SessionNotFoundException);
-      // Then
-    });
   });
 
   describe('getVerify()', () => {
-    it('should throw if session is not found', async () => {
-      // Given
-      sessionServiceMock.get.mockReturnValueOnce(null);
-
-      // When / Then
-      await expect(() =>
-        coreController.getVerify(req, res, params, sessionServiceMock),
-      ).rejects.toThrow(SessionNotFoundException);
-    });
-
     describe('Idp blacklisted scenario for get oidc callback', () => {
       const res = {
         redirect: jest.fn(),
