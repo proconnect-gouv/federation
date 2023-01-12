@@ -34,7 +34,6 @@ import {
   Session,
   SessionCsrfService,
   SessionInvalidCsrfConsentException,
-  SessionNotFoundException,
   SessionService,
 } from '@fc/session';
 import {
@@ -43,7 +42,7 @@ import {
   TrackingService,
 } from '@fc/tracking';
 
-import { AuthorizeParamsDto, ErrorParamsDto } from '../dto';
+import { AuthorizeParamsDto, ErrorParamsDto, GetLoginSessionDto } from '../dto';
 import {
   CoreFcpFailedAbortSessionException,
   CoreFcpInvalidEventKeyException,
@@ -237,15 +236,11 @@ export class OidcProviderController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient')
+    @Session('OidcClient', GetLoginSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { _csrf: csrfToken } = body;
     const session: OidcSession = await sessionOidc.get();
-
-    if (!session) {
-      throw new SessionNotFoundException('OidcClient');
-    }
 
     const { spId, spIdentity } = session;
 

@@ -10,7 +10,6 @@ import { OidcClientService, TokenParams } from '@fc/oidc-client';
 import {
   SessionCsrfService,
   SessionInvalidCsrfSelectIdpException,
-  SessionNotFoundException,
   SessionService,
 } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
@@ -516,16 +515,6 @@ describe('OidcClient Controller', () => {
       oidcClientServiceMock.utils.checkIdpBlacklisted.mockResolvedValueOnce(
         false,
       );
-    });
-
-    it('should throw an exception if the oidc session is not defined', async () => {
-      // setup
-      sessionServiceMock.get.mockReset().mockResolvedValueOnce(undefined);
-
-      // action
-      await expect(
-        controller.getOidcCallback(req, res, sessionServiceMock),
-      ).rejects.toThrow(SessionNotFoundException);
     });
 
     it('should call token with providerId', async () => {
