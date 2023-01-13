@@ -160,6 +160,9 @@ _up() {
       min-storybook)
         services="$services min-storybook"
         ;;
+      usagers-fca)
+        services="$services usagers-fca"
+        ;;
       all)
         services=all
         break
@@ -185,6 +188,7 @@ _up() {
         echo "  - hybridge-fca-low => up minimal needed services to run core-fca-low fca-low-front bridge-proxy-rie fsa1-low lemon-ldap"
         echo "  - partners-fca => up minimal needed services to run partners fca front and back"
         echo "  - partners-fcp => up minimal needed services to run partners fcp front and back"
+        echo "  - usagers-fca => up minimal needed services to run usager agentConnect"
         echo "  - min-storybook => up minimal needed services to run storybook"
         echo "  - all => run all services"
         echo "----"
