@@ -106,8 +106,8 @@ Fonctionnalité: Information Consentement
     Et je suis connecté
     Et le fournisseur de service a accès aux informations du scope "anonyme"
 
-  # Ignorer à cause du bug https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/540
-  @ignoreHigh @ignoreLow
+  # Aucun FS privé sur fcp-low
+  @ignoreLow
   Scénario: Information - scope anonyme avec FS privé avec consentement obligatoire
     Etant donné que j'utilise un fournisseur de service "privé avec consentement obligatoire"
     Et le fournisseur de service requiert l'accès aux informations du scope "anonyme"
