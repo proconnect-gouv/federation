@@ -130,7 +130,7 @@ export class ConnectionWorkflow {
       this.serviceProvider.explicitConsent &&
       this.scopeContext.type !== 'anonyme'
     ) {
-      infoConsent.getConsentCheckbox().check();
+      infoConsent.getConsentCheckbox().check({ force: true });
     }
     infoConsent.getConsentButton().click();
     return this;

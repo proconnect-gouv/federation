@@ -72,7 +72,7 @@
     "encryption": "",
     "signature": "HS256",
     "selectors": {
-      "idpButton": ".footer-container li:nth-child(4) a",
+      "idpButton": "footer li:nth-child(5) a",
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "[type='submit']"

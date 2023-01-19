@@ -8,21 +8,21 @@ import { ChainableElement, IdentityProvider } from '../../common/types';
 
 export class TechnicalErrorPage {
   checkIsVisible(): void {
-    cy.get('#error-section').should('be.visible');
+    cy.get('[data-testid="error-section"]').should('be.visible');
   }
 
   checkErrorCode(errorCode: string): void {
-    cy.get('#error-code').contains(errorCode);
+    cy.get('[data-testid="error-code"]').contains(errorCode);
   }
 
   checkErrorMessage(message: string): void {
-    cy.get('h1.main-title').contains(message);
+    cy.get('[data-testid="error-section-title"]').contains(message);
   }
 }
 
 export class IdentityProviderSelectionPage {
   getIdpGrid(): ChainableElement {
-    return cy.get('.main-providers');
+    return cy.get('[data-testid="main-providers"]');
   }
 
   getIdpButton(idp: IdentityProvider): ChainableElement {
@@ -36,10 +36,10 @@ export class IdentityProviderSelectionPage {
 
 export class InfoConsentPage {
   getConsentButton(): ChainableElement {
-    return cy.get('button.content__continue');
+    return cy.get('[data-testid="consent-continue"]');
   }
 
   getConsentCheckbox(): ChainableElement {
-    return cy.get('#consent');
+    return cy.get('[data-testid="checkbox-consent"]');
   }
 }
