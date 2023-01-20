@@ -1,5 +1,8 @@
-import { Then, When } from 'cypress-cucumber-preprocessor/steps';
+import { Given, Then, When } from 'cypress-cucumber-preprocessor/steps';
 
+import { addInterceptParams } from '../../common/helpers';
+import { IdentityProvider } from '../../common/types';
+import { getDefaultIdpScope } from '../helpers';
 import IdentityProviderSelectionPage from '../pages/identity-provider-selection-page';
 
 const identityProviderSelectionPage = new IdentityProviderSelectionPage();
@@ -28,6 +31,46 @@ Then(
     identityProviderSelectionPage
       .getIdpButton(this.identityProvider.idpId)
       .should(isEnabled ? 'be.enabled' : 'be.disabled');
+  },
+);
+
+Given(
+  "je paramètre un intercepteur pour retirer le scope {string} au prochain appel au fournisseur d'identité",
+  function (scopeToRemove) {
+    const { idpId, url }: IdentityProvider = this.identityProvider;
+    // Use requested scope for eidas idp and default scope for other idp
+    const scopeContext =
+      idpId === 'eidas-bridge'
+        ? this.requestedScope
+        : getDefaultIdpScope(this.scopes);
+    const { scopes } = scopeContext;
+    const modifiedScope = scopes
+      .filter((scope) => scope !== scopeToRemove)
+      .join(' ');
+    addInterceptParams(
+      `${url}/authorize*`,
+      { scope: modifiedScope },
+      'FI:IdpRemoveScope',
+    );
+  },
+);
+
+Given(
+  "je paramètre un intercepteur pour ajouter le scope {string} au prochain appel au fournisseur d'identité",
+  function (scopeToAdd) {
+    const { idpId, url }: IdentityProvider = this.identityProvider;
+    // Use requested scope for eidas idp and default scope for other idp
+    const scopeContext =
+      idpId === 'eidas-bridge'
+        ? this.requestedScope
+        : getDefaultIdpScope(this.scopes);
+    const { scopes } = scopeContext;
+    const modifiedScope = [...scopes, scopeToAdd].join(' ');
+    addInterceptParams(
+      `${url}/authorize*`,
+      { scope: modifiedScope },
+      'FI:IdpAddScope',
+    );
   },
 );
 
