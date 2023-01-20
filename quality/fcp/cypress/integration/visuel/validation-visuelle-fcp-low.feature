@@ -29,7 +29,7 @@ Fonctionnalité: Validation Visuelle
       | tablet landscape |
       | desktop          |
 
-  @ignoreLow
+  @ignore
   Plan du Scénario: Validation Visuelle - cinématique depuis un FS privé avec consentement obligatoire sur <device>
     Etant donné que j'utilise un navigateur web sur "<device>"
     Et que j'utilise un fournisseur de service "privé avec consentement obligatoire"

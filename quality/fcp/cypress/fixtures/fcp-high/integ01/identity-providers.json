@@ -6,11 +6,12 @@
     "descriptions": [
       "par défaut",
       "actif",
-      "whitelisté"
+      "whitelisté",
+      "français"
     ],
     "mocked": true,
     "usable": true,
-    "url": "https://fip1v2.integ01.fcp.fournisseur-d-identite.fr/interaction",
+    "url": "https://fip1v2.integ01.fcp.fournisseur-d-identite.fr",
     "acrValue": "eidas3",
     "selectors": {
       "idpButton": "#idp-fip1",
@@ -26,7 +27,7 @@
     "descriptions": ["désactivé et visible"],
     "mocked": true,
     "usable": false,
-    "url": "https://fip-desactive-visible.integ01.fcp.fournisseur-d-identite.fr/interaction",
+    "url": "https://fip-desactive-visible.integ01.fcp.fournisseur-d-identite.fr",
     "acrValue": "eidas3",
     "encryption": "RSA-OAEP,A256GCM",
     "signature": "HS256",
@@ -44,7 +45,7 @@
     "descriptions": ["désactivé et non visible"],
     "mocked": true,
     "usable": false,
-    "url": "https://fip-desactive-invisible.integ01.fcp.fournisseur-d-identite.fr/interaction",
+    "url": "https://fip-desactive-invisible.integ01.fcp.fournisseur-d-identite.fr",
     "acrValue": "eidas3",
     "encryption": "RSA-OAEP,A256GCM",
     "signature": "ES256",
@@ -62,7 +63,7 @@
     "descriptions": ["actif et non visible"],
     "mocked": true,
     "usable": false,
-    "url": "https://fip-active-invisible.integ01.fcp.fournisseur-d-identite.fr/interaction",
+    "url": "https://fip-active-invisible.integ01.fcp.fournisseur-d-identite.fr",
     "acrValue": "eidas3",
     "encryption": "RSA-OAEP,A256GCM",
     "signature": "ES256",
