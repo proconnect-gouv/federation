@@ -556,6 +556,11 @@
     lodash.isundefined "^3.0.1"
     lodash.uniq "^4.5.0"
 
+"@gouvfr/dsfr@1.8.5":
+  version "1.8.5"
+  resolved "https://registry.yarnpkg.com/@gouvfr/dsfr/-/dsfr-1.8.5.tgz#e99d095e99debcce0c41db18989637290d588b78"
+  integrity sha512-29L+THvWmYJXztPa0Os5TS9yD2WQbrH7VnCKxkyUXQZQ+6lsGebtz0GdCnLexOWDfCn1y53Mh7+/ihxI/z0Vjw==
+
 "@hapi/hoek@^9.0.0":
   version "9.3.0"
   resolved "https://registry.yarnpkg.com/@hapi/hoek/-/hoek-9.3.0.tgz#8368869dcb735be2e7f5cb7647de78e167a251fb"

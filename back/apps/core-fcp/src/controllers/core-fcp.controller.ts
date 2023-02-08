@@ -87,7 +87,8 @@ export class CoreFcpController {
 
     const { spName } = session;
     const { params, uid } = await this.oidcProvider.getInteraction(req, res);
-    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
+    const { scope: spScope } = params;
+    const { scope: idpScope } = this.config.get<OidcClientConfig>('OidcClient');
     const { acr_values: acrValues, client_id: clientId } = params;
 
     const {
@@ -131,7 +132,8 @@ export class CoreFcpController {
       notifications,
       params,
       providers: authorizedProviders,
-      scope,
+      idpScope,
+      spScope,
       spName,
       uid,
     };
@@ -207,12 +209,14 @@ export class CoreFcpController {
     const scopes = this.core.getScopesForInteraction(interaction);
     const claims = this.core.getClaimsLabelsForInteraction(interaction);
     const consentRequired = await this.core.isConsentRequired(spId);
+    const isOpenIdScope = scopes.every((scope) => scope === 'openid');
 
     // -- generate and store in session the CSRF token
     const csrfToken = this.csrfService.get();
     await this.csrfService.save(sessionOidc, csrfToken);
 
     const response = {
+      isOpenIdScope,
       claims,
       consentRequired,
       csrfToken,

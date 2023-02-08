@@ -42,7 +42,10 @@ Then('je suis redirigé vers la page fournisseur de service', function () {
   serviceProviderPage.checkIsVisible();
 });
 
-Then(/^je suis connecté$/, function () {
+Then('je suis connecté au fournisseur de service', function () {
+  // Init serviceProviderPage because this step can be called without
+  // being preceded by the navigation step
+  serviceProviderPage = new ServiceProviderPage(this.serviceProvider);
   serviceProviderPage.checkIsUserConnected();
 });
 

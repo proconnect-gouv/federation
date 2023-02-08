@@ -6,7 +6,8 @@
 |--------------|------|
 | core-fcp-low | 9300 |
 | fsp1-low     | 9301 |
-| fsp2-low     | 9331 |
+| fsp2-low     | 9302 |
+| fsp3-low     | 9303 |
 | fip1-low     | 9321 |
 | fip2-low     | 9322 |
 | fip3-low     | 9323 |

@@ -19,7 +19,7 @@ Then(
   function (text) {
     const isVisible = text === 'est';
     identityProviderSelectionPage
-      .getIdpButton(this.identityProvider.idpId)
+      .getIdpButton(this.identityProvider)
       .should(isVisible ? 'be.visible' : 'not.exist');
   },
 );
@@ -29,7 +29,7 @@ Then(
   function (state) {
     const isEnabled = state === 'actif';
     identityProviderSelectionPage
-      .getIdpButton(this.identityProvider.idpId)
+      .getIdpButton(this.identityProvider)
       .should(isEnabled ? 'be.enabled' : 'be.disabled');
   },
 );
@@ -77,6 +77,6 @@ Given(
 When("je clique sur le fournisseur d'identité", function () {
   expect(this.identityProvider).to.exist;
   identityProviderSelectionPage
-    .getIdpButton(this.identityProvider.idpId)
+    .getIdpButton(this.identityProvider)
     .click({ force: true });
 });

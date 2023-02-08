@@ -74,6 +74,7 @@
   },
   "dependencies": {
     "@elastic/elasticsearch": "8.5.0",
+    "@gouvfr/dsfr": "1.8.5",
     "@maxmind/geoip2-node": "^3.4.0",
     "@nestjs-modules/mailer": "^1.7.1",
     "@nestjs/axios": "0.0.8",

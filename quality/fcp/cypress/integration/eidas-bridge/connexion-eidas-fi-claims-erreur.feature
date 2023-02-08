@@ -17,8 +17,8 @@ Fonctionnalité: Connexion eIDAS - Validation des claims renvoyés par le fourni
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès
-    Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y000006"
+    Alors je suis redirigé vers la page erreur technique FranceConnect
+    Et le code d'erreur FranceConnect est "Y000006"
     Et le message d'erreur FranceConnect est "Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous"
 
   Scénario: Connexion FS Européen - Pas d'erreur si FI FR ne renvoit pas un claim optionnel
@@ -69,8 +69,8 @@ Fonctionnalité: Connexion eIDAS - Validation des claims renvoyés par le fourni
     Et que je suis redirigé vers la page sélection du pays
     Et que je clique sur le pays "Mock Node"
     Quand je m'authentifie avec succès sur le fournisseur d'identité étranger
-    Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y000006"
+    Alors je suis redirigé vers la page erreur technique FranceConnect
+    Et le code d'erreur FranceConnect est "Y000006"
     Et le message d'erreur FranceConnect est "Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous"
 
   Scénario: Connexion FS français - Pas d'erreur si FI FR ne renvoit pas un claim optionnel
@@ -88,7 +88,7 @@ Fonctionnalité: Connexion eIDAS - Validation des claims renvoyés par le fourni
     Et je suis redirigé vers la page confirmation de connexion
     Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
-    Et je suis connecté
+    Et je suis connecté au fournisseur de service
     Et la cinématique a utilisé le niveau de sécurité "eidas2"
     Et le fournisseur de service a accès aux informations des scopes "eidas sans birthplace"
     Et la cinématique a renvoyé l'amr "eidas"
@@ -108,7 +108,7 @@ Fonctionnalité: Connexion eIDAS - Validation des claims renvoyés par le fourni
     Et je suis redirigé vers la page confirmation de connexion
     Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
-    Et je suis connecté
+    Et je suis connecté au fournisseur de service
     Et la cinématique a utilisé le niveau de sécurité "eidas2"
     Et le fournisseur de service a accès aux informations des scopes "eidas"
     Et la cinématique a renvoyé l'amr "eidas"

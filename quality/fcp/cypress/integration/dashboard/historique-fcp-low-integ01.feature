@@ -11,7 +11,7 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Etant donné que j'utilise un compte usager "pour les tests de traces"
     Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
     Et que j'utilise le fournisseur de service "par défaut"
-    Et que j'ai fait une cinématique FranceConnect Legacy
+    Et que j'ai fait une cinématique FranceConnect
     Et que je navigue sur la page d'accueil du dashboard usager
     Quand je me connecte au dashboard usager
     Alors je suis redirigé vers la page historique du dashboard usager
@@ -30,7 +30,7 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Etant donné que j'utilise un compte usager "pour les tests de traces"
     Et que j'utilise le fournisseur de service "pour les scopes data"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "dgfip et cnam"
-    Et que j'ai fait une cinématique FranceConnect Legacy
+    Et que j'ai fait une cinématique FranceConnect
     Et que je navigue sur la page d'accueil du dashboard usager
     Quand je me connecte au dashboard usager
     Alors je suis redirigé vers la page historique du dashboard usager
@@ -64,7 +64,7 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Etant donné que j'utilise un compte usager "pour les tests de traces"
     Et que j'utilise le fournisseur de service "privé avec consentement obligatoire"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "profile sans preferred_username"
-    Et que j'ai fait une cinématique FranceConnect Legacy
+    Et que j'ai fait une cinématique FranceConnect
     Et que je navigue sur la page d'accueil du dashboard usager
     Quand je me connecte au dashboard usager
     Alors je suis redirigé vers la page historique du dashboard usager
@@ -95,7 +95,7 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Etant donné que j'utilise un compte usager "pour les tests de traces"
     Et que j'utilise le fournisseur de service "pour les scopes data"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "dgfip et cnam"
-    Et que j'ai fait une cinématique FranceConnect Legacy
+    Et que j'ai fait une cinématique FranceConnect
     Et que je navigue sur la page d'accueil du dashboard usager
     Quand je me connecte au dashboard usager
     Alors je suis redirigé vers la page historique du dashboard usager
@@ -144,7 +144,7 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Etant donné que j'utilise un compte usager "pour les tests de traces"
     Et que j'utilise le fournisseur de service "privé avec consentement obligatoire"
     Et que le fournisseur de service requiert l'accès aux informations du scope "anonyme"
-    Et que j'ai fait une cinématique FranceConnect Legacy
+    Et que j'ai fait une cinématique FranceConnect
     Et que je navigue sur la page d'accueil du dashboard usager
     Quand je me connecte au dashboard usager
     Alors je suis redirigé vers la page historique du dashboard usager

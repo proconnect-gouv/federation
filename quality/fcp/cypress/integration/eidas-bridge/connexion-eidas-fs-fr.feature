@@ -19,7 +19,7 @@ Fonctionnalité: Connexion eIDAS - FS français
     Et je suis redirigé vers la page confirmation de connexion
     Et je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
-    Et je suis connecté
+    Et je suis connecté au fournisseur de service
     Et la cinématique a utilisé le niveau de sécurité "eidas2"
     Et le fournisseur de service a accès aux informations des scopes "eidas"
     Et la cinématique a renvoyé l'amr "eidas"
