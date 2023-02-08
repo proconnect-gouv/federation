@@ -504,6 +504,7 @@ describe('CoreFcpController', () => {
       );
       // Then
       expect(result).toStrictEqual({
+        isOpenIdScope: false,
         claims: claimsLabelMock,
         consentRequired: true,
         csrfToken: csrfMock,

@@ -7,18 +7,32 @@ import {
 import { getClaims } from '../helpers';
 
 export default class ServiceProviderPage {
+  clientId: string;
   fcButtonSelector: string;
   logoutButtonSelector: string;
+  mocked: boolean;
   originUrl: string;
+  redirectUri: string;
 
   constructor(args: ServiceProviderBase) {
     const {
+      clientId,
+      mocked,
+      redirectUri,
       selectors: { fcButton, logoutButton },
       url,
     } = args;
+    this.clientId = clientId;
     this.fcButtonSelector = fcButton;
     this.logoutButtonSelector = logoutButton;
+    this.mocked = mocked;
     this.originUrl = url;
+    this.redirectUri = redirectUri;
+  }
+
+  isLegacySPMock(): boolean {
+    // Only Legacy SP mocks have clientId and redirectUri in the fixtures
+    return this.mocked && !!this.clientId && !!this.redirectUri;
   }
 
   getFcButton(): ChainableElement {
@@ -37,6 +51,32 @@ export default class ServiceProviderPage {
     const state = isConnected ? 'be.visible' : 'not.exist';
     this.getLogoutButton().should(state);
   }
+
+  // Initiate FC connection using Legacy SP mock
+  callAuthorize(
+    fcRootUrl: string,
+    scopeContext: ScopeContext,
+    acrValues = 'eidas1',
+  ): void {
+    const { scopes = [] } = scopeContext;
+
+    const qs = {
+      acr_values: acrValues,
+      client_id: this.clientId,
+      nonce: 'noncefortestsBDD',
+      redirect_uri: this.redirectUri,
+      response_type: 'code',
+      scope: Array.isArray(scopes) ? scopes.join(' ') : scopes,
+      state: 'testsBDD',
+    };
+
+    cy.visit(`${fcRootUrl}/api/v1/authorize`, {
+      failOnStatusCode: false,
+      qs,
+    });
+  }
+
+  // Setup and initiate FC connection using core v2 SP mock
 
   setMockAuthorizeHttpMethod(formMethod: 'get' | 'post'): void {
     cy.get('#httpMethod').select(formMethod);
@@ -62,6 +102,27 @@ export default class ServiceProviderPage {
       cy.get('#claim_amr').check();
     } else {
       cy.get('#claim_amr').uncheck();
+    }
+  }
+
+  startLogin(fcRootUrl: string, scopeContext: ScopeContext): void {
+    // Initiate FS connection from Legacy SP mock
+    if (this.isLegacySPMock()) {
+      this.callAuthorize(fcRootUrl, scopeContext);
+      return;
+    }
+    // Initiate FS connection from SP mock
+    if (this.mocked) {
+      this.setMockRequestedScope(scopeContext);
+    }
+    this.getFcButton().click();
+  }
+
+  logout(): void {
+    this.getLogoutButton().click();
+    if (this.isLegacySPMock()) {
+      // 2 clicks required on Legacy SP mock
+      cy.get('#fconnect-access .logout a').click();
     }
   }
 

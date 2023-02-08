@@ -434,6 +434,11 @@ _reset_db_fcp_high() {
   cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fcp-high /opt/scripts/manage.sh --reset-db
 }
 
+_reset_db_fcp_low() {
+  echo "Reseting Core FCP low mongo database..."
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fcp-low /opt/scripts/manage.sh --reset-db
+}
+
 _reset_db_core_fca_low() {
   echo "Reseting Core FCA LOW mongo database..."
   cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fca-low /opt/scripts/manage.sh --reset-db
@@ -583,6 +588,9 @@ case "$action" in
     ;;
   reset-db-core-fcp-high)
     _reset_db_fcp_high $@
+    ;;
+  reset-db-core-fcp-low)
+    _reset_db_fcp_low $@
     ;;
   reset-db-core-fca-low)
     _reset_db_core_fca_low $@

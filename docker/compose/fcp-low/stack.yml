@@ -23,6 +23,7 @@ services:
       # -- SP
       - 'fsp1-low'
       - 'fsp2-low'
+      - 'fsp3-low'
       # -- IdP
       - 'fip1-low'
       - 'fip2-low'
@@ -40,6 +41,7 @@ services:
       - 'core-fcp-low'
       - 'fsp1-low'
       - 'fsp2-low'
+      - 'fsp3-low'
       - 'fip1-low'
       - 'fip2-low'
       - 'fip3-low'
