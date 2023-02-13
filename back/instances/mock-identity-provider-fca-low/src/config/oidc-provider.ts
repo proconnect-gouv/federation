@@ -149,8 +149,8 @@ export default {
     },
     jwks: {
       keys: [
-        env.json('CRYPTO_SIG_ES256_PRIV_KEY'),
-        env.json('CRYPTO_SIG_RS256_PRIV_KEY'),
+        ...env.json('CRYPTO_SIG_ES256_PRIV_KEYS'),
+        ...env.json('CRYPTO_SIG_RS256_PRIV_KEYS'),
       ],
     },
 
