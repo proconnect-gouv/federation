@@ -151,7 +151,7 @@ export default {
       userinfoSigningAlgValues: ['ES256'],
     },
     jwks: {
-      keys: [env.json('CRYPTO_SIG_FAKE_PRIV_KEY')],
+      keys: env.json('CRYPTO_SIG_FAKE_PRIV_KEYS'),
     },
 
     // Global request timeout used for any outgoing app requests.
