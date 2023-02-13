@@ -7,6 +7,7 @@ const CLAIM_LABELS = {
   birthcountry: 'Pays de naissance',
   birthdate: 'Date de naissance',
   birthplace: 'Lieu de naissance',
+  connexion_tracks: 'Historique de connexions',
   email: 'Adresse email',
   family_name: 'Nom de naissance',
   gender: 'Sexe',
