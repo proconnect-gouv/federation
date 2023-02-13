@@ -174,6 +174,61 @@ export default class ServiceProviderPage {
       });
   }
 
+  checkTracks(): void {
+    cy.get('#json-tracks')
+      .invoke('text')
+      .then((text) => {
+        const content = text.trim();
+        expect(content).not.to.be.empty;
+
+        const responseBody = JSON.parse(content);
+        expect(responseBody).to.exist;
+        const { meta, payload } = responseBody;
+        expect(meta.size).to.equal(500);
+        expect(meta.offset).to.equal(0);
+        expect(meta.total).to.be.greaterThan(0);
+
+        // we retrieve maximum 500 events (meta.size)
+        expect(payload.length).to.be.equal(Math.min(meta.total, meta.size));
+
+        // we verify one fcpHigh event
+        const fcpHighEvent = payload.find(
+          ({ event, platform }) =>
+            event === 'FC_VERIFIED' && platform === 'FranceConnect+',
+        );
+        expect(fcpHighEvent).to.exist;
+        expect(['eidas2', 'eidas3']).to.include(fcpHighEvent.spAcr);
+        expect(fcpHighEvent).to.include.all.keys(
+          'event',
+          'time',
+          'spLabel',
+          'spAcr',
+          'idpLabel',
+          'claims',
+          'trackId',
+          'platform',
+        );
+
+        // we verify one fcpLow event
+        const fcpLowEvent = payload.find(
+          ({ event, platform }) =>
+            event === 'FC_VERIFIED' && platform === 'FranceConnect',
+        );
+        expect(fcpLowEvent).to.exist;
+        expect(fcpLowEvent.spAcr).to.equal('eidas1');
+        expect(fcpLowEvent).to.include.all.keys(
+          'event',
+          'time',
+          'spLabel',
+          'spAcr',
+          'idpLabel',
+          'claims',
+          'trackId',
+          'platform',
+        );
+      });
+  }
+
   checkMockAcrValue(acrValue: string): void {
     cy.get('[id="info-acr"] strong').contains(acrValue);
   }
