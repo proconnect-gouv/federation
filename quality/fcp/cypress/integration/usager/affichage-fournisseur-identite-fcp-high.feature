@@ -97,3 +97,12 @@ Fonctionnalité: Affichage Fournisseur Identité
     Et le fournisseur d'identité n'est pas affiché dans la mire
     Et j'utilise un fournisseur d'identité "non blacklisté"
     Et le fournisseur d'identité est affiché dans la mire
+
+  Scénario: Connexion d'un usager - erreur connexion abandonnée
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton FranceConnect
+    Et que je suis redirigé vers la page sélection du fournisseur d'identité
+    Quand je clique sur le lien retour vers le fournisseur de service
+    Alors je suis redirigé vers la page erreur du fournisseur de service
+    Et le titre de l'erreur fournisseur de service est "access_denied"
+    Et la description de l'erreur fournisseur de service est "User auth aborted"

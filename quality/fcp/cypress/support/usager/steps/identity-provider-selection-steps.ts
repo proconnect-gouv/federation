@@ -80,3 +80,10 @@ When("je clique sur le fournisseur d'identité", function () {
     .getIdpButton(this.identityProvider)
     .click({ force: true });
 });
+
+When(
+  'je clique sur le lien retour vers le fournisseur de service',
+  function () {
+    identityProviderSelectionPage.getBackToServiceProviderLink().click();
+  },
+);
