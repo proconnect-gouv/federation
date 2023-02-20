@@ -2,7 +2,7 @@
 
 // Declarative code
 import { Type } from 'class-transformer';
-import { IsObject, IsUrl, ValidateNested } from 'class-validator';
+import { IsBoolean, IsObject, IsUrl, ValidateNested } from 'class-validator';
 
 import { AppConfig } from '@fc/app';
 import { CryptographyFcaConfig } from '@fc/cryptography-fca';
@@ -17,16 +17,19 @@ import { ServiceProviderAdapterMongoConfig } from '@fc/service-provider-adapter-
 import { SessionConfig } from '@fc/session';
 import { TrackingConfig } from '@fc/tracking';
 
-export class Core {
+export class CoreConfig {
   @IsUrl()
   readonly defaultRedirectUri: string;
+
+  @IsBoolean()
+  readonly enableSso: boolean;
 }
 
 export class CoreFcaConfig {
   @IsObject()
   @ValidateNested()
-  @Type(() => Core)
-  readonly Core: Core;
+  @Type(() => CoreConfig)
+  readonly Core: CoreConfig;
 
   @IsObject()
   @ValidateNested()

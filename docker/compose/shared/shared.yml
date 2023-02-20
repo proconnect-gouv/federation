@@ -72,10 +72,12 @@ services:
           - fsa2-low.docker.dev-franceconnect.fr
           - fsa3-low.docker.dev-franceconnect.fr
           - fsa4-low.docker.dev-franceconnect.fr
+          - fsa5-low.docker.dev-franceconnect.fr
           - fia1-low.docker.dev-franceconnect.fr
           - fia2-low.docker.dev-franceconnect.fr
           - fia4-low.docker.dev-franceconnect.fr
           - fia5-low.docker.dev-franceconnect.fr
+          - fia8-low.docker.dev-franceconnect.fr
           # EIDAS
           - eidas-bridge.docker.dev-franceconnect.fr
           - eidas-fr.docker.dev-franceconnect.fr
