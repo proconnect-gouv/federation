@@ -66,7 +66,7 @@ fca-low:
     - cd $CI_PROJECT_DIR
     # Start the NodeJS apps
     - docker-stack start-ci core-fca-low fca-low-front \
-      fsa1-low fsa2-low fsa4-low fia1-low fia2-low fia4-low fia5-low \
+      fsa1-low fsa2-low fsa4-low fsa5-low fia1-low fia2-low fia4-low fia5-low fia8-low \
       exploitation-fca-low
     # Ensure the required apps are running
     - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fca-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
