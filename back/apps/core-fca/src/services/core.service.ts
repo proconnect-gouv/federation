@@ -4,7 +4,6 @@ import { AccountBlockedException, AccountService } from '@fc/account';
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import {
-  AcrValues,
   ComputeIdp,
   ComputeSp,
   CoreClaimAmrException,
@@ -16,7 +15,9 @@ import {
 } from '@fc/core';
 import { CoreConfig } from '@fc/core-fca';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
-import { Acr, IOidcClaims, OidcSession } from '@fc/oidc';
+import { IOidcClaims, OidcSession } from '@fc/oidc';
+import { OidcAcrConfig, OidcAcrService } from '@fc/oidc-acr';
+import { OidcClientSession } from '@fc/oidc-client';
 import {
   OidcCtx,
   OidcProviderConfig,
@@ -36,11 +37,11 @@ export class CoreService {
   constructor(
     private readonly logger: LoggerService,
     private readonly config: ConfigService,
+    private readonly oidcAcr: OidcAcrService,
     private readonly oidcProvider: OidcProviderService,
     private readonly oidcErrorService: OidcProviderErrorService,
     private readonly account: AccountService,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
-    private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -79,8 +80,12 @@ export class CoreService {
   }
 
   private registerMiddlewares() {
-    const { defaultAcrValue, forcedPrompt, knownAcrValues } =
+    const { forcedPrompt } =
       this.config.get<OidcProviderConfig>('OidcProvider');
+
+    const { defaultAcrValue } = this.config.get<OidcAcrConfig>('OidcAcr');
+
+    const knownAcrValues = this.oidcAcr.getKnownAcrValues();
 
     this.oidcProvider.registerMiddleware(
       OidcProviderMiddlewareStep.BEFORE,
@@ -141,7 +146,10 @@ export class CoreService {
     }
     const { req } = ctx;
 
-    const session = SessionService.getBoundedSession(req, 'OidcClient');
+    const session = SessionService.getBoundedSession<OidcClientSession>(
+      req,
+      'OidcClient',
+    );
 
     ctx.isSso = await this.isSsoAvailable(session);
 
@@ -319,7 +327,9 @@ export class CoreService {
     if (['POST', 'GET'].includes(ctx.method)) {
       const isPostMethod = ctx.method === 'POST';
       const data = isPostMethod ? ctx.req.body : ctx.query;
-      const { acr_values: dataAcrValues } = data as AcrValues;
+      // oidc parameter
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      const { acr_values: dataAcrValues } = data as { acr_values: string };
       const acrValues = dataAcrValues.split(/\s+/);
       data.acr_values = pickAcr(knownAcrValues, acrValues, defaultAcrValue);
     } else {
@@ -404,26 +414,13 @@ export class CoreService {
       throw new CoreInvalidAcrException();
     }
 
-    if (!this.isAcrValid(received, requested)) {
+    if (!this.oidcAcr.isAcrValid(received, requested)) {
       this.logger.trace(
         { error: 'received ACR lower than requested' },
         LoggerLevelNames.WARN,
       );
       throw new CoreLowAcrException();
     }
-  }
-
-  /**
-   * Acr level is high enough to respect provider requirements
-   * @param source Acr given from the user
-   * @param target Acr given from the Idp
-   * @returns
-   */
-  isAcrValid(source: string, target: string): boolean {
-    const sourceAcr = Acr[source];
-    const targetAcr = Acr[target];
-
-    return sourceAcr >= targetAcr;
   }
 
   async rejectInvalidAcr(

@@ -87,3 +87,12 @@ When(
     identityProviderSelectionPage.getBackToServiceProviderLink().click();
   },
 );
+
+When("je force l'utilisation du fournisseur d'identité", function () {
+  expect(this.identityProvider).to.exist;
+  identityProviderSelectionPage
+    .getIdpButton(this.identityProvider.idpId)
+    // Remove the disabled attribute
+    .invoke('attr', 'disabled', false)
+    .click({ force: true });
+});

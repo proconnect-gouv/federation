@@ -995,6 +995,15 @@
       "compilerOptions": {
         "tsConfigPath": "instances/mock-rnipp/tsconfig.app.json"
       }
+    },
+    "oidc-acr": {
+      "type": "library",
+      "root": "libs/oidc-acr",
+      "entryFile": "index",
+      "sourceRoot": "libs/oidc-acr/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/oidc-acr/tsconfig.lib.json"
+      }
     }
   }
 }

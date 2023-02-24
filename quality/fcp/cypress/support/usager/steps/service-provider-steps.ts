@@ -1,6 +1,7 @@
 import { Then, When } from 'cypress-cucumber-preprocessor/steps';
 
 import {
+  addInterceptHeaders,
   checkFCBasicAuthorization,
   isUsingFCBasicAuthorization,
   navigateTo,
@@ -44,6 +45,34 @@ When('je clique sur le bouton FranceConnect', function () {
     checkFCBasicAuthorization();
   }
 });
+
+When(
+  /^j'initie une connexion suspecte à (?:FranceConnect low|FranceConnect\+)$/,
+  function () {
+    // TODO to move to serviceProviderPage
+    if (this.serviceProvider.mocked === true) {
+      serviceProviderPage.setMockAuthorizeHttpMethod(
+        this.serviceProvider.authorizeHttpMethod,
+      );
+      serviceProviderPage.setMockRequestedAmr(
+        this.serviceProvider.claims.includes('amr'),
+      );
+      serviceProviderPage.setMockRequestedScope(this.requestedScope);
+      serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
+    }
+
+    const headers = {
+      'X-Suspicious': '1',
+    };
+    addInterceptHeaders(headers, 'FC:suspicious');
+
+    serviceProviderPage.getFcButton().click();
+
+    if (isUsingFCBasicAuthorization()) {
+      checkFCBasicAuthorization();
+    }
+  },
+);
 
 Then('je suis redirigé vers la page fournisseur de service', function () {
   serviceProviderPage.checkIsVisible();

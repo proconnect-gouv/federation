@@ -136,6 +136,50 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
+  "FIP4-LOW": {
+    uid: "fip4-low",
+    name: "fip4-low",
+    active: true,
+    display: true,
+    title: "IDP4 - Identity Provider - eIDAS substantiel",
+    image: "fi-mock-substantiel.svg",
+    imageFocus: "fi-mock-substantiel.svg",
+    alt: "fip4-low",
+    eidas: 2,
+    mailto: "",
+    featureHandlers: {
+      coreVerify: "core-fcp-default-verify",
+      authenticationEmail: "core-fcp-send-email",
+      idpIdentityCheck: "core-fcp-default-identity-check",
+    },
+    specificText: "specific text fip4-low",
+    url: "https://fip4-low.docker.dev-franceconnect.fr/",
+    discoveryUrl:
+      "https://fip4-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+    discovery: true,
+    clientID: "myclientidforfip4-low",
+    client_secret:
+      "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+    order: null,
+    createdAt: new Date("2022-02-25 17:09:17"),
+    updatedAt: new Date("2022-02-25 17:09:17"),
+    updatedBy: "admin",
+    response_types: ["code"],
+    id_token_signed_response_alg: "ES256",
+    token_endpoint_auth_method: "client_secret_post",
+    revocation_endpoint_auth_method: "client_secret_post",
+    id_token_encrypted_response_alg: "",
+    id_token_encrypted_response_enc: "",
+    userinfo_signed_response_alg: "ES256",
+    userinfo_encrypted_response_alg: "",
+    userinfo_encrypted_response_enc: "",
+    redirect_uris: [
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
+    ],
+    post_logout_redirect_uris: [
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+    ],
+  },
 };
 
 // -- FIs ----------
