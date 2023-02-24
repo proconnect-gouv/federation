@@ -457,6 +457,12 @@
       "@fc/mock-rnipp/*": [
         "apps/mock-rnipp/src/*"
       ],
+      "@fc/oidc-acr": [
+        "libs/oidc-acr/src"
+      ],
+      "@fc/oidc-acr/*": [
+        "libs/oidc-acr/src/*"
+      ]
     }
   },
   "files": [

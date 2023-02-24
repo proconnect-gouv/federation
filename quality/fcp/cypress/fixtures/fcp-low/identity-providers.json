@@ -55,5 +55,23 @@
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
     }
+  },
+  {
+    "idpId": "fip4-low",
+    "name": "fip4-low",
+    "title": "IDP4 - Identity Provider - eIDAS substantiel",
+    "descriptions": [],
+    "mocked": true,
+    "usable": true,
+    "url": "https://fip4-low.{{TEST_ENV}}.dev-franceconnect.fr/interaction",
+    "acrValue": "eidas2",
+    "encryption": "",
+    "signature": "ES256",
+    "selectors": {
+      "idpButton": "#idp-fip4-low",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "button[type='submit']"
+    }
   }
 ]

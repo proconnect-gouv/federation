@@ -1,3 +1,5 @@
+import { mocked } from 'jest-mock';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AccountBlockedException, AccountService } from '@fc/account';
@@ -10,16 +12,16 @@ import {
   CoreInvalidAcrException,
   CoreLowAcrException,
 } from '@fc/core';
-import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
+import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcCtx,
+  OidcProviderErrorService,
   OidcProviderMiddlewareStep,
   OidcProviderRoutes,
   OidcProviderService,
 } from '@fc/oidc-provider';
-import { OidcProviderErrorService } from '@fc/oidc-provider/services/oidc-provider-error.service';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
@@ -52,6 +54,11 @@ describe('CoreService', () => {
   };
 
   const getInteractionMock = jest.fn();
+
+  const oidcAcrServiceMock = {
+    getKnownAcrValues: jest.fn(),
+    isAcrValid: jest.fn(),
+  };
 
   const oidcProviderServiceMock = {
     getInteraction: getInteractionMock,
@@ -92,11 +99,6 @@ describe('CoreService', () => {
 
   const idpIdentityMock = {
     sub: 'some idpSub',
-  };
-
-  const cryptographyFcpServiceMock = {
-    computeIdentityHash: jest.fn(),
-    computeSubV1: jest.fn(),
   };
 
   const configServiceMock = {
@@ -169,6 +171,10 @@ describe('CoreService', () => {
 
   const unknownError = new Error('Unknown Error');
 
+  beforeAll(() => {
+    SessionService.getBoundedSession = jest.fn();
+  });
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -178,12 +184,11 @@ describe('CoreService', () => {
         CoreService,
         LoggerService,
         ConfigService,
+        OidcAcrService,
         OidcProviderService,
         OidcProviderErrorService,
-        CryptographyFcpService,
         AccountService,
         ServiceProviderAdapterMongoService,
-        SessionService,
         TrackingService,
       ],
     })
@@ -191,18 +196,16 @@ describe('CoreService', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(OidcAcrService)
+      .useValue(oidcAcrServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
-      .overrideProvider(CryptographyFcpService)
-      .useValue(cryptographyFcpServiceMock)
       .overrideProvider(OidcProviderErrorService)
       .useValue(oidcProviderErrorServiceMock)
       .overrideProvider(AccountService)
       .useValue(accountServiceMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
       .compile();
@@ -532,10 +535,8 @@ describe('CoreService', () => {
   });
 
   describe('checkIfAcrIsValid()', () => {
-    let isAcrValidMock: jest.SpyInstance;
     beforeEach(() => {
-      isAcrValidMock = jest.spyOn<CoreService, any>(service, 'isAcrValid');
-      isAcrValidMock.mockReturnValueOnce(true);
+      oidcAcrServiceMock.isAcrValid.mockReturnValueOnce(true);
     });
 
     it('should succeed if acr value is accepted', () => {
@@ -557,7 +558,7 @@ describe('CoreService', () => {
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
-      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
+      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if received is empty', () => {
@@ -569,7 +570,7 @@ describe('CoreService', () => {
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
 
-      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
+      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if requested is undefined', () => {
@@ -581,7 +582,7 @@ describe('CoreService', () => {
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
 
-      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
+      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if received is undefined', () => {
@@ -593,7 +594,7 @@ describe('CoreService', () => {
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
 
-      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
+      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if requested is null', () => {
@@ -605,7 +606,7 @@ describe('CoreService', () => {
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
 
-      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
+      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if received is null', () => {
@@ -617,12 +618,12 @@ describe('CoreService', () => {
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
 
-      expect(isAcrValidMock).toHaveBeenCalledTimes(0);
+      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(0);
     });
 
     it('should throw if acr is not valid', () => {
       // Given
-      isAcrValidMock.mockReset().mockReturnValueOnce(false);
+      oidcAcrServiceMock.isAcrValid.mockReset().mockReturnValueOnce(false);
 
       const received = 'eidas1';
       const requested = 'eidas2';
@@ -630,84 +631,18 @@ describe('CoreService', () => {
       const call = () => service['checkIfAcrIsValid'](received, requested);
       // Then
       expect(call).toThrow(CoreLowAcrException);
-      expect(isAcrValidMock).toHaveBeenCalledTimes(1);
+      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(1);
       expect(loggerServiceMock.trace).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('isAcrValid', () => {
-    it('should throw if received is lower than requested (1 vs 2)', () => {
-      // Given
-      const received = 'eidas1';
-      const requested = 'eidas2';
-      // When
-      const result = service.isAcrValid(received, requested);
-      // Then
-      expect(result).toStrictEqual(false);
-    });
-
-    it('should throw if received is lower than requested (2 vs 3)', () => {
-      // Given
-      const received = 'eidas2';
-      const requested = 'eidas3';
-      // When
-      const result = service.isAcrValid(received, requested);
-      // Then
-      expect(result).toStrictEqual(false);
-    });
-
-    it('should succeed if received is equal to requested for level eidas1', () => {
-      // Given
-      const received = 'eidas1';
-      const requested = 'eidas1';
-      // When
-      const result = service.isAcrValid(received, requested);
-      // Then
-      expect(result).toStrictEqual(true);
-    });
-
-    it('should succeed if received is equal to requested for level eidas2', () => {
-      // Given
-      const received = 'eidas2';
-      const requested = 'eidas2';
-      // When
-      const result = service.isAcrValid(received, requested);
-      // Then
-      expect(result).toStrictEqual(true);
-    });
-
-    it('should succeed if received is equal to requested for level eidas3', () => {
-      // Given
-      const received = 'eidas3';
-      const requested = 'eidas3';
-      // When
-      const result = service.isAcrValid(received, requested);
-      // Then
-      expect(result).toStrictEqual(true);
-    });
-
-    it('should succeed if received is higher then requested (2 vs 1)', () => {
-      // Given
-      const received = 'eidas2';
-      const requested = 'eidas1';
-      // When
-      const result = service.isAcrValid(received, requested);
-      // Then
-      expect(result).toStrictEqual(true);
-    });
-
-    it('should succeed if received is higher then requested (3 vs 2)', () => {
-      // Given
-      const received = 'eidas3';
-      const requested = 'eidas2';
-      // When
-      const result = service.isAcrValid(received, requested);
-      // Then
-      expect(result).toStrictEqual(true);
-    });
-  });
-
   describe('registerMiddlewares()', () => {
+    const acrLevelsMock = ['acr1', 'acr2', 'acr3', 'acr4'];
+
+    beforeEach(() => {
+      oidcAcrServiceMock.getKnownAcrValues.mockReturnValueOnce(acrLevelsMock);
+    });
+
     it('should call registerMiddleware from oidcProvider', () => {
       // Given
       oidcProviderServiceMock.registerMiddleware = jest.fn();
@@ -871,6 +806,12 @@ describe('CoreService', () => {
       );
 
       configServiceMock.get.mockReturnValueOnce({ enableSso: false });
+    });
+
+    beforeEach(() => {
+      mocked(SessionService.getBoundedSession).mockReturnValueOnce(
+        sessionServiceMock,
+      );
     });
 
     it('should abort middleware execution if the request is flagged with an error', () => {

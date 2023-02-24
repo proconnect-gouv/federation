@@ -9,6 +9,7 @@ import { CryptographyFcaConfig } from '@fc/cryptography-fca';
 import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
 import { LoggerConfig } from '@fc/logger-legacy';
 import { MongooseConfig } from '@fc/mongoose';
+import { OidcAcrConfig } from '@fc/oidc-acr';
 import { OidcClientConfig } from '@fc/oidc-client';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { OverrideOidcProviderConfig } from '@fc/override-oidc-provider';
@@ -40,6 +41,11 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => LoggerConfig)
   readonly Logger: LoggerConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => OidcAcrConfig)
+  readonly OidcAcr: OidcAcrConfig;
 
   @IsObject()
   @ValidateNested()

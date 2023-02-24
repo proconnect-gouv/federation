@@ -73,4 +73,8 @@ export class AppConfig {
   @IsString()
   @IsIn(['Europe/Paris'])
   readonly timezone?: string;
+
+  @IsOptional()
+  @IsString()
+  readonly minAcrForContextRequest?: string;
 }

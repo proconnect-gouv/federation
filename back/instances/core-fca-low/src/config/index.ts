@@ -9,6 +9,7 @@ import CryptographyFca from './cryptography-fca';
 import IdentityProviderAdapterMongo from './identity-provider-adapter-mongo';
 import Logger from './logger';
 import Mongoose from './mongoose';
+import OidcAcr from './oidc-acr';
 import OidcClient from './oidc-client';
 import OidcProvider from './oidc-provider';
 import OverrideOidcProvider from './override-oidc-provider';
@@ -21,6 +22,7 @@ export default {
   App,
   Core,
   Logger,
+  OidcAcr,
   OidcProvider,
   OidcClient,
   Mongoose,
