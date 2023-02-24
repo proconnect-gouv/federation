@@ -11,6 +11,9 @@ export interface IOidcIdentity {
   given_name: string;
   // oidc defined variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
+  given_name_array: string[];
+  // oidc defined variable name
+  // eslint-disable-next-line @typescript-eslint/naming-convention
   family_name: string;
   birthdate: string;
   gender: string;
