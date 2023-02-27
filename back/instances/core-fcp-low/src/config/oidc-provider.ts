@@ -89,7 +89,7 @@ export default {
       birthplace: ['birthplace'],
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      given_name: ['given_name', 'given_name_array'],
+      given_name: ['given_name'],
       // node-oidc-provider defined key
       // eslint-disable-next-line @typescript-eslint/naming-convention
       family_name: ['family_name'],
@@ -103,7 +103,6 @@ export default {
       phone: ['phone_number'],
       profile: [
         'given_name',
-        'given_name_array',
         'family_name',
         'birthdate',
         'gender',
@@ -114,7 +113,6 @@ export default {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       identite_pivot: [
         'given_name',
-        'given_name_array',
         'family_name',
         'birthdate',
         'gender',

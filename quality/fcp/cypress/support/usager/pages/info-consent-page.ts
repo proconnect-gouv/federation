@@ -1,5 +1,19 @@
 import { ChainableElement, ScopeContext } from '../../common/types';
-import { getClaimsWithoutRnippPrefix } from '../helpers';
+import { getClaims } from '../helpers';
+
+/* eslint-disable @typescript-eslint/naming-convention */
+const CLAIM_LABELS = {
+  address: 'Adresse postale',
+  birthcountry: 'Pays de naissance',
+  birthdate: 'Date de naissance',
+  birthplace: 'Lieu de naissance',
+  connexion_tracks: 'Historique de connexions',
+  email: 'Adresse email',
+  family_name: 'Nom de naissance',
+  gender: 'Sexe',
+  given_name: 'Prénom(s)',
+  preferred_username: 'Nom d’usage',
+};
 /* eslint-enable @typescript-eslint/naming-convention */
 
 export default class InfoConsentPage {
@@ -50,9 +64,9 @@ export default class InfoConsentPage {
     scopeContext: ScopeContext,
     explicitConsent: boolean,
   ): void {
-    // Retrieve distinct claims without rnipp_ prefix.
-    const expectedClaimsSet: Set<string> =
-      getClaimsWithoutRnippPrefix(scopeContext);
+    const expectedClaims = getClaims(scopeContext).filter(
+      (claimName) => claimName !== 'sub',
+    );
 
     if (!explicitConsent) {
       // Information page: Use the toggle to display the claims
@@ -67,13 +81,13 @@ export default class InfoConsentPage {
       .then((text) => {
         const arrClaims = text.trim().split(/\s\s+/);
         // Check all expected claims
-        expectedClaimsSet.forEach((claimLabel) =>
-          expect(arrClaims).include(claimLabel),
+        expectedClaims.forEach((claimName) =>
+          expect(arrClaims).include(CLAIM_LABELS[claimName]),
         );
         // Check no other claims
         expect(arrClaims.length).to.equal(
-          expectedClaimsSet.size,
-          `The claims count should be ${expectedClaimsSet.size}`,
+          expectedClaims.length,
+          `The claims count should be ${expectedClaims.length}`,
         );
       });
   }

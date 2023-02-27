@@ -4,6 +4,7 @@ import {
   ServiceProviderBase,
   UserClaims,
 } from '../../common/types';
+import { getClaims } from '../helpers';
 
 export default class ServiceProviderPage {
   clientId: string;
@@ -126,9 +127,10 @@ export default class ServiceProviderPage {
   }
 
   checkMockInformationAccess(
-    expectedClaims: string[],
+    requestedScope: ScopeContext,
     userClaims: UserClaims,
   ): void {
+    const expectedClaims = getClaims(requestedScope);
     cy.get('#json-output')
       .invoke('text')
       .then((text) => {

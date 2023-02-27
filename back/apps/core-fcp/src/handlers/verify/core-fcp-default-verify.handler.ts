@@ -119,8 +119,8 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
       },
     );
 
-    const rnippClaims: Partial<RnippPivotIdentity> =
-      this.buildRnippClaims(rnippIdentity);
+    const rnippClaims = this.buildRnippClaims(rnippIdentity);
+
     /**
      * Prepare identity that will be retrieved by `oidc-provider`
      * and sent to the SP
@@ -130,9 +130,6 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     const spIdentity = {
       ...idpIdentity,
       ...rnippClaims,
-      // OIDC Fashion naming
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      given_name_array: rnippIdentity.given_name_array,
       sub: subSp,
     };
 
@@ -176,7 +173,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
 
   private buildRnippClaims(
     rnippIdentity: RnippPivotIdentity,
-  ): Partial<RnippPivotIdentity> {
+  ): Record<string, Partial<RnippPivotIdentity>> {
     const rnippClaims = Object.fromEntries(
       Object.entries(rnippIdentity).map(([key, value]) => [
         `rnipp_${key}`,

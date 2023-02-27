@@ -6,7 +6,6 @@ import { Injectable } from '@nestjs/common';
 import { CitizenStatus } from '../dto';
 import { Genders, RnippResponseCodes, RnippXmlSelectors } from '../enums';
 import { RnippHttpStatusException } from '../exceptions';
-import { GivenNameScopeInterface } from '../interfaces';
 
 const FRANCE_COG = '99100';
 
@@ -47,22 +46,20 @@ export class RnippResponseParserService {
       RnippXmlSelectors.DECEASED,
     );
 
-    const { givenName, givenNameArray } = this.getGivenNamesAttribute(
-      parsedXml,
-      RnippXmlSelectors.GIVEN_NAME,
-    );
-
     const identity: /* IIdentity */ any = {
       gender: this.getGenderFromParsedXml(parsedXml, RnippXmlSelectors.GENDER),
+      // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       family_name: this.getXmlAttribute(
         parsedXml,
         RnippXmlSelectors.FAMILY_NAME,
       ),
+      // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      given_name: givenName,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      given_name_array: givenNameArray,
+      given_name: this.getGivenNamesAttribute(
+        parsedXml,
+        RnippXmlSelectors.GIVEN_NAME,
+      ),
       birthdate: this.getXmlAttribute(parsedXml, RnippXmlSelectors.BIRTH_DATE),
       birthplace: this.getXmlAttribute(
         parsedXml,
@@ -105,15 +102,10 @@ export class RnippResponseParserService {
     }
   }
 
-  private getGivenNamesAttribute(
-    parsedXml: JSON,
-    path: string,
-  ): GivenNameScopeInterface {
+  private getGivenNamesAttribute(parsedXml: JSON, path: string): string {
     const givenNames: string[] = this.getXmlAttribute(parsedXml, path, []);
-    return {
-      givenName: givenNames.join(' '),
-      givenNameArray: givenNames,
-    };
+
+    return givenNames.join(' ');
   }
 
   private getDeceasedStateAttribute(parsedXml: JSON, path: string): boolean {

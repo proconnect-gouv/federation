@@ -6,6 +6,7 @@ export const claims: IClaims = {
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
   given_name: 'given_name',
+  // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
   family_name: 'family_name',
   // OIDC fashion naming
@@ -21,9 +22,6 @@ export const claims: IClaims = {
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
   rnipp_given_name: 'rnipp_given_name',
-  // OIDC fashion naming
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  rnipp_given_name_array: 'rnipp_given_name_array',
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
   rnipp_family_name: 'rnipp_family_name',

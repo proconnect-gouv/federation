@@ -34,8 +34,6 @@ describe('CsmrUserPreferencesController', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Angela Claire Louise',
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    given_name_array: ['Angela', 'Claire', 'Louise'],
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'DUBOIS',
     birthdate: '1962-08-24',
     gender: 'female',

@@ -38,9 +38,6 @@ describe('CryptographyFcpService', () => {
     given_name: 'Jean Paul Henri',
     // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    given_name_array: ['Jean', 'Paul', 'Henri'],
-    // scope openid @see https://openid.net/specs/openid-connect-core-1_0.html#StandardClaims
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'Dupont',
     gender: 'male',
     birthdate: '1970-01-01',
