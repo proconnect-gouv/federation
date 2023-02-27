@@ -9,7 +9,6 @@ import {
   IsNumber,
   IsOptional,
   IsString,
-  ValidateIf,
   ValidateNested,
 } from 'class-validator';
 
@@ -30,7 +29,6 @@ export class RichClaim implements IRichClaim {
   identifier: string;
 
   @IsString()
-  @ValidateIf((object, value) => value !== null)
   label: string;
 
   @ValidateNested()

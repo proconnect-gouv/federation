@@ -2,7 +2,7 @@ import { ILabelMapping } from '../../interfaces';
 import { claims } from './fcp-high.claims';
 
 export const labels: ILabelMapping<typeof claims> = {
-  sub: null,
+  sub: 'sub',
   gender: 'Sexe',
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -23,23 +23,20 @@ export const labels: ILabelMapping<typeof claims> = {
   email: 'Adresse email',
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  rnipp_gender: null,
+  rnipp_gender: 'sexe à la naissance provenant du RNIPP',
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  rnipp_given_name: null,
+  rnipp_given_name: 'prénoms de naissance provenant du RNIPP',
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  rnipp_given_name_array: null,
+  rnipp_family_name: 'nom de famille de naissance provenant du RNIPP',
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  rnipp_family_name: null,
+  rnipp_birthdate: 'date de naissance provenant du RNIPP',
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  rnipp_birthdate: null,
+  rnipp_birthplace: 'COG de la ville de naissance provenant du RNIPP',
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  rnipp_birthplace: null,
-  // OIDC fashion naming
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  rnipp_birthcountry: null,
+  rnipp_birthcountry: 'COG du pays de naissance provenant du RNIPP',
 };
