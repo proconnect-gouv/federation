@@ -1,0 +1,140 @@
+{
+  "mongo_mocks": {
+    "hosts": ["fc_mongodb-mocks_1"],
+    "port": 27017,
+    "db": "testDb"
+  },
+  "mongo": {
+    "hosts": ["fc_mongo_1"],
+    "port": 27017,
+    "db": "fc",
+    "options": {
+      "ssl": false,
+      "server": {
+        "poolsize": 3,
+        "socketOptions": {
+          "keepAlive": 1
+        }
+      },
+      "replset": {
+        "rs_name": "rs0",
+        "readPreference": "primaryPreferred",
+        "socketOptions": {
+          "keepAlive": 1
+        }
+      },
+      "user": "fc",
+      "pass": "pass"
+    }
+  },
+  "bunyan": {
+    "dir": "./",
+    "filename": "event.log"
+  },
+  "mode": "particuliers",
+  "env": "development",
+  "trackingSiteId": "4",
+  "cookieSigningSecret": "a_changer_en_prod",
+  "cookieDomain": ".franceconnect-franceconnect.fr",
+  "serverTimeout": 300,
+  "accessTokenTTL": 1200,
+  "callbackURL": "http://franceconnect-franceconnect.fr:3000/oidc_callback",
+  "issuerURL": "http://franceconnect-franceconnect.fr:3000",
+  "rnipp": {
+    "httpsEnabled": true,
+    "hostname": "identification.personnes-physiques.insee.fr",
+    "clientSiret": "12003704900026",
+    "userId": "SGMAP France connect"
+  },
+  "maxmindGeolocation": {
+    "mode": "database",
+    "account": 105745,
+    "password": "uMUXw9tZTn5Y"
+  },
+  "stats": {
+    "mailSchedule": "* * * * * 10",
+    "mailfrom": "support@dev-franceconnect.fr",
+    "mailto": "support@dev-franceconnect.fr"
+  },
+  "features": {
+    "debugMode": true,
+    "nonceMandatory": true,
+    "accessTokenHeaderOnly": true,
+    "secureCookieFlag": false,
+    "convertToJsonIdentityFromCheckToken": true,
+    "enableMails": {
+      "authentication": false,
+      "rnippError": false,
+      "partnerAccountManagement": false,
+      "IdentityProviderStats": false,
+      "ServiceProviderStats": false,
+      "generalStats": false
+    },
+    "rnippIdentityCheck": false,
+    "geolocation": false,
+    "footerHelp": true,
+    "displayMessageOnLogin": false
+  },
+  "messageOnLogin": {
+    "message": "FranceConnect n'est pas accessible pour l'instant. Nous mettons tout en oeuvre pour que le service revienne à la normale dans les meilleurs délais. Veuillez nous excuser pour la gêne occasionnée.",
+    "startDate": "",
+    "startHour": "",
+    "stopDate": "",
+    "stopHour": "",
+    "startRNIPPMessageHour": "22:00",
+    "stopRNIPPMessageHour": "22:30"
+  },
+  "debug": {
+    "logPath": []
+  },
+  "elasticsearch": {
+    "configOptions": {
+      "hosts": ["https://docker-stack:docker-stack@elasticsearch:9200"]
+    },
+    "index": "test_integration"
+  },
+  "mailjet": {
+    "user": "49ef66eb65a47002941da3ee96f539c5",
+    "key": "93736bcfcbf52562d5e5d6fd7d4bf139"
+  },
+  "scope": ["profile", "email", "address", "phone"],
+  "providersNotImpactedByRnipp": [
+    "dgfip",
+    "ameli",
+    "union_europeenne",
+    "idn",
+    "net_entreprises"
+  ],
+  "httpsGlobalAgent": {
+    "certPath": "/var/lib/franceconnect/certif-client.pem",
+    "keyPath": "/var/lib/franceconnect/certif-client.key"
+  },
+  "openIdConnectStrategyParameters": {
+    "clientID": "35957cfb5e640c2702965aee2be3803d446b8affbb154e0c76849a177cb1cf1e",
+    "clientSecret": "480558bd0cdff38367310cd79919937fb94462c9b10a98d0c5a84d6349e59c0a",
+    "callbackURL": "http://partenaires-franceconnect.fr:3666/callback_oidc",
+    "authorizationURL": "http://franceconnect-franceconnect.fr:3000/api/v1/authorize",
+    "tokenURL": "http://franceconnect-franceconnect.fr:3000/api/v1/token",
+    "userInfoURL": "http://franceconnect-franceconnect.fr:3000/api/v1/userInfo",
+    "logoutURL": "http://franceconnect-franceconnect.fr:3000/api/v1/logout",
+    "scope": ["profile"]
+  },
+  "applicationsApiAuthorization": [
+    {
+      "tokenAccess": "56d08c71985eba066ae6c41bc7376c9744829dbca65b71a218c63b955d51e092",
+      "api": [
+        "/api/v1/service-provider",
+        "/api/v1/service-provider/:key",
+        "/api/v1/stats/:clientKey/user/connection",
+        "/api/v1/service-provider/names/:key"
+      ]
+    }
+  ],
+  "additionalAllowedAuthorizeParams": [
+    "utm_source",
+    "utm_campaign",
+    "utm_medium",
+    "utm_term",
+    "goal"
+  ]
+}

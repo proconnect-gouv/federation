@@ -1,0 +1,49 @@
+version: '2.4'
+
+####################
+####################
+services:
+  # ####################
+  # # Core
+  # ####################
+  #
+  fc-core:
+    hostname: fc-core
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - 'mongo-legacy'
+      - 'redis-sentinel'
+      - 'squid'
+      - 'haproxy'
+      - 'rnipp'
+      - 'assets'
+    volumes:
+      - '${VOLUMES_DIR}/src/FranceConnect:/var/www/app'
+      - '${VOLUMES_DIR}/fc-core/config:/var/www/app/projects/fc/core/config'
+      - '${VOLUMES_DIR}/fc-core/config-fc-commons:/var/www/app/projects/fc/fc-commons/config'
+      - '${VOLUMES_DIR}/fc-core/ssl/ca-trust:/etc/pki/ca-trust/extracted/pem'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '${VOLUMES_DIR}/log/:/var/log/fc-evt'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/maxmind/database/GeoLite2-City:/var/geoipdb'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/core-legacy/.env/core.env'
+    networks:
+      - public
+      - data
+    command: 'pm2 logs'
+
+  assets:
+    image: nginx:1.14.2
+    volumes:
+      - ${VOLUMES_DIR}/nginx-assets/etc:/etc/nginx/conf.d:ro
+      - ${VOLUMES_DIR}/src/FranceConnect/projects/fc/core/public:/var/www:ro
+    environment:
+      - 'VIRTUAL_PORT:80'
+      - 'VIRTUAL_HOST=assets.docker.dev-franceconnect.fr'
+    networks:
+      - public

@@ -166,6 +166,9 @@ _up() {
       mock-rnipp)
         services="$services mock-rnipp"
         ;;
+      min-core-legacy)
+        services="$services min-core-legacy"
+        ;;
       all)
         services=all
         break
@@ -194,6 +197,7 @@ _up() {
         echo "  - usagers-fca => up minimal needed services to run usager agentConnect"
         echo "  - mock-rnipp => up minimal needed services to run mock-rnipp"
         echo "  - min-storybook => up minimal needed services to run storybook"
+        echo "  - min-core-legacy => up minimal needed services to run core legacy"
         echo "  - all => run all services"
         echo "----"
         exit 1
@@ -236,6 +240,14 @@ _up() {
         echo $services
         sleep 10
         docker-compose exec $NO_TTY mongo-fcp-low /opt/scripts/manage.sh --reset-db
+        echo "Loaded !"
+        ;;
+      *"-core-legacy"*)
+        # Sleep to wait for mongodb replicat initialization
+        echo "Reseting database to default state..."
+        echo $services
+        sleep 10
+        docker-compose exec $NO_TTY mongo-legacy /opt/scripts/manage.sh --reset-db
         echo "Loaded !"
         ;;
       *"-fcp-high"*)
@@ -487,6 +499,10 @@ _mongo_shell_core-fcp-low() {
  echo "starting mongo `core-fcp-low` database in shell..."
   cd ${WORKING_DIR} && docker-compose exec mongo-fcp-low mongo core-fcp-low -u 'core-fcp-low' -p 'pass' --authenticationDatabase core-fcp-low --tls
 }
+_mongo_shell_core-legacy() {
+ echo "starting mongo `core-legacy` database in shell..."
+  cd ${WORKING_DIR} && docker-compose exec mongo-legacy mongo core-legacy -u 'core-legacy' -p 'pass' --authenticationDatabase core-legacy --tls
+}
 
 _fca_low_front() {
   cd ${WORKING_DIR}
@@ -579,6 +595,9 @@ case "$action" in
     ;;
   mongo-shell-core-fcp-low)
     _mongo_shell_core-fcp-low
+    ;;  
+  mongo-shell-core-legacy)
+    _mongo_shell_core-legacy
     ;;
   reload-rp)
     cd ${WORKING_DIR} && docker-compose kill -s SIGHUP rp-all
