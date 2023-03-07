@@ -235,6 +235,10 @@ export default class ServiceProviderPage {
     cy.get('[id="info-amr"] strong').contains(amrValue);
   }
 
+  getMockIdTokenText(): Cypress.Chainable<string> {
+    return cy.get('[id="info-id-token"]').invoke('text');
+  }
+
   checkMockErrorCallback(): void {
     const errorCallbackURL = `${this.originUrl}/error`;
     cy.url().should('include', errorCallbackURL);

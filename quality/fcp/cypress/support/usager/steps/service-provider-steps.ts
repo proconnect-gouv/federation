@@ -142,6 +142,19 @@ Then("la cinématique n'a pas renvoyé d'amr", function () {
 });
 
 Then(
+  'le token retourné au FS est signé avec la clé provenant du HSM',
+  function () {
+    serviceProviderPage.getMockIdTokenText().then((idToken: string) => {
+      const es256SigPubKey = Cypress.env('ES256_SIG_PUB_KEY');
+      cy.task('isJwsValid', {
+        jws: idToken,
+        sigPubKey: es256SigPubKey,
+      }).should('be.true');
+    });
+  },
+);
+
+Then(
   'je suis redirigé vers la page erreur du fournisseur de service',
   function () {
     serviceProviderPage.checkMockErrorCallback();

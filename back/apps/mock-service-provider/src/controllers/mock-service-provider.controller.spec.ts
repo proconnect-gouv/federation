@@ -440,7 +440,14 @@ describe('MockServiceProviderController', () => {
   });
 
   describe('retrieveUserinfo', () => {
-    it('should retrieve and display userinfo on userinfo page', async () => {
+    const idpIdTokenMock =
+      'eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikhlcm1hbiIsImZpcnN0X25hbWUiOiJTdMOpcGhhbmUiLCJpYXQiOjE1MTYyMzkwMjJ9.EWgP3XF8uccp5uokOJV9MFgOwGzcXOW1PlNnAoo1D1ScMB6rv352kFdWORzllA2oJqrpvlY4yI_NpyI5FDQzyQ';
+
+    beforeEach(() => {
+      sessionServiceMock.get.mockResolvedValueOnce(idpIdTokenMock);
+    });
+
+    it('should retrieve and display userinfo as well as cinematic information on userinfo page', async () => {
       // setup
       const providerUid = 'envIssuer';
       const body = { accessToken: 'access_token' };
@@ -450,16 +457,7 @@ describe('MockServiceProviderController', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         given_name: 'given_name',
       });
-      // action
-      const result = await controller.retrieveUserinfo(res, body);
-
-      // assert
-      expect(oidcClientServiceMock.utils.getUserInfo).toHaveBeenCalledTimes(1);
-      expect(oidcClientServiceMock.utils.getUserInfo).toHaveBeenCalledWith(
-        body.accessToken,
-        providerUid,
-      );
-      expect(result).toEqual({
+      const expectedOutput = {
         accessToken: 'access_token',
         titleFront: 'Mock Service Provider - Userinfo',
         idpIdentity: {
@@ -468,7 +466,23 @@ describe('MockServiceProviderController', () => {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           given_name: 'given_name',
         },
-      });
+        idpIdToken: idpIdTokenMock,
+      };
+
+      // action
+      const result = await controller.retrieveUserinfo(
+        res,
+        body,
+        sessionServiceMock,
+      );
+
+      // assert
+      expect(oidcClientServiceMock.utils.getUserInfo).toHaveBeenCalledTimes(1);
+      expect(oidcClientServiceMock.utils.getUserInfo).toHaveBeenCalledWith(
+        body.accessToken,
+        providerUid,
+      );
+      expect(result).toEqual(expectedOutput);
     });
 
     it('should redirect to the error page if getUserInfo throw an error', async () => {
@@ -477,7 +491,7 @@ describe('MockServiceProviderController', () => {
       oidcClientServiceMock.utils.getUserInfo.mockRejectedValue(oidcErrorMock);
 
       // action
-      await controller.retrieveUserinfo(res, body);
+      await controller.retrieveUserinfo(res, body, sessionServiceMock);
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
@@ -493,7 +507,8 @@ describe('MockServiceProviderController', () => {
 
       // assert
       expect(
-        async () => await controller.retrieveUserinfo(res, body),
+        async () =>
+          await controller.retrieveUserinfo(res, body, sessionServiceMock),
       ).rejects.toThrow(MockServiceProviderUserinfoException);
     });
   });
