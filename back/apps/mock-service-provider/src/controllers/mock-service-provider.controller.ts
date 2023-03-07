@@ -323,7 +323,12 @@ export class MockServiceProviderController {
   @Post(MockServiceProviderRoutes.USERINFO)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('login-callback')
-  async retrieveUserinfo(@Res() res, @Body() body: AccessTokenParamsDTO) {
+  async retrieveUserinfo(
+    @Res() res,
+    @Body() body: AccessTokenParamsDTO,
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+  ) {
     let response;
     try {
       /**
@@ -338,10 +343,13 @@ export class MockServiceProviderController {
         providerUid,
       );
 
+      const idpIdToken = await sessionOidc.get('idpIdToken');
+
       response = {
         titleFront: 'Mock Service Provider - Userinfo',
         accessToken,
         idpIdentity,
+        idpIdToken,
       };
     } catch (e) {
       this.logger.trace({ e }, LoggerLevelNames.WARN);
