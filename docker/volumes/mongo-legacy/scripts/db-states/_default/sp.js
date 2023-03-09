@@ -281,6 +281,48 @@ const fsp = {
       '28e9ed103d6b075d371303a8bc5a66446f0cd4c0ce7ec237773276c247d28a68',
     whitelistByServiceProviderActivated: false,
   },
+  'user dashboard': {
+    name: 'User Dashboard',
+    site: 'https://site.com',
+    redirect_uris: [
+      'https://ud.docker.dev-franceconnect.fr/api/oidc-callback/envIssuer',
+    ],
+    post_logout_redirect_uris: [
+      'https://ud.docker.dev-franceconnect.fr/api/logout-callback',
+    ],
+    key: 'myclientidforud-back-with-so-many-characters',
+    client_secret:
+      'g73pC+HYNhr2VAleGDjXo/lXHlyltxq1PavSDdoCzFC72Shd86S1e+0ch6riozdKRrIw8ax3b1ChPISIGrs9GTinFbEUXgH86/z0fppT2T+p/A7aw0msBq7Rf+8=',
+    credentialsFlow: false,
+    email: 'users@franceconnect.loc',
+    IPServerAddressesAndRanges: ['1.1.1.1'],
+    active: true,
+    type: 'public',
+    __v: 4,
+    updatedAt: '2019-04-24 17:09:17',
+    updatedBy: 'admin',
+    scopes: [
+      'openid',
+      'given_name',
+      'family_name',
+      'birthdate',
+      'gender',
+      'birthplace',
+      'birthcountry',
+      'email',
+      'idp_id',
+    ],
+    identityConsent: false,
+    id_token_signed_response_alg: 'ES256',
+    id_token_encrypted_response_alg: 'RSA-OAEP',
+    id_token_encrypted_response_enc: 'A256GCM',
+    userinfo_signed_response_alg: 'ES256',
+    userinfo_encrypted_response_alg: 'RSA-OAEP',
+    userinfo_encrypted_response_enc: 'A256GCM',
+    jwks_uri: 'https://ud.docker.dev-franceconnect.fr/.well-known/keys',
+    trustedIdentity: false,
+    eidas: 1,
+  },
 };
 
 /* ------------------------------------------------------------------------------- */

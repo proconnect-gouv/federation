@@ -1,0 +1,77 @@
+{
+  "settings": {
+    "index.number_of_replicas": "0",
+    "index.number_of_shards": "1"
+  },
+  "mappings": {
+    "dynamic_templates": [
+      {
+        "string_as_keyword": {
+          "mapping": {
+            "type": "keyword"
+          },
+          "match_mapping_type": "string",
+          "match": "*"
+        }
+      }
+    ],
+    "properties": {
+      "eidas": {
+        "type": "keyword"
+      },
+      "fs_label": {
+        "type": "keyword",
+        "fields": {
+          "raw": {
+            "ignore_above": 256,
+            "type": "keyword"
+          }
+        }
+      },
+      "fi": {
+        "type": "keyword",
+        "fields": {
+          "raw": {
+            "ignore_above": 256,
+            "type": "keyword"
+          }
+        }
+      },
+      "time": {
+        "type": "date"
+      },
+      "fs": {
+        "type": "keyword",
+        "fields": {
+          "raw": {
+            "ignore_above": 256,
+            "type": "keyword"
+          }
+        }
+      },
+      "rnippReturnValue": {
+        "type": "keyword",
+        "fields": {
+          "raw": {
+            "ignore_above": 256,
+            "type": "keyword"
+          }
+        }
+      },
+      "source": {
+        "properties": {
+          "address": {
+            "type": "ip"
+          },
+          "geo": {
+            "properties": {
+              "location": {
+                "type": "geo_point"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
