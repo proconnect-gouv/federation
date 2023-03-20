@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountBlockedException, AccountService } from '@fc/account';
 import { RequiredExcept } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { LoggerService } from '@fc/logger-legacy';
 import { IOidcIdentity } from '@fc/oidc';
@@ -11,7 +12,6 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
-import { CoreService } from '../../services';
 import { CoreFcpDefaultVerifyHandler } from './core-fcp-default-verify.handler';
 
 describe('CoreFcpDefaultVerifyHandler', () => {
@@ -80,10 +80,12 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
   const accountIdMock = 'accountIdMock value';
 
-  const coreServiceMock = {
-    checkIfAccountIsBlocked: jest.fn(),
+  const coreAccountServiceMock = {
+    computeFederation: jest.fn(),
+  };
+
+  const coreAcrServiceMock = {
     checkIfAcrIsValid: jest.fn(),
-    computeInteraction: jest.fn(),
   };
 
   const sessionDataMock = {
@@ -118,7 +120,8 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ConfigService,
-        CoreService,
+        CoreAccountService,
+        CoreAcrService,
         CoreFcpDefaultVerifyHandler,
         LoggerService,
         SessionService,
@@ -131,8 +134,10 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(CoreService)
-      .useValue(coreServiceMock)
+      .overrideProvider(CoreAccountService)
+      .useValue(coreAccountServiceMock)
+      .overrideProvider(CoreAcrService)
+      .useValue(coreAcrServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
@@ -147,7 +152,6 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       .useValue(cryptographyFcpServiceMock)
       .overrideProvider(AccountService)
       .useValue(accountServiceMock)
-
       .compile();
 
     service = module.get<CoreFcpDefaultVerifyHandler>(
@@ -166,7 +170,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       .mockReturnValueOnce('computedSubSp')
       .mockReturnValueOnce('computedSubIdp');
 
-    coreServiceMock.computeInteraction.mockResolvedValue(accountIdMock);
+    coreAccountServiceMock.computeFederation.mockResolvedValue(accountIdMock);
 
     accountServiceMock.getAccountByIdentityHash.mockResolvedValueOnce(
       accountDataMock,
@@ -228,7 +232,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       await service.handle(handleArgument);
 
       // Then
-      expect(coreServiceMock.computeInteraction).toBeCalledWith(
+      expect(coreAccountServiceMock.computeFederation).toBeCalledWith(
         expect.objectContaining({
           subSp: subFromAccount,
         }),
@@ -249,7 +253,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       await service.handle(handleArgument);
 
       // Then
-      expect(coreServiceMock.computeInteraction).toBeCalledWith(
+      expect(coreAccountServiceMock.computeFederation).toBeCalledWith(
         expect.objectContaining({
           subSp: 'computedSubSp',
         }),
@@ -260,7 +264,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     it('Should throw if acr is not validated', async () => {
       // Given
       const errorMock = new Error('my error 1');
-      coreServiceMock.checkIfAcrIsValid.mockImplementation(() => {
+      coreAcrServiceMock.checkIfAcrIsValid.mockImplementation(() => {
         throw errorMock;
       });
       // Then
@@ -324,12 +328,12 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       });
     });
 
-    it('Should call computeInteraction()', async () => {
+    it('Should call computeFederation()', async () => {
       // When
       await service.handle(handleArgument);
       // Then
-      expect(coreServiceMock.computeInteraction).toHaveBeenCalledTimes(1);
-      expect(coreServiceMock.computeInteraction).toBeCalledWith(
+      expect(coreAccountServiceMock.computeFederation).toHaveBeenCalledTimes(1);
+      expect(coreAccountServiceMock.computeFederation).toBeCalledWith(
         {
           spId: sessionDataMock.spId,
           entityId: spMock.entityId,

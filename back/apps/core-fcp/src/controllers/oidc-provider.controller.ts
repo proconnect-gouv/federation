@@ -94,6 +94,12 @@ export class OidcProviderController {
       route: OidcProviderRoutes.AUTHORIZATION,
     });
 
+    /**
+     * DO NOTE REMOVE !
+     * The session cannot be reset outside the controller,
+     * because we do not always go through the before middleware
+     * according to the different kinematics
+     * */
     // Initializes a new session local
     await this.sessionService.reset(req, res);
 
@@ -145,6 +151,12 @@ export class OidcProviderController {
       route: OidcProviderRoutes.AUTHORIZATION,
     });
 
+    /**
+     * DO NOTE REMOVE !
+     * The session cannot be reset outside the controller,
+     * because we do not always go through the before middleware
+     * according to the different kinematics
+     * */
     // Initializes a new session local
     await this.sessionService.reset(req, res);
     const errors = await validateDto(
