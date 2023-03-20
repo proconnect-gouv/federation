@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  Header,
   Param,
   Render,
   Req,
@@ -64,6 +65,7 @@ export class CoreFcpController {
   }
 
   @Get(CoreRoutes.DEFAULT)
+  @Header('cache-control', 'no-store')
   getDefault(@Res() res) {
     const { defaultRedirectUri } = this.config.get<CoreConfig>('Core');
 
@@ -80,6 +82,7 @@ export class CoreFcpController {
   // More than 4 parameters authorized for dependency injection
   // eslint-disable-next-line max-params
   @Get(CoreRoutes.INTERACTION)
+  @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getInteraction(
     @Req() req,
@@ -171,6 +174,7 @@ export class CoreFcpController {
   // More than 4 parameters authorized for dependency injection
   // eslint-disable-next-line max-params
   @Get(CoreRoutes.INTERACTION_VERIFY)
+  @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getVerify(
     @Req() req,
@@ -217,6 +221,7 @@ export class CoreFcpController {
   }
 
   @Get(CoreRoutes.INTERACTION_CONSENT)
+  @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('consent')
   async getConsent(

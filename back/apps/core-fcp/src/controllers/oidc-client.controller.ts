@@ -65,6 +65,7 @@ export class OidcClientController {
    * @todo #242 get configured parameters (scope and acr)
    */
   @Post(OidcClientRoutes.REDIRECT_TO_IDP)
+  @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async redirectToIdp(
     @Res() res,
@@ -162,6 +163,7 @@ export class OidcClientController {
   }
 
   @Get(OidcClientRoutes.OIDC_CALLBACK_LEGACY)
+  @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Redirect()
   async getLegacyOidcCallback(
@@ -190,6 +192,7 @@ export class OidcClientController {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/308
    */
   @Get(OidcClientRoutes.OIDC_CALLBACK)
+  @Header('cache-control', 'no-store')
   async getOidcCallback(
     @Req() req,
     @Res() res,
