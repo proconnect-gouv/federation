@@ -13,7 +13,7 @@ import {
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { CoreRoutes, Interaction } from '@fc/core';
+import { CoreAcrService, CoreRoutes, Interaction } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { MinistriesService } from '@fc/ministries';
@@ -32,10 +32,9 @@ import {
   SessionCsrfService,
   SessionNotFoundException,
 } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
 
 import { CoreConfig } from '../dto';
-import { CoreFcaService, CoreService } from '../services';
+import { CoreFcaVerifyService } from '../services/core-fca-verify.service';
 
 @Controller()
 export class CoreFcaController {
@@ -47,11 +46,10 @@ export class CoreFcaController {
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly ministries: MinistriesService,
-    private readonly core: CoreFcaService,
     private readonly config: ConfigService,
     private readonly csrfService: SessionCsrfService,
-    private readonly coreService: CoreService,
-    private readonly tracking: TrackingService,
+    private readonly coreAcr: CoreAcrService,
+    private readonly coreFcaVerify: CoreFcaVerifyService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -221,7 +219,7 @@ export class CoreFcaController {
       configuration: { acrValues: allowedAcrValues },
     } = this.config.get<OidcProviderConfig>('OidcProvider');
 
-    const rejected = await this.coreService.rejectInvalidAcr(
+    const rejected = await this.coreAcr.rejectInvalidAcr(
       acrValues,
       allowedAcrValues,
       { req, res },
@@ -236,68 +234,6 @@ export class CoreFcaController {
     }
 
     return {};
-  }
-
-  private async trackBlackListed(req: Request) {
-    const eventContext = { req };
-    const { FC_BLACKLISTED } = this.tracking.TrackedEventsMap;
-
-    await this.tracking.track(FC_BLACKLISTED, eventContext);
-  }
-
-  private async trackVerified(req: Request) {
-    const eventContext = { req };
-    const { FC_VERIFIED } = this.tracking.TrackedEventsMap;
-
-    await this.tracking.track(FC_VERIFIED, eventContext);
-  }
-
-  private async handleBlacklisted(
-    req: Request,
-    res: Response,
-    params: {
-      urlPrefix: string;
-      interactionId: string;
-      sessionOidc: ISessionService<OidcClientSession>;
-    },
-  ): Promise<void> {
-    const { interactionId, urlPrefix, sessionOidc } = params;
-
-    const url = `${urlPrefix}${CoreRoutes.INTERACTION.replace(
-      ':uid',
-      interactionId,
-    )}`;
-
-    /**
-     * Black listing redirects to idp choice,
-     * thus we are no longer in an "sso" interaction,
-     * so we update isSso flag in session.
-     */
-    sessionOidc.set('isSso', false);
-
-    await this.trackBlackListed(req);
-
-    return res.redirect(url);
-  }
-
-  private async handleVerifyIdentity(
-    req: Request,
-    res: Response,
-    params: {
-      urlPrefix: string;
-      interactionId: string;
-      sessionOidc: ISessionService<OidcClientSession>;
-    },
-  ): Promise<void> {
-    const { sessionOidc, urlPrefix } = params;
-
-    await this.core.verify(sessionOidc);
-
-    const url = `${urlPrefix}${CoreRoutes.INTERACTION_LOGIN}`;
-
-    await this.trackVerified(req);
-
-    return res.redirect(url);
   }
 
   @Get(CoreRoutes.INTERACTION_VERIFY)
@@ -331,9 +267,11 @@ export class CoreFcaController {
     const params = { urlPrefix, interactionId, sessionOidc };
 
     if (isBlackListed) {
-      return this.handleBlacklisted(req, res, params);
+      const url = await this.coreFcaVerify.handleBlacklisted(req, params);
+      return res.redirect(url);
     } else {
-      return this.handleVerifyIdentity(req, res, params);
+      const url = await this.coreFcaVerify.handleVerifyIdentity(req, params);
+      return res.redirect(url);
     }
   }
 }

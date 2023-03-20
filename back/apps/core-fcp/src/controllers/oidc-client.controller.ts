@@ -17,6 +17,7 @@ import {
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
+import { CoreVerifyService, ProcessCore } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
@@ -41,10 +42,8 @@ import {
   OidcIdentityDto,
   RedirectToIdpSessionDto,
 } from '../dto';
-import { ProcessCore } from '../enums';
 import { CoreFcpInvalidIdentityException } from '../exceptions';
 import { IIdentityCheckFeatureHandler } from '../interfaces';
-import { CoreFcpService } from '../services';
 
 @Controller()
 export class OidcClientController {
@@ -56,7 +55,7 @@ export class OidcClientController {
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly csrfService: SessionCsrfService,
     private readonly config: ConfigService,
-    private readonly core: CoreFcpService,
+    private readonly coreVerify: CoreVerifyService,
     private readonly tracking: TrackingService,
   ) {
     this.logger.setContext(this.constructor.name);
@@ -262,7 +261,7 @@ export class OidcClientController {
 
   private async validateIdentity(idpId: string, identity: OidcIdentityDto) {
     const identityCheckHandler =
-      await this.core.getFeature<IIdentityCheckFeatureHandler>(
+      await this.coreVerify.getFeature<IIdentityCheckFeatureHandler>(
         idpId,
         ProcessCore.ID_CHECK,
       );

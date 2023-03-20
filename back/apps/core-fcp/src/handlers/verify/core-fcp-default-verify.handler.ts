@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { AccountBlockedException, AccountService } from '@fc/account';
 import { RequiredExcept } from '@fc/common';
+import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { FeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger-legacy';
@@ -15,7 +16,6 @@ import {
   IVerifyFeatureHandler,
   IVerifyFeatureHandlerHandleArgument,
 } from '../../interfaces';
-import { CoreService } from '../../services';
 
 @Injectable()
 @FeatureHandler('core-fcp-default-verify')
@@ -24,7 +24,8 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
   /* eslint-disable-next-line max-params */
   constructor(
     private readonly logger: LoggerService,
-    private readonly core: CoreService,
+    private readonly coreAccount: CoreAccountService,
+    private readonly coreAcr: CoreAcrService,
     private readonly tracking: TrackingService,
     private readonly rnipp: RnippService,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
@@ -72,7 +73,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
      */
 
     // Acr check
-    this.core.checkIfAcrIsValid(idpAcr, spAcr);
+    this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr);
 
     // Identity check and normalization
     const rnippIdentity = await this.rnippCheck(
@@ -106,7 +107,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     const subIdp = this.cryptographyFcp.computeSubV1(spId, idpIdentityHash);
 
     // Save interaction to database & get sp's sub to avoid double computation
-    const accountId = await this.core.computeInteraction(
+    const accountId = await this.coreAccount.computeFederation(
       {
         entityId,
         hashSp,

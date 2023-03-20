@@ -11,7 +11,12 @@ import {
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { CoreRoutes, Interaction } from '@fc/core';
+import {
+  CoreAcrService,
+  CoreRoutes,
+  CoreVerifyService,
+  Interaction,
+} from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { NotificationsService } from '@fc/notifications';
@@ -35,7 +40,7 @@ import {
   InteractionSessionDto,
 } from '../dto';
 import { InsufficientAcrLevelSuspiciousContextException } from '../exceptions';
-import { CoreFcpService, CoreService } from '../services';
+import { CoreFcpService } from '../services';
 
 @Controller()
 export class CoreFcpController {
@@ -50,9 +55,10 @@ export class CoreFcpController {
     private readonly config: ConfigService,
     private readonly notifications: NotificationsService,
     private readonly csrf: SessionCsrfService,
-    private readonly core: CoreService,
     private readonly oidcAcr: OidcAcrService,
     private readonly oidcClient: OidcClientService,
+    private readonly coreAcr: CoreAcrService,
+    private readonly coreVerify: CoreVerifyService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -100,7 +106,7 @@ export class CoreFcpController {
       configuration: { acrValues: allowedAcrValues },
     } = this.config.get<OidcProviderConfig>('OidcProvider');
 
-    const rejected = await this.core.rejectInvalidAcr(
+    const rejected = await this.coreAcr.rejectInvalidAcr(
       acrValues,
       allowedAcrValues,
       { req, res },
@@ -195,7 +201,7 @@ export class CoreFcpController {
     }
 
     const trackingContext: TrackedEventContextInterface = { req };
-    await this.coreFcp.verify(sessionOidc, trackingContext);
+    await this.coreVerify.verify(sessionOidc, trackingContext);
 
     const { urlPrefix } = this.config.get<AppConfig>('App');
     const url = `${urlPrefix}/interaction/${interactionId}/consent`;
