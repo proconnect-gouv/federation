@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import {
   Controller,
   Get,
+  Header,
   Param,
   Render,
   Req,
@@ -57,6 +58,7 @@ export class CoreFcaController {
   }
 
   @Get(CoreRoutes.DEFAULT)
+  @Header('cache-control', 'no-store')
   getDefault(@Res() res) {
     const { defaultRedirectUri } = this.config.get<CoreConfig>('Core');
     this.logger.trace({
@@ -69,6 +71,7 @@ export class CoreFcaController {
   }
 
   @Get(CoreRoutes.FCA_FRONT_HISTORY_BACK_URL)
+  @Header('cache-control', 'no-store')
   async getFrontHistoryBackURL(
     @Req() req,
     @Res() res,
@@ -104,6 +107,7 @@ export class CoreFcaController {
   }
 
   @Get(CoreRoutes.FCA_FRONT_DATAS)
+  @Header('cache-control', 'no-store')
   async getFrontData(
     @Req() req,
     @Res() res,
@@ -191,6 +195,7 @@ export class CoreFcaController {
   }
 
   @Get(CoreRoutes.INTERACTION)
+  @Header('cache-control', 'no-store')
   @Render('interaction')
   async getInteraction(
     @Req() req,
@@ -301,6 +306,7 @@ export class CoreFcaController {
   }
 
   @Get(CoreRoutes.INTERACTION_VERIFY)
+  @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getVerify(
     @Req() req: Request,

@@ -4,6 +4,7 @@ import {
   Body,
   Controller,
   Get,
+  Header,
   Next,
   Post,
   Query,
@@ -81,6 +82,7 @@ export class OidcProviderController {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/144
    */
   @Get(OidcProviderRoutes.AUTHORIZATION)
+  @Header('cache-control', 'no-store')
   async getAuthorize(
     @Req() req,
     @Res() res,
@@ -132,6 +134,7 @@ export class OidcProviderController {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/144
    */
   @Post(OidcProviderRoutes.AUTHORIZATION)
+  @Header('cache-control', 'no-store')
   async postAuthorize(
     @Req() req,
     @Res() res,
@@ -169,6 +172,7 @@ export class OidcProviderController {
 
   // A controller is an exception to the max-params lint due to decorators
   @Get(CoreRoutes.REDIRECT_TO_SP_WITH_ERROR)
+  @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async redirectToSpWithError(
     @Query() { error, error_description: errorDescription }: ErrorParamsDto,
@@ -245,6 +249,7 @@ export class OidcProviderController {
   }
 
   @Post(CoreRoutes.INTERACTION_LOGIN)
+  @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async getLogin(
     @Req() req,
