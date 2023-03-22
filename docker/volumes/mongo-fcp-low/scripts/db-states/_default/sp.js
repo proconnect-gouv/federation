@@ -1,6 +1,6 @@
 // == FS
 const fsp = {
-  'FSP1-LOW': {
+  "FSP1-LOW": {
     name: "fsp1-low",
     title: "FSP1 - LOW",
     eidas: 2,
@@ -40,8 +40,9 @@ const fsp = {
       "profile",
       "birth",
       "identite_pivot",
+      "idp_birthdate",
     ],
-    claims: ['amr'],
+    claims: ["amr"],
     id_token_signed_response_alg: "HS256",
     id_token_encrypted_response_alg: "",
     id_token_encrypted_response_enc: "",
@@ -56,7 +57,7 @@ const fsp = {
     trustedIdentity: false,
   },
   // FSP2-LOW - amr not authorized
-  'FSP2-LOW': {
+  "FSP2-LOW": {
     name: "fsp2-low",
     title: "FSP2 - LOW",
     eidas: 2,
@@ -96,6 +97,7 @@ const fsp = {
       "profile",
       "birth",
       "identite_pivot",
+      "idp_birthdate",
     ],
     claims: [],
     id_token_signed_response_alg: "HS256",
@@ -112,7 +114,7 @@ const fsp = {
     trustedIdentity: false,
   },
   // FSP3-LOW - private sp
-  'FSP3-LOW': {
+  "FSP3-LOW": {
     name: "fsp3-low",
     title: "FSP3 - LOW",
     eidas: 1,
@@ -152,8 +154,9 @@ const fsp = {
       "profile",
       "birth",
       "identite_pivot",
+      "idp_birthdate",
     ],
-    claims: ['amr'],
+    claims: ["amr"],
     id_token_signed_response_alg: "HS256",
     id_token_encrypted_response_alg: "",
     id_token_encrypted_response_enc: "",
