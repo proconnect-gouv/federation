@@ -106,8 +106,8 @@ const fsp = {
     userinfo_encrypted_response_enc: "",
     jwks_uri:
       "https://fsp1-low.docker.dev-franceconnect.fr/client/.well-known/keys",
-    idpFilterExclude: true,
-    idpFilterList: [],
+    idpFilterExclude: false,
+    idpFilterList: ["fip1-low","fip2-low","fip3-low"],
     identityConsent: false,
     trustedIdentity: false,
   },
@@ -163,7 +163,7 @@ const fsp = {
     jwks_uri:
       "https://fsp3-low.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
-    idpFilterList: [],
+    idpFilterList: ["fip3-low"],
     identityConsent: true,
     trustedIdentity: false,
   },
