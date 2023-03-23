@@ -133,17 +133,23 @@ export class CoreFcpController {
 
     const isSuspicious = await sessionApp.get('isSuspicious');
 
-    const authorizedProviders = providers
-      .filter(({ maxAuthorizedAcr }) =>
-        this.oidcAcr.isAcrValid(maxAuthorizedAcr, acrValues),
-      )
-      .filter(({ maxAuthorizedAcr }) => {
-        const authorizedIdp = !this.coreFcp.isInsufficientAcrLevel(
-          maxAuthorizedAcr,
-          isSuspicious,
-        );
-        return authorizedIdp;
-      });
+    const authorizedProviders = providers.map((provider) => {
+      const isAcrValid = this.oidcAcr.isAcrValid(
+        provider.maxAuthorizedAcr,
+        acrValues,
+      );
+
+      const isInsufficientAcrLevel = this.coreFcp.isInsufficientAcrLevel(
+        provider.maxAuthorizedAcr,
+        isSuspicious,
+      );
+
+      if (!isAcrValid || isInsufficientAcrLevel) {
+        provider.active = false;
+      }
+
+      return provider;
+    });
 
     // -- generate and store in session the CSRF token
     const csrfToken = this.csrf.get();

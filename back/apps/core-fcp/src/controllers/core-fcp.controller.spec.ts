@@ -511,7 +511,7 @@ describe('CoreFcpController', () => {
 
       // Then
       expect(coreFcpServiceMock.isInsufficientAcrLevel).toHaveBeenCalledTimes(
-        2,
+        3,
       );
       expect(coreFcpServiceMock.isInsufficientAcrLevel).toHaveBeenNthCalledWith(
         1,
@@ -520,6 +520,11 @@ describe('CoreFcpController', () => {
       );
       expect(coreFcpServiceMock.isInsufficientAcrLevel).toHaveBeenNthCalledWith(
         2,
+        idpFilterListMock[1].maxAuthorizedAcr,
+        false,
+      );
+      expect(coreFcpServiceMock.isInsufficientAcrLevel).toHaveBeenNthCalledWith(
+        3,
         idpFilterListMock[2].maxAuthorizedAcr,
         false,
       );
