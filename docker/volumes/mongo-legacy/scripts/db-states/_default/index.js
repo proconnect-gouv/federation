@@ -20,3 +20,8 @@ load('/opt/scripts/db-states/_default/scopes.js');
 
 print('Initializing Claims...');
 load('/opt/scripts/db-states/_default/claims.js');
+
+/* ------------------------------------------------------------------------------- */
+
+print('Initializing Partners...');
+load('/opt/scripts/db-states/_default/partners.js');

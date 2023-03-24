@@ -1,6 +1,6 @@
 db = db.getSiblingDB('core-legacy');
 
-const collections = ['client', 'provider', 'scopes', 'claims', 'partner'];
+const collections = ['client', 'partner'];
 
 collections.forEach((collection) => {
   print(`Reseting ${collection} collection...`);
