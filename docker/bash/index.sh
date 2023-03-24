@@ -34,7 +34,7 @@ case "$action" in
     ;;
   dep-all|dependencies-all)
     _get_running_containers
-    _install_dependencies $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+    _install_dependencies $NODEJS_CONTAINERS
     ;;
   exec)
     _exec $@
@@ -89,7 +89,7 @@ case "$action" in
     ;;
   reload-all)
     _get_running_containers
-    _start $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+    _start $NODEJS_CONTAINERS
     ;;
   init-ud)
     _init_ud
@@ -151,19 +151,19 @@ case "$action" in
   # -- start all up's containers (FCP and/or FCA)
   start-all)
     _get_running_containers
-    _start $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+    _start $NODEJS_CONTAINERS
     ;;
   # -- stop all up's containers (FCP and/or FCA)
   stop-all)
     _get_running_containers
-    _stop $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+    _stop $NODEJS_CONTAINERS
     ;;
   test)
     _test $@
     ;;
   test-all)
     _get_running_containers
-    _test $_ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS
+    _test $NODEJS_CONTAINERS
     ;;
   e2e)
     _e2e $@
@@ -185,6 +185,9 @@ case "$action" in
     ;;
   fixtures-partners-fca)
     _fixtures-partners "partners-fca-back"
+    ;;
+  init)
+    _init-fcapps $@
     ;;
   storybook)
     _storybook

@@ -3,19 +3,25 @@
 
 # Find which nodejs containers are running and store it into $RUNNING_CONTAINERS
 _get_running_containers() {
-  NODEJS_CONTAINERS=`docker ps -qf ancestor=$FC_DOCKER_REGISTRY/nodejs:$NODE_VERSION-dev`
+  local RAW_NODEJS_CONTAINERS=`docker ps --format '{{.Names}}' -f ancestor=$FC_DOCKER_REGISTRY/nodejs:$NODE_VERSION-dev`
+  local RAW_ALL_CONTAINERS=`docker ps --format '{{.Names}}'`
 
-  FC_CONTAINERS=`$0 ps --services --filter=status=running | grep -vE "(tmpdir|rp-all|docker-gen)"`
+  NODEJS_CONTAINERS=$(_container-to-compose-name "$RAW_NODEJS_CONTAINERS")
+  FC_CONTAINERS=$(_container-to-compose-name "$RAW_ALL_CONTAINERS")
+}
 
-  if [ "${NODEJS_CONTAINERS:-xxx}" != "xxx" ]
-  then
-    RUNNING_CONTAINERS=`docker inspect -f '{{index (.Config.Labels) "com.docker.compose.service" }}' $NODEJS_CONTAINERS`
 
-    # Quick dirty trick to not match any legacy container in CI
-    # This will get all running containers ($RUNNING_CONTAINERS) and match them against the container list from docker-compose (which is for sure not containing legacy containers)
-    # Objective is to use the $COMPOSE_PROJECT_NAME later.
-    _ONLY_NODEJS_NON_LEGACY_RUNNING_CONTAINERS=`comm -12 <(docker-compose ps --services --filter "status=running" | sort) <(echo $RUNNING_CONTAINERS | tr ' ' '\n' | sort)`
-  fi
+_container-to-compose-name() {
+  local INPUT=$1
+  local OUTPUT=""
+
+  for container in $INPUT
+  do
+    local name=$(echo $container| sed -E 's/^fc_(.*)_1$/\1/')
+    OUTPUT=$(echo -e "$OUTPUT\n$name")
+  done
+
+  echo $OUTPUT
 }
 
 
