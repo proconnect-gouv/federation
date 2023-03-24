@@ -1,6 +1,8 @@
 
 #!/usr/bin/env bash
 
+source "$INCLUDE_DIR/utils.sh"
+
 _log() {
   app=${@:-no-container}
   cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} pm2 logs
@@ -8,12 +10,19 @@ _log() {
 
 
 _start() {
-  apps=${@:-no-container}
+  local apps=${@:-no-container}
   for app in $apps
   do
-    echo "Starting ${app} app..."
     cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} "/opt/scripts/start.sh" || err=true
+    # task "Starting ${app} app"\
+    # "_do_start $app"
   done
+}
+
+
+_do_start() {
+  local app=$1
+  cd ${WORKING_DIR} && docker-compose exec $NO_TTY ${app} "/opt/scripts/start.sh" || err=true
 }
 
 _stop() {

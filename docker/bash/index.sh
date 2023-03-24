@@ -7,6 +7,8 @@ then
   exit 1;
 fi
 
+__DKS_LAST_LOG_FILE="/tmp/docker_stack_last.log"
+
 INCLUDE_DIR="$FC_ROOT/fc/docker/bash"
 
 
@@ -15,7 +17,6 @@ source "$INCLUDE_DIR/config.sh"
 source "$INCLUDE_DIR/docker.sh"
 source "$INCLUDE_DIR/elastic.sh"
 source "$INCLUDE_DIR/fca-tmp.sh"
-source "$INCLUDE_DIR/mongo.sh"
 source "$INCLUDE_DIR/node.sh"
 source "$INCLUDE_DIR/postgres.sh"
 source "$INCLUDE_DIR/test.sh"
@@ -63,6 +64,10 @@ case "$action" in
     ;;
   fca-low-front)
     _fca_low_front
+    ;;
+  # Unique command to keep
+  mongo)
+    _mongo_shell $@
     ;;
   mongo-shell-core-fca-low)
     _mongo_shell_core_fca_low
@@ -131,6 +136,9 @@ case "$action" in
   idp-as-prod-v2)
     _idp_as_prod_v2 $@
     ;;
+  idp-as-prod-legacy)
+    _idp_as_prod_legacy $@
+    ;;
   start)
     _start $@
     ;;
@@ -197,7 +205,7 @@ case "$action" in
     _run_prod $@
     ;;
   help)
-    cat ./txt/usage.txt
+    cat $INCLUDE_DIR/txt/usage.txt
     exit 1
     ;;
   *)
