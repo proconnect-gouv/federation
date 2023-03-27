@@ -104,7 +104,11 @@ export default class ServiceProviderPage {
     }
   }
 
-  startLogin(fcRootUrl: string, scopeContext: ScopeContext): void {
+  startLogin(
+    fcRootUrl: string,
+    scopeContext: ScopeContext,
+    claims: string[] = [],
+  ): void {
     // Initiate FS connection from Legacy SP mock
     if (this.isLegacySPMock()) {
       this.callAuthorize(fcRootUrl, scopeContext);
@@ -113,6 +117,7 @@ export default class ServiceProviderPage {
     // Initiate FS connection from SP mock
     if (this.mocked) {
       this.setMockRequestedScope(scopeContext);
+      this.setMockRequestedAmr(claims.includes('amr'));
     }
     this.getFcButton().click();
   }
@@ -123,6 +128,16 @@ export default class ServiceProviderPage {
       // 2 clicks required on Legacy SP mock
       cy.get('#fconnect-access .logout a').click();
     }
+  }
+
+  getMockSubText(): Cypress.Chainable<string> {
+    return cy
+      .get('#json-output')
+      .invoke('text')
+      .then((text) => {
+        const responseBody = JSON.parse(text.trim());
+        return responseBody['sub'];
+      });
   }
 
   checkMockInformationAccess(

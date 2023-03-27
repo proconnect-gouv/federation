@@ -3,7 +3,8 @@
     "name": "fsp1v2",
     "descriptions": [
       "par défaut",
-      "public"
+      "public",
+      "avec un entityId"
     ],
     "mocked": true,
     "url": "https://fsp1v2.integ01.fcp.fournisseur-de-service.fr",
@@ -26,7 +27,8 @@
     "descriptions": [
       "habilité à demander le scope identite_pivot",
       "privé avec consentement obligatoire",
-      "avec une whitelist de FI"
+      "avec une whitelist de FI",
+      "avec le même entityId"
     ],
     "mocked": true,
     "url": "https://fsp2v2.integ01.fcp.fournisseur-de-service.fr",
