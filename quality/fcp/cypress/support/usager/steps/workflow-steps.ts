@@ -60,7 +60,13 @@ export class ConnectionWorkflow {
    * @returns the current ConnectionWorkflow instance
    */
   start(): this {
-    this.serviceProviderPage.startLogin(this.fcRootUrl, this.scopeContext);
+    const { claims }: ServiceProvider = this.serviceProvider;
+
+    this.serviceProviderPage.startLogin(
+      this.fcRootUrl,
+      this.scopeContext,
+      claims,
+    );
     return this;
   }
 
