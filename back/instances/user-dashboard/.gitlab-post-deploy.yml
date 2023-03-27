@@ -6,6 +6,7 @@ quality-user-dashboard-release:
   only:
     - tags
   when: manual
+  needs: []
   environment:
     name: integ01
     url: https://fcp.integ01.dev-franceconnect.fr

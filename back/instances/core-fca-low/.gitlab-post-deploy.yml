@@ -6,6 +6,7 @@ quality-fca-low-release:
   only:
     - tags
   when: manual
+  needs: []
   environment:
     name: integ01
     url: https://fca.integ01.dev-agentconnect.fr

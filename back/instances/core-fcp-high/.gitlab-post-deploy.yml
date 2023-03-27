@@ -6,6 +6,7 @@ quality-fcp-high-release:
   only:
     - tags
   when: manual
+  needs: []
   environment:
     name: integ01
     url: https://auth.integ01.dev-franceconnect.fr
