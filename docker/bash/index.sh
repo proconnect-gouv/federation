@@ -11,7 +11,6 @@ __DKS_LAST_LOG_FILE="/tmp/docker_stack_last.log"
 
 INCLUDE_DIR="$FC_ROOT/fc/docker/bash"
 
-
 source "$INCLUDE_DIR/utils.sh"
 source "$INCLUDE_DIR/config.sh"
 source "$INCLUDE_DIR/docker.sh"
@@ -21,197 +20,73 @@ source "$INCLUDE_DIR/node.sh"
 source "$INCLUDE_DIR/postgres.sh"
 source "$INCLUDE_DIR/test.sh"
 source "$INCLUDE_DIR/up.sh"
+source "$INCLUDE_DIR/checkout.sh"
+source "$INCLUDE_DIR/lemonldap.sh"
+source "$INCLUDE_DIR/commands.sh"
 
-script=$0
-action=${1:-help}
-[ $# -gt 0 ] && shift
-case "$action" in
-  checkout)
-    _checkout $@
-    ;;
-  dep|dependencies)
-    _install_dependencies $@
-    ;;
-  dep-all|dependencies-all)
-    _get_running_containers
-    _install_dependencies $NODEJS_CONTAINERS
-    ;;
-  exec)
-    _exec $@
-    ;;
-  halt)
-    _halt
-    ;;
-  log)
-    _log $@
-    ;;
-  llng-configure)
-    cd ${WORKING_DIR} && docker-compose exec fia-llng-low bash /scripts/init.sh
-    ;;
-  compose)
-    cd ${WORKING_DIR} && docker-compose $@
-    ;;
-  log-rotate)
-    echo "Send SIGUSR2 to core-fcp-high app..."
-    cd ${WORKING_DIR} && docker-compose exec core-fcp-high pkill -SIGUSR2 -f '/usr/bin/node -r source-map-support/register --inspect=0.0.0.0:9235 /var/www/app/dist/instances/core-fcp-high/main'
-    echo "... Signal done"
-    ;;
-  fixtures-fcp-high)
-    _fixtures_fcp_high
-    ;;
-  fixtures-fca-low)
-    _fixtures_fca_low
-    ;;
-  fca-low-front)
-    _fca_low_front
-    ;;
-  # Unique command to keep
-  mongo)
-    _mongo_shell $@
-    ;;
-  mongo-shell-core-fca-low)
-    _mongo_shell_core_fca_low
-    ;;
-  mongo-shell-core-fcp-high)
-    _mongo_shell_core-fcp-high
-    ;;
-  mongo-shell-core-fcp-low)
-    _mongo_shell_core-fcp-low
-    ;;  
-  mongo-shell-core-legacy)
-    _mongo_shell_core-legacy
-    ;;
-  reload-rp)
-    cd ${WORKING_DIR} && docker-compose kill -s SIGHUP rp-all
-    ;;
-  reload)
-    _start $@
-    ;;
-  reload-all)
-    _get_running_containers
-    _start $NODEJS_CONTAINERS
-    ;;
-  init-ud)
-    _init_ud
-  ;;
-  reset-stats)
-    _reset_stats
-    ;;
-  generate-stats)
-    _generate_stats
-    ;;
-  generate-events)
-    _generate_events
-    ;;
-  generate_legacy_traces)
-    _generate_legacy_traces
-    ;;
-  generate_v2_traces)
-    _generate_v2_traces
-    ;;
-  generate-metrics)
-    _generate_metrics
-    ;;
-  delete-indexes)
-   _delete_indexes
-    ;;
-  es-create-ingest-pipeline)
-    _create_es_ingest_pipeline
-    ;;
-  restore-snapshot)
-    _es_restore_snapshot
-    ;;
-  reset-db-core-fcp-high)
-    _reset_db_fcp_high $@
-    ;;
-  reset-db-core-fcp-low)
-    _reset_db_fcp_low $@
-    ;;
-  reset-db-core-fca-low)
-    _reset_db_core_fca_low $@
-    ;;
-  reset-db-legacy)
-    _reset_db_legacy $@
-    ;;
-  idp-as-prod-v2)
-    _idp_as_prod_v2 $@
-    ;;
-  idp-as-prod-legacy)
-    _idp_as_prod_legacy $@
-    ;;
-  start)
-    _start $@
-    ;;
-  start-ci)
-    _start_ci $@
-    ;;
-  stop)
-    _stop $@
-    ;;
-  # -- start all up's containers (FCP and/or FCA)
-  start-all)
-    _get_running_containers
-    _start $NODEJS_CONTAINERS
-    ;;
-  # -- stop all up's containers (FCP and/or FCA)
-  stop-all)
-    _get_running_containers
-    _stop $NODEJS_CONTAINERS
-    ;;
-  test)
-    _test $@
-    ;;
-  test-all)
-    _get_running_containers
-    _test $NODEJS_CONTAINERS
-    ;;
-  e2e)
-    _e2e $@
-    ;;
-  migrations-partners-fcp)
-    _migrations-partners "partners-fcp-back"
-    ;;
-  migrations-partners-fca)
-    _migrations-partners "partners-fca-back"
-    ;;
-  migrations-generate-partners-fcp)
-    _migrations-generate-partners "partners-fcp-back" $@
-    ;;
-  migrations-generate-partners-fca)
-    _migrations-generate-partners "partners-fca-back" $@
-    ;;
-  fixtures-partners-fcp)
-    _fixtures-partners "partners-fcp-back"
-    ;;
-  fixtures-partners-fca)
-    _fixtures-partners "partners-fca-back"
-    ;;
-  init)
-    _init-fcapps $@
-    ;;
-  storybook)
-    _storybook
-    ;;
-  prune)
-    _halt
-    docker network prune -f && docker container prune -f
-    ;;
-  prune-all)
-    cat ./txt/atomic.art.txt
-    _halt
-    docker system prune -af && docker image prune -af && docker system prune -af --volumes && docker system df && (cypress cache prune || echo "skipped cypress cache prune") && npm cache clean --force && yarn cache clean && sudo du -sh /var/cache/apt/archives && cd ${FC_ROOT} && find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
-    ;;
-  up)
-    _up $@
-    ;;
-  run-prod)
-    _run_prod $@
-    ;;
-  help)
-    cat $INCLUDE_DIR/txt/usage.txt
-    exit 1
-    ;;
-  *)
-    cd ${WORKING_DIR} && docker-compose $action $@
-    ;;
-esac
+
+_command_register "checkout" "_checkout" "checkout <code:branch/tag> [infra:branch/tag] => set the environment to the state of the given branch/tag"
+_command_register "dep" "_install_dependencies" "dependencies [<app1> <app2> <...>] / dep [...] => install dependencies (using npm or yarn) on given nodejs applications (fc-core|fc-exploitation|fc-stats|fc-support|fc-workers|fdp1|fip1|aidants-connect-mock|fsp1|fsp2|fsp3|rnipp|partenaires|usagers - default: fc-core)"
+_command_register "dependencies" "_install_dependencies" "dependencies [<app1> <app2> <...>] / dep [...] => install dependencies (using npm or yarn) on given nodejs applications (fc-core|fc-exploitation|fc-stats|fc-support|fc-workers|fdp1|fip1|aidants-connect-mock|fsp1|fsp2|fsp3|rnipp|partenaires|usagers - default: fc-core)"
+_command_register "dep-all" "_install_dependencies_all" "dependencies-all | dep-all => install dependencies (using npm or yarn) on all nodejs applications"
+_command_register "dependencies-all" "_install_dependencies_all" "dependencies-all | dep-all => install dependencies (using npm or yarn) on all nodejs applications"
+_command_register "exec" "_exec" "exec <container_name> <command> => exec a command inside a container"
+_command_register "halt" "_halt" "alt => stop docker-compose and delete containers"
+_command_register "log" "_log" "log [<app>] => exec pm2 logs for given instance "
+_command_register "llng-configure" "_llng-configure" "Configure lemob LDAP?"
+_command_register "compose" "cd ${WORKING_DIR} && docker-compose" "aliato docker-compose"
+_command_register "log-rotate" "_log-rotate" "log-rotate Rotate the logs and send SIGUSR"
+_command_register "fixtures-fcp-high" "_fixtures_fcp_high" "drop and restore default postgres database for exploitation fcp high"
+_command_register "fixtures-fca-low" "_fixtures_fca_low" "Drop and restore default postgres database for exploitation fca low"
+_command_register "fca-low-front" "_fca_low_front" "build de l'application front FCA (react)"
+_command_register "mongo" "_mongo_shell" "mongo <server> <database>: Opens mongo shell"
+_command_register "mongo-shell-core-fca-low" "_mongo_shell_core_fca_low" "[deprecated] Open mongo shell for core-fca-low "
+_command_register "mongo-shell-core-fcp-high" "_mongo_shell_core-fcp-high" "[deprecated] Open mongo shell for core-fcp-high"
+_command_register "mongo-shell-core-fcp-low" "_mongo_shell_core-fcp-low"   "[deprecated] Open mongo shell for core-fcp-low"
+_command_register "mongo-shell-core-legacy" "_mongo_shell_core-legacy" "[deprecated] Open mongo shell for core-legacy"
+_command_register "reload-rp" "cd ${WORKING_DIR} && docker-compose kill -s SIGHUP rp-all" "Reload Reverse proxy?"
+_command_register "reload" "_start" "[<app1> <app2> <...>] => (re)start given pm2 instances "
+_command_register "reload-all" "_get_running_container && _start $NODEJS_CONTAINERS" "(re)start all pm2 instances"
+_command_register "init-ud" "_init_ud" "init-ud => Initialize data for user dashboard"
+_command_register "reset-stats" "_reset_stats" "reset-stats => drop stats index"
+_command_register "generate-stats" "_generate_stats" "generate-stats => restore all stats (logs, event and metrics) index"
+_command_register "generate-events" "_generate_events" "restore logs and events index"
+_command_register "generate_legacy_traces" "_generate_legacy_traces" "Generate traces for legacy"
+_command_register "generate_v2_traces" "_generate_v2_traces" "" # Description to be defined
+_command_register "generate-metrics" "_generate_metrics" "" # Description to be defined
+_command_register "delete-indexes" "_delete_indexes" "" # Description to be defined
+_command_register "es-create-ingest-pipeline" "_create_es_ingest_pipeline" "" # Description to be defined
+_command_register "restore-snapshot" "_es_restore_snapshot" "" # Description to be defined # Deprecated
+_command_register "reset-db-core-fcp-high" "_reset_db_fcp_high" "" # Description to be defined # Deprecated
+_command_register "reset-db-core-fcp-low" "_reset_db_fcp_low" "" # Description to be defined # Deprecated
+_command_register "reset-db-core-fca-low" "_reset_db_core_fca_low" "" # Description to be defined # Deprecated
+_command_register "reset-db-legacy" "_reset_db_legacy" "" # Description to be defined # Deprecated
+_command_register "reset-mongo" "_reset_mongodb" "reset-mongo <mongo-service-name> : Reset given mongodb container"
+_command_register "idp-as-prod-v2" "_idp_as_prod_v2" "" # Description to be defined
+_command_register "idp-as-prod-legacy" "_idp_as_prod_legacy" "" # Description to be defined
+_command_register "start" "_start" "start application"
+_command_register "start-ci" "_start_ci" "start for CI only"
+_command_register "stop" "_stop" "stop application"
+_command_register "start-all" "_start_all" "Start all application for wich containers are up"
+_command_register "stop-all" "_stop_all" "Stop all application for wich containers are up"
+_command_register "test" "_test" "Launch tests?"
+_command_register "test-all" "_test_all" "" # Description to be defined
+_command_register "e2e" "_e2e" "" # Description to be defined
+_command_register "migrations-partners-fcp" "_migrations-partners 'partners-fcp-back'" "" # Description to be defined
+_command_register "migrations-partners-fca" "_migrations-partners 'partners-fca-back'" "" # Description to be defined
+_command_register "migrations-generate-partners-fcp" "_migrations-generate-partners 'partners-fcp-back'" "" # Description to be defined
+_command_register "migrations-generate-partners-fca" "_migrations-generate-partners 'partners-fca-back'" "" # Description to be defined
+_command_register "fixtures-partners-fcp" "_fixtures-partners 'partners-fcp-back'" "" # Description to be defined
+_command_register "fixtures-partners-fca" "_fixtures-partners 'partners-fca-back'" "" # Description to be defined
+_command_register "init" "_init-fcapps" "Init FC-apps"
+_command_register "storybook" "_storybook" "" # Description to be defined
+_command_register "prune" "_prune" "Stop and remove all runing containers"
+_command_register "prune-all" "_prune_all" "" # Description to be defined
+_command_register "up" "_up" "up <stack name> => Launch a stack"
+_command_register "run-prod" "_run_prod" "" # Description to be defined
+_command_register "list" "_list_services" "List available services / stacks"
+_command_register "help" "_command_list" "Display this help"
+
+
+
+_command_run "$1" ${@:2}

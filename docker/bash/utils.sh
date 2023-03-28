@@ -10,7 +10,7 @@ KO="\e[1;41m Failed \e[0;0m"
 task() {
   if [ -z $VERBOSE ]
   then
-    echo -n " * $1: "
+    echo -ne " * $1: "
     (`$2 &> "$__DKS_LAST_LOG_FILE"` && _task_success $"1") || _task_fail "$1" "$2"
   else
     $2
@@ -26,9 +26,8 @@ _task_fail() {
     echo "   - command: > $1"
     echo "   - result:"
     echo " -------------------------------- "
-    echo $KO;
+    cat "$__DKS_LAST_LOG_FILE"
+    echo " -------------------------------- "
+    echo -e " * $1: $KO";
     exit 1;
-  else
-    echo -e $OK
-  fi
 }

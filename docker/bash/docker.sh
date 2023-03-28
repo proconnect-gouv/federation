@@ -10,21 +10,6 @@ _get_running_containers() {
   FC_CONTAINERS=$(_container-to-compose-name "$RAW_ALL_CONTAINERS")
 }
 
-
-_container-to-compose-name() {
-  local INPUT=$1
-  local OUTPUT=""
-
-  for container in $INPUT
-  do
-    local name=$(echo $container| sed -E 's/^fc_(.*)_1$/\1/')
-    OUTPUT=$(echo -e "$OUTPUT\n$name")
-  done
-
-  echo $OUTPUT
-}
-
-
 _halt() {
   echo "Stopping FC Dev environment..."
   cd ${WORKING_DIR} && docker-compose stop
@@ -56,8 +41,6 @@ _pull_node_image() {
   docker pull $URI
   # (docker login $FC_DOCKER_REGISTRY && docker pull $URI) || echo "Could not fetch fresh nodejs Image, not connected to the Internet?"
 }
-<<<<<<< HEAD
-=======
 
 _prune() {
   _halt
@@ -79,4 +62,3 @@ _prune_all() {
   cd $FC_ROOT
   find . -name "node_modules" -type d -prune -exec rm -rf '{}' +
 }
->>>>>>> 76e425bd0... fixup! [POC-1225]🔧 Update tooling

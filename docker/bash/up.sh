@@ -74,7 +74,7 @@ _auto_init_containers() {
 
   for app in $FC_CONTAINERS
   do
-    task "init $app " "_init_container $app"
+    task " * init \e[3m${app}\e[0m " "_init_container $app"
   done
 }
 

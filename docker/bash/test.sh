@@ -8,6 +8,11 @@ _test() {
   done
 }
 
+_test_all() {
+  _get_running_containers
+  _test $NODEJS_CONTAINERS
+}
+
 _e2e() {
   app=${1:-no-container}
   [ $# -gt 0 ] && shift
