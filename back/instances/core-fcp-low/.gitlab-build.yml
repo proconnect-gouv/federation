@@ -1,0 +1,44 @@
+include: '/back/.gitlab-build-template.yml'
+
+fc_low/core-build-image:
+  extends: .base-build
+  variables:
+    APP: core-low
+    MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncore_low_version:"
+
+fc_low/core-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: core-fcp-low
+    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncore_low_version:"
+  needs:
+    - job: fc_low/core-build-image
+
+fc_low/fip1-low-build-image:
+  extends: .base-build
+  variables:
+    APP: mock-identity-provider-fcp-low
+    MSG: "environments/outscale-tools/group_vars/all/versions.yml\nfip1_low_version:"
+
+fc_low/fip1-low-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: mock-identity-provider-fcp-low
+    MSG: "environments/outscale-tools/group_vars/all/versions.yml\nfip1_low_version:"
+  needs:
+    - job: fc_low/fip1-low-build-image
+
+fc_low/fsp1-low-build-image:
+  extends: .base-build
+  variables:
+    APP: mock-service-provider-fcp-low
+    MSG: "environments/outscale-tools/group_vars/all/versions.yml\nfsp1_low_version:"
+
+fc_low/fsp1-low-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: mock-service-provider-fcp-low
+    MSG: "environments/outscale-tools/group_vars/all/versions.yml\nfsp1_low_version:"
+  needs:
+    - job: fc_low/fsp1-low-build-image
+
