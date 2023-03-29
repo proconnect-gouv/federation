@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
-import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { CoreOidcProviderMiddlewareService, CoreRoutes } from '@fc/core';
+import { CoreConfig, CoreOidcProviderMiddlewareService } from '@fc/core';
 import { LoggerService } from '@fc/logger-legacy';
-import { OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
 import {
@@ -15,10 +13,8 @@ import {
   OidcProviderService,
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { ISessionService, SessionService } from '@fc/session';
+import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
-
-import { CoreConfig } from '../dto';
 
 @Injectable()
 export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService {
@@ -101,6 +97,7 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     if (ctx.oidc['isError'] === true) {
       return;
     }
+
     const eventContext = this.getEventContext(ctx);
     const { req } = ctx;
 
@@ -111,52 +108,16 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     );
 
     ctx.isSso = await this.isSsoAvailable(oidcSession);
-    const { isSso } = ctx;
 
     const sessionProperties = await this.buildSessionWithNewInteraction(
       ctx,
       eventContext,
     );
-    Object.assign(sessionProperties, { isSso });
 
     await oidcSession.set(sessionProperties);
 
     await this.trackAuthorize(eventContext);
 
-    if (enableSso && isSso) {
-      this.logger.trace('ssoMiddleware');
-      await this.redirectToSso(ctx);
-    }
-  }
-
-  private async isSsoAvailable(
-    session: ISessionService<OidcSession>,
-  ): Promise<boolean> {
-    const spIdentity = await session.get('spIdentity');
-
-    return Boolean(spIdentity);
-  }
-
-  private async redirectToSso(ctx: OidcCtx) {
-    const { res } = ctx;
-    const interactionId = this.oidcProvider.getInteractionIdFromCtx(ctx);
-    const { urlPrefix } = this.config.get<AppConfig>('App');
-
-    const url = `${urlPrefix}${CoreRoutes.INTERACTION_VERIFY.replace(
-      ':uid',
-      interactionId,
-    )}`;
-
-    await this.trackSso(ctx);
-
-    res.redirect(url);
-  }
-
-  private async trackSso(ctx: OidcCtx) {
-    const eventContext = this.getEventContext(ctx);
-
-    const { FC_SSO_INITIATED } = this.tracking.TrackedEventsMap;
-
-    await this.tracking.track(FC_SSO_INITIATED, eventContext);
+    await this.checkRedirectToSso(enableSso, ctx);
   }
 }

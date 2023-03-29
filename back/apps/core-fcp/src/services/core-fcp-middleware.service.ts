@@ -1,11 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { CoreOidcProviderMiddlewareService } from '@fc/core';
+import { CoreConfig, CoreOidcProviderMiddlewareService } from '@fc/core';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
 import {
+  OidcCtx,
   OidcProviderErrorService,
   OidcProviderMiddlewareStep,
   OidcProviderRoutes,
@@ -88,7 +89,7 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     );
   }
 
-  protected async afterAuthorizeMiddleware(ctx) {
+  protected async afterAuthorizeMiddleware(ctx: OidcCtx): Promise<void> {
     /**
      * Abort middleware if authorize is in error
      *
@@ -100,9 +101,12 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     }
 
     const eventContext = this.getEventContext(ctx);
-
     const { req, res } = ctx;
-    await this.sessionService.reset(req, res);
+
+    const { enableSso } = this.config.get<CoreConfig>('Core');
+    if (!enableSso) {
+      await this.sessionService.reset(req, res);
+    }
 
     const oidcSession = SessionService.getBoundedSession<OidcClientSession>(
       req,
@@ -114,6 +118,8 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
       'isSuspicious',
       ctx.req.headers['x-suspicious'] === '1',
     );
+
+    ctx.isSso = await this.isSsoAvailable(oidcSession);
 
     const sessionProperties = await this.buildSessionWithNewInteraction(
       ctx,
@@ -130,5 +136,7 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     };
 
     await this.trackAuthorize(authEventContext);
+
+    await this.checkRedirectToSso(enableSso, ctx);
   }
 }

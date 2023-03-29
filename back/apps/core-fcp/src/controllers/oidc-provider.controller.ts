@@ -15,6 +15,7 @@ import {
 } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
+import { ConfigService } from '@fc/config';
 import {
   CoreMissingIdentityException,
   CoreRoutes,
@@ -43,7 +44,12 @@ import {
   TrackingService,
 } from '@fc/tracking';
 
-import { AuthorizeParamsDto, ErrorParamsDto, GetLoginSessionDto } from '../dto';
+import {
+  AuthorizeParamsDto,
+  CoreConfig,
+  ErrorParamsDto,
+  GetLoginSessionDto,
+} from '../dto';
 import { ConfirmationType, DataType } from '../enums';
 import {
   CoreFcpFailedAbortSessionException,
@@ -69,6 +75,7 @@ export class OidcProviderController {
     private readonly core: CoreFcpService,
     private readonly tracking: TrackingService,
     private readonly csrfService: SessionCsrfService,
+    private readonly config: ConfigService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -96,14 +103,17 @@ export class OidcProviderController {
       route: OidcProviderRoutes.AUTHORIZATION,
     });
 
-    /**
-     * DO NOTE REMOVE !
-     * The session cannot be reset outside the controller,
-     * because we do not always go through the before middleware
-     * according to the different kinematics
-     * */
-    // Initializes a new session local
-    await this.sessionService.reset(req, res);
+    const { enableSso } = this.config.get<CoreConfig>('Core');
+    if (!enableSso) {
+      /**
+       * DO NOT REMOVE !
+       * The session cannot be reset outside the controller,
+       * because we do not always go through the before middleware
+       * according to the different kinematics
+       */
+      // Initializes a new session local
+      await this.sessionService.reset(req, res);
+    }
 
     const errors = await validateDto(
       query,
@@ -154,14 +164,18 @@ export class OidcProviderController {
       route: OidcProviderRoutes.AUTHORIZATION,
     });
 
-    /**
-     * DO NOTE REMOVE !
-     * The session cannot be reset outside the controller,
-     * because we do not always go through the before middleware
-     * according to the different kinematics
-     * */
-    // Initializes a new session local
-    await this.sessionService.reset(req, res);
+    const { enableSso } = this.config.get<CoreConfig>('Core');
+    if (!enableSso) {
+      /**
+       * DO NOT REMOVE !
+       * The session cannot be reset outside the controller,
+       * because we do not always go through the before middleware
+       * according to the different kinematics
+       */
+      // Initializes a new session local
+      await this.sessionService.reset(req, res);
+    }
+
     const errors = await validateDto(
       body,
       AuthorizeParamsDto,

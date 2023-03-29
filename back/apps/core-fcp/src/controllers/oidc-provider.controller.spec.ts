@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
+import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
 import { LoggerService } from '@fc/logger-legacy';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
@@ -94,6 +95,10 @@ const res = {
   render: jest.fn(),
 };
 
+const configServiceMock = {
+  get: jest.fn(),
+};
+
 const interactionIdMock = 'interactionIdMockValue';
 const acrMock = 'acrMockValue';
 const spNameMock = 'some SP';
@@ -167,6 +172,7 @@ describe('OidcProviderController', () => {
         CoreFcpService,
         TrackingService,
         SessionCsrfService,
+        ConfigService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -183,6 +189,8 @@ describe('OidcProviderController', () => {
       .useValue(trackingServiceMock)
       .overrideProvider(SessionCsrfService)
       .useValue(sessionCsrfServiceMock)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .compile();
 
     oidcProviderController = await app.get<OidcProviderController>(
@@ -213,6 +221,10 @@ describe('OidcProviderController', () => {
     sessionCsrfServiceMock.get.mockReturnValueOnce(csrfMock);
     sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
 
+    configServiceMock.get.mockReturnValueOnce({
+      enableSso: false,
+    });
+
     resMock.locals = {};
   });
 
@@ -231,6 +243,32 @@ describe('OidcProviderController', () => {
 
       // Then
       expect(sessionServiceMock.reset).toHaveBeenCalledTimes(1);
+      expect(validateDtoMock).toHaveBeenCalledTimes(1);
+      expect(validateDtoMock).toHaveBeenCalledWith(
+        queryMock,
+        AuthorizeParamsDto,
+        validatorOptions,
+      );
+      expect(nextMock).toHaveReturnedTimes(1);
+    });
+
+    it('should call next (sso mode)', async () => {
+      // Given
+      validateDtoMock.mockResolvedValueOnce([]);
+      configServiceMock.get.mockReset().mockReturnValueOnce({
+        enableSso: true,
+      });
+
+      // When
+      await oidcProviderController.getAuthorize(
+        reqMock,
+        resMock,
+        nextMock,
+        queryMock,
+      );
+
+      // Then
+      expect(sessionServiceMock.reset).toHaveBeenCalledTimes(0);
       expect(validateDtoMock).toHaveBeenCalledTimes(1);
       expect(validateDtoMock).toHaveBeenCalledWith(
         queryMock,

@@ -5,10 +5,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CoreVerifyService } from '@fc/core';
 import { LoggerService } from '@fc/logger-legacy';
 
-import { CoreFcaVerifyService } from './core-fca-verify.service';
+import { CoreFcpVerifyService } from './core-fcp-verify.service';
 
-describe('CoreFcaVerifyService', () => {
-  let service: CoreFcaVerifyService;
+describe('CoreFcpVerifyService', () => {
+  let service: CoreFcpVerifyService;
 
   const loggerServiceMock = {
     debug: jest.fn(),
@@ -49,7 +49,7 @@ describe('CoreFcaVerifyService', () => {
     jest.restoreAllMocks();
 
     const app: TestingModule = await Test.createTestingModule({
-      providers: [CoreFcaVerifyService, LoggerService, CoreVerifyService],
+      providers: [CoreFcpVerifyService, LoggerService, CoreVerifyService],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
@@ -57,7 +57,7 @@ describe('CoreFcaVerifyService', () => {
       .useValue(coreVerifyServiceMock)
       .compile();
 
-    service = await app.get<CoreFcaVerifyService>(CoreFcaVerifyService);
+    service = await app.get<CoreFcpVerifyService>(CoreFcpVerifyService);
   });
 
   it('should be defined', () => {
@@ -90,7 +90,7 @@ describe('CoreFcaVerifyService', () => {
 
     it('should return url result', async () => {
       // Given
-      const expected = 'urlPrefixValue/login';
+      const expected = 'urlPrefixValue/interaction/interactionId/consent';
       // When
       const result = await service['handleVerifyIdentity'](req, params);
       // Then
