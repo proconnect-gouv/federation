@@ -31,3 +31,42 @@ _task_fail() {
     echo -e " * $1: $KO";
     exit 1;
 }
+
+
+wait_for_nodejs() {
+
+  local CONTAINER=$1
+  local URL=$2
+  local MAX_TIME=${3:-60}
+  local DELAY=${4:-5}
+  local MAX_RETRIES=${5:-100}
+
+  echo "Waiting for $CONTAINER on URL: $URL"
+
+  (curl\
+    --silent\
+    --insecure\
+    --fail\
+    --retry $MAX_RETRIES\
+    --retry-delay $DELAY\
+    --retry-max-time $MAX_TIME $URL\
+    > /dev/null\
+    && _wait_for_nodejs_success "$CONTAINER"\
+  )\
+  || _wait_for_nodejs_fail "$CONTAINER"
+
+}
+
+_wait_for_nodejs_fail() {
+  echo -e "$KO Service DOWN: $1"
+  echo ""
+  echo "--- PM2 Logs for $1 ---------------------------"
+  docker exec "fc_${1}_1" bash -c 'cat /tmp/.pm2/logs/*.log'
+  echo "--- END OF PM2 Logs for $1 --------------------"
+  echo ""
+  exit 1
+}
+
+_wait_for_nodejs_success() {
+  echo -e "$OK Service UP: $1"
+}

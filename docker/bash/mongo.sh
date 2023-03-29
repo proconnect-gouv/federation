@@ -4,8 +4,6 @@
 _reset_mongodb() {
   local DB_CONTAINER_NAME=$1
   echo "Reseting database $DB_CONTAINER_NAME to default state..."
-  # Sleep to wait for mongodb replicat initialization
-  sleep 10
   docker-compose exec $NO_TTY $DB_CONTAINER_NAME /opt/scripts/manage.sh --reset-db
 }
 

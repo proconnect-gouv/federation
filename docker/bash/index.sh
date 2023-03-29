@@ -44,7 +44,7 @@ _command_register "mongo-shell-core-fca-low" "_mongo_shell_core_fca_low" "[depre
 _command_register "mongo-shell-core-fcp-high" "_mongo_shell_core-fcp-high" "[deprecated] Open mongo shell for core-fcp-high"
 _command_register "mongo-shell-core-fcp-low" "_mongo_shell_core-fcp-low"   "[deprecated] Open mongo shell for core-fcp-low"
 _command_register "mongo-shell-core-legacy" "_mongo_shell_core-legacy" "[deprecated] Open mongo shell for core-legacy"
-_command_register "reload-rp" "cd ${WORKING_DIR} && docker-compose kill -s SIGHUP rp-all" "Reload Reverse proxy?"
+_command_register "reload-rp" "_reload-rp" "Reload Reverse proxy"
 _command_register "reload" "_start" "[<app1> <app2> <...>] => (re)start given pm2 instances "
 _command_register "reload-all" "_get_running_container && _start $NODEJS_CONTAINERS" "(re)start all pm2 instances"
 _command_register "init-ud" "_init_ud" "init-ud => Initialize data for user dashboard"
@@ -86,6 +86,7 @@ _command_register "up" "_up" "up <stack name> => Launch a stack"
 _command_register "run-prod" "_run_prod" "" # Description to be defined
 _command_register "list" "_list_services" "List available services / stacks"
 _command_register "help" "_command_list" "Display this help"
+_command_register "wait" "wait_for_nodejs" "Wait for a nodejs HTTP service to respond on an URL or try to display logs"
 
 
 
