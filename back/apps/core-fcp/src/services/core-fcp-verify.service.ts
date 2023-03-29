@@ -9,7 +9,7 @@ import { ISessionService } from '@fc/session';
 import { TrackedEventContextInterface } from '@fc/tracking';
 
 @Injectable()
-export class CoreFcaVerifyService {
+export class CoreFcpVerifyService {
   constructor(
     private readonly logger: LoggerService,
     private readonly coreVerify: CoreVerifyService,
@@ -25,14 +25,17 @@ export class CoreFcaVerifyService {
       sessionOidc: ISessionService<OidcClientSession>;
     },
   ): Promise<string> {
-    const { sessionOidc, urlPrefix } = params;
+    const { interactionId, urlPrefix, sessionOidc } = params;
     const trackingContext: TrackedEventContextInterface = { req };
 
     await this.coreVerify.verify(sessionOidc, trackingContext);
 
     await this.coreVerify.trackVerified(req);
 
-    const url = `${urlPrefix}${CoreRoutes.INTERACTION_LOGIN}`;
+    const url = `${urlPrefix}${CoreRoutes.INTERACTION_CONSENT.replace(
+      ':uid',
+      interactionId,
+    )}`;
     return url;
   }
 }

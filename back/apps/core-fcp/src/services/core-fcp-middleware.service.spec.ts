@@ -4,6 +4,7 @@ import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcAcrService } from '@fc/oidc-acr';
 import {
+  OidcCtx,
   OidcProviderErrorService,
   OidcProviderMiddlewareStep,
   OidcProviderRoutes,
@@ -20,6 +21,7 @@ describe('CoreFcpMiddlewareService', () => {
 
   const loggerServiceMock = {
     setContext: jest.fn(),
+    trace: jest.fn(),
   };
 
   const oidcProviderServiceMock = {
@@ -179,7 +181,7 @@ describe('CoreFcpMiddlewareService', () => {
         },
         req: reqMock,
         res: resMock,
-      };
+      } as unknown as OidcCtx;
     };
 
     const eventCtxMock: TrackedEventContextInterface = {
@@ -208,18 +210,23 @@ describe('CoreFcpMiddlewareService', () => {
         sessionServiceMock as unknown as ISessionService<unknown>,
       );
 
+      service['isSsoAvailable'] = jest.fn();
+      service['checkRedirectToSso'] = jest.fn();
       service['buildSessionWithNewInteraction'] = jest.fn();
       service['trackAuthorize'] = jest.fn();
+
+      configServiceMock.get.mockReturnValueOnce({ enableSso: false });
     });
 
-    it('should abort middleware execution if the request is flagged with an error', () => {
+    it('should abort middleware execution if the request is flagged with an error', async () => {
       // Given
       const ctxMock = getCtxMock(true);
-      service['getEventContext'] = jest.fn();
-
+      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+      service['buildSessionWithNewInteraction'] = jest
+        .fn()
+        .mockReturnValueOnce(sessionPropertiesMock);
       // When
-      service['afterAuthorizeMiddleware'](ctxMock);
-
+      await service['afterAuthorizeMiddleware'](ctxMock);
       // Then
       expect(service['getEventContext']).toHaveBeenCalledTimes(0);
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(0);
@@ -229,7 +236,6 @@ describe('CoreFcpMiddlewareService', () => {
     it('should call session.reset()', async () => {
       // Given
       const ctxMock = getCtxMock();
-
       service['buildSessionWithNewInteraction'] = jest
         .fn()
         .mockReturnValueOnce(sessionPropertiesMock);
@@ -246,7 +252,6 @@ describe('CoreFcpMiddlewareService', () => {
     it('should get two bounded session services', async () => {
       // Given
       const ctxMock = getCtxMock();
-
       service['buildSessionWithNewInteraction'] = jest
         .fn()
         .mockReturnValueOnce(sessionPropertiesMock);
@@ -262,7 +267,6 @@ describe('CoreFcpMiddlewareService', () => {
     it('should get bounded AppSession service', async () => {
       // Given
       const ctxMock = getCtxMock();
-
       service['buildSessionWithNewInteraction'] = jest
         .fn()
         .mockReturnValueOnce(sessionPropertiesMock);
@@ -281,7 +285,6 @@ describe('CoreFcpMiddlewareService', () => {
     it('should get bounded OidcClientSession service', async () => {
       // Given
       const ctxMock = getCtxMock();
-
       service['buildSessionWithNewInteraction'] = jest
         .fn()
         .mockReturnValueOnce(sessionPropertiesMock);
@@ -300,7 +303,6 @@ describe('CoreFcpMiddlewareService', () => {
     it('should call session.set() twice', async () => {
       // Given
       const ctxMock = getCtxMock();
-
       service['buildSessionWithNewInteraction'] = jest
         .fn()
         .mockReturnValueOnce(sessionPropertiesMock);
@@ -316,7 +318,6 @@ describe('CoreFcpMiddlewareService', () => {
     it('should set suspicious request status in AppSession', async () => {
       // Given
       const ctxMock = getCtxMock();
-
       service['buildSessionWithNewInteraction'] = jest
         .fn()
         .mockReturnValueOnce(sessionPropertiesMock);
@@ -381,6 +382,61 @@ describe('CoreFcpMiddlewareService', () => {
       // Then
       expect(service['trackAuthorize']).toHaveBeenCalledTimes(1);
       expect(service['trackAuthorize']).toHaveBeenCalledWith(expected);
+    });
+
+    it('should call isSsoAvailable() with the sessionService', async () => {
+      // Given
+      const ctxMock = getCtxMock();
+      service['isSsoAvailable'] = jest.fn().mockResolvedValue(true);
+      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+      service['buildSessionWithNewInteraction'] = jest
+        .fn()
+        .mockResolvedValue(sessionPropertiesMock);
+      // When
+      await service['afterAuthorizeMiddleware'](ctxMock);
+      // Then
+      expect(service['isSsoAvailable']).toHaveBeenCalledTimes(1);
+      expect(service['isSsoAvailable']).toHaveBeenCalledWith(
+        sessionServiceMock,
+      );
+    });
+
+    it('should call buildSessionWithNewInteraction() with the sessionService and ctx', async () => {
+      // Given
+      const ctxMock = getCtxMock();
+      service['isSsoAvailable'] = jest.fn().mockResolvedValue(true);
+      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+      service['buildSessionWithNewInteraction'] = jest
+        .fn()
+        .mockResolvedValue(sessionPropertiesMock);
+      // When
+      await service['afterAuthorizeMiddleware'](ctxMock);
+      // Then
+      expect(service['buildSessionWithNewInteraction']).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(service['buildSessionWithNewInteraction']).toHaveBeenCalledWith(
+        ctxMock,
+        eventCtxMock,
+      );
+    });
+
+    it('should call `checkRedirectToSso()` with params `true` and ctx', async () => {
+      // Given
+      const ctxMock = getCtxMock();
+      configServiceMock.get
+        .mockReset()
+        .mockReturnValueOnce({ enableSso: true });
+      service['isSsoAvailable'] = jest.fn().mockResolvedValue(true);
+      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+      service['buildSessionWithNewInteraction'] = jest
+        .fn()
+        .mockResolvedValue(sessionPropertiesMock);
+      // When
+      await service['afterAuthorizeMiddleware'](ctxMock);
+      // Then
+      expect(service['checkRedirectToSso']).toHaveBeenCalledTimes(1);
+      expect(service['checkRedirectToSso']).toHaveBeenCalledWith(true, ctxMock);
     });
   });
 });

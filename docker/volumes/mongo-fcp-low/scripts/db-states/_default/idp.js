@@ -139,6 +139,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
     ],
   },
+  // -- FIP - FIP7-LOW - Beta
   "FIP4-LOW": {
     uid: "fip4-low",
     name: "fip4-low",
@@ -300,6 +301,52 @@ const fip = {
       "https://fip7-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
     clientID: "myclientidforfip7-low",
+    client_secret:
+      "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+    order: 1,
+    createdAt: new Date("2022-02-15 17:09:17"),
+    updatedAt: new Date("2023-03-10 17:09:17"),
+    updatedBy: "admin",
+    response_types: ["code"],
+    id_token_signed_response_alg: "HS256",
+    token_endpoint_auth_method: "client_secret_post",
+    revocation_endpoint_auth_method: "client_secret_post",
+    id_token_encrypted_response_alg: "",
+    id_token_encrypted_response_enc: "",
+    userinfo_signed_response_alg: "HS256",
+    userinfo_encrypted_response_alg: "",
+    userinfo_encrypted_response_enc: "",
+    redirect_uris: [
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
+    ],
+    post_logout_redirect_uris: [
+      "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/logout/redirect-from-idp",
+    ],
+  },
+  // -- FIP - FIP7-LOW - Activated - whitelisted by fsp4
+  "FIP8-LOW": {
+    uid: "fip8-low",
+    name: "fip8-low",
+    active: true,
+    display: true,
+    isBeta: false,
+    title: "IDP8 - LOW",
+    image: "fi-mock-faible.svg",
+    imageFocus: "fi-mock-faible.svg",
+    alt: "fip8-low",
+    eidas: 1,
+    mailto: "",
+    featureHandlers: {
+      coreVerify: "core-fcp-default-verify",
+      authenticationEmail: "core-fcp-send-email",
+      idpIdentityCheck: "core-fcp-default-identity-check",
+    },
+    specificText: "specific text fip8-low",
+    url: "https://fip8-low.docker.dev-franceconnect.fr/",
+    discoveryUrl:
+      "https://fip8-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+    discovery: true,
+    clientID: "myclientidforfip8-low",
     client_secret:
       "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
     order: 1,

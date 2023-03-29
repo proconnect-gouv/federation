@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { CoreAcrService } from '@fc/core';
+import { CoreAcrService, CoreVerifyService } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger-legacy';
 import { MinistriesService } from '@fc/ministries';
@@ -76,10 +76,10 @@ describe('CoreFcaController', () => {
 
   const coreVerifyServiceMock = {
     verify: jest.fn(),
+    handleBlacklisted: jest.fn(),
   };
 
   const coreFcaVerifyServiceMock = {
-    handleBlacklisted: jest.fn(),
     handleVerifyIdentity: jest.fn(),
   };
 
@@ -154,6 +154,7 @@ describe('CoreFcaController', () => {
         SessionCsrfService,
         CoreAcrService,
         CoreFcaVerifyService,
+        CoreVerifyService,
       ],
     })
       .overrideProvider(OidcProviderService)
@@ -170,6 +171,8 @@ describe('CoreFcaController', () => {
       .useValue(serviceProviderServiceMock)
       .overrideProvider(CoreFcaVerifyService)
       .useValue(coreFcaVerifyServiceMock)
+      .overrideProvider(CoreVerifyService)
+      .useValue(coreVerifyServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(SessionCsrfService)
@@ -513,7 +516,7 @@ describe('CoreFcaController', () => {
 
     describe('when `serviceProvider.shouldExcludeIdp()` returns `true`', () => {
       beforeEach(() => {
-        coreFcaVerifyServiceMock.handleBlacklisted.mockResolvedValue(
+        coreVerifyServiceMock.handleBlacklisted.mockResolvedValue(
           handleBlackListedResult,
         );
         coreFcaVerifyServiceMock.handleVerifyIdentity.mockResolvedValue(
@@ -530,9 +533,9 @@ describe('CoreFcaController', () => {
           sessionServiceMock,
         );
         // Then
-        expect(
-          coreFcaVerifyServiceMock.handleBlacklisted,
-        ).toHaveBeenCalledTimes(1);
+        expect(coreVerifyServiceMock.handleBlacklisted).toHaveBeenCalledTimes(
+          1,
+        );
         expect(
           coreFcaVerifyServiceMock.handleVerifyIdentity,
         ).not.toHaveBeenCalled();
@@ -555,7 +558,7 @@ describe('CoreFcaController', () => {
     describe('when `serviceProvider.shouldExcludeIdp()` returns `false`', () => {
       beforeEach(() => {
         serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(false);
-        coreFcaVerifyServiceMock.handleBlacklisted.mockResolvedValue(
+        coreVerifyServiceMock.handleBlacklisted.mockResolvedValue(
           handleBlackListedResult,
         );
         coreFcaVerifyServiceMock.handleVerifyIdentity.mockResolvedValue(
@@ -575,9 +578,7 @@ describe('CoreFcaController', () => {
         expect(
           coreFcaVerifyServiceMock.handleVerifyIdentity,
         ).toHaveBeenCalledTimes(1);
-        expect(
-          coreFcaVerifyServiceMock.handleBlacklisted,
-        ).not.toHaveBeenCalled();
+        expect(coreVerifyServiceMock.handleBlacklisted).not.toHaveBeenCalled();
       });
 
       it('should call return result from `handleVerify()`', async () => {

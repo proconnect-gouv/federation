@@ -53,6 +53,7 @@ import {
 import {
   CoreFcpMiddlewareService,
   CoreFcpService,
+  CoreFcpVerifyService,
   OidcProviderConfigAppService,
 } from './services';
 
@@ -106,6 +107,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     CoreAccountService,
     CoreAcrService,
     CoreVerifyService,
+    CoreFcpVerifyService,
     CoreFcpMiddlewareService,
     OidcProviderConfigAppService,
     CoreFcpDefaultVerifyHandler,
