@@ -47,6 +47,7 @@ import {
 import {
   AuthorizeParamsDto,
   CoreConfig,
+  CoreSessionDto,
   ErrorParamsDto,
   GetLoginSessionDto,
 } from '../dto';
@@ -274,6 +275,8 @@ export class OidcProviderController {
     this.tracking.track(eventKey, context);
   }
 
+  // adding a param reached max params limit
+  // eslint-disable-next-line max-params
   @Post(CoreRoutes.INTERACTION_LOGIN)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -288,6 +291,8 @@ export class OidcProviderController {
      */
     @Session('OidcClient', GetLoginSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
+    @Session('Core')
+    sessionCore: ISessionService<CoreSessionDto>,
   ) {
     const { _csrf: csrfToken } = body;
     const session: OidcSession = await sessionOidc.get();
@@ -313,7 +318,7 @@ export class OidcProviderController {
     await this.trackDatatransfer(trackingContext, interaction, spId);
 
     // send the notification mail to the final user
-    await this.core.sendAuthenticationMail(session);
+    await this.core.sendAuthenticationMail(session, sessionCore);
 
     this.logger.trace({
       data: { req, res, session },

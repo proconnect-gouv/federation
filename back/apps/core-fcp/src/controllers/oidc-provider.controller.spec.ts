@@ -35,6 +35,11 @@ const sessionServiceMock = {
   setAlias: jest.fn(),
 };
 
+const coreSessionServiceMock = {
+  get: jest.fn(),
+  set: jest.fn(),
+};
+
 const nextMock = jest.fn();
 
 const loggerServiceMock = {
@@ -217,6 +222,8 @@ describe('OidcProviderController', () => {
     sessionServiceMock.reset.mockResolvedValueOnce(sessionIdMock);
     sessionServiceMock.get.mockResolvedValueOnce(sessionDataMock);
     sessionServiceMock.set.mockResolvedValueOnce(undefined);
+
+    coreSessionServiceMock.get.mockResolvedValue([]);
 
     sessionCsrfServiceMock.get.mockReturnValueOnce(csrfMock);
     sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
@@ -710,9 +717,16 @@ describe('OidcProviderController', () => {
         spAcr: acrMock,
         spName: spNameMock,
       });
+
       // Then
       await expect(
-        oidcProviderController.getLogin(req, res, body, sessionServiceMock),
+        oidcProviderController.getLogin(
+          req,
+          res,
+          body,
+          sessionServiceMock,
+          coreSessionServiceMock,
+        ),
       ).rejects.toThrow(CoreMissingIdentityException);
     });
 
@@ -734,7 +748,13 @@ describe('OidcProviderController', () => {
       });
       // Then
       await expect(
-        oidcProviderController.getLogin(req, res, body, sessionServiceMock),
+        oidcProviderController.getLogin(
+          req,
+          res,
+          body,
+          sessionServiceMock,
+          coreSessionServiceMock,
+        ),
       ).rejects.toThrow(SessionInvalidCsrfConsentException);
     });
 
@@ -742,11 +762,18 @@ describe('OidcProviderController', () => {
       // Given
       const body = { _csrf: randomStringMock };
       // When
-      await oidcProviderController.getLogin(req, res, body, sessionServiceMock);
+      await oidcProviderController.getLogin(
+        req,
+        res,
+        body,
+        sessionServiceMock,
+        coreSessionServiceMock,
+      );
       // Then
       expect(coreServiceMock.sendAuthenticationMail).toBeCalledTimes(1);
       expect(coreServiceMock.sendAuthenticationMail).toBeCalledWith(
         sessionDataMock,
+        coreSessionServiceMock,
       );
     });
 
@@ -754,7 +781,13 @@ describe('OidcProviderController', () => {
       // Given
       const body = { _csrf: randomStringMock };
       // When
-      await oidcProviderController.getLogin(req, res, body, sessionServiceMock);
+      await oidcProviderController.getLogin(
+        req,
+        res,
+        body,
+        sessionServiceMock,
+        coreSessionServiceMock,
+      );
       // Then
       expect(oidcProviderServiceMock.finishInteraction).toHaveBeenCalledTimes(
         1,

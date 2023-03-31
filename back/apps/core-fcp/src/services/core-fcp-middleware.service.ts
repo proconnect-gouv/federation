@@ -16,7 +16,7 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import { SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
-import { AppSession } from '../dto';
+import { AppSession, CoreSessionDto } from '../dto';
 
 @Injectable()
 export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService {
@@ -127,6 +127,19 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     );
 
     await oidcSession.set(sessionProperties);
+
+    const coreSession = SessionService.getBoundedSession<CoreSessionDto>(
+      req,
+      'Core',
+    );
+
+    const sentNotificationsForSp = await coreSession.get(
+      'sentNotificationsForSp',
+    );
+
+    const sentNotificationsForSpRes = sentNotificationsForSp ?? [];
+
+    await coreSession.set('sentNotificationsForSp', sentNotificationsForSpRes);
 
     const { interactionId: _interactionId, ...sessionWithoutInteractionId } =
       sessionProperties;
