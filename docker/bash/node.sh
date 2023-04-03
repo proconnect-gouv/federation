@@ -2,6 +2,7 @@
 #!/usr/bin/env bash
 
 source "$INCLUDE_DIR/utils.sh"
+source "$INCLUDE_DIR/docker.sh"
 
 _log() {
   app=${@:-no-container}
@@ -16,6 +17,7 @@ _start() {
     task " * Starting app \e[3m${app}\e[0m"\
     "_do_start $app"
   done
+  _reload-rp
 }
 
 _do_start() {

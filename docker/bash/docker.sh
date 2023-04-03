@@ -10,6 +10,24 @@ _get_running_containers() {
   FC_CONTAINERS=$(_container-to-compose-name "$RAW_ALL_CONTAINERS")
 }
 
+_reload-rp() {
+  docker exec fc-rp-all service nginx reload
+}
+
+_container-to-compose-name() {
+  local INPUT=$1
+  local OUTPUT=""
+
+  for container in $INPUT
+  do
+    local name=$(echo $container| sed -E 's/^fc_(.*)_1$/\1/')
+    OUTPUT=$(echo -e "$OUTPUT\n$name")
+  done
+
+  echo $OUTPUT
+}
+
+
 _halt() {
   echo "Stopping FC Dev environment..."
   cd ${WORKING_DIR} && docker-compose stop

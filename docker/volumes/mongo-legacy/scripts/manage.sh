@@ -25,6 +25,8 @@ reset_state() {
 
   SCRIPT_TO_EXEC="$SCRIPTS_DIR/$STATE/index.js";
 
+  # TMP to keep compatibility with CL E2E
+  # Inhibate reset
   # drop_database;
 
   if [ ! -f $SCRIPT_TO_EXEC ]; then
