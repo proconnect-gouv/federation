@@ -90,5 +90,4 @@ include:
   - 'back/instances/**/.gitlab-ci.yml'
   - 'back/instances/**/.gitlab-deploy.yml'
   - 'back/instances/**/.gitlab-post-deploy.yml'
-  - '/back/.gitlab-checkmarx.yml'
   - '/back/.gitlab-post-deploy.yml'
