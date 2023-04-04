@@ -118,6 +118,7 @@ services:
           - assets.docker.dev-franceconnect.fr
           - fc-exploitation.docker.dev-franceconnect.fr
           - fc-support.docker.dev-franceconnect.fr
+          - tracks-data-provider.docker.dev-franceconnect.fr
       fc:
       rie:
         aliases:
@@ -486,7 +487,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/log/:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/client_certs:ro"
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/shared/.env/tracks-data-provider.env"

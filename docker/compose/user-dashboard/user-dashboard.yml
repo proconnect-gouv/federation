@@ -5,7 +5,7 @@ version: '2.4'
 services:
   ud-back:
     hostname: ud-back
-    image: registry.gitlab.dev-franceconnect.fr/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
@@ -36,7 +36,7 @@ services:
 
   ud-front:
     hostname: ud-front
-    image: registry.gitlab.dev-franceconnect.fr/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
