@@ -1,28 +1,26 @@
 #!/usr/bin/env bash
 set -e
 
-if [ -z "$FC_ROOT"  ]
+if [ -z "${FC_ROOT}"  ]
 then
   read -p "Missing FC_ROOT path. Please fill in: " FC_ROOT
   exit 1;
 fi
 
-__DKS_LAST_LOG_FILE="/tmp/docker_stack_last.log"
-
 INCLUDE_DIR="$FC_ROOT/fc/docker/bash"
 
-source "$INCLUDE_DIR/utils.sh"
-source "$INCLUDE_DIR/config.sh"
-source "$INCLUDE_DIR/docker.sh"
-source "$INCLUDE_DIR/elastic.sh"
-source "$INCLUDE_DIR/fca-tmp.sh"
-source "$INCLUDE_DIR/node.sh"
-source "$INCLUDE_DIR/postgres.sh"
-source "$INCLUDE_DIR/test.sh"
-source "$INCLUDE_DIR/up.sh"
-source "$INCLUDE_DIR/checkout.sh"
-source "$INCLUDE_DIR/lemonldap.sh"
-source "$INCLUDE_DIR/commands.sh"
+source "${INCLUDE_DIR}/utils/index.sh"
+source "${INCLUDE_DIR}/config.sh"
+source "${INCLUDE_DIR}/docker.sh"
+source "${INCLUDE_DIR}/elastic.sh"
+source "${INCLUDE_DIR}/fca-tmp.sh"
+source "${INCLUDE_DIR}/node.sh"
+source "${INCLUDE_DIR}/postgres.sh"
+source "${INCLUDE_DIR}/test.sh"
+source "${INCLUDE_DIR}/init-hooks.sh"
+source "${INCLUDE_DIR}/up.sh"
+source "${INCLUDE_DIR}/checkout.sh"
+source "${INCLUDE_DIR}/lemonldap.sh"
 
 
 _command_register "checkout" "_checkout" "checkout <code:branch/tag> [infra:branch/tag] => set the environment to the state of the given branch/tag"
@@ -46,7 +44,7 @@ _command_register "mongo-shell-core-fcp-low" "_mongo_shell_core-fcp-low"   "[dep
 _command_register "mongo-shell-core-legacy" "_mongo_shell_core-legacy" "[deprecated] Open mongo shell for core-legacy"
 _command_register "reload-rp" "_reload-rp" "Reload Reverse proxy"
 _command_register "reload" "_start" "[<app1> <app2> <...>] => (re)start given pm2 instances "
-_command_register "reload-all" "_get_running_container && _start $NODEJS_CONTAINERS" "(re)start all pm2 instances"
+_command_register "reload-all" "_get_running_container && _start ${NODEJS_CONTAINERS}" "(re)start all pm2 instances"
 _command_register "init-ud" "_init_ud" "init-ud => Initialize data for user dashboard"
 _command_register "reset-stats" "_reset_stats" "reset-stats => drop stats index"
 _command_register "generate-stats" "_generate_stats" "generate-stats => restore all stats (logs, event and metrics) index"

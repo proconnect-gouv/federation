@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 _checkout() {
-  if [ -z "$FC_ROOT"  ]
+  if [ -z "${FC_ROOT}"  ]
   then
     echo ""
     echo "Unable to find your root directory, please make sure \"FC_ROOT\" is defined."
@@ -19,13 +19,13 @@ _checkout() {
     *)
       cd "${FC_ROOT}/FranceConnect"
 
-      exist=`git ls-remote . $branch_code | wc -l`
-      if [ $exist -lt 1 ]; then
+      local exist=`git ls-remote . ${branch_code} | wc -l`
+      if [ ${exist} -lt 1 ]; then
         echo "The code branch \"${branch_code}\" does not exist or hasn't been fetched"
         exit 1
       fi
 
-      git checkout $branch_code || exit $?
+      git checkout ${branch_code} || exit $?
 
       git pull origin || exit $?
 

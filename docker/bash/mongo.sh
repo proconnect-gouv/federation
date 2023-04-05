@@ -2,39 +2,39 @@
 
 
 _reset_mongodb() {
-  local DB_CONTAINER_NAME=$1
-  echo "Reseting database $DB_CONTAINER_NAME to default state..."
-  docker-compose exec $NO_TTY $DB_CONTAINER_NAME /opt/scripts/manage.sh --reset-db
+  local db_container_name=$1
+  echo "Reseting database ${db_container_name} to default state..."
+  docker-compose exec ${NO_TTY} ${db_container_name} /opt/scripts/manage.sh --reset-db
 }
 
 _idp_as_prod_v2() {
   echo "Set IdP as production ..."
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-fcp-high /opt/scripts/manage.sh --reset-db=display-idp-as-in-prod
+  cd ${WORKING_DIR} && docker-compose exec ${NO_TTY} mongo-fcp-high /opt/scripts/manage.sh --reset-db=display-idp-as-in-prod
 }
 
 
 _idp_as_prod_legacy() {
   echo "Set IdP as production ..."
-  cd ${WORKING_DIR} && docker-compose exec $NO_TTY mongo-legacy /opt/scripts/manage.sh --reset-db=display-idp-as-in-prod
+  cd ${WORKING_DIR} && docker-compose exec ${NO_TTY} mongo-legacy /opt/scripts/manage.sh --reset-db=display-idp-as-in-prod
 }
 
 
 _mongo_core_shell() {
-  local APP_NAME=$1
-  _mongo_shell "mongo-$APP_NAME" "core-$APP_NAME"
+  local app_name=$1
+  _mongo_shell "mongo-$app_name" "core-$app_name"
 }
 
 _mongo_shell() {
-  local SERVER=$1
-  local DATABASE=$2
+  local server=$1
+  local database=$2
   
-  echo "starting mongo $SERVER database in shell..."
+  echo "starting mongo ${server} database in shell..."
 
   docker-compose exec\
-    "$SERVER"\
-    mongo -u 'rootAdmin' -p 'pass'\
+    "${server}"\
+    mongo -u ${MONGO_DEFAULT_USER} -p ${MONGO_DEFAULT_PASS}\
     --authenticationDatabase admin\
-    "$DATABASE"\
+    "${database}"\
     --tls
 }
 

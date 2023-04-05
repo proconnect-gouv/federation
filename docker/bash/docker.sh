@@ -3,11 +3,11 @@
 
 # Find which nodejs containers are running and store it into $RUNNING_CONTAINERS
 _get_running_containers() {
-  local RAW_NODEJS_CONTAINERS=`docker ps --format '{{.Names}}' -f ancestor=$FC_DOCKER_REGISTRY/nodejs:$NODE_VERSION-dev`
-  local RAW_ALL_CONTAINERS=`docker ps --format '{{.Names}}'`
+  local raw_nodejs_containers=`docker ps --format '{{.Names}}' -f ancestor=${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev`
+  local raw_all_containers=`docker ps --format '{{.Names}}'`
 
-  NODEJS_CONTAINERS=$(_container-to-compose-name "$RAW_NODEJS_CONTAINERS")
-  FC_CONTAINERS=$(_container-to-compose-name "$RAW_ALL_CONTAINERS")
+  NODEJS_CONTAINERS=$(_container-to-compose-name "${raw_nodejs_containers}")
+  FC_CONTAINERS=$(_container-to-compose-name "${raw_all_containers}")
 }
 
 _reload-rp() {
@@ -15,36 +15,36 @@ _reload-rp() {
 }
 
 _container-to-compose-name() {
-  local INPUT=$1
-  local OUTPUT=""
+  local input=$1
+  local output=""
 
-  for container in $INPUT
-  do
-    local name=$(echo $container| sed -E 's/^fc_(.*)_1$/\1/')
-    OUTPUT=$(echo -e "$OUTPUT\n$name")
+  for container in ${input}; do
+    local name=$(echo ${container}| sed -E 's/^fc_(.*)_1$/\1/')
+    output=$(echo -e "${output}\n${name}")
   done
 
-  echo $OUTPUT
+  echo ${output}
 }
 
 
 _halt() {
   echo "Stopping FC Dev environment..."
-  cd ${WORKING_DIR} && docker-compose stop
+  cd ${WORKING_DIR}
+  docker-compose stop
 }
 
 _exec() {
   app=${1:-empty}
 [ $# -gt 0 ] && shift
 
-  case $app in
+  case ${app} in
     empty)
       echo "Usage: docker-stack exec <container_name> <command>"
       exit 1
       ;;
     *)
-      cd $WORKING_DIR
-      docker-compose exec $NO_TTY $app $@
+      cd ${WORKING_DIR}
+      docker-compose exec ${NO_TTY} ${app} ${@}
       ;;
   esac
 }
@@ -54,10 +54,18 @@ _list_services() {
 }
 
 _pull_node_image() {
-  local URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc-docker/nodejs:$DEFAULT_NODE_VERSION-dev"
-  docker login $FC_DOCKER_REGISTRY
-  docker pull $URI
-  # (docker login $FC_DOCKER_REGISTRY && docker pull $URI) || echo "Could not fetch fresh nodejs Image, not connected to the Internet?"
+  if [ -z ${OFFLINE} ]; then
+    (\
+     docker login ${FC_DOCKER_REGISTRY} &&\
+     docker pull ${DOCKER_REGISTERY_URI}\
+    ) || (\
+    echo "Could not fetch fresh nodejs Image, not connected to the Internet?
+    Use OFFLINE env var to skip:\
+     > OFFLINE=1 docker-stack up <stack>" &&\
+    exit 1);
+  else
+    echo $(format_warning "skipped")
+  fi
 }
 
 _prune() {
@@ -67,7 +75,7 @@ _prune() {
 }
 
 _prune_all() {
-  cat "$INCLUDE_DIR/txt/atomic.art.txt"
+  cat "${INCLUDE_DIR}/txt/atomic.art.txt"
   _halt
   docker system prune -af
   docker image prune -af

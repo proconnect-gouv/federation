@@ -3,14 +3,29 @@
 #### Global Variables:
 COMPOSE_PROJECT_NAME=fc
 DEFAULT_NODE_VERSION=latest
-COMPOSE_DIR="$FC_ROOT/fc/docker/compose"
-COMPOSE_FILES=$(find $COMPOSE_DIR -name "*.yml")
-VOLUMES_DIR="$FC_ROOT/fc/docker/volumes"
-WORKING_DIR="$( cd "$( dirname "$0" )" >/dev/null 2>&1 && pwd )"
+COMPOSE_DIR="${FC_ROOT}/fc/docker/compose"
+COMPOSE_FILES=$(find ${COMPOSE_DIR} -name "*.yml")
+VOLUMES_DIR="${FC_ROOT}/fc/docker/volumes"
+WORKING_DIR="$( cd "$( dirname "${0}" )" >/dev/null 2>&1 && pwd )"
+
+DOCKER_REGISTERY_URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc-docker/nodejs:${DEFAULT_NODE_VERSION}-dev"
+
+
+MONGO_DEFAULT_USER="rootAdmin"
+MONGO_DEFAULT_PASS="pass"
+
+__DKS_LAST_LOG_FILE="/tmp/docker_stack_last.log"
+
+#### Formating helpers
+STYLE_SUCCESS="\e[1;36m"
+STYLE_FAILURE="\e[1;41m"
+STYLE_WARNING="\e[1;33m"
+STYLE_EMPHASIS="\e[3m"
+STYLE_RESET="\e[0;0m"
 
 # https://docs.docker.com/compose/reference/envvars/#compose_file
 COMPOSE_PATH_SEPARATOR=":"
-COMPOSE_FILE=$(join_by $COMPOSE_PATH_SEPARATOR $COMPOSE_FILES)
+COMPOSE_FILE=$(join_by ${COMPOSE_PATH_SEPARATOR} ${COMPOSE_FILES})
 export COMPOSE_PATH_SEPARATOR
 export COMPOSE_FILE
 export COMPOSE_DIR
