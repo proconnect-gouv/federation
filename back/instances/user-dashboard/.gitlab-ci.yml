@@ -61,33 +61,27 @@ user-dashboard:
   script:
     # Up the docker-stack with minimal requirement
     - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
-    - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
+    # - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
     - rsync -a $CI_PROJECT_DIR/cache/core-legacy/ $FC_LEGACY_ROOT/ || true
-    - cd $FC_LEGACY_ROOT && yarn install
-    - rm -rf $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
-    - cp -r $FC_LEGACY_ROOT/projects/fc/fc-commons $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
+    # - cd $FC_LEGACY_ROOT && yarn install
+    # - rm -rf $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
+    # - cp -r $FC_LEGACY_ROOT/projects/fc/fc-commons $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker-stack up bdd-ud
     - docker-stack exec ud-front yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack exec ud-back yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
-    - docker-stack dep ud-front ud-back
-    - docker-stack fixtures fc-exploitation fc-support
     # Start the NodeJS apps
-    - docker-stack start fc-core
-      fsp1 fsp3 fip1 fip3 fip4 aidants-connect-mock rnipp
-      ud-back ud-front fdp1 tracks-data-provider
-      csmr-hsm
-      csmr-tracks csmr-account-high csmr-account-legacy
-      csmr-user-preferences-high
-      fc-exploitation fc-support
+    - docker-stack start-all
     # Ensure the required apps are running
-    - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://ud.docker.dev-franceconnect.fr)" != "200" ]];
-      do echo "Waiting for ud-front..." && sleep 10; done' || (
-      (echo 'Cannot connect to ud-front') &&
-      (docker exec fc_ud-front_1 cat /tmp/.pm2/logs/ud-front-error-0.log || true) &&
-      (docker exec fc_ud-front_1 cat /tmp/.pm2/logs/ud-front-out-0.log || true) &&
-      $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&
-      exit 1)
+    - docker-stack wait "ud-front" "https://ud.docker.dev-franceconnect.fr" "180"
+
+    # - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://ud.docker.dev-franceconnect.fr)" != "200" ]];
+    #   do echo "Waiting for ud-front..." && sleep 10; done' || (
+    #   (echo 'Cannot connect to ud-front') &&
+    #   (docker exec fc_ud-front_1 cat /tmp/.pm2/logs/ud-front-error-0.log || true) &&
+    #   (docker exec fc_ud-front_1 cat /tmp/.pm2/logs/ud-front-out-0.log || true) &&
+    #   $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&
+    #   exit 1)
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp

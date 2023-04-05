@@ -113,10 +113,10 @@ _init_container() {
     *"mongo-partenaires"*)
       _reset_mongodb "mongo-partenaires"
       ;;
-    *"pg-fc-exploitation"*)
+    *"pg-exploitation"*)
       _init-fcapps "fc-exploitation"
       ;;    
-    *"pg-fc-support"*)
+    *"pg-support"*)
       _init-fcapps "fc-support"
       ;;
     *"partners-fca-back"*)

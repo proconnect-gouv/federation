@@ -24,7 +24,7 @@ _init-fcapps() {
     docker-compose exec $NO_TTY "${app}" yarn migrations:run
     docker-compose exec $NO_TTY "${app}" yarn fixtures:load
 
-    cd ${FC_ROOT}/fc-apps/shared/cypress/support/ && ./db.sh $app create
+    cd ${FC_ROOT}/fc-apps/shared/cypress/support/ && ./db.sh ${app:3} create
   done
 
   echo "**************************************"

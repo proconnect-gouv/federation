@@ -9,7 +9,7 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app/fc-support
     depends_on:
-      - 'pg-fc-support'
+      - 'pg-support'
       - 'mongo-legacy'
       - 'squid'
       - 'rnipp'
@@ -31,7 +31,7 @@ services:
       - data
     command: 'pm2 logs'
 
-  pg-fc-support:
+  pg-support:
     image: postgres:11
     environment:
       - 'POSTGRES_DB=pg-db'

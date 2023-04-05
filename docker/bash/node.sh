@@ -29,9 +29,9 @@ _do_start() {
 
 _start_all() {
   _get_running_containers
+  echo " * Automatically start apps for for started nodejs containers"
   _start $NODEJS_CONTAINERS
 }
-
 
 
 _stop() {
@@ -39,7 +39,7 @@ _stop() {
   for app in $apps
   do
     task " * Stopping app \e[3m${app}\e[0m"\
-    "_do_start $app"
+    "_do_stop $app"
   done
 }
 
