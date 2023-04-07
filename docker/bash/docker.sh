@@ -55,17 +55,24 @@ _list_services() {
 
 _pull_node_image() {
   if [ -z ${OFFLINE} ]; then
-    (\
-     docker login ${FC_DOCKER_REGISTRY} &&\
-     docker pull ${DOCKER_REGISTERY_URI}\
-    ) || (\
-    echo "Could not fetch fresh nodejs Image, not connected to the Internet?
-    Use OFFLINE env var to skip:\
-     > OFFLINE=1 docker-stack up <stack>" &&\
-    exit 1);
+   _do_pull
   else
     echo $(format_warning "skipped")
   fi
+}
+
+_do_pull() {
+  timeout 5 docker login ${FC_DOCKER_REGISTRY} || _pull_failure
+  docker pull ${DOCKER_REGISTERY_URI} || _pull_failure
+}
+
+_pull_failure() {
+  echo "Could not fetch fresh nodejs Image, not connected to the Internet or maybe need to login"
+  echo "Use 'OFFLINE' env var to skip:"
+  echo " > OFFLINE=1 ${@}"
+  echo "Or 'VERBOSE' env var to be prompted for login"
+  echo " > VERBOSE=1 ${@}"
+  exit 1
 }
 
 _prune() {
