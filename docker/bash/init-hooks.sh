@@ -72,5 +72,11 @@ function _init_hooks() {
       echo "Initialize user-dashboard data..."
       _init_ud
       ;;
+    *)
+      # Erase line content for containers that don't have an init section
+      # This way we only display task for containers that have actually done something
+      # Note that number of space characters is arbitrary but should work in most cases
+      _task_result "\r                                                                 \r"
+      ;;
   esac
 }

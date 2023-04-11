@@ -57,7 +57,7 @@ _pull_node_image() {
   if [ -z ${OFFLINE} ]; then
    _do_pull
   else
-    echo $(format_warning "skipped")
+    _task_result "$(format_warning "skipped")" "newline"
   fi
 }
 

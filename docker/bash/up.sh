@@ -4,10 +4,10 @@ _up() {
   task " * Checking required services"\
   "_check_for_unknown_services ${@}"
 
-  echo " * Starting services... $(format_emphasis $(join_by ", " "${@}"))"
+  echo " * Starting services: $(format_emphasis $(join_by ", " "${@}"))"
 
-  echo -n " * Pulling fresh node image: "
-  _pull_node_image
+  task " * Pull fresh node image"\
+  "_pull_node_image"
 
   task " * Up containers"\
   "_do_up $@"
@@ -64,7 +64,7 @@ _auto_install_dependencies() {
 
 _auto_init_containers() {
   for app in ${FC_CONTAINERS}; do
-    task "   * init $(format_emphasis "${app}") " "_init_hooks ${app}"
+    task "   * init $(format_emphasis "${app}")" "_init_hooks ${app}"
   done
 }
 

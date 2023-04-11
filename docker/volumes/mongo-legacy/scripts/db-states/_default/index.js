@@ -25,3 +25,13 @@ load('/opt/scripts/db-states/_default/claims.js');
 
 print('Initializing Partners...');
 load('/opt/scripts/db-states/_default/partners.js');
+
+/* ------------------------------------------------------------------------------- */
+
+print('Initializing Indexes...');
+load('/opt/scripts/db-states/_default/indexes.js');
+
+/* ------------------------------------------------------------------------------- */
+
+print('Initializing Notifications...');
+load('/opt/scripts/db-states/_default/notifications.js');
