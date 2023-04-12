@@ -211,3 +211,7 @@ docker-stack exec <container_name> <command>
 You may experience some docker network issues with docker containers, for exemple in case of a switch of network on the hosts or long inactivity of the stack.
 
 In most case you can get back a healthy state by reseting the stack with `docker-stack prune`
+
+### Maintaining and Extending
+
+See [dedicated README](../bash/README.md) alongside the source code oif docker-stack.
