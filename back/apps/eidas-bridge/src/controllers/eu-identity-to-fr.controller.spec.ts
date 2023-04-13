@@ -1,3 +1,5 @@
+import { Request } from 'express';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
@@ -13,9 +15,10 @@ import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
 
 import { AppConfig, EidasBridgeIdentityDto } from '../dto';
-import { EidasBridgeInvalidIdentityException } from '../exceptions';
+import { EidasBridgeInvalidEUIdentityException } from '../exceptions';
 import { EuIdentityToFrController } from './eu-identity-to-fr.controller';
 
 jest.mock('@fc/common', () => ({
@@ -94,7 +97,7 @@ describe('EuIdentityToFrController', () => {
     params: {
       uid: '1234456',
     },
-  };
+  } as unknown as Request;
 
   const interactionMock = {
     uid: Symbol('uidMockValue'),
@@ -118,6 +121,11 @@ describe('EuIdentityToFrController', () => {
     setAlias: jest.fn(),
   };
 
+  const trackingServiceMock = {
+    track: jest.fn(),
+    TrackedEventsMap: {},
+  };
+
   beforeEach(async () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [EuIdentityToFrController],
@@ -130,6 +138,7 @@ describe('EuIdentityToFrController', () => {
         EidasToOidcService,
         EidasCountryService,
         SessionService,
+        TrackingService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -148,6 +157,8 @@ describe('EuIdentityToFrController', () => {
       .useValue(eidasCountryServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
+      .overrideProvider(TrackingService)
+      .useValue(trackingServiceMock)
       .compile();
 
     euIdentityToFrController = await app.get<EuIdentityToFrController>(
@@ -711,7 +722,7 @@ describe('EuIdentityToFrController', () => {
         // action
         euIdentityToFrController['validateIdentity'](identityMock),
         // assert
-      ).rejects.toThrow(EidasBridgeInvalidIdentityException);
+      ).rejects.toThrow(EidasBridgeInvalidEUIdentityException);
     });
   });
 
@@ -748,6 +759,7 @@ describe('EuIdentityToFrController', () => {
     it('should return a status code and a url', async () => {
       // When
       const result = await euIdentityToFrController.redirectToFrNodeConnector(
+        req,
         req.body,
       );
       // Then
