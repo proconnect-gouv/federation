@@ -42,7 +42,7 @@ partner-fca:
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/partners
-    - yarn install
+    - yarn install --ignore-engines
     - CYPRESS_TEST_ENV=docker yarn test:fca -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - CYPRESS_PLATFORM=partners-fca CYPRESS_TEST_ENV=docker yarn report:generate

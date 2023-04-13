@@ -24,7 +24,7 @@ quality-fca-low-release:
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cd $CI_PROJECT_DIR/quality/fca && yarn install
+    - cd $CI_PROJECT_DIR/quality/fca && yarn install --ignore-engines
     - cd $CI_PROJECT_DIR
   script:
   # Build the nginx proxy to access /integ01/fca.html

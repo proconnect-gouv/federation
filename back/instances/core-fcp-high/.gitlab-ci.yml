@@ -60,7 +60,7 @@ fcp-high:
     - docker-stack dep core-fcp-high
     - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
     - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
-    - cd $CI_PROJECT_DIR/quality/fcp && yarn install
+    - cd $CI_PROJECT_DIR/quality/fcp && yarn install --ignore-engines
     - docker-stack fixtures-fcp-high
     - cd $CI_PROJECT_DIR
     # Start the NodeJS apps

@@ -142,6 +142,7 @@ services:
 
   haproxy:
     image: haproxy:2.3
+    hostname: haproxy
     ports:
       - 8404:8404
     volumes:
@@ -150,6 +151,7 @@ services:
     networks:
       - public
       - fc
+      - exploitation
     depends_on:
       - rp-all
 
