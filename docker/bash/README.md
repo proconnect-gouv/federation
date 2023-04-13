@@ -38,7 +38,7 @@ OFFLINE=1 dks up <some-stack>
 
 ### Commands
 
-This tools is intended to register commands that can be run by `docker-stack` and generate a synamic summary of available commands.
+This tools is intended to register commands that can be run by `docker-stack` and generate a dynamic summary of available commands.
 
 **`_command_register`** is the only function one should use, to add a new command to `docker-stack`.
 
@@ -55,6 +55,8 @@ The use of `commands` require that you define a single function to handle the ac
 > :bulb: Avoid oneliners and the use of `&&` or `;`
 
 > :pencil: Source code is in [./utils/commands.sh](./utils/commands.sh).
+
+> :bulb: Commands should be stored in [./commands](./commands) directory.
 
 ### Tasks
 
@@ -91,15 +93,19 @@ To use this feature, use `_task_result` in your task.
 
 > :pencil: Source code is in [./utils/task.sh](./utils/task.sh).
 
-### Init-hooks
+### Initialisation hooks
 
-Init-hooks allow you to define instruction to be executed after stack startup, matching the containers that are up at this moment.
+Initialisation hooks allow you to define instructions to be executed after stack startup, matching the containers that are up at this moment.
 
 This is the place to load some fixtures in a database for example.
 
+The index file contains a `case` statement which allows basic pattern matching against container names.
+
+The init functions should be placed in a dedicated file in the [/hooks](./hooks) directory.
+
 > :bulb: Target the container that really needs the operation to be run.
 
-> :pencil: Source code is in [./init-hooks.sh](./init-hooks.sh).
+> :pencil: Source code is in [./hooks/index.sh](./hooks/index.sh).
 
 ## Other features
 

@@ -10,17 +10,9 @@ fi
 INCLUDE_DIR="$FC_ROOT/fc/docker/bash"
 
 source "${INCLUDE_DIR}/utils/index.sh"
-source "${INCLUDE_DIR}/config.sh"
-source "${INCLUDE_DIR}/docker.sh"
-source "${INCLUDE_DIR}/elastic.sh"
-source "${INCLUDE_DIR}/fca-tmp.sh"
-source "${INCLUDE_DIR}/node.sh"
-source "${INCLUDE_DIR}/postgres.sh"
-source "${INCLUDE_DIR}/test.sh"
-source "${INCLUDE_DIR}/init-hooks.sh"
-source "${INCLUDE_DIR}/up.sh"
-source "${INCLUDE_DIR}/checkout.sh"
-source "${INCLUDE_DIR}/lemonldap.sh"
+source "${INCLUDE_DIR}/config/index.sh"
+source "${INCLUDE_DIR}/commands/index.sh"
+source "${INCLUDE_DIR}/hooks/index.sh"
 
 
 _command_register "checkout" "_checkout" "checkout <code:branch/tag> [infra:branch/tag] => set the environment to the state of the given branch/tag"
@@ -77,7 +69,7 @@ _command_register "migrations-generate-partners-fcp" "_migrations-generate-partn
 _command_register "migrations-generate-partners-fca" "_migrations-generate-partners 'partners-fca-back'" "" # Description to be defined
 _command_register "fixtures-partners-fcp" "_fixtures-partners 'partners-fcp-back'" "" # Description to be defined
 _command_register "fixtures-partners-fca" "_fixtures-partners 'partners-fca-back'" "" # Description to be defined
-_command_register "init" "_init-fcapps" "Init FC-apps"
+_command_register "init" "_hook_fc_apps" "Init FC-apps"
 _command_register "storybook" "_storybook" "" # Description to be defined
 _command_register "prune" "_prune" "Stop and remove all runing containers"
 _command_register "prune-all" "_prune_all" "" # Description to be defined
