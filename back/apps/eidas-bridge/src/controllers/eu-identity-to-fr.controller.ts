@@ -1,5 +1,6 @@
 import { ClassTransformOptions } from 'class-transformer';
 import { ValidatorOptions } from 'class-validator';
+import { Request } from 'express';
 
 import {
   Body,
@@ -16,7 +17,7 @@ import {
 
 import { PartialExcept, validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { EidasClientSession } from '@fc/eidas-client';
+import { EidasClientRoutes, EidasClientSession } from '@fc/eidas-client';
 import { EidasCountryService } from '@fc/eidas-country';
 import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
@@ -24,6 +25,7 @@ import { IOidcIdentity, OidcError } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ISessionService, Session, SessionService } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
 
 import {
   AppConfig,
@@ -31,7 +33,7 @@ import {
   EidasBridgeValidateEuropeanIdentity,
 } from '../dto';
 import { EidasBridgeRoutes } from '../enums';
-import { EidasBridgeInvalidIdentityException } from '../exceptions';
+import { EidasBridgeInvalidEUIdentityException } from '../exceptions';
 
 /**
  * @todo #411 Clean the controller (create a service, generalize code, ...)
@@ -49,6 +51,7 @@ export class EuIdentityToFrController {
     private readonly eidasToOidc: EidasToOidcService,
     private readonly eidasCountry: EidasCountryService,
     private readonly sessionService: SessionService,
+    private readonly tracking: TrackingService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -112,12 +115,20 @@ export class EuIdentityToFrController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Redirect()
   async redirectToFrNodeConnector(
+    @Req() req: Request,
     @Body() body: EidasBridgeValidateEuropeanIdentity,
   ) {
+    const { country: countryCodeDst } = body;
+    const url = `${EidasClientRoutes.BASE}${EidasClientRoutes.REDIRECT_TO_FR_NODE_CONNECTOR}?country=${countryCodeDst}`;
     const response = {
-      url: `/eidas-client/redirect-to-fr-node-connector?country=${body.country}`,
+      url,
       statusCode: 302,
     };
+
+    const { SELECTED_CITIZEN_COUNTRY } = this.tracking.TrackedEventsMap;
+    const trackingContext = { req, countryCodeDst };
+
+    this.tracking.track(SELECTED_CITIZEN_COUNTRY, trackingContext);
 
     this.logger.trace({
       route: EidasBridgeRoutes.INTERACTION_LOGIN,
@@ -143,9 +154,15 @@ export class EuIdentityToFrController {
     @Session('EidasClient')
     sessionEidas: ISessionService<EidasClientSession>,
   ) {
+    const { REDIRECT_TO_FC, EIDAS_RESPONSE_ERROR } =
+      this.tracking.TrackedEventsMap;
+    const trackingContext = { req };
+
     const { eidasResponse } = await sessionEidas.get();
 
     if (eidasResponse.status.failure) {
+      this.tracking.track(EIDAS_RESPONSE_ERROR, trackingContext);
+
       const { params } = await this.oidcProvider.getInteraction(req, res);
 
       const oidcError = await this.eidasToOidc.mapPartialResponseFailure(
@@ -185,7 +202,7 @@ export class EuIdentityToFrController {
       name: 'EidasBridgeRoutes.FINISH_FC_INTERACTION',
       session,
     });
-
+    this.tracking.track(REDIRECT_TO_FC, trackingContext);
     return this.oidcProvider.finishInteraction(req, res, sessionClient);
   }
 
@@ -212,7 +229,7 @@ export class EuIdentityToFrController {
 
     if (errors.length) {
       this.logger.trace({ errors }, LoggerLevelNames.WARN);
-      throw new EidasBridgeInvalidIdentityException();
+      throw new EidasBridgeInvalidEUIdentityException();
     }
   }
 

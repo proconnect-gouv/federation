@@ -52,7 +52,8 @@
 
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|
-| [Y050006](../apps/eidas-bridge/src/exceptions/eidas-bridge-invalid-identity.exception.ts "EidasBridgeInvalidIdentityException") | 400 | Un problème lié à vos données d&#39;identité empêche la connexion d&#39;aboutir. Nous vous invitons à nous contacter pour corriger le problème. | L&#39;identité reçue du bridge eIDAS ( venant d&#39;un autre état membre ) n&#39;est pas valide. Contacter le support N3 | 
+| [Y050006](../apps/eidas-bridge/src/exceptions/eidas-bridge-invalid-eu-identity.exception.ts "EidasBridgeInvalidEUIdentityException") | 400 | Un problème lié à vos données d&#39;identité empêche la connexion d&#39;aboutir. Nous vous invitons à nous contacter pour corriger le problème. | L&#39;identité reçue du bridge eIDAS ( venant d&#39;un autre état membre ) n&#39;est pas valide. Contacter le support N3 | 
+| [Y050006](../apps/eidas-bridge/src/exceptions/eidas-bridge-invalid-fr-identity.exception.ts "EidasBridgeInvalidFRIdentityException") | 400 | Un problème lié à vos données d&#39;identité empêche la connexion d&#39;aboutir. Nous vous invitons à nous contacter pour corriger le problème. | L&#39;identité reçue du fournisseur d&#39;identité français n&#39;est pas valide. Contacter le support N3 | 
 
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|
@@ -166,4 +167,8 @@
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|
 | [Y400001](../libs/geoip-maxmind/src/exceptions/geoip-maxmind-not-found.exception.ts "GeoipMaxmindNotFoundException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | La base de donnée local GeoIP Maxmind n&#39;a pa pu être chargée | 
+
+| Code d'erreur | Code HTTP | Message utilisateur | Description |
+|---|---|---|---|
+| [Y410001](../libs/tracking-context/src/exceptions/tracking-missing-network-context.exception.ts "TrackingMissingNetworkContextException") | 500 | Missing network context (headers) | L&#39;application n&#39;a pas trouvé de headers dans l&#39;objet request, c&#39;est probablement un bug, Contacter le support N3 | 
 
