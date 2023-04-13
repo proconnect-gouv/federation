@@ -61,7 +61,7 @@ fca-low:
     - docker-stack dep core-fca-low
     - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
     - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
-    - cd $CI_PROJECT_DIR/quality/fca && yarn install
+    - cd $CI_PROJECT_DIR/quality/fca && yarn install --ignore-engines
     - docker-stack fixtures-fca-low
     - cd $CI_PROJECT_DIR
     # Start the NodeJS apps

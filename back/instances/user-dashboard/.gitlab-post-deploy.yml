@@ -34,7 +34,7 @@ quality-user-dashboard-release:
     # Shallow clone depth 1 fc-docker repository
     - rm -rf $FC_ROOT/fc-docker
     - git clone -b $FC_DOCKER_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker  --single-branch
-    - cd $CI_PROJECT_DIR/quality/fcp && yarn install
+    - cd $CI_PROJECT_DIR/quality/fcp && yarn install --ignore-engines
     - cd $CI_PROJECT_DIR
   script:
   # Build the nginx proxy to access /integ01/fcp-legacy.html

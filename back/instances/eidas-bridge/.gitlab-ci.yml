@@ -43,7 +43,7 @@ eidas-bridge:
   script:
     # Install Cypress on the runner and fetch node_modules
     - cd $CI_PROJECT_DIR/quality/fcp
-    - yarn install
+    - yarn install --ignore-engines
     # Up the docker-stack with minimal requirement
     - docker-stack up min-eidas-high
     - docker exec fc_core-fcp-high_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"

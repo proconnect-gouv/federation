@@ -23,14 +23,14 @@ back:
   script:
     # Back folder
     - cd back/
-    - yarn install
+    - yarn install --ignore-engines
     - yarn lint
     - yarn prettier
     - yarn test --coverage
     - ../coverage.sh
     # Quality folder
     - cd $CI_PROJECT_DIR/quality
-    - yarn install
+    - yarn install --ignore-engines
     - yarn lint
     - yarn prettier
     - yarn tsc --noEmit
@@ -73,9 +73,9 @@ build-cache:
       - cache/Cypress
   stage: 'Cache'
   script:
-    - cd $CI_PROJECT_DIR/back && yarn install
+    - cd $CI_PROJECT_DIR/back && yarn install --ignore-engines
     - cd $CI_PROJECT_DIR/front && yarn install
-    - cd $CI_PROJECT_DIR/quality && yarn install
+    - cd $CI_PROJECT_DIR/quality && yarn install --ignore-engines
     - git clone -b $FC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $CI_PROJECT_DIR/cache/fc-apps
     - cd $CI_PROJECT_DIR/cache/fc-apps && yarn install
     - git clone -b $FC_LEGACY_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/core-legacy.git $CI_PROJECT_DIR/cache/core-legacy
