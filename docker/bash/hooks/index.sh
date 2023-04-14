@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source "$INCLUDE_DIR/hooks/fc-apps.sh"
+source "$INCLUDE_DIR/hooks/legacy-fc-commons.sh"
 source "$INCLUDE_DIR/hooks/lemon-ldap.sh"
 source "$INCLUDE_DIR/hooks/mongo.sh"
 source "$INCLUDE_DIR/hooks/partners.sh"
@@ -59,6 +60,12 @@ function _init_hooks() {
       echo "Initialize user-dashboard data..."
       _init_ud
       ;;
+      "fc-core")
+        _fc-common-symlink "fc-core"
+        ;;
+      "partenaires")
+        _fc-common-symlink "partenaires"
+        ;;
     *)
       # Erase line content for containers that don't have an init section
       # This way we only display task for containers that have actually done something
