@@ -1,32 +1,31 @@
 #!/usr/bin/env bash
 
 task() {
-  if [ -z $VERBOSE ]
-  then
+  if [ -z $VERBOSE ]; then
     echo -ne "$1: "
-    (`$2 &> "$__DKS_LAST_LOG_FILE"` && _task_success) || _task_fail "$1" "$2" "$?"
+    ($($2 &>"$__DKS_LAST_LOG_FILE") && _task_success) || _task_fail "$1" "$2" "$?"
   else
     $2
   fi
 }
 
 _task_success() {
-    echo $(format_success "OK")
+  echo $(format_success "OK")
 }
 
 _task_fail() {
 
   if [ $3 == $__DKS_TASK_RETURN_EXIT_CODE ]; then
     cat "$__DKS_LAST_LOG_FILE"
-  else  
+  else
     echo $(format_failure "Failed")
-    echo "   - command: > $1"
+    echo -e "   - command: > $1"
     echo "   - result:"
     echo " -------------------------------- "
     cat "$__DKS_LAST_LOG_FILE"
     echo " -------------------------------- "
-    echo -e " * $1: $KO";
-    exit 1;
+    echo -e " * $1: $KO"
+    exit 1
   fi
 }
 

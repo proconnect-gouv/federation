@@ -6,10 +6,9 @@ DEFAULT_NODE_VERSION=latest
 COMPOSE_DIR="${FC_ROOT}/fc/docker/compose"
 COMPOSE_FILES=$(find ${COMPOSE_DIR} -name "*.yml")
 VOLUMES_DIR="${FC_ROOT}/fc/docker/volumes"
-WORKING_DIR="$( cd "$( dirname "${0}" )" >/dev/null 2>&1 && pwd )"
+WORKING_DIR="$(cd "$(dirname "${0}")" >/dev/null 2>&1 && pwd)"
 
 DOCKER_REGISTERY_URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc-docker/nodejs:${DEFAULT_NODE_VERSION}-dev"
-
 
 MONGO_DEFAULT_USER="rootAdmin"
 MONGO_DEFAULT_PASS="pass"
@@ -42,8 +41,7 @@ export WORKING_DIR
 export CURRENT_UID="$(id -u):$(grep docker /etc/group | cut -d: -f3)"
 
 # Fix node version to use
-if [ "${NODE_VERSION:-xxx}" = "xxx" ]
-then
+if [ "${NODE_VERSION:-xxx}" = "xxx" ]; then
   NODE_VERSION=${DEFAULT_NODE_VERSION}
 fi
 export NODE_VERSION

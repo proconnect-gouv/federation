@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 
 _log() {
@@ -7,12 +6,11 @@ _log() {
   docker-compose exec ${NO_TTY} ${app} pm2 logs
 }
 
-
 _start() {
   local apps=${@:-no-container}
   for app in ${apps}; do
-    task "   * Starting app \e[3m${app}\e[0m"\
-    "_do_start ${app}"
+    task "   * Starting app \e[3m${app}\e[0m" \
+      "_do_start ${app}"
   done
 
   # Reload RP in case the app took to long and was consired down by Nginx
@@ -35,8 +33,8 @@ _start_all() {
 _stop() {
   apps=${@:-no-container}
   for app in $apps; do
-    task " * Stopping app \e[3m${app}\e[0m"\
-    "_do_stop ${app}"
+    task " * Stopping app \e[3m${app}\e[0m" \
+      "_do_stop ${app}"
   done
 }
 
@@ -74,8 +72,8 @@ _install_dependencies_all() {
 }
 
 _log-rotate() {
-    echo "Send SIGUSR2 to core-fcp-high app..."
-    cd ${WORKING_DIR}
-    docker-compose exec core-fcp-high pkill -SIGUSR2 -f '/usr/bin/node -r source-map-support/register --inspect=0.0.0.0:9235 /var/www/app/dist/instances/core-fcp-high/main'
-    echo "... Signal done"
+  echo "Send SIGUSR2 to core-fcp-high app..."
+  cd ${WORKING_DIR}
+  docker-compose exec core-fcp-high pkill -SIGUSR2 -f '/usr/bin/node -r source-map-support/register --inspect=0.0.0.0:9235 /var/www/app/dist/instances/core-fcp-high/main'
+  echo "... Signal done"
 }

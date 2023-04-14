@@ -1,4 +1,3 @@
-
 #!/usr/bin/env bash
 
 _fca_low_front() {
@@ -7,8 +6,7 @@ _fca_low_front() {
   docker-compose exec $NO_TTY fca-low-front yarn build:fca-low-front
   cd ${FC_ROOT}/fc/back/apps/core-fca/src/
 
-  if [ -d 'public' ]
-  then
+  if [ -d 'public' ]; then
     rm -rf public
   fi
 
@@ -18,8 +16,7 @@ _fca_low_front() {
   cd ${FC_ROOT}/fc/front/instances/agent-connect/
   cp -r ${FC_ROOT}/fc/front/instances/agent-connect/build/** ${FC_ROOT}/fc/back/apps/core-fca/src/public
 
-  if [ -e 'interaction.ejs' ]
-  then
+  if [ -e 'interaction.ejs' ]; then
     rm ${FC_ROOT}/fc/back/apps/core-fca/src/views/interaction.ejs
   fi
 

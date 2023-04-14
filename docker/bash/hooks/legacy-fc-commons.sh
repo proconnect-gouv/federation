@@ -1,16 +1,15 @@
 #!/usr/bin/env bash
 
-
 function _fc-common-symlink() {
   local base="$FC_ROOT/fc/docker/volumes/src/FranceConnect/projects"
 
   case ${app} in
-    "fc-core")
-      _update_symlink "${base}/fc/core/node_modules" "../../fc-commons"
-      ;;
-    "partenaires")
-      _update_symlink "${base}/partenaires/node_modules" "../../fc/fc-commons"
-      ;;
+  "fc-core")
+    _update_symlink "${base}/fc/core/node_modules" "../../fc-commons"
+    ;;
+  "partenaires")
+    _update_symlink "${base}/partenaires/node_modules" "../../fc/fc-commons"
+    ;;
   esac
 }
 
@@ -21,6 +20,6 @@ function _update_symlink() {
   echo "Replace lib by symlink ${appPath} ~> ${libPath}"
 
   cd "${appPath}"
-  rm -rf fc-commons 
+  rm -rf fc-commons
   ln -s "${libPath}"
-} 
+}

@@ -10,7 +10,7 @@ source "$INCLUDE_DIR/hooks/partners.sh"
 #
 # This runs arbitrary code if a container is started
 # matching on the container name
-# 
+#
 # Hooks are called in the `docker-stack up <stack>` command,
 # after all other automatic procedures.
 # Nodejs dependencies are already installed at this stage
@@ -19,58 +19,58 @@ function _init_hooks() {
   local container=$1
 
   case $container in
-    *"lemon-ldap"*)
-      _hook_lemon_ldap
-      ;;
-    *"mongo-legacy"*)
-      _hook_mongo "mongo-legacy"
-      # TMP to keep compatibility with CL E2E
-      _idp_as_prod_legacy
-      ;;
-    *"mongo-fca-low"*)
-      _hook_mongo "mongo-fca-low"
-      ;;
-    *"mongo-fcp-low"*)
-      _hook_mongo "mongo-fcp-low"
-      ;;
-    *"mongo-fcp-high"*)
-      _hook_mongo "mongo-fcp-high"
-      ;;
-   *"pg-exploitation-high")
-      _hook_fc_apps "exploitation-high"
-      ;;
-   *"pg-support-high")
-      _hook_fc_apps "support-high"
-      ;;
-    *"pg-exploitation")
-      _hook_fc_apps "fc-exploitation"
-      ;;
-    *"pg-support"*)
-      _hook_fc_apps "fc-support"
-      ;;
-    *"partners-fca-back"*)
-      _hook_patners "partners-fca-back"
-      ;;
-    *"partners-fcp-back"*)
-      _hook_patners "partners-fcp-back"
-      ;;
-    *"elasticsearch"*)
-      # Waiting for ES to be up
-      sleep 15
-      echo "Initialize user-dashboard data..."
-      _init_ud
-      ;;
-      "fc-core")
-        _fc-common-symlink "fc-core"
-        ;;
-      "partenaires")
-        _fc-common-symlink "partenaires"
-        ;;
-    *)
-      # Erase line content for containers that don't have an init section
-      # This way we only display task for containers that have actually done something
-      # Note that number of space characters is arbitrary but should work in most cases
-      _task_result "\r                                                                 \r"
-      ;;
+  *"lemon-ldap"*)
+    _hook_lemon_ldap
+    ;;
+  *"mongo-legacy"*)
+    _hook_mongo "mongo-legacy"
+    # TMP to keep compatibility with CL E2E
+    _idp_as_prod_legacy
+    ;;
+  *"mongo-fca-low"*)
+    _hook_mongo "mongo-fca-low"
+    ;;
+  *"mongo-fcp-low"*)
+    _hook_mongo "mongo-fcp-low"
+    ;;
+  *"mongo-fcp-high"*)
+    _hook_mongo "mongo-fcp-high"
+    ;;
+  *"pg-exploitation-high")
+    _hook_fc_apps "exploitation-high"
+    ;;
+  *"pg-support-high")
+    _hook_fc_apps "support-high"
+    ;;
+  *"pg-exploitation")
+    _hook_fc_apps "fc-exploitation"
+    ;;
+  *"pg-support"*)
+    _hook_fc_apps "fc-support"
+    ;;
+  *"partners-fca-back"*)
+    _hook_patners "partners-fca-back"
+    ;;
+  *"partners-fcp-back"*)
+    _hook_patners "partners-fcp-back"
+    ;;
+  *"elasticsearch"*)
+    # Waiting for ES to be up
+    sleep 15
+    echo "Initialize user-dashboard data..."
+    _init_ud
+    ;;
+  "fc-core")
+    _fc-common-symlink "fc-core"
+    ;;
+  "partenaires")
+    _fc-common-symlink "partenaires"
+    ;;
+  *)
+    # Erase line content for containers that don't have an init section
+    # This way we only display task for containers that have actually done something
+    # Note that number of space characters is arbitrary but should work in most cases
+    _task_result "\r                                                                 \r"
+    ;;
   esac
 }

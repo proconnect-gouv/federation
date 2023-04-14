@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
 
 _up() {
-  task " * Checking required services"\
-  "_check_for_unknown_services "${@}""
+  task " * Checking required services" \
+    "_check_for_unknown_services "${@}""
 
   echo " * Starting services: $(format_emphasis $(join_by ", " "${@}"))"
 
-  task " * Pull fresh node image"\
-  "_pull_node_image"
+  task " * Pull fresh node image" \
+    "_pull_node_image"
 
-  task " * Up containers"\
-  "_do_up $@"
+  task " * Up containers" \
+    "_do_up $@"
 
   task " * Populate global variables"
   "_get_running_containers"
 
-  task " * Automatically install dependencies for started containers"\
-  "_auto_install_dependencies"
+  task " * Automatically install dependencies for started containers" \
+    "_auto_install_dependencies"
 
   echo " * Automatically run init scripts for started containers"
   _auto_init_containers
@@ -26,8 +26,8 @@ _do_up() {
   # Get wanted services
   local services=$(_get_services "$@")
 
-  cd ${WORKING_DIR} 
-  docker-compose up --build -d $services 
+  cd ${WORKING_DIR}
+  docker-compose up --build -d $services
 }
 
 _check_for_unknown_services() {
@@ -38,8 +38,8 @@ _check_for_unknown_services() {
     match=$(echo "$available" | grep "^$service$" | wc -l)
 
     if [ "$match" != "1" ]; then
-      echo "Service / Stack Not Found: $service";
-      exit 1;
+      echo "Service / Stack Not Found: $service"
+      exit 1
     fi
   done
 }
@@ -67,4 +67,3 @@ _auto_init_containers() {
     task "   * init $(format_emphasis "${app}")" "_init_hooks ${app}"
   done
 }
-

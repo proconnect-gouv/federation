@@ -8,7 +8,7 @@ _reset_stats() {
   ES_AUTH="docker-stack:docker-stack"
 
   RUN_CONTEXT="docker-compose exec $NO_TTY elasticsearch"
-  
+
   CURL_OPTIONS="-k -u $ES_AUTH"
 
   echo "# Delete indices"
@@ -110,7 +110,7 @@ _generate_metrics() {
 
   echo "Generate metrics"
   docker-compose exec $NO_TTY fc-workers bash -c "cd tests/fixtures && node generate-metrics.js $START $STOP $METRIC_GROWTH"
-  
+
   echo "Generate Identities"
   docker-compose up -d mongo
   docker-compose exec $NO_TTY fc-workers bash -c "yarn debug generate-identities.js && ./run InitIdentityES && ./run IndexUserStats --metric=identity"

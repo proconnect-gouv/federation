@@ -5,7 +5,7 @@ COMPOSE_PROJECT_NAME=fc
 COMPOSE_DIR="${FC_ROOT}/fc/docker/compose"
 COMPOSE_FILES=$(find ${COMPOSE_DIR} -name "*.yml")
 VOLUMES_DIR="${FC_ROOT}/fc/docker/volumes"
-WORKING_DIR="$( cd "$( dirname "${0}" )" >/dev/null 2>&1 && pwd )"
+WORKING_DIR="$(cd "$(dirname "${0}")" >/dev/null 2>&1 && pwd)"
 
 DOCKER_REGISTERY_URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev"
 

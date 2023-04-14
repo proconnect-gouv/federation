@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 format_success() {
   printf "${STYLE_SUCCESS}${1}${STYLE_RESET}"
 }

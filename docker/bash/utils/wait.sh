@@ -10,17 +10,13 @@ wait_for_nodejs() {
 
   echo "Waiting for ${container} on URL: $url"
 
-  (curl\
-    --silent\
-    --insecure\
-    --fail\
-    --retry ${max_retries}\
-    --retry-delay ${delay}\
-    --retry-max-time ${max_time} "${url}"\
-    > /dev/null\
-    && _wait_for_nodejs_success "${container}"\
-  )\
-  || _wait_for_nodejs_fail "${container}"
+  (
+    curl --silent --insecure --fail --retry ${max_retries} \
+      --retry-delay ${delay} \
+      --retry-max-time ${max_time} "${url}" \
+      >/dev/null && _wait_for_nodejs_success "${container}"
+  ) ||
+    _wait_for_nodejs_fail "${container}"
 
 }
 

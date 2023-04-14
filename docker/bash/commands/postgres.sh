@@ -11,11 +11,11 @@ _migrations-generate-partners() {
 }
 
 _fixtures_fcp_high() {
-  _init-fcapps "exploitation-high"
+  _hook_fc_apps "exploitation-high"
 }
 
 _fixtures_fca_low() {
-  _init-fcapps "exploitation-fca-low"
+  _hook_fc_apps "exploitation-fca-low"
 }
 
 _fixtures-partners() {

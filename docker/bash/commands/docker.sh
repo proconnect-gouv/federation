@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
 
-
 # Find which nodejs containers are running and store it into $RUNNING_CONTAINERS
 _get_running_containers() {
-  local raw_nodejs_containers=`docker ps --format '{{.Names}}' -f ancestor=${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev`
-  local raw_all_containers=`docker ps --format '{{.Names}}'`
+  local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
+  local raw_all_containers=$(docker ps --format '{{.Names}}')
 
   NODEJS_CONTAINERS=$(_container-to-compose-name "${raw_nodejs_containers}")
   FC_CONTAINERS=$(_container-to-compose-name "${raw_all_containers}")
@@ -19,13 +18,12 @@ _container-to-compose-name() {
   local output=""
 
   for container in ${input}; do
-    local name=$(echo ${container}| sed -E 's/^fc_(.*)_1$/\1/')
+    local name=$(echo ${container} | sed -E 's/^fc_(.*)_1$/\1/')
     output=$(echo -e "${output}\n${name}")
   done
 
   echo ${output}
 }
-
 
 _halt() {
   echo "Stopping FC Dev environment..."
@@ -35,17 +33,17 @@ _halt() {
 
 _exec() {
   app=${1:-empty}
-[ $# -gt 0 ] && shift
+  [ $# -gt 0 ] && shift
 
   case ${app} in
-    empty)
-      echo "Usage: docker-stack exec <container_name> <command>"
-      exit 1
-      ;;
-    *)
-      cd ${WORKING_DIR}
-      docker-compose exec ${NO_TTY} ${app} ${@}
-      ;;
+  empty)
+    echo "Usage: docker-stack exec <container_name> <command>"
+    exit 1
+    ;;
+  *)
+    cd ${WORKING_DIR}
+    docker-compose exec ${NO_TTY} ${app} ${@}
+    ;;
   esac
 }
 
@@ -55,7 +53,7 @@ _list_services() {
 
 _pull_node_image() {
   if [ -z ${OFFLINE} ]; then
-   _do_pull
+    _do_pull
   else
     _task_result "$(format_warning "skipped")" "newline"
   fi

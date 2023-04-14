@@ -3,9 +3,7 @@
 function _hook_fc_apps() {
   local apps=${@:-fc-exploitation fc-support exploitation-high support-high}
 
-
-  for app in ${apps}
-  do
+  for app in ${apps}; do
     local db_container=$(echo "$app" | sed 's/fc-*//')
     echo "  Fixture for ${app} app..."
     cd ${WORKING_DIR}

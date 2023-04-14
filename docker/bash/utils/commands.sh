@@ -3,7 +3,6 @@
 declare -A __CMD_COMMANDS
 declare -A __CMD_USAGES
 
-
 function _command_register() {
   local key=$1
   local command=$2
@@ -19,8 +18,8 @@ function _command_run() {
   if [ -v ${key} ]; then
     echo "No command found"
     echo "Use help to see all avilable commands:"
-    echo " > ./docker-stack help" 
-    exit 1;
+    echo " > ./docker-stack help"
+    exit 1
   fi
 
   local cmd=${__CMD_COMMANDS[${key}]}
@@ -28,8 +27,8 @@ function _command_run() {
   if [ -v ${cmd} ]; then
     echo "Command not found: <${key}>"
     echo "Use help to see all avilable commands:"
-    echo " > ./docker-stack help" 
-    exit 1;
+    echo " > ./docker-stack help"
+    exit 1
   fi
 
   $cmd ${@:2}
@@ -44,7 +43,7 @@ function _command_list() {
   echo "---------------------------"
   echo "Use env variable 'VERBOSE' to get verbose output"
   echo "ex."
-  echo "> VERBOSE=1 docker-stack up min-core-legacy"  
+  echo "> VERBOSE=1 docker-stack up min-core-legacy"
 }
 
 function _do_list_commands() {
