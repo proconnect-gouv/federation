@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-source "${INCLUDE_DIR}/commands/checkout.sh"
 source "${INCLUDE_DIR}/commands/docker.sh"
 source "${INCLUDE_DIR}/commands/elastic.sh"
 source "${INCLUDE_DIR}/commands/fca-tmp.sh"

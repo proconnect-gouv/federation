@@ -15,7 +15,6 @@ source "${INCLUDE_DIR}/commands/index.sh"
 source "${INCLUDE_DIR}/hooks/index.sh"
 
 
-_command_register "checkout" "_checkout" "checkout <code:branch/tag> [infra:branch/tag] => set the environment to the state of the given branch/tag"
 _command_register "dep" "_install_dependencies" "dependencies [<app1> <app2> <...>] / dep [...] => install dependencies (using npm or yarn) on given nodejs applications (fc-core|fc-exploitation|fc-stats|fc-support|fc-workers|fdp1|fip1|aidants-connect-mock|fsp1|fsp2|fsp3|rnipp|partenaires|usagers - default: fc-core)"
 _command_register "dependencies" "_install_dependencies" "dependencies [<app1> <app2> <...>] / dep [...] => install dependencies (using npm or yarn) on given nodejs applications (fc-core|fc-exploitation|fc-stats|fc-support|fc-workers|fdp1|fip1|aidants-connect-mock|fsp1|fsp2|fsp3|rnipp|partenaires|usagers - default: fc-core)"
 _command_register "dep-all" "_install_dependencies_all" "dependencies-all | dep-all => install dependencies (using npm or yarn) on all nodejs applications"
