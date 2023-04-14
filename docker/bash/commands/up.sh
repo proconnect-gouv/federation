@@ -2,7 +2,7 @@
 
 _up() {
   task " * Checking required services"\
-  "_check_for_unknown_services ${@}"
+  "_check_for_unknown_services "${@}""
 
   echo " * Starting services: $(format_emphasis $(join_by ", " "${@}"))"
 

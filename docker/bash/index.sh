@@ -81,4 +81,4 @@ _command_register "wait" "wait_for_nodejs" "Wait for a nodejs HTTP service to re
 
 
 
-_command_run "$1" ${@:2}
+_command_run "$1" "${@:2}"

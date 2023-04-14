@@ -28,7 +28,7 @@ _do_start() {
 
 _start_all() {
   _get_running_containers
-  echo " * Automatically start apps for for started nodejs containers"
+  echo " * Automatically start apps for started nodejs containers"
   _start "${NODEJS_CONTAINERS}"
 }
 

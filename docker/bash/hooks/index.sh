@@ -35,9 +35,15 @@ function _init_hooks() {
     *"mongo-fcp-high"*)
       _hook_mongo "mongo-fcp-high"
       ;;
-    *"pg-exploitation"*)
+   *"pg-exploitation-high")
+      _hook_fc_apps "exploitation-high"
+      ;;
+   *"pg-support-high")
+      _hook_fc_apps "support-high"
+      ;;
+    *"pg-exploitation")
       _hook_fc_apps "fc-exploitation"
-      ;;    
+      ;;
     *"pg-support"*)
       _hook_fc_apps "fc-support"
       ;;
