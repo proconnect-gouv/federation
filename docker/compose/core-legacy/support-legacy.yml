@@ -13,7 +13,6 @@ services:
       - 'mongo-legacy'
       - 'squid'
       - 'rnipp'
-      - 'redis-pwd'
       - 'csmr-user-preferences-high'
       - 'broker'
     volumes:
@@ -27,7 +26,7 @@ services:
       - '${COMPOSE_DIR}/shared/.env/postgres.env'
       - '${COMPOSE_DIR}/core-legacy/.env/support-legacy.env'
     networks:
-      - public
+      - fc
       - data
     command: 'pm2 logs'
 
