@@ -2,7 +2,7 @@
 
 wait_for_nodejs() {
 
-  local $container=$1
+  local container=$1
   local url=$2
   local max_time=${3:-60}
   local delay=${4:-5}

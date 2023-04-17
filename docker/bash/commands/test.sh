@@ -20,30 +20,20 @@ _e2e() {
   [ $# -gt 0 ] && shift
 
   case "${app}" in
-    *)
-      echo "Usage: $script <option>:"
-      echo "----"
-      echo "* e2e ==> only this stack are allowed :"
-      echo "@todo Implements this"
-      echo "----"
-      exit 1
+  *)
+    echo "Usage: $script <option>:"
+    echo "----"
+    echo "* e2e ==> only this stack are allowed :"
+    echo "@todo Implements this"
+    echo "----"
+    exit 1
     ;;
   esac
   command="open"
-  if [ "${@:-xxx}" = "run" ]
-  then
+  if [ "${@:-xxx}" = "run" ]; then
     command='run'
   fi
   cd ${FC_ROOT}/${directory} && npx cypress ${command}
-}
-
-_start_ci() {
-  apps=${@:-no-container}
-  for app in ${apps}; do
-    echo "Starting ${app} app..."
-    cd ${WORKING_DIR}
-    docker-compose exec ${NO_TTY} "${app}" "/opt/scripts/start-ci.sh"
-  done
 }
 
 _storybook() {
@@ -52,4 +42,3 @@ _storybook() {
   docker-compose exec ${NO_TTY} storybook "/opt/scripts/install.sh"
   docker-compose exec ${NO_TTY} storybook "/opt/scripts/start.sh"
 }
-

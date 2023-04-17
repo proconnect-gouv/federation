@@ -54,6 +54,7 @@ _command_register "idp-as-prod-v2" "_idp_as_prod_v2" ""         # Description to
 _command_register "idp-as-prod-legacy" "_idp_as_prod_legacy" "" # Description to be defined
 _command_register "start" "_start" "start application"
 _command_register "start-ci" "_start_ci" "start for CI only"
+_command_register "start-all-ci" "_start_all_ci" "start for CI only"
 _command_register "stop" "_stop" "stop application"
 _command_register "start-all" "_start_all" "Start all application for wich containers are up"
 _command_register "stop-all" "_stop_all" "Stop all application for wich containers are up"

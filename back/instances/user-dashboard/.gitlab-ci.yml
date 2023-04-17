@@ -63,25 +63,14 @@ user-dashboard:
     - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
     # - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
     - rsync -a $CI_PROJECT_DIR/cache/core-legacy/ $FC_LEGACY_ROOT/ || true
-    # - cd $FC_LEGACY_ROOT && yarn install
-    # - rm -rf $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
-    # - cp -r $FC_LEGACY_ROOT/projects/fc/fc-commons $FC_LEGACY_ROOT/projects/fc/core/node_modules/fc-commons
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker-stack up bdd-ud
     - docker-stack exec ud-front yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack exec ud-back yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     # Start the NodeJS apps
-    - docker-stack start-all
+    - docker-stack start-all-ci
     # Ensure the required apps are running
     - docker-stack wait "ud-front" "https://ud.docker.dev-franceconnect.fr" "180"
-
-    # - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://ud.docker.dev-franceconnect.fr)" != "200" ]];
-    #   do echo "Waiting for ud-front..." && sleep 10; done' || (
-    #   (echo 'Cannot connect to ud-front') &&
-    #   (docker exec fc_ud-front_1 cat /tmp/.pm2/logs/ud-front-error-0.log || true) &&
-    #   (docker exec fc_ud-front_1 cat /tmp/.pm2/logs/ud-front-out-0.log || true) &&
-    #   $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&
-    #   exit 1)
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp

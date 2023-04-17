@@ -58,37 +58,20 @@ fca-low:
     - docker exec fc_core-fca-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker exec fc_fca-low-front_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - docker-stack fca-low-front
-    - docker-stack dep core-fca-low
     - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
-    - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
     - cd $CI_PROJECT_DIR/quality/fca && yarn install --ignore-engines
-    - docker-stack fixtures-fca-low
     - cd $CI_PROJECT_DIR
     # Start the NodeJS apps
-    - docker-stack start-ci core-fca-low fca-low-front \
-      fsa1-low fsa2-low fsa4-low fsa5-low fia1-low fia2-low fia4-low fia5-low fia8-low \
-      exploitation-fca-low
+    - docker-stack start-all-ci
     # Ensure the required apps are running
-    - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fca-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
-      do echo "Waiting for core-fca-low..." && sleep 10; done' || (
-      (echo 'Cannot connect to core-fca-low') &&
-      (docker exec fc_core-fca-low_1 cat /tmp/.pm2/logs/core-fca-low-error-0.log || true) &&
-      (docker exec fc_core-fca-low_1 cat /tmp/.pm2/logs/core-fca-low-out-0.log || true) &&
-      $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&
-      exit 1)
-    - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://exploitation-fca-low.docker.dev-franceconnect.fr/login)" != "200" ]];
-      do echo "Waiting for exploitation-fca-low..." && sleep 10; done' ||
-      (echo 'Cannot connect to exploitation-fca-low' &&
-      (docker exec fc_exploitation-fca-low_1 cat /tmp/.pm2/logs/exploitation-fca-low-error-0.log || true) &&
-      (docker exec fc_exploitation-fca-low_1 cat /tmp/.pm2/logs/exploitation-fca-low-out-0.log || true) &&
-      $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&
-      exit 1)
+    - docker-stack wait "core-fca-low" "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
+    - docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login"
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fca
     # Run Visual BDD tests and abort if failed
     - CYPRESS_TEST_ENV=docker yarn test:low:snapshot -c video=${CYPRESS_VIDEO}
-    # Run Functional BDD tests  
+    # Run Functional BDD tests
     - CYPRESS_TEST_ENV=docker yarn test:low:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
     - CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=docker yarn report:generate

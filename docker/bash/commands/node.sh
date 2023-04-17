@@ -7,10 +7,21 @@ _log() {
 }
 
 _start() {
-  local apps=${@:-no-container}
+  local apps="${@:-no-container}"
   for app in ${apps}; do
     task "   * Starting app \e[3m${app}\e[0m" \
-      "_do_start ${app}"
+      "_do_start "${app}""
+  done
+
+  # Reload RP in case the app took to long and was consired down by Nginx
+  task "   * Reload RP" "_reload-rp"
+}
+
+_start_ci() {
+  local apps="${@:-no-container}"
+  for app in ${apps}; do
+    task "   * Starting app (CI mode) \e[3m${app}\e[0m" \
+      "_do_start_ci "${app}""
   done
 
   # Reload RP in case the app took to long and was consired down by Nginx
@@ -21,13 +32,26 @@ _do_start() {
   local app=$1
 
   cd ${WORKING_DIR}
-  docker-compose exec "${NO_TTY}" "${app}" "/opt/scripts/start.sh"
+  docker-compose exec ${NO_TTY} "${app}" "/opt/scripts/start.sh"
+}
+
+_do_start_ci() {
+  local app=$1
+
+  cd ${WORKING_DIR}
+  docker-compose exec ${NO_TTY} "${app}" "/opt/scripts/start-ci.sh"
 }
 
 _start_all() {
   _get_running_containers
   echo " * Automatically start apps for started nodejs containers"
   _start "${NODEJS_CONTAINERS}"
+}
+
+_start_all_ci() {
+  _get_running_containers
+  echo " * Automatically start apps for started nodejs containers"
+  _start_ci "${NODEJS_CONTAINERS}"
 }
 
 _stop() {
