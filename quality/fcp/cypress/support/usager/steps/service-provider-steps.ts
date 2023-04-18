@@ -51,6 +51,10 @@ When('je clique sur le bouton FranceConnect', function () {
   }
 });
 
+When("je redemande les informations de l'usager", function () {
+  serviceProviderPage.getUserInfoButton().click();
+});
+
 When(
   /^j'initie une connexion suspecte à (?:FranceConnect low|FranceConnect\+)$/,
   function () {
@@ -141,7 +145,7 @@ Given('je mémorise le sub envoyé au fournisseur de service', function () {
 });
 
 Then(
-  /^le sub transmis au fournisseur de service est (identique|différent) [ad]u sub précédent$/,
+  /^le sub transmis au fournisseur de service est (identique|différent) [ad]u sub mémorisé$/,
   function (text: string) {
     const comparison = text === 'identique' ? 'be.equal' : 'not.be.equal';
 

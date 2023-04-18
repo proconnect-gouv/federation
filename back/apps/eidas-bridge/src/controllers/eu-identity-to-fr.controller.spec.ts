@@ -14,7 +14,6 @@ import { EidasToOidcService, OidcToEidasService } from '@fc/eidas-oidc-mapper';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
 import { AppConfig, EidasBridgeIdentityDto } from '../dto';
@@ -81,6 +80,7 @@ describe('EuIdentityToFrController', () => {
 
   const sessionDataMock: OidcClientSession = {
     spName: 'spNameMockValue',
+    spId: 'spIdMock',
   };
 
   const res = {
@@ -117,10 +117,6 @@ describe('EuIdentityToFrController', () => {
     getListByIso: jest.fn(),
   };
 
-  const sessionServiceMock = {
-    setAlias: jest.fn(),
-  };
-
   const trackingServiceMock = {
     track: jest.fn(),
     TrackedEventsMap: {},
@@ -132,12 +128,10 @@ describe('EuIdentityToFrController', () => {
       providers: [
         ConfigService,
         LoggerService,
-        SessionService,
         OidcProviderService,
         OidcToEidasService,
         EidasToOidcService,
         EidasCountryService,
-        SessionService,
         TrackingService,
       ],
     })
@@ -145,8 +139,6 @@ describe('EuIdentityToFrController', () => {
       .useValue(configServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceOidcMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
       .overrideProvider(OidcToEidasService)
@@ -155,8 +147,6 @@ describe('EuIdentityToFrController', () => {
       .useValue(eidasToOidcServiceMock)
       .overrideProvider(EidasCountryService)
       .useValue(eidasCountryServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingServiceMock)
       .compile();
@@ -458,9 +448,20 @@ describe('EuIdentityToFrController', () => {
       it('should `set` to update the oidc session with the identity to send to the SP', async () => {
         // setup
         const expectedUpdatedSession = {
-          idpIdentity: { sub: successOidcJson.userinfos.sub },
+          idpIdentity: { sub: 'BE/FR/12345' },
           spAcr: successOidcJson.acr,
-          spIdentity: successOidcJson.userinfos,
+          spIdentity: {
+            // oidc parameter
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            family_name: 'Garcia',
+            // oidc parameter
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            given_name: 'javier',
+            birthdate: '1964-12-31',
+          },
+          subs: {
+            spIdMock: 'BE/FR/12345',
+          },
         };
 
         // action

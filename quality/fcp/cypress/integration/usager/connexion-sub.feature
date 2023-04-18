@@ -32,7 +32,7 @@ Fonctionnalité: Connexion Usager - Sub
     Quand je me connecte à FranceConnect
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté au fournisseur de service
-    Et le sub transmis au fournisseur de service est identique au sub précédent
+    Et le sub transmis au fournisseur de service est identique au sub mémorisé
 
   # fsp1v2 et fsp2v2 ont le même entityId
   @ignoreInteg01
@@ -50,4 +50,4 @@ Fonctionnalité: Connexion Usager - Sub
     Quand je me connecte à FranceConnect
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté au fournisseur de service
-    Et le sub transmis au fournisseur de service est différent du sub précédent
+    Et le sub transmis au fournisseur de service est différent du sub mémorisé

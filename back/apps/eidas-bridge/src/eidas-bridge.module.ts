@@ -20,7 +20,10 @@ import {
   IdentityProviderAdapterEnvService,
 } from '@fc/identity-provider-adapter-env';
 import { OidcClientModule } from '@fc/oidc-client';
-import { OidcProviderModule } from '@fc/oidc-provider';
+import {
+  OidcProviderGrantService,
+  OidcProviderModule,
+} from '@fc/oidc-provider';
 import {
   ServiceProviderAdapterEnvModule,
   ServiceProviderAdapterEnvService,
@@ -86,7 +89,11 @@ const oidcProviderModule = OidcProviderModule.register(
     OidcClientController,
     OidcProviderController,
   ],
-  providers: [OidcMiddlewareService, OidcProviderConfigAppService],
+  providers: [
+    OidcMiddlewareService,
+    OidcProviderConfigAppService,
+    OidcProviderGrantService,
+  ],
   exports: [OidcProviderConfigAppService],
 })
 export class EidasBridgeModule {

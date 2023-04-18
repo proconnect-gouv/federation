@@ -142,7 +142,7 @@ export class OidcSession {
    */
   @IsOptional()
   @IsObject()
-  readonly spIdentity?: PartialExcept<IOidcIdentity, 'sub'>;
+  readonly spIdentity?: Partial<Omit<IOidcIdentity, 'sub'>>;
 
   @IsString()
   @IsOptional()
@@ -151,4 +151,8 @@ export class OidcSession {
   @IsBoolean()
   @IsOptional()
   readonly isSso?: boolean;
+
+  @IsObject()
+  @IsOptional()
+  subs?: Record<string, string>;
 }

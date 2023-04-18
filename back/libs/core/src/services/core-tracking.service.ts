@@ -92,7 +92,7 @@ export class CoreTrackingService {
       spId = null,
       spAcr = null,
       spName = null,
-      spIdentity = null,
+      subs = {},
 
       idpId = null,
       idpAcr = null,
@@ -110,7 +110,7 @@ export class CoreTrackingService {
       spId,
       spAcr,
       spName,
-      spSub: spIdentity?.sub || null,
+      spSub: subs[spId] || null,
 
       idpId,
       idpAcr,
