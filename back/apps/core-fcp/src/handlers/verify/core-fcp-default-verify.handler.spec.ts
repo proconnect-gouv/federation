@@ -375,10 +375,14 @@ describe('CoreFcpDefaultVerifyHandler', () => {
         idpIdentity: idpIdentityMock,
         rnippIdentity: rnippIdentityMock,
         spIdentity: {
-          ...idpIdentityMock,
           subSp: 'computedSubSp',
           email: 'email',
           birthdate: 'foo',
+        },
+        subs: {
+          // FranceConnect claims naming convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sp_id: 'computedSubSp',
         },
       });
     });
@@ -456,7 +460,9 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
     it('should call buildSpIdentity with subSp, idpIdentity and rnippIdentity', async () => {
       // Given
-      service['buildSpIdentity'] = jest.fn();
+      service['buildSpIdentity'] = jest
+        .fn()
+        .mockReturnValue({ sub: idpIdentityMock.sub });
       // When
       await service.handle(handleArgument);
       // Then

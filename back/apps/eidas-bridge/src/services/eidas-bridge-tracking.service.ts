@@ -109,7 +109,7 @@ export class EidasBridgeTrackingService implements AppTrackingServiceAbstract {
         'EidasClient',
       ).get();
 
-    const { idpIdentity, spIdentity } = sessionOidc || {};
+    const { idpIdentity, spId, subs } = sessionOidc || {};
 
     const context = {
       eidasLevelRequested: sessionEidas?.eidasPartialRequest?.levelOfAssurance,
@@ -117,7 +117,7 @@ export class EidasBridgeTrackingService implements AppTrackingServiceAbstract {
       countryCodeDst:
         sessionEidas?.eidasRequest?.citizenCountryCode || countryCodeDst,
       idpSub: idpIdentity?.sub,
-      spSub: spIdentity?.sub,
+      spSub: subs && subs[spId],
     };
 
     return context;

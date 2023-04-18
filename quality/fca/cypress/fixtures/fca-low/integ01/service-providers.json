@@ -1,12 +1,14 @@
 [
   {
     "name": "fsa1v2",
-    "descriptions": ["par défaut"],
+    "descriptions": [
+      "par défaut",
+      "avec accès au FI par défaut (premier FS)"
+    ],
     "mocked": true,
     "url": "https://fsa1v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
-    "claims": [
-    ],
+    "claims": [],
     "selectors": {
       "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
@@ -15,12 +17,14 @@
   },
   {
     "name": "fsa2v2",
-    "descriptions": ["avec une whitelist de FI"],
+    "descriptions": [
+      "avec une whitelist de FI",
+      "avec accès au FI par défaut (deuxième FS)"
+    ],
     "mocked": true,
     "url": "https://fsa2v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
-    "claims": [
-    ],
+    "claims": [],
     "selectors": {
       "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
@@ -37,8 +41,7 @@
     "mocked": true,
     "url": "https://fsa3v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
-    "claims": [
-    ],
+    "claims": [],
     "selectors": {
       "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
@@ -47,12 +50,13 @@
   },
   {
     "name": "osmose",
-    "descriptions": ["osmose"],
+    "descriptions": [
+      "osmose"
+    ],
     "mocked": false,
     "url": "https://bacasable-prep-osmose.jaliosagora.com",
     "acrValue": "eidas1",
-    "claims": [
-    ],
+    "claims": [],
     "selectors": {
       "fcaButton": ".ac-authentication img",
       "logoutButton": "#main-sidebar-opener"

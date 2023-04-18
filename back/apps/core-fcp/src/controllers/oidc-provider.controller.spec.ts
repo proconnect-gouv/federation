@@ -162,8 +162,8 @@ describe('OidcProviderController', () => {
 
   const oidcProviderServiceMock = {
     abortInteraction: jest.fn(),
-    finishInteraction: jest.fn(),
     getInteraction: jest.fn(),
+    finishInteraction: jest.fn(),
   };
 
   beforeEach(async () => {

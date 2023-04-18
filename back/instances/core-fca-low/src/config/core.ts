@@ -5,5 +5,5 @@ import { CoreConfig } from '@fc/core';
 
 export default {
   defaultRedirectUri: 'https://agentconnect.gouv.fr',
-  enableSso: false,
+  enableSso: true,
 } as CoreConfig;

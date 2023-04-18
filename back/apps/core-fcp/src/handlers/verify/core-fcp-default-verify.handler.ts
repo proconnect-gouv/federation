@@ -58,7 +58,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     this.logger.debug('getConsent service: ##### core-fcp-default-verify');
 
     // Grab informations on interaction and identity
-    const { idpAcr, idpId, idpIdentity, spAcr, spId, isSso } =
+    const { idpAcr, idpId, idpIdentity, spAcr, spId, isSso, subs } =
       await sessionOidc.get();
 
     /**
@@ -121,14 +121,19 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
       },
     );
 
-    const spIdentity = this.buildSpIdentity(subSp, idpIdentity, rnippIdentity);
+    const { sub: _sub, ...spIdentityCleaned } = this.buildSpIdentity(
+      subSp,
+      idpIdentity,
+      rnippIdentity,
+    );
 
     const session: OidcClientSession = {
       amr: ['fc'],
       idpIdentity,
       rnippIdentity,
-      spIdentity,
+      spIdentity: spIdentityCleaned,
       accountId,
+      subs: { ...subs, [spId]: subSp },
     };
 
     this.logger.trace({ session });

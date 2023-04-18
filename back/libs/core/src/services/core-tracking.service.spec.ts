@@ -77,10 +77,14 @@ describe('CoreTrackingService', () => {
     sessionId: sessionIdMock,
     interactionId: interactionIdMock,
 
-    spId: 'some spId',
+    subs: {
+      clientId: 'sub client id',
+      otherClientId: 'sub for other client id',
+    },
+    spId: 'clientId',
     spName: 'some spName',
     spAcr: 'some spAcr',
-    spIdentity: { sub: 'some spSub' },
+    spIdentity: {},
 
     idpId: 'some idpId',
     idpName: 'some idpName',
@@ -285,10 +289,10 @@ describe('CoreTrackingService', () => {
         interactionId: interactionIdMock,
         isSso: null,
 
-        spId: 'some spId',
+        spId: 'clientId',
         spName: 'some spName',
         spAcr: 'some spAcr',
-        spSub: 'some spSub',
+        spSub: 'sub client id',
 
         idpId: 'some idpId',
         idpName: 'some idpName',
@@ -313,7 +317,7 @@ describe('CoreTrackingService', () => {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spAcr: 'spAcrMock',
-        spSub: null,
+        spSub: 'sub for spIdMock',
 
         idpId: null,
         idpName: null,
@@ -325,6 +329,7 @@ describe('CoreTrackingService', () => {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spAcr: 'spAcrMock',
+        subs: { spIdMock: 'sub for spIdMock' },
       };
       const sessionGetBinded = jest.fn().mockResolvedValue(sessionMock);
       sessionServiceMock.get.bind.mockReturnValueOnce(sessionGetBinded);
@@ -345,7 +350,7 @@ describe('CoreTrackingService', () => {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spAcr: 'spAcrMock',
-        spSub: 'spSubMock',
+        spSub: 'sub for spIdMock',
 
         idpId: null,
         idpName: null,
@@ -357,7 +362,8 @@ describe('CoreTrackingService', () => {
         spId: 'spIdMock',
         spName: 'spNameMock',
         spAcr: 'spAcrMock',
-        spIdentity: { sub: 'spSubMock' },
+        subs: { spIdMock: 'sub for spIdMock' },
+        spIdentity: {},
       };
       const sessionGetBinded = jest.fn().mockResolvedValue(sessionMock);
       sessionServiceMock.get.bind.mockReturnValueOnce(sessionGetBinded);
@@ -380,7 +386,7 @@ describe('CoreTrackingService', () => {
         spId: null,
         spName: null,
         spAcr: null,
-        spSub: 'spSubMock',
+        spSub: null,
 
         idpId: null,
         idpName: null,
@@ -389,7 +395,8 @@ describe('CoreTrackingService', () => {
         idpLabel: null,
       };
       const sessionMock: OidcSession = {
-        spIdentity: { sub: 'spSubMock' },
+        subs: {},
+        spIdentity: {},
       };
       const boundSessionGet = jest.fn().mockResolvedValue(sessionMock);
       sessionServiceMock.get.bind = jest

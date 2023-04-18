@@ -289,7 +289,8 @@ describe('EidasBridgeTrackingService', () => {
       // Given
       const oidcClientSessionMock = {
         idpIdentity: { sub: 'subMockValue (idp)' },
-        spIdentity: { sub: 'subMockValue (sp)' },
+        subs: { spIdMock: 'subMockValue (sp)' },
+        spId: 'spIdMock',
       };
       const eidasClientSessionMock = {
         eidasRequest: {
@@ -325,7 +326,7 @@ describe('EidasBridgeTrackingService', () => {
         eidasLevelReceived:
           eidasClientSessionMock.eidasResponse.levelOfAssurance,
         idpSub: oidcClientSessionMock.idpIdentity.sub,
-        spSub: oidcClientSessionMock.spIdentity.sub,
+        spSub: 'subMockValue (sp)',
       });
     });
 

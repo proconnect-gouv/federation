@@ -111,3 +111,26 @@ Fonctionnalité: Connexion Usager - SSO
     Et j'utilise un fournisseur de service "avec accès au FI par défaut (deuxième FS)"
     Et je navigue sur la page fournisseur de service
     Et je suis connecté au fournisseur de service
+
+  Scénario: Connexion SSO - deux FS avec accès au même FI ayant chacun son propre sub
+    Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Et que j'utilise le fournisseur d'identité "par défaut"
+    Et que je navigue sur la page fournisseur de service
+    Et que je me connecte à FranceConnect
+    Et que je suis redirigé vers la page fournisseur de service
+    Et que je suis connecté au fournisseur de service
+    Et que je mémorise le sub envoyé au fournisseur de service
+    Et que j'utilise un fournisseur de service "avec un entityId différent"
+    Et que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton FranceConnect
+    Et que je suis redirigé vers la page de consentement
+    Et que je consens à transmettre mes informations au fournisseur de service
+    Et que je continue sur le fournisseur de service
+    Et que je suis connecté au fournisseur de service
+    Et que le sub transmis au fournisseur de service est différent du sub mémorisé
+    Et que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Et que j'utilise le fournisseur d'identité "par défaut"
+    Et que je navigue sur la page fournisseur de service
+    Quand je redemande les informations de l'usager
+    Alors je suis redirigé vers la page fournisseur de service
+    Et le sub transmis au fournisseur de service est identique au sub mémorisé

@@ -42,6 +42,10 @@ export default class ServiceProviderPage {
     return cy.get(this.logoutButtonSelector);
   }
 
+  getUserInfoButton(): ChainableElement {
+    return cy.get('#reload-userinfo');
+  }
+
   checkIsVisible(): void {
     cy.url().should('include', this.originUrl);
   }
