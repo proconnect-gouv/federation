@@ -35,6 +35,7 @@ services:
       - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
@@ -56,6 +57,7 @@ services:
       - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
@@ -77,6 +79,7 @@ services:
       - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
@@ -98,6 +101,7 @@ services:
       - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
@@ -119,6 +123,7 @@ services:
       - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
@@ -168,6 +173,7 @@ services:
       - '${VOLUMES_DIR}/src/service-provider-example:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/core-legacy/.env/sp.env'
@@ -191,6 +197,7 @@ services:
       - '${VOLUMES_DIR}/src/service-provider-example:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/core-legacy/.env/sp.env'
@@ -209,7 +216,7 @@ services:
   ## Data Providers
   #########################################
   fdp1:
-    hostname: fsp1
+    hostname: fdp1
     image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -217,10 +224,12 @@ services:
       - '${VOLUMES_DIR}/src/data-provider-example:/var/www/app'
       - '${VOLUMES_DIR}/app:/opt/scripts'
       - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
     env_file:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
     environment:
       - 'PM2_SCRIPT=bin/www'
+      - 'PM2_CI_SCRIPT=bin/www'
       - 'VIRTUAL_HOST=fdp1.docker.dev-franceconnect.fr'
       - 'USE_FC_MOCK=false'
       - 'FC_URL=https://fcp.docker.dev-franceconnect.fr'

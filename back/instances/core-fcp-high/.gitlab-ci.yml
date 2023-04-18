@@ -64,7 +64,7 @@ fcp-high:
     - docker-stack start-all-ci
     # Ensure the required apps are running
     - docker-stack wait "core-fcp-high" "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
-    - docker-stack wait "exploitation-high" "https://exploitation-high.docker.dev-franceconnect.fr/login"
+    - docker-stack wait "exploitation-high" "https://exploitation-high.docker.dev-franceconnect.fr/login" "240"
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp

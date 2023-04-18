@@ -119,6 +119,8 @@ services:
           - fc-exploitation.docker.dev-franceconnect.fr
           - fc-support.docker.dev-franceconnect.fr
           - tracks-data-provider.docker.dev-franceconnect.fr
+          - ud.docker.dev-franceconnect.fr 
+          - maildev.docker.dev-franceconnect.fr
       fc:
       rie:
         aliases:

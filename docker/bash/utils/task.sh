@@ -39,5 +39,7 @@ _task_result() {
     echo ""
   fi
 
-  exit ${__DKS_TASK_RETURN_EXIT_CODE}
+  if [ -z $VERBOSE ]; then
+    exit ${__DKS_TASK_RETURN_EXIT_CODE}
+  fi
 }

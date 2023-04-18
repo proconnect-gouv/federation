@@ -64,6 +64,6 @@ _auto_install_dependencies() {
 
 _auto_init_containers() {
   for app in ${FC_CONTAINERS}; do
-    task "   * init $(format_emphasis "${app}")" "_init_hooks ${app}"
+    task "   * init $(format_emphasis "${app}")" "_init_hooks "${app}""
   done
 }

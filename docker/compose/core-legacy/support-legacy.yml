@@ -13,6 +13,7 @@ services:
       - 'mongo-legacy'
       - 'squid'
       - 'rnipp'
+      - 'haproxy'
       - 'csmr-user-preferences-high'
       - 'broker'
     volumes:
