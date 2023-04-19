@@ -57,7 +57,7 @@ _generate_legacy_traces() {
 
 _generate_v2_traces() {
   cd $FC_ROOT/fc/quality/fcp/data/userdashboard
-  yarn install
+  yarn install --ignore-engines
   URL="https://docker-stack:docker-stack@elasticsearch:9200"
   Elasticsearch_TRACKS_INDEX=fc_tracks Elasticsearch_NODES="[\"${URL}\"]" Elasticsearch_USERNAME=docker-stack Elasticsearch_PASSWORD=docker-stack node populate-account-traces.script.js
 }

@@ -1,26 +1,6 @@
 // print('Remove all idp from database');
 // db.provider.remove({});
 
-//FSP1
-print('Update fsp1 whitelist idp');
-db.client.update(
-  {
-    name: 'Service Provider Example',
-  },
-  {
-    $set: {
-      whitelistByIdentityProvider: {
-        impot_gouv: true,
-        ameli: true,
-        la_poste: true,
-        mobile_connect: true,
-        msa: true,
-        alicem: true,
-      },
-    },
-  },
-);
-
 // impot_gouv
 print('Initializing idp: impot_gouv...');
 db.provider.update(

@@ -24,8 +24,6 @@ function _init_hooks() {
     ;;
   *"mongo-legacy"*)
     _hook_mongo "mongo-legacy"
-    # TMP to keep compatibility with CL E2E
-    _idp_as_prod_legacy
     ;;
   *"mongo-fca-low"*)
     _hook_mongo "mongo-fca-low"

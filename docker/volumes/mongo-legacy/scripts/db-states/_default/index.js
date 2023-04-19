@@ -6,6 +6,9 @@ load('/opt/scripts/db-states/_default/sp.js');
 print('Initializing IDPs...');
 load('/opt/scripts/db-states/_default/idp.js');
 
+print('Initializing IDPs...');
+load('/opt/scripts/db-states/display-idp-as-in-prod/idp.js');
+
 /* ------------------------------------------------------------------------------- */
 
 print('Initializing Claims...');
