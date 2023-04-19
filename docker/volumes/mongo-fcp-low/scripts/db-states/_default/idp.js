@@ -11,6 +11,7 @@ const fip = {
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
     alt: "fip1-low",
+    trustedIdentity: false,
     eidas: 1,
     mailto: "",
     featureHandlers: {
@@ -57,6 +58,7 @@ const fip = {
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
     alt: "fip2-low",
+    trustedIdentity: false,
     eidas: 1,
     mailto: "",
     featureHandlers: {
@@ -104,6 +106,7 @@ const fip = {
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
     alt: "fip3-low",
+    trustedIdentity: false,
     eidas: 1,
     mailto: "",
     featureHandlers: {
@@ -150,6 +153,7 @@ const fip = {
     image: "fi-mock-substantiel.svg",
     imageFocus: "fi-mock-substantiel.svg",
     alt: "fip4-low",
+    trustedIdentity: false,
     eidas: 2,
     mailto: "",
     featureHandlers: {
@@ -196,6 +200,7 @@ const fip = {
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
     alt: "fip5-low",
+    trustedIdentity: false,
     eidas: 1,
     mailto: "",
     featureHandlers: {
@@ -242,6 +247,7 @@ const fip = {
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
     alt: "fip6-low",
+    trustedIdentity: false,
     eidas: 1,
     mailto: "",
     featureHandlers: {
@@ -288,6 +294,7 @@ const fip = {
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
     alt: "fip7-low",
+    trustedIdentity: false,
     eidas: 1,
     mailto: "",
     featureHandlers: {
@@ -334,6 +341,7 @@ const fip = {
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
     alt: "fip8-low",
+    trustedIdentity: false,
     eidas: 1,
     mailto: "",
     featureHandlers: {
