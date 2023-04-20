@@ -250,11 +250,8 @@ export class CoreOidcProviderMiddlewareService {
     await this.tracking.track(FC_SSO_INITIATED, eventContext);
   }
 
-  protected async checkRedirectToSso(
-    enableSso: boolean,
-    ctx: OidcCtx,
-  ): Promise<void> {
-    if (enableSso && ctx.isSso) {
+  protected async checkRedirectToSso(ctx: OidcCtx): Promise<void> {
+    if (ctx.isSso) {
       this.logger.trace('ssoMiddleware');
       await this.redirectToSso(ctx);
     }

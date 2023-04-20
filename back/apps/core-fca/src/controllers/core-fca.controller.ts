@@ -250,6 +250,8 @@ export class CoreFcaController {
   @Get(CoreRoutes.INTERACTION_VERIFY)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
+  // we choose to keep code readable here and to be close to fcp
+  // eslint-disable-next-line complexity
   async getVerify(
     @Req() req: Request,
     @Res() res: Response,
@@ -268,22 +270,27 @@ export class CoreFcaController {
       throw new SessionNotFoundException('OidcClient');
     }
 
-    const { idpId, interactionId, spId } = session;
+    const { idpId, interactionId, spId, isSso } = session;
+
+    const { urlPrefix } = this.config.get<AppConfig>('App');
+    const params = { urlPrefix, interactionId, sessionOidc };
+
+    const { ssoDisabled } = await this.serviceProvider.getById(spId);
+    if (isSso && ssoDisabled) {
+      const url = await this.coreFcaVerify.handleSsoDisabled(req, params);
+      return res.redirect(url);
+    }
 
     const isBlackListed = await this.serviceProvider.shouldExcludeIdp(
       spId,
       idpId,
     );
-
-    const { urlPrefix } = this.config.get<AppConfig>('App');
-    const params = { urlPrefix, interactionId, sessionOidc };
-
     if (isBlackListed) {
       const url = await this.coreVerify.handleBlacklisted(req, params);
       return res.redirect(url);
-    } else {
-      const url = await this.coreFcaVerify.handleVerifyIdentity(req, params);
-      return res.redirect(url);
     }
+
+    const url = await this.coreFcaVerify.handleVerifyIdentity(req, params);
+    return res.redirect(url);
   }
 }

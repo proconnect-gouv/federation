@@ -57,6 +57,7 @@ const fsp = {
     ],
     identityConsent: false,
     trustedIdentity: false,
+    ssoDisabled: false,
   },
   // FSP2-LOW - amr not authorized
   "FSP2-LOW": {
@@ -114,6 +115,7 @@ const fsp = {
     idpFilterList: ["fip1-low","fip2-low","fip3-low"],
     identityConsent: false,
     trustedIdentity: false,
+    ssoDisabled: false,
   },
   // FSP3-LOW - private sp
   "FSP3-LOW": {
@@ -171,6 +173,7 @@ const fsp = {
     idpFilterList: ["fip3-low"],
     identityConsent: true,
     trustedIdentity: false,
+    ssoDisabled: false,
   },
   // FSP4-LOW - whitelist fip8
   'FSP4-LOW': {
@@ -230,6 +233,7 @@ const fsp = {
     ],
     identityConsent: false,
     trustedIdentity: false,
+    ssoDisabled: false,
   },
 };
 
