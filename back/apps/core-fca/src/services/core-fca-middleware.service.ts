@@ -99,15 +99,20 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     }
 
     const eventContext = this.getEventContext(ctx);
-    const { req } = ctx;
+    const { req, res } = ctx;
 
     const { enableSso } = this.config.get<CoreConfig>('Core');
+    if (!enableSso) {
+      this.sessionService.init(req, res);
+    }
+
     const oidcSession = SessionService.getBoundedSession<OidcClientSession>(
       req,
       'OidcClient',
     );
 
-    ctx.isSso = await this.isSsoAvailable(oidcSession);
+    const isSsoAvailable = await this.isSsoAvailable(oidcSession);
+    ctx.isSso = enableSso && isSsoAvailable;
 
     const sessionProperties = await this.buildSessionWithNewInteraction(
       ctx,
@@ -118,6 +123,6 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
 
     await this.trackAuthorize(eventContext);
 
-    await this.checkRedirectToSso(enableSso, ctx);
+    await this.checkRedirectToSso(ctx);
   }
 }

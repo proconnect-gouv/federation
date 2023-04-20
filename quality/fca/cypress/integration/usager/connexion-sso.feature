@@ -122,3 +122,30 @@ Fonctionnalité: Connexion Usager - SSO
     Alors je suis déconnecté du fournisseur de service
     Et je clique sur le bouton AgentConnect
     Et je suis redirigé vers la page sélection du fournisseur d'identité
+
+  Scénario: Connexion SSO - SSO désactivé pour le deuxième FS
+    Etant donné que je désactive le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Et que j'utilise un fournisseur de service "avec accès au FI par défaut (deuxième FS)"
+    Et que j'utilise le fournisseur d'identité "par défaut"
+    Et que je navigue sur la page fournisseur de service
+    Et que je me connecte à AgentConnect
+    Et que je suis redirigé vers la page fournisseur de service
+    Et que je suis connecté au fournisseur de service
+    Et que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Et que je navigue sur la page fournisseur de service
+    Quand je clique sur le bouton AgentConnect
+    Alors je suis redirigé vers la page sélection du fournisseur d'identité
+
+  Scénario: Connexion SSO - SSO réactivé pour le deuxième FS
+    Etant donné que j'active le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Et que j'utilise un fournisseur de service "avec accès au FI par défaut (deuxième FS)"
+    Et que j'utilise le fournisseur d'identité "par défaut"
+    Et que je navigue sur la page fournisseur de service
+    Et que je me connecte à AgentConnect
+    Et que je suis redirigé vers la page fournisseur de service
+    Et que je suis connecté au fournisseur de service
+    Et que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Et que je navigue sur la page fournisseur de service
+    Quand je clique sur le bouton AgentConnect
+    Alors je suis redirigé vers la page fournisseur de service
+    Et je suis connecté au fournisseur de service

@@ -479,7 +479,7 @@ describe('CoreFcpMiddlewareService', () => {
       );
     });
 
-    it('should call `checkRedirectToSso()` with params `true` and ctx', async () => {
+    it('should call `checkRedirectToSso()` with ctx', async () => {
       // Given
       const ctxMock = getCtxMock();
       configServiceMock.get
@@ -494,7 +494,71 @@ describe('CoreFcpMiddlewareService', () => {
       await service['afterAuthorizeMiddleware'](ctxMock);
       // Then
       expect(service['checkRedirectToSso']).toHaveBeenCalledTimes(1);
-      expect(service['checkRedirectToSso']).toHaveBeenCalledWith(true, ctxMock);
+      expect(service['checkRedirectToSso']).toHaveBeenCalledWith(ctxMock);
+    });
+
+    it('should be isSso = true when enableSso = true and isSsoAvailable = true', async () => {
+      // Given
+      const ctxMock = getCtxMock();
+      const isSsoMock = true;
+      configServiceMock.get
+        .mockReset()
+        .mockReturnValueOnce({ enableSso: true });
+      service['isSsoAvailable'] = jest.fn().mockResolvedValue(true);
+      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+      service['buildSessionWithNewInteraction'] = jest
+        .fn()
+        .mockResolvedValue(sessionPropertiesMock);
+
+      // When
+      await service['afterAuthorizeMiddleware'](ctxMock);
+
+      // Then
+      expect(ctxMock.isSso).toBe(isSsoMock);
+    });
+
+    it('should be isSso = false when enableSso = false', async () => {
+      // Given
+      const ctxMock = getCtxMock();
+      const isSsoMock = false;
+      const isSsoAvailableMock = Symbol('boolean') as unknown as boolean;
+      configServiceMock.get
+        .mockReset()
+        .mockReturnValueOnce({ enableSso: false });
+      service['isSsoAvailable'] = jest
+        .fn()
+        .mockResolvedValue(isSsoAvailableMock);
+      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+      service['buildSessionWithNewInteraction'] = jest
+        .fn()
+        .mockResolvedValue(sessionPropertiesMock);
+
+      // When
+      await service['afterAuthorizeMiddleware'](ctxMock);
+
+      // Then
+      expect(ctxMock.isSso).toBe(isSsoMock);
+    });
+
+    it('should be isSso = false when isSsoAvailable = false', async () => {
+      // Given
+      const ctxMock = getCtxMock();
+      const isSsoMock = false;
+      const enableSsoMock = Symbol('boolean') as unknown as boolean;
+      configServiceMock.get
+        .mockReset()
+        .mockReturnValueOnce({ enableSso: enableSsoMock });
+      service['isSsoAvailable'] = jest.fn().mockResolvedValue(false);
+      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+      service['buildSessionWithNewInteraction'] = jest
+        .fn()
+        .mockResolvedValue(sessionPropertiesMock);
+
+      // When
+      await service['afterAuthorizeMiddleware'](ctxMock);
+
+      // Then
+      expect(ctxMock.isSso).toBe(isSsoMock);
     });
   });
 });

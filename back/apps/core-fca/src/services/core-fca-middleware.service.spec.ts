@@ -342,9 +342,11 @@ describe('CoreFcaMiddlewareService', () => {
       expect(service['trackAuthorize']).toHaveBeenCalledWith(expected);
     });
 
-    it('should call `checkRedirectToSso()` with params `true` and ctx', async () => {
+    it('should call `checkRedirectToSso()` with ctx with isSso = true', async () => {
       // Given
       const ctxMock = getCtxMock(false);
+      const isSsoMock = true;
+
       configServiceMock.get
         .mockReset()
         .mockReturnValueOnce({ enableSso: true });
@@ -356,13 +358,15 @@ describe('CoreFcaMiddlewareService', () => {
       // When
       await service['afterAuthorizeMiddleware'](ctxMock);
       // Then
+      expect(ctxMock.isSso).toBe(isSsoMock);
       expect(service['checkRedirectToSso']).toHaveBeenCalledTimes(1);
-      expect(service['checkRedirectToSso']).toHaveBeenCalledWith(true, ctxMock);
+      expect(service['checkRedirectToSso']).toHaveBeenCalledWith(ctxMock);
     });
 
-    it('should call `redirectToSso()` with params `false` and ctx', async () => {
+    it('should call `redirectToSso()` with params ctx with isSso = false', async () => {
       // Given
       const ctxMock = getCtxMock(false);
+      const isSsoMock = false;
       service['isSsoAvailable'] = jest.fn().mockResolvedValueOnce(false);
       service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
       service['buildSessionWithNewInteraction'] = jest
@@ -371,11 +375,9 @@ describe('CoreFcaMiddlewareService', () => {
       // When
       await service['afterAuthorizeMiddleware'](ctxMock);
       // Then
+      expect(ctxMock.isSso).toBe(isSsoMock);
       expect(service['checkRedirectToSso']).toHaveBeenCalledTimes(1);
-      expect(service['checkRedirectToSso']).toHaveBeenCalledWith(
-        false,
-        ctxMock,
-      );
+      expect(service['checkRedirectToSso']).toHaveBeenCalledWith(ctxMock);
     });
   });
 });

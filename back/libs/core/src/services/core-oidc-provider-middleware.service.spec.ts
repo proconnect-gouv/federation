@@ -987,44 +987,31 @@ describe('CoreOidcProviderMiddlewareService', () => {
   });
 
   describe('checkRedirectToSso()', () => {
-    it('should call `redirectToSso()` if enableSso = true && ctx.isSso = true', async () => {
+    it('should call `redirectToSso()` if ctx.isSso = true', async () => {
       // Given
       const ctxMock = {
         isSso: true,
       } as unknown as OidcCtx;
-      const enableSsoMock = true;
       service['redirectToSso'] = jest.fn();
       // When
-      await service['checkRedirectToSso'](enableSsoMock, ctxMock);
+      await service['checkRedirectToSso'](ctxMock);
       // Then
       expect(service['redirectToSso']).toHaveBeenCalledTimes(1);
       expect(service['redirectToSso']).toHaveBeenCalledOnceWith(ctxMock);
     });
 
-    it('should not call `redirectToSso()` if enableSso = false && ctx.isSso = true', async () => {
-      // Given
-      const ctxMock = {
-        isSso: true,
-      } as unknown as OidcCtx;
-      const enableSsoMock = false;
-      service['redirectToSso'] = jest.fn();
-      // When
-      await service['checkRedirectToSso'](enableSsoMock, ctxMock);
-      // Then
-      expect(service['redirectToSso']).toHaveBeenCalledTimes(0);
-    });
-
-    it('should not call `redirectToSso()` if enableSso = true && ctx.isSso = false', async () => {
+    it('should not call `redirectToSso()` if ctx.isSso = false', async () => {
       // Given
       const ctxMock = {
         isSso: false,
       } as unknown as OidcCtx;
-      const enableSsoMock = true;
       service['redirectToSso'] = jest.fn();
+
       // When
-      await service['checkRedirectToSso'](enableSsoMock, ctxMock);
+      await service['checkRedirectToSso'](ctxMock);
+
       // Then
-      expect(service['redirectToSso']).toHaveBeenCalledTimes(0);
+      expect(service['redirectToSso']).not.toHaveBeenCalled();
     });
   });
 

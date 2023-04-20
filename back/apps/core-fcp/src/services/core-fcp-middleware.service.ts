@@ -89,6 +89,7 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     );
   }
 
+  // eslint-disable-next-line complexity
   protected async afterAuthorizeMiddleware(ctx: OidcCtx): Promise<void> {
     /**
      * Abort middleware if authorize is in error
@@ -119,7 +120,8 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
       ctx.req.headers['x-suspicious'] === '1',
     );
 
-    ctx.isSso = await this.isSsoAvailable(oidcSession);
+    const isSsoAvailable = await this.isSsoAvailable(oidcSession);
+    ctx.isSso = enableSso && isSsoAvailable;
 
     const sessionProperties = await this.buildSessionWithNewInteraction(
       ctx,
@@ -150,6 +152,6 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
 
     await this.trackAuthorize(authEventContext);
 
-    await this.checkRedirectToSso(enableSso, ctx);
+    await this.checkRedirectToSso(ctx);
   }
 }
