@@ -4,7 +4,7 @@ wait_for_nodejs() {
 
   local container=$1
   local url=$2
-  local max_time=${3:-240} # 4 minutes
+  local max_time=${3:-180} # 3 minutes
   local delay=${4:-5}
   local max_retries=${5:-100}
 
@@ -24,7 +24,7 @@ _wait_for_nodejs_fail() {
   echo "$(format_failure " Failed ") Service DOWN: $1"
   echo ""
   echo "--- PM2 Logs for ${1} ---------------------------"
-  docker exec "fc_${1}_1" bash -c 'cat /tmp/.pm2/logs/*.log'
+  docker exec "fc_${1}_1" bash -c 'cat /tmp/.pm2/logs/*.log' || true
   echo "--- End of PM2 Logs for ${1} --------------------"
   echo ""
   echo "--- curl Logs for ${1} ---------------------------"

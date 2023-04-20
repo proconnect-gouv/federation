@@ -40,9 +40,6 @@ function _init_hooks() {
   *"pg-exploitation-fca-low")
     _hook_fc_apps "exploitation-fca-low"
     ;;
-  *"pg-support-high")
-    _hook_fc_apps "support-high"
-    ;;
   *"pg-exploitation")
     _hook_fc_apps "fc-exploitation"
     ;;

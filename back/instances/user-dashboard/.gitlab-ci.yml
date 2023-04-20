@@ -61,7 +61,6 @@ user-dashboard:
   script:
     # Up the docker-stack with minimal requirement
     - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
-    # - cd $FC_ROOT/fc-apps/fc-exploitation && yarn install
     - rsync -a $CI_PROJECT_DIR/cache/core-legacy/ $FC_LEGACY_ROOT/ || true
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker-stack up bdd-ud

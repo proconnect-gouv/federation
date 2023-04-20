@@ -214,4 +214,4 @@ In most case you can get back a healthy state by reseting the stack with `docker
 
 ### Maintaining and Extending
 
-See [dedicated README](../bash/README.md) alongside the source code oif docker-stack.
+See [dedicated README](../bash/README.md) alongside the source code of docker-stack.

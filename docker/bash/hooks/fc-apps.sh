@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function _hook_fc_apps() {
-  local apps=${@:-fc-exploitation fc-support exploitation-high support-high}
+  local apps=${@:-fc-exploitation fc-support exploitation-high}
 
   for app in ${apps}; do
     local db_container=$(echo "$app" | sed 's/^fc-*//')

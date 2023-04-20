@@ -7,6 +7,7 @@ Procédure pour générer un certificat signé avec l'autorité de certification
 ## Créer un fichier de config openssl
 
 à déposer dans le dossier `./requests/mongo-req.conf`
+
 ```ini
 [req]
 distinguished_name = req_distinguished_name
@@ -34,8 +35,10 @@ DNS.2 = mongo-fcp-high
 DNS.3 = mongo-fca-low
 DNS.4 = mongo-fcp-low
 DNS.5 = mongo-legacy
-DNS.6 = localhost
+DNS.6 = mongo-partenaires
+DNS.7 = localhost
 IP.1  = 127.0.0.1
+
 
 ```
 
@@ -73,14 +76,17 @@ Il est parfois nécessaire d'avoir la clé privée et le certificat dans un mêm
 Par convention nous les mettrons dans un fichier `pem`.
 
 Par exemple avec mongoDB:
+
 ```shell
 > cat mongo.crt mongo.key > mongo.pem
 ```
+
 Le certificat est utilisé dans `docker/builds/mongodb/Dockerfile`.
 
 ### Certificat CA et NodeJS
 
-Afin que les requêtes https vers nos mocks soient validées, il faut déclarer la variable `NODE_EXTRA_CA_CERTS`: 
+Afin que les requêtes https vers nos mocks soient validées, il faut déclarer la variable `NODE_EXTRA_CA_CERTS`:
+
 ```
 NODE_EXTRA_CA_CERTS=/etc/ssl/docker_host/docker-stack-ca.crt
 ```
@@ -112,4 +118,5 @@ Vous pouvez ajouter le certificat CA `docker-stack-ca.crt` dans votre navigateur
 Le certificat `app.crt` est un certificat "générique" utilisé abusivement afin de simplifier la configuration de la docker stack.
 
 Ce certificat est à la fois `client` et `serveur` avec un wildcard `*.docker.dev-franceconnect.fr`
+
 > voir la conf `./requests/app.req.conf`

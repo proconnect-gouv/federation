@@ -22,6 +22,13 @@ _up() {
   _auto_init_containers
 }
 
+_add_node_app() {
+  task " * Up containers" \
+    "_do_up "${@}""
+
+  _start "${@}"
+}
+
 _do_up() {
   # Get wanted services
   local services=$(_get_services "$@")

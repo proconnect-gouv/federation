@@ -121,6 +121,7 @@ services:
           - tracks-data-provider.docker.dev-franceconnect.fr
           - ud.docker.dev-franceconnect.fr 
           - maildev.docker.dev-franceconnect.fr
+          - partenaires.docker.dev-franceconnect.fr
       fc:
       rie:
         aliases:
@@ -519,7 +520,7 @@ services:
       - "${VOLUMES_DIR}/maxmind/database/GeoLite2-City:/var/geoipdb"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
-      - "${COMPOSE_DIR}/shared/.env/tracks-high.env"
+      - "${COMPOSE_DIR}/shared/.env/csmr-tracks.env"
     ports:
       - 10253:10253
     environment:

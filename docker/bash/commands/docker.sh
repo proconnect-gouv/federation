@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Find which nodejs containers are running and store it into $RUNNING_CONTAINERS
+# Find which nodejs containers are running and store it into $NODEJS_CONTAINERS
 _get_running_containers() {
   local raw_nodejs_containers=$(docker ps --format '{{.Names}}' -f ancestor=${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev)
   local raw_all_containers=$(docker ps --format '{{.Names}}')
@@ -48,7 +48,7 @@ _exec() {
 }
 
 _list_services() {
-  docker-compose ps --services
+  docker-compose ps --services | sort
 }
 
 _pull_node_image() {
