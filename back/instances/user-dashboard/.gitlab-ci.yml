@@ -42,7 +42,6 @@ user-dashboard:
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
     - shopt -s expand_aliases
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    # Shallow clone depth 1 core-legacy repository
     - export FC_LEGACY_ROOT=$FC_ROOT/fc/docker/volumes/src/FranceConnect
     - git clone -b ${FC_LEGACY_VERSION:=staging} --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/core-legacy.git $FC_LEGACY_ROOT
     # Shallow clone depth 1 fc-apps repository
@@ -73,7 +72,7 @@ user-dashboard:
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp
-    - yarn install
+    - yarn install --ignore-engines
     # Run Visual BDD tests and abort if failed
     - CYPRESS_TEST_ENV=docker yarn test:ud:snapshot || RETURN_CODE=1
     # Run Functional BDD tests
