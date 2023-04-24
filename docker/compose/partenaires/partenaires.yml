@@ -1,0 +1,34 @@
+version: '2.4'
+
+####################
+####################
+services:
+  # ####################
+  # # Portail partenaires
+  # ####################
+  partenaires:
+    hostname: partenaires
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app/projects/partenaires
+    depends_on:
+      - 'redis-sentinel'
+      - 'squid'
+      - 'mongo-legacy'
+      - 'elasticsearch'
+      - 'fc-core'
+    volumes:
+      - '${VOLUMES_DIR}/src/FranceConnect:/var/www/app'
+      - '${VOLUMES_DIR}/partenaires:/var/www/app/projects/partenaires/config'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/fc-core/config-fc-commons:/var/www/app/projects/fc/fc-commons/config'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/log/:/var/log/partenaires'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/partenaires/.env/partenaires.env'
+    networks:
+      - public
+      - data
+    command: 'tail -f /dev/null'

@@ -1,0 +1,44 @@
+{
+  "cookieSigningSecret": "9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa",
+  "urlFCP": "https://fcp.docker.dev-franceconnect.fr",
+  "urlPartner": "https://partenaires.docker.dev-franceconnect.fr",
+  "FCMail": "ne-pas-repondre@franceconnect.gouv.fr",
+  "mailjet": {
+    "key": "93736bcfcbf52562d5e5d6fd7d4bf139",
+    "user": "49ef66eb65a47002941da3ee96f539c5"
+  },
+  "env": "development",
+  "features": {
+    "enableCMS": true,
+    "enableMails": {
+      "partnerAccountManagement": false
+    },
+    "enableCgu": true
+  },
+  "mailer": {
+    "newMailerPercentage": 1,
+    "newFromEmail": "ne-pas-repondre@notification.franceconnect.gouv.fr",
+    "legacyFromEmail": "ne-pas-repondre@franceconnect.gouv.fr"
+  },
+  "API_FCP_FI": {
+    "accessToken": "56d08c71985eba066ae6c41bc7376c9744829dbca65b71a218c63b955d51e092",
+    "resource": "https://fcp.docker.dev-franceconnect.fr/api/v1/identity-provider",
+    "names_resource": "https://fcp.docker.dev-franceconnect.fr/api/v1/identity-provider/names",
+    "logo_resource": "https://fcp.docker.dev-franceconnect.fr/logo"
+  },
+  "API_FCP": {
+    "accessToken": "56d08c71985eba066ae6c41bc7376c9744829dbca65b71a218c63b955d51e092",
+    "resource": "https://fcp.docker.dev-franceconnect.fr/api/v1/service-provider",
+    "names_resource": "https://fcp.docker.dev-franceconnect.fr/api/v1/service-provider/names",
+    "logo_resource": "https://fcp.docker.dev-franceconnect.fr/logo"
+  },
+  "productionRequest": {
+    "accessToken": "56d08c71985eba066ae6c41bc7376c9744829dbca65b71a218c63b955d51e092",
+    "resource": "https://fcp.docker.dev-franceconnect.fr/api/v1/service-provider/create"
+  },
+  "googleCaptcha": {
+    "resource": "https://google.com/recaptcha/api/siteverify",
+    "secret": "6LfxVxwTAAAAANaTjNdGPTJNBbPKnE-4zIo323x5"
+  },
+  "noCaptcha": true
+}

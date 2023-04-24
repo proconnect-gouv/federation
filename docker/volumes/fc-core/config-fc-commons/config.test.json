@@ -1,0 +1,101 @@
+{
+  "environmentName": "Développement",
+  "environmentShortcut": "DEV",
+  "modeName": "fcp_admin",
+  "accessTokenTTL": 1200,
+  "env": "development",
+  "trackingSiteId": "4",
+  "cookieSigningSecret": "9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa",
+  "features": {
+    "debugMode": true,
+    "nonceMandatory": true,
+    "geolocation": false,
+    "footerHelp": true,
+    "enableMails": {
+      "authentication": false,
+      "rnippError": false,
+      "partnerAccountManagement": false,
+      "IdentityProviderStats": true,
+      "ServiceProviderStats": true,
+      "generalStats": true
+    },
+    "displayMessageOnLogin": false,
+    "convertToJsonIdentityFromCheckToken": true,
+    "accessTokenHeaderOnly": true,
+    "rnippIdentityCheck": true,
+    "secondFactorAuthenticator": false,
+    "cronjob": true,
+    "secureCookieFlag": true,
+    "sensitiveActionsCheckWithAuthenticator": false,
+    "isFSActivatedMouseFlow": []
+  },
+  "additionalAllowedAuthorizeParams": [
+    "utm_source",
+    "utm_campaign",
+    "utm_medium",
+    "utm_term",
+    "goal"
+  ],
+  "scope": ["profile", "email", "address", "phone"],
+  "applicationsApiAuthorization": [
+    {
+      "tokenAccess": "56d08c71985eba066ae6c41bc7376c9744829dbca65b71a218c63b955d51e092",
+      "api": [
+        "/api/v1/service-provider",
+        "/api/v1/service-provider/names/:key",
+        "/api/v1/service-provider/:key",
+        "/api/v1/service-provider/production-key/:key",
+        "/api/v1/stats/:clientKey/user/connection",
+        "/api/v1/stats/:clientKey/user/gender",
+        "/api/v1/stats/:clientKey/user/age",
+        "/api/v1/service-provider/create"
+      ]
+    },
+    {
+      "tokenAccess": "07BF7A057C75556EA68E7EED6F78ACF14222822B90DA055E7B9073327DF3EB33",
+      "api": ["/api/v2/service-provider/integration/create"]
+    }
+  ],
+  "mongo": {
+    "hosts": ["fc_mongo_1"],
+    "port": 27017,
+    "db": "fc",
+    "options": {
+      "ssl": false,
+      "readConcern": {
+        "level": "majority"
+      },
+      "server": {
+        "poolsize": 5
+      },
+      "replset": {
+        "rs_name": "rs0",
+        "readPreference": "primaryPreferred"
+      },
+      "db": {
+        "w": "majority"
+      },
+      "user": "fcApp",
+      "pass": "pass"
+    }
+  },
+  "elasticsearch": {
+    "configOptions": {
+      "hosts": ["https://docker-stack:docker-stack@elasticsearch:9200"]
+    },
+    "index": "test_integration"
+  },
+  "bunyan": {
+    "dir": "./",
+    "filename": "event.log"
+  },
+  "mailjet": {
+    "user": "49ef66eb65a47002941da3ee96f539c5",
+    "key": "93736bcfcbf52562d5e5d6fd7d4bf139"
+  },
+  "partnerUrl": "https://partenaires.docker.dev-franceconnect.fr",
+  "_meta": {
+    "author": "ansible",
+    "creation_date": "2019-11-17T23:47:19.659591Z"
+  }
+}

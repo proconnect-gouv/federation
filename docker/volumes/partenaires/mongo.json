@@ -1,0 +1,28 @@
+{
+  "mongo": {
+    "hosts": ["mongo-legacy"],
+    "port": 27017,
+    "db": "core-legacy",
+    "options": {
+      "tls": true,
+      "tlsCAFile": "/etc/ssl/docker_host/docker-stack-ca.crt",
+      "tlsInsecure": false,
+      "readConcern": {
+        "level": "majority"
+      },
+      "server": {
+        "poolsize": 5
+      },
+      "replset": {
+        "rs_name": "rs0",
+        "readPreference": "primaryPreferred"
+      },
+      "writeConcern": {
+        "j": true,
+        "w": 1
+      },
+      "user": "core-legacy",
+      "pass": "pass"
+    }
+  }
+}

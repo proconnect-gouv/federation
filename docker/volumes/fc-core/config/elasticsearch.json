@@ -1,0 +1,8 @@
+{
+  "elasticsearch": {
+    "configOptions": {
+      "hosts": ["https://docker-stack:docker-stack@elasticsearch:9200"]
+    },
+    "index": "franceconnect"
+  }
+}

@@ -1,0 +1,239 @@
+version: '2.4'
+
+services:
+  #########################################
+  ## Identity Providers
+  #########################################
+  fip1:
+    hostname: fip1
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
+    environment:
+      - 'VIRTUAL_HOST=fip1.docker.dev-franceconnect.fr'
+      - 'ISSUER=https://fip1.docker.dev-franceconnect.fr'
+      - 'CLIENT_ID=09a1a257648c1742c74d6a3d84b31943'
+      - 'CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f'
+    networks:
+      - public
+    command: 'tail -f /dev/null'
+
+  fip2:
+    hostname: fip2
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
+    environment:
+      - 'VIRTUAL_HOST=fip2.docker.dev-franceconnect.fr'
+      - 'ISSUER=https://fip2.docker.dev-franceconnect.fr'
+      - 'CLIENT_ID=09a1a257648c1742c74d6a3d84b'
+      - 'CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f654s987'
+    networks:
+      - public
+    command: 'tail -f /dev/null'
+
+  fip3:
+    hostname: fip3
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
+    environment:
+      - 'VIRTUAL_HOST=fip3.docker.dev-franceconnect.fr'
+      - 'ISSUER=https://fip3.docker.dev-franceconnect.fr'
+      - 'CLIENT_ID=09a1a257648c1742c74d6a3d84c'
+      - 'CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f654s987'
+    networks:
+      - public
+    command: 'tail -f /dev/null'
+
+  fip4:
+    hostname: fip4
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
+    environment:
+      - 'VIRTUAL_HOST=fip4.docker.dev-franceconnect.fr'
+      - 'ISSUER=https://fip4.docker.dev-franceconnect.fr'
+      - 'CLIENT_ID=09a1a257648c1742c74d6a3d84b3194d'
+      - 'CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f'
+    networks:
+      - public
+    command: 'tail -f /dev/null'
+
+  aidants-connect-mock:
+    hostname: aidants-connect-mock
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
+    environment:
+      - 'VIRTUAL_HOST=aidants-connect-mock.docker.dev-franceconnect.fr'
+      - 'ISSUER=https://aidants-connect-mock.docker.dev-franceconnect.fr'
+      - 'CLIENT_ID=08a1a257648c1742c74d6a3d84b31943'
+      - 'CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f'
+    networks:
+      - public
+    command: 'tail -f /dev/null'
+
+  fi-beta-mock:
+    hostname: fi-beta-mock
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - '${VOLUMES_DIR}/src/fi-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/core-legacy/.env/idp.env'
+    environment:
+      - 'VIRTUAL_HOST=fi-beta-mock.docker.dev-franceconnect.fr'
+      - 'ISSUER=https://fi-beta-mock.docker.dev-franceconnect.fr'
+      - 'CLIENT_ID=09a1a257648c1742c74d6a3d84m'
+      - 'CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f'
+      - 'FS_URL=https://fsp3.docker.dev-franceconnect.fr'
+    networks:
+      - public
+    command: 'tail -f /dev/null'
+
+  #########################################
+  ## Service Providers
+  #########################################
+  fsp1:
+    hostname: fsp1
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - '${VOLUMES_DIR}/src/service-provider-example:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/core-legacy/.env/sp.env'
+    environment:
+      - 'VIRTUAL_HOST=fsp1.docker.dev-franceconnect.fr'
+      - 'CLIENT_ID=a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc'
+      - 'CLIENT_SECRET=a970fc88b3111fcfdce515c2ee03488d8a349e5379a3ba2aa48c225dcea243a5'
+      - 'DATA_CLIENT_ID=a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc'
+      - 'DATA_CLIENT_SECRET=a970fc88b3111fcfdce515c2ee03488d8a349e5379a3ba2aa48c225dcea243a5'
+      - 'FS_URL=https://fsp1.docker.dev-franceconnect.fr'
+    networks:
+      - public
+    command: 'tail -f /dev/null'
+
+  fsp2:
+    hostname: fsp2
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - '${VOLUMES_DIR}/src/service-provider-example:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/core-legacy/.env/sp.env'
+    environment:
+      - 'VIRTUAL_HOST=fsp2.docker.dev-franceconnect.fr'
+      - 'CLIENT_ID=7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775'
+      - 'CLIENT_SECRET=4ee5ec5177f98fc71f82fac702ee0c4c7e15aa48e7040a3c6222285cf4d6a2d9'
+      - 'DATA_CLIENT_ID=7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775'
+      - 'DATA_CLIENT_SECRET=4ee5ec5177f98fc71f82fac702ee0c4c7e15aa48e7040a3c6222285cf4d6a2d9'
+      - 'FS_URL=https://fsp2.docker.dev-franceconnect.fr'
+    networks:
+      - public
+    command: 'tail -f /dev/null'
+
+  fsp3:
+    hostname: fsp3
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - '${VOLUMES_DIR}/src/service-provider-example:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/core-legacy/.env/sp.env'
+    environment:
+      - 'VIRTUAL_HOST=fsp3.docker.dev-franceconnect.fr'
+      - 'CLIENT_ID=6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77'
+      - 'CLIENT_SECRET=be17e0f49628c47d4c0e24571d284b0e21a196c6659992a7ce9eda469e7751c3'
+      - 'DATA_CLIENT_ID=6495f347513b860e6b931fae4a1ba70c8489a558a0fc74ecdc094d48a4035e77'
+      - 'DATA_CLIENT_SECRET=be17e0f49628c47d4c0e24571d284b0e21a196c6659992a7ce9eda469e7751c3'
+      - 'FS_URL=https://fsp3.docker.dev-franceconnect.fr'
+    networks:
+      - public
+    command: 'tail -f /dev/null'
+
+  #########################################
+  ## Data Providers
+  #########################################
+  fdp1:
+    hostname: fdp1
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    volumes:
+      - '${VOLUMES_DIR}/src/data-provider-example:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+    environment:
+      - 'PM2_SCRIPT=bin/www'
+      - 'PM2_CI_SCRIPT=bin/www'
+      - 'VIRTUAL_HOST=fdp1.docker.dev-franceconnect.fr'
+      - 'USE_FC_MOCK=false'
+      - 'FC_URL=https://fcp.docker.dev-franceconnect.fr'
+      - 'NODE_TLS_REJECT_UNAUTHORIZED=0'
+    networks:
+      - public
+    command: 'tail -f /dev/null'

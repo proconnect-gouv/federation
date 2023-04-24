@@ -44,19 +44,12 @@ fcp-low:
     # Up the docker-stack with minimal requirement
     - docker-stack up bdd-fcp-low
     - docker exec fc_core-fcp-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
-    - docker-stack dep core-fcp-low
     - cd $CI_PROJECT_DIR/quality/fcp && yarn install --ignore-engines
     - cd $CI_PROJECT_DIR
     # Start the NodeJS apps
-    - docker-stack start rnipp fsp1-low fsp2-low fsp3-low fsp4-low fip1-low fip2-low fip3-low fip4-low fip8-low core-fcp-low
+    - docker-stack start-all-ci
     # Ensure the required apps are running
-    - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
-      do echo "Waiting for core-fcp-low..." && sleep 10; done' || (
-      (echo 'Cannot connect to core-fcp-low') &&
-      (docker exec fc_core-fcp-low_1 cat /tmp/.pm2/logs/core-fcp-low-error-0.log || true) &&
-      (docker exec fc_core-fcp-low_1 cat /tmp/.pm2/logs/core-fcp-low-out-0.log || true) &&
-      $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&
-      exit 1)
+    - docker-stack wait "core-fcp-low" "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp

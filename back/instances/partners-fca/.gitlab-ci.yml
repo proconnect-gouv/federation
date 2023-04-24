@@ -30,15 +30,9 @@ partner-fca:
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker-stack up partners-fca
     # Start the NodeJS apps
-    - docker-stack start-ci partners-fca-front partners-fca-back
+    - docker-stack start-all-ci
     # Ensure the required apps are running
-    - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://partners-fca.docker.dev-franceconnect.fr)" != "200" ]];
-      do echo "Waiting for partners-fca-front..." && sleep 10; done' || (
-      (echo 'Cannot connect to partners-fca-front') &&
-      (docker exec fc_partners-fca-front_1 cat /tmp/.pm2/logs/partners-fca-front-error-0.log || true) &&
-      (docker exec fc_partners-fca-front_1 cat /tmp/.pm2/logs/partners-fca-front-out-0.log || true) &&
-      $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&
-      exit 1)
+    - docker-stack wait "partners-fca-front" "https://partners-fca.docker.dev-franceconnect.fr"
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/partners

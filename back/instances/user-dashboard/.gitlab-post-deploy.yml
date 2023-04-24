@@ -29,15 +29,12 @@ quality-user-dashboard-release:
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - shopt -s expand_aliases
-    - alias docker-stack=$FC_ROOT/fc-docker/docker-stack
+    - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    # Shallow clone depth 1 fc-docker repository
-    - rm -rf $FC_ROOT/fc-docker
-    - git clone -b $FC_DOCKER_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker  --single-branch
     - cd $CI_PROJECT_DIR/quality/fcp && yarn install --ignore-engines
     - cd $CI_PROJECT_DIR
   script:
-  # Build the nginx proxy to access /integ01/fcp-legacy.html
+    # Build the nginx proxy to access /integ01/fcp-legacy.html
     - docker-stack up rp-all
     - cd $CI_PROJECT_DIR/quality/fcp
     - yarn test:ud -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
@@ -51,5 +48,5 @@ quality-user-dashboard-release:
     paths:
       - quality/fcp/cypress/reports/cucumber/html-report
   after_script:
-    - bash $CI_BUILDS_DIR/france-connect/fc-docker/docker-stack halt
+    - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
     - docker container prune -f && docker volume prune -f

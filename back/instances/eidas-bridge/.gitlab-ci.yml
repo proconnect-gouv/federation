@@ -37,7 +37,7 @@ eidas-bridge:
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
     - ln -s $FC_ROOT/fc/front/instances/user-dashboard $FC_ROOT/fc/docker/volumes/src/user-dashboard
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do cd $mock && git fetch && git checkout -f origin/master && git clean -df && echo "Installing depedencies for $(/usr/bin/basename $mock)" && npm install; ln -sfn $mock $FC_ROOT/fc/docker/volumes/src; done
-    # Return to project directory 
+    # Return to project directory
     - wait
     - cd $CI_PROJECT_DIR
   script:
@@ -47,23 +47,10 @@ eidas-bridge:
     # Up the docker-stack with minimal requirement
     - docker-stack up min-eidas-high
     - docker exec fc_core-fcp-high_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
-    - docker-stack dep core-fcp-high
-    - docker-stack start core-fcp-high eidas-bridge csmr-hsm rnipp fsp1-high fip1-high
+    - docker-stack start-all-ci
     # Ensure the required apps are running
-    - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration)" != "200" ]];
-      do echo "Waiting for core-fcp-high..." && sleep 10; done' || (
-      (echo 'Cannot connect to core-fcp-high') &&
-      (docker exec fc_core-fcp-high_1 cat /tmp/.pm2/logs/core-fcp-high-error-0.log || true) &&
-      (docker exec fc_core-fcp-high_1 cat /tmp/.pm2/logs/core-fcp-high-out-0.log || true) &&
-      $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&
-      exit 1)
-    - timeout 180 bash -c 'while [[ "$(curl --insecure -s -o /dev/null -w ''%{http_code}'' https://eidas-bridge.docker.dev-franceconnect.fr/.well-known/openid-configuration)" != "200" ]];
-      do echo "Waiting for eidas-bridge..." && sleep 10; done' || (
-      (echo 'Cannot connect to eidas-bridge') &&
-      (docker exec fc_eidas-bridge_1 cat /tmp/.pm2/logs/eidas-bridge-error-0.log || true) &&
-      (docker exec fc_eidas-bridge_1 cat /tmp/.pm2/logs/eidas-bridge-out-0.log || true) &&
-      $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&
-      exit 1)
+    - docker-stack wait "core-fcp-high" "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
+    - docker-stack wait "eidas-bridge" "https://eidas-bridge.docker.dev-franceconnect.fr/.well-known/openid-configuration"
     # Run Visual BDD tests and abort if failed
     - CYPRESS_TEST_ENV=docker yarn test:eidas:snapshot
     # Run Functional BDD tests

@@ -1,0 +1,97 @@
+{
+  "accessTokenConsentTTL": 60,
+  "accessTokenTTL": 60,
+  "aidantConnectClientId": "08a1a257648c1742c74d6a3d84b31943",
+  "applicationsApiAuthorization": [
+    {
+      "api": [
+        "/api/v1/service-provider",
+        "/api/v1/service-provider/names/",
+        "/api/v1/service-provider/names/:key",
+        "/api/v1/service-provider/:key",
+        "/api/v1/service-provider/production-key/:key",
+        "/api/v1/stats/:clientKey/user/connection",
+        "/api/v1/stats/:clientKey/user/gender",
+        "/api/v1/stats/:clientKey/user/age",
+        "/api/v1/stats/:clientKey/user/fi",
+        "/api/v1/service-provider/create",
+        "/api/v1/stats/accounts",
+        "/api/v1/stats/total/connection"
+      ],
+      "tokenAccess": "56d08c71985eba066ae6c41bc7376c9744829dbca65b71a218c63b955d51e092"
+    },
+    {
+      "api": ["/api/v2/service-provider/integration/create"],
+      "tokenAccess": "07BF7A057C75556EA68E7EED6F78ACF14222822B90DA055E7B9073327DF3EB33"
+    }
+  ],
+  "bunyan": {
+    "dir": "/var/log/fc-evt",
+    "filename": "event.log"
+  },
+  "callbackURL": "https://fcp.docker.dev-franceconnect.fr/oidc_callback",
+  "cookieDomain": ".fcp.docker.dev-franceconnect.fr",
+  "cookieSigningSecret": "9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa",
+  "eidasDefaultLevel": "eidas3",
+  "env": "docker",
+  "features": {
+    "accessTokenHeaderOnly": true,
+    "acr_values": true,
+    "convertToJsonIdentityFromCheckToken": true,
+    "displayConfirmationAfterAuthentication": true,
+    "enableMails": {
+      "IdentityProviderStats": false,
+      "ServiceProviderStats": false,
+      "authentication": false,
+      "generalStats": false,
+      "partnerAccountManagement": false,
+      "rnippError": false
+    },
+    "geolocation": true,
+    "globalAgentForHTTPS": true,
+    "isPivotIdentityBadlyFormattedBypass": true,
+    "nonceMandatory": true,
+    "rnippIdentityCheck": true,
+    "secureCookieFlag": true
+  },
+  "fiMappingUserInfosRules": {
+    "invertFamilyNameAttribute": []
+  },
+  "httpsGlobalAgent": {
+    "certPath": "/etc/ssl/docker_host/app.crt",
+    "keyPath": "/etc/ssl/docker_host/app.key"
+  },
+  "issuerURL": "https://fcp.docker.dev-franceconnect.fr",
+  "logger": {
+    "level": "debug",
+    "prettyPrint": true,
+    "slowtime": true
+  },
+  "mailer": {
+    "legacyFromEmail": "ne-pas-repondre@franceconnect.gouv.fr",
+    "newFromEmail": "ne-pas-repondre@notification.franceconnect.gouv.fr",
+    "newMailerPercentage": 1
+  },
+  "maxmindGeolocation": {
+    "geoipLocalDbPath": "/var/geoipdb/GeoLite2-City.mmdb"
+  },
+  "mode": "particuliers",
+  "partnerUrl": "https://partenaires.docker.dev-franceconnect.fr",
+  "rnipp": {
+    "clientSiret": "12003704900026",
+    "hostname": "haproxy",
+    "httpsEnabled": true,
+    "userId": "SGMAP France connect"
+  },
+  "scope": ["profile", "email", "address", "phone", "birth"],
+  "serverTimeout": 25000,
+  "smtp": {
+    "host": "maildev",
+    "port": 1025
+  },
+  "support": {
+    "techErrorUrl": "https://my-user-has-an-error-and-is-redirected-to-support-tech-error-form"
+  },
+  "tracesId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
+  "tracesSecret": "99c1105d041adda2c47835a82f6be9dc13e2a2731e302e6f214075aef09f5abb"
+}
