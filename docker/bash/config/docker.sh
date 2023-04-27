@@ -7,7 +7,7 @@ COMPOSE_FILES=$(find ${COMPOSE_DIR} -name "*.yml")
 VOLUMES_DIR="${FC_ROOT}/fc/docker/volumes"
 WORKING_DIR="$(cd "$(dirname "${0}")" >/dev/null 2>&1 && pwd)"
 
-DOCKER_REGISTERY_URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc-docker/nodejs:${NODE_VERSION}-dev"
+DOCKER_REGISTRY_URI="registry.gitlab.dev-franceconnect.fr/france-connect/fc/nodejs:${NODE_VERSION}-dev"
 
 # https://docs.docker.com/compose/reference/envvars/#compose_file
 COMPOSE_PATH_SEPARATOR=":"
