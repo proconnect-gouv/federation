@@ -61,7 +61,7 @@ _pull_node_image() {
 
 _do_pull() {
   timeout 5 docker login ${FC_DOCKER_REGISTRY} || _pull_failure
-  docker pull ${DOCKER_REGISTERY_URI} || _pull_failure
+  docker pull ${DOCKER_REGISTRY_URI} || _pull_failure
 }
 
 _pull_failure() {

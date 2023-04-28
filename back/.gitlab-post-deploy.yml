@@ -18,6 +18,7 @@ publish-sources:
     - git config user.name "France Connect"
     - cp -R $CI_PROJECT_DIR/* .
     - sed -i "s/ssh:\/\/git@gitlab.dev-franceconnect.fr:2222\/france-connect/\<france-connect-repository\>/g" docker/_doc/docker-stack.md
+    - sed -i "s/registry.gitlab.dev-franceconnect.fr\/france-connect/\<france-connect-registry\>/g" docker/bash/config/docker.sh
     - git add .
     - git commit -m "$CI_COMMIT_REF_NAME"
     - git push origin main
