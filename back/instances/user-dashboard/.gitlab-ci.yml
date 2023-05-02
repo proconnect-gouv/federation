@@ -36,7 +36,6 @@ user-dashboard:
   before_script:
     # Ensure a clean docker environnement
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
-    - echo "FC_DOCKER_VERSION=$FC_DOCKER_VERSION"
     - echo "FC_LEGACY_VERSION=${FC_LEGACY_VERSION:=staging}"
     - echo "FC_APPS_VERSION=${FC_APPS_VERSION:=staging}"
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
