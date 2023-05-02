@@ -1,9 +1,12 @@
 import { Injectable } from '@nestjs/common';
 
-import { AccountBlockedException, AccountService } from '@fc/account';
+import { Account, AccountBlockedException, AccountService } from '@fc/account';
 import { LoggerService } from '@fc/logger-legacy';
 
-import { CoreFailedPersistenceException } from '../exceptions';
+import {
+  CoreFailedPersistenceException,
+  CoreIdpBlockedForAccountException,
+} from '../exceptions';
 import { ComputeIdp, ComputeSp } from '../types';
 
 @Injectable()
@@ -74,6 +77,19 @@ export class CoreAccountService {
       return accountId;
     } catch (error) {
       throw new CoreFailedPersistenceException(error);
+    }
+  }
+
+  /**
+   * Check if the current IdP is blocked for the current account.
+   * @param {Account} account The current account
+   * @param {String} idpId The current idpId
+   */
+
+  checkIfIdpIsBlockedForAccount(account: Account, idpId: string): void {
+    const { isExcludeList, list } = account.preferences.idpSettings;
+    if (isExcludeList === list.includes(idpId)) {
+      throw new CoreIdpBlockedForAccountException();
     }
   }
 }

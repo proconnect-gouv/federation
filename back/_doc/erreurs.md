@@ -11,6 +11,7 @@
 | [Y000007](../apps/core-fcp/src/exceptions/core-fcp-invalid-event-key.exception.ts "CoreFcpInvalidEventKeyException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | La configuration du FS concernant le consentement demandé est incorrect ( un consentement est demandé sur une connexion anonyme, ... ). Contacter le support N3. | 
 | [Y000010](../libs/core/src/exceptions/core-identity-provider-not-found.exception.ts "CoreIdentityProviderNotFoundException") | 400 |  | N/A | 
 | [Y000011](../apps/core-fcp/src/exceptions/core-fcp-insufficient-acr-level-suspicious-context.exception.ts "InsufficientAcrLevelSuspiciousContextException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | Une connexion a eu lieu dans un context suspect et le FI a identifié l&#39;utilisateur avec un niveau eidas jugé trop faible. | 
+| [Y000012](../libs/core/src/exceptions/core-idp-blocked-for-account.exception.ts "CoreIdpBlockedForAccountException") | 403 | Vous avez bloqué l&#39;utilisation de ce fournisseur d&#39;identité. Pour pouvoir l&#39;utiliser, merci de vous rendre dans vos préférences FranceConnect pour l&#39;autoriser. | Le fournisseur d&#39;identité a été bloqué par l&#39;utilisateur. | 
 
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|

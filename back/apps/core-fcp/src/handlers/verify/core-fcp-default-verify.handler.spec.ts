@@ -83,6 +83,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
   const coreAccountServiceMock = {
     computeFederation: jest.fn(),
+    checkIfIdpIsBlockedForAccount: jest.fn(),
   };
 
   const coreAcrServiceMock = {
@@ -149,6 +150,12 @@ describe('CoreFcpDefaultVerifyHandler', () => {
 
   const accountDataMock = {
     active: true,
+    preferences: {
+      idpSettings: {
+        isExcludeList: true,
+        list: ['fip3-low'],
+      },
+    },
   };
 
   const accountServiceMock = {

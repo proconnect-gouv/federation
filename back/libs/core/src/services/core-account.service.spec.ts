@@ -1,10 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AccountBlockedException, AccountService } from '@fc/account';
+import { Account, AccountBlockedException, AccountService } from '@fc/account';
 import {
   ComputeIdp,
   ComputeSp,
   CoreFailedPersistenceException,
+  CoreIdpBlockedForAccountException,
 } from '@fc/core';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
@@ -237,6 +238,40 @@ describe('CoreAccountService', () => {
       ).rejects.toThrow(error);
 
       expect(accountServiceMock.isBlocked).toBeCalledTimes(1);
+    });
+  });
+
+  describe('checkIfIdpIsBlockedForAccount', () => {
+    it('should throw an exception when the IDP is blocked', () => {
+      // Given
+      const accountMock = {
+        preferences: {
+          idpSettings: {
+            isExcludeList: true,
+            list: ['IDP-1'],
+          },
+        },
+      } as unknown as Account; // Cela permet de ne pas devoir créer un accountMock contenant toutes les variables
+      const idpMock = 'IDP-1';
+      // When
+      const call = () =>
+        service.checkIfIdpIsBlockedForAccount(accountMock, idpMock);
+      // Then
+      expect(call).toThrow(CoreIdpBlockedForAccountException);
+    });
+    it('should not throw an exception if the IDP is not blocked', () => {
+      // Given
+      const accountMock = {
+        preferences: {
+          idpSettings: {},
+        },
+      } as unknown as Account; // Cela permet de ne pas devoir créer un accountMock contenant toutes les variables
+      const idpMock = 'IDP-1';
+      // When
+      const call = () =>
+        service.checkIfIdpIsBlockedForAccount(accountMock, idpMock);
+      // Then
+      expect(call).not.toThrow(CoreIdpBlockedForAccountException);
     });
   });
 });

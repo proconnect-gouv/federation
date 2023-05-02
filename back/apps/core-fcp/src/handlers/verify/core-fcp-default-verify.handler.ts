@@ -92,6 +92,9 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
       throw new AccountBlockedException();
     }
 
+    if (account.preferences) {
+      this.coreAccount.checkIfIdpIsBlockedForAccount(account, idpId);
+    }
     let subSp: string;
 
     if (account.spFederation?.hasOwnProperty(entityId)) {
