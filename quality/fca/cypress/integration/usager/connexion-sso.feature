@@ -18,6 +18,7 @@ Fonctionnalité: Connexion Usager - SSO
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté au fournisseur de service
 
+  @ignoreInteg01
   Scénario: Connexion SSO - deuxième FS sans accès au FI
     Etant donné que j'utilise un fournisseur de service "avec accès exclusif à un FI"
     Et que j'utilise le fournisseur d'identité "disponible que pour un FS"
