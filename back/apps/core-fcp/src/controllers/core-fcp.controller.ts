@@ -150,10 +150,10 @@ export class CoreFcpController {
     const csrfToken = this.csrf.get();
     await this.csrf.save(sessionOidc, csrfToken);
 
-    const notifications = await this.notifications.getNotifications();
+    const notification = await this.notifications.getNotificationToDisplay();
     const response = {
       csrfToken,
-      notifications,
+      notification,
       params,
       providers: authorizedProviders,
       idpScope,

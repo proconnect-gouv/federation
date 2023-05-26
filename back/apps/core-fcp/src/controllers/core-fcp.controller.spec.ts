@@ -135,7 +135,7 @@ describe('CoreFcpController', () => {
   const randomStringMock = 'randomStringMockValue';
 
   const notificationsServiceMock = {
-    getNotifications: jest.fn(),
+    getNotificationToDisplay: jest.fn(),
   };
 
   const appConfigMock = {
@@ -327,7 +327,7 @@ describe('CoreFcpController', () => {
       appSessionServiceMock.get.mockResolvedValue(false);
       oidcAcrServiceMock.isAcrValid.mockReturnValue(true);
       coreFcpServiceMock.isInsufficientAcrLevel.mockReturnValue(false);
-      notificationsServiceMock.getNotifications.mockResolvedValue(
+      notificationsServiceMock.getNotificationToDisplay.mockResolvedValue(
         notificationsMock,
       );
     });
@@ -590,10 +590,12 @@ describe('CoreFcpController', () => {
       );
 
       // Then
-      expect(notificationsServiceMock.getNotifications).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(notificationsServiceMock.getNotifications).toHaveBeenCalledWith();
+      expect(
+        notificationsServiceMock.getNotificationToDisplay,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        notificationsServiceMock.getNotificationToDisplay,
+      ).toHaveBeenCalledWith();
     });
 
     it('should get the notifications list', async () => {
@@ -605,7 +607,7 @@ describe('CoreFcpController', () => {
       oidcSessionServiceMock.get.mockResolvedValueOnce(oidcSessionMock.spName);
       const expectedInteractionDetails = {
         csrfToken: csrfMock,
-        notifications: notificationsMock,
+        notification: notificationsMock,
         params: interactionDetailsMock.params,
         uid: interactionDetailsMock.uid,
         spName: oidcSessionMock.spName,
