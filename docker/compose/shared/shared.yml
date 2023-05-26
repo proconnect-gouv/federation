@@ -69,6 +69,7 @@ services:
           - fip3-low.docker.dev-franceconnect.fr
           - fip4-low.docker.dev-franceconnect.fr
           - fip8-low.docker.dev-franceconnect.fr
+          - fip9-low.docker.dev-franceconnect.fr
           # FCA LOW
           - core-fca-low.docker.dev-franceconnect.fr
           - bridge-proxy-rie.docker.dev-franceconnect.fr
