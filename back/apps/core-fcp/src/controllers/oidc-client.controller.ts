@@ -18,6 +18,7 @@ import {
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { CoreVerifyService, ProcessCore } from '@fc/core';
+import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
@@ -67,6 +68,8 @@ export class OidcClientController {
   @Post(OidcClientRoutes.REDIRECT_TO_IDP)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
+  @IsStep()
+  @ForbidRefresh()
   async redirectToIdp(
     @Res() res,
     @Body() body: RedirectToIdp,
@@ -193,6 +196,8 @@ export class OidcClientController {
    */
   @Get(OidcClientRoutes.OIDC_CALLBACK)
   @Header('cache-control', 'no-store')
+  @IsStep()
+  @ForbidRefresh()
   async getOidcCallback(
     @Req() req,
     @Res() res,
