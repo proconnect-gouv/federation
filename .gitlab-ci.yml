@@ -1,15 +1,16 @@
 stages:
-  - 'Code quality'
-  - 'End to end'
-  - 'Checkmarx'
-  - 'Cache'
-  - 'Review'
-  - 'Build Back'
-  - 'Build Front'
-  - 'Tag Back'
-  - 'Tag Front'
-  - 'Post-deploy'
+  - Code quality
+  - test
+  - End to end
+  - Cache
+  - Review
+  - Build Back
+  - Build Front
+  - Tag Back
+  - Tag Front
+  - Post-deploy
 
 include:
-  - '/back/.gitlab-ci.yml'
-  - '/front/.gitlab-ci.yml'
+  - "/back/.gitlab-ci.yml"
+  - "/front/.gitlab-ci.yml"
+  - ".gitlab-ci-security-scanning.yml"
