@@ -117,6 +117,7 @@
     "pg": "^8.7.3",
     "pino": "^8.4.2",
     "pkcs11js": "^1.0.19",
+    "recursive-readdir": "^2.2.3",
     "reflect-metadata": "^0.1.13",
     "retry": "^0.13.1",
     "rimraf": "^3.0.0",

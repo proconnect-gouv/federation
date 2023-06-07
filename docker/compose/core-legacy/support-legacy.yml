@@ -10,7 +10,7 @@ services:
     working_dir: /var/www/app/fc-support
     depends_on:
       - 'pg-support'
-      - 'mongo-legacy'
+      - 'mongo-fcp-low'
       - 'squid'
       - 'rnipp'
       - 'haproxy'
@@ -26,6 +26,7 @@ services:
       - '${COMPOSE_DIR}/shared/.env/base-app.env'
       - '${COMPOSE_DIR}/shared/.env/postgres.env'
       - '${COMPOSE_DIR}/core-legacy/.env/support-legacy.env'
+      - '${COMPOSE_DIR}/fcp-low/.env/mongo-fcp-low.env'
     networks:
       - fc
       - data

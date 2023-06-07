@@ -25,3 +25,13 @@ load('/opt/scripts/db-states/_default/claims.js');
 
 print('Initializing notifications...');
 load('/opt/scripts/db-states/_default/notifications.js');
+
+/* ------------------------------------------------------------------------------- */
+
+print("Initializing Legacy SPs...");
+load("/opt/scripts/db-states/_default/legacy-sp.js");
+
+/* ------------------------------------------------------------------------------- */
+
+print("Initializing Legacy ACCOUNTS...");
+load("/opt/scripts/db-states/_default/legacy-account.js");

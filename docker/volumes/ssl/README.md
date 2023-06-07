@@ -34,9 +34,8 @@ DNS.1 = mongo
 DNS.2 = mongo-fcp-high
 DNS.3 = mongo-fca-low
 DNS.4 = mongo-fcp-low
-DNS.5 = mongo-legacy
-DNS.6 = mongo-partenaires
-DNS.7 = localhost
+DNS.5 = mongo-partenaires
+DNS.6 = localhost
 IP.1  = 127.0.0.1
 
 

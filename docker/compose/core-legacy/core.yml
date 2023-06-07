@@ -13,7 +13,7 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
-      - 'mongo-legacy'
+      - 'mongo-fcp-low'
       - 'redis-sentinel'
       - 'squid'
       - 'haproxy'

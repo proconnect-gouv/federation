@@ -14,7 +14,7 @@ services:
     depends_on:
       - 'redis-sentinel'
       - 'squid'
-      - 'mongo-legacy'
+      - 'mongo-fcp-low'
       - 'elasticsearch'
       - 'fc-core'
     volumes:

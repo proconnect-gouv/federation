@@ -1,8 +1,8 @@
 {
   "mongo": {
-    "hosts": ["mongo-legacy"],
+    "hosts": ["mongo-fcp-low"],
     "port": 27017,
-    "db": "core-legacy",
+    "db": "core-fcp-low",
     "options": {
       "tls": true,
       "tlsCAFile": "/etc/ssl/docker_host/docker-stack-ca.crt",
@@ -21,7 +21,7 @@
         "j": true,
         "w": 1
       },
-      "user": "core-legacy",
+      "user": "core-fcp-low",
       "pass": "pass"
     }
   }

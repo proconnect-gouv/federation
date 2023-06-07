@@ -1,6 +1,6 @@
 {
   "mongo": {
-    "hosts": ["mongo-legacy"],
+    "hosts": ["mongo-fcp-low"],
     "port": 27017,
     "db": "core-legacy",
     "options": {

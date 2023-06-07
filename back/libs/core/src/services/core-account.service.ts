@@ -7,7 +7,7 @@ import {
   CoreFailedPersistenceException,
   CoreIdpBlockedForAccountException,
 } from '../exceptions';
-import { ComputeIdp, ComputeSp } from '../types';
+import { ComputeSp } from '../types';
 
 @Injectable()
 export class CoreAccountService {
@@ -33,40 +33,33 @@ export class CoreAccountService {
   /**
    * Computes federation entry for a given identity and provider id
    *
-   * @param providerId
-   * @param sub
-   * @param entityId?
+   * @param {string} key - id of the Service Provider (spId - FCA) or entityId (FCP)
+   * @param {string} sub - sub of the Service Provider
    */
 
-  private getFederation(providerId: string, sub: string, entityId?: string) {
-    const key = entityId || providerId;
-    return { [key]: { sub } };
+  private buildFederation(key: string, sub: string) {
+    return { [key]: sub };
   }
 
   /**
    * Build and persist current interaction with account service
-   * @param {string} spId - id of the Service Provider
-   * @param {string} entityId -
-   * @param {string} subSp - sub of the Service Provider
-   * @param {string} hashSp - hash of the Service Provider
-   * @param {string} idpId - id of the Identity Provider
-   * @param {string} subIdp - sub of the Identity Provider
+   * @param {string} key - id of the Service Provider (spId - FCA) or entityId (FCP)
+   * @param {string} sub - sub of the Service Provider
+   * @param {string} identityHash - hash of the Service Provider
    */
-  async computeFederation(
-    { entityId, hashSp, spId, subSp }: ComputeSp,
-    { idpId, subIdp }: ComputeIdp,
-  ): Promise<string> {
-    const spFederation = this.getFederation(spId, subSp, entityId);
-    const idpFederation = this.getFederation(idpId, subIdp);
+  async computeFederation({
+    key,
+    identityHash,
+    sub,
+  }: ComputeSp): Promise<string> {
+    const spFederation = this.buildFederation(key, sub);
 
     const interaction = {
       // service provider Hash is used as main identity hash
-      identityHash: hashSp,
-      // federation for each sides
-      idpFederation: idpFederation,
+      identityHash,
       // Set last connection time to now
       lastConnection: new Date(),
-      spFederation: spFederation,
+      spFederation,
     };
 
     this.logger.trace(interaction);
@@ -87,6 +80,10 @@ export class CoreAccountService {
    */
 
   checkIfIdpIsBlockedForAccount(account: Account, idpId: string): void {
+    if (!account.preferences) {
+      return;
+    }
+
     const { isExcludeList, list } = account.preferences.idpSettings;
     if (isExcludeList === list.includes(idpId)) {
       throw new CoreIdpBlockedForAccountException();
