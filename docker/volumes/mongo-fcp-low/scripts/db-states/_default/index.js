@@ -35,3 +35,13 @@ load("/opt/scripts/db-states/_default/legacy-sp.js");
 
 print("Initializing Legacy ACCOUNTS...");
 load("/opt/scripts/db-states/_default/legacy-account.js");
+
+/* ------------------------------------------------------------------------------- */
+
+print("Initializing Legacy Partners...");
+load("/opt/scripts/db-states/_default/legacy-partners.js");
+
+/* ------------------------------------------------------------------------------- */
+
+print("Initializing Legacy Partners SPs...");
+load("/opt/scripts/db-states/_default/legacy-partners-sp.js");
