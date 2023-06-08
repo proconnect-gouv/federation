@@ -23,6 +23,7 @@ services:
       # -- SP
       - "fsp1-high"
       - "fsp2-high"
+      - "fsp3-high"
       - "fsp5-high"
       - "fsp6-high"
       # -- IdP

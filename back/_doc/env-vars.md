@@ -152,6 +152,7 @@
 | AdapterMongo_CLIENT_SECRET_CIPHER_PASS | string |
 | AdapterMongo_DECRYPT_CLIENT_SECRET_FEATURE | boolean |
 | AdapterMongo_DISABLE_IDP_VALIDATION_ON_LEGACY | boolean |
+| AdapterMongo_PLATFORM | string |
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_HTTPS_SERVER_CERT | file |
@@ -336,8 +337,6 @@
 | IdentityProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
-| IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS | json |
-| IdentityProviderAdapterEnv_REDIRECT_URIS | json |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
@@ -464,6 +463,7 @@
 | App_CITIZEN_DATABASE_PATH | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_SCENARIOS_DATABASE_PATH | string |
 | FQDN | string |
 | Logger_FILE | string |
 | Logger_LEVEL | string |
@@ -501,6 +501,7 @@
 | App_CITIZEN_DATABASE_PATH | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_SCENARIOS_DATABASE_PATH | string |
 | FQDN | string |
 | Logger_FILE | string |
 | Logger_LEVEL | string |
@@ -539,6 +540,7 @@
 | App_CITIZEN_DATABASE_PATH | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_SCENARIOS_DATABASE_PATH | string |
 | FQDN | string |
 | Logger_FILE | string |
 | Logger_LEVEL | string |
@@ -589,6 +591,7 @@
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
+| FQDN | string |
 | IdentityProviderAdapterEnv_CLIENT_ID | string |
 | IdentityProviderAdapterEnv_CLIENT_SECRET | string |
 | IdentityProviderAdapterEnv_CLIENT_SECRET_CIPHER_PASS | string |
@@ -598,8 +601,6 @@
 | IdentityProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
-| IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS | json |
-| IdentityProviderAdapterEnv_REDIRECT_URIS | json |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
@@ -612,6 +613,8 @@
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
 | OidcClient_HTTPS_CLIENT_KEY | file |
+| OidcClient_POST_LOGOUT_REDIRECT_URI | string |
+| OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
 | REQUEST_TIMEOUT | string |
 | Redis_DB | number |
@@ -640,8 +643,6 @@
 | IdentityProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
-| IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS | json |
-| IdentityProviderAdapterEnv_REDIRECT_URIS | json |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
@@ -654,6 +655,8 @@
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
 | OidcClient_HTTPS_CLIENT_KEY | file |
+| OidcClient_POST_LOGOUT_REDIRECT_URI | string |
+| OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
 | REQUEST_TIMEOUT | string |
 | Redis_DB | number |
@@ -681,8 +684,6 @@
 | IdentityProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
-| IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS | json |
-| IdentityProviderAdapterEnv_REDIRECT_URIS | json |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
@@ -694,6 +695,8 @@
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
 | OidcClient_HTTPS_CLIENT_KEY | file |
+| OidcClient_POST_LOGOUT_REDIRECT_URI | string |
+| OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
 | REQUEST_TIMEOUT | string |
 | Redis_DB | number |
@@ -778,8 +781,6 @@
 | IdentityProviderAdapterEnv_END_SESSION_ENDPOINT | string |
 | IdentityProviderAdapterEnv_ISSUER | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
-| IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS | json |
-| IdentityProviderAdapterEnv_REDIRECT_URIS | json |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |

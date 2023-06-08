@@ -29,8 +29,7 @@ _command_register "fixtures" "_hook_fc_apps" "Init postgres FC-Apps : docker-sta
 _command_register "reset-db-core-fcp-high" "_reset_db_fcp_high" ""    # Description to be defined # Deprecated
 _command_register "reset-db-core-fcp-low" "_reset_db_fcp_low" ""      # Description to be defined # Deprecated
 _command_register "reset-db-core-fca-low" "_reset_db_core_fca_low" "" # Description to be defined # Deprecated
-_command_register "reset-db" "_reset_db_legacy" ""                    # Description to be defined # Deprecated
-_command_register "reset-db-legacy" "_reset_db_legacy" ""             # Description to be defined # Deprecated
+_command_register "reset-db" "_reset_db_fcp_low" "Alias to reset-db-core-fcp-low" # Backward compatibility entry
 _command_register "reset-mongo" "_reset_mongodb" "reset-mongo <mongo-service-name> : Reset given mongodb container"
 _command_register "idp-as-prod-v2" "_idp_as_prod_v2" ""         # Description to be defined
 _command_register "idp-as-prod-legacy" "_idp_as_prod_legacy" "" # Description to be defined
