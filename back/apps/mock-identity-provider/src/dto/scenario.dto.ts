@@ -1,7 +1,13 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsEnum, IsNumber, IsString, ValidateIf } from 'class-validator';
+import {
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateIf,
+} from 'class-validator';
 
 import { Scenario } from '../enums';
 
@@ -28,6 +34,7 @@ export class ScenarioDto {
   body?: string;
 
   @ValidateIf(itMatchesType(Scenario.SERVER_RESPONSE))
+  @IsOptional()
   @IsNumber()
   delay?: number;
 
