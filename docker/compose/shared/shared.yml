@@ -267,23 +267,6 @@ services:
     networks:
       - data
 
-  mongo-partenaires:
-    hostname: mongo-partenaires
-    build:
-      context: '${WORKING_DIR}'
-      dockerfile: '${WORKING_DIR}/builds/mongodb/Dockerfile'
-      args:
-        MONGO_VERSION: '4.4'
-    volumes:
-      - '${VOLUMES_DIR}/mongo-partenaires/scripts:/opt/scripts'
-      - '${VOLUMES_DIR}/mongo-partenaires/initdb.d:/docker-entrypoint-initdb.d'
-    env_file:
-      - '${COMPOSE_DIR}/shared/.env/mongo-partenaires.env'
-    ports:
-      - '27021:27017'
-    networks:
-      - data
-
   mongo-fcp-high:
     hostname: mongo-fcp-high
     build:
