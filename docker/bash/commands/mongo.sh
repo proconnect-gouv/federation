@@ -33,6 +33,13 @@ _mongo_shell() {
     --tls
 }
 
+_mongo_script() {
+  container=$1
+  script=$2
+
+  docker-compose exec -T ${container} /opt/scripts/run.sh "${script}"
+}
+
 # Presets for backward compatibility
 
 _reset_db_fcp_high() {
