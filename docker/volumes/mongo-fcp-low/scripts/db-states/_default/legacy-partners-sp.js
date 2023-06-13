@@ -1,5 +1,5 @@
 // == FS
-const fsp = {
+const fspLegacyPartners = {
   MarieDeHem: {
     site: 'https://site.com',
     redirect_uris: [
@@ -98,7 +98,7 @@ const fsp = {
 };
 
 /* ------------------------------------------------------------------------------- */
-Object.values(fsp).forEach((fs) => {
+Object.values(fspLegacyPartners).forEach((fs) => {
   print(`${fs.name} > Initializing provider: ${fs.name}`);
   db.client.update({ name: fs.name }, fs, { upsert: true });
 });
