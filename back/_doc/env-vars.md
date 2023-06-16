@@ -16,17 +16,18 @@
 10. [eidas-bridge](#eidas-bridge)
 11. [exploit-fca-low](#exploit-fca-low)
 12. [exploit-fcp-high](#exploit-fcp-high)
-13. [mock-identity-provider-fca-low](#mock-identity-provider-fca-low)
-14. [mock-identity-provider-fcp-high](#mock-identity-provider-fcp-high)
-15. [mock-identity-provider-fcp-low](#mock-identity-provider-fcp-low)
-16. [mock-rnipp](#mock-rnipp)
-17. [mock-service-provider-fca-low](#mock-service-provider-fca-low)
-18. [mock-service-provider-fcp-high](#mock-service-provider-fcp-high)
-19. [mock-service-provider-fcp-low](#mock-service-provider-fcp-low)
-20. [partners-fca](#partners-fca)
-21. [partners-fcp](#partners-fcp)
-22. [tracks-data-provider](#tracks-data-provider)
-23. [user-dashboard](#user-dashboard)
+13. [mock-data-provider](#mock-data-provider)
+14. [mock-identity-provider-fca-low](#mock-identity-provider-fca-low)
+15. [mock-identity-provider-fcp-high](#mock-identity-provider-fcp-high)
+16. [mock-identity-provider-fcp-low](#mock-identity-provider-fcp-low)
+17. [mock-rnipp](#mock-rnipp)
+18. [mock-service-provider-fca-low](#mock-service-provider-fca-low)
+19. [mock-service-provider-fcp-high](#mock-service-provider-fcp-high)
+20. [mock-service-provider-fcp-low](#mock-service-provider-fcp-low)
+21. [partners-fca](#partners-fca)
+22. [partners-fcp](#partners-fcp)
+23. [tracks-data-provider](#tracks-data-provider)
+24. [user-dashboard](#user-dashboard)
 
 ## Variables
 
@@ -455,6 +456,20 @@
 | Redis_PORT | number |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+### mock-data-provider
+
+| Var Name | Inferred type |
+|---|---|
+| APP_NAME | string |
+| App_API_OUTPUT_CONTENT_TYPE | string |
+| App_HTTPS_SERVER_CERT | file |
+| App_HTTPS_SERVER_KEY | file |
+| DataProviderAdapterCore_CHECKTOKEN_ENDPOINT | string |
+| DataProviderAdapterCore_CLIENT_ID | string |
+| DataProviderAdapterCore_CLIENT_SECRET | string |
+| Logger_FILE | string |
+| Logger_LEVEL | string |
+| NODE_ENV | string |
 ### mock-identity-provider-fca-low
 
 | Var Name | Inferred type |
