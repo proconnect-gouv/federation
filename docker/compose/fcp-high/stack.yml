@@ -12,6 +12,7 @@ services:
       # --
       - "rnipp"
       - "csmr-hsm"
+      - "mock-data-provider-high"
   
   bdd-fcp-high:
     image: alpine
@@ -74,3 +75,4 @@ services:
       - "exploit-fcp-high-front"
       # --
       - "maildev"
+      - "mock-data-provider-high"

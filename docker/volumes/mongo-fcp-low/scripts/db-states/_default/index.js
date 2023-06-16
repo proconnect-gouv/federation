@@ -45,3 +45,8 @@ load("/opt/scripts/db-states/_default/legacy-partners.js");
 
 print("Initializing Legacy Partners SPs...");
 load("/opt/scripts/db-states/_default/legacy-partners-sp.js");
+
+/* ------------------------------------------------------------------------------- */
+
+print("Initializing Data providers...");
+load("/opt/scripts/db-states/_default/dp.js");
