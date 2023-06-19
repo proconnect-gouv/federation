@@ -28,7 +28,7 @@
       "habilité à demander le scope identite_pivot",
       "privé avec consentement obligatoire",
       "avec une whitelist de FI",
-      "avec le même entityId"
+      "avec un entityId différent"
     ],
     "mocked": true,
     "url": "https://fsp2v2.integ01.fcp.fournisseur-de-service.fr",
