@@ -2,7 +2,7 @@
 const fip = {
   // -- FIP - FIP1-HIGH - Activated - Discovery true
   'FIP1-HIGH': {
-    uid: 'fip1-high',
+    uid: 'dedc7160-8811-4d0f-9dd7-c072c15f2f18',
     name: 'fip1-high',
     active: true,
     display: true,
@@ -50,7 +50,7 @@ const fip = {
 
   // -- FIP - FIP2-HIGH - Activated
   'FIP2-HIGH': {
-    uid: 'fip2-high',
+    uid: 'f9a3f6fe-f9b3-4cec-b787-33713fdffc79',
     name: 'fip2-high',
     active: true,
     display: true,
@@ -101,7 +101,7 @@ const fip = {
   },
   // -- FIP - FIP3-HIGH - Deactivated but visible
   'FIP3-HIGH': {
-    uid: 'fip3-desactive-visible',
+    uid: '621c3c17-5f49-4ca5-b8ef-a4b1cecaf7c2',
     name: 'fip3-desactive-visible',
     active: false,
     display: true,
@@ -153,7 +153,7 @@ const fip = {
   // -- FIP - FIP4-HIGH - Deactivated and invisible
   // use fip1 urls to avoid the generation of a container
   'FIP4-HIGH': {
-    uid: 'fip4-desactive-invisible',
+    uid: 'ce0f6c4d-d70e-411e-a8a0-2a66afa7bd90',
     name: 'fip4-desactive-invisible',
     active: false,
     display: false,
@@ -205,7 +205,7 @@ const fip = {
   // -- FIP - FIP5-HIGH - Activated and invisible
   // use fip1 urls to avoid the generation of a container
   'FIP5-HIGH': {
-    uid: 'fip5-active-invisible',
+    uid: '3ae390ce-c9b8-4090-926f-3db90f85fe6a',
     name: 'fip5-active-invisible',
     active: true,
     display: false,
@@ -256,7 +256,7 @@ const fip = {
   },
   // -- FIP - FIP6-HIGH
   'FIP6-HIGH': {
-    uid: 'fip6-high',
+    uid: '2031310b-186e-4643-944a-00efb9d59e0f',
     name: 'fip6-high',
     active: true,
     display: true,
@@ -309,7 +309,7 @@ const fip = {
   // -- FIP - FIP7-HIGH - no discovery attribute
   // use fip1 urls to avoid the generation of a container
   'FIP7-HIGH': {
-    uid: 'fip7-high',
+    uid: 'ed928691-4697-44b4-9e56-df1853876610',
     name: 'fip7-high',
     active: true,
     display: true,
@@ -361,7 +361,7 @@ const fip = {
   // Blacklisted by FSP2
   // Absent of FSP5 whitelist
   'FIP8-HIGH': {
-    uid: 'fip8-high',
+    uid: '0cbdf732-aaea-4566-a99e-4430f388ff18',
     name: 'fip8-high',
     active: true,
     display: true,
@@ -411,7 +411,7 @@ const fip = {
   // -- FIP - FIP9-HIGH - no discovery url
   // use fip1 urls to avoid the generation of a container
   'FIP9-HIGH': {
-    uid: 'fip9-high',
+    uid: 'b4ae876d-773c-4b4a-bd45-33e0938af4a7',
     name: 'fip9-high',
     active: true,
     display: true,
@@ -461,7 +461,7 @@ const fip = {
   // -- FIP - FIP10-HIGH - invalid parameter
   // use fip1 urls to avoid the generation of a container
   'FIP10-HIGH': {
-    uid: 'fip10-high',
+    uid: 'a97369fb-f7b0-478a-bcc1-6fa49c8782d9',
     name: 'fip10-high',
     active: true,
     display: true,
@@ -513,7 +513,7 @@ const fip = {
   // -- FIP - FIP11-HIGH
   // use fip1 urls to avoid the generation of a container
   'FIP11-HIGH': {
-    uid: 'fip11-high',
+    uid: 'a437f8aa-10b5-48bd-8931-78f2d055e3df',
     name: 'fip11-high',
     active: true,
     display: true,
@@ -566,7 +566,7 @@ const fip = {
   // -- FIP - IDP12-HIGH - Identity Provider not respecting the DTO
   // use fip1 urls to avoid the generation of a container
   'FIP12-HIGH': {
-    uid: 'fip12-high',
+    uid: '7f90ea0f-b965-4f10-bbf8-d6ad19a17451',
     name: 'fip12-high',
     active: true,
     display: true,
@@ -619,7 +619,7 @@ const fip = {
   },
   // -- FIP - FIP13V2 - Activated - eIDAS élevé - crypted (ECDH-ES + A256GCM) - signed (ES256)
   'FIP13-HIGH': {
-    uid: 'fip13-high',
+    uid: '8456c460-f89b-4744-93cf-e0b6ac694075',
     name: 'fip13-high',
     active: true,
     display: true,
@@ -670,9 +670,52 @@ const fip = {
     ],
   },
 
+  // -- FIP - FIP13V2BIS - Activated - INVALID FORMAT
+  'FIP13BIS-HIGH': {
+    uid: 'ad0ed11b-621b-45e9-af75-64f27ced6d52',
+    name: 'fip13-high',
+    active: true,
+    display: true,
+    isBeta: false,
+    title:
+      'IDP13 - Identity Provider - INVALID FORMAT',
+    image: 'fi-mock-eleve.svg',
+    imageFocus: 'fi-mock-eleve.svg',
+    alt: 'impots',
+    trustedIdentity: false,
+    eidas: 3,
+    featureHandlers: {
+      coreVerify: 'core-fcp-default-verify',
+      authenticationEmail: 'core-fcp-send-email',
+      idpIdentityCheck: 'core-fcp-default-identity-check',
+    },
+    mailto: '',
+    specificText: 'specific text fip13-high',
+    discovery: true,
+    response_types: ['code'],
+    clientID: 'myclientidforfip13bis-high',
+    client_secret:
+      'jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE',
+    order: 13,
+    createdAt: new Date('2022-02-23 17:09:17'),
+    updatedAt: new Date('2023-03-10 17:09:17'),
+    updatedBy: 'admin',
+    id_token_signed_response_alg: 'ES256',
+    token_endpoint_auth_method: 'client_secret_post',
+    revocation_endpoint_auth_method: 'client_secret_post',
+    userinfo_encrypted_response_alg: 'ECDH-ES',
+    userinfo_encrypted_response_enc: 'A256GCM',
+    redirect_uris: [
+      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback',
+    ],
+    post_logout_redirect_uris: [
+      'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback',
+    ],
+  },
+
   // -- FIP - FIP14V2 - Activated - eIDAS élevé - crypted (RSA-OAEP + A256GCM) - signed (RS256)
   'FIP14-HIGH': {
-    uid: 'fip14-high',
+    uid: '81e3c37a-e7ea-43be-aa7a-0ed28a1a6e47',
     name: 'fip14-high',
     active: true,
     display: true,
@@ -725,7 +768,7 @@ const fip = {
 
   // -- FIP - FIP15V2 - Activated - eIDAS substantiel - crypted (RSA-OAEP + A256GCM) - signed (ES256)
   'FIP15-HIGH': {
-    uid: 'fip15-high',
+    uid: '4c3e8c0d-12e3-46c2-bef8-5cb7b0702c9d',
     name: 'fip15-high',
     active: true,
     display: true,
@@ -779,7 +822,7 @@ const fip = {
 
   // -- FIP - FIP16V2 - Activated - eIDAS substantiel - crypted (ECDH-ES + A256GCM) - signed (RS256)
   'FIP16-HIGH': {
-    uid: 'fip16-high',
+    uid: 'f403044b-fcd3-46f2-a87b-30e65f8e7bfe',
     name: 'fip16-high',
     active: true,
     display: true,
@@ -832,7 +875,7 @@ const fip = {
 
   // -- FIP - FIP17V2 - Activated - eIDAS substantiel - crypted (none) - signed (ES256)
   'FIP17-HIGH': {
-    uid: 'fip17-high',
+    uid: '913ef56e-0997-4e25-bc55-19a20d6e0532',
     name: 'fip17-high',
     active: true,
     display: true,
@@ -885,7 +928,7 @@ const fip = {
 
   // -- FIP - FIP18V2 - Activated - eIDAS faible - crypted (none) - signed (ES256)
   'FIP18-HIGH': {
-    uid: 'fip18-high',
+    uid: 'c341093a-f4b4-4151-85ff-5fbdcd6baa58',
     name: 'fip18-high',
     active: true,
     display: true,
@@ -939,7 +982,7 @@ const fip = {
 
   // -- FIP - FIP19V2 - Activated - eIDAS faible - crypted (none) - signed (RS256)
   'FIP19-HIGH': {
-    uid: 'fip19-high',
+    uid: '3c8776ae-5278-425b-8e97-7f01eadd22a0',
     name: 'fip19-high',
     active: true,
     display: true,
@@ -992,7 +1035,7 @@ const fip = {
 
   // -- FIP - FIP20V2 - Activated - eIDAS faible - crypted (none) - signed (HS256)
   'FIP20-HIGH': {
-    uid: 'fip20-high',
+    uid: '7d35f733-a3d0-49c1-9a6f-b9f4800b0b7a',
     name: 'fip20-high',
     active: true,
     display: true,
@@ -1043,7 +1086,7 @@ const fip = {
   },
   // -- FIP - FIP21-HIGH - BETA
   'FIP21-HIGH': {
-    uid: 'fip21-high',
+    uid: 'de28e362-b476-41dc-9c6d-fadb3a21d871',
     name: 'fip21-high',
     active: true,
     display: true,
@@ -1095,7 +1138,7 @@ const fip = {
 
   // -- FIPEIDAS - FIPEIDASV2 - Activated
   EIDASBRIDGE: {
-    uid: 'eidas-bridge',
+    uid: '8aa849db-8402-4f2e-bad9-7471dd21ff94',
     url: 'https://eidas-bridge.docker.dev-franceconnect.fr',
     name: 'eidas-bridge',
     image: 'demonstration_eleve.png',
