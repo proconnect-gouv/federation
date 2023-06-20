@@ -20,4 +20,5 @@ export default {
   // @NOTE a-t-on besoin de cette variable pour fcp low ?
   udFqdn: process.env.UD_FQDN,
   minAcrForContextRequest: 'eidas2',
+  eidasBridgeUid: env.string('EIDAS_BRIDGE_UID'),
 } as AppConfig;

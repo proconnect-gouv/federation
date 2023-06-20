@@ -50,7 +50,7 @@ const fsa = {
     jwks_uri:
       "https://fsa1-low.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
-    idpFilterList: ["fia3-low", "fia5-low", "fia8-low"],
+    idpFilterList: ["405d3839-9182-415f-9926-597489d11509", "46f5d9f9-881d-46b1-bdcc-0548913ea443", "56c5831b-7749-4206-b961-11f840bc566b"],
     identityConsent: false,
     trustedIdentity: false,
     ssoDisabled: false,
@@ -104,7 +104,7 @@ const fsa = {
     jwks_uri:
       "https://fsa2-low.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: false,
-    idpFilterList: ["fia1-low", "fia2-low", "fia3-desactive-visible", "fia5-low"],
+    idpFilterList: ["9c716f61-b8a1-435c-a407-ef4d677ec270", "0e7c099f-fe86-49a0-b7d1-19df45397212", "405d3839-9182-415f-9926-597489d11509", "46f5d9f9-881d-46b1-bdcc-0548913ea443"],
     identityConsent: false,
     trustedIdentity: false,
     ssoDisabled: false,
@@ -215,7 +215,7 @@ const fsa = {
     jwks_uri:
       "https://fsa4-low.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: false,
-    idpFilterList: ["fia1-low", "fia2-low", "fia4-low", "fia5-low"],
+    idpFilterList: ["9c716f61-b8a1-435c-a407-ef4d677ec270", "0e7c099f-fe86-49a0-b7d1-19df45397212", "87762a76-7da0-442d-8243-5785f859b88b", "46f5d9f9-881d-46b1-bdcc-0548913ea443"],
     identityConsent: false,
     trustedIdentity: false,
     ssoDisabled: false,
@@ -270,7 +270,7 @@ const fsa = {
       jwks_uri:
         "https://fsa5-low.docker.dev-franceconnect.fr/client/.well-known/keys",
       idpFilterExclude: false,
-      idpFilterList: ["fia8-low"],
+      idpFilterList: ["56c5831b-7749-4206-b961-11f840bc566b"],
       identityConsent: false,
       trustedIdentity: false,
       ssoDisabled: false,
