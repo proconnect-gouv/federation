@@ -695,6 +695,8 @@ const fip = {
 
 // -- FIs ----------
 
+db.provider.createIndex({ name: 1 }, { unique: true });
+
 Object.values(fip).forEach((fi) => {
   print(`FIP > Initializing provider: ${fi.name} - Activated`);
   db.provider.update({ uid: fi.uid }, fi, { upsert: true });
