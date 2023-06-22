@@ -480,6 +480,7 @@
 | App_CITIZEN_DATABASE_PATH | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_PASSWORD_VERIFICATION | boolean |
 | App_SCENARIOS_DATABASE_PATH | string |
 | FQDN | string |
 | Logger_FILE | string |
@@ -518,6 +519,7 @@
 | App_CITIZEN_DATABASE_PATH | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_PASSWORD_VERIFICATION | boolean |
 | App_SCENARIOS_DATABASE_PATH | string |
 | FQDN | string |
 | Logger_FILE | string |
@@ -557,6 +559,7 @@
 | App_CITIZEN_DATABASE_PATH | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_PASSWORD_VERIFICATION | boolean |
 | App_SCENARIOS_DATABASE_PATH | string |
 | FQDN | string |
 | Logger_FILE | string |
