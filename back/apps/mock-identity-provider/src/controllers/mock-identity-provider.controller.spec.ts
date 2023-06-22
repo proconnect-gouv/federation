@@ -51,6 +51,7 @@ describe('MockIdentityProviderController', () => {
 
   const mockIdentityProviderServiceMock = {
     getIdentity: jest.fn(),
+    isPasswordValid: jest.fn(),
   };
 
   const interactionIdMock = 'interactionIdMockValue';
@@ -58,6 +59,7 @@ describe('MockIdentityProviderController', () => {
   const scopeMock = 'scopeMock';
   const providerUidMock = 'providerUidMock';
   const loginMockValue = 'loginMockValue';
+  const passwordMockValue = 'passwordMockValue';
   const randomStringMock = 'randomStringMockValue';
   const stateMock = randomStringMock;
 
@@ -190,9 +192,14 @@ describe('MockIdentityProviderController', () => {
     const interactionId: string = interactionIdMock;
     const body = {
       login: loginMockValue,
+      password: passwordMockValue,
       interactionId,
       acr: acrMock,
     };
+
+    beforeEach(() => {
+      mockIdentityProviderServiceMock.isPasswordValid.mockReturnValue(true);
+    });
 
     it('should call service.getIdentity() to retrieve sp identity', async () => {
       // Given
@@ -223,6 +230,7 @@ describe('MockIdentityProviderController', () => {
       const body = {
         interactionId,
         login: loginMockValue,
+        password: passwordMockValue,
         acr: acrMock,
       };
       const expectedError = new Error('Identity not found in database');
@@ -237,6 +245,70 @@ describe('MockIdentityProviderController', () => {
         ),
       ).rejects.toThrow(expectedError);
       expect(next).toHaveBeenCalledTimes(0);
+    });
+
+    it('should check if password is valid', async () => {
+      // Given
+      const identityMock = {
+        password: passwordMockValue,
+      };
+      mockIdentityProviderServiceMock.getIdentity.mockResolvedValue(
+        identityMock,
+      );
+      const interactionId: string = interactionIdMock;
+      const body = {
+        interactionId,
+        login: loginMockValue,
+        password: `${passwordMockValue}_foo`,
+        acr: acrMock,
+      };
+
+      // When
+      await controller.getLogin(
+        next,
+        body,
+        oidcClientSessionServiceMock,
+        appSessionServiceMock,
+      );
+
+      // Then
+      expect(
+        mockIdentityProviderServiceMock.isPasswordValid,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockIdentityProviderServiceMock.isPasswordValid,
+      ).toHaveBeenCalledWith(passwordMockValue, body.password);
+    });
+
+    it('should throw an error and not call "next" if the password is not valid', async () => {
+      // Given
+      mockIdentityProviderServiceMock.isPasswordValid.mockReturnValueOnce(
+        false,
+      );
+      const identityMock = {
+        password: passwordMockValue,
+      };
+      mockIdentityProviderServiceMock.getIdentity.mockResolvedValue(
+        identityMock,
+      );
+      const interactionId: string = interactionIdMock;
+      const body = {
+        interactionId,
+        login: loginMockValue,
+        password: `${passwordMockValue}_foo`,
+        acr: acrMock,
+      };
+      const expectedError = new Error('Password is invalid');
+
+      // When / Then
+      await expect(() =>
+        controller.getLogin(
+          next,
+          body,
+          oidcClientSessionServiceMock,
+          appSessionServiceMock,
+        ),
+      ).rejects.toThrow(expectedError);
     });
 
     it('should save the login in app session', async () => {
@@ -312,6 +384,7 @@ describe('MockIdentityProviderController', () => {
       const body = {
         interactionId,
         login: loginMockValue,
+        password: passwordMockValue,
         acr: acrMock,
       };
       // When

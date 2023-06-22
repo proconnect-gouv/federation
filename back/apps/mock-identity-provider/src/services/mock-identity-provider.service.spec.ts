@@ -425,6 +425,53 @@ describe('MockIdentityProviderService', () => {
     });
   });
 
+  describe('isPasswordValid()', () => {
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValue({ passwordVerification: true });
+    });
+
+    it('should return true if password check is enabled and password is valid', () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({ passwordVerification: true });
+      const password = 'password';
+      const inputPassword = 'password';
+
+      // When
+      const result = service.isPasswordValid(password, inputPassword);
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it('should return false if password check is enabled and password is invalid', () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({ passwordVerification: true });
+      const password = 'password';
+      const inputPassword = 'foo';
+
+      // When
+      const result = service.isPasswordValid(password, inputPassword);
+
+      // Then
+      expect(result).toBe(false);
+    });
+
+    it('should return true if password check is disabled even if password is invalid', () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        passwordVerification: false,
+      });
+      const password = 'password';
+      const inputPassword = 'foo';
+
+      // When
+      const result = service.isPasswordValid(password, inputPassword);
+
+      // Then
+      expect(result).toBe(true);
+    });
+  });
+
   describe('toOidcFormat', () => {
     it('should replace the "login" property by "sub" and return the OidcClaims', () => {
       // setup
