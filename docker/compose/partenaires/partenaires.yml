@@ -17,6 +17,7 @@ services:
       - 'mongo-fcp-low'
       - 'elasticsearch'
       - 'fc-core'
+      - 'maildev'
     volumes:
       - '${VOLUMES_DIR}/src/FranceConnect:/var/www/app'
       - '${VOLUMES_DIR}/partenaires:/var/www/app/projects/partenaires/config'
