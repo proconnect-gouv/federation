@@ -1,0 +1,13 @@
+mock-data-provider-build-image:
+  extends: .base-build
+  variables:
+    APP: mock-data-provider
+    MSG: "environments/outscale-tools/group_vars/all/versions.yml\nmock_data_provider_version:"
+
+mock-data-provider-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: mock-data-provider
+    MSG: "environments/outscale-tools/group_vars/all/versions.yml\nmock_data_provider_version:"
+  needs:
+    - job: mock-data-provider-build-image
