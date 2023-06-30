@@ -148,6 +148,9 @@ export class OidcClientController {
       idpLabel,
       idpState: state,
       idpNonce: nonce,
+      idpIdentity: undefined,
+      spIdentity: undefined,
+      accountId: undefined,
     };
 
     await sessionOidc.set(session);
