@@ -106,5 +106,5 @@ _command_register "mongo-shell-core-fcp-low" "_mongo_shell_core-fcp-low" "[depre
 _command_register "mongo-shell-core-legacy" "_mongo_shell_core-legacy" "[deprecated] Open mongo shell for core-legacy"
 _command_register "mongo-script" "_mongo_script" "Execute MongoDB <script> on given <container>: docker-stack mongo-script <container> <script>"
 
-_command_register "add" "_add_node_app" ""
+_command_register "add" "_add_node_app" "Start a node application."
 _command_run "$1" "${@:2}"
