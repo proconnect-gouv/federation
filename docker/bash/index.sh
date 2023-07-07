@@ -88,7 +88,7 @@ _command_register "reload-rp" "_reload-rp" "Reload Reverse proxy"
 
 _command_register "storybook" "_storybook" "" # Description to be defined
 
-_command_register "compose" "cd ${WORKING_DIR} && docker-compose" "Alias for docker-compose"
+_command_register "compose" "cd ${WORKING_DIR} && ${DOCKER_COMPOSE}" "Alias for docker-compose"
 
 _command_register "llng-configure" "_llng-configure" "Restore LemonLDAP configuration from ./docker/volumes/llng/llng-conf.json dump file"
 
