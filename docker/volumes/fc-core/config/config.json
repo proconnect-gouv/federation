@@ -87,7 +87,14 @@
     "httpsEnabled": true,
     "userId": "SGMAP France connect"
   },
-  "scope": ["profile", "email", "address", "phone", "birthplace", "birthcountry"],
+  "scope": [
+    "profile",
+    "email",
+    "address",
+    "phone",
+    "birthplace",
+    "birthcountry"
+  ],
   "serverTimeout": 25000,
   "smtp": {
     "host": "maildev",
@@ -97,5 +104,23 @@
     "techErrorUrl": "https://my-user-has-an-error-and-is-redirected-to-support-tech-error-form"
   },
   "tracesId": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
-  "tracesSecret": "99c1105d041adda2c47835a82f6be9dc13e2a2731e302e6f214075aef09f5abb"
+  "tracesSecret": "99c1105d041adda2c47835a82f6be9dc13e2a2731e302e6f214075aef09f5abb",
+  "helmet": {
+    "excludedPaths": ["/js/franceconnect.js", "/stylesheets/franceconnect.css"],
+    "referrerPolicy": {
+      "policy": ["origin", "unsafe-url"]
+    },
+    "directives": {
+      "manifest-src": ["'self'", "*.dev-franceconnect.fr"],
+      "script-src": ["'self'", "'unsafe-inline'", "*.dev-franceconnect.fr"],
+      "style-src": ["'self'", "'unsafe-inline'", "*.dev-franceconnect.fr"],
+      "img-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "*.dev-franceconnect.fr",
+        "data:"
+      ],
+      "formAction": null
+    }
+  }
 }
