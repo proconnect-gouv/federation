@@ -61,6 +61,10 @@
     "certPath": "/etc/ssl/docker_host/app.crt",
     "keyPath": "/etc/ssl/docker_host/app.key"
   },
+  "appTls": {
+    "certPath": "/etc/ssl/docker_host/app.crt",
+    "keyPath": "/etc/ssl/docker_host/app.key"
+  },
   "issuerURL": "https://fcp.docker.dev-franceconnect.fr",
   "logger": {
     "level": "debug",
