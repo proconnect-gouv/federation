@@ -34,7 +34,7 @@ _do_up() {
   local services=$(_get_services "$@")
 
   cd ${WORKING_DIR}
-  docker-compose up --build -d $services
+  $DOCKER_COMPOSE up --build -d $services
 }
 
 _check_for_unknown_services() {
