@@ -10,7 +10,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import {
   CoreAcrService,
@@ -31,6 +30,7 @@ import { ISessionService, Session, SessionCsrfService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import {
+  AppConfig,
   AppSession,
   CoreConfig,
   GetConsentSessionDto,

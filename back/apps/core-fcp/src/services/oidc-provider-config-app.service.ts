@@ -2,7 +2,6 @@ import { KoaContextWithOIDC } from 'oidc-provider';
 
 import { Injectable } from '@nestjs/common';
 
-import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
@@ -18,6 +17,8 @@ import {
   OidcProviderGrantService,
 } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
+
+import { AppConfig } from '../dto';
 
 @Injectable()
 export class OidcProviderConfigAppService extends OidcProviderAppConfigLibService {

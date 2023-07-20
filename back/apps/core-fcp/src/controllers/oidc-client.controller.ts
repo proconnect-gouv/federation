@@ -16,7 +16,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { CoreVerifyService, ProcessCore } from '@fc/core';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
@@ -41,6 +40,7 @@ import {
 import { TrackingService } from '@fc/tracking';
 
 import {
+  AppConfig,
   GetOidcCallbackSessionDto,
   OidcIdentityDto,
   RedirectToIdpSessionDto,

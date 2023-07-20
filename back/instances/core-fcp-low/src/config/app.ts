@@ -1,14 +1,15 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { AppConfig } from '@fc/app';
 import { ConfigParser } from '@fc/config';
+import { AppConfig } from '@fc/core-fcp';
 
 const env = new ConfigParser(process.env, 'App');
 
 export default {
   apiOutputContentType: env.string('API_OUTPUT_CONTENT_TYPE'),
   name: 'fclow',
+  platform: 'FranceConnect',
   urlPrefix: '/api/v2',
   assetsPaths: env.json('ASSETS_PATHS'),
   viewsPaths: env.json('VIEWS_PATHS'),
