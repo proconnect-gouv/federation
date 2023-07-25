@@ -1,4 +1,4 @@
-version: '2.4'
+version: "2.4"
 
 services:
   ####################
@@ -8,29 +8,29 @@ services:
   min-core-legacy:
     image: alpine
     depends_on:
-      - 'fc-core'
-      - 'fsp1'
-      - 'fip1-low'
+      - "fc-core"
+      - "fsp1"
+      - "fip1-low"
 
   bdd-fcp-legacy:
     image: alpine
     depends_on:
       # -- Core v1
-      - 'fc-core'
-      - 'fc-exploitation'
-      - 'fc-support'
+      - "fc-core"
+      - "fc-exploitation"
+      - "fc-support"
       # -- SP
-      - 'fsp1' # for public tests
-      - 'fsp2'
-      - 'fsp3' # for private tests
+      - "fsp1" # for public tests
+      - "fsp2"
+      - "fsp3" # for private tests
       # -- IdP
-      - 'fip1-low'
-      - 'fip2-low'
-      - 'fip3-low'
-      - 'fip8-low'
-      - 'fi-beta-mock'
-      - 'aidants-connect-mock'
+      - "fip1-low"
+      - "fip2-low"
+      - "fip3-low"
+      - "fip8-low"
+      - "fi-beta-mock"
+      - "aidants-connect-mock"
       # -- DP
-      - 'fdp1'
+      - "fdp1"
       # -- FS traces legacy
-      - 'elasticsearch'
+      - "elasticsearch"

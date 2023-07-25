@@ -1,4 +1,4 @@
-version: '2.4'
+version: "2.4"
 
 ####################
 ####################
@@ -12,15 +12,15 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app
     depends_on:
-      - 'squid'
+      - "squid"
     volumes:
-      - '${VOLUMES_DIR}/src/usagers:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+      - "${VOLUMES_DIR}/src/usagers:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/usagers/.env/usagers.env'
+      - "${COMPOSE_DIR}/shared/.env/base-app.env"
+      - "${COMPOSE_DIR}/usagers/.env/usagers.env"
     networks:
       - public
-    command: 'tail -f /dev/null'
+    command: "tail -f /dev/null"
