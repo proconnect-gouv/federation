@@ -1,4 +1,4 @@
-version: '2.4'
+version: "2.4"
 
 ####################
 ####################
@@ -9,34 +9,34 @@ services:
     user: ${CURRENT_UID}
     working_dir: /var/www/app/fc-support
     depends_on:
-      - 'pg-support'
-      - 'mongo-fcp-low'
-      - 'squid'
-      - 'rnipp'
-      - 'haproxy'
-      - 'csmr-user-preferences-high'
-      - 'broker'
+      - "pg-support"
+      - "mongo-fcp-low"
+      - "squid"
+      - "rnipp"
+      - "haproxy"
+      - "csmr-user-preferences-high"
+      - "broker"
     volumes:
-      - '${VOLUMES_DIR}/src/fc-apps:/var/www/app'
-      - '${VOLUMES_DIR}/app:/opt/scripts'
-      - '${VOLUMES_DIR}/.home:/home'
-      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
-      - '${VOLUMES_DIR}/log:/var/log/app'
+      - "${VOLUMES_DIR}/src/fc-apps:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+      - "${VOLUMES_DIR}/log:/var/log/app"
     env_file:
-      - '${COMPOSE_DIR}/shared/.env/base-app.env'
-      - '${COMPOSE_DIR}/shared/.env/postgres.env'
-      - '${COMPOSE_DIR}/core-legacy/.env/support-legacy.env'
-      - '${COMPOSE_DIR}/fcp-low/.env/mongo-fcp-low.env'
+      - "${COMPOSE_DIR}/shared/.env/base-app.env"
+      - "${COMPOSE_DIR}/shared/.env/postgres.env"
+      - "${COMPOSE_DIR}/core-legacy/.env/support-legacy.env"
+      - "${COMPOSE_DIR}/fcp-low/.env/mongo-fcp-low.env"
     networks:
       - fc
       - data
-    command: 'pm2 logs'
+    command: "pm2 logs"
 
   pg-support:
     image: postgres:11
     environment:
-      - 'POSTGRES_DB=pg-db'
-      - 'POSTGRES_USER=pg-user'
-      - 'POSTGRES_PASSWORD=pg-password'
+      - "POSTGRES_DB=pg-db"
+      - "POSTGRES_USER=pg-user"
+      - "POSTGRES_PASSWORD=pg-password"
     networks:
       - data
