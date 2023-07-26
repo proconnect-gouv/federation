@@ -44,7 +44,7 @@ db.provider.update(
       "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
   },
-  { upsert: true }
+  { upsert: true },
 );
 
 db.ministries.update(
@@ -53,5 +53,5 @@ db.ministries.update(
     $push: {
       identityProviders: "ebe0026f-d6e3-4807-bfa2-c65c8ae46d07",
     },
-  }
+  },
 );

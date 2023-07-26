@@ -1,9 +1,9 @@
-cluster.name: 'docker-cluster'
+cluster.name: "docker-cluster"
 network.host: 0.0.0.0
 
 xpack.security.enabled: true
 
-xpack.security.authc.anonymous.roles: 'monitor'
+xpack.security.authc.anonymous.roles: "monitor"
 
 xpack.security.transport.ssl.enabled: true
 xpack.security.transport.ssl.key: elasticsearch.key

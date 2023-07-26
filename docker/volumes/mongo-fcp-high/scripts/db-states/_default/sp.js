@@ -401,7 +401,10 @@ const fsp = {
     jwks_uri:
       "https://eidas-bridge.docker.dev-franceconnect.fr/client/.well-known/keys",
     idpFilterExclude: true,
-    idpFilterList: ["2031310b-186e-4643-944a-00efb9d59e0f", "0cbdf732-aaea-4566-a99e-4430f388ff18"],
+    idpFilterList: [
+      "2031310b-186e-4643-944a-00efb9d59e0f",
+      "0cbdf732-aaea-4566-a99e-4430f388ff18",
+    ],
     identityConsent: false,
     ssoDisabled: false,
   },

@@ -5,5 +5,5 @@ db.provider.update(
       title: "Idp test Updated, activated",
       active: true,
     },
-  }
+  },
 );
