@@ -49,6 +49,7 @@ const fip = {
   },
 
   // -- FIP - FIP2-HIGH - Activated
+  // Without endSessionURL 
   'FIP2-HIGH': {
     uid: 'f9a3f6fe-f9b3-4cec-b787-33713fdffc79',
     name: 'fip2-high',
@@ -71,7 +72,7 @@ const fip = {
     url: 'https://fip2-high.docker.dev-franceconnect.fr',
     tokenURL: 'https://fip2-high.docker.dev-franceconnect.fr/token',
     userInfoURL: 'https://fip2-high.docker.dev-franceconnect.fr/userinfo',
-    endSessionURL: 'https://fip2-high.docker.dev-franceconnect.fr/session/end',
+    // endSessionURL: 'https://fip2-high.docker.dev-franceconnect.fr/session/end',
     statusURL: 'https://fip2-high.docker.dev-franceconnect.fr/',
     jwksURL: 'https://fip2-high.docker.dev-franceconnect.fr/jwks',
     authzURL: 'https://fip2-high.docker.dev-franceconnect.fr/authorize',

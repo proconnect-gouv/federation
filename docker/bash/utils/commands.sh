@@ -35,10 +35,16 @@ function _command_run() {
 }
 
 function _command_list() {
+  local search=$1
+
   echo ""
   echo "Available commands:"
 
-  echo "$(_do_list_commands | sort)"
+  if [ -z ${search} ]; then
+    echo "$(_do_list_commands | sort)"
+  else
+    echo "$(_do_list_commands | grep "${search}" | sort)"
+  fi
 
   echo "---------------------------"
   echo "Use env variable 'VERBOSE' to get verbose output"

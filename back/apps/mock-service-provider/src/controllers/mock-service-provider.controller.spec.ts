@@ -10,6 +10,8 @@ import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
 import { SessionNotFoundException } from '@fc/session';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
@@ -51,11 +53,7 @@ describe('MockServiceProviderController', () => {
     error_description: 'error_description',
   };
 
-  const sessionServiceMock = {
-    destroy: jest.fn(),
-    set: jest.fn(),
-    get: jest.fn(),
-  };
+  const sessionServiceMock = getSessionServiceMock();
 
   const nonceMock = 'nonceMockValue';
   const idpStateMock = 'idpStateMockValue';

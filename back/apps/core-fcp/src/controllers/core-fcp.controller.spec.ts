@@ -15,6 +15,8 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import { SessionCsrfService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import { InsufficientAcrLevelSuspiciousContextException } from '../exceptions';
 import { CoreFcpService, CoreFcpVerifyService } from '../services';
 import { CoreFcpController } from './core-fcp.controller';
@@ -116,16 +118,9 @@ describe('CoreFcpController', () => {
     getById: jest.fn(),
   };
 
-  const oidcSessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-    setAlias: jest.fn(),
-  };
+  const oidcSessionServiceMock = getSessionServiceMock();
 
-  const appSessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-  };
+  const appSessionServiceMock = getSessionServiceMock();
 
   const sessionCsrfServiceMock = {
     get: jest.fn(),

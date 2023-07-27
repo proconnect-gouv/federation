@@ -32,6 +32,7 @@ export default {
     `${app.urlPrefix}${OidcProviderRoutes.AUTHORIZATION}`,
     `${app.urlPrefix}${OidcProviderRoutes.JWKS}`,
     `${app.urlPrefix}${OidcProviderRoutes.OPENID_CONFIGURATION}`,
+    `${app.urlPrefix}${OidcProviderRoutes.END_SESSION_CONFIRMATION}`,
     `${app.urlPrefix}${OidcClientRoutes.WELL_KNOWN_KEYS}`,
   ],
   templateExposed: {

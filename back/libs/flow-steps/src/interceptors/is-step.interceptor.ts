@@ -51,7 +51,7 @@ export class IsStepInterceptor implements NestInterceptor {
       return;
     }
 
-    const session = SessionService.getBoundedSession<OidcSession>(
+    const session = SessionService.getBoundSession<OidcSession>(
       req,
       'OidcClient',
     );

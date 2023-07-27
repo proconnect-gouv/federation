@@ -16,6 +16,8 @@ import {
 } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import { UserDashboardFrontRoutes } from '../enums';
 import { UserDashboardTokenRevocationException } from '../exceptions';
 import { OidcClientController } from './oidc-client.controller';
@@ -61,11 +63,7 @@ describe('OidcClient Controller', () => {
     verbose: jest.fn(),
   } as unknown as LoggerService;
 
-  const sessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-    reset: jest.fn(),
-  };
+  const sessionServiceMock = getSessionServiceMock();
 
   const sessionCsrfServiceMock = {
     get: jest.fn(),

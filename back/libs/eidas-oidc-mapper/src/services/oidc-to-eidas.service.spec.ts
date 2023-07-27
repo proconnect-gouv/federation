@@ -270,20 +270,20 @@ describe('OidcToEidasService', () => {
   });
 
   describe('mapRequestedAttributesFromClaims', () => {
-    const getClaimsBoundedClaimsToAttributesReducerMock = jest.fn();
+    const getClaimsBoundClaimsToAttributesReducerMock = jest.fn();
     const mockReduceResult = { mapped: 'attributes' };
     const mockReducer = () => {
       return mockReduceResult;
     };
 
     beforeEach(() => {
-      service['getClaimsBoundedClaimsToAttributesReducer'] =
-        getClaimsBoundedClaimsToAttributesReducerMock.mockReturnValueOnce(
+      service['getClaimsBoundClaimsToAttributesReducer'] =
+        getClaimsBoundClaimsToAttributesReducerMock.mockReturnValueOnce(
           mockReducer,
         );
     });
 
-    it('should get the reducer bounded with the given claims', () => {
+    it('should get the reducer bound with the given claims', () => {
       // action
       service['mapRequestedAttributesFromClaims'](
         claimsMock,
@@ -291,12 +291,12 @@ describe('OidcToEidasService', () => {
       );
 
       // expect
-      expect(
-        getClaimsBoundedClaimsToAttributesReducerMock,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        getClaimsBoundedClaimsToAttributesReducerMock,
-      ).toHaveBeenCalledWith(claimsMock);
+      expect(getClaimsBoundClaimsToAttributesReducerMock).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(getClaimsBoundClaimsToAttributesReducerMock).toHaveBeenCalledWith(
+        claimsMock,
+      );
     });
 
     it('should return the reduce result', () => {
@@ -311,14 +311,14 @@ describe('OidcToEidasService', () => {
     });
   });
 
-  describe('getClaimsBoundedClaimsToAttributesReducer', () => {
+  describe('getClaimsBoundClaimsToAttributesReducer', () => {
     it('should bind the OidcToEidasService and the claims to the claimsToAttributesReducer function', () => {
       // setup
       service['claimsToAttributesReducer'] = jest.fn();
       service['claimsToAttributesReducer'].bind = jest.fn();
 
       // action
-      service['getClaimsBoundedClaimsToAttributesReducer'](claimsMock);
+      service['getClaimsBoundClaimsToAttributesReducer'](claimsMock);
 
       // expect
       expect(service['claimsToAttributesReducer'].bind).toHaveBeenCalledTimes(
@@ -330,10 +330,10 @@ describe('OidcToEidasService', () => {
       );
     });
 
-    it('should return the claimsToAttributesReducer bounded function', () => {
+    it('should return the claimsToAttributesReducer bound function', () => {
       // action
       const result =
-        service['getClaimsBoundedClaimsToAttributesReducer'](claimsMock);
+        service['getClaimsBoundClaimsToAttributesReducer'](claimsMock);
 
       // expect
       expect(result).toBeInstanceOf(Function);

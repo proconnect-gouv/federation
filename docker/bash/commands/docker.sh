@@ -48,7 +48,13 @@ _exec() {
 }
 
 _list_services() {
-  $DOCKER_COMPOSE ps --services | sort
+  local search=$1
+
+  if [ -z ${search} ]; then
+    $DOCKER_COMPOSE ps --services | sort
+  else
+    $DOCKER_COMPOSE ps --services | grep "${search}" | sort
+  fi
 }
 
 _pull_node_image() {

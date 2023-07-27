@@ -16,6 +16,8 @@ import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { TrackingService } from '@fc/tracking';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import { AppConfig, EidasBridgeIdentityDto } from '../dto';
 import { EidasBridgeInvalidEUIdentityException } from '../exceptions';
 import { EuIdentityToFrController } from './eu-identity-to-fr.controller';
@@ -68,15 +70,9 @@ describe('EuIdentityToFrController', () => {
     trace: jest.fn(),
   } as unknown as LoggerService;
 
-  const sessionServiceOidcMock = {
-    set: jest.fn(),
-    get: jest.fn(),
-  };
+  const sessionServiceOidcMock = getSessionServiceMock();
 
-  const sessionServiceEidasMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-  };
+  const sessionServiceEidasMock = getSessionServiceMock();
 
   const sessionDataMock: OidcClientSession = {
     spName: 'spNameMockValue',

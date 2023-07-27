@@ -199,11 +199,28 @@ export default {
       interceptRoutes: [{ method: RequestMethod.ALL, path: '/checktoken' }],
     },
 
-    // Not implemented yet
     SP_REQUESTED_LOGOUT: {
       step: '8.0.0',
       category: EventsCategories.FRONT_CINEMATIC,
       event: 'SP_REQUESTED_LOGOUT',
+    },
+
+    FC_REQUESTED_LOGOUT_FROM_IDP: {
+      step: '8.1.0',
+      category: EventsCategories.FRONT_CINEMATIC,
+      event: 'FC_REQUESTED_LOGOUT_FROM_IDP',
+      interceptRoutes: [
+        {
+          method: RequestMethod.ALL,
+          path: OidcClientRoutes.DISCONNECT_FROM_IDP,
+        },
+      ],
+    },
+
+    FC_SESSION_TERMINATED: {
+      step: '8.2.0',
+      category: EventsCategories.FRONT_CINEMATIC,
+      event: 'FC_SESSION_TERMINATED',
     },
   },
 } as TrackingConfig;
