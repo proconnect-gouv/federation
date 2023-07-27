@@ -27,7 +27,10 @@
     "idpId": "f9a3f6fe-f9b3-4cec-b787-33713fdffc79",
     "name": "fip2-high",
     "title": "IDP2 - Identity Provider - eIDAS élevé - nodiscov - nocrypt",
-    "descriptions": ["eidas 3 - nodiscov - crypted (none) - signed (RS256)"],
+    "descriptions": [
+      "eidas 3 - nodiscov - crypted (none) - signed (RS256)",
+      "sans endSessionUrl"
+    ],
     "mocked": true,
     "usable": true,
     "url": "https://fip2-high.{{TEST_ENV}}.dev-franceconnect.fr",

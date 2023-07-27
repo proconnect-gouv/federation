@@ -15,7 +15,6 @@ import {
   ISessionService,
   SessionBadFormatException,
   SessionCsrfService,
-  SessionNotFoundException,
 } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
@@ -506,16 +505,6 @@ describe('CoreFcaController', () => {
       expect(result).toEqual({});
     });
 
-    it('should throw if session is not found', async () => {
-      // Given
-      sessionServiceMock.get.mockResolvedValueOnce(undefined);
-      // When
-      await expect(
-        coreController.getInteraction(req, res, sessionServiceMock),
-      ).rejects.toThrow(SessionNotFoundException);
-      // Then
-    });
-
     it('should track route if not a refresh', async () => {
       // When
       await coreController.getInteraction(req, res, sessionServiceMock);
@@ -524,11 +513,9 @@ describe('CoreFcaController', () => {
       expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
     });
 
-    it('should track route if is a refresh', async () => {
+    it('should not track route if is a refresh', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValueOnce({
-        stepRoute: CoreRoutes.INTERACTION,
-      });
+      sessionServiceMock.get.mockResolvedValueOnce(CoreRoutes.INTERACTION);
       // When
       await coreController.getInteraction(req, res, sessionServiceMock);
 
@@ -538,21 +525,6 @@ describe('CoreFcaController', () => {
   });
 
   describe('getVerify()', () => {
-    it('should throw if session is not found', async () => {
-      // Given
-      sessionServiceMock.get.mockReturnValueOnce(null);
-
-      // When / Then
-      await expect(() =>
-        coreController.getVerify(
-          req,
-          res as unknown as Response,
-          params,
-          sessionServiceMock,
-        ),
-      ).rejects.toThrow(SessionNotFoundException);
-    });
-
     it('should not call handleSsoDisabled with ssoDisabled = false and isSso = false', async () => {
       // When
       const oidcClientSessionDataMock = {

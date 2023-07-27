@@ -33,9 +33,9 @@ import {
   AppConfig,
   AppSession,
   CoreConfig,
-  GetConsentSessionDto,
-  GetVerifySessionDto,
-  InteractionSessionDto,
+  GetConsentOidcClientSessionDto,
+  GetInteractionOidcClientSessionDto,
+  GetVerifyOidcClientSessionDto,
 } from '../dto';
 import { InsufficientAcrLevelSuspiciousContextException } from '../exceptions';
 import { CoreFcpService, CoreFcpVerifyService } from '../services';
@@ -92,7 +92,7 @@ export class CoreFcpController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient', InteractionSessionDto)
+    @Session('OidcClient', GetInteractionOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
     @Session('App')
     sessionApp: ISessionService<AppSession>,
@@ -200,7 +200,7 @@ export class CoreFcpController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient', GetVerifySessionDto)
+    @Session('OidcClient', GetVerifyOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
     @Session('App')
     sessionApp: ISessionService<AppSession>,
@@ -247,7 +247,7 @@ export class CoreFcpController {
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient', GetConsentSessionDto)
+    @Session('OidcClient', GetConsentOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const {

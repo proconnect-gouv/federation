@@ -6,6 +6,8 @@ import { LoggerService } from '@fc/logger-legacy';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { SessionService, SessionSubNotFoundException } from '@fc/session';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import {
   OidcProviderRuntimeException,
   OidcProviderSpIdNotFoundException,
@@ -27,10 +29,7 @@ describe('OidcProviderAppConfigLibService', () => {
     trace: jest.fn(),
   };
 
-  const sessionServiceMock = {
-    set: jest.fn(),
-    get: jest.fn(),
-  };
+  const sessionServiceMock = getSessionServiceMock();
 
   const errorServiceMock = {
     throwError: jest.fn(),

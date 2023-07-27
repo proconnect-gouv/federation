@@ -18,6 +18,8 @@ import {
   UserPreferencesService,
 } from '@fc/user-preferences';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import { GetUserTracesQueryDto } from '../dto';
 import { UserInfosInterface } from '../interfaces';
 import { UserDashboardService } from '../services';
@@ -49,11 +51,7 @@ describe('UserDashboardController', () => {
     trace: jest.fn(),
   } as unknown as LoggerService;
 
-  const sessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-  };
-
+  const sessionServiceMock = getSessionServiceMock();
   const randomStringMock = 'randomStringMockValue';
   const idpStateMock = 'idpStateMockValue';
   const identityMock = {

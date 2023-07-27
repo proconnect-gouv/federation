@@ -21,6 +21,8 @@ import {
 import { SessionNotFoundException, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import { EidasBridgeIdentityDto } from '../dto';
 import { IDP_ID } from '../enums';
 import { EidasBridgeInvalidFRIdentityException } from '../exceptions';
@@ -65,15 +67,9 @@ describe('FrIdentityToEuController', () => {
     mapPartialResponseSuccess: jest.fn(),
   };
 
-  const sessionServiceOidcMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-  };
+  const sessionServiceOidcMock = getSessionServiceMock();
 
-  const sessionServiceEidasMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-  };
+  const sessionServiceEidasMock = getSessionServiceMock();
 
   const oidcErrorMock = {
     error: 'error',

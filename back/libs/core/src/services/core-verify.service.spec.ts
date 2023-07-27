@@ -10,6 +10,8 @@ import { LoggerService } from '@fc/logger-legacy';
 import { IdentityProviderMetadata, IOidcIdentity, OidcSession } from '@fc/oidc';
 import { TrackingService } from '@fc/tracking';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import { ProcessCore } from '../enums';
 import { CoreIdentityProviderNotFoundException } from '../exceptions';
 import { IVerifyFeatureHandler } from '../interfaces';
@@ -25,10 +27,7 @@ describe('CoreVerifyService', () => {
     trace: jest.fn(),
   };
 
-  const sessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-  };
+  const sessionServiceMock = getSessionServiceMock();
 
   const spIdentityMock = {
     // oidc parameter

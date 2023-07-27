@@ -1,3 +1,4 @@
+import { Response } from 'express';
 import * as OidcProvider from 'oidc-provider';
 
 import { HttpAdapterHost } from '@nestjs/core';
@@ -17,7 +18,7 @@ import {
   OidcProviderInteractionNotFoundException,
   OidcProviderRuntimeException,
 } from './exceptions';
-import { OidcProviderService } from './oidc-provider.service';
+import { COOKIES, OidcProviderService } from './oidc-provider.service';
 import { OidcProviderConfigService } from './services/oidc-provider-config.service';
 import { OidcProviderErrorService } from './services/oidc-provider-error.service';
 import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
@@ -641,6 +642,23 @@ describe('OidcProviderService', () => {
       expect(
         oidcProviderConfigAppMock.finishInteraction,
       ).toHaveBeenLastCalledWith(reqMock, resMock, sessionDataMock);
+    });
+  });
+
+  describe('clearCookies', () => {
+    it('should iterate over COOKIES and call res.clearCookie with entry from COOKIES', () => {
+      // Given
+      const resMock = {
+        clearCookie: jest.fn(),
+      } as unknown as Response;
+      // When
+      service.clearCookies(resMock);
+      // Then
+      expect(resMock.clearCookie).toHaveBeenCalledTimes(3);
+
+      expect(resMock.clearCookie).toHaveBeenNthCalledWith(1, COOKIES[0]);
+      expect(resMock.clearCookie).toHaveBeenNthCalledWith(2, COOKIES[1]);
+      expect(resMock.clearCookie).toHaveBeenNthCalledWith(3, COOKIES[2]);
     });
   });
 });

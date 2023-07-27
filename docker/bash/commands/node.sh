@@ -10,7 +10,7 @@ _start() {
   local apps="${@:-no-container}"
   for app in ${apps}; do
     task "   * Starting app \e[3m${app}\e[0m" \
-      "_do_start "${app}""
+      "_do_start" "${app}"
   done
 
   # Reload RP in case the app took to long and was consired down by Nginx
@@ -21,7 +21,7 @@ _start_ci() {
   local apps="${@:-no-container}"
   for app in ${apps}; do
     task "   * Starting app (CI mode) \e[3m${app}\e[0m" \
-      "_do_start_ci "${app}""
+      "_do_start_ci" "${app}"
   done
 
   # Reload RP in case the app took to long and was consired down by Nginx
@@ -58,7 +58,7 @@ _stop() {
   apps=${@:-no-container}
   for app in $apps; do
     task " * Stopping app \e[3m${app}\e[0m" \
-      "_do_stop ${app}"
+      "_do_stop" "${app}"
   done
 }
 

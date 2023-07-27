@@ -25,7 +25,10 @@
   },
   {
     "idpId": "fia2v2",
-    "descriptions": ["FI eidas1 avec signature ES256"],
+    "descriptions": [
+      "FI eidas1 avec signature ES256",
+      "différent"
+    ],
     "ministry": "Démonstration",
     "title": "Identity Provider 2 - ES256",
     "mocked": true,

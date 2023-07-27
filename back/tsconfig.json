@@ -492,7 +492,13 @@
       ],
       "@fc/data-provider-adapter-core/*": [
         "libs/data-provider-adapter-core/src/*"
-      ]
+      ],
+      "@mocks/session": [
+        "libs/session/.mocks"
+      ],      
+      "@mocks/session/*": [
+        "libs/session/.mocks/*"
+      ],
     }
   },
   "files": [

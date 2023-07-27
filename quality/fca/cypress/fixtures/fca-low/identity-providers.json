@@ -24,7 +24,10 @@
   },
   {
     "idpId": "0e7c099f-fe86-49a0-b7d1-19df45397212",
-    "descriptions": ["FI eidas1 avec signature RS256"],
+    "descriptions": [
+      "FI eidas1 avec signature RS256",
+      "différent"
+    ],
     "ministry": "MOCK - Ministère de la transition écologique - ALL FIS - SORT 2",
     "title": "Identity Provider 2 - eIDAS faible - RS256",
     "mocked": true,

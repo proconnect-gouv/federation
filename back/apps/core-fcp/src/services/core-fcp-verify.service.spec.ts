@@ -5,6 +5,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { CoreVerifyService } from '@fc/core';
 import { LoggerService } from '@fc/logger-legacy';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import { CoreFcpVerifyService } from './core-fcp-verify.service';
 
 describe('CoreFcpVerifyService', () => {
@@ -21,10 +23,7 @@ describe('CoreFcpVerifyService', () => {
     trackVerified: jest.fn(),
   };
 
-  const sessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-  };
+  const sessionServiceMock = getSessionServiceMock();
 
   const interactionIdMock = 'interactionIdMockValue';
 

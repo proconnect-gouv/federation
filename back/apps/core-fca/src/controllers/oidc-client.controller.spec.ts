@@ -16,12 +16,13 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import {
   SessionCsrfService,
   SessionInvalidCsrfSelectIdpException,
-  SessionNotFoundException,
   SessionService,
 } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
-import { OidcIdentityDto } from '../dto';
+import { getSessionServiceMock } from '@mocks/session';
+
+import { GetOidcCallbackSessionDto, OidcIdentityDto } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
 import { OidcClientController } from './oidc-client.controller';
 
@@ -74,11 +75,8 @@ describe('OidcClient Controller', () => {
   const spNameMock = 'some SP';
   const randomStringMock = 'randomStringMockValue';
 
-  const sessionServiceMock = {
-    set: jest.fn(),
-    get: jest.fn(),
-    destroy: jest.fn(),
-  };
+  const sessionServiceMock = getSessionServiceMock();
+  const newSessionServiceMock = getSessionServiceMock();
 
   const sessionCsrfServiceMock = {
     get: jest.fn(),
@@ -205,6 +203,7 @@ describe('OidcClient Controller', () => {
 
     identityProviderServiceMock.getById.mockReturnValue(idpMock);
     sessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
+    newSessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
 
     oidcClientServiceMock.utils.buildAuthorizeParameters.mockReturnValue({
       state: stateMock,
@@ -221,6 +220,10 @@ describe('OidcClient Controller', () => {
     );
 
     configServiceMock.get.mockReturnValue(configMock);
+
+    jest
+      .spyOn(SessionService, 'getBoundSession')
+      .mockReturnValue(newSessionServiceMock);
   });
 
   it('should be defined', () => {
@@ -678,17 +681,35 @@ describe('OidcClient Controller', () => {
       );
     });
 
-    it('should throw an exception if the oidc session is not defined', async () => {
-      // setup
-      sessionServiceMock.get.mockReset().mockResolvedValueOnce(undefined);
+    it('should detach current session', async () => {
+      // When
+      await controller.getOidcCallback(req, res, sessionServiceMock);
+      // Then
+      expect(sessionServiceMock.detach).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.detach).toHaveBeenCalledWith(req, res);
+    });
 
+    it('should duplicate current session', async () => {
+      // When
+      await controller.getOidcCallback(req, res, sessionServiceMock);
+      // Then
+      expect(sessionServiceMock.duplicate).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.duplicate).toHaveBeenCalledWith(
+        req,
+        res,
+        GetOidcCallbackSessionDto,
+      );
+    });
+
+    it('should call SessionService.getBoundSession', async () => {
+      // setup
+      const getBoundSessionMock = jest.mocked(SessionService.getBoundSession);
       // action
-      await expect(
-        controller.getOidcCallback(req, res, sessionServiceMock),
-      ).rejects.toThrow(SessionNotFoundException);
+      await controller.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
-      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(getBoundSessionMock).toHaveBeenCalledTimes(1);
+      expect(getBoundSessionMock).toHaveBeenCalledWith(req, 'OidcClient');
     });
 
     it('should call token with providerId', async () => {
@@ -745,8 +766,10 @@ describe('OidcClient Controller', () => {
       await controller.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
-      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set).toHaveBeenCalledWith(identityExchangeMock);
+      expect(newSessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(newSessionServiceMock.set).toHaveBeenCalledWith(
+        identityExchangeMock,
+      );
     });
 
     it('should redirect user after token and userinfo received and saved', async () => {

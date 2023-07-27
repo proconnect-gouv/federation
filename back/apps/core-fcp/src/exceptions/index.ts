@@ -6,3 +6,4 @@ export * from './core-fcp-insufficient-acr-level-suspicious-context.exception';
 export * from './core-fcp-invalid-check-token-request.exception';
 export * from './core-fcp-invalid-event-key.exception';
 export * from './core-fcp-invalid-identity.exception';
+export * from './core-fcp-missing-at-hash.exception';

@@ -32,6 +32,7 @@ const randomStringMockValue = 'randomStringMockValue';
 const sessionServiceMock = {
   get: jest.fn(),
   set: jest.fn(),
+  setAlias: jest.fn(),
 };
 
 const sessionDataMock: OidcSession = {

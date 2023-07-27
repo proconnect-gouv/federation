@@ -3,6 +3,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcProviderService } from '@fc/oidc-provider';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import { MockIdentityProviderService } from '../services';
 import { MockIdentityProviderController } from './mock-identity-provider.controller';
 
@@ -34,15 +36,9 @@ describe('MockIdentityProviderController', () => {
     trace: jest.fn(),
   } as unknown as LoggerService;
 
-  const oidcClientSessionServiceMock = {
-    set: jest.fn(),
-    get: jest.fn(),
-  };
+  const oidcClientSessionServiceMock = getSessionServiceMock();
 
-  const appSessionServiceMock = {
-    set: jest.fn(),
-    get: jest.fn(),
-  };
+  const appSessionServiceMock = getSessionServiceMock();
 
   const oidcProviderServiceMock = {
     getInteraction: jest.fn(),
@@ -124,6 +120,7 @@ describe('MockIdentityProviderController', () => {
     const appSessionServiceMock = {
       get: jest.fn(),
       set: jest.fn(),
+      setAlias: jest.fn(),
     };
     const finalSpIdMock = 'abcdefghijklmnopqrstuvwxyz0123456789';
 

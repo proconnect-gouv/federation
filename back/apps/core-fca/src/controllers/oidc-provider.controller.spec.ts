@@ -7,6 +7,8 @@ import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 
+import { getSessionServiceMock } from '@mocks/session';
+
 import { AuthorizeParamsDto } from '../dto';
 import { OidcProviderController } from './oidc-provider.controller';
 
@@ -19,11 +21,7 @@ describe('OidcProviderController', () => {
     trace: jest.fn(),
   } as unknown as LoggerService;
 
-  const sessionServiceMock = {
-    reset: jest.fn(),
-    get: jest.fn(),
-    set: jest.fn(),
-  };
+  const sessionServiceMock = getSessionServiceMock();
 
   const oidcProviderServiceMock = {
     getInteraction: jest.fn(),
