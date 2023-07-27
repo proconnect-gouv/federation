@@ -24,6 +24,8 @@ back:
     # Back folder
     - cd back/
     - yarn install --ignore-engines
+    - yarn doc
+    - git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
     - yarn lint
     - yarn prettier
     - yarn test --coverage

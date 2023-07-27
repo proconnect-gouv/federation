@@ -70,9 +70,9 @@
     "test:e2e:core-fcp-low:open": "cypress open -P instances/core-fcp-low",
     "test:e2e:core-fcp-high:open": "cypress open -P instances/core-fcp-high",
     "test:e2e:eidas-bridge:open": "cypress open -P instances/eidas-bridge",
-    "doc:api": "typedoc",
     "doc:exceptions": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/exceptions/src/cli/export-exceptions",
-    "doc:env": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/config/src/cli/export-env"
+    "doc:env": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/config/src/cli/export-env",
+    "doc": "yarn doc:exceptions && yarn doc:env"
   },
   "resolutions": {
     "cookie-signature": "1.2.0"
