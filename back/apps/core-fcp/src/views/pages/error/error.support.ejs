@@ -1,24 +1,25 @@
 <% if (locals.config?.Core?.supportFormCodes?.includes(locals.code)) { %>
-
   <%
-  const sp_name = locals.session.OidcClient?.spName || locals.spName;
+  const { OidcClient } = locals.session;
+  const sp_name = OidcClient?.spName || locals.spName;
+  const idp_name = OidcClient?.idpLabel || OidcClient?.idpName;
 
   const params = {
     platform: locals.config.App?.name,
     error_code: locals.code,
     sp_name,
-    idp_name: locals.session.OidcClient?.idpName,
+    idp_name,
     error_id: locals.id,
   };
 
   const queryString = Object.entries(params).reduce((acc, [key, value]) => {
-    const separator = acc === '' ? '?' : '&'; 
+    const separator = acc === '' ? '?' : '&';
     return value ? `${acc}${separator}${key}=${encodeURIComponent(value)}` : acc;
   }, '');
 
   const href = `${locals.config.Core.supportFormUrl}${queryString}`;
   %>
-  <a 
+  <a
     href="<%= href %>"
     rel="noreferrer noopener"
     id="form-link-button"
@@ -26,6 +27,4 @@
   >
     Formulaire d'aide
   </a>
-
-
 <% } %>
