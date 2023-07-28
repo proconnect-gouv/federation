@@ -36,6 +36,6 @@ export default {
     `${app.urlPrefix}${OidcClientRoutes.WELL_KNOWN_KEYS}`,
   ],
   templateExposed: {
-    OidcClient: { spId: true, spName: true, idpName: true },
+    OidcClient: { spId: true, spName: true, idpName: true, idpLabel: true },
   },
 } as SessionConfig;
