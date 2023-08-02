@@ -23,7 +23,7 @@ module.exports = {
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    project: './*/tsconfig.json',
+    project: './tsconfig.json',
     sourceType: 'module',
   },
   plugins: [
@@ -109,5 +109,7 @@ module.exports = {
     ],
     'sort-imports': 'off',
     'max-nested-callbacks': ['error', { max: 1 }],
+    'require-await': 'error',
+    '@typescript-eslint/no-floating-promises': 'error',
   },
 };

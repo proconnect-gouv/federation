@@ -186,7 +186,7 @@ export class OidcClientController {
       method: 'GET',
       name: 'OidcClientRoutes.WELL_KNOWN_KEYS',
     });
-    return this.oidcClient.utils.wellKnownKeys();
+    return await this.oidcClient.utils.wellKnownKeys();
   }
 
   @Post(OidcClientRoutes.DISCONNECT_FROM_IDP)
@@ -252,10 +252,7 @@ export class OidcClientController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Header('cache-control', 'no-store')
   @Redirect()
-  async getLegacyOidcCallback(
-    @Query() query,
-    @Param() params: GetOidcCallback,
-  ) {
+  getLegacyOidcCallback(@Query() query, @Param() params: GetOidcCallback) {
     const { urlPrefix } = this.config.get<AppConfig>('App');
 
     const response = {
@@ -301,7 +298,7 @@ export class OidcClientController {
     );
 
     const { IDP_CALLEDBACK } = this.tracking.TrackedEventsMap;
-    this.tracking.track(IDP_CALLEDBACK, { req });
+    await this.tracking.track(IDP_CALLEDBACK, { req });
 
     const { idpId, idpNonce, idpState, interactionId, spId } =
       await newSessionOidc.get();
@@ -326,7 +323,7 @@ export class OidcClientController {
       );
 
     const { FC_REQUESTED_IDP_TOKEN } = this.tracking.TrackedEventsMap;
-    this.tracking.track(FC_REQUESTED_IDP_TOKEN, { req });
+    await this.tracking.track(FC_REQUESTED_IDP_TOKEN, { req });
 
     const userInfoParams = {
       accessToken,
@@ -339,7 +336,7 @@ export class OidcClientController {
     );
 
     const { FC_REQUESTED_IDP_USERINFO } = this.tracking.TrackedEventsMap;
-    this.tracking.track(FC_REQUESTED_IDP_USERINFO, { req });
+    await this.tracking.track(FC_REQUESTED_IDP_USERINFO, { req });
 
     await this.validateIdentity(idpId, identity);
 

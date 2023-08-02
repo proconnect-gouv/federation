@@ -83,7 +83,7 @@ export class CoreVerifyService {
      * thus we are no longer in an "sso" interaction,
      * so we update isSso flag in session.
      */
-    sessionOidc.set('isSso', false);
+    await sessionOidc.set('isSso', false);
 
     await this.trackBlackListed(req);
 

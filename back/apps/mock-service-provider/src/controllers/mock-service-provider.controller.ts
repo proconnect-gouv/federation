@@ -366,7 +366,7 @@ export class MockServiceProviderController {
 
   @Get(MockServiceProviderRoutes.ERROR)
   @Render('error')
-  async error(@Query() query) {
+  error(@Query() query) {
     const response = {
       titleFront: "Mock service provider - Erreur lors de l'authentification",
       ...query,

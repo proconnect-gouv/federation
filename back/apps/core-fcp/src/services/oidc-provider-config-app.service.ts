@@ -56,9 +56,9 @@ export class OidcProviderConfigAppService extends OidcProviderAppConfigLibServic
 
     const trackingContext: TrackedEventContextInterface = { req };
     const { SP_REQUESTED_LOGOUT } = this.tracking.TrackedEventsMap;
-    this.tracking.track(SP_REQUESTED_LOGOUT, trackingContext);
+    await this.tracking.track(SP_REQUESTED_LOGOUT, trackingContext);
 
-    this.logoutFormSessionDestroy(ctx, form, session, params);
+    await this.logoutFormSessionDestroy(ctx, form, session, params);
   }
 
   private async switchToAliasedSession(ctx: OidcCtx): Promise<void> {
@@ -71,7 +71,7 @@ export class OidcProviderConfigAppService extends OidcProviderAppConfigLibServic
     }
 
     const sessionId = await this.sessionService.getAlias(alias);
-    this.sessionService.attach(req, res, sessionId);
+    await this.sessionService.attach(req, res, sessionId);
     this.logger.debug({
       dbg: 'switched session',
       from: req.sessionId,

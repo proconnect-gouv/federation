@@ -93,16 +93,6 @@ describe('ServiceProviderService', () => {
         .mockResolvedValueOnce(serviceProviderListMock);
     });
 
-    it('should resolve', async () => {
-      // setup
-
-      // action
-      const result = service.getList();
-
-      // expect
-      expect(result).toBeInstanceOf(Promise);
-    });
-
     it('should return service provider list', async () => {
       const expected = [
         {

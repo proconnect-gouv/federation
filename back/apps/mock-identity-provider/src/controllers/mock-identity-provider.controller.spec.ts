@@ -106,11 +106,9 @@ describe('MockIdentityProviderController', () => {
   });
 
   describe('index', () => {
-    it('Should return some status object', async () => {
-      // setup
-      oidcClientSessionServiceMock.set.mockResolvedValueOnce(undefined);
+    it('Should return some status object', () => {
       // action
-      const result = await controller.index();
+      const result = controller.index();
       // assert
       expect(result).toEqual({ status: 'ok' });
     });

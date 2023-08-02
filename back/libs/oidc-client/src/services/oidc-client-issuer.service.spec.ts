@@ -343,7 +343,7 @@ describe('OidcClientIssuerService', () => {
       // Given
       oidcClientConfigServiceMock.get.mockResolvedValue({ providers });
       // Then
-      expect(service['getIdpMetadata']('p0')).rejects.toThrow(
+      await expect(service['getIdpMetadata']('p0')).rejects.toThrow(
         OidcClientProviderNotFoundException,
       );
     });
@@ -351,7 +351,7 @@ describe('OidcClientIssuerService', () => {
       // Given
       oidcClientConfigServiceMock.get.mockResolvedValue({ providers });
       // Then
-      expect(service['getIdpMetadata']('p3')).rejects.toThrow(
+      await expect(service['getIdpMetadata']('p3')).rejects.toThrow(
         OidcClientProviderDisabledException,
       );
     });

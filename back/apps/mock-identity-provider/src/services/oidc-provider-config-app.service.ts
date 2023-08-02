@@ -43,6 +43,8 @@ export class OidcProviderConfigAppService extends OidcProviderAppConfigLibServic
        * @see OidcProviderService.finishInteraction()
        */
       accountId: sessionId,
+      // compliant to oidc-provider spec
+      // eslint-disable-next-line require-await
       async claims() {
         return claims;
       },

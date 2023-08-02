@@ -242,7 +242,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
         .fn()
         .mockReturnValueOnce(eventContextMock);
       // When
-      service['trackAuthorize'](ctxMock);
+      await service['trackAuthorize'](ctxMock);
       // Then
       expect(service['tracking'].track).toHaveBeenCalledTimes(1);
       expect(service['tracking'].track).toHaveBeenCalledWith(
@@ -811,7 +811,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
     beforeEach(() => {
       service['bindSessionId'] = jest.fn();
     });
-    it('should publish a token event', () => {
+    it('should publish a token event', async () => {
       // Given
       const ctxMock = {
         req: {
@@ -833,7 +833,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
         },
       });
       // When
-      service['userinfoMiddleware'](ctxMock);
+      await service['userinfoMiddleware'](ctxMock);
       // Then
       expect(trackingMock.track).toHaveBeenCalledTimes(1);
       expect(trackingMock.track).toHaveBeenCalledWith(
@@ -842,7 +842,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
       );
     });
 
-    it('should call throwError if getEventContext fail', () => {
+    it('should call throwError if getEventContext fail', async () => {
       // Given
       const ctxMock: any = {
         not: 'altered',
@@ -861,7 +861,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
         throw errorMock;
       });
       // When
-      service['userinfoMiddleware'](ctxMock);
+      await service['userinfoMiddleware'](ctxMock);
       // Then
       expect(service['getEventContext']).toHaveBeenCalledTimes(1);
       expect(service['oidcErrorService']['throwError']).toHaveBeenNthCalledWith(
@@ -871,7 +871,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
       );
     });
 
-    it('should call throwError if tracking.track throw an error', () => {
+    it('should call throwError if tracking.track throw an error', async () => {
       // Given
       const ctxMock: any = {
         not: 'altered',
@@ -892,7 +892,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
         throw errorMock;
       });
       // When
-      service['userinfoMiddleware'](ctxMock);
+      await service['userinfoMiddleware'](ctxMock);
       // Then
       expect(service['getEventContext']).toHaveBeenCalledTimes(1);
       expect(service['oidcErrorService']['throwError']).toHaveBeenNthCalledWith(
@@ -940,7 +940,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
         .fn()
         .mockReturnValueOnce(eventContextMock);
       // When
-      service['trackSso'](ctxMock);
+      await service['trackSso'](ctxMock);
       // Then
       expect(service['tracking'].track).toHaveBeenCalledTimes(1);
       expect(service['tracking'].track).toHaveBeenCalledWith(

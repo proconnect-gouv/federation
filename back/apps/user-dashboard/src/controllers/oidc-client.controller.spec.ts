@@ -326,32 +326,29 @@ describe('OidcClient Controller', () => {
   });
 
   describe('getLegacyOidcCallback', () => {
-    it('should extract urlPrefix from app config', async () => {
+    it('should extract urlPrefix from app config', () => {
       // When
-      await controller.getLegacyOidcCallback(req.query, req.params);
+      controller.getLegacyOidcCallback(req.query, req.params);
       // Then
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
       expect(configServiceMock.get).toHaveBeenCalledWith('App');
     });
 
-    it('should build redirect url with encode from querystring', async () => {
+    it('should build redirect url with encode from querystring', () => {
       // When
-      await controller.getLegacyOidcCallback(req.query, req.params);
+      controller.getLegacyOidcCallback(req.query, req.params);
       // Then
       expect(queryStringEncodeMock).toHaveBeenCalledTimes(1);
       expect(queryStringEncodeMock).toHaveBeenCalledWith(req.query);
     });
 
-    it('should redrect to the built oidc callback url', async () => {
+    it('should redrect to the built oidc callback url', () => {
       // Given
       const queryMock = 'first-query-param=first&second-query-param=second';
       queryStringEncodeMock.mockReturnValueOnce(queryMock);
       const redirectOidcCallbackUrl = `${configMock.urlPrefix}/oidc-callback?${queryMock}`;
       // When
-      const result = await controller.getLegacyOidcCallback(
-        req.query,
-        req.params,
-      );
+      const result = controller.getLegacyOidcCallback(req.query, req.params);
       // Then
       expect(result).toEqual({
         statusCode: 302,
@@ -552,16 +549,16 @@ describe('OidcClient Controller', () => {
       );
     });
 
-    it('Should throw mock service provider revoke token exception if error is not an instance of OPError', () => {
+    it('Should throw mock service provider revoke token exception if error is not an instance of OPError', async () => {
       // setup
       const unknowError = { foo: 'bar' };
       const body = { accessToken: 'access_token' };
       oidcClientServiceMock.utils.revokeToken.mockRejectedValue(unknowError);
 
       // assert
-      expect(
-        async () => await controller.revocationToken(res, body),
-      ).rejects.toThrow(UserDashboardTokenRevocationException);
+      await expect(controller.revocationToken(res, body)).rejects.toThrow(
+        UserDashboardTokenRevocationException,
+      );
     });
   });
 });

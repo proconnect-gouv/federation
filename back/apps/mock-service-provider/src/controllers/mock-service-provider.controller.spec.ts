@@ -307,7 +307,7 @@ describe('MockServiceProviderController', () => {
   });
 
   describe('error', () => {
-    it('Should return error', async () => {
+    it('Should return error', () => {
       // setup
       const queryMock = {
         error: 'error',
@@ -315,7 +315,7 @@ describe('MockServiceProviderController', () => {
         error_description: 'Error description',
       };
       // action
-      const result = await controller.error(queryMock);
+      const result = controller.error(queryMock);
 
       // assert
       expect(result).toEqual({
@@ -422,16 +422,16 @@ describe('MockServiceProviderController', () => {
       );
     });
 
-    it('Should throw mock service provider revoke token exception if error is not an instance of OPError', () => {
+    it('Should throw mock service provider revoke token exception if error is not an instance of OPError', async () => {
       // setup
       const unknowError = { foo: 'bar' };
       const body = { accessToken: 'access_token' };
       oidcClientServiceMock.utils.revokeToken.mockRejectedValue(unknowError);
 
       // assert
-      expect(
-        async () => await controller.revocationToken(res, body),
-      ).rejects.toThrow(MockServiceProviderTokenRevocationException);
+      await expect(controller.revocationToken(res, body)).rejects.toThrow(
+        MockServiceProviderTokenRevocationException,
+      );
     });
   });
 
@@ -496,15 +496,14 @@ describe('MockServiceProviderController', () => {
       );
     });
 
-    it('Should throw mock service provider userinfo exception if error is not an instance of OPError', () => {
+    it('Should throw mock service provider userinfo exception if error is not an instance of OPError', async () => {
       // setup
       oidcClientServiceMock.utils.getUserInfo.mockRejectedValue({});
       const body = { accessToken: 'access_token' };
 
       // assert
-      expect(
-        async () =>
-          await controller.retrieveUserinfo(res, body, sessionServiceMock),
+      await expect(
+        controller.retrieveUserinfo(res, body, sessionServiceMock),
       ).rejects.toThrow(MockServiceProviderUserinfoException);
     });
   });

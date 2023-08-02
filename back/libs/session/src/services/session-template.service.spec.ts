@@ -84,7 +84,7 @@ describe('SessionTemplateService', () => {
     extractSessionFromRequestMock.mockReturnValue(sessionServiceMock);
   });
 
-  it('should be defined', async () => {
+  it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
@@ -134,7 +134,7 @@ describe('SessionTemplateService', () => {
   });
 
   describe('fillObject', () => {
-    it('should return partial object', async () => {
+    it('should return partial object', () => {
       // Given
       const source = {
         bar: 'barValue',

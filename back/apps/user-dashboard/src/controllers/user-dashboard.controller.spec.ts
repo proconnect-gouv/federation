@@ -602,9 +602,9 @@ describe('UserDashboardController', () => {
         .mockReturnValueOnce(formatUserPreferenceChangeTrackLogReturnValue);
     });
 
-    it('should call userDashboard.formatUserPreferenceChangeTrackLog()', () => {
+    it('should call userDashboard.formatUserPreferenceChangeTrackLog()', async () => {
       // When
-      controller['trackUserPreferenceChange'](
+      await controller['trackUserPreferenceChange'](
         reqMock,
         formattedIdpSettingsMock,
         identityMock,
@@ -618,9 +618,9 @@ describe('UserDashboardController', () => {
       ).toHaveBeenCalledWith(formattedIdpSettingsMock);
     });
 
-    it('should call tracking.track() for global event', () => {
+    it('should call tracking.track() for global event', async () => {
       // When
-      controller['trackUserPreferenceChange'](
+      await controller['trackUserPreferenceChange'](
         reqMock,
         formattedIdpSettingsMock,
         identityMock,
@@ -640,9 +640,9 @@ describe('UserDashboardController', () => {
       );
     });
 
-    it('should call tracking.track() for future idp change', () => {
+    it('should call tracking.track() for future idp change', async () => {
       // When
-      controller['trackUserPreferenceChange'](
+      await controller['trackUserPreferenceChange'](
         reqMock,
         formattedIdpSettingsMock,
         identityMock,
@@ -660,9 +660,9 @@ describe('UserDashboardController', () => {
       );
     });
 
-    it('should call tracking.track() for each changed idp', () => {
+    it('should call tracking.track() for each changed idp', async () => {
       // When
-      controller['trackUserPreferenceChange'](
+      await controller['trackUserPreferenceChange'](
         reqMock,
         formattedIdpSettingsMock,
         identityMock,

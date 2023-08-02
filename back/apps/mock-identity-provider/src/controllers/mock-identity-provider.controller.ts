@@ -31,7 +31,7 @@ export class MockIdentityProviderController {
   }
 
   @Get(MockIdentityProviderRoutes.INDEX)
-  async index() {
+  index() {
     const response = { status: 'ok' };
 
     this.logger.trace({

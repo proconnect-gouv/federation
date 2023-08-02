@@ -263,7 +263,7 @@ describe('CoreFcaController', () => {
       // given
       sessionServiceMock.get.mockResolvedValueOnce(undefined);
       // then
-      expect(
+      await expect(
         coreController.getFrontHistoryBackURL(req, res, sessionServiceMock),
       ).rejects.toThrow(SessionBadFormatException);
     });
@@ -272,7 +272,7 @@ describe('CoreFcaController', () => {
       // given
       sessionServiceMock.get.mockResolvedValueOnce({});
       // then
-      expect(
+      await expect(
         coreController.getFrontHistoryBackURL(req, res, sessionServiceMock),
       ).rejects.toThrow(SessionBadFormatException);
     });

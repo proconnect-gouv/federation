@@ -48,10 +48,7 @@ export class CoreOidcProviderMiddlewareService {
     this.oidcProvider.registerMiddleware(step, pattern, middleware.bind(this));
   }
 
-  protected async beforeAuthorizeMiddleware({
-    req,
-    res,
-  }: OidcCtx): Promise<void> {
+  protected beforeAuthorizeMiddleware({ req, res }: OidcCtx): void {
     /**
      * Force cookies to be reset to prevent panva from keeping
      * a session open if you use several service provider in a row
@@ -226,18 +223,18 @@ export class CoreOidcProviderMiddlewareService {
 
       const eventContext = this.getEventContext(ctx);
       const { SP_REQUESTED_FC_TOKEN } = this.tracking.TrackedEventsMap;
-      this.tracking.track(SP_REQUESTED_FC_TOKEN, eventContext);
+      await this.tracking.track(SP_REQUESTED_FC_TOKEN, eventContext);
     } catch (exception) {
       this.oidcErrorService.throwError(ctx, exception);
     }
   }
 
-  protected userinfoMiddleware(ctx) {
+  protected async userinfoMiddleware(ctx) {
     try {
       this.bindSessionId(ctx);
       const eventContext = this.getEventContext(ctx);
       const { SP_REQUESTED_FC_USERINFO } = this.tracking.TrackedEventsMap;
-      this.tracking.track(SP_REQUESTED_FC_USERINFO, eventContext);
+      await this.tracking.track(SP_REQUESTED_FC_USERINFO, eventContext);
     } catch (exception) {
       this.oidcErrorService.throwError(ctx, exception);
     }

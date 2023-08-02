@@ -168,7 +168,7 @@ export class FrIdentityToEuController {
     const { error, error_description } = query;
     if (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
-      this.tracking.track(RECEIVED_FC_AUTH_ERROR, trackingContext);
+      await this.tracking.track(RECEIVED_FC_AUTH_ERROR, trackingContext);
 
       partialEidasResponse = this.oidcToEidas.mapPartialResponseFailure({
         error,
@@ -177,7 +177,8 @@ export class FrIdentityToEuController {
         error_description,
       });
     } else {
-      this.tracking.track(RECEIVED_FC_AUTH_CODE, trackingContext);
+      await this.tracking.track(RECEIVED_FC_AUTH_CODE, trackingContext);
+
       try {
         partialEidasResponse = await this.handleOidcCallbackAuthCode(
           req,
@@ -186,7 +187,8 @@ export class FrIdentityToEuController {
         );
       } catch (error) {
         this.logger.trace({ error }, LoggerLevelNames.WARN);
-        this.tracking.trackExceptionIfNeeded(error, trackingContext);
+        await this.tracking.trackExceptionIfNeeded(error, trackingContext);
+
         partialEidasResponse =
           this.oidcToEidas.mapPartialResponseFailure(error);
       }

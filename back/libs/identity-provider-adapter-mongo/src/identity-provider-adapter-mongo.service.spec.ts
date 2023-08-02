@@ -646,14 +646,6 @@ describe('IdentityProviderAdapterMongoService', () => {
       service.getList = jest.fn().mockResolvedValueOnce(defaultProvidersMock);
     });
 
-    it('should resolve', async () => {
-      // action
-      const result = service.getFilteredList(defaultOptionsMock);
-
-      // expect
-      expect(result).toBeInstanceOf(Promise);
-    });
-
     it('should return a list of mapped providers', async () => {
       // GIVEN
       const optionsMock = {
