@@ -276,7 +276,7 @@ export class OidcProviderController {
       claims,
     };
 
-    this.tracking.track(eventKey, context);
+    await this.tracking.track(eventKey, context);
   }
 
   // adding a param reached max params limit

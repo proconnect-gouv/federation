@@ -249,7 +249,7 @@ export class OidcProviderService {
     });
   }
 
-  async finishInteraction(req: any, res: any, session: OidcSession) {
+  finishInteraction(req: any, res: any, session: OidcSession) {
     this.oidcProviderConfigApp.finishInteraction(req, res, session);
   }
 

@@ -126,7 +126,7 @@ export class CoreFcpSendEmailHandler
     this.logger.trace({ from, to });
 
     // -- send
-    this.mailer.send({
+    await this.mailer.send({
       from,
       to,
       subject: `Notification de connexion au service "${spName}" grâce à ${platform}`,

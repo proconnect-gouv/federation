@@ -72,7 +72,7 @@ describe('SessionTemplateInterceptor', () => {
     httpContextMock.getRequest.mockReturnValue(reqMock);
   });
 
-  it('should be defined', async () => {
+  it('should be defined', () => {
     expect(interceptor).toBeDefined();
     expect(loggerServiceMock.setContext).toHaveBeenCalledTimes(1);
   });

@@ -92,24 +92,24 @@ describe('OidcProviderController', () => {
   });
 
   describe('getAuthorize()', () => {
-    it('should call next', async () => {
+    it('should call next', () => {
       // Given
       const nextMock = jest.fn();
       const queryMock = {} as AuthorizeParamsDto;
       // When
-      await oidcProviderController.getAuthorize(nextMock, queryMock);
+      oidcProviderController.getAuthorize(nextMock, queryMock);
       // Then
       expect(nextMock).toHaveReturnedTimes(1);
     });
   });
 
   describe('postAuthorize()', () => {
-    it('should call next', async () => {
+    it('should call next', () => {
       // Given
       const nextMock = jest.fn();
       const bodyMock = {} as AuthorizeParamsDto;
       // When
-      await oidcProviderController.postAuthorize(nextMock, bodyMock);
+      oidcProviderController.postAuthorize(nextMock, bodyMock);
       // Then
       expect(nextMock).toHaveReturnedTimes(1);
     });
@@ -126,7 +126,7 @@ describe('OidcProviderController', () => {
         spName: spNameMock,
       });
       // Then
-      expect(
+      await expect(
         oidcProviderController.getLogin(reqMock, next, sessionServiceMock),
       ).rejects.toThrow(CoreMissingIdentityException);
     });

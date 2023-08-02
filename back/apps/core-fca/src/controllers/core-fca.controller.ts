@@ -241,7 +241,7 @@ export class CoreFcaController {
     if (!isRefresh) {
       const trackingContext: TrackedEventContextInterface = { req };
       const { FC_SHOWED_IDP_CHOICE } = this.tracking.TrackedEventsMap;
-      this.tracking.track(FC_SHOWED_IDP_CHOICE, trackingContext);
+      await this.tracking.track(FC_SHOWED_IDP_CHOICE, trackingContext);
     }
 
     return {};

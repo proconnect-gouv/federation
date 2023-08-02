@@ -11,6 +11,8 @@ export class ServiceProviderAdapterEnvService
 {
   constructor(private readonly config: ConfigService) {}
 
+  // Needed to match the interface
+  // eslint-disable-next-line require-await
   async getList(): Promise<ServiceProviderMetadata[]> {
     const configuredSp = this.config.get<ServiceProviderAdapterEnvConfig>(
       'ServiceProviderAdapterEnv',

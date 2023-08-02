@@ -398,9 +398,9 @@ describe('OidcClientUtilsService', () => {
       const errorMock = new Error('lol');
       callbackMock.mockRejectedValueOnce(errorMock);
       // Then
-      expect(service.getTokenSet(req, providerId, params)).rejects.toThrow(
-        OidcClientTokenFailedException,
-      );
+      await expect(
+        service.getTokenSet(req, providerId, params),
+      ).rejects.toThrow(OidcClientTokenFailedException);
     });
   });
 
@@ -413,9 +413,9 @@ describe('OidcClientUtilsService', () => {
         state: 'callbackParamsState',
       });
       // Then
-      expect(service['extractParams'](req, clientMock, state)).rejects.toThrow(
-        OidcClientMissingCodeException,
-      );
+      await expect(
+        service['extractParams'](req, clientMock, state),
+      ).rejects.toThrow(OidcClientMissingCodeException);
     });
     it('should throw if state is not provided in url', async () => {
       // Given
@@ -423,9 +423,9 @@ describe('OidcClientUtilsService', () => {
         code: 'callbackParamsCode',
       });
       // Then
-      expect(service['extractParams'](req, clientMock, state)).rejects.toThrow(
-        OidcClientMissingStateException,
-      );
+      await expect(
+        service['extractParams'](req, clientMock, state),
+      ).rejects.toThrow(OidcClientMissingStateException);
     });
     it('should throw if state in url does not match state in session', async () => {
       // Given
@@ -435,7 +435,7 @@ describe('OidcClientUtilsService', () => {
       });
       const invalidState = 'notTheSameStateAsInRequest';
       // Then
-      expect(
+      await expect(
         service['extractParams'](req, clientMock, invalidState),
       ).rejects.toThrow(OidcClientInvalidStateException);
     });

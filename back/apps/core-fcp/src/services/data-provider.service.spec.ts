@@ -48,11 +48,11 @@ describe('DataProviderService', () => {
       validateDtoMock.mockResolvedValueOnce([
         /* No error */
       ]);
-      // When
-      const call = async () =>
-        await service.checkRequestValid(requestTokenMock);
-      // Then
-      expect(call).not.toThrow();
+
+      // When / Then
+      await expect(
+        service.checkRequestValid(requestTokenMock),
+      ).resolves.not.toThrow();
     });
 
     it('should throw an error when the request token is invalid', async () => {

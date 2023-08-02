@@ -91,7 +91,7 @@ describe('OidcProviderAppConfigLibService', () => {
   });
 
   describe('logoutSource', () => {
-    it('should set a body property to koa context', async () => {
+    it('should set a body property to koa context', () => {
       // Given
       const htmlDisconnectFromFi = `<!DOCTYPE html>
       <head>
@@ -465,7 +465,12 @@ describe('OidcProviderAppConfigLibService', () => {
       // Given
       const logoutFormProperty = 'oidcProviderLogoutForm';
       // When
-      service.logoutFormSessionDestroy(ctx, form, sessionServiceMock, params);
+      await service.logoutFormSessionDestroy(
+        ctx,
+        form,
+        sessionServiceMock,
+        params,
+      );
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.set).toHaveBeenCalledWith(
@@ -490,7 +495,12 @@ describe('OidcProviderAppConfigLibService', () => {
       </body>
     </html>`;
       // When
-      service.logoutFormSessionDestroy(ctx, form, sessionServiceMock, params);
+      await service.logoutFormSessionDestroy(
+        ctx,
+        form,
+        sessionServiceMock,
+        params,
+      );
       // Then
       expect(ctx).toHaveProperty('body', htmlDisconnectFromFi);
     });

@@ -151,7 +151,7 @@ export class OidcClientController {
       name: 'OidcClientRoutes.WELL_KNOWN_KEYS',
       route: OidcClientRoutes.WELL_KNOWN_KEYS,
     });
-    return this.oidcClient.utils.wellKnownKeys();
+    return await this.oidcClient.utils.wellKnownKeys();
   }
 
   @Get(UserDashboardBackRoutes.LOGOUT)
@@ -240,10 +240,7 @@ export class OidcClientController {
   @Get(OidcClientRoutes.OIDC_CALLBACK_LEGACY)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Redirect()
-  async getLegacyOidcCallback(
-    @Query() query,
-    @Param() _params: GetOidcCallback,
-  ) {
+  getLegacyOidcCallback(@Query() query, @Param() _params: GetOidcCallback) {
     const { urlPrefix } = this.config.get<AppConfig>('App');
     const queryParams = encode(query);
 

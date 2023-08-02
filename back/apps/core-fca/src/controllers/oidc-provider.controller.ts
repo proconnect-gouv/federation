@@ -48,7 +48,7 @@ export class OidcProviderController {
     }),
   )
   @IsStep()
-  async getAuthorize(@Next() next, @Query() query: AuthorizeParamsDto) {
+  getAuthorize(@Next() next, @Query() query: AuthorizeParamsDto) {
     this.logger.trace({
       route: OidcProviderRoutes.AUTHORIZATION,
       method: 'GET',
@@ -77,7 +77,7 @@ export class OidcProviderController {
     }),
   )
   @IsStep()
-  async postAuthorize(@Next() next, @Body() body: AuthorizeParamsDto) {
+  postAuthorize(@Next() next, @Body() body: AuthorizeParamsDto) {
     this.logger.trace({
       route: OidcProviderRoutes.AUTHORIZATION,
       method: 'POST',

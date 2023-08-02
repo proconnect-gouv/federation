@@ -235,14 +235,6 @@ describe('IdentityProviderAdapterEnvService', () => {
   });
 
   describe('findAllIdentityProvider', () => {
-    it('should resolve', async () => {
-      // action
-      const result = service['findAllIdentityProvider']();
-
-      // expect
-      expect(result).toBeInstanceOf(Promise);
-    });
-
     it('should return result of type list', async () => {
       // setup
       configMock.get.mockReturnValueOnce(env);
@@ -292,14 +284,6 @@ describe('IdentityProviderAdapterEnvService', () => {
   });
 
   describe('getList', () => {
-    it('should resolve', async () => {
-      // action
-      const result = service.getList();
-
-      // expect
-      expect(result).toBeInstanceOf(Promise);
-    });
-
     it('should return a list of valids identity providers', async () => {
       // setup
       configMock.get.mockReturnValueOnce(env);
@@ -380,13 +364,6 @@ describe('IdentityProviderAdapterEnvService', () => {
       service['getList'] = jest
         .fn()
         .mockResolvedValueOnce(identityProviderListMock);
-    });
-    it('should resolve', async () => {
-      // action
-      const result = service.getFilteredList([], true);
-
-      // expect
-      expect(result).toBeInstanceOf(Promise);
     });
 
     it('should return a list of mapped whitelisted active identity providers', async () => {

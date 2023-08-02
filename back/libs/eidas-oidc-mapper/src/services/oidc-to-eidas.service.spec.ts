@@ -115,7 +115,7 @@ describe('OidcToEidasService', () => {
       );
     });
 
-    it('should call map the splitted oidc scopes to eidas attributes', async () => {
+    it('should call map the splitted oidc scopes to eidas attributes', () => {
       // action
       service.mapPartialRequest(requestedScopesMock, acrMock);
 
@@ -126,7 +126,7 @@ describe('OidcToEidasService', () => {
       );
     });
 
-    it('should return the eidas requested attributes and the level of assurance', async () => {
+    it('should return the eidas requested attributes and the level of assurance', () => {
       // action
       const result = service.mapPartialRequest(requestedScopesMock, acrMock);
 
