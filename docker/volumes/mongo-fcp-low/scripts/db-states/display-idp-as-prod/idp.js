@@ -50,7 +50,7 @@ db.provider.replaceOne(
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-  }
+  },
 );
 
 /* ------------------------------------------------------------------------------- */
@@ -107,7 +107,7 @@ db.provider.replaceOne(
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-  }
+  },
 );
 
 /* ------------------------------------------------------------------------------- */
@@ -164,7 +164,7 @@ db.provider.replaceOne(
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-  }
+  },
 );
 
 /* ------------------------------------------------------------------------------- */
@@ -221,7 +221,7 @@ db.provider.replaceOne(
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-  }
+  },
 );
 
 /* ------------------------------------------------------------------------------- */
@@ -278,7 +278,7 @@ db.provider.replaceOne(
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-  }
+  },
 );
 
 /* ------------------------------------------------------------------------------- */
@@ -335,7 +335,7 @@ db.provider.replaceOne(
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-  }
+  },
 );
 
 /* ------------------------------------------------------------------------------- */

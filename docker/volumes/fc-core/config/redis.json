@@ -5,7 +5,7 @@
     { "host": "fc_redis-sentinel_3", "port": 26379 }
   ],
   "name": "fc_core_v2",
-  "encryptionKey" : "t_EzMK^U-r&nHWMUAUdX2d%b?r2n4T-Q",
+  "encryptionKey": "t_EzMK^U-r&nHWMUAUdX2d%b?r2n4T-Q",
   "encrypt": true,
   "prefix": "fc",
   "password": "Ivae1feiThoogahquohDei7iwie0ceeM"

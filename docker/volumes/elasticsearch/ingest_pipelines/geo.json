@@ -46,10 +46,7 @@
         "database_file": "GeoLite2-ASN.mmdb",
         "field": "source.address",
         "target_field": "source.as",
-        "properties": [
-          "asn",
-          "organization_name"
-        ],
+        "properties": ["asn", "organization_name"],
         "first_only": true,
         "ignore_missing": true
       }

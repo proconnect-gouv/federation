@@ -392,7 +392,7 @@ const fia = {
     ],
   },
 
-  // RIE 
+  // RIE
 
   // -- FIA - FIA-RIE-LOW - Activated
   "FIA-RIE-LOW": {
@@ -443,7 +443,7 @@ const fia = {
     ],
   },
 
-  // -- FIA using LemonLDAP 
+  // -- FIA using LemonLDAP
   "FIA-LLNG-LOW": {
     uid: "4be87184-1052-460b-9e14-3e164f584200",
     name: "LemonLDAP::ng",
@@ -510,6 +510,10 @@ db.provider.update({ name: "fia7-low" }, fia["FIA7-LOW"], { upsert: true });
 print("FIP > Initializing provider: fia8-low - Activated");
 db.provider.update({ name: "fia8-low" }, fia["FIA8-LOW"], { upsert: true });
 print("FIA > Initializing provider: llng - Activated");
-db.provider.update({ name: "LemonLDAP-ng" }, fia["FIA-LLNG-LOW"], { upsert: true });
+db.provider.update({ name: "LemonLDAP-ng" }, fia["FIA-LLNG-LOW"], {
+  upsert: true,
+});
 print("FIA > Initializing provider: fia-rie-low - Activated");
-db.provider.update({ name: "fia-rie-low" }, fia["FIA-RIE-LOW"], { upsert: true });
+db.provider.update({ name: "fia-rie-low" }, fia["FIA-RIE-LOW"], {
+  upsert: true,
+});

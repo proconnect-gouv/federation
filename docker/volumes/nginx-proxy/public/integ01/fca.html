@@ -1,78 +1,129 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>AgentConnect integ01</title>
-  <style type="text/css">
-    body {
-      font-family: Helvetica, Arial, sans-serif;
-      font-size: 16px;
-      line-height: 150%;
-      background-image: url("background.svg");
-    }
-    #all {
-      margin: 0 auto 10em auto;
-      width: 100%;
-      min-width: 32em;
-      max-width: 60em;
-    }
-    #links {
-      column-count: auto;
-      column-width: 15em;
-    }
-    a {
-      color: #666;
-      text-decoration: none;
-    }
-    a {
-      display: list-item;
-      list-style-type: square;
-      list-style-position: inside;
-    }
-    a:hover, a:active {
-      color: black;
-      text-decoration: underline;
-    }
-    h1 {
-      text-align: center;
-    }
-    h3 {
-      font-size: 1.4em;
-      margin: 0 0 1em 0;
-    }
-    .block {
-      margin-top: 4em;
-      break-inside: avoid-column;
-      display: inline-block;
-    }
-    ul {
-      margin: 1em 0 0 0;
-      list-style: none;
-      padding: 0 0 0 1em;
-    }
-  </style>
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <title>AgentConnect integ01</title>
+    <style type="text/css">
+      body {
+        font-family: Helvetica, Arial, sans-serif;
+        font-size: 16px;
+        line-height: 150%;
+        background-image: url("background.svg");
+      }
+      #all {
+        margin: 0 auto 10em auto;
+        width: 100%;
+        min-width: 32em;
+        max-width: 60em;
+      }
+      #links {
+        column-count: auto;
+        column-width: 15em;
+      }
+      a {
+        color: #666;
+        text-decoration: none;
+      }
+      a {
+        display: list-item;
+        list-style-type: square;
+        list-style-position: inside;
+      }
+      a:hover,
+      a:active {
+        color: black;
+        text-decoration: underline;
+      }
+      h1 {
+        text-align: center;
+      }
+      h3 {
+        font-size: 1.4em;
+        margin: 0 0 1em 0;
+      }
+      .block {
+        margin-top: 4em;
+        break-inside: avoid-column;
+        display: inline-block;
+      }
+      ul {
+        margin: 1em 0 0 0;
+        list-style: none;
+        padding: 0 0 0 1em;
+      }
+    </style>
+  </head>
 
-<body>
-  <img src="/logo-agentconnect.svg">
-  <h1>AgentConnect integ01</h1>
-  <div id="all">
-    <div id="links">
-      <div class="block">
-        <h3>Urls</h3>
-        <ul>
-          <li><a href="https://fsa1v2.integ01.dev-agentconnect.fr/interaction/verify" id="fsa1v2">fsa1v2</a></li>
-          <li><a href="https://fsa2v2.integ01.dev-agentconnect.fr/interaction/verify" id="fsa2v2">fsa2v2</a></li>
-          <li><a href="https://fsa3v2.integ01.dev-agentconnect.fr/interaction/verify" id="fsa3v2">fsa3v2</a></li>
-          <li><a href="https://bacasable-prep-osmose.jaliosagora.com" id="osmose">osmose</a></li>
-          <li><a href="https://fc-exploitation.integ01.dev-agentconnect.fr" id="exploitation-fca-low">exploitation-fca-low</a></li>
-          <li><a href="https://fia1v2.integ01.dev-agentconnect.fr" id="fia1v2">fia1v2</a></li>
-          <li><a href="https://fia2v2.integ01.dev-agentconnect.fr" id="fia2v2">fia2v2</a></li>
-          <li><a href="https://authentification.recette.din.developpement-durable.gouv.fr" id="cerbere">Cerbère</a></li>
-          <li><a href="https://auth.insee.net/auth/realms/insee/protocol/openid-connect/auth?client_id=fi-agent-connect&response_type=code" id="insee">Insee</a></li>
-        </ul>
+  <body>
+    <img src="/logo-agentconnect.svg" />
+    <h1>AgentConnect integ01</h1>
+    <div id="all">
+      <div id="links">
+        <div class="block">
+          <h3>Urls</h3>
+          <ul>
+            <li>
+              <a
+                href="https://fsa1v2.integ01.dev-agentconnect.fr/interaction/verify"
+                id="fsa1v2"
+                >fsa1v2</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://fsa2v2.integ01.dev-agentconnect.fr/interaction/verify"
+                id="fsa2v2"
+                >fsa2v2</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://fsa3v2.integ01.dev-agentconnect.fr/interaction/verify"
+                id="fsa3v2"
+                >fsa3v2</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://bacasable-prep-osmose.jaliosagora.com"
+                id="osmose"
+                >osmose</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://fc-exploitation.integ01.dev-agentconnect.fr"
+                id="exploitation-fca-low"
+                >exploitation-fca-low</a
+              >
+            </li>
+            <li>
+              <a href="https://fia1v2.integ01.dev-agentconnect.fr" id="fia1v2"
+                >fia1v2</a
+              >
+            </li>
+            <li>
+              <a href="https://fia2v2.integ01.dev-agentconnect.fr" id="fia2v2"
+                >fia2v2</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://authentification.recette.din.developpement-durable.gouv.fr"
+                id="cerbere"
+                >Cerbère</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://auth.insee.net/auth/realms/insee/protocol/openid-connect/auth?client_id=fi-agent-connect&response_type=code"
+                id="insee"
+                >Insee</a
+              >
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-</body>
+  </body>
 </html>

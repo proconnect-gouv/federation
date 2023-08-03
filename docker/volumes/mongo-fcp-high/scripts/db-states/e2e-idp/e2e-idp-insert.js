@@ -45,12 +45,12 @@ db.provider.update(
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
   },
-  { upsert: true }
+  { upsert: true },
 );
 
 db.provider.update(
   { uid: "99b9d1dd-8104-4219-a1ca-8842f37dd0d3" },
   {
     $set: { title: "Idp test Inserted" },
-  }
+  },
 );
