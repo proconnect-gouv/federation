@@ -12,6 +12,7 @@
 | [Y000007](../apps/core-fcp/src/exceptions/core-fcp-invalid-event-key.exception.ts "CoreFcpInvalidEventKeyException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | La configuration du FS concernant le consentement demandé est incorrect ( un consentement est demandé sur une connexion anonyme, ... ). Contacter le support N3. | 
 | [Y000010](../libs/core/src/exceptions/core-identity-provider-not-found.exception.ts "CoreIdentityProviderNotFoundException") | 400 |  | N/A | 
 | [Y000011](../apps/core-fcp/src/exceptions/core-fcp-insufficient-acr-level-suspicious-context.exception.ts "InsufficientAcrLevelSuspiciousContextException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | Une connexion a eu lieu dans un context suspect et le FI a identifié l&#39;utilisateur avec un niveau eidas jugé trop faible. | 
+| [Y000012](../apps/core-fcp/src/exceptions/core-fcp-fetch-data-provider-jwks-failed.exception.ts "CoreFcpFetchDataProviderJwksFailed") | 500 | Failed to fetch data provider JWKS | Impossible pour le core de joindre le JWKS du fournisseur de données | 
 | [Y000012](../libs/core/src/exceptions/core-idp-blocked-for-account.exception.ts "CoreIdpBlockedForAccountException") | 403 | Vous avez bloqué l&#39;utilisation de ce fournisseur d&#39;identité. Pour pouvoir l&#39;utiliser, merci de vous rendre dans vos préférences FranceConnect pour l&#39;autoriser. | Le fournisseur d&#39;identité a été bloqué par l&#39;utilisateur. | 
 | [Y000013](../apps/core-fcp/src/exceptions/core-fcp-invalid-check-token-request.exception.ts "InvalidChecktokenRequestException") | 400 | Required parameter missing or invalid. | La requête reçue pour vérifier le token n&#39;est pas valide. Des paramètres obligatoires sont manquants ou au mauvais format. | 
 | [Y000050](../apps/core-fcp/src/exceptions/core-fcp-missing-at-hash.exception.ts "CoreFcpMissingAtHashException") | 400 | Missing at_hash claim in id_token_hint | Le claim at_hash n&#39;a pas été trouvé dans l&#39;id_token_hint lors du logout | 
@@ -191,4 +192,16 @@
 |---|---|---|---|
 | [Y430001](../libs/data-provider-adapter-core/src/exceptions/checktoken-timeout.exception.ts "ChecktokenTimeoutException") | 408 | The authorization server is currently unable to handle the request. | Un problème est survenu lors de l&#39;appel au checktoken, le core est injoignable | 
 | [Y430002](../libs/data-provider-adapter-core/src/exceptions/checktoken-http-status.exception.ts "ChecktokenHttpStatusException") | 500 | The authorization server encountered an unexpected condition that prevented it from fulfilling the request. | Impossible de joindre le core. L&#39;utilisateur doit redémarrer sa cinématique. Si cela persiste, contacter le support N3 | 
+| [Y430003](../libs/data-provider-adapter-core/src/exceptions/jwks-fetch-failed.exception.ts "JwksFetchFailedException") | 500 | Can not fetch jwks | Impossible pour le fournisseur de données de joindre le JWKS du core | 
+
+| Code d'erreur | Code HTTP | Message utilisateur | Description |
+|---|---|---|---|
+| [Y440001](../libs/jwt/src/exceptions/no-relevant-key.exception.ts "NoRelevantKeyException") | 500 | No relevant key found for alg: Error and use: undefined | Aucune clé pertinente trouvée | 
+| [Y440002](../libs/jwt/src/exceptions/invalid-signature.exception.ts "InvalidSignatureException") | 500 | Signature not verified | N/A | 
+| [Y440004](../libs/jwt/src/exceptions/can-not-import-jwk.exception.ts "CanNotImportJwkException") | 500 | Can not import JWK | Impossible d&#39;importer le JWK | 
+| [Y440005](../libs/jwt/src/exceptions/can-not-encrypt.exception.ts "CanNotEncryptException") | 500 | Can not encrypt | Impossible de chiffrer le JWT | 
+| [Y440006](../libs/jwt/src/exceptions/can-not-decrypt.exception.ts "CanNotDecryptException") | 500 | Can not decrypt | Impossible de déchiffrer le JWT | 
+| [Y440007](../libs/jwt/src/exceptions/can-not-decode-plaintext.exception.ts "CanNotDecodePlaintextException") | 500 | Can not decode plaintext | Impossible de décoder le JWT une fois déchiffré | 
+| [Y440008](../libs/jwt/src/exceptions/can-not-sign-jwt.exception.ts "CanNotSignJwtException") | 500 | Can not sign JWT | Impossible de signer le JWT | 
+| [Y440009](../libs/jwt/src/exceptions/multiple-relevant-keys.exception.ts "MultipleRelevantKeysException") | 500 | Multipe relevant keys found alg: Error, kid: undefined and use: undefined | Plusieurs clés pertinentes ont été trouvées alors qu&#39;un kid était fourni | 
 
