@@ -68,6 +68,7 @@ user-dashboard:
     - docker-stack start-all-ci
     # Ensure the required apps are running
     - docker-stack wait "ud-front" "https://ud.docker.dev-franceconnect.fr" "240"
+    - docker-stack wait "core" "https://fcp.docker.dev-franceconnect.fr/api/v1/statuses"
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp

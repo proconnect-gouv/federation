@@ -467,8 +467,14 @@
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | DataProviderAdapterCore_CHECKTOKEN_ENDPOINT | string |
+| DataProviderAdapterCore_CHECKTOKEN_JWT_ENCRYPTED_RESPONSE_ALG | string |
+| DataProviderAdapterCore_CHECKTOKEN_JWT_ENCRYPTED_RESPONSE_ENC | string |
+| DataProviderAdapterCore_CHECKTOKEN_JWT_SIGNED_RESPONSE_ALG | string |
 | DataProviderAdapterCore_CLIENT_ID | string |
 | DataProviderAdapterCore_CLIENT_SECRET | string |
+| DataProviderAdapterCore_ISSUER | string |
+| DataProviderAdapterCore_JWKS | json |
+| DataProviderAdapterCore_JWKS_ENDPOINT | string |
 | Logger_FILE | string |
 | Logger_LEVEL | string |
 | NODE_ENV | string |
