@@ -31,6 +31,7 @@
 
 ## Variables
 
+
 ### bridge-http-proxy-rie
 
 | Var Name | Inferred type |
@@ -44,6 +45,7 @@
 | Logger_LEVEL | string |
 | NODE_ENV | string |
 | REQUEST_TIMEOUT | string |
+
 ### core-fca-low
 
 | Var Name | Inferred type |
@@ -85,6 +87,7 @@
 | Redis_PORT | number |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### core-fcp-high
 
 | Var Name | Inferred type |
@@ -147,6 +150,7 @@
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
 | UD_FQDN | string |
+
 ### core-fcp-low
 
 | Var Name | Inferred type |
@@ -208,6 +212,7 @@
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
 | UD_FQDN | string |
+
 ### csmr-account
 
 | Var Name | Inferred type |
@@ -226,6 +231,7 @@
 | Mongoose_USER | string |
 | NODE_ENV | string |
 | REQUEST_TIMEOUT | string |
+
 ### csmr-hsm-high
 
 | Var Name | Inferred type |
@@ -240,6 +246,7 @@
 | Logger_LEVEL | string |
 | NODE_ENV | string |
 | REQUEST_TIMEOUT | string |
+
 ### csmr-rie
 
 | Var Name | Inferred type |
@@ -250,6 +257,7 @@
 | REQUEST_TIMEOUT | string |
 | RieBroker_QUEUE | string |
 | RieBroker_URLS | json |
+
 ### csmr-tracks
 
 | Var Name | Inferred type |
@@ -270,6 +278,7 @@
 | REQUEST_TIMEOUT | string |
 | TracksBroker_QUEUE | string |
 | TracksBroker_URLS | json |
+
 ### csmr-user-preferences-high
 
 | Var Name | Inferred type |
@@ -292,6 +301,7 @@
 | Mongoose_USER | string |
 | NODE_ENV | string |
 | REQUEST_TIMEOUT | string |
+
 ### eidas-bridge
 
 | Var Name | Inferred type |
@@ -311,6 +321,7 @@
 | App_AVAILABLE_COUNTRIES | json |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_IDP_ID | string |
 | App_VIEWS_PATHS | json |
 | Cog_CITY_FILE | string |
 | Cog_COUNTRY_FILE | string |
@@ -340,8 +351,11 @@
 | IdentityProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
+| IdentityProviderAdapterEnv_NAME | string |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_TITLE | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_UID | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
@@ -362,20 +376,33 @@
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
-| ServiceProviderAdapterEnv_CLIENT_ID | string |
-| ServiceProviderAdapterEnv_CLIENT_SECRET | string |
-| ServiceProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ALG | string |
-| ServiceProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
-| ServiceProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
-| ServiceProviderAdapterEnv_JWKS_URI | string |
-| ServiceProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS | json |
-| ServiceProviderAdapterEnv_REDIRECT_URIS | json |
-| ServiceProviderAdapterEnv_SCOPE | string |
-| ServiceProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
-| ServiceProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
-| ServiceProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
+| ServiceProviderAdapterEnvHigh_CLIENT_ID | string |
+| ServiceProviderAdapterEnvHigh_CLIENT_SECRET | string |
+| ServiceProviderAdapterEnvHigh_ID_TOKEN_ENCRYPTED_RESPONSE_ALG | string |
+| ServiceProviderAdapterEnvHigh_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
+| ServiceProviderAdapterEnvHigh_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
+| ServiceProviderAdapterEnvHigh_JWKS_URI | string |
+| ServiceProviderAdapterEnvHigh_POST_LOGOUT_REDIRECT_URIS | json |
+| ServiceProviderAdapterEnvHigh_REDIRECT_URIS | json |
+| ServiceProviderAdapterEnvHigh_SCOPE | string |
+| ServiceProviderAdapterEnvHigh_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
+| ServiceProviderAdapterEnvHigh_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
+| ServiceProviderAdapterEnvHigh_USERINFO_SIGNED_RESPONSE_ALG | string |
+| ServiceProviderAdapterEnvLow_CLIENT_ID | string |
+| ServiceProviderAdapterEnvLow_CLIENT_SECRET | string |
+| ServiceProviderAdapterEnvLow_ID_TOKEN_ENCRYPTED_RESPONSE_ALG | string |
+| ServiceProviderAdapterEnvLow_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
+| ServiceProviderAdapterEnvLow_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
+| ServiceProviderAdapterEnvLow_JWKS_URI | string |
+| ServiceProviderAdapterEnvLow_POST_LOGOUT_REDIRECT_URIS | json |
+| ServiceProviderAdapterEnvLow_REDIRECT_URIS | json |
+| ServiceProviderAdapterEnvLow_SCOPE | string |
+| ServiceProviderAdapterEnvLow_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
+| ServiceProviderAdapterEnvLow_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
+| ServiceProviderAdapterEnvLow_USERINFO_SIGNED_RESPONSE_ALG | string |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### exploit-fca-low
 
 | Var Name | Inferred type |
@@ -384,6 +411,7 @@
 | App_ASSETS_PATHS | json |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_IDP_ID | string |
 | App_VIEWS_PATHS | json |
 | FQDN | string |
 | IdentityProviderAdapterEnv_CLIENT_ID | string |
@@ -395,10 +423,11 @@
 | IdentityProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
-| IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS | json |
-| IdentityProviderAdapterEnv_REDIRECT_URIS | json |
+| IdentityProviderAdapterEnv_NAME | string |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_TITLE | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_UID | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
@@ -409,6 +438,8 @@
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
 | OidcClient_HTTPS_CLIENT_KEY | file |
+| OidcClient_POST_LOGOUT_REDIRECT_URI | string |
+| OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
 | REQUEST_TIMEOUT | string |
 | Redis_DB | number |
@@ -417,6 +448,7 @@
 | Redis_PORT | number |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### exploit-fcp-high
 
 | Var Name | Inferred type |
@@ -425,6 +457,7 @@
 | App_ASSETS_PATHS | json |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_IDP_ID | string |
 | App_VIEWS_PATHS | json |
 | FQDN | string |
 | IdentityProviderAdapterEnv_CLIENT_ID | string |
@@ -436,10 +469,11 @@
 | IdentityProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
-| IdentityProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS | json |
-| IdentityProviderAdapterEnv_REDIRECT_URIS | json |
+| IdentityProviderAdapterEnv_NAME | string |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_TITLE | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_UID | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
@@ -450,6 +484,8 @@
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
 | OidcClient_HTTPS_CLIENT_KEY | file |
+| OidcClient_POST_LOGOUT_REDIRECT_URI | string |
+| OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
 | REQUEST_TIMEOUT | string |
 | Redis_DB | number |
@@ -458,6 +494,7 @@
 | Redis_PORT | number |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### mock-data-provider
 
 | Var Name | Inferred type |
@@ -478,6 +515,7 @@
 | Logger_FILE | string |
 | Logger_LEVEL | string |
 | NODE_ENV | string |
+
 ### mock-identity-provider-fca-low
 
 | Var Name | Inferred type |
@@ -516,6 +554,7 @@
 | ServiceProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### mock-identity-provider-fcp-high
 
 | Var Name | Inferred type |
@@ -556,6 +595,7 @@
 | ServiceProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### mock-identity-provider-fcp-low
 
 | Var Name | Inferred type |
@@ -596,6 +636,7 @@
 | ServiceProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### mock-rnipp
 
 | Var Name | Inferred type |
@@ -608,6 +649,7 @@
 | Logger_FILE | string |
 | Logger_LEVEL | string |
 | NODE_ENV | string |
+
 ### mock-service-provider-fca-low
 
 | Var Name | Inferred type |
@@ -616,6 +658,7 @@
 | App_ASSETS_PATHS | json |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_IDP_ID | string |
 | App_VIEWS_PATHS | json |
 | FQDN | string |
 | IdentityProviderAdapterEnv_CLIENT_ID | string |
@@ -627,8 +670,11 @@
 | IdentityProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
+| IdentityProviderAdapterEnv_NAME | string |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_TITLE | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_UID | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
@@ -650,6 +696,7 @@
 | Session_COOKIE_SECRETS | json |
 | Session_FQDN | string |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### mock-service-provider-fcp-high
 
 | Var Name | Inferred type |
@@ -658,6 +705,7 @@
 | App_ASSETS_PATHS | json |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_IDP_ID | string |
 | App_VIEWS_PATHS | json |
 | FQDN | string |
 | IdentityProviderAdapterEnv_CLIENT_ID | string |
@@ -669,8 +717,11 @@
 | IdentityProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
+| IdentityProviderAdapterEnv_NAME | string |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_TITLE | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_UID | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
@@ -691,6 +742,7 @@
 | Redis_PORT | number |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### mock-service-provider-fcp-low
 
 | Var Name | Inferred type |
@@ -699,6 +751,7 @@
 | App_ASSETS_PATHS | json |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_IDP_ID | string |
 | App_VIEWS_PATHS | json |
 | FQDN | string |
 | IdentityProviderAdapterEnv_CLIENT_ID | string |
@@ -710,8 +763,11 @@
 | IdentityProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
+| IdentityProviderAdapterEnv_NAME | string |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_TITLE | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_UID | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
@@ -731,6 +787,7 @@
 | Redis_PORT | number |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### partners-fca
 
 | Var Name | Inferred type |
@@ -754,6 +811,7 @@
 | Redis_PORT | number |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### partners-fcp
 
 | Var Name | Inferred type |
@@ -777,6 +835,7 @@
 | Redis_PORT | number |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
+
 ### tracks-data-provider
 
 | Var Name | Inferred type |
@@ -792,6 +851,7 @@
 | REQUEST_TIMEOUT | string |
 | TracksBroker_QUEUE | string |
 | TracksBroker_URLS | json |
+
 ### user-dashboard
 
 | Var Name | Inferred type |
@@ -799,6 +859,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_IDP_ID | string |
 | FQDN | string |
 | IdentityProviderAdapterEnv_AUTHORIZATION_ENDPOINT | string |
 | IdentityProviderAdapterEnv_CLIENT_ID | string |
@@ -807,9 +868,12 @@
 | IdentityProviderAdapterEnv_END_SESSION_ENDPOINT | string |
 | IdentityProviderAdapterEnv_ISSUER | string |
 | IdentityProviderAdapterEnv_JWKS_URI | string |
+| IdentityProviderAdapterEnv_NAME | string |
 | IdentityProviderAdapterEnv_REVOCATION_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_TITLE | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT | string |
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
+| IdentityProviderAdapterEnv_UID | string |
 | IdentityProviderAdapterEnv_USERINFO_ENDPOINT | string |
 | Logger_FILE | string |
 | Logger_LEVEL | string |

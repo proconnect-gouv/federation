@@ -47,13 +47,13 @@ const availableListMock: IEidasCountryElement['iso'][] = [
 describe('EuIdentityToFrController', () => {
   let euIdentityToFrController: EuIdentityToFrController;
 
-  const configMock: AppConfig = {
+  const configMock = {
     apiOutputContentType: 'html',
     name: 'notUsedValue',
     urlPrefix: '',
     countryIsoList: availableListMock,
     httpsOptions: {},
-  };
+  } as AppConfig;
 
   const configServiceMock = {
     get: jest.fn(),

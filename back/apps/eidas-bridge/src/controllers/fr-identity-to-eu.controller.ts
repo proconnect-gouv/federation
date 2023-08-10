@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { Controller, Get, Query, Redirect, Req } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
+import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { CryptographyEidasService } from '@fc/cryptography-eidas';
 import { EidasResponse } from '@fc/eidas';
@@ -27,8 +28,8 @@ import {
 } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
-import { EidasBridgeIdentityDto } from '../dto';
-import { EidasBridgeRoutes, IDP_ID } from '../enums';
+import { AppConfig, EidasBridgeIdentityDto } from '../dto';
+import { EidasBridgeRoutes } from '../enums';
 import { EidasBridgeInvalidFRIdentityException } from '../exceptions';
 
 /**
@@ -42,6 +43,7 @@ export class FrIdentityToEuController {
   constructor(
     private readonly crypto: CryptographyService,
     private readonly cryptoEidas: CryptographyEidasService,
+    private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly oidcClient: OidcClientService,
@@ -68,7 +70,7 @@ export class FrIdentityToEuController {
 
     await sessionOidc.set({
       idpState,
-      idpId: IDP_ID,
+      idpId: this.getIdpId(),
     });
 
     const response = {
@@ -115,7 +117,7 @@ export class FrIdentityToEuController {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: oidcRequest.acr_values,
       nonce,
-      idpId: IDP_ID,
+      idpId: this.getIdpId(),
       scope: oidcRequest.scope.join(' '),
       state,
     });
@@ -305,5 +307,11 @@ export class FrIdentityToEuController {
     const pairwisedSub = this.cryptoEidas.computeSubV1(spCountryCode, idpSub);
     this.logger.trace({ spCountryCode, pairwisedSub });
     return pairwisedSub;
+  }
+
+  private getIdpId(): string {
+    const { idpId } = this.config.get<AppConfig>('App');
+
+    return idpId;
   }
 }

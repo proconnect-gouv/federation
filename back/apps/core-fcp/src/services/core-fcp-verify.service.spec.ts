@@ -2,6 +2,7 @@ import { Request } from 'express';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { ConfigService } from '@fc/config';
 import { CoreVerifyService } from '@fc/core';
 import { LoggerService } from '@fc/logger-legacy';
 
@@ -17,6 +18,10 @@ describe('CoreFcpVerifyService', () => {
     setContext: jest.fn(),
     trace: jest.fn(),
   } as unknown as LoggerService;
+
+  const configServiceMock = {
+    get: jest.fn(),
+  };
 
   const coreVerifyServiceMock = {
     verify: jest.fn(),
@@ -48,10 +53,17 @@ describe('CoreFcpVerifyService', () => {
     jest.restoreAllMocks();
 
     const app: TestingModule = await Test.createTestingModule({
-      providers: [CoreFcpVerifyService, LoggerService, CoreVerifyService],
+      providers: [
+        CoreFcpVerifyService,
+        LoggerService,
+        ConfigService,
+        CoreVerifyService,
+      ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(ConfigService)
+      .useValue(configServiceMock)
       .overrideProvider(CoreVerifyService)
       .useValue(coreVerifyServiceMock)
       .compile();
@@ -92,6 +104,31 @@ describe('CoreFcpVerifyService', () => {
       const expected = 'urlPrefixValue/interaction/interactionId/consent';
       // When
       const result = await service['handleVerifyIdentity'](req, params);
+      // Then
+      expect(result).toBe(expected);
+    });
+  });
+
+  describe('handleInsufficientAcrLevel()', () => {
+    beforeEach(() => {
+      configServiceMock.get = jest.fn().mockReturnValue({
+        urlPrefix: 'urlPrefixValue',
+      });
+    });
+
+    it('should get urlPrefix from config', () => {
+      // When
+      service['handleInsufficientAcrLevel'](interactionIdMock);
+      // Then
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('App');
+    });
+
+    it('should return url result', () => {
+      // Given
+      const expected = 'urlPrefixValue/interaction/interactionIdMockValue';
+      // When
+      const result = service['handleInsufficientAcrLevel'](interactionIdMock);
       // Then
       expect(result).toBe(expected);
     });

@@ -276,13 +276,19 @@ export class CoreFcaController {
       const url = await this.coreFcaVerify.handleSsoDisabled(req, params);
       return res.redirect(url);
     }
+    const isIdpActive = await this.identityProvider.isActiveById(idpId);
 
     const isBlackListed = await this.serviceProvider.shouldExcludeIdp(
       spId,
       idpId,
     );
-    if (isBlackListed) {
-      const url = await this.coreVerify.handleBlacklisted(req, params);
+
+    if (isBlackListed || !isIdpActive) {
+      const url = await this.coreVerify.handleUnavailableIdp(
+        req,
+        params,
+        !isIdpActive,
+      );
       return res.redirect(url);
     }
 

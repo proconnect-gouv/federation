@@ -84,8 +84,8 @@ Fonctionnalité: Connexion Usager - session fcp-low (avec SSO)
     Et que la valeur "accountId" est identique dans l'événement "FC_AUTHORIZE_INITIATED"
     Et que la valeur "sessionId" est différente dans l'événement "FC_AUTHORIZE_INITIATED"
     Et que je mémorise la valeur "sessionId" de l'événement "FC_AUTHORIZE_INITIATED"
-    # FC_SSO_UNAUTHORIZED_IDP: l'attribut isSso devient false
-    Et que l'événement "FC_SSO_UNAUTHORIZED_IDP" est journalisé
+    # FC_IDP_BLACKLISTED: l'attribut isSso devient false
+    Et que l'événement "FC_IDP_BLACKLISTED" est journalisé
     Et que l'événement "FC_SHOWED_IDP_CHOICE" est journalisé avec "isSso" "false"
     Quand j'utilise un fournisseur d'identité "par défaut"
     Et je clique sur le fournisseur d'identité

@@ -1,7 +1,13 @@
+import { cloneDeep } from 'lodash';
+
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { IServiceProviderAdapter, ServiceProviderMetadata } from '@fc/oidc';
+import {
+  IServiceProviderAdapter,
+  ServiceProviderMetadata,
+  ServiceProviderMetadataList,
+} from '@fc/oidc';
 
 import { ServiceProviderAdapterEnvConfig } from './dto';
 
@@ -14,11 +20,11 @@ export class ServiceProviderAdapterEnvService
   // Needed to match the interface
   // eslint-disable-next-line require-await
   async getList(): Promise<ServiceProviderMetadata[]> {
-    const configuredSp = this.config.get<ServiceProviderAdapterEnvConfig>(
+    const { list } = this.config.get<ServiceProviderAdapterEnvConfig>(
       'ServiceProviderAdapterEnv',
-    ) as ServiceProviderMetadata;
+    ) as ServiceProviderMetadataList;
 
-    return [JSON.parse(JSON.stringify(configuredSp))];
+    return cloneDeep(list);
   }
 
   async shouldExcludeIdp(spId: string, idpId: string): Promise<boolean> {

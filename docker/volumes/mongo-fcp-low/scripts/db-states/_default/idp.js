@@ -51,6 +51,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
       "https://fcp.docker.dev-franceconnect.fr/api/v1/logout/redirect_from_provider",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP1-LOW - Activated
   "FIP1-LOW": {
@@ -98,6 +99,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP1-LOW - Beta ACTIVE
   "FIP1-BETA-ACTIVE": {
@@ -147,6 +149,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP1-LOW - Beta INACTIVE
   "FIP1-BETA-INACTIVE": {
@@ -196,6 +199,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP2-LOW - Activated
   "FIP2-LOW": {
@@ -247,6 +251,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP3-LOW - Activated
   "FIP3-LOW": {
@@ -296,6 +301,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP4-LOW - ES256
   "FIP4-LOW": {
@@ -346,6 +352,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP5-LOW - Disabled
   "FIP5-LOW": {
@@ -395,6 +402,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP6-LOW - Invisible
   "FIP6-LOW": {
@@ -444,6 +452,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP7-LOW - Disabled and Invisible
   "FIP7-LOW": {
@@ -493,6 +502,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP7-LOW - Activated - whitelisted by fsp3
   "FIP8-LOW": {
@@ -542,6 +552,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   // -- FIP - FIP9-LOW - Activated - no endSessionUrl
   "FIP9-LOW": {
@@ -591,6 +602,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    disabledForLegacy: false,
   },
   //Aidants Connect mock
   "aidants-connect": {
@@ -598,6 +610,7 @@ const fip = {
     name: "aidants-connect-mock",
     active: true,
     display: true,
+    isBeta: false,
     title: "Aidants Connect mock",
     image: "fi-aidantsconnect.png",
     imageFocus: "fi-aidantsconnect.png",
@@ -643,7 +656,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-    isBeta: false,
+    disabledForLegacy: false,
   },
   // eIDAS Bridge as Identity Provider
   "eidas-bridge": {
@@ -651,6 +664,7 @@ const fip = {
     name: "eidas_interconnection_bridge",
     active: true,
     display: true,
+    isBeta: false,
     title: "eIDAS Bridge",
     image: "fi-europe.svg",
     imageFocus: "fi-europe.svg",
@@ -658,38 +672,40 @@ const fip = {
     eidas: 2,
     mailto: "",
     featureHandlers: {
-      coreVerify: "core-fcp-default-verify",
-      authenticationEmail: "core-fcp-send-email",
-      idpIdentityCheck: "core-fcp-default-identity-check",
+      coreVerify: "core-fcp-eidas-verify",
+      authenticationEmail: null,
+      idpIdentityCheck: "core-fcp-eidas-identity-check",
     },
     specificText: "specific text eidas bridge",
-    url: "https://eidas-bridge.docker.dev-franceconnect.fr",
-    discoveryUrl:
-      "https://eidas-bridge.docker.dev-franceconnect.fr/.well-known/openid-configuration",
-    discovery: true,
-    clientID: "ObnxTzt6NzRXbPmbhrVx175jyQ9B6iwW",
+    clientID: "myclientidforeidas-bridge-low",
     client_secret:
-      "ImUyBBXcWVg0Z/nq0RSmm9nlBbTIvaE2cJU9005a9gu88wOGA4gB6HQPQhxsKyTXJAnG+rmvfLG/suLI",
+      "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
+    url: "https://eidas-bridge.docker.dev-franceconnect.fr",
+    discovery: false,
     order: 9,
     createdAt: new Date("2019-04-24 17:09:17"),
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
+    authzURL: "https://eidas-bridge.docker.dev-franceconnect.fr/authorize",
+    tokenURL: "https://eidas-bridge.docker.dev-franceconnect.fr/token",
+    userInfoURL: "https://eidas-bridge.docker.dev-franceconnect.fr/userinfo",
+    jwksURL: "https://eidas-bridge.docker.dev-franceconnect.fr/jwks",
     response_types: ["code"],
-    id_token_signed_response_alg: "HS256",
+    id_token_signed_response_alg: "ES256",
     token_endpoint_auth_method: "client_secret_post",
     revocation_endpoint_auth_method: "client_secret_post",
-    id_token_encrypted_response_alg: "",
-    id_token_encrypted_response_enc: "",
-    userinfo_signed_response_alg: "HS256",
-    userinfo_encrypted_response_alg: "",
-    userinfo_encrypted_response_enc: "",
+    id_token_encrypted_response_alg: "ECDH-ES",
+    id_token_encrypted_response_enc: "A256GCM",
+    userinfo_signed_response_alg: "ES256",
+    userinfo_encrypted_response_alg: "ECDH-ES",
+    userinfo_encrypted_response_enc: "A256GCM",
     redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
     ],
     post_logout_redirect_uris: [
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
-    isBeta: false,
+    disabledForLegacy: true,
   },
 };
 
