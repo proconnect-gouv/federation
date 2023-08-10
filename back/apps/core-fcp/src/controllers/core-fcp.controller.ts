@@ -37,7 +37,6 @@ import {
   GetInteractionOidcClientSessionDto,
   GetVerifyOidcClientSessionDto,
 } from '../dto';
-import { InsufficientAcrLevelSuspiciousContextException } from '../exceptions';
 import { CoreFcpService, CoreFcpVerifyService } from '../services';
 
 @Controller()
@@ -210,13 +209,19 @@ export class CoreFcpController {
     const { urlPrefix } = this.config.get<AppConfig>('App');
     const params = { urlPrefix, interactionId, sessionOidc };
 
+    const isIdpActive = await this.identityProvider.isActiveById(idpId);
+
     const isBlackListed = await this.serviceProvider.shouldExcludeIdp(
       spId,
       idpId,
     );
 
-    if (isBlackListed) {
-      const url = await this.coreVerify.handleBlacklisted(req, params);
+    if (isBlackListed || !isIdpActive) {
+      const url = await this.coreVerify.handleUnavailableIdp(
+        req,
+        params,
+        !isIdpActive,
+      );
       return res.redirect(url);
     }
 
@@ -226,7 +231,22 @@ export class CoreFcpController {
       isSuspicious,
     );
     if (isInsufficientAcrLevel) {
-      throw new InsufficientAcrLevelSuspiciousContextException();
+      const url = await this.coreFcpVerify.handleInsufficientAcrLevel(
+        interactionId,
+      );
+
+      /**
+       * Suspect context redirects to idp choice,
+       * thus we are no longer in an "sso" interaction,
+       * so we update isSso flag in session.
+       */
+      await sessionOidc.set('isSso', false);
+
+      const trackingContext: TrackedEventContextInterface = { req };
+      const { FC_IDP_INSUFFICIENT_ACR } = this.tracking.TrackedEventsMap;
+      await this.tracking.track(FC_IDP_INSUFFICIENT_ACR, trackingContext);
+
+      return res.redirect(url);
     }
 
     const url = await this.coreFcpVerify.handleVerifyIdentity(req, params);

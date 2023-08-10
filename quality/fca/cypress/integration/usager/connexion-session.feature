@@ -85,8 +85,8 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et je cherche le fournisseur d'identité par son nom
     Et je clique sur le fournisseur d'identité
     Et je suis redirigé vers la page login du fournisseur d'identité
-    # FC_SSO_UNAUTHORIZED_IDP: l'attribut isSso devient false
-    Et l'événement "FC_SSO_UNAUTHORIZED_IDP" est journalisé
+    # FC_IDP_BLACKLISTED: l'attribut isSso devient false
+    Et l'événement "FC_IDP_BLACKLISTED" est journalisé
     Et l'événement "FC_SHOWED_IDP_CHOICE" est journalisé avec "isSso" "false"
     # Evènement IDP_CHOSEN: les données de session concernant l'usager sont supprimées une fois le FI sélectionné
     Et l'événement "IDP_CHOSEN" est journalisé avec "accountId" "null" et "idpSub" "null" et "isSso" "false"

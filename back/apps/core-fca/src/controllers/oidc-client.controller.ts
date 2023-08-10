@@ -112,6 +112,8 @@ export class OidcClientController {
 
     await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
 
+    await this.oidcClient.utils.checkIdpDisabled(spId, idpId);
+
     const { state, nonce } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 

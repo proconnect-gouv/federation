@@ -79,18 +79,18 @@ describe('OidcClient Controller', () => {
     track: jest.fn(),
   };
 
+  const idpIdMock = 'idpIdMockValue';
   const configMock = {
     urlPrefix: '/api/v2',
     defaultAcrValue: 'eidas3',
     scope: 'openid',
+    idpId: idpIdMock,
   };
 
   const configServiceMock = {
     get: jest.fn(),
   };
 
-  const providerIdMock = 'providerIdMockValue';
-  const idpIdMock = 'idpIdMockValue';
   const queryStringEncodeMock = jest.mocked(encode);
 
   beforeEach(async () => {
@@ -160,12 +160,11 @@ describe('OidcClient Controller', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'acrMock',
       nonce: idpNonceMock,
-      providerUid: providerIdMock,
+      providerUid: configMock.idpId,
       scope: 'scopeMock',
       state: idpStateMock,
     });
 
-    configServiceMock.get.mockReturnValue(configMock);
     sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
   });
 
@@ -174,6 +173,10 @@ describe('OidcClient Controller', () => {
   });
 
   describe('redirectToIdp()', () => {
+    beforeEach(() => {
+      controller['getIdpId'] = jest.fn().mockReturnValue(configMock.idpId);
+    });
+
     it('should call oidc-client-service to retrieve authorize url', async () => {
       // setup
       const body = {
@@ -191,7 +194,7 @@ describe('OidcClient Controller', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
         nonce: idpNonceMock,
-        idpId: 'envIssuer',
+        idpId: configMock.idpId,
         scope: 'openid',
         state: idpStateMock,
         prompt: 'login',
@@ -247,7 +250,7 @@ describe('OidcClient Controller', () => {
       // assert
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.set).toHaveBeenCalledWith({
-        idpId: 'envIssuer',
+        idpId: configMock.idpId,
         idpName: 'nameValue',
         idpLabel: 'titleValue',
         idpNonce: idpNonceMock,
@@ -264,7 +267,7 @@ describe('OidcClient Controller', () => {
         claims: 'any_formatted_json_string',
         csrfToken: 'csrfMockValue',
         nonce: idpNonceMock,
-        providerUid: providerIdMock,
+        providerUid: configMock.idpId,
         scope: 'openid',
       };
       sessionServiceMock.get.mockImplementationOnce(() => {
@@ -287,7 +290,7 @@ describe('OidcClient Controller', () => {
         claims: 'any_formatted_json_string',
         csrfToken: 'csrfMockValue',
         nonce: idpNonceMock,
-        providerUid: providerIdMock,
+        providerUid: configMock.idpId,
         scope: 'openid',
       };
       sessionServiceMock.get.mockReturnValueOnce('spId');
@@ -559,6 +562,31 @@ describe('OidcClient Controller', () => {
       await expect(controller.revocationToken(res, body)).rejects.toThrow(
         UserDashboardTokenRevocationException,
       );
+    });
+  });
+
+  describe('getIdpId()', () => {
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValueOnce({
+        idpId: idpIdMock,
+      });
+    });
+
+    it('should get the idpId from the config', () => {
+      // When
+      controller['getIdpId']();
+
+      // Then
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('App');
+    });
+
+    it('should return the idpId from the config', () => {
+      // When
+      const result = controller['getIdpId']();
+
+      // Then
+      expect(result).toBe(idpIdMock);
     });
   });
 });

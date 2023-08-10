@@ -1151,7 +1151,7 @@ const fip = {
       authenticationEmail: null,
       idpIdentityCheck: "core-fcp-eidas-identity-check",
     },
-    clientID: "myclientidforeidas-bridge",
+    clientID: "myclientidforeidas-bridge-high",
     client_secret:
       "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
     response_types: ["code"],
@@ -1184,6 +1184,12 @@ const fip = {
     endSessionURL:
       "https://eidas-bridge.docker.dev-franceconnect.fr/session/end",
     statusURL: "https://eidas-bridge.docker.dev-franceconnect.fr/",
+    redirect_uris: [
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback",
+    ],
+    post_logout_redirect_uris: [
+      "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
+    ],
   },
 };
 

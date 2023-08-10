@@ -11,7 +11,7 @@ import { OidcClientBaseException } from './oidc-client-base.exception';
 @Description(
   'Le FI est désactivé, si le problème persiste, contacter le support N3',
 )
-export class OidcClientProviderDisabledException extends OidcClientBaseException {
+export class OidcClientIdpDisabledException extends OidcClientBaseException {
   code = ErrorCode.DISABLED_PROVIDER;
   message =
     'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.';

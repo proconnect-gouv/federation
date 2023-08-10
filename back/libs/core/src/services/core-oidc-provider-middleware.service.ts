@@ -202,6 +202,7 @@ export class CoreOidcProviderMiddlewareService {
     const spAmrIsAuthorized = spClaimsAuthorized.includes('amr');
 
     if (!spAmrIsAuthorized) {
+      ctx.oidc['isError'] = true;
       const exception = new CoreClaimAmrException();
       this.oidcErrorService.throwError(ctx, exception);
     }
@@ -225,6 +226,7 @@ export class CoreOidcProviderMiddlewareService {
       const { SP_REQUESTED_FC_TOKEN } = this.tracking.TrackedEventsMap;
       await this.tracking.track(SP_REQUESTED_FC_TOKEN, eventContext);
     } catch (exception) {
+      ctx.oidc['isError'] = true;
       this.oidcErrorService.throwError(ctx, exception);
     }
   }
@@ -236,6 +238,7 @@ export class CoreOidcProviderMiddlewareService {
       const { SP_REQUESTED_FC_USERINFO } = this.tracking.TrackedEventsMap;
       await this.tracking.track(SP_REQUESTED_FC_USERINFO, eventContext);
     } catch (exception) {
+      ctx.oidc['isError'] = true;
       this.oidcErrorService.throwError(ctx, exception);
     }
   }

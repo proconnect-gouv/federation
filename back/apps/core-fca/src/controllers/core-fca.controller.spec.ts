@@ -80,7 +80,7 @@ describe('CoreFcaController', () => {
 
   const coreVerifyServiceMock = {
     verify: jest.fn(),
-    handleBlacklisted: jest.fn(),
+    handleUnavailableIdp: jest.fn(),
   };
 
   const coreFcaVerifyServiceMock = {
@@ -99,6 +99,7 @@ describe('CoreFcaController', () => {
   const identityProviderServiceMock = {
     getFilteredList: jest.fn(),
     getList: jest.fn(),
+    isActiveById: jest.fn(),
   };
 
   const serviceProviderServiceMock = {
@@ -151,7 +152,7 @@ describe('CoreFcaController', () => {
     stepRoute: '/some/route',
   };
 
-  const handleBlackListedResult = 'urlPrefixValue/interaction/interactionId';
+  const handleUnavailableIdpResult = 'urlPrefixValue/interaction/interactionId';
   const handleVerifyResult = 'urlPrefixValue/login';
   const handleSsoDisabledResult =
     'urlPrefixValue/interaction/interactionIdMockValue';
@@ -227,6 +228,8 @@ describe('CoreFcaController', () => {
     sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
 
     serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(true);
+
+    identityProviderServiceMock.isActiveById.mockResolvedValue(true);
   });
 
   describe('getDefault()', () => {
@@ -654,17 +657,19 @@ describe('CoreFcaController', () => {
       expect(res.redirect).toBeCalledWith(handleSsoDisabledResult);
     });
 
-    describe('when `serviceProvider.shouldExcludeIdp()` returns `true`', () => {
+    describe('when `identityProvider.isActiveById` returns false', () => {
       beforeEach(() => {
-        coreVerifyServiceMock.handleBlacklisted.mockResolvedValue(
-          handleBlackListedResult,
+        serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(false);
+        identityProviderServiceMock.isActiveById.mockResolvedValue(false);
+        coreVerifyServiceMock.handleUnavailableIdp.mockResolvedValue(
+          handleUnavailableIdpResult,
         );
         coreFcaVerifyServiceMock.handleVerifyIdentity.mockResolvedValue(
           handleVerifyResult,
         );
       });
 
-      it('should call `handleBlackListed()` and not `handleVerify()`', async () => {
+      it('should call `handleUnavailableIdp()` and not `handleVerify()`', async () => {
         // When
         await coreController.getVerify(
           req,
@@ -673,15 +678,15 @@ describe('CoreFcaController', () => {
           sessionServiceMock,
         );
         // Then
-        expect(coreVerifyServiceMock.handleBlacklisted).toHaveBeenCalledTimes(
-          1,
-        );
+        expect(
+          coreVerifyServiceMock.handleUnavailableIdp,
+        ).toHaveBeenCalledTimes(1);
         expect(
           coreFcaVerifyServiceMock.handleVerifyIdentity,
         ).not.toHaveBeenCalled();
       });
 
-      it('should return result from `handleBlackListed()`', async () => {
+      it('should return result from `handleUnavailableIdp()`', async () => {
         // When
         await coreController.getVerify(
           req,
@@ -691,22 +696,63 @@ describe('CoreFcaController', () => {
         );
         // Then
         expect(res.redirect).toBeCalledTimes(1);
-        expect(res.redirect).toBeCalledWith(handleBlackListedResult);
+        expect(res.redirect).toBeCalledWith(handleUnavailableIdpResult);
       });
     });
 
-    describe('when `serviceProvider.shouldExcludeIdp()` returns `false`', () => {
+    describe('when `serviceProvider.shouldExcludeIdp()` returns `true`', () => {
       beforeEach(() => {
-        serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(false);
-        coreVerifyServiceMock.handleBlacklisted.mockResolvedValue(
-          handleBlackListedResult,
+        coreVerifyServiceMock.handleUnavailableIdp.mockResolvedValue(
+          handleUnavailableIdpResult,
         );
         coreFcaVerifyServiceMock.handleVerifyIdentity.mockResolvedValue(
           handleVerifyResult,
         );
       });
 
-      it('should call `handleVerify()` and not `handleBlackListed()`', async () => {
+      it('should call `handleUnavailableIdp()` and not `handleVerify()`', async () => {
+        // When
+        await coreController.getVerify(
+          req,
+          res as unknown as Response,
+          params,
+          sessionServiceMock,
+        );
+        // Then
+        expect(
+          coreVerifyServiceMock.handleUnavailableIdp,
+        ).toHaveBeenCalledTimes(1);
+        expect(
+          coreFcaVerifyServiceMock.handleVerifyIdentity,
+        ).not.toHaveBeenCalled();
+      });
+
+      it('should return result from `handleUnavailableIdp()`', async () => {
+        // When
+        await coreController.getVerify(
+          req,
+          res as unknown as Response,
+          params,
+          sessionServiceMock,
+        );
+        // Then
+        expect(res.redirect).toBeCalledTimes(1);
+        expect(res.redirect).toBeCalledWith(handleUnavailableIdpResult);
+      });
+    });
+
+    describe('when `serviceProvider.shouldExcludeIdp()` returns `false`', () => {
+      beforeEach(() => {
+        serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(false);
+        coreVerifyServiceMock.handleUnavailableIdp.mockResolvedValue(
+          handleUnavailableIdpResult,
+        );
+        coreFcaVerifyServiceMock.handleVerifyIdentity.mockResolvedValue(
+          handleVerifyResult,
+        );
+      });
+
+      it('should call `handleVerify()` and not `handleUnavailableIdp()`', async () => {
         // When
         await coreController.getVerify(
           req,
@@ -718,7 +764,9 @@ describe('CoreFcaController', () => {
         expect(
           coreFcaVerifyServiceMock.handleVerifyIdentity,
         ).toHaveBeenCalledTimes(1);
-        expect(coreVerifyServiceMock.handleBlacklisted).not.toHaveBeenCalled();
+        expect(
+          coreVerifyServiceMock.handleUnavailableIdp,
+        ).not.toHaveBeenCalled();
       });
 
       it('should call return result from `handleVerify()`', async () => {

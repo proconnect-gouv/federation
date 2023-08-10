@@ -77,6 +77,16 @@ describe('MockServiceProviderController', () => {
   const acrMock = 'acrMock';
   const claimsMock = 'claimsMock';
 
+  const configMockValue = {
+    scope: scopeMock,
+    acr: acrMock,
+    claims: claimsMock,
+    urlPrefix: '/api/v2',
+    defaultAcrValue: 'eidas2',
+    redirectUri: ['redirect', 'uri'],
+    idpId: 'providerUidMock',
+  };
+
   const identityProviderMock = {
     getList: jest.fn(),
   };
@@ -219,14 +229,7 @@ describe('MockServiceProviderController', () => {
 
     sessionServiceMock.get.mockResolvedValue(sessionDataMock);
 
-    configMock.get.mockReturnValue({
-      scope: scopeMock,
-      acr: acrMock,
-      claims: claimsMock,
-      urlPrefix: '/api/v2',
-      defaultAcrValue: 'eidas2',
-      redirectUri: ['redirect', 'uri'],
-    });
+    configMock.get.mockReturnValue(configMockValue);
     identityProviderMock.getList.mockResolvedValue(identityProviderList);
   });
 
@@ -388,9 +391,24 @@ describe('MockServiceProviderController', () => {
   });
 
   describe('revocationToken', () => {
+    beforeEach(() => {
+      controller['getIdpId'] = jest.fn().mockReturnValue(configMockValue.idpId);
+    });
+
+    it('should get the idpId from the app config', async () => {
+      // Given
+      const body = { accessToken: 'access_token' };
+
+      // When
+      await controller.revocationToken(res, body);
+
+      // Then
+      expect(controller['getIdpId']).toHaveBeenCalledTimes(1);
+      expect(controller['getIdpId']).toHaveBeenCalledWith();
+    });
+
     it('should display success page when token is revoked', async () => {
       // setup
-      const providerUid = 'envIssuer';
       const body = { accessToken: 'access_token' };
       // action
       const result = await controller.revocationToken(res, body);
@@ -399,7 +417,7 @@ describe('MockServiceProviderController', () => {
       expect(oidcClientServiceMock.utils.revokeToken).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.utils.revokeToken).toHaveBeenCalledWith(
         body.accessToken,
-        providerUid,
+        configMockValue.idpId,
       );
       expect(result).toEqual({
         accessToken: 'access_token',
@@ -445,7 +463,6 @@ describe('MockServiceProviderController', () => {
 
     it('should retrieve and display userinfo as well as cinematic information on userinfo page', async () => {
       // setup
-      const providerUid = 'envIssuer';
       const body = { accessToken: 'access_token' };
       oidcClientServiceMock.utils.getUserInfo.mockReturnValueOnce({
         sub: '1',
@@ -476,7 +493,7 @@ describe('MockServiceProviderController', () => {
       expect(oidcClientServiceMock.utils.getUserInfo).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.utils.getUserInfo).toHaveBeenCalledWith(
         body.accessToken,
-        providerUid,
+        configMockValue.idpId,
       );
       expect(result).toEqual(expectedOutput);
     });
@@ -745,6 +762,31 @@ describe('MockServiceProviderController', () => {
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(redirectMock);
+    });
+  });
+
+  describe('getIdpId()', () => {
+    beforeEach(() => {
+      configMock.get.mockReturnValueOnce({
+        idpId: idpIdMock,
+      });
+    });
+
+    it('should get the idpId from the config', () => {
+      // When
+      controller['getIdpId']();
+
+      // Then
+      expect(configMock.get).toHaveBeenCalledTimes(1);
+      expect(configMock.get).toHaveBeenCalledWith('App');
+    });
+
+    it('should return the idpId from the config', () => {
+      // When
+      const result = controller['getIdpId']();
+
+      // Then
+      expect(result).toBe(idpIdMock);
     });
   });
 });

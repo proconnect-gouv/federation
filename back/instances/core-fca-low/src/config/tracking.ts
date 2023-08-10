@@ -76,10 +76,16 @@ export default {
       event: 'FC_VERIFIED',
     },
 
-    FC_BLACKLISTED: {
+    FC_IDP_DISABLED: {
       step: '5.1.0',
       category: EventsCategories.FRONT_CINEMATIC,
-      event: 'FC_SSO_UNAUTHORIZED_IDP',
+      event: 'FC_IDP_DISABLED',
+    },
+
+    FC_IDP_BLACKLISTED: {
+      step: '5.2.0',
+      category: EventsCategories.FRONT_CINEMATIC,
+      event: 'FC_IDP_BLACKLISTED',
     },
 
     FC_REDIRECTED_TO_SP: {

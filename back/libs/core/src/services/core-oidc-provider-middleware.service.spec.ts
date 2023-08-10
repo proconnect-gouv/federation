@@ -842,9 +842,35 @@ describe('CoreOidcProviderMiddlewareService', () => {
       );
     });
 
+    it('should set oidc error if getEventContext failed', async () => {
+      // Given
+      const ctxMock: any = {
+        oidc: {},
+        not: 'altered',
+        req: {
+          headers: {
+            'x-forwarded-for': '123.123.123.123',
+            'x-forwarded-source-port': '443',
+            'x-forwarded-for-original': '123.123.123.123,124.124.124.124',
+          },
+        },
+      };
+
+      const errorMock = new Error('unknowError');
+
+      service['getEventContext'] = jest.fn().mockImplementationOnce(() => {
+        throw errorMock;
+      });
+      // When
+      await service['userinfoMiddleware'](ctxMock);
+      // Then
+      expect(ctxMock.oidc.isError).toBe(true);
+    });
+
     it('should call throwError if getEventContext fail', async () => {
       // Given
       const ctxMock: any = {
+        oidc: {},
         not: 'altered',
         req: {
           headers: {
@@ -874,6 +900,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
     it('should call throwError if tracking.track throw an error', async () => {
       // Given
       const ctxMock: any = {
+        oidc: {},
         not: 'altered',
         req: {
           headers: {
