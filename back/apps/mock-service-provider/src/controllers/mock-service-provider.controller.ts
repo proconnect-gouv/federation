@@ -37,6 +37,7 @@ import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
 } from '../exceptions';
+import { MockServiceProviderService } from '../services';
 
 @Controller()
 export class MockServiceProviderController {
@@ -47,6 +48,7 @@ export class MockServiceProviderController {
     private readonly oidcClient: OidcClientService,
     private readonly logger: LoggerService,
     private readonly identityProvider: IdentityProviderAdapterEnvService,
+    private readonly mockServiceProvider: MockServiceProviderService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -112,10 +114,13 @@ export class MockServiceProviderController {
       res.redirect('/');
     }
 
+    const { dataApiUrl } = this.config.get<AppConfig>('App');
+
     const response = {
       ...session,
       accessToken: session.idpAccessToken,
       titleFront: 'Mock Service Provider - Login Callback',
+      dataApiActive: Boolean(dataApiUrl),
     };
 
     this.logger.trace({
@@ -179,9 +184,12 @@ export class MockServiceProviderController {
       const { accessToken } = body;
       await this.oidcClient.utils.revokeToken(accessToken, providerUid);
 
+      const { dataApiUrl } = this.config.get<AppConfig>('App');
+
       response = {
         titleFront: 'Mock Service Provider - Token révoqué',
         accessToken,
+        dataApiActive: Boolean(dataApiUrl),
       };
     } catch (e) {
       this.logger.trace({ e }, LoggerLevelNames.WARN);
@@ -329,11 +337,14 @@ export class MockServiceProviderController {
 
       const idpIdToken = await sessionOidc.get('idpIdToken');
 
+      const { dataApiUrl } = this.config.get<AppConfig>('App');
+
       response = {
         titleFront: 'Mock Service Provider - Userinfo',
         accessToken,
         idpIdentity,
         idpIdToken,
+        dataApiActive: Boolean(dataApiUrl),
       };
     } catch (e) {
       this.logger.trace({ e }, LoggerLevelNames.WARN);
@@ -362,6 +373,53 @@ export class MockServiceProviderController {
     });
 
     return response;
+  }
+
+  @Get(MockServiceProviderRoutes.DATA)
+  async getData(
+    @Res() res,
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+  ) {
+    const { dataApiAuthSecret, dataApiUrl } = this.config.get<AppConfig>('App');
+
+    if (!dataApiUrl) {
+      const redirect = `/error?error=no_data_provider&error_description=${encodeURIComponent(
+        'No data provider configured.',
+      )}`;
+      return res.redirect(redirect);
+    }
+    const { idpAccessToken } = await sessionOidc.get();
+
+    try {
+      const data = await this.mockServiceProvider.getData(
+        dataApiUrl,
+        idpAccessToken,
+        dataApiAuthSecret,
+      );
+
+      const response = {
+        titleFront: 'Mock Service Provider - UserData',
+        accessToken: idpAccessToken,
+        data,
+        dataApiActive: true,
+      };
+
+      this.logger.trace({
+        route: MockServiceProviderRoutes.DATA,
+        method: 'GET',
+        name: 'MockServiceProviderRoutes.DATA',
+        response,
+      });
+
+      // Cannot use decorator since it would try to render even on error after the redirect
+      return res.render('data', response);
+    } catch (e) {
+      const redirect = `/error?error=${encodeURIComponent(
+        e.error,
+      )}&error_description=${encodeURIComponent(e.error_description)}`;
+      return res.redirect(redirect);
+    }
   }
 
   @Get(MockServiceProviderRoutes.ERROR)

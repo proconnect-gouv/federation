@@ -39,6 +39,22 @@ describe('DataProviderAdapterCoreService', () => {
 
   const jwtServiceMock = getJwtServiceMock();
 
+  const axiosErrorMock = {
+    response: {
+      data: {
+        error: 'error',
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: 'error_description',
+      },
+    },
+  } as AxiosError<{
+    error: string;
+    // oidc compliant
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    error_description: string;
+  }>;
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -99,7 +115,7 @@ describe('DataProviderAdapterCoreService', () => {
 
     it('should call checktokenHttpError if lastValueFrom throws', async () => {
       // Given
-      const errorMock = new ChecktokenHttpStatusException('error');
+      const errorMock = new ChecktokenHttpStatusException(axiosErrorMock);
       service['fetchToken'] = jest.fn().mockRejectedValueOnce(errorMock);
       service['checktokenHttpError'] = jest.fn().mockImplementation(() => {
         throw errorMock;
@@ -313,7 +329,13 @@ describe('DataProviderAdapterCoreService', () => {
     it('should throw ChecktokenTimeoutException', () => {
       const error = {
         code: 'ETIMEDOUT',
-      } as AxiosError;
+        ...axiosErrorMock,
+      } as AxiosError<{
+        error: string;
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: string;
+      }>;
 
       expect(() => service['checktokenHttpError'](error)).toThrowError(
         ChecktokenTimeoutException,
@@ -323,7 +345,13 @@ describe('DataProviderAdapterCoreService', () => {
     it('should throw ChecktokenTimeoutException', () => {
       const error = {
         code: 'ECONNABORTED',
-      } as AxiosError;
+        ...axiosErrorMock,
+      } as AxiosError<{
+        error: string;
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: string;
+      }>;
 
       expect(() => service['checktokenHttpError'](error)).toThrowError(
         ChecktokenTimeoutException,
@@ -333,7 +361,13 @@ describe('DataProviderAdapterCoreService', () => {
     it('should throw ChecktokenTimeoutException', () => {
       const error = {
         code: 'ECONNRESET',
-      } as AxiosError;
+        ...axiosErrorMock,
+      } as AxiosError<{
+        error: string;
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: string;
+      }>;
 
       expect(() => service['checktokenHttpError'](error)).toThrowError(
         ChecktokenTimeoutException,
@@ -343,7 +377,13 @@ describe('DataProviderAdapterCoreService', () => {
     it('should throw ChecktokenHttpStatusException', () => {
       const error = {
         code: 'SOME_CODE',
-      } as AxiosError;
+        ...axiosErrorMock,
+      } as AxiosError<{
+        error: string;
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: string;
+      }>;
 
       expect(() => service['checktokenHttpError'](error)).toThrowError(
         ChecktokenHttpStatusException,

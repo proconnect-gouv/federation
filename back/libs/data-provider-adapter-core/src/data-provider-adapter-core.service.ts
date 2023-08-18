@@ -109,7 +109,11 @@ export class DataProviderAdapterCoreService {
     return response.data as JSONWebKeySet;
   }
 
-  private checktokenHttpError(error: AxiosError) {
+  private checktokenHttpError(
+    // oidc compliant
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    error: AxiosError<{ error: string; error_description: string }>,
+  ) {
     switch (error.code) {
       /**
        * At the moment Axios does not use "ETIMEOUT" like native
@@ -121,6 +125,6 @@ export class DataProviderAdapterCoreService {
         throw new ChecktokenTimeoutException();
     }
 
-    throw new ChecktokenHttpStatusException();
+    throw new ChecktokenHttpStatusException(error);
   }
 }
