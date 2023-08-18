@@ -500,6 +500,7 @@
 | Var Name | Inferred type |
 |---|---|
 | APP_NAME | string |
+| App_API_AUTH_SECRET | string |
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
@@ -703,6 +704,8 @@
 |---|---|
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
+| App_DATA_API_AUTH_SECRET | string |
+| App_DATA_API_URL | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_IDP_ID | string |
@@ -749,6 +752,8 @@
 |---|---|
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
+| App_DATA_API_AUTH_SECRET | string |
+| App_DATA_API_URL | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_IDP_ID | string |

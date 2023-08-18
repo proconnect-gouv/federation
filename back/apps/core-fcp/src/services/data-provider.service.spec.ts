@@ -12,17 +12,24 @@ import {
 } from '@fc/data-provider-adapter-mongo';
 import { JwtService } from '@fc/jwt';
 import { LoggerService } from '@fc/logger-legacy';
+import { atHashFromAccessToken } from '@fc/oidc';
+import { OIDC_PROVIDER_REDIS_PREFIX } from '@fc/oidc-provider';
+import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
+import { SessionService } from '@fc/session';
 
 import { getJwtServiceMock } from '@mocks/jwt';
 
 import { ChecktokenRequestDto } from '../dto';
 import {
+  CoreFcpFetchAccessTokenFromRedisFailed,
   CoreFcpFetchDataProviderJwksFailed,
+  CoreFcpInvalidAccessTokenFromDataProvider,
   InvalidChecktokenRequestException,
 } from '../exceptions';
 import { DataProviderService } from './data-provider.service';
 
 jest.mock('rxjs');
+jest.mock('@fc/oidc');
 
 jest.mock('@fc/common', () => ({
   ...(jest.requireActual('@fc/common') as any),
@@ -67,9 +74,21 @@ const configDataMock = {
   configuration: { jwks: {} },
 };
 
+const sessionServiceMock = {
+  getAlias: jest.fn(),
+};
+
+const redisMock = {
+  ttl: jest.fn(),
+};
+
 describe('DataProviderService', () => {
   let service: DataProviderService;
 
+  const RedisProviderMock = {
+    provide: REDIS_CONNECTION_TOKEN,
+    useValue: redisMock,
+  };
   beforeEach(async () => {
     jest.clearAllMocks();
 
@@ -81,6 +100,8 @@ describe('DataProviderService', () => {
         DataProviderAdapterMongoService,
         HttpService,
         JwtService,
+        RedisProviderMock,
+        SessionService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -93,6 +114,8 @@ describe('DataProviderService', () => {
       .useValue(httpServiceMock)
       .overrideProvider(JwtService)
       .useValue(jwtServiceMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
       .compile();
 
     service = module.get<DataProviderService>(DataProviderService);
@@ -207,6 +230,96 @@ describe('DataProviderService', () => {
 
       // Then
       expect(result).toEqual(jweMock);
+    });
+  });
+
+  describe('getSessionByAccessToken', () => {
+    const atHashMock = 'at_hash';
+    const sessionIdMock = 'session_id';
+
+    beforeEach(() => {
+      jest.mocked(atHashFromAccessToken).mockReturnValue(atHashMock);
+      sessionServiceMock.getAlias.mockResolvedValue(sessionIdMock);
+    });
+
+    it('should get at_hash from access token', async () => {
+      // When
+      await service.getSessionByAccessToken(atHashMock);
+
+      // Then
+      expect(atHashFromAccessToken).toHaveBeenCalledTimes(1);
+      expect(atHashFromAccessToken).toHaveBeenCalledWith({ jti: atHashMock });
+    });
+
+    it('should get session id from session service', async () => {
+      // When
+      await service.getSessionByAccessToken(atHashMock);
+
+      // Then
+      expect(sessionServiceMock.getAlias).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.getAlias).toHaveBeenCalledWith(atHashMock);
+    });
+  });
+
+  describe('getAccessTokenExp', () => {
+    const ttlMock = 42;
+    const nowMock = 24.9 * 1000;
+    const accessTokenKeyMock = `${OIDC_PROVIDER_REDIS_PREFIX}:AccessToken:access_token`;
+
+    beforeEach(() => {
+      redisMock.ttl.mockResolvedValue(ttlMock);
+      jest.spyOn(Date, 'now').mockReturnValue(nowMock);
+    });
+
+    it('should get ttl from redis', async () => {
+      // When
+      await service.getAccessTokenExp('access_token');
+
+      // Then
+      expect(redisMock.ttl).toHaveBeenCalledTimes(1);
+      expect(redisMock.ttl).toHaveBeenCalledWith(accessTokenKeyMock);
+    });
+
+    it('should throw CoreFcpFetchAccessTokenFromRedisFailed if redis fails', async () => {
+      // Given
+      const errorMock = new Error('error');
+      redisMock.ttl.mockRejectedValue(errorMock);
+
+      // When / Then
+      await expect(
+        service.getAccessTokenExp('access_token'),
+      ).rejects.toThrowError(CoreFcpFetchAccessTokenFromRedisFailed);
+    });
+
+    it('should throw CoreFcpInvalidAccessTokenFromDataProvider if ttl is 0', async () => {
+      // Given
+      redisMock.ttl.mockResolvedValue(0);
+
+      // When / Then
+      await expect(
+        service.getAccessTokenExp('access_token'),
+      ).rejects.toThrowError(CoreFcpInvalidAccessTokenFromDataProvider);
+    });
+
+    it('should throw CoreFcpInvalidAccessTokenFromDataProvider if ttl is negative', async () => {
+      // Given
+      redisMock.ttl.mockResolvedValue(-1);
+
+      // When / Then
+      await expect(
+        service.getAccessTokenExp('access_token'),
+      ).rejects.toThrowError(CoreFcpInvalidAccessTokenFromDataProvider);
+    });
+
+    it('should return the exp timestamp', async () => {
+      // Given
+      const expected = 24 + ttlMock;
+
+      // When
+      const result = await service.getAccessTokenExp('access_token');
+
+      // Then
+      expect(result).toBe(expected);
     });
   });
 

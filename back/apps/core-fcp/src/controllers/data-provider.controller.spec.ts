@@ -6,6 +6,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DataProviderAdapterMongoService } from '@fc/data-provider-adapter-mongo';
 import { DataProviderInvalidCredentialsException } from '@fc/data-provider-adapter-mongo/exceptions';
 import { LoggerService } from '@fc/logger-legacy';
+import { OidcClientSession } from '@fc/oidc-client';
+import { ISessionRequest, ISessionService, SessionService } from '@fc/session';
 
 import { ChecktokenRequestDto } from '../dto';
 import { InvalidChecktokenRequestException } from '../exceptions';
@@ -18,6 +20,8 @@ describe('DataProviderController', () => {
   const dataProviderServiceMock = {
     checkRequestValid: jest.fn(),
     generateJwt: jest.fn(),
+    getSessionByAccessToken: jest.fn(),
+    getAccessTokenExp: jest.fn(),
   };
 
   const dataProviderAdapterMongoMock = {
@@ -30,6 +34,14 @@ describe('DataProviderController', () => {
     trace: jest.fn(),
   } as unknown as LoggerService;
 
+  const sessionServiceMock = {
+    attach: jest.fn(),
+  } as unknown as SessionService;
+
+  const oidcSessionServiceMock = {
+    get: jest.fn(),
+  } as unknown as ISessionService<OidcClientSession>;
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -40,6 +52,7 @@ describe('DataProviderController', () => {
         DataProviderAdapterMongoService,
         DataProviderService,
         LoggerService,
+        SessionService,
       ],
     })
       .overrideProvider(DataProviderAdapterMongoService)
@@ -48,6 +61,8 @@ describe('DataProviderController', () => {
       .useValue(dataProviderServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
       .compile();
 
     dataProviderController = module.get<DataProviderController>(
@@ -62,63 +77,179 @@ describe('DataProviderController', () => {
   });
 
   describe('checktoken', () => {
+    const reqMock = {
+      foo: 'bar',
+    } as unknown as ISessionRequest;
+
+    const bodyMock: ChecktokenRequestDto = {
+      // oidc compliant
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      access_token: 'acces_token',
+      // oidc compliant
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_id: 'client_id',
+      // oidc compliant
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      client_secret: 'client_secret',
+    };
+
     const resMock = {
       status: jest.fn(),
       send: jest.fn(),
       json: jest.fn(),
     } as unknown as Response;
 
-    const claimsMock = {};
-    beforeEach(() => {
-      jest.mocked(resMock.status).mockReturnValue(resMock);
-    });
+    const sessionIdMock = 'testSessionId';
 
-    it('should return HTTP code 200 and call end function', async () => {
-      // Given
+    const claimsMock = {};
+
+    const expMock = 1;
+    beforeEach(() => {
       dataProviderServiceMock.checkRequestValid.mockReturnValue(true);
       dataProviderServiceMock.generateJwt.mockReturnValue(claimsMock);
       dataProviderAdapterMongoMock.checkAuthentication.mockResolvedValue(
         Promise.resolve(),
       );
-      const bodyMock: ChecktokenRequestDto = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        access_token: 'acces_token',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id: 'client_id',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_secret: 'client_secret',
-      };
+      dataProviderServiceMock.getSessionByAccessToken = jest
+        .fn()
+        .mockReturnValue(sessionIdMock);
+      dataProviderServiceMock.getAccessTokenExp = jest
+        .fn()
+        .mockReturnValue(expMock);
+      jest
+        .spyOn(SessionService, 'getBoundSession')
+        .mockReturnValue(oidcSessionServiceMock);
+      jest.mocked(resMock.status).mockReturnValue(resMock);
+    });
+
+    it('should check if request is valid', async () => {
       // When
-      await dataProviderController.checktoken(resMock, bodyMock);
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(dataProviderServiceMock.checkRequestValid).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(dataProviderServiceMock.checkRequestValid).toHaveBeenCalledWith(
+        bodyMock,
+      );
+    });
+
+    it('should authenticate the data provider', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(
+        dataProviderAdapterMongoMock.checkAuthentication,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        dataProviderAdapterMongoMock.checkAuthentication,
+      ).toHaveBeenCalledWith(bodyMock.client_id, bodyMock.client_secret);
+    });
+
+    it('should get the session given the access token', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(
+        dataProviderServiceMock.getSessionByAccessToken,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        dataProviderServiceMock.getSessionByAccessToken,
+      ).toHaveBeenCalledWith(bodyMock.access_token);
+    });
+
+    it('should set sessionId and sessionService on req', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(reqMock.sessionId).toEqual(sessionIdMock);
+      expect(reqMock.sessionService).toEqual(sessionServiceMock);
+    });
+
+    it('should get the session service bound to sessionId', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(SessionService.getBoundSession).toHaveBeenCalledTimes(1);
+      expect(SessionService.getBoundSession).toHaveBeenCalledWith(
+        reqMock,
+        'OidcClient',
+      );
+    });
+
+    it('should get the oidc session', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(oidcSessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(oidcSessionServiceMock.get).toHaveBeenCalledWith();
+    });
+
+    it('should get acces token TTL', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(dataProviderServiceMock.getAccessTokenExp).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(dataProviderServiceMock.getAccessTokenExp).toHaveBeenCalledWith(
+        bodyMock.access_token,
+      );
+    });
+
+    it('should generate the JWT', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledTimes(1);
+      expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledWith(
+        { exp: expMock },
+        bodyMock.client_id,
+      );
+    });
+
+    it('should set HTTP code 200', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
       // Then
       expect(resMock.status).toHaveBeenCalledTimes(1);
       expect(resMock.status).toHaveBeenCalledWith(HttpStatus.OK);
+    });
+
+    it('should send the JWT', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
       expect(resMock.send).toHaveBeenCalledTimes(1);
       expect(resMock.send).toHaveBeenCalledWith(claimsMock);
     });
 
     it('should return HTTP code 401 and send error message when checkAuthentication method failed', async () => {
-      dataProviderServiceMock.checkRequestValid.mockReturnValue(true);
-      // Given
-      const bodyMock: ChecktokenRequestDto = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        access_token: 'acces_token',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id: 'client_id',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_secret: 'client_secret',
-      };
-      dataProviderAdapterMongoMock.checkAuthentication.mockRejectedValue(
+      dataProviderServiceMock.checkRequestValid.mockResolvedValueOnce(true);
+      dataProviderAdapterMongoMock.checkAuthentication.mockRejectedValueOnce(
         new DataProviderInvalidCredentialsException(),
       );
+
       // When
-      await dataProviderController.checktoken(resMock, bodyMock);
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
       // Then
       expect(resMock.status).toHaveBeenCalledTimes(1);
       expect(resMock.status).toHaveBeenCalledWith(401);
       expect(resMock.json).toHaveBeenCalledTimes(1);
       expect(resMock.json).toHaveBeenCalledWith({
         error: 'invalid_client',
+        // oidc compliant
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Client authentication failed.',
       });
@@ -126,26 +257,31 @@ describe('DataProviderController', () => {
 
     it('should return HTTP code 400 and send error message when checkRequest method failed', async () => {
       // Given
-      dataProviderAdapterMongoMock.checkAuthentication.mockReturnValue(true);
       dataProviderServiceMock.checkRequestValid.mockRejectedValue(
         new InvalidChecktokenRequestException(),
       );
       const bodyMock: ChecktokenRequestDto = {
+        // oidc compliant
         // eslint-disable-next-line @typescript-eslint/naming-convention
         access_token: 'acces_token',
+        // oidc compliant
         // eslint-disable-next-line @typescript-eslint/naming-convention
         client_id: 'client_id',
+        // oidc compliant
         // eslint-disable-next-line @typescript-eslint/naming-convention
         client_secret: 'client_secret',
       };
+
       // When
-      await dataProviderController.checktoken(resMock, bodyMock);
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
       // Then
       expect(resMock.status).toHaveBeenCalledTimes(1);
       expect(resMock.status).toHaveBeenCalledWith(400);
       expect(resMock.json).toHaveBeenCalledTimes(1);
       expect(resMock.json).toHaveBeenCalledWith({
         error: 'invalid_request',
+        // oidc compliant
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Required parameter missing or invalid.',
       });
