@@ -13,6 +13,14 @@ module.exports = {
     '!**/*.stories.tsx',
   ],
   coverageDirectory: './coverage',
+  coverageThreshold: {
+    global: {
+      branches: 100,
+      functions: 100,
+      lines: 100,
+      statements: 100,
+    },
+  },
   moduleNameMapper: {
     // @NOTE LIBS Modules are arranged in alphabetical order
     '^@fc/account(|/.*)$': '<rootDir>/libs/account/src/$1',
