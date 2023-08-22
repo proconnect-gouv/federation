@@ -31,7 +31,7 @@ import {
   SessionNotFoundException,
 } from '@fc/session';
 
-import { AccessTokenParamsDTO, AppConfig } from '../dto';
+import { AccessTokenParamsDTO, AppConfig, DataApi } from '../dto';
 import { MockServiceProviderRoutes } from '../enums';
 import {
   MockServiceProviderTokenRevocationException,
@@ -114,13 +114,13 @@ export class MockServiceProviderController {
       res.redirect('/');
     }
 
-    const { dataApiUrl } = this.config.get<AppConfig>('App');
+    const { dataApis } = this.config.get<AppConfig>('App');
 
     const response = {
       ...session,
       accessToken: session.idpAccessToken,
       titleFront: 'Mock Service Provider - Login Callback',
-      dataApiActive: Boolean(dataApiUrl),
+      dataApiActive: dataApis?.length > 0,
     };
 
     this.logger.trace({
@@ -184,12 +184,12 @@ export class MockServiceProviderController {
       const { accessToken } = body;
       await this.oidcClient.utils.revokeToken(accessToken, providerUid);
 
-      const { dataApiUrl } = this.config.get<AppConfig>('App');
+      const { dataApis } = this.config.get<AppConfig>('App');
 
       response = {
         titleFront: 'Mock Service Provider - Token révoqué',
         accessToken,
-        dataApiActive: Boolean(dataApiUrl),
+        dataApiActive: dataApis?.length > 0,
       };
     } catch (e) {
       this.logger.trace({ e }, LoggerLevelNames.WARN);
@@ -337,14 +337,14 @@ export class MockServiceProviderController {
 
       const idpIdToken = await sessionOidc.get('idpIdToken');
 
-      const { dataApiUrl } = this.config.get<AppConfig>('App');
+      const { dataApis } = this.config.get<AppConfig>('App');
 
       response = {
         titleFront: 'Mock Service Provider - Userinfo',
         accessToken,
         idpIdentity,
         idpIdToken,
-        dataApiActive: Boolean(dataApiUrl),
+        dataApiActive: dataApis?.length > 0,
       };
     } catch (e) {
       this.logger.trace({ e }, LoggerLevelNames.WARN);
@@ -376,50 +376,40 @@ export class MockServiceProviderController {
   }
 
   @Get(MockServiceProviderRoutes.DATA)
-  async getData(
+  async getAllData(
     @Res() res,
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
-    const { dataApiAuthSecret, dataApiUrl } = this.config.get<AppConfig>('App');
+    const { dataApis } = this.config.get<AppConfig>('App');
 
-    if (!dataApiUrl) {
+    if (!dataApis?.length) {
       const redirect = `/error?error=no_data_provider&error_description=${encodeURIComponent(
         'No data provider configured.',
       )}`;
       return res.redirect(redirect);
     }
+
     const { idpAccessToken } = await sessionOidc.get();
 
-    try {
-      const data = await this.mockServiceProvider.getData(
-        dataApiUrl,
-        idpAccessToken,
-        dataApiAuthSecret,
-      );
+    const data = await Promise.all(
+      dataApis.map(async (dataApi) => {
+        const response = await this.getData(dataApi, idpAccessToken);
+        return {
+          name: dataApi.name,
+          response,
+        };
+      }),
+    );
 
-      const response = {
-        titleFront: 'Mock Service Provider - UserData',
-        accessToken: idpAccessToken,
-        data,
-        dataApiActive: true,
-      };
+    const response = {
+      titleFront: 'Mock Service Provider - UserData',
+      accessToken: idpAccessToken,
+      data,
+      dataApiActive: true,
+    };
 
-      this.logger.trace({
-        route: MockServiceProviderRoutes.DATA,
-        method: 'GET',
-        name: 'MockServiceProviderRoutes.DATA',
-        response,
-      });
-
-      // Cannot use decorator since it would try to render even on error after the redirect
-      return res.render('data', response);
-    } catch (e) {
-      const redirect = `/error?error=${encodeURIComponent(
-        e.error,
-      )}&error_description=${encodeURIComponent(e.error_description)}`;
-      return res.redirect(redirect);
-    }
+    return res.render('data', response);
   }
 
   @Get(MockServiceProviderRoutes.ERROR)
@@ -493,5 +483,29 @@ export class MockServiceProviderController {
     const { idpId } = this.config.get<AppConfig>('App');
 
     return idpId;
+  }
+
+  private async getData(
+    { url, secret }: DataApi,
+    idpAccessToken: string,
+  ): Promise<unknown> {
+    try {
+      const data = await this.mockServiceProvider.getData(
+        url,
+        idpAccessToken,
+        secret,
+      );
+
+      this.logger.trace({
+        route: MockServiceProviderRoutes.DATA,
+        method: 'GET',
+        name: 'MockServiceProviderRoutes.DATA',
+        data,
+      });
+
+      return data;
+    } catch (e) {
+      return e;
+    }
   }
 }

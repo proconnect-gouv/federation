@@ -11,7 +11,7 @@ export class MockServiceProviderService {
     apiUrl: string,
     accessToken: string,
     authSecret: string,
-  ): Promise<any> {
+  ): Promise<unknown> {
     const bearer = Buffer.from(
       `${accessToken}:${authSecret}`,
       'utf-8',

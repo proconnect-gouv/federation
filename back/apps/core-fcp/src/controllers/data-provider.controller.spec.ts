@@ -7,6 +7,7 @@ import { DataProviderAdapterMongoService } from '@fc/data-provider-adapter-mongo
 import { DataProviderInvalidCredentialsException } from '@fc/data-provider-adapter-mongo/exceptions';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
+import { RnippPivotIdentity } from '@fc/rnipp';
 import { ISessionRequest, ISessionService, SessionService } from '@fc/session';
 
 import { ChecktokenRequestDto } from '../dto';
@@ -22,6 +23,7 @@ describe('DataProviderController', () => {
     generateJwt: jest.fn(),
     getSessionByAccessToken: jest.fn(),
     getAccessTokenExp: jest.fn(),
+    generateDataProviderSub: jest.fn(),
   };
 
   const dataProviderAdapterMongoMock = {
@@ -104,8 +106,14 @@ describe('DataProviderController', () => {
     const claimsMock = {};
 
     const expMock = 1;
+    const rnippIdentityMock = Symbol(
+      'rnippIdentityMock',
+    ) as unknown as RnippPivotIdentity;
+    const subMock = 'subMock';
+
     beforeEach(() => {
       dataProviderServiceMock.checkRequestValid.mockReturnValue(true);
+      dataProviderServiceMock.generateDataProviderSub.mockReturnValue(subMock);
       dataProviderServiceMock.generateJwt.mockReturnValue(claimsMock);
       dataProviderAdapterMongoMock.checkAuthentication.mockResolvedValue(
         Promise.resolve(),
@@ -119,6 +127,9 @@ describe('DataProviderController', () => {
       jest
         .spyOn(SessionService, 'getBoundSession')
         .mockReturnValue(oidcSessionServiceMock);
+      jest.mocked(oidcSessionServiceMock.get).mockResolvedValue({
+        rnippIdentity: rnippIdentityMock,
+      });
       jest.mocked(resMock.status).mockReturnValue(resMock);
     });
 
@@ -191,6 +202,19 @@ describe('DataProviderController', () => {
       expect(oidcSessionServiceMock.get).toHaveBeenCalledWith();
     });
 
+    it('should generate the sub claim from rnipp identity', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(
+        dataProviderServiceMock.generateDataProviderSub,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        dataProviderServiceMock.generateDataProviderSub,
+      ).toHaveBeenCalledWith(rnippIdentityMock, bodyMock.client_id);
+    });
+
     it('should get acces token TTL', async () => {
       // When
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);
@@ -205,13 +229,16 @@ describe('DataProviderController', () => {
     });
 
     it('should generate the JWT', async () => {
+      // Given
+      const expectedPayload = { sub: subMock, exp: expMock };
+
       // When
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);
 
       // Then
       expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledTimes(1);
       expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledWith(
-        { exp: expMock },
+        expectedPayload,
         bodyMock.client_id,
       );
     });
@@ -260,17 +287,6 @@ describe('DataProviderController', () => {
       dataProviderServiceMock.checkRequestValid.mockRejectedValue(
         new InvalidChecktokenRequestException(),
       );
-      const bodyMock: ChecktokenRequestDto = {
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        access_token: 'acces_token',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id: 'client_id',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_secret: 'client_secret',
-      };
 
       // When
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);

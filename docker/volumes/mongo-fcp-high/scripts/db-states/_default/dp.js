@@ -10,7 +10,22 @@ const dps = {
       // client_secret decrypted : 36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847
       "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
     jwks_uri:
-      'https://mock-data-provider-high.docker.dev-franceconnect.fr/api/v1/jwks',
+      'https://dp1-high.docker.dev-franceconnect.fr/api/v1/jwks',
+    checktoken_endpoint_auth_signing_alg: 'ES256',
+    checktoken_encrypted_response_alg: 'ECDH-ES',
+    checktoken_encrypted_response_enc: 'A256GCM',
+  },
+  "DP2-HIGH": {
+    uid: "dd5a2c9e-40ad-4f47-b8ed-869d82e6334c",
+    title: "Fournisseur de données Mock - 2",
+    active: true,
+    client_id:
+      "8c6771b49d3985b112eeacb69ca24168222cb247429728db888ad49d44fd9688",
+    client_secret:
+      // client_secret decrypted : 36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847
+      "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
+    jwks_uri:
+      'https://dp2-high.docker.dev-franceconnect.fr/api/v1/jwks',
     checktoken_endpoint_auth_signing_alg: 'ES256',
     checktoken_encrypted_response_alg: 'RSA-OAEP',
     checktoken_encrypted_response_enc: 'A256GCM',
@@ -23,7 +38,7 @@ const dps = {
       // client_secret decrypted : 36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847
       "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
     jwks_uri:
-      'https://mock-data-provider-high.docker.dev-franceconnect.fr/api/v1/jwks',
+      'https://dp1-high.docker.dev-franceconnect.fr/api/v1/jwks',
     checktoken_endpoint_auth_signing_alg: 'ES256',
     checktoken_encrypted_response_alg: 'RSA-OAEP',
     checktoken_encrypted_response_enc: 'A256GCM',

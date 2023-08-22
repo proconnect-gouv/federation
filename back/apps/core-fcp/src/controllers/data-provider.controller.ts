@@ -52,14 +52,16 @@ export class DataProviderController {
       const oidcSessionService =
         SessionService.getBoundSession<OidcClientSession>(req, 'OidcClient');
 
-      const oidcSession = await oidcSessionService.get();
+      const { rnippIdentity } = await oidcSessionService.get();
 
-      // Remove this when doing the next tickets that use the session
-      void oidcSession;
+      const sub = this.dataProvider.generateDataProviderSub(
+        rnippIdentity,
+        clientId,
+      );
 
       const exp = await this.dataProvider.getAccessTokenExp(accessToken);
 
-      const payload = { exp };
+      const payload = { sub, exp };
 
       jwt = await this.dataProvider.generateJwt(payload, clientId);
     } catch (exception) {
