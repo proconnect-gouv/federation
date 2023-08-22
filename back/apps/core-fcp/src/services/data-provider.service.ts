@@ -9,6 +9,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { Use } from '@fc/cryptography';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import {
   DataProviderAdapterMongoService,
   DataProviderMetadata,
@@ -21,6 +22,7 @@ import {
   OidcProviderConfig,
 } from '@fc/oidc-provider';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
+import { RnippPivotIdentity } from '@fc/rnipp';
 import { SessionService } from '@fc/session';
 
 import { ChecktokenRequestDto } from '../dto';
@@ -44,6 +46,7 @@ export class DataProviderService {
     private readonly jwt: JwtService,
     @Inject(REDIS_CONNECTION_TOKEN) private readonly redis: Redis,
     private readonly session: SessionService,
+    private readonly cryptographyFcp: CryptographyFcpService,
   ) {}
   /**
    * This function take the checkTokenRequest to validate it
@@ -121,6 +124,14 @@ export class DataProviderService {
     const now = Math.floor(Date.now() / 1000);
 
     return now + ttl;
+  }
+
+  generateDataProviderSub(
+    identity: RnippPivotIdentity,
+    clientId: string,
+  ): string {
+    const identityHash = this.cryptographyFcp.computeIdentityHash(identity);
+    return this.cryptographyFcp.computeSubV1(clientId, identityHash);
   }
 
   private async generateJws(

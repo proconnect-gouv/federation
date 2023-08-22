@@ -100,8 +100,10 @@ services:
           # Mock RNIPP
           - mock-rnipp.docker.dev-franceconnect.fr
           # Mock Data Provider
-          - mock-data-provider-high.docker.dev-franceconnect.fr
-          - mock-data-provider-low.docker.dev-franceconnect.fr
+          - dp1-high.docker.dev-franceconnect.fr
+          - dp2-high.docker.dev-franceconnect.fr
+          - dp1-low.docker.dev-franceconnect.fr
+          - dp2-low.docker.dev-franceconnect.fr
           # Storybook
           - storybook.docker.dev-franceconnect.fr
           # Generic

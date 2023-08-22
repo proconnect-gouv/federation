@@ -6,6 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import {
   DataProviderAdapterMongoService,
   DataProviderMetadata,
@@ -15,6 +16,7 @@ import { LoggerService } from '@fc/logger-legacy';
 import { atHashFromAccessToken } from '@fc/oidc';
 import { OIDC_PROVIDER_REDIS_PREFIX } from '@fc/oidc-provider';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
+import { RnippPivotIdentity } from '@fc/rnipp';
 import { SessionService } from '@fc/session';
 
 import { getJwtServiceMock } from '@mocks/jwt';
@@ -89,6 +91,12 @@ describe('DataProviderService', () => {
     provide: REDIS_CONNECTION_TOKEN,
     useValue: redisMock,
   };
+
+  const cryptographyFcpMock = {
+    computeIdentityHash: jest.fn(),
+    computeSubV1: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
 
@@ -102,6 +110,7 @@ describe('DataProviderService', () => {
         JwtService,
         RedisProviderMock,
         SessionService,
+        CryptographyFcpService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -116,6 +125,8 @@ describe('DataProviderService', () => {
       .useValue(jwtServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
+      .overrideProvider(CryptographyFcpService)
+      .useValue(cryptographyFcpMock)
       .compile();
 
     service = module.get<DataProviderService>(DataProviderService);
@@ -320,6 +331,56 @@ describe('DataProviderService', () => {
 
       // Then
       expect(result).toBe(expected);
+    });
+  });
+
+  describe('generateDataProviderSub', () => {
+    const rnippIdentityMock = Symbol(
+      'rnippIdentity',
+    ) as unknown as RnippPivotIdentity;
+    const clientIdMock = 'client_id';
+    const identityHashMock = 'identity_hash';
+    const subMock = 'sub';
+
+    beforeEach(() => {
+      jest
+        .mocked(cryptographyFcpMock.computeIdentityHash)
+        .mockReturnValue(identityHashMock);
+      jest.mocked(cryptographyFcpMock.computeSubV1).mockReturnValue(subMock);
+    });
+
+    it('should compute identity hash', () => {
+      // When
+      service.generateDataProviderSub(rnippIdentityMock, clientIdMock);
+
+      // Then
+      expect(cryptographyFcpMock.computeIdentityHash).toHaveBeenCalledTimes(1);
+      expect(cryptographyFcpMock.computeIdentityHash).toHaveBeenCalledWith(
+        rnippIdentityMock,
+      );
+    });
+
+    it('should compute sub', () => {
+      // When
+      service.generateDataProviderSub(rnippIdentityMock, clientIdMock);
+
+      // Then
+      expect(cryptographyFcpMock.computeSubV1).toHaveBeenCalledTimes(1);
+      expect(cryptographyFcpMock.computeSubV1).toHaveBeenCalledWith(
+        clientIdMock,
+        identityHashMock,
+      );
+    });
+
+    it('should return the sub', () => {
+      // When
+      const result = service.generateDataProviderSub(
+        rnippIdentityMock,
+        clientIdMock,
+      );
+
+      // Then
+      expect(result).toBe(subMock);
     });
   });
 

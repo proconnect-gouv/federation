@@ -18,6 +18,5 @@ export default {
   urlPrefix: '',
   viewsPaths: env.json('VIEWS_PATHS'),
   idpId: env.string('IDP_ID'),
-  dataApiUrl: env.string('DATA_API_URL'),
-  dataApiAuthSecret: env.string('DATA_API_AUTH_SECRET'),
+  dataApis: env.json('DATA_APIS'),
 } as AppConfig;
