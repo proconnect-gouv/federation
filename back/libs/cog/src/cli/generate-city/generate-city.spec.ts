@@ -44,12 +44,28 @@ describe('GenerateCity', () => {
       TNCC: '0',
       NCC: 'NCC',
       NCCENR: 'NCCENR',
-      LIBELLE: 'libelle',
+      LIBELLE: 'libelle 1',
       CAN: '0117',
       COMPARENT: '',
     },
     {
       TYPECOM: 'COMD',
+      COM: '01002',
+      REG: '85',
+      DEP: '02',
+      CTCD: '02D',
+      ARR: '012',
+      TNCC: '0',
+      NCC: 'NCC',
+      NCCENR: 'NCCENR',
+      LIBELLE: 'libelle 2',
+      CAN: '0117',
+      COMPARENT: '',
+    },
+  ];
+
+  const searchResultFile2Mock = [
+    {
       '#Code_commune_INSEE': '01001',
       // naming column file
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -144,7 +160,9 @@ describe('GenerateCity', () => {
     const createCSVMock = jest.mocked(createCSV);
 
     beforeEach(() => {
-      readCSVMock.mockResolvedValue(searchResultFile1Mock);
+      readCSVMock
+        .mockResolvedValueOnce(searchResultFile1Mock)
+        .mockResolvedValueOnce(searchResultFile2Mock);
       createCSVMock.mockReturnValue(fileContent);
       existsSyncMock.mockReturnValue(false);
 
@@ -169,7 +187,7 @@ describe('GenerateCity', () => {
       expect(GenerateCity.processCSVData).toHaveBeenCalledTimes(1);
       expect(GenerateCity.processCSVData).toHaveBeenCalledWith(
         searchResultFile1Mock[0],
-        searchResultFile1Mock,
+        searchResultFile2Mock,
         '#Code_commune_INSEE',
       );
     });
@@ -213,7 +231,7 @@ describe('GenerateCity', () => {
 
     it('should log an error if there is an error while reading the CSV files', async () => {
       // Given
-      readCSVMock.mockRejectedValue(new Error('Read CSV error'));
+      readCSVMock.mockReset().mockRejectedValue(new Error('Read CSV error'));
 
       await GenerateCity.searchInTwoCSVFiles('file1.csv', 'file2.csv');
 
@@ -226,7 +244,7 @@ describe('GenerateCity', () => {
       // When
       const result = GenerateCity.processCSVData(
         searchResultFile1Mock[0],
-        searchResultFile1Mock,
+        searchResultFile2Mock,
         '#Code_commune_INSEE',
       );
 
