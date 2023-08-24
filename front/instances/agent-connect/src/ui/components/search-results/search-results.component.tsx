@@ -10,9 +10,13 @@ export const SearchResultsComponent = React.memo(() => {
     <React.Fragment>
       {showResults && <SearchResultsListComponent results={searchResults} />}
       {showNoResults && (
-        <div className="fr-mx-2w fr-text--lg" id="identity-provider-result">
-          Aucun fournisseur d&rsquo;identité n&rsquo;a été trouvé
+        <div>
+          <div className="fr-mx-2w fr-text--lg" id="identity-provider-result">
+            Aucun résultat. Vous pouvez vous connecter en utilisant MonComptePro.
+          </div>
+          <div>[ajouter le bouton MCP]</div>
         </div>
+
       )}
     </React.Fragment>
   );
