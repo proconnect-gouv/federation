@@ -402,7 +402,7 @@ const fia = {
     title: "Identity Provider MonComptePro",
     image: "fi-mock-eleve.svg",
     imageFocus: "fi-mock-eleve.svg",
-    alt: "llng",
+    alt: "mcp ",
     trustedIdentity: false,
     eidas: 1,
     featureHandlers: {
@@ -413,7 +413,7 @@ const fia = {
     specificText: "specific text llng",
     url: "https://fia9-low.docker.dev-franceconnect.fr",
     discoveryUrl:
-      "https://fia8-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://fia9-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
     clientID: "myclientidforllng",
     client_secret:
@@ -422,7 +422,7 @@ const fia = {
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://auth.llng.docker.dev-franceconnect.fr/oauth2/logout",
+      "https://fia8-low.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "RS256",
     token_endpoint_auth_method: "client_secret_post",

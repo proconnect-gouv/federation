@@ -83,6 +83,7 @@ services:
           - fia4-low.docker.dev-franceconnect.fr
           - fia5-low.docker.dev-franceconnect.fr
           - fia8-low.docker.dev-franceconnect.fr
+          - fia9-low.docker.dev-franceconnect.fr
           # EIDAS
           - eidas-bridge.docker.dev-franceconnect.fr
           - eidas-fr.docker.dev-franceconnect.fr
