@@ -1,8 +1,8 @@
 import classnames from 'classnames';
-import React from 'react';
+import React, { useContext } from 'react';
 
 import { useAddToUserHistory } from '@fc/agent-connect-history';
-import { useSearchResults } from '@fc/agent-connect-search';
+import { AgentConnectSearchContext, useSearchResults } from '@fc/agent-connect-search';
 import { RedirectToIdpFormComponent } from '@fc/oidc-client';
 
 import styles from './search-results.module.scss';
@@ -10,8 +10,11 @@ import { SearchResultsListComponent } from './search-results-list.component';
 
 export const SearchResultsComponent = React.memo(() => {
   const { searchResults, showNoResults, showResults } = useSearchResults();
-  const uid = 'uuid';
-  const csrfToken = 'csrfToken';
+  const { payload } = useContext(AgentConnectSearchContext);
+
+  // todo: replace this uuid by the one in production?
+  const uid = '54a380fd-876e-4cdc-88b5-5da9cf16f357';
+  const { csrfToken } = payload;
 
   const addToUserHistory = useAddToUserHistory(uid);
 
