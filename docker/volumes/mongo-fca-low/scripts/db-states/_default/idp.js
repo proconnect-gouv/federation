@@ -415,14 +415,14 @@ const fia = {
     discoveryUrl:
       "https://fia9-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
-    clientID: "myclientidforllng",
+    clientID: "myClientIdforfia9-low",
     client_secret:
       "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
     order: null,
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fia8-low.docker.dev-franceconnect.fr/user/session/end",
+      "https://fia9-low.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "RS256",
     token_endpoint_auth_method: "client_secret_post",

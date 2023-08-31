@@ -23,8 +23,9 @@ export const SearchResultsComponent = React.memo(() => {
       {showResults && <SearchResultsListComponent results={searchResults} />}
       {showNoResults && (
         <div>
-          <div className="fr-mx-2w fr-text--lg" id="identity-provider-result">
-            <p>Aucun résultat. Vous pouvez vous connecter en utilisant MonComptePro.</p>
+          <div className="fr-mx-2w" id="identity-provider-result">
+            <h3 className='fr-text--md'>Nous ne trouvons pas votre administration</h3>
+            <p className='fr-text--md'>Vous pouvez continuer en utilisant MonComptePro</p>
           </div>
           <RedirectToIdpFormComponent csrf={csrfToken} id={`fca-search-idp-${uid}`} uid={uid}>
             <button
