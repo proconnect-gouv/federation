@@ -466,5 +466,31 @@ describe('CoreFcpService', () => {
       // Then
       expect(result).toEqual(['openid', 'profile']);
     });
+
+    it('should return scopes trim extracted and parsed from interaction', () => {
+      // Given
+      const interactionMock = {
+        params: {
+          scope: ' openid profile ',
+        },
+      };
+      // When
+      const result = service.getScopesForInteraction(interactionMock);
+      // Then
+      expect(result).toEqual(['openid', 'profile']);
+    });
+
+    it('should return uniq list scopes extracted and parsed from interaction', () => {
+      // Given
+      const interactionMock = {
+        params: {
+          scope: 'openid profile profile',
+        },
+      };
+      // When
+      const result = service.getScopesForInteraction(interactionMock);
+      // Then
+      expect(result).toEqual(['openid', 'profile']);
+    });
   });
 });

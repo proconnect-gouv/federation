@@ -30,6 +30,7 @@ jest.mock('uuid');
 jest.mock('@fc/common', () => ({
   ...jest.requireActual('@fc/common'),
   validateDto: jest.fn(),
+  stringToArray: jest.fn(),
 }));
 
 describe('CoreFcpMiddlewareService', () => {
@@ -70,6 +71,7 @@ describe('CoreFcpMiddlewareService', () => {
   const spNameMock = 'my SP';
   const spAcrMock = 'eidas3';
   const spIdMock = 'spIdValue';
+  const spScopeMock = ['openid', 'givenName', 'gender'];
   const ipMock = '123.123.123.123';
   const sourcePortMock = '443';
   const xForwardedForOriginalMock = '123.123.123.123,124.124.124.124';
@@ -190,9 +192,15 @@ describe('CoreFcpMiddlewareService', () => {
       return {
         oidc: {
           isError: hasError,
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          params: { acr_values: spAcrMock, client_id: spIdMock },
+          params: {
+            // oidc param
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            acr_values: spAcrMock,
+            // oidc param
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            client_id: spIdMock,
+            scope: 'openid givenName gender',
+          },
         },
         req: reqMock,
         res: resMock,
@@ -212,6 +220,7 @@ describe('CoreFcpMiddlewareService', () => {
       spAcr: spAcrMock,
       spId: spIdMock,
       spName: spNameMock,
+      spScope: spScopeMock,
     };
 
     const getBoundSessionMock = jest.spyOn(SessionService, 'getBoundSession');
@@ -451,6 +460,7 @@ describe('CoreFcpMiddlewareService', () => {
           },
           sessionId: '42',
         },
+        spScope: ['openid', 'givenName', 'gender'],
       };
       service['buildSessionWithNewInteraction'] = jest
         .fn()

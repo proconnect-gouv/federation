@@ -52,7 +52,7 @@ export class DataProviderController {
       const oidcSessionService =
         SessionService.getBoundSession<OidcClientSession>(req, 'OidcClient');
 
-      const { rnippIdentity } = await oidcSessionService.get();
+      const { rnippIdentity, spScope } = await oidcSessionService.get();
 
       const sub = this.dataProvider.generateDataProviderSub(
         rnippIdentity,
@@ -61,7 +61,7 @@ export class DataProviderController {
 
       const exp = await this.dataProvider.getAccessTokenExp(accessToken);
 
-      const payload = { sub, exp };
+      const payload = { sub, exp, spScope };
 
       jwt = await this.dataProvider.generateJwt(payload, clientId);
     } catch (exception) {

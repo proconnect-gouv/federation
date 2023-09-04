@@ -6,6 +6,7 @@ import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CoreConfig, CoreOidcProviderMiddlewareService } from '@fc/core';
 import { LoggerService } from '@fc/logger-legacy';
+import { stringToArray } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
 import {
@@ -174,9 +175,12 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
       eventContext,
     );
 
+    const scope = ctx.oidc.params.scope as string;
+    const spScope = stringToArray(scope);
+
     const browsingSessionId = await this.getBrowsingSessionId(oidcSession);
 
-    await oidcSession.set({ ...sessionProperties, browsingSessionId });
+    await oidcSession.set({ ...sessionProperties, browsingSessionId, spScope });
 
     const coreSession = SessionService.getBoundSession<CoreSessionDto>(
       req,

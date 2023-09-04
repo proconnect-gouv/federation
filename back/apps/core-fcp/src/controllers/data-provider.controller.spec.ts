@@ -109,6 +109,7 @@ describe('DataProviderController', () => {
     const rnippIdentityMock = Symbol(
       'rnippIdentityMock',
     ) as unknown as RnippPivotIdentity;
+    const spScopeMock = ['openid', 'gender', 'given_name'];
     const subMock = 'subMock';
 
     beforeEach(() => {
@@ -129,6 +130,7 @@ describe('DataProviderController', () => {
         .mockReturnValue(oidcSessionServiceMock);
       jest.mocked(oidcSessionServiceMock.get).mockResolvedValue({
         rnippIdentity: rnippIdentityMock,
+        spScope: spScopeMock,
       });
       jest.mocked(resMock.status).mockReturnValue(resMock);
     });
@@ -230,7 +232,11 @@ describe('DataProviderController', () => {
 
     it('should generate the JWT', async () => {
       // Given
-      const expectedPayload = { sub: subMock, exp: expMock };
+      const expectedPayload = {
+        sub: subMock,
+        exp: expMock,
+        spScope: ['openid', 'gender', 'given_name'],
+      };
 
       // When
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);
