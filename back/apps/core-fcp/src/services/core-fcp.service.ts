@@ -5,7 +5,7 @@ import { ConfigService } from '@fc/config';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger-legacy';
-import { OidcSession } from '@fc/oidc';
+import { OidcSession, stringToArray } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { IClaim, IRichClaim, ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
@@ -129,7 +129,7 @@ export class CoreFcpService {
     const {
       params: { scope },
     } = interaction;
-    const scopes = scope.split(' ');
+    const scopes = stringToArray(scope);
 
     this.logger.trace({ interaction, scopes });
 
