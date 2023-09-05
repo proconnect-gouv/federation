@@ -50,6 +50,7 @@ import {
   OidcIdentityDto,
 } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
+import { CoreFcaClientService } from '../services/core-fca-client.service';
 
 @Controller()
 export class OidcClientController {
@@ -64,6 +65,7 @@ export class OidcClientController {
     private readonly oidcProvider: OidcProviderService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
+    private readonly coreFcaClientService: CoreFcaClientService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -117,25 +119,17 @@ export class OidcClientController {
     const { state, nonce } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
-    const authorizeParams = {
-      state,
-      scope,
-      idpId,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-      nonce,
-      /**
-       * @todo #1021 Récupérer la vraie valeur du claims envoyé par le FS
-       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1021
-       * @ticket FC-1021
-       */
-      claims: '{"id_token":{"amr":{"essential":true}}}',
-      // No prompt is sent to the identity provider voluntary
-    };
-
-    const authorizationUrlRaw =
-      await this.oidcClient.utils.getAuthorizeUrl(authorizeParams);
+    const authorizationUrlRaw = await this.oidcClient.utils.getAuthorizeUrl(
+      await this.coreFcaClientService.getAuthorizeParams(
+        state,
+        scope,
+        idpId,
+        // acr_values is an oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values,
+        nonce
+      ),
+    );
 
     let authorizationUrl = authorizationUrlRaw;
     if (spId) {

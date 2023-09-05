@@ -40,6 +40,10 @@
             <label for="acr">
               <span>Niveau de sécurité (acr_values)</span>
               <input type="text" name="acr" id="acr" value="<%= locals.params.acr_values %>" />
+            </label>
+            <label for="publicness">
+              <span>Service public ?</span>
+              <input type="checkbox" name="publicness" id="publicness" />
             </label>    
             <button type="submit">Envoyer</button>
           </form>

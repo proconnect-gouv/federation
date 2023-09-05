@@ -105,7 +105,7 @@ export default {
       chorusdt: ['chorusdt:matricule', 'chorusdt:societe'],
       // AgentConnect claims naming convention
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      service_public: ['is_service_public'],
+      is_service_public: ['is_service_public'],
     },
     clientDefaults: {
       // node-oidc-provider defined key
