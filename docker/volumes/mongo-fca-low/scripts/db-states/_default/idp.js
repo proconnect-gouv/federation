@@ -407,7 +407,7 @@ const fia = {
     eidas: 1,
     mailto: "",
     featureHandlers: {
-      coreVerify: "core-fca-default-verify",
+      coreVerify: "core-fca-mcp-verify",
       authenticationEmail: null,
     },
     specificText: "specific text fia9-low",

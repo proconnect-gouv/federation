@@ -69,3 +69,8 @@ db.scopes.update(
   { scope: "idp_acr", fd: "IDENTITY", label: "", __v: 0 },
   { upsert: true },
 );
+db.scopes.update(
+  { scope: "is_service_public" },
+  { scope: "is_service_public", fd: "IDENTITY", label: "", __v: 0 },
+  { upsert: true },
+);
