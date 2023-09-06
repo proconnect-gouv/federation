@@ -1,28 +1,28 @@
-login,password,uid,organizational_unit,siren,email,usual_name,given_name,belonging_population,siret,phone_number,chorusdt:societe,chorusdt:matricule
-test,123,1,comptabilite,343293775,test@abcd.com,DUBOIS,Angela Claire Louise,agent,34329377500037,+331-12-44-45-23,CHT,USER_AGC
-12354,123,2,comptabilite,343293775,test@abcd.com,Martinot,bernard,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123457
-12352,123,3,,343293775,test@abcd.com,Martinot,henry,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123458
-12355,123,3,comptabilite,,test@abcd.com,Martinot,mohamed,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123459
-12356,123,4,comptabilite,343293775,test@abcd.com,Martinot,Pierre,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123460
-12357,123,5,comptabilite,343293775,,Martinot,Paul,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123461
-12358,123,6,comptabilite,343293775,test@abcd.com,,Jacques,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123462
-12351,123,7,comptabilite,343293775,test@abcd.com,Martinot,,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123463
-12361,123,8,comptabilite,343293775,test@abcd.com,Martinot,Frederic,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123464
-12371,123,9,comptabilite,343293775,test@abcd.com,Martinot,Frederique,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123465
-12381,123,10,comptabilite,343293775,test@abcd.com,Martinot,Jeanne,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123466
-12391,123,11,comptabilite,343293775,test@abcd.com,Martinot,Martine,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123467
-12451,123,12,comptabilite,343293775,test@abcd.com,Martinot,Martin,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123468
-12551,123,13,comptabilite,343293775,test@abcd.com,Martinot,Gils,,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123469
-12651,123,14,comptabilite,343293775,test@abcd.com,Martinot,Josiane,agent,,+331-12-44-45-23,MinistèreIntérieur,123470
-12751,123,15,comptabilite,343293775,test@abcd.com,Martinot,Jean-Pierre,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123471
-12851,123,16,comptabilite,343293775,test@abcd.com,Martinot,Philipe,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123472
-12951,123,17,comptabilite,343293775,test@abcd.com,Martinot,Ursule,agent,34329377500037,,MinistèreIntérieur,123473
-13351,123,18,comptabilite,343293775,test@abcd.com,Martinot,Gudule,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123474
-14351,123,19,comptabilite,343293775,test@abcd.com,Martinot,Maurissette,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123475
-E000001,123,20,error 2,error3,error@error.com,error 4,error 5,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123476
-E020025,123,21,comptabilite,343293775,test@abcd.com,Martinot,Didier,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123464
-Marjorie.Martin,123,22,ministère de la transition écologique,343293775,m.martin@transition-ecologique.gouv.fr,Martin,Marjorie,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123464
-Edmee.Martinot,123,23,ministère de la culture,343293775,edmee.martinot.ext@culture.gouv.fr,Martinot,Edmee,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123477
-Brunot.Martinot,123,24,ministère de la culture,343293775,brunot.martinot.ext@culture.gouv.fr,Martinot,Bruno,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123478
-TestInteg,123,25,comptabilite,343293775,franceconnect.recette@gmail.com,NUM,Lady Di,agent,34329377500037,33123456789,MinistèreIntérieur,123479
-TestInteg2,123,26,comptabilite,343293775,duplanty.test@gmail.com,DUPLANTY,Mélodie,agent,34329377500037,33123456789,MinistèreIntérieur,123479
+login,password,uid,organizational_unit,siren,email,usual_name,given_name,belonging_population,siret,phone_number,chorusdt:societe,chorusdt:matricule, is_service_public
+test,123,1,comptabilite,343293775,test@abcd.com,DUBOIS,Angela Claire Louise,agent,34329377500037,+331-12-44-45-23,CHT,USER_AGC,true
+12354,123,2,comptabilite,343293775,test@abcd.com,Martinot,bernard,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123457,false
+12352,123,3,,343293775,test@abcd.com,Martinot,henry,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123458,true
+12355,123,3,comptabilite,,test@abcd.com,Martinot,mohamed,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123459,true
+12356,123,4,comptabilite,343293775,test@abcd.com,Martinot,Pierre,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123460,true
+12357,123,5,comptabilite,343293775,,Martinot,Paul,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123461,true
+12358,123,6,comptabilite,343293775,test@abcd.com,,Jacques,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123462,true
+12351,123,7,comptabilite,343293775,test@abcd.com,Martinot,,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123463,true
+12361,123,8,comptabilite,343293775,test@abcd.com,Martinot,Frederic,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123464,true
+12371,123,9,comptabilite,343293775,test@abcd.com,Martinot,Frederique,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123465,true
+12381,123,10,comptabilite,343293775,test@abcd.com,Martinot,Jeanne,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123466,true
+12391,123,11,comptabilite,343293775,test@abcd.com,Martinot,Martine,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123467,true
+12451,123,12,comptabilite,343293775,test@abcd.com,Martinot,Martin,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123468,true
+12551,123,13,comptabilite,343293775,test@abcd.com,Martinot,Gils,,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123469,true
+12651,123,14,comptabilite,343293775,test@abcd.com,Martinot,Josiane,agent,,+331-12-44-45-23,MinistèreIntérieur,123470,true
+12751,123,15,comptabilite,343293775,test@abcd.com,Martinot,Jean-Pierre,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123471,true
+12851,123,16,comptabilite,343293775,test@abcd.com,Martinot,Philipe,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123472,false
+12951,123,17,comptabilite,343293775,test@abcd.com,Martinot,Ursule,agent,34329377500037,,MinistèreIntérieur,123473,false
+13351,123,18,comptabilite,343293775,test@abcd.com,Martinot,Gudule,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123474,
+14351,123,19,comptabilite,343293775,test@abcd.com,Martinot,Maurissette,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123475,
+E000001,123,20,error 2,error3,error@error.com,error 4,error 5,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123476,
+E020025,123,21,comptabilite,343293775,test@abcd.com,Martinot,Didier,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123464,
+Marjorie.Martin,123,22,ministère de la transition écologique,343293775,m.martin@transition-ecologique.gouv.fr,Martin,Marjorie,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123464,true
+Edmee.Martinot,123,23,ministère de la culture,343293775,edmee.martinot.ext@culture.gouv.fr,Martinot,Edmee,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123477,
+Brunot.Martinot,123,24,ministère de la culture,343293775,brunot.martinot.ext@culture.gouv.fr,Martinot,Bruno,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123478,
+TestInteg,123,25,comptabilite,343293775,franceconnect.recette@gmail.com,NUM,Lady Di,agent,34329377500037,33123456789,MinistèreIntérieur,123479,
+TestInteg2,123,26,comptabilite,343293775,duplanty.test@gmail.com,DUPLANTY,Mélodie,agent,34329377500037,33123456789,MinistèreIntérieur,123479,
