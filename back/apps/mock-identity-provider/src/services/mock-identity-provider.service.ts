@@ -21,7 +21,7 @@ import { Csv, IdentityFixture, OidcClaims } from '../interfaces';
 
 @Injectable()
 export class MockIdentityProviderService {
-  private database: Csv[];
+  private database: Csv [];
 
   // Authorized in constructors
   // eslint-disable-next-line max-params
@@ -103,9 +103,30 @@ export class MockIdentityProviderService {
 
     this.database = allFiles.flat();
 
+    //todo: here refine the database
+
     this.logger.debug(
       `Database loaded (${this.database.length} entries found)`,
     );
+  }
+
+  /** convert specified string column in boolean */
+  private transformBoolean(database: Csv[]): Csv[] {
+    const booleanEntries = ['is_service_public'];
+    // check with complete true
+    // if ":" and boolean in key, we apply the conversion of the column
+
+    database.map((entry) => {
+      const convertIntoBoolean = (key: string) => {
+        if(!booleanEntries.includes(key)) {
+          return entry;
+        }
+        entry[key] = (entry[key] === 'true');
+      }
+      Object.keys(entry).forEach(convertIntoBoolean);
+    });
+
+    return database;
   }
 
   private async loadDatabase(path: string): Promise<Csv[]> {
@@ -120,11 +141,11 @@ export class MockIdentityProviderService {
 
       // remove empty properties
       database.forEach((entry) => {
-        const cleaner = (key) => entry[key] === '' && delete entry[key];
+        const cleaner = (key: string) => entry[key] === '' && delete entry[key];
         Object.keys(entry).forEach(cleaner);
       });
 
-      return database;
+      return this.transformBoolean(database);
     } catch (error) {
       this.logger.fatal(`Failed to load CSV database, path was: ${path}`);
       throw error;
@@ -161,7 +182,7 @@ export class MockIdentityProviderService {
 
     const sub = crypto
       .createHash('sha256')
-      .update(identity.login)
+      .update(identity.login as string)
       .digest('hex');
     identityCopy.sub = sub;
     delete identityCopy.login;
@@ -185,14 +206,14 @@ export class MockIdentityProviderService {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { country, postal_code, locality, street_address } = identity;
     oidcIdentity.address = {
-      country,
+      country: country as string,
       // oidc parameter
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      postal_code,
-      locality,
+      postal_code: postal_code as string,
+      locality: locality as string,
       // oidc parameter
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      street_address,
+      street_address: street_address as string,
       formatted: `${country} ${locality} ${postal_code} ${street_address}`,
     };
 

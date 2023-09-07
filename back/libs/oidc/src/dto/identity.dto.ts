@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsEmail, IsOptional, IsString } from 'class-validator';
 
 /**
  * @see https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
@@ -38,4 +38,7 @@ export class OidcIdentityDto {
 
   @IsEmail()
   email: string;
+
+  @IsBoolean()
+  is_service_public?: boolean;
 }

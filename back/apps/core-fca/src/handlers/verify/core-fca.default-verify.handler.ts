@@ -37,7 +37,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   async handle({
     sessionOidc,
   }: IVerifyFeatureHandlerHandleArgument): Promise<void> {
-    this.logger.debug('getConsent service: ##### core-fca-default-verify');
+    this.logger.debug('verifyIdentity service: ##### core-fca-default-verify');
 
     const { idpId, idpIdentity, idpAcr, spId, spAcr, amr, subs } =
       await sessionOidc.get();

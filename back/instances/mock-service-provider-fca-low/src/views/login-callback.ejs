@@ -50,6 +50,10 @@
       {
         label: 'Siren',
         key: 'siren',
+      },
+      {
+        label: 'Service public',
+        key: 'is_service_public',
       }
     ].map((claim) => claim.transform ? claim : { ...claim, transform: defaultTransform });
     %>
