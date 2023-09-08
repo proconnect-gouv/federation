@@ -18,6 +18,7 @@ import { ISessionBoundContext, SessionService } from '@fc/session';
 import { AppConfig } from '../dto';
 import { getFilesPathsFromDir, parseCsv } from '../helpers';
 import { Csv, IdentityFixture, OidcClaims } from '../interfaces';
+import { CsvConvertorType } from '../enums';
 
 @Injectable()
 export class MockIdentityProviderService {
@@ -112,16 +113,25 @@ export class MockIdentityProviderService {
 
   /** convert specified string column in boolean */
   private transformBoolean(database: Csv[]): Csv[] {
-    const booleanEntries = ['is_service_public'];
-    // check with complete true
-    // if ":" and boolean in key, we apply the conversion of the column
+    const findTypeRegex = /^(.*?):(.*)$/;
 
     database.map((entry) => {
       const convertIntoBoolean = (key: string) => {
-        if(!booleanEntries.includes(key)) {
+        const found = key.match(findTypeRegex);
+
+        if(!found) return entry;
+
+        if (found[2] !== CsvConvertorType.BOOLEAN) {
           return entry;
         }
-        entry[key] = (entry[key] === 'true');
+
+        // replace the key by a new one remove ":"
+        // e.g. is_service_public:boolean -> is_service_public
+        entry[found[1]] = (entry[key] === 'true');
+
+        // remove previous data with original key
+        // we don't want service_public:boolean anymore
+        delete entry[key];
       }
       Object.keys(entry).forEach(convertIntoBoolean);
     });

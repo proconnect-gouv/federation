@@ -9,7 +9,7 @@ import { CryptographyFcaService, IAgentIdentity } from '@fc/cryptography-fca';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
-import { InvalidIdentityException } from '@fc/data-provider-core-auth';
+import { CoreFcaInvalidPublicnessException } from '@fc/core-fca/exceptions';
 
 @Injectable()
 @FeatureHandler('core-fca-mcp-verify')
@@ -43,10 +43,8 @@ export class CoreFcaMcpVerifyHandler implements IFeatureHandler {
     const { idpId, idpIdentity, idpAcr, spId, spAcr, amr, subs } =
       await sessionOidc.get();
 
-    console.log('xyz: isp type is = ', typeof(idpIdentity.is_service_public));
-    console.log('xyz: isp is = ', idpIdentity.is_service_public);
     if (idpIdentity.is_service_public !== true) {
-      throw new InvalidIdentityException();
+      throw new CoreFcaInvalidPublicnessException();
     }
 
     // Acr check
