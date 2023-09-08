@@ -134,9 +134,8 @@ export class OidcClientController {
       // No prompt is sent to the identity provider voluntary
     };
 
-    const authorizationUrlRaw = await this.oidcClient.utils.getAuthorizeUrl(
-      authorizeParams,
-    );
+    const authorizationUrlRaw =
+      await this.oidcClient.utils.getAuthorizeUrl(authorizeParams);
 
     let authorizationUrl = authorizationUrlRaw;
     if (spId) {

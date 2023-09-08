@@ -116,7 +116,7 @@ export class OidcMiddlewareService {
       const { RECEIVED_CALL_ON_TOKEN } = this.tracking.TrackedEventsMap;
       await this.tracking.track(RECEIVED_CALL_ON_TOKEN, eventContext);
     } catch (exception) {
-      this.oidcErrorService.throwError(ctx, exception);
+      await this.oidcErrorService.throwError(ctx, exception);
     }
   }
 
@@ -127,7 +127,7 @@ export class OidcMiddlewareService {
       const { RECEIVED_CALL_ON_USERINFO } = this.tracking.TrackedEventsMap;
       await this.tracking.track(RECEIVED_CALL_ON_USERINFO, eventContext);
     } catch (exception) {
-      this.oidcErrorService.throwError(ctx, exception);
+      await this.oidcErrorService.throwError(ctx, exception);
     }
   }
 }

@@ -54,13 +54,13 @@ describe('OidcProviderErrorService', () => {
   });
 
   describe('renderError', () => {
-    it('should call exceptionFilter.catch', () => {
+    it('should call exceptionFilter.catch', async () => {
       // Given
       const ctx = { res: {} } as KoaContextWithOIDC;
       const out = '';
       const error = new Error('foo bar');
       // When
-      service['renderError'](ctx, out, error);
+      await service['renderError'](ctx, out, error);
       // Then
       expect(exceptionFilterMock.catch).toHaveBeenCalledTimes(1);
     });
