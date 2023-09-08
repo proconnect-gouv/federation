@@ -43,9 +43,8 @@ export class DataProviderController {
         clientSecret,
       );
 
-      const sessionId = await this.dataProvider.getSessionByAccessToken(
-        accessToken,
-      );
+      const sessionId =
+        await this.dataProvider.getSessionByAccessToken(accessToken);
       req.sessionId = sessionId;
       req.sessionService = this.session;
 

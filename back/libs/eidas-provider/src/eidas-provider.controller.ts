@@ -55,9 +55,8 @@ export class EidasProviderController {
 
     await this.tracking.track(INCOMING_EIDAS_REQUEST, trackingContext);
 
-    const lightRequest = await this.eidasProvider.readLightRequestFromCache(
-      token,
-    );
+    const lightRequest =
+      await this.eidasProvider.readLightRequestFromCache(token);
 
     const request = this.eidasProvider.parseLightRequest(lightRequest);
 

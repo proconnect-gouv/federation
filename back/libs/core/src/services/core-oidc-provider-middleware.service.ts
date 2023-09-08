@@ -204,7 +204,7 @@ export class CoreOidcProviderMiddlewareService {
     if (!spAmrIsAuthorized) {
       ctx.oidc['isError'] = true;
       const exception = new CoreClaimAmrException();
-      this.oidcErrorService.throwError(ctx, exception);
+      await this.oidcErrorService.throwError(ctx, exception);
     }
   }
 
@@ -227,7 +227,7 @@ export class CoreOidcProviderMiddlewareService {
       await this.tracking.track(SP_REQUESTED_FC_TOKEN, eventContext);
     } catch (exception) {
       ctx.oidc['isError'] = true;
-      this.oidcErrorService.throwError(ctx, exception);
+      await this.oidcErrorService.throwError(ctx, exception);
     }
   }
 
@@ -239,7 +239,7 @@ export class CoreOidcProviderMiddlewareService {
       await this.tracking.track(SP_REQUESTED_FC_USERINFO, eventContext);
     } catch (exception) {
       ctx.oidc['isError'] = true;
-      this.oidcErrorService.throwError(ctx, exception);
+      await this.oidcErrorService.throwError(ctx, exception);
     }
   }
 

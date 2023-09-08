@@ -231,9 +231,8 @@ export class CoreFcpController {
       isSuspicious,
     );
     if (isInsufficientAcrLevel) {
-      const url = await this.coreFcpVerify.handleInsufficientAcrLevel(
-        interactionId,
-      );
+      const url =
+        await this.coreFcpVerify.handleInsufficientAcrLevel(interactionId);
 
       /**
        * Suspect context redirects to idp choice,

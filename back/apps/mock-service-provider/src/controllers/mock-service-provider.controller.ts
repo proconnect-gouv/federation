@@ -69,9 +69,8 @@ export class MockServiceProviderController {
     // Only one provider is available with `@fc/identity-provider-env`
     const [provider] = await this.identityProvider.getList();
 
-    const { authorizationUrl, params } = await this.getInteractionParameters(
-      provider,
-    );
+    const { authorizationUrl, params } =
+      await this.getInteractionParameters(provider);
 
     await sessionOidc.set({
       idpId: provider.uid,

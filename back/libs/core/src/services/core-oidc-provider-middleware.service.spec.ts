@@ -1035,7 +1035,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
       await service['checkRedirectToSso'](ctxMock);
       // Then
       expect(service['redirectToSso']).toHaveBeenCalledTimes(1);
-      expect(service['redirectToSso']).toHaveBeenCalledOnceWith(ctxMock);
+      expect(service['redirectToSso']).toHaveBeenCalledWith(ctxMock);
     });
 
     it('should not call `redirectToSso()` if ctx.isSso = false', async () => {
