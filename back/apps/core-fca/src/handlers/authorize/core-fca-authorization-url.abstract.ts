@@ -1,0 +1,85 @@
+import { IAuthorizationUrlFeatureHandlerHandleArgument } from '../../interfaces';
+import { LoggerService } from '@fc/logger-legacy';
+
+export abstract class CoreFcaAuthorizationUrlAbstract {
+  constructor(
+    protected readonly logger: LoggerService,
+  ) {
+    this.logger.setContext(this.constructor.name);
+  }
+
+  /**
+   * Append the sp_id query param to the authorize url
+   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/475
+   *
+   * @param serviceProviderId The client_id of the SP
+   * @param authorizationUrl The authorization url built by the library oidc-client
+   * @returns The final url
+  */
+  protected appendSpIdToAuthorizeUrl(
+    serviceProviderId: string,
+    authorizationUrl: string,
+  ): string {
+    return `${authorizationUrl}&sp_id=${serviceProviderId}`;
+  }
+
+  async getAuthorizeParams(
+    state: string,
+    scope: string,
+    idpId: string,
+    acr_values: string,
+    nonce: string
+  ) {
+    return {
+      state,
+      scope,
+      idpId,
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values,
+      nonce,
+      /**
+       * @todo #1021 Récupérer la vraie valeur du claims envoyé par le FS
+       * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1021
+       * @ticket FC-1021
+       */
+      claims: '{"id_token":{"amr":{"essential":true}}}',
+      // No prompt is sent to the identity provider voluntary
+    };
+  }
+
+  async handle({
+    oidcClient,
+    state,
+    scope,
+    idpId,
+    acr_values,
+    nonce,
+    spId,
+    }: IAuthorizationUrlFeatureHandlerHandleArgument): Promise<string> {
+    this.logger.debug('getAuthorizeParams service: ##### core-fca-default-authorize');
+
+    const authorizationUrlRaw = await oidcClient.utils.getAuthorizeUrl(
+      await this.getAuthorizeParams(
+        state,
+        scope,
+        idpId,
+        // acr_values is an oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values,
+        nonce
+      ),
+    );
+
+    let authorizationUrl = authorizationUrlRaw;
+    if (spId) {
+      authorizationUrl = this.appendSpIdToAuthorizeUrl(
+        spId,
+        authorizationUrlRaw,
+      );
+    }
+
+    return authorizationUrl;
+  }
+}
+  

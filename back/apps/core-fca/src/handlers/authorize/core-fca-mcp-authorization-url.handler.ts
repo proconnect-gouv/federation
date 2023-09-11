@@ -1,28 +1,25 @@
+import { Injectable } from "@nestjs/common";
+import { FeatureHandler, IFeatureHandler } from "@fc/feature-handler";
+import { CoreFcaAuthorizationUrlAbstract } from "./core-fca-authorization-url.abstract";
+import { LoggerService } from "@fc/logger-legacy";
 
-import { Injectable } from '@nestjs/common';
-
-import { LoggerService } from '@fc/logger-legacy';
-
-export const MONCOMPTEPRO_UID = '54a380fd-876e-4cdc-88b5-5da9cf16f357';
 export const PUBLICNESS_SCOPE = 'is_service_public';
 
 @Injectable()
-export class CoreFcaClientService {
-  // eslint-disable-next-line max-params
+@FeatureHandler('core-fca-mcp-authorization-url')
+export class CoreFcaMcpAuthorizationParamsHandler
+  extends CoreFcaAuthorizationUrlAbstract
+  implements IFeatureHandler {
   constructor(
-    private readonly logger: LoggerService,
+    protected readonly logger: LoggerService,
   ) {
-    this.logger.setContext(this.constructor.name);
+    super(logger);
   }
 
-  private composeScope(scope: string, idpId: string): string {
-    // if idpId is "MonComptePro", we add a special scope
-    if (idpId !== MONCOMPTEPRO_UID) return scope;
-
+  private handleScopePublicness(scope:string): string {
     const scopeList = scope.split(' ');
     if (scopeList.includes(PUBLICNESS_SCOPE)) return scope;
     scopeList.push(PUBLICNESS_SCOPE);
-
     return scopeList.join(" ");
   }
 
@@ -33,7 +30,7 @@ export class CoreFcaClientService {
     acr_values: string,
     nonce: string
   ) {
-    scope = this.composeScope(scope, idpId);
+    scope = this.handleScopePublicness(scope);
 
     return {
       state,

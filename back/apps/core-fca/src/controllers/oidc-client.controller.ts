@@ -50,7 +50,7 @@ import {
   OidcIdentityDto,
 } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
-import { CoreFcaClientService } from '../services/core-fca-client.service';
+import { CoreFcaAuthorizationUrl } from '../services';
 
 @Controller()
 export class OidcClientController {
@@ -65,7 +65,7 @@ export class OidcClientController {
     private readonly oidcProvider: OidcProviderService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
-    private readonly coreFcaClientService: CoreFcaClientService,
+    private readonly coreFcaAuthorizationUrl: CoreFcaAuthorizationUrl,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -118,29 +118,20 @@ export class OidcClientController {
 
     const { state, nonce } =
       await this.oidcClient.utils.buildAuthorizeParameters();
-
-    const authorizationUrlRaw = await this.oidcClient.utils.getAuthorizeUrl(
-      await this.coreFcaClientService.getAuthorizeParams(
-        state,
-        scope,
-        idpId,
-        // acr_values is an oidc defined variable name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values,
-        nonce
-      ),
-    );
-
-    let authorizationUrl = authorizationUrlRaw;
-    if (spId) {
-      authorizationUrl = this.appendSpIdToAuthorizeUrl(
-        spId,
-        authorizationUrlRaw,
-      );
-    }
-
-    const { name: idpName, title: idpLabel } =
+    const { name: idpName, title: idpLabel, featureHandlers: idpFeatureHandlers } =
       await this.identityProvider.getById(idpId);
+      
+    const authorizationUrl = await this.coreFcaAuthorizationUrl.getAuthorizeUrl({
+      oidcClient: this.oidcClient,
+      state,
+      scope,
+      idpId,
+      idpFeatureHandlers,
+      acr_values,
+      nonce,
+      spId,
+    });
+
     const session: OidcClientSession = {
       idpId,
       idpName,
@@ -226,21 +217,6 @@ export class OidcClientController {
     await this.sessionService.destroy(req, res);
 
     return { oidcProviderLogoutForm };
-  }
-
-  /**
-   * Append the sp_id query param to the authorize url
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/475
-   *
-   * @param serviceProviderId The client_id of the SP
-   * @param authorizationUrl The authorization url built by the library oidc-client
-   * @returns The final url
-   */
-  private appendSpIdToAuthorizeUrl(
-    serviceProviderId: string,
-    authorizationUrl: string,
-  ): string {
-    return `${authorizationUrl}&sp_id=${serviceProviderId}`;
   }
 
   @Get(OidcClientRoutes.OIDC_CALLBACK_LEGACY)

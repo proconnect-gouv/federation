@@ -47,8 +47,10 @@ import {
   CoreFcaVerifyService,
   OidcProviderConfigAppService,
 } from './services';
-import { CoreFcaClientService } from './services/core-fca-client.service';
 import { CoreFcaMcpVerifyHandler } from './handlers/verify/core-fca.mcp-verify.handler';
+import { CoreFcaAuthorizationUrl } from './services/core-fca-authorization-url.service';
+import { CoreFcaDefaultAuthorizationParamsHandler } from './handlers/authorize/core-fca-default-authorization-url.handler';
+import { CoreFcaMcpAuthorizationParamsHandler } from './handlers/authorize/core-fca-mcp-authorization-url.handler';
 
 const trackingModule = TrackingModule.forRoot(CoreTrackingService);
 
@@ -100,8 +102,10 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     CoreFcaDefaultVerifyHandler,
     CoreFcaVerifyService,
     OidcProviderGrantService,
-    CoreFcaClientService,
+    CoreFcaAuthorizationUrl,
     CoreFcaMcpVerifyHandler,
+    CoreFcaDefaultAuthorizationParamsHandler,
+    CoreFcaMcpAuthorizationParamsHandler,
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [
