@@ -58,10 +58,6 @@
       {
         label: 'Téléphone',
         key: 'phone_number',
-      },
-      {
-        label: 'Service public',
-        key: 'is_service_public',
       }
     ].map((claim) => claim.transform ? claim : { ...claim, transform: defaultTransform });
     %>

@@ -38,8 +38,7 @@ const fsa = {
       "belonging_population",
       "chorusdt",
       "idp_id",
-      "idp_acr",
-      "is_service_public"
+      "idp_acr"
     ],
     claims: ["amr"],
     id_token_signed_response_alg: "HS256",
