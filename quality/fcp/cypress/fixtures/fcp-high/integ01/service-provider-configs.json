@@ -1,6 +1,6 @@
 {
     "sans restriction de FI": {
-        "name": "test-sp-without-restriction",
+        "name": "bdd-sp-without-restriction",
         "signupId": "12345",
         "redirectUri":"https://fsp1-high.docker.dev-franceconnect.fr/oidc-callback",
         "redirectUriLogout":"https://fsp1-high.docker.dev-franceconnect.fr/logout-callback",
@@ -23,7 +23,7 @@
         "entityId": "a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc"
     },
     "avec 2 FI whitelistés":{
-        "name": "sp-with-2-ipd-whitelisted",
+        "name": "bdd-sp-with-2-ipd-whitelisted",
         "signupId": "12345",
         "redirectUri":"https://fsp1-high.docker.dev-franceconnect.fr/oidc-callback",
         "redirectUriLogout":"https://fsp1-high.docker.dev-franceconnect.fr/logout-callback",
@@ -48,7 +48,7 @@
         "entityId": "a0cd64372db6ecf39c317c0c74ce90f02d8ad7d510ce054883b759d666a996bc"
     },
     "avec 2 FI blacklistés":{
-        "name": "sp-with-2-ipd-blacklisted",
+        "name": "bdd-sp-with-2-ipd-blacklisted",
         "signupId": "12345",
         "redirectUri":"https://fsp1-high.docker.dev-franceconnect.fr/oidc-callback",
         "redirectUriLogout":"https://fsp1-high.docker.dev-franceconnect.fr/logout-callback",

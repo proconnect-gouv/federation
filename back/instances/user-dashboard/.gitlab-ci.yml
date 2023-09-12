@@ -74,7 +74,7 @@ user-dashboard:
     - cd $CI_PROJECT_DIR/quality/fcp
     - yarn install --ignore-engines
     # Run Visual BDD tests and abort if failed
-    - CYPRESS_TEST_ENV=docker yarn test:ud:snapshot || RETURN_CODE=1
+    - CYPRESS_TEST_ENV=docker yarn test:ud:snapshot
     # Run Functional BDD tests
     - CYPRESS_TEST_ENV=docker yarn test:ud -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report:prepare
