@@ -1,9 +1,8 @@
 {
   "fiLegacy": {
-    "name": "fip4_fi-legacy",
+    "name": "bdd-idp-legacy",
     "title": "FI Legacy pour les tests automatisés",
     "issuer": "https://fournisseur-d-identite.dev-franceconnect.fr",
-    "jwksUrl": "https://issuer.fr/jwks",
     "authorizationUrl": "https://fournisseur-d-identite.dev-franceconnect.fr/user/authorize",
     "tokenUrl": "https://fournisseur-d-identite.dev-franceconnect.fr/user/token",
     "userInfoUrl": "https://fournisseur-d-identite.dev-franceconnect.fr/api/user",
@@ -20,7 +19,7 @@
     "trustedIdentity": "false",
     "eidas": "1",
     "order": "1",
-    "emails": "fip4_fi-legacy@yopmail.com",
+    "emails": "bdd-idp-legacy@yopmail.com",
     "specificText": "Veuillez fournir une capture d'écran de votre page de profil !",
     "token_endpoint_auth_method": "client_secret_post"
   }

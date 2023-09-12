@@ -410,7 +410,7 @@ services:
   ####################
 
   elasticsearch:
-    image: elasticsearch:7.16.3
+    image: elasticsearch:7.17.9
     volumes:
       - "${VOLUMES_DIR}/elasticsearch/data:/usr/share/elasticsearch/data"
       - "${VOLUMES_DIR}/elasticsearch/config/users:/usr/share/elasticsearch/config/users:ro"

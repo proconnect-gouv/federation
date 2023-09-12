@@ -1,6 +1,6 @@
 {
   "sans restriction de FI": {
-    "name": "test-sp-without-restriction",
+    "name": "bdd-sp-without-restriction",
     "signupId": "12345",
     "platform": "CORE_LEGACY",
     "redirectUri": "https://fsp1.docker.dev-franceconnect.fr/login-callback",
