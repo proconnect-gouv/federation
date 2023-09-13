@@ -25,29 +25,3 @@ exports[`ErrorPage should match the snapshot, in a mobile viewport 1`] = `
   </div>
 </div>
 `;
-
-exports[`ErrorPage should math the snapshot, in a desktop viewport 1`] = `
-<div>
-  <div>
-    <div>
-      React Helmet
-    </div>
-  </div>
-  <div>
-    NotFoundComponent
-  </div>
-</div>
-`;
-
-exports[`ErrorPage should math the snapshot, in a mobile viewport 1`] = `
-<div>
-  <div>
-    <div>
-      React Helmet
-    </div>
-  </div>
-  <div>
-    NotFoundComponent
-  </div>
-</div>
-`;

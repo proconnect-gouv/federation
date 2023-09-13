@@ -10,7 +10,7 @@ export default defineConfig({
     setupNodeEvents(on, config) {
       return pluginConfig(on, config);
     },
-    specPattern: 'cypress/integration/usager/recherche-fi.feature',
+    specPattern: 'cypress/integration/**/*.feature',
     supportFile: 'cypress/support/index.ts',
     video: false,
   },
