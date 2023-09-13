@@ -3,12 +3,6 @@ import { useMediaQuery } from 'react-responsive';
 
 import { PublicnessErrorComponent } from './publicness-error.component';
 
-const errorMock = {
-  code: 'any-error-code',
-  id: 'any-error-id',
-  message: 'any-error-message',
-};
-
 describe('PublicnessErrorComponent', () => {
   it('should have call useMediaQuery with params', () => {
     // when

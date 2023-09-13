@@ -30,7 +30,8 @@ export const PublicnessErrorComponent = React.memo(() => {
       </h2>
       <div className="fr-mx-auto fr-my-4w fr-px-2w fr-text--lg">
         <p className="fr-mb-4w">
-          Ce service est réservé aux agents de la de Fonction Publique d&#39;État et d&#39;opérateurs de l&#39;État.
+          Ce service est réservé aux agents de la de Fonction Publique d&#39;État et
+          d&#39;opérateurs de l&#39;État.
         </p>
         <p className="fr-mb-4w">
           Vous êtes rattaché à une organisation de droit privé. Vous ne pouvez pas y avoir accès.

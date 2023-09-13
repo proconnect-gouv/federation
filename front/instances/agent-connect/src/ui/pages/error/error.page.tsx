@@ -22,7 +22,7 @@ export const ErrorPage = React.memo(() => {
       return (
         <React.Fragment>
           <PageTitle />
-          <PublicnessErrorComponent/>
+          <PublicnessErrorComponent />
         </React.Fragment>
       );
     }
