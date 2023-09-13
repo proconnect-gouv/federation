@@ -10,7 +10,7 @@ services:
       - "fca-low-front"
       - "fsa1-low"
       - "fia1-low"
-      - "fia9-low"
+      - "moncomptepro"
 
   bdd-fca-low:
     image: alpine
@@ -29,7 +29,7 @@ services:
       - "fia4-low"
       - "fia5-low"
       - "fia8-low"
-      - "fia9-low"
+      - "moncomptepro"
 
   exploit-fca-low:
     image: alpine
@@ -52,7 +52,7 @@ services:
       - "fia4-low"
       - "fia5-low"
       - "fia8-low"
-      - "fia9-low"
+      - "moncomptepro"
       - "exploitation-fca-low"
       - "pg-exploit-fca-low"
       - "exploit-fca-low-back"

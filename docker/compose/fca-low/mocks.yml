@@ -261,8 +261,8 @@ services:
       - data
     command: "pm2 logs"
 
-  fia9-low:
-    hostname: fia9-low
+  moncomptepro:
+    hostname: moncomptepro
     image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
     user: ${CURRENT_UID}
     working_dir: /var/www/app
@@ -277,7 +277,7 @@ services:
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
-      - "${COMPOSE_DIR}/fca-low/.env/fia9-low.env"
+      - "${COMPOSE_DIR}/fca-low/.env/moncomptepro.env"
     ports:
       - 9249:9249
     tty: true

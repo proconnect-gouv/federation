@@ -22,7 +22,7 @@ import { CsvConvertorType } from '../enums';
 
 @Injectable()
 export class MockIdentityProviderService {
-  private database: Csv [];
+  private database: Csv[];
 
   // Authorized in constructors
   // eslint-disable-next-line max-params

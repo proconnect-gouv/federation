@@ -400,17 +400,17 @@ const fia = {
     ],
   },
 
-  // -- FIA - FIA9-LOW MonComptePro - Activated
-  "FIA9-LOW": {
+  // -- FIA - MonComptePro - Activated
+  "MONCOMPTEPRO": {
     uid: "54a380fd-876e-4cdc-88b5-5da9cf16f357",
-    name: "fia9-low",
+    name: "moncomptepro",
     active: true,
     display: true,
     isBeta: false,
     title: "Identity Provider MonComptePro",
     image: "fi-mock-faible.svg",
     imageFocus: "fi-mock-faible.svg",
-    alt: "mcp ",
+    alt: "moncomptepro ",
     trustedIdentity: false,
     eidas: 1,
     mailto: "",
@@ -419,19 +419,19 @@ const fia = {
       authenticationEmail: null,
       fcaAuthorizationUrl: "core-fca-mcp-authorization-url",
     },
-    specificText: "specific text fia9-low",
-    url: "https://fia9-low.docker.dev-franceconnect.fr",
+    specificText: "specific text MonComptePro",
+    url: "https://moncomptepro.docker.dev-franceconnect.fr",
     discoveryUrl:
-      "https://fia9-low.docker.dev-franceconnect.fr/.well-known/openid-configuration",
+      "https://moncomptepro.docker.dev-franceconnect.fr/.well-known/openid-configuration",
     discovery: true,
-    clientID: "myclientidforfia9-low",
+    clientID: "myclientidformoncomptepro",
     client_secret:
       "jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE",
     order: null,
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     endSessionURL:
-      "https://fia9-low.docker.dev-franceconnect.fr/user/session/end",
+      "https://moncomptepro.docker.dev-franceconnect.fr/user/session/end",
     response_types: ["code"],
     id_token_signed_response_alg: "ES256",
     token_endpoint_auth_method: "client_secret_post",
@@ -567,8 +567,8 @@ print("FIP > Initializing provider: fia7-low - Activated");
 db.provider.update({ name: "fia7-low" }, fia["FIA7-LOW"], { upsert: true });
 print("FIP > Initializing provider: fia8-low - Activated");
 db.provider.update({ name: "fia8-low" }, fia["FIA8-LOW"], { upsert: true });
-print("FIP > Initializing provider: fia9-low - Activated");
-db.provider.update({ name: "fia9-low" }, fia["FIA9-LOW"], { upsert: true });
+print("FIP > Initializing provider: moncomptepro - Activated");
+db.provider.update({ name: "moncomptepro" }, fia["MONCOMPTEPRO"], { upsert: true });
 print("FIA > Initializing provider: llng - Activated");
 db.provider.update({ name: "LemonLDAP-ng" }, fia["FIA-LLNG-LOW"], {
   upsert: true,
