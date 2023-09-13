@@ -11,12 +11,14 @@ const PageTitle = () => (
   </Helmet>
 );
 
+export const INVALID_PUBLICNESS_ERROR_CODE = 'Y000015';
+
 export const ErrorPage = React.memo(() => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const hasError = (window as any).appError !== undefined;
   if (hasError) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if ((window as any).appError.code === 'Y000015') {
+    if ((window as any).appError.code === INVALID_PUBLICNESS_ERROR_CODE) {
       return (
         <React.Fragment>
           <PageTitle />
