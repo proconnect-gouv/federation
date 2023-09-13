@@ -46,5 +46,5 @@ copy_file() {
   local src="$1"
   local dest="$2"
   echo "Copie de ${src} vers ${dest}"
-  cp -r "$src" "$dest"
+  cp "$src" "$dest"
 }
