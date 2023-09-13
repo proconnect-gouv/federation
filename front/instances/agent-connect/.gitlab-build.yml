@@ -9,7 +9,7 @@ fca/build-front:
 fca/tag-front-to-prod:
   extends: .base-tag-front-to-prod
   variables:
-    APP: user-dashboard
+    APP: agent-connect
     MSG: "environments/nubo01-fca-prod/group_vars/all/versions.yml\nenvironments/nubo12-fca-prod/group_vars/all/versions.yml\nfca_front_version:"
   needs:
     - job: fca/build-front
