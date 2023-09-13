@@ -26,7 +26,7 @@ export interface IOidcIdentity {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   preferred_username?: string;
   email: string;
-  // oidc defined variable name
+  // external defined variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
   is_service_public?: boolean;
 }

@@ -1,10 +1,9 @@
-import { IAuthorizationUrlFeatureHandlerHandleArgument } from '../../interfaces';
 import { LoggerService } from '@fc/logger-legacy';
 
+import { IAuthorizationUrlFeatureHandlerHandleArgument } from '../../interfaces';
+
 export abstract class CoreFcaAuthorizationUrlAbstract {
-  constructor(
-    protected readonly logger: LoggerService,
-  ) {
+  constructor(protected readonly logger: LoggerService) {
     this.logger.setContext(this.constructor.name);
   }
 
@@ -15,7 +14,7 @@ export abstract class CoreFcaAuthorizationUrlAbstract {
    * @param serviceProviderId The client_id of the SP
    * @param authorizationUrl The authorization url built by the library oidc-client
    * @returns The final url
-  */
+   */
   protected appendSpIdToAuthorizeUrl(
     serviceProviderId: string,
     authorizationUrl: string,
@@ -23,21 +22,23 @@ export abstract class CoreFcaAuthorizationUrlAbstract {
     return `${authorizationUrl}&sp_id=${serviceProviderId}`;
   }
 
-  async getAuthorizeParams(
-    state: string,
-    scope: string,
-    idpId: string,
-    acr_values: string,
-    nonce: string
-  ) {
+  getAuthorizeParams(config: {
+    state: string;
+    scope: string;
+    idpId: string;
+    // acr_values is an oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    acr_values: string;
+    nonce: string;
+  }) {
     return {
-      state,
-      scope,
-      idpId,
+      state: config.state,
+      scope: config.scope,
+      idpId: config.idpId,
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-      nonce,
+      acr_values: config.acr_values,
+      nonce: config.nonce,
       /**
        * @todo #1021 Récupérer la vraie valeur du claims envoyé par le FS
        * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1021
@@ -53,22 +54,26 @@ export abstract class CoreFcaAuthorizationUrlAbstract {
     state,
     scope,
     idpId,
+    // acr_values is an oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values,
     nonce,
     spId,
-    }: IAuthorizationUrlFeatureHandlerHandleArgument): Promise<string> {
-    this.logger.debug('getAuthorizeParams service: ##### core-fca-default-authorize');
+  }: IAuthorizationUrlFeatureHandlerHandleArgument): Promise<string> {
+    this.logger.debug(
+      'getAuthorizeParams service: ##### core-fca-default-authorize',
+    );
 
     const authorizationUrlRaw = await oidcClient.utils.getAuthorizeUrl(
-      await this.getAuthorizeParams(
+      this.getAuthorizeParams({
         state,
         scope,
         idpId,
         // acr_values is an oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
-        nonce
-      ),
+        nonce,
+      }),
     );
 
     let authorizationUrl = authorizationUrlRaw;
@@ -82,4 +87,3 @@ export abstract class CoreFcaAuthorizationUrlAbstract {
     return authorizationUrl;
   }
 }
-  

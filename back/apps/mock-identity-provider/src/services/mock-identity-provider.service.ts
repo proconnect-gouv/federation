@@ -16,9 +16,9 @@ import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-e
 import { ISessionBoundContext, SessionService } from '@fc/session';
 
 import { AppConfig } from '../dto';
+import { CsvConvertorType } from '../enums';
 import { getFilesPathsFromDir, parseCsv } from '../helpers';
 import { Csv, IdentityFixture, OidcClaims } from '../interfaces';
-import { CsvConvertorType } from '../enums';
 
 @Injectable()
 export class MockIdentityProviderService {
@@ -119,7 +119,7 @@ export class MockIdentityProviderService {
       const convertIntoBoolean = (key: string) => {
         const found = key.match(findTypeRegex);
 
-        if(!found) return entry;
+        if (!found) return entry;
 
         if (found[2] !== CsvConvertorType.BOOLEAN) {
           return entry;
@@ -127,12 +127,12 @@ export class MockIdentityProviderService {
 
         // replace the key by a new one remove ":"
         // e.g. is_service_public:boolean -> is_service_public
-        entry[found[1]] = (entry[key] === 'true');
+        entry[found[1]] = entry[key] === 'true';
 
         // remove previous data with original key
         // we don't want service_public:boolean anymore
         delete entry[key];
-      }
+      };
       Object.keys(entry).forEach(convertIntoBoolean);
     });
 

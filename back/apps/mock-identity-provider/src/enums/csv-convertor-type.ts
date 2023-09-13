@@ -1,3 +1,3 @@
 export enum CsvConvertorType {
-    BOOLEAN = 'boolean',
+  BOOLEAN = 'boolean',
 }

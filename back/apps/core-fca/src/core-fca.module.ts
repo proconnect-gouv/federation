@@ -42,15 +42,15 @@ import {
 } from './controllers';
 import { CoreFcaSession } from './dto';
 import { CoreFcaDefaultVerifyHandler } from './handlers';
+import { CoreFcaDefaultAuthorizationParamsHandler } from './handlers/authorize/core-fca-default-authorization-url.handler';
+import { CoreFcaMcpAuthorizationParamsHandler } from './handlers/authorize/core-fca-mcp-authorization-url.handler';
+import { CoreFcaMcpVerifyHandler } from './handlers/verify/core-fca.mcp-verify.handler';
 import {
   CoreFcaMiddlewareService,
   CoreFcaVerifyService,
   OidcProviderConfigAppService,
 } from './services';
-import { CoreFcaMcpVerifyHandler } from './handlers/verify/core-fca.mcp-verify.handler';
 import { CoreFcaAuthorizationUrl } from './services/core-fca-authorization-url.service';
-import { CoreFcaDefaultAuthorizationParamsHandler } from './handlers/authorize/core-fca-default-authorization-url.handler';
-import { CoreFcaMcpAuthorizationParamsHandler } from './handlers/authorize/core-fca-mcp-authorization-url.handler';
 
 const trackingModule = TrackingModule.forRoot(CoreTrackingService);
 

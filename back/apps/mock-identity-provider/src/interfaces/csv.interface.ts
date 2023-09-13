@@ -1,3 +1,3 @@
 export interface Csv {
-  [key: string]: string|boolean;
+  [key: string]: string | boolean;
 }

@@ -1,10 +1,12 @@
-import { FeatureHandler, IFeatureHandler } from "@fc/feature-handler";
-import { LoggerService } from "@fc/logger-legacy";
-import { Injectable } from "@nestjs/common";
-import { ModuleRef } from "@nestjs/core";
-import { IAuthorizationUrlFeatureHandlerHandleArgument } from "../interfaces/authorization-url-feature-handler.handler";
+import { Injectable } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 
-export const FCA_AUTHORIZATION_URL= 'fcaAuthorizationUrl';
+import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
+import { LoggerService } from '@fc/logger-legacy';
+
+import { IAuthorizationUrlFeatureHandlerHandleArgument } from '../interfaces/authorization-url-feature-handler.handler';
+
+export const FCA_AUTHORIZATION_URL = 'fcaAuthorizationUrl';
 
 @Injectable()
 export class CoreFcaAuthorizationUrl {
@@ -15,12 +17,14 @@ export class CoreFcaAuthorizationUrl {
     this.logger.setContext(this.constructor.name);
   }
 
-  async getAuthorizeUrl<T extends IFeatureHandler>({
+  getAuthorizeUrl<T extends IFeatureHandler>({
     oidcClient,
     state,
     scope,
     idpId,
     idpFeatureHandlers,
+    // acr_values is an oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values,
     nonce,
     spId,
@@ -32,6 +36,8 @@ export class CoreFcaAuthorizationUrl {
       state,
       scope,
       idpId,
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
       nonce,
       spId,

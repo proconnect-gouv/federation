@@ -5,11 +5,11 @@ import {
   CoreAcrService,
   IVerifyFeatureHandlerHandleArgument,
 } from '@fc/core';
+import { CoreFcaInvalidPublicnessException } from '@fc/core-fca/exceptions';
 import { CryptographyFcaService, IAgentIdentity } from '@fc/cryptography-fca';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
-import { CoreFcaInvalidPublicnessException } from '@fc/core-fca/exceptions';
 
 @Injectable()
 @FeatureHandler('core-fca-mcp-verify')

@@ -118,19 +118,26 @@ export class OidcClientController {
 
     const { state, nonce } =
       await this.oidcClient.utils.buildAuthorizeParameters();
-    const { name: idpName, title: idpLabel, featureHandlers: idpFeatureHandlers } =
-      await this.identityProvider.getById(idpId);
-      
-    const authorizationUrl = await this.coreFcaAuthorizationUrl.getAuthorizeUrl({
-      oidcClient: this.oidcClient,
-      state,
-      scope,
-      idpId,
-      idpFeatureHandlers,
-      acr_values,
-      nonce,
-      spId,
-    });
+    const {
+      name: idpName,
+      title: idpLabel,
+      featureHandlers: idpFeatureHandlers,
+    } = await this.identityProvider.getById(idpId);
+
+    const authorizationUrl = await this.coreFcaAuthorizationUrl.getAuthorizeUrl(
+      {
+        oidcClient: this.oidcClient,
+        state,
+        scope,
+        idpId,
+        idpFeatureHandlers,
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values,
+        nonce,
+        spId,
+      },
+    );
 
     const session: OidcClientSession = {
       idpId,
