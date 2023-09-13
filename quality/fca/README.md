@@ -54,8 +54,6 @@ In order to run tests with Cypress,
 docker-stack prune && \
 docker-stack up bdd-fca-low && \
 docker-stack fca-low-front && \
-docker-stack dep core-fca-low && \
-docker-stack fixtures-fca-low && \
 docker-stack start-all
 ```
 
@@ -82,19 +80,19 @@ yarn start:low
 1. Duplicate `cypress-fca-low.json` and rename it `cypress-recette.json`
 2. Change the following env attributes
 
-  ```json
-  "TEST_ENV": "recette",
-  "FC_ACCESS_USER": "<FranceConnect access user for HTTP Basic Authentication>",
-  "FC_ACCESS_PASS": "<FranceConnect access password for HTTP Basic Authentication>",
-  ```
+```json
+"TEST_ENV": "recette",
+"FC_ACCESS_USER": "<FranceConnect access user for HTTP Basic Authentication>",
+"FC_ACCESS_PASS": "<FranceConnect access password for HTTP Basic Authentication>",
+```
 
 3. Run the job `review-fca-low` on the merge request, in order to deploy the recette environment
 4. Check that the recette environment is up and running navigating from `https://recette.dev-franceconnect.fr/fca.html`
 5. Open Cypress UI to run tests on FCA-LOW against recette environment
 
-  ```shell
-  yarn start:low --config-file cypress-recette.json
-  ```
+```shell
+yarn start:low --config-file cypress-recette.json
+```
 
 6. Run the `usager` tests (user connection) or `exploitation` tests (admin configuration)
 
@@ -103,26 +101,26 @@ yarn start:low
 1. Duplicate `cypress-fca-low.json` and rename it `cypress-integ01.json`
 2. Change the following env attributes
 
-  ```json
-  "TEST_ENV": "integ01",
-  "EXPLOIT_USER_NAME": "<your integ01 operator user>",
-  "EXPLOIT_USER_PASS": "<your integ01 operator password>",
-  "EXPLOIT_USER_TOTP": "<your integ01 operator totp secret",
-  "FC_ACCESS_USER": "<FranceConnect access user for HTTP Basic Authentication>",
-  "FC_ACCESS_PASS": "<FranceConnect access password for HTTP Basic Authentication>",
-  ```
+```json
+"TEST_ENV": "integ01",
+"EXPLOIT_USER_NAME": "<your integ01 operator user>",
+"EXPLOIT_USER_PASS": "<your integ01 operator password>",
+"EXPLOIT_USER_TOTP": "<your integ01 operator totp secret",
+"FC_ACCESS_USER": "<FranceConnect access user for HTTP Basic Authentication>",
+"FC_ACCESS_PASS": "<FranceConnect access password for HTTP Basic Authentication>",
+```
 
 3. Start the proxy to access `https://docker.dev-franceconnect.fr/integ01/fca.html`
 
-  ```shell
-  docker-stack up rp-all
-  ```
+```shell
+docker-stack up rp-all
+```
 
 4. Open Cypress UI to run tests on FCA-LOW against integ01 environment
 
-  ```shell
-  yarn start:low --config-file cypress-integ01.json
-  ```
+```shell
+yarn start:low --config-file cypress-integ01.json
+```
 
 5. Run the `usager` tests (user connection) or `exploitation` tests (if you have an operator user)
 
