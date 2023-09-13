@@ -7,11 +7,18 @@
 - [Eleventy DSFR](https://github.com/codegouvfr/eleventy-dsfr)
 - [Acessibilite Numerique](https://github.com/DISIC/accessibilite.numerique.gouv.fr/blob/main/CONTRIBUTING.md)
 
+## Folders Structure
+
+- **./apps** Main applications markdown files
+- **./instances** Output applications folder
+- **./libs** Generics shareds files/folder across applications
+
 ## HOWTO
 
 ## Create a new application (minimal requirements)
 
 - Duplicate `./apps/example` folder and rename it to `./apps/[app_name]`
+- Update the `name` and `description` fields into `./apps/[app_name]/package.json` with your project `app_name`
 - Create new scripts entries into `web/package.json`
   ```json
   "scripts": {
@@ -102,6 +109,7 @@ yarn build [app_name]
 ## Issues & Fixes
 
 - While watching in dev mode and deleting file/folder
+- Need to re `start-all` to take `./libs` folder changes
 - Sticky Footer is not yet implemented
 - No Docker container
 - SASS files are not yet managed
