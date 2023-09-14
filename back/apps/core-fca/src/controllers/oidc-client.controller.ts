@@ -50,7 +50,7 @@ import {
   OidcIdentityDto,
 } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
-import { CoreFcaAuthorizationUrl } from '../services';
+import { CoreFcaAuthorizationUrlService } from '../services';
 
 @Controller()
 export class OidcClientController {
@@ -65,7 +65,7 @@ export class OidcClientController {
     private readonly oidcProvider: OidcProviderService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
-    private readonly coreFcaAuthorizationUrl: CoreFcaAuthorizationUrl,
+    private readonly coreFcaAuthorizationUrlService: CoreFcaAuthorizationUrlService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -124,7 +124,7 @@ export class OidcClientController {
       featureHandlers: idpFeatureHandlers,
     } = await this.identityProvider.getById(idpId);
 
-    const authorizationUrl = await this.coreFcaAuthorizationUrl.getAuthorizeUrl(
+    const authorizationUrl = await this.coreFcaAuthorizationUrlService.getAuthorizeUrl(
       {
         oidcClient: this.oidcClient,
         state,

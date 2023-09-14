@@ -3,14 +3,14 @@ import { Injectable } from '@nestjs/common';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger-legacy';
 
-import { CoreFcaAuthorizationUrlAbstract } from './core-fca-authorization-url.abstract';
+import { CoreFcaAuthorizationUrlServiceAbstract } from './core-fca-authorization-url.abstract';
 
 export const PUBLICNESS_SCOPE = 'is_service_public';
 
 @Injectable()
 @FeatureHandler('core-fca-mcp-authorization-url')
-export class CoreFcaMcpAuthorizationParamsHandler
-  extends CoreFcaAuthorizationUrlAbstract
+export class CoreFcaMcpAuthorizationHandler
+  extends CoreFcaAuthorizationUrlServiceAbstract
   implements IFeatureHandler
 {
   constructor(protected readonly logger: LoggerService) {

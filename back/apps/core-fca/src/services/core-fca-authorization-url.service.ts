@@ -9,7 +9,7 @@ import { IAuthorizationUrlFeatureHandlerHandleArgument } from '../interfaces/aut
 export const FCA_AUTHORIZATION_URL = 'fcaAuthorizationUrl';
 
 @Injectable()
-export class CoreFcaAuthorizationUrl {
+export class CoreFcaAuthorizationUrlService {
   constructor(
     private readonly logger: LoggerService,
     public readonly moduleRef: ModuleRef,
@@ -30,7 +30,8 @@ export class CoreFcaAuthorizationUrl {
     spId,
   }: IAuthorizationUrlFeatureHandlerHandleArgument) {
     const idClass = idpFeatureHandlers[FCA_AUTHORIZATION_URL];
-    const authorizationUrlhandler = FeatureHandler.get<T>(idClass, this);
+    const authorizationUrlhandler = FeatureHandler.get<T>(idClass, {moduleRef: this.moduleRef});
+
     return authorizationUrlhandler.handle({
       oidcClient,
       state,

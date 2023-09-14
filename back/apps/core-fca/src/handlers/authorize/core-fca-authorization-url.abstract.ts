@@ -2,7 +2,7 @@ import { LoggerService } from '@fc/logger-legacy';
 
 import { IAuthorizationUrlFeatureHandlerHandleArgument } from '../../interfaces';
 
-export abstract class CoreFcaAuthorizationUrlAbstract {
+export abstract class CoreFcaAuthorizationUrlServiceAbstract {
   constructor(protected readonly logger: LoggerService) {
     this.logger.setContext(this.constructor.name);
   }
@@ -22,7 +22,7 @@ export abstract class CoreFcaAuthorizationUrlAbstract {
     return `${authorizationUrl}&sp_id=${serviceProviderId}`;
   }
 
-  getAuthorizeParams(config: {
+  protected getAuthorizeParams(config: {
     state: string;
     scope: string;
     idpId: string;
