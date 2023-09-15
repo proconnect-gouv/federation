@@ -111,7 +111,7 @@ export class MockIdentityProviderService {
     );
   }
 
-  /** convert specified string column in boolean */
+  /** convert specified string column in boolean with :boolean */
   private transformBoolean(database: Csv[]): Csv[] {
     const findTypeRegex = /^(.*?):(.*)$/;
 

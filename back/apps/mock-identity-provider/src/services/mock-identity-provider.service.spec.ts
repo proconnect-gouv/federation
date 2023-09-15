@@ -687,4 +687,83 @@ describe('MockIdentityProviderService', () => {
       expect(result).toBe(true);
     });
   });
+
+  describe('transformBoolean', () => {
+    const pathMock = 'pathMockValue';
+    it('should transform string into boolean when suffixed with :boolean', async () => {
+      // Given
+      const csvWithEmptyMock = [
+        {
+          property1: '1',
+          property2: '2',
+          property3: '',
+          'property4:boolean': 'false',
+        },
+        {
+          property1: '',
+          property2: '6',
+          property3: '7',
+          'property4:boolean': 'true',
+        },
+        {
+          property1: '',
+          property2: '6',
+          property3: '7',
+          'property4:boolean': 'notaboolean',
+        },
+      ];
+      const expected = [
+        { property1: '1', property2: '2', property4: false },
+        { property2: '6', property3: '7', property4: true },
+        { property2: '6', property3: '7', property4: false },
+      ];
+      jest.mocked(parseCsv).mockResolvedValueOnce(csvWithEmptyMock);
+
+      // When
+      const database = await service['loadDatabase'](pathMock);
+
+      // Then
+      expect(database).toStrictEqual(expected);
+    });
+
+    it('should return a string when suffixed with another :command', async () => {
+      // Given
+      const csvWithEmptyMock = [
+        {
+          property1: '1',
+          property2: '2',
+          property3: '',
+          'property4:notaboolean': 'false',
+        },
+        {
+          property1: '',
+          property2: '6',
+          property3: '7',
+          'property4:notaboolean': 'true',
+        },
+        {
+          property1: '',
+          property2: '6',
+          property3: '7',
+          'property4:notaboolean': 'notaboolean',
+        },
+      ];
+      const expected = [
+        { property1: '1', property2: '2', 'property4:notaboolean': 'false' },
+        { property2: '6', property3: '7', 'property4:notaboolean': 'true' },
+        {
+          property2: '6',
+          property3: '7',
+          'property4:notaboolean': 'notaboolean',
+        },
+      ];
+      jest.mocked(parseCsv).mockResolvedValueOnce(csvWithEmptyMock);
+
+      // When
+      const database = await service['loadDatabase'](pathMock);
+
+      // Then
+      expect(database).toStrictEqual(expected);
+    });
+  });
 });
