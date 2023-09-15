@@ -63,6 +63,7 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
   readonly 'chorusdt'?: string;
 
   @IsBoolean()
+  @IsOptional()
   @Expose()
   // external defined variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
