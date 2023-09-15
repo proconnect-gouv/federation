@@ -48,6 +48,7 @@
           "../../../apps/core-fcp/**/*.js",
           "../../../apps/core-fcp/**/*.svg",
           "../../../apps/core-fcp/**/*.woff2",
+          "../../../instances/core-fcp-low/**/*.js",
           "../../../instances/core-fcp-low/**/*.css",
           "../../../instances/core-fcp-low/**/*.ejs",
           "../../../instances/core-fcp-low/**/*.ico",
