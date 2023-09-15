@@ -46,11 +46,11 @@ import { CoreFcaDefaultAuthorizationHandler } from './handlers/authorize/core-fc
 import { CoreFcaMcpAuthorizationHandler } from './handlers/authorize/core-fca-mcp-authorization-url.handler';
 import { CoreFcaMcpVerifyHandler } from './handlers/verify/core-fca.mcp-verify.handler';
 import {
+  CoreFcaAuthorizationUrlService,
   CoreFcaMiddlewareService,
   CoreFcaVerifyService,
   OidcProviderConfigAppService,
 } from './services';
-import { CoreFcaAuthorizationUrlService } from './services';
 
 const trackingModule = TrackingModule.forRoot(CoreTrackingService);
 

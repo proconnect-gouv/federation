@@ -124,8 +124,8 @@ export class OidcClientController {
       featureHandlers: idpFeatureHandlers,
     } = await this.identityProvider.getById(idpId);
 
-    const authorizationUrl = await this.coreFcaAuthorizationUrlService.getAuthorizeUrl(
-      {
+    const authorizationUrl =
+      await this.coreFcaAuthorizationUrlService.getAuthorizeUrl({
         oidcClient: this.oidcClient,
         state,
         scope,
@@ -136,8 +136,7 @@ export class OidcClientController {
         acr_values,
         nonce,
         spId,
-      },
-    );
+      });
 
     const session: OidcClientSession = {
       idpId,

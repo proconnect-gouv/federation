@@ -4,7 +4,7 @@ import { ModuleRef } from '@nestjs/core';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger-legacy';
 
-import { IAuthorizationUrlFeatureHandlerHandleArgument } from '../interfaces/authorization-url-feature-handler.handler';
+import { IAuthorizationUrlServiceGetAuhtorizeArgument } from '../interfaces/authorization-url-feature-handler.interface';
 
 export const FCA_AUTHORIZATION_URL = 'fcaAuthorizationUrl';
 
@@ -28,9 +28,11 @@ export class CoreFcaAuthorizationUrlService {
     acr_values,
     nonce,
     spId,
-  }: IAuthorizationUrlFeatureHandlerHandleArgument) {
+  }: IAuthorizationUrlServiceGetAuhtorizeArgument) {
     const idClass = idpFeatureHandlers[FCA_AUTHORIZATION_URL];
-    const authorizationUrlhandler = FeatureHandler.get<T>(idClass, {moduleRef: this.moduleRef});
+    const authorizationUrlhandler = FeatureHandler.get<T>(idClass, {
+      moduleRef: this.moduleRef,
+    });
 
     return authorizationUrlhandler.handle({
       oidcClient,

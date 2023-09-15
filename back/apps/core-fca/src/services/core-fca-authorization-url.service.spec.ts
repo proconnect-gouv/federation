@@ -1,10 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LoggerService } from "@fc/logger-legacy";
-import { CoreFcaAuthorizationUrlService } from "./core-fca-authorization-url.service";
+import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientService } from '@fc/oidc-client';
-import { CoreFcaDefaultAuthorizationHandler, CoreFcaMcpAuthorizationHandler } from '../handlers/authorize';
-import exp = require('constants');
+
+import {
+  CoreFcaDefaultAuthorizationHandler,
+  CoreFcaMcpAuthorizationHandler,
+} from '../handlers/authorize';
+import { CoreFcaAuthorizationUrlService } from './core-fca-authorization-url.service';
 
 describe('CoreFcaAuthorizationUrlService', () => {
   let service: CoreFcaAuthorizationUrlService;
@@ -17,10 +20,10 @@ describe('CoreFcaAuthorizationUrlService', () => {
 
   const defaultHandlerMock = {
     handle: jest.fn(),
-  }
+  };
   const moncompteproHandlerMock = {
     handle: jest.fn(),
-  }
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -41,8 +44,10 @@ describe('CoreFcaAuthorizationUrlService', () => {
       .overrideProvider(CoreFcaMcpAuthorizationHandler)
       .useValue(moncompteproHandlerMock)
       .compile();
-  
-    service = module.get<CoreFcaAuthorizationUrlService>(CoreFcaAuthorizationUrlService);
+
+    service = module.get<CoreFcaAuthorizationUrlService>(
+      CoreFcaAuthorizationUrlService,
+    );
   });
 
   it('should be defined', () => {
@@ -64,12 +69,14 @@ describe('CoreFcaAuthorizationUrlService', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'acr',
         nonce: 'nonce',
-        spId: 'spId'
+        spId: 'spId',
       };
 
       const getAuthorizeUrlParams = {
-        ...handlerParams, 
-        idpFeatureHandlers: {fcaAuthorizationUrl: 'core-fca-default-authorization-url'} 
+        ...handlerParams,
+        idpFeatureHandlers: {
+          fcaAuthorizationUrl: 'core-fca-default-authorization-url',
+        },
       };
 
       const result = await service.getAuthorizeUrl(getAuthorizeUrlParams);
@@ -77,7 +84,7 @@ describe('CoreFcaAuthorizationUrlService', () => {
       // Then
       expect(defaultHandlerMock.handle).toBeCalledTimes(1);
       expect(defaultHandlerMock.handle).toBeCalledWith(handlerParams);
-      
+
       expect(result).toBe(expectedAuthorizeUrl);
     });
 
@@ -95,12 +102,14 @@ describe('CoreFcaAuthorizationUrlService', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'acr',
         nonce: 'nonce',
-        spId: 'spId'
+        spId: 'spId',
       };
 
       const getAuthorizeUrlParams = {
-        ...handlerParams, 
-        idpFeatureHandlers: {fcaAuthorizationUrl: 'core-fca-mcp-authorization-url'} 
+        ...handlerParams,
+        idpFeatureHandlers: {
+          fcaAuthorizationUrl: 'core-fca-mcp-authorization-url',
+        },
       };
 
       const result = await service.getAuthorizeUrl(getAuthorizeUrlParams);

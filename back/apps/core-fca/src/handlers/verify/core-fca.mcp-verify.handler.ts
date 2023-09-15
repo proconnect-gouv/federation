@@ -11,6 +11,8 @@ import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
 
+import { IAgentConnectOidcIdentity } from '../../interfaces';
+
 @Injectable()
 @FeatureHandler('core-fca-mcp-verify')
 export class CoreFcaMcpVerifyHandler implements IFeatureHandler {
@@ -43,7 +45,9 @@ export class CoreFcaMcpVerifyHandler implements IFeatureHandler {
     const { idpId, idpIdentity, idpAcr, spId, spAcr, amr, subs } =
       await sessionOidc.get();
 
-    if (idpIdentity.is_service_public !== true) {
+    // for mcp, we check is_service_public
+    // only is_service_public true can be verified with mcp idp
+    if ((idpIdentity as IAgentConnectOidcIdentity).is_service_public !== true) {
       throw new CoreFcaInvalidPublicnessException();
     }
 

@@ -152,7 +152,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
   private async rnippCheck(
     idpIdentity: RequiredExcept<
       IOidcIdentity,
-      'sub' | 'email' | 'preferred_username' | 'is_service_public'
+      'sub' | 'email' | 'preferred_username'
     >,
     trackingContext: any,
   ): Promise<RnippPivotIdentity> {

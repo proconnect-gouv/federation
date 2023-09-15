@@ -24,8 +24,8 @@ import { getSessionServiceMock } from '@mocks/session';
 
 import { GetOidcCallbackSessionDto, OidcIdentityDto } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
-import { OidcClientController } from './oidc-client.controller';
 import { CoreFcaAuthorizationUrlService } from '../services';
+import { OidcClientController } from './oidc-client.controller';
 
 jest.mock('querystring', () => ({
   encode: jest.fn(),
@@ -303,12 +303,12 @@ describe('OidcClient Controller', () => {
       await controller.redirectToIdp(req, res, body, sessionServiceMock);
 
       // Then
-      expect(coreFcaAuthorizationUrlServiceMock.getAuthorizeUrl).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(coreFcaAuthorizationUrlServiceMock.getAuthorizeUrl).toHaveBeenCalledWith(
-        expectedGetAuthorizeCallParameter,
-      );
+      expect(
+        coreFcaAuthorizationUrlServiceMock.getAuthorizeUrl,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        coreFcaAuthorizationUrlServiceMock.getAuthorizeUrl,
+      ).toHaveBeenCalledWith(expectedGetAuthorizeCallParameter);
     });
 
     it('should store state and nonce in session', async () => {
@@ -591,7 +591,6 @@ describe('OidcClient Controller', () => {
       });
     });
   });
-
 
   describe('getLegacyOidcCallback', () => {
     it('should extract urlPrefix from app config', async () => {

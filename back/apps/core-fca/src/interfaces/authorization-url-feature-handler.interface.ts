@@ -8,6 +8,18 @@ export interface IAuthorizationUrlFeatureHandlerHandleArgument {
   state: string;
   scope: string;
   idpId: string;
+  // acr_values is an oidc defined variable name
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  acr_values: string;
+  nonce: string;
+  spId: string;
+}
+
+export interface IAuthorizationUrlServiceGetAuhtorizeArgument {
+  oidcClient: OidcClientService;
+  state: string;
+  scope: string;
+  idpId: string;
   idpFeatureHandlers: {
     [key: string]: string;
   };
@@ -15,5 +27,5 @@ export interface IAuthorizationUrlFeatureHandlerHandleArgument {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   acr_values: string;
   nonce: string;
-  spId;
+  spId: string;
 }

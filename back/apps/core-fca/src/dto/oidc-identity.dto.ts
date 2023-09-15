@@ -1,5 +1,11 @@
 import { Expose } from 'class-transformer';
-import { IsAscii, IsOptional, MaxLength, MinLength } from 'class-validator';
+import {
+  IsAscii,
+  IsBoolean,
+  IsOptional,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 import { IsSafeString } from '@fc/common';
 
@@ -55,4 +61,10 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
   @IsOptional()
   @Expose()
   readonly 'chorusdt'?: string;
+
+  @IsBoolean()
+  @Expose()
+  // external defined variable name
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly is_service_public?: boolean;
 }
