@@ -12,9 +12,8 @@ export const SearchResultsComponent = React.memo(() => {
 
   /* istanbul ignore next */
   const isMoncompteProAvailable = () => {
-    const moncomptepro = (identityProviders: IdentityProvider[]): IdentityProvider | null => identityProviders.map(
-      idp => (idp.uid === MONCOMPTEPRO_UID) ? idp: null).filter(n => n)[0];
-
+    const moncomptepro = (identityProviders: IdentityProvider[]): IdentityProvider | undefined => identityProviders.find(
+      (idp) => idp.uid === MONCOMPTEPRO_UID);
     /* istanbul ignore next */
     return (
       moncomptepro

@@ -116,11 +116,11 @@ export class MockIdentityProviderService {
 
   /** convert specified string column in boolean with :boolean */
   private transformBoolean(database: Csv[]): CsvWithBoolean[] {
-    const COLUMNS_TO_CONVERT_INTO_BOOLEAN = ['is_service_public'];
+    const { columsToConvertIntoBoolean } = this.config.get<AppConfig>('App');
 
     database.map((entry: CsvWithBoolean) => {
       const convertIntoBoolean = (key: string) => {
-        if (COLUMNS_TO_CONVERT_INTO_BOOLEAN.indexOf(key) < 0) return entry;
+        if (columsToConvertIntoBoolean.indexOf(key) < 0) return entry;
         entry[key] = parseBoolean(entry[key])
           ? parseBoolean(entry[key])
           : false;

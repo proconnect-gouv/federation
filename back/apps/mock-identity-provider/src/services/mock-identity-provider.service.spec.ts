@@ -52,6 +52,8 @@ describe('MockIdentityProviderService', () => {
   };
 
   const citizenDatabasePathMock = '/eur';
+  const columsToConvertIntoBooleanMock = ['is_service_public'];
+
   const fastCsvOptsMock = {
     trim: true,
     ignoreEmpty: true,
@@ -140,6 +142,7 @@ describe('MockIdentityProviderService', () => {
     beforeEach(() => {
       configServiceMock.get.mockReturnValueOnce({
         citizenDatabasePath: citizenDatabasePathMock,
+        columsToConvertIntoBoolean: columsToConvertIntoBooleanMock,
       });
       jest.mocked(getFilesPathsFromDir).mockResolvedValueOnce(pathsMock);
 
@@ -193,6 +196,12 @@ describe('MockIdentityProviderService', () => {
   });
 
   describe('loadDatabase()', () => {
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValueOnce({
+        columsToConvertIntoBoolean: columsToConvertIntoBooleanMock,
+      });
+    });
+
     const csvMock = [
       { property1: '1', property2: '2', property3: '3', property4: '4' },
       { property1: '5', property2: '6', property3: '7', property4: '8' },
@@ -689,6 +698,13 @@ describe('MockIdentityProviderService', () => {
   });
 
   describe('transformBoolean', () => {
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValueOnce({
+        citizenDatabasePath: citizenDatabasePathMock,
+        columsToConvertIntoBoolean: columsToConvertIntoBooleanMock,
+      });
+    });
+
     const pathMock = 'pathMockValue';
     it('should transform string into boolean when suffixed with :boolean', async () => {
       // Given

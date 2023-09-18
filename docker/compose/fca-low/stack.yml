@@ -10,7 +10,6 @@ services:
       - "fca-low-front"
       - "fsa1-low"
       - "fia1-low"
-      - "moncomptepro"
 
   bdd-fca-low:
     image: alpine

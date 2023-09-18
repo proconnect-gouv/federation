@@ -18,4 +18,5 @@ export default {
   name: 'MOCK_IDENTITY_PROVIDER_FCA_LOW',
   urlPrefix: '',
   passwordVerification: env.boolean('PASSWORD_VERIFICATION'),
+  columsToConvertIntoBoolean: ['is_service_public'],
 } as AppConfig;
