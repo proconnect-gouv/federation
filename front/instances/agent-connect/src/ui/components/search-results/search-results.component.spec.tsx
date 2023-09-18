@@ -26,12 +26,10 @@ describe('SearchResultsComponent', () => {
 
     // when
     const { getByText } = render(<SearchResultsComponent />);
-    const title = getByText('Nous ne trouvons pas votre administration');
-    const subtext = getByText('Vous pouvez continuer en utilisant MonComptePro');
+    const noMonCompteProTtitle = getByText('Aucun fournisseur d’identité n’a été trouvé');
 
     // then
-    expect(title).toBeInTheDocument();
-    expect(subtext).toBeInTheDocument();
+    expect(noMonCompteProTtitle).toBeInTheDocument();
   });
 
   it('should have not shown no results element', () => {
