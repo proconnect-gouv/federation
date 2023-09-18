@@ -697,25 +697,37 @@ describe('MockIdentityProviderService', () => {
           property1: '1',
           property2: '2',
           property3: '',
-          'property4:boolean': 'false',
+          // external convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_service_public: 'false',
         },
         {
           property1: '',
           property2: '6',
           property3: '7',
-          'property4:boolean': 'true',
+          // external convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_service_public: 'true',
         },
         {
           property1: '',
           property2: '6',
           property3: '7',
-          'property4:boolean': 'notaboolean',
+          // external convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_service_public: 'notaboolean',
         },
       ];
       const expected = [
-        { property1: '1', property2: '2', property4: false },
-        { property2: '6', property3: '7', property4: true },
-        { property2: '6', property3: '7', property4: false },
+        // external convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { property1: '1', property2: '2', is_service_public: false },
+        // external convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { property2: '6', property3: '7', is_service_public: true },
+        // external convention
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { property2: '6', property3: '7', is_service_public: false },
       ];
       jest.mocked(parseCsv).mockResolvedValueOnce(csvWithEmptyMock);
 
@@ -733,28 +745,47 @@ describe('MockIdentityProviderService', () => {
           property1: '1',
           property2: '2',
           property3: '',
-          'property4:notaboolean': 'false',
+          // external convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_service_public_or_not: 'false',
         },
         {
           property1: '',
           property2: '6',
           property3: '7',
-          'property4:notaboolean': 'true',
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_service_public_or_not: 'true',
         },
         {
           property1: '',
           property2: '6',
           property3: '7',
-          'property4:notaboolean': 'notaboolean',
+          // external convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_service_public_or_not: 'notaboolean',
         },
       ];
       const expected = [
-        { property1: '1', property2: '2', 'property4:notaboolean': 'false' },
-        { property2: '6', property3: '7', 'property4:notaboolean': 'true' },
+        {
+          property1: '1',
+          property2: '2',
+          // external convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_service_public_or_not: 'false',
+        },
         {
           property2: '6',
           property3: '7',
-          'property4:notaboolean': 'notaboolean',
+          // external convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_service_public_or_not: 'true',
+        },
+        {
+          property2: '6',
+          property3: '7',
+          // external convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          is_service_public_or_not: 'notaboolean',
         },
       ];
       jest.mocked(parseCsv).mockResolvedValueOnce(csvWithEmptyMock);

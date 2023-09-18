@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 
 import { Injectable } from '@nestjs/common';
 
+import { parseBoolean } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
@@ -16,13 +17,17 @@ import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-e
 import { ISessionBoundContext, SessionService } from '@fc/session';
 
 import { AppConfig } from '../dto';
-import { CsvConvertorType } from '../enums';
 import { getFilesPathsFromDir, parseCsv } from '../helpers';
-import { Csv, IdentityFixture, OidcClaims } from '../interfaces';
+import {
+  Csv,
+  CsvWithBoolean,
+  IdentityFixture,
+  OidcClaims,
+} from '../interfaces';
 
 @Injectable()
 export class MockIdentityProviderService {
-  private database: Csv[];
+  private database: Csv[] | CsvWithBoolean[];
 
   // Authorized in constructors
   // eslint-disable-next-line max-params
@@ -104,34 +109,21 @@ export class MockIdentityProviderService {
 
     this.database = allFiles.flat();
 
-    //todo: here refine the database
-
     this.logger.debug(
       `Database loaded (${this.database.length} entries found)`,
     );
   }
 
   /** convert specified string column in boolean with :boolean */
-  private transformBoolean(database: Csv[]): Csv[] {
-    const findTypeRegex = /^(.*?):(.*)$/;
+  private transformBoolean(database: Csv[]): CsvWithBoolean[] {
+    const COLUMNS_TO_CONVERT_INTO_BOOLEAN = ['is_service_public'];
 
-    database.map((entry) => {
+    database.map((entry: CsvWithBoolean) => {
       const convertIntoBoolean = (key: string) => {
-        const found = key.match(findTypeRegex);
-
-        if (!found) return entry;
-
-        if (found[2] !== CsvConvertorType.BOOLEAN) {
-          return entry;
-        }
-
-        // replace the key by a new one remove ":"
-        // e.g. is_service_public:boolean -> is_service_public
-        entry[found[1]] = entry[key] === 'true';
-
-        // remove previous data with original key
-        // we don't want service_public:boolean anymore
-        delete entry[key];
+        if (COLUMNS_TO_CONVERT_INTO_BOOLEAN.indexOf(key) < 0) return entry;
+        entry[key] = parseBoolean(entry[key])
+          ? parseBoolean(entry[key])
+          : false;
       };
       Object.keys(entry).forEach(convertIntoBoolean);
     });
@@ -139,7 +131,7 @@ export class MockIdentityProviderService {
     return database;
   }
 
-  private async loadDatabase(path: string): Promise<Csv[]> {
+  private async loadDatabase(path: string): Promise<CsvWithBoolean[]> {
     try {
       this.logger.debug('Loading database...');
 
@@ -163,7 +155,7 @@ export class MockIdentityProviderService {
   }
 
   getIdentity(inputLogin: string): IdentityFixture | void {
-    const identity: Csv = this.database.find(
+    const identity: CsvWithBoolean = this.database.find(
       ({ login }) => login === inputLogin,
     );
 
@@ -184,7 +176,7 @@ export class MockIdentityProviderService {
     return password === inputPassword;
   }
 
-  private toOidcFormat(identity: Csv): OidcClaims {
+  private toOidcFormat(identity: CsvWithBoolean): OidcClaims {
     // This copy works because "Csv" type only contains strings. Beware !
     const identityCopy = {
       ...identity,
@@ -204,7 +196,7 @@ export class MockIdentityProviderService {
     return identityCopy as OidcClaims;
   }
 
-  private formatOidcAddress(identity: Csv): Partial<OidcClaims> {
+  private formatOidcAddress(identity: CsvWithBoolean): Partial<OidcClaims> {
     const oidcIdentity: Partial<OidcClaims> = _.omit(identity, [
       'country',
       'postal_code',
@@ -215,6 +207,7 @@ export class MockIdentityProviderService {
     // oidc parameter
     // eslint-disable-next-line @typescript-eslint/naming-convention
     const { country, postal_code, locality, street_address } = identity;
+
     oidcIdentity.address = {
       country: country as string,
       // oidc parameter
@@ -230,7 +223,7 @@ export class MockIdentityProviderService {
     return oidcIdentity;
   }
 
-  private oidcAddressFieldPresent(identity: Csv) {
+  private oidcAddressFieldPresent(identity: CsvWithBoolean) {
     return Boolean(
       identity.country ||
         identity.postal_code ||

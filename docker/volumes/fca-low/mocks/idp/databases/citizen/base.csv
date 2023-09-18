@@ -1,4 +1,4 @@
-login,password,uid,organizational_unit,siren,email,usual_name,given_name,belonging_population,siret,phone_number,chorusdt:societe,chorusdt:matricule,is_service_public:boolean
+login,password,uid,organizational_unit,siren,email,usual_name,given_name,belonging_population,siret,phone_number,chorusdt:societe,chorusdt:matricule,is_service_public
 test,123,1,comptabilite,343293775,test@abcd.com,DUBOIS,Angela Claire Louise,agent,34329377500037,+331-12-44-45-23,CHT,USER_AGC,true
 12354,123,2,comptabilite,343293775,test@abcd.com,Martinot,bernard,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123457,false
 12352,123,3,,343293775,test@abcd.com,Martinot,henry,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123458,true
