@@ -2,7 +2,8 @@ import React from 'react';
 
 import { IdentityProvider, useSearchResults } from '@fc/agent-connect-search';
 
-import { MONCOMPTEPRO_UID, NoResultComponent } from './no-result.component';
+import { MONCOMPTEPRO_UID } from '../../../config';
+import { NoResultComponent } from './no-result.component';
 import { SearchResultsListComponent } from './search-results-list.component';
 
 

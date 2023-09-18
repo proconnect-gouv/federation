@@ -2,7 +2,7 @@ import { LoggerService } from '@fc/logger-legacy';
 
 import { IAuthorizationUrlFeatureHandlerHandleArgument } from '../../interfaces';
 
-export abstract class CoreFcaAuthorizationUrlServiceAbstract {
+export class CoreFcaAuthorizationUrlBaseHandler {
   constructor(protected readonly logger: LoggerService) {
     this.logger.setContext(this.constructor.name);
   }

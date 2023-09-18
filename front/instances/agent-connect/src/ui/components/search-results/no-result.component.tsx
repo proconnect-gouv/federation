@@ -5,10 +5,8 @@ import { useAddToUserHistory } from '@fc/agent-connect-history';
 import { AgentConnectSearchContext } from '@fc/agent-connect-search';
 import { RedirectToIdpFormComponent } from '@fc/oidc-client';
 
+import { MONCOMPTEPRO_UID } from '../../../config';
 import styles from './search-results.module.scss';
-
-// todo: replace with prod uid
-export const MONCOMPTEPRO_UID = '54a380fd-876e-4cdc-88b5-5da9cf16f357';
 
 export interface NoResultProps {
   isMoncompteProAvailable: boolean;
