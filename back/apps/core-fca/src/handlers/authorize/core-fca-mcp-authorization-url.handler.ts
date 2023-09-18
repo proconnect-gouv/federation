@@ -47,7 +47,6 @@ export class CoreFcaMcpAuthorizationHandler
        * @ticket FC-1021
        */
       claims: '{"id_token":{"amr":{"essential":true}}}',
-      // No prompt is sent to the identity provider voluntary
     };
   }
 }

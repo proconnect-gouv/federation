@@ -114,7 +114,9 @@ export class MockIdentityProviderService {
     );
   }
 
-  /** convert specified string column in boolean with :boolean */
+  /**
+   *  Convert specified columns from string to boolean
+   */
   private transformBoolean(database: Csv[]): CsvWithBoolean[] {
     const { columsToConvertIntoBoolean } = this.config.get<AppConfig>('App');
 

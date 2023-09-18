@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // declarative file
-export const { MONCOMPTEPRO_UID='', NODE_ENV, REACT_APP_API_MOCK_DATA_FILE} = process.env;
+export const { MONCOMPTEPRO_UID = '', NODE_ENV, REACT_APP_API_MOCK_DATA_FILE } = process.env;
 export const IS_DEVELOPMENT = NODE_ENV === 'development';
 
 // REACT_APP_API_MOCK_DATA_FILE is only used for local development

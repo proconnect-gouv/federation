@@ -42,9 +42,11 @@ import {
 } from './controllers';
 import { CoreFcaSession } from './dto';
 import { CoreFcaDefaultVerifyHandler } from './handlers';
-import { CoreFcaDefaultAuthorizationHandler } from './handlers/authorize/core-fca-default-authorization-url.handler';
-import { CoreFcaMcpAuthorizationHandler } from './handlers/authorize/core-fca-mcp-authorization-url.handler';
-import { CoreFcaMcpVerifyHandler } from './handlers/verify/core-fca.mcp-verify.handler';
+import {
+  CoreFcaDefaultAuthorizationHandler,
+  CoreFcaMcpAuthorizationHandler,
+} from './handlers/authorize';
+import { CoreFcaMcpVerifyHandler } from './handlers/verify';
 import {
   CoreFcaAuthorizationUrlService,
   CoreFcaMiddlewareService,

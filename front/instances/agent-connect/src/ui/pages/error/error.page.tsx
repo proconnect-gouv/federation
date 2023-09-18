@@ -11,6 +11,10 @@ const PageTitle = () => (
   </Helmet>
 );
 
+// a temporary way to display a specific error content
+// because react app is supposed to be replace by ejs pages soon
+// if fca react app is not deleted at the end of 2023,
+// this part should be rewrite
 export const INVALID_PUBLICNESS_ERROR_CODE = 'Y000015';
 
 export const ErrorPage = React.memo(() => {

@@ -1,3 +1,6 @@
+/* istanbul ignore file */
+
+// Declarative code
 export interface Csv {
   [key: string]: string;
 }

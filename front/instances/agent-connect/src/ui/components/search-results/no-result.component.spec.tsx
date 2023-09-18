@@ -1,14 +1,12 @@
-import { render } from "@testing-library/react";
+import { render } from '@testing-library/react';
 
-import { NoResultComponent } from "./no-result.component";
+import { NoResultComponent } from './no-result.component';
 
 describe('NoResultComponent', () => {
   it('should return a message when MonComptePro is not available', () => {
     // when
     const { getByText } = render(<NoResultComponent isMoncompteProAvailable={false} />);
-    const message = getByText(
-      'Aucun fournisseur d’identité n’a été trouvé',
-    );
+    const message = getByText('Aucun fournisseur d’identité n’a été trouvé');
 
     // then
     expect(message).toBeInTheDocument();
