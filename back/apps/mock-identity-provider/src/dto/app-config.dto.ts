@@ -1,4 +1,4 @@
-import { IsArray, IsBoolean, IsString } from 'class-validator';
+import { IsArray, IsBoolean, IsOptional, IsString } from 'class-validator';
 
 import { AppConfig as AppGenericConfig } from '@fc/app';
 
@@ -13,5 +13,6 @@ export class AppConfig extends AppGenericConfig {
   passwordVerification: boolean;
 
   @IsArray()
+  @IsOptional()
   columsToConvertIntoBoolean: string[];
 }

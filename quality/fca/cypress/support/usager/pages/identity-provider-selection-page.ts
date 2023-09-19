@@ -32,6 +32,12 @@ export default class IdentityProviderSelectionPage {
   }
 
   checkIsNoResultMessageIsVisible(): void {
+    cy.contains('Aucun fournisseur d’identité n’a été trouvé').should(
+      'be.visible',
+    );
+  }
+
+  checkIsNoResultMonCompteProMessageIsVisible(): void {
     cy.contains('Nous ne trouvons pas votre administration').should(
       'be.visible',
     );
