@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // declarative file
-export const { MONCOMPTEPRO_UID = '', NODE_ENV, REACT_APP_API_MOCK_DATA_FILE } = process.env;
+export const { NODE_ENV, REACT_APP_API_MOCK_DATA_FILE } = process.env;
 export const IS_DEVELOPMENT = NODE_ENV === 'development';
 
 // REACT_APP_API_MOCK_DATA_FILE is only used for local development
@@ -13,3 +13,5 @@ export const API_DATAS_ROUTES =
 export const API_ERROR_ROUTE = '/api/v2/error';
 
 export const REDUX_PERSIST_STORAGE_KEY = 'AgentConnect::local::state';
+
+export const MONCOMPTEPRO_UID = '8fd381aa-4800-4d1d-a483-b7f0ce9a1c32';
