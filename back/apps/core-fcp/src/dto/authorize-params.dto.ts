@@ -39,7 +39,7 @@ export class AuthorizeParamsDto {
   readonly response_type: string;
 
   @IsString()
-  @MinLength(32)
+  @MinLength(22)
   readonly nonce: string;
 
   @IsString()
