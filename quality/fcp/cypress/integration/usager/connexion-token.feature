@@ -5,7 +5,8 @@ Fonctionnalité: Connexion Usager - Token
   # je souhaite que mes données de session soient accessibles tant que mon token est valide
   # afin de continuer à utiliser mes données depuis mon fournisseur de service
 
-  @fcpLow
+  # configuration de FS manquante sur integ01
+  @fcpLow @ignoreInteg01
   Scénario: FCP LOW - Token encore valide après changement d'identité (FI non disponible pour SSO)
     # Première cinématique
     Etant donné que j'utilise un compte usager "par défaut"

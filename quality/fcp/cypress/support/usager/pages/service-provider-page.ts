@@ -155,7 +155,7 @@ export default class ServiceProviderPage {
 
         // Check mandatory data
         const mandatoryData = {
-          aud: /^\w+$/,
+          aud: /^[\w-]+$/,
           exp: /^\d+/,
           iat: /^\d+/,
           iss: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,

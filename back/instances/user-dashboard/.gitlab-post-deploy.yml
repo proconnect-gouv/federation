@@ -33,7 +33,7 @@ quality-user-dashboard-release:
     - cd $CI_PROJECT_DIR/quality/fcp && yarn install --ignore-engines
     - cd $CI_PROJECT_DIR
   script:
-    # Build the nginx proxy to access /integ01/fcp-legacy.html
+    # Build the nginx proxy to access /integ01/fcp-low.html
     - docker-stack up rp-all
     - cd $CI_PROJECT_DIR/quality/fcp
     - yarn test:ud -c video=${CYPRESS_VIDEO} || RETURN_CODE=1

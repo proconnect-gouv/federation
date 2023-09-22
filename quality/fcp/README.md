@@ -142,7 +142,7 @@ yarn start:high --config-file cypress-recette.json
 "FC_ACCESS_PASS": "<FranceConnect access password for HTTP Basic Authentication>",
 ```
 
-3. Start the proxy to access `https://docker.dev-franceconnect.fr/integ01/fcp.html`
+3. Start the proxy to access `https://docker.dev-franceconnect.fr/integ01/fcp-high.html`
 
 ```shell
 docker-stack up rp-all
