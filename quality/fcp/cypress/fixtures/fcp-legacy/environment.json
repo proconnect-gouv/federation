@@ -1,6 +1,6 @@
 {
   "name": "{{TEST_ENV}}",
-  "allAppsUrl": "https://{{TEST_ENV}}.dev-franceconnect.fr/fcp-legacy.html",
+  "allAppsUrl": "https://{{TEST_ENV}}.dev-franceconnect.fr/fcp-low.html",
   "fcRootUrl": "https://fcp.{{TEST_ENV}}.dev-franceconnect.fr",
   "exploitAppId": "exploitation",
   "exploitRootUrl": "https://fc-exploitation.{{TEST_ENV}}.dev-franceconnect.fr",

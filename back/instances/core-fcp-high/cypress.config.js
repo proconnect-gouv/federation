@@ -109,7 +109,7 @@ module.exports = defineConfig({
     SP6_ID: '#fsp6-high',
     SP6_ROOT_URL: 'https://fsp6-high.docker.dev-franceconnect.fr',
     WELL_KNOWN: '/api/v2/.well-known/openid-configuration',
-    ALL_APPS_LISTED: 'https://docker.dev-franceconnect.fr/fcp.html',
+    ALL_APPS_LISTED: 'https://docker.dev-franceconnect.fr/fcp-high.html',
     EXPLOITATION: [
       {
         USER_NAME: 'jean_patoche',

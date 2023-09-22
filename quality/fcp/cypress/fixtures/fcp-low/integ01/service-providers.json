@@ -1,0 +1,49 @@
+[
+  {
+    "name": "fsp1-low",
+    "descriptions": [
+      "par défaut",
+      "public",
+      "avec un entityId",
+      "avec accès au FI par défaut (deuxième FS)"
+    ],
+    "mocked": true,
+    "url": "https://fsp1-low.integ01.fcp.fournisseur-de-service.fr",
+    "clientId": "myclientidforfsp1-low",
+    "acrValue": "eidas1",
+    "claims": [
+      "amr"
+    ],
+    "scopes": [
+      "tous les scopes"
+    ],
+    "explicitConsent": false,
+    "selectors": {
+      "fcButton": "#call-authorize-button",
+      "logoutButton": ".nav-logout"
+    },
+    "authorizeHttpMethod": "get"
+  },
+  {
+    "name": "fsp2-low",
+    "descriptions": [
+      "privé avec consentement obligatoire",
+      "avec un entityId différent",
+      "avec accès au FI par défaut (premier FS)"
+    ],
+    "mocked": true,
+    "url": "https://fsp2-low.integ01.fcp.fournisseur-de-service.fr",
+    "clientId": "myclientidforfsp2-low",
+    "acrValue": "eidas1",
+    "claims": [],
+    "scopes": [
+      "tous les scopes"
+    ],
+    "explicitConsent": true,
+    "selectors": {
+      "fcButton": "#call-authorize-button",
+      "logoutButton": ".nav-logout"
+    },
+    "authorizeHttpMethod": "get"
+  }
+]

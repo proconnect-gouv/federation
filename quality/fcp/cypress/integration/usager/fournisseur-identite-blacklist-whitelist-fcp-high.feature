@@ -1,6 +1,6 @@
 #language: fr
-@usager @fiBlacklistWhitelist @ci
-Fonctionnalité: Fournisseur Identité - Blacklist et Whitelist
+@usager @fiBlacklistWhitelist @fcpHigh @ci
+Fonctionnalité: Fournisseur Identité - Blacklist et Whitelist - fcp-high
   # En tant que fournisseur de service,
   # je veux que seuls les fournisseurs d'identité whitelistés ou non blacklistés soient disponibles
   # afin de contrôler les accès à mon service

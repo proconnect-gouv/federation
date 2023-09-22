@@ -1,6 +1,6 @@
 {
   "name": "{{TEST_ENV}}",
-  "allAppsUrl": "https://{{TEST_ENV}}.dev-franceconnect.fr/fcp.html",
+  "allAppsUrl": "https://{{TEST_ENV}}.dev-franceconnect.fr/fcp-high.html",
   "udAppId": "user-dashboard",
   "udRootUrl": "https://ud.{{TEST_ENV}}.dev-franceconnect.fr",
   "exploitAppId": "exploitation-high",

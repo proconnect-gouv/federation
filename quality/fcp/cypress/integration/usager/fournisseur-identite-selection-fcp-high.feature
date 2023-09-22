@@ -1,22 +1,11 @@
 #language: fr
-@usager @fiSelection @ci
-Fonctionnalité: Fournisseur Identité - Sélection
+@usager @fiSelection @fcpHigh @ci
+Fonctionnalité: Fournisseur Identité - Sélection - fcp-high
   # En tant qu'usager d'un fournisseur de service,
   # je veux visualiser la liste des fournisseurs d'identité disponibles
   # afin de me connecter au service
 
-  @ignoreInteg01 @fcpLow
-  Scénario:  Affichage des FI sur la mire - FI eidas1 et supérieurs disponibles pour une cinématique FS eidas1
-    Etant donné que le fournisseur de service requiert un niveau de sécurité "eidas1"
-    Et que je navigue sur la page fournisseur de service
-    Quand je clique sur le bouton FranceConnect
-    Alors je suis redirigé vers la page sélection du fournisseur d'identité
-    Et j'utilise un fournisseur d'identité avec niveau de sécurité "eidas1"
-    Et le fournisseur d'identité est actif dans la mire
-    Et j'utilise un fournisseur d'identité avec niveau de sécurité "eidas2"
-    Et le fournisseur d'identité est actif dans la mire
-
-  @ignoreInteg01 @fcpHigh
+  @ignoreInteg01
   Scénario: Affichage des FI sur la mire - FI eidas2/eidas3 disponibles pour une cinématique FS eidas2
     Etant donné que le fournisseur de service requiert un niveau de sécurité "eidas2"
     Et que je navigue sur la page fournisseur de service
@@ -35,7 +24,7 @@ Fonctionnalité: Fournisseur Identité - Sélection
     Et j'utilise un fournisseur d'identité avec niveau de sécurité "eidas3", chiffrement "ECDH-ES,A256GCM" et signature "ES256"
     Et le fournisseur d'identité est actif dans la mire
 
-  @ignoreInteg01 @fcpHigh
+  @ignoreInteg01
   Scénario:  Affichage des FI sur la mire - FI eidas2 indisponibles pour une cinématique FS eidas3
     Etant donné que le fournisseur de service requiert un niveau de sécurité "eidas3"
     Et que je navigue sur la page fournisseur de service

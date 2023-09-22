@@ -1,5 +1,5 @@
 #language: fr
-@usager @fcpLow @connexionSSO @ci @ignoreInteg01
+@usager @fcpLow @connexionSSO @ci
 Fonctionnalité: Connexion Usager - SSO
   # En tant qu'agent,
   # je souhaite bénéficier d'une authentification unique sur FranceConnect
@@ -19,6 +19,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et je continue sur le fournisseur de service
     Et je suis connecté au fournisseur de service
 
+  @ignoreInteg01
   Scénario: Connexion SSO - deuxième FS sans accès au FI
     Etant donné que j'utilise un fournisseur de service "avec accès exclusif à un FI"
     Et que j'utilise le fournisseur d'identité "disponible que pour un FS"
@@ -32,6 +33,7 @@ Fonctionnalité: Connexion Usager - SSO
     Alors je suis redirigé vers la page sélection du fournisseur d'identité
     Et le fournisseur d'identité est désactivé dans la liste
 
+  @ignoreInteg01
   Scénario: Connexion SSO - deuxième FS utilise un autre FI
     Etant donné que j'utilise un fournisseur de service "avec accès exclusif à un FI"
     Et que j'utilise le fournisseur d'identité "disponible que pour un FS"
@@ -51,6 +53,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et je continue sur le fournisseur de service
     Et je suis connecté au fournisseur de service
 
+  @ignoreInteg01
   Scénario: Connexion SSO - troisième FS utilise SSO après une cinématique non terminée (arrêt MIRE)
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise le fournisseur d'identité "par défaut"
@@ -69,6 +72,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et je continue sur le fournisseur de service
     Et je suis connecté au fournisseur de service
 
+  @ignoreInteg01
   Scénario: Connexion SSO - troisième FS utilise SSO après une cinématique non terminée (arrêt page consentement)
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise le fournisseur d'identité "par défaut"
@@ -111,6 +115,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et je navigue sur la page fournisseur de service
     Et je suis connecté au fournisseur de service
 
+  @ignoreInteg01
   Scénario: Connexion SSO - deux FS avec accès au même FI ayant chacun son propre sub
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise le fournisseur d'identité "par défaut"

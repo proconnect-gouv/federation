@@ -1,0 +1,7 @@
+{
+  "name": "integ01",
+  "allAppsUrl": "https://docker.dev-franceconnect.fr/integ01/fcp-low.html",
+  "exploitAppId": "exploitation-low",
+  "exploitRootUrl": "https://fc-exploitation.integ01.dev-franceconnect.fr",
+  "fcRootUrl": "https://fcp-low.integ01.dev-franceconnect.fr"
+}
