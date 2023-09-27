@@ -24,6 +24,9 @@ const blackout = [
     selector: '[data-testid="updateidpsettings-date"]',
     width: 275,
   },
+  {
+    selector: '[data-testid="connection-notification-message"]',
+  },
 ];
 const blackoutDiv = (width) => {
   const style = width ? ` style="width: ${width}px"` : '';
