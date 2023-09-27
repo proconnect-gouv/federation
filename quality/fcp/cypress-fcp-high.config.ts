@@ -32,6 +32,11 @@ export default defineConfig({
     EXPLOIT_USER_TOTP: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD',
     FC_ACCESS_USER: '',
     FC_ACCESS_PASS: '',
+    // Maildev
+    MAILDEV_PROTOCOL: 'https',
+    MAILDEV_HOST: 'maildev.docker.dev-franceconnect.fr',
+    MAILDEV_SMTP_PORT: '1025',
+    MAILDEV_API_PORT: '443',
     // Other Configuration
     LOG_FILE_PATH: '../../docker/volumes/log/core-fcp-high.log',
     ES256_SIG_PUB_KEY:

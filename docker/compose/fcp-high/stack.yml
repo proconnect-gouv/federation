@@ -38,6 +38,8 @@ services:
       - "fip18-high"
       - "fip19-high"
       - "fip20-high"
+      # -- Mailer
+      - "maildev"
 
   exploit-fcp-high:
     image: alpine
