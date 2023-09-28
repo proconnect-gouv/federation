@@ -36,4 +36,13 @@ export default class IdentityProviderSelectionPage {
       'be.visible',
     );
   }
+
+  checkIsNoResultMonCompteProMessageIsVisible(): void {
+    cy.contains('Nous ne trouvons pas votre administration').should(
+      'be.visible',
+    );
+    cy.contains('Vous pouvez continuer en utilisant MonComptePro').should(
+      'be.visible',
+    );
+  }
 }

@@ -54,6 +54,11 @@ Then(
   },
 );
 
+Then('moncomptepro est retourné', function () {
+  identityProviderSelectionPage.checkIsNoResultMonCompteProMessageIsVisible();
+  identityProviderSelectionPage.getIdentityProviders().should('not.exist');
+});
+
 Then("aucun fournisseur d'identité n'est trouvé", function () {
   identityProviderSelectionPage.checkIsNoResultMessageIsVisible();
   identityProviderSelectionPage.getIdentityProviders().should('not.exist');

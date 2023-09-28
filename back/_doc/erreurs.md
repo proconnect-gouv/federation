@@ -16,6 +16,7 @@
 | [Y000013](../apps/core-fcp/src/exceptions/core-fcp-invalid-access-token-from-data-provider.exception.ts "CoreFcpInvalidAccessTokenFromDataProvider") | 404 | The access token is invalid or expired | Impossible pour le core de joindre le JWKS du fournisseur de données | 
 | [Y000013](../apps/core-fcp/src/exceptions/core-fcp-invalid-check-token-request.exception.ts "InvalidChecktokenRequestException") | 400 | Required parameter missing or invalid. | La requête reçue pour vérifier le token n&#39;est pas valide. Des paramètres obligatoires sont manquants ou au mauvais format. | 
 | [Y000014](../apps/core-fcp/src/exceptions/core-fcp-fetch-access-token-from-redis-failed.exception.ts "CoreFcpFetchAccessTokenFromRedisFailed") | 500 | The authorization server encountered an unexpected condition that prevented it from fulfilling the request. | La requête redis pour récupérer le TTL du token a échoué | 
+| [Y000015](../apps/core-fca/src/exceptions/core-fca-agent-not-from-public-service.exception.ts "CoreFcaAgentNotFromPublicServiceException") | 400 | Seuls les agents de la fonction publique sont autorisés à se connecter via AgentConnect. | L&#39;utilisateur renseigné n&#39;est pas reconnu comme dépendant du service public | 
 | [Y000050](../apps/core-fcp/src/exceptions/core-fcp-missing-at-hash.exception.ts "CoreFcpMissingAtHashException") | 400 | Missing at_hash claim in id_token_hint | Le claim at_hash n&#39;a pas été trouvé dans l&#39;id_token_hint lors du logout | 
 
 | Code d'erreur | Code HTTP | Message utilisateur | Description |

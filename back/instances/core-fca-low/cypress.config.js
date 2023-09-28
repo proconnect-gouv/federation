@@ -10,8 +10,8 @@ module.exports = defineConfig({
     setupNodeEvents(on, config) {
       return pluginConfig(on, config);
     },
-    specPattern: 'cypress/integration/**/*.js',
-    excludeSpecPattern: 'cypress/integration/**/*.utils.js',
+    specPattern: 'cypress/integration/**/*.spec.js',
+    excludeSpecPattern: '',
     supportFile: 'cypress/support/index.js',
     video: false,
   },
