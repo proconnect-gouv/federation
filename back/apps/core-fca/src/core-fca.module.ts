@@ -43,6 +43,12 @@ import {
 import { CoreFcaSession } from './dto';
 import { CoreFcaDefaultVerifyHandler } from './handlers';
 import {
+  CoreFcaDefaultAuthorizationHandler,
+  CoreFcaMcpAuthorizationHandler,
+} from './handlers/authorize';
+import { CoreFcaMcpVerifyHandler } from './handlers/verify';
+import {
+  CoreFcaAuthorizationUrlService,
   CoreFcaMiddlewareService,
   CoreFcaVerifyService,
   OidcProviderConfigAppService,
@@ -98,6 +104,10 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     CoreFcaDefaultVerifyHandler,
     CoreFcaVerifyService,
     OidcProviderGrantService,
+    CoreFcaAuthorizationUrlService,
+    CoreFcaMcpVerifyHandler,
+    CoreFcaDefaultAuthorizationHandler,
+    CoreFcaMcpAuthorizationHandler,
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [
