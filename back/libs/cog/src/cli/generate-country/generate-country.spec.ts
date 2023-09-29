@@ -1,12 +1,7 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
-import {
-  createCSV,
-  getCwdForDirectory,
-  getParameterValue,
-  readCSV,
-} from '../helpers';
+import { createCSV, getCwdForDirectory, readCSV } from '../helpers';
 import { GenerateCountry } from './generate-country';
 
 jest.mock('path');
@@ -58,7 +53,6 @@ describe('GenerateCountry', () => {
 
   describe('run()', () => {
     const searchInCSVFilesMock = Symbol('csvFile') as any;
-    const getParameterValueMock = jest.mocked(getParameterValue);
 
     beforeEach(() => {
       jest
@@ -77,9 +71,6 @@ describe('GenerateCountry', () => {
     });
 
     it('should call searchInCSVFiles with the correct arguments when CSV file provided', async () => {
-      // Given
-      getParameterValueMock.mockReturnValueOnce('file1.csv');
-
       // When
       await GenerateCountry.run(['file1.csv']);
 

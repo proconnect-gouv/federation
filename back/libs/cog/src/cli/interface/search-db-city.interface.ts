@@ -1,10 +1,9 @@
 /* istanbul ignore file */
 
 // Declaration only
-export interface InseeDbCityInterface {
+export interface SearchDbCityInterface {
   cog: string;
   name: string;
-  arr: string;
   abr: string;
   cp: string;
   specificPlace: string;
