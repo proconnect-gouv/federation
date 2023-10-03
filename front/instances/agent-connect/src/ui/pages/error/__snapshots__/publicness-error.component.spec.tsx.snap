@@ -16,7 +16,7 @@ exports[`PublicnessErrorComponent should match the snapshot for a desktop viewpo
       <p
         class="fr-mb-4w"
       >
-        Ce service est réservé aux agents de la de Fonction Publique d'État et d'opérateurs de l'État.
+        Ce service est réservé aux agents de la Fonction Publique.
       </p>
       <p
         class="fr-mb-4w"
@@ -44,7 +44,7 @@ exports[`PublicnessErrorComponent should match the snapshot for a tablet viewpor
       <p
         class="fr-mb-4w"
       >
-        Ce service est réservé aux agents de la de Fonction Publique d'État et d'opérateurs de l'État.
+        Ce service est réservé aux agents de la Fonction Publique.
       </p>
       <p
         class="fr-mb-4w"

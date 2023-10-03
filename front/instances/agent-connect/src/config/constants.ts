@@ -15,6 +15,4 @@ export const API_ERROR_ROUTE = '/api/v2/error';
 export const REDUX_PERSIST_STORAGE_KEY = 'AgentConnect::local::state';
 
 // MONCOMPTEPRO_UID
-export const MONCOMPTEPRO_UID =
-  (IS_DEVELOPMENT && '8fd381aa-4800-4d1d-a483-b7f0ce9a1c32') ||
-  '71144ab3-ee1a-4401-b7b3-79b44f7daeeb';
+export const MONCOMPTEPRO_UID = '71144ab3-ee1a-4401-b7b3-79b44f7daeeb';

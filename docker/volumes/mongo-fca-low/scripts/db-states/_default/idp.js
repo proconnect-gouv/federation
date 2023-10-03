@@ -402,7 +402,7 @@ const fia = {
 
   // -- FIA - MonComptePro - Activated
   "MONCOMPTEPRO": {
-    uid: "8fd381aa-4800-4d1d-a483-b7f0ce9a1c32",
+    uid: "71144ab3-ee1a-4401-b7b3-79b44f7daeeb",
     name: "moncomptepro",
     active: true,
     display: true,
