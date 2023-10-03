@@ -6,7 +6,7 @@ Fonctionnalité: Connexion avec chiffrement
   # afin d'accéder à mon service
 
   @ignoreInteg01
-  Plan du Scénario: Connexion d'un usager - FCP low - FI eidas1 avec signature <signature>
+  Plan du Scénario: Connexion d'un usager - FCP low - FI eidas1 avec signature userinfo "<signature>"
     Etant donné que j'utilise le fournisseur de service "par défaut"
     Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
     Et que le fournisseur de service requiert un niveau de sécurité "eidas1"
@@ -28,5 +28,27 @@ Fonctionnalité: Connexion avec chiffrement
       | signature |
       | ES256     |
       | HS256     |
-# Supporté par FCP-LOW mais pas par core-legacy
-#     | RS256     |
+      |           |
+  # Aucun FI configuré actuellement avec cette configuration de signature
+  #   | RS256     |
+
+  @ignoreInteg01
+  Plan du Scénario: Connexion d'un usager - FCP low - FI eidas1 avec une mauvaise signature userinfo
+    Etant donné que j'utilise le fournisseur de service "par défaut"
+    Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
+    Et que le fournisseur de service requiert un niveau de sécurité "eidas1"
+    Et que j'utilise un fournisseur d'identité avec niveau de sécurité "eidas1" et signature "<signature>"
+    Et que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton FranceConnect
+    Et que je suis redirigé vers la page sélection du fournisseur d'identité
+    Et que je clique sur le fournisseur d'identité
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Quand je m'authentifie avec succès
+    Alors je suis redirigé vers la page erreur technique FranceConnect
+    Et le code d'erreur FranceConnect est "Y020027"
+    Et le message d'erreur FranceConnect est "Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter."
+
+    Exemples:
+      | signature    |
+      | mauvaise     |
+      | no-signature |
