@@ -81,7 +81,9 @@
 | OidcProvider_PREFIX | string |
 | OverrideOidcProvider_CRYPTO_SIG_HSM_PUB_KEYS | json |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
@@ -137,7 +139,9 @@
 | OidcProvider_PREFIX | string |
 | OverrideOidcProvider_CRYPTO_SIG_HSM_PUB_KEYS | json |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_NAME | string |
 | Redis_PASSWORD | string |
@@ -199,7 +203,9 @@
 | OidcProvider_USE_ENCRYPTION | string |
 | OverrideOidcProvider_CRYPTO_SIG_HSM_PUB_KEYS | json |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_NAME | string |
 | Redis_PASSWORD | string |
@@ -372,7 +378,9 @@
 | OidcProvider_PREFIX | string |
 | OverrideOidcProvider_CRYPTO_SIG_HSM_PUB_KEYS | json |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
@@ -537,7 +545,9 @@
 | OidcProvider_PREFIX | string |
 | OidcProvider_USE_ENCRYPTION | boolean |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
@@ -578,7 +588,9 @@
 | OidcProvider_PREFIX | string |
 | OidcProvider_USE_ENCRYPTION | boolean |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
@@ -619,7 +631,9 @@
 | OidcProvider_PREFIX | string |
 | OidcProvider_USE_ENCRYPTION | boolean |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
@@ -690,7 +704,9 @@
 | OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
@@ -738,7 +754,9 @@
 | OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
@@ -784,7 +802,9 @@
 | OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
@@ -808,7 +828,9 @@
 | Postgres_PORT | number |
 | Postgres_TYPE | string |
 | Postgres_USER | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
@@ -832,7 +854,9 @@
 | Postgres_PORT | number |
 | Postgres_TYPE | string |
 | Postgres_USER | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_PASSWORD | string |
 | Redis_PORT | number |
@@ -892,7 +916,9 @@
 | OidcClient_HTTPS_CLIENT_KEY | file |
 | OidcClient_JWKS | json |
 | REQUEST_TIMEOUT | string |
+| Redis_CACERT | file |
 | Redis_DB | number |
+| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
 | Redis_HOST | string |
 | Redis_NAME | string |
 | Redis_PASSWORD | string |
