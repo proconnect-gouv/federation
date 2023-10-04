@@ -234,3 +234,5 @@ $RECYCLE.BIN/
 _tmp/
 *.tar.gz
 instances/*
+apps/tmp
+apps/temp
