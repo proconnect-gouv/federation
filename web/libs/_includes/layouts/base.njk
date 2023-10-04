@@ -3,13 +3,14 @@
   {% include "templates/head.njk" %}
 
   <body id="top">
-    {% include "templates/header.njk" %}
-
-    <main id="content">{{ content | safe }}</main>
-
-    {% include "templates/footer.njk" %}
+    <div class="sticky-body">
+      <div class="sticky-content">
+        {% include "templates/header.njk" %}
+        <main id="content">{{ content | safe }}</main>
+      </div>
+      {% include "templates/footer.njk" %}
+    </div>
     {% include "templates/display.njk" %}
-
     <!-- Script en version es6 module et nomodule pour les navigateurs le ne supportant pas -->
     <script type="module" src="/js/dsfr.module.min.js"></script>
     <script
