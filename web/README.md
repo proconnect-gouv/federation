@@ -12,6 +12,8 @@
     - [Add a page to the navigation bar](#add-a-page-to-the-navigation-bar)
     - [Use a specific layout for a page](#use-a-specific-layout-for-a-page)
     - [Define a page title/description](#define-a-page-titledescription)
+  - [Start your application into dev mode](#start-your-application-into-dev-mode)
+  - [Build your application for production](#build-your-application-for-production-1)
   - [Issues \& Fixes](#issues--fixes)
 
 ### Documentations
@@ -118,6 +120,20 @@ Into the `./apps/[app_name]/content/[my_page].md`, use the template header to de
 title: My Website Homepage
 description: Lorem ipsum dolor sit amet...
 ---
+```
+
+## Start your application into dev mode
+
+```bash
+cd $FC_ROOT/fc/web
+yarn start:[app_name]
+```
+
+## Build your application for production
+
+```bash
+cd $FC_ROOT/fc/web
+yarn build:[app_name]
 ```
 
 ## Issues & Fixes

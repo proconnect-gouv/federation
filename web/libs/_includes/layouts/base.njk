@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="{{ metadata.language }}" data-fr-scheme="system" dir="ltr">
-  {% include "templates/head.njk" %}
+  <head>
+    {% include "templates/head.njk" %}
+  </head>
 
   <body id="top">
     <div class="sticky-body">
@@ -11,6 +13,7 @@
       {% include "templates/footer.njk" %}
     </div>
     {% include "templates/display.njk" %}
+    {% js "body" %}
     <!-- Script en version es6 module et nomodule pour les navigateurs le ne supportant pas -->
     <script type="module" src="/js/dsfr.module.min.js"></script>
     <script
@@ -18,5 +21,8 @@
       nomodule
       src="/js/dsfr.nomodule.min.js"
     ></script>
+    {% endjs %}
+    {% getBundle "js",
+    "body" %}
   </body>
 </html>

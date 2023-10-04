@@ -236,3 +236,4 @@ _tmp/
 instances/*
 apps/tmp
 apps/temp
+package-lock.json
