@@ -12,9 +12,11 @@
     "@11ty/eleventy-navigation": "^0.3.5",
     "@11ty/eleventy-plugin-bundle": "^1.0.3",
     "@gouvfr/dsfr": "^1.9.3",
+    "@kevingimbel/eleventy-plugin-mermaid": "^2.1.0",
     "markdown-it-anchor": "^8.6.6",
     "markdown-it-attrs": "^4.1.6",
-    "markdown-it-container": "^3.0.0"
+    "markdown-it-container": "^3.0.0",
+    "mermaid": "^10.2.4"
   },
   "scripts": {
     "build": "eleventy"
