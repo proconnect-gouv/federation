@@ -195,6 +195,8 @@
 | [Y430001](../libs/data-provider-adapter-core/src/exceptions/checktoken-timeout.exception.ts "ChecktokenTimeoutException") | 408 | The authorization server is currently unable to handle the request. | Un problème est survenu lors de l&#39;appel au checktoken, le core est injoignable | 
 | [Y430002](../libs/data-provider-adapter-core/src/exceptions/checktoken-http-status.exception.ts "ChecktokenHttpStatusException") | 500 | The authorization server encountered an unexpected condition that prevented it from fulfilling the request. | Impossible de joindre le core. L&#39;utilisateur doit redémarrer sa cinématique. Si cela persiste, contacter le support N3 | 
 | [Y430003](../libs/data-provider-adapter-core/src/exceptions/jwks-fetch-failed.exception.ts "JwksFetchFailedException") | 500 | Can not fetch jwks | Impossible pour le fournisseur de données de joindre le JWKS du core | 
+| [Y430004](../libs/data-provider-adapter-core/src/exceptions/checktoken-invalid-algorithm.exception.ts "ChecktokenInvalidAlgorithmException") | 500 | The encryption algorithm for the configured checktoken does not match the one received. | Un problème est survenu lors de l&#39;appel au checktoken | 
+| [Y430005](../libs/data-provider-adapter-core/src/exceptions/checktoken-invalid-encoding.exception.ts "ChecktokenInvalidEncodingException") | 500 | The encryption encoding for the configured checktoken does not match the one received. | Un problème est survenu lors de l&#39;appel au checktoken, le core est injoignable | 
 
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|
