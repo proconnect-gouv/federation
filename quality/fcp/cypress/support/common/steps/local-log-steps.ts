@@ -1,6 +1,7 @@
 import { Then, When } from 'cypress-cucumber-preprocessor/steps';
 
 import {
+  getAllBusinessLogs,
   getBusinessLogs,
   getValueByKeyFromFirstEvent,
   hasBusinessLog,
@@ -143,6 +144,60 @@ Then(
     const logResult =
       text === 'est' ? LogResult.EventFound : LogResult.EventNotFound;
     hasBusinessLog(expectedEvent, logResult, logPath);
+  },
+);
+
+/**
+ * Used to check the order of events, the presence of all events
+ * and the presence of all expected keys in the logs.
+ */
+Then(
+  /^la cohérence des événements de la cinématique FS "(européen|français)" est respectée$/,
+  function (spSource) {
+    const logPath = Cypress.env('EIDAS_LOG_FILE_PATH');
+    const { name } = this.env;
+    if (name !== 'docker') {
+      cy.log(
+        'aucune validation des événements dans les logs possible en dehors de la stack locale',
+      );
+      return;
+    }
+
+    let expectedEvents;
+
+    switch (spSource) {
+      case 'européen':
+        expectedEvents = Cypress.env('FLOW_CONSISTENCY_FR_EU');
+        break;
+      case 'français':
+        expectedEvents = Cypress.env('FLOW_CONSISTENCY_EU_FR');
+        break;
+      default:
+        expect(spSource).to.be.oneOf(['européen', 'français']);
+    }
+
+    expect(expectedEvents).not.to.be.undefined;
+
+    getAllBusinessLogs(logPath).then((logs) => {
+      // Need te re-reverse the logs to have them in the right order (most recent last)
+      const orderedLogs = logs.reverse();
+
+      expectedEvents.forEach(
+        ({ event: expectedEvent, keys: expectedKeys }, index) => {
+          const currentEvent = orderedLogs[index]?.event;
+          const currentKeys = Object.keys(orderedLogs[index]);
+
+          expect(currentEvent).to.equal(
+            expectedEvent,
+            `l'événement ${expectedEvent} n'est pas cohérent. Log: ${currentEvent} / Référence: ${expectedEvent}. Quelque chose à cassé la cinématique et / ou les variables d'env FLOW_CONSISTENCY_* ne sont pas à jour.`,
+          );
+          expect(currentKeys).to.deep.equal(
+            expectedKeys,
+            `les clés de l'événement ${expectedEvent} ne sont pas cohérentes. Log: ${currentKeys} / Référence: ${expectedKeys}. Quelque chose à cassé la cinématique et / ou les variables d'env FLOW_CONSISTENCY_* ne sont pas à jour.`,
+          );
+        },
+      );
+    });
   },
 );
 

@@ -11,6 +11,7 @@ import { getFixturePath } from './fixture-plugin';
 import { isJwsValid } from './is-jws-valid.plugin';
 import {
   clearBusinessLog,
+  getAllBusinessLogs,
   getBusinessLogs,
   hasBusinessLog,
 } from './log-plugin';
@@ -31,6 +32,7 @@ const pluginConfig = (
 
   on('task', {
     clearBusinessLog,
+    getAllBusinessLogs,
     getBusinessLogs,
     getFixturePath,
     hasBusinessLog,

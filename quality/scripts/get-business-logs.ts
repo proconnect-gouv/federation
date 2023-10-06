@@ -35,8 +35,14 @@ const loadLog = async (path: string): Promise<LogEvent[]> => {
 const getBusinessLogs = async ([logFile, stringifiedTestEvent]: string[]): Promise<void> => {
   try {
     const logs: LogEvent[] = await loadLog(logFile);
-    const testEvent: LogEvent = JSON.parse(stringifiedTestEvent);
+  
+    if (!stringifiedTestEvent) {
+      // eslint-disable-next-line no-console
+      console.log(JSON.stringify(logs));
+      process.exit(0);
+    }
 
+    const testEvent: LogEvent = JSON.parse(stringifiedTestEvent);
     const foundEvents: LogEvent[] = logs.filter((log) => log.event === testEvent.event);
 
     // eslint-disable-next-line no-console
