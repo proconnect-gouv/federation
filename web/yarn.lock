@@ -183,6 +183,31 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
+"@pagefind/darwin-arm64@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@pagefind/darwin-arm64/-/darwin-arm64-1.0.3.tgz#5377ff2c3fca97125d0624da019b52cc2375edb9"
+  integrity sha512-vsHDtvao3W4iFCxVc4S0BVhpj3E2MAoIVM7RmuQfGp1Ng22nGLRaMP6FguLO8TMabRJdvp4SVr227hL4WGKOHA==
+
+"@pagefind/darwin-x64@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@pagefind/darwin-x64/-/darwin-x64-1.0.3.tgz#c4bae6522e3bac09a9f58f48f89356dca931f5ca"
+  integrity sha512-NhEXHHYmB/hT6lx5rCcmnVTxH+uIkMAd43bzEqMwHQosqTZEIQfwihmV39H+m8yo7jFvz3zRbJNzhAh7G4PiwA==
+
+"@pagefind/linux-arm64@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@pagefind/linux-arm64/-/linux-arm64-1.0.3.tgz#ada5ec030c7286f956d506aebe1e1e53ea826966"
+  integrity sha512-RGsMt4AmGT8WxCSeP09arU7Za6Vf/We4TWHVSbY7vDMuwWql9Ngoib/q1cP9dIAIMdkXh9ePG/S3mGnJYsdzuQ==
+
+"@pagefind/linux-x64@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@pagefind/linux-x64/-/linux-x64-1.0.3.tgz#4f658bac9ce5e9fb22e0a4350ff933e621c6b916"
+  integrity sha512-o+VCKaqImL42scSH1n5gUfppYSNyu3BuGTvtKKgWHmycbL+A3fkFH+ZOFbaLeN7LVTvJqJIOYbk4j2yaq9784Q==
+
+"@pagefind/windows-x64@1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@pagefind/windows-x64/-/windows-x64-1.0.3.tgz#686c46cb274e087362d0a8d6ff03e89a10ee508e"
+  integrity sha512-S+Yq4FyvXJm4F+iN/wRiLvEEF8Xs9lTKGtQGaRHXJslQyl65dytDDPIULXJXIadrDbnMrnTt4C2YHmEUIyUIHg==
+
 "@sindresorhus/slugify@^1.1.2":
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/@sindresorhus/slugify/-/slugify-1.1.2.tgz#c2c0129298b8caace2d9156176fe244d0e83156c"
@@ -1997,6 +2022,17 @@ p-timeout@^3.2.0:
   integrity sha512-rhIwUycgwwKcP9yTOOFK/AKsAopjjCakVqLHePO3CC6Mir1Z99xT+R63jZxAT5lFZLa2inS5h+ZS2GvR99/FBg==
   dependencies:
     p-finally "^1.0.0"
+
+pagefind@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/pagefind/-/pagefind-1.0.3.tgz#1ce2118408d42fbd303e8b567ed3fff134895138"
+  integrity sha512-ws7kmMxW6OuxzsOjj3YAx6TYq/54MiE3wfyBM3J5CInbZyBBvM2Z8c8IYvnMkBcb5v2EoB9DewXEekOEiDRu5g==
+  optionalDependencies:
+    "@pagefind/darwin-arm64" "1.0.3"
+    "@pagefind/darwin-x64" "1.0.3"
+    "@pagefind/linux-arm64" "1.0.3"
+    "@pagefind/linux-x64" "1.0.3"
+    "@pagefind/windows-x64" "1.0.3"
 
 parse-srcset@^1.0.2:
   version "1.0.2"

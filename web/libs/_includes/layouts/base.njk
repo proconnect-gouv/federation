@@ -14,7 +14,10 @@
     </div>
     {% include "templates/display.njk" %}
     {% js "body" %}
-    <!-- Script en version es6 module et nomodule pour les navigateurs le ne supportant pas -->
+    <script>
+      const SEARCH_RESULTS_URL = "{{ '/search-results/' | htmlBaseUrl }}";
+    </script>
+    <script type="text/javascript" src="/js/search.js"></script>
     <script type="module" src="/js/dsfr.module.min.js"></script>
     <script
       type="text/javascript"
