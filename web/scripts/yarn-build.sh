@@ -12,7 +12,7 @@ APP_NAME=$1
 
 INSTANCE_FOLDER="./instances/$APP_NAME"
 
-$(
+(
   # Cleanup existing application
   [ -d "$INSTANCE_FOLDER" ] && rm -rf "$INSTANCE_FOLDER"
   setup "$APP_NAME"
