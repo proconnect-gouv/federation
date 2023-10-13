@@ -58,7 +58,7 @@ Fonctionnalité: Historique Connexion sur FC Legacy (docker)
     Et les données "DGFIP" de l'évènement contiennent "Détail des personnes à charge et rattachées"
     Et les données "DGFIP" de l'évènement contiennent "Adresse déclarée au 1er Janvier"
     Et l'évènement concerne 1 donnée "CNAM"
-    Et les données "CNAM" de l'évènement contiennent "Paiements d'indemnités journalières versés par l’Assurance Maladie"
+    Et les données "CNAM" de l'évènement contiennent "Paiements d'indemnités journalières versées par l'Assurance Maladie"
 
   Scénario: Historique Connexion - FC Legacy - FS public avec scope traces
     Etant donné que j'utilise un compte usager "pour les tests de traces"
@@ -153,7 +153,7 @@ Fonctionnalité: Historique Connexion sur FC Legacy (docker)
     Et les données "DGFIP" de l'évènement contiennent "Détail des personnes à charge et rattachées"
     Et les données "DGFIP" de l'évènement contiennent "Adresse déclarée au 1er Janvier"
     Et l'évènement concerne 1 donnée "CNAM"
-    Et les données "CNAM" de l'évènement contiennent "Paiements d'indemnités journalières versés par l’Assurance Maladie"
+    Et les données "CNAM" de l'évènement contiennent "Paiements d'indemnités journalières versées par l'Assurance Maladie"
     Et j'affiche le détail du dernier évènement "Échange de Données" sur "FranceConnect" du fournisseur de service "Virtual Private Service Provider for Consent"
     Et la plateforme de l'évènement est "FranceConnect"
     Et le type d'action de l'évènement est "Échange de Données"
@@ -168,7 +168,7 @@ Fonctionnalité: Historique Connexion sur FC Legacy (docker)
     Et les données "DGFIP" de l'évènement contiennent "Détail des personnes à charge et rattachées"
     Et les données "DGFIP" de l'évènement contiennent "Adresse déclarée au 1er Janvier"
     Et l'évènement concerne 1 donnée "CNAM"
-    Et les données "CNAM" de l'évènement contiennent "Paiements d'indemnités journalières versés par l’Assurance Maladie"
+    Et les données "CNAM" de l'évènement contiennent "Paiements d'indemnités journalières versées par l'Assurance Maladie"
 
   Scénario: Historique Connexion - FC Legacy - FS privé avec scope data pour chaque FD
     Etant donné que j'utilise un compte usager "pour les tests de traces"
@@ -200,7 +200,7 @@ Fonctionnalité: Historique Connexion sur FC Legacy (docker)
     Et l'évènement concerne 1 donnée "DGFIP"
     Et les données "DGFIP" de l'évènement contiennent "Revenu fiscal de référence"
     Et l'évènement concerne 1 donnée "CNAM"
-    Et les données "CNAM" de l'évènement contiennent "Paiements d'indemnités journalières versés par l’Assurance Maladie"
+    Et les données "CNAM" de l'évènement contiennent "Paiements d'indemnités journalières versées par l'Assurance Maladie"
     Et l'évènement concerne 1 donnée "MI"
     Et les données "MI" de l'évènement contiennent "Informations de la carte grise: Titulaire et véhicule"
     Et l'évènement concerne 1 donnée "MESRI"
@@ -231,7 +231,7 @@ Fonctionnalité: Historique Connexion sur FC Legacy (docker)
     Et l'évènement concerne 1 donnée "DGFIP"
     Et les données "DGFIP" de l'évènement contiennent "Revenu fiscal de référence"
     Et l'évènement concerne 1 donnée "CNAM"
-    Et les données "CNAM" de l'évènement contiennent "Paiements d'indemnités journalières versés par l’Assurance Maladie"
+    Et les données "CNAM" de l'évènement contiennent "Paiements d'indemnités journalières versées par l'Assurance Maladie"
     Et l'évènement concerne 1 donnée "MI"
     Et les données "MI" de l'évènement contiennent "Informations de la carte grise: Titulaire et véhicule"
     Et l'évènement concerne 1 donnée "MESRI"

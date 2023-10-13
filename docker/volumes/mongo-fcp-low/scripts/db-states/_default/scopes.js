@@ -661,7 +661,7 @@ db.scopes.update(
     scope: "cnam_paiements_ij",
     fd: "CNAM",
     label:
-      "Paiements d'indemnités journalières versés par l'Assurance Maladie (Caisse nationale de l'assurance maladie)",
+      "Paiements d'indemnités journalières versées par l'Assurance Maladie (Caisse nationale de l'assurance maladie)",
     __v: 0,
   },
   { upsert: true },
