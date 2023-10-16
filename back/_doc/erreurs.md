@@ -152,6 +152,7 @@
 | [Y280004](../apps/csmr-tracks/src/exceptions/csmr-tracks-unknown-action.exception.ts "CsmrTracksUnknownActionException") | 500 | Unknown Action/TypeAction for tracks event | Unknown Action/TypeAction for tracks event | 
 | [Y280005](../apps/csmr-tracks/src/exceptions/csmr-tracks-transform-tracks-failed.exception.ts "CsmrTracksTransformTracksFailedException") | 500 | Impossible to transform tracks | Impossible to transform tracks, something went wrong during mapping process | 
 | [Y280006](../apps/csmr-tracks/src/exceptions/csmr-tracks-account-response.exception.ts "CsmrTracksAccountResponseException") | 500 | Impossible to fetch accountId | Impossible to fetch accountId, please check the consumer results | 
+| [Y280007](../apps/csmr-tracks/src/exceptions/csmr-tracks-unknown-instance.exception.ts "CsmrTracksUnknownInstanceException") | 500 | Found unknown instance (service) in track | Le champ service de la trace n&#39;a pas permis de déterminer le type d&#39;instance pour lequel formatter la trace | 
 
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|
