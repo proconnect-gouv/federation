@@ -44,12 +44,12 @@ Given('les traces sont récupérées dans elasticsearch', function () {
 });
 
 Given(
-  /^les traces "(FranceConnect|FranceConnect\+|FranceConnect et FranceConnect\+)" contiennent "([^"]+)"$/,
+  /^les traces "(FranceConnect\(v2\)|FranceConnect\(CL\)|FranceConnect\+|FranceConnect\(CL\) et FranceConnect\+)" contiennent "([^"]+)"$/,
   function (platform, description) {
     let tracksType = description;
 
     // Divide the connections between the 2 platforms
-    if (platform === 'FranceConnect et FranceConnect+') {
+    if (platform === 'FranceConnect(CL) et FranceConnect+') {
       const result = tracksType.match(/^(\d+) connexions$/);
       if (result) {
         const connectionCount = result[1];
@@ -62,11 +62,14 @@ Given(
     cy.task('removeTracks');
 
     switch (platform) {
-      case 'FranceConnect':
+      case 'FranceConnect(CL)':
         cy.task('addTracksLegacy', { tracksType });
         break;
       case 'FranceConnect+':
-        cy.task('addTracks', { tracksType });
+        cy.task('addTracks', { mockSet: 'high', tracksType });
+        break;
+      case 'FranceConnect(v2)':
+        cy.task('addTracks', { mockSet: 'low', tracksType });
         break;
       default:
         cy.task('addTracksLegacy', { tracksType });

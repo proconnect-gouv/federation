@@ -4,11 +4,10 @@
 
 import { SearchHit } from '@elastic/elasticsearch/lib/api/types';
 
-import { IPaginationResult } from '@fc/common';
+import { ICsmrTracksOutputTrack } from '@fc/tracks';
 
 import { ICsmrTracksData } from './csmr-tracks-fields-data.interface';
 
-export type ICsmrTracksElasticResults = {
-  meta: IPaginationResult;
-  payload: SearchHit<ICsmrTracksData>[];
-};
+export interface TracksFormatterInterface {
+  formatTrack(rawTrack: SearchHit<ICsmrTracksData>): ICsmrTracksOutputTrack;
+}

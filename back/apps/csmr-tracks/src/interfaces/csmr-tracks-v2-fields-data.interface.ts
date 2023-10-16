@@ -2,19 +2,19 @@
 
 // Declarative code
 
-import { ICsmrTracksGeneratedData } from './csmr-tracks-generated-data.interface';
+import { CoreInstance } from '../enums';
 import { ICsmrTracksGeoData } from './csmr-tracks-geo.interface';
 
 /**
  * Piece of data specific to core-high from ElasticSearch source
  */
-export type ICsmrTracksHighData = {
+export type ICsmrTracksV2Data = {
   idpName: string;
   idpId: string;
   event: string;
   ip: string;
   idpSub: string;
-  service: string;
+  service: CoreInstance;
   spSub: string;
   spId: string;
   spName: string;
@@ -22,17 +22,12 @@ export type ICsmrTracksHighData = {
   idpLabel: string;
   spAcr: string;
   claims?: string;
-  time: string; // /!\ timestamp as string !
+  time: number;
 };
 
 /**
  * data specific to core-high from ElasticSearch source with geo and script generated data
  */
-export type ICsmrTracksHighFieldsData = Readonly<
-  ICsmrTracksHighData & ICsmrTracksGeoData & ICsmrTracksGeneratedData
->;
-
-export type ICsmrTracksHighTransformData = Omit<
-  ICsmrTracksHighFieldsData,
-  'trackId' | 'platform'
+export type ICsmrTracksV2FieldsData = Readonly<
+  ICsmrTracksV2Data & ICsmrTracksGeoData
 >;
