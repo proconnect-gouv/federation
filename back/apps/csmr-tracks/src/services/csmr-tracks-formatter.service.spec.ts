@@ -36,6 +36,7 @@ describe('CsmrTracksFormatterService', () => {
   const trackLow = { _source: { service: CoreInstance.FCP_LOW } };
   const trackLegacy = { _source: { service: CoreInstance.FC_LEGACY } };
   const trackUnknown = { _source: { service: 'some random invalid value' } };
+  const trackMissingService = { _source: { service: '' } };
 
   beforeEach(async () => {
     jest.restoreAllMocks();
@@ -93,6 +94,22 @@ describe('CsmrTracksFormatterService', () => {
 
       expect(formatterLegacyMock.formatTrack).toHaveBeenCalledOnce();
       expect(formatterLegacyMock.formatTrack).toHaveBeenCalledWith(trackLegacy);
+    });
+
+    it('should use legacy if no service is provided', () => {
+      // Given
+      const tracks = [
+        trackMissingService,
+      ] as unknown as SearchHit<ICsmrTracksData>[];
+
+      // When
+      service.formatTracks(tracks);
+
+      // Then
+      expect(formatterLegacyMock.formatTrack).toHaveBeenCalledOnce();
+      expect(formatterLegacyMock.formatTrack).toHaveBeenCalledWith(
+        trackMissingService,
+      );
     });
 
     it('should throw if instance is unknown', () => {
