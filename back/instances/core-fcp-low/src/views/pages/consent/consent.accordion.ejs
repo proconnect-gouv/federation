@@ -1,5 +1,6 @@
 <%
 
+// Hard coded claims order for identity claims
 const sortedNames = [
   'family_name',
   'preferred_username',
@@ -8,16 +9,51 @@ const sortedNames = [
   'birthdate',
   'birthplace',
   'birthcountry',
+  'address',
   'email',
+  'phone_number',
+
 ];
 
-const labels = sortedNames
-  .map((claimName) => 
-    locals.claims.find(
-      ({ identifier }) => identifier === claimName
-  ))
-  .filter((claim) => claim)
-  .map(({ label }) => label);
+const dataProviderOrder = (a, b) => {
+  // FC Must Come First
+  if (a[0].provider.key === 'FCP_LOW') {
+    return -1;
+  }
+  
+  if (b[0].provider.key === 'FCP_LOW') {
+    return 1;
+  }
+
+  // Normal sort
+  return a[0].provider.label < b[0].provider.label ? -1 : 1;
+}
+
+const claimOrder = (a, b) => {
+  if (a.provider.key === 'FCP_LOW') { // Sort is hard coded for identity claims
+    return sortedNames.indexOf(a.identifier) - sortedNames.indexOf(b.identifier);
+  }
+
+  return a.label < b.label ? -1 : 1; 
+}
+
+const regroup = (groups, claim) => {
+   if (!groups[claim.provider.key]) {
+      groups[claim.provider.key] = [];
+    }
+
+    groups[claim.provider.key].push(claim);
+}
+
+const hasLabel = ({ label }) => label;
+
+
+const claimsGroups = {};
+
+locals.claims
+  .filter(hasLabel) // Omit claims with falsy label (sub, amr...)
+  .forEach(regroup.bind(null, claimsGroups));
+
 %>
 
 <section class="fr-accordion fr-col-12 fr-col-lg-6 fr-m-auto">
@@ -27,10 +63,22 @@ const labels = sortedNames
     </button>
   </h3>
   <div class="fr-collapse" id="accordion-consent">
-    <ul data-testid="consent-detail">
-      <% labels.forEach(label => { %>
-        <li><%= label %></li>
-      <% }); %>
-    </ul>
+
+    <div>
+    <% Object.values(claimsGroups).sort(dataProviderOrder).forEach((group) => { %>
+
+         <p class="fr-mb-0"><strong>Informations récupérées depuis <%= group[0].provider.label%></strong></p>
+
+         <ul data-testid="consent-detail">
+         <% group.sort(claimOrder).forEach((claim) => { %>
+            <li>
+              <%= claim.label %>
+            </li>
+          <% })%>
+         </ul>
+
+      <% }) %>
+
+    </div>
   </div>
 </section>

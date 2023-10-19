@@ -70,11 +70,6 @@
             </div>
           <% } %>
           <div class="content-details__content">
-            <% if (!locals.consentRequired) { %>
-              <p>
-                Pour confirmer votre identité, FranceConnect+ doit partager ces informations :
-              </p>
-            <% } %>
         
            <%- include('includes/claims.ejs', { claims }) %>
 

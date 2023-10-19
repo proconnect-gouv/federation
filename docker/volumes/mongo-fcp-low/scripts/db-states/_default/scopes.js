@@ -134,7 +134,7 @@ db.scopes.update(
   { upsert: true },
 );
 db.scopes.update(
-  { scope: "dgfip_annee_n_moins_2" },
+  { scope: "dgfip_annee_n_moins_3" },
   {
     scope: "dgfip_annee_n_moins_3",
     fd: "DGFIP",
@@ -546,9 +546,9 @@ db.scopes.update(
   { upsert: true },
 );
 db.scopes.update(
-  { scope: "fip_PaDeduc_Autres" },
+  { scope: "dgfip_PaDeduc_Autres" },
   {
-    scope: "fip_PaDeduc_Autres",
+    scope: "dgfip_PaDeduc_Autres",
     fd: "DGFIP",
     label:
       "Pensions alimentaires déductibles - Autres pensions alimentaires versées (Direction générale des Finances publiques)",

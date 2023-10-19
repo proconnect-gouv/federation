@@ -295,7 +295,7 @@ services:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/fcp-low/.env/dp1-low.env"
     ports:
-      - "9266:9266"
+      - "9268:9268"
     networks:
       - public
     command: "pm2 logs"
@@ -315,7 +315,7 @@ services:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/fcp-low/.env/dp2-low.env"
     ports:
-      - "9267:9267"
+      - "9269:9269"
     networks:
       - public
     command: "pm2 logs"

@@ -16,20 +16,18 @@ import {
 } from '@fc/data-provider-adapter-mongo';
 import { JwtService } from '@fc/jwt';
 import { LoggerService } from '@fc/logger-legacy';
-import { atHashFromAccessToken } from '@fc/oidc';
-import {
-  OIDC_PROVIDER_REDIS_PREFIX,
-  OidcProviderConfig,
-} from '@fc/oidc-provider';
+import { AccessToken, atHashFromAccessToken, stringToArray } from '@fc/oidc';
+import { OidcClientSession } from '@fc/oidc-client';
+import { OidcProviderConfig } from '@fc/oidc-provider';
+import { OidcProviderRedisAdapter } from '@fc/oidc-provider/adapters';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 import { RnippPivotIdentity } from '@fc/rnipp';
-import { SessionService } from '@fc/session';
+import { ScopesService } from '@fc/scopes';
+import { ISessionService, SessionService } from '@fc/session';
 
 import { ChecktokenRequestDto } from '../dto';
 import {
-  CoreFcpFetchAccessTokenFromRedisFailed,
   CoreFcpFetchDataProviderJwksFailed,
-  CoreFcpInvalidAccessTokenFromDataProvider,
   InvalidChecktokenRequestException,
 } from '../exceptions';
 
@@ -47,6 +45,7 @@ export class DataProviderService {
     @Inject(REDIS_CONNECTION_TOKEN) private readonly redis: Redis,
     private readonly session: SessionService,
     private readonly cryptographyFcp: CryptographyFcpService,
+    private readonly scopes: ScopesService,
   ) {}
   /**
    * This function take the checkTokenRequest to validate it
@@ -91,42 +90,108 @@ export class DataProviderService {
     return await this.session.getAlias(atHash);
   }
 
-  /**
-   * @Note ⚠️ This function use the adapter prefix that we pass to oidc-provider.
-   * the "AccessToken" part is fully handled by oidc-provider so if you always get
-   * nothing with this function, you should check the oidc-provider documentation
-   * and look for some changes. ⚠️
-   */
-  async getAccessTokenExp(accessToken: string): Promise<number> {
-    const accessTokenKey = `${OIDC_PROVIDER_REDIS_PREFIX}:AccessToken:${accessToken}`;
-
-    let ttl;
-
+  async generatePayload(
+    oidcSessionService: ISessionService<OidcClientSession>,
+    accessToken: string,
+    dpClientId: string,
+  ): Promise<JWTPayload> {
     /**
-     * @author sherman
-     * @todo It would be better if we used the oidc provider redis adapter instead of
-     * directly using the redis client. That or any other wrapper via DI.
+     * We can not use DI for this adapter since it was made to be instantiated by `oidc-provider`
+     * It requires a ServiceProviderAdapter that we won't use here
+     * and the `context` parameter which is a string, not a provider.
      */
-    try {
-      ttl = await this.redis.ttl(accessTokenKey);
-    } catch (error) {
-      throw new CoreFcpFetchAccessTokenFromRedisFailed(error);
+    const adapter = new OidcProviderRedisAdapter(
+      this.logger,
+      this.redis,
+      undefined,
+      'AccessToken',
+    );
+
+    const { expire, payload: interaction } =
+      await adapter.getExpireAndPayload<AccessToken>(accessToken);
+
+    if (expire <= 0) {
+      return this.generateExpiredPayload(dpClientId);
     }
 
-    if (ttl <= 0) {
-      throw new CoreFcpInvalidAccessTokenFromDataProvider(ttl);
-    }
-
-    /**
-     * Using floor to avoid amplifying rounding TTL errors between the time we get the TTL
-     * and the time we use it to generate the JWT.
-     */
-    const now = Math.floor(Date.now() / 1000);
-
-    return now + ttl;
+    return this.generateValidPayload(
+      dpClientId,
+      oidcSessionService,
+      interaction,
+    );
   }
 
-  generateDataProviderSub(
+  generateExpiredPayload(aud: string): JWTPayload {
+    return {
+      // OIDC defined var name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_introspection: {
+        active: false,
+      },
+      aud,
+    };
+  }
+
+  private async generateValidPayload(
+    dpClientId: string,
+    oidcSessionService: ISessionService<OidcClientSession>,
+    interaction: AccessToken,
+  ): Promise<JWTPayload> {
+    const {
+      claims: {
+        id_token: {
+          acr: { values: acr },
+        },
+      },
+      iat,
+      exp,
+      jti,
+      clientId: spClientId,
+    } = interaction;
+
+    const { rnippIdentity } = await oidcSessionService.get();
+    const dpSub = this.generateDataProviderSub(rnippIdentity, dpClientId);
+
+    const scope = await this.getDpRelatedScopes(dpClientId, interaction);
+
+    const payload = {
+      // OIDC defined var name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      token_introspection: {
+        active: true,
+        aud: spClientId,
+        sub: dpSub,
+        iat,
+        exp,
+        acr: acr.join(' '),
+        jti,
+        scope: scope.join(' '),
+        ...rnippIdentity,
+      },
+      aud: dpClientId,
+    };
+
+    return payload;
+  }
+
+  private async getDpRelatedScopes(
+    dpClientId: string,
+    interaction: AccessToken,
+  ): Promise<string[]> {
+    const { slug } = await this.dataProvider.getByClientId(dpClientId);
+
+    const { scope: interactionScopes } = interaction;
+
+    const dataProviderScope = this.scopes.getScopesByDataProvider(slug);
+
+    const dpRelatedScopes = stringToArray(interactionScopes).filter(
+      (scope: string) => dataProviderScope.includes(scope),
+    );
+
+    return dpRelatedScopes;
+  }
+
+  private generateDataProviderSub(
     identity: RnippPivotIdentity,
     clientId: string,
   ): string {
