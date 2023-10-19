@@ -1,4 +1,5 @@
 import { Response } from 'express';
+import { JWTPayload } from 'jose';
 
 import { Body, Controller, HttpStatus, Post, Req, Res } from '@nestjs/common';
 
@@ -38,6 +39,7 @@ export class DataProviderController {
         client_id: clientId,
         client_secret: clientSecret,
       } = bodyChecktokenRequest;
+
       await this.dataProviderAdapter.checkAuthentication(
         clientId,
         clientSecret,
@@ -45,22 +47,23 @@ export class DataProviderController {
 
       const sessionId =
         await this.dataProvider.getSessionByAccessToken(accessToken);
-      req.sessionId = sessionId;
-      req.sessionService = this.session;
 
-      const oidcSessionService =
-        SessionService.getBoundSession<OidcClientSession>(req, 'OidcClient');
+      let payload: JWTPayload;
 
-      const { rnippIdentity, spScope } = await oidcSessionService.get();
+      if (!sessionId) {
+        payload = this.dataProvider.generateExpiredPayload(clientId);
+      } else {
+        req.sessionId = sessionId;
+        req.sessionService = this.session;
+        const oidcSessionService =
+          SessionService.getBoundSession<OidcClientSession>(req, 'OidcClient');
 
-      const sub = this.dataProvider.generateDataProviderSub(
-        rnippIdentity,
-        clientId,
-      );
-
-      const exp = await this.dataProvider.getAccessTokenExp(accessToken);
-
-      const payload = { sub, exp, spScope };
+        payload = await this.dataProvider.generatePayload(
+          oidcSessionService,
+          accessToken,
+          clientId,
+        );
+      }
 
       jwt = await this.dataProvider.generateJwt(payload, clientId);
     } catch (exception) {
@@ -76,8 +79,6 @@ export class DataProviderController {
       };
       return res.status(httpStatusCode).json(result);
     }
-
-    this.logger.trace({ jwt });
 
     return res.status(HttpStatus.OK).send(jwt);
   }

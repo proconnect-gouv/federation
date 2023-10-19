@@ -21,9 +21,11 @@ describe('DataProviderController', () => {
   const dataProviderServiceMock = {
     checkRequestValid: jest.fn(),
     generateJwt: jest.fn(),
+    generatePayload: jest.fn(),
     getSessionByAccessToken: jest.fn(),
     getAccessTokenExp: jest.fn(),
     generateDataProviderSub: jest.fn(),
+    generateExpiredPayload: jest.fn(),
   };
 
   const dataProviderAdapterMongoMock = {
@@ -103,7 +105,8 @@ describe('DataProviderController', () => {
 
     const sessionIdMock = 'testSessionId';
 
-    const claimsMock = {};
+    const payloadMock = {};
+    const jwtMock = Symbol('jwtMock');
 
     const expMock = 1;
     const rnippIdentityMock = Symbol(
@@ -115,7 +118,8 @@ describe('DataProviderController', () => {
     beforeEach(() => {
       dataProviderServiceMock.checkRequestValid.mockReturnValue(true);
       dataProviderServiceMock.generateDataProviderSub.mockReturnValue(subMock);
-      dataProviderServiceMock.generateJwt.mockReturnValue(claimsMock);
+      dataProviderServiceMock.generatePayload.mockReturnValue(payloadMock);
+      dataProviderServiceMock.generateJwt.mockReturnValue(jwtMock);
       dataProviderAdapterMongoMock.checkAuthentication.mockResolvedValue(
         Promise.resolve(),
       );
@@ -195,56 +199,25 @@ describe('DataProviderController', () => {
       );
     });
 
-    it('should get the oidc session', async () => {
+    it('should call dataProvider.generatePayload with the right parameters', async () => {
       // When
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);
-
       // Then
-      expect(oidcSessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(oidcSessionServiceMock.get).toHaveBeenCalledWith();
-    });
-
-    it('should generate the sub claim from rnipp identity', async () => {
-      // When
-      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
-
-      // Then
-      expect(
-        dataProviderServiceMock.generateDataProviderSub,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        dataProviderServiceMock.generateDataProviderSub,
-      ).toHaveBeenCalledWith(rnippIdentityMock, bodyMock.client_id);
-    });
-
-    it('should get acces token TTL', async () => {
-      // When
-      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
-
-      // Then
-      expect(dataProviderServiceMock.getAccessTokenExp).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(dataProviderServiceMock.getAccessTokenExp).toHaveBeenCalledWith(
+      expect(dataProviderServiceMock.generatePayload).toHaveBeenCalledTimes(1);
+      expect(dataProviderServiceMock.generatePayload).toHaveBeenCalledWith(
+        oidcSessionServiceMock,
         bodyMock.access_token,
+        bodyMock.client_id,
       );
     });
 
-    it('should generate the JWT', async () => {
-      // Given
-      const expectedPayload = {
-        sub: subMock,
-        exp: expMock,
-        spScope: ['openid', 'gender', 'given_name'],
-      };
-
+    it('should call generateJwt with the right parameters', async () => {
       // When
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);
-
       // Then
       expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledTimes(1);
       expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledWith(
-        expectedPayload,
+        payloadMock,
         bodyMock.client_id,
       );
     });
@@ -264,7 +237,7 @@ describe('DataProviderController', () => {
 
       // Then
       expect(resMock.send).toHaveBeenCalledTimes(1);
-      expect(resMock.send).toHaveBeenCalledWith(claimsMock);
+      expect(resMock.send).toHaveBeenCalledWith(jwtMock);
     });
 
     it('should return HTTP code 401 and send error message when checkAuthentication method failed', async () => {
@@ -307,6 +280,34 @@ describe('DataProviderController', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Required parameter missing or invalid.',
       });
+    });
+
+    it('should return expired JWT if session is not found', async () => {
+      // Given
+      dataProviderServiceMock.getSessionByAccessToken.mockReturnValueOnce(
+        undefined,
+      );
+      const expiredPayload = Symbol('Expired paylad');
+      dataProviderServiceMock.generateExpiredPayload.mockReturnValueOnce(
+        expiredPayload,
+      );
+
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(
+        dataProviderServiceMock.generateExpiredPayload,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        dataProviderServiceMock.generateExpiredPayload,
+      ).toHaveBeenCalledWith(bodyMock.client_id);
+
+      expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledTimes(1);
+      expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledWith(
+        expiredPayload,
+        bodyMock.client_id,
+      );
     });
   });
 });

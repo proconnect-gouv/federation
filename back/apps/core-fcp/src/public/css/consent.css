@@ -274,6 +274,11 @@ main .content__details .content-details__content a {
   text-decoration: none;
 }
 
+main .content__details .content-details__content p.provider {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
 main .content__details .content-details__content a:hover {
   text-decoration: underline;
 }
