@@ -101,7 +101,8 @@
     "port": 1025
   },
   "support": {
-    "techErrorUrl": "https://my-user-has-an-error-and-is-redirected-to-support-tech-error-form"
+    "techErrorUrl": "https://my-user-has-an-error-and-is-redirected-to-support-tech-error-form",
+    "email": "support.usagers@franceconnect.gouv.fr"
   },
   "tracesId": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
   "tracesSecret": "99c1105d041adda2c47835a82f6be9dc13e2a2731e302e6f214075aef09f5abb",
