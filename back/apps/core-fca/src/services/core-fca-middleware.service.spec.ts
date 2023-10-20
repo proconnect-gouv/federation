@@ -5,6 +5,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CORE_SERVICE } from '@fc/core';
+import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
@@ -133,6 +135,10 @@ describe('CoreFcaMiddlewareService', () => {
     req: reqMock,
   };
 
+  const coreFcaServiceMock = {};
+
+  const FlowStepsServiceMock = {};
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -148,6 +154,11 @@ describe('CoreFcaMiddlewareService', () => {
         ServiceProviderAdapterMongoService,
         OidcAcrService,
         OidcProviderErrorService,
+        {
+          provide: CORE_SERVICE,
+          useValue: coreFcaServiceMock,
+        },
+        FlowStepsService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -166,6 +177,8 @@ describe('CoreFcaMiddlewareService', () => {
       .useValue(configServiceMock)
       .overrideProvider(OidcAcrService)
       .useValue(oidcAcrServiceMock)
+      .overrideProvider(FlowStepsService)
+      .useValue(FlowStepsServiceMock)
       .compile();
 
     service = module.get<CoreFcaMiddlewareService>(CoreFcaMiddlewareService);
@@ -184,10 +197,10 @@ describe('CoreFcaMiddlewareService', () => {
       // When
       service.onModuleInit();
       // Then
-      expect(service['registerMiddleware']).toHaveBeenCalledTimes(7);
+      expect(service['registerMiddleware']).toHaveBeenCalledTimes(8);
     });
 
-    it('should register 7 events', () => {
+    it('should register 8 events', () => {
       // Given
       service['overrideAuthorizePrompt'] = jest.fn();
       service['overrideAuthorizeAcrValues'] = jest.fn();

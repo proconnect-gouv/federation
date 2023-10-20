@@ -8,7 +8,8 @@
       "actif",
       "whitelisté",
       "non blacklisté",
-      "français"
+      "français",
+      "autorisé pour idp_hint"
     ],
     "mocked": true,
     "usable": true,
@@ -48,7 +49,7 @@
     "idpId": "621c3c17-5f49-4ca5-b8ef-a4b1cecaf7c2",
     "name": "fip3-desactive-visible",
     "title": "FIP3 - FI désactivé mais visible",
-    "descriptions": ["désactivé et visible"],
+    "descriptions": ["désactivé et visible", "non autorisé pour idp_hint"],
     "mocked": true,
     "usable": false,
     "url": "https://fip3-high.{{TEST_ENV}}.dev-franceconnect.fr",
@@ -101,12 +102,8 @@
   {
     "idpId": "0cbdf732-aaea-4566-a99e-4430f388ff18",
     "name": "fip8-high",
-    "title":
-      "IDP8 - Identity Provider - eIDAS élevé - whitelisted - discov - crypt",
-    "descriptions": [
-      "non whitelisté",
-      "blacklisté"
-    ],
+    "title": "IDP8 - Identity Provider - eIDAS élevé - whitelisted - discov - crypt",
+    "descriptions": ["non whitelisté", "blacklisté"],
     "mocked": true,
     "usable": true,
     "url": "https://fip1-high.{{TEST_ENV}}.dev-franceconnect.fr",
@@ -122,9 +119,8 @@
   },
   {
     "idpId": "8456c460-f89b-4744-93cf-e0b6ac694075",
-    "name": "fip13-high", 
-    "title":
-      "IDP13 - Identity Provider - eIDAS élevé - crypted (ECDH-ES + A256GCM) - signed (ES256)",
+    "name": "fip13-high",
+    "title": "IDP13 - Identity Provider - eIDAS élevé - crypted (ECDH-ES + A256GCM) - signed (ES256)",
     "descriptions": ["eidas 3 - crypted (ECDH-ES + A256GCM) - signed (ES256)"],
     "mocked": true,
     "usable": true,
@@ -142,8 +138,7 @@
   {
     "idpId": "81e3c37a-e7ea-43be-aa7a-0ed28a1a6e47",
     "name": "fip14-high",
-    "title":
-      "IDP14 - Identity Provider - eIDAS élevé - crypted (RSA-OAEP + A256GCM) - signed (RS256)",
+    "title": "IDP14 - Identity Provider - eIDAS élevé - crypted (RSA-OAEP + A256GCM) - signed (RS256)",
     "descriptions": ["eidas 3 - crypted (RSA-OAEP + A256GCM) - signed (RS256)"],
     "mocked": true,
     "usable": true,
@@ -161,8 +156,7 @@
   {
     "idpId": "4c3e8c0d-12e3-46c2-bef8-5cb7b0702c9d",
     "name": "fip15-high",
-    "title":
-      "IDP15 - Identity Provider - eIDAS substantiel - crypted (RSA-OAEP + A256GCM) - signed (ES256)",
+    "title": "IDP15 - Identity Provider - eIDAS substantiel - crypted (RSA-OAEP + A256GCM) - signed (ES256)",
     "descriptions": ["eidas 2 - crypted (RSA-OAEP + A256GCM) - signed (ES256)"],
     "mocked": true,
     "usable": true,
@@ -180,8 +174,7 @@
   {
     "idpId": "f403044b-fcd3-46f2-a87b-30e65f8e7bfe",
     "name": "fip16-high",
-    "title":
-      "IDP16 - Identity Provider - eIDAS substantiel - crypted (ECDH-ES + A256GCM) - signed (RS256)",
+    "title": "IDP16 - Identity Provider - eIDAS substantiel - crypted (ECDH-ES + A256GCM) - signed (RS256)",
     "descriptions": ["eidas 2 - crypted (ECDH-ES + A256GCM) - signed (RS256)"],
     "mocked": true,
     "usable": true,
@@ -199,8 +192,7 @@
   {
     "idpId": "913ef56e-0997-4e25-bc55-19a20d6e0532",
     "name": "fip17-high",
-    "title":
-      "IDP17 - Identity Provider - eIDAS substantiel - crypted (none) - signed (ES256)",
+    "title": "IDP17 - Identity Provider - eIDAS substantiel - crypted (none) - signed (ES256)",
     "descriptions": ["eidas 2 - crypted (none) - signed (ES256)"],
     "mocked": true,
     "usable": true,
@@ -218,8 +210,7 @@
   {
     "idpId": "8aa849db-8402-4f2e-bad9-7471dd21ff94",
     "name": "eidas-bridge",
-    "title":
-      "Sign in with a digital identity from another European country",
+    "title": "Sign in with a digital identity from another European country",
     "descriptions": ["eidas-bridge"],
     "mocked": false,
     "usable": true,

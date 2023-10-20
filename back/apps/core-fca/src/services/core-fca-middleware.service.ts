@@ -1,10 +1,15 @@
 import { v4 as uuid } from 'uuid';
 
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { CoreConfig, CoreOidcProviderMiddlewareService } from '@fc/core';
+import {
+  CORE_SERVICE,
+  CoreConfig,
+  CoreOidcProviderMiddlewareService,
+} from '@fc/core';
+import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
@@ -23,6 +28,7 @@ import {
   GetAuthorizeOidcClientSsoSession,
   GetAuthorizeSessionDto,
 } from '../dto';
+import { CoreFcaService } from './core-fca.service';
 
 @Injectable()
 export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService {
@@ -37,6 +43,9 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     protected readonly tracking: TrackingService,
     protected readonly oidcErrorService: OidcProviderErrorService,
     protected readonly oidcAcr: OidcAcrService,
+    @Inject(CORE_SERVICE)
+    protected readonly core: CoreFcaService,
+    protected readonly flowSteps: FlowStepsService,
   ) {
     super(
       logger,
@@ -47,6 +56,8 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
       tracking,
       oidcErrorService,
       oidcAcr,
+      core,
+      flowSteps,
     );
     this.logger.setContext(this.constructor.name);
   }
@@ -68,6 +79,12 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
       OidcProviderMiddlewareStep.BEFORE,
       OidcProviderRoutes.AUTHORIZATION,
       this.overrideAuthorizePrompt,
+    );
+
+    this.registerMiddleware(
+      OidcProviderMiddlewareStep.AFTER,
+      OidcProviderRoutes.AUTHORIZATION,
+      this.redirectToHintedIdpMiddleware,
     );
 
     this.registerMiddleware(

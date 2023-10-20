@@ -39,9 +39,6 @@
                   </button>
                 </div>
                 <input type="hidden" name="providerUid" value="<%= provider.uid %>" />
-                <input type="hidden" name="uid" value="<%= locals.uid %>" />
-                <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
-                <input type="hidden" name="scope" value="<%= locals.idpScope %>" />
                 <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
               </form>
             <% }) %>
@@ -59,9 +56,6 @@
                 </button>
               </div>
               <input type="hidden" name="providerUid" value="<%= eidasBridgeProvider.uid %>" />
-              <input type="hidden" name="uid" value="<%= locals.uid %>" />
-              <input type="hidden" name="acr_values" value="<%= params.acr_values %>" />
-              <input type="hidden" name="scope" value="<%= locals.idpScope %>" />
               <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
             </form>
           <% } %>

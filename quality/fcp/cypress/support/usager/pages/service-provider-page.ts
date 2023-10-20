@@ -108,6 +108,11 @@ export default class ServiceProviderPage {
     }
   }
 
+  setIdpHint(idpHint: string): void {
+    cy.get('input[name="idp_hint"]').clear();
+    cy.get('input[name="idp_hint"]').type(idpHint);
+  }
+
   startLogin(
     fcRootUrl: string,
     scopeContext: ScopeContext,

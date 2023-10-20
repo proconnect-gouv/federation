@@ -144,6 +144,14 @@ Given('je mémorise le sub envoyé au fournisseur de service', function () {
   serviceProviderPage.getMockSubText().as('spSub');
 });
 
+Given(
+  "je rentre l'id du fournisseur d'identité dans le champ idp_hint",
+  function () {
+    const { idpId } = this.identityProvider;
+    serviceProviderPage.setIdpHint(idpId);
+  },
+);
+
 Then(
   /^le sub transmis au fournisseur de service est (identique|différent) [ad]u sub mémorisé$/,
   function (text: string) {

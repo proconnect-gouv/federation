@@ -22,12 +22,10 @@ import { AppConfig } from '@fc/app';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
 import {
   GetOidcCallback,
-  OidcClientConfig,
   OidcClientRoutes,
   OidcClientService,
   OidcClientSession,
@@ -50,7 +48,7 @@ import {
   OidcIdentityDto,
 } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
-import { CoreFcaAuthorizationUrlService } from '../services';
+import { CoreFcaService } from '../services';
 
 @Controller()
 export class OidcClientController {
@@ -60,12 +58,11 @@ export class OidcClientController {
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
-    private readonly identityProvider: IdentityProviderAdapterMongoService,
+    private readonly coreFca: CoreFcaService,
     private readonly csrfService: SessionCsrfService,
     private readonly oidcProvider: OidcProviderService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
-    private readonly coreFcaAuthorizationUrlService: CoreFcaAuthorizationUrlService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -93,17 +90,6 @@ export class OidcClientController {
   ): Promise<void> {
     const { providerUid: idpId, csrfToken } = body;
 
-    const { spId } = await sessionOidc.get();
-
-    const { scope } = this.config.get<OidcClientConfig>('OidcClient');
-    const { params } = await this.oidcProvider.getInteraction(req, res);
-
-    const {
-      // oidc parameter
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-    } = params as Record<string, string>;
-
     // -- control if the CSRF provided is the same as the one previously saved in session.
     try {
       await this.csrfService.validate(sessionOidc, csrfToken);
@@ -112,56 +98,13 @@ export class OidcClientController {
       throw new SessionInvalidCsrfSelectIdpException(error);
     }
 
-    await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
-
-    await this.oidcClient.utils.checkIdpDisabled(spId, idpId);
-
-    const { state, nonce } =
-      await this.oidcClient.utils.buildAuthorizeParameters();
     const {
-      name: idpName,
-      title: idpLabel,
-      featureHandlers: idpFeatureHandlers,
-    } = await this.identityProvider.getById(idpId);
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      params: { acr_values: acr },
+    } = await this.oidcProvider.getInteraction(req, res);
 
-    const authorizationUrl =
-      await this.coreFcaAuthorizationUrlService.getAuthorizeUrl({
-        oidcClient: this.oidcClient,
-        state,
-        scope,
-        idpId,
-        idpFeatureHandlers,
-        // oidc parameter
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values,
-        nonce,
-        spId,
-      });
-
-    const session: OidcClientSession = {
-      idpId,
-      idpName,
-      idpLabel,
-      idpState: state,
-      idpNonce: nonce,
-      idpIdentity: undefined,
-      spIdentity: undefined,
-      accountId: undefined,
-    };
-
-    await sessionOidc.set(session);
-
-    this.logger.trace({
-      route: OidcClientRoutes.REDIRECT_TO_IDP,
-      method: 'POST',
-      name: 'OidcClientRoutes.REDIRECT_TO_IDP',
-      body,
-      res,
-      session,
-      redirect: authorizationUrl,
-    });
-
-    res.redirect(authorizationUrl);
+    await this.coreFca.redirectToIdp(res, acr, idpId, sessionOidc);
   }
 
   /**

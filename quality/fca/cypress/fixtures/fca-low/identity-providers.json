@@ -5,7 +5,8 @@
       "par défaut",
       "actif",
       "rattaché à un ministère avec plusieurs FI",
-      "rattaché à plusieurs ministères"
+      "rattaché à plusieurs ministères",
+      "autorisé pour idp_hint"
     ],
     "ministry": "MOCK - Ministère de la transition écologique - ALL FIS - SORT 2",
     "title": "Identity Provider 1 - eIDAS faible - ES256",
@@ -26,7 +27,8 @@
     "idpId": "0e7c099f-fe86-49a0-b7d1-19df45397212",
     "descriptions": [
       "FI eidas1 avec signature RS256",
-      "différent"
+      "différent",
+      "non autorisé pour idp_hint"
     ],
     "ministry": "MOCK - Ministère de la transition écologique - ALL FIS - SORT 2",
     "title": "Identity Provider 2 - eIDAS faible - RS256",
@@ -82,10 +84,7 @@
   },
   {
     "idpId": "46f5d9f9-881d-46b1-bdcc-0548913ea443",
-    "descriptions": [
-      "whitelisté",
-      "blacklisté"
-    ],
+    "descriptions": ["whitelisté", "blacklisté"],
     "ministry": "MOCK - Ministère de la mer - E2E - SORT 4",
     "title": "Identity Provider 5 - eIDAS faible - RS256",
     "mocked": true,

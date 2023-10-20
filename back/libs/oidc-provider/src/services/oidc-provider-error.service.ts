@@ -103,4 +103,18 @@ export class OidcProviderErrorService {
     // Finally call the exception filter
     await this.exceptionFilter.catch(exception, host);
   }
+
+  handleRedirectableError(ctx: OidcCtx, exception: FcException) {
+    if (exception.redirect === true) {
+      const { res, oidc } = ctx;
+      const { redirect_uri: redirectUri } = oidc.params;
+      const {
+        oidc: { error, description },
+      } = exception;
+
+      res.redirect(
+        `${redirectUri}?error=${error}&error_description=${description}`,
+      );
+    }
+  }
 }
