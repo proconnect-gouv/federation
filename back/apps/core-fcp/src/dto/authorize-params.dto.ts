@@ -67,4 +67,10 @@ export class AuthorizeParamsDto {
   @IsValidPrompt()
   @IsOptional()
   readonly prompt?: string;
+
+  @IsOptional()
+  @IsString()
+  // openid inspired property name
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  readonly idp_hint?: string;
 }

@@ -125,3 +125,11 @@ Then(
     });
   },
 );
+
+Given(
+  "je rentre l'id du fournisseur d'identité dans le champ idp_hint",
+  function () {
+    const { idpId } = this.identityProvider;
+    serviceProviderPage.setIdpHint(idpId);
+  },
+);

@@ -1,3 +1,4 @@
+import { Request, Response } from 'express';
 import { encode } from 'querystring';
 
 import {
@@ -19,7 +20,6 @@ import {
 import { ConfigService } from '@fc/config';
 import { CoreVerifyService, ProcessCore } from '@fc/core';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
-import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
 import {
@@ -29,7 +29,7 @@ import {
   OidcClientSession,
   RedirectToIdp,
 } from '@fc/oidc-client';
-import { OidcProviderPrompt } from '@fc/oidc-provider';
+import { OidcProviderService } from '@fc/oidc-provider';
 import {
   ISessionService,
   Session,
@@ -48,6 +48,7 @@ import {
 } from '../dto';
 import { CoreFcpInvalidIdentityException } from '../exceptions';
 import { IIdentityCheckFeatureHandler } from '../interfaces';
+import { CoreFcpService } from '../services';
 
 @Controller()
 export class OidcClientController {
@@ -56,7 +57,8 @@ export class OidcClientController {
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
-    private readonly identityProvider: IdentityProviderAdapterMongoService,
+    private readonly coreFcp: CoreFcpService,
+    private readonly oidcProvider: OidcProviderService,
     private readonly csrfService: SessionCsrfService,
     private readonly config: ConfigService,
     private readonly coreVerify: CoreVerifyService,
@@ -75,7 +77,8 @@ export class OidcClientController {
   @IsStep()
   @ForbidRefresh()
   async redirectToIdp(
-    @Res() res,
+    @Req() req: Request,
+    @Res() res: Response,
     @Body() body: RedirectToIdp,
     /**
      * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
@@ -85,17 +88,8 @@ export class OidcClientController {
     @Session('OidcClient', GetRedirectToIdpOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
-    const {
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-      claims,
-      csrfToken,
-      providerUid: idpId,
-      scope,
-    } = body;
+    const { csrfToken, providerUid: idpId } = body;
 
-    const { spId } = await sessionOidc.get();
     // -- control if the CSRF provided is the same as the one previously saved in session.
     try {
       await this.csrfService.validate(sessionOidc, csrfToken);
@@ -104,55 +98,13 @@ export class OidcClientController {
       throw new SessionInvalidCsrfSelectIdpException(error);
     }
 
-    await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
-
-    const { nonce, state } =
-      await this.oidcClient.utils.buildAuthorizeParameters();
-
-    const authorizeParams = {
+    const {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-      claims,
-      nonce,
-      idpId,
-      scope,
-      state,
-      // Prompt for the identity provider is forced here
-      // and not linked to the prompt required of the service provider
-      prompt: OidcProviderPrompt.LOGIN,
-    };
+      params: { acr_values: acr },
+    } = await this.oidcProvider.getInteraction(req, res);
 
-    const authorizationUrl =
-      await this.oidcClient.utils.getAuthorizeUrl(authorizeParams);
-
-    const { name: idpName, title: idpLabel } =
-      await this.identityProvider.getById(idpId);
-    const session: OidcClientSession = {
-      idpId,
-      idpName,
-      idpLabel,
-      idpNonce: nonce,
-      idpState: state,
-      rnippIdentity: undefined,
-      idpIdentity: undefined,
-      spIdentity: undefined,
-      accountId: undefined,
-    };
-
-    await sessionOidc.set(session);
-
-    this.logger.trace({
-      body,
-      method: 'POST',
-      name: 'OidcClientRoutes.REDIRECT_TO_IDP',
-      redirect: authorizationUrl,
-      res,
-      route: OidcClientRoutes.REDIRECT_TO_IDP,
-      session,
-    });
-
-    res.redirect(authorizationUrl);
+    await this.coreFcp.redirectToIdp(res, acr, idpId, sessionOidc);
   }
 
   /**

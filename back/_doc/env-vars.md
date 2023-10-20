@@ -58,6 +58,7 @@
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
+| Core_ALLOWED_IDP_HINTS | json |
 | CryptographyFca_CRYPTO_HASH_SECRET | string |
 | CryptographyFca_CRYPTO_SUB_SECRET | string |
 | FQDN | string |
@@ -104,6 +105,7 @@
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
+| Core_ALLOWED_IDP_HINTS | json |
 | Core_SUPPORT_FORM_URL | string |
 | CryptographyBroker_QUEUE | string |
 | CryptographyBroker_URLS | json |
@@ -169,6 +171,7 @@
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
+| Core_ALLOWED_IDP_HINTS | json |
 | Core_SUPPORT_FORM_URL | string |
 | Cryptography_SUB_SECRET | string |
 | FQDN | string |

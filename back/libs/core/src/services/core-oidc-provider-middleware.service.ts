@@ -1,11 +1,12 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
+import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger-legacy';
 import { atHashFromAccessToken, IOidcClaims, OidcSession } from '@fc/oidc';
 import { OidcAcrConfig, OidcAcrService } from '@fc/oidc-acr';
-import { OidcClientSession } from '@fc/oidc-client';
+import { OidcClientRoutes, OidcClientSession } from '@fc/oidc-client';
 import {
   OidcCtx,
   OidcProviderConfig,
@@ -19,8 +20,11 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
+import { CoreConfig } from '../dto';
 import { CoreRoutes } from '../enums';
-import { CoreClaimAmrException } from '../exceptions';
+import { CoreClaimAmrException, CoreIdpHintException } from '../exceptions';
+import { CoreServiceInterface } from '../interfaces';
+import { CORE_SERVICE } from '../tokens';
 import { pickAcr } from '../transforms';
 
 @Injectable()
@@ -36,6 +40,9 @@ export class CoreOidcProviderMiddlewareService {
     protected readonly tracking: TrackingService,
     protected readonly oidcErrorService: OidcProviderErrorService,
     protected readonly oidcAcr: OidcAcrService,
+    @Inject(CORE_SERVICE)
+    protected readonly core: CoreServiceInterface,
+    protected readonly flowSteps: FlowStepsService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -241,6 +248,34 @@ export class CoreOidcProviderMiddlewareService {
       ctx.oidc['isError'] = true;
       await this.oidcErrorService.throwError(ctx, exception);
     }
+  }
+
+  protected async redirectToHintedIdpMiddleware(ctx: OidcCtx) {
+    const { req, res } = ctx;
+    const idpHint = req.query.idp_hint as string;
+    const { allowedIdpHints } = this.config.get<CoreConfig>('Core');
+    const acr = ctx.oidc.params.acr_values as string;
+    const session = SessionService.getBoundSession<OidcClientSession>(
+      req,
+      'OidcClient',
+    );
+
+    if (ctx.isSso || !idpHint) {
+      return;
+    }
+
+    if (!allowedIdpHints.includes(idpHint)) {
+      const exception = new CoreIdpHintException();
+      return this.oidcErrorService.handleRedirectableError(ctx, exception);
+    }
+
+    await this.flowSteps.setStep(req, OidcClientRoutes.REDIRECT_TO_IDP);
+
+    await this.core.redirectToIdp(res, acr, idpHint, session);
+
+    const eventContext = this.getEventContext(ctx);
+    const { FC_REDIRECTED_TO_HINTED_IDP } = this.tracking.TrackedEventsMap;
+    await this.tracking.track(FC_REDIRECTED_TO_HINTED_IDP, eventContext);
   }
 
   protected async isSsoAvailable(
