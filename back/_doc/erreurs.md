@@ -191,6 +191,7 @@
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|
 | [Y420001](../libs/flow-steps/src/exceptions/unexpected-navigation.exception.ts "UnexpectedNavigationException") | 500 | Nous vous invitons à fermer tous les onglets de votre navigateur et à vous authentifier de nouveau en suivant les étapes de connexion. | L&#39;usager fait une navigation anormale, probablement un refresh sur une page déjà en erreur ou un retour arrière non géré | 
+| [Y420002](../libs/flow-steps/src/exceptions/undefined-step-route.exception.ts "UndefinedStepRouteException") | 500 | Nous vous invitons à fermer tous les onglets de votre navigateur et à vous authentifier de nouveau en suivant les étapes de connexion. | L&#39;usager fait une navigation anormale, probablement un refresh sur une page déjà en erreur ou un retour arrière non géré | 
 
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|

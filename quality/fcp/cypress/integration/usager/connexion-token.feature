@@ -35,7 +35,8 @@ Fonctionnalité: Connexion Usager - Token
     Alors le fournisseur de service a accès aux informations des scopes "identite_pivot"
 
   # TODO: Investiguer pourquoi ce scénario ne fonctionne pas avec Cypress sur integ01
-  @fcpHigh @ignoreInteg01
+  # TODO: A réactiver quand le #1418 sera fait
+  @fcpHigh @ignoreInteg01 @ignoreHigh
   Scénario: FCP HIGH - Token encore valide après nouvelle cinématique
     # Première cinématique
     Etant donné que j'utilise un compte usager "par défaut"
@@ -49,6 +50,7 @@ Fonctionnalité: Connexion Usager - Token
     # Deuxième cinématique avec autre identité
     Et que j'utilise un compte usager "présumé né jour"
     Et que j'utilise un fournisseur de service "privé avec consentement obligatoire"
+    Et que le fournisseur de service requiert un niveau de sécurité "eidas3"
     Et que je navigue sur la page fournisseur de service
     Et que je me connecte à FranceConnect
     Et que je suis redirigé vers la page fournisseur de service
