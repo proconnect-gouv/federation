@@ -1,11 +1,11 @@
 #language: fr
 @usager @fcpLow @connexionSSO @ci
-Fonctionnalité: Connexion Usager - SSO
+Fonctionnalité: Connexion Usager - SSO - FCP Low
   # En tant qu'agent,
   # je souhaite bénéficier d'une authentification unique sur FranceConnect
   # afin de naviguer sur différents FS sans avoir à me ré-authentifier
 
-  Scénario: Connexion SSO - deux FS avec accès au même FI
+  Scénario: Connexion SSO - FCP Low - deux FS avec accès au même FI
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je navigue sur la page fournisseur de service
@@ -15,12 +15,12 @@ Fonctionnalité: Connexion Usager - SSO
     Et que j'utilise un fournisseur de service "avec accès au FI par défaut (deuxième FS)"
     Et que je navigue sur la page fournisseur de service
     Quand je clique sur le bouton FranceConnect
-    Et je suis redirigé vers la page d'information
+    Alors je suis redirigé vers la page d'information
     Et je continue sur le fournisseur de service
     Et je suis connecté au fournisseur de service
 
   @ignoreInteg01
-  Scénario: Connexion SSO - deuxième FS sans accès au FI
+  Scénario: Connexion SSO - FCP Low - deuxième FS sans accès au FI
     Etant donné que j'utilise un fournisseur de service "avec accès exclusif à un FI"
     Et que j'utilise le fournisseur d'identité "disponible que pour un FS"
     Et que je navigue sur la page fournisseur de service
@@ -34,7 +34,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et le fournisseur d'identité est désactivé dans la liste
 
   @ignoreInteg01
-  Scénario: Connexion SSO - deuxième FS utilise un autre FI
+  Scénario: Connexion SSO - FCP Low - deuxième FS utilise un autre FI
     Etant donné que j'utilise un fournisseur de service "avec accès exclusif à un FI"
     Et que j'utilise le fournisseur d'identité "disponible que pour un FS"
     Et que je navigue sur la page fournisseur de service
@@ -49,12 +49,12 @@ Fonctionnalité: Connexion Usager - SSO
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès
-    Et je suis redirigé vers la page d'information
+    Alors je suis redirigé vers la page d'information
     Et je continue sur le fournisseur de service
     Et je suis connecté au fournisseur de service
 
   @ignoreInteg01
-  Scénario: Connexion SSO - troisième FS utilise SSO après une cinématique non terminée (arrêt MIRE)
+  Scénario: Connexion SSO - FCP Low - troisième FS utilise SSO après une cinématique non terminée (arrêt MIRE)
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je navigue sur la page fournisseur de service
@@ -73,7 +73,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et je suis connecté au fournisseur de service
 
   @ignoreInteg01
-  Scénario: Connexion SSO - troisième FS utilise SSO après une cinématique non terminée (arrêt page consentement)
+  Scénario: Connexion SSO - FCP Low - troisième FS utilise SSO après une cinématique non terminée (arrêt page consentement)
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je navigue sur la page fournisseur de service
@@ -89,9 +89,9 @@ Fonctionnalité: Connexion Usager - SSO
     Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je navigue sur la page fournisseur de service
     Quand je clique sur le bouton FranceConnect
-    Et je suis redirigé vers la page sélection du fournisseur d'identité
+    Alors je suis redirigé vers la page sélection du fournisseur d'identité
 
-  Scénario: Connexion SSO - déconnexion d'un FS seulement et SSO terminé
+  Scénario: Connexion SSO - FCP Low - déconnexion d'un FS seulement et SSO terminé
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je navigue sur la page fournisseur de service
@@ -116,7 +116,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et je suis connecté au fournisseur de service
 
   @ignoreInteg01
-  Scénario: Connexion SSO - deux FS avec accès au même FI ayant chacun son propre sub
+  Scénario: Connexion SSO - FCP Low - deux FS avec accès au même FI ayant chacun son propre sub
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je navigue sur la page fournisseur de service

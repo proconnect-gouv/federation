@@ -50,5 +50,6 @@ export default {
     'Y270003',
   ],
   useIdentityFrom: IdentitySource.IDP,
-  enableSso: false,
+  enableSso: true,
+  allowedSsoAcrs: ['eidas2'],
 } as CoreConfig;

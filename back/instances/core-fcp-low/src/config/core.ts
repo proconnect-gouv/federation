@@ -51,4 +51,5 @@ export default {
   ],
   useIdentityFrom: IdentitySource.RNIPP,
   enableSso: true,
+  allowedSsoAcrs: ['eidas1'],
 } as CoreConfig;

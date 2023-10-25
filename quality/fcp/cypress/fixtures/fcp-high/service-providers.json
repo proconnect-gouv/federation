@@ -28,7 +28,8 @@
     "descriptions": [
       "habilité à demander le scope identite_pivot",
       "avec une blacklist de FI",
-      "avec le même entityId"
+      "avec le même entityId",
+      "avec accès au FI par défaut (deuxième FS)"
     ],
     "mocked": true,
     "url": "https://fsp2-high.{{TEST_ENV}}.dev-franceconnect.fr",
@@ -74,7 +75,10 @@
   },
   {
     "name": "fsp6-high",
-    "descriptions": ["privé sans consentement obligatoire", "non habilité à demander le claim amr"],
+    "descriptions": [
+      "privé sans consentement obligatoire",
+      "non habilité à demander le claim amr"
+    ],
     "mocked": true,
     "url": "https://fsp6-high.{{TEST_ENV}}.dev-franceconnect.fr",
     "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
@@ -92,7 +96,9 @@
   },
   {
     "name": "eidas-mock",
-    "descriptions": ["eidas-mock"],
+    "descriptions": [
+      "eidas-mock"
+    ],
     "mocked": false,
     "url": "https://eidas-mock.{{TEST_ENV}}.dev-franceconnect.fr",
     "clientId": "",
@@ -105,7 +111,9 @@
   },
   {
     "name": "eidas-be",
-    "descriptions": ["eidas-be"],
+    "descriptions": [
+      "eidas-be"
+    ],
     "mocked": false,
     "url": "https://eidas-be.{{TEST_ENV}}.dev-franceconnect.fr",
     "clientId": "",

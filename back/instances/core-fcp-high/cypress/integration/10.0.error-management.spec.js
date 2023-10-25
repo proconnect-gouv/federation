@@ -1,7 +1,7 @@
 import {
   basicScenario,
   getAuthorizeUrl,
-  getIdentityProvider
+  getIdentityProvider,
 } from './mire.utils';
 
 describe('10.0 - Error Management', () => {
@@ -67,16 +67,14 @@ describe('10.0 - Error Management', () => {
       'contains',
       '//fsp1-high.docker.dev-franceconnect.fr/error?error=Y000006',
     );
-    cy.get('#error-title').contains(
-      `Error: Y000006`,
-    );
+    cy.get('#error-title').contains(`Error: Y000006`);
     cy.get('#error-description').contains(
       `Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous`,
     );
   });
 
   it('should redirect to Sp if we select an blacklisted Idp', () => {
-    const url = getAuthorizeUrl({ 
+    const url = getAuthorizeUrl({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: `${Cypress.env('SP5_CLIENT_ID')}`,
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -107,44 +105,4 @@ describe('10.0 - Error Management', () => {
       'error?error=Y020023&error_description=Une%20erreur%20technique%20est%20survenue%2C%20fermez%20l%E2%80%99onglet%20de%20votre%20navigateur%20et%20reconnectez-vous.&state=stateTraces',
     );
   });
-
-  it('should display the Y190009 error when no active session exists', () => {
-    basicScenario({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: 'eidas2',
-      idpId,
-      userName: 'test',
-    });
-
-    cy.clearCookies();
-
-    cy.get('#consent').click();
-
-    cy.hasError('Y190009');
-    cy.get('#error-message').contains(
-      'Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous',
-    );
-
-    cy.get('.previous-link').should('not.exist');
-  });
-
-  it('shoudld redirect to the good sp if we are already a locals session defined', () => {
-    // Initialize a session with sp1 information
-    cy.visit(getAuthorizeUrl());
-    cy.url().should('match', mireUrl);
-
-
-    // Generate error on authorize
-    const url = getAuthorizeUrl({
-      // Oidc convention name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      client_id: 'random-bad-client-id'
-    })
-    cy.visit(url, {
-      failOnStatusCode: false,
-    });
-    cy.hasError('Y030106');
-
-    cy.get('.previous-link').should('not.exist');
-  })
 });

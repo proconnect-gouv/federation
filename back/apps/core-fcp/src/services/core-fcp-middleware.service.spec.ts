@@ -248,8 +248,6 @@ describe('CoreFcpMiddlewareService', () => {
       service['buildSessionWithNewInteraction'] = jest.fn();
       service['trackAuthorize'] = jest.fn();
       service['renewSession'] = jest.fn();
-
-      configServiceMock.get.mockReturnValueOnce({ enableSso: false });
     });
 
     it('should abort middleware execution if the request is flagged with an error', async () => {
@@ -280,7 +278,7 @@ describe('CoreFcpMiddlewareService', () => {
 
       // Then
       expect(service['renewSession']).toHaveBeenCalledTimes(1);
-      expect(service['renewSession']).toHaveBeenCalledWith(ctxMock, false);
+      expect(service['renewSession']).toHaveBeenCalledWith(ctxMock, spAcrMock);
     });
 
     it('should get three bound session services', async () => {
@@ -498,6 +496,7 @@ describe('CoreFcpMiddlewareService', () => {
       expect(service['isSsoAvailable']).toHaveBeenCalledTimes(1);
       expect(service['isSsoAvailable']).toHaveBeenCalledWith(
         sessionServiceMock,
+        ctxMock.oidc.params.acr_values,
       );
     });
 
@@ -524,9 +523,6 @@ describe('CoreFcpMiddlewareService', () => {
     it('should call `checkRedirectToSso()` with ctx', async () => {
       // Given
       const ctxMock = getCtxMock();
-      configServiceMock.get
-        .mockReset()
-        .mockReturnValueOnce({ enableSso: true });
       service['isSsoAvailable'] = jest.fn().mockResolvedValue(true);
       service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
       service['buildSessionWithNewInteraction'] = jest
@@ -539,37 +535,11 @@ describe('CoreFcpMiddlewareService', () => {
       expect(service['checkRedirectToSso']).toHaveBeenCalledWith(ctxMock);
     });
 
-    it('should be isSso = true when enableSso = true and isSsoAvailable = true', async () => {
+    it('should be isSso = true when isSsoAvailable = true', async () => {
       // Given
       const ctxMock = getCtxMock();
       const isSsoMock = true;
-      configServiceMock.get
-        .mockReset()
-        .mockReturnValueOnce({ enableSso: true });
       service['isSsoAvailable'] = jest.fn().mockResolvedValue(true);
-      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
-      service['buildSessionWithNewInteraction'] = jest
-        .fn()
-        .mockResolvedValue(sessionPropertiesMock);
-
-      // When
-      await service['afterAuthorizeMiddleware'](ctxMock);
-
-      // Then
-      expect(ctxMock.isSso).toBe(isSsoMock);
-    });
-
-    it('should be isSso = false when enableSso = false', async () => {
-      // Given
-      const ctxMock = getCtxMock();
-      const isSsoMock = false;
-      const isSsoAvailableMock = Symbol('boolean') as unknown as boolean;
-      configServiceMock.get
-        .mockReset()
-        .mockReturnValueOnce({ enableSso: false });
-      service['isSsoAvailable'] = jest
-        .fn()
-        .mockResolvedValue(isSsoAvailableMock);
       service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
       service['buildSessionWithNewInteraction'] = jest
         .fn()
@@ -690,45 +660,62 @@ describe('CoreFcpMiddlewareService', () => {
         .fn()
         .mockReturnValue(sessionServiceMock);
       service['isSsoSession'] = jest.fn().mockReturnValue(true);
+
+      configServiceMock.get.mockReturnValueOnce({
+        enableSso: true,
+        allowedSsoAcrs: ['eidas3'],
+      });
     });
 
-    it('should call session.reset() if no sso', async () => {
+    it('should call session.reset() if sso is disabled', async () => {
       // Given
-      const enableSso = false;
+      configServiceMock.get.mockReset().mockReturnValueOnce({
+        enableSso: false,
+        allowedSsoAcrs: ['eidas3'],
+      });
       // When
-      await service['renewSession'](ctxMock, enableSso);
+      await service['renewSession'](ctxMock, spAcrMock);
+      // Then
+      expect(sessionServiceMock.reset).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.reset).toHaveBeenCalledWith(reqMock, resMock);
+    });
+
+    it('should call session.reset() if acr is authorized for sso', async () => {
+      // Given
+      configServiceMock.get.mockReset().mockReturnValueOnce({
+        enableSso: true,
+        allowedSsoAcrs: ['eidas2'],
+      });
+      // When
+      await service['renewSession'](ctxMock, spAcrMock);
       // Then
       expect(sessionServiceMock.reset).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.reset).toHaveBeenCalledWith(reqMock, resMock);
     });
 
     it('should check if session is SSO compliant with isSsoSession()', async () => {
-      // Given
-      const enableSso = true;
       // When
-      await service['renewSession'](ctxMock, enableSso);
+      await service['renewSession'](ctxMock, spAcrMock);
       // Then
       expect(service['isSsoSession']).toHaveBeenCalledTimes(1);
       expect(service['isSsoSession']).toHaveBeenCalledWith(ctxMock);
     });
 
-    it('should call sessionService.detach if sso is enabled and spIdentity is present', async () => {
+    it('should call sessionService.detach if sso is enabled, spIdentity is present and sso authorized for acr', async () => {
       // Given
-      const enableSso = true;
       sessionServiceMock.get.mockResolvedValueOnce(true);
       // When
-      await service['renewSession'](ctxMock, enableSso);
+      await service['renewSession'](ctxMock, spAcrMock);
       // Then
       expect(sessionServiceMock.detach).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.detach).toHaveBeenCalledWith(reqMock, resMock);
     });
 
-    it('should call sessionService.duplicate if sso is enabled and spIdentity is present', async () => {
+    it('should call sessionService.duplicate if sso is enabled, spIdentity is present and sso authorized for acr', async () => {
       // Given
-      const enableSso = true;
       sessionServiceMock.get.mockResolvedValueOnce(true);
       // When
-      await service['renewSession'](ctxMock, enableSso);
+      await service['renewSession'](ctxMock, spAcrMock);
       // Then
       expect(sessionServiceMock.duplicate).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.duplicate).toHaveBeenCalledWith(

@@ -117,6 +117,7 @@ export default class ServiceProviderPage {
     fcRootUrl: string,
     scopeContext: ScopeContext,
     claims: string[] = [],
+    acrValue: string,
   ): void {
     // Initiate FS connection from Legacy SP mock
     if (this.isLegacySPMock()) {
@@ -127,6 +128,7 @@ export default class ServiceProviderPage {
     if (this.mocked) {
       this.setMockRequestedScope(scopeContext);
       this.setMockRequestedAmr(claims.includes('amr'));
+      this.setMockRequestedAcr(acrValue);
     }
     this.getFcButton().click();
   }

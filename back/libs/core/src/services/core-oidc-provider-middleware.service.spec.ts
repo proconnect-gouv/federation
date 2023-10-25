@@ -80,6 +80,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
 
   const oidcAcrServiceMock = {
     getKnownAcrValues: jest.fn(),
+    isAcrValid: jest.fn(),
   };
 
   const atHashMock = 'atHashMock value';
@@ -951,28 +952,92 @@ describe('CoreOidcProviderMiddlewareService', () => {
   });
 
   describe('isSsoAvailable', () => {
+    const idpAcrMock = 'eidas2';
+
+    beforeEach(() => {
+      configServiceMock.get.mockReturnValueOnce({
+        allowedSsoAcrs: ['eidas2'],
+        enableSso: true,
+      });
+
+      sessionServiceMock.get.mockResolvedValueOnce({
+        idpAcr: idpAcrMock,
+        spIdentity: 'mockSpIdentity',
+      });
+    });
     it('should call session.get()', async () => {
       // When
-      await service['isSsoAvailable'](sessionServiceMock);
+      await service['isSsoAvailable'](sessionServiceMock, spAcrMock);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.get).toHaveBeenCalledWith('spIdentity');
     });
 
-    it('should return `true` if spIdentity exists in session', async () => {
-      // Given
-      sessionServiceMock.get.mockResolvedValueOnce({});
+    it('should call isAcrValid', async () => {
       // When
-      const result = await service['isSsoAvailable'](sessionServiceMock);
+      await service['isSsoAvailable'](sessionServiceMock, spAcrMock);
+      // Then
+      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(1);
+      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledWith(
+        idpAcrMock,
+        spAcrMock,
+      );
+    });
+
+    it('should call ssoCanBeUsed', async () => {
+      // Given
+      service['ssoCanBeUsed'] = jest.fn();
+
+      oidcAcrServiceMock.isAcrValid.mockReturnValue(true);
+      // When
+      await service['isSsoAvailable'](sessionServiceMock, spAcrMock);
+      // Then
+      expect(service['ssoCanBeUsed']).toHaveBeenCalledTimes(1);
+      expect(service['ssoCanBeUsed']).toHaveBeenCalledWith(
+        true,
+        false,
+        true,
+        true,
+      );
+    });
+
+    it('should defined spIdentity and idpAcr to undefined if destructure method is impossible', async () => {
+      // Given
+      service['ssoCanBeUsed'] = jest.fn();
+
+      sessionServiceMock.get.mockReset().mockResolvedValueOnce(null);
+      oidcAcrServiceMock.isAcrValid.mockReturnValue(false);
+      // When
+      await service['isSsoAvailable'](sessionServiceMock, spAcrMock);
+      // Then
+      expect(service['ssoCanBeUsed']).toHaveBeenCalledTimes(1);
+      expect(service['ssoCanBeUsed']).toHaveBeenCalledWith(
+        true,
+        false,
+        false,
+        false,
+      );
+    });
+
+    it('should return `true` if ssoCanBeUsed return true', async () => {
+      // Given
+      service['ssoCanBeUsed'] = jest.fn().mockReturnValue(true);
+      // When
+      const result = await service['isSsoAvailable'](
+        sessionServiceMock,
+        spAcrMock,
+      );
       // Then
       expect(result).toBe(true);
     });
 
-    it('should return `false` if spIdentity does not exist in session', async () => {
+    it('should return `false` if ssoCanBeUsed return false', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValueOnce(undefined);
+      service['ssoCanBeUsed'] = jest.fn().mockReturnValue(false);
       // When
-      const result = await service['isSsoAvailable'](sessionServiceMock);
+      const result = await service['isSsoAvailable'](
+        sessionServiceMock,
+        spAcrMock,
+      );
       // Then
       expect(result).toBe(false);
     });
@@ -1228,6 +1293,93 @@ describe('CoreOidcProviderMiddlewareService', () => {
       expect(flowStepsMock.setStep).not.toHaveBeenCalled();
       expect(trackingMock.track).not.toHaveBeenCalled();
       expect(coreServiceMock.redirectToIdp).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('ssoCanBeUsed', () => {
+    it('should return true if all params are true', () => {
+      // Given
+      const enableSsoMock = true;
+      const hasAuthorizedAcrMock = true;
+      const hasSufficientAcrMock = true;
+      const hasSpIdentityMock = true;
+      // When
+      const result = service['ssoCanBeUsed'](
+        enableSsoMock,
+        hasAuthorizedAcrMock,
+        hasSufficientAcrMock,
+        hasSpIdentityMock,
+      );
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it('should return false if enableSso is defined to false and others to true', () => {
+      // Given
+      const enableSsoMock = false;
+      const hasAuthorizedAcrMock = true;
+      const hasSufficientAcrMock = true;
+      const hasSpIdentityMock = true;
+      // When
+      const result = service['ssoCanBeUsed'](
+        enableSsoMock,
+        hasAuthorizedAcrMock,
+        hasSufficientAcrMock,
+        hasSpIdentityMock,
+      );
+      // Then
+      expect(result).toBe(false);
+    });
+
+    it('should return false if hasAuthorizedAcr is defined to false and others to true', () => {
+      // Given
+      const enableSsoMock = true;
+      const hasAuthorizedAcrMock = false;
+      const hasSufficientAcrMock = true;
+      const hasSpIdentityMock = true;
+      // When
+      const result = service['ssoCanBeUsed'](
+        enableSsoMock,
+        hasAuthorizedAcrMock,
+        hasSufficientAcrMock,
+        hasSpIdentityMock,
+      );
+      // Then
+      expect(result).toBe(false);
+    });
+
+    it('should return false if hasSufficientAcr is defined to false and others to true', () => {
+      // Given
+      const enableSsoMock = true;
+      const hasAuthorizedAcrMock = true;
+      const hasSufficientAcrMock = false;
+      const hasSpIdentityMock = true;
+      // When
+      const result = service['ssoCanBeUsed'](
+        enableSsoMock,
+        hasAuthorizedAcrMock,
+        hasSufficientAcrMock,
+        hasSpIdentityMock,
+      );
+      // Then
+      expect(result).toBe(false);
+    });
+
+    it('should return false if hasSpIdentity is defined to false and others to true', () => {
+      // Given
+      const enableSsoMock = true;
+      const hasAuthorizedAcrMock = true;
+      const hasSufficientAcrMock = true;
+      const hasSpIdentityMock = false;
+      // When
+      const result = service['ssoCanBeUsed'](
+        enableSsoMock,
+        hasAuthorizedAcrMock,
+        hasSufficientAcrMock,
+        hasSpIdentityMock,
+      );
+      // Then
+      expect(result).toBe(false);
     });
   });
 });

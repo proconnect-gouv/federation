@@ -280,10 +280,22 @@ export class CoreOidcProviderMiddlewareService {
 
   protected async isSsoAvailable(
     session: ISessionService<OidcSession>,
+    spAcr: string,
   ): Promise<boolean> {
-    const spIdentity = await session.get('spIdentity');
+    const { allowedSsoAcrs, enableSso } = this.config.get<CoreConfig>('Core');
+    const { spIdentity, idpAcr } = (await session.get()) || {};
 
-    return Boolean(spIdentity);
+    const hasSpIdentity = Boolean(spIdentity);
+    const hasSufficientAcr = this.oidcAcr.isAcrValid(idpAcr, spAcr);
+    const hasAuthorizedAcr = allowedSsoAcrs.includes(spAcr);
+    const ssoCanBeUsed = this.ssoCanBeUsed(
+      enableSso,
+      hasAuthorizedAcr,
+      hasSufficientAcr,
+      hasSpIdentity,
+    );
+
+    return ssoCanBeUsed;
   }
 
   protected async redirectToSso(ctx: OidcCtx): Promise<void> {
@@ -320,5 +332,14 @@ export class CoreOidcProviderMiddlewareService {
     const context = this.getEventContext(ctx);
 
     ctx.req.sessionId = context.sessionId;
+  }
+
+  private ssoCanBeUsed(
+    enableSso: boolean,
+    hasAuthorizedAcr: boolean,
+    hasSufficientAcr: boolean,
+    hasSpIdentity: boolean,
+  ): boolean {
+    return enableSso && hasAuthorizedAcr && hasSufficientAcr && hasSpIdentity;
   }
 }

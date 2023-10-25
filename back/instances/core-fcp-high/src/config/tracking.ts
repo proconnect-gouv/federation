@@ -27,6 +27,12 @@ export default {
       event: 'FC_AUTHORIZE_INITIATED',
     },
 
+    FC_SSO_INITIATED: {
+      step: '1.1.0',
+      category: EventsCategories.FRONT_CINEMATIC,
+      event: 'FC_SSO_INITIATED',
+    },
+
     FC_SHOWED_IDP_CHOICE: {
       step: '2.0.0',
       category: EventsCategories.FRONT_CINEMATIC,
