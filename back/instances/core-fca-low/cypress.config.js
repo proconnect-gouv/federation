@@ -14,6 +14,8 @@ module.exports = defineConfig({
     excludeSpecPattern: '',
     supportFile: 'cypress/support/index.js',
     video: false,
+    experimentalRunAllSpecs: true,
+    experimentalMemoryManagement: true,
   },
   env: {
     APP_DOMAIN: 'core-fca-low.docker.dev-franceconnect.fr',
@@ -85,7 +87,6 @@ module.exports = defineConfig({
     WELL_KNOWN: '/api/v2/.well-known/openid-configuration',
   },
   chromeWebSecurity: false,
-  videoUploadOnPasses: false,
   viewportHeight: 1000,
   viewportWidth: 1400,
   pageLoadTimeout: 30000,

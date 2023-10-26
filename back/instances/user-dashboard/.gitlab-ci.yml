@@ -8,6 +8,9 @@ user-dashboard:
     - cypress
   variables:
     TZ: 'Europe/Paris'
+    CYPRESS_PLATFORM: 'fcp-legacy' 
+    CYPRESS_TEST_ENV: 'docker'
+    CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
   cache:
     key: ${CACHE_KEY}
     policy: pull
@@ -72,13 +75,12 @@ user-dashboard:
     # Starting Cypress Quality checks
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp
-    - yarn install --ignore-engines
+    - yarn install
     # Run Visual BDD tests and abort if failed
-    - CYPRESS_TEST_ENV=docker yarn test:ud:snapshot
+    - yarn test:ud:snapshot
     # Run Functional BDD tests
-    - CYPRESS_TEST_ENV=docker yarn test:ud -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
-    - yarn report:prepare
-    - CYPRESS_PLATFORM=fcp-legacy CYPRESS_TEST_ENV=docker yarn report:generate
+    - yarn test:ud -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn report
     # Extract logs in case of failure
     - if [ $RETURN_CODE -ne 0 ]; then $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&
       (docker cp fc_fc-core_1:/var/log/fc-evt $CI_PROJECT_DIR/artifacts-logs/fcp || true) &&

@@ -218,11 +218,8 @@ yarn start:eidas
 ### Generate the Cucumber HTML report
 
 ```shell
-# Add Screenshots/Videos to the Cucumber logs
-yarn report:prepare
-
 # Generate the report for fcp-high integ01
-CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=integ01 yarn report:generate
+CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=integ01 yarn report
 ```
 
 ## Accessibility Validation

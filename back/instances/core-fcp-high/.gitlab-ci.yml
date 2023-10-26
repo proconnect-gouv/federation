@@ -8,6 +8,9 @@ fcp-high:
     - cypress
   variables:
     TZ: 'Europe/Paris'
+    CYPRESS_PLATFORM: 'fcp-high' 
+    CYPRESS_TEST_ENV: 'docker'
+    CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
   cache:
     key: ${CACHE_KEY}
     policy: pull
@@ -58,7 +61,7 @@ fcp-high:
     - docker-stack up bdd-fcp-high
     - docker exec fc_core-fcp-high_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
-    - cd $CI_PROJECT_DIR/quality/fcp && yarn install --ignore-engines
+    - cd $CI_PROJECT_DIR/quality/fcp && yarn install
     - cd $CI_PROJECT_DIR
     # Start the NodeJS apps
     - docker-stack start-all-ci
@@ -69,11 +72,10 @@ fcp-high:
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp
     # Run Visual BDD tests and abort if failed
-    - CYPRESS_TEST_ENV=docker yarn test:high:snapshot
+    - yarn test:high:snapshot
     # Run Functional BDD tests
-    - CYPRESS_TEST_ENV=docker yarn test:high:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
-    - yarn report:prepare
-    - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=docker yarn report:generate
+    - yarn test:high:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn report
     # Exit if return code equals 1
     - if [ $RETURN_CODE -ne 0 ]; then $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh && (docker cp fc-rp-all:/var/log/nginx /tmp/artifacts-logs || echo "[fc-rp-all] No NginX logs found") && exit $RETURN_CODE; fi
     # Starting Cypress E2E checks

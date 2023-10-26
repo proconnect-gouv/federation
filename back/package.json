@@ -153,7 +153,7 @@
     "@types/supertest": "^2.0.12",
     "@typescript-eslint/eslint-plugin": "^6.5.0",
     "@typescript-eslint/parser": "^6.5.0",
-    "cypress": "10.7.0",
+    "cypress": "12.17.4",
     "cypress-plugin-tab": "^1.0.5",
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",

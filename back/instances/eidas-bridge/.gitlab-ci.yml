@@ -7,6 +7,9 @@ eidas-bridge:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
   variables:
     TZ: 'Europe/Paris'
+    CYPRESS_PLATFORM: 'fcp-high'
+    CYPRESS_TEST_ENV: 'docker'
+    CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
   cache:
     key: ${CACHE_KEY}
     policy: pull
@@ -43,7 +46,7 @@ eidas-bridge:
   script:
     # Install Cypress on the runner and fetch node_modules
     - cd $CI_PROJECT_DIR/quality/fcp
-    - yarn install --ignore-engines
+    - yarn install
     # Up the docker-stack with minimal requirement
     - docker-stack up min-eidas-high
     - docker exec fc_core-fcp-high_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
@@ -52,11 +55,10 @@ eidas-bridge:
     - docker-stack wait "core-fcp-high" "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
     - docker-stack wait "eidas-bridge" "https://eidas-bridge.docker.dev-franceconnect.fr/.well-known/openid-configuration"
     # Run Visual BDD tests and abort if failed
-    - CYPRESS_TEST_ENV=docker yarn test:eidas:snapshot
+    - yarn test:eidas:snapshot
     # Run Functional BDD tests
-    - CYPRESS_TEST_ENV=docker yarn test:eidas -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
-    - yarn report:prepare
-    - CYPRESS_PLATFORM=fcp-high CYPRESS_TEST_ENV=docker yarn report:generate
+    - yarn test:eidas -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn report
     # Exit if return code equals 1
     - if [ $RETURN_CODE -ne 0 ]; then $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh && (docker cp fc-rp-all:/var/log/nginx /tmp/artifacts-logs || echo "[fc-rp-all] No NginX logs found") && exit $RETURN_CODE; fi
   interruptible: true

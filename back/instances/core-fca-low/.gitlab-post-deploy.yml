@@ -13,6 +13,7 @@ quality-fca-low-release:
   variables:
     CYPRESS_PLATFORM: 'fca-low'
     CYPRESS_TEST_ENV: 'integ01'
+    CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
   cache:
     key: ${CACHE_KEY}
     policy: pull
@@ -24,7 +25,7 @@ quality-fca-low-release:
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cd $CI_PROJECT_DIR/quality/fca && yarn install --ignore-engines
+    - cd $CI_PROJECT_DIR/quality/fca && yarn install
     - cd $CI_PROJECT_DIR
   script:
   # Build the nginx proxy to access /integ01/fca.html
@@ -33,8 +34,7 @@ quality-fca-low-release:
     - export CYPRESS_EXPLOIT_USER_PASS=$EXPLOIT_FCA_LOW_INT_PWD
     - export CYPRESS_EXPLOIT_USER_TOTP=$EXPLOIT_FCA_LOW_INT_TOTP
     - yarn test:low:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
-    - yarn report:prepare
-    - yarn report:generate
+    - yarn report
     - exit $RETURN_CODE
   dependencies: []
   artifacts:

@@ -14,6 +14,8 @@ module.exports = defineConfig({
     excludeSpecPattern: 'cypress/integration/**/*.utils.js',
     supportFile: 'cypress/support/index.js',
     video: false,
+    experimentalRunAllSpecs: true,
+    experimentalMemoryManagement: true,
   },
   env: {
     APP_DOMAIN: 'core-fcp-high.docker.dev-franceconnect.fr',
@@ -125,7 +127,6 @@ module.exports = defineConfig({
     SECRET_TOTP: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD',
   },
   chromeWebSecurity: false,
-  videoUploadOnPasses: false,
   viewportHeight: 1000,
   viewportWidth: 1400,
   pageLoadTimeout: 30000,
