@@ -32,7 +32,7 @@ back:
     - ../coverage.sh
     # Quality folder
     - cd $CI_PROJECT_DIR/quality
-    - yarn install --ignore-engines
+    - yarn install
     - yarn lint
     - yarn prettier
     - yarn tsc --noEmit
@@ -77,7 +77,7 @@ build-cache:
   script:
     - cd $CI_PROJECT_DIR/back && yarn install --ignore-engines
     - cd $CI_PROJECT_DIR/front && yarn install
-    - cd $CI_PROJECT_DIR/quality && yarn install --ignore-engines
+    - cd $CI_PROJECT_DIR/quality && yarn install
     - git clone -b $FC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $CI_PROJECT_DIR/cache/fc-apps
     - cd $CI_PROJECT_DIR/cache/fc-apps && yarn install
     - git clone -b $FC_LEGACY_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/core-legacy.git $CI_PROJECT_DIR/cache/core-legacy

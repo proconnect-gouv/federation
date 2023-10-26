@@ -16,6 +16,7 @@ quality-fcp-low-release:
     CYPRESS_EXPLOIT_USER_NAME: $EXPLOIT_FCP_LEGACY_USER
     CYPRESS_EXPLOIT_USER_PASS: $EXPLOIT_FCP_LEGACY_PWD
     CYPRESS_EXPLOIT_USER_TOTP: $EXPLOIT_FCP_LEGACY_TOTP
+    CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
   cache:
     key: ${CACHE_KEY}
     policy: pull
@@ -27,15 +28,14 @@ quality-fcp-low-release:
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
-    - cd $CI_PROJECT_DIR/quality/fcp && yarn install --ignore-engines
+    - cd $CI_PROJECT_DIR/quality/fcp && yarn install
     - cd $CI_PROJECT_DIR
   script:
   # Build the nginx proxy to access /integ01/fcp-low.html
     - docker-stack up rp-all
     - cd $CI_PROJECT_DIR/quality/fcp
     - yarn test:low:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
-    - yarn report:prepare
-    - yarn report:generate
+    - yarn report
     - exit $RETURN_CODE
   dependencies: []
   artifacts:

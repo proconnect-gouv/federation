@@ -7,7 +7,7 @@
       "avec accès au FI par défaut (premier FS)"
     ],
     "mocked": true,
-    "url": "https://fsa1-low.{{TEST_ENV}}.dev-franceconnect.fr",
+    "url": "https://fsa1-low.docker.dev-franceconnect.fr",
     "acrValue": "eidas1",
     "claims": [
       "amr"
@@ -25,7 +25,7 @@
       "avec accès au FI par défaut (deuxième FS)"
     ],
     "mocked": true,
-    "url": "https://fsa2-low.{{TEST_ENV}}.dev-franceconnect.fr",
+    "url": "https://fsa2-low.docker.dev-franceconnect.fr",
     "acrValue": "eidas1",
     "claims": [
       "amr"
@@ -44,7 +44,7 @@
       "avec accès au FI par défaut (troisième FS)"
     ],
     "mocked": true,
-    "url": "https://fsa4-low.{{TEST_ENV}}.dev-franceconnect.fr",
+    "url": "https://fsa4-low.docker.dev-franceconnect.fr",
     "acrValue": "eidas1",
     "claims": [],
     "selectors": {
@@ -60,7 +60,7 @@
       "avec accès exclusif à un FI"
     ],
     "mocked": true,
-    "url": "https://fsa5-low.{{TEST_ENV}}.dev-franceconnect.fr",
+    "url": "https://fsa5-low.docker.dev-franceconnect.fr",
     "acrValue": "eidas1",
     "claims": [],
     "selectors": {

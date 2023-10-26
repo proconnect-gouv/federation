@@ -20,7 +20,7 @@ export default class IdentityProviderSelectionPage {
   }
 
   searchIdentityProvider(terms: string): void {
-    cy.get('#fi-search-term').clear().type(terms);
+    cy.get('#fi-search-term').clearThenType(terms);
   }
 
   getIdpButton(idpId: string): ChainableElement {

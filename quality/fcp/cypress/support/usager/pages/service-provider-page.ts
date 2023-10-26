@@ -97,7 +97,8 @@ export default class ServiceProviderPage {
   }
 
   setMockRequestedAcr(acrValue: string): void {
-    cy.get('input[name="acr_values"]').clear().type(acrValue);
+    cy.get('input[name="acr_values"]').clear();
+    cy.get('input[name="acr_values"]').type(acrValue);
   }
 
   setMockRequestedAmr(isRequested: boolean): void {

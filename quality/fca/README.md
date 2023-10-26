@@ -127,11 +127,7 @@ yarn start:low --config-file cypress-integ01.json
 ### Generate the Cucumber HTML report
 
 ```shell
-# Add Screenshots/Videos to the Cucumber logs
-yarn report:prepare
-
-# Generate the report
-CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=integ01 yarn report:generate
+CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=integ01 yarn report
 ```
 
 ## Visual Validation
