@@ -92,8 +92,7 @@
     "email",
     "address",
     "phone",
-    "birthplace",
-    "birthcountry"
+    "birth"
   ],
   "serverTimeout": 25000,
   "smtp": {
