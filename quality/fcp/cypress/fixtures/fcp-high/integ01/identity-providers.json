@@ -7,7 +7,8 @@
       "par défaut",
       "actif",
       "whitelisté",
-      "français"
+      "français",
+      "autorisé pour idp_hint"
     ],
     "mocked": true,
     "usable": true,
@@ -15,6 +16,24 @@
     "acrValue": "eidas3",
     "selectors": {
       "idpButton": "#idp-fip1",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "[type='submit']"
+    }
+  },
+  {
+    "idpId": "fip2",
+    "name": "fip2",
+    "title": "Identity Provider - eIDAS élevé - nodiscov - nocrypt",
+    "descriptions": [
+      "non autorisé pour idp_hint"
+    ],
+    "mocked": true,
+    "usable": true,
+    "url": "https://fip2v2.integ01.fcp.fournisseur-d-identite.fr",
+    "acrValue": "eidas3",
+    "selectors": {
+      "idpButton": "#idp-fip2",
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "[type='submit']"

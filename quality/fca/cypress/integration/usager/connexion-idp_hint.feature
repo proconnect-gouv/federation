@@ -4,7 +4,8 @@ Fonctionnalité: Connexion Usager - idp_hint
   # En tant que FS,
   # je souhaite forcer l'usager à utilier un FI donné
 
-  Scénario: Connexion initiale + SSO avec id_hint valide
+  @ignoreInteg01
+  Scénario: Connexion initiale + SSO avec idp_hint valide
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise le fournisseur d'identité "autorisé pour idp_hint"
     Et que je navigue sur la page fournisseur de service
@@ -23,7 +24,7 @@ Fonctionnalité: Connexion Usager - idp_hint
     Et je suis redirigé vers la page fournisseur de service
     Et je suis connecté au fournisseur de service
 
-  Scénario: Connexion avec id_hint invalide
+  Scénario: Connexion avec idp_hint invalide
     Etant donné que j'utilise un fournisseur de service "par défaut"
     Et que j'utilise le fournisseur d'identité "non autorisé pour idp_hint"
     Et que je navigue sur la page fournisseur de service
