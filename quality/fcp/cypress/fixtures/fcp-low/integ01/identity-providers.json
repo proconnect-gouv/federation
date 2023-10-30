@@ -25,7 +25,8 @@
     "name": "fip2-low",
     "title": "IDP2 - LOW",
     "descriptions": [
-      "actif"
+      "actif",
+      "non autorisé pour idp_hint"
     ],
     "mocked": true,
     "usable": true,

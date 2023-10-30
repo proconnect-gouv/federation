@@ -6,7 +6,8 @@
       "par défaut",
       "whitelisté",
       "non blacklisté",
-      "rattaché à un ministère avec plusieurs FI"
+      "rattaché à un ministère avec plusieurs FI",
+      "non autorisé pour idp_hint"
     ],
     "ministry": "Démonstration",
     "title": "Identity Provider 1 - HS256",
