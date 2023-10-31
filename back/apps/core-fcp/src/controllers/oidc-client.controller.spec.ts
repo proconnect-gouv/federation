@@ -5,10 +5,15 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { CoreVerifyService, ProcessCore } from '@fc/core';
+import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger-legacy';
 import { IdentityProviderMetadata, IOidcIdentity, OidcSession } from '@fc/oidc';
-import { OidcClientService, TokenParams } from '@fc/oidc-client';
+import {
+  OidcClientConfigService,
+  OidcClientService,
+  TokenParams,
+} from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import {
   SessionCsrfService,
@@ -147,6 +152,14 @@ describe('OidcClient Controller', () => {
     getInteraction: jest.fn(),
   };
 
+  const oidcClientConfigServiceMock = {
+    get: jest.fn(),
+  };
+
+  const cryptographyMock = {
+    genRandomString: jest.fn(),
+  };
+
   const interactionMock = {
     params: {
       // acr_values is an oidc defined variable name
@@ -172,6 +185,8 @@ describe('OidcClient Controller', () => {
         CoreVerifyService,
         CoreFcpService,
         OidcProviderService,
+        OidcClientConfigService,
+        CryptographyService,
       ],
     })
       .overrideProvider(OidcClientService)
@@ -194,6 +209,10 @@ describe('OidcClient Controller', () => {
       .useValue(coreServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
+      .overrideProvider(OidcClientConfigService)
+      .useValue(oidcClientConfigServiceMock)
+      .overrideProvider(CryptographyService)
+      .useValue(cryptographyMock)
       .compile();
 
     controller = module.get<OidcClientController>(OidcClientController);
@@ -559,6 +578,29 @@ describe('OidcClient Controller', () => {
       oidcClientServiceMock.getEndSessionUrlFromProvider.mockReturnValueOnce(
         endsessionurlMock,
       );
+
+      oidcClientConfigServiceMock.get.mockReturnValue({ stateLength: 32 });
+      cryptographyMock.genRandomString.mockReturnValueOnce(idpStateMock);
+    });
+
+    it('should call oidc config', async () => {
+      // When
+      await controller.logoutFromIdp(res, sessionServiceMock);
+
+      // Then
+      expect(oidcClientConfigServiceMock.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('Should generate a random state of 32 characters', async () => {
+      // Given
+      const randSize = 32;
+
+      // When
+      await controller.logoutFromIdp(res, sessionServiceMock);
+
+      // Then
+      expect(cryptographyMock.genRandomString).toHaveBeenCalledTimes(1);
+      expect(cryptographyMock.genRandomString).toHaveBeenCalledWith(randSize);
     });
 
     it('should call sessionOidc getter', async () => {

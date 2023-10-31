@@ -21,11 +21,13 @@ import {
 import { AppConfig } from '@fc/app';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
 import {
   GetOidcCallback,
+  OidcClientConfigService,
   OidcClientRoutes,
   OidcClientService,
   OidcClientSession,
@@ -58,11 +60,13 @@ export class OidcClientController {
     private readonly config: ConfigService,
     private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
+    private readonly oidcClientConfig: OidcClientConfigService,
     private readonly coreFca: CoreFcaService,
     private readonly csrfService: SessionCsrfService,
     private readonly oidcProvider: OidcProviderService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
+    private readonly crypto: CryptographyService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -136,7 +140,10 @@ export class OidcClientController {
       method: 'POST',
       name: 'OidcClientRoutes.DISCONNECT_FROM_IDP',
     });
-    const { idpIdToken, idpState, idpId } = await sessionOidc.get();
+    const { idpIdToken, idpId } = await sessionOidc.get();
+
+    const { stateLength } = await this.oidcClientConfig.get();
+    const idpState: string = this.crypto.genRandomString(stateLength);
 
     const endSessionUrl: string =
       await this.oidcClient.getEndSessionUrlFromProvider(
