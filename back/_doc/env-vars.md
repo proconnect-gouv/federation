@@ -166,6 +166,7 @@
 | AdapterMongo_DISABLE_IDP_VALIDATION_ON_LEGACY | boolean |
 | AdapterMongo_PLATFORM | string |
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
 | App_EIDAS_BRIDGE_UID | string |
 | App_HTTPS_SERVER_CERT | file |

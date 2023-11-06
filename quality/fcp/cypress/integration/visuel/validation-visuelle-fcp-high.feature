@@ -16,7 +16,7 @@ Fonctionnalité: Validation Visuelle
     Et que je suis redirigé vers la page d'information
     Et que la copie d'écran "information" correspond à la page actuelle sur "<device>"
     Et que les informations demandées par le fournisseur de service correspondent au scope "identite_pivot sans alias"
-    Et que la copie d'écran "informationAvecScope" correspond à l'élément web "article" sur "<device>"
+    Et que la copie d'écran "informationAvecScope" correspond à l'élément web "[data-testid='consent-detail']" sur "<device>"
     Quand je continue sur le fournisseur de service
     Alors je suis redirigé vers la page fournisseur de service
     Et je suis connecté au fournisseur de service
