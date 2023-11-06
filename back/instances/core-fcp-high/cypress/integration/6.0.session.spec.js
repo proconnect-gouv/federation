@@ -18,7 +18,7 @@ describe('6.0 - Session', () => {
 
     cy.clearCookies();
 
-    cy.get('#consent').click();
+    cy.get('[data-testid="consent-continue"]').click();
 
     cy.url().should('match', new RegExp(`\/login`));
     cy.hasError('Y420002');

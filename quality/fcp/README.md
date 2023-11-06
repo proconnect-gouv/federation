@@ -52,8 +52,7 @@ In order to run tests with Cypress,
 
 ```shell
 docker-stack prune && \
-docker-stack up all-fcp-low && \
-docker-stack dependencies-all && \
+docker-stack up bdd-fcp-low && \
 docker-stack start-all
 ```
 
@@ -84,8 +83,6 @@ yarn start:low
 ```shell
 docker-stack prune && \
 docker-stack up bdd-fcp-high && \
-docker-stack dependencies-all && \
-docker-stack fixtures-fcp-high && \
 docker-stack start-all
 ```
 
@@ -193,7 +190,6 @@ yarn start:ud
 ```shell
 docker-stack prune && \
 docker-stack up min-eidas-high && \
-docker-stack dependencies-all && \
 docker-stack start-all
 ```
 

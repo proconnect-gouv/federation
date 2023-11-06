@@ -18,7 +18,7 @@ describe('10.0 - Error Management', () => {
       failOnStatusCode: false,
     });
 
-    cy.get('.previous-link').should('not.exist');
+    cy.get('[data-testid="back-to-sp-link"]').should('not.exist');
   });
 
   it('should not have link to error management after redirect_uri in authorize', () => {
@@ -31,7 +31,7 @@ describe('10.0 - Error Management', () => {
       failOnStatusCode: false,
     });
 
-    cy.get('.previous-link').should('not.exist');
+    cy.get('[data-testid="back-to-sp-link"]').should('not.exist');
   });
 
   it('should redirect to Sp after Idp crashed', () => {
@@ -49,19 +49,21 @@ describe('10.0 - Error Management', () => {
     cy.proxyURLWasActivated();
 
     cy.hasError('Y000006');
-    cy.get('#error-message').contains(
+    cy.hasErrorMessage(
       `Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous`,
     );
 
-    cy.get('.previous-link').should('exist');
-    cy.get('.previous-link').contains('Revenir sur FSP - FSP1-HIGH');
+    cy.get('[data-testid="back-to-sp-link"]').should('exist');
+    cy.get('[data-testid="back-to-sp-link"]').contains(
+      'Revenir sur FSP - FSP1-HIGH',
+    );
 
-    cy.get('.previous-link-container')
+    cy.get('[data-testid="back-to-sp-link"]')
       .invoke('attr', 'href')
       .then(($link) => {
         cy.log($link);
       });
-    cy.get('.previous-link').click();
+    cy.get('[data-testid="back-to-sp-link"]').click();
 
     cy.url().should(
       'contains',
@@ -85,20 +87,22 @@ describe('10.0 - Error Management', () => {
     /**
      * intentionally blacklisted to create a false error
      */
-    cy.get(`#fs-request-${idpId}`).within(() => {
+    cy.get(`[data-testid="fs-request-${idpId}"]`).within(() => {
       cy.get('input[name="providerUid"]').invoke('attr', 'value', 'fip8-high');
       cy.get(`button#idp-${idpId}`).click();
     });
 
     cy.hasError('Y020023');
-    cy.get('#error-message').contains(
+    cy.hasErrorMessage(
       'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.',
     );
 
-    cy.get('.previous-link').should('exist');
-    cy.get('.previous-link').contains('Revenir sur FSP - FSP5-HIGH');
+    cy.get('[data-testid="back-to-sp-link"]').should('exist');
+    cy.get('[data-testid="back-to-sp-link"]').contains(
+      'Revenir sur FSP - FSP5-HIGH',
+    );
 
-    cy.get('.previous-link').click();
+    cy.get('[data-testid="back-to-sp-link"]').click();
 
     cy.url().should(
       'contains',
