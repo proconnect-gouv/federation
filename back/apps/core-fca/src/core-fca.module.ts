@@ -16,6 +16,7 @@ import { CryptographyFcaModule } from '@fc/cryptography-fca';
 import { ExceptionsModule } from '@fc/exceptions';
 import { FeatureHandlerModule } from '@fc/feature-handler';
 import { FlowStepsModule } from '@fc/flow-steps';
+import { FqdnToIdpAdapterMongoModule } from '@fc/fqdn-to-idp-adapter-mongo';
 import { HttpProxyModule } from '@fc/http-proxy';
 import {
   IdentityProviderAdapterMongoModule,
@@ -68,6 +69,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     AccountModule,
     ServiceProviderAdapterMongoModule,
     IdentityProviderAdapterMongoModule,
+    FqdnToIdpAdapterMongoModule,
     MinistriesModule,
     HttpProxyModule,
     OidcAcrModule,

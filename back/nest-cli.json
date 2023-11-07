@@ -1059,6 +1059,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/jwt/tsconfig.lib.json"
       }
+    },
+    "fqdn-to-idp-adapter-mongo": {
+      "type": "library",
+      "root": "libs/fqdn-to-idp-adapter-mongo",
+      "entryFile": "index",
+      "sourceRoot": "libs/fqdn-to-idp-adapter-mongo/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/fqdn-to-idp-adapter-mongo/tsconfig.lib.json"
+      }
     }
   }
 }

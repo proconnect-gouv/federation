@@ -233,6 +233,7 @@
       "^@fc/identity-provider-adapter-env(|/.*)$": "<rootDir>/libs/identity-provider-adapter-env/src$1",
       "^@fc/identity-provider-adapter-mongo(|/.*)$": "<rootDir>/libs/identity-provider-adapter-mongo/src$1",
       "^@fc/data-provider-adapter-mongo(|/.*)$": "<rootDir>/libs/data-provider-adapter-mongo/src$1",
+      "^@fc/fqdn-to-idp-adapter-mongo(|/.*)$": "<rootDir>/libs/fqdn-to-idp-adapter-mongo/src/$1",
       "^@fc/identity(|/.*)$": "<rootDir>/libs/identity/src$1",
       "^@fc/service-provider-adapter-env(|/.*)$": "<rootDir>/libs/service-provider-adapter-env/src$1",
       "^@fc/service-provider-adapter-mongo(|/.*)$": "<rootDir>/libs/service-provider-adapter-mongo/src$1",

@@ -550,30 +550,8 @@ const fia = {
   },
 };
 
-// -- IDPs ----------
-print("FIA > Initializing provider: fia1-low - Activated");
-db.provider.update({ name: "fia1-low" }, fia["FIA1-LOW"], { upsert: true });
-print("FIA > Initializing provider: fia2-low - Activated");
-db.provider.update({ name: "fia2-low" }, fia["FIA2-LOW"], { upsert: true });
-print("FIA > Initializing provider: fia3-low - Activated");
-db.provider.update({ name: "fia3-low" }, fia["FIA3-LOW"], { upsert: true });
-print("FIP > Initializing provider: fia4-low - Activated");
-db.provider.update({ name: "fia4-low" }, fia["FIA4-LOW"], { upsert: true });
-print("FIP > Initializing provider: fia5-low - Activated");
-db.provider.update({ name: "fia5-low" }, fia["FIA5-LOW"], { upsert: true });
-print("FIP > Initializing provider: fia6-low - Activated");
-db.provider.update({ name: "fia6-low" }, fia["FIA6-LOW"], { upsert: true });
-print("FIP > Initializing provider: fia7-low - Activated");
-db.provider.update({ name: "fia7-low" }, fia["FIA7-LOW"], { upsert: true });
-print("FIP > Initializing provider: fia8-low - Activated");
-db.provider.update({ name: "fia8-low" }, fia["FIA8-LOW"], { upsert: true });
-print("FIP > Initializing provider: moncomptepro - Activated");
-db.provider.update({ name: "moncomptepro" }, fia["MONCOMPTEPRO"], { upsert: true });
-print("FIA > Initializing provider: llng - Activated");
-db.provider.update({ name: "LemonLDAP-ng" }, fia["FIA-LLNG-LOW"], {
-  upsert: true,
-});
-print("FIA > Initializing provider: fia-rie-low - Activated");
-db.provider.update({ name: "fia-rie-low" }, fia["FIA-RIE-LOW"], {
-  upsert: true,
+// -- Idps ----------
+Object.values(fia).forEach((idp) => {
+  print(`${idp.name} > Initializing provider: ${idp.name}`);
+  db.provider.update({ name: idp.name }, idp, { upsert: true });
 });
