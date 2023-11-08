@@ -106,6 +106,7 @@
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
 | Core_ALLOWED_IDP_HINTS | json |
+| Core_FEATURE_SSO_SUBSTANTIAL | boolean |
 | Core_SUPPORT_FORM_URL | string |
 | CryptographyBroker_QUEUE | string |
 | CryptographyBroker_URLS | json |
@@ -154,6 +155,7 @@
 | Rnipp_HOSTNAME | string |
 | Rnipp_PROTOCOL | string |
 | Session_COOKIE_SECRETS | json |
+| Session_FEATURE_SSO_SUBSTANTIAL | boolean |
 | Session_USERINFO_CRYPT_KEY | string |
 | UD_FQDN | string |
 
