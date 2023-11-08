@@ -50,6 +50,6 @@ export default {
     'Y270003',
   ],
   useIdentityFrom: IdentitySource.IDP,
-  enableSso: true,
+  enableSso: env.boolean('FEATURE_SSO_SUBSTANTIAL'),
   allowedSsoAcrs: ['eidas2'],
 } as CoreConfig;

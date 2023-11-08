@@ -25,7 +25,7 @@ export default {
   sessionCookieName: 'fc_session_id',
   lifetime: 600, // 10 minutes
   sessionIdLength: 64,
-  slidingExpiration: true,
+  slidingExpiration: env.boolean('FEATURE_SSO_SUBSTANTIAL'),
   excludedRoutes: [
     OidcProviderRoutes.JWKS,
     OidcProviderRoutes.OPENID_CONFIGURATION,
