@@ -1,4 +1,4 @@
-partner-fca:
+.partner-fca:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:

@@ -9,6 +9,7 @@ FCA validation with system tests implemented using a Test Framework (based on Cy
 ## Folder Structure
 
 - Features folder: [/cypress/integration](./cypress/integration)
+- Steps/Pages folder (common): [/cypress/support/common](./cypress/support/common)
 - Steps/Pages folder (exploitation): [/cypress/support/exploitation](./cypress/support/exploitation)
 - Steps/Pages folder (usager): [/cypress/support/usager](./cypress/support/usager)
 - Test Data folder: [/cypress/fixtures](./cypress/fixtures)
@@ -18,7 +19,7 @@ FCA validation with system tests implemented using a Test Framework (based on Cy
 | Environment Variable | Description                       | Comment                                      |
 | -------------------- | --------------------------------- | -------------------------------------------- |
 | PLATFORM             | Platform under test               | `fca-low`                                    |
-| TEST_ENV             | Test environment                  | `docker` or `recette`, etc.                  |
+| TEST_ENV             | Test environment                  | `docker` or `integ01`, etc.                  |
 | TAGS                 | Tags expression                   | `not @ignore`                                |
 | EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/preprod              |
 | EXPLOIT_ADMIN_PASS   | Exploitation admin password       | needed only for integ01/preprod              |
@@ -75,31 +76,9 @@ yarn test:low
 yarn start:low
 ```
 
-#### Run the tests from Cypress UI for recette environment
-
-1. Duplicate `cypress-fca-low.json` and rename it `cypress-recette.json`
-2. Change the following env attributes
-
-```json
-"TEST_ENV": "recette",
-"FC_ACCESS_USER": "<FranceConnect access user for HTTP Basic Authentication>",
-"FC_ACCESS_PASS": "<FranceConnect access password for HTTP Basic Authentication>",
-```
-
-3. Run the job `review-fca-low` on the merge request, in order to deploy the recette environment
-4. Check that the recette environment is up and running navigating from `https://recette.dev-franceconnect.fr/fca.html`
-5. Open Cypress UI to run tests on FCA-LOW against recette environment
-
-```shell
-yarn start:low --config-file cypress-recette.json
-```
-
-6. Run the `usager` tests (user connection) or `exploitation` tests (admin configuration)
-
 #### Run the tests from Cypress UI for integ01 environment
 
-1. Duplicate `cypress-fca-low.json` and rename it `cypress-integ01.json`
-2. Change the following env attributes
+1. Update `cypress-fca-low-base.config.ts` by changing the following env attributes
 
 ```json
 "TEST_ENV": "integ01",
@@ -110,7 +89,7 @@ yarn start:low --config-file cypress-recette.json
 "FC_ACCESS_PASS": "<FranceConnect access password for HTTP Basic Authentication>",
 ```
 
-3. Start the proxy to access `https://docker.dev-franceconnect.fr/integ01/fca.html`
+1. Start the proxy to access `https://docker.dev-franceconnect.fr/integ01/fca.html`
 
 ```shell
 docker-stack up rp-all
@@ -119,7 +98,7 @@ docker-stack up rp-all
 4. Open Cypress UI to run tests on FCA-LOW against integ01 environment
 
 ```shell
-yarn start:low --config-file cypress-integ01.json
+yarn start:low
 ```
 
 5. Run the `usager` tests (user connection) or `exploitation` tests (if you have an operator user)
@@ -134,7 +113,7 @@ CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=integ01 yarn report
 
 We are running visual validation using the cypress plugin [cypress-image-snapshot](https://github.com/jaredpalmer/cypress-image-snapshot).
 
-The visual validations are done on Electron 94 headless in the terminal.
+The visual validations are done on Electron 106 headless in the terminal.
 
 ### Run the snapshot tests
 

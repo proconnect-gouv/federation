@@ -1,5 +1,5 @@
 #language: fr
-@userDashboard @historiqueConnexion @ignoreDocker @ignoreHigh @ignoreLow
+@userDashboard @historiqueConnexion @ignoreDocker
 Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
   # En tant qu'usager de FranceConnect,
   # je veux me connecter au user-dashboard sur integ01

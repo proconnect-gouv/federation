@@ -2,7 +2,12 @@ user-dashboard:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      variables:
+        BDD_TAGS: '@ci and not @ignore'
+    - if: '$CI_COMMIT_BRANCH == "staging"'
+      variables:
+        BDD_TAGS: 'not @ignore'
   timeout: 1h
   tags:
     - cypress
@@ -37,6 +42,9 @@ user-dashboard:
       # Cypress
       - cache/Cypress
   before_script:
+    # Test Scope definition
+    - BDD_TAGS=${BDD_TAGS_UD:-$BDD_TAGS}
+    - echo "BDD_TAGS=$BDD_TAGS"
     # Ensure a clean docker environnement
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - echo "FC_LEGACY_VERSION=${FC_LEGACY_VERSION:=staging}"
@@ -73,13 +81,14 @@ user-dashboard:
     - docker-stack wait "ud-front" "https://ud.docker.dev-franceconnect.fr" "240"
     - docker-stack wait "core" "https://fcp.docker.dev-franceconnect.fr/api/v1/statuses"
     # Starting Cypress Quality checks
-    - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp
     - yarn install
     # Run Visual BDD tests and abort if failed
+    - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting visual checks"
     - yarn test:ud:snapshot
     # Run Functional BDD tests
-    - yarn test:ud -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks with tags $BDD_TAGS"
+    - yarn test:ud -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS" || RETURN_CODE=1
     - yarn report
     # Extract logs in case of failure
     - if [ $RETURN_CODE -ne 0 ]; then $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh &&

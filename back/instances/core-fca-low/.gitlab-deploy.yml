@@ -45,7 +45,7 @@ stop-fca-low:
     - staging
   when: manual
 
-quality-fca-low-recette:
+.quality-fca-low-recette:
   stage: 'Review'
   image: ${E2E_DOCKER_IMAGE}
   tags:

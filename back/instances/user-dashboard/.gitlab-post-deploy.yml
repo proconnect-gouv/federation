@@ -11,6 +11,7 @@ quality-user-dashboard-release:
     name: integ01
     url: https://fcp.integ01.dev-franceconnect.fr
   variables:
+    BDD_TAGS: 'not @ignore'
     CYPRESS_PLATFORM: 'fcp-legacy'
     CYPRESS_TEST_ENV: 'integ01'
     CYPRESS_EXPLOIT_USER_NAME: $EXPLOIT_FCP_LEGACY_USER
@@ -26,6 +27,8 @@ quality-user-dashboard-release:
     paths:
       - quality/node_modules/
   before_script:
+    # Test Scope definition
+    - BDD_TAGS=${BDD_TAGS_UD:-$BDD_TAGS}
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - shopt -s expand_aliases
@@ -37,7 +40,7 @@ quality-user-dashboard-release:
     # Build the nginx proxy to access /integ01/fcp-low.html
     - docker-stack up rp-all
     - cd $CI_PROJECT_DIR/quality/fcp
-    - yarn test:ud -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - yarn test:ud -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS" || RETURN_CODE=1
     - yarn report
     - exit $RETURN_CODE
   dependencies: []

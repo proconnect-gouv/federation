@@ -1,10 +1,11 @@
 #language: fr
-@usager @rechercheFi @ci
+@usager @rechercheFi
 Fonctionnalité: Recherche FI
   # En tant qu'usager d'un fournisseur de service,
   # je veux rechercher un FI par ministère ou par son nom,
   # afin de m'authentifier
 
+  @ci
   Scénario: Recherche FI - par son nom
     Etant donné que j'utilise le fournisseur de service "par défaut"
     Et que je navigue sur la page fournisseur de service
@@ -34,6 +35,7 @@ Fonctionnalité: Recherche FI
       | eidas faible        |
       | es256               |
 
+  @ci
   Scénario: Recherche FI - par son ministère
     Etant donné que j'utilise le fournisseur de service "par défaut"
     Et que je navigue sur la page fournisseur de service

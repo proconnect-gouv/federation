@@ -1,5 +1,5 @@
 #language: fr
-@usager @connexionChiffrement @ci @fcpLow
+@usager @connexionChiffrement @fcpLow
 Fonctionnalité: Connexion avec chiffrement
   # En tant qu'usager d'un fournisseur de service,
   # je veux me connecter à un FI en utilisant du chiffrement
@@ -24,11 +24,15 @@ Fonctionnalité: Connexion avec chiffrement
     Et je suis connecté au fournisseur de service
     Et le fournisseur de service a accès aux informations du scope "tous les scopes"
 
+    @ci
+    Exemples:
+      | signature |
+      | HS256     |
+      |           |
+
     Exemples:
       | signature |
       | ES256     |
-      | HS256     |
-      |           |
   # Aucun FI configuré actuellement avec cette configuration de signature
   #   | RS256     |
 
