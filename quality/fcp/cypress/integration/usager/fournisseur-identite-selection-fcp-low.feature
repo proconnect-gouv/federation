@@ -1,5 +1,5 @@
 #language: fr
-@usager @fiSelection @fcpLow @ci
+@usager @fiSelection @fcpLow
 Fonctionnalité: Fournisseur Identité - Sélection - fcp-low
   # En tant qu'usager d'un fournisseur de service,
   # je veux visualiser la liste des fournisseurs d'identité disponibles
@@ -44,7 +44,7 @@ Fonctionnalité: Fournisseur Identité - Sélection - fcp-low
     Alors je suis redirigé vers la page login du fournisseur d'identité
 
   # configuration de FI manquante
-  @ignoreInteg01
+  @ci @ignoreInteg01
   Scénario: Affichage des FI sur la mire - FI désactivé non sélectionnable
     Etant donné que j'utilise un fournisseur d'identité "désactivé et visible"
     Et que je navigue sur la page fournisseur de service
@@ -55,7 +55,7 @@ Fonctionnalité: Fournisseur Identité - Sélection - fcp-low
     Alors je ne suis pas redirigé vers la page login du fournisseur d'identité
 
   # configuration de FI manquante
-  @ignoreInteg01
+  @ci @ignoreInteg01
   Scénario: Connexion d'un usager - erreur si on force la connexion via un FI désactivé
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
@@ -67,6 +67,7 @@ Fonctionnalité: Fournisseur Identité - Sélection - fcp-low
     Et le code d'erreur FranceConnect est "Y020017"
     Et le message d'erreur FranceConnect est "Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous."
 
+  @ci
   Scénario: Connexion d'un usager - erreur connexion abandonnée
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect

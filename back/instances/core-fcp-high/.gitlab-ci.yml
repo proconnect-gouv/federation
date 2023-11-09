@@ -2,7 +2,14 @@ fcp-high:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      variables:
+        BDD_TAGS: '@ci and not @ignoreHigh and not @fcpLow'
+        RUN_E2E: 0
+    - if: '$CI_COMMIT_BRANCH == "staging"'
+      variables:
+        BDD_TAGS: 'not @ignoreHigh and not @fcpLow'
+        RUN_E2E: 1
   timeout: 2h
   tags:
     - cypress
@@ -37,6 +44,11 @@ fcp-high:
       # Cypress
       - cache/Cypress
   before_script:
+    # Test Scope definition
+    - BDD_TAGS=${BDD_TAGS_FCP_HIGH:-$BDD_TAGS}
+    - RUN_E2E=${RUN_E2E_FCP_HIGH:-$RUN_E2E}
+    - echo "BDD_TAGS=$BDD_TAGS"
+    - echo "RUN_E2E=$RUN_E2E"
     # Ensure a clean docker environnement
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
@@ -69,16 +81,18 @@ fcp-high:
     - docker-stack wait "core-fcp-high" "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
     - docker-stack wait "exploitation-high" "https://exploitation-high.docker.dev-franceconnect.fr/login"
     # Starting Cypress Quality checks
-    - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks"
     - cd $CI_PROJECT_DIR/quality/fcp
     # Run Visual BDD tests and abort if failed
+    - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting visual checks"
     - yarn test:high:snapshot
     # Run Functional BDD tests
-    - yarn test:high:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
+    - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks with tags $BDD_TAGS"
+    - yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS" || RETURN_CODE=1
     - yarn report
     # Exit if return code equals 1
     - if [ $RETURN_CODE -ne 0 ]; then $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh && (docker cp fc-rp-all:/var/log/nginx /tmp/artifacts-logs || echo "[fc-rp-all] No NginX logs found") && exit $RETURN_CODE; fi
-    # Starting Cypress E2E checks
+    # Starting Cypress E2E checks (if $RUN_E2E = 1)
+    - if [ $RUN_E2E -ne 1 ]; then exit $RETURN_CODE; fi
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting E2E checks"
     - cd $CI_PROJECT_DIR/back
     - yarn test:e2e:core-fcp-high -c video=${CYPRESS_VIDEO} || RETURN_CODE=1

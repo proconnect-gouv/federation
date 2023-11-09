@@ -1,4 +1,4 @@
-partner-fcp:
+.partner-fcp:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:
