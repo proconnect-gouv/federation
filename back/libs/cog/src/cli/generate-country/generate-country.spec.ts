@@ -1,7 +1,12 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
-import { createCSV, getCwdForDirectory, readCSV } from '../helpers';
+import {
+  createCSV,
+  getCwdForDirectory,
+  readCSV,
+  replaceAllOccurrences,
+} from '../helpers';
 import { GenerateCountry } from './generate-country';
 
 jest.mock('path');
@@ -84,6 +89,7 @@ describe('GenerateCountry', () => {
 
   describe('searchInCSVFiles()', () => {
     const getCwdForDirectoryMock = jest.mocked(getCwdForDirectory);
+    const replaceAllOccurrencesMock = jest.mocked(replaceAllOccurrences);
     const joinMock = jest.mocked(join);
     const readCSVMock = jest.mocked(readCSV);
     const createCSVMock = jest.mocked(createCSV);
@@ -104,6 +110,11 @@ describe('GenerateCountry', () => {
     });
 
     it('should call createCSV to create csv file', async () => {
+      // Given
+      replaceAllOccurrencesMock
+        .mockReturnValueOnce('libcog')
+        .mockReturnValueOnce('ancom');
+
       //When
       await GenerateCountry.searchInCSVFiles('file1.csv');
 
