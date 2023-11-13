@@ -1,8 +1,14 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
+import { FIND_OCCURENCES, REPLACE_BY_SPACE } from '../constants';
 import { FilesName, Folder } from '../enums';
-import { createCSV, getCwdForDirectory, readCSV } from '../helpers';
+import {
+  createCSV,
+  getCwdForDirectory,
+  readCSV,
+  replaceAllOccurrences,
+} from '../helpers';
 import { SearchDbCountryInterface } from '../interface';
 import { InseeDbCountryCurrentInterface } from '../interface/insee-db-country-current.interface';
 
@@ -30,8 +36,12 @@ export class GenerateCountry {
           cog,
           oldGeographicCode,
           geographicCode,
-          name,
-          oldName,
+          name: replaceAllOccurrences(name, FIND_OCCURENCES, REPLACE_BY_SPACE),
+          oldName: replaceAllOccurrences(
+            oldName,
+            FIND_OCCURENCES,
+            REPLACE_BY_SPACE,
+          ),
         }),
       );
 
