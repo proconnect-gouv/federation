@@ -153,7 +153,7 @@ export class EuIdentityToFrController {
     @Session('EidasClient')
     sessionEidas: ISessionService<EidasClientSession>,
   ) {
-    const { REDIRECT_TO_FC, EIDAS_RESPONSE_ERROR } =
+    const { REDIRECTED_TO_FC, EIDAS_RESPONSE_ERROR } =
       this.tracking.TrackedEventsMap;
     const trackingContext = { req };
 
@@ -204,7 +204,7 @@ export class EuIdentityToFrController {
       session,
     });
 
-    await this.tracking.track(REDIRECT_TO_FC, trackingContext);
+    await this.tracking.track(REDIRECTED_TO_FC, trackingContext);
 
     return this.oidcProvider.finishInteraction(req, res, sessionClient);
   }
