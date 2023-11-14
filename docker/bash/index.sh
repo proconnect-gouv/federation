@@ -16,19 +16,12 @@ source "${INCLUDE_DIR}/hooks/index.sh"
 ## Data initialisation
 
 ### Postgres
-_command_register "migrations-partners-fcp" "_migrations-partners 'partners-fcp-back'" ""                   # Description to be defined
-_command_register "migrations-partners-fca" "_migrations-partners 'partners-fca-back'" ""                   # Description to be defined
-_command_register "migrations-generate-partners-fcp" "_migrations-generate-partners 'partners-fcp-back'" "" # Description to be defined
-_command_register "migrations-generate-partners-fca" "_migrations-generate-partners 'partners-fca-back'" "" # Description to be defined
-_command_register "fixtures-partners-fcp" "_fixtures-partners 'partners-fcp-back'" ""                       # Description to be defined
-_command_register "fixtures-partners-fca" "_fixtures-partners 'partners-fca-back'" ""                       # Description to be defined
-
 _command_register "fixtures" "_hook_fc_apps" "Init postgres FC-Apps : docker-stack fixtures <fc-exploitation | fc-support | exploitation-high | exploitation-fca-low>"
 
 ### Mongo
-_command_register "reset-db-core-fcp-high" "_reset_db_fcp_high" ""    # Description to be defined # Deprecated
-_command_register "reset-db-core-fcp-low" "_reset_db_fcp_low" ""      # Description to be defined # Deprecated
-_command_register "reset-db-core-fca-low" "_reset_db_core_fca_low" "" # Description to be defined # Deprecated
+_command_register "reset-db-core-fcp-high" "_reset_db_fcp_high" ""                # Description to be defined # Deprecated
+_command_register "reset-db-core-fcp-low" "_reset_db_fcp_low" ""                  # Description to be defined # Deprecated
+_command_register "reset-db-core-fca-low" "_reset_db_core_fca_low" ""             # Description to be defined # Deprecated
 _command_register "reset-db" "_reset_db_fcp_low" "Alias to reset-db-core-fcp-low" # Backward compatibility entry
 _command_register "reset-mongo" "_reset_mongodb" "reset-mongo <mongo-service-name> : Reset given mongodb container"
 _command_register "idp-as-prod-v2" "_idp_as_prod_v2" ""         # Description to be defined
@@ -78,6 +71,7 @@ _command_register "e2e" "_e2e" ""           # Description to be defined
 ## Docker
 _command_register "prune" "_prune" "Stop and remove all runing containers"
 _command_register "prune-all" "_prune_all" "" # Description to be defined
+_command_register "prune-ci" "_prune_ci" "Reset docker for CI runners"
 _command_register "up" "_up" "up <stack name> => Launch a stack"
 _command_register "exec" "_exec" "exec <container_name> <command> => exec a command inside a container"
 _command_register "halt" "_halt" "alt => stop docker-compose and delete containers"
@@ -89,8 +83,6 @@ _command_register "list" "_list_services" "List available services / stacks: lis
 _command_register "help" "_command_list" "Display this help: help <search term>"
 
 _command_register "reload-rp" "_reload-rp" "Reload Reverse proxy"
-
-_command_register "storybook" "_storybook" "" # Description to be defined
 
 _command_register "compose" "cd ${WORKING_DIR} && ${DOCKER_COMPOSE}" "Alias for docker-compose"
 
