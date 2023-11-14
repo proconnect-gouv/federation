@@ -6,8 +6,7 @@
   "workspaces": {
     "packages": [
       "fca",
-      "fcp",
-      "partners"
+      "fcp"
     ]
   },
   "keywords": [

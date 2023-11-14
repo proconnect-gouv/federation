@@ -15,7 +15,7 @@ fcp-high:
     - cypress
   variables:
     TZ: 'Europe/Paris'
-    CYPRESS_PLATFORM: 'fcp-high' 
+    CYPRESS_PLATFORM: 'fcp-high'
     CYPRESS_TEST_ENV: 'docker'
     CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
   cache:
@@ -27,10 +27,6 @@ fcp-high:
       # Front
       - front/node_modules/
       - front/instances/agent-connect/node_modules/
-      - front/instances/exploit-fca-low/node_modules/
-      - front/instances/exploit-fcp-high/node_modules/
-      - front/instances/partners-fca/node_modules/
-      - front/instances/partners-fcp/node_modules/
       - front/instances/user-dashboard/node_modules/
       # Quality
       - quality/node_modules/
@@ -51,9 +47,9 @@ fcp-high:
     - echo "RUN_E2E=$RUN_E2E"
     # Ensure a clean docker environnement
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
-    - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
+    - docker-stack prune-ci
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
     - RETURN_CODE=0

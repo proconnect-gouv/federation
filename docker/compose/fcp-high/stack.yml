@@ -41,12 +41,6 @@ services:
       # -- Mailer
       - "maildev"
 
-  exploit-fcp-high:
-    image: alpine
-    depends_on:
-      - "exploit-fcp-high-back"
-      - "exploit-fcp-high-front"
-
   all-fcp-high:
     image: alpine
     depends_on:
@@ -73,8 +67,6 @@ services:
       # --
       - "rnipp"
       - "csmr-hsm"
-      - "exploit-fcp-high-back"
-      - "exploit-fcp-high-front"
       # --
       - "maildev"
       - "dp1-high"

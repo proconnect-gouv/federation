@@ -134,16 +134,6 @@
 
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|
-| [Y240001](../libs/access-control/src/exceptions/access-control-unknown-permission.exception.ts "UnknownPermissionException") | 401 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | le rôle demandé est inconnu. Merci de vérifier la liste des droits de l&#39;utilisateur | 
-
-| Code d'erreur | Code HTTP | Message utilisateur | Description |
-|---|---|---|---|
-| [Y250001](../libs/partner-service-provider-configuration/src/exceptions/partner-service-provider-configuration-fetch.exception.ts "PartnerServiceProviderConfigurationFetchException") | 500 | Une erreur technique est survenue, veuillez contacter le support. | Une erreur est survenue lors de l&#39;appel à la base de donnée au fetch des configurations du service provider. Contacter le support N3. | 
-| [Y250002](../libs/partner-service-provider-configuration/src/exceptions/partner-service-provider-configuration-post.exception.ts "PartnerServiceProviderConfigurationPostException") | 500 | Une erreur technique est survenue, veuillez contacter le support. | Une erreur est survenue lors de l&#39;appel à la base de donnée au post de service provider configuration. Contacter le support N3. | 
-| [Y250003](../libs/partner-service-provider-configuration/src/exceptions/partner-service-provider-configuration-missing-sp-id.exception.ts "PartnerServiceProviderConfigurationMissingSpIdException") | 500 | Une erreur technique est survenue, veuillez contacter le support. | L&#39;identifiant du service provider de la configuration est absent. | 
-
-| Code d'erreur | Code HTTP | Message utilisateur | Description |
-|---|---|---|---|
 | [Y270001](../libs/mailer/src/exceptions/no-email.exception.ts "NoEmailException") | 500 | Les informations sur votre identité sont incomplètes et ne permettent pas de vous connecter à votre service. Veuillez contacter le support. | L&#39;identité de l&#39;utilisateur transmise par le fournisseur d&#39;identité ne contient pas de mail. Il n&#39;est pas possible de lui envoyer le mail de notification. Demander au FI de compléter l&#39;identité de l&#39;utilisateur | 
 | [Y270002](../libs/mailer/src/exceptions/mailer-notification-connect.exception.ts "MailerNotificationConnectException") | 500 | Une erreur technique est survenue, veuillez contacter le support. | Une erreur s&#39;est produite lors de l&#39;envoi du mail de notification. Cela peut être dû à des données obligatoires manquantes dans l&#39;identité de l&#39;usager ( given_name, family_name ), des données manquantes en session ( nom du FS ou du FI ), date du jour ou la configuration. Vérifier les données de l&#39;utilisateur. Si les données sont bien présentes, contacter le support N3. | 
 | [Y270003](../libs/mailer/src/exceptions/template-not-found.exception.ts "TemplateNotFoundException") | 500 | Une erreur technique est survenue, veuillez contacter le support. | Le modèle de mail n&#39;est pas présent. Il faut contacter d&#39;urgence le support N3 car aucun mail ne peut partir. | 
@@ -163,9 +153,7 @@
 
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|
-| [Y310001](../libs/partner-account/src/exceptions/postgres-connection-failure.exception.ts "PostgresConnectionFailure") | 500 | Une erreur technique est survenue, veuillez contacter le support. | Une erreur est survenue lors de l&#39;appel à la base de donnée. Contacter le support N3. | 
 | [Y310001](../libs/user-preferences/src/exceptions/get-user-preferences-response.exception.ts "GetUserPreferencesResponseException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | Une erreur s&#39;est produite lors de la récupération des préferences utilisateur via le broker | 
-| [Y310002](../libs/partner-account/src/exceptions/account-not-found.exception.ts "AccountNotFound") | 401 | Le nom d&#39;utilisateur ou le mot de passe est invalide. | Le nom d&#39;utilisateur ou le mot de passe est invalide. Il est recommandé d&#39;utiliser la fonction de réinitialisation du mot de passe en cas d&#39;erreur répétée. | 
 | [Y310002](../libs/user-preferences/src/exceptions/set-user-preferences-response.exception.ts "SetUserPreferencesResponseException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | Une erreur s&#39;est produite lors de la modification des préferences utilisateur via le broker | 
 | [Y310003](../libs/user-preferences/src/exceptions/get-user-preferences-consumer-error.exception.ts "GetUserPreferencesConsumerErrorException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | Le consumer csmr-user-preferences a retourné un code erreur lors de la récupération des préferences utilisateur | 
 | [Y310004](../libs/user-preferences/src/exceptions/set-user-preferences-consumer-error.exception.ts "SetUserPreferencesConsumerErrorException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | Le consumer csmr-user-preferences a retourné un code erreur lors de la modification des préferences utilisateur | 
@@ -173,7 +161,6 @@
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|
 | [Y320001](../apps/csmr-user-preferences/src/exceptions/csmr-user-preferences-idp-not-found.exception.ts "CsmrUserPreferencesIdpNotFoundException") | 500 | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous. | Le fournisseur d&#39;identité en entrée n&#39;existe pas dans la liste des idp | 
-| [Y320001](../libs/partner-service-provider/src/exceptions/postgres-connection-failure.exception.ts "PostgresConnectionFailure") | 500 | Une erreur technique est survenue, veuillez contacter le support. | Une erreur est survenue lors de l&#39;appel à la base de donnée. Contacter le support N3. | 
 
 | Code d'erreur | Code HTTP | Message utilisateur | Description |
 |---|---|---|---|

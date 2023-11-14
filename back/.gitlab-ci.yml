@@ -52,10 +52,6 @@ build-cache:
       # Front
       - front/node_modules/
       - front/instances/agent-connect/node_modules/
-      - front/instances/exploit-fca-low/node_modules/
-      - front/instances/exploit-fcp-high/node_modules/
-      - front/instances/partners-fca/node_modules/
-      - front/instances/partners-fcp/node_modules/
       - front/instances/user-dashboard/node_modules/
       # Quality
       - quality/node_modules/
