@@ -104,7 +104,7 @@ export class EidasProviderController {
     @Session('EidasProvider')
     session: ISessionService<EidasProviderSession>,
   ) {
-    const { REDIRECTING_TO_EIDAS_FR_NODE } = this.tracking.TrackedEventsMap;
+    const { REDIRECTED_TO_EIDAS_FR_NODE } = this.tracking.TrackedEventsMap;
     const trackingContext = { req };
     const eidasReponse = await this.getEidasResponse(session);
 
@@ -118,7 +118,7 @@ export class EidasProviderController {
 
     const { proxyServiceResponseCacheUrl } =
       this.config.get<EidasProviderConfig>('EidasProvider');
-    await this.tracking.track(REDIRECTING_TO_EIDAS_FR_NODE, trackingContext);
+    await this.tracking.track(REDIRECTED_TO_EIDAS_FR_NODE, trackingContext);
 
     return { proxyServiceResponseCacheUrl, token };
   }
