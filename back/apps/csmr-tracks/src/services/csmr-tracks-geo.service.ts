@@ -7,7 +7,6 @@ import {
   ICsmrTracksData,
   ICsmrTracksLegacyFieldsData,
   ICsmrTracksV2FieldsData,
-  IGeo,
 } from '../interfaces';
 
 @Injectable()
@@ -19,12 +18,28 @@ export class CsmrTracksGeoService {
     this.logger.setContext(this.constructor.name);
   }
 
-  getGeoFromIp(track: ICsmrTracksData): IGeo {
+  // eslint-disable-next-line complexity
+  getGeoFromIp(track: ICsmrTracksData): {
+    city: string | undefined;
+    country: string | undefined;
+  } {
+    const geo = track.source?.geo || {
+      // Input data
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      city_name: undefined,
+      // Input data
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      country_iso_code: undefined,
+      // Input data
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      region_name: undefined,
+    };
+
     const {
-      'source.geo.city_name': city,
-      'source.geo.country_iso_code': country,
-      'source.geo.region_name': region,
-    } = track;
+      city_name: city,
+      country_iso_code: country,
+      region_name: region,
+    } = geo;
 
     const ip = this.getIp(track);
 
