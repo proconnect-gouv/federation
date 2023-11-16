@@ -4,7 +4,7 @@ import { JSONWebKeySet, JWTPayload } from 'jose';
 import { lastValueFrom } from 'rxjs';
 
 import { HttpService } from '@nestjs/axios';
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Inject, Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
@@ -25,7 +25,7 @@ import { RnippPivotIdentity } from '@fc/rnipp';
 import { ScopesService } from '@fc/scopes';
 import { ISessionService, SessionService } from '@fc/session';
 
-import { ChecktokenRequestDto } from '../dto';
+import { ChecktokenRequestDto, ErrorParamsDto } from '../dto';
 import {
   CoreFcpFetchDataProviderJwksFailed,
   InvalidChecktokenRequestException,
@@ -129,6 +129,29 @@ export class DataProviderService {
         active: false,
       },
       aud,
+    };
+  }
+
+  generateErrorMessage(
+    httpStatusCode: number,
+    message: string,
+    error: string,
+  ): ErrorParamsDto {
+    if (httpStatusCode === HttpStatus.INTERNAL_SERVER_ERROR) {
+      return {
+        error: 'server_error',
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description:
+          'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
+      };
+    }
+
+    return {
+      error,
+      // oidc compliant
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      error_description: message,
     };
   }
 

@@ -710,4 +710,64 @@ describe('DataProviderService', () => {
       expect(result).toStrictEqual(responseMock.data);
     });
   });
+
+  describe('generateErrorMessage', () => {
+    const errorMock = 'foo_bar';
+    const messageMock = 'Error message description';
+
+    it('should send message retrieve through params if http status code is 400', () => {
+      // Given
+      const httpStatusCodeMock = 400;
+      // When
+      const result = service['generateErrorMessage'](
+        httpStatusCodeMock,
+        messageMock,
+        errorMock,
+      );
+      // Then
+      expect(result).toEqual({
+        error: 'foo_bar',
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: 'Error message description',
+      });
+    });
+
+    it('should send message retrieve through params if http status code is 401', () => {
+      // Given
+      const httpStatusCodeMock = 401;
+      // When
+      const result = service['generateErrorMessage'](
+        httpStatusCodeMock,
+        messageMock,
+        errorMock,
+      );
+      // Then
+      expect(result).toEqual({
+        error: 'foo_bar',
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: 'Error message description',
+      });
+    });
+
+    it('should send predifined message if http status code is 500', () => {
+      // Given
+      const httpStatusCodeMock = 500;
+      // When
+      const result = service['generateErrorMessage'](
+        httpStatusCodeMock,
+        messageMock,
+        errorMock,
+      );
+      // Then
+      expect(result).toEqual({
+        error: 'server_error',
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description:
+          'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
+      });
+    });
+  });
 });

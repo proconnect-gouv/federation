@@ -67,16 +67,21 @@ export class DataProviderController {
 
       jwt = await this.dataProvider.generateJwt(payload, clientId);
     } catch (exception) {
-      const { error, message, httpStatusCode } = exception;
+      const {
+        message,
+        error = '',
+        httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR,
+      } = exception;
       this.logger.debug(
         `POST checktoken error in data-provider-controller : ${exception}`,
       );
-      const result = {
+
+      const result = this.dataProvider.generateErrorMessage(
+        httpStatusCode,
+        message,
         error,
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        error_description: message,
-      };
+      );
+
       return res.status(httpStatusCode).json(result);
     }
 
