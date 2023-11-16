@@ -43,10 +43,10 @@ export class FqdnToIdpAdapterMongoService
    * Return a list of fqdnToIdp
    * for a specific domain
    */
-  async getIdpsByDomain(domain: string): Promise<FqdnToIdentityProvider[]> {
+  async getIdpsByFqdn(fqdn: string): Promise<FqdnToIdentityProvider[]> {
     const allfqdnToProvider = await this.getList();
     const fqdnToProviders = allfqdnToProvider.filter(
-      (row) => row.domain === domain,
+      (row) => row.fqdn === fqdn,
     );
 
     return fqdnToProviders;
@@ -89,8 +89,14 @@ export class FqdnToIdpAdapterMongoService
    * and eventually returns only validated rows
    */
   private async fetchFqdnToIdps(): Promise<FqdnToIdentityProvider[]> {
-    const fqdnToProviderRaw =
-      await this.FqdnToIdentityProviderModel.find().lean();
+    const fqdnToProviderRaw = await this.FqdnToIdentityProviderModel.find(
+      {},
+      {
+        _id: false,
+        fqdn: true,
+        identityProvider: true,
+      },
+    ).lean();
 
     const fqdnToProvider = await asyncFilter<FqdnToIdentityProvider[]>(
       // because fqdnToProvidr entity == fqdnToProvider dto
@@ -105,7 +111,7 @@ export class FqdnToIdpAdapterMongoService
 
         if (errors.length > 0) {
           this.logger.warn(
-            `fqdnToProvider with domain "${doc.domain}" and provider uuid "${doc.identityProvider}" was excluded from the result at DTO validation.`,
+            `fqdnToProvider with domain "${doc.fqdn}" and provider uuid "${doc.identityProvider}" was excluded from the result at DTO validation.`,
           );
           this.logger.trace({ errors });
         }

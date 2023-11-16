@@ -15,7 +15,7 @@ jest.mock('@fc/common', () => ({
 
 const fqdnToIdps = [
   {
-    domain: 'default-domain.fr',
+    fqdn: 'default-fqdn.fr',
     identityProvider: 'default provider',
   },
 ];
@@ -119,7 +119,7 @@ describe('FqdnToIdpAdapterMongoService', () => {
     });
   });
 
-  describe('getIdpsByDomain', () => {
+  describe('getIdpsByFqdn', () => {
     beforeEach(() => {
       const getAllfqdnToIdpsMock = jest.fn();
       getAllfqdnToIdpsMock.mockReturnValueOnce(fqdnToIdps);
@@ -127,14 +127,12 @@ describe('FqdnToIdpAdapterMongoService', () => {
     });
 
     it('should return a list of FqdnToIdentityProvider', async () => {
-      const idpByDomain = await service.getIdpsByDomain('default-domain.fr');
-      expect(idpByDomain).toStrictEqual(fqdnToIdps);
+      const idpByFqdn = await service.getIdpsByFqdn('default-fqdn.fr');
+      expect(idpByFqdn).toStrictEqual(fqdnToIdps);
     });
 
-    it('should return an empty array if no corresponding FI is found for a domain', async () => {
-      const fqdnToIdps = await service.getIdpsByDomain(
-        'non-existing-domain.fr',
-      );
+    it('should return an empty array if no corresponding FI is found for a fqdn', async () => {
+      const fqdnToIdps = await service.getIdpsByFqdn('non-existing-fqdn.fr');
       expect(fqdnToIdps).toStrictEqual([]);
     });
   });
@@ -173,7 +171,7 @@ describe('FqdnToIdpAdapterMongoService', () => {
       expect(service['fetchFqdnToIdps']).toHaveBeenCalledTimes(0);
     });
 
-    it('should return the list of idps by domain when cache is refreshed', async () => {
+    it('should return the list of idps by fqdn when cache is refreshed', async () => {
       // When
       const response = await service.getList(true);
 
@@ -181,7 +179,7 @@ describe('FqdnToIdpAdapterMongoService', () => {
       expect(response).toStrictEqual(fqdnToIdps);
     });
 
-    it('should return the list of idps by domain when cache is not refreshed', async () => {
+    it('should return the list of idps by fqdn when cache is not refreshed', async () => {
       // When
       service['fqdnToIdpCache'] = fqdnToIdps as FqdnToIdentityProvider[];
       const response = await service.getList(false);
@@ -252,7 +250,7 @@ describe('FqdnToIdpAdapterMongoService', () => {
       const invalidFqdnToIdp = { notAValidField: 'unused' };
       const validFqdnToIdp = {
         identityProvider: 'validIdp',
-        domain: 'validDomain',
+        fqdn: 'validFqdn',
       };
       const fqdnToIdpProviderWithInvalidListMock = [
         validFqdnToIdp,
