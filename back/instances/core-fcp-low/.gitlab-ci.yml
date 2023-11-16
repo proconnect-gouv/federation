@@ -28,6 +28,13 @@ fcp-low:
       - front/instances/user-dashboard/node_modules/
       # Quality
       - quality/node_modules/
+      # Fc-apps
+      - cache/fc-apps/fc-exploitation/node_modules/
+      - cache/fc-apps/fc-stats/node_modules/
+      - cache/fc-apps/fc-support/node_modules/
+      - cache/fc-apps/fc-workers/node_modules/
+      - cache/fc-apps/node_modules/
+      - cache/fc-apps/shared/node_modules/
       # Cypress
       - cache/Cypress
   before_script:
@@ -35,14 +42,20 @@ fcp-low:
     - BDD_TAGS=${BDD_TAGS_FCP_LOW:-$BDD_TAGS}
     - echo "BDD_TAGS=$BDD_TAGS"
     # Ensure a clean docker environnement
+    - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
+    - if [ "$(docker ps -aq --filter name=^fc |wc -l) -ge 1" ]; then docker container rm -f $(docker ps -aq --filter name=^fc) || true; docker volume prune -f; fi
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker-stack prune-ci
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
     - RETURN_CODE=0
+    # Shallow clone depth 1 FC-APP repository
+    - rm -rf $FC_ROOT/fc-apps
+    - git clone -b $FC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $FC_ROOT/fc-apps
     # Bind sources in docker volumes
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
+    - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
     - for mock in `find $FC_ROOT/mocks -maxdepth 1 -mindepth 1 -type d`; do cd $mock && git fetch && git checkout -f origin/master && git clean -df && echo "Installing depedencies for $(/usr/bin/basename $mock)" && npm install; ln -sfn $mock $FC_ROOT/fc/docker/volumes/src; done
     # Return to project directory
     - wait
@@ -51,12 +64,14 @@ fcp-low:
     # Up the docker-stack with minimal requirement
     - docker-stack up bdd-fcp-low
     - docker exec fc_core-fcp-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
+    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
     - cd $CI_PROJECT_DIR/quality/fcp && yarn install
     - cd $CI_PROJECT_DIR
     # Start the NodeJS apps
     - docker-stack start-all-ci
     # Ensure the required apps are running
     - docker-stack wait "core-fcp-low" "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
+    - docker-stack wait "exploitation-high" "https://fc-exploitation.docker.dev-franceconnect.fr/login"
     # Starting Cypress Quality checks
     - cd $CI_PROJECT_DIR/quality/fcp
     # Run Visual BDD tests and abort if failed

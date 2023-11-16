@@ -28,6 +28,7 @@ services:
       - "fip2-low"
       - "fip3-low"
       - "fip8-low"
+      - "fip9-low"
       - "fi-beta-mock"
       - "aidants-connect-mock"
       # -- DP

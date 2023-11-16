@@ -35,6 +35,8 @@ services:
       - "fip9-low"
       # --
       - "rnipp"
+      # -- Exploitation
+      - "fc-exploitation"
 
   ####################
   # ALL FCP LOW
