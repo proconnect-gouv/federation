@@ -1,6 +1,6 @@
 {
     "default": {
-        "name": "test-idp-default",
+        "name": "bdd-idp-default",
         "title": "FI de test pour la discovery url",
         "issuer": "https://issuer.fr",
         "authorizationUrl": "https://issuer.fr/auth",
