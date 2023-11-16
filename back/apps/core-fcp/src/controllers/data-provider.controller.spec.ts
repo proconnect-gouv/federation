@@ -26,6 +26,7 @@ describe('DataProviderController', () => {
     getAccessTokenExp: jest.fn(),
     generateDataProviderSub: jest.fn(),
     generateExpiredPayload: jest.fn(),
+    generateErrorMessage: jest.fn(),
   };
 
   const dataProviderAdapterMongoMock = {
@@ -242,6 +243,12 @@ describe('DataProviderController', () => {
 
     it('should return HTTP code 401 and send error message when checkAuthentication method failed', async () => {
       dataProviderServiceMock.checkRequestValid.mockResolvedValueOnce(true);
+      dataProviderServiceMock.generateErrorMessage.mockReturnValueOnce({
+        error: 'invalid_client',
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: 'Client authentication failed.',
+      });
       dataProviderAdapterMongoMock.checkAuthentication.mockRejectedValueOnce(
         new DataProviderInvalidCredentialsException(),
       );
@@ -266,6 +273,12 @@ describe('DataProviderController', () => {
       dataProviderServiceMock.checkRequestValid.mockRejectedValue(
         new InvalidChecktokenRequestException(),
       );
+      dataProviderServiceMock.generateErrorMessage.mockReturnValueOnce({
+        error: 'invalid_request',
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: 'Required parameter missing or invalid.',
+      });
 
       // When
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);
@@ -279,6 +292,33 @@ describe('DataProviderController', () => {
         // oidc compliant
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Required parameter missing or invalid.',
+      });
+    });
+
+    it('should return HTTP code 500 and send error message if no httpStatusCode', async () => {
+      // Given
+      dataProviderServiceMock.checkRequestValid.mockRejectedValue(new Error());
+      dataProviderServiceMock.generateErrorMessage.mockReturnValueOnce({
+        error: 'server_error',
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description:
+          'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
+      });
+
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(resMock.status).toHaveBeenCalledTimes(1);
+      expect(resMock.status).toHaveBeenCalledWith(500);
+      expect(resMock.json).toHaveBeenCalledTimes(1);
+      expect(resMock.json).toHaveBeenCalledWith({
+        error: 'server_error',
+        // oidc compliant
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description:
+          'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
       });
     });
 
