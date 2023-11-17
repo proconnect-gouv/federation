@@ -52,7 +52,7 @@ const fip = {
       "https://fcp.docker.dev-franceconnect.fr/api/v1/logout/redirect_from_provider",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail", "mfa"],
+    amr: ["fc", "pwd", "mail", "mfa"],
   },
   // -- FIP - FIP1-LOW - Activated
   "FIP1-LOW": {
@@ -101,7 +101,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail"],
+    amr: ["fc", "pwd", "mail"],
   },
   // -- FIP - FIP1-LOW - Beta ACTIVE
   "FIP1-BETA-ACTIVE": {
@@ -152,7 +152,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd"],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - FIP1-LOW - Beta INACTIVE
   "FIP1-BETA-INACTIVE": {
@@ -203,7 +203,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail"],
+    amr: ["fc", "pwd", "mail"],
   },
   // -- FIP - FIP1 - ES256 configuré mais HS256 renvoyé par FI
   "FIP1-WRONG-SIGNATURE": {
@@ -258,7 +258,7 @@ const fip = {
       "https://fcp.docker.dev-franceconnect.fr/api/v1/logout/redirect_from_provider",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail", "mfa"],
+    amr: ["fc", "pwd", "mail", "mfa"],
   },
   // -- FIP - FIP1 - Aucune signature userinfo demandé mais renvoyé par FI
   "FIP1-NO-SIGNATURE": {
@@ -312,7 +312,7 @@ const fip = {
       "https://fcp.docker.dev-franceconnect.fr/api/v1/logout/redirect_from_provider",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail", "mfa"],
+    amr: ["fc", "pwd", "mail", "mfa"],
   },
   // -- FIP - FIP2-LOW - Activated
   "FIP2-LOW": {
@@ -365,7 +365,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "pop", "mfa"],
+    amr: ["fc", "pwd", "pop", "mfa"],
   },
   // -- FIP - FIP3-LOW - Activated
   "FIP3-LOW": {
@@ -416,7 +416,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail"],
+    amr: ["fc", "pwd", "mail"],
   },
   // -- FIP - FIP4-LOW - ES256
   "FIP4-LOW": {
@@ -468,7 +468,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail"],
+    amr: ["fc", "pwd", "mail"],
   },
   // -- FIP - FIP5-LOW - Disabled
   "FIP5-LOW": {
@@ -519,7 +519,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail"],
+    amr: ["fc", "pwd", "mail"],
   },
   // -- FIP - FIP6-LOW - Invisible
   "FIP6-LOW": {
@@ -570,7 +570,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail"],
+    amr: ["fc", "pwd", "mail"],
   },
   // -- FIP - FIP7-LOW - Disabled and Invisible
   "FIP7-LOW": {
@@ -621,7 +621,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail"],
+    amr: ["fc", "pwd", "mail"],
   },
   // -- FIP - FIP8-LOW - Activated - whitelisted by fsp3
   "FIP8-LOW": {
@@ -672,7 +672,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail"],
+    amr: ["fc", "pwd", "mail"],
   },
   // -- FIP - FIP9-LOW - Activated - no endSessionUrl - userinfo_signed_response_alg not signed
   "FIP9-LOW": {
@@ -723,7 +723,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail"],
+    amr: ["fc", "pwd", "mail"],
   },
   //Aidants Connect mock
   "aidants-connect": {
@@ -778,7 +778,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: false,
-    amr: ["pwd", "mail"],
+    amr: ["fc", "pwd", "mail"],
   },
   // eIDAS Bridge as Identity Provider
   "eidas-bridge": {
@@ -828,7 +828,7 @@ const fip = {
       "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
     disabledForLegacy: true,
-    amr: ["pwd", "mail"],
+    amr: ["eidas"],
   },
 };
 

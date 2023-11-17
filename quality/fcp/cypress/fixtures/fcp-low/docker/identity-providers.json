@@ -3,7 +3,12 @@
     "idpId": "8dfc4080-c90d-4234-969b-f6c961de3e90",
     "name": "fip1-no-discovery",
     "title": "IDP1 - NO DISCOVERY",
-    "descriptions": ["par défaut", "actif", "autorisé pour idp_hint"],
+    "descriptions": [
+      "par défaut",
+      "actif",
+      "autorisé pour idp_hint",
+      "par défaut avec amr 'fc pwd mail mfa'"
+    ],
     "mocked": true,
     "usable": true,
     "url": "https://fip1-low.docker.dev-franceconnect.fr",

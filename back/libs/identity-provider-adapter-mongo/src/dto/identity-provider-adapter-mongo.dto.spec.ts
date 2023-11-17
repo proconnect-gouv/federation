@@ -1,4 +1,5 @@
 import { validateDto } from '@fc/common';
+import { Amr } from '@fc/oidc';
 
 import {
   DiscoveryIdpAdapterMongoDTO,
@@ -14,6 +15,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
   const metaDataIdPAdapterMongoMock = {
     active: true,
     clientID: 'clientID',
+    amr: [Amr.MAIL, Amr.PWD],
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,

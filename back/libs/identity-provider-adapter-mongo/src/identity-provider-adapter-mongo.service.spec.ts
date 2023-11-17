@@ -7,7 +7,7 @@ import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger-legacy';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
-import { IdentityProviderMetadata } from '@fc/oidc';
+import { Amr, IdentityProviderMetadata } from '@fc/oidc';
 
 import {
   DiscoveryIdpAdapterMongoDTO,
@@ -30,6 +30,7 @@ describe('IdentityProviderAdapterMongoService', () => {
     authzURL:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/authorize',
     clientID: 'clientID',
+    amr: [Amr.MAIL, Amr.PWD],
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
@@ -89,6 +90,7 @@ describe('IdentityProviderAdapterMongoService', () => {
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_id: 'clientID',
+    amr: [Amr.MAIL, Amr.PWD],
     // oidc param name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
@@ -185,6 +187,7 @@ describe('IdentityProviderAdapterMongoService', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       userinfo_signed_response_alg: 'HS256',
     },
+    amr: [Amr.MAIL, Amr.PWD],
     discovery: false,
     display: false,
     maxAuthorizedAcr: 'eidas2',
