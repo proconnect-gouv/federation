@@ -46,6 +46,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd", "mail", "mfa"],
   },
 
   // -- FIP - FIP2-HIGH - Activated
@@ -99,6 +100,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd", "mail"],
   },
   // -- FIP - FIP3-HIGH - Deactivated but visible
   "FIP3-HIGH": {
@@ -150,6 +152,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd", "mail"],
   },
   // -- FIP - FIP4-HIGH - Deactivated and invisible
   // use fip1 urls to avoid the generation of a container
@@ -202,6 +205,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - FIP5-HIGH - Activated and invisible
   // use fip1 urls to avoid the generation of a container
@@ -254,6 +258,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - FIP6-HIGH
   "FIP6-HIGH": {
@@ -306,6 +311,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - FIP7-HIGH - no discovery attribute
   // use fip1 urls to avoid the generation of a container
@@ -356,6 +362,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - FIP8-HIGH - blacklisted
   // use fip1 urls to avoid the generation of a container
@@ -408,6 +415,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - FIP9-HIGH - no discovery url
   // use fip1 urls to avoid the generation of a container
@@ -458,6 +466,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - FIP10-HIGH - invalid parameter
   // use fip1 urls to avoid the generation of a container
@@ -510,6 +519,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - FIP11-HIGH
   // use fip1 urls to avoid the generation of a container
@@ -563,6 +573,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - IDP12-HIGH - Identity Provider not respecting the DTO
   // use fip1 urls to avoid the generation of a container
@@ -617,6 +628,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - FIP13V2 - Activated - eIDAS élevé - crypted (ECDH-ES + A256GCM) - signed (ES256)
   "FIP13-HIGH": {
@@ -669,6 +681,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
 
   // -- FIP - FIP13V2BIS - Activated - INVALID FORMAT
@@ -711,6 +724,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
 
   // -- FIP - FIP14V2 - Activated - eIDAS élevé - crypted (RSA-OAEP + A256GCM) - signed (RS256)
@@ -764,6 +778,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
 
   // -- FIP - FIP15V2 - Activated - eIDAS substantiel - crypted (RSA-OAEP + A256GCM) - signed (ES256)
@@ -818,6 +833,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
 
   // -- FIP - FIP16V2 - Activated - eIDAS substantiel - crypted (ECDH-ES + A256GCM) - signed (RS256)
@@ -871,6 +887,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
 
   // -- FIP - FIP17V2 - Activated - eIDAS substantiel - crypted (none) - signed (ES256)
@@ -924,6 +941,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
 
   // -- FIP - FIP18V2 - Activated - eIDAS faible - crypted (none) - signed (ES256)
@@ -978,6 +996,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
 
   // -- FIP - FIP19V2 - Activated - eIDAS faible - crypted (none) - signed (RS256)
@@ -1031,6 +1050,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
 
   // -- FIP - FIP20V2 - Activated - eIDAS faible - crypted (none) - signed (HS256)
@@ -1083,6 +1103,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
   // -- FIP - FIP21-HIGH - BETA
   "FIP21-HIGH": {
@@ -1134,6 +1155,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["fc", "pwd"],
   },
 
   // -- FIPEIDAS - FIPEIDASV2 - Activated
@@ -1190,6 +1212,7 @@ const fip = {
     post_logout_redirect_uris: [
       "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
     ],
+    amr: ["eidas"],
   },
 };
 

@@ -63,7 +63,6 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
     const idpIdentityCleaned = { sub: idpIdentity.sub };
 
     await sessionOidc.set({
-      amr: ['eidas'],
       idpIdentity: idpIdentityCleaned,
       spIdentity: spIdentityCleaned,
       accountId,

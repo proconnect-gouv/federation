@@ -9,7 +9,8 @@
       "whitelisté",
       "non blacklisté",
       "français",
-      "autorisé pour idp_hint"
+      "autorisé pour idp_hint",
+      "par défaut avec amr 'fc pwd mail mfa'"
     ],
     "mocked": true,
     "usable": true,

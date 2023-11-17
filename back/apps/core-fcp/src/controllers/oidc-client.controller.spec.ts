@@ -168,6 +168,12 @@ describe('OidcClient Controller', () => {
     },
   };
 
+  const idpMock: Partial<IdentityProviderMetadata> = {
+    name: 'nameValue',
+    title: 'titleValue',
+    amr: ['amrValue'],
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -219,11 +225,6 @@ describe('OidcClient Controller', () => {
 
     res = {
       redirect: jest.fn(),
-    };
-
-    const idpMock: Partial<IdentityProviderMetadata> = {
-      name: 'nameValue',
-      title: 'titleValue',
     };
 
     identityProviderServiceMock.getById.mockReturnValue(idpMock);
@@ -388,7 +389,7 @@ describe('OidcClient Controller', () => {
     };
 
     const identityExchangeMock = {
-      amr: amrMock,
+      amr: [...idpMock.amr],
       idpAccessToken: accessTokenMock,
       idpAcr: acrMock,
       idpIdentity: identityMock,
@@ -401,7 +402,7 @@ describe('OidcClient Controller', () => {
       oidcClientServiceMock.getTokenFromProvider.mockReturnValueOnce({
         accessToken: accessTokenMock,
         acr: acrMock,
-        amr: amrMock,
+        amr: [amrMock],
       });
       oidcClientServiceMock.getUserInfosFromProvider.mockReturnValueOnce(
         identityMock,

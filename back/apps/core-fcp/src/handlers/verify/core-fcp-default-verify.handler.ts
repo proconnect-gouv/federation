@@ -107,7 +107,6 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     const spIdentity = this.buildSpIdentity(idpIdentity, rnippIdentity);
 
     const session: OidcClientSession = {
-      amr: ['fc'],
       idpIdentity,
       rnippIdentity,
       spIdentity,

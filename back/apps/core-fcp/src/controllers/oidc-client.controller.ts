@@ -21,6 +21,7 @@ import { ConfigService } from '@fc/config';
 import { CoreVerifyService, ProcessCore } from '@fc/core';
 import { CryptographyService } from '@fc/cryptography';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
 import {
@@ -68,6 +69,7 @@ export class OidcClientController {
     private readonly tracking: TrackingService,
     private readonly sessionService: SessionService,
     private readonly crypto: CryptographyService,
+    private readonly identityProvider: IdentityProviderAdapterMongoService,
   ) {
     this.logger.setContext(this.constructor.name);
   }
@@ -189,7 +191,7 @@ export class OidcClientController {
       nonce: idpNonce,
     };
 
-    const { accessToken, idToken, acr, amr } =
+    const { accessToken, idToken, acr } =
       await this.oidcClient.getTokenFromProvider(idpId, tokenParams, req);
 
     await this.tracking.track(
@@ -198,6 +200,8 @@ export class OidcClientController {
         req,
       },
     );
+
+    const { amr } = await this.identityProvider.getById(idpId);
 
     const userInfoParams = {
       accessToken,

@@ -216,6 +216,20 @@ describe('OidcClientService', () => {
       expect(claimsMock).toHaveBeenCalledTimes(1);
       expect(acr).toStrictEqual(acrMock);
     });
+
+    it('should get an empty array as amr if amr claims is empty', async () => {
+      // arrange
+      claimsMock.mockReset().mockReturnValueOnce({});
+      // action
+      const { amr } = await service.getTokenFromProvider(
+        idpIdMock,
+        tokenParamsMock,
+        contextMock,
+      );
+      // assert
+      expect(claimsMock).toHaveBeenCalledTimes(1);
+      expect(amr).toStrictEqual([]);
+    });
   });
 
   describe('getUserInfosFromProvider', () => {

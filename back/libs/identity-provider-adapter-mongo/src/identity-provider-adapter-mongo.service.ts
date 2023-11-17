@@ -87,6 +87,7 @@ export class IdentityProviderAdapterMongoService
         {},
         {
           _id: false,
+          amr: true,
           active: true,
           isBeta: true,
           authzURL: true,

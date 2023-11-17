@@ -54,7 +54,7 @@ export class OidcClientService {
     );
 
     const { access_token: accessToken, id_token: idToken } = tokenSet;
-    const { acr, amr } = tokenSet.claims();
+    const { acr, amr = [] } = tokenSet.claims();
 
     const tokenResult = {
       acr,

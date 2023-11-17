@@ -8,7 +8,8 @@
       "actif",
       "whitelisté",
       "français",
-      "autorisé pour idp_hint"
+      "autorisé pour idp_hint",
+      "par défaut avec amr 'pwd mail mfa'"
     ],
     "mocked": true,
     "usable": true,
@@ -25,9 +26,7 @@
     "idpId": "fip2",
     "name": "fip2",
     "title": "Identity Provider - eIDAS élevé - nodiscov - nocrypt",
-    "descriptions": [
-      "non autorisé pour idp_hint"
-    ],
+    "descriptions": ["non autorisé pour idp_hint"],
     "mocked": true,
     "usable": true,
     "url": "https://fip2v2.integ01.fcp.fournisseur-d-identite.fr",
@@ -97,10 +96,7 @@
     "idpId": "lin",
     "name": "lin",
     "title": "L'identité Numérique La Poste",
-    "descriptions": [
-      "l'identité numérique La Poste",
-      "non whitelisté"
-    ],
+    "descriptions": ["l'identité numérique La Poste", "non whitelisté"],
     "mocked": false,
     "usable": true,
     "url": "https://integration.compte.laposte.fr",

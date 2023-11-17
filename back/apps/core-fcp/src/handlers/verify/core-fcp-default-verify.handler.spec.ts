@@ -331,7 +331,6 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.set).toHaveBeenCalledWith({
         accountId: accountIdMock,
-        amr: ['fc'],
         idpIdentity: idpIdentityMock,
         rnippIdentity: rnippIdentityMock,
         spIdentity: {

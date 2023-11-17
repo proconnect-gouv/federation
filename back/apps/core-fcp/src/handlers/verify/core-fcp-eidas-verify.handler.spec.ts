@@ -191,24 +191,6 @@ describe('CoreFcpEidasVerifyHandler', () => {
       await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
-    it('Should call session set with amr parameter', async () => {
-      // When
-      await service.handle(handleArgument);
-      // Then
-      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set).toHaveBeenCalledWith({
-        accountId: accountIdMock,
-        amr: ['eidas'],
-        idpIdentity: { sub: 'sub' },
-        spIdentity: { email: 'some@email.com' },
-        subs: {
-          // FranceConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          sp_id: 'computedSubSp',
-        },
-      });
-    });
-
     it('Should call computeFederation()', async () => {
       // When
       await service.handle(handleArgument);
