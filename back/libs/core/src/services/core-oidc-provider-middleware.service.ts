@@ -250,6 +250,19 @@ export class CoreOidcProviderMiddlewareService {
     }
   }
 
+  private shouldAbortIdpHint(ctx: OidcCtx) {
+    const { req } = ctx;
+    const idpHint = req.query.idp_hint as string;
+
+    return ctx.oidc['isError'] === true || ctx.isSso || !idpHint;
+  }
+
+  private trackRedirectToIdp(ctx: OidcCtx) {
+    const eventContext = this.getEventContext(ctx);
+    const { FC_REDIRECTED_TO_HINTED_IDP } = this.tracking.TrackedEventsMap;
+    return this.tracking.track(FC_REDIRECTED_TO_HINTED_IDP, eventContext);
+  }
+
   protected async redirectToHintedIdpMiddleware(ctx: OidcCtx) {
     const { req, res } = ctx;
     const idpHint = req.query.idp_hint as string;
@@ -260,7 +273,7 @@ export class CoreOidcProviderMiddlewareService {
       'OidcClient',
     );
 
-    if (ctx.isSso || !idpHint) {
+    if (this.shouldAbortIdpHint(ctx)) {
       return;
     }
 
@@ -271,11 +284,12 @@ export class CoreOidcProviderMiddlewareService {
 
     await this.flowSteps.setStep(req, OidcClientRoutes.REDIRECT_TO_IDP);
 
-    await this.core.redirectToIdp(res, acr, idpHint, session);
-
-    const eventContext = this.getEventContext(ctx);
-    const { FC_REDIRECTED_TO_HINTED_IDP } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(FC_REDIRECTED_TO_HINTED_IDP, eventContext);
+    try {
+      await this.core.redirectToIdp(res, acr, idpHint, session);
+      await this.trackRedirectToIdp(ctx);
+    } catch (error) {
+      await this.oidcErrorService.throwError(ctx, error);
+    }
   }
 
   protected async isSsoAvailable(

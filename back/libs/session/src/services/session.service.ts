@@ -285,7 +285,7 @@ export class SessionService {
   }
 
   async reset(req: ISessionRequest, res: ISessionResponse): Promise<string> {
-    const sessionId = this.getSessionIdFromCookie(req);
+    const { sessionId } = req;
     const sessionKey = this.getSessionKey(sessionId);
 
     res.locals.session = {};
@@ -296,7 +296,7 @@ export class SessionService {
   }
 
   async destroy(req: ISessionRequest, res: ISessionResponse) {
-    const sessionId = this.getSessionIdFromCookie(req);
+    const { sessionId } = req;
     const sessionKey = this.getSessionKey(sessionId);
 
     res.locals.session = {};

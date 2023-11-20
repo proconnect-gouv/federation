@@ -13,7 +13,7 @@ const cookieOptions: ISessionCookieOptions = {
   sameSite: 'Lax',
   httpOnly: true,
   secure: true,
-  maxAge: 600000, // 10 minutes
+  maxAge: undefined, // Make cookie expire at the end of the browsing session (browser close)
   domain: process.env.FQDN,
 };
 
@@ -25,7 +25,7 @@ export default {
   sessionCookieName: 'fc_session_id',
   lifetime: 600, // 10 minutes
   sessionIdLength: 64,
-  slidingExpiration: env.boolean('FEATURE_SSO_SUBSTANTIAL'),
+  slidingExpiration: false,
   excludedRoutes: [
     OidcProviderRoutes.JWKS,
     OidcProviderRoutes.OPENID_CONFIGURATION,

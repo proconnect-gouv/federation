@@ -33,8 +33,11 @@ import {
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
+  ISessionRequest,
+  ISessionResponse,
   ISessionService,
   Session,
+  SessionConfig,
   SessionCsrfService,
   SessionInvalidCsrfConsentException,
   SessionService,
@@ -287,8 +290,8 @@ export class OidcProviderController {
   @IsStep()
   @ForbidRefresh()
   async getLogin(
-    @Req() req,
-    @Res() res,
+    @Req() req: ISessionRequest,
+    @Res() res: ISessionResponse,
     @Body() body: CsrfToken,
     /**
      * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
@@ -333,11 +336,30 @@ export class OidcProviderController {
       route: CoreRoutes.INTERACTION_LOGIN,
     });
 
+    await this.handleSessionLife(req, res);
+
+    return this.oidcProvider.finishInteraction(req, res, session);
+  }
+
+  private async handleSessionLife(
+    req: ISessionRequest,
+    res: ISessionResponse,
+  ): Promise<void> {
+    if (this.shouldExtendSessionLifeTime()) {
+      await this.sessionService.refresh(req, res);
+    }
+
     const { enableSso } = this.config.get<CoreConfig>('Core');
+
     if (!enableSso) {
       await this.sessionService.detach(req, res);
     }
+  }
 
-    return this.oidcProvider.finishInteraction(req, res, session);
+  private shouldExtendSessionLifeTime() {
+    const { enableSso } = this.config.get<CoreConfig>('Core');
+    const { slidingExpiration } = this.config.get<SessionConfig>('Session');
+
+    return enableSso && !slidingExpiration;
   }
 }

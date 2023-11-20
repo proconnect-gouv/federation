@@ -574,7 +574,7 @@ describe('CoreFcpMiddlewareService', () => {
     });
   });
 
-  describe('isSsoSession', () => {
+  describe('isFinishedInteractionSession', () => {
     // Given
     const ctxMock = {
       oidc: {},
@@ -600,7 +600,7 @@ describe('CoreFcpMiddlewareService', () => {
 
     it('should call session.get() with the sessionService', async () => {
       // When
-      await service['isSsoSession'](ctxMock);
+      await service['isFinishedInteractionSession'](ctxMock);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
     });
@@ -610,7 +610,7 @@ describe('CoreFcpMiddlewareService', () => {
       const sessionDataMock = Symbol('sessionData');
       sessionServiceMock.get.mockReturnValueOnce(sessionDataMock);
       // When
-      await service['isSsoSession'](ctxMock);
+      await service['isFinishedInteractionSession'](ctxMock);
       // Then
       expect(validateDtoMock).toHaveBeenCalledTimes(1);
       expect(validateDtoMock).toHaveBeenCalledWith(
@@ -627,7 +627,7 @@ describe('CoreFcpMiddlewareService', () => {
         .mockResolvedValueOnce(validationWithErrorsMock);
 
       // When
-      const result = await service['isSsoSession'](ctxMock);
+      const result = await service['isFinishedInteractionSession'](ctxMock);
       // Then
       expect(result).toBe(false);
     });
@@ -637,7 +637,7 @@ describe('CoreFcpMiddlewareService', () => {
       const validationErrorsMock = [] as unknown as ValidationError[];
       validateDtoMock.mockReset().mockResolvedValueOnce(validationErrorsMock);
       // When
-      const result = await service['isSsoSession'](ctxMock);
+      const result = await service['isFinishedInteractionSession'](ctxMock);
       // Then
       expect(result).toBe(true);
     });
@@ -659,7 +659,7 @@ describe('CoreFcpMiddlewareService', () => {
       SessionService.getBoundSession = jest
         .fn()
         .mockReturnValue(sessionServiceMock);
-      service['isSsoSession'] = jest.fn().mockReturnValue(true);
+      service['isFinishedInteractionSession'] = jest.fn().mockReturnValue(true);
 
       configServiceMock.get.mockReturnValueOnce({
         enableSso: true,
@@ -693,12 +693,14 @@ describe('CoreFcpMiddlewareService', () => {
       expect(sessionServiceMock.reset).toHaveBeenCalledWith(reqMock, resMock);
     });
 
-    it('should check if session is SSO compliant with isSsoSession()', async () => {
+    it('should check if session is SSO compliant with isFinishedInteractionSession()', async () => {
       // When
       await service['renewSession'](ctxMock, spAcrMock);
       // Then
-      expect(service['isSsoSession']).toHaveBeenCalledTimes(1);
-      expect(service['isSsoSession']).toHaveBeenCalledWith(ctxMock);
+      expect(service['isFinishedInteractionSession']).toHaveBeenCalledTimes(1);
+      expect(service['isFinishedInteractionSession']).toHaveBeenCalledWith(
+        ctxMock,
+      );
     });
 
     it('should call sessionService.detach if sso is enabled, spIdentity is present and sso authorized for acr', async () => {
