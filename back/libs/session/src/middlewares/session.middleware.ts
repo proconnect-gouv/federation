@@ -27,12 +27,10 @@ export class SessionMiddleware implements NestMiddleware {
     const cookieSessionId = this.sessionService.getSessionIdFromCookie(req);
     const { slidingExpiration } = this.config.get<SessionConfig>('Session');
 
-    if (slidingExpiration) {
-      if (!cookieSessionId) {
-        await this.sessionService.init(req, res);
-      } else {
-        await this.sessionService.refresh(req, res);
-      }
+    if (slidingExpiration && cookieSessionId) {
+      await this.sessionService.refresh(req, res);
+    } else if (!cookieSessionId) {
+      this.sessionService.init(req, res);
     } else {
       this.sessionService.bindToRequest(req, cookieSessionId);
     }

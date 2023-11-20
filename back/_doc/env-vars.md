@@ -150,7 +150,6 @@
 | Rnipp_HOSTNAME | string |
 | Rnipp_PROTOCOL | string |
 | Session_COOKIE_SECRETS | json |
-| Session_FEATURE_SSO_SUBSTANTIAL | boolean |
 | Session_USERINFO_CRYPT_KEY | string |
 | UD_FQDN | string |
 

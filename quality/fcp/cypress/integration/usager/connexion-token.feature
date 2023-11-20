@@ -35,8 +35,7 @@ Fonctionnalité: Connexion Usager - Token
     Alors le fournisseur de service a accès aux informations des scopes "identite_pivot"
 
   # TODO: Investiguer pourquoi ce scénario ne fonctionne pas avec Cypress sur integ01
-  # TODO: A réactiver quand le #1418 sera fait
-  @fcpHigh @ignoreInteg01 @ignoreHigh
+  @fcpHigh @ignoreInteg01
   Scénario: FCP HIGH - Token encore valide après nouvelle cinématique
     # Première cinématique
     Etant donné que j'utilise un compte usager "par défaut"

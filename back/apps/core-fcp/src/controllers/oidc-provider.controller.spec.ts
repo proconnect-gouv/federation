@@ -11,6 +11,8 @@ import {
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
+  ISessionRequest,
+  ISessionResponse,
   SessionCsrfService,
   SessionInvalidCsrfConsentException,
   SessionService,
@@ -92,7 +94,7 @@ const coreServiceMock = {
 const res = {
   redirect: jest.fn(),
   render: jest.fn(),
-};
+} as unknown as ISessionResponse;
 
 const configServiceMock = {
   get: jest.fn(),
@@ -122,7 +124,7 @@ const req = {
   params: {
     providerUid: 'secretProviderUid',
   },
-};
+} as unknown as ISessionRequest;
 
 const sessionCsrfServiceMock = {
   get: jest.fn(),
@@ -702,6 +704,10 @@ describe('OidcProviderController', () => {
   });
 
   describe('getLogin()', () => {
+    beforeEach(() => {
+      oidcProviderController['handleSessionLife'] = jest.fn();
+    });
+
     it('should throw an exception if no identity in session', async () => {
       // Given
       const body = { _csrf: randomStringMock };
@@ -771,7 +777,7 @@ describe('OidcProviderController', () => {
       );
     });
 
-    it('should detach session if sso is not enabled', async () => {
+    it('should call handleSessionLife()', async () => {
       // Given
       const body = { _csrf: randomStringMock };
       // When
@@ -783,26 +789,13 @@ describe('OidcProviderController', () => {
         coreSessionServiceMock,
       );
       // Then
-      expect(sessionServiceMock.detach).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.detach).toHaveBeenCalledWith(req, res);
-    });
-
-    it('should not detach session if sso is enabled', async () => {
-      // Given
-      const body = { _csrf: randomStringMock };
-      configServiceMock.get.mockReset().mockReturnValueOnce({
-        enableSso: true,
-      });
-      // When
-      await oidcProviderController.getLogin(
+      expect(oidcProviderController['handleSessionLife']).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(oidcProviderController['handleSessionLife']).toHaveBeenCalledWith(
         req,
         res,
-        body,
-        sessionServiceMock,
-        coreSessionServiceMock,
       );
-      // Then
-      expect(sessionServiceMock.detach).not.toHaveBeenCalled();
     });
 
     it('should call oidcProvider.interactionFinish', async () => {
@@ -826,5 +819,94 @@ describe('OidcProviderController', () => {
         sessionDataMock,
       );
     });
+  });
+
+  describe('handleSessionLife', () => {
+    beforeEach(() => {
+      // Given
+      oidcProviderController['shouldExtendSessionLifeTime'] = jest
+        .fn()
+        .mockReturnValueOnce(true);
+    });
+
+    it('should refresh session if shouldExtendSessionLifeTime() returns true', async () => {
+      // When
+      await oidcProviderController['handleSessionLife'](req, res);
+
+      // Then
+      expect(sessionServiceMock.refresh).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.refresh).toHaveBeenCalledWith(req, res);
+    });
+
+    it('should not refresh session if shouldExtendSessionLifeTime() returns false', async () => {
+      // Given
+      oidcProviderController['shouldExtendSessionLifeTime'] = jest
+        .fn()
+        .mockReturnValueOnce(false);
+
+      // When
+      await oidcProviderController['handleSessionLife'](req, res);
+
+      // Then
+      expect(sessionServiceMock.refresh).not.toHaveBeenCalled();
+    });
+
+    it('should detach session if sso is not enabled', async () => {
+      // Given
+      configServiceMock.get.mockReset().mockReturnValueOnce({
+        enableSso: false,
+      });
+
+      // When
+      await oidcProviderController['handleSessionLife'](req, res);
+
+      // Then
+      expect(sessionServiceMock.detach).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.detach).toHaveBeenCalledWith(req, res);
+    });
+
+    it('should not detach session if sso is enabled', async () => {
+      // Given
+      configServiceMock.get.mockReset().mockReturnValueOnce({
+        enableSso: true,
+      });
+
+      // When
+      await oidcProviderController['handleSessionLife'](req, res);
+
+      // Then
+      expect(sessionServiceMock.detach).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('shouldExtendSessionLifeTime', () => {
+    const cases = [
+      // expected, enableSso, slidingExpiration
+      [true, true, false],
+      [false, false, true],
+      [false, true, true],
+      [false, false, false],
+    ];
+
+    test.each(cases)(
+      'should return %s for parameters, enableSso=%s, slidingExpiration=%s',
+      (expected, enableSso, slidingExpiration) => {
+        // Given
+        configServiceMock.get
+          .mockReset()
+          .mockReturnValueOnce({
+            enableSso,
+          })
+          .mockReturnValueOnce({
+            slidingExpiration,
+          });
+
+        // When
+        const result = oidcProviderController['shouldExtendSessionLifeTime']();
+
+        // Then
+        expect(result).toBe(expected);
+      },
+    );
   });
 });

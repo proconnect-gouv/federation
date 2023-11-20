@@ -38,8 +38,8 @@ export class CookieOptions {
   readonly secure: boolean;
 
   @IsNumber()
-  @IsPositive()
-  readonly maxAge: number;
+  @IsOptional()
+  readonly maxAge?: number;
 
   @IsString()
   readonly domain: string;

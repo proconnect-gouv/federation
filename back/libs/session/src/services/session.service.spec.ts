@@ -1168,14 +1168,6 @@ describe('SessionService', () => {
       service['init'] = jest.fn().mockResolvedValue(randomStringMockValue);
     });
 
-    it('should call getSessionIdFromCookie', async () => {
-      // When
-      await service.reset(reqMock, resMock);
-      // Then
-      expect(service['getSessionIdFromCookie']).toHaveBeenCalledTimes(1);
-      expect(service['getSessionIdFromCookie']).toHaveBeenCalledWith(reqMock);
-    });
-
     it('should call getSessionKey', async () => {
       // When
       await service.reset(reqMock, resMock);
@@ -1215,14 +1207,6 @@ describe('SessionService', () => {
         .mockReturnValue(reqMock.sessionId);
       service['getSessionKey'] = jest.fn().mockReturnValueOnce(sessionKeyMock);
       service['init'] = jest.fn().mockResolvedValue(randomStringMockValue);
-    });
-
-    it('should call getSessionIdFromCookie', async () => {
-      // When
-      await service.destroy(reqMock, resMock);
-      // Then
-      expect(service['getSessionIdFromCookie']).toHaveBeenCalledTimes(1);
-      expect(service['getSessionIdFromCookie']).toHaveBeenCalledWith(reqMock);
     });
 
     it('should call getSessionKey', async () => {
