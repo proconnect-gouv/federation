@@ -177,9 +177,19 @@ describe('CsmrTracksV2DataService', () => {
     const sourceMock = {
       _id: 'idValue',
       _source: {
-        'source.geo.city_name': 'Paris',
-        'source.geo.country_iso_code': 'FR',
-        'source.geo.region_name': 'Ile-de-France',
+        source: {
+          geo: {
+            // Input data
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            city_name: undefined,
+            // Input data
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            country_iso_code: 'FR',
+            // Input data
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            region_name: 'Ile-de-France',
+          },
+        },
         idpId: 'idpIdValue',
         idpAcr: 'idpAcrValue',
         idpLabel: 'idpLabelValue',
