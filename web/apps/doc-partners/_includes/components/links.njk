@@ -1,0 +1,15 @@
+{% if not links %}
+  {% set links = params %}
+{% endif %}
+
+{% if links.keys %}
+<hr />
+
+Voir aussi :
+
+<ul class="fr-links-group">
+  {% for entry in collections.all | linkFilter(links.keys) %}
+    <li><a class="fr-link" href="{{ entry.url }}">{{ entry.data.title}}</a></li>    
+  {% endfor %}
+</ul>
+{% endif %}

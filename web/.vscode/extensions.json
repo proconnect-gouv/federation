@@ -1,4 +1,4 @@
 {
-  "recommendations": ["okitavera.vscode-nunjucks-formatter", "ronnidc.nunjucks"],
+  "recommendations": ["okitavera.vscode-nunjucks-formatter", "ronnidc.nunjucks", "esbenp.prettier-vscode"],
   "unwantedRecommendations": []
 }

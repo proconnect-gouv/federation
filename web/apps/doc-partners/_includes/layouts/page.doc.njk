@@ -1,0 +1,25 @@
+---
+layout: layouts/page.njk
+showBreadcrumb: true
+---
+{% from "components/component.njk" import component with context %}
+
+{% css 'body' %}
+<link rel="stylesheet" href="/css/mermaid.dsfr.css" />
+{% endcss %}
+
+<h1>{{ title }}</h1>
+
+{{ content | safe }}
+
+{{ component("links", {
+      keys: seealso
+}) }}
+
+<br />
+
+{% include "components/back_to_top.njk" %}
+
+{% js 'body' %}
+{% mermaid_js %}
+{% endjs %}
