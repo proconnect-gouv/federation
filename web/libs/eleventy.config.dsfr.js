@@ -1,5 +1,8 @@
 const pluginBundle = require('@11ty/eleventy-plugin-bundle');
 const pluginNavigation = require('@11ty/eleventy-navigation');
+const pluginMermaid = require('@kevingimbel/eleventy-plugin-mermaid');
+const pluginSyntaxHighlight = require('@11ty/eleventy-plugin-syntaxhighlight');
+
 const { EleventyHtmlBasePlugin } = require('@11ty/eleventy');
 
 module.exports = function (eleventyConfig) {
@@ -15,6 +18,7 @@ module.exports = function (eleventyConfig) {
     './node_modules/@gouvfr/dsfr/dist/dsfr.module.min.js': '/js/dsfr.module.min.js',
     './node_modules/@gouvfr/dsfr/dist/dsfr.nomodule.min.js': '/js/dsfr.nomodule.min.js',
     './node_modules/@gouvfr/dsfr/dist/artwork': '/artwork',
+    './node_modules/prismjs/themes/prism-okaidia.css': '/css/prism-okaidia.css',
   });
 
   // Watch content images for the image pipeline.
@@ -30,6 +34,10 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.addPlugin(pluginNavigation);
   eleventyConfig.addPlugin(EleventyHtmlBasePlugin);
   eleventyConfig.addPlugin(pluginBundle);
+  eleventyConfig.addPlugin(pluginSyntaxHighlight, {
+    preAttributes: { tabindex: 0 },
+  });
+  eleventyConfig.addPlugin(pluginMermaid);
 
   // Automatically strip all leading or trailing whitespace
   // to prevent Markdown lib from rendering with wrapping into paragraphs

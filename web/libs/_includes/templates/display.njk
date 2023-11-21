@@ -3,6 +3,7 @@
   class="fr-modal"
   role="dialog"
   aria-labelledby="fr-theme-modal-title"
+  data-pagefind-ignore
 >
   <div class="fr-container fr-container--fluid fr-container-md">
     <div class="fr-grid-row fr-grid-row--center">
@@ -18,9 +19,9 @@
             </button>
           </div>
           <div class="fr-modal__content">
-            <h1 id="fr-theme-modal-title" class="fr-modal__title">
+            <h6 id="fr-theme-modal-title fr-h1" class="fr-modal__title">
               {{ display.display_params }}
-            </h1>
+            </h6>
             <div id="fr-display" class="fr-display">
               <div class="fr-form-group">
                 <fieldset class="fr-fieldset">
@@ -36,7 +37,7 @@
                         value="light"
                         type="radio"
                         id="fr-radios-theme-light"
-                        name="fr-radios-theme"/>
+                        name="fr-radios-theme" />
                       <label class="fr-label" for="fr-radios-theme-light">
                         {{ display.light_theme }}
                       </label>
@@ -50,11 +51,11 @@
                         >
                           <use class="fr-artwork-decorative" xlink:href="{{
                           "/artwork/light.svg#artwork-decorative" | htmlBaseUrl
-                          }}"/>
+                          }}" />
                           <use class="fr-artwork-minor" xlink:href="{{
-                          "/artwork/light.svg#artwork-minor" | htmlBaseUrl }}"/>
+                          "/artwork/light.svg#artwork-minor" | htmlBaseUrl }}" />
                           <use class="fr-artwork-major" xlink:href="{{
-                          "/artwork/light.svg#artwork-major" | htmlBaseUrl }}"/>
+                          "/artwork/light.svg#artwork-major" | htmlBaseUrl }}" />
                         </svg>
                       </div>
                     </div>
@@ -63,7 +64,7 @@
                         value="dark"
                         type="radio"
                         id="fr-radios-theme-dark"
-                        name="fr-radios-theme"/>
+                        name="fr-radios-theme" />
                       <label class="fr-label" for="fr-radios-theme-dark">
                         {{ display.dark_theme }}
                       </label>
@@ -77,11 +78,11 @@
                         >
                           <use class="fr-artwork-decorative" xlink:href="{{
                           "/artwork/dark.svg#artwork-decorative" | htmlBaseUrl
-                          }}"/>
+                          }}" />
                           <use class="fr-artwork-minor" xlink:href="{{
-                          "/artwork/dark.svg#artwork-minor" | htmlBaseUrl }}"/>
+                          "/artwork/dark.svg#artwork-minor" | htmlBaseUrl }}" />
                           <use class="fr-artwork-major" xlink:href="{{
-                          "/artwork/dark.svg#artwork-major" | htmlBaseUrl }}"/>
+                          "/artwork/dark.svg#artwork-major" | htmlBaseUrl }}" />
                         </svg>
                       </div>
                     </div>
@@ -90,7 +91,7 @@
                         value="system"
                         type="radio"
                         id="fr-radios-theme-system"
-                        name="fr-radios-theme"/>
+                        name="fr-radios-theme" />
                       <label class="fr-label" for="fr-radios-theme-system">
                         {{ display.system }}
                         <span class="fr-hint-text"
@@ -107,13 +108,13 @@
                         >
                           <use class="fr-artwork-decorative" xlink:href="{{
                           "/artwork/system.svg#artwork-decorative" | htmlBaseUrl
-                          }}"/>
+                          }}" />
                           <use class="fr-artwork-minor" xlink:href="{{
                           "/artwork/system.svg#artwork-minor" | htmlBaseUrl
-                          }}"/>
+                          }}" />
                           <use class="fr-artwork-major" xlink:href="{{
                           "/artwork/system.svg#artwork-major" | htmlBaseUrl
-                          }}"/>
+                          }}" />
                         </svg>
                       </div>
                     </div>

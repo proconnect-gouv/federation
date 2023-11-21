@@ -1,0 +1,19 @@
+{% if not items %}
+  {% set items = params %}
+{% endif %}
+
+{# List every content page in the project #}
+
+<div class="fr-grid-row fr-grid-row--gutters fr-mb-3w">
+
+  {% for entry in collections.all | categoryFilter(items.category) | sortByOrder %}
+
+    {{ component("card-simple", {
+      url: entry.url,
+      title: entry.data.title,
+      description: entry.data.abstract,
+      tags: entry.data.tags
+    }) }}
+
+  {% endfor %}
+</div>

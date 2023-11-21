@@ -11,12 +11,19 @@
     "@11ty/eleventy-img": "^3.0.0",
     "@11ty/eleventy-navigation": "^0.3.5",
     "@11ty/eleventy-plugin-bundle": "^1.0.3",
+    "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
+    "@kevingimbel/eleventy-plugin-mermaid": "^2.1.0",
     "@gouvfr/dsfr": "^1.9.3",
     "markdown-it-anchor": "^8.6.6",
     "markdown-it-attrs": "^4.1.6",
-    "markdown-it-container": "^3.0.0"
+    "markdown-it-container": "^3.0.0",
+    "pagefind": "^1.0.3",
+    "mermaid": "^10.2.4"
   },
   "scripts": {
-    "build": "eleventy"
+    "build": "eleventy",
+    "make:search": "npx pagefind --site dist/ --output-subdir '_pagefind'",
+    "postbuild": "yarn make:search",
+    "serve:dev": "npx serve ./dist -l 8080"
   }
 }
