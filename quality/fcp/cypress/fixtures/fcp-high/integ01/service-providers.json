@@ -4,7 +4,8 @@
     "descriptions": [
       "par défaut",
       "public",
-      "avec un entityId"
+      "avec un entityId",
+      "avec accès au FI par défaut (premier FS)"
     ],
     "mocked": true,
     "url": "https://fsp1v2.integ01.fcp.fournisseur-de-service.fr",
@@ -28,7 +29,8 @@
       "habilité à demander le scope identite_pivot",
       "privé avec consentement obligatoire",
       "avec une whitelist de FI",
-      "avec un entityId différent"
+      "avec un entityId différent",
+      "avec accès au FI par défaut (deuxième FS)"
     ],
     "mocked": true,
     "url": "https://fsp2v2.integ01.fcp.fournisseur-de-service.fr",
