@@ -259,10 +259,11 @@ export default class ServiceProviderPage {
   }
 
   checkMockAmrValue(amrValue: string): void {
+    const amrArray = amrValue.split(' ');
     cy.get('[id="info-amr"] strong')
       .invoke('text')
-      .then((value) => value.trim())
-      .should('equal', amrValue);
+      .then((value) => value.trim().split(' '))
+      .should('have.members', amrArray);
   }
 
   getMockIdTokenText(): Cypress.Chainable<string> {
