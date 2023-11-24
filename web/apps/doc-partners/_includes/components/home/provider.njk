@@ -1,0 +1,30 @@
+{% set item = params.item %}
+<div class="fr-col-4">
+  <div class="fr-card fr-card--sm fr-enlarge-link fr-card--no-icon">
+    <div class="fr-card__body">
+      <div class="fr-card__content">
+        <h3 class="fr-card__title">
+          {{ item.title }}
+        </h3>
+        <div class="fr-card__start">
+          <ul class="fr-tags-group">
+            {% for tag in item.tags %}
+              {% if tag !== 'referencesFcFi' and tag !== 'referencesFcFs' %}
+                <li>
+                  <p class="fr-tag fr-tag--sm">
+                    {{ tag }}
+                  </p>
+                </li>
+              {% endif %}
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="fr-card__header">
+      <div class="fr-card__img">
+        <img class="fr-responsive-img" src="images/home/{{ item.img }}" alt="{{ item.title }}" />
+      </div>
+    </div>
+  </div>
+</div>

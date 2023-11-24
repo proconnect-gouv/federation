@@ -10,10 +10,11 @@ APP_NAME=$1
 INSTANCE_FOLDER="./instances/$APP_NAME"
 
 # Cleanup existing folders
-FOLDERS=("data" "includes" "content" "public" "dist")
+FOLDERS=("_data" "_includes" "content" "public" "dist")
 for folder in "${FOLDERS[@]}"; do
   # Use double quotes to properly handle folder names with spaces or special characters
   if [ -d "${INSTANCE_FOLDER}/${folder}" ]; then
+    print_info "Suppression du dossier ${INSTANCE_FOLDER}/${folder}"
     rm -rf "${INSTANCE_FOLDER}/${folder}"
   fi
 done

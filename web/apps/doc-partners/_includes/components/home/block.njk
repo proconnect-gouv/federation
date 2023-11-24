@@ -1,0 +1,14 @@
+{% set item = params.item %}
+<div class="fr-col-4 fc-text--center">
+  {% if item.img %}
+    <img class="fr-mb-5v" src="images/home/{{ item.img }}" alt="{{ item.title }}" />
+  {% endif %}
+  <h5>{{ item.title }}</h5>
+  <p class="fr-text--lg">{{ item.description | safe }}</p>
+  {% if item.url %}
+    <a href="{{ item.url }}">
+      <span>{{ i18n.learn_more }}</span>
+      <span class="fr-icon-arrow-right-line fr-icon--sm fr-ml-2v" aria-hidden="true"></span>
+    </a>
+  {% endif %}
+</div>

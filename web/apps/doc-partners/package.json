@@ -1,29 +1,29 @@
 {
-  "name": "doc-partners",
-  "version": "0.1.0",
-  "description": "Documentation partenaires",
-  "private": true,
-  "installConfig": {
-    "hoistingLimits": "workspaces"
-  },
   "dependencies": {
     "@11ty/eleventy": "^2.0.0",
     "@11ty/eleventy-img": "^3.0.0",
     "@11ty/eleventy-navigation": "^0.3.5",
     "@11ty/eleventy-plugin-bundle": "^1.0.3",
     "@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
+    "@gouvfr/dsfr": "^1.10.1",
     "@kevingimbel/eleventy-plugin-mermaid": "^2.1.0",
-    "@gouvfr/dsfr": "^1.9.3",
     "markdown-it-anchor": "^8.6.6",
     "markdown-it-attrs": "^4.1.6",
     "markdown-it-container": "^3.0.0",
-    "pagefind": "^1.0.3",
-    "mermaid": "^10.2.4"
+    "mermaid": "^10.2.4",
+    "pagefind": "^1.0.3"
   },
+  "description": "Documentation partenaires",
+  "installConfig": {
+    "hoistingLimits": "workspaces"
+  },
+  "name": "doc-partners",
+  "private": true,
   "scripts": {
     "build": "eleventy",
     "make:search": "npx pagefind --site dist/ --output-subdir '_pagefind'",
     "postbuild": "yarn make:search",
     "serve:dev": "npx serve ./dist -l 8080"
-  }
+  },
+  "version": "0.1.0"
 }

@@ -4,10 +4,15 @@ PUCE=" *  "
 RESET='\033[0m'
 RED='\033[0;31m'
 GREEN='\033[32m'
+GREY='\033[90m'
 
 print_error() {
   echo -e "${RED}ERROR : $1${RESET}" >&2
   exit 1
+}
+
+print_info() {
+  echo -e "${GREY}$1${RESET}"
 }
 
 print_success() {
