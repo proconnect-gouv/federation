@@ -30,4 +30,8 @@ module.exports = function (eleventyConfig) {
   eleventyConfig.amendLibrary('md', (mdLib) => {
     mdLib.use(markdownItContainer, 'quote', customMarkdownContainers.quote(mdLib));
   });
+
+  eleventyConfig.amendLibrary('md', (mdLib) => {
+    mdLib.use(markdownItContainer, 'table', customMarkdownContainers.table(mdLib));
+  });
 };

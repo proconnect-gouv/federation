@@ -1,4 +1,22 @@
 module.exports = {
+  table: (md) => {
+    const regex = /^table(\s+.*)?$/;
+    return {
+      validate: (params) => {
+        return params.trim().match(regex);
+      },
+      render: (tokens, idx) => {
+        const params = tokens[idx].info.trim().match(regex);
+        if (tokens[idx].nesting === 1) {
+          // opening tag
+          return '<div class="fr-table">';
+        } else {
+          // closing tag
+          return '</div>';
+        }
+      },
+    };
+  },
   callout: (md) => {
     const re = /^callout(\s+.*)?$/;
     return {
