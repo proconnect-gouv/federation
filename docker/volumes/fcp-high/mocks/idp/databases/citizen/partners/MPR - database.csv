@@ -1,0 +1,65 @@
+login,password,family_name,preferred_username,given_name,gender,email,phone_number,birthdate,birthplace,birthcountry,country,postal_code,locality,street_address
+test_2JEROME,123,BERGERE,,JEROME PIERRE ERIC,male,ydozicah-37762@yopmail.com,123456789,1959-08-15,75112,99100,France,75007,Paris,20 avenue de Ségur
+test_2GERALDINE,123,LAMPE,LIT,GERALDINE,female,ducowanet-70062@yopmail.com,123456789,1976-09-21,68066,99100,France,75007,Paris,20 avenue de Ségur
+test_2CLEMENT,123,CORSE,,CLEMENT,male,baterollu-53992@yopmail.com,123456789,1991-02-12,2A115,99100,France,75007,Paris,20 avenue de Ségur
+test_2PHILIPPE,123,LIT,,PHILIPPE,male,daddalassux-19552@yopmail.com,123456789,1991-02-12,,99137,France,75007,Paris,20 avenue de Ségur
+test_2BERTRAND,123,GUERIDON,,BERTRAND,male,uvebaffollo-99132@yopmail.com,123456789,1959-08-15,35118,99100,France,75007,Paris,20 avenue de Ségur
+test_2ALAIN,123,BUREAU,,ALAIN,male,raxihuda-05142@yopmail.com,123456789,2003-04-04,75115,99100,France,75007,Paris,20 avenue de Ségur
+test_2NICOLAS,123,BUFFET,,NICOLAS,male,ycofolarr-15342@yopmail.com,123456789,1972-01-08,35124,99100,France,75007,Paris,20 avenue de Ségur
+test_2CINDY,123,COMMODE,ARMOIRE,CINDY,female,itittotuq-66732@yopmail.com,123456789,1980-06-27,57431,99100,France,75007,Paris,20 avenue de Ségur
+test_2DAVID,123,ARMOIRE,,DAVID,male,dicipumo-17822@yopmail.com,123456789,1975-10-28,57530,99100,France,75007,Paris,20 avenue de Ségur
+test_2STEPHANE,123,FAUTEUIL,,STEPHANE,male,awakussarri-32872@yopmail.com,123456789,1970-04-10,57253,99100,France,75007,Paris,20 avenue de Ségur
+test_2JENNIFER,123,CANAPE,FAUTEUIL,JENNIFER,female,saqetyde-27642@yopmail.com,123456789,1978-05-16,57117,99100,France,75007,Paris,20 avenue de Ségur
+test_2WILLIAM,123,BALDAQUIN,,WILLIAM,male,axitamaff-90642@yopmail.com,123456789,1951-08-14,82195,99100,France,75007,Paris,20 avenue de Ségur
+test_2LAURENT,123,COIFFEUSE,,LAURENT,male,xarrinedodd-01732@yopmail.com,123456789,1951-07-20,82195,99100,France,75007,Paris,20 avenue de Ségur
+test_2ELSA,123,PLACARD,,ELSA,female,ywiwyne-12682@yopmail.com,123456789,1987-04-13,59226,99100,France,75007,Paris,20 avenue de Ségur
+test_2FABIEN,123,PENDERIE,,FABIEN,male,doqenaxeq-16822@yopmail.com,123456789,1986-03-25,83028,99100,France,75007,Paris,20 avenue de Ségur
+test_2THIBAULT,123,TABLE,,THIBAULT,male,iffikeppano-90642@yopmail.com,123456789,1991-02-13,75116,99100,France,75007,Paris,20 avenue de Ségur
+test_3JEROME,123,BERGERE,,JEROME PIERRE ERIC,male,ydozicah-37763@yopmail.com,123456789,1959-08-15,75112,99100,France,75007,Paris,20 avenue de Ségur
+test_3GERALDINE,123,LAMPE,LIT,GERALDINE,female,ducowanet-70063@yopmail.com,123456789,1976-09-21,68066,99100,France,75007,Paris,20 avenue de Ségur
+test_3CLEMENT,123,CORSE,,CLEMENT,male,baterollu-53993@yopmail.com,123456789,1991-02-12,2A115,99100,France,75007,Paris,20 avenue de Ségur
+test_3PHILIPPE,123,LIT,,PHILIPPE,male,daddalassux-19553@yopmail.com,123456789,1991-02-12,,99137,France,75007,Paris,20 avenue de Ségur
+test_3BERTRAND,123,GUERIDON,,BERTRAND,male,uvebaffollo-99133@yopmail.com,123456789,1959-08-15,35118,99100,France,75007,Paris,20 avenue de Ségur
+test_3ALAIN,123,BUREAU,,ALAIN,male,raxihuda-05143@yopmail.com,123456789,2003-04-04,75115,99100,France,75007,Paris,20 avenue de Ségur
+test_3NICOLAS,123,BUFFET,,NICOLAS,male,ycofolarr-15343@yopmail.com,123456789,1972-01-08,35124,99100,France,75007,Paris,20 avenue de Ségur
+test_3CINDY,123,COMMODE,ARMOIRE,CINDY,female,itittotuq-66733@yopmail.com,123456789,1980-06-27,57431,99100,France,75007,Paris,20 avenue de Ségur
+test_3DAVID,123,ARMOIRE,,DAVID,male,dicipumo-17823@yopmail.com,123456789,1975-10-28,57530,99100,France,75007,Paris,20 avenue de Ségur
+test_3STEPHANE,123,FAUTEUIL,,STEPHANE,male,awakussarri-32873@yopmail.com,123456789,1970-04-10,57253,99100,France,75007,Paris,20 avenue de Ségur
+test_3JENNIFER,123,CANAPE,FAUTEUIL,JENNIFER,female,saqetyde-27643@yopmail.com,123456789,1978-05-16,57117,99100,France,75007,Paris,20 avenue de Ségur
+test_3WILLIAM,123,BALDAQUIN,,WILLIAM,male,axitamaff-90643@yopmail.com,123456789,1951-08-14,82195,99100,France,75007,Paris,20 avenue de Ségur
+test_3LAURENT,123,COIFFEUSE,,LAURENT,male,xarrinedodd-01733@yopmail.com,123456789,1951-07-20,82195,99100,France,75007,Paris,20 avenue de Ségur
+test_3ELSA,123,PLACARD,,ELSA,female,ywiwyne-12683@yopmail.com,123456789,1987-04-13,59226,99100,France,75007,Paris,20 avenue de Ségur
+test_3FABIEN,123,PENDERIE,,FABIEN,male,doqenaxeq-16823@yopmail.com,123456789,1986-03-25,83028,99100,France,75007,Paris,20 avenue de Ségur
+test_3THIBAULT,123,TABLE,,THIBAULT,male,iffikeppano-90643@yopmail.com,123456789,1991-02-13,75116,99100,France,75007,Paris,20 avenue de Ségur
+test_4JEROME,123,BERGERE,,JEROME PIERRE ERIC,male,ydozicah-37764@yopmail.com,123456789,1959-08-15,75112,99100,France,75007,Paris,20 avenue de Ségur
+test_4GERALDINE,123,LAMPE,LIT,GERALDINE,female,ducowanet-70064@yopmail.com,123456789,1976-09-21,68066,99100,France,75007,Paris,20 avenue de Ségur
+test_4CLEMENT,123,CORSE,,CLEMENT,male,baterollu-53994@yopmail.com,123456789,1991-02-12,2A115,99100,France,75007,Paris,20 avenue de Ségur
+test_4PHILIPPE,123,LIT,,PHILIPPE,male,daddalassux-19554@yopmail.com,123456789,1991-02-12,,99137,France,75007,Paris,20 avenue de Ségur
+test_4BERTRAND,123,GUERIDON,,BERTRAND,male,uvebaffollo-99134@yopmail.com,123456789,1959-08-15,35118,99100,France,75007,Paris,20 avenue de Ségur
+test_4ALAIN,123,BUREAU,,ALAIN,male,raxihuda-05144@yopmail.com,123456789,2003-04-04,75115,99100,France,75007,Paris,20 avenue de Ségur
+test_4NICOLAS,123,BUFFET,,NICOLAS,male,ycofolarr-15344@yopmail.com,123456789,1972-01-08,35124,99100,France,75007,Paris,20 avenue de Ségur
+test_4CINDY,123,COMMODE,ARMOIRE,CINDY,female,itittotuq-66734@yopmail.com,123456789,1980-06-27,57431,99100,France,75007,Paris,20 avenue de Ségur
+test_4DAVID,123,ARMOIRE,,DAVID,male,dicipumo-17824@yopmail.com,123456789,1975-10-28,57530,99100,France,75007,Paris,20 avenue de Ségur
+test_4STEPHANE,123,FAUTEUIL,,STEPHANE,male,awakussarri-32874@yopmail.com,123456789,1970-04-10,57253,99100,France,75007,Paris,20 avenue de Ségur
+test_4JENNIFER,123,CANAPE,FAUTEUIL,JENNIFER,female,saqetyde-27644@yopmail.com,123456789,1978-05-16,57117,99100,France,75007,Paris,20 avenue de Ségur
+test_4WILLIAM,123,BALDAQUIN,,WILLIAM,male,axitamaff-90644@yopmail.com,123456789,1951-08-14,82195,99100,France,75007,Paris,20 avenue de Ségur
+test_4LAURENT,123,COIFFEUSE,,LAURENT,male,xarrinedodd-01734@yopmail.com,123456789,1951-07-20,82195,99100,France,75007,Paris,20 avenue de Ségur
+test_4ELSA,123,PLACARD,,ELSA,female,ywiwyne-12684@yopmail.com,123456789,1987-04-13,59226,99100,France,75007,Paris,20 avenue de Ségur
+test_4FABIEN,123,PENDERIE,,FABIEN,male,doqenaxeq-16824@yopmail.com,123456789,1986-03-25,83028,99100,France,75007,Paris,20 avenue de Ségur
+test_4THIBAULT,123,TABLE,,THIBAULT,male,iffikeppano-90644@yopmail.com,123456789,1991-02-13,75116,99100,France,75007,Paris,20 avenue de Ségur
+test_5JEROME,123,BERGERE,BERGERE,JEROME PIERRE ERIC,male,ydozicah-37765@yopmail.com,123456789,1959-08-15,75112,99100,France,75007,Paris,20 avenue de Ségur
+test_5GERALDINE,123,LAMPE,BERGERE,GERALDINE,female,ducowanet-70065@yopmail.com,123456789,1976-09-21,68066,99100,France,75007,Paris,20 avenue de Ségur
+test_5CLEMENT,123,CORSE,CORSE,CLEMENT,male,baterollu-53995@yopmail.com,123456789,1991-02-12,2A115,99100,France,75007,Paris,20 avenue de Ségur
+test_5PHILIPPE,123,LIT,CORSE,PHILIPPE,male,daddalassux-19555@yopmail.com,123456789,1991-02-12,,99137,France,75007,Paris,20 avenue de Ségur
+test_5BERTRAND,123,GUERIDON,,BERTRAND,male,uvebaffollo-99135@yopmail.com,123456789,1959-08-15,35118,99100,France,62000,ARRAS,18 rue des Chariottes
+test_5ALAIN,123,BUREAU,,ALAIN,male,raxihuda-05145@yopmail.com,123456789,2003-04-04,75115,99100,France,62000,ARRAS,18 rue des Chariottes
+test_5NICOLAS,123,BUFFET,,NICOLAS,male,ycofolarr-15345@yopmail.com,123456789,1972-01-08,35124,99100,France,97300,CAYENNE,51 rue des spatules
+test_5CINDY,123,COMMODE,ARMOIRE,CINDY,female,itittotuq-66735@yopmail.com,123456789,1980-06-27,57431,99100,France,97300,CAYENNE,51 rue des spatules
+test_5DAVID_NoMail,123,ARMOIRE,,DAVID,male,,123456789,1975-10-28,57530,99100,France,75002,Paris,1 rue de la paix
+test_5STEPHANE_NoMail,123,FAUTEUIL,,STEPHANE,male,,123456789,1970-04-10,57253,99100,France,75002,Paris,1 rue de la paix
+test_5JENNIFER_Usage,123,,FAUTEUIL,JENNIFER,female,saqetyde-27645@yopmail.com,123456789,1978-05-16,57117,99100,France,75002,Paris,1 rue de la paix
+test_5WILLIAM_Usage,123,,BALDAQUIN,WILLIAM,male,axitamaff-90645@yopmail.com,123456789,1951-08-14,82195,99100,France,75002,Paris,1 rue de la paix
+test_5LAURENT,123,COIFFEUSE,COIFFEUSE,LAURENT,male,xarrinedodd-01735@yopmail.com,123456789,1951-07-20,82195,99100,France,75002,Paris,1 rue de la paix
+test_5ELSA,123,COIFFEUSE,COIFFEUSE,ELSA,female,ywiwyne-12685@yopmail.com,123456789,1987-04-13,59226,99100,France,75002,Paris,1 rue de la paix
+test_5FABIEN,123,PENDERIE,,FABIEN,male,doqenaxeq-16825@yopmail.com,123456789,1986-03-25,83028,99100,France,75002,Paris,1 rue de la paix
+test_5THIBAULT,123,TABLE,,THIBAULT,male,iffikeppano-90645@yopmail.com,123456789,1991-02-13,75116,99100,France,75002,Paris,1 rue de la paix
