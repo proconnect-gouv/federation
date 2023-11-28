@@ -19,6 +19,8 @@ Fonctionnalité: Fournisseur Identité - Sélection - fcp-high
     Et le fournisseur d'identité est actif dans la mire
     Et j'utilise un fournisseur d'identité avec niveau de sécurité "eidas3", chiffrement "" et signature "RS256"
     Et le fournisseur d'identité est actif dans la mire
+    Et j'utilise un fournisseur d'identité avec niveau de sécurité "eidas3", chiffrement "RSA-OAEP-256,A256GCM" et signature "ES256"
+    Et le fournisseur d'identité est actif dans la mire
     Et j'utilise un fournisseur d'identité avec niveau de sécurité "eidas3", chiffrement "RSA-OAEP,A256GCM" et signature "RS256"
     Et le fournisseur d'identité est actif dans la mire
     Et j'utilise un fournisseur d'identité avec niveau de sécurité "eidas3", chiffrement "ECDH-ES,A256GCM" et signature "ES256"
