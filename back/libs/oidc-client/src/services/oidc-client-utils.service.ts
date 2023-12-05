@@ -249,9 +249,22 @@ export class OidcClientUtilsService {
       throw new OidcClientGetEndSessionUrlException();
     }
 
-    this.logger.trace({ idpId, endSessionUrl });
+    /**
+     * Temporary remove client_id from endSessionUrl since parameter was not provided in previous version of openid-client
+     * This might break the logout with our Idps
+     * @todo #1449 Enable client_id in endSessionUrl
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1449
+     *
+     */
 
-    return endSessionUrl;
+    const temporaryWorkAroundUrl = endSessionUrl.replace(
+      /(&|\?)client_id=[^&]+/,
+      '',
+    );
+
+    this.logger.trace({ idpId, endSessionUrl, temporaryWorkAroundUrl });
+
+    return temporaryWorkAroundUrl;
   }
 
   async hasEndSessionUrl(idpId: string): Promise<boolean> {
