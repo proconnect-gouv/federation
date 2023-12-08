@@ -9,6 +9,11 @@
   --blue-france-sun-113-625: var(--blue-agent-connect);
   --blue-france-sun-113-625-hover: var(--blue-agent-connect-hover);
   --blue-france-sun-113-625-active: var(--blue-agent-connect-active);
+
+  header .fr-header__operator > img {
+    height: 54px !important;
+    max-height: 54px !important;
+  }
 }
 
 :root[data-fr-theme='dark'] {
@@ -20,4 +25,9 @@
   --blue-france-sun-113-625: var(--blue-agent-connect);
   --blue-france-sun-113-625-hover: var(--blue-agent-connect-hover);
   --blue-france-sun-113-625-active: var(--blue-agent-connect-active);
+
+  header .fr-header__operator > img {
+    height: 54px !important;
+    max-height: 54px !important;
+  }
 }
