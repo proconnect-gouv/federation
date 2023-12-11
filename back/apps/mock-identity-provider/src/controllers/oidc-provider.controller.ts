@@ -13,7 +13,7 @@ import { LoggerService } from '@fc/logger-legacy';
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
 import { ISessionService, Session } from '@fc/session';
 
-import { AppSession, AuthorizeParamsDto, LogoutParamsDto } from '../dto';
+import { AppSession, AuthorizeParamsDto } from '../dto';
 
 @Controller()
 export class OidcProviderController {
@@ -108,19 +108,6 @@ export class OidcProviderController {
     const msg = JSON.stringify(['/token', 'sp_id', sp_id]);
     this.logger.trace({ msg });
 
-    return next();
-  }
-
-  @Get(OidcProviderRoutes.END_SESSION)
-  @UsePipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }),
-  )
-  getEndSession(@Next() next, @Query() _query: LogoutParamsDto) {
-    // Pass the query to oidc-provider
     return next();
   }
 }

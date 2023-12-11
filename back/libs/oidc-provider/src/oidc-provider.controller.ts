@@ -6,6 +6,7 @@ import {
   Inject,
   Next,
   Post,
+  Query,
   Req,
   Res,
   UsePipes,
@@ -17,7 +18,7 @@ import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ISessionService, Session } from '@fc/session';
 
-import { RevocationTokenParamsDTO } from './dto';
+import { LogoutParamsDto, RevocationTokenParamsDTO } from './dto';
 import { OidcProviderRoutes } from './enums';
 import { IOidcProviderConfigAppService } from './interfaces';
 import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
@@ -103,7 +104,13 @@ export class OidcProviderController {
   }
 
   @Get(OidcProviderRoutes.END_SESSION)
-  getEndSession(@Next() next) {
+  @UsePipes(
+    new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+    }),
+  )
+  getEndSession(@Next() next, @Query() _query: LogoutParamsDto) {
     this.logger.trace({
       route: OidcProviderRoutes.END_SESSION,
       method: 'GET',
