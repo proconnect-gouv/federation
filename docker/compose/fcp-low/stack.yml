@@ -37,6 +37,8 @@ services:
       - "rnipp"
       # -- Exploitation
       - "fc-exploitation"
+      # -- Mailer
+      - "maildev"
 
   ####################
   # ALL FCP LOW
