@@ -13,7 +13,7 @@ import { NestFactory } from '@nestjs/core';
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger-legacy';
+import { NestLoggerService } from '@fc/logger';
 import {
   AppConfig,
   MockIdentityProviderConfig,
@@ -51,7 +51,12 @@ async function bootstrap() {
      */
     bodyParser: false,
     httpsOptions,
+    bufferLogs: true,
   });
+
+  const logger = await app.resolve(NestLoggerService);
+
+  app.useLogger(logger);
 
   /**
    * @see https://expressjs.com/fr/api.html#app.set
@@ -97,9 +102,6 @@ async function bootstrap() {
    * @see body-parser.md in the project doc folder for further informations.
    */
   app.use(urlencoded({ extended: false }));
-
-  const logger = await app.resolve(LoggerService);
-  app.useLogger(logger);
 
   app.engine('ejs', renderFile);
   app.set('views', [join(__dirname, 'views')]);

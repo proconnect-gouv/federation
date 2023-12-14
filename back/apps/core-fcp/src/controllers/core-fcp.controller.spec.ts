@@ -5,7 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { CoreAcrService, CoreVerifyService } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
@@ -15,6 +15,7 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import { SessionCsrfService, SessionService } from '@fc/session';
 import { TrackedEventInterface, TrackingService } from '@fc/tracking';
 
+import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreFcpService, CoreFcpVerifyService } from '../services';
@@ -77,11 +78,7 @@ describe('CoreFcpController', () => {
     getInteraction: jest.fn(),
   };
 
-  const loggerServiceMock = {
-    debug: jest.fn(),
-    setContext: jest.fn(),
-    trace: jest.fn(),
-  } as unknown as LoggerService;
+  const loggerServiceMock = getLoggerMock();
 
   const coreFcpServiceMock = {
     getClaimsForInteraction: jest.fn(),

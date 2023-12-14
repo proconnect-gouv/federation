@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
   OidcClientRoutes,
@@ -31,10 +31,9 @@ export class OidcProviderConfigAppService extends OidcProviderAppConfigLibServic
     protected readonly grantService: OidcProviderGrantService,
     private readonly oidcClient: OidcClientService,
     private readonly config: ConfigService,
-    private tracking: TrackingService,
+    private readonly tracking: TrackingService,
   ) {
     super(logger, sessionService, errorService, grantService);
-    this.logger.setContext(this.constructor.name);
   }
 
   /**

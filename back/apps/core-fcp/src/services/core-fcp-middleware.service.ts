@@ -10,7 +10,7 @@ import {
   CoreOidcProviderMiddlewareService,
 } from '@fc/core';
 import { FlowStepsService } from '@fc/flow-steps';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { stringToArray } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
@@ -62,7 +62,6 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
       core,
       flowSteps,
     );
-    this.logger.setContext(this.constructor.name);
   }
 
   onModuleInit() {
@@ -130,7 +129,7 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
       { forbidNonWhitelisted: true },
     );
 
-    this.logger.trace({ data, validationErrors });
+    this.logger.debug({ data, validationErrors });
 
     return validationErrors.length === 0;
   }
@@ -153,6 +152,7 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     if (isFinishedInteractionSession) {
       await this.sessionService.detach(req, res);
       await this.sessionService.duplicate(req, res, GetAuthorizeSessionDto);
+      this.logger.debug('Session has been detached and duplicated');
     }
   }
 
@@ -169,6 +169,7 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
 
     if (!isSsoSession) {
       await this.sessionService.reset(req, res);
+      this.logger.debug('Session has been reset');
     }
   }
 

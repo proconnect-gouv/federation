@@ -1,11 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import {
   OidcProviderErrorService,
   OidcProviderGrantService,
 } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
 
@@ -26,6 +28,8 @@ describe('OidcProviderConfigAppService', () => {
     saveGrant: jest.fn(),
   };
 
+  const loggerServiceMock = getLoggerMock();
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -39,6 +43,8 @@ describe('OidcProviderConfigAppService', () => {
         OidcProviderGrantService,
       ],
     })
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(OidcProviderErrorService)

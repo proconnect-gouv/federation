@@ -61,6 +61,12 @@
       "@fc/logger/*": [
         "libs/logger/src/*"
       ],
+      "@mocks/logger": [
+        "libs/logger/.mocks"
+      ],
+      "@mocks/logger/*": [
+        "libs/logger/.mocks/*"
+      ],
       "@fc/oidc-provider": [
         "libs/oidc-provider/src"
       ],
@@ -417,7 +423,7 @@
       ],
       "@mocks/jwt": [
         "libs/jwt/.mocks"
-      ],      
+      ],
       "@mocks/jwt/*": [
         "libs/jwt/.mocks/*"
       ],
@@ -459,7 +465,7 @@
       ],
       "@mocks/session": [
         "libs/session/.mocks"
-      ],      
+      ],
       "@mocks/session/*": [
         "libs/session/.mocks/*"
       ],
@@ -468,6 +474,18 @@
       ],
       "@fc/fqdn-to-idp-adapter-mongo/*": [
         "libs/fqdn-to-idp-adapter-mongo/src/*"
+      ],
+      "@fc/async-local-storage": [
+        "libs/async-local-storage/src"
+      ],
+      "@fc/async-local-storage/*": [
+        "libs/async-local-storage/src/*"
+      ],
+      "@mocks/async-local-storage": [
+        "libs/async-local-storage/.mocks"
+      ],
+      "@mocks/async-local-storage/*": [
+        "libs/async-local-storage/.mocks/*"
       ],
     }
   },

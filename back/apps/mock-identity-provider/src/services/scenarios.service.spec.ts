@@ -7,7 +7,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import * as FcCommon from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import { ScenarioDto } from '../dto';
 import { Scenario } from '../enums';
@@ -29,10 +31,7 @@ jest.mock('@fc/common', () => {
 describe('ScenarioService', () => {
   let service: ScenariosService;
 
-  const loggerMock = {
-    setContext: jest.fn(),
-    warn: jest.fn(),
-  };
+  const loggerMock = getLoggerMock();
 
   const configMock = {
     get: jest.fn(),

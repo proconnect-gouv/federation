@@ -4,9 +4,10 @@ import { AccountBlockedException } from '@fc/account';
 import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { CoreFcaAgentNotFromPublicServiceException } from '@fc/core-fca/exceptions';
 import { CryptographyFcaService } from '@fc/cryptography-fca';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 
+import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreFcaMcpVerifyHandler } from './core-fca.mcp-verify.handler';
@@ -14,12 +15,7 @@ import { CoreFcaMcpVerifyHandler } from './core-fca.mcp-verify.handler';
 describe('CoreFcaMcpVerifyHandler', () => {
   let service: CoreFcaMcpVerifyHandler;
 
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    debug: jest.fn(),
-    warn: jest.fn(),
-    trace: jest.fn(),
-  };
+  const loggerServiceMock = getLoggerMock();
 
   const accountIdMock = 'accountIdMock value';
 

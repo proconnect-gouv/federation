@@ -6,7 +6,7 @@ import { ConfigService } from '@fc/config';
 import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { FeatureHandler } from '@fc/feature-handler';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { RnippPivotIdentity, RnippService } from '@fc/rnipp';
@@ -36,9 +36,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly cryptographyFcp: CryptographyFcpService,
     private readonly account: AccountService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   /**
    * Main business manipulations occurs in this method
@@ -114,8 +112,6 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
       subs: { ...subs, [spId]: sub },
     };
 
-    this.logger.trace({ session });
-
     await sessionOidc.set(session);
   }
 
@@ -132,13 +128,14 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
   ): string {
     let sub: string;
     if (account.spFederation?.hasOwnProperty(entityId)) {
+      this.logger.info('using existing sub from spFederation');
       const subData = account.spFederation[entityId];
-      this.logger.trace('using existing sub from spFederation');
       sub = typeof subData === 'string' ? subData : subData.sub;
     } else {
-      this.logger.trace('creating new sub');
+      this.logger.info('creating new sub');
       sub = this.cryptographyFcp.computeSubV1(entityId, identityHash);
     }
+    this.logger.debug({ sub });
 
     return sub;
   }
@@ -161,8 +158,6 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     await this.tracking.track(FC_REQUESTED_RNIPP, trackingContext);
     const rnippIdentity = await this.rnipp.check(idpIdentity);
     await this.tracking.track(FC_RECEIVED_VALID_RNIPP, trackingContext);
-
-    this.logger.trace({ rnippIdentity });
 
     return rnippIdentity;
   }

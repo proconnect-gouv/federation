@@ -4,9 +4,11 @@ import * as OidcProvider from 'oidc-provider';
 import { HttpAdapterHost } from '@nestjs/core';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import {
   OidcProviderMiddlewarePattern,
@@ -25,6 +27,8 @@ import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
 
 describe('OidcProviderService', () => {
   let service: OidcProviderService;
+
+  const loggerMock = getLoggerMock();
 
   const httpAdapterHostMock = {
     httpAdapter: {
@@ -62,14 +66,6 @@ describe('OidcProviderService', () => {
       },
     },
   };
-
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    verbose: jest.fn(),
-    debug: jest.fn(),
-    trace: jest.fn(),
-    businessEvent: jest.fn(),
-  } as unknown as LoggerService;
 
   const serviceProviderListMock = [{ name: 'my SP' }];
   const serviceProviderServiceMock = {
@@ -118,9 +114,9 @@ describe('OidcProviderService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
+        LoggerService,
         OidcProviderService,
         HttpAdapterHost,
-        LoggerService,
         {
           provide: REDIS_CONNECTION_TOKEN,
           useValue: redisMock,
@@ -133,17 +129,15 @@ describe('OidcProviderService', () => {
         },
       ],
     })
+      .overrideProvider(LoggerService)
+      .useValue(loggerMock)
       .overrideProvider(HttpAdapterHost)
       .useValue(httpAdapterHostMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
       .overrideProvider(OidcProviderErrorService)
       .useValue(oidcProviderErrorServiceMock)
       .overrideProvider(OidcProviderConfigService)
       .useValue(oidcProviderConfigServiceMock)
       .compile();
-
-    module.useLogger(loggerServiceMock);
 
     service = module.get<OidcProviderService>(OidcProviderService);
     jest.resetAllMocks();
@@ -152,12 +146,6 @@ describe('OidcProviderService', () => {
       switch (module) {
         case 'OidcProvider':
           return configOidcProviderMock;
-        case 'Logger':
-          return {
-            path: '/dev/null',
-            level: LoggerLevelNames.TRACE,
-            isDevelopment: false,
-          };
       }
     });
 

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
   OidcProviderErrorService,
@@ -10,17 +10,14 @@ import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-e
 import { ISessionBoundContext, SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
+import { getLoggerMock } from '@mocks/logger';
+
 import { OidcMiddlewareService } from './oidc-middleware.service';
 
 describe('MockIdentityProviderFcaService', () => {
   let service: OidcMiddlewareService;
 
-  const loggerMock = {
-    debug: jest.fn(),
-    fatal: jest.fn(),
-    setContext: jest.fn(),
-    trace: jest.fn(),
-  };
+  const loggerMock = getLoggerMock();
 
   const sessionServiceMock = {
     set: {

@@ -6,7 +6,7 @@ import { InjectModel } from '@nestjs/mongoose';
 
 import { asyncFilter, validateDto } from '@fc/common';
 import { validationOptions } from '@fc/config';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
 
 import { GetFqdnToIdentityProviderMongoDto } from '../dto/fqdn-to-idp-mongo.dto';
@@ -24,9 +24,7 @@ export class FqdnToIdpAdapterMongoService
     private readonly FqdnToIdentityProviderModel: Model<FqdnToIdentityProvider>,
     private readonly logger: LoggerService,
     private readonly mongooseWatcher: MongooseCollectionOperationWatcherHelper,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   async onModuleInit() {
     this.mongooseWatcher.watchWith<FqdnToIdentityProvider>(
@@ -68,12 +66,12 @@ export class FqdnToIdpAdapterMongoService
         await this.fetchFqdnToIdps(),
       ) as FqdnToIdentityProvider[];
 
-      this.logger.trace({
+      this.logger.debug({
         message: 'fqdnToIdpCache has been refreshed.',
         step: 'REFRESH',
       });
     } else {
-      this.logger.trace({
+      this.logger.debug({
         message: 'fqdnToIdpCache has been used.',
         step: 'CACHE',
       });
@@ -112,17 +110,16 @@ export class FqdnToIdpAdapterMongoService
         );
 
         if (errors.length > 0) {
-          this.logger.warn(
+          this.logger.warning(
             `fqdnToProvider with domain "${doc.fqdn}" and provider uuid "${doc.identityProvider}" was excluded from the result at DTO validation.`,
           );
-          this.logger.trace({ errors });
+          this.logger.err({ errors });
         }
 
         return errors.length === 0;
       },
     );
 
-    this.logger.trace({ fqdnToProvider });
     return fqdnToProvider;
   }
 }

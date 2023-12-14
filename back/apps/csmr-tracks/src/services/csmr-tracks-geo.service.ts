@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { GeoipMaxmindService } from '@fc/geoip-maxmind';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 
 import {
   ICsmrTracksData,
@@ -14,9 +14,7 @@ export class CsmrTracksGeoService {
   constructor(
     protected readonly logger: LoggerService,
     protected readonly geoip: GeoipMaxmindService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   // eslint-disable-next-line complexity
   getGeoFromIp(track: ICsmrTracksData): {
@@ -43,7 +41,7 @@ export class CsmrTracksGeoService {
 
     const ip = this.getIp(track);
 
-    this.logger.debug('getGeoFromIp from csmr-tracks-data-legacy service');
+    this.logger.info('getGeoFromIp from csmr-tracks-data-legacy service');
     if (city || country) {
       return {
         city: city || region,

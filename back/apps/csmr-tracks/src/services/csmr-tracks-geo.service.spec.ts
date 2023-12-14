@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { GeoipMaxmindService } from '@fc/geoip-maxmind';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 
-import { getLoggerMock } from '@mocks/logger-legacy';
+import { getLoggerMock } from '@mocks/logger';
 
 import { ICsmrTracksData, ICsmrTracksV2FieldsData } from '../interfaces';
 import { CsmrTracksGeoService } from './csmr-tracks-geo.service';

@@ -6,6 +6,7 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 
 import { AccountModule } from '@fc/account';
 import { AppModule } from '@fc/app';
+import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { ConfigService, ConfigTemplateInterceptor } from '@fc/config';
 import {
   CORE_SERVICE,
@@ -73,6 +74,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
 @Module({
   imports: [
     exceptionModule,
+    AsyncLocalStorageModule,
     MongooseModule.forRoot(),
     SessionModule.forRoot({
       schema: CoreFcpSession,

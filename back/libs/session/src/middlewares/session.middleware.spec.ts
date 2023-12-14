@@ -2,7 +2,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger-legacy';
 
 import { SessionConfig } from '../dto';
 import { ISessionRequest } from '../interfaces';
@@ -14,10 +13,6 @@ describe('session.middleware', () => {
 
   const configServiceMock = {
     get: jest.fn(),
-  };
-
-  const loggerServiceMock = {
-    setContext: jest.fn(),
   };
 
   const configMock: Partial<SessionConfig> = {
@@ -60,7 +55,6 @@ describe('session.middleware', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         SessionMiddleware,
-        LoggerService,
         ConfigService,
         CryptographyService,
         SessionService,
@@ -68,8 +62,6 @@ describe('session.middleware', () => {
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(CryptographyService)
@@ -83,7 +75,6 @@ describe('session.middleware', () => {
 
   it('should be defined', () => {
     expect(middleware).toBeDefined();
-    expect(loggerServiceMock.setContext).toHaveBeenCalledTimes(1);
   });
 
   describe('use()', () => {

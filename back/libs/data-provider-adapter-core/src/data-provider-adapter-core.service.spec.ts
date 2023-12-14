@@ -7,7 +7,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { JwtService } from '@fc/jwt';
-import { LoggerService } from '@fc/logger-legacy';
 
 import { getJwtServiceMock } from '@mocks/jwt';
 
@@ -27,11 +26,6 @@ describe('DataProviderAdapterCoreService', () => {
 
   const configServiceMock = {
     get: jest.fn().mockReturnValue({}),
-  };
-
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    trace: jest.fn(),
   };
 
   const HttpServiceMock = {
@@ -68,15 +62,12 @@ describe('DataProviderAdapterCoreService', () => {
       providers: [
         DataProviderAdapterCoreService,
         ConfigService,
-        LoggerService,
         HttpService,
         JwtService,
       ],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
       .overrideProvider(HttpService)
       .useValue(HttpServiceMock)
       .overrideProvider(JwtService)
@@ -90,13 +81,6 @@ describe('DataProviderAdapterCoreService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  it('should set logger context', () => {
-    expect(loggerServiceMock.setContext).toHaveBeenCalledTimes(1);
-    expect(loggerServiceMock.setContext).toHaveBeenCalledWith(
-      DataProviderAdapterCoreService.name,
-    );
   });
 
   describe('checktoken', () => {

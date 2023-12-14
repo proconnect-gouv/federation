@@ -7,7 +7,6 @@ import { ConfigService } from '@fc/config';
 import { CoreServiceInterface } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger-legacy';
 import { OidcSession, stringToArray } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import {
@@ -28,7 +27,6 @@ export class CoreFcpService implements CoreServiceInterface {
   // Dependency injection can require more than 4 parameters
   // eslint-disable-next-line max-params
   constructor(
-    private readonly logger: LoggerService,
     private readonly config: ConfigService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     public readonly moduleRef: ModuleRef,
@@ -36,9 +34,7 @@ export class CoreFcpService implements CoreServiceInterface {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly oidcAcr: OidcAcrService,
     private readonly oidcClient: OidcClientService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   /**
    * Send an email to the authenticated end-user after consent.
@@ -50,13 +46,9 @@ export class CoreFcpService implements CoreServiceInterface {
     session: OidcSession,
     sessionCore: ISessionService<CoreSessionDto>,
   ): Promise<void> {
-    this.logger.debug('CoreFcpService.sendAuthenticationMail()');
-
     const { sentNotificationsForSp } = await sessionCore.get();
     const { idpId, spId } = session;
     const idp = await this.identityProvider.getById(idpId);
-
-    this.logger.trace({ idpId, idp });
 
     const { authenticationEmail } = idp.featureHandlers;
     const handler = FeatureHandler.get<CoreFcpSendEmailHandler>(
@@ -83,8 +75,6 @@ export class CoreFcpService implements CoreServiceInterface {
       type,
       identityConsent,
     );
-
-    this.logger.trace({ consentRequired });
 
     return consentRequired;
   }
@@ -161,8 +151,6 @@ export class CoreFcpService implements CoreServiceInterface {
 
     const claims = this.scopes.getRichClaimsFromScopes(scopes);
 
-    this.logger.trace({ interaction, claims });
-
     return claims;
   }
 
@@ -175,8 +163,6 @@ export class CoreFcpService implements CoreServiceInterface {
     const scopes = this.getScopesForInteraction(interaction);
 
     const claims = this.scopes.getRawClaimsFromScopes(scopes);
-
-    this.logger.trace({ interaction, claims });
 
     return claims;
   }
@@ -191,8 +177,6 @@ export class CoreFcpService implements CoreServiceInterface {
       params: { scope },
     } = interaction;
     const scopes = stringToArray(scope);
-
-    this.logger.trace({ interaction, scopes });
 
     return scopes;
   }

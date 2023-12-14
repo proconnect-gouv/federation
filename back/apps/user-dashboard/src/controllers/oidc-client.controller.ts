@@ -18,7 +18,6 @@ import {
 
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
-import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { OidcSession } from '@fc/oidc';
 import { OidcAcrConfig } from '@fc/oidc-acr';
 import {
@@ -47,15 +46,12 @@ import { UserDashboardTokenRevocationException } from '../exceptions';
 export class OidcClientController {
   // eslint-disable-next-line max-params
   constructor(
-    private readonly logger: LoggerService,
     private readonly oidcClient: OidcClientService,
     private readonly identityProvider: IdentityProviderAdapterEnvService,
     private readonly csrfService: SessionCsrfService,
     private readonly config: ConfigService,
     private readonly sessionService: SessionService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   /**
    * @todo #242 get configured parameters (scope and acr)
@@ -87,7 +83,6 @@ export class OidcClientController {
     try {
       await this.csrfService.validate(sessionOidc, csrfToken);
     } catch (error) {
-      this.logger.trace({ error }, LoggerLevelNames.WARN);
       throw new SessionInvalidCsrfSelectIdpException(error);
     }
 
@@ -122,16 +117,6 @@ export class OidcClientController {
 
     await sessionOidc.set(session);
 
-    this.logger.trace({
-      body,
-      method: 'POST',
-      name: 'OidcClientRoutes.REDIRECT_TO_IDP',
-      redirect: authorizationUrl,
-      res,
-      route: OidcClientRoutes.REDIRECT_TO_IDP,
-      session,
-    });
-
     res.redirect(authorizationUrl);
   }
 
@@ -144,11 +129,6 @@ export class OidcClientController {
   @Get(OidcClientRoutes.WELL_KNOWN_KEYS)
   @Header('cache-control', 'public, max-age=600')
   async getWellKnownKeys() {
-    this.logger.trace({
-      method: 'GET',
-      name: 'OidcClientRoutes.WELL_KNOWN_KEYS',
-      route: OidcClientRoutes.WELL_KNOWN_KEYS,
-    });
     return await this.oidcClient.utils.wellKnownKeys();
   }
 
@@ -185,13 +165,6 @@ export class OidcClientController {
 
   @Get(UserDashboardBackRoutes.LOGOUT_CALLBACK)
   async logoutCallback(@Req() req, @Res() res) {
-    this.logger.trace({
-      route: UserDashboardBackRoutes.LOGOUT_CALLBACK,
-      method: 'GET',
-      name: 'MockServiceProviderRoutes.LOGOUT_CALLBACK',
-      redirect: '/',
-    });
-
     // delete oidc session
     await this.sessionService.reset(req, res);
 
@@ -246,11 +219,6 @@ export class OidcClientController {
       statusCode: 302,
       url: `${urlPrefix}${OidcClientRoutes.OIDC_CALLBACK}?${queryParams}`,
     };
-
-    this.logger.trace({
-      method: 'GET',
-      name: 'OidcClientRoutes.OIDC_CALLBACK_LEGACY',
-    });
 
     return response;
   }

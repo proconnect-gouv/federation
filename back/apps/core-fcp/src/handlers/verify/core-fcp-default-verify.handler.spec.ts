@@ -6,24 +6,21 @@ import { ConfigService } from '@fc/config';
 import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { IdentitySource } from '@fc/core-fcp/enums';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { RnippPivotIdentity, RnippService } from '@fc/rnipp';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
+import { getLoggerMock } from '@mocks/logger';
+
 import { CoreFcpDefaultVerifyHandler } from './core-fcp-default-verify.handler';
 
 describe('CoreFcpDefaultVerifyHandler', () => {
   let service: CoreFcpDefaultVerifyHandler;
 
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    debug: jest.fn(),
-    warn: jest.fn(),
-    trace: jest.fn(),
-  };
+  const loggerServiceMock = getLoggerMock();
 
   const uidMock = '42';
 

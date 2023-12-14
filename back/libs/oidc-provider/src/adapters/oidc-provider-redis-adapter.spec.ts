@@ -1,6 +1,8 @@
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { Redis } from '@fc/redis';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import {
   OidcProviderParseRedisResponseException,
@@ -14,11 +16,7 @@ import {
 describe('OidcProviderRedisAdapter', () => {
   let adapter;
 
-  const loggerMock = {
-    setContext: jest.fn(),
-    debug: jest.fn(),
-    trace: jest.fn(),
-  } as unknown as LoggerService;
+  const loggerMock = getLoggerMock() as unknown as LoggerService;
 
   const redisMock = {
     hgetall: jest.fn(),
@@ -407,20 +405,6 @@ describe('OidcProviderRedisAdapter', () => {
       expect(ServiceProviderAdapterMock.getById).toHaveBeenCalledWith(id);
     });
 
-    it('should call the logger', async () => {
-      // GIVEN
-      const spId = 'greatId';
-      const sp = { name: 'greatFS' };
-      ServiceProviderAdapterMock.getById.mockResolvedValueOnce(sp);
-
-      // WHEN
-      await adapter['findServiceProvider'](spId);
-
-      // THEN
-      expect(loggerMock.trace).toHaveBeenCalledTimes(1);
-      expect(loggerMock.trace).toHaveBeenCalledWith({ spId, sp });
-    });
-
     it('should return the found service provider', async () => {
       // GIVEN
       const id = 'greatId';
@@ -512,14 +496,6 @@ describe('OidcProviderRedisAdapter', () => {
 
   describe('find', () => {
     const id = 'greatId';
-    it('should call the logger', async () => {
-      // WHEN
-      await adapter.find(id);
-
-      // THEN
-      expect(loggerMock.debug).toHaveBeenCalledTimes(1);
-      expect(loggerMock.debug).toHaveBeenCalledWith('Find');
-    });
 
     it('should return found Service Provider if the contextName is client', async () => {
       // GIVEN

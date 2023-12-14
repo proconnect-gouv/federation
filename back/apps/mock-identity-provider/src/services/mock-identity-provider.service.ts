@@ -5,7 +5,7 @@ import * as _ from 'lodash';
 import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
   OidcProviderMiddlewareStep,
@@ -36,9 +36,7 @@ export class MockIdentityProviderService {
     private readonly serviceProvider: ServiceProviderAdapterEnvService,
     private readonly sessionService: SessionService,
     private readonly config: ConfigService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   async onModuleInit() {
     await this.loadDatabases();
@@ -108,14 +106,14 @@ export class MockIdentityProviderService {
 
     this.database = allFiles.flat();
 
-    this.logger.debug(
+    this.logger.notice(
       `Database loaded (${this.database.length} entries found)`,
     );
   }
 
   private async loadDatabase(path: string): Promise<CsvParsed[]> {
     try {
-      this.logger.debug('Loading database...');
+      this.logger.info('Loading database...');
 
       const database = await parseCsv(path, {
         trim: true,
@@ -128,7 +126,7 @@ export class MockIdentityProviderService {
 
       return transformColumnsIntoBoolean(cleanedDatabase, csvBooleanColumns);
     } catch (error) {
-      this.logger.fatal(`Failed to load CSV database, path was: ${path}`);
+      this.logger.emerg(`Failed to load CSV database, path was: ${path}`);
       throw error;
     }
   }

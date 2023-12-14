@@ -2,10 +2,11 @@ import { KoaContextWithOIDC, Provider } from 'oidc-provider';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { SessionService, SessionSubNotFoundException } from '@fc/session';
 
+import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import {
@@ -22,14 +23,9 @@ describe('OidcProviderAppConfigLibService', () => {
 
   class AppTest extends OidcProviderAppConfigLibService {}
 
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    debug: jest.fn(),
-    warn: jest.fn(),
-    trace: jest.fn(),
-  };
-
   const sessionServiceMock = getSessionServiceMock();
+
+  const loggerMock = getLoggerMock();
 
   const errorServiceMock = {
     throwError: jest.fn(),
@@ -72,7 +68,7 @@ describe('OidcProviderAppConfigLibService', () => {
       ],
     })
       .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
+      .useValue(loggerMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(OidcProviderErrorService)

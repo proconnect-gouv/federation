@@ -2,8 +2,10 @@ import { getModelToken } from '@nestjs/mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import { FqdnToIdentityProvider } from '../schemas';
 import { FqdnToIdpAdapterMongoService } from './fqdn-to-idp-adapter-mongo.service';
@@ -30,12 +32,7 @@ describe('FqdnToIdpAdapterMongoService', () => {
     watch: jest.fn(),
   };
 
-  const loggerMock = {
-    debug: jest.fn(),
-    setContext: jest.fn(),
-    trace: jest.fn(),
-    warn: jest.fn(),
-  };
+  const loggerMock = getLoggerMock();
 
   const mongooseCollectionOperationWatcherHelperMock = {
     connectAllWatchers: jest.fn(),
@@ -242,10 +239,10 @@ describe('FqdnToIdpAdapterMongoService', () => {
       await service['fetchFqdnToIdps']();
 
       // Then
-      expect(loggerMock.warn).toHaveBeenCalledTimes(1);
+      expect(loggerMock.warning).toHaveBeenCalledTimes(1);
     });
 
-    it('should filter out any entry exluded by the DTO', async () => {
+    it('should filter out any entry excluded by the DTO', async () => {
       // Given
       const invalidFqdnToIdp = { notAValidField: 'unused' };
       const validFqdnToIdp = {

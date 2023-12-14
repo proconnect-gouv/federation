@@ -4,6 +4,7 @@
 import { HttpModule } from '@nestjs/axios';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 
+import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { ConfigService } from '@fc/config';
 import { CryptographyModule } from '@fc/cryptography';
 import { ExceptionsModule } from '@fc/exceptions';
@@ -35,6 +36,7 @@ const oidcClientModule = OidcClientModule.register(
 @Module({
   imports: [
     ExceptionsModule.withoutTracking(),
+    AsyncLocalStorageModule,
     IdentityProviderAdapterEnvModule,
     SessionModule.forRoot({
       schema: MockServiceProviderSession,

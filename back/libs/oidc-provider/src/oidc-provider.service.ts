@@ -6,7 +6,7 @@ import { HttpOptions } from 'openid-client';
 import { Global, Inject, Injectable } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 
@@ -58,9 +58,7 @@ export class OidcProviderService {
     private readonly configService: OidcProviderConfigService,
     @Inject(OIDC_PROVIDER_CONFIG_APP_TOKEN)
     private readonly oidcProviderConfigApp: IOidcProviderConfigAppService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   /**
    * Wait for nest to load its own route before binding oidc-provider routes
@@ -72,7 +70,6 @@ export class OidcProviderService {
       await this.configService.getConfig(this);
     this.configuration = configuration;
 
-    this.logger.debug('Initializing oidc-provider');
     try {
       this.provider = new this.ProviderProxy(issuer, {
         ...configuration,
@@ -85,7 +82,6 @@ export class OidcProviderService {
 
     this.oidcProviderConfigApp.setProvider(this.provider);
 
-    this.logger.debug('Mouting oidc-provider middleware');
     try {
       /**
        * @see https://github.com/panva/node-oidc-provider/blob/main/docs/README.md#mounting-oidc-provider
@@ -106,8 +102,6 @@ export class OidcProviderService {
     if (!interactionId) {
       throw new OidcProviderInteractionNotFoundException();
     }
-
-    this.logger.trace({ interactionId });
 
     return interactionId;
   }
@@ -152,12 +146,6 @@ export class OidcProviderService {
         req,
         res,
       );
-
-      this.logger.trace({
-        text: 'Interaction Type',
-        interactionType: interactionDetail.prompt.name,
-        interactionReason: interactionDetail.prompt.reasons,
-      });
 
       return interactionDetail;
     } catch (error) {

@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialExcept, validateDto } from '@fc/common';
-import { LoggerService } from '@fc/logger-legacy';
 import { IOidcIdentity } from '@fc/oidc';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
@@ -32,14 +31,6 @@ describe('OidcClientService', () => {
   const contextMock: TrackedEventContextInterface = {
     hello: 'world',
   };
-
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    trace: jest.fn(),
-    debug: jest.fn(),
-    error: jest.fn(),
-    businessEvent: jest.fn(),
-  } as unknown as LoggerService;
 
   const trackingServiceMock = {
     track: jest.fn(),
@@ -95,19 +86,12 @@ describe('OidcClientService', () => {
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        LoggerService,
-        TrackingService,
-        OidcClientUtilsService,
-        OidcClientService,
-      ],
+      providers: [TrackingService, OidcClientUtilsService, OidcClientService],
     })
       .overrideProvider(OidcClientUtilsService)
       .useValue(oidcClientUtilsServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
       .compile();
 
     service = module.get<OidcClientService>(OidcClientService);

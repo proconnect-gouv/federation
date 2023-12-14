@@ -197,3 +197,7 @@
 | [Y440008](../libs/jwt/src/exceptions/can-not-sign-jwt.exception.ts "CanNotSignJwtException") | 500 | Can not sign JWT | Impossible de signer le JWT | 
 | [Y440009](../libs/jwt/src/exceptions/multiple-relevant-keys.exception.ts "MultipleRelevantKeysException") | 500 | Multipe relevant keys found alg: Error, kid: undefined and use: undefined | Plusieurs clés pertinentes ont été trouvées alors qu&#39;un kid était fourni | 
 
+| Code d'erreur | Code HTTP | Message utilisateur | Description |
+|---|---|---|---|
+| [Y450001](../libs/async-local-storage/src/exceptions/async-local-storage-not-found.exception.ts "AsyncLocalStorageNotFoundException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | Le store n&#39;a pas pu être récupéré dans le présent contexte. Vérifiez que l&#39;appel actuel se situe bien dans le contexte du callback de l&#39;appel à &#34;run&#34;. Voir également la documentation NodeJS de AsyncLocalStorage pour plus de détail. | 
+

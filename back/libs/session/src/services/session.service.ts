@@ -5,7 +5,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import { getTransformed, validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
-import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
 
 import { SessionConfig } from '../dto';
@@ -40,14 +39,11 @@ export class SessionService {
     @Inject(SESSION_TOKEN_OPTIONS)
     private readonly sessionOptions: ISessionOptions,
     private readonly config: ConfigService,
-    private readonly logger: LoggerService,
     @Inject(REDIS_CONNECTION_TOKEN)
     private readonly redis: Redis,
     private readonly cryptography: CryptographyService,
     private readonly sessionTemplate: SessionTemplateService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   static getBoundSession<T = unknown>(
     req: ISessionRequest,
@@ -111,8 +107,6 @@ export class SessionService {
     keyOrData: string | object,
     data?: unknown,
   ): Promise<boolean> {
-    this.logger.debug('store session in redis');
-
     const { sessionId } = ctx;
 
     const session = await this.getFullSession(sessionId);
@@ -173,8 +167,6 @@ export class SessionService {
 
     const data = this.unserialize(dataCipher);
     await this.validate(data);
-
-    this.logger.trace({ sessionId, data });
 
     return data;
   }
@@ -416,7 +408,6 @@ export class SessionService {
     try {
       dataString = JSON.stringify(data);
     } catch (error) {
-      this.logger.trace(error, LoggerLevelNames.ERROR);
       throw new SessionBadStringifyException();
     }
     const dataCipher = this.cryptography.encryptSymetric(

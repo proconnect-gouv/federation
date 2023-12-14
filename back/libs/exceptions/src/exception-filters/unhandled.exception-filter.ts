@@ -15,7 +15,7 @@ import {
   AppConfig,
 } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 
 import { ExceptionsService } from '../exceptions.service';
 
@@ -29,7 +29,6 @@ export class UnhandledExceptionFilter
     private readonly logger: LoggerService,
   ) {
     super();
-    this.logger.setContext(this.constructor.name);
   }
 
   catch(exception: Error, host: ArgumentsHost) {
@@ -42,7 +41,7 @@ export class UnhandledExceptionFilter
     const { name, message, stack } = exception;
     const stackTrace: string[] = stack.split('\n');
 
-    this.logger.error({
+    this.logger.err({
       type: name,
       code,
       id,
@@ -65,7 +64,7 @@ export class UnhandledExceptionFilter
     const { error, httpResponseCode, res } = errorParam;
     const { apiOutputContentType } = this.config.get<AppConfig>('App');
 
-    this.logger.trace(error, LoggerLevelNames.ERROR);
+    this.logger.err(error);
 
     /**
      * @todo #139 allow the exception to set the HTTP response code

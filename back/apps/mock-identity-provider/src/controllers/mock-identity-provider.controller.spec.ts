@@ -1,6 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LoggerService } from '@fc/logger-legacy';
 import { OidcProviderService } from '@fc/oidc-provider';
 
 import { getSessionServiceMock } from '@mocks/session';
@@ -30,11 +29,6 @@ describe('MockIdentityProviderController', () => {
     buildAuthorizeParameters: jest.fn(),
     finishInteraction: jest.fn(),
   };
-
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    trace: jest.fn(),
-  } as unknown as LoggerService;
 
   const oidcClientSessionServiceMock = getSessionServiceMock();
 
@@ -69,14 +63,8 @@ describe('MockIdentityProviderController', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MockIdentityProviderController],
-      providers: [
-        LoggerService,
-        OidcProviderService,
-        MockIdentityProviderService,
-      ],
+      providers: [OidcProviderService, MockIdentityProviderService],
     })
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
       .overrideProvider(MockIdentityProviderService)

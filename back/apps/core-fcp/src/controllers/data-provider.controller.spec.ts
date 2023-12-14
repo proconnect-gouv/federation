@@ -5,10 +5,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { DataProviderAdapterMongoService } from '@fc/data-provider-adapter-mongo';
 import { DataProviderInvalidCredentialsException } from '@fc/data-provider-adapter-mongo/exceptions';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcClientSession } from '@fc/oidc-client';
 import { RnippPivotIdentity } from '@fc/rnipp';
 import { ISessionRequest, ISessionService, SessionService } from '@fc/session';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import { ChecktokenRequestDto } from '../dto';
 import { InvalidChecktokenRequestException } from '../exceptions';
@@ -33,11 +35,7 @@ describe('DataProviderController', () => {
     checkAuthentication: jest.fn(),
   };
 
-  const loggerServiceMock = {
-    debug: jest.fn(),
-    setContext: jest.fn(),
-    trace: jest.fn(),
-  } as unknown as LoggerService;
+  const loggerServiceMock = getLoggerMock();
 
   const sessionServiceMock = {
     attach: jest.fn(),
@@ -293,6 +291,22 @@ describe('DataProviderController', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Required parameter missing or invalid.',
       });
+    });
+
+    it('should log a critical error if a catch happens', async () => {
+      // Given
+      const errorMock = new Error('test');
+      dataProviderServiceMock.checkRequestValid.mockRejectedValue(errorMock);
+
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(loggerServiceMock.crit).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.crit).toHaveBeenCalledWith(
+        { error: '' },
+        errorMock.message,
+      );
     });
 
     it('should return HTTP code 500 and send error message if no httpStatusCode', async () => {

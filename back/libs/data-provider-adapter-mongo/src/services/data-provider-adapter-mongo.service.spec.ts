@@ -5,8 +5,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import {
   DataProviderInvalidCredentialsException,
@@ -42,12 +44,7 @@ describe('DataProviderAdapterMongoService', () => {
 
   const dataProviderListMock = [dataProviderMock];
 
-  const loggerMock = {
-    debug: jest.fn(),
-    setContext: jest.fn(),
-    trace: jest.fn(),
-    warn: jest.fn(),
-  };
+  const loggerMock = getLoggerMock();
 
   const cryptographyMock = {
     decryptSymetric: jest.fn(),
@@ -206,7 +203,7 @@ describe('DataProviderAdapterMongoService', () => {
       await service['findAllDataProvider']();
 
       // Then
-      expect(loggerMock.warn).toHaveBeenCalledTimes(1);
+      expect(loggerMock.warning).toHaveBeenCalledTimes(1);
     });
 
     it('should filter out any entry exluded by the DTO', async () => {

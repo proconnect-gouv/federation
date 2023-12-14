@@ -8,7 +8,7 @@ import {
 import { CoreFcaAgentNotFromPublicServiceException } from '@fc/core-fca/exceptions';
 import { CryptographyFcaService } from '@fc/cryptography-fca';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 
 import { IAgentConnectOidcIdentity } from '../../interfaces';
 import { CoreFcaDefaultVerifyHandler } from './core-fca.default-verify.handler';

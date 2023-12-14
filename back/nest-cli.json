@@ -285,7 +285,9 @@
       "sourceRoot": "instances/csmr-user-preferences-high/src",
       "compilerOptions": {
         "tsConfigPath": "instances/csmr-user-preferences-high/tsconfig.app.json",
-        "assets": ["../../../instances/csmr-user-preferences-high/**/*.ejs"]
+        "assets": [
+          "../../../instances/csmr-user-preferences-high/**/*.ejs"
+        ]
       }
     },
     "csmr-account-instance": {
@@ -943,6 +945,15 @@
       "sourceRoot": "libs/fqdn-to-idp-adapter-mongo/src",
       "compilerOptions": {
         "tsConfigPath": "libs/fqdn-to-idp-adapter-mongo/tsconfig.lib.json"
+      }
+    },
+    "async-local-storage": {
+      "type": "library",
+      "root": "libs/async-local-storage",
+      "entryFile": "index",
+      "sourceRoot": "libs/async-local-storage/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/async-local-storage/tsconfig.lib.json"
       }
     }
   }

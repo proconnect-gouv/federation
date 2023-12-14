@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
   OidcProviderMiddlewareStep,
@@ -10,6 +10,8 @@ import {
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-env';
 import { ISessionBoundContext, SessionService } from '@fc/session';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import {
   getFilesPathsFromDir,
@@ -24,11 +26,7 @@ jest.mock('../helpers');
 describe('MockIdentityProviderService', () => {
   let service: MockIdentityProviderService;
 
-  const loggerMock = {
-    debug: jest.fn(),
-    fatal: jest.fn(),
-    setContext: jest.fn(),
-  };
+  const loggerMock = getLoggerMock();
 
   const sessionServiceMock = {
     set: {
@@ -198,6 +196,20 @@ describe('MockIdentityProviderService', () => {
       // Then
       expect(service['database']).toStrictEqual(databaseMock);
     });
+
+    it('should notice that all databases are loaded', async () => {
+      // Given
+      service['database'] = null;
+      const databaseMock = [...csvMock1, ...csvMock2, ...csvMock3];
+      // When
+      await service['loadDatabases']();
+
+      // Then
+      expect(loggerMock.notice).toHaveBeenCalledTimes(1);
+      expect(loggerMock.notice).toHaveBeenCalledWith(
+        `Database loaded (${databaseMock.length} entries found)`,
+      );
+    });
   });
 
   describe('loadDatabase()', () => {
@@ -348,6 +360,22 @@ describe('MockIdentityProviderService', () => {
       // When / Then
       await expect(service['loadDatabase'](pathMock)).rejects.toThrow(
         errorMock,
+      );
+    });
+
+    it("should log emerg if database can't be logged", async () => {
+      // Given
+      const errorMock = new Error();
+      jest.mocked(parseCsv).mockRejectedValueOnce(errorMock);
+
+      // When / Then
+      await expect(service['loadDatabase'](pathMock)).rejects.toThrow(
+        errorMock,
+      );
+
+      expect(loggerMock.emerg).toHaveBeenCalledTimes(1);
+      expect(loggerMock.emerg).toHaveBeenCalledWith(
+        `Failed to load CSV database, path was: ${pathMock}`,
       );
     });
   });
