@@ -4,7 +4,7 @@ import { JWTPayload } from 'jose';
 import { Body, Controller, HttpStatus, Post, Req, Res } from '@nestjs/common';
 
 import { DataProviderAdapterMongoService } from '@fc/data-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ISessionRequest, SessionService } from '@fc/session';
 
@@ -19,9 +19,7 @@ export class DataProviderController {
     private readonly dataProvider: DataProviderService,
     private readonly dataProviderAdapter: DataProviderAdapterMongoService,
     private readonly session: SessionService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   @Post(DataProviderRoutes.CHECKTOKEN)
   async checktoken(
@@ -72,9 +70,7 @@ export class DataProviderController {
         error = '',
         httpStatusCode = HttpStatus.INTERNAL_SERVER_ERROR,
       } = exception;
-      this.logger.debug(
-        `POST checktoken error in data-provider-controller : ${exception}`,
-      );
+      this.logger.crit({ error }, message);
 
       const result = this.dataProvider.generateErrorMessage(
         httpStatusCode,

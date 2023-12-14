@@ -6,7 +6,7 @@ import { ConfigService } from '@fc/config';
 import { CoreServiceInterface } from '@fc/core';
 import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import {
   OidcClientConfig,
   OidcClientService,
@@ -89,7 +89,7 @@ export class CoreFcaService implements CoreServiceInterface {
       await this.fqdnToIdpAdapterMongoService.getIdpsByFqdn(fqdn);
 
     if (idpsByFqdn?.length > 1) {
-      this.logger.warn('More than one IdP exists');
+      this.logger.warning('More than one IdP exists');
     }
 
     const { defaultIpdId } = this.config.get<AppConfig>('App');

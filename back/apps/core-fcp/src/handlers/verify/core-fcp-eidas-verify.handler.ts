@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { CryptographyEidasService } from '@fc/cryptography-eidas';
 import { FeatureHandler } from '@fc/feature-handler';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 
@@ -23,9 +23,7 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
     private readonly coreAcr: CoreAcrService,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly cryptographyEidas: CryptographyEidasService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   async handle({
     sessionOidc,

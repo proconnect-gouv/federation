@@ -7,7 +7,7 @@ import {
 } from '@fc/core';
 import { CryptographyFcaService, IAgentIdentity } from '@fc/cryptography-fca';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ISessionService } from '@fc/session';
@@ -20,9 +20,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     protected readonly coreAccount: CoreAccountService,
     protected readonly coreAcr: CoreAcrService,
     protected readonly cryptographyFca: CryptographyFcaService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   /**
    * Main business manipulations occurs in this method
@@ -127,8 +125,6 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
       accountId,
       subs: { ...subs, [spId]: sub },
     };
-
-    this.logger.trace({ session });
 
     await sessionOidc.set(session);
   }

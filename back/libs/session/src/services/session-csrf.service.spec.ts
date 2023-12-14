@@ -2,8 +2,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialExcept } from '@fc/common';
 import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import { SessionCsrfService } from './session-csrf.service';
 
@@ -15,11 +17,7 @@ const idpStateMock = 'idpStateMockValue';
 const idpNonceMock = 'idpNonceMock';
 const idpIdMock = 'idpIdMockValue';
 
-const loggerServiceMock = {
-  setContext: jest.fn(),
-  debug: jest.fn(),
-  trace: jest.fn(),
-};
+const loggerServiceMock = getLoggerMock();
 
 const cryptographyServiceMock = {
   encryptSymetric: jest.fn(),
@@ -120,6 +118,11 @@ describe('SessionCsrfService', () => {
       await expect(
         service.validate(sessionServiceMock, randomMockValue),
       ).rejects.toThrow(errorMock);
+      expect(loggerServiceMock.err).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.err).toHaveBeenCalledWith(
+        { csrfToken: randomMockValue, csrfTokenSession: randomStringMockValue },
+        'Invalid CSRF token',
+      );
     });
   });
 });

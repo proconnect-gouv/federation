@@ -22,7 +22,6 @@ import {
 } from '@fc/core';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
 import { NotificationsService } from '@fc/notifications';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
@@ -42,7 +41,6 @@ export class CoreFcaController {
   // More than 4 parameters authorized for a controller
   /* eslint-disable-next-line max-params */
   constructor(
-    private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
@@ -54,20 +52,12 @@ export class CoreFcaController {
     private readonly coreFcaVerify: CoreFcaVerifyService,
     private readonly coreVerify: CoreVerifyService,
     private readonly tracking: TrackingService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   @Get(CoreRoutes.DEFAULT)
   @Header('cache-control', 'no-store')
   getDefault(@Res() res) {
     const { defaultRedirectUri } = this.config.get<CoreConfig>('Core');
-    this.logger.trace({
-      method: 'GET',
-      name: 'CoreRoutes.DEFAULT',
-      redirect: defaultRedirectUri,
-      route: CoreRoutes.DEFAULT,
-    });
     res.redirect(301, defaultRedirectUri);
   }
 
@@ -107,10 +97,6 @@ export class CoreFcaController {
     );
 
     if (rejected) {
-      this.logger.trace(
-        { acrValues, allowedAcrValues, rejected },
-        LoggerLevelNames.WARN,
-      );
       return;
     }
 

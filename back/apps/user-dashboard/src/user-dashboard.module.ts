@@ -4,6 +4,7 @@
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 
 import { AppModule } from '@fc/app';
+import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { ConfigService } from '@fc/config';
 import { ExceptionsModule } from '@fc/exceptions';
 import { HttpProxyModule } from '@fc/http-proxy';
@@ -37,6 +38,7 @@ const oidcClientModule = OidcClientModule.register(
   controllers: [UserDashboardController, OidcClientController],
   imports: [
     ExceptionsModule.withoutTracking(),
+    AsyncLocalStorageModule,
     AppModule,
     HttpProxyModule,
     IdentityProviderAdapterEnvModule,

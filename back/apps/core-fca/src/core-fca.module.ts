@@ -4,6 +4,7 @@
 import { Global, MiddlewareConsumer, Module } from '@nestjs/common';
 
 import { AccountModule } from '@fc/account';
+import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { ConfigService } from '@fc/config';
 import {
   CORE_SERVICE,
@@ -64,6 +65,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
 @Module({
   imports: [
     exceptionModule,
+    AsyncLocalStorageModule,
     MongooseModule.forRoot(),
     CryptographyFcaModule,
     AccountModule,

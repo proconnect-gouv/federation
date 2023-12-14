@@ -1,12 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import {
   OidcProviderErrorService,
   OidcProviderGrantService,
 } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 
+import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
@@ -29,6 +30,8 @@ describe('OidcProviderConfigAppService', () => {
     deleteClaims: jest.fn(),
   };
 
+  const loggerServiceMock = getLoggerMock();
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -43,6 +46,8 @@ describe('OidcProviderConfigAppService', () => {
         ScenariosService,
       ],
     })
+      .overrideProvider(LoggerService)
+      .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(OidcProviderErrorService)

@@ -3,6 +3,7 @@
 // Declarative code
 import { Global, MiddlewareConsumer, Module } from '@nestjs/common';
 
+import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { ConfigService } from '@fc/config';
 import { ExceptionsModule } from '@fc/exceptions';
 import {
@@ -32,6 +33,7 @@ const exceptionModule = ExceptionsModule.withoutTracking();
 @Module({
   imports: [
     exceptionModule,
+    AsyncLocalStorageModule,
     ServiceProviderAdapterEnvModule,
     SessionModule.forRoot({
       schema: MockIdentityProviderSession,

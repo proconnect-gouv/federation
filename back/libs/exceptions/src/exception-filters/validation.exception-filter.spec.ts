@@ -1,17 +1,14 @@
 import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
+
+import { getLoggerMock } from '@mocks/logger';
 
 import { FcException, ValidationException } from '../exceptions';
 import { ValidationExceptionFilter } from './validation.exception-filter';
 
 describe('ValidationExceptionFilter', () => {
   let exceptionFilter: ValidationExceptionFilter;
-  const loggerMock = {
-    debug: jest.fn(),
-    error: jest.fn(),
-    setContext: jest.fn(),
-    trace: jest.fn(),
-  } as unknown as LoggerService;
+  const loggerMock = getLoggerMock();
 
   const apiOutputContentTypeValueMock = 'html';
   const configServiceMock = {} as unknown as ConfigService;
@@ -26,28 +23,12 @@ describe('ValidationExceptionFilter', () => {
   beforeEach(() => {
     exceptionFilter = new ValidationExceptionFilter(
       configServiceMock,
-      loggerMock,
+      loggerMock as unknown as LoggerService,
     );
     jest.resetAllMocks();
   });
 
   describe('catch()', () => {
-    it('should log validation errors', () => {
-      // Given
-      const errors = [];
-      const exception = new ValidationException(errors);
-      // When
-      try {
-        exceptionFilter.catch(exception);
-        // Then
-        expect(loggerMock.error).toHaveBeenCalledWith(errors);
-      } catch (e) {
-        expect(e).toBeInstanceOf(FcException);
-      }
-
-      expect.hasAssertions();
-    });
-
     it('should throw an FcException', () => {
       // Given
       const errors = [];

@@ -11,7 +11,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ISessionService, Session } from '@fc/session';
@@ -23,23 +22,13 @@ import { MockIdentityProviderService } from '../services';
 @Controller()
 export class MockIdentityProviderController {
   constructor(
-    private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly mockIdentityProviderService: MockIdentityProviderService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   @Get(MockIdentityProviderRoutes.INDEX)
   index() {
     const response = { status: 'ok' };
-
-    this.logger.trace({
-      route: MockIdentityProviderRoutes.INDEX,
-      method: 'GET',
-      name: 'MockIdentityProviderRoutes.INDEX',
-      response,
-    });
 
     return response;
   }
@@ -72,13 +61,6 @@ export class MockIdentityProviderController {
       spName,
       finalSpId,
     };
-
-    this.logger.trace({
-      route: MockIdentityProviderRoutes.INTERACTION,
-      method: 'GET',
-      name: 'MockIdentityProviderRoutes.INTERACTION',
-      response,
-    });
 
     return response;
   }
@@ -125,13 +107,6 @@ export class MockIdentityProviderController {
       spIdentity: spIdentityCleaned,
       amr: ['pwd'],
       subs: { [spId]: sub },
-    });
-
-    this.logger.trace({
-      route: MockIdentityProviderRoutes.INTERACTION_LOGIN,
-      method: 'POST',
-      name: 'MockIdentityProviderRoutes.INTERACTION_LOGIN',
-      spIdentity,
     });
 
     return next();

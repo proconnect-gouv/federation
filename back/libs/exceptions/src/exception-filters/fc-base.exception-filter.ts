@@ -10,7 +10,7 @@ import {
   AppConfig,
 } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 
 @Catch()
 export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
@@ -19,7 +19,6 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
     protected readonly logger: LoggerService,
   ) {
     super();
-    this.logger.setContext(this.constructor.name);
   }
 
   protected getStackTraceArray(exception: any) {
@@ -46,19 +45,15 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
       type: exception.constructor.name,
       code,
       id,
-      message,
       stackTrace,
       redirect,
     };
-    this.logger.warn(exceptionObject);
-    this.logger.trace(exceptionObject, LoggerLevelNames.WARN);
+    this.logger.err(exceptionObject, message);
   }
 
   protected errorOutput(errorParam: ApiErrorParams): void {
     const { error, httpResponseCode, res } = errorParam;
     const { apiOutputContentType } = this.config.get<AppConfig>('App');
-
-    this.logger.trace(error, LoggerLevelNames.ERROR);
 
     res.status(httpResponseCode);
 

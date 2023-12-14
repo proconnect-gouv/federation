@@ -5,7 +5,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PartialDeep } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
-import { LoggerService } from '@fc/logger-legacy';
 import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
 import {
@@ -55,14 +54,6 @@ describe('OidcClient Controller', () => {
     error_description: 'error_description',
   };
 
-  const loggerServiceMock = {
-    businessEvent: jest.fn(),
-    debug: jest.fn(),
-    setContext: jest.fn(),
-    trace: jest.fn(),
-    verbose: jest.fn(),
-  } as unknown as LoggerService;
-
   const sessionServiceMock = getSessionServiceMock();
 
   const sessionCsrfServiceMock = {
@@ -101,7 +92,6 @@ describe('OidcClient Controller', () => {
       controllers: [OidcClientController],
       providers: [
         OidcClientService,
-        LoggerService,
         SessionService,
         SessionCsrfService,
         TrackingService,
@@ -111,8 +101,6 @@ describe('OidcClient Controller', () => {
     })
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(TrackingService)

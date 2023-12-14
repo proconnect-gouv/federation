@@ -4,7 +4,6 @@ import { TokenSet } from 'openid-client';
 import { Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
-import { LoggerService } from '@fc/logger-legacy';
 import { IOidcIdentity } from '@fc/oidc';
 import { TrackedEventContextInterface } from '@fc/tracking';
 
@@ -25,12 +24,7 @@ const DTO_OPTIONS: ValidatorOptions = {
 
 @Injectable()
 export class OidcClientService {
-  constructor(
-    private readonly logger: LoggerService,
-    public readonly utils: OidcClientUtilsService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  constructor(public readonly utils: OidcClientUtilsService) {}
 
   async getTokenFromProvider(
     idpId: string,
@@ -79,32 +73,18 @@ export class OidcClientService {
       );
     }
 
-    this.logger.trace({
-      search: {
-        context,
-        idpId,
-        params,
-        acr,
-        amr,
-        accessToken,
-        tokenResult,
-        idToken,
-      },
-    });
-
     return tokenResult;
   }
 
   async getUserInfosFromProvider(
     { accessToken, idpId }: UserInfosParams,
-    context: TrackedEventContextInterface,
+    _context: TrackedEventContextInterface,
   ): Promise<IOidcIdentity> {
     // OIDC: call idp's /userinfo endpoint
     let identity: IOidcIdentity;
     try {
       identity = await this.utils.getUserInfo(accessToken, idpId);
     } catch (error) {
-      this.logger.error(error, 'getUserInfo');
       /**
        * @todo #587 Add the error to the exception, then add "@Loggable()" decorator
        * to the exception.
@@ -114,15 +94,6 @@ export class OidcClientService {
        */
       throw new OidcClientUserinfosFailedException();
     }
-
-    this.logger.trace({
-      search: {
-        context,
-        idpId,
-        accessToken,
-        identity,
-      },
-    });
 
     const errors = await validateDto(
       identity,

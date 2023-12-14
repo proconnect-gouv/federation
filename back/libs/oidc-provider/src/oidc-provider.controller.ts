@@ -14,7 +14,6 @@ import {
 } from '@nestjs/common';
 
 import { ForbidRefresh } from '@fc/flow-steps';
-import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ISessionService, Session } from '@fc/session';
 
@@ -26,12 +25,9 @@ import { OIDC_PROVIDER_CONFIG_APP_TOKEN } from './tokens';
 @Controller()
 export class OidcProviderController {
   constructor(
-    private readonly logger: LoggerService,
     @Inject(OIDC_PROVIDER_CONFIG_APP_TOKEN)
     private readonly oidcProviderConfigApp: IOidcProviderConfigAppService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   @Post(OidcProviderRoutes.REDIRECT_TO_SP)
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -49,25 +45,11 @@ export class OidcProviderController {
   ): Promise<void> {
     const session: OidcClientSession = await sessionOidc.get();
 
-    this.logger.trace({
-      route: OidcProviderRoutes.REDIRECT_TO_SP,
-      method: 'POST',
-      name: 'OidcProviderRoutes.REDIRECT_TO_SP',
-      req,
-      res,
-    });
-
     return this.oidcProviderConfigApp.finishInteraction(req, res, session);
   }
 
   @Post(OidcProviderRoutes.TOKEN)
   postToken(@Next() next) {
-    this.logger.trace({
-      route: OidcProviderRoutes.TOKEN,
-      method: 'POST',
-      name: 'OidcProviderRoutes.TOKEN',
-    });
-
     // Pass the query to oidc-provider
     return next();
   }
@@ -80,25 +62,12 @@ export class OidcProviderController {
     }),
   )
   revokeToken(@Next() next, @Body() _body: RevocationTokenParamsDTO) {
-    this.logger.trace({
-      route: OidcProviderRoutes.REVOCATION,
-      method: 'POST',
-      name: 'OidcProviderRoutes.REVOCATION',
-      body: _body,
-    });
-
     // Pass the query to oidc-provider
     return next();
   }
 
   @Get(OidcProviderRoutes.USERINFO)
   getUserInfo(@Next() next) {
-    this.logger.trace({
-      route: OidcProviderRoutes.USERINFO,
-      method: 'GET',
-      name: 'OidcProviderRoutes.USERINFO',
-    });
-
     // Pass the query to oidc-provider
     return next();
   }
@@ -111,12 +80,6 @@ export class OidcProviderController {
     }),
   )
   getEndSession(@Next() next, @Query() _query: LogoutParamsDto) {
-    this.logger.trace({
-      route: OidcProviderRoutes.END_SESSION,
-      method: 'GET',
-      name: 'OidcProviderRoutes.END_SESSION',
-    });
-
     // Pass the query to oidc-provider
     return next();
   }

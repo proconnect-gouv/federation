@@ -3,9 +3,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountBlockedException } from '@fc/account';
 import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { CryptographyFcaService } from '@fc/cryptography-fca';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 
+import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreFcaDefaultVerifyHandler } from './core-fca.default-verify.handler';
@@ -13,12 +14,7 @@ import { CoreFcaDefaultVerifyHandler } from './core-fca.default-verify.handler';
 describe('CoreFcaDefaultVerifyHandler', () => {
   let service: CoreFcaDefaultVerifyHandler;
 
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    debug: jest.fn(),
-    warn: jest.fn(),
-    trace: jest.fn(),
-  };
+  const loggerServiceMock = getLoggerMock();
 
   const accountIdMock = 'accountIdMock value';
 

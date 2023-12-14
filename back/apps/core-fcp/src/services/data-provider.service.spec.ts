@@ -12,7 +12,7 @@ import {
   DataProviderMetadata,
 } from '@fc/data-provider-adapter-mongo';
 import { JwtService } from '@fc/jwt';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { AccessToken, atHashFromAccessToken, stringToArray } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderRedisAdapter } from '@fc/oidc-provider/adapters';
@@ -22,6 +22,7 @@ import { ScopesService } from '@fc/scopes';
 import { ISessionService, SessionService } from '@fc/session';
 
 import { getJwtServiceMock } from '@mocks/jwt';
+import { getLoggerMock } from '@mocks/logger';
 
 import { ChecktokenRequestDto } from '../dto';
 import {
@@ -44,10 +45,7 @@ const configServiceMock = {
   get: jest.fn(),
 };
 
-const logggerServiceMock = {
-  trace: jest.fn(),
-};
-
+const loggerServiceMock = getLoggerMock();
 const dataProviderMock = {
   getByClientId: jest.fn(),
 };
@@ -123,7 +121,7 @@ describe('DataProviderService', () => {
       ],
     })
       .overrideProvider(LoggerService)
-      .useValue(logggerServiceMock)
+      .useValue(loggerServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(DataProviderAdapterMongoService)
@@ -400,7 +398,7 @@ describe('DataProviderService', () => {
       // Then
       expect(adapterMocked).toHaveBeenCalledTimes(1);
       expect(adapterMocked).toHaveBeenCalledWith(
-        logggerServiceMock,
+        loggerServiceMock,
         redisMock,
         undefined,
         'AccessToken',

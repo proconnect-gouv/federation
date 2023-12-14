@@ -6,7 +6,7 @@ import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata, IOidcIdentity } from '@fc/oidc';
 import {
   OidcClientConfigService,
@@ -22,6 +22,7 @@ import {
 } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { GetOidcCallbackSessionDto, OidcIdentityDto } from '../dto';
@@ -57,13 +58,7 @@ describe('OidcClient Controller', () => {
     getUserInfosFromProvider: jest.fn(),
   };
 
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    verbose: jest.fn(),
-    debug: jest.fn(),
-    businessEvent: jest.fn(),
-    trace: jest.fn(),
-  } as unknown as LoggerService;
+  const loggerServiceMock = getLoggerMock();
 
   const spIdMock = 'spIdMock';
   const idpIdMock = 'idpIdMock';

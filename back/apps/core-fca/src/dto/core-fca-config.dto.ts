@@ -7,7 +7,8 @@ import { IsObject, ValidateNested } from 'class-validator';
 import { CoreConfig } from '@fc/core';
 import { CryptographyFcaConfig } from '@fc/cryptography-fca';
 import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
-import { LoggerConfig } from '@fc/logger-legacy';
+import { LoggerConfig } from '@fc/logger';
+import { LoggerConfig as LoggerLegacyConfig } from '@fc/logger-legacy';
 import { MongooseConfig } from '@fc/mongoose';
 import { OidcAcrConfig } from '@fc/oidc-acr';
 import { OidcClientConfig } from '@fc/oidc-client';
@@ -35,6 +36,11 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => LoggerConfig)
   readonly Logger: LoggerConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => LoggerLegacyConfig)
+  readonly LoggerLegacy: LoggerLegacyConfig;
 
   @IsObject()
   @ValidateNested()

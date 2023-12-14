@@ -2,14 +2,12 @@ import { Injectable } from '@nestjs/common';
 
 import { IAuthorizationUrlFeatureHandlerHandleArgument } from '@fc/core-fca/interfaces';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 
 @Injectable()
 @FeatureHandler('core-fca-default-authorization-url')
 export class CoreFcaDefaultAuthorizationHandler implements IFeatureHandler {
-  constructor(protected readonly logger: LoggerService) {
-    this.logger.setContext(this.constructor.name);
-  }
+  constructor(protected readonly logger: LoggerService) {}
 
   async handle({
     oidcClient,
@@ -40,6 +38,7 @@ export class CoreFcaDefaultAuthorizationHandler implements IFeatureHandler {
 
     let authorizationUrl = authorizationUrlRaw;
     if (spId) {
+      this.logger.debug(`Found "${spId}" to append to authorize url`);
       authorizationUrl = this.appendSpIdToAuthorizeUrl(
         spId,
         authorizationUrlRaw,

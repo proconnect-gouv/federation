@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialExcept } from '@fc/common';
-import { LoggerService } from '@fc/logger-legacy';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { OidcProviderService } from '@fc/oidc-provider';
@@ -46,14 +45,6 @@ describe('OidcProviderController', () => {
 
   const sessionServiceMock = getSessionServiceMock();
 
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    verbose: jest.fn(),
-    businessEvent: jest.fn(),
-    debug: jest.fn(),
-    trace: jest.fn(),
-  } as unknown as LoggerService;
-
   const oidcProviderConfigAppMock = {
     finishInteraction: jest.fn(),
   };
@@ -63,7 +54,6 @@ describe('OidcProviderController', () => {
       controllers: [OidcProviderController],
       providers: [
         OidcProviderService,
-        LoggerService,
         {
           provide: SERVICE_PROVIDER_SERVICE_TOKEN,
           useValue: serviceProviderServiceMock,
@@ -76,8 +66,6 @@ describe('OidcProviderController', () => {
     })
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
       .compile();
 
     oidcProviderController = await app.get<OidcProviderController>(

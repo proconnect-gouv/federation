@@ -5,7 +5,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { CoreAcrService, CoreRoutes, CoreVerifyService } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger-legacy';
 import { NotificationsService } from '@fc/notifications';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
@@ -75,12 +74,6 @@ describe('CoreFcaController', () => {
     finishInteraction: jest.fn(),
     getInteraction: jest.fn(),
   };
-
-  const loggerServiceMock = {
-    debug: jest.fn(),
-    setContext: jest.fn(),
-    trace: jest.fn(),
-  } as unknown as LoggerService;
 
   const coreVerifyServiceMock = {
     verify: jest.fn(),
@@ -210,7 +203,6 @@ describe('CoreFcaController', () => {
     const app: TestingModule = await Test.createTestingModule({
       controllers: [CoreFcaController],
       providers: [
-        LoggerService,
         OidcProviderService,
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
@@ -227,10 +219,6 @@ describe('CoreFcaController', () => {
     })
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
-      .overrideProvider(CoreAcrService)
-      .useValue(coreAcrServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderServiceMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
@@ -241,6 +229,8 @@ describe('CoreFcaController', () => {
       .useValue(coreVerifyServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(CoreAcrService)
+      .useValue(coreAcrServiceMock)
       .overrideProvider(SessionCsrfService)
       .useValue(sessionCsrfServiceMock)
       .overrideProvider(TrackingService)

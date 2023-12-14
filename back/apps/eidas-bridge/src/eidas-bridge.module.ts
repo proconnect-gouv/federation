@@ -3,6 +3,7 @@
 // Declarative code
 import { Global, MiddlewareConsumer, Module } from '@nestjs/common';
 
+import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { ConfigService } from '@fc/config';
 import { CryptographyModule } from '@fc/cryptography';
 import { CryptographyEidasModule } from '@fc/cryptography-eidas';
@@ -65,6 +66,7 @@ const oidcProviderModule = OidcProviderModule.register(
 @Module({
   imports: [
     exceptionModule,
+    AsyncLocalStorageModule,
     EidasClientModule,
     EidasProviderModule,
     SessionModule.forRoot({

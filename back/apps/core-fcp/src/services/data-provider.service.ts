@@ -15,7 +15,7 @@ import {
   DataProviderMetadata,
 } from '@fc/data-provider-adapter-mongo';
 import { JwtService } from '@fc/jwt';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { AccessToken, atHashFromAccessToken, stringToArray } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderConfig } from '@fc/oidc-provider';
@@ -275,8 +275,6 @@ export class DataProviderService {
     } catch (error) {
       throw new CoreFcpFetchDataProviderJwksFailed(error);
     }
-
-    this.logger.trace({ response });
 
     return response.data as JSONWebKeySet;
   }

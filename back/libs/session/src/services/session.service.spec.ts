@@ -3,7 +3,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getTransformed, validateDto } from '@fc/common';
 import { ConfigService, validationOptions } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
-import { LoggerService } from '@fc/logger-legacy';
 import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
 
 import {
@@ -55,13 +54,6 @@ const configServiceMock = {
 
 const cipherMock =
   'VGhlIGZpcnN0IHJlc2lkZW50IGNyZXcsIEV4cGVkaXRpb24gMSwgYXJyaXZlZCBpbiBOb3ZlbWJlciAyMDAwIG9uIFNveXV6IFRNLTMxLiBBdCB0aGUgZW5kIG9mIHRoZSBmaXJzdCBkYXkgb24gdGhlIHN0YXRpb24sIGFzdHJvbmF1dCBCaWxsIFNoZXBoZXJkIHJlcXVlc3RlZCB0aGUgdXNlIG9mIHRoZSByYWRpbyBjYWxsIHNpZ24gIkFscGhhIiwgd2hpY2ggaGUgYW5kIGNvc21vbmF1dCBLcmlrYWxldiBwcmVmZXJyZWQgdG8gdGhlIG1vcmUgY3VtYmVyc29tZSAiSW50ZXJuYXRpb25hbCBTcGFjZSBTdGF0aW9uIi4=';
-
-const loggerServiceMock = {
-  debug: jest.fn(),
-  setContext: jest.fn(),
-  trace: jest.fn(),
-  error: jest.fn(),
-};
 
 const redisServiceMock = {
   del: jest.fn(),
@@ -151,7 +143,6 @@ describe('SessionService', () => {
           useValue: sessionOptions,
         },
         ConfigService,
-        LoggerService,
         {
           provide: REDIS_CONNECTION_TOKEN,
           useValue: redisServiceMock,
@@ -162,8 +153,6 @@ describe('SessionService', () => {
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyServiceMock)
       .overrideProvider(SessionTemplateService)
@@ -181,12 +170,6 @@ describe('SessionService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
-  });
-
-  it('should set the logger context', () => {
-    // expect
-    expect(loggerServiceMock.setContext).toHaveBeenCalledTimes(1);
-    expect(loggerServiceMock.setContext).toHaveBeenCalledWith('SessionService');
   });
 
   describe('getBoundSession', () => {
@@ -940,7 +923,6 @@ describe('SessionService', () => {
         () => service['serialize'](errorMock),
         // expect
       ).toThrow(SessionBadStringifyException);
-      expect(loggerServiceMock.trace).toHaveBeenCalledTimes(1);
       expect(cryptographyServiceMock.encryptSymetric).toHaveBeenCalledTimes(0);
     });
 
@@ -954,7 +936,6 @@ describe('SessionService', () => {
         () => service['serialize'](errorMock),
         // expect
       ).toThrow(SessionBadStringifyException);
-      expect(loggerServiceMock.trace).toHaveBeenCalledTimes(1);
       expect(cryptographyServiceMock.encryptSymetric).toHaveBeenCalledTimes(0);
     });
   });

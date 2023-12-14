@@ -3,7 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CoreMissingIdentityException } from '@fc/core';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import {
   OidcProviderAuthorizeParamsException,
@@ -19,6 +19,7 @@ import {
 } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { AuthorizeParamsDto } from '../dto';
@@ -38,11 +39,7 @@ const coreSessionServiceMock = getSessionServiceMock();
 
 const nextMock = jest.fn();
 
-const loggerServiceMock = {
-  debug: jest.fn(),
-  setContext: jest.fn(),
-  trace: jest.fn(),
-} as unknown as LoggerService;
+const loggerServiceMock = getLoggerMock();
 
 const reqMock = Symbol('req');
 const resMock = {

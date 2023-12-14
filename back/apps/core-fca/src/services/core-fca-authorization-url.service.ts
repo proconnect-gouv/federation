@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
-import { LoggerService } from '@fc/logger-legacy';
 
 import { IAuthorizationUrlServiceGetAuhtorizeArgument } from '../interfaces/authorization-url-feature-handler.interface';
 
@@ -10,12 +9,7 @@ export const FCA_AUTHORIZATION_URL = 'fcaAuthorizationUrl';
 
 @Injectable()
 export class CoreFcaAuthorizationUrlService {
-  constructor(
-    private readonly logger: LoggerService,
-    public readonly moduleRef: ModuleRef,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  constructor(public readonly moduleRef: ModuleRef) {}
 
   getAuthorizeUrl<T extends IFeatureHandler>({
     oidcClient,

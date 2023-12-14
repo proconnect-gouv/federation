@@ -6,7 +6,7 @@ import {
 
 import { Injectable } from '@nestjs/common';
 
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import {
@@ -34,13 +34,11 @@ export abstract class OidcProviderAppConfigLibService
   protected provider: Provider;
 
   constructor(
-    protected readonly logger: LoggerService,
+    protected readonly _logger: LoggerService,
     protected readonly sessionService: SessionService,
     protected readonly errorService: OidcProviderErrorService,
     protected readonly grantService: OidcProviderGrantService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   /**
    * More documentation can be found in oidc-provider repo

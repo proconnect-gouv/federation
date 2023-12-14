@@ -36,9 +36,9 @@
 | App_HTTPS_SERVER_KEY | file |
 | Broker_QUEUE | string |
 | Broker_URLS | json |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |
 
 ### core-fca-low
@@ -58,8 +58,10 @@
 | CryptographyFca_CRYPTO_HASH_SECRET | string |
 | CryptographyFca_CRYPTO_SUB_SECRET | string |
 | FQDN | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
+| LoggerLegacy_FILE | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | Mongoose_DATABASE | string |
 | Mongoose_HOSTS | string |
 | Mongoose_PASSWORD | string |
@@ -68,7 +70,6 @@
 | Mongoose_TLS_CA_FILE | string |
 | Mongoose_TLS_INSECURE | boolean |
 | Mongoose_USER | string |
-| NODE_ENV | string |
 | OidcClient_CRYPTO_ENC_LOCALE_PRIV_KEYS | json |
 | OidcClient_FAPI | boolean |
 | OidcClient_SCOPE | string |
@@ -109,8 +110,10 @@
 | Cryptography_CRYPTO_SUB_SECRET | string |
 | FQDN | string |
 | GLOBAL_AGENT_HTTPS_PROXY | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
+| LoggerLegacy_FILE | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | Mailer_FROM_EMAIL | string |
 | Mailer_FROM_NAME | string |
 | Mailer_HOST | string |
@@ -126,7 +129,6 @@
 | Mongoose_TLS_CA_FILE | string |
 | Mongoose_TLS_INSECURE | boolean |
 | Mongoose_USER | string |
-| NODE_ENV | string |
 | OidcClient_CRYPTO_ENC_LOCALE_PRIV_KEYS | json |
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
@@ -174,8 +176,10 @@
 | Cryptography_SUB_SECRET | string |
 | FQDN | string |
 | GLOBAL_AGENT_HTTPS_PROXY | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
+| LoggerLegacy_FILE | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | Mailer_FROM_EMAIL | string |
 | Mailer_FROM_NAME | string |
 | Mailer_HOST | string |
@@ -191,7 +195,6 @@
 | Mongoose_TLS_CA_FILE | string |
 | Mongoose_TLS_INSECURE | boolean |
 | Mongoose_USER | string |
-| NODE_ENV | string |
 | OidcClient_CRYPTO_ENC_LOCALE_PRIV_KEYS | json |
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
@@ -226,8 +229,9 @@
 |---|---|
 | AccountBroker_QUEUE | string |
 | AccountBroker_URLS | json |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | Mongoose_DATABASE | string |
 | Mongoose_HOSTS | string |
 | Mongoose_PASSWORD | string |
@@ -236,7 +240,6 @@
 | Mongoose_TLS_CA_FILE | string |
 | Mongoose_TLS_INSECURE | boolean |
 | Mongoose_USER | string |
-| NODE_ENV | string |
 | REQUEST_TIMEOUT | string |
 
 ### csmr-hsm-high
@@ -249,18 +252,19 @@
 | Hsm_PIN | string |
 | Hsm_SIG_HSM_PUB_KEY_CKA_LABEL | string |
 | Hsm_VIRTUAL_HSM_SLOT | number |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| LoggerLegacy_FILE | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |
 
 ### csmr-rie
 
 | Var Name | Inferred type |
 |---|---|
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |
 | RieBroker_QUEUE | string |
 | RieBroker_URLS | json |
@@ -279,9 +283,9 @@
 | Elasticsearch_USERNAME | string |
 | GeoIpMaxmind_DATABASE_PATH | string |
 | Idp_MAPPINGS | json |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |
 | TracksBroker_QUEUE | string |
 | TracksBroker_URLS | json |
@@ -296,8 +300,9 @@
 | App_AIDANTS_CONNECT_UID | string |
 | Broker_QUEUE | string |
 | Broker_URLS | json |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | Mongoose_DATABASE | string |
 | Mongoose_HOSTS | string |
 | Mongoose_PASSWORD | string |
@@ -306,7 +311,6 @@
 | Mongoose_TLS_CA_FILE | string |
 | Mongoose_TLS_INSECURE | boolean |
 | Mongoose_USER | string |
-| NODE_ENV | string |
 | REQUEST_TIMEOUT | string |
 
 ### eidas-bridge
@@ -366,9 +370,10 @@
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| LoggerLegacy_FILE | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
 | OidcClient_HTTPS_CLIENT_KEY | file |
@@ -430,9 +435,9 @@
 | DataProviderAdapterCore_ISSUER | string |
 | DataProviderAdapterCore_JWKS | json |
 | DataProviderAdapterCore_JWKS_ENDPOINT | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 
 ### mock-identity-provider-fca-low
 
@@ -445,9 +450,9 @@
 | App_PASSWORD_VERIFICATION | boolean |
 | App_SCENARIOS_DATABASE_PATH | string |
 | FQDN | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | OidcProvider_COOKIES_KEYS | json |
 | OidcProvider_CRYPTO_SIG_ES256_PRIV_KEYS | json |
 | OidcProvider_CRYPTO_SIG_RS256_PRIV_KEYS | json |
@@ -487,9 +492,9 @@
 | App_PASSWORD_VERIFICATION | boolean |
 | App_SCENARIOS_DATABASE_PATH | string |
 | FQDN | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | OidcProvider_COOKIES_KEYS | json |
 | OidcProvider_COOKIE_MAX_AGE | number |
 | OidcProvider_CRYPTO_SIG_ES256_PRIV_KEYS | json |
@@ -530,9 +535,9 @@
 | App_PASSWORD_VERIFICATION | boolean |
 | App_SCENARIOS_DATABASE_PATH | string |
 | FQDN | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | OidcProvider_COOKIES_KEYS | json |
 | OidcProvider_COOKIE_MAX_AGE | number |
 | OidcProvider_CRYPTO_SIG_ES256_PRIV_KEYS | json |
@@ -570,9 +575,9 @@
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 
 ### mock-service-provider-fca-low
 
@@ -603,9 +608,9 @@
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
 | JWKS | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
 | OidcClient_HTTPS_CLIENT_KEY | file |
@@ -653,9 +658,9 @@
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
 | JWKS | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
 | OidcClient_HTTPS_CLIENT_KEY | file |
@@ -701,9 +706,9 @@
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
 | IdentityProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
-| NODE_ENV | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | OidcClient_FAPI | boolean |
 | OidcClient_HTTPS_CLIENT_CERT | file |
 | OidcClient_HTTPS_CLIENT_KEY | file |
@@ -743,8 +748,10 @@
 | IdentityProviderAdapterEnv_TOKEN_ENDPOINT_AUTH_METHOD | string |
 | IdentityProviderAdapterEnv_UID | string |
 | IdentityProviderAdapterEnv_USERINFO_ENDPOINT | string |
-| Logger_FILE | string |
-| Logger_LEVEL | string |
+| LoggerLegacy_FILE | string |
+| Logger_STDERR_LEVELS | json |
+| Logger_STDOUT_LEVELS | json |
+| Logger_THRESHOLD | string |
 | Mailer_FROM_EMAIL | string |
 | Mailer_FROM_NAME | string |
 | Mailer_HOST | string |
@@ -752,7 +759,6 @@
 | Mailer_SECURE | boolean |
 | Mailer_TEMPLATES_PATHS | json |
 | Mailer_TRANSPORT | string |
-| NODE_ENV | string |
 | OidcClient_HTTPS_CLIENT_CERT | file |
 | OidcClient_HTTPS_CLIENT_KEY | file |
 | OidcClient_JWKS | json |

@@ -7,7 +7,7 @@ import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CORE_SERVICE } from '@fc/core';
 import { FlowStepsService } from '@fc/flow-steps';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import {
@@ -21,6 +21,7 @@ import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter
 import { ISessionService, SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
+import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import {
@@ -40,10 +41,7 @@ describe('CoreFcaMiddlewareService', () => {
 
   const uuidMock = jest.mocked(uuid);
 
-  const loggerServiceMock = {
-    trace: jest.fn(),
-    setContext: jest.fn(),
-  };
+  const loggerServiceMock = getLoggerMock();
 
   const oidcProviderServiceMock = {
     registerMiddleware: jest.fn(),

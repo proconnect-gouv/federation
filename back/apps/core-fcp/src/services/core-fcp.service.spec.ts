@@ -7,7 +7,6 @@ import { PartialExcept } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger-legacy';
 import { IdentityProviderMetadata, IOidcIdentity, OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
@@ -21,13 +20,6 @@ import { CoreFcpService } from './core-fcp.service';
 
 describe('CoreFcpService', () => {
   let service: CoreFcpService;
-
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    debug: jest.fn(),
-    warn: jest.fn(),
-    trace: jest.fn(),
-  };
 
   const configServiceMock = {
     get: jest.fn(),
@@ -122,7 +114,6 @@ describe('CoreFcpService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         CoreFcpService,
-        LoggerService,
         ConfigService,
         OidcAcrService,
         IdentityProviderAdapterMongoService,
@@ -132,8 +123,7 @@ describe('CoreFcpService', () => {
         OidcClientService,
       ],
     })
-      .overrideProvider(LoggerService)
-      .useValue(loggerServiceMock)
+
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
       .overrideProvider(OidcAcrService)

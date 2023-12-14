@@ -48,34 +48,4 @@ describe('1.0 - Successful scenarios', () => {
       expect(response.headers.location).to.eq('https://franceconnect.gouv.fr');
     });
   });
-
-  describe('Send notification email on a successfull scenario', () => {
-    beforeEach(() => {
-      cy.resetTechnicalLog();
-    });
-
-    it('should log in to Service Provider Example and check notification email is sent', () => {
-      basicSuccessScenario({
-        userName: 'test',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2',
-        idpId,
-        accountId: '3ec64565-a907-4284-935a-0ff0213cc120',
-      });
-
-      checkInformationsServiceProvider({
-        gender: 'Femme',
-        givenName: 'Angela Claire Louise',
-        familyName: 'DUBOIS',
-        birthdate: '1962-08-24',
-        birthplace: '75107',
-        birthcountry: '99100',
-      });
-      checkInStringifiedJson(
-        'sub',
-        '4d327dd1e427daf4d50296ab71d6f3fc82ccc40742943521d42cb2bae4df41afv1',
-      );
-      cy.verifyEmailIsSent('Notification de connexion à FranceConnect+');
-    });
-  });
 });

@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import {
   ISessionRequest,
   ISessionResponse,
@@ -35,14 +35,12 @@ export class EidasProviderController {
   // Authorized for dependency injection
   // eslint-disable-next-line max-params
   constructor(
-    private readonly logger: LoggerService,
     private readonly config: ConfigService,
+    private readonly logger: LoggerService,
     private readonly eidasProvider: EidasProviderService,
     private readonly tracking: TrackingService,
     private readonly session: SessionService,
-  ) {
-    this.logger.setContext(this.constructor.name);
-  }
+  ) {}
 
   /**
    * Temporary controller to handle the request
@@ -59,6 +57,7 @@ export class EidasProviderController {
     body: RequestHandlerDTO,
   ) {
     await this.session.reset(req, res);
+    this.logger.info('Session was reset');
 
     /**
      * We need to bind the session after the reset to prevent using
@@ -126,12 +125,8 @@ export class EidasProviderController {
   private async getEidasResponse(
     sessionEidas: ISessionService<EidasProviderSession>,
   ) {
-    this.logger.debug('getEidasResponse()');
-
     const { eidasRequest, partialEidasResponse }: EidasProviderSession =
       await sessionEidas.get();
-
-    this.logger.trace({ partialEidasResponse });
 
     let eidasReponse;
     if (!partialEidasResponse.status.failure) {

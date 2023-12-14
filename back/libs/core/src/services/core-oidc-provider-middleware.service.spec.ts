@@ -4,19 +4,22 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { FlowStepsService } from '@fc/flow-steps';
-import { LoggerService } from '@fc/logger-legacy';
+import { LoggerService } from '@fc/logger';
 import { atHashFromAccessToken } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientRoutes } from '@fc/oidc-client';
 import {
   OidcCtx,
   OidcProviderErrorService,
+  OidcProviderMiddlewarePattern,
+  OidcProviderMiddlewareStep,
   OidcProviderService,
 } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
+import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreClaimAmrException, CoreIdpHintException } from '../exceptions';
@@ -31,11 +34,7 @@ jest.mock('@fc/oidc');
 describe('CoreOidcProviderMiddlewareService', () => {
   let service: CoreOidcProviderMiddlewareService;
 
-  const loggerServiceMock = {
-    setContext: jest.fn(),
-    warn: jest.fn(),
-    trace: jest.fn(),
-  };
+  const loggerServiceMock = getLoggerMock();
 
   const sessionServiceMock = getSessionServiceMock();
 
@@ -168,6 +167,31 @@ describe('CoreOidcProviderMiddlewareService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('registerMiddleware', () => {
+    const stepMock = Symbol(
+      'stepMock',
+    ) as unknown as OidcProviderMiddlewareStep;
+    const patternMock = Symbol(
+      'middlewareMock',
+    ) as unknown as OidcProviderMiddlewarePattern;
+    const middlewareMock = function test() {};
+
+    it('should call oidcProviderService.registerMiddleware()', () => {
+      // When
+      service['registerMiddleware'](stepMock, patternMock, middlewareMock);
+
+      // Then
+      expect(oidcProviderServiceMock.registerMiddleware).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(oidcProviderServiceMock.registerMiddleware).toHaveBeenCalledWith(
+        stepMock,
+        patternMock,
+        expect.any(Function),
+      );
+    });
   });
 
   describe('getEventContext', () => {
@@ -624,19 +648,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       expect(ctxMock.query).toBeUndefined();
     });
 
-    it('should not do anything but log if there is no method declared', () => {
-      // Given
-      const ctxMock = {} as OidcCtx;
-      configServiceMock.get.mockReturnValue({
-        forcedPrompt: ['login'],
-      });
-      // When
-      service['overrideAuthorizePrompt'](ctxMock);
-      // Then
-      expect(ctxMock).toEqual({});
-      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
-    });
-
     it('should not do anything but log if method is not handled', () => {
       // Given
       const ctxMock = { method: 'DELETE' } as OidcCtx;
@@ -647,7 +658,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
       service['overrideAuthorizePrompt'](ctxMock);
       // Then
       expect(ctxMock).toEqual({ method: 'DELETE' });
-      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
+      expect(pickAcr).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -697,16 +708,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       expect(ctxMock.query).toBeUndefined();
     });
 
-    it('should not do anything but log if there is no method declared', () => {
-      // Given
-      const ctxMock = {} as OidcCtx;
-      // When
-      service['overrideAuthorizeAcrValues'](ctxMock);
-      // Then
-      expect(ctxMock).toEqual({});
-      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
-    });
-
     it('should not do anything but log if method is not handled', () => {
       // Given
       const ctxMock = { method: 'DELETE' } as OidcCtx;
@@ -714,7 +715,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
       service['overrideAuthorizeAcrValues'](ctxMock);
       // Then
       expect(ctxMock).toEqual({ method: 'DELETE' });
-      expect(loggerServiceMock.warn).toHaveBeenCalledTimes(1);
+      expect(pickAcr).toHaveBeenCalledTimes(0);
     });
   });
 
