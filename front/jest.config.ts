@@ -37,8 +37,6 @@ const config: Config = {
     '\\.(css|scss)$': 'identity-obj-proxy',
     '\\.svg$': '<rootDir>/__mocks__/svgrMock.js',
     '^@fc/account(|/.*)$': '<rootDir>/libs/account/src/$1',
-    '^@fc/agent-connect-history(|/.*)$': '<rootDir>/apps/agent-connect-history/src/$1',
-    '^@fc/agent-connect-search(|/.*)$': '<rootDir>/apps/agent-connect-search/src/$1',
     '^@fc/axios-error-catcher(|/.*)$': '<rootDir>/libs/axios-error-catcher/src/$1',
     '^@fc/common(|/.*)$': '<rootDir>/libs/common/src/$1',
     '^@fc/config(|/.*)$': '<rootDir>/libs/config/src/$1',

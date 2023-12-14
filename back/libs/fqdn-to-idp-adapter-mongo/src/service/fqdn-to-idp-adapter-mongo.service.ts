@@ -96,7 +96,9 @@ export class FqdnToIdpAdapterMongoService
         fqdn: true,
         identityProvider: true,
       },
-    ).lean();
+    )
+      .sort({ fqdn: 1, identityProvider: 1 })
+      .lean();
 
     const fqdnToProvider = await asyncFilter<FqdnToIdentityProvider[]>(
       // because fqdnToProvidr entity == fqdnToProvider dto

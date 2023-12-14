@@ -22,8 +22,8 @@ import {
   IdentityProviderAdapterMongoModule,
   IdentityProviderAdapterMongoService,
 } from '@fc/identity-provider-adapter-mongo';
-import { MinistriesModule } from '@fc/ministries';
 import { MongooseModule } from '@fc/mongoose';
+import { NotificationsModule } from '@fc/notifications';
 import { OidcAcrModule } from '@fc/oidc-acr';
 import { OidcClientModule } from '@fc/oidc-client';
 import {
@@ -70,7 +70,6 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     ServiceProviderAdapterMongoModule,
     IdentityProviderAdapterMongoModule,
     FqdnToIdpAdapterMongoModule,
-    MinistriesModule,
     HttpProxyModule,
     OidcAcrModule,
     OidcProviderModule.register(
@@ -91,6 +90,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     FlowStepsModule,
     /** Inject app specific tracking service */
     trackingModule,
+    NotificationsModule,
     FeatureHandlerModule,
   ],
   controllers: [

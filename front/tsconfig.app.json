@@ -19,8 +19,6 @@
     "jsx": "react-jsx",
     "paths": {
       "^@fc/account(|/.*)$": ["../../libs/account/src/*"],
-      "^@fc/agent-connect-history(|/.*)$": ["../../apps/agent-connect-history/src/*"],
-      "^@fc/agent-connect-search(|/.*)$": ["../../apps/agent-connect-search/src/*"],
       "^@fc/axios-error-catcher(|/.*)$": ["../../libs/axios-error-catcher/src/*"],
       "^@fc/common(|/.*)$": ["../../libs/common/src/*"],
       "^@fc/config(|/.*)$": ["../../libs/config/src/*"],

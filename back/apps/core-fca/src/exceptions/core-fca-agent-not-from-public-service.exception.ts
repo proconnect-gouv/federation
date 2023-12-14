@@ -15,7 +15,7 @@ export class CoreFcaAgentNotFromPublicServiceException extends CoreBaseException
 
   constructor() {
     super(
-      'Seuls les agents de la fonction publique sont autorisés à se connecter via AgentConnect.',
+      'Seuls les agents et agentes de la fonction publique sont autorisées à se connecter via AgentConnect.',
     );
   }
 }

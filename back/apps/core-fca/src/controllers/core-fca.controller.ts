@@ -5,7 +5,6 @@ import {
   Get,
   Header,
   Param,
-  Render,
   Req,
   Res,
   UsePipes,
@@ -24,20 +23,12 @@ import {
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerLevelNames, LoggerService } from '@fc/logger-legacy';
-import { MinistriesService } from '@fc/ministries';
-import {
-  OidcClientConfig,
-  OidcClientRoutes,
-  OidcClientSession,
-} from '@fc/oidc-client';
+import { NotificationsService } from '@fc/notifications';
+import { OidcAcrService } from '@fc/oidc-acr';
+import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderConfig, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import {
-  ISessionService,
-  Session,
-  SessionBadFormatException,
-  SessionCsrfService,
-} from '@fc/session';
+import { ISessionService, Session, SessionCsrfService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import {
@@ -48,16 +39,17 @@ import { CoreFcaVerifyService } from '../services';
 
 @Controller()
 export class CoreFcaController {
-  // Dependency injection can require more than 4 parameters
+  // More than 4 parameters authorized for a controller
   /* eslint-disable-next-line max-params */
   constructor(
     private readonly logger: LoggerService,
     private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
-    private readonly ministries: MinistriesService,
     private readonly config: ConfigService,
+    private readonly notifications: NotificationsService,
     private readonly csrfService: SessionCsrfService,
+    private readonly oidcAcr: OidcAcrService,
     private readonly coreAcr: CoreAcrService,
     private readonly coreFcaVerify: CoreFcaVerifyService,
     private readonly coreVerify: CoreVerifyService,
@@ -79,143 +71,30 @@ export class CoreFcaController {
     res.redirect(301, defaultRedirectUri);
   }
 
-  @Get(CoreRoutes.FCA_FRONT_HISTORY_BACK_URL)
+  @Get(CoreRoutes.INTERACTION)
   @Header('cache-control', 'no-store')
-  async getFrontHistoryBackURL(
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @IsStep()
+  async getInteraction(
     @Req() req,
-    @Res() res,
-    @Session('OidcClient')
-    sessionOidc: ISessionService<OidcClientSession>,
-  ) {
-    /**
-     * @TODO #1018 Refactoriser la partie API du controller core-fca
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1018
-     * @ticket FC-1018
-     */
-    const { spName } = (await sessionOidc.get()) || {};
-    if (!spName) {
-      throw new SessionBadFormatException();
-    }
-
-    const { params } = await this.oidcProvider.getInteraction(req, res);
-    const { redirect_uri: redirectURI, state } = params;
-
-    const redirectURIQuery = {
-      state,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      error_description: 'User auth aborted',
-      error: 'access_denied',
-    };
-
-    const jsonResponse = {
-      spName,
-      redirectURIQuery,
-      redirectURI,
-    };
-    return res.json(jsonResponse);
-  }
-
-  @Get(CoreRoutes.FCA_FRONT_DATAS)
-  @Header('cache-control', 'no-store')
-  async getFrontData(
-    @Req() req,
-    @Res() res,
+    @Res() res: Response,
+    @Param() _params: Interaction,
     /**
      * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
      * @ticket FC-1020
      */
-    @Session('OidcClient')
-    sessionOidc: ISessionService<OidcClientSession>,
-  ) {
-    try {
-      const { spName } = (await sessionOidc.get()) || {};
-      if (!spName) {
-        throw new SessionBadFormatException();
-      }
-      const { params } = await this.oidcProvider.getInteraction(req, res);
-      const { scope } = this.config.get<OidcClientConfig>('OidcClient');
-      const { urlPrefix } = this.config.get<AppConfig>('App');
-
-      // -- generate and store in session the CSRF token
-      const csrfToken = this.csrfService.get();
-      await this.csrfService.save(sessionOidc, csrfToken);
-
-      const {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        client_id,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        redirect_uri,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        response_type,
-      } = params;
-
-      const redirectToIdentityProviderInputs = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values,
-        csrfToken,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        redirect_uri,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        response_type,
-        scope,
-      };
-
-      const ministries = await this.ministries.getList();
-      const { idpFilterExclude, idpFilterList } =
-        await this.serviceProvider.getById(client_id);
-
-      const identityProvidersList = await this.identityProvider.getFilteredList(
-        {
-          blacklist: idpFilterExclude,
-          idpList: idpFilterList,
-        },
-      );
-
-      const identityProviders = identityProvidersList.map(
-        ({ active, display, title, uid }) => ({
-          active,
-          display,
-          name: title,
-          uid,
-        }),
-      );
-
-      const jsonResponse = {
-        identityProviders,
-        ministries,
-        redirectToIdentityProviderInputs,
-        redirectURL: `${urlPrefix}${OidcClientRoutes.REDIRECT_TO_IDP}`,
-        serviceProviderName: spName,
-      };
-
-      this.logger.trace({
-        method: 'GET',
-        name: 'CoreRoutes.FCA_FRONT_DATAS',
-        response: jsonResponse,
-        route: CoreRoutes.FCA_FRONT_DATAS,
-      });
-      return res.json(jsonResponse);
-    } catch (err) {
-      return res.status(500).json(err);
-    }
-  }
-
-  @Get(CoreRoutes.INTERACTION)
-  @Header('cache-control', 'no-store')
-  @Render('interaction')
-  @IsStep()
-  async getInteraction(
-    @Req() req,
-    @Res() res,
     @Session('OidcClient', GetInteractionOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
-  ) {
-    const { params } = await this.oidcProvider.getInteraction(req, res);
+  ): Promise<void> {
+    const { spName, stepRoute } = await sessionOidc.get();
 
-    const { acr_values: acrValues } = params;
+    const { params } = await this.oidcProvider.getInteraction(req, res);
+    const {
+      acr_values: acrValues,
+      client_id: clientId,
+      scope: spScope,
+    } = params;
 
     const {
       configuration: { acrValues: allowedAcrValues },
@@ -235,7 +114,41 @@ export class CoreFcaController {
       return;
     }
 
-    const stepRoute = await sessionOidc.get('stepRoute');
+    const { idpFilterExclude, idpFilterList } =
+      await this.serviceProvider.getById(clientId);
+
+    const providers = await this.identityProvider.getFilteredList({
+      blacklist: idpFilterExclude,
+      idpList: idpFilterList,
+    });
+
+    const authorizedProviders = providers.map((provider) => {
+      const isAcrValid = this.oidcAcr.isAcrValid(
+        provider.maxAuthorizedAcr,
+        acrValues,
+      );
+
+      if (!isAcrValid) {
+        provider.active = false;
+      }
+
+      return provider;
+    });
+
+    // -- generate and store in session the CSRF token
+    const csrfToken = this.csrfService.get();
+    await this.csrfService.save(sessionOidc, csrfToken);
+    const notification = await this.notifications.getNotificationToDisplay();
+
+    const response = {
+      csrfToken,
+      notification,
+      params,
+      providers: authorizedProviders,
+      spName,
+      spScope,
+    };
+
     const isRefresh = stepRoute === CoreRoutes.INTERACTION;
 
     if (!isRefresh) {
@@ -244,7 +157,7 @@ export class CoreFcaController {
       await this.tracking.track(FC_SHOWED_IDP_CHOICE, trackingContext);
     }
 
-    return {};
+    res.render('interaction', response);
   }
 
   @Get(CoreRoutes.INTERACTION_VERIFY)

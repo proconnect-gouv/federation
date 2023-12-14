@@ -8,7 +8,7 @@ let identityProviderPage: IdentityProviderPage;
 
 Then(
   /^je (suis|ne suis pas) redirigé vers la page login du fournisseur d'identité$/,
-  function (text) {
+  function (text: string) {
     const expectVisible = text === 'suis';
     identityProviderPage = new IdentityProviderPage(this.identityProvider);
     if (expectVisible) {

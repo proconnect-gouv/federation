@@ -22,7 +22,8 @@
       "belonging_population": "agent",
       "phone_number": "+331-12-44-45-23",
       "chorusdt:matricule": "USER_AGC",
-      "chorusdt:societe": "CHT"
+      "chorusdt:societe": "CHT",
+      "is_service_public": "true"
     }
   },
   {
@@ -48,7 +49,8 @@
       "belonging_population": "agent",
       "phone_number": "+331-12-44-45-23",
       "chorusdt:matricule": "123457",
-      "chorusdt:societe": "MinistèreIntérieur"
+      "chorusdt:societe": "MinistèreIntérieur",
+      "is_service_public": "false"
     }
   }
 ]

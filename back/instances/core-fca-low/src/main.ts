@@ -110,6 +110,32 @@ async function bootstrap() {
       return join(__dirname, viewsPath, 'views');
     }),
   );
+
+  /**
+   * @TODO #1203 All below useStaticAssets functions need to be removed (until line 146) when webpack has been configured to load assets from @gouvfr/dsfr package
+   * @ticket FC-1203
+   */
+  app.useStaticAssets(
+    join(__dirname, '../../../node_modules/@gouvfr/dsfr/dist/dsfr'),
+    {
+      prefix: '/dsfr',
+    },
+  );
+
+  app.useStaticAssets(
+    join(__dirname, '../../../node_modules/@gouvfr/dsfr/dist/fonts'),
+    {
+      prefix: '/fonts',
+    },
+  );
+
+  app.useStaticAssets(
+    join(__dirname, '../../../node_modules/@gouvfr/dsfr/dist/icons'),
+    {
+      prefix: '/icons',
+    },
+  );
+
   app.setViewEngine('ejs');
   assetsPaths.forEach((assetsPath) => {
     app.useStaticAssets(join(__dirname, assetsPath, 'public'));
