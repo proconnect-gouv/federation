@@ -14,7 +14,6 @@
   "scripts": {
     "start:ud": "cd instances/user-dashboard && yarn start",
     "start:fca": "cd instances/agent-connect && yarn start",
-    "build:fca-low-front": "cd instances/agent-connect && FAST_REFRESH=false ../../scripts/yarn-build agent-connect",
     "cleanup": "./scripts/yarn-cleanup",
     "format:js": "prettier --write \"{apps,instances,libs}/**/*.(ts|tsx)\"",
     "format:css": "stylelint \"{apps,instances,libs}/**/*.(scss|css|sass)\" --fix",
@@ -73,6 +72,7 @@
     "react-scripts": "5.0.1",
     "redux-devtools-extension": "^2.13.9",
     "sass": "^1.66.1",
+    "sass-rem": "^3.0.0",
     "serve": "^14.2.1",
     "stylelint": "^15.10.3",
     "stylelint-config-prettier": "^9.0.4",

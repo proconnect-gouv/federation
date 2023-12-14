@@ -1,9 +1,34 @@
 [
   {
+    "idpId": "moncomptepro",
+    "descriptions": [
+      "moncomptepro",
+      "whitelisté",
+      "non blacklisté",
+      "rattaché à un ministère avec plusieurs FI",
+      "non autorisé pour idp_hint"
+    ],
+    "ministry": "Démonstration",
+    "title": "Identity Provider 1 - HS256",
+    "mocked": true,
+    "usable": true,
+    "url": "https://moncomptepro.docker.dev-franceconnect.fr",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "HS256",
+    "selectors": {
+      "idpButton": "#idp-moncomptepro",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "button[type='submit']"
+    }
+  },
+  {
     "idpId": "fia1v2",
     "descriptions": [
-      "actif",
       "par défaut",
+      "actif",
+      "FI eidas1 avec signature ES256",
       "whitelisté",
       "non blacklisté",
       "rattaché à un ministère avec plusieurs FI",

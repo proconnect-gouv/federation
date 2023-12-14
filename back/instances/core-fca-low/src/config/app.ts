@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // Tested by DTO
-import { AppConfig } from '@fc/app';
 import { ConfigParser } from '@fc/config';
+import { AppConfig } from '@fc/core-fca';
 
 const env = new ConfigParser(process.env, 'App');
 
@@ -17,4 +17,5 @@ export default {
     cert: env.file('HTTPS_SERVER_CERT', { optional: true }),
   },
   fqdn: process.env.FQDN,
+  defaultIpdId: env.string('DEFAULT_IDP_UID'),
 } as AppConfig;

@@ -92,8 +92,6 @@ _command_register "wait" "wait_for_nodejs" "Wait for a nodejs HTTP service to re
 
 _command_register "log-rotate" "_log-rotate" "log-rotate Rotate the logs and send SIGUSR"
 
-_command_register "fca-low-front" "_fca_low_front" "Build the FCA React front-end"
-
 _command_register "mongo" "_mongo_shell" "mongo <server> <database>: Opens mongo shell"
 ### Legacy aliases for mongo shell access
 _command_register "mongo-shell-core-fca-low" "_mongo_shell_core_fca_low" "[deprecated] Open mongo shell for core-fca-low "

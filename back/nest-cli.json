@@ -15,7 +15,26 @@
       "sourceRoot": "instances/core-fca-low/src",
       "compilerOptions": {
         "tsConfigPath": "instances/core-fca-low/tsconfig.app.json",
-        "assets": ["../../../apps/core-fca/**/*.ejs"]
+        "assets": [
+          "../../../apps/core-fca/**/*.ejs",
+          "../../../apps/core-fca/**/*.css",
+          "../../../apps/core-fca/**/*.js",
+          "../../../apps/core-fca/**/*.svg",
+          "../../../apps/core-fca/**/*.png",
+          "../../../apps/core-fca/**/*.ico",
+          "../../../apps/core-fca/**/*.woff2",
+          "../../../apps/core-fca/**/*.webmanifest",
+          "../../../apps/core-fca/**/robots.txt",
+          "../../../instances/core-fca-low/src/**/*.js",
+          "../../../instances/core-fca-low/src/**/*.css",
+          "../../../instances/core-fca-low/src/**/*.ejs",
+          "../../../instances/core-fca-low/src/**/*.ico",
+          "../../../instances/core-fca-low/src/**/*.svg",
+          "../../../instances/core-fca-low/src/**/*.png",
+          "../../../instances/core-fca-low/src/**/*.woff2",
+          "../../../instances/core-fca-low/src/**/*.webmanifest",
+          "../../../instances/core-fca-low/src/**/robots.txt"
+        ]
       }
     },
     "eidas-bridge-instance": {

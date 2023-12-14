@@ -7,7 +7,6 @@ services:
     image: alpine
     depends_on:
       - "core-fca-low"
-      - "fca-low-front"
       - "fsa1-low"
       - "fia1-low"
 
@@ -15,7 +14,6 @@ services:
     image: alpine
     depends_on:
       - "core-fca-low"
-      - "fca-low-front"
       - "exploitation-fca-low"
       # -- SP
       - "fsa1-low"
@@ -34,7 +32,6 @@ services:
     image: alpine
     depends_on:
       - "core-fca-low"
-      - "fca-low-front"
       - "fsa1-low"
       - "fsa2-low"
       - "fsa3-low"

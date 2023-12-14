@@ -3,6 +3,7 @@ import { Response } from 'express';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger-legacy';
 import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
@@ -63,6 +64,12 @@ describe('CoreFcaService', () => {
 
   const authorizeUrlMock = Symbol('authorizeUrlMockValue');
 
+  const fqdnToIdpAdapterMongoServiceMock = {
+    getIdpsByFqdn: jest.fn(),
+    refreshCache: jest.fn(),
+    getList: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -75,6 +82,7 @@ describe('CoreFcaService', () => {
         OidcClientService,
         IdentityProviderAdapterMongoService,
         CoreFcaAuthorizationUrlService,
+        FqdnToIdpAdapterMongoService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -87,6 +95,8 @@ describe('CoreFcaService', () => {
       .useValue(identityProviderMock)
       .overrideProvider(CoreFcaAuthorizationUrlService)
       .useValue(coreFcaAuthorizationUrlServiceMock)
+      .overrideProvider(FqdnToIdpAdapterMongoService)
+      .useValue(fqdnToIdpAdapterMongoServiceMock)
       .compile();
 
     service = app.get<CoreFcaService>(CoreFcaService);
@@ -244,6 +254,56 @@ describe('CoreFcaService', () => {
       // Then
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
       expect(resMock.redirect).toHaveBeenCalledWith(authorizeUrlMock);
+    });
+  });
+
+  describe('getIdpIdForEmail', () => {
+    it('should return the default uuid of idp when no idp is found', async () => {
+      const result = await service.getIdpIdForEmail('dobby@unknown.person');
+
+      fqdnToIdpAdapterMongoServiceMock.getIdpsByFqdn.mockResolvedValueOnce([
+        { fqdn: 'good.person', identityProvider: 'snapeIdp' },
+        { fqdn: 'bad.person', identityProvider: 'luciusIdp' },
+      ]);
+
+      expect(result).toBe(process.env.DEFAULT_IDP_UID);
+    });
+
+    it('should call fqdnToIdpAdapterMongoService getIdpsByFqdn', async () => {
+      await service.getIdpIdForEmail('voldemort@bad.person');
+
+      expect(
+        fqdnToIdpAdapterMongoServiceMock.getIdpsByFqdn,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        fqdnToIdpAdapterMongoServiceMock.getIdpsByFqdn,
+      ).toHaveBeenCalledWith('bad.person');
+    });
+
+    it('should get return the first corresponding idp for fqdn', async () => {
+      fqdnToIdpAdapterMongoServiceMock.getIdpsByFqdn.mockResolvedValueOnce([
+        { fqdn: 'bad.person', identityProvider: 'snapeIdp' },
+        { fqdn: 'bad.person', identityProvider: 'luciusIdp' },
+        { fqdn: 'bad.person', identityProvider: 'dobbyIdp' },
+      ]);
+
+      const result = await service.getIdpIdForEmail('voldemort@bad.person');
+
+      expect(result).toBe('snapeIdp');
+    });
+  });
+
+  describe('getFqdnFromEmail', () => {
+    it('should only return the full qualified domain name from an email address', () => {
+      const fqdn = service['getFqdnFromEmail']('hermione.granger@hogwards.uk');
+      expect(fqdn).toBe('hogwards.uk');
+    });
+
+    it('should only return the full qualified domain name from an email address with numbers', () => {
+      const fqdn = service['getFqdnFromEmail'](
+        'hermione.grangerhogwards4321@hogwards1234.uk',
+      );
+      expect(fqdn).toBe('hogwards1234.uk');
     });
   });
 });

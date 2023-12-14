@@ -1,5 +1,6 @@
 import { ClassTransformOptions } from 'class-transformer';
 import { ValidatorOptions } from 'class-validator';
+import { Response } from 'express';
 import { encode } from 'querystring';
 
 import {
@@ -31,7 +32,6 @@ import {
   OidcClientRoutes,
   OidcClientService,
   OidcClientSession,
-  RedirectToIdp,
 } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import {
@@ -49,6 +49,7 @@ import {
   GetRedirectToIdpOidcClientSessionDto,
   OidcIdentityDto,
 } from '../dto';
+import { RedirectToIdp } from '../dto/redirect-to-idp.dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
 import { CoreFcaService } from '../services';
 
@@ -82,7 +83,7 @@ export class OidcClientController {
   // eslint-disable-next-line complexity
   async redirectToIdp(
     @Req() req,
-    @Res() res,
+    @Res() res: Response,
     @Body() body: RedirectToIdp,
     /**
      * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
@@ -92,15 +93,16 @@ export class OidcClientController {
     @Session('OidcClient', GetRedirectToIdpOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
-    const { providerUid: idpId, csrfToken } = body;
-
-    // -- control if the CSRF provided is the same as the one previously saved in session.
+    const { csrfToken, email } = body;
+    // control if the CSRF provided is the same as the one previously saved in session.
     try {
       await this.csrfService.validate(sessionOidc, csrfToken);
     } catch (error) {
       this.logger.trace({ error }, LoggerLevelNames.WARN);
       throw new SessionInvalidCsrfSelectIdpException(error);
     }
+
+    const idpId = await this.coreFca.getIdpIdForEmail(email);
 
     const {
       // acr_values is an oidc defined variable name

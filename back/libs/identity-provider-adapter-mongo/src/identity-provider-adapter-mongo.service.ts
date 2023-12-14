@@ -203,7 +203,7 @@ export class IdentityProviderAdapterMongoService
    * Method triggered when you want to filter identity providers
    * from service providers's whitelist/blacklist
    * @param idpList  list of identity providers's clientID
-   * @param isBlackListed  boolean false = blacklist true = whitelist
+   * @param blacklist  boolean false = blacklist true = whitelist
    */
   async getFilteredList(
     options: FilteringOptions,

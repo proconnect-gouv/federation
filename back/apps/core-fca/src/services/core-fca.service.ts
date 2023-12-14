@@ -4,7 +4,9 @@ import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { CoreServiceInterface } from '@fc/core';
+import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger-legacy';
 import {
   OidcClientConfig,
   OidcClientService,
@@ -12,15 +14,20 @@ import {
 } from '@fc/oidc-client';
 import { ISessionService } from '@fc/session';
 
+import { AppConfig } from '../dto/app-config.dto';
 import { CoreFcaAuthorizationUrlService } from './core-fca-authorization-url.service';
 
 @Injectable()
 export class CoreFcaService implements CoreServiceInterface {
+  // Dependency injection can require more than 4 parameters
+  /* eslint-disable-next-line max-params */
   constructor(
     private readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly coreFcaAuthorizationUrlService: CoreFcaAuthorizationUrlService,
+    private readonly fqdnToIdpAdapterMongoService: FqdnToIdpAdapterMongoService,
+    private readonly logger: LoggerService,
   ) {}
 
   async redirectToIdp(
@@ -73,5 +80,26 @@ export class CoreFcaService implements CoreServiceInterface {
     await session.set(sessionPayload);
 
     res.redirect(authorizationUrl);
+  }
+
+  async getIdpIdForEmail(email: string): Promise<string> {
+    // find the proper identity provider by fqdn
+    const fqdn = this.getFqdnFromEmail(email);
+    const idpsByFqdn =
+      await this.fqdnToIdpAdapterMongoService.getIdpsByFqdn(fqdn);
+
+    if (idpsByFqdn?.length > 1) {
+      this.logger.warn('More than one IdP exists');
+    }
+
+    const { defaultIpdId } = this.config.get<AppConfig>('App');
+
+    return idpsByFqdn?.length > 0
+      ? idpsByFqdn[0].identityProvider
+      : defaultIpdId;
+  }
+
+  private getFqdnFromEmail(email: string): string {
+    return email.split('@').pop();
   }
 }

@@ -147,7 +147,6 @@ docker-stack start-all
 
 ```bash
 docker-stack up min-fca-low
-docker-stack fca-low-front
 docker-stack start-all
 ```
 

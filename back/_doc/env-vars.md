@@ -50,6 +50,7 @@
 | AdapterMongo_DISABLE_IDP_VALIDATION_ON_LEGACY | boolean |
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
+| App_DEFAULT_IDP_UID | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |

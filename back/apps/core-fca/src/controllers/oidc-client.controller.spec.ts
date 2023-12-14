@@ -90,6 +90,7 @@ describe('OidcClient Controller', () => {
 
   const identityProviderServiceMock = {
     getById: jest.fn(),
+    isActiveById: jest.fn(),
   };
 
   const trackingMock = {
@@ -157,6 +158,7 @@ describe('OidcClient Controller', () => {
 
   const coreServiceMock = {
     redirectToIdp: jest.fn(),
+    getIdpIdForEmail: jest.fn(),
   };
 
   const oidcClientConfigServiceMock = {
@@ -268,7 +270,10 @@ describe('OidcClient Controller', () => {
       const body = {
         providerUid: providerIdMock,
         csrfToken: 'csrfMockValue',
+        email: 'harry.potter@hogwarts.uk',
       };
+
+      identityProviderServiceMock.isActiveById.mockReturnValueOnce(true);
 
       // When
       await controller.redirectToIdp(req, res, body, sessionServiceMock);
@@ -286,6 +291,7 @@ describe('OidcClient Controller', () => {
       const body = {
         providerUid: providerIdMock,
         csrfToken: 'csrfMockValue',
+        email: 'harry.potter@hogwarts.uk',
       };
       const error = new Error('New Error');
       sessionCsrfServiceMock.validate.mockReset().mockImplementationOnce(() => {
@@ -305,7 +311,10 @@ describe('OidcClient Controller', () => {
       const body = {
         providerUid: providerIdMock,
         csrfToken: 'csrfMockValue',
+        email: 'harry.potter@hogwarts.uk',
       };
+
+      coreServiceMock.getIdpIdForEmail.mockResolvedValueOnce(providerIdMock);
 
       // When
       await controller.redirectToIdp(req, res, body, sessionServiceMock);
@@ -317,6 +326,26 @@ describe('OidcClient Controller', () => {
         interactionDetailsResolved.params.acr_values,
         providerIdMock,
         sessionServiceMock,
+      );
+    });
+
+    it('should call coreServiceMock getIdpIdForEmail', async () => {
+      // Given
+      const body = {
+        providerUid: providerIdMock,
+        csrfToken: 'csrfMockValue',
+        email: 'ginny.potter@hogwarts.uk',
+      };
+
+      coreServiceMock.getIdpIdForEmail.mockResolvedValueOnce(providerIdMock);
+
+      // When
+      await controller.redirectToIdp(req, res, body, sessionServiceMock);
+
+      // Then
+      expect(coreServiceMock.getIdpIdForEmail).toHaveBeenCalledTimes(1);
+      expect(coreServiceMock.getIdpIdForEmail).toHaveBeenCalledWith(
+        'ginny.potter@hogwarts.uk',
       );
     });
   });

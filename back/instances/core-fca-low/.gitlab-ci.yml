@@ -67,8 +67,6 @@ fca-low:
     # Up the docker-stack with minimal requirement
     - docker-stack up bdd-fca-low
     - docker exec fc_core-fca-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
-    - docker exec fc_fca-low-front_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
-    - docker-stack fca-low-front
     - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
     - cd $CI_PROJECT_DIR/quality/fca && yarn install
     - cd $CI_PROJECT_DIR
