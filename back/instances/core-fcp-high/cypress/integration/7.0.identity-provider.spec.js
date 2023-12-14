@@ -21,15 +21,12 @@ describe('7.0 - Idp activation & visibility', () => {
       cy.get('[data-testid="idp-dedc7160-8811-4d0f-9dd7-c072c15f2f18"]').should(
         'exist',
       );
-      cy.get(
-        '[data-testid="idp-dedc7160-8811-4d0f-9dd7-c072c15f2f18"] figure figcaption',
-      )
-        .invoke('text')
-        .then((text) => {
-          expect(text.trim()).equal(
-            'IDP1 - Identity Provider - eIDAS élevé - discov - crypt',
-          );
-        });
+      cy.get('[data-testid="idp-dedc7160-8811-4d0f-9dd7-c072c15f2f18"] img')
+        .invoke('attr', 'alt')
+        .should(
+          'eq',
+          'IDP1 - Identity Provider - eIDAS élevé - discov - crypt',
+        );
 
       // Control content title is set if provider has no logo
       cy.get('[data-testid="idp-621c3c17-5f49-4ca5-b8ef-a4b1cecaf7c2"]').should(
@@ -226,10 +223,8 @@ describe('7.0 - Idp activation & visibility', () => {
         'Idp test Updated, desactivated',
       );
       cy.get(
-        '[data-testid="idp-da5bbb8d-3a93-4434-b1bf-448c69fa7fc9"] figure figcaption',
-      )
-        .invoke('text')
-        .should('contain', 'Indisponible');
+        '[data-testid="idp-da5bbb8d-3a93-4434-b1bf-448c69fa7fc9"] [data-testid="idp-status-description"]',
+      ).contains('Indisponible');
     });
 
     it('should remove an identity provider without an app restart needed', () => {
