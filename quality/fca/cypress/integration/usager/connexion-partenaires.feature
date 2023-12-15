@@ -12,7 +12,7 @@ Fonctionnalité: Connexion Partenaires
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page interaction
     Et que j'utilise le fournisseur d'identité "par défaut"
-    Et que j'entre l'email "test@abcd.com"
+    Et que j'entre l'email "test@fia1.fr"
     Quand je clique sur le bouton de connexion
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Et que je m'authentifie avec succès

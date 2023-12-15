@@ -12,7 +12,7 @@ Fonctionnalité: Deconnexion Usager
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page interaction
     Et que j'utilise un fournisseur d'identité "actif"
-    Et que j'entre l'email "test@abcd.com"
+    Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Et que je m'authentifie avec succès
@@ -32,7 +32,7 @@ Fonctionnalité: Deconnexion Usager
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page interaction
     Et que j'utilise un fournisseur d'identité "actif"
-    Et que j'entre l'email "test@abcd.com"
+    Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Et que je m'authentifie avec succès

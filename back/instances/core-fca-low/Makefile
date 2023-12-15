@@ -46,4 +46,4 @@ ci:
 	$(MAKE) doc && $(MAKE) prepare && $(MAKE) test-coverage && $(MAKE) tq
 
 test-legacy tl:
-	cd (FC_ROOT)/fc/back  && yarn run test:e2e:core-fca-low
+	cd $(FC_ROOT)/fc/back  && yarn run test:e2e:core-fca-low

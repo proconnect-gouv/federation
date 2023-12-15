@@ -83,7 +83,7 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que la valeur "accountId" est identique dans l'événement "FC_AUTHORIZE_INITIATED"
     Et que je mémorise la valeur "sessionId" de l'événement "FC_AUTHORIZE_INITIATED"
     Quand j'utilise un fournisseur d'identité "par défaut"
-    Et j'entre l'email "test@abcd.com"
+    Et j'entre l'email "test@fia1.fr"
     Et je clique sur le bouton de connexion
     Et je suis redirigé vers la page login du fournisseur d'identité
     # FC_IDP_BLACKLISTED: l'attribut isSso devient false
