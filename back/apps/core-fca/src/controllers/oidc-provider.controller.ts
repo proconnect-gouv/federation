@@ -1,9 +1,11 @@
 import {
+  Body,
   Controller,
   Get,
   Header,
   Next,
   Post,
+  Query,
   Req,
   Res,
   UsePipes,
@@ -16,7 +18,7 @@ import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderRoutes, OidcProviderService } from '@fc/oidc-provider';
 import { ISessionService, Session } from '@fc/session';
 
-import { GetLoginOidcClientSessionDto } from '../dto';
+import { AuthorizeParamsDto, GetLoginOidcClientSessionDto } from '../dto';
 
 @Controller()
 export class OidcProviderController {
@@ -40,7 +42,7 @@ export class OidcProviderController {
     }),
   )
   @IsStep()
-  getAuthorize(@Next() next) {
+  getAuthorize(@Next() next, @Query() _query: AuthorizeParamsDto) {
     // Pass the query to oidc-provider
     return next();
   }
@@ -63,7 +65,7 @@ export class OidcProviderController {
     }),
   )
   @IsStep()
-  postAuthorize(@Next() next) {
+  postAuthorize(@Next() next, @Body() _body: AuthorizeParamsDto) {
     // Pass the query to oidc-provider
     return next();
   }

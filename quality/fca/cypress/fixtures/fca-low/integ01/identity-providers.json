@@ -12,7 +12,7 @@
     "title": "Identity Provider 1 - HS256",
     "mocked": true,
     "usable": true,
-    "url": "https://moncomptepro.docker.dev-franceconnect.fr",
+    "url": "https://app-test.moncomptepro.beta.gouv.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "HS256",
@@ -21,7 +21,8 @@
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
-    }
+    },
+    "fqdn": "moncomptepro.fr"
   },
   {
     "idpId": "fia1v2",
@@ -47,14 +48,12 @@
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
-    }
+    },
+    "fqdn": "fia1.fr"
   },
   {
     "idpId": "fia2v2",
-    "descriptions": [
-      "FI eidas1 avec signature ES256",
-      "différent"
-    ],
+    "descriptions": ["FI eidas1 avec signature ES256", "différent"],
     "ministry": "Démonstration",
     "title": "Identity Provider 2 - ES256",
     "mocked": true,
@@ -68,7 +67,8 @@
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
-    }
+    },
+    "fqdn": "fia2.fr"
   },
   {
     "idpId": "fia3v2",
@@ -90,7 +90,8 @@
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
-    }
+    },
+    "fqdn": "fia3.fr"
   },
   {
     "idpId": "fia4-desactive-visible",
@@ -105,7 +106,8 @@
     "signature": "ES256",
     "selectors": {
       "idpButton": "#idp-fia4-desactive-visible"
-    }
+    },
+    "fqdn": "fia4.fr"
   },
   {
     "idpId": "fia5-active-invisible",
@@ -120,7 +122,8 @@
     "signature": "ES256",
     "selectors": {
       "idpButton": "#idp-fia5-active-invisible"
-    }
+    },
+    "fqdn": "fia5.fr"
   },
   {
     "idpId": "fia6-desactive-invisible",
@@ -135,11 +138,12 @@
     "signature": "ES256",
     "selectors": {
       "idpButton": "#idp-fia6-desactive-invisible"
-    }
+    },
+    "fqdn": "fia6.fr"
   },
   {
     "idpId": "cerbere",
-    "descriptions": ["rattaché à plusieurs ministères"],
+    "descriptions": ["rattaché à plusieurs ministères", "cerbere"],
     "ministry": "Ministère de la Transition écologique",
     "title": "Cerbère",
     "mocked": false,
@@ -153,6 +157,7 @@
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
-    }
+    },
+    "fqdn": "cerbere.fr"
   }
 ]

@@ -10,7 +10,7 @@
       Et que je suis redirigé vers la page interaction
       Et que la copie d'écran "selectionFI" correspond à la page actuelle sur "<device>"
       Et que j'utilise un fournisseur d'identité "actif"
-      Et que j'entre l'email "test@abcd.com"
+      Et que j'entre l'email "test@fia1.fr"
       Et que je clique sur le bouton de connexion
       Et que je suis redirigé vers la page login du fournisseur d'identité
       Quand je m'authentifie avec succès
@@ -34,7 +34,7 @@
       Et que je clique sur le bouton AgentConnect
       Et que je suis redirigé vers la page interaction
       Et que j'utilise un fournisseur d'identité "actif"
-      Et que j'entre l'email "test@abcd.com"
+      Et que j'entre l'email "test@fia1.fr"
       Et que je clique sur le bouton de connexion
       Et que je suis redirigé vers la page login du fournisseur d'identité
       Et que le fournisseur d'identité garantit un niveau de sécurité "inconnu"

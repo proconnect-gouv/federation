@@ -8,6 +8,7 @@ import { SessionService } from '@fc/session';
 
 import { getSessionServiceMock } from '@mocks/session';
 
+import { AuthorizeParamsDto } from '../dto';
 import { OidcProviderController } from './oidc-provider.controller';
 
 describe('OidcProviderController', () => {
@@ -85,8 +86,9 @@ describe('OidcProviderController', () => {
     it('should call next', () => {
       // Given
       const nextMock = jest.fn();
+      const queryMock = {} as AuthorizeParamsDto;
       // When
-      oidcProviderController.getAuthorize(nextMock);
+      oidcProviderController.getAuthorize(nextMock, queryMock);
       // Then
       expect(nextMock).toHaveReturnedTimes(1);
     });
@@ -96,8 +98,9 @@ describe('OidcProviderController', () => {
     it('should call next', () => {
       // Given
       const nextMock = jest.fn();
+      const bodyMock = {} as AuthorizeParamsDto;
       // When
-      oidcProviderController.postAuthorize(nextMock);
+      oidcProviderController.postAuthorize(nextMock, bodyMock);
       // Then
       expect(nextMock).toHaveReturnedTimes(1);
     });

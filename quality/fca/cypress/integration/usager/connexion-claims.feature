@@ -11,7 +11,7 @@ Fonctionnalité: Connexion avec Claims
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page interaction
-    Et que j'entre l'email "test@abcd.com"
+    Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès
@@ -25,7 +25,7 @@ Fonctionnalité: Connexion avec Claims
     Et que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page interaction
-    Et que j'entre l'email "test@abcd.com"
+    Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Quand je m'authentifie avec succès
