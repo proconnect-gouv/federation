@@ -38,6 +38,9 @@ services:
       - "fip18-high"
       - "fip19-high"
       - "fip20-high"
+      # -- DP
+      - "dp1-high"
+      - "dp2-high"
       # -- Mailer
       - "maildev"
 

@@ -182,8 +182,9 @@ describe('DataProviderAdapterCoreService', () => {
 
     it('should call the checktoken endpoint with the configuration', async () => {
       // Given
-      const expectedHeader = {
+      const expectedOptions = {
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        proxy: false,
       };
       const expectedUri =
         'client_id=client_id&client_secret=client_secret&access_token=token';
@@ -196,7 +197,7 @@ describe('DataProviderAdapterCoreService', () => {
       expect(HttpServiceMock.post).toHaveBeenCalledWith(
         configMock.checktokenEndpoint,
         expectedUri,
-        expectedHeader,
+        expectedOptions,
       );
     });
 
@@ -287,6 +288,9 @@ describe('DataProviderAdapterCoreService', () => {
     it('should call the signkeys endpoint with the given URL', async () => {
       // Given
       const urlMock = 'url';
+      const expectedOptions = {
+        proxy: false,
+      };
       mocked(lastValueFrom).mockResolvedValue({ data: 'data' });
 
       // When
@@ -294,7 +298,10 @@ describe('DataProviderAdapterCoreService', () => {
 
       // Then
       expect(HttpServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(HttpServiceMock.get).toHaveBeenCalledWith(urlMock);
+      expect(HttpServiceMock.get).toHaveBeenCalledWith(
+        urlMock,
+        expectedOptions,
+      );
     });
 
     it('should throw if fetch fails', async () => {

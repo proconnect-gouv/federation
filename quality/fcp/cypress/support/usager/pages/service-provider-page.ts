@@ -38,12 +38,20 @@ export default class ServiceProviderPage {
     return cy.get(this.fcButtonSelector);
   }
 
+  getRevokeTokenButton(): ChainableElement {
+    return cy.get('#revoke-token');
+  }
+
   getLogoutButton(): ChainableElement {
     return cy.get(this.logoutButtonSelector);
   }
 
   getUserInfoButton(): ChainableElement {
     return cy.get('#reload-userinfo');
+  }
+
+  getDataButton(): ChainableElement {
+    return cy.get('[data-testid="get-data-link"]');
   }
 
   checkIsVisible(): void {
@@ -268,6 +276,15 @@ export default class ServiceProviderPage {
 
   getMockIdTokenText(): Cypress.Chainable<string> {
     return cy.get('[id="info-id-token"]').invoke('text');
+  }
+
+  checkIsMockDataPageVisible(): void {
+    const dataPageURL = `${this.originUrl}/data`;
+    cy.url().should('include', dataPageURL);
+  }
+
+  getMockIntrospectionTokenText(): Cypress.Chainable<string> {
+    return cy.get('#json').first().invoke('text');
   }
 
   checkMockErrorCallback(): void {

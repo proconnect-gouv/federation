@@ -151,5 +151,23 @@
       "rnipp_given_name_array",
       "rnipp_family_name"
     ]
+  },
+  {
+    "type": "tous les scopes data",
+    "scopes": [
+      "openid",
+      "dgfip_rfr",
+      "dgfip_aft",
+      "droits_assurance_maladie",
+      "cnam_caisse"
+    ]
+  },
+  {
+    "type": "CNAM",
+    "scopes": [
+      "openid",
+      "droits_assurance_maladie",
+      "cnam_caisse"
+    ]
   }
 ]

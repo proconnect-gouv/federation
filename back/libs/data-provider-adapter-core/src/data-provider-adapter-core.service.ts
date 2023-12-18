@@ -71,6 +71,7 @@ export class DataProviderAdapterCoreService {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
+        proxy: false,
       }),
     );
 
@@ -104,7 +105,11 @@ export class DataProviderAdapterCoreService {
     let response: AxiosResponse<JSONWebKeySet>;
 
     try {
-      response = await lastValueFrom(this.http.get(url));
+      response = await lastValueFrom(
+        this.http.get(url, {
+          proxy: false,
+        }),
+      );
     } catch (error) {
       throw new JwksFetchFailedException(error);
     }

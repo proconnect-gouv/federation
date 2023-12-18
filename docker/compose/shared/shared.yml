@@ -33,6 +33,7 @@ services:
       - ${VOLUMES_DIR}/nginx-proxy/default-vhost:/etc/nginx/html:ro
       - ${VOLUMES_DIR}/ssl:/etc/nginx/docker_host:ro
       - ${VOLUMES_DIR}/ssl:/etc/nginx/client_certs:ro
+      - ${VOLUMES_DIR}/log/nginx:/var/log/nginx
     networks:
       public:
         aliases:
