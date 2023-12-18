@@ -202,6 +202,31 @@ Then(
   },
 );
 
+When('je révoke le token', function () {
+  serviceProviderPage.getRevokeTokenButton().click();
+});
+
+When(
+  "le fournisseur de service demande l'accès aux données au fournisseur de données",
+  function () {
+    serviceProviderPage.getDataButton().click();
+  },
+);
+
+Then(
+  "le fournisseur de données vérifie l'access token fourni par le fournisseur de service",
+  function () {
+    serviceProviderPage.checkIsMockDataPageVisible();
+    serviceProviderPage
+      .getMockIntrospectionTokenText()
+      .should('be.ok')
+      .then((tokenText) => {
+        const token = JSON.parse(tokenText);
+        cy.wrap(token).as('tokenIntrospection');
+      });
+  },
+);
+
 Then(
   'je suis redirigé vers la page erreur du fournisseur de service',
   function () {

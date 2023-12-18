@@ -86,14 +86,14 @@ fcp-high:
     - yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS" || RETURN_CODE=1
     - yarn report
     # Exit if return code equals 1
-    - if [ $RETURN_CODE -ne 0 ]; then $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh && (docker cp fc-rp-all:/var/log/nginx /tmp/artifacts-logs || echo "[fc-rp-all] No NginX logs found") && exit $RETURN_CODE; fi
+    - if [ $RETURN_CODE -ne 0 ]; then $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-rp-logs.sh && exit $RETURN_CODE; fi
     # Starting Cypress E2E checks (if $RUN_E2E = 1)
     - if [ $RUN_E2E -ne 1 ]; then exit $RETURN_CODE; fi
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting E2E checks"
     - cd $CI_PROJECT_DIR/back
     - yarn test:e2e:core-fcp-high -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     # Extract logs in case of failure
-    - if [ $RETURN_CODE -ne 0 ]; then $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-logs.sh && (docker cp fc-rp-all:/var/log/nginx /tmp/artifacts-logs || echo "[fc-rp-all] No NginX logs found"); fi
+    - if [ $RETURN_CODE -ne 0 ]; then $CI_PROJECT_DIR/back/scripts/ci/extract-pm2-rp-logs.sh; fi
     # Exit with return code
     - exit $RETURN_CODE
   interruptible: true

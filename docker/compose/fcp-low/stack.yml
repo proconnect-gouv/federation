@@ -33,6 +33,9 @@ services:
       - "fip4-low"
       - "fip8-low"
       - "fip9-low"
+      # -- DP
+      - "dp1-low"
+      - "dp2-low"
       # --
       - "rnipp"
       # -- Exploitation
