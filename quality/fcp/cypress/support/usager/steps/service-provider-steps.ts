@@ -202,8 +202,12 @@ Then(
   },
 );
 
-When('je révoke le token', function () {
+When('je révoque le token FranceConnect', function () {
   serviceProviderPage.getRevokeTokenButton().click();
+});
+
+Then('le token FranceConnect est révoqué', function () {
+  serviceProviderPage.getTokenRevokationConfirmation().should('be.visible');
 });
 
 When(
@@ -224,26 +228,5 @@ Then(
         const token = JSON.parse(tokenText);
         cy.wrap(token).as('tokenIntrospection');
       });
-  },
-);
-
-Then(
-  'je suis redirigé vers la page erreur du fournisseur de service',
-  function () {
-    serviceProviderPage.checkMockErrorCallback();
-  },
-);
-
-Then(
-  "le titre de l'erreur fournisseur de service est {string}",
-  function (errorCode: string) {
-    serviceProviderPage.checkMockErrorCode(errorCode);
-  },
-);
-
-Then(
-  "la description de l'erreur fournisseur de service est {string}",
-  function (errorDescription: string) {
-    serviceProviderPage.checkMockErrorDescription(errorDescription);
   },
 );

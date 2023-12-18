@@ -38,5 +38,22 @@
         "emails": "test1@yopmail.com\ntest2@yopmail.com",
         "specificText": "Veuillez fournir une capture d'écran de votre page de profil !",
         "token_endpoint_auth_method": "client_secret_post"
-    }
+    },
+    "idpRsaOaep256": {
+        "name": "bdd-idp-rsa-oaep-256",
+        "title": "FI de test pour RSA-OAEP-256",
+        "issuer": "https://fip1v2.integ01.fcp.fournisseur-d-identite.fr",
+        "clientId": "09a1a257648c1742c74d6a3d84b31943",
+        "client_secret": "7ae4fef2aab63fb78d777fe657b7536f",
+        "discovery": "true",
+        "discoveryUrl": "https://fip1v2.integ01.fcp.fournisseur-d-identite.fr/.well-known/openid-configuration",
+        "eidas": "3",
+        "token_endpoint_auth_method": "client_secret_post",
+        "id_token_signed_response_alg": "RS256",
+        "userinfo_signed_response_alg": "RS256",
+        "id_token_encrypted_response_alg": "RSA-OAEP-256",
+        "userinfo_encrypted_response_alg": "RSA-OAEP-256",
+        "id_token_encrypted_response_enc": "A256GCM",
+        "userinfo_encrypted_response_enc": "A256GCM"
+      }
 }

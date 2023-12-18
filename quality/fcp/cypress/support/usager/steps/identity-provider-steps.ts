@@ -35,3 +35,7 @@ When("je m'authentifie avec succès", function () {
   expect(userCredentials).to.exist;
   identityProviderPage.login(userCredentials);
 });
+
+When("je m'authentifie avec {string}", function (username: string) {
+  identityProviderPage.login({ username });
+});

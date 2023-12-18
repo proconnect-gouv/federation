@@ -38,7 +38,7 @@ Fonctionnalité: Fournisseur Données
     Et que je me connecte à FranceConnect
     Et que je suis redirigé vers la page fournisseur de service
     Et que je suis connecté au fournisseur de service
-    Quand je révoke le token
+    Quand je révoque le token FranceConnect
     Et le fournisseur de service demande l'accès aux données au fournisseur de données
     Alors le fournisseur de données vérifie l'access token fourni par le fournisseur de service
     Et le checktoken endpoint envoie un token d'introspection expiré
