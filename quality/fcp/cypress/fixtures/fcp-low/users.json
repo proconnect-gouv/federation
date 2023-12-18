@@ -115,15 +115,24 @@
   {
     "enabled": true,
     "criteria": [
-      "avec un COG invalide"
+      "avec des caractères spéciaux"
     ],
     "credentials": [
       {
         "idpId": "default",
-        "username": "test_INVALID_COG",
+        "username": "caractères_spéciaux",
         "password": "123"
       }
-    ]
+    ],
+    "claims": {
+      "given_name": "Joëlle Françoise",
+      "family_name": "DUBINÔRE",
+      "birthdate": "1992-08-15",
+      "gender": "female",
+      "birthcountry": "99100",
+      "birthplace": "75117",
+      "email": "effannopiq-4009@yopmail.com"
+    }
   },
   {
     "enabled": true,

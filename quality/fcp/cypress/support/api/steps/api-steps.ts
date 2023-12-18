@@ -19,6 +19,21 @@ Given('je prépare une requête {string}', function (requestKey: string) {
   );
 });
 
+Given(
+  'je retire le paramètre {string} de la requête',
+  function (property: string) {
+    expect(this.requestOptions.qs[property]).to.exist;
+    delete this.requestOptions.qs[property];
+  },
+);
+
+Given(
+  'je mets {string} dans le paramètre {string} de la requête',
+  function (value: string, property: string) {
+    this.requestOptions.qs[property] = value;
+  },
+);
+
 Given('je retire {string} du corps de la requête', function (property: string) {
   expect(this.requestOptions.body[property]).to.exist;
   delete this.requestOptions.body[property];
@@ -28,6 +43,13 @@ Given(
   'je mets {string} dans la propriété {string} du corps de la requête',
   function (value: string, property: string) {
     this.requestOptions.body[property] = value;
+  },
+);
+
+Given(
+  'je configure la requête pour ne pas suivre les redirections',
+  function () {
+    this.requestOptions.followRedirect = false;
   },
 );
 
@@ -80,6 +102,18 @@ Then(
     cy.get('@apiResponse').its('body').should('not.have.property', property);
   },
 );
+
+Then('le corps de la réponse contient une page web', function () {
+  cy.get('@apiResponse')
+    .its('body')
+    .then((htmlBody) => {
+      expect(htmlBody).to.be.a('string');
+      expect(htmlBody).to.contain('<html');
+      cy.document().then((document) => {
+        document.documentElement.innerHTML = htmlBody;
+      });
+    });
+});
 
 Then('le corps de la réponse contient un JWT', function () {
   cy.get('@apiResponse')

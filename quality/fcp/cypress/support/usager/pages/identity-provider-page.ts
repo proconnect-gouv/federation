@@ -36,8 +36,8 @@ export default class IdentityProviderPage {
     });
   }
 
-  login(userCredentials: UserCredentials): void {
-    const { password, username } = userCredentials;
+  login(userCredentials: Partial<UserCredentials>): void {
+    const { password = '123', username } = userCredentials;
     cy.get(this.usernameSelector).clearThenType(username);
     cy.get(this.passwordSelector).clearThenType(password, { log: false });
     cy.get(this.loginButtonSelector).click();

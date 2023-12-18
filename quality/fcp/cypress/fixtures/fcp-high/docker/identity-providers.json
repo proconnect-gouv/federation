@@ -31,7 +31,8 @@
     "title": "IDP2 - Identity Provider - eIDAS élevé - nodiscov - nocrypt",
     "descriptions": [
       "eidas 3 - nodiscov - crypted (none) - signed (RS256)",
-      "sans endSessionUrl"
+      "sans endSessionUrl",
+      "utilisant une route OidcCallback legacy"
     ],
     "mocked": true,
     "usable": true,

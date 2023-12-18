@@ -425,19 +425,6 @@
   {
     "enabled": true,
     "criteria": [
-      "avec un COG invalide"
-    ],
-    "credentials": [
-      {
-        "idpId": "default",
-        "username": "test_INVALID_COG",
-        "password": "123"
-      }
-    ]
-  },
-  {
-    "enabled": true,
-    "criteria": [
       "pour les tests eidas-bridge"
     ],
     "credentials": [
