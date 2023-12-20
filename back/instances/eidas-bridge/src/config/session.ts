@@ -10,7 +10,7 @@ const env = new ConfigParser(process.env, 'Session');
 
 const cookieOptions: ISessionCookieOptions = {
   signed: true,
-  sameSite: 'Strict',
+  sameSite: 'Lax',
   httpOnly: true,
   secure: true,
   maxAge: 600000, // 10 minutes

@@ -130,18 +130,16 @@ Fonctionnalité: API - authorize
       | code token     | unsupported_response_type | unsupported response_type requested |
       | code token     | unsupported_response_type | unsupported response_type requested |
 
-  # @todo #1463 Erreur Bad Request non gérée. FC devrait afficher la page d'erreur technique
-  # @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1463
   Scénario: API authorize - erreur Y030007 client_id=
     Etant donné que je prépare une requête "authorize"
     Et je mets "" dans le paramètre "client_id" de la requête
     Quand je lance la requête
     Alors le statut de la réponse est 400
-    # Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
-    # Et le corps de la réponse contient une page web
-    # Et je suis redirigé vers la page erreur technique FranceConnect
-    # Et le code d'erreur FranceConnect est "Y030007"
-    # Et le lien retour vers le FS n'est pas affiché dans la page erreur technique
+    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
+    Et le corps de la réponse contient une page web
+    Et je suis redirigé vers la page erreur technique FranceConnect
+    Et le code d'erreur FranceConnect est "Y030007"
+    Et le lien retour vers le FS n'est pas affiché dans la page erreur technique
 
   Plan du Scénario: API authorize - erreur Y030106 client_id=<clientId>
     Etant donné que je prépare une requête "authorize"

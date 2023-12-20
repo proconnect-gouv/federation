@@ -81,6 +81,7 @@ export class DataProviderController {
       return res.status(httpStatusCode).json(result);
     }
 
-    return res.status(HttpStatus.OK).send(jwt);
+    res.set('Content-Type', 'application/token-introspection+jwt');
+    return res.status(HttpStatus.OK).end(jwt);
   }
 }

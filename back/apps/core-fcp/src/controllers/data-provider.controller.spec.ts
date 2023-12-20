@@ -97,9 +97,10 @@ describe('DataProviderController', () => {
     };
 
     const resMock = {
+      set: jest.fn(),
       status: jest.fn(),
-      send: jest.fn(),
       json: jest.fn(),
+      end: jest.fn(),
     } as unknown as Response;
 
     const sessionIdMock = 'testSessionId';
@@ -221,6 +222,18 @@ describe('DataProviderController', () => {
       );
     });
 
+    it('should set the header application/token-introspection+jwt', async () => {
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(resMock.set).toHaveBeenCalledTimes(1);
+      expect(resMock.set).toHaveBeenCalledWith(
+        'Content-Type',
+        'application/token-introspection+jwt',
+      );
+    });
+
     it('should set HTTP code 200', async () => {
       // When
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);
@@ -235,8 +248,8 @@ describe('DataProviderController', () => {
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);
 
       // Then
-      expect(resMock.send).toHaveBeenCalledTimes(1);
-      expect(resMock.send).toHaveBeenCalledWith(jwtMock);
+      expect(resMock.end).toHaveBeenCalledTimes(1);
+      expect(resMock.end).toHaveBeenCalledWith(jwtMock);
     });
 
     it('should return HTTP code 401 and send error message when checkAuthentication method failed', async () => {

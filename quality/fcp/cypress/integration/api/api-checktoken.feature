@@ -6,9 +6,7 @@ Fonctionnalité: API - checktoken
     Etant donné que je prépare une requête "checktoken"
     Quand je lance la requête
     Alors le statut de la réponse est 200
-    # @todo #1461 Corriger le header "content-type"
-    # @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1461
-    #Et l'entête de la réponse a une propriété "content-type" égale à "application/token-introspection+jwt"
+    Et l'entête de la réponse a une propriété "content-type" égale à "application/token-introspection+jwt"
     #Et l'entête de la réponse n'a pas une propriété "set-cookie"
     Et le corps de la réponse contient un JWT
 
