@@ -108,12 +108,6 @@ Fonctionnalité: Connexion Usager - RNIPP
       | mauvais format de requête      | E010009  | Y010009   | FC_FAILED_RNIPP            |
       | pas de réponse du RNIPP        | E010011  | Y010011   | FC_FAILED_RNIPP            |
       | impossible de joindre le RNIPP | E010012  | Y010012   | FC_FAILED_RNIPP            |
+      | citoyen sans nom dans le RNIPP | E010013  | Y010013   | FC_RECEIVED_INVALID_RNIPP  |
+      | statut non valide              | E010099  | Y010013   | FC_RECEIVED_INVALID_RNIPP  |
       | usager décédé                  | E010015  | Y010015   | FC_RECEIVED_DECEASED_RNIPP |
-
-    # @todo #1459 sur fcp-low RnippCitizenStatusFormatException manquante dans l'event FC_RECEIVED_INVALID_RNIPP
-    # @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1459
-    @ignoreLow
-    Exemples:
-      | scenario                       | username | errorCode | event                     |
-      | citoyen sans nom dans le RNIPP | E010013  | Y010013   | FC_RECEIVED_INVALID_RNIPP |
-      | statut non valide              | E010099  | Y010013   | FC_RECEIVED_INVALID_RNIPP |
