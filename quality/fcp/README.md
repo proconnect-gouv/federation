@@ -255,6 +255,12 @@ yarn test:low:snapshot
 yarn test:ud:snapshot
 ```
 
+- eIDAS
+
+```shell
+yarn test:eidas:snapshot
+```
+
 ### Update the base image files for all of your tests
 
 - FCP-HIGH
@@ -275,6 +281,12 @@ yarn test:low:snapshot --env updateSnapshots=true
 yarn test:ud:snapshot --env updateSnapshots=true
 ```
 
+- eIDAS
+
+```shell
+yarn test:eidas:snapshot --env updateSnapshots=true
+```
+
 ### Prevent test failures when an image diff does not pass
 
 - FCP-HIGH
@@ -293,6 +305,12 @@ yarn test:low:snapshot --env failOnSnapshotDiff=false
 
 ```shell
 yarn test:ud:snapshot --env failOnSnapshotDiff=false
+```
+
+- eIDAS
+
+```shell
+yarn test:eidas:snapshot --env failOnSnapshotDiff=false
 ```
 
 ## Gitlab test pipeline

@@ -49,8 +49,10 @@
 | AdapterMongo_DECRYPT_CLIENT_SECRET_FEATURE | boolean |
 | AdapterMongo_DISABLE_IDP_VALIDATION_ON_LEGACY | boolean |
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
 | App_DEFAULT_IDP_UID | string |
+| App_DSFR_ASSETS_PATHS | json |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
@@ -98,6 +100,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
+| App_DSFR_ASSETS_PATHS | json |
 | App_EIDAS_BRIDGE_UID | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
@@ -167,6 +170,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
+| App_DSFR_ASSETS_PATHS | json |
 | App_EIDAS_BRIDGE_UID | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
@@ -328,8 +332,10 @@
 | ApacheIgnite_USERNAME | string |
 | ApacheIgnite_USE_TLS | boolean |
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
 | App_AVAILABLE_COUNTRIES | json |
+| App_DSFR_ASSETS_PATHS | json |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_IDP_ID | string |
