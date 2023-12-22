@@ -49,7 +49,11 @@
           "../../../apps/eidas-bridge/**/*.css",
           "../../../apps/eidas-bridge/**/*.js",
           "../../../apps/eidas-bridge/**/*.svg",
+          "../../../apps/eidas-bridge/**/*.png",
+          "../../../apps/eidas-bridge/**/*.ico",
           "../../../apps/eidas-bridge/**/*.woff2",
+          "../../../apps/eidas-bridge/**/*.webmanifest",
+          "../../../apps/eidas-bridge/**/robots.txt",
           "../../../libs/eidas-country/src/public/**/*.svg"
         ]
       }

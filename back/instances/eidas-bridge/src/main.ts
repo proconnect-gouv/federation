@@ -29,6 +29,8 @@ async function bootstrap() {
   const {
     urlPrefix,
     assetsPaths,
+    assetsDsfrPaths,
+    assetsCacheTtl,
     viewsPaths,
     httpsOptions: { key, cert },
   } = configService.get<AppConfig>('App');
@@ -113,8 +115,22 @@ async function bootstrap() {
     }),
   );
   app.setViewEngine('ejs');
+
+  /**
+   * @TODO #1203 All below useStaticAssets functions need to be removed (until line 146) when webpack has been configured to load assets from @gouvfr/dsfr package
+   * @ticket FC-1203
+   */
+  assetsDsfrPaths.forEach(({ assetPath, prefix }) => {
+    app.useStaticAssets(join(__dirname, assetPath), {
+      maxAge: assetsCacheTtl * 1000,
+      prefix,
+    });
+  });
+
   assetsPaths.forEach((assetsPath) => {
-    app.useStaticAssets(join(__dirname, assetsPath, 'public'));
+    app.useStaticAssets(join(__dirname, assetsPath, 'public'), {
+      maxAge: assetsCacheTtl * 1000,
+    });
   });
 
   const { cookieSecrets } = configService.get<SessionConfig>('Session');
