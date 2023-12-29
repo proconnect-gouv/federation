@@ -2,9 +2,10 @@
 
 // Declarative code
 import { Global, MiddlewareConsumer, Module } from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { ConfigService } from '@fc/config';
+import { ConfigService, ConfigTemplateInterceptor } from '@fc/config';
 import { ExceptionsModule } from '@fc/exceptions';
 import {
   OidcProviderGrantService,
@@ -52,6 +53,10 @@ const exceptionModule = ExceptionsModule.withoutTracking();
     OidcProviderGrantService,
     OidcProviderMiddlewareService,
     ScenariosService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: ConfigTemplateInterceptor,
+    },
   ],
   exports: [OidcProviderConfigAppService],
 })

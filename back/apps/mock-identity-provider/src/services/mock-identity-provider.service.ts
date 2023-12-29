@@ -153,16 +153,28 @@ export class MockIdentityProviderService {
     return password === inputPassword;
   }
 
+  getSub(identity: Csv | CsvParsed): string {
+    const input =
+      identity.login ||
+      identity.uid ||
+      [identity.given_name, identity.family_name, identity.birthdate].join('');
+
+    const sub = crypto
+      .createHash('sha256')
+      .update(input as string)
+      .digest('hex');
+
+    return sub;
+  }
+
   private toOidcFormat(identity: CsvParsed): OidcClaims {
     // This copy works because "Csv" type only contains strings. Beware !
     const identityCopy = {
       ...identity,
     };
 
-    const sub = crypto
-      .createHash('sha256')
-      .update(identity.login as string)
-      .digest('hex');
+    const sub = this.getSub(identityCopy);
+
     identityCopy.sub = sub;
     delete identityCopy.login;
 

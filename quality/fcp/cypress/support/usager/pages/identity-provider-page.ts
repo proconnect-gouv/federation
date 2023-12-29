@@ -1,3 +1,4 @@
+import { User } from '../../common/helpers';
 import { IdentityProviderBase, UserCredentials } from '../../common/types';
 
 export default class IdentityProviderPage {
@@ -40,6 +41,32 @@ export default class IdentityProviderPage {
     const { password = '123', username } = userCredentials;
     cy.get(this.usernameSelector).clearThenType(username);
     cy.get(this.passwordSelector).clearThenType(password, { log: false });
+    cy.get(this.loginButtonSelector).click();
+  }
+
+  useCustomIdentity(user: User): void {
+    cy.get('#custom-identity-link').click();
+
+    const fields = [
+      'given_name',
+      'family_name',
+      'preferred_username',
+      'birthdate',
+      'birthplace',
+      'birthcountry',
+      'email',
+      'acr',
+    ];
+
+    fields.forEach((field) => {
+      const value = user.claims[field] as string;
+      if (value) {
+        cy.get(`input#${field}`).clearThenType(value);
+      }
+    });
+
+    cy.get('select#gender').select(user.claims.gender);
+
     cy.get(this.loginButtonSelector).click();
   }
 }

@@ -1,27 +1,34 @@
+import { Request, Response } from 'express';
+
 import {
   Body,
   Controller,
   Get,
-  Next,
   Post,
   Render,
   Req,
   Res,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
 
+import { getDtoInputWithErrors, getTransformed, validateDto } from '@fc/common';
+import { ConfigService } from '@fc/config';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ISessionService, Session } from '@fc/session';
 
-import { AppSession, SignInDTO } from '../dto';
+import { AppConfig, AppSession, SignInDTO } from '../dto';
 import { MockIdentityProviderRoutes } from '../enums';
+import { CustomIdentityGuard } from '../guards';
+import { MinimalCustomIdentityInterface } from '../interfaces';
 import { MockIdentityProviderService } from '../services';
 
 @Controller()
 export class MockIdentityProviderController {
   constructor(
+    private readonly config: ConfigService,
     private readonly oidcProvider: OidcProviderService,
     private readonly mockIdentityProviderService: MockIdentityProviderService,
   ) {}
@@ -65,9 +72,12 @@ export class MockIdentityProviderController {
     return response;
   }
 
+  // More than 4 parameters authorized for dependency injection
+  // eslint-disable-next-line max-params
   @Post(MockIdentityProviderRoutes.INTERACTION_LOGIN)
   async getLogin(
-    @Next() next,
+    @Req() req: Request,
+    @Res() res: Response,
     @Body() body: SignInDTO,
     /**
      * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
@@ -109,6 +119,64 @@ export class MockIdentityProviderController {
       subs: { [spId]: sub },
     });
 
-    return next();
+    const session = await sessionOidc.get();
+
+    return this.oidcProvider.finishInteraction(req, res, session);
+  }
+
+  @Get(MockIdentityProviderRoutes.INTERACTION_LOGIN_CUSTOM)
+  @Render('interaction-login-custom')
+  @UseGuards(CustomIdentityGuard)
+  getLoginCustom() {
+    const { identityForm } = this.config.get<AppConfig>('App');
+    const data = {};
+
+    return { identityForm, data };
+  }
+
+  @Post(MockIdentityProviderRoutes.INTERACTION_LOGIN_CUSTOM)
+  @UseGuards(CustomIdentityGuard)
+  async postLoginCustom(
+    @Body() identity: MinimalCustomIdentityInterface,
+    @Req() req: Request,
+    @Res() res: Response,
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+  ) {
+    const { identityDto } = this.config.get<AppConfig>('App');
+    const options = { whitelist: true };
+    const errors = await validateDto(identity, identityDto, options);
+
+    if (errors.length > 0) {
+      const { identityForm } = this.config.get<AppConfig>('App');
+
+      const data = getDtoInputWithErrors(errors);
+
+      return res.render('interaction-login-custom', { identityForm, data });
+    }
+
+    const transformedIdentity = getTransformed(identity, identityDto);
+
+    await this.prepareIdentity(transformedIdentity, sessionOidc);
+
+    const session = await sessionOidc.get();
+
+    return this.oidcProvider.finishInteraction(req, res, session);
+  }
+
+  private async prepareIdentity(
+    identity: MinimalCustomIdentityInterface,
+    sessionOidc: ISessionService<OidcClientSession>,
+  ): Promise<void> {
+    const { acr, ...spIdentityCleaned } = identity;
+    const { spId } = await sessionOidc.get();
+    const sub = this.mockIdentityProviderService.getSub(spIdentityCleaned);
+
+    await sessionOidc.set({
+      spAcr: acr,
+      spIdentity: spIdentityCleaned,
+      amr: ['pwd'],
+      subs: { [spId]: sub },
+    });
   }
 }

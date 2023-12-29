@@ -30,6 +30,8 @@ async function bootstrap() {
   });
   const {
     httpsOptions: { key, cert },
+    assetsPaths,
+    viewsPaths,
   } = configService.get<AppConfig>('App');
 
   const httpsOptions = key && cert ? { key, cert } : null;
@@ -103,10 +105,16 @@ async function bootstrap() {
   app.use(urlencoded({ extended: false }));
 
   app.engine('ejs', renderFile);
-  app.set('views', [join(__dirname, 'views')]);
+  app.set(
+    'views',
+    viewsPaths.map((viewsPath) => {
+      return join(__dirname, viewsPath, 'views');
+    }),
+  );
   app.setViewEngine('ejs');
-  app.useStaticAssets(join(__dirname, 'public'));
-
+  assetsPaths.forEach((assetsPath) => {
+    app.useStaticAssets(join(__dirname, assetsPath, 'public'));
+  });
   const { cookieSecrets } = configService.get<SessionConfig>('Session');
   app.use(CookieParser(cookieSecrets));
 

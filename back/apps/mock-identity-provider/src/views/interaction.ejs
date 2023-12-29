@@ -1,27 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <link rel="stylesheet" href="/css/interaction.css" />
-    <title>Fournisseur d&apos;identit&eacute; de d&eacute;monstration</title>
-  </head>
-
+  <%- include("includes/head") %>
   <body>
     <div id="mire">
-      <img
-        class="header-logo"
-        src="/img/logo@3x.svg"
-        alt="AgentConnect - application de démonstration"
-      />
+      <%- include("includes/header") %>
+
       <div id="container">
         <div class="inner">
-          <h3 class="title">
-            Fournisseur d&apos;identité de d&eacute;monstration - FCA-LOW
-          </h3>
+          <h3 class="title"><%= locals.config.App.title %></h3>
           <form method="POST" action="/login">
             <input
               type="hidden"
@@ -39,15 +25,27 @@
             </label>
             <label for="acr">
               <span>Niveau de sécurité (acr_values)</span>
-              <input type="text" name="acr" id="acr" value="<%= locals.params.acr_values %>" />
+              <input
+                type="text"
+                name="acr"
+                id="acr"
+                value="<%= locals.params.acr_values %>"
+              />
             </label>
             <button type="submit">Envoyer</button>
           </form>
         </div>
+        <% if(locals.config.App.allowCustomIdentity) { %> 
+          <a
+          class="navigate"
+          id="custom-identity-link"
+          href="/login/with-custom-identity"
+          >Je souhaite utiliser une identité spécifique à mon service</a
+          >
+        <% } %>
       </div>
-      <% if (finalSpId) { %>
-      <h6 id="final-sp-id">Identifiant du client final: <%= finalSpId %></h6>
-      <% } %>
+      <%- include('includes/login-footer') %>
     </div>
+    <%- include('includes/footer') %>
   </body>
 </html>

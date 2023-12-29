@@ -449,12 +449,15 @@
 
 | Var Name | Inferred type |
 |---|---|
+| App_ALLOW_CUSTOM_IDENTITY | boolean |
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ASSETS_PATHS | json |
 | App_CITIZEN_DATABASE_PATH | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_PASSWORD_VERIFICATION | boolean |
 | App_SCENARIOS_DATABASE_PATH | string |
+| App_VIEWS_PATHS | json |
 | FQDN | string |
 | Logger_STDERR_LEVELS | json |
 | Logger_STDOUT_LEVELS | json |
@@ -491,12 +494,15 @@
 | Var Name | Inferred type |
 |---|---|
 | APP_NAME | string |
+| App_ALLOW_CUSTOM_IDENTITY | boolean |
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ASSETS_PATHS | json |
 | App_CITIZEN_DATABASE_PATH | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_PASSWORD_VERIFICATION | boolean |
 | App_SCENARIOS_DATABASE_PATH | string |
+| App_VIEWS_PATHS | json |
 | FQDN | string |
 | Logger_STDERR_LEVELS | json |
 | Logger_STDOUT_LEVELS | json |
@@ -534,12 +540,15 @@
 | Var Name | Inferred type |
 |---|---|
 | APP_NAME | string |
+| App_ALLOW_CUSTOM_IDENTITY | boolean |
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ASSETS_PATHS | json |
 | App_CITIZEN_DATABASE_PATH | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_PASSWORD_VERIFICATION | boolean |
 | App_SCENARIOS_DATABASE_PATH | string |
+| App_VIEWS_PATHS | json |
 | FQDN | string |
 | Logger_STDERR_LEVELS | json |
 | Logger_STDOUT_LEVELS | json |

@@ -39,3 +39,11 @@ When("je m'authentifie avec succès", function () {
 When("je m'authentifie avec {string}", function (username: string) {
   identityProviderPage.login({ username });
 });
+
+When("je saisi manuellement l'identité de l'utilisateur", function () {
+  expect(this.user).to.exist;
+
+  const currentUser: User = this.user;
+
+  identityProviderPage.useCustomIdentity(currentUser);
+});
