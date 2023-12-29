@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+  <% locals.config = { App: { title: "Erreur", logo: "logo"}}; %>
+  <%- include("includes/head") %>
+
+  <body>
+    <div id="mire">
+      <%- include("includes/header") %>
+
+      <div id="container">
+        <div class="inner">
+          <h3 class="title"><%= locals.config.App.title %></h3>
+
+          <h4><%= locals.message %></h4>
+          <ul style="text-align: left">
+            <li>code : <strong><%= locals.code %></strong></li>
+            <li>id: <%= locals.id %></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <%- include("includes/footer") %>
+  </body>
+</html>

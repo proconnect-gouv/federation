@@ -30,6 +30,7 @@ async function bootstrap() {
   });
   const {
     httpsOptions: { key, cert },
+    viewsPaths,
   } = configService.get<AppConfig>('App');
 
   const appModule = AppModule.forRoot(configService);
@@ -104,7 +105,12 @@ async function bootstrap() {
   app.use(urlencoded({ extended: false }));
 
   app.engine('ejs', renderFile);
-  app.set('views', [join(__dirname, 'views')]);
+  app.set(
+    'views',
+    viewsPaths.map((viewsPath) => {
+      return join(__dirname, viewsPath, 'views');
+    }),
+  );
   app.setViewEngine('ejs');
   app.useStaticAssets(join(__dirname, 'public'));
 

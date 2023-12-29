@@ -607,6 +607,57 @@ describe('MockIdentityProviderService', () => {
     });
   });
 
+  describe('getSub', () => {
+    it('should return the sha256 hash of the login if present', () => {
+      // Given
+      const identity = {
+        login: 'loginValue',
+      };
+      const expected =
+        'e7cec19454756aed994df34eee995d8b021ca55ef8ac97e7f7d834091a419c15';
+
+      // When
+      const result = service['getSub'](identity);
+
+      // Then
+      expect(result).toBe(expected);
+    });
+
+    it('should return the sha256 hash of the uid if present and login is not present', () => {
+      // Given
+      const identity = {
+        uid: 'uidValue',
+      };
+      const expected =
+        'dd0f586454d3f739e70ef2e969b4f9acada1420063da97826c61a7fd4329eeef';
+
+      // When
+      const result = service['getSub'](identity);
+
+      // Then
+      expect(result).toBe(expected);
+    });
+
+    it('should return the sha256 hash of the concatenation of given_name, family_name and birthdate if present and login or uid are not present', () => {
+      // Given
+      const identity = {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        given_name: 'given_name value',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        family_name: 'family_name value',
+        birthdate: 'birthdate value',
+      };
+      const expected =
+        '5e6d2965a89806acff6abb3ed295c5f1f0e467860e5da34b872346631a935a58';
+
+      // When
+      const result = service['getSub'](identity);
+
+      // Then
+      expect(result).toBe(expected);
+    });
+  });
+
   describe('toOidcFormat', () => {
     it('should replace the "login" property by "sub" and return the OidcClaims', () => {
       // setup
