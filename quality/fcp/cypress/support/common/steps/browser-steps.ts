@@ -8,6 +8,8 @@ When(/^je rafraîchis la page$/, function () {
   cy.wait(500);
 });
 
+When('je reviens en arrière', () => cy.go('back'));
+
 Then('le haut de la page est affiché', function () {
   cy.window().then(($window) => {
     expect($window.scrollY).to.be.closeTo(0, 0);

@@ -17,6 +17,30 @@ Fonctionnalité: Connexion Usager - session absente
     Quand je clique sur le bouton FranceConnect
     Alors je suis redirigé vers la page sélection du fournisseur d'identité
 
+  Scénario: Connexion OK - rafraîchissement sur page de consentement
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton FranceConnect
+    Et que je suis redirigé vers la page sélection du fournisseur d'identité
+    Et que je clique sur le fournisseur d'identité
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Et que je m'authentifie avec succès
+    Et que je suis redirigé vers la page confirmation de connexion
+    Quand je rafraîchis la page
+    Alors je suis redirigé vers la page confirmation de connexion
+
+  Scénario: Connexion OK - retour sur la mire après sélection du fournisseur d'identité
+    Etant donné que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton FranceConnect
+    Et que je suis redirigé vers la page sélection du fournisseur d'identité
+    Et que je clique sur le fournisseur d'identité
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Quand je reviens en arrière
+    Alors je suis redirigé vers la page sélection du fournisseur d'identité
+    Et je clique sur le fournisseur d'identité
+    Et je suis redirigé vers la page login du fournisseur d'identité
+    Et je m'authentifie avec succès
+    Et je suis redirigé vers la page confirmation de connexion
+
   Scénario: Connexion erreur - session absente sur page sélection du fournisseur d'identité
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
