@@ -40,9 +40,9 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et je suis redirigé vers la page login du fournisseur d'identité
 
     Exemples:
-      | email                        | idpName      |
-      | albus.dumbledore@hogwarts.uk | moncomptepro |
-      | hades@cerbere.fr             | cerbere      |
+      | email                               | idpName      |
+      | albus.dumbledore@hogwarts.uk        | moncomptepro |
+      | hades@developpement-durable.gouv.fr | cerbere      |
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - fqdn non reconnu et non service public

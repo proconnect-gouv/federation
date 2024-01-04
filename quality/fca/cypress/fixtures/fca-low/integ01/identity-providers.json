@@ -158,6 +158,6 @@
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
     },
-    "fqdn": "cerbere.fr"
+    "fqdn": "developpement-durable.gouv.fr"
   }
 ]
