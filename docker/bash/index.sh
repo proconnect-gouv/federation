@@ -24,8 +24,7 @@ _command_register "reset-db-core-fcp-low" "_reset_db_fcp_low" ""                
 _command_register "reset-db-core-fca-low" "_reset_db_core_fca_low" ""             # Description to be defined # Deprecated
 _command_register "reset-db" "_reset_db_fcp_low" "Alias to reset-db-core-fcp-low" # Backward compatibility entry
 _command_register "reset-mongo" "_reset_mongodb" "reset-mongo <mongo-service-name> : Reset given mongodb container"
-_command_register "idp-as-prod-v2" "_idp_as_prod_v2" ""         # Description to be defined
-_command_register "idp-as-prod-legacy" "_idp_as_prod_legacy" "" # Description to be defined
+_command_register "reset-mongo-as-prod" "_reset_mongodb_as_prod" "reset-mongo-as-prod <mongo-service-name> : Reset given mongodb container with production IDPs"
 
 ### Redis
 

@@ -77,6 +77,13 @@ fcp-high:
     # Run Visual BDD tests and abort if failed
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting visual checks"
     - yarn test:high:snapshot
+    # Run Visual BDD tests as in production and abort if failed
+    - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Setting IDP as in production & Starting visual checks as in production"
+    - docker-stack reset-mongo-as-prod mongo-fcp-high
+    - yarn test:high:snapshot --env 'TAGS=@fcpHigh and @validationVisuelleProduction and not @ignore'
+    # Reset IDP as in development
+    - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Resetting IDP as in development"
+    - docker-stack reset-mongo mongo-fcp-high
     # Run Functional BDD tests
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks with tags $BDD_TAGS"
     - yarn test:high:chrome-desktop -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS" || RETURN_CODE=1
