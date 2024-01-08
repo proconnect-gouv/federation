@@ -71,6 +71,7 @@ export default {
       devInteractions: { enabled: false },
       encryption: { enabled: true },
       jwtUserinfo: { enabled: true },
+      backchannelLogout: { enabled: false },
       revocation: { enabled: true },
       claimsParameter: { enabled: true },
       rpInitiatedLogout: { enabled: true },

@@ -20,10 +20,8 @@ Fonctionnalité: API - discovery
     Et "userinfo_signing_alg_values_supported" contient uniquement "HS256 ES256 RS256" dans la configuration openid
     Et "userinfo_encryption_alg_values_supported" n'est pas présent dans la configuration openid
     Et "userinfo_encryption_enc_values_supported" n'est pas présent dans la configuration openid
-    # @todo #1455 Désactiver la fonction back channel logout
-    # @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1455
-    # Et "backchannel_logout_supported" n'est pas présent dans la configuration openid
-    # Et "backchannel_logout_session_supported" n'est pas présent dans la configuration openid
+    Et "backchannel_logout_supported" n'est pas présent dans la configuration openid
+    Et "backchannel_logout_session_supported" n'est pas présent dans la configuration openid
 
   @fcpHigh
   Scénario: API discovery - fcp-high
