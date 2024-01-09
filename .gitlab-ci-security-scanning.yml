@@ -10,6 +10,7 @@ default:
 
 include:
   - template: Security/Dependency-Scanning.gitlab-ci.yml
+  - template: Security/SAST.gitlab-ci.yml
 
 variables:
   # dependency_scanning
@@ -18,9 +19,24 @@ variables:
   DS_EXCLUDED_PATHS: "spec, test, tests, tmp, quality, docker"
   # Can cause problems due to multiples package.json project
   DS_REMEDIATE: "false"
+  # SAST (Static Application Security Testing)
+  SAST_EXCLUDED_PATHS: "spec, test, tests, tmp, quality, docker, cypress, .mocks"
+  SAST_EXCLUDED_ANALYZERS: "spotbugs, flawfinder"
 
 gemnasium-dependency_scanning:
   image: registry.gitlab.dev-franceconnect.fr/france-connect/fc/gitlab-security-scanning/gemnasium:3
+  stage: test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
+  interruptible: true
+
+nodejs-scan-sast:
+  stage: test
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
+  interruptible: true
+
+semgrep-sast:
   stage: test
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "staging"'
