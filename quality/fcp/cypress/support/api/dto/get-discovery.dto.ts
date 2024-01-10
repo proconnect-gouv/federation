@@ -193,17 +193,3 @@ export class GetDiscoveryWithEncryptionDto extends GetDiscoveryDto {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly request_object_encryption_enc_values_supported: string[];
 }
-
-export class GetDiscoveryWithoutEncryptionDto extends GetDiscoveryDto {
-  // TODO Should we have those back channel config ?
-
-  @IsBoolean()
-  // oidc defined variable name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly backchannel_logout_supported: boolean;
-
-  @IsBoolean()
-  // oidc defined variable name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly backchannel_logout_session_supported: boolean;
-}

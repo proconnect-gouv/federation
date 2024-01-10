@@ -1,22 +1,22 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
 import {
+  GetDiscoveryDto,
   GetDiscoveryWithEncryptionDto,
-  GetDiscoveryWithoutEncryptionDto,
 } from '../dto/get-discovery.dto';
 import { validateDto } from '../helpers/class-validator-helper';
 
 Then(
   'le corps de la réponse contient une configuration openid {string}',
   function (withEncryption: string) {
-    const GetDiscoveryDto =
+    const ExpectedGetDiscoveryDto =
       withEncryption === 'avec chiffrement'
         ? GetDiscoveryWithEncryptionDto
-        : GetDiscoveryWithoutEncryptionDto;
+        : GetDiscoveryDto;
     cy.get('@apiResponse')
       .its('body')
       .then(async (body) => {
-        const errors = await validateDto(body, GetDiscoveryDto, {
+        const errors = await validateDto(body, ExpectedGetDiscoveryDto, {
           forbidNonWhitelisted: true,
           whitelist: true,
         });
