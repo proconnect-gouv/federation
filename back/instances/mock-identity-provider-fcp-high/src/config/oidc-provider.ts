@@ -65,6 +65,7 @@ export default {
       jwtUserinfo: { enabled: true },
       backchannelLogout: { enabled: false },
       revocation: { enabled: true },
+      resourceIndicators: { enabled: false },
     },
     acceptQueryParamAccessTokens: true,
     ttl: {

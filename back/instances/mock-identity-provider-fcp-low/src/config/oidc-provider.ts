@@ -66,6 +66,7 @@ export default {
       backchannelLogout: { enabled: false },
       revocation: { enabled: true },
       rpInitiatedLogout: { enabled: true },
+      resourceIndicators: { enabled: false },
     },
     acceptQueryParamAccessTokens: true,
     ttl: {
