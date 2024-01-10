@@ -65,6 +65,7 @@ export default {
       revocation: { enabled: true },
       rpInitiatedLogout: { enabled: true },
       claimsParameter: { enabled: true },
+      resourceIndicators: { enabled: false },
     },
     acceptQueryParamAccessTokens: true,
     ttl: {
