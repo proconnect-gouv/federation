@@ -167,6 +167,7 @@
 | AdapterMongo_DECRYPT_CLIENT_SECRET_FEATURE | boolean |
 | AdapterMongo_DISABLE_IDP_VALIDATION_ON_LEGACY | boolean |
 | AdapterMongo_PLATFORM | string |
+| App_AIDANTS_CONNECT_UID | string |
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |

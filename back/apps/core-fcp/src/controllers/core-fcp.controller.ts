@@ -138,6 +138,12 @@ export class CoreFcpController {
       return provider;
     });
 
+    const { aidantsConnectUid } = this.config.get<AppConfig>('App');
+    const aidantsConnect = authorizedProviders.find((provider) => {
+      const isAidantsConnect = provider.uid === aidantsConnectUid;
+      return isAidantsConnect && provider.active && provider.display;
+    });
+
     // -- generate and store in session the CSRF token
     const csrfToken = this.csrf.get();
     await this.csrf.save(sessionOidc, csrfToken);
@@ -148,6 +154,7 @@ export class CoreFcpController {
       notification,
       params,
       providers: authorizedProviders,
+      aidantsConnect: aidantsConnect,
       spName,
       spScope,
     };

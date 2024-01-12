@@ -13,6 +13,10 @@ export default class IdentityProviderSelectionPage {
     return cy.get(idp.selectors.idpButton);
   }
 
+  getAidantsConnectLink(): ChainableElement {
+    return cy.get('[data-testid="footer-aidants-connect-link"]');
+  }
+
   checkIsVisible(): void {
     this.getIdpGrid().should('be.visible');
   }

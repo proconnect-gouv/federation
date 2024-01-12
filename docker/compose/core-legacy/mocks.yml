@@ -92,28 +92,6 @@ services:
       - public
     command: "tail -f /dev/null"
 
-  aidants-connect-mock:
-    hostname: aidants-connect-mock
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    volumes:
-      - "${VOLUMES_DIR}/src/fi-mock:/var/www/app"
-      - "${VOLUMES_DIR}/app:/opt/scripts"
-      - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
-    env_file:
-      - "${COMPOSE_DIR}/shared/.env/base-app.env"
-      - "${COMPOSE_DIR}/core-legacy/.env/idp.env"
-    environment:
-      - "VIRTUAL_HOST=aidants-connect-mock.docker.dev-franceconnect.fr"
-      - "ISSUER=https://aidants-connect-mock.docker.dev-franceconnect.fr"
-      - "CLIENT_ID=08a1a257648c1742c74d6a3d84b31943"
-      - "CLIENT_SECRET=7ae4fef2aab63fb78d777fe657b7536f"
-    networks:
-      - public
-    command: "tail -f /dev/null"
-
   fi-beta-mock:
     hostname: fi-beta-mock
     image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev

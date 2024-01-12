@@ -148,3 +148,17 @@ Then(
       .should(isDisabled ? 'be.disabled' : 'be.enabled');
   },
 );
+
+Then(
+  /^le lien Aidants Connect (est|n'est pas) affiché dans le footer$/,
+  function (text: string) {
+    const isVisible = text === 'est';
+    identityProviderSelectionPage
+      .getAidantsConnectLink()
+      .should(isVisible ? 'be.visible' : 'not.exist');
+  },
+);
+
+When('je clique sur le lien Aidants Connect', function () {
+  identityProviderSelectionPage.getAidantsConnectLink().click();
+});

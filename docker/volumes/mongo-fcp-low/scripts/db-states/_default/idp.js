@@ -726,7 +726,7 @@ const fip = {
     amr: ["fc", "pwd", "mail"],
   },
   //Aidants Connect mock
-  "aidants-connect": {
+  "aidants-connect-mock": {
     uid: "3189d655-0c78-4ff7-9758-f3a3ac36dd7e",
     name: "aidants-connect-mock",
     active: true,
@@ -746,14 +746,14 @@ const fip = {
     },
     specificText: "aidants connect mock",
     url: "https://aidants-connect-mock.docker.dev-franceconnect.fr",
+    statusURL: "https://aidants-connect-mock.docker.dev-franceconnect.fr",
     authzURL:
-      "https://aidants-connect-mock.docker.dev-franceconnect.fr/user/authorize",
-    tokenURL:
-      "https://aidants-connect-mock.docker.dev-franceconnect.fr/user/token",
+      "https://aidants-connect-mock.docker.dev-franceconnect.fr/authorize",
+    tokenURL: "https://aidants-connect-mock.docker.dev-franceconnect.fr/token",
     userInfoURL:
-      "https://aidants-connect-mock.docker.dev-franceconnect.fr/api/user",
+      "https://aidants-connect-mock.docker.dev-franceconnect.fr/userinfo",
     endSessionURL:
-      "https://aidants-connect-mock.docker.dev-franceconnect.fr/user/session/end",
+      "https://aidants-connect-mock.docker.dev-franceconnect.fr/session/end",
     discovery: false,
     clientID: "08a1a257648c1742c74d6a3d84b31943",
     client_secret:
