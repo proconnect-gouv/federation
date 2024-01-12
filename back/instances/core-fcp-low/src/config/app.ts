@@ -24,4 +24,5 @@ export default {
   udFqdn: process.env.UD_FQDN,
   minAcrForContextRequest: 'eidas2',
   eidasBridgeUid: env.string('EIDAS_BRIDGE_UID'),
+  aidantsConnectUid: env.string('AIDANTS_CONNECT_UID'),
 } as AppConfig;

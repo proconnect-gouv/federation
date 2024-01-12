@@ -94,4 +94,8 @@ export class AppConfig {
   @IsOptional()
   @IsString()
   eidasBridgeUid?: string;
+
+  @IsOptional()
+  @IsString()
+  aidantsConnectUid?: string;
 }

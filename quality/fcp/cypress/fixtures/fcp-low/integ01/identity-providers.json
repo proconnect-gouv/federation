@@ -38,5 +38,22 @@
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
     }
+  },
+  {
+    "idpId": "3189d655-0c78-4ff7-9758-f3a3ac36dd7e",
+    "name": "aidants-connect-mock",
+    "descriptions": ["Aidants Connect"],
+    "mocked": true,
+    "usable": true,
+    "url": "https://integ.aidantsconnect.beta.gouv.fr",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "HS256",
+    "selectors": {
+      "idpButton": "[data-testid='footer-aidants-connect-link']",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "[type='submit']"
+    }
   }
 ]
