@@ -303,10 +303,11 @@ describe('OidcClient Controller', () => {
 
     it('should call coreService redirectToIdp', async () => {
       // Given
+      const email = 'harry.potter@hogwarts.uk';
       const body = {
         providerUid: providerIdMock,
         csrfToken: 'csrfMockValue',
-        email: 'harry.potter@hogwarts.uk',
+        email,
       };
 
       coreServiceMock.getIdpIdForEmail.mockResolvedValueOnce(providerIdMock);
@@ -318,9 +319,14 @@ describe('OidcClient Controller', () => {
       expect(coreServiceMock.redirectToIdp).toHaveBeenCalledTimes(1);
       expect(coreServiceMock.redirectToIdp).toHaveBeenCalledWith(
         res,
-        interactionDetailsResolved.params.acr_values,
         providerIdMock,
         sessionServiceMock,
+        {
+          acr: interactionDetailsResolved.params.acr_values,
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          login_hint: email,
+        },
       );
     });
 

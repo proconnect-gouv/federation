@@ -25,6 +25,8 @@ import { CustomIdentityGuard } from '../guards';
 import { MinimalCustomIdentityInterface } from '../interfaces';
 import { MockIdentityProviderService } from '../services';
 
+const DEFAULT_USER_LOGIN = 'test';
+
 @Controller()
 export class MockIdentityProviderController {
   constructor(
@@ -67,6 +69,7 @@ export class MockIdentityProviderController {
       params,
       spName,
       finalSpId,
+      login: params.login_hint || DEFAULT_USER_LOGIN,
     };
 
     return response;

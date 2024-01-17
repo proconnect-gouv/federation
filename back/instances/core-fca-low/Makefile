@@ -7,7 +7,7 @@ reset-db:
 	$(DKS_PATH) reset-db-core-fca-low
 
 start s:
-	$(DKS_PATH) prune && $(DKS_PATH) up bdd-fca-low && $(DKS_PATH) dep core-fca-low && $(DKS_PATH) start-all
+	$(DKS_PATH) prune && $(DKS_PATH) up bdd-fca-low && $(DKS_PATH) start-all
 
 restart r:
 	$(DKS_PATH) start-all
@@ -36,6 +36,9 @@ test t:
 quality tq:
 	cd $(FC_ROOT)/fc/quality/fca && yarn install && yarn start:low
 
+quality-headless tqh:
+	cd $(FC_ROOT)/fc/quality/fca && yarn install && yarn start:low
+
 visual v:
 	cd $(FC_ROOT)/fc/quality/fca && yarn install && yarn test:low:snapshot
 
@@ -43,7 +46,7 @@ update-visual:
 	cd $(FC_ROOT)/fc/quality/fca && yarn install && yarn test:low:snapshot --env updateSnapshots=true
 
 ci:
-	$(MAKE) doc && $(MAKE) prepare && $(MAKE) test-coverage && $(MAKE) tq
+	$(MAKE) doc && $(MAKE) prepare && $(MAKE) test-coverage && $(MAKE) tl && $(MAKE) tqh && $(MAKE) v
 
 test-legacy tl:
 	cd $(FC_ROOT)/fc/back  && yarn run test:e2e:core-fca-low

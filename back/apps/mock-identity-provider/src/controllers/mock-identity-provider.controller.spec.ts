@@ -198,6 +198,7 @@ describe('MockIdentityProviderController', () => {
         params: interactionMock.params,
         spName: spNameMock,
         finalSpId: finalSpIdMock,
+        login: 'test',
       });
     });
   });

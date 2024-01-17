@@ -530,9 +530,9 @@ describe('CoreFcpService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        { acr: acrMock },
       );
       // Then
       expect(
@@ -547,9 +547,9 @@ describe('CoreFcpService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        { acr: acrMock },
       );
       // Then
       expect(
@@ -564,9 +564,9 @@ describe('CoreFcpService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        { acr: acrMock },
       );
       // Then
       expect(
@@ -578,9 +578,9 @@ describe('CoreFcpService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        { acr: acrMock },
       );
       // Then
       expect(IdentityProviderMock.getById).toHaveBeenCalledTimes(1);
@@ -591,9 +591,9 @@ describe('CoreFcpService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        { acr: acrMock },
       );
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
@@ -619,9 +619,9 @@ describe('CoreFcpService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        { acr: acrMock },
       );
 
       // Then

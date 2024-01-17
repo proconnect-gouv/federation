@@ -43,3 +43,7 @@ When("je saisi manuellement l'identité de l'utilisateur", function () {
 
   identityProviderPage.useCustomIdentity(currentUser);
 });
+
+Then('le champ identifiant correspond à {string}', function (login: string) {
+  identityProviderPage.getLogin().invoke('val').should('be.equal', login);
+});

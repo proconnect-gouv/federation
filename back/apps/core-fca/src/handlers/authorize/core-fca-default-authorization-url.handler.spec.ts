@@ -5,7 +5,8 @@ import { OidcClientService } from '@fc/oidc-client';
 
 import { getLoggerMock } from '@mocks/logger';
 
-import { CoreFcaDefaultAuthorizationHandler } from './core-fca-default-authorization-url.handler';
+import { AuthorizeParamsKeys } from '../../enums';
+import { CoreFcaDefaultAuthorizationHandler } from './';
 
 describe('CoreFcaDefaultAuthorizationHandler', () => {
   let service: CoreFcaDefaultAuthorizationHandler;
@@ -45,6 +46,9 @@ describe('CoreFcaDefaultAuthorizationHandler', () => {
         acr_values: 'acr',
         nonce: 'nonce',
         claims: '{"id_token":{"amr":{"essential":true}}}',
+        // oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        login_hint: 'test@example.com',
       };
 
       const expectedAuthorizeUrl = 'prefix/authorize';
@@ -62,6 +66,9 @@ describe('CoreFcaDefaultAuthorizationHandler', () => {
         acr_values: 'acr',
         nonce: 'nonce',
         spId: 'spId',
+        // oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        login_hint: 'test@example.com',
       };
 
       await service.handle(params);
@@ -109,6 +116,9 @@ describe('CoreFcaDefaultAuthorizationHandler', () => {
 
       const expected = {
         ...params,
+        // oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        login_hint: undefined,
         claims: '{"id_token":{"amr":{"essential":true}}}',
       };
       const result = service['getAuthorizeParams'](params);
@@ -117,11 +127,12 @@ describe('CoreFcaDefaultAuthorizationHandler', () => {
     });
   });
 
-  describe('appendSpIdToAuthorizeUrl()', () => {
-    it('should return an url with sp', () => {
+  describe('appendParamToAuthorizeUrl()', () => {
+    it('should return an url with selected parameter appended', () => {
       const serviceProviderId = 'serviceProviderId';
       const authorizationUrl = '/authorization-url.com';
-      const completeUrl = service['appendSpIdToAuthorizeUrl'](
+      const completeUrl = service['appendParamToAuthorizeUrl'](
+        AuthorizeParamsKeys.SP_ID,
         serviceProviderId,
         authorizationUrl,
       );

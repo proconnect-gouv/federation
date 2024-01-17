@@ -108,7 +108,7 @@ export class OidcClientController {
       params: { acr_values: acr },
     } = await this.oidcProvider.getInteraction(req, res);
 
-    await this.coreFcp.redirectToIdp(res, acr, idpId, sessionOidc);
+    await this.coreFcp.redirectToIdp(res, idpId, sessionOidc, { acr });
   }
 
   /**

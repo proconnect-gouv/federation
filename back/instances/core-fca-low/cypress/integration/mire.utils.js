@@ -173,7 +173,7 @@ export function checkInStringifiedJson(key, value, selector = '#json') {
 }
 
 export function chooseIdpOnCore(idpId) {
-  const { ID, EMAIL } = getIdentityProvider(idpId);
+  const { EMAIL } = getIdentityProvider(idpId);
   cy.url().should(
     'include',
     `${Cypress.env('FC_ROOT_URL')}/api/v2/interaction`,
