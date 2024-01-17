@@ -3,7 +3,7 @@ import { ModuleRef } from '@nestjs/core';
 
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 
-import { IAuthorizationUrlServiceGetAuhtorizeArgument } from '../interfaces/authorization-url-feature-handler.interface';
+import { IAuthorizationUrlFeatureHandlerArgument } from '../interfaces';
 
 export const FCA_AUTHORIZATION_URL = 'fcaAuthorizationUrl';
 
@@ -22,7 +22,10 @@ export class CoreFcaAuthorizationUrlService {
     acr_values,
     nonce,
     spId,
-  }: IAuthorizationUrlServiceGetAuhtorizeArgument) {
+    // login_hint is an oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    login_hint,
+  }: IAuthorizationUrlFeatureHandlerArgument) {
     const idClass = idpFeatureHandlers[FCA_AUTHORIZATION_URL];
     const authorizationUrlhandler = FeatureHandler.get<T>(idClass, {
       moduleRef: this.moduleRef,
@@ -38,6 +41,9 @@ export class CoreFcaAuthorizationUrlService {
       acr_values,
       nonce,
       spId,
+      // login_hint is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      login_hint,
     });
   }
 }

@@ -1316,9 +1316,9 @@ describe('CoreOidcProviderMiddlewareService', () => {
       expect(coreServiceMock.redirectToIdp).toHaveBeenCalledTimes(1);
       expect(coreServiceMock.redirectToIdp).toHaveBeenCalledWith(
         ctxMock.res,
-        ctxMock.oidc.params.acr_values,
         idpHintMock,
         sessionServiceMock,
+        { acr: ctxMock.oidc.params.acr_values },
       );
     });
 

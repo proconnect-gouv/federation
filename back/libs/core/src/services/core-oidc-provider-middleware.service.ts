@@ -287,7 +287,7 @@ export class CoreOidcProviderMiddlewareService {
     await this.flowSteps.setStep(req, OidcClientRoutes.REDIRECT_TO_IDP);
 
     try {
-      await this.core.redirectToIdp(res, acr, idpHint, session);
+      await this.core.redirectToIdp(res, idpHint, session, { acr });
       await this.trackRedirectToIdp(ctx);
     } catch (error) {
       await this.oidcErrorService.throwError(ctx, error);

@@ -108,7 +108,14 @@ export class OidcClientController {
       params: { acr_values: acr },
     } = await this.oidcProvider.getInteraction(req, res);
 
-    await this.coreFca.redirectToIdp(res, acr, idpId, sessionOidc);
+    const authorizeParams = {
+      acr,
+      // login_hint is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      login_hint: email,
+    };
+
+    await this.coreFca.redirectToIdp(res, idpId, sessionOidc, authorizeParams);
   }
 
   /**

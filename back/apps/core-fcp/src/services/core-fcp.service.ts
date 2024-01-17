@@ -4,7 +4,6 @@ import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
 import { ConfigService } from '@fc/config';
-import { CoreServiceInterface } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { OidcSession, stringToArray } from '@fc/oidc';
@@ -21,9 +20,13 @@ import { ISessionService } from '@fc/session';
 
 import { AppConfig, CoreSessionDto } from '../dto';
 import { CoreFcpSendEmailHandler } from '../handlers';
+import {
+  CoreFcpAuthorizeParamsInterface,
+  CoreFcpServiceInterface,
+} from '../interfaces/core-fcp-service.interface';
 
 @Injectable()
-export class CoreFcpService implements CoreServiceInterface {
+export class CoreFcpService implements CoreFcpServiceInterface {
   // Dependency injection can require more than 4 parameters
   // eslint-disable-next-line max-params
   constructor(
@@ -81,9 +84,9 @@ export class CoreFcpService implements CoreServiceInterface {
 
   async redirectToIdp(
     res: Response,
-    acr: string,
     idpId: string,
     session: ISessionService<OidcClientSession>,
+    { acr }: CoreFcpAuthorizeParamsInterface,
   ): Promise<void> {
     const { spId } = await session.get();
 

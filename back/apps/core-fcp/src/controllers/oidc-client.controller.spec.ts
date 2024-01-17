@@ -316,9 +316,11 @@ describe('OidcClient Controller', () => {
       expect(coreServiceMock.redirectToIdp).toHaveBeenCalledTimes(1);
       expect(coreServiceMock.redirectToIdp).toHaveBeenCalledWith(
         res,
-        interactionMock.params.acr_values,
         providerIdMock,
         sessionServiceMock,
+        {
+          acr: interactionMock.params.acr_values,
+        },
       );
     });
   });

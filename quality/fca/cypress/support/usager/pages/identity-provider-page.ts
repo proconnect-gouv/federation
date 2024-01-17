@@ -1,5 +1,9 @@
 import { User } from '../../common/helpers';
-import { IdentityProviderBase, UserCredentials } from '../../common/types';
+import {
+  ChainableElement,
+  IdentityProviderBase,
+  UserCredentials,
+} from '../../common/types';
 
 export default class IdentityProviderPage {
   usernameSelector: string;
@@ -35,6 +39,10 @@ export default class IdentityProviderPage {
     cy.get(this.usernameSelector).clearThenType(username);
     cy.get(this.passwordSelector).clearThenType(password, { log: false });
     cy.get(this.loginButtonSelector).click();
+  }
+
+  getLogin(): ChainableElement {
+    return cy.get('#login');
   }
 
   useCustomIdentity(user: User): void {

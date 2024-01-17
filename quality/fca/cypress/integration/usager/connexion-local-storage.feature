@@ -11,15 +11,15 @@ Fonctionnalité: Connexion avec LocalStorage
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "<email>"
-    Quand je clique sur le bouton de connexion
-    Alors j'utilise le fournisseur d'identité "<fi>"
-    Alors je suis redirigé vers la page login du fournisseur d'identité
-    Alors je navigue sur la page fournisseur de service
-    Alors je clique sur le bouton AgentConnect
-    Alors je suis redirigé vers la page interaction
-    Alors le champ email correspond à "<email>"
-    Alors je clique sur le bouton de connexion
+    Et que je clique sur le bouton de connexion
+    Et que j'utilise le fournisseur d'identité "<fi>"
     Et que je suis redirigé vers la page login du fournisseur d'identité
+    Quand je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton AgentConnect
+    Et que je suis redirigé vers la page interaction
+    Alors le champ email correspond à "<email>"
+    Et je clique sur le bouton de connexion
+    Et je suis redirigé vers la page login du fournisseur d'identité
 
     Exemples:
       | email                        | fi           |

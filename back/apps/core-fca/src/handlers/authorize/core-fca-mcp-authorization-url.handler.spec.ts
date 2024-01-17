@@ -5,7 +5,7 @@ import { OidcClientService } from '@fc/oidc-client';
 
 import { getLoggerMock } from '@mocks/logger';
 
-import { CoreFcaMcpAuthorizationHandler } from './core-fca-mcp-authorization-url.handler';
+import { CoreFcaMcpAuthorizationHandler } from './';
 
 describe('CoreFcaMcpAuthorizationHandler', () => {
   let service: CoreFcaMcpAuthorizationHandler;

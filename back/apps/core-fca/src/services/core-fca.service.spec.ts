@@ -130,9 +130,14 @@ describe('CoreFcaService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        {
+          acr: acrMock,
+          // oidc parameter
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          login_hint: 'example@email.com',
+        },
       );
 
       // Then
@@ -144,9 +149,14 @@ describe('CoreFcaService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        {
+          acr: acrMock,
+          // oidc parameter
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          login_hint: 'example@email.com',
+        },
       );
       // Then
       expect(oidcMock.utils.checkIdpBlacklisted).toHaveBeenCalledTimes(1);
@@ -160,9 +170,14 @@ describe('CoreFcaService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        {
+          acr: acrMock,
+          // oidc parameter
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          login_hint: 'example@email.com',
+        },
       );
       // Then
       expect(oidcMock.utils.checkIdpDisabled).toHaveBeenCalledTimes(1);
@@ -173,9 +188,14 @@ describe('CoreFcaService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        {
+          acr: acrMock,
+          // oidc parameter
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          login_hint: 'example@email.com',
+        },
       );
       // Then
       expect(oidcMock.utils.buildAuthorizeParameters).toHaveBeenCalledTimes(1);
@@ -185,9 +205,14 @@ describe('CoreFcaService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        {
+          acr: acrMock,
+          // oidc parameter
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          login_hint: 'example@email.com',
+        },
       );
       // Then
       expect(identityProviderMock.getById).toHaveBeenCalledTimes(1);
@@ -198,9 +223,14 @@ describe('CoreFcaService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        {
+          acr: acrMock,
+          // oidc parameter
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          login_hint: 'example@email.com',
+        },
       );
       // Then
       expect(
@@ -219,6 +249,9 @@ describe('CoreFcaService', () => {
         acr_values: acrMock,
         nonce: nonceMock,
         spId: spIdMock,
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        login_hint: 'example@email.com',
       });
     });
 
@@ -226,9 +259,14 @@ describe('CoreFcaService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        {
+          acr: acrMock,
+          // oidc parameter
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          login_hint: 'example@email.com',
+        },
       );
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
@@ -241,6 +279,9 @@ describe('CoreFcaService', () => {
         idpIdentity: undefined,
         spIdentity: undefined,
         accountId: undefined,
+        // oidc parameter
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        login_hint: 'example@email.com',
       });
     });
 
@@ -248,9 +289,14 @@ describe('CoreFcaService', () => {
       // When
       await service.redirectToIdp(
         resMock,
-        acrMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
+        {
+          acr: acrMock,
+          // oidc parameter
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          login_hint: 'example@email.com',
+        },
       );
       // Then
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
