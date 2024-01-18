@@ -6,6 +6,7 @@ import { LoggerService } from '@fc/logger';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { SessionCsrfService } from './session-csrf.service';
 
@@ -27,11 +28,7 @@ const cryptographyServiceMock = {
 
 const randomStringMockValue = 'randomStringMockValue';
 
-const sessionServiceMock = {
-  get: jest.fn(),
-  set: jest.fn(),
-  setAlias: jest.fn(),
-};
+const sessionServiceMock = getSessionServiceMock();
 
 const sessionDataMock: OidcSession = {
   interactionId: interactionIdMock,

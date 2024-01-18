@@ -1,11 +1,11 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Global, MiddlewareConsumer, Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { ConfigService, ConfigTemplateInterceptor } from '@fc/config';
+import { ConfigTemplateInterceptor } from '@fc/config';
 import { ExceptionsModule } from '@fc/exceptions';
 import {
   OidcProviderGrantService,
@@ -15,13 +15,12 @@ import {
   ServiceProviderAdapterEnvModule,
   ServiceProviderAdapterEnvService,
 } from '@fc/service-provider-adapter-env';
-import { SessionConfig, SessionMiddleware, SessionModule } from '@fc/session';
+import { SessionModule } from '@fc/session';
 
 import {
   MockIdentityProviderController,
   OidcProviderController,
 } from './controllers';
-import { MockIdentityProviderSession } from './dto';
 import {
   MockIdentityProviderService,
   OidcProviderConfigAppService,
@@ -36,9 +35,7 @@ const exceptionModule = ExceptionsModule.withoutTracking();
     exceptionModule,
     AsyncLocalStorageModule,
     ServiceProviderAdapterEnvModule,
-    SessionModule.forRoot({
-      schema: MockIdentityProviderSession,
-    }),
+    SessionModule,
     OidcProviderModule.register(
       OidcProviderConfigAppService,
       ServiceProviderAdapterEnvService,
@@ -60,15 +57,4 @@ const exceptionModule = ExceptionsModule.withoutTracking();
   ],
   exports: [OidcProviderConfigAppService],
 })
-export class MockIdentityProviderModule {
-  constructor(private readonly config: ConfigService) {}
-
-  configure(consumer: MiddlewareConsumer) {
-    const { excludedRoutes } = this.config.get<SessionConfig>('Session');
-
-    consumer
-      .apply(SessionMiddleware)
-      .exclude(...excludedRoutes)
-      .forRoutes('*');
-  }
-}
+export class MockIdentityProviderModule {}

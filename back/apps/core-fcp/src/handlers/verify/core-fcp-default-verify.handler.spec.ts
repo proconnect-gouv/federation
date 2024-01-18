@@ -14,6 +14,7 @@ import { SessionService } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreFcpDefaultVerifyHandler } from './core-fcp-default-verify.handler';
 
@@ -38,11 +39,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
   };
   const getInteractionMock = jest.fn();
 
-  const sessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-    setAlias: jest.fn(),
-  };
+  const sessionServiceMock = getSessionServiceMock();
 
   const rnippServiceMock = {
     check: jest.fn(),

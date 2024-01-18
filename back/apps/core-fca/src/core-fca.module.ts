@@ -1,11 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Global, MiddlewareConsumer, Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 
 import { AccountModule } from '@fc/account';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { ConfigService } from '@fc/config';
 import {
   CORE_SERVICE,
   CoreAccountService,
@@ -35,7 +34,7 @@ import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
 } from '@fc/service-provider-adapter-mongo';
-import { SessionConfig, SessionMiddleware, SessionModule } from '@fc/session';
+import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 
 import {
@@ -43,7 +42,6 @@ import {
   OidcClientController,
   OidcProviderController,
 } from './controllers';
-import { CoreFcaSession } from './dto';
 import { CoreFcaDefaultVerifyHandler } from './handlers';
 import {
   CoreFcaDefaultAuthorizationHandler,
@@ -66,6 +64,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
   imports: [
     exceptionModule,
     AsyncLocalStorageModule,
+    SessionModule,
     MongooseModule.forRoot(),
     CryptographyFcaModule,
     AccountModule,
@@ -86,9 +85,6 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
       ServiceProviderAdapterMongoService,
       ServiceProviderAdapterMongoModule,
     ),
-    SessionModule.forRoot({
-      schema: CoreFcaSession,
-    }),
     FlowStepsModule,
     /** Inject app specific tracking service */
     trackingModule,
@@ -127,15 +123,4 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     OidcProviderConfigAppService,
   ],
 })
-export class CoreFcaModule {
-  constructor(private readonly config: ConfigService) {}
-
-  configure(consumer: MiddlewareConsumer) {
-    const { excludedRoutes } = this.config.get<SessionConfig>('Session');
-
-    consumer
-      .apply(SessionMiddleware)
-      .exclude(...excludedRoutes)
-      .forRoutes('*');
-  }
-}
+export class CoreFcaModule {}

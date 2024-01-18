@@ -17,7 +17,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { RouteInfo } from '@nestjs/common/interfaces';
+import { RouteInfo, Type as Class } from '@nestjs/common/interfaces';
 
 import { IsStringOrRegExp } from '@fc/common';
 
@@ -87,4 +87,7 @@ export class SessionConfig {
 
   @IsBoolean()
   readonly slidingExpiration: boolean;
+
+  @IsObject()
+  readonly schema: Class<unknown>;
 }

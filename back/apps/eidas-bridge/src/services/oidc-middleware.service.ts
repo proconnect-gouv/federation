@@ -124,11 +124,8 @@ export class OidcMiddlewareService {
       moduleName: 'OidcClient',
     };
 
-    const saveWithContext = this.sessionService.set.bind(
-      this.sessionService,
-      boundSessionContext,
-    );
-    await saveWithContext(sessionProperties);
+    await this.sessionService.set(boundSessionContext, sessionProperties);
+    await this.sessionService.commit(boundSessionContext);
   }
 
   private async tokenMiddleware(ctx) {

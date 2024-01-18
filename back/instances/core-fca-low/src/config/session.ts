@@ -2,6 +2,7 @@
 
 // Tested by DTO
 import { ConfigParser } from '@fc/config';
+import { CoreFcaSession } from '@fc/core-fca';
 import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 import { ISessionCookieOptions, SessionConfig } from '@fc/session';
@@ -32,4 +33,5 @@ export default {
     OidcProviderRoutes.END_SESSION_CONFIRMATION,
     OidcClientRoutes.WELL_KNOWN_KEYS,
   ],
+  schema: CoreFcaSession,
 } as SessionConfig;

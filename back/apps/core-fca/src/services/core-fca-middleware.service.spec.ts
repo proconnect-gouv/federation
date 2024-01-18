@@ -414,6 +414,22 @@ describe('CoreFcaMiddlewareService', () => {
       expect(service['checkRedirectToSso']).toHaveBeenCalledTimes(1);
       expect(service['checkRedirectToSso']).toHaveBeenCalledWith(ctxMock);
     });
+
+    it('should call session.commit() one time', async () => {
+      // Given
+      const ctxMock = getCtxMock();
+
+      service['buildSessionWithNewInteraction'] = jest
+        .fn()
+        .mockReturnValueOnce(sessionPropertiesMock);
+      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+
+      // When
+      await service['afterAuthorizeMiddleware'](ctxMock);
+
+      // Then
+      expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('isSsoSession', () => {
@@ -445,6 +461,28 @@ describe('CoreFcaMiddlewareService', () => {
       await service['isSsoSession'](ctxMock);
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+    });
+
+    it('should skip DTO validation if sessionService returns undefined', async () => {
+      // Given
+      sessionServiceMock.get.mockReset().mockResolvedValueOnce(undefined);
+
+      // When
+      await service['isSsoSession'](ctxMock);
+
+      // Then
+      expect(validateDtoMock).not.toHaveBeenCalled();
+    });
+
+    it('should return false if sessionService returns undefined', async () => {
+      // Given
+      sessionServiceMock.get.mockReset().mockResolvedValueOnce(undefined);
+
+      // When
+      const result = await service['isSsoSession'](ctxMock);
+
+      // Then
+      expect(result).toBe(false);
     });
 
     it('should call validateDto() with the data from session', async () => {
@@ -524,16 +562,6 @@ describe('CoreFcaMiddlewareService', () => {
       // Then
       expect(service['isSsoSession']).toHaveBeenCalledTimes(1);
       expect(service['isSsoSession']).toHaveBeenCalledWith(ctxMock);
-    });
-
-    it('should call sessionService.detach if sso is enabled and spIdentity is present', async () => {
-      // Given
-      sessionServiceMock.get.mockResolvedValueOnce(true);
-      // When
-      await service['renewSession'](ctxMock);
-      // Then
-      expect(sessionServiceMock.detach).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.detach).toHaveBeenCalledWith(reqMock, resMock);
     });
 
     it('should call sessionService.duplicate if sso is enabled and spIdentity is present', async () => {

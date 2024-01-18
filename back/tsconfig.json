@@ -181,6 +181,12 @@
       "@fc/redis/*": [
         "libs/redis/src/*"
       ],
+      "@mocks/redis": [
+        "libs/redis/.mocks"
+      ],
+      "@mocks/redis/*": [
+        "libs/redis/.mocks/*"
+      ],
       "@fc/rabbitmq": [
         "libs/rabbitmq/src"
       ],

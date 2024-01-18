@@ -473,6 +473,19 @@ describe('OidcProviderAppConfigLibService', () => {
         logoutFormProperty,
         form,
       );
+      expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
+    });
+
+    it('should commit changes to session', async () => {
+      // When
+      await service.logoutFormSessionDestroy(
+        ctx,
+        form,
+        sessionServiceMock,
+        params,
+      );
+      // Then
+      expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
     });
 
     it('should set a body property to koa context', async () => {

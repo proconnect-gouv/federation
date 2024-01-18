@@ -1,37 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { AsyncLocalStorageService } from '@fc/async-local-storage';
 import { ConfigService } from '@fc/config';
-import { CryptographyService } from '@fc/cryptography';
+
+import { getAsyncLocalStorageMock } from '@mocks/async-local-storage';
+import { getConfigMock } from '@mocks/config';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { SessionConfig } from '../dto';
 import { ISessionRequest } from '../interfaces';
 import { SessionService } from '../services';
+import { SESSION_STORE_KEY } from '../tokens';
 import { SessionMiddleware } from './session.middleware';
 
 describe('session.middleware', () => {
   let middleware: SessionMiddleware;
 
-  const configServiceMock = {
-    get: jest.fn(),
-  };
+  const configServiceMock = getConfigMock();
+  const sessionServiceMock = getSessionServiceMock();
+  const asyncLocalStorageServiceMock = getAsyncLocalStorageMock();
 
   const configMock: Partial<SessionConfig> = {
     sessionCookieName: 'sessionCookieName',
     sessionIdLength: 64,
     slidingExpiration: true,
-  };
-
-  const sessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-    init: jest.fn(),
-    refresh: jest.fn(),
-    getSessionIdFromCookie: jest.fn(),
-    bindToRequest: jest.fn(),
-  };
-
-  const cryptographyServiceMock = {
-    genRandomString: jest.fn(),
   };
 
   const reqMock = {
@@ -56,7 +48,7 @@ describe('session.middleware', () => {
       providers: [
         SessionMiddleware,
         ConfigService,
-        CryptographyService,
+        AsyncLocalStorageService,
         SessionService,
       ],
     })
@@ -64,8 +56,8 @@ describe('session.middleware', () => {
       .useValue(configServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(CryptographyService)
-      .useValue(cryptographyServiceMock)
+      .overrideProvider(AsyncLocalStorageService)
+      .useValue(asyncLocalStorageServiceMock)
       .compile();
 
     middleware = module.get<SessionMiddleware>(SessionMiddleware);
@@ -78,6 +70,22 @@ describe('session.middleware', () => {
   });
 
   describe('use()', () => {
+    it('should initialize asyncLocalStorage', async () => {
+      // When
+      await middleware.use(reqMock, resMock, nextMock);
+
+      // Then
+      expect(asyncLocalStorageServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(asyncLocalStorageServiceMock.set).toHaveBeenCalledWith(
+        SESSION_STORE_KEY,
+        {
+          data: null,
+          sync: false,
+          id: null,
+        },
+      );
+    });
+
     it('should call handleSession', async () => {
       // Given
       middleware['handleSession'] = jest.fn();

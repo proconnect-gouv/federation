@@ -1,13 +1,13 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { Global, MiddlewareConsumer, Module } from '@nestjs/common';
+import { Global, Module } from '@nestjs/common';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 
 import { AccountModule } from '@fc/account';
 import { AppModule } from '@fc/app';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { ConfigService, ConfigTemplateInterceptor } from '@fc/config';
+import { ConfigTemplateInterceptor } from '@fc/config';
 import {
   CORE_SERVICE,
   CoreAccountService,
@@ -42,7 +42,7 @@ import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
 } from '@fc/service-provider-adapter-mongo';
-import { SessionConfig, SessionMiddleware, SessionModule } from '@fc/session';
+import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 
 import {
@@ -51,7 +51,6 @@ import {
   OidcClientController,
   OidcProviderController,
 } from './controllers';
-import { CoreFcpSession } from './dto';
 import {
   CoreFcpDefaultIdentityCheckHandler,
   CoreFcpDefaultVerifyHandler,
@@ -76,9 +75,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     exceptionModule,
     AsyncLocalStorageModule,
     MongooseModule.forRoot(),
-    SessionModule.forRoot({
-      schema: CoreFcpSession,
-    }),
+    SessionModule,
     FlowStepsModule,
     RnippModule,
     CryptographyFcpModule,
@@ -150,15 +147,4 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     CoreTrackingService,
   ],
 })
-export class CoreFcpModule {
-  constructor(private readonly config: ConfigService) {}
-
-  configure(consumer: MiddlewareConsumer) {
-    const { excludedRoutes } = this.config.get<SessionConfig>('Session');
-
-    consumer
-      .apply(SessionMiddleware)
-      .exclude(...excludedRoutes)
-      .forRoutes('*');
-  }
-}
+export class CoreFcpModule {}

@@ -100,11 +100,7 @@ describe('CoreFcaController', () => {
     shouldExcludeIdp: jest.fn(),
   };
 
-  const sessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-    setAlias: jest.fn(),
-  };
+  const sessionServiceMock = getSessionServiceMock();
 
   const sessionCsrfServiceMock = {
     get: jest.fn(),

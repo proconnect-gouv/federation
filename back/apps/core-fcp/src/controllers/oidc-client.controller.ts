@@ -160,7 +160,6 @@ export class OidcClientController {
     @Session('OidcClient', GetOidcCallbackOidcClientSessionDto)
     _sessionOidc: ISessionService<OidcClientSession>,
   ) {
-    await this.sessionService.detach(req, res);
     await this.sessionService.duplicate(req, res, GetOidcCallbackSessionDto);
     this.logger.debug('Session has been detached and duplicated');
 

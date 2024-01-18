@@ -364,6 +364,22 @@ describe('CoreFcpMiddlewareService', () => {
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(3);
     });
 
+    it('should call session.commit() one time', async () => {
+      // Given
+      const ctxMock = getCtxMock();
+
+      service['buildSessionWithNewInteraction'] = jest
+        .fn()
+        .mockReturnValueOnce(sessionPropertiesMock);
+      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+
+      // When
+      await service['afterAuthorizeMiddleware'](ctxMock);
+
+      // Then
+      expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
+    });
+
     it('should set suspicious request status in AppSession', async () => {
       // Given
       const ctxMock = getCtxMock();
@@ -699,16 +715,6 @@ describe('CoreFcpMiddlewareService', () => {
       expect(service['isFinishedInteractionSession']).toHaveBeenCalledWith(
         ctxMock,
       );
-    });
-
-    it('should call sessionService.detach if sso is enabled, spIdentity is present and sso authorized for acr', async () => {
-      // Given
-      sessionServiceMock.get.mockResolvedValueOnce(true);
-      // When
-      await service['renewSession'](ctxMock, spAcrMock);
-      // Then
-      expect(sessionServiceMock.detach).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.detach).toHaveBeenCalledWith(reqMock, resMock);
     });
 
     it('should call sessionService.duplicate if sso is enabled, spIdentity is present and sso authorized for acr', async () => {

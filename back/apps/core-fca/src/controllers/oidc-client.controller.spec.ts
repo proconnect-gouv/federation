@@ -546,14 +546,6 @@ describe('OidcClient Controller', () => {
       );
     });
 
-    it('should detach current session', async () => {
-      // When
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-      // Then
-      expect(sessionServiceMock.detach).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.detach).toHaveBeenCalledWith(req, res);
-    });
-
     it('should duplicate current session', async () => {
       // When
       await controller.getOidcCallback(req, res, sessionServiceMock);

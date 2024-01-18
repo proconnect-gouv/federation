@@ -1322,6 +1322,14 @@ describe('CoreOidcProviderMiddlewareService', () => {
       );
     });
 
+    it('should call session.commit() if a valid idp_hint was provided', async () => {
+      // When
+      await service['redirectToHintedIdpMiddleware'](ctxMock);
+
+      // Then
+      expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
+    });
+
     it('should call shouldAbortIdpHint', async () => {
       // Given
       service['shouldAbortIdpHint'] = jest.fn().mockReturnValueOnce(true);

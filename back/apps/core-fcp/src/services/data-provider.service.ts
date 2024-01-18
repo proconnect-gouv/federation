@@ -4,7 +4,7 @@ import { JSONWebKeySet, JWTPayload } from 'jose';
 import { lastValueFrom } from 'rxjs';
 
 import { HttpService } from '@nestjs/axios';
-import { HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
@@ -15,12 +15,11 @@ import {
   DataProviderMetadata,
 } from '@fc/data-provider-adapter-mongo';
 import { JwtService } from '@fc/jwt';
-import { LoggerService } from '@fc/logger';
 import { AccessToken, atHashFromAccessToken, stringToArray } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderConfig } from '@fc/oidc-provider';
 import { OidcProviderRedisAdapter } from '@fc/oidc-provider/adapters';
-import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
+import { RedisService } from '@fc/redis';
 import { RnippPivotIdentity } from '@fc/rnipp';
 import { ScopesService } from '@fc/scopes';
 import { ISessionService, SessionService } from '@fc/session';
@@ -37,12 +36,11 @@ export class DataProviderService {
   // Rule override allowed for dependency injection
   // eslint-disable-next-line max-params
   constructor(
-    private readonly logger: LoggerService,
     private readonly config: ConfigService,
     private readonly dataProvider: DataProviderAdapterMongoService,
     private readonly http: HttpService,
     private readonly jwt: JwtService,
-    @Inject(REDIS_CONNECTION_TOKEN) private readonly redis: Redis,
+    private readonly redis: RedisService,
     private readonly session: SessionService,
     private readonly cryptographyFcp: CryptographyFcpService,
     private readonly scopes: ScopesService,
@@ -101,7 +99,6 @@ export class DataProviderService {
      * and the `context` parameter which is a string, not a provider.
      */
     const adapter = new OidcProviderRedisAdapter(
-      this.logger,
       this.redis,
       undefined,
       'AccessToken',

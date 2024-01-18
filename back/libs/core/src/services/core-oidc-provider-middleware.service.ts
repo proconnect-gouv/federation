@@ -288,6 +288,7 @@ export class CoreOidcProviderMiddlewareService {
 
     try {
       await this.core.redirectToIdp(res, idpHint, session, { acr });
+      await session.commit();
       await this.trackRedirectToIdp(ctx);
     } catch (error) {
       await this.oidcErrorService.throwError(ctx, error);

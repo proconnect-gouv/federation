@@ -134,11 +134,7 @@ describe('MockIdentityProviderController', () => {
   });
 
   describe('getInteraction', () => {
-    const appSessionServiceMock = {
-      get: jest.fn(),
-      set: jest.fn(),
-      setAlias: jest.fn(),
-    };
+    const appSessionServiceMock = getSessionServiceMock();
     const finalSpIdMock = 'abcdefghijklmnopqrstuvwxyz0123456789';
 
     beforeEach(() => {
