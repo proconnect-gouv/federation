@@ -236,6 +236,7 @@
       "^@fc/exceptions(|/.*)$": "<rootDir>/libs/exceptions/src$1",
       "^@fc/mongoose(|/.*)$": "<rootDir>/libs/mongoose/src$1",
       "^@fc/redis(|/.*)$": "<rootDir>/libs/redis/src$1",
+      "^@mocks/redis(|/.*)$": "<rootDir>/libs/redis/.mocks$1",
       "^@fc/rabbitmq(|/.*)$": "<rootDir>/libs/rabbitmq/src$1",
       "^@fc/hsm(|/.*)$": "<rootDir>/libs/hsm/src$1",
       "^@fc/microservices(|/.*)$": "<rootDir>/libs/microservices/src$1",

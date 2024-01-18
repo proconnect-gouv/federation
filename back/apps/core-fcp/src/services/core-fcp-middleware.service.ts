@@ -150,7 +150,6 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     const { req, res } = ctx;
 
     if (isFinishedInteractionSession) {
-      await this.sessionService.detach(req, res);
       await this.sessionService.duplicate(req, res, GetAuthorizeSessionDto);
       this.logger.debug('Session has been detached and duplicated');
     }
@@ -235,6 +234,7 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     const sentNotificationsForSpRes = sentNotificationsForSp ?? [];
 
     await coreSession.set('sentNotificationsForSp', sentNotificationsForSpRes);
+    await coreSession.commit();
 
     const { interactionId: _interactionId, ...sessionWithoutInteractionId } =
       sessionProperties;

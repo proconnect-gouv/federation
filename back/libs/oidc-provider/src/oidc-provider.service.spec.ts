@@ -6,9 +6,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
-import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
+import { RedisService } from '@fc/redis';
 
 import { getLoggerMock } from '@mocks/logger';
+import { getRedisServiceMock } from '@mocks/redis';
 
 import {
   OidcProviderMiddlewarePattern,
@@ -86,15 +87,7 @@ describe('OidcProviderService', () => {
     interactionFinished: jest.fn(),
   };
 
-  const redisMock = {
-    hgetall: jest.fn(),
-    get: jest.fn(),
-    multi: jest.fn(),
-    hset: jest.fn(),
-    ttl: jest.fn(),
-    lrange: jest.fn(),
-    del: jest.fn(),
-  };
+  const redisMock = getRedisServiceMock();
 
   const oidcProviderErrorServiceMock = {
     catchErrorEvents: jest.fn(),
@@ -117,10 +110,7 @@ describe('OidcProviderService', () => {
         LoggerService,
         OidcProviderService,
         HttpAdapterHost,
-        {
-          provide: REDIS_CONNECTION_TOKEN,
-          useValue: redisMock,
-        },
+        RedisService,
         OidcProviderErrorService,
         OidcProviderConfigService,
         {
@@ -131,6 +121,8 @@ describe('OidcProviderService', () => {
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
+      .overrideProvider(RedisService)
+      .useValue(redisMock)
       .overrideProvider(HttpAdapterHost)
       .useValue(httpAdapterHostMock)
       .overrideProvider(OidcProviderErrorService)

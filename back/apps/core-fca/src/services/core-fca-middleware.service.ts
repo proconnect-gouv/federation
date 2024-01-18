@@ -143,6 +143,7 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
 
     const browsingSessionId = await this.getBrowsingSessionId(oidcSession);
     await oidcSession.set({ ...sessionProperties, browsingSessionId });
+    await oidcSession.commit();
 
     await this.trackAuthorize(eventContext);
 
@@ -157,6 +158,10 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     );
 
     const data = await oidcSession.get();
+
+    if (!data) {
+      return false;
+    }
 
     const validationErrors = await validateDto(
       data,
@@ -176,7 +181,6 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     const isSsoSession = await this.isSsoSession(ctx);
 
     if (enableSso && isSsoSession) {
-      await this.sessionService.detach(req, res);
       await this.sessionService.duplicate(req, res, GetAuthorizeSessionDto);
       this.logger.debug('Session has been detached and duplicated');
     } else {

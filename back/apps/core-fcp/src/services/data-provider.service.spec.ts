@@ -16,13 +16,14 @@ import { LoggerService } from '@fc/logger';
 import { AccessToken, atHashFromAccessToken, stringToArray } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderRedisAdapter } from '@fc/oidc-provider/adapters';
-import { REDIS_CONNECTION_TOKEN } from '@fc/redis';
+import { RedisService } from '@fc/redis';
 import { RnippPivotIdentity } from '@fc/rnipp';
 import { ScopesService } from '@fc/scopes';
 import { ISessionService, SessionService } from '@fc/session';
 
 import { getJwtServiceMock } from '@mocks/jwt';
 import { getLoggerMock } from '@mocks/logger';
+import { getRedisServiceMock } from '@mocks/redis';
 
 import { ChecktokenRequestDto } from '../dto';
 import {
@@ -82,9 +83,7 @@ const sessionServiceMock = {
   get: jest.fn(),
 };
 
-const redisMock = {
-  ttl: jest.fn(),
-};
+const redisMock = getRedisServiceMock();
 
 const scopesMock = {
   getScopesByDataProvider: jest.fn(),
@@ -92,11 +91,6 @@ const scopesMock = {
 
 describe('DataProviderService', () => {
   let service: DataProviderService;
-
-  const RedisProviderMock = {
-    provide: REDIS_CONNECTION_TOKEN,
-    useValue: redisMock,
-  };
 
   const cryptographyFcpMock = {
     computeIdentityHash: jest.fn(),
@@ -114,7 +108,7 @@ describe('DataProviderService', () => {
         DataProviderAdapterMongoService,
         HttpService,
         JwtService,
-        RedisProviderMock,
+        RedisService,
         SessionService,
         CryptographyFcpService,
         ScopesService,
@@ -130,6 +124,8 @@ describe('DataProviderService', () => {
       .useValue(httpServiceMock)
       .overrideProvider(JwtService)
       .useValue(jwtServiceMock)
+      .overrideProvider(RedisService)
+      .useValue(redisMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .overrideProvider(CryptographyFcpService)
@@ -398,7 +394,6 @@ describe('DataProviderService', () => {
       // Then
       expect(adapterMocked).toHaveBeenCalledTimes(1);
       expect(adapterMocked).toHaveBeenCalledWith(
-        loggerServiceMock,
         redisMock,
         undefined,
         'AccessToken',

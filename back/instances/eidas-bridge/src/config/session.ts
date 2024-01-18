@@ -2,6 +2,7 @@
 
 // Tested by DTO
 import { ConfigParser } from '@fc/config';
+import { EidasBridgeSession } from '@fc/eidas-bridge';
 import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 import { ISessionCookieOptions, SessionConfig } from '@fc/session';
@@ -31,4 +32,5 @@ export default {
     OidcProviderRoutes.OPENID_CONFIGURATION,
     OidcClientRoutes.WELL_KNOWN_KEYS,
   ],
+  schema: EidasBridgeSession,
 } as SessionConfig;

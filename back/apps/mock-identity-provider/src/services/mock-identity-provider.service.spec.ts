@@ -12,6 +12,7 @@ import { ServiceProviderAdapterEnvService } from '@fc/service-provider-adapter-e
 import { ISessionBoundContext, SessionService } from '@fc/session';
 
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
 import {
   getFilesPathsFromDir,
@@ -28,11 +29,7 @@ describe('MockIdentityProviderService', () => {
 
   const loggerMock = getLoggerMock();
 
-  const sessionServiceMock = {
-    set: {
-      bind: jest.fn(),
-    },
-  };
+  const sessionServiceMock = getSessionServiceMock();
 
   const serviceProviderEnvServiceMock = {
     getList: jest.fn(),
@@ -462,7 +459,7 @@ describe('MockIdentityProviderService', () => {
       ).toHaveBeenCalledTimes(0);
       expect(serviceProviderEnvServiceMock.getById).toHaveBeenCalledTimes(0);
 
-      expect(sessionServiceMock.set.bind).toHaveBeenCalledTimes(0);
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(0);
     });
 
     it('should call session.set()', async () => {
@@ -476,9 +473,6 @@ describe('MockIdentityProviderService', () => {
       serviceProviderEnvServiceMock.getById.mockReturnValueOnce({
         name: spNameMock,
       });
-
-      const bindedSessionService = jest.fn().mockResolvedValueOnce(undefined);
-      sessionServiceMock.set.bind.mockReturnValueOnce(bindedSessionService);
 
       const boundSessionContextMock: ISessionBoundContext = {
         sessionId: sessionIdValueMock,
@@ -497,29 +491,38 @@ describe('MockIdentityProviderService', () => {
       await service['authorizationMiddleware'](ctxMock);
 
       // Then
-      expect(sessionServiceMock.set.bind).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set.bind).toHaveBeenCalledWith(
-        sessionServiceMock,
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith(
         boundSessionContextMock,
+        sessionMock,
       );
-
-      expect(bindedSessionService).toHaveBeenCalledTimes(1);
-      expect(bindedSessionService).toHaveBeenCalledWith(sessionMock);
     });
 
-    it('should throw if the session initialization fails', async () => {
+    it('should call session.commit()', async () => {
       // Given
       shouldAbortMock.mockReturnValueOnce(false);
 
       oidcProviderServiceMock.getInteractionIdFromCtx.mockReturnValue(
         interactionIdValueMock,
       );
-      sessionServiceMock.set.bind.mockRejectedValueOnce(new Error('test'));
+
+      serviceProviderEnvServiceMock.getById.mockReturnValueOnce({
+        name: spNameMock,
+      });
+
+      const boundSessionContextMock: ISessionBoundContext = {
+        sessionId: sessionIdValueMock,
+        moduleName: 'OidcClient',
+      };
+
+      // When
+      await service['authorizationMiddleware'](ctxMock);
 
       // Then
-      await expect(
-        service['authorizationMiddleware'](ctxMock),
-      ).rejects.toThrow();
+      expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.commit).toHaveBeenCalledWith(
+        boundSessionContextMock,
+      );
     });
   });
 

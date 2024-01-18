@@ -190,6 +190,7 @@ export abstract class OidcProviderAppConfigLibService
     { method, uri, title }: LogoutFormParamsInterface,
   ): Promise<void> {
     await session.set('oidcProviderLogoutForm', form);
+    await session.commit();
 
     ctx.body = `<!DOCTYPE html>
       <head>

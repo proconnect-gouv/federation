@@ -8,7 +8,7 @@ import { HttpAdapterHost } from '@nestjs/core';
 
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
-import { Redis, REDIS_CONNECTION_TOKEN } from '@fc/redis';
+import { RedisService } from '@fc/redis';
 
 import {
   OidcProviderMiddlewarePattern,
@@ -52,8 +52,7 @@ export class OidcProviderService {
   constructor(
     private httpAdapterHost: HttpAdapterHost,
     readonly logger: LoggerService,
-    @Inject(REDIS_CONNECTION_TOKEN)
-    readonly redis: Redis,
+    readonly redis: RedisService,
     private readonly errorService: OidcProviderErrorService,
     private readonly configService: OidcProviderConfigService,
     @Inject(OIDC_PROVIDER_CONFIG_APP_TOKEN)

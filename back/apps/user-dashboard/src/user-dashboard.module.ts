@@ -1,11 +1,10 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 
 import { AppModule } from '@fc/app';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { ConfigService } from '@fc/config';
 import { ExceptionsModule } from '@fc/exceptions';
 import { HttpProxyModule } from '@fc/http-proxy';
 import {
@@ -18,13 +17,12 @@ import {
   ServiceProviderAdapterEnvModule,
   ServiceProviderAdapterEnvService,
 } from '@fc/service-provider-adapter-env';
-import { SessionConfig, SessionMiddleware, SessionModule } from '@fc/session';
+import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
 import { TracksModule } from '@fc/tracks';
 import { UserPreferencesModule } from '@fc/user-preferences';
 
 import { OidcClientController, UserDashboardController } from './controllers';
-import { UserDashboardSession } from './dto';
 import { UserDashboardService, UserDashboardTrackingService } from './services';
 
 const oidcClientModule = OidcClientModule.register(
@@ -39,11 +37,11 @@ const oidcClientModule = OidcClientModule.register(
   imports: [
     ExceptionsModule.withoutTracking(),
     AsyncLocalStorageModule,
+    SessionModule,
     AppModule,
     HttpProxyModule,
     IdentityProviderAdapterEnvModule,
     oidcClientModule,
-    SessionModule.forRoot({ schema: UserDashboardSession }),
     TrackingModule.forRoot(UserDashboardTrackingService),
     TracksModule,
     UserPreferencesModule,
@@ -51,15 +49,4 @@ const oidcClientModule = OidcClientModule.register(
   ],
   providers: [UserDashboardService],
 })
-export class UserDashboardModule {
-  constructor(private readonly config: ConfigService) {}
-
-  configure(consumer: MiddlewareConsumer) {
-    const { excludedRoutes } = this.config.get<SessionConfig>('Session');
-
-    consumer
-      .apply(SessionMiddleware)
-      .exclude(...excludedRoutes)
-      .forRoutes('*');
-  }
-}
+export class UserDashboardModule {}
