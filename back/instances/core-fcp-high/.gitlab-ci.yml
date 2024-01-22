@@ -30,7 +30,6 @@ fcp-high:
       - quality/node_modules/
       # Fc-apps
       - cache/fc-apps/fc-exploitation/node_modules/
-      - cache/fc-apps/fc-stats/node_modules/
       - cache/fc-apps/fc-support/node_modules/
       - cache/fc-apps/fc-workers/node_modules/
       - cache/fc-apps/node_modules/
