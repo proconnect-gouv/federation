@@ -57,7 +57,7 @@ _command_register "reload-all" "_start_all" "Alias for start-all"
 
 _command_register "log" "_log" "log [<app>] => exec pm2 logs for given instance"
 
-_command_register "dependencies" "_install_dependencies" "dependencies [<app1> <app2> <...>] / dep [...] => install dependencies (using npm or yarn) on given nodejs applications (fc-core|fc-exploitation|fc-stats|fc-support|fc-workers|fdp1|fip1|aidants-connect-mock|fsp1|fsp2|fsp3|rnipp|partenaires|usagers - default: fc-core)"
+_command_register "dependencies" "_install_dependencies" "dependencies [<app1> <app2> <...>] / dep [...] => install dependencies (using npm or yarn) on given nodejs applications (fc-core|fc-exploitation|fc-support|fc-workers|fdp1|fip1|aidants-connect-mock|fsp1|fsp2|fsp3|rnipp|partenaires|usagers - default: fc-core)"
 _command_register "dependencies-all" "_install_dependencies_all" "dependencies-all | dep-all => install dependencies (using npm or yarn) on all nodejs applications"
 
 _command_register "dep" "_install_dependencies" "Alias de dependencies"
