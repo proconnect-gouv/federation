@@ -1,5 +1,3 @@
-import { encode } from 'querystring';
-
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
@@ -117,7 +115,6 @@ describe('OidcClient Controller', () => {
   };
 
   const providerIdMock = 'providerIdMockValue';
-  const queryStringEncodeMock = jest.mocked(encode);
 
   const identityMock = {
     // oidc spec defined property
@@ -454,41 +451,6 @@ describe('OidcClient Controller', () => {
       // Then
       expect(result).toEqual({
         oidcProviderLogoutForm: oidcProviderLogoutFormMock,
-      });
-    });
-  });
-
-  describe('getLegacyOidcCallback', () => {
-    it('should extract urlPrefix from app config', async () => {
-      // When
-      await controller.getLegacyOidcCallback(req.query, req.params);
-      // Then
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('App');
-    });
-
-    it('should build redirect url with encode from querystring', async () => {
-      // When
-      await controller.getLegacyOidcCallback(req.query, req.params);
-      // Then
-      expect(queryStringEncodeMock).toHaveBeenCalledTimes(1);
-      expect(queryStringEncodeMock).toHaveBeenCalledWith(req.query);
-    });
-
-    it('should redirect to the built oidc callback url', async () => {
-      // Given
-      const queryMock = 'first-query-param=first&second-query-param=second';
-      queryStringEncodeMock.mockReturnValueOnce(queryMock);
-      const redirectOidcCallbackUrl = `${configMock.urlPrefix}/oidc-callback?${queryMock}`;
-      // When
-      const result = await controller.getLegacyOidcCallback(
-        req.query,
-        req.params,
-      );
-      // Then
-      expect(result).toEqual({
-        statusCode: 302,
-        url: redirectOidcCallbackUrl,
       });
     });
   });

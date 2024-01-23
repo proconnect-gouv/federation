@@ -107,7 +107,7 @@
     "descriptions": ["user-dashboard"],
     "mocked": false,
     "url": "https://tableaudebord.docker.dev-franceconnect.fr",
-    "redirectUri": "https://tableaudebord.docker.dev-franceconnect.fr/api/oidc-callback/envIssuer",
+    "redirectUri": "https://tableaudebord.docker.dev-franceconnect.fr/api/oidc-callback",
     "acrValue": "eidas1",
     "claims": [],
     "scopes": [],

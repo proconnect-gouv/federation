@@ -1,17 +1,13 @@
 import { ClassTransformOptions } from 'class-transformer';
 import { ValidatorOptions } from 'class-validator';
 import { Response } from 'express';
-import { encode } from 'querystring';
 
 import {
   Body,
   Controller,
   Get,
   Header,
-  Param,
   Post,
-  Query,
-  Redirect,
   Render,
   Req,
   Res,
@@ -27,7 +23,6 @@ import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
-  GetOidcCallback,
   OidcClientConfigService,
   OidcClientRoutes,
   OidcClientService,
@@ -170,23 +165,6 @@ export class OidcClientController {
     await this.sessionService.destroy(req, res);
 
     return { oidcProviderLogoutForm };
-  }
-
-  @Get(OidcClientRoutes.OIDC_CALLBACK_LEGACY)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Header('cache-control', 'no-store')
-  @Redirect()
-  getLegacyOidcCallback(@Query() query, @Param() params: GetOidcCallback) {
-    const { urlPrefix } = this.config.get<AppConfig>('App');
-
-    const response = {
-      statusCode: 302,
-      url: `${urlPrefix}${OidcClientRoutes.OIDC_CALLBACK}?${encode(query)}`,
-    };
-    this.logger.warning(
-      `Legacy OIDC callback called by "${params.providerUid}"`,
-    );
-    return response;
   }
 
   /**
