@@ -1,15 +1,11 @@
 import { Request, Response } from 'express';
-import { encode } from 'querystring';
 
 import {
   Body,
   Controller,
   Get,
   Header,
-  Param,
   Post,
-  Query,
-  Redirect,
   Render,
   Req,
   Res,
@@ -25,7 +21,6 @@ import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapt
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
-  GetOidcCallback,
   OidcClientConfigService,
   OidcClientRoutes,
   OidcClientService,
@@ -121,24 +116,6 @@ export class OidcClientController {
   @Header('cache-control', 'public, max-age=600')
   async getWellKnownKeys() {
     return await this.oidcClient.utils.wellKnownKeys();
-  }
-
-  @Get(OidcClientRoutes.OIDC_CALLBACK_LEGACY)
-  @Header('cache-control', 'no-store')
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Redirect()
-  getLegacyOidcCallback(@Query() query, @Param() params: GetOidcCallback) {
-    const { urlPrefix } = this.config.get<AppConfig>('App');
-    const queryParams = encode(query);
-
-    const response = {
-      statusCode: 302,
-      url: `${urlPrefix}${OidcClientRoutes.OIDC_CALLBACK}?${queryParams}`,
-    };
-    this.logger.warning(
-      `Legacy OIDC callback called by "${params.providerUid}"`,
-    );
-    return response;
   }
 
   /**

@@ -33,14 +33,6 @@ const BASE_PRODUCTION_IPD_LOW = {
   userinfo_signed_response_alg: "HS256",
   userinfo_encrypted_response_alg: "",
   userinfo_encrypted_response_enc: "",
-  redirect_uris: [
-    "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback",
-    "https://fcp.docker.dev-franceconnect.fr/oidc_callback",
-  ],
-  post_logout_redirect_uris: [
-    "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
-    "https://fcp.docker.dev-franceconnect.fr/api/v1/logout/redirect_from_provider",
-  ],
   amr: ["fc", "pwd", "mail"],
 };
 
@@ -93,7 +85,7 @@ const PRODUCTION_IDPS_LOW = {
   // @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1305
   // EIDAS_BRIDGE: {
   //   order: 99,
-  //   uid: "1f4d6633-d853-43c6-b461-ce54fdc19bff", // same as App_EIDAS_BRIDGE_UID env 
+  //   uid: "1f4d6633-d853-43c6-b461-ce54fdc19bff", // same as App_EIDAS_BRIDGE_UID env
   //   title: "eIDAS Bridge",
   //   image: "fi-europe.svg",
   //   disabledForLegacy: true,

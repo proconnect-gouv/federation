@@ -27,12 +27,6 @@ const BASE_PRODUCTION_IDP_HIGH = {
   revocation_endpoint_auth_method: "client_secret_post",
   url: "https://fip1-high.docker.dev-franceconnect.fr/",
   statusURL: "https://fip1-high.docker.dev-franceconnect.fr/",
-  post_logout_redirect_uris: [
-    "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/client/logout-callback",
-  ],
-  redirect_uris: [
-    "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1-high",
-  ],
   endSessionURL:
     "https://fip1-high.docker.dev-franceconnect.fr/user/session/end",
   discoveryUrl:
@@ -49,7 +43,7 @@ const PRODUCTION_IPDS_HIGH = {
   },
   EIDAS_BRIDGE: {
     order: 99,
-    uid: "8aa849db-8402-4f2e-bad9-7471dd21ff94", // same as App_EIDAS_BRIDGE_UID env 
+    uid: "8aa849db-8402-4f2e-bad9-7471dd21ff94", // same as App_EIDAS_BRIDGE_UID env
     active: false, // simulate eidas-bridge being blacklisted on all SP
     display: true,
     title: "eIDAS Bridge",

@@ -1,14 +1,9 @@
-import { encode } from 'querystring';
-
 import {
   Body,
   Controller,
   Get,
   Header,
-  Param,
   Post,
-  Query,
-  Redirect,
   Render,
   Req,
   Res,
@@ -22,7 +17,6 @@ import { OidcSession } from '@fc/oidc';
 import { OidcAcrConfig } from '@fc/oidc-acr';
 import {
   CrsfToken,
-  GetOidcCallback,
   OidcClientConfig,
   OidcClientRoutes,
   OidcClientService,
@@ -206,21 +200,6 @@ export class OidcClientController {
       }
       throw new UserDashboardTokenRevocationException();
     }
-  }
-
-  @Get(OidcClientRoutes.OIDC_CALLBACK_LEGACY)
-  @UsePipes(new ValidationPipe({ whitelist: true }))
-  @Redirect()
-  getLegacyOidcCallback(@Query() query, @Param() _params: GetOidcCallback) {
-    const { urlPrefix } = this.config.get<AppConfig>('App');
-    const queryParams = encode(query);
-
-    const response = {
-      statusCode: 302,
-      url: `${urlPrefix}${OidcClientRoutes.OIDC_CALLBACK}?${queryParams}`,
-    };
-
-    return response;
   }
 
   /**

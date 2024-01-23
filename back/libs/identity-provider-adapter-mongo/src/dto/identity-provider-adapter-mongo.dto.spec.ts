@@ -34,14 +34,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
     image: 'provider1.png',
     name: 'provider1',
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    post_logout_redirect_uris: [
-      'https://corev2.docker.dev-franceconnect.fr/api/v2/logout-from-provider',
-    ],
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    redirect_uris: [
-      'https://corev2.docker.dev-franceconnect.fr/api/v2/oidc-callback/fip1v2',
-    ],
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     response_types: ['code'],
     // eslint-disable-next-line @typescript-eslint/naming-convention
     revocation_endpoint_auth_method: 'client_secret_post',
