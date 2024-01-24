@@ -405,6 +405,8 @@ describe('OidcClientUtilsService', () => {
       await expect(
         service.getTokenSet(req, providerId, params),
       ).rejects.toThrow(OidcClientTokenFailedException);
+      expect(loggerServiceMock.debug).toHaveBeenCalledTimes(1);
+      expect(loggerServiceMock.debug).toHaveBeenCalledWith(errorMock);
     });
   });
 
