@@ -114,7 +114,7 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     );
   }
 
-  private async isFinishedInteractionSession(ctx: OidcCtx) {
+  private async isFinishedInteractionSession(ctx: OidcCtx): Promise<boolean> {
     const { req } = ctx;
     const oidcSession = SessionService.getBoundSession<OidcClientSession>(
       req,
@@ -122,6 +122,10 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     );
 
     const data = await oidcSession.get();
+
+    if (!data) {
+      return false;
+    }
 
     const validationErrors = await validateDto(
       data,
