@@ -4,11 +4,16 @@ import { TokenSet } from 'openid-client';
 import { Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
+import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { TrackedEventContextInterface } from '@fc/tracking';
 
 import { MinIdentityDto, TokenResultDto } from '../dto';
-import { OidcClientUserinfosFailedException } from '../exceptions';
+import {
+  OidcClientMissingIdentitySubException,
+  OidcClientTokenResultFailedException,
+  OidcClientUserinfosFailedException,
+} from '../exceptions';
 import {
   ExtraTokenParams,
   TokenParams,
@@ -24,7 +29,10 @@ const DTO_OPTIONS: ValidatorOptions = {
 
 @Injectable()
 export class OidcClientService {
-  constructor(public readonly utils: OidcClientUtilsService) {}
+  constructor(
+    public readonly utils: OidcClientUtilsService,
+    private readonly logger: LoggerService,
+  ) {}
 
   async getTokenFromProvider(
     idpId: string,
@@ -64,13 +72,8 @@ export class OidcClientService {
     );
 
     if (errorsOutputs.length) {
-      throw new Error(
-        `"${JSON.stringify(
-          tokenResult,
-        )}" input was wrong from the result at DTO validation: ${JSON.stringify(
-          errorsOutputs,
-        )}`,
-      );
+      this.logger.debug(errorsOutputs);
+      throw new OidcClientTokenResultFailedException();
     }
 
     return tokenResult;
@@ -107,11 +110,8 @@ export class OidcClientService {
     );
 
     if (errors.length) {
-      throw new Error(
-        `"${idpId}" doesn't provide a minimum identity information: ${JSON.stringify(
-          errors,
-        )}`,
-      );
+      this.logger.debug(errors);
+      throw new OidcClientMissingIdentitySubException();
     }
 
     return identity;
