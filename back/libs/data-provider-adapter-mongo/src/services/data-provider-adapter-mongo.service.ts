@@ -131,10 +131,10 @@ export class DataProviderAdapterMongoService implements IDataProviderAdapter {
     return provider;
   }
 
-  async checkAuthentication(
+  async getAuthenticatedDataProvider(
     clientId: string,
     clientSecret: string,
-  ): Promise<void> {
+  ): Promise<DataProviderMetadata> {
     const dataProvider: DataProviderMetadata =
       await this.getByClientId(clientId);
 
@@ -147,5 +147,7 @@ export class DataProviderAdapterMongoService implements IDataProviderAdapter {
     if (dataProvider.client_secret !== clientSecret) {
       throw new DataProviderInvalidCredentialsException();
     }
+
+    return dataProvider;
   }
 }

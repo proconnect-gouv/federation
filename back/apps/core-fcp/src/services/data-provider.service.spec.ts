@@ -11,7 +11,7 @@ import {
   DataProviderAdapterMongoService,
   DataProviderMetadata,
 } from '@fc/data-provider-adapter-mongo';
-import { JwtService } from '@fc/jwt';
+import { CustomJwtPayload, JwtService } from '@fc/jwt';
 import { LoggerService } from '@fc/logger';
 import { AccessToken, atHashFromAccessToken, stringToArray } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
@@ -30,6 +30,7 @@ import {
   CoreFcpFetchDataProviderJwksFailed,
   InvalidChecktokenRequestException,
 } from '../exceptions';
+import { DpJwtPayloadInterface } from '../interfaces';
 import { DataProviderService } from './data-provider.service';
 
 jest.mock('rxjs');
@@ -195,7 +196,7 @@ describe('DataProviderService', () => {
   });
 
   describe('generateJwt', () => {
-    const payload = {};
+    const payload = {} as unknown as CustomJwtPayload<DpJwtPayloadInterface>;
     const dataProviderId = 'client_id';
     const jwsMock = Symbol('jws');
     const jweMock = Symbol('jwe');
@@ -542,7 +543,7 @@ describe('DataProviderService', () => {
 
   describe('generateJws', () => {
     // Given
-    const payload = {};
+    const payload = {} as unknown as CustomJwtPayload<DpJwtPayloadInterface>;
     const jwsMock = Symbol('jws');
 
     beforeEach(() => {
@@ -599,7 +600,7 @@ describe('DataProviderService', () => {
 
   describe('generateJwe', () => {
     // Given
-    const payload = {};
+    const payload = {} as unknown as CustomJwtPayload<DpJwtPayloadInterface>;
     const dataProviderJwksMock = {};
     const dataProviderId = 'client_id';
     const jwsMock = Symbol('jws') as unknown as string;

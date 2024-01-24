@@ -3,14 +3,18 @@ import { Response } from 'express';
 import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { DataProviderAdapterMongoService } from '@fc/data-provider-adapter-mongo';
+import {
+  DataProviderAdapterMongoService,
+  DataProviderMetadata,
+} from '@fc/data-provider-adapter-mongo';
 import { DataProviderInvalidCredentialsException } from '@fc/data-provider-adapter-mongo/exceptions';
 import { LoggerService } from '@fc/logger';
-import { OidcClientSession } from '@fc/oidc-client';
 import { RnippPivotIdentity } from '@fc/rnipp';
-import { ISessionRequest, ISessionService, SessionService } from '@fc/session';
+import { ISessionRequest, SessionService } from '@fc/session';
+import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
+import { getSessionServiceMock } from '@mocks/session';
 
 import { ChecktokenRequestDto } from '../dto';
 import { InvalidChecktokenRequestException } from '../exceptions';
@@ -32,18 +36,48 @@ describe('DataProviderController', () => {
   };
 
   const dataProviderAdapterMongoMock = {
-    checkAuthentication: jest.fn(),
+    getAuthenticatedDataProvider: jest.fn(),
   };
 
   const loggerServiceMock = getLoggerMock();
 
-  const sessionServiceMock = {
-    attach: jest.fn(),
-  } as unknown as SessionService;
+  const oidcSessionServiceMock = getSessionServiceMock();
+  const sessionServiceMock = getSessionServiceMock();
 
-  const oidcSessionServiceMock = {
-    get: jest.fn(),
-  } as unknown as ISessionService<OidcClientSession>;
+  const trackingServiceMock: TrackingService = {
+    track: jest.fn(),
+    TrackedEventsMap: {
+      DP_VERIFIED_FC_CHECKTOKEN: {},
+      DP_USED_INVALID_ACCESS_TOKEN: {},
+      DP_USED_INVALID_CREDENTIAL: {},
+    },
+  } as unknown as TrackingService;
+
+  const payloadMock = {
+    // oidc naming
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    token_introspection: {
+      active: true,
+      scope: 'scope',
+    },
+  };
+
+  const expiredPayload = {
+    // oidc naming
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    token_introspection: {
+      active: false,
+    },
+  };
+
+  const dpMock = {
+    uid: 'dp-uid',
+    title: 'data provider title',
+  } as DataProviderMetadata;
+
+  const reqMock = {
+    foo: 'bar',
+  } as unknown as ISessionRequest;
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -56,6 +90,7 @@ describe('DataProviderController', () => {
         DataProviderService,
         LoggerService,
         SessionService,
+        TrackingService,
       ],
     })
       .overrideProvider(DataProviderAdapterMongoService)
@@ -66,13 +101,17 @@ describe('DataProviderController', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
+      .overrideProvider(TrackingService)
+      .useValue(trackingServiceMock)
       .compile();
 
     dataProviderController = module.get<DataProviderController>(
       DataProviderController,
     );
     dataProviderServiceMock.checkRequestValid.mockReturnValue(true);
-    dataProviderAdapterMongoMock.checkAuthentication.mockReturnValue(true);
+    dataProviderAdapterMongoMock.getAuthenticatedDataProvider.mockReturnValue(
+      dpMock,
+    );
   });
 
   it('should be defined', () => {
@@ -80,10 +119,6 @@ describe('DataProviderController', () => {
   });
 
   describe('checktoken', () => {
-    const reqMock = {
-      foo: 'bar',
-    } as unknown as ISessionRequest;
-
     const bodyMock: ChecktokenRequestDto = {
       // oidc compliant
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -105,7 +140,6 @@ describe('DataProviderController', () => {
 
     const sessionIdMock = 'testSessionId';
 
-    const payloadMock = {};
     const jwtMock = Symbol('jwtMock');
 
     const expMock = 1;
@@ -120,8 +154,8 @@ describe('DataProviderController', () => {
       dataProviderServiceMock.generateDataProviderSub.mockReturnValue(subMock);
       dataProviderServiceMock.generatePayload.mockReturnValue(payloadMock);
       dataProviderServiceMock.generateJwt.mockReturnValue(jwtMock);
-      dataProviderAdapterMongoMock.checkAuthentication.mockResolvedValue(
-        Promise.resolve(),
+      dataProviderAdapterMongoMock.getAuthenticatedDataProvider.mockResolvedValue(
+        dpMock,
       );
       dataProviderServiceMock.getSessionByAccessToken = jest
         .fn()
@@ -158,10 +192,10 @@ describe('DataProviderController', () => {
 
       // Then
       expect(
-        dataProviderAdapterMongoMock.checkAuthentication,
+        dataProviderAdapterMongoMock.getAuthenticatedDataProvider,
       ).toHaveBeenCalledTimes(1);
       expect(
-        dataProviderAdapterMongoMock.checkAuthentication,
+        dataProviderAdapterMongoMock.getAuthenticatedDataProvider,
       ).toHaveBeenCalledWith(bodyMock.client_id, bodyMock.client_secret);
     });
 
@@ -234,6 +268,23 @@ describe('DataProviderController', () => {
       );
     });
 
+    it('should call trackChecktokenJWT', async () => {
+      // Given
+      dataProviderController['trackChecktokenJWT'] = jest.fn();
+
+      // When
+      await dataProviderController.checktoken(reqMock, resMock, bodyMock);
+
+      // Then
+      expect(
+        dataProviderController['trackChecktokenJWT'],
+      ).toHaveBeenCalledTimes(1);
+      expect(dataProviderController['trackChecktokenJWT']).toHaveBeenCalledWith(
+        payloadMock,
+        { req: reqMock, dpId: 'dp-uid', dpTitle: 'data provider title' },
+      );
+    });
+
     it('should set HTTP code 200', async () => {
       // When
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);
@@ -252,7 +303,7 @@ describe('DataProviderController', () => {
       expect(resMock.end).toHaveBeenCalledWith(jwtMock);
     });
 
-    it('should return HTTP code 401 and send error message when checkAuthentication method failed', async () => {
+    it('should return HTTP code 401 and send error message when getAuthenticatedDataProvider method failed', async () => {
       dataProviderServiceMock.checkRequestValid.mockResolvedValueOnce(true);
       dataProviderServiceMock.generateErrorMessage.mockReturnValueOnce({
         error: 'invalid_client',
@@ -260,7 +311,7 @@ describe('DataProviderController', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Client authentication failed.',
       });
-      dataProviderAdapterMongoMock.checkAuthentication.mockRejectedValueOnce(
+      dataProviderAdapterMongoMock.getAuthenticatedDataProvider.mockRejectedValueOnce(
         new DataProviderInvalidCredentialsException(),
       );
 
@@ -277,6 +328,12 @@ describe('DataProviderController', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Client authentication failed.',
       });
+
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
+      expect(trackingServiceMock.track).toHaveBeenCalledWith(
+        trackingServiceMock.TrackedEventsMap.DP_USED_INVALID_CREDENTIAL,
+        { req: reqMock, dpClientId: bodyMock.client_id },
+      );
     });
 
     it('should return HTTP code 400 and send error message when checkRequest method failed', async () => {
@@ -304,6 +361,8 @@ describe('DataProviderController', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Required parameter missing or invalid.',
       });
+
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(0);
     });
 
     it('should log a critical error if a catch happens', async () => {
@@ -320,6 +379,8 @@ describe('DataProviderController', () => {
         { error: '' },
         errorMock.message,
       );
+
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(0);
     });
 
     it('should return HTTP code 500 and send error message if no httpStatusCode', async () => {
@@ -347,14 +408,16 @@ describe('DataProviderController', () => {
         error_description:
           'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
       });
+
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(0);
     });
 
     it('should return expired JWT if session is not found', async () => {
       // Given
+      dataProviderController['trackChecktokenJWT'] = jest.fn();
       dataProviderServiceMock.getSessionByAccessToken.mockReturnValueOnce(
         undefined,
       );
-      const expiredPayload = Symbol('Expired paylad');
       dataProviderServiceMock.generateExpiredPayload.mockReturnValueOnce(
         expiredPayload,
       );
@@ -374,6 +437,44 @@ describe('DataProviderController', () => {
       expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledWith(
         expiredPayload,
         bodyMock.client_id,
+      );
+
+      expect(
+        dataProviderController['trackChecktokenJWT'],
+      ).toHaveBeenCalledTimes(1);
+      expect(dataProviderController['trackChecktokenJWT']).toHaveBeenCalledWith(
+        expiredPayload,
+        { req: reqMock, dpId: 'dp-uid', dpTitle: 'data provider title' },
+      );
+    });
+  });
+
+  describe('trackChecktokenJWT()', () => {
+    it('should emit DP_VERIFIED_FC_CHECKTOKEN event if token_introspection is active', async () => {
+      // When
+      await dataProviderController['trackChecktokenJWT'](payloadMock, {
+        req: reqMock,
+      });
+
+      // Then
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
+      expect(trackingServiceMock.track).toHaveBeenCalledWith(
+        trackingServiceMock.TrackedEventsMap.DP_VERIFIED_FC_CHECKTOKEN,
+        { req: reqMock, scope: 'scope' },
+      );
+    });
+
+    it('should emit DP_USED_INVALID_ACCESS_TOKEN event if token_introspection is not active', async () => {
+      // When
+      await dataProviderController['trackChecktokenJWT'](expiredPayload, {
+        req: reqMock,
+      });
+
+      // Then
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
+      expect(trackingServiceMock.track).toHaveBeenCalledWith(
+        trackingServiceMock.TrackedEventsMap.DP_USED_INVALID_ACCESS_TOKEN,
+        { req: reqMock },
       );
     });
   });
