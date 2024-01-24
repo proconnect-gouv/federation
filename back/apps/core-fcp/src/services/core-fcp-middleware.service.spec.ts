@@ -646,8 +646,28 @@ describe('CoreFcpMiddlewareService', () => {
       expect(result).toBe(false);
     });
 
+    it('should return false there is no session', async () => {
+      // Given
+      sessionServiceMock.get.mockReturnValueOnce(undefined);
+      // When
+      const result = await service['isFinishedInteractionSession'](ctxMock);
+      // Then
+      expect(result).toBe(false);
+    });
+
+    it('should not try to validate if there is no session', async () => {
+      // Given
+      sessionServiceMock.get.mockReturnValueOnce(undefined);
+      // When
+      await service['isFinishedInteractionSession'](ctxMock);
+      // Then
+      expect(validateDtoMock).not.toHaveBeenCalled();
+    });
+
     it('should return true if there are no validation errors', async () => {
       // Given
+      const sessionDataMock = Symbol('sessionData');
+      sessionServiceMock.get.mockReturnValueOnce(sessionDataMock);
       const validationErrorsMock = [] as unknown as ValidationError[];
       validateDtoMock.mockReset().mockResolvedValueOnce(validationErrorsMock);
       // When
