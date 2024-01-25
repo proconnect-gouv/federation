@@ -31,7 +31,7 @@ describe('Session', () => {
     cy.hasError('Y190001');
   });
 
-  it.only('should trigger error Y190001 if FC session cookie not set', () => {
+  it('should trigger error Y190001 if FC session cookie not set', () => {
     const authorizeUrl = getAuthorizeUrl();
     cy.visit(authorizeUrl);
     cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));

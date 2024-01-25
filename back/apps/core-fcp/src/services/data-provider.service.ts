@@ -26,7 +26,7 @@ import { ISessionService, SessionService } from '@fc/session';
 
 import { ChecktokenRequestDto, ErrorParamsDto } from '../dto';
 import {
-  CoreFcpFetchDataProviderJwksFailed,
+  CoreFcpFetchDataProviderJwksFailedException,
   InvalidChecktokenRequestException,
 } from '../exceptions';
 import { DpJwtPayloadInterface } from '../interfaces';
@@ -271,7 +271,7 @@ export class DataProviderService {
     try {
       response = await lastValueFrom(this.http.get(url));
     } catch (error) {
-      throw new CoreFcpFetchDataProviderJwksFailed(error);
+      throw new CoreFcpFetchDataProviderJwksFailedException(error);
     }
 
     return response.data as JSONWebKeySet;

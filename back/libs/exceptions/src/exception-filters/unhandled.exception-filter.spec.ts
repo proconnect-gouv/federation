@@ -33,6 +33,8 @@ describe(' UnhandledExceptionFilter', () => {
     message: 'messageValueMock',
   };
 
+  const exception = new Error('mock exception');
+
   beforeEach(() => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -72,8 +74,12 @@ describe(' UnhandledExceptionFilter', () => {
       expect(resMock.render).toHaveBeenCalledWith(
         'error',
         expect.objectContaining({
-          code: 'Y000000',
-          message: 'message text',
+          exception,
+          error: {
+            code: 'Y000000',
+            message: 'message text',
+            id: expect.any(String),
+          },
         }),
       );
     });
@@ -87,6 +93,7 @@ describe(' UnhandledExceptionFilter', () => {
       });
       const httpErrorCodeValueMock = 500;
       const exceptionParam: ApiErrorParams = {
+        exception,
         res: resMock,
         error: errorValueMock,
         httpResponseCode: httpErrorCodeValueMock,
@@ -106,14 +113,15 @@ describe(' UnhandledExceptionFilter', () => {
       // Given
       const httpErrorCodeValueMock = 500;
       const exceptionParam: ApiErrorParams = {
+        exception,
         res: resMock,
         error: errorValueMock,
         httpResponseCode: httpErrorCodeValueMock,
       };
-      const errorValueReturnedMock: ApiErrorMessage = {
-        code: 'codeValueMock',
-        id: 'idValueMock',
-        message: 'messageValueMock',
+      const errorValueReturnedMock = {
+        exception,
+        error: errorValueMock,
+        httpResponseCode: httpErrorCodeValueMock,
       };
       // When
       exceptionFilter['errorOutput'](exceptionParam);

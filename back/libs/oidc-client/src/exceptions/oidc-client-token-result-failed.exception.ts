@@ -19,5 +19,5 @@ export class OidcClientTokenResultFailedException extends OidcClientBaseExceptio
 
   static ERROR = 'server_error';
   static ERROR_DESCRIPTION =
-    'authentication aborted due to technical error authorization server';
+    'authentication aborted due to a technical error on the authorization server';
 }

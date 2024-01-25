@@ -52,6 +52,7 @@ export class UnhandledExceptionFilter
     const httpErrorCode: number = HttpStatus.INTERNAL_SERVER_ERROR;
     const errorMessage: ApiErrorMessage = { code, id, message };
     const exceptionParam: ApiErrorParams = {
+      exception,
       res,
       error: errorMessage,
       httpResponseCode: httpErrorCode,
@@ -74,20 +75,23 @@ export class UnhandledExceptionFilter
 
     switch (apiOutputContentType) {
       case ApiContentType.HTML:
-        this.getApiOutputHtml(res, error);
+        this.getApiOutputHtml(errorParam);
         break;
 
       case ApiContentType.JSON:
-        this.getApiOutputJson(res, error);
+        this.getApiOutputJson(errorParam);
         break;
     }
   }
 
-  private getApiOutputHtml(res: Response, error: ApiErrorMessage): void {
-    res.render('error', error);
+  private getApiOutputHtml(errorParam: ApiErrorParams): void {
+    const { res, ...params } = errorParam;
+    res.render('error', params);
   }
 
-  private getApiOutputJson(res: Response, error: ApiErrorMessage): void {
+  private getApiOutputJson(errorParam: ApiErrorParams): void {
+    const { res, error } = errorParam;
+
     res.json(error);
   }
 }

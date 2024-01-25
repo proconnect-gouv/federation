@@ -58,6 +58,7 @@ export class FcExceptionFilter
 
     const errorMessage: ApiErrorMessage = { code, id, message };
     const exceptionParam: ApiErrorParams = {
+      exception,
       res,
       error: errorMessage,
       httpResponseCode: exception.httpStatusCode,
