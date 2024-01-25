@@ -27,7 +27,7 @@ import { getRedisServiceMock } from '@mocks/redis';
 
 import { ChecktokenRequestDto } from '../dto';
 import {
-  CoreFcpFetchDataProviderJwksFailed,
+  CoreFcpFetchDataProviderJwksFailedException,
   InvalidChecktokenRequestException,
 } from '../exceptions';
 import { DpJwtPayloadInterface } from '../interfaces';
@@ -688,7 +688,7 @@ describe('DataProviderService', () => {
       // When / Then
       await expect(
         service['fetchEncryptionKeys'](urlMock),
-      ).rejects.toThrowError(CoreFcpFetchDataProviderJwksFailed);
+      ).rejects.toThrowError(CoreFcpFetchDataProviderJwksFailedException);
     });
 
     it('should return the response data', async () => {

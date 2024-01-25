@@ -1,14 +1,7 @@
-import { Response } from 'express';
-
 import { Catch } from '@nestjs/common';
 import { BaseExceptionFilter } from '@nestjs/core';
 
-import {
-  ApiContentType,
-  ApiErrorMessage,
-  ApiErrorParams,
-  AppConfig,
-} from '@fc/app';
+import { ApiContentType, ApiErrorParams, AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 
@@ -52,27 +45,30 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
   }
 
   protected errorOutput(errorParam: ApiErrorParams): void {
-    const { error, httpResponseCode, res } = errorParam;
+    const { httpResponseCode, res } = errorParam;
     const { apiOutputContentType } = this.config.get<AppConfig>('App');
 
     res.status(httpResponseCode);
 
     switch (apiOutputContentType) {
       case ApiContentType.HTML:
-        this.getApiOutputHtml(res, error);
+        this.getApiOutputHtml(errorParam);
         break;
 
       case ApiContentType.JSON:
-        this.getApiOutputJson(res, error);
+        this.getApiOutputJson(errorParam);
         break;
     }
   }
 
-  private getApiOutputHtml(res: Response, error: ApiErrorMessage): void {
-    res.render('error', error);
+  private getApiOutputHtml(errorParam: ApiErrorParams): void {
+    const { res, ...params } = errorParam;
+    res.render('error', params);
   }
 
-  private getApiOutputJson(res: Response, error: ApiErrorMessage): void {
+  private getApiOutputJson(errorParam: ApiErrorParams): void {
+    const { res, error } = errorParam;
+
     res.json(error);
   }
 }

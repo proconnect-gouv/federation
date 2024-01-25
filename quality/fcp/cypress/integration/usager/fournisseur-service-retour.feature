@@ -25,6 +25,5 @@ Fonctionnalité: Fournisseur Service - Retour
     Et que le code d'erreur FranceConnect est "Y000006"
     Quand je clique sur le lien retour vers le FS après une erreur
     Alors je suis redirigé vers la page erreur du fournisseur de service
-    Et le titre de l'erreur fournisseur de service est "Y000006"
-    Et la description de l'erreur fournisseur de service est "Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous"
-  
+    Et le titre de l'erreur fournisseur de service est "server_error"
+    Et la description de l'erreur fournisseur de service est "authentication aborted due to a technical error on the authorization server"

@@ -31,6 +31,7 @@ describe('HttpExceptionFilter', () => {
     id: idValueMock,
     message: messageValueMock,
   };
+  const exception = new Error('mock exception');
 
   let configServiceMock;
 
@@ -88,8 +89,12 @@ describe('HttpExceptionFilter', () => {
       expect(resMock.render).toHaveBeenCalledWith(
         'error',
         expect.objectContaining({
-          code: `Y000${codeMock}`,
-          message: 'some other text',
+          exception,
+          error: {
+            code: `Y000${codeMock}`,
+            message: 'some other text',
+            id: expect.any(String),
+          },
         }),
       );
     });
@@ -102,6 +107,7 @@ describe('HttpExceptionFilter', () => {
         apiOutputContentType: 'json',
       });
       const exceptionParam: ApiErrorParams = {
+        exception,
         res: resMock,
         error: errorValueMock,
         httpResponseCode: HttpStatus.BAD_REQUEST,
@@ -120,14 +126,18 @@ describe('HttpExceptionFilter', () => {
     it('should return an error through `res.render` if the `apiOutputContentType` value is set to `html`', () => {
       // Given
       const exceptionParam: ApiErrorParams = {
+        exception,
         res: resMock,
         error: errorValueMock,
         httpResponseCode: HttpStatus.BAD_REQUEST,
       };
-      const errorValueReturnedMock: ApiErrorMessage = {
-        code: 'codeValueMock',
-        id: 'idValueMock',
-        message: 'messageValueMock',
+      const errorValueReturnedMock = {
+        exception,
+        error: {
+          code: 'codeValueMock',
+          id: 'idValueMock',
+          message: 'messageValueMock',
+        },
       };
       // When
       exceptionFilter['errorOutput'](exceptionParam);
@@ -142,6 +152,7 @@ describe('HttpExceptionFilter', () => {
     it('should send an HTTP code corresponding to `httpResponseCode` given in `errorParam`', () => {
       // Given
       const exceptionParam: ApiErrorParams = {
+        exception,
         res: resMock,
         error: errorValueMock,
         httpResponseCode: HttpStatus.BAD_REQUEST,

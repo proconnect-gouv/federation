@@ -46,6 +46,8 @@ describe('FcExceptionFilter', () => {
     get: jest.fn(),
   };
 
+  const exception = new Error('mock exception');
+
   beforeEach(() => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -128,8 +130,12 @@ describe('FcExceptionFilter', () => {
       expect(resMock.render).toHaveBeenCalledWith(
         'error',
         expect.objectContaining({
-          code: 'Y020003',
-          message: 'message text',
+          exception,
+          error: {
+            code: 'Y020003',
+            message: 'message text',
+            id: expect.any(String),
+          },
         }),
       );
     });
@@ -244,6 +250,7 @@ describe('FcExceptionFilter', () => {
         apiOutputContentType: 'json',
       });
       const exceptionParam: ApiErrorParams = {
+        exception,
         res: resMock,
         error: errorValueMock,
         httpResponseCode: HttpStatus.BAD_REQUEST,
@@ -262,14 +269,18 @@ describe('FcExceptionFilter', () => {
     it('should return an error through `res.render` if the `apiOutputContentType` value is set to `html`', () => {
       // Given
       const exceptionParam: ApiErrorParams = {
+        exception,
         res: resMock,
         error: errorValueMock,
         httpResponseCode: HttpStatus.BAD_REQUEST,
       };
-      const errorValueReturnedMock: ApiErrorMessage = {
-        code: 'codeValueMock',
-        id: 'idValueMock',
-        message: 'messageValueMock',
+      const errorValueReturnedMock = {
+        exception,
+        error: {
+          code: 'codeValueMock',
+          id: 'idValueMock',
+          message: 'messageValueMock',
+        },
       };
       // When
       exceptionFilter['errorOutput'](exceptionParam);
@@ -284,6 +295,7 @@ describe('FcExceptionFilter', () => {
     it('should send an HTTP code corresponding to `httpResponseCode` given in `errorParam`', () => {
       // Given
       const exceptionParam: ApiErrorParams = {
+        exception,
         res: resMock,
         error: errorValueMock,
         httpResponseCode: HttpStatus.BAD_REQUEST,
