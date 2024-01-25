@@ -2,10 +2,12 @@ import { KoaContextWithOIDC, Provider } from 'oidc-provider';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { SessionService, SessionSubNotFoundException } from '@fc/session';
 
+import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
@@ -26,6 +28,7 @@ describe('OidcProviderAppConfigLibService', () => {
   const sessionServiceMock = getSessionServiceMock();
 
   const loggerMock = getLoggerMock();
+  const configMock = getConfigMock();
 
   const errorServiceMock = {
     throwError: jest.fn(),
@@ -65,6 +68,7 @@ describe('OidcProviderAppConfigLibService', () => {
         SessionService,
         OidcProviderErrorService,
         OidcProviderGrantService,
+        ConfigService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -75,6 +79,8 @@ describe('OidcProviderAppConfigLibService', () => {
       .useValue(errorServiceMock)
       .overrideProvider(OidcProviderGrantService)
       .useValue(oidcProviderGrantServiceMock)
+      .overrideProvider(ConfigService)
+      .useValue(configMock)
       .compile();
 
     service = module.get<AppTest>(AppTest);
@@ -297,6 +303,11 @@ describe('OidcProviderAppConfigLibService', () => {
       sessionId: 'sessionIdMockedValue',
     };
     const resMock = {};
+    const acrMock = Symbol('acrMock');
+
+    beforeEach(() => {
+      service['getInteractionAcr'] = jest.fn().mockReturnValue(acrMock);
+    });
 
     it('should return the result of oidc-provider.interactionFinished()', async () => {
       // Given
@@ -348,7 +359,7 @@ describe('OidcProviderAppConfigLibService', () => {
         },
         login: {
           accountId: reqMock.sessionId,
-          acr: spAcrMock,
+          acr: acrMock,
           amr: amrValueMock,
           ts: expect.any(Number),
           remember: false,
@@ -394,6 +405,40 @@ describe('OidcProviderAppConfigLibService', () => {
       await expect(
         service.finishInteraction(reqMock, resMock, sessionDataMock),
       ).rejects.toThrow(OidcProviderRuntimeException);
+    });
+  });
+
+  describe('getInteractionAcr()', () => {
+    beforeEach(() => {
+      configMock.get.mockReturnValue({
+        configuration: {
+          acrValues: ['spAcrValue', 'idpAcrValue'],
+        },
+      });
+    });
+
+    it('should return the idpAcr value', () => {
+      // Given
+      const sessionDataMock: OidcSession = {
+        spAcr: 'spAcrValue',
+        idpAcr: 'idpAcrValue',
+      };
+      // When
+      const result = service['getInteractionAcr'](sessionDataMock);
+      // Then
+      expect(result).toBe('idpAcrValue');
+    });
+
+    it('should return the spAcr value', () => {
+      // Given
+      const sessionDataMock: OidcSession = {
+        spAcr: 'spAcrValue',
+        idpAcr: 'idpAcrValueNotInConfig',
+      };
+      // When
+      const result = service['getInteractionAcr'](sessionDataMock);
+      // Then
+      expect(result).toBe('spAcrValue');
     });
   });
 

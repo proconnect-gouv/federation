@@ -74,8 +74,8 @@ export default {
       AuthorizationCode: 30, // 30 seconds
       Grant: 30, // 30 seconds
       IdToken: 60, // 1 minute
-      Interaction: env.number('COOKIE_MAX_AGE'), // 20 minutes
-      Session: env.number('COOKIE_MAX_AGE'), // 20 minutes
+      Interaction: 600, // 10 minutes
+      Session: 600, // 10 minutes
     },
     acrValues: ['eidas2', 'eidas3'],
     scopes: ['openid'],

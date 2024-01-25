@@ -6,7 +6,11 @@ import { OidcProviderService } from '@fc/oidc-provider';
 
 import { getLoggerMock } from '@mocks/logger';
 
-import { CoreInvalidAcrException, CoreLowAcrException } from '../exceptions';
+import {
+  CoreHighAcrException,
+  CoreInvalidAcrException,
+  CoreLowAcrException,
+} from '../exceptions';
 import { CoreAcrService } from './core-acr.service';
 
 describe('CoreAcrService', () => {
@@ -51,16 +55,17 @@ describe('CoreAcrService', () => {
 
   describe('checkIfAcrIsValid()', () => {
     beforeEach(() => {
-      oidcAcrServiceMock.isAcrValid.mockReturnValueOnce(true);
+      oidcAcrServiceMock.isAcrValid.mockReturnValue(true);
     });
 
     it('should succeed if acr value is accepted', () => {
       // Given
       const received = 'eidas3';
       const requested = 'eidas3';
+      const maxAcr = 'eidas3';
 
       // When
-      const call = () => service.checkIfAcrIsValid(received, requested);
+      const call = () => service.checkIfAcrIsValid(received, requested, maxAcr);
 
       // Then
       expect(call).not.toThrow();
@@ -70,9 +75,11 @@ describe('CoreAcrService', () => {
       // Given
       const received = 'eidas3';
       const requested = '';
+      const maxAcr = 'eidas3';
 
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const call = () =>
+        service['checkIfAcrIsValid'](received, requested, maxAcr);
 
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
@@ -83,9 +90,11 @@ describe('CoreAcrService', () => {
       // Given
       const received = '';
       const requested = 'eidas2';
+      const maxAcr = 'eidas3';
 
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const call = () =>
+        service['checkIfAcrIsValid'](received, requested, maxAcr);
 
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
@@ -96,9 +105,11 @@ describe('CoreAcrService', () => {
       // Given
       const received = 'eidas3';
       const requested = undefined;
+      const maxAcr = 'eidas3';
 
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const call = () =>
+        service['checkIfAcrIsValid'](received, requested, maxAcr);
 
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
@@ -109,9 +120,11 @@ describe('CoreAcrService', () => {
       // Given
       const received = undefined;
       const requested = 'eidas2';
+      const maxAcr = 'eidas3';
 
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const call = () =>
+        service['checkIfAcrIsValid'](received, requested, maxAcr);
 
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
@@ -122,9 +135,11 @@ describe('CoreAcrService', () => {
       // Given
       const received = 'eidas3';
       const requested = null;
+      const maxAcr = 'eidas3';
 
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const call = () =>
+        service['checkIfAcrIsValid'](received, requested, maxAcr);
 
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
@@ -135,28 +150,52 @@ describe('CoreAcrService', () => {
       // Given
       const received = null;
       const requested = 'eidas2';
+      const maxAcr = 'eidas3';
 
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const call = () =>
+        service['checkIfAcrIsValid'](received, requested, maxAcr);
 
       // Then
       expect(call).toThrow(CoreInvalidAcrException);
       expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(0);
     });
 
-    it('should throw if acr is not valid', () => {
+    it('should throw if acr is too low', () => {
       // Given
       oidcAcrServiceMock.isAcrValid.mockReset().mockReturnValueOnce(false);
 
       const received = 'eidas1';
       const requested = 'eidas2';
+      const maxAcr = 'eidas3';
 
       // When
-      const call = () => service['checkIfAcrIsValid'](received, requested);
+      const call = () =>
+        service['checkIfAcrIsValid'](received, requested, maxAcr);
 
       // Then
       expect(call).toThrow(CoreLowAcrException);
       expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(1);
+    });
+
+    it('should throw if acr is too high', () => {
+      // Given
+      oidcAcrServiceMock.isAcrValid
+        .mockReset()
+        .mockReturnValueOnce(true)
+        .mockReturnValueOnce(false);
+
+      const received = 'eidas3';
+      const requested = 'eidas2';
+      const maxAcr = 'eidas2';
+
+      // When
+      const call = () =>
+        service['checkIfAcrIsValid'](received, requested, maxAcr);
+
+      // Then
+      expect(call).toThrow(CoreHighAcrException);
+      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(2);
     });
   });
 

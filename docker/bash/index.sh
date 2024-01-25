@@ -74,6 +74,7 @@ _command_register "prune-ci" "_prune_ci" "Reset docker for CI runners"
 _command_register "up" "_up" "up <stack name> => Launch a stack"
 _command_register "exec" "_exec" "exec <container_name> <command> => exec a command inside a container"
 _command_register "halt" "_halt" "alt => stop docker-compose and delete containers"
+_command_register "switch" "_switch" "Switch to another stack: performs a prune, an up and a start-all"
 
 _command_register "run-prod" "_run_prod" "" # Description to be defined
 _command_register "list" "_list_services" "List available services / stacks: list <search term>"

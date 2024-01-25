@@ -4,7 +4,11 @@ import { LoggerService } from '@fc/logger';
 import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcProviderService } from '@fc/oidc-provider';
 
-import { CoreInvalidAcrException, CoreLowAcrException } from '../exceptions';
+import {
+  CoreHighAcrException,
+  CoreInvalidAcrException,
+  CoreLowAcrException,
+} from '../exceptions';
 
 @Injectable()
 export class CoreAcrService {
@@ -39,7 +43,12 @@ export class CoreAcrService {
     return true;
   }
 
-  checkIfAcrIsValid(received: string, requested: string): void {
+  // eslint-disable-next-line complexity
+  checkIfAcrIsValid(
+    received: string,
+    requested: string,
+    maxAuthorizedAcr: string,
+  ): void {
     /**
      * @todo #494
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/494
@@ -56,6 +65,13 @@ export class CoreAcrService {
         `Received ACR value "${received}" is lower than requested "${requested}"`,
       );
       throw new CoreLowAcrException();
+    }
+
+    if (!this.oidcAcr.isAcrValid(maxAuthorizedAcr, received)) {
+      this.logger.err(
+        `Received ACR value "${received}" is higher than max authorized "${maxAuthorizedAcr}"`,
+      );
+      throw new CoreHighAcrException();
     }
   }
 }

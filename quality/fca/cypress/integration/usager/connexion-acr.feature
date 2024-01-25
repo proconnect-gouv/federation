@@ -70,15 +70,9 @@ Fonctionnalité: Connexion Usager - Acr
     Et le fournisseur de service a accès aux informations des scopes "obligatoires"
     Et la cinématique a utilisé le niveau de sécurité "<actualAcr>"
 
-    @ci
-    Exemples:
-      | idpAcr | actualAcr |
-      | eidas2 | eidas1    |
-
     Exemples:
       | idpAcr | actualAcr |
       | eidas1 | eidas1    |
-      | eidas3 | eidas1    |
 
   Scénario: Connexion ACR - FI retourne un niveau inconnu
     Etant donné que j'utilise le fournisseur de service "par défaut"
@@ -94,3 +88,18 @@ Fonctionnalité: Connexion Usager - Acr
     Quand je m'authentifie avec succès
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y020001"
+
+  Scénario: Connexion ACR - FI retourne un niveau trop élevé
+    Etant donné que j'utilise le fournisseur de service "par défaut"
+    Et que j'utilise le fournisseur d'identité "par défaut"
+    Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires"
+    Et que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton AgentConnect
+    Et que je suis redirigé vers la page interaction
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Et que le fournisseur d'identité garantit un niveau de sécurité "eidas2"
+    Quand je m'authentifie avec succès
+    Alors je suis redirigé vers la page erreur technique
+    Et le code d'erreur est "Y020018"

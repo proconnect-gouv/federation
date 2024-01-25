@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { CryptographyEidasService } from '@fc/cryptography-eidas';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
@@ -87,6 +88,10 @@ describe('CoreFcpEidasVerifyHandler', () => {
     computeIdentityHash: jest.fn(),
   };
 
+  const identityProviderAdapterMock = {
+    getById: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -98,6 +103,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
         SessionService,
         TrackingService,
         ServiceProviderAdapterMongoService,
+        IdentityProviderAdapterMongoService,
         CryptographyEidasService,
       ],
     })
@@ -117,6 +123,8 @@ describe('CoreFcpEidasVerifyHandler', () => {
       .useValue(serviceProviderMock)
       .overrideProvider(CryptographyEidasService)
       .useValue(cryptographyEidasServiceMock)
+      .overrideProvider(IdentityProviderAdapterMongoService)
+      .useValue(identityProviderAdapterMock)
       .compile();
 
     service = module.get<CoreFcpEidasVerifyHandler>(CoreFcpEidasVerifyHandler);
@@ -133,6 +141,10 @@ describe('CoreFcpEidasVerifyHandler', () => {
     );
 
     coreAccountServiceMock.computeFederation.mockResolvedValue(accountIdMock);
+
+    identityProviderAdapterMock.getById.mockResolvedValue({
+      maxAuthorizedAcr: 'maxAuthorizedAcr value',
+    });
   });
 
   it('should be defined', () => {

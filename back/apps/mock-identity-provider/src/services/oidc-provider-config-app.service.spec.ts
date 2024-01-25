@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import {
   OidcProviderErrorService,
@@ -7,6 +8,7 @@ import {
 } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 
+import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
@@ -31,6 +33,7 @@ describe('OidcProviderConfigAppService', () => {
   };
 
   const loggerServiceMock = getLoggerMock();
+  const configMock = getConfigMock();
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -44,6 +47,7 @@ describe('OidcProviderConfigAppService', () => {
         OidcProviderErrorService,
         OidcProviderGrantService,
         ScenariosService,
+        ConfigService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -56,6 +60,8 @@ describe('OidcProviderConfigAppService', () => {
       .useValue(oidcProviderGrantServiceMock)
       .overrideProvider(ScenariosService)
       .useValue(scenariosServiceMock)
+      .overrideProvider(ConfigService)
+      .useValue(configMock)
       .compile();
 
     service = module.get<OidcProviderConfigAppService>(
