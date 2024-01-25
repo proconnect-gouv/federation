@@ -6,6 +6,7 @@ import { ConfigService } from '@fc/config';
 import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { IdentitySource } from '@fc/core-fcp/enums';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { RnippPivotIdentity, RnippService } from '@fc/rnipp';
@@ -161,6 +162,10 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     useIdentityFrom: IdentitySource.RNIPP,
   };
 
+  const identityProviderAdapterMock = {
+    getById: jest.fn(),
+  };
+
   const trackingContext = {} as unknown as TrackedEventContextInterface;
 
   beforeEach(async () => {
@@ -175,6 +180,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
         RnippService,
         TrackingService,
         ServiceProviderAdapterMongoService,
+        IdentityProviderAdapterMongoService,
         CryptographyFcpService,
         AccountService,
       ],
@@ -199,6 +205,8 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       .useValue(cryptographyFcpServiceMock)
       .overrideProvider(AccountService)
       .useValue(accountServiceMock)
+      .overrideProvider(IdentityProviderAdapterMongoService)
+      .useValue(identityProviderAdapterMock)
       .compile();
 
     service = module.get<CoreFcpDefaultVerifyHandler>(
@@ -223,6 +231,10 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       accountDataMock,
     );
     configServiceMock.get.mockReturnValue(configReturnedValueMock);
+
+    identityProviderAdapterMock.getById.mockResolvedValue({
+      maxAuthorizedAcr: 'maxAuthorizedAcr value',
+    });
   });
 
   it('should be defined', () => {

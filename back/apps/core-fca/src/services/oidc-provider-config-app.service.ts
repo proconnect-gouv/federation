@@ -29,11 +29,11 @@ export class OidcProviderConfigAppService extends OidcProviderAppConfigLibServic
     protected readonly sessionService: SessionService,
     protected readonly errorService: OidcProviderErrorService,
     protected readonly grantService: OidcProviderGrantService,
+    protected readonly config: ConfigService,
     private readonly oidcClient: OidcClientService,
-    private readonly config: ConfigService,
     private readonly tracking: TrackingService,
   ) {
-    super(logger, sessionService, errorService, grantService);
+    super(logger, sessionService, errorService, grantService, config);
   }
 
   /**

@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AccountBlockedException } from '@fc/account';
 import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { CryptographyFcaService } from '@fc/cryptography-fca';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
 
@@ -72,6 +73,10 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     computeIdentityHash: jest.fn(),
   };
 
+  const identityProviderAdapterMock = {
+    getById: jest.fn(),
+  };
+
   const agentHashMock = 'spIdentityHash';
 
   beforeEach(async () => {
@@ -83,6 +88,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         CoreAccountService,
         CoreAcrService,
         CryptographyFcaService,
+        IdentityProviderAdapterMongoService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -95,6 +101,8 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       .useValue(coreAcrServiceMock)
       .overrideProvider(CryptographyFcaService)
       .useValue(cryptographyFcaServiceMock)
+      .overrideProvider(IdentityProviderAdapterMongoService)
+      .useValue(identityProviderAdapterMock)
       .compile();
 
     service = module.get<CoreFcaDefaultVerifyHandler>(
@@ -112,6 +120,10 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       'computedSubSp',
     );
     coreAccountServiceMock.computeFederation.mockResolvedValue(accountIdMock);
+
+    identityProviderAdapterMock.getById.mockResolvedValue({
+      maxAuthorizedAcr: 'maxAuthorizedAcr value',
+    });
   });
 
   it('should be defined', () => {

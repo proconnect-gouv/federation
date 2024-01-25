@@ -21,4 +21,5 @@ export enum ErrorCode {
   DATA_PROVIDER_NOT_FOUND = 14,
   AGENT_NOT_FOUND = 15,
   INVALID_IDP_HINT = 16,
+  HIGH_ACR = 18,
 }

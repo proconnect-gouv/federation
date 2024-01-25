@@ -120,3 +120,9 @@ _prune_ci() {
 
   docker volume prune -f
 }
+
+_switch() {
+  _prune
+  _up "${@}"
+  _start_all
+}

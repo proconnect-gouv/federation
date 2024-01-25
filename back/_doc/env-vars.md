@@ -509,7 +509,6 @@
 | Logger_STDOUT_LEVELS | json |
 | Logger_THRESHOLD | string |
 | OidcProvider_COOKIES_KEYS | json |
-| OidcProvider_COOKIE_MAX_AGE | number |
 | OidcProvider_CRYPTO_SIG_ES256_PRIV_KEYS | json |
 | OidcProvider_CRYPTO_SIG_RS256_PRIV_KEYS | json |
 | OidcProvider_PREFIX | string |
@@ -555,7 +554,6 @@
 | Logger_STDOUT_LEVELS | json |
 | Logger_THRESHOLD | string |
 | OidcProvider_COOKIES_KEYS | json |
-| OidcProvider_COOKIE_MAX_AGE | number |
 | OidcProvider_CRYPTO_SIG_ES256_PRIV_KEYS | json |
 | OidcProvider_CRYPTO_SIG_RS256_PRIV_KEYS | json |
 | OidcProvider_PREFIX | string |
