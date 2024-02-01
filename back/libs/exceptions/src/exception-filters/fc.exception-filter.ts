@@ -5,6 +5,7 @@ import { ConfigService } from '@fc/config';
 import { Loggable } from '@fc/exceptions';
 import { LoggerService } from '@fc/logger';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
+import { ViewTemplateService } from '@fc/view-templates';
 
 import { FcException } from '../exceptions';
 import { ExceptionsService } from '../exceptions.service';
@@ -18,9 +19,10 @@ export class FcExceptionFilter
   constructor(
     protected readonly config: ConfigService,
     protected readonly logger: LoggerService,
+    protected readonly viewTemplate: ViewTemplateService,
     protected readonly tracking: TrackingService,
   ) {
-    super(config, logger);
+    super(config, logger, viewTemplate);
   }
 
   async catch(exception: FcException, host: ArgumentsHost) {

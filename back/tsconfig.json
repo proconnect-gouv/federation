@@ -493,6 +493,12 @@
       "@mocks/async-local-storage/*": [
         "libs/async-local-storage/.mocks/*"
       ],
+      "@fc/view-templates": [
+        "libs/view-templates/src"
+      ],
+      "@fc/view-templates/*": [
+        "libs/view-templates/src/*"
+      ]
     }
   },
   "files": [

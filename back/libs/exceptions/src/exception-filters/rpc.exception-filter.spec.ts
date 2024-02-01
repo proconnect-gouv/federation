@@ -2,6 +2,7 @@ import { throwError } from 'rxjs';
 
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { ViewTemplateService } from '@fc/view-templates';
 
 import { getLoggerMock } from '@mocks/logger';
 
@@ -24,10 +25,15 @@ describe('RpcExceptionFilter', () => {
   resMock.render = jest.fn().mockReturnValue(resMock);
   resMock.status = jest.fn().mockReturnValue(resMock);
 
+  const viewTemplateServiceMock = {
+    bindMethodsToResponse: jest.fn(),
+  };
+
   beforeEach(() => {
     exceptionFilter = new RpcExceptionFilter(
       configServiceMock,
       loggerMock as unknown as LoggerService,
+      viewTemplateServiceMock as unknown as ViewTemplateService,
     );
     jest.resetAllMocks();
   });

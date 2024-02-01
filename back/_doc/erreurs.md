@@ -207,3 +207,8 @@
 |---|---|---|---|---|---|
 | [Y450001](../libs/async-local-storage/src/exceptions/async-local-storage-not-found.exception.ts "AsyncLocalStorageNotFoundException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | Le store n&#39;a pas pu être récupéré dans le présent contexte. Vérifiez que l&#39;appel actuel se situe bien dans le contexte du callback de l&#39;appel à &#34;run&#34;. Voir également la documentation NodeJS de AsyncLocalStorage pour plus de détail. | server_error | authentication aborted due to a technical error on the authorization server |
 
+| Code d'erreur | Code HTTP | Message utilisateur | Description | Erreur | Erreur Description |
+|---|---|---|---|---|---|
+| [Y460001](../libs/view-templates/src/exceptions/view-template-conflicting-alias.exception.ts "ViewTemplateConflictingAliasException") | 500 | View template alias &#34;Error&#34; is already registered | Un alias d&#39;opérateur de template avec ce nom est déjà enregistré. Erreur au démarrage de l&#39;application. | server_error | authentication aborted due to a technical error on the authorization server |
+| [Y460002](../libs/view-templates/src/exceptions/view-template-service-not-found.exception.ts "ViewTemplateServiceNotFoundException") | 500 | Could not find Error.undefined(), is Error defined as provider and &#39;@Injectable()&#39;? | Un alias sur une méthode d&#39;instance n&#39;a pas pu être exposé aux templates, probablement car le service n&#39;est pas enregistré comme provider. | server_error | authentication aborted due to a technical error on the authorization server |
+

@@ -2,10 +2,8 @@
 
 // Declarative code
 import { Global, Module } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { ConfigTemplateInterceptor } from '@fc/config';
 import { ExceptionsModule } from '@fc/exceptions';
 import {
   OidcProviderGrantService,
@@ -16,6 +14,7 @@ import {
   ServiceProviderAdapterEnvService,
 } from '@fc/service-provider-adapter-env';
 import { SessionModule } from '@fc/session';
+import { ViewTemplatesModule } from '@fc/view-templates';
 
 import {
   MockIdentityProviderController,
@@ -42,6 +41,7 @@ const exceptionModule = ExceptionsModule.withoutTracking();
       ServiceProviderAdapterEnvModule,
       exceptionModule,
     ),
+    ViewTemplatesModule,
   ],
   controllers: [MockIdentityProviderController, OidcProviderController],
   providers: [
@@ -50,10 +50,6 @@ const exceptionModule = ExceptionsModule.withoutTracking();
     OidcProviderGrantService,
     OidcProviderMiddlewareService,
     ScenariosService,
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: ConfigTemplateInterceptor,
-    },
   ],
   exports: [OidcProviderConfigAppService],
 })

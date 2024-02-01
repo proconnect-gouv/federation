@@ -1,6 +1,5 @@
 <!doctype html>
 <html>
-  <% locals.config = { App: { title: "Erreur", logo: "logo"}}; %>
   <%- include("includes/head") %>
 
   <body>
@@ -9,12 +8,12 @@
 
       <div id="container">
         <div class="inner">
-          <h3 class="title"><%= locals.config.App.title %></h3>
+          <h3 class="title"><%= $config('App.title') %></h3>
 
           <h4><%= locals.message %></h4>
           <ul style="text-align: left">
-            <li>code : <strong><%= locals.code %></strong></li>
-            <li>id: <%= locals.id %></li>
+            <li>code : <strong><%= locals.error.code %></strong></li>
+            <li>id: <%= locals.error.id %></li>
           </ul>
         </div>
       </div>

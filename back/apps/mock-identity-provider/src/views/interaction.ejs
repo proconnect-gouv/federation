@@ -7,7 +7,7 @@
 
       <div id="container">
         <div class="inner">
-          <h3 class="title"><%= locals.config.App.title %></h3>
+          <h3 class="title"><%= $config('App.title') %></h3>
           <form method="POST" action="/login">
             <input
               type="hidden"
@@ -35,7 +35,7 @@
             <button type="submit">Envoyer</button>
           </form>
         </div>
-        <% if(locals.config.App.allowCustomIdentity) { %>
+        <% if($config('App.allowCustomIdentity')) { %> 
           <a
           class="navigate"
           id="custom-identity-link"

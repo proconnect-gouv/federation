@@ -4,12 +4,14 @@ import { BaseExceptionFilter } from '@nestjs/core';
 import { ApiContentType, ApiErrorParams, AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
+import { ViewTemplateService } from '@fc/view-templates';
 
 @Catch()
 export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
   constructor(
     protected readonly config: ConfigService,
     protected readonly logger: LoggerService,
+    protected readonly viewTemplate: ViewTemplateService,
   ) {
     super();
   }
@@ -47,6 +49,12 @@ export abstract class FcBaseExceptionFilter extends BaseExceptionFilter {
   protected errorOutput(errorParam: ApiErrorParams): void {
     const { httpResponseCode, res } = errorParam;
     const { apiOutputContentType } = this.config.get<AppConfig>('App');
+
+    /**
+     * Interceptors are not run in case of route not handled by our app (404)
+     * So we need to manually bind template helpers.
+     */
+    this.viewTemplate.bindMethodsToResponse(res);
 
     res.status(httpResponseCode);
 

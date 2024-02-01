@@ -1,7 +1,7 @@
 <%
 locals.providers
   .filter(p => p.display)
-  .filter(p => p.uid !== locals.config.App.aidantsConnectUid)
+  .filter(p => p.uid !== $config('App.aidantsConnectUid'))
   .forEach((provider) => {
 %>
   <form action="/api/v2/redirect-to-idp" method="POST" class="interaction-main-content-form" name="fs-request">
