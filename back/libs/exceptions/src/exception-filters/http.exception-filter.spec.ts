@@ -2,6 +2,7 @@ import { ArgumentsHost, HttpStatus } from '@nestjs/common';
 
 import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 import { LoggerService } from '@fc/logger';
+import { ViewTemplateService } from '@fc/view-templates';
 
 import { getLoggerMock } from '@mocks/logger';
 
@@ -35,6 +36,10 @@ describe('HttpExceptionFilter', () => {
 
   let configServiceMock;
 
+  const viewTemplateServiceMock = {
+    bindMethodsToResponse: jest.fn(),
+  };
+
   beforeEach(() => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -50,6 +55,7 @@ describe('HttpExceptionFilter', () => {
     exceptionFilter = new HttpExceptionFilter(
       configServiceMock,
       loggerMock as unknown as LoggerService,
+      viewTemplateServiceMock as unknown as ViewTemplateService,
     );
   });
 

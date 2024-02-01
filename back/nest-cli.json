@@ -959,6 +959,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/async-local-storage/tsconfig.lib.json"
       }
+    },
+    "view-templates": {
+      "type": "library",
+      "root": "libs/view-templates",
+      "entryFile": "index",
+      "sourceRoot": "libs/view-templates/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/view-templates/tsconfig.lib.json"
+      }
     }
   }
 }

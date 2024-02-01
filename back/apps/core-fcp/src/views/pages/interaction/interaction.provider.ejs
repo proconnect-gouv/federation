@@ -1,34 +1,27 @@
 <%
-// Helpers function
-function genAttributes(params) {
-  return Object.entries(params)
-    .filter(([attributeName, item]) => item.if)
-    .map(([attributeName, item]) => `${attributeName}="${item.value}"`);
-}
+
 
 // Settings
 const badgeClassname = provider.active
   ? 'fr-badge--info'
   : '';
 
-
-const attributes = genAttributes({
-  'disabled': {
-    value: 'disabled',
-    if: !provider.active,
-  },
-});
-
 const availability = !provider.active
   ? 'Indisponible'
   : '';
+
+const disabled = !provider.active
+  ? 'disabled'
+  : '';
+
 %>
 <button
   role="link"
   id="idp-<%= provider.uid %>"
   data-testid="idp-<%= provider.uid %>"
   class="fr-btn fr-btn--tertiary fr-px-0 fc-btn--provider"
-  <%- attributes.join('\n') %>>
+  <%= disabled %>
+>
 
   <% if (provider.isBeta) { %>
     <p class="fr-badge <%= badgeClassname %> fr-badge--no-icon">

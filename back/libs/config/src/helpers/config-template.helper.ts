@@ -1,30 +1,25 @@
-import { Observable } from 'rxjs';
+import { get } from 'lodash';
 
-import {
-  CallHandler,
-  ExecutionContext,
-  Injectable,
-  NestInterceptor,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
+
+import { TemplateMethod } from '@fc/view-templates';
 
 import { ConfigService } from '../config.service';
 import { ConfigConfig } from '../dto';
 import { TemplateExposedType } from '../types';
 
 @Injectable()
-export class ConfigTemplateInterceptor implements NestInterceptor {
+export class ConfigTemplateHelper {
   constructor(private readonly config: ConfigService) {}
 
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
-    const res = context.switchToHttp().getResponse();
+  @TemplateMethod('config')
+  get(key: string): unknown {
     const { templateExposed } = this.config.get<ConfigConfig>('Config');
 
     if (templateExposed) {
       const configParts = this.getConfigParts(templateExposed);
-      res.locals.config = configParts;
+      return get(configParts, key);
     }
-
-    return next.handle();
   }
 
   private fillObject(filters, source) {

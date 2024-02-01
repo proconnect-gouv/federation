@@ -17,6 +17,7 @@ import {
   ServiceProviderAdapterEnvService,
 } from '@fc/service-provider-adapter-env';
 import { SessionModule } from '@fc/session';
+import { ViewTemplatesModule } from '@fc/view-templates';
 
 import {
   MockServiceProviderController,
@@ -40,6 +41,7 @@ const oidcClientModule = OidcClientModule.register(
     CryptographyModule,
     oidcClientModule,
     HttpModule,
+    ViewTemplatesModule,
   ],
   controllers: [OidcClientController, MockServiceProviderController],
   providers: [MockServiceProviderService],

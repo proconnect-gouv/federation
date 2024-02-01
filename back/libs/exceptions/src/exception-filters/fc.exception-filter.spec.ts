@@ -5,6 +5,7 @@ import { ConfigService } from '@fc/config';
 import { Loggable, Trackable } from '@fc/exceptions';
 import { LoggerService } from '@fc/logger';
 import { TrackingService } from '@fc/tracking';
+import { ViewTemplateService } from '@fc/view-templates';
 
 import { getLoggerMock } from '@mocks/logger';
 
@@ -47,6 +48,9 @@ describe('FcExceptionFilter', () => {
   };
 
   const exception = new Error('mock exception');
+  const ViewTemplateServiceMock = {
+    bindMethodsToResponse: jest.fn(),
+  };
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -55,6 +59,7 @@ describe('FcExceptionFilter', () => {
     exceptionFilter = new FcExceptionFilter(
       configServiceMock as unknown as ConfigService,
       loggerServiceMock as unknown as LoggerService,
+      ViewTemplateServiceMock as unknown as ViewTemplateService,
       trackingServiceMock as unknown as TrackingService,
     );
 
@@ -290,6 +295,25 @@ describe('FcExceptionFilter', () => {
         'error',
         expect.objectContaining(errorValueReturnedMock),
       );
+    });
+
+    it('should call `viewTemplate.bindMethodsToResponse()`', () => {
+      // Given
+      const exceptionParam: ApiErrorParams = {
+        exception,
+        res: resMock,
+        error: errorValueMock,
+        httpResponseCode: HttpStatus.BAD_REQUEST,
+      };
+      // When
+      exceptionFilter['errorOutput'](exceptionParam);
+      // Then
+      expect(
+        ViewTemplateServiceMock.bindMethodsToResponse,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        ViewTemplateServiceMock.bindMethodsToResponse,
+      ).toHaveBeenCalledWith(resMock);
     });
 
     it('should send an HTTP code corresponding to `httpResponseCode` given in `errorParam`', () => {

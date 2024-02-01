@@ -2,12 +2,10 @@
 
 // Declarative code
 import { Global, Module } from '@nestjs/common';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 
 import { AccountModule } from '@fc/account';
 import { AppModule } from '@fc/app';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { ConfigTemplateInterceptor } from '@fc/config';
 import {
   CORE_SERVICE,
   CoreAccountService,
@@ -44,6 +42,7 @@ import {
 } from '@fc/service-provider-adapter-mongo';
 import { SessionModule } from '@fc/session';
 import { TrackingModule } from '@fc/tracking';
+import { ViewTemplatesModule } from '@fc/view-templates';
 
 import {
   CoreFcpController,
@@ -58,6 +57,7 @@ import {
   CoreFcpEidasVerifyHandler,
   CoreFcpSendEmailHandler,
 } from './handlers';
+import { ScopesHelper } from './helpers';
 import {
   CoreFcpMiddlewareService,
   CoreFcpService,
@@ -106,6 +106,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     FeatureHandlerModule,
     AppModule,
     DataProviderAdapterMongoModule,
+    ViewTemplatesModule,
   ],
   controllers: [
     CoreFcpController,
@@ -128,15 +129,12 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     CoreFcpDefaultIdentityCheckHandler,
     CoreFcpEidasIdentityCheckHandler,
     {
-      provide: APP_INTERCEPTOR,
-      useClass: ConfigTemplateInterceptor,
-    },
-    {
       provide: CORE_SERVICE,
       useClass: CoreFcpService,
     },
     OidcProviderGrantService,
     DataProviderService,
+    ScopesHelper,
   ],
   // Make `CoreTrackingService` dependencies available
   exports: [
