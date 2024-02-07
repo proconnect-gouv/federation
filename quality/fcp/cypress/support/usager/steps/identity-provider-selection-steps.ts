@@ -95,6 +95,18 @@ Given(
   },
 );
 
+Given(
+  "je paramètre un intercepteur pour forcer un mauvais client_id au prochain appel au fournisseur d'identité",
+  function () {
+    const { url }: IdentityProvider = this.identityProvider;
+    addInterceptParams(
+      `${url}/authorize*`,
+      { client_id: 'wrong_client_id' },
+      'FI:ClientIdModified',
+    );
+  },
+);
+
 When("je clique sur le fournisseur d'identité", function () {
   expect(this.identityProvider).to.exist;
   identityProviderSelectionPage

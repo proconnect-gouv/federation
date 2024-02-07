@@ -13,7 +13,7 @@ When('je clique sur le pays {string}', function (country: string) {
   eidasBridgePage.getCountryButton(country).click();
 });
 
-Then("je suis redirigé vers la page d'erreur eidas-bridge", function () {
+Then("je suis redirigé vers la page d'erreur depuis eidas-bridge", function () {
   const { fcRootUrl }: Environment = this.env;
   cy.url().should(
     'includes',
