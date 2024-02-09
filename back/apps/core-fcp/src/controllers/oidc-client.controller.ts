@@ -100,10 +100,12 @@ export class OidcClientController {
     const {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      params: { acr_values: acr },
+      params: { acr_values },
     } = await this.oidcProvider.getInteraction(req, res);
 
-    await this.coreFcp.redirectToIdp(res, idpId, sessionOidc, { acr });
+    // acr_values is an oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    await this.coreFcp.redirectToIdp(res, idpId, sessionOidc, { acr_values });
   }
 
   /**

@@ -9,6 +9,7 @@ const BASE_PRODUCTION_IPD_LOW = {
     coreVerify: "core-fcp-default-verify",
     authenticationEmail: "core-fcp-send-email",
     idpIdentityCheck: "core-fcp-default-identity-check",
+    coreAuthorization : "core-fcp-default-authorization",
   },
   discovery: false,
   url: "https://fip1-low.docker.dev-franceconnect.fr",

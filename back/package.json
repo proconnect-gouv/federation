@@ -281,7 +281,8 @@
       "^@mocks/jwt(|/.*)$": "<rootDir>/libs/jwt/.mocks/$1",
       "^@fc/async-local-storage(|/.*)$": "<rootDir>/libs/async-local-storage/src/$1",
       "^@mocks/async-local-storage(|/.*)$": "<rootDir>/libs/async-local-storage/.mocks$1",
-      "^@fc/view-templates(|/.*)$": "<rootDir>/libs/view-templates/src/$1"
+      "^@fc/view-templates(|/.*)$": "<rootDir>/libs/view-templates/src/$1",
+      "^@mocks/core(|/.*)$": "<rootDir>/libs/core/.mocks/$1"
     },
     "preset": "ts-jest"
   }

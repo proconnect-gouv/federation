@@ -31,9 +31,9 @@ export class CoreVerifyService {
       throw new CoreIdentityProviderNotFoundException();
     }
 
-    const idClass = idp.featureHandlers[process];
+    const handlerClassName = idp.featureHandlers[process];
 
-    return FeatureHandler.get<T>(idClass, this);
+    return FeatureHandler.get<T>(handlerClassName, this);
   }
 
   /**

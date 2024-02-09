@@ -9,6 +9,7 @@ import {
   CORE_SERVICE,
   CoreAccountService,
   CoreAcrService,
+  CoreAuthorizationService,
   CoreTrackingService,
   CoreVerifyService,
 } from '@fc/core';
@@ -49,7 +50,6 @@ import {
 } from './handlers/authorize';
 import { CoreFcaMcpVerifyHandler } from './handlers/verify';
 import {
-  CoreFcaAuthorizationUrlService,
   CoreFcaMiddlewareService,
   CoreFcaService,
   CoreFcaVerifyService,
@@ -102,12 +102,12 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     CoreFcaService,
     CoreVerifyService,
     CoreFcaMiddlewareService,
+    CoreAuthorizationService,
     CoreTrackingService,
     OidcProviderConfigAppService,
     CoreFcaDefaultVerifyHandler,
     CoreFcaVerifyService,
     OidcProviderGrantService,
-    CoreFcaAuthorizationUrlService,
     CoreFcaMcpVerifyHandler,
     CoreFcaDefaultAuthorizationHandler,
     CoreFcaMcpAuthorizationHandler,

@@ -103,15 +103,17 @@ export class FrIdentityToEuController {
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
-    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl({
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: oidcRequest.acr_values,
-      nonce,
-      idpId: this.getIdpId(),
-      scope: oidcRequest.scope.join(' '),
-      state,
-    });
+    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
+      this.getIdpId(),
+      {
+        // acr_values is an oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values: oidcRequest.acr_values,
+        nonce,
+        scope: oidcRequest.scope.join(' '),
+        state,
+      },
+    );
 
     await sessionOidc.set({
       idpNonce: nonce,

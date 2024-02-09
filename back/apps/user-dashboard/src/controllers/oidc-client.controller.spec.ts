@@ -13,6 +13,7 @@ import {
 } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { getConfigMock } from '@mocks/config';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { UserDashboardFrontRoutes } from '../enums';
@@ -76,9 +77,7 @@ describe('OidcClient Controller', () => {
     idpId: idpIdMock,
   };
 
-  const configServiceMock = {
-    get: jest.fn(),
-  };
+  const configServiceMock = getConfigMock();
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -178,7 +177,6 @@ describe('OidcClient Controller', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: 'eidas3',
         nonce: idpNonceMock,
-        idpId: configMock.idpId,
         scope: 'openid',
         state: idpStateMock,
         prompt: 'login',
@@ -192,6 +190,7 @@ describe('OidcClient Controller', () => {
         1,
       );
       expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledWith(
+        configMock.idpId,
         expectedGetAuthorizeCallParameter,
       );
     });

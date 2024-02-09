@@ -25,7 +25,7 @@ import { getSessionServiceMock } from '@mocks/session';
 
 import { GetOidcCallbackSessionDto, OidcIdentityDto } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
-import { CoreFcaAuthorizationUrlService, CoreFcaService } from '../services';
+import { CoreFcaService } from '../services';
 import { OidcClientController } from './oidc-client.controller';
 
 jest.mock('querystring', () => ({
@@ -144,10 +144,6 @@ describe('OidcClient Controller', () => {
     },
   } as unknown as TrackingService;
 
-  const coreFcaAuthorizationUrlServiceMock = {
-    getAuthorizeUrl: jest.fn(),
-  };
-
   const coreServiceMock = {
     redirectToIdp: jest.fn(),
     getIdpIdForEmail: jest.fn(),
@@ -177,7 +173,6 @@ describe('OidcClient Controller', () => {
         IdentityProviderAdapterMongoService,
         OidcProviderService,
         TrackingService,
-        CoreFcaAuthorizationUrlService,
         CoreFcaService,
         OidcClientConfigService,
         CryptographyService,
@@ -201,8 +196,6 @@ describe('OidcClient Controller', () => {
       .useValue(oidcProviderServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingServiceMock)
-      .overrideProvider(CoreFcaAuthorizationUrlService)
-      .useValue(coreFcaAuthorizationUrlServiceMock)
       .overrideProvider(CoreFcaService)
       .useValue(coreServiceMock)
       .overrideProvider(OidcClientConfigService)
@@ -319,7 +312,9 @@ describe('OidcClient Controller', () => {
         providerIdMock,
         sessionServiceMock,
         {
-          acr: interactionDetailsResolved.params.acr_values,
+          // oidc spec defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          acr_values: interactionDetailsResolved.params.acr_values,
           // oidc spec defined property
           // eslint-disable-next-line @typescript-eslint/naming-convention
           login_hint: email,

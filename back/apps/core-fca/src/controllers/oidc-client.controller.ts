@@ -100,11 +100,13 @@ export class OidcClientController {
     const {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      params: { acr_values: acr },
+      params: { acr_values },
     } = await this.oidcProvider.getInteraction(req, res);
 
     const authorizeParams = {
-      acr,
+      // acr_values is an oidc defined variable name
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      acr_values,
       // login_hint is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
       login_hint: email,

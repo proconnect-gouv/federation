@@ -90,19 +90,21 @@ export class OidcClientController {
     const { state, nonce } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
-    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl({
-      state,
-      scope,
+    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
       idpId,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-      nonce,
-      claims,
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      idp_hint,
-    });
+      {
+        state,
+        scope,
+        // acr_values is an oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        acr_values,
+        nonce,
+        claims,
+        // acr_values is an oidc defined variable name
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        idp_hint,
+      },
+    );
 
     const { name: idpName, title: idpLabel } =
       await this.identityProvider.getById(idpId);

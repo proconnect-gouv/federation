@@ -185,10 +185,9 @@ describe('OidcClientUtilsService', () => {
       const acr_values = 'eidas1';
       service['createOidcClient'] = createOidcClientMock;
       // When
-      await service.getAuthorizeUrl({
+      await service.getAuthorizeUrl(providerId, {
         state,
         scope,
-        idpId: providerId,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
@@ -209,10 +208,10 @@ describe('OidcClientUtilsService', () => {
       const prompt = 'login';
       service['createOidcClient'] = createOidcClientMock;
       // When
-      await service.getAuthorizeUrl({
+      await service.getAuthorizeUrl(providerId, {
         state,
         scope,
-        idpId: providerId,
+        // oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
@@ -223,6 +222,7 @@ describe('OidcClientUtilsService', () => {
         prompt,
         state,
         scope,
+        // oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
@@ -243,10 +243,10 @@ describe('OidcClientUtilsService', () => {
       const prompt = 'login';
       service['createOidcClient'] = createOidcClientMock;
       // When
-      await service.getAuthorizeUrl({
+      await service.getAuthorizeUrl(providerId, {
         state,
         scope,
-        idpId: providerId,
+        // oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,
@@ -277,10 +277,10 @@ describe('OidcClientUtilsService', () => {
       service['createOidcClient'] = createOidcClientMock;
 
       // When
-      const url = await service.getAuthorizeUrl({
+      const url = await service.getAuthorizeUrl(providerId, {
         state,
         scope,
-        idpId: providerId,
+        // oidc defined variable name
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values,
         nonce,

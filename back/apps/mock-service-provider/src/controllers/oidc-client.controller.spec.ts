@@ -17,7 +17,7 @@ import { getSessionServiceMock } from '@mocks/session';
 
 import { OidcClientController } from './oidc-client.controller';
 
-describe('OidcClient Controller', () => {
+describe('OidcClientController', () => {
   let controller: OidcClientController;
   let res;
 
@@ -153,7 +153,6 @@ describe('OidcClient Controller', () => {
         acr_values: 'eidas3',
         claims: 'json_stringified',
         nonce: 'nonceMock',
-        idpId: 'providerIdMockValue',
         scope: 'openid',
         state: 'stateMock',
       };
@@ -166,6 +165,7 @@ describe('OidcClient Controller', () => {
         1,
       );
       expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledWith(
+        providerIdMock,
         expectedGetAuthorizeCallParameter,
       );
     });

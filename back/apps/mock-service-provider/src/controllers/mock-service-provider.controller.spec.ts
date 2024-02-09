@@ -694,6 +694,7 @@ describe('MockServiceProviderController', () => {
   describe('getInteractionParameters', () => {
     const provider = identityProviderFull as IdentityProviderMetadata;
     const urlMock = 'https://somewhere.com/foo';
+    const providerUidMock = 'providerUidMock';
 
     beforeEach(() => {
       // Given
@@ -704,21 +705,21 @@ describe('MockServiceProviderController', () => {
       // When
       await controller['getInteractionParameters'](provider);
       // Then
-      expect(configServiceMock.get).toBeCalledTimes(2);
+      expect(configServiceMock.get).toHaveBeenCalledTimes(2);
     });
 
     it('should get OidcAcr config', async () => {
       // When
       await controller['getInteractionParameters'](provider);
       // Then
-      expect(configServiceMock.get).toBeCalledWith('OidcAcr');
+      expect(configServiceMock.get).toHaveBeenCalledWith('OidcAcr');
     });
 
     it('should get OidcClient config', async () => {
       // When
       await controller['getInteractionParameters'](provider);
       // Then
-      expect(configServiceMock.get).toBeCalledWith('OidcClient');
+      expect(configServiceMock.get).toHaveBeenCalledWith('OidcClient');
     });
 
     it('should call oidcClient.buildAuthorizeParameters', async () => {
@@ -727,24 +728,28 @@ describe('MockServiceProviderController', () => {
       // Then
       expect(
         oidcClientServiceMock.utils.buildAuthorizeParameters,
-      ).toBeCalledTimes(1);
+      ).toHaveBeenCalledTimes(1);
     });
 
     it('should call oidcClient.getAuthorizeUrl', async () => {
       // When
       await controller['getInteractionParameters'](provider);
       // Then
-      expect(oidcClientServiceMock.utils.getAuthorizeUrl).toBeCalledTimes(1);
-      expect(oidcClientServiceMock.utils.getAuthorizeUrl).toBeCalledWith({
-        state: idpStateMock,
-        prompt: 'login consent',
-        scope: scopeMock,
-        idpId: 'providerUidMock',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: 'eidas2',
-        nonce: nonceMock,
-        claims: 'claimsMock',
-      });
+      expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledWith(
+        providerUidMock,
+        {
+          state: idpStateMock,
+          prompt: 'login consent',
+          scope: scopeMock,
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          acr_values: 'eidas2',
+          nonce: nonceMock,
+          claims: 'claimsMock',
+        },
+      );
     });
 
     it('should return object containing results from various calls', async () => {

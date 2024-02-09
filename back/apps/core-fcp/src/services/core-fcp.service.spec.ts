@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialExcept } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CoreAuthorizationService } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { IdentityProviderMetadata, IOidcIdentity, OidcSession } from '@fc/oidc';
@@ -14,6 +15,8 @@ import { ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
 
+import { getConfigMock } from '@mocks/config';
+import { getCoreAuthorizationServiceMock } from '@mocks/core';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreFcpService } from './core-fcp.service';
@@ -21,18 +24,13 @@ import { CoreFcpService } from './core-fcp.service';
 describe('CoreFcpService', () => {
   let service: CoreFcpService;
 
-  const configServiceMock = {
-    get: jest.fn(),
-  };
+  const configServiceMock = getConfigMock();
 
   const oidcAcrServiceMock = {
     isAcrValid: jest.fn(),
   };
 
-  const sessionServiceMock = {
-    get: jest.fn(),
-    set: jest.fn(),
-  };
+  const sessionServiceMock = getSessionServiceMock();
 
   const sessionCoreServiceMock = getSessionServiceMock();
 
@@ -40,6 +38,7 @@ describe('CoreFcpService', () => {
     // oidc parameter
     // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Edward',
+    // oidc parameter
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
     email: 'eteach@fqdn.ext',
@@ -98,6 +97,8 @@ describe('CoreFcpService', () => {
     },
   } as unknown as IdentityProviderMetadata;
 
+  const coreAuthorizationServiceMock = getCoreAuthorizationServiceMock();
+
   const oidcClientServiceMock = {
     utils: {
       checkIdpBlacklisted: jest.fn(),
@@ -121,6 +122,7 @@ describe('CoreFcpService', () => {
         ScopesService,
         ServiceProviderAdapterMongoService,
         OidcClientService,
+        CoreAuthorizationService,
       ],
     })
 
@@ -140,6 +142,8 @@ describe('CoreFcpService', () => {
       .useValue(serviceProviderMock)
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
+      .overrideProvider(CoreAuthorizationService)
+      .useValue(coreAuthorizationServiceMock)
       .compile();
 
     service = module.get<CoreFcpService>(CoreFcpService);
@@ -212,9 +216,12 @@ describe('CoreFcpService', () => {
     it('Should not call featureHandle.handle() when notification is already sent', async () => {
       // Given
       const spIdMock = 'sp_id';
-      sessionCoreServiceMock.get.mockReset().mockResolvedValue({
-        sentNotificationsForSp: [spIdMock],
-      });
+      jest
+        .mocked(sessionCoreServiceMock.get)
+        .mockReset()
+        .mockResolvedValue({
+          sentNotificationsForSp: [spIdMock],
+        });
 
       // When
       await service.sendAuthenticationMail(
@@ -229,9 +236,12 @@ describe('CoreFcpService', () => {
     it('Should call featureHandle.handle() when notification from another service provider is already sent', async () => {
       // Given
       const anotherSpIdMock = 'another_sp_id';
-      sessionCoreServiceMock.get.mockReset().mockResolvedValue({
-        sentNotificationsForSp: [anotherSpIdMock],
-      });
+      jest
+        .mocked(sessionCoreServiceMock.get)
+        .mockReset()
+        .mockResolvedValue({
+          sentNotificationsForSp: [anotherSpIdMock],
+        });
 
       // When
       await service.sendAuthenticationMail(
@@ -511,6 +521,10 @@ describe('CoreFcpService', () => {
       redirect: jest.fn(),
     } as unknown as Response;
 
+    // oidc parameters
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const authorizationParametersMock = { acr_values: acrMock };
+
     beforeEach(() => {
       sessionServiceMock.get.mockResolvedValue({
         spId: spIdMock,
@@ -532,7 +546,7 @@ describe('CoreFcpService', () => {
         resMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
-        { acr: acrMock },
+        authorizationParametersMock,
       );
       // Then
       expect(
@@ -549,7 +563,7 @@ describe('CoreFcpService', () => {
         resMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
-        { acr: acrMock },
+        authorizationParametersMock,
       );
       // Then
       expect(
@@ -566,7 +580,7 @@ describe('CoreFcpService', () => {
         resMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
-        { acr: acrMock },
+        authorizationParametersMock,
       );
       // Then
       expect(
@@ -580,7 +594,7 @@ describe('CoreFcpService', () => {
         resMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
-        { acr: acrMock },
+        authorizationParametersMock,
       );
       // Then
       expect(IdentityProviderMock.getById).toHaveBeenCalledTimes(1);
@@ -593,7 +607,7 @@ describe('CoreFcpService', () => {
         resMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
-        { acr: acrMock },
+        authorizationParametersMock,
       );
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
@@ -612,7 +626,7 @@ describe('CoreFcpService', () => {
     it('should call res.redirect()', async () => {
       // Given
       const authorizeUrlMock = Symbol('authorizeUrlMock');
-      oidcClientServiceMock.utils.getAuthorizeUrl.mockResolvedValue(
+      coreAuthorizationServiceMock.getAuthorizeUrl.mockResolvedValue(
         authorizeUrlMock,
       );
 
@@ -621,7 +635,7 @@ describe('CoreFcpService', () => {
         resMock,
         idpIdMock,
         sessionServiceMock as unknown as ISessionService<OidcClientSession>,
-        { acr: acrMock },
+        authorizationParametersMock,
       );
 
       // Then

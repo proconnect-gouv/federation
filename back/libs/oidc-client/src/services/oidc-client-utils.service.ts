@@ -5,7 +5,12 @@
  */
 import { isURL } from 'class-validator';
 import { JWK } from 'jose-openid-client';
-import { CallbackExtras, Client, TokenSet } from 'openid-client';
+import {
+  AuthorizationParameters,
+  CallbackExtras,
+  Client,
+  TokenSet,
+} from 'openid-client';
 
 import { Inject, Injectable } from '@nestjs/common';
 
@@ -30,7 +35,6 @@ import {
 } from '../exceptions';
 import {
   ExtraTokenParams,
-  IGetAuthorizeUrlParams,
   IIdentityProviderAdapter,
   TokenParams,
 } from '../interfaces';
@@ -70,37 +74,13 @@ export class OidcClientUtilsService {
     return params;
   }
 
-  async getAuthorizeUrl({
-    state,
-    scope,
-    idpId,
-    // acr_values is an oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    acr_values,
-    nonce,
-    claims,
-    prompt,
-    // acr_values is an oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    idp_hint,
-  }: IGetAuthorizeUrlParams): Promise<string> {
+  async getAuthorizeUrl(
+    idpId: string,
+    authorizationParams: AuthorizationParameters,
+  ): Promise<string> {
     const client: Client = await this.issuer.getClient(idpId);
 
-    const params = {
-      scope,
-      state,
-      nonce,
-      claims,
-      // oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values,
-      prompt,
-      // oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      idp_hint,
-    };
-
-    return client.authorizationUrl(params);
+    return client.authorizationUrl(authorizationParams);
   }
 
   async wellKnownKeys() {
