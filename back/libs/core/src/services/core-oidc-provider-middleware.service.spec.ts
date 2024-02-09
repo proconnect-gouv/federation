@@ -96,7 +96,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
       'x-forwarded-for-original': xForwardedForOriginalMock,
     },
     sessionId: sessionIdMock,
-    // oidc param
+    // oidc parameter
     // eslint-disable-next-line @typescript-eslint/naming-convention
     query: { acr_values: spAcrMock, client_id: spIdMock },
   };
@@ -1318,7 +1318,9 @@ describe('CoreOidcProviderMiddlewareService', () => {
         ctxMock.res,
         idpHintMock,
         sessionServiceMock,
-        { acr: ctxMock.oidc.params.acr_values },
+        // oidc param
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { acr_values: ctxMock.oidc.params.acr_values },
       );
     });
 

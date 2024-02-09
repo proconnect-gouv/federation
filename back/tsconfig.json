@@ -498,7 +498,13 @@
       ],
       "@fc/view-templates/*": [
         "libs/view-templates/src/*"
-      ]
+      ],
+      "@mocks/core": [
+        "libs/core/.mocks"
+      ],
+      "@mocks/core/*": [
+        "libs/core/.mocks/*"
+      ],
     }
   },
   "files": [

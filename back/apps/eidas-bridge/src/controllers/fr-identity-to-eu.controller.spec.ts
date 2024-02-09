@@ -22,6 +22,7 @@ import {
 import { SessionNotFoundException, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
@@ -114,9 +115,7 @@ describe('FrIdentityToEuController', () => {
     TrackedEventsMap: {},
   };
 
-  const configServiceMock = {
-    get: jest.fn(),
-  };
+  const configServiceMock = getConfigMock();
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -332,7 +331,6 @@ describe('FrIdentityToEuController', () => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: oidcRequestMock.acr_values,
         nonce: idpNonceMock,
-        idpId: idpIdMock,
         scope: oidcRequestMock.scope.join(' '),
         state: 'state',
       };
@@ -352,14 +350,16 @@ describe('FrIdentityToEuController', () => {
       expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledTimes(
         1,
       );
-      expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledWith({
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        acr_values: authorizeParametersMock.acr_values,
-        nonce: authorizeParametersMock.nonce,
-        idpId: authorizeParametersMock.idpId,
-        scope: authorizeParametersMock.scope,
-        state: authorizeParametersMock.state,
-      });
+      expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledWith(
+        idpIdMock,
+        {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          acr_values: authorizeParametersMock.acr_values,
+          nonce: authorizeParametersMock.nonce,
+          scope: authorizeParametersMock.scope,
+          state: authorizeParametersMock.state,
+        },
+      );
     });
 
     it('should get IdP id from app config', async () => {

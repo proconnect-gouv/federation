@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { ModuleRef } from '@nestjs/core';
 
 import { ConfigService } from '@fc/config';
+import { CoreAuthorizationService } from '@fc/core';
 import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { OidcSession, stringToArray } from '@fc/oidc';
@@ -21,9 +22,9 @@ import { ISessionService } from '@fc/session';
 import { AppConfig, CoreSessionDto } from '../dto';
 import { CoreFcpSendEmailHandler } from '../handlers';
 import {
-  CoreFcpAuthorizeParamsInterface,
+  CoreFcpAuthorizationParametersInterface,
   CoreFcpServiceInterface,
-} from '../interfaces/core-fcp-service.interface';
+} from '../interfaces';
 
 @Injectable()
 export class CoreFcpService implements CoreFcpServiceInterface {
@@ -37,6 +38,7 @@ export class CoreFcpService implements CoreFcpServiceInterface {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly oidcAcr: OidcAcrService,
     private readonly oidcClient: OidcClientService,
+    private readonly coreAuthorization: CoreAuthorizationService,
   ) {}
 
   /**
@@ -86,7 +88,9 @@ export class CoreFcpService implements CoreFcpServiceInterface {
     res: Response,
     idpId: string,
     session: ISessionService<OidcClientSession>,
-    { acr }: CoreFcpAuthorizeParamsInterface,
+    // acr_values is an oidc defined variable name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    { acr_values }: Pick<CoreFcpAuthorizationParametersInterface, 'acr_values'>,
   ): Promise<void> {
     const { spId } = await session.get();
 
@@ -98,12 +102,11 @@ export class CoreFcpService implements CoreFcpServiceInterface {
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
 
-    const authorizeParams = {
+    const authorizeParams: CoreFcpAuthorizationParametersInterface = {
       // acr_values is an oidc defined variable name
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      acr_values: acr,
+      acr_values,
       nonce,
-      idpId,
       scope,
       state,
       // Prompt for the identity provider is forced here
@@ -111,8 +114,10 @@ export class CoreFcpService implements CoreFcpServiceInterface {
       prompt: OidcProviderPrompt.LOGIN,
     };
 
-    const authorizationUrl =
-      await this.oidcClient.utils.getAuthorizeUrl(authorizeParams);
+    const authorizationUrl = await this.coreAuthorization.getAuthorizeUrl(
+      idpId,
+      authorizeParams,
+    );
 
     const { name: idpName, title: idpLabel } =
       await this.identityProvider.getById(idpId);

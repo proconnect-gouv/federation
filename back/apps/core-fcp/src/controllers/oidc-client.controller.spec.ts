@@ -316,7 +316,9 @@ describe('OidcClient Controller', () => {
         providerIdMock,
         sessionServiceMock,
         {
-          acr: interactionMock.params.acr_values,
+          // oidc param
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          acr_values: interactionMock.params.acr_values,
         },
       );
     });

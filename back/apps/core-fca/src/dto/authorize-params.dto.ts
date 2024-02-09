@@ -1,7 +1,6 @@
 import {
   IsArray,
   IsAscii,
-  IsEmail,
   IsOptional,
   IsString,
   IsUrl,
@@ -73,10 +72,4 @@ export class AuthorizeParamsDto {
   // openid inspired property name
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly idp_hint?: string;
-
-  @IsOptional()
-  @IsEmail()
-  // openid inspired property name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly login_hint?: string;
 }

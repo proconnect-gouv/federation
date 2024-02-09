@@ -385,7 +385,6 @@ export class MockServiceProviderController {
     const authorizeParams = {
       state,
       scope,
-      idpId: provider.uid,
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: defaultAcrValue,
       nonce,
@@ -394,7 +393,10 @@ export class MockServiceProviderController {
     };
 
     const authorizationUrl: string =
-      await this.oidcClient.utils.getAuthorizeUrl(authorizeParams);
+      await this.oidcClient.utils.getAuthorizeUrl(
+        provider.uid,
+        authorizeParams,
+      );
 
     const url = new URL(authorizationUrl);
 

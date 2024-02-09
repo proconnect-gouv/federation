@@ -269,7 +269,9 @@ export class CoreOidcProviderMiddlewareService {
     const { req, res } = ctx;
     const idpHint = req.query.idp_hint as string;
     const { allowedIdpHints } = this.config.get<CoreConfig>('Core');
-    const acr = ctx.oidc.params.acr_values as string;
+    // oidc parameter
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const acr_values = ctx.oidc.params.acr_values as string;
     const session = SessionService.getBoundSession<OidcClientSession>(
       req,
       'OidcClient',
@@ -287,7 +289,9 @@ export class CoreOidcProviderMiddlewareService {
     await this.flowSteps.setStep(req, OidcClientRoutes.REDIRECT_TO_IDP);
 
     try {
-      await this.core.redirectToIdp(res, idpHint, session, { acr });
+      // oidc parameter
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      await this.core.redirectToIdp(res, idpHint, session, { acr_values });
       await session.commit();
       await this.trackRedirectToIdp(ctx);
     } catch (error) {

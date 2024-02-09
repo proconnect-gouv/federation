@@ -10,6 +10,7 @@ import {
   CORE_SERVICE,
   CoreAccountService,
   CoreAcrService,
+  CoreAuthorizationService,
   CoreTrackingService,
   CoreVerifyService,
 } from '@fc/core';
@@ -51,6 +52,7 @@ import {
   OidcProviderController,
 } from './controllers';
 import {
+  CoreFcpDefaultAuthorizationHandler,
   CoreFcpDefaultIdentityCheckHandler,
   CoreFcpDefaultVerifyHandler,
   CoreFcpEidasIdentityCheckHandler,
@@ -122,12 +124,14 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     CoreVerifyService,
     CoreFcpVerifyService,
     CoreFcpMiddlewareService,
+    CoreAuthorizationService,
     OidcProviderConfigAppService,
     CoreFcpDefaultVerifyHandler,
     CoreFcpEidasVerifyHandler,
     CoreFcpSendEmailHandler,
     CoreFcpDefaultIdentityCheckHandler,
     CoreFcpEidasIdentityCheckHandler,
+    CoreFcpDefaultAuthorizationHandler,
     {
       provide: CORE_SERVICE,
       useClass: CoreFcpService,

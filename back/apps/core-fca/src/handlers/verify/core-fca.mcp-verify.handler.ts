@@ -44,7 +44,7 @@ export class CoreFcaMcpVerifyHandler
   async handle({
     sessionOidc,
   }: IVerifyFeatureHandlerHandleArgument): Promise<void> {
-    this.logger.debug('verifyIdentity service: ##### core-fca-default-verify');
+    this.logger.debug('verifyIdentity service: ##### core-fca-mcp-verify');
 
     const { idpId, idpIdentity, idpAcr, spId, spAcr } = await sessionOidc.get();
 

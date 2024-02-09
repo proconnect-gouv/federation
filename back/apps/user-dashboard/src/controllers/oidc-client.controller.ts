@@ -90,14 +90,15 @@ export class OidcClientController {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
       nonce,
-      idpId,
       scope,
       state,
       prompt,
     };
 
-    const authorizationUrl =
-      await this.oidcClient.utils.getAuthorizeUrl(authorizeParams);
+    const authorizationUrl = await this.oidcClient.utils.getAuthorizeUrl(
+      idpId,
+      authorizeParams,
+    );
 
     const { name: idpName, title: idpLabel } =
       await this.identityProvider.getById(idpId);
