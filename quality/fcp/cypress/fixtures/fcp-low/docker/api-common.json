@@ -39,5 +39,24 @@
     },
     "method": "GET",
     "url": "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback"
+  },
+  "token": {
+    "body": {
+      "grant_type": "authorization_code",
+      "client_id": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
+      "client_secret": "a970fc88b3111fcfdce515c2ee03488d8a349e5379a3ba2aa48c225dcea243a5",
+      "redirect_uri": "https://fsp1-low.docker.dev-franceconnect.fr/oidc-callback",
+      "code": "bAEk2ZasUawAGYjicNwLYvefJsDhoxi0VA61xUZqh44"
+    },
+    "form": true,
+    "method": "POST",
+    "url": "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/token"
+  },
+  "userinfo": {
+    "headers": {
+      "authorization": "Bearer c171FrSXuL116ByNhuppzoVIbROI8dfHQhXWWNqZSld"
+    },
+    "method": "GET",
+    "url": "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/userinfo"
   }
 }
