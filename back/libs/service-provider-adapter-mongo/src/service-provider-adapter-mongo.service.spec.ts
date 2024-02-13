@@ -10,7 +10,6 @@ import { ServiceProviderMetadata } from '@fc/oidc';
 
 import { getLoggerMock } from '@mocks/logger';
 
-import { platform } from './enums';
 import { ServiceProvider } from './schemas';
 import { ServiceProviderAdapterMongoService } from './service-provider-adapter-mongo.service';
 
@@ -209,7 +208,7 @@ describe('ServiceProviderAdapterMongoService', () => {
   });
 
   describe('findAllServiceProvider', () => {
-    const { CORE_FCP } = platform;
+    const platformMock = 'CORE_FCP';
     const expectedRetreivedFields = {
       _id: false,
       active: true,
@@ -258,7 +257,7 @@ describe('ServiceProviderAdapterMongoService', () => {
     };
 
     beforeEach(() => {
-      configMock.get.mockReturnValue({ platform: CORE_FCP });
+      configMock.get.mockReturnValue({ platform: platformMock });
     });
 
     it('should retrieve platform from config', async () => {
@@ -284,7 +283,7 @@ describe('ServiceProviderAdapterMongoService', () => {
       // setup
       const expectedRequestFilter = {
         active: true,
-        platform: CORE_FCP,
+        platform: platformMock,
       };
       // action
       await service['findAllServiceProvider']();
