@@ -1,7 +1,6 @@
 import {
   IsArray,
   IsBoolean,
-  IsEnum,
   IsIn,
   IsOptional,
   IsString,
@@ -9,9 +8,11 @@ import {
   MinLength,
 } from 'class-validator';
 
+// Creates a cyclic dependency
+import { IsEqualToConfig } from '@fc/common';
 import { SUPPORTED_SIG_ALG } from '@fc/cryptography';
 
-import { platform } from '../enums';
+import { ServiceProviderAdapterMongoConfig } from './service-provider-adapter-mongo-config.dto';
 
 export class ServiceProviderAdapterMongoDTO {
   @IsBoolean()
@@ -112,6 +113,10 @@ export class ServiceProviderAdapterMongoDTO {
   readonly ssoDisabled: boolean;
 
   @IsOptional()
-  @IsEnum(platform)
-  readonly platform?: platform;
+  @IsEqualToConfig<ServiceProviderAdapterMongoConfig>(
+    'ServiceProviderAdapterMongo',
+    'platform',
+  )
+  @IsString()
+  readonly platform?: string;
 }
