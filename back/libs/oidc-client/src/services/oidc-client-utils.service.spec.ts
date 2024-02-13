@@ -399,14 +399,16 @@ describe('OidcClientUtilsService', () => {
 
     it('should throw if something unexpected goes wrong in extractParams', async () => {
       // Given
-      const errorMock = new Error('lol');
-      callbackMock.mockRejectedValueOnce(errorMock);
+      const errorMessage = 'a custom error message';
+      callbackMock.mockRejectedValueOnce(errorMessage);
       // Then
       await expect(
         service.getTokenSet(req, providerId, params),
       ).rejects.toThrow(OidcClientTokenFailedException);
       expect(loggerServiceMock.debug).toHaveBeenCalledTimes(1);
-      expect(loggerServiceMock.debug).toHaveBeenCalledWith(errorMock);
+      expect(loggerServiceMock.debug).toHaveBeenCalledWith(
+        JSON.stringify(errorMessage),
+      );
     });
   });
 

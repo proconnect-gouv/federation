@@ -155,7 +155,7 @@ export class OidcClientUtilsService {
         this.buildExtraParameters(extraParams),
       );
     } catch (error) {
-      this.logger.debug(error);
+      this.logger.debug(JSON.stringify(error));
       throw new OidcClientTokenFailedException();
     }
 
