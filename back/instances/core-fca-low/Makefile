@@ -50,3 +50,17 @@ ci:
 
 test-legacy tl:
 	cd $(FC_ROOT)/fc/back  && yarn run test:e2e:core-fca-low
+
+halt:
+	$(DKS_PATH) halt
+
+## FC Exploitation
+
+start-exploitation se:
+	$(DKS_PATH) start exploitation-fca-low
+
+log-exploitation le:
+	$(DKS_PATH) log exploitation-fca-low
+
+test-exploitation te:
+	$(DKS_PATH) exec exploitation-fca-low yarn test	
