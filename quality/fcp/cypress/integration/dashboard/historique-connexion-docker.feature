@@ -8,9 +8,9 @@ Fonctionnalité: Historique Connexion FC Legacy et FC+ (docker)
   Scénario: Historique Connexion - FC Legacy et FC+ - connexions de moins de 6 mois sont affichées
     Etant donné que j'utilise un compte usager "pour les tests de traces"
     Et que les traces "FranceConnect(CL) et FranceConnect+" contiennent "des connexions récentes et anciennes de plus de 6 mois"
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et 3 évènements "FranceConnect+" sont affichés
     Et 7 évènements "FranceConnect" sont affichés
     Et les évènements "FranceConnect+" ont moins de 6 mois
@@ -23,9 +23,9 @@ Fonctionnalité: Historique Connexion FC Legacy et FC+ (docker)
     Etant donné que j'utilise un navigateur web sur "<device>"
     Et que j'utilise un compte usager "pour les tests de traces"
     Et que les traces "<platform>" contiennent "<tracksType>"
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et la page 1 est sélectionnée dans la pagination de l'historique
     Et <pageEventCount> évènements "<platform>" sont affichés
     Et les évènements sont affichés par ordre décroissant
@@ -42,9 +42,9 @@ Fonctionnalité: Historique Connexion FC Legacy et FC+ (docker)
     Etant donné que j'utilise un navigateur web sur "<device>"
     Et que j'utilise un compte usager "pour les tests de traces"
     Et que les traces "<platform>" contiennent "<tracksType>"
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et la page 1 est sélectionnée dans la pagination de l'historique
     Et 10 évènements "<platform>" sont affichés
     Et les évènements sont affichés par ordre décroissant
@@ -82,9 +82,9 @@ Fonctionnalité: Historique Connexion FC Legacy et FC+ (docker)
     Etant donné que j'utilise un navigateur web sur "mobile"
     Et que j'utilise un compte usager "pour les tests de traces"
     Et que les traces "FranceConnect(CL) et FranceConnect+" contiennent "124 connexions"
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et la page 1 est sélectionnée dans la pagination de l'historique
     Et le bouton page 2 de l'historique est affiché
     Et le bouton page 13 de l'historique est affiché
@@ -119,9 +119,9 @@ Fonctionnalité: Historique Connexion FC Legacy et FC+ (docker)
     Etant donné que j'utilise un navigateur web sur "<device>"
     Et que j'utilise un compte usager "pour les tests de traces"
     Et que les traces "FranceConnect(CL) et FranceConnect+" contiennent "124 connexions"
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et la page 1 est sélectionnée dans la pagination de l'historique
     Et je navigue vers la dernière page de l'historique
     Et la page 13 est sélectionnée dans la pagination de l'historique

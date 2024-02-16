@@ -12,9 +12,9 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
     Et que j'utilise le fournisseur de service "par défaut"
     Et que j'ai fait une cinématique FranceConnect
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Quand j'affiche le détail du dernier évènement "Connexion" sur "FranceConnect" du fournisseur de service "Service Provider Example - Authentication"
     Alors la plateforme de l'évènement est "FranceConnect"
     Et le type d'action de l'évènement est "Connexion"
@@ -31,9 +31,9 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Et que j'utilise le fournisseur de service "pour les scopes data"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "dgfip et cnam"
     Et que j'ai fait une cinématique FranceConnect
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et j'affiche le détail du dernier évènement "Connexion" sur "FranceConnect" du fournisseur de service "Service Provider Example - Data"
     Et la plateforme de l'évènement est "FranceConnect"
     Et le type d'action de l'évènement est "Connexion"
@@ -65,9 +65,9 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Et que j'utilise le fournisseur de service "privé avec consentement obligatoire"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "profile sans preferred_username"
     Et que j'ai fait une cinématique FranceConnect
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et j'affiche le détail du dernier évènement "Connexion" sur "FranceConnect" du fournisseur de service "Service Provider Example - Authentication"
     Et la plateforme de l'évènement est "FranceConnect"
     Et le type d'action de l'évènement est "Connexion"
@@ -96,9 +96,9 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Et que j'utilise le fournisseur de service "privé pour les scopes data"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "dgfip et cnam"
     Et que j'ai fait une cinématique FranceConnect
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et j'affiche le détail du dernier évènement "Connexion" sur "FranceConnect" du fournisseur de service "Service Provider Example - Data"
     Et la plateforme de l'évènement est "FranceConnect"
     Et le type d'action de l'évènement est "Connexion"
@@ -145,9 +145,9 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Et que j'utilise le fournisseur de service "privé avec consentement obligatoire"
     Et que le fournisseur de service requiert l'accès aux informations du scope "anonyme"
     Et que j'ai fait une cinématique FranceConnect
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et j'affiche le détail du dernier évènement "Connexion" sur "FranceConnect" du fournisseur de service "Service Provider Example - Authentication"
     Et la plateforme de l'évènement est "FranceConnect"
     Et le type d'action de l'évènement est "Connexion"
@@ -164,9 +164,9 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Et que j'utilise le fournisseur de service "connecté à FD traces"
     Et que le fournisseur de service requiert l'accès aux informations du scope "connexion_tracks"
     Et que j'ai fait une cinématique FranceConnect
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et j'affiche le détail du dernier évènement "Connexion" sur "FranceConnect" du fournisseur de service "Service Provider Example - Authentication"
     Et la plateforme de l'évènement est "FranceConnect"
     Et le type d'action de l'évènement est "Connexion"
@@ -191,9 +191,9 @@ Fonctionnalité: Historique Connexion sur FC Legacy (integ01)
     Et que j'utilise le fournisseur de service "privé connecté à FD traces"
     Et que le fournisseur de service requiert l'accès aux informations du scope "connexion_tracks"
     Et que j'ai fait une cinématique FranceConnect
-    Et que je navigue sur la page d'accueil du dashboard usager
-    Quand je me connecte au dashboard usager
-    Alors je suis redirigé vers la page historique du dashboard usager
+    Et que je navigue sur la page d'accueil du tableau de bord usager
+    Quand je me connecte au tableau de bord usager
+    Alors je suis redirigé vers la page historique du tableau de bord usager
     Et j'affiche le détail du dernier évènement "Connexion" sur "FranceConnect" du fournisseur de service "Service Provider Example - Data"
     Et la plateforme de l'évènement est "FranceConnect"
     Et le type d'action de l'évènement est "Connexion"
