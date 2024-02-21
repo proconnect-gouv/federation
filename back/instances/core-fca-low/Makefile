@@ -24,6 +24,11 @@ bash b:
 prepare p:
 	$(DKS_PATH) exec core-fca-low yarn lint --fix && $(DKS_PATH) exec core-fca-low yarn prettier --write
 
+prepare-full pf:
+	$(DKS_PATH) exec core-fca-low yarn lint --fix &&\
+	$(DKS_PATH) exec core-fca-low yarn prettier --write &&\
+	cd $(FC_ROOT)/fc/quality/fca && yarn lint --fix && yarn prettier --write
+
 doc:
 	$(DKS_PATH) exec core-fca-low yarn doc
 
