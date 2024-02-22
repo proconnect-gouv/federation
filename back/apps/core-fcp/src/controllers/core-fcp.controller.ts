@@ -141,7 +141,7 @@ export class CoreFcpController {
     const { aidantsConnectUid } = this.config.get<AppConfig>('App');
     const aidantsConnect = authorizedProviders.find((provider) => {
       const isAidantsConnect = provider.uid === aidantsConnectUid;
-      return isAidantsConnect && provider.active && provider.display;
+      return isAidantsConnect && provider.display;
     });
 
     // -- generate and store in session the CSRF token

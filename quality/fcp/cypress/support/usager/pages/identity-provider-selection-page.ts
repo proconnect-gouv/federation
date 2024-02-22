@@ -13,8 +13,8 @@ export default class IdentityProviderSelectionPage {
     return cy.get(idp.selectors.idpButton);
   }
 
-  getAidantsConnectLink(): ChainableElement {
-    return cy.get('[data-testid="footer-aidants-connect-link"]');
+  getAidantsConnectButton(): ChainableElement {
+    return cy.get('[data-testid="interaction-aidants-connect-button"]');
   }
 
   checkIsVisible(): void {
