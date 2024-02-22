@@ -3,10 +3,7 @@
     "idpId": "fip1",
     "name": "identity-provider-example-faible",
     "title": "Démonstration - faible",
-    "descriptions": [
-      "par défaut",
-      "actif"
-    ],
+    "descriptions": ["par défaut", "actif"],
     "mocked": true,
     "usable": true,
     "url": "https://fournisseur-d-identite.dev-franceconnect.fr",
@@ -24,9 +21,7 @@
     "idpId": "fip2",
     "name": "identity-provider-example-substantiel",
     "title": "Démonstration - substantiel",
-    "descriptions": [
-      "pour le test de préférences FI"
-    ],
+    "descriptions": ["pour le test de préférences FI"],
     "mocked": true,
     "usable": true,
     "url": "https://fournisseur-d-identite.dev-franceconnect.fr",
@@ -44,9 +39,7 @@
     "idpId": "fip3",
     "name": "identity-provider-example",
     "title": "Démonstration - élevé",
-    "descriptions": [
-      "distinct"
-    ],
+    "descriptions": ["distinct"],
     "mocked": true,
     "usable": true,
     "url": "https://fournisseur-d-identite.dev-franceconnect.fr",
@@ -72,7 +65,7 @@
     "encryption": "",
     "signature": "HS256",
     "selectors": {
-      "idpButton": "footer li:nth-child(5) a",
+      "idpButton": "[data-testid='interaction-aidants-connect-button']",
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "[type='submit']"

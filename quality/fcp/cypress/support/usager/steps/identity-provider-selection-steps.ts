@@ -162,15 +162,25 @@ Then(
 );
 
 Then(
-  /^le lien Aidants Connect (est|n'est pas) affiché dans le footer$/,
+  /^le bouton Aidants Connect (est|n'est pas) affiché sous la mire$/,
   function (text: string) {
     const isVisible = text === 'est';
     identityProviderSelectionPage
-      .getAidantsConnectLink()
+      .getAidantsConnectButton()
       .should(isVisible ? 'be.visible' : 'not.exist');
   },
 );
 
-When('je clique sur le lien Aidants Connect', function () {
-  identityProviderSelectionPage.getAidantsConnectLink().click();
+Then(
+  /^le bouton Aidants Connect (est|n'est pas) actif$/,
+  function (text: string) {
+    const isEnabled = text === 'est';
+    identityProviderSelectionPage
+      .getAidantsConnectButton()
+      .should(isEnabled ? 'be.enabled' : 'be.disabled');
+  },
+);
+
+When('je clique sur le bouton Aidants Connect', function () {
+  identityProviderSelectionPage.getAidantsConnectButton().click();
 });
