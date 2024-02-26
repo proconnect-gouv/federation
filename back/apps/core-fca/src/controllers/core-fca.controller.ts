@@ -23,7 +23,6 @@ import {
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { NotificationsService } from '@fc/notifications';
-import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderConfig, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
@@ -47,7 +46,6 @@ export class CoreFcaController {
     private readonly config: ConfigService,
     private readonly notifications: NotificationsService,
     private readonly csrfService: SessionCsrfService,
-    private readonly oidcAcr: OidcAcrService,
     private readonly coreAcr: CoreAcrService,
     private readonly coreFcaVerify: CoreFcaVerifyService,
     private readonly coreVerify: CoreVerifyService,
@@ -80,11 +78,7 @@ export class CoreFcaController {
     const { spName, stepRoute } = await sessionOidc.get();
 
     const { params } = await this.oidcProvider.getInteraction(req, res);
-    const {
-      acr_values: acrValues,
-      client_id: clientId,
-      scope: spScope,
-    } = params;
+    const { acr_values: acrValues, scope: spScope } = params;
 
     const {
       configuration: { acrValues: allowedAcrValues },
@@ -100,27 +94,6 @@ export class CoreFcaController {
       return;
     }
 
-    const { idpFilterExclude, idpFilterList } =
-      await this.serviceProvider.getById(clientId);
-
-    const providers = await this.identityProvider.getFilteredList({
-      blacklist: idpFilterExclude,
-      idpList: idpFilterList,
-    });
-
-    const authorizedProviders = providers.map((provider) => {
-      const isAcrValid = this.oidcAcr.isAcrValid(
-        provider.maxAuthorizedAcr,
-        acrValues,
-      );
-
-      if (!isAcrValid) {
-        provider.active = false;
-      }
-
-      return provider;
-    });
-
     // -- generate and store in session the CSRF token
     const csrfToken = this.csrfService.get();
     await this.csrfService.save(sessionOidc, csrfToken);
@@ -130,7 +103,6 @@ export class CoreFcaController {
       csrfToken,
       notification,
       params,
-      providers: authorizedProviders,
       spName,
       spScope,
     };

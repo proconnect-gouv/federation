@@ -296,36 +296,7 @@ describe('CoreFcaController', () => {
   });
 
   describe('getInteraction()', () => {
-    const idpFilterExcludeMock = true;
-
-    const idpFilterListMock = [
-      {
-        maxAuthorizedAcr: 'eidas1',
-        name: 'idp2',
-        uid: 'idp2',
-      },
-      {
-        maxAuthorizedAcr: 'eidas2',
-        name: 'idp3',
-        uid: 'idp3',
-      },
-      {
-        maxAuthorizedAcr: 'eidas3',
-        name: 'idp4',
-        uid: 'idp4',
-      },
-    ];
-
     beforeEach(() => {
-      serviceProviderServiceMock.getById.mockReturnValue({
-        idpFilterExclude: idpFilterExcludeMock,
-        idpFilterList: idpFilterListMock,
-      });
-
-      identityProviderServiceMock.getFilteredList.mockResolvedValue(
-        idpFilterListMock,
-      );
-
       oidcProviderServiceMock.getInteraction.mockResolvedValue(
         interactionDetailsMock,
       );
@@ -449,84 +420,6 @@ describe('CoreFcaController', () => {
       expect(res.render).not.toHaveBeenCalled();
     });
 
-    it('should retrieve the service provider given the client_id', async () => {
-      // When
-      await coreController.getInteraction(
-        req,
-        res,
-        params,
-        oidcSessionServiceMock,
-      );
-      // Then
-      expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(1);
-      expect(serviceProviderServiceMock.getById).toHaveBeenCalledWith(
-        interactionDetailsMock.params.client_id,
-      );
-    });
-
-    it('should retrieve the idp list given the service provider blacklist / whitelist', async () => {
-      // When
-      await coreController.getInteraction(
-        req,
-        res,
-        params,
-        oidcSessionServiceMock,
-      );
-      // Then
-      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledWith({
-        blacklist: idpFilterExcludeMock,
-        idpList: idpFilterListMock,
-      });
-    });
-
-    it('should retrieve the idp list given the service provider blacklist / whitelist', async () => {
-      // When
-      await coreController.getInteraction(
-        req,
-        res,
-        params,
-        oidcSessionServiceMock,
-      );
-      // Then
-      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledWith({
-        blacklist: idpFilterExcludeMock,
-        idpList: idpFilterListMock,
-      });
-    });
-
-    it('should check all identity providers against requested acrValue', async () => {
-      // When
-      await coreController.getInteraction(
-        req,
-        res,
-        params,
-        oidcSessionServiceMock,
-      );
-      // Then
-      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(3);
-      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenNthCalledWith(
-        1,
-        idpFilterListMock[0].maxAuthorizedAcr,
-        interactionDetailsMock.params.acr_values,
-      );
-      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenNthCalledWith(
-        2,
-        idpFilterListMock[1].maxAuthorizedAcr,
-        interactionDetailsMock.params.acr_values,
-      );
-      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenNthCalledWith(
-        3,
-        idpFilterListMock[2].maxAuthorizedAcr,
-        interactionDetailsMock.params.acr_values,
-      );
-    });
-
     it('should retrieve csrf', async () => {
       // When
       await coreController.getInteraction(
@@ -581,7 +474,6 @@ describe('CoreFcaController', () => {
         csrfToken: randomStringMock,
         notification: notificationsMock,
         params: interactionDetailsMock.params,
-        providers: idpFilterListMock,
         spName: oidcSessionMock.spName,
         spScope: interactionDetailsMock.params.scope,
       };
