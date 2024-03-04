@@ -6,5 +6,6 @@ export * from './difference';
 export * from './dto-validation';
 export * from './parse-boolean';
 export * from './parse-json-property';
+export * from './safely-parse-json';
 export * from './unique';
 export * from './wait';
