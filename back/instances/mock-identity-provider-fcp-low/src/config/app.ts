@@ -85,5 +85,11 @@ export default {
       mandatory: true,
       type: 'text',
     },
+    {
+      name: 'rep_scope',
+      label: 'Périmètres du mandat Aidants Connect à renvoyer',
+      mandatory: false,
+      type: 'text',
+    },
   ],
 } as AppConfig;

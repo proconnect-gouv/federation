@@ -37,6 +37,7 @@
   "features": {
     "accessTokenHeaderOnly": true,
     "acr_values": true,
+    "rep_scope": true,
     "convertToJsonIdentityFromCheckToken": true,
     "displayConfirmationAfterAuthentication": true,
     "enableMails": {
