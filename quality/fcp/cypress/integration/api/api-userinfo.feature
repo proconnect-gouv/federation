@@ -55,7 +55,7 @@ Fonctionnalité: API - userinfo
     Quand je lance la requête
     Alors le statut de la réponse est 200
     Et l'entête de la réponse a une propriété "content-type" contenant "application/jwt"
-    # Et l'entête de la réponse n'a pas de propriété "set-cookie"
+    Et l'entête de la réponse n'a pas de propriété "set-cookie"
     Et le corps de la réponse contient le JWT userinfo pour le FS
     Et le JWT n'est pas chiffré
     Et l'entête du JWS a une propriété "alg" égale à "HS256"

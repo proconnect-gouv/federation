@@ -22,6 +22,13 @@ describe('OidcProviderConfigAppService', () => {
   let service: OidcProviderConfigAppService;
 
   const sessionServiceMock = getSessionServiceMock();
+
+  const userLoginMock = 'dbrando';
+
+  const sessionDataMock = {
+    userLogin: userLoginMock,
+  };
+
   const errorServiceMock = {
     throwError: jest.fn(),
   };
@@ -70,6 +77,8 @@ describe('OidcProviderConfigAppService', () => {
     service = module.get<OidcProviderConfigAppService>(
       OidcProviderConfigAppService,
     );
+
+    sessionServiceMock.get.mockReturnValue(sessionDataMock);
   });
 
   it('should be defined', () => {
@@ -90,8 +99,6 @@ describe('OidcProviderConfigAppService', () => {
       family_name: 'Brando',
     };
 
-    const userLoginMock = 'dbrando';
-
     const claimsMock = {
       sub: spSubMock,
       ...spIdentityMock,
@@ -100,35 +107,10 @@ describe('OidcProviderConfigAppService', () => {
     let stringToArrayMock;
 
     beforeEach(() => {
-      jest.resetAllMocks();
-      jest.restoreAllMocks();
-
-      jest
-        .spyOn(SessionService, 'getBoundSession')
-        .mockReturnValue(sessionServiceMock);
-
       scenariosServiceMock.deleteClaims.mockReturnValue(claimsMock);
 
       stringToArrayMock = jest.mocked(stringToArray);
       stringToArrayMock.mockReturnValue([]);
-    });
-
-    it('should get the bound app session', async () => {
-      // Given
-      const reqMock = {
-        sessionId: sessionIdMock,
-        sessionService: sessionServiceMock,
-      };
-
-      // When
-      await service['formatAccount'](sessionIdMock, spIdentityMock, spSubMock);
-
-      // Then
-      expect(SessionService.getBoundSession).toHaveBeenCalledTimes(1);
-      expect(SessionService.getBoundSession).toHaveBeenCalledWith(
-        reqMock,
-        'App',
-      );
     });
 
     it('should retrieve the current user login in app session', async () => {
@@ -137,13 +119,10 @@ describe('OidcProviderConfigAppService', () => {
 
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.get).toHaveBeenCalledWith('userLogin');
+      expect(sessionServiceMock.get).toHaveBeenCalledWith('App');
     });
 
     it('should call the "deleteClaims" scenario handler with the current login, the sp identity and the sp sub', async () => {
-      // Given
-      sessionServiceMock.get.mockResolvedValueOnce(userLoginMock);
-
       // When
       await service['formatAccount'](sessionIdMock, spIdentityMock, spSubMock);
 
@@ -158,8 +137,6 @@ describe('OidcProviderConfigAppService', () => {
 
     it('should return an account for the oidc-provider library to interact with', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValueOnce(userLoginMock);
-
       const expected = {
         accountId: sessionIdMock,
         claims: expect.any(Function),

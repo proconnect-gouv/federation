@@ -2,11 +2,9 @@
 const hasParams = !!locals.params;
 const isError = !!locals.exception;
 
-const isOidcClientSession = !!(locals.session && locals.session.OidcClient);
-
 const label = hasParams
   ? locals.spName
-  : isOidcClientSession && locals.session.OidcClient.spName || undefined;
+  : $session('OidcClient.spName');
 
 const urlBase = hasParams
   ? locals.params.redirect_uri

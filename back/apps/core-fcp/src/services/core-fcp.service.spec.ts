@@ -10,10 +10,10 @@ import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { IdentityProviderMetadata, IOidcIdentity, OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
-import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
+import { OidcClientService } from '@fc/oidc-client';
 import { ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { ISessionService, SessionService } from '@fc/session';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getCoreAuthorizationServiceMock } from '@mocks/core';
@@ -163,7 +163,7 @@ describe('CoreFcpService', () => {
   describe('sendAuthenticationMail()', () => {
     it('should return a promise', async () => {
       // given
-      sessionCoreServiceMock.get.mockReset().mockResolvedValue({
+      sessionCoreServiceMock.get.mockReset().mockReturnValue({
         sentNotificationsForSp: [],
       });
 
@@ -179,7 +179,7 @@ describe('CoreFcpService', () => {
 
     it('Should call `FeatureHandler.get()` to get instantiated featureHandler class', async () => {
       // Given
-      sessionCoreServiceMock.get.mockReset().mockResolvedValue({
+      sessionCoreServiceMock.get.mockReset().mockReturnValue({
         sentNotificationsForSp: [],
       });
 
@@ -196,9 +196,23 @@ describe('CoreFcpService', () => {
       );
     });
 
+    it('Should use an empty array if `sessionCore.sentNotificationsForSp` is not set', async () => {
+      // Given
+      sessionCoreServiceMock.get.mockReset().mockReturnValue(undefined);
+
+      // When
+      await service.sendAuthenticationMail(
+        sessionDataMock,
+        sessionCoreServiceMock,
+      );
+
+      // Then
+      expect(featureHandlerServiceMock.handle).toBeCalledTimes(1);
+      expect(featureHandlerServiceMock.handle).toBeCalledWith(sessionDataMock);
+    });
     it('Should call featureHandle.handle() with `session`', async () => {
       // Given
-      sessionCoreServiceMock.get.mockReset().mockResolvedValue({
+      sessionCoreServiceMock.get.mockReset().mockReturnValue({
         sentNotificationsForSp: [],
       });
 
@@ -213,13 +227,31 @@ describe('CoreFcpService', () => {
       expect(featureHandlerServiceMock.handle).toBeCalledWith(sessionDataMock);
     });
 
+    it('should initialize sentNotificationsForSp to an empty array if it is not defined', async () => {
+      // Given
+      sessionCoreServiceMock.get.mockReset().mockReturnValue({});
+
+      // When
+      await service.sendAuthenticationMail(
+        sessionDataMock,
+        sessionCoreServiceMock,
+      );
+
+      // Then
+      expect(sessionCoreServiceMock.set).toBeCalledTimes(1);
+      expect(sessionCoreServiceMock.set).toBeCalledWith(
+        'sentNotificationsForSp',
+        [sessionDataMock.spId],
+      );
+    });
+
     it('Should not call featureHandle.handle() when notification is already sent', async () => {
       // Given
       const spIdMock = 'sp_id';
       jest
         .mocked(sessionCoreServiceMock.get)
         .mockReset()
-        .mockResolvedValue({
+        .mockReturnValue({
           sentNotificationsForSp: [spIdMock],
         });
 
@@ -239,7 +271,7 @@ describe('CoreFcpService', () => {
       jest
         .mocked(sessionCoreServiceMock.get)
         .mockReset()
-        .mockResolvedValue({
+        .mockReturnValue({
           sentNotificationsForSp: [anotherSpIdMock],
         });
 
@@ -526,7 +558,7 @@ describe('CoreFcpService', () => {
     const authorizationParametersMock = { acr_values: acrMock };
 
     beforeEach(() => {
-      sessionServiceMock.get.mockResolvedValue({
+      sessionServiceMock.get.mockReturnValue({
         spId: spIdMock,
       });
 
@@ -545,7 +577,6 @@ describe('CoreFcpService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
@@ -562,7 +593,6 @@ describe('CoreFcpService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
@@ -579,7 +609,6 @@ describe('CoreFcpService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
@@ -593,7 +622,6 @@ describe('CoreFcpService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
@@ -606,12 +634,11 @@ describe('CoreFcpService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set).toHaveBeenCalledWith({
+      expect(sessionServiceMock.set).toHaveBeenCalledWith('OidcClient', {
         idpId: idpIdMock,
         idpName: identityProviderResultMock.name,
         idpLabel: identityProviderResultMock.title,
@@ -634,7 +661,6 @@ describe('CoreFcpService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
 

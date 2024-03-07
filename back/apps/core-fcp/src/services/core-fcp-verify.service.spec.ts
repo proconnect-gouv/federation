@@ -54,7 +54,7 @@ describe('CoreFcpVerifyService', () => {
       .useValue(coreVerifyServiceMock)
       .compile();
 
-    service = await app.get<CoreFcpVerifyService>(CoreFcpVerifyService);
+    service = app.get<CoreFcpVerifyService>(CoreFcpVerifyService);
   });
 
   it('should be defined', () => {

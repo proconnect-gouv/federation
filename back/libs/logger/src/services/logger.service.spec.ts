@@ -4,6 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AsyncLocalStorageService } from '@fc/async-local-storage';
 import { ConfigService } from '@fc/config';
+import { SESSION_STORE_KEY } from '@fc/session/tokens';
 
 import { getAsyncLocalStorageMock } from '@mocks/async-local-storage';
 import { getConfigMock } from '@mocks/config';
@@ -443,12 +444,16 @@ describe('LoggerService', () => {
       method: 'GET',
       baseUrl: '/base-url',
       path: '/path',
-      sessionId: 'test-session-id',
       headers: {},
     };
+
+    const sessionDataMock = {
+      id: 'test-session-id',
+    };
+
     const expectedRequestContext = {
       method: requestMock.method,
-      sessionId: requestMock.sessionId,
+      sessionId: sessionDataMock.id,
       path: `${requestMock.baseUrl}${requestMock.path}`,
     };
 
@@ -457,13 +462,19 @@ describe('LoggerService', () => {
       service['getRequestContext']();
 
       // Then
-      expect(asyncLocalStorageMock.get).toHaveBeenCalledTimes(1);
-      expect(asyncLocalStorageMock.get).toHaveBeenCalledWith('request');
+      expect(asyncLocalStorageMock.get).toHaveBeenCalledTimes(2);
+      expect(asyncLocalStorageMock.get).toHaveBeenNthCalledWith(1, 'request');
+      expect(asyncLocalStorageMock.get).toHaveBeenNthCalledWith(
+        2,
+        SESSION_STORE_KEY,
+      );
     });
 
     it('should return the request context if found', () => {
       // Given
-      asyncLocalStorageMock.get.mockReturnValueOnce(requestMock);
+      asyncLocalStorageMock.get
+        .mockReturnValueOnce(requestMock)
+        .mockReturnValueOnce(sessionDataMock);
 
       // When
       const requestContext = service['getRequestContext']();
@@ -492,10 +503,12 @@ describe('LoggerService', () => {
         ...expectedRequestContext,
         requestId: headersMock['x-request-id'],
       };
-      asyncLocalStorageMock.get.mockReturnValueOnce({
-        ...requestMock,
-        headers: headersMock,
-      });
+      asyncLocalStorageMock.get
+        .mockReturnValueOnce({
+          ...requestMock,
+          headers: headersMock,
+        })
+        .mockReturnValueOnce(sessionDataMock);
 
       // When
       const requestContext = service['getRequestContext']();
@@ -513,10 +526,12 @@ describe('LoggerService', () => {
         ...expectedRequestContext,
         isSuspicious: true,
       };
-      asyncLocalStorageMock.get.mockReturnValueOnce({
-        ...requestMock,
-        headers: headersMock,
-      });
+      asyncLocalStorageMock.get
+        .mockReturnValueOnce({
+          ...requestMock,
+          headers: headersMock,
+        })
+        .mockReturnValueOnce(sessionDataMock);
 
       // When
       const requestContext = service['getRequestContext']();

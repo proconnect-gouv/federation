@@ -3,14 +3,12 @@
 // Declarative file
 import { Response } from 'express';
 
-import { AuthorizationParameters, OidcClientSession } from '@fc/oidc-client';
-import { ISessionService } from '@fc/session';
+import { AuthorizationParameters } from '@fc/oidc-client';
 
 export interface CoreServiceInterface {
   redirectToIdp: (
     res: Response,
     idpId: string,
-    session: ISessionService<OidcClientSession>,
     authorizeParams: AuthorizationParameters,
   ) => Promise<void>;
 }

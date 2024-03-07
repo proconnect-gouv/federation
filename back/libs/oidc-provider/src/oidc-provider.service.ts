@@ -64,9 +64,10 @@ export class OidcProviderService {
    * @see https://docs.nestjs.com/faq/http-adapter
    * @see https://docs.nestjs.com/fundamentals/lifecycle-events
    */
-  async onModuleInit() {
+
+  onModuleInit() {
     const { prefix, issuer, configuration } =
-      await this.configService.getConfig(this);
+      this.configService.getConfig(this);
     this.configuration = configuration;
 
     try {

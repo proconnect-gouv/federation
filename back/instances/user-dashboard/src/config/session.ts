@@ -4,13 +4,16 @@
 import { ConfigParser } from '@fc/config';
 import { OidcClientRoutes } from '@fc/oidc-client';
 import { ISessionCookieOptions, SessionConfig } from '@fc/session';
-import { UserDashboardSession } from '@fc/user-dashboard';
+import {
+  UserDashboardBackRoutes,
+  UserDashboardSession,
+} from '@fc/user-dashboard';
 
 const env = new ConfigParser(process.env, 'Session');
 
 const cookieOptions: ISessionCookieOptions = {
   signed: true,
-  sameSite: 'Strict',
+  sameSite: 'strict',
   httpOnly: true,
   secure: true,
   maxAge: 600000, // 10 minutes
@@ -26,6 +29,27 @@ export default {
   lifetime: 600, // 10 minutes
   sessionIdLength: 64,
   slidingExpiration: true,
-  excludedRoutes: [OidcClientRoutes.WELL_KNOWN_KEYS],
+  middlewareExcludedRoutes: [],
+  middlewareIncludedRoutes: [
+    // Connection flow
+    OidcClientRoutes.REDIRECT_TO_IDP,
+    OidcClientRoutes.OIDC_CALLBACK,
+    UserDashboardBackRoutes.LOGIN,
+    UserDashboardBackRoutes.LOGIN_CALLBACK,
+
+    // Business
+    UserDashboardBackRoutes.ERROR,
+    UserDashboardBackRoutes.USER_PREFERENCES,
+    UserDashboardBackRoutes.TRACKS,
+    UserDashboardBackRoutes.USER_INFOS,
+    UserDashboardBackRoutes.VERIFY,
+    UserDashboardBackRoutes.CSRF_TOKEN,
+
+    // Disconnection flow
+    UserDashboardBackRoutes.LOGOUT,
+    UserDashboardBackRoutes.LOGOUT_CALLBACK,
+    UserDashboardBackRoutes.REVOCATION,
+    UserDashboardBackRoutes.OIDC_CLIENT_GET_END_SESSION_URL,
+  ],
   schema: UserDashboardSession,
 } as SessionConfig;

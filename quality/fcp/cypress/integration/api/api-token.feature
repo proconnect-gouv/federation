@@ -13,7 +13,7 @@ Fonctionnalité: API - token
     Quand je lance la requête
     Alors le statut de la réponse est 200
     Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
-    # Et l'entête de la réponse n'a pas de propriété "set-cookie"
+    Et l'entête de la réponse n'a pas de propriété "set-cookie"
     Et le corps de la réponse a 5 propriétés
     Et le corps de la réponse a une propriété "access_token"
     Et le corps de la réponse a une propriété "expires_in" égale à 60
@@ -42,7 +42,7 @@ Fonctionnalité: API - token
     Et le payload du JWT a une propriété "amr"
     Et le payload du JWT a une propriété "nonce"
     Et le payload du JWT a une propriété "iss" égale à "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2"
-    
+
   @fcpLow
   Scénario: API token - id_token - FCP Low
     Etant donné que je navigue sur la page fournisseur de service

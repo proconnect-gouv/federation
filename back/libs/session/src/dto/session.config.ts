@@ -28,8 +28,8 @@ export class CookieOptions {
   readonly signed: boolean;
 
   @IsString()
-  @IsIn(['Strict', 'Lax', 'None'])
-  readonly sameSite: 'Strict' | 'Lax' | 'None';
+  @IsIn(['strict', 'lax', 'none'])
+  readonly sameSite: 'strict' | 'lax' | 'none';
 
   @IsBoolean()
   readonly httpOnly: boolean;
@@ -79,7 +79,11 @@ export class SessionConfig {
 
   @IsArray()
   @IsStringOrRegExp({ each: true })
-  readonly excludedRoutes: (string | RouteInfo)[];
+  readonly middlewareIncludedRoutes: (string | RouteInfo)[];
+
+  @IsArray()
+  @IsStringOrRegExp({ each: true })
+  readonly middlewareExcludedRoutes: (string | RouteInfo)[];
 
   @IsObject()
   @IsOptional()

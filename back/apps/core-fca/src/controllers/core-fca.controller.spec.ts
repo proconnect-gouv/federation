@@ -11,11 +11,7 @@ import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import {
-  ISessionService,
-  SessionCsrfService,
-  SessionService,
-} from '@fc/session';
+import { ISessionService, SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
 import { getSessionServiceMock } from '@mocks/session';
@@ -134,8 +130,9 @@ describe('CoreFcaController', () => {
     isAcrValid: jest.fn(),
   };
 
+  const csrfToken = randomStringMock;
+
   const oidcClientSessionDataMock: OidcClientSession = {
-    csrfToken: randomStringMock,
     spId: spIdMock,
     idpId: idpIdMock,
     idpNonce: idpNonceMock,
@@ -173,7 +170,6 @@ describe('CoreFcaController', () => {
   const csrfMock = 'csrfMockValue';
 
   const oidcSessionMock: OidcSession = {
-    csrfToken: randomStringMock,
     idpId: idpIdMock,
     idpNonce: idpNonceMock,
     idpState: idpStateMock,
@@ -203,7 +199,6 @@ describe('CoreFcaController', () => {
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
         ConfigService,
-        SessionCsrfService,
         CoreAcrService,
         CoreFcaVerifyService,
         CoreVerifyService,
@@ -227,8 +222,6 @@ describe('CoreFcaController', () => {
       .useValue(configServiceMock)
       .overrideProvider(CoreAcrService)
       .useValue(coreAcrServiceMock)
-      .overrideProvider(SessionCsrfService)
-      .useValue(sessionCsrfServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingServiceMock)
       .overrideProvider(OidcAcrService)
@@ -239,7 +232,7 @@ describe('CoreFcaController', () => {
       .useValue(notificationsServiceMock)
       .compile();
 
-    coreController = await app.get<CoreFcaController>(CoreFcaController);
+    coreController = app.get<CoreFcaController>(CoreFcaController);
 
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -259,7 +252,7 @@ describe('CoreFcaController', () => {
     serviceProviderServiceMock.getById.mockResolvedValue({
       name: spNameMock,
     });
-    sessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
+    sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
 
     sessionServiceMock.set.mockResolvedValueOnce(undefined);
     cryptographyServiceMock.genRandomString.mockReturnValue(randomStringMock);
@@ -269,7 +262,7 @@ describe('CoreFcaController', () => {
     sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
 
     serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(true);
-    oidcSessionServiceMock.get.mockResolvedValue(oidcSessionMock);
+    oidcSessionServiceMock.get.mockReturnValue(oidcSessionMock);
     sessionCsrfServiceMock.get.mockReturnValueOnce(csrfMock);
 
     identityProviderServiceMock.isActiveById.mockResolvedValue(true);
@@ -327,6 +320,7 @@ describe('CoreFcaController', () => {
         req,
         res,
         params,
+        csrfToken,
         oidcSessionServiceMock,
       );
       // Then
@@ -340,6 +334,7 @@ describe('CoreFcaController', () => {
         req,
         res,
         params,
+        csrfToken,
         oidcSessionServiceMock,
       );
       // Then
@@ -348,7 +343,7 @@ describe('CoreFcaController', () => {
 
     it('should not track route if is a refresh', async () => {
       // Given
-      oidcSessionServiceMock.get.mockResolvedValueOnce({
+      oidcSessionServiceMock.get.mockReturnValueOnce({
         stepRoute: CoreRoutes.INTERACTION,
       });
       // When
@@ -356,6 +351,7 @@ describe('CoreFcaController', () => {
         req,
         res,
         params,
+        csrfToken,
         oidcSessionServiceMock,
       );
       // Then
@@ -368,6 +364,7 @@ describe('CoreFcaController', () => {
         req,
         res,
         params,
+        csrfToken,
         oidcSessionServiceMock,
       );
       // Then
@@ -381,6 +378,7 @@ describe('CoreFcaController', () => {
         req,
         res,
         params,
+        csrfToken,
         oidcSessionServiceMock,
       );
       // Then
@@ -393,6 +391,7 @@ describe('CoreFcaController', () => {
         req,
         res,
         params,
+        csrfToken,
         oidcSessionServiceMock,
       );
       // Then
@@ -413,42 +412,12 @@ describe('CoreFcaController', () => {
         req,
         res,
         params,
+        csrfToken,
         oidcSessionServiceMock,
       );
       // Then
       expect(result).toBeUndefined();
       expect(res.render).not.toHaveBeenCalled();
-    });
-
-    it('should retrieve csrf', async () => {
-      // When
-      await coreController.getInteraction(
-        req,
-        res,
-        params,
-        oidcSessionServiceMock,
-      );
-
-      // Then
-      expect(sessionCsrfServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionCsrfServiceMock.get).toHaveBeenCalledWith();
-    });
-
-    it('should save the csrf in oidc session', async () => {
-      // When
-      await coreController.getInteraction(
-        req,
-        res,
-        params,
-        oidcSessionServiceMock,
-      );
-
-      // Then
-      expect(sessionCsrfServiceMock.save).toHaveBeenCalledTimes(1);
-      expect(sessionCsrfServiceMock.save).toHaveBeenCalledWith(
-        oidcSessionServiceMock,
-        randomStringMock,
-      );
     });
 
     it('should call the notifications list without params', async () => {
@@ -457,6 +426,7 @@ describe('CoreFcaController', () => {
         req,
         res,
         params,
+        csrfToken,
         oidcSessionServiceMock,
       );
 
@@ -483,6 +453,7 @@ describe('CoreFcaController', () => {
         req,
         res,
         params,
+        csrfToken,
         oidcSessionServiceMock,
       );
 
@@ -501,7 +472,7 @@ describe('CoreFcaController', () => {
       const oidcClientSessionDataMock = {
         isSso: false,
       } as unknown as ISessionService<OidcClientSession>;
-      sessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
+      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
       serviceProviderServiceMock.getById.mockResolvedValue({
         ssoDisabled: false,
       });
@@ -522,7 +493,7 @@ describe('CoreFcaController', () => {
       const oidcClientSessionDataMock = {
         isSso: false,
       } as unknown as ISessionService<OidcClientSession>;
-      sessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
+      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
       serviceProviderServiceMock.getById.mockResolvedValue({
         ssoDisabled: ssoDisabledMock,
       });
@@ -545,7 +516,7 @@ describe('CoreFcaController', () => {
       } as unknown as ISessionService<OidcClientSession>;
 
       // When
-      sessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
+      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
       serviceProviderServiceMock.getById.mockResolvedValue({
         ssoDisabled: false,
       });
@@ -571,7 +542,7 @@ describe('CoreFcaController', () => {
       const urlPrefixMock = '/api/v2';
 
       // When
-      sessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
+      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
       serviceProviderServiceMock.getById.mockResolvedValue({
         ssoDisabled: true,
       });
@@ -605,14 +576,15 @@ describe('CoreFcaController', () => {
         isSso: true,
       } as unknown as ISessionService<OidcClientSession>;
 
-      // When
       coreFcaVerifyServiceMock.handleSsoDisabled.mockResolvedValue(
         handleSsoDisabledResult,
       );
-      sessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
+      sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
       serviceProviderServiceMock.getById.mockResolvedValue({
         ssoDisabled: true,
       });
+
+      // When
       await coreController.getVerify(
         req,
         res as unknown as Response,
@@ -621,8 +593,8 @@ describe('CoreFcaController', () => {
       );
 
       // Then
-      expect(res.redirect).toBeCalledTimes(1);
-      expect(res.redirect).toBeCalledWith(handleSsoDisabledResult);
+      expect(res.redirect).toHaveBeenCalledTimes(1);
+      expect(res.redirect).toHaveBeenCalledWith(handleSsoDisabledResult);
     });
 
     describe('when `identityProvider.isActiveById` returns false', () => {

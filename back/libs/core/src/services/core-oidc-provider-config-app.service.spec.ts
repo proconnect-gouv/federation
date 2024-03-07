@@ -2,24 +2,23 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
 import {
   OidcCtx,
   OidcProviderErrorService,
   OidcProviderGrantService,
 } from '@fc/oidc-provider';
-import { ISessionService, SessionService } from '@fc/session';
+import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { CoreFcaMissingAtHashException } from '../exceptions';
-import { OidcProviderConfigAppService } from './oidc-provider-config-app.service';
+import { CoreMissingAtHashException } from '../exceptions';
+import { CoreOidcProviderConfigAppService } from './core-oidc-provider-config-app.service';
 
-describe('OidcProviderConfigAppService', () => {
-  let service: OidcProviderConfigAppService;
+describe('CoreOidcProviderConfigAppService', () => {
+  let service: CoreOidcProviderConfigAppService;
 
   const sessionServiceMock = getSessionServiceMock();
 
@@ -65,8 +64,14 @@ describe('OidcProviderConfigAppService', () => {
     },
   } as unknown as OidcCtx;
 
-  const sessionOidcMock: OidcSession = {
-    idpId: 'idp_id',
+  const idpIdMock = 'idp_id';
+  const sessionOidcMock = {
+    OidcClient: {
+      idpId: idpIdMock,
+      idpIdentity: {
+        sub: 'idp_sub',
+      },
+    },
   };
 
   const trackingServiceMock = {
@@ -81,15 +86,13 @@ describe('OidcProviderConfigAppService', () => {
   const form =
     '<form id="logoutId" method="post" action="https://redirect/me/there"><input type="hidden" name="xsrf" value="123456azerty"/></form>';
 
-  let getBoundSessionMock;
-
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        OidcProviderConfigAppService,
+        CoreOidcProviderConfigAppService,
         LoggerService,
         SessionService,
         OidcProviderErrorService,
@@ -115,17 +118,11 @@ describe('OidcProviderConfigAppService', () => {
       .useValue(trackingServiceMock)
       .compile();
 
-    service = module.get<OidcProviderConfigAppService>(
-      OidcProviderConfigAppService,
+    service = module.get<CoreOidcProviderConfigAppService>(
+      CoreOidcProviderConfigAppService,
     );
 
     configServiceMock.get.mockReturnValue(appConfigMock);
-
-    getBoundSessionMock = jest.spyOn(SessionService, 'getBoundSession');
-
-    getBoundSessionMock.mockReturnValue(
-      sessionServiceMock as unknown as ISessionService<unknown>,
-    );
 
     service['logoutFormSessionDestroy'] = jest.fn();
   });
@@ -136,20 +133,13 @@ describe('OidcProviderConfigAppService', () => {
 
   describe('logoutSource', () => {
     beforeEach(() => {
-      service['switchToAliasedSession'] = jest.fn();
-    });
-
-    it('should call switchToAliasedSession()', async () => {
-      // When
-      await service.logoutSource(ctxMock, form);
-      // Then
-      expect(service['switchToAliasedSession']).toHaveBeenCalledTimes(1);
-      expect(service['switchToAliasedSession']).toHaveBeenCalledWith(ctxMock);
+      sessionServiceMock.getDataFromBackend.mockResolvedValue(sessionOidcMock);
+      service['getSessionId'] = jest.fn().mockResolvedValue(sessionId);
     });
 
     it('should call hasEndSessionUrlFromProvider if session & idpId is defined', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValue(sessionOidcMock);
+      sessionServiceMock.getDataFromBackend.mockResolvedValue(sessionOidcMock);
       // When
       await service.logoutSource(ctxMock, form);
       // Then
@@ -160,7 +150,7 @@ describe('OidcProviderConfigAppService', () => {
 
     it('should call logoutFormSessionDestroy with given parameters if session & idpId is defined and hasEndSessionUrlFromProvider return true', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValue(sessionOidcMock);
+      sessionServiceMock.getDataFromBackend.mockResolvedValue(sessionOidcMock);
       oidcClientServiceMock.hasEndSessionUrlFromProvider.mockResolvedValue(
         true,
       );
@@ -176,14 +166,13 @@ describe('OidcProviderConfigAppService', () => {
       expect(service['logoutFormSessionDestroy']).toHaveBeenCalledWith(
         ctxMock,
         form,
-        sessionServiceMock,
         expectedParamsMock,
       );
     });
 
     it('should call logoutFormSessionDestroy with given parameters if hasEndSessionUrlFromProvider is false', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValue(sessionOidcMock);
+      sessionServiceMock.getDataFromBackend.mockResolvedValue(sessionOidcMock);
       oidcClientServiceMock.hasEndSessionUrlFromProvider.mockResolvedValue(
         false,
       );
@@ -199,60 +188,101 @@ describe('OidcProviderConfigAppService', () => {
       expect(service['logoutFormSessionDestroy']).toHaveBeenCalledWith(
         ctxMock,
         form,
-        sessionServiceMock,
         expectedParamsMock,
       );
     });
   });
 
-  describe('switchToAliasedSession', () => {
-    it('should throw if at_hash is not found', async () => {
-      // Given
-      const badCtxMock = {
-        oidc: {},
-      } as OidcCtx;
-      // When
-      await expect(
-        service['switchToAliasedSession'](badCtxMock),
-      ).rejects.toThrow(CoreFcaMissingAtHashException);
+  describe('getSessionId', () => {
+    beforeEach(() => {
+      sessionServiceMock.getAlias.mockResolvedValue(sessionId);
     });
 
-    it('should throw if at_hash is not a string', async () => {
+    it('should return sessionId', async () => {
       // Given
-      const badCtxMock = {
-        oidc: {
-          // OIDC naming
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          entities: { IdTokenHint: { payload: { at_hash: undefined } } },
-        },
-      } as unknown as OidcCtx;
       // When
-      await expect(
-        service['switchToAliasedSession'](badCtxMock),
-      ).rejects.toThrow(CoreFcaMissingAtHashException);
-    });
-
-    it('should call session.getAlias() with value of at_hash', async () => {
-      // When
-      await service['switchToAliasedSession'](ctxMock);
+      const result = await service['getSessionId'](ctxMock);
       // Then
-      expect(sessionServiceMock.getAlias).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.getAlias).toHaveBeenLastCalledWith(atHashMock);
+      expect(result).toBe(sessionId);
     });
 
-    it('should call session.attach() with retrieved sessionId from session.getAlias()', async () => {
+    it('should throw CoreFcaMissingAtHashException if at_hash is not a string', async () => {
       // Given
-      const aliasedSessionId = Symbol('aliasedSessionId');
-      sessionServiceMock.getAlias.mockResolvedValueOnce(aliasedSessionId);
+      ctxMock.oidc.entities.IdTokenHint.payload.at_hash = null;
       // When
-      await service['switchToAliasedSession'](ctxMock);
-      // Then
-      expect(sessionServiceMock.attach).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.attach).toHaveBeenLastCalledWith(
-        reqMock,
-        resMock,
-        aliasedSessionId,
+      await expect(service['getSessionId'](ctxMock)).rejects.toThrow(
+        CoreMissingAtHashException,
       );
+    });
+  });
+
+  describe('getLogoutParams', () => {
+    it('should return params with idp logout url if hasIdpLogoutUrl is true', async () => {
+      // Given
+      const expectedParamsMock = {
+        method: 'POST',
+        title: 'Déconnexion du FI',
+        uri: '/api/v2/client/disconnect-from-idp',
+      };
+      service['hasIdpLogoutUrl'] = jest.fn().mockResolvedValue(true);
+
+      // When
+      const result = await service['getLogoutParams'](idpIdMock);
+
+      // Then
+      expect(result).toEqual(expectedParamsMock);
+    });
+
+    it('should return params with client logout url if hasIdpLogoutUrl is false', async () => {
+      // Given
+      const expectedParamsMock = {
+        method: 'GET',
+        title: 'Déconnexion FC',
+        uri: '/api/v2/client/logout-callback',
+      };
+      service['hasIdpLogoutUrl'] = jest.fn().mockResolvedValue(false);
+
+      // When
+      const result = await service['getLogoutParams'](idpIdMock);
+
+      // Then
+      expect(result).toEqual(expectedParamsMock);
+    });
+  });
+
+  describe('hasIdpLogoutUrl', () => {
+    it('should return false if idpId is not defined', async () => {
+      // When
+      const result = await service['hasIdpLogoutUrl'](undefined);
+      // Then
+      expect(result).toBe(false);
+    });
+
+    it('should call hasEndSessionUrlFromProvider with idpId if idpId is defined', async () => {
+      // Given
+      // When
+      await service['hasIdpLogoutUrl'](idpIdMock);
+      // Then
+      expect(
+        oidcClientServiceMock.hasEndSessionUrlFromProvider,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        oidcClientServiceMock.hasEndSessionUrlFromProvider,
+      ).toHaveBeenCalledWith(sessionOidcMock.OidcClient.idpId);
+    });
+
+    it('should return result from call to hasEndSessionUrlFromProvider', async () => {
+      // Given
+      const hasEndSessionUrlFromProviderResult = Symbol(
+        'hasEndSessionUrlFromProviderResult',
+      );
+      oidcClientServiceMock.hasEndSessionUrlFromProvider.mockResolvedValue(
+        hasEndSessionUrlFromProviderResult,
+      );
+      // When
+      const result = await service['hasIdpLogoutUrl'](idpIdMock);
+      // Then
+      expect(result).toBe(hasEndSessionUrlFromProviderResult);
     });
   });
 });

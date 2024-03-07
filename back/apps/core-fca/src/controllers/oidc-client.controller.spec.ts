@@ -1,8 +1,11 @@
+import { cloneDeep } from 'lodash';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
+import { CsrfTokenGuard } from '@fc/csrf';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata, IOidcIdentity } from '@fc/oidc';
@@ -13,11 +16,7 @@ import {
   TokenParams,
 } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
-import {
-  SessionCsrfService,
-  SessionInvalidCsrfSelectIdpException,
-  SessionService,
-} from '@fc/session';
+import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
@@ -28,12 +27,17 @@ import { CoreFcaInvalidIdentityException } from '../exceptions';
 import { CoreFcaService } from '../services';
 import { OidcClientController } from './oidc-client.controller';
 
+jest.mock('lodash', () => ({
+  ...jest.requireActual('lodash'),
+  cloneDeep: jest.fn(),
+}));
+
 jest.mock('querystring', () => ({
   encode: jest.fn(),
 }));
 
 jest.mock('@fc/common', () => ({
-  ...(jest.requireActual('@fc/common') as any),
+  ...jest.requireActual('@fc/common'),
   validateDto: jest.fn(),
 }));
 
@@ -48,7 +52,6 @@ describe('OidcClient Controller', () => {
       wellKnownKeys: jest.fn(),
       buildAuthorizeParameters: jest.fn(),
       checkIdpBlacklisted: jest.fn(),
-      checkCsrfTokenValidity: jest.fn(),
       checkIdpDisabled: jest.fn(),
     },
     getEndSessionUrlFromProvider: jest.fn(),
@@ -70,16 +73,8 @@ describe('OidcClient Controller', () => {
   const interactionIdMock = 'interactionIdMockValue';
   const acrMock = 'acrMockValue';
   const spNameMock = 'some SP';
-  const randomStringMock = 'randomStringMockValue';
 
   const sessionServiceMock = getSessionServiceMock();
-  const newSessionServiceMock = getSessionServiceMock();
-
-  const sessionCsrfServiceMock = {
-    get: jest.fn(),
-    save: jest.fn(),
-    validate: jest.fn(),
-  };
 
   const identityProviderServiceMock = {
     getById: jest.fn(),
@@ -124,7 +119,6 @@ describe('OidcClient Controller', () => {
   };
 
   const oidcClientSessionDataMock: OidcClientSession = {
-    csrfToken: randomStringMock,
     spId: spIdMock,
     idpId: idpIdMock,
     idpNonce: nonceMock,
@@ -157,6 +151,10 @@ describe('OidcClient Controller', () => {
     genRandomString: jest.fn(),
   };
 
+  const csrfTokenGuardMock = {
+    canActivate: () => true,
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -167,7 +165,6 @@ describe('OidcClient Controller', () => {
         OidcClientService,
         LoggerService,
         SessionService,
-        SessionCsrfService,
         TrackingService,
         ConfigService,
         IdentityProviderAdapterMongoService,
@@ -178,6 +175,8 @@ describe('OidcClient Controller', () => {
         CryptographyService,
       ],
     })
+      .overrideGuard(CsrfTokenGuard)
+      .useValue(csrfTokenGuardMock)
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
       .overrideProvider(LoggerService)
@@ -188,8 +187,6 @@ describe('OidcClient Controller', () => {
       .useValue(trackingMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(SessionCsrfService)
-      .useValue(sessionCsrfServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderServiceMock)
       .overrideProvider(OidcProviderService)
@@ -221,8 +218,7 @@ describe('OidcClient Controller', () => {
     };
 
     identityProviderServiceMock.getById.mockReturnValue(idpMock);
-    sessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
-    newSessionServiceMock.get.mockResolvedValue(oidcClientSessionDataMock);
+    sessionServiceMock.get.mockReturnValue(oidcClientSessionDataMock);
 
     oidcClientServiceMock.utils.buildAuthorizeParameters.mockReturnValue({
       state: stateMock,
@@ -233,16 +229,11 @@ describe('OidcClient Controller', () => {
       acr_values: 'acrMock',
     });
 
-    sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
     oidcProviderServiceMock.getInteraction.mockResolvedValue(
       interactionDetailsResolved,
     );
 
     configServiceMock.get.mockReturnValue(configMock);
-
-    jest
-      .spyOn(SessionService, 'getBoundSession')
-      .mockReturnValue(newSessionServiceMock);
   });
 
   it('should be defined', () => {
@@ -271,26 +262,6 @@ describe('OidcClient Controller', () => {
       );
     });
 
-    it('should throw an error if the two CSRF tokens (provided in request and previously stored in session) are not the same.', async () => {
-      // Given
-      const body = {
-        providerUid: providerIdMock,
-        csrfToken: 'csrfMockValue',
-        email: 'harry.potter@hogwarts.uk',
-      };
-      const error = new Error('New Error');
-      sessionCsrfServiceMock.validate.mockReset().mockImplementationOnce(() => {
-        throw error;
-      });
-
-      sessionServiceMock.get.mockReturnValueOnce('spId');
-
-      // When / Then
-      await expect(() =>
-        controller.redirectToIdp(req, res, body, sessionServiceMock),
-      ).rejects.toThrow(SessionInvalidCsrfSelectIdpException);
-    });
-
     it('should call coreService redirectToIdp', async () => {
       // Given
       const email = 'harry.potter@hogwarts.uk';
@@ -310,7 +281,6 @@ describe('OidcClient Controller', () => {
       expect(coreServiceMock.redirectToIdp).toHaveBeenCalledWith(
         res,
         providerIdMock,
-        sessionServiceMock,
         {
           // oidc spec defined property
           // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -432,7 +402,7 @@ describe('OidcClient Controller', () => {
 
       // Then
       expect(sessionServiceMock.destroy).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.destroy).toHaveBeenCalledWith(req, res);
+      expect(sessionServiceMock.destroy).toHaveBeenCalledWith(res);
     });
 
     it('should return oidcProviderLogoutForm', async () => {
@@ -509,21 +479,9 @@ describe('OidcClient Controller', () => {
       // Then
       expect(sessionServiceMock.duplicate).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.duplicate).toHaveBeenCalledWith(
-        req,
         res,
         GetOidcCallbackSessionDto,
       );
-    });
-
-    it('should call SessionService.getBoundSession', async () => {
-      // setup
-      const getBoundSessionMock = jest.mocked(SessionService.getBoundSession);
-      // action
-      await controller.getOidcCallback(req, res, sessionServiceMock);
-
-      // assert
-      expect(getBoundSessionMock).toHaveBeenCalledTimes(1);
-      expect(getBoundSessionMock).toHaveBeenCalledWith(req, 'OidcClient');
     });
 
     it('should call token with providerId', async () => {
@@ -575,15 +533,29 @@ describe('OidcClient Controller', () => {
       );
     });
 
+    it('should create an object with cloned values', async () => {
+      // Given
+      const cloneDeepMock = jest.mocked(cloneDeep);
+
+      // When
+      await controller.getOidcCallback(req, res, sessionServiceMock);
+
+      // Then
+      expect(cloneDeepMock).toHaveBeenCalledTimes(1);
+      expect(cloneDeepMock).toHaveBeenLastCalledWith(identityExchangeMock);
+    });
+
     it('should set session with identity result.', async () => {
+      // Given
+      const clonedIdentityMock = Symbol();
+      jest.mocked(cloneDeep).mockReturnValueOnce(clonedIdentityMock);
+
       // When
       await controller.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
-      expect(newSessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(newSessionServiceMock.set).toHaveBeenCalledWith(
-        identityExchangeMock,
-      );
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith(clonedIdentityMock);
     });
 
     it('should redirect user after token and userinfo received and saved', async () => {

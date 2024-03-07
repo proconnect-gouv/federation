@@ -604,14 +604,14 @@ describe('OidcClientUtilsService', () => {
       );
     });
 
-    it('should not do anything because identity provider exists and is not disabled', async () => {
+    it('should not do anything because identity provider exists and is not disabled', () => {
       // Given
       identityProviderServiceMock.getById.mockResolvedValueOnce({
         active: true,
       });
 
       // When / Then
-      await expect(() => service.checkIdpDisabled('idpId')).not.toThrow();
+      expect(() => service.checkIdpDisabled('idpId')).not.toThrow();
     });
   });
 

@@ -1,4 +1,5 @@
 import { ValidatorOptions } from 'class-validator';
+import { Request, Response } from 'express';
 
 import {
   Body,
@@ -10,6 +11,7 @@ import {
   Query,
   Req,
   Res,
+  UseGuards,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -19,9 +21,9 @@ import { ConfigService } from '@fc/config';
 import {
   CoreMissingIdentityException,
   CoreRoutes,
-  CsrfToken,
   DataTransfertType,
 } from '@fc/core';
+import { CsrfTokenGuard } from '@fc/csrf';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
@@ -33,13 +35,9 @@ import {
 import { OidcProviderRoutes } from '@fc/oidc-provider/enums';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import {
-  ISessionRequest,
-  ISessionResponse,
   ISessionService,
   Session,
   SessionConfig,
-  SessionCsrfService,
-  SessionInvalidCsrfConsentException,
   SessionService,
 } from '@fc/session';
 import {
@@ -51,7 +49,7 @@ import {
 import {
   AuthorizeParamsDto,
   CoreConfig,
-  CoreSessionDto,
+  CoreSession,
   ErrorParamsDto,
   GetLoginOidcClientSessionDto,
 } from '../dto';
@@ -79,7 +77,6 @@ export class OidcProviderController {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly core: CoreFcpService,
     private readonly tracking: TrackingService,
-    private readonly csrfService: SessionCsrfService,
     private readonly config: ConfigService,
   ) {}
 
@@ -95,7 +92,6 @@ export class OidcProviderController {
   @Header('cache-control', 'no-store')
   @IsStep()
   async getAuthorize(
-    @Req() req,
     @Res() res,
     @Next() next,
     @Query() query: AuthorizeParamsDto,
@@ -109,7 +105,7 @@ export class OidcProviderController {
        * according to the different kinematics
        */
       // Initializes a new session local
-      await this.sessionService.reset(req, res);
+      await this.sessionService.reset(res);
     }
 
     const errors = await validateDto(
@@ -149,7 +145,6 @@ export class OidcProviderController {
   @Header('cache-control', 'no-store')
   @IsStep()
   async postAuthorize(
-    @Req() req,
     @Res() res,
     @Next() next,
     @Body() body: AuthorizeParamsDto,
@@ -163,7 +158,7 @@ export class OidcProviderController {
        * according to the different kinematics
        */
       // Initializes a new session local
-      await this.sessionService.reset(req, res);
+      await this.sessionService.reset(res);
     }
 
     const errors = await validateDto(
@@ -271,10 +266,10 @@ export class OidcProviderController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @IsStep()
   @ForbidRefresh()
+  @UseGuards(CsrfTokenGuard)
   async getLogin(
-    @Req() req: ISessionRequest,
-    @Res() res: ISessionResponse,
-    @Body() body: CsrfToken,
+    @Req() req: Request,
+    @Res() res: Response,
     /**
      * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
@@ -283,19 +278,11 @@ export class OidcProviderController {
     @Session('OidcClient', GetLoginOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
     @Session('Core')
-    sessionCore: ISessionService<CoreSessionDto>,
+    sessionCore: ISessionService<CoreSession>,
   ) {
-    const { _csrf: csrfToken } = body;
-    const session: OidcSession = await sessionOidc.get();
+    const session: OidcSession = sessionOidc.get();
 
     const { spId, spIdentity } = session;
-
-    try {
-      await this.csrfService.validate(sessionOidc, csrfToken);
-    } catch (error) {
-      this.logger.debug(error);
-      throw new SessionInvalidCsrfConsentException(error);
-    }
 
     if (!spIdentity) {
       throw new CoreMissingIdentityException();
@@ -308,15 +295,12 @@ export class OidcProviderController {
     // send the notification mail to the final user
     await this.core.sendAuthenticationMail(session, sessionCore);
 
-    await this.handleSessionLife(req, res);
+    this.oidcProvider.finishInteraction(req, res, session);
 
-    return this.oidcProvider.finishInteraction(req, res, session);
+    await this.handleSessionLife(req, res);
   }
 
-  private async handleSessionLife(
-    req: ISessionRequest,
-    res: ISessionResponse,
-  ): Promise<void> {
+  private async handleSessionLife(req: Request, res: Response): Promise<void> {
     if (this.shouldExtendSessionLifeTime()) {
       await this.sessionService.refresh(req, res);
       this.logger.debug('Session has been refreshed to be used later for SSO');
@@ -324,8 +308,16 @@ export class OidcProviderController {
 
     const { enableSso } = this.config.get<CoreConfig>('Core');
 
+    /**
+     * @todo #1429 change behavior once SSO is enabled on all instances
+     *
+     * Either we remove this code altogether since no instance will have SSO disabled.
+     * Or we can keep it in case it happens again in the future,
+     * but we would have to change the behavior to not detach the session but to init a new empty session,
+     * for the sake of simplicity in session library (SessionCommitInterceptor)
+     */
     if (!enableSso) {
-      await this.sessionService.detach(req, res);
+      await this.sessionService.detach(res);
       this.logger.debug(
         'Session has been detached because SSO is disabled on this platform',
       );

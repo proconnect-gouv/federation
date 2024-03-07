@@ -2,13 +2,21 @@
 
 // Declarative code
 import { Type } from 'class-transformer';
-import { IsObject, ValidateNested } from 'class-validator';
+import { IsObject, IsOptional, ValidateNested } from 'class-validator';
 
+import { CsrfSession } from '@fc/csrf';
 import { OidcClientSession } from '@fc/oidc-client';
 
 export class UserDashboardSession {
   @IsObject()
   @ValidateNested()
   @Type(() => OidcClientSession)
-  readonly OidcClient: OidcClientSession;
+  @IsOptional()
+  readonly OidcClient?: OidcClientSession;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => CsrfSession)
+  @IsOptional()
+  readonly Csrf?: CsrfSession;
 }

@@ -16,6 +16,7 @@ import {
 } from '@fc/core';
 import { CryptographyEidasModule } from '@fc/cryptography-eidas';
 import { CryptographyFcpModule } from '@fc/cryptography-fcp';
+import { CsrfModule, CsrfService } from '@fc/csrf';
 import { DataProviderAdapterMongoModule } from '@fc/data-provider-adapter-mongo';
 import { ExceptionsModule } from '@fc/exceptions';
 import { FeatureHandlerModule } from '@fc/feature-handler';
@@ -109,6 +110,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     AppModule,
     DataProviderAdapterMongoModule,
     ViewTemplatesModule,
+    CsrfModule,
   ],
   controllers: [
     CoreFcpController,
@@ -132,6 +134,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     CoreFcpDefaultIdentityCheckHandler,
     CoreFcpEidasIdentityCheckHandler,
     CoreFcpDefaultAuthorizationHandler,
+    CsrfService,
     {
       provide: CORE_SERVICE,
       useClass: CoreFcpService,

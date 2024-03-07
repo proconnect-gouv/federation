@@ -12,7 +12,7 @@ import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { SessionCsrfService, SessionService } from '@fc/session';
+import { SessionService } from '@fc/session';
 import { TrackedEventInterface, TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
@@ -120,12 +120,6 @@ describe('CoreFcpController', () => {
 
   const appSessionServiceMock = getSessionServiceMock();
 
-  const sessionCsrfServiceMock = {
-    get: jest.fn(),
-    save: jest.fn(),
-    validate: jest.fn(),
-  };
-
   const randomStringMock = 'randomStringMockValue';
 
   const notificationsServiceMock = {
@@ -163,10 +157,8 @@ describe('CoreFcpController', () => {
     type: 'public',
   };
 
-  const csrfMock = 'csrfMockValue';
-
+  const csrfToken = randomStringMock;
   const oidcSessionMock: OidcSession = {
-    csrfToken: randomStringMock,
     idpId: idpIdMock,
     idpNonce: idpNonceMock,
     idpState: idpStateMock,
@@ -201,7 +193,6 @@ describe('CoreFcpController', () => {
         ConfigService,
         NotificationsService,
         OidcClientService,
-        SessionCsrfService,
         CoreAcrService,
         CoreVerifyService,
         CoreFcpVerifyService,
@@ -230,8 +221,6 @@ describe('CoreFcpController', () => {
       .useValue(notificationsServiceMock)
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
-      .overrideProvider(SessionCsrfService)
-      .useValue(sessionCsrfServiceMock)
       .overrideProvider(CoreAcrService)
       .useValue(coreAcrServiceMock)
       .overrideProvider(CoreVerifyService)
@@ -242,7 +231,7 @@ describe('CoreFcpController', () => {
       .useValue(trackingServiceMock)
       .compile();
 
-    coreController = await app.get<CoreFcpController>(CoreFcpController);
+    coreController = app.get<CoreFcpController>(CoreFcpController);
 
     configServiceMock.get.mockReturnValue(appConfigMock);
 
@@ -253,7 +242,7 @@ describe('CoreFcpController', () => {
     );
     serviceProviderServiceMock.getById.mockResolvedValue(serviceProviderMock);
 
-    oidcSessionServiceMock.get.mockResolvedValue(oidcSessionMock);
+    oidcSessionServiceMock.get.mockReturnValue(oidcSessionMock);
 
     coreVerifyServiceMock.verify.mockResolvedValue(interactionDetailsMock);
     coreFcpServiceMock.getClaimsForInteraction.mockReturnValue(claimsMock);
@@ -264,9 +253,6 @@ describe('CoreFcpController', () => {
       claimsLabelMock,
     );
     coreAcrServiceMock.rejectInvalidAcr.mockResolvedValue(false);
-
-    sessionCsrfServiceMock.get.mockReturnValueOnce(csrfMock);
-    sessionCsrfServiceMock.save.mockResolvedValueOnce(true);
 
     serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(true);
 
@@ -338,7 +324,7 @@ describe('CoreFcpController', () => {
       identityProviderServiceMock.getFilteredList.mockResolvedValue(
         idpFilterListMock,
       );
-      appSessionServiceMock.get.mockResolvedValue(false);
+      appSessionServiceMock.get.mockReturnValue(false);
       oidcAcrServiceMock.isAcrValid.mockReturnValue(true);
       coreFcpServiceMock.isInsufficientAcrLevel.mockReturnValue(false);
       notificationsServiceMock.getNotificationToDisplay.mockResolvedValue(
@@ -358,6 +344,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(oidcSessionServiceMock.get).toHaveBeenCalledTimes(1);
@@ -372,6 +359,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(configServiceMock.get).toHaveBeenNthCalledWith(1, 'OidcProvider');
@@ -385,6 +373,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(coreAcrServiceMock.rejectInvalidAcr).toHaveBeenCalledTimes(1);
@@ -406,6 +395,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(result).toBeUndefined();
@@ -422,6 +412,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(serviceProviderServiceMock.getById).toHaveBeenCalledTimes(1);
@@ -438,6 +429,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledTimes(
@@ -457,6 +449,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledTimes(
@@ -476,6 +469,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(appSessionServiceMock.get).toHaveBeenCalledTimes(1);
@@ -490,6 +484,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(3);
@@ -524,6 +519,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
 
       // Then
@@ -555,6 +551,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(configServiceMock.get).toHaveBeenNthCalledWith(2, 'App');
@@ -576,12 +573,13 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
 
       // Then
       expect(res.render).toHaveBeenCalledTimes(1);
       expect(res.render).toHaveBeenCalledWith('interaction', {
-        csrfToken: csrfMock,
+        csrfToken,
         notification: notificationsMock,
         params: interactionDetailsMock.params,
         providers: [aidantsConnectProviderMock],
@@ -607,12 +605,13 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
 
       // Then
       expect(res.render).toHaveBeenCalledTimes(1);
       expect(res.render).toHaveBeenCalledWith('interaction', {
-        csrfToken: csrfMock,
+        csrfToken,
         notification: notificationsMock,
         params: interactionDetailsMock.params,
         providers: [aidantsConnectProviderMock],
@@ -643,12 +642,13 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
 
       // Then
       expect(res.render).toHaveBeenCalledTimes(1);
       expect(res.render).toHaveBeenCalledWith('interaction', {
-        csrfToken: csrfMock,
+        csrfToken,
         notification: notificationsMock,
         params: interactionDetailsMock.params,
         providers: [aidantsConnectProviderMock],
@@ -656,39 +656,6 @@ describe('CoreFcpController', () => {
         spName: oidcSessionMock.spName,
         spScope: interactionDetailsMock.params.scope,
       });
-    });
-
-    it('should retrieve csrf', async () => {
-      // When
-      await coreController.getInteraction(
-        req,
-        res,
-        params,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
-
-      // Then
-      expect(sessionCsrfServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionCsrfServiceMock.get).toHaveBeenCalledWith();
-    });
-
-    it('should save the csrf in oidc session', async () => {
-      // When
-      await coreController.getInteraction(
-        req,
-        res,
-        params,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
-
-      // Then
-      expect(sessionCsrfServiceMock.save).toHaveBeenCalledTimes(1);
-      expect(sessionCsrfServiceMock.save).toHaveBeenCalledWith(
-        oidcSessionServiceMock,
-        csrfMock,
-      );
     });
 
     it('should get the notifications list', async () => {
@@ -699,6 +666,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
 
       // Then
@@ -712,11 +680,11 @@ describe('CoreFcpController', () => {
 
     it('should get the notifications list', async () => {
       // Given
-      oidcSessionServiceMock.get.mockResolvedValueOnce({
+      oidcSessionServiceMock.get.mockReturnValue({
         spName: oidcSessionMock.spName,
       });
       const expectedInteractionDetails = {
-        csrfToken: csrfMock,
+        csrfToken,
         notification: notificationsMock,
         params: interactionDetailsMock.params,
         providers: idpFilterListMock,
@@ -732,6 +700,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
 
       // Then
@@ -754,6 +723,7 @@ describe('CoreFcpController', () => {
         params,
         oidcSessionServiceMock,
         appSessionServiceMock,
+        csrfToken,
       );
 
       // Then
@@ -782,10 +752,10 @@ describe('CoreFcpController', () => {
     };
 
     beforeEach(() => {
-      oidcSessionServiceMock.get.mockResolvedValue(oidcSessionMock);
+      oidcSessionServiceMock.get.mockReturnValue(oidcSessionMock);
       identityProviderServiceMock.isActiveById.mockResolvedValue(true);
       serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(false);
-      appSessionServiceMock.get.mockResolvedValue(false);
+      appSessionServiceMock.get.mockReturnValue(false);
       coreFcpServiceMock.isInsufficientAcrLevel.mockReturnValue(false);
       coreFcpVerifyServiceMock.handleVerifyIdentity.mockResolvedValue(
         handleVerifyResult,
@@ -1204,14 +1174,26 @@ describe('CoreFcpController', () => {
   describe('getConsent()', () => {
     it('should get data from session', async () => {
       // When
-      await coreController.getConsent(req, res, params, oidcSessionServiceMock);
+      await coreController.getConsent(
+        req,
+        res,
+        params,
+        oidcSessionServiceMock,
+        csrfToken,
+      );
       // Then
       expect(oidcSessionServiceMock.get).toHaveBeenCalledTimes(1);
     });
 
     it('should check if consent is required', async () => {
       // When
-      await coreController.getConsent(req, res, params, oidcSessionServiceMock);
+      await coreController.getConsent(
+        req,
+        res,
+        params,
+        oidcSessionServiceMock,
+        csrfToken,
+      );
       // Then
       expect(coreFcpServiceMock.isConsentRequired).toHaveBeenCalledTimes(1);
       expect(coreFcpServiceMock.isConsentRequired).toHaveBeenCalledWith(
@@ -1221,25 +1203,18 @@ describe('CoreFcpController', () => {
 
     it('should get data from interaction with oidc provider', async () => {
       // When
-      await coreController.getConsent(req, res, params, oidcSessionServiceMock);
+      await coreController.getConsent(
+        req,
+        res,
+        params,
+        oidcSessionServiceMock,
+        csrfToken,
+      );
       // Then
       expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledTimes(1);
       expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledWith(
         req,
         res,
-      );
-    });
-
-    it('should generate a csrf token', async () => {
-      // When
-      await coreController.getConsent(req, res, params, oidcSessionServiceMock);
-      // Then
-      expect(sessionCsrfServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionCsrfServiceMock.get).toHaveBeenCalledWith();
-      expect(sessionCsrfServiceMock.save).toHaveBeenCalledTimes(1);
-      expect(sessionCsrfServiceMock.save).toHaveBeenCalledWith(
-        oidcSessionServiceMock,
-        csrfMock,
       );
     });
 
@@ -1253,13 +1228,14 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
+        csrfToken,
       );
       // Then
       expect(result).toStrictEqual({
         isOpenIdScope: false,
         claims: claimsLabelMock,
         consentRequired: true,
-        csrfToken: csrfMock,
+        csrfToken,
         identity: {},
         interactionId: interactionIdMock,
         scopes: scopesMock,

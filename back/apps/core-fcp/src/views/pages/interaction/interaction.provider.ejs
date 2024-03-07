@@ -33,6 +33,7 @@ const disabled = !provider.active
     class="fr-content-media"
     role="group"
     aria-label="<%= provider.title %>-<%= availability %>">
+    <% if(provider.image) { %> 
     <div class="fr-content-media__img">
       <img
         <%#
@@ -42,6 +43,7 @@ const disabled = !provider.active
         alt=""
         src="/img/fi/<%= provider.image %>" />
     </div>
+    <% } %>
     <figcaption class="fr-content-media__caption fr-text--xs fr-mt-1-5v">
       <%= provider.title -%>
       <br />

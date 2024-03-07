@@ -17,9 +17,9 @@ import {
 import { OidcProviderPrompt } from '@fc/oidc-provider';
 import { IClaim, IRichClaim, ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { ISessionService } from '@fc/session';
+import { ISessionService, SessionService } from '@fc/session';
 
-import { AppConfig, CoreSessionDto } from '../dto';
+import { AppConfig, CoreSession } from '../dto';
 import { CoreFcpSendEmailHandler } from '../handlers';
 import {
   CoreFcpAuthorizationParametersInterface,
@@ -39,6 +39,7 @@ export class CoreFcpService implements CoreFcpServiceInterface {
     private readonly oidcAcr: OidcAcrService,
     private readonly oidcClient: OidcClientService,
     private readonly coreAuthorization: CoreAuthorizationService,
+    private readonly session: SessionService,
   ) {}
 
   /**
@@ -49,9 +50,9 @@ export class CoreFcpService implements CoreFcpServiceInterface {
    */
   async sendAuthenticationMail(
     session: OidcSession,
-    sessionCore: ISessionService<CoreSessionDto>,
+    sessionCore: ISessionService<CoreSession>,
   ): Promise<void> {
-    const { sentNotificationsForSp } = await sessionCore.get();
+    let { sentNotificationsForSp } = sessionCore.get() || {};
     const { idpId, spId } = session;
     const idp = await this.identityProvider.getById(idpId);
 
@@ -61,6 +62,10 @@ export class CoreFcpService implements CoreFcpServiceInterface {
       this,
     );
 
+    if (!sentNotificationsForSp) {
+      sentNotificationsForSp = [];
+    }
+
     // notification already sent for this service provider during this session
     if (sentNotificationsForSp.includes(spId)) {
       return;
@@ -68,7 +73,7 @@ export class CoreFcpService implements CoreFcpServiceInterface {
 
     // update the session to take into account the notification for this service provider
     sentNotificationsForSp.push(spId);
-    await sessionCore.set('sentNotificationsForSp', sentNotificationsForSp);
+    sessionCore.set('sentNotificationsForSp', sentNotificationsForSp);
 
     await handler.handle(session);
   }
@@ -87,13 +92,11 @@ export class CoreFcpService implements CoreFcpServiceInterface {
   async redirectToIdp(
     res: Response,
     idpId: string,
-    session: ISessionService<OidcClientSession>,
     // acr_values is an oidc defined variable name
     // eslint-disable-next-line @typescript-eslint/naming-convention
     { acr_values }: Pick<CoreFcpAuthorizationParametersInterface, 'acr_values'>,
   ): Promise<void> {
-    const { spId } = await session.get();
-
+    const { spId } = this.session.get<OidcSession>('OidcClient');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
     await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
@@ -133,7 +136,7 @@ export class CoreFcpService implements CoreFcpServiceInterface {
       accountId: undefined,
     };
 
-    await session.set(sessionPayload);
+    this.session.set('OidcClient', sessionPayload);
 
     res.redirect(authorizationUrl);
   }

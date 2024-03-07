@@ -158,7 +158,7 @@ describe('FrIdentityToEuController', () => {
       .useValue(trackingServiceMock)
       .compile();
 
-    frIdentityToEuController = await app.get<FrIdentityToEuController>(
+    frIdentityToEuController = app.get<FrIdentityToEuController>(
       FrIdentityToEuController,
     );
 
@@ -167,7 +167,7 @@ describe('FrIdentityToEuController', () => {
       state: stateMock,
     });
 
-    sessionServiceOidcMock.get.mockResolvedValue(sessionMockValue);
+    sessionServiceOidcMock.get.mockReturnValue(sessionMockValue);
 
     cryptographyMock.genRandomString.mockReturnValue(randomStringMock);
   });
@@ -182,7 +182,7 @@ describe('FrIdentityToEuController', () => {
 
     it('should call oidc config', async () => {
       // setup
-      sessionServiceOidcMock.set.mockResolvedValueOnce(undefined);
+      sessionServiceOidcMock.set.mockReturnValue(undefined);
 
       // action
       await frIdentityToEuController.initSession(sessionServiceOidcMock);
@@ -193,7 +193,7 @@ describe('FrIdentityToEuController', () => {
 
     it('Should generate a random state of 32 characters', async () => {
       // setup
-      sessionServiceOidcMock.set.mockResolvedValueOnce(undefined);
+      sessionServiceOidcMock.set.mockReturnValue(undefined);
       const randSize = 32;
 
       // action
@@ -215,7 +215,7 @@ describe('FrIdentityToEuController', () => {
 
     it('Should init the session', async () => {
       // setup
-      sessionServiceOidcMock.set.mockResolvedValueOnce(undefined);
+      sessionServiceOidcMock.set.mockReturnValue(undefined);
       cryptographyMock.genRandomString.mockReturnValueOnce('random');
 
       // action
@@ -263,7 +263,7 @@ describe('FrIdentityToEuController', () => {
     const mapPartialRequestMock = jest.fn();
 
     beforeEach(() => {
-      sessionServiceEidasMock.get.mockResolvedValueOnce({
+      sessionServiceEidasMock.get.mockReturnValue({
         eidasRequest: eidasRequestMock,
       });
       eidasToOidcServiceMock.mapPartialRequest =
@@ -278,7 +278,7 @@ describe('FrIdentityToEuController', () => {
 
     it('Should get the eidas request from the session', async () => {
       // setup
-      sessionServiceOidcMock.set.mockResolvedValueOnce('randomStringMockValue');
+      sessionServiceOidcMock.set.mockReturnValueOnce('randomStringMockValue');
       // action
       await frIdentityToEuController.redirectToFcAuthorize(
         req,
@@ -307,7 +307,7 @@ describe('FrIdentityToEuController', () => {
     });
 
     it('Should build the authorize parameters with the oidc params', async () => {
-      sessionServiceOidcMock.set.mockResolvedValueOnce('randomStringMockValue');
+      sessionServiceOidcMock.set.mockReturnValueOnce('randomStringMockValue');
 
       // action
       await frIdentityToEuController.redirectToFcAuthorize(
@@ -337,7 +337,7 @@ describe('FrIdentityToEuController', () => {
       oidcClientServiceMock.utils.buildAuthorizeParameters.mockResolvedValueOnce(
         authorizeParametersMock,
       );
-      sessionServiceOidcMock.set.mockResolvedValueOnce('randomStringMockValue');
+      sessionServiceOidcMock.set.mockReturnValueOnce('randomStringMockValue');
 
       // action
       await frIdentityToEuController.redirectToFcAuthorize(
@@ -376,7 +376,7 @@ describe('FrIdentityToEuController', () => {
     });
 
     it('Should patch the session', async () => {
-      sessionServiceOidcMock.set.mockResolvedValueOnce(undefined);
+      sessionServiceOidcMock.set.mockReturnValueOnce(undefined);
 
       // action
       await frIdentityToEuController.redirectToFcAuthorize(
@@ -394,7 +394,9 @@ describe('FrIdentityToEuController', () => {
     });
 
     it("Should throw if the session can't be patched", async () => {
-      sessionServiceOidcMock.set.mockRejectedValueOnce(new Error('test'));
+      sessionServiceOidcMock.set.mockImplementationOnce(() => {
+        throw new Error('test');
+      });
 
       // expect
       await expect(
@@ -517,11 +519,11 @@ describe('FrIdentityToEuController', () => {
       let accessTokenMock;
       let validateIdentityMock;
       beforeEach(() => {
-        sessionServiceOidcMock.get.mockResolvedValueOnce({
+        sessionServiceOidcMock.get.mockReturnValue({
           idpNonce: idpNonceMock,
           idpState: idpStateMock,
         });
-        sessionServiceEidasMock.get.mockResolvedValueOnce({
+        sessionServiceEidasMock.get.mockReturnValue({
           requestedAttributes: requestedAttributesMock,
         });
 
@@ -635,7 +637,7 @@ describe('FrIdentityToEuController', () => {
       spCountryCode: countryCodeMock,
     };
     beforeEach(() => {
-      sessionServiceEidasMock.get.mockResolvedValueOnce(requestMock);
+      sessionServiceEidasMock.get.mockReturnValue(requestMock);
 
       accessTokenMock = Symbol('accessTokenMock');
 
@@ -664,7 +666,7 @@ describe('FrIdentityToEuController', () => {
 
     it('should throw an exception if the oidc session is not defined', async () => {
       // setup
-      sessionServiceOidcMock.get.mockReset().mockResolvedValueOnce(undefined);
+      sessionServiceOidcMock.get.mockReset().mockReturnValueOnce(undefined);
 
       // action
       await expect(

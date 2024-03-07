@@ -8,7 +8,7 @@ import {
   OidcProviderErrorService,
   OidcProviderGrantService,
 } from '@fc/oidc-provider';
-import { ISessionRequest, SessionService } from '@fc/session';
+import { SessionService } from '@fc/session';
 
 import { AppSession } from '../dto';
 import { ScenariosService } from './scenarios.service';
@@ -28,19 +28,14 @@ export class OidcProviderConfigAppService extends OidcProviderAppConfigLibServic
     super(logger, sessionService, errorService, grantService, config);
   }
 
+  // Needed for consistent typing
+  // eslint-disable-next-line require-await
   protected async formatAccount(
     sessionId: string,
     spIdentity: Partial<IOidcIdentity>,
     subSp: string,
-  ) {
-    const req = {
-      sessionId,
-      sessionService: this.sessionService,
-    } as ISessionRequest;
-
-    const appSession = SessionService.getBoundSession<AppSession>(req, 'App');
-
-    const userLogin = await appSession.get('userLogin');
+  ): Promise<{ accountId: string; claims: Function }> {
+    const { userLogin } = this.sessionService.get<AppSession>('App');
 
     const claims = this.scenarios.deleteClaims(userLogin, spIdentity, subSp);
 

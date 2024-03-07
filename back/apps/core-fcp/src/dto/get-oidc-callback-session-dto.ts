@@ -8,7 +8,7 @@ import { CoreBaseOidcClientSessionDto } from '@fc/core';
 import { OidcClientRoutes } from '@fc/oidc-client';
 
 import { AppSession } from './app-session.dto';
-import { CoreSessionDto } from './core-session.dto';
+import { CoreSession } from './core-session.dto';
 
 export class GetOidcCallbackOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
   // Metadata: We MUST restrict the routes we can come from
@@ -58,6 +58,6 @@ export class GetOidcCallbackSessionDto {
   readonly OidcClient: GetOidcCallbackOidcClientSessionDto;
 
   @Expose()
-  @Type(() => CoreSessionDto)
-  readonly Core: CoreSessionDto;
+  @Type(() => CoreSession)
+  readonly Core: CoreSession;
 }
