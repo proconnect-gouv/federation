@@ -968,6 +968,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/view-templates/tsconfig.lib.json"
       }
+    },
+    "csrf": {
+      "type": "library",
+      "root": "libs/csrf",
+      "entryFile": "index",
+      "sourceRoot": "libs/csrf/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/csrf/tsconfig.lib.json"
+      }
     }
   }
 }

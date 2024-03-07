@@ -59,7 +59,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
 
     // Grab informations on interaction and identity
     const { idpAcr, idpId, idpIdentity, spAcr, spId, isSso, subs } =
-      await sessionOidc.get();
+      sessionOidc.get();
 
     /**
      * @todo #410 - le DTO est permissif et devrait forcer les données
@@ -116,7 +116,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
       subs: { ...subs, [spId]: sub },
     };
 
-    await sessionOidc.set(session);
+    sessionOidc.set(session);
   }
 
   private checkAccountBlocked(account: Account): void {
@@ -248,7 +248,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     let rnippIdentity: RnippPivotIdentity;
 
     if (isSso) {
-      rnippIdentity = await sessionOidc.get('rnippIdentity');
+      rnippIdentity = sessionOidc.get('rnippIdentity');
     } else {
       // Identity check and normalization
       rnippIdentity = await this.rnippCheck(idpIdentity, trackingContext);

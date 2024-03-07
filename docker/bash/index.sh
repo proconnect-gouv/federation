@@ -66,6 +66,7 @@ _command_register "dep-all" "_install_dependencies_all" "Alias de dependencies-a
 _command_register "test" "_test" "Launch tests?"
 _command_register "test-all" "_test_all" "" # Description to be defined
 _command_register "e2e" "_e2e" ""           # Description to be defined
+_command_register "twc" "unit_test_watch_coverage" "twc <path> => Watch unit tests for given path and display coverage only for that path"
 
 ## Docker
 _command_register "prune" "_prune" "Stop and remove all runing containers"

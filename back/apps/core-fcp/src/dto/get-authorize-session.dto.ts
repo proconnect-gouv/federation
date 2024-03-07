@@ -10,7 +10,7 @@ import { Amr, IOidcIdentity, OidcIdentityDto } from '@fc/oidc';
 import { RnippPivotIdentity } from '@fc/rnipp';
 
 import { AppSession } from './app-session.dto';
-import { CoreSessionDto } from './core-session.dto';
+import { CoreSession } from './core-session.dto';
 
 /**
  * This DTO validates only an SSO compliant session.
@@ -86,6 +86,6 @@ export class GetAuthorizeSessionDto {
   readonly OidcClient: GetAuthorizeOidcClientSsoSession;
 
   @Expose()
-  @Type(() => CoreSessionDto)
-  readonly Core: CoreSessionDto;
+  @Type(() => CoreSession)
+  readonly Core: CoreSession;
 }

@@ -7,12 +7,9 @@ import { CoreAuthorizationService } from '@fc/core';
 import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import {
-  OidcClientConfig,
-  OidcClientService,
-  OidcClientSession,
-} from '@fc/oidc-client';
-import { ISessionService } from '@fc/session';
+import { OidcSession } from '@fc/oidc';
+import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
+import { SessionService } from '@fc/session';
 
 import { AppConfig } from '../dto/app-config.dto';
 import { CoreFcaOidcClientSession } from '../dto/core-fca-oidc-client-session.dto';
@@ -32,12 +29,12 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     private readonly fqdnToIdpAdapterMongo: FqdnToIdpAdapterMongoService,
     private readonly logger: LoggerService,
     private readonly coreAuthorization: CoreAuthorizationService,
+    private readonly session: SessionService,
   ) {}
   // eslint-disable-next-line max-params
   async redirectToIdp(
     res: Response,
     idpId: string,
-    session: ISessionService<OidcClientSession>,
     {
       // oidc parameter
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -50,7 +47,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
       'acr_values' | 'login_hint'
     >,
   ): Promise<void> {
-    const { spId } = await session.get();
+    const { spId } = this.session.get<OidcSession>('OidcClient');
 
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
@@ -97,7 +94,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
       login_hint: login_hint,
     };
 
-    await session.set(sessionPayload);
+    this.session.set('OidcClient', sessionPayload);
 
     res.redirect(authorizationUrl);
   }

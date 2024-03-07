@@ -14,6 +14,7 @@ import {
   CoreVerifyService,
 } from '@fc/core';
 import { CryptographyFcaModule } from '@fc/cryptography-fca';
+import { CsrfModule } from '@fc/csrf';
 import { ExceptionsModule } from '@fc/exceptions';
 import { FeatureHandlerModule } from '@fc/feature-handler';
 import { FlowStepsModule } from '@fc/flow-steps';
@@ -90,6 +91,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     trackingModule,
     NotificationsModule,
     FeatureHandlerModule,
+    CsrfModule,
   ],
   controllers: [
     CoreFcaController,

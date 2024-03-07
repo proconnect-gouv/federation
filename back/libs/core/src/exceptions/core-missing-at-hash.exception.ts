@@ -3,15 +3,15 @@
 // Declarative code
 import { HttpStatus } from '@nestjs/common';
 
-import { CoreBaseException } from '@fc/core';
 import { Description } from '@fc/exceptions';
 
 import { ErrorCode } from '../enums';
+import { CoreBaseException } from './core-base.exception';
 
 @Description(
   "Le claim at_hash n'a pas été trouvé dans l'id_token_hint lors du logout",
 )
-export class CoreFcaMissingAtHashException extends CoreBaseException {
+export class CoreMissingAtHashException extends CoreBaseException {
   code = ErrorCode.MISSING_AT_HASH;
   public readonly httpStatusCode = HttpStatus.BAD_REQUEST;
 

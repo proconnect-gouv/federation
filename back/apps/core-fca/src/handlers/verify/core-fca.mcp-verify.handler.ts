@@ -46,7 +46,7 @@ export class CoreFcaMcpVerifyHandler
   }: IVerifyFeatureHandlerHandleArgument): Promise<void> {
     this.logger.debug('verifyIdentity service: ##### core-fca-mcp-verify');
 
-    const { idpId, idpIdentity, idpAcr, spId, spAcr } = await sessionOidc.get();
+    const { idpId, idpIdentity, idpAcr, spId, spAcr } = sessionOidc.get();
 
     // for mcp, we check is_service_public
     // only is_service_public true can be verified with mcp idp
@@ -79,7 +79,7 @@ export class CoreFcaMcpVerifyHandler
       idpAcr,
     );
 
-    await this.storeIdentityWithSessionService(
+    this.storeIdentityWithSessionService(
       sessionOidc,
       sub,
       spIdentity,

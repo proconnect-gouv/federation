@@ -7,8 +7,8 @@ import { CoreAuthorizationService } from '@fc/core';
 import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { OidcClientService, OidcClientSession } from '@fc/oidc-client';
-import { ISessionService } from '@fc/session';
+import { OidcClientService } from '@fc/oidc-client';
+import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
 import { getCoreAuthorizationServiceMock } from '@mocks/core';
@@ -81,6 +81,7 @@ describe('CoreFcaService', () => {
         FqdnToIdpAdapterMongoService,
         LoggerService,
         CoreAuthorizationService,
+        SessionService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -95,6 +96,8 @@ describe('CoreFcaService', () => {
       .useValue(fqdnToIdpAdapterMongoMock)
       .overrideProvider(CoreAuthorizationService)
       .useValue(coreAuthorizationServiceMock)
+      .overrideProvider(SessionService)
+      .useValue(sessionServiceMock)
       .compile();
 
     service = app.get<CoreFcaService>(CoreFcaService);
@@ -127,7 +130,7 @@ describe('CoreFcaService', () => {
     };
 
     beforeEach(() => {
-      sessionServiceMock.get.mockResolvedValue({
+      sessionServiceMock.get.mockReturnValue({
         spId: spIdMock,
       });
     });
@@ -137,7 +140,6 @@ describe('CoreFcaService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
 
@@ -151,7 +153,6 @@ describe('CoreFcaService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
@@ -167,7 +168,6 @@ describe('CoreFcaService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
@@ -180,7 +180,6 @@ describe('CoreFcaService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
@@ -192,7 +191,6 @@ describe('CoreFcaService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
@@ -205,7 +203,6 @@ describe('CoreFcaService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
@@ -236,12 +233,11 @@ describe('CoreFcaService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set).toHaveBeenCalledWith({
+      expect(sessionServiceMock.set).toHaveBeenCalledWith('OidcClient', {
         idpId: idpIdMock,
         idpName: identityProviderMockResponse.name,
         idpLabel: identityProviderMockResponse.title,
@@ -261,7 +257,6 @@ describe('CoreFcaService', () => {
       await service.redirectToIdp(
         resMock,
         idpIdMock,
-        sessionServiceMock as unknown as ISessionService<OidcClientSession>,
         authorizationParametersMock,
       );
       // Then

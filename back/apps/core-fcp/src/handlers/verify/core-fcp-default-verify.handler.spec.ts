@@ -216,7 +216,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     jest.resetAllMocks();
 
     getInteractionMock.mockResolvedValue(getInteractionResultMock);
-    sessionServiceMock.get.mockResolvedValue(sessionDataMock);
+    sessionServiceMock.get.mockReturnValue(sessionDataMock);
     rnippServiceMock.check.mockResolvedValue(spIdentityMock);
     cryptographyFcpServiceMock.computeIdentityHash.mockReturnValueOnce(
       'spIdentityHash',
@@ -283,7 +283,9 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     it('Should throw if identity provider is not usable', async () => {
       // Given
       const errorMock = new Error('my error');
-      sessionServiceMock.get.mockRejectedValueOnce(errorMock);
+      sessionServiceMock.get.mockImplementationOnce(() => {
+        throw errorMock;
+      });
       // Then
       await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
@@ -310,7 +312,9 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     it('Should throw if identity storage for service provider fails', async () => {
       // Given
       const errorMock = new Error('my error');
-      sessionServiceMock.set.mockRejectedValueOnce(errorMock);
+      sessionServiceMock.set.mockImplementationOnce(() => {
+        throw errorMock;
+      });
       // Then
       await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });

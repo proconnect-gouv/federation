@@ -5,10 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { IPaginationResult } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import {
-  SessionCsrfService,
-  SessionInvalidCsrfSelectIdpException,
-} from '@fc/session';
+import { CsrfTokenGuard } from '@fc/csrf';
 import { TrackingService } from '@fc/tracking';
 import { TrackDto, TracksService } from '@fc/tracks';
 import {
@@ -56,12 +53,6 @@ describe('UserDashboardController', () => {
     sub: 'identityMock.sub value',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     idp_id: '8dfc4080-c90d-4234-969b-f6c961de3e90',
-  };
-
-  const sessionGenericCsrfServiceMock = {
-    get: jest.fn(),
-    save: jest.fn(),
-    validate: jest.fn(),
   };
 
   const cryptographyMock = {
@@ -113,6 +104,7 @@ describe('UserDashboardController', () => {
       UPDATED_USER_PREFERENCES_IDP: {},
     },
   };
+  const guardMock = { canActivate: jest.fn() };
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -122,17 +114,16 @@ describe('UserDashboardController', () => {
       controllers: [UserDashboardController],
       providers: [
         ConfigService,
-        SessionCsrfService,
         TracksService,
         TrackingService,
         UserPreferencesService,
         UserDashboardService,
       ],
     })
+      .overrideGuard(CsrfTokenGuard)
+      .useValue(guardMock)
       .overrideProvider(ConfigService)
       .useValue(configMock)
-      .overrideProvider(SessionCsrfService)
-      .useValue(sessionGenericCsrfServiceMock)
       .overrideProvider(TracksService)
       .useValue(tracksServiceMock)
       .overrideProvider(TrackingService)
@@ -153,7 +144,7 @@ describe('UserDashboardController', () => {
       state: idpStateMock,
     });
 
-    sessionServiceMock.get.mockResolvedValue(identityMock);
+    sessionServiceMock.get.mockReturnValue(identityMock);
 
     configMock.get.mockReturnValueOnce({
       payloadEncoding: 'base64',
@@ -178,32 +169,10 @@ describe('UserDashboardController', () => {
 
   describe('getCsrfToken', () => {
     const csrfTokenMock = 'csrfTokenMock';
-    beforeEach(() => {
-      // Given
-      sessionGenericCsrfServiceMock.get.mockReturnValueOnce(csrfTokenMock);
-    });
 
-    it('should call csrfService.get', async () => {
+    it('should return csrfToken', () => {
       // When
-      await controller.getCsrfToken(sessionServiceMock);
-      // Then
-      expect(sessionGenericCsrfServiceMock.get).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call csrfService.save', async () => {
-      // When
-      await controller.getCsrfToken(sessionServiceMock);
-      // Then
-      expect(sessionGenericCsrfServiceMock.save).toHaveBeenCalledTimes(1);
-      expect(sessionGenericCsrfServiceMock.save).toHaveBeenCalledWith(
-        sessionServiceMock,
-        csrfTokenMock,
-      );
-    });
-
-    it('should return csrfToken', async () => {
-      // When
-      const result = await controller.getCsrfToken(sessionServiceMock);
+      const result = controller.getCsrfToken(csrfTokenMock);
       // Then
       expect(result).toEqual({ csrfToken: csrfTokenMock });
     });
@@ -260,7 +229,7 @@ describe('UserDashboardController', () => {
 
     it('should return a 401 if no session', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValueOnce(undefined);
+      sessionServiceMock.get.mockReturnValueOnce(undefined);
       // When
       await controller.getUserTraces(
         reqMock,
@@ -318,7 +287,7 @@ describe('UserDashboardController', () => {
 
     it('should return a 401 if no session', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValueOnce(undefined);
+      sessionServiceMock.get.mockReturnValueOnce(undefined);
       // When
       await controller.getUserInfos(resMock, sessionServiceMock);
       // Then
@@ -330,7 +299,7 @@ describe('UserDashboardController', () => {
 
     it('should return an object with familyName, givenName and idp used for the connection props', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValueOnce(identityMock);
+      sessionServiceMock.get.mockReturnValueOnce(identityMock);
       // When
       const { firstname, lastname, idpId } = (await controller.getUserInfos(
         resMock,
@@ -354,7 +323,7 @@ describe('UserDashboardController', () => {
 
     it('should return a 401 if no session', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValueOnce(undefined);
+      sessionServiceMock.get.mockReturnValueOnce(undefined);
       // When
       await controller.getUserPreferences(reqMock, resMock, sessionServiceMock);
       // Then
@@ -444,7 +413,7 @@ describe('UserDashboardController', () => {
 
     it('should return a 401 if no session', async () => {
       // Given
-      sessionServiceMock.get.mockResolvedValueOnce(undefined);
+      sessionServiceMock.get.mockReturnValueOnce(undefined);
       // When
       await controller.updateUserPreferences(
         reqMock,
@@ -555,23 +524,6 @@ describe('UserDashboardController', () => {
         resolvedUserPreferencesMock,
         identityMock,
       );
-    });
-
-    it('should fail if csrfToken is invalid', async () => {
-      // Given
-      sessionGenericCsrfServiceMock.validate.mockImplementationOnce(() => {
-        throw new Error();
-      });
-
-      // Then / When
-      await expect(
-        controller.updateUserPreferences(
-          reqMock,
-          resMock,
-          updatePreferencesBodyMock,
-          sessionServiceMock,
-        ),
-      ).rejects.toThrow(SessionInvalidCsrfSelectIdpException);
     });
   });
 

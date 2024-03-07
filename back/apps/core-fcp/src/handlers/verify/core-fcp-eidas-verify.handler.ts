@@ -33,8 +33,7 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
     this.logger.debug('getConsent service: ##### core-fcp-eidas-verify ');
 
     // Grab informations on interaction and identity
-    const { idpId, idpIdentity, idpAcr, spId, spAcr, subs } =
-      await sessionOidc.get();
+    const { idpId, idpIdentity, idpAcr, spId, spAcr, subs } = sessionOidc.get();
     const { entityId } = await this.serviceProvider.getById(spId);
 
     // Acr check
@@ -65,7 +64,7 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
     // Delete idp identity from volatile memory but keep the sub for the business logs.
     const idpIdentityCleaned = { sub: idpIdentity.sub };
 
-    await sessionOidc.set({
+    sessionOidc.set({
       idpIdentity: idpIdentityCleaned,
       spIdentity: spIdentityCleaned,
       accountId,

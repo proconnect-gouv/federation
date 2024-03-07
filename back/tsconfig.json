@@ -505,6 +505,12 @@
       "@mocks/core/*": [
         "libs/core/.mocks/*"
       ],
+      "@fc/csrf": [
+        "libs/csrf/src"
+      ],
+      "@fc/csrf/*": [
+        "libs/csrf/src/*"
+      ]
     }
   },
   "files": [
