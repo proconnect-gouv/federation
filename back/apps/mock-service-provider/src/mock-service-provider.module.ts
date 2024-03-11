@@ -7,7 +7,7 @@ import { Module } from '@nestjs/common';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { CryptographyModule } from '@fc/cryptography';
 import { CsrfModule } from '@fc/csrf';
-import { ExceptionsModule } from '@fc/exceptions';
+import { ExceptionsModule } from '@fc/exceptions-deprecated';
 import {
   IdentityProviderAdapterEnvModule,
   IdentityProviderAdapterEnvService,

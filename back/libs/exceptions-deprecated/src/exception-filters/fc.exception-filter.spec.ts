@@ -2,7 +2,7 @@ import { ArgumentsHost, HttpStatus } from '@nestjs/common';
 
 import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { Loggable, Trackable } from '@fc/exceptions';
+import { Loggable, Trackable } from '@fc/exceptions-deprecated';
 import { LoggerService } from '@fc/logger';
 import { TrackingService } from '@fc/tracking';
 import { ViewTemplateService } from '@fc/view-templates';
@@ -12,7 +12,7 @@ import { getLoggerMock } from '@mocks/logger';
 import { FcException } from '../exceptions';
 import { FcExceptionFilter } from './fc.exception-filter';
 
-jest.mock('@fc/exceptions/decorator/trackable.decorator');
+jest.mock('@fc/exceptions-deprecated/decorator/trackable.decorator');
 
 describe('FcExceptionFilter', () => {
   let exceptionFilter: FcExceptionFilter;

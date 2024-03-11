@@ -289,9 +289,7 @@
       "sourceRoot": "instances/csmr-user-preferences-high/src",
       "compilerOptions": {
         "tsConfigPath": "instances/csmr-user-preferences-high/tsconfig.app.json",
-        "assets": [
-          "../../../instances/csmr-user-preferences-high/**/*.ejs"
-        ]
+        "assets": ["../../../instances/csmr-user-preferences-high/**/*.ejs"]
       }
     },
     "csmr-account-instance": {
@@ -492,13 +490,13 @@
         "tsConfigPath": "libs/config/tsconfig.lib.json"
       }
     },
-    "exceptions": {
+    "exceptions-deprecated": {
       "type": "library",
-      "root": "libs/exceptions",
+      "root": "libs/exceptions-deprecated",
       "entryFile": "index",
-      "sourceRoot": "libs/exceptions/src",
+      "sourceRoot": "libs/exceptions-deprecated/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/exceptions/tsconfig.lib.json"
+        "tsConfigPath": "libs/exceptions-deprecated/tsconfig.lib.json"
       }
     },
     "mongoose": {

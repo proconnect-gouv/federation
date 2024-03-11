@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as ejs from 'ejs';
 import * as glob from 'glob';
 
-import { FcException } from '@fc/exceptions';
+import { FcException } from '@fc/exceptions-deprecated';
 
 import MarkdownGenerator from './markdown-generator';
 import Runner from './runner';
