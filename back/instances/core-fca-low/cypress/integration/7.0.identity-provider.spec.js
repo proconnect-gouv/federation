@@ -24,7 +24,7 @@ describe('Idp activation & visibility', () => {
     cy.url().should('include', IDP_INTERACTION_URL);
   });
 
-  it('should trigger error Y190007 if the CSRF token is not valid', () => {
+  it('should trigger error Y470001 if the CSRF token is not valid', () => {
     // Given
     cy.visit(getAuthorizeUrl());
     cy.url().should('match', mireUrl);
@@ -37,7 +37,7 @@ describe('Idp activation & visibility', () => {
     basicSuccessScenario(identityProviderId);
     // Then
     cy.url().should('contain', '/api/v2/redirect-to-idp');
-    cy.hasError('Y190007');
+    cy.hasError('Y470001');
   });
 
   describe('No app restart needed', () => {
