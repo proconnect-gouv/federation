@@ -1,5 +1,5 @@
 /* istanbul ignore file */
-import { FcException } from '@fc/exceptions';
+import { FcException } from '@fc/exceptions-deprecated';
 
 export const anyFunction = () => false;
 

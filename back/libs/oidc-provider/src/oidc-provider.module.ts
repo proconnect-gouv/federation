@@ -5,7 +5,7 @@ import { DynamicModule, Module, Type } from '@nestjs/common';
 import { ModuleMetadata } from '@nestjs/common/interfaces';
 import { CqrsModule } from '@nestjs/cqrs';
 
-import { FcExceptionFilter } from '@fc/exceptions';
+import { FcExceptionFilter } from '@fc/exceptions-deprecated';
 import { IServiceProviderAdapter } from '@fc/oidc';
 import { SERVICE_PROVIDER_SERVICE_TOKEN } from '@fc/oidc/tokens';
 import { RedisModule } from '@fc/redis';

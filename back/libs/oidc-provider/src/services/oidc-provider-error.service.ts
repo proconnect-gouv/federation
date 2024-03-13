@@ -2,7 +2,7 @@ import { KoaContextWithOIDC, Provider } from 'oidc-provider';
 
 import { ArgumentsHost, Injectable } from '@nestjs/common';
 
-import { FcException, FcExceptionFilter } from '@fc/exceptions';
+import { FcException, FcExceptionFilter } from '@fc/exceptions-deprecated';
 
 import { ErrorCode, OidcProviderEvents } from '../enums';
 import { OidcProviderRuntimeException } from '../exceptions';

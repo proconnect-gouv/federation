@@ -9,7 +9,7 @@ import {
   ExceptionsService,
   FcException,
   IExceptionDocumentation,
-} from '@fc/exceptions';
+} from '@fc/exceptions-deprecated';
 
 import { Description, Loggable, Trackable } from '../../decorator';
 import {

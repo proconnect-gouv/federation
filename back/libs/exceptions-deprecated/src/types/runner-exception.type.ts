@@ -3,7 +3,7 @@
 // Declarative code
 import { Type } from '@nestjs/common';
 
-import { FcException } from '@fc/exceptions';
+import { FcException } from '@fc/exceptions-deprecated';
 
 export type PathAndException = {
   path: string;
