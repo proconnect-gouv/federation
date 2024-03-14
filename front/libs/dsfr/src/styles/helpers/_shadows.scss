@@ -5,6 +5,8 @@
 }
 
 .accordion-shadow-bottom {
+  // @TODO ce block doit être dans un module du composant accordeon
+  // @NOTE ne semble pas être utilisé
   box-shadow:
     0 1px 1px var(--background-elevated-grey-active),
     0 1px 0 -2px var(--background-elevated-grey-active),

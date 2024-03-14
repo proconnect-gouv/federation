@@ -1,4 +1,6 @@
-@import '@fc/dsfr/styles';
+// @TODO remplacer par une resolution via TS ou autre
+// EX : @import '@fc/dsfr/styles';
+@import '@fc/dsfr/src/styles/index.scss';
 
 #page-container {
   max-width: 992px;
@@ -9,5 +11,6 @@
 }
 
 .is-blue-shadow {
+  // @TODO cette couleur n'existe pas dans le DSFR
   box-shadow: 0 0 7px -2px #66a1e4;
 }

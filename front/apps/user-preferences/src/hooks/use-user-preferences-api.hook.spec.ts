@@ -108,7 +108,7 @@ describe('useUserPreferencesApi', () => {
       renderHook(() => useUserPreferencesApi(options));
 
       // then
-      expect(UserPreferencesService.parseFormData).toHaveBeenCalledTimes(1);
+      expect(UserPreferencesService.parseFormData).toHaveBeenCalledOnce();
       expect(UserPreferencesService.parseFormData).toHaveBeenCalledWith(userPreferences);
     });
 
@@ -150,7 +150,7 @@ describe('useUserPreferencesApi', () => {
 
       // then
       await waitFor(() => {
-        expect(UserPreferencesService.encodeFormData).toHaveBeenCalledTimes(1);
+        expect(UserPreferencesService.encodeFormData).toHaveBeenCalledOnce();
         expect(UserPreferencesService.encodeFormData).toHaveBeenCalledWith({
           allowFutureIdp: false,
           csrfToken,
@@ -178,7 +178,7 @@ describe('useUserPreferencesApi', () => {
 
       // then
       await waitFor(() => {
-        expect(axios.post).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledOnce();
         expect(axios.post).toHaveBeenCalledWith(options.API_ROUTE_USER_PREFERENCES, dataMock);
       });
     });
@@ -217,8 +217,8 @@ describe('useUserPreferencesApi', () => {
 
       // then
       await waitFor(() => {
-        expect(axios.post).toHaveBeenCalledTimes(1);
-        expect(UserPreferencesService.encodeFormData).toHaveBeenCalledTimes(1);
+        expect(axios.post).toHaveBeenCalledOnce();
+        expect(UserPreferencesService.encodeFormData).toHaveBeenCalledOnce();
         expect(UserPreferencesService.encodeFormData).toHaveBeenCalledWith({
           allowFutureIdp: false,
           csrfToken: 'csrfTokenMockValue',
@@ -292,7 +292,7 @@ describe('useUserPreferencesApi', () => {
 
       // then
       await waitFor(() => {
-        expect(navigateMock).toHaveBeenCalledTimes(1);
+        expect(navigateMock).toHaveBeenCalledOnce();
         expect(navigateMock).toHaveBeenCalledWith('/error/409', { replace: true });
       });
     });

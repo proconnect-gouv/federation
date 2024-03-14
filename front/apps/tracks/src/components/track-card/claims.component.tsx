@@ -14,7 +14,7 @@ type ClaimsComponentProps = {
 
 const IDENTITY_DP = ['FCP_HIGH', 'FCP_LOW'];
 
-const excludeIdentityProviders = ([dataProvider]: [string, {}]) =>
+const excludeIdentityProviders = ([dataProvider]: [string, object]) =>
   !IDENTITY_DP.includes(dataProvider);
 
 export const ClaimsComponent = React.memo(

@@ -84,7 +84,7 @@ describe('LayoutHeaderComponent', () => {
     );
 
     // then
-    expect(LayoutHeaderLogosComponent).toHaveBeenCalledTimes(1);
+    expect(LayoutHeaderLogosComponent).toHaveBeenCalledOnce();
     expect(LayoutHeaderLogosComponent).toHaveBeenCalledWith(
       { logo: 'any-logo-mock', title: 'any-title' },
       {},
@@ -105,7 +105,7 @@ describe('LayoutHeaderComponent', () => {
     );
 
     // then
-    expect(LayoutHeaderMobileBurgerButton).toHaveBeenCalledTimes(1);
+    expect(LayoutHeaderMobileBurgerButton).toHaveBeenCalledOnce();
     expect(LayoutHeaderMobileBurgerButton).toHaveBeenCalledWith(
       { onOpen: expect.any(Function), opened: false },
       {},
@@ -126,7 +126,7 @@ describe('LayoutHeaderComponent', () => {
     );
 
     // then
-    expect(LayoutHeaderToolsComponent).toHaveBeenCalledTimes(1);
+    expect(LayoutHeaderToolsComponent).toHaveBeenCalledOnce();
     expect(LayoutHeaderToolsComponent).toHaveBeenCalledWith(
       {
         firstname: expect.any(String),
@@ -152,7 +152,7 @@ describe('LayoutHeaderComponent', () => {
     );
 
     // then
-    expect(LayoutHeaderMenuComponent).toHaveBeenCalledTimes(1);
+    expect(LayoutHeaderMenuComponent).toHaveBeenCalledOnce();
     expect(LayoutHeaderMenuComponent).toHaveBeenCalledWith(
       {
         firstname: expect.any(String),
@@ -209,7 +209,7 @@ describe('LayoutHeaderComponent', () => {
     );
 
     // then
-    expect(ReturnButtonComponent).toHaveBeenCalledTimes(1);
+    expect(ReturnButtonComponent).toHaveBeenCalledOnce();
     expect(ReturnButtonComponent).toHaveBeenCalledWith(
       {
         isMobileViewport: true,
@@ -242,7 +242,7 @@ describe('LayoutHeaderComponent', () => {
     );
 
     // then
-    expect(LayoutHeaderServiceComponent).toHaveBeenCalledTimes(1);
+    expect(LayoutHeaderServiceComponent).toHaveBeenCalledOnce();
     expect(LayoutHeaderServiceComponent).toHaveBeenCalledWith(
       {
         service: serviceConfigMock,

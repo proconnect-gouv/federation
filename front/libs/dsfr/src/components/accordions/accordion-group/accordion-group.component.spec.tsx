@@ -57,7 +57,7 @@ describe('AccordionGroupComponent', () => {
     render(<AccordionGroupComponent items={accordionItemsMock} />);
 
     // then
-    expect(useSelectedItems).toHaveBeenCalledTimes(1);
+    expect(useSelectedItems).toHaveBeenCalledOnce();
   });
 
   it('should call useSelectedItems hook with options props', () => {
@@ -68,7 +68,7 @@ describe('AccordionGroupComponent', () => {
     render(<AccordionGroupComponent items={accordionItemsMock} options={options} />);
 
     // then
-    expect(useSelectedItems).toHaveBeenCalledTimes(1);
+    expect(useSelectedItems).toHaveBeenCalledOnce();
     expect(useSelectedItems).toHaveBeenCalledWith(options);
   });
 

@@ -73,6 +73,6 @@ describe('Application', () => {
     render(<Application />);
 
     // then
-    expect(ApplicationRoutesMock).toHaveBeenCalledTimes(1);
+    expect(ApplicationRoutesMock).toHaveBeenCalledOnce();
   });
 });

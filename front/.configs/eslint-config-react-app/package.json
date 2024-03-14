@@ -1,0 +1,7 @@
+{
+  "name": "@fc/eslint-config-react-app",
+  "description": "FC React/Front ESLint base configuration",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js"
+}

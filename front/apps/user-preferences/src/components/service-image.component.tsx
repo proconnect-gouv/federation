@@ -17,8 +17,6 @@ export const ServiceImageComponent: React.FC<ServiceImageComponentProps> = React
       <div
         className={classnames(
           styles.image,
-          // class CSS
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           'is-relative no-overflow fr-mr-3w',
           // class CSS
           // eslint-disable-next-line @typescript-eslint/naming-convention

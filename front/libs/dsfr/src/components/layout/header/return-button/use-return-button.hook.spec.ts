@@ -6,7 +6,7 @@ import { useApiGet } from '@fc/common';
 import { useReturnButton } from './use-return-button.hook';
 
 jest.mock('@fc/common');
-jest.mock('react', () => {
+jest.mock<typeof import('react')>('react', () => {
   const actualReact = jest.requireActual('react');
   return {
     ...actualReact,
@@ -28,9 +28,9 @@ describe('useReturnButton', () => {
     const { historyBackURL, serviceProviderName, showButton } = result.current;
 
     // then
-    expect(historyBackURL).toEqual('/');
-    expect(serviceProviderName).toEqual('');
-    expect(showButton).toBe(false);
+    expect(historyBackURL).toBe('/');
+    expect(serviceProviderName).toBe('');
+    expect(showButton).toBeFalse();
   });
 
   it('should have called useApiGet with enpoint param', () => {
@@ -41,7 +41,7 @@ describe('useReturnButton', () => {
     renderHook(() => useReturnButton(url));
 
     // then
-    expect(useApiGet).toHaveBeenCalledTimes(1);
+    expect(useApiGet).toHaveBeenCalledOnce();
     expect(useApiGet).toHaveBeenCalledWith({ endpoint: url });
   });
 
@@ -116,7 +116,7 @@ describe('useReturnButton', () => {
 
     // then
     expect(useApiGet).toHaveBeenCalledTimes(5);
-    expect(setStateMock).toHaveBeenCalledTimes(1);
+    expect(setStateMock).toHaveBeenCalledOnce();
     expect(setStateMock).toHaveBeenCalledWith({
       historyBackURL: 'redirect-uri-mock?mock=mock',
       serviceProviderName: 'service-provider-name-mock',
