@@ -13,4 +13,4 @@ export type SideEffectHandler = (
   action: FSA,
   dispatch: Function,
   getState: () => GlobalState,
-) => {};
+) => object | void;

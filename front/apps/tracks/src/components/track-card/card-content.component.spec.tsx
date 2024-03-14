@@ -108,7 +108,7 @@ describe('TrackCardContentComponent', () => {
     );
 
     // Then
-    expect(ConnectionComponent).toHaveBeenCalledTimes(1);
+    expect(ConnectionComponent).toHaveBeenCalledOnce();
 
     expect(ConnectionComponent).toHaveBeenCalledWith(
       {
@@ -144,7 +144,7 @@ describe('TrackCardContentComponent', () => {
     );
 
     // Then
-    expect(ClaimsComponent).toHaveBeenCalledTimes(1);
+    expect(ClaimsComponent).toHaveBeenCalledOnce();
 
     expect(ClaimsComponent).toHaveBeenCalledWith(
       {

@@ -26,7 +26,7 @@ describe('usePaginatedTracks', () => {
         submitErrors: undefined,
         tracks: tracksMock,
       });
-      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledOnce();
       expect(axios.get).toHaveBeenCalledWith(
         `${options.API_ROUTE_TRACKS}?offset=${DEFAULT_OFFSET}&size=${DEFAULT_SIZE}`,
       );

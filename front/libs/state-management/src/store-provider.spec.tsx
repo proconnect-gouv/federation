@@ -1,6 +1,3 @@
-/**
- * @jest-environment jsdom
- */
 import { render } from '@testing-library/react';
 import { combineReducers, legacy_createStore } from 'redux';
 import { persistStore } from 'redux-persist';
@@ -51,7 +48,7 @@ describe('StoreProvider', () => {
 
     // then
     expect(mockConfigure).toHaveBeenCalled();
-    expect(mockConfigure).toHaveBeenCalledTimes(1);
+    expect(mockConfigure).toHaveBeenCalledOnce();
     expect(mockConfigure).toHaveBeenCalledWith(
       persistKey,
       states,

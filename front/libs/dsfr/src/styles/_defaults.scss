@@ -1,7 +1,8 @@
-@use '~sass-rem' as rem with (
-  $fallback: true,
-  $baseline: 16px
-);
+// @TODO replace by @use "rem" with the new version of sass-rem (v4)
+@import 'sass-rem';
+
+$rem-fallback: true;
+$rem-baseline: 16px;
 
 $breakpoints-xs: 320px !default; /* Mobile Small */
 $breakpoints-sm: 576px !default; /* Mobile */

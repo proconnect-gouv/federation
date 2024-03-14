@@ -81,7 +81,7 @@ describe('useLocalStorage', () => {
       result.get();
 
       // Then
-      expect(getItemMock).toHaveBeenCalledTimes(1);
+      expect(getItemMock).toHaveBeenCalledOnce();
       expect(getItemMock).toHaveBeenCalledWith(key);
     });
 
@@ -94,7 +94,7 @@ describe('useLocalStorage', () => {
       result.get();
 
       // Then
-      expect(jsonParseMock).toHaveBeenCalledTimes(1);
+      expect(jsonParseMock).toHaveBeenCalledOnce();
       expect(jsonParseMock).toHaveBeenCalledWith(localStorageItemMock);
     });
 
@@ -108,7 +108,7 @@ describe('useLocalStorage', () => {
       result.get();
 
       // Then
-      expect(jsonParseMock).toHaveBeenCalledTimes(1);
+      expect(jsonParseMock).toHaveBeenCalledOnce();
       expect(jsonParseMock).toHaveBeenCalledWith('null');
     });
 
@@ -121,7 +121,7 @@ describe('useLocalStorage', () => {
       result.get('any-path');
 
       // Then
-      expect(lget).toHaveBeenCalledTimes(1);
+      expect(lget).toHaveBeenCalledOnce();
       expect(lget).toHaveBeenCalledWith(jsonParseMockReturnValue, 'any-path');
     });
 
@@ -163,7 +163,7 @@ describe('useLocalStorage', () => {
       hook.set(value);
 
       // Then
-      expect(jsonStringifyMock).toHaveBeenCalledTimes(1);
+      expect(jsonStringifyMock).toHaveBeenCalledOnce();
       expect(jsonStringifyMock).toHaveBeenCalledWith(value);
     });
 
@@ -177,7 +177,7 @@ describe('useLocalStorage', () => {
       hook.set(value);
 
       // Then
-      expect(setItemMock).toHaveBeenCalledTimes(1);
+      expect(setItemMock).toHaveBeenCalledOnce();
       expect(setItemMock).toHaveBeenCalledWith(key, jsonStringifyMockReturnValue);
     });
 
@@ -235,7 +235,7 @@ describe('useLocalStorage', () => {
       hook.flush();
 
       // Then
-      expect(removeItemMock).toHaveBeenCalledTimes(1);
+      expect(removeItemMock).toHaveBeenCalledOnce();
       expect(removeItemMock).toHaveBeenCalledWith(key);
     });
   });

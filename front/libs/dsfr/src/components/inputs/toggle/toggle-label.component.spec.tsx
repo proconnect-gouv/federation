@@ -48,7 +48,7 @@ describe('ToggleLabelComponent', () => {
     );
 
     // Then
-    expect(labelMock).toHaveBeenCalledTimes(1);
+    expect(labelMock).toHaveBeenCalledOnce();
     expect(labelMock).toHaveBeenCalledWith(fieldInputPropsMock.checked);
   });
 });

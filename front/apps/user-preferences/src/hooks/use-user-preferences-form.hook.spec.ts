@@ -80,7 +80,7 @@ describe('useUserPreferencesForm', () => {
     });
 
     // then
-    expect(setAlertInfoStateMock).toHaveBeenCalledTimes(1);
+    expect(setAlertInfoStateMock).toHaveBeenCalledOnce();
     expect(setAlertInfoStateMock).toHaveBeenCalledWith(expect.any(Function));
   });
 });

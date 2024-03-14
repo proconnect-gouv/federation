@@ -18,7 +18,6 @@ front:
     paths:
       # Front
       - front/node_modules/
-      - front/instances/agent-connect/node_modules/
       - front/instances/user-dashboard/node_modules/
   script:
     # front folder
@@ -28,7 +27,6 @@ front:
     - yarn prettier
     - yarn lint
     - ../coverage.sh
-    # - yarn tsc --noEmit
   coverage: '/Global coverage is: \[([\d\.]+)%\]/'
   interruptible: true
 

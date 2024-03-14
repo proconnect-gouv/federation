@@ -1,4 +1,5 @@
-@use '~sass-rem' as rem;
+// @TODO replace by `@use "rem"` the new version of sass-rem (v4)
+@import 'sass-rem';
 
 /* MOBILE FIRST */
 
@@ -8,7 +9,8 @@
   min-height: 100vh;
 
   .sticky-content {
-    margin-bottom: rem.convert(64px);
+    // @TODO replace by `rem.convert` the new version of sass-rem (v4)
+    margin-bottom: rem-convert(64px);
   }
 
   .sticky-footer {

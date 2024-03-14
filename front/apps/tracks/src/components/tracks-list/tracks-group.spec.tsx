@@ -65,7 +65,7 @@ describe('tracksGroupComponent', () => {
       <TracksGroupComponent label="Any Label" options={options} tracks={allTracks} />,
     );
     // then
-    expect(sortFunctionSpy).toHaveBeenCalled();
+    expect(sortFunctionSpy).toHaveBeenCalledOnce();
     unmount();
   });
 

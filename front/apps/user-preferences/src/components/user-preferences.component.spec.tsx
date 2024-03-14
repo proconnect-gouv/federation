@@ -107,7 +107,7 @@ describe('UserPreferencesComponent', () => {
     render(<UserPreferencesComponent options={optionsMock} />);
 
     // then
-    expect(useUserPreferencesApi).toHaveBeenCalledTimes(1);
+    expect(useUserPreferencesApi).toHaveBeenCalledOnce();
     expect(useUserPreferencesApi).toHaveBeenCalledWith(optionsMock);
   });
 });

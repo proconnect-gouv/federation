@@ -7,7 +7,7 @@ const setStateMock = jest.fn(() => ({}));
 
 const ChildrenComponentMock = () => <div>mock children</div>;
 
-jest.mock('react', () => ({
+jest.mock<typeof import('react')>('react', () => ({
   ...jest.requireActual('react'),
   useState: () => [stateMock, setStateMock],
 }));
