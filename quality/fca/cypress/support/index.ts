@@ -14,6 +14,7 @@
 // ***********************************************************
 
 import 'cypress-axe';
+import 'cypress-plugin-api';
 
 import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command';
 
