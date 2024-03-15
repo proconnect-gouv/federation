@@ -4,12 +4,11 @@ import {
   IsIn,
   IsOptional,
   IsString,
-  IsUrl,
   MinLength,
 } from 'class-validator';
 
 // Creates a cyclic dependency
-import { IsEqualToConfig } from '@fc/common';
+import { IsEqualToConfig, IsUrlRequiredTldFromConfig } from '@fc/common';
 import { SUPPORTED_SIG_ALG } from '@fc/cryptography';
 
 import { ServiceProviderAdapterMongoConfig } from './service-provider-adapter-mongo-config.dto';
@@ -38,13 +37,13 @@ export class ServiceProviderAdapterMongoDTO {
   readonly client_secret: string;
 
   @IsArray()
-  @IsUrl({}, { each: true })
+  @IsUrlRequiredTldFromConfig({ each: true })
   // oidc defined variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly redirect_uris: string[];
 
   @IsArray()
-  @IsUrl({}, { each: true })
+  @IsUrlRequiredTldFromConfig({ each: true })
   // oidc defined variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly post_logout_redirect_uris: string[];
@@ -89,7 +88,7 @@ export class ServiceProviderAdapterMongoDTO {
   readonly userinfo_encrypted_response_enc: string;
 
   @IsOptional()
-  @IsUrl()
+  @IsUrlRequiredTldFromConfig()
   // oidc defined variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly jwks_uri?: string;
