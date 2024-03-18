@@ -1,0 +1,11 @@
+<%# In the meantime, while waiting to have other message display mechanisms, we also condition it with the FI name. %>
+<% if (locals.errorContext.hasError && locals.errorContext.idpLabel) { %>
+  <div class="fr-col-12 fr-col-lg-10 fr-col-offset-lg-1">
+    <section class="fr-alert fr-alert--error" role="alert">
+      <p data-testid="interaction-error-message">
+        La connexion à <b><%= locals.errorContext.idpLabel %></b> n'a pas été possible. Veuillez réessayer ou choisir un
+        autre moyen de connexion.
+      </p>
+    </section>
+  </div>
+<% } %>

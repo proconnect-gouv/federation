@@ -26,7 +26,10 @@
     "idpId": "fip2",
     "name": "fip2",
     "title": "Identity Provider - eIDAS élevé - nodiscov - nocrypt",
-    "descriptions": ["non autorisé pour idp_hint"],
+    "descriptions": [
+      "différent",
+      "non autorisé pour idp_hint"
+    ],
     "mocked": true,
     "usable": true,
     "url": "https://fip2v2.integ01.fcp.fournisseur-d-identite.fr",

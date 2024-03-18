@@ -25,6 +25,7 @@ export default {
   logo: '/img/fc-logo.svg',
   title: "Fournisseur d'identité de démonstration - FCP-LOW",
   allowCustomIdentity: env.boolean('ALLOW_CUSTOM_IDENTITY'),
+  allowBackButton: true,
   identityDto: CustomIdentityDto,
   identityForm: [
     {

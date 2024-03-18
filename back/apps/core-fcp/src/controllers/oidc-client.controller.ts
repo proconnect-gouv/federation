@@ -7,6 +7,7 @@ import {
   Get,
   Header,
   Post,
+  Query,
   Render,
   Req,
   Res,
@@ -22,7 +23,7 @@ import { CsrfTokenGuard } from '@fc/csrf';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
+import { OidcCallbackInterface, OidcSession } from '@fc/oidc';
 import {
   OidcClientConfigService,
   OidcClientRoutes,
@@ -43,7 +44,7 @@ import {
 } from '../dto';
 import { CoreFcpInvalidIdentityException } from '../exceptions';
 import { IIdentityCheckFeatureHandler } from '../interfaces';
-import { CoreFcpService } from '../services';
+import { CoreFcpService, CoreFcpVerifyService } from '../services';
 
 @Controller()
 export class OidcClientController {
@@ -57,6 +58,7 @@ export class OidcClientController {
     private readonly oidcProvider: OidcProviderService,
     private readonly config: ConfigService,
     private readonly coreVerify: CoreVerifyService,
+    private readonly coreFcpVerify: CoreFcpVerifyService,
     private readonly tracking: TrackingService,
     private readonly sessionService: SessionService,
     private readonly crypto: CryptographyService,
@@ -127,16 +129,42 @@ export class OidcClientController {
      */
     @Session('OidcClient', GetOidcCallbackOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
+    @Query()
+    {
+      error,
+      // oidc naming
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      error_description,
+      state,
+    }: OidcCallbackInterface,
   ) {
+    if (error) {
+      const { idpState } = sessionOidc.get();
+      this.oidcClient.utils.checkState({ state }, idpState);
+
+      await this.coreFcpVerify.handleIdpError(req, res, {
+        error,
+        // oidc naming
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description,
+      });
+      return;
+    }
+
+    const trackingContext: TrackedEventContextInterface = { req };
+    const {
+      IDP_CALLEDBACK,
+      FC_REQUESTED_IDP_TOKEN,
+      FC_REQUESTED_IDP_USERINFO,
+    } = this.tracking.TrackedEventsMap;
+
     await this.sessionService.duplicate(res, GetOidcCallbackSessionDto);
     this.logger.debug('Session has been detached and duplicated');
 
     const { idpId, idpNonce, idpState, idpLabel, interactionId } =
       sessionOidc.get();
 
-    await this.tracking.track(this.tracking.TrackedEventsMap.IDP_CALLEDBACK, {
-      req,
-    });
+    await this.tracking.track(IDP_CALLEDBACK, trackingContext);
 
     const tokenParams = {
       state: idpState,
@@ -146,12 +174,7 @@ export class OidcClientController {
     const { accessToken, idToken, acr } =
       await this.oidcClient.getTokenFromProvider(idpId, tokenParams, req);
 
-    await this.tracking.track(
-      this.tracking.TrackedEventsMap.FC_REQUESTED_IDP_TOKEN,
-      {
-        req,
-      },
-    );
+    await this.tracking.track(FC_REQUESTED_IDP_TOKEN, trackingContext);
 
     const { amr } = await this.identityProvider.getById(idpId);
 
@@ -165,12 +188,7 @@ export class OidcClientController {
       req,
     );
 
-    await this.tracking.track(
-      this.tracking.TrackedEventsMap.FC_REQUESTED_IDP_USERINFO,
-      {
-        req,
-      },
-    );
+    await this.tracking.track(FC_REQUESTED_IDP_USERINFO, trackingContext);
 
     await this.validateIdentity(idpId, identity);
 

@@ -26,7 +26,7 @@ import {
 import { CsrfTokenGuard } from '@fc/csrf';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
-import { OidcSession } from '@fc/oidc';
+import { OidcError, OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 import {
   OidcProviderAuthorizeParamsException,
@@ -50,7 +50,6 @@ import {
   AuthorizeParamsDto,
   CoreConfig,
   CoreSession,
-  ErrorParamsDto,
   GetLoginOidcClientSessionDto,
 } from '../dto';
 import { ConfirmationType, DataType } from '../enums';
@@ -186,17 +185,19 @@ export class OidcProviderController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @IsStep()
   async redirectToSpWithError(
-    @Query() { error, error_description: errorDescription }: ErrorParamsDto,
+    // oidc naming
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    @Query() { error, error_description }: OidcError,
     @Req() req,
     @Res() res,
   ) {
     try {
-      await this.oidcProvider.abortInteraction(
-        req,
-        res,
+      await this.oidcProvider.abortInteraction(req, res, {
         error,
-        errorDescription,
-      );
+        // oidc naming
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description,
+      });
     } catch (error) {
       throw new CoreFcpFailedAbortSessionException(error);
     }

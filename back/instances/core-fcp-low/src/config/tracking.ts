@@ -69,6 +69,12 @@ export default {
       event: 'IDP_CALLEDBACK',
     },
 
+    IDP_CALLEDBACK_WITH_ERROR: {
+      step: '4.0.5',
+      category: EventsCategories.FRONT_CINEMATIC,
+      event: 'IDP_CALLEDBACK_WITH_ERROR',
+    },
+
     FC_REQUESTED_IDP_TOKEN: {
       step: '4.1.0',
       category: EventsCategories.FRONT_CINEMATIC,

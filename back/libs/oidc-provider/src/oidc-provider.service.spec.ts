@@ -576,11 +576,16 @@ describe('OidcProviderService', () => {
       // then
       await expect(
         // when
-        service.abortInteraction(reqMock, resMock, mockErr, mockErrDescription),
+        service.abortInteraction(reqMock, resMock, {
+          error: mockErr,
+          // oidc naming
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_description: mockErrDescription,
+        }),
       ).rejects.toThrow(OidcProviderRuntimeException);
     });
 
-    it('Should have called this.provider.interactionFinished with parameters', async () => {
+    it('Should have called this.provider.interactionFinished with parameters if retry params is false', async () => {
       // given
       const resMock = Symbol('mock result');
       const reqMock = Symbol('mock request');
@@ -588,12 +593,12 @@ describe('OidcProviderService', () => {
       const mockErrDescription = 'this is an error description';
 
       // when
-      await service.abortInteraction(
-        reqMock,
-        resMock,
-        mockErr,
-        mockErrDescription,
-      );
+      await service.abortInteraction(reqMock, resMock, {
+        error: mockErr,
+        // oidc naming
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        error_description: mockErrDescription,
+      });
 
       // then
       expect(providerMock.interactionFinished).toHaveBeenCalledTimes(1);
@@ -604,6 +609,35 @@ describe('OidcProviderService', () => {
           error: mockErr,
           // eslint-disable-next-line @typescript-eslint/naming-convention
           error_description: mockErrDescription,
+        },
+      );
+    });
+
+    it('Should have called this.provider.interactionFinished with error undefined if retry params is true', async () => {
+      // given
+      const resMock = Symbol('mock result');
+      const reqMock = Symbol('mock request');
+
+      // when
+      await service.abortInteraction(
+        reqMock,
+        resMock,
+        {
+          error: 'error',
+          // oidc naming
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          error_description: 'error description',
+        },
+        true,
+      );
+
+      // then
+      expect(providerMock.interactionFinished).toHaveBeenCalledTimes(1);
+      expect(providerMock.interactionFinished).toHaveBeenCalledWith(
+        reqMock,
+        resMock,
+        {
+          error: undefined,
         },
       );
     });
