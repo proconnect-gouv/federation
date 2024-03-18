@@ -266,3 +266,13 @@ Then(
       });
   },
 );
+
+Then(
+  /^le message d'erreur (est|n'est pas) présent sur la mire$/,
+  function (state: string) {
+    const exist = state === 'est';
+    serviceProviderPage
+      .getInteractionErrorMessage()
+      .should(exist ? 'be.visible' : 'not.exist');
+  },
+);

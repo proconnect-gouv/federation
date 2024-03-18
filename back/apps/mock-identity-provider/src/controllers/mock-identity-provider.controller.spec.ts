@@ -150,8 +150,11 @@ describe('MockIdentityProviderController', () => {
         appSessionServiceMock,
       );
       // Then
-      expect(oidcProviderServiceMock.getInteraction).toBeCalledTimes(1);
-      expect(oidcProviderServiceMock.getInteraction).toBeCalledWith(req, res);
+      expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledTimes(1);
+      expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledWith(
+        req,
+        res,
+      );
     });
 
     it('should call oidcClientSessionServiceMock.get with spName', async () => {
@@ -163,8 +166,8 @@ describe('MockIdentityProviderController', () => {
         appSessionServiceMock,
       );
       // Then
-      expect(oidcClientSessionServiceMock.get).toBeCalledTimes(1);
-      expect(oidcClientSessionServiceMock.get).toBeCalledWith('spName');
+      expect(oidcClientSessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(oidcClientSessionServiceMock.get).toHaveBeenCalledWith('spName');
     });
 
     it('should call appSessionServiceMock.get with finalspId', async () => {
@@ -176,8 +179,8 @@ describe('MockIdentityProviderController', () => {
         appSessionServiceMock,
       );
       // Then
-      expect(appSessionServiceMock.get).toBeCalledTimes(1);
-      expect(appSessionServiceMock.get).toBeCalledWith('finalSpId');
+      expect(appSessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(appSessionServiceMock.get).toHaveBeenCalledWith('finalSpId');
     });
 
     it('should return an object with data from session and oidcProvider interaction', async () => {

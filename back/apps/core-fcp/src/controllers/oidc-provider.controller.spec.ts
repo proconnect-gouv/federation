@@ -351,8 +351,9 @@ describe('OidcProviderController', () => {
       expect(oidcProviderServiceMock.abortInteraction).toHaveBeenCalledWith(
         reqMock,
         resMock,
-        'error',
-        'errorDescription',
+        // oidc naming
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        { error: 'error', error_description: 'errorDescription' },
       );
     });
 

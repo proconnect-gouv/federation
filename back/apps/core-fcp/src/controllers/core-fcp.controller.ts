@@ -24,7 +24,7 @@ import { LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
 import { OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
-import { OidcClientSession } from '@fc/oidc-client';
+import { OidcClientRoutes, OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderConfig, OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, Session } from '@fc/session';
@@ -38,6 +38,7 @@ import {
   GetInteractionOidcClientSessionDto,
   GetVerifyOidcClientSessionDto,
 } from '../dto';
+import { InteractionResponseInterface } from '../interfaces';
 import { CoreFcpService, CoreFcpVerifyService } from '../services';
 
 @Controller()
@@ -88,7 +89,7 @@ export class CoreFcpController {
     sessionApp: ISessionService<AppSession>,
     @CsrfToken() csrfToken: string,
   ) {
-    const { spName, stepRoute } = sessionOidc.get();
+    const { spName, stepRoute, idpLabel = null } = sessionOidc.get();
 
     const { params } = await this.oidcProvider.getInteraction(req, res);
     const {
@@ -148,7 +149,13 @@ export class CoreFcpController {
     // -- generate and store in session the CSRF token
 
     const notification = await this.notifications.getNotificationToDisplay();
-    const response = {
+
+    /** Currently, we don't have the ability to know what the error message is.
+     * Therefore, the only way to check if we have an error is to verify
+     * if we just came from oidc callback step route */
+    const hasError = stepRoute === OidcClientRoutes.OIDC_CALLBACK;
+
+    const response: InteractionResponseInterface = {
       csrfToken,
       notification,
       params,
@@ -156,6 +163,10 @@ export class CoreFcpController {
       aidantsConnect: aidantsConnect,
       spName,
       spScope,
+      errorContext: {
+        hasError,
+        idpLabel,
+      },
     };
 
     const isRefresh = stepRoute === CoreRoutes.INTERACTION;

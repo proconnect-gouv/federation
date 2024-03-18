@@ -5,6 +5,7 @@
  */
 import { isURL } from 'class-validator';
 import { JWK } from 'jose-openid-client';
+import { CallbackParamsType } from 'openid-client';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -362,6 +363,14 @@ describe('OidcClientUtilsService', () => {
       state: 'callbackParamsState',
       nonce: 'callbackParamsNonce',
     };
+    const callbackParams: CallbackParamsType = {
+      state: 'callbackParamsState',
+      code: 'callbackParamsCode',
+    };
+
+    beforeEach(() => {
+      service['extractParams'] = jest.fn().mockReturnValue(callbackParams);
+    });
 
     it('should call extractParams with callbackParams', async () => {
       // Given
@@ -413,39 +422,51 @@ describe('OidcClientUtilsService', () => {
   });
 
   describe('extractParams()', () => {
-    const req = { session: { codeVerifier: 'codeVerifierValue' } };
-    const state = 'callbackParamsState';
+    const params = {
+      state: Symbol('state'),
+      code: Symbol('code'),
+    } as unknown as CallbackParamsType;
+    const state = params.state;
 
-    it('should throw if code is not provided in url', async () => {
-      callbackParamsMock.mockResolvedValueOnce({
-        state: 'callbackParamsState',
-      });
+    it('should throw if code is not provided in url', () => {
+      const missingCodeParams = {
+        state: params.state,
+      };
       // Then
-      await expect(
-        service['extractParams'](req, clientMock, state),
-      ).rejects.toThrow(OidcClientMissingCodeException);
+      expect(() => service['extractParams'](missingCodeParams, state)).toThrow(
+        OidcClientMissingCodeException,
+      );
     });
-    it('should throw if state is not provided in url', async () => {
+
+    it('should throw if state is not provided in url', () => {
       // Given
-      callbackParamsMock.mockResolvedValueOnce({
-        code: 'callbackParamsCode',
-      });
+      const missingStateParams = {
+        code: params.code,
+      };
       // Then
-      await expect(
-        service['extractParams'](req, clientMock, state),
-      ).rejects.toThrow(OidcClientMissingStateException);
+      expect(() => service['extractParams'](missingStateParams, state)).toThrow(
+        OidcClientMissingStateException,
+      );
     });
-    it('should throw if state in url does not match state in session', async () => {
+
+    it('should throw if state in url does not match state in session', () => {
       // Given
-      callbackParamsMock.mockResolvedValueOnce({
-        state: 'callbackParamsState',
-        code: 'callbackParamsCode',
-      });
-      const invalidState = 'notTheSameStateAsInRequest';
+      const wrongStateParams = {
+        code: params.code,
+        state: 'wrongState',
+      };
       // Then
-      await expect(
-        service['extractParams'](req, clientMock, invalidState),
-      ).rejects.toThrow(OidcClientInvalidStateException);
+      expect(() => service['extractParams'](wrongStateParams, state)).toThrow(
+        OidcClientInvalidStateException,
+      );
+    });
+
+    it('should return given params', () => {
+      // When
+      const result = service['extractParams'](params, state);
+
+      // Then
+      expect(result).toBe(params);
     });
   });
 

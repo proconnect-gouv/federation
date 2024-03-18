@@ -25,7 +25,11 @@
     "idpId": "21329ee8-56ea-445f-9d88-45ac1989399c",
     "name": "fip2-low",
     "title": "IDP2 - LOW",
-    "descriptions": ["actif", "non autorisé pour idp_hint"],
+    "descriptions": [
+      "différent",
+      "actif",
+      "non autorisé pour idp_hint"
+    ],
     "mocked": true,
     "usable": true,
     "url": "https://fip2-low.integ01.fcp.fournisseur-d-identite.fr",

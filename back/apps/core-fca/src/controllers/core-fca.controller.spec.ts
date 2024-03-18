@@ -12,7 +12,7 @@ import { OidcClientSession } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
-import { TrackingService } from '@fc/tracking';
+import { TrackedEventInterface, TrackingService } from '@fc/tracking';
 
 import { getSessionServiceMock } from '@mocks/session';
 
@@ -122,7 +122,9 @@ describe('CoreFcaController', () => {
   const trackingServiceMock: TrackingService = {
     track: jest.fn(),
     TrackedEventsMap: {
-      IDP_CALLEDBACK: {},
+      FC_SHOWED_IDP_CHOICE: Symbol(
+        'FC_SHOWED_IDP_CHOICE',
+      ) as unknown as TrackedEventInterface,
     },
   } as unknown as TrackingService;
 
@@ -301,10 +303,6 @@ describe('CoreFcaController', () => {
       appSessionServiceMock.get.mockResolvedValue(false);
     });
 
-    /*
-     * @Todo #486 rework test missing assertion or not complete ones
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/486
-     */
     it('should return nothing, stop interaction, when acr value is not an allowedAcrValue', async () => {
       // Given
       coreAcrServiceMock.rejectInvalidAcr.mockResolvedValue(true);
@@ -339,6 +337,10 @@ describe('CoreFcaController', () => {
       );
       // Then
       expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
+      expect(trackingServiceMock.track).toHaveBeenCalledWith(
+        trackingServiceMock.TrackedEventsMap.FC_SHOWED_IDP_CHOICE,
+        { req },
+      );
     });
 
     it('should not track route if is a refresh', async () => {

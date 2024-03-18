@@ -3,13 +3,13 @@ import { Request } from 'express';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { CoreAcrService, CoreVerifyService } from '@fc/core';
+import { CoreAcrService, CoreRoutes, CoreVerifyService } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { NotificationsService } from '@fc/notifications';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
-import { OidcClientService } from '@fc/oidc-client';
+import { OidcClientRoutes, OidcClientService } from '@fc/oidc-client';
 import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
@@ -146,7 +146,12 @@ describe('CoreFcpController', () => {
   const trackingServiceMock: TrackingService = {
     track: jest.fn(),
     TrackedEventsMap: {
-      IDP_CALLEDBACK: {},
+      FC_SHOWED_IDP_CHOICE: Symbol(
+        'FC_SHOWED_IDP_CHOICE',
+      ) as unknown as TrackedEventInterface,
+      FC_IDP_INSUFFICIENT_ACR: Symbol(
+        'FC_IDP_INSUFFICIENT_ACR',
+      ) as unknown as TrackedEventInterface,
     },
   } as unknown as TrackingService;
 
@@ -332,11 +337,7 @@ describe('CoreFcpController', () => {
       );
     });
 
-    /*
-     * @Todo #486 rework test missing assertion or not complete ones
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/486
-     */
-    it('should retrieve the spName and stepRoute from oidcSession', async () => {
+    it('should call sessionOidc.get', async () => {
       // When
       await coreController.getInteraction(
         req,
@@ -349,6 +350,25 @@ describe('CoreFcpController', () => {
       // Then
       expect(oidcSessionServiceMock.get).toHaveBeenCalledTimes(1);
       expect(oidcSessionServiceMock.get).toHaveBeenCalledWith();
+    });
+
+    it('should call oidcProvider.getInteraction', async () => {
+      // When
+      await coreController.getInteraction(
+        req,
+        res,
+        params,
+        oidcSessionServiceMock,
+        appSessionServiceMock,
+        csrfToken,
+      );
+
+      // Then
+      expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledTimes(1);
+      expect(oidcProviderServiceMock.getInteraction).toHaveBeenCalledWith(
+        req,
+        res,
+      );
     });
 
     it('should retrieve get the OidcProvider config', async () => {
@@ -419,26 +439,6 @@ describe('CoreFcpController', () => {
       expect(serviceProviderServiceMock.getById).toHaveBeenCalledWith(
         interactionDetailsMock.params.client_id,
       );
-    });
-
-    it('should retrieve the idp list given the service provider blacklist / whitelist', async () => {
-      // When
-      await coreController.getInteraction(
-        req,
-        res,
-        params,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-        csrfToken,
-      );
-      // Then
-      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledTimes(
-        1,
-      );
-      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledWith({
-        blacklist: idpFilterExcludeMock,
-        idpList: idpFilterListMock,
-      });
     });
 
     it('should retrieve the idp list given the service provider blacklist / whitelist', async () => {
@@ -586,6 +586,7 @@ describe('CoreFcpController', () => {
         aidantsConnect: undefined,
         spName: oidcSessionMock.spName,
         spScope: interactionDetailsMock.params.scope,
+        errorContext: { hasError: false, idpLabel: null },
       });
     });
 
@@ -618,6 +619,7 @@ describe('CoreFcpController', () => {
         aidantsConnect: undefined,
         spName: oidcSessionMock.spName,
         spScope: interactionDetailsMock.params.scope,
+        errorContext: { hasError: false, idpLabel: null },
       });
     });
 
@@ -655,6 +657,7 @@ describe('CoreFcpController', () => {
         aidantsConnect: aidantsConnectProviderMock,
         spName: oidcSessionMock.spName,
         spScope: interactionDetailsMock.params.scope,
+        errorContext: { hasError: false, idpLabel: null },
       });
     });
 
@@ -678,7 +681,87 @@ describe('CoreFcpController', () => {
       ).toHaveBeenCalledWith();
     });
 
-    it('should get the notifications list', async () => {
+    it('should track the event FC_SHOWED_IDP_CHOICE', async () => {
+      // When
+      await coreController.getInteraction(
+        req,
+        res,
+        params,
+        oidcSessionServiceMock,
+        appSessionServiceMock,
+        csrfToken,
+      );
+
+      // Then
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
+      expect(trackingServiceMock.track).toHaveBeenCalledWith(
+        trackingServiceMock.TrackedEventsMap.FC_SHOWED_IDP_CHOICE,
+        { req },
+      );
+    });
+
+    it('should not track the event FC_SHOWED_IDP_CHOICE if the page is refresh', async () => {
+      // Given
+      oidcSessionServiceMock.get.mockReturnValueOnce({
+        ...oidcSessionMock,
+        stepRoute: CoreRoutes.INTERACTION,
+      });
+
+      // When
+      await coreController.getInteraction(
+        req,
+        res,
+        params,
+        oidcSessionServiceMock,
+        appSessionServiceMock,
+        csrfToken,
+      );
+
+      // Then
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(0);
+    });
+
+    it('should call the res.render method when stepRoute is defined to OidcClientRoutes.OIDC_CALLBACK', async () => {
+      // Given
+      const idpLabelMock = 'idpLabel';
+
+      oidcSessionServiceMock.get.mockReturnValueOnce({
+        ...oidcSessionMock,
+        stepRoute: OidcClientRoutes.OIDC_CALLBACK,
+        spName: oidcSessionMock.spName,
+        idpLabel: idpLabelMock,
+      });
+
+      const expectedInteractionDetails = {
+        csrfToken,
+        notification: notificationsMock,
+        params: interactionDetailsMock.params,
+        providers: idpFilterListMock,
+        aidantsConnect: undefined,
+        spName: oidcSessionMock.spName,
+        spScope: interactionDetailsMock.params.scope,
+        errorContext: { hasError: true, idpLabel: idpLabelMock },
+      };
+
+      // When
+      await coreController.getInteraction(
+        req,
+        res,
+        params,
+        oidcSessionServiceMock,
+        appSessionServiceMock,
+        csrfToken,
+      );
+
+      // Then
+      expect(res.render).toHaveBeenCalledTimes(1);
+      expect(res.render).toHaveBeenCalledWith(
+        'interaction',
+        expectedInteractionDetails,
+      );
+    });
+
+    it("should call res.render method with default parameters when it's first time", async () => {
       // Given
       oidcSessionServiceMock.get.mockReturnValue({
         spName: oidcSessionMock.spName,
@@ -691,6 +774,7 @@ describe('CoreFcpController', () => {
         aidantsConnect: undefined,
         spName: oidcSessionMock.spName,
         spScope: interactionDetailsMock.params.scope,
+        errorContext: { hasError: false, idpLabel: null },
       };
 
       // When
@@ -1104,9 +1188,6 @@ describe('CoreFcpController', () => {
 
       it('should track the event FC_IDP_INSUFFICIENT_ACR', async () => {
         // Given
-        trackingServiceMock.TrackedEventsMap.FC_IDP_INSUFFICIENT_ACR = Symbol(
-          'FC_IDP_INSUFFICIENT_ACR',
-        ) as unknown as TrackedEventInterface;
         const ctxMock = {
           req: reqMock,
         };
