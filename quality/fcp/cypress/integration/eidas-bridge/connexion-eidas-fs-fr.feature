@@ -25,6 +25,7 @@ Fonctionnalité: Connexion eIDAS - FS français
     Et le fournisseur de service a accès aux informations des scopes "eidas"
     Et la cinématique a renvoyé l'amr "eidas"
 
+  @ci
   Scénario: Connexion FS français - erreur absence de consentement des attributs obligatoires
     Etant donné que j'utilise un compte usager "pour les tests eidas-bridge"
     Et que le fournisseur de service requiert le claim "amr"
@@ -36,7 +37,8 @@ Fonctionnalité: Connexion eIDAS - FS français
     Et que je suis redirigé vers la page sélection du pays
     Et que je clique sur le pays "Mock Node"
     Quand j'annule l'authentification sur le fournisseur d'identité étranger lors du "consentement des attributs obligatoires"
-    Alors je suis redirigé vers la page d'erreur depuis eidas-bridge
+    Alors je suis redirigé vers la page sélection du fournisseur d'identité
+    Et le message d'erreur est présent sur la mire
     Et le refus d'authentification eidas est "Consent not given for a mandatory attribute."
 
   Scénario: Connexion FS français - erreur absence de consentement des attributs optionnels
@@ -50,7 +52,8 @@ Fonctionnalité: Connexion eIDAS - FS français
     Et que je suis redirigé vers la page sélection du pays
     Et que je clique sur le pays "Mock Node"
     Quand j'annule l'authentification sur le fournisseur d'identité étranger lors du "consentement des attributs optionnels"
-    Alors je suis redirigé vers la page d'erreur depuis eidas-bridge
+    Alors je suis redirigé vers la page sélection du fournisseur d'identité
+    Et le message d'erreur est présent sur la mire
     Et le refus d'authentification eidas est "Consent not given for a mandatory attribute."
 
   Scénario: Connexion FS français - erreur absence de confirmation du consentement
@@ -64,7 +67,8 @@ Fonctionnalité: Connexion eIDAS - FS français
     Et que je suis redirigé vers la page sélection du pays
     Et que je clique sur le pays "Mock Node"
     Quand j'annule l'authentification sur le fournisseur d'identité étranger lors de la "confirmation du consentement"
-    Alors je suis redirigé vers la page d'erreur depuis eidas-bridge
+    Alors je suis redirigé vers la page sélection du fournisseur d'identité
+    Et le message d'erreur est présent sur la mire
     Et le refus d'authentification eidas est "Citizen consent not given."
 
   Scénario: Connexion FS français - erreur niveau de garantie inférieure au niveau attendu
@@ -78,5 +82,6 @@ Fonctionnalité: Connexion eIDAS - FS français
     Et que je suis redirigé vers la page sélection du pays
     Et que je clique sur le pays "Mock Node"
     Quand je m'authentifie avec succès sur le fournisseur d'identité étranger avec un niveau de garantie "A"
-    Alors je suis redirigé vers la page d'erreur depuis eidas-bridge
+    Alors je suis redirigé vers la page sélection du fournisseur d'identité
+    Et le message d'erreur est présent sur la mire
     Et l'erreur d'authentification eidas est "202019 - Incorrect Level of Assurance in IdP response"

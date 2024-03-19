@@ -40,6 +40,15 @@
     "method": "GET",
     "url": "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback"
   },
+  "oidc-callback-error": {
+    "qs": {
+      "error": "access_denied",
+      "error_description": "user+authentication+aborted",
+      "state": "37098dd31af91b8d4e2684f7dfcd7f3a0b68f3615db783cada58463cdbb93449"
+    },
+    "method": "GET",
+    "url": "https://core-fcp-low.docker.dev-franceconnect.fr/api/v2/oidc-callback"
+  },
   "token": {
     "body": {
       "grant_type": "authorization_code",
