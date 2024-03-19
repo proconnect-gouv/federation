@@ -1,5 +1,5 @@
 #language: fr
-@usager @interactionErrorMessage
+@usager @interactionErrorMessage @ci
 Fonctionnalité: Message d'erreur sur la mire
   # En tant qu'usager FranceConnect,
   # je veux être informé par un message d'erreur sur la mire
@@ -42,6 +42,7 @@ Fonctionnalité: Message d'erreur sur la mire
     Et que je suis redirigé vers la page sélection du fournisseur d'identité
     Et que le message d'erreur est présent sur la mire
     Quand j'utilise un fournisseur d'identité "différent"
+    Et je clique sur le fournisseur d'identité
     Alors je suis redirigé vers la page login du fournisseur d'identité
     Et je m'authentifie avec succès
     Et je suis redirigé vers la page confirmation de connexion
