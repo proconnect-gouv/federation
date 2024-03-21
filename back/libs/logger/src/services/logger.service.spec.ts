@@ -1,4 +1,4 @@
-import pino, { MultiStreamRes } from 'pino';
+import pino, { Logger, MultiStreamRes } from 'pino';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
@@ -33,7 +33,7 @@ describe('LoggerService', () => {
     jest.restoreAllMocks();
 
     configServiceMock.get.mockReturnValue(configMock);
-    jest.mocked(pino).mockReturnValue(loggerMock as unknown as pino.Logger);
+    jest.mocked(pino).mockReturnValue(loggerMock as unknown as Logger<string>);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [LoggerService, ConfigService, AsyncLocalStorageService],

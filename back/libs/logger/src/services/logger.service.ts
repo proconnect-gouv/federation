@@ -28,11 +28,7 @@ export class LoggerService {
     [LogLevels.INFO]: 20,
     [LogLevels.DEBUG]: 10,
   };
-  private pino: Logger<{
-    level: LogLevels;
-    customLevels: CustomLogLevels;
-    useOnlyCustomLevels: boolean;
-  }>;
+  private pino: Logger<keyof CustomLogLevels>;
 
   constructor(
     private readonly config: ConfigService,
