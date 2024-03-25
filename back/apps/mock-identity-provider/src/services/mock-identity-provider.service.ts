@@ -142,7 +142,14 @@ export class MockIdentityProviderService {
       return true;
     }
 
-    return password === inputPassword;
+    return (
+      // Crypto timing safe equal wants buffers with the same length
+      password.length === inputPassword.length &&
+      crypto.timingSafeEqual(
+        Buffer.from(inputPassword, 'utf-8'),
+        Buffer.from(password, 'utf-8'),
+      )
+    );
   }
 
   getSub(identity: Csv | CsvParsed): string {

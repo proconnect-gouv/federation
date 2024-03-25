@@ -580,6 +580,19 @@ describe('MockIdentityProviderService', () => {
       expect(result).toBe(false);
     });
 
+    it('should return false if password check is enabled and password is invalid with same length', () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({ passwordVerification: true });
+      const password = 'password';
+      const inputPassword = 'foosword';
+
+      // When
+      const result = service.isPasswordValid(password, inputPassword);
+
+      // Then
+      expect(result).toBe(false);
+    });
+
     it('should return true if password check is disabled even if password is invalid', () => {
       // Given
       configServiceMock.get.mockReturnValueOnce({
