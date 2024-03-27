@@ -39,7 +39,11 @@ export const scopes: ScopesInterface = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   preferred_username: [claims.preferred_username],
   address: [claims.address],
+  // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
   idp_birthdate: [claims.idp_birthdate],
   amr: [claims.amr],
+  // OIDC fashion naming
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  idp_id: [claims.idp_id],
 };

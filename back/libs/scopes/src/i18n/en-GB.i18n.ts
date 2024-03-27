@@ -118,4 +118,5 @@ export const enGB = {
   'claim.rnipp_birthplace': '',
   'claim.rnipp_birthcountry': '',
   'claim.amr': '',
+  'claim.idp_id': '',
 };

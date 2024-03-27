@@ -119,4 +119,5 @@ export const frFR = {
   'claim.rnipp_birthplace': '',
   'claim.rnipp_birthcountry': '',
   'claim.amr': '',
+  'claim.idp_id': '',
 };

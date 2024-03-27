@@ -107,16 +107,28 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     });
 
     const spIdentity = this.buildSpIdentity(idpIdentity, rnippIdentity);
+    const technicalClaims = this.getTechnicalClaims(idpId);
 
     const session: OidcClientSession = {
       idpIdentity,
       rnippIdentity,
-      spIdentity,
+      spIdentity: {
+        ...spIdentity,
+        ...technicalClaims,
+      },
       accountId,
       subs: { ...subs, [spId]: sub },
     };
 
     sessionOidc.set(session);
+  }
+
+  private getTechnicalClaims(idpId: string): Record<string, unknown> {
+    return {
+      // OIDC fashion naming
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      idp_id: idpId,
+    };
   }
 
   private checkAccountBlocked(account: Account): void {

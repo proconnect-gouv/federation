@@ -46,6 +46,7 @@ const fsp = {
       "dgfip_nbpac",
       "droits_assurance_maladie",
       "cnam_caisse",
+      "idp_id",
     ],
     claims: ["amr"],
     id_token_signed_response_alg: "HS256",

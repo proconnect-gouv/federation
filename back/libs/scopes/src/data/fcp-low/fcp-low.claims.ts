@@ -22,7 +22,11 @@ export const claims: ClaimsInterface = {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   phone_number: 'phone_number',
   email: 'email',
+  // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
   idp_birthdate: 'idp_birthdate',
   amr: 'amr',
+  // OIDC fashion naming
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  idp_id: 'idp_id',
 };
