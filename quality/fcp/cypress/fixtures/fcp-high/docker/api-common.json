@@ -3,6 +3,17 @@
     "method": "GET",
     "url": "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2"
   },
+  "/api/v2/wrong-url": {
+    "method": "GET",
+    "url": "https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/wrong-url",
+    "headers": {
+      "accept": "text/html"
+    }
+  },
+  "/wrong-url": {
+    "method": "GET",
+    "url": "https://core-fcp-high.docker.dev-franceconnect.fr/wrong-url"
+  },
   "authorize": {
     "qs": {
       "scope": "openid profile",

@@ -52,7 +52,12 @@ export class OidcProviderErrorService {
    */
   async renderError(ctx: KoaContextWithOIDC, _out: string, error: any) {
     // Instantiate our exception
-    const exception = new OidcProviderRuntimeException(error);
+    const canRedirect = false;
+    const exception = new OidcProviderRuntimeException(
+      error,
+      undefined,
+      canRedirect,
+    );
     // Call our hacky "thrower"
     await this.throwError(ctx, exception);
   }
