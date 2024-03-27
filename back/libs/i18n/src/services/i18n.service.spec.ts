@@ -208,6 +208,30 @@ describe('I18nService', () => {
       // Then
       expect(result).toBe(translations['fr-FR']);
     });
+
+    it('should fall back to the default language if no session language is found and no language is given as option', () => {
+      // Given
+      sessionMock.get.mockReturnValueOnce(undefined);
+
+      const configDefaultLanguage = Symbol('defaultLanguage');
+      const defaultTranslations = Symbol('defaultTranslations');
+
+      configMock.get
+        .mockReturnValueOnce({
+          defaultLanguage: configDefaultLanguage,
+        })
+        .mockReturnValueOnce({
+          translations: {
+            [configDefaultLanguage]: defaultTranslations,
+          },
+        });
+
+      // When
+      const result = service['getTranslations'](options);
+
+      // Then
+      expect(result).toBe(defaultTranslations);
+    });
   });
 
   describe('replaceVariables', () => {

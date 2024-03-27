@@ -53,7 +53,11 @@ export class I18nService {
 
     if (!language) {
       const session = this.session.get<I18nSession>('I18n');
-      language = session.language;
+      language = session?.language;
+    }
+
+    if (!language) {
+      language = this.config.get<I18nConfig>('I18n').defaultLanguage;
     }
 
     const { translations } = this.config.get<I18nConfig>('I18n');
