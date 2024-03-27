@@ -266,5 +266,45 @@ describe('CoreFcpEidasVerifyHandler', () => {
         'en-GB',
       );
     });
+
+    it('Should save to session ', async () => {
+      // Given
+      const technicalClaims = { tech: 'claims' };
+
+      service['getTechnicalClaims'] = jest
+        .fn()
+        .mockReturnValueOnce(technicalClaims);
+      // When
+      await service.handle(handleArgument);
+      // Then
+      expect(sessionServiceMock.set).toHaveBeenCalledExactlyOnceWith({
+        idpIdentity: { sub: idpIdentityMock.sub },
+        spIdentity: {
+          email: idpIdentityMock.email,
+          ...technicalClaims,
+        },
+        accountId: accountIdMock,
+        subs: {
+          // FranceConnect claims naming convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sp_id: 'computedSubSp',
+        },
+      });
+    });
+  });
+
+  describe('getTechnicalClaims', () => {
+    it('should return technical claims', () => {
+      // Given
+      const idpId = Symbol('idpId') as unknown as string;
+      // When
+      const result = service['getTechnicalClaims'](idpId);
+      // Then
+      expect(result).toEqual({
+        // OIDC fashion naming
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        idp_id: idpId,
+      });
+    });
   });
 });

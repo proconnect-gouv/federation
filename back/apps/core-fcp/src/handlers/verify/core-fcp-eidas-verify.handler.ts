@@ -65,15 +65,27 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
 
     // Delete idp identity from volatile memory but keep the sub for the business logs.
     const idpIdentityCleaned = { sub: idpIdentity.sub };
+    const technicalClaims = this.getTechnicalClaims(idpId);
 
     sessionOidc.set({
       idpIdentity: idpIdentityCleaned,
-      spIdentity: spIdentityCleaned,
+      spIdentity: {
+        ...spIdentityCleaned,
+        ...technicalClaims,
+      },
       accountId,
       subs: { ...subs, [spId]: sub },
     });
 
     // Force language to be en-GB when coming from eIDAS bridge
     this.i18n.setSessionLanguage('en-GB');
+  }
+
+  private getTechnicalClaims(idpId: string): Record<string, unknown> {
+    return {
+      // OIDC fashion naming
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      idp_id: idpId,
+    };
   }
 }
