@@ -6,14 +6,21 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { IPaginationResult } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CsrfTokenGuard } from '@fc/csrf';
+import { I18nService } from '@fc/i18n';
 import { TrackingService } from '@fc/tracking';
-import { TrackDto, TracksService } from '@fc/tracks';
+import {
+  ICsmrTracksOutputTrack,
+  TrackDto,
+  TracksResults,
+  TracksService,
+} from '@fc/tracks';
 import {
   FormattedIdpDto,
   FormattedIdpSettingDto,
   UserPreferencesService,
 } from '@fc/user-preferences';
 
+import { getI18nServiceMock } from '@mocks/i18n';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { GetUserTracesQueryDto } from '../dto';
@@ -41,6 +48,7 @@ describe('UserDashboardController', () => {
 
   const uuidMockedValue = 'uuid-v4-Mocked-Value';
 
+  const i18nMock = getI18nServiceMock();
   const sessionServiceMock = getSessionServiceMock();
   const randomStringMock = 'randomStringMockValue';
   const idpStateMock = 'idpStateMockValue';
@@ -118,6 +126,7 @@ describe('UserDashboardController', () => {
         TrackingService,
         UserPreferencesService,
         UserDashboardService,
+        I18nService,
       ],
     })
       .overrideGuard(CsrfTokenGuard)
@@ -132,6 +141,8 @@ describe('UserDashboardController', () => {
       .useValue(userPreferencesMock)
       .overrideProvider(UserDashboardService)
       .useValue(userDashboardServiceMock)
+      .overrideProvider(I18nService)
+      .useValue(i18nMock)
       .compile();
 
     controller = module.get<UserDashboardController>(UserDashboardController);
@@ -190,7 +201,10 @@ describe('UserDashboardController', () => {
       provider: { key: 'keyValue', label: 'labelValue' },
     };
 
-    const listTracks: { meta: IPaginationResult; payload: TrackDto[] } = {
+    const addLabelsToTracksResult: {
+      meta: IPaginationResult;
+      payload: TrackDto[];
+    } = {
       meta: {
         total: 2,
         offset: 0,
@@ -210,8 +224,13 @@ describe('UserDashboardController', () => {
       ],
     };
 
+    const listTracksResult = Symbol('listTracksResult');
+
     beforeEach(() => {
-      tracksServiceMock.getList.mockResolvedValueOnce(listTracks);
+      tracksServiceMock.getList.mockResolvedValueOnce(listTracksResult);
+      controller['addLabelsToTracks'] = jest
+        .fn()
+        .mockReturnValue(addLabelsToTracksResult);
     });
 
     it('should fetch session', async () => {
@@ -260,6 +279,21 @@ describe('UserDashboardController', () => {
       );
     });
 
+    it('should call addLabelsToTracks', async () => {
+      // When
+      await controller.getUserTraces(
+        reqMock,
+        resMock,
+        sessionServiceMock,
+        queryMock,
+      );
+      // Then
+      expect(controller['addLabelsToTracks']).toHaveBeenCalledTimes(1);
+      expect(controller['addLabelsToTracks']).toHaveBeenCalledWith(
+        listTracksResult,
+      );
+    });
+
     it('should return tracks.getList', async () => {
       // When
       const result = await controller.getUserTraces(
@@ -270,8 +304,96 @@ describe('UserDashboardController', () => {
       );
       // Then
       expect(result).toStrictEqual({
-        ...listTracks,
+        ...addLabelsToTracksResult,
         type: 'TRACKS_DATA',
+      });
+    });
+  });
+
+  describe('addLabelsToTracks', () => {
+    it('should call addLabelsToTrack with each track', () => {
+      // Given
+      const trackMock1 = {
+        claims: [
+          {
+            identifier: 'identifier 1 Value',
+            provider: {},
+          },
+        ],
+      };
+      const trackMock2 = {
+        claims: [
+          {
+            identifier: 'identifier 2 Value',
+            provider: {},
+          },
+        ],
+      };
+
+      const tracksMock = {
+        payload: [trackMock1, trackMock2],
+      } as unknown as TracksResults;
+
+      controller['addLabelsToTrack'] = jest
+        .fn()
+        .mockImplementation((track) => track);
+
+      // When
+      controller['addLabelsToTracks'](tracksMock);
+      // Then
+      expect(controller['addLabelsToTrack']).toHaveBeenCalledTimes(2);
+      expect(controller['addLabelsToTrack']).toHaveBeenNthCalledWith(
+        1,
+        trackMock1,
+        0,
+        tracksMock.payload,
+      );
+      expect(controller['addLabelsToTrack']).toHaveBeenNthCalledWith(
+        2,
+        trackMock2,
+        1,
+        tracksMock.payload,
+      );
+    });
+  });
+
+  describe('addLabelsToTrack', () => {
+    it('should return track with labels', () => {
+      // Given
+      controller['i18n'].translate = jest
+        .fn()
+        .mockReturnValueOnce('first claim label')
+        .mockReturnValueOnce('second claim label');
+      const trackMock = {
+        claims: [
+          {
+            identifier: 'identifier1Value',
+            provider: {},
+          },
+          {
+            identifier: 'identifier2Value',
+            provider: {},
+          },
+        ],
+      } as unknown as ICsmrTracksOutputTrack;
+
+      // When
+      const result = controller['addLabelsToTrack'](trackMock);
+
+      // Then
+      expect(result).toStrictEqual({
+        claims: [
+          {
+            identifier: 'identifier1Value',
+            label: 'first claim label',
+            provider: {},
+          },
+          {
+            identifier: 'identifier2Value',
+            label: 'second claim label',
+            provider: {},
+          },
+        ],
       });
     });
   });

@@ -42,6 +42,6 @@ const urlParams = Object.entries(params)
   href="<%= urlBase %>?<%= urlParams %>"
   class="fr-btn fr-btn--tertiary-no-outline fr-btn--icon-left fr-icon-arrow-go-back-fill"
 >
-  Revenir sur <%= label %>
+  <%= $translate('nav.back_to_provider', { spName: label }) %>
 </a>
 <% } %>

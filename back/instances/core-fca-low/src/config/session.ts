@@ -48,4 +48,5 @@ export default {
     CoreRoutes.REDIRECT_TO_SP_WITH_ERROR,
   ],
   schema: CoreFcaSession,
+  defaultData: {},
 } as SessionConfig;

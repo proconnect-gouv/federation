@@ -22,6 +22,7 @@ import { ExceptionsModule } from '@fc/exceptions-deprecated';
 import { FeatureHandlerModule } from '@fc/feature-handler';
 import { FlowStepsModule } from '@fc/flow-steps';
 import { HttpProxyModule } from '@fc/http-proxy';
+import { I18nModule } from '@fc/i18n';
 import {
   IdentityProviderAdapterMongoModule,
   IdentityProviderAdapterMongoService,
@@ -111,6 +112,7 @@ const exceptionModule = ExceptionsModule.withTracking(trackingModule);
     DataProviderAdapterMongoModule,
     ViewTemplatesModule,
     CsrfModule,
+    I18nModule,
   ],
   controllers: [
     CoreFcpController,

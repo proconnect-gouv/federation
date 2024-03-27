@@ -47,4 +47,5 @@ export default {
     MockServiceProviderRoutes.LOGOUT_CALLBACK,
   ],
   schema: MockServiceProviderSession,
+  defaultData: {},
 } as SessionConfig;

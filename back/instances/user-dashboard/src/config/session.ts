@@ -9,6 +9,8 @@ import {
   UserDashboardSession,
 } from '@fc/user-dashboard';
 
+import I18nConfig from './i18n';
+
 const env = new ConfigParser(process.env, 'Session');
 
 const cookieOptions: ISessionCookieOptions = {
@@ -52,4 +54,9 @@ export default {
     UserDashboardBackRoutes.OIDC_CLIENT_GET_END_SESSION_URL,
   ],
   schema: UserDashboardSession,
+  defaultData: {
+    I18n: {
+      language: I18nConfig.defaultLanguage,
+    },
+  },
 } as SessionConfig;

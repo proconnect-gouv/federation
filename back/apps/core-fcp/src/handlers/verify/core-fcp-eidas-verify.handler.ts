@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { CryptographyEidasService } from '@fc/cryptography-eidas';
 import { FeatureHandler } from '@fc/feature-handler';
+import { I18nService } from '@fc/i18n';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
@@ -25,6 +26,7 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly cryptographyEidas: CryptographyEidasService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
+    private readonly i18n: I18nService,
   ) {}
 
   async handle({
@@ -70,5 +72,8 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
       accountId,
       subs: { ...subs, [spId]: sub },
     });
+
+    // Force language to be en-GB when coming from eIDAS bridge
+    this.i18n.setSessionLanguage('en-GB');
   }
 }

@@ -26,6 +26,20 @@ Fonctionnalité: Connexion eIDAS - FS français
     Et la cinématique a renvoyé l'amr "eidas"
 
   @ci
+  Scénario: Connexion FS français - affiche le consentement en anglais
+    Etant donné que j'utilise un compte usager "pour les tests eidas-bridge"
+    Et que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton FranceConnect
+    Et que je suis redirigé vers la page sélection du fournisseur d'identité
+    Et que j'utilise le fournisseur d'identité "eidas-bridge"
+    Et que je clique sur le fournisseur d'identité
+    Et que je suis redirigé vers la page sélection du pays
+    Et que je clique sur le pays "Mock Node"
+    Quand je m'authentifie avec succès sur le fournisseur d'identité étranger
+    Alors je suis redirigé vers la page confirmation de connexion
+    Et la page est en "anglais"
+
+  @ci
   Scénario: Connexion FS français - erreur absence de consentement des attributs obligatoires
     Etant donné que j'utilise un compte usager "pour les tests eidas-bridge"
     Et que le fournisseur de service requiert le claim "amr"

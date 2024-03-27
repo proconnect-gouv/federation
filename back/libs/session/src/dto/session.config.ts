@@ -94,4 +94,7 @@ export class SessionConfig {
 
   @IsObject()
   readonly schema: Class<unknown>;
+
+  @IsObject()
+  readonly defaultData: Record<string, unknown>;
 }

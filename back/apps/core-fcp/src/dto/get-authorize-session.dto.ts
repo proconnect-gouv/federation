@@ -6,6 +6,7 @@ import { IsEnum, IsJWT, IsNotEmpty, IsObject, IsString } from 'class-validator';
 
 import { PartialExcept } from '@fc/common';
 import { CoreBaseOidcClientSessionDto } from '@fc/core';
+import { I18nSession } from '@fc/i18n';
 import { Amr, IOidcIdentity, OidcIdentityDto } from '@fc/oidc';
 import { RnippPivotIdentity } from '@fc/rnipp';
 
@@ -88,4 +89,8 @@ export class GetAuthorizeSessionDto {
   @Expose()
   @Type(() => CoreSession)
   readonly Core: CoreSession;
+
+  @Expose()
+  @Type(() => I18nSession)
+  readonly I18n: I18nSession;
 }

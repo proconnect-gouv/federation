@@ -57,4 +57,5 @@ export default {
     OidcClientRoutes.CLIENT_LOGOUT_CALLBACK,
   ],
   schema: EidasBridgeSession,
+  defaultData: {},
 } as SessionConfig;
