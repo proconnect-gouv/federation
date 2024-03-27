@@ -8,6 +8,7 @@ import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { CsrfModule } from '@fc/csrf';
 import { ExceptionsModule } from '@fc/exceptions-deprecated';
 import { HttpProxyModule } from '@fc/http-proxy';
+import { I18nModule } from '@fc/i18n';
 import {
   IdentityProviderAdapterEnvModule,
   IdentityProviderAdapterEnvService,
@@ -48,6 +49,7 @@ const oidcClientModule = OidcClientModule.register(
     UserPreferencesModule,
     MailerModule,
     CsrfModule,
+    I18nModule,
   ],
   providers: [UserDashboardService],
 })

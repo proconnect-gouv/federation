@@ -40,4 +40,5 @@ export default {
     OidcProviderRoutes.END_SESSION,
   ],
   schema: MockIdentityProviderSession,
+  defaultData: {},
 } as SessionConfig;

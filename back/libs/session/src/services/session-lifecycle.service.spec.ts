@@ -27,6 +27,7 @@ describe('SessionLifecycleService', () => {
 
   const configMock = getConfigMock();
   const sessionIdLength = Symbol('sessionIdLength');
+  const defaultData = Symbol('defaultData');
 
   const cryptographyMock = {
     genRandomString: jest.fn(),
@@ -92,7 +93,7 @@ describe('SessionLifecycleService', () => {
     service = module.get<SessionLifecycleService>(SessionLifecycleService);
 
     cryptographyMock.genRandomString.mockReturnValue(randomStringValue);
-    configMock.get.mockReturnValue({ sessionIdLength });
+    configMock.get.mockReturnValue({ defaultData, sessionIdLength });
 
     getTransformedMock.mockReturnValue(getTransformedResult);
   });
@@ -108,7 +109,7 @@ describe('SessionLifecycleService', () => {
 
       // Then
       expect(localStorageMock.setStore).toHaveBeenCalledWith({
-        data: {},
+        data: defaultData,
         id: randomStringValue,
         sync: false,
       });
@@ -210,19 +211,6 @@ describe('SessionLifecycleService', () => {
       // Then
       expect(backendStorageMock.remove).toHaveBeenCalledTimes(1);
       expect(backendStorageMock.remove).toHaveBeenCalledWith(sessionId);
-    });
-
-    it('should call localStorage.setStore()', async () => {
-      // When
-      await service.reset(res);
-
-      // Then
-      expect(localStorageMock.setStore).toHaveBeenCalledTimes(1);
-      expect(localStorageMock.setStore).toHaveBeenCalledWith({
-        data: {},
-        id: sessionId,
-        sync: true,
-      });
     });
 
     it('should call init()', async () => {
@@ -450,7 +438,7 @@ describe('SessionLifecycleService', () => {
       // Then
       expect(localStorageMock.setStore).toHaveBeenCalledTimes(1);
       expect(localStorageMock.setStore).toHaveBeenCalledWith({
-        data: {},
+        data: defaultData,
         id: undefined,
         sync: false,
       });

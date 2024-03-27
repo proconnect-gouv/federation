@@ -18,11 +18,17 @@ import {
 
 import { FSA, PartialExcept } from '@fc/common';
 import { CsrfToken, CsrfTokenGuard } from '@fc/csrf';
+import { I18nService } from '@fc/i18n';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
+import { RichClaimInterface } from '@fc/scopes';
 import { ISessionService, Session } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
-import { TracksService } from '@fc/tracks';
+import {
+  ICsmrTracksOutputTrack,
+  TracksResults,
+  TracksService,
+} from '@fc/tracks';
 import {
   FormattedIdpSettingDto,
   UserPreferencesService,
@@ -46,6 +52,7 @@ export class UserDashboardController {
     private readonly tracks: TracksService,
     private readonly userPreferences: UserPreferencesService,
     private readonly userDashboard: UserDashboardService,
+    private readonly i18n: I18nService,
   ) {}
 
   @Get(UserDashboardBackRoutes.CSRF_TOKEN)
@@ -79,10 +86,30 @@ export class UserDashboardController {
 
     const tracks = await this.tracks.getList(idpIdentity, query);
 
+    const humanReadableTracks = this.addLabelsToTracks(tracks);
+
     return res.json({
       type: 'TRACKS_DATA',
-      ...tracks,
+      ...humanReadableTracks,
     });
+  }
+
+  private addLabelsToTracks(tracks: TracksResults): TracksResults {
+    tracks.payload = tracks.payload.map(this.addLabelsToTrack.bind(this));
+    return tracks;
+  }
+
+  private addLabelsToTrack(
+    track: ICsmrTracksOutputTrack,
+  ): ICsmrTracksOutputTrack {
+    track.claims = track.claims
+      .map((claim: RichClaimInterface) => {
+        claim.label = this.i18n.translate(`claim.${claim.identifier}`);
+        return claim;
+      })
+      .filter((claim: RichClaimInterface) => claim.label);
+
+    return track;
   }
 
   @Get(UserDashboardBackRoutes.USER_INFOS)

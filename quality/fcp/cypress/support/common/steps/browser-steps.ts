@@ -15,3 +15,11 @@ Then('le haut de la page est affiché', function () {
     expect($window.scrollY).to.be.closeTo(0, 0);
   });
 });
+
+Then('la page est en {string}', function (lang: string) {
+  const langMap = {
+    anglais: 'en',
+    français: 'fr',
+  };
+  cy.get('html').should('have.attr', 'lang', langMap[lang]);
+});

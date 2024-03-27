@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
 import { LoggerService } from '@fc/logger';
-import { IRichClaim, ScopesService } from '@fc/scopes';
+import { RichClaimInterface, ScopesService } from '@fc/scopes';
 import { ICsmrTracksOutputTrack } from '@fc/tracks';
 
 import { IdpMappings } from '../dto';
@@ -63,7 +63,9 @@ export class TracksV2Formatter implements TracksFormatterInterface {
     }
   }
 
-  private getClaimsGroups({ claims }: ICsmrTracksV2FieldsData): IRichClaim[] {
+  private getClaimsGroups({
+    claims,
+  }: ICsmrTracksV2FieldsData): RichClaimInterface[] {
     if (!claims) {
       return [];
     }

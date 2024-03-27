@@ -25,7 +25,7 @@ const disabled = !provider.active
 
   <% if (provider.isBeta) { %>
     <p class="fr-badge <%= badgeClassname %> fr-badge--no-icon">
-      BETA
+      <%= $translate('interaction.beta_provider') %>
     </p>
   <% } %>
 

@@ -15,7 +15,7 @@ import {
   OidcClientSession,
 } from '@fc/oidc-client';
 import { OidcProviderPrompt } from '@fc/oidc-provider';
-import { IClaim, IRichClaim, ScopesService } from '@fc/scopes';
+import { ClaimInterface, RichClaimInterface, ScopesService } from '@fc/scopes';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, SessionService } from '@fc/session';
 
@@ -157,7 +157,7 @@ export class CoreFcpService implements CoreFcpServiceInterface {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1023
    * @ticket #FC-1023
    */
-  getClaimsLabelsForInteraction(interaction: any): IRichClaim[] {
+  getClaimsLabelsForInteraction(interaction: any): RichClaimInterface[] {
     const scopes = this.getScopesForInteraction(interaction);
 
     const claims = this.scopes.getRichClaimsFromScopes(scopes);
@@ -170,7 +170,7 @@ export class CoreFcpService implements CoreFcpServiceInterface {
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1023
    * @ticket #FC-1023
    */
-  getClaimsForInteraction(interaction: any): IClaim[] {
+  getClaimsForInteraction(interaction: any): ClaimInterface[] {
     const scopes = this.getScopesForInteraction(interaction);
 
     const claims = this.scopes.getRawClaimsFromScopes(scopes);

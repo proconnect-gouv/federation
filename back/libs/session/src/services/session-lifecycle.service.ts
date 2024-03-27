@@ -1,5 +1,6 @@
 import { ClassTransformOptions } from 'class-transformer';
 import { Request, Response } from 'express';
+import { cloneDeep } from 'lodash';
 
 import { Injectable, Type } from '@nestjs/common';
 
@@ -30,12 +31,13 @@ export class SessionLifecycleService {
   ) {}
 
   init(res: Response): string {
-    const { sessionIdLength } = this.config.get<SessionConfig>('Session');
+    const { sessionIdLength, defaultData } =
+      this.config.get<SessionConfig>('Session');
     const sessionId: string =
       this.cryptography.genRandomString(sessionIdLength);
 
     this.localStorage.setStore({
-      data: {},
+      data: cloneDeep(defaultData),
       id: sessionId,
       sync: false,
     });
@@ -65,12 +67,6 @@ export class SessionLifecycleService {
     const { id } = this.localStorage.getStore();
 
     await this.backendStorage.remove(id);
-
-    this.localStorage.setStore({
-      data: {},
-      id,
-      sync: true,
-    });
 
     return this.init(res);
   }
@@ -119,9 +115,9 @@ export class SessionLifecycleService {
 
   async detach(res: Response, backendLifetime?: number): Promise<void> {
     const { id } = this.localStorage.getStore();
-
+    const { defaultData } = this.config.get<SessionConfig>('Session');
     this.localStorage.setStore({
-      data: {},
+      data: defaultData,
       id: undefined,
       sync: false,
     });

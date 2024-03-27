@@ -3,12 +3,13 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { CoreAccountService, CoreAcrService } from '@fc/core';
 import { CryptographyEidasService } from '@fc/cryptography-eidas';
+import { I18nService } from '@fc/i18n';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
-import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { getI18nServiceMock } from '@mocks/i18n';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
@@ -18,6 +19,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
   let service: CoreFcpEidasVerifyHandler;
 
   const loggerServiceMock = getLoggerMock();
+  const i18nMock = getI18nServiceMock();
 
   const uidMock = '42';
 
@@ -100,7 +102,7 @@ describe('CoreFcpEidasVerifyHandler', () => {
         CoreAcrService,
         CoreFcpEidasVerifyHandler,
         LoggerService,
-        SessionService,
+        I18nService,
         TrackingService,
         ServiceProviderAdapterMongoService,
         IdentityProviderAdapterMongoService,
@@ -115,8 +117,8 @@ describe('CoreFcpEidasVerifyHandler', () => {
       .useValue(coreAcrServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
+      .overrideProvider(I18nService)
+      .useValue(i18nMock)
       .overrideProvider(TrackingService)
       .useValue(trackingMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
@@ -252,6 +254,16 @@ describe('CoreFcpEidasVerifyHandler', () => {
       expect(cryptographyEidasServiceMock.computeSubV1).toHaveBeenCalledWith(
         spMock.entityId,
         'spIdentityHash',
+      );
+    });
+
+    it('should set language to en-GB in session', async () => {
+      // When
+      await service.handle(handleArgument);
+
+      // Then
+      expect(i18nMock.setSessionLanguage).toHaveBeenCalledExactlyOnceWith(
+        'en-GB',
       );
     });
   });

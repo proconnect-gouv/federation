@@ -1,7 +1,7 @@
-import { IScopes } from '../../interfaces';
+import { ScopesInterface } from '../../interfaces';
 import { claims } from './fcp-low.claims';
 
-export const scopes: IScopes = {
+export const scopes: ScopesInterface = {
   profile: [
     claims.given_name,
     claims.given_name_array,

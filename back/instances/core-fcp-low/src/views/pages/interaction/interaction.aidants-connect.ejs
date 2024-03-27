@@ -15,7 +15,7 @@
   <% } %>
   <div class="fc-text--center fr-mb-2w">
     <span>
-      Vous&nbsp;êtes&nbsp;un&nbsp;aidant&nbsp;professionnel&nbsp;?
+      <%= $translate('interaction.ac.introduction') %>
     </span>
   </div>
   <button
@@ -23,8 +23,9 @@
     class="fr-btn fr-btn--tertiary"
     data-testid="interaction-aidants-connect-button"
     <%= locals.aidantsConnect.active ? '' : 'disabled' %>
-    <%- !locals.aidantsConnect.active ? '' : 'form="form-aidants-connect"' %>>
-    Utiliser&nbsp;Aidants&nbsp;Connect
+    <% if(locals.aidantsConnect.active) { %>form="form-aidants-connect"<% } %>
+  >
+    <%= $translate('interaction.ac.redirect_to_ac') %>
   </button>
 </div>
 <% } %>

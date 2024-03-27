@@ -289,7 +289,9 @@
       "sourceRoot": "instances/csmr-user-preferences-high/src",
       "compilerOptions": {
         "tsConfigPath": "instances/csmr-user-preferences-high/tsconfig.app.json",
-        "assets": ["../../../instances/csmr-user-preferences-high/**/*.ejs"]
+        "assets": [
+          "../../../instances/csmr-user-preferences-high/**/*.ejs"
+        ]
       }
     },
     "csmr-account-instance": {
@@ -974,6 +976,15 @@
       "sourceRoot": "libs/csrf/src",
       "compilerOptions": {
         "tsConfigPath": "libs/csrf/tsconfig.lib.json"
+      }
+    },
+    "i18n": {
+      "type": "library",
+      "root": "libs/i18n",
+      "entryFile": "index",
+      "sourceRoot": "libs/i18n/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/i18n/tsconfig.lib.json"
       }
     }
   }
