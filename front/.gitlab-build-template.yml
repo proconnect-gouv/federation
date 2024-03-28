@@ -14,8 +14,7 @@
   script:
     - cd front
     - yarn install
-    - cd instances/$APP
-    - GENERATE_SOURCEMAP=false yarn build --production
+    - yarn build $APP
     - tar zcvf ${CI_PROJECT_DIR}/${PACKAGE} -C ${CI_PROJECT_DIR}/front/instances/${APP}/build/ .
     - >
       curl --header "JOB-TOKEN:$CI_JOB_TOKEN" --upload-file ${CI_PROJECT_DIR}/${PACKAGE} "${INFRA_PACKAGE_REGISTRY}/${APP}/${CI_COMMIT_REF_NAME}/${PACKAGE}"
