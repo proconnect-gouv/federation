@@ -1,0 +1,15 @@
+include: '/front/.gitlab-build-template.yml'
+
+<replace by app_name>/build-front:
+  extends: .base-build-front
+  variables:
+    APP: <replace by app_name>
+    MSG: "environments/pa4-integ/group_vars/all/versions.yml\nu<replace by app_name>:"
+
+<replace by app_name>/tag-front-to-prod:
+  extends: .base-tag-front-to-prod
+  variables:
+    APP: <replace by app_name>
+    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\nu<replace by app_name>:"
+  needs:
+    - job: <replace by app_name>/build-front
