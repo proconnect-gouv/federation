@@ -47,6 +47,9 @@ export default {
     // Error
     CoreRoutes.REDIRECT_TO_SP_WITH_ERROR,
   ],
+  templateExposed: {
+    OidcClient: { spName: true, idpName: true },
+  },
   schema: CoreFcaSession,
   defaultData: {},
 } as SessionConfig;
