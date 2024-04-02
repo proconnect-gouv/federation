@@ -2,6 +2,7 @@
   "options": {
     "extends": "@fc/react-app/tsconfig.json",
     "exclude": [
+      "./libs/styles/src/**/*",
       "**/.template",
       "**/tmp",
       "**/temp",

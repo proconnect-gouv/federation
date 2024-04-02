@@ -329,6 +329,7 @@ $RECYCLE.BIN/
 
 instances/**/dist
 instances/**/build
+instances/**/public/fc
 instances/**/public/dsfr
 instances/**/public/*.mock.json
 
