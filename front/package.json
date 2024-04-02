@@ -27,6 +27,7 @@
     "@fc/react-app": "^0.1.0",
     "@fc/routing": "^0.1.0",
     "@fc/state-management": "^0.1.0",
+    "@fc/styles": "^0.1.0",
     "@fc/testing-library": "^0.1.0",
     "@fc/tracks": "^0.1.0",
     "@fc/tsproject": "^0.1.0",
