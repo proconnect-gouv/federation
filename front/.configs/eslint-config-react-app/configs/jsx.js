@@ -2,8 +2,9 @@ module.exports = {
   overrides: [
     {
       files: ['**/*.ts', '**/*.tsx'],
-      plugins: ['react'],
+      plugins: ['react', 'react-hooks'],
       rules: {
+        'react/display-name': [2, { ignoreTranspilerName: false }],
         'react/jsx-key': 2,
         'react/jsx-props-no-spreading': [
           2,
@@ -11,7 +12,7 @@ module.exports = {
             html: 'enforce',
             custom: 'enforce',
             explicitSpread: 'ignore',
-            exceptions: ['input'],
+            exceptions: ['input', 'select', 'textarea'],
           },
         ],
         'react/jsx-sort-props': [
@@ -28,6 +29,8 @@ module.exports = {
         ],
         'react/no-unstable-nested-components': 2,
         'react/react-in-jsx-scope': 0,
+        'react-hooks/rules-of-hooks': 2,
+        'react-hooks/exhaustive-deps': 2,
       },
     },
   ],

@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import React from 'react';
 
-import { Service } from '../interfaces';
+import type { Service } from '../interfaces';
 import styles from './service-image.module.scss';
 
 interface ServiceImageComponentProps {

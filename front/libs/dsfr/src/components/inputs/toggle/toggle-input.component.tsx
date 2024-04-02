@@ -1,5 +1,5 @@
 import React from 'react';
-import { FieldInputProps } from 'react-final-form';
+import type { FieldInputProps } from 'react-final-form';
 
 export interface ToggleInputComponentProps {
   disabled?: boolean;

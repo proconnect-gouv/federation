@@ -1,8 +1,8 @@
-import { DateTime } from 'luxon';
+import type { DateTime } from 'luxon';
 import React from 'react';
 
 import { CinematicEvents } from '../../enums';
-import { IGroupedClaims, IRichClaim, TracksConfig } from '../../interfaces';
+import type { IGroupedClaims, IRichClaim, TracksConfig } from '../../interfaces';
 import { groupByDataProvider } from '../../utils';
 
 type ClaimsComponentProps = {

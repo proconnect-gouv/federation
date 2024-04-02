@@ -3,7 +3,7 @@ import React from 'react';
 import { t } from '@fc/i18n';
 
 import { DEFAULT_NUMBER_OF_PAGES_SHOWN_INTO_NAVIGATION, DEFAULT_USE_ELLIPSIS } from '../../enums';
-import { Pagination } from '../../interfaces';
+import type { Pagination } from '../../interfaces';
 import { usePagination } from './use-pagination.hook';
 
 export interface PaginationComponentProps {

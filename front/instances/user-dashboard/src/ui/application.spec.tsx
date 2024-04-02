@@ -1,9 +1,12 @@
 import { render } from '@testing-library/react';
-import { ReactElement } from 'react';
+import type { ReactElement } from 'react';
 
-import { AccountProvider, AccountProviderProps } from '@fc/account';
-import { AxiosErrorCatcherProvider, AxiosErrorCatcherProviderProps } from '@fc/axios-error-catcher';
-import { AppContextProvider, AppContextProviderProps } from '@fc/state-management';
+import type { AccountProviderProps } from '@fc/account';
+import { AccountProvider } from '@fc/account';
+import type { AxiosErrorCatcherProviderProps } from '@fc/axios-error-catcher';
+import { AxiosErrorCatcherProvider } from '@fc/axios-error-catcher';
+import type { AppContextProviderProps } from '@fc/state-management';
+import { AppContextProvider } from '@fc/state-management';
 
 import { AppConfig } from '../config';
 import { Application } from './application';

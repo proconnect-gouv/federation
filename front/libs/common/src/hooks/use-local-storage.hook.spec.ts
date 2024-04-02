@@ -1,5 +1,6 @@
 import lget from 'lodash.get';
-import { DependencyList, useCallback } from 'react';
+import type { DependencyList } from 'react';
+import { useCallback } from 'react';
 
 import { useLocalStorage } from './use-local-storage.hook';
 

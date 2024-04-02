@@ -1,8 +1,9 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import axios from 'axios';
-import { Location, useLocation } from 'react-router-dom';
+import type { Location } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
-import { TracksConfig } from '../../interfaces';
+import type { TracksConfig } from '../../interfaces';
 import { DEFAULT_OFFSET, DEFAULT_SIZE, usePaginatedTracks } from './use-paginated-tracks.hook';
 
 jest.mock('axios');

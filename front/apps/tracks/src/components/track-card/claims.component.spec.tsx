@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { DateTime } from 'luxon';
 
-import { IRichClaim } from '../../interfaces';
+import type { IRichClaim } from '../../interfaces';
 import { ClaimsComponent } from './claims.component';
 
 describe('ConnexionComponent', () => {

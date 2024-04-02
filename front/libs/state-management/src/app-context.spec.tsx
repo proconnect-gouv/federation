@@ -7,6 +7,8 @@ const setStateMock = jest.fn(() => ({}));
 
 const ChildrenComponentMock = () => <div>mock children</div>;
 
+// @TOOD creat a React mock into __mocks__ folder
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 jest.mock<typeof import('react')>('react', () => ({
   ...jest.requireActual('react'),
   useState: () => [stateMock, setStateMock],

@@ -6,12 +6,12 @@ module.exports = {
   },
   extends: [
     'eslint:recommended',
+    'plugin:import/recommended',
     'plugin:import/react',
     'plugin:import/typescript',
     'plugin:@typescript-eslint/strict-type-checked',
     'plugin:react/recommended',
     'plugin:react/jsx-runtime',
-    'plugin:react-hooks/recommended',
     'plugin:jsx-a11y/recommended',
     'plugin:prettier/recommended',
   ],
@@ -47,7 +47,7 @@ module.exports = {
     ecmaVersion: 2020,
     sourceType: 'module',
   },
-  plugins: ['simple-import-sort', 'prettier'],
+  plugins: ['simple-import-sort', 'sort-destructure-keys', 'sort-keys-fix', 'prettier'],
   reportUnusedDisableDirectives: true,
   rules: {
     'class-methods-use-this': [
@@ -75,8 +75,17 @@ module.exports = {
       },
     ],
     'no-else-return': 2,
+    // @NOTE dot-notation rule is disabled because extended by @typescript-eslint/dot-notation
     'dot-notation': 0,
     'no-console': 2,
+    'object-shorthand': [
+      2,
+      'always',
+      {
+        ignoreConstructors: false,
+        avoidQuotes: true,
+      },
+    ],
     'simple-import-sort/imports': [
       2,
       {
@@ -90,9 +99,25 @@ module.exports = {
         ],
       },
     ],
+    'sort-destructure-keys/sort-destructure-keys': [2],
+    'sort-keys-fix/sort-keys-fix': [2],
   },
   settings: {
+    'import/core-modules': [],
+    'import/extensions': ['.js', '.cts', '.mjs', '.jsx', '.ts', '.tsx', '.d.ts'],
+    'import/external-module-folders': ['node_modules', 'node_modules/@types'],
+    'import/ignore': ['node_modules', '\\.(coffee|scss|css|less|hbs|svg|json)$'],
+    'import/parsers': {
+      '@typescript-eslint/parser': ['.ts', '.cts', '.mts', '.tsx', '.d.ts'],
+    },
+    'import/resolver': {
+      node: {
+        extensions: ['.mjs', '.js', '.jsx', '.json', '.ts', '.tsx', '.cts', '.mts', '.d.ts'],
+      },
+    },
+    propWrapperFunctions: ['forbidExtraProps', 'exact', 'Object.freeze'],
     react: {
+      pragma: 'React',
       version: 'detect',
     },
   },

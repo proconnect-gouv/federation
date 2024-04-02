@@ -4,5 +4,7 @@ module.exports = {
     './configs/jest.js',
     './configs/jsx.js',
     './configs/typescript.js',
+    './configs/legacy.js',
+    './configs/deprecated.js',
   ],
 };

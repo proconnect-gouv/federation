@@ -16,8 +16,8 @@ import { toBeFalse, toBeTrue, toHaveBeenCalledOnce, toThrowWithMessage } from 'j
 
 // @NOTE are we still using more than this one into tests ?
 expect.extend({
-  toThrowWithMessage,
-  toHaveBeenCalledOnce,
   toBeFalse,
   toBeTrue,
+  toHaveBeenCalledOnce,
+  toThrowWithMessage,
 });

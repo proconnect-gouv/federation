@@ -3,5 +3,8 @@
   "description": "FC React/Front ESLint base configuration",
   "version": "0.1.0",
   "private": true,
-  "main": "index.js"
+  "main": "index.js",
+  "scripts": {
+    "deprecated:check": "node ./scripts/check-deprecated.js"
+  }
 }

@@ -1,4 +1,4 @@
-import { FSA } from '@fc/common';
+import type { FSA } from '@fc/common';
 
 import { initSideEffectsMiddleware } from './side-effects.middleware';
 

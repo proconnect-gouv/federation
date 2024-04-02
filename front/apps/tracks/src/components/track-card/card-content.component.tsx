@@ -1,9 +1,10 @@
 import classnames from 'classnames';
-import { DateTime } from 'luxon';
+import type { DateTime } from 'luxon';
 import React from 'react';
 
-import { CinematicEvents, EidasToLabel } from '../../enums';
-import { IRichClaim, TracksConfig } from '../../interfaces';
+import type { EidasToLabel } from '../../enums';
+import { CinematicEvents } from '../../enums';
+import type { IRichClaim, TracksConfig } from '../../interfaces';
 import { ClaimsComponent } from './claims.component';
 import { ConnectionComponent } from './connection.component';
 

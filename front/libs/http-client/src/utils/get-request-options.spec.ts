@@ -1,7 +1,7 @@
 import { ConfigService } from '@fc/config';
 
 import { Options } from '../enums';
-import { HttpClientOptions } from '../interfaces';
+import type { HttpClientOptions } from '../interfaces';
 import * as Module from './get-request-options';
 import { slashifyPath } from './slashify-path';
 

@@ -6,6 +6,8 @@ import { useApiGet } from '@fc/common';
 import { useReturnButton } from './use-return-button.hook';
 
 jest.mock('@fc/common');
+// @TOOD creat a React mock into __mocks__ folder
+// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 jest.mock<typeof import('react')>('react', () => {
   const actualReact = jest.requireActual('react');
   return {

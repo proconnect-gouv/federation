@@ -5,7 +5,7 @@ import * as ReactRouterDom from 'react-router-dom';
 
 import { PaginationComponent } from '@fc/dsfr';
 
-import { Track } from '../../interfaces';
+import type { Track } from '../../interfaces';
 import { orderGroupByKeyAsc, transformTrackToEnhanced } from '../../utils';
 import { TracksGroupComponent } from './tracks-group';
 import { TracksListComponent } from './tracks-list.component';

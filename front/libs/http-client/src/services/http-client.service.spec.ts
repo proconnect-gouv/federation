@@ -1,4 +1,5 @@
-import axios, { AxiosResponse } from 'axios';
+import type { AxiosResponse } from 'axios';
+import axios from 'axios';
 
 import { objectToFormData } from '@fc/common';
 import { ConfigService } from '@fc/config';
