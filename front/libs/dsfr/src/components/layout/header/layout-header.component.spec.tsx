@@ -1,7 +1,8 @@
 import { render } from '@testing-library/react';
 import { useMediaQuery } from 'react-responsive';
 
-import { AccountContext, AccountInterface } from '@fc/account';
+import type { AccountInterface } from '@fc/account';
+import { AccountContext } from '@fc/account';
 import { AppContextProvider } from '@fc/state-management';
 
 import { LayoutHeaderComponent } from './layout-header.component';

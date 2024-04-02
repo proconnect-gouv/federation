@@ -1,8 +1,8 @@
 import { fireEvent, render } from '@testing-library/react';
 import { DateTime } from 'luxon';
 
-import { CinematicEvents, EidasToLabel } from '../../enums';
-import { EnhancedTrack, IRichClaim } from '../../interfaces';
+import type { CinematicEvents, EidasToLabel } from '../../enums';
+import type { EnhancedTrack, IRichClaim } from '../../interfaces';
 import { TrackCardBadgeComponent } from './card-badge.component';
 import { TrackCardContentComponent } from './card-content.component';
 import { TrackCardHeaderComponent } from './card-header.component';

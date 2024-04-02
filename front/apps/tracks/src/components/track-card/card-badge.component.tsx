@@ -8,7 +8,7 @@ import {
 import { useMediaQuery } from 'react-responsive';
 
 import { CinematicEvents } from '../../enums';
-import { Badges } from '../../interfaces';
+import type { Badges } from '../../interfaces';
 import styles from './card-badge.module.scss';
 
 const TYPE_CONFIG = {

@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
 
-import { SelectedItemsHook, useSelectedItems } from '@fc/common';
+import type { SelectedItemsHook } from '@fc/common';
+import { useSelectedItems } from '@fc/common';
 
 import { AccordionComponent } from '../accordion/accordion.component';
 import { AccordionGroupComponent } from './accordion-group.component';

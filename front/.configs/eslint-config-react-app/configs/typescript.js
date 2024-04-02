@@ -18,6 +18,12 @@ module.exports = {
             },
           },
         ],
+        '@typescript-eslint/consistent-type-imports': [
+          2,
+          {
+            prefer: 'type-imports',
+          },
+        ],
         '@typescript-eslint/dot-notation': [
           2,
           {

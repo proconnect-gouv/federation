@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react';
 import React from 'react';
 
-import { UserPreferencesData } from '../interfaces';
+import type { UserPreferencesData } from '../interfaces';
 import { checkHasDefaultConfiguration, checkSomeIdpHasBeenChangedSinceLoading } from '../utils';
 import { useUserPreferencesForm } from './use-user-preferences-form.hook';
 

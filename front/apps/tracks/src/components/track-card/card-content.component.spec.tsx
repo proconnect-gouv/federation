@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { DateTime } from 'luxon';
 
 import { CinematicEvents } from '../../enums';
-import { IRichClaim } from '../../interfaces';
+import type { IRichClaim } from '../../interfaces';
 import { TrackCardContentComponent } from './card-content.component';
 import { ClaimsComponent } from './claims.component';
 import { ConnectionComponent } from './connection.component';

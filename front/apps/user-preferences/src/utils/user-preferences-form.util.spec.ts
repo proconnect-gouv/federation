@@ -1,4 +1,4 @@
-import { Service, UserPreferencesData } from '../interfaces';
+import type { Service, UserPreferencesData } from '../interfaces';
 import {
   checkHasDefaultConfiguration,
   checkSomeIdpHasBeenChangedSinceLoading,

@@ -1,11 +1,12 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
-import axios, { AxiosError, AxiosResponse } from 'axios';
+import type { AxiosError, AxiosResponse } from 'axios';
+import axios from 'axios';
 import * as ReactRouter from 'react-router-dom';
 
 import { useApiGet } from '@fc/common';
-import { GetCsrfTokenResponse } from '@fc/http-client';
+import type { GetCsrfTokenResponse } from '@fc/http-client';
 
-import { FormValues } from '../interfaces';
+import type { FormValues } from '../interfaces';
 import { UserPreferencesService } from '../services/user-preferences.service';
 import { useUserPreferencesApi, validateHandlerCallback } from './use-user-preferences-api.hook';
 

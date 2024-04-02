@@ -9,7 +9,7 @@ describe('ToggleInput', () => {
   it('should match the snapshot', () => {
     // When
     const { container } = renderWithFinalForm(
-      <ToggleInput label={'any-label-mock'} name={'any-name-mock'} />,
+      <ToggleInput label="any-label-mock" name="any-name-mock" />,
     );
 
     // Then

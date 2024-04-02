@@ -1,7 +1,7 @@
 // @see _doc/jest.md
 import { render } from '@testing-library/react';
 
-import { HeaderService } from '../../../../interfaces';
+import type { HeaderService } from '../../../../interfaces';
 import { LayoutHeaderServiceComponent } from './layout-header-service.component';
 
 describe('LayoutHeaderServiceComponent', () => {

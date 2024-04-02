@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import { combineReducers, legacy_createStore } from 'redux';
 import { persistStore } from 'redux-persist';
-import { PersistGateProps } from 'redux-persist/integration/react';
+import type { PersistGateProps } from 'redux-persist/integration/react';
 
 import { configure } from './configure';
 import { StoreProvider } from './store-provider';

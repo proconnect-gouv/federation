@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon';
 
-import { CinematicEvents, EidasToLabel } from '../enums';
-import { EnhancedTrack, IRichClaim, TrackList, TracksConfig } from '../interfaces';
+import type { CinematicEvents, EidasToLabel } from '../enums';
+import type { EnhancedTrack, IRichClaim, TrackList, TracksConfig } from '../interfaces';
 import {
   groupByDataProvider,
   groupByDataProviderReducer,
