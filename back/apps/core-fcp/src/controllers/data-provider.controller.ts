@@ -72,8 +72,10 @@ export class DataProviderController {
             idpId,
             idpName,
             idpLabel,
+            idpAcr,
             spId,
             spName,
+            spAcr,
           },
         } = userSession;
         trackingContext = {
@@ -83,8 +85,10 @@ export class DataProviderController {
           idpId,
           idpName,
           idpLabel,
+          idpAcr,
           spId,
           spName,
+          spAcr,
         };
 
         payload = await this.dataProvider.generatePayload(
