@@ -1,5 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { overrideWithSourceIfNotNull } from '@fc/common/helpers';
 import { ConfigService } from '@fc/config';
 import { OidcSession } from '@fc/oidc';
 import { SessionService } from '@fc/session';
@@ -10,6 +11,7 @@ import { getSessionServiceMock } from '@mocks/session';
 import { ICoreTrackingContext } from '../interfaces';
 import { CoreTrackingService } from './core-tracking.service';
 
+jest.mock('@fc/common/helpers');
 jest.mock('@fc/tracking-context', () => ({
   extractNetworkInfoFromHeaders: jest.fn(),
 }));
@@ -130,11 +132,19 @@ describe('CoreTrackingService', () => {
   });
 
   describe('buildLog()', () => {
+    const overrideWithSourceIfNotNullMock = jest.mocked(
+      overrideWithSourceIfNotNull,
+    );
+
     beforeEach(() => {
       service['extractContext'] = jest.fn().mockReturnValue(extractedValueMock);
       service['getDataFromSession'] = jest
         .fn()
         .mockReturnValue(sessionDataMock);
+      overrideWithSourceIfNotNullMock.mockReturnValue({
+        ...extractedValueMock,
+        ...sessionDataMock,
+      });
     });
 
     it('should call extractContext with req property of context param', async () => {

@@ -184,13 +184,6 @@ export default {
       event: 'FC_DATATRANSFER_CONSENT_IDENTITY',
     },
 
-    // Not implemented yet
-    FC_DATATRANSFER_CONSENT_DATA: {
-      step: '6.2.3',
-      category: EventsCategories.FRONT_CINEMATIC,
-      event: 'FC_DATATRANSFER_CONSENT_DATA',
-    },
-
     FC_REDIRECTED_TO_SP: {
       step: '7.0.0',
       category: EventsCategories.FRONT_CINEMATIC,

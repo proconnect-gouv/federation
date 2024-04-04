@@ -38,9 +38,8 @@ export const TrackCardContentComponent = React.memo(
       claims &&
       claims.length > 0 &&
       [
-        CinematicEvents.DP_REQUESTED_FC_CHECKTOKEN,
+        CinematicEvents.DP_VERIFIED_FC_CHECKTOKEN,
         CinematicEvents.FC_DATATRANSFER_CONSENT_IDENTITY,
-        CinematicEvents.FC_DATATRANSFER_CONSENT_DATA,
       ].includes(eventType);
 
     const shouldDisplayConnexion = eventType === CinematicEvents.FC_VERIFIED;
