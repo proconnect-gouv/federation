@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 
+import { overrideWithSourceIfNotNull } from '@fc/common';
 import { OidcSession } from '@fc/oidc';
 import { SessionService } from '@fc/session';
 import {
@@ -37,9 +38,13 @@ export class CoreTrackingService {
     // Authorization route
     const extractedFromSession = this.getDataFromSession(sessionId);
 
+    const ctxMergedWithSession = overrideWithSourceIfNotNull(
+      extractedFromContext,
+      extractedFromSession,
+    );
+
     return {
-      ...extractedFromContext,
-      ...extractedFromSession,
+      ...ctxMergedWithSession,
       sessionId,
       step,
       category,

@@ -63,14 +63,24 @@ export class TracksV2Formatter implements TracksFormatterInterface {
     }
   }
 
+  // eslint-disable-next-line complexity
   private getClaimsGroups({
     claims,
+    scope,
   }: ICsmrTracksV2FieldsData): RichClaimInterface[] {
-    if (!claims) {
+    if (!claims && !scope) {
       return [];
     }
 
-    const richClaims = this.scopes.getRichClaimsFromClaims(claims.split(' '));
+    let richClaims: RichClaimInterface[];
+
+    if (claims) {
+      richClaims = this.scopes.getRichClaimsFromClaims(claims.split(' '));
+    }
+
+    if (scope) {
+      richClaims = this.scopes.getRichClaimsFromScopes(scope.split(' '));
+    }
 
     return richClaims;
   }

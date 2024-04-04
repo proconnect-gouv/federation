@@ -81,7 +81,7 @@ describe('ConnexionComponent', () => {
       <ClaimsComponent
         claims={claimsMock}
         datetime={date}
-        eventType="DP_REQUESTED_FC_CHECKTOKEN"
+        eventType="DP_VERIFIED_FC_CHECKTOKEN"
         options={options}
       />,
     );
@@ -119,7 +119,7 @@ describe('ConnexionComponent', () => {
       <ClaimsComponent
         claims={claimsMock}
         datetime={date}
-        eventType="DP_REQUESTED_FC_CHECKTOKEN"
+        eventType="DP_VERIFIED_FC_CHECKTOKEN"
         options={options}
       />,
     );

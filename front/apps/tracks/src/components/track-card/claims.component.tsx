@@ -30,20 +30,20 @@ export const ClaimsComponent = React.memo(
     let globalBaseLine =
       'Vous avez autorisé la transmission de données personnelles à ce service le :';
 
-    if (eventType === CinematicEvents.DP_REQUESTED_FC_CHECKTOKEN) {
+    if (eventType === CinematicEvents.DP_VERIFIED_FC_CHECKTOKEN) {
       globalBaseLine = 'Des données ont été transmises à ce service le :';
     }
 
     let dataProviderBaseLine =
       'Vous avez autorisé le service à récupérer les données suivantes depuis';
 
-    if (eventType === CinematicEvents.DP_REQUESTED_FC_CHECKTOKEN) {
+    if (eventType === CinematicEvents.DP_VERIFIED_FC_CHECKTOKEN) {
       dataProviderBaseLine = 'Le service a récupéré les données suivantes depuis';
     }
 
     let entries = Object.entries(groupedClaims);
 
-    if (eventType === CinematicEvents.DP_REQUESTED_FC_CHECKTOKEN) {
+    if (eventType === CinematicEvents.DP_VERIFIED_FC_CHECKTOKEN) {
       entries = entries.filter(excludeIdentityProviders);
     }
 
