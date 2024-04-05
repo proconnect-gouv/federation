@@ -184,3 +184,45 @@ Then(
 When('je clique sur le bouton Aidants Connect', function () {
   identityProviderSelectionPage.getAidantsConnectButton().click();
 });
+
+Then(
+  /^la modale "sélection FI" (est|n'est pas) présente sur la mire$/,
+  function (text: string) {
+    const isVisible = text === 'est';
+    const { idpId } = this.identityProvider;
+    identityProviderSelectionPage
+      .getIdpSelectionModal(idpId)
+      .getModal()
+      .should(isVisible ? 'be.visible' : 'not.be.visible');
+  },
+);
+
+When(
+  'je clique sur le bouton continuer de la modale "sélection FI"',
+  function () {
+    const { idpId } = this.identityProvider;
+    identityProviderSelectionPage
+      .getIdpSelectionModal(idpId)
+      .getContinueButton()
+      .click();
+  },
+);
+
+When(
+  'je clique sur le bouton annuler de la modale "sélection FI"',
+  function () {
+    const { idpId } = this.identityProvider;
+    identityProviderSelectionPage
+      .getIdpSelectionModal(idpId)
+      .getCancelButton()
+      .click();
+  },
+);
+
+When('je clique sur le bouton fermer de la modale "sélection FI"', function () {
+  const { idpId } = this.identityProvider;
+  identityProviderSelectionPage
+    .getIdpSelectionModal(idpId)
+    .getCloseButton()
+    .click();
+});

@@ -135,6 +135,7 @@ export class IdentityProviderAdapterMongoService
           // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_signed_response_alg: true,
           endSessionURL: true,
+          modal: true,
         },
       )
       .sort({ order: 'asc', createdAt: 'asc' })

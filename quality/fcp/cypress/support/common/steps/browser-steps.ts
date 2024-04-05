@@ -8,6 +8,8 @@ When(/^je rafraîchis la page$/, function () {
   cy.wait(500);
 });
 
+When("j'attends le chargement de la page {int}ms", (ms: number) => cy.wait(ms));
+
 When('je reviens en arrière', () => cy.go('back'));
 
 Then('le haut de la page est affiché', function () {

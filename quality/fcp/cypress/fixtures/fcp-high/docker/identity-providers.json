@@ -130,6 +130,28 @@
     }
   },
   {
+    "idpId": "a437f8aa-10b5-48bd-8931-78f2d055e3df",
+    "name": "fip11-high",
+    "title": "IDP11 - Identity Provider - eIDAS élevé - whitelisted - nodiscov - crypt - modal",
+    "descriptions": [
+      "actif",
+      "whitelisté",
+      "avec modale de sélection FI"
+    ],
+    "mocked": true,
+    "usable": true,
+    "url": "https://fip1-high.docker.dev-franceconnect.fr",
+    "acrValue": "eidas3",
+    "encryption": "RSA-OAEP-256,A256GCM",
+    "signature": "ES256",
+    "selectors": {
+      "idpButton": "#idp-a437f8aa-10b5-48bd-8931-78f2d055e3df",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "[type='submit']"
+    }
+  },
+  {
     "idpId": "8456c460-f89b-4744-93cf-e0b6ac694075",
     "name": "fip13-high",
     "title": "IDP13 - Identity Provider - eIDAS élevé - crypted (ECDH-ES + A256GCM) - signed (ES256)",
