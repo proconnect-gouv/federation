@@ -11,6 +11,10 @@ export const frFR: I18nTranslationsMapType = {
   // Meta
   'meta.lang': 'fr',
 
+  // Common
+  'common.close': 'Fermer',
+  'common.new_window': 'Ouvre une nouvelle fenêtre',
+
   // Footer
   'footer.a11y_conformity': 'Accessibilité : non conforme',
   'footer.more_info': 'En savoir plus sur {platform}',
@@ -31,6 +35,7 @@ export const frFR: I18nTranslationsMapType = {
 
   'interaction.connecting_to': 'Connexion en cours sur {spName}',
   'interaction.choose_provider': 'Choisissez un compte pour vous connecter :',
+  'interaction.modal.cancel_text': 'Utiliser un autre compte',
 
   // Consent
   'consent.page_title':

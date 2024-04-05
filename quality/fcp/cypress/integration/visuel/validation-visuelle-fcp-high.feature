@@ -141,3 +141,21 @@ Fonctionnalité: Validation Visuelle
       | tablet portrait  |
       | tablet landscape |
       | desktop          |
+
+  Plan du Scénario: Validation Visuelle - avec modale de sélection FI <device>
+    Etant donné que j'utilise un navigateur web sur "<device>"
+    Et que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton FranceConnect
+    Et que je suis redirigé vers la page sélection du fournisseur d'identité
+    Et que j'attends le chargement de la page 500ms
+    Et que j'utilise le fournisseur d'identité "avec modale de sélection FI"
+    Quand je clique sur le fournisseur d'identité
+    Et que la modale "sélection FI" est présente sur la mire
+    Et que la copie d'écran "modalSelectionFI" correspond à l'élément web "[aria-modal='true']" sur "<device>"
+
+    Exemples:
+      | device           |
+      | mobile           |
+      | tablet portrait  |
+      | tablet landscape |
+      | desktop          |

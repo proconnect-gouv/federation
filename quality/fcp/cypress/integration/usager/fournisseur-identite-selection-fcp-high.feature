@@ -68,6 +68,48 @@ Fonctionnalité: Fournisseur Identité - Sélection - fcp-high
     Quand je clique sur le fournisseur d'identité
     Alors je suis redirigé vers la page login du fournisseur d'identité
 
+  @ci @ignoreInteg01
+  Scénario: Affichage des FI sur la mire - FI avec modale, confirmation
+    Etant donné que j'utilise un fournisseur d'identité "actif"
+    Et que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton FranceConnect
+    Et que je suis redirigé vers la page sélection du fournisseur d'identité
+    Et que j'attends le chargement de la page 500ms
+    Et que j'utilise le fournisseur d'identité "avec modale de sélection FI"
+    Et que le fournisseur d'identité est actif dans la mire
+    Quand je clique sur le fournisseur d'identité
+    Alors la modale "sélection FI" est présente sur la mire
+    Et que je clique sur le bouton continuer de la modale "sélection FI"
+    Alors je suis redirigé vers la page login du fournisseur d'identité
+
+  @ci @ignoreInteg01
+  Scénario: Affichage des FI sur la mire - FI avec modale, abandon
+    Etant donné que j'utilise un fournisseur d'identité "actif"
+    Et que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton FranceConnect
+    Et que je suis redirigé vers la page sélection du fournisseur d'identité
+    Et que j'attends le chargement de la page 500ms
+    Et que j'utilise le fournisseur d'identité "avec modale de sélection FI"
+    Et que le fournisseur d'identité est actif dans la mire
+    Quand je clique sur le fournisseur d'identité
+    Alors la modale "sélection FI" est présente sur la mire
+    Et que je clique sur le bouton annuler de la modale "sélection FI"
+    Alors la modale "sélection FI" n'est pas présente sur la mire
+
+  @ci @ignoreInteg01
+  Scénario: Affichage des FI sur la mire - FI avec modale, fermeture
+    Etant donné que j'utilise un fournisseur d'identité "actif"
+    Et que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton FranceConnect
+    Et que je suis redirigé vers la page sélection du fournisseur d'identité
+    Et que j'attends le chargement de la page 500ms
+    Et que j'utilise le fournisseur d'identité "avec modale de sélection FI"
+    Et que le fournisseur d'identité est actif dans la mire
+    Quand je clique sur le fournisseur d'identité
+    Alors la modale "sélection FI" est présente sur la mire
+    Et que je clique sur le bouton fermer de la modale "sélection FI"
+    Alors la modale "sélection FI" n'est pas présente sur la mire
+
   @ci
   Scénario: Affichage des FI sur la mire - FI désactivé non sélectionnable
     Etant donné que j'utilise un fournisseur d'identité "désactivé et visible"

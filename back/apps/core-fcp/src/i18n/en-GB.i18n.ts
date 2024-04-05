@@ -11,6 +11,10 @@ export const enGB: I18nTranslationsMapType = {
   // Meta
   'meta.lang': 'en',
 
+  // Common
+  'common.close': 'Close',
+  'common.new_window': 'Open a new window',
+
   // Footer
   'footer.a11y_conformity': 'Accessibility: non-compliant',
   'footer.more_info': 'Learn more about {platform}',
@@ -28,9 +32,9 @@ export const enGB: I18nTranslationsMapType = {
   'interaction.idp_connexion_failed':
     'Connection to <b>{idpName}</b> failed. Please try again or use another connection method.',
   'interaction.beta_provider': 'BETA',
-
   'interaction.connecting_to': 'Connecting to {spName}',
   'interaction.choose_provider': 'Choose an account to connect with:',
+  'interaction.modal.cancel_text': 'Choose another account',
 
   // Consent
   'consent.page_title':
