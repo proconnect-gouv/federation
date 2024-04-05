@@ -117,7 +117,7 @@ export class SessionLifecycleService {
     const { id } = this.localStorage.getStore();
     const { defaultData } = this.config.get<SessionConfig>('Session');
     this.localStorage.setStore({
-      data: defaultData,
+      data: cloneDeep(defaultData),
       id: undefined,
       sync: false,
     });
