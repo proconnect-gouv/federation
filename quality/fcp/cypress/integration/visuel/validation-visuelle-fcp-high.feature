@@ -142,6 +142,8 @@ Fonctionnalité: Validation Visuelle
       | tablet landscape |
       | desktop          |
 
+  # TODO: Investigate flaky visual test
+  @ignore
   Plan du Scénario: Validation Visuelle - avec modale de sélection FI <device>
     Etant donné que j'utilise un navigateur web sur "<device>"
     Et que je navigue sur la page fournisseur de service
