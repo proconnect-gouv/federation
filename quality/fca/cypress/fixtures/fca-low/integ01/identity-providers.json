@@ -12,7 +12,7 @@
     "title": "Identity Provider 1 - HS256",
     "mocked": true,
     "usable": true,
-    "url": "https://app-test.moncomptepro.beta.gouv.fr",
+    "url": "https://app-sandbox.moncomptepro.beta.gouv.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "HS256",
