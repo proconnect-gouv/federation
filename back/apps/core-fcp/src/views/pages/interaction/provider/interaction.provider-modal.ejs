@@ -38,23 +38,20 @@
           </div>
           <div class="fr-modal__footer">
             <div
-              class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
-              <div
-                class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
-                <button
-                  data-testid="modal-continue-button"
-                  type="submit"
-                  class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left">
-                  <%= provider.modal.continueText %>
-                </button>
-                <button
-                  data-testid="modal-cancel-button"
-                  type="button"
-                  aria-controls="<%= approvalModalId %>"
-                  class="fr-btn fr-icon-checkbox-circle-line fr-btn--icon-left fr-btn--secondary">
-                  <%= $translate('interaction.modal.cancel_text') %>
-                </button>
-            </div>
+              class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg">
+              <button
+                data-testid="modal-continue-button"
+                type="submit"
+                class="fr-btn">
+                <%= provider.modal.continueText %>
+              </button>
+              <button
+                data-testid="modal-cancel-button"
+                type="button"
+                aria-controls="<%= approvalModalId %>"
+                class="fr-btn fr-btn--secondary">
+                <%= $translate('interaction.modal.cancel_text') %>
+              </button>
             </div>
           </div>
         </div>
