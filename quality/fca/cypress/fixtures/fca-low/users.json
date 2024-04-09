@@ -45,7 +45,7 @@
 
   {
     "enabled": true,
-    "criteria": ["différent"],
+    "criteria": ["différent", "privé"],
     "credentials": [
       {
         "idpId": "default",

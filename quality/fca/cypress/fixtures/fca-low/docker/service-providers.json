@@ -20,7 +20,8 @@
     "name": "fsa2-low",
     "descriptions": [
       "avec une whitelist de FI",
-      "avec accès au FI par défaut (deuxième FS)"
+      "avec accès au FI par défaut (deuxième FS)",
+      "acceptant le privé"
     ],
     "mocked": true,
     "url": "https://fsa2-low.docker.dev-franceconnect.fr",

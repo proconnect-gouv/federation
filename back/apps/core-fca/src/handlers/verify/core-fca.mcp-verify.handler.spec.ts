@@ -6,6 +6,10 @@ import { CoreFcaAgentNotFromPublicServiceException } from '@fc/core-fca/exceptio
 import { CryptographyFcaService } from '@fc/cryptography-fca';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import {
+  ServiceProviderAdapterMongoService,
+  Types,
+} from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
 
 import { getLoggerMock } from '@mocks/logger';
@@ -37,6 +41,7 @@ describe('CoreFcaMcpVerifyHandler', () => {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
     email: 'eteach@fqdn.ext',
+    type: Types.PUBLIC,
   };
 
   describe('handle with is_service_public true', () => {
@@ -76,6 +81,10 @@ describe('CoreFcaMcpVerifyHandler', () => {
       getById: jest.fn(),
     };
 
+    const serviceProviderAdapterMock = {
+      getById: jest.fn(),
+    };
+
     const { sub: _sub, ...idpIdentityMockCleaned } = idpIdentityMock;
 
     beforeEach(async () => {
@@ -88,6 +97,7 @@ describe('CoreFcaMcpVerifyHandler', () => {
           CoreAcrService,
           CryptographyFcaService,
           IdentityProviderAdapterMongoService,
+          ServiceProviderAdapterMongoService,
         ],
       })
         .overrideProvider(LoggerService)
@@ -102,6 +112,8 @@ describe('CoreFcaMcpVerifyHandler', () => {
         .useValue(cryptographyFcaServiceMock)
         .overrideProvider(IdentityProviderAdapterMongoService)
         .useValue(identityProviderAdapterMock)
+        .overrideProvider(ServiceProviderAdapterMongoService)
+        .useValue(serviceProviderAdapterMock)
         .compile();
 
       service = module.get<CoreFcaMcpVerifyHandler>(CoreFcaMcpVerifyHandler);
@@ -110,6 +122,9 @@ describe('CoreFcaMcpVerifyHandler', () => {
       jest.restoreAllMocks();
 
       sessionServiceMock.get.mockReturnValue(sessionDataMock);
+      serviceProviderAdapterMock.getById.mockReturnValue({
+        type: Types.PUBLIC,
+      });
       cryptographyFcaServiceMock.computeIdentityHash.mockReturnValueOnce(
         'spIdentityHash',
       );
@@ -285,7 +300,7 @@ describe('CoreFcaMcpVerifyHandler', () => {
     });
   });
 
-  describe('handle with is_service_public false', () => {
+  describe('handle with is_service_public false and sp type is public', () => {
     const idpIdentityMock = {
       sub: 'computedSubIdp',
       // Oidc Naming convention
@@ -322,6 +337,10 @@ describe('CoreFcaMcpVerifyHandler', () => {
       getById: jest.fn(),
     };
 
+    const serviceProviderAdapterMock = {
+      getById: jest.fn(),
+    };
+
     beforeEach(async () => {
       const module: TestingModule = await Test.createTestingModule({
         providers: [
@@ -332,6 +351,7 @@ describe('CoreFcaMcpVerifyHandler', () => {
           CoreAcrService,
           CryptographyFcaService,
           IdentityProviderAdapterMongoService,
+          ServiceProviderAdapterMongoService,
         ],
       })
         .overrideProvider(LoggerService)
@@ -346,6 +366,8 @@ describe('CoreFcaMcpVerifyHandler', () => {
         .useValue(cryptographyFcaServiceMock)
         .overrideProvider(IdentityProviderAdapterMongoService)
         .useValue(identityProviderAdapterMock)
+        .overrideProvider(ServiceProviderAdapterMongoService)
+        .useValue(serviceProviderAdapterMock)
         .compile();
 
       service = module.get<CoreFcaMcpVerifyHandler>(CoreFcaMcpVerifyHandler);
@@ -362,6 +384,10 @@ describe('CoreFcaMcpVerifyHandler', () => {
       );
       coreAccountServiceMock.computeFederation.mockResolvedValue(accountIdMock);
 
+      serviceProviderAdapterMock.getById.mockReturnValue({
+        type: Types.PUBLIC,
+      });
+
       identityProviderAdapterMock.getById.mockResolvedValue({
         maxAuthorizedAcr: 'maxAuthorizedAcr value',
       });
@@ -376,6 +402,109 @@ describe('CoreFcaMcpVerifyHandler', () => {
       await expect(service.handle(handleArgument)).rejects.toThrow(
         CoreFcaAgentNotFromPublicServiceException,
       );
+    });
+  });
+
+  describe('handle with is_service_public false and sp type is private', () => {
+    const idpIdentityMock = {
+      sub: 'computedSubIdp',
+      // Oidc Naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      given_name: 'givenNameValue',
+      uid: 'uidValue',
+      // moncomptepro Naming convention
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      is_service_public: false,
+    };
+
+    const sessionDataMock = {
+      idpId: '42',
+      idpAcr: 'eidas3',
+      idpName: 'my favorite Idp',
+      idpIdentity: idpIdentityMock,
+      spId: 'sp_id',
+      spAcr: 'eidas3',
+      spName: 'my great SP',
+      spIdentity: spIdentityMock,
+      amr: ['pwd'],
+    };
+
+    const cryptographyFcaServiceMock = {
+      computeSubV1: jest.fn(),
+      computeIdentityHash: jest.fn(),
+    };
+
+    const handleArgument = {
+      sessionOidc: sessionServiceMock,
+    };
+
+    const identityProviderAdapterMock = {
+      getById: jest.fn(),
+    };
+
+    const serviceProviderAdapterMock = {
+      getById: jest.fn(),
+    };
+
+    beforeEach(async () => {
+      const module: TestingModule = await Test.createTestingModule({
+        providers: [
+          CoreFcaMcpVerifyHandler,
+          SessionService,
+          LoggerService,
+          CoreAccountService,
+          CoreAcrService,
+          CryptographyFcaService,
+          IdentityProviderAdapterMongoService,
+          ServiceProviderAdapterMongoService,
+        ],
+      })
+        .overrideProvider(LoggerService)
+        .useValue(loggerServiceMock)
+        .overrideProvider(SessionService)
+        .useValue(sessionServiceMock)
+        .overrideProvider(CoreAccountService)
+        .useValue(coreAccountServiceMock)
+        .overrideProvider(CoreAcrService)
+        .useValue(coreAcrServiceMock)
+        .overrideProvider(CryptographyFcaService)
+        .useValue(cryptographyFcaServiceMock)
+        .overrideProvider(IdentityProviderAdapterMongoService)
+        .useValue(identityProviderAdapterMock)
+        .overrideProvider(ServiceProviderAdapterMongoService)
+        .useValue(serviceProviderAdapterMock)
+        .compile();
+
+      service = module.get<CoreFcaMcpVerifyHandler>(CoreFcaMcpVerifyHandler);
+
+      jest.resetAllMocks();
+      jest.restoreAllMocks();
+
+      sessionServiceMock.get.mockReturnValue(sessionDataMock);
+      cryptographyFcaServiceMock.computeIdentityHash.mockReturnValueOnce(
+        'spIdentityHash',
+      );
+      cryptographyFcaServiceMock.computeSubV1.mockReturnValueOnce(
+        'computedSubSp',
+      );
+      coreAccountServiceMock.computeFederation.mockResolvedValue(accountIdMock);
+
+      serviceProviderAdapterMock.getById.mockReturnValue({
+        type: Types.PRIVATE,
+      });
+
+      identityProviderAdapterMock.getById.mockResolvedValue({
+        maxAuthorizedAcr: 'maxAuthorizedAcr value',
+      });
+    });
+
+    it('should be defined', () => {
+      expect(service).toBeDefined();
+    });
+
+    it('should not throw if verified', async () => {
+      // Then
+      await expect(service.handle(handleArgument)).resolves.not.toThrow();
     });
   });
 
@@ -413,6 +542,10 @@ describe('CoreFcaMcpVerifyHandler', () => {
       getById: jest.fn(),
     };
 
+    const serviceProviderAdapterMock = {
+      getById: jest.fn(),
+    };
+
     beforeEach(async () => {
       const module: TestingModule = await Test.createTestingModule({
         providers: [
@@ -423,6 +556,7 @@ describe('CoreFcaMcpVerifyHandler', () => {
           CoreAcrService,
           CryptographyFcaService,
           IdentityProviderAdapterMongoService,
+          ServiceProviderAdapterMongoService,
         ],
       })
         .overrideProvider(LoggerService)
@@ -437,6 +571,8 @@ describe('CoreFcaMcpVerifyHandler', () => {
         .useValue(cryptographyFcaServiceMock)
         .overrideProvider(IdentityProviderAdapterMongoService)
         .useValue(identityProviderAdapterMock)
+        .overrideProvider(ServiceProviderAdapterMongoService)
+        .useValue(serviceProviderAdapterMock)
         .compile();
 
       service = module.get<CoreFcaMcpVerifyHandler>(CoreFcaMcpVerifyHandler);
@@ -448,9 +584,15 @@ describe('CoreFcaMcpVerifyHandler', () => {
       cryptographyFcaServiceMock.computeIdentityHash.mockReturnValueOnce(
         'spIdentityHash',
       );
+
+      serviceProviderAdapterMock.getById.mockReturnValue({
+        type: Types.PUBLIC,
+      });
+
       cryptographyFcaServiceMock.computeSubV1.mockReturnValueOnce(
         'computedSubSp',
       );
+
       coreAccountServiceMock.computeFederation.mockResolvedValue(accountIdMock);
 
       identityProviderAdapterMock.getById.mockResolvedValue({
