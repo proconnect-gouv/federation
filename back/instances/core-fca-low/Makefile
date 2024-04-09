@@ -9,6 +9,9 @@ reset-db:
 start s:
 	$(DKS_PATH) prune && $(DKS_PATH) up bdd-fca-low && $(DKS_PATH) start-all
 
+start-min sm:
+	$(DKS_PATH) prune && $(DKS_PATH) up min-fca && $(DKS_PATH) start-all
+
 restart r:
 	$(DKS_PATH) start-all
 

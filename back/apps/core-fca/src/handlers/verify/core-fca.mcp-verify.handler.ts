@@ -10,6 +10,10 @@ import { CryptographyFcaService } from '@fc/cryptography-fca';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import {
+  ServiceProviderAdapterMongoService,
+  Types,
+} from '@fc/service-provider-adapter-mongo';
 
 import { IAgentConnectOidcIdentity } from '../../interfaces';
 import { CoreFcaDefaultVerifyHandler } from './core-fca.default-verify.handler';
@@ -28,6 +32,7 @@ export class CoreFcaMcpVerifyHandler
     protected readonly coreAcr: CoreAcrService,
     protected readonly cryptographyFca: CryptographyFcaService,
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
+    protected readonly serviceProvider: ServiceProviderAdapterMongoService,
   ) {
     super(logger, coreAccount, coreAcr, cryptographyFca, identityProvider);
   }
@@ -47,10 +52,15 @@ export class CoreFcaMcpVerifyHandler
     this.logger.debug('verifyIdentity service: ##### core-fca-mcp-verify');
 
     const { idpId, idpIdentity, idpAcr, spId, spAcr } = sessionOidc.get();
+    const { type } = await this.serviceProvider.getById(spId);
 
-    // for mcp, we check is_service_public
-    // only is_service_public true can be verified with mcp idp
-    if ((idpIdentity as IAgentConnectOidcIdentity).is_service_public !== true) {
+    const isIdentityPrivate =
+      (idpIdentity as IAgentConnectOidcIdentity).is_service_public !== true;
+    // Types.PUBLIC = sp that accepts public servant only
+    // Types.PRIVATE = sp that also accepts private compagnies employes
+    const doesSpAcceptPrivate = type !== Types.PUBLIC;
+
+    if (isIdentityPrivate && !doesSpAcceptPrivate) {
       throw new CoreFcaAgentNotFromPublicServiceException();
     }
 
