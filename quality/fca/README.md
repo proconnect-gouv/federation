@@ -55,7 +55,7 @@ In order to run tests with Cypress,
 docker-stack prune && \
 docker-stack up bdd-fca-low && \
 docker-stack dep core-fca-low && \
-docker-stack fixtures-fca-low && \
+docker-stack reset-db-core-fca-low && \
 docker-stack start-all
 ```
 
