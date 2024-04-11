@@ -29,13 +29,14 @@ export class GetInteractionOidcClientSessionDto extends CoreBaseOidcClientSessio
   readonly accountId?: string;
 
   // Metadata: We MUST restrict the routes we can come from
+  // routes are listed in chronological order of the cinematic
   @IsString()
   @IsIn([
     OidcProviderRoutes.AUTHORIZATION, // Standard cinematic
     CoreRoutes.INTERACTION, // Refresh
     OidcClientRoutes.OIDC_CALLBACK, // Back on error
     CoreRoutes.INTERACTION_VERIFY, // Back on error
-    CoreRoutes.INTERACTION_CONSENT, // Back on error
+    OidcClientRoutes.REDIRECT_TO_IDP, // Browser back button
   ])
   @Expose()
   readonly stepRoute: string;
