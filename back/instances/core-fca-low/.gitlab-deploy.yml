@@ -67,7 +67,7 @@ stop-fca-low:
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
   script:
     - unset EXPLOIT_USER_NAME && unset EXPLOIT_USER_PASS && unset EXPLOIT_USER_TOTP
-    - cd quality/fca && yarn install
+    - cd quality/fca && yarn install --ignore-engines
     - yarn test:low:ci -c video=${CYPRESS_VIDEO} || RETURN_CODE=1
     - yarn report
     - exit $RETURN_CODE

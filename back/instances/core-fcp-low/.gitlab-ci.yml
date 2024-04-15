@@ -64,7 +64,7 @@ fcp-low:
     - docker-stack up bdd-fcp-low
     - docker exec fc_core-fcp-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
-    - cd $CI_PROJECT_DIR/quality/fcp && yarn install
+    - cd $CI_PROJECT_DIR/quality/fcp && yarn install --ignore-engines
     - cd $CI_PROJECT_DIR
     # Start the NodeJS apps
     - docker-stack start-all-ci

@@ -77,7 +77,7 @@ user-dashboard:
     - docker-stack wait "core" "https://fcp.docker.dev-franceconnect.fr/api/v1/statuses"
     # Starting Cypress Quality checks
     - cd $CI_PROJECT_DIR/quality/fcp
-    - yarn install
+    - yarn install --ignore-engines
     # Run Visual BDD tests and abort if failed
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting visual checks"
     - yarn test:ud:snapshot
