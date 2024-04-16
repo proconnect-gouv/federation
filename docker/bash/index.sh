@@ -90,18 +90,18 @@ _command_register "reload-rp" "_reload-rp" "Reload Reverse proxy"
 
 _command_register "compose" "cd ${WORKING_DIR} && ${DOCKER_COMPOSE}" "Alias for docker-compose"
 
-_command_register "llng-configure" "_llng-configure" "Restore LemonLDAP configuration from ./docker/volumes/llng/llng-conf.json dump file"
+_command_register "llng-configure" "_llng_configure" "Restore LemonLDAP configuration from ./docker/volumes/llng/llng-conf.json dump file"
 
 _command_register "wait" "wait_for_nodejs" "Wait for a nodejs HTTP service to respond on an URL or try to display logs"
 
-_command_register "log-rotate" "_log-rotate" "log-rotate Rotate the logs and send SIGUSR"
+_command_register "log-rotate" "_log_rotate" "log-rotate Rotate the logs and send SIGUSR"
 
 _command_register "mongo" "_mongo_shell" "mongo <server> <database>: Opens mongo shell"
 ### Legacy aliases for mongo shell access
 _command_register "mongo-shell-core-fca-low" "_mongo_shell_core_fca_low" "[deprecated] Open mongo shell for core-fca-low "
-_command_register "mongo-shell-core-fcp-high" "_mongo_shell_core-fcp-high" "[deprecated] Open mongo shell for core-fcp-high"
-_command_register "mongo-shell-core-fcp-low" "_mongo_shell_core-fcp-low" "[deprecated] Open mongo shell for core-fcp-low"
-_command_register "mongo-shell-core-legacy" "_mongo_shell_core-legacy" "[deprecated] Open mongo shell for core-legacy"
+_command_register "mongo-shell-core-fcp-high" "_mongo_shell_core_fcp_high" "[deprecated] Open mongo shell for core-fcp-high"
+_command_register "mongo-shell-core-fcp-low" "_mongo_shell_core_fcp_low" "[deprecated] Open mongo shell for core-fcp-low"
+_command_register "mongo-shell-core-legacy" "_mongo_shell_core_legacy" "[deprecated] Open mongo shell for core-legacy"
 _command_register "mongo-script" "_mongo_script" "Execute MongoDB <script> on given <container>: docker-stack mongo-script <container> <script>"
 
 _command_register "add" "_add_node_app" "Start a node application."
