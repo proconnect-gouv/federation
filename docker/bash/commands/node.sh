@@ -14,7 +14,7 @@ _start() {
   done
 
   # Reload RP in case the app took to long and was consired down by Nginx
-  task "   * Reload RP" "_reload-rp"
+  task "   * Reload RP" "_reload_rp"
 }
 
 _start_ci() {
@@ -25,7 +25,7 @@ _start_ci() {
   done
 
   # Reload RP in case the app took to long and was consired down by Nginx
-  task "   * Reload RP" "_reload-rp"
+  task "   * Reload RP" "_reload_rp"
 }
 
 _do_start() {
@@ -95,7 +95,7 @@ _install_dependencies_all() {
   _install_dependencies $NODEJS_CONTAINERS
 }
 
-_log-rotate() {
+_log_rotate() {
   echo "Send SIGUSR2 to core-fcp-high app..."
   cd ${WORKING_DIR}
   $DOCKER_COMPOSE exec core-fcp-high pkill -SIGUSR2 -f '/usr/bin/node -r source-map-support/register --inspect=0.0.0.0:9235 /var/www/app/dist/instances/core-fcp-high/main'
