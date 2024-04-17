@@ -6,11 +6,17 @@ mongo db:
 reset-db:
 	$(DKS_PATH) reset-db-core-fca-low
 
+start-min sm:
+	$(DKS_PATH) prune && $(DKS_PATH) up min-fca-low && $(DKS_PATH) start-all
+
 start s:
 	$(DKS_PATH) prune && $(DKS_PATH) up bdd-fca-low && $(DKS_PATH) start-all
 
 start-min sm:
 	$(DKS_PATH) prune && $(DKS_PATH) up min-fca && $(DKS_PATH) start-all
+
+start-rie rie:
+	$(DKS_PATH) prune && $(DKS_PATH) up min-fca-rie && $(DKS_PATH) start-all
 
 restart r:
 	$(DKS_PATH) start-all
@@ -20,6 +26,9 @@ stop:
 
 log l:
 	$(DKS_PATH) log core-fca-low
+
+log-rie lrie:
+	$(DKS_PATH) log core-fca-rie
 
 bash b:
 	$(DKS_PATH) exec core-fca-low bash

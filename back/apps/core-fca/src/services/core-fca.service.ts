@@ -8,11 +8,21 @@ import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
-import { OidcClientConfig, OidcClientService } from '@fc/oidc-client';
+import {
+  OidcClientConfig,
+  OidcClientIdpBlacklistedException,
+  OidcClientIdpDisabledException,
+  OidcClientService,
+} from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
 
 import { AppConfig } from '../dto/app-config.dto';
 import { CoreFcaOidcClientSession } from '../dto/core-fca-oidc-client-session.dto';
+import {
+  CoreFcaAgentIdpBlacklistedException,
+  CoreFcaAgentIdpDisabledException,
+  CoreFcaAgentNoIdpException,
+} from '../exceptions';
 import {
   CoreFcaAuthorizationParametersInterface,
   CoreFcaServiceInterface,
@@ -51,8 +61,8 @@ export class CoreFcaService implements CoreFcaServiceInterface {
 
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
 
-    await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
-    await this.oidcClient.utils.checkIdpDisabled(idpId);
+    await this.checkIdpBlacklisted(spId, idpId);
+    await this.checkIdpDisabled(idpId);
 
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
@@ -108,7 +118,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
       this.logger.warning('More than one IdP exists');
     }
 
-    const { defaultIpdId } = this.config.get<AppConfig>('App');
+    const defaultIpdId = this.getDefaultIdp(idpsByFqdn?.length);
 
     return idpsByFqdn?.length > 0
       ? idpsByFqdn[0].identityProvider
@@ -117,5 +127,37 @@ export class CoreFcaService implements CoreFcaServiceInterface {
 
   private getFqdnFromEmail(email: string): string {
     return email.split('@').pop();
+  }
+
+  private async checkIdpBlacklisted(spId: string, idpId: string) {
+    try {
+      await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
+    } catch (error) {
+      if (error instanceof OidcClientIdpBlacklistedException) {
+        throw new CoreFcaAgentIdpBlacklistedException();
+      }
+      throw error;
+    }
+  }
+
+  private async checkIdpDisabled(idpId: string) {
+    try {
+      await this.oidcClient.utils.checkIdpDisabled(idpId);
+    } catch (error) {
+      if (error instanceof OidcClientIdpDisabledException) {
+        throw new CoreFcaAgentIdpDisabledException();
+      }
+      throw error;
+    }
+  }
+
+  private getDefaultIdp(idpsByFqdnLength: number): string {
+    const { defaultIpdId } = this.config.get<AppConfig>('App');
+
+    if (idpsByFqdnLength === 0 && !defaultIpdId) {
+      throw new CoreFcaAgentNoIdpException();
+    }
+
+    return defaultIpdId;
   }
 }

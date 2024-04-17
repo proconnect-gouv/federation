@@ -7,7 +7,11 @@ import { CoreAuthorizationService } from '@fc/core';
 import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
-import { OidcClientService } from '@fc/oidc-client';
+import {
+  OidcClientIdpBlacklistedException,
+  OidcClientIdpDisabledException,
+  OidcClientService,
+} from '@fc/oidc-client';
 import { SessionService } from '@fc/session';
 
 import { getConfigMock } from '@mocks/config';
@@ -15,6 +19,11 @@ import { getCoreAuthorizationServiceMock } from '@mocks/core';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
+import {
+  CoreFcaAgentIdpBlacklistedException,
+  CoreFcaAgentIdpDisabledException,
+  CoreFcaAgentNoIdpException,
+} from '../exceptions';
 import { CoreFcaService } from './core-fca.service';
 
 describe('CoreFcaService', () => {
@@ -119,7 +128,7 @@ describe('CoreFcaService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('redirectToIdp()', () => {
+  describe('redirectToIdp', () => {
     const authorizationParametersMock = {
       // oidc parameter
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -133,6 +142,10 @@ describe('CoreFcaService', () => {
       sessionServiceMock.get.mockReturnValue({
         spId: spIdMock,
       });
+
+      const getIdpIdForEmailMock = jest.spyOn(service, 'getIdpIdForEmail');
+
+      getIdpIdForEmailMock.mockResolvedValueOnce(idpIdMock);
     });
 
     it('should call config.get to retrieve configured parameters', async () => {
@@ -336,6 +349,89 @@ describe('CoreFcaService', () => {
 
       // Then
       expect(fqdn).toBe('hogwards1234.uk');
+    });
+  });
+
+  describe('checkIdpBlacklisted', () => {
+    it('should call oidcClient.utils.checkIdpBlacklisted', async () => {
+      // When
+      await service['checkIdpBlacklisted'](spIdMock, idpIdMock);
+
+      // Then
+      expect(oidcMock.utils.checkIdpBlacklisted).toHaveBeenCalledTimes(1);
+      expect(oidcMock.utils.checkIdpBlacklisted).toHaveBeenCalledWith(
+        spIdMock,
+        idpIdMock,
+      );
+    });
+
+    it('should throw a CoreFcaAgentIdpBlacklistedException', async () => {
+      // Given
+      oidcMock.utils.checkIdpBlacklisted.mockRejectedValue(
+        new OidcClientIdpBlacklistedException(),
+      );
+      // When
+      await expect(
+        service['checkIdpBlacklisted'](spIdMock, idpIdMock),
+      ).rejects.toThrow(CoreFcaAgentIdpBlacklistedException);
+    });
+
+    it('should throw an error if utils return an error', async () => {
+      // Given
+      oidcMock.utils.checkIdpBlacklisted.mockRejectedValue(new Error('wrong'));
+      // When
+      await expect(
+        service['checkIdpBlacklisted'](spIdMock, idpIdMock),
+      ).rejects.toThrow(Error);
+    });
+  });
+
+  describe('checkIdpDisabled', () => {
+    it('should call oidcClient.utils.checkIdpDisabled', async () => {
+      // When
+      await service['checkIdpDisabled'](idpIdMock);
+
+      // Then
+      expect(oidcMock.utils.checkIdpDisabled).toHaveBeenCalledTimes(1);
+      expect(oidcMock.utils.checkIdpDisabled).toHaveBeenCalledWith(idpIdMock);
+    });
+
+    it('should throw a CoreFcaAgentIdpDisabledException if utils returns a OidcClientIdpDisabledException', async () => {
+      // Given
+      oidcMock.utils.checkIdpDisabled.mockRejectedValue(
+        new OidcClientIdpDisabledException(),
+      );
+      // When
+      await expect(service['checkIdpDisabled'](idpIdMock)).rejects.toThrow(
+        CoreFcaAgentIdpDisabledException,
+      );
+    });
+
+    it('should throw an error if utils return an error', async () => {
+      // Given
+      oidcMock.utils.checkIdpDisabled.mockRejectedValue(new Error('wrong'));
+      // When
+      await expect(service['checkIdpDisabled'](idpIdMock)).rejects.toThrow(
+        Error,
+      );
+    });
+  });
+
+  describe('getDefaultIdp', () => {
+    it('should call the config when we call getDefaultIdp', () => {
+      // When
+      service['getDefaultIdp'](1);
+
+      // Then
+      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(configServiceMock.get).toHaveBeenCalledWith('App');
+    });
+
+    it('should throw an CoreFcaAgentNoIdpException error when no idp is found', () => {
+      // Then
+      expect(() => service['getDefaultIdp'](0)).toThrow(
+        CoreFcaAgentNoIdpException,
+      );
     });
   });
 });
