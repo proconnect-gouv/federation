@@ -242,7 +242,12 @@ export class OidcClientUtilsService {
 
     try {
       endSessionUrl = client.endSessionUrl();
-      return isURL(endSessionUrl, { protocols: ['http', 'https'] });
+      return isURL(endSessionUrl, {
+        protocols: ['https'],
+        // Validator.js defined property
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        require_protocol: true,
+      });
     } catch (error) {
       this.logger.err({ error });
       return false;

@@ -673,7 +673,12 @@ describe('OidcClientUtilsService', () => {
       expect(isURLMock).toHaveBeenCalledTimes(1);
       expect(isURLMock).toHaveBeenCalledWith(
         'https://endSessionUrlMockMock?id_token_hint=idTokenMockValue&post_logout_redirect_uri=https://postLogoutRedirectUriMock&state=stateMockValue',
-        { protocols: ['http', 'https'] },
+        {
+          protocols: ['https'],
+          // Validator.js defined property
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          require_protocol: true,
+        },
       );
       expect(result).toBeTrue;
     });
