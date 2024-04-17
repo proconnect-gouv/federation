@@ -44,8 +44,6 @@ test t:
 quality tq:
 	cd $(FC_ROOT)/fc/quality/fca && yarn install && yarn start:low
 
-quality-headless tqh:
-	cd $(FC_ROOT)/fc/quality/fca && yarn install && yarn start:low
 
 visual v:
 	cd $(FC_ROOT)/fc/quality/fca && yarn install && yarn test:low:snapshot
