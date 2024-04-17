@@ -201,6 +201,8 @@
       "@mocks/core/*": ["libs/core/.mocks/*"],
       "@fc/csrf": ["libs/csrf/src"],
       "@fc/csrf/*": ["libs/csrf/src/*"],
+      "@fc/exceptions": ["libs/exceptions/src"],
+      "@fc/exceptions/*": ["libs/exceptions/src/*"],
       "@fc/i18n": ["libs/i18n/src"],
       "@fc/i18n/*": ["libs/i18n/src/*"],
       "@mocks/i18n": ["libs/i18n/.mocks"],

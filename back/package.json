@@ -52,7 +52,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e:core-fca-low": "cypress run -P instances/core-fca-low",
     "test:e2e:core-fca-low:open": "cypress open -P instances/core-fca-low",
-    "doc:exceptions": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/exceptions-deprecated/src/cli/export-exceptions",
+    "doc:exceptions": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/exceptions/src/cli/export-exceptions",
     "doc:env": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/config/src/cli/export-env",
     "doc": "yarn doc:exceptions && yarn doc:env",
     "generate-insee:country": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-country",
@@ -279,6 +279,7 @@
       "^@fc/view-templates(|/.*)$": "<rootDir>/libs/view-templates/src/$1",
       "^@mocks/core(|/.*)$": "<rootDir>/libs/core/.mocks/$1",
       "^@fc/csrf(|/.*)$": "<rootDir>/libs/csrf/src/$1",
+      "^@fc/exceptions(|/.*)$": "<rootDir>/libs/exceptions/src/$1",
       "^@fc/i18n(|/.*)$": "<rootDir>/libs/i18n/src/$1",
       "^@mocks/i18n(|/.*)$": "<rootDir>/libs/i18n/.mocks$1"
     },

@@ -54,13 +54,13 @@ export class CoreFcaMcpVerifyHandler
     const { idpId, idpIdentity, idpAcr, spId, spAcr } = sessionOidc.get();
     const { type } = await this.serviceProvider.getById(spId);
 
-    const isIdentityPrivate =
+    const isPrivateIdentity =
       (idpIdentity as IAgentConnectOidcIdentity).is_service_public !== true;
     // Types.PUBLIC = sp that accepts public servant only
     // Types.PRIVATE = sp that also accepts private compagnies employes
-    const doesSpAcceptPrivate = type !== Types.PUBLIC;
+    const spAcceptsPrivate = type !== Types.PUBLIC;
 
-    if (isIdentityPrivate && !doesSpAcceptPrivate) {
+    if (isPrivateIdentity && !spAcceptsPrivate) {
       throw new CoreFcaAgentNotFromPublicServiceException();
     }
 

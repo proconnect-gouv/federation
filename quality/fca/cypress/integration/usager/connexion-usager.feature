@@ -57,7 +57,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Et j'utilise un compte usager "privé"
     Et je m'authentifie avec succès
     Alors je suis redirigé vers la page erreur technique
-    Et le code d'erreur est "Y000015"
+    Et le code d'erreur est "Y500015"
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - fqdn non reconnu et non service public mais FS acceptant le privé

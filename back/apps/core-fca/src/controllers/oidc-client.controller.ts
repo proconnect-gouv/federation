@@ -85,6 +85,7 @@ export class OidcClientController {
   ): Promise<void> {
     const { email } = body;
 
+    // todo: move into a dedicated service
     const idpId = await this.coreFca.getIdpIdForEmail(email);
 
     const {
@@ -102,6 +103,7 @@ export class OidcClientController {
       login_hint: email,
     };
 
+    // we need to keep idpId as 2nd parameter for the idp_hint
     await this.coreFca.redirectToIdp(res, idpId, authorizeParams);
   }
 
