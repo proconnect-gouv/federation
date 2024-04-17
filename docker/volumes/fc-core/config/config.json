@@ -21,7 +21,9 @@
       "tokenAccess": "56d08c71985eba066ae6c41bc7376c9744829dbca65b71a218c63b955d51e092"
     },
     {
-      "api": ["/api/v2/service-provider/integration/create"],
+      "api": [
+        "/api/v2/service-provider/integration/create"
+      ],
       "tokenAccess": "07BF7A057C75556EA68E7EED6F78ACF14222822B90DA055E7B9073327DF3EB33"
     }
   ],
@@ -40,10 +42,14 @@
     "rep_scope": true,
     "convertToJsonIdentityFromCheckToken": true,
     "displayConfirmationAfterAuthentication": true,
+    "displayInformationBlock": {
+      "title": "Les notifications de connexion évoluent",
+      "content": "FranceConnect ne vous enverra plus systématiquement une notification à chacune de vos connexions. Une notification vous sera envoyée uniquement lorsqu’une connexion inhabituelle est détectée."
+    },
     "enableMails": {
       "IdentityProviderStats": false,
       "ServiceProviderStats": false,
-      "authentication": false,
+      "authentication": true,
       "generalStats": false,
       "partnerAccountManagement": false,
       "rnippError": false
@@ -107,14 +113,31 @@
   "tracesId": "73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049",
   "tracesSecret": "99c1105d041adda2c47835a82f6be9dc13e2a2731e302e6f214075aef09f5abb",
   "helmet": {
-    "excludedPaths": ["/js/franceconnect.js", "/stylesheets/franceconnect.css"],
+    "excludedPaths": [
+      "/js/franceconnect.js",
+      "/stylesheets/franceconnect.css"
+    ],
     "referrerPolicy": {
-      "policy": ["origin", "unsafe-url"]
+      "policy": [
+        "origin",
+        "unsafe-url"
+      ]
     },
     "directives": {
-      "manifest-src": ["'self'", "*.dev-franceconnect.fr"],
-      "script-src": ["'self'", "'unsafe-inline'", "*.dev-franceconnect.fr"],
-      "style-src": ["'self'", "'unsafe-inline'", "*.dev-franceconnect.fr"],
+      "manifest-src": [
+        "'self'",
+        "*.dev-franceconnect.fr"
+      ],
+      "script-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "*.dev-franceconnect.fr"
+      ],
+      "style-src": [
+        "'self'",
+        "'unsafe-inline'",
+        "*.dev-franceconnect.fr"
+      ],
       "img-src": [
         "'self'",
         "'unsafe-inline'",
