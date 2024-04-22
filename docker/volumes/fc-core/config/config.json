@@ -33,7 +33,8 @@
   },
   "callbackURL": "https://fcp.docker.dev-franceconnect.fr/oidc_callback",
   "cookieDomain": ".fcp.docker.dev-franceconnect.fr",
-  "cookieSigningSecret": "9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa",
+  "cookieSigningSecret": ["yahvaeJ0eiNua6te", "lidubozieKadee7w", "Eigoh6ev8xaiNoox", "veed7Oow7er5Saim"],
+  "cryptographySubSecret": "9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa",
   "eidasDefaultLevel": "eidas3",
   "env": "docker",
   "features": {
@@ -146,5 +147,13 @@
       ],
       "formAction": null
     }
+  },
+  "trustedDevice": {
+    "cookieName": "trustedDevice",
+    "cookieDomain": ".docker.dev-franceconnect.fr",
+    "identityHmacSecret": "a70bfa5ad69b6c3273b1eaaab142623872138ca814201a36605a9b3cec25e29b",
+    "identityHmacDailyTtl": 90,
+    "maxIdentityNumber": 3,
+    "maxIdentityTrusted": 2
   }
 }
