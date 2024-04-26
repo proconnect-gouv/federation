@@ -1,8 +1,10 @@
+import { v4 as uuid } from 'uuid';
+
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AccountBlockedException } from '@fc/account';
-import { CoreAccountService, CoreAcrService } from '@fc/core';
-import { CryptographyFcaService } from '@fc/cryptography-fca';
+import { AccountFca, AccountFcaService } from '@fc/account-fca';
+import { CoreAcrService } from '@fc/core';
+import { CoreFcaAgentAccountBlockedException } from '@fc/core-fca/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { SessionService } from '@fc/session';
@@ -12,31 +14,29 @@ import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreFcaDefaultVerifyHandler } from './core-fca.default-verify.handler';
 
+jest.mock('uuid');
+
 describe('CoreFcaDefaultVerifyHandler', () => {
   let service: CoreFcaDefaultVerifyHandler;
+
+  const uuidMock = jest.mocked(uuid);
 
   const loggerServiceMock = getLoggerMock();
 
   const accountIdMock = 'accountIdMock value';
+  const universalSubMock = '0b3d4211-d85e-4839-b0ac-2c8a218fe4dd';
 
-  const coreAccountServiceMock = {
-    checkIfAccountIsBlocked: jest.fn(),
-    computeFederation: jest.fn(),
-  };
+  const accountFcaMock = {
+    id: accountIdMock,
+    sub: universalSubMock,
+    active: true,
+  } as AccountFca;
 
   const coreAcrServiceMock = {
     checkIfAcrIsValid: jest.fn(),
   };
 
   const sessionServiceMock = getSessionServiceMock();
-
-  const spIdentityMock = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    given_name: 'Edward',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    family_name: 'TEACH',
-    email: 'eteach@fqdn.ext',
-  };
 
   const idpIdentityMock = {
     sub: 'computedSubIdp',
@@ -60,24 +60,38 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     spId: 'sp_id',
     spAcr: 'eidas3',
     spName: 'my great SP',
-    spIdentity: spIdentityMock,
+    spIdentity: idpIdentityMock,
     amr: ['pwd'],
+  };
+
+  const fcaIdentityMock = {
+    ...idpIdentityMockCleaned,
+    // AgentConnect claims naming convention
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    idp_id: sessionDataMock.idpId,
+    // AgentConnect claims naming convention
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    idp_acr: sessionDataMock.idpAcr,
   };
 
   const handleArgument = {
     sessionOidc: sessionServiceMock,
   };
 
-  const cryptographyFcaServiceMock = {
-    computeSubV1: jest.fn(),
-    computeIdentityHash: jest.fn(),
-  };
-
   const identityProviderAdapterMock = {
     getById: jest.fn(),
   };
 
-  const agentHashMock = 'spIdentityHash';
+  const idpAgentKeyMock = {
+    idpSub: idpIdentityMock.sub,
+    idpUid: idpIdentityMock.uid,
+  };
+
+  const accountFcaServiceMock = {
+    isBlocked: jest.fn(),
+    storeInteraction: jest.fn(),
+    getAccountByIdpAgentKey: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -85,24 +99,21 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         CoreFcaDefaultVerifyHandler,
         SessionService,
         LoggerService,
-        CoreAccountService,
         CoreAcrService,
-        CryptographyFcaService,
         IdentityProviderAdapterMongoService,
+        AccountFcaService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(CoreAccountService)
-      .useValue(coreAccountServiceMock)
       .overrideProvider(CoreAcrService)
       .useValue(coreAcrServiceMock)
-      .overrideProvider(CryptographyFcaService)
-      .useValue(cryptographyFcaServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderAdapterMock)
+      .overrideProvider(AccountFcaService)
+      .useValue(accountFcaServiceMock)
       .compile();
 
     service = module.get<CoreFcaDefaultVerifyHandler>(
@@ -113,13 +124,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     jest.restoreAllMocks();
 
     sessionServiceMock.get.mockReturnValue(sessionDataMock);
-    cryptographyFcaServiceMock.computeIdentityHash.mockReturnValueOnce(
-      'spIdentityHash',
-    );
-    cryptographyFcaServiceMock.computeSubV1.mockReturnValueOnce(
-      'computedSubSp',
-    );
-    coreAccountServiceMock.computeFederation.mockResolvedValue(accountIdMock);
 
     identityProviderAdapterMock.getById.mockResolvedValue({
       maxAuthorizedAcr: 'maxAuthorizedAcr value',
@@ -130,72 +134,252 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getAgentHash()', () => {
-    it('should call computeIdentityHash() with correct params', () => {
-      service['getAgentHash'](sessionDataMock.idpId, idpIdentityMock);
+  describe('handle()', () => {
+    beforeEach(() => {
+      const newSub = 'newSub';
+      uuidMock.mockReturnValueOnce(newSub);
 
-      expect(
-        cryptographyFcaServiceMock.computeIdentityHash,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        cryptographyFcaServiceMock.computeIdentityHash,
-      ).toHaveBeenCalledWith('42', idpIdentityMock);
+      const persistLongTermIdentitySpied = jest.spyOn<
+        CoreFcaDefaultVerifyHandler,
+        any
+      >(service, 'persistLongTermIdentity');
+
+      persistLongTermIdentitySpied.mockReturnValueOnce(accountFcaMock);
     });
 
-    it('should return a computed identity hash', () => {
-      const result = service['getAgentHash'](
-        sessionDataMock.idpId,
+    it('should not throw if verified', async () => {
+      // Then
+      await expect(service.handle(handleArgument)).resolves.not.toThrow();
+    });
+
+    it('should throw if acr is not validated', async () => {
+      // Given
+      const errorMock = new Error('my error 1');
+      coreAcrServiceMock.checkIfAcrIsValid.mockImplementation(() => {
+        throw errorMock;
+      });
+      // Then
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
+    });
+
+    it('sould call persistLongTermIdentity with agent identity and idp id', async () => {
+      // When
+
+      const composeFcaIdentitySpied = jest.spyOn<
+        CoreFcaDefaultVerifyHandler,
+        any
+      >(service, 'persistLongTermIdentity');
+
+      await service.handle(handleArgument);
+
+      // Then
+      expect(composeFcaIdentitySpied).toHaveBeenCalledTimes(1);
+      expect(composeFcaIdentitySpied).toHaveBeenCalledWith(
         idpIdentityMock,
+        sessionDataMock.idpId,
+      );
+    });
+
+    it('should throw if account is blocked', async () => {
+      // Given
+      const checkIfAccountIsBlockedSpied = jest.spyOn<
+        CoreFcaDefaultVerifyHandler,
+        any
+      >(service, 'checkIfAccountIsBlocked');
+
+      const errorMock = new CoreFcaAgentAccountBlockedException();
+      checkIfAccountIsBlockedSpied.mockImplementation(() => {
+        throw errorMock;
+      });
+
+      // Then
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
+    });
+
+    it('should throw if identity provider is not usable', async () => {
+      // Given
+      const errorMock = new Error('my error');
+      sessionServiceMock.get.mockImplementationOnce(() => {
+        throw errorMock;
+      });
+      // Then
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
+    });
+
+    it('should call composeFcaIdentitySpied with idp identity, idp id and idp acr', async () => {
+      // When
+      const composeFcaIdentitySpied = jest.spyOn<
+        CoreFcaDefaultVerifyHandler,
+        any
+      >(service, 'composeFcaIdentity');
+
+      await service.handle(handleArgument);
+
+      // Then
+      expect(composeFcaIdentitySpied).toHaveBeenCalledTimes(1);
+      expect(composeFcaIdentitySpied).toHaveBeenCalledWith(
+        idpIdentityMock,
+        sessionDataMock.idpId,
+        sessionDataMock.idpAcr,
+      );
+    });
+
+    it('should throw an error if composeFcaIdentity failed', async () => {
+      // Given
+      const composeFcaIdentitySpied = jest.spyOn<
+        CoreFcaDefaultVerifyHandler,
+        any
+      >(service, 'composeFcaIdentity');
+
+      const errorMock = new Error('my error');
+      composeFcaIdentitySpied.mockImplementation(() => {
+        throw errorMock;
+      });
+
+      // Then
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
+    });
+
+    it('should patch the session with idp and sp identity', async () => {
+      // Given
+      const calledMock = {
+        idpIdentity: idpIdentityMock,
+        spIdentity: {
+          // Oidc naming convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          given_name: idpIdentityMock.given_name,
+          uid: idpIdentityMock.uid,
+          // AgentConnect claims naming convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          idp_id: sessionDataMock.idpId,
+          // AgentConnect claims naming convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          idp_acr: sessionDataMock.idpAcr,
+          email: idpIdentityMock.email,
+          // Oidc Naming convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          usual_name: idpIdentityMock.usual_name,
+        },
+        subs: {
+          // AgentConnect claims naming convention
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          sp_id: universalSubMock,
+        },
+        accountId: accountIdMock,
+        amr: ['pwd'],
+      };
+
+      // When
+      await service.handle(handleArgument);
+
+      // Then
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith(calledMock);
+    });
+
+    it('should throw if identity storage for service provider fails', async () => {
+      // Given
+      const errorMock = new Error('my error');
+      sessionServiceMock.set.mockImplementationOnce(() => {
+        throw errorMock;
+      });
+
+      // Then
+      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
+    });
+  });
+
+  describe('persistLongTermIdentity()', () => {
+    it('should call create a new uuid and ipd uuid when account is not found', async () => {
+      const newSub = 'newSub';
+      uuidMock.mockReturnValueOnce(newSub);
+
+      const saveInteractionToDatabaseSpied = jest.spyOn<
+        CoreFcaDefaultVerifyHandler,
+        any
+      >(service, 'saveInteractionToDatabase');
+
+      accountFcaServiceMock.getAccountByIdpAgentKey.mockReturnValueOnce(null);
+
+      await service['persistLongTermIdentity'](
+        idpIdentityMock,
+        idpAgentKeyMock.idpUid,
       );
 
-      expect(
-        cryptographyFcaServiceMock.computeIdentityHash,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        cryptographyFcaServiceMock.computeIdentityHash,
-      ).toHaveBeenCalledWith('42', idpIdentityMock);
+      expect(saveInteractionToDatabaseSpied).toHaveBeenCalledTimes(1);
+      expect(saveInteractionToDatabaseSpied).toHaveBeenCalledWith(
+        newSub,
+        idpAgentKeyMock,
+      );
+    });
 
-      expect(result).toStrictEqual('spIdentityHash');
+    it('should use existing uuid and idp uuid when account is found', async () => {
+      const saveInteractionToDatabaseSpied = jest.spyOn<
+        CoreFcaDefaultVerifyHandler,
+        any
+      >(service, 'saveInteractionToDatabase');
+
+      accountFcaServiceMock.getAccountByIdpAgentKey.mockResolvedValueOnce(
+        accountFcaMock,
+      );
+
+      await service['persistLongTermIdentity'](
+        idpIdentityMock,
+        idpAgentKeyMock.idpUid,
+      );
+
+      idpAgentKeyMock.idpUid = accountFcaMock.id;
+
+      expect(saveInteractionToDatabaseSpied).toHaveBeenCalledTimes(1);
+      expect(saveInteractionToDatabaseSpied).toHaveBeenCalledWith(
+        accountFcaMock.sub,
+        {
+          idpSub: idpIdentityMock.sub,
+          idpUid: idpIdentityMock.uid,
+        },
+      );
+    });
+  });
+
+  describe('getIdpAgentKey()', () => {
+    it('should return a concatenation of idpUid and idpSub', () => {
+      const result = service['getIdpAgentKey'](
+        sessionDataMock.idpId,
+        idpIdentityMock.sub,
+      );
+
+      expect(result).toStrictEqual({
+        idpUid: sessionDataMock.idpId,
+        idpSub: idpIdentityMock.sub,
+      });
     });
   });
 
   describe('saveInteractionToDatabase()', () => {
-    it('should call saveInteractionToDatabase() with correct params', async () => {
+    it('should call storeInteraction() with correct params', async () => {
+      jest.useFakeTimers();
+      jest.setSystemTime(new Date(2020, 1, 2));
+
       await service['saveInteractionToDatabase'](
-        sessionDataMock.spId,
-        idpIdentityMock.sub,
-        agentHashMock,
+        universalSubMock,
+        idpAgentKeyMock,
       );
 
-      expect(coreAccountServiceMock.computeFederation).toHaveBeenCalledTimes(1);
-      expect(coreAccountServiceMock.computeFederation).toHaveBeenCalledWith({
-        key: sessionDataMock.spId,
-        sub: idpIdentityMock.sub,
-        identityHash: agentHashMock,
-      });
-    });
-
-    it('should return a nominal response for saveInteractionToDatabase()', async () => {
-      const result = await service['saveInteractionToDatabase'](
-        sessionDataMock.spId,
-        idpIdentityMock.sub,
-        agentHashMock,
-      );
-
-      expect(coreAccountServiceMock.computeFederation).toHaveBeenCalledTimes(1);
-      expect(coreAccountServiceMock.computeFederation).toHaveBeenCalledWith({
-        key: sessionDataMock.spId,
-        sub: idpIdentityMock.sub,
-        identityHash: agentHashMock,
+      expect(accountFcaServiceMock.storeInteraction).toHaveBeenCalledTimes(1);
+      expect(accountFcaServiceMock.storeInteraction).toHaveBeenCalledWith({
+        idpUid: idpAgentKeyMock.idpUid,
+        idpSub: idpAgentKeyMock.idpSub,
+        lastConnection: new Date(2020, 1, 2),
+        sub: universalSubMock,
       });
 
-      expect(result).toStrictEqual(accountIdMock);
+      jest.useRealTimers();
     });
   });
 
-  describe('getSpSub()', () => {
+  describe('composeFcaIdentity()', () => {
     it('should return a clean identity', () => {
-      const result = service['getSpSub'](
+      const result = service['composeFcaIdentity'](
         idpIdentityMock,
         sessionDataMock.idpId,
         sessionDataMock.idpAcr,
@@ -219,56 +403,23 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     it('should set the Oidc session', () => {
       service['storeIdentityWithSessionService'](
         sessionServiceMock,
-        idpIdentityMock.sub,
-        spIdentityMock,
+        accountFcaMock.sub,
+        idpIdentityMock,
         accountIdMock,
       );
 
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
     });
-  });
 
-  describe('handle()', () => {
-    it('Should not throw if verified', async () => {
-      // Then
-      await expect(service.handle(handleArgument)).resolves.not.toThrow();
-    });
-
-    // Dependencies sevices errors
-    it('Should throw if acr is not validated', async () => {
-      // Given
-      const errorMock = new Error('my error 1');
-      coreAcrServiceMock.checkIfAcrIsValid.mockImplementation(() => {
-        throw errorMock;
-      });
-      // Then
-      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
-    });
-
-    it('Should throw if account is blocked', async () => {
-      // Given
-      const errorMock = new AccountBlockedException();
-      coreAccountServiceMock.checkIfAccountIsBlocked.mockRejectedValueOnce(
-        errorMock,
+    it('should call session set with amr parameters', () => {
+      // When
+      service['storeIdentityWithSessionService'](
+        sessionServiceMock,
+        accountFcaMock.sub,
+        fcaIdentityMock,
+        accountIdMock,
       );
 
-      // Then
-      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
-    });
-
-    it('Should throw if identity provider is not usable', async () => {
-      // Given
-      const errorMock = new Error('my error');
-      sessionServiceMock.get.mockImplementationOnce(() => {
-        throw errorMock;
-      });
-      // Then
-      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
-    });
-
-    it('Should call session set with amr parameter', async () => {
-      // When
-      await service.handle(handleArgument);
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.set).toHaveBeenCalledWith({
@@ -279,112 +430,46 @@ describe('CoreFcaDefaultVerifyHandler', () => {
           ...idpIdentityMockCleaned,
           // AgentConnect claims naming convention
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          idp_id: '42',
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          idp_acr: 'eidas3',
-        },
-        subs: {
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          sp_id: 'computedSubSp',
-        },
-      });
-    });
-
-    it('Should call computeFederation()', async () => {
-      // When
-      await service.handle(handleArgument);
-      // Then
-      expect(coreAccountServiceMock.computeFederation).toHaveBeenCalledTimes(1);
-      expect(coreAccountServiceMock.computeFederation).toHaveBeenCalledWith({
-        key: sessionDataMock.spId,
-        sub: 'computedSubSp',
-        identityHash: 'spIdentityHash',
-      });
-    });
-
-    it('should call computeIdentityHash with idp identity and idp id', async () => {
-      // When
-      await service.handle(handleArgument);
-
-      // Then
-      expect(
-        cryptographyFcaServiceMock.computeIdentityHash,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        cryptographyFcaServiceMock.computeIdentityHash,
-      ).toHaveBeenNthCalledWith(1, sessionDataMock.idpId, idpIdentityMock);
-    });
-
-    it('Should call compute Sub for Sp based on identity hash', async () => {
-      // When
-      await service.handle(handleArgument);
-
-      // Then
-      expect(cryptographyFcaServiceMock.computeSubV1).toHaveBeenCalledTimes(1);
-      expect(cryptographyFcaServiceMock.computeSubV1).toHaveBeenNthCalledWith(
-        1,
-        sessionDataMock.spId,
-        'spIdentityHash',
-      );
-    });
-
-    it('Should throw an error if computeFederation failed', async () => {
-      // Given
-      const errorMock = new Error('my error');
-      coreAccountServiceMock.computeFederation.mockRejectedValueOnce(errorMock);
-
-      // Then
-      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
-    });
-
-    it('Should patch the session with idp and sp identity', async () => {
-      // Given
-      const calledMock = {
-        idpIdentity: idpIdentityMock,
-        spIdentity: {
-          // Oidc naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          given_name: idpIdentityMock.given_name,
-          uid: idpIdentityMock.uid,
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           idp_id: sessionDataMock.idpId,
           // AgentConnect claims naming convention
           // eslint-disable-next-line @typescript-eslint/naming-convention
           idp_acr: sessionDataMock.idpAcr,
-          email: idpIdentityMock.email,
-          // Oidc Naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          usual_name: idpIdentityMock.usual_name,
         },
         subs: {
           // AgentConnect claims naming convention
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          sp_id: 'computedSubSp',
+          sp_id: universalSubMock,
         },
-        accountId: accountIdMock,
-        amr: ['pwd'],
-      };
+      });
+    });
+  });
 
-      // When
-      await service.handle(handleArgument);
+  describe('checkIfAccountIsBlocked()', () => {
+    it('should call isBlocked() with correct params', () => {
+      service['checkIfAccountIsBlocked'](accountFcaMock);
 
-      // Then
-      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.set).toHaveBeenCalledWith(calledMock);
+      expect(accountFcaServiceMock.isBlocked).toHaveBeenCalledTimes(1);
+      expect(accountFcaServiceMock.isBlocked).toHaveBeenCalledWith(
+        accountFcaMock,
+      );
     });
 
-    it('Should throw if identity storage for service provider fails', async () => {
-      // Given
-      const errorMock = new Error('my error');
-      sessionServiceMock.set.mockImplementationOnce(() => {
-        throw errorMock;
-      });
+    it('should throw an error if account is not active', () => {
+      accountFcaMock.active = false;
+      accountFcaServiceMock.isBlocked.mockReturnValueOnce(true);
 
-      // Then
-      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
+      expect(() => service['checkIfAccountIsBlocked'](accountFcaMock)).toThrow(
+        new CoreFcaAgentAccountBlockedException(),
+      );
+    });
+
+    it('should not throw an error if account is active', () => {
+      accountFcaMock.active = true;
+      accountFcaServiceMock.isBlocked.mockReturnValueOnce(false);
+
+      expect(() =>
+        service['checkIfAccountIsBlocked'](accountFcaMock),
+      ).not.toThrow();
     });
   });
 });
