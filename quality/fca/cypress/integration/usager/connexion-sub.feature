@@ -71,6 +71,3 @@ Fonctionnalité: Connexion Usager - Sub
     Et que je suis redirigé vers la page fournisseur de service
     Et que je suis connecté au fournisseur de service
     Alors le sub transmis au fournisseur de service est identique au sub mémorisé
-
-  Scénario: Connexion Usager - une identité déjà liée à deux FIs génèrent un même sub
-

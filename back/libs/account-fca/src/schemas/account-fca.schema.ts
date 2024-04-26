@@ -51,7 +51,6 @@ export class AccountFca extends Document {
    */
   @Prop({
     type: [IdpIdentityKey],
-    index: { idpSub: 1, idpUid: 1, unique: true },
   })
   idpIdentityKeys: [IdpIdentityKey];
 
