@@ -5,11 +5,9 @@ import { Module } from '@nestjs/common';
 
 import { CryptographyModule, CryptographyService } from '@fc/cryptography';
 
-import { CryptographyFcaService } from './cryptography-fca.service';
-
 @Module({
   imports: [CryptographyModule],
-  providers: [CryptographyFcaService, CryptographyService],
-  exports: [CryptographyFcaService],
+  providers: [CryptographyService],
+  exports: [],
 })
 export class CryptographyFcaModule {}
