@@ -86,8 +86,8 @@ describe('CoreFcaMcpVerifyHandler', () => {
 
   const accountFcaServiceMock = {
     isBlocked: jest.fn(),
-    storeInteraction: jest.fn(),
-    getAccountByIdpAgentKey: jest.fn(),
+    saveInteraction: jest.fn(),
+    getAccountByIdpAgentKeys: jest.fn(),
   };
 
   beforeEach(async () => {
