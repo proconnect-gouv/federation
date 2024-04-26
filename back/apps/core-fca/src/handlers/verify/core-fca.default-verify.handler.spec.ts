@@ -89,8 +89,8 @@ describe('CoreFcaDefaultVerifyHandler', () => {
 
   const accountFcaServiceMock = {
     isBlocked: jest.fn(),
-    storeInteraction: jest.fn(),
-    getAccountByIdpAgentKey: jest.fn(),
+    saveInteraction: jest.fn(),
+    getAccountByIdpAgentKeys: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -299,7 +299,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         any
       >(service, 'saveInteractionToDatabase');
 
-      accountFcaServiceMock.getAccountByIdpAgentKey.mockReturnValueOnce(null);
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockReturnValueOnce(null);
 
       await service['persistLongTermIdentity'](
         idpIdentityMock,
@@ -319,7 +319,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         any
       >(service, 'saveInteractionToDatabase');
 
-      accountFcaServiceMock.getAccountByIdpAgentKey.mockResolvedValueOnce(
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValueOnce(
         accountFcaMock,
       );
 
@@ -356,7 +356,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
   });
 
   describe('saveInteractionToDatabase()', () => {
-    it('should call storeInteraction() with correct params', async () => {
+    it('should call saveInteraction() with correct params', async () => {
       jest.useFakeTimers();
       jest.setSystemTime(new Date(2020, 1, 2));
 
@@ -365,8 +365,8 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         idpAgentKeyMock,
       );
 
-      expect(accountFcaServiceMock.storeInteraction).toHaveBeenCalledTimes(1);
-      expect(accountFcaServiceMock.storeInteraction).toHaveBeenCalledWith({
+      expect(accountFcaServiceMock.saveInteraction).toHaveBeenCalledTimes(1);
+      expect(accountFcaServiceMock.saveInteraction).toHaveBeenCalledWith({
         idpUid: idpAgentKeyMock.idpUid,
         idpSub: idpAgentKeyMock.idpSub,
         lastConnection: new Date(2020, 1, 2),

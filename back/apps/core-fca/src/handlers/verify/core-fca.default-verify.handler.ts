@@ -2,10 +2,10 @@ import { v4 as uuid } from 'uuid';
 
 import { Injectable } from '@nestjs/common';
 
-import { AccountFca, AccountFcaService } from '@fc/account-fca';
+import { AccountFca, AccountFcaService, IIdpAgentKeys } from '@fc/account-fca';
 import { CoreAcrService, IVerifyFeatureHandlerHandleArgument } from '@fc/core';
 import { CoreFcaAgentAccountBlockedException } from '@fc/core-fca/exceptions/core-fca-account-blocked.exception';
-import { IAgentIdentity, IIdpAgentKey } from '@fc/cryptography-fca';
+import { IAgentIdentity } from '@fc/cryptography-fca';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -71,7 +71,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
 
     // check if account exists
     const existingAccount =
-      await this.accountService.getAccountByIdpAgentKey(idpAgentKey);
+      await this.accountService.getAccountByIdpAgentKeys(idpAgentKey);
     let universalSub: string;
 
     if (existingAccount) {
@@ -90,7 +90,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   }
 
   // agentHash is a combination of idpId and idpSub
-  protected getIdpAgentKey(idpUid: string, idpSub: string): IIdpAgentKey {
+  protected getIdpAgentKey(idpUid: string, idpSub: string): IIdpAgentKeys {
     return {
       idpUid,
       idpSub,
@@ -99,7 +99,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
 
   protected async saveInteractionToDatabase(
     sub: string,
-    idpAgentKey: IIdpAgentKey,
+    idpAgentKey: IIdpAgentKeys,
   ): Promise<AccountFca> {
     const interaction = {
       // fca Hash is used as main identity hash
@@ -110,7 +110,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
       sub,
     };
 
-    return await this.accountService.storeInteraction(interaction);
+    return await this.accountService.saveInteraction(interaction);
   }
 
   protected composeFcaIdentity(
