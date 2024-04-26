@@ -6,7 +6,7 @@
     "descriptions": [
       "par défaut",
       "actif",
-      "par défaut avec amr 'fc pwd mail mfa'"
+      "par défaut avec amr 'fc pwd'"
     ],
     "mocked": true,
     "usable": true,
