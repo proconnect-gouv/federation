@@ -147,7 +147,8 @@ describe('AccountFcaService', () => {
       // Then
       expect(findOneMock).toHaveBeenCalledTimes(1);
       expect(findOneMock).toHaveBeenCalledWith({
-        idpIdentityKeys: idpIdentityKeyMock,
+        'idpIdentityKeys.idpUid': idpIdentityKeyMock.idpUid,
+        'idpIdentityKeys.idpSub': idpIdentityKeyMock.idpSub,
       });
     });
 

@@ -83,3 +83,16 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Quand je clique sur le bouton de connexion
     Quand je reviens en arrière
     Alors je suis redirigé vers la page interaction
+
+ @ignoreInteg01
+ Scénario: Connexion d'un usager - account déjà existant
+    Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Et que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton AgentConnect
+    Et que je suis redirigé vers la page interaction
+    Et que j'entre l'email "mohamed@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Quand je m'authentifie avec succès avec l'identifiant "12355"
+    Alors je suis redirigé vers la page fournisseur de service
+    Et je suis connecté au fournisseur de service
