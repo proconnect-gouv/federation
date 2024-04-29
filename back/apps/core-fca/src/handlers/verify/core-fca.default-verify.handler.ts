@@ -86,7 +86,11 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
       universalSub = uuid();
     }
 
-    return await this.saveInteractionToDatabase(universalSub, idpAgentKey);
+    return await this.saveInteractionToDatabase(
+      universalSub,
+      idpAgentKey,
+      existingAccount,
+    );
   }
 
   // agentHash is a combination of idpId and idpSub
@@ -100,6 +104,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   protected async saveInteractionToDatabase(
     sub: string,
     idpAgentKey: IIdpAgentKeys,
+    existingAccount?: AccountFca,
   ): Promise<AccountFca> {
     const interaction = {
       // fca Hash is used as main identity hash
@@ -110,7 +115,10 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
       sub,
     };
 
-    return await this.accountService.saveInteraction(interaction);
+    return await this.accountService.saveInteraction(
+      interaction,
+      existingAccount,
+    );
   }
 
   protected composeFcaIdentity(

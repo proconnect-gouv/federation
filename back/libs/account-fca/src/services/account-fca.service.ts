@@ -14,8 +14,11 @@ export class AccountFcaService {
     return !account.active;
   }
 
-  async saveInteraction(interaction: IInteraction): Promise<AccountFca> {
-    const account = await this.getAccountWithSub(interaction);
+  async saveInteraction(
+    interaction: IInteraction,
+    existingAccount?: AccountFca,
+  ): Promise<AccountFca> {
+    const account = this.getAccountWithSub(interaction, existingAccount);
     await account.save();
 
     return account;
@@ -32,21 +35,18 @@ export class AccountFcaService {
     });
   }
 
-  private async getAccountWithSub({
-    sub,
-    lastConnection,
-    idpSub,
-    idpUid,
-  }: Omit<IInteraction, 'id'>): Promise<AccountFca> {
-    // Get existing account or declare a new one
-    let account = await this.model.findOne({ sub });
+  private getAccountWithSub(
+    { sub, lastConnection, idpSub, idpUid }: Omit<IInteraction, 'id'>,
+    existingAccount?: AccountFca,
+  ): AccountFca {
+    let account = existingAccount;
 
     if (!account) {
       account = new this.model({ sub });
       account.idpIdentityKeys = [{ idpSub, idpUid }];
     }
 
-    // Update last connection timestamp
+    // Updating last connection timestamp updates session lifetime
     account.lastConnection = lastConnection;
 
     return account;

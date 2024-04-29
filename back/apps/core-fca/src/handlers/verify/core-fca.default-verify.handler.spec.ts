@@ -310,6 +310,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       expect(saveInteractionToDatabaseSpied).toHaveBeenCalledWith(
         newSub,
         idpAgentKeyMock,
+        null,
       );
     });
 
@@ -337,6 +338,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
           idpSub: idpIdentityMock.sub,
           idpUid: idpIdentityMock.uid,
         },
+        accountFcaMock,
       );
     });
   });
@@ -366,12 +368,15 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       );
 
       expect(accountFcaServiceMock.saveInteraction).toHaveBeenCalledTimes(1);
-      expect(accountFcaServiceMock.saveInteraction).toHaveBeenCalledWith({
-        idpUid: idpAgentKeyMock.idpUid,
-        idpSub: idpAgentKeyMock.idpSub,
-        lastConnection: new Date(2020, 1, 2),
-        sub: universalSubMock,
-      });
+      expect(accountFcaServiceMock.saveInteraction).toHaveBeenCalledWith(
+        {
+          idpUid: idpAgentKeyMock.idpUid,
+          idpSub: idpAgentKeyMock.idpSub,
+          lastConnection: new Date(2020, 1, 2),
+          sub: universalSubMock,
+        },
+        undefined,
+      );
 
       jest.useRealTimers();
     });

@@ -39,10 +39,14 @@ describe('AccountFcaService', () => {
     }
   }
 
-  const modelMock = {
-    save: jest.fn(),
+  const accountMock = {
     id: 'Account Mock Id Value',
     lastConnection: new Date('2023-04-25T21:44:02.968Z'),
+  } as AccountFca;
+
+  const modelMock = {
+    ...accountMock,
+    save: jest.fn(),
   };
 
   const interactionMock = {
@@ -93,10 +97,10 @@ describe('AccountFcaService', () => {
     });
   });
 
-  describe('saveInteractionToDatabase()', () => {
-    it('should call store interaction and account save with correct params', async () => {
+  describe('saveInteraction()', () => {
+    it('should call save interaction with correct params', async () => {
       // Given
-      service['getAccountWithSub'] = jest.fn().mockResolvedValueOnce(modelMock);
+      service['getAccountWithSub'] = jest.fn().mockReturnValueOnce(modelMock);
       modelMock.save.mockResolvedValueOnce(undefined);
 
       // When
@@ -106,13 +110,14 @@ describe('AccountFcaService', () => {
       expect(service['getAccountWithSub']).toHaveBeenCalledTimes(1);
       expect(service['getAccountWithSub']).toHaveBeenCalledWith(
         interactionMock,
+        undefined,
       );
       expect(modelMock.save).toHaveBeenCalledTimes(1);
     });
 
     it('should return an account', async () => {
       // Given
-      service['getAccountWithSub'] = jest.fn().mockResolvedValueOnce(modelMock);
+      service['getAccountWithSub'] = jest.fn().mockReturnValueOnce(modelMock);
 
       // When
       const result = await service.saveInteraction(interactionMock);
@@ -125,7 +130,7 @@ describe('AccountFcaService', () => {
       // Given
       service['getAccountWithSub'] = jest
         .fn()
-        .mockRejectedValueOnce(new Error('test'));
+        .mockReturnValueOnce(new Error('test'));
 
       // Then
       await expect(service.saveInteraction(interactionMock)).rejects.toThrow();
@@ -136,7 +141,7 @@ describe('AccountFcaService', () => {
       service['getAccountWithInteraction'] = jest
         .fn()
         .mockResolvedValueOnce(modelMock);
-      modelMock.save.mockRejectedValueOnce(new Error('test'));
+      modelMock.save.mockReturnValueOnce(new Error('test'));
 
       // Then
       await expect(service.saveInteraction(interactionMock)).rejects.toThrow();
@@ -171,24 +176,12 @@ describe('AccountFcaService', () => {
   });
 
   describe('getAccountWithSub()', () => {
-    it('should call findOne with correct params', async () => {
+    it('should return a new account if none is found', () => {
       // Given
       findOneMock.mockResolvedValueOnce(null);
 
       // When
-      await service['getAccountWithSub'](interactionMock);
-
-      // Then
-      expect(findOneMock).toHaveBeenCalledTimes(1);
-      expect(findOneMock).toHaveBeenCalledWith({ sub: interactionMock.sub });
-    });
-
-    it('should return a new account if none is found', async () => {
-      // Given
-      findOneMock.mockResolvedValueOnce(null);
-
-      // When
-      const result = await service['getAccountWithSub'](interactionMock);
+      const result = service['getAccountWithSub'](interactionMock);
 
       // Then
       expect(result).toEqual(
@@ -201,23 +194,17 @@ describe('AccountFcaService', () => {
       );
     });
 
-    it('should return an existing account if one is found', async () => {
-      // Given
-      findOneMock.mockResolvedValueOnce(modelMock);
-
+    it('should return an existing account if one is passed', () => {
       // When
-      const result = await service['getAccountWithSub'](interactionMock);
+      const result = service['getAccountWithSub'](interactionMock, accountMock);
 
       // Then
-      expect(result).toBe(modelMock);
+      expect(result).toBe(accountMock);
     });
 
-    it('should return an account with updated last connection timestamp', async () => {
-      // Given
-      findOneMock.mockResolvedValueOnce(modelMock);
-
+    it('should return an account with updated last connection timestamp', () => {
       // When
-      const result = await service['getAccountWithSub'](interactionMock);
+      const result = service['getAccountWithSub'](interactionMock);
 
       // Then
       expect(result.lastConnection).toBe(interactionMock.lastConnection);
