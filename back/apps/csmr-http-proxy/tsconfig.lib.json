@@ -1,8 +1,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "declaration": false,
-    "outDir": "../../dist/apps/csmr-account"
+    "declaration": true,
+    "outDir": "../../dist/apps/csmr-http-proxy"
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "test", "**/*spec.ts"]

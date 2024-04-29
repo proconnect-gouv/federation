@@ -14,6 +14,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+      - "${VOLUMES_DIR}/log:/var/log/app"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/core-legacy/.env/idp.env"
@@ -36,6 +37,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+      - "${VOLUMES_DIR}/log:/var/log/app"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/core-legacy/.env/idp.env"
@@ -58,6 +60,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+      - "${VOLUMES_DIR}/log:/var/log/app"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/core-legacy/.env/idp.env"
@@ -80,6 +83,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+      - "${VOLUMES_DIR}/log:/var/log/app"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/core-legacy/.env/idp.env"
@@ -102,6 +106,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+      - "${VOLUMES_DIR}/log:/var/log/app"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/core-legacy/.env/idp.env"
@@ -128,6 +133,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+      - "${VOLUMES_DIR}/log:/var/log/app"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/core-legacy/.env/sp.env"
@@ -152,6 +158,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+      - "${VOLUMES_DIR}/log:/var/log/app"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/core-legacy/.env/sp.env"
@@ -176,6 +183,7 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+      - "${VOLUMES_DIR}/log:/var/log/app"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/core-legacy/.env/sp.env"
@@ -203,9 +211,12 @@ services:
       - "${VOLUMES_DIR}/app:/opt/scripts"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+      - "${VOLUMES_DIR}/log:/var/log/app"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
     environment:
+      - "DEFAULT_MODE=legacy"
+      - "APP_NAME=fdp1"
       - "PM2_SCRIPT=bin/www"
       - "PM2_CI_SCRIPT=bin/www"
       - "VIRTUAL_HOST=fdp1.docker.dev-franceconnect.fr"
