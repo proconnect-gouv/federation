@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { AccountFca, AccountFcaService, IIdpAgentKeys } from '@fc/account-fca';
 import { CoreAcrService, IVerifyFeatureHandlerHandleArgument } from '@fc/core';
 import { CoreFcaAgentAccountBlockedException } from '@fc/core-fca/exceptions/core-fca-account-blocked.exception';
-import { IAgentIdentity } from '@fc/cryptography-fca';
+import { IAgentIdentity } from '@fc/core-fca/interfaces';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';

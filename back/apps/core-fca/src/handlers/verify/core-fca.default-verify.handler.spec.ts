@@ -88,7 +88,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
   };
 
   const accountFcaServiceMock = {
-    isBlocked: jest.fn(),
     saveInteraction: jest.fn(),
     getAccountByIdpAgentKeys: jest.fn(),
   };
@@ -450,18 +449,8 @@ describe('CoreFcaDefaultVerifyHandler', () => {
   });
 
   describe('checkIfAccountIsBlocked()', () => {
-    it('should call isBlocked() with correct params', () => {
-      service['checkIfAccountIsBlocked'](accountFcaMock);
-
-      expect(accountFcaServiceMock.isBlocked).toHaveBeenCalledTimes(1);
-      expect(accountFcaServiceMock.isBlocked).toHaveBeenCalledWith(
-        accountFcaMock,
-      );
-    });
-
     it('should throw an error if account is not active', () => {
       accountFcaMock.active = false;
-      accountFcaServiceMock.isBlocked.mockReturnValueOnce(true);
 
       expect(() => service['checkIfAccountIsBlocked'](accountFcaMock)).toThrow(
         new CoreFcaAgentAccountBlockedException(),
@@ -470,7 +459,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
 
     it('should not throw an error if account is active', () => {
       accountFcaMock.active = true;
-      accountFcaServiceMock.isBlocked.mockReturnValueOnce(false);
 
       expect(() =>
         service['checkIfAccountIsBlocked'](accountFcaMock),
