@@ -995,6 +995,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/exceptions/tsconfig.lib.json"
       }
+    },
+    "account-fca": {
+      "type": "library",
+      "root": "libs/account-fca",
+      "entryFile": "index",
+      "sourceRoot": "libs/account-fca/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/account-fca/tsconfig.lib.json"
+      }
     }
   }
 }

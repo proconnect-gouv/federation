@@ -5,6 +5,7 @@ import { Global, Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 
 import { AccountModule } from '@fc/account';
+import { AccountFcaModule } from '@fc/account-fca';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import {
   CORE_SERVICE,
@@ -119,6 +120,7 @@ const exceptionFiltersProviders = [
     NotificationsModule,
     FeatureHandlerModule,
     CsrfModule,
+    AccountFcaModule,
   ],
   controllers: [
     CoreFcaController,

@@ -281,7 +281,8 @@
       "^@fc/csrf(|/.*)$": "<rootDir>/libs/csrf/src/$1",
       "^@fc/exceptions(|/.*)$": "<rootDir>/libs/exceptions/src/$1",
       "^@fc/i18n(|/.*)$": "<rootDir>/libs/i18n/src/$1",
-      "^@mocks/i18n(|/.*)$": "<rootDir>/libs/i18n/.mocks$1"
+      "^@mocks/i18n(|/.*)$": "<rootDir>/libs/i18n/.mocks$1",
+      "^@fc/account-fca(|/.*)$": "<rootDir>/libs/account-fca/src/$1"
     },
     "preset": "ts-jest"
   }
