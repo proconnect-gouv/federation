@@ -10,10 +10,6 @@ import { AccountFca } from '../schemas';
 export class AccountFcaService {
   constructor(@InjectModel('AccountFca') private model: Model<AccountFca>) {}
 
-  isBlocked(account: AccountFca): boolean {
-    return !account.active;
-  }
-
   async saveInteraction(
     interaction: IInteraction,
     existingAccount?: AccountFca,

@@ -168,9 +168,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   }
 
   protected checkIfAccountIsBlocked(account: AccountFca): void {
-    const accountIsBlocked = this.accountService.isBlocked(account);
-
-    if (accountIsBlocked) {
+    if (!account.active) {
       throw new CoreFcaAgentAccountBlockedException();
     }
   }

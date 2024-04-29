@@ -85,18 +85,6 @@ describe('AccountFcaService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('isBlocked()', () => {
-    it('should return true if account is blocked', () => {
-      const account = { active: false } as AccountFca;
-      expect(service.isBlocked(account)).toBe(true);
-    });
-
-    it('should return false if account is not blocked', () => {
-      const account = { active: true } as AccountFca;
-      expect(service.isBlocked(account)).toBe(false);
-    });
-  });
-
   describe('saveInteraction()', () => {
     it('should call save interaction with correct params', async () => {
       // Given
