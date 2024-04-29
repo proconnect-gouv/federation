@@ -217,7 +217,6 @@
       "^@fc/oidc-provider(|/.*)$": "<rootDir>/libs/oidc-provider/src$1",
       "^@fc/oidc-client(|/.*)$": "<rootDir>/libs/oidc-client/src$1",
       "^@fc/cryptography-fcp(|/.*)$": "<rootDir>/libs/cryptography-fcp/src$1",
-      "^@fc/cryptography-fca(|/.*)$": "<rootDir>/libs/cryptography-fca/src$1",
       "^@fc/cryptography-eidas(|/.*)$": "<rootDir>/libs/cryptography-eidas/src$1",
       "^@fc/cryptography(|/.*)$": "<rootDir>/libs/cryptography/src$1",
       "^@fc/core(|/.*)$": "<rootDir>/libs/core/src$1",

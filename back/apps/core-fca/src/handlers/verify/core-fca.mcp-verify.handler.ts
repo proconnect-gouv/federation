@@ -3,7 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { AccountFcaService } from '@fc/account-fca';
 import { CoreAcrService, IVerifyFeatureHandlerHandleArgument } from '@fc/core';
 import { CoreFcaAgentNotFromPublicServiceException } from '@fc/core-fca/exceptions';
-import { IAgentIdentity } from '@fc/cryptography-fca';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -12,7 +11,10 @@ import {
   Types,
 } from '@fc/service-provider-adapter-mongo';
 
-import { IAgentConnectOidcIdentity } from '../../interfaces';
+import {
+  IAgentIdentity,
+  IAggentIdentityWithPublicness,
+} from '../../interfaces';
 import { CoreFcaDefaultVerifyHandler } from './core-fca.default-verify.handler';
 
 @Injectable()
@@ -52,7 +54,7 @@ export class CoreFcaMcpVerifyHandler
     const { type } = await this.serviceProvider.getById(spId);
 
     const isPrivateIdentity =
-      (idpIdentity as IAgentConnectOidcIdentity).is_service_public !== true;
+      (idpIdentity as IAggentIdentityWithPublicness).is_service_public !== true;
     // Types.PUBLIC = sp that accepts public servant only
     // Types.PRIVATE = sp that also accepts private compagnies employes
     const spAcceptsPrivate = type !== Types.PUBLIC;
