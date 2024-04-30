@@ -74,21 +74,6 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Alors je suis redirigé vers la page fournisseur de service
 
   @ignoreInteg01
-  Scénario: Connexion d'un usager - fqdn lié à plusieurs fi retourne le premier fi
-    Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
-    Et que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton AgentConnect
-    Et que je suis redirigé vers la page interaction
-    Et que j'entre l'email "many@polyfi.fr"
-    Quand je clique sur le bouton de connexion
-    Et j'utilise le fournisseur d'identité "différent"
-    Et je suis redirigé vers la page login du fournisseur d'identité
-    Et je m'authentifie avec succès
-    Alors je suis redirigé vers la page fournisseur de service
-    Et je suis connecté au fournisseur de service
-    Et le fournisseur de service a accès aux informations du scope "tous les scopes"
-
-  @ignoreInteg01
   Scénario: Connexion d'un usager - retour en arrière après redirection vers FI
     Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
     Et que je navigue sur la page fournisseur de service
