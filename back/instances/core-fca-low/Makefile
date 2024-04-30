@@ -59,7 +59,7 @@ visual v:
 update-visual:
 	cd $(FC_ROOT)/fc/quality/fca && yarn install && yarn test:low:snapshot --env updateSnapshots=true
 
-ci:
+ci-legacy:
 	$(MAKE) doc && $(MAKE) prepare && $(MAKE) test-coverage && $(MAKE) tl && $(MAKE) tqh && $(MAKE) v
 
 test-legacy tl:

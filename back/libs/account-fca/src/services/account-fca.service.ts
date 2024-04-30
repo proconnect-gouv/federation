@@ -25,8 +25,8 @@ export class AccountFcaService {
     return new this.model({ sub });
   }
 
-  async upsertWihSub(account: AccountFca): Promise<AccountFca> {
-    return await this.model.findOneAndUpdate(
+  async upsertWithSub(account: AccountFca): Promise<void> {
+    await this.model.findOneAndUpdate(
       {
         sub: account.sub,
       },

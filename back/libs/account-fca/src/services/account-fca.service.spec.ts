@@ -132,13 +132,13 @@ describe('AccountFcaService', () => {
     });
   });
 
-  describe('upsertWihSub()', () => {
+  describe('upsertWithSub()', () => {
     it('should call findOneAndUpdate with correct params', async () => {
       // Given
       findOneAndUpdateMock.mockResolvedValueOnce(accountMock);
 
       // When
-      await service.upsertWihSub(accountMock);
+      await service.upsertWithSub(accountMock);
 
       // Then
       expect(findOneAndUpdateMock).toHaveBeenCalledTimes(1);

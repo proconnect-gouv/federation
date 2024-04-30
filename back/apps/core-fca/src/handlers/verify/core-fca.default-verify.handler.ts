@@ -27,7 +27,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
    * Main business manipulations occurs in this method
    *
    * 1. Get infos on current interaction and identity fetched from IdP
-   * 2. Store interaction with account service (long term storage)
+   * 2. Create or update account with interaction (long term storage)
    * 3. Store identity with session service (short term storage)
    *
    * @param req
@@ -46,7 +46,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
 
     const agentIdentity = idpIdentity as IAgentIdentity;
 
-    const account = await this.persistLongTermIdentity(agentIdentity, idpId);
+    const account = await this.createOrUpdateAccount(agentIdentity, idpId);
 
     this.checkIfAccountIsBlocked(account);
 
@@ -60,19 +60,17 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     );
   }
 
-  protected async persistLongTermIdentity(
+  protected async createOrUpdateAccount(
     agentIdentity: IAgentIdentity,
     idpUid: string,
   ): Promise<AccountFca> {
     const account = await this.getAccountForInteraction(agentIdentity, idpUid);
 
-    const accountWithInteraction = this.updateAcccountWithInteraction(
-      account,
-      agentIdentity,
-      idpUid,
-    );
+    this.updateAccountWithInteraction(account, agentIdentity, idpUid);
 
-    return await this.accountService.upsertWihSub(accountWithInteraction);
+    await this.accountService.upsertWithSub(account);
+
+    return account;
   }
 
   private async getAccountForInteraction(
@@ -90,11 +88,11 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     return this.accountService.createAccount();
   }
 
-  private updateAcccountWithInteraction(
+  private updateAccountWithInteraction(
     account: AccountFca,
     agentIdentity: IAgentIdentity,
     idpUid: string,
-  ): AccountFca {
+  ): void {
     const { sub } = agentIdentity;
     const hasInteraction = this.hasInteraction(account, sub);
 
@@ -103,8 +101,6 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     }
 
     account.lastConnection = new Date();
-
-    return account;
   }
 
   private hasInteraction(account: AccountFca, sub: string): boolean {

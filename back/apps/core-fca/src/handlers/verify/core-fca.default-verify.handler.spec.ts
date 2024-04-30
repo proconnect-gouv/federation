@@ -90,7 +90,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
   const accountFcaServiceMock = {
     createAccount: jest.fn(),
     getAccountByIdpAgentKeys: jest.fn(),
-    upsertWihSub: jest.fn(),
+    upsertWithSub: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -139,12 +139,12 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       const newSub = 'newSub';
       uuidMock.mockReturnValueOnce(newSub);
 
-      const persistLongTermIdentitySpied = jest.spyOn<
+      const createOrUpdateAccountSpied = jest.spyOn<
         CoreFcaDefaultVerifyHandler,
         any
-      >(service, 'persistLongTermIdentity');
+      >(service, 'createOrUpdateAccount');
 
-      persistLongTermIdentitySpied.mockReturnValueOnce(accountFcaMock);
+      createOrUpdateAccountSpied.mockReturnValueOnce(accountFcaMock);
     });
 
     it('should not throw if verified', async () => {
@@ -162,13 +162,13 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
-    it('sould call persistLongTermIdentity with agent identity and idp id', async () => {
+    it('sould call createOrUpdateAccount with agent identity and idp id', async () => {
       // When
 
       const composeFcaIdentitySpied = jest.spyOn<
         CoreFcaDefaultVerifyHandler,
         any
-      >(service, 'persistLongTermIdentity');
+      >(service, 'createOrUpdateAccount');
 
       await service.handle(handleArgument);
 
@@ -289,13 +289,13 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     });
   });
 
-  describe('persistLongTermIdentity()', () => {
-    it('should updateAcccountWithInteraction with correct parameters', async () => {
+  describe('createOrUpdateAccount()', () => {
+    it('should updateAccountWithInteraction with correct parameters', async () => {
       // Given
-      const updateAcccountWithInteractionSpied = jest.spyOn<
+      const updateAccountWithInteractionSpied = jest.spyOn<
         CoreFcaDefaultVerifyHandler,
         any
-      >(service, 'updateAcccountWithInteraction');
+      >(service, 'updateAccountWithInteraction');
 
       const hasInteractionSpied = jest.spyOn<CoreFcaDefaultVerifyHandler, any>(
         service,
@@ -309,21 +309,21 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       hasInteractionSpied.mockResolvedValueOnce(true);
 
       // When
-      await service['persistLongTermIdentity'](
+      await service['createOrUpdateAccount'](
         idpIdentityMock,
         sessionDataMock.idpId,
       );
 
       // Then
-      expect(updateAcccountWithInteractionSpied).toHaveBeenCalledTimes(1);
-      expect(updateAcccountWithInteractionSpied).toHaveBeenCalledWith(
+      expect(updateAccountWithInteractionSpied).toHaveBeenCalledTimes(1);
+      expect(updateAccountWithInteractionSpied).toHaveBeenCalledWith(
         accountFcaMock,
         idpIdentityMock,
         sessionDataMock.idpId,
       );
     });
 
-    it('should call accountService.upsertWihSub with correct parameters', async () => {
+    it('should call accountService.upsertWithSub with correct parameters', async () => {
       // Given
       accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValueOnce(
         accountFcaMock,
@@ -337,19 +337,19 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       hasInteractionSpied.mockResolvedValueOnce(true);
 
       // When
-      await service['persistLongTermIdentity'](
+      await service['createOrUpdateAccount'](
         idpIdentityMock,
         sessionDataMock.idpId,
       );
 
       // Then
-      expect(accountFcaServiceMock.upsertWihSub).toHaveBeenCalledTimes(1);
-      expect(accountFcaServiceMock.upsertWihSub).toHaveBeenCalledWith(
+      expect(accountFcaServiceMock.upsertWithSub).toHaveBeenCalledTimes(1);
+      expect(accountFcaServiceMock.upsertWithSub).toHaveBeenCalledWith(
         accountFcaMock,
       );
     });
 
-    it('it should call upsertWihSub with correct parameters', async () => {
+    it('it should call upsertWithSub with correct parameters', async () => {
       // Given
       accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValueOnce(
         accountFcaMock,
@@ -363,14 +363,14 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       hasInteractionSpied.mockResolvedValueOnce(true);
 
       // When
-      await service['persistLongTermIdentity'](
+      await service['createOrUpdateAccount'](
         idpIdentityMock,
         sessionDataMock.idpId,
       );
 
       // Then
-      expect(accountFcaServiceMock.upsertWihSub).toHaveBeenCalledTimes(1);
-      expect(accountFcaServiceMock.upsertWihSub).toHaveBeenCalledWith(
+      expect(accountFcaServiceMock.upsertWithSub).toHaveBeenCalledTimes(1);
+      expect(accountFcaServiceMock.upsertWithSub).toHaveBeenCalledWith(
         accountFcaMock,
       );
     });
@@ -536,7 +536,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     });
   });
 
-  describe('updateAcccountWithInteraction()', () => {
+  describe('updateAccountWithInteraction()', () => {
     it('should add an interaction if the account does not have one', () => {
       // Given
       const account = {
@@ -544,14 +544,14 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       } as unknown as AccountFca;
 
       // When
-      const result = service['updateAcccountWithInteraction'](
+      service['updateAccountWithInteraction'](
         account,
         idpIdentityMock,
         sessionDataMock.idpId,
       );
 
       // Then
-      expect(result.idpIdentityKeys).toEqual([
+      expect(account.idpIdentityKeys).toEqual([
         {
           idpUid: sessionDataMock.idpId,
           idpSub: idpIdentityMock.sub,
@@ -571,14 +571,14 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       } as AccountFca;
 
       // When
-      const result = service['updateAcccountWithInteraction'](
+      service['updateAccountWithInteraction'](
         account,
         idpIdentityMock,
         sessionDataMock.idpId,
       );
 
       // Then
-      expect(result.idpIdentityKeys).toEqual(account.idpIdentityKeys);
+      expect(account.idpIdentityKeys).toHaveLength(1);
     });
 
     it('should update the last connection date', () => {
@@ -588,14 +588,14 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       } as AccountFca;
 
       // When
-      const result = service['updateAcccountWithInteraction'](
+      service['updateAccountWithInteraction'](
         account,
         idpIdentityMock,
         sessionDataMock.idpId,
       );
 
       // Then
-      expect(result.lastConnection).toBeInstanceOf(Date);
+      expect(account.lastConnection).toBeInstanceOf(Date);
     });
   });
 

@@ -71,7 +71,7 @@ export class CoreFcaMcpVerifyHandler
     // todo: we will need to add a proper way to check and transform sessionOidc into IAgentIdentity
     const agentIdentity = idpIdentity as IAgentIdentity;
 
-    const account = await this.persistLongTermIdentity(agentIdentity, idpId);
+    const account = await this.createOrUpdateAccount(agentIdentity, idpId);
     this.checkIfAccountIsBlocked(account);
 
     const fcaIdentity = this.composeFcaIdentity(agentIdentity, idpId, idpAcr);

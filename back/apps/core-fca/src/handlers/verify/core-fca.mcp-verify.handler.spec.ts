@@ -137,12 +137,12 @@ describe('CoreFcaMcpVerifyHandler', () => {
       const newSub = 'newSub';
       uuidMock.mockReturnValueOnce(newSub);
 
-      const persistLongTermIdentitySpied = jest.spyOn<
+      const createOrUpdateAccountSpied = jest.spyOn<
         CoreFcaMcpVerifyHandler,
         any
-      >(service, 'persistLongTermIdentity');
+      >(service, 'createOrUpdateAccount');
 
-      persistLongTermIdentitySpied.mockReturnValueOnce(accountFcaMock);
+      createOrUpdateAccountSpied.mockReturnValueOnce(accountFcaMock);
 
       // by default accept only public
       serviceProviderAdapterMock.getById.mockReturnValue({
@@ -165,12 +165,12 @@ describe('CoreFcaMcpVerifyHandler', () => {
       await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
-    it('should call persistLongTermIdentity with agent identity and idp id', async () => {
+    it('should call createOrUpdateAccount with agent identity and idp id', async () => {
       // When
 
       const composeFcaIdentitySpied = jest.spyOn<CoreFcaMcpVerifyHandler, any>(
         service,
-        'persistLongTermIdentity',
+        'createOrUpdateAccount',
       );
 
       await service.handle(handleArgument);
