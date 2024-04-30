@@ -35,3 +35,5 @@ services:
       - "fdp1"
       # -- FS traces legacy
       - "elasticsearch"
+      # -- maildev
+      - "maildev"
