@@ -6,7 +6,6 @@ import { ConfigService } from '@fc/config';
 import { CoreAuthorizationService } from '@fc/core';
 import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
-import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
   OidcClientConfig,
@@ -37,7 +36,6 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     private readonly oidcClient: OidcClientService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly fqdnToIdpAdapterMongo: FqdnToIdpAdapterMongoService,
-    private readonly logger: LoggerService,
     private readonly coreAuthorization: CoreAuthorizationService,
     private readonly session: SessionService,
   ) {}
@@ -109,23 +107,18 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     res.redirect(authorizationUrl);
   }
 
-  async getIdpIdForEmail(email: string): Promise<string> {
+  async getIdpIdForEmail(email: string): Promise<string[]> {
+    const { defaultIpdId } = this.config.get<AppConfig>('App');
     // find the proper identity provider by fqdn
     const fqdn = this.getFqdnFromEmail(email);
     const idpsByFqdn = await this.fqdnToIdpAdapterMongo.getIdpsByFqdn(fqdn);
 
-    if (idpsByFqdn?.length > 1) {
-      this.logger.warning('More than one IdP exists');
-    }
-
-    const defaultIpdId = this.getDefaultIdp(idpsByFqdn?.length);
-
-    return idpsByFqdn?.length > 0
-      ? idpsByFqdn[0].identityProvider
-      : defaultIpdId;
+    return idpsByFqdn.length > 0
+      ? idpsByFqdn.map(({ identityProvider }) => identityProvider)
+      : [defaultIpdId];
   }
 
-  private getFqdnFromEmail(email: string): string {
+  getFqdnFromEmail(email: string): string {
     return email.split('@').pop();
   }
 
@@ -159,5 +152,12 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     }
 
     return defaultIpdId;
+  }
+
+  async getIdentityProvidersByIds(...idpIds: string[]) {
+    const idpList = await this.identityProvider.getList();
+    return idpList
+      .filter(({ uid }) => idpIds.includes(uid))
+      .map(({ name, title, uid }) => ({ name, title, uid }));
   }
 }
