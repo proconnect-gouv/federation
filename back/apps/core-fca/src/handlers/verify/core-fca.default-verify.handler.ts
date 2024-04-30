@@ -1,5 +1,3 @@
-import { v4 as uuid } from 'uuid';
-
 import { Injectable } from '@nestjs/common';
 
 import { AccountFca, AccountFcaService, IIdpAgentKeys } from '@fc/account-fca';
@@ -66,59 +64,61 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     agentIdentity: IAgentIdentity,
     idpUid: string,
   ): Promise<AccountFca> {
-    // get agent key
-    const idpAgentKey = this.getIdpAgentKey(idpUid, agentIdentity.sub);
+    const account = await this.getAccountForInteraction(agentIdentity, idpUid);
 
-    // check if account exists
+    const accountWithInteraction = this.updateAcccountWithInteraction(
+      account,
+      agentIdentity,
+      idpUid,
+    );
+
+    return await this.accountService.upsertWihSub(accountWithInteraction);
+  }
+
+  private async getAccountForInteraction(
+    agentIdentity: IAgentIdentity,
+    idpUid: string,
+  ): Promise<AccountFca> {
+    const idpAgentKeys = this.getIdpAgentKeys(idpUid, agentIdentity.sub);
     const existingAccount =
-      await this.accountService.getAccountByIdpAgentKeys(idpAgentKey);
-    let universalSub: string;
+      await this.accountService.getAccountByIdpAgentKeys(idpAgentKeys);
 
     if (existingAccount) {
-      this.logger.info(
-        `Account for idpId "${idpUid}" and sub "${agentIdentity.sub}" already exists`,
-      );
-      universalSub = existingAccount.sub;
-    } else {
-      this.logger.info(
-        `Account for idpId "${idpUid}" and sub "${agentIdentity.sub}" does not exist, creating a new one`,
-      );
-      universalSub = uuid();
+      return existingAccount;
     }
 
-    return await this.saveInteractionToDatabase(
-      universalSub,
-      idpAgentKey,
-      existingAccount,
+    return this.accountService.createAccount();
+  }
+
+  private updateAcccountWithInteraction(
+    account: AccountFca,
+    agentIdentity: IAgentIdentity,
+    idpUid: string,
+  ): AccountFca {
+    const { sub } = agentIdentity;
+    const hasInteraction = this.hasInteraction(account, sub);
+
+    if (!hasInteraction) {
+      account.idpIdentityKeys.push({ idpSub: sub, idpUid });
+    }
+
+    account.lastConnection = new Date();
+
+    return account;
+  }
+
+  private hasInteraction(account: AccountFca, sub: string): boolean {
+    return !!account.idpIdentityKeys.find(
+      ({ idpSub, idpUid }) => idpSub === sub && idpUid === idpUid,
     );
   }
 
-  // agentHash is a combination of idpId and idpSub
-  protected getIdpAgentKey(idpUid: string, idpSub: string): IIdpAgentKeys {
+  // IdpAgentKeys is a combination of idpId and idpSub
+  protected getIdpAgentKeys(idpUid: string, idpSub: string): IIdpAgentKeys {
     return {
       idpUid,
       idpSub,
     };
-  }
-
-  protected async saveInteractionToDatabase(
-    sub: string,
-    idpAgentKey: IIdpAgentKeys,
-    existingAccount?: AccountFca,
-  ): Promise<AccountFca> {
-    const interaction = {
-      // fca Hash is used as main identity hash
-      idpUid: idpAgentKey.idpUid,
-      idpSub: idpAgentKey.idpSub,
-      // Set last connection time to now
-      lastConnection: new Date(),
-      sub,
-    };
-
-    return await this.accountService.saveInteraction(
-      interaction,
-      existingAccount,
-    );
   }
 
   protected composeFcaIdentity(

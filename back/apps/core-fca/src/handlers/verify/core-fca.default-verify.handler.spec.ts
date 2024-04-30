@@ -88,8 +88,9 @@ describe('CoreFcaDefaultVerifyHandler', () => {
   };
 
   const accountFcaServiceMock = {
-    saveInteraction: jest.fn(),
+    createAccount: jest.fn(),
     getAccountByIdpAgentKeys: jest.fn(),
+    upsertWihSub: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -289,62 +290,95 @@ describe('CoreFcaDefaultVerifyHandler', () => {
   });
 
   describe('persistLongTermIdentity()', () => {
-    it('should call create a new uuid and ipd uuid when account is not found', async () => {
-      const newSub = 'newSub';
-      uuidMock.mockReturnValueOnce(newSub);
-
-      const saveInteractionToDatabaseSpied = jest.spyOn<
+    it('should updateAcccountWithInteraction with correct parameters', async () => {
+      // Given
+      const updateAcccountWithInteractionSpied = jest.spyOn<
         CoreFcaDefaultVerifyHandler,
         any
-      >(service, 'saveInteractionToDatabase');
+      >(service, 'updateAcccountWithInteraction');
 
-      accountFcaServiceMock.getAccountByIdpAgentKeys.mockReturnValueOnce(null);
-
-      await service['persistLongTermIdentity'](
-        idpIdentityMock,
-        idpAgentKeyMock.idpUid,
+      const hasInteractionSpied = jest.spyOn<CoreFcaDefaultVerifyHandler, any>(
+        service,
+        'hasInteraction',
       );
-
-      expect(saveInteractionToDatabaseSpied).toHaveBeenCalledTimes(1);
-      expect(saveInteractionToDatabaseSpied).toHaveBeenCalledWith(
-        newSub,
-        idpAgentKeyMock,
-        null,
-      );
-    });
-
-    it('should use existing uuid and idp uuid when account is found', async () => {
-      const saveInteractionToDatabaseSpied = jest.spyOn<
-        CoreFcaDefaultVerifyHandler,
-        any
-      >(service, 'saveInteractionToDatabase');
 
       accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValueOnce(
         accountFcaMock,
       );
 
+      hasInteractionSpied.mockResolvedValueOnce(true);
+
+      // When
       await service['persistLongTermIdentity'](
         idpIdentityMock,
-        idpAgentKeyMock.idpUid,
+        sessionDataMock.idpId,
       );
 
-      idpAgentKeyMock.idpUid = accountFcaMock.id;
+      // Then
+      expect(updateAcccountWithInteractionSpied).toHaveBeenCalledTimes(1);
+      expect(updateAcccountWithInteractionSpied).toHaveBeenCalledWith(
+        accountFcaMock,
+        idpIdentityMock,
+        sessionDataMock.idpId,
+      );
+    });
 
-      expect(saveInteractionToDatabaseSpied).toHaveBeenCalledTimes(1);
-      expect(saveInteractionToDatabaseSpied).toHaveBeenCalledWith(
-        accountFcaMock.sub,
-        {
-          idpSub: idpIdentityMock.sub,
-          idpUid: idpIdentityMock.uid,
-        },
+    it('should call accountService.upsertWihSub with correct parameters', async () => {
+      // Given
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValueOnce(
+        accountFcaMock,
+      );
+
+      const hasInteractionSpied = jest.spyOn<CoreFcaDefaultVerifyHandler, any>(
+        service,
+        'hasInteraction',
+      );
+
+      hasInteractionSpied.mockResolvedValueOnce(true);
+
+      // When
+      await service['persistLongTermIdentity'](
+        idpIdentityMock,
+        sessionDataMock.idpId,
+      );
+
+      // Then
+      expect(accountFcaServiceMock.upsertWihSub).toHaveBeenCalledTimes(1);
+      expect(accountFcaServiceMock.upsertWihSub).toHaveBeenCalledWith(
+        accountFcaMock,
+      );
+    });
+
+    it('it should call upsertWihSub with correct parameters', async () => {
+      // Given
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValueOnce(
+        accountFcaMock,
+      );
+
+      const hasInteractionSpied = jest.spyOn<CoreFcaDefaultVerifyHandler, any>(
+        service,
+        'hasInteraction',
+      );
+
+      hasInteractionSpied.mockResolvedValueOnce(true);
+
+      // When
+      await service['persistLongTermIdentity'](
+        idpIdentityMock,
+        sessionDataMock.idpId,
+      );
+
+      // Then
+      expect(accountFcaServiceMock.upsertWihSub).toHaveBeenCalledTimes(1);
+      expect(accountFcaServiceMock.upsertWihSub).toHaveBeenCalledWith(
         accountFcaMock,
       );
     });
   });
 
-  describe('getIdpAgentKey()', () => {
+  describe('getIdpAgentKeys()', () => {
     it('should return a concatenation of idpUid and idpSub', () => {
-      const result = service['getIdpAgentKey'](
+      const result = service['getIdpAgentKeys'](
         sessionDataMock.idpId,
         idpIdentityMock.sub,
       );
@@ -353,31 +387,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         idpUid: sessionDataMock.idpId,
         idpSub: idpIdentityMock.sub,
       });
-    });
-  });
-
-  describe('saveInteractionToDatabase()', () => {
-    it('should call saveInteraction() with correct params', async () => {
-      jest.useFakeTimers();
-      jest.setSystemTime(new Date(2020, 1, 2));
-
-      await service['saveInteractionToDatabase'](
-        universalSubMock,
-        idpAgentKeyMock,
-      );
-
-      expect(accountFcaServiceMock.saveInteraction).toHaveBeenCalledTimes(1);
-      expect(accountFcaServiceMock.saveInteraction).toHaveBeenCalledWith(
-        {
-          idpUid: idpAgentKeyMock.idpUid,
-          idpSub: idpAgentKeyMock.idpSub,
-          lastConnection: new Date(2020, 1, 2),
-          sub: universalSubMock,
-        },
-        undefined,
-      );
-
-      jest.useRealTimers();
     });
   });
 
@@ -463,6 +472,163 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       expect(() =>
         service['checkIfAccountIsBlocked'](accountFcaMock),
       ).not.toThrow();
+    });
+  });
+
+  describe('getAccountForInteraction()', () => {
+    it('should call getAccountByIdpAgentKeys with correct parameters', async () => {
+      // Given
+      const idpAgentKeys = {
+        idpSub: idpIdentityMock.sub,
+        idpUid: sessionDataMock.idpId,
+      };
+
+      // When
+      await service['getAccountForInteraction'](
+        idpIdentityMock,
+        sessionDataMock.idpId,
+      );
+
+      // Then
+      expect(
+        accountFcaServiceMock.getAccountByIdpAgentKeys,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        accountFcaServiceMock.getAccountByIdpAgentKeys,
+      ).toHaveBeenCalledWith(idpAgentKeys);
+    });
+
+    it('should return the account if it exists', async () => {
+      // Given
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValueOnce(
+        accountFcaMock,
+      );
+
+      // When
+      const result = await service['getAccountForInteraction'](
+        idpIdentityMock,
+        sessionDataMock.idpId,
+      );
+
+      // Then
+      expect(result).toBe(accountFcaMock);
+    });
+
+    it('should create a new account if it does not exist', async () => {
+      // Given
+      const customAccountFcaMock = { ...accountFcaMock, sub: 'custom-sub' };
+      accountFcaServiceMock.createAccount.mockReturnValueOnce(
+        customAccountFcaMock,
+      );
+
+      accountFcaServiceMock.getAccountByIdpAgentKeys.mockResolvedValueOnce(
+        null,
+      );
+
+      // When
+      const result = await service['getAccountForInteraction'](
+        idpIdentityMock,
+        sessionDataMock.idpId,
+      );
+
+      // Then
+      expect(result).toEqual(customAccountFcaMock);
+    });
+  });
+
+  describe('updateAcccountWithInteraction()', () => {
+    it('should add an interaction if the account does not have one', () => {
+      // Given
+      const account = {
+        idpIdentityKeys: [],
+      } as unknown as AccountFca;
+
+      // When
+      const result = service['updateAcccountWithInteraction'](
+        account,
+        idpIdentityMock,
+        sessionDataMock.idpId,
+      );
+
+      // Then
+      expect(result.idpIdentityKeys).toEqual([
+        {
+          idpUid: sessionDataMock.idpId,
+          idpSub: idpIdentityMock.sub,
+        },
+      ]);
+    });
+
+    it('should not add an interaction if the account already has one', () => {
+      // Given
+      const account = {
+        idpIdentityKeys: [
+          {
+            idpSub: idpIdentityMock.sub,
+            idpUid: sessionDataMock.idpId,
+          },
+        ],
+      } as AccountFca;
+
+      // When
+      const result = service['updateAcccountWithInteraction'](
+        account,
+        idpIdentityMock,
+        sessionDataMock.idpId,
+      );
+
+      // Then
+      expect(result.idpIdentityKeys).toEqual(account.idpIdentityKeys);
+    });
+
+    it('should update the last connection date', () => {
+      // Given
+      const account = {
+        idpIdentityKeys: [idpAgentKeyMock],
+      } as AccountFca;
+
+      // When
+      const result = service['updateAcccountWithInteraction'](
+        account,
+        idpIdentityMock,
+        sessionDataMock.idpId,
+      );
+
+      // Then
+      expect(result.lastConnection).toBeInstanceOf(Date);
+    });
+  });
+
+  describe('hasInteraction()', () => {
+    it('should return true if the account has an interaction', () => {
+      // Given
+      const account = {
+        idpIdentityKeys: [idpAgentKeyMock],
+      } as AccountFca;
+
+      // When
+      const result = service['hasInteraction'](account, idpIdentityMock.sub);
+
+      // Then
+      expect(result).toBe(true);
+    });
+
+    it('should return false if the account does not have an interaction', () => {
+      // Given
+      const account = {
+        idpIdentityKeys: [
+          {
+            idpUid: '',
+            idpSub: '',
+          },
+        ],
+      } as AccountFca;
+
+      // When
+      const result = service['hasInteraction'](account, idpIdentityMock.sub);
+
+      // Then
+      expect(result).toBe(false);
     });
   });
 });
