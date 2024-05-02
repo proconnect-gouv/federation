@@ -1,6 +1,5 @@
 import { render } from '@testing-library/react';
 
-import { AccountProvider } from '@fc/account';
 import { AxiosErrorCatcherProvider } from '@fc/axios-error-catcher';
 import { AppContextProvider } from '@fc/state-management';
 
@@ -10,23 +9,17 @@ import { ApplicationRoutes } from './application.routes';
 
 jest.mock('react-router-dom');
 jest.mock('@fc/dsfr');
-jest.mock('@fc/account');
 jest.mock('@fc/state-management');
 jest.mock('@fc/axios-error-catcher');
 jest.mock('./application.routes');
 
 describe('Application', () => {
-  it('should call AccountProvider with config', () => {
+  it('should match snapshot', () => {
     // when
-    render(<Application />);
+    const { container } = render(<Application />);
 
     // then
-    expect(AccountProvider).toHaveBeenCalledWith(
-      expect.objectContaining({
-        config: AppConfig.Account,
-      }),
-      {},
-    );
+    expect(container).toMatchSnapshot();
   });
 
   it('should call AppContextProvider with config', () => {
