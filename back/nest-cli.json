@@ -116,6 +116,15 @@
         ]
       }
     },
+    "partners": {
+      "type": "library",
+      "root": "apps/partners",
+      "entryFile": "index",
+      "sourceRoot": "apps/partners/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/partners/tsconfig.lib.json"
+      }
+    },
     "csmr-hsm-high": {
       "type": "application",
       "root": "instances/csmr-hsm-high",

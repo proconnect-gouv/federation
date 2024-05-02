@@ -208,7 +208,9 @@
       "@mocks/i18n": ["libs/i18n/.mocks"],
       "@mocks/i18n/*": ["libs/i18n/.mocks/*"],
       "@fc/account-fca": ["libs/account-fca/src"],
-      "@fc/account-fca/*": ["libs/account-fca/src/*"]
+      "@fc/account-fca/*": ["libs/account-fca/src/*"],
+      "@fc/partners": ["apps/partners/src"],
+      "@fc/partners/*": ["apps/partners/src/*"]
     }
   },
   "files": ["global.d.ts"],
