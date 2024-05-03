@@ -1,0 +1,17 @@
+{
+  "authorize": {
+    "qs": {
+      "scope": "openid profile",
+      "acr_values": "eidas1",
+      "claims": "{\"id_token\":{\"amr\":{\"essential\":true}}}",
+      "prompt": "login consent",
+      "client_id": "04c42481532d4e17abcd539ff20bc1ee2e1ec5d4a9f15b7aeda798d69ddb4ad7",
+      "redirect_uri": "http://localhost/login-callback",
+      "response_type": "code",
+      "state": "00919d38c2f28fd6aa362042ee987200b8e8fee50a1a04bd34d192e40fe1186b",
+      "nonce": "f23f6cebd994466d1de0975d21471294fd729a2a6e5b16dbf0d6f6247a2f6917"
+    },
+    "method": "GET",
+    "url": "https://fcp-low.integ01.dev-franceconnect.fr/api/v2/authorize"
+  }
+}

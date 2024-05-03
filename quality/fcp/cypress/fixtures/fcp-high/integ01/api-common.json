@@ -1,0 +1,17 @@
+{
+  "authorize": {
+    "qs": {
+      "scope": "openid profile",
+      "acr_values": "eidas2",
+      "claims": "{\"id_token\":{\"amr\":{\"essential\":true}}}",
+      "prompt": "login consent",
+      "client_id": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
+      "redirect_uri": "https://fsp1v2.integ01.fcp.fournisseur-de-service.fr/oidc-callback",
+      "response_type": "code",
+      "state": "14dd7724756a64366c59727c1b324d87f965d813a9cfd5f82a7734fd1e31eaa4",
+      "nonce": "e662b7aceaf3acbfddc9cbb3e130e117f2f5ae4758a5f38b2f4639af417d7519"
+    },
+    "method": "GET",
+    "url": "https://auth.integ01.dev-franceconnect.fr/api/v2/authorize"
+  }
+}
