@@ -1,0 +1,17 @@
+{
+  "authorize": {
+    "qs": {
+      "scope": "openid uid given_name usual_name",
+      "acr_values": "eidas1",
+      "claims": "{\"id_token\":{\"amr\":{\"essential\":true}}}",
+      "prompt": "login consent",
+      "client_id": "214f336f-fa6d-463a-818b-c80a3e74cd1c",
+      "redirect_uri": "http://localhost:3000/login-callback",
+      "response_type": "code",
+      "state": "e64de683f6b92f5a7e3f61401ac39b41699e052be5721f22f1a1cee93d5dc3c5",
+      "nonce": "1cfbc2d0a5d28644f0de857d96fa2086c4d3cd05e629fa3829e040066950f65b"
+    },
+    "method": "GET",
+    "url": "https://fca.integ01.dev-agentconnect.fr/api/v2/authorize"
+  }
+}
