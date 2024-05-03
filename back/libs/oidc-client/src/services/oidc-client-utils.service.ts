@@ -162,7 +162,14 @@ export class OidcClientUtilsService {
         this.buildExtraParameters(extraParams),
       );
     } catch (error) {
-      this.logger.debug(JSON.stringify(error));
+      this.logger.err(error.stack);
+      this.logger.debug({
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        client: { ...client, client_secret: '***' },
+        receivedParams,
+        params,
+      });
+
       throw new OidcClientTokenFailedException();
     }
 
