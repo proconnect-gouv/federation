@@ -6,14 +6,11 @@ mongo db:
 reset-db:
 	$(DKS_PATH) reset-db-core-fca-low
 
-start-min sm:
-	$(DKS_PATH) prune && $(DKS_PATH) up min-fca-low && $(DKS_PATH) start-all
-
 start s:
 	$(DKS_PATH) prune && $(DKS_PATH) up bdd-fca-low && $(DKS_PATH) start-all
 
 start-min sm:
-	$(DKS_PATH) prune && $(DKS_PATH) up min-fca && $(DKS_PATH) start-all
+	$(DKS_PATH) prune && $(DKS_PATH) up min-fca-low && $(DKS_PATH) start-all
 
 start-rie rie:
 	$(DKS_PATH) prune && $(DKS_PATH) up min-fca-rie && $(DKS_PATH) start-all
@@ -62,7 +59,7 @@ visual v:
 update-visual:
 	cd $(FC_ROOT)/fc/quality/fca && yarn install && yarn test:low:snapshot --env updateSnapshots=true
 
-ci:
+ci-legacy:
 	$(MAKE) doc && $(MAKE) prepare && $(MAKE) test-coverage && $(MAKE) tl && $(MAKE) tqh && $(MAKE) v
 
 test-legacy tl:

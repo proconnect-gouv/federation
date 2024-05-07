@@ -57,8 +57,6 @@
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
 | Core_ALLOWED_IDP_HINTS | json |
-| CryptographyFca_CRYPTO_HASH_SECRET | string |
-| CryptographyFca_CRYPTO_SUB_SECRET | string |
 | FQDN | string |
 | LoggerLegacy_FILE | string |
 | Logger_STDERR_LEVELS | json |

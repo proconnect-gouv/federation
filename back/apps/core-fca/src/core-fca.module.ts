@@ -15,7 +15,6 @@ import {
   CoreTrackingService,
   CoreVerifyService,
 } from '@fc/core';
-import { CryptographyFcaModule } from '@fc/cryptography-fca';
 import { CsrfModule } from '@fc/csrf';
 import { ExceptionsModule } from '@fc/exceptions';
 import { FeatureHandlerModule } from '@fc/feature-handler';
@@ -95,7 +94,6 @@ const exceptionFiltersProviders = [
     AsyncLocalStorageModule,
     SessionModule,
     MongooseModule.forRoot(),
-    CryptographyFcaModule,
     AccountModule,
     ServiceProviderAdapterMongoModule,
     IdentityProviderAdapterMongoModule,
