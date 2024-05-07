@@ -751,15 +751,6 @@
         "tsConfigPath": "libs/notifications/tsconfig.lib.json"
       }
     },
-    "cryptography-fca": {
-      "type": "library",
-      "root": "libs/cryptography-fca",
-      "entryFile": "index",
-      "sourceRoot": "libs/cryptography-fca/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/cryptography-fca/tsconfig.lib.json"
-      }
-    },
     "cryptography-eidas": {
       "type": "library",
       "root": "libs/cryptography-eidas",

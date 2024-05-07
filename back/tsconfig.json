@@ -143,8 +143,6 @@
       "@fc/scopes/*": ["libs/scopes/src/*"],
       "@fc/feature-handler": ["libs/feature-handler/src"],
       "@fc/feature-handler/*": ["libs/feature-handler/src/*"],
-      "@fc/cryptography-fca": ["libs/cryptography-fca/src"],
-      "@fc/cryptography-fca/*": ["libs/cryptography-fca/src/*"],
       "@fc/cryptography-eidas": ["libs/cryptography-eidas/src"],
       "@fc/cryptography-eidas/*": ["libs/cryptography-eidas/src/*"],
       "@fc/elasticsearch": ["libs/elasticsearch/src"],
