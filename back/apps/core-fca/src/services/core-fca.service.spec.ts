@@ -319,6 +319,35 @@ describe('CoreFcaService', () => {
       // Then
       expect(fqdn).toBe('hogwards1234.uk');
     });
+
+    const emailToTest = [
+      {
+        value: 'hermione.granger@hogwards1234.uK',
+        expectedFqdn: 'hogwards1234.uk',
+      },
+      {
+        value: 'hermione.granger@hogwardS1234.uk',
+        expectedFqdn: 'hogwards1234.uk',
+      },
+      {
+        value: 'hermione.granger@hogwardS1234.uK',
+        expectedFqdn: 'hogwards1234.uk',
+      },
+      {
+        value: 'hermione.granger@HOGWARDS1234.UK',
+        expectedFqdn: 'hogwards1234.uk',
+      },
+    ];
+    it.each(emailToTest)(
+      'should always return qualified domain name in lower case from an email address with upper case',
+      ({ value, expectedFqdn }) => {
+        // When
+        const fqdn = service.getFqdnFromEmail(value);
+
+        // Then
+        expect(fqdn).toBe(expectedFqdn);
+      },
+    );
   });
 
   describe('checkIdpBlacklisted', () => {

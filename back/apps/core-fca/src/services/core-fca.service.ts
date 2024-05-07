@@ -119,7 +119,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
   }
 
   getFqdnFromEmail(email: string): string {
-    return email.split('@').pop();
+    return email.split('@').pop().toLowerCase();
   }
 
   private async checkIdpBlacklisted(spId: string, idpId: string) {

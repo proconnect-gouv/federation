@@ -22,6 +22,7 @@ Fonctionnalité: Connexion Usager - Redirection vers FI avec email
     Exemples:
       | email                  | idpName    | scope           |
       | iknowthisemail@fia1.fr | par défaut | tous les scopes |
+      | iknowthisemail@FIA1.fr | par défaut | tous les scopes |
       | iknowthisemail@fia2.fr | différent  | tous les scopes |
 
     @ignoreInteg01
