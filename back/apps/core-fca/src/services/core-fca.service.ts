@@ -6,6 +6,7 @@ import { ConfigService } from '@fc/config';
 import { CoreAuthorizationService } from '@fc/core';
 import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
   OidcClientConfig,
@@ -38,6 +39,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     private readonly fqdnToIdpAdapterMongo: FqdnToIdpAdapterMongoService,
     private readonly coreAuthorization: CoreAuthorizationService,
     private readonly session: SessionService,
+    private readonly logger: LoggerService,
   ) {}
   // eslint-disable-next-line max-params
   async redirectToIdp(
@@ -126,6 +128,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     try {
       await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
     } catch (error) {
+      this.logger.info(error);
       if (error instanceof OidcClientIdpBlacklistedException) {
         throw new CoreFcaAgentIdpBlacklistedException();
       }
