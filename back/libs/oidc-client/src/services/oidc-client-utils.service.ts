@@ -276,11 +276,12 @@ export class OidcClientUtilsService {
     try {
       isIdpExcluded = await this.serviceProvider.shouldExcludeIdp(spId, idpId);
     } catch (error) {
-      this.logger.info(error);
+      this.logger.err(error);
       throw new OidcClientFailedToFetchBlacklist();
     }
 
     if (isIdpExcluded) {
+      this.logger.debug(`${idpId} is blacklisted for ${spId}`);
       throw new OidcClientIdpBlacklistedException();
     }
   }

@@ -128,7 +128,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     try {
       await this.oidcClient.utils.checkIdpBlacklisted(spId, idpId);
     } catch (error) {
-      this.logger.info(error);
+      this.logger.err(error);
       if (error instanceof OidcClientIdpBlacklistedException) {
         throw new CoreFcaAgentIdpBlacklistedException();
       }
@@ -140,6 +140,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     try {
       await this.oidcClient.utils.checkIdpDisabled(idpId);
     } catch (error) {
+      this.logger.err(error);
       if (error instanceof OidcClientIdpDisabledException) {
         throw new CoreFcaAgentIdpDisabledException();
       }
