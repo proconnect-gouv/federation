@@ -15,7 +15,7 @@
     "build:csmr-account": "nest build csmr-account-instance",
     "build:csmr-user-preferences-high": "nest build csmr-user-preferences-high",
     "build:eidas-bridge": "nest build eidas-bridge-instance",
-    "build:bridge-http-proxy-rie": "nest build bridge-http-proxy-rie-instance",
+    "build:bridge-http-proxy-rie": "nest build bridge-http-proxy-rie",
     "build:user-dashboard": "nest build user-dashboard-instance",
     "build:mock-service-provider-fcp-low": "nest build mock-service-provider-fcp-low",
     "build:mock-service-provider-fcp-high": "nest build mock-service-provider-fcp-high",
