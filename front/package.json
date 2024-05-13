@@ -86,7 +86,7 @@
   },
   "dependencies": {
     "@gouvfr/dsfr": "1.11.0",
-    "axios": "^1.6.7",
+    "axios": "^1.6.8",
     "classnames": "^2.5.1",
     "deep-freeze": "^0.0.1",
     "final-form": "^4.20.10",
