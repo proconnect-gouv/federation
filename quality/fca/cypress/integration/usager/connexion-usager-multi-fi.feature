@@ -23,6 +23,22 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
       | Identity Provider 1 - eIDAS faible - ES256 | par défaut | tous les scopes |
       | Identity Provider 2 - eIDAS faible - RS256 | différent  | tous les scopes |
 
+  Scénario: Connexion d'un usager - fournisseur d'identité autre
+    Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
+    Et que je navigue sur la page fournisseur de service
+    Et que je clique sur le bouton AgentConnect
+    Et que je suis redirigé vers la page interaction
+    Et que j'entre l'email "many@polyfi.fr"
+    Quand je clique sur le bouton de connexion
+    Et je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
+    Et je choisis le fournisseur d'identité "Autre"
+    Et que j'utilise le fournisseur d'identité "moncomptepro"
+    Et je suis redirigé vers la page login du fournisseur d'identité
+    Quand je reviens en arrière
+    Alors je suis redirigé vers la page permettant la selection d'un fournisseur d'identité
+    Quand je reviens en arrière
+    Alors je suis redirigé vers la page interaction
+
   Scénario: Connexion d'un usager - retour en arrière après redirection vers FI
     Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
     Et que je navigue sur la page fournisseur de service

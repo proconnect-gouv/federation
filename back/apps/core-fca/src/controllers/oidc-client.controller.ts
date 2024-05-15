@@ -17,12 +17,12 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { AppConfig } from '@fc/app';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfToken, CsrfTokenGuard } from '@fc/csrf';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
+import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
 import {
@@ -42,9 +42,13 @@ import {
   GetRedirectToIdpOidcClientSessionDto,
   OidcIdentityDto,
 } from '../dto';
+import { AppConfig } from '../dto/app-config.dto';
 import { RedirectToIdp } from '../dto/redirect-to-idp.dto';
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
-import { CoreFcaInvalidIdentityException } from '../exceptions';
+import {
+  CoreFcaAgentNoIdpException,
+  CoreFcaInvalidIdentityException,
+} from '../exceptions';
 import { CoreFcaService } from '../services';
 
 @Controller()
@@ -58,6 +62,7 @@ export class OidcClientController {
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly coreFca: CoreFcaService,
     private readonly oidcProvider: OidcProviderService,
+    private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
     private readonly crypto: CryptographyService,
@@ -73,10 +78,18 @@ export class OidcClientController {
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const { login_hint: email } = sessionOidc.get();
+    const { defaultIpdId } = this.config.get<AppConfig>('App');
 
     const idpIds = await this.coreFca.getIdpIdForEmail(email);
     const providers = await this.coreFca.getIdentityProvidersByIds(...idpIds);
-    const response = { csrfToken, email, providers };
+    const response = {
+      csrfToken,
+      email,
+      providers: [
+        ...providers,
+        ...(defaultIpdId ? [{ title: 'Autre', uid: defaultIpdId }] : []),
+      ],
+    };
 
     res.render('interaction-identity-provider', response);
   }
@@ -122,6 +135,12 @@ export class OidcClientController {
     sessionOidc.set('login_hint', email);
 
     if (identityProviderUid) {
+      const { title: idpLabel } =
+        await this.identityProvider.getById(identityProviderUid);
+      this.logger.debug(
+        `Redirect "****@${fqdn}" to selected idp "${idpLabel}" (${identityProviderUid})`,
+      );
+
       return this.coreFca.redirectToIdp(
         res,
         identityProviderUid,
@@ -130,12 +149,19 @@ export class OidcClientController {
     }
 
     const idpIds = await this.coreFca.getIdpIdForEmail(email);
+    const hasNoProvider = idpIds.length === 0;
     const hasUniqueProvider = idpIds.length === 1;
+
+    if (hasNoProvider) {
+      throw new CoreFcaAgentNoIdpException();
+    }
 
     if (hasUniqueProvider) {
       const [idpId] = idpIds;
+
+      const { title: idpLabel } = await this.identityProvider.getById(idpId);
       this.logger.debug(
-        `Redirect "****@${fqdn}" to the identity provider "${idpId}"`,
+        `Redirect "****@${fqdn}" to unique idp "${idpLabel}" (${idpId})`,
       );
 
       // we need to keep idpId as 2nd parameter for the idp_hint

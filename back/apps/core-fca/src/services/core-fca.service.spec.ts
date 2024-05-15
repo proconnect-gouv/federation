@@ -20,7 +20,6 @@ import { getSessionServiceMock } from '@mocks/session';
 import {
   CoreFcaAgentIdpBlacklistedException,
   CoreFcaAgentIdpDisabledException,
-  CoreFcaAgentNoIdpException,
 } from '../exceptions';
 import { CoreFcaService } from './core-fca.service';
 
@@ -411,24 +410,6 @@ describe('CoreFcaService', () => {
       // When
       await expect(service['checkIdpDisabled'](idpIdMock)).rejects.toThrow(
         Error,
-      );
-    });
-  });
-
-  describe('getDefaultIdp', () => {
-    it('should call the config when we call getDefaultIdp', () => {
-      // When
-      service['getDefaultIdp'](1);
-
-      // Then
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('App');
-    });
-
-    it('should throw an CoreFcaAgentNoIdpException error when no idp is found', () => {
-      // Then
-      expect(() => service['getDefaultIdp'](0)).toThrow(
-        CoreFcaAgentNoIdpException,
       );
     });
   });

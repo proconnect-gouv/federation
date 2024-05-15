@@ -20,7 +20,6 @@ import { CoreFcaOidcClientSession } from '../dto/core-fca-oidc-client-session.dt
 import {
   CoreFcaAgentIdpBlacklistedException,
   CoreFcaAgentIdpDisabledException,
-  CoreFcaAgentNoIdpException,
 } from '../exceptions';
 import {
   CoreFcaAuthorizationParametersInterface,
@@ -142,16 +141,6 @@ export class CoreFcaService implements CoreFcaServiceInterface {
       }
       throw error;
     }
-  }
-
-  private getDefaultIdp(idpsByFqdnLength: number): string {
-    const { defaultIpdId } = this.config.get<AppConfig>('App');
-
-    if (idpsByFqdnLength === 0 && !defaultIpdId) {
-      throw new CoreFcaAgentNoIdpException();
-    }
-
-    return defaultIpdId;
   }
 
   async getIdentityProvidersByIds(...idpIds: string[]) {
