@@ -3,13 +3,13 @@ include: '/back/.gitlab-build-template.yml'
 ud/csmr-tracks-build-image:
   extends: .base-build
   variables:
-    APP: csmr-tracks
+    APP: csmr-tracks-instance
     MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_tracks_version:"
 
 ud/csmr-tracks-tag-to-prod-image:
   extends: .base-tag-to-prod
   variables:
-    DOCKER_IMAGE: csmr-tracks
+    DOCKER_IMAGE: csmr-tracks-instance
     MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_tracks_version:"
   needs:
     - job: ud/csmr-tracks-build-image
