@@ -114,7 +114,9 @@ export class CoreFcaService implements CoreFcaServiceInterface {
 
     return idpsByFqdn.length > 0
       ? idpsByFqdn.map(({ identityProvider }) => identityProvider)
-      : [defaultIpdId];
+      : defaultIpdId
+        ? [defaultIpdId]
+        : [];
   }
 
   getFqdnFromEmail(email: string): string {
