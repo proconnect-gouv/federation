@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
-import { useMediaQuery } from 'react-responsive';
 
 import type { AccountInterface } from '@fc/account';
 import { AccountContext } from '@fc/account';
 import { AppContextProvider } from '@fc/state-management';
+import { useStylesQuery, useStylesVariables } from '@fc/styles';
 
 import { LayoutHeaderComponent } from './layout-header.component';
 import { LayoutHeaderLogosComponent } from './logos';
@@ -14,6 +14,7 @@ import { LayoutHeaderServiceComponent } from './service';
 import { LayoutHeaderToolsComponent } from './tools';
 
 jest.mock('@fc/state-management');
+jest.mock('@fc/styles');
 jest.mock('./tools/layout-header-tools.component');
 jest.mock('./logos/layout-header-logos.component');
 jest.mock('./menu/layout-header-menu.component');
@@ -49,6 +50,12 @@ describe('LayoutHeaderComponent', () => {
       },
     },
   };
+
+  beforeEach(() => {
+    // @NOTE used to prevent useStylesVariables.useStylesContext to throw
+    // useStylesContext requires to be into a StylesProvider context
+    jest.mocked(useStylesVariables).mockReturnValueOnce([expect.any(Number), expect.any(Number)]);
+  });
 
   it('should match the snapshot', () => {
     // when
@@ -118,6 +125,7 @@ describe('LayoutHeaderComponent', () => {
 
   it('should call LayoutHeaderToolsComponent with params when user is connected', () => {
     // given
+    jest.mocked(useStylesQuery).mockReturnValue(true);
     const accountMock = { ...accountContextMock, connected: true, ready: true };
 
     // when
@@ -144,6 +152,7 @@ describe('LayoutHeaderComponent', () => {
 
   it('should call LayoutHeaderMenuComponent with params when user is connected', () => {
     // given
+    jest.mocked(useStylesQuery).mockReturnValue(false);
     const accountMock = { ...accountContextMock, connected: true, ready: true };
 
     // when
@@ -172,7 +181,7 @@ describe('LayoutHeaderComponent', () => {
 
   it('should not call ReturnButtonComponent into a mobile viewport, if returnButtonUrl is undefined from OidcClient config', () => {
     // given
-    jest.mocked(useMediaQuery).mockReturnValueOnce(true);
+    jest.mocked(useStylesQuery).mockReturnValueOnce(true);
     const accountMock = { ...accountContextMock, connected: true, ready: true };
 
     // when
@@ -191,7 +200,7 @@ describe('LayoutHeaderComponent', () => {
   it('should call ReturnButtonComponent into a mobile viewport, if returnButtonUrl is defined from OidcClient config', () => {
     // given
     const returnButtonUrlMock = 'any-returnButtonUrlMock-mock';
-    jest.mocked(useMediaQuery).mockReturnValueOnce(true);
+    jest.mocked(useStylesQuery).mockReturnValueOnce(true);
     const accountMock = { ...accountContextMock, connected: true, ready: true };
 
     // when

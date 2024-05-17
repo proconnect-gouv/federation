@@ -8,10 +8,10 @@
  */
 :root {
   @each $zindex-name, $zindex-value in $zindex {
-    --zindex-#{$zindex-name}: #{$zindex-value} !default;
+    --zindex-#{$zindex-name}: #{$zindex-value};
   }
 
   @each $breakpoint-name, $breakpoint-value in $breakpoints {
-    --breakpoint-#{$breakpoint-name}: #{$breakpoint-value} !default;
+    --breakpoint-#{$breakpoint-name}: #{$breakpoint-value};
   }
 }

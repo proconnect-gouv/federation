@@ -1,13 +1,16 @@
 import classnames from 'classnames';
 import React from 'react';
-import { useMediaQuery } from 'react-responsive';
 
+import { useStylesQuery, useStylesVariables } from '@fc/styles';
+
+import { UserPreferencesTutorialComponent } from '../user-preferences-tutorial';
 import styles from './user-preferences-introduction.module.scss';
 
 export const UserPreferencesIntroductionComponent: React.FC = React.memo(() => {
-  const gtMobile = useMediaQuery({ query: '(min-width: 576px)' });
-  const gtDesktop = useMediaQuery({ query: '(min-width: 992px)' });
-  const imageWidth = gtMobile ? 350 : '100%';
+  const [breakpointMd, breakpointLg] = useStylesVariables(['breakpoint-md', 'breakpoint-lg']);
+
+  const gtTablet = useStylesQuery({ minWidth: breakpointMd });
+  const gtDesktop = useStylesQuery({ minWidth: breakpointLg });
 
   return (
     <React.Fragment>
@@ -38,79 +41,56 @@ export const UserPreferencesIntroductionComponent: React.FC = React.memo(() => {
         className={classnames('flex-wrapper', {
           // Class CSS
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          'flex-between': gtDesktop,
+          'flex-between': gtTablet,
           // Class CSS
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          'flex-center': !gtMobile,
+          'flex-center': !gtTablet,
           // Class CSS
           // eslint-disable-next-line @typescript-eslint/naming-convention
-          'text-center': !gtDesktop && gtMobile,
-        })}>
-        <div
-          className={classnames(styles.tutoriel, {
+          'text-center': gtTablet && !gtDesktop,
+        })}
+        data-testid="user-preferences-introduction-container">
+        <UserPreferencesTutorialComponent
+          alt="Tentative de connexion"
+          className={classnames({
             // Class CSS
             // eslint-disable-next-line @typescript-eslint/naming-convention
             'fr-mb-3w': !gtDesktop,
             // Class CSS
             // eslint-disable-next-line @typescript-eslint/naming-convention
             'fr-mb-5w': gtDesktop,
-          })}>
-          <strong className="fr-text--md is-block fr-mb-1w">
-            1. Un usurpateur tente de se connecter à Service-Public.fr
-          </strong>
-          <img
-            alt="Tentative de connexion"
-            className="shadow-bottom"
-            src="/images/user-preferences-tutoriel-01.png"
-            width={imageWidth}
-          />
-        </div>
-        <div
-          className={classnames(styles.tutoriel, {
+          })}
+          img="/images/user-preferences-tutoriel-01.png"
+          label="1. Un usurpateur tente de se connecter à Service-Public.fr"
+        />
+        <UserPreferencesTutorialComponent
+          alt="Utilisation d'un compte bloqué"
+          className={classnames({
             // Class CSS
             // eslint-disable-next-line @typescript-eslint/naming-convention
             'fr-mb-3w': !gtDesktop,
             // Class CSS
             // eslint-disable-next-line @typescript-eslint/naming-convention
             'fr-mb-5w': gtDesktop,
-          })}>
-          <strong className="fr-text--md is-block fr-mb-1w">
-            2. L&rsquo;usurpateur tente d&rsquo;utiliser un compte préalablement bloqué
-          </strong>
-          <img
-            alt="Utilisation d'un compte bloqué"
-            className="shadow-bottom"
-            src="/images/user-preferences-tutoriel-02.png"
-            width={imageWidth}
-          />
-        </div>
-        <div
-          className={classnames(styles.tutoriel, {
+          })}
+          img="/images/user-preferences-tutoriel-02.png"
+          label="2. L’usurpateur tente d’utiliser un compte préalablement bloqué"
+        />
+        <UserPreferencesTutorialComponent
+          alt="Identification"
+          className={classnames({
             // Class CSS
             // eslint-disable-next-line @typescript-eslint/naming-convention
             'fr-mb-3w': !gtDesktop,
-          })}>
-          <strong className="fr-text--md is-block fr-mb-1w">
-            3. L&rsquo;usurpateur parvient à s&rsquo;identifier
-          </strong>
-          <img
-            alt="Identification"
-            className="shadow-bottom"
-            src="/images/user-preferences-tutoriel-03.png"
-            width={imageWidth}
-          />
-        </div>
-        <div className={classnames(styles.tutoriel)}>
-          <strong className="fr-text--md is-block fr-mb-1w">
-            4. FranceConnect bloque la connexion
-          </strong>
-          <img
-            alt="Usurpateur bloqué"
-            className="shadow-bottom"
-            src="/images/user-preferences-tutoriel-04.png"
-            width={imageWidth}
-          />
-        </div>
+          })}
+          img="/images/user-preferences-tutoriel-03.png"
+          label="3. L’usurpateur parvient à s’identifier"
+        />
+        <UserPreferencesTutorialComponent
+          alt="Usurpateur bloqué"
+          img="/images/user-preferences-tutoriel-04.png"
+          label="4. FranceConnect bloque la connexion"
+        />
       </div>
     </React.Fragment>
   );

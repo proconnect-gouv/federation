@@ -1,9 +1,9 @@
 import classnames from 'classnames';
 import React, { useCallback, useState } from 'react';
 import { OnChange } from 'react-final-form-listeners';
-import { useMediaQuery } from 'react-responsive';
 
 import { ToggleInput } from '@fc/dsfr';
+import { useStylesQuery, useStylesVariables } from '@fc/styles';
 
 import type { Service } from '../interfaces';
 import { ServiceImageComponent } from './service-image.component';
@@ -16,8 +16,10 @@ interface ServiceComponentProps {
 
 export const ServiceComponent: React.FC<ServiceComponentProps> = React.memo(
   ({ allowToBeUpdated, service }: ServiceComponentProps) => {
-    const gtMobile = useMediaQuery({ query: '(min-width: 576px)' });
-    const gtDesktop = useMediaQuery({ query: '(min-width: 992px)' });
+    const [breakpointLg, breakpointSm] = useStylesVariables(['breakpoint-lg', 'breakpoint-sm']);
+
+    const gtDesktop = useStylesQuery({ minWidth: breakpointLg });
+    const gtMobile = useStylesQuery({ minWidth: breakpointSm });
 
     const [isDisabled, setIsDisabled] = useState(!service.isChecked);
 

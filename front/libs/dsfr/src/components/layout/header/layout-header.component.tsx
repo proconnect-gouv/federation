@@ -1,11 +1,11 @@
 import classnames from 'classnames';
 import React, { useCallback, useContext, useState } from 'react';
-import { useMediaQuery } from 'react-responsive';
 
 import type { AccountInterface } from '@fc/account';
 import { AccountContext } from '@fc/account';
 import type { AppContextInterface } from '@fc/state-management';
 import { AppContext } from '@fc/state-management';
+import { useStylesQuery, useStylesVariables } from '@fc/styles';
 
 import styles from './layout-header.module.scss';
 import { LayoutHeaderLogosComponent } from './logos';
@@ -17,13 +17,6 @@ import { LayoutHeaderToolsComponent } from './tools';
 
 export const LayoutHeaderComponent = React.memo(() => {
   const [mobileMenuOpened, setMobileMenuOpened] = useState(false);
-  const ltDesktop = useMediaQuery({ query: '(max-width: 992px)' });
-
-  const { connected, ready, userinfos } = useContext<AccountInterface>(AccountContext);
-
-  const isUserConnected = connected && ready;
-  const firstname = userinfos?.firstname;
-  const lastname = userinfos?.lastname;
 
   const { state } = useContext<AppContextInterface>(AppContext);
   const { footerLinkTitle, logo, navigationItems, service } = state.config.Layout;
@@ -32,6 +25,15 @@ export const LayoutHeaderComponent = React.memo(() => {
   // @SEE https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/984
   /* istanbul ignore next */
   const { returnButtonUrl } = state.config?.OidcClient?.endpoints || {};
+
+  const { connected, ready, userinfos } = useContext<AccountInterface>(AccountContext);
+  const isUserConnected = connected && ready;
+  const firstname = userinfos?.firstname;
+  const lastname = userinfos?.lastname;
+
+  const [breakpointLg] = useStylesVariables('breakpoint-lg');
+
+  const ltDesktop = useStylesQuery({ maxWidth: breakpointLg });
 
   /* @NOTE can not be mocked without a native re-implementation */
   /* istanbul ignore next */

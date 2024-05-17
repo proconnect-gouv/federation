@@ -6,6 +6,7 @@ import { AccountProvider } from '@fc/account';
 import { AxiosErrorCatcherProvider } from '@fc/axios-error-catcher';
 import { I18nService } from '@fc/i18n';
 import { AppContextProvider } from '@fc/state-management';
+import { StylesProvider } from '@fc/styles';
 
 import { AppConfig } from '../config';
 import translations from '../i18n/fr.json';
@@ -18,7 +19,9 @@ export function Application(): JSX.Element {
       <AppContextProvider value={{ config: AppConfig }}>
         <AccountProvider config={AppConfig.Account}>
           <AxiosErrorCatcherProvider>
-            <ApplicationRoutes />
+            <StylesProvider>
+              <ApplicationRoutes />
+            </StylesProvider>
           </AxiosErrorCatcherProvider>
         </AccountProvider>
       </AppContextProvider>

@@ -31,66 +31,63 @@ exports[`UserPreferencesIntroductionComponent should match snapshot on desktop 1
   </p>
   <div
     class="flex-wrapper flex-between"
+    data-testid="user-preferences-introduction-container"
   >
-    <div
-      class="tutoriel fr-mb-5w"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         1. Un usurpateur tente de se connecter à Service-Public.fr
-      </strong>
-      <img
-        alt="Tentative de connexion"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-01.png"
-        width="350"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-01.png
+      </div>
+      <div>
+        Tentative de connexion
+      </div>
     </div>
-    <div
-      class="tutoriel fr-mb-5w"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         2. L’usurpateur tente d’utiliser un compte préalablement bloqué
-      </strong>
-      <img
-        alt="Utilisation d'un compte bloqué"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-02.png"
-        width="350"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-02.png
+      </div>
+      <div>
+        Utilisation d'un compte bloqué
+      </div>
     </div>
-    <div
-      class="tutoriel"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         3. L’usurpateur parvient à s’identifier
-      </strong>
-      <img
-        alt="Identification"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-03.png"
-        width="350"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-03.png
+      </div>
+      <div>
+        Identification
+      </div>
     </div>
-    <div
-      class="tutoriel"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         4. FranceConnect bloque la connexion
-      </strong>
-      <img
-        alt="Usurpateur bloqué"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-04.png"
-        width="350"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-04.png
+      </div>
+      <div>
+        Usurpateur bloqué
+      </div>
     </div>
   </div>
 </div>
@@ -127,66 +124,63 @@ exports[`UserPreferencesIntroductionComponent should match snapshot on mobile 1`
   </p>
   <div
     class="flex-wrapper flex-center"
+    data-testid="user-preferences-introduction-container"
   >
-    <div
-      class="tutoriel fr-mb-3w"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         1. Un usurpateur tente de se connecter à Service-Public.fr
-      </strong>
-      <img
-        alt="Tentative de connexion"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-01.png"
-        width="100%"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-01.png
+      </div>
+      <div>
+        Tentative de connexion
+      </div>
     </div>
-    <div
-      class="tutoriel fr-mb-3w"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         2. L’usurpateur tente d’utiliser un compte préalablement bloqué
-      </strong>
-      <img
-        alt="Utilisation d'un compte bloqué"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-02.png"
-        width="100%"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-02.png
+      </div>
+      <div>
+        Utilisation d'un compte bloqué
+      </div>
     </div>
-    <div
-      class="tutoriel fr-mb-3w"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         3. L’usurpateur parvient à s’identifier
-      </strong>
-      <img
-        alt="Identification"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-03.png"
-        width="100%"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-03.png
+      </div>
+      <div>
+        Identification
+      </div>
     </div>
-    <div
-      class="tutoriel"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         4. FranceConnect bloque la connexion
-      </strong>
-      <img
-        alt="Usurpateur bloqué"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-04.png"
-        width="100%"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-04.png
+      </div>
+      <div>
+        Usurpateur bloqué
+      </div>
     </div>
   </div>
 </div>
@@ -222,67 +216,64 @@ exports[`UserPreferencesIntroductionComponent should match snapshot on tablet 1`
     En images :
   </p>
   <div
-    class="flex-wrapper text-center"
+    class="flex-wrapper flex-between text-center"
+    data-testid="user-preferences-introduction-container"
   >
-    <div
-      class="tutoriel fr-mb-3w"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         1. Un usurpateur tente de se connecter à Service-Public.fr
-      </strong>
-      <img
-        alt="Tentative de connexion"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-01.png"
-        width="350"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-01.png
+      </div>
+      <div>
+        Tentative de connexion
+      </div>
     </div>
-    <div
-      class="tutoriel fr-mb-3w"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         2. L’usurpateur tente d’utiliser un compte préalablement bloqué
-      </strong>
-      <img
-        alt="Utilisation d'un compte bloqué"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-02.png"
-        width="350"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-02.png
+      </div>
+      <div>
+        Utilisation d'un compte bloqué
+      </div>
     </div>
-    <div
-      class="tutoriel fr-mb-3w"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         3. L’usurpateur parvient à s’identifier
-      </strong>
-      <img
-        alt="Identification"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-03.png"
-        width="350"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-03.png
+      </div>
+      <div>
+        Identification
+      </div>
     </div>
-    <div
-      class="tutoriel"
-    >
-      <strong
-        class="fr-text--md is-block fr-mb-1w"
-      >
+    <div>
+      <span>
+        UserPreferencesTutorialComponent :
+      </span>
+      <div>
         4. FranceConnect bloque la connexion
-      </strong>
-      <img
-        alt="Usurpateur bloqué"
-        class="shadow-bottom"
-        src="/images/user-preferences-tutoriel-04.png"
-        width="350"
-      />
+      </div>
+      <div>
+        /images/user-preferences-tutoriel-04.png
+      </div>
+      <div>
+        Usurpateur bloqué
+      </div>
     </div>
   </div>
 </div>

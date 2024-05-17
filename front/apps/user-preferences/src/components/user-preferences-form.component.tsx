@@ -2,9 +2,9 @@ import classnames from 'classnames';
 import type { FormEventHandler } from 'react';
 import React, { useCallback } from 'react';
 import { OnChange } from 'react-final-form-listeners';
-import { useMediaQuery } from 'react-responsive';
 
 import { AlertComponent, AlertTypes, SimpleButton, Sizes, ToggleInput } from '@fc/dsfr';
+import { useStylesQuery, useStylesVariables } from '@fc/styles';
 
 import { useUserPreferencesForm } from '../hooks';
 import type { UserPreferencesData } from '../interfaces';
@@ -30,7 +30,8 @@ export const UserPreferencesFormComponent: React.FC<UserPreferencesFormComponent
     showNotification,
     userPreferences,
   }: UserPreferencesFormComponentProps) => {
-    const gtTablet = useMediaQuery({ minWidth: 768 });
+    const [breakpointMd] = useStylesVariables(['breakpoint-md']);
+    const gtTablet = useStylesQuery({ minWidth: breakpointMd });
 
     const { alertInfoState, allowingIdPConfirmation } = useUserPreferencesForm({
       dirtyFields,
