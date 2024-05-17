@@ -26,7 +26,7 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = React.mem
   }: PaginationComponentProps) => {
     const {
       currentPage,
-      isTabletOrDesktop,
+      gtTablet,
       navigationNumbers,
       pagesCount,
       paginationChangeHandler,
@@ -46,7 +46,7 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = React.mem
     return (
       <nav aria-label="Pagination" className="fr-pagination" role="navigation">
         <ul className="fr-pagination__list">
-          {(useEdgeArrows || !isTabletOrDesktop) && (
+          {(useEdgeArrows || !gtTablet) && (
             <li>
               <button
                 className="fr-pagination__link fr-pagination__link--first"
@@ -57,7 +57,7 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = React.mem
               </button>
             </li>
           )}
-          {(useNavArrows || !isTabletOrDesktop) && (
+          {(useNavArrows || !gtTablet) && (
             <li>
               <button
                 className="fr-pagination__link fr-pagination__link--prev fr-pagination__link--lg-label"
@@ -111,7 +111,7 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = React.mem
               </button>
             </li>
           )}
-          {(useNavArrows || !isTabletOrDesktop) && (
+          {(useNavArrows || !gtTablet) && (
             <li>
               <button
                 className="fr-pagination__link fr-pagination__link--next fr-pagination__link--lg-label"
@@ -122,7 +122,7 @@ export const PaginationComponent: React.FC<PaginationComponentProps> = React.mem
               </button>
             </li>
           )}
-          {(useEdgeArrows || !isTabletOrDesktop) && (
+          {(useEdgeArrows || !gtTablet) && (
             <li>
               <button
                 className="fr-pagination__link fr-pagination__link--last"

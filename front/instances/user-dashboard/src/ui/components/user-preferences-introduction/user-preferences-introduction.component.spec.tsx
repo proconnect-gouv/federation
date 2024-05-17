@@ -1,14 +1,22 @@
 import { render } from '@testing-library/react';
-import { useMediaQuery } from 'react-responsive';
+
+import { useStylesQuery, useStylesVariables } from '@fc/styles';
 
 import { UserPreferencesIntroductionComponent } from './user-preferences-introduction.component';
 
-jest.mock('react-responsive');
+jest.mock('@fc/styles');
+jest.mock('../user-preferences-tutorial/user-preferences-tutorial.component');
 
 describe('UserPreferencesIntroductionComponent', () => {
+  beforeEach(() => {
+    // @NOTE used to prevent useStylesVariables.useStylesContext to throw
+    // useStylesContext requires to be into a StylesProvider context
+    jest.mocked(useStylesVariables).mockReturnValue([expect.any(Number), expect.any(Number)]);
+  });
+
   it('should match snapshot on mobile', () => {
     // Given
-    jest.mocked(useMediaQuery).mockReturnValueOnce(false).mockReturnValueOnce(false);
+    jest.mocked(useStylesQuery).mockReturnValueOnce(false).mockReturnValueOnce(false);
 
     // When
     const { container } = render(<UserPreferencesIntroductionComponent />);
@@ -19,7 +27,7 @@ describe('UserPreferencesIntroductionComponent', () => {
 
   it('should match snapshot on tablet', () => {
     // Given
-    jest.mocked(useMediaQuery).mockReturnValueOnce(true).mockReturnValueOnce(false);
+    jest.mocked(useStylesQuery).mockReturnValueOnce(true).mockReturnValueOnce(false);
 
     // When
     const { container } = render(<UserPreferencesIntroductionComponent />);
@@ -30,7 +38,7 @@ describe('UserPreferencesIntroductionComponent', () => {
 
   it('should match snapshot on desktop', () => {
     // Given
-    jest.mocked(useMediaQuery).mockReturnValueOnce(true).mockReturnValueOnce(true);
+    jest.mocked(useStylesQuery).mockReturnValueOnce(true).mockReturnValueOnce(true);
 
     // When
     const { container } = render(<UserPreferencesIntroductionComponent />);

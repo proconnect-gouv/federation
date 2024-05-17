@@ -42,3 +42,9 @@ export enum HeadingTag {
   H5 = 'h5',
   H6 = 'h6',
 }
+
+export enum Strings {
+  EMPTY_STRING = '',
+  WHITE_SPACE = ' ',
+  DASH = '-',
+}
