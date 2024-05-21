@@ -45,7 +45,6 @@ const resMock = {
 
 const queryErrorMock = {
   error: 'error',
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   error_description: 'errorDescription',
 };
 const validatorOptions = {
@@ -351,8 +350,6 @@ describe('OidcProviderController', () => {
       expect(oidcProviderServiceMock.abortInteraction).toHaveBeenCalledWith(
         reqMock,
         resMock,
-        // oidc naming
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { error: 'error', error_description: 'errorDescription' },
       );
     });

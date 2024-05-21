@@ -169,7 +169,6 @@ export class UserDashboardController {
     };
     await this.tracking.track(DISPLAYED_USER_PREFERENCES, context);
     // idp_id has been removed because it is not necessary to pass it to the consumer
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { idp_id: _idpId, ...identityFiltered } = idpIdentity;
 
     const preferences =
@@ -217,7 +216,6 @@ export class UserDashboardController {
     }
 
     // idp_id has been removed because it is not necessary to pass it to the consumer
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { idp_id: _idpId, ...identityFiltered } = idpIdentity;
 
     const preferences = await this.userPreferences.setUserPreferencesList(

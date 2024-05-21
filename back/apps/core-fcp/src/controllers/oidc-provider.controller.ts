@@ -185,8 +185,6 @@ export class OidcProviderController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @IsStep()
   async redirectToSpWithError(
-    // oidc naming
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     @Query() { error, error_description }: OidcError,
     @Req() req,
     @Res() res,
@@ -194,8 +192,6 @@ export class OidcProviderController {
     try {
       await this.oidcProvider.abortInteraction(req, res, {
         error,
-        // oidc naming
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description,
       });
     } catch (error) {

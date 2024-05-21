@@ -247,18 +247,10 @@ export function getAuthorizeUrl(overrideParams = {}, removeParams = []) {
   const { SP_CLIENT_ID, SP_ROOT_URL } = getServiceProvider('fsa1-low');
   const baseAuthorizeUrl = '/api/v2/authorize';
   const baseAuthorizeParams = {
-    // oidc param
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     acr_values: 'eidas1',
-    // oidc param
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     client_id: `${SP_CLIENT_ID}`,
     nonce: 'nonceThatRespectsTheLengthWhichIsDefinedInTheDTOForKinematicWork',
-    // oidc param
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     redirect_uri: `${SP_ROOT_URL}/oidc-callback`,
-    // oidc param
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     response_type: 'code',
     scope: 'openid gender family_name',
     state: 'stateTraces',

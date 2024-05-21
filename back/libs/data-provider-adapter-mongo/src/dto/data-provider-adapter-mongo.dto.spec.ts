@@ -12,16 +12,10 @@ describe('Data Provider (Data Transfer Object)', () => {
     title: 'Fournisseur de données Mock - 1',
     active: true,
     slug: 'MOCK_1',
-    // OIDC fashion naming
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     client_id:
       '423dcbdc5a15ece61ed00ff5989d72379c26d9ed4c8e4e05a87cffae019586e0',
-    // OIDC fashion naming
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     client_secret:
       'sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=',
-    // OIDC fashion naming
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     jwks_uri: 'url.fr/jwks',
     // OIDC fashion naming
     // eslint-disable-next-line @typescript-eslint/naming-convention

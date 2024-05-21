@@ -122,22 +122,14 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     idpId: string,
     idpAcr: string,
   ): {
-    // AgentConnect claims naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     idp_id: string;
-    // AgentConnect claims naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     idp_acr: string;
   } & Omit<IAgentIdentity, 'sub'> {
     const { sub: _sub, ...spIdentityCleaned } = idpIdentity;
 
     return {
       ...spIdentityCleaned,
-      // AgentConnect claims naming convention
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       idp_id: idpId,
-      // AgentConnect claims naming convention
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       idp_acr: idpAcr,
     };
   }
@@ -145,8 +137,6 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   protected storeIdentityWithSessionService(
     sessionOidc: ISessionService<OidcClientSession>,
     sub: string,
-    // AgentConnect claims naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     spIdentity: Partial<Omit<IOidcIdentity, 'sub'>>,
     accountId: string,
   ): void {

@@ -124,7 +124,6 @@ export class IdentityProviderAdapterEnvService
   ): IIdentityProviderAdapterEnv {
     const { clientSecretEncryptKey, ...configuration } = list;
 
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const client_secret = this.decryptClientSecret(
       configuration.client.client_secret,
       clientSecretEncryptKey,
@@ -132,7 +131,6 @@ export class IdentityProviderAdapterEnvService
 
     const clientLegacyToOpenId = {
       ...configuration.client,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret,
     };
 

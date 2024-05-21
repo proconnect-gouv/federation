@@ -116,8 +116,6 @@ export class DataProviderService {
 
   generateExpiredPayload(aud: string): CustomJwtPayload<DpJwtPayloadInterface> {
     return {
-      // OIDC defined var name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_introspection: {
         active: false,
       },
@@ -133,8 +131,6 @@ export class DataProviderService {
     if (httpStatusCode === HttpStatus.INTERNAL_SERVER_ERROR) {
       return {
         error: 'server_error',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description:
           'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
       };
@@ -142,8 +138,6 @@ export class DataProviderService {
 
     return {
       error,
-      // oidc compliant
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       error_description: message,
     };
   }
@@ -174,8 +168,6 @@ export class DataProviderService {
     const scope = await this.getDpRelatedScopes(dpClientId, interaction);
 
     const payload = {
-      // OIDC defined var name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_introspection: {
         active: true,
         aud: spClientId,

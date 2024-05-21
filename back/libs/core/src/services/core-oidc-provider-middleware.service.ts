@@ -82,8 +82,6 @@ export class CoreOidcProviderMiddlewareService {
 
     const isPostMethod = ctx.method === 'POST';
     const data = isPostMethod ? ctx.req.body : ctx.query;
-    // oidc parameter
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { acr_values: dataAcrValues } = data as { acr_values: string };
     const acrValues = dataAcrValues.split(/\s+/);
     data.acr_values = pickAcr(knownAcrValues, acrValues, defaultAcrValue);
@@ -175,8 +173,6 @@ export class CoreOidcProviderMiddlewareService {
     const { interactionId } = eventContext.fc;
     const { isSso } = ctx;
 
-    // oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const {
       acr_values: spAcr,
       client_id: spId,
@@ -283,8 +279,6 @@ export class CoreOidcProviderMiddlewareService {
     const { req, res } = ctx;
     const idpHint = req.query.idp_hint as string;
     const { allowedIdpHints } = this.config.get<CoreConfig>('Core');
-    // oidc parameter
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const acr_values = ctx.oidc.params.acr_values as string;
 
     if (this.shouldAbortIdpHint(ctx)) {
@@ -299,8 +293,6 @@ export class CoreOidcProviderMiddlewareService {
     this.flowSteps.setStep(OidcClientRoutes.REDIRECT_TO_IDP);
 
     try {
-      // oidc parameter
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       await this.core.redirectToIdp(res, idpHint, { acr_values });
       await this.sessionService.commit();
       await this.trackRedirectToIdp(ctx);

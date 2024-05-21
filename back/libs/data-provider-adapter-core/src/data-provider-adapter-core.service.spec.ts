@@ -39,15 +39,11 @@ describe('DataProviderAdapterCoreService', () => {
     response: {
       data: {
         error: 'error',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'error_description',
       },
     },
   } as AxiosError<{
     error: string;
-    // oidc compliant
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     error_description: string;
   }>;
 

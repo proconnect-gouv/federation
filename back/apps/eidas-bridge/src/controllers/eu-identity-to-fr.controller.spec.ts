@@ -262,11 +262,7 @@ describe('EuIdentityToFrController', () => {
       acr: 'eidas2',
       userinfos: {
         sub: 'BE/FR/12345',
-        // oidc parameter
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         family_name: 'Garcia',
-        // oidc parameter
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         given_name: 'javier',
         birthdate: '1964-12-31',
       },
@@ -284,8 +280,6 @@ describe('EuIdentityToFrController', () => {
 
     const failureOidcJson = {
       error: 'error',
-      // oidc parameter
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       error_description: 'error_description',
     };
 
@@ -437,11 +431,7 @@ describe('EuIdentityToFrController', () => {
           idpIdentity: { sub: 'BE/FR/12345' },
           spAcr: successOidcJson.acr,
           spIdentity: {
-            // oidc parameter
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             family_name: 'Garcia',
-            // oidc parameter
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             given_name: 'javier',
             birthdate: '1964-12-31',
           },
@@ -670,11 +660,7 @@ describe('EuIdentityToFrController', () => {
     let identityMock;
     beforeEach(() => {
       identityMock = {
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         given_name: 'given_nameValue',
-        // Oidc naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         family_name: 'family_nameValue',
       };
       validateDtoMock = jest.mocked(validateDto);
@@ -718,13 +704,9 @@ describe('EuIdentityToFrController', () => {
       // setup
       const oidcErrorMock = {
         error: 'error',
-        // oidc param
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'error_description',
       };
       const paramsMock = {
-        // oidc param
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         redirect_uri: 'https://redirect.url',
         state: 'texas',
       };

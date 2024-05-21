@@ -35,11 +35,7 @@ describe('CoreFcpService', () => {
   const sessionCoreServiceMock = getSessionServiceMock();
 
   const spIdentityMock = {
-    // oidc parameter
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Edward',
-    // oidc parameter
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
     email: 'eteach@fqdn.ext',
   } as IOidcIdentity;

@@ -19,15 +19,11 @@ import { OidcProviderConfig } from '@fc/oidc-provider';
  */
 export class AuthorizeParamsDto {
   @IsString()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_id: string;
 
   @IsString({ each: true })
   @IsArray()
   @Split(/[ ]+/)
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly acr_values: string;
 
   @IsOptional()
@@ -35,8 +31,6 @@ export class AuthorizeParamsDto {
   readonly claims?: string;
 
   @IsString()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly response_type: string;
 
   @IsString()
@@ -48,8 +42,6 @@ export class AuthorizeParamsDto {
   readonly state: string;
 
   @IsUrlRequiredTldFromConfig()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly redirect_uri: string;
 
   // The openid verification is made into oidc-provider
@@ -68,7 +60,5 @@ export class AuthorizeParamsDto {
 
   @IsOptional()
   @IsString()
-  // openid inspired property name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly idp_hint?: string;
 }

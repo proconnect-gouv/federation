@@ -97,8 +97,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       'x-forwarded-for-original': xForwardedForOriginalMock,
     },
     sessionId: sessionIdMock,
-    // oidc parameter
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     query: { acr_values: spAcrMock, client_id: spIdMock },
   };
   const resMock = {
@@ -299,8 +297,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
   describe('buildSessionWithNewInteraction', () => {
     const ctxMock = {
       oidc: {
-        // oidc naming style
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         params: { acr_values: 'acr_values', client_id: 'client_id' },
       },
       isSso: true,
@@ -457,11 +453,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         oidc: {
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: { acr_values: spAcrMock, client_id: spIdMock },
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           claims: { id_token: { amr: { essential: true } } },
         },
         req: reqMock,
@@ -491,8 +483,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         oidc: {
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: { acr_values: spAcrMock, client_id: spIdMock },
           claims: {},
         },
@@ -515,8 +505,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         oidc: {
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: { acr_values: spAcrMock, client_id: spIdMock },
           claims: {},
         },
@@ -539,11 +527,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         oidc: {
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: { acr_values: spAcrMock, client_id: spIdMock },
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           claims: { id_token: { amr: { essential: true } } },
         },
         req: reqMock,
@@ -569,11 +553,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         oidc: {
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: { acr_values: spAcrMock, client_id: spIdMock },
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           claims: { id_token: { amr: { essential: true } } },
         },
         req: reqMock,
@@ -603,8 +583,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         oidc: {
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: { acr_values: spAcrMock, client_id: spIdMock },
           claims: {},
         },
@@ -627,8 +605,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         oidc: {
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: { acr_values: spAcrMock, client_id: spIdMock },
           claims: {},
         },
@@ -651,11 +627,7 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         oidc: {
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: { acr_values: spAcrMock, client_id: spIdMock },
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           claims: { id_token: { amr: { essential: true } } },
         },
         req: reqMock,
@@ -745,8 +717,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         method: 'GET',
-        // Oidc Naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         query: { acr_values: 'boots' },
       } as unknown as OidcCtx;
       // When
@@ -760,8 +730,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         method: 'POST',
-        // Oidc Naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         req: { body: { acr_values: 'boots' } },
       } as unknown as OidcCtx;
       // When
@@ -799,8 +767,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
           'x-forwarded-source-port': '443',
           'x-forwarded-for-original': '123.123.123.123,124.124.124.124',
         },
-        // oidc
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         query: { acr_values: 'eidas3', client_id: 'foo' },
       },
       res: {},
@@ -905,8 +871,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       const ctxMock = {
         req: {
           headers: { 'x-forwarded-for': '123.123.123.123' },
-          // oidc
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           query: { acr_values: 'eidas3', client_id: 'foo' },
         },
         res: {},
@@ -1219,8 +1183,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         oidc: { isError: true },
-        // OIDC fashion variable name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         req: { query: { idp_hint: 'foo' } },
       } as unknown as OidcCtx;
 
@@ -1235,8 +1197,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       // Given
       const ctxMock = {
         oidc: {},
-        // OIDC fashion variable name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         req: { query: { idp_hint: 'foo' } },
         isSso: true,
       } as unknown as OidcCtx;
@@ -1274,15 +1234,11 @@ describe('CoreOidcProviderMiddlewareService', () => {
     const ctxMock = {
       req: {
         query: {
-          // OIDC fashion variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           idp_hint: idpHintMock,
         },
       },
       oidc: {
         params: {
-          // OIDC fashion variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           acr_values: Symbol('acr'),
         },
       },
@@ -1304,8 +1260,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
         ...ctxMock,
         req: {
           query: {
-            // OIDC fashion variable name
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             idp_hint: 'invalidIdpHint',
           },
         },
@@ -1360,8 +1314,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       expect(coreServiceMock.redirectToIdp).toHaveBeenCalledWith(
         ctxMock.res,
         idpHintMock,
-        // oidc param
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { acr_values: ctxMock.oidc.params.acr_values },
       );
     });
@@ -1380,8 +1332,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
 
       const noIdpHintCtx = {
         ...ctxMock,
-        // OIDC fashion variable name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         req: { query: { idp_hint: 'foo' } },
       } as unknown as OidcCtx;
 
@@ -1398,8 +1348,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
 
       const noIdpHintCtx = {
         ...ctxMock,
-        // OIDC fashion variable name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         req: { query: { idp_hint: 'foo' } },
       } as unknown as OidcCtx;
 

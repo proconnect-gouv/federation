@@ -131,8 +131,6 @@ export class DataProviderController {
   }
 
   private async trackChecktokenJWT(
-    // oidc naming
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     { token_introspection }: CustomJwtPayload<DpJwtPayloadInterface>,
     trackingContext: TrackedEventContextInterface,
   ): Promise<void> {

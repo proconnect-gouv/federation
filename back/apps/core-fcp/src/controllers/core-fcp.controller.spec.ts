@@ -50,11 +50,7 @@ describe('CoreFcpController', () => {
 
   const interactionDetailsMock = {
     params: {
-      // oidc params
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'toto titi',
-      // oidc params
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: 'client_id',
       scope: 'openid',
     },

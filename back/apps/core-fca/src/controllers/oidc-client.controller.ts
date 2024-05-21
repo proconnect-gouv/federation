@@ -106,16 +106,11 @@ export class OidcClientController {
     const fqdn = this.coreFca.getFqdnFromEmail(email);
 
     const {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       params: { acr_values },
     } = await this.oidcProvider.getInteraction(req, res);
 
     const authorizeParams = {
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
-      // login_hint is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       login_hint: email,
     };
 
@@ -240,8 +235,6 @@ export class OidcClientController {
     };
 
     const extraParams = {
-      // OIDC inspired variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       sp_id: spId,
     };
 

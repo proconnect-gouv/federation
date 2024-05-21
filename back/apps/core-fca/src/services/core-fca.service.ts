@@ -44,11 +44,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     res: Response,
     idpId: string,
     {
-      // oidc parameter
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
-      // oidc parameter
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       login_hint,
     }: Pick<
       CoreFcaAuthorizationParametersInterface,
@@ -68,15 +64,9 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     const authorizeParams: CoreFcaAuthorizationParametersInterface = {
       state,
       scope,
-      // oidc parameter
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
       nonce,
-      // We want the same nomenclature as OpenId Connect
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       sp_id: spId,
-      // login_hint is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       login_hint,
     };
 
@@ -97,8 +87,6 @@ export class CoreFcaService implements CoreFcaServiceInterface {
       idpIdentity: undefined,
       spIdentity: undefined,
       accountId: undefined,
-      // login_hint is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       login_hint: login_hint,
     };
 

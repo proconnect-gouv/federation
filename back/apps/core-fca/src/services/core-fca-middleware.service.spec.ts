@@ -76,11 +76,7 @@ describe('CoreFcaMiddlewareService', () => {
 
   const spIdentityMock = {
     email: 'eteach@fqdn.ext',
-    // oidc param
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
-    // oidc param
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Edward',
     sub: '42',
   };
@@ -116,8 +112,6 @@ describe('CoreFcaMiddlewareService', () => {
       'x-forwarded-for-original': xForwardedForOriginalMock,
     },
     sessionId: sessionIdMockValue,
-    // oidc param
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     query: { acr_values: spAcrMock, client_id: spIdMock },
   };
   const resMock = {
@@ -363,8 +357,6 @@ describe('CoreFcaMiddlewareService', () => {
       return {
         oidc: {
           isError: hasError,
-          // oidc param
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           params: { acr_values: spAcrMock, client_id: spIdMock },
         },
         req: reqMock,
@@ -472,9 +464,7 @@ describe('CoreFcaMiddlewareService', () => {
             'x-forwarded-source-port': '443',
           },
           query: {
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             acr_values: 'eidas3',
-            // eslint-disable-next-line @typescript-eslint/naming-convention
             client_id: 'spIdValue',
           },
           sessionId: '42',
@@ -632,8 +622,6 @@ describe('CoreFcaMiddlewareService', () => {
     // Given
     const ctxMock = {
       oidc: {
-        // OIDC defined variable names
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         params: { acr_values: spAcrMock, client_id: spIdMock },
       },
       req: reqMock,

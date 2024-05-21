@@ -112,7 +112,6 @@ describe('MockIdentityProviderController', () => {
       state: stateMock,
       scope: scopeMock,
       providerUid: providerUidMock,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: acrMock,
     });
 

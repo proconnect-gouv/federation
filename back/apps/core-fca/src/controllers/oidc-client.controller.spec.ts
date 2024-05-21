@@ -98,7 +98,6 @@ describe('OidcClient Controller', () => {
 
   const interactionDetailsResolved = {
     params: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'interactionDetailsResolved.acr_values',
       scope: 'toto titi',
     },
@@ -113,8 +112,6 @@ describe('OidcClient Controller', () => {
   const providerIdMock = 'providerIdMockValue';
 
   const identityMock = {
-    // oidc spec defined property
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'given_name',
     sub: '1',
   };
@@ -232,7 +229,6 @@ describe('OidcClient Controller', () => {
       nonce: nonceMock,
       scope: 'scopeMock',
       providerUid: providerIdMock,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'acrMock',
     });
 
@@ -257,7 +253,6 @@ describe('OidcClient Controller', () => {
 
       sessionServiceMock.get.mockReturnValueOnce({
         ...oidcClientSessionDataMock,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         login_hint: 'harry.potter@hogwarts.uk',
       });
       coreServiceMock.getIdpIdForEmail.mockResolvedValueOnce(hogwartsProviders);
@@ -313,11 +308,7 @@ describe('OidcClient Controller', () => {
         res,
         providerIdMock,
         {
-          // oidc spec defined property
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           acr_values: interactionDetailsResolved.params.acr_values,
-          // oidc spec defined property
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           login_hint: body.email,
         },
       );
@@ -341,11 +332,7 @@ describe('OidcClient Controller', () => {
         res,
         providerIdMock,
         {
-          // oidc spec defined property
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           acr_values: interactionDetailsResolved.params.acr_values,
-          // oidc spec defined property
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           login_hint: body.email,
         },
       );
@@ -511,11 +498,7 @@ describe('OidcClient Controller', () => {
       };
 
       oidcClientServiceMock.getTokenFromProvider.mockReturnValueOnce({
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         accessToken: accessTokenMock,
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr: acrMock,
         amr: amrMock,
       });
@@ -557,8 +540,6 @@ describe('OidcClient Controller', () => {
         idpIdMock,
         tokenParamsMock,
         req,
-        // OIDC inspired parameter name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         { sp_id: spIdMock },
       );
     });

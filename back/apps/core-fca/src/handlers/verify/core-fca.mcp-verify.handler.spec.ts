@@ -51,16 +51,10 @@ describe('CoreFcaMcpVerifyHandler', () => {
 
   const idpIdentityMock = {
     sub: 'computedSubIdp',
-    // Oidc Naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'givenNameValue',
     uid: 'uidValue',
-    // Oidc Naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     usual_name: 'usalNameValue',
     email: 'myemail@mail.fr',
-    // Oidc Naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     is_service_public: true,
   };
 
@@ -248,27 +242,15 @@ describe('CoreFcaMcpVerifyHandler', () => {
       const calledMock = {
         idpIdentity: idpIdentityMock,
         spIdentity: {
-          // Oidc naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           given_name: idpIdentityMock.given_name,
           uid: idpIdentityMock.uid,
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           idp_id: sessionDataMock.idpId,
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           idp_acr: sessionDataMock.idpAcr,
           email: idpIdentityMock.email,
-          // Oidc Naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           usual_name: idpIdentityMock.usual_name,
-          // Oidc Naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           is_service_public: true,
         },
         subs: {
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           sp_id: universalSubMock,
         },
         accountId: accountIdMock,

@@ -16,7 +16,6 @@ describe('Identity Provider (Data Transfer Object)', () => {
     active: true,
     clientID: 'clientID',
     amr: [Amr.MAIL, Amr.PWD],
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
     display: false,
@@ -25,28 +24,19 @@ describe('Identity Provider (Data Transfer Object)', () => {
     endSessionURL:
       'https://corev2.docker.dev-franceconnect.fr/api/v2/session/end',
     featureHandlers: {},
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     id_token_encrypted_response_alg: 'RSA-OAEP',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     id_token_encrypted_response_enc: 'A256GCM',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     id_token_signed_response_alg: 'RS512',
     image: 'provider1.png',
     name: 'provider1',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     response_types: ['code'],
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     revocation_endpoint_auth_method: 'client_secret_post',
     title: 'provider 1',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     token_endpoint_auth_method: 'client_secret_post',
     uid: 'uid',
     url: 'https://corev2.docker.dev-franceconnect.fr',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     userinfo_encrypted_response_alg: 'RSA-OAEP',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     userinfo_encrypted_response_enc: 'A256GCM',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     userinfo_signed_response_alg: 'RS512',
   };
 
@@ -104,9 +94,7 @@ describe('Identity Provider (Data Transfer Object)', () => {
       // Given
       const dto = Object.assign(identityProviderAdapterMongoMock, {
         discovery: true,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token_signed_response_alg: 'HS512',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         userinfo_signed_response_alg: 'HS512',
       });
       delete dto.jwksURL;

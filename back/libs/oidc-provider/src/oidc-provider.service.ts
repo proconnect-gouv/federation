@@ -166,8 +166,6 @@ export class OidcProviderService {
   async abortInteraction(
     req: any,
     res: any,
-    // oidc naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     errorParams: InteractionResults,
     retry: boolean = false,
   ): Promise<any> {
