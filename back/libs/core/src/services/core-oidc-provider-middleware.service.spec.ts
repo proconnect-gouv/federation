@@ -348,6 +348,70 @@ describe('CoreOidcProviderMiddlewareService', () => {
     });
   });
 
+  describe('getAuthorizationParameters', () => {
+    it('should return request body when method is POST', () => {
+      // Given
+      const ctxMock: any = {
+        method: 'POST',
+        req: {
+          body: { param1: 'value1', param2: 'value2' },
+          query: { param3: 'value3', param4: 'value4' },
+        },
+      };
+
+      // When
+      const result = service['getAuthorizationParameters'](ctxMock);
+
+      // Then
+      expect(result).toEqual({ param1: 'value1', param2: 'value2' });
+    });
+
+    it('should return query parameters when method is not POST', () => {
+      // Given
+      const ctxMock: any = {
+        method: 'GET',
+        req: {
+          body: { param1: 'value1', param2: 'value2' },
+          query: { param3: 'value3', param4: 'value4' },
+        },
+      };
+
+      // When
+      const result = service['getAuthorizationParameters'](ctxMock);
+
+      // Then
+      expect(result).toEqual({ param3: 'value3', param4: 'value4' });
+    });
+
+    it('should return empty object when method is POST and request body is empty', () => {
+      // Given
+      const ctxMock: any = {
+        method: 'POST',
+        req: { body: {}, query: { param3: 'value3', param4: 'value4' } },
+      };
+
+      // When
+      const result = service['getAuthorizationParameters'](ctxMock);
+
+      // Then
+      expect(result).toEqual({});
+    });
+
+    it('should return empty object when method is not POST and query parameters are empty', () => {
+      // Arrange
+      const ctxMock: any = {
+        method: 'GET',
+        req: { body: { param1: 'value1', param2: 'value2' }, query: {} },
+      };
+
+      // When
+      const result = service['getAuthorizationParameters'](ctxMock);
+
+      // Then
+      expect(result).toEqual({});
+    });
+  });
+
   describe('beforeAuthorizeMiddleware', () => {
     it('should set cookies to nothing if cookies do not exist', () => {
       // Given

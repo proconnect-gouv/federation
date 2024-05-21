@@ -15,7 +15,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
-import { PartialExcept } from '@fc/common';
+import { IsUrlRequiredTldFromConfig, PartialExcept } from '@fc/common';
 import { RnippPivotIdentity } from '@fc/rnipp';
 
 import { IOidcIdentity } from '../interfaces';
@@ -42,6 +42,10 @@ export class OidcSession {
   @IsOptional()
   @IsArray()
   readonly amr?: string[];
+
+  @IsOptional()
+  @IsBoolean()
+  readonly isSilentAuthentication?: boolean;
 
   // == IdP
 
@@ -130,6 +134,10 @@ export class OidcSession {
   @IsString()
   @MinLength(1)
   readonly spAcr?: string;
+
+  @IsOptional()
+  @IsUrlRequiredTldFromConfig()
+  readonly spRedirectUri?: string;
 
   /**
    * @todo #485 This section require a deep type validation

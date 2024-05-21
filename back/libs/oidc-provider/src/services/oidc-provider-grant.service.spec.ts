@@ -9,7 +9,13 @@ import {
 } from '../exceptions';
 import { OidcProviderGrantService } from './oidc-provider-grant.service';
 
-jest.mock('@fc/common');
+jest.mock('@fc/common', () => {
+  const actual = jest.requireActual('@fc/common');
+  return {
+    ...actual,
+    safelyParseJson: jest.fn(),
+  };
+});
 jest.mock('@fc/oidc');
 
 describe('OidcProviderGrantService', () => {

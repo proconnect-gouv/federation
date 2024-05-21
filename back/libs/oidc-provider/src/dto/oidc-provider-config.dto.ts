@@ -865,6 +865,10 @@ export class OidcProviderConfig {
   @IsEnum(OidcProviderPrompt, { each: true })
   readonly forcedPrompt: OidcProviderPrompt[];
 
+  @IsArray()
+  @IsEnum(OidcProviderPrompt, { each: true })
+  readonly allowedPrompt: OidcProviderPrompt[];
+
   @IsBoolean()
   @IsOptional()
   readonly isLocalhostAllowed?: boolean;

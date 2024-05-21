@@ -140,3 +140,7 @@ Given(
     serviceProviderPage.setIdpHint(idpId);
   },
 );
+
+Given('je rentre {string} dans le champ prompt', function (prompt: string) {
+  serviceProviderPage.setPrompt(prompt);
+});
