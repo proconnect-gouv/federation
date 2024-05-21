@@ -125,11 +125,7 @@ describe('CoreFcaService', () => {
 
   describe('redirectToIdp', () => {
     const authorizationParametersMock = {
-      // oidc parameter
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: acrMock,
-      // oidc parameter
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       login_hint: 'example@email.com',
     };
 
@@ -222,15 +218,9 @@ describe('CoreFcaService', () => {
         {
           state: stateMock,
           scope: configMock.scope,
-          // oidc parameter
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           acr_values: acrMock,
           nonce: nonceMock,
-          // oidc parameter
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           sp_id: spIdMock,
-          // oidc parameter
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           login_hint: 'example@email.com',
         },
       );
@@ -254,8 +244,6 @@ describe('CoreFcaService', () => {
         idpIdentity: undefined,
         spIdentity: undefined,
         accountId: undefined,
-        // oidc parameter
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         login_hint: 'example@email.com',
       });
     });

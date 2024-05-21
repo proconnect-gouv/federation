@@ -125,8 +125,6 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
 
   private getTechnicalClaims(idpId: string): Record<string, unknown> {
     return {
-      // OIDC fashion naming
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       idp_id: idpId,
     };
   }
@@ -213,15 +211,11 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     rnippIdentity: RnippPivotIdentity,
     idpIdentity: PartialExcept<IOidcIdentity, 'sub'>,
   ): Partial<Omit<IOidcIdentity, 'sub'>> {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { birthdate, email, preferred_username } = idpIdentity;
     return {
       ...rnippIdentity,
-      // oidc claim
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       idp_birthdate: birthdate,
       email,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       preferred_username,
     };
   }

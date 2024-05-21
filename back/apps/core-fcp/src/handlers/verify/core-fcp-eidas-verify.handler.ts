@@ -83,8 +83,6 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
 
   private getTechnicalClaims(idpId: string): Record<string, unknown> {
     return {
-      // OIDC fashion naming
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       idp_id: idpId,
     };
   }

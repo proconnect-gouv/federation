@@ -44,8 +44,6 @@ export class MockDataProviderController {
 
       const result = {
         error,
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: message,
       };
 

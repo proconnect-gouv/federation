@@ -48,7 +48,6 @@ describe('MockServiceProviderController', () => {
 
   const oidcErrorMock = {
     error: 'error',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     error_description: 'error_description',
   };
 
@@ -98,10 +97,8 @@ describe('MockServiceProviderController', () => {
 
   const identityProviderMinimum = {
     client: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uris: ['https://foo.bar.com/buz'],
       uid: 'providerUidMock',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: 'mock client_id',
     },
   };
@@ -112,57 +109,27 @@ describe('MockServiceProviderController', () => {
     name: 'envIssuer',
     display: true,
     active: true,
-    // oidc param name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     discovery: true,
     discoveryUrl:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration',
     issuer: {
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       jwks_uri: 'https://fsp1v2.docker.dev-franceconnect.fr/jwks_uri',
     },
     client: {
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: 'mock client_id',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_signed_response_alg: 'ES256',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       post_logout_redirect_uris: [
         'https://fsp1v2.docker.dev-franceconnect.fr/logout-callback',
       ],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       redirect_uris: ['https://foo.bar.com/buz'],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       response_types: ['code'],
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       token_endpoint_auth_method: 'client_secret_post',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       revocation_endpoint_auth_method: 'client_secret_post',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_encrypted_response_alg: 'RSA-OAEP',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       id_token_encrypted_response_enc: 'A256GCM',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       userinfo_encrypted_response_alg: 'RSA-OAEP',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       userinfo_encrypted_response_enc: 'A256GCM',
-      // oidc param name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       userinfo_signed_response_alg: 'ES256',
     },
   };
@@ -230,7 +197,6 @@ describe('MockServiceProviderController', () => {
       state: idpStateMock,
       nonce: nonceMock,
       providerUid: 'providerUidMock',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'acrMock',
       claims: 'claimsMock',
     });
@@ -327,7 +293,6 @@ describe('MockServiceProviderController', () => {
       // setup
       const queryMock = {
         error: 'error',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Error description',
       };
       // action
@@ -337,7 +302,6 @@ describe('MockServiceProviderController', () => {
       expect(result).toEqual({
         titleFront: "Mock service provider - Erreur lors de l'authentification",
         error: 'error',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Error description',
       });
     });
@@ -480,8 +444,6 @@ describe('MockServiceProviderController', () => {
       const body = { accessToken: 'access_token' };
       oidcClientServiceMock.utils.getUserInfo.mockReturnValueOnce({
         sub: '1',
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         given_name: 'given_name',
       });
       const expectedOutput = {
@@ -489,8 +451,6 @@ describe('MockServiceProviderController', () => {
         titleFront: 'Mock Service Provider - Userinfo',
         idpIdentity: {
           sub: '1',
-          // oidc spec defined property
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           given_name: 'given_name',
         },
         idpIdToken: idpIdTokenMock,
@@ -725,7 +685,6 @@ describe('MockServiceProviderController', () => {
           state: idpStateMock,
           prompt: 'login consent',
           scope: scopeMock,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           acr_values: 'eidas2',
           nonce: nonceMock,
           claims: 'claimsMock',
@@ -747,12 +706,9 @@ describe('MockServiceProviderController', () => {
           acr: 'eidas2',
           claims: 'claimsMock',
           prompt: ['login', 'consent'],
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           redirect_uri: ['redirect', 'uri'],
           scope: scopeMock,
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           authorization_endpoint: 'https://somewhere.com/foo',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           client_id: idp.client.client_id,
         },
         authorizationUrl: urlMock,
@@ -765,8 +721,6 @@ describe('MockServiceProviderController', () => {
     const amrMock = Symbol('amr');
     const identityMock = {
       sub: '1',
-      // oidc spec defined property
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       given_name: 'given_name',
     };
     const tokenParamsMock = {
@@ -789,11 +743,7 @@ describe('MockServiceProviderController', () => {
 
     beforeEach(() => {
       oidcClientServiceMock.getTokenFromProvider.mockReturnValueOnce({
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         accessToken: accessTokenMock,
-        // oidc spec defined property
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr: acrMock,
         amr: amrMock,
       });
@@ -824,8 +774,6 @@ describe('MockServiceProviderController', () => {
       // setup
       const queryMock = {
         error: 'toto',
-        // oidc parameter
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'toto42',
       };
       const errorQueryMock = 'error=toto&error_description=toto42';
@@ -854,8 +802,6 @@ describe('MockServiceProviderController', () => {
       // setup
       const queryMock = {
         error: 'toto',
-        // oidc parameter
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'toto42',
       };
 

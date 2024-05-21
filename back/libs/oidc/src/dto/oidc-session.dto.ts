@@ -175,7 +175,5 @@ export class OidcSession {
 
   @IsString()
   @IsOptional()
-  // OIDC parameter name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly login_hint?: string;
 }

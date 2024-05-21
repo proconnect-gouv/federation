@@ -285,8 +285,6 @@ describe('CoreFcpEidasVerifyHandler', () => {
         },
         accountId: accountIdMock,
         subs: {
-          // FranceConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           sp_id: 'computedSubSp',
         },
       });
@@ -301,8 +299,6 @@ describe('CoreFcpEidasVerifyHandler', () => {
       const result = service['getTechnicalClaims'](idpId);
       // Then
       expect(result).toEqual({
-        // OIDC fashion naming
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         idp_id: idpId,
       });
     });

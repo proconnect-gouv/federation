@@ -90,49 +90,29 @@ export class IdentityProviderAdapterMongoService
           isBeta: true,
           authzURL: true,
           clientID: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: true,
           discovery: true,
           discoveryUrl: true,
           display: true,
           eidas: true,
           featureHandlers: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           id_token_encrypted_response_alg: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           id_token_encrypted_response_enc: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           id_token_signed_response_alg: true,
           image: true,
           issuer: true,
           jwksURL: true,
           name: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           response_types: true,
-          // openid defined property names
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           revocation_endpoint_auth_method: true,
           title: true,
           tokenURL: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           token_endpoint_auth_method: true,
           uid: true,
           url: true,
           userInfoURL: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_encrypted_response_alg: true,
-          // oidc defined variable namev
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_encrypted_response_enc: true,
-          // oidc defined variable name
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           userinfo_signed_response_alg: true,
           endSessionURL: true,
           modal: true,
@@ -261,8 +241,6 @@ export class IdentityProviderAdapterMongoService
       Reflect.deleteProperty(result, legacyName);
     });
 
-    // openid defined property names
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     result.client_secret = this.decryptClientSecret(source.client_secret);
     result.maxAuthorizedAcr = `eidas${source['eidas']}`;
 

@@ -65,8 +65,6 @@ export class OidcClientController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
-    // acr_values is an oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { defaultAcrValue: acr_values } =
       this.config.get<OidcAcrConfig>('OidcAcr');
 
@@ -80,8 +78,6 @@ export class OidcClientController {
     const prompt = [OidcProviderPrompt.LOGIN].join(' ');
 
     const authorizeParams = {
-      // acr_values is an oidc defined variable name
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values,
       nonce,
       scope,

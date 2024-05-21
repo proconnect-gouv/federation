@@ -54,8 +54,6 @@ describe('DataProviderController', () => {
   } as unknown as TrackingService;
 
   const payloadMock = {
-    // oidc naming
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     token_introspection: {
       active: true,
       scope: 'scope',
@@ -63,8 +61,6 @@ describe('DataProviderController', () => {
   };
 
   const expiredPayload = {
-    // oidc naming
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     token_introspection: {
       active: false,
     },
@@ -133,14 +129,8 @@ describe('DataProviderController', () => {
 
   describe('checktoken', () => {
     const bodyMock: ChecktokenRequestDto = {
-      // oidc compliant
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       access_token: 'acces_token',
-      // oidc compliant
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: 'client_id',
-      // oidc compliant
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: 'client_secret',
     };
 
@@ -302,8 +292,6 @@ describe('DataProviderController', () => {
       dataProviderServiceMock.checkRequestValid.mockResolvedValueOnce(true);
       dataProviderServiceMock.generateErrorMessage.mockReturnValueOnce({
         error: 'invalid_client',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Client authentication failed.',
       });
       dataProviderAdapterMongoMock.getAuthenticatedDataProvider.mockRejectedValueOnce(
@@ -319,8 +307,6 @@ describe('DataProviderController', () => {
       expect(resMock.json).toHaveBeenCalledTimes(1);
       expect(resMock.json).toHaveBeenCalledWith({
         error: 'invalid_client',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Client authentication failed.',
       });
 
@@ -338,8 +324,6 @@ describe('DataProviderController', () => {
       );
       dataProviderServiceMock.generateErrorMessage.mockReturnValueOnce({
         error: 'invalid_request',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Required parameter missing or invalid.',
       });
 
@@ -352,8 +336,6 @@ describe('DataProviderController', () => {
       expect(resMock.json).toHaveBeenCalledTimes(1);
       expect(resMock.json).toHaveBeenCalledWith({
         error: 'invalid_request',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Required parameter missing or invalid.',
       });
 
@@ -383,8 +365,6 @@ describe('DataProviderController', () => {
       dataProviderServiceMock.checkRequestValid.mockRejectedValue(new Error());
       dataProviderServiceMock.generateErrorMessage.mockReturnValueOnce({
         error: 'server_error',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description:
           'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
       });
@@ -398,8 +378,6 @@ describe('DataProviderController', () => {
       expect(resMock.json).toHaveBeenCalledTimes(1);
       expect(resMock.json).toHaveBeenCalledWith({
         error: 'server_error',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description:
           'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
       });

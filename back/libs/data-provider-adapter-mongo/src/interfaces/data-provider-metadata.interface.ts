@@ -5,14 +5,8 @@ export interface DataProviderMetadata {
   title: string;
   active: boolean;
   slug: string;
-  // openid inspired property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   client_id: string;
-  // openid inspired property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   client_secret: string;
-  // openid inspired property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   jwks_uri: string;
   // openid inspired property names
   // eslint-disable-next-line @typescript-eslint/naming-convention

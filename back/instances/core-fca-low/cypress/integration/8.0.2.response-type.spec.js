@@ -5,8 +5,6 @@ describe('Response type', () => {
 
   it('should return to the SP with an "unsupported_response_type" error if the query contains a non registered "response_type" (id_token)', () => {
     const url = getAuthorizeUrl({
-      // oidc param
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       response_type: 'id_token',
     });
 
@@ -20,8 +18,6 @@ describe('Response type', () => {
 
   it('should return to the SP with an "unsupported_response_type" error if the query contains a non registered "response_type" (id_token token)', () => {
     const url = getAuthorizeUrl({
-      // oidc param
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       response_type: 'id_token token',
     });
 
@@ -35,8 +31,6 @@ describe('Response type', () => {
 
   it('should return to the SP with an "unsupported_response_type" error if the query contains a non registered "response_type" (code id_token)', () => {
     const url = getAuthorizeUrl({
-      // oidc param
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       response_type: 'code id_token',
     });
 
@@ -50,8 +44,6 @@ describe('Response type', () => {
 
   it('should return to the SP with an "unsupported_response_type" error if the query contains a non registered "response_type" (code token)', () => {
     const url = getAuthorizeUrl({
-      // oidc param
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       response_type: 'code token',
     });
 
@@ -65,8 +57,6 @@ describe('Response type', () => {
 
   it('should return to the SP with an "unsupported_response_type" error if the query contains a non registered "response_type" (code id_token token)', () => {
     const url = getAuthorizeUrl({
-      // oidc param
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       response_type: 'code id_token token',
     });
 
@@ -84,8 +74,6 @@ describe('Response type', () => {
    */
   it.skip('should return to the SP with an "unsupported_response_type" error if the query contains a non registered "response_type"', () => {
     const url = getAuthorizeUrl({
-      // oidc param
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       response_type: 'what the fuck',
     });
 

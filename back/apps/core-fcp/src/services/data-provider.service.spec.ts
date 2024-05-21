@@ -60,8 +60,6 @@ const jwtServiceMock = getJwtServiceMock();
 
 const DataProviderMock = {
   slug: 'SLUG',
-  // OIDC fashion naming
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   jwks_uri: 'jwks_uri',
   // OIDC fashion naming
   // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -158,13 +156,10 @@ describe('DataProviderService', () => {
     it('should return true when the request token is valid', async () => {
       // Given
       const requestTokenMock: ChecktokenRequestDto = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_id:
           '423dcbdc5a15ece61ed00ff5989d72379c26d9ed4c8e4e05a87cffae019586e0',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_secret:
           'jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         access_token: 'acces_token',
       };
       validateDtoMock.mockResolvedValueOnce([
@@ -180,11 +175,8 @@ describe('DataProviderService', () => {
     it('should throw an error when the request token is invalid', async () => {
       // Given
       const requestTokenMock: ChecktokenRequestDto = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_id: '',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_secret: '',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         access_token: '',
       };
       validateDtoMock.mockResolvedValueOnce([
@@ -290,8 +282,6 @@ describe('DataProviderService', () => {
 
       // Then
       expect(result).toEqual({
-        // OIDC defined var name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_introspection: {
           active: false,
         },
@@ -316,8 +306,6 @@ describe('DataProviderService', () => {
 
     const interactionMock = {
       claims: {
-        // OIDC defined var name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         id_token: {
           acr: { values: acrMock },
         },
@@ -345,8 +333,6 @@ describe('DataProviderService', () => {
 
       // Then
       expect(result).toEqual({
-        // OIDC defined var name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         token_introspection: {
           active: true,
           acr: 'acr values',
@@ -756,8 +742,6 @@ describe('DataProviderService', () => {
       // Then
       expect(result).toEqual({
         error: 'foo_bar',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Error message description',
       });
     });
@@ -774,8 +758,6 @@ describe('DataProviderService', () => {
       // Then
       expect(result).toEqual({
         error: 'foo_bar',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: 'Error message description',
       });
     });
@@ -792,8 +774,6 @@ describe('DataProviderService', () => {
       // Then
       expect(result).toEqual({
         error: 'server_error',
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description:
           'The authorization server encountered an unexpected condition that prevented it from fulfilling the request.',
       });

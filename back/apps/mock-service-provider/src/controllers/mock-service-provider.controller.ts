@@ -385,7 +385,6 @@ export class MockServiceProviderController {
     const authorizeParams = {
       state,
       scope,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: defaultAcrValue,
       nonce,
       claims,
@@ -402,11 +401,7 @@ export class MockServiceProviderController {
 
     return {
       params: {
-        // oidc name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         redirect_uri: redirectUri,
-        // oidc name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         client_id: provider.client.client_id,
         uid: provider.uid,
         state,
@@ -414,8 +409,6 @@ export class MockServiceProviderController {
         acr: defaultAcrValue,
         claims,
         nonce,
-        // oidc name
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         authorization_endpoint: `${url.origin}${url.pathname}`,
         prompt,
       },

@@ -22,8 +22,6 @@ export class OidcProviderGrantService {
     accountId: string,
   ): Promise<any> {
     const details = await provider.interactionDetails(req, res);
-    // oidc naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const { claims, client_id, scope } = details.params as InteractionParams;
 
     const grant = new provider.Grant();

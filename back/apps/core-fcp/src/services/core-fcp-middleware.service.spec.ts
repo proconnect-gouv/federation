@@ -82,8 +82,6 @@ describe('CoreFcpMiddlewareService', () => {
       'x-forwarded-for-original': xForwardedForOriginalMock,
     },
     sessionId: sessionIdMockValue,
-    // oidc param
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     query: { acr_values: spAcrMock, client_id: spIdMock },
   };
   const resMock = {};

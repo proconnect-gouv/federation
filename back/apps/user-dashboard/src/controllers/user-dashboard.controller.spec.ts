@@ -54,12 +54,9 @@ describe('UserDashboardController', () => {
   const idpStateMock = 'idpStateMockValue';
   const identityMock = {
     email: 'email@email.fr',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'givenName',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'familyName',
     sub: 'identityMock.sub value',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     idp_id: '8dfc4080-c90d-4234-969b-f6c961de3e90',
   };
 
@@ -148,7 +145,6 @@ describe('UserDashboardController', () => {
     controller = module.get<UserDashboardController>(UserDashboardController);
 
     oidcClientServiceMock.utils.buildAuthorizeParameters.mockReturnValue({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'acrMock',
       providerUid: 'providerUidMock',
       scope: 'scopeMock',

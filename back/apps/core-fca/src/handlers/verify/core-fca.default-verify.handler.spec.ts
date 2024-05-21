@@ -40,12 +40,8 @@ describe('CoreFcaDefaultVerifyHandler', () => {
 
   const idpIdentityMock = {
     sub: 'computedSubIdp',
-    // Oidc Naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'givenNameValue',
     uid: 'uidValue',
-    // Oidc Naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     usual_name: 'usalNameValue',
     email: 'myemail@mail.fr',
   };
@@ -66,11 +62,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
 
   const fcaIdentityMock = {
     ...idpIdentityMockCleaned,
-    // AgentConnect claims naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     idp_id: sessionDataMock.idpId,
-    // AgentConnect claims naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     idp_acr: sessionDataMock.idpAcr,
   };
 
@@ -245,24 +237,14 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       const calledMock = {
         idpIdentity: idpIdentityMock,
         spIdentity: {
-          // Oidc naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           given_name: idpIdentityMock.given_name,
           uid: idpIdentityMock.uid,
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           idp_id: sessionDataMock.idpId,
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           idp_acr: sessionDataMock.idpAcr,
           email: idpIdentityMock.email,
-          // Oidc Naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           usual_name: idpIdentityMock.usual_name,
         },
         subs: {
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           sp_id: universalSubMock,
         },
         accountId: accountIdMock,
@@ -400,11 +382,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
 
       const expected = {
         ...idpIdentityMockCleaned,
-        // AgentConnect claims naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         idp_id: '42',
-        // AgentConnect claims naming convention
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         idp_acr: 'eidas3',
       };
 
@@ -441,16 +419,10 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         idpIdentity: idpIdentityMock,
         spIdentity: {
           ...idpIdentityMockCleaned,
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           idp_id: sessionDataMock.idpId,
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           idp_acr: sessionDataMock.idpAcr,
         },
         subs: {
-          // AgentConnect claims naming convention
-          // eslint-disable-next-line @typescript-eslint/naming-convention
           sp_id: universalSubMock,
         },
       });

@@ -27,19 +27,13 @@ export class DataProviderAdapterMongoDTO {
 
   @IsString()
   @MinLength(32)
-  // oidc like
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_id: string;
 
   @IsString()
   @MinLength(32)
-  // oidc like
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly client_secret: string;
 
   @IsUrl()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly jwks_uri: string;
 
   @IsEnum(KekAlg)

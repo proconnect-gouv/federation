@@ -175,8 +175,6 @@ describe('MockDataProviderController', () => {
       // Then
       expect(result).toStrictEqual({
         error: checktokenErrorMock.error,
-        // oidc compliant
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         error_description: checktokenErrorMock.message,
       });
     });

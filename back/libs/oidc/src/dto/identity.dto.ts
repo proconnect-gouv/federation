@@ -9,13 +9,9 @@ export class OidcIdentityDto {
   sub?: string;
 
   @IsString()
-  // oidc defined variable name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   given_name: string;
 
   @IsString()
-  // oidc defined variable name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   family_name: string;
 
   @IsString()
@@ -32,8 +28,6 @@ export class OidcIdentityDto {
 
   @IsString()
   @IsOptional()
-  // oidc defined variable name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   preferred_username?: string;
 
   @IsEmail()

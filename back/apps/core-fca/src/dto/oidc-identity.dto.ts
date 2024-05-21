@@ -35,8 +35,6 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
   @MaxLength(256)
   @IsOptional()
   @Expose()
-  // oidc naming convention
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly organizational_unit?: string;
 
   @IsSafeString()
@@ -44,15 +42,11 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
   @MaxLength(256)
   @IsOptional()
   @Expose()
-  // oidc naming convention
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly belonging_population?: string;
 
   @IsAscii()
   @IsOptional()
   @Expose()
-  // oidc naming convention
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly phone_number?: string;
 
   @IsSafeString()
@@ -65,7 +59,5 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
   @IsBoolean()
   @IsOptional()
   @Expose()
-  // external defined variable name
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly is_service_public?: boolean;
 }
