@@ -41,9 +41,9 @@ export class OidcProviderGrantService {
       grant.addOIDCScope(scope);
     });
 
-    const isRepScopeRquested = this.isRepScopeRequested(claims);
+    const isRepScopeRequested = this.isRepScopeRequested(claims);
 
-    if (isRepScopeRquested) {
+    if (isRepScopeRequested) {
       grant.addOIDCClaims(['rep_scope']);
     }
 

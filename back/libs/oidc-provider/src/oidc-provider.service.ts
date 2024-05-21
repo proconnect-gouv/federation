@@ -198,7 +198,7 @@ export class OidcProviderService {
     { step, route, path, pattern, ctx },
     middleware: Function,
   ) {
-    // run middleware AFTER pattern occured
+    // run middleware AFTER pattern occurred
     if (
       step === OidcProviderMiddlewareStep.AFTER &&
       /**
