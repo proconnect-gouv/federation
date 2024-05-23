@@ -39,7 +39,7 @@ export class DataProviderAdapterMongoDTO {
   @IsEnum(KekAlg)
   // openid inspired property names
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  readonly checktoken_endpoint_auth_signing_alg: KekAlg;
+  readonly checktoken_signed_response_alg: KekAlg;
 
   @IsEnum(KekAlg)
   // openid inspired property names

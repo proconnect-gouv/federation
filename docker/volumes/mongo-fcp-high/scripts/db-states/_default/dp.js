@@ -12,7 +12,7 @@ const dps = {
       "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
     jwks_uri:
       'https://dp1-high.docker.dev-franceconnect.fr/api/v1/jwks',
-    checktoken_endpoint_auth_signing_alg: 'ES256',
+    checktoken_signed_response_alg: 'ES256',
     checktoken_encrypted_response_alg: 'ECDH-ES',
     checktoken_encrypted_response_enc: 'A256GCM',
   },
@@ -28,7 +28,7 @@ const dps = {
       "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
     jwks_uri:
       'https://dp2-high.docker.dev-franceconnect.fr/api/v1/jwks',
-    checktoken_endpoint_auth_signing_alg: 'ES256',
+    checktoken_signed_response_alg: 'ES256',
     checktoken_encrypted_response_alg: 'RSA-OAEP',
     checktoken_encrypted_response_enc: 'A256GCM',
   },
@@ -42,7 +42,7 @@ const dps = {
       "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
     jwks_uri:
       'https://dp1-high.docker.dev-franceconnect.fr/api/v1/jwks',
-    checktoken_endpoint_auth_signing_alg: 'ES256',
+    checktoken_signed_response_alg: 'ES256',
     checktoken_encrypted_response_alg: 'RSA-OAEP',
     checktoken_encrypted_response_enc: 'A256GCM',
   },

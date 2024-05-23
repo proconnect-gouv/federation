@@ -15,8 +15,8 @@ describe('TrackCardContentComponent', () => {
     identifier: 'claims1',
     label: 'Claims 1 Label',
     provider: {
-      key: 'provider1_key',
       label: 'Provider 1 label',
+      slug: 'provider1_key',
     },
   };
 
@@ -24,8 +24,8 @@ describe('TrackCardContentComponent', () => {
     identifier: 'claims2',
     label: 'Claims 2 Label',
     provider: {
-      key: 'provider1_key',
       label: 'Provider 1 label',
+      slug: 'provider1_key',
     },
   };
 
