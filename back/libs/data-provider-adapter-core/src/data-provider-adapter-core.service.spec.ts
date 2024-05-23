@@ -183,7 +183,7 @@ describe('DataProviderAdapterCoreService', () => {
         proxy: false,
       };
       const expectedUri =
-        'client_id=client_id&client_secret=client_secret&access_token=token';
+        'client_id=client_id&client_secret=client_secret&token=token';
 
       // When
       await service['fetchToken'](tokenMock);

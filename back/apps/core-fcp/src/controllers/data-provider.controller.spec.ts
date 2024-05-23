@@ -129,7 +129,7 @@ describe('DataProviderController', () => {
 
   describe('checktoken', () => {
     const bodyMock: ChecktokenRequestDto = {
-      access_token: 'acces_token',
+      token: 'acces_token',
       client_id: 'client_id',
       client_secret: 'client_secret',
     };
@@ -210,7 +210,7 @@ describe('DataProviderController', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         dataProviderServiceMock.getSessionByAccessToken,
-      ).toHaveBeenCalledWith(bodyMock.access_token);
+      ).toHaveBeenCalledWith(bodyMock.token);
     });
 
     it('should call dataProvider.generatePayload with the right parameters', async () => {
@@ -220,7 +220,7 @@ describe('DataProviderController', () => {
       expect(dataProviderServiceMock.generatePayload).toHaveBeenCalledTimes(1);
       expect(dataProviderServiceMock.generatePayload).toHaveBeenCalledWith(
         sessionDataMock,
-        bodyMock.access_token,
+        bodyMock.token,
         bodyMock.client_id,
       );
     });
