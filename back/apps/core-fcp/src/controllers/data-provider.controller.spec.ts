@@ -10,7 +10,6 @@ import {
 import { DataProviderInvalidCredentialsException } from '@fc/data-provider-adapter-mongo/exceptions';
 import { LoggerService } from '@fc/logger';
 import { RnippPivotIdentity } from '@fc/rnipp';
-import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
 import { getLoggerMock } from '@mocks/logger';
@@ -27,11 +26,10 @@ describe('DataProviderController', () => {
   const dataProviderServiceMock = {
     checkRequestValid: jest.fn(),
     generateJwt: jest.fn(),
-    generatePayload: jest.fn(),
+    generateTokenIntrospection: jest.fn(),
     getSessionByAccessToken: jest.fn(),
     getAccessTokenExp: jest.fn(),
     generateDataProviderSub: jest.fn(),
-    generateExpiredPayload: jest.fn(),
     generateErrorMessage: jest.fn(),
   };
 
@@ -42,7 +40,6 @@ describe('DataProviderController', () => {
   const loggerServiceMock = getLoggerMock();
 
   const oidcSessionServiceMock = getSessionServiceMock();
-  const sessionServiceMock = getSessionServiceMock();
 
   const trackingServiceMock: TrackingService = {
     track: jest.fn(),
@@ -53,22 +50,19 @@ describe('DataProviderController', () => {
     },
   } as unknown as TrackingService;
 
-  const payloadMock = {
-    token_introspection: {
-      active: true,
-      scope: 'scope',
-    },
+  const tokenIntrospectionMock = {
+    active: true,
+    scope: 'scope',
   };
 
-  const expiredPayload = {
-    token_introspection: {
-      active: false,
-    },
+  const expiredTokenIntrospectionMock = {
+    active: false,
   };
 
   const dpMock = {
     uid: 'dp-uid',
     title: 'data provider title',
+    client_id: 'client_id',
   } as DataProviderMetadata;
 
   const reqMock = {
@@ -97,7 +91,6 @@ describe('DataProviderController', () => {
         DataProviderAdapterMongoService,
         DataProviderService,
         LoggerService,
-        SessionService,
         TrackingService,
       ],
     })
@@ -107,8 +100,6 @@ describe('DataProviderController', () => {
       .useValue(dataProviderServiceMock)
       .overrideProvider(LoggerService)
       .useValue(loggerServiceMock)
-      .overrideProvider(SessionService)
-      .useValue(sessionServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingServiceMock)
       .compile();
@@ -120,7 +111,6 @@ describe('DataProviderController', () => {
     dataProviderAdapterMongoMock.getAuthenticatedDataProvider.mockReturnValue(
       dpMock,
     );
-    sessionServiceMock.getDataFromBackend.mockResolvedValue(sessionDataMock);
   });
 
   it('should be defined', () => {
@@ -141,8 +131,6 @@ describe('DataProviderController', () => {
       end: jest.fn(),
     } as unknown as Response;
 
-    const sessionIdMock = 'testSessionId';
-
     const jwtMock = Symbol('jwtMock');
 
     const expMock = 1;
@@ -155,14 +143,16 @@ describe('DataProviderController', () => {
     beforeEach(() => {
       dataProviderServiceMock.checkRequestValid.mockResolvedValue(true);
       dataProviderServiceMock.generateDataProviderSub.mockReturnValue(subMock);
-      dataProviderServiceMock.generatePayload.mockReturnValue(payloadMock);
+      dataProviderServiceMock.generateTokenIntrospection.mockReturnValue(
+        tokenIntrospectionMock,
+      );
       dataProviderServiceMock.generateJwt.mockReturnValue(jwtMock);
-      dataProviderAdapterMongoMock.getAuthenticatedDataProvider.mockResolvedValue(
+      dataProviderAdapterMongoMock.getAuthenticatedDataProvider.mockReturnValue(
         dpMock,
       );
       dataProviderServiceMock.getSessionByAccessToken = jest
         .fn()
-        .mockReturnValue(sessionIdMock);
+        .mockReturnValue(sessionDataMock);
       dataProviderServiceMock.getAccessTokenExp = jest
         .fn()
         .mockReturnValue(expMock);
@@ -213,16 +203,16 @@ describe('DataProviderController', () => {
       ).toHaveBeenCalledWith(bodyMock.token);
     });
 
-    it('should call dataProvider.generatePayload with the right parameters', async () => {
+    it('should call dataProvider.generateIntrospectionToken with the right parameters', async () => {
       // When
       await dataProviderController.checktoken(reqMock, resMock, bodyMock);
       // Then
-      expect(dataProviderServiceMock.generatePayload).toHaveBeenCalledTimes(1);
-      expect(dataProviderServiceMock.generatePayload).toHaveBeenCalledWith(
-        sessionDataMock,
-        bodyMock.token,
-        bodyMock.client_id,
-      );
+      expect(
+        dataProviderServiceMock.generateTokenIntrospection,
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        dataProviderServiceMock.generateTokenIntrospection,
+      ).toHaveBeenCalledWith(sessionDataMock, bodyMock.token, dpMock);
     });
 
     it('should call generateJwt with the right parameters', async () => {
@@ -231,8 +221,8 @@ describe('DataProviderController', () => {
       // Then
       expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledTimes(1);
       expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledWith(
-        payloadMock,
-        bodyMock.client_id,
+        tokenIntrospectionMock,
+        dpMock,
       );
     });
 
@@ -260,7 +250,7 @@ describe('DataProviderController', () => {
         dataProviderController['trackChecktokenJWT'],
       ).toHaveBeenCalledTimes(1);
       expect(dataProviderController['trackChecktokenJWT']).toHaveBeenCalledWith(
-        payloadMock,
+        tokenIntrospectionMock,
         {
           req: reqMock,
           dpId: 'dp-uid',
@@ -388,11 +378,9 @@ describe('DataProviderController', () => {
     it('should return expired JWT if session is not found', async () => {
       // Given
       dataProviderController['trackChecktokenJWT'] = jest.fn();
-      dataProviderServiceMock.getSessionByAccessToken.mockReturnValueOnce(
-        undefined,
-      );
-      dataProviderServiceMock.generateExpiredPayload.mockReturnValueOnce(
-        expiredPayload,
+      dataProviderServiceMock.getSessionByAccessToken.mockReturnValueOnce(null);
+      dataProviderServiceMock.generateTokenIntrospection.mockReturnValueOnce(
+        expiredTokenIntrospectionMock,
       );
 
       // When
@@ -400,23 +388,23 @@ describe('DataProviderController', () => {
 
       // Then
       expect(
-        dataProviderServiceMock.generateExpiredPayload,
+        dataProviderServiceMock.generateTokenIntrospection,
       ).toHaveBeenCalledTimes(1);
       expect(
-        dataProviderServiceMock.generateExpiredPayload,
-      ).toHaveBeenCalledWith(bodyMock.client_id);
+        dataProviderServiceMock.generateTokenIntrospection,
+      ).toHaveBeenCalledWith(null, bodyMock.token, dpMock);
 
       expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledTimes(1);
       expect(dataProviderServiceMock.generateJwt).toHaveBeenCalledWith(
-        expiredPayload,
-        bodyMock.client_id,
+        expiredTokenIntrospectionMock,
+        dpMock,
       );
 
       expect(
         dataProviderController['trackChecktokenJWT'],
       ).toHaveBeenCalledTimes(1);
       expect(dataProviderController['trackChecktokenJWT']).toHaveBeenCalledWith(
-        expiredPayload,
+        expiredTokenIntrospectionMock,
         { req: reqMock, dpId: 'dp-uid', dpTitle: 'data provider title' },
       );
     });
@@ -425,9 +413,12 @@ describe('DataProviderController', () => {
   describe('trackChecktokenJWT()', () => {
     it('should emit DP_VERIFIED_FC_CHECKTOKEN event if token_introspection is active', async () => {
       // When
-      await dataProviderController['trackChecktokenJWT'](payloadMock, {
-        req: reqMock,
-      });
+      await dataProviderController['trackChecktokenJWT'](
+        tokenIntrospectionMock,
+        {
+          req: reqMock,
+        },
+      );
 
       // Then
       expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
@@ -439,9 +430,12 @@ describe('DataProviderController', () => {
 
     it('should emit DP_USED_INVALID_ACCESS_TOKEN event if token_introspection is not active', async () => {
       // When
-      await dataProviderController['trackChecktokenJWT'](expiredPayload, {
-        req: reqMock,
-      });
+      await dataProviderController['trackChecktokenJWT'](
+        expiredTokenIntrospectionMock,
+        {
+          req: reqMock,
+        },
+      );
 
       // Then
       expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);

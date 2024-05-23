@@ -194,7 +194,7 @@ describe('UserDashboardController', () => {
     const claimMock = {
       identifier: 'identifierValue',
       label: 'labelValue',
-      provider: { key: 'keyValue', label: 'labelValue' },
+      provider: { slug: 'slugValue', label: 'labelValue' },
     };
 
     const addLabelsToTracksResult: {

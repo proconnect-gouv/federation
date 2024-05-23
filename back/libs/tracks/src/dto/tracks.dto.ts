@@ -19,7 +19,7 @@ import { ICsmrTracksOutputTrack } from '../interfaces';
 
 export class Provider implements ProviderInterface {
   @IsString()
-  key: string;
+  slug: string;
 
   @IsString()
   label: string;

@@ -19,7 +19,7 @@ describe('Data Provider (Data Transfer Object)', () => {
     jwks_uri: 'url.fr/jwks',
     // OIDC fashion naming
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    checktoken_endpoint_auth_signing_alg: 'RS256',
+    checktoken_signed_response_alg: 'RS256',
     // OIDC fashion naming
     // eslint-disable-next-line @typescript-eslint/naming-convention
     checktoken_encrypted_response_alg: 'RSA-OAEP',
