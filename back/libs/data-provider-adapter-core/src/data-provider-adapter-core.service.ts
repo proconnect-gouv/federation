@@ -57,7 +57,7 @@ export class DataProviderAdapterCoreService {
     const checktokenRequest = {
       client_id,
       client_secret,
-      access_token: accessToken,
+      token: accessToken,
     };
 
     const { status, data } = await lastValueFrom<AxiosResponse<string>>(

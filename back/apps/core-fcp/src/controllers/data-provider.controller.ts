@@ -36,7 +36,7 @@ export class DataProviderController {
     let trackingContext: TrackedEventContextInterface;
 
     const {
-      access_token: accessToken,
+      token: accessToken,
       client_id: clientId,
       client_secret: clientSecret,
     } = bodyChecktokenRequest;

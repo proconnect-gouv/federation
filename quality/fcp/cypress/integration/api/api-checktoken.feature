@@ -41,7 +41,7 @@ Fonctionnalité: API - checktoken
 
   Scénario: API checktoken - token manquant
     Etant donné que je prépare une requête "checktoken"
-    Et que je retire "access_token" du corps de la requête
+    Et que je retire "token" du corps de la requête
     Quand je lance la requête
     Alors le statut de la réponse est 400
     Et l'entête de la réponse a une propriété "content-type" contenant "application/json"

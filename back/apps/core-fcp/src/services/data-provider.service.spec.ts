@@ -160,7 +160,7 @@ describe('DataProviderService', () => {
           '423dcbdc5a15ece61ed00ff5989d72379c26d9ed4c8e4e05a87cffae019586e0',
         client_secret:
           'jClItOnQiSZdE4kxm7EWzJbz4ckfD89k1e3NJw/pbGRHD/Jp6ooupqmHTyc3b62L9wqyF2TlR/5hJejE',
-        access_token: 'acces_token',
+        token: 'acces_token',
       };
       validateDtoMock.mockResolvedValueOnce([
         /* No error */
@@ -177,7 +177,7 @@ describe('DataProviderService', () => {
       const requestTokenMock: ChecktokenRequestDto = {
         client_id: '',
         client_secret: '',
-        access_token: '',
+        token: '',
       };
       validateDtoMock.mockResolvedValueOnce([
         new Error('Unknown Error') as unknown as ValidationError,

@@ -6,7 +6,7 @@ import { IsNotEmpty, IsString } from 'class-validator';
 export class ChecktokenRequestDto {
   @IsString()
   @IsNotEmpty()
-  readonly access_token: string;
+  readonly token: string;
 
   @IsString()
   @IsNotEmpty()
