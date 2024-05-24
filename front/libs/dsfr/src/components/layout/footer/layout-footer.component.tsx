@@ -21,9 +21,9 @@ const DEFAULT_TOP_LINKS = [
     label: 'legifrance.gouv.fr',
   },
   {
-    a11y: 'Accèder au site gouvernement.fr nouvelle fenêtre',
-    href: 'https://www.gouvernement.fr',
-    label: 'gouvernement.fr',
+    a11y: 'Accèder au site info.gouv.fr nouvelle fenêtre',
+    href: 'https://www.info.gouv.fr',
+    label: 'info.gouv.fr',
   },
   {
     a11y: 'Accèder au site service-public.fr nouvelle fenêtre',
