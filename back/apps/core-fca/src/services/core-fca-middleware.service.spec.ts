@@ -196,6 +196,29 @@ describe('CoreFcaMiddlewareService', () => {
       jest.resetAllMocks();
     });
 
+    it('should override prompt with default values when prompt is undefined', async () => {
+      // Given
+      const ctxMock: any = {
+        acr_values: ['acr1', 'acr2'],
+      };
+      const mockOverrideAuthorizePrompt = (service[
+        'getAuthorizationParameters'
+      ] = jest.fn().mockReturnValue(ctxMock));
+      service['isSsoAvailable'] = jest.fn();
+      service['isPromptStrictlyEqualNone'] = jest.fn();
+      service['overrideAuthorizePrompt'] = mockOverrideAuthorizePrompt;
+
+      // When
+      await service['handleSilentAuthenticationMiddleware'](ctxMock);
+
+      // Then
+      expect(mockOverrideAuthorizePrompt).toHaveBeenCalledWith(ctxMock);
+
+      expect(service['isSsoAvailable']).not.toHaveBeenCalled();
+      expect(service['isPromptStrictlyEqualNone']).not.toHaveBeenCalled();
+      expect(sessionServiceMock.set).not.toHaveBeenCalled();
+    });
+
     it('should override prompt with default values when SSO is available and prompt is "none"', async () => {
       // Given
       const ctxMock: any = {
@@ -343,6 +366,9 @@ describe('CoreFcaMiddlewareService', () => {
       { expected: false, value: 'none consent' },
       { expected: false, value: 'consent login none' },
       { expected: false, value: 'consent login' },
+      { expected: false, value: undefined },
+      { expected: false, value: '' },
+      { expected: false, value: null },
     ];
     it.each(values)(
       'should returns %s for input "%s"',

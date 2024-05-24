@@ -56,6 +56,15 @@ Fonctionnalité: API - authorize
       | login consent |
       | consent login |
 
+  Scénario: API authorize - prompt n'est pas défini
+    Etant donné que je prépare une requête "authorize"
+    Et que je retire le paramètre "prompt" de la requête
+    Quand je lance la requête
+    Alors le statut de la réponse est 200
+    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
+    Et le corps de la réponse contient une page web
+    Et je suis redirigé vers la page interaction
+
   Plan du Scénario: API authorize - erreur prompt=none sans session
     Etant donné que je prépare une requête "authorize"
     Et que je mets "<prompt>" dans le paramètre "prompt" de la requête
