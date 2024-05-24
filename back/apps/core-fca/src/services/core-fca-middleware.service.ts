@@ -118,6 +118,10 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     const { acr_values: acrValues, prompt } =
       this.getAuthorizationParameters(ctx);
 
+    if (!prompt) {
+      return this.overrideAuthorizePrompt(ctx);
+    }
+
     const isSilentAuthentication = this.isPromptStrictlyEqualNone(prompt);
 
     // Persist this flag to adjust redirections during '/verify'
@@ -136,6 +140,9 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
   }
 
   private isPromptStrictlyEqualNone(prompt: string) {
+    if (!prompt) {
+      return false;
+    }
     const promptValues = stringToArray(prompt);
     return (
       promptValues.length === 1 && promptValues[0] === OidcProviderPrompt.NONE
