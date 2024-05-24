@@ -2,7 +2,7 @@ import type { FSA } from '@fc/common';
 
 import type { GlobalState, SideEffectMap } from '../interfaces';
 
-export interface SideEffectsMiddlewareOptions {
+interface SideEffectsMiddlewareOptions {
   dispatch: Function;
   getState: () => GlobalState;
 }

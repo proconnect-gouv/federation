@@ -6,7 +6,7 @@ import { AppContextProvider } from '@fc/state-management';
 import { AppConfig } from '../config';
 import { ApplicationRoutes } from './application.routes';
 
-export function Application(): JSX.Element {
+export function Application() {
   return (
     <AppContextProvider value={{ config: AppConfig }}>
       <AxiosErrorCatcherProvider>

@@ -12,7 +12,7 @@ import { AppConfig } from '../config';
 import translations from '../i18n/fr.json';
 import { ApplicationRoutes } from './application.routes';
 
-export function Application(): JSX.Element {
+export function Application() {
   I18nService.initialize('fr', translations);
   return (
     <BrowserRouter>

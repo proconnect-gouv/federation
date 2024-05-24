@@ -1,18 +1,6 @@
 import { render } from '@testing-library/react';
 
-import { AppContextProvider, mergeState } from './app-context';
-
-const stateMock = {};
-const setStateMock = jest.fn(() => ({}));
-
-const ChildrenComponentMock = () => <div>mock children</div>;
-
-// @TOOD creat a React mock into __mocks__ folder
-// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-jest.mock<typeof import('react')>('react', () => ({
-  ...jest.requireActual('react'),
-  useState: () => [stateMock, setStateMock],
-}));
+import * as defaultExport from './app-context';
 
 describe('mergeState', () => {
   it('should return an overrided object', () => {
@@ -32,7 +20,7 @@ describe('mergeState', () => {
       extraPropertyFromExtend: 'it will be merged',
       user: { connected: true },
     };
-    const result = mergeState(base, extend);
+    const result = defaultExport.mergeState(base, extend);
     // then
     expect(result).toStrictEqual({
       config: {
@@ -46,14 +34,34 @@ describe('mergeState', () => {
 });
 
 describe('AppContextProvider', () => {
+  // given
+  const ChildrenComponentMock = jest.fn(() => <div>mock children</div>);
+
   it('should have render the children', () => {
-    // given
+    // when
     const { getByText } = render(
-      <AppContextProvider value={{}}>
+      <defaultExport.AppContextProvider value={{}}>
         <ChildrenComponentMock />
-      </AppContextProvider>,
+      </defaultExport.AppContextProvider>,
     );
+
     // then
     expect(getByText('mock children')).toBeInTheDocument();
+  });
+
+  it('should call mergeState at first render with defaultContext and value argument', () => {
+    // given
+    const valueMock = expect.any(Object);
+    const mergeStateMock = jest.spyOn(defaultExport, 'mergeState');
+
+    // when
+    render(
+      <defaultExport.AppContextProvider value={valueMock}>
+        <ChildrenComponentMock />
+      </defaultExport.AppContextProvider>,
+    );
+
+    // then
+    expect(mergeStateMock).toHaveBeenCalledWith(defaultExport.defaultContext, valueMock);
   });
 });

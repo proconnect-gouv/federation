@@ -9,13 +9,36 @@ import { LayoutFooterBottomLinksComponent } from './layout-footer-bottom-links.c
 import { LayoutFooterContentLinksComponent } from './layout-footer-content-links.component';
 import { LayoutFooterLicenceComponent } from './layout-footer-licence.component';
 
-export interface LayoutFooterComponentProps {
+interface LayoutFooterComponentProps {
   showLicence?: boolean;
   topLinks?: NavigationLink[];
 }
 
-export const LayoutFooterComponent: React.FC<LayoutFooterComponentProps> = React.memo(
-  ({ showLicence, topLinks }: LayoutFooterComponentProps) => {
+const DEFAULT_TOP_LINKS = [
+  {
+    a11y: 'Accèder au site legifrance.gouv.fr nouvelle fenêtre',
+    href: 'https://www.legifrance.gouv.fr',
+    label: 'legifrance.gouv.fr',
+  },
+  {
+    a11y: 'Accèder au site gouvernement.fr nouvelle fenêtre',
+    href: 'https://www.gouvernement.fr',
+    label: 'gouvernement.fr',
+  },
+  {
+    a11y: 'Accèder au site service-public.fr nouvelle fenêtre',
+    href: 'https://www.service-public.fr/',
+    label: 'service-public.fr',
+  },
+  {
+    a11y: 'Accèder au site data.gouv.fr nouvelle fenêtre',
+    href: 'https://data.gouv.fr',
+    label: 'data.gouv.fr',
+  },
+];
+
+export const LayoutFooterComponent = React.memo(
+  ({ showLicence = false, topLinks = DEFAULT_TOP_LINKS }: LayoutFooterComponentProps) => {
     const appContext = useContext(AppContext);
     const layoutConfig = appContext.state.config.Layout;
     const {
@@ -60,31 +83,5 @@ export const LayoutFooterComponent: React.FC<LayoutFooterComponentProps> = React
     );
   },
 );
-
-LayoutFooterComponent.defaultProps = {
-  showLicence: false,
-  topLinks: [
-    {
-      a11y: 'Accèder au site legifrance.gouv.fr nouvelle fenêtre',
-      href: 'https://www.legifrance.gouv.fr',
-      label: 'legifrance.gouv.fr',
-    },
-    {
-      a11y: 'Accèder au site gouvernement.fr nouvelle fenêtre',
-      href: 'https://www.gouvernement.fr',
-      label: 'gouvernement.fr',
-    },
-    {
-      a11y: 'Accèder au site service-public.fr nouvelle fenêtre',
-      href: 'https://www.service-public.fr/',
-      label: 'service-public.fr',
-    },
-    {
-      a11y: 'Accèder au site data.gouv.fr nouvelle fenêtre',
-      href: 'https://data.gouv.fr',
-      label: 'data.gouv.fr',
-    },
-  ],
-};
 
 LayoutFooterComponent.displayName = 'LayoutFooterComponent';

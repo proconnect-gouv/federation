@@ -8,7 +8,7 @@ import { TrackCardHeaderComponent } from './card-header.component';
 
 export const MISSING_SP_LABEL_VALUE = 'Nom du service non défini';
 
-export interface TrackCardProps {
+interface TrackCardProps {
   track: EnhancedTrack;
   options: TracksConfig;
 }

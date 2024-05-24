@@ -1,17 +1,17 @@
 import classnames from 'classnames';
+import type { PropsWithChildren } from 'react';
 import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 
 import type { AppContextInterface } from '@fc/state-management';
 import { AppContext } from '@fc/state-management';
 
-interface LayoutHomepageLinkComponentProps {
-  children: React.ReactNode;
+interface LayoutHomepageLinkComponentProps extends Required<PropsWithChildren> {
   isFooter?: boolean;
 }
 
-export const LayoutHomepageLinkComponent: React.FC<LayoutHomepageLinkComponentProps> = React.memo(
-  ({ children, isFooter }: LayoutHomepageLinkComponentProps): JSX.Element => {
+export const LayoutHomepageLinkComponent = React.memo(
+  ({ children, isFooter = false }: LayoutHomepageLinkComponentProps) => {
     // @TODO use ConfigService instead of Context; first ConfigService needs to be initialized
     const { state } = useContext<AppContextInterface>(AppContext);
     const layoutConfig = state.config.Layout;
@@ -44,9 +44,5 @@ export const LayoutHomepageLinkComponent: React.FC<LayoutHomepageLinkComponentPr
     );
   },
 );
-
-LayoutHomepageLinkComponent.defaultProps = {
-  isFooter: false,
-};
 
 LayoutHomepageLinkComponent.displayName = 'LayoutHomepageLinkComponent';

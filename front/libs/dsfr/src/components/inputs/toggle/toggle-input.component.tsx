@@ -1,15 +1,15 @@
 import React from 'react';
 import type { FieldInputProps } from 'react-final-form';
 
-export interface ToggleInputComponentProps {
+interface ToggleInputComponentProps {
   disabled?: boolean;
   // @NOTE la regle est desactivée car le type provient de la librairie react-final-form
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   input: FieldInputProps<any, HTMLElement>;
 }
 
-export const ToggleInputComponent: React.FC<ToggleInputComponentProps> = React.memo(
-  ({ disabled, input }: ToggleInputComponentProps) => (
+export const ToggleInputComponent = React.memo(
+  ({ disabled = false, input }: ToggleInputComponentProps) => (
     <input
       {...input}
       aria-describedby={`${input.name}-hint-text`}
@@ -22,9 +22,5 @@ export const ToggleInputComponent: React.FC<ToggleInputComponentProps> = React.m
     />
   ),
 );
-
-ToggleInputComponent.defaultProps = {
-  disabled: false,
-};
 
 ToggleInputComponent.displayName = 'ToggleInputComponent';

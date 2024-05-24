@@ -1,9 +1,8 @@
-/* istanbul ignore file */
-
 // @NOTE refacto needed
 // AppContext + useApiGet should be merged
 // the `update` is not necessary and migth be outsourced inside AppContext.Consumer
-import React, { type ReactElement, useState } from 'react';
+import type { PropsWithChildren } from 'react';
+import React, { useState } from 'react';
 
 import type { AppContextInterface, AppContextStateInterface } from './interfaces';
 
@@ -14,12 +13,10 @@ export const defaultContext: AppContextStateInterface = {
 
 export const AppContext = React.createContext<AppContextInterface>({
   state: defaultContext,
-  update: () => {},
 });
 
-export interface AppContextProviderProps {
+interface AppContextProviderProps extends Required<PropsWithChildren> {
   value: AppContextStateInterface | Partial<AppContextStateInterface>;
-  children: ReactElement[] | ReactElement;
 }
 
 export const mergeState = (
@@ -31,15 +28,10 @@ export const mergeState = (
 });
 
 export const AppContextProvider = ({ children, value }: AppContextProviderProps) => {
-  const [state, setState] = useState<AppContextStateInterface>(() => {
+  const [state] = useState<AppContextStateInterface>(() => {
     const defaultStateValue = mergeState(defaultContext, value);
     return defaultStateValue;
   });
 
-  const update = (input: AppContextStateInterface) => {
-    const merged = mergeState(state, input);
-    setState(merged);
-  };
-
-  return <AppContext.Provider value={{ state, update }}>{children}</AppContext.Provider>;
+  return <AppContext.Provider value={{ state }}>{children}</AppContext.Provider>;
 };

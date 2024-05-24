@@ -1,13 +1,12 @@
-import type { ReactElement } from 'react';
+import type { PropsWithChildren } from 'react';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import type { AccountConfig, AccountInterface } from '../interfaces';
 import { AccountService } from '../services';
 import { AccountContext } from './account.context';
 
-export interface AccountProviderProps {
+interface AccountProviderProps extends Required<PropsWithChildren> {
   config: AccountConfig;
-  children: ReactElement | ReactElement[];
 }
 
 export const AccountProvider = ({ children, config }: AccountProviderProps) => {

@@ -7,15 +7,20 @@ import { ReturnButtonComponent } from '../return-button';
 import { LayoutHeaderToolsAccountComponent } from './layout-header-tools-account.component';
 import { LayoutHeaderToolsLogoutButton } from './layout-header-tools-logout.button';
 
-export interface LayoutHeaderToolsComponentProps {
+interface LayoutHeaderToolsComponentProps {
   lastname?: string;
   isModalMenu?: boolean;
   isDesktopViewport?: boolean;
   firstname?: string;
 }
 
-export const LayoutHeaderToolsComponent: React.FC<LayoutHeaderToolsComponentProps> = React.memo(
-  ({ firstname, isDesktopViewport, isModalMenu, lastname }: LayoutHeaderToolsComponentProps) => {
+export const LayoutHeaderToolsComponent = React.memo(
+  ({
+    firstname,
+    isDesktopViewport = false,
+    isModalMenu = false,
+    lastname,
+  }: LayoutHeaderToolsComponentProps) => {
     const { state } = useContext(AppContext);
     // @TODO testing implies splitting the function into a private
     // it seems to be useless till should be refactored with the global config for front apps
@@ -60,12 +65,5 @@ export const LayoutHeaderToolsComponent: React.FC<LayoutHeaderToolsComponentProp
     );
   },
 );
-
-LayoutHeaderToolsComponent.defaultProps = {
-  firstname: undefined,
-  isDesktopViewport: false,
-  isModalMenu: false,
-  lastname: undefined,
-};
 
 LayoutHeaderToolsComponent.displayName = 'LayoutHeaderToolsComponent';

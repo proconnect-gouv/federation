@@ -12,5 +12,4 @@ export interface AppContextStateInterface {
 
 export interface AppContextInterface {
   state: AppContextStateInterface;
-  update: Function;
 }

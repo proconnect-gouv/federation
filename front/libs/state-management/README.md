@@ -275,7 +275,7 @@ import { AppContextProvider, StoreProvider } from '@fc/state-management';
 import { AppConfig } from '../config';
 import { reducers, sideEffectsMiddleware, states } from '../store';
 
-export function Application(): JSX.Element {
+export function Application() {
   return (
     <React.StrictMode>
       <AppContextProvider value={{ config: AppConfig }}>
