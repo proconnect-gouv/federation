@@ -1,15 +1,14 @@
-import type { ReactNode } from 'react';
+import type { PropsWithChildren } from 'react';
 import { useContext } from 'react';
 
 import type { AppContextInterface } from '@fc/state-management';
 import { AppContext } from '@fc/state-management';
 
-export type RedirectToIdpFormProps = {
-  children: ReactNode;
+interface RedirectToIdpFormProps extends Required<PropsWithChildren> {
   csrf?: string;
   id: string;
   uid?: string;
-};
+}
 
 export const RedirectToIdpFormComponent = ({ children, csrf, id, uid }: RedirectToIdpFormProps) => {
   const {
@@ -27,11 +26,6 @@ export const RedirectToIdpFormComponent = ({ children, csrf, id, uid }: Redirect
       {children}
     </form>
   );
-};
-
-RedirectToIdpFormComponent.defaultProps = {
-  csrf: undefined,
-  uid: undefined,
 };
 
 RedirectToIdpFormComponent.displayName = 'RedirectToIdpFormComponent';

@@ -14,8 +14,8 @@ interface ServiceComponentProps {
   allowToBeUpdated?: boolean;
 }
 
-export const ServiceComponent: React.FC<ServiceComponentProps> = React.memo(
-  ({ allowToBeUpdated, service }: ServiceComponentProps) => {
+export const ServiceComponent = React.memo(
+  ({ allowToBeUpdated = true, service }: ServiceComponentProps) => {
     const [breakpointLg, breakpointSm] = useStylesVariables(['breakpoint-lg', 'breakpoint-sm']);
 
     const gtDesktop = useStylesQuery({ minWidth: breakpointLg });
@@ -63,7 +63,7 @@ export const ServiceComponent: React.FC<ServiceComponentProps> = React.memo(
           name={`idpList.${service.uid}`}
         />
         {/*
-          @TODO find a way to remove OnChange
+          @TODO find a way to remove react-final-form-listeners.OnChange
           Author: Matthieu
           Date: 06/10/2022
         */}
@@ -72,9 +72,5 @@ export const ServiceComponent: React.FC<ServiceComponentProps> = React.memo(
     );
   },
 );
-
-ServiceComponent.defaultProps = {
-  allowToBeUpdated: true,
-};
 
 ServiceComponent.displayName = 'ServiceComponent';

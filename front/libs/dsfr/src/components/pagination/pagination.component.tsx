@@ -6,7 +6,7 @@ import { DEFAULT_NUMBER_OF_PAGES_SHOWN_INTO_NAVIGATION, DEFAULT_USE_ELLIPSIS } f
 import type { Pagination } from '../../interfaces';
 import { usePagination } from './use-pagination.hook';
 
-export interface PaginationComponentProps {
+interface PaginationComponentProps {
   onPageClick: (nextOffset: number) => void;
   pagination: Pagination;
   numberOfPagesShownIntoNavigation?: number;

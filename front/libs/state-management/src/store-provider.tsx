@@ -14,7 +14,7 @@ function getStoreProvider<S extends GlobalState = GlobalState<unknown>>({
   persistKey,
   reducers,
   states,
-}: StoreProviderProps<S>): JSX.Element {
+}: StoreProviderProps<S>) {
   const { persistor, store } = configure<S>(persistKey, states, reducers, middlewares, debugMode);
 
   return (
