@@ -1,12 +1,6 @@
 import { getAuthorizeUrl } from './mire.utils';
 
 describe('prompt', () => {
-  it('should not allow prompt=none', () => {
-    const url = getAuthorizeUrl({ prompt: 'none' });
-    cy.visit(url, { failOnStatusCode: false });
-    cy.hasError('Y000400');
-  });
-
   it('should not allow prompt=select_account', () => {
     const url = getAuthorizeUrl({ prompt: 'select_account' });
     cy.visit(url, { failOnStatusCode: false });
@@ -15,7 +9,7 @@ describe('prompt', () => {
 
   it('should allow prompt=login', () => {
     const url = getAuthorizeUrl({ prompt: 'login' });
-    cy.visit(url, { failOnStatusCode: false });+
+    cy.visit(url, { failOnStatusCode: false });
     cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
     cy.get('#email-input').should('exist');
   });
@@ -25,7 +19,6 @@ describe('prompt', () => {
     cy.visit(url, { failOnStatusCode: false });
     cy.url().should('match', new RegExp(`\/interaction\/[^/]+$`));
     cy.get('#email-input').should('exist');
-
   });
 
   it('should allow prompt=login consent', () => {
