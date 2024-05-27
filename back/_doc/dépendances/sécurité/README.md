@@ -20,6 +20,9 @@ Voir [body-parser](./body-parser.md).
 
 Voir [elasticsearch](./elasticsearch.md).
 
+## koa/cors
+
+Voir [koa/cors](./koacors.md).
 
 ## Faux positifs Checkmarx
 
