@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import { HelmetProvider } from 'react-helmet-async';
 
 import { AxiosErrorCatcherProvider } from '@fc/axios-error-catcher';
 import { AppContextProvider } from '@fc/state-management';
@@ -8,6 +9,7 @@ import { Application } from './application';
 import { ApplicationRoutes } from './application.routes';
 
 jest.mock('react-router-dom');
+jest.mock('react-helmet-async');
 jest.mock('@fc/dsfr');
 jest.mock('@fc/state-management');
 jest.mock('@fc/axios-error-catcher');
@@ -40,6 +42,14 @@ describe('Application', () => {
     render(<Application />);
     // Then
     expect(AxiosErrorCatcherProvider).toHaveBeenCalled();
+  });
+
+  it('should call HelmetProvider', () => {
+    // when
+    render(<Application />);
+
+    // then
+    expect(HelmetProvider).toHaveBeenCalledOnce();
   });
 
   it('should call ApplicationRoutes', () => {
