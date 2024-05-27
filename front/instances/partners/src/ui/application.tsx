@@ -1,5 +1,7 @@
 import './application.scss';
 
+import { HelmetProvider } from 'react-helmet-async';
+
 import { AxiosErrorCatcherProvider } from '@fc/axios-error-catcher';
 import { AppContextProvider } from '@fc/state-management';
 
@@ -10,7 +12,9 @@ export function Application() {
   return (
     <AppContextProvider value={{ config: AppConfig }}>
       <AxiosErrorCatcherProvider>
-        <ApplicationRoutes />
+        <HelmetProvider>
+          <ApplicationRoutes />
+        </HelmetProvider>
       </AxiosErrorCatcherProvider>
     </AppContextProvider>
   );

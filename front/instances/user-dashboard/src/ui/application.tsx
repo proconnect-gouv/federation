@@ -1,5 +1,6 @@
 import './application.scss';
 
+import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter } from 'react-router-dom';
 
 import { AccountProvider } from '@fc/account';
@@ -19,9 +20,11 @@ export function Application() {
       <AppContextProvider value={{ config: AppConfig }}>
         <AccountProvider config={AppConfig.Account}>
           <AxiosErrorCatcherProvider>
-            <StylesProvider>
-              <ApplicationRoutes />
-            </StylesProvider>
+            <HelmetProvider>
+              <StylesProvider>
+                <ApplicationRoutes />
+              </StylesProvider>
+            </HelmetProvider>
           </AxiosErrorCatcherProvider>
         </AccountProvider>
       </AppContextProvider>

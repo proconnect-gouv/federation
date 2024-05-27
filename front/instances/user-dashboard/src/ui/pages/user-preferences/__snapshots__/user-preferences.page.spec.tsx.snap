@@ -5,9 +5,9 @@ exports[`UserPreferencesPage should match the snapshot, display into a desktop v
   <div
     data-mockid="Helmet"
   >
-    <div>
-      React Helmet Async
-    </div>
+    <title>
+      Mon tableau de bord - Mes Accès
+    </title>
   </div>
   <div
     class="fr-m-auto fr-px-2w fr-mt-8w"
@@ -28,9 +28,9 @@ exports[`UserPreferencesPage should match the snapshot, display into a mobile vi
   <div
     data-mockid="Helmet"
   >
-    <div>
-      React Helmet Async
-    </div>
+    <title>
+      Mon tableau de bord - Mes Accès
+    </title>
   </div>
   <div
     class="fr-m-auto fr-px-2w fr-mt-5w"
