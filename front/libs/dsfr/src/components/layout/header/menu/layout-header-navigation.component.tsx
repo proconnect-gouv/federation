@@ -23,7 +23,7 @@ export const LayoutHeaderNavigationComponent = React.memo(
         role="navigation">
         <ul className="fr-nav__list">
           {navigationItems &&
-            navigationItems.map(({ a11y, href: path, label }, index) => {
+            navigationItems.map(({ href: path, label, title }, index) => {
               const isCurrentPage = matchPath(path, pathname);
               const uniqkey = `layout-header-nav-item::${index}`;
 
@@ -33,7 +33,7 @@ export const LayoutHeaderNavigationComponent = React.memo(
                     aria-current={isCurrentPage ? 'page' : undefined}
                     className="fr-nav__link"
                     target="_self"
-                    title={a11y}
+                    title={title}
                     to={path}
                     onClick={onItemClick}>
                     {label}

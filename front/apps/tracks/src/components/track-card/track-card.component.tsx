@@ -43,12 +43,12 @@ export const TrackCardComponent = React.memo(({ options, track }: TrackCardProps
    */
   const isFromFranceConnectPlus = platform === 'FranceConnect+';
 
-  const cardA11YId = `card::a11y::${trackId}`;
+  const cardId = `track::card::${trackId}`;
   const dataTestId = `${platform}-${trackId}`;
   return (
     <button
-      key={cardA11YId}
-      aria-controls={cardA11YId}
+      key={cardId}
+      aria-controls={cardId}
       aria-expanded={opened}
       aria-label="Voir les détails"
       className={classnames(
@@ -67,7 +67,7 @@ export const TrackCardComponent = React.memo(({ options, track }: TrackCardProps
       />
 
       <TrackCardContentComponent
-        accessibleId={cardA11YId}
+        accessibleId={cardId}
         city={city}
         claims={claims}
         country={country}

@@ -16,24 +16,24 @@ interface LayoutFooterComponentProps {
 
 const DEFAULT_TOP_LINKS = [
   {
-    a11y: 'Accèder au site legifrance.gouv.fr nouvelle fenêtre',
     href: 'https://www.legifrance.gouv.fr',
     label: 'legifrance.gouv.fr',
+    title: 'Accèder au site legifrance.gouv.fr nouvelle fenêtre',
   },
   {
-    a11y: 'Accèder au site info.gouv.fr nouvelle fenêtre',
     href: 'https://www.info.gouv.fr',
     label: 'info.gouv.fr',
+    title: 'Accèder au site info.gouv.fr nouvelle fenêtre',
   },
   {
-    a11y: 'Accèder au site service-public.fr nouvelle fenêtre',
     href: 'https://www.service-public.fr/',
     label: 'service-public.fr',
+    title: 'Accèder au site service-public.fr nouvelle fenêtre',
   },
   {
-    a11y: 'Accèder au site data.gouv.fr nouvelle fenêtre',
     href: 'https://data.gouv.fr',
     label: 'data.gouv.fr',
+    title: 'Accèder au site data.gouv.fr nouvelle fenêtre',
   },
 ];
 

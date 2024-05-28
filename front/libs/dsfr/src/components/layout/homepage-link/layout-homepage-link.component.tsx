@@ -31,6 +31,9 @@ export const LayoutHomepageLinkComponent = React.memo(
         {children}
       </Link>
     ) : (
+      // @TODO Check the comment for the eslint rule below from #1005
+      // AgentConnect has been removed
+      //
       // DSFR forces us to use <a href=""/> for accessibility; for AgentConnect app: it is a single page application with a dynamic URL
       // eslint-disable-next-line jsx-a11y/anchor-is-valid
       <a
