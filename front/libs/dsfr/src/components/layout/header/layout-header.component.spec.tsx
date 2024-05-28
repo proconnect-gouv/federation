@@ -25,8 +25,8 @@ jest.mock('./service/layout-header-service.component');
 describe('LayoutHeaderComponent', () => {
   // given
   const navigationItemsMock = [
-    { a11y: 'any-a11y-mock-1', href: 'any-href-mock-1', label: 'any-label-mock-1' },
-    { a11y: 'any-a11y-mock-2', href: 'any-href-mock-2', label: 'any-label-mock-2' },
+    { href: 'any-href-mock-1', label: 'any-label-mock-1', title: 'any-title-mock-1' },
+    { href: 'any-href-mock-2', label: 'any-label-mock-2', title: 'any-title-mock-2' },
   ];
 
   const accountContextMock = {

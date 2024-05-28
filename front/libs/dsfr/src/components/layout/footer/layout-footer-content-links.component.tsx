@@ -13,7 +13,7 @@ export const LayoutFooterContentLinksComponent = React.memo(
     const rel = showIcon ? 'noreferrer' : undefined;
     return (
       <ul className="fr-footer__content-list">
-        {items.map(({ a11y, href, label }, index) => {
+        {items.map(({ href, label, title }, index) => {
           const uniqKey = `layout-footer-content-links::${index}`;
           return (
             <li key={uniqKey} className="fr-footer__content-item">
@@ -22,7 +22,7 @@ export const LayoutFooterContentLinksComponent = React.memo(
                 href={href}
                 rel={rel}
                 target={target}
-                title={a11y}>
+                title={title}>
                 {label}
               </a>
             </li>

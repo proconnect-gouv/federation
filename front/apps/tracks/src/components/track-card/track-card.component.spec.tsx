@@ -76,7 +76,7 @@ describe('TrackCardComponent', () => {
       expect(element.tagName).toBe('BUTTON');
       expect(element.getAttribute('type')).toBe('button');
       expect(element.getAttribute('aria-expanded')).toBe('false');
-      expect(element.getAttribute('aria-controls')).toBe(`card::a11y::${track.trackId}`);
+      expect(element.getAttribute('aria-controls')).toBe(`track::card::${track.trackId}`);
     });
 
     it('should have called card badge component', () => {
@@ -113,7 +113,7 @@ describe('TrackCardComponent', () => {
       // then
       expect(TrackCardContentComponent).toHaveBeenCalledWith(
         {
-          accessibleId: `card::a11y::${track.trackId}`,
+          accessibleId: `track::card::${track.trackId}`,
           city: 'mock-city',
           claims: [claims1, claims2],
           country: 'mock-country',

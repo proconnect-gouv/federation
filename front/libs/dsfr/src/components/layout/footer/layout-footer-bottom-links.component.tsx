@@ -9,11 +9,11 @@ interface LayoutFooterBottomLinksComponentProps {
 export const LayoutFooterBottomLinksComponent = React.memo(
   ({ items }: LayoutFooterBottomLinksComponentProps) => (
     <ul className="fr-footer__bottom-list">
-      {items.map(({ a11y, href, label }, index) => {
+      {items.map(({ href, label, title }, index) => {
         const uniqKey = `layout-footer-bottom-links::${index}`;
         return (
           <li key={uniqKey} className="fr-footer__bottom-item">
-            <a className="fr-footer__bottom-link" href={href} title={a11y}>
+            <a className="fr-footer__bottom-link" href={href} title={title}>
               {label}
             </a>
           </li>
