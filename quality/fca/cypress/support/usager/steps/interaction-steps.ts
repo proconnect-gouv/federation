@@ -21,7 +21,8 @@ Then('le champ email correspond à {string}', function (email: string) {
 });
 
 Then("je choisis le fournisseur d'identité {string}", function (text: string) {
-  cy.contains('button', text).click();
+  cy.contains('label', text).click();
+  cy.contains('button', 'Continue').click();
 });
 
 Then(

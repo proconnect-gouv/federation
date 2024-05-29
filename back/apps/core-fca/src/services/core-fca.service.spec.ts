@@ -17,10 +17,10 @@ import { getConfigMock } from '@mocks/config';
 import { getCoreAuthorizationServiceMock } from '@mocks/core';
 import { getSessionServiceMock } from '@mocks/session';
 
+import { AppConfig } from '../dto';
 import {
   CoreFcaAgentIdpBlacklistedException,
   CoreFcaAgentIdpDisabledException,
-  CoreFcaAgentNoIdpException,
 } from '../exceptions';
 import { CoreFcaService } from './core-fca.service';
 
@@ -264,13 +264,27 @@ describe('CoreFcaService', () => {
   describe('getIdpIdForEmail', () => {
     it('should return the default uuid of idp when the idp list is empty', async () => {
       // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'gryffindor_provider_id',
+      } satisfies Partial<InstanceType<typeof AppConfig>>);
       fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
 
       // When
       const result = await service.getIdpIdForEmail('voldemort@bad.person');
 
       // Then
-      expect(result).toEqual([process.env.DEFAULT_IDP_UID]);
+      expect(result).toEqual(['gryffindor_provider_id']);
+    });
+
+    it('should return an empty list when no default and an empty idp list is empty', async () => {
+      // Given
+      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
+
+      // When
+      const result = await service.getIdpIdForEmail('voldemort@bad.person');
+
+      // Then
+      expect(result).toEqual([]);
     });
 
     it('should get return all the corresponding idp for fqdn', async () => {
@@ -399,24 +413,6 @@ describe('CoreFcaService', () => {
       // When
       await expect(service['checkIdpDisabled'](idpIdMock)).rejects.toThrow(
         Error,
-      );
-    });
-  });
-
-  describe('getDefaultIdp', () => {
-    it('should call the config when we call getDefaultIdp', () => {
-      // When
-      service['getDefaultIdp'](1);
-
-      // Then
-      expect(configServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(configServiceMock.get).toHaveBeenCalledWith('App');
-    });
-
-    it('should throw an CoreFcaAgentNoIdpException error when no idp is found', () => {
-      // Then
-      expect(() => service['getDefaultIdp'](0)).toThrow(
-        CoreFcaAgentNoIdpException,
       );
     });
   });

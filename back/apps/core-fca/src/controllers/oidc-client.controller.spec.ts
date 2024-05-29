@@ -22,8 +22,11 @@ import { TrackingService } from '@fc/tracking';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { GetOidcCallbackSessionDto, OidcIdentityDto } from '../dto';
-import { CoreFcaInvalidIdentityException } from '../exceptions';
+import { AppConfig, GetOidcCallbackSessionDto, OidcIdentityDto } from '../dto';
+import {
+  CoreFcaAgentNoIdpException,
+  CoreFcaInvalidIdentityException,
+} from '../exceptions';
 import { CoreFcaService } from '../services';
 import { OidcClientController } from './oidc-client.controller';
 
@@ -247,7 +250,7 @@ describe('OidcClient Controller', () => {
     it('should render identity providers interaction page', async () => {
       // Given
       const hogwartsProviders = [
-        'gryffindor_provider_id',
+        'ravenclaw_provider_id',
         'slytherin_provider_id',
       ];
 
@@ -255,12 +258,11 @@ describe('OidcClient Controller', () => {
         ...oidcClientSessionDataMock,
         login_hint: 'harry.potter@hogwarts.uk',
       });
+      configServiceMock.get.mockReturnValue({});
       coreServiceMock.getIdpIdForEmail.mockResolvedValueOnce(hogwartsProviders);
       coreServiceMock.getIdentityProvidersByIds.mockResolvedValueOnce([
-        {
-          uid: 'gryffindor_provider_id',
-        },
-        { uid: 'slytherin_provider_id' },
+        { title: 'Ravenclaw', uid: 'ravenclaw_provider_id' },
+        { title: 'Slytherin', uid: 'slytherin_provider_id' },
       ]);
 
       // When
@@ -283,8 +285,55 @@ describe('OidcClient Controller', () => {
         csrfToken: 'csrfMockValue',
         email: 'harry.potter@hogwarts.uk',
         providers: [
-          { uid: 'gryffindor_provider_id' },
-          { uid: 'slytherin_provider_id' },
+          { title: 'Ravenclaw', uid: 'ravenclaw_provider_id' },
+          { title: 'Slytherin', uid: 'slytherin_provider_id' },
+        ],
+      });
+    });
+
+    it('should render identity providers interaction page with default provider', async () => {
+      // Given
+      const hogwartsProviders = [
+        'ravenclaw_provider_id',
+        'slytherin_provider_id',
+      ];
+
+      sessionServiceMock.get.mockReturnValueOnce({
+        ...oidcClientSessionDataMock,
+        login_hint: 'harry.potter@hogwarts.uk',
+      });
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'gryffindor_provider_id',
+      } satisfies Partial<InstanceType<typeof AppConfig>>);
+      coreServiceMock.getIdpIdForEmail.mockResolvedValueOnce(hogwartsProviders);
+      coreServiceMock.getIdentityProvidersByIds.mockResolvedValueOnce([
+        { title: 'Ravenclaw', uid: 'ravenclaw_provider_id' },
+        { title: 'Slytherin', uid: 'slytherin_provider_id' },
+      ]);
+
+      // When
+      await controller.getIdentityProviderSelection(
+        'csrfMockValue',
+        res,
+        sessionServiceMock,
+      );
+
+      // Then
+      expect(coreServiceMock.getIdentityProvidersByIds).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(coreServiceMock.getIdentityProvidersByIds).toHaveBeenCalledWith(
+        ...hogwartsProviders,
+      );
+
+      expect(res.render).toHaveBeenCalledTimes(1);
+      expect(res.render).toHaveBeenCalledWith('interaction-identity-provider', {
+        csrfToken: 'csrfMockValue',
+        email: 'harry.potter@hogwarts.uk',
+        providers: [
+          { title: 'Ravenclaw', uid: 'ravenclaw_provider_id' },
+          { title: 'Slytherin', uid: 'slytherin_provider_id' },
+          { title: 'Autre', uid: 'gryffindor_provider_id' },
         ],
       });
     });
@@ -358,6 +407,21 @@ describe('OidcClient Controller', () => {
       expect(res.redirect).toHaveBeenCalledWith(
         '/api/v2/interaction/identity/select',
       );
+    });
+
+    it('should throw an CoreFcaAgentNoIdpException error when no default idp is found', async () => {
+      // Given
+      const body = {
+        csrfToken: 'csrfMockValue',
+        email: 'harry.potter@hogwarts.uk',
+      };
+
+      coreServiceMock.getIdpIdForEmail.mockResolvedValueOnce([]);
+
+      // Then
+      await expect(
+        controller.redirectToIdp(req, res, body, sessionServiceMock),
+      ).rejects.toThrow(CoreFcaAgentNoIdpException);
     });
   });
 

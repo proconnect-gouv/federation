@@ -19,5 +19,5 @@ export default {
     cert: env.file('HTTPS_SERVER_CERT', { optional: true }),
   },
   fqdn: process.env.FQDN,
-  defaultIpdId: env.string('DEFAULT_IDP_UID'),
+  defaultIdpId: env.string('DEFAULT_IDP_UID'),
 } as AppConfig;
