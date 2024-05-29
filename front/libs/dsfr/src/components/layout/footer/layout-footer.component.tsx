@@ -1,8 +1,9 @@
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { AppContext } from '@fc/state-management';
+import { ConfigService } from '@fc/config';
 
-import type { NavigationLink } from '../../../interfaces';
+import { Options } from '../../../enums';
+import type { LayoutConfig, NavigationLink } from '../../../interfaces';
 import { LogoRepubliqueFrancaiseComponent } from '../../logos';
 import { LayoutHomepageLinkComponent } from '../homepage-link';
 import { LayoutFooterBottomLinksComponent } from './layout-footer-bottom-links.component';
@@ -39,14 +40,13 @@ const DEFAULT_TOP_LINKS = [
 
 export const LayoutFooterComponent = React.memo(
   ({ showLicence = false, topLinks = DEFAULT_TOP_LINKS }: LayoutFooterComponentProps) => {
-    const appContext = useContext(AppContext);
-    const layoutConfig = appContext.state.config.Layout;
+    const config = ConfigService.get<LayoutConfig>(Options.CONFIG_NAME);
     const {
       bottomLinks,
       footerDescription: description,
       footerLinkTitle,
       logo: ApplicationLogo,
-    } = layoutConfig;
+    } = config;
 
     const showFooterBottom = bottomLinks || showLicence;
 

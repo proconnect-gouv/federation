@@ -1,10 +1,12 @@
 import classnames from 'classnames';
 import type { PropsWithChildren } from 'react';
-import React, { useContext } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-import type { AppContextInterface } from '@fc/state-management';
-import { AppContext } from '@fc/state-management';
+import { ConfigService } from '@fc/config';
+
+import { Options } from '../../../enums';
+import type { LayoutConfig } from '../../../interfaces';
 
 interface LayoutHomepageLinkComponentProps extends Required<PropsWithChildren> {
   isFooter?: boolean;
@@ -12,10 +14,8 @@ interface LayoutHomepageLinkComponentProps extends Required<PropsWithChildren> {
 
 export const LayoutHomepageLinkComponent = React.memo(
   ({ children, isFooter = false }: LayoutHomepageLinkComponentProps) => {
-    // @TODO use ConfigService instead of Context; first ConfigService needs to be initialized
-    const { state } = useContext<AppContextInterface>(AppContext);
-    const layoutConfig = state.config.Layout;
-    const { footerLinkTitle, homepage } = layoutConfig;
+    const config = ConfigService.get<LayoutConfig>(Options.CONFIG_NAME);
+    const { footerLinkTitle, homepage } = config;
 
     // @TODO use i18n translation library
     const prefix = isFooter ? 'Retour à l’accueil du site' : 'Accueil';

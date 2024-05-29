@@ -15,7 +15,6 @@ export const AccountProvider = ({ children, config }: AccountProviderProps) => {
   const [state, setState] = useState<AccountInterface>({
     connected: false,
     ready: false,
-    // @TODO this will be removed using react-redux
     updateAccount: /* istanbul ignore next */ () => {},
     userinfos: {
       firstname: '',

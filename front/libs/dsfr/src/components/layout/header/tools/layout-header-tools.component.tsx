@@ -1,7 +1,9 @@
 import classnames from 'classnames';
-import React, { useContext } from 'react';
+import React from 'react';
 
-import { AppContext } from '@fc/state-management';
+import { ConfigService } from '@fc/config';
+import type { OidcClientConfig } from '@fc/oidc-client';
+import { Options } from '@fc/oidc-client';
 
 import { ReturnButtonComponent } from '../return-button';
 import { LayoutHeaderToolsAccountComponent } from './layout-header-tools-account.component';
@@ -21,12 +23,8 @@ export const LayoutHeaderToolsComponent = React.memo(
     isModalMenu = false,
     lastname,
   }: LayoutHeaderToolsComponentProps) => {
-    const { state } = useContext(AppContext);
-    // @TODO testing implies splitting the function into a private
-    // it seems to be useless till should be refactored with the global config for front apps
-    // @SEE https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/984
-    /* istanbul ignore next */
-    const { endSessionUrl, returnButtonUrl } = state.config?.OidcClient?.endpoints || {};
+    const config = ConfigService.get<OidcClientConfig>(Options.CONFIG_NAME);
+    const { endSessionUrl, returnButtonUrl } = config.endpoints || {};
 
     const isConnected = !!(firstname && lastname);
 

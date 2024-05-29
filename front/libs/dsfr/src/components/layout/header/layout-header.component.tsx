@@ -3,8 +3,11 @@ import React, { useCallback, useContext, useState } from 'react';
 
 import type { AccountInterface } from '@fc/account';
 import { AccountContext } from '@fc/account';
-import type { AppContextInterface } from '@fc/state-management';
-import { AppContext } from '@fc/state-management';
+import { ConfigService } from '@fc/config';
+import type { LayoutConfig } from '@fc/dsfr';
+import { Options as LayoutOptions } from '@fc/dsfr';
+import type { OidcClientConfig } from '@fc/oidc-client';
+import { Options as OidcClientOptions } from '@fc/oidc-client';
 import { useStylesQuery, useStylesVariables } from '@fc/styles';
 
 import styles from './layout-header.module.scss';
@@ -18,14 +21,15 @@ import { LayoutHeaderToolsComponent } from './tools';
 export const LayoutHeaderComponent = React.memo(() => {
   const [mobileMenuOpened, setMobileMenuOpened] = useState(false);
 
-  const { state } = useContext<AppContextInterface>(AppContext);
-  const { footerLinkTitle, logo, navigationItems, service } = state.config.Layout;
-  // @TODO testing implies splitting the function into a private
-  // it seems to be useless till should be refactored with the global config for front apps
-  // @SEE https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/984
-  /* istanbul ignore next */
-  const { returnButtonUrl } = state.config?.OidcClient?.endpoints || {};
+  const layoutConfig = ConfigService.get<LayoutConfig>(LayoutOptions.CONFIG_NAME);
+  const { footerLinkTitle, logo, navigationItems, service } = layoutConfig;
 
+  const oidcClientConfig = ConfigService.get<OidcClientConfig>(OidcClientOptions.CONFIG_NAME);
+  const { returnButtonUrl } = oidcClientConfig.endpoints;
+
+  // @TODO add a Hook to get informations
+  // instead of using useContext
+  // -> easier to mock and test
   const { connected, ready, userinfos } = useContext<AccountInterface>(AccountContext);
   const isUserConnected = connected && ready;
   const firstname = userinfos?.firstname;

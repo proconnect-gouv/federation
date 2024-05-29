@@ -4,6 +4,7 @@ module.exports = {
     {
       env: {
         jest: true,
+        'jest/globals': true,
       },
       files: ['**/*.spec.ts', '**/*.spec.tsx'],
       plugins: ['jest', 'jest-extended', 'testing-library'],
