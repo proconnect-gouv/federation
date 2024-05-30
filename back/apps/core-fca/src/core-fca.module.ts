@@ -60,11 +60,12 @@ import { CoreFcaMcpVerifyHandler } from './handlers/verify';
 import {
   CoreFcaMiddlewareService,
   CoreFcaService,
+  CoreFcaTrackingService,
   CoreFcaVerifyService,
   OidcProviderConfigAppService,
 } from './services';
 
-const trackingModule = TrackingModule.forRoot(CoreTrackingService);
+const trackingModule = TrackingModule.forRoot(CoreFcaTrackingService);
 
 const exceptionModule = ExceptionsModule.withTracking(trackingModule);
 
