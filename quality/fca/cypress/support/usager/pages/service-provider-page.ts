@@ -12,6 +12,7 @@ const mandatoryData = {
   iss: /^(https?:\/\/)?([\da-z.-]+)\.([a-z.]{2,6})([/\w .-]*)*\/?$/,
   sub: /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/,
 };
+
 export default class ServiceProviderPage {
   fcaButtonSelector: string;
   logoutButtonSelector: string;
@@ -135,7 +136,7 @@ export default class ServiceProviderPage {
   }
 
   checkMandatoryData(): void {
-    this.getUserInfo().then((responseBody: Record<string, unknown>) => {
+    this.getUserInfo().then((responseBody) => {
       Object.keys(mandatoryData).forEach((key) =>
         expect(responseBody[key]).to.match(
           mandatoryData[key],
@@ -150,9 +151,9 @@ export default class ServiceProviderPage {
     expectedClaims: string[],
     userClaims: UserClaims,
   ): void {
-    this.getUserInfo().then((responseBody: Record<string, unknown>) => {
-      Object.keys(userClaims)
-        .filter((userClaim) => expectedClaims.includes(userClaim))
+    this.getUserInfo().then((responseBody) => {
+      expectedClaims
+        .filter((claimName) => claimName !== 'sub')
         .forEach((claimName) => {
           expect(responseBody[claimName]).to.deep.equal(
             userClaims[claimName],
@@ -165,7 +166,7 @@ export default class ServiceProviderPage {
   }
 
   checkNoExtraClaims(expectedClaims: string[]): void {
-    this.getUserInfo().then((responseBody: Record<string, unknown>) => {
+    this.getUserInfo().then((responseBody) => {
       const extraClaimsName = Object.keys(responseBody).filter(
         (key) => !mandatoryData[key] && !expectedClaims.includes(key),
       );

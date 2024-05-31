@@ -6,7 +6,6 @@ import {
   IdentityProvider,
   ScopeContext,
   ServiceProvider,
-  UserCredentials,
 } from '../../common/types';
 import { getDefaultScope } from '../helpers';
 import IdentityProviderPage from '../pages/identity-provider-page';
@@ -60,7 +59,7 @@ export class ConnectionWorkflow {
    * @returns the current ConnectionWorkflow instance
    */
   start(): this {
-    const { acrValue, claims }: ServiceProvider = this.serviceProvider;
+    const { acrValue, claims } = this.serviceProvider;
 
     this.serviceProviderPage.startLogin(
       this.fcRootUrl,
@@ -102,9 +101,7 @@ export class ConnectionWorkflow {
     const identityProviderPage = new IdentityProviderPage(
       this.identityProvider,
     );
-    const credentials: UserCredentials = user.getCredentials(
-      this.identityProvider.idpId,
-    );
+    const credentials = user.getCredentials(this.identityProvider.idpId);
     expect(credentials).to.exist;
     identityProviderPage.login(credentials);
     return this;

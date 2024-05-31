@@ -1,7 +1,6 @@
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 import { navigateTo } from '../../common/helpers';
-import { Environment } from '../../common/types';
 import UdEventCard from '../pages/ud-event-card-component';
 import UdHistoryPage from '../pages/ud-history-page';
 import UdPagination from '../pages/ud-pagination-component';
@@ -13,7 +12,7 @@ const udPagination = new UdPagination();
 Given(
   'je navigue directement vers la page historique du tableau de bord usager',
   function () {
-    const { allAppsUrl }: Environment = this.env;
+    const { allAppsUrl } = this.env;
     navigateTo({ appId: 'ud-history', baseUrl: allAppsUrl });
     // Wait for the connection history loading
     // eslint-disable-next-line cypress/no-unnecessary-waiting
@@ -24,7 +23,7 @@ Given(
 Given(
   'je navigue vers la page historique du tableau de bord usager',
   function () {
-    const { allAppsUrl, udRootUrl }: Environment = this.env;
+    const { allAppsUrl, udRootUrl } = this.env;
     navigateTo({ appId: 'ud-history', baseUrl: allAppsUrl });
     udHistoryPage = new UdHistoryPage(udRootUrl);
     udHistoryPage.checkIsVisible();
@@ -37,7 +36,7 @@ Given(
 Given(
   /^je suis (redirigé vers|sur) la page historique du tableau de bord usager$/,
   function () {
-    const { udRootUrl }: Environment = this.env;
+    const { udRootUrl } = this.env;
     udHistoryPage = new UdHistoryPage(udRootUrl);
     udHistoryPage.checkIsVisible();
     // Wait for the connection history loading
