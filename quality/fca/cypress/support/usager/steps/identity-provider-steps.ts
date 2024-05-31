@@ -1,7 +1,5 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
-import { User } from '../../common/helpers';
-import { UserCredentials } from '../../common/types';
 import IdentityProviderPage from '../pages/identity-provider-page';
 
 let identityProviderPage: IdentityProviderPage;
@@ -23,15 +21,15 @@ When(
   "le fournisseur d'identité garantit un niveau de sécurité {string}",
   function (acr: string) {
     identityProviderPage.setMockAcrValue(acr);
+    this.identityProvider.acrValue = acr;
   },
 );
 
 When("je m'authentifie avec succès", function () {
   expect(this.user).to.exist;
 
-  const currentUser: User = this.user;
   const { idpId } = this.identityProvider;
-  const userCredentials: UserCredentials = currentUser.getCredentials(idpId);
+  const userCredentials = this.user.getCredentials(idpId);
   expect(userCredentials).to.exist;
   identityProviderPage.login(userCredentials);
 });
@@ -46,9 +44,7 @@ When(
 When("je saisi manuellement l'identité de l'utilisateur", function () {
   expect(this.user).to.exist;
 
-  const currentUser: User = this.user;
-
-  identityProviderPage.useCustomIdentity(currentUser);
+  identityProviderPage.useCustomIdentity(this.user);
 });
 
 Then('le champ identifiant correspond à {string}', function (login: string) {

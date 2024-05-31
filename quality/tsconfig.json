@@ -11,12 +11,14 @@
     "module": "nodenext",
     "target": "ES2022",
     "types": [
-      "cypress",
-      "cypress-axe",
       "node"
     ]
   },
   "include": [
     "**/*.ts"
+  ],
+  "exclude": [
+    "fca",
+    "fcp"
   ]
 }
