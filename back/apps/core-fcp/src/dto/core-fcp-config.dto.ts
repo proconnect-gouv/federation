@@ -15,6 +15,7 @@ import { CoreConfig as CoreLibConfig } from '@fc/core';
 import { CryptographyEidasConfig } from '@fc/cryptography-eidas';
 import { CryptographyFcpConfig } from '@fc/cryptography-fcp';
 import { DataProviderAdapterMongoConfig } from '@fc/data-provider-adapter-mongo';
+import { DeviceConfig } from '@fc/device';
 import { I18nConfig } from '@fc/i18n';
 import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
 import { LoggerConfig } from '@fc/logger';
@@ -61,6 +62,11 @@ export class CoreFcpConfig {
   @ValidateNested()
   @Type(() => ConfigConfig)
   readonly Config: ConfigConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => DeviceConfig)
+  readonly Device: DeviceConfig;
 
   @IsObject()
   @ValidateNested()

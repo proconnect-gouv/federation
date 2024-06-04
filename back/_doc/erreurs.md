@@ -223,3 +223,8 @@
 | [Y500023](../apps/core-fca/src/exceptions/core-fca-idp-blacklist.exception.ts "CoreFcaAgentIdpBlacklistedException") | 400 |  | Le fournisseur d&#39;identité utilisé par l&#39;usager n&#39;est pas autorisé pour ce FS. Cela peut se produire uniquement lorsque l&#39;on a ajouté le FI dans la blacklist du FS. L&#39;utilisateur doit recommencer sa cinématique. Si le problème persiste, contacter le support AgentConnect | access_denied | authentication aborted due to a technical error on the authorization server |
 | [Y500024](../apps/core-fca/src/exceptions/core-fca-account-blocked.exception.ts "CoreFcaAgentAccountBlockedException") | 400 |  | Le compte de l’agent.e n&#39;est plus actif. | access_denied | authentication aborted due to invalid identity |
 
+| Code d'erreur | Code HTTP | Message utilisateur | Description | Erreur | Erreur Description |
+|---|---|---|---|---|---|
+| [Y510001](../libs/device/src/exceptions/device-cookie-invalid-json.exception.ts "DeviceCookieInvalidJsonException") | 400 |  | Le cookie &#34;device&#34; contient des données mal formatées, indiquer de vider les cookies et prévenir SN3 situation anormale | invalid_request | required parameter missing or invalid |
+| [Y510002](../libs/device/src/exceptions/device-cookie-invalid-data.exception.ts "DeviceCookieInvalidDataException") | 400 |  | Le cookie &#34;device&#34; contient des données invalides, indiquer de vider les cookies et prévenir SN3 situation anormale | invalid_request | required parameter missing or invalid |
+

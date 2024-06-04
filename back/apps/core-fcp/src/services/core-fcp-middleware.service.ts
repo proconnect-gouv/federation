@@ -9,6 +9,7 @@ import {
   CoreConfig,
   CoreOidcProviderMiddlewareService,
 } from '@fc/core';
+import { DeviceService } from '@fc/device';
 import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
 import { OidcSession, stringToArray } from '@fc/oidc';
@@ -46,6 +47,7 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     @Inject(CORE_SERVICE)
     protected readonly core: CoreFcpService,
     protected readonly flowSteps: FlowStepsService,
+    protected readonly device: DeviceService,
   ) {
     super(
       logger,
@@ -189,11 +191,7 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     const spAcr = ctx?.oidc?.params?.acr_values as string;
     await this.renewSession(ctx, spAcr);
 
-    this.sessionService.set(
-      'App',
-      'isSuspicious',
-      ctx.req.headers['x-suspicious'] === '1',
-    );
+    await this.device.initSession(ctx.req);
 
     ctx.isSso = this.isSsoAvailable(spAcr);
 

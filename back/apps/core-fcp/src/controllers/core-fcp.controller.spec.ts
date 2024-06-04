@@ -114,7 +114,7 @@ describe('CoreFcpController', () => {
 
   const oidcSessionServiceMock = getSessionServiceMock();
 
-  const appSessionServiceMock = getSessionServiceMock();
+  const deviceSessionServiceMock = getSessionServiceMock();
 
   const randomStringMock = 'randomStringMockValue';
 
@@ -325,7 +325,7 @@ describe('CoreFcpController', () => {
       identityProviderServiceMock.getFilteredList.mockResolvedValue(
         idpFilterListMock,
       );
-      appSessionServiceMock.get.mockReturnValue(false);
+      deviceSessionServiceMock.get.mockReturnValue(false);
       oidcAcrServiceMock.isAcrValid.mockReturnValue(true);
       coreFcpServiceMock.isInsufficientAcrLevel.mockReturnValue(false);
       notificationsServiceMock.getNotificationToDisplay.mockResolvedValue(
@@ -340,7 +340,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
       // Then
@@ -355,7 +355,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -374,7 +374,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
       // Then
@@ -388,7 +388,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
       // Then
@@ -410,7 +410,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
       // Then
@@ -427,7 +427,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
       // Then
@@ -444,7 +444,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
       // Then
@@ -457,19 +457,19 @@ describe('CoreFcpController', () => {
       });
     });
 
-    it('should retrieve the isSuspicious status from AppSession', async () => {
+    it('should retrieve the suspicious status from DeviceSession', async () => {
       // When
       await coreController.getInteraction(
         req,
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
       // Then
-      expect(appSessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(appSessionServiceMock.get).toHaveBeenCalledWith('isSuspicious');
+      expect(deviceSessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(deviceSessionServiceMock.get).toHaveBeenCalledWith('isSuspicious');
     });
 
     it('should check all identity providers against requested acrValue', async () => {
@@ -479,7 +479,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
       // Then
@@ -514,7 +514,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -546,7 +546,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
       // Then
@@ -568,7 +568,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -601,7 +601,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -639,7 +639,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -664,7 +664,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -684,7 +684,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -709,7 +709,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -745,7 +745,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -779,7 +779,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -802,7 +802,7 @@ describe('CoreFcpController', () => {
         res,
         params,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
         csrfToken,
       );
 
@@ -835,7 +835,7 @@ describe('CoreFcpController', () => {
       oidcSessionServiceMock.get.mockReturnValue(oidcSessionMock);
       identityProviderServiceMock.isActiveById.mockResolvedValue(true);
       serviceProviderServiceMock.shouldExcludeIdp.mockResolvedValue(false);
-      appSessionServiceMock.get.mockReturnValue(false);
+      deviceSessionServiceMock.get.mockReturnValue(false);
       coreFcpServiceMock.isInsufficientAcrLevel.mockReturnValue(false);
       coreFcpVerifyServiceMock.handleVerifyIdentity.mockResolvedValue(
         handleVerifyResult,
@@ -849,7 +849,7 @@ describe('CoreFcpController', () => {
         resMock,
         paramsMock,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
       );
       // Then
       expect(oidcSessionServiceMock.get).toHaveBeenCalledTimes(1);
@@ -863,7 +863,7 @@ describe('CoreFcpController', () => {
         resMock,
         paramsMock,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
       );
       // Then
       expect(configServiceMock.get).toHaveBeenCalledTimes(1);
@@ -877,7 +877,7 @@ describe('CoreFcpController', () => {
         resMock,
         paramsMock,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
       );
       // Then
       expect(identityProviderServiceMock.isActiveById).toHaveBeenCalledTimes(1);
@@ -893,7 +893,7 @@ describe('CoreFcpController', () => {
         resMock,
         paramsMock,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
       );
       // Then
       expect(serviceProviderServiceMock.shouldExcludeIdp).toHaveBeenCalledTimes(
@@ -912,11 +912,11 @@ describe('CoreFcpController', () => {
         resMock,
         paramsMock,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
       );
       // Then
-      expect(appSessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(appSessionServiceMock.get).toHaveBeenCalledWith('isSuspicious');
+      expect(deviceSessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(deviceSessionServiceMock.get).toHaveBeenCalledWith('isSuspicious');
     });
 
     it('should check if acr level is sufficient', async () => {
@@ -926,7 +926,7 @@ describe('CoreFcpController', () => {
         resMock,
         paramsMock,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
       );
       // Then
       expect(coreFcpServiceMock.isInsufficientAcrLevel).toHaveBeenCalledTimes(
@@ -945,7 +945,7 @@ describe('CoreFcpController', () => {
         resMock,
         paramsMock,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
       );
       // Then
       expect(
@@ -967,7 +967,7 @@ describe('CoreFcpController', () => {
         resMock,
         paramsMock,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
       );
       // Then
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -985,7 +985,7 @@ describe('CoreFcpController', () => {
         resMock,
         paramsMock,
         oidcSessionServiceMock,
-        appSessionServiceMock,
+        deviceSessionServiceMock,
       );
 
       // Then
@@ -1011,7 +1011,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
         // Then
         expect(
@@ -1039,7 +1039,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
         // Then
         expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -1059,7 +1059,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
 
         // Then
@@ -1086,7 +1086,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
         // Then
         expect(
@@ -1114,7 +1114,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
         // Then
         expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -1134,7 +1134,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
 
         // Then
@@ -1157,7 +1157,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
         // Then
         expect(
@@ -1175,7 +1175,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
         // Then
         expect(oidcSessionServiceMock.set).toHaveBeenCalledTimes(1);
@@ -1194,7 +1194,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
         // Then
         expect(trackingServiceMock.track).toHaveBeenCalledTimes(1);
@@ -1219,7 +1219,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
         // Then
         expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -1239,7 +1239,7 @@ describe('CoreFcpController', () => {
           resMock,
           paramsMock,
           oidcSessionServiceMock,
-          appSessionServiceMock,
+          deviceSessionServiceMock,
         );
 
         // Then

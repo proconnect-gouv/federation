@@ -1,0 +1,104 @@
+import { createHmac } from 'crypto';
+
+import { DateTime } from 'luxon';
+
+import { Injectable } from '@nestjs/common';
+
+import { ConfigService } from '@fc/config';
+import { IOidcIdentity } from '@fc/oidc';
+
+import { DeviceConfig, DeviceUserEntry } from '../dto';
+
+@Injectable()
+export class DeviceEntriesService {
+  constructor(private readonly config: ConfigService) {}
+
+  generate(
+    identity: Partial<Omit<IOidcIdentity, 'sub'>>,
+    deviceSalt: string,
+    oldEntries: DeviceUserEntry[],
+  ): DeviceUserEntry {
+    const { identityHmacDailyTtl } = this.config.get<DeviceConfig>('Device');
+
+    const hash = this.findCorrectHash(identity, deviceSalt, oldEntries);
+
+    const timestamp = DateTime.now()
+      .plus({ days: identityHmacDailyTtl })
+      .toMillis();
+
+    return {
+      h: hash,
+      d: timestamp,
+    };
+  }
+
+  push(entries: DeviceUserEntry[], entry: DeviceUserEntry): DeviceUserEntry[] {
+    const { maxIdentityNumber } = this.config.get<DeviceConfig>('Device');
+    const newEntries = entries.filter(this.isNotExpired.bind(this));
+
+    const userFound = newEntries.find(({ h }) => h === entry.h);
+
+    if (!userFound) {
+      newEntries.push(entry);
+    }
+
+    if (newEntries.length > maxIdentityNumber) {
+      newEntries.shift();
+    }
+
+    return newEntries;
+  }
+
+  private isNotExpired = function isExpired({ d: trustExpirationDate }) {
+    const now = Date.now();
+
+    return now < trustExpirationDate;
+  };
+
+  private findCorrectHash(
+    identity: Partial<Omit<IOidcIdentity, 'sub'>>,
+    deviceSalt: string,
+    oldEntries: DeviceUserEntry[],
+  ): string {
+    const { identityHmacSecret } = this.config.get<DeviceConfig>('Device');
+
+    let firstHash: string;
+
+    for (const secret of identityHmacSecret) {
+      const hash = this.hashIdentity(identity, secret, deviceSalt);
+
+      if (this.isHashInEntries(oldEntries, hash)) {
+        return hash;
+      }
+
+      if (!firstHash) {
+        firstHash = hash;
+      }
+    }
+
+    return firstHash;
+  }
+
+  private hashIdentity(
+    identity: Partial<Omit<IOidcIdentity, 'sub'>>,
+    secret: string,
+    deviceSalt: string,
+  ): string {
+    const { identityHashSourceProperties } =
+      this.config.get<DeviceConfig>('Device');
+
+    const value = identityHashSourceProperties
+      .map((property) => identity[property])
+      .join('');
+
+    const salt = `${deviceSalt}${secret}`;
+
+    const hash = createHmac('sha256', salt).update(value).digest('base64');
+
+    return hash;
+  }
+
+  private isHashInEntries(entries: DeviceUserEntry[], hash: string): boolean {
+    return entries.some((entry) => entry.h === hash);
+  }
+}

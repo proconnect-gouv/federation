@@ -1002,6 +1002,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/account-fca/tsconfig.lib.json"
       }
+    },
+    "device": {
+      "type": "library",
+      "root": "libs/device",
+      "entryFile": "index",
+      "sourceRoot": "libs/device/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/device/tsconfig.lib.json"
+      }
     }
   }
 }

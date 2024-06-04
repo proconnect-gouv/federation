@@ -208,7 +208,9 @@
       "@fc/account-fca": ["libs/account-fca/src"],
       "@fc/account-fca/*": ["libs/account-fca/src/*"],
       "@fc/partners": ["apps/partners/src"],
-      "@fc/partners/*": ["apps/partners/src/*"]
+      "@fc/partners/*": ["apps/partners/src/*"],
+      "@fc/device": ["libs/device/src"],
+      "@fc/device/*": ["libs/device/src/*"]
     }
   },
   "files": ["global.d.ts"],

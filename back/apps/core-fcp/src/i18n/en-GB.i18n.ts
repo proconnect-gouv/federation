@@ -49,7 +49,10 @@ export const enGB: I18nTranslationsMapType = {
   'consent.data_fetched_from': 'Data fetched from {dpName}',
   'consent.no_personal_data_transmitted':
     'No personal data will be transmitted',
-
+  'consent.information_block_title':
+    'The connection notifications are evolving.',
+  'consent.information_block_content':
+    'FranceConnect will no longer systematically send you a notification for each connection. A notification will be sent only when an unusual connection is detected.',
   // Errors
   'error.page_title': 'Connection - Error - {platform}',
   'error.what_to_do': 'What to do?',
