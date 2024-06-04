@@ -35,3 +35,8 @@ load("/opt/scripts/db-states/_default/claims.js");
 
 print("Initializing fqdnToProvider...");
 load("/opt/scripts/db-states/_default/fqdn-to-provider.js");
+
+/* ------------------------------------------------------------------------------- */
+
+print("Initializing Data providers...");
+load("/opt/scripts/db-states/_default/dp.js");

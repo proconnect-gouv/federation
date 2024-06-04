@@ -141,3 +141,28 @@ Given(
 Given('je rentre {string} dans le champ prompt', function (prompt: string) {
   serviceProviderPage.setPrompt(prompt);
 });
+
+When('je révoque le token AgentConnect', function () {
+  serviceProviderPage.getRevokeTokenButton().click();
+});
+
+When(
+  "le fournisseur de service demande l'accès aux données au fournisseur de données",
+  function () {
+    serviceProviderPage.getDataButton().click();
+  },
+);
+
+Then(
+  "le fournisseur de données vérifie l'access token fourni par le fournisseur de service",
+  function () {
+    serviceProviderPage.checkIsMockDataPageVisible();
+    serviceProviderPage
+      .getMockIntrospectionTokenText()
+      .should('be.ok')
+      .then((tokenText) => {
+        const token = JSON.parse(tokenText);
+        cy.wrap(token).as('tokenIntrospection');
+      });
+  },
+);

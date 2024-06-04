@@ -99,10 +99,12 @@ services:
           # Mock RNIPP
           - mock-rnipp.docker.dev-franceconnect.fr
           # Mock Data Provider
-          - dp1-high.docker.dev-franceconnect.fr
-          - dp2-high.docker.dev-franceconnect.fr
-          - dp1-low.docker.dev-franceconnect.fr
-          - dp2-low.docker.dev-franceconnect.fr
+          - dpp1-high.docker.dev-franceconnect.fr
+          - dpp2-high.docker.dev-franceconnect.fr
+          - dpp1-low.docker.dev-franceconnect.fr
+          - dpp2-low.docker.dev-franceconnect.fr
+          - dpa1-low.docker.dev-franceconnect.fr
+          - dpa2-low.docker.dev-franceconnect.fr
           # Generic
           - docker.dev-franceconnect.fr
           # Stack Documentation 11TY

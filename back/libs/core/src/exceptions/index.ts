@@ -9,6 +9,7 @@ export * from './core-identity-provider-not-found.exception';
 export * from './core-idp-blocked-for-account.exception';
 export * from './core-idp-hint.exception';
 export * from './core-invalid-acr.exception';
+export * from './core-invalid-check-token-request.exception';
 export * from './core-low-acr.exception';
 export * from './core-missing-at-hash.exception';
 export * from './core-missing-context.exception';

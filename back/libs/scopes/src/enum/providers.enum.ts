@@ -8,4 +8,5 @@ export const enum Providers {
   MI = 'MI',
   CNOUS = 'CNOUS',
   PE = 'PE',
+  DESK = 'DESK',
 }

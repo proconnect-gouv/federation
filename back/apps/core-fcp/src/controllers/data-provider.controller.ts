@@ -2,13 +2,15 @@ import { Request, Response } from 'express';
 
 import { Body, Controller, HttpStatus, Post, Req, Res } from '@nestjs/common';
 
+import {
+  ChecktokenRequestDto,
+  DataProviderRoutes,
+  TokenIntrospectionInterface,
+} from '@fc/core';
 import { DataProviderAdapterMongoService } from '@fc/data-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
-import { ChecktokenRequestDto } from '../dto';
-import { DataProviderRoutes } from '../enums';
-import { TokenIntrospectionInterface } from '../interfaces';
 import { DataProviderService } from '../services';
 
 @Controller()

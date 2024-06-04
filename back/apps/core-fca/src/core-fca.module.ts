@@ -16,6 +16,7 @@ import {
   CoreVerifyService,
 } from '@fc/core';
 import { CsrfModule } from '@fc/csrf';
+import { DataProviderAdapterMongoModule } from '@fc/data-provider-adapter-mongo';
 import { ExceptionsModule } from '@fc/exceptions';
 import { FeatureHandlerModule } from '@fc/feature-handler';
 import { FlowStepsModule } from '@fc/flow-steps';
@@ -25,6 +26,7 @@ import {
   IdentityProviderAdapterMongoModule,
   IdentityProviderAdapterMongoService,
 } from '@fc/identity-provider-adapter-mongo';
+import { JwtModule } from '@fc/jwt';
 import { MongooseModule } from '@fc/mongoose';
 import { NotificationsModule } from '@fc/notifications';
 import { OidcAcrModule } from '@fc/oidc-acr';
@@ -33,6 +35,7 @@ import {
   OidcProviderGrantService,
   OidcProviderModule,
 } from '@fc/oidc-provider';
+import { ScopesModule } from '@fc/scopes';
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
@@ -42,6 +45,7 @@ import { TrackingModule } from '@fc/tracking';
 
 import {
   CoreFcaController,
+  DataProviderController,
   OidcClientController,
   OidcProviderController,
 } from './controllers';
@@ -62,6 +66,7 @@ import {
   CoreFcaService,
   CoreFcaTrackingService,
   CoreFcaVerifyService,
+  DataProviderService,
   OidcProviderConfigAppService,
 } from './services';
 
@@ -99,6 +104,9 @@ const exceptionFiltersProviders = [
     ServiceProviderAdapterMongoModule,
     IdentityProviderAdapterMongoModule,
     FqdnToIdpAdapterMongoModule,
+    DataProviderAdapterMongoModule,
+    JwtModule,
+    ScopesModule,
     HttpProxyModule,
     OidcAcrModule,
     OidcProviderModule.register(
@@ -125,6 +133,7 @@ const exceptionFiltersProviders = [
     CoreFcaController,
     OidcClientController,
     OidcProviderController,
+    DataProviderController,
   ],
   providers: [
     ...exceptionFiltersProviders,
@@ -142,6 +151,7 @@ const exceptionFiltersProviders = [
     CoreFcaMcpVerifyHandler,
     CoreFcaDefaultAuthorizationHandler,
     CoreFcaMcpAuthorizationHandler,
+    DataProviderService,
     {
       provide: CORE_SERVICE,
       useClass: CoreFcaService,

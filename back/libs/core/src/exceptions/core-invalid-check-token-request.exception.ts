@@ -3,8 +3,10 @@
 // Declarative code
 import { HttpStatus } from '@nestjs/common';
 
-import { CoreBaseException, ErrorCode } from '@fc/core';
 import { Description } from '@fc/exceptions-deprecated';
+
+import { ErrorCode } from '../enums';
+import { CoreBaseException } from './core-base.exception';
 
 @Description(
   "La requête reçue pour vérifier le token n'est pas valide. Des paramètres obligatoires sont manquants ou au mauvais format.",

@@ -4,8 +4,10 @@
     "descriptions": [
       "par défaut",
       "avec une blacklist de FI",
-      "avec accès au FI par défaut (premier FS)"
+      "avec accès au FI par défaut (premier FS)",
+      "éligible au scope groups"
     ],
+    "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
     "mocked": true,
     "url": "https://fsa1-low.docker.dev-franceconnect.fr",
     "acrValue": "eidas1",

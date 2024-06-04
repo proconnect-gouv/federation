@@ -5,6 +5,13 @@ import { HttpStatus, Injectable } from '@nestjs/common';
 
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import {
+  ChecktokenRequestDto,
+  DpJwtPayloadInterface,
+  ErrorParamsDto,
+  InvalidChecktokenRequestException,
+  TokenIntrospectionInterface,
+} from '@fc/core';
 import { Use } from '@fc/cryptography';
 import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { DataProviderMetadata } from '@fc/data-provider-adapter-mongo';
@@ -17,12 +24,7 @@ import { RnippPivotIdentity } from '@fc/rnipp';
 import { ScopesService } from '@fc/scopes';
 import { SessionService } from '@fc/session';
 
-import { ChecktokenRequestDto, CoreFcpSession, ErrorParamsDto } from '../dto';
-import { InvalidChecktokenRequestException } from '../exceptions';
-import {
-  DpJwtPayloadInterface,
-  TokenIntrospectionInterface,
-} from '../interfaces';
+import { CoreFcpSession } from '../dto';
 
 @Injectable()
 export class DataProviderService {

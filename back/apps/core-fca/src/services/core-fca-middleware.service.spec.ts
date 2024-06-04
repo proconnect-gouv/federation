@@ -222,7 +222,6 @@ describe('CoreFcaMiddlewareService', () => {
     it('should override prompt with default values when SSO is available and prompt is "none"', async () => {
       // Given
       const ctxMock: any = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: ['acr1', 'acr2'],
         prompt: 'none',
       };
@@ -250,7 +249,6 @@ describe('CoreFcaMiddlewareService', () => {
     it('should not override prompt values when SSO is not available', async () => {
       // Given
       const ctxMock: any = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: ['acr1', 'acr2'],
         prompt: 'none',
       };
@@ -278,7 +276,6 @@ describe('CoreFcaMiddlewareService', () => {
     it('should not override prompt values when prompt does not include "none"', async () => {
       // Given
       const ctxMock: any = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: ['acr1', 'acr2'],
         prompt: 'login',
       };
@@ -306,7 +303,6 @@ describe('CoreFcaMiddlewareService', () => {
     it('should not override prompt values when prompt does not include "none" and SSO is not available', async () => {
       // Given
       const ctxMock: any = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: ['acr1', 'acr2'],
         prompt: 'login',
       };
@@ -334,7 +330,6 @@ describe('CoreFcaMiddlewareService', () => {
     it('should not override prompt values when "none" is not the single prompt value', async () => {
       // Given
       const ctxMock: any = {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         acr_values: ['acr1', 'acr2'],
         prompt: 'login none',
       };

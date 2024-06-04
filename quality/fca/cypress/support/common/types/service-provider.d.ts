@@ -1,4 +1,6 @@
 export interface ServiceProviderBase {
+  // fixme
+  clientId?: string;
   selectors: {
     fcaButton: string;
     logoutButton: string;
