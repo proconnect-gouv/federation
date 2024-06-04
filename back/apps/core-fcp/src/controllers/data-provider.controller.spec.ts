@@ -4,6 +4,10 @@ import { HttpStatus } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import {
+  ChecktokenRequestDto,
+  InvalidChecktokenRequestException,
+} from '@fc/core';
+import {
   DataProviderAdapterMongoService,
   DataProviderMetadata,
 } from '@fc/data-provider-adapter-mongo';
@@ -15,8 +19,6 @@ import { TrackingService } from '@fc/tracking';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { ChecktokenRequestDto } from '../dto';
-import { InvalidChecktokenRequestException } from '../exceptions';
 import { DataProviderService } from '../services';
 import { DataProviderController } from './data-provider.controller';
 

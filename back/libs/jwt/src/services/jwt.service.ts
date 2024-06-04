@@ -119,13 +119,14 @@ export class JwtService {
     jwk: JWK,
   ): Promise<string> {
     const key = await this.importJwk(jwk);
-    const { alg } = jwk;
+    const { alg, kid } = jwk;
 
     let jwt: string;
+    const protectedHeader = kid ? { alg, kid } : { alg };
 
     try {
       jwt = await new SignJWT(payload)
-        .setProtectedHeader({ alg })
+        .setProtectedHeader(protectedHeader)
         .setIssuedAt()
         .setIssuer(issuer)
         .setAudience(audience)

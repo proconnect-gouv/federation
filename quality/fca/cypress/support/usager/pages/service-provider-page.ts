@@ -176,4 +176,21 @@ export default class ServiceProviderPage {
       );
     });
   }
+
+  getMockIntrospectionTokenText(): Cypress.Chainable<string> {
+    return cy.get('#json').first().invoke('text');
+  }
+
+  getRevokeTokenButton(): ChainableElement {
+    return cy.get('#revoke-token');
+  }
+
+  getDataButton(): ChainableElement {
+    return cy.get('[data-testid="get-data-link"]');
+  }
+
+  checkIsMockDataPageVisible(): void {
+    const dataPageURL = `${this.originUrl}/data`;
+    cy.url().should('include', dataPageURL);
+  }
 }

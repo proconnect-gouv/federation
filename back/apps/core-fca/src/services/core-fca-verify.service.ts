@@ -74,8 +74,6 @@ export class CoreFcaVerifyService {
     const redirectUrl = new URL(spRedirectUri);
     const errorParams = new URLSearchParams({
       error: 'login_required',
-      // oidc parameter
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       error_description: 'End-User authentication is required',
     });
     redirectUrl.search = errorParams.toString();

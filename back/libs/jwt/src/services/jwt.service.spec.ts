@@ -352,6 +352,34 @@ describe('JwtService', () => {
       expect(signJWTInstance.sign).toHaveBeenCalledWith(key);
     });
 
+    it('should instantiate SignJWT and call setProtectedHeader with a kid, setIssuedAt, setIssuer and sign', async () => {
+      // Given
+      const kidExpectedValue = 'NewKidValue12345';
+      const jwkWithKid = {
+        kid: kidExpectedValue,
+        ...jwk,
+      };
+
+      // When
+      await service.sign(payload, issuer, audience, jwkWithKid);
+
+      // Then
+      expect(signJWTInstance.setProtectedHeader).toHaveBeenCalledTimes(1);
+      expect(signJWTInstance.setProtectedHeader).toHaveBeenCalledWith({
+        alg: 'RS256',
+        kid: kidExpectedValue,
+      });
+
+      expect(signJWTInstance.setIssuedAt).toHaveBeenCalledTimes(1);
+      expect(signJWTInstance.setIssuedAt).toHaveBeenCalledWith();
+
+      expect(signJWTInstance.setIssuer).toHaveBeenCalledTimes(1);
+      expect(signJWTInstance.setIssuer).toHaveBeenCalledWith(issuer);
+
+      expect(signJWTInstance.sign).toHaveBeenCalledTimes(1);
+      expect(signJWTInstance.sign).toHaveBeenCalledWith(key);
+    });
+
     it('should throw CanNotSignJwtException if signJWT.sign() throws', async () => {
       // Given
       const error = new Error('foo');

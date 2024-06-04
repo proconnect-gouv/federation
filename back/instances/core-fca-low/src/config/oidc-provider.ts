@@ -88,6 +88,7 @@ export default {
       idp_acr: ['idp_acr'],
       // MonComptePro claims naming convention
       is_service_public: ['is_service_public'],
+      groups: ['groups'],
     },
     clientDefaults: {
       grant_types: ['authorization_code'],

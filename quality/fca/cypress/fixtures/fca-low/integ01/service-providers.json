@@ -5,6 +5,7 @@
       "par défaut",
       "avec accès au FI par défaut (premier FS)"
     ],
+    "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
     "mocked": true,
     "url": "https://fsa1v2.integ01.dev-agentconnect.fr",
     "acrValue": "eidas1",
