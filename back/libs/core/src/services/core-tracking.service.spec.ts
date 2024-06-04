@@ -314,8 +314,9 @@ describe('CoreTrackingService', () => {
       // When
       service['getDataFromSession'](sessionIdMock);
       // Then
-      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.get).toHaveBeenCalledWith('OidcClient');
+      expect(sessionServiceMock.get).toHaveBeenCalledTimes(2);
+      expect(sessionServiceMock.get).toHaveBeenNthCalledWith(1, 'OidcClient');
+      expect(sessionServiceMock.get).toHaveBeenNthCalledWith(2, 'Device');
     });
 
     it('should return a default object with only sessionId, if session is not found', () => {
@@ -338,7 +339,9 @@ describe('CoreTrackingService', () => {
         idpLabel: null,
         idpSub: null,
       };
-      sessionServiceMock.get.mockReturnValueOnce(null);
+      sessionServiceMock.get
+        .mockReturnValueOnce(null)
+        .mockReturnValueOnce(null);
 
       // When
       const result = service['getDataFromSession'](sessionIdMock);

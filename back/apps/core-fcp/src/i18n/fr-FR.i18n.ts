@@ -51,6 +51,9 @@ export const frFR: I18nTranslationsMapType = {
   'consent.data_fetched_from': 'Informations récupérées depuis {dpName}',
   'consent.no_personal_data_transmitted':
     'Aucune donnée personnelle ne sera transmise',
+  'consent.information_block_title': 'Les notifications de connexion évoluent',
+  'consent.information_block_content':
+    'FranceConnect ne vous enverra plus systématiquement une notification à chacune de vos connexions. Une notification vous sera envoyée uniquement lorsqu’une connexion inhabituelle est détectée.',
 
   // Errors
   'error.page_title': 'Connexion - Erreur - {platform}',

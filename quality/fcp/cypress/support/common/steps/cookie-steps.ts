@@ -81,6 +81,13 @@ Given('je supprime les cookies FranceConnect', function () {
   cy.clearCookies({ domain });
 });
 
+Given('je supprime les cookies du FS Mock', function () {
+  const { url: spUrl } = this.serviceProvider;
+  const url = new URL(spUrl);
+  const domain = url.hostname;
+  cy.clearCookie('sp_session_id', { domain });
+});
+
 Given('je supprime tous les cookies', function () {
   cy.clearAllCookies();
 });

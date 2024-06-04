@@ -18,6 +18,7 @@ import {
   Interaction,
 } from '@fc/core';
 import { CsrfToken } from '@fc/csrf';
+import { DeviceSession } from '@fc/device';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -32,7 +33,6 @@ import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import {
   AppConfig,
-  AppSession,
   CoreConfig,
   GetConsentOidcClientSessionDto,
   GetInteractionOidcClientSessionDto,
@@ -85,8 +85,8 @@ export class CoreFcpController {
      */
     @Session('OidcClient', GetInteractionOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
-    @Session('App')
-    sessionApp: ISessionService<AppSession>,
+    @Session('Device')
+    sessionDevice: ISessionService<DeviceSession>,
     @CsrfToken() csrfToken: string,
   ) {
     const { spName, stepRoute, idpLabel = null } = sessionOidc.get();
@@ -120,7 +120,7 @@ export class CoreFcpController {
       idpList: idpFilterList,
     });
 
-    const isSuspicious = sessionApp.get('isSuspicious');
+    const isSuspicious = sessionDevice.get('isSuspicious');
 
     const authorizedProviders = providers.map((provider) => {
       const isAcrValid = this.oidcAcr.isAcrValid(
@@ -198,8 +198,8 @@ export class CoreFcpController {
      */
     @Session('OidcClient', GetVerifyOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
-    @Session('App')
-    sessionApp: ISessionService<AppSession>,
+    @Session('Device')
+    sessionDevice: ISessionService<DeviceSession>,
   ) {
     const { idpId, idpAcr, interactionId, spId } = sessionOidc.get();
 
@@ -222,7 +222,7 @@ export class CoreFcpController {
       return res.redirect(url);
     }
 
-    const isSuspicious = sessionApp.get('isSuspicious');
+    const isSuspicious = sessionDevice.get('isSuspicious');
     const isInsufficientAcrLevel = this.coreFcp.isInsufficientAcrLevel(
       idpAcr,
       isSuspicious,

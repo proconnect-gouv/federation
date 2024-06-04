@@ -6,8 +6,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CORE_SERVICE } from '@fc/core';
+import { DeviceService } from '@fc/device';
 import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
+import { stringToArray } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcCtx,
@@ -33,6 +35,10 @@ jest.mock('uuid');
 jest.mock('@fc/common', () => ({
   ...jest.requireActual('@fc/common'),
   validateDto: jest.fn(),
+}));
+
+jest.mock('@fc/oidc', () => ({
+  ...jest.requireActual('@fc/oidc'),
   stringToArray: jest.fn(),
 }));
 
@@ -40,6 +46,7 @@ describe('CoreFcpMiddlewareService', () => {
   let service: CoreFcpMiddlewareService;
 
   const uuidMock = jest.mocked(uuid);
+  const stringToArrayMock = jest.mocked(stringToArray);
 
   const loggerServiceMock = getLoggerMock();
 
@@ -97,6 +104,11 @@ describe('CoreFcpMiddlewareService', () => {
   const coreFcpServiceMock = {};
 
   const FlowStepsServiceMock = {};
+
+  const deviceServiceMock = {
+    initSession: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
     jest.resetAllMocks();
@@ -117,6 +129,7 @@ describe('CoreFcpMiddlewareService', () => {
           useValue: coreFcpServiceMock,
         },
         FlowStepsService,
+        DeviceService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -137,6 +150,8 @@ describe('CoreFcpMiddlewareService', () => {
       .useValue(oidcAcrServiceMock)
       .overrideProvider(FlowStepsService)
       .useValue(FlowStepsServiceMock)
+      .overrideProvider(DeviceService)
+      .useValue(deviceServiceMock)
       .compile();
 
     service = module.get<CoreFcpMiddlewareService>(CoreFcpMiddlewareService);
@@ -271,10 +286,9 @@ describe('CoreFcpMiddlewareService', () => {
       expect(service['renewSession']).toHaveBeenCalledWith(ctxMock, spAcrMock);
     });
 
-    it('should call session.set() two times', async () => {
+    it('should call device.initSession()', async () => {
       // Given
       const ctxMock = getCtxMock();
-
       service['buildSessionWithNewInteraction'] = jest
         .fn()
         .mockReturnValueOnce(sessionPropertiesMock);
@@ -284,7 +298,35 @@ describe('CoreFcpMiddlewareService', () => {
       await service['afterAuthorizeMiddleware'](ctxMock);
 
       // Then
-      expect(sessionServiceMock.set).toHaveBeenCalledTimes(2);
+      expect(deviceServiceMock.initSession).toHaveBeenCalledExactlyOnceWith(
+        ctxMock.req,
+      );
+    });
+
+    it('should call session.set()', async () => {
+      // Given
+      const ctxMock = getCtxMock();
+      stringToArrayMock.mockReturnValueOnce(spScopeMock);
+
+      service['buildSessionWithNewInteraction'] = jest
+        .fn()
+        .mockReturnValueOnce(sessionPropertiesMock);
+      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
+      service['getBrowsingSessionId'] = jest
+        .fn()
+        .mockReturnValueOnce(browsingSessionId);
+      // When
+      await service['afterAuthorizeMiddleware'](ctxMock);
+
+      // Then
+      expect(sessionServiceMock.set).toHaveBeenCalledExactlyOnceWith(
+        'OidcClient',
+        {
+          ...sessionPropertiesMock,
+          spScope: spScopeMock,
+          browsingSessionId,
+        },
+      );
     });
 
     it('should call session.commit() one time', async () => {
@@ -303,25 +345,6 @@ describe('CoreFcpMiddlewareService', () => {
       expect(sessionServiceMock.commit).toHaveBeenCalledTimes(1);
     });
 
-    it('should set suspicious request status in AppSession', async () => {
-      // Given
-      const ctxMock = getCtxMock();
-      service['buildSessionWithNewInteraction'] = jest
-        .fn()
-        .mockReturnValueOnce(sessionPropertiesMock);
-      service['getEventContext'] = jest.fn().mockReturnValueOnce(eventCtxMock);
-
-      // When
-      await service['afterAuthorizeMiddleware'](ctxMock);
-
-      // Then
-      expect(sessionServiceMock.set).toHaveBeenCalledWith(
-        'App',
-        'isSuspicious',
-        false,
-      );
-    });
-
     it('should set interaction status in OidcClientSession', async () => {
       // Given
       const ctxMock = getCtxMock();
@@ -332,6 +355,7 @@ describe('CoreFcpMiddlewareService', () => {
       service['getBrowsingSessionId'] = jest
         .fn()
         .mockReturnValueOnce(browsingSessionId);
+      stringToArrayMock.mockReturnValueOnce(spScopeMock);
 
       // When
       await service['afterAuthorizeMiddleware'](ctxMock);

@@ -110,6 +110,12 @@
 | CryptographyBroker_QUEUE | string |
 | CryptographyBroker_URLS | json |
 | Cryptography_CRYPTO_SUB_SECRET | string |
+| Device_COOKIE_DOMAIN | string |
+| Device_COOKIE_NAME | string |
+| Device_IDENTITY_HMAC_DAILY_TTL | number |
+| Device_IDENTITY_HMAC_SECRET | json |
+| Device_MAX_IDENTITY_NUMBER | number |
+| Device_MAX_IDENTITY_TRUSTED | number |
 | FQDN | string |
 | GLOBAL_AGENT_HTTPS_PROXY | string |
 | LoggerLegacy_FILE | string |
@@ -179,6 +185,12 @@
 | Core_ALLOWED_IDP_HINTS | json |
 | Core_SUPPORT_FORM_URL | string |
 | Cryptography_SUB_SECRET | string |
+| Device_COOKIE_DOMAIN | string |
+| Device_COOKIE_NAME | string |
+| Device_IDENTITY_HMAC_DAILY_TTL | number |
+| Device_IDENTITY_HMAC_SECRET | json |
+| Device_MAX_IDENTITY_NUMBER | number |
+| Device_MAX_IDENTITY_TRUSTED | number |
 | FQDN | string |
 | GLOBAL_AGENT_HTTPS_PROXY | string |
 | LoggerLegacy_FILE | string |

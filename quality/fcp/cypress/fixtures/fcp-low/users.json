@@ -3,7 +3,8 @@
     "enabled": true,
     "criteria": [
       "par défaut",
-      "avec un prénom"
+      "avec un prénom",
+      "première identité"
     ],
     "credentials": [
       {
@@ -26,7 +27,8 @@
   {
     "enabled": true,
     "criteria": [
-      "né en Corse"
+      "né en Corse",
+      "deuxième identité"
     ],
     "credentials": [
       {
@@ -94,7 +96,8 @@
   {
     "enabled": true,
     "criteria": [
-      "né en Algérie"
+      "né en Algérie",
+      "troisième identité"
     ],
     "credentials": [
       {
@@ -115,7 +118,8 @@
   {
     "enabled": true,
     "criteria": [
-      "avec des caractères spéciaux"
+      "avec des caractères spéciaux",
+      "quatrième identité"
     ],
     "credentials": [
       {
