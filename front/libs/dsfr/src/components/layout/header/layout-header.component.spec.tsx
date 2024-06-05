@@ -1,4 +1,5 @@
-import { render } from '@testing-library/react';
+import { fireEvent, render } from '@testing-library/react';
+import { useToggle } from 'usehooks-ts';
 
 import type { AccountInterface } from '@fc/account';
 import { AccountContext } from '@fc/account';
@@ -68,6 +69,52 @@ describe('LayoutHeaderComponent', () => {
     expect(container).toMatchSnapshot();
   });
 
+  it('should call toggle wrapped when calling onOpen on LayoutHeaderMobileBurgerButton', () => {
+    // given
+    const accountMock = { ...accountContextMock, connected: true, ready: true };
+    const toggleFunctionMock = jest.fn();
+    jest
+      .mocked(useToggle)
+      .mockReturnValueOnce([expect.any(Boolean), toggleFunctionMock, expect.any(Function)]);
+
+    // when
+    const { getByTestId } = render(
+      <AccountContext.Provider value={accountMock}>
+        <LayoutHeaderComponent />
+      </AccountContext.Provider>,
+    );
+    // @NOTE we are using LayoutHeaderMobileBurgerButton toggle button mock
+    // to simulate a click event and calling the useCallback function
+    const button = getByTestId('LayoutHeaderMobileBurgerButton-button-mock');
+    fireEvent.click(button);
+
+    // then
+    expect(toggleFunctionMock).toHaveBeenCalledOnce();
+  });
+
+  it('should call toggle wrapped when calling onClose on LayoutHeaderMenuComponent', () => {
+    // given
+    const accountMock = { ...accountContextMock, connected: true, ready: true };
+    const toggleFunctionMock = jest.fn();
+    jest
+      .mocked(useToggle)
+      .mockReturnValueOnce([expect.any(Boolean), toggleFunctionMock, expect.any(Function)]);
+
+    // when
+    const { getByTestId } = render(
+      <AccountContext.Provider value={accountMock}>
+        <LayoutHeaderComponent />
+      </AccountContext.Provider>,
+    );
+    // @NOTE we are using LayoutHeaderMobileBurgerButton toggle button mock
+    // to simulate a click event and calling the useCallback function
+    const button = getByTestId('LayoutHeaderMenuComponent-button-mock');
+    fireEvent.click(button);
+
+    // then
+    expect(toggleFunctionMock).toHaveBeenCalledOnce();
+  });
+
   it('should match the snapshot, when user is connected', () => {
     // given
     const accountMock = { ...accountContextMock, connected: true, ready: true };
@@ -99,6 +146,11 @@ describe('LayoutHeaderComponent', () => {
     // given
     const accountMock = { ...accountContextMock, connected: true, ready: true };
 
+    const toggleValueMock = true;
+    jest
+      .mocked(useToggle)
+      .mockReturnValueOnce([toggleValueMock, expect.any(Function), expect.any(Function)]);
+
     // when
     render(
       <AccountContext.Provider value={accountMock}>
@@ -109,7 +161,7 @@ describe('LayoutHeaderComponent', () => {
     // then
     expect(LayoutHeaderMobileBurgerButton).toHaveBeenCalledOnce();
     expect(LayoutHeaderMobileBurgerButton).toHaveBeenCalledWith(
-      { onOpen: expect.any(Function), opened: false },
+      { onOpen: expect.any(Function), opened: toggleValueMock },
       {},
     );
   });
@@ -144,6 +196,11 @@ describe('LayoutHeaderComponent', () => {
     jest.mocked(useStylesQuery).mockReturnValue(false);
     const accountMock = { ...accountContextMock, connected: true, ready: true };
 
+    const toggleValueMock = true;
+    jest
+      .mocked(useToggle)
+      .mockReturnValueOnce([toggleValueMock, expect.any(Function), expect.any(Function)]);
+
     // when
     render(
       <AccountContext.Provider value={accountMock}>
@@ -160,7 +217,7 @@ describe('LayoutHeaderComponent', () => {
         lastname: expect.any(String),
         navigationItems: navigationItemsMock,
         onClose: expect.any(Function),
-        opened: false,
+        opened: toggleValueMock,
       },
       {},
     );

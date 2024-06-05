@@ -1,5 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 import { DateTime } from 'luxon';
+import { useToggle } from 'usehooks-ts';
 
 import type { CinematicEvents, EidasToLabel } from '../../enums';
 import type { EnhancedTrack, IRichClaim } from '../../interfaces';
@@ -56,6 +57,11 @@ describe('TrackCardComponent', () => {
   };
 
   describe('Initial component render', () => {
+    beforeEach(() => {
+      // given
+      jest.mocked(useToggle).mockReturnValue([false, jest.fn(), jest.fn()]);
+    });
+
     it('should match snapshot, with default props', () => {
       // when
       const { container } = render(<TrackCardComponent options={options} track={track} />);
@@ -162,33 +168,56 @@ describe('TrackCardComponent', () => {
     });
   });
 
-  it('When user clicks the button, should toggle the card content (expand)', () => {
+  it('should call useToggle hook with default prop', () => {
     // given
-    const { getByTestId } = render(<TrackCardComponent options={options} track={track} />);
+    const useToggleMock = jest.mocked(useToggle);
 
     // when
+    render(<TrackCardComponent options={options} track={track} />);
+
+    // then
+    expect(useToggleMock).toHaveBeenCalledOnce();
+    expect(useToggleMock).toHaveBeenCalledWith(false);
+  });
+
+  it('should call toggleOpened on each button click', () => {
+    // given
+    const toggleMock = jest.fn();
+    jest.mocked(useToggle).mockReturnValue([false, toggleMock, jest.fn()]);
+
+    // when
+    const { getByTestId } = render(<TrackCardComponent options={options} track={track} />);
     const element = getByTestId(`${track.platform}-${track.trackId}`);
 
     // then
     fireEvent.click(element);
-    expect(element.getAttribute('aria-expanded')).toBe('true');
-    expect(TrackCardHeaderComponent).toHaveBeenCalledWith(
-      expect.objectContaining({ opened: true }),
-      {},
-    );
-    expect(TrackCardContentComponent).toHaveBeenCalledWith(
-      expect.objectContaining({ opened: true }),
-      {},
-    );
-
     fireEvent.click(element);
-    expect(element.getAttribute('aria-expanded')).toBe('false');
+    fireEvent.click(element);
+    expect(toggleMock).toHaveBeenCalledTimes(3);
+  });
+
+  it('should set useToggle hook value on each card content component', () => {
+    // given
+    jest
+      .mocked(useToggle)
+      .mockReturnValue([
+        'initial_usetoggle_value_mock' as unknown as boolean,
+        jest.fn(),
+        jest.fn(),
+      ]);
+
+    // when
+    const { getByTestId } = render(<TrackCardComponent options={options} track={track} />);
+    const element = getByTestId(`${track.platform}-${track.trackId}`);
+
+    // then
+    expect(element.getAttribute('aria-expanded')).toBe('initial_usetoggle_value_mock');
     expect(TrackCardHeaderComponent).toHaveBeenCalledWith(
-      expect.objectContaining({ opened: false }),
+      expect.objectContaining({ opened: 'initial_usetoggle_value_mock' }),
       {},
     );
     expect(TrackCardContentComponent).toHaveBeenCalledWith(
-      expect.objectContaining({ opened: false }),
+      expect.objectContaining({ opened: 'initial_usetoggle_value_mock' }),
       {},
     );
   });
