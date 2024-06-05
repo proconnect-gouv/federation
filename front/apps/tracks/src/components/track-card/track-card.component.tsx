@@ -1,5 +1,6 @@
 import classnames from 'classnames';
-import React, { useCallback, useState } from 'react';
+import React from 'react';
+import { useToggle } from 'usehooks-ts';
 
 import type { EnhancedTrack, TracksConfig } from '../../interfaces';
 import { TrackCardBadgeComponent } from './card-badge.component';
@@ -14,12 +15,7 @@ interface TrackCardProps {
 }
 
 export const TrackCardComponent = React.memo(({ options, track }: TrackCardProps) => {
-  const [opened, setOpened] = useState(false);
-
-  const openCardHandler = useCallback(() => {
-    const next = !opened;
-    setOpened(next);
-  }, [opened]);
+  const [opened, toggleOpened] = useToggle(false);
 
   const {
     city,
@@ -57,7 +53,7 @@ export const TrackCardComponent = React.memo(({ options, track }: TrackCardProps
       data-testid={dataTestId}
       data-time={datetime}
       type="button"
-      onClick={openCardHandler}>
+      onClick={toggleOpened}>
       <TrackCardBadgeComponent fromFcPlus={isFromFranceConnectPlus} type={eventType} />
       <TrackCardHeaderComponent
         datetime={datetime}

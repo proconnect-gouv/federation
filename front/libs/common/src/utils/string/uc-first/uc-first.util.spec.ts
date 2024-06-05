@@ -1,4 +1,4 @@
-import { ucfirst } from './ucfirst';
+import { ucfirst } from './uc-first.util';
 
 describe('ucfirst', () => {
   it('should return first letter uppercase, others unchanged (all caps)', () => {

@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from 'react';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import type { AccountConfig, AccountInterface } from '../interfaces';
 import { AccountService } from '../services';
@@ -10,8 +10,6 @@ interface AccountProviderProps extends Required<PropsWithChildren> {
 }
 
 export const AccountProvider = ({ children, config }: AccountProviderProps) => {
-  const isMounted = useRef(false);
-
   const [state, setState] = useState<AccountInterface>({
     connected: false,
     ready: false,
@@ -31,11 +29,10 @@ export const AccountProvider = ({ children, config }: AccountProviderProps) => {
   );
 
   useEffect(() => {
-    if (!isMounted.current) {
-      isMounted.current = true;
-      AccountService.fetchData(config.endpoints.me, updateAccount);
-    }
-  }, [config.endpoints.me, updateAccount]);
+    AccountService.fetchData(config.endpoints.me, updateAccount);
+    // @NOTE should be called only once
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <AccountContext.Provider value={{ ...state, updateAccount }}>

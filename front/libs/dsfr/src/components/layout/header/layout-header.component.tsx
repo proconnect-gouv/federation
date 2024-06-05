@@ -1,5 +1,6 @@
 import classnames from 'classnames';
-import React, { useCallback, useContext, useState } from 'react';
+import React, { useContext } from 'react';
+import { useToggle } from 'usehooks-ts';
 
 import type { AccountInterface } from '@fc/account';
 import { AccountContext } from '@fc/account';
@@ -19,7 +20,7 @@ import { LayoutHeaderServiceComponent } from './service/layout-header-service.co
 import { LayoutHeaderToolsComponent } from './tools';
 
 export const LayoutHeaderComponent = React.memo(() => {
-  const [mobileMenuOpened, setMobileMenuOpened] = useState(false);
+  const [mobileMenuOpened, toggleMobileMenuOpened] = useToggle(false);
 
   const layoutConfig = ConfigService.get<LayoutConfig>(LayoutOptions.CONFIG_NAME);
   const { footerLinkTitle, logo, navigationItems, service } = layoutConfig;
@@ -39,14 +40,6 @@ export const LayoutHeaderComponent = React.memo(() => {
 
   const ltDesktop = useStylesQuery({ maxWidth: breakpointLg });
 
-  /* @NOTE can not be mocked without a native re-implementation */
-  /* istanbul ignore next */
-  const toggleMobileMenu = useCallback(() => {
-    /* @NOTE can not be mocked without a native re-implementation */
-    /* istanbul ignore next */
-    setMobileMenuOpened((prev: boolean) => !prev);
-  }, []);
-
   return (
     <React.Fragment>
       <header className={classnames(styles.banner, 'fr-header')} role="banner">
@@ -61,7 +54,9 @@ export const LayoutHeaderComponent = React.memo(() => {
                     // used to show/hide Mobile modal menu
                     <LayoutHeaderMobileBurgerButton
                       opened={mobileMenuOpened}
-                      onOpen={toggleMobileMenu}
+                      onOpen={() => {
+                        toggleMobileMenuOpened();
+                      }}
                     />
                   )}
                 </div>
@@ -91,7 +86,9 @@ export const LayoutHeaderComponent = React.memo(() => {
             lastname={lastname}
             navigationItems={navigationItems}
             opened={mobileMenuOpened}
-            onClose={toggleMobileMenu}
+            onClose={() => {
+              toggleMobileMenuOpened();
+            }}
           />
         )}
       </header>

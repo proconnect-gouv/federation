@@ -1,4 +1,4 @@
 /* istanbul ignore file */
 
 // declarative file
-export * from './ucfirst';
+export * from './sort-by-key.util';
