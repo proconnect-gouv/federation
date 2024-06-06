@@ -10,7 +10,7 @@ Then(
         const match = url.match(
           /^https:\/\/.*\/oidc-callback([?#])error=([^&]+)&error_description=([^&]+)&state=[^&]+&iss=[^&]+$/,
         );
-        expect(match.length).to.equal(4);
+        expect(match?.length).to.equal(4);
       });
   },
 );
