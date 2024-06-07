@@ -283,7 +283,9 @@
       "^@mocks/i18n(|/.*)$": "<rootDir>/libs/i18n/.mocks$1",
       "^@fc/account-fca(|/.*)$": "<rootDir>/libs/account-fca/src/$1",
       "^@fc/partners(|/.*)$": "<rootDir>/apps/partners/src/$1",
-      "^@fc/device(|/.*)$": "<rootDir>/libs/device/src/$1"
+      "^@fc/device(|/.*)$": "<rootDir>/libs/device/src/$1",
+      "^@fc/dto2form(|/.*)$": "<rootDir>/libs/dto2form/src/$1",
+      "^@mocks/dto2form(|/.*)$": "<rootDir>/libs/dto2form/.mocks/$1"
     },
     "preset": "ts-jest"
   }

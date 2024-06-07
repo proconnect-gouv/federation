@@ -210,7 +210,11 @@
       "@fc/partners": ["apps/partners/src"],
       "@fc/partners/*": ["apps/partners/src/*"],
       "@fc/device": ["libs/device/src"],
-      "@fc/device/*": ["libs/device/src/*"]
+      "@fc/device/*": ["libs/device/src/*"],
+      "@fc/dto2form": ["libs/dto2form/src"],
+      "@fc/dto2form/*": ["libs/dto2form/src/*"],
+      "@mocks/dto2form": ["libs/dto2form/.mocks"],
+      "@mocks/dto2form/*": ["libs/dto2form/.mocks/*"]
     }
   },
   "files": ["global.d.ts"],
