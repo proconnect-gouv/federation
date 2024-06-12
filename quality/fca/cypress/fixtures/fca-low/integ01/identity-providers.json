@@ -9,7 +9,7 @@
       "non autorisé pour idp_hint"
     ],
     "ministry": "Démonstration",
-    "title": "Identity Provider 1 - HS256",
+    "title": "MonComptePro Identity Provider",
     "mocked": true,
     "usable": true,
     "url": "https://app-sandbox.moncomptepro.beta.gouv.fr",
