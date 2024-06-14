@@ -1,4 +1,4 @@
-import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 import IdentityProviderPage from '../pages/identity-provider-page';
 
@@ -50,3 +50,19 @@ When("je saisi manuellement l'identité de l'utilisateur", function () {
 Then('le champ identifiant correspond à {string}', function (login: string) {
   identityProviderPage.getLogin().invoke('val').should('be.equal', login);
 });
+
+Given(
+  'je paramètre un intercepteur pour retirer le paramètre {string} au prochain appel authorize à AgentConnect',
+  function (param: string) {
+    const { fcaRootUrl } = this.env;
+    cy.intercept(`${fcaRootUrl}/api/v2/authorize*`, (req) => {
+      if (req.method === 'GET') {
+        delete req.query[param];
+        return;
+      }
+      const searchParams = new URLSearchParams(req.body);
+      searchParams.delete(param);
+      req.body = searchParams.toString();
+    }).as('AC:AuthorizeRemoveParam');
+  },
+);
