@@ -81,3 +81,12 @@ Fonctionnalité: API - authorize
       | none          | login_required   | End-User authentication is required              |
       | none login    | invalid_request  | prompt none must only be used alone              |
       | none consent  | invalid_request  | prompt none must only be used alone              |
+
+  Scénario: API authorize - Cas nominal sans nonce
+    Etant donné que je prépare une requête "authorize"
+    Et je retire le paramètre "nonce" de la requête
+    Quand je lance la requête
+    Alors le statut de la réponse est 200
+    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
+    Et le corps de la réponse contient une page web
+    Et je suis redirigé vers la page interaction

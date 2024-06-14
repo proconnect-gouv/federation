@@ -33,6 +33,7 @@ export class AuthorizeParamsDto {
   @IsString()
   readonly response_type: string;
 
+  @IsOptional()
   @IsString()
   @IsAscii({ message: 'Le nonce doit être composé de caractères ASCII' })
   @Length(1, 512)

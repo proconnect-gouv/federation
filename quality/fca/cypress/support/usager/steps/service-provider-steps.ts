@@ -166,3 +166,27 @@ Then(
       });
   },
 );
+
+Given(
+  "je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service",
+  function () {
+    const { url } = this.serviceProvider;
+    cy.intercept(`${url}/oidc-callback*`, (req) => {
+      req.reply({
+        body: '<h1>Intercepted request</h1>',
+      });
+    }).as('FS:OidcCallback');
+  },
+);
+
+Given(
+  'je mets le code renvoyé par AC au FS dans la propriété "code" du corps de la requête',
+  function () {
+    cy.wait('@FS:OidcCallback')
+      .its('request.query.code')
+      .should('exist')
+      .then((value: string) => {
+        this.apiRequest.body['code'] = value;
+      });
+  },
+);
