@@ -5,7 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { IOidcIdentity } from '@fc/oidc';
 import { SessionService } from '@fc/session';
 
-import { DeviceSession } from '../dto';
+import { DeviceCookieDto, DeviceSession } from '../dto';
 import { DeviceInformationInterface } from '../interfaces';
 import { DeviceCookieService } from './device-cookie.service';
 import { DeviceEntriesService } from './device-entries.service';
@@ -29,7 +29,7 @@ export class DeviceService {
     res: Response,
     identity: Partial<Omit<IOidcIdentity, 'sub'>>,
   ): Promise<DeviceInformationInterface> {
-    const { s: deviceSalt, e: oldEntries } = await this.cookie.get(req);
+    const { s: deviceSalt, e: oldEntries } = await this.getDeviceCookie(req);
 
     // Compute new informations
     const entry = this.entries.generate(identity, deviceSalt, oldEntries);
@@ -38,9 +38,14 @@ export class DeviceService {
     // Extract modification informations
     const report = this.infos.extract(entry, oldEntries, newEntries);
 
-    // Update persisted informations
-    const { isTrusted, accountCount } = report;
-    this.session.set('Device', { isTrusted, accountCount });
+    // Update persisted information
+    const { accountCount, isSuspicious, isTrusted } = report;
+    const deviceSession: DeviceSession = {
+      accountCount,
+      isSuspicious,
+      isTrusted,
+    };
+    this.session.set('Device', deviceSession);
     this.cookie.set(res, { s: deviceSalt, e: newEntries });
 
     return report;
@@ -49,14 +54,27 @@ export class DeviceService {
   async initSession(req: Request) {
     const isSuspicious = this.headerFlags.isSuspicious(req);
 
-    const deviceInfos = await this.cookie.get(req);
-    const isTrusted = this.infos.isTrusted(deviceInfos.e);
+    const { e: oldEntries } = await this.getDeviceCookie(req);
+
+    const accountCount = oldEntries.length;
+    const isTrusted = this.infos.isTrusted(oldEntries);
 
     const deviceSession: DeviceSession = {
-      isTrusted,
+      accountCount,
       isSuspicious,
+      isTrusted,
     };
 
     this.session.set('Device', deviceSession);
+  }
+
+  private async getDeviceCookie(req: Request): Promise<DeviceCookieDto> {
+    const { s, e: oldEntries } = await this.cookie.get(req);
+    const validEntries = this.entries.filterValidEntries(oldEntries);
+    const deviceCookie = {
+      s,
+      e: validEntries,
+    };
+    return deviceCookie;
   }
 }

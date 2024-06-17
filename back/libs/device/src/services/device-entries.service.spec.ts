@@ -101,6 +101,34 @@ describe('DeviceEntriesService', () => {
     });
   });
 
+  describe('filterValidEntries', () => {
+    it('should remove expired entries', () => {
+      // Given
+      service['isNotExpired'] = jest
+        .fn()
+        .mockReturnValueOnce(true)
+        .mockReturnValueOnce(false);
+
+      const entries = [
+        {
+          h: 'hash1',
+          d: 123,
+        },
+        {
+          h: 'hash2',
+          d: 456,
+        },
+      ];
+
+      // When
+      const result = service.filterValidEntries(entries);
+
+      // Then
+      expect(result.length).toBe(1);
+      expect(result).toEqual([entries[0]]);
+    });
+  });
+
   describe('push', () => {
     beforeEach(() => {
       service['isNotExpired'] = jest.fn().mockReturnValue(true);
@@ -168,37 +196,6 @@ describe('DeviceEntriesService', () => {
       // Then
       expect(result.length).toBe(2);
       expect(result).toEqual(entries);
-    });
-
-    it('should remove expired entries', () => {
-      // Given
-      service['isNotExpired'] = jest
-        .fn()
-        .mockReturnValueOnce(true)
-        .mockReturnValueOnce(false);
-
-      const entries = [
-        {
-          h: 'hash1',
-          d: 123,
-        },
-        {
-          h: 'hash2',
-          d: 456,
-        },
-      ];
-
-      const entry = {
-        h: 'hash3',
-        d: 789,
-      };
-
-      // When
-      const result = service.push(entries, entry);
-
-      // Then
-      expect(result.length).toBe(2);
-      expect(result).toEqual([entries[0], entry]);
     });
 
     it('should keep only the last maxIdentityNumber entries', () => {

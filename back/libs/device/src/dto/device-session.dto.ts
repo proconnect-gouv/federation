@@ -2,14 +2,18 @@
 
 // Declarative file
 import { Expose } from 'class-transformer';
-import { IsBoolean } from 'class-validator';
+import { IsBoolean, IsNumber } from 'class-validator';
 
 export class DeviceSession {
-  @IsBoolean()
+  @IsNumber()
   @Expose()
-  readonly isTrusted: boolean;
+  readonly accountCount: number;
 
   @IsBoolean()
   @Expose()
   readonly isSuspicious: boolean;
+
+  @IsBoolean()
+  @Expose()
+  readonly isTrusted: boolean;
 }

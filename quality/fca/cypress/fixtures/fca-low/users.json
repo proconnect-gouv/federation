@@ -87,7 +87,7 @@
   },
   {
     "enabled": true,
-    "criteria": ["mulitple sub"],
+    "criteria": ["avec plusieurs identités"],
     "claims": {
       "uid": "43",
       "given_name": "mohamed",

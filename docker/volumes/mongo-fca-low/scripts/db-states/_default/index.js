@@ -8,11 +8,6 @@ load("/opt/scripts/db-states/_default/idp.js");
 
 /* ------------------------------------------------------------------------------- */
 
-print("Initializing ACCOUNTS...");
-load("/opt/scripts/db-states/_default/account.js");
-
-/* ------------------------------------------------------------------------------- */
-
 print("Initializing FCA ACCOUNTS...");
 load("/opt/scripts/db-states/_default/account-fca.js");
 

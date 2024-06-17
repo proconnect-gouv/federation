@@ -156,7 +156,7 @@ describe('CoreFcpService', () => {
   });
 
   describe('sendNotificationMail()', () => {
-    const deviceInfos = {
+    const deviceInfo = {
       isTrusted: true,
       isSuspicious: false,
     } as DeviceInformationInterface;
@@ -172,7 +172,7 @@ describe('CoreFcpService', () => {
       });
 
       // action
-      const result = service.sendNotificationMail(deviceInfos);
+      const result = service.sendNotificationMail(deviceInfo);
       await result;
       // expect
       expect(result).toBeInstanceOf(Promise);
@@ -185,7 +185,7 @@ describe('CoreFcpService', () => {
       });
 
       // When
-      await service.sendNotificationMail(deviceInfos);
+      await service.sendNotificationMail(deviceInfo);
       // Then
       expect(featureHandlerGetSpy).toBeCalledTimes(1);
       expect(featureHandlerGetSpy).toBeCalledWith(
@@ -200,7 +200,7 @@ describe('CoreFcpService', () => {
       sessionServiceMock.get.mockReset().mockReturnValue({ spId: spIdMock });
 
       // When
-      await service.sendNotificationMail(deviceInfos);
+      await service.sendNotificationMail(deviceInfo);
 
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledExactlyOnceWith(
@@ -218,7 +218,7 @@ describe('CoreFcpService', () => {
         .mockReturnValueOnce({ spId: spIdMock });
 
       // When
-      await service.sendNotificationMail(deviceInfos);
+      await service.sendNotificationMail(deviceInfo);
 
       // Then
       expect(sessionServiceMock.set).toHaveBeenCalledExactlyOnceWith(
@@ -235,7 +235,7 @@ describe('CoreFcpService', () => {
       });
 
       // When
-      await service.sendNotificationMail(deviceInfos);
+      await service.sendNotificationMail(deviceInfo);
 
       // Then
       expect(
@@ -251,7 +251,7 @@ describe('CoreFcpService', () => {
       });
 
       // When
-      await service.sendNotificationMail(deviceInfos);
+      await service.sendNotificationMail(deviceInfo);
 
       // Then
       expect(featureHandlerServiceMock.handle).toHaveBeenCalledOnce();
@@ -264,7 +264,7 @@ describe('CoreFcpService', () => {
         .mockReturnValueOnce(false);
 
       // When
-      await service.sendNotificationMail(deviceInfos);
+      await service.sendNotificationMail(deviceInfo);
 
       // Then
       expect(featureHandlerServiceMock.handle).not.toHaveBeenCalled();
@@ -275,7 +275,7 @@ describe('CoreFcpService', () => {
     // Given
 
     const spIdMock = 'spIdMockValue';
-    const deviceInfosMock = { isTrusted: false } as DeviceInformationInterface;
+    const deviceInfoMock = { isTrusted: false } as DeviceInformationInterface;
     const sentNotificationsForSpMock = ['foo'];
 
     beforeEach(() => {
@@ -290,7 +290,7 @@ describe('CoreFcpService', () => {
       // When
       const result = service['shouldSendNotificationMail'](
         spIdMock,
-        deviceInfosMock,
+        deviceInfoMock,
         sentNotificationsForSpMock,
       );
 
@@ -305,7 +305,7 @@ describe('CoreFcpService', () => {
       // When
       const result = service['shouldSendNotificationMail'](
         spIdMock,
-        deviceInfosMock,
+        deviceInfoMock,
         sentNotificationsForSpMock,
       );
 
@@ -327,14 +327,14 @@ describe('CoreFcpService', () => {
 
     it('should return true if NOT trusted, NOT alreadySent and NOT forcedByDevice', () => {
       // Given
-      const deviceInfosMock = {
+      const deviceInfoMock = {
         isTrusted: false,
       } as DeviceInformationInterface;
 
       // When
       const result = service['shouldSendNotificationMail'](
         spIdMock,
-        deviceInfosMock,
+        deviceInfoMock,
         sentNotificationsForSpMock,
       );
 
@@ -346,12 +346,12 @@ describe('CoreFcpService', () => {
   describe('isForcedByDevice()', () => {
     it('should return true if suspicious', () => {
       // Given
-      const deviceInfosMock = {
+      const deviceInfoMock = {
         isSuspicious: true,
       } as DeviceInformationInterface;
 
       // When
-      const result = service['isForcedByDevice'](deviceInfosMock);
+      const result = service['isForcedByDevice'](deviceInfoMock);
 
       // Then
       expect(result).toBeTrue();
@@ -359,12 +359,12 @@ describe('CoreFcpService', () => {
 
     it('should return true if newIdentity', () => {
       // Given
-      const deviceInfosMock = {
+      const deviceInfoMock = {
         newIdentity: true,
       } as DeviceInformationInterface;
 
       // When
-      const result = service['isForcedByDevice'](deviceInfosMock);
+      const result = service['isForcedByDevice'](deviceInfoMock);
 
       // Then
       expect(result).toBeTrue();
@@ -372,14 +372,14 @@ describe('CoreFcpService', () => {
 
     it('should return false if trusted, not suspicious and not newIdentity', () => {
       // Given
-      const deviceInfosMock = {
+      const deviceInfoMock = {
         isTrusted: true,
         isSuspicious: false,
         newIdentity: false,
       } as DeviceInformationInterface;
 
       // When
-      const result = service['isForcedByDevice'](deviceInfosMock);
+      const result = service['isForcedByDevice'](deviceInfoMock);
 
       // Then
       expect(result).toBeFalse();

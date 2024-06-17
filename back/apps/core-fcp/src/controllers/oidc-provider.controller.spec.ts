@@ -675,14 +675,14 @@ describe('OidcProviderController', () => {
   });
 
   describe('getLogin()', () => {
-    const deviceInfosMock = {
+    const deviceInfoMock = {
       isTrusted: false,
       isSuspicious: false,
       newIdentity: false,
     };
     beforeEach(() => {
       oidcProviderController['handleSessionLife'] = jest.fn();
-      deviceServiceMock.update.mockResolvedValue(deviceInfosMock);
+      deviceServiceMock.update.mockResolvedValue(deviceInfoMock);
       oidcProviderController['trackDatatransfer'] = jest.fn();
     });
 
@@ -692,7 +692,7 @@ describe('OidcProviderController', () => {
       oidcProviderServiceMock.getInteraction.mockResolvedValueOnce(
         interactionMock,
       );
-      deviceServiceMock.update.mockResolvedValueOnce(deviceInfosMock);
+      deviceServiceMock.update.mockResolvedValueOnce(deviceInfoMock);
 
       // When
       await oidcProviderController.getLogin(req, res, sessionServiceMock);
@@ -702,7 +702,7 @@ describe('OidcProviderController', () => {
         oidcProviderController['trackDatatransfer'],
       ).toHaveBeenCalledExactlyOnceWith(
         {
-          ...deviceInfosMock,
+          ...deviceInfoMock,
           req,
         },
         interactionMock,
@@ -732,7 +732,7 @@ describe('OidcProviderController', () => {
       // Then
       expect(
         coreServiceMock.sendNotificationMail,
-      ).toHaveBeenCalledExactlyOnceWith(deviceInfosMock);
+      ).toHaveBeenCalledExactlyOnceWith(deviceInfoMock);
     });
 
     it('should call handleSessionLife()', async () => {
