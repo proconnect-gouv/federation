@@ -25,6 +25,7 @@ describe('DeviceService', () => {
   };
 
   const entriesMock = {
+    filterValidEntries: jest.fn(),
     generate: jest.fn(),
     push: jest.fn(),
   };
@@ -84,21 +85,27 @@ describe('DeviceService', () => {
     const oldEntries = [];
     const newEntries = [];
     const entry = { h: 'hash', d: 123 };
-    const report = { isTrusted, accountCount };
+    const report = {
+      accountCount,
+      isSuspicious: sessionData.isSuspicious,
+      isTrusted,
+    };
 
     beforeEach(() => {
-      cookieMock.get.mockResolvedValue({ s: deviceSalt, e: oldEntries });
+      service['getDeviceCookie'] = jest
+        .fn()
+        .mockResolvedValue({ s: deviceSalt, e: oldEntries });
       entriesMock.generate.mockReturnValue(entry);
       entriesMock.push.mockReturnValue(newEntries);
       infosMock.extract.mockReturnValue(report);
     });
 
-    it('should fetch device informations', async () => {
+    it('should fetch device cookie', async () => {
       // When
       await service.update(req, res, identity);
 
       // Then
-      expect(cookieMock.get).toHaveBeenCalledWith(req);
+      expect(service['getDeviceCookie']).toHaveBeenCalledWith(req);
     });
 
     it('should generate new entry', async () => {
@@ -139,8 +146,9 @@ describe('DeviceService', () => {
 
       // Then
       expect(sessionMock.set).toHaveBeenCalledWith('Device', {
-        isTrusted,
         accountCount,
+        isSuspicious: sessionData.isSuspicious,
+        isTrusted,
       });
     });
 
@@ -167,7 +175,7 @@ describe('DeviceService', () => {
   describe('initSession', () => {
     const req = { headers: {} } as any;
 
-    const deviceInfos = {
+    const deviceCookie = {
       s: 'salt',
       e: [{}, {}],
     };
@@ -175,7 +183,7 @@ describe('DeviceService', () => {
     const isTrusted = true;
 
     beforeEach(() => {
-      cookieMock.get.mockResolvedValue(deviceInfos);
+      service['getDeviceCookie'] = jest.fn().mockResolvedValue(deviceCookie);
       infosMock.isTrusted.mockReturnValue(isTrusted);
       headerFlagsMock.isSuspicious.mockReturnValue(sessionData.isSuspicious);
     });
@@ -188,12 +196,12 @@ describe('DeviceService', () => {
       expect(headerFlagsMock.isSuspicious).toHaveBeenCalledWith(req);
     });
 
-    it('should fetch device informations', async () => {
+    it('should fetch device cookie', async () => {
       // When
       await service.initSession(req);
 
       // Then
-      expect(cookieMock.get).toHaveBeenCalledWith(req);
+      expect(service['getDeviceCookie']).toHaveBeenCalledWith(req);
     });
 
     it('should check if device is trusted', async () => {
@@ -201,7 +209,7 @@ describe('DeviceService', () => {
       await service.initSession(req);
 
       // Then
-      expect(infosMock.isTrusted).toHaveBeenCalledWith(deviceInfos.e);
+      expect(infosMock.isTrusted).toHaveBeenCalledWith(deviceCookie.e);
     });
 
     it('should set session', async () => {
@@ -210,9 +218,38 @@ describe('DeviceService', () => {
 
       // Then
       expect(sessionMock.set).toHaveBeenCalledWith('Device', {
-        isTrusted,
+        accountCount: deviceCookie.e.length,
         isSuspicious: sessionData.isSuspicious,
+        isTrusted,
       });
+    });
+  });
+
+  describe('getDeviceCookie', () => {
+    const req = { headers: {} } as any;
+    const deviceCookie = {
+      s: 'salt',
+      e: [{}, {}],
+    };
+    const filteredDeviceCookie = {
+      s: 'salt',
+      e: [{}],
+    };
+
+    it('should return device cookie with valid entries', async () => {
+      // Given
+      cookieMock.get.mockResolvedValue(deviceCookie);
+      entriesMock.filterValidEntries.mockReturnValue(filteredDeviceCookie.e);
+
+      // When
+      const result = await service['getDeviceCookie'](req);
+
+      // Then
+      expect(cookieMock.get).toHaveBeenCalledWith(req);
+      expect(entriesMock.filterValidEntries).toHaveBeenCalledWith(
+        deviceCookie.e,
+      );
+      expect(result).toEqual(filteredDeviceCookie);
     });
   });
 });

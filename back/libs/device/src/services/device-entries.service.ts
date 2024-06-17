@@ -32,9 +32,14 @@ export class DeviceEntriesService {
     };
   }
 
+  filterValidEntries(entries: DeviceUserEntry[]): DeviceUserEntry[] {
+    const validEntries = entries.filter(this.isNotExpired.bind(this));
+    return validEntries;
+  }
+
   push(entries: DeviceUserEntry[], entry: DeviceUserEntry): DeviceUserEntry[] {
     const { maxIdentityNumber } = this.config.get<DeviceConfig>('Device');
-    const newEntries = entries.filter(this.isNotExpired.bind(this));
+    const newEntries = Array.from(entries);
 
     const userFound = newEntries.find(({ h }) => h === entry.h);
 
