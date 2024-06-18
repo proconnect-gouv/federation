@@ -115,10 +115,10 @@ export class CoreFcpController {
     const { idpFilterExclude, idpFilterList } =
       await this.serviceProvider.getById(clientId);
 
-    const providers = await this.identityProvider.getFilteredList({
-      blacklist: idpFilterExclude,
-      idpList: idpFilterList,
-    });
+    const providers = await this.identityProvider.getFilteredList(
+      idpFilterList,
+      idpFilterExclude,
+    );
 
     const isSuspicious = sessionDevice.get('isSuspicious');
 

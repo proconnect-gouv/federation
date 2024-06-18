@@ -63,7 +63,9 @@ export class IdentityProviderAdapterEnvService
   }
 
   /**
-   * @param refreshCache  Should we refreshCache the cache made by the service?
+   * Get the list of IdentityProviderMetadata, optionally refreshing the cache.
+   *
+   * @param {boolean} [refreshCache=false] - Whether to refresh the cache made by the service
    */
   async getList(refreshCache?: boolean): Promise<IdentityProviderMetadata[]> {
     if (refreshCache || !this.identityProviderCache) {
@@ -81,11 +83,16 @@ export class IdentityProviderAdapterEnvService
     return this.identityProviderCache;
   }
 
+  async refreshCache(): Promise<void> {
+    await this.getList(true);
+  }
+
   /**
    * Method triggered when you want to filter identity providers
-   * from service providers's whitelist/blacklist
-   * @param idpList  list of identity providers's clientID
-   * @param isBlackListed  boolean false = blacklist true = whitelist
+   * from service providers' whitelist/blacklist
+   *
+   * @param idpList  list of identity providers' clientID
+   * @param blacklist  boolean false = blacklist true = whitelist
    */
   async getFilteredList(
     idpList: string[],
@@ -138,9 +145,10 @@ export class IdentityProviderAdapterEnvService
   }
 
   /**
-   * Decrypt client secrect with specific key provided by configuration
+   * Decrypt client secret with specific key provided by configuration
    *
    * @param clientSecret
+   * @param clientSecretEncryptKey
    */
   private decryptClientSecret(
     clientSecret: string,

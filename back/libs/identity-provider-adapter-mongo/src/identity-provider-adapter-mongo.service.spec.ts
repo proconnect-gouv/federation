@@ -16,7 +16,6 @@ import {
   NoDiscoveryIdpAdapterMongoDTO,
 } from './dto';
 import { IdentityProviderAdapterMongoService } from './identity-provider-adapter-mongo.service';
-import { FilteringOptions } from './interfaces';
 import { IdentityProvider } from './schemas';
 
 jest.mock('@fc/common', () => ({
@@ -520,12 +519,6 @@ describe('IdentityProviderAdapterMongoService', () => {
   });
 
   describe('getFilteredList', () => {
-    const blacklist = true;
-    const idpList = ['idp1'];
-    const defaultOptionsMock: FilteringOptions = {
-      blacklist,
-      idpList,
-    };
     const defaultProvidersMock = [
       {
         eidas: 1,
@@ -555,9 +548,8 @@ describe('IdentityProviderAdapterMongoService', () => {
 
     it('should return a list of mapped providers', async () => {
       // GIVEN
-      const optionsMock = {
-        ...defaultOptionsMock,
-      };
+      const idpListMock = ['idp1'];
+      const blacklistMock = true;
       const expected = [
         {
           active: false,
@@ -583,7 +575,7 @@ describe('IdentityProviderAdapterMongoService', () => {
       ];
 
       // WHEN
-      const result = await service.getFilteredList(optionsMock);
+      const result = await service.getFilteredList(idpListMock, blacklistMock);
 
       // THEN
       expect(result).toEqual(expected);
@@ -591,12 +583,8 @@ describe('IdentityProviderAdapterMongoService', () => {
 
     it('should return a list of providers containing whitelisted ones', async () => {
       // GIVEN
-      const optionsMock = {
-        ...defaultOptionsMock,
-        acrValues: null,
-        blacklist: false,
-        idpList: ['idp2'],
-      };
+      const idpListMock = ['idp2'];
+      const blacklistMock = false;
       const expected = [
         {
           active: false,
@@ -624,7 +612,7 @@ describe('IdentityProviderAdapterMongoService', () => {
       ];
 
       // WHEN
-      const result = await service.getFilteredList(optionsMock);
+      const result = await service.getFilteredList(idpListMock, blacklistMock);
 
       // THEN
       expect(result).toEqual(expected);
