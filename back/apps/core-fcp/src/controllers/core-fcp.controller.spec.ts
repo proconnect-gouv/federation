@@ -451,10 +451,10 @@ describe('CoreFcpController', () => {
       expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledTimes(
         1,
       );
-      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledWith({
-        blacklist: idpFilterExcludeMock,
-        idpList: idpFilterListMock,
-      });
+      expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledWith(
+        idpFilterListMock,
+        idpFilterExcludeMock,
+      );
     });
 
     it('should retrieve the suspicious status from DeviceSession', async () => {

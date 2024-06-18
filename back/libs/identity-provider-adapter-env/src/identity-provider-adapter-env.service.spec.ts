@@ -285,6 +285,20 @@ describe('IdentityProviderAdapterEnvService', () => {
     });
   });
 
+  describe('refreshCache', () => {
+    beforeEach(() => {
+      // Given
+      service.getList = jest.fn();
+    });
+    it('should call getList method with true value in param', async () => {
+      // When
+      await service.refreshCache();
+      // Then
+      expect(service.getList).toHaveBeenCalledTimes(1);
+      expect(service.getList).toHaveBeenCalledWith(true);
+    });
+  });
+
   describe('getFilteredList', () => {
     beforeEach(() => {
       service['getList'] = jest
