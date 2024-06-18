@@ -8,7 +8,6 @@ import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
-import { SessionNotFoundException } from '@fc/session';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
@@ -788,14 +787,36 @@ describe('MockServiceProviderController', () => {
       expect(res.redirect).toHaveBeenCalledWith(expectedErrorUriMock);
     });
 
-    it('should throw an error if the session is not found', async () => {
+    it('should redirect to /error if the session is not found', async () => {
       // setup
       sessionServiceMock.get.mockReset().mockReturnValueOnce(undefined);
 
+      // action
+      await controller.getOidcCallback(req, res, query, sessionServiceMock);
+
       // action/assertion
-      await expect(
-        controller.getOidcCallback(req, res, query, sessionServiceMock),
-      ).rejects.toThrow(SessionNotFoundException);
+      expect(res.redirect).toHaveBeenCalledWith(
+        expect.stringContaining(
+          '/error?error=1&error_description=Votre session a expiré ou est invalide, fermez l’onglet de votre navigateur et reconnectez-vous.',
+        ),
+      );
+    });
+
+    it('should redirect to /error if any error is thrown', async () => {
+      // setup
+      oidcClientServiceMock.getUserInfosFromProvider
+        .mockReset()
+        .mockRejectedValueOnce(new Error('OidcClientUserinfosFailedException'));
+
+      // action
+      await controller.getOidcCallback(req, res, query, sessionServiceMock);
+
+      // action/assertion
+      expect(res.redirect).toHaveBeenCalledWith(
+        expect.stringContaining(
+          '/error?error=Error&error_description=OidcClientUserinfosFailedException',
+        ),
+      );
     });
 
     it('should not call getTokenFromProvider if the query contains an error', async () => {
