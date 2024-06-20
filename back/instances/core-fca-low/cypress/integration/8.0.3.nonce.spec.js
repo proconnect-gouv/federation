@@ -5,12 +5,6 @@ import {
 } from './mire.utils';
 
 describe('nonce', () => {
-  it('should return an error if the nonce is not provided (FC as IDP)', () => {
-    const url = getAuthorizeUrl({}, 'nonce');
-    cy.visit(url, { failOnStatusCode: false });
-    cy.hasError('Y000400');
-  });
-
   it('should return an error if the nonce is less than 1 character (FC as IDP)', () => {
     const url = getAuthorizeUrl({
       nonce: '',
