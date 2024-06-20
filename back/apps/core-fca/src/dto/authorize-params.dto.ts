@@ -37,7 +37,7 @@ export class AuthorizeParamsDto {
   @IsString()
   @IsAscii({ message: 'Le nonce doit être composé de caractères ASCII' })
   @Length(1, 512)
-  readonly nonce: string;
+  readonly nonce?: string;
 
   @IsString()
   readonly state: string;
