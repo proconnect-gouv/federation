@@ -4,7 +4,12 @@ import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
-import { atHashFromAccessToken, IOidcClaims, OidcSession } from '@fc/oidc';
+import {
+  atHashFromAccessToken,
+  IOidcClaims,
+  OidcSession,
+  stringToArray,
+} from '@fc/oidc';
 import { OidcAcrConfig, OidcAcrService } from '@fc/oidc-acr';
 import { AuthorizationParameters, OidcClientRoutes } from '@fc/oidc-client';
 import {
@@ -82,8 +87,8 @@ export class CoreOidcProviderMiddlewareService {
 
     const isPostMethod = ctx.method === 'POST';
     const data = isPostMethod ? ctx.req.body : ctx.query;
-    const { acr_values: dataAcrValues } = data as { acr_values: string };
-    const acrValues = dataAcrValues.split(/\s+/);
+    const { acr_values: dataAcrValues = '' } = data as { acr_values?: string };
+    const acrValues = stringToArray(dataAcrValues);
     data.acr_values = pickAcr(knownAcrValues, acrValues, defaultAcrValue);
 
     this.logger.info(`Overriding "acr_values" with "${data.acr_values}"`);

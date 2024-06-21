@@ -713,7 +713,33 @@ describe('CoreOidcProviderMiddlewareService', () => {
       pickAcrMock.mockReturnValueOnce(overrideAcr);
     });
 
-    it('should set acr values parameter on query', () => {
+    it('should set acr_values in query when acr_values is an empty string', () => {
+      // Given
+      const ctxMock = {
+        method: 'GET',
+        query: { acr_values: '' },
+      } as unknown as OidcCtx;
+      // When
+      service['overrideAuthorizeAcrValues'](ctxMock);
+      // Then
+      expect(ctxMock.query.acr_values).toBe(overrideAcr);
+      expect(ctxMock.body).toBeUndefined();
+    });
+
+    it('should set acr_values in query when acr_values is undefined', () => {
+      // Given
+      const ctxMock = {
+        method: 'GET',
+        query: {},
+      } as unknown as OidcCtx;
+      // When
+      service['overrideAuthorizeAcrValues'](ctxMock);
+      // Then
+      expect(ctxMock.query.acr_values).toBe(overrideAcr);
+      expect(ctxMock.body).toBeUndefined();
+    });
+
+    it('should override acr_values in query when acr_values has a value', () => {
       // Given
       const ctxMock = {
         method: 'GET',
@@ -726,7 +752,33 @@ describe('CoreOidcProviderMiddlewareService', () => {
       expect(ctxMock.body).toBeUndefined();
     });
 
-    it('should set acr values parameter on body', () => {
+    it('should set acr_values in body when acr_values is an empty string', () => {
+      // Given
+      const ctxMock = {
+        method: 'POST',
+        req: { body: { acr_values: '' } },
+      } as unknown as OidcCtx;
+      // When
+      service['overrideAuthorizeAcrValues'](ctxMock);
+      // Then
+      expect(ctxMock.req.body.acr_values).toBe(overrideAcr);
+      expect(ctxMock.query).toBeUndefined();
+    });
+
+    it('should set acr_values in body when acr_values is undefined', () => {
+      // Given
+      const ctxMock = {
+        method: 'POST',
+        req: { body: {} },
+      } as unknown as OidcCtx;
+      // When
+      service['overrideAuthorizeAcrValues'](ctxMock);
+      // Then
+      expect(ctxMock.req.body.acr_values).toBe(overrideAcr);
+      expect(ctxMock.query).toBeUndefined();
+    });
+
+    it('should override acr_values in body when acr_values has a value', () => {
       // Given
       const ctxMock = {
         method: 'POST',

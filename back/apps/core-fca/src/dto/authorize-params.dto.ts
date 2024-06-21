@@ -21,10 +21,11 @@ export class AuthorizeParamsDto {
   @IsString()
   readonly client_id: string;
 
+  @IsOptional()
   @IsString({ each: true })
   @IsArray()
   @Split(/[ ]+/)
-  readonly acr_values: string;
+  readonly acr_values?: string;
 
   @IsOptional()
   @IsString()

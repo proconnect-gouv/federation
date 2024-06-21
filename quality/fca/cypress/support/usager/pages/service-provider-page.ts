@@ -74,8 +74,13 @@ export default class ServiceProviderPage {
     }
   }
 
-  setMockRequestedAcr(acrValue: string): void {
-    cy.get('input[name="acr_values"]').clearThenType(acrValue);
+  setMockRequestedAcr(acrValue?: string): void {
+    if (!acrValue) {
+      cy.get('input[name="acr_values"]').clear();
+      cy.get('input[id="acr_values_toggle"]').uncheck();
+    } else {
+      cy.get('input[name="acr_values"]').clearThenType(acrValue);
+    }
   }
 
   setMockRequestedAmr(isRequested: boolean): void {
