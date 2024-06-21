@@ -42,7 +42,7 @@ async function bootstrap() {
      * More general explanation about prototype pollution/poising:
      * @see https://medium.com/intrinsic/javascript-prototype-poisoning-vulnerabilities-in-the-wild-7bc15347c96
      */
-    bodyParser: false,
+    bodyParser: true,
     httpsOptions,
     bufferLogs: true,
   });
