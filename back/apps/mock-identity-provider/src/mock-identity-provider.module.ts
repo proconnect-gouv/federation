@@ -3,6 +3,7 @@
 // Declarative code
 import { Global, Module } from '@nestjs/common';
 
+import { AppModule } from '@fc/app';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { ExceptionsModule } from '@fc/exceptions-deprecated';
 import {
@@ -31,6 +32,7 @@ const exceptionModule = ExceptionsModule.withoutTracking();
 @Global()
 @Module({
   imports: [
+    AppModule,
     exceptionModule,
     AsyncLocalStorageModule,
     ServiceProviderAdapterEnvModule,

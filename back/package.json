@@ -285,7 +285,8 @@
       "^@fc/partners(|/.*)$": "<rootDir>/apps/partners/src/$1",
       "^@fc/device(|/.*)$": "<rootDir>/libs/device/src/$1",
       "^@fc/dto2form(|/.*)$": "<rootDir>/libs/dto2form/src/$1",
-      "^@mocks/dto2form(|/.*)$": "<rootDir>/libs/dto2form/.mocks/$1"
+      "^@mocks/dto2form(|/.*)$": "<rootDir>/libs/dto2form/.mocks/$1",
+      "^@fc/logger-plugins(|/.*)$": "<rootDir>/libs/logger-plugins/src/$1"
     },
     "preset": "ts-jest"
   }
