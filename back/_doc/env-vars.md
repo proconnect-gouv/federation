@@ -414,6 +414,7 @@
 | ServiceProviderAdapterEnvLow_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
 | ServiceProviderAdapterEnvLow_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
 | ServiceProviderAdapterEnvLow_USERINFO_SIGNED_RESPONSE_ALG | string |
+| Session_COOKIE_SAMESITE | string |
 | Session_COOKIE_SECRETS | json |
 | Session_USERINFO_CRYPT_KEY | string |
 

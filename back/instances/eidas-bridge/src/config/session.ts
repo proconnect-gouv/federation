@@ -11,9 +11,11 @@ import { ISessionCookieOptions, SessionConfig } from '@fc/session';
 
 const env = new ConfigParser(process.env, 'Session');
 
+const sameSite = env.string('COOKIE_SAMESITE') as 'none' | 'lax' | 'strict';
+
 const cookieOptions: ISessionCookieOptions = {
   signed: true,
-  sameSite: 'lax',
+  sameSite,
   httpOnly: true,
   secure: true,
   maxAge: 600000, // 10 minutes
