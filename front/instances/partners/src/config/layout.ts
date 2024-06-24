@@ -42,4 +42,9 @@ export const Layout: LayoutConfig = {
       label: 'Formulaires',
     },
   ],
+  service: {
+    baseline: 'Espace Partenaires',
+    name: 'FranceConnect / FranceConnect+',
+    title: 'Retourner à l’accueil',
+  },
 };

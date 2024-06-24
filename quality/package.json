@@ -6,7 +6,8 @@
   "workspaces": {
     "packages": [
       "fca",
-      "fcp"
+      "fcp",
+      "partners"
     ]
   },
   "keywords": [
@@ -56,7 +57,7 @@
     "prettier": "^3.2.5"
   },
   "scripts": {
-    "prettier": "prettier -c \"{.,fca,fcp}/{.,cypress,scripts}/**/*.ts\" --config .prettierrc",
-    "lint": "eslint \"{.,fca,fcp}/{.,cypress,scripts}/**/*.ts\""
+    "prettier": "prettier -c \"{.,fca,fcp,partners}/{.,cypress,scripts}/**/*.ts\" --config .prettierrc",
+    "lint": "eslint \"{.,fca,fcp,partners}/{.,cypress,scripts}/**/*.ts\""
   }
 }
