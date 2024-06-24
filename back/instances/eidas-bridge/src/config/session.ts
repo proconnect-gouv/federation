@@ -7,11 +7,15 @@ import { EidasClientRoutes } from '@fc/eidas-client';
 import { EidasProviderRoutes } from '@fc/eidas-provider';
 import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
-import { ISessionCookieOptions, SessionConfig } from '@fc/session';
+import {
+  ISessionCookieOptions,
+  SameSiteType,
+  SessionConfig,
+} from '@fc/session';
 
 const env = new ConfigParser(process.env, 'Session');
 
-const sameSite = env.string('COOKIE_SAMESITE') as 'none' | 'lax' | 'strict';
+const sameSite = env.string('COOKIE_SAMESITE') as SameSiteType;
 
 const cookieOptions: ISessionCookieOptions = {
   signed: true,
