@@ -49,6 +49,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
+| App_DEFAULT_EMAIL_RENATER | string |
 | App_DEFAULT_IDP_UID | string |
 | App_DSFR_ASSETS_PATHS | json |
 | App_HTTPS_SERVER_CERT | file |
