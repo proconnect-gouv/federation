@@ -13,6 +13,9 @@
         <%- include('pages/interaction/interaction.welcome.ejs') %> <%-
         include('pages/interaction/interaction.notice.ejs') %> <%-
         include('pages/interaction/interaction.email.ejs') %>
+        <% if (locals.defaultEmailRenater) { %> <%-
+          include('pages/interaction/interaction.renater.ejs') %>
+        <% } %>
       </div>
       <%- include('pages/interaction/interaction.media.ejs') %>
     </main>
