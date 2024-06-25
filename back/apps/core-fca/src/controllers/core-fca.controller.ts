@@ -11,7 +11,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { AppConfig } from '@fc/app';
 import { ConfigService } from '@fc/config';
 import {
   CoreAcrService,
@@ -31,6 +30,7 @@ import { ISessionService, Session } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
 
 import {
+  AppConfig,
   GetInteractionOidcClientSessionDto,
   GetVerifyOidcClientSessionDto,
 } from '../dto';
@@ -98,8 +98,11 @@ export class CoreFcaController {
 
     const notification = await this.notifications.getNotificationToDisplay();
 
+    const { defaultEmailRenater } = this.config.get<AppConfig>('App');
+
     const response = {
       csrfToken,
+      defaultEmailRenater,
       notification,
       params,
       spName,

@@ -20,4 +20,5 @@ export default {
   },
   fqdn: process.env.FQDN,
   defaultIdpId: env.string('DEFAULT_IDP_UID'),
+  defaultEmailRenater: env.string('DEFAULT_EMAIL_RENATER'),
 } as AppConfig;
