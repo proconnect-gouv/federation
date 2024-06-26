@@ -39,6 +39,14 @@ fca-low:
       # Cypress
       - cache/Cypress
   before_script:
+    - shopt -s expand_aliases
+    - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
+    # build the main app and check if it is impacted by MR
+    - DIFF_FILES=$(docker-stack ci-diff-files core-fca-low bridge-http-proxy-rie csmr-rie mock-identity-provider-fca-low mock-service-provider-fca-low)
+    - DIFF_CHECK_STATUS=$(echo "$DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
+    - echo "$DIFF_CHECK_STATUS"
+    - if [ "$DIFF_CHECK_STATUS" == "NO_CHANGES" ]; then exit 0; fi
+    - if [ "$DIFF_CHECK_STATUS" == "ERRORS" ]; then exit 1; fi
     # Test Scope definition
     - BDD_TAGS=${BDD_TAGS_FCA_LOW:-$BDD_TAGS}
     - RUN_E2E=${RUN_E2E_FCA_LOW:-$RUN_E2E}
@@ -46,8 +54,6 @@ fca-low:
     - echo "RUN_E2E=$RUN_E2E"
     # Ensure a clean docker environnement
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
-    - shopt -s expand_aliases
-    - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker-stack prune-ci
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi

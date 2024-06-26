@@ -37,15 +37,16 @@ user-dashboard:
       # Cypress
       - cache/Cypress
   before_script:
-    # Test Scope definition
+    # Make docker-stack an alias
+    - shopt -s expand_aliases
+    - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
+      # Test Scope definition
     - BDD_TAGS=${BDD_TAGS_UD:-$BDD_TAGS}
     - echo "BDD_TAGS=$BDD_TAGS"
     # Ensure a clean docker environnement
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - echo "FC_LEGACY_VERSION=${FC_LEGACY_VERSION:=staging}"
     - echo "FC_APPS_VERSION=${FC_APPS_VERSION:=staging}"
-    - shopt -s expand_aliases
-    - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - docker-stack prune-ci
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
     - export FC_LEGACY_ROOT=$FC_ROOT/fc/docker/volumes/src/FranceConnect
