@@ -7,11 +7,11 @@ import {
   IsAscii,
   IsBoolean,
   IsJWT,
+  IsNotEmpty,
   IsObject,
   IsOptional,
   IsString,
   IsUUID,
-  MinLength,
   ValidateNested,
 } from 'class-validator';
 
@@ -23,7 +23,7 @@ import { IOidcIdentity } from '../interfaces';
 export class OidcSession {
   @IsOptional()
   @IsAscii()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly sessionId?: string;
 
   @IsOptional()
@@ -31,12 +31,13 @@ export class OidcSession {
   readonly browsingSessionId?: string;
 
   @IsOptional()
-  @IsUUID(4)
+  @IsString()
+  @IsNotEmpty()
   readonly accountId?: string;
 
   @IsOptional()
   @IsAscii()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly interactionId?: string;
 
   @IsOptional()
@@ -51,27 +52,27 @@ export class OidcSession {
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly idpId?: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly idpName?: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly idpLabel?: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly idpState?: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly idpNonce?: string;
 
   /**
@@ -100,12 +101,12 @@ export class OidcSession {
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly idpAcr?: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly idpAccessToken?: string;
 
   @IsOptional()
@@ -122,17 +123,17 @@ export class OidcSession {
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly spId?: string;
 
-  @IsString()
   @IsOptional()
-  @MinLength(1)
+  @IsString()
+  @IsNotEmpty()
   readonly spName?: string;
 
   @IsOptional()
   @IsString()
-  @MinLength(1)
+  @IsNotEmpty()
   readonly spAcr?: string;
 
   @IsOptional()
@@ -157,23 +158,23 @@ export class OidcSession {
   @IsObject()
   readonly spIdentity?: Partial<Omit<IOidcIdentity, 'sub'>>;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   readonly oidcProviderLogoutForm?: string;
 
-  @IsBoolean()
   @IsOptional()
+  @IsBoolean()
   readonly isSso?: boolean;
 
-  @IsObject()
   @IsOptional()
+  @IsObject()
   readonly subs?: Record<string, string>;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   readonly stepRoute?: string;
 
-  @IsString()
   @IsOptional()
+  @IsString()
   readonly login_hint?: string;
 }
