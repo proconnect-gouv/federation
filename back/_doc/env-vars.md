@@ -570,7 +570,6 @@
 | Var Name | Inferred type |
 |---|---|
 | App_API_OUTPUT_CONTENT_TYPE | string |
-| App_ASSETS_PATHS | json |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
