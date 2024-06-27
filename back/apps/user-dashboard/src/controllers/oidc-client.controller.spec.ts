@@ -4,7 +4,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { PartialDeep } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import { CsrfTokenGuard } from '@fc/csrf';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
 import { IdentityProviderMetadata } from '@fc/oidc';
 import { OidcClientService } from '@fc/oidc-client';
@@ -74,8 +73,6 @@ describe('OidcClient Controller', () => {
 
   const configServiceMock = getConfigMock();
 
-  const guardMock = { canActivate: jest.fn() };
-
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -90,8 +87,6 @@ describe('OidcClient Controller', () => {
         IdentityProviderAdapterEnvService,
       ],
     })
-      .overrideGuard(CsrfTokenGuard)
-      .useValue(guardMock)
       .overrideProvider(OidcClientService)
       .useValue(oidcClientServiceMock)
       .overrideProvider(SessionService)
