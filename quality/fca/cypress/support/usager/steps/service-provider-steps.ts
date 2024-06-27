@@ -190,3 +190,7 @@ Given(
       });
   },
 );
+
+Then('le token AgentConnect est révoqué', function () {
+  serviceProviderPage.getTokenRevokationConfirmation().should('be.visible');
+});

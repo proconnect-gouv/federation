@@ -198,4 +198,8 @@ export default class ServiceProviderPage {
     const dataPageURL = `${this.originUrl}/data`;
     cy.url().should('include', dataPageURL);
   }
+
+  getTokenRevokationConfirmation(): ChainableElement {
+    return cy.contains('h1', 'Le token a été révoqué');
+  }
 }

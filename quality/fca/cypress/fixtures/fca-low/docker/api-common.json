@@ -47,5 +47,16 @@
     "form": true,
     "method": "POST",
     "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/token"
+  },
+  "redirect-to-idp": {
+    "method": "POST",
+    "url": "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/redirect-to-idp",
+    "form": true,
+    "body": {
+      "email": "test@fia1.fr",
+      "scope": "openid profile",
+      "acr_values": "eidas1",
+      "csrfToken": "3f42c6c16ef2f1fc63ae9f8ee85b476819e204c91cdb68f39be01ed3faec42f2"
+    }
   }
 }
