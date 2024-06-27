@@ -66,3 +66,7 @@ Given(
     }).as('AC:AuthorizeRemoveParam');
   },
 );
+
+Then("la page du FI affiche l'id du FS", function () {
+  identityProviderPage.checkSpIdIsVisible(this.serviceProvider.clientId);
+});
