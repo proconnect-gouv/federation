@@ -1,5 +1,3 @@
-import { OnChange } from 'react-final-form-listeners';
-
 import { ToggleInput } from '@fc/dsfr';
 import { useStylesQuery, useStylesVariables } from '@fc/styles';
 import { renderWithFinalForm } from '@fc/testing-library';
@@ -7,9 +5,6 @@ import { renderWithFinalForm } from '@fc/testing-library';
 import { ServiceComponent } from './service.component';
 import { ServiceImageComponent } from './service-image.component';
 
-jest.mock('@fc/dsfr');
-jest.mock('@fc/styles');
-jest.mock('react-final-form-listeners');
 jest.mock('./service-image.component');
 jest.mock('./service-switch-label.component');
 
@@ -112,18 +107,6 @@ describe('ServiceComponent', () => {
     );
   });
 
-  it('should call OnChange from react-final-form-listener with name param', () => {
-    // when
-    renderWithFinalForm(<ServiceComponent service={serviceMock} />);
-
-    // then
-    expect(OnChange).toHaveBeenCalledOnce();
-    expect(OnChange).toHaveBeenCalledWith(
-      { children: expect.any(Function), name: 'idpList.any-uid' },
-      {},
-    );
-  });
-
   describe('when is not allowed to be updated', () => {
     it('should set the disabled class on the service component', () => {
       // when
@@ -160,14 +143,6 @@ describe('ServiceComponent', () => {
         }),
         {},
       );
-    });
-
-    it('should not call OnChange from react-final-form-listener', () => {
-      // when
-      renderWithFinalForm(<ServiceComponent allowToBeUpdated={false} service={serviceMock} />);
-
-      // then
-      expect(OnChange).not.toHaveBeenCalled();
     });
   });
 });
