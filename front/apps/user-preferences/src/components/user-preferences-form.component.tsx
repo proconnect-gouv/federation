@@ -1,7 +1,6 @@
 import classnames from 'classnames';
 import type { FormEventHandler } from 'react';
 import React, { useCallback } from 'react';
-import { OnChange } from 'react-final-form-listeners';
 
 import { AlertComponent, AlertTypes, SimpleButton, Sizes, ToggleInput } from '@fc/dsfr';
 import { useStylesQuery, useStylesVariables } from '@fc/styles';
@@ -84,8 +83,8 @@ export const UserPreferencesFormComponent: React.FC<UserPreferencesFormComponent
           label={labelCallback}
           legend={{ checked: 'Autorisé', unchecked: 'Bloqué' }}
           name="allowFutureIdp"
+          onUpdate={allowingIdPConfirmation}
         />
-        <OnChange name="allowFutureIdp">{allowingIdPConfirmation}</OnChange>
 
         {alertInfoState.isDisplayedAlertInfo && (
           <AlertComponent size={Sizes.SMALL}>

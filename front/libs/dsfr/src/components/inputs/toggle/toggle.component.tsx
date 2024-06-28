@@ -15,13 +15,22 @@ interface ToggleComponentProps {
   input: FieldInputProps<any, HTMLElement>;
   label: string | Function;
   className?: string;
+  onUpdate?: (v: boolean) => void;
   legend: CheckableLegend | undefined;
 }
 
 export const ToggleComponent = React.memo(
-  ({ className, disabled = false, hint, input, label, legend }: ToggleComponentProps) => (
+  ({
+    className,
+    disabled = false,
+    hint,
+    input,
+    label,
+    legend,
+    onUpdate = undefined,
+  }: ToggleComponentProps) => (
     <div className={classnames('fr-toggle', className)}>
-      <ToggleInputComponent disabled={disabled} input={input} />
+      <ToggleInputComponent disabled={disabled} input={input} onUpdate={onUpdate} />
       <ToggleLabelComponent input={input} label={label} legend={legend} />
       {hint && (
         <p className="fr-hint-text" id={`${input.name}-hint-text`}>

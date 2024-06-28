@@ -25,8 +25,7 @@ describe('useStylesContext', () => {
 
     // @NOTE hide console.error logs into console
     // as the code below suposed to throw
-    jest.spyOn(console, 'error');
-    jest.mocked(console.error).mockImplementation(() => {});
+    jest.spyOn(console, 'error').mockImplementation(() => {});
 
     // then
     expect(() => {

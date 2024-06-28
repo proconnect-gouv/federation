@@ -1,6 +1,5 @@
 import classnames from 'classnames';
 import React, { useCallback, useState } from 'react';
-import { OnChange } from 'react-final-form-listeners';
 
 import { ToggleInput } from '@fc/dsfr';
 import { useStylesQuery, useStylesVariables } from '@fc/styles';
@@ -42,6 +41,7 @@ export const ServiceComponent = React.memo(
       setIsDisabled(!value);
     }, []);
 
+    const inputName = `idpList.${service.uid}`;
     return (
       <li
         className={classnames('flex-start items-start fr-pt-2w fr-toggle--border-bottom', {
@@ -60,14 +60,9 @@ export const ServiceComponent = React.memo(
           initialValue={service.isChecked}
           label={labelCallback}
           legend={{ checked: 'Autorisé', unchecked: 'Bloqué' }}
-          name={`idpList.${service.uid}`}
+          name={inputName}
+          onUpdate={allowToBeUpdated ? onChangeHandler : undefined}
         />
-        {/*
-          @TODO find a way to remove react-final-form-listeners.OnChange
-          Author: Matthieu
-          Date: 06/10/2022
-        */}
-        {allowToBeUpdated && <OnChange name={`idpList.${service.uid}`}>{onChangeHandler}</OnChange>}
       </li>
     );
   },

@@ -16,10 +16,20 @@ interface ToggleInputProps {
   name: string;
   className?: string;
   legend?: CheckableLegend;
+  onUpdate?: (v: boolean) => void;
 }
 
 export const ToggleInput = React.memo(
-  ({ className, disabled = false, hint, initialValue, label, legend, name }: ToggleInputProps) => (
+  ({
+    className,
+    disabled = false,
+    hint,
+    initialValue,
+    label,
+    legend,
+    name,
+    onUpdate = undefined,
+  }: ToggleInputProps) => (
     <Field initialValue={initialValue} name={name} type="checkbox">
       {({ input }) => (
         <ToggleComponent
@@ -29,6 +39,7 @@ export const ToggleInput = React.memo(
           input={input}
           label={label}
           legend={legend}
+          onUpdate={onUpdate}
         />
       )}
     </Field>

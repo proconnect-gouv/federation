@@ -18,6 +18,7 @@ module.exports = {
         'jest/no-disabled-tests': 2,
         'jest/prefer-lowercase-title': 0,
         'jest/prefer-expect-assertions': 0,
+        'jest/prefer-importing-jest-globals': 0,
         'react/jsx-props-no-spreading': 0,
         'testing-library/prefer-screen-queries': 0,
       },
