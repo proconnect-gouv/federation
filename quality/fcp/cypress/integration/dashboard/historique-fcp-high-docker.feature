@@ -19,7 +19,7 @@ Fonctionnalité: Historique Connexion FC+ (docker)
     Et la date et heure de connexion sont affichées
     Et la localisation de l'évènement est affichée
     Et le nom du fournisseur d'identité de l'évènement est "IDP1 - Identity Provider - eIDAS élevé - discov - crypt"
-    Et le niveau de sécurité de l'évènement est "Substantiel"
+    Et le niveau de sécurité de l'évènement est "Élevé"
 
   Scénario: Historique Connexion - FC+ - FS privé avec scope identité
     Etant donné que j'utilise un compte usager "pour les tests de traces"

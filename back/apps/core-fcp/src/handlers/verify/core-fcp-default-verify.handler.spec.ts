@@ -9,6 +9,7 @@ import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
+import { OidcAcrService } from '@fc/oidc-acr';
 import { RnippPivotIdentity, RnippService } from '@fc/rnipp';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { SessionService } from '@fc/session';
@@ -159,6 +160,11 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     getById: jest.fn(),
   };
 
+  const oidcAcrMock = {
+    getInteractionAcr: jest.fn(),
+  };
+  const interactionAcrMock = 'interactionAcrMock';
+
   const trackingContext = {} as unknown as TrackedEventContextInterface;
 
   beforeEach(async () => {
@@ -176,6 +182,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
         IdentityProviderAdapterMongoService,
         CryptographyFcpService,
         AccountService,
+        OidcAcrService,
       ],
     })
       .overrideProvider(ConfigService)
@@ -200,6 +207,8 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       .useValue(accountServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderAdapterMock)
+      .overrideProvider(OidcAcrService)
+      .useValue(oidcAcrMock)
       .compile();
 
     service = module.get<CoreFcpDefaultVerifyHandler>(
@@ -228,6 +237,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     identityProviderAdapterMock.getById.mockResolvedValue({
       maxAuthorizedAcr: 'maxAuthorizedAcr value',
     });
+    oidcAcrMock.getInteractionAcr.mockReturnValue(interactionAcrMock);
   });
 
   it('should be defined', () => {
@@ -341,6 +351,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
         accountId: accountIdMock,
         idpIdentity: idpIdentityMock,
         rnippIdentity: rnippIdentityMock,
+        interactionAcr: interactionAcrMock,
         spIdentity: {
           ...idpIdentityMock,
           sub: 'computedSubSp',

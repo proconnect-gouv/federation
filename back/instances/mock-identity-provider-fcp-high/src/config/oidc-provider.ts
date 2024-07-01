@@ -65,7 +65,7 @@ export default {
       Interaction: 600, // 10 minutes
       Session: 600, // 10 minutes
     },
-    acrValues: ['eidas2', 'eidas3'],
+    acrValues: ['eidas1', 'eidas2', 'eidas3'],
     scopes: ['openid'],
     claims: {
       amr: ['amr'],

@@ -35,7 +35,7 @@ export interface Track {
   event: CinematicEvents;
   idpLabel: string;
   platform: 'FranceConnect' | 'FranceConnect+';
-  spAcr: keyof typeof EidasToLabel;
+  interactionAcr: keyof typeof EidasToLabel;
   spLabel?: string;
   time: number;
   trackId: string;

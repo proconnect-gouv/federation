@@ -41,6 +41,11 @@ export class OidcSession {
   readonly interactionId?: string;
 
   @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  readonly interactionAcr?: string;
+
+  @IsOptional()
   @IsArray()
   readonly amr?: string[];
 

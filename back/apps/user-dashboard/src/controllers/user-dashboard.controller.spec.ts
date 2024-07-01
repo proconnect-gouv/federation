@@ -211,7 +211,7 @@ describe('UserDashboardController', () => {
           event: 'eventValue',
           idpLabel: 'idpLabelValue',
           platform: 'platformValue',
-          spAcr: 'eidas1',
+          interactionAcr: 'eidas1',
           spLabel: 'spLabelValue',
           time: 11233335550000,
           trackId: 'trackIdValue',

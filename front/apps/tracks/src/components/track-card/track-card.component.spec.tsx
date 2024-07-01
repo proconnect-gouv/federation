@@ -49,8 +49,8 @@ describe('TrackCardComponent', () => {
     datetime: DateTime.fromObject({ day: 1, month: 10, year: 2021 }, { zone: 'Europe/Paris' }),
     event: 'MOCK_EVENT' as CinematicEvents,
     idpLabel: 'mock-idpLabel',
+    interactionAcr: 'eidas1' as keyof typeof EidasToLabel,
     platform: 'FranceConnect',
-    spAcr: 'eidas1' as keyof typeof EidasToLabel,
     spLabel: 'mock-spLabel',
     time: 1633042800000, // '2021-10-01T00:00:00.000+01:00'
     trackId: 'mock-track-id',
@@ -126,9 +126,9 @@ describe('TrackCardComponent', () => {
           datetime: track.datetime,
           eventType: 'MOCK_EVENT',
           idpLabel: track.idpLabel,
+          interactionAcr: track.interactionAcr,
           opened: false,
           options,
-          spAcr: track.spAcr,
         },
         {},
       );

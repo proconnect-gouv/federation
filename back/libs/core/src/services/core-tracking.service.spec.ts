@@ -86,11 +86,14 @@ describe('CoreTrackingService', () => {
     idpIdentity: undefined,
   };
 
+  const interactionAcrMock = 'interactionAcrMock';
+
   const sessionDataMock: OidcSession = {
     accountId: 'accountId Mock Value',
     browsingSessionId: 'browsingSessionId Mock Value',
     sessionId: sessionIdMock,
     interactionId: interactionIdMock,
+    interactionAcr: interactionAcrMock,
 
     subs: {
       clientId: 'sub client id',
@@ -325,6 +328,7 @@ describe('CoreTrackingService', () => {
         accountId: null,
         browsingSessionId: null,
         interactionId: null,
+        interactionAcr: null,
         sessionId: sessionIdMock,
         isSso: null,
 
@@ -357,6 +361,7 @@ describe('CoreTrackingService', () => {
         browsingSessionId: 'browsingSessionId Mock Value',
         sessionId: sessionIdMock,
         interactionId: interactionIdMock,
+        interactionAcr: interactionAcrMock,
         isSso: null,
 
         spId: 'clientId',
@@ -383,6 +388,7 @@ describe('CoreTrackingService', () => {
         browsingSessionId: browsingSessionIdMock,
         sessionId: sessionIdMock,
         interactionId: null,
+        interactionAcr: null,
         isSso: null,
 
         spId: 'spIdMock',
@@ -419,6 +425,7 @@ describe('CoreTrackingService', () => {
         sessionId: sessionIdMock,
         browsingSessionId: browsingSessionIdMock,
         interactionId: null,
+        interactionAcr: null,
         isSso: null,
 
         spId: 'spIdMock',
@@ -456,6 +463,7 @@ describe('CoreTrackingService', () => {
         sessionId: sessionIdMock,
         browsingSessionId: browsingSessionIdMock,
         interactionId: null,
+        interactionAcr: null,
         isSso: null,
 
         spId: null,

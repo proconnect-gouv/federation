@@ -56,9 +56,9 @@ describe('TrackCardContentComponent', () => {
         datetime={date}
         eventType={CinematicEvents.FC_VERIFIED}
         idpLabel="idpLabelValue"
+        interactionAcr="eidas1"
         opened={false}
         options={options}
-        spAcr="eidas1"
       />,
     );
 
@@ -77,9 +77,9 @@ describe('TrackCardContentComponent', () => {
         datetime={date}
         eventType={CinematicEvents.DP_VERIFIED_FC_CHECKTOKEN}
         idpLabel="idpLabelValue"
+        interactionAcr="eidas1"
         opened={false}
         options={options}
-        spAcr="eidas1"
       />,
     );
 
@@ -101,9 +101,9 @@ describe('TrackCardContentComponent', () => {
         datetime={date}
         eventType={eventType}
         idpLabel="idpLabelValue"
+        interactionAcr="eidas1"
         opened={false}
         options={options}
-        spAcr="eidas1"
       />,
     );
 
@@ -116,8 +116,8 @@ describe('TrackCardContentComponent', () => {
         country: 'countryMock',
         datetime: date,
         idpLabel: 'idpLabelValue',
+        interactionAcr: 'eidas1',
         options,
-        spAcr: 'eidas1',
       },
       {},
     );
@@ -137,9 +137,9 @@ describe('TrackCardContentComponent', () => {
         datetime={date}
         eventType={eventType}
         idpLabel="idpLabelValue"
+        interactionAcr="eidas1"
         opened={false}
         options={options}
-        spAcr="eidas1"
       />,
     );
 

@@ -1,21 +1,24 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { OidcSession } from '@fc/oidc';
+
+import { getConfigMock } from '@mocks/config';
 
 import { OidcAcrService } from './oidc-acr.service';
 
 describe('OidcAcrService', () => {
   let service: OidcAcrService;
 
-  const configServiceMock = {
-    get: jest.fn(),
-  };
+  const configServiceMock = getConfigMock();
 
-  const acrLevelsMock = {
+  const knownAcrValuesMock = {
     eidas1: 1,
     eidas2: 2,
     eidas3: 3,
   };
+
+  const allowedAcrValuesMock = ['spAcrValue', 'idpAcrValue'];
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,7 +40,8 @@ describe('OidcAcrService', () => {
     jest.clearAllMocks();
 
     configServiceMock.get.mockReturnValueOnce({
-      acrLevels: acrLevelsMock,
+      knownAcrValues: knownAcrValuesMock,
+      allowedAcrValues: allowedAcrValuesMock,
     });
   });
 
@@ -59,6 +63,7 @@ describe('OidcAcrService', () => {
       // Given
       const received = 'eidas1';
       const requested = 'eidas2';
+
       // When
       const result = service.isAcrValid(received, requested);
       // Then
@@ -69,6 +74,7 @@ describe('OidcAcrService', () => {
       // Given
       const received = 'eidas2';
       const requested = 'eidas3';
+
       // When
       const result = service.isAcrValid(received, requested);
       // Then
@@ -79,8 +85,10 @@ describe('OidcAcrService', () => {
       // Given
       const received = 'eidas1';
       const requested = 'eidas1';
+
       // When
       const result = service.isAcrValid(received, requested);
+
       // Then
       expect(result).toStrictEqual(true);
     });
@@ -89,8 +97,10 @@ describe('OidcAcrService', () => {
       // Given
       const received = 'eidas2';
       const requested = 'eidas2';
+
       // When
       const result = service.isAcrValid(received, requested);
+
       // Then
       expect(result).toStrictEqual(true);
     });
@@ -99,8 +109,10 @@ describe('OidcAcrService', () => {
       // Given
       const received = 'eidas3';
       const requested = 'eidas3';
+
       // When
       const result = service.isAcrValid(received, requested);
+
       // Then
       expect(result).toStrictEqual(true);
     });
@@ -109,8 +121,10 @@ describe('OidcAcrService', () => {
       // Given
       const received = 'eidas2';
       const requested = 'eidas1';
+
       // When
       const result = service.isAcrValid(received, requested);
+
       // Then
       expect(result).toStrictEqual(true);
     });
@@ -119,10 +133,42 @@ describe('OidcAcrService', () => {
       // Given
       const received = 'eidas3';
       const requested = 'eidas2';
+
       // When
       const result = service.isAcrValid(received, requested);
+
       // Then
       expect(result).toStrictEqual(true);
+    });
+  });
+
+  describe('getInteractionAcr()', () => {
+    it('should return the idpAcr value', () => {
+      // Given
+      const sessionDataMock: OidcSession = {
+        spAcr: 'spAcrValue',
+        idpAcr: 'idpAcrValue',
+      };
+
+      // When
+      const result = service['getInteractionAcr'](sessionDataMock);
+
+      // Then
+      expect(result).toBe('idpAcrValue');
+    });
+
+    it('should return the spAcr value', () => {
+      // Given
+      const sessionDataMock: OidcSession = {
+        spAcr: 'spAcrValue',
+        idpAcr: 'idpAcrValueNotAllowed',
+      };
+
+      // When
+      const result = service['getInteractionAcr'](sessionDataMock);
+
+      // Then
+      expect(result).toBe('spAcrValue');
     });
   });
 });

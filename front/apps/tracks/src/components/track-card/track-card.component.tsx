@@ -24,8 +24,8 @@ export const TrackCardComponent = React.memo(({ options, track }: TrackCardProps
     datetime,
     event: eventType,
     idpLabel,
+    interactionAcr,
     platform,
-    spAcr,
     spLabel,
     trackId,
   } = track;
@@ -70,9 +70,9 @@ export const TrackCardComponent = React.memo(({ options, track }: TrackCardProps
         datetime={datetime}
         eventType={eventType}
         idpLabel={idpLabel}
+        interactionAcr={interactionAcr}
         opened={opened}
         options={options}
-        spAcr={spAcr}
       />
     </button>
   );

@@ -7,6 +7,7 @@ import { I18nService } from '@fc/i18n';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
+import { OidcAcrService } from '@fc/oidc-acr';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 
 import {
@@ -27,6 +28,7 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
     private readonly cryptographyEidas: CryptographyEidasService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly i18n: I18nService,
+    private readonly oidcAcr: OidcAcrService,
   ) {}
 
   async handle({
@@ -42,6 +44,7 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
     const { maxAuthorizedAcr } = await this.identityProvider.getById(idpId);
 
     this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, maxAuthorizedAcr);
+    const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
 
     const identityHash = this.cryptographyEidas.computeIdentityHash(
       idpIdentity as IOidcIdentity,
@@ -69,6 +72,7 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
 
     sessionOidc.set({
       idpIdentity: idpIdentityCleaned,
+      interactionAcr,
       spIdentity: {
         ...spIdentityCleaned,
         ...technicalClaims,
