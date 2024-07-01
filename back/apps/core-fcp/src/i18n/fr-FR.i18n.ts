@@ -57,8 +57,11 @@ export const frFR: I18nTranslationsMapType = {
 
   // Errors
   'error.page_title': 'Connexion - Erreur - {platform}',
-  'error.what_to_do': 'Que faire ?',
-  'error.contact_us': 'Contactez-nous',
-  'error.an_error_occurred': 'Une erreur s’est produite',
+  'error.support.title': 'Que faire ?',
+  'error.support.button_label': 'Contactez-nous',
+  'error.error_title': 'Une erreur s’est produite',
   'error.error_code': 'Erreur {code}',
+  'error.faq.title': "Besoin d'aide ?",
+  'error.faq.button_label': 'Consulter la page d’aide',
+  'error.faq.body': 'Merci de consulter notre page d’aide FranceConnect.',
 };
