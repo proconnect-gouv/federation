@@ -71,6 +71,8 @@
       "@fc/config/*": ["libs/config/src/*"],
       "@mocks/config": ["libs/config/.mocks"],
       "@mocks/config/*": ["libs/config/.mocks/*"],
+      "@fc/exceptions-fcp": ["libs/exceptions-fcp/src"],
+      "@fc/exceptions-fcp/*": ["libs/exceptions-fcp/src/*"],
       "@fc/exceptions-deprecated": ["libs/exceptions-deprecated/src"],
       "@fc/exceptions-deprecated/*": ["libs/exceptions-deprecated/src/*"],
       "@fc/ministries": ["libs/ministries/src"],

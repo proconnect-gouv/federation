@@ -499,6 +499,15 @@
         "tsConfigPath": "libs/config/tsconfig.lib.json"
       }
     },
+    "exceptions-fcp": {
+      "type": "library",
+      "root": "libs/exceptions-fcp",
+      "entryFile": "index",
+      "sourceRoot": "libs/exceptions-fcp/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/exceptions-fcp/tsconfig.lib.json"
+      }
+    },
     "exceptions-deprecated": {
       "type": "library",
       "root": "libs/exceptions-deprecated",
