@@ -9,6 +9,7 @@ import { FeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
+import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
 import { RnippPivotIdentity, RnippService } from '@fc/rnipp';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
@@ -38,6 +39,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     private readonly cryptographyFcp: CryptographyFcpService,
     private readonly account: AccountService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
+    private readonly oidcAcr: OidcAcrService,
   ) {}
 
   /**
@@ -76,6 +78,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     const { maxAuthorizedAcr } = await this.identityProvider.getById(idpId);
 
     this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, maxAuthorizedAcr);
+    const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
 
     const rnippIdentity = await this.retrieveRnippIdentity(
       isSso,
@@ -112,6 +115,7 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     const session: OidcClientSession = {
       idpIdentity,
       rnippIdentity,
+      interactionAcr,
       spIdentity: {
         ...spIdentity,
         ...technicalClaims,

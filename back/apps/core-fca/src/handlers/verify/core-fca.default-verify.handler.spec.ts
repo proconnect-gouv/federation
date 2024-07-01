@@ -7,6 +7,7 @@ import { CoreAcrService } from '@fc/core';
 import { CoreFcaAgentAccountBlockedException } from '@fc/core-fca/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import { OidcAcrService } from '@fc/oidc-acr';
 import { SessionService } from '@fc/session';
 
 import { getLoggerMock } from '@mocks/logger';
@@ -85,6 +86,11 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     upsertWithSub: jest.fn(),
   };
 
+  const oidcAcrMock = {
+    getInteractionAcr: jest.fn(),
+  };
+  const interactionAcrMock = 'interactionAcrMock';
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -94,6 +100,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         CoreAcrService,
         IdentityProviderAdapterMongoService,
         AccountFcaService,
+        OidcAcrService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -106,6 +113,8 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       .useValue(identityProviderAdapterMock)
       .overrideProvider(AccountFcaService)
       .useValue(accountFcaServiceMock)
+      .overrideProvider(OidcAcrService)
+      .useValue(oidcAcrMock)
       .compile();
 
     service = module.get<CoreFcaDefaultVerifyHandler>(
@@ -120,6 +129,8 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     identityProviderAdapterMock.getById.mockResolvedValue({
       maxAuthorizedAcr: 'maxAuthorizedAcr value',
     });
+
+    oidcAcrMock.getInteractionAcr.mockReturnValue(interactionAcrMock);
   });
 
   it('should be defined', () => {
@@ -236,6 +247,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       // Given
       const calledMock = {
         idpIdentity: idpIdentityMock,
+        interactionAcr: interactionAcrMock,
         spIdentity: {
           given_name: idpIdentityMock.given_name,
           uid: idpIdentityMock.uid,
@@ -397,6 +409,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         accountFcaMock.sub,
         idpIdentityMock,
         accountIdMock,
+        interactionAcrMock,
       );
 
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
@@ -409,6 +422,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         accountFcaMock.sub,
         fcaIdentityMock,
         accountIdMock,
+        interactionAcrMock,
       );
 
       // Then
@@ -417,6 +431,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         accountId: accountIdMock,
         amr: ['pwd'],
         idpIdentity: idpIdentityMock,
+        interactionAcr: interactionAcrMock,
         spIdentity: {
           ...idpIdentityMockCleaned,
           idp_id: sessionDataMock.idpId,

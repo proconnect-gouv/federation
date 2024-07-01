@@ -53,7 +53,7 @@ export class TrackDto implements ICsmrTracksOutputTrack {
   idpLabel?: string;
 
   @IsString()
-  spAcr: string;
+  interactionAcr: string;
 
   @IsString()
   spLabel: string;

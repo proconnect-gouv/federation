@@ -6,6 +6,7 @@ import { CoreFcaAgentNotFromPublicServiceException } from '@fc/core-fca/exceptio
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import { OidcAcrService } from '@fc/oidc-acr';
 import {
   ServiceProviderAdapterMongoService,
   Types,
@@ -28,8 +29,9 @@ export class CoreFcaMcpVerifyHandler
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
     protected readonly serviceProvider: ServiceProviderAdapterMongoService,
     protected readonly accountService: AccountFcaService,
+    protected readonly oidcAcr: OidcAcrService,
   ) {
-    super(logger, coreAcr, identityProvider, accountService);
+    super(logger, coreAcr, identityProvider, accountService, oidcAcr);
   }
 
   /**
@@ -64,6 +66,7 @@ export class CoreFcaMcpVerifyHandler
     const { maxAuthorizedAcr } = await this.identityProvider.getById(idpId);
 
     this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, maxAuthorizedAcr);
+    const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
 
     // todo: we will need to add a proper way to check and transform sessionOidc into IAgentIdentity
     const agentIdentity = idpIdentity as IAgentIdentity;
@@ -78,6 +81,7 @@ export class CoreFcaMcpVerifyHandler
       account.sub,
       fcaIdentity,
       account.id,
+      interactionAcr,
     );
   }
 }

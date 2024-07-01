@@ -10,6 +10,7 @@ import {
 } from '@fc/core-fca/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
+import { OidcAcrService } from '@fc/oidc-acr';
 import {
   ServiceProviderAdapterMongoService,
   Types,
@@ -84,6 +85,11 @@ describe('CoreFcaMcpVerifyHandler', () => {
     getAccountByIdpAgentKeys: jest.fn(),
   };
 
+  const oidcAcrMock = {
+    getInteractionAcr: jest.fn(),
+  };
+  const interactionAcrMock = 'interactionAcrMock';
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -94,6 +100,7 @@ describe('CoreFcaMcpVerifyHandler', () => {
         IdentityProviderAdapterMongoService,
         AccountFcaService,
         ServiceProviderAdapterMongoService,
+        OidcAcrService,
       ],
     })
       .overrideProvider(LoggerService)
@@ -108,6 +115,8 @@ describe('CoreFcaMcpVerifyHandler', () => {
       .useValue(accountFcaServiceMock)
       .overrideProvider(ServiceProviderAdapterMongoService)
       .useValue(serviceProviderAdapterMock)
+      .overrideProvider(OidcAcrService)
+      .useValue(oidcAcrMock)
       .compile();
 
     service = module.get<CoreFcaMcpVerifyHandler>(CoreFcaMcpVerifyHandler);
@@ -120,6 +129,8 @@ describe('CoreFcaMcpVerifyHandler', () => {
     identityProviderAdapterMock.getById.mockResolvedValue({
       maxAuthorizedAcr: 'maxAuthorizedAcr value',
     });
+
+    oidcAcrMock.getInteractionAcr.mockReturnValue(interactionAcrMock);
   });
 
   it('should be defined', () => {
@@ -250,6 +261,7 @@ describe('CoreFcaMcpVerifyHandler', () => {
           usual_name: idpIdentityMock.usual_name,
           is_service_public: true,
         },
+        interactionAcr: interactionAcrMock,
         subs: {
           sp_id: universalSubMock,
         },

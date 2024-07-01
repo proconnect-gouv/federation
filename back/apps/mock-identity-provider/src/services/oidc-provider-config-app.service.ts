@@ -23,7 +23,7 @@ export class OidcProviderConfigAppService extends OidcProviderAppConfigLibServic
     protected readonly errorService: OidcProviderErrorService,
     protected readonly grantService: OidcProviderGrantService,
     protected readonly config: ConfigService,
-    private readonly scenarios: ScenariosService,
+    protected readonly scenarios: ScenariosService,
   ) {
     super(logger, sessionService, errorService, grantService, config);
   }

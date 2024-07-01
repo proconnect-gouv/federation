@@ -19,7 +19,10 @@ export class OidcAcrConfig {
    * - defaultAcrValue -> 'anyAcr_3'
    */
   @AcrLevels()
-  readonly acrLevels: AcrLevelsConfig;
+  readonly knownAcrValues: AcrLevelsConfig;
+
+  @IsString({ each: true })
+  readonly allowedAcrValues: string[];
 
   @IsString()
   readonly defaultAcrValue: string;

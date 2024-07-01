@@ -430,6 +430,7 @@ describe('EuIdentityToFrController', () => {
         const expectedUpdatedSession = {
           idpIdentity: { sub: 'BE/FR/12345' },
           spAcr: successOidcJson.acr,
+          interactionAcr: successOidcJson.acr,
           spIdentity: {
             family_name: 'Garcia',
             given_name: 'javier',

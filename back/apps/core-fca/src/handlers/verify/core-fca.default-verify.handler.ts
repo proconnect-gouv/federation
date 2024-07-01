@@ -8,6 +8,7 @@ import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
+import { OidcAcrService } from '@fc/oidc-acr';
 import { OidcClientSession } from '@fc/oidc-client';
 import { ISessionService } from '@fc/session';
 
@@ -21,6 +22,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     protected readonly coreAcr: CoreAcrService,
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
     protected readonly accountService: AccountFcaService,
+    protected readonly oidcAcr: OidcAcrService,
   ) {}
 
   /**
@@ -43,6 +45,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     const { maxAuthorizedAcr } = await this.identityProvider.getById(idpId);
 
     this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, maxAuthorizedAcr);
+    const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
 
     const agentIdentity = idpIdentity as IAgentIdentity;
 
@@ -57,6 +60,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
       account.sub,
       fcaIdentity,
       account.id,
+      interactionAcr,
     );
   }
 
@@ -134,11 +138,15 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     };
   }
 
+  // New parameter needed
+  // @fixme Check with AC team what to do about that
+  // eslint-disable-next-line max-params
   protected storeIdentityWithSessionService(
     sessionOidc: ISessionService<OidcClientSession>,
     sub: string,
     spIdentity: Partial<Omit<IOidcIdentity, 'sub'>>,
     accountId: string,
+    interactionAcr: string,
   ): void {
     const { idpIdentity, spId, amr, subs } = sessionOidc.get();
 
@@ -147,6 +155,7 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
       idpIdentity,
       spIdentity,
       accountId,
+      interactionAcr,
       subs: { ...subs, [spId]: sub },
     };
 
