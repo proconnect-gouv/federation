@@ -140,6 +140,12 @@ export class ConnectionWorkflow {
     return this;
   }
 
+  fetchData(): this {
+    this.serviceProviderPage.getDataButton().click();
+    this.serviceProviderPage.getUserInfoButton().click();
+    return this;
+  }
+
   logout(): void {
     this.serviceProviderPage.logout();
   }
@@ -178,6 +184,25 @@ When("j'ai fait une cinématique FranceConnect", function () {
     .login(this.user)
     .consent()
     .checkIsConnected()
+    .logout();
+});
+
+When("j'ai fait une cinématique FranceConnect avec appel aux FD", function () {
+  expect(this.env).to.exist;
+  expect(this.serviceProvider).to.exist;
+  expect(this.scopes).to.exist;
+  expect(this.identityProvider).to.exist;
+  expect(this.user).to.exist;
+  const scopes = this.requestedScope || getDefaultScope(this.scopes);
+  new ConnectionWorkflow(this.env, this.serviceProvider)
+    .init()
+    .withScope(scopes)
+    .start()
+    .selectIdentityProvider(this.identityProvider)
+    .login(this.user)
+    .consent()
+    .checkIsConnected()
+    .fetchData()
     .logout();
 });
 
