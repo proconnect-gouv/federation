@@ -6,7 +6,8 @@
     "descriptions": [
       "par défaut",
       "actif",
-      "par défaut avec amr 'fc pwd'"
+      "par défaut avec amr 'fc pwd'",
+      "pour user-dashboard (core v2)"
     ],
     "mocked": true,
     "usable": true,
@@ -28,7 +29,8 @@
     "descriptions": [
       "différent",
       "actif",
-      "non autorisé pour idp_hint"
+      "non autorisé pour idp_hint",
+      "pour le test de préférences FI"
     ],
     "mocked": true,
     "usable": true,
@@ -41,6 +43,24 @@
       "username": "input[name='login']",
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
+    }
+  },
+  {
+    "idpId": "fip1",
+    "name": "identity-provider-example-faible",
+    "title": "Démonstration - faible",
+    "descriptions": ["différent"],
+    "mocked": true,
+    "usable": true,
+    "url": "https://fournisseur-d-identite.dev-franceconnect.fr",
+    "acrValue": "eidas1",
+    "encryption": "",
+    "signature": "HS256",
+    "selectors": {
+      "idpButton": "#idp-0d3ff50a-a477-4809-a42a-b18975084b9c",
+      "username": "input[name='login']",
+      "password": "input[name='password']",
+      "loginButton": "[type='submit']"
     }
   },
   {

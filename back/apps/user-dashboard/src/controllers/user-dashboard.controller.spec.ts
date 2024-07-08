@@ -3,7 +3,7 @@ import { v4 as uuid } from 'uuid';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { IPaginationResult } from '@fc/common';
+import { getTransformed, IPaginationResult } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CsrfTokenGuard } from '@fc/csrf';
 import { I18nService } from '@fc/i18n';
@@ -29,9 +29,15 @@ import { UserDashboardService } from '../services';
 import { UserDashboardController } from './user-dashboard.controller';
 
 jest.mock('uuid');
+jest.mock('@fc/common', () => ({
+  ...jest.requireActual('@fc/common'),
+  getTransformed: jest.fn(),
+}));
 
 describe('UserDashboardController', () => {
   let controller: UserDashboardController;
+
+  const getTransformedMock = jest.mocked(getTransformed);
 
   const oidcClientServiceMock = {
     getTokenFromProvider: jest.fn(),
@@ -454,6 +460,7 @@ describe('UserDashboardController', () => {
     it('should call userPreferences.getUserPreferencesList', async () => {
       // Given
       const { idp_id: _idpId, ...identityWithoutIdpIdMock } = identityMock;
+      getTransformedMock.mockReturnValueOnce(identityWithoutIdpIdMock);
 
       // When
       await controller.getUserPreferences(reqMock, resMock, sessionServiceMock);
@@ -578,6 +585,7 @@ describe('UserDashboardController', () => {
       const { allowFutureIdp, idpList } = updatePreferencesBodyMock;
       const expectedServicedArguments = { allowFutureIdp, idpList };
 
+      getTransformedMock.mockReturnValueOnce(identityWithoutIdpIdMock);
       userPreferencesMock.setUserPreferencesList.mockResolvedValueOnce(
         resolvedUserPreferencesMock,
       );

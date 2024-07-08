@@ -1,7 +1,7 @@
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 import {
-  getDefaultIdentityProvider,
+  getIdentityProviderByDescription,
   getServiceProviderByDescription,
   navigateTo,
 } from '../../common/helpers';
@@ -49,7 +49,11 @@ When('je me connecte au tableau de bord usager', function () {
     this.serviceProviders,
     'user-dashboard',
   );
-  const identityProvider = getDefaultIdentityProvider(this.identityProviders);
+  const IDP_DESCRIPTION = 'pour user-dashboard (core v2)';
+  const identityProvider = getIdentityProviderByDescription(
+    this.identityProviders,
+    IDP_DESCRIPTION,
+  );
   new ConnectionWorkflow(this.env, serviceProvider)
     .init()
     .start()

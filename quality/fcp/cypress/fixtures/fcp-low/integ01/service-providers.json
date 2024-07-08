@@ -45,5 +45,20 @@
       "logoutButton": ".nav-logout"
     },
     "authorizeHttpMethod": "get"
+  },
+  {
+    "name": "ud-home",
+    "descriptions": ["user-dashboard"],
+    "mocked": false,
+    "url": "https://tableaudebord.integ01.dev-franceconnect.fr",
+    "acrValue": "eidas1",
+    "claims": [],
+    "scopes": [],
+    "explicitConsent": false,
+    "selectors": {
+      "fcButton": "#login-form button",
+      "logoutButton": "[data-testid='logout-button-component']"
+    },
+    "authorizeHttpMethod": "get"
   }
 ]

@@ -41,6 +41,7 @@ back:
     - yarn lint
     - yarn prettier
     - yarn tsc --noEmit
+    - yarn test --coverage
   coverage: '/Global coverage is: \[([\d\.]+)%\]/'
   interruptible: true
 
