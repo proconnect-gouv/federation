@@ -7,8 +7,6 @@ import {
   MinLength,
 } from 'class-validator';
 
-import { IsSafeString } from '@fc/common';
-
 import { MandatoryIdentityDto } from './mandatory-identity.dto';
 
 export class OidcIdentityDto extends MandatoryIdentityDto {
@@ -16,7 +14,7 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
    * @todo #484 Faire un validator pour siren
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/484
    */
-  @IsSafeString()
+  @IsAscii()
   @IsOptional()
   @Expose()
   readonly siren?: string;
@@ -25,19 +23,19 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
    * @todo #484 Faire un validator pour siren
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/484
    */
-  @IsSafeString()
+  @IsAscii()
   @IsOptional()
   @Expose()
   readonly siret?: string;
 
-  @IsSafeString()
+  @IsAscii()
   @MinLength(1)
   @MaxLength(256)
   @IsOptional()
   @Expose()
   readonly organizational_unit?: string;
 
-  @IsSafeString()
+  @IsAscii()
   @MinLength(1)
   @MaxLength(256)
   @IsOptional()
@@ -49,7 +47,7 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
   @Expose()
   readonly phone_number?: string;
 
-  @IsSafeString()
+  @IsAscii()
   @MinLength(1)
   @MaxLength(256)
   @IsOptional()
