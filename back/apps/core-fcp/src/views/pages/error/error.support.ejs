@@ -25,7 +25,7 @@ const queryString = Object.entries(params).reduce((acc, [key, value]) => {
 
 const { href, buttonLabel } = $getCustomErrorSupport({
   code: locals.error.code,
-  url: `${$config('Core.supportFormUrl')}${queryString}`
+  href: `${$config('Core.supportFormUrl')}${queryString}`
 })
 
 %>
