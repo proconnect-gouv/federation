@@ -1,4 +1,5 @@
 const BASE_PRODUCTION_IDP_HIGH = {
+  eidas: 3,
   allowedAcr: ["eidas3"],
   mailto: "",
   order: null,
