@@ -11,6 +11,7 @@ db.provider.update(
     image: "fi-mock-eleve.svg",
     imageFocus: "fi-mock-eleve.svg",
     alt: "idp test",
+    eidas: 3,
     allowedAcr: ["eidas3"],
     mailto: "",
     featureHandlers: { coreVerify: "core-fca-default-verify" },

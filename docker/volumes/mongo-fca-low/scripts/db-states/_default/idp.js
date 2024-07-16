@@ -12,6 +12,7 @@ const fia = {
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     mailto: "",
     featureHandlers: {
@@ -62,6 +63,7 @@ const fia = {
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     mailto: "",
     featureHandlers: {
@@ -112,6 +114,7 @@ const fia = {
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     mailto: "",
     featureHandlers: {
@@ -162,6 +165,7 @@ const fia = {
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     featureHandlers: {
       coreVerify: "core-fca-default-verify",
@@ -212,6 +216,7 @@ const fia = {
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     featureHandlers: {
       coreVerify: "core-fca-default-verify",
@@ -262,6 +267,7 @@ const fia = {
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     mailto: "",
     featureHandlers: {
@@ -312,6 +318,7 @@ const fia = {
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     mailto: "",
     featureHandlers: {
@@ -362,6 +369,7 @@ const fia = {
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     mailto: "",
     featureHandlers: {
@@ -412,6 +420,7 @@ const fia = {
     imageFocus: "fi-mock-faible.svg",
     alt: "moncomptepro ",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     mailto: "",
     featureHandlers: {
@@ -462,6 +471,7 @@ const fia = {
     imageFocus: "fi-mock-faible.svg",
     alt: "impots",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     mailto: "",
     featureHandlers: {
@@ -512,6 +522,7 @@ const fia = {
     imageFocus: "fi-mock-eleve.svg",
     alt: "llng",
     trustedIdentity: false,
+    eidas: 1,
     allowedAcr: ["eidas1"],
     featureHandlers: {
       coreVerify: "core-fca-default-verify",
