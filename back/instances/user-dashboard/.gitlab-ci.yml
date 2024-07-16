@@ -40,6 +40,21 @@ user-dashboard:
     # Make docker-stack an alias
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
+    - node -v
+    - apt update && apt install -y jq
+      # build the main apps and check if they are impacted by MR
+    - BACK_DIFF_FILES=$(docker-stack detect-back-changes user-dashboard csmr-tracks-instance csmr-account-instance csmr-user-preferences-high)
+    - BACK_DIFF_CHECK_STATUS=$(echo "$BACK_DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
+    - echo "$BACK_DIFF_CHECK_STATUS"
+    - if [ "$BACK_DIFF_CHECK_STATUS" == "ERRORS" ]; then echo "$BACK_DIFF_FILES"; exit 1; fi
+
+    - FRONT_DIFF_FILES=$(docker-stack detect-front-changes user-dashboard)
+    - echo "$FRONT_DIFF_FILES"
+    - FRONT_DIFF_CHECK_STATUS=$(echo "$FRONT_DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
+    - echo "$FRONT_DIFF_CHECK_STATUS"
+    - if [ "$FRONT_DIFF_CHECK_STATUS" == "ERRORS" ]; then echo "$FRONT_DIFF_FILES"; exit 1; fi
+    - if [ "$BACK_DIFF_CHECK_STATUS" == "NO_CHANGES" ] && [ "$FRONT_DIFF_CHECK_STATUS" == "NO_CHANGES" ]; then exit 0; fi
+
       # Test Scope definition
     - BDD_TAGS=${BDD_TAGS_UD:-$BDD_TAGS}
     - echo "BDD_TAGS=$BDD_TAGS"

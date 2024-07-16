@@ -5,7 +5,7 @@
   "description": "FC Front Apps mono repository",
   "private": true,
   "engines": {
-    "node": ">=18.16.1 < 19"
+    "node": ">=18.16.0 < 19"
   },
   "workspaces": [
     ".configs/*",

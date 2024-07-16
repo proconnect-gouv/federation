@@ -41,11 +41,11 @@ fcp-low:
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     # build the main apps and check if they are impacted by MR
-    - DIFF_FILES=$(docker-stack ci-diff-files core-fcp-low mock-service-provider-fcp-low mock-identity-provider-fcp-low mock-data-provider)
+    - DIFF_FILES=$(docker-stack detect-back-changes core-fcp-low mock-service-provider-fcp-low mock-identity-provider-fcp-low mock-data-provider)
     - DIFF_CHECK_STATUS=$(echo "$DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
     - echo "$DIFF_CHECK_STATUS"
     - if [ "$DIFF_CHECK_STATUS" == "NO_CHANGES" ]; then exit 0; fi
-    - if [ "$DIFF_CHECK_STATUS" == "ERRORS" ]; then exit 1; fi
+    - if [ "$DIFF_CHECK_STATUS" == "ERRORS" ]; then echo "$DIFF_FILES"; exit 1; fi
       # Test Scope definition
     - BDD_TAGS=${BDD_TAGS_FCP_LOW:-$BDD_TAGS}
     - echo "BDD_TAGS=$BDD_TAGS"
