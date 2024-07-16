@@ -40,11 +40,11 @@ fca-low:
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     # build the main app and check if it is impacted by MR
-    - DIFF_FILES=$(docker-stack ci-diff-files core-fca-low bridge-http-proxy-rie csmr-rie mock-identity-provider-fca-low mock-service-provider-fca-low)
+    - DIFF_FILES=$(docker-stack detect-back-changes core-fca-low bridge-http-proxy-rie csmr-rie mock-identity-provider-fca-low mock-service-provider-fca-low)
     - DIFF_CHECK_STATUS=$(echo "$DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
     - echo "$DIFF_CHECK_STATUS"
     - if [ "$DIFF_CHECK_STATUS" == "NO_CHANGES" ]; then exit 0; fi
-    - if [ "$DIFF_CHECK_STATUS" == "ERRORS" ]; then exit 1; fi
+    - if [ "$DIFF_CHECK_STATUS" == "ERRORS" ]; then echo "$DIFF_FILES"; exit 1; fi
     # Test Scope definition
     - BDD_TAGS=${BDD_TAGS_FCA_LOW:-$BDD_TAGS}
     - echo "BDD_TAGS=$BDD_TAGS"
