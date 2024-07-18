@@ -91,6 +91,10 @@ export default class ServiceProviderPage {
     }
   }
 
+  disablePrompt(): void {
+    cy.get('#prompt_toggle').uncheck();
+  }
+
   setPrompt(prompt: string): void {
     cy.get('input[name="prompt"').clearThenType(prompt);
   }

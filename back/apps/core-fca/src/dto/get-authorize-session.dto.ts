@@ -7,6 +7,7 @@ import {
   IsJWT,
   IsNotEmpty,
   IsObject,
+  IsOptional,
   IsString,
 } from 'class-validator';
 
@@ -64,6 +65,7 @@ export class GetAuthorizeOidcClientSsoSession extends CoreBaseOidcClientSessionD
   @Expose()
   readonly idpIdentity: PartialExcept<IOidcIdentity, 'sub'> | IOidcIdentity;
 
+  @IsOptional()
   @IsBoolean()
   @Expose()
   readonly isSilentAuthentication: boolean;
