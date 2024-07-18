@@ -139,6 +139,10 @@ Given(
 );
 
 Given('je rentre {string} dans le champ prompt', function (prompt: string) {
+  if (prompt === 'disabled') {
+    serviceProviderPage.disablePrompt();
+    return;
+  }
   serviceProviderPage.setPrompt(prompt);
 });
 
