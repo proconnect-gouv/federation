@@ -93,7 +93,7 @@ Fonctionnalité: Connexion Notification
     Et que j'utilise un fournisseur d'identité avec niveau de sécurité "eidas3"
     Et que je clique sur le fournisseur d'identité
     Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que le fournisseur d'identité garantit un niveau de sécurité "eidas2"
+    Et que le fournisseur d'identité garantit un niveau de sécurité "eidas3"
     Et que je m'authentifie avec succès
     Et que je suis redirigé vers la page confirmation de connexion
     Et que je continue sur le fournisseur de service

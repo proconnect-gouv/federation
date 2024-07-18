@@ -124,12 +124,12 @@ export class CoreFcpController {
 
     const authorizedProviders = providers.map((provider) => {
       const isAcrValid = this.oidcAcr.isAcrValid(
-        provider.maxAuthorizedAcr,
+        this.oidcAcr.getMaxAcr(provider.allowedAcr),
         acrValues,
       );
 
       const isInsufficientAcrLevel = this.coreFcp.isInsufficientAcrLevel(
-        provider.maxAuthorizedAcr,
+        this.oidcAcr.getMinAcr(provider.allowedAcr),
         isSuspicious,
       );
 

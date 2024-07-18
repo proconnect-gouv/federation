@@ -42,9 +42,9 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
     const { idpId, idpIdentity, idpAcr, spAcr } = sessionOidc.get();
 
     // Acr check
-    const { maxAuthorizedAcr } = await this.identityProvider.getById(idpId);
+    const { allowedAcr } = await this.identityProvider.getById(idpId);
 
-    this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, maxAuthorizedAcr);
+    this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, allowedAcr);
     const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
 
     const agentIdentity = idpIdentity as IAgentIdentity;

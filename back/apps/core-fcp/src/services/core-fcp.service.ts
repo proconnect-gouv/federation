@@ -125,9 +125,9 @@ export class CoreFcpService implements CoreFcpServiceInterface {
   async redirectToIdp(
     res: Response,
     idpId: string,
-    // acr_values is an oidc defined variable name
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    { acr_values }: Pick<CoreFcpAuthorizationParametersInterface, 'acr_values'>,
+    {
+      acr_values: spAcr,
+    }: Pick<CoreFcpAuthorizationParametersInterface, 'acr_values'>,
   ): Promise<void> {
     const { spId } = this.session.get<OidcSession>('OidcClient');
     const { scope } = this.config.get<OidcClientConfig>('OidcClient');
@@ -137,6 +137,13 @@ export class CoreFcpService implements CoreFcpServiceInterface {
 
     const { nonce, state } =
       await this.oidcClient.utils.buildAuthorizeParameters();
+
+    const {
+      allowedAcr,
+      name: idpName,
+      title: idpLabel,
+    } = await this.identityProvider.getById(idpId);
+    const acr_values = this.oidcAcr.getAcrToAskToIdp(spAcr, allowedAcr);
 
     const authorizeParams: CoreFcpAuthorizationParametersInterface = {
       // acr_values is an oidc defined variable name
@@ -155,8 +162,6 @@ export class CoreFcpService implements CoreFcpServiceInterface {
       authorizeParams,
     );
 
-    const { name: idpName, title: idpLabel } =
-      await this.identityProvider.getById(idpId);
     const sessionPayload: OidcClientSession = {
       idpId,
       idpName,

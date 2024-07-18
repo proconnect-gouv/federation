@@ -29,6 +29,7 @@ describe('CoreFcpService', () => {
 
   const oidcAcrServiceMock = {
     isAcrValid: jest.fn(),
+    getAcrToAskToIdp: jest.fn(),
   };
 
   const sessionServiceMock = getSessionServiceMock();

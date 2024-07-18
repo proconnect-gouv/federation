@@ -218,7 +218,9 @@
       "@mocks/dto2form": ["libs/dto2form/.mocks"],
       "@mocks/dto2form/*": ["libs/dto2form/.mocks/*"],
       "@fc/logger-plugins": ["libs/logger-plugins/src"],
-      "@fc/logger-plugins/*": ["libs/logger-plugins/src/*"]
+      "@fc/logger-plugins/*": ["libs/logger-plugins/src/*"],
+      "@mocks/common": ["libs/common/.mocks"],
+      "@mocks/common/*": ["libs/common/.mocks/*"]
     }
   },
   "files": ["global.d.ts"],

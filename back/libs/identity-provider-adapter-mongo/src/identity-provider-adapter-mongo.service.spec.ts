@@ -35,7 +35,7 @@ describe('IdentityProviderAdapterMongoService', () => {
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
     display: false,
-    eidas: 2,
+    allowedAcr: ['eidas2'],
     endSessionURL:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
     featureHandlers: {
@@ -71,7 +71,7 @@ describe('IdentityProviderAdapterMongoService', () => {
     client_secret: '7vhnwzo1yUVOJT9GJ91gD5oid56effu1',
     discovery: false,
     display: false,
-    maxAuthorizedAcr: 'eidas2',
+    allowedAcr: ['eidas2'],
     end_session_endpoint:
       'https://core-fcp-high.docker.dev-franceconnect.fr/api/v2/session/end',
     featureHandlers: {
@@ -117,7 +117,7 @@ describe('IdentityProviderAdapterMongoService', () => {
     amr: [Amr.MAIL, Amr.PWD],
     discovery: false,
     display: false,
-    maxAuthorizedAcr: 'eidas2',
+    allowedAcr: ['eidas2'],
     featureHandlers: {
       authenticationEmail: null,
       coreVerify: 'core-fcp-default-verify',

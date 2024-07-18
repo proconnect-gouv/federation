@@ -41,9 +41,9 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
     const { entityId } = await this.serviceProvider.getById(spId);
 
     // Acr check
-    const { maxAuthorizedAcr } = await this.identityProvider.getById(idpId);
+    const { allowedAcr } = await this.identityProvider.getById(idpId);
 
-    this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, maxAuthorizedAcr);
+    this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, allowedAcr);
     const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
 
     const identityHash = this.cryptographyEidas.computeIdentityHash(
