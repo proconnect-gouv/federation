@@ -48,8 +48,8 @@ export class IdentityProvider extends Document {
   @Prop({ type: SchemaNative.Types.Mixed })
   featureHandlers: IFeatureHandlerDatabase;
 
-  @Prop({ type: Number })
-  eidas: number;
+  @Prop({ type: [String] })
+  allowedAcr: string[];
 }
 
 export const IdentityProviderSchema =

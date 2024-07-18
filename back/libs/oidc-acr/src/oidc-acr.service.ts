@@ -44,4 +44,43 @@ export class OidcAcrService {
      */
     return spAcr;
   }
+
+  getAcrToAskToIdp(spAcr: string, idpAllowedAcr: string[]): string {
+    const { knownAcrValues } = this.config.get<OidcAcrConfig>('OidcAcr');
+
+    const idpMinAllowedAcr = this.getMinAcr(idpAllowedAcr);
+
+    const acr =
+      knownAcrValues[spAcr] > knownAcrValues[idpMinAllowedAcr]
+        ? spAcr
+        : idpMinAllowedAcr;
+
+    return acr;
+  }
+
+  getMinAcr(acrList: string[]): string {
+    const sorted = this.getSortedAcrList(acrList);
+
+    const minAcr = sorted.shift();
+
+    return minAcr;
+  }
+
+  getMaxAcr(acrList: string[]): string {
+    const sorted = this.getSortedAcrList(acrList);
+
+    const minAcr = sorted.pop();
+
+    return minAcr;
+  }
+
+  private getSortedAcrList(acrList: string[]): string[] {
+    const { knownAcrValues } = this.config.get<OidcAcrConfig>('OidcAcr');
+
+    const sorted = Array.from(acrList).sort(
+      (a, b) => knownAcrValues[a] - knownAcrValues[b],
+    );
+
+    return sorted;
+  }
 }

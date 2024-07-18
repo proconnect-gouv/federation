@@ -17,6 +17,13 @@ Then(
   },
 );
 
+Then(
+  /^Le fournisseur d'identité a été appelé avec le niveau de sécurité "([^"]+)"$/,
+  function (idpAcr: string) {
+    identityProviderPage.checkMockAcrValue(idpAcr);
+  },
+);
+
 Given(
   "le fournisseur d'identité garantit un niveau de sécurité {string}",
   function (idpAcr: string) {

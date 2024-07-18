@@ -39,7 +39,7 @@ describe('OidcAcrService', () => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 
-    configServiceMock.get.mockReturnValueOnce({
+    configServiceMock.get.mockReturnValue({
       knownAcrValues: knownAcrValuesMock,
       allowedAcrValues: allowedAcrValuesMock,
     });
@@ -170,5 +170,101 @@ describe('OidcAcrService', () => {
       // Then
       expect(result).toBe('spAcrValue');
     });
+  });
+
+  describe('getAcrToAskToIdp', () => {
+    // @note We do not mock getMinAcr() as it keeps the test simpler
+
+    it('should return the sp acr value when it is higher than minimal idp acr', () => {
+      // Given
+      const spAcr = 'eidas2';
+      const idpAllowedAcr = ['eidas1', 'eidas2', 'eidas3'];
+
+      // When
+      const result = service.getAcrToAskToIdp(spAcr, idpAllowedAcr);
+
+      // Then
+      expect(result).toBe('eidas2');
+    });
+
+    it('should return the minimal idp acr value when it is higher than sp acr', () => {
+      // Given
+      const spAcr = 'eidas1';
+      const idpAllowedAcr = ['eidas2', 'eidas3'];
+
+      // When
+      const result = service.getAcrToAskToIdp(spAcr, idpAllowedAcr);
+
+      // Then
+      expect(result).toBe('eidas2');
+    });
+
+    it('should return the sp acr value even if the idp does not reach the sp acr', () => {
+      // Given
+      const spAcr = 'eidas3';
+      const idpAllowedAcr = ['eidas1', 'eidas2'];
+
+      // When
+      const result = service.getAcrToAskToIdp(spAcr, idpAllowedAcr);
+
+      // Then
+      expect(result).toBe('eidas3');
+    });
+  });
+
+  describe('getMinAcr', () => {
+    it('should return the minimum acr value', () => {
+      // Given
+      const acrList = ['eidas1', 'eidas2', 'eidas3'];
+
+      const sortedListMock = ['a', 'b', 'c'];
+      service['getSortedAcrList'] = jest.fn().mockReturnValue(sortedListMock);
+
+      // When
+      const result = service['getMinAcr'](acrList);
+
+      // Then
+      expect(result).toBe('a');
+    });
+  });
+
+  describe('getMaxAcr', () => {
+    it('should return the maximum acr value', () => {
+      // Given
+      const acrList = ['eidas1', 'eidas2', 'eidas3'];
+
+      const sortedListMock = ['a', 'b', 'c'];
+      service['getSortedAcrList'] = jest.fn().mockReturnValue(sortedListMock);
+
+      // When
+      const result = service['getMaxAcr'](acrList);
+
+      // Then
+      expect(result).toBe('c');
+    });
+  });
+
+  describe('getSortedAcrList', () => {
+    const expectedResult = ['eidas1', 'eidas2', 'eidas3'];
+
+    const inputs = [
+      ['eidas1', 'eidas2', 'eidas3'],
+      ['eidas1', 'eidas3', 'eidas2'],
+      ['eidas2', 'eidas1', 'eidas3'],
+      ['eidas2', 'eidas3', 'eidas1'],
+      ['eidas3', 'eidas1', 'eidas2'],
+      ['eidas3', 'eidas2', 'eidas1'],
+    ];
+
+    it.each(inputs)(
+      'should return the sorted acr list for input %s, %s, %s',
+      (...acrList) => {
+        // When
+        const result = service['getSortedAcrList'](acrList);
+
+        // Then
+        expect(result).toEqual(expectedResult);
+      },
+    );
   });
 });

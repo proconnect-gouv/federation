@@ -64,6 +64,8 @@ describe('CoreFcpController', () => {
 
   const oidcAcrServiceMock = {
     isAcrValid: jest.fn(),
+    getMaxAcr: jest.fn(),
+    getMinAcr: jest.fn(),
   };
 
   const coreAcrServiceMock = {
@@ -288,7 +290,7 @@ describe('CoreFcpController', () => {
     const idpFilterExcludeMock = true;
 
     const aidantsConnectProviderMock = {
-      maxAuthorizedAcr: 'eidas1',
+      allowedAcr: ['eidas1'],
       name: 'idp-aidants-connect',
       uid: 'idp-aidants-connect-uid',
       active: true,
@@ -297,17 +299,17 @@ describe('CoreFcpController', () => {
 
     const idpFilterListMock = [
       {
-        maxAuthorizedAcr: 'eidas1',
+        allowedAcr: ['eidas1'],
         name: 'idp2',
         uid: 'idp2',
       },
       {
-        maxAuthorizedAcr: 'eidas2',
+        allowedAcr: ['eidas2'],
         name: 'idp3',
         uid: 'idp3',
       },
       {
-        maxAuthorizedAcr: 'eidas3',
+        allowedAcr: ['eidas3'],
         name: 'idp4',
         uid: 'idp4',
       },
@@ -326,6 +328,8 @@ describe('CoreFcpController', () => {
         idpFilterListMock,
       );
       deviceSessionServiceMock.get.mockReturnValue(false);
+      oidcAcrServiceMock.getMaxAcr.mockReturnValue('maxAcrValue');
+      oidcAcrServiceMock.getMinAcr.mockReturnValue('minAcrValue');
       oidcAcrServiceMock.isAcrValid.mockReturnValue(true);
       coreFcpServiceMock.isInsufficientAcrLevel.mockReturnValue(false);
       notificationsServiceMock.getNotificationToDisplay.mockResolvedValue(
@@ -486,17 +490,17 @@ describe('CoreFcpController', () => {
       expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(3);
       expect(oidcAcrServiceMock.isAcrValid).toHaveBeenNthCalledWith(
         1,
-        idpFilterListMock[0].maxAuthorizedAcr,
+        'maxAcrValue',
         interactionDetailsMock.params.acr_values,
       );
       expect(oidcAcrServiceMock.isAcrValid).toHaveBeenNthCalledWith(
         2,
-        idpFilterListMock[1].maxAuthorizedAcr,
+        'maxAcrValue',
         interactionDetailsMock.params.acr_values,
       );
       expect(oidcAcrServiceMock.isAcrValid).toHaveBeenNthCalledWith(
         3,
-        idpFilterListMock[2].maxAuthorizedAcr,
+        'maxAcrValue',
         interactionDetailsMock.params.acr_values,
       );
     });
@@ -524,17 +528,17 @@ describe('CoreFcpController', () => {
       );
       expect(coreFcpServiceMock.isInsufficientAcrLevel).toHaveBeenNthCalledWith(
         1,
-        idpFilterListMock[0].maxAuthorizedAcr,
+        'minAcrValue',
         false,
       );
       expect(coreFcpServiceMock.isInsufficientAcrLevel).toHaveBeenNthCalledWith(
         2,
-        idpFilterListMock[1].maxAuthorizedAcr,
+        'minAcrValue',
         false,
       );
       expect(coreFcpServiceMock.isInsufficientAcrLevel).toHaveBeenNthCalledWith(
         3,
-        idpFilterListMock[2].maxAuthorizedAcr,
+        'minAcrValue',
         false,
       );
     });

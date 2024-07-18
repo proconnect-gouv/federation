@@ -63,9 +63,9 @@ export class CoreFcaMcpVerifyHandler
     }
 
     // Acr check
-    const { maxAuthorizedAcr } = await this.identityProvider.getById(idpId);
+    const { allowedAcr } = await this.identityProvider.getById(idpId);
 
-    this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, maxAuthorizedAcr);
+    this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, allowedAcr);
     const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
 
     // todo: we will need to add a proper way to check and transform sessionOidc into IAgentIdentity

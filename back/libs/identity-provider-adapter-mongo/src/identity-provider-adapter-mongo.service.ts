@@ -93,7 +93,7 @@ export class IdentityProviderAdapterMongoService
           discovery: true,
           discoveryUrl: true,
           display: true,
-          eidas: true,
+          allowedAcr: true,
           featureHandlers: true,
           id_token_encrypted_response_alg: true,
           id_token_encrypted_response_enc: true,
@@ -230,8 +230,6 @@ export class IdentityProviderAdapterMongoService
       tokenURL: 'token_endpoint',
       url: 'issuer',
       userInfoURL: 'userinfo_endpoint',
-      // Business properties
-      eidas: 'maxAuthorizedAcr',
     };
 
     const result: Partial<IdentityProvider & IdentityProviderMetadata> = {
@@ -244,7 +242,6 @@ export class IdentityProviderAdapterMongoService
     });
 
     result.client_secret = this.decryptClientSecret(source.client_secret);
-    result.maxAuthorizedAcr = `eidas${source['eidas']}`;
 
     /**
      * @TODO #326 Fix type issues between legacy model and `oidc-client` library

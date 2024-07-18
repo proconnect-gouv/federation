@@ -7,7 +7,6 @@ import {
   IsBoolean,
   IsEnum,
   IsNotEmpty,
-  IsNumber,
   IsObject,
   IsOptional,
   IsString,
@@ -19,6 +18,7 @@ import {
   ValidateNested,
 } from 'class-validator';
 
+import { IsIncludedInConfig } from '@fc/common';
 import {
   IFeatureHandlerDatabase,
   IsRegisteredHandler,
@@ -96,8 +96,8 @@ export class MetadataIdpAdapterMongoDTO {
   /**
    * CLIENT METADATA
    */
-  @IsNumber()
-  readonly eidas: number;
+  @IsIncludedInConfig('IdentityProviderAdapterMongo', 'allowedAcr')
+  readonly allowedAcr: string[];
 
   @IsString()
   readonly clientID: string;

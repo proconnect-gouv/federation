@@ -726,7 +726,7 @@ const fip = {
     imageFocus: "fi-europe.svg",
     alt: "eIDAS Bridge",
     eidas: 2,
-    allowedAcr: ["eidas1", "eidas2", "eidas3"],
+    allowedAcr: ["eidas2", "eidas3"],
     mailto: "",
     featureHandlers: {
       coreVerify: "core-fcp-eidas-verify",

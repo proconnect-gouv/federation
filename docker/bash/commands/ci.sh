@@ -159,8 +159,10 @@ _ci_job_relevant_for_back_apps() {
     yarn "build:${app}"
   done
 
+  echo "Fetch target branch ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}..."
+
   # Auto fetch ci MR target revision
-  git fetch origin "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}"
+  git fetch origin "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" --
 
   # Search for updated files
   local files=$(_get_modified_files_for_back_apps "${@}" "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" 2>&1)
