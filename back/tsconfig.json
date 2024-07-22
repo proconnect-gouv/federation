@@ -75,8 +75,6 @@
       "@fc/exceptions-fcp/*": ["libs/exceptions-fcp/src/*"],
       "@fc/exceptions-deprecated": ["libs/exceptions-deprecated/src"],
       "@fc/exceptions-deprecated/*": ["libs/exceptions-deprecated/src/*"],
-      "@fc/ministries": ["libs/ministries/src"],
-      "@fc/ministries/*": ["libs/ministries/src/*"],
       "@fc/mongoose": ["libs/mongoose/src"],
       "@fc/mongoose/*": ["libs/mongoose/src/*"],
       "@fc/redis": ["libs/redis/src"],

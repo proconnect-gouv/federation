@@ -13,11 +13,6 @@ load("/opt/scripts/db-states/_default/account-fca.js");
 
 /* ------------------------------------------------------------------------------- */
 
-print("Initializing MINISTRIES...");
-load("/opt/scripts/db-states/_default/ministries.js");
-
-/* ------------------------------------------------------------------------------- */
-
 print("Initializing Scopes...");
 load("/opt/scripts/db-states/_default/scopes.js");
 
