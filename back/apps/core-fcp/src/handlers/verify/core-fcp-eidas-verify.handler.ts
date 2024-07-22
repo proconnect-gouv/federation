@@ -37,14 +37,19 @@ export class CoreFcpEidasVerifyHandler implements IVerifyFeatureHandler {
     this.logger.debug('getConsent service: ##### core-fcp-eidas-verify ');
 
     // Grab informations on interaction and identity
-    const { idpId, idpIdentity, idpAcr, spId, spAcr, subs } = sessionOidc.get();
+    const { idpId, idpIdentity, idpAcr, spId, spAcr, subs, isSso } =
+      sessionOidc.get();
     const { entityId } = await this.serviceProvider.getById(spId);
 
     // Acr check
     const { allowedAcr } = await this.identityProvider.getById(idpId);
 
     this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, allowedAcr);
-    const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
+    const interactionAcr = this.oidcAcr.getInteractionAcr({
+      idpAcr,
+      spAcr,
+      isSso,
+    });
 
     const identityHash = this.cryptographyEidas.computeIdentityHash(
       idpIdentity as IOidcIdentity,

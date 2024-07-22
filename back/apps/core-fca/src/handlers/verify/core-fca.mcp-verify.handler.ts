@@ -48,7 +48,8 @@ export class CoreFcaMcpVerifyHandler
   }: IVerifyFeatureHandlerHandleArgument): Promise<void> {
     this.logger.debug('verifyIdentity service: ##### core-fca-mcp-verify');
 
-    const { idpId, idpIdentity, idpAcr, spAcr, spId } = sessionOidc.get();
+    const { idpId, idpIdentity, idpAcr, spAcr, spId, isSso } =
+      sessionOidc.get();
     // Check if the sp accepts private employees
     const { type } = await this.serviceProvider.getById(spId);
 
@@ -66,7 +67,11 @@ export class CoreFcaMcpVerifyHandler
     const { allowedAcr } = await this.identityProvider.getById(idpId);
 
     this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, allowedAcr);
-    const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
+    const interactionAcr = this.oidcAcr.getInteractionAcr({
+      idpAcr,
+      spAcr,
+      isSso,
+    });
 
     // todo: we will need to add a proper way to check and transform sessionOidc into IAgentIdentity
     const agentIdentity = idpIdentity as IAgentIdentity;

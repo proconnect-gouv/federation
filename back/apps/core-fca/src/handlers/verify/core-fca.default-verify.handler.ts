@@ -39,13 +39,17 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   }: IVerifyFeatureHandlerHandleArgument): Promise<void> {
     this.logger.debug('verifyIdentity service: ##### core-fca-default-verify');
 
-    const { idpId, idpIdentity, idpAcr, spAcr } = sessionOidc.get();
+    const { idpId, idpIdentity, idpAcr, spAcr, isSso } = sessionOidc.get();
 
     // Acr check
     const { allowedAcr } = await this.identityProvider.getById(idpId);
 
     this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, allowedAcr);
-    const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
+    const interactionAcr = this.oidcAcr.getInteractionAcr({
+      idpAcr,
+      spAcr,
+      isSso,
+    });
 
     const agentIdentity = idpIdentity as IAgentIdentity;
 

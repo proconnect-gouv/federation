@@ -78,7 +78,11 @@ export class CoreFcpDefaultVerifyHandler implements IVerifyFeatureHandler {
     const { allowedAcr } = await this.identityProvider.getById(idpId);
 
     this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, allowedAcr);
-    const interactionAcr = this.oidcAcr.getInteractionAcr({ idpAcr, spAcr });
+    const interactionAcr = this.oidcAcr.getInteractionAcr({
+      idpAcr,
+      spAcr,
+      isSso,
+    });
 
     const rnippIdentity = await this.retrieveRnippIdentity(
       isSso,

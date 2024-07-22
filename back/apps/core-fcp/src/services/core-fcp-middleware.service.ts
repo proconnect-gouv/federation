@@ -13,7 +13,7 @@ import { DeviceService } from '@fc/device';
 import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
 import { OidcSession, stringToArray } from '@fc/oidc';
-import { OidcAcrService } from '@fc/oidc-acr';
+import { OidcAcrConfig, OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcCtx,
   OidcProviderErrorService,
@@ -158,7 +158,8 @@ export class CoreFcpMiddlewareService extends CoreOidcProviderMiddlewareService 
     spAcr: string,
   ): Promise<void> {
     const { res } = ctx;
-    const { allowedSsoAcrs, enableSso } = this.config.get<CoreConfig>('Core');
+    const { enableSso } = this.config.get<CoreConfig>('Core');
+    const { allowedSsoAcrs } = this.config.get<OidcAcrConfig>('OidcAcr');
     const hasAuthorizedAcr = allowedSsoAcrs.includes(spAcr);
     const isSsoSession =
       enableSso && hasAuthorizedAcr && isFinishedInteractionSession;

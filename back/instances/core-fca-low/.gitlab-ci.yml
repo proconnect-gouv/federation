@@ -42,7 +42,7 @@ fca-low:
     # build the main app and check if it is impacted by MR
     - DIFF_FILES=$(docker-stack detect-back-changes core-fca-low bridge-http-proxy-rie csmr-rie mock-identity-provider-fca-low mock-service-provider-fca-low)
     - DIFF_CHECK_STATUS=$(echo "$DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
-    - echo "$DIFF_CHECK_STATUS"
+    - echo "$DIFF_FILES"
     - if [ "$DIFF_CHECK_STATUS" == "NO_CHANGES" ]; then exit 0; fi
     - if [ "$DIFF_CHECK_STATUS" == "ERRORS" ]; then echo "$DIFF_FILES"; exit 1; fi
     # Test Scope definition

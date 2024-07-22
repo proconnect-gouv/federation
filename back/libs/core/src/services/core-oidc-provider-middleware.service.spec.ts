@@ -1026,10 +1026,13 @@ describe('CoreOidcProviderMiddlewareService', () => {
     const idpAcrMock = 'eidas2';
 
     beforeEach(() => {
-      configServiceMock.get.mockReturnValueOnce({
-        allowedSsoAcrs: ['eidas2'],
-        enableSso: true,
-      });
+      configServiceMock.get
+        .mockReturnValueOnce({
+          enableSso: true,
+        })
+        .mockReturnValueOnce({
+          allowedSsoAcrs: ['eidas2'],
+        });
 
       sessionServiceMock.get.mockReturnValue({
         idpAcr: idpAcrMock,

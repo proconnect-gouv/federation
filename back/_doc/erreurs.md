@@ -234,3 +234,7 @@
 | [Y510001](../libs/device/src/exceptions/device-cookie-invalid-json.exception.ts "DeviceCookieInvalidJsonException") | 400 |  | Le cookie &#34;device&#34; contient des données mal formatées, indiquer de vider les cookies et prévenir SN3 situation anormale | invalid_request | required parameter missing or invalid |
 | [Y510002](../libs/device/src/exceptions/device-cookie-invalid-data.exception.ts "DeviceCookieInvalidDataException") | 400 |  | Le cookie &#34;device&#34; contient des données invalides, indiquer de vider les cookies et prévenir SN3 situation anormale | invalid_request | required parameter missing or invalid |
 
+| Code d'erreur | Code HTTP | Message utilisateur | Description | Erreur | Erreur Description |
+|---|---|---|---|---|---|
+| [Y520001](../libs/oidc-acr/src/exceptions/oidc-acr-no-sso-allowed-acr-found.exception.ts "OidcAcrNoSsoAllowedAcrFoundException") | 500 | No SSO allowed ACR found | Une connexion SSO a échouée car le niveau ACR n&#39;a pas pu être déterminé | server_error | authentication aborted due to a technical error on the authorization server |
+
