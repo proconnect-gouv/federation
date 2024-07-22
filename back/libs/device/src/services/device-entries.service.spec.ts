@@ -130,14 +130,12 @@ describe('DeviceEntriesService', () => {
   });
 
   describe('push', () => {
-    beforeEach(() => {
-      service['isNotExpired'] = jest.fn().mockReturnValue(true);
-    });
-
     it('should fetch maxIdentityNumber from config', () => {
       // Given
       const entries = [];
       const entry = { h: 'hash', d: 123 };
+
+      service['filterValidEntries'] = jest.fn().mockReturnValueOnce(entries);
 
       // When
       service.push(entries, entry);
@@ -164,15 +162,19 @@ describe('DeviceEntriesService', () => {
         d: 789,
       };
 
+      service['filterValidEntries'] = jest.fn().mockReturnValueOnce(entries);
+
+      const expected = [...entries, entry];
+
       // When
       const result = service.push(entries, entry);
 
       // Then
       expect(result.length).toBe(3);
-      expect(result).toEqual([...entries, entry]);
+      expect(result).toEqual(expected);
     });
 
-    it('should not add a new entry if it already exists', () => {
+    it('should add a new entry with correct timestamp if user already exist', () => {
       // Given
       const entries = [
         {
@@ -190,12 +192,14 @@ describe('DeviceEntriesService', () => {
         d: 789,
       };
 
+      service['filterValidEntries'] = jest.fn().mockReturnValueOnce(entries);
+
       // When
       const result = service.push(entries, entry);
 
       // Then
       expect(result.length).toBe(2);
-      expect(result).toEqual(entries);
+      expect(result).toEqual([entries[0], entry]);
     });
 
     it('should keep only the last maxIdentityNumber entries', () => {
@@ -218,6 +222,8 @@ describe('DeviceEntriesService', () => {
         h: 'hash4',
         d: 789,
       };
+
+      service['filterValidEntries'] = jest.fn().mockReturnValueOnce(entries);
 
       // When
       const result = service.push(entries, entry);

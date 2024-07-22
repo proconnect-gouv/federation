@@ -47,6 +47,7 @@ export class DeviceCookieService {
     const cookieValue = Buffer.from(JSON.stringify(cookie)).toString('base64');
 
     res.cookie(cookieName, cookieValue, {
+      secure: true,
       signed: true,
       httpOnly: true,
       sameSite: 'strict',

@@ -165,6 +165,7 @@ describe('DeviceCookieService', () => {
         configValueMock.cookieName,
         base64ValidJson,
         {
+          secure: true,
           signed: true,
           httpOnly: true,
           sameSite: 'strict',
