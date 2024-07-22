@@ -100,6 +100,7 @@
 | App_EIDAS_BRIDGE_UID | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_SHOW_EXCLUDED_IDP | boolean |
 | App_VIEWS_PATHS | json |
 | Core_ALLOWED_IDP_HINTS | json |
 | Core_FEATURE_SSO_SUBSTANTIAL | boolean |
@@ -176,6 +177,7 @@
 | App_EIDAS_BRIDGE_UID | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_SHOW_EXCLUDED_IDP | boolean |
 | App_VIEWS_PATHS | json |
 | Core_ALLOWED_IDP_HINTS | json |
 | Core_SUPPORT_FORM_URL | string |

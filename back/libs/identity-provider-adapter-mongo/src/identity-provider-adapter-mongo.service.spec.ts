@@ -530,26 +530,17 @@ describe('IdentityProviderAdapterMongoService', () => {
         name: 'idp2',
         uid: 'idp2',
       },
-      {
-        eidas: 2,
-        name: 'idp3',
-        uid: 'idp3',
-      },
-      {
-        eidas: 3,
-        name: 'idp4',
-        uid: 'idp4',
-      },
     ];
 
     beforeEach(() => {
       service.getList = jest.fn().mockResolvedValueOnce(defaultProvidersMock);
     });
 
-    it('should return a list of mapped providers', async () => {
+    it('should return a list of mapped providers containing blacklist that we want to display', async () => {
       // GIVEN
       const idpListMock = ['idp1'];
       const blacklistMock = true;
+      const showExcludedIdpMock = true;
       const expected = [
         {
           active: false,
@@ -562,32 +553,42 @@ describe('IdentityProviderAdapterMongoService', () => {
           name: 'idp2',
           uid: 'idp2',
         },
-        {
-          eidas: 2,
-          name: 'idp3',
-          uid: 'idp3',
-        },
-        {
-          eidas: 3,
-          name: 'idp4',
-          uid: 'idp4',
-        },
       ];
 
+      service['updateProviderStatus'] = jest
+        .fn()
+        .mockReturnValueOnce({
+          active: false,
+          eidas: 1,
+          name: 'idp1',
+          uid: 'idp1',
+        })
+        .mockReturnValueOnce({
+          eidas: 1,
+          name: 'idp2',
+          uid: 'idp2',
+        });
+
       // WHEN
-      const result = await service.getFilteredList(idpListMock, blacklistMock);
+      const result = await service.getFilteredList(
+        idpListMock,
+        blacklistMock,
+        showExcludedIdpMock,
+      );
 
       // THEN
       expect(result).toEqual(expected);
     });
 
-    it('should return a list of providers containing whitelisted ones', async () => {
+    it('should return a list of providers containing whitelisted ones and not displaying blacklist', async () => {
       // GIVEN
       const idpListMock = ['idp2'];
       const blacklistMock = false;
+      const showExcludedIdpMock = false;
       const expected = [
         {
           active: false,
+          display: false,
           eidas: 1,
           name: 'idp1',
           uid: 'idp1',
@@ -597,22 +598,29 @@ describe('IdentityProviderAdapterMongoService', () => {
           name: 'idp2',
           uid: 'idp2',
         },
-        {
-          active: false,
-          eidas: 2,
-          name: 'idp3',
-          uid: 'idp3',
-        },
-        {
-          active: false,
-          eidas: 3,
-          name: 'idp4',
-          uid: 'idp4',
-        },
       ];
 
+      service['updateProviderStatus'] = jest
+        .fn()
+        .mockReturnValueOnce({
+          active: false,
+          display: false,
+          eidas: 1,
+          name: 'idp1',
+          uid: 'idp1',
+        })
+        .mockReturnValueOnce({
+          eidas: 1,
+          name: 'idp2',
+          uid: 'idp2',
+        });
+
       // WHEN
-      const result = await service.getFilteredList(idpListMock, blacklistMock);
+      const result = await service.getFilteredList(
+        idpListMock,
+        blacklistMock,
+        showExcludedIdpMock,
+      );
 
       // THEN
       expect(result).toEqual(expected);
@@ -782,6 +790,80 @@ describe('IdentityProviderAdapterMongoService', () => {
       const result = await service.isActiveById('id');
       // Then
       expect(result).toBeFalse();
+    });
+  });
+
+  describe('updateProviderStatus', () => {
+    const defaultProvidersMock = {
+      eidas: 1,
+      name: 'idp1',
+      uid: 'idp1',
+    } as unknown as IdentityProviderMetadata;
+
+    it('should return provider without modification', () => {
+      // Given
+      const isIdpAuthorizedMock = true;
+      const showExcludedIdpMock = false;
+      const expected = {
+        eidas: 1,
+        name: 'idp1',
+        uid: 'idp1',
+      };
+
+      // When
+      const result = service['updateProviderStatus'](
+        defaultProvidersMock,
+        isIdpAuthorizedMock,
+        showExcludedIdpMock,
+      );
+
+      // When
+      expect(result).toEqual(expected);
+    });
+
+    it('Should return a blacklisted provider that we want to display', () => {
+      // Given
+      const isIdpAuthorizedMock = false;
+      const showExcludedIdpMock = true;
+      const expected = {
+        active: false,
+        eidas: 1,
+        name: 'idp1',
+        uid: 'idp1',
+      };
+
+      // When
+      const result = service['updateProviderStatus'](
+        defaultProvidersMock,
+        isIdpAuthorizedMock,
+        showExcludedIdpMock,
+      );
+
+      // When
+      expect(result).toEqual(expected);
+    });
+
+    it("Should return a blacklisted provider that we don't want to display", () => {
+      // Given
+      const isIdpAuthorizedMock = false;
+      const showExcludedIdpMock = false;
+      const expected = {
+        active: false,
+        display: false,
+        eidas: 1,
+        name: 'idp1',
+        uid: 'idp1',
+      };
+
+      // When
+      const result = service['updateProviderStatus'](
+        defaultProvidersMock,
+        isIdpAuthorizedMock,
+        showExcludedIdpMock,
+      );
+
+      // When
+      expect(result).toEqual(expected);
     });
   });
 });

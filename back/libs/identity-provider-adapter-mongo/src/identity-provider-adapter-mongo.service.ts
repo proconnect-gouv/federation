@@ -186,18 +186,22 @@ export class IdentityProviderAdapterMongoService
   async getFilteredList(
     idpList: string[],
     blacklist: boolean,
+    showExcludedIdp: boolean,
   ): Promise<IdentityProviderMetadata[]> {
     const providers = cloneDeep(await this.getList());
     const mappedProviders = providers.map((provider) => {
       const idpFound = idpList.includes(provider.uid);
       const isIdpAuthorized = blacklist ? !idpFound : idpFound;
 
-      if (!isIdpAuthorized) {
-        provider.active = false;
-      }
+      const providerUpdated = this.updateProviderStatus(
+        provider,
+        isIdpAuthorized,
+        showExcludedIdp,
+      );
 
-      return provider;
+      return providerUpdated;
     });
+
     return mappedProviders;
   }
 
@@ -216,6 +220,22 @@ export class IdentityProviderAdapterMongoService
     const idp = await this.getById(id);
 
     return Boolean(idp?.active);
+  }
+
+  private updateProviderStatus(
+    provider: IdentityProviderMetadata,
+    isIdpAuthorized: boolean,
+    showExcludedIdp: boolean,
+  ): IdentityProviderMetadata {
+    if (!isIdpAuthorized) {
+      provider.active = false;
+    }
+
+    if (!showExcludedIdp && !isIdpAuthorized) {
+      provider.display = false;
+    }
+
+    return provider;
   }
 
   private legacyToOpenIdPropertyName(

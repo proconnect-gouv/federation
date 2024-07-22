@@ -127,6 +127,7 @@ describe('CoreFcpController', () => {
   const appConfigMock = {
     configuration: { acrValues: ['eidas2', 'eidas3'] },
     urlPrefix: '/api/v2',
+    showExcludedIdp: true,
   };
 
   const configServiceMock = {
@@ -335,6 +336,9 @@ describe('CoreFcpController', () => {
       notificationsServiceMock.getNotificationToDisplay.mockResolvedValue(
         notificationsMock,
       );
+      configServiceMock.get.mockReturnValue({
+        ...appConfigMock,
+      });
     });
 
     it('should call sessionOidc.get', async () => {
@@ -458,6 +462,7 @@ describe('CoreFcpController', () => {
       expect(identityProviderServiceMock.getFilteredList).toHaveBeenCalledWith(
         idpFilterListMock,
         idpFilterExcludeMock,
+        true,
       );
     });
 

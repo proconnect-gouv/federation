@@ -9,6 +9,7 @@ export interface IIdentityProviderAdapter {
   getFilteredList(
     idpList: string[],
     blacklist: boolean,
+    showExcludedIdp?: boolean,
   ): Promise<IdentityProviderMetadata[]>;
 
   getList(refreshCache?: boolean): Promise<IdentityProviderMetadata[]>;
