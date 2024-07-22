@@ -21,4 +21,3 @@ Fonctionnalité: API - discovery
     Et "userinfo_encryption_enc_values_supported" n'est pas présent dans la configuration openid
     Et "backchannel_logout_supported" n'est pas présent dans la configuration openid
     Et "backchannel_logout_session_supported" n'est pas présent dans la configuration openid
-

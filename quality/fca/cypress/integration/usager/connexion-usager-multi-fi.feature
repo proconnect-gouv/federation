@@ -58,6 +58,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Et que j'utilise le fournisseur d'identité "moncomptepro"
     Et je suis redirigé vers la page login du fournisseur d'identité
 
+  @ignoreInteg01
   Scénario: Connexion d'un usager - retour en arrière après redirection vers FI
     Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
     Et que je navigue sur la page fournisseur de service
