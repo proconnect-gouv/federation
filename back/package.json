@@ -198,7 +198,6 @@
       "^@fc/core-fcp(|/.*)$": "<rootDir>/apps/core-fcp/src$1",
       "^@fc/csmr-hsm(|/.*)$": "<rootDir>/apps/csmr-hsm/src$1",
       "^@fc/csmr-http-proxy(|/.*)$": "<rootDir>/apps/csmr-http-proxy/src$1",
-      "^@fc/ministries(|/.*)$": "<rootDir>/libs/ministries/src/$1",
       "^@fc/mock-service-provider(|/.*)$": "<rootDir>/apps/mock-service-provider/src$1",
       "^@fc/eidas-bridge(|/.*)$": "<rootDir>/apps/eidas-bridge/src$1",
       "^@fc/rnipp(|/.*)$": "<rootDir>/libs/rnipp/src$1",

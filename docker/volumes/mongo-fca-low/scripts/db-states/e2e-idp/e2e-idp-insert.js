@@ -41,12 +41,3 @@ db.provider.update(
   },
   { upsert: true },
 );
-
-db.ministries.update(
-  { id: "mock-ministere-de-la-transition-ecologique-all-fis-sort-2" },
-  {
-    $push: {
-      identityProviders: "ebe0026f-d6e3-4807-bfa2-c65c8ae46d07",
-    },
-  },
-);
