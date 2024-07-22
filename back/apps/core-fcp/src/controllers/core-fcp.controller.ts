@@ -115,9 +115,13 @@ export class CoreFcpController {
     const { idpFilterExclude, idpFilterList } =
       await this.serviceProvider.getById(clientId);
 
+    const { aidantsConnectUid, showExcludedIdp } =
+      this.config.get<AppConfig>('App');
+
     const providers = await this.identityProvider.getFilteredList(
       idpFilterList,
       idpFilterExclude,
+      showExcludedIdp,
     );
 
     const isSuspicious = sessionDevice.get('isSuspicious');
@@ -140,7 +144,6 @@ export class CoreFcpController {
       return provider;
     });
 
-    const { aidantsConnectUid } = this.config.get<AppConfig>('App');
     const aidantsConnect = authorizedProviders.find((provider) => {
       const isAidantsConnect = provider.uid === aidantsConnectUid;
       return isAidantsConnect && provider.display;

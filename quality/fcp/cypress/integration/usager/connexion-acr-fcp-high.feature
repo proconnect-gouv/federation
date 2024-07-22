@@ -112,7 +112,7 @@ Fonctionnalité: Connexion ACR
 
   # Waiting for an "eidas2" IdP to be available on Integ01
   @ignoreInteg01
-  Scénario: Connexion ACR - FCP high - erreur FI retourne un acr qui ne lui est pas permis (suprieur)
+  Scénario: Connexion ACR - FCP high - erreur FI retourne un acr qui ne lui est pas permis (supérieur)
     Etant donné que j'utilise le fournisseur de service "par défaut"
     Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
     Et que le fournisseur de service requiert un niveau de sécurité "eidas2"
