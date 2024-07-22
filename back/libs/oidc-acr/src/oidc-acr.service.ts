@@ -5,6 +5,7 @@ import { OidcSession } from '@fc/oidc';
 import { OidcClientSession } from '@fc/oidc-client';
 
 import { OidcAcrConfig } from './dto';
+import { OidcAcrNoSsoAllowedAcrFoundException } from './exceptions';
 
 @Injectable()
 export class OidcAcrService {
@@ -29,20 +30,26 @@ export class OidcAcrService {
   }
 
   getInteractionAcr(session: OidcSession): string {
-    const { spAcr, idpAcr }: OidcClientSession = session;
+    const { spAcr, idpAcr, isSso }: OidcClientSession = session;
 
     const { allowedAcrValues } = this.config.get<OidcAcrConfig>('OidcAcr');
-
-    if (allowedAcrValues.includes(idpAcr)) {
-      return idpAcr;
-    }
 
     /**
      * We trust spAcr because:
      * 1. It has been validated as a valid acr value in the authorize step,
      * 2. We filtered out idp to be compatible with acr value required by sp.
      */
-    return spAcr;
+    let interactionAcr = spAcr;
+
+    if (allowedAcrValues.includes(idpAcr)) {
+      interactionAcr = idpAcr;
+    }
+
+    if (isSso) {
+      interactionAcr = this.getFirstAllowedAcr(interactionAcr);
+    }
+
+    return interactionAcr;
   }
 
   getAcrToAskToIdp(spAcr: string, idpAllowedAcr: string[]): string {
@@ -82,5 +89,28 @@ export class OidcAcrService {
     );
 
     return sorted;
+  }
+
+  private getFirstAllowedAcr(currentAcr: string): string {
+    const { knownAcrValues, allowedSsoAcrs } =
+      this.config.get<OidcAcrConfig>('OidcAcr');
+
+    if (allowedSsoAcrs.includes(currentAcr)) {
+      return currentAcr;
+    }
+
+    const sortedAcrAcrListWithCurrent = this.getSortedAcrList(
+      Object.keys(knownAcrValues),
+    ).filter((acr) => acr === currentAcr || allowedSsoAcrs.includes(acr));
+
+    const currentAcrPos = sortedAcrAcrListWithCurrent.indexOf(currentAcr);
+
+    if (currentAcrPos < 1) {
+      throw new OidcAcrNoSsoAllowedAcrFoundException();
+    }
+
+    const getFirstAllowedAcr = sortedAcrAcrListWithCurrent[currentAcrPos - 1];
+
+    return getFirstAllowedAcr;
   }
 }

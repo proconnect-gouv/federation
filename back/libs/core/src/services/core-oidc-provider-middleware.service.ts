@@ -307,7 +307,8 @@ export class CoreOidcProviderMiddlewareService {
   }
 
   protected isSsoAvailable(spAcr: string): boolean {
-    const { allowedSsoAcrs, enableSso } = this.config.get<CoreConfig>('Core');
+    const { enableSso } = this.config.get<CoreConfig>('Core');
+    const { allowedSsoAcrs } = this.config.get<OidcAcrConfig>('OidcAcr');
     const { spIdentity, idpAcr } =
       this.sessionService.get<OidcSession>('OidcClient') || {};
 

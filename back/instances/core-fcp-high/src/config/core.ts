@@ -12,5 +12,4 @@ export default {
   supportFormUrl: env.string('SUPPORT_FORM_URL'),
   useIdentityFrom: IdentitySource.IDP,
   enableSso: env.boolean('FEATURE_SSO_SUBSTANTIAL'),
-  allowedSsoAcrs: ['eidas2'],
 } as CoreConfig;

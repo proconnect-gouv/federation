@@ -588,18 +588,25 @@ describe('CoreFcpMiddlewareService', () => {
     beforeEach(() => {
       service['isFinishedInteractionSession'] = jest.fn().mockReturnValue(true);
 
-      configServiceMock.get.mockReturnValueOnce({
-        enableSso: true,
-        allowedSsoAcrs: ['eidas3'],
-      });
+      configServiceMock.get
+        .mockReturnValueOnce({
+          enableSso: true,
+        })
+        .mockReturnValueOnce({
+          allowedSsoAcrs: ['eidas3'],
+        });
     });
 
     it('should call session.reset() if sso is disabled', async () => {
       // Given
-      configServiceMock.get.mockReset().mockReturnValueOnce({
-        enableSso: false,
-        allowedSsoAcrs: ['eidas3'],
-      });
+      configServiceMock.get
+        .mockReset()
+        .mockReturnValueOnce({
+          enableSso: false,
+        })
+        .mockReturnValueOnce({
+          allowedSsoAcrs: ['eidas3'],
+        });
       // When
       await service['renewSession'](ctxMock, spAcrMock);
       // Then
@@ -609,10 +616,14 @@ describe('CoreFcpMiddlewareService', () => {
 
     it('should call session.reset() if acr is authorized for sso', async () => {
       // Given
-      configServiceMock.get.mockReset().mockReturnValueOnce({
-        enableSso: true,
-        allowedSsoAcrs: ['eidas2'],
-      });
+      configServiceMock.get
+        .mockReset()
+        .mockReturnValueOnce({
+          enableSso: true,
+        })
+        .mockReturnValueOnce({
+          allowedSsoAcrs: ['eidas2'],
+        });
       // When
       await service['renewSession'](ctxMock, spAcrMock);
       // Then

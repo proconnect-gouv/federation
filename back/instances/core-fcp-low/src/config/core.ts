@@ -12,5 +12,4 @@ export default {
   supportFormUrl: env.string('SUPPORT_FORM_URL'),
   useIdentityFrom: IdentitySource.RNIPP,
   enableSso: true,
-  allowedSsoAcrs: ['eidas1'],
 } as CoreConfig;

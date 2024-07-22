@@ -14,4 +14,5 @@ export default {
   },
   allowedAcrValues: OidcProvider.configuration.acrValues,
   defaultAcrValue: 'eidas3',
+  allowedSsoAcrs: ['eidas2'],
 } as OidcAcrConfig;
