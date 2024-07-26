@@ -53,14 +53,14 @@ _get_back_diff_files() {
   local refRevision="${1}"
 
   cd $FC_ROOT/fc
-  git diff --name-only "${refRevision}" "./${BACK_PREFIX}" | sort
+  git diff --name-only "${refRevision}" -- "./${BACK_PREFIX}" | sort
 }
 
 _get_front_diff_files() {
   local refRevision="${1}"
 
   cd $FC_ROOT/fc
-  git diff --name-only "${refRevision}" -- ./${FRONT_PREFIX} | sort
+  git diff --name-only "${refRevision}" -- "./${FRONT_PREFIX}" | sort
 }
 
 _get_abs_path() {
