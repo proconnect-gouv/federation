@@ -80,7 +80,7 @@ _get_abs_path() {
 
 _get_modified_files_for_back_app() {
   local app="${1}"
-  local refRevision="${2}"
+  local refRevision=$(git ls-remote origin "${2}" | cut -d$'\t' -f1)
 
   local appFiles=$(_get_back_app_files "${app}")
   local diffFiles=$(_get_back_diff_files "${refRevision}")
@@ -90,7 +90,7 @@ _get_modified_files_for_back_app() {
 
 _get_modified_files_for_front_app() {
   local app="${1}"
-  local refRevision="${2}"
+  local refRevision=$(git ls-remote origin "${2}" | cut -d$'\t' -f1)
 
   local appFiles=$(_get_front_app_files "${app}")
   local diffFiles=$(_get_front_diff_files "${refRevision}")
@@ -159,13 +159,8 @@ _ci_job_relevant_for_back_apps() {
     yarn "build:${app}"
   done
 
-  echo "Fetch target branch ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}..."
-
-  # Auto fetch ci MR target revision
-  git fetch origin "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" --
-
   # Search for updated files
-  local files=$(_get_modified_files_for_back_apps "${@}" "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" 2>&1)
+  local files=$(_get_modified_files_for_back_apps "${@}" "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" 2>&1)
 
   _analyse_diff_results ${BACK_PREFIX} "${files}"
 }
@@ -188,11 +183,8 @@ _ci_job_relevant_for_front_apps() {
     yarn build "${app}"
   done
 
-  # Auto fetch ci MR target revision
-  git fetch origin ${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}
-
   # Search for updated files
-  local files=$(_get_modified_files_for_front_apps "${@}" "origin/${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" 2>&1)
+  local files=$(_get_modified_files_for_front_apps "${@}" "${CI_MERGE_REQUEST_TARGET_BRANCH_NAME}" 2>&1)
 
   _analyse_diff_results ${FRONT_PREFIX} "${files}"
 }
