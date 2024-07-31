@@ -55,11 +55,11 @@ export const getCSRF = async (): Promise<GetCsrfTokenResponse> => {
  * @param axiosOptions AxiosRequestConfig
  * @returns
  */
-export const get = async (
+export const get = async <T = unknown>(
   endpoint: string,
   data?: HttpClientData | URLSearchParams,
   options?: HttpClientOptions,
-): Promise<AxiosResponse> => {
+): Promise<AxiosResponse<T>> => {
   try {
     const method = Methods.GET;
     return await makeRequest(method, endpoint, data, options);
