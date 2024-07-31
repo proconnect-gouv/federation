@@ -1,7 +1,9 @@
+import classnames from 'classnames';
 import React from 'react';
 import type { FieldInputProps } from 'react-final-form';
 
 import type { CheckableLegend } from '../../../interfaces';
+import styles from './toggle-label.module.scss';
 
 interface ToggleLabelComponentProps {
   // @NOTE la regle est desactivée car le type provient de la librairie react-final-form
@@ -19,7 +21,7 @@ export const ToggleLabelComponent = React.memo(
     const isLabelFunction = typeof label === 'function';
     return (
       <label
-        className="fr-toggle__label"
+        className={classnames('fr-toggle__label', styles.label)}
         data-fr-checked-label={legend.checked}
         data-fr-unchecked-label={legend.unchecked}
         data-testid={`field-toggle-label-${input.name}`}

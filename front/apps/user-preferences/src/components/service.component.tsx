@@ -56,6 +56,7 @@ export const ServiceComponent = React.memo(
         data-testid={`service-component-${service.name}`}>
         <ServiceImageComponent disabled={isDisabled} service={service} />
         <ToggleInput
+          className="fr-mt-2w"
           disabled={!allowToBeUpdated}
           initialValue={service.isChecked}
           label={labelCallback}

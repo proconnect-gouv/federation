@@ -110,6 +110,8 @@ services:
           # Stack Documentation 11TY
           - doc-example.docker.dev-franceconnect.fr
           - doc-partners.docker.dev-franceconnect.fr
+          # Espace partenaires
+          - partners.docker.dev-franceconnect.fr
           # Stack Legacy
           - fcp.docker.dev-franceconnect.fr
           - fip1.docker.dev-franceconnect.fr

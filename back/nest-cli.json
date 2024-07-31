@@ -116,6 +116,15 @@
         ]
       }
     },
+    "partners-instance": {
+      "type": "application",
+      "root": "instances/partners",
+      "entryFile": "main",
+      "sourceRoot": "instances/partners/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/partners/tsconfig.app.json"
+      }
+    },
     "partners": {
       "type": "library",
       "root": "apps/partners",
@@ -298,7 +307,9 @@
       "sourceRoot": "instances/csmr-user-preferences-high/src",
       "compilerOptions": {
         "tsConfigPath": "instances/csmr-user-preferences-high/tsconfig.app.json",
-        "assets": ["../../../instances/csmr-user-preferences-high/**/*.ejs"]
+        "assets": [
+          "../../../instances/csmr-user-preferences-high/**/*.ejs"
+        ]
       }
     },
     "csmr-account-instance": {

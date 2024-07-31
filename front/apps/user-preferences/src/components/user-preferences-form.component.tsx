@@ -69,7 +69,7 @@ export const UserPreferencesFormComponent: React.FC<UserPreferencesFormComponent
           </AlertComponent>
         )}
 
-        <p className="fr-mt-5w">
+        <p className="fr-my-5w">
           Il est possible que FranceConnect mette à votre disposition dans le futur de nouveaux
           comptes pour vous connecter à vos services.
           <strong> Par défaut leur utilisation sera autorisée.</strong>
@@ -87,7 +87,7 @@ export const UserPreferencesFormComponent: React.FC<UserPreferencesFormComponent
         />
 
         {alertInfoState.isDisplayedAlertInfo && (
-          <AlertComponent size={Sizes.SMALL}>
+          <AlertComponent className="fr-mt-2w" size={Sizes.SMALL}>
             <p data-testid="UserPreferenceFormComponent-title-info">
               Êtes-vous sûr de vouloir autoriser par défaut les futurs moyens de connexion ?
             </p>
