@@ -26,7 +26,7 @@
   {
     "name": "fsp2v2",
     "descriptions": [
-      "habilité à demander le scope identite_pivot",
+      "non habilité à demander le scope cnous_statut_boursier",
       "privé avec consentement obligatoire",
       "avec une whitelist de FI",
       "avec un entityId différent",

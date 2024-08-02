@@ -137,10 +137,9 @@ Fonctionnalité: Connexion Usager - Scope
     Et je suis connecté au fournisseur de service
     Et le fournisseur de service a accès aux informations des scopes "profile"
 
-  @ignoreLow
   Scénario: Connexion d'un usager - erreur FS non habilité pour ce scope
-    Etant donné que j'utilise le fournisseur de service "habilité à demander le scope identite_pivot"
-    Et que le fournisseur de service requiert l'accès aux informations du scope "email"
+    Etant donné que j'utilise le fournisseur de service "non habilité à demander le scope cnous_statut_boursier"
+    Et que le fournisseur de service requiert l'accès aux informations du scope "cnous_statut_boursier"
     Et que je navigue sur la page fournisseur de service
     Quand je clique sur le bouton FranceConnect
     Alors je suis redirigé vers la page erreur du fournisseur de service

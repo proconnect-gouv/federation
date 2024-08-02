@@ -26,7 +26,6 @@ Fonctionnalité: Historique Connexion sur FC+ (integ01)
     Et le nom du fournisseur d'identité de l'évènement est "Identity Provider - eIDAS élevé - discov - crypt"
     Et le niveau de sécurité de l'évènement est "Substantiel"
 
-  @ignoreInteg01
   Scénario: Historique Connexion - FC+ - FS public avec scope data
     Etant donné que j'utilise la plateforme "FranceConnect+"
     Et que j'utilise un compte usager "pour les tests de traces"
@@ -109,7 +108,6 @@ Fonctionnalité: Historique Connexion sur FC+ (integ01)
     Et l'évènement concerne aucune donnée "DGFIP"
     Et l'évènement concerne aucune donnée "CNAM"
 
-  @ignoreInteg01
   Scénario: Historique Connexion - FC+ - FS privé avec scope data
     Etant donné que j'utilise la plateforme "FranceConnect+"
     Et que j'utilise un compte usager "pour les tests de traces"

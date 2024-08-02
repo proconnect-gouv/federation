@@ -107,5 +107,12 @@
       "cnous_statut_boursier",
       "api_fc-liste-paiementsv1"
     ]
+  },
+  {
+    "type": "cnous_statut_boursier",
+    "scopes": [
+      "openid",
+      "cnous_statut_boursier"
+    ]
   }
 ]

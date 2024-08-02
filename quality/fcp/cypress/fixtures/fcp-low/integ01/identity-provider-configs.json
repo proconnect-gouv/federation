@@ -55,7 +55,7 @@
       "image": "fi-mock-faible.svg",
       "imageFocus": "",
       "trustedIdentity": "false",
-      "allowedAcr": ["eidas2"],
+      "allowedAcr": ["eidas1"],
       "userinfo_signed_response_alg": "HS256",
       "order": "1",
       "emails": "bdd-idp@yopmail.com",

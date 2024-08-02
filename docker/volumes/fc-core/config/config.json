@@ -35,7 +35,7 @@
   "cookieDomain": ".fcp.docker.dev-franceconnect.fr",
   "cookieSigningSecret": ["yahvaeJ0eiNua6te", "lidubozieKadee7w", "Eigoh6ev8xaiNoox", "veed7Oow7er5Saim"],
   "cryptographySubSecret": "9ed64cd3762973c8a5219e0774671940a3550ae1050af86831d613193e825caa",
-  "eidasDefaultLevel": "eidas3",
+  "eidasDefaultLevel": "eidas1",
   "env": "docker",
   "features": {
     "accessTokenHeaderOnly": true,

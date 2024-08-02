@@ -1,7 +1,7 @@
 {
     "default": {
         "name": "bdd-idp-default",
-        "title": "FI de test pour la discovery url",
+        "title": "FI de test sans discovery url",
         "issuer": "https://issuer.fr",
         "authorizationUrl": "https://issuer.fr/auth",
         "tokenUrl": "https://issuer.fr/token",
@@ -23,7 +23,7 @@
         "token_endpoint_auth_method": "client_secret_post"
     },
     "defaultDiscoveryUrl": {
-        "title": "FI de test pour la discovery url",
+        "title": "FI de test avec discovery url",
         "issuer": "https://issuer.fr",
         "clientId": "09a1a257648c1742c74d6a3d84b31943",
         "client_secret": "1234567890AZERTYUIOP",
