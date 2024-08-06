@@ -104,7 +104,6 @@
 | App_SHOW_EXCLUDED_IDP | boolean |
 | App_VIEWS_PATHS | json |
 | Core_ALLOWED_IDP_HINTS | json |
-| Core_FEATURE_SSO_SUBSTANTIAL | boolean |
 | Core_SUPPORT_FORM_URL | string |
 | CryptographyBroker_QUEUE | string |
 | CryptographyBroker_URLS | json |
