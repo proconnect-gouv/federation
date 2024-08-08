@@ -33,6 +33,10 @@ back:
     # Quality folder
     - cd $CI_PROJECT_DIR/quality
     - yarn install --ignore-engines
+    - cd $CI_PROJECT_DIR/quality/partners
+    - yarn lint
+    - yarn prettier
+    - yarn tsc --noEmit
     - cd $CI_PROJECT_DIR/quality/fca
     - yarn lint
     - yarn prettier

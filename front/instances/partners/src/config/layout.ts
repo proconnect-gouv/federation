@@ -62,10 +62,6 @@ export const Layout: LayoutConfig = {
       href: '/',
       label: 'Home',
     },
-    {
-      href: '/form',
-      label: 'Formulaires',
-    },
   ],
   service: {
     baseline: 'Espace Partenaires',
