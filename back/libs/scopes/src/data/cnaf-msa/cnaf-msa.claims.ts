@@ -3,26 +3,32 @@ import { ClaimsInterface } from '../../interfaces';
 export const claims: ClaimsInterface = {
   // OIDC fashion variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  droits_assurance_maladie: 'droits_assurance_maladie',
+  allocation_adulte_handicape: 'allocation_adulte_handicape',
   // OIDC fashion variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  cnam_beneficiaires: 'cnam_beneficiaires',
+  allocation_soutien_familial: 'allocation_soutien_familial',
   // OIDC fashion variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  cnam_contrats: 'cnam_contrats',
+  prime_activite: 'prime_activite',
   // OIDC fashion variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  cnam_caisse: 'cnam_caisse',
+  prime_activite_majoration: 'prime_activite_majoration',
   // OIDC fashion variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  cnam_exonerations: 'cnam_exonerations',
+  cnaf_quotient_familial: 'cnaf_quotient_familial',
   // OIDC fashion variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  cnam_medecin_traitant: 'cnam_medecin_traitant',
+  cnaf_allocataires: 'cnaf_allocataires',
   // OIDC fashion variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  cnam_presence_medecin_traitant: 'cnam_presence_medecin_traitant',
+  cnaf_enfants: 'cnaf_enfants',
   // OIDC fashion variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  cnam_paiements_ij: 'cnam_paiements_ij',
+  cnaf_adresse: 'cnaf_adresse',
+  // OIDC fashion variable name
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  revenu_solidarite_active: 'revenu_solidarite_active',
+  // OIDC fashion variable name
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  revenu_solidarite_active_majoration: 'revenu_solidarite_active_majoration',
 };
