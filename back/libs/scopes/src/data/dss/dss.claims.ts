@@ -1,7 +1,7 @@
 import { ClaimsInterface } from '../../interfaces';
 
 export const claims: ClaimsInterface = {
-  // OIDC fashion naming
+  // OIDC fashion variable name
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  connexion_tracks: 'connexion_tracks',
+  complementaire_sante_solidaire: 'complementaire_sante_solidaire',
 };
