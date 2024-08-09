@@ -17,7 +17,7 @@ services:
       - "redis-sentinel"
       - "squid"
       - "haproxy"
-      - "rnipp"
+      - "mock-rnipp"
       - "assets"
     volumes:
       - "${VOLUMES_DIR}/src/FranceConnect:/var/www/app"

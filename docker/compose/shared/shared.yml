@@ -43,7 +43,6 @@ services:
           - fsp3-high.docker.dev-franceconnect.fr
           - fsp5-high.docker.dev-franceconnect.fr
           - fsp6-high.docker.dev-franceconnect.fr
-          - rnipp.docker.dev-franceconnect.fr
           - ud-back.docker.dev-franceconnect.fr
           - ud-front.docker.dev-franceconnect.fr
           - core-fcp-high.docker.dev-franceconnect.fr
@@ -432,38 +431,6 @@ services:
     networks:
       - public
     command: "pm2 logs"
-
-  # Old implementation in specific repo
-  rnipp:
-    hostname: rnipp
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    volumes:
-      - "${VOLUMES_DIR}/src/rnipp-mock:/var/www/app"
-      - "${VOLUMES_DIR}/app:/opt/scripts"
-      - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/log:/var/log/app"
-    environment:
-      - "APP_NAME=rnipp"
-      - "VIRTUAL_HOST=rnipp.docker.dev-franceconnect.fr"
-      # HA Proxy health check puts annoying entries in logs
-      # so we disable logging redirection for now
-      - "PM2_OUT_FILE=/dev/null"
-      - "PM2_ERROR_FILE=/dev/null"
-      - "VIRTUAL_PORT=3000"
-      - "DEFAULT_MODE=legacy"
-      - "NODE_ENV=development"
-      - "PORT=3000"
-      - "PM2_SCRIPT=index.js"
-      - "PM2_CI_SCRIPT=index.js"
-      - "PM2_CWD=/var/www/app/src"
-      - "HOME=/home"
-      - "PM2_HOME=/tmp/.pm2"
-      - "TZ=Europe/Paris"
-    networks:
-      - public
-    command: "tail -f /dev/null"
 
   ####################
   # Tracks related services

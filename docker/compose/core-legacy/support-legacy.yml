@@ -12,7 +12,7 @@ services:
       - "pg-support"
       - "mongo-fcp-low"
       - "squid"
-      - "rnipp"
+      - "mock-rnipp"
       - "haproxy"
       - "csmr-user-preferences-high"
       - "broker"
