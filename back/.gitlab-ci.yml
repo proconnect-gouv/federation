@@ -23,7 +23,7 @@ back:
   script:
     # Back folder
     - cd back/
-    - yarn install --ignore-engines
+    - yarn install --frozen-lockfile
     - yarn doc
     - git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
     - yarn lint
@@ -32,7 +32,7 @@ back:
     - ../coverage.sh
     # Quality folder
     - cd $CI_PROJECT_DIR/quality
-    - yarn install --ignore-engines
+    - yarn install --frozen-lockfile
     - cd $CI_PROJECT_DIR/quality/partners
     - yarn lint
     - yarn prettier
@@ -80,13 +80,13 @@ build-cache:
       - cache/Cypress
   stage: 'Cache'
   script:
-    - cd $CI_PROJECT_DIR/back && yarn install --ignore-engines
-    - cd $CI_PROJECT_DIR/front && yarn install
-    - cd $CI_PROJECT_DIR/quality && yarn install --ignore-engines
+    - cd $CI_PROJECT_DIR/back && yarn install --frozen-lockfile
+    - cd $CI_PROJECT_DIR/front && yarn install --frozen-lockfile
+    - cd $CI_PROJECT_DIR/quality && yarn install --frozen-lockfile
     - git clone -b $FC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $CI_PROJECT_DIR/cache/fc-apps
-    - cd $CI_PROJECT_DIR/cache/fc-apps && yarn install
+    - cd $CI_PROJECT_DIR/cache/fc-apps && yarn install --frozen-lockfile
     - git clone -b $FC_LEGACY_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/core-legacy.git $CI_PROJECT_DIR/cache/core-legacy
-    - cd $CI_PROJECT_DIR/cache/core-legacy && yarn install
+    - cd $CI_PROJECT_DIR/cache/core-legacy && yarn install --frozen-lockfile
   dependencies: []
   interruptible: true
   rules:

@@ -4,12 +4,17 @@ eidas-bridge:
   tags:
     - cypress
   rules:
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      variables:
-        BDD_TAGS: '@ci and not @ignore'
     - if: '$CI_COMMIT_BRANCH == "staging"'
       variables:
         BDD_TAGS: 'not @ignore'
+        SKIP_DIFF_CHECK: 'true'
+    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
+      variables:
+        BDD_TAGS: 'not @ignore'
+        SKIP_DIFF_CHECK: 'true'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      variables:
+        BDD_TAGS: '@ci and not @ignore'
   variables:
     TZ: 'Europe/Paris'
     CYPRESS_PLATFORM: 'fcp-high'
@@ -57,7 +62,7 @@ eidas-bridge:
   script:
     # Install Cypress on the runner and fetch node_modules
     - cd $CI_PROJECT_DIR/quality/fcp
-    - yarn install --ignore-engines
+    - yarn install --frozen-lockfile
     # Up the docker-stack with minimal requirement
     - docker-stack up min-eidas-high
     - docker exec fc_core-fcp-high_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"

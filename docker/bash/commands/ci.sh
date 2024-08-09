@@ -137,7 +137,7 @@ _get_modified_files_for_front_apps() {
 }
 
 _ci_job_relevant_for_back_apps() {
-  if [ "${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" == "staging" ] || [ "${CI_COMMIT_BRANCH}" == "staging" ]; then
+  if [ "${SKIP_DIFF_CHECK}" == "true" ]; then
     echo "STATUS=SKIP"
     exit 0
   fi
@@ -149,8 +149,7 @@ _ci_job_relevant_for_back_apps() {
   apt update
   apt install -y make g++
 
-  # Temporary fix while node version is late on runner
-  yarn install --ignore-engines
+  yarn install --frozen-lockfile
 
   local i
   for ((i = 1; i <= $#; i++)); do
@@ -166,15 +165,14 @@ _ci_job_relevant_for_back_apps() {
 }
 
 _ci_job_relevant_for_front_apps() {
-  if [ "${CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}" == "staging" ] || [ "${CI_COMMIT_BRANCH}" == "staging" ]; then
+  if [ "${SKIP_DIFF_CHECK}" == "true" ]; then
     echo "STATUS=SKIP"
     exit 0
   fi
 
   # Build the apps to obtain the stats file
   cd ${CI_PROJECT_DIR}/front
-  # Temporary fix while node version is late on runner
-  yarn install --ignore-engines
+  yarn install --frozen-lockfile
 
   local i
   for ((i = 1; i <= $#; i++)); do

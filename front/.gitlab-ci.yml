@@ -22,7 +22,7 @@ front:
   script:
     # front folder
     - cd front/
-    - yarn install
+    - yarn install --frozen-lockfile
     - yarn test --coverage
     - yarn prettier
     - yarn lint
