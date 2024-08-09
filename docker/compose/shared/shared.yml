@@ -118,7 +118,6 @@ services:
           - fip3.docker.dev-franceconnect.fr
           - fip4.docker.dev-franceconnect.fr
           - aidants-connect-mock.docker.dev-franceconnect.fr
-          - fi-beta-mock.docker.dev-franceconnect.fr
           - fsp1.docker.dev-franceconnect.fr
           - fsp2.docker.dev-franceconnect.fr
           - fsp3.docker.dev-franceconnect.fr
