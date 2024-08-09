@@ -1,0 +1,13 @@
+mock-rnipp-build-image:
+  extends: .base-build
+  variables:
+    APP: mock-rnipp
+    MSG: "environments/outscale-tools/group_vars/all/versions.yml\nmock_rnipp_version:"
+
+mock-rnipp-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: mock-rnipp
+    MSG: "environments/outscale-tools/group_vars/all/versions.yml\nmock_rnipp_version:"
+  needs:
+    - job: mock-rnipp-build-image
