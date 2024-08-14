@@ -46,7 +46,6 @@ const fsp = {
       "dgfip_nbpart",
       "dgfip_sitfam",
       "dgfip_pac",
-      "dgfip_aft",
       "droits_assurance_maladie",
       "cnam_caisse",
       "cnam_paiements_ij",

@@ -78,12 +78,12 @@ The table below provides a clear view of the technical keys used by the library 
 
 | Slug | Grouped claims identifier | Provider Label |
 | - | - | - |
-| CNAF_MSA | cnafMsa | Caisse nationale des allocations familiales & Mutualité |
+| CNAF_MSA | cnafMsa | Caisse nationale des allocations familiales & Mutualité sociale agricole |
 | CNAM |cnam | Caisse nationale de l’assurance maladie|
 | CNOUS | cnous | Centre national des œuvres universitaires et scolaires |
 | DESK | desk | Gestion d'accès - La Suite numérique |
 | DGFIP | dgfip | Direction générale des Finances publiques |
-| DSS | dss | Sécurtié Sociale |
+| DSS | dss | Sécurité Sociale |
 | fCP_HIGH | fcpHigh | FranceConnect+ |
 | fCP_LOW | fcpLow | FranceConnect |
 | FT | ft | France Travail|
