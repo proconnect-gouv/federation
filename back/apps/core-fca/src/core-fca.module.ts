@@ -35,7 +35,6 @@ import {
   OidcProviderGrantService,
   OidcProviderModule,
 } from '@fc/oidc-provider';
-import { ScopesModule } from '@fc/scopes';
 import {
   ServiceProviderAdapterMongoModule,
   ServiceProviderAdapterMongoService,
@@ -106,7 +105,6 @@ const exceptionFiltersProviders = [
     FqdnToIdpAdapterMongoModule,
     DataProviderAdapterMongoModule,
     JwtModule,
-    ScopesModule,
     HttpProxyModule,
     OidcAcrModule,
     OidcProviderModule.register(

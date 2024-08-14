@@ -4,7 +4,6 @@
 export * from './cnaf-msa';
 export * from './cnam';
 export * from './cnous';
-export * from './desk';
 export * from './dgfip';
 export * from './dss';
 export * from './fcp-high';

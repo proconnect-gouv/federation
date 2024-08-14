@@ -4,7 +4,14 @@ const dps = {
     uid: "6f21b751-ed06-48b6-a59c-36e1300a368a",
     title: "Fournisseur de données Mock - 1",
     active: true,
-    slug: "DGFIP",
+    scopes: [
+      "dgfip_rfr",
+      "dgfip_aft",
+      "dgfip_nbpac",
+      "dgfip_nbpart",
+      "dgfip_sitfam",
+      "dgfip_pac",
+    ],
     client_id:
       "423dcbdc5a15ece61ed00ff5989d72379c26d9ed4c8e4e05a87cffae019586e0",
     client_secret:
@@ -20,7 +27,11 @@ const dps = {
     uid: "dd5a2c9e-40ad-4f47-b8ed-869d82e6334c",
     title: "Fournisseur de données Mock - 2",
     active: true,
-    slug: "CNAM",
+    scopes: [
+      "droits_assurance_maladie",
+      "cnam_caisse",
+      "cnam_paiements_ij",
+    ],
     client_id:
       "8c6771b49d3985b112eeacb69ca24168222cb247429728db888ad49d44fd9688",
     client_secret:
@@ -35,7 +46,7 @@ const dps = {
   "DPP-INVALID-HIGH": {
     uid: "not-a-uuid",
     title: 42,
-    slug: "MI",
+    scopes: ["test"],
     client_id: null,
     client_secret:
       // client_secret decrypted : 36aa214e7a0043c8da60ae991d8908947147d637137c5bf14bc2fc53e1055847
