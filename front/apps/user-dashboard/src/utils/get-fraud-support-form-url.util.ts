@@ -1,0 +1,19 @@
+import { Strings } from '@fc/common';
+import { ConfigService } from '@fc/config';
+import type { FraudConfig } from '@fc/user-dashboard';
+import { FraudOptions } from '@fc/user-dashboard';
+
+export const getFraudSupportFormUrl = (search: string): string => {
+  const fraudConfig = ConfigService.get<FraudConfig>(FraudOptions.CONFIG_NAME);
+  const { fraudSupportFormPathname, supportFormUrl, surveyOriginQueryParam } = fraudConfig;
+
+  const searchParam = new URLSearchParams(search);
+
+  // @NOTE
+  // we must provide a fraudSurveyOrigin to the form in Formulaire Usager
+  const surveyOrigin = searchParam.get(surveyOriginQueryParam) ?? FraudOptions.SURVEY_ORIGIN_UNKOWN;
+
+  const fraudSupportFormUrl = `${supportFormUrl}${fraudSupportFormPathname}${Strings.SLASH}${surveyOrigin}`;
+
+  return fraudSupportFormUrl;
+};

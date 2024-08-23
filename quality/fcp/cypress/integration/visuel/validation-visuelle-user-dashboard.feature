@@ -34,6 +34,22 @@ Fonctionnalité: Validation Visuelle - User Dashboard
       | tablet landscape |
       | desktop          |
 
+  Plan du Scénario: Validation Visuelle - Signalement usurpation sur <device>
+    Etant donné que j'utilise un compte usager "par défaut"
+    Et que j'utilise un navigateur web sur "<device>"
+    Et que je navigue sur la page de connexion du formulaire usurpation
+    Et que la copie d'écran "udFraudLogin" correspond à la page actuelle sur "<device>"
+    Quand je me connecte pour accéder au formulaire usurpation
+    Alors je suis redirigé vers le formulaire usurpation
+    Et la copie d'écran "udFraudForm" correspond à la page actuelle sur "<device>"
+
+    Exemples:
+      | device           |
+      | mobile           |
+      | tablet portrait  |
+      | tablet landscape |
+      | desktop          |
+
   Plan du Scénario: Validation Visuelle - Préférences FI sur <device>
     Etant donné que j'utilise un compte usager "pour le test de préférences FI"
     Et que j'utilise un navigateur web sur "<device>"

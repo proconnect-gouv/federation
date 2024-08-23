@@ -50,19 +50,19 @@ describe('LoginFormComponent', () => {
     expect(formElement).toHaveAttribute('action', 'login-url-mock');
   });
 
-  it('should render an input with the origin', () => {
+  it('should render an input with the redirectUrl', () => {
     // when
     const { getByDisplayValue } = render(
       <LoginFormComponent
         connectType={ConnectTypes.FRANCE_CONNECT}
-        origin="/any-login-callback-url"
+        redirectUrl="/any-login-callback-url"
       />,
     );
     const element = getByDisplayValue('/any-login-callback-url');
 
     // then
     expect(element).toBeInTheDocument();
-    expect(element).toHaveAttribute('name', 'origin');
+    expect(element).toHaveAttribute('name', 'redirectUrl');
     expect(element).toHaveAttribute('type', 'hidden');
   });
 
