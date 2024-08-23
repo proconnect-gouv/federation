@@ -1,3 +1,5 @@
+import * as path from 'path';
+
 import { NextFunction, Response } from 'express';
 
 import {
@@ -55,7 +57,9 @@ export class MockRnippController {
         }, 7000);
         break;
       case Scenario.ERROR:
-        res.sendFile(`/responses/${exceptionKey}.xml`);
+        res.sendFile(`responses/${exceptionKey}.xml`, {
+          root: path.join(__dirname),
+        });
     }
   }
 
