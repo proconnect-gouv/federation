@@ -4,15 +4,15 @@ fcp-high:
   rules:
     - if: '$CI_COMMIT_BRANCH == "staging"'
       variables:
-        BDD_TAGS: 'not @ignoreHigh and not @fcpLow'
+        BDD_TAGS: '@fcpHigh and not @ignoreHigh'
         SKIP_DIFF_CHECK: 'true'
     - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
       variables:
-        BDD_TAGS: 'not @ignoreHigh and not @fcpLow'
+        BDD_TAGS: '@fcpHigh and not @ignoreHigh'
         SKIP_DIFF_CHECK: 'true'
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       variables:
-        BDD_TAGS: '@ci and not @ignoreHigh and not @fcpLow'
+        BDD_TAGS: '@fcpHigh and not @ignoreHigh and @ci'
   timeout: 2h
   tags:
     - cypress

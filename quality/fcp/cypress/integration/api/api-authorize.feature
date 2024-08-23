@@ -1,5 +1,5 @@
 #language: fr
-@api @apiAuthorize @ignoreInteg01
+@api @apiAuthorize @fcpLow @fcpHigh @ignoreInteg01
 Fonctionnalité: API - authorize
 
   Plan du Scénario: API authorize - Cas nominal prompt=<prompt>

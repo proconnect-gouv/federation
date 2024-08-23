@@ -61,6 +61,7 @@ Fonctionnalité: Connexion Usager - RNIPP
       | userType    |
       | né en Corse |
 
+  @fcpLow @fcpHigh
   Scénario: Connexion avec erreur Y000006 identité sans mail renvoyé par le FI
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
@@ -73,7 +74,7 @@ Fonctionnalité: Connexion Usager - RNIPP
     Et le message d'erreur FranceConnect est "Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous"
 
   # Pas d'accès aux logs métier en integ01
-  @ignoreInteg01
+  @fcpLow @fcpHigh @ignoreInteg01
   Scénario: Connexion avec erreur Y000006 birthplace non valide renvoyé par le FI
     Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton FranceConnect
@@ -99,6 +100,7 @@ Fonctionnalité: Connexion Usager - RNIPP
     Et le code d'erreur FranceConnect est "<errorCode>"
     Et l'événement "<event>" est journalisé avec "idpId" "non null"
 
+    @fcpLow @fcpHigh
     Exemples:
       | scenario                       | username | errorCode | event                      |
       | non trouvé avec un echo        | E010004  | Y010004   | FC_RECEIVED_INVALID_RNIPP  |
