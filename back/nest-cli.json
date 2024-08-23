@@ -912,7 +912,11 @@
       "entryFile": "main",
       "sourceRoot": "instances/mock-rnipp/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/mock-rnipp/tsconfig.app.json"
+        "tsConfigPath": "instances/mock-rnipp/tsconfig.app.json",
+        "assets": [
+          "../../../apps/mock-rnipp/**/*.ejs",
+          "../../../apps/mock-rnipp/**/*.xml"
+        ]
       }
     },
     "oidc-acr": {

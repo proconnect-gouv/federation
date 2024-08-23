@@ -178,7 +178,9 @@ describe('MockRnippController', () => {
 
       // Then
       expect(resMock.sendFile).toHaveBeenCalledTimes(1);
-      expect(resMock.sendFile).toHaveBeenCalledWith('/responses/E010004.xml');
+      expect(resMock.sendFile).toHaveBeenCalledWith('responses/E010004.xml', {
+        root: expect.any(String),
+      });
     });
   });
 
