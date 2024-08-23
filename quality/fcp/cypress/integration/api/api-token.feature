@@ -2,6 +2,7 @@
 @usager @apiToken @ignoreInteg01 @ci
 Fonctionnalité: API - token
 
+  @fcpLow @fcpHigh
   Scénario: API token - cas nominal
     Etant donné que je navigue sur la page fournisseur de service
     Et que je me connecte au fournisseur d'identité via FranceConnect

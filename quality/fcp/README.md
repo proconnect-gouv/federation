@@ -22,7 +22,7 @@ FCP validation with system tests implemented using a Test Framework (based on Cy
 | -------------------- | --------------------------------- | -------------------------------------------- |
 | PLATFORM             | Platform under test               | `fcp-high` or `fcp-low` or `fcp-legacy`      |
 | TEST_ENV             | Test environment                  | `docker` or `integ01`, etc.                  |
-| TAGS                 | Tags expression                   | `not @ignoreLow and not @fcpHigh`            |
+| TAGS                 | Tags expression                   | `@fcpLow and not @ignoreLow`                 |
 | EXPLOIT_ADMIN_NAME   | Exploitation admin username       | needed only for integ01/preprod              |
 | EXPLOIT_ADMIN_PASS   | Exploitation admin password       | needed only for integ01/preprod              |
 | EXPLOIT_ADMIN_TOTP   | Exploitation admin totp secret    | needed only for integ01/preprod              |
@@ -372,8 +372,8 @@ You can create a test pipeline in Gitlab from a merge request or from the stagin
 | FC_LEGACY_VERSION    | branch from core-legacy repository                                           | only if not staging                                              |
 | FC_APPS_VERSION      | branch from fc-apps repository                                               | only if not staging                                              |
 | SKIP_DIFF_CHECK      | allows to skip the difference check in order to force the BDD test execution | by default "true" for BDD jobs run on staging or MR from staging |
-| BDD_TAGS_FCP_LOW     | tags for the fcp-low BDD tests                                               | by default '@ci and not @ignoreLow and not @fcpHigh'             |
-| BDD_TAGS_FCP_HIGH    | tags for the fcp-high BDD tests                                              | by default '@ci and not @ignoreHigh and not @fcpLow'             |
+| BDD_TAGS_FCP_LOW     | tags for the fcp-low BDD tests                                               | by default '@fcpLow and not @ignoreLow and @ci'                  |
+| BDD_TAGS_FCP_HIGH    | tags for the fcp-high BDD tests                                              | by default '@fcpHigh and not @ignoreHigh and @ci'                |
 | BDD_TAGS_FCA_LOW     | tags for the fca-low BDD tests                                               | by default '@ci and not @ignore'                                 |
 | BDD_TAGS_EIDAS       | tags for the eidas-bridge BDD tests                                          | by default '@ci and not @ignore'                                 |
 | BDD_TAGS_UD          | tags for the user-dashboard BDD tests                                        | by default '@ci and not @ignore'                                 |

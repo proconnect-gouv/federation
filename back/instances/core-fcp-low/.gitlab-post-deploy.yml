@@ -11,7 +11,7 @@ quality-fcp-low-release:
     name: integ01
     url: https://fcp-low.integ01.dev-franceconnect.fr
   variables:
-    BDD_TAGS: 'not @ignoreLow and not @fcpHigh'
+    BDD_TAGS: '@fcpLow and not @ignoreLow'
     CYPRESS_PLATFORM: 'fcp-low'
     CYPRESS_TEST_ENV: 'integ01'
     CYPRESS_EXPLOIT_USER_NAME: $EXPLOIT_FCP_LEGACY_USER
