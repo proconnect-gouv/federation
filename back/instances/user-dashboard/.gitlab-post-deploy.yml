@@ -50,5 +50,4 @@ quality-user-dashboard-release:
     paths:
       - quality/fcp/cypress/reports/cucumber/html-report
   after_script:
-    - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
-    - docker container prune -f && docker volume prune -f
+    - $FC_ROOT/fc/docker/docker-stack halt
