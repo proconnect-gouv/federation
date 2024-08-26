@@ -122,4 +122,4 @@ user-dashboard:
       - quality/fcp/cypress/snapshots/diff
       - quality/fcp/cypress/videos
   after_script:
-    - docker container prune -f && docker volume prune -f && docker network prune -f
+    - $FC_ROOT/fc/docker/docker-stack halt

@@ -31,7 +31,7 @@ quality-fca-low-release:
     - cd $CI_PROJECT_DIR/quality/fca && yarn install --frozen-lockfile
     - cd $CI_PROJECT_DIR
   script:
-  # Build the nginx proxy to access /integ01/fca.html
+    # Build the nginx proxy to access /integ01/fca.html
     - docker-stack up rp-all
     - cd $CI_PROJECT_DIR/quality/fca
     - export CYPRESS_EXPLOIT_USER_PASS=$EXPLOIT_FCA_LOW_INT_PWD
@@ -46,5 +46,4 @@ quality-fca-low-release:
     paths:
       - quality/fca/cypress/reports/cucumber/html-report
   after_script:
-    - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
-    - docker container prune --force && docker volume prune -f
+    - $FC_ROOT/fc/docker/docker-stack halt

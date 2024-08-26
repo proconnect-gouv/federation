@@ -112,5 +112,4 @@ fcp-high:
       - quality/fcp/cypress/snapshots/diff
       - artifacts-logs
   after_script:
-    - bash $CI_BUILDS_DIR/france-connect/fc/docker/docker-stack halt
-    - docker container prune -f && docker volume prune -f && docker network prune -f
+    - $FC_ROOT/fc/docker/docker-stack halt

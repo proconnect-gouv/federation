@@ -81,6 +81,7 @@ _get_abs_path() {
 _get_modified_files_for_back_app() {
   local app="${1}"
   local refRevision=$(git ls-remote origin "${2}" | cut -d$'\t' -f1)
+  local fetchResult=$(git fetch origin "${refRevision}" &>/dev/null)
 
   local appFiles=$(_get_back_app_files "${app}")
   local diffFiles=$(_get_back_diff_files "${refRevision}")
@@ -91,6 +92,7 @@ _get_modified_files_for_back_app() {
 _get_modified_files_for_front_app() {
   local app="${1}"
   local refRevision=$(git ls-remote origin "${2}" | cut -d$'\t' -f1)
+  local fetchResult=$(git fetch origin "${refRevision}" &>/dev/null)
 
   local appFiles=$(_get_front_app_files "${app}")
   local diffFiles=$(_get_front_diff_files "${refRevision}")
