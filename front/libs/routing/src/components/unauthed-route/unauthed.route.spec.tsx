@@ -10,7 +10,13 @@ import { UnauthedRoute } from './unauthed.route';
 describe('UnauthedRoute', () => {
   beforeEach(() => {
     // given
-    jest.mocked(useLocation).mockReturnValue(expect.any(Object));
+    jest.mocked(useLocation).mockReturnValue({
+      hash: expect.any(String),
+      key: expect.any(String),
+      pathname: '/any-location-pathname-mock',
+      search: expect.any(String),
+      state: expect.any(Object),
+    });
     jest.mocked(useSafeContext).mockReturnValue({ connected: true, ready: true });
   });
 
@@ -53,7 +59,7 @@ describe('UnauthedRoute', () => {
     // then
     expect(Navigate).toHaveBeenCalledOnce();
     expect(Navigate).toHaveBeenCalledWith(
-      { replace: false, state: { from: expect.any(Object) }, to: '/any-authed-fallback' },
+      { replace: false, state: { from: expect.any(String) }, to: '/any-authed-fallback' },
       {},
     );
   });
@@ -79,7 +85,7 @@ describe('UnauthedRoute', () => {
     // then
     expect(Navigate).toHaveBeenCalledOnce();
     expect(Navigate).toHaveBeenCalledWith(
-      { replace: false, state: { from: expect.any(Object) }, to: '/' },
+      { replace: false, state: { from: expect.any(String) }, to: '/' },
       {},
     );
   });
@@ -97,7 +103,7 @@ describe('UnauthedRoute', () => {
     // then
     expect(Navigate).toHaveBeenCalledOnce();
     expect(Navigate).toHaveBeenCalledWith(
-      { replace: false, state: { from: locationMock }, to: '/any-authed-fallback' },
+      { replace: false, state: { from: '/any-pathname' }, to: '/any-authed-fallback' },
       {},
     );
     expect(fallbackMock).toHaveBeenCalledOnce();

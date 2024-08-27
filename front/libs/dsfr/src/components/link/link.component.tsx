@@ -10,13 +10,11 @@ interface LinkComponentProps {
   iconPlacement?: IconPlacement;
   label?: string;
   size?: Sizes;
-  dataTestId?: string;
 }
 
 export const LinkComponent = React.memo(
   ({
     className,
-    dataTestId,
     href,
     icon,
     iconPlacement = IconPlacement.LEFT,
@@ -34,7 +32,6 @@ export const LinkComponent = React.memo(
         },
         className,
       )}
-      data-testid={dataTestId}
       href={href}>
       {label}
     </a>

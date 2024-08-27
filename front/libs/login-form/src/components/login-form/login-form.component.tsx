@@ -9,17 +9,17 @@ import { ButtonTypes, LoginConnectButton } from '@fc/dsfr';
 interface LoginFormComponentProps {
   connectType: ConnectTypes;
   className?: string;
-  redirectUrl?: string;
+  origin?: string;
 }
 
 export const LoginFormComponent = React.memo(
-  ({ className, connectType, redirectUrl }: LoginFormComponentProps) => {
+  ({ className, connectType, origin }: LoginFormComponentProps) => {
     const config = ConfigService.get<AccountConfig>(AccountOptions.CONFIG_NAME);
     const { login } = config.endpoints;
 
     return (
       <form action={login} data-testid="login-form-component" method="get">
-        {redirectUrl && <input name="redirectUrl" type="hidden" value={redirectUrl} />}
+        {origin && <input name="origin" type="hidden" value={origin} />}
         <LoginConnectButton
           className={className}
           connectType={connectType}
