@@ -121,6 +121,8 @@ services:
           - fsp1.docker.dev-franceconnect.fr
           - fsp2.docker.dev-franceconnect.fr
           - fsp3.docker.dev-franceconnect.fr
+          - fsp1-legacy.docker.dev-franceconnect.fr
+          - fsp2-legacy.docker.dev-franceconnect.fr
           - fdp1.docker.dev-franceconnect.fr
           - assets.docker.dev-franceconnect.fr
           - fc-exploitation.docker.dev-franceconnect.fr

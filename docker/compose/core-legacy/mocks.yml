@@ -174,6 +174,54 @@ services:
       - public
     command: "tail -f /dev/null"
 
+  fsp1-legacy:
+    hostname: fsp1-legacy
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "redis-pwd"
+      - "squid"
+      - "haproxy"
+    volumes:
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+    env_file:
+      - "${COMPOSE_DIR}/shared/.env/base-app.env"
+      - "${COMPOSE_DIR}/core-legacy/.env/fsp1-legacy.env"
+    tty: true
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
+  fsp2-legacy:
+    hostname: fsp2-legacy
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      - "redis-pwd"
+      - "squid"
+      - "haproxy"
+    volumes:
+      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
+      - "${VOLUMES_DIR}/app:/opt/scripts"
+      - "${VOLUMES_DIR}/log/:/var/log/app"
+      - "${VOLUMES_DIR}/.home:/home"
+      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
+    env_file:
+      - "${COMPOSE_DIR}/shared/.env/base-app.env"
+      - "${COMPOSE_DIR}/core-legacy/.env/fsp2-legacy.env"
+    tty: true
+    networks:
+      - public
+      - data
+    command: "pm2 logs"
+
   #########################################
   ## Data Providers
   #########################################
