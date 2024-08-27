@@ -37,6 +37,7 @@ describe('OidcClient Controller', () => {
     getEndSessionUrlFromProvider: jest.fn(),
     utils: {
       buildAuthorizeParameters: jest.fn(),
+      checkCsrfTokenValidity: jest.fn(),
       getAuthorizeUrl: jest.fn(),
       revokeToken: jest.fn(),
       wellKnownKeys: jest.fn(),
@@ -51,10 +52,6 @@ describe('OidcClient Controller', () => {
     error: 'error',
     error_description: 'error_description',
   };
-
-  const oidcSessionServiceMock = getSessionServiceMock();
-
-  const appSessionServiceMock = getSessionServiceMock();
 
   const sessionServiceMock = getSessionServiceMock();
 
@@ -125,14 +122,12 @@ describe('OidcClient Controller', () => {
 
     identityProviderServiceMock.getById.mockReturnValue(idpMock);
 
-    oidcSessionServiceMock.get.mockReturnValue({
+    sessionServiceMock.get.mockReturnValue({
       idpNonce: idpNonceMock,
       idpState: idpStateMock,
       idpId: idpIdMock,
       idpIdToken: idpIdTokenMock,
     });
-
-    appSessionServiceMock.get.mockReturnValue(undefined);
 
     oidcClientServiceMock.utils.buildAuthorizeParameters.mockReturnValue({
       acr_values: 'acrMock',
@@ -154,8 +149,6 @@ describe('OidcClient Controller', () => {
 
     it('should call oidc-client-service to retrieve authorize url', async () => {
       // setup
-      const query = {};
-
       const authorizeUrlMock = 'https://my-authentication-openid-url.com';
 
       oidcClientServiceMock.utils.getAuthorizeUrl.mockReturnValueOnce(
@@ -171,12 +164,7 @@ describe('OidcClient Controller', () => {
       };
 
       // action
-      await controller.redirectToIdp(
-        res,
-        query,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
+      await controller.redirectToIdp(res, sessionServiceMock);
 
       // assert
       expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledTimes(
@@ -190,8 +178,6 @@ describe('OidcClient Controller', () => {
 
     it('should call res.redirect() with the authorizeUrl', async () => {
       // setup
-      const query = {};
-
       const authorizeUrlMock = 'https://my-authentication-openid-url.com';
 
       oidcClientServiceMock.utils.getAuthorizeUrl.mockReturnValueOnce(
@@ -199,22 +185,15 @@ describe('OidcClient Controller', () => {
       );
 
       // action
-      await controller.redirectToIdp(
-        res,
-        query,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
+      await controller.redirectToIdp(res, sessionServiceMock);
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(authorizeUrlMock);
     });
 
-    it('should store state and nonce in oidc session', async () => {
+    it('should store state and nonce in session', async () => {
       // setup
-      const query = {};
-
       const authorizeUrlMock = 'https://my-authentication-openid-url.com';
 
       oidcClientServiceMock.utils.getAuthorizeUrl.mockReturnValueOnce(
@@ -222,48 +201,16 @@ describe('OidcClient Controller', () => {
       );
 
       // action
-      await controller.redirectToIdp(
-        res,
-        query,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
+      await controller.redirectToIdp(res, sessionServiceMock);
 
       // assert
-      expect(oidcSessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(oidcSessionServiceMock.set).toHaveBeenCalledWith({
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith({
         idpId: configMock.idpId,
         idpName: 'nameValue',
         idpLabel: 'titleValue',
         idpNonce: idpNonceMock,
         idpState: idpStateMock,
-      });
-    });
-
-    it('should store redirectUrl in app session', async () => {
-      // setup
-      const query = {
-        redirectUrl: '/route?query-param',
-      };
-
-      const authorizeUrlMock = 'https://my-authentication-openid-url.com';
-
-      oidcClientServiceMock.utils.getAuthorizeUrl.mockReturnValueOnce(
-        authorizeUrlMock,
-      );
-
-      // action
-      await controller.redirectToIdp(
-        res,
-        query,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
-
-      // assert
-      expect(appSessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(appSessionServiceMock.set).toHaveBeenCalledWith({
-        redirectUrl: '/route?query-param',
       });
     });
   });
@@ -280,27 +227,13 @@ describe('OidcClient Controller', () => {
   });
 
   describe('logoutCallback()', () => {
-    it('should redirect to the index page if no redirectUrl', async () => {
+    it('should redirect on the home page', async () => {
       // action
-      await controller.logoutCallback(req, res, appSessionServiceMock);
+      await controller.logoutCallback(req, res);
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/');
-    });
-
-    it('should redirect to the redirectUrl', async () => {
-      // setup
-      appSessionServiceMock.get
-        .mockReset()
-        .mockReturnValueOnce('/route?query-param');
-
-      // action
-      await controller.logoutCallback(req, res, appSessionServiceMock);
-
-      // assert
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/route?query-param');
     });
   });
 
@@ -328,6 +261,8 @@ describe('OidcClient Controller', () => {
       idpIdentity: identityMock,
     };
 
+    const redirectMock = UserDashboardFrontRoutes.MES_TRACES;
+
     beforeEach(() => {
       res = {
         redirect: jest.fn(),
@@ -340,35 +275,21 @@ describe('OidcClient Controller', () => {
       oidcClientServiceMock.getUserInfosFromProvider.mockReturnValueOnce(
         identityMock,
       );
-
-      controller['getRedirectUrl'] = jest
-        .fn()
-        .mockReturnValue(UserDashboardFrontRoutes.HISTORY);
     });
 
     it('should throw an error if the session is not found', async () => {
       // setup
-      oidcSessionServiceMock.get.mockReset().mockReturnValueOnce(undefined);
+      sessionServiceMock.get.mockReset().mockReturnValueOnce(undefined);
 
       // action/assertion
       await expect(
-        controller.getOidcCallback(
-          req,
-          res,
-          oidcSessionServiceMock,
-          appSessionServiceMock,
-        ),
+        controller.getOidcCallback(req, res, sessionServiceMock),
       ).rejects.toThrow(SessionNotFoundException);
     });
 
     it('should call token with providerId', async () => {
       // action
-      await controller.getOidcCallback(
-        req,
-        res,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
+      await controller.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledTimes(
@@ -385,12 +306,7 @@ describe('OidcClient Controller', () => {
       // arrange
 
       // action
-      await controller.getOidcCallback(
-        req,
-        res,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
+      await controller.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
       expect(
@@ -406,12 +322,7 @@ describe('OidcClient Controller', () => {
       const cloneDeepMock = jest.mocked(cloneDeep);
 
       // When
-      await controller.getOidcCallback(
-        req,
-        res,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
+      await controller.getOidcCallback(req, res, sessionServiceMock);
 
       // Then
       expect(cloneDeepMock).toHaveBeenCalledTimes(1);
@@ -424,51 +335,20 @@ describe('OidcClient Controller', () => {
       jest.mocked(cloneDeep).mockReturnValueOnce(clonedIdentityMock);
 
       // action
-      await controller.getOidcCallback(
-        req,
-        res,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
+      await controller.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
-      expect(oidcSessionServiceMock.set).toHaveBeenCalledTimes(1);
-      expect(oidcSessionServiceMock.set).toHaveBeenCalledWith(
-        clonedIdentityMock,
-      );
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith(clonedIdentityMock);
     });
 
-    it('should redirect user to redirectUrl', async () => {
-      // setup
-      appSessionServiceMock.get
-        .mockReset()
-        .mockReturnValueOnce('/route?query-param');
-
+    it('should redirect user after token and userinfo received and saved', async () => {
       // action
-      await controller.getOidcCallback(
-        req,
-        res,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
+      await controller.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/route?query-param');
-    });
-
-    it('should redirect user to history page if no redirectUrl', async () => {
-      // action
-      await controller.getOidcCallback(
-        req,
-        res,
-        oidcSessionServiceMock,
-        appSessionServiceMock,
-      );
-
-      // assert
-      expect(res.redirect).toHaveBeenCalledTimes(1);
-      expect(res.redirect).toHaveBeenCalledWith('/history');
+      expect(res.redirect).toHaveBeenCalledWith(redirectMock);
     });
   });
 
@@ -479,7 +359,7 @@ describe('OidcClient Controller', () => {
         '/logout-callback',
       );
       // action
-      await controller.logout(res, oidcSessionServiceMock);
+      await controller.logout(res, sessionServiceMock);
 
       // assert
       expect(res.redirect).toHaveBeenCalledTimes(1);
@@ -491,12 +371,12 @@ describe('OidcClient Controller', () => {
       const resMock = {
         redirect: jest.fn(),
       };
-
       const redirectUrl = '/';
 
-      oidcSessionServiceMock.get.mockResolvedValue(undefined);
+      sessionServiceMock.get.mockResolvedValue(undefined);
 
-      await controller.logout(resMock, oidcSessionServiceMock);
+      // action
+      await controller.logout(resMock, sessionServiceMock);
 
       // assert
       expect(resMock.redirect).toHaveBeenCalledTimes(1);
@@ -510,13 +390,13 @@ describe('OidcClient Controller', () => {
       };
       const redirectUrl = '/';
 
-      oidcSessionServiceMock.get.mockResolvedValue({
+      sessionServiceMock.get.mockResolvedValue({
         idpState: 'idpState',
         idpId: 'idpId',
       });
 
       // action
-      await controller.logout(resMock, oidcSessionServiceMock);
+      await controller.logout(resMock, sessionServiceMock);
 
       // assert
       expect(resMock.redirect).toHaveBeenCalledTimes(1);

@@ -6,7 +6,6 @@ import {
   Get,
   Header,
   Post,
-  Query,
   Render,
   Req,
   Res,
@@ -32,12 +31,7 @@ import {
   SessionService,
 } from '@fc/session';
 
-import {
-  AccessTokenParamsDTO,
-  AppConfig,
-  AppSession,
-  redirectToIdpQueryDto,
-} from '../dto';
+import { AccessTokenParamsDTO, AppConfig } from '../dto';
 import { UserDashboardBackRoutes, UserDashboardFrontRoutes } from '../enums';
 import { UserDashboardTokenRevocationException } from '../exceptions';
 
@@ -58,7 +52,6 @@ export class OidcClientController {
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async redirectToIdp(
     @Res() res,
-    @Query() query: redirectToIdpQueryDto,
     /**
      * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
@@ -66,7 +59,6 @@ export class OidcClientController {
      */
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
-    @Session('App') sessionApp: ISessionService<AppSession>,
   ): Promise<void> {
     const { defaultAcrValue: acr_values } =
       this.config.get<OidcAcrConfig>('OidcAcr');
@@ -104,10 +96,6 @@ export class OidcClientController {
     };
 
     sessionOidc.set(session);
-
-    sessionApp.set({
-      redirectUrl: query.redirectUrl,
-    });
 
     res.redirect(authorizationUrl);
   }
@@ -156,19 +144,14 @@ export class OidcClientController {
   }
 
   @Get(UserDashboardBackRoutes.LOGOUT_CALLBACK)
-  async logoutCallback(
-    @Req() req,
-    @Res() res,
-    @Session('App') sessionApp: ISessionService<AppSession>,
-  ) {
-    const redirectUrl =
-      sessionApp.get('redirectUrl') ?? UserDashboardFrontRoutes.INDEX;
-
+  async logoutCallback(@Req() req, @Res() res) {
     // delete oidc session
     await this.sessionService.reset(res);
 
-    // BUSINESS: Redirect to the redirectUrl specified in redirectToIdp Query
-    return res.redirect(redirectUrl);
+    // BUSINESS: Redirect to business page
+    const redirect = '/';
+
+    return res.redirect(redirect);
   }
 
   @Post(UserDashboardBackRoutes.REVOCATION)
@@ -221,7 +204,6 @@ export class OidcClientController {
      */
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
-    @Session('App') sessionApp: ISessionService<AppSession>,
   ) {
     const session: OidcSession = sessionOidc.get();
 
@@ -266,11 +248,7 @@ export class OidcClientController {
 
     sessionOidc.set(identityExchange);
 
-    const redirectUrl =
-      sessionApp.get('redirectUrl') ?? UserDashboardFrontRoutes.HISTORY;
-
-    // BUSINESS: Redirect to the redirectUrl specified in redirectToIdp Query
-    res.redirect(redirectUrl);
+    res.redirect(UserDashboardFrontRoutes.MES_TRACES);
   }
 
   private getIdpId(): string {

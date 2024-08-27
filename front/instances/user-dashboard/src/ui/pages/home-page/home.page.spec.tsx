@@ -1,5 +1,4 @@
 import { render } from '@testing-library/react';
-import { useLocation } from 'react-router-dom';
 
 import { AccountContext } from '@fc/account';
 import { useSafeContext } from '@fc/common';
@@ -92,16 +91,8 @@ describe('HomePage', () => {
     // then
     expect(element).toBeInTheDocument();
     expect(element).toHaveTextContent(
-      'Pour accéder à votre tableau de bord FranceConnect, veuillez vous connecter',
+      'Pour accéder à votre historique d’utilisation de FranceConnect, veuillez vous connecter',
     );
-  });
-
-  it('should have called useLocation hook', () => {
-    // when
-    render(<HomePage />);
-
-    // then
-    expect(useLocation).toHaveBeenCalled();
   });
 
   it('should render the paragraph', () => {
@@ -114,7 +105,7 @@ describe('HomePage', () => {
     // then
     expect(element).toBeInTheDocument();
     expect(element).toHaveTextContent(
-      'Une fois connecté, vous pourrez consulter l’historique de vos connexions et configurer vos accès FranceConnect.',
+      'Une fois connecté, vous pourrez accéder à l’ensemble des connexions et échanges de données liés à votre compte sur les 6 derniers mois.',
     );
   });
 
@@ -138,7 +129,7 @@ describe('HomePage', () => {
     );
   });
 
-  it('should render LoginFormComponent without redirectUrl', () => {
+  it('should render LoginFormComponent', () => {
     // when
     render(<HomePage />);
 
@@ -148,32 +139,6 @@ describe('HomePage', () => {
       {
         className: 'flex-rows items-center',
         connectType: 'FranceConnect',
-        redirectUrl: undefined,
-      },
-      {},
-    );
-  });
-
-  it('should render LoginFormComponent with redirectUrl', () => {
-    // Given
-    jest.mocked(useLocation).mockReturnValueOnce({
-      hash: expect.any(String),
-      key: expect.any(String),
-      pathname: expect.any(String),
-      search: expect.any(String),
-      state: { from: { pathname: '/any-pathname' } },
-    });
-
-    // when
-    render(<HomePage />);
-
-    // then
-    expect(LoginFormComponent).toHaveBeenCalledOnce();
-    expect(LoginFormComponent).toHaveBeenCalledWith(
-      {
-        className: 'flex-rows items-center',
-        connectType: 'FranceConnect',
-        redirectUrl: '/any-pathname',
       },
       {},
     );
