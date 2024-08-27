@@ -34,3 +34,25 @@ services:
       - "fdp1"
       # -- maildev
       - "maildev"
+  
+  bdd-fcp-legacy-wip:
+    image: alpine
+    depends_on:
+      # -- Core v1
+      - "fc-core"
+      - "fc-exploitation"
+      - "fc-support"
+      # -- SP
+      - "fsp1-legacy" # for public tests
+      - "fsp2-legacy" # for private tests
+      # -- IdP
+      - "fip1-low"
+      - "fip2-low"
+      - "fip3-low"
+      - "fip8-low"
+      - "fip9-low"
+      - "aidants-connect-mock"
+      # -- DP
+      - "fdp1"
+      # -- maildev
+      - "maildev"

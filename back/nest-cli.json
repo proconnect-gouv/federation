@@ -212,6 +212,29 @@
         ]
       }
     },
+    "mock-service-provider-fcp-legacy": {
+      "type": "application",
+      "root": "instances/mock-service-provider-fcp-legacy",
+      "entryFile": "main",
+      "sourceRoot": "instances/mock-service-provider-fcp-legacy/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/mock-service-provider-fcp-legacy/tsconfig.app.json",
+        "assets": [
+          "../../../apps/mock-service-provider/src/public/css/main.css",
+          "../../../apps/mock-service-provider/src/views/error.ejs",
+          "../../../apps/mock-service-provider/src/views/success-revoke-token.ejs",
+          "../../../apps/mock-service-provider/**/*.ejs",
+          "../../../apps/mock-service-provider/**/*.css",
+          "../../../apps/mock-service-provider/**/*.svg",
+          "../../../apps/mock-service-provider/**/*.png",
+          "../../../instances/mock-service-provider-fcp-legacy/**/*.js",
+          "../../../instances/mock-service-provider-fcp-legacy/**/*.ejs",
+          "../../../instances/mock-service-provider-fcp-legacy/**/*.css",
+          "../../../instances/mock-service-provider-fcp-legacy/**/*.svg",
+          "../../../instances/mock-service-provider-fcp-legacy/**/*.png"
+        ]
+      }
+    },
     "mock-identity-provider-fca-low": {
       "type": "application",
       "root": "instances/mock-identity-provider-fca-low",
