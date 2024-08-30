@@ -68,6 +68,7 @@ import {
   DataProviderService,
   OidcProviderConfigAppService,
 } from './services';
+import { CoreFcaFqdnService } from './services/core-fca-fqdn.service';
 
 const trackingModule = TrackingModule.forRoot(CoreFcaTrackingService);
 
@@ -150,6 +151,7 @@ const exceptionFiltersProviders = [
     CoreFcaDefaultAuthorizationHandler,
     CoreFcaMcpAuthorizationHandler,
     DataProviderService,
+    CoreFcaFqdnService,
     {
       provide: CORE_SERVICE,
       useClass: CoreFcaService,
