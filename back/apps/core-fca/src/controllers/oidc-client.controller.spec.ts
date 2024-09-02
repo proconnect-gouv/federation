@@ -1,3 +1,5 @@
+import { plainToInstance } from 'class-transformer';
+import { validate } from 'class-validator';
 import { cloneDeep } from 'lodash';
 
 import { Test, TestingModule } from '@nestjs/testing';
@@ -710,6 +712,61 @@ describe('OidcClient Controller', () => {
         controller['validateIdentity'](idpIdMock, identityMock),
         // Then
       ).rejects.toThrow(CoreFcaInvalidIdentityException);
+    });
+
+    it('should throw when email is a string of number', async () => {
+      const emailIdentity = {
+        email: '12345',
+      };
+      const oidcIdentityDto = plainToInstance(OidcIdentityDto, emailIdentity);
+      const errors = await validate(oidcIdentityDto, {
+        skipMissingProperties: true,
+      });
+      expect(errors.length).not.toBe(0);
+      expect(errors[0].constraints.isEmail).toContain(`email must be an email`);
+    });
+
+    it('should success when phone_number contains list of phones number', async () => {
+      const phoneNumberIdentity = {
+        phone_number: '0634283766,0471432775',
+      };
+      const oidcIdentityDto = plainToInstance(
+        OidcIdentityDto,
+        phoneNumberIdentity,
+      );
+      const errors = await validate(oidcIdentityDto, {
+        skipMissingProperties: true,
+      });
+      expect(errors.length).toBe(0);
+    });
+
+    it('should success when organizational_unit contains points and others specifics characters', async () => {
+      const organizationalUnitIdentity = {
+        organizational_unit:
+          'MINISTERE INTERIEUR/DGPN/US REGROUPEMENT DES DZPN/US REGROUP. DIPN GC/DIPN77/CPN MELUN VAL DE SEINE',
+      };
+      const oidcIdentityDto = plainToInstance(
+        OidcIdentityDto,
+        organizationalUnitIdentity,
+      );
+      const errors = await validate(oidcIdentityDto, {
+        skipMissingProperties: true,
+      });
+      expect(errors.length).toBe(0);
+    });
+
+    it('should failed if siren is empty string', async () => {
+      const sirenIdentity = {
+        siren: '',
+      };
+      const oidcIdentityDto = plainToInstance(OidcIdentityDto, sirenIdentity);
+      const errors = await validate(oidcIdentityDto, {
+        skipMissingProperties: true,
+      });
+      expect(errors.length).not.toBe(0);
+      expect(errors[0].constraints.minLength).toContain(
+        `siren must be longer than or equal to 1 characters`,
+      );
     });
   });
 });
