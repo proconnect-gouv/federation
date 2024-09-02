@@ -1,7 +1,11 @@
 import { Expose } from 'class-transformer';
-import { IsBoolean, IsOptional, MaxLength, MinLength } from 'class-validator';
-
-import { IsSafeString } from '@fc/common';
+import {
+  IsBoolean,
+  IsOptional,
+  IsString,
+  MaxLength,
+  MinLength,
+} from 'class-validator';
 
 import { MandatoryIdentityDto } from './mandatory-identity.dto';
 
@@ -10,7 +14,9 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
    * @todo #484 Faire un validator pour siren
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/484
    */
-  @IsSafeString()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(256)
   @IsOptional()
   @Expose()
   readonly siren?: string;
@@ -19,31 +25,34 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
    * @todo #484 Faire un validator pour siren
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/484
    */
-  @IsSafeString()
+  @IsString()
+  @MinLength(1)
+  @MaxLength(256)
   @IsOptional()
   @Expose()
   readonly siret?: string;
 
-  @IsSafeString()
+  @IsString()
   @MinLength(1)
   @MaxLength(256)
   @IsOptional()
   @Expose()
   readonly organizational_unit?: string;
 
-  @IsSafeString()
+  @IsString()
   @MinLength(1)
   @MaxLength(256)
   @IsOptional()
   @Expose()
   readonly belonging_population?: string;
 
-  @IsSafeString()
+  @IsString()
+  @MaxLength(256)
   @IsOptional()
   @Expose()
   readonly phone_number?: string;
 
-  @IsSafeString()
+  @IsString()
   @MinLength(1)
   @MaxLength(256)
   @IsOptional()
