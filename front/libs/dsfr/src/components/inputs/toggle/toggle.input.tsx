@@ -1,10 +1,12 @@
 import React from 'react';
 import { Field } from 'react-final-form';
 
+import type { PropsWithClassName } from '@fc/common';
+
 import type { CheckableLegend } from '../../../interfaces';
 import { ToggleComponent } from './toggle.component';
 
-interface ToggleInputProps {
+interface ToggleInputProps extends PropsWithClassName {
   // @SEE https://gouvfr.atlassian.net/wiki/spaces/DB/pages/368935138/Interrupteur+-+Toggle+switch
   disabled?: boolean;
   hint?: string;
@@ -14,7 +16,6 @@ interface ToggleInputProps {
   initialValue?: any;
   label: string | Function;
   name: string;
-  className?: string;
   legend?: CheckableLegend;
   onUpdate?: (v: boolean) => void;
 }

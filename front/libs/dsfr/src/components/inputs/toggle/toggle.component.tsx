@@ -2,11 +2,13 @@ import classnames from 'classnames';
 import React from 'react';
 import type { FieldInputProps } from 'react-final-form';
 
+import type { PropsWithClassName } from '@fc/common';
+
 import type { CheckableLegend } from '../../../interfaces';
 import { ToggleInputComponent } from './toggle-input.component';
 import { ToggleLabelComponent } from './toggle-label.component';
 
-interface ToggleComponentProps {
+interface ToggleComponentProps extends PropsWithClassName {
   // @SEE https://gouvfr.atlassian.net/wiki/spaces/DB/pages/217251933/Case+cocher+-+Checkbox
   disabled?: boolean;
   hint?: string;
@@ -14,7 +16,6 @@ interface ToggleComponentProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   input: FieldInputProps<any, HTMLElement>;
   label: string | Function;
-  className?: string;
   onUpdate?: (v: boolean) => void;
   legend: CheckableLegend | undefined;
 }
