@@ -1,12 +1,13 @@
 import classnames from 'classnames';
 import React from 'react';
 
+import type { PropsWithClassName } from '@fc/common';
+
 import type { Service } from '../interfaces';
 import styles from './service-image.module.scss';
 
-interface ServiceImageComponentProps {
+interface ServiceImageComponentProps extends PropsWithClassName {
   disabled?: boolean;
-  className?: string;
   service: Service;
 }
 
