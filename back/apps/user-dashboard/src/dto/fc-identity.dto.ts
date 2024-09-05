@@ -11,10 +11,9 @@ import {
   ValidateIf,
 } from 'class-validator';
 
+import { COG_FRANCE } from '@fc/cog';
 import { MinIdentityDto } from '@fc/oidc-client';
 import { Genders } from '@fc/rnipp';
-
-const COG_FRANCE = '99100';
 
 export class FcIdentityDto extends MinIdentityDto {
   @IsString()
