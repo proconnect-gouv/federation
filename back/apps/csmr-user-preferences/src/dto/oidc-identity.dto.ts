@@ -13,10 +13,8 @@ import {
   ValidateIf,
 } from 'class-validator';
 
-import { IsCog } from '@fc/cog';
+import { COG_FRANCE, IsCog } from '@fc/cog';
 import { Genders } from '@fc/rnipp';
-
-const COG_FRANCE = '99100';
 
 export class OidcIdentityDto {
   @MinLength(1)
