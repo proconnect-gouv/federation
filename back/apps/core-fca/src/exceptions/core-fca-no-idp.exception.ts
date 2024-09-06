@@ -15,6 +15,7 @@ const description =
 export class CoreFcaAgentNoIdpException extends CoreFcaBaseException {
   code = ErrorCode.NO_IDP;
   public readonly httpStatusCode = HttpStatus.BAD_REQUEST;
+  public description: string = description;
 
   illustration = 'access-restricted-error';
   title = 'Accès indisponible';
