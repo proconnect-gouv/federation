@@ -4,7 +4,7 @@ import type { Dispatch, SetStateAction } from 'react';
 import { get } from '@fc/http-client';
 
 import type {
-  AccountContextStateInterface,
+  AccountContextState,
   UserInfosInterface,
   UserInfosValidatorInterface,
 } from '../../interfaces';
@@ -12,7 +12,7 @@ import type {
 interface UserInfosFetcherInterface {
   endpoint: string;
   validator: UserInfosValidatorInterface;
-  updateState: Dispatch<SetStateAction<AccountContextStateInterface<UserInfosInterface>>>;
+  updateState: Dispatch<SetStateAction<AccountContextState<UserInfosInterface>>>;
 }
 
 export const fetchUserInfosErrorHandler =

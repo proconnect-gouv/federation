@@ -3,10 +3,8 @@
 // declarative file
 import React from 'react';
 
-import type { AccountContextStateInterface } from '../interfaces';
+import type { AccountContextState } from '../interfaces';
 
-export const AccountContext = React.createContext<AccountContextStateInterface | undefined>(
-  undefined,
-);
+export const AccountContext = React.createContext<AccountContextState | undefined>(undefined);
 
 AccountContext.displayName = 'AccountContext';

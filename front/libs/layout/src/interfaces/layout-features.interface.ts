@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // declarative file
-export interface LayoutFeatures {
+export interface LayoutFeaturesInterface {
   showLicence: boolean;
   showServiceTitle: boolean;
 }

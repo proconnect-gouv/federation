@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import React from 'react';
 
-import type { AccountContextStateInterface } from '@fc/account';
+import type { AccountContextState } from '@fc/account';
 import { AccountContext } from '@fc/account';
 import { useSafeContext } from '@fc/common';
 import { AlertComponent, AlertTypes, ConnectTypes, Sizes } from '@fc/dsfr';
@@ -11,7 +11,7 @@ import { useStylesQuery, useStylesVariables } from '@fc/styles';
 import styles from './home.module.scss';
 
 export const HomePage = React.memo(() => {
-  const { expired } = useSafeContext<AccountContextStateInterface>(AccountContext);
+  const { expired } = useSafeContext<AccountContextState>(AccountContext);
 
   const [breakpointLg, breakpointSm] = useStylesVariables(['breakpoint-lg', 'breakpoint-sm']);
 

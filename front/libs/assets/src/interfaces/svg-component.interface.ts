@@ -1,4 +1,5 @@
 /* istanbul ignore file */
 
 // declarative file
-export interface SVGComponent extends React.FunctionComponent<React.SVGAttributes<SVGElement>> {}
+export interface SVGComponentInterface
+  extends React.FunctionComponent<React.SVGAttributes<SVGElement>> {}

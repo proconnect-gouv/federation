@@ -2,10 +2,10 @@ import type { MouseEventHandler } from 'react';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 
-import type { NavigationLink } from '@fc/common';
+import type { NavigationLinkInterface } from '@fc/common';
 
 interface LayoutHeaderNavigationComponentProps {
-  navigation?: NavigationLink[];
+  navigation?: NavigationLinkInterface[];
   onItemClick?: MouseEventHandler<HTMLButtonElement | HTMLAnchorElement>;
 }
 

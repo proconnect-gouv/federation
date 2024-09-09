@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // declarative file
-export interface CheckableLegend {
+export interface CheckableLegendInterface {
   checked: string;
   unchecked: string;
 }
