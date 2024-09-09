@@ -1,0 +1,15 @@
+include: '/back/.gitlab-build-template.yml'
+
+ud/csmr-fraud-build-image:
+  extends: .base-build
+  variables:
+    APP: csmr-fraud-instance
+    MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_fraud_version:"
+
+ud/csmr-fraud-tag-to-prod-image:
+  extends: .base-tag-to-prod
+  variables:
+    DOCKER_IMAGE: csmr-fraud-instance
+    MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_fraud_version:"
+  needs:
+    - job: ud/csmr-fraud-build-image
