@@ -1,7 +1,7 @@
 import classnames from 'classnames';
 import React from 'react';
 
-import { type NavigationLink, useSafeContext } from '@fc/common';
+import { type NavigationLinkInterface, useSafeContext } from '@fc/common';
 
 import { LayoutContext } from '../../../context';
 import type { LayoutContextState } from '../../../interfaces';
@@ -9,7 +9,7 @@ import { LayoutHeaderNavigationComponent } from '../navigation';
 import { LayoutHeaderToolsComponent } from '../tools';
 
 interface LayoutHeaderMenuComponentProps {
-  navigation?: NavigationLink[];
+  navigation?: NavigationLinkInterface[];
 }
 
 export const LayoutHeaderMenuComponent = React.memo(

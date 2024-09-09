@@ -3,12 +3,13 @@ import React from 'react';
 
 import type { PropsWithClassName } from '@fc/common';
 
-import type { Service } from '../interfaces';
+import type { ServiceInterface } from '../interfaces';
 import styles from './service-image.module.scss';
 
 interface ServiceImageComponentProps extends PropsWithClassName {
   disabled?: boolean;
-  service: Service;
+  className?: string;
+  service: ServiceInterface;
 }
 
 export const ServiceImageComponent = React.memo(

@@ -1,10 +1,10 @@
 /* istanbul ignore file */
 
 // declarative file
-import type { NavigationLink } from '@fc/common';
+import type { NavigationLinkInterface } from '@fc/common';
 
-export interface LayoutFooter {
-  links: NavigationLink[];
+export interface LayoutFooterInterface {
+  links: NavigationLinkInterface[];
   description?: string;
-  navigation: NavigationLink[];
+  navigation: NavigationLinkInterface[];
 }

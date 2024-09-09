@@ -3,7 +3,7 @@ import { Field } from 'react-final-form';
 
 import type { PropsWithClassName } from '@fc/common';
 
-import type { CheckableLegend } from '../../../interfaces';
+import type { CheckableLegendInterface } from '../../../interfaces';
 import { ToggleComponent } from './toggle.component';
 
 interface ToggleInputProps extends PropsWithClassName {
@@ -16,7 +16,8 @@ interface ToggleInputProps extends PropsWithClassName {
   initialValue?: any;
   label: string | Function;
   name: string;
-  legend?: CheckableLegend;
+  className?: string;
+  legend?: CheckableLegendInterface;
   onUpdate?: (v: boolean) => void;
 }
 

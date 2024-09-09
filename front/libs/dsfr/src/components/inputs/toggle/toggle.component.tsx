@@ -4,7 +4,7 @@ import type { FieldInputProps } from 'react-final-form';
 
 import type { PropsWithClassName } from '@fc/common';
 
-import type { CheckableLegend } from '../../../interfaces';
+import type { CheckableLegendInterface } from '../../../interfaces';
 import { ToggleInputComponent } from './toggle-input.component';
 import { ToggleLabelComponent } from './toggle-label.component';
 
@@ -17,7 +17,7 @@ interface ToggleComponentProps extends PropsWithClassName {
   input: FieldInputProps<any, HTMLElement>;
   label: string | Function;
   onUpdate?: (v: boolean) => void;
-  legend: CheckableLegend | undefined;
+  legend: CheckableLegendInterface | undefined;
 }
 
 export const ToggleComponent = React.memo(

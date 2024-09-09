@@ -8,7 +8,7 @@ import { ConfigService } from '@fc/config';
 import { Options } from '../enums';
 import type {
   AccountConfig,
-  AccountContextStateInterface,
+  AccountContextState,
   UserInfosValidatorInterface,
 } from '../interfaces';
 import { fetchUserInfos } from '../services';
@@ -24,7 +24,7 @@ export const AccountProvider = ({ children, validator }: AccountProviderProps) =
   const { codeError, hasError } =
     useSafeContext<AxiosErrorCatcherInterface>(AxiosErrorCatcherContext);
 
-  const [account, setAccount] = useState<AccountContextStateInterface>({
+  const [account, setAccount] = useState<AccountContextState>({
     connected: false,
     expired: false,
     ready: false,

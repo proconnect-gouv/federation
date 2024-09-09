@@ -6,7 +6,7 @@ import { AlertComponent, AlertTypes, SimpleButton, Sizes, ToggleInput } from '@f
 import { useStylesQuery, useStylesVariables } from '@fc/styles';
 
 import { useUserPreferencesForm } from '../hooks';
-import type { UserPreferencesData } from '../interfaces';
+import type { UserPreferencesDataInterface } from '../interfaces';
 import { AllowFutureIdpSwitchLabelComponent } from './allow-future-idp-switch-label.component';
 import { ServicesListComponent } from './services-list.component';
 import styles from './user-preferences-form.module.scss';
@@ -15,7 +15,7 @@ interface UserPreferencesFormComponentProps {
   dirtyFields: Record<string, boolean>;
   isDisabled: boolean;
   onSubmit: FormEventHandler<HTMLFormElement>;
-  userPreferences: UserPreferencesData;
+  userPreferences: UserPreferencesDataInterface;
   showNotification: boolean;
   hasValidationErrors: boolean;
 }

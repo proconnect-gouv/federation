@@ -1,18 +1,17 @@
 import React from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
-import type { AccountContextStateInterface } from '@fc/account';
+import type { AccountContextState } from '@fc/account';
 import { AccountContext } from '@fc/account';
 import { useSafeContext } from '@fc/common';
 
 import { AuthFallbackRoutes } from '../../enums';
-import type { AuthRoutePropsInterface } from '../../interfaces';
+import type { AuthRouteInterface } from '../../interfaces';
 
 export const AuthedRoute = React.memo(
-  ({ fallback = AuthFallbackRoutes.LOGIN, replace = false }: AuthRoutePropsInterface) => {
+  ({ fallback = AuthFallbackRoutes.LOGIN, replace = false }: AuthRouteInterface) => {
     const location = useLocation();
-    const { connected, expired, ready } =
-      useSafeContext<AccountContextStateInterface>(AccountContext);
+    const { connected, expired, ready } = useSafeContext<AccountContextState>(AccountContext);
 
     if (!ready) {
       return <div data-testid="route-authed-component-loader-div" />;

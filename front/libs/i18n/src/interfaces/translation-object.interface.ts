@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative code
-export interface TranslationObject {
+export interface TranslationObjectInterface {
   term: string;
   /**
    * @todo See if we can enforce the use of at least one property
@@ -15,9 +15,3 @@ export interface TranslationObject {
     other: string;
   };
 }
-
-export type TranslationsReplacement = Record<string, string | number>;
-
-export type TranslationValue = string | TranslationObject;
-
-export type TranslationMap = Record<string, TranslationValue>;

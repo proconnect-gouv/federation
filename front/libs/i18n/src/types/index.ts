@@ -1,4 +1,4 @@
 /* istanbul ignore file */
 
 // Declarative code
-export * from './translation-object.interface';
+export * from './translation-map.type';

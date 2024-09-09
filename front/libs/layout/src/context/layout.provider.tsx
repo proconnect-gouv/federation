@@ -1,7 +1,7 @@
 import { type PropsWithChildren } from 'react';
 import { useToggle } from 'usehooks-ts';
 
-import type { AccountContextStateInterface } from '@fc/account';
+import type { AccountContextState } from '@fc/account';
 import { AccountContext } from '@fc/account';
 import { useSafeContext } from '@fc/common';
 
@@ -10,8 +10,7 @@ import { LayoutContext } from './layout.context';
 export const LayoutProvider = ({ children }: PropsWithChildren) => {
   const [menuIsOpened, toggleMenu] = useToggle(false);
 
-  const { connected, ready, userinfos } =
-    useSafeContext<AccountContextStateInterface>(AccountContext);
+  const { connected, ready, userinfos } = useSafeContext<AccountContextState>(AccountContext);
   const isUserConnected = connected && ready;
 
   return (
