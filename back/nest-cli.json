@@ -344,6 +344,15 @@
         "tsConfigPath": "instances/csmr-account-instance/tsconfig.app.json"
       }
     },
+    "csmr-fraud-instance": {
+      "type": "application",
+      "root": "instances/csmr-fraud-instance",
+      "entryFile": "main",
+      "sourceRoot": "instances/csmr-fraud-instance/src",
+      "compilerOptions": {
+        "tsConfigPath": "instances/csmr-fraud-instance/tsconfig.app.json"
+      }
+    },
     "rnipp": {
       "type": "library",
       "root": "libs/rnipp",
@@ -918,6 +927,15 @@
       "sourceRoot": "apps/csmr-account/src",
       "compilerOptions": {
         "tsConfigPath": "apps/csmr-account/tsconfig.lib.json"
+      }
+    },
+    "csmr-fraud": {
+      "type": "library",
+      "root": "apps/csmr-fraud",
+      "entryFile": "index",
+      "sourceRoot": "apps/csmr-fraud/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/csmr-fraud/tsconfig.lib.json"
       }
     },
     "roles": {

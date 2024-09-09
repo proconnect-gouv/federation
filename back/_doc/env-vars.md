@@ -9,22 +9,23 @@
 3. [core-fcp-high](#core-fcp-high)
 4. [core-fcp-low](#core-fcp-low)
 5. [csmr-account-instance](#csmr-account-instance)
-6. [csmr-hsm-high](#csmr-hsm-high)
-7. [csmr-rie](#csmr-rie)
-8. [csmr-tracks-instance](#csmr-tracks-instance)
-9. [csmr-user-preferences-high](#csmr-user-preferences-high)
-10. [eidas-bridge](#eidas-bridge)
-11. [mock-data-provider](#mock-data-provider)
-12. [mock-identity-provider-fca-low](#mock-identity-provider-fca-low)
-13. [mock-identity-provider-fcp-high](#mock-identity-provider-fcp-high)
-14. [mock-identity-provider-fcp-low](#mock-identity-provider-fcp-low)
-15. [mock-rnipp](#mock-rnipp)
-16. [mock-service-provider-fca-low](#mock-service-provider-fca-low)
-17. [mock-service-provider-fcp-high](#mock-service-provider-fcp-high)
-18. [mock-service-provider-fcp-legacy](#mock-service-provider-fcp-legacy)
-19. [mock-service-provider-fcp-low](#mock-service-provider-fcp-low)
-20. [partners](#partners)
-21. [user-dashboard](#user-dashboard)
+6. [csmr-fraud-instance](#csmr-fraud-instance)
+7. [csmr-hsm-high](#csmr-hsm-high)
+8. [csmr-rie](#csmr-rie)
+9. [csmr-tracks-instance](#csmr-tracks-instance)
+10. [csmr-user-preferences-high](#csmr-user-preferences-high)
+11. [eidas-bridge](#eidas-bridge)
+12. [mock-data-provider](#mock-data-provider)
+13. [mock-identity-provider-fca-low](#mock-identity-provider-fca-low)
+14. [mock-identity-provider-fcp-high](#mock-identity-provider-fcp-high)
+15. [mock-identity-provider-fcp-low](#mock-identity-provider-fcp-low)
+16. [mock-rnipp](#mock-rnipp)
+17. [mock-service-provider-fca-low](#mock-service-provider-fca-low)
+18. [mock-service-provider-fcp-high](#mock-service-provider-fcp-high)
+19. [mock-service-provider-fcp-legacy](#mock-service-provider-fcp-legacy)
+20. [mock-service-provider-fcp-low](#mock-service-provider-fcp-low)
+21. [partners](#partners)
+22. [user-dashboard](#user-dashboard)
 
 ## Variables
 
@@ -252,6 +253,15 @@
 | Mongoose_TLS_CA_FILE | string |
 | Mongoose_TLS_INSECURE | boolean |
 | Mongoose_USER | string |
+| REQUEST_TIMEOUT | string |
+
+### csmr-fraud-instance
+
+| Var Name | Inferred type |
+|---|---|
+| FraudBroker_QUEUE | string |
+| FraudBroker_URLS | json |
+| Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |
 
 ### csmr-hsm-high
