@@ -31,7 +31,7 @@ Fonctionnalité: Connexion Usager - Scope
       | profile                   |
       | identite_pivot            |
 
-  @fcpHigh
+  @fcpHigh 
   Plan du Scénario: Connexion d'un usager - tous les claims rnipp avec usager <userType>
     Etant donné que le fournisseur de service requiert l'accès aux informations des scopes "tous les scopes rnipp (authorize)"
     Et que je navigue sur la page fournisseur de service
@@ -59,6 +59,7 @@ Fonctionnalité: Connexion Usager - Scope
       | avec un prénom                     |
       | avec 3 prénoms                     |
       | avec prénom composé                |
+      | avec genre indéfini                |
 
   @fcpLow @ci
   Scénario: Connexion d'un usager - scope idp_birthdate
@@ -99,12 +100,13 @@ Fonctionnalité: Connexion Usager - Scope
     Exemples:
       | userType                           |
       | avec un prénom contenant un espace |
-    
+
     Exemples:
       | userType                           |
       | avec un prénom                     |
       | avec 3 prénoms                     |
       | avec prénom composé                |
+      | avec genre indéfini                |
 
   @fcpLow @fcpHigh
   Scénario: Connexion d'un usager - scope anonyme
