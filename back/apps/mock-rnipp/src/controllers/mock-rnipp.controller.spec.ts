@@ -68,6 +68,12 @@ describe('MockRnippController', () => {
     });
   });
 
+  describe('healthCheck', () => {
+    it('should return OK', () => {
+      expect(controller.healthCheck()).toBe('OK');
+    });
+  });
+
   describe('handleScenario', () => {
     const successfullQuery = {
       codeLieuNaissance: '75020',
