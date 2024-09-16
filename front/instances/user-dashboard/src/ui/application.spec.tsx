@@ -45,6 +45,7 @@ describe('Application', () => {
   it('should call ErrorBoundary with props', () => {
     // When
     render(<Application />);
+
     // Then
     expect(ErrorBoundary).toHaveBeenCalledOnce();
     expect(ErrorBoundary).toHaveBeenCalledWith(
@@ -58,6 +59,7 @@ describe('Application', () => {
   it('should call BrowserRouter with props', () => {
     // When
     render(<Application />);
+
     // Then
     expect(BrowserRouter).toHaveBeenCalledOnce();
   });
@@ -80,6 +82,7 @@ describe('Application', () => {
   it('should call AxiosErrorCatcherProvider', () => {
     // When
     render(<Application />);
+
     // Then
     expect(AxiosErrorCatcherProvider).toHaveBeenCalled();
   });

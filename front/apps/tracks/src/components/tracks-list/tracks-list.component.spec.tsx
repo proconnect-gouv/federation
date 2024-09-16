@@ -95,6 +95,7 @@ describe('TracksListComponent', () => {
     usePaginatedTracksMock.mockReturnValue({ submitErrors: undefined, tracks: emptyTracksMock });
     // when
     const { container } = render(<TracksListComponent options={options} />);
+
     // then
     expect(container).toMatchSnapshot();
   });
