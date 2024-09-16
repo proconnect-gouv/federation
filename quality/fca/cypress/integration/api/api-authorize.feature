@@ -114,6 +114,16 @@ Fonctionnalité: API - authorize
     Et le corps de la réponse contient une page web
     Et je suis redirigé vers la page interaction
 
+  @ignoreInteg01
+  Scénario: API authorize - Cas nominal sans login_hint
+    Etant donné que je prépare une requête "authorize"
+    Et que je retire le paramètre "login_hint" de la requête
+    Quand je lance la requête
+    Alors le statut de la réponse est 200
+    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
+    Et le corps de la réponse contient une page web
+    Et je suis redirigé vers la page interaction
+
   Plan du Scénario: API authorize - Erreur <error> avec response_type=<responseType>
     Etant donné que je prépare une requête "authorize"
     Et que je mets "<responseType>" dans le paramètre "response_type" de la requête
