@@ -64,6 +64,7 @@ describe('addAxiosCatcherInterceptors', () => {
     // when / then
     addAxiosCatcherInterceptors(updateStateMock);
     const errorCallback = axiosInterceptorResponseUseMock.mock.calls[0][1];
+
     await expect(() =>
       errorCallback!({ response: { status: 401 } } as AxiosError),
     ).rejects.toStrictEqual({ response: { status: 401 } } as AxiosError);

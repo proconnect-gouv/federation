@@ -54,7 +54,9 @@ describe('tracksGroupComponent', () => {
     );
     // then
     const element = getByText('Any Label');
+
     expect(element).toBeInTheDocument();
+
     unmount();
   });
 
@@ -64,8 +66,10 @@ describe('tracksGroupComponent', () => {
     const { unmount } = render(
       <TracksGroupComponent label="Any Label" options={options} tracks={allTracks} />,
     );
+
     // then
     expect(sortFunctionSpy).toHaveBeenCalledOnce();
+
     unmount();
   });
 
@@ -74,8 +78,10 @@ describe('tracksGroupComponent', () => {
     const { unmount } = render(
       <TracksGroupComponent label="Any Label" options={options} tracks={allTracks} />,
     );
+
     // then
     expect(TrackCardComponent).toHaveBeenCalledTimes(2);
+
     unmount();
   });
 
@@ -84,8 +90,10 @@ describe('tracksGroupComponent', () => {
     const { unmount } = render(
       <TracksGroupComponent label="Any Label" options={options} tracks={allTracks} />,
     );
+
     // then
     expect(TrackCardComponent).toHaveBeenNthCalledWith(1, { options, track: newestTrack }, {});
+
     unmount();
   });
 });

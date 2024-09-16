@@ -34,6 +34,7 @@ describe('ToggleLabelComponent', () => {
 
     // Then
     const element = container.firstChild;
+
     expect(element).toHaveAttribute('data-fr-checked-label', 'Activé');
     expect(element).toHaveAttribute('data-fr-unchecked-label', 'Désactivé');
   });

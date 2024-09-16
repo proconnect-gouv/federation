@@ -193,6 +193,7 @@ describe('TrackCardComponent', () => {
     fireEvent.click(element);
     fireEvent.click(element);
     fireEvent.click(element);
+
     expect(toggleMock).toHaveBeenCalledTimes(3);
   });
 
