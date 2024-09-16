@@ -20,14 +20,19 @@ import { MockRnippRoutes, RnippCode, Scenario } from '../enums';
 import { SuccessfullResponseInterface } from '../interfaces';
 import { MockRnippService } from '../services';
 
-@Controller(MockRnippRoutes.BASE)
+@Controller()
 export class MockRnippController {
   constructor(
     private readonly mockRnippService: MockRnippService,
     private readonly logger: LoggerService,
   ) {}
 
-  @Get()
+  @Get(MockRnippRoutes.HEALTH_CHECK)
+  healthCheck() {
+    return 'OK';
+  }
+
+  @Get(MockRnippRoutes.BASE)
   @UsePipes(new ValidationPipe())
   handleScenario(
     @Query() query: ScenarioQueryDto,
