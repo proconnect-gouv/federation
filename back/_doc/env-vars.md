@@ -52,6 +52,11 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
+| App_CSP_CONNECT_SRC | json |
+| App_CSP_DEFAULT_SRC | json |
+| App_CSP_FRAME_ANCESTORS | json |
+| App_CSP_SCRIPT_SRC | json |
+| App_CSP_STYLE_SRC | json |
 | App_DEFAULT_EMAIL_RENATER | string |
 | App_DEFAULT_IDP_UID | string |
 | App_DSFR_ASSETS_PATHS | json |
