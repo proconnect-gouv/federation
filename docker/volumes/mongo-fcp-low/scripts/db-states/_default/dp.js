@@ -26,11 +26,7 @@ const dps = {
     uid: "735c6dc3-1e47-41b1-9fa6-6c7f667cfba1",
     title: "Fournisseur de données Mock - 2",
     active: true,
-    scopes: [
-      "droits_assurance_maladie",
-      "cnam_caisse",
-      "cnam_paiements_ij",
-    ],
+    scopes: ["droits_assurance_maladie", "cnam_caisse", "cnam_paiements_ij"],
     client_id:
       "71c27fec9540e5aa30b34f8c012154f88f8416530b25f31ba4873a2e58e3d3fe",
     client_secret:
@@ -38,7 +34,7 @@ const dps = {
       "VZdGyhdVO6Axm1yqR3RYKqQdI7r4jHScaiqzCAfvh1ZEEnY5L3g4zPHqMJIx5V70Iff9B6IOfmiQQrw6AeR6Bq16P4CzGe3kC5HNinR7oc6e68STyJhE+T9EMlY=",
     jwks_uri: "https://dpp2-low.docker.dev-franceconnect.fr/api/v1/jwks",
     checktoken_signed_response_alg: "ES256",
-    checktoken_encrypted_response_alg: "RSA-OAEP",
+    checktoken_encrypted_response_alg: "RSA-OAEP-256",
     checktoken_encrypted_response_enc: "A256GCM",
   },
   "DPP-INVALID-LOW": {
