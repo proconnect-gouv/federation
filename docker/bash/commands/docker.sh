@@ -37,7 +37,7 @@ _exec() {
 
   case ${app} in
   empty)
-    echo "Usage: docker-stack exec <container_name> <command>"
+    echo "Usage: dks exec <container_name> <command>"
     exit 1
     ;;
   *)
