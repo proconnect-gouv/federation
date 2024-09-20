@@ -222,6 +222,7 @@ describe('UserDashboardController', () => {
           time: 11233335550000,
           trackId: 'trackIdValue',
           claims: [claimMock],
+          authenticationEventId: 'f8f52a8e-896d-4975-93cc-fa91ee6ede51',
         },
       ],
     };
