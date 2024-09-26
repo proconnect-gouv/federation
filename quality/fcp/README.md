@@ -282,6 +282,13 @@ docker-stack reset-mongo-as-prod mongo-fcp-low
 yarn test:low:snapshot --env 'TAGS=@fcpLow and @validationVisuelleProduction and not @ignore'
 ```
 
+- USER-DASHBOARD
+
+```shell
+docker-stack reset-mongo-as-prod mongo-fcp-low
+yarn test:ud:snapshot --env 'TAGS=@userDashboard and @validationVisuelleProduction and not @ignore'
+```
+
 ### Update the base image files for all of your tests
 
 #### In a development environment
@@ -326,6 +333,13 @@ yarn test:high:snapshot --env 'TAGS=@fcpHigh and @validationVisuelleProduction a
 ```shell
 docker-stack reset-mongo-as-prod mongo-fcp-low
 yarn test:low:snapshot --env 'TAGS=@fcpLow and @validationVisuelleProduction and not @ignore,updateSnapshots=true'
+```
+
+- USER-DASHBOARD
+
+```shell
+docker-stack reset-mongo-as-prod mongo-fcp-low
+yarn test:ud:snapshot --env 'TAGS=@userDashboard and @validationVisuelleProduction and not @ignore,updateSnapshots=true'
 ```
 
 ### Prevent test failures when an image diff does not pass
