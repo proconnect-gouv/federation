@@ -235,7 +235,7 @@ services:
     volumes:
       - "${VOLUMES_DIR}/ssl:/bitnami/redis/data/ssl"
     healthcheck:
-      test: redis-c-li -a $${REDIS_PASSWORD} --tls --cacert $${REDIS_TLS_CA_FILE} role | grep master
+      test: redis-cli -a $${REDIS_PASSWORD} --tls --cacert $${REDIS_TLS_CA_FILE} role | grep master
       interval: 2s
       start_period: 5s
     networks:
