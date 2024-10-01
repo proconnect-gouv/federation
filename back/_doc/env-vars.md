@@ -35,6 +35,7 @@
 | Var Name | Inferred type |
 |---|---|
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | Broker_QUEUE | string |
@@ -60,6 +61,7 @@
 | App_DEFAULT_EMAIL_RENATER | string |
 | App_DEFAULT_IDP_UID | string |
 | App_DSFR_ASSETS_PATHS | json |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
@@ -106,6 +108,7 @@
 | App_ASSETS_PATHS | json |
 | App_DSFR_ASSETS_PATHS | json |
 | App_EIDAS_BRIDGE_UID | string |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_SHOW_EXCLUDED_IDP | boolean |
@@ -182,6 +185,7 @@
 | App_ASSETS_PATHS | json |
 | App_DSFR_ASSETS_PATHS | json |
 | App_EIDAS_BRIDGE_UID | string |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_SHOW_EXCLUDED_IDP | boolean |
@@ -247,8 +251,10 @@
 
 | Var Name | Inferred type |
 |---|---|
+| APP_NAME | string |
 | AccountBroker_QUEUE | string |
 | AccountBroker_URLS | json |
+| App_ENVIRONMENT | string |
 | Logger_THRESHOLD | string |
 | Mongoose_DATABASE | string |
 | Mongoose_HOSTS | string |
@@ -264,6 +270,8 @@
 
 | Var Name | Inferred type |
 |---|---|
+| APP_NAME | string |
+| App_ENVIRONMENT | string |
 | FraudBroker_QUEUE | string |
 | FraudBroker_URLS | json |
 | Logger_THRESHOLD | string |
@@ -273,6 +281,8 @@
 
 | Var Name | Inferred type |
 |---|---|
+| APP_NAME | string |
+| App_ENVIRONMENT | string |
 | CryptographyBroker_QUEUE | string |
 | CryptographyBroker_URLS | json |
 | Hsm_LIB | string |
@@ -287,6 +297,8 @@
 
 | Var Name | Inferred type |
 |---|---|
+| APP_NAME | string |
+| App_ENVIRONMENT | string |
 | Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |
 | RieBroker_QUEUE | string |
@@ -296,10 +308,12 @@
 
 | Var Name | Inferred type |
 |---|---|
+| APP_NAME | string |
 | AccountHighBroker_QUEUE | string |
 | AccountHighBroker_URLS | json |
 | AccountLegacyBroker_QUEUE | string |
 | AccountLegacyBroker_URLS | json |
+| App_ENVIRONMENT | string |
 | Elasticsearch_NODES | json |
 | Elasticsearch_PASSWORD | string |
 | Elasticsearch_TRACKS_INDEX | string |
@@ -315,10 +329,12 @@
 
 | Var Name | Inferred type |
 |---|---|
+| APP_NAME | string |
 | AdapterMongo_CLIENT_SECRET_CIPHER_PASS | string |
 | AdapterMongo_DECRYPT_CLIENT_SECRET_FEATURE | boolean |
 | AdapterMongo_DISABLE_IDP_VALIDATION_ON_LEGACY | boolean |
 | App_AIDANTS_CONNECT_UID | string |
+| App_ENVIRONMENT | string |
 | Broker_QUEUE | string |
 | Broker_URLS | json |
 | Logger_THRESHOLD | string |
@@ -351,6 +367,7 @@
 | App_ASSETS_PATHS | json |
 | App_AVAILABLE_COUNTRIES | json |
 | App_DSFR_ASSETS_PATHS | json |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_IDP_ID | string |
@@ -444,6 +461,7 @@
 | APP_NAME | string |
 | App_API_AUTH_SECRET | string |
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | DataProviderAdapterCore_CHECKTOKEN_ENDPOINT | string |
@@ -465,6 +483,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_CITIZEN_DATABASE_PATH | string |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_PASSWORD_VERIFICATION | boolean |
@@ -508,6 +527,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_CITIZEN_DATABASE_PATH | string |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_PASSWORD_VERIFICATION | boolean |
@@ -551,6 +571,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_CITIZEN_DATABASE_PATH | string |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_PASSWORD_VERIFICATION | boolean |
@@ -590,6 +611,7 @@
 | Var Name | Inferred type |
 |---|---|
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_VIEWS_PATHS | json |
@@ -602,6 +624,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_DATA_APIS | json |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_IDP_ID | string |
@@ -650,6 +673,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_DATA_APIS | json |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_IDP_ID | string |
@@ -697,6 +721,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_DATA_APIS | json |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_IDP_ID | string |
@@ -747,6 +772,7 @@
 | App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_DATA_APIS | json |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_IDP_ID | string |
@@ -791,6 +817,7 @@
 | Var Name | Inferred type |
 |---|---|
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ENVIRONMENT | string |
 | App_FQDN | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
@@ -840,6 +867,7 @@
 | Var Name | Inferred type |
 |---|---|
 | App_API_OUTPUT_CONTENT_TYPE | string |
+| App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
 | App_IDP_ID | string |
