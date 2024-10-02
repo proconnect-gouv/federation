@@ -12,9 +12,9 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
   },
   env: {
     // Base Configuration
-    PLATFORM: 'fcp-high',
+    PLATFORM: 'fcp-low',
     TEST_ENV: 'docker',
-    TAGS: '@fcpHigh and not @ignoreHigh',
+    TAGS: '@fcpLow and not @ignoreLow and not @validationVisuelle',
     // Test environment access
     EXPLOIT_ADMIN_NAME: 'jean_moust',
     EXPLOIT_ADMIN_PASS: 'georgesmoustaki',
@@ -22,6 +22,9 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
     EXPLOIT_USER_NAME: 'jean_patoche',
     EXPLOIT_USER_PASS: 'georgesmoustaki',
     EXPLOIT_USER_TOTP: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD',
+    SUPPORT_USER_NAME: 'jean_patoche',
+    SUPPORT_USER_PASS: 'georgesmoustaki',
+    SUPPORT_USER_TOTP: 'KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD',
     FC_ACCESS_USER: '',
     FC_ACCESS_PASS: '',
     // Maildev
@@ -30,11 +33,11 @@ const config: Partial<Cypress.ResolvedConfigOptions<never>> = {
     MAILDEV_SMTP_PORT: '1025',
     MAILDEV_API_PORT: '443',
     // Other Configuration
-    LOG_FILE_PATH: '../../docker/volumes/log/core-fcp-high.log',
+    LOG_FILE_PATH: '../../docker/volumes/log/core-fcp-low.log',
     EIDAS_LOG_FILE_PATH: '../../docker/volumes/log/eidas-bridge.log',
+    // Keys used on the local stack
     ES256_SIG_PUB_KEY:
       '-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEUvVm7hq8ycQGaKle6kpzUom73IQy\nYINGRdzQC75AXxzKiKAjeHjGNFA8R5fwZ8jJHiZ+Kiq80gY9anv/vHujGQ==\n-----END PUBLIC KEY-----\n',
-    // Keys used by the sp mock and dp mock on the local stack
     RSA_ENC_PRIV_KEY: {
       e: 'AQAB',
       n: 'usnS3yJWQXQSCrXX1ij55Kn3T6c_G-k1MioMnhijMOH4ymc3HDyhYSzyidtmfVTNJiZu5pGRs3Wnicrpy9xgYOtdTkycAGwrqs3Y4MoKktH1rSb91F-B06OPqr7jxjB8d9pOnFKrmy9SXR_b6ARSAegdDCl0_D72AIsMtOm3n1mKwDN_87M4bTkVGyhUT3bzKiPT2PNbxoOG9QKyJxKrUK8JAINJzhLJyWm88yIIE8cZ25Q7KXqb_JZDe4uTcrUYOIgExGtZzRpzeYVtJoygeUzX66PBzexmjPgMHdURpnCqdHwJU703TguApSVxD0dn4ZWUHTl64FPintEPsn1ZUQ',
