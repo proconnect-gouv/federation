@@ -27,6 +27,7 @@ export default {
     scriptSrc: env.json('CSP_SCRIPT_SRC'),
     connectSrc: env.json('CSP_CONNECT_SRC'),
     frameAncestors: env.json('CSP_FRAME_ANCESTORS'),
+    imgSrc: env.json('CSP_IMG_SRC'),
   },
   environment: env.string('ENVIRONMENT'),
 } as AppConfig;
