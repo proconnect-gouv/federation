@@ -9,6 +9,7 @@ import { CoreFcaAgentAccountBlockedException } from '@fc/core-fca/exceptions/cor
 import { IAgentIdentity } from '@fc/core-fca/interfaces';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
+import { standardJwtClaims } from '@fc/jwt';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcAcrService } from '@fc/oidc-acr';
@@ -187,9 +188,6 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
 
   // All unknown properties from idp identity are moved to "custom" property
   private customizeIdentity(identity: IAgentIdentity): IAgentIdentity {
-    // todo: put this value in a constant in jwt lib after merging this feature whose code only affects AgentConnect
-    const standardJwtClaims = ['aud', 'exp', 'iat', 'iss'];
-
     /*
      * Some IdPs may return a "custom" field in the userinfo response.
      *
