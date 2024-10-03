@@ -11,7 +11,6 @@ import { I18nService } from '@fc/i18n';
 import { StylesProvider } from '@fc/styles';
 
 import { AppConfig } from '../config';
-import translations from '../i18n/fr.json';
 import { Application } from './application';
 import { ApplicationRoutes } from './application.routes';
 
@@ -31,7 +30,14 @@ describe('Application', () => {
     render(<Application />);
 
     // then
-    expect(I18nService.initialize).toHaveBeenCalledWith('fr', translations);
+    expect(I18nService.initialize).toHaveBeenCalledWith('fr', {
+      // @NOTE This is a sample of the translations that should be in the fr.json file
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'TracksPage.nextPage': 'Page suivante',
+      // @NOTE This is a sample of the translations that should be in the fr.json file
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'TracksPage.previousPage': 'Page précédente',
+    });
   });
 
   it('should call ConfigService initialize with config', () => {

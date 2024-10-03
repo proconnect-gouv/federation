@@ -54,3 +54,14 @@ build_and_copy_fc_stylesheet_to_instances_public_folder() {
   fi
   print_success "$OUTPUT_FILE created successfully !"
 }
+
+generate_18n_files() {
+  if [ -z "$1" ]; then
+    echo '❌ Missing argument'
+    exit 1
+  fi
+
+  print_info "Generating i18n for $1..."
+  node ./scripts/i18n.js $1
+  print_success "Files created successfully !"
+}
