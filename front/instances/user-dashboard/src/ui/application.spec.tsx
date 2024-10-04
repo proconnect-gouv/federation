@@ -33,6 +33,12 @@ describe('Application', () => {
     expect(I18nService.initialize).toHaveBeenCalledWith('fr', {
       // @NOTE This is a sample of the translations that should be in the fr.json file
       // eslint-disable-next-line @typescript-eslint/naming-convention
+      'DSFR.stepper.location': 'Étape {current} sur {total}',
+      // @NOTE This is a sample of the translations that should be in the fr.json file
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      'DSFR.stepper.nextStep': 'Étape suivante',
+      // @NOTE This is a sample of the translations that should be in the fr.json file
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       'TracksPage.nextPage': 'Page suivante',
       // @NOTE This is a sample of the translations that should be in the fr.json file
       // eslint-disable-next-line @typescript-eslint/naming-convention
