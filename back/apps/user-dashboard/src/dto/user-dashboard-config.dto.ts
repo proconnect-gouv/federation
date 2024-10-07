@@ -17,6 +17,7 @@ import { SessionConfig } from '@fc/session';
 import { TrackingConfig } from '@fc/tracking';
 
 import { AppConfig } from './app-config.dto';
+import { OtrsConfig } from './otrs-config.dto';
 
 export class UserDashboardConfig {
   @IsObject()
@@ -83,4 +84,9 @@ export class UserDashboardConfig {
   @ValidateNested()
   @Type(() => I18nConfig)
   readonly I18n: I18nConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => OtrsConfig)
+  readonly Otrs: OtrsConfig;
 }

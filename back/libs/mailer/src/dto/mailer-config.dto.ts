@@ -27,6 +27,14 @@ export class MailFrom {
   readonly name: string;
 }
 
+export class ReplyTo {
+  @IsEmail()
+  readonly email: string;
+
+  @IsString()
+  readonly name: string;
+}
+
 export class MailTo {
   @IsEmail()
   @NotContains('localhost')

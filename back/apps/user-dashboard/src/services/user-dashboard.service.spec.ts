@@ -68,9 +68,28 @@ describe('UserDashboardService', () => {
     updatedAt: 1647772217000,
   };
 
+  const identityMock = {
+    given_name: 'firstname',
+    family_name: 'lastname',
+    birthdate: 'birthdate',
+    gender: 'gender',
+    birthplace: 'birthplace',
+    birthcountry: 'birthcountry',
+  };
+
+  const fraudFormValuesMock = {
+    contactEmail: 'email@mock.fr',
+    idpEmail: 'email@fi.fr',
+    authenticationEventId: '1a344d7d-fb1f-432f-99df-01b374c93687',
+    fraudSurveyOrigin: 'fraudSurveyOriginMock',
+    comment: 'commentMock',
+    phoneNumber: '0678912345',
+  };
+
   const formattedDateMock = '4 avril 2022 à 13:02:56';
   const htmlContent = 'myWonderful template content';
   const getIdpConfigUpdateEmailBodyContentMock = htmlContent;
+  const getFraudFormEmailBodyContentMock = htmlContent;
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -119,7 +138,7 @@ describe('UserDashboardService', () => {
         familyName: 'lastname',
       };
 
-      // When/Then
+      // When / Then
       const errorMock = new MailerNotificationConnectException();
       await expect(
         service['getIdpConfigUpdateEmailBodyContent'](
@@ -130,13 +149,13 @@ describe('UserDashboardService', () => {
     });
 
     it('should call mailToSend with futureIdpChoice =!idpConfiguration.allowFutureIdp', async () => {
-      // WHEN
+      // When
       await service['getIdpConfigUpdateEmailBodyContent'](
         userInfo,
         idpConfiguration,
       );
 
-      // THEN
+      // Then
       expect(mailerServiceMock.mailToSend).toHaveBeenCalledTimes(1);
       expect(mailerServiceMock.mailToSend).toHaveBeenCalledWith(
         EmailsTemplates.IDP_CONFIG_UPDATES_EMAIL,
@@ -151,7 +170,7 @@ describe('UserDashboardService', () => {
     });
 
     it('should call mailToSend with futureIdpChoice =idpConfiguration.allowFutureIdp', async () => {
-      // GIVEN
+      // Given
       const otherIdpConfiguration = {
         formattedIdpSettingsList: formattedUserIdpSettingsListMock,
         updatedIdpSettingsList: updatedIdpIdpSettingListMock,
@@ -159,13 +178,13 @@ describe('UserDashboardService', () => {
         allowFutureIdp: false,
       };
 
-      // WHEN
+      // When
       await service['getIdpConfigUpdateEmailBodyContent'](
         userInfo,
         otherIdpConfiguration,
       );
 
-      // THEN
+      // Then
       expect(mailerServiceMock.mailToSend).toHaveBeenCalledTimes(1);
       expect(mailerServiceMock.mailToSend).toHaveBeenCalledWith(
         EmailsTemplates.IDP_CONFIG_UPDATES_EMAIL,
@@ -181,18 +200,18 @@ describe('UserDashboardService', () => {
     });
 
     it('should return html content', async () => {
-      // GIVEN
+      // Given
       jest
         .mocked(mailerServiceMock.mailToSend)
         .mockResolvedValueOnce(getIdpConfigUpdateEmailBodyContentMock);
 
-      // WHEN
+      // When
       const result = await service['getIdpConfigUpdateEmailBodyContent'](
         userInfo,
         idpConfiguration,
       );
 
-      // THEN
+      // Then
       expect(result).toEqual(getIdpConfigUpdateEmailBodyContentMock);
     });
   });
@@ -217,7 +236,7 @@ describe('UserDashboardService', () => {
       configMock.get.mockReturnValueOnce({ from: configMailerWithoutEmail });
       const errorMock = new NoEmailException();
 
-      // When/Then
+      // When / Then
       await expect(
         service.sendMail(userInfo, idpConfiguration),
       ).rejects.toThrow(errorMock);
@@ -232,7 +251,7 @@ describe('UserDashboardService', () => {
       };
       configMock.get.mockReturnValueOnce({ from: fromMock });
 
-      // When/Then
+      // When / Then
       const errorMock = new NoEmailException();
       await expect(
         service.sendMail(badUserInfoData, idpConfiguration),
@@ -346,6 +365,157 @@ describe('UserDashboardService', () => {
           },
         ],
       });
+    });
+  });
+
+  describe('sendFraudForm', () => {
+    const otrsEmailMock = 'mail@otrs.com';
+    const recipientNameMock = 'otrs';
+
+    beforeEach(() => {
+      service['getFraudFormEmailBodyContent'] = jest
+        .fn()
+        .mockResolvedValueOnce(getFraudFormEmailBodyContentMock);
+    });
+
+    it('should throw an `Error` if the FROM email is not valid', async () => {
+      // Given
+      const fraudFormValuesWithWrongEmail = {
+        contactEmail: 'wrong email',
+        idpEmail: 'email@fi.fr',
+        authenticationEventId: '1a344d7d-fb1f-432f-99df-01b374c93687',
+        fraudSurveyOrigin: 'fraudSurveyOriginMock',
+        comment: 'commentMock',
+        phoneNumber: '0678912345',
+      };
+      const errorMock = new NoEmailException();
+
+      // When / Then
+      await expect(
+        service.sendFraudForm(identityMock, fraudFormValuesWithWrongEmail),
+      ).rejects.toThrow(errorMock);
+    });
+
+    it('should throw an Error if the TO email is not valid', async () => {
+      // Given
+      configMock.get.mockReturnValue({
+        otrsEmail: 'fake_otrs_mail',
+      });
+
+      // When / Then
+      const errorMock = new NoEmailException();
+      await expect(
+        service.sendFraudForm(identityMock, fraudFormValuesMock),
+      ).rejects.toThrow(errorMock);
+    });
+
+    it('should call getFraudFormEmailBodyContent', async () => {
+      // Given
+      configMock.get.mockReturnValue({
+        otrsEmail: otrsEmailMock,
+        recipientName: recipientNameMock,
+        fraudEmailSubject: 'subject',
+      });
+
+      // When
+      await service.sendFraudForm(identityMock, fraudFormValuesMock);
+
+      // Then
+      expect(service['getFraudFormEmailBodyContent']).toHaveBeenCalledTimes(1);
+      expect(service['getFraudFormEmailBodyContent']).toHaveBeenCalledWith(
+        identityMock,
+        fraudFormValuesMock,
+      );
+    });
+
+    it('should call send method from mailerService', async () => {
+      // Given
+      configMock.get.mockReturnValue({
+        otrsEmail: otrsEmailMock,
+        recipientName: recipientNameMock,
+        fraudEmailSubject: 'subject',
+      });
+
+      // When
+      await service.sendFraudForm(identityMock, fraudFormValuesMock);
+
+      // Then
+      expect(mailerServiceMock.send).toHaveBeenCalledTimes(1);
+      expect(mailerServiceMock.send).toHaveBeenCalledWith({
+        from: { email: 'email@mock.fr', name: 'firstname lastname' },
+        to: [
+          {
+            email: otrsEmailMock,
+            name: recipientNameMock,
+          },
+        ],
+        replyTo: { email: 'email@mock.fr', name: 'firstname lastname' },
+        subject: 'subject',
+        body: getFraudFormEmailBodyContentMock,
+      });
+    });
+  });
+
+  describe('getFraudFormEmailBodyContent', () => {
+    it('should throw if any parameters is not valid', async () => {
+      // Given
+      const badFraudFormValues = {
+        contactEmail: 'bademail',
+        idpEmail: 'bademail',
+        authenticationEventId: 'authenticationEventIdMock',
+        fraudSurveyOrigin: 'originMock',
+      };
+
+      // When / Then
+      const errorMock = new MailerNotificationConnectException();
+      await expect(
+        service['getFraudFormEmailBodyContent'](
+          identityMock,
+          badFraudFormValues,
+        ),
+      ).rejects.toThrow(errorMock);
+    });
+
+    it('should call mailToSend with ', async () => {
+      // When
+      await service['getFraudFormEmailBodyContent'](
+        identityMock,
+        fraudFormValuesMock,
+      );
+
+      // Then
+      expect(mailerServiceMock.mailToSend).toHaveBeenCalledTimes(1);
+      expect(mailerServiceMock.mailToSend).toHaveBeenCalledWith(
+        EmailsTemplates.FRAUD_FORM_EMAIL,
+        {
+          given_name: 'firstname',
+          family_name: 'lastname',
+          birthdate: 'birthdate',
+          birthplace: 'birthplace',
+          birthcountry: 'birthcountry',
+          contactEmail: 'email@mock.fr',
+          idpEmail: 'email@fi.fr',
+          authenticationEventId: '1a344d7d-fb1f-432f-99df-01b374c93687',
+          fraudSurveyOrigin: 'fraudSurveyOriginMock',
+          comment: 'commentMock',
+          phoneNumber: '0678912345',
+        },
+      );
+    });
+    it('should return html content', async () => {
+      // Given
+      jest
+        .mocked(mailerServiceMock.mailToSend)
+        .mockResolvedValueOnce(getFraudFormEmailBodyContentMock);
+
+      // When
+      const result = await service['getFraudFormEmailBodyContent'](
+        identityMock,
+        fraudFormValuesMock,
+      );
+
+      // Then
+      expect(result).toEqual(getFraudFormEmailBodyContentMock);
     });
   });
 });

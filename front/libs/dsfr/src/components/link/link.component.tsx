@@ -14,18 +14,24 @@ interface LinkComponentProps extends PropsWithChildren, PropsWithClassName {
   size?: Sizes;
   label?: string | undefined;
   external?: boolean;
+  target?: string;
+  rel?: string;
+  dataTestId?: string;
 }
 
 export const LinkComponent = React.memo(
   ({
     children,
     className,
+    dataTestId,
     external = false,
     href,
     icon,
     iconPlacement = IconPlacement.LEFT,
     label = undefined,
+    rel,
     size = Sizes.MEDIUM,
+    target,
   }: LinkComponentProps) => (
     <Link
       className={classnames(
@@ -36,7 +42,10 @@ export const LinkComponent = React.memo(
         },
         className,
       )}
+      data-testid={dataTestId}
+      rel={rel}
       reloadDocument={external}
+      target={target}
       to={href}>
       {label || children}
     </Link>
