@@ -64,6 +64,7 @@
 | App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
+| App_SP_AUTHORIZED_FQDNS_CONFIGS | json |
 | App_VIEWS_PATHS | json |
 | Core_ALLOWED_IDP_HINTS | json |
 | FQDN | string |
