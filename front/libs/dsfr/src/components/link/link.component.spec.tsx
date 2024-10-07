@@ -28,9 +28,12 @@ describe('LinkComponent', () => {
     const { container } = render(
       <LinkComponent
         external
+        dataTestId="data-test-id"
         href="any-url-mock"
         icon="any-icon-mock"
-        iconPlacement={IconPlacement.RIGHT}>
+        iconPlacement={IconPlacement.RIGHT}
+        rel="noopener"
+        target="_blank">
         any-label-mock
       </LinkComponent>,
     );
@@ -42,7 +45,11 @@ describe('LinkComponent', () => {
       {
         children: 'any-label-mock',
         className: 'fr-link fr-link--md fr-icon-any-icon-mock fr-link--icon-right',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'data-testid': 'data-test-id',
+        rel: 'noopener',
         reloadDocument: true,
+        target: '_blank',
         to: 'any-url-mock',
       },
       {},

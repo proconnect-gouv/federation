@@ -905,6 +905,8 @@
 | OidcClient_POST_LOGOUT_REDIRECT_URI | string |
 | OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
+| Otrs_EMAIL | string |
+| Otrs_RECIPIENT_NAME | string |
 | REQUEST_TIMEOUT | string |
 | Redis_CACERT | file |
 | Redis_DB | number |

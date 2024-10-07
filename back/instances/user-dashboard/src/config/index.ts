@@ -11,6 +11,7 @@ import LoggerLegacy from './logger-legacy';
 import Mailer from './mailer';
 import OidcAcr from './oidc-acr';
 import OidcClient from './oidc-client';
+import Otrs from './otrs';
 import Redis from './redis';
 import Session from './session';
 import Tracking from './tracking';
@@ -31,4 +32,5 @@ export default {
   Mailer,
   Tracking,
   I18n,
+  Otrs,
 } as UserDashboardConfig;

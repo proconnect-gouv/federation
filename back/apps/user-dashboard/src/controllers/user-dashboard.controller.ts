@@ -35,7 +35,11 @@ import {
   UserPreferencesService,
 } from '@fc/user-preferences';
 
-import { GetUserTracesQueryDto, UserPreferencesBodyDto } from '../dto';
+import {
+  FraudFormValuesDto,
+  GetUserTracesQueryDto,
+  UserPreferencesBodyDto,
+} from '../dto';
 import { UserDashboardBackRoutes } from '../enums';
 import {
   HttpErrorResponse,
@@ -123,10 +127,6 @@ export class UserDashboardController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<UserInfosInterface | HttpErrorResponse> {
-    /**
-     * @Todo find better way to define interface
-     * Author: Emmanuel Maravilha
-     */
     const idpIdentity = sessionOidc.get('idpIdentity') as OidcIdentityInterface;
     if (!idpIdentity) {
       return res.status(HttpStatus.UNAUTHORIZED).send({
@@ -138,12 +138,14 @@ export class UserDashboardController {
       given_name: firstname,
       family_name: lastname,
       idp_id: idpId,
+      email,
     } = idpIdentity;
 
     const userInfos = {
       firstname,
       lastname,
       idpId,
+      email,
     };
 
     return res.json(userInfos);
@@ -156,10 +158,6 @@ export class UserDashboardController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<FormattedIdpSettingDto | HttpErrorResponse> {
-    /**
-     * @Todo find better way to define interface
-     * Author: Emmanuel Maravilha
-     */
     const idpIdentity = sessionOidc.get('idpIdentity') as OidcIdentityInterface;
     if (!idpIdentity) {
       return res.status(HttpStatus.UNAUTHORIZED).send({
@@ -197,10 +195,6 @@ export class UserDashboardController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<FormattedIdpSettingDto | HttpErrorResponse> {
-    /**
-     * @Todo find better way to define interface
-     * Author: Emmanuel Maravilha
-     */
     const idpIdentity = sessionOidc.get('idpIdentity') as OidcIdentityInterface;
     if (!idpIdentity) {
       return res.status(HttpStatus.UNAUTHORIZED).send({
@@ -263,6 +257,33 @@ export class UserDashboardController {
     }
 
     return res.json(preferences);
+  }
+
+  @Post(UserDashboardBackRoutes.FRAUD_FORM)
+  @UsePipes(new ValidationPipe({ whitelist: true }))
+  @UseGuards(CsrfTokenGuard)
+  async sendFraudForm(
+    @Res() res,
+    @Body() body: FraudFormValuesDto,
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+  ): Promise<FormattedIdpSettingDto | HttpErrorResponse> {
+    const idpIdentity = sessionOidc.get('idpIdentity') as OidcIdentityInterface;
+    if (!idpIdentity) {
+      return res.status(HttpStatus.UNAUTHORIZED).send({
+        code: 'INVALID_SESSION',
+      });
+    }
+
+    const identityFiltered = getTransformed<PivotIdentityDto>(
+      idpIdentity,
+      PivotIdentityDto,
+      FILTERED_OPTIONS,
+    );
+
+    await this.userDashboard.sendFraudForm(identityFiltered, body);
+
+    return res.status(HttpStatus.OK).send();
   }
 
   private async trackUserPreferenceChange(
