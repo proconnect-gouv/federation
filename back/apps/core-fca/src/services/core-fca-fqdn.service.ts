@@ -3,7 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@fc/config';
 import { FqdnToIdpAdapterMongoService } from '@fc/fqdn-to-idp-adapter-mongo';
 
-import { AppConfig } from '../dto/app-config.dto';
+import { AppConfig } from '../dto';
 import { FqdnConfigInterface } from '../interfaces';
 
 @Injectable()
@@ -61,6 +61,20 @@ export class CoreFcaFqdnService {
 
   getFqdnFromEmail(email: string): string {
     return email.split('@').pop().toLowerCase();
+  }
+
+  getSpAuthorizedFqdnsConfig(spId: string): {
+    spName: string;
+    spContact: string;
+    authorizedFqdns: string[];
+  } | null {
+    const { spAuthorizedFqdnsConfigs } = this.config.get<AppConfig>('App');
+
+    return (
+      spAuthorizedFqdnsConfigs.find((config) => {
+        return config.spId === spId;
+      }) || null
+    );
   }
 
   private addDefaultIdp(

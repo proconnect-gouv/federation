@@ -238,4 +238,44 @@ describe('CoreFcaFqdnService', () => {
       expect(result).toEqual(new Set(['idp1', 'default-idp']));
     });
   });
+
+  describe('getSpAuthorizedFqdnsConfig', () => {
+    it('should return the sp authorized fqdns config', () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        spAuthorizedFqdnsConfigs: [
+          {
+            spId: 'sp1',
+            spName: 'Isengard',
+            spContact: 'saruman@palantir.morgoth',
+            authorizedFqdns: ['isengard.maia'],
+          },
+          {
+            spId: 'sp2',
+            spName: 'Barad-Dur',
+            spContact: 'sauron@palantir.morgoth',
+            authorizedFqdns: ['mordor.orc'],
+          },
+        ],
+      });
+
+      // When
+      expect(service.getSpAuthorizedFqdnsConfig('sp1')).toStrictEqual({
+        spId: 'sp1',
+        spName: 'Isengard',
+        spContact: 'saruman@palantir.morgoth',
+        authorizedFqdns: ['isengard.maia'],
+      });
+    });
+  });
+
+  it('should return nothing when the sp authorized fqdns config is empty', () => {
+    // Given
+    configServiceMock.get.mockReturnValueOnce({
+      spAuthorizedFqdnsConfigs: [],
+    });
+
+    // When
+    expect(service.getSpAuthorizedFqdnsConfig('sp1')).toStrictEqual(null);
+  });
 });
