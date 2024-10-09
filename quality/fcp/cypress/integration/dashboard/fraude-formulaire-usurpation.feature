@@ -24,8 +24,7 @@ Fonctionnalité: Formulaire Usurpation
 
   @ignoreDocker
   Scénario: Formulaire usurpation - demande support prise en compte
-    Etant donné que je supprime les mails envoyés à l'usager
-    Et que je navigue sur la page de connexion du formulaire usurpation
+    Etant donné que je navigue sur la page de connexion du formulaire usurpation
     Et que je force la donnée "fraudSurveyOrigin" à "identite-inconnue" dans le localStorage
     Et que je me connecte pour accéder au formulaire usurpation
     Et que je suis redirigé vers le formulaire usurpation
