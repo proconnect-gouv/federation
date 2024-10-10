@@ -24,16 +24,16 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
   illustration = 'unauthorized-email-error';
   title = 'Email non autorisé';
   description =
-    `Vous essayer de vous connecter à ${this.spName}.\n\n` +
-    `Réessayez en utilisant votre adresse email professionnelle:\n\n` +
+    `Vous essayez de vous connecter à ${this.spName}.\n\n` +
+    `Réessayez en utilisant votre adresse email professionnelle :\n\n` +
     `✅ ${this.authorizedFqdns.join(', ')}\n` +
     `❌ gmail, yahoo, orange`;
   public displayContact = true;
-  public contactMessage = `Si cela ne fonctionne pas, contacter le support utilisateur du service ${this.spName} pour régler le problème.`;
+  public contactMessage = `Si cela ne fonctionne pas, contactez le support utilisateur du service ${this.spName} pour régler le problème.`;
 
   static ERROR = 'access_denied';
   static ERROR_DESCRIPTION =
-    'authentication aborted due to a technical error on the authorization server';
+    'authentication aborted due to a configuration limitation';
 
   public contactHref = `mailto:${this.spContact}`;
 }
