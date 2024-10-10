@@ -14,7 +14,7 @@
     DOCKER_TLS_CERTDIR: ''
     RELEASE_VERSION: ${CI_COMMIT_REF_NAME}
   services:
-    - name: docker:19.03.12-dind
+    - name: docker:25.0.5-dind
       command: ['--experimental']
   before_script:
     - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
@@ -42,7 +42,7 @@
     RELEASE_VERSION: $CI_COMMIT_REF_NAME
     DOCKER_CLI_EXPERIMENTAL: enabled
   services:
-    - name: docker:19.03.12-dind
+    - name: docker:25.0.5-dind
       command: ['--experimental']
   before_script:
     - echo "$INFRA_REGISTRY_PASS" | docker login $INFRA_REGISTRY --username $INFRA_REGISTRY_USER --password-stdin
