@@ -1,6 +1,6 @@
 import { fireEvent, render } from '@testing-library/react';
 
-import { redirectToExternalUrl } from '@fc/user-dashboard';
+import { redirectToUrl } from '@fc/routing';
 
 import { LayoutHeaderLogoutButton } from './layout-header.logout';
 
@@ -37,7 +37,7 @@ describe('LayoutHeaderLogoutButton', () => {
 
     // Then
     expect(clearSpy).toHaveBeenCalledOnce();
-    expect(redirectToExternalUrl).toHaveBeenCalledOnce();
-    expect(redirectToExternalUrl).toHaveBeenCalledWith(endSessionUrlMock);
+    expect(redirectToUrl).toHaveBeenCalledOnce();
+    expect(redirectToUrl).toHaveBeenCalledWith(endSessionUrlMock);
   });
 });

@@ -1,5 +1,5 @@
 import classnames from 'classnames';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Helmet } from 'react-helmet-async';
 
 import type { AccountContextState } from '@fc/account';
@@ -14,7 +14,7 @@ import {
   FraudFormComponent,
   FraudFormIntroductionComponent,
   FraudOptions,
-  redirectToExternalUrl,
+  FraudSurveyIntroductionComponent,
   useFraudFormApi,
   useGetFraudSurveyOrigin,
 } from '@fc/user-dashboard';
@@ -31,11 +31,7 @@ export const FraudFormPage = React.memo(() => {
 
   const { commit, submitErrors, submitWithSuccess } = useFraudFormApi(fraudConfig);
 
-  useEffect(() => {
-    if (!fraudSurveyOrigin && !submitWithSuccess) {
-      redirectToExternalUrl(fraudConfig.fraudSurveyUrl);
-    }
-  }, [fraudSurveyOrigin, submitWithSuccess, fraudConfig]);
+  const shouldDisplayFraudForm = !!fraudSurveyOrigin || submitWithSuccess;
 
   return (
     <React.Fragment>
@@ -52,29 +48,35 @@ export const FraudFormPage = React.memo(() => {
           'fr-mt-8w': gtDesktop,
         })}
         id="page-container">
-        <FraudFormIntroductionComponent />
-        {submitWithSuccess ? (
-          <AlertComponent dataTestId="success-alert" type={AlertTypes.SUCCESS}>
-            <p className="fr-alert__title">Votre demande a bien été prise en compte</p>
-            <p>
-              Vous allez recevoir un message de confirmation à l’adresse électronique indiquée dans
-              le formulaire de contact.
-            </p>
-          </AlertComponent>
-        ) : (
-          <React.Fragment>
-            <FraudFormComponent
-              commit={commit}
-              fraudSurveyOrigin={fraudSurveyOrigin}
-              idpEmail={userinfos?.email}
-            />
-            {submitErrors && (
-              <AlertComponent size={Sizes.SMALL} type={AlertTypes.ERROR}>
-                <p className="fr-alert__title">Le message n&rsquo;a pas pu être envoyé</p>
+        {shouldDisplayFraudForm ? (
+          <div>
+            <FraudFormIntroductionComponent />
+            {submitWithSuccess ? (
+              <AlertComponent dataTestId="success-alert" type={AlertTypes.SUCCESS}>
+                <p className="fr-alert__title">Votre demande a bien été prise en compte</p>
+                <p>
+                  Vous allez recevoir un message de confirmation à l’adresse électronique indiquée
+                  dans le formulaire de contact.
+                </p>
               </AlertComponent>
+            ) : (
+              <React.Fragment>
+                <FraudFormComponent
+                  commit={commit}
+                  fraudSurveyOrigin={fraudSurveyOrigin}
+                  idpEmail={userinfos?.email}
+                />
+                {submitErrors && (
+                  <AlertComponent size={Sizes.SMALL} type={AlertTypes.ERROR}>
+                    <p className="fr-alert__title">Le message n&rsquo;a pas pu être envoyé</p>
+                  </AlertComponent>
+                )}
+                <AuthenticationEventIdCallout className="fr-mt-6w" />
+              </React.Fragment>
             )}
-            <AuthenticationEventIdCallout className="fr-mt-6w" />
-          </React.Fragment>
+          </div>
+        ) : (
+          <FraudSurveyIntroductionComponent />
         )}
       </div>
     </React.Fragment>

@@ -4,8 +4,8 @@ import type { FraudConfigInterface } from '@fc/user-dashboard';
 import { FraudOptions } from '@fc/user-dashboard';
 
 export const getFraudSupportFormUrl = (search: string): string => {
-  const fraudConfig = ConfigService.get<FraudConfigInterface>(FraudOptions.CONFIG_NAME);
-  const { fraudSupportFormPathname, supportFormUrl, surveyOriginQueryParam } = fraudConfig;
+  const { fraudSupportFormPathname, supportFormUrl, surveyOriginQueryParam } =
+    ConfigService.get<FraudConfigInterface>(FraudOptions.CONFIG_NAME);
 
   const searchParam = new URLSearchParams(search);
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { redirectToExternalUrl } from '@fc/user-dashboard';
+import { redirectToUrl } from '@fc/routing';
 
 interface LayoutHeaderLogoutButtonProps {
   endSessionUrl: string;
@@ -11,7 +11,7 @@ export const LayoutHeaderLogoutButton = React.memo(
     const handleLogout = (event: React.MouseEvent<HTMLAnchorElement>) => {
       event.preventDefault();
       localStorage.clear();
-      redirectToExternalUrl(endSessionUrl);
+      redirectToUrl(endSessionUrl);
     };
 
     return (

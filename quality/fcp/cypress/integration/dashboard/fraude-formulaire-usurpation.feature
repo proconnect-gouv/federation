@@ -8,7 +8,8 @@ Fonctionnalité: Formulaire Usurpation
     Et que je navigue sur la page de connexion du formulaire usurpation
     Et que je force la donnée "fraudSurveyOrigin" à "identite-inconnue" dans le localStorage
     Et que je me connecte pour accéder au formulaire usurpation
-    Et que je suis redirigé vers le formulaire usurpation
+    Et que je suis redirigé vers la page formulaire usurpation
+    Et que le formulaire usurpation est affiché
     Et que j'entre les valeurs par défaut sur le formulaire usurpation
     Et que je coche la case de consentement du formulaire usurpation
     Quand je valide le formulaire usurpation
@@ -27,7 +28,8 @@ Fonctionnalité: Formulaire Usurpation
     Etant donné que je navigue sur la page de connexion du formulaire usurpation
     Et que je force la donnée "fraudSurveyOrigin" à "identite-inconnue" dans le localStorage
     Et que je me connecte pour accéder au formulaire usurpation
-    Et que je suis redirigé vers le formulaire usurpation
+    Et que je suis redirigé vers la page formulaire usurpation
+    Et que le formulaire usurpation est affiché
     Et que j'entre les valeurs par défaut sur le formulaire usurpation
     Et que je coche la case de consentement du formulaire usurpation
     Quand je valide le formulaire usurpation
@@ -37,7 +39,8 @@ Fonctionnalité: Formulaire Usurpation
     Etant donné que je navigue sur la page de connexion du formulaire usurpation
     Et que je force la donnée "fraudSurveyOrigin" à "identite-inconnue" dans le localStorage
     Et que je me connecte pour accéder au formulaire usurpation
-    Et que je suis redirigé vers le formulaire usurpation
+    Et que je suis redirigé vers la page formulaire usurpation
+    Et que le formulaire usurpation est affiché
     Et que j'entre "bad contact email" dans le champ "contactEmail" du formulaire usurpation
     Et que je coche la case de consentement du formulaire usurpation
     Quand je valide le formulaire usurpation
@@ -47,7 +50,8 @@ Fonctionnalité: Formulaire Usurpation
     Etant donné que je navigue sur la page de connexion du formulaire usurpation
     Et que je force la donnée "fraudSurveyOrigin" à "identite-inconnue" dans le localStorage
     Et que je me connecte pour accéder au formulaire usurpation
-    Et que je suis redirigé vers le formulaire usurpation
+    Et que je suis redirigé vers la page formulaire usurpation
+    Et que le formulaire usurpation est affiché
     Et que j'entre "bad authentication event id" dans le champ "authenticationEventId" du formulaire usurpation
     Et que je coche la case de consentement du formulaire usurpation
     Quand je valide le formulaire usurpation
@@ -57,7 +61,8 @@ Fonctionnalité: Formulaire Usurpation
     Etant donné que je navigue sur la page de connexion du formulaire usurpation
     Et que je force la donnée "fraudSurveyOrigin" à "identite-inconnue" dans le localStorage
     Et que je me connecte pour accéder au formulaire usurpation
-    Et que je suis redirigé vers le formulaire usurpation
+    Et que je suis redirigé vers la page formulaire usurpation
+    Et que le formulaire usurpation est affiché
     Et que je supprime la valeur du champ "contactEmail" du formulaire usurpation
     Quand je valide le formulaire usurpation
     Alors le champ "contactEmail" a une erreur "Veuillez saisir une adresse électronique" dans le formulaire usurpation
@@ -68,7 +73,8 @@ Fonctionnalité: Formulaire Usurpation
     Etant donné que je navigue sur la page de connexion du formulaire usurpation
     Et que je force la donnée "fraudSurveyOrigin" à "identite-inconnue" dans le localStorage
     Quand je me connecte pour accéder au formulaire usurpation
-    Alors je suis redirigé vers le formulaire usurpation
+    Alors je suis redirigé vers la page formulaire usurpation
+    Et le formulaire usurpation est affiché
     Et le champ "contactEmail" contient l'email du compte FI dans le formulaire usurpation
 
   @ignoreInteg01
@@ -76,7 +82,8 @@ Fonctionnalité: Formulaire Usurpation
     Etant donné que je navigue sur la page de connexion du formulaire usurpation
     Et que je force la donnée "fraudSurveyOrigin" à "identite-inconnue" dans le localStorage
     Et que je me connecte pour accéder au formulaire usurpation
-    Et que je suis redirigé vers le formulaire usurpation
+    Et que je suis redirigé vers la page formulaire usurpation
+    Et que le formulaire usurpation est affiché
     Et que j'entre les valeurs par défaut sur le formulaire usurpation
     Et que je supprime la valeur du champ "comment" du formulaire usurpation
     Et que je supprime la valeur du champ "phoneNumber" du formulaire usurpation
@@ -91,5 +98,5 @@ Fonctionnalité: Formulaire Usurpation
     Etant donné que je navigue sur la page de connexion du formulaire usurpation
     Et que je force la donnée "fraudSurveyOrigin" à "identite-inconnue" dans le localStorage
     Quand je me connecte pour accéder au formulaire usurpation
-    Alors je suis redirigé vers le formulaire usurpation
+    Alors je suis redirigé vers la page formulaire usurpation
     Et le lien vers la page historique de connexion est affiché sur le formulaire usurpation
