@@ -11,6 +11,10 @@ export const FraudFormIntroductionComponent = jest.fn(() => (
   <div>FraudFormIntroductionComponent</div>
 ));
 
+export const FraudSurveyIntroductionComponent = jest.fn(() => (
+  <div>FraudSurveyIntroductionComponent</div>
+));
+
 export const getFraudSupportFormUrl = jest.fn();
 
 export const useFraudFormApi = jest.fn();
@@ -19,7 +23,7 @@ export const useGetFraudSurveyOrigin = jest.fn();
 
 export const composeValidators = jest.fn();
 
-export const redirectToExternalUrl = jest.fn();
+export const redirectToFraudSurvey = jest.fn();
 
 export const mustBeEmail = jest.fn();
 

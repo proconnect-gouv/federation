@@ -6,7 +6,7 @@ import UdFraudFormPage from '../pages/ud-fraud-form-page';
 let udFraudFormPage: UdFraudFormPage;
 
 Given(
-  /^je navigue directement vers le formulaire usurpation(?: avec le paramètre fraudSurveyOrigin égal à "([^"]+)")?$/,
+  /^je navigue directement vers la page formulaire usurpation(?: avec le paramètre fraudSurveyOrigin égal à "([^"]+)")?$/,
   function (fraudSurveyOrigin?: string) {
     const { allAppsUrl } = this.env;
     navigateTo({
@@ -25,7 +25,7 @@ Given(
 );
 
 Then(
-  /^je suis redirigé vers le formulaire usurpation(?: avec le paramètre fraudSurveyOrigin égal à "([^"]+)")?$/,
+  /^je suis redirigé vers la page formulaire usurpation(?: avec le paramètre fraudSurveyOrigin égal à "([^"]+)")?$/,
   function (fraudSurveyOrigin?: string) {
     const { udRootUrl } = this.env;
     udFraudFormPage = new UdFraudFormPage(udRootUrl);
@@ -35,6 +35,10 @@ Then(
     }
   },
 );
+
+Then('le formulaire usurpation est affiché', function () {
+  udFraudFormPage.getValidationButton().should('be.visible');
+});
 
 Given(
   /^je force la donnée "fraudSurveyOrigin" à "([^"]+)" dans le localStorage(?: datée d'il y a (\d+) minutes)?$/,
@@ -100,6 +104,14 @@ When(
 
 When('je valide le formulaire usurpation', function () {
   udFraudFormPage.validateForm();
+});
+
+When('je clique sur le button vers le questionnaire fraude', function () {
+  udFraudFormPage.getFraudSurveyButton().click();
+});
+
+Given('le bouton vers le questionnaire fraude est affiché', function () {
+  udFraudFormPage.getFraudSurveyButton().should('be.visible');
 });
 
 Then('la demande de support est prise en compte', function () {

@@ -9,7 +9,7 @@ import {
   AuthenticationEventIdCallout,
   FraudFormComponent,
   FraudFormIntroductionComponent,
-  redirectToExternalUrl,
+  FraudSurveyIntroductionComponent,
   useFraudFormApi,
   useGetFraudSurveyOrigin,
 } from '@fc/user-dashboard';
@@ -38,7 +38,7 @@ describe('FraudFormPage', () => {
     jest.mocked(useSafeContext).mockReturnValue({ userinfos: { email: 'email@fi.com' } });
   });
 
-  it('should match the snapshot on desktop layout,', () => {
+  it('should match the snapshot on desktop layout with fraud form,', () => {
     // Given
     jest.mocked(useStylesQuery).mockReturnValue(false);
 
@@ -49,9 +49,33 @@ describe('FraudFormPage', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should match the snapshot on mobile layout,', () => {
+  it('should match the snapshot on mobile layout with fraud form,', () => {
     // Given
     jest.mocked(useStylesQuery).mockReturnValue(true);
+
+    // When
+    const { container } = render(<FraudFormPage />);
+
+    // Then
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match the snapshot on desktop layout without fraud form,', () => {
+    // Given
+    jest.mocked(useStylesQuery).mockReturnValue(false);
+    jest.mocked(useGetFraudSurveyOrigin).mockReturnValueOnce('');
+
+    // When
+    const { container } = render(<FraudFormPage />);
+
+    // Then
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match the snapshot on mobile layout without fraud form,', () => {
+    // Given
+    jest.mocked(useStylesQuery).mockReturnValue(true);
+    jest.mocked(useGetFraudSurveyOrigin).mockReturnValueOnce('');
 
     // When
     const { container } = render(<FraudFormPage />);
@@ -124,7 +148,7 @@ describe('FraudFormPage', () => {
     expect(container).toMatchSnapshot();
   });
 
-  it('should have called IntroductionComponent', () => {
+  it('should have called FraudFormIntroductionComponent when fraud form is displayed', () => {
     // When
     render(<FraudFormPage />);
 
@@ -146,6 +170,39 @@ describe('FraudFormPage', () => {
 
     // Then
     expect(AuthenticationEventIdCallout).toHaveBeenCalled();
+  });
+
+  it('should have called FraudSurveyIntroductionComponent when fraud form is not displayed', () => {
+    // Given
+    jest.mocked(useGetFraudSurveyOrigin).mockReturnValueOnce('');
+
+    // When
+    render(<FraudFormPage />);
+
+    // Then
+    expect(FraudSurveyIntroductionComponent).toHaveBeenCalled();
+  });
+
+  it('should have not called FraudFormComponent', () => {
+    // Given
+    jest.mocked(useGetFraudSurveyOrigin).mockReturnValueOnce('');
+
+    // When
+    render(<FraudFormPage />);
+
+    // Then
+    expect(FraudFormComponent).not.toHaveBeenCalled();
+  });
+
+  it('should have not called SessionIdCallout', () => {
+    // Given
+    jest.mocked(useGetFraudSurveyOrigin).mockReturnValueOnce('');
+
+    // When
+    render(<FraudFormPage />);
+
+    // Then
+    expect(AuthenticationEventIdCallout).not.toHaveBeenCalled();
   });
 
   it('should have called useGetFraudSurveyOrigin hook', () => {
@@ -172,33 +229,5 @@ describe('FraudFormPage', () => {
     // Then
     expect(useFraudFormApi).toHaveBeenCalledOnce();
     expect(useFraudFormApi).toHaveBeenCalledWith(fraudConfig);
-  });
-
-  it('should redirect to fraud survey if no origin', () => {
-    // Given
-    jest.mocked(useGetFraudSurveyOrigin).mockReturnValueOnce('');
-
-    // When
-    render(<FraudFormPage />);
-
-    // Then
-    expect(redirectToExternalUrl).toHaveBeenCalledOnce();
-    expect(redirectToExternalUrl).toHaveBeenCalledWith('fraud-survey-url');
-  });
-
-  it('should not redirect to fraud survey if submittedWithSuccess is true', () => {
-    // Given
-    jest.mocked(useGetFraudSurveyOrigin).mockReturnValueOnce('');
-    jest.mocked(useFraudFormApi).mockReturnValueOnce({
-      commit: jest.fn(),
-      submitErrors: undefined,
-      submitWithSuccess: true,
-    });
-
-    // When
-    render(<FraudFormPage />);
-
-    // Then
-    expect(redirectToExternalUrl).not.toHaveBeenCalled();
   });
 });

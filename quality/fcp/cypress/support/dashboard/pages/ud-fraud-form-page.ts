@@ -88,6 +88,10 @@ export default class UdFraudFormPage {
     return cy.get('[data-testid="fraud-form-submit-button"]');
   }
 
+  getFraudSurveyButton(): ChainableElement {
+    return cy.get('[data-testid="fraud-survey-button"]');
+  }
+
   validateForm(): void {
     this.getValidationButton().click();
   }
