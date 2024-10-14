@@ -331,13 +331,33 @@ describe('OidcClientController', () => {
   });
 
   describe('logoutCallback', () => {
-    it('should destroy the client session', async () => {
+    it('should reset the client session', async () => {
       // action
       await controller.logoutCallback(res);
 
       // assert
-      expect(sessionServiceMock.destroy).toHaveBeenCalledTimes(1);
-      expect(sessionServiceMock.destroy).toHaveBeenCalledWith(res);
+      expect(sessionServiceMock.reset).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.reset).toHaveBeenCalledWith(res);
+    });
+
+    it('should keep the App session from the client session', async () => {
+      // setup
+      const sessionAppMock = {
+        mode: 'currentMode',
+      };
+      sessionServiceMock.get.mockReturnValueOnce(sessionAppMock);
+
+      // action
+      await controller.logoutCallback(res);
+
+      // assert
+      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.get).toHaveBeenCalledWith('App');
+      expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
+      expect(sessionServiceMock.set).toHaveBeenCalledWith(
+        'App',
+        sessionAppMock,
+      );
     });
 
     it('should redirect to the home page', async () => {

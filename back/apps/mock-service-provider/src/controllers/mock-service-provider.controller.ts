@@ -31,8 +31,8 @@ import {
   SessionNotFoundException,
 } from '@fc/session';
 
-import { AccessTokenParamsDTO, AppConfig, DataApi } from '../dto';
-import { MockServiceProviderRoutes } from '../enums';
+import { AccessTokenParamsDTO, AppConfig, AppSession, DataApi } from '../dto';
+import { FormMode, MockServiceProviderRoutes } from '../enums';
 import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
@@ -52,8 +52,8 @@ export class MockServiceProviderController {
   ) {}
 
   @Get(MockServiceProviderRoutes.INDEX)
-  @Render('index')
-  async index(
+  index(
+    @Res() res,
     /**
      * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
@@ -61,7 +61,40 @@ export class MockServiceProviderController {
      */
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
+    @Query()
+    query,
   ) {
+    // Redirect to the verify page if idpIdentity present in the session
+    const { idpIdentity } = sessionOidc.get() || {};
+    if (idpIdentity) {
+      res.redirect(MockServiceProviderRoutes.VERIFY);
+    }
+
+    res.redirect(`${MockServiceProviderRoutes.LOGIN}?${encode(query)}`);
+  }
+
+  @Get(MockServiceProviderRoutes.LOGIN)
+  @Render('index')
+  async login(
+    @Res() res,
+    /**
+     * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
+     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
+     * @ticket FC-1020
+     */
+    @Session('OidcClient')
+    sessionOidc: ISessionService<OidcClientSession>,
+    @Session('App')
+    sessionApp: ISessionService<AppSession>,
+    @Query('mode')
+    requestedMode?: string,
+  ) {
+    // Update mode
+    const { mode = FormMode.SIMPLE } = sessionApp.get() || {};
+    const currentMode = requestedMode || mode;
+    const isAdvancedMode = currentMode === FormMode.ADVANCED;
+    sessionApp.set('mode', currentMode);
+
     const { defaultAcrValue } = this.config.get<OidcAcrConfig>('OidcAcr');
 
     // Only one provider is available with `@fc/identity-provider-env`
@@ -81,6 +114,7 @@ export class MockServiceProviderController {
       params,
       authorizationUrl: authorizationUrl,
       defaultAcrValue,
+      isAdvancedMode,
     };
 
     return response;
@@ -102,7 +136,7 @@ export class MockServiceProviderController {
 
     // Redirect to the home page if no idpIdentity present in the session
     if (!session?.idpIdentity) {
-      res.redirect('/');
+      res.redirect(MockServiceProviderRoutes.INDEX);
     }
 
     const { dataApis } = this.config.get<AppConfig>('App');
