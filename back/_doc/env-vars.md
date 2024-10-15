@@ -895,7 +895,9 @@
 | Mailer_FROM_EMAIL | string |
 | Mailer_FROM_NAME | string |
 | Mailer_HOST | string |
+| Mailer_IGNORE_TLS | boolean |
 | Mailer_PORT | number |
+| Mailer_REJECT_UNAUTHORIZED | boolean |
 | Mailer_SECURE | boolean |
 | Mailer_TEMPLATES_PATHS | json |
 | Mailer_TRANSPORT | string |

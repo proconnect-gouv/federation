@@ -17,6 +17,8 @@ export default {
     host: env.string('HOST'),
     port: env.number('PORT'),
     secure: env.boolean('SECURE'),
+    ignoreTLS: env.boolean('IGNORE_TLS'),
+    rejectUnauthorized: env.boolean('REJECT_UNAUTHORIZED'),
   },
   from,
 } as MailerConfig;

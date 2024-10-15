@@ -18,12 +18,20 @@ import { MailerService, SmtpService, TemplateService } from './services';
           from: { name, email },
           options,
         } = configService.get<MailerConfig>('Mailer');
-        const { host, port, secure } = options;
+        const {
+          host,
+          port,
+          secure,
+          ignoreTLS = false,
+          rejectUnauthorized = true,
+        } = options;
         const params = {
           transport: {
             host,
             port,
             secure,
+            ignoreTLS,
+            tls: { rejectUnauthorized },
           },
           defaults: {
             from: `"${name}" <${email}>`,
