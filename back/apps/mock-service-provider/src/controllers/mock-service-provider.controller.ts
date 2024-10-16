@@ -348,7 +348,7 @@ export class MockServiceProviderController {
       return res.redirect(redirect);
     }
 
-    const { idpAccessToken } = sessionOidc.get();
+    const { idpAccessToken, idpIdentity } = sessionOidc.get();
 
     const data = await Promise.all(
       dataApis.map(async (dataApi) => {
@@ -363,6 +363,7 @@ export class MockServiceProviderController {
     const response = {
       titleFront: 'Mock Service Provider - UserData',
       accessToken: idpAccessToken,
+      idpIdentity,
       data,
       dataApiActive: true,
     };
