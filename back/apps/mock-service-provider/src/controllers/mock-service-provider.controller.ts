@@ -6,9 +6,11 @@ import {
   Get,
   Post,
   Query,
+  Redirect,
   Render,
   Req,
   Res,
+  UseInterceptors,
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
@@ -37,6 +39,7 @@ import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
 } from '../exceptions';
+import { LogoutRedirectInterceptor } from '../interceptors';
 import { MockServiceProviderService } from '../services';
 
 @Controller()
@@ -52,29 +55,13 @@ export class MockServiceProviderController {
   ) {}
 
   @Get(MockServiceProviderRoutes.INDEX)
-  index(
-    @Res() res,
-    /**
-     * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
-     * @ticket FC-1020
-     */
-    @Session('OidcClient')
-    sessionOidc: ISessionService<OidcClientSession>,
-  ) {
-    // Redirect to the verify page if idpIdentity present in the session
-    const { idpIdentity } = sessionOidc.get() || {};
-    if (idpIdentity) {
-      res.redirect(MockServiceProviderRoutes.VERIFY);
-    }
-
-    res.redirect(MockServiceProviderRoutes.LOGIN);
-  }
+  @UseInterceptors(LogoutRedirectInterceptor)
+  @Redirect(MockServiceProviderRoutes.VERIFY)
+  index() {}
 
   @Get(MockServiceProviderRoutes.LOGIN)
   @Render('index')
   async login(
-    @Res() res,
     /**
      * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
@@ -115,9 +102,9 @@ export class MockServiceProviderController {
   }
 
   @Get(MockServiceProviderRoutes.VERIFY)
+  @UseInterceptors(LogoutRedirectInterceptor)
   @Render('login-callback')
   getVerify(
-    @Res() res,
     /**
      * @todo #1020 Partage d'une session entre oidc-provider & oidc-client
      * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1020
@@ -127,12 +114,6 @@ export class MockServiceProviderController {
     sessionOidc: ISessionService<OidcClientSession>,
   ) {
     const session = sessionOidc.get();
-
-    // Redirect to the home page if no idpIdentity present in the session
-    if (!session?.idpIdentity) {
-      res.redirect(MockServiceProviderRoutes.INDEX);
-    }
-
     const { dataApis } = this.config.get<AppConfig>('App');
 
     const response = {
@@ -297,6 +278,7 @@ export class MockServiceProviderController {
   }
 
   @Post(MockServiceProviderRoutes.USERINFO)
+  @UseInterceptors(LogoutRedirectInterceptor)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('login-callback')
   async retrieveUserinfo(
@@ -351,6 +333,7 @@ export class MockServiceProviderController {
   }
 
   @Get(MockServiceProviderRoutes.DATA)
+  @UseInterceptors(LogoutRedirectInterceptor)
   async getAllData(
     @Res() res,
     @Session('OidcClient')
