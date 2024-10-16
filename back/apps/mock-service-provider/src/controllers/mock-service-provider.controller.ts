@@ -61,8 +61,6 @@ export class MockServiceProviderController {
      */
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
-    @Query()
-    query,
   ) {
     // Redirect to the verify page if idpIdentity present in the session
     const { idpIdentity } = sessionOidc.get() || {};
@@ -70,7 +68,7 @@ export class MockServiceProviderController {
       res.redirect(MockServiceProviderRoutes.VERIFY);
     }
 
-    res.redirect(`${MockServiceProviderRoutes.LOGIN}?${encode(query)}`);
+    res.redirect(MockServiceProviderRoutes.LOGIN);
   }
 
   @Get(MockServiceProviderRoutes.LOGIN)
@@ -86,14 +84,10 @@ export class MockServiceProviderController {
     sessionOidc: ISessionService<OidcClientSession>,
     @Session('App')
     sessionApp: ISessionService<AppSession>,
-    @Query('mode')
-    requestedMode?: string,
   ) {
-    // Update mode
-    const { mode = FormMode.SIMPLE } = sessionApp.get() || {};
-    const currentMode = requestedMode || mode;
-    const isAdvancedMode = currentMode === FormMode.ADVANCED;
-    sessionApp.set('mode', currentMode);
+    // Get App mode
+    const { mode } = sessionApp.get() || {};
+    const isAdvancedMode = mode === FormMode.ADVANCED;
 
     const { defaultAcrValue } = this.config.get<OidcAcrConfig>('OidcAcr');
 
