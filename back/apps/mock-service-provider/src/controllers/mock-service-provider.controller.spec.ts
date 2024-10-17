@@ -227,7 +227,7 @@ describe('MockServiceProviderController', () => {
 
   describe('index', () => {
     it('should return nothing', () => {
-      // expect
+      // When / Then
       expect(controller.index()).toBeNil();
     });
   });
@@ -240,26 +240,26 @@ describe('MockServiceProviderController', () => {
     });
 
     it("should throw if the oidc session can't be initialized", async () => {
-      // setup
+      // Given
       sessionOidcServiceMock.set.mockImplementationOnce(() => {
         throw new Error('test');
       });
 
-      // expect
+      // When / Then
       await expect(
         controller.login(sessionOidcServiceMock, sessionAppServiceMock),
       ).rejects.toThrow();
     });
 
     it('should return front title', async () => {
-      // setup
+      // Given
       sessionOidcServiceMock.set.mockResolvedValueOnce(undefined);
-      // action
+      // When
       const result = await controller.login(
         sessionOidcServiceMock,
         sessionAppServiceMock,
       );
-      // assert
+      // Then
       expect(result).toEqual(
         expect.objectContaining({
           titleFront: 'Mock Service Provider',
@@ -268,14 +268,14 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should return default ACR value', async () => {
-      // setup
+      // Given
       sessionOidcServiceMock.set.mockResolvedValueOnce(undefined);
-      // action
+      // When
       const result = await controller.login(
         sessionOidcServiceMock,
         sessionAppServiceMock,
       );
-      // assert
+      // Then
       expect(result).toEqual(
         expect.objectContaining({
           defaultAcrValue: 'eidas2',
@@ -284,14 +284,14 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should return isAdvancedMode false if no current mode defined', async () => {
-      // setup
+      // Given
       sessionAppServiceMock.get.mockResolvedValueOnce(undefined);
-      // action
+      // When
       const result = await controller.login(
         sessionOidcServiceMock,
         sessionAppServiceMock,
       );
-      // assert
+      // Then
       expect(result).toEqual(
         expect.objectContaining({
           isAdvancedMode: false,
@@ -300,16 +300,16 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should return isAdvancedMode false if current mode is basic', async () => {
-      // setup
+      // Given
       sessionAppServiceMock.get.mockResolvedValueOnce({
         mode: AppMode.BASIC,
       });
-      // action
+      // When
       const result = await controller.login(
         sessionOidcServiceMock,
         sessionAppServiceMock,
       );
-      // assert
+      // Then
       expect(result).toEqual(
         expect.objectContaining({
           isAdvancedMode: false,
@@ -318,16 +318,16 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should return isAdvancedMode true if current mode is advanced', async () => {
-      // setup
+      // Given
       sessionAppServiceMock.get.mockReturnValueOnce({
         mode: AppMode.ADVANCED,
       });
-      // action
+      // When
       const result = await controller.login(
         sessionOidcServiceMock,
         sessionAppServiceMock,
       );
-      // assert
+      // Then
       expect(result).toEqual(
         expect.objectContaining({
           isAdvancedMode: true,
@@ -337,7 +337,7 @@ describe('MockServiceProviderController', () => {
   });
 
   describe('verify', () => {
-    it('Should call session.get', () => {
+    it('should call session.get', () => {
       // When
       controller.getVerify(sessionOidcServiceMock);
       // Then
@@ -345,7 +345,7 @@ describe('MockServiceProviderController', () => {
       expect(sessionOidcServiceMock.get).toHaveBeenCalledWith();
     });
 
-    it('Should return session data and hardcoded title', () => {
+    it('should return session data and hardcoded title', () => {
       // When
       const result = controller.getVerify(sessionOidcServiceMock);
 
@@ -360,16 +360,16 @@ describe('MockServiceProviderController', () => {
   });
 
   describe('error', () => {
-    it('Should return error', () => {
-      // setup
+    it('should return error', () => {
+      // Given
       const queryMock = {
         error: 'error',
         error_description: 'Error description',
       };
-      // action
+      // When
       const result = controller.error(queryMock);
 
-      // assert
+      // Then
       expect(result).toEqual({
         titleFront: "Mock service provider - Erreur lors de l'authentification",
         error: 'error',
@@ -390,27 +390,27 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should call session.get() to retrieves idp current cinematic informations', async () => {
-      // action
+      // When
       await controller.logout(
         res,
         sessionOidcServiceMock,
         postLogoutRedirectUriMock,
       );
 
-      // assert
+      // Then
       expect(sessionOidcServiceMock.get).toHaveBeenCalledTimes(1);
       expect(sessionOidcServiceMock.get).toHaveBeenCalledWith();
     });
 
     it('should call clientService.getEndSessionUrlFromProvider() to build the endSessionUrl', async () => {
-      // action
+      // When
       await controller.logout(
         res,
         sessionOidcServiceMock,
         postLogoutRedirectUriMock,
       );
 
-      // assert
+      // Then
       expect(
         oidcClientServiceMock.getEndSessionUrlFromProvider,
       ).toHaveBeenCalledTimes(1);
@@ -425,14 +425,14 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should redirect on the logout callback controller', async () => {
-      // action
+      // When
       await controller.logout(
         res,
         sessionOidcServiceMock,
         postLogoutRedirectUriMock,
       );
 
-      // assert
+      // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(endSessionUrlMock);
     });
@@ -456,12 +456,12 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should display success page when token is revoked', async () => {
-      // setup
+      // Given
       const body = { accessToken: 'access_token' };
-      // action
+      // When
       const result = await controller.revocationToken(res, body);
 
-      // assert
+      // Then
       expect(oidcClientServiceMock.utils.revokeToken).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.utils.revokeToken).toHaveBeenCalledWith(
         body.accessToken,
@@ -475,27 +475,27 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should redirect to the error page if revokeToken throw an error', async () => {
-      // setup
+      // Given
       oidcClientServiceMock.utils.revokeToken.mockRejectedValue(oidcErrorMock);
       const body = { accessToken: 'access_token' };
 
-      // action
+      // When
       await controller.revocationToken(res, body);
 
-      // assert
+      // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
         '/error?error=error&error_description=error_description',
       );
     });
 
-    it('Should throw mock service provider revoke token exception if error is not an instance of OPError', async () => {
-      // setup
+    it('should throw mock service provider revoke token exception if error is not an instance of OPError', async () => {
+      // Given
       const unknowError = { foo: 'bar' };
       const body = { accessToken: 'access_token' };
       oidcClientServiceMock.utils.revokeToken.mockRejectedValue(unknowError);
 
-      // assert
+      // When / Then
       await expect(controller.revocationToken(res, body)).rejects.toThrow(
         MockServiceProviderTokenRevocationException,
       );
@@ -511,7 +511,7 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should retrieve and display userinfo as well as cinematic information on userinfo page', async () => {
-      // setup
+      // Given
       const body = { accessToken: 'access_token' };
       oidcClientServiceMock.utils.getUserInfo.mockReturnValueOnce({
         sub: '1',
@@ -528,14 +528,14 @@ describe('MockServiceProviderController', () => {
         dataApiActive: false,
       };
 
-      // action
+      // When
       const result = await controller.retrieveUserinfo(
         res,
         body,
         sessionOidcServiceMock,
       );
 
-      // assert
+      // Then
       expect(oidcClientServiceMock.utils.getUserInfo).toHaveBeenCalledTimes(1);
       expect(oidcClientServiceMock.utils.getUserInfo).toHaveBeenCalledWith(
         body.accessToken,
@@ -545,26 +545,26 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should redirect to the error page if getUserInfo throw an error', async () => {
-      // setup
+      // Given
       const body = { accessToken: 'access_token' };
       oidcClientServiceMock.utils.getUserInfo.mockRejectedValue(oidcErrorMock);
 
-      // action
+      // When
       await controller.retrieveUserinfo(res, body, sessionOidcServiceMock);
 
-      // assert
+      // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(
         '/error?error=error&error_description=error_description',
       );
     });
 
-    it('Should throw mock service provider userinfo exception if error is not an instance of OPError', async () => {
-      // setup
+    it('should throw mock service provider userinfo exception if error is not an instance of OPError', async () => {
+      // Given
       oidcClientServiceMock.utils.getUserInfo.mockRejectedValue({});
       const body = { accessToken: 'access_token' };
 
-      // assert
+      // When / Then
       await expect(
         controller.retrieveUserinfo(res, body, sessionOidcServiceMock),
       ).rejects.toThrow(MockServiceProviderUserinfoException);
@@ -826,7 +826,7 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should call res.redirect with an error if the query contains an error', async () => {
-      // setup
+      // Given
       const queryMock = {
         error: 'toto',
       };
@@ -834,7 +834,7 @@ describe('MockServiceProviderController', () => {
       queryStringEncodeMock.mockReturnValueOnce(errorQueryMock);
       const expectedErrorUriMock = `/error?${errorQueryMock}`;
 
-      // action
+      // When
       await controller.getOidcCallback(
         req,
         res,
@@ -842,13 +842,13 @@ describe('MockServiceProviderController', () => {
         sessionOidcServiceMock,
       );
 
-      // assert
+      // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(expectedErrorUriMock);
     });
 
     it('should call res.redirect with an error and error_description if the query contains an error and error_description', async () => {
-      // setup
+      // Given
       const queryMock = {
         error: 'toto',
         error_description: 'toto42',
@@ -857,7 +857,7 @@ describe('MockServiceProviderController', () => {
       queryStringEncodeMock.mockReturnValueOnce(errorQueryMock);
       const expectedErrorUriMock = `/error?${errorQueryMock}`;
 
-      // action
+      // When
       await controller.getOidcCallback(
         req,
         res,
@@ -865,29 +865,29 @@ describe('MockServiceProviderController', () => {
         sessionOidcServiceMock,
       );
 
-      // assert
+      // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(expectedErrorUriMock);
     });
 
     it('should throw an error if the session is not found', async () => {
-      // setup
+      // Given
       sessionOidcServiceMock.get.mockReset().mockReturnValueOnce(undefined);
 
-      // action/assertion
+      // When / Then
       await expect(
         controller.getOidcCallback(req, res, query, sessionOidcServiceMock),
       ).rejects.toThrow(SessionNotFoundException);
     });
 
     it('should not call getTokenFromProvider if the query contains an error', async () => {
-      // setup
+      // Given
       const queryMock = {
         error: 'toto',
         error_description: 'toto42',
       };
 
-      // action
+      // When
       await controller.getOidcCallback(
         req,
         res,
@@ -895,17 +895,17 @@ describe('MockServiceProviderController', () => {
         sessionOidcServiceMock,
       );
 
-      // assert
+      // Then
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledTimes(
         0,
       );
     });
 
     it('should call token with providerId', async () => {
-      // action
+      // When
       await controller.getOidcCallback(req, res, query, sessionOidcServiceMock);
 
-      // assert
+      // Then
       expect(oidcClientServiceMock.getTokenFromProvider).toHaveBeenCalledTimes(
         1,
       );
@@ -917,12 +917,10 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should call userinfo with acesstoken, dto and context', async () => {
-      // arrange
-
-      // action
+      // When
       await controller.getOidcCallback(req, res, query, sessionOidcServiceMock);
 
-      // assert
+      // Then
       expect(
         oidcClientServiceMock.getUserInfosFromProvider,
       ).toHaveBeenCalledTimes(1);
@@ -932,10 +930,10 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should set session with identity result.', async () => {
-      // action
+      // When
       await controller.getOidcCallback(req, res, query, sessionOidcServiceMock);
 
-      // assert
+      // Then
       expect(sessionOidcServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionOidcServiceMock.set).toHaveBeenCalledWith(
         identityExchangeMock,
@@ -943,16 +941,16 @@ describe('MockServiceProviderController', () => {
     });
 
     it('should redirect user after token and userinfo received and saved', async () => {
-      // action
+      // When
       await controller.getOidcCallback(req, res, query, sessionOidcServiceMock);
 
-      // assert
+      // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(redirectMock);
     });
   });
 
-  describe('getIdpId()', () => {
+  describe('getIdpId', () => {
     beforeEach(() => {
       configServiceMock.get.mockReturnValueOnce({
         idpId: idpIdMock,

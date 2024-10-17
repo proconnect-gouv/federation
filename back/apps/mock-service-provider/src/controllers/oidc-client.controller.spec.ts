@@ -118,7 +118,7 @@ describe('OidcClientController', () => {
 
   describe('redirectToIdp()', () => {
     it('should call oidc-client-service for retrieve authorize url', async () => {
-      // setup
+      // Given
       const body = {
         scope: 'openid',
         providerUid: providerIdMock,
@@ -142,10 +142,10 @@ describe('OidcClientController', () => {
         state: 'stateMock',
       };
 
-      // action
+      // When
       await controller.redirectToIdp(res, body, sessionServiceMock);
 
-      // assert
+      // Then
       expect(oidcClientServiceMock.utils.getAuthorizeUrl).toHaveBeenCalledTimes(
         1,
       );
@@ -156,7 +156,7 @@ describe('OidcClientController', () => {
     });
 
     it('should call res.redirect() with the authorizeUrl', async () => {
-      // setup
+      // Given
       const body = {
         scope: 'openid',
         providerUid: providerIdMock,
@@ -172,16 +172,16 @@ describe('OidcClientController', () => {
         authorizeUrlMock,
       );
 
-      // action
+      // When
       await controller.redirectToIdp(res, body, sessionServiceMock);
 
-      // assert
+      // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(authorizeUrlMock);
     });
 
     it('should store state and nonce in session', async () => {
-      // setup
+      // Given
       const body = {
         scope: 'openid',
         providerUid: providerIdMock,
@@ -197,10 +197,10 @@ describe('OidcClientController', () => {
         authorizeUrlMock,
       );
 
-      // action
+      // When
       await controller.redirectToIdp(res, body, sessionServiceMock);
 
-      // assert
+      // Then
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.set).toHaveBeenCalledWith({
         idpId: body.providerUid,
@@ -212,7 +212,7 @@ describe('OidcClientController', () => {
     });
 
     it('should resolve even if no spId are fetchable', async () => {
-      // setup
+      // Given
       const body = {
         scope: 'openid',
         providerUid: providerIdMock,
@@ -225,15 +225,15 @@ describe('OidcClientController', () => {
         throw new Error();
       });
 
-      // action
+      // When
       await controller.redirectToIdp(res, body, sessionServiceMock);
 
-      // assert
+      // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
     });
 
     it('should log error if session service threw', async () => {
-      // setup
+      // Given
       const body = {
         scope: 'openid',
         providerUid: providerIdMock,
@@ -247,16 +247,16 @@ describe('OidcClientController', () => {
         throw errorMock;
       });
 
-      // action
+      // When
       await controller.redirectToIdp(res, body, sessionServiceMock);
 
-      // assert
+      // Then
       expect(loggerServiceMock.err).toHaveBeenCalledTimes(1);
       expect(loggerServiceMock.err).toHaveBeenCalledWith(errorMock);
     });
 
     it('should throw an error if the two CSRF tokens (provided in request and previously stored in session) are not the same.', async () => {
-      // setup
+      // Given
       const body = {
         scope: 'openid',
         providerUid: providerIdMock,
@@ -267,10 +267,10 @@ describe('OidcClientController', () => {
       };
       sessionServiceMock.get.mockReturnValueOnce('spId');
 
-      // action
+      // When
       await controller.redirectToIdp(res, body, sessionServiceMock);
 
-      // assert
+      // Then
       expect(sessionServiceMock.get).toHaveBeenLastCalledWith();
       expect(res.redirect).toHaveBeenCalledTimes(1);
     });
@@ -283,7 +283,7 @@ describe('OidcClientController', () => {
       });
 
       it('idp is blacklisted', async () => {
-        // setup
+        // Given
         const body = {
           scope: 'openid',
           providerUid: providerIdMock,
@@ -298,7 +298,7 @@ describe('OidcClientController', () => {
         });
         isBlacklistedMock.mockRejectedValueOnce(errorMock);
 
-        // action / assert
+        // When / Then
         await expect(() =>
           controller.redirectToIdp(res, body, sessionServiceMock),
         ).rejects.toThrow(errorMock);
@@ -306,7 +306,7 @@ describe('OidcClientController', () => {
       });
 
       it('idp is not blacklisted', async () => {
-        // setup
+        // Given
         const body = {
           scope: 'openid',
           providerUid: providerIdMock,
@@ -320,10 +320,10 @@ describe('OidcClientController', () => {
         });
         isBlacklistedMock.mockReturnValueOnce(false);
 
-        // action
+        // When
         await controller.redirectToIdp(res, body, sessionServiceMock);
 
-        // assert
+        // Then
         expect(sessionServiceMock.get).toHaveBeenLastCalledWith();
         expect(res.redirect).toHaveBeenCalledTimes(1);
       });
@@ -332,25 +332,25 @@ describe('OidcClientController', () => {
 
   describe('logoutCallback', () => {
     it('should reset the client session', async () => {
-      // action
+      // When
       await controller.logoutCallback(res);
 
-      // assert
+      // Then
       expect(sessionServiceMock.reset).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.reset).toHaveBeenCalledWith(res);
     });
 
     it('should keep the App session from the client session', async () => {
-      // setup
+      // Given
       const sessionAppMock = {
         mode: 'currentMode',
       };
       sessionServiceMock.get.mockReturnValueOnce(sessionAppMock);
 
-      // action
+      // When
       await controller.logoutCallback(res);
 
-      // assert
+      // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.get).toHaveBeenCalledWith('App');
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
@@ -361,10 +361,10 @@ describe('OidcClientController', () => {
     });
 
     it('should redirect to the home page', async () => {
-      // action
+      // When
       await controller.logoutCallback(res);
 
-      // assert
+      // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith('/');
     });
