@@ -2,11 +2,11 @@ fca-low:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging"'
+    - if: '$CI_COMMIT_BRANCH == "staging" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
       variables:
         BDD_TAGS: 'not @ignore'
         SKIP_DIFF_CHECK: 'true'
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /CI Test (all|fca-low)/'
       variables:
         BDD_TAGS: 'not @ignore'
         SKIP_DIFF_CHECK: 'true'
@@ -45,6 +45,7 @@ fca-low:
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     # build the main app and check if it is impacted by MR
+    - echo "CI_MERGE_REQUEST_LABELS=$CI_MERGE_REQUEST_LABELS"
     - DIFF_FILES=$(docker-stack detect-back-changes core-fca-low bridge-http-proxy-rie csmr-rie mock-identity-provider-fca-low mock-service-provider-fca-low)
     - DIFF_CHECK_STATUS=$(echo "$DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
     - echo "$DIFF_FILES"

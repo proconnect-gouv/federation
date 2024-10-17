@@ -2,11 +2,11 @@ user-dashboard:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging"'
+    - if: '$CI_COMMIT_BRANCH == "staging" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
       variables:
         BDD_TAGS: 'not @ignore'
         SKIP_DIFF_CHECK: 'true'
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /CI Test (all|ud)/'
       variables:
         BDD_TAGS: 'not @ignore'
         SKIP_DIFF_CHECK: 'true'
@@ -47,7 +47,8 @@ user-dashboard:
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     - node -v
     - apt update && apt install -y jq
-      # build the main apps and check if they are impacted by MR
+    # build the main apps and check if they are impacted by MR
+    - echo "CI_MERGE_REQUEST_LABELS=$CI_MERGE_REQUEST_LABELS"
     - BACK_DIFF_FILES=$(docker-stack detect-back-changes user-dashboard csmr-tracks-instance csmr-account-instance csmr-user-preferences-high)
     - BACK_DIFF_CHECK_STATUS=$(echo "$BACK_DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
     - echo "$BACK_DIFF_FILES"
@@ -60,7 +61,7 @@ user-dashboard:
     - if [ "$FRONT_DIFF_CHECK_STATUS" == "ERRORS" ]; then echo "$FRONT_DIFF_FILES"; exit 1; fi
     - if [ "$BACK_DIFF_CHECK_STATUS" == "NO_CHANGES" ] && [ "$FRONT_DIFF_CHECK_STATUS" == "NO_CHANGES" ]; then exit 0; fi
 
-      # Test Scope definition
+    # Test Scope definition
     - BDD_TAGS=${BDD_TAGS_UD:-$BDD_TAGS}
     - echo "BDD_TAGS=$BDD_TAGS"
     # Ensure a clean docker environnement

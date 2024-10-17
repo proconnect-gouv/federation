@@ -4,11 +4,11 @@ eidas-bridge:
   tags:
     - cypress
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging"'
+    - if: '$CI_COMMIT_BRANCH == "staging" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
       variables:
         BDD_TAGS: 'not @ignore'
         SKIP_DIFF_CHECK: 'true'
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /CI Test (all|eidas)/'
       variables:
         BDD_TAGS: 'not @ignore'
         SKIP_DIFF_CHECK: 'true'
@@ -39,6 +39,7 @@ eidas-bridge:
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     # build the main apps and check if they are impacted by MR
+    - echo "CI_MERGE_REQUEST_LABELS=$CI_MERGE_REQUEST_LABELS"
     - DIFF_FILES=$(docker-stack detect-back-changes eidas-bridge)
     - DIFF_CHECK_STATUS=$(echo "$DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
     - echo "$DIFF_FILES"

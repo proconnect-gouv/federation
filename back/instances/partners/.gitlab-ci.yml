@@ -2,11 +2,11 @@ partners:
   stage: 'End to end'
   image: ${E2E_DOCKER_IMAGE}
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging"'
+    - if: '$CI_COMMIT_BRANCH == "staging" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
       variables:
         BDD_TAGS: 'not @ignore'
         SKIP_DIFF_CHECK: 'true'
-    - if: '$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
+    - if: '$CI_MERGE_REQUEST_LABELS =~ /CI Test (all|partners)/'
       variables:
         BDD_TAGS: 'not @ignore'
         SKIP_DIFF_CHECK: 'true'
@@ -42,6 +42,7 @@ partners:
     - node -v
     - apt update && apt install -y jq
       # build the main apps and check if they are impacted by MR
+    - echo "CI_MERGE_REQUEST_LABELS=$CI_MERGE_REQUEST_LABELS"
     - BACK_DIFF_FILES=$(docker-stack detect-back-changes partners)
     - BACK_DIFF_CHECK_STATUS=$(echo "$BACK_DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
     - echo "$BACK_DIFF_FILES"
