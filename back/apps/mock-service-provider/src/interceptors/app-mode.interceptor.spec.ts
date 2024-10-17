@@ -5,7 +5,7 @@ import { SessionService } from '@fc/session';
 
 import { getSessionServiceMock } from '@mocks/session';
 
-import { FormMode } from '../enums';
+import { AppMode } from '../enums';
 import { AppModeInterceptor } from '.';
 
 describe('AppModeInterceptor', () => {
@@ -127,7 +127,7 @@ describe('AppModeInterceptor', () => {
       );
     });
 
-    it('should set the App mode to simple if both request mode and session mode are not truthy', async () => {
+    it('should set the App mode to basic if both request mode and session mode are not truthy', async () => {
       // Given
       const emptyRequestMode = '';
       const emptySessionMode = '';
@@ -143,7 +143,7 @@ describe('AppModeInterceptor', () => {
       expect(sessionServiceMock.set).toHaveBeenCalledWith(
         'App',
         'mode',
-        FormMode.SIMPLE,
+        AppMode.BASIC,
       );
     });
   });

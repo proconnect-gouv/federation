@@ -1,7 +1,7 @@
 /* istanbul ignore file */
 
 // Declarative file
-export enum FormMode {
+export enum AppMode {
   ADVANCED = 'advanced',
-  SIMPLE = 'basic',
+  BASIC = 'basic',
 }

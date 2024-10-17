@@ -11,7 +11,7 @@ import {
 import { SessionService } from '@fc/session';
 
 import { AppSession } from '../dto';
-import { FormMode } from '../enums';
+import { AppMode } from '../enums';
 
 @Injectable()
 export class AppModeInterceptor implements NestInterceptor {
@@ -29,7 +29,7 @@ export class AppModeInterceptor implements NestInterceptor {
 
   private async setAppMode(requestMode: string): Promise<void> {
     const { mode } = this.session.get<AppSession>('App') || {};
-    const currentMode = requestMode || mode || FormMode.SIMPLE;
+    const currentMode = requestMode || mode || AppMode.BASIC;
     this.session.set('App', 'mode', currentMode);
     await this.session.commit();
   }

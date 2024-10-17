@@ -13,7 +13,7 @@ import { SessionNotFoundException, SessionService } from '@fc/session';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { FormMode } from '../enums';
+import { AppMode } from '../enums';
 import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
@@ -302,7 +302,7 @@ describe('MockServiceProviderController', () => {
     it('should return isAdvancedMode false if current mode is basic', async () => {
       // setup
       sessionAppServiceMock.get.mockResolvedValueOnce({
-        mode: FormMode.SIMPLE,
+        mode: AppMode.BASIC,
       });
       // action
       const result = await controller.login(
@@ -320,7 +320,7 @@ describe('MockServiceProviderController', () => {
     it('should return isAdvancedMode true if current mode is advanced', async () => {
       // setup
       sessionAppServiceMock.get.mockReturnValueOnce({
-        mode: FormMode.ADVANCED,
+        mode: AppMode.ADVANCED,
       });
       // action
       const result = await controller.login(

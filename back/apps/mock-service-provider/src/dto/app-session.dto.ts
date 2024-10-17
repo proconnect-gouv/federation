@@ -1,10 +1,13 @@
 /* istanbul ignore file */
 
 // Declarative code
-import { IsOptional, IsString } from 'class-validator';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+
+import { AppMode } from '../enums';
 
 export class AppSession {
   @IsOptional()
   @IsString()
+  @IsEnum(AppMode)
   readonly mode?: string;
 }

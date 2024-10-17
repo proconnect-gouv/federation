@@ -34,7 +34,7 @@ import {
 } from '@fc/session';
 
 import { AccessTokenParamsDTO, AppConfig, AppSession, DataApi } from '../dto';
-import { FormMode, MockServiceProviderRoutes } from '../enums';
+import { AppMode, MockServiceProviderRoutes } from '../enums';
 import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
@@ -74,7 +74,7 @@ export class MockServiceProviderController {
   ) {
     // Get App mode
     const { mode } = sessionApp.get() || {};
-    const isAdvancedMode = mode === FormMode.ADVANCED;
+    const isAdvancedMode = mode === AppMode.ADVANCED;
 
     const { defaultAcrValue } = this.config.get<OidcAcrConfig>('OidcAcr');
 
