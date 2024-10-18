@@ -14,7 +14,7 @@ import { SessionService } from '@fc/session';
 import { MockServiceProviderRoutes } from '../enums';
 
 @Injectable()
-export class LogoutRedirectInterceptor implements NestInterceptor {
+export class AuthRedirectInterceptor implements NestInterceptor {
   constructor(private readonly session: SessionService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {

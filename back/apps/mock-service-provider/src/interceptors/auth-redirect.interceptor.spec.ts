@@ -9,10 +9,10 @@ import { SessionService } from '@fc/session';
 import { getSessionServiceMock } from '@mocks/session';
 
 import { MockServiceProviderRoutes } from '../enums';
-import { LogoutRedirectInterceptor } from '.';
+import { AuthRedirectInterceptor } from '.';
 
-describe('LogoutRedirectInterceptor', () => {
-  let interceptor: LogoutRedirectInterceptor;
+describe('AuthRedirectInterceptor', () => {
+  let interceptor: AuthRedirectInterceptor;
 
   const httpContextMock = {
     getResponse: jest.fn(),
@@ -42,15 +42,13 @@ describe('LogoutRedirectInterceptor', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [LogoutRedirectInterceptor, SessionService],
+      providers: [AuthRedirectInterceptor, SessionService],
     })
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
       .compile();
 
-    interceptor = module.get<LogoutRedirectInterceptor>(
-      LogoutRedirectInterceptor,
-    );
+    interceptor = module.get<AuthRedirectInterceptor>(AuthRedirectInterceptor);
 
     jest.resetAllMocks();
     httpContextMock.getResponse.mockReturnValue(resMock);

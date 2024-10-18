@@ -18,7 +18,7 @@ import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
 } from '../exceptions';
-import { LogoutRedirectInterceptor } from '../interceptors';
+import { AuthRedirectInterceptor } from '../interceptors';
 import { MockServiceProviderService } from '../services';
 import { MockServiceProviderController } from './mock-service-provider.controller';
 
@@ -99,7 +99,7 @@ describe('MockServiceProviderController', () => {
     getData: jest.fn(),
   };
 
-  const logoutRedirectInterceptorMock = {
+  const authRedirectInterceptorMock = {
     intercept: jest.fn(),
   };
 
@@ -168,7 +168,7 @@ describe('MockServiceProviderController', () => {
         IdentityProviderAdapterEnvService,
         MockServiceProviderService,
         SessionService,
-        LogoutRedirectInterceptor,
+        AuthRedirectInterceptor,
       ],
     })
       .overrideProvider(ConfigService)
@@ -183,8 +183,8 @@ describe('MockServiceProviderController', () => {
       .useValue(mockServiceProviderServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(LogoutRedirectInterceptor)
-      .useValue(logoutRedirectInterceptorMock)
+      .overrideProvider(AuthRedirectInterceptor)
+      .useValue(authRedirectInterceptorMock)
       .compile();
 
     controller = module.get<MockServiceProviderController>(

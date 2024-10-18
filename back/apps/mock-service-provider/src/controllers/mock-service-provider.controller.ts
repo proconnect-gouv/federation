@@ -39,7 +39,7 @@ import {
   MockServiceProviderTokenRevocationException,
   MockServiceProviderUserinfoException,
 } from '../exceptions';
-import { LogoutRedirectInterceptor } from '../interceptors';
+import { AuthRedirectInterceptor } from '../interceptors';
 import { MockServiceProviderService } from '../services';
 
 @Controller()
@@ -55,7 +55,7 @@ export class MockServiceProviderController {
   ) {}
 
   @Get(MockServiceProviderRoutes.INDEX)
-  @UseInterceptors(LogoutRedirectInterceptor)
+  @UseInterceptors(AuthRedirectInterceptor)
   @Redirect(MockServiceProviderRoutes.VERIFY)
   index() {}
 
@@ -102,7 +102,7 @@ export class MockServiceProviderController {
   }
 
   @Get(MockServiceProviderRoutes.VERIFY)
-  @UseInterceptors(LogoutRedirectInterceptor)
+  @UseInterceptors(AuthRedirectInterceptor)
   @Render('login-callback')
   getVerify(
     /**
@@ -278,7 +278,7 @@ export class MockServiceProviderController {
   }
 
   @Post(MockServiceProviderRoutes.USERINFO)
-  @UseInterceptors(LogoutRedirectInterceptor)
+  @UseInterceptors(AuthRedirectInterceptor)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @Render('login-callback')
   async retrieveUserinfo(
@@ -333,7 +333,7 @@ export class MockServiceProviderController {
   }
 
   @Get(MockServiceProviderRoutes.DATA)
-  @UseInterceptors(LogoutRedirectInterceptor)
+  @UseInterceptors(AuthRedirectInterceptor)
   async getAllData(
     @Res() res,
     @Session('OidcClient')
