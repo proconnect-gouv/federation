@@ -58,6 +58,10 @@ class SmtpOptions {
 
   @IsBoolean()
   readonly secure: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  readonly rejectUnauthorized?: boolean;
 }
 
 export class MailerConfig {
