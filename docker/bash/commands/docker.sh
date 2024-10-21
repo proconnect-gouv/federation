@@ -31,6 +31,11 @@ _halt() {
   $DOCKER_COMPOSE stop
 }
 
+_compose() {
+  cd ${WORKING_DIR}
+  $DOCKER_COMPOSE "${@}"
+}
+
 _exec() {
   app=${1:-empty}
   [ $# -gt 0 ] && shift
