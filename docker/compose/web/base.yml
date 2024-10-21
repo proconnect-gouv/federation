@@ -21,4 +21,5 @@ services:
     networks:
       - public
     tty: true
+    init: true
     command: "pm2 logs"

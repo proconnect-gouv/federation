@@ -31,6 +31,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsp2-high:
@@ -56,6 +57,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsp3-high:
@@ -81,6 +83,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsp5-high:
@@ -106,6 +109,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsp6-high:
@@ -131,6 +135,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip1-high:
@@ -154,6 +159,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip2-high:
@@ -177,6 +183,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip6-high:
@@ -200,6 +207,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip13-high:
@@ -223,6 +231,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip14-high:
@@ -246,6 +255,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip15-high:
@@ -269,6 +279,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip16-high:
@@ -292,6 +303,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip17-high:
@@ -315,6 +327,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip18-high:
@@ -338,6 +351,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip19-high:
@@ -361,6 +375,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip20-high:
@@ -384,6 +399,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   ####################
@@ -406,6 +422,7 @@ services:
       - "${COMPOSE_DIR}/fcp-high/.env/dpp1-high.env"
     networks:
       - public
+    init: true
     command: "pm2 logs"
 
   dpp2-high:
@@ -424,4 +441,5 @@ services:
       - "${COMPOSE_DIR}/fcp-high/.env/dpp2-high.env"
     networks:
       - public
+    init: true
     command: "pm2 logs"

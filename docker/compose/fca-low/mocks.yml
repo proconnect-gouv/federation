@@ -28,6 +28,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsa2-low:
@@ -51,6 +52,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsa3-low:
@@ -74,6 +76,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsa4-low:
@@ -97,6 +100,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsa5-low:
@@ -120,6 +124,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   ####################
@@ -147,6 +152,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fia2-low:
@@ -170,6 +176,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fia4-low:
@@ -193,6 +200,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fia5-low:
@@ -216,6 +224,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fia8-low:
@@ -239,6 +248,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   moncomptepro:
@@ -262,6 +272,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   ####################
@@ -284,6 +295,7 @@ services:
       - "${COMPOSE_DIR}/fca-low/.env/dpa1-low.env"
     networks:
       - public
+    init: true
     command: "pm2 logs"
 
   dpa2-low:
@@ -302,4 +314,5 @@ services:
       - "${COMPOSE_DIR}/fca-low/.env/dpa2-low.env"
     networks:
       - public
+    init: true
     command: "pm2 logs"

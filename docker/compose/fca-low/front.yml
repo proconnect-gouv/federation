@@ -33,4 +33,5 @@ services:
       - "EVT_LOG_FILE=/var/log/app/fca-low-front.log"
     networks:
       - fc
+    init: true
     command: "pm2 logs"

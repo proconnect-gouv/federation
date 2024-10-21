@@ -33,4 +33,5 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"

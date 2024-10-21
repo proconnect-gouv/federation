@@ -25,4 +25,5 @@ services:
     networks:
       - fc
       - data
+    init: true
     command: "pm2 logs"

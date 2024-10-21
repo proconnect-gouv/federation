@@ -29,4 +29,5 @@ services:
     networks:
       - eidas
       - public
+    init: true
     command: "tail -f /dev/null"
