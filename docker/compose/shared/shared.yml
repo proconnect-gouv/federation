@@ -392,6 +392,7 @@ services:
       - "CryptographyBroker_QUEUE=crypto"
     networks:
       - data
+    init: true
     command: "pm2 logs"
 
   ####################
@@ -430,6 +431,7 @@ services:
       - "${COMPOSE_DIR}/shared/.env/mock-rnipp.env"
     networks:
       - public
+    init: true
     command: "pm2 logs"
 
   ####################
@@ -507,6 +509,7 @@ services:
       - "GeoIpMaxmind_DATABASE_PATH=/var/geoipdb/GeoLite2-City.mmdb"
     networks:
       - data
+    init: true
     command: "pm2 logs"
 
   csmr-account-legacy:
@@ -540,6 +543,7 @@ services:
       - "AccountBroker_QUEUE=account-legacy"
     networks:
       - data
+    init: true
     command: "pm2 logs"
 
   csmr-account-high:
@@ -573,6 +577,7 @@ services:
       - "AccountBroker_QUEUE=account-high"
     networks:
       - data
+    init: true
     command: "pm2 logs"
 
   csmr-fraud:
@@ -593,6 +598,7 @@ services:
       - "${COMPOSE_DIR}/shared/.env/fraud.env"
     networks:
       - data
+    init: true
     command: "pm2 logs"
 
   csmr-user-preferences-high:
@@ -616,6 +622,7 @@ services:
     tty: true
     networks:
       - data
+    init: true
     command: "pm2 logs"
 
 ####################

@@ -31,4 +31,5 @@ services:
       - public
       - data
       - eidas
+    init: true
     command: "pm2 logs"

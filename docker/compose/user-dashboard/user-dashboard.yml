@@ -31,6 +31,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   ud-front:
@@ -50,4 +51,5 @@ services:
       - "${COMPOSE_DIR}/user-dashboard/.env/ud-front.env"
     networks:
       - public
+    init: true
     command: "pm2 logs"

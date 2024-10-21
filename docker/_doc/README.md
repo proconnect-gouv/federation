@@ -105,6 +105,7 @@ services:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
     networks:
       - public
+    init: true
     command: "pm2 logs"
 ```
 

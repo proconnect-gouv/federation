@@ -26,6 +26,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsp2-low:
@@ -49,6 +50,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsp3-low:
@@ -72,6 +74,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fsp4-low:
@@ -95,6 +98,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   ####################
@@ -123,6 +127,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip2-low:
@@ -147,6 +152,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip3-low:
@@ -171,6 +177,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip4-low:
@@ -194,6 +201,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip8-low:
@@ -217,6 +225,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   fip9-low:
@@ -240,6 +249,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   aidants-connect-mock:
@@ -263,6 +273,7 @@ services:
     networks:
       - public
       - data
+    init: true
     command: "pm2 logs"
 
   ####################
@@ -285,6 +296,7 @@ services:
       - "${COMPOSE_DIR}/fcp-low/.env/dpp1-low.env"
     networks:
       - public
+    init: true
     command: "pm2 logs"
 
   dpp2-low:
@@ -303,4 +315,5 @@ services:
       - "${COMPOSE_DIR}/fcp-low/.env/dpp2-low.env"
     networks:
       - public
+    init: true
     command: "pm2 logs"
