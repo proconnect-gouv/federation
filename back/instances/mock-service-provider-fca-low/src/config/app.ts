@@ -20,4 +20,5 @@ export default {
   idpId: env.string('IDP_ID'),
   dataApis: env.json('DATA_APIS'),
   environment: env.string('ENVIRONMENT'),
+  allowRevokeToken: true,
 } as AppConfig;

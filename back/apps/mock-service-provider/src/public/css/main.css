@@ -29,9 +29,27 @@ section.connect {
   height: 22rem;
 }
 
+#modeForm {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+#modeForm .form-check {
+  display: inline-flex;
+  align-items: center;
+}
+
+#modeForm .form-check-input {
+  margin-top: 0;
+}
+
+#modeForm .form-check-label {
+  padding-left: 0.5rem;
+  font-size: 1.6rem;
+}
+
 #scopes .claim-input-wrapper,
-#scopes .scope-input-wrapper,
-#scopes .prompt-input-wrapper {
+#scopes .scope-input-wrapper {
   display: inline-block;
   padding: 6px;
   margin: 3px;
@@ -48,7 +66,7 @@ select {
 
 #call-authorize-button {
   background-image: url('/img/FCboutons-10.svg');
-  width: 234px;
+  width: 232px;
   height: 62px;
   display: inline-block;
   vertical-align: top;
