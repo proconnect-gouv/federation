@@ -18,6 +18,7 @@ import {
 } from '@nestjs/common';
 
 import { FSA, getTransformed, PartialExcept } from '@fc/common';
+import { CsmrFraudClientService } from '@fc/csmr-fraud-client';
 import { CsrfToken, CsrfTokenGuard } from '@fc/csrf';
 import { I18nService } from '@fc/i18n';
 import { IOidcIdentity, PivotIdentityDto } from '@fc/oidc';
@@ -59,6 +60,7 @@ export class UserDashboardController {
   constructor(
     private readonly tracking: TrackingService,
     private readonly tracks: TracksService,
+    private readonly fraud: CsmrFraudClientService,
     private readonly userPreferences: UserPreferencesService,
     private readonly userDashboard: UserDashboardService,
     private readonly i18n: I18nService,
@@ -262,7 +264,7 @@ export class UserDashboardController {
   @Post(UserDashboardBackRoutes.FRAUD_FORM)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @UseGuards(CsrfTokenGuard)
-  async sendFraudForm(
+  async processFraudForm(
     @Res() res,
     @Body() body: FraudFormValuesDto,
     @Session('OidcClient')
@@ -281,7 +283,7 @@ export class UserDashboardController {
       FILTERED_OPTIONS,
     );
 
-    await this.userDashboard.sendFraudForm(identityFiltered, body);
+    await this.fraud.processFraudCase(identityFiltered, body);
 
     return res.status(HttpStatus.OK).send();
   }

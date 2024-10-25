@@ -585,6 +585,7 @@ services:
     working_dir: /var/www/app
     depends_on:
       - "broker"
+      - "maildev"
     volumes:
       - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
       - "${VOLUMES_DIR}/app:/opt/scripts"
@@ -593,7 +594,7 @@ services:
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
-      - "${COMPOSE_DIR}/shared/.env/fraud.env"
+      - "${COMPOSE_DIR}/shared/.env/csmr-fraud.env"
     networks:
       - data
     init: true

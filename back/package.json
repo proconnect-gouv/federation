@@ -263,6 +263,7 @@
       "^@fc/csmr-user-preferences(|/.*)$": "<rootDir>/apps/csmr-user-preferences/src$1",
       "^@fc/data-provider-core-auth(|/.*)$": "<rootDir>/libs/data-provider-core-auth/src/$1",
       "^@fc/tracks(|/.*)$": "<rootDir>/libs/tracks/src/$1",
+      "^@fc/csmr-fraud-client(|/.*)$": "<rootDir>/libs/csmr-fraud-client/src/$1",
       "^@fc/hybridge-http-proxy(|/.*)$": "<rootDir>/libs/hybridge-http-proxy/src$1",
       "^@fc/user-preferences(|/.*)$": "<rootDir>/libs/user-preferences/src$1",
       "^@fc/csmr-tracks(|/.*)$": "<rootDir>/apps/csmr-tracks/src/$1",

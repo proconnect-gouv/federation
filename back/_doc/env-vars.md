@@ -274,9 +274,17 @@
 |---|---|
 | APP_NAME | string |
 | App_ENVIRONMENT | string |
+| App_FRAUD_EMAIL_ADDRESS | string |
+| App_FRAUD_EMAIL_RECIPIENT | string |
 | FraudBroker_QUEUE | string |
 | FraudBroker_URLS | json |
 | Logger_THRESHOLD | string |
+| Mailer_HOST | string |
+| Mailer_PORT | number |
+| Mailer_REJECT_UNAUTHORIZED | boolean |
+| Mailer_SECURE | boolean |
+| Mailer_TEMPLATES_PATHS | json |
+| Mailer_TRANSPORT | string |
 | REQUEST_TIMEOUT | string |
 
 ### csmr-hsm-high
@@ -874,6 +882,8 @@
 | App_HTTPS_SERVER_KEY | file |
 | App_IDP_ID | string |
 | FQDN | string |
+| FraudBroker_QUEUE | string |
+| FraudBroker_URLS | json |
 | IdentityProviderAdapterEnv_CLIENT_ID | string |
 | IdentityProviderAdapterEnv_CLIENT_SECRET | string |
 | IdentityProviderAdapterEnv_CLIENT_SECRET_CIPHER_PASS | string |
@@ -907,8 +917,6 @@
 | OidcClient_POST_LOGOUT_REDIRECT_URI | string |
 | OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
-| Otrs_EMAIL | string |
-| Otrs_RECIPIENT_NAME | string |
 | REQUEST_TIMEOUT | string |
 | Redis_CACERT | file |
 | Redis_DB | number |
