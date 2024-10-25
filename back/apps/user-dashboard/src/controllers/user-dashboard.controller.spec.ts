@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { getTransformed, IPaginationResult } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CsmrFraudClientService } from '@fc/csmr-fraud-client';
 import { CsrfTokenGuard } from '@fc/csrf';
 import { I18nService } from '@fc/i18n';
 import { TrackingService } from '@fc/tracking';
@@ -80,6 +81,10 @@ describe('UserDashboardController', () => {
     getList: jest.fn(),
   };
 
+  const fraudServiceMock = {
+    processFraudCase: jest.fn(),
+  };
+
   const userPreferencesMock = {
     getUserPreferencesList: jest.fn(),
     setUserPreferencesList: jest.fn(),
@@ -99,7 +104,7 @@ describe('UserDashboardController', () => {
     allowFutureIdp: false,
   };
 
-  const sendFraudFormBodyMock = {
+  const processFraudFormBodyMock = {
     contactEmail: 'email@mock.fr',
     idpEmail: 'email@idp.fr',
     authenticationEventId: '1a344d7d-fb1f-432f-99df-01b374c93687',
@@ -111,7 +116,6 @@ describe('UserDashboardController', () => {
   const userDashboardServiceMock = {
     sendMail: jest.fn(),
     formatUserPreferenceChangeTrackLog: jest.fn(),
-    sendFraudForm: jest.fn(),
   };
 
   const formatUserPreferenceChangeTrackLogReturnValue = {
@@ -138,6 +142,7 @@ describe('UserDashboardController', () => {
       providers: [
         ConfigService,
         TracksService,
+        CsmrFraudClientService,
         TrackingService,
         UserPreferencesService,
         UserDashboardService,
@@ -150,6 +155,8 @@ describe('UserDashboardController', () => {
       .useValue(configMock)
       .overrideProvider(TracksService)
       .useValue(tracksServiceMock)
+      .overrideProvider(CsmrFraudClientService)
+      .useValue(fraudServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingService)
       .overrideProvider(UserPreferencesService)
@@ -776,12 +783,12 @@ describe('UserDashboardController', () => {
     });
   });
 
-  describe('sendFraudForm', () => {
+  describe('processFraudForm', () => {
     it('should fetch session', async () => {
       // When
-      await controller.sendFraudForm(
+      await controller.processFraudForm(
         resMock,
-        sendFraudFormBodyMock,
+        processFraudFormBodyMock,
         sessionServiceMock,
       );
       // Then
@@ -794,9 +801,9 @@ describe('UserDashboardController', () => {
       sessionServiceMock.get.mockReturnValueOnce(undefined);
 
       // When
-      await controller.sendFraudForm(
+      await controller.processFraudForm(
         resMock,
-        sendFraudFormBodyMock,
+        processFraudFormBodyMock,
         sessionServiceMock,
       );
       // Then
@@ -806,27 +813,27 @@ describe('UserDashboardController', () => {
       expect(resMock.send).toHaveBeenCalledWith({ code: 'INVALID_SESSION' });
     });
 
-    it('should call userDashboard.sendFraudForm', async () => {
+    it('should call csmrFraudClient.processFraudCase', async () => {
       // When
-      await controller.sendFraudForm(
+      await controller.processFraudForm(
         resMock,
-        sendFraudFormBodyMock,
+        processFraudFormBodyMock,
         sessionServiceMock,
       );
 
       // Then
-      expect(userDashboardServiceMock.sendFraudForm).toHaveBeenCalledTimes(1);
-      expect(userDashboardServiceMock.sendFraudForm).toHaveBeenCalledWith(
+      expect(fraudServiceMock.processFraudCase).toHaveBeenCalledTimes(1);
+      expect(fraudServiceMock.processFraudCase).toHaveBeenCalledWith(
         identityWithoutIdpIdMock,
-        sendFraudFormBodyMock,
+        processFraudFormBodyMock,
       );
     });
 
     it('should return a 200', async () => {
       // When
-      await controller.sendFraudForm(
+      await controller.processFraudForm(
         resMock,
-        sendFraudFormBodyMock,
+        processFraudFormBodyMock,
         sessionServiceMock,
       );
 

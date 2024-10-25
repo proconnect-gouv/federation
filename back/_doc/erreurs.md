@@ -239,3 +239,7 @@
 |---|---|---|---|---|---|
 | [Y520001](../libs/oidc-acr/src/exceptions/oidc-acr-no-sso-allowed-acr-found.exception.ts "OidcAcrNoSsoAllowedAcrFoundException") | 500 | No SSO allowed ACR found | Une connexion SSO a échouée car le niveau ACR n&#39;a pas pu être déterminé | server_error | authentication aborted due to a technical error on the authorization server |
 
+| Code d'erreur | Code HTTP | Message utilisateur | Description | Erreur | Erreur Description |
+|---|---|---|---|---|---|
+| [Y530001](../libs/csmr-fraud-client/src/exceptions/csmr-fraud-client-response.exception.ts "CsmrFraudClientResponseException") | 500 | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | Une erreur s&#39;est produite lors du traitement du formulaire usurpation via le broker | server_error | authentication aborted due to a technical error on the authorization server |
+

@@ -78,8 +78,9 @@ export class MailerConfig {
   @ValidateIf(({ transport }) => transport === 'smtp')
   readonly options: SmtpOptions;
 
+  @IsOptional()
   @IsObject()
   @ValidateNested()
   @Type(() => MailFrom)
-  readonly from: MailFrom;
+  readonly from?: MailFrom;
 }

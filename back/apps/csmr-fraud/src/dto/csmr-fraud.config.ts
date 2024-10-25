@@ -4,9 +4,11 @@
 import { Type } from 'class-transformer';
 import { IsObject, ValidateNested } from 'class-validator';
 
-import { AppRmqConfig } from '@fc/app';
 import { LoggerConfig } from '@fc/logger';
+import { MailerConfig } from '@fc/mailer';
 import { RabbitmqConfig } from '@fc/rabbitmq';
+
+import { AppRmqConfig } from './app-rmq-config.dto';
 
 export class CsmrFraudConfig {
   @IsObject()
@@ -23,4 +25,9 @@ export class CsmrFraudConfig {
   @ValidateNested()
   @Type(() => RabbitmqConfig)
   readonly FraudBroker: RabbitmqConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => MailerConfig)
+  readonly Mailer: MailerConfig;
 }

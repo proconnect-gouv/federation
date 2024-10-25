@@ -885,6 +885,15 @@
         "tsConfigPath": "libs/tracks/tsconfig.lib.json"
       }
     },
+    "csmr-fraud-client": {
+      "type": "library",
+      "root": "libs/csmr-fraud-client",
+      "entryFile": "index",
+      "sourceRoot": "libs/csmr-fraud-client/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/csmr-fraud-client/tsconfig.lib.json"
+      }
+    },
     "hybridge-http-proxy": {
       "type": "library",
       "root": "libs/hybridge-http-proxy",
