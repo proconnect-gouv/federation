@@ -142,6 +142,7 @@ describe('OidcClient Controller', () => {
   const trackingServiceMock: TrackingService = {
     track: jest.fn(),
     TrackedEventsMap: {
+      FC_FQDN_MISSMATCH: Symbol('FC_FQDN_MISSMATCH'),
       IDP_CALLEDBACK: {},
     },
   } as unknown as TrackingService;
@@ -169,6 +170,7 @@ describe('OidcClient Controller', () => {
   const coreFcaFqdnServiceMock = {
     getFqdnFromEmail: jest.fn(),
     getFqdnConfigFromEmail: jest.fn(),
+    isAllowedIdpForEmail: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -635,6 +637,18 @@ describe('OidcClient Controller', () => {
       expect(validateIdentityMock).toHaveBeenCalledWith(
         idpIdMock,
         identityMock,
+      );
+    });
+
+    it('should track fqdn missmatch if detected', async () => {
+      // When
+      await controller.getOidcCallback(req, res, sessionServiceMock);
+
+      // Then
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(4);
+      expect(trackingServiceMock.track).toHaveBeenCalledWith(
+        trackingServiceMock.TrackedEventsMap.FC_FQDN_MISSMATCH,
+        { req },
       );
     });
 

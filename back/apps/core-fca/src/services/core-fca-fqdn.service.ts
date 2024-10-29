@@ -77,6 +77,22 @@ export class CoreFcaFqdnService {
     );
   }
 
+  async isAllowedIdpForEmail(idpId: string, email: string): Promise<boolean> {
+    const fqdn = this.getFqdnFromEmail(email);
+    const existingFqdnToProvider =
+      await this.fqdnToIdpAdapterMongo.getIdpsByFqdn(fqdn);
+
+    if (existingFqdnToProvider.length > 0) {
+      return existingFqdnToProvider.some(
+        ({ identityProvider }) => identityProvider === idpId,
+      );
+    }
+
+    // if fqdnToProvider not exists, the only idp allowed is the default one
+    const { defaultIdpId } = this.config.get<AppConfig>('App');
+    return defaultIdpId === idpId;
+  }
+
   private addDefaultIdp(
     acceptsDefaultIdp: boolean,
     identityProvidersSet: Set<string>,
