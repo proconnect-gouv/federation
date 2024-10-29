@@ -19,7 +19,8 @@ describe('CoreFcaFqdnService', () => {
   const configServiceMock = getConfigMock();
 
   beforeEach(async () => {
-    jest.clearAllMocks();
+    jest.resetAllMocks();
+    jest.restoreAllMocks();
 
     const app: TestingModule = await Test.createTestingModule({
       providers: [
@@ -210,6 +211,117 @@ describe('CoreFcaFqdnService', () => {
     });
   });
 
+  describe('isAllowedIdpForEmail', () => {
+    it('should allow a fqdn listed in one of the FqdnToProvider of an idp', async () => {
+      // Given
+      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+        { identityProvider: 'idp1' },
+      ]);
+
+      // When
+      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+        'idp1',
+        'hogwards.uk',
+      );
+
+      // Then
+      expect(isAllowedIdpForEmail).toEqual(true);
+    });
+
+    it('should not allow a fqdn listed in one of the FqdnToProvider of only others idps', async () => {
+      // Given
+      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+        { identityProvider: 'idp2' },
+        { identityProvider: 'idp3' },
+      ]);
+
+      // When
+      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+        'idp1',
+        'hogwards.uk',
+      );
+
+      // Then
+      expect(isAllowedIdpForEmail).toEqual(false);
+    });
+
+    it('should allow an unknown fqdn when using the default identity provider', async () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
+
+      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
+
+      // When
+      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+        'default-idp',
+        'hogwards.uk',
+      );
+
+      // Then
+      expect(isAllowedIdpForEmail).toEqual(true);
+    });
+
+    it('should not allow an unknown domain when not using the default identity provider', async () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
+
+      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([]);
+
+      // When
+      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+        'not-the-default-idp',
+        'hogwards.uk',
+      );
+
+      // Then
+      expect(isAllowedIdpForEmail).toEqual(false);
+    });
+
+    it('should allow a fqdn listed in one of the FqdnToProvider of the default identity provider', async () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
+
+      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+        { identityProvider: 'default-idp' },
+      ]);
+
+      // When
+      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+        'default-idp',
+        'beauxbatons.uk',
+      );
+
+      // Then
+      expect(isAllowedIdpForEmail).toEqual(true);
+    });
+
+    it('should not allow a fqdn listed in one of the FqdnToProvider even with a default identity provider activated', async () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        defaultIdpId: 'default-idp',
+      });
+
+      fqdnToIdpAdapterMongoMock.getIdpsByFqdn.mockResolvedValueOnce([
+        { identityProvider: 'another-idp' },
+      ]);
+
+      // When
+      const isAllowedIdpForEmail = await service.isAllowedIdpForEmail(
+        'default-idp',
+        'beauxbatons.uk',
+      );
+
+      // Then
+      expect(isAllowedIdpForEmail).toEqual(false);
+    });
+  });
+
   describe('addDefaultIdp', () => {
     it('should return idps provider list with default idp when there is more than one idp', () => {
       // Given
@@ -267,15 +379,15 @@ describe('CoreFcaFqdnService', () => {
         authorizedFqdns: ['isengard.maia'],
       });
     });
-  });
 
-  it('should return nothing when the sp authorized fqdns config is empty', () => {
-    // Given
-    configServiceMock.get.mockReturnValueOnce({
-      spAuthorizedFqdnsConfigs: [],
+    it('should return nothing when the sp authorized fqdns config is empty', () => {
+      // Given
+      configServiceMock.get.mockReturnValueOnce({
+        spAuthorizedFqdnsConfigs: [],
+      });
+
+      // When
+      expect(service.getSpAuthorizedFqdnsConfig('sp1')).toStrictEqual(null);
     });
-
-    // When
-    expect(service.getSpAuthorizedFqdnsConfig('sp1')).toStrictEqual(null);
   });
 });

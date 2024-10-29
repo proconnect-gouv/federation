@@ -300,6 +300,19 @@ export class OidcClientController {
 
     await this.validateIdentity(idpId, identity);
 
+    const isAllowedIdpForEmail = await this.fqdnService.isAllowedIdpForEmail(
+      idpId,
+      identity.email,
+    );
+    if (!isAllowedIdpForEmail) {
+      const fqdn = this.fqdnService.getFqdnFromEmail(identity.email);
+      this.logger.warning(
+        `Identity from "${idpId}" using "***@${fqdn}" is not allowed`,
+      );
+      const { FC_FQDN_MISSMATCH } = this.tracking.TrackedEventsMap;
+      await this.tracking.track(FC_FQDN_MISSMATCH, { req });
+    }
+
     const identityExchange: OidcSession = cloneDeep({
       amr,
       idpAccessToken: accessToken,
