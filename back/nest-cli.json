@@ -342,7 +342,10 @@
       "entryFile": "main",
       "sourceRoot": "instances/csmr-fraud-instance/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/csmr-fraud-instance/tsconfig.app.json"
+        "tsConfigPath": "instances/csmr-fraud-instance/tsconfig.app.json",
+        "assets": [
+          "../../../instances/csmr-fraud-instance/**/*.ejs"
+        ]
       }
     },
     "rnipp": {
