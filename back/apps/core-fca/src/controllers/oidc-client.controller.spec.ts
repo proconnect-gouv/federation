@@ -90,6 +90,9 @@ describe('OidcClient Controller', () => {
 
   const trackingMock = {
     track: jest.fn(),
+    TrackedEventsMap: {
+      FC_REQUESTED_IDP_USERINFO: Symbol('FC_REQUESTED_IDP_USERINFO'),
+    },
   };
 
   const configMock = {
@@ -675,6 +678,23 @@ describe('OidcClient Controller', () => {
       // assert
       expect(sessionServiceMock.set).toHaveBeenCalledTimes(1);
       expect(sessionServiceMock.set).toHaveBeenCalledWith(clonedIdentityMock);
+    });
+
+    it('should track empty email.', async () => {
+      // Given
+      oidcClientServiceMock.getUserInfosFromProvider
+        .mockReset()
+        .mockReturnValueOnce({});
+
+      // When
+      await controller.getOidcCallback(req, res, sessionServiceMock);
+
+      // assert
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(3);
+      expect(trackingServiceMock.track).toHaveBeenCalledWith(
+        trackingServiceMock.TrackedEventsMap.FC_REQUESTED_IDP_USERINFO,
+        { req, fqdn: undefined },
+      );
     });
 
     it('should redirect user after token and userinfo received and saved', async () => {
