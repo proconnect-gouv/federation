@@ -83,6 +83,7 @@ describe('CoreFcaController', () => {
     getFqdnConfigFromEmail: jest.fn(),
     getFqdnFromEmail: jest.fn(),
     getSpAuthorizedFqdnsConfig: jest.fn(),
+    isAllowedIdpForEmail: jest.fn(),
   };
   const coreFcaVerifyServiceMock = {
     handleVerifyIdentity: jest.fn(),

@@ -690,7 +690,7 @@ describe('OidcClient Controller', () => {
       await controller.getOidcCallback(req, res, sessionServiceMock);
 
       // assert
-      expect(trackingServiceMock.track).toHaveBeenCalledTimes(3);
+      expect(trackingServiceMock.track).toHaveBeenCalledTimes(4);
       expect(trackingServiceMock.track).toHaveBeenCalledWith(
         trackingServiceMock.TrackedEventsMap.FC_REQUESTED_IDP_USERINFO,
         { req, fqdn: undefined },
