@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
+import { throwException } from '@fc/exceptions/helpers';
 import {
   OidcCtx,
-  OidcProviderErrorService,
   OidcProviderMiddlewarePattern,
   OidcProviderMiddlewareStep,
   OidcProviderRoutes,
@@ -22,7 +22,6 @@ export class OidcProviderMiddlewareService {
     private readonly oidcProvider: OidcProviderService,
     private readonly scenarios: ScenariosService,
     private readonly session: SessionService,
-    private readonly oidcErrorService: OidcProviderErrorService,
   ) {}
 
   onModuleInit() {
@@ -50,10 +49,7 @@ export class OidcProviderMiddlewareService {
         sessionId,
       );
     } catch (error) {
-      return await this.oidcErrorService.throwError(
-        ctx,
-        new SessionNotFoundException('App'),
-      );
+      return await throwException(new SessionNotFoundException('App'));
     }
 
     const {

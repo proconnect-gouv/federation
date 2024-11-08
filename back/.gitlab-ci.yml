@@ -28,6 +28,8 @@ back:
     - git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
     - yarn lint
     - yarn prettier
+    - yarn generate-oidc-provider-exceptions
+    - git --no-pager diff --exit-code || (echo "💥 oidc-provider runtime exceptions diff detected 💥" && exit 1)
     - yarn test --coverage
     - ../coverage.sh
     # Quality folder
