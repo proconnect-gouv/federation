@@ -60,7 +60,8 @@
     "doc:env": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/config/src/cli/export-env",
     "doc": "yarn doc:exceptions && yarn doc:env",
     "generate-insee:country": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-country",
-    "generate-insee:city": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-city"
+    "generate-insee:city": "ts-node --dir . -r tsconfig-paths/register --project tsconfig.json libs/cog/src/cli/generate-city",
+    "generate-oidc-provider-exceptions": "./libs/oidc-provider/src/cli/scaffold-exceptions/run.sh"
   },
   "resolutions": {
     "cookie-signature": "1.2.0",
@@ -230,7 +231,6 @@
       "^@fc/config(|/.*)$": "<rootDir>/libs/config/src$1",
       "^@mocks/config(|/.*)$": "<rootDir>/libs/config/.mocks$1",
       "^@fc/exceptions-fcp(|/.*)$": "<rootDir>/libs/exceptions-fcp/src$1",
-      "^@fc/exceptions-deprecated(|/.*)$": "<rootDir>/libs/exceptions-deprecated/src$1",
       "^@fc/mongoose(|/.*)$": "<rootDir>/libs/mongoose/src$1",
       "^@fc/redis(|/.*)$": "<rootDir>/libs/redis/src$1",
       "^@mocks/redis(|/.*)$": "<rootDir>/libs/redis/.mocks$1",

@@ -80,7 +80,7 @@ export class AppConfig {
   @IsArray()
   readonly viewsPaths?: string[];
 
-  @IsIn([ApiContentType.HTML, ApiContentType.JSON])
+  @IsEnum(ApiContentType)
   readonly apiOutputContentType: string;
 
   @IsOptional()

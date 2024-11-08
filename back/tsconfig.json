@@ -73,8 +73,6 @@
       "@mocks/config/*": ["libs/config/.mocks/*"],
       "@fc/exceptions-fcp": ["libs/exceptions-fcp/src"],
       "@fc/exceptions-fcp/*": ["libs/exceptions-fcp/src/*"],
-      "@fc/exceptions-deprecated": ["libs/exceptions-deprecated/src"],
-      "@fc/exceptions-deprecated/*": ["libs/exceptions-deprecated/src/*"],
       "@fc/mongoose": ["libs/mongoose/src"],
       "@fc/mongoose/*": ["libs/mongoose/src/*"],
       "@fc/redis": ["libs/redis/src"],

@@ -10,6 +10,7 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsUrl,
   ValidateNested,
 } from 'class-validator';
 import {
@@ -826,4 +827,7 @@ export class OidcProviderConfig {
   @IsBoolean()
   @IsOptional()
   readonly isLocalhostAllowed?: boolean;
+
+  @IsUrl()
+  readonly errorUriBase?: string;
 }

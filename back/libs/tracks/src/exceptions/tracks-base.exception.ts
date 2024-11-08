@@ -1,8 +1,8 @@
 /* istanbul ignore file */
 
 // declarative file
-import { FcException } from '@fc/exceptions-deprecated';
+import { FcException } from '@fc/exceptions/exceptions';
 
 export class TracksBaseException extends FcException {
-  scope = 22;
+  static SCOPE = 22;
 }
