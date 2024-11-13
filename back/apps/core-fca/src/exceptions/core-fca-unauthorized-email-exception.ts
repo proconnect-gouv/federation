@@ -27,7 +27,7 @@ export class CoreFcaUnauthorizedEmailException extends CoreFcaBaseException {
   public title = 'Email non autorisé';
   public description =
     `Vous essayez de vous connecter à ${this.spName}.\n\n` +
-    `Réessayez en utilisant votre adresse email professionnelle :\n\n` +
+    `Réessayez en utilisant votre adresse email professionnelle :\n\n` +
     `✅ ${this.authorizedFqdns.join(', ')}\n` +
     `❌ gmail, yahoo, orange`;
   public displayContact = true;
