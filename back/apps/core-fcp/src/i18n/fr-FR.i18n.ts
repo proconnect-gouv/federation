@@ -101,8 +101,6 @@ export const frFR: I18nTranslationsMapType = {
   'CsmrHsm.exceptions.csmrHsmSign': ERROR_CONTACT_US,
 
   // csmr-tracks
-  'CsmrTracks.exceptions.csmrTracksAccountResponse':
-    'Impossible to fetch accountId',
   'CsmrTracks.exceptions.csmrTracksTransformTracksFailed':
     'Impossible to transform tracks',
   'CsmrTracks.exceptions.csmrTracksUnknownAction':
@@ -163,6 +161,10 @@ export const frFR: I18nTranslationsMapType = {
   'Cryptography.exceptions.lowEntropyArgument':
     'Entropy must be at least 32 Bytes for random bytes generation',
   'Cryptography.exceptions.passwordHashFailure': ERROR_CONTACT_US,
+
+  // csmr-account-client
+  'CsmrAccountClient.exceptions.csmrAccountResponse':
+    'Impossible to fetch accountId',
 
   // csrf
   'Csrf.exceptions.csrfBadToken':

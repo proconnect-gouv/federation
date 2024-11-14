@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 
 import { IPaginationOptions } from '@fc/common';
-import { CryptographyFcpService } from '@fc/cryptography-fcp';
+import { CsmrAccountClientService } from '@fc/csmr-account-client';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 import { TracksResults } from '@fc/tracks';
 
-import { CsmrTracksAccountService } from './csmr-tracks-account.service';
 import { CsmrTracksElasticService } from './csmr-tracks-elastic.service';
 import { CsmrTracksFormatterService } from './csmr-tracks-formatter.service';
 
@@ -16,17 +15,15 @@ export class CsmrTracksService {
   // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
-    private readonly account: CsmrTracksAccountService,
+    private readonly account: CsmrAccountClientService,
     private readonly elastic: CsmrTracksElasticService,
     private readonly formatter: CsmrTracksFormatterService,
-    private readonly cryptographyFcp: CryptographyFcpService,
   ) {}
   async getTracksForIdentity(
     identity: IOidcIdentity,
     options: IPaginationOptions,
   ): Promise<TracksResults> {
-    const identityHash = this.cryptographyFcp.computeIdentityHash(identity);
-    const accountIds = await this.account.getIdsWithIdentityHash(identityHash);
+    const accountIds = await this.account.getAccountIdsFromIdentity(identity);
 
     if (!accountIds.length) {
       this.logger.debug('No AccountId found');

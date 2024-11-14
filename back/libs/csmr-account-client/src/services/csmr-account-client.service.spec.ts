@@ -4,15 +4,17 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { AccountProtocol } from '@fc/microservices';
+import { IOidcIdentity } from '@fc/oidc';
 
-import { CsmrTracksAccountResponseException } from '../exceptions';
-import { CsmrTracksAccountService } from './csmr-tracks-account.service';
+import { CsmrAccountResponseException } from '../exceptions';
+import { CsmrAccountClientService } from './csmr-account-client.service';
 
 jest.mock('rxjs');
 
-describe('CsmrTracksAccountService', () => {
-  let service: CsmrTracksAccountService;
+describe('CsmrAccountClientService', () => {
+  let service: CsmrAccountClientService;
 
   const lastValueFromMock = jest.mocked(lastValueFrom);
 
@@ -22,6 +24,10 @@ describe('CsmrTracksAccountService', () => {
 
   const configMock = {
     get: jest.fn(),
+  };
+
+  const cryptographyFcpMock = {
+    computeIdentityHash: jest.fn(),
   };
 
   const brokerMockHigh = {
@@ -52,7 +58,7 @@ describe('CsmrTracksAccountService', () => {
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        CsmrTracksAccountService,
+        CsmrAccountClientService,
         ConfigService,
         {
           provide: 'AccountHighBroker',
@@ -62,15 +68,18 @@ describe('CsmrTracksAccountService', () => {
           provide: 'AccountLegacyBroker',
           useValue: brokerMockLegacy,
         },
+        CryptographyFcpService,
       ],
     })
       .overrideProvider(ConfigService)
       .useValue(configMock)
+      .overrideProvider(CryptographyFcpService)
+      .useValue(cryptographyFcpMock)
       .compile();
 
-    service = module.get<CsmrTracksAccountService>(CsmrTracksAccountService);
+    service = module.get<CsmrAccountClientService>(CsmrAccountClientService);
 
-    configMock.get.mockReturnValueOnce(configDataMock);
+    configMock.get.mockReturnValue(configDataMock);
 
     brokerMockHigh.send.mockReturnValue(messageMock);
     brokerMockLegacy.send.mockReturnValue(messageMock);
@@ -83,77 +92,92 @@ describe('CsmrTracksAccountService', () => {
     expect(service).toBeDefined();
   });
 
-  describe('getIdsWithIdentityHash', () => {
+  describe('getAccountIdsFromIdentity', () => {
+    const identityMock = {} as unknown as IOidcIdentity;
     const identityHashMock = 'identityHashMock';
     const accountIdLegacyMock = 'accountIdLegacyMock';
     const accountIdHighMock = 'accountIdHighMock';
 
     beforeEach(() => {
       service['getAccountId'] = jest.fn();
+      cryptographyFcpMock.computeIdentityHash.mockReturnValue(identityHashMock);
+    });
+
+    it('should call cryptographyFcpMock.computeIdentityHash() with identity', async () => {
+      // When
+      await service.getAccountIdsFromIdentity(identityMock);
+
+      // Then
+      expect(cryptographyFcpMock.computeIdentityHash).toHaveBeenCalledTimes(1);
+      expect(cryptographyFcpMock.computeIdentityHash).toHaveBeenCalledWith(
+        identityMock,
+      );
     });
 
     it('should retrieves the accountId of the current user for fc legacy', async () => {
-      // given
+      // Given
       jest
         .mocked(service['getAccountId'])
         .mockResolvedValueOnce(accountIdLegacyMock)
         .mockResolvedValueOnce(accountIdHighMock);
 
-      // when
-      await service.getIdsWithIdentityHash(identityHashMock);
+      // When
+      await service.getAccountIdsFromIdentity(identityMock);
 
-      // then
+      // Then
       expect(service['getAccountId']).toHaveBeenCalledTimes(2);
       expect(service['getAccountId']).toHaveBeenNthCalledWith(
         1,
         brokerMockLegacy,
+        'AccountLegacyBroker',
         identityHashMock,
       );
     });
 
     it('should retrieves the accountId of the current user for fcp high', async () => {
-      // given
+      // Given
       jest
         .mocked(service['getAccountId'])
         .mockResolvedValueOnce(accountIdLegacyMock)
         .mockResolvedValueOnce(accountIdHighMock);
 
-      // when
-      await service.getIdsWithIdentityHash(identityHashMock);
+      // When
+      await service.getAccountIdsFromIdentity(identityMock);
 
-      // then
+      // Then
       expect(service['getAccountId']).toHaveBeenCalledTimes(2);
       expect(service['getAccountId']).toHaveBeenNthCalledWith(
         2,
         brokerMockHigh,
+        'AccountHighBroker',
         identityHashMock,
       );
     });
 
     it('should return all accounts id if defined', async () => {
-      // given
+      // Given
       jest
         .mocked(service['getAccountId'])
         .mockResolvedValueOnce(accountIdLegacyMock)
         .mockResolvedValueOnce(accountIdHighMock);
 
-      // when
-      const result = await service.getIdsWithIdentityHash(identityHashMock);
+      // When
+      const result = await service.getAccountIdsFromIdentity(identityMock);
 
-      // then
+      // Then
       expect(result).toStrictEqual([accountIdLegacyMock, accountIdHighMock]);
     });
 
     it('should return only the account ids that are defined', async () => {
-      // given
+      // Given
       jest
         .mocked(service['getAccountId'])
         .mockResolvedValueOnce(accountIdLegacyMock);
 
-      // when
-      const result = await service.getIdsWithIdentityHash(identityHashMock);
+      // When
+      const result = await service.getAccountIdsFromIdentity(identityMock);
 
-      // then
+      // Then
       expect(result).toStrictEqual([accountIdLegacyMock]);
     });
   });
@@ -163,10 +187,14 @@ describe('CsmrTracksAccountService', () => {
     const castedBrokerMock = brokerMockHigh as unknown as ClientProxy;
 
     it('should send a message using the identityHash to return the accountId', async () => {
-      // when
-      await service['getAccountId'](castedBrokerMock, identityHashMock);
+      // When
+      await service['getAccountId'](
+        castedBrokerMock,
+        'AccountHighBroker',
+        identityHashMock,
+      );
 
-      // then
+      // Then
       expect(brokerMockHigh.send).toHaveBeenCalledTimes(1);
       expect(brokerMockHigh.send).toHaveBeenCalledWith(
         AccountProtocol.Commands.GET_ACCOUNT_ID,
@@ -177,13 +205,14 @@ describe('CsmrTracksAccountService', () => {
     });
 
     it('should return the accountId', async () => {
-      // when
+      // When
       const result = await service['getAccountId'](
         castedBrokerMock,
+        'AccountHighBroker',
         identityHashMock,
       );
 
-      // then
+      // Then
       expect(result).toBe(brokerResponseMock.payload);
     });
 
@@ -194,8 +223,12 @@ describe('CsmrTracksAccountService', () => {
 
       // When / Then
       await expect(() =>
-        service['getAccountId'](castedBrokerMock, identityHashMock),
-      ).rejects.toThrow(CsmrTracksAccountResponseException);
+        service['getAccountId'](
+          castedBrokerMock,
+          'AccountHighBroker',
+          identityHashMock,
+        ),
+      ).rejects.toThrow(CsmrAccountResponseException);
     });
 
     it('should throw if consumer throws', async () => {
@@ -206,8 +239,12 @@ describe('CsmrTracksAccountService', () => {
 
       // When / Then
       await expect(() =>
-        service['getAccountId'](castedBrokerMock, identityHashMock),
-      ).rejects.toThrow(CsmrTracksAccountResponseException);
+        service['getAccountId'](
+          castedBrokerMock,
+          'AccountHighBroker',
+          identityHashMock,
+        ),
+      ).rejects.toThrow(CsmrAccountResponseException);
     });
   });
 });
