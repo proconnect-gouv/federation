@@ -1,14 +1,13 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { IPaginationOptions } from '@fc/common';
-import { CryptographyFcpService } from '@fc/cryptography-fcp';
+import { CsmrAccountClientService } from '@fc/csmr-account-client';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
 
 import { getLoggerMock } from '@mocks/logger';
 
 import { CsmrTracksService } from './csmr-tracks.service';
-import { CsmrTracksAccountService } from './csmr-tracks-account.service';
 import { CsmrTracksElasticService } from './csmr-tracks-elastic.service';
 import { CsmrTracksFormatterService } from './csmr-tracks-formatter.service';
 
@@ -18,7 +17,7 @@ describe('CsmrTracksService', () => {
   const loggerMock = getLoggerMock();
 
   const accountMock = {
-    getIdsWithIdentityHash: jest.fn(),
+    getAccountIdsFromIdentity: jest.fn(),
   };
 
   const elasticMock = {
@@ -29,10 +28,6 @@ describe('CsmrTracksService', () => {
     formatTracks: jest.fn(),
   };
 
-  const cryptographyFcpMock = {
-    computeIdentityHash: jest.fn(),
-  };
-
   beforeEach(async () => {
     jest.restoreAllMocks();
     jest.resetAllMocks();
@@ -41,17 +36,14 @@ describe('CsmrTracksService', () => {
       providers: [
         CsmrTracksService,
         LoggerService,
-        CryptographyFcpService,
-        CsmrTracksAccountService,
+        CsmrAccountClientService,
         CsmrTracksElasticService,
         CsmrTracksFormatterService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
-      .overrideProvider(CryptographyFcpService)
-      .useValue(cryptographyFcpMock)
-      .overrideProvider(CsmrTracksAccountService)
+      .overrideProvider(CsmrAccountClientService)
       .useValue(accountMock)
       .overrideProvider(CsmrTracksElasticService)
       .useValue(elasticMock)
@@ -69,7 +61,6 @@ describe('CsmrTracksService', () => {
   describe('getTracksForIdentity', () => {
     // Given
     const identityMock = Symbol('identityMock') as unknown as IOidcIdentity;
-    const identityHashMock = Symbol('identityHashMock');
     const accountIdsMock = ['accountIdsMock'];
     const elasticTracksMock = {
       meta: Symbol('elasticMetaMock'),
@@ -79,33 +70,19 @@ describe('CsmrTracksService', () => {
     const optionsMock = {} as IPaginationOptions;
 
     beforeEach(() => {
-      cryptographyFcpMock.computeIdentityHash.mockReturnValueOnce(
-        identityHashMock,
-      );
       elasticMock.getTracks.mockResolvedValueOnce(elasticTracksMock);
       formatterMock.formatTracks.mockReturnValueOnce(formattedTracksMock);
-      accountMock.getIdsWithIdentityHash.mockResolvedValue(accountIdsMock);
+      accountMock.getAccountIdsFromIdentity.mockResolvedValue(accountIdsMock);
     });
 
-    it('should call cryptographyFcpMock.computeIdentityHash() with identity', async () => {
+    it('should call accountMock.getIdsWithIdentityHash() with identity ', async () => {
       // When
       await service.getTracksForIdentity(identityMock, optionsMock);
 
       // Then
-      expect(cryptographyFcpMock.computeIdentityHash).toHaveBeenCalledTimes(1);
-      expect(cryptographyFcpMock.computeIdentityHash).toHaveBeenCalledWith(
+      expect(accountMock.getAccountIdsFromIdentity).toHaveBeenCalledTimes(1);
+      expect(accountMock.getAccountIdsFromIdentity).toHaveBeenCalledWith(
         identityMock,
-      );
-    });
-
-    it('should call accountMock.getIdsWithIdentityHash() with identityHash from computeIdentityHash', async () => {
-      // When
-      await service.getTracksForIdentity(identityMock, optionsMock);
-
-      // Then
-      expect(accountMock.getIdsWithIdentityHash).toHaveBeenCalledTimes(1);
-      expect(accountMock.getIdsWithIdentityHash).toHaveBeenCalledWith(
-        identityHashMock,
       );
     });
 
@@ -147,7 +124,7 @@ describe('CsmrTracksService', () => {
 
     it('should return result generateEmptyResults() if no accountIds are found', async () => {
       // Given
-      accountMock.getIdsWithIdentityHash.mockResolvedValueOnce([]);
+      accountMock.getAccountIdsFromIdentity.mockResolvedValueOnce([]);
       const emptyResultMock = Symbol('emptyResultMock');
       service['generateEmptyResults'] = jest
         .fn()

@@ -5,28 +5,37 @@ import { ClientProxy } from '@nestjs/microservices';
 
 import { FSA } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CryptographyFcpService } from '@fc/cryptography-fcp';
 import { AccountProtocol } from '@fc/microservices';
+import { PivotIdentityDto } from '@fc/oidc';
 import { RabbitmqConfig } from '@fc/rabbitmq';
 
-import { CsmrTracksAccountResponseException } from '../exceptions';
+import { CsmrAccountResponseException } from '../exceptions';
 
 @Injectable()
-export class CsmrTracksAccountService {
+export class CsmrAccountClientService {
   constructor(
     private readonly config: ConfigService,
     @Inject('AccountHighBroker')
     private readonly accountHighBroker: ClientProxy,
     @Inject('AccountLegacyBroker')
     private readonly accountLegacyBroker: ClientProxy,
+    private readonly cryptographyFcp: CryptographyFcpService,
   ) {}
 
-  async getIdsWithIdentityHash(identityHash: string): Promise<string[]> {
+  async getAccountIdsFromIdentity(
+    identity: PivotIdentityDto,
+  ): Promise<string[]> {
+    const identityHash = this.cryptographyFcp.computeIdentityHash(identity);
+
     const accountIdLegacy = await this.getAccountId(
       this.accountLegacyBroker,
+      'AccountLegacyBroker',
       identityHash,
     );
     const accountIdHigh = await this.getAccountId(
       this.accountHighBroker,
+      'AccountHighBroker',
       identityHash,
     );
 
@@ -37,9 +46,10 @@ export class CsmrTracksAccountService {
 
   private async getAccountId(
     broker: ClientProxy,
+    brokerName: string,
     identityHash: string,
   ): Promise<string | null> {
-    const { requestTimeout } = this.config.get<RabbitmqConfig>('TracksBroker');
+    const { requestTimeout } = this.config.get<RabbitmqConfig>(brokerName);
 
     /**
      * @todo #825 microservice wrapping
@@ -63,7 +73,7 @@ export class CsmrTracksAccountService {
 
       return id;
     } catch (error) {
-      throw new CsmrTracksAccountResponseException(error);
+      throw new CsmrAccountResponseException(error);
     }
   }
 }

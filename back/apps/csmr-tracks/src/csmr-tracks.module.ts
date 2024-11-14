@@ -5,8 +5,7 @@ import { Module } from '@nestjs/common';
 import { APP_FILTER } from '@nestjs/core';
 
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
-import { CryptographyService } from '@fc/cryptography';
-import { CryptographyFcpModule } from '@fc/cryptography-fcp';
+import { CsmrAccountClientModule } from '@fc/csmr-account-client';
 import { ElasticsearchModule } from '@fc/elasticsearch';
 import { ExceptionsModule, FcRmqExceptionFilter } from '@fc/exceptions';
 import { GeoipMaxmindModule } from '@fc/geoip-maxmind';
@@ -20,7 +19,6 @@ import {
   TracksLegacyFormatter,
 } from './formatters';
 import {
-  CsmrTracksAccountService,
   CsmrTracksElasticService,
   CsmrTracksFormatterService,
   CsmrTracksGeoService,
@@ -31,15 +29,13 @@ import {
   imports: [
     ExceptionsModule,
     AsyncLocalStorageModule,
-    CryptographyFcpModule,
     ScopesModule.forConfig('FcpHigh'),
     ScopesModule.forConfig('FcpLow'),
     ScopesModule.forConfig('FcLegacy'),
     GeoipMaxmindModule,
     ElasticsearchModule.register(),
     RabbitmqModule.registerFor('Tracks'),
-    RabbitmqModule.registerFor('AccountHigh'),
-    RabbitmqModule.registerFor('AccountLegacy'),
+    CsmrAccountClientModule,
   ],
   controllers: [CsmrTracksController],
   providers: [
@@ -48,10 +44,8 @@ import {
     TracksLegacyFormatter,
     CsmrTracksGeoService,
     CsmrTracksService,
-    CsmrTracksAccountService,
     CsmrTracksElasticService,
     CsmrTracksFormatterService,
-    CryptographyService,
     FcRmqExceptionFilter,
     {
       provide: APP_FILTER,
