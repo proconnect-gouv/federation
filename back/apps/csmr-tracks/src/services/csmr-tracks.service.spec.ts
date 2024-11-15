@@ -4,12 +4,11 @@ import { IPaginationOptions } from '@fc/common';
 import { CsmrAccountClientService } from '@fc/csmr-account-client';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
+import { TracksAdapterElasticsearchService } from '@fc/tracks-adapter-elasticsearch';
 
 import { getLoggerMock } from '@mocks/logger';
 
 import { CsmrTracksService } from './csmr-tracks.service';
-import { CsmrTracksElasticService } from './csmr-tracks-elastic.service';
-import { CsmrTracksFormatterService } from './csmr-tracks-formatter.service';
 
 describe('CsmrTracksService', () => {
   let service: CsmrTracksService;
@@ -20,12 +19,8 @@ describe('CsmrTracksService', () => {
     getAccountIdsFromIdentity: jest.fn(),
   };
 
-  const elasticMock = {
+  const tracksAdapterMock = {
     getTracks: jest.fn(),
-  };
-
-  const formatterMock = {
-    formatTracks: jest.fn(),
   };
 
   beforeEach(async () => {
@@ -37,18 +32,15 @@ describe('CsmrTracksService', () => {
         CsmrTracksService,
         LoggerService,
         CsmrAccountClientService,
-        CsmrTracksElasticService,
-        CsmrTracksFormatterService,
+        TracksAdapterElasticsearchService,
       ],
     })
       .overrideProvider(LoggerService)
       .useValue(loggerMock)
       .overrideProvider(CsmrAccountClientService)
       .useValue(accountMock)
-      .overrideProvider(CsmrTracksElasticService)
-      .useValue(elasticMock)
-      .overrideProvider(CsmrTracksFormatterService)
-      .useValue(formatterMock)
+      .overrideProvider(TracksAdapterElasticsearchService)
+      .useValue(tracksAdapterMock)
       .compile();
 
     service = module.get<CsmrTracksService>(CsmrTracksService);
@@ -62,17 +54,25 @@ describe('CsmrTracksService', () => {
     // Given
     const identityMock = Symbol('identityMock') as unknown as IOidcIdentity;
     const accountIdsMock = ['accountIdsMock'];
-    const elasticTracksMock = {
-      meta: Symbol('elasticMetaMock'),
-      payload: Symbol('elasticPayloadMock'),
-    };
+    const totalMock = Symbol('tracksTotalMock');
     const formattedTracksMock = Symbol('formattedTracksMock');
+    const tracksAdapterResultsMock = {
+      total: totalMock,
+      payload: formattedTracksMock,
+    };
     const optionsMock = {} as IPaginationOptions;
+    const paginationResultsMock = {
+      ...optionsMock,
+      total: totalMock,
+    };
+    const tracksResultsMock = {
+      meta: paginationResultsMock,
+      payload: formattedTracksMock,
+    };
 
     beforeEach(() => {
-      elasticMock.getTracks.mockResolvedValueOnce(elasticTracksMock);
-      formatterMock.formatTracks.mockReturnValueOnce(formattedTracksMock);
       accountMock.getAccountIdsFromIdentity.mockResolvedValue(accountIdsMock);
+      tracksAdapterMock.getTracks.mockReturnValueOnce(tracksAdapterResultsMock);
     });
 
     it('should call accountMock.getIdsWithIdentityHash() with identity ', async () => {
@@ -86,40 +86,41 @@ describe('CsmrTracksService', () => {
       );
     });
 
-    it('should call elastic.getTracks() with accountIds from getIdsWithIdentityHash', async () => {
+    it('should call tracks.getTracks() with accountIds from getIdsWithIdentityHash', async () => {
       // When
       await service.getTracksForIdentity(identityMock, optionsMock);
 
       // Then
-      expect(elasticMock.getTracks).toHaveBeenCalledTimes(1);
-      expect(elasticMock.getTracks).toHaveBeenCalledWith(
+      expect(tracksAdapterMock.getTracks).toHaveBeenCalledTimes(1);
+      expect(tracksAdapterMock.getTracks).toHaveBeenCalledWith(
         accountIdsMock,
         optionsMock,
       );
     });
 
-    it('should call formatter.formatTracks() with results from elastic', async () => {
+    it('should call this.getPaginationResults() with options and total', async () => {
+      // Given
+      service['getPaginationResults'] = jest.fn();
+
       // When
       await service.getTracksForIdentity(identityMock, optionsMock);
 
       // Then
-      expect(formatterMock.formatTracks).toHaveBeenCalledTimes(1);
-      expect(formatterMock.formatTracks).toHaveBeenCalledWith(
-        elasticTracksMock.payload,
+      expect(service['getPaginationResults']).toHaveBeenCalledTimes(1);
+      expect(service['getPaginationResults']).toHaveBeenCalledWith(
+        optionsMock,
+        tracksAdapterResultsMock.total,
       );
     });
 
-    it('should return an object with formatted tracks and metadata from elastic', async () => {
+    it('should return an object with formatted tracks and metadata', async () => {
       // When
       const tracks = await service.getTracksForIdentity(
         identityMock,
         optionsMock,
       );
       // Then
-      expect(tracks).toEqual({
-        meta: elasticTracksMock.meta,
-        payload: formattedTracksMock,
-      });
+      expect(tracks).toEqual(tracksResultsMock);
     });
 
     it('should return result generateEmptyResults() if no accountIds are found', async () => {
@@ -148,7 +149,7 @@ describe('CsmrTracksService', () => {
       const optionsMock = {
         size: sizeMock,
         offset: offsetMock,
-      };
+      } as unknown as IPaginationOptions;
       const expectedResultMock = {
         meta: {
           total: 0,
@@ -163,6 +164,31 @@ describe('CsmrTracksService', () => {
 
       // Then
       expect(result).toEqual(expectedResultMock);
+    });
+  });
+
+  describe('getPaginationResults', () => {
+    it('should return an object with total and options', () => {
+      // Given
+      const totalMock = Symbol('totalMock') as unknown as number;
+      const sizeMock = Symbol('sizeMock');
+      const offsetMock = Symbol('offsetMock');
+      const optionsMock = {
+        size: sizeMock,
+        offset: offsetMock,
+      } as unknown as IPaginationOptions;
+
+      const paginationResultMock = {
+        total: totalMock,
+        size: sizeMock,
+        offset: offsetMock,
+      };
+
+      // When
+      const result = service['getPaginationResults'](optionsMock, totalMock);
+
+      // Then
+      expect(result).toEqual(paginationResultMock);
     });
   });
 });

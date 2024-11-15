@@ -100,14 +100,6 @@ export const frFR: I18nTranslationsMapType = {
   'CsmrHsm.exceptions.csmrHsmRandom': ERROR_CONTACT_US,
   'CsmrHsm.exceptions.csmrHsmSign': ERROR_CONTACT_US,
 
-  // csmr-tracks
-  'CsmrTracks.exceptions.csmrTracksTransformTracksFailed':
-    'Impossible to transform tracks',
-  'CsmrTracks.exceptions.csmrTracksUnknownAction':
-    'Unknown Action or TypeAction for tracks event',
-  'CsmrTracks.exceptions.csmrTracksUnknownInstance':
-    'Found unknown instance (service) in track',
-
   // csmr-user-preferences
   'CsmrUserPreferences.exceptions.csmrUserPreferencesIdpNotFound':
     ERROR_RECONNECT,
@@ -165,6 +157,9 @@ export const frFR: I18nTranslationsMapType = {
   // csmr-account-client
   'CsmrAccountClient.exceptions.csmrAccountResponse':
     'Impossible to fetch accountId',
+
+  // csmr-tracks-client
+  'CsmrTracksClient.exceptions.tracksResponse': ERROR_CONTACT_US,
 
   // csrf
   'Csrf.exceptions.csrfBadToken':
@@ -338,8 +333,11 @@ export const frFR: I18nTranslationsMapType = {
   'TrackingContext.exceptions.trackingMissingNetworkContext':
     'Missing network context (headers)',
 
-  // tracks
-  'Tracks.exceptions.tracksResponse': ERROR_CONTACT_US,
+  // tracks-adapter-elasticsearch
+  'TracksAdapterElasticsearch.exceptions.tracksFormatterUnknownInstance':
+    'Found unknown instance (service) in track',
+  'TracksAdapterElasticsearch.exceptions.tracksFormatterMappingFailed':
+    'Impossible to format tracks',
 
   // user-preferences
   'UserPreferences.exceptions.getUserPreferencesConsumerError':
