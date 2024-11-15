@@ -136,10 +136,10 @@
 | [<b>200001</b>](../libs/feature-handler/src/exceptions/feature-handler-empty.exception.ts) |  | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [FeatureHandlerEmptyException](../libs/feature-handler/src/exceptions/feature-handler-empty.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 | [<b>200002</b>](../libs/feature-handler/src/exceptions/feature-handler-unregistered.exception.ts) |  | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [FeatureHandlerUnregisteredException](../libs/feature-handler/src/exceptions/feature-handler-unregistered.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 
-## @fc/tracks
+## @fc/csmr-tracks-client
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|
-| [<b>220001</b>](../libs/tracks/src/exceptions/tracks-response.exception.ts) | Une erreur s&#39;est produite lors de la récupération des traces via le broker | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [TracksResponseException](../libs/tracks/src/exceptions/tracks-response.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
+| [<b>220001</b>](../libs/csmr-tracks-client/src/exceptions/csmr-tracks-client-response.exception.ts) | Une erreur s&#39;est produite lors de la récupération des traces via le broker | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [TracksResponseException](../libs/csmr-tracks-client/src/exceptions/csmr-tracks-client-response.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 
 ## @fc/apache-ignite
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
@@ -161,9 +161,7 @@
 ## @fc/csmr-tracks
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|
-| [<b>280004</b>](../apps/csmr-tracks/src/exceptions/csmr-tracks-unknown-action.exception.ts) | Unknown Action/TypeAction for tracks event | Unknown Action or TypeAction for tracks event | <b>Classe :</b> [CsmrTracksUnknownActionException](../apps/csmr-tracks/src/exceptions/csmr-tracks-unknown-action.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-| [<b>280005</b>](../apps/csmr-tracks/src/exceptions/csmr-tracks-transform-tracks-failed.exception.ts) | CsmrTracks.exceptions.csmrTracksTransformTracksFailed, something went wrong during mapping process | Impossible to transform tracks | <b>Classe :</b> [CsmrTracksTransformTracksFailedException](../apps/csmr-tracks/src/exceptions/csmr-tracks-transform-tracks-failed.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-| [<b>280007</b>](../apps/csmr-tracks/src/exceptions/csmr-tracks-unknown-instance.exception.ts) | Le champ service de la trace n&#39;a pas permis de déterminer le type d&#39;instance pour lequel formatter la trace | Found unknown instance (service) in track | <b>Classe :</b> [CsmrTracksUnknownInstanceException](../apps/csmr-tracks/src/exceptions/csmr-tracks-unknown-instance.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
+| [<b>280001</b>](../apps/csmr-tracks/src/exceptions/csmr-tracks-unknown-action.exception.ts) | Unknown Action/TypeAction for tracks event |  | <b>Classe :</b> [CsmrTracksUnknownActionException](../apps/csmr-tracks/src/exceptions/csmr-tracks-unknown-action.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 
 ## @fc/bridge-http-proxy
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
@@ -291,3 +289,9 @@
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|
 | [<b>540001</b>](../libs/csmr-account-client/src/exceptions/csmr-account-response.exception.ts) | CsmrAccountClient.exceptions.csmrAccountResponse, please check the consumer results | Impossible to fetch accountId | <b>Classe :</b> [CsmrAccountResponseException](../libs/csmr-account-client/src/exceptions/csmr-account-response.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
+
+## @fc/tracks-adapter-elasticsearch
+| Code d'erreur | Description | Message utilisateur | Infos techniques |
+|---|---|---|---|
+| [<b>550001</b>](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-unknown-instance.exception.ts) | Le champ service de la trace n&#39;a pas permis de déterminer le type d&#39;instance pour lequel formatter la trace | Found unknown instance (service) in track | <b>Classe :</b> [TracksFormatterUnknownInstanceException](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-unknown-instance.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
+| [<b>550002</b>](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-mapping-failed.exception.ts) | TracksAdapterElasticsearch.exceptions.tracksFormatterMappingFailed, something went wrong during mapping process | Impossible to format tracks | <b>Classe :</b> [TracksFormatterMappingFailedException](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-mapping-failed.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |

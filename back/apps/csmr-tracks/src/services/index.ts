@@ -2,6 +2,3 @@
 
 // Declarative code
 export * from './csmr-tracks.service';
-export * from './csmr-tracks-elastic.service';
-export * from './csmr-tracks-formatter.service';
-export * from './csmr-tracks-geo.service';

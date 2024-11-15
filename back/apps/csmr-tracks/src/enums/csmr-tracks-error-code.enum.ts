@@ -8,10 +8,5 @@
  * @see ../../../../back/_doc/erreurs.md
  */
 export const enum CsmrTracksErrorCode {
-  FORMAT_TRACKS_FAILED = 1,
-  AGGREGATION_FAILED = 2,
-  CSMR_FAILED = 3,
-  UNKNOWN_ACTION = 4,
-  TRANSFORM_TRACKS_FAILED = 5,
-  UNKNOWN_INSTANCE = 7,
+  UNKNOWN_ACTION = 1,
 }

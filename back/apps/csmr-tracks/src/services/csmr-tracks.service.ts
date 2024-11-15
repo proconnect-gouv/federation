@@ -1,13 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
-import { IPaginationOptions } from '@fc/common';
+import { IPaginationOptions, IPaginationResult } from '@fc/common';
 import { CsmrAccountClientService } from '@fc/csmr-account-client';
+import {
+  TracksOutputInterface,
+  TracksResultsInterface,
+} from '@fc/csmr-tracks-client';
 import { LoggerService } from '@fc/logger';
 import { IOidcIdentity } from '@fc/oidc';
-import { TracksResults } from '@fc/tracks';
-
-import { CsmrTracksElasticService } from './csmr-tracks-elastic.service';
-import { CsmrTracksFormatterService } from './csmr-tracks-formatter.service';
+import { TracksAdapterElasticsearchService } from '@fc/tracks-adapter-elasticsearch';
 
 @Injectable()
 export class CsmrTracksService {
@@ -16,35 +17,35 @@ export class CsmrTracksService {
   constructor(
     private readonly logger: LoggerService,
     private readonly account: CsmrAccountClientService,
-    private readonly elastic: CsmrTracksElasticService,
-    private readonly formatter: CsmrTracksFormatterService,
+    private readonly tracks: TracksAdapterElasticsearchService<TracksOutputInterface>,
   ) {}
   async getTracksForIdentity(
     identity: IOidcIdentity,
     options: IPaginationOptions,
-  ): Promise<TracksResults> {
+  ): Promise<TracksResultsInterface> {
     const accountIds = await this.account.getAccountIdsFromIdentity(identity);
 
     if (!accountIds.length) {
       this.logger.debug('No AccountId found');
       return this.generateEmptyResults(options);
     }
+    const { total, payload } = await this.tracks.getTracks(accountIds, options);
 
-    const { meta, payload: rawTracks } = await this.elastic.getTracks(
-      accountIds,
-      options,
-    );
+    const meta = this.getPaginationResults(options, total);
 
-    const payload = this.formatter.formatTracks(rawTracks);
-
-    const results: TracksResults = { meta, payload };
-
-    return results;
+    return { meta, payload };
   }
 
-  private generateEmptyResults(options: any) {
-    const { size, offset } = options as IPaginationOptions;
-    const results: TracksResults = {
+  private getPaginationResults(
+    options: IPaginationOptions,
+    total: number,
+  ): IPaginationResult {
+    return { ...options, total };
+  }
+
+  private generateEmptyResults(options: IPaginationOptions) {
+    const { size, offset } = options;
+    const results: TracksResultsInterface = {
       meta: {
         total: 0,
         size,
