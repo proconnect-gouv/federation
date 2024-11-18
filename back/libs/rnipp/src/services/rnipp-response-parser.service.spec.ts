@@ -325,8 +325,8 @@ describe('RnippResponseParserService', () => {
       expect(result).toStrictEqual(Genders.MALE);
     });
 
-    it('should return "unspecified" if "getXmlAttribute" returns "U"', () => {
-      service['getXmlAttribute'] = jest.fn().mockReturnValueOnce('U');
+    it('should return "unspecified" if "getXmlAttribute" returns "I"', () => {
+      service['getXmlAttribute'] = jest.fn().mockReturnValueOnce('I');
 
       // action
       const result = service['getGenderFromParsedXml'](

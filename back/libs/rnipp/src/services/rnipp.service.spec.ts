@@ -259,40 +259,6 @@ describe('RnippService', () => {
     });
   });
 
-  describe('formatSexe', () => {
-    it('should return "M" if "male" is given as argument', () => {
-      // action
-      const result = service['formatSexe'](Genders.MALE);
-
-      // expect
-      expect(result).toStrictEqual(Genders.ABBR_MALE);
-    });
-
-    it('should return "F" if "female" is given as argument', () => {
-      // action
-      const result = service['formatSexe'](Genders.FEMALE);
-
-      // expect
-      expect(result).toStrictEqual(Genders.ABBR_FEMALE);
-    });
-
-    it('should return "U" if "unspecified" is given as argument', () => {
-      // action
-      const result = service['formatSexe'](Genders.UNSPECIFIED);
-
-      // expect
-      expect(result).toStrictEqual(Genders.ABBR_UNSPECIFIED);
-    });
-
-    it('should return an empty string if any other argument is given', () => {
-      // action
-      const result = service['formatSexe']('Apache Helicopter');
-
-      // expect
-      expect(result).toStrictEqual('');
-    });
-  });
-
   describe('formatDateNaissance', () => {
     it('should return the given birthdate without any "-"', () => {
       // action
