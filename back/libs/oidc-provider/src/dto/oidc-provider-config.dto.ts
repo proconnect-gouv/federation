@@ -520,8 +520,6 @@ class AllClientMetadataValidator implements AllClientMetadata {
   readonly token_endpoint_auth_signing_alg?: SigningAlgorithm;
 
   @IsOptional()
-  // openid defined property names
-  // eslint-disable-next-line @typescript-eslint/naming-convention
   readonly userinfo_signed_response_alg?: SigningAlgorithmWithNone;
 
   @IsOptional()

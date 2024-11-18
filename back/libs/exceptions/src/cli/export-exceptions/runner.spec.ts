@@ -377,11 +377,7 @@ describe('Runner', () => {
 
     beforeEach(() => {
       generatorSpy.mockImplementation(() => markdownGenerateResult);
-      // Inhibate library function
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       jest.spyOn(fs, 'writeFileSync').mockImplementation(() => {});
-      // Inhibate library function
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
       jest.spyOn(console, 'log').mockImplementation(() => {});
 
       Runner.renderFile = jest.fn().mockResolvedValue(renderFileResult);

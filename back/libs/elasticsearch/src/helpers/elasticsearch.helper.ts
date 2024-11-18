@@ -69,8 +69,6 @@ export function formatMultiMatchGroup(
 export function formatV2Query(event: string): andNotCriteria {
   const query: andNotCriteria = { bool: { must: [{ term: { event } }] } };
   if (event === EVENT_MAPPING['checkedToken/verification']) {
-    // es naming convention
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     query.bool.must_not = [{ term: { scope: '' } }];
   }
   return query;
