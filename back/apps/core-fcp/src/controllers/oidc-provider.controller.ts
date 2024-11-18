@@ -178,7 +178,6 @@ export class OidcProviderController {
     return next();
   }
 
-  // A controller is an exception to the max-params lint due to decorators
   @Get(CoreRoutes.REDIRECT_TO_SP_WITH_ERROR)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))
@@ -248,8 +247,6 @@ export class OidcProviderController {
     await this.tracking.track(eventKey, context);
   }
 
-  // adding a param reached max params limit
-  // eslint-disable-next-line max-params
   @Post(CoreRoutes.INTERACTION_LOGIN)
   @Header('cache-control', 'no-store')
   @UsePipes(new ValidationPipe({ whitelist: true }))

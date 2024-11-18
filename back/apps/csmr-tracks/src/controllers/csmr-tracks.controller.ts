@@ -9,7 +9,6 @@ import { CsmrTracksService } from '../services';
 
 @Controller()
 export class CsmrTracksController {
-  // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
     private readonly tracks: CsmrTracksService,

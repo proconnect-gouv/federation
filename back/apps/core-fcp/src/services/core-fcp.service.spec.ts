@@ -686,8 +686,6 @@ describe('CoreFcpService', () => {
       redirect: jest.fn(),
     } as unknown as Response;
 
-    // oidc parameters
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     const authorizationParametersMock = { acr_values: acrMock };
 
     beforeEach(() => {

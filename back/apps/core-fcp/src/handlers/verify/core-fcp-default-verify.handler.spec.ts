@@ -31,10 +31,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
     prompt: {},
 
     params: {
-      // oidc param
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       acr_values: 'eidas3',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       client_id: 'spId',
     },
     uid: uidMock,
@@ -48,9 +45,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
   };
 
   const spIdentityMock = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'Edward',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'TEACH',
     email: 'eteach@fqdn.ext',
   } as RequiredExcept<IOidcIdentity, 'sub' | 'email'>;
@@ -99,19 +94,12 @@ describe('CoreFcpDefaultVerifyHandler', () => {
   };
 
   const rnippIdentityMock = {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     gender: 'gender',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name: 'given_name',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     given_name_array: ['given_name_array'],
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     family_name: 'family_name',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     birthdate: 'birthdate',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     birthplace: 'birthplace',
-    // eslint-disable-next-line @typescript-eslint/naming-convention
     birthcountry: 'birthcountry',
   };
   const rnippClaims = {
@@ -588,7 +576,6 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       expect(buildFromIdpIdentityResult).toEqual({
         ...rnippClaims,
         ...idpIdentityMock,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         given_name_array: rnippIdentityMock.given_name_array,
       });
     });
@@ -682,9 +669,7 @@ describe('CoreFcpDefaultVerifyHandler', () => {
       // Given
       const input = {
         gender: Symbol('gender value'),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         given_name: Symbol('given name value'),
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         family_name: Symbol('family_name'),
         birthdate: Symbol('birthdate value'),
         birthplace: Symbol('birthplace value'),

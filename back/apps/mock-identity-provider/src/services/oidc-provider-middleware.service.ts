@@ -16,8 +16,6 @@ import { ScenariosService } from './scenarios.service';
 
 @Injectable()
 export class OidcProviderMiddlewareService {
-  // Dependency injection can require more than 4 parameters
-  // eslint-disable-next-line max-params
   constructor(
     private readonly oidcProvider: OidcProviderService,
     private readonly scenarios: ScenariosService,

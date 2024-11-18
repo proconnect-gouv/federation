@@ -191,7 +191,6 @@ export class UserDashboardController {
   @Post(UserDashboardBackRoutes.USER_PREFERENCES)
   @UsePipes(new ValidationPipe({ whitelist: true }))
   @UseGuards(CsrfTokenGuard)
-  // eslint-disable-next-line complexity
   async updateUserPreferences(
     @Req() req: Request,
     @Res() res,

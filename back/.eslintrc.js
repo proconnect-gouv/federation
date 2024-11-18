@@ -81,6 +81,7 @@ module.exports = {
     node: true,
   },
   extends: [
+    'plugin:@eslint-community/eslint-comments/recommended',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/eslint-recommended',
     'prettier',
@@ -111,6 +112,7 @@ module.exports = {
   ],
   root: true,
   rules: {
+    '@eslint-community/eslint-comments/no-unused-disable': 'error',
     '@typescript-eslint/ban-types': [
       'error',
       {

@@ -32,7 +32,6 @@ export class FcWebHtmlExceptionFilter
     super(config, logger, eventBus);
   }
 
-  // eslint-disable-next-line complexity
   catch(exception: BaseException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const res = ctx.getResponse();
