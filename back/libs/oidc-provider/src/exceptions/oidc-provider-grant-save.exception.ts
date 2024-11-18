@@ -3,9 +3,9 @@
 // Declarative code
 
 import { ErrorCode } from '../enums';
-import { OidcProviderRenderedException } from './oidc-provider-rendered.exception';
+import { OidcProviderBaseRenderedException } from './oidc-provider-base-rendered.exception';
 
-export class OidcProviderGrantSaveException extends OidcProviderRenderedException {
+export class OidcProviderGrantSaveException extends OidcProviderBaseRenderedException {
   static CODE = ErrorCode.GRANT_NOT_SAVED;
   static DOCUMENTATION =
     'Problème de sauvegarde du grant. Contacter le support N3';

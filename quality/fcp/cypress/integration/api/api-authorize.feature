@@ -198,3 +198,18 @@ Fonctionnalité: API - authorize
       |                                      | 400      | Y030007 | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.                 |
       | https://my-malicious-url.fr/callback | 400      | Y046350 | Une erreur de communication avec le fournisseur de service est survenue. Veuillez réessayer ultérieurement. |
       | example.com                          | 400      | Y030007 | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.                 |
+
+
+  @exceptions
+  Scénario: API authorize - erreur de paramètres : erreur scope et erreur redirect_uri
+    Etant donné que je prépare une requête "authorize"
+    Et je mets "email" dans le paramètre "scope" de la requête
+    Et j'ajoute "/wrong-url" dans le paramètre "redirect_uri" de la requête
+    Quand je lance la requête
+    Alors le statut de la réponse est 400
+    Et l'entête de la réponse a une propriété "content-type" contenant "text/html"
+    Et le corps de la réponse contient une page web
+    Et je suis redirigé vers la page erreur technique FranceConnect
+    Et le code d'erreur FranceConnect est "Y030031"
+    Et le message d'erreur FranceConnect est "Une erreur s'est produite, veuillez réessayer ultérieurement"
+    Et le lien retour vers le FS n'est pas affiché dans la page erreur technique

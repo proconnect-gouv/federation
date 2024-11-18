@@ -7,7 +7,7 @@ import { FcWebHtmlExceptionFilter } from '@fc/exceptions/filters';
 
 import {
   OidcProviderBaseRedirectException,
-  OidcProviderRenderedException,
+  OidcProviderBaseRenderedException,
 } from '../exceptions';
 import {
   OidcProviderRedirectExceptionFilter,
@@ -90,7 +90,7 @@ describe('ExceptionOccurredHandler', () => {
     it('should call the rendered html filter when the exception is a rendered exception and the content type is html', async () => {
       // Given
       const exceptionMock =
-        new (class MockRendered extends OidcProviderRenderedException {})();
+        new (class MockRendered extends OidcProviderBaseRenderedException {})();
 
       // When
       await handler.execute({
@@ -108,7 +108,7 @@ describe('ExceptionOccurredHandler', () => {
     it('should call the rendered json filter when the exception is a rendered exception and the content type is json', async () => {
       // Given
       const exceptionMock =
-        new (class MockRendered extends OidcProviderRenderedException {})();
+        new (class MockRendered extends OidcProviderBaseRenderedException {})();
       handler['getContentType'] = jest
         .fn()
         .mockReturnValue(ApiContentType.JSON);

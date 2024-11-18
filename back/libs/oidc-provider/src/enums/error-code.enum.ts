@@ -36,4 +36,5 @@ export enum ErrorCode {
   PARSE_JSON_CLAIMS = 28,
   RUNTIME_ERROR = 29,
   USER_ABORTED = 30,
+  NO_WRAPPER = 31,
 }

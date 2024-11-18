@@ -3,9 +3,9 @@
 // Declarative code
 
 import { ErrorCode } from '../enums';
-import { OidcProviderRenderedException } from './oidc-provider-rendered.exception';
+import { OidcProviderBaseRenderedException } from './oidc-provider-base-rendered.exception';
 
-export class OidcProviderParseJsonClaimsException extends OidcProviderRenderedException {
+export class OidcProviderParseJsonClaimsException extends OidcProviderBaseRenderedException {
   static CODE = ErrorCode.PARSE_JSON_CLAIMS;
   static DOCUMENTATION =
     "Le format attendu pour le claims n'est pas le bon. Si le problème persiste, contacter le support N3";

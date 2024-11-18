@@ -9,7 +9,7 @@ import { getLoggerMock } from '@mocks/logger';
 
 import {
   OidcProviderInitialisationException,
-  OidcProviderRenderedException,
+  OidcProviderNoWrapperException,
 } from '../exceptions';
 import { OidcProviderBaseRuntimeException } from '../exceptions/oidc-provider-base-runtime.exception';
 import { OidcProviderErrorService } from './oidc-provider-error.service';
@@ -126,7 +126,7 @@ describe('OidcProviderErrorService', () => {
         OidcProviderErrorService.getRenderedExceptionWrapper(error);
 
       // Then
-      expect(result).toBe(OidcProviderRenderedException);
+      expect(result).toBe(OidcProviderNoWrapperException);
     });
 
     it('should return a specific exception class', () => {

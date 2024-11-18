@@ -3,9 +3,9 @@
 // Declarative file
 import { errors } from 'oidc-provider';
 
-import { OidcProviderRenderedException } from './oidc-provider-rendered.exception';
+import { OidcProviderBaseRenderedException } from './oidc-provider-base-rendered.exception';
 
-export class OidcProviderBaseRuntimeException extends OidcProviderRenderedException {
+export class OidcProviderBaseRuntimeException extends OidcProviderBaseRenderedException {
   static SCOPE = 4;
   static UI =
     'Une erreur de communication avec le fournisseur de service est survenue. Veuillez réessayer ultérieurement.';
