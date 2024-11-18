@@ -4,9 +4,9 @@
 import { HttpStatus } from '@nestjs/common';
 
 import { ErrorCode } from '../enums';
-import { OidcProviderRenderedException } from './oidc-provider-rendered.exception';
+import { OidcProviderBaseRenderedException } from './oidc-provider-base-rendered.exception';
 
-export class OidcProviderSpIdNotFoundException extends OidcProviderRenderedException {
+export class OidcProviderSpIdNotFoundException extends OidcProviderBaseRenderedException {
   static CODE = ErrorCode.SP_ID_NOT_FOUND;
   static DOCUMENTATION =
     "Le client id associé à ce fournisseur de service n'a pas été trouvé dans le contexte. Si le problème persiste, contacter le support N3";

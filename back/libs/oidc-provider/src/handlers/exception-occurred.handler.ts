@@ -7,7 +7,7 @@ import { ExceptionOccurredHandler as BaseExceptionOccurredHandler } from '@fc/ex
 
 import {
   OidcProviderBaseRedirectException,
-  OidcProviderRenderedException,
+  OidcProviderBaseRenderedException,
 } from '../exceptions';
 import {
   OidcProviderRedirectExceptionFilter,
@@ -29,7 +29,7 @@ export class ExceptionOccurredHandler extends BaseExceptionOccurredHandler {
   execute(command: ExceptionOccurredCommand) {
     if (command.exception instanceof OidcProviderBaseRedirectException) {
       return this.redirectFilter.catch(command.exception, command.host);
-    } else if (command.exception instanceof OidcProviderRenderedException) {
+    } else if (command.exception instanceof OidcProviderBaseRenderedException) {
       const contentType = this.getContentType(
         command.host.switchToHttp().getResponse(),
       );

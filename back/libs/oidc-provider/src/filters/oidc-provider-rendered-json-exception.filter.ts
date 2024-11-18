@@ -9,15 +9,15 @@ import { ApiErrorParams } from '@fc/app';
 import { FcWebJsonExceptionFilter } from '@fc/exceptions/filters';
 
 import { OidcProviderConfig } from '../dto';
-import { OidcProviderRenderedException } from '../exceptions';
+import { OidcProviderBaseRenderedException } from '../exceptions';
 
-@Catch(OidcProviderRenderedException)
+@Catch(OidcProviderBaseRenderedException)
 @Injectable()
 export class OidcProviderRenderedJsonExceptionFilter
   extends FcWebJsonExceptionFilter
   implements ExceptionFilter
 {
-  catch(exception: OidcProviderRenderedException, host: ArgumentsHost) {
+  catch(exception: OidcProviderBaseRenderedException, host: ArgumentsHost) {
     if (exception.originalError?.caught) {
       return;
     }

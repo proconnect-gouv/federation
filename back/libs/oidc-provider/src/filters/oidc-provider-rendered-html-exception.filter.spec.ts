@@ -12,7 +12,10 @@ import { ViewTemplateService } from '@fc/view-templates';
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 
-import { OidcProviderRenderedException, OriginalError } from '../exceptions';
+import {
+  OidcProviderBaseRenderedException,
+  OriginalError,
+} from '../exceptions';
 import { OidcProviderRenderedHtmlExceptionFilter } from './oidc-provider-rendered-html-exception.filter';
 
 jest.mock('@fc/exceptions/helpers', () => ({
@@ -38,7 +41,7 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
   };
   const viewTemplateServiceMock = {};
 
-  class ExceptionMock extends OidcProviderRenderedException {
+  class ExceptionMock extends OidcProviderBaseRenderedException {
     ERROR = 'ERROR';
     ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
   }

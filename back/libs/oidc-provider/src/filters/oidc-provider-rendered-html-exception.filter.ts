@@ -9,7 +9,7 @@ import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { FcWebHtmlExceptionFilter } from '@fc/exceptions/filters';
 import { generateErrorId } from '@fc/exceptions/helpers';
 
-import { OidcProviderRenderedException } from '../exceptions';
+import { OidcProviderBaseRenderedException } from '../exceptions';
 
 const NOT_REDIRECTABLE_ERRORS = [
   'invalid_client',
@@ -23,13 +23,13 @@ const NOT_REDIRECTABLE_ERROR_DESCRIPTIONS = [
   /unrecognized route or not allowed method .+/,
 ];
 
-@Catch(OidcProviderRenderedException)
+@Catch(OidcProviderBaseRenderedException)
 @Injectable()
 export class OidcProviderRenderedHtmlExceptionFilter
   extends FcWebHtmlExceptionFilter
   implements ExceptionFilter
 {
-  catch(exception: OidcProviderRenderedException, host: ArgumentsHost) {
+  catch(exception: OidcProviderBaseRenderedException, host: ArgumentsHost) {
     if (exception.originalError?.caught) {
       return;
     }
@@ -51,11 +51,11 @@ export class OidcProviderRenderedHtmlExceptionFilter
     this.eventBus.publish(new ExceptionCaughtEvent(exception, { req }));
   }
 
-  private shouldNotRedirect(exception: OidcProviderRenderedException) {
+  private shouldNotRedirect(exception: OidcProviderBaseRenderedException) {
     return this.isListed(exception);
   }
 
-  private isListed(exception: OidcProviderRenderedException) {
+  private isListed(exception: OidcProviderBaseRenderedException) {
     if (!exception.originalError) {
       return false;
     }

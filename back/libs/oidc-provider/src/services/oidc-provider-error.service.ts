@@ -5,7 +5,7 @@ import { Injectable, Type } from '@nestjs/common';
 import { throwException } from '@fc/exceptions/helpers';
 
 import { OidcProviderEvents } from '../enums';
-import { OidcProviderRenderedException } from '../exceptions';
+import { OidcProviderNoWrapperException } from '../exceptions';
 import { OidcProviderBaseRuntimeException } from '../exceptions/oidc-provider-base-runtime.exception';
 import { exceptionSourceMap } from '../exceptions/runtime';
 
@@ -77,7 +77,8 @@ export class OidcProviderErrorService {
       .split('\n')?.[1]
       .match(/node_modules\/oidc-provider\/lib\/(.*):[0-9]/)?.[1];
 
-    const wrapper = exceptionSourceMap[source] || OidcProviderRenderedException;
+    const wrapper =
+      exceptionSourceMap[source] || OidcProviderNoWrapperException;
 
     return wrapper;
   }

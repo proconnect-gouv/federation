@@ -10,7 +10,7 @@ import { LoggerService } from '@fc/logger';
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 
-import { OidcProviderRenderedException } from '../exceptions';
+import { OidcProviderBaseRenderedException } from '../exceptions';
 import { OidcProviderRenderedJsonExceptionFilter } from './oidc-provider-rendered-json-exception.filter';
 
 describe('OidcProviderRenderedJsonExceptionFilter', () => {
@@ -28,7 +28,7 @@ describe('OidcProviderRenderedJsonExceptionFilter', () => {
     getResponse: jest.fn(),
   };
 
-  class ExceptionMock extends OidcProviderRenderedException {
+  class ExceptionMock extends OidcProviderBaseRenderedException {
     ERROR = 'ERROR';
     ERROR_DESCRIPTION = 'ERROR_DESCRIPTION';
   }

@@ -34,7 +34,6 @@
 
 | Var Name | Inferred type |
 |---|---|
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
@@ -50,7 +49,6 @@
 | AdapterMongo_CLIENT_SECRET_CIPHER_PASS | string |
 | AdapterMongo_DECRYPT_CLIENT_SECRET_FEATURE | boolean |
 | AdapterMongo_DISABLE_IDP_VALIDATION_ON_LEGACY | boolean |
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
 | App_CSP_CONNECT_SRC | json |
@@ -106,7 +104,6 @@
 | AdapterMongo_CLIENT_SECRET_CIPHER_PASS | string |
 | AdapterMongo_DECRYPT_CLIENT_SECRET_FEATURE | boolean |
 | AdapterMongo_DISABLE_IDP_VALIDATION_ON_LEGACY | boolean |
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
 | App_DSFR_ASSETS_PATHS | json |
@@ -184,7 +181,6 @@
 | AdapterMongo_DISABLE_IDP_VALIDATION_ON_LEGACY | boolean |
 | AdapterMongo_PLATFORM | string |
 | App_AIDANTS_CONNECT_UID | string |
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
 | App_DSFR_ASSETS_PATHS | json |
@@ -375,7 +371,6 @@
 | ApacheIgnite_TLS_KEY | file |
 | ApacheIgnite_USERNAME | string |
 | ApacheIgnite_USE_TLS | boolean |
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_CACHE_TTL | number |
 | App_ASSETS_PATHS | json |
 | App_AVAILABLE_COUNTRIES | json |
@@ -474,7 +469,6 @@
 |---|---|
 | APP_NAME | string |
 | App_API_AUTH_SECRET | string |
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
@@ -494,7 +488,6 @@
 | Var Name | Inferred type |
 |---|---|
 | App_ALLOW_CUSTOM_IDENTITY | boolean |
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_CITIZEN_DATABASE_PATH | string |
 | App_ENVIRONMENT | string |
@@ -539,7 +532,6 @@
 |---|---|
 | APP_NAME | string |
 | App_ALLOW_CUSTOM_IDENTITY | boolean |
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_CITIZEN_DATABASE_PATH | string |
 | App_ENVIRONMENT | string |
@@ -584,7 +576,6 @@
 |---|---|
 | APP_NAME | string |
 | App_ALLOW_CUSTOM_IDENTITY | boolean |
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_CITIZEN_DATABASE_PATH | string |
 | App_ENVIRONMENT | string |
@@ -627,7 +618,6 @@
 
 | Var Name | Inferred type |
 |---|---|
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |
@@ -638,7 +628,6 @@
 
 | Var Name | Inferred type |
 |---|---|
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_DATA_APIS | json |
 | App_ENVIRONMENT | string |
@@ -687,7 +676,6 @@
 
 | Var Name | Inferred type |
 |---|---|
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_DATA_APIS | json |
 | App_ENVIRONMENT | string |
@@ -735,7 +723,6 @@
 
 | Var Name | Inferred type |
 |---|---|
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_DATA_APIS | json |
 | App_ENVIRONMENT | string |
@@ -786,7 +773,6 @@
 
 | Var Name | Inferred type |
 |---|---|
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ASSETS_PATHS | json |
 | App_DATA_APIS | json |
 | App_ENVIRONMENT | string |
@@ -833,7 +819,6 @@
 
 | Var Name | Inferred type |
 |---|---|
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ENVIRONMENT | string |
 | App_FQDN | string |
 | App_HTTPS_SERVER_CERT | file |
@@ -883,7 +868,6 @@
 
 | Var Name | Inferred type |
 |---|---|
-| App_API_OUTPUT_CONTENT_TYPE | string |
 | App_ENVIRONMENT | string |
 | App_HTTPS_SERVER_CERT | file |
 | App_HTTPS_SERVER_KEY | file |

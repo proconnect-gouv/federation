@@ -3,9 +3,9 @@
 // Declarative code
 
 import { ErrorCode } from '../enums';
-import { OidcProviderRenderedException } from './oidc-provider-rendered.exception';
+import { OidcProviderBaseRenderedException } from './oidc-provider-base-rendered.exception';
 
-export class OidcProviderInteractionNotFoundException extends OidcProviderRenderedException {
+export class OidcProviderInteractionNotFoundException extends OidcProviderBaseRenderedException {
   static CODE = ErrorCode.INTERACTION_NOT_FOUND;
   static DOCUMENTATION =
     "L'identifiant de cinématique ( interactionId ou sub ) n'a pas été retrouvé dans le contexte de la requête. Cela peut-être dû à un problème de session ou une manipulation de cet identifiant par l'utilisateur (pour l'interactionId).  Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3";
