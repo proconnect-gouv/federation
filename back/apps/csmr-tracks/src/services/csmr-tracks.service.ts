@@ -12,8 +12,6 @@ import { TracksAdapterElasticsearchService } from '@fc/tracks-adapter-elasticsea
 
 @Injectable()
 export class CsmrTracksService {
-  // Allowed for DI
-  // eslint-disable-next-line max-params
   constructor(
     private readonly logger: LoggerService,
     private readonly account: CsmrAccountClientService,
