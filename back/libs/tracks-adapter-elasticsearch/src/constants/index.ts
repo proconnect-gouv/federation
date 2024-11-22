@@ -1,5 +1,4 @@
 /* istanbul ignore file */
 
-// Declarative code
-export * from './elastic-tracks.constant';
+// declarative file
 export * from './event-mapping.constant';

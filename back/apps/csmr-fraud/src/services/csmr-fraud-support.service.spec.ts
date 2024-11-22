@@ -30,6 +30,9 @@ describe('CsmrFraudSupportService', () => {
     fraudSurveyOrigin: 'fraudSurveyOriginMock',
     comment: 'commentMock',
     phoneNumber: '0678912345',
+    error: '',
+    total: 0,
+    tracks: [],
   };
 
   const fromMock = {

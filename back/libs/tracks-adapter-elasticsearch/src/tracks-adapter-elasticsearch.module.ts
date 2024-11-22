@@ -7,8 +7,8 @@ import { ElasticsearchModule } from '@fc/elasticsearch';
 import { GeoipMaxmindModule } from '@fc/geoip-maxmind';
 
 import {
-  BaseTracksOutputInterface,
   TracksFormatterAbstract,
+  TracksFormatterOutputAbstract,
 } from './interfaces';
 import {
   ElasticTracksService,
@@ -23,7 +23,7 @@ interface TracksAdapterElasticsearchModuleOptions {
 
 @Module({})
 export class TracksAdapterElasticsearchModule {
-  static forRoot<TOutput extends BaseTracksOutputInterface>(
+  static forRoot<TOutput extends TracksFormatterOutputAbstract>(
     formatterFcpHigh: Type<TracksFormatterAbstract<TOutput>>,
     formatterFcpLow: Type<TracksFormatterAbstract<TOutput>>,
     formatterLegacy: Type<TracksFormatterAbstract<TOutput>>,
