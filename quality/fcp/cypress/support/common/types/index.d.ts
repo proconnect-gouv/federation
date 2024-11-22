@@ -1,8 +1,10 @@
 import { Result } from 'axe-core';
+import { type Email } from 'cypress-maildev/build/types/Email';
 
 import { type OperatorUser } from '../../exploitation/helpers';
 import { type User } from '../helpers';
 import { Environment } from './environment';
+import { FraudFormValues } from './fraud-form-values';
 import { IdentityProvider } from './identity-provider';
 import { IdentityProviderConfig } from './identity-provider-config';
 import { ScopeContext, ServiceProvider } from './service-provider';
@@ -38,10 +40,12 @@ declare module 'mocha' {
 
     // BDD context
     env: Environment;
+    fraudFormValues?: FraudFormValues;
     identityProvider: IdentityProvider;
     identityProviders: IdentityProvider[];
     idpConfig?: IdentityProviderConfig;
     idpConfigs: IdentityProviderConfig[];
+    mail?: Email;
     operatorUser?: OperatorUser;
     repScopes: ScopeContext[];
     repScope?: ScopeContext;

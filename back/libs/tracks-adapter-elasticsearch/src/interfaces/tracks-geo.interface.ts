@@ -1,7 +1,6 @@
 /* istanbul ignore file */
 
 // Declarative code
-
 export interface SourceInterface {
   readonly geo: TracksGeoDataInterface;
   readonly address: string[];
