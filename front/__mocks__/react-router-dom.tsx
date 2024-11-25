@@ -26,6 +26,11 @@ module.exports = {
   useNavigate: jest.fn(() => jest.fn()),
   useParams: jest.fn(),
   useSearchParams: jest.fn(() => [new URLSearchParams(), jest.fn()]),
+  useLoaderData: jest.fn(),
+  useRouteLoaderData: jest.fn(),
+  useRouteError: jest.fn(),
+  useOutletContext: jest.fn(),
+  isRouteErrorResponse: jest.fn(),
 };
 
 export {};

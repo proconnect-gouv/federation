@@ -17,7 +17,7 @@ describe('BadgeComponent', () => {
 
   it('should match the snapshot with default value and custom icon', () => {
     // when
-    const { container } = render(<BadgeComponent icon={UserIcon} label="label" />);
+    const { container } = render(<BadgeComponent Icon={UserIcon} label="label" />);
 
     // then
     expect(container).toMatchSnapshot();
@@ -59,7 +59,7 @@ describe('BadgeComponent', () => {
   it('should have class fr-badge--no-icon if we define a custom icon', () => {
     // when
     const { getByTestId } = render(
-      <BadgeComponent dataTestId="BadgeComponent" icon={UserIcon} label="label" />,
+      <BadgeComponent dataTestId="BadgeComponent" Icon={UserIcon} label="label" />,
     );
     const element = getByTestId('BadgeComponent');
 
@@ -72,7 +72,7 @@ describe('BadgeComponent', () => {
     jest.mocked(UserIcon);
 
     // when
-    render(<BadgeComponent icon={UserIcon} label="label" />);
+    render(<BadgeComponent Icon={UserIcon} label="label" />);
 
     // then
     expect(UserIcon).toHaveBeenCalledOnce();
@@ -83,7 +83,7 @@ describe('BadgeComponent', () => {
     jest.mocked(UserIcon);
 
     // when
-    render(<BadgeComponent noIcon icon={UserIcon} label="label" />);
+    render(<BadgeComponent noIcon Icon={UserIcon} label="label" />);
 
     // then
     expect(UserIcon).toHaveBeenCalledTimes(0);

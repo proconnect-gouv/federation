@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 
+import { LoginFormComponent } from '@fc/login-form';
 import { useStylesQuery, useStylesVariables } from '@fc/styles';
 
 import { LoginPage } from './login.page';
@@ -14,6 +15,8 @@ describe('Login Page', () => {
 
   it('shoud match the snapshot, greater than desktop viewport', () => {
     // given
+    const breakpointMock = Symbol(1234) as unknown as string;
+    jest.mocked(useStylesVariables).mockReturnValue([breakpointMock]);
     jest.mocked(useStylesQuery).mockReturnValue(true);
 
     // when
@@ -21,10 +24,24 @@ describe('Login Page', () => {
 
     // then
     expect(container).toMatchSnapshot();
+    expect(useStylesVariables).toHaveBeenCalledOnce();
+    expect(useStylesVariables).toHaveBeenCalledWith(['breakpoint-lg']);
+    expect(useStylesQuery).toHaveBeenCalledOnce();
+    expect(useStylesQuery).toHaveBeenCalledWith({ minWidth: breakpointMock });
+    expect(LoginFormComponent).toHaveBeenCalledOnce();
+    expect(LoginFormComponent).toHaveBeenCalledWith(
+      {
+        className: 'flex-rows items-start',
+        connectType: 'AgentConnect',
+      },
+      {},
+    );
   });
 
   it('shoud match the snapshot, lower than mobile viewport', () => {
     // given
+    const breakpointMock = Symbol(1234) as unknown as string;
+    jest.mocked(useStylesVariables).mockReturnValue([breakpointMock]);
     jest.mocked(useStylesQuery).mockReturnValue(false);
 
     // when
@@ -32,27 +49,17 @@ describe('Login Page', () => {
 
     // then
     expect(container).toMatchSnapshot();
-  });
-
-  it('should retrieve the css :root breakpoint variables', () => {
-    // when
-    render(<LoginPage />);
-
-    // then
     expect(useStylesVariables).toHaveBeenCalledOnce();
     expect(useStylesVariables).toHaveBeenCalledWith(['breakpoint-lg']);
-  });
-
-  it('should retrieve the current viewport dimensions', () => {
-    // given
-    const breakpointMock = Symbol(1234) as unknown as string;
-    jest.mocked(useStylesVariables).mockReturnValue([breakpointMock]);
-
-    // when
-    render(<LoginPage />);
-
-    // then
     expect(useStylesQuery).toHaveBeenCalledOnce();
     expect(useStylesQuery).toHaveBeenCalledWith({ minWidth: breakpointMock });
+    expect(LoginFormComponent).toHaveBeenCalledOnce();
+    expect(LoginFormComponent).toHaveBeenCalledWith(
+      {
+        className: 'flex-rows items-start',
+        connectType: 'AgentConnect',
+      },
+      {},
+    );
   });
 });

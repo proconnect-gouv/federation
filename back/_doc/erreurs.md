@@ -147,6 +147,11 @@
 |---|---|---|---|
 | [<b>230001</b>](../libs/apache-ignite/src/exceptions/invalid-socket.exception.ts) | Le socket entre le bridge et le cache apache ignite n&#39;existe pas. Problème de connexion entre le bridge et le noeud. Impossible de mettre en place le keep alive. | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [ApacheIgniteInvalidSocketException](../libs/apache-ignite/src/exceptions/invalid-socket.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 
+## @fc/access-control
+| Code d'erreur | Description | Message utilisateur | Infos techniques |
+|---|---|---|---|
+| [<b>240001</b>](../libs/access-control/src/exceptions/access-control-unknown-permission.exception.ts) | le rôle demandé est inconnu. Merci de vérifier la liste des droits de l&#39;utilisateur |  | <b>Classe :</b> [UnknownPermissionException](../libs/access-control/src/exceptions/access-control-unknown-permission.exception.ts) <br /><b>Code HTTP :</b> 401 <br /><b>error :</b>  <br /> <b>error_description :</b>  |
+
 ## @fc/csv
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|
@@ -252,6 +257,7 @@
 | [<b>480001</b>](../libs/dto2form/src/exceptions/dto2form-invalid-form.exception.ts) | La classe cible n&#39;est pas de type &#34;FormDtoBase&#34;. | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [Dto2FormInvalidFormException](../libs/dto2form/src/exceptions/dto2form-invalid-form.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 | [<b>480002</b>](../libs/dto2form/src/exceptions/dto2form-validate-if-rule-not-found.exception.ts) | Une des fonctions de validation conditionelle (validateIf) du formulaire en cours de validation n&#39;existe pas. | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [Dto2FormValidateIfRuleNotFoundException](../libs/dto2form/src/exceptions/dto2form-validate-if-rule-not-found.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 | [<b>480003</b>](../libs/dto2form/src/exceptions/dto2form-validation-error.exception.ts) | Les données soumises dans le formulaire ne satisfont pas les règles de validation. | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [Dto2FormValidationErrorException](../libs/dto2form/src/exceptions/dto2form-validation-error.exception.ts) <br /><b>Code HTTP :</b> 422 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
+| [<b>480004</b>](../libs/dto2form/src/exceptions/dto2form-invalid-metadata.exception.ts) | Impossible de récupérer les métadonnées lié au dto. |  | <b>Classe :</b> [Dto2FormInvalidMetadataException](../libs/dto2form/src/exceptions/dto2form-invalid-metadata.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 
 ## @fc/i18n
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
@@ -296,3 +302,8 @@
 |---|---|---|---|
 | [<b>550001</b>](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-unknown-instance.exception.ts) | Le champ service de la trace n&#39;a pas permis de déterminer le type d&#39;instance pour lequel formatter la trace | Found unknown instance (service) in track | <b>Classe :</b> [TracksFormatterUnknownInstanceException](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-unknown-instance.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 | [<b>550002</b>](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-mapping-failed.exception.ts) | TracksAdapterElasticsearch.exceptions.tracksFormatterMappingFailed, something went wrong during mapping process | Impossible to format tracks | <b>Classe :</b> [TracksFormatterMappingFailedException](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-mapping-failed.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
+
+## @fc/postgres
+| Code d'erreur | Description | Message utilisateur | Infos techniques |
+|---|---|---|---|
+| [<b>560001</b>](../libs/postgres/src/exceptions/postgres-operation-failure.exception.ts) | Une erreur est survenue lors de l&#39;appel à la base de donnée. Contacter le support N3. |  | <b>Classe :</b> [PostgresOperationFailure](../libs/postgres/src/exceptions/postgres-operation-failure.exception.ts) <br /><b>Code HTTP :</b> 401 <br /><b>error :</b>  <br /> <b>error_description :</b>  |

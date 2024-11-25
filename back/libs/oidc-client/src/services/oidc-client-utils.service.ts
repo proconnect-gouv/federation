@@ -18,7 +18,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CryptographyService } from '@fc/cryptography';
 import { LoggerService } from '@fc/logger';
 import {
-  IOidcIdentity,
+  BaseOidcIdentityInterface,
   IServiceProviderAdapter,
   SERVICE_PROVIDER_SERVICE_TOKEN,
 } from '@fc/oidc';
@@ -179,13 +179,13 @@ export class OidcClientUtilsService {
     await client.revoke(accessToken);
   }
 
-  async getUserInfo(
+  async getUserInfo<T extends BaseOidcIdentityInterface>(
     accessToken: string,
     idpId: string,
-  ): Promise<IOidcIdentity> {
+  ): Promise<T> {
     const client = await this.issuer.getClient(idpId);
 
-    const userInfo = (await client.userinfo(accessToken)) as IOidcIdentity;
+    const userInfo = await client.userinfo<T>(accessToken);
 
     return userInfo;
   }

@@ -1,0 +1,9 @@
+/* istanbul ignore file */
+
+// Declarative code
+export enum EntityType {
+  ORGANISATION = 'ORGANISATION',
+  SERVICE_PROVIDER = 'SERVICE_PROVIDER',
+  SP_INSTANCE = 'SP_INSTANCE',
+  SP_INSTANCE_VERSION = 'SP_INSTANCE_VERSION',
+}

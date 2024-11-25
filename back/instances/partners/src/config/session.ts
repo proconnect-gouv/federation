@@ -39,6 +39,11 @@ export default {
     PartnersBackRoutes.USER_INFO,
     PartnersBackRoutes.INDEX,
 
+    PartnersBackRoutes.SP_INSTANCES,
+    PartnersBackRoutes.SP_INSTANCE,
+
+    PartnersBackRoutes.SP_VERSION_FORM_METADATA,
+
     // Disconnection flow
     PartnersBackRoutes.LOGOUT,
     PartnersBackRoutes.LOGOUT_CALLBACK,

@@ -10,6 +10,7 @@ import { AppBoundaryComponent } from '@fc/exceptions';
 import { I18nService } from '@fc/i18n';
 import { StylesProvider } from '@fc/styles';
 
+import i18n from '../__fixtures__/i18n.fr.json';
 import { AppConfig } from '../config';
 import { Application } from './application';
 import { ApplicationRoutes } from './application.routes';
@@ -30,20 +31,7 @@ describe('Application', () => {
     render(<Application />);
 
     // then
-    expect(I18nService.initialize).toHaveBeenCalledWith('fr', {
-      // @NOTE This is a sample of the translations that should be in the fr.json file
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'DSFR.stepper.location': 'Étape {current} sur {total}',
-      // @NOTE This is a sample of the translations that should be in the fr.json file
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'DSFR.stepper.nextStep': 'Étape suivante',
-      // @NOTE This is a sample of the translations that should be in the fr.json file
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'TracksPage.nextPage': 'Page suivante',
-      // @NOTE This is a sample of the translations that should be in the fr.json file
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'TracksPage.previousPage': 'Page précédente',
-    });
+    expect(I18nService.initialize).toHaveBeenCalledWith('fr', i18n);
   });
 
   it('should call ConfigService initialize with config', () => {

@@ -1,12 +1,12 @@
 import { fireEvent, render } from '@testing-library/react';
 
-import { IconPlacement, Priorities, Sizes } from '../../../enums';
+import { ButtonTypes, IconPlacement, Priorities, Sizes } from '../../../enums';
 import { SimpleButton } from './simple.button';
 
 describe('SimpleButton', () => {
   it('should match the snapshot', () => {
     // when
-    const { container } = render(<SimpleButton label="any-label-mock" />);
+    const { container } = render(<SimpleButton>any-label-mock</SimpleButton>);
 
     // then
     expect(container).toMatchSnapshot();
@@ -14,7 +14,7 @@ describe('SimpleButton', () => {
 
   it('should match the snapshot, when size is defined to Sizes.LARGE', () => {
     // when
-    const { container } = render(<SimpleButton label="any-label-mock" size={Sizes.LARGE} />);
+    const { container } = render(<SimpleButton size={Sizes.LARGE}>any-label-mock</SimpleButton>);
 
     // then
     expect(container).toMatchSnapshot();
@@ -22,7 +22,7 @@ describe('SimpleButton', () => {
 
   it('should match the snapshot, when size is defined to Sizes.MEDIUM', () => {
     // when
-    const { container } = render(<SimpleButton label="any-label-mock" size={Sizes.MEDIUM} />);
+    const { container } = render(<SimpleButton size={Sizes.MEDIUM}>any-label-mock</SimpleButton>);
 
     // then
     expect(container).toMatchSnapshot();
@@ -30,7 +30,7 @@ describe('SimpleButton', () => {
 
   it('should match the snapshot, when size is defined to Sizes.SMALL', () => {
     // when
-    const { container } = render(<SimpleButton label="any-label-mock" size={Sizes.SMALL} />);
+    const { container } = render(<SimpleButton size={Sizes.SMALL}>any-label-mock</SimpleButton>);
 
     // then
     expect(container).toMatchSnapshot();
@@ -38,7 +38,7 @@ describe('SimpleButton', () => {
 
   it('should render the firstchild as a button', () => {
     // when
-    const { container, getByRole } = render(<SimpleButton label="any-label-mock" />);
+    const { container, getByRole } = render(<SimpleButton>any-label-mock</SimpleButton>);
     const element = getByRole('button');
 
     // then
@@ -47,7 +47,7 @@ describe('SimpleButton', () => {
 
   it('should render the label', () => {
     // when
-    const { getByText } = render(<SimpleButton label="any-label-mock" />);
+    const { getByText } = render(<SimpleButton>any-label-mock</SimpleButton>);
     const linkElement = getByText('any-label-mock');
 
     // then
@@ -56,7 +56,7 @@ describe('SimpleButton', () => {
 
   it('should have the disable attribute', () => {
     // when
-    const { getByRole } = render(<SimpleButton disabled label="any-label-mock" />);
+    const { getByRole } = render(<SimpleButton disabled>any-label-mock</SimpleButton>);
     const element = getByRole('button');
 
     // then
@@ -65,7 +65,9 @@ describe('SimpleButton', () => {
 
   it('should have the title attribute', () => {
     // when
-    const { getByRole } = render(<SimpleButton label="any-label-mock" title="any-title-mock" />);
+    const { getByRole } = render(
+      <SimpleButton title="any-title-mock">any-label-mock</SimpleButton>,
+    );
     const element = getByRole('button');
 
     // then
@@ -74,7 +76,9 @@ describe('SimpleButton', () => {
 
   it('should have the type attribute defined', () => {
     // when
-    const { getByRole } = render(<SimpleButton label="any-label-mock" type="reset" />);
+    const { getByRole } = render(
+      <SimpleButton type={ButtonTypes.RESET}>any-label-mock</SimpleButton>,
+    );
     const element = getByRole('button');
 
     // then
@@ -85,7 +89,7 @@ describe('SimpleButton', () => {
     // given
     const onClickMock = jest.fn();
     // when
-    const { getByRole } = render(<SimpleButton label="any-label-mock" onClick={onClickMock} />);
+    const { getByRole } = render(<SimpleButton onClick={onClickMock}>any-label-mock</SimpleButton>);
     const element = getByRole('button');
     fireEvent.click(element);
 
@@ -96,7 +100,7 @@ describe('SimpleButton', () => {
   it('should have the classname when priority is equal to Priorities.SECONDARY', () => {
     // when
     const { getByRole } = render(
-      <SimpleButton label="any-label-mock" priority={Priorities.SECONDARY} />,
+      <SimpleButton priority={Priorities.SECONDARY}>any-label-mock</SimpleButton>,
     );
     const element = getByRole('button');
 
@@ -107,7 +111,7 @@ describe('SimpleButton', () => {
   it('should have the classname when priority is equal to Priorities.TERTIARY', () => {
     // when
     const { getByRole } = render(
-      <SimpleButton label="any-label-mock" priority={Priorities.TERTIARY} />,
+      <SimpleButton priority={Priorities.TERTIARY}>any-label-mock</SimpleButton>,
     );
     const element = getByRole('button');
 
@@ -118,7 +122,9 @@ describe('SimpleButton', () => {
   it('should have the classname when priority is equal to Priorities.TERTIARY and noOutline is defined', () => {
     // when
     const { getByRole } = render(
-      <SimpleButton noOutline label="any-label-mock" priority={Priorities.TERTIARY} />,
+      <SimpleButton noOutline priority={Priorities.TERTIARY}>
+        any-label-mock
+      </SimpleButton>,
     );
     const element = getByRole('button');
 
@@ -128,7 +134,7 @@ describe('SimpleButton', () => {
 
   it('should have the classname when icon is defined', () => {
     // when
-    const { getByRole } = render(<SimpleButton icon="any-icon-mock" label="any-label-mock" />);
+    const { getByRole } = render(<SimpleButton icon="any-icon-mock">any-label-mock</SimpleButton>);
     const element = getByRole('button');
 
     // then
@@ -139,11 +145,9 @@ describe('SimpleButton', () => {
   it('should have the classname when icon placement is defined', () => {
     // when
     const { getByRole } = render(
-      <SimpleButton
-        icon="any-icon-mock"
-        iconPlacement={IconPlacement.LEFT}
-        label="any-label-mock"
-      />,
+      <SimpleButton icon="any-icon-mock" iconPlacement={IconPlacement.LEFT}>
+        any-label-mock
+      </SimpleButton>,
     );
     const element = getByRole('button');
 
@@ -158,9 +162,9 @@ describe('SimpleButton', () => {
       <SimpleButton
         className="any-classname-mock"
         icon="any-icon-mock"
-        iconPlacement={IconPlacement.LEFT}
-        label="any-label-mock"
-      />,
+        iconPlacement={IconPlacement.LEFT}>
+        any-label-mock
+      </SimpleButton>,
     );
     const element = getByRole('button');
 
@@ -175,9 +179,9 @@ describe('SimpleButton', () => {
         className="any-classname-mock"
         dataTestId="any-datatestid-mock"
         icon="any-icon-mock"
-        iconPlacement={IconPlacement.LEFT}
-        label="any-label-mock"
-      />,
+        iconPlacement={IconPlacement.LEFT}>
+        any-label-mock
+      </SimpleButton>,
     );
     const element = getByTestId('any-datatestid-mock');
 

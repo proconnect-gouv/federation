@@ -55,6 +55,11 @@ export const TrackCardComponent = React.memo(({ options, track }: TrackCardProps
       data-time={datetime}
       type="button"
       onClick={toggleOpened}>
+      {/*
+       // @TODO
+       // instead of using a custom badge
+       // use the BadgeComponent from DSFR
+      */}
       <TrackCardBadgeComponent fromFcPlus={isFromFranceConnectPlus} type={eventType} />
       <TrackCardHeaderComponent
         datetime={datetime}

@@ -851,6 +851,11 @@
 | OidcClient_POST_LOGOUT_REDIRECT_URI | string |
 | OidcClient_REDIRECT_URI | string |
 | OidcClient_SCOPE | string |
+| Postgres_DATABASE | string |
+| Postgres_HOST | string |
+| Postgres_PASSWORD | string |
+| Postgres_PORT | number |
+| Postgres_USER | string |
 | REQUEST_TIMEOUT | string |
 | Redis_CACERT | file |
 | Redis_DB | number |

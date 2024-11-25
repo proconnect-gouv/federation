@@ -33,7 +33,7 @@ services:
     command: "pm2 logs"
 
   pg-support:
-    image: postgres:11
+    image: postgres:13-bullseye
     environment:
       - "POSTGRES_DB=pg-db"
       - "POSTGRES_USER=pg-user"

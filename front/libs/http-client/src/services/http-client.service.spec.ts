@@ -1,17 +1,12 @@
 import type { AxiosResponse } from 'axios';
 import axios from 'axios';
 
-import { objectToFormData } from '@fc/common';
 import { ConfigService } from '@fc/config';
 
 import { Options } from '../enums';
 import { AxiosException } from '../errors';
 import { getRequestOptions } from '../utils';
 import * as HttpClientService from './http-client.service';
-
-jest.mock('axios');
-jest.mock('@fc/config');
-jest.mock('@fc/common');
 
 jest.mock('./../utils');
 
@@ -212,7 +207,13 @@ describe('HttpClientService', () => {
           'post',
           endpoint,
           { ...data, csrfToken: 'any-csrf-token' },
-          { ...axiosOptions, transformRequest: jest.mocked(objectToFormData) },
+          {
+            ...axiosOptions,
+            headers: {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          },
         );
       });
 

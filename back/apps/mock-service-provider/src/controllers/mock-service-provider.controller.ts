@@ -296,10 +296,11 @@ export class MockServiceProviderController {
       const providerUid = this.getIdpId();
       const { accessToken } = body;
       // OIDC: call idp's /userinfo endpoint
-      const idpIdentity = await this.oidcClient.utils.getUserInfo(
-        accessToken,
-        providerUid,
-      );
+      const idpIdentity =
+        await this.oidcClient.utils.getUserInfo<IOidcIdentity>(
+          accessToken,
+          providerUid,
+        );
 
       const idpIdToken = sessionOidc.get('idpIdToken');
 

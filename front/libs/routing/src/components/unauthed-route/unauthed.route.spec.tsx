@@ -31,18 +31,6 @@ describe('UnauthedRoute', () => {
     expect(useSafeContext).toHaveBeenCalledWith(AccountContext);
   });
 
-  it('should render loader element if connection is not ready', () => {
-    // given
-    jest.mocked(useSafeContext).mockReturnValueOnce({ connected: false, ready: false });
-
-    // when
-    const { getByTestId } = render(<UnauthedRoute fallback="/any-authed-fallback" />);
-    const element = getByTestId('route-unauthed-component-loader-div');
-
-    // then
-    expect(element).toBeInTheDocument();
-  });
-
   it('should redirect with parameters if the user is connected', () => {
     // given
     jest.mocked(useSafeContext).mockReturnValueOnce({ connected: true, ready: true });

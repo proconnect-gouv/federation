@@ -1,0 +1,53 @@
+entity: PartnersAccountPermission
+items:
+  permissions-spi-list-1:
+    id: '2b430fa9-bdc4-47f4-a0b0-4747f7f32fb7'
+    permissionType: 'LIST'
+    entity: 'SP_INSTANCE'
+    account: '@user-angela-dubois'
+
+  permissions-spi-1:
+    id: '0f2e2074-7415-4509-9a53-150873dc59ed'
+    permissionType: 'VIEW'
+    entity: 'SP_INSTANCE'
+    # @sp1-i1-sandbox
+    entityId: '997abfe2-a19a-49c9-a2c2-138798dde859'
+    account: '@user-angela-dubois'
+
+  permissions-sp1iv-1:
+    id: 'fe6e16a2-611c-4315-8261-d06810f261cc'
+    permissionType: 'VIEW'
+    entity: 'SP_INSTANCE_VERSION'
+    # @sp1-i1-v1
+    entityId: '6b3718be-3c85-48b6-8f48-087465b12ba2'
+    account: '@user-angela-dubois'
+
+  permissions-sp1iv-2:
+    id: '25017209-a52a-4f82-8b07-aa8975e516eb'
+    permissionType: 'VIEW'
+    entity: 'SP_INSTANCE_VERSION'
+    # @sp1-i1-v2
+    entityId: '48222f1b-fb58-427b-ada1-7c7a8b3bf833'
+    account: '@user-angela-dubois'
+
+  permissions-sp1iv-3:
+    id: '9b136874-d77f-45cf-bb41-53271f886188'
+    permissionType: 'VIEW'
+    entity: 'SP_INSTANCE_VERSION'
+    # @sp1-i1-v3
+    entityId: '2aec40fd-db63-4e34-98ef-e55e5cc6985b'
+    account: '@user-angela-dubois'
+
+  permissions-spi-list-2:
+    id: '3fac4288-0a56-48a4-b0ec-b9f9af6cf60a'
+    permissionType: 'LIST'
+    entity: 'SP_INSTANCE'
+    account: '@user-bernard-martinot'
+
+  permissions-spi-2:
+    id: 'f6d98b6d-9d84-44b7-84b4-2ac2829e2333'
+    permissionType: 'VIEW'
+    entity: 'SP_INSTANCE'
+    # @sp2-i1-sandbox
+    entityId: 'efa51522-26e9-4d03-8958-816ff59a74bd'
+    account: '@user-bernard-martinot'

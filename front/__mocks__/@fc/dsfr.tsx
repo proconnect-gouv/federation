@@ -1,14 +1,26 @@
+export const LinkButton = jest.fn(() => <div>LinkButton</div>);
+
 export const SimpleButton = jest.fn(() => <div>SimpleButton</div>);
 
 export const CheckboxInput = jest.fn(() => <div>CheckboxInput</div>);
 
 export const ToggleInput = jest.fn(() => <div>ToggleInput</div>);
 
-export const LinkComponent = jest.fn(({ label }) => <div data-mockid="LinkComponent">{label}</div>);
+export const LinkComponent = jest.fn(({ label }) => (
+  <span data-mockid="LinkComponent">{label}</span>
+));
+
+export const CardComponent = jest.fn(() => <div>CardComponent</div>);
+
+export const TileComponent = jest.fn(() => <div>TileComponent</div>);
 
 export const SearchBarComponent = jest.fn(() => <div>SearchBarComponent</div>);
 
 export const BadgeComponent = jest.fn(() => <div>BadgeComponent</div>);
+
+export const BreadCrumbsComponent = jest.fn(() => <div>BreadCrumbsComponent</div>);
+
+export const BadgesGroupComponent = jest.fn(() => <div>BadgesGroupComponent</div>);
 
 export const PaginationComponent = jest.fn(() => <div>PaginationComponent</div>);
 
