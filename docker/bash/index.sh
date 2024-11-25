@@ -16,6 +16,10 @@ source "${INCLUDE_DIR}/hooks/index.sh"
 ## Data initialisation
 
 ### Postgres
+_command_register "migrations-partners-back" "_migrations-postgres partners-back" ""                   # Description to be defined
+_command_register "migrations-generate-partners-back" "_migrations-generate-postgres partners-back" "" # Description to be defined
+_command_register "fixtures-partners-back" "_fixtures-postgres 'partners-back'" ""                     # Description to be defined
+
 _command_register "fixtures" "_hook_fc_apps" "Init postgres FC-Apps : docker-stack fixtures <fc-exploitation | fc-support | exploitation-high | exploitation-fca-low>"
 
 ### Mongo

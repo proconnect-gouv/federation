@@ -43,18 +43,6 @@ describe('AuthedRoute', () => {
     expect(useSafeContext).toHaveBeenCalledWith(AxiosErrorCatcherContext);
   });
 
-  it('should render loader element if connection is not ready', () => {
-    // given
-    jest.mocked(useSafeContext).mockReturnValueOnce({ ready: false });
-
-    // when
-    const { getByTestId } = render(<AuthedRoute fallback="/any-authed-fallback" />);
-    const element = getByTestId('route-authed-component-loader-div');
-
-    // then
-    expect(element).toBeInTheDocument();
-  });
-
   it('should redirect with parameters if the user is not connected', () => {
     // given
     const fallbackMock = jest.fn(() => `/any-authed-fallback`);

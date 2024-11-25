@@ -337,8 +337,8 @@ describe('UserPreferencesFormComponent', () => {
     expect(SimpleButton).toHaveBeenCalledOnce();
     expect(SimpleButton).toHaveBeenCalledWith(
       expect.objectContaining({
+        children: 'Enregistrer mes réglages',
         disabled: true,
-        label: 'Enregistrer mes réglages',
         type: 'submit',
       }),
       {},
@@ -365,8 +365,8 @@ describe('UserPreferencesFormComponent', () => {
     expect(SimpleButton).toHaveBeenCalledOnce();
     expect(SimpleButton).toHaveBeenCalledWith(
       expect.objectContaining({
+        children: 'Enregistrer mes réglages',
         disabled: false,
-        label: 'Enregistrer mes réglages',
         type: 'submit',
       }),
       {},

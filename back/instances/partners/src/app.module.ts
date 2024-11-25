@@ -4,6 +4,7 @@
 import { PartnersModule } from 'apps/partners/src';
 
 import { DynamicModule, Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ConfigModule, ConfigService } from '@fc/config';
 import { LoggerModule } from '@fc/logger';
@@ -29,6 +30,10 @@ export class AppModule {
         ]),
         // 3. Load other modules
         PartnersModule,
+        TypeOrmModule.forRootAsync({
+          useFactory: (config: ConfigService) => config.get('Postgres'),
+          inject: [ConfigService],
+        }),
       ],
     };
   }

@@ -29,7 +29,10 @@ describe('AccountProvider', () => {
     jest.spyOn(React, 'useState').mockReturnValue([expect.any(Object), jest.fn()]);
   });
 
-  it('should render the child component', () => {
+  it('should render the child component if account has been loaded', () => {
+    // given
+    jest.spyOn(React, 'useState').mockReturnValueOnce([{ ready: true }, jest.fn()]);
+
     // when
     const { container, getByTestId } = render(<Provider />);
     const element = getByTestId('ChildComponent');
@@ -37,6 +40,17 @@ describe('AccountProvider', () => {
     // then
     expect(container).toMatchSnapshot();
     expect(element).toBeInTheDocument();
+  });
+
+  it('should not render the child component if account has not been loaded', () => {
+    // given
+    jest.spyOn(React, 'useState').mockReturnValueOnce([{ ready: false }, jest.fn()]);
+
+    // when / then
+    expect(() => {
+      const { getByTestId } = render(<Provider />);
+      getByTestId('ChildComponent');
+    }).toThrow();
   });
 
   it('should retrieve the account config', () => {

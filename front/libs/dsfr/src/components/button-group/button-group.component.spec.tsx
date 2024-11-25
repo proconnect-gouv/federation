@@ -10,8 +10,8 @@ describe('ButtonGroupComponent', () => {
     // when
     const { container } = render(
       <ButtonGroupComponent>
-        <SimpleButton label="précédent" />
-        <SimpleButton label="suivant" />
+        <SimpleButton>précédent</SimpleButton>
+        <SimpleButton>suivant</SimpleButton>
       </ButtonGroupComponent>,
     );
 
@@ -27,8 +27,8 @@ describe('ButtonGroupComponent', () => {
     // when
     const { container } = render(
       <ButtonGroupComponent equisized inline={false}>
-        <SimpleButton label="précédent" />
-        <SimpleButton label="suivant" />
+        <SimpleButton>précédent</SimpleButton>
+        <SimpleButton>suivant</SimpleButton>
       </ButtonGroupComponent>,
     );
 

@@ -3,6 +3,7 @@
 // declarative file
 export * from './alert-types.enum';
 export * from './button-types.enum';
+export * from './card-backgrounds.enum';
 export * from './connect-types.enum';
 export * from './icon-placement.enum';
 export * from './options.enum';

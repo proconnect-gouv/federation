@@ -1,0 +1,40 @@
+import { render } from '@testing-library/react';
+
+import { HeadingTag } from '@fc/common';
+
+import { Sizes } from '../../enums';
+import { TileComponent } from './tile.component';
+
+describe('TileComponent', () => {
+  it('should match the snapshot, with default values', () => {
+    // when
+    const { container } = render(
+      <TileComponent link="any-link-mock" title="Tile title mock">
+        any description text treat as children
+      </TileComponent>,
+    );
+
+    // then
+    expect(container).toMatchSnapshot();
+  });
+
+  it('should match the snapshot, with optionnal values', () => {
+    // when
+    const { container } = render(
+      <TileComponent
+        isHorizontal
+        useDownload
+        description="any-description-mock"
+        detail="any-detail-mock"
+        Heading={HeadingTag.H1}
+        link="any-link-mock"
+        size={Sizes.LARGE}
+        title="Tile title mock">
+        any description text treat as children
+      </TileComponent>,
+    );
+
+    // then
+    expect(container).toMatchSnapshot();
+  });
+});

@@ -307,8 +307,7 @@ services:
       - data
 
   postgres:
-    # OPS have access to only v11 atm on debian
-    image: postgres:11-buster
+    image: postgres:13-bullseye
     volumes:
       - "${VOLUMES_DIR}/postgres/init-multiple-postgresql-databases.sh:/docker-entrypoint-initdb.d/init-multiple-postgresql-databases.sh:ro"
     env_file:

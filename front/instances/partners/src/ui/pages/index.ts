@@ -3,4 +3,5 @@
 // declarative file
 export * from './home';
 export * from './login';
-export * from './steps';
+export * from './version';
+export * from './versions';

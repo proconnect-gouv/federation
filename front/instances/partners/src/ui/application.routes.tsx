@@ -9,32 +9,44 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
+import { VersionsService } from '@fc/core-partners';
 import { ApplicationLayout } from '@fc/layout';
-import { AuthedRoute, UnauthedRoute } from '@fc/routing';
+import { AuthedRoute, RouterErrorBoundaryComponent, UnauthedRoute } from '@fc/routing';
 
-import { HomePage, LoginPage } from './pages';
-import { Step1Page, Step2Page, Step3Page, Step4Page, Step5Page } from './pages/steps';
+import { RouteLoaderDataIds } from '../enums';
+import { PageLayout } from './layouts';
+import { HomePage, LoginPage, VersionCreatePage, VersionsPage, VersionUpdatePage } from './pages';
 
 export const ApplicationRoutes = React.memo(() => {
-  const appRouter = createBrowserRouter(
-    createRoutesFromElements(
-      <Route element={<ApplicationLayout />} path="/">
-        <Route element={<UnauthedRoute />}>
-          <Route element={<LoginPage />} path="login" />
-        </Route>
-        <Route element={<AuthedRoute fallback="/login" />}>
-          <Route index element={<HomePage />} />
-          <Route path="mock/steps">
-            <Route element={<Step5Page />} path="step-5" />
-            <Route element={<Step4Page />} path="step-4" />
-            <Route element={<Step3Page />} path="step-3" />
-            <Route element={<Step2Page />} path="step-2" />
-            <Route index element={<Step1Page />} path="*" />
+  const routes = createRoutesFromElements(
+    <Route element={<ApplicationLayout />} errorElement={<RouterErrorBoundaryComponent />} path="/">
+      <Route element={<UnauthedRoute fallback="/versions" />}>
+        <Route element={<LoginPage />} path="login" />
+      </Route>
+      <Route element={<AuthedRoute fallback="/login" />}>
+        <Route element={<PageLayout />}>
+          <Route
+            id={RouteLoaderDataIds.VERSION_SCHEMA}
+            loader={VersionsService.loadSchema}
+            path="versions">
+            <Route element={<VersionCreatePage />} path="create" />
+            <Route
+              element={<VersionUpdatePage />}
+              loader={VersionsService.read}
+              path=":versionId"
+            />
+            <Route index element={<VersionsPage />} loader={VersionsService.loadAll} />
           </Route>
         </Route>
-      </Route>,
-    ),
+        <Route index element={<HomePage />} />
+      </Route>
+    </Route>,
   );
+
+  const appRouter = createBrowserRouter(routes, {
+    basename: '/',
+  });
+
   return <RouterProvider router={appRouter} />;
 });
 

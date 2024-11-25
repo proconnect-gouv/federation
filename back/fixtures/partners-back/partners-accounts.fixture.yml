@@ -1,0 +1,23 @@
+entity: PartnersAccount
+items:
+  # test / 123 / fia1
+  user-angela-dubois:
+    id: 'c763dcdb-5220-4ebf-8c23-f59b0a869b5f'
+    sub: '662596fb-6636-4c59-87b9-4d81048609d0'
+    email: 'test@abcd.com'
+    firstname: 'Angela Claire Louise'
+    lastname: 'DUBOIS'
+    createdAt: '2024-02-22'
+    updatedAt: '2024-05-02'
+    siren: '120027016'
+
+  # 12354 / 123 / fia1
+  user-bernard-martinot:
+    id: '4bb3b761-6e52-4cb4-affd-6685b68b8429'
+    sub: 'ca316f86-5847-4125-a470-f7cd62599480'
+    email: 'test@fia1.fr'
+    firstname: 'Bernard'
+    lastname: 'MARTINOT'
+    createdAt: '2024-02-22'
+    updatedAt: '2024-05-02'
+    siren: '120027016'

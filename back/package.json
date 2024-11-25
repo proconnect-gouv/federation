@@ -53,6 +53,11 @@
     "lint": "eslint \"{apps,instances,libs}/**/*.ts\"",
     "prettier": "prettier -c \"{apps,instances,libs}/**/*.ts\" --config .prettierrc",
     "test": "jest",
+    "typeorm": "typeorm-ts-node-esm",
+    "typeorm:migrations-run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./typeorm.config.ts migration:run",
+    "typeorm:migrations-generate": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./typeorm.config.ts migration:generate",
+    "typeorm:fixtures:load": "./scripts/fixtures-load.sh",
+    "typeorm:fixtures:reset-config-test": "./scripts/fixtures-reset-config-test.sh",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -117,6 +122,8 @@
     "rimraf": "^5.0.1",
     "rxjs": "^7.8.1",
     "type-fest": "^4.3.1",
+    "typeorm": "^0.3.20",
+    "typeorm-fixtures-cli": "^4.0.0",
     "uuid": "^10.0.0",
     "xml-js": "^1.6.11",
     "xml2js": "^0.6.2"
@@ -295,7 +302,15 @@
       "^@fc/dto2form(|/.*)$": "<rootDir>/libs/dto2form/src/$1",
       "^@mocks/dto2form(|/.*)$": "<rootDir>/libs/dto2form/.mocks/$1",
       "^@fc/logger-plugins(|/.*)$": "<rootDir>/libs/logger-plugins/src/$1",
-      "^@mocks/common(|/.*)$": "<rootDir>/libs/common/.mocks/$1"
+      "^@mocks/common(|/.*)$": "<rootDir>/libs/common/.mocks/$1",
+      "^@mocks/typeorm(|/.*)$": "<rootDir>/libs/typeorm/.mocks/$1",
+      "^@fc/postgres(|/.*)$": "<rootDir>/libs/postgres/src/$1",
+      "^@fc/partners-account(|/.*)$": "<rootDir>/libs/partners-account/src/$1",
+      "^@fc/partners-organisation(|/.*)$": "<rootDir>/libs/partners-organisation/src/$1",
+      "^@fc/partners-service-provider(|/.*)$": "<rootDir>/libs/partners-service-provider/src/$1",
+      "^@fc/partners-service-provider-instance(|/.*)$": "<rootDir>/libs/partners-service-provider-instance/src/$1",
+      "^@fc/partners-service-provider-instance-version(|/.*)$": "<rootDir>/libs/partners-service-provider-instance-version/src/$1",
+      "^@fc/access-control(|/.*)$": "<rootDir>/libs/access-control/src/$1"
     },
     "preset": "ts-jest"
   }

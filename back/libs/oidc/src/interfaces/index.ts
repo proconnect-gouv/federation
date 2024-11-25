@@ -2,6 +2,7 @@
 
 // Declarative code
 export * from './access-token.interface';
+export * from './base-identity.interface';
 export * from './identity.interface';
 export * from './identity-provider.interface';
 export * from './oidc-callback.interface';

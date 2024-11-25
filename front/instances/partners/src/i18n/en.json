@@ -1,1 +1,8 @@
-{}
+{
+  "Partners.button.create_instance": "Add a test instance",
+  "Partners.homepage.sandbox_title": "My Sandbox",
+  "Partners.homepage.create_tile_desc": "Use your datapass number to perform tests with a sandbox provided for you.",
+  "Partners.homepage.create_tile_title": "Create a test instance",
+  "Partners.homepage.sandbox_tile_desc": "Access and create your test instances with public keys. It is not linked to your integration and production environments.",
+  "Partners.homepage.sandbox_tile_title": "Public Sandbox"
+}

@@ -2,7 +2,14 @@ import classnames from 'classnames';
 import type { FormEventHandler } from 'react';
 import React, { useCallback } from 'react';
 
-import { AlertComponent, AlertTypes, SimpleButton, Sizes, ToggleInput } from '@fc/dsfr';
+import {
+  AlertComponent,
+  AlertTypes,
+  ButtonTypes,
+  SimpleButton,
+  Sizes,
+  ToggleInput,
+} from '@fc/dsfr';
 import { useStylesQuery, useStylesVariables } from '@fc/styles';
 
 import { useUserPreferencesForm } from '../hooks';
@@ -115,10 +122,10 @@ export const UserPreferencesFormComponent: React.FC<UserPreferencesFormComponent
           })}>
           <SimpleButton
             disabled={isDisabled || alertInfoState.isDisplayedAlertInfo}
-            label="Enregistrer mes réglages"
             size={Sizes.LARGE}
-            type="submit"
-          />
+            type={ButtonTypes.SUBMIT}>
+            Enregistrer mes réglages
+          </SimpleButton>
           {showNotification && (
             <p className="fr-mt-3v">
               Une notification récapitulant les modifications va vous être envoyée
