@@ -271,22 +271,30 @@ export class UserDashboardController {
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<FormattedIdpSettingDto | HttpErrorResponse> {
-    const idpIdentity = sessionOidc.get('idpIdentity') as OidcIdentityInterface;
-    if (!idpIdentity) {
-      return res.status(HttpStatus.UNAUTHORIZED).send({
-        code: 'INVALID_SESSION',
+    try {
+      const idpIdentity = sessionOidc.get(
+        'idpIdentity',
+      ) as OidcIdentityInterface;
+      if (!idpIdentity) {
+        return res.status(HttpStatus.UNAUTHORIZED).json({
+          code: 'INVALID_SESSION',
+        });
+      }
+
+      const identityFiltered = getTransformed<PivotIdentityDto>(
+        idpIdentity,
+        PivotIdentityDto,
+        FILTERED_OPTIONS,
+      );
+
+      await this.fraud.processFraudCase(identityFiltered, body);
+
+      return res.status(HttpStatus.OK).json({
+        code: 'SUCCESS',
       });
+    } catch (err) {
+      console.error('Error:', err);
     }
-
-    const identityFiltered = getTransformed<PivotIdentityDto>(
-      idpIdentity,
-      PivotIdentityDto,
-      FILTERED_OPTIONS,
-    );
-
-    await this.fraud.processFraudCase(identityFiltered, body);
-
-    return res.status(HttpStatus.OK).send();
   }
 
   private async trackUserPreferenceChange(

@@ -37,6 +37,7 @@ export const useFraudFormApi = (options: FraudConfigInterface) => {
         removeLocalFraudSurveyOrigin();
         setSubmitWithSuccess(true);
       } catch (err) {
+        console.error(err);
         setSubmitErrors(err as Error);
         setSubmitWithSuccess(false);
       }
