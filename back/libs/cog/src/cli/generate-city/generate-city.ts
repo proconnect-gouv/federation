@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 import { FilesName, Folder } from '../enums';
-import { createCSV, getCwdForDirectory, readCSV } from '../helpers';
+import { generateCsvContent, getCwdForDirectory, readCSV } from '../helpers';
 import {
   InseeDbCityComerInterface,
   InseeDbCityCurrentInterface,
@@ -197,9 +197,11 @@ export class GenerateCity {
   }
 
   private writeCsvFile(searchData: SearchDbCityInterface[]): void {
-    const targetDirectory = getCwdForDirectory(Folder.TARGET_DIRECTORY);
+    const targetDirectory = getCwdForDirectory(
+      Folder.TARGET_DIRECTORY_FOR_FCAPPS,
+    );
     const filenameCsv = FilesName.CITY;
-    const fileContent = createCSV(searchData);
+    const fileContent = generateCsvContent(searchData);
 
     if (!existsSync(targetDirectory)) {
       mkdirSync(targetDirectory, { recursive: true });
