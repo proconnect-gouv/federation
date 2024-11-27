@@ -2,7 +2,7 @@ import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
 import { FilesName } from '../enums';
-import { createCSV, getCwdForDirectory, readCSV } from '../helpers';
+import { generateCsvContent, getCwdForDirectory, readCSV } from '../helpers';
 import {
   InseeDbCityComerInterface,
   InseeDbCityCurrentInterface,
@@ -631,8 +631,8 @@ describe('GenerateCity', () => {
       service['writeCsvFile'](searchDataMock);
 
       // Then
-      expect(createCSV).toHaveBeenCalledTimes(1);
-      expect(createCSV).toHaveBeenCalledWith(searchDataMock);
+      expect(generateCsvContent).toHaveBeenCalledTimes(1);
+      expect(generateCsvContent).toHaveBeenCalledWith(searchDataMock);
     });
 
     it('should check if the target directory exists', () => {
@@ -685,7 +685,7 @@ describe('GenerateCity', () => {
       expect(writeFileSync).toHaveBeenCalledTimes(1);
       expect(writeFileSync).toHaveBeenCalledWith(
         filePathMock,
-        createCSV(searchDataMock),
+        generateCsvContent(searchDataMock),
       );
     });
   });
