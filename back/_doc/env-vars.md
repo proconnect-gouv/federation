@@ -279,9 +279,9 @@
 | App_ENVIRONMENT | string |
 | App_FRAUD_EMAIL_ADDRESS | string |
 | App_FRAUD_EMAIL_RECIPIENT | string |
+| Elasticsearch_FRAUD_INDEX | string |
 | Elasticsearch_NODES | json |
 | Elasticsearch_PASSWORD | string |
-| Elasticsearch_TRACKS_INDEX | string |
 | Elasticsearch_USERNAME | string |
 | FraudBroker_QUEUE | string |
 | FraudBroker_URLS | json |

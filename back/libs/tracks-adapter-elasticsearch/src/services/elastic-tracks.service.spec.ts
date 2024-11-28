@@ -274,7 +274,7 @@ describe('ElasticTracksService', () => {
 
   describe('getElasticLogs()', () => {
     const configDataMock: Partial<ElasticsearchConfig> = {
-      tracksIndex: 'indexValue',
+      index: 'indexValue',
     };
 
     const dateQueryMock: QueryDslQueryContainer = {
