@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { AxiosError } from 'axios';
 
 export class AxiosException extends Error {

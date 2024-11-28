@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// @NOTE refacto needed
 // AppContext + useApiGet should be merged
 // the axios wrapper might not be a hook but a function
 import axios from 'axios';

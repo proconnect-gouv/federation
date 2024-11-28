@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { IsObject, IsOptional, IsString, IsUUID } from 'class-validator';
 
 import {

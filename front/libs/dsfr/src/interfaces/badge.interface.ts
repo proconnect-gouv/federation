@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { IconType } from 'react-icons';
 
 import type { Sizes } from '../enums';

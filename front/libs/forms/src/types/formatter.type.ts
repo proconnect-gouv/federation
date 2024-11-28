@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 // @NOTE Can be used to format the value before displaying it
 // Use this to format text input like phone number or date
 // EX: (value) => value.toUpperCase()

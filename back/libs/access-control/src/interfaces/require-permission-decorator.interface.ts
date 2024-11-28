@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { EntityType, PermissionsType } from '../enums';
 
 export interface EntityIdInterface {

@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { TracksFormatterOutputAbstract } from './tracks-formatter-output.abstract';
 
 export interface TracksAdapterResultsInterface<

@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 export * from './accordions';
 export * from './alerts';
 export * from './badge';

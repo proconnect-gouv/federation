@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { Repository } from 'typeorm';
 
 import { DynamicModule, Module, Type } from '@nestjs/common';

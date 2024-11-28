@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { RichClaimInterface } from '@fc/scopes';
 import { TracksFormatterOutputAbstract } from '@fc/tracks-adapter-elasticsearch';
 

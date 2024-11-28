@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declaration only
 export interface InseeDbCountryCurrentInterface {
   COG: string;
   ACTUAL: string;

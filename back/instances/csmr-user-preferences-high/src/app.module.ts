@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { CsmrUserPreferencesModule } from 'apps/csmr-user-preferences/src';
 
 import { DynamicModule, Module } from '@nestjs/common';

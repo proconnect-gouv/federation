@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { TracksFormatterOutputAbstract } from '@fc/tracks-adapter-elasticsearch';
 
 /**

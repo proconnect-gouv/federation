@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 export * from './core-base.exception';
 export * from './core-claim-amr.exception';
 export * from './core-failed-persistence-exception';

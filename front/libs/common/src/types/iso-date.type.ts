@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 type TYear = `${number}${number}${number}${number}`;
 type TMonth = `${number}${number}`;
 type TDay = `${number}${number}`;

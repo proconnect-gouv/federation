@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Tested by DTO
 import { CsmrFraudConfig } from '@fc/csmr-fraud';
 
 import AccountHighBroker from './account-high-broker';

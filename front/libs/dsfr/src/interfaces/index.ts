@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 export * from './accordion-group-item.interface';
 export * from './badge.interface';
 export * from './button.interface';

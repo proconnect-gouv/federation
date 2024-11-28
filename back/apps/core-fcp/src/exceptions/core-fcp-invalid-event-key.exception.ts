@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { CoreBaseException, ErrorCode } from '@fc/core';
 /**
  * @todo #992 do not extend class from @fc/core, use a specific BaseException instead

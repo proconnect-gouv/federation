@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative file
 import { IsArray, IsOptional, IsString, MinLength } from 'class-validator';
 
 import { IsUrlRequiredTldFromConfig, Split } from '@fc/common';

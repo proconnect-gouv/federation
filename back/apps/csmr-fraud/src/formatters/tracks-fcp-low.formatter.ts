@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-// Declarative file
+// Only injects specific service and inherit everything
 import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@fc/logger';

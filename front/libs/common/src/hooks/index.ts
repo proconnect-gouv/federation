@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 export * from './clipboard';
 export * from './content-height.hook';
 export * from './safe-context';

@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative code
 export * from './session-bad-alias.exception';
 export * from './session-bad-cookie.exception';
 export * from './session-bad-format.exception';

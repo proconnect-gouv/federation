@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { Decorator, SubmissionErrors, ValidationErrors } from 'final-form';
 
 import type { FormConfigInterface } from './form-props-config.interface';

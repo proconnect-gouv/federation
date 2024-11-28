@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { PartnersModule } from 'apps/partners/src';
 
 import { DynamicModule, Module } from '@nestjs/common';

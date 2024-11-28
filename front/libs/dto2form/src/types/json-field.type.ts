@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { FieldTypes } from '@fc/forms';
 
 import type { FieldAttributes } from '../interfaces/field-attributes.interface';

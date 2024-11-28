@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import type { FieldAttributes, FieldAttributesArguments } from './field-attributes.interface';
 
 export interface InputAttributesArguments extends FieldAttributesArguments {}

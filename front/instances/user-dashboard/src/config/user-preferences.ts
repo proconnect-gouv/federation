@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { UserPreferencesConfig } from '@fc/user-preferences';
 
 const API_BASE_URL = '/api';

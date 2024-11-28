@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { PartnersConfig } from '@fc/partners';
 
 import App from './app';

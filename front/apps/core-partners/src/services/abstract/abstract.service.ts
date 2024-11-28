@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-// declarative file
+// To be refactored
 import { commit } from './commit';
 import { get } from './get';
 

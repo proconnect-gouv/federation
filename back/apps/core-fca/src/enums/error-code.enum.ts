@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative file
 export enum ErrorCode {
   NO_IDP = 1,
   MISSING_AT_HASH = 2,

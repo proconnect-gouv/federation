@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { JSONFieldType } from '@fc/dto2form';
 
 export interface VersionContextInterface {

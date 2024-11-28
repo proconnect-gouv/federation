@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative file
 import type { RequireAtLeastOne } from 'type-fest';
 
 import { EntityType, PermissionsType } from '../enums';

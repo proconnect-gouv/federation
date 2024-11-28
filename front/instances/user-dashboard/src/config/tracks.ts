@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { TracksConfig } from '@fc/tracks';
 
 // API URLs

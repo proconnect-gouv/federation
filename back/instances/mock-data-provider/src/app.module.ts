@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { MockDataProviderModule } from 'apps/mock-data-provider/src';
 
 import { DynamicModule, Module } from '@nestjs/common';

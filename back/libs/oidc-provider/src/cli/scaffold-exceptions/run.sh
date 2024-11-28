@@ -7,16 +7,14 @@ _generate_oidc_provider_exceptions() {
 
   local pattern="${exceptionDir}/*.exception.ts"
 
-  local istanbulIgnore="/* istanbul ignore file */
-
-/**
+  local header="/**
   * Code generated from oidc-provider exceptions
   * @see @fc/oidc-provider/src/cli/scaffold-exceptions/run.sh
   */
 "
   indexMap="export const exceptionSourceMap = {"
-  local indexImports="${istanbulIgnore}"
-  local i18n="${istanbulIgnore}const DEFAULT_MESSAGE = 'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.';
+  local indexImports="${header}"
+  local i18n="${header}const DEFAULT_MESSAGE = 'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.';
   
 export const frFR = {"
 
@@ -62,7 +60,7 @@ ${identifier}"
     local relativeFileName="oidc-provider-runtime-${class}-${identifier}.exception"
     local fileName="${exceptionDir}/${relativeFileName}.ts"
     local className="OidcProviderRuntime_${class}_${identifier}_Exception"
-    local TEMPLATE="${istanbulIgnore}import { OidcProviderBaseRuntimeException } from '../oidc-provider-base-runtime.exception';
+    local TEMPLATE="${header}import { OidcProviderBaseRuntimeException } from '../oidc-provider-base-runtime.exception';
 
 export class ${className} extends OidcProviderBaseRuntimeException {
   static CODE = '${identifier}';

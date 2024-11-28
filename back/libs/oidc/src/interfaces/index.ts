@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 export * from './access-token.interface';
 export * from './base-identity.interface';
 export * from './identity.interface';
