@@ -148,14 +148,13 @@ export class ElasticTracksService {
       },
     };
 
-    const { tracksIndex } =
-      this.config.get<ElasticsearchConfig>('Elasticsearch');
+    const { index } = this.config.get<ElasticsearchConfig>('Elasticsearch');
 
     const query: SearchType = {
       // Elastic Search params
       // eslint-disable-next-line @typescript-eslint/naming-convention
       rest_total_hits_as_int: true,
-      index: tracksIndex,
+      index,
       from: offset,
       size,
       sort: [
