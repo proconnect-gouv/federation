@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 export * from './formatter.type';
 export * from './props-with-hint.type';
 export * from './props-with-input-choice.type';

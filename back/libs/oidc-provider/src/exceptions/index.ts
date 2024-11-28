@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 export * from './oidc-provider-authorize-params.exception';
 export * from './oidc-provider-base.exception';
 export * from './oidc-provider-base-redirect.exception';

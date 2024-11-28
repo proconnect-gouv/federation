@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 export * from './alert-types.enum';
 export * from './button-types.enum';
 export * from './card-backgrounds.enum';

@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 export enum EntityType {
   ORGANISATION = 'ORGANISATION',
   SERVICE_PROVIDER = 'SERVICE_PROVIDER',

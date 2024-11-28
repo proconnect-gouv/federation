@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 export * from './access-control.module';
 export * from './decorators';
 export * from './enums';

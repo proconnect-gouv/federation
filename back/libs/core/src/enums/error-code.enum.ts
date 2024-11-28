@@ -1,5 +1,3 @@
-/* istanbul ignore file */
-
 export enum ErrorCode {
   LOW_ACR = 1,
   INVALID_ACR = 2,

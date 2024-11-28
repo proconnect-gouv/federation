@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 export * from './partners-account.entity';
 export * from './partners-account-permission.entity';
 export * from './partners-organisation.entity';

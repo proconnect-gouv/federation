@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import type { FieldValidateIfRule } from './field-validate-if-rule.interface';
 import type { FieldValidator, FieldValidatorBase } from './field-validator.interface';
 

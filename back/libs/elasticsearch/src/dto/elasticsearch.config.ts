@@ -1,4 +1,3 @@
-/* istanbul ignore file */
 import { IsArray, IsString, IsUrl } from 'class-validator';
 
 export class ElasticsearchConfig {

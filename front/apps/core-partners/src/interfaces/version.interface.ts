@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { AnyObjectInterface, ISODate } from '@fc/common';
 
 import type { PublicationStatus } from '../enums';

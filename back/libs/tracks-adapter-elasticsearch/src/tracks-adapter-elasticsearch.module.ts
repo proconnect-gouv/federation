@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import { DynamicModule, Module, Type } from '@nestjs/common';
 
 import { ElasticsearchModule } from '@fc/elasticsearch';

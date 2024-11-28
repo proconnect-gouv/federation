@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 export enum ComponentTypes {
   // @NOTE Types used as in `ReactFinalForm.Field.component` property
   INPUT = 'input',

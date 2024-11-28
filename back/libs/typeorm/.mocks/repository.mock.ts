@@ -1,7 +1,3 @@
-/* istanbul ignore file */
-
-// This is a moc
-
 export function getRepositoryMock() {
   const mock = {
     manager: {

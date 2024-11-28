@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { FieldRenderProps } from 'react-final-form';
 
 import type { InputConfigInterface } from '../interfaces';

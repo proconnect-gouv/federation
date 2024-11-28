@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { CoreBaseException } from '@fc/core';
 
 import { ErrorCode } from '../enums';

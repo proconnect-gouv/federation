@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 export * from './field-attributes.interface';
 export * from './field-errors.interface';
 export * from './field-validate-if-rule.interface';

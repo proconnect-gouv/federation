@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { ISODate } from '@fc/common';
 
 import type { Environment } from '../enums';

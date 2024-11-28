@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { uuid } from '@fc/common';
 
 import { EntityType, PermissionsType } from '../enums';

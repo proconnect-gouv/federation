@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import type { Sizes } from '@fc/dsfr';
 
 import type { PropsWithHintType } from '../types';

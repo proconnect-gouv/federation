@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// declarative file
 import { renderHook } from '@testing-library/react';
 
 const Wrapper = ({ children, className }: { className: string; children: React.ReactNode }) => (

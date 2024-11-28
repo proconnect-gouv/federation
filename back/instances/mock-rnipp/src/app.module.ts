@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { MockRnippModule } from 'apps/mock-rnipp/src';
 
 import { DynamicModule, Module } from '@nestjs/common';

@@ -1,8 +1,5 @@
-/* istanbul ignore file */
-
 import { TracksTicketDataInterface } from './tracks-results.interface';
 
-// Declarative code
 export interface SecurityTicketDataInterface {
   givenName: string;
   familyName: string;

@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { OidcProviderBaseRedirectException } from '@fc/oidc-provider/exceptions';
 
 import { ErrorCode } from '../enums';

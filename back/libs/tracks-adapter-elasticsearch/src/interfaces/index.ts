@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 export * from './elastic-tracks.type';
 export * from './elastic-tracks-results.interface';
 export * from './search.type';

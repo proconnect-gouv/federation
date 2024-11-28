@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 import { BaseOidcIdentityInterface } from './base-identity.interface';
 
 /**

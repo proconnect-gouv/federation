@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-// Declarative file
+// Only injects specific service and inherit everything
 import { Inject, Injectable } from '@nestjs/common';
 
 import { ConfigService } from '@fc/config';
@@ -12,7 +12,6 @@ import {
   TracksFormatterAbstract,
 } from '@fc/tracks-adapter-elasticsearch';
 
-// No barrel file to prevent circular dependency
 import { Platform } from '../enums';
 import { TracksV2Formatter } from './tracks-v2.formatter';
 

@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Tested by DTO
 import { ExceptionsFcpConfig } from '@fc/exceptions-fcp';
 
 export default {

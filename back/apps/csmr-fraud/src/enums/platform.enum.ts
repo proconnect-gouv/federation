@@ -1,6 +1,3 @@
-/* istanbul ignore file */
-
-// Declarative code
 export const enum Platform {
   FCP_HIGH = 'FC+',
   FCP_LOW = 'FC (v2)',
