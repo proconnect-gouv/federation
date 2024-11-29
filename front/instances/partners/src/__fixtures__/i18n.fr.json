@@ -1,11 +1,12 @@
 {
-  "CorePartners.version.createAt": "Créée le : {date}",
+  "CorePartners.version.createdAt": "Créée le : {date}",
   "DSFR.stepper.location": "Étape {current} sur {total}",
   "DSFR.stepper.nextStep": "Étape suivante",
   "DSFR.breadcrumbs.show": "Voir le fil d’Ariane",
   "DSFR.breadcrumbs.location": "vous êtes ici :",
   "DSFR.button.loginConnect.authenticateWith": "S’identifier avec",
   "DSFR.button.loginConnect.whatIs": "Qu’est ce que {connectType} ?",
+  "DSFR.alert.close": "Masquer le message",
   "FC.Common.newWindow": "Nouvelle fenêtre",
   "Form.submit": "Envoyer ces informations",
   "Form.reset": "Effacer le formulaire",
@@ -18,10 +19,12 @@
   "Form.FORM_ERROR": "Une erreur s'est produite lors de la soumission du formulaire.",
   "TracksPage.previousPage": "Page précédente",
   "TracksPage.nextPage": "Page suivante",
-  "Partners.button.create_instance": "Ajouter une instance de test",
-  "Partners.homepage.sandbox_title": "Mon Bac à Sable",
-  "Partners.homepage.create_tile_desc": "Munissez vous de votre numéro de datapass pour réaliser les tests avec un bac à sable mis à votre disposition.",
-  "Partners.homepage.create_tile_title": "Créer une instance de test",
-  "Partners.homepage.sandbox_tile_desc": "Accéder et créer vos instances de test avec les clés publiques. Il n’est pas lié à vos environnement d’intégration et de production.",
-  "Partners.homepage.sandbox_tile_title": "Bac à sable public"
+  "Partners.button.createInstance": "Ajouter une instance de test",
+  "Partners.homepage.sandboxTitle": "Mon Bac à Sable",
+  "Partners.homepage.createTileDescription": "Munissez vous de votre numéro de datapass pour réaliser les tests avec un bac à sable mis à votre disposition.",
+  "Partners.homepage.createTileTitle": "Créer une instance de test",
+  "Partners.homepage.sandboxTileDescription": "Accéder et créer vos instances de test avec les clés publiques. Il n’est pas lié à vos environnement d’intégration et de production.",
+  "Partners.homepage.sandboxTileTitle": "Bac à sable public",
+  "Partners.instance.successCreate": "Votre instance de test a été créée.",
+  "Partners.instance.successUpdate": "Votre instance de test a été mise à jour."
 }

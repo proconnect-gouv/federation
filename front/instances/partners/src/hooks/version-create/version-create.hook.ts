@@ -7,7 +7,7 @@ import type { JSONFieldType } from '@fc/dto2form';
 import { UNKNOWN_FORM_ERROR } from '@fc/forms';
 import type { HttpClientDataInterface } from '@fc/http-client';
 
-import { RouteLoaderDataIds } from '../../enums';
+import { RouteLoaderDataIds, SubmitTypes, SubmitTypesMessage } from '../../enums';
 
 export const useVersionCreate = () => {
   const navigate = useNavigate();
@@ -22,7 +22,12 @@ export const useVersionCreate = () => {
         return (response && response.payload) || UNKNOWN_FORM_ERROR;
       }
 
-      navigate('..', { replace: true, state: { submitSuccess: true } });
+      const submitState = {
+        message: SubmitTypesMessage.INSTANCE_SUCCESS_CREATE,
+        type: SubmitTypes.SUCCESS,
+      };
+
+      navigate('..', { replace: true, state: { submitState } });
       return null;
     },
     [navigate],

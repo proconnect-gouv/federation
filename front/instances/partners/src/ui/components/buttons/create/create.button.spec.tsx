@@ -28,6 +28,6 @@ describe('CreateButton', () => {
       {},
     );
     expect(t).toHaveBeenCalledOnce();
-    expect(t).toHaveBeenCalledWith('Partners.button.create_instance');
+    expect(t).toHaveBeenCalledWith('Partners.button.createInstance');
   });
 });

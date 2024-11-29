@@ -11,7 +11,7 @@ interface VersionComponentProps {
 
 // @TODO rename to InstanceComponent
 export const VersionComponent = React.memo(({ item }: VersionComponentProps) => {
-  const date = t('CorePartners.version.createAt', { date: item.createdAt });
+  const date = t('CorePartners.version.createdAt', { date: item.createdAt });
 
   return (
     <CardComponent

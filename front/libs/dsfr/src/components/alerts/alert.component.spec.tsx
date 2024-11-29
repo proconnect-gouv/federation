@@ -1,6 +1,8 @@
 import { render } from '@testing-library/react';
 
-import { AlertTypes, Sizes } from '../../enums';
+import { EventTypes } from '@fc/common';
+
+import { Sizes } from '../../enums';
 import { AlertComponent } from './alert.component';
 
 describe('Alert', () => {
@@ -51,7 +53,7 @@ describe('Alert', () => {
   it('should have class fr-alert--error if type is ERROR', () => {
     // when
     const { getByTestId } = render(
-      <AlertComponent type={AlertTypes.ERROR}>Children</AlertComponent>,
+      <AlertComponent type={EventTypes.ERROR}>Children</AlertComponent>,
     );
     const element = getByTestId('AlertComponent');
 
@@ -62,7 +64,7 @@ describe('Alert', () => {
   it('should have class fr-alert--info if type is INFO', () => {
     // when
     const { getByTestId } = render(
-      <AlertComponent type={AlertTypes.INFO}>Children</AlertComponent>,
+      <AlertComponent type={EventTypes.INFO}>Children</AlertComponent>,
     );
     const element = getByTestId('AlertComponent');
 
@@ -73,7 +75,7 @@ describe('Alert', () => {
   it('should have class fr-alert--success if type is SUCCESS', () => {
     // when
     const { getByTestId } = render(
-      <AlertComponent type={AlertTypes.SUCCESS}>Children</AlertComponent>,
+      <AlertComponent type={EventTypes.SUCCESS}>Children</AlertComponent>,
     );
     const element = getByTestId('AlertComponent');
 
@@ -84,7 +86,7 @@ describe('Alert', () => {
   it('should have class fr-alert--warning if type is WARNING', () => {
     // when
     const { getByTestId } = render(
-      <AlertComponent type={AlertTypes.WARNING}>Children</AlertComponent>,
+      <AlertComponent type={EventTypes.WARNING}>Children</AlertComponent>,
     );
     const element = getByTestId('AlertComponent');
 
@@ -104,7 +106,7 @@ describe('Alert', () => {
   it('should have a custom testid', () => {
     // when
     const { getByTestId } = render(
-      <AlertComponent dataTestId="alert-component-custom-testid" type={AlertTypes.WARNING}>
+      <AlertComponent dataTestId="alert-component-custom-testid" type={EventTypes.WARNING}>
         Children
       </AlertComponent>,
     );

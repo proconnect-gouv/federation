@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 
-// To be refactored
+// declarative file
 import { create } from './create';
 import { loadAll } from './load-all';
 import { loadSchema } from './load-schema';

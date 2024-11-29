@@ -74,3 +74,10 @@ export enum HttpMethods {
   PATCH = 'patch',
   DELETE = 'delete',
 }
+
+export enum EventTypes {
+  ERROR = 'error',
+  INFO = 'info',
+  SUCCESS = 'success',
+  WARNING = 'warning',
+}
