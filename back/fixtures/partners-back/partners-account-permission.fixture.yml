@@ -51,3 +51,31 @@ items:
     # @sp2-i1-sandbox
     entityId: 'efa51522-26e9-4d03-8958-816ff59a74bd'
     account: '@user-bernard-martinot'
+
+  permissions-spi-list-3:
+    id: '049e6bbc-13cf-4202-8ada-a065d0703f03'
+    permissionType: 'LIST'
+    entity: 'SP_INSTANCE'
+    account: '@user-bdd-default'
+
+  permissions-spi-3:
+    id: 'b0b5dc53-1f51-45e9-aab4-e9be58973a85'
+    permissionType: 'VIEW'
+    entity: 'SP_INSTANCE'
+    # @sp3-i1-sandbox
+    entityId: 'acfacfcf-291b-43bd-abe7-fb234b3d879e'
+    account: '@user-bdd-default'
+
+  permissions-spi-list-4:
+    id: 'cf24e90b-2d42-468f-af23-7612f64cacbe'
+    permissionType: 'LIST'
+    entity: 'SP_INSTANCE'
+    account: '@user-bdd-one-instance'
+
+  permissions-spi-4:
+    id: 'fdcad688-eb6f-40a4-a52b-b4de8948d5f9'
+    permissionType: 'VIEW'
+    entity: 'SP_INSTANCE'
+    # @sp4-i1-sandbox
+    entityId: '50b70101-0e1f-419a-9365-81754c2de689'
+    account: '@user-bdd-one-instance'
