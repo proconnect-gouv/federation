@@ -56,16 +56,16 @@ export const AccordionGroupComponent = jest.fn(({ children }) => (
   </div>
 ));
 
-export const LoginConnectButton = jest.fn(({ type }) => (
-  <div data-mockid="LoginConnectButton">
+export const LoginConnectComponent = jest.fn(({ type }) => (
+  <div data-mockid="LoginConnectComponent">
     <div>{type}</div>
-    <div>LoginConnectButton</div>
+    <div>LoginConnectComponent</div>
   </div>
 ));
 
 export const ConnectTypes = {
   FRANCE_CONNECT: 'FranceConnect',
-  AGENT_CONNECT: 'AgentConnect',
+  PRO_CONNECT: 'ProConnect',
 };
 
 export const Sizes = {

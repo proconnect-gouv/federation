@@ -32,7 +32,8 @@ describe('Login Page', () => {
     expect(LoginFormComponent).toHaveBeenCalledWith(
       {
         className: 'flex-rows items-start',
-        connectType: 'AgentConnect',
+        connectType: 'ProConnect',
+        showHelp: true,
       },
       {},
     );
@@ -57,7 +58,8 @@ describe('Login Page', () => {
     expect(LoginFormComponent).toHaveBeenCalledWith(
       {
         className: 'flex-rows items-start',
-        connectType: 'AgentConnect',
+        connectType: 'ProConnect',
+        showHelp: true,
       },
       {},
     );

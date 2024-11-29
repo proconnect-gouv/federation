@@ -2,5 +2,7 @@
   "DSFR.stepper.location": "Étape {current} sur {total}",
   "DSFR.stepper.nextStep": "Étape suivante",
   "DSFR.breadcrumbs.show": "Voir le fil d’Ariane",
-  "DSFR.breadcrumbs.location": "vous êtes ici :"
+  "DSFR.breadcrumbs.location": "vous êtes ici :",
+  "DSFR.button.loginConnect.whatIs": "Qu’est ce que {connectType} ?",
+  "DSFR.button.loginConnect.authenticateWith": "S’identifier avec"
 }
