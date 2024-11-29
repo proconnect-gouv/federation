@@ -26,3 +26,6 @@ Edmee.Martinot,123,23,ministère de la culture,343293775,edmee.martinot.ext@cult
 Brunot.Martinot,123,24,ministère de la culture,343293775,brunot.martinot.ext@culture.gouv.fr,Martinot,Bruno,agent,34329377500037,+331-12-44-45-23,MinistèreIntérieur,123478,false,
 TestInteg,123,25,comptabilite,343293775,franceconnect.recette@gmail.com,NUM,Lady Di,agent,34329377500037,33123456789,MinistèreIntérieur,123479,false,
 TestInteg2,123,26,comptabilite,343293775,duplanty.test@gmail.com,DUPLANTY,Mélodie,agent,34329377500037,33123456789,MinistèreIntérieur,123479,false,
+bdd_default,123,31,comptabilite,130025265,hdubois@yopmail.com,DUBOIS,Hugo,agent,13002526500013,33123456789,DINUM,00001,true,comptable
+bdd_new,123,32,projet,130025265,mcgarnier@yopmail.com,GARNIER,Marie-Charlène,agent,13002526500013,33123456789,DINUM,00002,true,chef de projet
+bdd_one_instance,123,33,projet,999912345,cchevalier@yopmail.com,CHEVALIER,Clara Angela,project,99991234500011,33123456789,,,false,technicienne
