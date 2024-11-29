@@ -10,7 +10,7 @@ export const CreateButton = React.memo(() => (
     iconPlacement={IconPlacement.LEFT}
     link="create"
     priority={Priorities.TERTIARY}>
-    {t('Partners.button.create_instance')}
+    {t('Partners.button.createInstance')}
   </LinkButton>
 ));
 

@@ -1,4 +1,5 @@
 export * from './accordions';
+export * from './alert-v2';
 export * from './alerts';
 export * from './badge';
 export * from './badges-group';

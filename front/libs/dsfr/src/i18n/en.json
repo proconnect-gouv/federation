@@ -4,5 +4,6 @@
   "DSFR.breadcrumbs.show": "Show breadcrumbs",
   "DSFR.breadcrumbs.location": "You are here :",
   "DSFR.button.loginConnect.whatIs": "What is {connectType}?",
-  "DSFR.button.loginConnect.authenticateWith": "Authenticate with"
+  "DSFR.button.loginConnect.authenticateWith": "Authenticate with",
+  "DSFR.alert.close": "Hide the message"
 }

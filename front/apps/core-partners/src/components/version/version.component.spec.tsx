@@ -29,7 +29,7 @@ describe('VersionComponent', () => {
 
     // Then
     expect(t).toHaveBeenCalledOnce();
-    expect(t).toHaveBeenCalledWith('CorePartners.version.createAt', { date: 'any-date-mock' });
+    expect(t).toHaveBeenCalledWith('CorePartners.version.createdAt', { date: 'any-date-mock' });
     expect(container).toMatchSnapshot();
     expect(CardComponent).toHaveBeenCalledOnce();
     expect(CardComponent).toHaveBeenCalledWith(

@@ -66,3 +66,43 @@ exports[`VersionsPage should match snapshot, when items are not empties 1`] = `
   </div>
 </div>
 `;
+
+exports[`VersionsPage should match snapshot, when the alert component is displayed 1`] = `
+<div>
+  <div
+    class="fr-col-12 fr-col-md-6"
+  >
+    <div
+      class="fr-col-12"
+    >
+      <h1>
+        any
+      </h1>
+    </div>
+    <div
+      data-mockid="AlertComponentV2"
+    />
+    <div
+      class="fr-col-12"
+    >
+      <div
+        data-mockid="CreateButton"
+      />
+    </div>
+    <div
+      class="fr-col-12"
+    >
+      <div
+        data-mockid="VersionsListComponent"
+      />
+    </div>
+    <div
+      class="fr-col-12"
+    >
+      <div>
+        TileComponent
+      </div>
+    </div>
+  </div>
+</div>
+`;

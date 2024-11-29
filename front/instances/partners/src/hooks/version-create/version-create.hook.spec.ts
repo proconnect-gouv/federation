@@ -84,7 +84,12 @@ describe('useVersionCreate', () => {
       expect(navigateMock).toHaveBeenCalledOnce();
       expect(navigateMock).toHaveBeenCalledWith('..', {
         replace: true,
-        state: { submitSuccess: true },
+        state: {
+          submitState: {
+            message: 'Partners.instance.successCreate',
+            type: 'success',
+          },
+        },
       });
       expect(errors).toBeNull();
     });

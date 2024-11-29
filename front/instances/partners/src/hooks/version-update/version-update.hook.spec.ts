@@ -48,7 +48,7 @@ describe('useVersionUpdate', () => {
     expect(useRouteLoaderData).toHaveBeenCalledWith('dto2form::version::shema');
   });
 
-  describe('the submit function', () => {
+  describe('Submit function', () => {
     it('should call VersionsService.update with data when submit is called', async () => {
       // Given
       const dataMock = Symbol('data-mock') as unknown as HttpClientDataInterface;
@@ -92,7 +92,7 @@ describe('useVersionUpdate', () => {
       expect(errors).toStrictEqual({ 'FINAL_FORM/form-error': 'Form.FORM_ERROR' });
     });
 
-    it('should call navigate if VersionsService.update is not returning any errors', async () => {
+    it('should call navigate if VersionsService.update with params is not returning any errors', async () => {
       // Given
       const dataMock = Symbol('data-mock') as unknown as HttpClientDataInterface;
 
@@ -104,9 +104,14 @@ describe('useVersionUpdate', () => {
 
       // Then
       expect(navigateMock).toHaveBeenCalledOnce();
-      expect(navigateMock).toHaveBeenCalledWith('.', {
+      expect(navigateMock).toHaveBeenCalledWith('..', {
         replace: true,
-        state: { submitSuccess: true },
+        state: {
+          submitState: {
+            message: 'Partners.instance.successUpdate',
+            type: 'success',
+          },
+        },
       });
       expect(errors).toBeNull();
     });
