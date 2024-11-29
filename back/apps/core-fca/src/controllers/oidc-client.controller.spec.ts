@@ -145,7 +145,7 @@ describe('OidcClient Controller', () => {
   const trackingServiceMock: TrackingService = {
     track: jest.fn(),
     TrackedEventsMap: {
-      FC_FQDN_MISSMATCH: Symbol('FC_FQDN_MISSMATCH'),
+      FC_FQDN_MISMATCH: Symbol('FC_FQDN_MISMATCH'),
       IDP_CALLEDBACK: {},
     },
   } as unknown as TrackingService;
@@ -650,7 +650,7 @@ describe('OidcClient Controller', () => {
       // Then
       expect(trackingServiceMock.track).toHaveBeenCalledTimes(4);
       expect(trackingServiceMock.track).toHaveBeenCalledWith(
-        trackingServiceMock.TrackedEventsMap.FC_FQDN_MISSMATCH,
+        trackingServiceMock.TrackedEventsMap.FC_FQDN_MISMATCH,
         { req },
       );
     });
