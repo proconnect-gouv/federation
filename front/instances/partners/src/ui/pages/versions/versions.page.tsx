@@ -1,4 +1,5 @@
 import React from 'react';
+import { ScrollRestoration } from 'react-router-dom';
 
 import { VersionsListComponent } from '@fc/core-partners';
 import { AlertComponentV2, Sizes, TileComponent } from '@fc/dsfr';
@@ -52,6 +53,7 @@ export const VersionsPage = React.memo(() => {
           title={t('Partners.homepage.sandboxTileTitle')}
         />
       </div>
+      {submitState && <ScrollRestoration />}
     </div>
   );
 });
