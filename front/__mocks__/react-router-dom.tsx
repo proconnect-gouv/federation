@@ -19,6 +19,7 @@ module.exports = {
     return <div data-mockid={'BrowserRouter'}>{children}</div>;
   }),
   Routes: jest.fn(({ children }) => children),
+  ScrollRestoration: jest.fn(() => <span data-mockid={'ScrollRestoration'} />),
   matchPath: jest.fn(),
   useLocation: jest.fn(() => ({
     pathname: '',

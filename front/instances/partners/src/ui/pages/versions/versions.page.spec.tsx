@@ -1,4 +1,5 @@
 import { render } from '@testing-library/react';
+import { ScrollRestoration } from 'react-router-dom';
 
 import type { EventTypes } from '@fc/common';
 import { type InstanceInterface, VersionsListComponent } from '@fc/core-partners';
@@ -73,6 +74,7 @@ describe('VersionsPage', () => {
       },
       {},
     );
+    expect(ScrollRestoration).not.toHaveBeenCalled();
   });
 
   it('should match snapshot, when items are not empties', () => {
@@ -116,6 +118,7 @@ describe('VersionsPage', () => {
       },
       {},
     );
+    expect(ScrollRestoration).not.toHaveBeenCalled();
   });
 
   it('should match snapshot, when the alert component is displayed', () => {
@@ -148,5 +151,7 @@ describe('VersionsPage', () => {
       },
       {},
     );
+    expect(ScrollRestoration).toHaveBeenCalledOnce();
+    expect(ScrollRestoration).toHaveBeenCalledWith({}, {});
   });
 });

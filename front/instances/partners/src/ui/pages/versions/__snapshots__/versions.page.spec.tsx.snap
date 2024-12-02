@@ -103,6 +103,9 @@ exports[`VersionsPage should match snapshot, when the alert component is display
         TileComponent
       </div>
     </div>
+    <span
+      data-mockid="ScrollRestoration"
+    />
   </div>
 </div>
 `;
