@@ -11,6 +11,7 @@ interface TileComponentProps extends PropsWithChildren {
   isHorizontal?: boolean;
   useDownload?: boolean | undefined;
   description?: string;
+  dataTestId?: string | undefined;
   detail?: string;
   Heading?: HeadingTag;
   link: string;
@@ -26,6 +27,7 @@ export const TileComponent = React.memo(
   ({
     Heading = HeadingTag.H3,
     children: svgArtwork,
+    dataTestId = 'TileComponent',
     description = undefined,
     detail = undefined,
     isHorizontal = false,
@@ -42,10 +44,11 @@ export const TileComponent = React.memo(
         // @NOTE CSS class
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'fr-tile--horizontal': isHorizontal,
-      })}>
+      })}
+      data-testid={dataTestId}>
       <div className="fr-tile__body">
         <div className="fr-tile__content">
-          <Heading className="fr-tile__title">
+          <Heading className="fr-tile__title" data-testid={`${dataTestId}-title`}>
             <Link download={useDownload} to={link}>
               {title}
             </Link>

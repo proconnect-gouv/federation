@@ -18,11 +18,13 @@ interface AlertComponentV2Props extends PropsWithClassName {
   // @NOTE TS Omit(H1) issued with HeadingTag's type
   heading?: HeadingTag.H2 | HeadingTag.H3 | HeadingTag.H4 | HeadingTag.H5 | HeadingTag.H6;
   onClose?: () => void;
+  dataTestId?: string;
 }
 
 export const AlertComponentV2 = React.memo(
   ({
     className,
+    dataTestId = 'AlertComponentV2',
     description,
     heading: Heading = HeadingTag.H3,
     noRole = false,
@@ -37,11 +39,20 @@ export const AlertComponentV2 = React.memo(
     return (
       <div
         className={classnames(className, `fr-alert fr-alert--${type} fr-alert--${size}`)}
+        data-testid={dataTestId}
         role={noRole ? undefined : 'alert'}>
-        {showTitle && <Heading className="fr-alert__title">{title}</Heading>}
+        {showTitle && (
+          <Heading className="fr-alert__title" data-testid={`${dataTestId}-title`}>
+            {title}
+          </Heading>
+        )}
         {description}
         {!!onClose && (
-          <button className="fr-link--close fr-link" title={closeLabel} onClick={onClose}>
+          <button
+            className="fr-link--close fr-link"
+            data-testid={`${dataTestId}-close-button`}
+            title={closeLabel}
+            onClick={onClose}>
             {closeLabel}
           </button>
         )}

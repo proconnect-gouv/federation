@@ -80,10 +80,12 @@ describe('CardComponent', () => {
         any description text treat as children
       </CardComponent>,
     );
-    const element = getByRole('heading', { level: 1 });
+    const titleElt = getByRole('heading', { level: 1 });
 
     // then
-    expect(element).toBeInTheDocument();
+    expect(titleElt).toBeInTheDocument();
+    expect(titleElt).toHaveClass('fr-card__title');
+    expect(titleElt).toHaveAttribute('data-testid', 'CardComponent-title');
     expect(Link).toHaveBeenCalledOnce();
     expect(Link).toHaveBeenCalledWith(
       {
@@ -125,6 +127,7 @@ describe('CardComponent', () => {
       {
         className: 'any-classname-bottom-mock',
         content: 'any-content-bottom-mock',
+        dataTestId: 'CardComponent-detail-bottom',
       },
       {},
     );
@@ -133,6 +136,7 @@ describe('CardComponent', () => {
       {
         className: 'any-classname-top-mock',
         content: 'any-content-top-mock',
+        dataTestId: 'CardComponent-detail-top',
       },
       {},
     );

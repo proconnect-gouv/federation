@@ -24,6 +24,7 @@ describe('TileComponent', () => {
       <TileComponent
         isHorizontal
         useDownload
+        dataTestId="any-data-test-id-mock"
         description="any-description-mock"
         detail="any-detail-mock"
         Heading={HeadingTag.H1}

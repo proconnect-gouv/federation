@@ -11,6 +11,6 @@ describe('HomePage', () => {
     // Then
     expect(container).toMatchSnapshot();
     expect(Navigate).toHaveBeenCalledOnce();
-    expect(Navigate).toHaveBeenCalledWith({ replace: true, to: '/versions' }, {});
+    expect(Navigate).toHaveBeenCalledWith({ replace: true, to: '/instances' }, {});
   });
 });

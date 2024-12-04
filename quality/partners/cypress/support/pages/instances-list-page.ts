@@ -1,25 +1,28 @@
 import { ChainableElement } from '../types';
-import InstanceCard from './instances-card';
+import InstanceCard from './instance-card';
 
 export default class InstancesListPage {
   getConfirmationMessageTitle(): ChainableElement {
-    return cy.get('.fr-alert__title');
+    return cy.get('[data-testid="instances-page-alert-top-title"]');
   }
 
   getConfirmationMessageCloseButton(): ChainableElement {
-    return cy.get('.fr-alert .fr-link--close');
+    return cy.get('[data-testid="instances-page-alert-top-close-button"]');
   }
 
   getCreateInstanceTile(): ChainableElement {
-    return cy.contains('.fr-tile a', 'Créer une instance de test');
+    return cy.contains(
+      '[data-testid="instances-page-create-tile-title"] a',
+      'Créer une instance de test',
+    );
   }
 
   getAddInstanceLink(): ChainableElement {
-    return cy.get('a.fr-icon-add-line');
+    return cy.get('[data-testid="CreateInstanceButton"]');
   }
 
   getAllInstanceCards(): ChainableElement {
-    return cy.get('div.fr-card');
+    return cy.get('[data-testid="CardComponent"]');
   }
 
   // Index starting with 0
@@ -28,7 +31,10 @@ export default class InstancesListPage {
   }
 
   checkIsVisible(): void {
-    cy.contains('h1', 'Mon Bac à Sable').should('be.visible');
+    cy.contains(
+      '[data-testid="instances-page-title"]',
+      'Mon Bac à Sable',
+    ).should('be.visible');
   }
 
   checkIsInstanceCreationConfirmationVisible(isVisible: boolean): void {
@@ -62,7 +68,10 @@ export default class InstancesListPage {
     let cardIndex;
     return this.getAllInstanceCards()
       .each(($el, index) => {
-        const instanceNameActual = $el.find('h3 a').text();
+        // @TODO Matthieu
+        const instanceNameActual = $el
+          .find('[data-testid="CardComponent-title"] a')
+          .text();
         if (instanceNameActual === instanceName) {
           if (eventIndex === 1) {
             cardIndex = index;
@@ -72,7 +81,7 @@ export default class InstancesListPage {
         }
       })
       .then(() => {
-        if (cardIndex != undefined) {
+        if (cardIndex !== undefined) {
           return this.getInstanceCard(cardIndex);
         } else {
           return null;
