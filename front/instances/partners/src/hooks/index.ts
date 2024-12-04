@@ -1,3 +1,3 @@
-export * from './version-create';
-export * from './version-update';
-export * from './versions';
+export * from './instance-create';
+export * from './instance-update';
+export * from './instances';

@@ -4,6 +4,7 @@ exports[`CardComponent should match the snapshot, with all optionnal values 1`] 
 <div>
   <div
     class="fr-card fr-card--lg fr-card--shadow fr-card--horizontal fr-enlarge-link any-classname-mock"
+    data-testid="CardComponent"
   >
     <div
       class="fr-card__body"
@@ -13,6 +14,7 @@ exports[`CardComponent should match the snapshot, with all optionnal values 1`] 
       >
         <h1
           class="fr-card__title"
+          data-testid="CardComponent-title"
         >
           <span
             data-mockid="Link"
@@ -55,6 +57,7 @@ exports[`CardComponent should match the snapshot, with default values 1`] = `
 <div>
   <div
     class="fr-card fr-card--md fr-card--no-background"
+    data-testid="CardComponent"
   >
     <div
       class="fr-card__body"
@@ -64,6 +67,7 @@ exports[`CardComponent should match the snapshot, with default values 1`] = `
       >
         <h3
           class="fr-card__title"
+          data-testid="CardComponent-title"
         >
           <span
             data-mockid="Link"

@@ -56,7 +56,7 @@ export const Layout: LayoutConfig = {
   },
   navigation: [
     {
-      href: '/versions',
+      href: '/instances',
       label: 'Mon espace partenaire',
     },
   ],

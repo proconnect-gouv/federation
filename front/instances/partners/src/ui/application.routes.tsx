@@ -6,18 +6,24 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 
-import { VersionsService } from '@fc/core-partners';
+import { InstancesService, VersionsService } from '@fc/core-partners';
 import { ApplicationLayout } from '@fc/layout';
 import { AuthedRoute, RouterErrorBoundaryComponent, UnauthedRoute } from '@fc/routing';
 
 import { RouteLoaderDataIds } from '../enums';
 import { PageLayout } from './layouts';
-import { HomePage, LoginPage, VersionCreatePage, VersionsPage, VersionUpdatePage } from './pages';
+import {
+  HomePage,
+  InstanceCreatePage,
+  InstancesPage,
+  InstanceUpdatePage,
+  LoginPage,
+} from './pages';
 
 export const ApplicationRoutes = React.memo(() => {
   const routes = createRoutesFromElements(
     <Route element={<ApplicationLayout />} errorElement={<RouterErrorBoundaryComponent />} path="/">
-      <Route element={<UnauthedRoute fallback="/versions" />}>
+      <Route element={<UnauthedRoute fallback="/instances" />}>
         <Route element={<LoginPage />} path="login" />
       </Route>
       <Route element={<AuthedRoute fallback="/login" />}>
@@ -25,14 +31,14 @@ export const ApplicationRoutes = React.memo(() => {
           <Route
             id={RouteLoaderDataIds.VERSION_SCHEMA}
             loader={VersionsService.loadSchema}
-            path="versions">
-            <Route element={<VersionCreatePage />} path="create" />
+            path="instances">
+            <Route element={<InstanceCreatePage />} path="create" />
             <Route
-              element={<VersionUpdatePage />}
-              loader={VersionsService.read}
-              path=":versionId"
+              element={<InstanceUpdatePage />}
+              loader={InstancesService.read}
+              path=":instanceId"
             />
-            <Route index element={<VersionsPage />} loader={VersionsService.loadAll} />
+            <Route index element={<InstancesPage />} loader={InstancesService.loadAll} />
           </Route>
         </Route>
         <Route index element={<HomePage />} />

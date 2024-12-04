@@ -66,10 +66,11 @@ export const CardComponent = React.memo(
           'fr-enlarge-link': enlargeLink,
         },
         className,
-      )}>
+      )}
+      data-testid="CardComponent">
       <div className="fr-card__body">
         <div className="fr-card__content">
-          <Heading className="fr-card__title">
+          <Heading className="fr-card__title" data-testid="CardComponent-title">
             <Link to={link}>{title}</Link>
           </Heading>
           <p className="fr-card__desc">{description}</p>
@@ -78,6 +79,7 @@ export const CardComponent = React.memo(
               <CardDetailComponent
                 className={details.bottom.className}
                 content={details.bottom.content}
+                dataTestId="CardComponent-detail-bottom"
               />
             </div>
           )}
@@ -88,6 +90,7 @@ export const CardComponent = React.memo(
               <CardDetailComponent
                 className={details.top.className}
                 content={details.top.content}
+                dataTestId="CardComponent-detail-top"
               />
             )}
           </div>

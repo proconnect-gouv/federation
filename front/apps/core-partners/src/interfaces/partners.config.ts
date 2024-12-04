@@ -3,7 +3,6 @@ export interface PartnersConfig {
     versions: string;
   };
   endpoints: {
-    versions: string;
     instances: string;
   };
 }

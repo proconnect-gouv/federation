@@ -4,9 +4,11 @@ exports[`AlertComponentV2 should match the snapshot with all optional values 1`]
 <div>
   <div
     class="any-custom-class-mock fr-alert fr-alert--error fr-alert--md"
+    data-testid="any-data-test-id-mock"
   >
     <h2
       class="fr-alert__title"
+      data-testid="any-data-test-id-mock-title"
     >
       any-title-mock
     </h2>
@@ -17,6 +19,7 @@ exports[`AlertComponentV2 should match the snapshot with all optional values 1`]
     </p>
     <button
       class="fr-link--close fr-link"
+      data-testid="any-data-test-id-mock-close-button"
       title="DSFR.alert.close.mock_value"
     >
       DSFR.alert.close.mock_value
@@ -29,6 +32,7 @@ exports[`AlertComponentV2 should match the snapshot with default values 1`] = `
 <div>
   <div
     class="fr-alert fr-alert--info fr-alert--md"
+    data-testid="AlertComponentV2"
     role="alert"
   />
 </div>

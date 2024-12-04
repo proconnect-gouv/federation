@@ -1,6 +1,6 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
-import InstanceCard from '../../pages/instances-card';
+import InstanceCard from '../../pages/instance-card';
 import InstancesListPage from '../../pages/instances-list-page';
 
 const instancesListPage = new InstancesListPage();

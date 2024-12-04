@@ -35,6 +35,7 @@ describe('AlertComponentV2', () => {
       <AlertComponentV2
         noRole
         className="any-custom-class-mock"
+        dataTestId="any-data-test-id-mock"
         description={<p className="any-description-class-mock">any-description-value-mock</p>}
         heading={HeadingTag.H2}
         size={Sizes.MEDIUM}
@@ -54,9 +55,11 @@ describe('AlertComponentV2', () => {
     expect(container.firstChild).toHaveClass('fr-alert--md');
     expect(container.firstChild).toHaveClass('fr-alert--error');
     expect(container.firstChild).toHaveClass('any-custom-class-mock');
+    expect(container.firstChild).toHaveAttribute('data-testid', 'any-data-test-id-mock');
     expect(container.firstChild).not.toHaveRole('alert');
     expect(titleElt).toBeInTheDocument();
     expect(titleElt.tagName).toBe('H2');
+    expect(titleElt).toHaveAttribute('data-testid', 'any-data-test-id-mock-title');
     expect(descriptionElt).toBeInTheDocument();
     expect(descriptionElt).toHaveClass('any-description-class-mock');
     expect(t).toHaveBeenCalledWith('DSFR.alert.close');
@@ -65,6 +68,7 @@ describe('AlertComponentV2', () => {
     expect(buttonElement).toHaveClass('fr-link');
     expect(buttonElement).toHaveTextContent('DSFR.alert.close.mock_value');
     expect(buttonElement).toBe(buttonRoleElement);
+    expect(buttonElement).toHaveAttribute('data-testid', 'any-data-test-id-mock-close-button');
   });
 
   it('should match the snapshot, when size is small, title should not be displayed', () => {
