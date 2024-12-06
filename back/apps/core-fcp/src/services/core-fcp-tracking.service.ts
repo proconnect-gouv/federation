@@ -3,19 +3,19 @@ import { Injectable } from '@nestjs/common';
 import { CoreTrackingService } from '@fc/core';
 import { TrackedEventContextInterface } from '@fc/tracking';
 
-import { CoreFcaTrackingContextInterface } from '../interfaces';
+import { ICoreTrackingContext } from '../interfaces';
 
 @Injectable()
-export class CoreFcaTrackingService extends CoreTrackingService {
+export class CoreFcpTrackingService extends CoreTrackingService {
   protected extractContext(
     ctx: TrackedEventContextInterface,
-  ): CoreFcaTrackingContextInterface {
+  ): ICoreTrackingContext {
     const baseContext = super.extractContext(ctx);
-    const { fqdn } = ctx;
+    const { rep_scope } = ctx;
 
     const context = {
       ...baseContext,
-      fqdn,
+      rep_scope: rep_scope?.join(' '),
     };
 
     return context;

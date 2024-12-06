@@ -1,1 +1,2 @@
-export * from './verify/core-fca.default-verify.handler';
+export * from './authorize';
+export * from './verify';

@@ -25,7 +25,6 @@ export interface ICoreTrackingContext {
   readonly idpName?: string;
   readonly idpLabel?: string;
   readonly idpIdentity?: OidcIdentityDto;
-  readonly rep_scope?: string[];
 
   readonly deviceTrusted?: boolean;
   readonly deviceIsSuspicious?: boolean;

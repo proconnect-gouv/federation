@@ -9,3 +9,10 @@ export interface CoreServiceInterface {
     authorizeParams: AuthorizationParameters,
   ) => Promise<void>;
 }
+
+export interface CoreAuthorizationServiceInterface {
+  getAuthorizeUrl(
+    idpId: string,
+    parameters: AuthorizationParameters,
+  ): Promise<string>;
+}
