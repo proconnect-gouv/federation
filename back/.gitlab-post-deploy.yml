@@ -2,7 +2,7 @@ publish-sources:
   stage: 'Post-deploy'
   image:
     name: alpine/git
-    entrypoint: [""]
+    entrypoint: ['']
   tags:
     - publish
   only:

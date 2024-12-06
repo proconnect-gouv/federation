@@ -14,3 +14,4 @@ include:
   - '/back/.gitlab-ci.yml'
   - '/front/.gitlab-ci.yml'
   - '.gitlab-ci-security-scanning.yml'
+  - '.gitlab-ci-labeller.yml'
