@@ -117,6 +117,11 @@ export class OidcSession {
   readonly idpIdToken?: string;
 
   @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  idpRefreshToken?: string;
+
+  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   readonly idpRepresentativeScope?: string[];

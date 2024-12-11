@@ -56,7 +56,11 @@ export class OidcClientService {
       extraParams,
     );
 
-    const { access_token: accessToken, id_token: idToken } = tokenSet;
+    const {
+      access_token: accessToken,
+      id_token: idToken,
+      refresh_token: refreshToken,
+    } = tokenSet;
     const {
       acr,
       amr = [],
@@ -68,6 +72,7 @@ export class OidcClientService {
       amr,
       accessToken,
       idToken,
+      refreshToken,
       idpRepresentativeScope,
     };
 
