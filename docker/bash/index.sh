@@ -103,7 +103,7 @@ _command_register "wait" "wait_for_nodejs" "Wait for a nodejs HTTP service to re
 
 _command_register "log-rotate" "_log_rotate" "log-rotate Rotate the logs and send SIGUSR"
 
-_command_register "mongo" "_mongo_shell" "mongo <server> <database>: Opens mongo shell"
+_command_register "mongo" "_mongo_shell" "mongo <server> <database> [tls]: Opens mongo shell [Optional tls argument to activate client authentication]"
 ### Legacy aliases for mongo shell access
 _command_register "mongo-shell-core-fca-low" "_mongo_shell_core_fca_low" "[deprecated] Open mongo shell for core-fca-low "
 _command_register "mongo-shell-core-fcp-high" "_mongo_shell_core_fcp_high" "[deprecated] Open mongo shell for core-fcp-high"
