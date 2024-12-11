@@ -30,4 +30,10 @@ export default {
     PartnersServiceProviderInstanceVersion,
   ],
   synchronize: false, // do not set to true, we do not want schema automatic creation
+  ssl: {
+    rejectUnauthorized: env.boolean('SSL_REJECT_UNAUTHORIZED'),
+    ca: env.file('SSL_CA', { optional: true }),
+    key: env.file('SSL_KEY', { optional: true }),
+    cert: env.file('SSL_CERT', { optional: true }),
+  },
 } as PostgresConfig;

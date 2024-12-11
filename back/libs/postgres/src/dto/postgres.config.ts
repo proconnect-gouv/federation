@@ -1,4 +1,32 @@
-import { IsArray, IsBoolean, IsIn, IsNumber, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsArray,
+  IsBoolean,
+  IsIn,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+
+class SslConfig {
+  @IsBoolean()
+  @IsOptional()
+  readonly rejectUnauthorized?: boolean;
+
+  @IsString()
+  @IsOptional()
+  readonly ca?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly key?: string;
+
+  @IsString()
+  @IsOptional()
+  readonly cert?: string;
+}
 
 export class PostgresConfig {
   @IsString()
@@ -19,7 +47,8 @@ export class PostgresConfig {
   readonly username: string;
 
   @IsString()
-  readonly password: string;
+  @IsOptional()
+  readonly password?: string;
 
   /**
    * We want instantiable only value (classes).
@@ -30,4 +59,10 @@ export class PostgresConfig {
 
   @IsBoolean()
   readonly synchronize: false;
+
+  @IsObject()
+  @ValidateNested()
+  @IsOptional()
+  @Type(() => SslConfig)
+  readonly ssl?: SslConfig;
 }

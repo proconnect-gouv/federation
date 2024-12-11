@@ -864,6 +864,10 @@
 | Postgres_HOST | string |
 | Postgres_PASSWORD | string |
 | Postgres_PORT | number |
+| Postgres_SSL_CA | file |
+| Postgres_SSL_CERT | file |
+| Postgres_SSL_KEY | file |
+| Postgres_SSL_REJECT_UNAUTHORIZED | boolean |
 | Postgres_USER | string |
 | REQUEST_TIMEOUT | string |
 | Redis_CACERT | file |
