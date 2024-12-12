@@ -1,8 +1,10 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
+import { generateCSVContent } from '@fc/csv';
+
 import { FilesName, Folder } from '../enums';
-import { generateCsvContent, getCwdForDirectory, readCSV } from '../helpers';
+import { getCwdForDirectory, readCSV } from '../helpers';
 import {
   InseeDbCityComerInterface,
   InseeDbCityCurrentInterface,
@@ -201,7 +203,7 @@ export class GenerateCity {
       Folder.TARGET_DIRECTORY_FOR_FCAPPS,
     );
     const filenameCsv = FilesName.CITY;
-    const fileContent = generateCsvContent(searchData);
+    const fileContent = generateCSVContent(searchData);
 
     if (!existsSync(targetDirectory)) {
       mkdirSync(targetDirectory, { recursive: true });

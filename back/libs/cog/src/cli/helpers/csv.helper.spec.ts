@@ -1,15 +1,17 @@
 import { createReadStream, existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
+import { generateCSVContent } from '@fc/csv';
+
 import { FilesName } from '../enums';
 import { SearchDbCountryInterface } from '../interface';
-import { generateCsvContent, readCSV, saveCsvToFile } from './csv.helper';
-import * as ModuleUnderTest from './csv.helper';
+import { readCSV, saveCsvToFile } from './csv.helper';
 import { getCwdForDirectory } from './utils.helper';
 
 jest.mock('path');
 jest.mock('fs');
 jest.mock('./utils.helper');
+jest.mock('@fc/csv');
 
 describe('readCSV', () => {
   const createReadStreamMock = jest.mocked(createReadStream);
@@ -61,41 +63,6 @@ describe('readCSV', () => {
   });
 });
 
-describe('generateCsvContent', () => {
-  it('should create a valid CSV content from an array of objects', () => {
-    // Given
-    const data = [
-      { col1: 'value1', col2: 'value2' },
-      { col1: 'value3', col2: 'value4' },
-    ] as unknown as SearchDbCountryInterface[];
-
-    const expectedCSVContent =
-      '"col1","col2"\n"value1","value2"\n"value3","value4"';
-
-    // When
-    const csvContent = generateCsvContent(data);
-
-    // Then
-    expect(csvContent).toEqual(expectedCSVContent);
-  });
-
-  it('should handle undefined values in the data', () => {
-    // Given
-    const data = [
-      { col1: 'value1', col2: undefined },
-      { col1: undefined, col2: 'value2' },
-    ] as unknown as SearchDbCountryInterface[];
-
-    const expectedCSVContent = '"col1","col2"\n"value1",""\n"","value2"';
-
-    // When
-    const csvContent = generateCsvContent(data);
-
-    // Then
-    expect(csvContent).toEqual(expectedCSVContent);
-  });
-});
-
 describe('saveCsvToFile', () => {
   let consoleLogSpy;
   const targetDirectory = '/path/to/target';
@@ -127,9 +94,7 @@ describe('saveCsvToFile', () => {
     existsSyncMock.mockReturnValue(false);
     joinMock.mockReturnValue(filePath);
 
-    jest
-      .spyOn(ModuleUnderTest, 'generateCsvContent')
-      .mockImplementation(() => fileContent);
+    jest.mocked(generateCSVContent).mockImplementation(() => fileContent);
 
     consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
   });
@@ -142,13 +107,13 @@ describe('saveCsvToFile', () => {
     expect(getCwdForDirectoryMock).toHaveBeenCalledExactlyOnceWith(filePath);
   });
 
-  it('should call generateCsvContent', () => {
+  it('should call generateCSVContent', () => {
     //When
     saveCsvToFile(dataMock, filePath);
 
     // Then
-    expect(ModuleUnderTest.generateCsvContent).toHaveBeenCalledTimes(1);
-    expect(ModuleUnderTest.generateCsvContent).toHaveBeenCalledWith(dataMock);
+    expect(generateCSVContent).toHaveBeenCalledTimes(1);
+    expect(generateCSVContent).toHaveBeenCalledWith(dataMock);
   });
 
   it('should verify and create target directory if not existing', () => {
