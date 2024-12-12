@@ -3,6 +3,8 @@ import { join } from 'path';
 
 import * as csvParser from 'csv-parser';
 
+import { generateCSVContent } from '@fc/csv';
+
 import { FilesName } from '../enums';
 import { SearchDbCountryInterface } from '../interface';
 import { getCwdForDirectory } from './utils.helper';
@@ -26,22 +28,6 @@ export function readCSV(csvFilePath: string): any {
   });
 }
 
-export function generateCsvContent(data: SearchDbCountryInterface[]): string {
-  const csvContent = [];
-  const headers = Object.keys(data[0]);
-  csvContent.push(headers.map((header) => `"${header}"`).join(','));
-
-  data.forEach((item) => {
-    // eslint-disable-next-line max-nested-callbacks
-    const values = headers.map((header) =>
-      item[header] !== undefined ? `"${item[header]}"` : '""',
-    );
-    csvContent.push(values.join(','));
-  });
-
-  return csvContent.join('\n');
-}
-
 export function saveCsvToFile(
   data: SearchDbCountryInterface[],
   folderDirectory: string,
@@ -49,7 +35,7 @@ export function saveCsvToFile(
   const targetDirectory = getCwdForDirectory(folderDirectory);
   const filenameCsv = FilesName.COUNTRY;
   // exports added for jest test mocked
-  const fileContent = exports.generateCsvContent(data);
+  const fileContent = generateCSVContent(data);
 
   if (!existsSync(targetDirectory)) {
     mkdirSync(targetDirectory, { recursive: true });

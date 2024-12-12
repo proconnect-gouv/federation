@@ -1,8 +1,10 @@
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
 
+import { generateCSVContent } from '@fc/csv';
+
 import { FilesName } from '../enums';
-import { generateCsvContent, getCwdForDirectory, readCSV } from '../helpers';
+import { getCwdForDirectory, readCSV } from '../helpers';
 import {
   InseeDbCityComerInterface,
   InseeDbCityCurrentInterface,
@@ -15,6 +17,7 @@ import { GenerateCity, MATCHING_COLUMN } from './generate-city';
 jest.mock('path');
 jest.mock('fs');
 jest.mock('../helpers');
+jest.mock('@fc/csv');
 
 describe('GenerateCity', () => {
   let service: GenerateCity;
@@ -631,8 +634,8 @@ describe('GenerateCity', () => {
       service['writeCsvFile'](searchDataMock);
 
       // Then
-      expect(generateCsvContent).toHaveBeenCalledTimes(1);
-      expect(generateCsvContent).toHaveBeenCalledWith(searchDataMock);
+      expect(generateCSVContent).toHaveBeenCalledTimes(1);
+      expect(generateCSVContent).toHaveBeenCalledWith(searchDataMock);
     });
 
     it('should check if the target directory exists', () => {
@@ -685,7 +688,7 @@ describe('GenerateCity', () => {
       expect(writeFileSync).toHaveBeenCalledTimes(1);
       expect(writeFileSync).toHaveBeenCalledWith(
         filePathMock,
-        generateCsvContent(searchDataMock),
+        generateCSVContent(searchDataMock),
       );
     });
   });
