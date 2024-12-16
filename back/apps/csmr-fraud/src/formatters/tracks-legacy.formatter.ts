@@ -5,6 +5,7 @@ import { Injectable } from '@nestjs/common';
 import { LoggerService } from '@fc/logger';
 import {
   getContextFromLegacyTracks,
+  getIpAddressFromTracks,
   getLocationFromTracks,
   TracksFormatterAbstract,
   TracksFormatterMappingFailedException,
@@ -27,9 +28,11 @@ export class TracksLegacyFormatter
     this.logger.debug('formatTracks from Legacy');
     try {
       const { _source } = rawTrack;
-      const { spName, idpName } = getContextFromLegacyTracks(_source);
+      const { spName, idpName, idpSub, spSub, interactionAcr } =
+        getContextFromLegacyTracks(_source);
       const time = new Date(_source.time).getTime();
       const date = getReadableDateFromTime(time);
+      const ipAddress = getIpAddressFromTracks(_source);
       const { country, city } = getLocationFromTracks(_source);
       const { accountId } = _source;
 
@@ -41,6 +44,10 @@ export class TracksLegacyFormatter
         city,
         platform: Platform.FCP_LEGACY,
         accountId,
+        interactionAcr,
+        idpSub,
+        spSub,
+        ipAddress,
       };
 
       return output;

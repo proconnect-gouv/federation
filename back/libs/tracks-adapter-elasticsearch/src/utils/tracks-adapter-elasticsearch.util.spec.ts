@@ -154,11 +154,17 @@ describe('getContextFromLegacyTracks()', () => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       fs_label: 'serviceProviderLabel',
       fi: 'identityProviderLabel',
+      fiSub: 'idpSub',
+      fsSub: 'spSub',
+      eidas: 'eidas1',
     } as unknown as TracksLegacyFieldsInterface;
 
     const expected = {
       spName: 'serviceProviderLabel',
       idpName: 'identityProviderLabel',
+      idpSub: 'idpSub',
+      spSub: 'spSub',
+      interactionAcr: 'eidas1',
     };
 
     // When
@@ -225,5 +231,22 @@ describe('getLocationFromTracks()', () => {
 
     // Then
     expect(result).toStrictEqual(expected);
+  });
+});
+
+describe('getIpAddressFromTracks()', () => {
+  it('should return track.source.address', () => {
+    // Given
+    const track = {
+      source: {
+        address: ['ipAddress'],
+      },
+    } as unknown as ElasticTracksType;
+
+    // When
+    const result = utils.getIpAddressFromTracks(track);
+
+    // Then
+    expect(result).toStrictEqual(['ipAddress']);
   });
 });

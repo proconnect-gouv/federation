@@ -9,6 +9,10 @@ import { TracksFormatterOutputAbstract } from '@fc/tracks-adapter-elasticsearch'
  *   spName: 'ANTS',
  *   date: '08/03/1995 12:00:00',
  *   accountId: 'any-string'
+ *   idpSub: 'any-string'
+ *   spSub: 'any-string'
+ *   interactionAcr: 'eidas1'
+ *   ipAddress: ['ipAddress']
  * -}
  */
 export interface TracksFormatterOutputInterface
@@ -20,4 +24,8 @@ export interface TracksFormatterOutputInterface
   spName: string;
   accountId: string;
   date: string;
+  idpSub: string;
+  spSub: string;
+  interactionAcr: string;
+  ipAddress: string[];
 }

@@ -4,6 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 import { LoggerService } from '@fc/logger';
 import {
+  getIpAddressFromTracks,
   getLocationFromTracks,
   TracksFormatterAbstract,
   TracksFormatterMappingFailedException,
@@ -28,8 +29,19 @@ export class TracksV2Formatter
   ): TracksFormatterOutputInterface {
     try {
       const { _source } = rawTrack;
-      const { spName, accountId, time, idpName } = _source;
+      const {
+        spName,
+        accountId,
+        time,
+        idpName,
+        spAcr,
+        interactionAcr,
+        spSub,
+        idpSub,
+      } = _source;
       const { country, city } = getLocationFromTracks(_source);
+      const ipAddress = getIpAddressFromTracks(_source);
+
       const date = getReadableDateFromTime(time);
 
       const output: TracksFormatterOutputInterface = {
@@ -40,6 +52,10 @@ export class TracksV2Formatter
         idpName,
         platform: this.platform,
         accountId,
+        interactionAcr: interactionAcr || spAcr,
+        ipAddress,
+        spSub,
+        idpSub,
       };
 
       return output;

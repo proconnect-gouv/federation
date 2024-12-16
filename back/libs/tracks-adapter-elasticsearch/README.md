@@ -163,7 +163,11 @@ class Foo {
     "platform": "FC (v1)",
     "country": "FR",
     "city": "Paris",
-    "accountId": "any-string"
+    "accountId": "any-string",
+    "spSub": "any-string",
+    "idpSub": "any-string",
+    "interactionAcr": "eidas1",
+    "ipAddress": ["ipAddress"]
   }
 ]
 ```
