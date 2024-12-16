@@ -60,6 +60,7 @@ import {
   DataProviderService,
   OidcProviderConfigAppService,
 } from './services';
+import { IsPhoneNumberFCAConstraint } from './validators';
 
 @Global()
 @Module({
@@ -134,6 +135,7 @@ import {
     OidcProviderGrantService,
     CoreFcaFqdnService,
     DataProviderService,
+    IsPhoneNumberFCAConstraint,
   ],
   exports: [OidcProviderConfigAppService, CqrsModule, CoreFcaService],
 })
