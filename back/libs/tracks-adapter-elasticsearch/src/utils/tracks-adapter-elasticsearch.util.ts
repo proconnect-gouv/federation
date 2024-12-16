@@ -30,8 +30,14 @@ export const buildEventQuery = ([legacy, event]: [
 };
 
 export function getContextFromLegacyTracks(track: TracksLegacyFieldsInterface) {
-  const { fs_label: spName, fi: idpName } = track;
-  return { spName, idpName };
+  const {
+    fs_label: spName,
+    fi: idpName,
+    fiSub: idpSub,
+    fsSub: spSub,
+    eidas: interactionAcr,
+  } = track;
+  return { spName, idpName, idpSub, spSub, interactionAcr };
 }
 
 export function getLocationFromTracks(track: ElasticTracksType) {
@@ -41,4 +47,8 @@ export function getLocationFromTracks(track: ElasticTracksType) {
     region_name: region,
   } = track.source.geo;
   return { country, city: city || region };
+}
+
+export function getIpAddressFromTracks(track: ElasticTracksType): string[] {
+  return track.source.address;
 }

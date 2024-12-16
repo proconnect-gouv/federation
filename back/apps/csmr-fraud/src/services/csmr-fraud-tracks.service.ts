@@ -45,16 +45,32 @@ export class CsmrFraudTracksService {
       }
 
       const tracks = payload.map(
-        ({ accountId, spName, idpName, city, country, platform, date }) => {
+        ({
+          date,
+          spName,
+          idpName,
+          idpSub,
+          spSub,
+          accountId,
+          platform,
+          interactionAcr,
+          city,
+          country,
+          ipAddress,
+        }) => {
           const accountIdMatch = accountIds.includes(accountId);
           return {
-            accountIdMatch,
+            date,
             spName,
             idpName,
+            idpSub,
+            spSub,
+            accountIdMatch,
+            platform,
+            interactionAcr,
             city,
             country,
-            platform,
-            date,
+            ipAddress,
           };
         },
       );

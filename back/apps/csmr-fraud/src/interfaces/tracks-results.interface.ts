@@ -1,11 +1,15 @@
 export interface TracksTicketDataInterface {
-  accountIdMatch: boolean;
-  platform: string;
+  date: string;
   idpName: string;
   spName: string;
-  date: string;
-  city: string;
+  idpSub: string;
+  spSub: string;
+  accountIdMatch: boolean;
+  platform: string;
+  interactionAcr: string;
   country: string;
+  city: string;
+  ipAddress: string[];
 }
 
 export interface TracksResultsInterface {

@@ -14,50 +14,50 @@
       Une demande de support a été envoyée avec les données ci-dessous.
     </p>
     <p>
-      <strong>Nom :</strong> <span data-testid="familyName"><%= familyName %></span>
+      <strong>Nom :</strong> <span data-testid="fraud-form-email-familyName"><%= familyName %></span>
     </p>
     <p>
-      <strong>Prénom :</strong> <span data-testid="givenName"><%= givenName %></span>
+      <strong>Prénom :</strong> <span data-testid="fraud-form-email-givenName"><%= givenName %></span>
     </p>
     <p>
-      <strong>Date de naissance :</strong> <span data-testid="birthdate"><%= birthdate %></span>
+      <strong>Date de naissance :</strong> <span data-testid="fraud-form-email-birthdate"><%= birthdate %></span>
     </p>
     <p>
-      <strong>Pays de naissance :</strong> <span data-testid="birthcountry"><%= birthcountry %></span>
+      <strong>Pays de naissance :</strong> <span data-testid="fraud-form-email-birthcountry"><%= birthcountry %></span>
     </p>
     <p>
-      <strong>Ville de naissance :</strong> <span data-testid="birthplace"><%= birthplace %></span>
+      <strong>Ville de naissance :</strong> <span data-testid="fraud-form-email-birthplace"><%= birthplace %></span>
     </p>
     <p>
-      <strong>Email de communication :</strong> <span data-testid="contactEmail"><%= contactEmail %></span>
+      <strong>Email de communication :</strong> <span data-testid="fraud-form-email-contactEmail"><%= contactEmail %></span>
     </p>
     <p>
-      <strong>Email du compte FI :</strong> <span data-testid="idpEmail"><%= idpEmail %></span>
+      <strong>Email du compte FI :</strong> <span data-testid="fraud-form-email-idpEmail"><%= idpEmail %></span>
     </p>
     <% if (phoneNumber) { %>
       <p>
-        <strong>Numéro de téléphone :</strong> <span data-testid="phoneNumber"><%= phoneNumber %></span>
+        <strong>Numéro de téléphone :</strong> <span data-testid="fraud-form-email-phoneNumber"><%= phoneNumber %></span>
       </p>
     <% } %>
     <p>
-      <strong>Provenance questionnaire usurpation :</strong> <span data-testid="fraudSurveyOrigin"><%= fraudSurveyOrigin %></span>
+      <strong>Provenance questionnaire usurpation :</strong> <span data-testid="fraud-form-email-fraudSurveyOrigin"><%= fraudSurveyOrigin %></span>
     </p>
     <p>
-      <strong>Code d’identification de session :</strong> <span data-testid="authenticationEventId"><%= authenticationEventId %></span>
+      <strong>Code d’identification de session :</strong> <span data-testid="fraud-form-email-authenticationEventId"><%= authenticationEventId %></span>
     </p>
     <% if (comment) { %>
       <p>
-        <strong>Commentaire de l’usager :</strong> <span data-testid="comment"><%= comment %></span>
+        <strong>Commentaire de l’usager :</strong> <span data-testid="fraud-form-email-comment"><%= comment %></span>
       </p>
     <% } %>
     <% if (error) { %>
       <p>
-        <strong>Erreur :</strong> <span data-testid="error"><%= error %></span>
+        <strong>Erreur :</strong> <span data-testid="fraud-form-email-error"><%= error %></span>
       </p>
     <% } %>
     <% if (total) { %>
       <p>
-        <strong>Nombre de traces correspondant au code de session :</strong> <span data-testid="total"><%= total %></span>
+        <strong>Nombre de traces correspondant au code de session :</strong> <span data-testid="fraud-form-email-total"><%= total %></span>
       </p>
     <% } %>
     <% if (tracks && tracks.length > 0) { %>
@@ -72,20 +72,22 @@
             <th>FI</th>
             <th>FS</th>
             <th>Plateforme</th>
+            <th>Niveau de garantie</th>
             <th>Pays</th>
             <th>Ville</th>
           </tr>
         </thead>
         <tbody>
           <% tracks.forEach(function(track, index) { %>
-            <tr data-testid="track-<%= index %>">
-              <td data-testid="date"><%= track.date %></td>
-              <td data-testid="accountIdMatch"><%= track.accountIdMatch ? 'Oui' : 'Non' %></td>
-              <td data-testid="idpName"><%= track.idpName %></td>
-              <td data-testid="spName"><%= track.spName %></td>
-              <td data-testid="platform"><%= track.platform %></td>
-              <td data-testid="country"><%= track.country %></td>
-              <td data-testid="city"><%= track.city %></td>
+            <tr data-testid="fraud-form-email-track-<%= index %>">
+              <td data-testid="fraud-form-email-date" style="width: 140px;"><%= track.date %></td>
+              <td data-testid="fraud-form-email-accountIdMatch"><%= track.accountIdMatch ? 'Oui' : 'Non' %></td>
+              <td data-testid="fraud-form-email-idpName"><%= track.idpName %></td>
+              <td data-testid="fraud-form-email-spName"><%= track.spName %></td>
+              <td data-testid="fraud-form-email-platform"><%= track.platform %></td>
+              <td data-testid="fraud-form-email-interactionAcr"><%= track.interactionAcr %></td>
+              <td data-testid="fraud-form-email-country"><%= track.country %></td>
+              <td data-testid="fraud-form-email-city"><%= track.city %></td>
             </tr>
           <% }); %>
         </tbody>

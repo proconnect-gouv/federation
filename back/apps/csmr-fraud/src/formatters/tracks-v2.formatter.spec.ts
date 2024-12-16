@@ -6,6 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import {
   CoreInstance,
+  getIpAddressFromTracks,
   getLocationFromTracks,
   TracksFormatterMappingFailedException,
   TracksV2FieldsInterface,
@@ -35,6 +36,8 @@ describe('TracksV2Formatter', () => {
 
   const readableDateMock = '11/11/2024 11:11:11';
 
+  const ipAddress = ['ipAddress'];
+
   const inputMock = {
     _source: {
       idpName: 'idpNameValue',
@@ -42,7 +45,11 @@ describe('TracksV2Formatter', () => {
       time: 1664661600000,
       accountId: 'accountId',
       service: CoreInstance.FCP_LOW,
-      source: { geo: geoMock },
+      idpSub: 'idpSub',
+      spSub: 'spSub',
+      interactionAcr: 'eidas1',
+      spAcr: 'eidas1',
+      source: { geo: geoMock, address: ipAddress },
     },
   } as SearchHit<TracksV2FieldsInterface>;
 
@@ -68,6 +75,7 @@ describe('TracksV2Formatter', () => {
 
     jest.mocked(getReadableDateFromTime).mockReturnValue(readableDateMock);
     jest.mocked(getLocationFromTracks).mockReturnValue(localisationMock);
+    jest.mocked(getIpAddressFromTracks).mockReturnValue(ipAddress);
   });
 
   it('should be defined', () => {
@@ -95,6 +103,45 @@ describe('TracksV2Formatter', () => {
       expect(getLocationFromTracks).toHaveBeenCalledWith(inputMock._source);
     });
 
+    it('should call getIpAddressFromTracks() with _source', () => {
+      // When
+      service.formatTrack(inputMock);
+
+      // Then
+      expect(getIpAddressFromTracks).toHaveBeenCalledTimes(1);
+      expect(getIpAddressFromTracks).toHaveBeenCalledWith(inputMock._source);
+    });
+
+    it('should use spAcr if interactionAcr is not set', () => {
+      // Given
+      const inputWithoutInteractionAcrMock = {
+        _source: {
+          ...inputMock._source,
+          interactionAcr: undefined,
+        },
+      } as SearchHit<TracksV2FieldsInterface>;
+
+      const resultMock = {
+        country: localisationMock.country,
+        city: localisationMock.city,
+        date: readableDateMock,
+        spName: 'spNameValue',
+        idpName: 'idpNameValue',
+        platform: platformMock,
+        accountId: 'accountId',
+        idpSub: 'idpSub',
+        spSub: 'spSub',
+        interactionAcr: 'eidas1',
+        ipAddress,
+      };
+
+      // When
+      const tracks = service.formatTrack(inputWithoutInteractionAcrMock);
+
+      // Then
+      expect(tracks).toStrictEqual(resultMock);
+    });
+
     it('should transform source to track data', () => {
       // Given
       const resultMock = {
@@ -105,6 +152,10 @@ describe('TracksV2Formatter', () => {
         idpName: 'idpNameValue',
         platform: platformMock,
         accountId: 'accountId',
+        idpSub: 'idpSub',
+        spSub: 'spSub',
+        interactionAcr: 'eidas1',
+        ipAddress,
       };
 
       // When

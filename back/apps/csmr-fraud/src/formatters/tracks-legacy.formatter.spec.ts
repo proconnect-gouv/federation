@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { LoggerService } from '@fc/logger';
 import {
   getContextFromLegacyTracks,
+  getIpAddressFromTracks,
   getLocationFromTracks,
   TracksFormatterMappingFailedException,
   TracksLegacyFieldsInterface,
@@ -30,9 +31,17 @@ describe('TracksLegacyFormatter', () => {
   // eslint-disable-next-line @typescript-eslint/naming-convention
   const geoMock = { city_name: 'Paris', country_iso_code: 'FR' };
 
-  const legacyContextMock = { spName: 'spName', idpName: 'idpName' };
+  const legacyContextMock = {
+    spName: 'spName',
+    idpName: 'idpName',
+    idpSub: 'idpSub',
+    spSub: 'spSub',
+    interactionAcr: 'eidas1',
+  };
 
   const localisationMock = { city: 'Paris', country: 'FR' };
+
+  const ipAddress = ['ipAddress'];
 
   const inputMock = {
     _source: {
@@ -42,7 +51,10 @@ describe('TracksLegacyFormatter', () => {
       time: 1731319871,
       fi: 'fi',
       accountId: 'accountId',
-      source: { geo: geoMock },
+      source: { geo: geoMock, address: ipAddress },
+      fiSub: 'idpSub',
+      fsSub: 'spSub',
+      eidas: 'eidas1',
     },
   } as unknown as SearchHit<TracksLegacyFieldsInterface>;
 
@@ -62,6 +74,7 @@ describe('TracksLegacyFormatter', () => {
     jest.mocked(getReadableDateFromTime).mockReturnValue(readableDateMock);
     jest.mocked(getLocationFromTracks).mockReturnValue(localisationMock);
     jest.mocked(getContextFromLegacyTracks).mockReturnValue(legacyContextMock);
+    jest.mocked(getIpAddressFromTracks).mockReturnValue(ipAddress);
   });
 
   it('should be defined', () => {
@@ -100,6 +113,15 @@ describe('TracksLegacyFormatter', () => {
       );
     });
 
+    it('should call getIpAddressFromTracks() with _source', () => {
+      // When
+      service.formatTrack(inputMock);
+
+      // Then
+      expect(getIpAddressFromTracks).toHaveBeenCalledTimes(1);
+      expect(getIpAddressFromTracks).toHaveBeenCalledWith(inputMock._source);
+    });
+
     it('should return formatted track', () => {
       // When
       const formattedTrack = service.formatTrack(inputMock);
@@ -113,6 +135,10 @@ describe('TracksLegacyFormatter', () => {
         city: localisationMock.city,
         platform: Platform.FCP_LEGACY,
         accountId: 'accountId',
+        idpSub: 'idpSub',
+        spSub: 'spSub',
+        interactionAcr: 'eidas1',
+        ipAddress,
       });
     });
 

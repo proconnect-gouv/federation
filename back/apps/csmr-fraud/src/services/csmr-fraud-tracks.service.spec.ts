@@ -62,6 +62,10 @@ describe('CsmrFraudTracksService', () => {
       spName: 'ANTS',
       date: '08/03/1995 12:00:00',
       accountId: 'accountIdMock',
+      interactionAcr: 'acr',
+      spSub: 'any-string',
+      idpSub: 'any-string',
+      ipAddress: ['any-string'],
     };
 
     const trackResultWithAccountMatchMock: TracksTicketDataInterface = {
@@ -72,6 +76,10 @@ describe('CsmrFraudTracksService', () => {
       spName: 'ANTS',
       date: '08/03/1995 12:00:00',
       accountIdMatch: true,
+      interactionAcr: 'acr',
+      spSub: 'any-string',
+      idpSub: 'any-string',
+      ipAddress: ['any-string'],
     };
 
     const formattedTrackWithoutAccountMatchMock: TracksFormatterOutputInterface =
@@ -83,6 +91,10 @@ describe('CsmrFraudTracksService', () => {
         spName: 'ANTS',
         date: '08/03/1995 12:00:00',
         accountId: 'any-string',
+        interactionAcr: 'acr',
+        spSub: 'any-string',
+        idpSub: 'any-string',
+        ipAddress: ['any-string'],
       };
 
     const trackResultWithoutAccountMatchMock: TracksTicketDataInterface = {
@@ -93,6 +105,10 @@ describe('CsmrFraudTracksService', () => {
       spName: 'ANTS',
       date: '08/03/1995 12:00:00',
       accountIdMatch: false,
+      interactionAcr: 'acr',
+      spSub: 'any-string',
+      idpSub: 'any-string',
+      ipAddress: ['any-string'],
     };
 
     const formattedTracksMock: TracksAdapterResultsInterface<TracksFormatterOutputInterface> =
