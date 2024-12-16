@@ -44,9 +44,5 @@ db.accountFca.createIndex(
 
 Object.entries(accountsFca).forEach(([key, account]) => {
   print(`${key} > Initializing user account: ${key}...`);
-  db.accountFca.updateOne(
-    { id: account.id },
-    { $set: account },
-    { upsert: true },
-  );
+  db.accountFca.update({ id: account.id }, account, { upsert: true });
 });

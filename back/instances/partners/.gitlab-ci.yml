@@ -43,6 +43,7 @@ partners:
     - apt update && apt install -y jq
       # build the main apps and check if they are impacted by MR
     - echo "CI_MERGE_REQUEST_LABELS=$CI_MERGE_REQUEST_LABELS"
+    - echo "SKIP_DIFF_CHECK=$SKIP_DIFF_CHECK"
     - BACK_DIFF_FILES=$(docker-stack detect-back-changes partners)
     - BACK_DIFF_CHECK_STATUS=$(echo "$BACK_DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
     - echo "$BACK_DIFF_FILES"

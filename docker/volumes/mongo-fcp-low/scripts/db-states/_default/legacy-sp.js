@@ -21,8 +21,7 @@ const spLegacy = {
     active: true,
     type: "public",
     __v: 4,
-    createdAt: new Date("2019-04-24 17:09:17"),
-    updatedAt: new Date("2019-04-24 17:09:17"),
+    updatedAt: "2019-04-24 17:09:17",
     updatedBy: "admin",
     scopes: [
       "openid",
@@ -73,8 +72,7 @@ const spLegacy = {
     active: true,
     type: "private",
     __v: 4,
-    createdAt: new Date("2019-04-24 17:09:17"),
-    updatedAt: new Date("2019-04-24 17:09:17"),
+    updatedAt: "2019-04-24 17:09:17",
     updatedBy: "admin",
     blacklistByIdentityProviderActivated: true,
     blacklistByIdentityProvider: {
@@ -128,8 +126,7 @@ const spLegacy = {
     active: true,
     type: "private",
     __v: 4,
-    createdAt: new Date("2019-04-24 17:09:17"),
-    updatedAt: new Date("2019-04-24 17:09:17"),
+    updatedAt: "2019-04-24 17:09:17",
     updatedBy: "admin",
     whitelistByServiceProviderActivated: true,
     whitelistByIdentityProvider: {
@@ -186,7 +183,6 @@ const spLegacy = {
     active: true,
     type: "public",
     __v: 4,
-    createdAt: new Date("2019-04-24 17:09:17"),
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     scopes: [
@@ -250,7 +246,6 @@ const spLegacy = {
     active: true,
     type: "private",
     __v: 4,
-    createdAt: new Date("2019-04-24 17:09:17"),
     updatedAt: new Date("2019-04-24 17:09:17"),
     updatedBy: "admin",
     scopes: [
@@ -314,8 +309,7 @@ const spLegacy = {
     active: false,
     type: "public",
     __v: 4,
-    createdAt: new Date("2019-04-24 17:09:17"),
-    updatedAt: new Date("2019-04-24 17:09:17"),
+    updatedAt: "2019-04-24 17:09:17",
     updatedBy: "admin",
     scopes: [
       "openid",
@@ -357,8 +351,7 @@ const spLegacy = {
     active: true,
     type: "private",
     __v: 4,
-    createdAt: new Date("2019-04-24 17:09:17"),
-    updatedAt: new Date("2019-04-24 17:09:17"),
+    updatedAt: "2019-04-24 17:09:17",
     updatedBy: "admin",
     blacklistByIdentityProviderActivated: true,
     blacklistByIdentityProvider: {
@@ -398,8 +391,7 @@ const spLegacy = {
     post_logout_redirect_uris: [
       "https://fsp1.docker.dev-franceconnect.fr/logout-callback",
     ],
-    createdAt: new Date("2019-05-22T14:36:12.516Z"),
-    updatedAt: new Date("2019-05-22T14:36:12.516Z"),
+    updatedAt: "2019-05-22T14:36:12.516Z",
     key: "28e9ed103d6b075d371303a8bc5a66446f0cd4c0ce7ec237773276c247d28a95",
     client_secret:
       "4eQRa1ab1h8jIKVs53cW8FBUGIa5KQLlXQpdP/lGe3EJifIwUMHR0w6HKxu3ccGzR0y6+aS2wLAifrmhsT76TtVCvnNQAF5rONzLejQ7Hqy1LBF8TAUpx+8yFak=",
@@ -411,6 +403,7 @@ const spLegacy = {
     active: true,
     type: "public",
     secretCreatedAt: "2019-05-22T14:36:12.494Z",
+    createdAt: "2019-05-22T14:36:12.493Z",
     credentialsFlow: false,
     scopes: [
       "openid",
@@ -445,8 +438,7 @@ const spLegacy = {
     post_logout_redirect_uris: [
       "https://fsp1.docker.dev-franceconnect.fr/logout-callback",
     ],
-    createdAt: new Date("2019-05-22T14:36:12.516Z"),
-    updatedAt: new Date("2019-05-22T14:36:12.516Z"),
+    updatedAt: "2019-05-22T14:36:12.516Z",
     key: "64e9ed103d6b075d371303a8bc5a66446f0cd4c0ce7ec237773276c288d28a67",
     client_secret:
       "EKMIJqIjjo0L7TmRJcdJj4QcmxMw5dLYkw20c949ezSI37tM51A2yzopBAJL+EFo5k717uIv/Ayb+hgsGu2P5Bntaa1ch+Z8QwaN5QgagJQfjMpUqqY5OUhXRHE=",
@@ -458,6 +450,7 @@ const spLegacy = {
     active: true,
     type: "public",
     secretCreatedAt: "2019-05-22T14:36:12.494Z",
+    createdAt: "2019-05-22T14:36:12.493Z",
     credentialsFlow: false,
     identityConsent: false,
     trustedIdentity: false,
@@ -471,5 +464,5 @@ const spLegacy = {
 /* ------------------------------------------------------------------------------- */
 Object.values(spLegacy).forEach((fs) => {
   print(`${fs.name} > Initializing provider: ${fs.name}`);
-  db.client.updateOne({ name: fs.name }, { $set: fs }, { upsert: true });
+  db.client.update({ name: fs.name }, fs, { upsert: true });
 });

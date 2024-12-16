@@ -77,9 +77,5 @@ Object.entries(PRODUCTION_IPDS_HIGH).forEach(([key, fi]) => {
   };
 
   print(`- initializing "${lkey}" : { active : ${update.active} }`);
-  db.provider.updateOne(
-    { uid: update.uid },
-    { $set: update },
-    { upsert: true },
-  );
+  db.provider.update({ uid: update.uid }, update, { upsert: true });
 });
