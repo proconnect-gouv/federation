@@ -14,4 +14,5 @@ include:
   - '/back/.gitlab-ci.yml'
   - '/front/.gitlab-ci.yml'
   - '.gitlab-ci-security-scanning.yml'
-  - '.gitlab-ci-labeller.yml'
+  # Temporary disable FCA-Labeller while fork XP is running
+  # - '.gitlab-ci-labeller.yml'
