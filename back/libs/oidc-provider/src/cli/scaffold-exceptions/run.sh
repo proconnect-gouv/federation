@@ -14,9 +14,12 @@ _generate_oidc_provider_exceptions() {
 "
   indexMap="export const exceptionSourceMap = {"
   local indexImports="${header}"
-  local i18n="${header}const DEFAULT_MESSAGE = 'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.';
+  local i18nFr="${header}const DEFAULT_MESSAGE = 'Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous.';
   
 export const frFR = {"
+  local i18nEn="${header}const DEFAULT_MESSAGE = 'A technical error has occurred. Please close your browser tab and reconnect.';
+  
+export const enGB = {"
 
   echo "Purging generated exception from ${pattern}"
   rm -f ${pattern}
@@ -74,7 +77,10 @@ export class ${className} extends OidcProviderBaseRuntimeException {
     echo "writing ${fileName}"
     echo "${TEMPLATE}" >"${fileName}"
 
-    i18n="${i18n}
+    i18nFr="${i18nFr}
+    '${i18nKey}': DEFAULT_MESSAGE,"
+
+    i18nEn="${i18nEn}
     '${i18nKey}': DEFAULT_MESSAGE,"
 
     indexMap="${indexMap}
@@ -87,12 +93,16 @@ import { ${className} } from './${relativeFileName}';"
   indexMap="${indexMap}
 };
 "
-  i18n="${i18n}
+  i18nFr="${i18nFr}
+};
+"
+  i18nEn="${i18nEn}
 };
 "
 
   local barrelFile="${exceptionDir}/index.ts"
-  local translationlFile="${exceptionDir}/fr-FR.i18n.ts"
+  local translationFrFile="${exceptionDir}/fr-FR.i18n.ts"
+  local translationEnFile="${exceptionDir}/en-GB.i18n.ts"
 
   local idCount=$(echo "${idList}" | wc -l)
   local uniqueIdCount=$(echo "${idList}" | sort | uniq | wc -l)
@@ -108,7 +118,8 @@ import { ${className} } from './${relativeFileName}';"
   echo "${indexMap}" >>"${barrelFile}"
 
   echo "Generate translation file"
-  echo "${i18n}" >"${translationlFile}"
+  echo "${i18nFr}" >"${translationFrFile}"
+  echo "${i18nEn}" >"${translationEnFile}"
 
   cd $FC_ROOT/fc/back
 
