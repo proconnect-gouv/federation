@@ -136,8 +136,6 @@ _get_modified_files_for_front_apps() {
 }
 
 _ci_job_relevant_for_back_apps() {
-
-  echo "SKIP_DIFF_CHECK from cli: ${SKIP_DIFF_CHECK}"
   if [ "${SKIP_DIFF_CHECK}" == "true" ]; then
     echo "STATUS=SKIP"
     exit 0
