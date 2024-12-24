@@ -15,7 +15,7 @@ export class PartnersAccount {
   id: string;
 
   @Column({
-    type: 'uuid',
+    type: 'text',
     unique: true,
   })
   sub: string; // claim `sub`

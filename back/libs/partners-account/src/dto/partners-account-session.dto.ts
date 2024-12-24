@@ -1,4 +1,10 @@
-import { IsObject, IsOptional, IsString, IsUUID } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsObject,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
 
 import {
   ACCESS_CONTROL_TOKEN,
@@ -6,7 +12,8 @@ import {
 } from '@fc/access-control';
 
 export class PartnersAccountSession {
-  @IsUUID('4')
+  @IsString()
+  @IsNotEmpty()
   readonly sub: string;
 
   @IsString()
