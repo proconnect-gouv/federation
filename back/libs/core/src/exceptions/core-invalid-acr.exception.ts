@@ -9,6 +9,5 @@ export class CoreInvalidAcrException extends CoreBaseException {
   static ERROR = 'invalid_request';
   static ERROR_DESCRIPTION = 'acr_values ​​not supported';
   static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
-  static SCOPE = 2; // identity provider scope
   static UI = 'Core.exceptions.coreInvalidAcr';
 }

@@ -126,6 +126,8 @@ const config: Config = {
     '^@fc/flow-steps(|/.*)$': '<rootDir>/libs/flow-steps/src/$1',
     '^@fc/mock-data-provider(|/.*)$':
       '<rootDir>/apps/mock-data-provider/src/$1',
+    '^@fc/mock-identity-provider(|/.*)$':
+      '<rootDir>/apps/mock-identity-provider/src/$1',
     '^@fc/data-provider-adapter-core(|/.*)$':
       '<rootDir>/libs/data-provider-adapter-core/src/$1',
     '^@mocks/session(|/.*)$': '<rootDir>/libs/session/.mocks/$1',

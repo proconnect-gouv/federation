@@ -1,10 +1,9 @@
-import { MockDataProviderModule } from 'apps/mock-data-provider/src';
-
 import { DynamicModule, Module } from '@nestjs/common';
 
 import { ConfigModule, ConfigService } from '@fc/config';
 import { LoggerModule } from '@fc/logger';
 import { LoggerRequestPlugin } from '@fc/logger-plugins';
+import { MockDataProviderModule } from '@fc/mock-data-provider';
 
 @Module({})
 export class AppModule {
