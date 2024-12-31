@@ -1,2 +1,2 @@
-export * from './use-user-preferences-api.hook';
-export * from './use-user-preferences-form.hook';
+export * from './user-preferences-api';
+export * from './user-preferences-form';

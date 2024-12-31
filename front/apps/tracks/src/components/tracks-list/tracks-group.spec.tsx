@@ -52,11 +52,11 @@ describe('tracksGroupComponent', () => {
   const allTracks = [oldestTrack, newestTrack];
 
   it('should render the defined label', () => {
-    // given
+    // Given
     const { getByText, unmount } = render(
       <TracksGroupComponent label="Any Label" options={options} tracks={allTracks} />,
     );
-    // then
+    // Then
     const element = getByText('Any Label');
 
     expect(element).toBeInTheDocument();
@@ -65,37 +65,37 @@ describe('tracksGroupComponent', () => {
   });
 
   it('orderTracksByDateDesc should have been called', () => {
-    // given
+    // Given
     const sortFunctionSpy = jest.spyOn(TrackUtils, 'orderTracksByDateDesc');
     const { unmount } = render(
       <TracksGroupComponent label="Any Label" options={options} tracks={allTracks} />,
     );
 
-    // then
+    // Then
     expect(sortFunctionSpy).toHaveBeenCalledOnce();
 
     unmount();
   });
 
   it('trackCardComponent should have been called 2 times', () => {
-    // given
+    // Given
     const { unmount } = render(
       <TracksGroupComponent label="Any Label" options={options} tracks={allTracks} />,
     );
 
-    // then
+    // Then
     expect(TrackCardComponent).toHaveBeenCalledTimes(2);
 
     unmount();
   });
 
   it('trackCardComponent should have been sorted by tracks.time', () => {
-    // given
+    // Given
     const { unmount } = render(
       <TracksGroupComponent label="Any Label" options={options} tracks={allTracks} />,
     );
 
-    // then
+    // Then
     expect(TrackCardComponent).toHaveBeenNthCalledWith(1, { options, track: newestTrack }, {});
 
     unmount();

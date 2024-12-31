@@ -12,7 +12,7 @@ jest.mock('../../../hooks/field-meta/field-meta.hook');
 
 describe('TextInput', () => {
   it('should match snapshot', () => {
-    // given
+    // Given
     jest.mocked(useFieldMeta).mockReturnValue({
       errorMessage: 'any errorMessage mock',
       hasError: true,
@@ -39,11 +39,11 @@ describe('TextInput', () => {
       },
     } as unknown as PropsWithInputConfigType<string>;
 
-    // when
+    // When
     const { container, getByDisplayValue } = render(<TextInput {...propsMock} />);
     const inputElement = getByDisplayValue('any input value mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useFieldMeta).toHaveBeenCalledOnce();
     expect(useFieldMeta).toHaveBeenCalledWith({

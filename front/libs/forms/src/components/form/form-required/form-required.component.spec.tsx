@@ -6,10 +6,10 @@ import { FormRequiredMessageComponent } from './form-required.component';
 
 describe('FormRequiredMessageComponent', () => {
   it('should match the snapshot', () => {
-    // when
+    // When
     const { container } = render(<FormRequiredMessageComponent />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(t).toHaveBeenCalledWith('Form.message.requiredFields');
   });

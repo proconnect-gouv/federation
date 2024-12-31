@@ -13,7 +13,7 @@ describe('InputField', () => {
   });
 
   it('should match snapshot and render a text input', () => {
-    // given
+    // Given
     const formatMock = jest.fn();
     const onPasteMock = jest.fn();
     const validateMock = jest.fn();
@@ -21,7 +21,7 @@ describe('InputField', () => {
       .mocked(useClipboard)
       .mockReturnValueOnce({ onCopy: jest.fn(), onPaste: onPasteMock, value: expect.anything() });
 
-    // when
+    // When
     const { container } = render(
       <InputField
         config={{
@@ -36,7 +36,7 @@ describe('InputField', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useClipboard).toHaveBeenCalledOnce();
     expect(useClipboard).toHaveBeenCalledWith(true);
@@ -60,7 +60,7 @@ describe('InputField', () => {
   });
 
   it('should match snapshot and render a text area', () => {
-    // given
+    // Given
     const formatMock = jest.fn();
     const onPasteMock = jest.fn();
     const validateMock = jest.fn();
@@ -68,7 +68,7 @@ describe('InputField', () => {
       .mocked(useClipboard)
       .mockReturnValueOnce({ onCopy: jest.fn(), onPaste: onPasteMock, value: expect.anything() });
 
-    // when
+    // When
     const { container } = render(
       <InputField
         config={{
@@ -83,7 +83,7 @@ describe('InputField', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useClipboard).toHaveBeenCalledOnce();
     expect(useClipboard).toHaveBeenCalledWith(true);

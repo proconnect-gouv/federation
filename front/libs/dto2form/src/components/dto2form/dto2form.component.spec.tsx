@@ -10,7 +10,7 @@ import { DTO2FormComponent } from './dto2form.component';
 jest.mock('../dto2field/dto2field.component');
 
 describe('DTO2FormComponent', () => {
-  // given
+  // Given
   const initialValuesMock = {};
   const onSubmitMock = jest.fn();
   const onValidateMock = jest.fn();
@@ -24,14 +24,14 @@ describe('DTO2FormComponent', () => {
   };
 
   beforeEach(() => {
-    // given
+    // Given
     jest
       .mocked(FormComponent)
       .mockImplementation(({ children }) => <div data-mockid="FormComponent">{children}</div>);
   });
 
   it('should match the snapshot', () => {
-    // when
+    // When
     const { container } = render(
       <DTO2FormComponent
         config={configMock}
@@ -42,7 +42,7 @@ describe('DTO2FormComponent', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(FormComponent).toHaveBeenCalledOnce();
     expect(FormComponent).toHaveBeenCalledWith(
@@ -58,10 +58,10 @@ describe('DTO2FormComponent', () => {
   });
 
   it('should memoize a children renderer function', () => {
-    // given
+    // Given
     const useMemoSpy = jest.spyOn(React, 'useMemo');
 
-    // when
+    // When
     render(
       <DTO2FormComponent
         config={configMock}
@@ -72,17 +72,17 @@ describe('DTO2FormComponent', () => {
       />,
     );
 
-    // then
+    // Then
     expect(useMemoSpy).toHaveBeenCalledOnce();
     expect(useMemoSpy).toHaveBeenCalledWith(expect.any(Function), [schemaMock, configMock.id]);
   });
 
   it('should sort the rendered children', () => {
-    // given
+    // Given
     const orderSorterMock = jest.fn();
     jest.mocked(sortByKey).mockReturnValueOnce(orderSorterMock);
 
-    // when
+    // When
     render(
       <DTO2FormComponent
         config={configMock}
@@ -93,7 +93,7 @@ describe('DTO2FormComponent', () => {
       />,
     );
 
-    // then
+    // Then
     expect(sortByKey).toHaveBeenCalledOnce();
     expect(sortByKey).toHaveBeenCalledWith('order');
     expect(orderSorterMock).toHaveBeenCalledTimes(2);

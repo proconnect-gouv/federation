@@ -12,7 +12,7 @@ jest.mock('../../elements/message/message.element');
 jest.mock('../../../hooks/field-meta/field-meta.hook');
 
 describe('SelectInput', () => {
-  // given
+  // Given
   const inputMock = {
     onBlur: jest.fn(),
     onChange: jest.fn(),
@@ -25,7 +25,7 @@ describe('SelectInput', () => {
   ];
 
   it('should match the snapshot when is valid', () => {
-    // given
+    // Given
     jest.mocked(useFieldMeta).mockReturnValueOnce({
       errorMessage: undefined,
       hasError: false,
@@ -33,7 +33,7 @@ describe('SelectInput', () => {
       isValid: true,
     });
 
-    // when
+    // When
     const { container } = render(
       <SelectInput
         choices={choices}
@@ -48,7 +48,7 @@ describe('SelectInput', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useFieldMeta).toHaveBeenCalledOnce();
     expect(useFieldMeta).toHaveBeenCalledWith({ error: undefined, touched: false });
@@ -88,7 +88,7 @@ describe('SelectInput', () => {
   });
 
   it('should match the snapshot when has error', () => {
-    // given
+    // Given
     jest.mocked(useFieldMeta).mockReturnValueOnce({
       errorMessage: 'any-error-message-mock',
       hasError: true,
@@ -96,7 +96,7 @@ describe('SelectInput', () => {
       isValid: false,
     });
 
-    // when
+    // When
     const { container } = render(
       <SelectInput
         choices={choices}
@@ -111,7 +111,7 @@ describe('SelectInput', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useFieldMeta).toHaveBeenCalledOnce();
     expect(useFieldMeta).toHaveBeenCalledWith({ error: 'any-error-message-mock', touched: false });
@@ -151,7 +151,7 @@ describe('SelectInput', () => {
   });
 
   it('should render 2 select.option', () => {
-    // given
+    // Given
     jest.mocked(useFieldMeta).mockReturnValueOnce({
       errorMessage: 'any-error-message-mock',
       hasError: true,
@@ -159,7 +159,7 @@ describe('SelectInput', () => {
       isValid: false,
     });
 
-    // when
+    // When
     const { getByText } = render(
       <SelectInput
         choices={choices}
@@ -176,7 +176,7 @@ describe('SelectInput', () => {
     const optionElt1 = getByText('mock-label-1');
     const optionElt2 = getByText('mock-label-2');
 
-    // then
+    // Then
     expect(optionElt1).toBeInTheDocument();
     expect(optionElt1).toHaveAttribute('value', 'mock-value-1');
     expect(optionElt2).toBeInTheDocument();

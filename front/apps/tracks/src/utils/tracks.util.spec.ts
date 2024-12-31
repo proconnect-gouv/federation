@@ -90,10 +90,10 @@ const configMock = {
 
 describe('groupTracksByMonth', () => {
   it('doit retourner une track dans un seul groupe', () => {
-    // when
+    // When
     const results = groupTracksByMonth(configMock)([], track1, 0);
 
-    // then
+    // Then
     expect(results).toHaveLength(1);
     expect(results[0][1].tracks).toHaveLength(1);
     expect(results[0][1].tracks[0]).toStrictEqual(track1);
@@ -101,13 +101,13 @@ describe('groupTracksByMonth', () => {
   });
 
   it('doit retourner deux tracks dans un seul groupe', () => {
-    // given
+    // Given
     const tracks = [track1, track2];
 
-    // when
+    // When
     const results = tracks.reduce(groupTracksByMonth(configMock), []);
 
-    // then
+    // Then
     expect(results).toHaveLength(1);
     expect(results[0][1].tracks).toHaveLength(2);
     expect(results[0][1].tracks[0]).toStrictEqual(track1);
@@ -116,13 +116,13 @@ describe('groupTracksByMonth', () => {
   });
 
   it('doit retourner trois tracks dans deux groupes (2|1)', () => {
-    // given
+    // Given
     const tracks = [track1, track2, track3];
 
-    // when
+    // When
     const results = tracks.reduce(groupTracksByMonth(configMock), []);
 
-    // then
+    // Then
     expect(results).toHaveLength(2);
     // first group
     expect(results[0][1].tracks).toHaveLength(2);
@@ -138,17 +138,17 @@ describe('groupTracksByMonth', () => {
 
 describe('orderGroupByKeyAsc', () => {
   it('doit retourner un tableau ordonner par la clé unique (timestamp)', () => {
-    // given
+    // Given
     const sortable = [
       [456, {}] as TrackListType,
       [789, {}] as TrackListType,
       [123, {}] as TrackListType,
     ];
 
-    // when
+    // When
     const result = sortable.sort(orderGroupByKeyAsc);
 
-    // then
+    // Then
     expect(result).toStrictEqual([
       [789, {}],
       [456, {}],
@@ -159,7 +159,7 @@ describe('orderGroupByKeyAsc', () => {
 
 describe('orderTracksByDateDesc', () => {
   it('doit retourner un tableau ordonné par la clé unique (timestamp)', () => {
-    // given
+    // Given
     const sortable = [
       //  '2011-09-02T14:48:00.000Z'
       { time: 1314974880000 } as EnhancedTrackInterface,
@@ -169,10 +169,10 @@ describe('orderTracksByDateDesc', () => {
       { time: 1314888480000 } as EnhancedTrackInterface,
     ];
 
-    // when
+    // When
     const result = sortable.sort(orderTracksByDateDesc);
 
-    // then
+    // Then
     expect(result).toStrictEqual([
       { time: 1317912480000 },
       { time: 1314974880000 },
@@ -183,10 +183,10 @@ describe('orderTracksByDateDesc', () => {
 
 describe('transformTrackToEnhanced', () => {
   it('doit retourner un objet avec une propriéte datetime de type luxon', () => {
-    // when
+    // When
     const result = transformTrackToEnhanced(track1);
 
-    // then
+    // Then
     expect(result).toStrictEqual({
       ...track1,
       datetime: DateTime.fromMillis(track1.time),

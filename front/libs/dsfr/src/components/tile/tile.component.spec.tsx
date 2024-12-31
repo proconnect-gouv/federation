@@ -7,19 +7,19 @@ import { TileComponent } from './tile.component';
 
 describe('TileComponent', () => {
   it('should match the snapshot, with default values', () => {
-    // when
+    // When
     const { container } = render(
       <TileComponent link="any-link-mock" title="Tile title mock">
         any description text treat as children
       </TileComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should match the snapshot, with optionnal values', () => {
-    // when
+    // When
     const { container } = render(
       <TileComponent
         isHorizontal
@@ -35,7 +35,7 @@ describe('TileComponent', () => {
       </TileComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 });

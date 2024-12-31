@@ -41,7 +41,7 @@ describe('ConnexionComponent', () => {
   const eventTypeMock = 'eventTypeMockValue';
 
   it('should match snapshot, with default props', () => {
-    // when
+    // When
     const { container } = render(
       <ClaimsComponent
         claims={claimsMock}
@@ -51,12 +51,12 @@ describe('ConnexionComponent', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should render global title for autorisation', () => {
-    // given
+    // Given
     const { getByText } = render(
       <ClaimsComponent
         claims={claimsMock}
@@ -66,17 +66,17 @@ describe('ConnexionComponent', () => {
       />,
     );
 
-    // when
+    // When
     const element = getByText(
       'Vous avez autorisé la transmission de données personnelles à ce service le :',
     );
 
-    // then
+    // Then
     expect(element).toBeInTheDocument();
   });
 
   it('should render global title for data transfer', () => {
-    // given
+    // Given
     const { getByText } = render(
       <ClaimsComponent
         claims={claimsMock}
@@ -86,15 +86,15 @@ describe('ConnexionComponent', () => {
       />,
     );
 
-    // when
+    // When
     const element = getByText('Des données ont été transmises à ce service le :');
 
-    // then
+    // Then
     expect(element).toBeInTheDocument();
   });
 
   it('should render data provider title for autorisation', () => {
-    // given
+    // Given
     const { getByText } = render(
       <ClaimsComponent
         claims={claimsMock}
@@ -104,17 +104,17 @@ describe('ConnexionComponent', () => {
       />,
     );
 
-    // when
+    // When
     const element = getByText(
       /^Vous avez autorisé le service à récupérer les données suivantes depuis .+/,
     );
 
-    // then
+    // Then
     expect(element).toBeInTheDocument();
   });
 
   it('should render data provider title for data transfer', () => {
-    // given
+    // Given
     const { getByText } = render(
       <ClaimsComponent
         claims={claimsMock}
@@ -124,15 +124,15 @@ describe('ConnexionComponent', () => {
       />,
     );
 
-    // when
+    // When
     const element = getByText(/^Le service a récupéré les données suivantes depuis .+/);
 
-    // then
+    // Then
     expect(element).toBeInTheDocument();
   });
 
   it('should render a list of 2 informations', () => {
-    // given
+    // Given
     const { container } = render(
       <ClaimsComponent
         claims={claimsMock}
@@ -142,10 +142,10 @@ describe('ConnexionComponent', () => {
       />,
     );
 
-    // when
+    // When
     const elements = container.getElementsByTagName('li');
 
-    // then
+    // Then
     expect(elements).toHaveLength(2);
   });
 });

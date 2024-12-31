@@ -8,7 +8,7 @@ import { buildValidator, composeValidators } from '../../helpers';
 import { isRequired } from '../../validators';
 import { useFieldValidate } from './field-validate.hook';
 
-// given
+// Given
 jest.mock('lodash.has', () => jest.fn());
 jest.mock('../../enums/validators.enum');
 jest.mock('../../validators/is-required/is-required.validator');
@@ -16,7 +16,7 @@ jest.mock('../../helpers/build-validator/build-validator.helper');
 jest.mock('../../helpers/compose-validators/compose-validators.helper');
 
 describe('useFieldValidate', () => {
-  // given
+  // Given
   const validatorsMock = [
     { errorLabel: 'any-error-label-mock-1', name: 'mock1' },
     { errorLabel: 'any-error-label-mock-2', name: 'mock2' },
@@ -24,15 +24,15 @@ describe('useFieldValidate', () => {
   ];
 
   it('should call lodash.has for each validator', () => {
-    // given
+    // Given
     jest.mocked(has).mockReturnValueOnce(true).mockReturnValueOnce(true).mockReturnValueOnce(true);
 
-    // when
+    // When
     renderHook(() =>
       useFieldValidate({ required: expect.any(Boolean), validators: validatorsMock }),
     );
 
-    // then
+    // Then
     expect(has).toHaveBeenCalledTimes(3);
     expect(has).toHaveBeenNthCalledWith(1, Validators, 'mock1');
     expect(has).toHaveBeenNthCalledWith(2, Validators, 'mock2');
@@ -40,14 +40,14 @@ describe('useFieldValidate', () => {
   });
 
   it('should call buildValidator for only each valid validator', () => {
-    // given
+    // Given
     const requiredMock = false;
     jest.mocked(has).mockReturnValueOnce(true).mockReturnValueOnce(false).mockReturnValueOnce(true);
 
-    // when
+    // When
     renderHook(() => useFieldValidate({ required: requiredMock, validators: validatorsMock }));
 
-    // then
+    // Then
     expect(buildValidator).toHaveBeenCalledTimes(2);
     expect(buildValidator).toHaveBeenNthCalledWith(
       1,
@@ -62,7 +62,7 @@ describe('useFieldValidate', () => {
   });
 
   it('should preprend a validator to validators stack when the field is required', () => {
-    // given
+    // Given
     const validateFunc = jest.fn();
     const errorMessageMock = 'any-error-message-mock';
 
@@ -74,10 +74,10 @@ describe('useFieldValidate', () => {
     jest.mocked(isRequired).mockReturnValueOnce(validateFunc);
     jest.spyOn(Array.prototype, 'map').mockReturnValueOnce(validatorsFuncsMock);
 
-    // when
+    // When
     renderHook(() => useFieldValidate({ required: true, validators: [] }));
 
-    // then
+    // Then
     expect(t).toHaveBeenCalledOnce();
     expect(t).toHaveBeenCalledWith('Form.message.required');
     expect(isRequired).toHaveBeenCalledOnce();
@@ -86,7 +86,7 @@ describe('useFieldValidate', () => {
   });
 
   it('should return undefined if the field is disabled', () => {
-    // when
+    // When
     const { result } = renderHook(() =>
       useFieldValidate({
         disabled: true,
@@ -95,13 +95,13 @@ describe('useFieldValidate', () => {
       }),
     );
 
-    // then
+    // Then
     expect(result.current).toBeUndefined();
     expect(composeValidators).not.toHaveBeenCalled();
   });
 
   it('should return undefined if there is no valid validators', () => {
-    // when
+    // When
     const { result } = renderHook(() =>
       useFieldValidate({
         disabled: true,
@@ -110,13 +110,13 @@ describe('useFieldValidate', () => {
       }),
     );
 
-    // then
+    // Then
     expect(result.current).toBeUndefined();
     expect(composeValidators).not.toHaveBeenCalled();
   });
 
   it('should return a validate function', () => {
-    // given
+    // Given
     const validators1 = () => expect.any(String);
     const validators2 = () => expect.any(String);
     const validatorsFuncsMock = [validators1, validators2];
@@ -129,7 +129,7 @@ describe('useFieldValidate', () => {
     jest.mocked(buildValidator).mockReturnValueOnce(validators1).mockReturnValueOnce(validators2);
     jest.mocked(composeValidators).mockReturnValueOnce(validateMock);
 
-    // when
+    // When
     const { result } = renderHook(() =>
       useFieldValidate({
         disabled: false,
@@ -138,7 +138,7 @@ describe('useFieldValidate', () => {
       }),
     );
 
-    // then
+    // Then
     expect(composeValidators).toHaveBeenCalledOnce();
     expect(composeValidators).toHaveBeenCalledWith(validators1, validators2);
     expect(result.current).toStrictEqual(validateMock);

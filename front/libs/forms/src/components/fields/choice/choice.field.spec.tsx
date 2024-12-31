@@ -14,7 +14,7 @@ jest.mock('./../../../hooks/field-meta/field-meta.hook');
 
 describe('ChoiceField', () => {
   beforeEach(() => {
-    // given
+    // Given
     jest.mocked(Field).mockImplementation(jest.fn());
     jest.mocked(useField).mockReturnValue({ input: expect.any(Object), meta: expect.any(Object) });
     jest.mocked(useFieldMeta).mockReturnValue({
@@ -26,10 +26,10 @@ describe('ChoiceField', () => {
   });
 
   it('should match snapshot', () => {
-    // given
+    // Given
     const validateMock = jest.fn();
 
-    // when
+    // When
     const { container } = render(
       <ChoiceField
         choices={[
@@ -47,7 +47,7 @@ describe('ChoiceField', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useField).toHaveBeenCalledOnce();
     expect(useField).toHaveBeenCalledWith('any-name-mock', {

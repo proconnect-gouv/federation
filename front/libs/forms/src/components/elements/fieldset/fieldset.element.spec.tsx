@@ -4,7 +4,7 @@ import { FieldsetElement } from './fieldset.element';
 
 describe('FieldsetElement', () => {
   it('should match the snapshot without parameters', () => {
-    // when
+    // When
     const ChildElementMock = jest.fn(() => <div>children-mock</div>);
     const { container, getByRole, getByText } = render(
       <FieldsetElement name="any-name-mock">
@@ -14,7 +14,7 @@ describe('FieldsetElement', () => {
     const fieldsetElt = getByRole('group');
     const childElt = getByText('children-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(fieldsetElt).toBeInTheDocument();
     expect(fieldsetElt).toHaveAttribute('id', 'any-name-mock');
@@ -29,7 +29,7 @@ describe('FieldsetElement', () => {
   });
 
   it('should match the snapshot with parameters', () => {
-    // when
+    // When
     const ChildElementMock = jest.fn(() => <div>children-mock</div>);
     const { container, getByRole, getByText } = render(
       <FieldsetElement hasError isValid className="any-classname-mock" name="any-name-mock">
@@ -39,7 +39,7 @@ describe('FieldsetElement', () => {
     const fieldsetElt = getByRole('group');
     const childElt = getByText('children-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(fieldsetElt).toBeInTheDocument();
     expect(fieldsetElt).toHaveAttribute('id', 'any-name-mock');

@@ -6,15 +6,15 @@ import { RouterErrorBoundaryComponent } from './router-error-boundary.component'
 
 describe('RouterErrorBoundaryComponent', () => {
   it('should match the snapshot if is not a router error', () => {
-    // given
+    // Given
     const errorMock = new RouterException(new Error('any message mock'));
     jest.mocked(useRouteError).mockReturnValueOnce(errorMock);
     jest.mocked(isRouteErrorResponse).mockReturnValueOnce(true);
 
-    // when
+    // When
     const { container } = render(<RouterErrorBoundaryComponent />);
 
-    // then
+    // Then
     expect(useRouteError).toHaveBeenCalledOnce();
     expect(isRouteErrorResponse).toHaveBeenCalledOnce();
     expect(isRouteErrorResponse).toHaveBeenCalledWith(errorMock);
@@ -22,7 +22,7 @@ describe('RouterErrorBoundaryComponent', () => {
   });
 
   it('should throw an error if is not a router error', () => {
-    // given
+    // Given
     const errorMock = new RouterException(new Error('any message mock'));
     jest.mocked(useRouteError).mockReturnValueOnce(errorMock);
     jest.mocked(isRouteErrorResponse).mockReturnValueOnce(false);
@@ -30,7 +30,7 @@ describe('RouterErrorBoundaryComponent', () => {
     // as the code below suposed to throw
     jest.spyOn(console, 'error').mockImplementation(() => {});
 
-    // when / then
+    // When / then
     expect(() => {
       render(<RouterErrorBoundaryComponent />);
     }).toThrow();

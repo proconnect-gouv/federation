@@ -6,13 +6,13 @@ import { LinkButton } from './link.button';
 
 describe('SimpleLink', () => {
   it('should match the snapshot, with default values', () => {
-    // when
+    // When
     const { container, getByText } = render(
       <LinkButton link="any-link-mock">any-label-mock</LinkButton>,
     );
     const element = getByText('any-label-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(element).toBeInTheDocument();
     expect(Link).toHaveBeenCalledOnce();
@@ -30,7 +30,7 @@ describe('SimpleLink', () => {
   });
 
   it('should match the snapshot, with optionnal values', () => {
-    // when
+    // When
     const { container, getByText } = render(
       <LinkButton
         noOutline
@@ -47,7 +47,7 @@ describe('SimpleLink', () => {
     );
     const element = getByText('any-label-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(element).toBeInTheDocument();
     expect(Link).toHaveBeenCalledOnce();

@@ -15,17 +15,17 @@ jest.mock('../badges-group/badges-group.component');
 
 describe('CardComponent', () => {
   it('should match the snapshot, with default values', () => {
-    // when
+    // When
     const { container } = render(
       <CardComponent title="Card title mock">any description text treat as children</CardComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should match the snapshot, with all optionnal values', () => {
-    // when
+    // When
     const { container } = render(
       <CardComponent
         enlargeLink
@@ -46,12 +46,12 @@ describe('CardComponent', () => {
       </CardComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should optionnal classnames on the main container', () => {
-    // when
+    // When
     const { container } = render(
       <CardComponent
         enlargeLink
@@ -65,7 +65,7 @@ describe('CardComponent', () => {
     );
     const element = container.firstChild;
 
-    // then
+    // Then
     expect(element).toHaveClass('fr-enlarge-link');
     expect(element).toHaveClass('fr-card--horizontal');
     expect(element).toHaveClass('fr-card--shadow');
@@ -74,7 +74,7 @@ describe('CardComponent', () => {
   });
 
   it('should render the heading tag with a link and the title', () => {
-    // when
+    // When
     const { getByRole } = render(
       <CardComponent Heading={HeadingTag.H1} link="any-link-mock" title="Card title mock">
         any description text treat as children
@@ -82,7 +82,7 @@ describe('CardComponent', () => {
     );
     const titleElt = getByRole('heading', { level: 1 });
 
-    // then
+    // Then
     expect(titleElt).toBeInTheDocument();
     expect(titleElt).toHaveClass('fr-card__title');
     expect(titleElt).toHaveAttribute('data-testid', 'CardComponent-title');
@@ -97,18 +97,18 @@ describe('CardComponent', () => {
   });
 
   it('should render the description', () => {
-    // when
+    // When
     const { getByText } = render(
       <CardComponent title="Card title mock">any description text treat as children</CardComponent>,
     );
     const element = getByText('any description text treat as children');
 
-    // then
+    // Then
     expect(element).toBeInTheDocument();
   });
 
   it('should render the card details (top, bottom)', () => {
-    // when
+    // When
     render(
       <CardComponent
         details={{
@@ -120,7 +120,7 @@ describe('CardComponent', () => {
       </CardComponent>,
     );
 
-    // then
+    // Then
     expect(CardDetailComponent).toHaveBeenCalledTimes(2);
     expect(CardDetailComponent).toHaveBeenNthCalledWith(
       1,
@@ -143,7 +143,7 @@ describe('CardComponent', () => {
   });
 
   it('should render the media', () => {
-    // when
+    // When
     render(
       <CardComponent
         media={{ alt: 'media-alt-mock', src: 'media-src-mock' }}
@@ -152,7 +152,7 @@ describe('CardComponent', () => {
       </CardComponent>,
     );
 
-    // then
+    // Then
     expect(CardMediaComponent).toHaveBeenCalledOnce();
     expect(CardMediaComponent).toHaveBeenCalledWith(
       {
@@ -164,14 +164,14 @@ describe('CardComponent', () => {
   });
 
   it('should render the badges group', () => {
-    // when
+    // When
     render(
       <CardComponent badges={[{ label: 'any-badge-mock' }]} title="Card title mock">
         any description text treat as children
       </CardComponent>,
     );
 
-    // then
+    // Then
     expect(BadgesGroupComponent).toHaveBeenCalledOnce();
     expect(BadgesGroupComponent).toHaveBeenCalledWith(
       {

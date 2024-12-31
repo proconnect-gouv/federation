@@ -19,6 +19,14 @@ import type {
 } from '../interfaces';
 import { getRequestOptions } from '../utils';
 
+const DEFAULT_OPTION = {
+  headers: {
+    // Conventional header name
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    'Content-Type': ContentType.FORM_URL_ENCODED,
+  },
+};
+
 export const makeRequest = async (
   method: Method,
   endpoint: string,
@@ -86,10 +94,7 @@ export const post = async <T>(
     const { csrfToken } = await getCSRF();
     const datas = { ...data, csrfToken };
     return await makeRequest(HttpMethods.POST, endpoint, datas, {
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        'Content-Type': ContentType.FORM_URL_ENCODED,
-      },
+      ...DEFAULT_OPTION,
       ...options,
     });
   } catch (err) {

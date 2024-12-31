@@ -13,7 +13,7 @@ jest.mock('../../elements/message/message.element');
 jest.mock('../../../hooks/field-meta/field-meta.hook');
 
 describe('TextAreaInput', () => {
-  // given
+  // Given
   const metaMock = Symbol('meta mock') as unknown as FieldMetaState<string>;
 
   const inputMock = {
@@ -23,7 +23,7 @@ describe('TextAreaInput', () => {
   };
 
   beforeEach(() => {
-    // given
+    // Given
     jest.mocked(useFieldMeta).mockReturnValue({
       errorMessage: undefined,
       hasError: false,
@@ -33,7 +33,7 @@ describe('TextAreaInput', () => {
   });
 
   it('should match the snapshot when value is valid', () => {
-    // when
+    // When
     const { container, getByTestId } = render(
       <TextAreaInput
         config={{
@@ -54,7 +54,7 @@ describe('TextAreaInput', () => {
     );
     const inputElt = getByTestId('form-input-textarea-testid-any-name-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useFieldMeta).toHaveBeenCalledOnce();
     expect(useFieldMeta).toHaveBeenCalledWith(metaMock);
@@ -99,7 +99,7 @@ describe('TextAreaInput', () => {
   });
 
   it('should match the snapshot when a max length is defined', () => {
-    // when
+    // When
     const { container } = render(
       <TextAreaInput
         config={{
@@ -119,7 +119,7 @@ describe('TextAreaInput', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(TextAreaMaxlengthComponent).toHaveBeenCalledOnce();
     expect(TextAreaMaxlengthComponent).toHaveBeenCalledWith(
@@ -132,7 +132,7 @@ describe('TextAreaInput', () => {
   });
 
   it('should match the snapshot when input value is invalid', () => {
-    // given
+    // Given
     jest.mocked(useFieldMeta).mockReturnValue({
       errorMessage: 'any-error-message-mock',
       hasError: true,
@@ -140,7 +140,7 @@ describe('TextAreaInput', () => {
       isValid: false,
     });
 
-    // when
+    // When
     const { container, getByTestId } = render(
       <TextAreaInput
         config={{
@@ -161,7 +161,7 @@ describe('TextAreaInput', () => {
     );
     const inputElt = getByTestId('form-input-textarea-testid-any-name-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useFieldMeta).toHaveBeenCalledOnce();
     expect(useFieldMeta).toHaveBeenCalledWith(metaMock);

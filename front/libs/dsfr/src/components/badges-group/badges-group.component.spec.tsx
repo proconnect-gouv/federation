@@ -6,7 +6,7 @@ import { BadgesGroupComponent } from './badges-group.component';
 jest.mock('../badge/badge.component');
 
 describe('BadgesGroupComponent', () => {
-  // given
+  // Given
   const badges = [
     { colorName: 'red', label: 'Red Badge' },
     { colorName: 'blue', label: 'Blue Badge' },
@@ -14,18 +14,18 @@ describe('BadgesGroupComponent', () => {
   ];
 
   it('should match the snapshot', () => {
-    // when
+    // When
     const { container } = render(<BadgesGroupComponent item={badges} />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should render a badge group with multiple badges', () => {
-    // when
+    // When
     render(<BadgesGroupComponent item={badges} />);
 
-    // then
+    // Then
     expect(BadgeComponent).toHaveBeenCalledTimes(3);
     expect(BadgeComponent).toHaveBeenNthCalledWith(
       1,

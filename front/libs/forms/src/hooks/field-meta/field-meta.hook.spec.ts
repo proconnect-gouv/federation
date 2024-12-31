@@ -4,11 +4,11 @@ import { useFieldMeta } from './field-meta.hook';
 
 describe('useFieldMeta', () => {
   it('should return props with error message when meta has error', () => {
-    // given
+    // Given
     const meta = { error: 'Field is required', touched: true };
     const { result } = renderHook(() => useFieldMeta(meta));
 
-    // then
+    // Then
     expect(result.current.errorMessage).toBe('Field is required');
     expect(result.current.hasError).toBeTrue();
     expect(result.current.inputClassname).not.toContain('fr-input--valid');
@@ -17,11 +17,11 @@ describe('useFieldMeta', () => {
   });
 
   it('should return props without error message when meta does not have error', () => {
-    // given
+    // Given
     const meta = { error: undefined, touched: true };
     const { result } = renderHook(() => useFieldMeta(meta));
 
-    // then
+    // Then
     expect(result.current.errorMessage).toBeUndefined();
     expect(result.current.hasError).toBeFalse();
     expect(result.current.inputClassname).toContain('fr-input--valid');
@@ -30,11 +30,11 @@ describe('useFieldMeta', () => {
   });
 
   it('should return props without error message when meta is not touched', () => {
-    // given
+    // Given
     const meta = { error: 'Field is required', touched: false };
     const { result } = renderHook(() => useFieldMeta(meta));
 
-    // then
+    // Then
     expect(result.current.errorMessage).toBeUndefined();
     expect(result.current.hasError).toBeFalse();
     expect(result.current.inputClassname).not.toContain('fr-input--valid');

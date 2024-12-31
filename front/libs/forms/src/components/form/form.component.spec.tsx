@@ -8,7 +8,7 @@ jest.mock('./form-wrapper/form-wrapper.component');
 
 describe('FormComponent', () => {
   it('should match snapshot with default values', () => {
-    // given
+    // Given
     const submitMock = jest.fn();
     const validateMock = jest.fn();
     const childrenMock = <div>any-children-mock</div>;
@@ -18,7 +18,7 @@ describe('FormComponent', () => {
       title: 'any-title-mock',
     };
 
-    // when
+    // When
     const { container } = render(
       <FormComponent
         config={configMock}
@@ -29,7 +29,7 @@ describe('FormComponent', () => {
       </FormComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(Form).toHaveBeenCalledOnce();
     expect(Form).toHaveBeenCalledWith(
@@ -57,7 +57,7 @@ describe('FormComponent', () => {
   });
 
   it('should match snapshot with noRequired and scrollTopOnSubmit', () => {
-    // given
+    // Given
     const submitMock = jest.fn();
     const validateMock = jest.fn();
     const childrenMock = <div>any-children-mock</div>;
@@ -67,7 +67,7 @@ describe('FormComponent', () => {
       title: 'any-title-mock',
     };
 
-    // when
+    // When
     const { container } = render(
       <FormComponent
         noRequired
@@ -80,7 +80,7 @@ describe('FormComponent', () => {
       </FormComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(Form).toHaveBeenCalledOnce();
     expect(Form).toHaveBeenCalledWith(

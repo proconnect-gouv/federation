@@ -3,25 +3,25 @@ import get from 'lodash.get';
 import { Validators } from '../../enums';
 import { buildValidator } from './build-validator.helper';
 
-// given
+// Given
 jest.mock('lodash.get', () => jest.fn());
 
 describe('buildValidator', () => {
   it('should return a validate function', () => {
-    // when
+    // When
     const result = buildValidator({
       errorLabel: 'errorLabelMock',
       name: 'any-validator-name',
       validationArgs: ['validationArgsMock'],
     });
 
-    // then
+    // Then
     expect(result).toBeInstanceOf(Function);
   });
 
   describe('when calling the built validate function', () => {
     it('should return undefined when the field value is "   " and allowEmpty is true', () => {
-      // when
+      // When
       const validator = buildValidator({
         errorLabel: expect.any(String),
         name: expect.any(String),
@@ -30,12 +30,12 @@ describe('buildValidator', () => {
       const fieldValue = '     ' as unknown as string;
       const result = validator(fieldValue);
 
-      // then
+      // Then
       expect(result).toBeUndefined();
     });
 
     it('should return undefined when the field value is an epty array and allowEmpty is true', () => {
-      // when
+      // When
       const validator = buildValidator({
         errorLabel: expect.any(String),
         name: expect.any(String),
@@ -44,12 +44,12 @@ describe('buildValidator', () => {
       const fieldValue = [] as unknown as string[];
       const result = validator(fieldValue);
 
-      // then
+      // Then
       expect(result).toBeUndefined();
     });
 
     it('should return undefined when the field value is 0 and allowEmpty is true', () => {
-      // when
+      // When
       const validator = buildValidator({
         errorLabel: expect.any(String),
         name: expect.any(String),
@@ -58,12 +58,12 @@ describe('buildValidator', () => {
       const fieldValue = 0 as unknown as string;
       const result = validator(fieldValue);
 
-      // then
+      // Then
       expect(result).toBeUndefined();
     });
 
     it('should return undefined when the field value is null and allowEmpty is true', () => {
-      // when
+      // When
       const validator = buildValidator({
         errorLabel: expect.any(String),
         name: expect.any(String),
@@ -72,12 +72,12 @@ describe('buildValidator', () => {
       const fieldValue = null as unknown as string;
       const result = validator(fieldValue);
 
-      // then
+      // Then
       expect(result).toBeUndefined();
     });
 
     it('should return undefined when the field value is undefined and allowEmpty is true', () => {
-      // when
+      // When
       const validator = buildValidator({
         errorLabel: expect.any(String),
         name: expect.any(String),
@@ -86,12 +86,12 @@ describe('buildValidator', () => {
       const fieldValue = undefined as unknown as string;
       const result = validator(fieldValue);
 
-      // then
+      // Then
       expect(result).toBeUndefined();
     });
 
     it('should call the defined validator and return undefined when value is valid', () => {
-      // given
+      // Given
       const validValueMock = true;
       const anyValidatorMock = jest.fn(() => validValueMock);
 
@@ -101,7 +101,7 @@ describe('buildValidator', () => {
 
       jest.mocked(get).mockReturnValueOnce(anyValidatorMock);
 
-      // when
+      // When
       const validator = buildValidator({
         errorLabel: expect.any(String),
         name: 'anyValidatorMock',
@@ -109,7 +109,7 @@ describe('buildValidator', () => {
       });
       const result = validator(valueMock);
 
-      // then
+      // Then
       expect(get).toHaveBeenCalledWith(Validators, 'anyValidatorMock');
       expect(anyValidatorMock).toHaveBeenCalledOnce();
       expect(anyValidatorMock).toHaveBeenCalledWith(
@@ -122,7 +122,7 @@ describe('buildValidator', () => {
     });
 
     it('should call "matches" validator with the match regex', () => {
-      // given
+      // Given
       const validValueMock = true;
       const anyValidatorMock = jest.fn(() => validValueMock);
 
@@ -130,7 +130,7 @@ describe('buildValidator', () => {
 
       jest.mocked(get).mockReturnValueOnce(anyValidatorMock);
 
-      // when
+      // When
       const validator = buildValidator({
         errorLabel: expect.any(String),
         name: 'matches',
@@ -138,14 +138,14 @@ describe('buildValidator', () => {
       });
       validator(valueMock);
 
-      // then
+      // Then
       expect(get).toHaveBeenCalledWith(Validators, 'matches');
       expect(anyValidatorMock).toHaveBeenCalledOnce();
       expect(anyValidatorMock).toHaveBeenCalledWith(valueMock, /(an-regex-mock)/);
     });
 
     it('should call the defined validator and return an error when value is not valid', () => {
-      // given
+      // Given
       const validValueMock = false;
       const anyValidatorMock = jest.fn(() => validValueMock);
 
@@ -154,14 +154,14 @@ describe('buildValidator', () => {
 
       jest.mocked(get).mockReturnValueOnce(anyValidatorMock);
 
-      // when
+      // When
       const validator = buildValidator({
         errorLabel: errorMessageMock,
         name: 'anyValidatorMock',
       });
       const result = validator(valueMock);
 
-      // then
+      // Then
       expect(get).toHaveBeenCalledWith(Validators, 'anyValidatorMock');
       expect(anyValidatorMock).toHaveBeenCalledOnce();
       expect(anyValidatorMock).toHaveBeenCalledWith(valueMock);

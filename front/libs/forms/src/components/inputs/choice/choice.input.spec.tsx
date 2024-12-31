@@ -9,7 +9,7 @@ import { ChoiceInput } from './choice.input';
 jest.mock('../../elements/label/label.element');
 
 describe('ChoiceInput', () => {
-  // given
+  // Given
   const choiceHintMock = Symbol('hint') as unknown as string;
   const choiceLabelMock = Symbol('label') as unknown as string;
 
@@ -22,7 +22,7 @@ describe('ChoiceInput', () => {
   };
 
   it('should match the snapshot', () => {
-    // when
+    // When
     const { container } = render(
       <ChoiceInput
         choice={{
@@ -41,7 +41,7 @@ describe('ChoiceInput', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(container.firstChild).not.toHaveClass('fr-fieldset__element--inline');
     expect(LabelElement).toHaveBeenCalledOnce();
@@ -56,7 +56,7 @@ describe('ChoiceInput', () => {
   });
 
   it('should match the snapshot when inline and size are not defined', () => {
-    // when
+    // When
     const { container } = render(
       <ChoiceInput
         choice={{
@@ -73,7 +73,7 @@ describe('ChoiceInput', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(container.firstChild).toHaveClass('fr-fieldset__element--inline');
   });

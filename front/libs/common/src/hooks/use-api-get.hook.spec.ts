@@ -1,41 +1,38 @@
 import { renderHook, waitFor } from '@testing-library/react';
-import axios from 'axios';
+import type { AxiosResponse } from 'axios';
 import { useNavigate } from 'react-router-dom';
+
+import { get } from '@fc/http-client';
 
 import { useApiGet } from './use-api-get.hook';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: jest.fn().mockReturnValue(jest.fn()),
-}));
-
 describe('useApiGet', () => {
-  const axiosGetMock = jest.mocked(axios.get);
-
-  const useNavigateMock = jest.mocked(useNavigate);
+  // Given
   const navigateMock = jest.fn();
 
   beforeEach(() => {
-    jest.resetAllMocks();
-
-    axiosGetMock.mockResolvedValue({ data: 'any-data-response' });
-    useNavigateMock.mockReturnValue(navigateMock);
+    // Given
+    const response = { data: 'any-data-response' } as unknown as AxiosResponse;
+    jest.mocked(get).mockResolvedValue(response);
+    jest.mocked(useNavigate).mockReturnValue(navigateMock);
   });
 
   it('should have return default state at first render', async () => {
-    axiosGetMock.mockResolvedValueOnce(undefined);
+    // Given
+    const response = undefined as unknown as AxiosResponse;
+    jest.mocked(get).mockResolvedValueOnce(response);
 
-    // when
+    // When
     const { result } = renderHook(() => useApiGet({ endpoint: 'any-url' }));
 
-    // then
+    // Then
     await waitFor(() => {
       expect(result.current).toBeUndefined();
     });
   });
 
-  it('should have called axios.get at first render only', async () => {
-    // when
+  it('should have called get at first render only', async () => {
+    // When
     const { rerender, result } = renderHook(() => useApiGet({ endpoint: 'any-url' }));
     // @NOTE excessive renders only for tests purpose
     rerender();
@@ -43,22 +40,22 @@ describe('useApiGet', () => {
     rerender();
     rerender();
 
-    // then
+    // Then
     await waitFor(() => {
-      expect(axios.get).toHaveBeenCalledOnce();
-      expect(axios.get).toHaveBeenCalledWith('any-url');
+      expect(get).toHaveBeenCalledOnce();
+      expect(get).toHaveBeenCalledWith('any-url');
       expect(result.current).toBe('any-data-response');
     });
   });
 
   it('should have called optional callback with api response', async () => {
-    // given
+    // Given
     const callbackMock = jest.fn();
 
-    // when
+    // When
     renderHook(() => useApiGet({ endpoint: 'any-url' }, callbackMock));
 
-    // then
+    // Then
     await waitFor(() => {
       expect(callbackMock).toHaveBeenCalledOnce();
       expect(callbackMock).toHaveBeenCalledWith('any-data-response');
@@ -66,14 +63,14 @@ describe('useApiGet', () => {
   });
 
   it('should navigate if an error is thrown and errorPath is provided', async () => {
-    // given
-    axiosGetMock.mockRejectedValueOnce(new Error('any-error'));
+    // Given
+    jest.mocked(get).mockRejectedValueOnce(new Error('any-error'));
     const callbackMock = jest.fn();
 
-    // when
+    // When
     renderHook(() => useApiGet({ endpoint: 'any-url', errorPath: '/some/path' }, callbackMock));
 
-    // then
+    // Then
     await waitFor(() => {
       expect(navigateMock).toHaveBeenCalledOnce();
       expect(navigateMock).toHaveBeenCalledWith('/some/path', { replace: true });
@@ -81,28 +78,28 @@ describe('useApiGet', () => {
   });
 
   it('should NOT navigate if an error is thrown but errorPath is not provided', async () => {
-    // given
-    axiosGetMock.mockRejectedValueOnce(new Error('any-error'));
+    // Given
+    jest.mocked(get).mockRejectedValueOnce(new Error('any-error'));
     const callbackMock = jest.fn();
 
-    // when
+    // When
     renderHook(() => useApiGet({ endpoint: 'any-url' }, callbackMock));
 
-    // then
+    // Then
     await waitFor(() => {
       expect(navigateMock).not.toHaveBeenCalled();
     });
   });
 
   it('should NOT use callback if an error is thrown', async () => {
-    // given
-    axiosGetMock.mockRejectedValueOnce(new Error('any-error'));
+    // Given
+    jest.mocked(get).mockRejectedValueOnce(new Error('any-error'));
     const callbackMock = jest.fn();
 
-    // when
+    // When
     renderHook(() => useApiGet({ endpoint: 'any-url' }, callbackMock));
 
-    // then
+    // Then
     await waitFor(() => {
       expect(callbackMock).not.toHaveBeenCalled();
     });

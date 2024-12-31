@@ -7,10 +7,10 @@ import { FormActionsComponent } from './form-actions.component';
 
 describe('FormActionsComponent', () => {
   it('should match the snapshot when reset button is not defined', () => {
-    // when
+    // When
     const { container } = render(<FormActionsComponent canSubmit />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(SimpleButton).toHaveBeenCalledOnce();
     expect(SimpleButton).toHaveBeenCalledWith(
@@ -27,10 +27,10 @@ describe('FormActionsComponent', () => {
   });
 
   it('should match the snapshot when reset button is defined', () => {
-    // when
+    // When
     const { container } = render(<FormActionsComponent canSubmit showReset size={Sizes.LARGE} />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(SimpleButton).toHaveBeenCalledTimes(2);
     expect(SimpleButton).toHaveBeenNthCalledWith(
