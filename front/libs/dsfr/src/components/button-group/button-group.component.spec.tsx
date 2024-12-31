@@ -7,7 +7,7 @@ jest.mock('../buttons/simple/simple.button');
 
 describe('ButtonGroupComponent', () => {
   it('should match snapshot with default props', () => {
-    // when
+    // When
     const { container } = render(
       <ButtonGroupComponent>
         <SimpleButton>précédent</SimpleButton>
@@ -15,7 +15,7 @@ describe('ButtonGroupComponent', () => {
       </ButtonGroupComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(container.firstChild).toHaveClass('fr-btns-group');
     expect(container.firstChild).toHaveClass('fr-btns-group--inline-md');
@@ -24,7 +24,7 @@ describe('ButtonGroupComponent', () => {
   });
 
   it('should match snapshot with all props', () => {
-    // when
+    // When
     const { container } = render(
       <ButtonGroupComponent equisized inline={false}>
         <SimpleButton>précédent</SimpleButton>
@@ -32,7 +32,7 @@ describe('ButtonGroupComponent', () => {
       </ButtonGroupComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(container.firstChild).toHaveClass('fr-btns-group');
     expect(container.firstChild).toHaveClass('fr-btns-group--equisized');

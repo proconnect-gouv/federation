@@ -9,7 +9,7 @@ jest.mock('../../abstract/abstract.service');
 
 describe('update', () => {
   beforeEach(() => {
-    // given
+    // Given
     jest.mocked(ConfigService.get).mockReturnValue({
       endpoints: {
         instances: '/api-instances-mock',

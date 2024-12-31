@@ -17,26 +17,26 @@ jest.mock('./application.routes');
 
 describe('Application', () => {
   it('should match snapshot', () => {
-    // when
+    // When
     const { container } = render(<Application />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should call I18nService initialize with config', () => {
-    // when
+    // When
     render(<Application />);
 
-    // then
+    // Then
     expect(I18nService.initialize).toHaveBeenCalledWith('fr', i18n);
   });
 
   it('should call ConfigService initialize with config', () => {
-    // when
+    // When
     render(<Application />);
 
-    // then
+    // Then
     expect(ConfigService.initialize).toHaveBeenCalledWith(AppConfig);
   });
 
@@ -78,18 +78,18 @@ describe('Application', () => {
   });
 
   it('should call HelmetProvider', () => {
-    // when
+    // When
     render(<Application />);
 
-    // then
+    // Then
     expect(HelmetProvider).toHaveBeenCalledOnce();
   });
 
   it('should call ApplicationRoutes', () => {
-    // when
+    // When
     render(<Application />);
 
-    // then
+    // Then
     expect(ApplicationRoutes).toHaveBeenCalledOnce();
   });
 });

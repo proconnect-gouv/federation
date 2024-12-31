@@ -14,15 +14,15 @@ describe('Login Page', () => {
   });
 
   it('shoud match the snapshot, greater than desktop viewport', () => {
-    // given
+    // Given
     const breakpointMock = Symbol(1234) as unknown as string;
     jest.mocked(useStylesVariables).mockReturnValue([breakpointMock]);
     jest.mocked(useStylesQuery).mockReturnValue(true);
 
-    // when
+    // When
     const { container } = render(<LoginPage />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useStylesVariables).toHaveBeenCalledOnce();
     expect(useStylesVariables).toHaveBeenCalledWith(['breakpoint-lg']);
@@ -40,15 +40,15 @@ describe('Login Page', () => {
   });
 
   it('shoud match the snapshot, lower than mobile viewport', () => {
-    // given
+    // Given
     const breakpointMock = Symbol(1234) as unknown as string;
     jest.mocked(useStylesVariables).mockReturnValue([breakpointMock]);
     jest.mocked(useStylesQuery).mockReturnValue(false);
 
-    // when
+    // When
     const { container } = render(<LoginPage />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useStylesVariables).toHaveBeenCalledOnce();
     expect(useStylesVariables).toHaveBeenCalledWith(['breakpoint-lg']);

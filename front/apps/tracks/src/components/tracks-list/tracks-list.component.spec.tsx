@@ -11,12 +11,9 @@ import { TracksGroupComponent } from './tracks-group';
 import { TracksListComponent } from './tracks-list.component';
 import { usePaginatedTracks } from './use-paginated-tracks.hook';
 
-jest.mock('@fc/common');
-jest.mock('@fc/dsfr');
 jest.mock('./tracks-group');
 jest.mock('./use-paginated-tracks.hook');
 jest.mock('./../../utils/tracks.util');
-jest.mock('react-router-dom');
 
 const payloadMock = [
   {
@@ -73,15 +70,15 @@ describe('TracksListComponent', () => {
   };
 
   it('should match snapshot', () => {
-    // when
+    // When
     const { container } = render(<TracksListComponent options={options} />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot when data contains no tracks', () => {
-    // given
+    // Given
     const emptyTracksMock = {
       meta: {
         offset: 0,
@@ -93,15 +90,15 @@ describe('TracksListComponent', () => {
       type: 'application',
     };
     usePaginatedTracksMock.mockReturnValue({ submitErrors: undefined, tracks: emptyTracksMock });
-    // when
+    // When
     const { container } = render(<TracksListComponent options={options} />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot when tracks data are not defined', () => {
-    // given
+    // Given
     usePaginatedTracksMock.mockReturnValue({
       submitErrors: undefined,
       tracks: {
@@ -109,18 +106,18 @@ describe('TracksListComponent', () => {
       },
     });
 
-    // when
+    // When
     const { container } = render(<TracksListComponent options={options} />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should have called usePaginatedTracks hook', () => {
-    // when
+    // When
     render(<TracksListComponent options={options} />);
 
-    // then
+    // Then
     expect(usePaginatedTracksMock).toHaveBeenCalledOnce();
   });
 
@@ -155,27 +152,27 @@ describe('TracksListComponent', () => {
   });
 
   it('should have called transformTrackToEnhanced', () => {
-    // when
+    // When
     render(<TracksListComponent options={options} />);
 
-    // then
+    // Then
     expect(transformTrackToEnhanced).toHaveBeenNthCalledWith(1, payloadMock[0], 0, payloadMock);
     expect(transformTrackToEnhanced).toHaveBeenNthCalledWith(2, payloadMock[1], 1, payloadMock);
   });
 
   it('should have called orderGroupByKeyAsc', () => {
-    // when
+    // When
     render(<TracksListComponent options={options} />);
 
-    // then
+    // Then
     expect(orderGroupByKeyAsc).toHaveBeenCalledOnce();
   });
 
   it('should have called TracksGroupComponent', () => {
-    // when
+    // When
     render(<TracksListComponent options={options} />);
 
-    // then
+    // Then
     expect(TracksGroupComponent).toHaveBeenNthCalledWith(
       1,
       {
@@ -197,23 +194,23 @@ describe('TracksListComponent', () => {
   });
 
   it('should not display TracksGroupComponent if tracks does not exist', () => {
-    // given
+    // Given
     usePaginatedTracksMock.mockReturnValue({
       submitErrors: undefined,
       tracks: { ...tracksMock, payload: undefined },
     });
 
-    // when
+    // When
     render(<TracksListComponent options={options} />);
 
-    // then
+    // Then
     expect(transformTrackToEnhanced).not.toHaveBeenCalled();
     expect(orderGroupByKeyAsc).not.toHaveBeenCalled();
     expect(TracksGroupComponent).not.toHaveBeenCalled();
   });
 
   it('should redirect to new location', () => {
-    // given
+    // Given
     const indexMock = 20;
     const navigateFuncMock = jest.fn();
     const useCallbackMock = jest.spyOn(React, 'useCallback').mockImplementation(() => jest.fn());
@@ -224,14 +221,14 @@ describe('TracksListComponent', () => {
       </button>
     ));
 
-    // when
+    // When
     render(<TracksListComponent options={options} />);
     const callback = useCallbackMock.mock.calls[0][0];
     act(() => {
       callback(indexMock);
     });
 
-    // then
+    // Then
     expect(navigateFuncMock).toHaveBeenCalledOnce();
   });
 });

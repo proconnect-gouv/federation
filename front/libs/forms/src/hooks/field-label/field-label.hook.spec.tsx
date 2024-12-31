@@ -4,14 +4,14 @@ import { useFieldLabel } from './field-label.hook';
 
 describe('useFieldLabel', () => {
   it('should return the label without an asterisk if not required', () => {
-    // when
+    // When
     const { result } = renderHook(() =>
       useFieldLabel({
         label: 'label-mock',
       }),
     );
 
-    // then
+    // Then
     expect(result.current).toStrictEqual({
       hint: undefined,
       label: 'label-mock',
@@ -20,7 +20,7 @@ describe('useFieldLabel', () => {
   });
 
   it('should return the label with an asterisk if required', () => {
-    // when
+    // When
     const { result } = renderHook(() =>
       useFieldLabel({
         label: 'label-mock',
@@ -28,7 +28,7 @@ describe('useFieldLabel', () => {
       }),
     );
 
-    // then
+    // Then
     expect(result.current).toStrictEqual({
       hint: undefined,
       label: 'label-mock *',
@@ -37,7 +37,7 @@ describe('useFieldLabel', () => {
   });
 
   it('should return the label with an asterisk and a hint', () => {
-    // when
+    // When
     const { result } = renderHook(() =>
       useFieldLabel({
         hint: 'hint-mock',
@@ -46,7 +46,7 @@ describe('useFieldLabel', () => {
       }),
     );
 
-    // then
+    // Then
     expect(result.current).toStrictEqual({
       hint: 'hint-mock',
       label: 'label-mock *',
@@ -55,7 +55,7 @@ describe('useFieldLabel', () => {
   });
 
   it('should return the label with an asterisk and the hint as the result of a function', () => {
-    // when
+    // When
     const { result } = renderHook(() =>
       useFieldLabel({
         hint: () => 'hint-mock',
@@ -64,7 +64,7 @@ describe('useFieldLabel', () => {
       }),
     );
 
-    // then
+    // Then
     expect(result.current).toStrictEqual({
       hint: 'hint-mock',
       label: 'label-mock *',
@@ -73,7 +73,7 @@ describe('useFieldLabel', () => {
   });
 
   it('should return the label and the hint as a component', () => {
-    // when
+    // When
     const HintMock = <div>hint-mock</div>;
 
     const { result } = renderHook(() =>
@@ -83,7 +83,7 @@ describe('useFieldLabel', () => {
       }),
     );
 
-    // then
+    // Then
     expect(result.current).toStrictEqual({
       hint: HintMock,
       label: 'label-mock',

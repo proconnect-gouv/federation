@@ -7,51 +7,51 @@ import { LoginFormComponent } from './login-form.component';
 
 describe('LoginFormComponent', () => {
   beforeEach(() => {
-    // given
+    // Given
     jest.mocked(ConfigService.get).mockReturnValue({
       endpoints: { login: 'login-url-mock' },
     });
   });
 
   it('should match the snapshot as FranceConnect', () => {
-    // when
+    // When
     const { container } = render(<LoginFormComponent connectType={ConnectTypes.FRANCE_CONNECT} />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should match the snapshot as ProConnect', () => {
-    // when
+    // When
     const { container } = render(<LoginFormComponent connectType={ConnectTypes.FRANCE_CONNECT} />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should call ConfigService.get with AccountConfig.CONFIG_NAME', () => {
-    // when
+    // When
     render(<LoginFormComponent connectType={ConnectTypes.FRANCE_CONNECT} />);
 
-    // then
+    // Then
     expect(ConfigService.get).toHaveBeenCalledWith('Account');
   });
 
   it('should render a form with params', () => {
-    // when
+    // When
     const { getByTestId } = render(
       <LoginFormComponent connectType={ConnectTypes.FRANCE_CONNECT} />,
     );
     const formElement = getByTestId('login-form-component');
 
-    // then
+    // Then
     expect(formElement).toBeInTheDocument();
     expect(formElement).toHaveAttribute('method', 'get');
     expect(formElement).toHaveAttribute('action', 'login-url-mock');
   });
 
   it('should render an input with the redirectUrl', () => {
-    // when
+    // When
     const { getByDisplayValue } = render(
       <LoginFormComponent
         connectType={ConnectTypes.FRANCE_CONNECT}
@@ -60,17 +60,17 @@ describe('LoginFormComponent', () => {
     );
     const element = getByDisplayValue('/any-login-callback-url');
 
-    // then
+    // Then
     expect(element).toBeInTheDocument();
     expect(element).toHaveAttribute('name', 'redirectUrl');
     expect(element).toHaveAttribute('type', 'hidden');
   });
 
   it('should render the LoginConnectComponent as FranceConnect', () => {
-    // when
+    // When
     render(<LoginFormComponent connectType={ConnectTypes.FRANCE_CONNECT} />);
 
-    // then
+    // Then
     expect(LoginConnectComponent).toHaveBeenCalledOnce();
     expect(LoginConnectComponent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -83,10 +83,10 @@ describe('LoginFormComponent', () => {
   });
 
   it('should render the LoginConnectComponent as ProConnect and showHelp as true', () => {
-    // when
+    // When
     render(<LoginFormComponent showHelp connectType={ConnectTypes.PRO_CONNECT} />);
 
-    // then
+    // Then
     expect(LoginConnectComponent).toHaveBeenCalledOnce();
     expect(LoginConnectComponent).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -99,7 +99,7 @@ describe('LoginFormComponent', () => {
   });
 
   it('should render the LoginConnectComponent with a className', () => {
-    // when
+    // When
     render(
       <LoginFormComponent
         className="any-className-mock"
@@ -107,7 +107,7 @@ describe('LoginFormComponent', () => {
       />,
     );
 
-    // then
+    // Then
     expect(LoginConnectComponent).toHaveBeenCalledOnce();
     expect(LoginConnectComponent).toHaveBeenCalledWith(
       expect.objectContaining({

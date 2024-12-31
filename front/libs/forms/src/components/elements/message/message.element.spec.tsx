@@ -6,11 +6,11 @@ import { MessageElement } from './message.element';
 
 describe('MessageElement', () => {
   it('should match the snapshot when has error', () => {
-    // when
+    // When
     const { container, getByText } = render(<MessageElement error="error-mock" id="id-mock" />);
     const errorTextElt = getByText('error-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(container.firstChild).toHaveClass('fr-messages-group');
     expect(container.firstChild).toHaveAttribute('aria-live', 'assertive');
@@ -22,10 +22,10 @@ describe('MessageElement', () => {
   });
 
   it('should match the snapshot when error is not defined', () => {
-    // when
+    // When
     const { container, getByText } = render(<MessageElement isValid id="id-mock" />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(container.firstChild).toHaveClass('fr-messages-group');
     expect(container.firstChild).toHaveAttribute('aria-live', 'assertive');

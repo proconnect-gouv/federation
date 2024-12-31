@@ -6,12 +6,12 @@ import { SelectField } from './select.field';
 
 describe('selectField', () => {
   it('should match the snapshot', () => {
-    // given
+    // Given
     const formatMock = jest.fn();
     const valildateMock = jest.fn();
     jest.mocked(Field).mockImplementationOnce(() => <div data-mockid="Field" />);
 
-    // when
+    // When
     const { container } = render(
       <SelectField
         choices={[
@@ -29,7 +29,7 @@ describe('selectField', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(Field).toHaveBeenCalledOnce();
     expect(Field).toHaveBeenCalledWith(

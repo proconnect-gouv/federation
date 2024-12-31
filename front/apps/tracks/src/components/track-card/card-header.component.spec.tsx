@@ -18,7 +18,7 @@ describe('TrackCardHeaderComponent', () => {
     .setLocale('fr');
 
   it('should have render the service provider name from props', () => {
-    // given
+    // Given
     const { getByText } = render(
       <TrackCardHeaderComponent
         datetime={date}
@@ -28,14 +28,14 @@ describe('TrackCardHeaderComponent', () => {
       />,
     );
 
-    // then
+    // Then
     const element = getByText('any identity provider name');
 
     expect(element).toBeInTheDocument();
   });
 
   it('should have render a day formatted date, using props', () => {
-    // given
+    // Given
     const expected = date.toFormat(options.LUXON_FORMAT_DAY);
     const { getByText } = render(
       <TrackCardHeaderComponent
@@ -45,14 +45,14 @@ describe('TrackCardHeaderComponent', () => {
         serviceProviderLabel="any"
       />,
     );
-    // then
+    // Then
     const element = getByText(expected);
 
     expect(element).toBeInTheDocument();
   });
 
   it('should render an accessible plus icon if card is closed', () => {
-    // given
+    // Given
     const { container } = render(
       <TrackCardHeaderComponent
         datetime={date}
@@ -61,7 +61,7 @@ describe('TrackCardHeaderComponent', () => {
         serviceProviderLabel="any"
       />,
     );
-    // then
+    // Then
     const elements = container.getElementsByTagName('title');
 
     expect(elements).toHaveLength(1);
@@ -69,7 +69,7 @@ describe('TrackCardHeaderComponent', () => {
   });
 
   it('should render an accessible minus icon if card is opened', () => {
-    // given
+    // Given
     const { container } = render(
       <TrackCardHeaderComponent
         opened
@@ -79,7 +79,7 @@ describe('TrackCardHeaderComponent', () => {
       />,
     );
 
-    // then
+    // Then
     const elements = container.getElementsByTagName('title');
 
     expect(elements).toHaveLength(1);

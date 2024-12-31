@@ -8,7 +8,7 @@ import { DTO2FieldComponent } from './dto2field.component';
 jest.mock('../../hooks/field-validate/field-validate.hook');
 
 describe('DTO2FieldComponent', () => {
-  // given
+  // Given
   const maxCharsMock = Symbol('maxChars') as unknown as number;
   const disabledMock = Symbol('disabled') as unknown as boolean;
   const requiredMock = Symbol('required') as unknown as boolean;
@@ -33,15 +33,15 @@ describe('DTO2FieldComponent', () => {
   const validateMock = jest.fn();
 
   beforeEach(() => {
-    // given
+    // Given
     jest.mocked(useFieldValidate).mockReturnValue(validateMock);
   });
 
   it('should call useFieldValidate hook', () => {
-    // when
+    // When
     render(<DTO2FieldComponent field={fieldMock} />);
 
-    // then
+    // Then
     expect(useFieldValidate).toHaveBeenCalledOnce();
     expect(useFieldValidate).toHaveBeenCalledWith({
       disabled: disabledMock,
@@ -51,10 +51,10 @@ describe('DTO2FieldComponent', () => {
   });
 
   it('should match the snapshot, should create input field (default)', () => {
-    // when
+    // When
     const { container } = render(<DTO2FieldComponent field={fieldMock} />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(useFieldValidate).toHaveBeenCalledOnce();
     expect(InputField).toHaveBeenCalledOnce();
@@ -79,7 +79,7 @@ describe('DTO2FieldComponent', () => {
   });
 
   it('should match the snapshot, should create select field', () => {
-    // given
+    // Given
     const optionsMock = [
       {
         label: 'option 1 label mock',
@@ -92,10 +92,10 @@ describe('DTO2FieldComponent', () => {
     ];
     const selectFieldMock = { ...fieldMock, options: optionsMock, type: FieldTypes.SELECT };
 
-    // when
+    // When
     render(<DTO2FieldComponent field={selectFieldMock} />);
 
-    // then
+    // Then
     expect(SelectField).toHaveBeenCalledOnce();
     expect(SelectField).toHaveBeenCalledWith(
       {
@@ -118,7 +118,7 @@ describe('DTO2FieldComponent', () => {
   });
 
   it('should match the snapshot, should create a choice field when type is "radio', () => {
-    // given
+    // Given
     const optionsMock = [
       {
         label: 'option 1 label mock',
@@ -131,10 +131,10 @@ describe('DTO2FieldComponent', () => {
     ];
     const radioFieldMock = { ...fieldMock, options: optionsMock, type: FieldTypes.RADIO };
 
-    // when
+    // When
     render(<DTO2FieldComponent field={radioFieldMock} />);
 
-    // then
+    // Then
     expect(ChoiceField).toHaveBeenCalledOnce();
     expect(ChoiceField).toHaveBeenCalledWith(
       {
@@ -158,7 +158,7 @@ describe('DTO2FieldComponent', () => {
   });
 
   it('should match the snapshot, should create a choice field when type is "checkbox', () => {
-    // given
+    // Given
     const optionsMock = [
       {
         label: 'option 1 label mock',
@@ -171,10 +171,10 @@ describe('DTO2FieldComponent', () => {
     ];
     const checkboxFieldMock = { ...fieldMock, options: optionsMock, type: FieldTypes.CHECKBOX };
 
-    // when
+    // When
     render(<DTO2FieldComponent field={checkboxFieldMock} />);
 
-    // then
+    // Then
     expect(ChoiceField).toHaveBeenCalledOnce();
     expect(ChoiceField).toHaveBeenCalledWith(
       {

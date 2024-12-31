@@ -1,7 +1,8 @@
 import type { AxiosError, AxiosResponse } from 'axios';
-import axios from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
+
+import { get } from '@fc/http-client';
 
 import type { TracksConfig, UserDashboardTracks } from '../../interfaces';
 
@@ -34,8 +35,7 @@ export const usePaginatedTracks = (options: TracksConfig) => {
 
     const endpoint = `${options.API_ROUTE_TRACKS}?${qs.toString()}`;
 
-    return axios
-      .get<UserDashboardTracks>(endpoint)
+    return get<UserDashboardTracks>(endpoint)
       .then(getTacksSuccessHandler)
       .catch(getTacksErrorHandler);
   }, [options.API_ROUTE_TRACKS, search, getTacksErrorHandler, getTacksSuccessHandler]);

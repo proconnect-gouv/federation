@@ -48,7 +48,7 @@ describe('TrackCardContentComponent', () => {
   const authenticationEventId = 'mock-authentication-event-id';
 
   it('should match snapshot, for connection', () => {
-    // when
+    // When
     const { container } = render(
       <TrackCardContentComponent
         accessibleId="mock-accessibleId"
@@ -65,12 +65,12 @@ describe('TrackCardContentComponent', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should match snapshot, for claims', () => {
-    // when
+    // When
     const { container } = render(
       <TrackCardContentComponent
         accessibleId="mock-accessibleId"
@@ -87,7 +87,7 @@ describe('TrackCardContentComponent', () => {
       />,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 

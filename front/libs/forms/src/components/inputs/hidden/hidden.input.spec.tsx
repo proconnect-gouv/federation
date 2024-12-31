@@ -5,15 +5,15 @@ import { HiddenInput } from './hidden.input';
 
 describe('HiddenInput', () => {
   beforeEach(() => {
-    // given
+    // Given
     jest.mocked(Field).mockImplementation(() => <div data-mockid="Field" />);
   });
 
   it('should match the snapshot', () => {
-    // when
+    // When
     const { container } = render(<HiddenInput name="name-mock" />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(Field).toHaveBeenCalledOnce();
     expect(Field).toHaveBeenCalledWith(

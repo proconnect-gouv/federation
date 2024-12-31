@@ -9,24 +9,24 @@ describe('FormErrorScrollComponent', () => {
   const scrollToMock = jest.fn();
 
   beforeEach(() => {
-    // given
+    // Given
     jest.mocked(useScrollToElement).mockImplementation(() => ({ scrollToElement: scrollToMock }));
   });
 
   it('should match its snapshot', () => {
-    // when
+    // When
     const { container } = renderWithFinalForm(<FormErrorScrollComponent />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 
   it('should render FormSpy mock with a subscription prop', () => {
-    // when
+    // When
     renderWithFinalForm(<FormErrorScrollComponent />);
     const { subscription } = jest.mocked(FormSpy).mock.calls[0][0];
 
-    // then
+    // Then
     expect(subscription).toStrictEqual({
       modifiedSinceLastSubmit: true,
       submitFailed: true,
@@ -34,30 +34,30 @@ describe('FormErrorScrollComponent', () => {
   });
 
   it('should render FormSpy mock with a onChange prop', () => {
-    // when
+    // When
     renderWithFinalForm(<FormErrorScrollComponent />);
     const { onChange } = jest.mocked(FormSpy).mock.calls[0][0];
 
-    // then
+    // Then
     expect(onChange).toBeInstanceOf(Function);
   });
 
   it('should call useScrollToElement when the component is render with classname parameter', () => {
-    // when
+    // When
     renderWithFinalForm(<FormErrorScrollComponent />);
 
-    // then
+    // Then
     expect(useScrollToElement).toHaveBeenCalledOnce();
     expect(useScrollToElement).toHaveBeenCalledWith('.fr-message--error');
   });
 
   it('should call useScrollToElement when FormSpy onChange is called', () => {
-    // when
+    // When
     renderWithFinalForm(<FormErrorScrollComponent />);
     const { onChange } = jest.mocked(FormSpy).mock.calls[0][0] as { onChange: () => void };
     onChange();
 
-    // then
+    // Then
     expect(scrollToMock).toHaveBeenCalledOnce();
   });
 });

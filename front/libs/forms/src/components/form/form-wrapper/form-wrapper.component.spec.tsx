@@ -17,11 +17,11 @@ jest.mock('./../form-required/form-required.component');
 
 describe('FormWrapperComponent', () => {
   it('should match snapshot', () => {
-    // given
+    // Given
     const handleSubmitMock = jest.fn();
     const childrenMock = <div>any-children-mock</div>;
 
-    // when
+    // When
     const { container, getByTestId, getByText } = render(
       <FormWrapperComponent
         scrollTopOnSubmit
@@ -41,7 +41,7 @@ describe('FormWrapperComponent', () => {
     const formElt = getByTestId('any-id-mock--testid');
     const childrenElt = getByText('any-children-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(formElt).toBeInTheDocument();
     expect(formElt).toHaveAttribute('id', 'any-id-mock');
@@ -72,12 +72,12 @@ describe('FormWrapperComponent', () => {
   });
 
   it('should match snapshot without description dans title', () => {
-    // given
+    // Given
     const handleSubmitMock = jest.fn();
 
     const childrenMock = <div>any-children-mock</div>;
 
-    // when
+    // When
     const { container } = render(
       <FormWrapperComponent
         scrollTopOnSubmit
@@ -93,18 +93,18 @@ describe('FormWrapperComponent', () => {
       </FormWrapperComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(FormHeaderComponent).not.toHaveBeenCalledOnce();
   });
 
   it('should not render all fields required message', () => {
-    // given
+    // Given
     const handleSubmitMock = jest.fn();
 
     const childrenMock = <div>any-children-mock</div>;
 
-    // when
+    // When
     const { container } = render(
       <FormWrapperComponent
         noRequired
@@ -120,18 +120,18 @@ describe('FormWrapperComponent', () => {
       </FormWrapperComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(FormRequiredMessageComponent).not.toHaveBeenCalledOnce();
   });
 
   it('should not render the error message', () => {
-    // given
+    // Given
     const handleSubmitMock = jest.fn();
 
     const childrenMock = <div>any-children-mock</div>;
 
-    // when
+    // When
     const { container } = render(
       <FormWrapperComponent
         noRequired
@@ -147,18 +147,18 @@ describe('FormWrapperComponent', () => {
       </FormWrapperComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(FormErrorComponent).not.toHaveBeenCalledOnce();
   });
 
   it('should not render the error scroll component', () => {
-    // given
+    // Given
     const handleSubmitMock = jest.fn();
 
     const childrenMock = <div>any-children-mock</div>;
 
-    // when
+    // When
     const { container } = render(
       <FormWrapperComponent
         noRequired
@@ -174,7 +174,7 @@ describe('FormWrapperComponent', () => {
       </FormWrapperComponent>,
     );
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(FormErrorScrollComponent).not.toHaveBeenCalledOnce();
   });

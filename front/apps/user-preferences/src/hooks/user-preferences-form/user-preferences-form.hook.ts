@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import type { UserPreferencesDataInterface } from '../interfaces';
-import { checkHasDefaultConfiguration, checkSomeIdpHasBeenChangedSinceLoading } from '../utils';
+import type { UserPreferencesDataInterface } from '../../interfaces';
+import { checkHasDefaultConfiguration, checkSomeIdpHasBeenChangedSinceLoading } from '../../utils';
 
 interface useUserPreferencesFormProps {
   dirtyFields: Record<string, boolean>;

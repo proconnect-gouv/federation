@@ -7,7 +7,7 @@ jest.mock('../../../hooks/field-label/field-label.hook');
 
 describe('LabelElement', () => {
   beforeEach(() => {
-    // given
+    // Given
     jest.mocked(useFieldLabel).mockReturnValue({
       hint: 'hook-hint-mock',
       label: 'hook-label-mock',
@@ -16,17 +16,17 @@ describe('LabelElement', () => {
   });
 
   it('should call useFieldLabel with parameters', () => {
-    // given
+    // Given
     const hintMock = Symbol('any-hint-mock') as unknown as string;
     const labelMock = Symbol('any-label-mock') as unknown as string;
     const requiredMock = Symbol('any-required-mock') as unknown as boolean;
 
-    // when
+    // When
     render(
       <LabelElement hint={hintMock} label={labelMock} name="name-mock" required={requiredMock} />,
     );
 
-    // then
+    // Then
     expect(useFieldLabel).toHaveBeenCalledOnce();
     expect(useFieldLabel).toHaveBeenCalledWith({
       hint: hintMock,
@@ -36,14 +36,14 @@ describe('LabelElement', () => {
   });
 
   it('should match the snapshot', () => {
-    // given
+    // Given
     jest.mocked(useFieldLabel).mockReturnValueOnce({
       hint: 'hook-hint-mock',
       label: 'hook-label-mock',
       required: true,
     });
 
-    // when
+    // When
     const { container, getByText } = render(
       <LabelElement
         className="any-classname-mock"
@@ -54,7 +54,7 @@ describe('LabelElement', () => {
     const hintTextElt = getByText('hook-hint-mock');
     const labelTextElt = getByText('hook-label-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(container.firstChild).toHaveClass('fr-label');
     expect(container.firstChild).toHaveClass('any-classname-mock');

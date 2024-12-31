@@ -4,10 +4,10 @@ import { FormMentionsComponent } from './form-mentions.component';
 
 describe('FormMentionsComponent', () => {
   it('should match the snapshot', () => {
-    // when
+    // When
     const { container } = render(<FormMentionsComponent />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 });

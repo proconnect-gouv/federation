@@ -60,26 +60,26 @@ describe('TrackCardComponent', () => {
 
   describe('Initial component render', () => {
     beforeEach(() => {
-      // given
+      // Given
       jest.mocked(useToggle).mockReturnValue([false, jest.fn(), jest.fn()]);
     });
 
     it('should match snapshot, with default props', () => {
-      // when
+      // When
       const { container } = render(<TrackCardComponent options={options} track={track} />);
 
-      // then
+      // Then
       expect(container).toMatchSnapshot();
     });
 
     it('should render an accessible button element at container top level', () => {
-      // given
+      // Given
       const { getByTestId } = render(<TrackCardComponent options={options} track={track} />);
 
-      // when
+      // When
       const element = getByTestId(`${track.platform}-${track.trackId}`);
 
-      // then
+      // Then
       expect(element).toBeInTheDocument();
       expect(element.tagName).toBe('BUTTON');
       expect(element.getAttribute('type')).toBe('button');
@@ -88,10 +88,10 @@ describe('TrackCardComponent', () => {
     });
 
     it('should have called card badge component', () => {
-      // when
+      // When
       render(<TrackCardComponent options={options} track={track} />);
 
-      // then
+      // Then
       expect(TrackCardBadgeComponent).toHaveBeenCalledWith(
         { fromFcPlus: false, type: track.event },
         {},
@@ -99,10 +99,10 @@ describe('TrackCardComponent', () => {
     });
 
     it('should have called card header component', () => {
-      // when
+      // When
       render(<TrackCardComponent options={options} track={track} />);
 
-      // then
+      // Then
       expect(TrackCardHeaderComponent).toHaveBeenCalledWith(
         {
           datetime: track.datetime,
@@ -115,10 +115,10 @@ describe('TrackCardComponent', () => {
     });
 
     it('should have called card content component', () => {
-      // when
+      // When
       render(<TrackCardComponent options={options} track={track} />);
 
-      // then
+      // Then
       expect(TrackCardContentComponent).toHaveBeenCalledWith(
         {
           accessibleId: `track::card::${track.trackId}`,
@@ -140,7 +140,7 @@ describe('TrackCardComponent', () => {
 
   describe('Special component render', () => {
     it('should render element at container top level', () => {
-      // given
+      // Given
       const spMissingTrack: EnhancedTrackInterface = {
         ...track,
         spLabel: undefined,
@@ -148,17 +148,17 @@ describe('TrackCardComponent', () => {
       const { getByTestId } = render(
         <TrackCardComponent options={options} track={spMissingTrack} />,
       );
-      // when
+      // When
       const element = getByTestId(`${track.platform}-${track.trackId}`);
 
-      // then
+      // Then
       expect(element).toBeInTheDocument();
     });
 
     it('should have called card header component with default spLabel', () => {
       render(<TrackCardComponent options={options} track={track} />);
 
-      // then
+      // Then
       expect(TrackCardHeaderComponent).toHaveBeenCalledWith(
         {
           datetime: track.datetime,
@@ -172,27 +172,27 @@ describe('TrackCardComponent', () => {
   });
 
   it('should call useToggle hook with default prop', () => {
-    // given
+    // Given
     const useToggleMock = jest.mocked(useToggle);
 
-    // when
+    // When
     render(<TrackCardComponent options={options} track={track} />);
 
-    // then
+    // Then
     expect(useToggleMock).toHaveBeenCalledOnce();
     expect(useToggleMock).toHaveBeenCalledWith(false);
   });
 
   it('should call toggleOpened on each button click', () => {
-    // given
+    // Given
     const toggleMock = jest.fn();
     jest.mocked(useToggle).mockReturnValue([false, toggleMock, jest.fn()]);
 
-    // when
+    // When
     const { getByTestId } = render(<TrackCardComponent options={options} track={track} />);
     const element = getByTestId(`${track.platform}-${track.trackId}`);
 
-    // then
+    // Then
     fireEvent.click(element);
     fireEvent.click(element);
     fireEvent.click(element);
@@ -201,7 +201,7 @@ describe('TrackCardComponent', () => {
   });
 
   it('should set useToggle hook value on each card content component', () => {
-    // given
+    // Given
     jest
       .mocked(useToggle)
       .mockReturnValue([
@@ -210,11 +210,11 @@ describe('TrackCardComponent', () => {
         jest.fn(),
       ]);
 
-    // when
+    // When
     const { getByTestId } = render(<TrackCardComponent options={options} track={track} />);
     const element = getByTestId(`${track.platform}-${track.trackId}`);
 
-    // then
+    // Then
     expect(element.getAttribute('aria-expanded')).toBe('initial_usetoggle_value_mock');
     expect(TrackCardHeaderComponent).toHaveBeenCalledWith(
       expect.objectContaining({ opened: 'initial_usetoggle_value_mock' }),

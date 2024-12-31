@@ -7,7 +7,7 @@ jest.mock('../../../hooks/field-label/field-label.hook');
 
 describe('FieldsetLegendElement', () => {
   beforeEach(() => {
-    // given
+    // Given
     jest.mocked(useFieldLabel).mockReturnValue({
       hint: 'hook-hint-mock',
       label: 'hook-label-mock',
@@ -16,12 +16,12 @@ describe('FieldsetLegendElement', () => {
   });
 
   it('should call useFieldLabel with parameters', () => {
-    // given
+    // Given
     const hintMock = Symbol('any-hint-mock') as unknown as string;
     const labelMock = Symbol('any-label-mock') as unknown as string;
     const requiredMock = Symbol('any-required-mock') as unknown as boolean;
 
-    // when
+    // When
     render(
       <FieldsetLegendElement
         hint={hintMock}
@@ -31,7 +31,7 @@ describe('FieldsetLegendElement', () => {
       />,
     );
 
-    // then
+    // Then
     expect(useFieldLabel).toHaveBeenCalledOnce();
     expect(useFieldLabel).toHaveBeenCalledWith({
       hint: hintMock,
@@ -41,14 +41,14 @@ describe('FieldsetLegendElement', () => {
   });
 
   it('should match the snapshot', () => {
-    // given
+    // Given
     jest.mocked(useFieldLabel).mockReturnValueOnce({
       hint: 'hook-hint-mock',
       label: 'hook-label-mock',
       required: true,
     });
 
-    // when
+    // When
     const { container, getByText } = render(
       <FieldsetLegendElement
         className="any-classname-mock"
@@ -59,7 +59,7 @@ describe('FieldsetLegendElement', () => {
     const hintTextElt = getByText('hook-hint-mock');
     const labelTextElt = getByText('hook-label-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(container.firstChild).toHaveClass('fr-fieldset__legend--regular fr-fieldset__legend');
     expect(container.firstChild).toHaveClass('any-classname-mock');

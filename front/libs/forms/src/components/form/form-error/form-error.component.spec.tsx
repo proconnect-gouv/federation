@@ -6,11 +6,11 @@ import { FormErrorComponent } from './form-error.component';
 
 describe('FormErrorComponent', () => {
   it('should match the snapshot when error is defined', () => {
-    // when
+    // When
     const { container, getByText } = render(<FormErrorComponent error="any-error-message-mock" />);
     const textElt = getByText('any-error-message-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(t).toHaveBeenCalledOnce();
     expect(t).toHaveBeenCalledWith('Form.message.requestFailed');
@@ -18,10 +18,10 @@ describe('FormErrorComponent', () => {
   });
 
   it('should match the snapshot when error is not defined', () => {
-    // when
+    // When
     const { container } = render(<FormErrorComponent error="any-error-message-mock" />);
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
   });
 });

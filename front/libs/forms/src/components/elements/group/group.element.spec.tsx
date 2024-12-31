@@ -5,10 +5,10 @@ import { GroupElement } from './group.element';
 
 describe('GroupElement', () => {
   it('should match the snapshot without parameters', () => {
-    // given
+    // Given
     const ChildComponentMock = jest.fn(() => <div>children-mock</div>);
 
-    // when
+    // When
     const { container, getByText } = render(
       <GroupElement type={ComponentTypes.INPUT}>
         <ChildComponentMock />
@@ -16,7 +16,7 @@ describe('GroupElement', () => {
     );
     const childElt = getByText('children-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(container.firstChild).toHaveClass('fr-input-group');
     expect(childElt).toBeInTheDocument();
@@ -25,10 +25,10 @@ describe('GroupElement', () => {
   });
 
   it('should match the snapshot with parameters', () => {
-    // given
+    // Given
     const ChildComponentMock = jest.fn(() => <div>children-mock</div>);
 
-    // when
+    // When
     const { container, getByText } = render(
       <GroupElement
         disabled
@@ -41,7 +41,7 @@ describe('GroupElement', () => {
     );
     const childElt = getByText('children-mock');
 
-    // then
+    // Then
     expect(container).toMatchSnapshot();
     expect(container.firstChild).toHaveClass('fr-input-group');
     expect(container.firstChild).toHaveClass('any-classname-mock');

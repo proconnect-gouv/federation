@@ -1,7 +1,5 @@
 import React from 'react';
 
-export const useApiGet = jest.fn(() => null);
-
 export const ucfirst = jest.fn((v) => v);
 
 export const sortByKey = jest.fn(() => jest.fn());
