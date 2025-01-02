@@ -11,10 +11,6 @@ jest.mock('./user-preferences-form.component');
 
 describe('UserPreferencesComponent', () => {
   // Given
-  const optionsMock = {
-    API_ROUTE_CSRF_TOKEN: 'csrf-token-endpoint',
-    API_ROUTE_USER_PREFERENCES: 'any-endpoint',
-  };
   const commitMock = jest.fn();
   const initialValuesMock = { allowFutureIdp: false, idpList: expect.any(Object) };
   const userPreferencesMock = {
@@ -36,7 +32,7 @@ describe('UserPreferencesComponent', () => {
     jest.mocked(useUserPreferencesApi).mockReturnValue(hookResultMock);
 
     // When
-    const { container } = render(<UserPreferencesComponent options={optionsMock} />);
+    const { container } = render(<UserPreferencesComponent />);
 
     // Then
     expect(container).toMatchSnapshot();
@@ -50,7 +46,7 @@ describe('UserPreferencesComponent', () => {
     });
 
     // When
-    render(<UserPreferencesComponent options={optionsMock} />);
+    render(<UserPreferencesComponent />);
 
     // Then
     expect(Form).toHaveBeenCalledTimes(0);
@@ -64,7 +60,7 @@ describe('UserPreferencesComponent', () => {
     });
 
     // When
-    render(<UserPreferencesComponent options={optionsMock} />);
+    render(<UserPreferencesComponent />);
 
     // Then
     expect(Form).toHaveBeenCalledTimes(0);
@@ -78,7 +74,7 @@ describe('UserPreferencesComponent', () => {
     });
 
     // When
-    render(<UserPreferencesComponent options={optionsMock} />);
+    render(<UserPreferencesComponent />);
 
     // Then
     expect(Form).toHaveBeenCalledTimes(0);
@@ -92,7 +88,7 @@ describe('UserPreferencesComponent', () => {
     });
 
     // When
-    render(<UserPreferencesComponent options={optionsMock} />);
+    render(<UserPreferencesComponent />);
 
     // Then
     expect(Form).toHaveBeenCalledTimes(0);
@@ -103,10 +99,10 @@ describe('UserPreferencesComponent', () => {
     jest.mocked(useUserPreferencesApi).mockReturnValue(hookResultMock);
 
     // When
-    render(<UserPreferencesComponent options={optionsMock} />);
+    render(<UserPreferencesComponent />);
 
     // Then
     expect(useUserPreferencesApi).toHaveBeenCalledOnce();
-    expect(useUserPreferencesApi).toHaveBeenCalledWith(optionsMock);
+    expect(useUserPreferencesApi).toHaveBeenCalledWith();
   });
 });

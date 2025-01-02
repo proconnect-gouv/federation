@@ -1,6 +1,8 @@
 import { render } from '@testing-library/react';
 import { DateTime } from 'luxon';
 
+import { ConfigService } from '@fc/config';
+
 import { ConnectionComponent } from './connection.component';
 
 describe('ConnectionComponent', () => {
@@ -11,15 +13,30 @@ describe('ConnectionComponent', () => {
 
   const authenticationEventId = 'mock-authentication-event-id';
 
-  const options = {
-    API_ROUTE_TRACKS: 'mock_API_ROUTE_TRACKS',
-    API_ROUTE_USER_INFOS: 'mock_API_ROUTE_USER_INFOS',
-    LUXON_FORMAT_DATETIME_SHORT_FR: "D 'à' T",
-    LUXON_FORMAT_DAY: 'DDD',
-    LUXON_FORMAT_HOUR_MINS: 'T',
-    LUXON_FORMAT_MONTH_YEAR: 'LLLL yyyy',
-    LUXON_FORMAT_TIMEZONE: 'z',
-  };
+  beforeEach(() => {
+    // Given
+    jest.mocked(ConfigService.get).mockReturnValue({
+      luxon: { datetimeShortFrFormat: "D 'à' T" },
+    });
+  });
+
+  it('should call ConfigService.get with the right parameter', () => {
+    // When
+    render(
+      <ConnectionComponent
+        authenticationEventId={authenticationEventId}
+        city="cityMock"
+        country="countryMock"
+        datetime={date}
+        idpLabel="idpLabelValue"
+        interactionAcr="eidas1"
+      />,
+    );
+
+    // Then
+    expect(ConfigService.get).toHaveBeenCalledOnce();
+    expect(ConfigService.get).toHaveBeenCalledWith('Tracks');
+  });
 
   it('should match snapshot, with default props', () => {
     // When
@@ -31,7 +48,6 @@ describe('ConnectionComponent', () => {
         datetime={date}
         idpLabel="idpLabelValue"
         interactionAcr="eidas1"
-        options={options}
       />,
     );
 
@@ -49,7 +65,6 @@ describe('ConnectionComponent', () => {
         datetime={date}
         idpLabel="idpLabelValue"
         interactionAcr="eidas1"
-        options={options}
       />,
     );
 
@@ -70,7 +85,6 @@ describe('ConnectionComponent', () => {
         datetime={date}
         idpLabel="idpLabelValue"
         interactionAcr="eidas1"
-        options={options}
       />,
     );
 
@@ -93,7 +107,6 @@ describe('ConnectionComponent', () => {
         datetime={date}
         idpLabel="idpLabelValue"
         interactionAcr="eidas1"
-        options={options}
       />,
     );
 
@@ -120,7 +133,6 @@ describe('ConnectionComponent', () => {
         datetime={date}
         idpLabel="idpLabelValue"
         interactionAcr="eidas1"
-        options={options}
       />,
     );
 
@@ -147,7 +159,6 @@ describe('ConnectionComponent', () => {
         datetime={date}
         idpLabel="idpLabelValue"
         interactionAcr="eidas1"
-        options={options}
       />,
     );
 
@@ -174,7 +185,6 @@ describe('ConnectionComponent', () => {
         datetime={date}
         idpLabel="idpLabelValue"
         interactionAcr="eidas1"
-        options={options}
       />,
     );
 
@@ -201,7 +211,6 @@ describe('ConnectionComponent', () => {
         datetime={date}
         idpLabel="idpLabelValue"
         interactionAcr="eidas1"
-        options={options}
       />,
     );
 
@@ -228,7 +237,6 @@ describe('ConnectionComponent', () => {
         datetime={date}
         idpLabel="idpLabelValue"
         interactionAcr="eidas1"
-        options={options}
       />,
     );
 
@@ -253,7 +261,6 @@ describe('ConnectionComponent', () => {
         datetime={date}
         idpLabel="idpLabelValue"
         interactionAcr="eidas1"
-        options={options}
       />,
     );
 

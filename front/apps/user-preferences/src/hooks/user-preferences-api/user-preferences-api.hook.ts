@@ -3,8 +3,10 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { HttpStatusCode } from '@fc/common';
+import { ConfigService } from '@fc/config';
 import { get, post } from '@fc/http-client';
 
+import { Options } from '../../enums';
 import type {
   FormValuesInterface,
   UserPreferencesConfig,
@@ -13,8 +15,12 @@ import type {
 import type { UserPreferencesServiceInterface } from '../../services';
 import { UserPreferencesService } from '../../services';
 
-export const useUserPreferencesApi = (options: UserPreferencesConfig) => {
+export const useUserPreferencesApi = () => {
   const navigate = useNavigate();
+
+  const {
+    endpoints: { userPreferences: userPreferencesEndpoint },
+  } = ConfigService.get<UserPreferencesConfig>(Options.CONFIG_NAME);
 
   const [submitErrors, setSubmitErrors] = useState<AxiosError | Error | undefined>(undefined);
   const [submitWithSuccess, setSubmitWithSuccess] = useState(false);
@@ -65,26 +71,22 @@ export const useUserPreferencesApi = (options: UserPreferencesConfig) => {
       const axiosOptions = { formSerializer: { indexes: null } };
       const data = UserPreferencesService.encodeFormData({ allowFutureIdp, idpList });
 
-      return post<UserPreferencesDataInterface>(
-        options.API_ROUTE_USER_PREFERENCES,
-        data,
-        axiosOptions,
-      )
+      return post<UserPreferencesDataInterface>(userPreferencesEndpoint, data, axiosOptions)
         .then(fetchSuccessHandler)
         .catch(fetchErrorHandler);
     },
-    [fetchSuccessHandler, fetchErrorHandler, options.API_ROUTE_USER_PREFERENCES],
+    [fetchSuccessHandler, fetchErrorHandler, userPreferencesEndpoint],
   );
 
   const fetchUserPreferences = useCallback(async () => {
     // @TODO add try/catch
     // to throw an error if the api.get is rejected
-    const response = await get<UserPreferencesDataInterface>(options.API_ROUTE_USER_PREFERENCES);
+    const response = await get<UserPreferencesDataInterface>(userPreferencesEndpoint);
     setUserPreferences(response.data);
 
     const values = UserPreferencesService.parseFormData(response.data);
     setFormValues(values);
-  }, [options.API_ROUTE_USER_PREFERENCES]);
+  }, [userPreferencesEndpoint]);
 
   useEffect(() => {
     fetchUserPreferences();

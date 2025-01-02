@@ -3,6 +3,7 @@ import { DateTime } from 'luxon';
 import React from 'react';
 import * as ReactRouterDom from 'react-router-dom';
 
+import { ConfigService } from '@fc/config';
 import { PaginationComponent } from '@fc/dsfr';
 
 import type { TrackInterface } from '../../interfaces';
@@ -56,22 +57,25 @@ describe('TracksListComponent', () => {
   const usePaginatedTracksMock = jest.mocked(usePaginatedTracks);
 
   beforeEach(() => {
+    // Given
     usePaginatedTracksMock.mockReturnValue({ submitErrors: undefined, tracks: tracksMock });
+    jest.mocked(ConfigService.get).mockReturnValue({
+      luxon: { monthYearFormat: 'LLLL yyyy' },
+    });
   });
 
-  const options = {
-    API_ROUTE_TRACKS: 'mock_API_ROUTE_TRACKS',
-    API_ROUTE_USER_INFOS: 'mock_API_ROUTE_USER_INFOS',
-    LUXON_FORMAT_DATETIME_SHORT_FR: "D 'à' T",
-    LUXON_FORMAT_DAY: 'DDD',
-    LUXON_FORMAT_HOUR_MINS: 'T',
-    LUXON_FORMAT_MONTH_YEAR: 'LLLL yyyy',
-    LUXON_FORMAT_TIMEZONE: 'z',
-  };
+  it('should call ConfigService.get with the right parameter', () => {
+    // When
+    render(<TracksListComponent />);
+
+    // Then
+    expect(ConfigService.get).toHaveBeenCalledOnce();
+    expect(ConfigService.get).toHaveBeenCalledWith('Tracks');
+  });
 
   it('should match snapshot', () => {
     // When
-    const { container } = render(<TracksListComponent options={options} />);
+    const { container } = render(<TracksListComponent />);
 
     // Then
     expect(container).toMatchSnapshot();
@@ -91,7 +95,7 @@ describe('TracksListComponent', () => {
     };
     usePaginatedTracksMock.mockReturnValue({ submitErrors: undefined, tracks: emptyTracksMock });
     // When
-    const { container } = render(<TracksListComponent options={options} />);
+    const { container } = render(<TracksListComponent />);
 
     // Then
     expect(container).toMatchSnapshot();
@@ -107,7 +111,7 @@ describe('TracksListComponent', () => {
     });
 
     // When
-    const { container } = render(<TracksListComponent options={options} />);
+    const { container } = render(<TracksListComponent />);
 
     // Then
     expect(container).toMatchSnapshot();
@@ -115,7 +119,7 @@ describe('TracksListComponent', () => {
 
   it('should have called usePaginatedTracks hook', () => {
     // When
-    render(<TracksListComponent options={options} />);
+    render(<TracksListComponent />);
 
     // Then
     expect(usePaginatedTracksMock).toHaveBeenCalledOnce();
@@ -144,7 +148,7 @@ describe('TracksListComponent', () => {
     });
 
     // When
-    render(<TracksListComponent options={options} />);
+    render(<TracksListComponent />);
 
     // Then
     expect(transformTrackToEnhanced).toHaveBeenNthCalledWith(1, nonNullish1, 0, filteredPayload);
@@ -153,7 +157,7 @@ describe('TracksListComponent', () => {
 
   it('should have called transformTrackToEnhanced', () => {
     // When
-    render(<TracksListComponent options={options} />);
+    render(<TracksListComponent />);
 
     // Then
     expect(transformTrackToEnhanced).toHaveBeenNthCalledWith(1, payloadMock[0], 0, payloadMock);
@@ -162,7 +166,7 @@ describe('TracksListComponent', () => {
 
   it('should have called orderGroupByKeyAsc', () => {
     // When
-    render(<TracksListComponent options={options} />);
+    render(<TracksListComponent />);
 
     // Then
     expect(orderGroupByKeyAsc).toHaveBeenCalledOnce();
@@ -170,14 +174,13 @@ describe('TracksListComponent', () => {
 
   it('should have called TracksGroupComponent', () => {
     // When
-    render(<TracksListComponent options={options} />);
+    render(<TracksListComponent />);
 
     // Then
     expect(TracksGroupComponent).toHaveBeenNthCalledWith(
       1,
       {
         label: 'Octobre 2021',
-        options,
         tracks: [payloadMock[0]],
       },
       {},
@@ -186,7 +189,6 @@ describe('TracksListComponent', () => {
       2,
       {
         label: 'Novembre 2021',
-        options,
         tracks: [payloadMock[1]],
       },
       {},
@@ -201,7 +203,7 @@ describe('TracksListComponent', () => {
     });
 
     // When
-    render(<TracksListComponent options={options} />);
+    render(<TracksListComponent />);
 
     // Then
     expect(transformTrackToEnhanced).not.toHaveBeenCalled();
@@ -222,7 +224,7 @@ describe('TracksListComponent', () => {
     ));
 
     // When
-    render(<TracksListComponent options={options} />);
+    render(<TracksListComponent />);
     const callback = useCallbackMock.mock.calls[0][0];
     act(() => {
       callback(indexMock);

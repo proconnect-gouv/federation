@@ -3,6 +3,7 @@ import type { AxiosResponse } from 'axios';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { ConfigService } from '@fc/config';
 import { get, post } from '@fc/http-client';
 
 import type { UserPreferencesDataInterface } from '../../interfaces';
@@ -14,11 +15,6 @@ jest.mock('../../services/user-preferences.service');
 
 describe('useUserPreferencesApi', () => {
   // Given
-  const optionsMock = {
-    API_ROUTE_CSRF_TOKEN: expect.any(String),
-    API_ROUTE_USER_PREFERENCES: 'any-user-preferences-route-mock',
-  };
-
   const encodedIdpListMock = ['any-uid-2-mock', 'any-uid-4-mock'];
   const allowFutureIdpMock = Symbol('allow-future-idp-mock') as unknown as boolean;
   const idpListMock = {
@@ -66,6 +62,11 @@ describe('useUserPreferencesApi', () => {
       allowFutureIdp: allowFutureIdpMock,
       idpList: encodedIdpListMock,
     });
+    jest.mocked(ConfigService.get).mockReturnValue({
+      endpoints: {
+        userPreferences: 'any-user-preferences-route-mock',
+      },
+    });
   });
 
   it('should return default values at first render', async () => {
@@ -79,7 +80,7 @@ describe('useUserPreferencesApi', () => {
     useEffectSpy.mockImplementationOnce(jest.fn());
 
     // When
-    const { result } = renderHook(() => useUserPreferencesApi(optionsMock));
+    const { result } = renderHook(() => useUserPreferencesApi());
 
     // Then
     expect(useEffectSpy).toHaveBeenCalledWith(expect.any(Function), []);
@@ -95,7 +96,7 @@ describe('useUserPreferencesApi', () => {
 
   it('should fetch user preferences only once', async () => {
     // When
-    const { rerender, result } = renderHook(() => useUserPreferencesApi(optionsMock));
+    const { rerender, result } = renderHook(() => useUserPreferencesApi());
     await waitFor(() => {
       // @NOTE empty wait for
       // HttpClient.get call is made into the useEffect
@@ -125,7 +126,7 @@ describe('useUserPreferencesApi', () => {
   describe('commit', () => {
     it('should update values when form submission successed', async () => {
       // When
-      const { result } = renderHook(() => useUserPreferencesApi(optionsMock));
+      const { result } = renderHook(() => useUserPreferencesApi());
       await waitFor(() => {
         result.current.commit({
           allowFutureIdp: allowFutureIdpMock,
@@ -149,7 +150,7 @@ describe('useUserPreferencesApi', () => {
       jest.mocked(post).mockRejectedValueOnce(new Error('any-error-mock'));
 
       // When
-      const { result } = renderHook(() => useUserPreferencesApi(optionsMock));
+      const { result } = renderHook(() => useUserPreferencesApi());
       await waitFor(() => {
         result.current.commit({
           allowFutureIdp: allowFutureIdpMock,
@@ -178,7 +179,7 @@ describe('useUserPreferencesApi', () => {
       });
 
       // When
-      const { result } = renderHook(() => useUserPreferencesApi(optionsMock));
+      const { result } = renderHook(() => useUserPreferencesApi());
       await waitFor(() => {
         result.current.commit({
           allowFutureIdp: allowFutureIdpMock,
@@ -203,7 +204,7 @@ describe('useUserPreferencesApi', () => {
   describe('validateHandler', () => {
     it('should return a form error if no idp is selected', async () => {
       // When
-      const { result } = renderHook(() => useUserPreferencesApi(optionsMock));
+      const { result } = renderHook(() => useUserPreferencesApi());
       await waitFor(() => {
         // @NOTE empty wait for
         // Till the get call is made inside a useEffect
@@ -226,7 +227,7 @@ describe('useUserPreferencesApi', () => {
 
     it('should return undefined if some idp are selected', async () => {
       // When
-      const { result } = renderHook(() => useUserPreferencesApi(optionsMock));
+      const { result } = renderHook(() => useUserPreferencesApi());
       await waitFor(() => {
         // @NOTE empty wait for
         // Till the get call is made inside a useEffect

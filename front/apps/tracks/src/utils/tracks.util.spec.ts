@@ -1,12 +1,7 @@
 import { DateTime } from 'luxon';
 
 import type { CinematicEvents, EidasToLabel } from '../enums';
-import type {
-  EnhancedTrackInterface,
-  RichClaimInterface,
-  TrackListType,
-  TracksConfig,
-} from '../interfaces';
+import type { EnhancedTrackInterface, RichClaimInterface, TrackListType } from '../interfaces';
 import {
   groupByDataProvider,
   groupByDataProviderReducer,
@@ -84,14 +79,10 @@ const track3: EnhancedTrackInterface = {
   trackId: 'trackId-3',
 };
 
-const configMock = {
-  LUXON_FORMAT_MONTH_YEAR: 'LLLL yyyy',
-} as TracksConfig;
-
 describe('groupTracksByMonth', () => {
   it('doit retourner une track dans un seul groupe', () => {
     // When
-    const results = groupTracksByMonth(configMock)([], track1, 0);
+    const results = groupTracksByMonth('LLLL yyyy')([], track1, 0);
 
     // Then
     expect(results).toHaveLength(1);
@@ -105,7 +96,7 @@ describe('groupTracksByMonth', () => {
     const tracks = [track1, track2];
 
     // When
-    const results = tracks.reduce(groupTracksByMonth(configMock), []);
+    const results = tracks.reduce(groupTracksByMonth('LLLL yyyy'), []);
 
     // Then
     expect(results).toHaveLength(1);
@@ -120,7 +111,7 @@ describe('groupTracksByMonth', () => {
     const tracks = [track1, track2, track3];
 
     // When
-    const results = tracks.reduce(groupTracksByMonth(configMock), []);
+    const results = tracks.reduce(groupTracksByMonth('LLLL yyyy'), []);
 
     // Then
     expect(results).toHaveLength(2);
