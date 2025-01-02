@@ -4,7 +4,6 @@ import type { PropsWithChildren } from 'react';
 import { StylesProvider, useStylesQuery, useStylesVariables } from '@fc/styles';
 import { UserPreferencesComponent } from '@fc/user-preferences';
 
-import { AppConfig } from '../../../config';
 import { UserPreferencesIntroductionComponent } from '../../components';
 import { UserPreferencesPage } from './user-preferences.page';
 
@@ -78,9 +77,6 @@ describe('UserPreferencesPage', () => {
 
     // Then
     expect(UserPreferencesComponent).toHaveBeenCalledOnce();
-    expect(UserPreferencesComponent).toHaveBeenCalledWith(
-      { options: AppConfig.UserPreferences },
-      {},
-    );
+    expect(UserPreferencesComponent).toHaveBeenCalledWith({}, {});
   });
 });

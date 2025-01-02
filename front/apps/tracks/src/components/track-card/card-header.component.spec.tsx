@@ -1,21 +1,22 @@
 import { render } from '@testing-library/react';
 import { DateTime } from 'luxon';
 
+import { ConfigService } from '@fc/config';
+
 import { TrackCardHeaderComponent } from './card-header.component';
 
 describe('TrackCardHeaderComponent', () => {
-  const options = {
-    API_ROUTE_TRACKS: 'mock_API_ROUTE_TRACKS',
-    API_ROUTE_USER_INFOS: 'mock_API_ROUTE_USER_INFOS',
-    LUXON_FORMAT_DATETIME_SHORT_FR: 'mock_LUXON_FORMAT_DATETIME_SHORT_FR',
-    LUXON_FORMAT_DAY: 'mock_LUXON_FORMAT_DAY',
-    LUXON_FORMAT_HOUR_MINS: 'mock_LUXON_FORMAT_HOUR_MINS',
-    LUXON_FORMAT_MONTH_YEAR: 'mock_LUXON_FORMAT_MONTH_YEAR',
-    LUXON_FORMAT_TIMEZONE: 'mock_LUXON_FORMAT_TIMEZONE',
-  };
+  // Given
   const date = DateTime.fromObject({ day: 1, month: 10, year: 2021 })
     .setZone('Europe/Paris')
     .setLocale('fr');
+
+  beforeEach(() => {
+    // Given
+    jest.mocked(ConfigService.get).mockReturnValue({
+      luxon: { dayFormat: 'luxon-format-day-mock' },
+    });
+  });
 
   it('should have render the service provider name from props', () => {
     // Given
@@ -23,7 +24,6 @@ describe('TrackCardHeaderComponent', () => {
       <TrackCardHeaderComponent
         datetime={date}
         opened={false}
-        options={options}
         serviceProviderLabel="any identity provider name"
       />,
     );
@@ -36,14 +36,9 @@ describe('TrackCardHeaderComponent', () => {
 
   it('should have render a day formatted date, using props', () => {
     // Given
-    const expected = date.toFormat(options.LUXON_FORMAT_DAY);
+    const expected = date.toFormat('luxon-format-day-mock');
     const { getByText } = render(
-      <TrackCardHeaderComponent
-        datetime={date}
-        opened={false}
-        options={options}
-        serviceProviderLabel="any"
-      />,
+      <TrackCardHeaderComponent datetime={date} opened={false} serviceProviderLabel="any" />,
     );
     // Then
     const element = getByText(expected);
@@ -54,12 +49,7 @@ describe('TrackCardHeaderComponent', () => {
   it('should render an accessible plus icon if card is closed', () => {
     // Given
     const { container } = render(
-      <TrackCardHeaderComponent
-        datetime={date}
-        opened={false}
-        options={options}
-        serviceProviderLabel="any"
-      />,
+      <TrackCardHeaderComponent datetime={date} opened={false} serviceProviderLabel="any" />,
     );
     // Then
     const elements = container.getElementsByTagName('title');
@@ -71,12 +61,7 @@ describe('TrackCardHeaderComponent', () => {
   it('should render an accessible minus icon if card is opened', () => {
     // Given
     const { container } = render(
-      <TrackCardHeaderComponent
-        opened
-        datetime={date}
-        options={options}
-        serviceProviderLabel="any"
-      />,
+      <TrackCardHeaderComponent opened datetime={date} serviceProviderLabel="any" />,
     );
 
     // Then
