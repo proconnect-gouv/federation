@@ -2,7 +2,7 @@
   "collection": "@nestjs/schematics",
   "sourceRoot": "instances/core-fcp-high/src",
   "monorepo": true,
-  "root": "instances/core-fcp-high",
+  "root": "instances/core-fca-low",
   "compilerOptions": {
     "webpack": true,
     "tsConfigPath": "instances/core-fcp-high/tsconfig.app.json"
@@ -37,133 +37,6 @@
         ]
       }
     },
-    "eidas-bridge-instance": {
-      "type": "application",
-      "root": "instances/eidas-bridge",
-      "entryFile": "main",
-      "sourceRoot": "instances/eidas-bridge/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/eidas-bridge/tsconfig.app.json",
-        "assets": [
-          "../../../apps/eidas-bridge/**/*.ejs",
-          "../../../apps/eidas-bridge/**/*.css",
-          "../../../apps/eidas-bridge/**/*.js",
-          "../../../apps/eidas-bridge/**/*.svg",
-          "../../../apps/eidas-bridge/**/*.png",
-          "../../../apps/eidas-bridge/**/*.ico",
-          "../../../apps/eidas-bridge/**/*.woff2",
-          "../../../apps/eidas-bridge/**/*.webmanifest",
-          "../../../apps/eidas-bridge/**/robots.txt",
-          "../../../libs/eidas-country/src/public/**/*.svg"
-        ]
-      }
-    },
-    "core-fcp-low": {
-      "type": "application",
-      "root": "instances/core-fcp-low",
-      "entryFile": "main",
-      "sourceRoot": "instances/core-fcp-low/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/core-fcp-low/tsconfig.app.json",
-        "assets": [
-          "../../../apps/core-fcp/**/*.ejs",
-          "../../../apps/core-fcp/**/*.css",
-          "../../../apps/core-fcp/**/*.js",
-          "../../../apps/core-fcp/**/*.svg",
-          "../../../apps/core-fcp/**/*.png",
-          "../../../apps/core-fcp/**/*.ico",
-          "../../../apps/core-fcp/**/*.woff2",
-          "../../../apps/core-fcp/**/*.webmanifest",
-          "../../../apps/core-fcp/**/robots.txt",
-          "../../../instances/core-fcp-low/src/**/*.js",
-          "../../../instances/core-fcp-low/src/**/*.css",
-          "../../../instances/core-fcp-low/src/**/*.ejs",
-          "../../../instances/core-fcp-low/src/**/*.ico",
-          "../../../instances/core-fcp-low/src/**/*.svg",
-          "../../../instances/core-fcp-low/src/**/*.png",
-          "../../../instances/core-fcp-low/src/**/*.woff2",
-          "../../../instances/core-fcp-low/src/**/*.webmanifest",
-          "../../../instances/core-fcp-low/src/**/robots.txt"
-        ]
-      }
-    },
-    "core-fcp-high": {
-      "type": "application",
-      "root": "instances/core-fcp-high",
-      "entryFile": "main",
-      "sourceRoot": "instances/core-fcp-high/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/core-fcp-high/tsconfig.app.json",
-        "assets": [
-          "../../../apps/core-fcp/**/*.ejs",
-          "../../../apps/core-fcp/**/*.css",
-          "../../../apps/core-fcp/**/*.js",
-          "../../../apps/core-fcp/**/*.svg",
-          "../../../apps/core-fcp/**/*.png",
-          "../../../apps/core-fcp/**/*.ico",
-          "../../../apps/core-fcp/**/*.woff2",
-          "../../../apps/core-fcp/**/*.webmanifest",
-          "../../../apps/core-fcp/**/robots.txt",
-          "../../../instances/core-fcp-high/src/**/*.js",
-          "../../../instances/core-fcp-high/src/**/*.css",
-          "../../../instances/core-fcp-high/src/**/*.ejs",
-          "../../../instances/core-fcp-high/src/**/*.ico",
-          "../../../instances/core-fcp-high/src/**/*.svg",
-          "../../../instances/core-fcp-high/src/**/*.png",
-          "../../../instances/core-fcp-high/src/**/*.woff2",
-          "../../../instances/core-fcp-high/src/**/*.webmanifest",
-          "../../../instances/core-fcp-high/src/**/robots.txt"
-        ]
-      }
-    },
-    "partners-instance": {
-      "type": "application",
-      "root": "instances/partners",
-      "entryFile": "main",
-      "sourceRoot": "instances/partners/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/partners/tsconfig.app.json"
-      }
-    },
-    "partners": {
-      "type": "library",
-      "root": "apps/partners",
-      "entryFile": "index",
-      "sourceRoot": "apps/partners/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/partners/tsconfig.lib.json"
-      }
-    },
-    "csmr-hsm-high": {
-      "type": "application",
-      "root": "instances/csmr-hsm-high",
-      "entryFile": "main",
-      "sourceRoot": "instances/csmr-hsm-high/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/csmr-hsm-high/tsconfig.app.json"
-      }
-    },
-    "mock-service-provider-fcp-high": {
-      "type": "application",
-      "root": "instances/mock-service-provider-fcp-high",
-      "entryFile": "main",
-      "sourceRoot": "instances/mock-service-provider-fcp-high/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/mock-service-provider-fcp-high/tsconfig.app.json",
-        "assets": [
-          "../../../apps/mock-service-provider/**/*.js",
-          "../../../apps/mock-service-provider/**/*.ejs",
-          "../../../apps/mock-service-provider/**/*.css",
-          "../../../apps/mock-service-provider/**/*.svg",
-          "../../../apps/mock-service-provider/**/*.png",
-          "../../../instances/mock-service-provider-fcp-high/**/*.js",
-          "../../../instances/mock-service-provider-fcp-high/**/*.ejs",
-          "../../../instances/mock-service-provider-fcp-high/**/*.css",
-          "../../../instances/mock-service-provider-fcp-high/**/*.svg",
-          "../../../instances/mock-service-provider-fcp-high/**/*.png"
-        ]
-      }
-    },
     "mock-service-provider-fca-low": {
       "type": "application",
       "root": "instances/mock-service-provider-fca-low",
@@ -182,48 +55,6 @@
           "../../../instances/mock-service-provider-fca-low/**/*.css",
           "../../../instances/mock-service-provider-fca-low/**/*.svg",
           "../../../instances/mock-service-provider-fca-low/**/*.png"
-        ]
-      }
-    },
-    "mock-service-provider-fcp-low": {
-      "type": "application",
-      "root": "instances/mock-service-provider-fcp-low",
-      "entryFile": "main",
-      "sourceRoot": "instances/mock-service-provider-fcp-low/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/mock-service-provider-fcp-low/tsconfig.app.json",
-        "assets": [
-          "../../../apps/mock-service-provider/**/*.js",
-          "../../../apps/mock-service-provider/**/*.ejs",
-          "../../../apps/mock-service-provider/**/*.css",
-          "../../../apps/mock-service-provider/**/*.svg",
-          "../../../apps/mock-service-provider/**/*.png",
-          "../../../instances/mock-service-provider-fcp-low/**/*.js",
-          "../../../instances/mock-service-provider-fcp-low/**/*.ejs",
-          "../../../instances/mock-service-provider-fcp-low/**/*.css",
-          "../../../instances/mock-service-provider-fcp-low/**/*.svg",
-          "../../../instances/mock-service-provider-fcp-low/**/*.png"
-        ]
-      }
-    },
-    "mock-service-provider-fcp-legacy": {
-      "type": "application",
-      "root": "instances/mock-service-provider-fcp-legacy",
-      "entryFile": "main",
-      "sourceRoot": "instances/mock-service-provider-fcp-legacy/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/mock-service-provider-fcp-legacy/tsconfig.app.json",
-        "assets": [
-          "../../../apps/mock-service-provider/**/*.js",
-          "../../../apps/mock-service-provider/**/*.ejs",
-          "../../../apps/mock-service-provider/**/*.css",
-          "../../../apps/mock-service-provider/**/*.svg",
-          "../../../apps/mock-service-provider/**/*.png",
-          "../../../instances/mock-service-provider-fcp-legacy/**/*.js",
-          "../../../instances/mock-service-provider-fcp-legacy/**/*.ejs",
-          "../../../instances/mock-service-provider-fcp-legacy/**/*.css",
-          "../../../instances/mock-service-provider-fcp-legacy/**/*.svg",
-          "../../../instances/mock-service-provider-fcp-legacy/**/*.png"
         ]
       }
     },
@@ -248,64 +79,6 @@
         ]
       }
     },
-    "mock-identity-provider-fcp-high": {
-      "type": "application",
-      "root": "instances/mock-identity-provider-fcp-high",
-      "entryFile": "main",
-      "sourceRoot": "instances/mock-identity-provider-fcp-high/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/mock-identity-provider-fcp-high/tsconfig.app.json",
-        "assets": [
-          "../../../apps/mock-identity-provider/**/*.ejs",
-          "../../../apps/mock-identity-provider/**/*.css",
-          "../../../apps/mock-identity-provider/**/*.svg",
-          "../../../apps/mock-identity-provider/**/*.png",
-          "../../../apps/mock-identity-provider/**/*.csv",
-          "../../../instances/mock-identity-provider-fcp-high/**/*.ejs",
-          "../../../instances/mock-identity-provider-fcp-high/**/*.css",
-          "../../../instances/mock-identity-provider-fcp-high/**/*.svg",
-          "../../../instances/mock-identity-provider-fcp-high/**/*.csv",
-          "../../../instances/mock-identity-provider-fcp-high/**/*.png"
-        ]
-      }
-    },
-    "mock-identity-provider-fcp-low": {
-      "type": "application",
-      "root": "instances/mock-identity-provider-fcp-low",
-      "entryFile": "main",
-      "sourceRoot": "instances/mock-identity-provider-fcp-low/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/mock-identity-provider-fcp-low/tsconfig.app.json",
-        "assets": [
-          "../../../apps/mock-identity-provider/**/*.ejs",
-          "../../../apps/mock-identity-provider/**/*.css",
-          "../../../apps/mock-identity-provider/**/*.svg",
-          "../../../apps/mock-identity-provider/**/*.png",
-          "../../../apps/mock-identity-provider/**/*.csv",
-          "../../../instances/mock-identity-provider-fcp-low/**/*.ejs",
-          "../../../instances/mock-identity-provider-fcp-low/**/*.css",
-          "../../../instances/mock-identity-provider-fcp-low/**/*.svg",
-          "../../../instances/mock-identity-provider-fcp-low/**/*.csv",
-          "../../../instances/mock-identity-provider-fcp-low/**/*.png"
-        ]
-      }
-    },
-    "user-dashboard-instance": {
-      "type": "application",
-      "root": "instances/user-dashboard",
-      "entryFile": "main",
-      "sourceRoot": "instances/user-dashboard/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/user-dashboard/tsconfig.app.json",
-        "assets": [
-          "../../../apps/user-dashboard/**/*.ejs",
-          "../../../apps/user-dashboard/**/*.css",
-          "../../../apps/user-dashboard/**/*.svg",
-          "../../../apps/user-dashboard/**/*.png",
-          "../../../instances/user-dashboard/**/*.ejs"
-        ]
-      }
-    },
     "bridge-http-proxy-rie": {
       "type": "application",
       "root": "instances/bridge-http-proxy-rie",
@@ -315,46 +88,22 @@
         "tsConfigPath": "instances/bridge-http-proxy-rie/tsconfig.app.json"
       }
     },
-    "csmr-user-preferences-high": {
+    "csmr-rie": {
       "type": "application",
-      "root": "instances/csmr-user-preferences-high",
+      "root": "instances/csmr-rie",
       "entryFile": "main",
-      "sourceRoot": "instances/csmr-user-preferences-high/src",
+      "sourceRoot": "instances/csmr-rie/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/csmr-user-preferences-high/tsconfig.app.json",
-        "assets": [
-          "../../../instances/csmr-user-preferences-high/**/*.ejs"
-        ]
+        "tsConfigPath": "instances/csmr-rie/tsconfig.app.json"
       }
     },
-    "csmr-account-instance": {
+    "mock-data-provider": {
       "type": "application",
-      "root": "instances/csmr-account-instance",
+      "root": "instances/mock-data-provider",
       "entryFile": "main",
-      "sourceRoot": "instances/csmr-account-instance/src",
+      "sourceRoot": "instances/mock-data-provider/src",
       "compilerOptions": {
-        "tsConfigPath": "instances/csmr-account-instance/tsconfig.app.json"
-      }
-    },
-    "csmr-fraud-instance": {
-      "type": "application",
-      "root": "instances/csmr-fraud-instance",
-      "entryFile": "main",
-      "sourceRoot": "instances/csmr-fraud-instance/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/csmr-fraud-instance/tsconfig.app.json",
-        "assets": [
-          "../../../instances/csmr-fraud-instance/**/*.ejs"
-        ]
-      }
-    },
-    "rnipp": {
-      "type": "library",
-      "root": "libs/rnipp",
-      "entryFile": "index",
-      "sourceRoot": "libs/rnipp/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/rnipp/tsconfig.lib.json"
+        "tsConfigPath": "instances/mock-data-provider/tsconfig.app.json"
       }
     },
     "identity": {
@@ -472,51 +221,6 @@
       "sourceRoot": "apps/core-fca/src",
       "compilerOptions": {
         "tsConfigPath": "apps/core-fca/tsconfig.lib.json"
-      }
-    },
-    "eidas-bridge": {
-      "type": "library",
-      "root": "apps/eidas-bridge",
-      "entryFile": "index",
-      "sourceRoot": "apps/eidas-bridge/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/eidas-bridge/tsconfig.lib.json"
-      }
-    },
-    "core-fcp": {
-      "type": "library",
-      "root": "apps/core-fcp",
-      "entryFile": "index",
-      "sourceRoot": "apps/core-fcp/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/core-fcp/tsconfig.lib.json"
-      }
-    },
-    "user-dashboard": {
-      "type": "library",
-      "root": "apps/user-dashboard",
-      "entryFile": "index",
-      "sourceRoot": "apps/user-dashboard/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/user-dashboard/tsconfig.lib.json"
-      }
-    },
-    "csmr-hsm": {
-      "type": "library",
-      "root": "apps/csmr-hsm",
-      "entryFile": "index",
-      "sourceRoot": "apps/csmr-hsm/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/csmr-hsm/tsconfig.lib.json"
-      }
-    },
-    "csmr-tracks": {
-      "type": "library",
-      "root": "apps/csmr-tracks",
-      "entryFile": "index",
-      "sourceRoot": "apps/csmr-tracks/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/csmr-tracks/tsconfig.lib.json"
       }
     },
     "common": {
@@ -861,15 +565,6 @@
         "tsConfigPath": "apps/csmr-http-proxy/tsconfig.app.json"
       }
     },
-    "csmr-rie": {
-      "type": "application",
-      "root": "instances/csmr-rie",
-      "entryFile": "main",
-      "sourceRoot": "instances/csmr-rie/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/csmr-rie/tsconfig.app.json"
-      }
-    },
     "data-provider-core-auth": {
       "type": "library",
       "root": "libs/data-provider-core-auth",
@@ -906,15 +601,6 @@
         "tsConfigPath": "libs/hybridge-http-proxy/tsconfig.lib.json"
       }
     },
-    "csmr-tracks-instance": {
-      "type": "application",
-      "root": "instances/csmr-tracks-instance",
-      "entryFile": "main",
-      "sourceRoot": "instances/csmr-tracks-instance/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/csmr-tracks-instance/tsconfig.app.json"
-      }
-    },
     "geoip-maxmind": {
       "type": "library",
       "root": "libs/geoip-maxmind",
@@ -924,24 +610,6 @@
         "tsConfigPath": "libs/geoip-maxmind/tsconfig.lib.json"
       }
     },
-    "csmr-account": {
-      "type": "library",
-      "root": "apps/csmr-account",
-      "entryFile": "index",
-      "sourceRoot": "apps/csmr-account/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/csmr-account/tsconfig.lib.json"
-      }
-    },
-    "csmr-fraud": {
-      "type": "library",
-      "root": "apps/csmr-fraud",
-      "entryFile": "index",
-      "sourceRoot": "apps/csmr-fraud/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/csmr-fraud/tsconfig.lib.json"
-      }
-    },
     "roles": {
       "type": "library",
       "root": "libs/roles",
@@ -949,19 +617,6 @@
       "sourceRoot": "libs/roles/src",
       "compilerOptions": {
         "tsConfigPath": "libs/roles/tsconfig.lib.json"
-      }
-    },
-    "mock-rnipp": {
-      "type": "application",
-      "root": "instances/mock-rnipp",
-      "entryFile": "main",
-      "sourceRoot": "instances/mock-rnipp/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/mock-rnipp/tsconfig.app.json",
-        "assets": [
-          "../../../apps/mock-rnipp/**/*.ejs",
-          "../../../apps/mock-rnipp/**/*.xml"
-        ]
       }
     },
     "oidc-acr": {
@@ -980,15 +635,6 @@
       "sourceRoot": "libs/flow-steps/src",
       "compilerOptions": {
         "tsConfigPath": "libs/flow-steps/tsconfig.lib.json"
-      }
-    },
-    "mock-data-provider": {
-      "type": "application",
-      "root": "instances/mock-data-provider",
-      "entryFile": "main",
-      "sourceRoot": "instances/mock-data-provider/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/mock-data-provider/tsconfig.app.json"
       }
     },
     "data-provider-adapter-core": {

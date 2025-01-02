@@ -5,15 +5,9 @@ stages:
   - Cache
   - Review
   - Build Back
-  - Build Front
   - Tag Back
-  - Tag Front
   - Post-deploy
 
 include:
   - "/back/.gitlab-ci.yml"
-  # Temporary disable FC
-  # - "/front/.gitlab-ci.yml"
   - ".gitlab-ci-security-scanning.yml"
-  # Temporary disable FCA-Labeller while fork XP is running
-  # - '.gitlab-ci-labeller.yml'

@@ -1,4 +1,0 @@
-{
-  "extends": ["@fc/stylelint-config-react-app"],
-  "plugins": ["stylelint-order"]
-}

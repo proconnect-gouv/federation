@@ -5,7 +5,7 @@ import * as glob from 'glob';
 
 import { HttpStatus } from '@nestjs/common';
 
-import { frFR } from '../../../../../apps/core-fcp/src/i18n/fr-FR.i18n';
+import { frFR } from '../../../../../apps/core-fca/src/i18n/fr-FR.i18n';
 import { BaseException } from '../../exceptions';
 import { getCode } from '../../helpers';
 import {
