@@ -5,9 +5,7 @@ services:
     image: alpine
     depends_on:
       - "rp-all"
-      - "all-fcp-high"
       - "all-fca-low"
-      - "all-fcp-low"
 
   ####################
   # Shared Services
@@ -35,38 +33,6 @@ services:
     networks:
       public:
         aliases:
-          # FCP HIGH
-          - fsp1-high.docker.dev-franceconnect.fr
-          - fsp2-high.docker.dev-franceconnect.fr
-          - fsp3-high.docker.dev-franceconnect.fr
-          - fsp5-high.docker.dev-franceconnect.fr
-          - fsp6-high.docker.dev-franceconnect.fr
-          - ud-back.docker.dev-franceconnect.fr
-          - ud-front.docker.dev-franceconnect.fr
-          - core-fcp-high.docker.dev-franceconnect.fr
-          - fip1-high.docker.dev-franceconnect.fr
-          - fip2-high.docker.dev-franceconnect.fr
-          - fip6-high.docker.dev-franceconnect.fr
-          - fip13-high.docker.dev-franceconnect.fr
-          - fip14-high.docker.dev-franceconnect.fr
-          - fip15-high.docker.dev-franceconnect.fr
-          - fip16-high.docker.dev-franceconnect.fr
-          - fip17-high.docker.dev-franceconnect.fr
-          - fip18-high.docker.dev-franceconnect.fr
-          - fip19-high.docker.dev-franceconnect.fr
-          - fip20-high.docker.dev-franceconnect.fr
-          # FCP LOW
-          - core-fcp-low.docker.dev-franceconnect.fr
-          - fsp1-low.docker.dev-franceconnect.fr
-          - fsp2-low.docker.dev-franceconnect.fr
-          - fsp3-low.docker.dev-franceconnect.fr
-          - fsp4-low.docker.dev-franceconnect.fr
-          - fip1-low.docker.dev-franceconnect.fr
-          - fip2-low.docker.dev-franceconnect.fr
-          - fip3-low.docker.dev-franceconnect.fr
-          - fip4-low.docker.dev-franceconnect.fr
-          - fip8-low.docker.dev-franceconnect.fr
-          - fip9-low.docker.dev-franceconnect.fr
           # FCA LOW
           - core-fca-low.docker.dev-franceconnect.fr
           - bridge-proxy-rie.docker.dev-franceconnect.fr
@@ -82,19 +48,10 @@ services:
           - fia5-low.docker.dev-franceconnect.fr
           - fia8-low.docker.dev-franceconnect.fr
           - moncomptepro.docker.dev-franceconnect.fr
-          # EIDAS
-          - eidas-bridge.docker.dev-franceconnect.fr
-          - eidas-fr.docker.dev-franceconnect.fr
-          - eidas-mock.docker.dev-franceconnect.fr
-          - eidas-be.docker.dev-franceconnect.fr
           # Aliases to access exploitation from test runner
           # TODO: Move those aliases to exploitation network once runner workaround found
           - exploitation-fca-low.docker.dev-franceconnect.fr
           - exploitation-high.docker.dev-franceconnect.fr
-          # Usagers FCA
-          - usagers-fca.docker.dev-franceconnect.fr
-          # Mock RNIPP
-          - mock-rnipp.docker.dev-franceconnect.fr
           # Mock Data Provider
           - dpp1-high.docker.dev-franceconnect.fr
           - dpp2-high.docker.dev-franceconnect.fr
@@ -106,28 +63,6 @@ services:
           - docker.dev-franceconnect.fr
           # Stack Documentation 11TY
           - doc-example.docker.dev-franceconnect.fr
-          - doc-partners.docker.dev-franceconnect.fr
-          # Espace partenaires
-          - partners.docker.dev-franceconnect.fr
-          # Stack Legacy
-          - fcp.docker.dev-franceconnect.fr
-          - fip1.docker.dev-franceconnect.fr
-          - fip2.docker.dev-franceconnect.fr
-          - fip3.docker.dev-franceconnect.fr
-          - fip4.docker.dev-franceconnect.fr
-          - aidants-connect-mock.docker.dev-franceconnect.fr
-          - fsp1.docker.dev-franceconnect.fr
-          - fsp2.docker.dev-franceconnect.fr
-          - fsp3.docker.dev-franceconnect.fr
-          - fsp1-legacy.docker.dev-franceconnect.fr
-          - fsp2-legacy.docker.dev-franceconnect.fr
-          - fdp1.docker.dev-franceconnect.fr
-          - assets.docker.dev-franceconnect.fr
-          - fc-exploitation.docker.dev-franceconnect.fr
-          - fc-support.docker.dev-franceconnect.fr
-          - ud.docker.dev-franceconnect.fr
-          - maildev.docker.dev-franceconnect.fr
-          - partenaires.docker.dev-franceconnect.fr
       fc:
       rie:
         aliases:
@@ -165,25 +100,6 @@ services:
       - fc
       - exploitation
       - rie
-
-  haproxy:
-    image: haproxy:2.3
-    hostname: haproxy
-    ulimits:
-      nofile:
-        soft: 1024
-        hard: 1024
-    ports:
-      - 8404:8404
-    volumes:
-      - "${VOLUMES_DIR}/haproxy:/usr/local/etc/haproxy:ro"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
-    networks:
-      - public
-      - fc
-      - exploitation
-    depends_on:
-      - rp-all
 
   log-hub:
     hostname: log-hub
@@ -323,80 +239,6 @@ services:
     networks:
       - data
 
-  mongo-fcp-high:
-    hostname: mongo-fcp-high
-    build:
-      context: "${WORKING_DIR}"
-      dockerfile: "${WORKING_DIR}/builds/mongodb/Dockerfile"
-      args:
-        MONGO_VERSION: "5.0.23"
-    volumes:
-      - "${VOLUMES_DIR}/mongo-fcp-high/scripts:/opt/scripts"
-      - "${VOLUMES_DIR}/mongo-fcp-high/initdb.d:/docker-entrypoint-initdb.d"
-    env_file:
-      - "${COMPOSE_DIR}/shared/.env/mongo-high.env"
-    ports:
-      - "27018:27017"
-    networks:
-      - data
-
-  ####################
-  # HSM
-  ####################
-
-  hsm:
-    image: ${FC_DOCKER_REGISTRY}/softhsm
-    networks:
-      - data
-    ports:
-      - "5551:5551"
-
-  csmr-hsm:
-    hostname: csmr-hsm
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      - "broker"
-      - "hsm"
-    volumes:
-      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
-      - "${VOLUMES_DIR}/app:/opt/scripts"
-      - "${VOLUMES_DIR}/csmr-hsm:/etc/hsm"
-      - "${VOLUMES_DIR}/log/:/var/log/app"
-      - "${VOLUMES_DIR}/.home:/home"
-      - ${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro
-    env_file:
-      - "${COMPOSE_DIR}/shared/.env/base-app.env"
-    environment:
-      - "DEFAULT_MODE=prod"
-      - "APP_NAME=csmr-hsm-high"
-      - "NESTJS_INSTANCE=csmr-hsm-high"
-      - "PM2_SCRIPT=yarn start:dev csmr-hsm-high"
-      - "PM2_CI_SCRIPT=yarn start:ci csmr-hsm-high"
-      - "REQUEST_TIMEOUT=6000"
-      # LoggerLegacy
-      - "LoggerLegacy_FILE=/var/log/app/csmr-hsm.log"
-      # Hsm
-      - "PROTECCIO_CONF_DIR=/etc/hsm"
-      - "HSM_HOST=hsm"
-      # Locale PKCS11 library
-      #   Use libpkcs11-proxy lib for development HSM (softHSM)
-      #   Use Bull's library for production HSM
-      #
-      # - "HSM_LIB=/etc/hsm/libnethsm.so"
-      - "Hsm_LIB=/etc/hsm/libpkcs11-proxy.so"
-      - "Hsm_PIN=1234"
-      - "Hsm_VIRTUAL_HSM_SLOT=0"
-      - "Hsm_SIG_HSM_PUB_KEY_CKA_LABEL=key-prime256v1"
-      - "PKCS11_PROXY_SOCKET=tcp://hsm:5551"
-      - 'CryptographyBroker_URLS=["amqp://broker:5672"]'
-      - "CryptographyBroker_QUEUE=crypto"
-    networks:
-      - data
-    init: true
-    command: "pm2 logs"
-
   ####################
   # Shared Mocks
   ####################
@@ -415,26 +257,6 @@ services:
     networks:
       - data
       - public
-
-  # New implementation in monorepo
-  mock-rnipp:
-    hostname: mock-rnipp
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    volumes:
-      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
-      - "${VOLUMES_DIR}/app:/opt/scripts"
-      - "${VOLUMES_DIR}/log:/var/log/app"
-      - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
-    env_file:
-      - "${COMPOSE_DIR}/shared/.env/base-app.env"
-      - "${COMPOSE_DIR}/shared/.env/mock-rnipp.env"
-    networks:
-      - public
-    init: true
-    command: "pm2 logs"
 
   ####################
   # Tracks related services
@@ -461,174 +283,6 @@ services:
       - "discovery.type=single-node"
       - "ES_JAVA_OPTS=-Xms64m -Xmx256m"
 
-  csmr-tracks:
-    hostname: csmr-tracks
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      - "broker"
-      - "csmr-account-legacy"
-      - "csmr-account-high"
-      - "elasticsearch"
-    volumes:
-      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
-      - "${VOLUMES_DIR}/app:/opt/scripts"
-      - "${VOLUMES_DIR}/log:/var/log/app"
-      - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
-      - "${VOLUMES_DIR}/maxmind/database/GeoLite2-City:/var/geoipdb"
-    env_file:
-      - "${COMPOSE_DIR}/shared/.env/base-app.env"
-      - "${COMPOSE_DIR}/shared/.env/csmr-tracks.env"
-    environment:
-      - "NODE_TLS_REJECT_UNAUTHORIZED=0"
-      - "DEFAULT_MODE=prod"
-      - "APP_NAME=csmr-tracks"
-      - "NESTJS_INSTANCE=csmr-tracks-instance"
-      - "PM2_SCRIPT=yarn start:dev csmr-tracks-instance"
-      - "PM2_CI_SCRIPT=yarn start:ci csmr-tracks-instance"
-      - "REQUEST_TIMEOUT=6000"
-      # -- LoggerLegacy
-      - "LoggerLegacy_FILE=/var/log/app/csmr-tracks.log"
-      # -- RabbitMQ credentials
-      - 'TracksBroker_URLS=["amqp://broker:5672"]'
-      - "TracksBroker_QUEUE=tracks"
-      - 'AccountHighBroker_URLS=["amqp://broker:5672"]'
-      - "AccountHighBroker_QUEUE=account-high"
-      - 'AccountLegacyBroker_URLS=["amqp://broker:5672"]'
-      - "AccountLegacyBroker_QUEUE=account-legacy"
-      - "FC_DB_TYPE=mongodb"
-      - "FC_DB_SYNCHRONIZE=false"
-      - "FC_DB_CONNECT_OPTIONS="
-      - "FC_DB_REPLICASET=rs0"
-        # Elasticsearch credentials
-      - "Elasticsearch_TRACKS_INDEX=tracks"
-      - 'Elasticsearch_NODES=["https://elasticsearch:9200"]'
-      - "Elasticsearch_USERNAME=docker-stack"
-      - "Elasticsearch_PASSWORD=docker-stack"
-        # GeoIP
-      - "GeoIpMaxmind_DATABASE_PATH=/var/geoipdb/GeoLite2-City.mmdb"
-    networks:
-      - data
-    init: true
-    command: "pm2 logs"
-
-  csmr-account-legacy:
-    hostname: csmr-account-legacy
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      - "broker"
-      - "mongo-fcp-low"
-    volumes:
-      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
-      - "${VOLUMES_DIR}/app:/opt/scripts"
-      - "${VOLUMES_DIR}/log:/var/log/app"
-      - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
-    env_file:
-      - "${COMPOSE_DIR}/shared/.env/base-app.env"
-      - "${COMPOSE_DIR}/fcp-low/.env/mongo-fcp-low.env"
-    environment:
-      - "DEFAULT_MODE=prod"
-      - "APP_NAME=csmr-account-legacy"
-      - "NESTJS_INSTANCE=csmr-account-instance"
-      - "PM2_SCRIPT=yarn start:dev csmr-account-instance"
-      - "PM2_CI_SCRIPT=yarn start:ci csmr-account-instance"
-      - "REQUEST_TIMEOUT=6000"
-      # -- LoggerLegacy
-      - "LoggerLegacy_FILE=/var/log/app/csmr-account-legacy.log"
-      # -- RabbitMQ credentials
-      - 'AccountBroker_URLS=["amqp://broker:5672"]'
-      - "AccountBroker_QUEUE=account-legacy"
-    networks:
-      - data
-    init: true
-    command: "pm2 logs"
-
-  csmr-account-high:
-    hostname: csmr-account-high
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      - "broker"
-      - "mongo-fcp-high"
-    volumes:
-      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
-      - "${VOLUMES_DIR}/app:/opt/scripts"
-      - "${VOLUMES_DIR}/log:/var/log/app"
-      - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
-    env_file:
-      - "${COMPOSE_DIR}/shared/.env/base-app.env"
-      - "${COMPOSE_DIR}/shared/.env/mongo-high.env"
-    environment:
-      - "DEFAULT_MODE=prod"
-      - "APP_NAME=csmr-account-high"
-      - "NESTJS_INSTANCE=csmr-account-instance"
-      - "PM2_SCRIPT=yarn start:dev csmr-account-instance"
-      - "PM2_CI_SCRIPT=yarn start:ci csmr-account-instance"
-      - "REQUEST_TIMEOUT=6000"
-      # -- LoggerLegacy
-      - "LoggerLegacy_FILE=/var/log/app/csmr-account-high.log"
-      # -- RabbitMQ credentials
-      - 'AccountBroker_URLS=["amqp://broker:5672"]'
-      - "AccountBroker_QUEUE=account-high"
-    networks:
-      - data
-    init: true
-    command: "pm2 logs"
-
-  csmr-fraud:
-    hostname: csmr-fraud
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    working_dir: /var/www/app
-    depends_on:
-      - "broker"
-      - "maildev"
-    volumes:
-      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
-      - "${VOLUMES_DIR}/app:/opt/scripts"
-      - "${VOLUMES_DIR}/log:/var/log/app"
-      - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
-      - "${VOLUMES_DIR}/maxmind/database/GeoLite2-City:/var/geoipdb"
-    env_file:
-      - "${COMPOSE_DIR}/shared/.env/base-app.env"
-      - "${COMPOSE_DIR}/shared/.env/csmr-fraud.env"
-    networks:
-      - data
-    init: true
-    command: "pm2 logs"
-
-  csmr-user-preferences-high:
-    hostname: csmr-user-preferences-high
-    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
-    user: ${CURRENT_UID}
-    depends_on:
-      - "broker"
-      - "mongo-fcp-low"
-    working_dir: /var/www/app
-    volumes:
-      - "${VOLUMES_DIR}/src/fc/back:/var/www/app"
-      - "${VOLUMES_DIR}/app:/opt/scripts"
-      - "${VOLUMES_DIR}/log:/var/log/app"
-      - "${VOLUMES_DIR}/.home:/home"
-      - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
-    env_file:
-      - "${COMPOSE_DIR}/shared/.env/base-app.env"
-      - "${COMPOSE_DIR}/shared/.env/csmr-user-preferences-high.env"
-      - "${COMPOSE_DIR}/fcp-low/.env/mongo-fcp-low.env"
-    tty: true
-    networks:
-      - data
-    init: true
-    command: "pm2 logs"
-
 ####################
 # Networks
 ####################
@@ -650,10 +304,6 @@ networks:
     ipam:
       config:
         - subnet: 172.16.4.0/24
-  eidas:
-    ipam:
-      config:
-        - subnet: 172.16.5.0/24
   rie:
     ipam:
       config:
