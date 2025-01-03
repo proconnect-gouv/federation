@@ -1,5 +1,0 @@
-cypress/fixtures.out
-cypress/reports
-
-# Ignore Fixtures:
-data/**/*.ejs
