@@ -10,7 +10,6 @@ import {
 import { PartialExcept } from '@fc/common';
 import { CoreBaseOidcClientSessionDto, CoreRoutes } from '@fc/core';
 import { IOidcIdentity } from '@fc/oidc';
-import { RnippPivotIdentity } from '@fc/rnipp';
 
 export class GetLoginOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
   // Metadata: We MUST have an accountId
@@ -54,12 +53,6 @@ export class GetLoginOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
   @IsObject()
   @Expose()
   readonly idpIdentity?: PartialExcept<IOidcIdentity, 'sub'> | IOidcIdentity;
-
-  // Identity: We MAY keep a rnippIdentity (SSO)
-  @IsOptional()
-  @IsObject()
-  @Expose()
-  readonly rnippIdentity?: RnippPivotIdentity;
 
   // Identity: We MUST have a spIdentity
   @IsObject()

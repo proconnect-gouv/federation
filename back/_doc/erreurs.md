@@ -13,19 +13,6 @@
 | [<b>000013</b>](../libs/core/src/exceptions/core-invalid-check-token-request.exception.ts) | La requête reçue pour vérifier le token n&#39;est pas valide. Des paramètres obligatoires sont manquants ou au mauvais format. | Required parameter missing or invalid. | <b>Classe :</b> [InvalidChecktokenRequestException](../libs/core/src/exceptions/core-invalid-check-token-request.exception.ts) <br /><b>Code HTTP :</b> 400 <br /><b>error :</b> invalid_request <br /> <b>error_description :</b> Required parameter missing or invalid. |
 | [<b>000019</b>](../libs/core/src/exceptions/core-missing-at-hash.exception.ts) | Le claim at_hash n&#39;a pas été trouvé dans l&#39;id_token_hint lors du logout | Missing at_hash claim in id_token_hint | <b>Classe :</b> [CoreMissingAtHashException](../libs/core/src/exceptions/core-missing-at-hash.exception.ts) <br /><b>Code HTTP :</b> 400 <br /><b>error :</b> invalid_request <br /> <b>error_description :</b> Core.exceptions.coreMissingAtHash |
 
-## @fc/rnipp
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>010004</b>](../libs/rnipp/src/exceptions/rnipp-not-found-single-echo.exception.ts) | Le RNIPP a trouvé un echo mais pas suffisamment proche de l&#39;identité demandée |  | <b>Classe :</b> [RnippNotFoundSingleEchoException](../libs/rnipp/src/exceptions/rnipp-not-found-single-echo.exception.ts) <br /><b>Code HTTP :</b> 403 <br /><b>error :</b> access_denied <br /> <b>error_description :</b> user authentication aborted |
-| [<b>010006</b>](../libs/rnipp/src/exceptions/rnipp-not-found-multiple-echo.exception.ts) | Le RNIPP a trouvé plusieurs echos pour l&#39;identité fournie |  | <b>Classe :</b> [RnippNotFoundMultipleEchoException](../libs/rnipp/src/exceptions/rnipp-not-found-multiple-echo.exception.ts) <br /><b>Code HTTP :</b> 403 <br /><b>error :</b> access_denied <br /> <b>error_description :</b> user authentication aborted |
-| [<b>010007</b>](../libs/rnipp/src/exceptions/rnipp-found-only-with-marital-name.exception.ts) | Demande identifiée avec le nom d&#39;usage uniquement |  | <b>Classe :</b> [RnippFoundOnlyWithMaritalNameException](../libs/rnipp/src/exceptions/rnipp-found-only-with-marital-name.exception.ts) <br /><b>Code HTTP :</b> 403 <br /><b>error :</b> access_denied <br /> <b>error_description :</b> user authentication aborted |
-| [<b>010008</b>](../libs/rnipp/src/exceptions/rnipp-not-found-no-echo.exception.ts) | Le RNIPP n&#39;a pas trouvé l&#39;identité fournie |  | <b>Classe :</b> [RnippNotFoundNoEchoException](../libs/rnipp/src/exceptions/rnipp-not-found-no-echo.exception.ts) <br /><b>Code HTTP :</b> 403 <br /><b>error :</b> access_denied <br /> <b>error_description :</b> user authentication aborted |
-| [<b>010009</b>](../libs/rnipp/src/exceptions/rnipp-rejected-bad-request.exception.ts) | Erreur de communication avec le RNIPP (demande rejetée par le RNIPP). L&#39;utilisateur doit redémarrer sa cinématique. Si cela persiste, contacter le support N3 |  | <b>Classe :</b> [RnippRejectedBadRequestException](../libs/rnipp/src/exceptions/rnipp-rejected-bad-request.exception.ts) <br /><b>Code HTTP :</b> 403 <br /><b>error :</b> access_denied <br /> <b>error_description :</b> user authentication aborted |
-| [<b>010011</b>](../libs/rnipp/src/exceptions/rnipp-timeout.exception.ts) | Erreur de communication avec le RNIPP (pas de réponse du RNIPP). L&#39;utilisateur doit redémarrer sa cinématique. Si cela persiste, contacter le support N3 |  | <b>Classe :</b> [RnippTimeoutException](../libs/rnipp/src/exceptions/rnipp-timeout.exception.ts) <br /><b>Code HTTP :</b> 504 <br /><b>error :</b> temporarily_unavailable <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-| [<b>010012</b>](../libs/rnipp/src/exceptions/rnipp-http-status.exception.ts) | Impossible de joindre le RNIPP. L&#39;utilisateur doit redémarrer sa cinématique. Si cela persiste, contacter le support N3 |  | <b>Classe :</b> [RnippHttpStatusException](../libs/rnipp/src/exceptions/rnipp-http-status.exception.ts) <br /><b>Code HTTP :</b> 504 <br /><b>error :</b> temporarily_unavailable <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-| [<b>010013</b>](../libs/rnipp/src/exceptions/rnipp-cititizen-status-format.exception.ts) | Erreur technique lors de l&#39;appel RNIPP, contacter le support N3 |  | <b>Classe :</b> [RnippCitizenStatusFormatException](../libs/rnipp/src/exceptions/rnipp-cititizen-status-format.exception.ts) <br /><b>Code HTTP :</b> 400 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-| [<b>010015</b>](../libs/rnipp/src/exceptions/rnipp-deceased.exception.ts) | Ce code erreur correspond au RNIPP qui renvoie l&#39;information &#39;décédée&#39; pour la personne dont l&#39;identité est actuellement redressée. On veut éviter en cas d&#39;erreur d&#39;être trop brutal et d&#39;afficher &#39;correspond à une personne décédée&#39; |  | <b>Classe :</b> [RnippDeceasedException](../libs/rnipp/src/exceptions/rnipp-deceased.exception.ts) <br /><b>Code HTTP :</b> 403 <br /><b>error :</b> access_denied <br /> <b>error_description :</b> user authentication aborted |
-
 ## @fc/core
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|
@@ -61,26 +48,6 @@
 | [<b>030028</b>](../libs/oidc-provider/src/exceptions/oidc-provider-parse-json-claims.exception.ts) | Le format attendu pour le claims n&#39;est pas le bon. Si le problème persiste, contacter le support N3 | Une erreur technique est survenue, fermez l’onglet de votre navigateur et reconnectez-vous. | <b>Classe :</b> [OidcProviderParseJsonClaimsException](../libs/oidc-provider/src/exceptions/oidc-provider-parse-json-claims.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 | [<b>030030</b>](../libs/oidc-provider/src/exceptions/oidc-provider-user-aborted.exception.ts) | L&#39;usager a annulé l&#39;authentification (lien de retour vers le FS) |  | <b>Classe :</b> [OidcProviderUserAbortedException](../libs/oidc-provider/src/exceptions/oidc-provider-user-aborted.exception.ts) <br /><b>Code HTTP :</b> 303 <br /><b>error :</b> access_denied <br /> <b>error_description :</b> user authentication aborted |
 | [<b>030031</b>](../libs/oidc-provider/src/exceptions/oidc-provider-no-wrapper.exception.ts) | Une erreur émise par la librairie OIDC Provider de manière dynamique, il est nécessaire de consulter les logs pour en savoir plus. |  | <b>Classe :</b> [OidcProviderNoWrapperException](../libs/oidc-provider/src/exceptions/oidc-provider-no-wrapper.exception.ts) <br /><b>Code HTTP :</b> 400 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
-## @fc/eidas-light-protocol
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>050001</b>](../libs/eidas-light-protocol/src/exceptions/eidas-json-to-xml.exception.ts) | Problème de connexion entre le bridge eIDAS et le noeud eIDAS; contacter le service technique (Le JSON reçu n&#39;a pas pu être converti en XML. La structure est invalide ou il manque des éléments essentiels.) |  | <b>Classe :</b> [EidasJsonToXmlException](../libs/eidas-light-protocol/src/exceptions/eidas-json-to-xml.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b>  <br /> <b>error_description :</b>  |
-| [<b>050002</b>](../libs/eidas-light-protocol/src/exceptions/eidas-xml-to-json.exception.ts) | Problème de connexion entre le bridge eidas et le noeud eidas contacter le SN3 (Le Xml reçu n&#39;a pas pu être converti en Json. La structure est invalide ou il manque des éléments essentiels.) |  | <b>Classe :</b> [EidasXmlToJsonException](../libs/eidas-light-protocol/src/exceptions/eidas-xml-to-json.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b>  <br /> <b>error_description :</b>  |
-| [<b>050003</b>](../libs/eidas-light-protocol/src/exceptions/eidas-oversized-token.exception.ts) | Problème de connexion entre le bridge eidas et le noeud eidas contacter le SN3 (Le LightToken dépasse la taille maximum autorisée pour son traitement. Possiblement une erreur dans le format ou une tentative d&#39;attaque.) |  | <b>Classe :</b> [EidasOversizedTokenException](../libs/eidas-light-protocol/src/exceptions/eidas-oversized-token.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b>  <br /> <b>error_description :</b>  |
-| [<b>050004</b>](../libs/eidas-light-protocol/src/exceptions/eidas-invalid-token-checksum.exception.ts) | Problème de connexion entre le bridge eIDAS et le noeud eIDAS; contacter le service technique (La somme de contrôle du LightToken reçu est invalide. Le token a possiblement été altéré. |  | <b>Classe :</b> [EidasInvalidTokenChecksumException](../libs/eidas-light-protocol/src/exceptions/eidas-invalid-token-checksum.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b>  <br /> <b>error_description :</b>  |
-
-## @fc/eidas-client
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>060001</b>](../libs/eidas-client/src/exceptions/write-light-request-in-cache.exception.ts) | Il y a un problème de connexion entre le bridge eIDAS et le noeud eIDAS. Il est impossible d&#39;écrire la &#39;LightRequest&#39; dans le cache ApacheIgnite. Le cache est probablement injoignable. Contacter le support N3 |  | <b>Classe :</b> [WriteLightRequestInCacheException](../libs/eidas-client/src/exceptions/write-light-request-in-cache.exception.ts) <br /><b>Code HTTP :</b> 504 <br /><b>error :</b> temporarily_unavailable <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-| [<b>060002</b>](../libs/eidas-client/src/exceptions/read-light-response-from-cache.exception.ts) | Il y a un problème de connexion entre le bridge eIDAS et le noeud eIDAS. Il est impossible de récupérer la &#39;LightResponse&#39; dans le cache ApacheIgnite. L&#39;id est invalide, la réponse a expiré ou le cache est injoignable. Contacter le support N3 |  | <b>Classe :</b> [ReadLightResponseFromCacheException](../libs/eidas-client/src/exceptions/read-light-response-from-cache.exception.ts) <br /><b>Code HTTP :</b> 504 <br /><b>error :</b> temporarily_unavailable <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
-## @fc/eidas-provider
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>070001</b>](../libs/eidas-provider/src/exceptions/write-light-response-in-cache.exception.ts) | Il y a un problème de connexion entre le bridge eIDAS et le noeud eIDAS. Il est impossible d&#39;écrire la &#39;LightResponse&#39; dans le cache ApacheIgnite. Le cache est probablement injoignable. Contacter le support N3 |  | <b>Classe :</b> [WriteLightResponseInCacheException](../libs/eidas-provider/src/exceptions/write-light-response-in-cache.exception.ts) <br /><b>Code HTTP :</b> 504 <br /><b>error :</b> temporarily_unavailable <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-| [<b>070002</b>](../libs/eidas-provider/src/exceptions/read-light-request-from-cache.exception.ts) | Il y a un problème de connexion entre le bridge eIDAS et le noeud eIDAS. Il est impossible de récupérer la &#39;LightRequest&#39; dans le cache ApacheIgnite. L&#39;id est invalide, la réponse a expiré ou le cache est injoignable. Contacter le support N3 |  | <b>Classe :</b> [ReadLightRequestFromCacheException](../libs/eidas-provider/src/exceptions/read-light-request-from-cache.exception.ts) <br /><b>Code HTTP :</b> 504 <br /><b>error :</b> temporarily_unavailable <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 
 ## @fc/mock-service-provider
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
@@ -123,20 +90,10 @@
 | [<b>200001</b>](../libs/feature-handler/src/exceptions/feature-handler-empty.exception.ts) |  | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [FeatureHandlerEmptyException](../libs/feature-handler/src/exceptions/feature-handler-empty.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 | [<b>200002</b>](../libs/feature-handler/src/exceptions/feature-handler-unregistered.exception.ts) |  | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [FeatureHandlerUnregisteredException](../libs/feature-handler/src/exceptions/feature-handler-unregistered.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 
-## @fc/csmr-tracks-client
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>220001</b>](../libs/csmr-tracks-client/src/exceptions/csmr-tracks-client-response.exception.ts) | Une erreur s&#39;est produite lors de la récupération des traces via le broker |  | <b>Classe :</b> [TracksResponseException](../libs/csmr-tracks-client/src/exceptions/csmr-tracks-client-response.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
 ## @fc/apache-ignite
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|
 | [<b>230001</b>](../libs/apache-ignite/src/exceptions/invalid-socket.exception.ts) | Le socket entre le bridge et le cache apache ignite n&#39;existe pas. Problème de connexion entre le bridge et le noeud. Impossible de mettre en place le keep alive. | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [ApacheIgniteInvalidSocketException](../libs/apache-ignite/src/exceptions/invalid-socket.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
-## @fc/access-control
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>240001</b>](../libs/access-control/src/exceptions/access-control-unknown-permission.exception.ts) | le rôle demandé est inconnu. Merci de vérifier la liste des droits de l&#39;utilisateur |  | <b>Classe :</b> [UnknownPermissionException](../libs/access-control/src/exceptions/access-control-unknown-permission.exception.ts) <br /><b>Code HTTP :</b> 401 <br /><b>error :</b>  <br /> <b>error_description :</b>  |
 
 ## @fc/csv
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
@@ -170,11 +127,6 @@
 |---|---|---|---|
 | [<b>330001</b>](../libs/data-provider-adapter-mongo/src/exceptions/data-provider-not-found.exception.ts) | Aucun fournisseur de données trouvé avec ce client_id. | Unknown client. | <b>Classe :</b> [DataProviderNotFoundException](../libs/data-provider-adapter-mongo/src/exceptions/data-provider-not-found.exception.ts) <br /><b>Code HTTP :</b> 401 <br /><b>error :</b> invalid_client <br /> <b>error_description :</b> Client authentication failed. |
 | [<b>330002</b>](../libs/data-provider-adapter-mongo/src/exceptions/data-provider-invalid-credentials.exception.ts) | Le client_id ou le client_secret ne correspond pas à celui d&#39;un fournisseur de données. | Client authentication failed. | <b>Classe :</b> [DataProviderInvalidCredentialsException](../libs/data-provider-adapter-mongo/src/exceptions/data-provider-invalid-credentials.exception.ts) <br /><b>Code HTTP :</b> 401 <br /><b>error :</b> invalid_client <br /> <b>error_description :</b> Client authentication failed. |
-
-## @fc/geoip-maxmind
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>400001</b>](../libs/geoip-maxmind/src/exceptions/geoip-maxmind-not-found.exception.ts) | La base de donnée local GeoIP Maxmind n&#39;a pa pu être chargée | Une erreur technique est survenue. Si le problème persiste, veuillez nous contacter. | <b>Classe :</b> [GeoipMaxmindNotFoundException](../libs/geoip-maxmind/src/exceptions/geoip-maxmind-not-found.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 
 ## @fc/tracking-context
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
@@ -262,24 +214,3 @@
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|
 | [<b>520001</b>](../libs/oidc-acr/src/exceptions/oidc-acr-no-sso-allowed-acr-found.exception.ts) | Une connexion SSO a échouée car le niveau ACR n&#39;a pas pu être déterminé | No SSO allowed ACR found | <b>Classe :</b> [OidcAcrNoSsoAllowedAcrFoundException](../libs/oidc-acr/src/exceptions/oidc-acr-no-sso-allowed-acr-found.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
-## @fc/csmr-fraud-client
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>530001</b>](../libs/csmr-fraud-client/src/exceptions/csmr-fraud-client-response.exception.ts) | Une erreur s&#39;est produite lors du traitement du formulaire usurpation via le broker |  | <b>Classe :</b> [CsmrFraudClientResponseException](../libs/csmr-fraud-client/src/exceptions/csmr-fraud-client-response.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
-## @fc/csmr-account-client
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>540001</b>](../libs/csmr-account-client/src/exceptions/csmr-account-response.exception.ts) | CsmrAccountClient.exceptions.csmrAccountResponse, please check the consumer results |  | <b>Classe :</b> [CsmrAccountResponseException](../libs/csmr-account-client/src/exceptions/csmr-account-response.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
-## @fc/tracks-adapter-elasticsearch
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>550001</b>](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-unknown-instance.exception.ts) | Le champ service de la trace n&#39;a pas permis de déterminer le type d&#39;instance pour lequel formatter la trace |  | <b>Classe :</b> [TracksFormatterUnknownInstanceException](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-unknown-instance.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-| [<b>550002</b>](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-mapping-failed.exception.ts) | TracksAdapterElasticsearch.exceptions.tracksFormatterMappingFailed, something went wrong during mapping process |  | <b>Classe :</b> [TracksFormatterMappingFailedException](../libs/tracks-adapter-elasticsearch/src/exceptions/tracks-formatter-mapping-failed.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
-## @fc/postgres
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>560001</b>](../libs/postgres/src/exceptions/postgres-operation-failure.exception.ts) | Une erreur est survenue lors de l&#39;appel à la base de donnée. Contacter le support N3. |  | <b>Classe :</b> [PostgresOperationFailure](../libs/postgres/src/exceptions/postgres-operation-failure.exception.ts) <br /><b>Code HTTP :</b> 401 <br /><b>error :</b>  <br /> <b>error_description :</b>  |

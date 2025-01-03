@@ -12,7 +12,6 @@ import { CoreBaseOidcClientSessionDto, CoreRoutes } from '@fc/core';
 import { IOidcIdentity } from '@fc/oidc';
 import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
-import { RnippPivotIdentity } from '@fc/rnipp';
 
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
 import { AppSession } from './app-session.dto';
@@ -45,12 +44,6 @@ export class GetInteractionOidcClientSessionDto extends CoreBaseOidcClientSessio
   @IsObject()
   @Expose()
   readonly idpIdentity?: PartialExcept<IOidcIdentity, 'sub'> | IOidcIdentity;
-
-  // Identity: We MAY have an rnippIdentity (SSO)
-  @IsOptional()
-  @IsObject()
-  @Expose()
-  readonly rnippIdentity?: RnippPivotIdentity;
 }
 
 export class GetInteractionSessionDto {
