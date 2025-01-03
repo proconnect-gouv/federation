@@ -78,7 +78,10 @@ export const enGB = {"
       sed -E "s/^['\"\`](.*)['\"\`]$/\1/g" |
 
       # Restore legit escaped single quotes
-      sed -E "s/__LEGIT_ESC_QUOTE__/\\\\'/g"
+      sed -E "s/__LEGIT_ESC_QUOTE__/\\\\'/g" |
+
+      # Fix unescaped quote that have been transformed in single quote (TODO: find a more consistent way to prevent this ?)
+      sed -E "s/([a-zA-Z])\"([a-zA-Z])/\1\\\\'\2/g"
     )
 
     # @example: CB6B
