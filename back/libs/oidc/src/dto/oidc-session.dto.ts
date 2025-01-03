@@ -1,4 +1,3 @@
-import { Type } from 'class-transformer';
 import {
   IsArray,
   IsAscii,
@@ -9,11 +8,9 @@ import {
   IsOptional,
   IsString,
   IsUUID,
-  ValidateNested,
 } from 'class-validator';
 
 import { IsUrlRequiredTldFromConfig, PartialExcept } from '@fc/common';
-import { RnippPivotIdentity } from '@fc/rnipp';
 
 import { IOidcIdentity } from '../interfaces';
 
@@ -94,12 +91,6 @@ export class OidcSession {
   @IsOptional()
   @IsObject()
   readonly idpIdentity?: PartialExcept<IOidcIdentity, 'sub'> | IOidcIdentity;
-
-  @IsOptional()
-  @IsObject()
-  @ValidateNested()
-  @Type(() => RnippPivotIdentity)
-  readonly rnippIdentity?: RnippPivotIdentity;
 
   @IsOptional()
   @IsString()

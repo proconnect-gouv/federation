@@ -1,11 +1,11 @@
 {
   "collection": "@nestjs/schematics",
-  "sourceRoot": "instances/core-fcp-high/src",
+  "sourceRoot": "instances/core-fca-low/src",
   "monorepo": true,
   "root": "instances/core-fca-low",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "instances/core-fcp-high/tsconfig.app.json"
+    "tsConfigPath": "instances/core-fca-low/tsconfig.app.json"
   },
   "projects": {
     "core-fca-low": {
@@ -178,15 +178,6 @@
         "tsConfigPath": "libs/oidc-client/tsconfig.lib.json"
       }
     },
-    "cryptography-fcp": {
-      "type": "library",
-      "root": "libs/cryptography-fcp",
-      "entryFile": "index",
-      "sourceRoot": "libs/cryptography-fcp/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/cryptography-fcp/tsconfig.lib.json"
-      }
-    },
     "cryptography": {
       "type": "library",
       "root": "libs/cryptography",
@@ -203,15 +194,6 @@
       "sourceRoot": "libs/core/src",
       "compilerOptions": {
         "tsConfigPath": "libs/core/tsconfig.lib.json"
-      }
-    },
-    "core-fcp-logger": {
-      "type": "library",
-      "root": "libs/core-fcp-logger",
-      "entryFile": "index",
-      "sourceRoot": "libs/core-fcp-logger/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/core-fcp-logger/tsconfig.lib.json"
       }
     },
     "core-fca": {
@@ -241,15 +223,6 @@
         "tsConfigPath": "libs/config/tsconfig.lib.json"
       }
     },
-    "exceptions-fcp": {
-      "type": "library",
-      "root": "libs/exceptions-fcp",
-      "entryFile": "index",
-      "sourceRoot": "libs/exceptions-fcp/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/exceptions-fcp/tsconfig.lib.json"
-      }
-    },
     "mongoose": {
       "type": "library",
       "root": "libs/mongoose",
@@ -275,15 +248,6 @@
       "sourceRoot": "libs/rabbitmq/src",
       "compilerOptions": {
         "tsConfigPath": "libs/rabbitmq/tsconfig.lib.json"
-      }
-    },
-    "hsm": {
-      "type": "library",
-      "root": "libs/hsm",
-      "entryFile": "index",
-      "sourceRoot": "libs/hsm/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/hsm/tsconfig.lib.json"
       }
     },
     "microservices": {
@@ -412,24 +376,6 @@
         "tsConfigPath": "libs/app/tsconfig.lib.json"
       }
     },
-    "eidas-light-protocol": {
-      "type": "library",
-      "root": "libs/eidas-light-protocol",
-      "entryFile": "index",
-      "sourceRoot": "libs/eidas-light-protocol/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/eidas-light-protocol/tsconfig.lib.json"
-      }
-    },
-    "eidas-client": {
-      "type": "library",
-      "root": "libs/eidas-client",
-      "entryFile": "index",
-      "sourceRoot": "libs/eidas-client/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/eidas-client/tsconfig.lib.json"
-      }
-    },
     "apache-ignite": {
       "type": "library",
       "root": "libs/apache-ignite",
@@ -437,33 +383,6 @@
       "sourceRoot": "libs/apache-ignite/src",
       "compilerOptions": {
         "tsConfigPath": "libs/apache-ignite/tsconfig.lib.json"
-      }
-    },
-    "eidas-provider": {
-      "type": "library",
-      "root": "libs/eidas-provider",
-      "entryFile": "index",
-      "sourceRoot": "libs/eidas-provider/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/eidas-provider/tsconfig.lib.json"
-      }
-    },
-    "eidas-oidc-mapper": {
-      "type": "library",
-      "root": "libs/eidas-oidc-mapper",
-      "entryFile": "index",
-      "sourceRoot": "libs/eidas-oidc-mapper/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/eidas-oidc-mapper/tsconfig.lib.json"
-      }
-    },
-    "eidas": {
-      "type": "library",
-      "root": "libs/eidas",
-      "entryFile": "index",
-      "sourceRoot": "libs/eidas/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/eidas/tsconfig.lib.json"
       }
     },
     "feature-handler": {
@@ -491,51 +410,6 @@
       "sourceRoot": "libs/notifications/src",
       "compilerOptions": {
         "tsConfigPath": "libs/notifications/tsconfig.lib.json"
-      }
-    },
-    "cryptography-eidas": {
-      "type": "library",
-      "root": "libs/cryptography-eidas",
-      "entryFile": "index",
-      "sourceRoot": "libs/cryptography-eidas/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/cryptography-eidas/tsconfig.lib.json"
-      }
-    },
-    "cog": {
-      "type": "library",
-      "root": "libs/cog",
-      "entryFile": "index",
-      "sourceRoot": "libs/cog/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/cog/tsconfig.lib.json"
-      }
-    },
-    "eidas-country": {
-      "type": "library",
-      "root": "libs/eidas-country",
-      "entryFile": "index",
-      "sourceRoot": "libs/eidas-country/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/eidas-country/tsconfig.lib.json"
-      }
-    },
-    "elasticsearch": {
-      "type": "library",
-      "root": "libs/elasticsearch",
-      "entryFile": "index",
-      "sourceRoot": "libs/elasticsearch/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/elasticsearch/tsconfig.lib.json"
-      }
-    },
-    "tracks-adapter-elasticsearch": {
-      "type": "library",
-      "root": "libs/tracks-adapter-elasticsearch",
-      "entryFile": "index",
-      "sourceRoot": "libs/tracks-adapter-elasticsearch/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/tracks-adapter-elasticsearch/tsconfig.lib.json"
       }
     },
     "csv": {
@@ -574,24 +448,6 @@
         "tsConfigPath": "libs/data-provider-core-auth/tsconfig.lib.json"
       }
     },
-    "csmr-tracks-client": {
-      "type": "library",
-      "root": "libs/csmr-tracks-client",
-      "entryFile": "index",
-      "sourceRoot": "libs/csmr-tracks-client/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/csmr-tracks-client/tsconfig.lib.json"
-      }
-    },
-    "csmr-fraud-client": {
-      "type": "library",
-      "root": "libs/csmr-fraud-client",
-      "entryFile": "index",
-      "sourceRoot": "libs/csmr-fraud-client/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/csmr-fraud-client/tsconfig.lib.json"
-      }
-    },
     "hybridge-http-proxy": {
       "type": "library",
       "root": "libs/hybridge-http-proxy",
@@ -599,15 +455,6 @@
       "sourceRoot": "libs/hybridge-http-proxy/src",
       "compilerOptions": {
         "tsConfigPath": "libs/hybridge-http-proxy/tsconfig.lib.json"
-      }
-    },
-    "geoip-maxmind": {
-      "type": "library",
-      "root": "libs/geoip-maxmind",
-      "entryFile": "index",
-      "sourceRoot": "libs/geoip-maxmind/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/geoip-maxmind/tsconfig.lib.json"
       }
     },
     "roles": {
@@ -743,69 +590,6 @@
       "sourceRoot": "libs/logger-plugins/src",
       "compilerOptions": {
         "tsConfigPath": "libs/logger-plugins/tsconfig.lib.json"
-      }
-    },
-    "postgres": {
-      "type": "library",
-      "root": "libs/postgres",
-      "entryFile": "index",
-      "sourceRoot": "libs/postgres/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/postgres/tsconfig.lib.json"
-      }
-    },
-    "partners-account": {
-      "type": "library",
-      "root": "libs/partners-account",
-      "entryFile": "index",
-      "sourceRoot": "libs/partners-account/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/partners-account/tsconfig.lib.json"
-      }
-    },
-    "partners-organisation": {
-      "type": "library",
-      "root": "libs/partners-organisation",
-      "entryFile": "index",
-      "sourceRoot": "libs/partners-organisation/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/partners-organisation/tsconfig.lib.json"
-      }
-    },
-    "partners-service-provider": {
-      "type": "library",
-      "root": "libs/partners-service-provider",
-      "entryFile": "index",
-      "sourceRoot": "libs/partners-service-provider/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/partners-service-provider/tsconfig.lib.json"
-      }
-    },
-    "partners-service-provider-instance": {
-      "type": "library",
-      "root": "libs/partners-service-provider-instance",
-      "entryFile": "index",
-      "sourceRoot": "libs/partners-service-provider-instance/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/partners-service-provider-instance/tsconfig.lib.json"
-      }
-    },
-    "partners-service-provider-instance-version": {
-      "type": "library",
-      "root": "libs/partners-service-provider-instance-version",
-      "entryFile": "index",
-      "sourceRoot": "libs/partners-service-provider-instance-version/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/partners-service-provider-instance-version/tsconfig.lib.json"
-      }
-    },
-    "access-control": {
-      "type": "library",
-      "root": "libs/access-control",
-      "entryFile": "index",
-      "sourceRoot": "libs/access-control/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/access-control/tsconfig.lib.json"
       }
     }
   }
