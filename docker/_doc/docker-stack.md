@@ -146,7 +146,7 @@ docker login $FC_DOCKER_REGISTRY
 You will be prompted for:
 
 - a username: use your gitlab.dev-franceconnect.fr username
-- a password: as two factor authentication is mandatory, you'll need to create an access token with only "read_registry" permission from your account settings: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html. If you are not from the internal team, please ask an FC for one through support.
+- a password: as two-factor authentication is mandatory, you'll need to create an access token with only "read_registry" permission from your account settings: https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html. If you are not from the internal team, please ask an FC for one through support.
 
 ### Running FranceConnect
 
@@ -172,17 +172,31 @@ dks start-all
 ### Running AgentConnect
 
 ```bash
-dks up min-fca-low
-dks start-all
+dks switch min-fca-low
 ```
 
 On https://fsa1-low.docker.dev-franceconnect.fr/, you can test the connexion with :
 
-- On the AgentConnect page use this email: test@fia1.fr
-- Change the login to: test
+- On the AgentConnect page use this email: `test@fia1.fr`
+- Change the login to: `test`
 - Leave the password empty
 
 You are now connected to fsa1!
+
+### Running FC exploitation for AgentConnect
+
+```bash
+dks switch bdd-fca-low
+```
+
+Then go to https://exploitation-fca-low.docker.dev-franceconnect.fr/login.
+
+Login with:
+- Username: `jean_moust`
+- Password: `georgesmoustaki`
+- TOTP: enter this secret in your totp app `KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD`
+
+More credentials can be found here : `fc-apps/shared/fixtures/User.yml`.
 
 ### Testing the installation
 
