@@ -1,3 +1,4 @@
 #!/bin/bash
 
-cd /var/www/app && yarn install --frozen-lockfile
+cd /var/www/app && yarn install --frozen-lockfile --ignore-engines
+
