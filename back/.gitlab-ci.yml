@@ -2,6 +2,7 @@ variables:
   FC_ROOT: '$CI_BUILDS_DIR/france-connect'
   PROXY_EXPLOITATION: 'http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT'
   CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
+  PC_APPS_VERSION: '${PC_APPS_VERSION:-fca-staging}'
 
 back:
   image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
@@ -9,11 +10,11 @@ back:
   tags:
     - node
   rules:
-    - if: '$CI_PIPELINE_SOURCE != "merge_request_event" && $CI_COMMIT_BRANCH != "staging"'
+    - if: '$CI_PIPELINE_SOURCE != "merge_request_event" && $CI_COMMIT_BRANCH != "fca-staging"'
       when: never
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
       when: manual
-    - if: '$CI_COMMIT_BRANCH == "staging"'
+    - if: '$CI_COMMIT_BRANCH == "fca-staging"'
   cache:
     key: ${CACHE_KEY}
     policy: pull
@@ -66,7 +67,7 @@ build-cache:
   script:
     - cd $CI_PROJECT_DIR/back && yarn install --frozen-lockfile
     - cd $CI_PROJECT_DIR/quality && yarn install --frozen-lockfile
-    - git clone -b $FC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $CI_PROJECT_DIR/cache/fc-apps
+    - git clone -b $PC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $CI_PROJECT_DIR/cache/fc-apps
     - cd $CI_PROJECT_DIR/cache/fc-apps && yarn install --frozen-lockfile
   dependencies: []
   interruptible: true
