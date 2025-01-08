@@ -25,6 +25,7 @@ export default {
     connectSrc: env.json('CSP_CONNECT_SRC'),
     frameAncestors: env.json('CSP_FRAME_ANCESTORS'),
     imgSrc: env.json('CSP_IMG_SRC'),
+    scriptSrcAttr: ["'unsafe-inline'"],
   },
   environment: env.string('ENVIRONMENT'),
 } as AppConfig;
