@@ -1,19 +1,29 @@
-<div class="fr-notice fr-notice--info ac-notice--info">
-  <div class="fr-container">
-    <div class="fr-notice__body">
-      <p>
-        <span class="fr-notice__title ac-notice__title"
-          >AgentConnect devient ProConnect !</span
+<div id="modal-survey" class="ac-survey ac-survey-default">
+  <div class="ac-notice fr-notice fr-notice--info ac-notice--info fr-m-2w">
+    <p><%= locals.modalClosed %></p>
+    <div class="fr-container">
+      <div class="fr-notice__body">
+        <p>
+          <span class="fr-notice__title ac-notice__title">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Questionnaire de satisfaction ProConnect"
+              href="https://tally.so/r/mJkV0Y"
+              class="fr-notice__link"
+              >Quel est votre avis sur ProConnect ?</a
+            >
+          </span>
+        </p>
+        <button
+          title="Masquer le message"
+          id="button-1299"
+          class="fr-btn--close fr-btn"
+          onclick="const notice = this.parentNode.parentNode.parentNode; notice.parentNode.removeChild(notice)"
         >
-        <a
-          target="_blank"
-          rel="noopener external"
-          title="ProConnect landing - nouvelle fenêtre"
-          href="https://www.proconnect.gouv.fr"
-          class="fr-notice__link"
-          >En savoir plus</a
-        >
-      </p>
+          Masquer le message
+        </button>
+      </div>
     </div>
   </div>
 </div>

@@ -36,6 +36,7 @@ async function bootstrap() {
       connectSrc,
       frameAncestors,
       imgSrc,
+      scriptSrcAttr,
     },
   } = configService.get<AppConfig>('App');
 
@@ -91,6 +92,7 @@ async function bootstrap() {
          * is too restricting. We don't have a precise domain to restrain to.
          */
         formAction: null,
+        scriptSrcAttr,
       },
     }),
   );
