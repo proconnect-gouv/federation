@@ -377,7 +377,7 @@ export class OidcClientController {
       if (error.property === 'phone_number') {
         delete transformedIdentity.phone_number;
       } else {
-        this.logger.debug(errors, `Identity from "${idpId}" is invalid`);
+        this.logger.err(errors, `Identity from "${idpId}" is invalid`);
         throw new CoreFcaInvalidIdentityException();
       }
     });
