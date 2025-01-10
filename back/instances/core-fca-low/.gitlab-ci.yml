@@ -1,8 +1,8 @@
 fca-low:
   stage: 'End to end'
-  image: ${E2E_DOCKER_IMAGE}
+  image: registry.gitlab.dev-franceconnect.fr/france-connect/fc/ci-cd/e2e:cypress-base-22.12.0
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "staging"'
+    - if: '$CI_COMMIT_BRANCH == "fca-staging" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "fca-staging"'
       variables:
         BDD_TAGS: 'not @ignore'
         SKIP_DIFF_CHECK: 'true'
@@ -22,25 +22,21 @@ fca-low:
     CYPRESS_TEST_ENV: 'docker'
     CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
   cache:
-    key: ${CACHE_KEY}
-    policy: pull
-    paths:
-      # Back
-      - back/node_modules/
-      # Front
-      - front/node_modules/
-      - front/instances/agent-connect/node_modules/
-      - front/instances/user-dashboard/node_modules/
-      # Quality
-      - quality/node_modules/
-      # Fc-apps
-      - cache/fc-apps/fc-exploitation/node_modules/
-      - cache/fc-apps/fc-support/node_modules/
-      - cache/fc-apps/fc-workers/node_modules/
-      - cache/fc-apps/node_modules/
-      - cache/fc-apps/shared/node_modules/
-      # Cypress
-      - cache/Cypress
+    - key:
+        files:
+          - quality/yarn.lock
+        prefix: fca_quality_node_modules
+      paths:
+        - quality/node_modules
+        - ${CYPRESS_CACHE_FOLDER}
+      policy: pull
+    - key:
+        files:
+          - back/yarn.lock
+        prefix: fca_back_node_modules
+      paths:
+        - back/node_modules
+      policy: pull
   before_script:
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
@@ -72,7 +68,9 @@ fca-low:
     - cd $CI_PROJECT_DIR
   script:
     # Up the docker-stack with minimal requirement
+    - export NODE_VERSION=v22.12.0
     - docker-stack up bdd-fca-low
+    - docker exec fc_core-fca-low_1 bash -c "node --version"
     - docker exec fc_core-fca-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
     - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
     - cd $CI_PROJECT_DIR/quality/fca && yarn install --frozen-lockfile
