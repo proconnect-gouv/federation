@@ -1,3 +1,10 @@
+include:
+  - 'back/instances/**/.gitlab-build.yml'
+  - 'back/instances/**/.gitlab-ci.yml'
+  - 'back/instances/**/.gitlab-deploy.yml'
+  - 'back/instances/**/.gitlab-post-deploy.yml'
+  - '/back/.gitlab-post-deploy.yml'
+
 variables:
   CYPRESS_CACHE_FOLDER: '${CI_PROJECT_DIR}/cache/Cypress'
   FC_ROOT: '$CI_BUILDS_DIR/france-connect'
@@ -72,41 +79,3 @@ quality:
     - yarn prettier
     - yarn tsc --noEmit
   interruptible: true
-
-build-cache:
-  image: node:22.12.0-bullseye-slim
-  tags:
-    - node
-  cache:
-    key: ${CI_PROJECT_ID}-fca
-    policy: push
-    paths:
-      # Back
-      - back/node_modules/
-      # Quality
-      - quality/node_modules/
-      # Fc-apps
-      - cache/fc-apps/fc-exploitation/node_modules/
-      - cache/fc-apps/fc-support/node_modules/
-      - cache/fc-apps/fc-workers/node_modules/
-      - cache/fc-apps/node_modules/
-      - cache/fc-apps/shared/node_modules/
-      # Cypress cache
-      - cache/Cypress
-  stage: 'Cache'
-  script:
-    - cd $CI_PROJECT_DIR/back && yarn install --frozen-lockfile --ignore-engines
-    - cd $CI_PROJECT_DIR/quality && yarn install --frozen-lockfile
-    - git clone -b $PC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $CI_PROJECT_DIR/cache/fc-apps
-    - cd $CI_PROJECT_DIR/cache/fc-apps && yarn install --frozen-lockfile
-  dependencies: []
-  interruptible: true
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "fca-staging"'
-
-include:
-  - 'back/instances/**/.gitlab-build.yml'
-  - 'back/instances/**/.gitlab-ci.yml'
-  - 'back/instances/**/.gitlab-deploy.yml'
-  - 'back/instances/**/.gitlab-post-deploy.yml'
-  - '/back/.gitlab-post-deploy.yml'
