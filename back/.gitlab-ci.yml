@@ -1,11 +1,13 @@
 variables:
+  CYPRESS_CACHE_FOLDER: '${CI_PROJECT_DIR}/cache/Cypress'
   FC_ROOT: '$CI_BUILDS_DIR/france-connect'
-  PROXY_EXPLOITATION: 'http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT'
-  CYPRESS_CACHE_FOLDER: '$CI_PROJECT_DIR/cache/Cypress'
+  GIT_DEPTH: 0
   PC_APPS_VERSION: '${PC_APPS_VERSION:-fca-staging}'
+  PROXY_EXPLOITATION: 'http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT'
+  YARN_CACHE_FOLDER: ${CI_BUILDS_DIR}/.yarn-cache
 
 back:
-  image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+  image: node:22.12.0-bullseye
   stage: 'Code quality'
   tags:
     - node
@@ -16,15 +18,18 @@ back:
       when: manual
     - if: '$CI_COMMIT_BRANCH == "fca-staging"'
   cache:
-    key: ${CACHE_KEY}
-    policy: pull
-    paths:
-      - back/node_modules/
-      - quality/node_modules/
+    - key:
+        files:
+          - back/yarn.lock
+        prefix: fca_back_node_modules
+      paths:
+        - back/node_modules
+  before_script:
+    - cd ${CI_PROJECT_DIR}/back
+    - corepack enable
+    - corepack prepare --activate
   script:
-    # Back folder
-    - cd back/
-    - yarn install --frozen-lockfile
+    - yarn install --frozen-lockfile --ignore-engines
     - yarn doc
     - git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
     - yarn lint
@@ -32,23 +37,48 @@ back:
     - yarn generate-oidc-provider-exceptions
     - git --no-pager diff --exit-code || (echo "💥 oidc-provider runtime exceptions diff detected 💥" && exit 1)
     - yarn test --coverage
-    - ../coverage.sh
-    # Quality folder
-    - cd $CI_PROJECT_DIR/quality
-    - yarn install --frozen-lockfile
-    - cd $CI_PROJECT_DIR/quality/fca
-    - yarn lint
-    - yarn prettier
-    - yarn tsc --noEmit
+    - apt-get update && apt-get install -y bc
+    - ${CI_PROJECT_DIR}/coverage.sh
   coverage: '/Global coverage is: \[([\d\.]+)%\]/'
   interruptible: true
 
+quality:
+  image: node:22.12.0-bullseye-slim
+  stage: 'Code quality'
+  tags:
+    - node
+  rules:
+    - if: '$CI_PIPELINE_SOURCE != "merge_request_event" && $CI_COMMIT_BRANCH != "staging"'
+      when: never
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - if: '$CI_COMMIT_BRANCH == "staging"'
+  cache:
+    - key:
+        files:
+          - quality/yarn.lock
+        prefix: fca_quality_node_modules
+      paths:
+        - quality/node_modules
+        - ${CYPRESS_CACHE_FOLDER}
+  before_script:
+    - cd ${CI_PROJECT_DIR}/quality
+    - corepack enable
+    - corepack prepare --activate
+  script:
+    - yarn install --frozen-lockfile --ignore-engines
+    - cd ${CI_PROJECT_DIR}/quality/fca
+    - yarn lint
+    - yarn prettier
+    - yarn tsc --noEmit
+  interruptible: true
+
 build-cache:
-  image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+  image: node:22.12.0-bullseye-slim
   tags:
     - node
   cache:
-    key: ${CI_PROJECT_ID}
+    key: ${CI_PROJECT_ID}-fca
     policy: push
     paths:
       # Back
@@ -65,14 +95,14 @@ build-cache:
       - cache/Cypress
   stage: 'Cache'
   script:
-    - cd $CI_PROJECT_DIR/back && yarn install --frozen-lockfile
+    - cd $CI_PROJECT_DIR/back && yarn install --frozen-lockfile --ignore-engines
     - cd $CI_PROJECT_DIR/quality && yarn install --frozen-lockfile
     - git clone -b $PC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $CI_PROJECT_DIR/cache/fc-apps
     - cd $CI_PROJECT_DIR/cache/fc-apps && yarn install --frozen-lockfile
   dependencies: []
   interruptible: true
   rules:
-    - if: '$CI_COMMIT_BRANCH == "staging"'
+    - if: '$CI_COMMIT_BRANCH == "fca-staging"'
 
 include:
   - 'back/instances/**/.gitlab-build.yml'

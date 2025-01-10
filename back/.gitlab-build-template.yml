@@ -22,6 +22,7 @@
     - git clone -b $FC_DOCKER_VERSION --single-branch https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-docker.git $FC_ROOT/fc-docker
   script:
     - cd $FC_ROOT/fc-docker
+    - export NODE_VERSION=v22.12.0
     - ./build.sh $APP $RELEASE_VERSION
     - echo -e "\e[1;34m$MSG $RELEASE_VERSION\e[0m"
 

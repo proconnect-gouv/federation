@@ -47,19 +47,23 @@ stop-fca-low:
 
 .quality-fca-low-recette:
   stage: 'Review'
-  image: ${E2E_DOCKER_IMAGE}
+  image: registry.gitlab.dev-franceconnect.fr/france-connect/fc/ci-cd/e2e:cypress-base-22.12.0
   tags:
     - cypress
   only:
     - merge_requests
     - staging
   cache:
-    key: ${CACHE_KEY}
-    policy: pull
-    paths:
-      - quality/node_modules/
+    - key:
+        files:
+          - quality/yarn.lock
+        prefix: fca_quality_node_modules
+      paths:
+        - quality/node_modules
+        - ${CYPRESS_CACHE_FOLDER}
+      policy: pull
   variables:
-    no_proxy: ""
+    no_proxy: ''
     CYPRESS_PLATFORM: 'fca-low'
     CYPRESS_TEST_ENV: 'recette'
   before_script:

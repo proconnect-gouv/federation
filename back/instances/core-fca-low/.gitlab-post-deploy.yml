@@ -1,6 +1,6 @@
 quality-fca-low-release:
   stage: 'Post-deploy'
-  image: ${E2E_DOCKER_IMAGE}
+  image: registry.gitlab.dev-franceconnect.fr/france-connect/fc/ci-cd/e2e:cypress-base-22.12.0
   tags:
     - cypress
   only:
@@ -16,10 +16,14 @@ quality-fca-low-release:
     CYPRESS_TEST_ENV: 'integ01'
     CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
   cache:
-    key: ${CACHE_KEY}
-    policy: pull
-    paths:
-      - quality/node_modules/
+    - key:
+        files:
+          - quality/yarn.lock
+        prefix: fca_quality_node_modules
+      paths:
+        - quality/node_modules
+        - ${CYPRESS_CACHE_FOLDER}
+      policy: pull
   before_script:
     # Test Scope definition
     - BDD_TAGS=${BDD_TAGS_FCA_LOW:-$BDD_TAGS}
