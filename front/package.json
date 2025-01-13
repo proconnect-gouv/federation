@@ -1,11 +1,11 @@
 {
   "root": true,
-  "name": "fc-front",
+  "name": "@fc/front",
   "version": "0.1.0",
   "description": "FC Front Apps mono repository",
   "private": true,
   "engines": {
-    "node": ">=18.16.0 < 19"
+    "node": ">=22.12.0 < 23"
   },
   "workspaces": [
     ".configs/*",
