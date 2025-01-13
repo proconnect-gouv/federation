@@ -85,7 +85,7 @@
     "newMailerPercentage": 1
   },
   "maxmindGeolocation": {
-    "geoipLocalDbPath": "/var/geoipdb/GeoLite2-City.mmdb"
+    "geoipLocalDbPath": "/usr/share/elasticsearch/modules/ingest-geoip/GeoLite2-City.mmdb"
   },
   "mode": "particuliers",
   "partnerUrl": "https://partenaires.docker.dev-franceconnect.fr",

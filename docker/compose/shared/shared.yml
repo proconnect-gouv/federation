@@ -478,7 +478,7 @@ services:
       - "${VOLUMES_DIR}/log:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
-      - "${VOLUMES_DIR}/maxmind/database/GeoLite2-City:/var/geoipdb"
+      - "${VOLUMES_DIR}/maxmind/database/GeoLite2-City:/usr/share/elasticsearch/modules/ingest-geoip/GeoLite2-City.mmdb:ro"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/shared/.env/csmr-tracks.env"
@@ -508,8 +508,6 @@ services:
       - 'Elasticsearch_NODES=["https://elasticsearch:9200"]'
       - "Elasticsearch_USERNAME=docker-stack"
       - "Elasticsearch_PASSWORD=docker-stack"
-        # GeoIP
-      - "GeoIpMaxmind_DATABASE_PATH=/var/geoipdb/GeoLite2-City.mmdb"
     networks:
       - data
     init: true
@@ -597,7 +595,7 @@ services:
       - "${VOLUMES_DIR}/log:/var/log/app"
       - "${VOLUMES_DIR}/.home:/home"
       - "${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro"
-      - "${VOLUMES_DIR}/maxmind/database/GeoLite2-City:/var/geoipdb"
+      - "${VOLUMES_DIR}/maxmind/database/GeoLite2-City:/usr/share/elasticsearch/modules/ingest-geoip/GeoLite2-City.mmdb:ro"
     env_file:
       - "${COMPOSE_DIR}/shared/.env/base-app.env"
       - "${COMPOSE_DIR}/shared/.env/csmr-fraud.env"

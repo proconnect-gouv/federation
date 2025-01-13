@@ -285,7 +285,6 @@
 | Elasticsearch_USERNAME | string |
 | FraudBroker_QUEUE | string |
 | FraudBroker_URLS | json |
-| GeoIpMaxmind_DATABASE_PATH | string |
 | Logger_THRESHOLD | string |
 | Mailer_HOST | string |
 | Mailer_PORT | number |
@@ -336,7 +335,6 @@
 | Elasticsearch_PASSWORD | string |
 | Elasticsearch_TRACKS_INDEX | string |
 | Elasticsearch_USERNAME | string |
-| GeoIpMaxmind_DATABASE_PATH | string |
 | Idp_MAPPINGS | json |
 | Logger_THRESHOLD | string |
 | REQUEST_TIMEOUT | string |

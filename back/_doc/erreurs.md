@@ -206,11 +206,6 @@
 | [<b>330001</b>](../libs/data-provider-adapter-mongo/src/exceptions/data-provider-not-found.exception.ts) | Aucun fournisseur de données trouvé avec ce client_id. | Unknown client. | <b>Classe :</b> [DataProviderNotFoundException](../libs/data-provider-adapter-mongo/src/exceptions/data-provider-not-found.exception.ts) <br /><b>Code HTTP :</b> 401 <br /><b>error :</b> invalid_client <br /> <b>error_description :</b> Client authentication failed. |
 | [<b>330002</b>](../libs/data-provider-adapter-mongo/src/exceptions/data-provider-invalid-credentials.exception.ts) | Le client_id ou le client_secret ne correspond pas à celui d&#39;un fournisseur de données. | Client authentication failed. | <b>Classe :</b> [DataProviderInvalidCredentialsException](../libs/data-provider-adapter-mongo/src/exceptions/data-provider-invalid-credentials.exception.ts) <br /><b>Code HTTP :</b> 401 <br /><b>error :</b> invalid_client <br /> <b>error_description :</b> Client authentication failed. |
 
-## @fc/geoip-maxmind
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>400001</b>](../libs/geoip-maxmind/src/exceptions/geoip-maxmind-not-found.exception.ts) | La base de donnée local GeoIP Maxmind n&#39;a pa pu être chargée |  | <b>Classe :</b> [GeoipMaxmindNotFoundException](../libs/geoip-maxmind/src/exceptions/geoip-maxmind-not-found.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
 ## @fc/tracking-context
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|

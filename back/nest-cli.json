@@ -915,15 +915,6 @@
         "tsConfigPath": "instances/csmr-tracks-instance/tsconfig.app.json"
       }
     },
-    "geoip-maxmind": {
-      "type": "library",
-      "root": "libs/geoip-maxmind",
-      "entryFile": "index",
-      "sourceRoot": "libs/geoip-maxmind/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/geoip-maxmind/tsconfig.lib.json"
-      }
-    },
     "csmr-account": {
       "type": "library",
       "root": "apps/csmr-account",

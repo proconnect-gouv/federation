@@ -14,3 +14,5 @@ xpack.security.http.ssl.key: elasticsearch.key
 xpack.security.http.ssl.certificate: elasticsearch.crt
 
 xpack.security.authc.realms.file.users.order: 0
+
+ingest.geoip.downloader.enabled: false
