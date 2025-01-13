@@ -118,7 +118,6 @@ const config: Config = {
       '<rootDir>/libs/hybridge-http-proxy/src$1',
     '^@fc/user-preferences(|/.*)$': '<rootDir>/libs/user-preferences/src$1',
     '^@fc/csmr-tracks(|/.*)$': '<rootDir>/apps/csmr-tracks/src/$1',
-    '^@fc/geoip-maxmind(|/.*)$': '<rootDir>/libs/geoip-maxmind/src$1',
     '^@fc/csmr-account(|/.*)$': '<rootDir>/apps/csmr-account/src/$1',
     '^@fc/csmr-fraud(|/.*)$': '<rootDir>/apps/csmr-fraud/src/$1',
     '^@fc/mock-rnipp(|/.*)$': '<rootDir>/apps/mock-rnipp/src/$1',

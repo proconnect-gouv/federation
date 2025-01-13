@@ -167,8 +167,6 @@
       "@fc/hybridge-http-proxy/*": ["libs/hybridge-http-proxy/src/*"],
       "@fc/user-preferences": ["libs/user-preferences/src"],
       "@fc/user-preferences/*": ["libs/user-preferences/src/*"],
-      "@fc/geoip-maxmind": ["libs/geoip-maxmind/src"],
-      "@fc/geoip-maxmind/*": ["libs/geoip-maxmind/src/*"],
       "@fc/jwt": ["libs/jwt/src"],
       "@fc/jwt/*": ["libs/jwt/src/*"],
       "@mocks/jwt": ["libs/jwt/.mocks"],
