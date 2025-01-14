@@ -85,7 +85,6 @@
     "@nestjs/microservices": "^10.2.3",
     "@nestjs/mongoose": "^10.0.1",
     "@nestjs/platform-express": "^10.2.3",
-    "@nestjs/typeorm": "^10.0.0",
     "@types/ejs": "^3.1.2",
     "@types/glob": "^8.1.0",
     "@types/luxon": "^3.3.1",
