@@ -1,6 +1,6 @@
 quality-fca-low-release:
   stage: 'Post-deploy'
-  image: registry.gitlab.dev-franceconnect.fr/france-connect/fc/ci-cd/e2e:cypress-base-22.12.0
+  image: registry.gitlab.dev-franceconnect.fr/france-connect/fc/ci-cd/e2e:cypress-base-22.13.0
   tags:
     - cypress
   only:
