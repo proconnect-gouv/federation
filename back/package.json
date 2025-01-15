@@ -73,7 +73,6 @@
     "string-width": "4.2.0"
   },
   "dependencies": {
-    "@elastic/elasticsearch": "^8.9.0",
     "@gouvfr/dsfr": "^1.12.1",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/axios": "^3.0.0",
