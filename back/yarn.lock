@@ -955,7 +955,7 @@
     multer "1.4.4-lts.1"
     tslib "2.7.0"
 
-"@nestjs/schematics@^10.0.1", "@nestjs/schematics@^10.0.2":
+"@nestjs/schematics@^10.0.1":
   version "10.1.4"
   resolved "https://registry.yarnpkg.com/@nestjs/schematics/-/schematics-10.1.4.tgz#e445b856eefce9bd338c5fc1cf2c95f0985849cf"
   integrity sha512-QpY8ez9cTvXXPr3/KBrtSgXQHMSV6BkOUYy2c2TTe6cBqriEdGnCYqGl8cnfrQl3632q3lveQPaZ/c127dHsEw==
