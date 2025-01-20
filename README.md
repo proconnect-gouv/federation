@@ -156,7 +156,7 @@ These tests are included directly in source code rather than in a dedicated test
 
 ```bash
 cd $FC_ROOT/fc/back
-yarn test --coverage
+yarn test --coverage --maxWorkers=50%
 ```
 
 ## Run the quality Tests
