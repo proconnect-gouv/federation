@@ -1,20 +1,19 @@
 <form id="scopes">
   <h2>Scopes</h2>
   <% locals.params.scope.split(' ').forEach(elem => { %>
-    <div class="scope-input-wrapper">
-      <input
-        id="scope_<%=elem%>"
-        type="checkbox"
-        name="selected-scope"
-        value="<%=elem%>"
-        checked
-        onChange="updateScope()"
-        <%= (elem === 'openid' ? 'disabled' : '') %>
-      />
-      <label for="scope_<%=elem%>"><%=elem%></label>
-    </div>
+  <div class="scope-input-wrapper">
+    <input
+      id="scope_<%=elem%>"
+      type="checkbox"
+      name="selected-scope"
+      value="<%=elem%>"
+      checked
+      onChange="updateScope();"
+      <%= (elem === 'openid' ? 'disabled' : '') %>
+    />
+    <label for="scope_<%=elem%>"><%=elem%></label>
+  </div>
   <% }) %>
-
   <h2>Claims</h2>
   <% ['amr'].forEach(elem => { %>
     <div class="claim-input-wrapper">
@@ -29,11 +28,17 @@
       <label for="claim_<%=elem%>"><%=elem%></label>
     </div>
   <% }) %>
-
-  <h2>ACR</h2>
-  <select name="acr" id="acrSelector" aria-label="ACR Value" onChange="updateAcr()">
+  <h2>ACR <input
+    id="acr_values_toggle"
+    type="checkbox"
+    name="activate-acr-values"
+    onChange="toggleAcrValues()"
+    checked
+    />
+  </h2>
+  <select name="acr" id="acrSelector" aria-label="ACR Value" onChange="updateAcr();">
     <% ['eidas1', 'eidas2', 'eidas3'].forEach(acr => { %>
-      <option value="<%=acr%>" <%= (locals.defaultAcrValue && locals.defaultAcrValue === acr) ? "selected" : "" %>><%=acr%></option>
+    <option value="<%=acr%>"><%=acr%></option>
     <% }) %>
   </select>
   <h2>Prompt <input
@@ -42,32 +47,33 @@
     name="activate-prompt"
     onChange="togglePrompt()"
     checked
-  /></h2>
-  <% ['login', 'consent', 'none', 'select_account'].forEach(elem => { %>
-    <div class="prompt-input-wrapper">
-      <input
-        id="prompt_<%=elem%>"
-        type="checkbox"
-        name="selected-prompt"
-        value="<%=elem%>"
-        onChange="updatePrompt()"
-        <%= ((locals.params.prompt || []).includes(elem) ? 'checked' : '') %>
-      />
-      <label for="prompt_<%=elem%>"><%=elem%></label>
-    </div>
-  <% }) %>
+    />
+  </h2>
+<% ['login', 'consent', 'none', 'select_account'].forEach(elem => { %>
+  <div class="prompt-input-wrapper">
+    <input
+      id="prompt_<%=elem%>"
+      type="checkbox"
+      name="selected-prompt"
+      value="<%=elem%>"
+      onChange="updatePrompt()"
+      <%= ((locals.params.prompt || []).includes(elem) ? 'checked' : '') %>
+    />
+    <label for="prompt_<%=elem%>"><%=elem%></label>
+  </div>
+<% }) %>
 </form>
 
 <form id="authorizeForm" action="<%=locals.params.authorization_endpoint;%>" method="get">
   <section class="connect bg-light">
-    <h2>Connectez-vous via FranceConnect</h2>
-    
+    <h2>Connectez-vous via ProConnect</h2>
+
     <div class="form-group row">
       <label class="col-2 col-form-label" for="httpMethod">Http Method : </label>
       <div class="col-10">
         <select id="httpMethod" onChange="changeHttpMethod();">
           <option value="get" selected>GET</option>
-          <option value="post" selected>POST</option>
+          <option value="post">POST</option>
         </select>
       </div>
     </div>
@@ -89,27 +95,24 @@
         <input id="claims" name="claims" type="text" value="" class="form-control" />
       </div>
     </div>
-
     <div class="form-group row">
       <label class="col-2 col-form-label" for="claims"> Prompt : </label>
       <div class="col-10">
         <input id="prompt" name="prompt" type="text" value="" class="form-control" />
       </div>
     </div>
-
     <div class="form-group row">
       <label class="col-2 col-form-label" for="claims"> IDP Hint : </label>
       <div class="col-10">
         <input id="idp_hint" name="idp_hint" type="text" value="" class="form-control" />
       </div>
     </div>
-
     <div class="btn d-flex justify-content-center">
       <button
         id="call-authorize-button"
         type="submit"
         class="btn no-pad hidden-btn"
-        aria-label="Connexion à FranceConnect"
+        aria-label="Connexion à ProConnect"
       ></button>
     </div>
   </section>
