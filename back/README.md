@@ -1,47 +1,52 @@
-# FC Core FCP / FCA
+# FC Documentation
 
-Core & backoffice applications
+D'un point de vue technique. La cinématique FC est divisée en deux parties principales distinctes:
 
-- [Documentation](_doc/README.md)
+1. Un échange openid entre le FI et FC
+2. Un échange openid entre FC et le FS
 
-## Librairies
+Ces deux échanges ne sont cependant pas linéaires:
 
-- [@fc/apache-ignite](libs/apache-ignite/README.md)
-- [@fc/eidas-client](libs/eidas-client/README.md)
-- [@fc/eidas-country](libs/eidas-country/README.md)
-- [@fc/eidas-light-protocol](libs/eidas-light-protocol/README.md)
-- [@fc/eidas-oidc-mapper](libs/eidas-oidc-mapper/README.md)
-- [@fc/eidas-provider](libs/eidas-provider/README.md)
-- [@fc/exceptions](libs/exceptions/README.md)
-- [@fc/http-proxy](libs/http-proxy/README.md)
-- [@fc/oidc-client](libs/oidc-client/README.md)
-- [@fc/oidc-provider](libs/oidc-provider/README.md)
-- [@fc/session](libs/session/README.md)
-- [@fc/tracking](libs/tracking/README.md)
+1. Le FS effectue une [demande d'autorisation openid](https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint) au endpoint FC dédié. **# Début de l'échange entre le FC et le FS**
+2. FC valide que la requête est acceptable et affiche une mire où l'user doit entrer son email.
+3. Le FI est automatiquement choisi selon l'email de l'user puis FC effectue une [demande d'autorisation openid](https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint) à l'endpoint dédié de ce FI. **# Début de l'échange entre le FI et FC**
+4. L'utilisateur s'authentifie sur le FI.
+5. Le FI donne accès aux données de l'utilisateur à FC. **# Fin de l'échange entre le FI et FC**
+6. FC donne accès aux données de l'utilisateur au FS. **# fin de l'échange entre FC et FS**
 
-## Applications
+```mermaid
+graph TB
+  subgraph "ECHANGE OPENID FI / FC"
+  FiFcFlow(Demande d'autorisation openid)
+  --> Node1.1[L'utilisateur s'authentifie sur le FI]
+  --> Node1.2[Le FI donne accès aux données de l'utilisateur à FC]
+  end
 
-- [@fc/core-fcp](apps/core-fcp/README.md)
+  subgraph "ECHANGE OPENID FC / FS"
+  Node1[Demande d'autorisation openid]
+  --> Node2[FC valide la requête]
+  --> Node3[L'utilisateur choisit son FI]
+  Node3 --> FiFcFlow
+  Node1.2 --> LastNode[FC donne accès aux données de l'utilisateur au FS]
+  end
+```
 
-## Installation
+L'échange entre le FI et FC est encapsulé dans l'échange entre FC et le FS. Il faut garder en tête que cette représentation reste simplifiée car il existe en vérité d'autres étapes qui s'insèrent entre ces étapes. On garde cependant une bonne vision globale de ce qu'il se passe.
 
-## Sécurité
+# Dépendances
 
-### Dépendances
+## Sécurité des dépendances
 
-[Informations relatives à la sécurité sur les dépendances](_doc/sécurité-dépendances.md).
-Le document compile les remontées de checkmarx (outil actuel) ainsi que les contre-mesures mises en place.
+_:warning: Les actions/contournements effectuées doivent régulièrement être mises à jour en fonction de l'évolution des dépendances_
 
-### List and documentations
+Cette section reprend des rapports de checkmarx et yarn audit.
 
-- Type-fest : is a collection of essential TypeScript types. [Documentation type-fest](https://github.com/sindresorhus/type-fest)
+Elle indique les contres mesures qui ont dû être prises pour palier au problème remonté.
 
-## Mise en place des données
+[Sécurité des dépendances](_doc/dépendances/sécurité/README.md).
 
-## Etc/hosts
+# Codes erreurs des applications
 
-## Variables d'env
+Cette section fait le lien avec les codes erreurs des applications.
 
-## Erreur
-
-- [@fc/error](libs/error/README.md)
+Voir [erreurs](_doc/erreurs.md).
