@@ -1,7 +1,6 @@
 import { ConfigParser } from '@fc/config';
 import { AppConfig } from '@fc/mock-identity-provider';
-
-import { CustomIdentityDto } from '../dto';
+import { CustomIdentityDto } from '@fc/mock-identity-provider/dto';
 
 const env = new ConfigParser(process.env, 'App');
 
