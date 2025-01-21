@@ -51,7 +51,7 @@
     "start:prod:mock-data-provider": "node dist/instances/mock-data-provider/main.js > /tmp/.pm2/logs/mock-data-provider-out-0.log 2> /tmp/.pm2/mock-data-provider-error-0.log",
     "start:prod:partners": "node dist/instances/partners/main.js > /tmp/.pm2/logs/partners-out-0.log 2> /tmp/.pm2/partners-error-0.log",
     "lint": "eslint \"{apps,instances,libs}/**/*.ts\"",
-    "prettier": "prettier -c \"{apps,instances,libs}/**/*.ts\" --config .prettierrc",
+    "prettier": "prettier -c \"{apps,instances,libs}/**/*.ts\"",
     "test": "jest",
     "typeorm": "typeorm-ts-node-esm",
     "typeorm:migrations-run": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js -d ./typeorm.config.ts migration:run",

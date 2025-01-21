@@ -62,7 +62,7 @@
     "ts-jest": "^29.2.5"
   },
   "scripts": {
-    "prettier": "prettier -c \"{.,fca}/{.,cypress,scripts}/**/*.ts\" --config .prettierrc",
+    "prettier": "prettier -c \"{.,fca}/{.,cypress,scripts}/**/*.ts\"",
     "lint": "eslint 'scripts/**/*.ts'",
     "test": "jest"
   },
