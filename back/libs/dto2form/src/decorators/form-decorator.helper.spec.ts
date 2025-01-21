@@ -1,5 +1,6 @@
 import * as ClassValidator from 'class-validator';
 
+import { convertRegExpToStrings } from '../helpers';
 import {
   FieldAttributes,
   FieldAttributesArguments,
@@ -9,6 +10,7 @@ import {
 } from '../interfaces';
 import { FormDecoratorHelper } from './form-decorator.helper';
 
+jest.mock('../helpers');
 jest.mock('class-validator');
 
 describe('FormDecoratorHelper', () => {
@@ -21,17 +23,17 @@ describe('FormDecoratorHelper', () => {
   const expectedFinalValidators = [
     {
       name: 'required',
-      errorLabel: 'testField_required_error',
+      errorLabel: 'required_error',
       validationArgs: [],
     },
     {
       name: 'minLength',
-      errorLabel: 'testField_minLength_error',
+      errorLabel: 'minLength_error',
       validationArgs: [],
     },
     {
       name: 'maxLength',
-      errorLabel: 'testField_maxLength_error',
+      errorLabel: 'maxLength_error',
       validationArgs: [],
     },
   ] as [FieldValidator, ...FieldValidator[]];
@@ -91,35 +93,41 @@ describe('FormDecoratorHelper', () => {
   });
 
   describe('generateFieldValidatorsMissingAttributes', () => {
+    const convertRegExpToStringsMock = jest.mocked(convertRegExpToStrings);
+
     it('should keep validationArgs if they are already defined', () => {
       // Given
       const validators: FieldValidatorBase[] = [
-        { name: 'required', validationArgs: ['Hello', 42] },
+        { name: 'any_validator', validationArgs: ['Hello', 42] },
         { name: 'minLength', validationArgs: [5] },
         { name: 'maxLength', validationArgs: [{ foo: 'bar' }] },
       ];
       const expectedFinalValidators = [
         {
-          name: 'required',
-          errorLabel: 'testField_required_error',
+          name: 'any_validator',
+          errorLabel: 'any_validator_error',
           validationArgs: ['Hello', 42],
         },
         {
           name: 'minLength',
-          errorLabel: 'testField_minLength_error',
+          errorLabel: 'minLength_error',
           validationArgs: [5],
         },
         {
           name: 'maxLength',
-          errorLabel: 'testField_maxLength_error',
+          errorLabel: 'maxLength_error',
           validationArgs: [{ foo: 'bar' }],
         },
       ] as [FieldValidator, ...FieldValidator[]];
 
+      convertRegExpToStringsMock
+        .mockReturnValueOnce(expectedFinalValidators[0]['validationArgs'])
+        .mockReturnValueOnce(expectedFinalValidators[1]['validationArgs'])
+        .mockReturnValueOnce(expectedFinalValidators[2]['validationArgs']);
+
       // When
       const result =
         FormDecoratorHelper.generateFieldValidatorsMissingAttributes(
-          key,
           validators,
         );
 
@@ -128,10 +136,12 @@ describe('FormDecoratorHelper', () => {
     });
 
     it('should generate missing attributes for each validator', () => {
+      // Given
+      convertRegExpToStringsMock.mockReturnValue([]);
+
       // When
       const result =
         FormDecoratorHelper.generateFieldValidatorsMissingAttributes(
-          key,
           validators,
         );
 
@@ -142,11 +152,11 @@ describe('FormDecoratorHelper', () => {
     it('should return an empty array if no validators are provided', () => {
       // Given
       const validators: FieldValidatorBase[] = [];
+      convertRegExpToStringsMock.mockReturnValue([]);
 
       // When
       const result =
         FormDecoratorHelper.generateFieldValidatorsMissingAttributes(
-          key,
           validators,
         );
 
@@ -181,7 +191,6 @@ describe('FormDecoratorHelper', () => {
       const expectedAttributes = {
         type: attributes.type,
         name: key,
-        label: `${key}_label`,
         required: true,
         order: attributes.order,
         validateIf: [validateIfRuleMock as unknown as FieldValidateIfRule],
@@ -208,7 +217,6 @@ describe('FormDecoratorHelper', () => {
       const expectedAttributes = {
         type: defaultType,
         name: key,
-        label: `${key}_label`,
         required: false,
         order: defaultOrder,
         validateIf: [],
@@ -225,6 +233,52 @@ describe('FormDecoratorHelper', () => {
 
       // Then
       expect(result).toStrictEqual(expectedAttributes);
+    });
+  });
+
+  describe('handleRequiredField', () => {
+    it('should return attibutes received if required is not defined', () => {
+      // Given
+      const attributes = {
+        required: false,
+        validators,
+      } as FieldAttributes;
+
+      const expected = {
+        required: false,
+        validators: expectedFinalValidators,
+      };
+
+      const result = FormDecoratorHelper.handleRequiredField(attributes);
+
+      // Then
+      expect(result).toEqual(expected);
+    });
+
+    it('should return isFilled attribute if required key exist', () => {
+      // Given
+      const attributes = {
+        required: true,
+        validators,
+      } as FieldAttributes;
+
+      const expected = {
+        required: true,
+        validators: [
+          {
+            name: 'isFilled',
+            errorLabel: `isFilled_error`,
+            validationArgs: [],
+          },
+          ...expectedFinalValidators,
+        ],
+      };
+
+      // When
+      const result = FormDecoratorHelper.handleRequiredField(attributes);
+
+      // Then
+      expect(result).toEqual(expected);
     });
   });
 });

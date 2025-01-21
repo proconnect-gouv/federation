@@ -1,13 +1,16 @@
 import { renderHook } from '@testing-library/react';
 import { useLoaderData, useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
 
-import { InstancesService, type VersionInterface } from '@fc/core-partners';
+import type { VersionInterface } from '@fc/core-partners';
 import type { JSONFieldType } from '@fc/dto2form';
 import type { HttpClientDataInterface } from '@fc/http-client';
 
+import { InstancesService } from '../../services';
 import { useInstanceUpdate } from './instance-update.hook';
 
-describe('useInstance', () => {
+jest.mock('./../../services');
+
+describe('useInstanceUpdate', () => {
   // Given
   const navigateMock = jest.fn();
   const instanceIdMock = 'any-instanceId-mock';
@@ -64,39 +67,32 @@ describe('useInstance', () => {
 
     it('should return some submission errors from InstancesService.update response', async () => {
       // Given
-      const submissionErrorsMock = [{ anyField: 'an-field-error' }];
+      const submissionErrorsMock = {
+        anyFieldMock1: ['an-field-error-1'],
+        anyFieldMock2: 'an-field-error-2',
+        anyFieldMock3: 'an-field-error-3',
+      };
       const dataMock = Symbol('data-mock') as unknown as HttpClientDataInterface;
 
-      jest.mocked(InstancesService.update).mockResolvedValueOnce({ payload: submissionErrorsMock });
+      jest.mocked(InstancesService.update).mockResolvedValueOnce(submissionErrorsMock);
 
       // When
       const { result } = renderHook(() => useInstanceUpdate());
       const errors = await result.current.submitHandler(dataMock);
 
       // Then
-      expect(errors).toBe(submissionErrorsMock);
-    });
-
-    it('should return the generic form error when InstancesService.update response is not defined', async () => {
-      // Given
-      const dataMock = Symbol('data-mock') as unknown as HttpClientDataInterface;
-
-      jest.mocked(InstancesService.update).mockResolvedValueOnce(undefined);
-
-      // When
-      const { result } = renderHook(() => useInstanceUpdate());
-      const errors = await result.current.submitHandler(dataMock);
-
-      // Then
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      expect(errors).toStrictEqual({ 'FINAL_FORM/form-error': 'Form.FORM_ERROR' });
+      expect(errors).toStrictEqual({
+        anyFieldMock1: ['an-field-error-1'],
+        anyFieldMock2: 'an-field-error-2',
+        anyFieldMock3: 'an-field-error-3',
+      });
     });
 
     it('should call navigate if InstancesService.update with params is not returning any errors', async () => {
       // Given
       const dataMock = Symbol('data-mock') as unknown as HttpClientDataInterface;
 
-      jest.mocked(InstancesService.update).mockResolvedValueOnce({ payload: undefined });
+      jest.mocked(InstancesService.update).mockResolvedValueOnce(undefined);
 
       // When
       const { result } = renderHook(() => useInstanceUpdate());

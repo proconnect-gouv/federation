@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 import React from 'react';
 
 import { sortByKey } from '@fc/common';
+import { ConfigService } from '@fc/config';
 import { FieldTypes, FormComponent } from '@fc/forms';
 
 import type { JSONFieldType } from '../../types';
@@ -25,6 +26,7 @@ describe('DTO2FormComponent', () => {
 
   beforeEach(() => {
     // Given
+    jest.mocked(ConfigService.get).mockReturnValue({ validateOnSubmit: true });
     jest
       .mocked(FormComponent)
       .mockImplementation(({ children }) => <div data-mockid="FormComponent">{children}</div>);
@@ -97,5 +99,36 @@ describe('DTO2FormComponent', () => {
     expect(sortByKey).toHaveBeenCalledOnce();
     expect(sortByKey).toHaveBeenCalledWith('order');
     expect(orderSorterMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('should call FormComponent without the validate function when DTO2Form.validateOnSubmit is false', () => {
+    // Given
+    jest.mocked(ConfigService.get).mockReturnValueOnce({ validateOnSubmit: false });
+
+    // When
+    render(
+      <DTO2FormComponent
+        config={configMock}
+        initialValues={initialValuesMock}
+        schema={schemaMock}
+        onSubmit={onSubmitMock}
+        onValidate={onValidateMock}
+      />,
+    );
+
+    // Then
+    expect(ConfigService.get).toHaveBeenCalledOnce();
+    expect(ConfigService.get).toHaveBeenCalledWith('DTO2Form');
+    expect(FormComponent).toHaveBeenCalledOnce();
+    expect(FormComponent).toHaveBeenCalledWith(
+      {
+        children: expect.any(Object),
+        config: configMock,
+        initialValues: initialValuesMock,
+        onSubmit: onSubmitMock,
+        onValidate: undefined,
+      },
+      {},
+    );
   });
 });

@@ -1,5 +1,8 @@
 import type { FieldValidateIfRule } from './field-validate-if-rule.interface';
-import type { FieldValidator, FieldValidatorBase } from './field-validator.interface';
+import type {
+  FieldValidatorBaseInterface,
+  FieldValidatorInterface,
+} from './field-validator.interface';
 
 export interface FieldAttributesArguments {
   type?: string;
@@ -14,7 +17,7 @@ export interface FieldAttributesArguments {
   /*
    ** Should at least have one validator (better safe than sorry ;D)
    */
-  validators: [FieldValidatorBase, ...FieldValidatorBase[]];
+  validators: [FieldValidatorBaseInterface, ...FieldValidatorBaseInterface[]];
 }
 
 export interface FieldAttributes extends FieldAttributesArguments {
@@ -27,5 +30,5 @@ export interface FieldAttributes extends FieldAttributesArguments {
   /*
    ** Should at least have one validator (better safe than sorry ;D)
    */
-  validators: [FieldValidator, ...FieldValidator[]];
+  validators: [FieldValidatorInterface, ...FieldValidatorInterface[]];
 }

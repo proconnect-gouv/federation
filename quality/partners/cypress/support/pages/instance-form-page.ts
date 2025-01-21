@@ -21,6 +21,10 @@ export default class InstanceFormPage {
     return cy.get(`[name=${name}]:not([type="hidden"])`);
   }
 
+  protected getInputErrorMessagesFromName(name: string): ChainableElement {
+    return cy.get(`[id=${name}-messages].fr-message--error`);
+  }
+
   getValidationButton(): ChainableElement {
     return cy.get("[type='submit']");
   }
@@ -40,10 +44,10 @@ export default class InstanceFormPage {
       } else if ($elem.is('select')) {
         cy.wrap($elem).select(value);
       } else {
-        // eslint-disable-next-line cypress/unsafe-to-chain-command
-        cy.wrap($elem)
-          .clear()
-          .type(value as string);
+        cy.wrap($elem).clear();
+        if (value && typeof value === 'string') {
+          cy.wrap($elem).type(value);
+        }
       }
     });
   }
@@ -61,8 +65,21 @@ export default class InstanceFormPage {
     });
   }
 
+  checkIsWithinViewport(name: string, isWithinViewport: boolean): void {
+    this.getVisibleInputFromName(name).checkWithinViewport(isWithinViewport);
+  }
+
   checkHasValue(name: string, value: string): void {
     this.getVisibleInputFromName(name).should('have.value', value);
+  }
+
+  checkHasError(name: string, hasError: boolean): void {
+    const state = hasError ? 'exist' : 'not.exist';
+    this.getInputErrorMessagesFromName(name).should(state);
+  }
+
+  checkHasErrorMessage(name: string, errorMessage: string): void {
+    this.getInputErrorMessagesFromName(name).should('contain', errorMessage);
   }
 
   checkHasCheckboxValues(name: string, values: string[]): void {

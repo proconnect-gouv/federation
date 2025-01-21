@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 
+import { ConfigService } from '@fc/config';
 import { ChoiceField, FieldTypes, InputField, SelectField } from '@fc/forms';
 
 import { useFieldValidate } from '../../hooks';
@@ -35,6 +36,7 @@ describe('DTO2FieldComponent', () => {
   beforeEach(() => {
     // Given
     jest.mocked(useFieldValidate).mockReturnValue(validateMock);
+    jest.mocked(ConfigService.get).mockReturnValue({ validateOnFieldChange: true });
   });
 
   it('should call useFieldValidate hook', () => {
@@ -78,7 +80,7 @@ describe('DTO2FieldComponent', () => {
     );
   });
 
-  it('should match the snapshot, should create select field', () => {
+  it('should match the snapshot, should create a choice field when type is "select', () => {
     // Given
     const optionsMock = [
       {
@@ -192,6 +194,38 @@ describe('DTO2FieldComponent', () => {
         },
         type: 'checkbox',
         validate: validateMock,
+      },
+      {},
+    );
+  });
+
+  it('should call InputField without the validate function when DTO2Form.validateOnFieldChange is false', () => {
+    // Given
+    jest.mocked(ConfigService.get).mockReturnValueOnce({ validateOnFieldChange: false });
+
+    // When
+    render(<DTO2FieldComponent field={fieldMock} />);
+
+    // Then
+    expect(useFieldValidate).toHaveBeenCalledOnce();
+    expect(ConfigService.get).toHaveBeenCalledOnce();
+    expect(ConfigService.get).toHaveBeenCalledWith('DTO2Form');
+    expect(InputField).toHaveBeenCalledOnce();
+    expect(InputField).toHaveBeenCalledWith(
+      {
+        config: {
+          clipboardDisabled: false,
+          hint: placeholderMock,
+          inline: true,
+          label: labelMock,
+          maxChars: maxCharsMock,
+          name: nameMock,
+          required: requiredMock,
+          size: 'md',
+          value: valueMock,
+        },
+        type: typeMock,
+        validate: undefined,
       },
       {},
     );

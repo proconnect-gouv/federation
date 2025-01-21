@@ -6,15 +6,13 @@ Fonctionnalité: Instance - Création
   # afin de configurer mon fournisseur d'identité dans l'environnement sandbox
 
   Scénario: Instance Création - Formulaire affiché depuis tuile de création
-    Etant donné que je suis un utilisateur "partenaire sans instance"
-    Et que je me connecte à l'espace partenaires
+    Etant donné que je me connecte à l'espace partenaires avec un utilisateur "partenaire sans instance"
     Et que je suis sur la page liste des instances
     Quand je clique sur la tuile de création d'instance
     Alors je suis redirigé vers la page création d'instance
 
   Scénario: Instance Création - Formulaire affiché depuis le lien ajouter
-    Etant donné que je suis un utilisateur "partenaire avec une instance"
-    Et que je me connecte à l'espace partenaires
+    Etant donné que je me connecte à l'espace partenaires avec un utilisateur "partenaire avec une instance"
     Et que je suis sur la page liste des instances
     Quand je clique sur le lien d'ajout d'une instance
     Alors je suis redirigé vers la page création d'instance

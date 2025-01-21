@@ -37,7 +37,9 @@ import {
   PartnersController,
   VersionController,
 } from './controllers/';
+import { FormValidationExceptionFilter } from './filters';
 import { AppPermissionsHandler } from './handlers';
+import { PartnersI18nService } from './services';
 
 const oidcClientModule = OidcClientModule.register(
   IdentityProviderAdapterEnvService,
@@ -69,6 +71,7 @@ const oidcClientModule = OidcClientModule.register(
   ],
   providers: [
     FcWebJsonExceptionFilter,
+    FormValidationExceptionFilter,
     {
       provide: APP_FILTER,
       useClass: UnknownJsonExceptionFilter,
@@ -77,6 +80,11 @@ const oidcClientModule = OidcClientModule.register(
       provide: APP_FILTER,
       useClass: FcWebJsonExceptionFilter,
     },
+    {
+      provide: APP_FILTER,
+      useClass: FormValidationExceptionFilter,
+    },
+    PartnersI18nService,
   ],
   controllers: [
     InstanceController,

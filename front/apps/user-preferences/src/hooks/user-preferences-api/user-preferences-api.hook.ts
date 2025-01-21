@@ -1,8 +1,8 @@
 import type { AxiosResponse } from 'axios';
+import { HttpStatusCode } from 'axios';
 import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { HttpStatusCode } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import type { AxiosException } from '@fc/http-client';
 import { get, post } from '@fc/http-client';
@@ -44,7 +44,7 @@ export const useUserPreferencesApi = () => {
   const commitErrorHandler = useCallback(
     (err: unknown) => {
       const error = err as AxiosException;
-      const isConflictError = error.status === HttpStatusCode.CONFLICT;
+      const isConflictError = error?.status === HttpStatusCode.Conflict;
       if (isConflictError) {
         navigate('/error/409', { replace: true });
       } else {

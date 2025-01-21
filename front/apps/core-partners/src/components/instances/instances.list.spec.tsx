@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import type { ISODate } from '@fc/common';
+import { type ISODate, sortByKey, SortOrder } from '@fc/common';
 
 import type { Environment } from '../../enums';
 import { InstanceComponent } from '../instance/instance.component';
@@ -37,7 +37,7 @@ describe('InstancesListComponent', () => {
     },
   ];
 
-  it('should match snapshot', () => {
+  it('should match snapshot while calling the sortByKey util', () => {
     // When
     const { container } = render(<InstancesListComponent items={instanceItemsMock} />);
 
@@ -47,5 +47,7 @@ describe('InstancesListComponent', () => {
     expect(InstanceComponent).toHaveBeenNthCalledWith(1, { item: instanceItemsMock[0] }, {});
     expect(InstanceComponent).toHaveBeenNthCalledWith(2, { item: instanceItemsMock[1] }, {});
     expect(InstanceComponent).toHaveBeenNthCalledWith(3, { item: instanceItemsMock[2] }, {});
+    expect(sortByKey).toHaveBeenCalledOnce();
+    expect(sortByKey).toHaveBeenCalledWith('updatedAt', SortOrder.DESC);
   });
 });

@@ -36,12 +36,6 @@ export const useScrollToElement = jest.fn(() => ({
   scrollToElement: jest.fn(),
 }));
 
-export enum HttpStatusCode {
-  FORBIDDEN = 403,
-  CONFLICT = 409,
-  UNAUTHORIZED = 401,
-}
-
 export enum HeadingTag {
   H1 = 'h1',
   H2 = 'h2',
@@ -78,4 +72,9 @@ export enum EventTypes {
   INFO = 'info',
   SUCCESS = 'success',
   WARNING = 'warning',
+}
+
+export enum SortOrder {
+  ASC = 'ASC',
+  DESC = 'DESC',
 }

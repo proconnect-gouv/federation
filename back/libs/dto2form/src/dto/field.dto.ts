@@ -44,10 +44,6 @@ export class FieldDto {
   @IsNotEmpty()
   readonly name: string;
 
-  @IsString()
-  @IsNotEmpty()
-  readonly label: string;
-
   @IsBoolean()
   readonly required: boolean;
 

@@ -20,7 +20,11 @@ import {
   Dto2FormValidateIfRuleNotFoundException,
   Dto2FormValidationErrorException,
 } from '../exceptions';
-import { FieldAttributes, FieldValidator } from '../interfaces';
+import {
+  FieldErrorsInterface,
+  FieldValidator,
+  MetadataDtoInterface,
+} from '../interfaces';
 import { ValidateIfRulesService, ValidatorCustomService } from '../services';
 import { FORM_METADATA_TOKEN } from '../tokens';
 import { FormValidationPipe } from './form-validation.pipe';
@@ -38,7 +42,7 @@ describe('FormValidationPipe', () => {
   const metadataMock = [
     getFieldAttributesMock('name1'),
     getFieldAttributesMock('name2'),
-  ] as FieldAttributes[];
+  ] as MetadataDtoInterface[];
 
   beforeEach(async () => {
     jest.resetAllMocks();
@@ -79,6 +83,11 @@ describe('FormValidationPipe', () => {
     beforeEach(() => {
       service['validate'] = jest.fn().mockResolvedValue([]);
       Reflect.defineMetadata(FORM_METADATA_TOKEN, metadataMock, metadatypeMock);
+
+      service['validateRequiredField'] = jest
+        .fn()
+        .mockReturnValueOnce([{ name: 'required field', errors: [] }]);
+      service['hasValidatorsErrors'] = jest.fn().mockReturnValueOnce(false);
     });
 
     it('should not validate if type is not body or query', async () => {
@@ -170,15 +179,39 @@ describe('FormValidationPipe', () => {
       );
     });
 
+    it('should validate if required fields are present', async () => {
+      // Given
+      const metadata = {
+        type: 'query',
+        metatype: metadatypeMock,
+      } as ArgumentMetadata;
+
+      // When
+      await service.transform(targetMock, metadata);
+
+      // Then
+      expect(service['validateRequiredField']).toHaveBeenCalledTimes(1);
+      expect(service['validateRequiredField']).toHaveBeenCalledWith(
+        targetMock,
+        metadataMock,
+      );
+    });
+
     it('should throw an error if the validation ends up with errors', async () => {
       // Given
       const metadata = {
         type: 'query',
         metatype: metadatypeMock,
       } as ArgumentMetadata;
-      jest
-        .mocked(service['validate'])
-        .mockResolvedValueOnce([{ name: 'name', errors: ['error'] }]);
+      jest.mocked(service['validate']).mockResolvedValueOnce([
+        {
+          name: 'name',
+          validators: [
+            { name: 'name', errorLabel: 'errrors', validationArgs: [] },
+          ],
+        },
+      ]);
+      service['hasValidatorsErrors'] = jest.fn().mockReturnValueOnce(true);
 
       // When / Then
       await expect(service.transform(targetMock, metadata)).rejects.toThrow(
@@ -263,7 +296,13 @@ describe('FormValidationPipe', () => {
       // Then
       expect(result).toEqual({
         name: invalidKeyMock,
-        errors: [`${invalidKeyMock}_invalidKey_error`],
+        validators: [
+          {
+            errorLabel: `${invalidKeyMock}_invalidKey_error`,
+            name: invalidKeyMock,
+            validationArgs: [],
+          },
+        ],
       });
     });
 
@@ -304,7 +343,7 @@ describe('FormValidationPipe', () => {
       // Then
       expect(result).toEqual({
         name: nameMock,
-        errors: [],
+        validators: [],
       });
     });
 
@@ -342,9 +381,17 @@ describe('FormValidationPipe', () => {
       // Then
       expect(result).toEqual({
         name: nameMock,
-        errors: [
-          metadataMock[0].validators[0].errorLabel,
-          metadataMock[0].validators[1].errorLabel,
+        validators: [
+          {
+            name: metadataMock[0].validators[0].name,
+            errorLabel: metadataMock[0].validators[0].errorLabel,
+            validationArgs: metadataMock[0].validators[0].validationArgs,
+          },
+          {
+            name: metadataMock[0].validators[1].name,
+            errorLabel: metadataMock[0].validators[1].errorLabel,
+            validationArgs: metadataMock[0].validators[1].validationArgs,
+          },
         ],
       });
     });
@@ -360,7 +407,7 @@ describe('FormValidationPipe', () => {
       // Then
       expect(result).toEqual({
         name: nameMock,
-        errors: [],
+        validators: [],
       });
     });
   });
@@ -604,6 +651,85 @@ describe('FormValidationPipe', () => {
 
       // Then
       expect(result).toEqual(['key1', 'key2']);
+    });
+  });
+
+  describe('hasValidatorsErrors', () => {
+    it('should return false if no error found', () => {
+      // Given
+      const targetMock = [
+        { foo: 'bar', validators: [] },
+        { fizz: 'buzz', validators: [] },
+      ] as unknown as FieldErrorsInterface[];
+
+      // When
+      const result = service['hasValidatorsErrors'](targetMock);
+
+      // Then
+      expect(result).toBeFalse;
+    });
+
+    it('should return true if error found', () => {
+      // Given
+      const targetMock = [
+        { foo: 'bar', validators: [Symbol('errors')] },
+        { fizz: 'buzz', validators: [] },
+      ] as unknown as FieldErrorsInterface[];
+
+      // When
+      const result = service['hasValidatorsErrors'](targetMock);
+
+      // Then
+      expect(result).toBeFalse;
+    });
+  });
+
+  describe('validateRequiredField', () => {
+    it('should return no errors when all required fields are present', () => {
+      const target = { field1: 'value1', field2: 'value2' };
+      const metadata = [
+        { name: 'field1', required: true },
+        { name: 'field2', required: true },
+      ] as unknown as MetadataDtoInterface[];
+
+      const result = service['validateRequiredField'](target, metadata);
+
+      expect(result).toEqual([]);
+    });
+
+    it('should return errors for missing required fields', () => {
+      const target = { field1: 'value1' };
+      const metadata = [
+        { name: 'field1', required: true },
+        { name: 'field2', required: true },
+      ] as unknown as MetadataDtoInterface[];
+
+      const result = service['validateRequiredField'](target, metadata);
+
+      expect(result).toEqual([
+        {
+          name: 'field2',
+          validators: [
+            {
+              errorLabel: 'isFilled_error',
+              name: 'isFilled',
+              validationArgs: [],
+            },
+          ],
+        },
+      ]);
+    });
+
+    it('should ignore non-required fields', () => {
+      const target = { field1: 'value1' };
+      const metadata = [
+        { name: 'field1', required: true },
+        { name: 'field2', required: false },
+      ] as unknown as MetadataDtoInterface[];
+
+      const result = service['validateRequiredField'](target, metadata);
+
+      expect(result).toEqual([]);
     });
   });
 });

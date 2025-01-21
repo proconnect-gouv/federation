@@ -12,7 +12,6 @@ import { FormRequiredMessageComponent } from '../form-required';
 interface FormWrapperComponentProps extends PropsWithChildren {
   config: FormConfigInterface;
   handleSubmit: (event: React.FormEvent<HTMLFormElement>) => void;
-  pristine: boolean;
   submitError?: string | undefined;
   submitting: boolean;
   noRequired: boolean;
@@ -24,14 +23,13 @@ export const FormWrapperComponent = ({
   config,
   handleSubmit,
   noRequired,
-  pristine,
   scrollTopOnSubmit,
   submitError,
   submitting,
 }: FormWrapperComponentProps) => {
   const { description, id, title } = config;
 
-  const canSubmit = !pristine && !submitting;
+  const canSubmit = !submitting;
   const showFormHeader = !!(title || description);
 
   return (

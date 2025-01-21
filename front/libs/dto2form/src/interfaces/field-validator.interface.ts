@@ -1,9 +1,9 @@
-export interface FieldValidatorBase {
+export interface FieldValidatorBaseInterface {
   name: string;
 
   validationArgs?: unknown[];
 }
 
-export interface FieldValidator extends FieldValidatorBase {
+export interface FieldValidatorInterface extends FieldValidatorBaseInterface {
   errorLabel: string;
 }

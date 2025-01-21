@@ -32,7 +32,6 @@ describe('FormWrapperComponent', () => {
         }}
         handleSubmit={handleSubmitMock}
         noRequired={false}
-        pristine={false}
         submitError="any-submit-error-mock"
         submitting={false}>
         {childrenMock}
@@ -71,7 +70,7 @@ describe('FormWrapperComponent', () => {
     expect(FormErrorScrollComponent).toHaveBeenCalledWith({}, {});
   });
 
-  it('should match snapshot without description dans title', () => {
+  it('should match snapshot without descriptionn, title and a disable submit button', () => {
     // Given
     const handleSubmitMock = jest.fn();
 
@@ -81,14 +80,13 @@ describe('FormWrapperComponent', () => {
     const { container } = render(
       <FormWrapperComponent
         scrollTopOnSubmit
+        submitting
         config={{
           id: 'any-id-mock',
         }}
         handleSubmit={handleSubmitMock}
         noRequired={false}
-        pristine={false}
-        submitError="any-submit-error-mock"
-        submitting={false}>
+        submitError="any-submit-error-mock">
         {childrenMock}
       </FormWrapperComponent>,
     );
@@ -96,6 +94,12 @@ describe('FormWrapperComponent', () => {
     // Then
     expect(container).toMatchSnapshot();
     expect(FormHeaderComponent).not.toHaveBeenCalledOnce();
+    expect(FormActionsComponent).toHaveBeenCalledWith(
+      {
+        canSubmit: false,
+      },
+      {},
+    );
   });
 
   it('should not render all fields required message', () => {
@@ -113,7 +117,6 @@ describe('FormWrapperComponent', () => {
           id: 'any-id-mock',
         }}
         handleSubmit={handleSubmitMock}
-        pristine={false}
         submitError="any-submit-error-mock"
         submitting={false}>
         {childrenMock}
@@ -140,7 +143,6 @@ describe('FormWrapperComponent', () => {
           id: 'any-id-mock',
         }}
         handleSubmit={handleSubmitMock}
-        pristine={false}
         submitError={undefined}
         submitting={false}>
         {childrenMock}
@@ -166,7 +168,6 @@ describe('FormWrapperComponent', () => {
           id: 'any-id-mock',
         }}
         handleSubmit={handleSubmitMock}
-        pristine={false}
         scrollTopOnSubmit={false}
         submitError={undefined}
         submitting={false}>

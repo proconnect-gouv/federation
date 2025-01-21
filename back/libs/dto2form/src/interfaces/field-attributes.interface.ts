@@ -22,7 +22,6 @@ export interface FieldAttributesArguments {
 export interface FieldAttributes extends FieldAttributesArguments {
   type: string;
   name: string;
-  label: string;
   required: boolean;
 
   /*

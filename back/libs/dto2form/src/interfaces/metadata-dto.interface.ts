@@ -16,5 +16,6 @@ export interface MetadataDtoInterface {
   validateIf: MetadataDtoValidateIfInterface[];
   type: string;
   name: string;
-  label: string;
+  label?: string;
+  hintText?: string;
 }

@@ -1,4 +1,5 @@
 import type { PropsWithChildren } from 'react';
+import type { FormRenderProps } from 'react-final-form';
 import { Form } from 'react-final-form';
 
 import type { FormPropsInterface } from '../../interfaces';
@@ -23,7 +24,7 @@ export function FormComponent<T = unknown>({
       scrollTopOnSubmit={scrollTopOnSubmit}
       validate={onValidate}
       onSubmit={onSubmit}>
-      {(props) =>
+      {(props: FormRenderProps<T>) =>
         FormWrapperComponent({ ...props, children, config, noRequired, scrollTopOnSubmit })
       }
     </Form>

@@ -7,6 +7,7 @@ import {
   AccountPermissionRepository,
 } from '@fc/access-control';
 import { CsrfTokenGuard } from '@fc/csrf';
+import { FormValidationPipe } from '@fc/dto2form';
 import { PartnersServiceProviderInstanceService } from '@fc/partners-service-provider-instance';
 import {
   PartnersServiceProviderInstanceVersionService,
@@ -66,6 +67,10 @@ describe('InstanceController', () => {
     canActivate: () => true,
   };
 
+  const formValidationPipeMock = {
+    transform: () => true,
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -88,6 +93,8 @@ describe('InstanceController', () => {
       .useValue(rolesGuardMock)
       .overrideGuard(CsrfTokenGuard)
       .useValue(csrfTokenGuardMock)
+      .overridePipe(FormValidationPipe)
+      .useValue(formValidationPipeMock)
       .compile();
 
     controller = module.get<InstanceController>(InstanceController);
