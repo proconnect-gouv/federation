@@ -116,7 +116,7 @@ import { ${className} } from './${relativeFileName}';"
   npx eslint --quiet --fix $exceptionDir
 
   echo "Auto format generated files"
-  npx prettier --log-level=error -w $exceptionDir --config .prettierrc
+  npx prettier --log-level=error -w $exceptionDir
 }
 
 _generate_oidc_provider_exceptions
