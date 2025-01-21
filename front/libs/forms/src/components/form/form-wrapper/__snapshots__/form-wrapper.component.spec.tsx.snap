@@ -35,7 +35,7 @@ exports[`FormWrapperComponent should match snapshot 1`] = `
 </div>
 `;
 
-exports[`FormWrapperComponent should match snapshot without description dans title 1`] = `
+exports[`FormWrapperComponent should match snapshot without descriptionn, title and a disable submit button 1`] = `
 <div>
   <form
     data-testid="any-id-mock--testid"

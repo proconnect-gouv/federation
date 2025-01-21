@@ -35,7 +35,6 @@ export const InputField = React.memo(({ config, type, validate }: InputFieldProp
       config={rest}
       format={format}
       name={name}
-      subscription={{ error: true, touched: true, value: true }}
       type={type}
       validate={validate}
       onPaste={onPaste}

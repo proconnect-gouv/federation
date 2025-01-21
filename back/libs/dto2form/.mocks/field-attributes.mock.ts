@@ -6,7 +6,6 @@ export function getFieldAttributesMock(name: string): FieldAttributes {
   return {
     name,
     type: 'text',
-    label: `${name}_label`,
     required: true,
     validateIf: [
       getValidateIfMock(`${name}_validate_if_rule_1`),

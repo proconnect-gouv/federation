@@ -1,9 +1,12 @@
 import React from 'react';
 
+import { ConfigService } from '@fc/config';
 import { Sizes } from '@fc/dsfr';
 import { ChoiceField, FieldTypes, InputField, SelectField } from '@fc/forms';
 
+import { Options } from '../../enums';
 import { useFieldValidate } from '../../hooks';
+import type { DTO2FormConfig } from '../../interfaces';
 import type { JSONFieldType } from '../../types';
 
 interface DTO2FieldComponentProps {
@@ -11,6 +14,8 @@ interface DTO2FieldComponentProps {
 }
 
 export const DTO2FieldComponent = React.memo(({ field }: DTO2FieldComponentProps) => {
+  const { validateOnFieldChange } = ConfigService.get<DTO2FormConfig>(Options.CONFIG_NAME);
+
   const { disabled, required, validators } = field;
   const validate = useFieldValidate({
     disabled,
@@ -32,18 +37,19 @@ export const DTO2FieldComponent = React.memo(({ field }: DTO2FieldComponentProps
 
   const { type } = field;
   const choices = field.options || [];
+  const validateFunc = validateOnFieldChange ? validate : undefined;
 
   const isSelectField = type === FieldTypes.SELECT;
   if (isSelectField) {
-    return <SelectField choices={choices} config={config} validate={validate} />;
+    return <SelectField choices={choices} config={config} validate={validateFunc} />;
   }
 
   const isChoiceField = type === FieldTypes.RADIO || type === FieldTypes.CHECKBOX;
   if (isChoiceField) {
-    return <ChoiceField choices={choices} config={config} type={type} validate={validate} />;
+    return <ChoiceField choices={choices} config={config} type={type} validate={validateFunc} />;
   }
 
-  return <InputField config={config} type={type} validate={validate} />;
+  return <InputField config={config} type={type} validate={validateFunc} />;
 });
 
 DTO2FieldComponent.displayName = 'DTO2FieldComponent';

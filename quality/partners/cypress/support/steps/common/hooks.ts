@@ -22,6 +22,7 @@ Before(function () {
   const testEnv: string = Cypress.env('TEST_ENV');
   const pathArray = [platform, testEnv];
   setFixtureContext('environment.json', pathArray, 'env');
+  setFixtureContext('api-common.json', pathArray, 'apiRequests');
   setFixtureContext('users.json', pathArray, 'users');
   setFixtureContext('instances.json', pathArray, 'instances');
 

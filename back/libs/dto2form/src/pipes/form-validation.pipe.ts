@@ -12,10 +12,10 @@ import {
   Dto2FormValidationErrorException,
 } from '../exceptions';
 import {
-  FieldAttributes,
   FieldErrorsInterface,
   FieldValidateIfRule,
   FieldValidator,
+  MetadataDtoInterface,
 } from '../interfaces';
 import { ValidateIfRulesService, ValidatorCustomService } from '../services';
 import { FORM_METADATA_TOKEN } from '../tokens';
@@ -43,15 +43,21 @@ export class FormValidationPipe implements PipeTransform {
       throw new Dto2FormInvalidFormException();
     }
 
-    const metadata: FieldAttributes[] = Reflect.getMetadata(
+    const metadata: MetadataDtoInterface[] = Reflect.getMetadata(
       FORM_METADATA_TOKEN,
       metatype,
     );
 
-    const errors = await this.validate(target, metadata);
+    const validatedFields = await this.validate(target, metadata);
 
-    if (errors.length > 0) {
-      throw new Dto2FormValidationErrorException(errors);
+    const missingFields = this.validateRequiredField(target, metadata);
+
+    const fieldValidationResults = [...validatedFields, ...missingFields];
+
+    const hasErrors = this.hasValidatorsErrors(fieldValidationResults);
+
+    if (hasErrors) {
+      throw new Dto2FormValidationErrorException(fieldValidationResults);
     }
 
     return target;
@@ -59,7 +65,7 @@ export class FormValidationPipe implements PipeTransform {
 
   private async validate(
     target: Record<string, unknown>,
-    metadata: FieldAttributes[],
+    metadata: MetadataDtoInterface[],
   ): Promise<FieldErrorsInterface[]> {
     return await ArrayAsyncHelper.mapAsync(
       this.getAttributeKeys(target),
@@ -69,17 +75,21 @@ export class FormValidationPipe implements PipeTransform {
 
   private async validateField(
     target: Record<string, unknown>,
-    metadata: FieldAttributes[],
+    metadata: MetadataDtoInterface[],
     name: string,
   ): Promise<FieldErrorsInterface> {
     const fieldMetadata = metadata.find((field) => field.name === name);
 
     const fieldErrors: FieldErrorsInterface = {
       name,
-      errors: [],
+      validators: [],
     };
     if (!fieldMetadata) {
-      fieldErrors.errors.push(`${name}_invalidKey_error`);
+      fieldErrors.validators.push({
+        name,
+        errorLabel: `${name}_invalidKey_error`,
+        validationArgs: [],
+      });
       return fieldErrors;
     }
 
@@ -93,16 +103,20 @@ export class FormValidationPipe implements PipeTransform {
       return fieldErrors;
     }
 
-    fieldErrors.errors = await ArrayAsyncHelper.reduceAsync<
+    fieldErrors.validators = await ArrayAsyncHelper.reduceAsync<
       FieldValidator,
-      FieldErrorsInterface['errors']
+      FieldErrorsInterface['validators']
     >(
       fieldMetadata.validators,
       async (errors, validator) => {
         const valid = await this.callValidator(validator, target[name], target);
 
         if (!valid) {
-          errors.push(validator.errorLabel);
+          errors.push({
+            name: validator.name,
+            errorLabel: validator.errorLabel,
+            validationArgs: validator.validationArgs,
+          });
         }
 
         return errors;
@@ -183,5 +197,31 @@ export class FormValidationPipe implements PipeTransform {
     return Object.keys(target).filter(
       (key) => typeof target[key] !== 'function',
     );
+  }
+
+  private hasValidatorsErrors(target: FieldErrorsInterface[]): boolean {
+    return target.some(({ validators }) => validators.length > 0);
+  }
+
+  private validateRequiredField(
+    target: Record<string, unknown>,
+    metadata: MetadataDtoInterface[],
+  ): FieldErrorsInterface[] {
+    const missingRequireKeys = metadata
+      .filter((item) => item.required)
+      .map((item) => item.name)
+      .filter((key) => !(key in target))
+      .map((key) => ({
+        name: key,
+        validators: [
+          {
+            name: 'isFilled',
+            errorLabel: `isFilled_error`,
+            validationArgs: [],
+          },
+        ],
+      }));
+
+    return missingRequireKeys;
   }
 }

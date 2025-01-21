@@ -1,4 +1,4 @@
-import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { DataTable, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 import InstanceFormPage from '../../pages/instance-form-page';
 
@@ -21,12 +21,42 @@ When("j'entre les valeurs par défaut pour mon instance", function () {
 
 When(
   /^j'entre "([^"]+)" dans le champ "([^"]+)" du formulaire de (?:création|modification) d'instance$/,
-  function (value: string, key: string) {
-    instanceFormPage.fillValue(key, value);
+  function (value: string, name: string) {
+    instanceFormPage.fillValue(name, value);
     this.instance = {
       ...this.instance,
-      [key]: value,
+      [name]: value,
     };
+  },
+);
+
+When(
+  /^j'entre les valeurs dans les champs suivants du formulaire de (?:création|modification) d'instance$/,
+  function (dataTable: DataTable) {
+    dataTable.hashes().forEach(({ name, value }) => {
+      instanceFormPage.fillValue(name, value);
+      this.instance = {
+        ...this.instance,
+        [name]: value,
+      };
+    });
+  },
+);
+
+When(
+  /^j'entre les chaines de caractères longues dans les champs suivants du formulaire de (?:création|modification) d'instance$/,
+  function (dataTable: DataTable) {
+    dataTable.hashes().forEach(({ name, prefix, suffix, totalLength }) => {
+      const length = parseInt(totalLength, 10);
+      const fillingLength = length - prefix.length - suffix.length;
+      const filling = 'a'.repeat(fillingLength);
+      const value = `${prefix}${filling}${suffix}`;
+      instanceFormPage.fillValue(name, value);
+      this.instance = {
+        ...this.instance,
+        [name]: value,
+      };
+    });
   },
 );
 
@@ -44,6 +74,14 @@ When(
 );
 
 Then(
+  /^le champ "([^"]+)" (est|n'est pas) visible à l'écran dans le formulaire de (?:création|modification) d'instance$/,
+  function (name: string, text: string) {
+    const isWithinViewport = text === 'est';
+    instanceFormPage.checkIsWithinViewport(name, isWithinViewport);
+  },
+);
+
+Then(
   /^le champ "([^"]+)" contient "([^"]*)" dans le formulaire de (?:création|modification) d'instance$/,
   function (name: string, value: string) {
     instanceFormPage.checkHasValue(name, value);
@@ -55,6 +93,40 @@ Then(
   function (name: string) {
     const { instance_name: instanceName } = this.instance;
     instanceFormPage.checkHasValue(name, instanceName);
+  },
+);
+
+Then(
+  /^le champ "([^"]+)" (est|n'est pas) en erreur dans le formulaire de (?:création|modification) d'instance$/,
+  function (name: string, text: string) {
+    const hasError = text === 'est';
+    instanceFormPage.checkHasError(name, hasError);
+  },
+);
+
+Then(
+  /^l'erreur du champ "([^"]+)" contient "([^"]+)" dans le formulaire de (?:création|modification) d'instance$/,
+  function (name: string, errorMessage: string) {
+    instanceFormPage.checkHasErrorMessage(name, errorMessage);
+  },
+);
+
+Then(
+  /^les champs suivants sont en erreur dans le formulaire de (?:création|modification) d'instance$/,
+  function (dataTable: DataTable) {
+    dataTable.hashes().forEach(({ errorMessage, name }) => {
+      instanceFormPage.checkHasError(name, true);
+      instanceFormPage.checkHasErrorMessage(name, errorMessage);
+    });
+  },
+);
+
+Then(
+  /^les champs suivants ne sont pas en erreur dans le formulaire de (?:création|modification) d'instance$/,
+  function (dataTable: DataTable) {
+    dataTable.hashes().forEach(({ name }) => {
+      instanceFormPage.checkHasError(name, false);
+    });
   },
 );
 

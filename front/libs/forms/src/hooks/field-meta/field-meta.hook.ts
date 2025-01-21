@@ -6,16 +6,23 @@ import type { InputMetaInterface } from '../../interfaces';
 export const useFieldMeta = <FieldValue = string>(
   meta: FieldMetaState<FieldValue>,
 ): InputMetaInterface => {
-  const hasError = !!(meta.touched && meta.error);
-  const isValid = !!(meta.touched && !meta.error);
-  const errorMessage = hasError ? meta.error : undefined;
+  const { error, invalid, pristine, submitError, touched, valid } = meta;
 
-  const inputClassname = classnames(`fr-input`, {
-    [`fr-input--error`]: hasError,
-    [`fr-input--valid`]: isValid,
+  const hasError = !!(touched && invalid);
+  const isValid = !!(touched && valid && !pristine);
+  const errorMessage = hasError ? error || submitError : undefined;
+
+  const inputClassname = classnames('fr-input', {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    'fr-input--error': hasError,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    'fr-input--valid': isValid,
   });
 
-  const fieldProps = { errorMessage, hasError, inputClassname, isValid };
-
-  return fieldProps;
+  return {
+    errorMessage,
+    hasError,
+    inputClassname,
+    isValid,
+  };
 };

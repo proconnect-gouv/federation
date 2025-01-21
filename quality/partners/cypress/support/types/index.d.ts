@@ -13,6 +13,7 @@ declare global {
     interface Chainable {
       // custom commands
       clearThenType(text: string, options?: Partial<Cypress.TypeOptions>): void;
+      checkWithinViewport(isWithinViewport: boolean): void;
     }
   }
 }
@@ -20,6 +21,10 @@ declare global {
 // Define Cucumber world interface
 declare module 'mocha' {
   export interface Context {
+    // API context
+    apiRequests: Partial<Cypress.RequestOptions>[];
+    apiRequest?: Partial<Cypress.RequestOptions>;
+
     // BDD context
     env: Environment;
     instances: Instance[];

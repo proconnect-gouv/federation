@@ -1,6 +1,6 @@
 export const isNotEmpty = (value: unknown | Array<unknown>) => {
   if (typeof value === 'string') {
-    return !!value.trim();
+    return value.trim() !== '';
   }
   if (Array.isArray(value)) {
     return value.length > 0;

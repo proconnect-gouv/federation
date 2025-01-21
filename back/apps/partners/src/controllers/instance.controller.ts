@@ -8,7 +8,6 @@ import {
   Put,
   UseGuards,
   UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 
 import {
@@ -27,6 +26,7 @@ import {
 } from '@fc/access-control';
 import { FSA, FSAMeta } from '@fc/common';
 import { CsrfTokenGuard } from '@fc/csrf';
+import { FormValidationPipe } from '@fc/dto2form';
 import { PartnersAccountSession } from '@fc/partners-account';
 import { PartnersServiceProviderInstanceService } from '@fc/partners-service-provider-instance';
 import {
@@ -70,7 +70,6 @@ export class InstanceController {
     entityIdLocation: { src: 'params', key: 'instanceId' },
   })
   @UseGuards(AccessControlGuard)
-  @UsePipes(new ValidationPipe({ whitelist: true, transform: true }))
   async retrieveInstance(
     @Param('instanceId') instanceId: string,
   ): Promise<FSA<FSAMeta, PartnersServiceProviderInstance>> {
@@ -88,8 +87,8 @@ export class InstanceController {
     entity: EntityType.SP_INSTANCE,
   })
   @UseGuards(AccessControlGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
   @UseGuards(CsrfTokenGuard)
+  @UsePipes(FormValidationPipe)
   async createInstance(
     @Body() data: ServiceProviderInstanceVersionDto,
     @Session('PartnersAccount')
@@ -121,8 +120,8 @@ export class InstanceController {
     entityIdLocation: { src: 'params', key: 'instanceId' },
   })
   @UseGuards(AccessControlGuard)
-  @UsePipes(new ValidationPipe({ transform: true }))
   @UseGuards(CsrfTokenGuard)
+  @UsePipes(FormValidationPipe)
   async updateInstance(
     @Body() data: ServiceProviderInstanceVersionDto,
     @Param('instanceId') instanceId: string,

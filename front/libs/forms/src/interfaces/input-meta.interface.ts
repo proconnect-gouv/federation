@@ -1,5 +1,5 @@
 export interface InputMetaInterface {
-  inputClassname: string | undefined;
+  inputClassname?: string | undefined;
   isValid: boolean;
   hasError: boolean;
   errorMessage?: string | undefined;
