@@ -33,6 +33,7 @@ export interface IdpFCMetadata {
   allowedAcr: string[];
   amr: string[];
   modal?: IdpFCModal;
+  siret: string;
 }
 
 export type IdentityProviderMetadata = IdpFCMetadata & {

@@ -3,19 +3,18 @@ include:
   - 'back/instances/**/.gitlab-ci.yml'
   - 'back/instances/**/.gitlab-deploy.yml'
   - 'back/instances/**/.gitlab-post-deploy.yml'
-  - '/back/.gitlab-post-deploy.yml'
+  - 'back/.gitlab-post-deploy.yml'
 
 variables:
   CYPRESS_CACHE_FOLDER: '${CI_PROJECT_DIR}/cache/Cypress'
   FC_ROOT: '$CI_BUILDS_DIR/france-connect'
   GIT_DEPTH: 0
-  PC_APPS_VERSION: '${PC_APPS_VERSION:-fca-staging}'
   PROXY_EXPLOITATION: 'http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT'
   YARN_CACHE_FOLDER: ${CI_BUILDS_DIR}/.yarn-cache
 
-back:
+static-and-unit-tests:
   image: node:22.13.0-bullseye
-  stage: 'Code quality'
+  stage: 'Internal'
   tags:
     - node
   rules:
@@ -36,46 +35,16 @@ back:
     - corepack enable
     - corepack prepare --activate
   script:
-    - yarn install --frozen-lockfile --ignore-engines
     - yarn doc
     - git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
-    - yarn lint
-    - yarn prettier
     - yarn generate-oidc-provider-exceptions
     - git --no-pager diff --exit-code || (echo "💥 oidc-provider runtime exceptions diff detected 💥" && exit 1)
-    - yarn test --coverage
-    - apt-get update && apt-get install -y bc
-    - ${CI_PROJECT_DIR}/coverage.sh
-  coverage: '/Global coverage is: \[([\d\.]+)%\]/'
-  interruptible: true
-
-quality:
-  image: node:22.13.0-bullseye-slim
-  stage: 'Code quality'
-  tags:
-    - node
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "merge_request_event" && $CI_COMMIT_BRANCH != "staging"'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: manual
-    - if: '$CI_COMMIT_BRANCH == "staging"'
-  cache:
-    - key:
-        files:
-          - quality/yarn.lock
-        prefix: fca_quality_node_modules
-      paths:
-        - quality/node_modules
-        - ${CYPRESS_CACHE_FOLDER}
-  before_script:
-    - cd ${CI_PROJECT_DIR}/quality
-    - corepack enable
-    - corepack prepare --activate
-  script:
-    - yarn install --frozen-lockfile --ignore-engines
-    - cd ${CI_PROJECT_DIR}/quality/fca
     - yarn lint
     - yarn prettier
     - yarn tsc --noEmit
+    - yarn test --coverage
+    - yarn install --frozen-lockfile --ignore-engines
+    - apt-get update && apt-get install -y bc
+    - ${CI_PROJECT_DIR}/coverage.sh
+  coverage: '/Global coverage is: \[([\d\.]+)%\]/'
   interruptible: true

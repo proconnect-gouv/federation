@@ -43,6 +43,22 @@ In order to run tests with Cypress,
   - [beforeEach hook](fca/cypress/support/common/steps/hooks.ts)
   - [Read more about SameSite cookie attribute](https://developer.mozilla.org/fr/docs/Web/HTTP/Headers/Set-Cookie/SameSite)
 
+## Create a test pipeline
+
+You can create a test pipeline in Gitlab from a merge request branch
+
+1- Navigate to https://gitlab.dev-franceconnect.fr/france-connect/fc/-/pipelines/new
+
+2- Add the pipeline variables (table below)
+3 - Click on the "Run pipeline" button
+4 - Start the static-and-unit-tests jobs
+
+| Environment Variable | Description                                                                          |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| CI_PIPELINE_SOURCE   | merge_request_event                                                                  |
+| CI_MERGE_REQUEST_IID | id of the merge request for instance 860 for the merge request /-/merge_requests/860 |
+| PC_APPS_VERSION      | branch from fc-apps repository only if not staging                                   |
+
 ## Scripts
 
 #### Start the local stack for FCA-LOW
@@ -109,6 +125,7 @@ CYPRESS_PLATFORM=fca-low CYPRESS_TEST_ENV=integ01 yarn report
 ### Filter tests
 
 You can filter which tests run by modifying the `specPattern` in the Cypress config file:
+
 ```bash
 specPattern: 'cypress/integration/**/*.feature',
 ```
@@ -116,6 +133,7 @@ specPattern: 'cypress/integration/**/*.feature',
 ### Run tests manually
 
 From the same directory:
+
 ```bash
 npx cypress open --e2e --config-file cypress-fca-low.config.ts
 npx cypress run --e2e --config-file cypress-fca-low.config.ts

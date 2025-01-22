@@ -1,5 +1,3 @@
-import { ClassTransformOptions } from 'class-transformer';
-import { ValidatorOptions } from 'class-validator';
 import { Response } from 'express';
 import { cloneDeep } from 'lodash';
 
@@ -17,7 +15,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { validateDto } from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfToken, CsrfTokenGuard } from '@fc/csrf';
@@ -45,11 +42,12 @@ import {
 import { AppConfig } from '../dto/app-config.dto';
 import { RedirectToIdp } from '../dto/redirect-to-idp.dto';
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
+import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
-  CoreFcaAgentNoIdpException,
-  CoreFcaInvalidIdentityException,
-} from '../exceptions';
-import { CoreFcaFqdnService, CoreFcaService } from '../services';
+  CoreFcaFqdnService,
+  CoreFcaService,
+  IdentitySanitizer,
+} from '../services';
 
 @Controller()
 export class OidcClientController {
@@ -67,6 +65,7 @@ export class OidcClientController {
     private readonly tracking: TrackingService,
     private readonly crypto: CryptographyService,
     private readonly fqdnService: CoreFcaFqdnService,
+    private readonly sanitizer: IdentitySanitizer,
   ) {}
 
   @Get(CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION)
@@ -317,7 +316,7 @@ export class OidcClientController {
       fqdn: identityFqdn,
     });
 
-    const transformedIdentity = await this.transformIdentity(idpId, identity);
+    const transformedIdentity = await this.sanitizer.sanitize(identity, idpId);
 
     const isAllowedIdpForEmail = await this.fqdnService.isAllowedIdpForEmail(
       idpId,
@@ -345,43 +344,5 @@ export class OidcClientController {
     const url = `${urlPrefix}/interaction/${interactionId}/verify`;
 
     res.redirect(url);
-  }
-
-  private async transformIdentity(
-    idpId: string,
-    identity: OidcIdentityDto,
-  ): Promise<OidcIdentityDto> {
-    const validatorOptions: ValidatorOptions = {
-      forbidNonWhitelisted: true,
-      forbidUnknownValues: true,
-      whitelist: true,
-    };
-    const transformOptions: ClassTransformOptions = {
-      excludeExtraneousValues: true,
-    };
-
-    const errors = await validateDto(
-      identity,
-      OidcIdentityDto,
-      validatorOptions,
-      transformOptions,
-    );
-
-    if (errors.length === 0) {
-      return identity;
-    }
-
-    const transformedIdentity = { ...identity };
-
-    errors.forEach((error) => {
-      if (error.property === 'phone_number') {
-        delete transformedIdentity.phone_number;
-      } else {
-        this.logger.err(errors, `Identity from "${idpId}" is invalid`);
-        throw new CoreFcaInvalidIdentityException();
-      }
-    });
-
-    return transformedIdentity;
   }
 }

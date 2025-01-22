@@ -114,8 +114,6 @@ _command_register "mongo-script" "_mongo_script" "Execute MongoDB <script> on gi
 _command_register "inspect-files-back" "_get_back_app_files" "inspect-files-for-app <app> => Extract files needed for a built application, based on webpack stats. App must be built before running this command"
 _command_register "inspect-files-front" "_get_front_app_files" "inspect-files-for-app <app> => Extract files needed for a built application, based on webpack stats. App must be built before running this command"
 _command_register "inspect-updated-files-for-apps" "_get_modified_files_for_apps" "inspect-updated-files-for-apps <app1> [<app2> <app3> ...] <git revision> => Compare list if files needed for an application to list of files modified for the given revision "
-_command_register "detect-back-changes" "_ci_job_relevant_for_back_apps" "ci-diff-files <app1> [<app2> <app3> ...] => CI ONLY! Runs inspect-updated-files-for-apps but auto build the applications and fetches the git revision"
-_command_register "detect-front-changes" "_ci_job_relevant_for_front_apps" "ci-diff-files <app1> [<app2> <app3> ...] => CI ONLY! Runs inspect-updated-files-for-apps but auto build the applications and fetches the git revision"
 
 _command_register "add" "_add_node_app" "Start a node application."
 _command_run "$1" "${@:2}"

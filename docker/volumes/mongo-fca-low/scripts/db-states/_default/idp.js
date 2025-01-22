@@ -4,6 +4,7 @@ const fia = {
   "FIA1-LOW": {
     uid: "9c716f61-b8a1-435c-a407-ef4d677ec270",
     name: "fia1-low",
+    siret: "81801912700021",
     active: true,
     display: true,
     isBeta: false,
@@ -55,6 +56,7 @@ const fia = {
   "FIA2-LOW": {
     uid: "0e7c099f-fe86-49a0-b7d1-19df45397212",
     name: "fia2-low",
+    siret: "",
     active: true,
     display: true,
     isBeta: false,
@@ -106,6 +108,7 @@ const fia = {
   "FIA3-LOW": {
     uid: "405d3839-9182-415f-9926-597489d11509",
     name: "fia3-desactive-visible",
+    siret: "12345678910003",
     active: false,
     display: true,
     isBeta: false,
@@ -157,6 +160,7 @@ const fia = {
   "FIA4-LOW": {
     uid: "87762a76-7da0-442d-8243-5785f859b88b",
     name: "fia4-low",
+    siret: "12345678910004",
     active: true,
     display: true,
     isBeta: false,
@@ -208,6 +212,7 @@ const fia = {
   "FIA5-LOW": {
     uid: "46f5d9f9-881d-46b1-bdcc-0548913ea443",
     name: "fia5-low",
+    siret: "12345678910005",
     active: true,
     display: true,
     isBeta: false,
@@ -259,6 +264,7 @@ const fia = {
   "FIA6-LOW": {
     uid: "ccae1186-3695-4ae2-8b38-d3a9926d92c4",
     name: "fia6-active-invisible",
+    siret: "12345678910006",
     active: true,
     display: false,
     isBeta: false,
@@ -310,6 +316,7 @@ const fia = {
   "FIA7-LOW": {
     uid: "b61f31b8-c131-40d0-9eca-109219249db6",
     name: "fia7-desactive-invisible",
+    siret: "12345678910007",
     active: false,
     display: false,
     isBeta: false,
@@ -361,6 +368,7 @@ const fia = {
   "FIA8-LOW": {
     uid: "56c5831b-7749-4206-b961-11f840bc566b",
     name: "fia8-low",
+    siret: "12345678910008",
     active: true,
     display: true,
     isBeta: false,
@@ -412,6 +420,7 @@ const fia = {
   MONCOMPTEPRO: {
     uid: "71144ab3-ee1a-4401-b7b3-79b44f7daeeb",
     name: "moncomptepro",
+    siret: "12345678910009",
     active: true,
     display: true,
     isBeta: false,
@@ -463,6 +472,7 @@ const fia = {
   "FIA-RIE-LOW": {
     uid: "c6ecab5e-dc67-4390-af57-fe208e97b649",
     name: "fia-rie-low",
+    siret: "12345678910010",
     active: true,
     display: true,
     isBeta: false,
@@ -514,6 +524,7 @@ const fia = {
   "FIA-LLNG-LOW": {
     uid: "4be87184-1052-460b-9e14-3e164f584200",
     name: "LemonLDAP::ng",
+    siret: "12345678910011",
     active: true,
     display: true,
     isBeta: false,

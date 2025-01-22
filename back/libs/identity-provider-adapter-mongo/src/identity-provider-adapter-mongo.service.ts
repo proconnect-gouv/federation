@@ -104,6 +104,7 @@ export class IdentityProviderAdapterMongoService
           name: true,
           response_types: true,
           revocation_endpoint_auth_method: true,
+          siret: true,
           title: true,
           tokenURL: true,
           token_endpoint_auth_method: true,
@@ -238,6 +239,7 @@ export class IdentityProviderAdapterMongoService
     return provider;
   }
 
+  // todo: remove this method for proconnect, we have no legacy IdP
   private legacyToOpenIdPropertyName(
     source: IdentityProvider,
   ): IdentityProviderMetadata {
@@ -271,6 +273,7 @@ export class IdentityProviderAdapterMongoService
     return this.toPanvaFormat(result);
   }
 
+  // todo: check if we can simply save the idp as panva format
   private toPanvaFormat(result: unknown): IdentityProviderMetadata {
     const panvaFormatted = {
       client: {} as ClientMetadata,

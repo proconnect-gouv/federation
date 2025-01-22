@@ -1,7 +1,7 @@
 stages:
-  - Code quality
-  - test
+  - Internal
   - End to end
+  - test # we need to use a stage named "test" cf https://docs.gitlab.com/ee/user/application_security/sast/#requirements
   - Cache
   - Review
   - Build Back

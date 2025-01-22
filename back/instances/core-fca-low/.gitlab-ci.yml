@@ -2,15 +2,19 @@ fca-low:
   stage: 'End to end'
   image: registry.gitlab.dev-franceconnect.fr/france-connect/fc/ci-cd/e2e:cypress-base-22.13.0
   rules:
+    # Force PC_APPS_VERSION for "fca-staging" branch and MR from "fca-staging" branch
     - if: '$CI_COMMIT_BRANCH == "fca-staging" || $CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "fca-staging"'
       variables:
         BDD_TAGS: 'not @ignore'
-        SKIP_DIFF_CHECK: 'true'
-    - if: '$CI_MERGE_REQUEST_LABELS =~ /CI Test (all|fca-low)/'
+        PC_APPS_VERSION: 'fca-staging'
+
+    # Add PC_APPS_VERSION for MR when custom PC_APPS_VERSION is not passed
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $PC_APPS_VERSION == null'
       variables:
-        BDD_TAGS: 'not @ignore'
-        SKIP_DIFF_CHECK: 'true'
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+        BDD_TAGS: '@ci and not @ignore'
+        PC_APPS_VERSION: 'fca-staging'
+
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $PC_APPS_VERSION != null'
       variables:
         BDD_TAGS: '@ci and not @ignore'
   timeout: 1h
@@ -42,14 +46,11 @@ fca-low:
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     # build the main app and check if it is impacted by MR
     - echo "CI_MERGE_REQUEST_LABELS=$CI_MERGE_REQUEST_LABELS"
-    - DIFF_FILES=$(docker-stack detect-back-changes core-fca-low bridge-http-proxy-rie csmr-rie mock-identity-provider-fca-low mock-service-provider-fca-low)
-    - DIFF_CHECK_STATUS=$(echo "$DIFF_FILES" | grep 'STATUS=' | sed 's/STATUS=//')
-    - echo "$DIFF_FILES"
-    - if [ "$DIFF_CHECK_STATUS" == "NO_CHANGES" ]; then exit 0; fi
-    - if [ "$DIFF_CHECK_STATUS" == "ERRORS" ]; then echo "$DIFF_FILES"; exit 1; fi
     # Test Scope definition
     - BDD_TAGS=${BDD_TAGS_FCA_LOW:-$BDD_TAGS}
     - echo "BDD_TAGS=$BDD_TAGS"
+    # Check FC Apps version for FCA
+    - echo "PC_APPS_VERSION=$PC_APPS_VERSION"
     # Ensure a clean docker environnement
     - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
     - docker-stack prune-ci
@@ -58,10 +59,9 @@ fca-low:
     - RETURN_CODE=0
     # Shallow clone depth 1 FC-APP repository
     - rm -rf $FC_ROOT/fc-apps
-    - git clone -b $FC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $FC_ROOT/fc-apps
+    - git clone -b $PC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $FC_ROOT/fc-apps
     # Bind sources in docker volumes
     - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
-    - ln -s $FC_ROOT/fc/front/instances/agent-connect $FC_ROOT/fc/docker/volumes/src/agent-connect
     - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
     # Return to project directory
     - wait

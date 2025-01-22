@@ -36,13 +36,13 @@ export default class ServiceProviderPage {
     return cy.get(this.logoutButtonSelector);
   }
 
-  getMockSubText(): Cypress.Chainable<string> {
+  getMockPropertyText(property: string): Cypress.Chainable<string> {
     return cy
       .get('#json')
       .invoke('text')
       .then((text) => {
         const responseBody = JSON.parse(text.trim());
-        return responseBody['sub'];
+        return responseBody[property];
       });
   }
 

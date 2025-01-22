@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 import { MinimalCustomIdentityInterface } from '@fc/mock-identity-provider';
 
@@ -13,7 +13,6 @@ export class CustomIdentityDto implements MinimalCustomIdentityInterface {
 
   @IsString()
   @IsNotEmpty()
-  @IsEmail()
   readonly email: string;
 
   @IsString()

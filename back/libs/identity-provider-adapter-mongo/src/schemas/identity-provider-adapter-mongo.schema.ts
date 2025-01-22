@@ -50,6 +50,9 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: [String] })
   allowedAcr: string[];
+
+  @Prop({ type: String })
+  siret: string;
 }
 
 export const IdentityProviderSchema =
