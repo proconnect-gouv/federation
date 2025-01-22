@@ -145,6 +145,9 @@ export class MetadataIdpAdapterMongoDTO {
 
   @IsBoolean()
   readonly discovery: boolean;
+
+  @IsString()
+  readonly siret: string;
 }
 
 export class DiscoveryIdpAdapterMongoDTO extends MetadataIdpAdapterMongoDTO {

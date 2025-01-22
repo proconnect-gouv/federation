@@ -1,10 +1,7 @@
-import { plainToInstance } from 'class-transformer';
-import { validate } from 'class-validator';
 import { cloneDeep } from 'lodash';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
-import * as FcCommon from '@fc/common';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfTokenGuard } from '@fc/csrf';
@@ -24,12 +21,13 @@ import { TrackingService } from '@fc/tracking';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
-import { AppConfig, GetOidcCallbackSessionDto, OidcIdentityDto } from '../dto';
+import { AppConfig, GetOidcCallbackSessionDto } from '../dto';
+import { CoreFcaAgentNoIdpException } from '../exceptions';
 import {
-  CoreFcaAgentNoIdpException,
-  CoreFcaInvalidIdentityException,
-} from '../exceptions';
-import { CoreFcaFqdnService, CoreFcaService } from '../services';
+  CoreFcaFqdnService,
+  CoreFcaService,
+  IdentitySanitizer,
+} from '../services';
 import { OidcClientController } from './oidc-client.controller';
 
 jest.mock('lodash', () => ({
@@ -176,6 +174,10 @@ describe('OidcClient Controller', () => {
     isAllowedIdpForEmail: jest.fn(),
   };
 
+  const identitySanitizerMock = {
+    sanitize: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
@@ -195,6 +197,7 @@ describe('OidcClient Controller', () => {
         OidcClientConfigService,
         CryptographyService,
         CoreFcaFqdnService,
+        IdentitySanitizer,
       ],
     })
       .overrideGuard(CsrfTokenGuard)
@@ -223,6 +226,8 @@ describe('OidcClient Controller', () => {
       .useValue(cryptographyMock)
       .overrideProvider(CoreFcaFqdnService)
       .useValue(coreFcaFqdnServiceMock)
+      .overrideProvider(IdentitySanitizer)
+      .useValue(identitySanitizerMock)
       .compile();
 
     controller = module.get<OidcClientController>(OidcClientController);
@@ -559,8 +564,6 @@ describe('OidcClient Controller', () => {
     };
     const redirectMock = `/api/v2/interaction/${interactionIdMock}/verify`;
 
-    let transformIdentityMock;
-
     beforeEach(() => {
       res = {
         redirect: jest.fn(),
@@ -571,15 +574,12 @@ describe('OidcClient Controller', () => {
         acr: acrMock,
         amr: amrMock,
       });
+
       oidcClientServiceMock.getUserInfosFromProvider.mockReturnValueOnce(
         identityMock,
       );
 
-      transformIdentityMock = jest.spyOn<OidcClientController, any>(
-        controller,
-        'transformIdentity',
-      );
-      transformIdentityMock.mockResolvedValueOnce({
+      identitySanitizerMock.sanitize.mockResolvedValue({
         given_name: 'given_name',
         sub: '1',
         email: 'complete@identity.fr',
@@ -635,7 +635,9 @@ describe('OidcClient Controller', () => {
     it('should failed to get identity if validation failed', async () => {
       // arrange
       const errorMock = new Error('Unknown Error');
-      transformIdentityMock.mockReset().mockRejectedValueOnce(errorMock);
+      identitySanitizerMock.sanitize
+        .mockReset()
+        .mockRejectedValueOnce(errorMock);
 
       // When
       await expect(
@@ -643,10 +645,10 @@ describe('OidcClient Controller', () => {
       ).rejects.toThrow(errorMock);
 
       // Then
-      expect(transformIdentityMock).toHaveBeenCalledTimes(1);
-      expect(transformIdentityMock).toHaveBeenCalledWith(
-        idpIdMock,
+      expect(identitySanitizerMock.sanitize).toHaveBeenCalledTimes(1);
+      expect(identitySanitizerMock.sanitize).toHaveBeenCalledWith(
         identityMock,
+        idpIdMock,
       );
     });
 
@@ -711,187 +713,6 @@ describe('OidcClient Controller', () => {
       // Then
       expect(res.redirect).toHaveBeenCalledTimes(1);
       expect(res.redirect).toHaveBeenCalledWith(redirectMock);
-    });
-  });
-
-  describe('transformIdentity()', () => {
-    beforeEach(() => {
-      jest.spyOn(FcCommon, 'validateDto');
-    });
-
-    it('should validate a correct identity', async () => {
-      // When
-      const res = await controller['transformIdentity'](
-        idpIdMock,
-        identityMock,
-      );
-
-      // Then
-      expect(res).toBe(identityMock);
-    });
-
-    it('should validate the OidcIdentityDto with correct params', async () => {
-      // When
-      await controller['transformIdentity'](idpIdMock, identityMock);
-
-      // Then
-      expect(FcCommon.validateDto).toHaveBeenCalledTimes(1);
-      expect(FcCommon.validateDto).toHaveBeenCalledWith(
-        identityMock,
-        OidcIdentityDto,
-        {
-          forbidNonWhitelisted: true,
-          forbidUnknownValues: true,
-          whitelist: true,
-        },
-        { excludeExtraneousValues: true },
-      );
-    });
-
-    it('should failed to validate an incorrect identity with missing sub', async () => {
-      // Given
-      const incorrectIdentityMock = { ...identityMock };
-      delete incorrectIdentityMock.sub;
-
-      await expect(
-        // When
-        controller['transformIdentity'](idpIdMock, incorrectIdentityMock),
-        // Then
-      ).rejects.toThrow(CoreFcaInvalidIdentityException);
-    });
-
-    it('should throw when email is a string of number', async () => {
-      const emailIdentity = {
-        email: '12345',
-      };
-
-      const oidcIdentityDto = plainToInstance(OidcIdentityDto, emailIdentity);
-      const errors = await validate(oidcIdentityDto, {
-        skipMissingProperties: true,
-      });
-      expect(errors.length).not.toBe(0);
-      expect(errors[0].constraints.isEmail).toContain(`email must be an email`);
-    });
-
-    it('should delete phone_number claim if the phone_number is invalid', async () => {
-      // Given
-      const invalidIdentity = {
-        ...identityMock,
-        phone_number: 'invalid_phone',
-      };
-
-      // When
-      const res = await controller['transformIdentity'](
-        idpIdMock,
-        invalidIdentity,
-      );
-
-      // Then
-      expect(res).not.toHaveProperty('phone_number');
-    });
-
-    it('should return a transformed identity if only phone_number is invalid', async () => {
-      // Given
-      const invalidIdentity = {
-        ...identityMock,
-        phone_number: 'invalid_phone',
-      };
-
-      // When
-      const res = await controller['transformIdentity'](
-        idpIdMock,
-        invalidIdentity,
-      );
-
-      // Then
-      expect(res).toEqual({ ...identityMock, phone_number: undefined });
-    });
-
-    it('should throw an exception for any property other than phone_number being invalid', async () => {
-      // Given
-      const invalidIdentity = {
-        ...identityMock,
-        email: 'invalid-email', // Invalid field
-      };
-
-      // When/Then
-      await expect(
-        controller['transformIdentity'](idpIdMock, invalidIdentity),
-      ).rejects.toThrow(CoreFcaInvalidIdentityException);
-    });
-
-    it('should return the original identity if it passes validation', async () => {
-      // Given
-      const validIdentity = {
-        ...identityMock,
-      };
-
-      // When
-      const res = await controller['transformIdentity'](
-        idpIdMock,
-        validIdentity,
-      );
-
-      // Then
-      expect(res).toEqual(validIdentity);
-    });
-
-    it('should success when organizational_unit contains points and others specifics characters', async () => {
-      const organizationalUnitIdentity = {
-        organizational_unit:
-          'MINISTERE INTERIEUR/DGPN/US REGROUPEMENT DES DZPN/US REGROUP. DIPN GC/DIPN77/CPN MELUN VAL DE SEINE',
-      };
-      const oidcIdentityDto = plainToInstance(
-        OidcIdentityDto,
-        organizationalUnitIdentity,
-      );
-      const errors = await validate(oidcIdentityDto, {
-        skipMissingProperties: true,
-      });
-      expect(errors.length).toBe(0);
-    });
-
-    it('should failed if siren is empty string', async () => {
-      const sirenIdentity = {
-        siren: '',
-      };
-      const oidcIdentityDto = plainToInstance(OidcIdentityDto, sirenIdentity);
-      const errors = await validate(oidcIdentityDto, {
-        skipMissingProperties: true,
-      });
-      expect(errors.length).not.toBe(0);
-      expect(errors[0].constraints.minLength).toContain(
-        `siren must be longer than or equal to 1 characters`,
-      );
-    });
-
-    it('should validate an identity with custom properties', async () => {
-      // Given
-      const identityMockWithCustomProperties = {
-        ...identityMock,
-        unknownField: 'a custom field',
-        anotherField: 'another custom field',
-      };
-
-      // When
-      const res = await controller['transformIdentity'](
-        idpIdMock,
-        identityMockWithCustomProperties,
-      );
-
-      // Then
-      expect(FcCommon.validateDto).toHaveBeenCalledTimes(1);
-      expect(FcCommon.validateDto).toHaveBeenCalledWith(
-        identityMockWithCustomProperties,
-        OidcIdentityDto,
-        {
-          forbidNonWhitelisted: true,
-          forbidUnknownValues: true,
-          whitelist: true,
-        },
-        { excludeExtraneousValues: true },
-      );
-      expect(res).toBe(identityMockWithCustomProperties);
     });
   });
 });

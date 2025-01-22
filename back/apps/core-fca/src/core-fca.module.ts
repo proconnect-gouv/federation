@@ -58,6 +58,7 @@ import {
   CoreFcaTrackingService,
   CoreFcaVerifyService,
   DataProviderService,
+  IdentitySanitizer,
   OidcProviderConfigAppService,
 } from './services';
 import { IsPhoneNumberFCAConstraint } from './validators';
@@ -136,6 +137,7 @@ import { IsPhoneNumberFCAConstraint } from './validators';
     CoreFcaFqdnService,
     DataProviderService,
     IsPhoneNumberFCAConstraint,
+    IdentitySanitizer,
   ],
   exports: [OidcProviderConfigAppService, CqrsModule, CoreFcaService],
 })

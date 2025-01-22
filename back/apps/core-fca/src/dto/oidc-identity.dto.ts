@@ -8,6 +8,7 @@ import {
 } from 'class-validator';
 
 import { IsPhoneNumberFca } from '../validators/is-phone-number-fca.validator';
+import { IsSiret } from '../validators/is-siret-validator';
 import { MandatoryIdentityDto } from './mandatory-identity.dto';
 
 export class OidcIdentityDto extends MandatoryIdentityDto {
@@ -26,9 +27,7 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
    * @todo #484 Faire un validator pour siren
    * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/484
    */
-  @IsString()
-  @MinLength(1)
-  @MaxLength(256)
+  @IsSiret()
   @IsOptional()
   @Expose()
   readonly siret?: string;

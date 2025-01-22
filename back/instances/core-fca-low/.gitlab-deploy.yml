@@ -4,18 +4,17 @@ review-fca-low:
   tags:
     - recette
   only:
-    - merge_requests
-    - staging
+    - fca-staging
   variables:
     GIT_STRATEGY: none
+    PC_APPS_VERSION: 'fca-staging'
   script:
     - chmod og= $RECETTE_SSH_KEY
-    - ssh -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER "sh /data/fca/start $CI_COMMIT_REF_NAME $FC_APPS_VERSION $CI_JOB_TOKEN $CI_REGISTRY $CI_OPEN_MERGE_REQUESTS"
+    - ssh -i $RECETTE_SSH_KEY -o StrictHostKeyChecking=no fcapp@$RECETTE_SERVER "sh /data/fca/start $CI_COMMIT_REF_NAME $PC_APPS_VERSION $CI_JOB_TOKEN $CI_REGISTRY $CI_OPEN_MERGE_REQUESTS"
   resource_group: recette
   dependencies: []
   environment:
     name: recette
-    url: https://recette.dev-franceconnect.fr
     on_stop: stop-fca-low
     auto_stop_in: 1 hour
   when: manual
@@ -41,8 +40,7 @@ stop-fca-low:
     name: recette
     action: stop
   only:
-    - merge_requests
-    - staging
+    - fca-staging
   when: manual
 
 .quality-fca-low-recette:
@@ -51,8 +49,7 @@ stop-fca-low:
   tags:
     - cypress
   only:
-    - merge_requests
-    - staging
+    - fca-staging
   cache:
     - key:
         files:
@@ -84,5 +81,4 @@ stop-fca-low:
       - quality/fca/cypress/reports/cucumber/html-report
   environment:
     name: recette
-    url: https://recette.dev-franceconnect.fr
   when: manual

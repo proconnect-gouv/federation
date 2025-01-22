@@ -11,7 +11,7 @@ import ServiceProviderPage from '../pages/service-provider-page';
 let serviceProviderPage: ServiceProviderPage;
 
 Given('je mémorise le sub envoyé au fournisseur de service', function () {
-  serviceProviderPage.getMockSubText().as('spSub');
+  serviceProviderPage.getMockPropertyText('sub').as('spSub');
 });
 
 When("je redemande les informations de l'usager", function () {
@@ -118,7 +118,9 @@ Then(
     const comparison = text === 'identique' ? 'be.equal' : 'not.be.equal';
 
     cy.get<string>('@spSub').then((previousSpSub) => {
-      serviceProviderPage.getMockSubText().should(comparison, previousSpSub);
+      serviceProviderPage
+        .getMockPropertyText('sub')
+        .should(comparison, previousSpSub);
     });
   },
 );
@@ -126,7 +128,14 @@ Then(
 Then(
   'le sub transmis au fournisseur de service est le suivant {string}',
   function (sub: string) {
-    serviceProviderPage.getMockSubText().should('be.equal', sub);
+    serviceProviderPage.getMockPropertyText('sub').should('be.equal', sub);
+  },
+);
+
+Then(
+  'le siret transmis au fournisseur de service est le suivant {string}',
+  function (siret: string) {
+    serviceProviderPage.getMockPropertyText('siret').should('be.equal', siret);
   },
 );
 

@@ -1,9 +1,7 @@
 [
   {
     "idpId": "71144ab3-ee1a-4401-b7b3-79b44f7daeeb",
-    "descriptions": [
-      "moncomptepro"
-    ],
+    "descriptions": ["moncomptepro"],
     "ministry": "MOCK - MonComptePro",
     "title": "MonComptePro - eIDAS faible - ES256",
     "mocked": true,
@@ -49,7 +47,8 @@
     "descriptions": [
       "FI eidas1 avec signature RS256",
       "différent",
-      "non autorisé pour idp_hint"
+      "non autorisé pour idp_hint",
+      "sans siret par défaut"
     ],
     "ministry": "MOCK - Ministère de la transition écologique - ALL FIS - SORT 2",
     "title": "Identity Provider 2 - eIDAS faible - RS256",
@@ -65,7 +64,8 @@
       "password": "input[name='password']",
       "loginButton": "button[type='submit']"
     },
-    "fqdn": "fia2.fr"
+    "fqdn": "fia2.fr",
+    "siret": ""
   },
   {
     "idpId": "405d3839-9182-415f-9926-597489d11509",
