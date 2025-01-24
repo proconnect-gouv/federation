@@ -1,4 +1,4 @@
-ARG MONGO_VERSION=4.4
+ARG MONGO_VERSION=5.0.23
 FROM mongo:${MONGO_VERSION}
 
 RUN openssl rand -base64 756 > /mongo-key-file
