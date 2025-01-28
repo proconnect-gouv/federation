@@ -6,9 +6,9 @@ Fonctionnalité: Connexion avec Claims
   # afin d'accéder à mon service
 
   Scénario: Connexion avec claims - avec claim AMR pwd
-    Etant donné que le fournisseur de service requiert le claim "amr"
-    Et que j'utilise le fournisseur d'identité "par défaut"
+    Etant donné que j'utilise le fournisseur d'identité "par défaut"
     Et que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service requiert le claim "amr"
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "test@fia1.fr"
@@ -20,9 +20,9 @@ Fonctionnalité: Connexion avec Claims
     Et la cinématique a renvoyé l'amr "pwd"
 
   Scénario: Connexion avec claims - claim AMR absent si non demandé
-    Etant donné que le fournisseur de service ne requiert pas le claim "amr"
-    Et que j'utilise le fournisseur d'identité "par défaut"
+    Etant donné que j'utilise le fournisseur d'identité "par défaut"
     Et que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service ne requiert pas le claim "amr"
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "test@fia1.fr"
@@ -35,10 +35,10 @@ Fonctionnalité: Connexion avec Claims
 
   Scénario: Connexion avec claims - erreur FS non habilité pour amr
     Etant donné que j'utilise le fournisseur de service "non habilité à demander le claim amr"
-    Et que le fournisseur de service requiert le claim "amr"
     Et que j'utilise le fournisseur d'identité "par défaut"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires"
     Et que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service requiert le claim "amr"
     Et que je clique sur le bouton AgentConnect
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y030009"

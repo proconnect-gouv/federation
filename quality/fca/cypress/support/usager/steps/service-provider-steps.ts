@@ -25,14 +25,19 @@ When('je navigue sur la page fournisseur de service', function () {
   navigateTo({ appId: this.serviceProvider.name, baseUrl: allAppsUrl });
 });
 
+Given('le fournisseur de service requiert le claim "amr"', function () {
+  serviceProviderPage.setAmrAsRequestedClaims();
+});
+
+Given('le fournisseur de service ne requiert pas le claim "amr"', function () {
+  serviceProviderPage.removeAmrFromRequestedClaims();
+});
+
 When('je clique sur le bouton AgentConnect', function () {
   // Setup the requested scope and eidas on mocked environment
   if (this.serviceProvider.mocked === true) {
     serviceProviderPage.setMockAuthorizeHttpMethod(
       this.serviceProvider.authorizeHttpMethod,
-    );
-    serviceProviderPage.setMockRequestedAmr(
-      this.serviceProvider.claims.includes('amr'),
     );
     serviceProviderPage.setMockRequestedScope(this.requestedScope);
     serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);

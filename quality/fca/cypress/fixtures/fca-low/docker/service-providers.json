@@ -11,7 +11,6 @@
     "mocked": true,
     "url": "https://fsa1-low.docker.dev-franceconnect.fr",
     "acrValue": "eidas1",
-    "claims": ["amr"],
     "selectors": {
       "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
@@ -29,7 +28,6 @@
     "mocked": true,
     "url": "https://fsa2-low.docker.dev-franceconnect.fr",
     "acrValue": "eidas1",
-    "claims": ["amr"],
     "selectors": {
       "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
@@ -48,7 +46,6 @@
     "mocked": true,
     "url": "https://fsa4-low.docker.dev-franceconnect.fr",
     "acrValue": "eidas1",
-    "claims": [],
     "selectors": {
       "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
@@ -65,7 +62,6 @@
     "mocked": true,
     "url": "https://fsa5-low.docker.dev-franceconnect.fr",
     "acrValue": "eidas1",
-    "claims": [],
     "selectors": {
       "fcaButton": "#call-authorize-button",
       "logoutButton": ".nav-logout"
