@@ -71,20 +71,40 @@ export default class ServiceProviderPage {
     }
   }
 
+  setAmrAsRequestedClaims(): void {
+    cy.get('#claims')
+      .invoke('val')
+      .then((claimsAsText) => {
+        const claims = JSON.parse(claimsAsText as string);
+        claims['id_token'] = { amr: { essential: true } };
+        cy.get('#claims').clear();
+        cy.get('#claims').type(JSON.stringify(claims), {
+          delay: 0,
+          parseSpecialCharSequences: false,
+        });
+      });
+  }
+
+  removeAmrFromRequestedClaims(): void {
+    cy.get('#claims')
+      .invoke('val')
+      .then((claimsAsText) => {
+        const claims = JSON.parse(claimsAsText as string);
+        delete claims['id_token']['amr'];
+        cy.get('#claims').clear();
+        cy.get('#claims').type(JSON.stringify(claims), {
+          delay: 0,
+          parseSpecialCharSequences: false,
+        });
+      });
+  }
+
   setMockRequestedAcr(acrValue?: string): void {
     if (!acrValue) {
       cy.get('input[name="acr_values"]').clear();
       cy.get('input[id="acr_values_toggle"]').uncheck();
     } else {
       cy.get('input[name="acr_values"]').clearThenType(acrValue);
-    }
-  }
-
-  setMockRequestedAmr(isRequested: boolean): void {
-    if (isRequested) {
-      cy.get('#claim_amr').check();
-    } else {
-      cy.get('#claim_amr').uncheck();
     }
   }
 

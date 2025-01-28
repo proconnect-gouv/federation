@@ -26,19 +26,6 @@ function updateAcr() {
   document.getElementById('acrValues').value = acr;
 }
 
-function getClaims() {
-  const selector = 'input[name="selected-claim"]:checked';
-  const elements = [...document.querySelectorAll(selector)];
-  return elements.map((elem) => elem.value);
-}
-
-function updateClaim() {
-  const claims = getClaims();
-  const claimsAreValid = claims && claims.length > 0;
-  const json = !claimsAreValid ? '' : transformClaimsToJsonString(claims);
-  document.getElementById('claims').value = json;
-}
-
 function togglePrompt() {
   const selector = 'input[name="activate-prompt"]';
   const toggle = document.querySelector(selector);
@@ -65,20 +52,10 @@ function changeHttpMethod() {
   document.forms['authorizeForm'].method = httpMethod;
 }
 
-function transformClaimsToJsonString(claims) {
-  const values = claims.reduce(
-    (acc, key) => ({ ...acc, [key]: { essential: true } }),
-    {},
-  );
-  const json = JSON.stringify({ id_token: values });
-  return json;
-}
-
 function init() {
   var mode = document.getElementById('modeForm').elements['mode'].value;
   if (mode === 'advanced') {
     updateAcr();
-    updateClaim();
     updatePrompt();
   }
   updateScope();

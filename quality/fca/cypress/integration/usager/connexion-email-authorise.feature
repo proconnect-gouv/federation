@@ -6,10 +6,10 @@ Fonctionnalité: Connexion Usager - Email autorisé
 
   @ignoreInteg01
   Scénario: Connexion à un FS qui limite les emails avec un email authorisé
-    Etant donné que le fournisseur de service ne requiert pas le claim "amr"
-    Et que j'utilise un fournisseur de service "avec une restriction de fqdn"
+    Etant donné que j'utilise un fournisseur de service "avec une restriction de fqdn"
     Et que le fournisseur de service requiert l'accès aux informations du scope "obligatoires"
     Et que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service ne requiert pas le claim "amr"
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "fqdnautorise@fia1.fr"
@@ -21,10 +21,10 @@ Fonctionnalité: Connexion Usager - Email autorisé
 
   @ignoreInteg01
   Scénario: Connexion à un FS qui limite les email avec un email non authorisé
-    Etant donné que le fournisseur de service ne requiert pas le claim "amr"
-    Et que j'utilise un fournisseur de service "avec une restriction de fqdn"
+    Etant donné que j'utilise un fournisseur de service "avec une restriction de fqdn"
     Et que le fournisseur de service requiert l'accès aux informations du scope "obligatoires"
     Et que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service ne requiert pas le claim "amr"
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "test@nonautorise.fr"

@@ -119,6 +119,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et que je suis connecté au fournisseur de service
     Et que j'utilise un fournisseur de service "avec accès au FI par défaut (troisième FS)"
     Et que je navigue sur la page fournisseur de service
+    Et que le fournisseur de service ne requiert pas le claim "amr"
     Et que je clique sur le bouton AgentConnect
     Et que je suis redirigé vers la page fournisseur de service
     Et que je suis connecté au fournisseur de service
@@ -132,6 +133,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et que je suis connecté au fournisseur de service
     Quand je me déconnecte du fournisseur de service
     Alors je suis déconnecté du fournisseur de service
+    Alors le fournisseur de service ne requiert pas le claim "amr"
     Et je clique sur le bouton AgentConnect
     Et je suis redirigé vers la page interaction
 

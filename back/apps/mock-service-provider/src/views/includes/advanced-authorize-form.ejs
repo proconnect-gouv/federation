@@ -14,20 +14,6 @@
     <label for="scope_<%=elem%>"><%=elem%></label>
   </div>
   <% }) %>
-  <h2>Claims</h2>
-  <% ['amr'].forEach(elem => { %>
-    <div class="claim-input-wrapper">
-      <input
-        id="claim_<%=elem%>"
-        type="checkbox"
-        name="selected-claim"
-        value="<%=elem%>"
-        checked
-        onChange="updateClaim()"
-      />
-      <label for="claim_<%=elem%>"><%=elem%></label>
-    </div>
-  <% }) %>
   <h2>ACR <input
     id="acr_values_toggle"
     type="checkbox"
@@ -92,7 +78,7 @@
     <div class="form-group row">
       <label class="col-2 col-form-label" for="claims"> Claims : </label>
       <div class="col-10">
-        <input id="claims" name="claims" type="text" value="" class="form-control" />
+        <input id="claims" name="claims" type="text" value='{"id_token":{"amr":{"essential":true}}}' class="form-control" />
       </div>
     </div>
     <div class="form-group row">
