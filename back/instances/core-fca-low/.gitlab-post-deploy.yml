@@ -8,7 +8,7 @@ quality-fca-low-release:
   when: manual
   needs: []
   environment:
-    name: integ01
+    name: build-fca
     url: https://fca.integ01.dev-agentconnect.fr
   variables:
     BDD_TAGS: 'not @ignore'
@@ -40,6 +40,8 @@ quality-fca-low-release:
     - cd $CI_PROJECT_DIR/quality/fca
     - export CYPRESS_EXPLOIT_USER_PASS=$EXPLOIT_FCA_LOW_INT_PWD
     - export CYPRESS_EXPLOIT_USER_TOTP=$EXPLOIT_FCA_LOW_INT_TOTP
+    - yarn cypress install
+    - yarn cypress verify
     - yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS" || RETURN_CODE=1
     - yarn report
     - exit $RETURN_CODE
