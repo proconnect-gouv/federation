@@ -1,11 +1,19 @@
 #
 
 .base_end_to_end:
-  stage: 'End to end'
   image: registry.gitlab.dev-franceconnect.fr/france-connect/fc/ci-cd/e2e:cypress-base-22.13.0
+  stage: 'End to end'
+  #
+  needs:
+    - job: 🧶 back
+      optional: true
+    - job: 🧶 quality
+      optional: true
   timeout: 1h
   tags:
     - cypress
+  retry:
+    max: 2
   variables:
     TZ: 'Europe/Paris'
     CYPRESS_PLATFORM: 'fca-low'
