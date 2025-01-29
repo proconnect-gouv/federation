@@ -6,34 +6,111 @@ include:
   - 'back/.gitlab-post-deploy.yml'
 
 variables:
-  CYPRESS_CACHE_FOLDER: '${CI_PROJECT_DIR}/cache/Cypress'
-  FC_ROOT: '$CI_BUILDS_DIR/france-connect'
+  CYPRESS_CACHE_FOLDER: '${CI_PROJECT_DIR}/.cache/Cypress'
+  FC_ROOT: '${CI_BUILDS_DIR}/france-connect'
   GIT_DEPTH: 0
   PROXY_EXPLOITATION: 'http://$EXPLOITATION_PROXY_HOST:$EXPLOITATION_PROXY_PORT'
-  YARN_CACHE_FOLDER: ${CI_BUILDS_DIR}/.yarn-cache
+  YARN_CACHE_FOLDER: ${CI_PROJECT_DIR}/.cache/yarn
 
-static-and-unit-tests:
-  image: node:22.13.0-bullseye
-  stage: 'Internal'
+#
+
+.var_cache_back_node_modules: &var_cache_back_node_modules
+  key:
+    files:
+      - back/yarn.lock
+    prefix: fca_back_node_modules
+  #
+  fallback_keys:
+    - fca_back_node_modules_${CI_DEFAULT_BRANCH}
+    - fca_back_node_modules_default
+  paths:
+    - back/node_modules
+  policy: pull
+
+.var_cache_quality_node_modules: &var_cache_quality_node_modules
+  key:
+    files:
+      - quality/yarn.lock
+    prefix: fca_quality_node_modules
+  #
+  fallback_keys:
+    - fca_quality_yarn_cache_${CI_DEFAULT_BRANCH}
+    - fca_quality_yarn_cache_default
+  paths:
+    - quality/node_modules
+    - ${CYPRESS_CACHE_FOLDER}
+  policy: pull
+
+.var_rule_on_merge_request_or_staging: &var_rule_on_merge_request_or_staging
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event" || $CI_COMMIT_BRANCH == "fca-staging"'
+
+#
+
+default:
+  interruptible: true
   tags:
     - node
-  rules:
-    - if: '$CI_PIPELINE_SOURCE != "merge_request_event" && $CI_COMMIT_BRANCH != "fca-staging"'
-      when: never
-    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-      when: manual
-    - if: '$CI_COMMIT_BRANCH == "fca-staging"'
+
+#
+
+🧶 back:
+  image: node:22.13.0-bullseye
+  stage: .pre
+  #
   cache:
-    - key:
-        files:
-          - back/yarn.lock
-        prefix: fca_back_node_modules
-      paths:
-        - back/node_modules
+    - <<: *var_cache_back_node_modules
+      policy: pull-push
+  rules:
+    - <<: *var_rule_on_merge_request_or_staging
+      changes:
+        - back/yarn.lock
+        - back/.gitlab-ci.yml
+  #
   before_script:
     - cd ${CI_PROJECT_DIR}/back
     - corepack enable
     - corepack prepare --activate
+  script:
+    - yarn install --ignore-engines --frozen-lockfile --no-progress
+
+🧶 quality:
+  image: node:22.13.0-bullseye
+  stage: .pre
+  #
+  cache:
+    - <<: *var_cache_quality_node_modules
+      policy: pull-push
+  rules:
+    - <<: *var_rule_on_merge_request_or_staging
+      changes:
+        - quality/yarn.lock
+        - back/.gitlab-ci.yml
+  #
+  before_script:
+    - cd ${CI_PROJECT_DIR}/quality
+    - corepack enable
+    - corepack prepare --activate
+  script:
+    - yarn install --ignore-engines --frozen-lockfile --no-progress
+    - yarn cypress install
+    - yarn cypress version
+
+#
+
+💅 Lint back:
+  image: node:22.13.0-bullseye
+  stage: Internal
+  #
+  cache:
+    - <<: *var_cache_back_node_modules
+  needs:
+    - job: 🧶 back
+      optional: true
+  rules:
+    - <<: *var_rule_on_merge_request_or_staging
+  #
+  before_script:
+    - cd ${CI_PROJECT_DIR}/back
   script:
     - yarn doc
     - git --no-pager diff --exit-code || (echo "💥 You forgot documentation 💥" && exit 1)
@@ -42,9 +119,43 @@ static-and-unit-tests:
     - yarn lint
     - yarn prettier
     - yarn tsc --noEmit
-    - yarn test --coverage
-    - yarn install --frozen-lockfile --ignore-engines
-    - apt-get update && apt-get install -y bc
-    - ${CI_PROJECT_DIR}/coverage.sh
+
+🧪 Test back:
+  image: node:22.13.0-bullseye
+  stage: Internal
+  #
+  cache:
+    - <<: *var_cache_back_node_modules
   coverage: '/Global coverage is: \[([\d\.]+)%\]/'
   interruptible: true
+  needs:
+    - job: 🧶 back
+      optional: true
+  rules:
+    - <<: *var_rule_on_merge_request_or_staging
+  #
+  before_script:
+    - cd ${CI_PROJECT_DIR}/back
+    - apt-get update && apt-get install -y bc
+  script:
+    - yarn test --coverage
+    - ${CI_PROJECT_DIR}/coverage.sh
+
+💅 Lint quality:
+  image: node:22.13.0-bullseye
+  stage: Internal
+  #
+  cache:
+    - <<: *var_cache_quality_node_modules
+  needs:
+    - job: 🧶 quality
+      optional: true
+  rules:
+    - <<: *var_rule_on_merge_request_or_staging
+  #
+  before_script:
+    - cd ${CI_PROJECT_DIR}/quality
+  script:
+    - yarn lint
+    - yarn prettier
+    - yarn tsc --noEmit
