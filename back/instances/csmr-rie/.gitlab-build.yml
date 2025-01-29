@@ -7,13 +7,3 @@ fca/csmr-rie-build-image:
   variables:
     APP: csmr-rie
     MSG: "environments/nubo01-fca-integ/group_vars/all/versions.yml\ncsmr_rie_version:"
-
-fca/csmr-rie-tag-to-prod-image:
-  extends: .base-tag-to-prod
-  environment:
-    name: build-fca
-  variables:
-    DOCKER_IMAGE: csmr-rie
-    MSG: "environments/nubo01-fca-prod/group_vars/all/versions.yml\ncsmr_rie_version:"
-  needs:
-    - job: fca/csmr-rie-build-image
