@@ -2,6 +2,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -13,9 +14,15 @@ export enum PublicationStatusEnum {
   DRAFT = 'DRAFT',
   PENDING = 'PENDING',
   PUBLISHED = 'PUBLISHED',
+  ARCHIVED = 'ARCHIVED',
+  FAILED = 'FAILED',
 }
 
 @Entity()
+@Index('version_unique_published', ['instance'], {
+  unique: true,
+  where: `"publicationStatus" = 'PUBLISHED'`,
+})
 export class PartnersServiceProviderInstanceVersion {
   @PrimaryGeneratedColumn('uuid')
   id: string;

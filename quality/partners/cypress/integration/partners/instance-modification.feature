@@ -16,7 +16,7 @@ Fonctionnalité: Instance - Modification
     Et que je suis sur la page liste des instances
     Et que je clique sur la première instance
     Et que je suis sur la page modification d'instance
-    Quand j'entre un nom aléatoire dans le champ "instance_name" du formulaire de modification d'instance
+    Quand j'entre un nom aléatoire dans le champ "name" du formulaire de modification d'instance
     Et je valide le formulaire de modification d'instance
     Alors je suis redirigé vers la page liste des instances
     Et la confirmation de modification de l'instance est affichée
