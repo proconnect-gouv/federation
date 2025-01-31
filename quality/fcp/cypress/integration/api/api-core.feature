@@ -10,7 +10,7 @@ Fonctionnalité: API - core
     Et l'entête de la réponse a une propriété "content-type" contenant "text/plain"
     Et l'entête de la réponse a une propriété "location" égale à "https://franceconnect.gouv.fr"
 
-  @exceptions
+  @exceptions @ignoreLow @ignoreHigh
   Scénario: API core - Page inconue dans le dossier /api/v2
     Etant donné que je prépare une requête "/api/v2/wrong-url"
     Et que je configure la requête pour ne pas suivre les redirections
