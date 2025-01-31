@@ -61,7 +61,7 @@ When(
 );
 
 When(
-  /^j'entre un nom aléatoire dans le champ "(instance_name)" du formulaire de (?:création|modification) d'instance$/,
+  /^j'entre un nom aléatoire dans le champ "(name)" du formulaire de (?:création|modification) d'instance$/,
   function (key: string) {
     const randomId = Cypress._.random(0, 1e6);
     const instanceName = `bdd_${randomId}`;
@@ -89,10 +89,10 @@ Then(
 );
 
 Then(
-  /^le champ "(instance_name)" contient le nom de l'instance dans le formulaire de modification d'instance$/,
-  function (name: string) {
-    const { instance_name: instanceName } = this.instance;
-    instanceFormPage.checkHasValue(name, instanceName);
+  /^le champ "(name)" contient le nom de l'instance dans le formulaire de modification d'instance$/,
+  function (key: string) {
+    const { name: instanceName } = this.instance;
+    instanceFormPage.checkHasValue(key, instanceName);
   },
 );
 

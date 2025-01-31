@@ -21,9 +21,9 @@ Fonctionnalité: Instance - Création
     Etant donné que je me connecte à l'espace partenaires
     Et que je suis sur la page liste des instances
     Et que je clique sur le lien d'ajout d'une instance
-    Et que j'utilise l'instance de FS "avec entity_id"
+    Et que j'utilise l'instance de FS "avec entityId"
     Quand j'entre les valeurs par défaut pour mon instance
-    Et j'entre un nom aléatoire dans le champ "instance_name" du formulaire de création d'instance
+    Et j'entre un nom aléatoire dans le champ "name" du formulaire de création d'instance
     Et je valide le formulaire de création d'instance
     Alors je suis redirigé vers la page liste des instances
     Et la confirmation de création de l'instance est affichée

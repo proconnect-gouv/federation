@@ -2,6 +2,7 @@
 
 import { Environment } from './environment';
 import { Instance } from './instance';
+import { RmqMessage } from './rmq-message';
 import { UserData } from './user';
 
 // Cypress Alias
@@ -24,16 +25,20 @@ declare module 'mocha' {
     // API context
     apiRequests: Partial<Cypress.RequestOptions>[];
     apiRequest?: Partial<Cypress.RequestOptions>;
-
+    rmqRequestMessage: RmqMessage;
+    rmqResponseMessage: RmqMessage;
     // BDD context
     env: Environment;
     instances: Instance[];
     instance: Instance;
     users: UserData[];
     user: UserData;
+    // Postgres context
+    pgVersions: object[];
   }
 }
 
 export * from './environment';
 export * from './instance';
+export * from './rmq-message';
 export * from './user';

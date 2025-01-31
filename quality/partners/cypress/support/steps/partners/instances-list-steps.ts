@@ -82,7 +82,7 @@ When("l'instance {string} est affichée", function (instanceName: string) {
 
 When(/^l'instance (?:créée|modifiée) est affichée$/, function () {
   expect(this.instance).to.exist;
-  const { instance_name: instanceName } = this.instance;
+  const { name: instanceName } = this.instance;
   instancesListPage.findInstanceCard(instanceName).then((instanceCard) => {
     expect(instanceCard).to.exist;
     currentInstanceCard = instanceCard;
@@ -95,7 +95,7 @@ Then(/^le nom de l'instance est "([^"]*)"$/, function (instanceName: string) {
 
 Then("le nom de l'instance est affiché", function () {
   expect(this.instance).to.exist;
-  const { instance_name: instanceName } = this.instance;
+  const { name: instanceName } = this.instance;
   currentInstanceCard.getInstanceName().should('have.text', instanceName);
 });
 
