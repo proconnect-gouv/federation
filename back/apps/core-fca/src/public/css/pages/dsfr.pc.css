@@ -31,8 +31,7 @@ CUSTOMIZE ICON NOTICE COMPONENT - it's a temporary poll for new PC service
 }
 
 .ac-notice {
-  border-style: solid;
-  border-width: 2px;
+  background-color: #c3fad5;
   color: var(--text-action-high-blue-france);
 }
 
