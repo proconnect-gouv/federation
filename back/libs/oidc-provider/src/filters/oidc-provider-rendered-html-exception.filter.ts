@@ -24,10 +24,15 @@ export class OidcProviderRenderedHtmlExceptionFilter
     const code = this.getExceptionCodeFor(exception);
     const id = generateErrorId();
 
-    if (exception.originalError?.caught) {
-      this.finalCatch(exception, ctx, code, id);
-    } else {
-      this.firstCatch(exception, ctx, code, id);
+    const { source } = exception;
+    const caught = exception.originalError?.caught;
+
+    if (!caught) {
+      this.logAndPublish(exception, ctx, code, id);
+    }
+
+    if (source === 'render') {
+      this.output(exception, ctx, code, id);
     }
   }
 
@@ -35,7 +40,7 @@ export class OidcProviderRenderedHtmlExceptionFilter
    * If the error is already caught, we should not log it again,
    * but this means we are in the render() call, so we should output the error.
    */
-  private finalCatch(
+  private output(
     exception: OidcProviderBaseRenderedException,
     ctx: HttpArgumentsHost,
     code: string,
@@ -59,7 +64,7 @@ export class OidcProviderRenderedHtmlExceptionFilter
    * Flag the error as caught to avoid multiple logs
    * (but do not create originalError if it does not exist).
    */
-  private firstCatch(
+  private logAndPublish(
     exception: OidcProviderBaseRenderedException,
     ctx: HttpArgumentsHost,
     code: string,

@@ -91,6 +91,7 @@ describe('OidcProviderRenderedHtmlExceptionFilter', () => {
 
     originalErrorMock = new Error('originalErrorMockValue');
     exceptionMock = new ExceptionMock(originalErrorMock);
+    exceptionMock.source = 'render';
   });
 
   it('should be defined', () => {
