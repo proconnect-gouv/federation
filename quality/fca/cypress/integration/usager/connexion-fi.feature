@@ -14,6 +14,7 @@ Fonctionnalité: Connexion à un FI
     Quand je clique sur le bouton de connexion
     Alors je suis redirigé vers la page login du fournisseur d'identité
 
+  @ignoreInteg01
   Scénario: Je me rends sur la page du FI et je récupère correctement le sp_id
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que je navigue sur la page fournisseur de service
@@ -37,6 +38,7 @@ Fonctionnalité: Connexion à un FI
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500006"
 
+  @ignoreInteg01
   Scénario: J'utilise un fournisseur d'identité blacklisté
     Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que je navigue sur la page fournisseur de service
@@ -46,6 +48,7 @@ Fonctionnalité: Connexion à un FI
     Alors je suis redirigé vers la page erreur technique
     Et le code d'erreur est "Y500023"
 
+  @ignoreInteg01
   Scénario: J'utilise un fournisseur d'identité désactivé mais non blacklisté
     Etant donné que j'utilise un fournisseur de service "par défaut"
     Et que je navigue sur la page fournisseur de service

@@ -35,7 +35,7 @@ Fonctionnalité: Connexion Usager - Scope
       | email                                     |
       | chorusdt                                  |
 
-  @ci
+  @ci @ignoreInteg01
   Scénario: Connexion d'un usager - scope anonyme
     Etant donné que le fournisseur de service requiert l'accès aux informations du scope "anonyme"
     Et que j'utilise un fournisseur d'identité "actif"
@@ -50,7 +50,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et je suis connecté au fournisseur de service
     Et le fournisseur de service a accès aux informations du scope "anonyme"
 
-  @ci
+  @ci @ignoreInteg01
   Scénario: Connexion d'un usager - attribut scope inconnu ignoré
     Etant donné que le fournisseur de service requiert l'accès aux informations des scopes "email avec scope inconnu"
     Et que j'utilise un fournisseur d'identité "actif"
@@ -65,6 +65,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et je suis connecté au fournisseur de service
     Et le fournisseur de service a accès aux informations des scopes "email"
 
+  @ignoreInteg01
   Scénario: Connexion d'un usager - erreur scope vide
     Etant donné que le fournisseur de service a configuré sa requête authorize avec un scope "vide"
     Et que je navigue sur la page fournisseur de service
@@ -73,6 +74,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et le titre de l'erreur fournisseur de service est "invalid_request"
     Et la description de l'erreur fournisseur de service est "openid scope must be requested when using the acr_values parameter"
 
+  @ignoreInteg01
   Scénario: Connexion d'un usager - erreur scope openid manquant
     Etant donné que le fournisseur de service a configuré sa requête authorize avec des scopes "obligatoires sans openid"
     Et que je navigue sur la page fournisseur de service
@@ -81,6 +83,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et le titre de l'erreur fournisseur de service est "invalid_request"
     Et la description de l'erreur fournisseur de service est "openid scope must be requested when using the acr_values parameter"
 
+  @ignoreInteg01
   Scénario: Connexion d'un usager - erreur FS non habilité pour ce scope
     Etant donné que j'utilise le fournisseur de service "non habilité à demander le scope belonging_population"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires et belonging_population"
