@@ -8,7 +8,7 @@ quality-fca-low-release:
   when: manual
   needs: []
   environment:
-    name: build-fca
+    name: integ01
     url: https://fca.integ01.dev-agentconnect.fr
   variables:
     BDD_TAGS: 'not @ignore'
