@@ -52,7 +52,6 @@
         - back/node_modules
       policy: pull
   before_script:
-    - export NODE_VERSION=v22.13.0
     - shopt -s expand_aliases
     - alias docker-stack=$FC_ROOT/fc/docker/docker-stack
     # Test Scope definition
@@ -60,7 +59,36 @@
     - echo "BDD_TAGS=$BDD_TAGS"
     # Check FC Apps version for FCA
     - echo "PC_APPS_VERSION=$PC_APPS_VERSION"
+    # Ensure a clean docker environnement
+    - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
+    - docker-stack prune-ci
     - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
+    - RETURN_CODE=0
+    # Shallow clone depth 1 FC-APP repository
+    - rm -rf $FC_ROOT/fc-apps
+    - git clone -b $PC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $FC_ROOT/fc-apps
+    # Bind sources in docker volumes
+    - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
+    - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
+    # Return to project directory
+    - wait
+    - cd $CI_PROJECT_DIR
+    # Up the docker-stack with minimal requirement
+    - export NODE_VERSION=v22.13.0
+    - docker-stack up bdd-fca-low
+    - docker exec fc_core-fca-low_1 bash -c "node --version"
+    - docker exec fc_core-fca-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
+    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
+    - cd $CI_PROJECT_DIR/quality/fca && yarn install --frozen-lockfile
+    - cd $CI_PROJECT_DIR
+    # Start the NodeJS apps
+    - docker-stack start-all-ci
+    # Ensure the required apps are running
+    - docker-stack wait "core-fca-low" "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
+    - docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login"
+    # Starting Cypress Quality checks
+    - cd $CI_PROJECT_DIR/quality/fca
   interruptible: true
   artifacts:
     expire_in: 1 hrs
@@ -81,16 +109,6 @@
 fca-low-snapshot:
   extends: .base_end_to_end
   script:
-    # Up the docker-stack with minimal requirement
-    - docker-stack up min-fca-low
-    - cd $CI_PROJECT_DIR/quality/fca && yarn install --frozen-lockfile
-    - cd $CI_PROJECT_DIR
-    # Start the NodeJS apps
-    - docker-stack start-all-ci
-    # Ensure the required apps are running
-    - docker-stack wait "core-fca-low" "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
-    # Starting Cypress Quality checks
-    - cd $CI_PROJECT_DIR/quality/fca
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting visual checks"
     - yarn test:low:snapshot -c video=${CYPRESS_VIDEO}
     - yarn report
@@ -98,33 +116,6 @@ fca-low-snapshot:
 fca-low-chrome-desktop:
   extends: .base_end_to_end
   script:
-    # Ensure a clean docker environnement
-    - yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION
-    - docker-stack prune-ci
-    - if [[ ! -d $FC_ROOT/mocks ]]; then cp -R /var/www/mocks $FC_ROOT/; fi
-    - RETURN_CODE=0
-    # Shallow clone depth 1 FC-APP repository
-    - rm -rf $FC_ROOT/fc-apps
-    - git clone -b $PC_APPS_VERSION --depth 1 https://gitlab-ci-token:$CI_JOB_TOKEN@gitlab.dev-franceconnect.fr/france-connect/fc-apps.git $FC_ROOT/fc-apps
-    # Bind sources in docker volumes
-    - ln -s $CI_PROJECT_DIR $FC_ROOT/fc/docker/volumes/src/fc
-    - ln -s $FC_ROOT/fc-apps $FC_ROOT/fc/docker/volumes/src/fc-apps
-    # Return to project directory
-    - wait
-    - cd $CI_PROJECT_DIR
-    # Up the docker-stack with minimal requirement
-    - docker-stack up bdd-fca-low
-    - docker exec fc_core-fca-low_1 bash -c "yarn config set proxy $PROXY_EXPLOITATION && yarn config set https-proxy $PROXY_EXPLOITATION"
-    - rsync -a $CI_PROJECT_DIR/cache/fc-apps/ $FC_ROOT/fc-apps/ || true
-    - cd $CI_PROJECT_DIR/quality/fca && yarn install --frozen-lockfile
-    - cd $CI_PROJECT_DIR
-    # Start the NodeJS apps
-    - docker-stack start-all-ci
-    # Ensure the required apps are running
-    - docker-stack wait "core-fca-low" "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
-    - docker-stack wait "exploitation-fca-low" "https://exploitation-fca-low.docker.dev-franceconnect.fr/login"
-    # Starting Cypress Quality checks
-    - cd $CI_PROJECT_DIR/quality/fca
     - $CI_PROJECT_DIR/back/scripts/ci/broadcast.sh "Starting Quality checks with tags $BDD_TAGS"
     - yarn test:low:chrome-desktop -c video=${CYPRESS_VIDEO} --env TAGS="$BDD_TAGS" || RETURN_CODE=1
     - yarn report
