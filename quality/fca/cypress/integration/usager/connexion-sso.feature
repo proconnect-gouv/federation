@@ -137,6 +137,7 @@ Fonctionnalité: Connexion Usager - SSO
     Et je clique sur le bouton AgentConnect
     Et je suis redirigé vers la page interaction
 
+  @ignoreInteg01
   Scénario: Connexion SSO - SSO désactivé pour le deuxième FS
     Etant donné que je désactive le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise un fournisseur de service "avec accès au FI par défaut (deuxième FS)"
@@ -150,6 +151,7 @@ Fonctionnalité: Connexion Usager - SSO
     Quand je clique sur le bouton AgentConnect
     Alors je suis redirigé vers la page interaction
 
+  @ignoreInteg01
   Scénario: Connexion SSO - SSO réactivé pour le deuxième FS
     Etant donné que j'active le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise un fournisseur de service "avec accès au FI par défaut (deuxième FS)"
