@@ -100,6 +100,12 @@ services:
       - fc
       - exploitation
       - rie
+    healthcheck:
+      test: ['CMD', 'bash', '-c', 'echo >/dev/tcp/localhost/3128 || exit 1']
+      interval: 1s
+      timeout: 1s
+      retries: 1
+      start_period: 1s
 
   log-hub:
     hostname: log-hub
