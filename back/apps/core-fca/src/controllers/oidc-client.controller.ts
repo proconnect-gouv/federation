@@ -319,6 +319,7 @@ export class OidcClientController {
       req,
       fqdn: identityFqdn,
       email: identity.email,
+      idpSub: identity.sub,
     });
 
     const transformedIdentity = await this.sanitizer.sanitize(identity, idpId);

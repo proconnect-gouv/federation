@@ -11,11 +11,13 @@ export class CoreFcaTrackingService extends CoreTrackingService {
     ctx: TrackedEventContextInterface,
   ): CoreFcaTrackingContextInterface {
     const baseContext = super.extractContext(ctx);
-    const { fqdn } = ctx;
+    const { fqdn, email, idpSub } = ctx;
 
     const context = {
       ...baseContext,
       fqdn,
+      email,
+      idpSub,
     };
 
     return context;
