@@ -28,18 +28,18 @@ export const frFR: I18nTranslationsMapType = {
   'Form.label.entityId': 'client_id à réutiliser pour générer les subs',
 
   // form create instance label description
-  'Form.hintText.name': 'Exemple : Commune de Paris - Portail Citoyen',
-  'Form.hintText.signupId':
+  'Form.hint.name': 'Exemple : Commune de Paris - Portail Citoyen',
+  'Form.hint.signupId':
     'Renseignez ici le numéro de la demande Datapass qui a été validée',
-  'Form.hintText.site': 'Renseignez ici votre URL de site',
-  'Form.hintText.redirect_uris': 'Exemple : https://www.paris.fr/callback',
-  'Form.hintText.post_logout_redirect_uris':
+  'Form.hint.site': 'Renseignez ici votre URL de site',
+  'Form.hint.redirect_uris': 'Exemple : https://www.paris.fr/callback',
+  'Form.hint.post_logout_redirect_uris':
     'Exemple : https://www.paris.fr/logout',
-  'Form.hintText.IPServerAddressesAndRanges':
+  'Form.hint.IPServerAddressesAndRanges':
     'Renseignez ici les adresses IP utilisées par votre Fournisseur de Service Exemple : 185.24.184.100 (IPv4), 2001:0db8:0000:85a3:0000:0000:ac1f:8001/59 (IPv6)',
-  'Form.hintText.id_token_signed_response_alg':
+  'Form.hint.id_token_signed_response_alg':
     'Renseignez ici l’algorithme de signature que vous souhaitez utiliser pour la signature des jetons transmis par FranceConnect',
-  'Form.hintText.entityId':
+  'Form.hint.entityId':
     'Veuillez saisir le client id de votre fournisseur de service FranceConnect v1',
 
   // common error field

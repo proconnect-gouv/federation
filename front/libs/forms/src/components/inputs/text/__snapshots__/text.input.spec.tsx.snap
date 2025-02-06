@@ -8,15 +8,8 @@ exports[`TextInput should match snapshot 1`] = `
     <div
       data-mockid="LabelElement"
     />
-    <input
-      aria-describedby="any name mock-messages"
-      class="any inputClassname mock"
-      data-testid="form-input-text-any name mock--testid"
-      disabled=""
-      id="form-input-text-any name mock"
-      name="any name mock"
-      type="text"
-      value="any input value mock"
+    <div
+      data-mockid="InputTextElement"
     />
     <div
       data-mockid="MessageElement"

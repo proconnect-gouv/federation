@@ -92,6 +92,42 @@ describe('FormDecoratorHelper', () => {
     });
   });
 
+  describe('getInitialValue', () => {
+    it('should return the default empty string when is not an array', () => {
+      // When
+      const result = FormDecoratorHelper['getInitialValue'](false);
+
+      // Then
+      expect(result).toBe('');
+    });
+
+    it('should return the default array with an single empty string when is an array', () => {
+      // When
+      const result = FormDecoratorHelper['getInitialValue'](true);
+
+      // Then
+      expect(result).toStrictEqual(['']);
+    });
+
+    it('should return the param value when defined', () => {
+      // When
+      const result = FormDecoratorHelper['getInitialValue'](false, [
+        'any-mock-value',
+      ]);
+
+      // Then
+      expect(result).toStrictEqual(['any-mock-value']);
+    });
+
+    it('should return the default value when param is undefined', () => {
+      // When
+      const result = FormDecoratorHelper['getInitialValue'](false, undefined);
+
+      // Then
+      expect(result).toStrictEqual('');
+    });
+  });
+
   describe('generateFieldValidatorsMissingAttributes', () => {
     const convertRegExpToStringsMock = jest.mocked(convertRegExpToStrings);
 
@@ -184,6 +220,7 @@ describe('FormDecoratorHelper', () => {
       const attributes = {
         type: 'number',
         required: true,
+        array: true,
         order: 2,
         validateIf: [validateIfRuleMock as unknown as FieldValidateIfRule],
         validators,
@@ -192,6 +229,8 @@ describe('FormDecoratorHelper', () => {
         type: attributes.type,
         name: key,
         required: true,
+        array: true,
+        initialValue: [''],
         order: attributes.order,
         validateIf: [validateIfRuleMock as unknown as FieldValidateIfRule],
         validators: expectedFinalValidators,
@@ -217,7 +256,9 @@ describe('FormDecoratorHelper', () => {
       const expectedAttributes = {
         type: defaultType,
         name: key,
+        initialValue: '',
         required: false,
+        array: false,
         order: defaultOrder,
         validateIf: [],
         validators: expectedFinalValidators,

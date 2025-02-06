@@ -63,6 +63,7 @@ export class ServiceProviderService {
       id_token_signed_response_alg,
       id_token_encrypted_response_alg,
       id_token_encrypted_response_enc,
+      entityId,
     } = input;
 
     return {
@@ -73,7 +74,6 @@ export class ServiceProviderService {
        *
        * idpFilterExclude,
        * idpFilterList,
-       * entityId,
        */
       eidas,
       rep_scope,
@@ -108,6 +108,7 @@ export class ServiceProviderService {
         userinfo_encrypted_response_alg as EncryptionAlgorithmEnum,
       userinfo_encrypted_response_enc:
         userinfo_encrypted_response_enc as EncryptionEncodingEnum,
+      entityId,
     };
   }
 
@@ -120,7 +121,6 @@ export class ServiceProviderService {
        *
        * This list is here to keep track of existing fields
        *
-       * entityId,
        * jwks_uri,
        */
       eidas,
@@ -150,6 +150,7 @@ export class ServiceProviderService {
       userinfo_encrypted_response_alg,
       userinfo_encrypted_response_enc,
       signupId: signup_id,
+      entityId,
     } = input;
 
     return {
@@ -200,6 +201,7 @@ export class ServiceProviderService {
       id_token_signed_response_alg,
       id_token_encrypted_response_alg,
       id_token_encrypted_response_enc,
+      entityId,
     };
   }
 }

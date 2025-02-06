@@ -1,0 +1,64 @@
+[
+  {
+    "required": true,
+    "order": 1,
+    "validators": [
+      {
+        "name": "any-validator-mock-1.1",
+        "errorLabel": "any-error-label-mock-1.1",
+        "validationArgs": []
+      },
+      {
+        "name": "any-validator-mock-1.2",
+        "errorLabel": "any-error-label-mock-1.2",
+        "validationArgs": []
+      },
+      {
+        "name": "any-validator-mock-1.3",
+        "validationArgs": [
+          {
+            "max": 256
+          }
+        ],
+        "errorLabel": "any-error-label-mock-1.3"
+      }
+    ],
+    "type": "any-type-mock-1",
+    "name": "any-name-mock-1",
+    "array": false,
+    "validateIf": [],
+    "label": "any-label-mock-1",
+    "hint": "any-hint-mock-1"
+  },
+  {
+    "required": true,
+    "order": 2,
+    "validators": [
+      {
+        "name": "any-validator-mock-2.1",
+        "errorLabel": "any-error-label-mock-2.1",
+        "validationArgs": []
+      },
+      {
+        "name": "any-validator-mock-2.2",
+        "errorLabel": "any-error-label-mock-2.2",
+        "validationArgs": []
+      },
+      {
+        "name": "any-validator-mock-2.3",
+        "validationArgs": [
+          {
+            "max": 256
+          }
+        ],
+        "errorLabel": "any-error-label-mock-2.3"
+      }
+    ],
+    "type": "any-type-mock-2",
+    "name": "any-name-mock-2",
+    "array": true,
+    "validateIf": [],
+    "label": "any-label-mock-2",
+    "hint": "any-hint-mock-2"
+  }
+]

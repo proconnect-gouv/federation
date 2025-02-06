@@ -9,5 +9,6 @@ import type {
 export type JSONFieldType = (SelectAttributes | FieldAttributes) & {
   type: FieldTypes;
   disabled?: boolean;
+  initialValue?: string | string[];
   options?: SelectAttributesOption[];
 };

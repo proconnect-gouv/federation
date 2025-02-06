@@ -1,11 +1,20 @@
 import validator from 'validator';
 
-import { isString } from '@fc/common';
-
-import { isFilled } from '../validators';
+import {
+  isFilled,
+  isIpAddressesAndRange,
+  isRedirectURL,
+  isSignedResponseAlg,
+  isString,
+  isWebsiteURL,
+} from '@fc/validators';
 
 export const Validators = {
   ...validator,
   isFilled,
+  isIpAddressesAndRange,
+  isRedirectURL,
+  isSignedResponseAlg,
   isString,
+  isWebsiteURL,
 };

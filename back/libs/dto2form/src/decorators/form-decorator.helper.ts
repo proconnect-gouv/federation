@@ -46,10 +46,20 @@ export class FormDecoratorHelper {
         attributes.validators,
       );
 
+    const isArray = Boolean(attributes.array);
+    const required = Boolean(attributes.required);
+
+    const initialValue = FormDecoratorHelper.getInitialValue(
+      isArray,
+      attributes.initialValue,
+    );
+
     const result = Object.assign({}, attributes, {
       type: attributes.type || defaultType,
       name: key,
-      required: Boolean(attributes.required),
+      required,
+      initialValue,
+      array: isArray,
       order: attributes.order || defaultOrder,
       validateIf: attributes.validateIf || [],
       validators,
@@ -69,5 +79,15 @@ export class FormDecoratorHelper {
     }
 
     return attributes;
+  }
+
+  private static getInitialValue(
+    isArray: boolean,
+    initialValue?: string | string[],
+  ): string | string[] {
+    const defaultInitialValue = isArray ? [''] : '';
+
+    const isUndefined = initialValue === undefined;
+    return !isUndefined ? initialValue : defaultInitialValue;
   }
 }

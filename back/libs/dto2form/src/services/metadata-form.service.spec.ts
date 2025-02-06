@@ -24,12 +24,13 @@ describe('MetadataFormService', () => {
   });
 
   describe('getDtoMetadata', () => {
-    it('should return metadata for a valid DTO when the input is not required', () => {
+    it('should return metadata for a valid DTO when the input is not required and an array', () => {
       // Given
       @Form()
       class TestDtoWithoutRequired {
         @Input({
           order: 0,
+          array: true,
           validators: [$IsString(), $IsNotEmpty()],
         })
         given_name: string;
@@ -38,7 +39,9 @@ describe('MetadataFormService', () => {
       const expectedMockMetadata = [
         {
           required: false,
+          array: true,
           order: 0,
+          initialValue: [''],
           validators: [
             {
               name: 'isString',
@@ -64,7 +67,7 @@ describe('MetadataFormService', () => {
       expect(metadata).toEqual(expectedMockMetadata);
     });
 
-    it('should return metadata for a valid DTO when the input is required', () => {
+    it('should return metadata for a valid DTO when the input is required and not an array', () => {
       // Given
       @Form()
       class TestDtoWithRequired {
@@ -79,7 +82,9 @@ describe('MetadataFormService', () => {
       const expectedMockMetadata = [
         {
           required: true,
+          array: false,
           order: 0,
+          initialValue: '',
           validators: [
             {
               name: 'isFilled',

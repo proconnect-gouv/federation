@@ -6,11 +6,10 @@ export const sortByKey = jest.fn(() => jest.fn());
 
 export const getAccessibleTitle = jest.fn();
 
+/* ----------------------
+ Hooks
+---------------------- */
 export const useSafeContext = jest.fn();
-
-export const isString = jest.fn();
-
-export const isNotEmpty = jest.fn();
 
 export const useContentHeight = jest.fn(() => ({
   contentHeight: expect.any(Number),

@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 
 import { ConfigService } from '@fc/config';
-import { ChoiceField, FieldTypes, InputField, SelectField } from '@fc/forms';
+import { ArrayField, ChoicesField, FieldTypes, InputField, SelectField } from '@fc/forms';
 
 import { useFieldValidate } from '../../hooks';
 import { DTO2FieldComponent } from './dto2field.component';
@@ -13,21 +13,20 @@ describe('DTO2FieldComponent', () => {
   const maxCharsMock = Symbol('maxChars') as unknown as number;
   const disabledMock = Symbol('disabled') as unknown as boolean;
   const requiredMock = Symbol('required') as unknown as boolean;
-  const placeholderMock = Symbol('placeholder') as unknown as string;
+  const hintMock = Symbol('hint') as unknown as string;
   const labelMock = Symbol('label') as unknown as string;
   const nameMock = Symbol('name') as unknown as string;
   const valueMock = Symbol('value') as unknown as string;
-  const typeMock = Symbol('type') as unknown as FieldTypes;
+
   const fieldMock = {
     disabled: disabledMock,
+    hint: hintMock,
     label: labelMock,
     maxChars: maxCharsMock,
     name: nameMock,
     order: 1,
-    placeholder: placeholderMock,
     required: requiredMock,
     size: 'md',
-    type: typeMock,
     validators: expect.anything(),
     value: valueMock,
   };
@@ -41,7 +40,7 @@ describe('DTO2FieldComponent', () => {
 
   it('should call useFieldValidate hook', () => {
     // When
-    render(<DTO2FieldComponent field={fieldMock} />);
+    render(<DTO2FieldComponent field={{ ...fieldMock, type: FieldTypes.TEXT }} />);
 
     // Then
     expect(useFieldValidate).toHaveBeenCalledOnce();
@@ -52,9 +51,11 @@ describe('DTO2FieldComponent', () => {
     });
   });
 
-  it('should match the snapshot, should create input field (default)', () => {
+  it('should match the snapshot, should create an InputField', () => {
     // When
-    const { container } = render(<DTO2FieldComponent field={fieldMock} />);
+    const { container } = render(
+      <DTO2FieldComponent field={{ ...fieldMock, type: FieldTypes.TEXT }} />,
+    );
 
     // Then
     expect(container).toMatchSnapshot();
@@ -62,9 +63,10 @@ describe('DTO2FieldComponent', () => {
     expect(InputField).toHaveBeenCalledOnce();
     expect(InputField).toHaveBeenCalledWith(
       {
+        choices: [],
         config: {
           clipboardDisabled: false,
-          hint: placeholderMock,
+          hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
@@ -73,14 +75,14 @@ describe('DTO2FieldComponent', () => {
           size: 'md',
           value: valueMock,
         },
-        type: typeMock,
+        type: 'text',
         validate: validateMock,
       },
       {},
     );
   });
 
-  it('should match the snapshot, should create a choice field when type is "select', () => {
+  it('should match the snapshot, should create a SelectField when type is "select"', () => {
     // Given
     const optionsMock = [
       {
@@ -92,10 +94,13 @@ describe('DTO2FieldComponent', () => {
         value: 'option_2_value_mock',
       },
     ];
-    const selectFieldMock = { ...fieldMock, options: optionsMock, type: FieldTypes.SELECT };
 
     // When
-    render(<DTO2FieldComponent field={selectFieldMock} />);
+    render(
+      <DTO2FieldComponent
+        field={{ ...fieldMock, options: optionsMock, type: FieldTypes.SELECT }}
+      />,
+    );
 
     // Then
     expect(SelectField).toHaveBeenCalledOnce();
@@ -104,7 +109,7 @@ describe('DTO2FieldComponent', () => {
         choices: optionsMock,
         config: {
           clipboardDisabled: false,
-          hint: placeholderMock,
+          hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
@@ -113,13 +118,14 @@ describe('DTO2FieldComponent', () => {
           size: 'md',
           value: valueMock,
         },
+        type: 'select',
         validate: validateMock,
       },
       {},
     );
   });
 
-  it('should match the snapshot, should create a choice field when type is "radio', () => {
+  it('should match the snapshot, should create a ChoicesField when type is "radio"', () => {
     // Given
     const optionsMock = [
       {
@@ -137,13 +143,13 @@ describe('DTO2FieldComponent', () => {
     render(<DTO2FieldComponent field={radioFieldMock} />);
 
     // Then
-    expect(ChoiceField).toHaveBeenCalledOnce();
-    expect(ChoiceField).toHaveBeenCalledWith(
+    expect(ChoicesField).toHaveBeenCalledOnce();
+    expect(ChoicesField).toHaveBeenCalledWith(
       {
         choices: optionsMock,
         config: {
           clipboardDisabled: false,
-          hint: placeholderMock,
+          hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
@@ -159,7 +165,7 @@ describe('DTO2FieldComponent', () => {
     );
   });
 
-  it('should match the snapshot, should create a choice field when type is "checkbox', () => {
+  it('should match the snapshot, should create a ChoicesField when type is "checkbox"', () => {
     // Given
     const optionsMock = [
       {
@@ -177,13 +183,13 @@ describe('DTO2FieldComponent', () => {
     render(<DTO2FieldComponent field={checkboxFieldMock} />);
 
     // Then
-    expect(ChoiceField).toHaveBeenCalledOnce();
-    expect(ChoiceField).toHaveBeenCalledWith(
+    expect(ChoicesField).toHaveBeenCalledOnce();
+    expect(ChoicesField).toHaveBeenCalledWith(
       {
         choices: optionsMock,
         config: {
           clipboardDisabled: false,
-          hint: placeholderMock,
+          hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
@@ -199,23 +205,21 @@ describe('DTO2FieldComponent', () => {
     );
   });
 
-  it('should call InputField without the validate function when DTO2Form.validateOnFieldChange is false', () => {
+  it('should match the snapshot, should create an ArrayField when "array === true"', () => {
     // Given
-    jest.mocked(ConfigService.get).mockReturnValueOnce({ validateOnFieldChange: false });
+    const arrayFieldMock = { ...fieldMock, array: true, type: FieldTypes.TEXT };
 
     // When
-    render(<DTO2FieldComponent field={fieldMock} />);
+    render(<DTO2FieldComponent field={arrayFieldMock} />);
 
     // Then
-    expect(useFieldValidate).toHaveBeenCalledOnce();
-    expect(ConfigService.get).toHaveBeenCalledOnce();
-    expect(ConfigService.get).toHaveBeenCalledWith('DTO2Form');
-    expect(InputField).toHaveBeenCalledOnce();
-    expect(InputField).toHaveBeenCalledWith(
+    expect(ArrayField).toHaveBeenCalledOnce();
+    expect(ArrayField).toHaveBeenCalledWith(
       {
+        choices: [],
         config: {
           clipboardDisabled: false,
-          hint: placeholderMock,
+          hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
@@ -224,7 +228,40 @@ describe('DTO2FieldComponent', () => {
           size: 'md',
           value: valueMock,
         },
-        type: typeMock,
+        type: 'text',
+        validate: validateMock,
+      },
+      {},
+    );
+  });
+
+  it('should call InputField without the validate function when DTO2Form.validateOnFieldChange is false', () => {
+    // Given
+    jest.mocked(ConfigService.get).mockReturnValueOnce({ validateOnFieldChange: false });
+
+    // When
+    render(<DTO2FieldComponent field={{ ...fieldMock, type: FieldTypes.TEXT }} />);
+
+    // Then
+    expect(useFieldValidate).toHaveBeenCalledOnce();
+    expect(ConfigService.get).toHaveBeenCalledOnce();
+    expect(ConfigService.get).toHaveBeenCalledWith('DTO2Form');
+    expect(InputField).toHaveBeenCalledOnce();
+    expect(InputField).toHaveBeenCalledWith(
+      {
+        choices: [],
+        config: {
+          clipboardDisabled: false,
+          hint: hintMock,
+          inline: true,
+          label: labelMock,
+          maxChars: maxCharsMock,
+          name: nameMock,
+          required: requiredMock,
+          size: 'md',
+          value: valueMock,
+        },
+        type: 'text',
         validate: undefined,
       },
       {},

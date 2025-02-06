@@ -41,6 +41,7 @@ describe('ServiceProviderService', () => {
     id_token_encrypted_response_enc: 'A256GCM',
     id_token_encrypted_response_alg: 'ECDH-ES',
     id_token_signed_response_alg: 'ES256',
+    entityId: 'entityId',
   };
 
   const v2Client: Partial<OidcClientInterface> = {
@@ -71,6 +72,7 @@ describe('ServiceProviderService', () => {
     id_token_encrypted_response_enc: EncryptionEncodingEnum.A256GCM,
     id_token_encrypted_response_alg: EncryptionAlgorithmEnum.ECDH_ES,
     id_token_signed_response_alg: SignatureAlgorithmEnum.ES256,
+    entityId: 'entityId',
   };
 
   beforeEach(async () => {

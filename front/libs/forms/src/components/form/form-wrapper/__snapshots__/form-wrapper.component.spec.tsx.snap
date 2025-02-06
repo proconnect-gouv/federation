@@ -140,6 +140,9 @@ exports[`FormWrapperComponent should not render the error scroll component 1`] =
       <div
         data-mockid="FormMentionsComponent"
       />
+      <div
+        data-mockid="FormErrorScrollComponent"
+      />
     </div>
   </form>
 </div>

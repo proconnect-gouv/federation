@@ -13,10 +13,16 @@ describe('InstanceCreatePage', () => {
     // Given
     const submitHandlerMock = jest.fn();
     const schemaMock = Symbol('any-schema-mock') as unknown as JSONFieldType[];
+    const initialValuesMock = Symbol('any-initial-values-mock') as unknown as Record<
+      string,
+      string | string[]
+    >;
 
-    jest
-      .mocked(useInstanceCreate)
-      .mockReturnValueOnce({ schema: schemaMock, submitHandler: submitHandlerMock });
+    jest.mocked(useInstanceCreate).mockReturnValueOnce({
+      initialValues: initialValuesMock,
+      schema: schemaMock,
+      submitHandler: submitHandlerMock,
+    });
 
     // When
     const { container } = render(<InstanceCreatePage />);
@@ -27,7 +33,7 @@ describe('InstanceCreatePage', () => {
     expect(DTO2FormComponent).toHaveBeenCalledWith(
       {
         config: { id: 'DTO2Form-instance-create' },
-        initialValues: {},
+        initialValues: initialValuesMock,
         onSubmit: submitHandlerMock,
         schema: schemaMock,
       },

@@ -14,15 +14,23 @@ export default class InstanceFormPage {
   }
 
   protected getActiveInputFromName(name: string): ChainableElement {
-    return cy.get(`[name=${name}]:not([type="hidden"]):not([disabled])`);
+    return cy.get(`[name="${name}"]:not([type="hidden"]):not([disabled])`);
   }
 
   protected getVisibleInputFromName(name: string): ChainableElement {
-    return cy.get(`[name=${name}]:not([type="hidden"])`);
+    return cy.get(`[name="${name}"]:not([type="hidden"])`);
   }
 
   protected getInputErrorMessagesFromName(name: string): ChainableElement {
-    return cy.get(`[id=${name}-messages].fr-message--error`);
+    return cy.get(`[data-testid="${name}-messages"].fr-message--error`);
+  }
+
+  getInputAddButton(key: string): ChainableElement {
+    return cy.get(`[data-testid="${key}-add"]`);
+  }
+
+  getInputRemoveButton(name: string): ChainableElement {
+    return cy.get(`[data-testid="${name}-remove"]`);
   }
 
   getValidationButton(): ChainableElement {
@@ -65,7 +73,12 @@ export default class InstanceFormPage {
     });
   }
 
-  checkIsWithinViewport(name: string, isWithinViewport: boolean): void {
+  checkIsFieldVisible(name: string, isVisible: boolean): void {
+    const state = isVisible ? 'be.visible' : 'not.exist';
+    this.getVisibleInputFromName(name).should(state);
+  }
+
+  checkIsFieldWithinViewport(name: string, isWithinViewport: boolean): void {
     this.getVisibleInputFromName(name).checkWithinViewport(isWithinViewport);
   }
 

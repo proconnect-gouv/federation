@@ -44,7 +44,7 @@ export class PartnersServiceProviderInstanceVersion {
     type: 'json',
     default: '{}',
   })
-  data: Record<string, unknown>;
+  data: Record<string, unknown | unknown[]>;
 
   @CreateDateColumn({
     default: () => 'NOW()',

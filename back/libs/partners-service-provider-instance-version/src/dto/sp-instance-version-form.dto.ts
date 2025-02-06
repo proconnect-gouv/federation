@@ -40,6 +40,7 @@ export class ServiceProviderInstanceVersionDto
 
   @Input({
     required: true,
+    array: true,
     order: 4,
     validators: [$IsWebsiteURL(), $IsLength({ max: 1024 })],
   })
@@ -52,6 +53,7 @@ export class ServiceProviderInstanceVersionDto
    */
   @Input({
     required: true,
+    array: true,
     order: 5,
     validators: [$IsRedirectURL(), $IsLength({ max: 1024 })],
   })
@@ -64,6 +66,7 @@ export class ServiceProviderInstanceVersionDto
    */
   @Input({
     required: true,
+    array: true,
     order: 6,
     validators: [$IsRedirectURL(), $IsLength({ max: 1024 })],
   })
@@ -72,6 +75,7 @@ export class ServiceProviderInstanceVersionDto
 
   @Input({
     order: 7,
+    array: true,
     validators: [$IsIpAddressesAndRange()],
   })
   @Expose()

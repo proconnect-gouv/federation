@@ -5,7 +5,7 @@ import { DTO2FormComponent } from '@fc/dto2form';
 import { useInstanceCreate } from '../../../hooks';
 
 export const InstanceCreatePage = React.memo(() => {
-  const { schema, submitHandler } = useInstanceCreate();
+  const { initialValues, schema, submitHandler } = useInstanceCreate();
 
   return (
     <div className="fr-col-12 fr-col-md-8 fc-grey-border--full">
@@ -13,7 +13,7 @@ export const InstanceCreatePage = React.memo(() => {
         <h1>Create</h1>
         <DTO2FormComponent
           config={{ id: 'DTO2Form-instance-create' }}
-          initialValues={{}}
+          initialValues={initialValues}
           schema={schema}
           onSubmit={submitHandler}
         />

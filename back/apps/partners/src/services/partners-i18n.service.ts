@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import {
   MetadataDtoInterface,
   MetadataDtoValidatorsInterface,
+  ValidatorType,
 } from '@fc/dto2form';
 import { I18nService, I18nVariables } from '@fc/i18n';
 
@@ -15,7 +16,7 @@ export class PartnersI18nService {
   public translation(payload: MetadataDtoInterface[]): MetadataDtoInterface[] {
     return payload.map((item) => {
       const label = this.getTranslation('label', item.name);
-      const hintText = this.getTranslation('hintText', item.name);
+      const hint = this.getTranslation('hint', item.name);
 
       const validators = this.getValidatorsWithErrorLabels(
         item.validators,
@@ -25,7 +26,7 @@ export class PartnersI18nService {
       return {
         ...item,
         label,
-        hintText,
+        hint,
         validators,
       };
     });
@@ -40,38 +41,49 @@ export class PartnersI18nService {
   }
 
   private getValidatorsWithErrorLabels(
-    validators: MetadataDtoValidatorsInterface[],
+    validators: ValidatorType,
     name: string,
-  ): MetadataDtoValidatorsInterface[] {
-    const validatorsEnriched = validators.map((validator) => {
-      let errorLabel: string;
+  ): ValidatorType {
+    return this.processValidatorsRecursively(validators, name);
+  }
 
-      if (validator.name === 'isLength') {
-        const { suffix, options } = this.generateI18nIsLengthParams(
-          /* @Todo Revoir / challenger l'interface MetadataDtoValidatorsInterface
-           * @see #2042
-           */
-          validator.validationArgs[0] as unknown as Record<string, unknown>,
-        );
-
-        errorLabel = this.getTranslation(
-          `${validator.errorLabel}${suffix}`,
-          name,
-          {
-            ...options,
-          },
-        );
-      } else {
-        errorLabel = this.getTranslation(validator.errorLabel, name);
+  private processValidatorsRecursively(
+    validators: ValidatorType,
+    name: string,
+  ): ValidatorType {
+    return validators.map((validator) => {
+      if (Array.isArray(validator)) {
+        return this.processValidatorsRecursively(validator, name);
       }
 
-      return {
-        ...validator,
-        errorLabel,
-      };
-    });
+      return this.enhanceValidatorWithErrorLabel(validator, name);
+    }) as MetadataDtoValidatorsInterface[];
+  }
 
-    return validatorsEnriched;
+  private enhanceValidatorWithErrorLabel(
+    validator: MetadataDtoValidatorsInterface,
+    name: string,
+  ): MetadataDtoValidatorsInterface {
+    let errorLabel: string;
+
+    if (validator.name === 'isLength') {
+      const { suffix, options } = this.generateI18nIsLengthParams(
+        /* @Todo Revoir / challenger l'interface MetadataDtoValidatorsInterface
+         * @see #2042
+         */
+        validator.validationArgs[0] as unknown as Record<string, unknown>,
+      );
+
+      errorLabel = this.getTranslation(
+        `${validator.errorLabel}${suffix}`,
+        name,
+        { ...options },
+      );
+    } else {
+      errorLabel = this.getTranslation(validator.errorLabel, name);
+    }
+
+    return { ...validator, errorLabel };
   }
 
   private generateI18nIsLengthParams(

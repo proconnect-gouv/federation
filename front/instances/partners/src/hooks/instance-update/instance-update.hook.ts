@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import { useLoaderData, useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
 
 import type { InstanceInterface, ResponseInterface, RouteParamsInterface } from '@fc/core-partners';
-import type { JSONFieldType } from '@fc/dto2form';
+import { type JSONFieldType, parseInitialValues } from '@fc/dto2form';
 import type { HttpClientDataInterface } from '@fc/http-client';
 
 import { RouteLoaderDataIds, SubmitTypes, SubmitTypesMessage } from '../../enums';
@@ -15,7 +15,7 @@ export const useInstanceUpdate = () => {
   const schema = useRouteLoaderData(RouteLoaderDataIds.VERSION_SCHEMA) as JSONFieldType[];
 
   const title = payload.name;
-  const initialValues = payload.versions[0].data;
+  const initialValues = parseInitialValues(schema, payload.versions[0].data);
 
   const submitHandler = useCallback(
     async (data: HttpClientDataInterface) => {
