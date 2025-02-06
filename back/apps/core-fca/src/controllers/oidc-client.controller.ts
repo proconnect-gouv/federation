@@ -275,7 +275,7 @@ export class OidcClientController {
 
     const fqdn = this.fqdnService.getFqdnFromEmail(login_hint ?? '');
     const { IDP_CALLEDBACK } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(IDP_CALLEDBACK, { req, fqdn });
+    await this.tracking.track(IDP_CALLEDBACK, { req, fqdn, email: login_hint });
     const tokenParams = {
       state: idpState,
       nonce: idpNonce,
@@ -294,7 +294,11 @@ export class OidcClientController {
       );
 
     const { FC_REQUESTED_IDP_TOKEN } = this.tracking.TrackedEventsMap;
-    await this.tracking.track(FC_REQUESTED_IDP_TOKEN, { req, fqdn });
+    await this.tracking.track(FC_REQUESTED_IDP_TOKEN, {
+      req,
+      fqdn,
+      email: login_hint,
+    });
 
     const userInfoParams = {
       accessToken,
@@ -314,6 +318,7 @@ export class OidcClientController {
     await this.tracking.track(FC_REQUESTED_IDP_USERINFO, {
       req,
       fqdn: identityFqdn,
+      email: identity.email,
     });
 
     const transformedIdentity = await this.sanitizer.sanitize(identity, idpId);
@@ -327,7 +332,10 @@ export class OidcClientController {
         `Identity from "${idpId}" using "***@${identityFqdn}" is not allowed`,
       );
       const { FC_FQDN_MISMATCH } = this.tracking.TrackedEventsMap;
-      await this.tracking.track(FC_FQDN_MISMATCH, { req, fqdn: identityFqdn });
+      await this.tracking.track(FC_FQDN_MISMATCH, {
+        req,
+        fqdn: identityFqdn,
+      });
     }
 
     const identityExchange: OidcSession = cloneDeep({
