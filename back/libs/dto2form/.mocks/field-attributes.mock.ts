@@ -2,11 +2,17 @@ import { FieldAttributes } from '@fc/dto2form';
 import { getValidateIfMock } from './validate-if-rule.mock';
 import { getValidatorMock } from './validator.mock';
 
-export function getFieldAttributesMock(name: string): FieldAttributes {
+export function getFieldAttributesMock(
+  name: string,
+  required = true,
+  array = false,
+): FieldAttributes {
   return {
     name,
     type: 'text',
-    required: true,
+    required,
+    array,
+    initialValue: '',
     validateIf: [
       getValidateIfMock(`${name}_validate_if_rule_1`),
       getValidateIfMock(`${name}_validate_if_rule_2`),

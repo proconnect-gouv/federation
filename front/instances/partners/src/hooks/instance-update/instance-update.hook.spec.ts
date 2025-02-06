@@ -2,12 +2,13 @@ import { renderHook } from '@testing-library/react';
 import { useLoaderData, useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
 
 import type { VersionInterface } from '@fc/core-partners';
-import type { JSONFieldType } from '@fc/dto2form';
+import { type JSONFieldType, parseInitialValues } from '@fc/dto2form';
 import type { HttpClientDataInterface } from '@fc/http-client';
 
 import { InstancesService } from '../../services';
 import { useInstanceUpdate } from './instance-update.hook';
 
+// Given
 jest.mock('./../../services');
 
 describe('useInstanceUpdate', () => {
@@ -21,6 +22,12 @@ describe('useInstanceUpdate', () => {
     name: 'any-name-mock',
     versions: [{ data: versionMock }],
   };
+  const initialValuesMock = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    'any-name-mock-1': '',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    'any-name-mock-2': [''],
+  };
 
   beforeEach(() => {
     // Given
@@ -28,6 +35,7 @@ describe('useInstanceUpdate', () => {
     jest.mocked(useParams).mockReturnValue(paramsMock);
     jest.mocked(useLoaderData).mockReturnValue({ payload: payloadMock });
     jest.mocked(useRouteLoaderData).mockReturnValue(schemaMock);
+    jest.mocked(parseInitialValues).mockReturnValue(initialValuesMock);
   });
 
   it('should call hooks and return an object with initialValues, submitHandler, title, schema', () => {
@@ -36,7 +44,7 @@ describe('useInstanceUpdate', () => {
 
     // Then
     expect(result.current).toStrictEqual({
-      initialValues: versionMock,
+      initialValues: initialValuesMock,
       schema: schemaMock,
       submitHandler: expect.any(Function),
       title: 'any-name-mock',

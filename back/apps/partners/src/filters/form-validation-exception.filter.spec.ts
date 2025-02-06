@@ -4,7 +4,10 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import { MetadataDtoInterface } from '@fc/dto2form';
+import {
+  MetadataDtoInterface,
+  MetadataDtoValidatorsInterface,
+} from '@fc/dto2form';
 import { FcException } from '@fc/exceptions';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
@@ -206,36 +209,98 @@ describe('FormValidationExceptionFilter', () => {
   });
 
   describe('transformToFinalForm', () => {
-    it('should include fields with validators containing error labels', () => {
+    beforeEach(() => {
+      filter['getErrorLabels'] = jest.fn();
+    });
+
+    it('should call getErrorLabels with params', () => {
+      // Given
+      const payloadMock = [
+        {
+          name: 'field1',
+          validators: [
+            {
+              name: 'isRequired',
+              errorLabel: 'This field is required',
+              validationArgs: [],
+            },
+            {
+              name: 'isLength',
+              errorLabel: 'Must be between 3 and 10 characters',
+              validationArgs: [],
+            },
+          ],
+        },
+        {
+          name: 'field2',
+          validators: [
+            {
+              name: 'isEmail',
+              errorLabel: 'Must be a valid email',
+              validationArgs: [],
+            },
+          ],
+        },
+      ] as unknown as MetadataDtoInterface[];
+
+      // When
+      const _result = filter['transformToFinalForm'](payloadMock);
+
+      // Then
+      expect(filter['getErrorLabels']).toHaveBeenCalledTimes(2);
+      expect(filter['getErrorLabels']).toHaveBeenNthCalledWith(
+        1,
+        payloadMock[0].validators,
+      );
+      expect(filter['getErrorLabels']).toHaveBeenNthCalledWith(
+        2,
+        payloadMock[1].validators,
+      );
+    });
+
+    it('should transform the payload into a record with error labels', () => {
       // Given
       const payload = [
         {
           name: 'field1',
-          validators: [{ errorLabel: 'error1' }, { errorLabel: 'error2' }],
-        },
-        {
-          name: 'field2',
-          validators: [{ errorLabel: 'error3' }],
+          validators: [
+            {
+              name: 'isRequired',
+              errorLabel: 'This field is required',
+              validationArgs: [],
+            },
+            {
+              name: 'isLength',
+              errorLabel: 'Must be between 3 and 10 characters',
+              validationArgs: [],
+            },
+          ],
         },
       ] as unknown as MetadataDtoInterface[];
+
+      const expected = [
+        'This field is required',
+        'Must be between 3 and 10 characters',
+      ];
+      filter['getErrorLabels'] = jest.fn().mockReturnValue(expected);
 
       // When
       const result = filter['transformToFinalForm'](payload);
 
       // Then
-      expect(result).toEqual({
-        field1: ['error1', 'error2'],
-        field2: ['error3'],
-      });
+      expect(result).toEqual({ field1: expected });
     });
 
-    it('should not include fields with empty validators array', () => {
+    it('should skip fields without validators', () => {
       // Given
       const payload = [
-        { name: 'field1', validators: [] },
+        {
+          name: 'field1',
+          validators: [],
+        },
         {
           name: 'field2',
-          validators: [{ errorLabel: 'error1' }],
+          validators: undefined,
         },
       ] as unknown as MetadataDtoInterface[];
 
@@ -243,9 +308,127 @@ describe('FormValidationExceptionFilter', () => {
       const result = filter['transformToFinalForm'](payload);
 
       // Then
-      expect(result).toEqual({
-        field2: ['error1'],
-      });
+      expect(filter['getErrorLabels']).not.toHaveBeenCalled();
+      expect(result).toEqual({});
+    });
+
+    it('should return an empty object if the payload is empty', () => {
+      // Given
+      const payload: MetadataDtoInterface[] = [];
+
+      // When
+      const result = filter['transformToFinalForm'](payload);
+
+      // Then
+      expect(filter['getErrorLabels']).not.toHaveBeenCalled();
+      expect(result).toEqual({});
+    });
+  });
+
+  describe('getErrorLabels', () => {
+    it('should call extractErrorLabel with params', () => {
+      // Given
+      const nestedValidatorsMock: (
+        | MetadataDtoValidatorsInterface
+        | MetadataDtoValidatorsInterface[]
+      )[] = [
+        {
+          name: 'isRequired',
+          errorLabel: 'This field is required',
+          validationArgs: [],
+        },
+        [
+          {
+            name: 'isLength',
+            errorLabel: 'Must be between 3 and 10 characters',
+            validationArgs: [],
+          },
+          {
+            name: 'isEmail',
+            errorLabel: 'Must be a valid email',
+            validationArgs: [],
+          },
+        ],
+      ];
+
+      filter['extractErrorLabel'] = jest
+        .fn()
+        .mockReturnValueOnce('This field is required')
+        .mockReturnValueOnce([
+          'Must be between 3 and 10 characters',
+          'Must be a valid email',
+        ]);
+
+      // When
+      const result = filter['getErrorLabels'](nestedValidatorsMock);
+
+      // Then
+      expect(filter['extractErrorLabel']).toHaveBeenCalledTimes(2);
+      expect(filter['extractErrorLabel']).toHaveBeenNthCalledWith(
+        1,
+        nestedValidatorsMock[0],
+      );
+      expect(filter['extractErrorLabel']).toHaveBeenNthCalledWith(
+        2,
+        nestedValidatorsMock[1],
+      );
+      expect(result).toEqual([
+        'This field is required',
+        ['Must be between 3 and 10 characters', 'Must be a valid email'],
+      ]);
+    });
+  });
+
+  describe('extractErrorLabel', () => {
+    it('should return the errorLabel for a single validator', () => {
+      // Given
+      const validatorMock: MetadataDtoValidatorsInterface = {
+        name: 'isRequired',
+        errorLabel: 'This field is required',
+        validationArgs: [],
+      };
+
+      // When
+      const result = filter['extractErrorLabel'](validatorMock);
+
+      // Then
+      expect(result).toEqual('This field is required');
+    });
+
+    it('should recursively extract error labels for an array of validators', () => {
+      // Given
+      const validatorMock: MetadataDtoValidatorsInterface[] = [
+        {
+          name: 'isRequired',
+          errorLabel: 'This field is required',
+          validationArgs: [],
+        },
+        {
+          name: 'isLength',
+          errorLabel: 'Must be between 3 and 10 characters',
+          validationArgs: [],
+        },
+      ];
+
+      // When
+      const result = filter['extractErrorLabel'](validatorMock);
+
+      // Then
+      expect(result).toEqual([
+        'This field is required',
+        'Must be between 3 and 10 characters',
+      ]);
+    });
+
+    it('should return an empty array if the validator array is empty', () => {
+      // Given
+      const emptyValidatorsMock: MetadataDtoValidatorsInterface[] = [];
+
+      // When
+      const result = filter['extractErrorLabel'](emptyValidatorsMock);
+
+      // Then
+      expect(result).toEqual([]);
     });
   });
 });

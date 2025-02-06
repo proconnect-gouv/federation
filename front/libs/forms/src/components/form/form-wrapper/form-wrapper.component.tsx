@@ -41,7 +41,7 @@ export const FormWrapperComponent = ({
         <FormActionsComponent canSubmit={canSubmit} />
         {submitError && <FormErrorComponent error={submitError} />}
         <FormMentionsComponent />
-        {scrollTopOnSubmit && <FormErrorScrollComponent />}
+        <FormErrorScrollComponent active={scrollTopOnSubmit} />
       </div>
     </form>
   );

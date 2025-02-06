@@ -2,9 +2,9 @@ import React from 'react';
 
 import { ConfigService } from '@fc/config';
 import { Sizes } from '@fc/dsfr';
-import { ChoiceField, FieldTypes, InputField, SelectField } from '@fc/forms';
+import { ArrayField } from '@fc/forms';
 
-import { Options } from '../../enums';
+import { FieldsCommponentMap, Options } from '../../enums';
 import { useFieldValidate } from '../../hooks';
 import type { DTO2FormConfig } from '../../interfaces';
 import type { JSONFieldType } from '../../types';
@@ -16,7 +16,20 @@ interface DTO2FieldComponentProps {
 export const DTO2FieldComponent = React.memo(({ field }: DTO2FieldComponentProps) => {
   const { validateOnFieldChange } = ConfigService.get<DTO2FormConfig>(Options.CONFIG_NAME);
 
-  const { disabled, required, validators } = field;
+  const {
+    array,
+    disabled,
+    hint,
+    label,
+    maxChars,
+    name,
+    options,
+    required,
+    type,
+    validators,
+    value,
+  } = field;
+
   const validate = useFieldValidate({
     disabled,
     required,
@@ -25,31 +38,22 @@ export const DTO2FieldComponent = React.memo(({ field }: DTO2FieldComponentProps
 
   const config = {
     clipboardDisabled: false,
-    hint: field.placeholder,
+    hint,
     inline: true,
-    label: field.label,
-    maxChars: field.maxChars,
-    name: field.name,
-    required: field.required,
+    label,
+    maxChars,
+    name,
+    required,
     size: Sizes.MEDIUM,
-    value: field.value,
+    value,
   };
 
-  const { type } = field;
-  const choices = field.options || [];
+  const choices = options || [];
   const validateFunc = validateOnFieldChange ? validate : undefined;
 
-  const isSelectField = type === FieldTypes.SELECT;
-  if (isSelectField) {
-    return <SelectField choices={choices} config={config} validate={validateFunc} />;
-  }
+  const Component = array ? ArrayField : FieldsCommponentMap[type];
 
-  const isChoiceField = type === FieldTypes.RADIO || type === FieldTypes.CHECKBOX;
-  if (isChoiceField) {
-    return <ChoiceField choices={choices} config={config} type={type} validate={validateFunc} />;
-  }
-
-  return <InputField config={config} type={type} validate={validateFunc} />;
+  return <Component choices={choices} config={config} type={type} validate={validateFunc} />;
 });
 
 DTO2FieldComponent.displayName = 'DTO2FieldComponent';

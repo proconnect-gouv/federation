@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useNavigate, useRouteLoaderData } from 'react-router-dom';
 
-import { type JSONFieldType } from '@fc/dto2form';
+import { type JSONFieldType, parseInitialValues } from '@fc/dto2form';
 import type { HttpClientDataInterface } from '@fc/http-client';
 
 import { RouteLoaderDataIds, SubmitTypes, SubmitTypesMessage } from '../../enums';
@@ -10,6 +10,8 @@ import { InstancesService } from '../../services';
 export const useInstanceCreate = () => {
   const navigate = useNavigate();
   const schema = useRouteLoaderData(RouteLoaderDataIds.VERSION_SCHEMA) as JSONFieldType[];
+
+  const initialValues = parseInitialValues(schema, {});
 
   const submitHandler = useCallback(
     async (data: HttpClientDataInterface) => {
@@ -29,5 +31,5 @@ export const useInstanceCreate = () => {
     [navigate],
   );
 
-  return { schema, submitHandler };
+  return { initialValues, schema, submitHandler };
 };

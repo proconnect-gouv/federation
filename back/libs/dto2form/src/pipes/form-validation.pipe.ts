@@ -2,7 +2,7 @@ import validatorjs from 'validator';
 
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
 
-import { ArrayAsyncHelper } from '@fc/common/helpers/array-async.helper';
+import { ArrayAsyncHelper } from '@fc/common';
 import { LoggerService } from '@fc/logger';
 
 import { FormDtoBase } from '../dto';
@@ -12,10 +12,10 @@ import {
   Dto2FormValidationErrorException,
 } from '../exceptions';
 import {
+  FieldAttributes,
   FieldErrorsInterface,
   FieldValidateIfRule,
   FieldValidator,
-  MetadataDtoInterface,
 } from '../interfaces';
 import { ValidateIfRulesService, ValidatorCustomService } from '../services';
 import { FORM_METADATA_TOKEN } from '../tokens';
@@ -30,9 +30,9 @@ export class FormValidationPipe implements PipeTransform {
 
   // eslint-disable-next-line complexity
   async transform(
-    target: Record<string, unknown>,
+    target: Record<string, unknown | unknown[]>,
     { type, metatype, data }: ArgumentMetadata,
-  ): Promise<Record<string, unknown>> {
+  ): Promise<Record<string, unknown | unknown[]>> {
     const validType = type === 'body' || type === 'query';
     const isSubObject = Boolean(data);
     if (!validType || isSubObject) {
@@ -43,7 +43,7 @@ export class FormValidationPipe implements PipeTransform {
       throw new Dto2FormInvalidFormException();
     }
 
-    const metadata: MetadataDtoInterface[] = Reflect.getMetadata(
+    const metadata: FieldAttributes[] = Reflect.getMetadata(
       FORM_METADATA_TOKEN,
       metatype,
     );
@@ -65,7 +65,7 @@ export class FormValidationPipe implements PipeTransform {
 
   private async validate(
     target: Record<string, unknown>,
-    metadata: MetadataDtoInterface[],
+    metadata: FieldAttributes[],
   ): Promise<FieldErrorsInterface[]> {
     return await ArrayAsyncHelper.mapAsync(
       this.getAttributeKeys(target),
@@ -75,7 +75,7 @@ export class FormValidationPipe implements PipeTransform {
 
   private async validateField(
     target: Record<string, unknown>,
-    metadata: MetadataDtoInterface[],
+    metadata: FieldAttributes[],
     name: string,
   ): Promise<FieldErrorsInterface> {
     const fieldMetadata = metadata.find((field) => field.name === name);
@@ -103,28 +103,80 @@ export class FormValidationPipe implements PipeTransform {
       return fieldErrors;
     }
 
-    fieldErrors.validators = await ArrayAsyncHelper.reduceAsync<
-      FieldValidator,
-      FieldErrorsInterface['validators']
-    >(
+    if (fieldMetadata.array) {
+      fieldErrors.validators = await this.handleArrayValidation(
+        target,
+        fieldMetadata,
+        name,
+      );
+    } else {
+      fieldErrors.validators = await this.handleValidation(
+        target,
+        fieldMetadata,
+        target[name],
+      );
+    }
+
+    return fieldErrors;
+  }
+
+  private async handleArrayValidation(
+    target: Record<string, unknown | unknown[]>,
+    fieldMetadata: FieldAttributes,
+    name: string,
+  ): Promise<(FieldValidator | FieldValidator[])[]> {
+    const errorsMapAsync = await ArrayAsyncHelper.mapAsync<
+      unknown,
+      FieldValidator[]
+    >(target[name] as unknown[], async (value) => {
+      return await this.handleValidation(target, fieldMetadata, value);
+    });
+
+    // Check that there are empty arrays,
+    // which would indicate that there are no errors
+    const isArrayEmpty = errorsMapAsync.every(
+      (item) => Array.isArray(item) && item.length === 0,
+    );
+
+    if (isArrayEmpty) {
+      const errorsMapAsyncFlat = errorsMapAsync.flat();
+      return errorsMapAsyncFlat;
+    }
+
+    return errorsMapAsync;
+  }
+
+  private async handleValidation(
+    target: Record<string, unknown | unknown[]>,
+    fieldMetadata: FieldAttributes,
+    value: unknown,
+  ): Promise<FieldValidator[]> {
+    return await ArrayAsyncHelper.reduceAsync<FieldValidator, FieldValidator[]>(
       fieldMetadata.validators,
       async (errors, validator) => {
-        const valid = await this.callValidator(validator, target[name], target);
-
-        if (!valid) {
-          errors.push({
-            name: validator.name,
-            errorLabel: validator.errorLabel,
-            validationArgs: validator.validationArgs,
-          });
-        }
-
-        return errors;
+        return await this.processValidator(errors, validator, value, target);
       },
       [],
     );
+  }
 
-    return fieldErrors;
+  private async processValidator(
+    errors: FieldValidator[],
+    validator: FieldValidator,
+    value: unknown,
+    target: Record<string, unknown | unknown[]>,
+  ): Promise<FieldValidator[]> {
+    const valid = await this.callValidator(validator, value, target);
+
+    if (!valid) {
+      errors.push({
+        name: validator.name,
+        errorLabel: validator.errorLabel,
+        validationArgs: validator.validationArgs,
+      });
+    }
+
+    return errors;
   }
 
   private async shouldValidate(
@@ -205,7 +257,7 @@ export class FormValidationPipe implements PipeTransform {
 
   private validateRequiredField(
     target: Record<string, unknown>,
-    metadata: MetadataDtoInterface[],
+    metadata: FieldAttributes[],
   ): FieldErrorsInterface[] {
     const missingRequireKeys = metadata
       .filter((item) => item.required)

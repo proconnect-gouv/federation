@@ -33,7 +33,12 @@ export const TextAreaInput = React.memo(
           maxLength={maxLength}
           name={name}
         />
-        <MessageElement error={errorMessage} id={name} isValid={isValid} />
+        <MessageElement
+          dataTestId={`${name}-messages`}
+          error={errorMessage}
+          id={name}
+          isValid={isValid}
+        />
         {maxLength && <TextAreaMaxlengthComponent count={count} maxLength={maxLength} />}
       </GroupElement>
     );

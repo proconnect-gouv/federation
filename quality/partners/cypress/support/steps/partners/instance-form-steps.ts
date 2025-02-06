@@ -73,11 +73,53 @@ When(
   },
 );
 
+When(
+  /^j'ajoute un champ "([^"]+)" dans le formulaire de (?:création|modification) d'instance$/,
+  function (name: string) {
+    instanceFormPage.getInputAddButton(name).click();
+  },
+);
+
+When(
+  /^je supprime le champ "([^"]+)" dans le formulaire de (?:création|modification) d'instance$/,
+  function (name: string) {
+    instanceFormPage.getInputRemoveButton(name).click();
+  },
+);
+
+Then(
+  /^le bouton "supprimer" du champ "([^"]+)" est (actif|désactivé) dans le formulaire de (?:création|modification) d'instance$/,
+  function (name: string, state: string) {
+    const isDisabled = state === 'désactivé';
+    instanceFormPage
+      .getInputRemoveButton(name)
+      .should(isDisabled ? 'be.disabled' : 'be.enabled');
+  },
+);
+
+Then(
+  /^le champ "([^"]+)" (est|n'est pas) affiché dans le formulaire de (?:création|modification) d'instance$/,
+  function (name: string, text: string) {
+    const isVisible = text === 'est';
+    instanceFormPage.checkIsFieldVisible(name, isVisible);
+  },
+);
+
+Then(
+  /^les champs suivants (sont|ne sont pas) affichés dans le formulaire de (?:création|modification) d'instance$/,
+  function (text: string, dataTable: DataTable) {
+    const isVisible = text === 'sont';
+    dataTable.hashes().forEach(({ name }) => {
+      instanceFormPage.checkIsFieldVisible(name, isVisible);
+    });
+  },
+);
+
 Then(
   /^le champ "([^"]+)" (est|n'est pas) visible à l'écran dans le formulaire de (?:création|modification) d'instance$/,
   function (name: string, text: string) {
     const isWithinViewport = text === 'est';
-    instanceFormPage.checkIsWithinViewport(name, isWithinViewport);
+    instanceFormPage.checkIsFieldWithinViewport(name, isWithinViewport);
   },
 );
 
@@ -85,6 +127,15 @@ Then(
   /^le champ "([^"]+)" contient "([^"]*)" dans le formulaire de (?:création|modification) d'instance$/,
   function (name: string, value: string) {
     instanceFormPage.checkHasValue(name, value);
+  },
+);
+
+Then(
+  /^les champs suivants sont initialisés dans le formulaire de (?:création|modification) d'instance$/,
+  function (dataTable: DataTable) {
+    dataTable.hashes().forEach(({ name, value }) => {
+      instanceFormPage.checkHasValue(name, value);
+    });
   },
 );
 

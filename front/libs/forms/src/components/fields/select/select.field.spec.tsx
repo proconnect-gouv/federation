@@ -1,6 +1,7 @@
 import { render } from '@testing-library/react';
 import { Field } from 'react-final-form';
 
+import { FieldTypes } from '../../../enums';
 import { SelectInput } from '../../inputs';
 import { SelectField } from './select.field';
 
@@ -25,6 +26,7 @@ describe('selectField', () => {
           name: 'any-name-mock',
           required: true,
         }}
+        type={FieldTypes.SELECT}
         validate={valildateMock}
       />,
     );
@@ -47,6 +49,7 @@ describe('selectField', () => {
         format: formatMock,
         name: 'any-name-mock',
         subscription: { error: true, touched: true, value: true },
+        type: 'select',
         validate: valildateMock,
       },
       {},

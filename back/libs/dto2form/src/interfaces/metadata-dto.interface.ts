@@ -1,7 +1,7 @@
 export interface MetadataDtoValidatorsInterface {
   name: string;
   errorLabel: string;
-  validationArgs: string[];
+  validationArgs: unknown[];
 }
 
 export interface MetadataDtoValidateIfInterface {
@@ -9,13 +9,19 @@ export interface MetadataDtoValidateIfInterface {
   ruleArgs: string[];
 }
 
+export type ValidatorType = (
+  | MetadataDtoValidatorsInterface
+  | MetadataDtoValidatorsInterface[]
+)[];
+
 export interface MetadataDtoInterface {
   required: boolean;
+  array: boolean;
   order: number;
-  validators: MetadataDtoValidatorsInterface[];
+  validators: ValidatorType;
   validateIf: MetadataDtoValidateIfInterface[];
   type: string;
   name: string;
   label?: string;
-  hintText?: string;
+  hint?: string;
 }

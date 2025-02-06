@@ -70,7 +70,7 @@ Fonctionnalité: API - instance création
     Et que je prépare une requête "instance-creation"
     Et je retire "name" du corps de la requête
     Et je mets "abcdef" dans la propriété "signupId" du corps de la requête
-    Et je mets "abcdef" dans la propriété "site" du corps de la requête
+    Et je mets "abcdef" dans la propriété "site[]" du corps de la requête
     Quand je lance la requête avec le csrf-token
     Alors le statut de la réponse est 422
     Et l'entête de la réponse a une propriété "content-type" contenant "application/json"
@@ -84,7 +84,8 @@ Fonctionnalité: API - instance création
     Et le corps de la réponse a une propriété "payload.signupId" avec 1 élément
     Et le corps de la réponse a une propriété "payload.signupId[0]" égale à "Veuillez saisir un numéro valide"
     Et le corps de la réponse a une propriété "payload.site" avec 1 élément
-    Et le corps de la réponse a une propriété "payload.site[0]" égale à "Veuillez saisir une url valide"
+    Et le corps de la réponse a une propriété "payload.site[0]" avec 1 élément
+    Et le corps de la réponse a une propriété "payload.site[0][0]" égale à "Veuillez saisir une url valide"
 
   Scénario: API instance création - plusieurs erreurs sur une propriété
     Etant donné que je me connecte à l'espace partenaires

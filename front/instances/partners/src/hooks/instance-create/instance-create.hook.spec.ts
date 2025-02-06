@@ -1,25 +1,32 @@
 import { renderHook } from '@testing-library/react';
 import { useNavigate, useRouteLoaderData } from 'react-router-dom';
 
-import type { JSONFieldType } from '@fc/dto2form';
+import { parseInitialValues } from '@fc/dto2form';
 import type { HttpClientDataInterface } from '@fc/http-client';
 
+import schemaMock from '../../__fixtures__/form-schema.fixture.json';
 import { InstancesService } from '../../services';
 import { useInstanceCreate } from './instance-create.hook';
 
 // Given
-jest.mock('./../../services');
+jest.mock('./../../services/instances/instances.service');
 
 describe('useInstanceCreate', () => {
   // Given
   const navigateMock = jest.fn();
   const dataMock = Symbol('data-mock') as unknown as HttpClientDataInterface;
-  const schemaMock = Symbol('schema-mock') as unknown as JSONFieldType[];
+  const initialValuesMock = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    'any-name-mock-1': '',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    'any-name-mock-2': [''],
+  };
 
   beforeEach(() => {
     // Given
     jest.mocked(useNavigate).mockReturnValue(navigateMock);
     jest.mocked(useRouteLoaderData).mockReturnValue(schemaMock);
+    jest.mocked(parseInitialValues).mockReturnValue(initialValuesMock);
   });
 
   it('should call hooks and return an object with initialValues, submitHandler, title, schema', () => {
@@ -28,6 +35,7 @@ describe('useInstanceCreate', () => {
 
     // Then
     expect(result.current).toStrictEqual({
+      initialValues: initialValuesMock,
       schema: schemaMock,
       submitHandler: expect.any(Function),
     });

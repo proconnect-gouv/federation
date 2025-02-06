@@ -1,3 +1,4 @@
+import finalFormArrays from 'final-form-arrays';
 import type { PropsWithChildren } from 'react';
 import type { FormRenderProps } from 'react-final-form';
 import { Form } from 'react-final-form';
@@ -20,6 +21,7 @@ export function FormComponent<T = unknown>({
       config={config}
       decorators={decorators}
       initialValues={initialValues}
+      mutators={{ ...finalFormArrays }}
       noRequired={noRequired}
       scrollTopOnSubmit={scrollTopOnSubmit}
       validate={onValidate}
