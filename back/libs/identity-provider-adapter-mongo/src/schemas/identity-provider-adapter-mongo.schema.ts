@@ -53,6 +53,9 @@ export class IdentityProvider extends Document {
 
   @Prop({ type: String })
   siret: string;
+
+  @Prop({ type: String, required: false })
+  supportEmail: string;
 }
 
 export const IdentityProviderSchema =
