@@ -55,6 +55,17 @@ describe('CoreFcaService', () => {
   };
 
   const acrMock = 'acrMockValue';
+  const claimsMock = {
+    id_token: {
+      acr: {
+        essential: true,
+      },
+      amr: {
+        essential: true,
+      },
+    },
+  };
+
   const configMock = {
     scope: Symbol('scopeMockValue'),
     spAuthorizedFqdnsConfigs: [],
@@ -237,6 +248,7 @@ describe('CoreFcaService', () => {
           state: stateMock,
           scope: configMock.scope,
           acr_values: acrMock,
+          claims: claimsMock,
           nonce: nonceMock,
           sp_id: spIdMock,
           login_hint: 'example@email.com',

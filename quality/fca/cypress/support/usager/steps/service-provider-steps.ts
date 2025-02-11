@@ -25,13 +25,26 @@ When('je navigue sur la page fournisseur de service', function () {
   navigateTo({ appId: this.serviceProvider.name, baseUrl: allAppsUrl });
 });
 
-Given('le fournisseur de service requiert le claim "amr"', function () {
-  serviceProviderPage.setAmrAsRequestedClaims();
-});
+Given(
+  'le fournisseur de service requiert le claim {string}',
+  function (claim: string) {
+    serviceProviderPage.setAsRequestedClaims(claim);
+  },
+);
 
-Given('le fournisseur de service ne requiert pas le claim "amr"', function () {
-  serviceProviderPage.removeAmrFromRequestedClaims();
-});
+Given(
+  'le fournisseur de service ne requiert pas le claim {string}',
+  function (claim: string) {
+    serviceProviderPage.removeFromRequestedClaims(claim);
+  },
+);
+
+Given(
+  'le fournisseur de service requiert un niveau de sécurité {string}',
+  function (acrValue: string) {
+    serviceProviderPage.setAsRequestedClaims('acr', acrValue);
+  },
+);
 
 When('je clique sur le bouton AgentConnect', function () {
   // Setup the requested scope and eidas on mocked environment

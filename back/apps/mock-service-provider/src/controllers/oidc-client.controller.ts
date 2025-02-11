@@ -13,11 +13,11 @@ import {
 import { CsrfTokenGuard } from '@fc/csrf';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
 import { LoggerService } from '@fc/logger';
+import { RedirectToIdp } from '@fc/mock-service-provider/dto/redirect-to-idp.dto';
 import {
   OidcClientRoutes,
   OidcClientService,
   OidcClientSession,
-  RedirectToIdp,
 } from '@fc/oidc-client';
 import { ISessionService, Session, SessionService } from '@fc/session';
 

@@ -29,14 +29,14 @@ Given(
 );
 
 Given(
-  'le fournisseur de service requiert un niveau de sécurité {string}',
+  'le fournisseur de service demande un niveau de sécurité {string}',
   function (acrValue: string) {
     this.serviceProvider.acrValue = acrValue;
   },
 );
 
 Given(
-  'le fournisseur de service ne requiert aucun niveau de sécurité',
+  'le fournisseur de service ne demande aucun niveau de sécurité',
   function () {
     this.serviceProvider.acrValue = undefined;
   },

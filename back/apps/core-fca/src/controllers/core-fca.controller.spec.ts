@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
-import { CoreAcrService, CoreRoutes, CoreVerifyService } from '@fc/core';
+import { CoreRoutes, CoreVerifyService } from '@fc/core';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { NotificationsService } from '@fc/notifications';
 import { IOidcIdentity, OidcSession } from '@fc/oidc';
@@ -91,10 +91,6 @@ describe('CoreFcaController', () => {
     handleErrorLoginRequired: jest.fn(),
   };
 
-  const coreAcrServiceMock = {
-    rejectInvalidAcr: jest.fn(),
-  };
-
   const identityProviderServiceMock = {
     getFilteredList: jest.fn(),
     getList: jest.fn(),
@@ -138,10 +134,6 @@ describe('CoreFcaController', () => {
     },
   } as unknown as TrackingService;
 
-  const oidcAcrServiceMock = {
-    isAcrValid: jest.fn(),
-  };
-
   const csrfToken = randomStringMock;
 
   const oidcClientSessionDataMock: OidcClientSession = {
@@ -157,11 +149,6 @@ describe('CoreFcaController', () => {
   };
 
   const interactionDetailsMock = {
-    params: {
-      acr_values: 'toto titi',
-      client_id: 'client_id',
-      scope: 'openid',
-    },
     prompt: Symbol('prompt'),
     uid: Symbol('uid'),
   };
@@ -209,7 +196,6 @@ describe('CoreFcaController', () => {
         IdentityProviderAdapterMongoService,
         ServiceProviderAdapterMongoService,
         ConfigService,
-        CoreAcrService,
         CoreFcaFqdnService,
         CoreFcaVerifyService,
         CoreVerifyService,
@@ -233,12 +219,8 @@ describe('CoreFcaController', () => {
       .useValue(coreVerifyServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(CoreAcrService)
-      .useValue(coreAcrServiceMock)
       .overrideProvider(TrackingService)
       .useValue(trackingServiceMock)
-      .overrideProvider(OidcAcrService)
-      .useValue(oidcAcrServiceMock)
       .overrideProvider(SessionService)
       .useValue(oidcSessionServiceMock)
       .overrideProvider(NotificationsService)
@@ -259,7 +241,6 @@ describe('CoreFcaController', () => {
     oidcProviderServiceMock.getInteraction.mockResolvedValue(
       interactionDetailsResolved,
     );
-    coreAcrServiceMock.rejectInvalidAcr.mockResolvedValue(false);
     coreVerifyServiceMock.verify.mockResolvedValue(interactionDetailsResolved);
 
     serviceProviderServiceMock.getById.mockResolvedValue({
@@ -312,29 +293,6 @@ describe('CoreFcaController', () => {
       );
 
       appSessionServiceMock.get.mockResolvedValue(false);
-    });
-
-    it('should return nothing, stop interaction, when acr value is not an allowedAcrValue', async () => {
-      // Given
-      coreAcrServiceMock.rejectInvalidAcr.mockResolvedValue(true);
-
-      oidcProviderServiceMock.getInteraction.mockResolvedValue({
-        params: 'params',
-        prompt: 'prompt',
-        uid: 'uid',
-      });
-
-      // When
-      const result = await coreController.getInteraction(
-        req,
-        res,
-        params,
-        csrfToken,
-        oidcSessionServiceMock,
-      );
-      // Then
-      expect(result).toBeUndefined();
-      expect(res.render).not.toHaveBeenCalled();
     });
 
     it('should track route if not a refresh', async () => {
@@ -395,42 +353,7 @@ describe('CoreFcaController', () => {
         oidcSessionServiceMock,
       );
       // Then
-      expect(configServiceMock.get).toHaveBeenNthCalledWith(1, 'OidcProvider');
-    });
-
-    it('should call coreAcrService.rejectInvalidAcr() with interaction acrValues, authorizedAcrValues, req and res', async () => {
-      // When
-      await coreController.getInteraction(
-        req,
-        res,
-        params,
-        csrfToken,
-        oidcSessionServiceMock,
-      );
-      // Then
-      expect(coreAcrServiceMock.rejectInvalidAcr).toHaveBeenCalledTimes(1);
-      expect(coreAcrServiceMock.rejectInvalidAcr).toHaveBeenCalledWith(
-        interactionDetailsMock.params.acr_values,
-        appConfigMock.configuration.acrValues,
-        { req, res },
-      );
-    });
-
-    it('should not render and return if acr value is not an allowedAcrValue', async () => {
-      // Given
-      coreAcrServiceMock.rejectInvalidAcr.mockResolvedValueOnce(true);
-
-      // When
-      const result = await coreController.getInteraction(
-        req,
-        res,
-        params,
-        csrfToken,
-        oidcSessionServiceMock,
-      );
-      // Then
-      expect(result).toBeUndefined();
-      expect(res.render).not.toHaveBeenCalled();
+      expect(configServiceMock.get).toHaveBeenNthCalledWith(1, 'App');
     });
 
     it('should call the notifications list without params', async () => {
@@ -455,10 +378,9 @@ describe('CoreFcaController', () => {
     it('should return a complete response when rendering', async () => {
       const expectedInteractionDetails = {
         csrfToken: randomStringMock,
+        defaultEmailRenater: undefined,
         notification: notificationsMock,
-        params: interactionDetailsMock.params,
         spName: oidcSessionMock.spName,
-        spScope: interactionDetailsMock.params.scope,
       };
 
       // When

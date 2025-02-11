@@ -45,11 +45,12 @@ export class GetAuthorizeOidcClientSsoSession extends CoreBaseOidcClientSessionD
   @Expose()
   readonly idpLabel: string;
 
-  // Identity Provider: We MUST have idpAcr (SSO)
+  // Identity Provider: We MAY have idpAcr (SSO)
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @Expose()
-  readonly idpAcr: string;
+  readonly idpAcr?: string;
 
   // Identity Provider: We MUST have an idpToken (SSO)
   @IsString()

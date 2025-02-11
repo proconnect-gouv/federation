@@ -5,13 +5,8 @@ import { ConfigService } from '@fc/config';
 import { throwException } from '@fc/exceptions/helpers';
 import { FlowStepsService } from '@fc/flow-steps';
 import { LoggerService } from '@fc/logger';
-import {
-  atHashFromAccessToken,
-  IOidcClaims,
-  OidcSession,
-  stringToArray,
-} from '@fc/oidc';
-import { OidcAcrConfig, OidcAcrService } from '@fc/oidc-acr';
+import { atHashFromAccessToken, IOidcClaims, OidcSession } from '@fc/oidc';
+import { OidcAcrService } from '@fc/oidc-acr';
 import { AuthorizationParameters, OidcClientRoutes } from '@fc/oidc-client';
 import {
   OidcCtx,
@@ -31,7 +26,6 @@ import { CoreRoutes } from '../enums';
 import { CoreClaimAmrException, CoreIdpHintException } from '../exceptions';
 import { CoreServiceInterface } from '../interfaces';
 import { CORE_SERVICE } from '../tokens';
-import { pickAcr } from '../transforms';
 
 @Injectable()
 export class CoreOidcProviderMiddlewareService {
@@ -75,28 +69,6 @@ export class CoreOidcProviderMiddlewareService {
      */
     this.oidcProvider.clearCookies(res);
     req.headers.cookie = '';
-  }
-
-  protected overrideAuthorizeAcrValues(ctx: OidcCtx): void {
-    if (!['POST', 'GET'].includes(ctx.method)) {
-      this.logger.warning(`Unsupported method "${ctx.method}".`);
-      return;
-    }
-
-    const { defaultAcrValue } = this.config.get<OidcAcrConfig>('OidcAcr');
-    const knownAcrValues = this.oidcAcr.getKnownAcrValues();
-
-    const isPostMethod = ctx.method === 'POST';
-    const data = isPostMethod ? ctx.req.body : ctx.query;
-    const { acr_values: dataAcrValues = '' } = data as { acr_values?: string };
-    const acrValues = stringToArray(dataAcrValues);
-    data.acr_values = pickAcr(knownAcrValues, acrValues, defaultAcrValue);
-
-    this.logger.info(`Overriding "acr_values" with "${data.acr_values}"`);
-    this.logger.debug({
-      originalAcrValues: dataAcrValues,
-      overriddenAcrValues: data.acr_values,
-    });
   }
 
   /**
@@ -194,7 +166,7 @@ export class CoreOidcProviderMiddlewareService {
 
     const sessionProperties = {
       interactionId,
-      spAcr: spAcr as string,
+      spAcr: spAcr as string | undefined,
       spId: spId as string,
       spRedirectUri: spRedirectUri as string,
       spName,
@@ -308,23 +280,14 @@ export class CoreOidcProviderMiddlewareService {
     }
   }
 
-  protected isSsoAvailable(spAcr: string): boolean {
+  protected isSsoAvailable(): boolean {
     const { enableSso } = this.config.get<CoreConfig>('Core');
-    const { allowedSsoAcrs } = this.config.get<OidcAcrConfig>('OidcAcr');
-    const { spIdentity, idpAcr } =
+    const { spIdentity } =
       this.sessionService.get<OidcSession>('OidcClient') || {};
 
     const hasSpIdentity = Boolean(spIdentity);
-    const hasSufficientAcr = this.oidcAcr.isAcrValid(idpAcr, spAcr);
-    const hasAuthorizedAcr = allowedSsoAcrs.includes(spAcr);
-    const ssoCanBeUsed = this.ssoCanBeUsed(
-      enableSso,
-      hasAuthorizedAcr,
-      hasSufficientAcr,
-      hasSpIdentity,
-    );
 
-    return ssoCanBeUsed;
+    return enableSso && hasSpIdentity;
   }
 
   protected async redirectToSso(ctx: OidcCtx): Promise<void> {
@@ -365,14 +328,5 @@ export class CoreOidcProviderMiddlewareService {
     }
 
     return sessionId;
-  }
-
-  private ssoCanBeUsed(
-    enableSso: boolean,
-    hasAuthorizedAcr: boolean,
-    hasSufficientAcr: boolean,
-    hasSpIdentity: boolean,
-  ): boolean {
-    return enableSso && hasAuthorizedAcr && hasSufficientAcr && hasSpIdentity;
   }
 }

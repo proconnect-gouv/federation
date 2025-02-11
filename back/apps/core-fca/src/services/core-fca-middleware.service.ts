@@ -72,12 +72,6 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     this.registerMiddleware(
       OidcProviderMiddlewareStep.BEFORE,
       OidcProviderRoutes.AUTHORIZATION,
-      this.overrideAuthorizeAcrValues,
-    );
-
-    this.registerMiddleware(
-      OidcProviderMiddlewareStep.BEFORE,
-      OidcProviderRoutes.AUTHORIZATION,
       this.handleSilentAuthenticationMiddleware,
     );
 
@@ -115,8 +109,7 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
   protected async handleSilentAuthenticationMiddleware(
     ctx: OidcCtx,
   ): Promise<void> {
-    const { acr_values: acrValues, prompt } =
-      this.getAuthorizationParameters(ctx);
+    const { prompt } = this.getAuthorizationParameters(ctx);
 
     if (!prompt) {
       return this.overrideAuthorizePrompt(ctx);
@@ -132,7 +125,7 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     );
     await this.sessionService.commit();
 
-    if (this.isSsoAvailable(acrValues) && isSilentAuthentication) {
+    if (this.isSsoAvailable() && isSilentAuthentication) {
       // Given the Panva middlewares lack of active session awareness, overriding the prompt value is crucial to prevent
       // login-required errors. Silent authentication will be treated as a login attempt when an active session exists.
       this.overrideAuthorizePrompt(ctx);
@@ -153,9 +146,7 @@ export class CoreFcaMiddlewareService extends CoreOidcProviderMiddlewareService 
     const eventContext = this.getEventContext(ctx);
     await this.renewSession(ctx);
 
-    // We force string casting because if it's undefined SSO will not be enabled
-    const spAcr = ctx?.oidc?.params?.acr_values as string;
-    ctx.isSso = this.isSsoAvailable(spAcr);
+    ctx.isSso = this.isSsoAvailable();
 
     const sessionProperties = await this.buildSessionWithNewInteraction(
       ctx,

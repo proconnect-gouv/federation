@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 
 import { AccountFca, AccountFcaService, IIdpAgentKeys } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
-import { CoreAcrService, IVerifyFeatureHandlerHandleArgument } from '@fc/core';
+import { IVerifyFeatureHandlerHandleArgument } from '@fc/core';
 import { CoreFcaAgentAccountBlockedException } from '@fc/core-fca/exceptions/core-fca-account-blocked.exception';
 import { IAgentIdentity } from '@fc/core-fca/interfaces';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
@@ -26,7 +26,6 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   /* eslint-disable-next-line max-params */
   constructor(
     protected readonly logger: LoggerService,
-    protected readonly coreAcr: CoreAcrService,
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
     protected readonly accountService: AccountFcaService,
     protected readonly oidcAcr: OidcAcrService,
@@ -51,16 +50,10 @@ export class CoreFcaDefaultVerifyHandler implements IFeatureHandler {
   }: IVerifyFeatureHandlerHandleArgument): Promise<void> {
     this.logger.debug('verifyIdentity service: ##### core-fca-default-verify');
 
-    const { idpId, idpIdentity, idpAcr, spAcr, isSso } = sessionOidc.get();
+    const { idpId, idpIdentity, idpAcr } = sessionOidc.get();
 
-    // Acr check
-    const { allowedAcr } = await this.identityProvider.getById(idpId);
-
-    this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, allowedAcr);
     const interactionAcr = this.oidcAcr.getInteractionAcr({
       idpAcr,
-      spAcr,
-      isSso,
     });
 
     // we need to create a deep copy of idpIdentity to avoid to customize the original object

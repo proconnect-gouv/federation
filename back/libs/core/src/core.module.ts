@@ -34,7 +34,6 @@ import {
   CoreOidcProviderMiddlewareService,
   CoreVerifyService,
 } from './services';
-import { CoreAcrService } from './services/core-acr.service';
 import { CORE_SERVICE } from './tokens';
 
 @Module({})
@@ -84,7 +83,6 @@ export class CoreModule {
           useExisting: CoreServiceInterface,
         },
         CoreOidcProviderMiddlewareService,
-        CoreAcrService,
         CoreVerifyService,
         CoreAuthorizationService,
         ExceptionOccurredHandler,
@@ -118,7 +116,6 @@ export class CoreModule {
       exports: [
         CoreAccountService,
         CoreOidcProviderMiddlewareService,
-        CoreAcrService,
         CoreVerifyService,
         CoreOidcProviderConfigAppService,
         trackingModule,

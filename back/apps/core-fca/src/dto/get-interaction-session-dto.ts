@@ -1,4 +1,4 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import {
   IsIn,
   IsNotEmpty,
@@ -14,8 +14,6 @@ import { OidcClientRoutes } from '@fc/oidc-client';
 import { OidcProviderRoutes } from '@fc/oidc-provider';
 
 import { CoreFcaRoutes } from '../enums/core-fca-routes.enum';
-import { AppSession } from './app-session.dto';
-import { CoreSessionDto } from './core-session.dto';
 
 export class GetInteractionOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
   // Metadata: We MAY have an accountId (SSO)
@@ -44,18 +42,4 @@ export class GetInteractionOidcClientSessionDto extends CoreBaseOidcClientSessio
   @IsObject()
   @Expose()
   readonly idpIdentity?: PartialExcept<IOidcIdentity, 'sub'> | IOidcIdentity;
-}
-
-export class GetInteractionSessionDto {
-  @Expose()
-  @Type(() => AppSession)
-  readonly App: AppSession;
-
-  @Expose()
-  @Type(() => GetInteractionOidcClientSessionDto)
-  readonly OidcClient: GetInteractionOidcClientSessionDto;
-
-  @Expose()
-  @Type(() => CoreSessionDto)
-  readonly Core: CoreSessionDto;
 }

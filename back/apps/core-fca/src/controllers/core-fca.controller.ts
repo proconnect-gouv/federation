@@ -13,7 +13,6 @@ import {
 
 import { ConfigService } from '@fc/config';
 import {
-  CoreAcrService,
   CoreConfig,
   CoreRoutes,
   CoreVerifyService,
@@ -24,7 +23,7 @@ import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { NotificationsService } from '@fc/notifications';
 import { OidcClientSession } from '@fc/oidc-client';
-import { OidcProviderConfig, OidcProviderService } from '@fc/oidc-provider';
+import { OidcProviderService } from '@fc/oidc-provider';
 import { ServiceProviderAdapterMongoService } from '@fc/service-provider-adapter-mongo';
 import { ISessionService, Session } from '@fc/session';
 import { TrackedEventContextInterface, TrackingService } from '@fc/tracking';
@@ -46,7 +45,6 @@ export class CoreFcaController {
     private readonly serviceProvider: ServiceProviderAdapterMongoService,
     private readonly config: ConfigService,
     private readonly notifications: NotificationsService,
-    private readonly coreAcr: CoreAcrService,
     private readonly fqdnService: CoreFcaFqdnService,
     private readonly coreFcaVerify: CoreFcaVerifyService,
     private readonly coreVerify: CoreVerifyService,
@@ -80,23 +78,6 @@ export class CoreFcaController {
   ): Promise<void> {
     const { spName, stepRoute, login_hint: email } = sessionOidc.get();
 
-    const { params } = await this.oidcProvider.getInteraction(req, res);
-    const { acr_values: acrValues, scope: spScope } = params;
-
-    const {
-      configuration: { acrValues: allowedAcrValues },
-    } = this.config.get<OidcProviderConfig>('OidcProvider');
-
-    const rejected = await this.coreAcr.rejectInvalidAcr(
-      acrValues,
-      allowedAcrValues,
-      { req, res },
-    );
-
-    if (rejected) {
-      return;
-    }
-
     const notification = await this.notifications.getNotificationToDisplay();
 
     const { defaultEmailRenater } = this.config.get<AppConfig>('App');
@@ -105,9 +86,7 @@ export class CoreFcaController {
       csrfToken,
       defaultEmailRenater,
       notification,
-      params,
       spName,
-      spScope,
     };
 
     const isRefresh = stepRoute === CoreRoutes.INTERACTION;

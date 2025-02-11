@@ -8,6 +8,7 @@ import { CsrfTokenGuard } from '@fc/csrf';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata, IOidcIdentity } from '@fc/oidc';
+import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcClientConfigService,
   OidcClientService,
@@ -94,7 +95,7 @@ describe('OidcClient Controller', () => {
   };
 
   const configMock = {
-    configuration: { acrValues: ['eidas1'] },
+    configuration: { acrValues: ['acr'] },
     defaultRedirectUri: 'https://hogwartsconnect.gouv.fr',
     scope: 'some scope',
     urlPrefix: '/api/v2',
@@ -106,11 +107,15 @@ describe('OidcClient Controller', () => {
 
   const interactionDetailsResolved = {
     params: {
-      acr_values: 'interactionDetailsResolved.acr_values',
+      acr_values: 'acr',
       scope: 'toto titi',
     },
     prompt: Symbol('prompt'),
     uid: Symbol('uid'),
+  };
+
+  const oidcAcrServiceMock = {
+    getFilteredAcrValues: jest.fn(),
   };
 
   const oidcProviderServiceMock = {
@@ -191,6 +196,7 @@ describe('OidcClient Controller', () => {
         TrackingService,
         ConfigService,
         IdentityProviderAdapterMongoService,
+        OidcAcrService,
         OidcProviderService,
         TrackingService,
         CoreFcaService,
@@ -214,6 +220,8 @@ describe('OidcClient Controller', () => {
       .useValue(configServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderServiceMock)
+      .overrideProvider(OidcAcrService)
+      .useValue(oidcAcrServiceMock)
       .overrideProvider(OidcProviderService)
       .useValue(oidcProviderServiceMock)
       .overrideProvider(TrackingService)
@@ -257,6 +265,10 @@ describe('OidcClient Controller', () => {
       providerUid: providerIdMock,
       acr_values: 'acrMock',
     });
+
+    oidcAcrServiceMock.getFilteredAcrValues.mockReturnValue(
+      interactionDetailsResolved.params.acr_values,
+    );
 
     oidcProviderServiceMock.getInteraction.mockResolvedValue(
       interactionDetailsResolved,

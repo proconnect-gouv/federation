@@ -187,7 +187,7 @@ describe('CoreFcaMiddlewareService', () => {
       // When
       service.onModuleInit();
       // Then
-      expect(service['registerMiddleware']).toHaveBeenCalledTimes(8);
+      expect(service['registerMiddleware']).toHaveBeenCalledTimes(7);
     });
   });
 
@@ -431,9 +431,6 @@ describe('CoreFcaMiddlewareService', () => {
       await service['afterAuthorizeMiddleware'](ctxMock);
       // Then
       expect(service['isSsoAvailable']).toHaveBeenCalledTimes(1);
-      expect(service['isSsoAvailable']).toHaveBeenCalledWith(
-        ctxMock.oidc.params.acr_values,
-      );
     });
 
     it('should call buildSessionWithNewInteraction() with the sessionService and ctx', async () => {

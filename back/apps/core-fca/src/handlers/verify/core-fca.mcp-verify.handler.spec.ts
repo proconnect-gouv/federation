@@ -4,7 +4,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AccountFca, AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
-import { CoreAcrService } from '@fc/core';
 import {
   CoreFcaAgentAccountBlockedException,
   CoreFcaAgentNotFromPublicServiceException,
@@ -40,10 +39,6 @@ describe('CoreFcaMcpVerifyHandler', () => {
     sub: universalSubMock,
     active: true,
   } as AccountFca;
-
-  const coreAcrServiceMock = {
-    checkIfAcrIsValid: jest.fn(),
-  };
 
   const serviceProviderAdapterMock = {
     getById: jest.fn(),
@@ -125,7 +120,6 @@ describe('CoreFcaMcpVerifyHandler', () => {
         CoreFcaMcpVerifyHandler,
         SessionService,
         LoggerService,
-        CoreAcrService,
         IdentityProviderAdapterMongoService,
         AccountFcaService,
         ServiceProviderAdapterMongoService,
@@ -137,8 +131,6 @@ describe('CoreFcaMcpVerifyHandler', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(CoreAcrService)
-      .useValue(coreAcrServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderAdapterMock)
       .overrideProvider(AccountFcaService)
@@ -212,16 +204,6 @@ describe('CoreFcaMcpVerifyHandler', () => {
     it('should not throw if verified', async () => {
       // Then
       await expect(service.handle(handleArgument)).resolves.not.toThrow();
-    });
-
-    it('should throw if acr is not validated', async () => {
-      // Given
-      const errorMock = new Error('my error 1');
-      coreAcrServiceMock.checkIfAcrIsValid.mockImplementation(() => {
-        throw errorMock;
-      });
-      // Then
-      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
     it('should call createOrUpdateAccount with agent identity and idp id', async () => {

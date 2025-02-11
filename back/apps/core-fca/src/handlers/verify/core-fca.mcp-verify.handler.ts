@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 import { AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
-import { CoreAcrService, IVerifyFeatureHandlerHandleArgument } from '@fc/core';
+import { IVerifyFeatureHandlerHandleArgument } from '@fc/core';
 import { CoreFcaAgentNotFromPublicServiceException } from '@fc/core-fca/exceptions';
 import { FeatureHandler, IFeatureHandler } from '@fc/feature-handler';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
@@ -26,14 +26,13 @@ export class CoreFcaMcpVerifyHandler
   // eslint-disable-next-line max-params
   constructor(
     protected readonly logger: LoggerService,
-    protected readonly coreAcr: CoreAcrService,
     protected readonly identityProvider: IdentityProviderAdapterMongoService,
     protected readonly serviceProvider: ServiceProviderAdapterMongoService,
     protected readonly accountService: AccountFcaService,
     protected readonly oidcAcr: OidcAcrService,
     protected readonly config: ConfigService,
   ) {
-    super(logger, coreAcr, identityProvider, accountService, oidcAcr, config);
+    super(logger, identityProvider, accountService, oidcAcr, config);
   }
 
   /**
@@ -50,29 +49,22 @@ export class CoreFcaMcpVerifyHandler
   }: IVerifyFeatureHandlerHandleArgument): Promise<void> {
     this.logger.debug('verifyIdentity service: ##### core-fca-mcp-verify');
 
-    const { idpId, idpIdentity, idpAcr, spAcr, spId, isSso } =
-      sessionOidc.get();
+    const { idpId, idpIdentity, idpAcr, spId } = sessionOidc.get();
     // Check if the sp accepts private employees
     const { type } = await this.serviceProvider.getById(spId);
 
     const isPrivateIdentity =
       (idpIdentity as IAgentIdentityWithPublicness).is_service_public !== true;
     // Types.PUBLIC = sp that accepts public servant only
-    // Types.PRIVATE = sp that also accepts private compagnies employes
+    // Types.PRIVATE = sp that also accepts private compagnies employees
     const spAcceptsPrivate = type !== Types.PUBLIC;
 
     if (isPrivateIdentity && !spAcceptsPrivate) {
       throw new CoreFcaAgentNotFromPublicServiceException();
     }
 
-    // Acr check
-    const { allowedAcr } = await this.identityProvider.getById(idpId);
-
-    this.coreAcr.checkIfAcrIsValid(idpAcr, spAcr, allowedAcr);
     const interactionAcr = this.oidcAcr.getInteractionAcr({
       idpAcr,
-      spAcr,
-      isSso,
     });
 
     // todo: we will need to add a proper way to check and transform sessionOidc into IAgentIdentity

@@ -1,8 +1,8 @@
 import { IsAscii, IsEmail, IsOptional, IsString } from 'class-validator';
 
-import { RedirectToIdp as CoreRedirectToIdp } from '@fc/oidc-client';
+import { CrsfToken } from '@fc/oidc-client';
 
-export class RedirectToIdp extends CoreRedirectToIdp {
+export class RedirectToIdp extends CrsfToken {
   @IsEmail()
   readonly email: string;
 

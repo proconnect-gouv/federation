@@ -4,7 +4,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { AccountFca, AccountFcaService } from '@fc/account-fca';
 import { ConfigService } from '@fc/config';
-import { CoreAcrService } from '@fc/core';
 import { CoreFcaAgentAccountBlockedException } from '@fc/core-fca/exceptions';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -33,10 +32,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     sub: universalSubMock,
     active: true,
   } as AccountFca;
-
-  const coreAcrServiceMock = {
-    checkIfAcrIsValid: jest.fn(),
-  };
 
   const sessionServiceMock = getSessionServiceMock();
 
@@ -126,7 +121,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
         CoreFcaDefaultVerifyHandler,
         SessionService,
         LoggerService,
-        CoreAcrService,
         IdentityProviderAdapterMongoService,
         AccountFcaService,
         OidcAcrService,
@@ -137,8 +131,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
       .useValue(loggerServiceMock)
       .overrideProvider(SessionService)
       .useValue(sessionServiceMock)
-      .overrideProvider(CoreAcrService)
-      .useValue(coreAcrServiceMock)
       .overrideProvider(IdentityProviderAdapterMongoService)
       .useValue(identityProviderAdapterMock)
       .overrideProvider(AccountFcaService)
@@ -207,16 +199,6 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     it('should not throw if verified', async () => {
       // Then
       await expect(service.handle(handleArgument)).resolves.not.toThrow();
-    });
-
-    it('should throw if acr is not validated', async () => {
-      // Given
-      const errorMock = new Error('my error 1');
-      coreAcrServiceMock.checkIfAcrIsValid.mockImplementation(() => {
-        throw errorMock;
-      });
-      // Then
-      await expect(service.handle(handleArgument)).rejects.toThrow(errorMock);
     });
 
     it('sould call createOrUpdateAccount with agent identity and idp id', async () => {

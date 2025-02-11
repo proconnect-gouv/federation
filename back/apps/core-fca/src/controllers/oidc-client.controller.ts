@@ -22,6 +22,7 @@ import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { OidcSession } from '@fc/oidc';
+import { OidcAcrService } from '@fc/oidc-acr';
 import {
   OidcClientConfigService,
   OidcClientRoutes,
@@ -59,6 +60,7 @@ export class OidcClientController {
     private readonly oidcClient: OidcClientService,
     private readonly oidcClientConfig: OidcClientConfigService,
     private readonly coreFca: CoreFcaService,
+    private readonly oidcAcr: OidcAcrService,
     private readonly oidcProvider: OidcProviderService,
     private readonly identityProvider: IdentityProviderAdapterMongoService,
     private readonly sessionService: SessionService,
@@ -111,6 +113,7 @@ export class OidcClientController {
   @IsStep()
   @ForbidRefresh()
   @UseGuards(CsrfTokenGuard)
+  // eslint-disable-next-line complexity
   async redirectToIdp(
     @Req() req: Request,
     @Res() res: Response,
@@ -123,74 +126,78 @@ export class OidcClientController {
     @Session('OidcClient', GetRedirectToIdpOidcClientSessionDto)
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
+    // if email is set, this controller is called from the interaction page
+    // if identityProviderUid is set, this controller is called directly from the sp page via idp_hint or from the select-idp page
     const { email, identityProviderUid } = body;
     const fqdn = this.fqdnService.getFqdnFromEmail(email);
 
     const {
-      params: { acr_values },
+      params: { acr_values: requestedAcrValues },
     } = await this.oidcProvider.getInteraction(req, res);
 
     const authorizeParams = {
-      acr_values,
       login_hint: email,
     };
 
+    const filteredAcrValues =
+      this.oidcAcr.getFilteredAcrValues(requestedAcrValues);
+    if (filteredAcrValues) {
+      authorizeParams['acr_values'] = filteredAcrValues;
+    }
+
     sessionOidc.set('login_hint', email);
 
+    let idpName: string;
+    let idpLabel: string;
+    let idpId: string;
     if (identityProviderUid) {
-      const { name: idpName, title: idpLabel } =
+      const { name, title } =
         await this.identityProvider.getById(identityProviderUid);
+      idpName = name;
+      idpLabel = title;
+      idpId = identityProviderUid;
       this.logger.debug(
-        `Redirect "****@${fqdn}" to selected idp "${idpLabel}" (${identityProviderUid})`,
+        `Redirect "****@${fqdn}" to selected idp "${idpLabel}" (${idpId})`,
       );
+    } else {
+      const { identityProviders } =
+        await this.fqdnService.getFqdnConfigFromEmail(email);
 
-      const trackingContext: TrackedEventContextInterface = {
-        req,
-        fqdn,
-        idpId: identityProviderUid,
-        idpLabel: idpLabel,
-        idpName: idpName,
-      };
-      const { FC_REDIRECT_TO_IDP } = this.tracking.TrackedEventsMap;
-      await this.tracking.track(FC_REDIRECT_TO_IDP, trackingContext);
-      return this.coreFca.redirectToIdp(
-        res,
-        identityProviderUid,
-        authorizeParams,
-      );
-    }
+      if (identityProviders.length === 0) {
+        throw new CoreFcaAgentNoIdpException();
+      }
 
-    const { identityProviders } =
-      await this.fqdnService.getFqdnConfigFromEmail(email);
-    const hasNoProvider = identityProviders.length === 0;
-    const hasUniqueProvider = identityProviders.length === 1;
+      if (identityProviders.length > 1) {
+        this.logger.debug(
+          `${identityProviders.length} identity providers matching for "****@${fqdn}"`,
+        );
+        const { urlPrefix } = this.config.get<AppConfig>('App');
+        const url = `${urlPrefix}${CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION}`;
 
-    if (hasNoProvider) {
-      throw new CoreFcaAgentNoIdpException();
-    }
+        return res.redirect(url);
+      }
 
-    if (hasUniqueProvider) {
-      const [idpId] = identityProviders;
+      idpId = identityProviders[0];
 
-      const { title: idpLabel } = await this.identityProvider.getById(idpId);
+      const { name, title } = await this.identityProvider.getById(idpId);
+      idpName = name;
+      idpLabel = title;
       this.logger.debug(
         `Redirect "****@${fqdn}" to unique idp "${idpLabel}" (${idpId})`,
       );
-
-      const trackingContext: TrackedEventContextInterface = { req, fqdn };
-      const { FC_REDIRECT_TO_IDP } = this.tracking.TrackedEventsMap;
-      await this.tracking.track(FC_REDIRECT_TO_IDP, trackingContext);
-      // we need to keep idpId as 2nd parameter for the idp_hint
-      return this.coreFca.redirectToIdp(res, idpId, authorizeParams);
     }
 
-    this.logger.debug(
-      `${identityProviders.length} identity providers matching for "****@${fqdn}"`,
-    );
-    const { urlPrefix } = this.config.get<AppConfig>('App');
-    const url = `${urlPrefix}${CoreFcaRoutes.INTERACTION_IDENTITY_PROVIDER_SELECTION}`;
-
-    return res.redirect(url);
+    const trackingContext: TrackedEventContextInterface = {
+      req,
+      fqdn,
+      idpId: idpId,
+      idpLabel: idpLabel,
+      idpName: idpName,
+    };
+    const { FC_REDIRECT_TO_IDP } = this.tracking.TrackedEventsMap;
+    await this.tracking.track(FC_REDIRECT_TO_IDP, trackingContext);
+    // we need to keep idpId as 2nd parameter for the idp_hint
+    return this.coreFca.redirectToIdp(res, idpId, authorizeParams);
   }
 
   /**
