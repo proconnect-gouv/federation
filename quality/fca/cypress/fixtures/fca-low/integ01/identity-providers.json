@@ -12,7 +12,7 @@
     "title": "MonComptePro Identity Provider",
     "mocked": true,
     "usable": true,
-    "url": "https://app-sandbox.moncomptepro.beta.gouv.fr",
+    "url": "https://identite-sandbox.proconnect.gouv.fr",
     "acrValue": "eidas1",
     "encryption": "",
     "signature": "HS256",
