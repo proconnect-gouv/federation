@@ -47,9 +47,19 @@ export class CoreFcaService implements CoreFcaServiceInterface {
     {
       acr_values,
       login_hint,
+      claims = {
+        id_token: {
+          amr: {
+            essential: true,
+          },
+          acr: {
+            essential: true,
+          },
+        },
+      },
     }: Pick<
       CoreFcaAuthorizationParametersInterface,
-      'acr_values' | 'login_hint'
+      'acr_values' | 'login_hint' | 'claims'
     >,
   ): Promise<void> {
     const { spId } = this.session.get<OidcSession>('OidcClient');
@@ -70,6 +80,7 @@ export class CoreFcaService implements CoreFcaServiceInterface {
       nonce,
       sp_id: spId,
       login_hint,
+      claims,
     };
 
     const authorizationUrl = await this.coreAuthorization.getAuthorizeUrl(

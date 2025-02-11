@@ -1,5 +1,4 @@
 import {
-  IsAlphanumeric,
   IsAscii,
   IsJWT,
   IsOptional,
@@ -27,8 +26,8 @@ export class TokenResultDto implements TokenResults {
   readonly refreshToken?: string;
 
   @IsString()
-  @IsAlphanumeric()
-  readonly acr: string;
+  @IsOptional()
+  readonly acr?: string;
 
   @IsString({ each: true })
   @IsOptional()

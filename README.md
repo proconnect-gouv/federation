@@ -138,7 +138,15 @@ The logger outputs JSON that can be read in Chrome DevTools.
 
 Alternatively, you can use `dks log core-fca-low`.
 
-### Halt a stack
+### Restart a single container
+
+By default, only the core-fca service runs in watch mode.
+To apply changes to either the idp, sp or data provider, execute the following command:
+```bash
+dks start fia1-low
+```
+
+### Halt the stack
 
 ```bash
 dks halt
@@ -171,12 +179,15 @@ yarn install
 ### Run tests from the Cypress UI
 
 ```bash
+dks switch bdd-fca-low
+cd $FC_ROOT/fc/quality/fca
 yarn start:low
 ```
 
 ## Visualization Tests
 
 ```bash
+dks switch bdd-fca-low
 cd $FC_ROOT/fc/quality/fca
 yarn test:low:snapshot
 ```
@@ -184,6 +195,9 @@ yarn test:low:snapshot
 ## Run static tests
 
 ```bash
+cd $FC_ROOT/fc/quality/fca
+yarn lint --fix
+yarn prettier --write
 cd $FC_ROOT/fc/back
 yarn doc
 yarn lint --fix

@@ -1,5 +1,3 @@
-import { mocked } from 'jest-mock';
-
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { ConfigService } from '@fc/config';
@@ -25,10 +23,7 @@ import { getSessionServiceMock } from '@mocks/session';
 
 import { CoreClaimAmrException, CoreIdpHintException } from '../exceptions';
 import { CORE_SERVICE } from '../tokens';
-import { pickAcr } from '../transforms';
 import { CoreOidcProviderMiddlewareService } from './core-oidc-provider-middleware.service';
-
-jest.mock('../transforms');
 
 jest.mock('@fc/oidc');
 
@@ -83,11 +78,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
 
   const configServiceMock = {
     get: jest.fn(),
-  };
-
-  const oidcAcrServiceMock = {
-    getKnownAcrValues: jest.fn(),
-    isAcrValid: jest.fn(),
   };
 
   const atHashMock = 'atHashMock value';
@@ -154,8 +144,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       .useValue(oidcProviderErrorServiceMock)
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
-      .overrideProvider(OidcAcrService)
-      .useValue(oidcAcrServiceMock)
       .overrideProvider(FlowStepsService)
       .useValue(flowStepsMock)
       .compile();
@@ -692,112 +680,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       service['overrideAuthorizePrompt'](ctxMock);
       // Then
       expect(ctxMock).toEqual({ method: 'DELETE' });
-      expect(pickAcr).toHaveBeenCalledTimes(0);
-    });
-  });
-
-  describe('overrideAuthorizeAcrValues()', () => {
-    const overrideAcr = 'boots';
-
-    beforeEach(() => {
-      configServiceMock.get.mockReturnValue({
-        defaultAcrValue: 'eidas3',
-      });
-      oidcAcrServiceMock.getKnownAcrValues.mockReturnValue([
-        'boots',
-        'clothes',
-        'motorcycle',
-      ]);
-      const pickAcrMock = mocked(pickAcr);
-      pickAcrMock.mockReturnValueOnce(overrideAcr);
-    });
-
-    it('should set acr_values in query when acr_values is an empty string', () => {
-      // Given
-      const ctxMock = {
-        method: 'GET',
-        query: { acr_values: '' },
-      } as unknown as OidcCtx;
-      // When
-      service['overrideAuthorizeAcrValues'](ctxMock);
-      // Then
-      expect(ctxMock.query.acr_values).toBe(overrideAcr);
-      expect(ctxMock.body).toBeUndefined();
-    });
-
-    it('should set acr_values in query when acr_values is undefined', () => {
-      // Given
-      const ctxMock = {
-        method: 'GET',
-        query: {},
-      } as unknown as OidcCtx;
-      // When
-      service['overrideAuthorizeAcrValues'](ctxMock);
-      // Then
-      expect(ctxMock.query.acr_values).toBe(overrideAcr);
-      expect(ctxMock.body).toBeUndefined();
-    });
-
-    it('should override acr_values in query when acr_values has a value', () => {
-      // Given
-      const ctxMock = {
-        method: 'GET',
-        query: { acr_values: 'boots' },
-      } as unknown as OidcCtx;
-      // When
-      service['overrideAuthorizeAcrValues'](ctxMock);
-      // Then
-      expect(ctxMock.query.acr_values).toBe(overrideAcr);
-      expect(ctxMock.body).toBeUndefined();
-    });
-
-    it('should set acr_values in body when acr_values is an empty string', () => {
-      // Given
-      const ctxMock = {
-        method: 'POST',
-        req: { body: { acr_values: '' } },
-      } as unknown as OidcCtx;
-      // When
-      service['overrideAuthorizeAcrValues'](ctxMock);
-      // Then
-      expect(ctxMock.req.body.acr_values).toBe(overrideAcr);
-      expect(ctxMock.query).toBeUndefined();
-    });
-
-    it('should set acr_values in body when acr_values is undefined', () => {
-      // Given
-      const ctxMock = {
-        method: 'POST',
-        req: { body: {} },
-      } as unknown as OidcCtx;
-      // When
-      service['overrideAuthorizeAcrValues'](ctxMock);
-      // Then
-      expect(ctxMock.req.body.acr_values).toBe(overrideAcr);
-      expect(ctxMock.query).toBeUndefined();
-    });
-
-    it('should override acr_values in body when acr_values has a value', () => {
-      // Given
-      const ctxMock = {
-        method: 'POST',
-        req: { body: { acr_values: 'boots' } },
-      } as unknown as OidcCtx;
-      // When
-      service['overrideAuthorizeAcrValues'](ctxMock);
-      // Then
-      expect(ctxMock.req.body.acr_values).toBe(overrideAcr);
-      expect(ctxMock.query).toBeUndefined();
-    });
-
-    it('should not do anything but log if method is not handled', () => {
-      // Given
-      const ctxMock = { method: 'DELETE' } as OidcCtx;
-      // When
-      service['overrideAuthorizeAcrValues'](ctxMock);
-      // Then
-      expect(ctxMock).toEqual({ method: 'DELETE' });
-      expect(pickAcr).toHaveBeenCalledTimes(0);
     });
   });
 
@@ -1018,97 +900,25 @@ describe('CoreOidcProviderMiddlewareService', () => {
         .mockReturnValueOnce({
           allowedSsoAcrs: ['eidas2'],
         });
-
-      sessionServiceMock.get.mockReturnValue({
-        idpAcr: idpAcrMock,
-        spIdentity: 'mockSpIdentity',
-      });
     });
 
     it('should call session.get()', () => {
+      sessionServiceMock.get.mockReturnValueOnce({
+        idpAcr: idpAcrMock,
+        spIdentity: 'mockSpIdentity',
+      });
       // When
-      service['isSsoAvailable'](spAcrMock);
+      service['isSsoAvailable']();
       // Then
       expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
     });
 
-    it('should use an empty object if there is no session', () => {
-      // Given
-      sessionServiceMock.get.mockReturnValueOnce(null);
-
+    it('should call session.get()', () => {
+      sessionServiceMock.get.mockReturnValueOnce(undefined);
       // When
-      service['isSsoAvailable'](spAcrMock);
-
+      service['isSsoAvailable']();
       // Then
-      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(1);
-      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledWith(
-        undefined,
-        spAcrMock,
-      );
-    });
-
-    it('should call isAcrValid', () => {
-      // When
-      service['isSsoAvailable'](spAcrMock);
-      // Then
-      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledTimes(1);
-      expect(oidcAcrServiceMock.isAcrValid).toHaveBeenCalledWith(
-        idpAcrMock,
-        spAcrMock,
-      );
-    });
-
-    it('should call ssoCanBeUsed', () => {
-      // Given
-      service['ssoCanBeUsed'] = jest.fn();
-
-      oidcAcrServiceMock.isAcrValid.mockReturnValue(true);
-      // When
-      service['isSsoAvailable'](spAcrMock);
-      // Then
-      expect(service['ssoCanBeUsed']).toHaveBeenCalledTimes(1);
-      expect(service['ssoCanBeUsed']).toHaveBeenCalledWith(
-        true,
-        false,
-        true,
-        true,
-      );
-    });
-
-    it('should defined spIdentity and idpAcr to undefined if destructure method is impossible', () => {
-      // Given
-      service['ssoCanBeUsed'] = jest.fn();
-
-      sessionServiceMock.get.mockReset().mockResolvedValueOnce(null);
-      oidcAcrServiceMock.isAcrValid.mockReturnValue(false);
-      // When
-      service['isSsoAvailable'](spAcrMock);
-      // Then
-      expect(service['ssoCanBeUsed']).toHaveBeenCalledTimes(1);
-      expect(service['ssoCanBeUsed']).toHaveBeenCalledWith(
-        true,
-        false,
-        false,
-        false,
-      );
-    });
-
-    it('should return `true` if ssoCanBeUsed return true', () => {
-      // Given
-      service['ssoCanBeUsed'] = jest.fn().mockReturnValue(true);
-      // When
-      const result = service['isSsoAvailable'](spAcrMock);
-      // Then
-      expect(result).toBe(true);
-    });
-
-    it('should return `false` if ssoCanBeUsed return false', () => {
-      // Given
-      service['ssoCanBeUsed'] = jest.fn().mockReturnValue(false);
-      // When
-      const result = service['isSsoAvailable'](spAcrMock);
-      // Then
-      expect(result).toBe(false);
+      expect(sessionServiceMock.get).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -1432,93 +1242,6 @@ describe('CoreOidcProviderMiddlewareService', () => {
       expect(() => service['getSessionId'](ctxMock)).toThrow(
         SessionNoSessionIdException,
       );
-    });
-  });
-
-  describe('ssoCanBeUsed', () => {
-    it('should return true if all params are true', () => {
-      // Given
-      const enableSsoMock = true;
-      const hasAuthorizedAcrMock = true;
-      const hasSufficientAcrMock = true;
-      const hasSpIdentityMock = true;
-      // When
-      const result = service['ssoCanBeUsed'](
-        enableSsoMock,
-        hasAuthorizedAcrMock,
-        hasSufficientAcrMock,
-        hasSpIdentityMock,
-      );
-      // Then
-      expect(result).toBe(true);
-    });
-
-    it('should return false if enableSso is defined to false and others to true', () => {
-      // Given
-      const enableSsoMock = false;
-      const hasAuthorizedAcrMock = true;
-      const hasSufficientAcrMock = true;
-      const hasSpIdentityMock = true;
-      // When
-      const result = service['ssoCanBeUsed'](
-        enableSsoMock,
-        hasAuthorizedAcrMock,
-        hasSufficientAcrMock,
-        hasSpIdentityMock,
-      );
-      // Then
-      expect(result).toBe(false);
-    });
-
-    it('should return false if hasAuthorizedAcr is defined to false and others to true', () => {
-      // Given
-      const enableSsoMock = true;
-      const hasAuthorizedAcrMock = false;
-      const hasSufficientAcrMock = true;
-      const hasSpIdentityMock = true;
-      // When
-      const result = service['ssoCanBeUsed'](
-        enableSsoMock,
-        hasAuthorizedAcrMock,
-        hasSufficientAcrMock,
-        hasSpIdentityMock,
-      );
-      // Then
-      expect(result).toBe(false);
-    });
-
-    it('should return false if hasSufficientAcr is defined to false and others to true', () => {
-      // Given
-      const enableSsoMock = true;
-      const hasAuthorizedAcrMock = true;
-      const hasSufficientAcrMock = false;
-      const hasSpIdentityMock = true;
-      // When
-      const result = service['ssoCanBeUsed'](
-        enableSsoMock,
-        hasAuthorizedAcrMock,
-        hasSufficientAcrMock,
-        hasSpIdentityMock,
-      );
-      // Then
-      expect(result).toBe(false);
-    });
-
-    it('should return false if hasSpIdentity is defined to false and others to true', () => {
-      // Given
-      const enableSsoMock = true;
-      const hasAuthorizedAcrMock = true;
-      const hasSufficientAcrMock = true;
-      const hasSpIdentityMock = false;
-      // When
-      const result = service['ssoCanBeUsed'](
-        enableSsoMock,
-        hasAuthorizedAcrMock,
-        hasSufficientAcrMock,
-        hasSpIdentityMock,
-      );
-      // Then
-      expect(result).toBe(false);
     });
   });
 });

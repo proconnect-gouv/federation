@@ -13,7 +13,7 @@ export type TokenResults = {
   accessToken: string;
   idToken: string;
   refreshToken?: string;
-  acr: string;
+  acr?: string;
   amr?: string[];
   idpRepresentativeScope?: string[];
 };

@@ -42,11 +42,12 @@ export class GetLoginOidcClientSessionDto extends CoreBaseOidcClientSessionDto {
   @Expose()
   readonly idpLabel: string;
 
-  // Identity Provider: We MUST have idpAcr
+  // Identity Provider: We MAY have idpAcr
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @Expose()
-  readonly idpAcr: string;
+  readonly idpAcr?: string;
 
   // Identity: We MAY keep an idpIdentity (SSO)
   @IsOptional()

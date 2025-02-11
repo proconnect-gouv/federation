@@ -115,7 +115,10 @@ export class MockIdentityProviderController {
 
     sessionOidc.set({
       spIdentity: spIdentityCleaned,
-      interactionAcr: acr,
+      // The `acr` parameter is a space-separated string.
+      // The `interactionAcr` value represents the satisfied `acr` level of this authentication.
+      // We arbitrarily select the first value from the provided list.
+      interactionAcr: acr.split(' ')[0],
       amr: ['pwd'],
       subs: { [spId]: sub },
     });

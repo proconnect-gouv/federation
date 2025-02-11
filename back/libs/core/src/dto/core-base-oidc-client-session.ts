@@ -59,10 +59,11 @@ export class CoreBaseOidcClientSessionDto {
   @Expose()
   readonly spRedirectUri: string;
 
+  @IsOptional()
   @IsString()
   @IsNotEmpty()
   @Expose()
-  readonly spAcr: string;
+  readonly spAcr?: string;
 
   @IsString()
   @IsNotEmpty()

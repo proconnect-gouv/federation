@@ -71,28 +71,40 @@ export default class ServiceProviderPage {
     }
   }
 
-  setAmrAsRequestedClaims(): void {
+  setAsRequestedClaims(claim: string, value?: string | string[]): void {
     cy.get('#claims')
       .invoke('val')
-      .then((claimsAsText) => {
-        const claims = JSON.parse(claimsAsText as string);
-        claims['id_token'] = { amr: { essential: true } };
+      .then((claimsRequestParamAsText) => {
+        const claimsRequestParam = JSON.parse(
+          claimsRequestParamAsText as string,
+        );
+
+        claimsRequestParam['id_token'] = { [claim]: { essential: true } };
+
+        if (Array.isArray(value)) {
+          claimsRequestParam['id_token'][claim]['values'] = value;
+        } else if (typeof value === 'string') {
+          claimsRequestParam['id_token'][claim]['value'] = value;
+        }
+
         cy.get('#claims').clear();
-        cy.get('#claims').type(JSON.stringify(claims), {
+        cy.get('#claims').type(JSON.stringify(claimsRequestParam), {
           delay: 0,
           parseSpecialCharSequences: false,
         });
       });
   }
 
-  removeAmrFromRequestedClaims(): void {
+  removeFromRequestedClaims(claim: string): void {
     cy.get('#claims')
       .invoke('val')
-      .then((claimsAsText) => {
-        const claims = JSON.parse(claimsAsText as string);
-        delete claims['id_token']['amr'];
+      .then((claimsRequestParamAsText) => {
+        const claimsRequestParam = JSON.parse(
+          claimsRequestParamAsText as string,
+        );
+        delete claimsRequestParam['id_token'][claim];
         cy.get('#claims').clear();
-        cy.get('#claims').type(JSON.stringify(claims), {
+        cy.get('#claims').type(JSON.stringify(claimsRequestParam), {
           delay: 0,
           parseSpecialCharSequences: false,
         });

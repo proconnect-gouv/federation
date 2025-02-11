@@ -18,6 +18,7 @@ export class AuthorizeParamsDto {
   @IsString()
   readonly client_id: string;
 
+  @IsOptional()
   @IsString({ each: true })
   @IsArray()
   @Split(/[ ]+/, { maxLength: 64 })

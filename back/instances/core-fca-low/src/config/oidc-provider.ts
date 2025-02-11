@@ -67,7 +67,12 @@ export default {
       Session: 7200, // 2h
       RefreshToken: 7200, // 2h
     },
-    acrValues: ['eidas1'],
+    acrValues: [
+      'eidas1',
+      'eidas2',
+      'eidas3',
+      'https://proconnect.gouv.fr/assurance/certification-dirigeant',
+    ],
     scopes: ['openid'],
     issueRefreshToken: () => true,
     claims: {

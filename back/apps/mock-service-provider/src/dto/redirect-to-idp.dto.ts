@@ -1,6 +1,6 @@
 import { IsAscii, IsOptional, IsString } from 'class-validator';
 
-import { CrsfToken } from './crsf-token.dto';
+import { CrsfToken } from '@fc/oidc-client/dto/crsf-token.dto';
 
 export class RedirectToIdp extends CrsfToken {
   @IsString()
