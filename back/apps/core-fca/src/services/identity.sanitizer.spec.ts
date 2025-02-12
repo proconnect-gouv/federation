@@ -257,7 +257,7 @@ describe('IdentitySanitizer', () => {
       ).rejects.toThrow(CoreFcaInvalidIdentityException);
 
       // Then
-      expect(loggerServiceMock.debug).toHaveBeenCalledTimes(2);
+      expect(loggerServiceMock.debug).toHaveBeenCalledTimes(1);
       expect(loggerServiceMock.debug).toHaveBeenCalledWith(
         errors,
         `Identity from "${idpIdMock}" is invalid`,
