@@ -7,7 +7,7 @@ import { IsIn, IsNumber, IsOptional, IsString, IsUrl } from 'class-validator';
 export class MicroservicesRmqConfig {
   // class-validator built-in options
   // eslint-disable-next-line @typescript-eslint/naming-convention
-  @IsUrl({ protocols: ['amqp'], require_tld: false }, { each: true })
+  @IsUrl({ protocols: ['amqp', 'amqps'], require_tld: false }, { each: true })
   readonly urls: string[];
 
   @IsString()
