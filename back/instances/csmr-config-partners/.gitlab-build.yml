@@ -1,15 +1,15 @@
 include: '/back/.gitlab-build-template.yml'
 
-csmr-config-partners/csmr-config-partners-build-image:
+partners/csmr-config-partners-build-image:
   extends: .base-build
   variables:
     APP: csmr-config-partners
     MSG: "environments/pa4-integ/group_vars/all/versions.yml\ncsmr_config_partners_version:"
 
-csmr-config-partners/csmr-config-partners-back-tag-to-prod-image: 
+partners/csmr-config-partners-back-tag-to-prod-image: 
   extends: .base-tag-to-prod
   variables:
     DOCKER_IMAGE: csmr-config-partners
     MSG: "environments/pa4-preprod/group_vars/all/versions.yml\nenvironments/pa4-prod/group_vars/all/versions.yml\ncsmr_config_partners_version:"
   needs:
-    - job: csmr-config-partners/csmr-config-partners-build-image
+    - job: partners/csmr-config-partners-build-image
