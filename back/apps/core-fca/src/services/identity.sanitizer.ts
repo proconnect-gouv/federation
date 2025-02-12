@@ -69,7 +69,7 @@ export class IdentitySanitizer {
          */
         identity.siret = await this.sanitizeSiret(error, idpId);
       } else {
-        this.logger.debug(error, `Identity from "${idpId}" is invalid`);
+        this.logger.err(error, `Identity from "${idpId}" is invalid`);
         throw new CoreFcaInvalidIdentityException();
       }
     }
@@ -81,7 +81,7 @@ export class IdentitySanitizer {
     const identityProvider = await this.identityProvider.getById(idpId);
 
     if (!identityProvider.siret) {
-      this.logger.debug(error, `No default siret for idp "${idpId}".`);
+      this.logger.err(error, `No default siret for idp "${idpId}".`);
       throw new NoDefaultSiretException();
     }
 
