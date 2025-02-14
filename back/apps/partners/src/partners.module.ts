@@ -13,6 +13,7 @@ import {
   FcWebJsonExceptionFilter,
   UnknownJsonExceptionFilter,
 } from '@fc/exceptions';
+import { HttpProxyModule } from '@fc/http-proxy';
 import { I18nModule } from '@fc/i18n';
 import {
   IdentityProviderAdapterEnvModule,
@@ -74,6 +75,7 @@ const oidcClientModule = OidcClientModule.register(
     AccessControlModule.withRolesHandler(AppPermissionsHandler),
     Dto2formModule,
     CsmrConfigClientModule.registerFor('SandboxLow'),
+    HttpProxyModule,
   ],
   providers: [
     FcWebJsonExceptionFilter,
