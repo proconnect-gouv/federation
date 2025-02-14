@@ -322,7 +322,9 @@
       "sourceRoot": "instances/csmr-user-preferences-high/src",
       "compilerOptions": {
         "tsConfigPath": "instances/csmr-user-preferences-high/tsconfig.app.json",
-        "assets": ["../../../instances/csmr-user-preferences-high/**/*.ejs"]
+        "assets": [
+          "../../../instances/csmr-user-preferences-high/**/*.ejs"
+        ]
       }
     },
     "csmr-account-instance": {
@@ -341,7 +343,9 @@
       "sourceRoot": "instances/csmr-fraud-instance/src",
       "compilerOptions": {
         "tsConfigPath": "instances/csmr-fraud-instance/tsconfig.app.json",
-        "assets": ["../../../instances/csmr-fraud-instance/**/*.ejs"]
+        "assets": [
+          "../../../instances/csmr-fraud-instance/**/*.ejs"
+        ]
       }
     },
     "rnipp": {
@@ -1219,6 +1223,15 @@
       "sourceRoot": "libs/service-provider/src",
       "compilerOptions": {
         "tsConfigPath": "libs/service-provider/tsconfig.lib.json"
+      }
+    },
+    "override-code": {
+      "type": "library",
+      "root": "libs/override-code",
+      "entryFile": "index",
+      "sourceRoot": "libs/override-code/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/override-code/tsconfig.lib.json"
       }
     }
   }

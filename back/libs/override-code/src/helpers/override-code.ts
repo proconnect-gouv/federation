@@ -1,8 +1,8 @@
 /**
  * The OverrideCode class wraps given functions so that they can be later
- * overrided when used any where, including in external libraries.
+ * overridden when used any where, including in external libraries.
  *
- * This is specially usefull when overrided library are imported by destructuring.
+ * This is specially useful when overridden library are imported by destructuring.
  * In this scenario, the code gets a direct reference to the library function,
  * so it can not be override later on.
  *
@@ -14,15 +14,15 @@
  * OverrideCode.override('crypto.sign', (...args) => {
  *   // do anything...
  *
- *   // optionnally call original wrapped function
+ *   // optionally call original wrapped function
  *   const original = OverrideCode.getOriginal('crypto.sign');
  *   const result = original(...args);
  * });
  * ```
  */
 export class OverrideCode {
-  private static originalRefStore: { [key: string]: any } = {};
-  private static overrideStore: { [key: string]: any } = {};
+  private static originalRefStore: { [key: string]: Function } = {};
+  private static overrideStore: { [key: string]: Function } = {};
 
   /**
    * Wraps a method / function for latter override
@@ -31,13 +31,13 @@ export class OverrideCode {
    * @param functionName name of the method to wrap
    * @param key Unique name of the wrap, used to store the original function and:
    *  - override (with `OverrideCode.override`) or
-   *  - retrieve (with `OverrideCode.getoriginal`)the original function.
+   *  - retrieve (with `OverrideCode.getOriginal`)the original function.
    *  Defaults to `functionName`
    *
    * @throws TypeError if `originalObject[functionName]` does not exists
    */
   static wrap(
-    originalObject: any,
+    originalObject: object,
     functionName: string,
     key: string = functionName,
   ): void {
@@ -59,10 +59,24 @@ export class OverrideCode {
       OverrideCode.overrideStore[key](...args);
   }
 
+  static restore(
+    originalObject: object,
+    functionName: string,
+    key: string = functionName,
+  ): void {
+    if (!(functionName in originalObject)) {
+      throw new TypeError(
+        `Tried to restore unexistant propery <${functionName}> of object`,
+      );
+    }
+
+    originalObject[functionName] = OverrideCode.originalRefStore[key];
+  }
+
   /**
    * Get a reference to the original (wrapped) function
    *
-   * Usefull to call the original function before or after a custom logic
+   * Useful to call the original function before or after a custom logic
    *
    * @param key name given at wrap time to get the original wrapped function
    * @returns the wrapped function/method
@@ -77,7 +91,7 @@ export class OverrideCode {
   }
 
   /**
-   * Override wrapped function with cutom code.
+   * Override wrapped function with custom code.
    *
    * Original function can be called inside `overrideFunction`
    * with a call OverrideCode.getOriginal
@@ -87,5 +101,37 @@ export class OverrideCode {
    */
   static override(key: string, overrideFunction: Function): void {
     OverrideCode.overrideStore[key] = overrideFunction;
+  }
+
+  static execWithOriginal<T = unknown>(
+    originalObject: object,
+    functionName: string,
+    key: string,
+    func: Function,
+  ): T {
+    OverrideCode.restore(originalObject, functionName, key);
+
+    const result = func();
+
+    originalObject[functionName] = (...args) =>
+      OverrideCode.overrideStore[key](...args);
+
+    return result;
+  }
+
+  static async execWithOriginalAsync<T = unknown>(
+    originalObject: object,
+    functionName: string,
+    key: string,
+    func: Function,
+  ): Promise<T> {
+    OverrideCode.restore(originalObject, functionName, key);
+
+    const result = await func();
+
+    originalObject[functionName] = (...args) =>
+      OverrideCode.overrideStore[key](...args);
+
+    return result;
   }
 }

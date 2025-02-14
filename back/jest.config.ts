@@ -9,7 +9,7 @@ const config: Config = {
     'instances/.+/src/main.ts',
     '.mocks/',
     '.+/index.ts',
-    '.+.(config|descriptor|dto|enum|fixture|i18n|interface|module|plugin|provider|schema|type|token).ts',
+    '.+.(config|descriptor|dto|enum|fixture|i18n|interface|module|override|plugin|provider|schema|type|token).ts',
   ],
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: '.',
@@ -177,6 +177,7 @@ const config: Config = {
       '<rootDir>/apps/csmr-config-partners/src/$1',
     '^@fc/service-partners(|/.*)$': '<rootDir>/apps/service-partners/src/$1',
     '^@fc/service-provider(|/.*)$': '<rootDir>/libs/service-provider/src/$1',
+    '^@fc/override-code(|/.*)$': '<rootDir>/libs/override-code/src/$1',
   },
   preset: 'ts-jest',
 };
