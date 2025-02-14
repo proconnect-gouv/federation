@@ -110,4 +110,106 @@ describe('OverrideCode', () => {
     // Then
     expect(originalFunc).toHaveBeenCalledWith('a', 'b', 'c');
   });
+
+  describe('restore', () => {
+    it('should restore original function', () => {
+      // Given
+      const originalFunc = jest.fn().mockReturnValueOnce('bar return value');
+      const overrideFunc = jest
+        .fn()
+        .mockReturnValueOnce('override return value');
+      const foo = { bar: originalFunc };
+      OverrideCode.wrap(foo, 'bar', 'foo.bar');
+      OverrideCode.override('foo.bar', overrideFunc);
+
+      // When
+      OverrideCode.restore(foo, 'bar', 'foo.bar');
+      foo.bar();
+
+      // Then
+      expect(originalFunc).toHaveBeenCalledTimes(1);
+      expect(overrideFunc).toHaveBeenCalledTimes(0);
+    });
+
+    it('should throw when trying to restore unknown member', () => {
+      // Given
+      const foo = {};
+      // Then
+      expect(() => {
+        // When
+        OverrideCode.restore(foo, 'bar', 'test');
+      }).toThrow();
+    });
+
+    it('should use original function name as store key if none provided', () => {
+      // Given
+      const originalFunc = jest.fn().mockReturnValueOnce('bar return value');
+      const foo = { bar: originalFunc };
+      const overrideFunc = jest
+        .fn()
+        .mockReturnValueOnce('override return value');
+      OverrideCode.wrap(foo, 'bar');
+      OverrideCode.override('bar', overrideFunc);
+
+      // When
+      OverrideCode.restore(foo, 'bar');
+      foo.bar();
+
+      // Then
+      expect(originalFunc).toHaveBeenCalledTimes(1);
+      expect(overrideFunc).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('execWithOriginal', () => {
+    it('should exec callback function with original, but not alter override beside', () => {
+      // Given
+      const originalFunc = jest.fn().mockReturnValueOnce('bar return value');
+      const overrideFunc = jest
+        .fn()
+        .mockReturnValueOnce('override return value');
+      const foo = { bar: originalFunc };
+      OverrideCode.wrap(foo, 'bar', 'foo.bar');
+      OverrideCode.override('foo.bar', overrideFunc);
+
+      // When
+      OverrideCode.execWithOriginal(foo, 'bar', 'foo.bar', () => {
+        foo.bar('with original');
+      });
+
+      foo.bar('with override');
+
+      // Then
+      expect(originalFunc).toHaveBeenCalledTimes(1);
+      expect(originalFunc).toHaveBeenCalledWith('with original');
+      expect(overrideFunc).toHaveBeenCalledTimes(1);
+      expect(overrideFunc).toHaveBeenCalledWith('with override');
+    });
+  });
+
+  describe('execWithOriginalAsync', () => {
+    it('should exec callback with original', async () => {
+      // Given
+      const originalFunc = jest.fn().mockReturnValueOnce('bar return value');
+      const overrideFunc = jest
+        .fn()
+        .mockReturnValueOnce('override return value');
+      const foo = { bar: originalFunc };
+      OverrideCode.wrap(foo, 'bar', 'foo.bar');
+      OverrideCode.override('foo.bar', overrideFunc);
+
+      // When
+      await OverrideCode.execWithOriginalAsync(foo, 'bar', 'foo.bar', () => {
+        foo.bar('with original');
+      });
+
+      foo.bar('with override');
+
+      // Then
+      expect(originalFunc).toHaveBeenCalledTimes(1);
+      expect(originalFunc).toHaveBeenCalledWith('with original');
+      expect(overrideFunc).toHaveBeenCalledTimes(1);
+      expect(overrideFunc).toHaveBeenCalledWith('with override');
+    });
+  });
 });

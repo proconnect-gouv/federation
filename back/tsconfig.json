@@ -265,7 +265,9 @@
       "@fc/csmr-config": ["apps/csmr-config/src"],
       "@fc/csmr-config/*": ["apps/csmr-config/src/*"],
       "@fc/service-provider": ["libs/service-provider/src"],
-      "@fc/service-provider/*": ["libs/service-provider/src/*"]
+      "@fc/service-provider/*": ["libs/service-provider/src/*"],
+      "@fc/override-code": ["libs/override-code/src"],
+      "@fc/override-code/*": ["libs/override-code/src/*"]
     }
   },
   "files": ["global.d.ts"],
