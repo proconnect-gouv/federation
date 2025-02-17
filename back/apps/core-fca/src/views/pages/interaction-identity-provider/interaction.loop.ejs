@@ -9,10 +9,12 @@
       id="radio-hint-legend"
     >
       Quel accès voulez-vous utiliser aujourd’hui ?
-      <span class="fr-hint-text"
-        >Si votre administration n'est pas répertoriée, sélectionnez
-        "Autre".</span
-      >
+      <% if (locals.acceptsDefaultIdp) { %>
+        <span class="fr-hint-text">
+          Si votre administration n'est pas répertoriée, sélectionnez
+          "Autre".
+        </span>
+      <% } %>
     </legend>
     <input type="hidden" name="csrfToken" value="<%= locals.csrfToken %>" />
     <input type="hidden" name="email" value="<%= locals.email %>" />
