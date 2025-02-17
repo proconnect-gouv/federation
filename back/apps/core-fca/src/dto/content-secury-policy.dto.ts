@@ -1,7 +1,5 @@
 import { IsArray, IsString } from 'class-validator';
 
-import { Optional } from '@nestjs/common';
-
 export class ContentSecurityPolicy {
   @IsArray()
   @IsString({ each: true })
@@ -26,9 +24,4 @@ export class ContentSecurityPolicy {
   @IsArray()
   @IsString({ each: true })
   imgSrc: string[];
-
-  @IsArray()
-  @IsString({ each: true })
-  @Optional()
-  scriptSrcAttr?: string[];
 }

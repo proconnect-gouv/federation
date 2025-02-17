@@ -15,36 +15,6 @@
   mask-repeat: no-repeat;
 }
 
-/* -----------------------------------------------------------------
-
-CUSTOMIZE ICON NOTICE COMPONENT - it's a temporary poll for new PC service
-
------------------------------------------------------------------ */
-
-.ac-notice--info
-  .ac-notice__title:not([class^='fr-icon-']):not([class*=' fr-icon-']):not(
-    [class^='fr-fi-']
-  ):not([class*=' fr-fi-']):before {
-  -webkit-mask-image: url(/icons/system/star-fill.svg) !important;
-  mask-image: url(/icons/system/star-fill.svg) !important;
-  mask-repeat: no-repeat;
-}
-
-.ac-notice {
-  background-color: #c3fad5;
-  color: var(--text-action-high-blue-france);
-}
-
-.ac-survey-default {
-  display: none;
-}
-
-@media screen and (max-width: 993px) {
-  .ac-notice {
-    text-align: center;
-  }
-}
-
 @media screen and (min-width: 993px) {
   .ac-survey {
     background-color: (to right, white 50%, pink 50%);
