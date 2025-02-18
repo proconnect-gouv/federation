@@ -1,5 +1,6 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
+import { getServiceProviderByDescription } from '../../common/helpers';
 import {
   PostChecktokenExpiredTokenDto,
   PostChecktokenValidTokenDto,
@@ -72,9 +73,9 @@ Then(
 );
 
 Then(
-  'le token d\'introspection a une propriété "aud" avec le client_id du fournisseur de service',
-  function () {
-    const { clientId } = this.serviceProvider;
+  /le token d'introspection a une propriété "aud" avec le client_id du fournisseur de service "([^"]+)"/,
+  function (description: string) {
+    const { clientId } = getServiceProviderByDescription(description);
     cy.get<PostChecktokenValidTokenDto>('@tokenIntrospection')
       .its('token_introspection.aud')
       .should('equal', clientId);

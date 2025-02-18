@@ -9,7 +9,7 @@ const fsa = {
       "https://fsa1-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
-      "https://fsa1-low.docker.dev-franceconnect.fr/client/logout-callback",
+      "https://fsa1-low.docker.dev-franceconnect.fr/",
     ],
     client_secret:
       "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
@@ -70,7 +70,9 @@ const fsa = {
     redirect_uris: [
       "https://fsa2-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
-    post_logout_redirect_uris: [],
+    post_logout_redirect_uris: [
+      "https://fsa2-low.docker.dev-franceconnect.fr/",
+    ],
     client_secret:
       "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
     key: "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
@@ -132,7 +134,7 @@ const fsa = {
       "https://fsa3-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
-      "https://fsa3-low.docker.dev-franceconnect.fr/client/logout-callback",
+      "https://fsa3-low.docker.dev-franceconnect.fr/",
     ],
     client_secret:
       "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
@@ -188,7 +190,7 @@ const fsa = {
       "https://fsa4-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
-      "https://fsa4-low.docker.dev-franceconnect.fr/client/logout-callback",
+      "https://fsa4-low.docker.dev-franceconnect.fr/",
     ],
     client_secret:
       "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",
@@ -250,7 +252,7 @@ const fsa = {
       "https://fsa5-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
     post_logout_redirect_uris: [
-      "https://fsa5-low.docker.dev-franceconnect.fr/client/logout-callback",
+      "https://fsa5-low.docker.dev-franceconnect.fr/",
     ],
     client_secret:
       "+sqGL4XE6aqzIMOp/DKC1jWB8I+8qE1jW6iz2tUv8lt+ZZzxjyoCBQeuAcJTFZxfLywkn6cAICK5JPLxYM0+8pk/q7CGHUfr/gzr3ZYRroWWE+egEEDxqRYDYe0=",

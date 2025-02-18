@@ -4,9 +4,10 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
 
   @ignoreInteg01
   Plan du Scénario: Connexion d'un usager au fi <idpName> docker
-    Etant donné que le fournisseur de service requiert l'accès aux informations du scope "<scope>"
-    Et que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton AgentConnect
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que le fournisseur de service requiert l'accès aux informations du scope "<scope>"
+    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "many@polyfi.fr"
     Quand je clique sur le bouton de connexion
@@ -15,7 +16,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Quand j'utilise le fournisseur d'identité "<idpName>"
     Et je suis redirigé vers la page login du fournisseur d'identité
     Et je m'authentifie avec succès
-    Alors je suis redirigé vers la page fournisseur de service
+    Alors je suis redirigé vers la page fournisseur de service "par défaut"
     Et je suis connecté au fournisseur de service
     Et le fournisseur de service a accès aux informations du scope "<scope>"
 
@@ -26,9 +27,10 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
 
   @ignoreDocker
   Plan du Scénario: Connexion d'un usager au fi <idpName> integ
-    Etant donné que le fournisseur de service requiert l'accès aux informations du scope "<scope>"
-    Et que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton AgentConnect
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que le fournisseur de service requiert l'accès aux informations du scope "<scope>"
+    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "many@polyfi.fr"
     Quand je clique sur le bouton de connexion
@@ -37,7 +39,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
     Quand j'utilise le fournisseur d'identité "<idpName>"
     Et je suis redirigé vers la page login du fournisseur d'identité
     Et je m'authentifie avec succès
-    Alors je suis redirigé vers la page fournisseur de service
+    Alors je suis redirigé vers la page fournisseur de service "par défaut"
     Et je suis connecté au fournisseur de service
     Et le fournisseur de service a accès aux informations du scope "<scope>"
 
@@ -47,9 +49,9 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
       | Identity Provider 2 - ES256 | différent  | tous les scopes |
 
   Scénario: Connexion d'un usager - fournisseur d'identité autre
-    Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
-    Et que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton AgentConnect
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
+    Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "many@polyfi.fr"
     Quand je clique sur le bouton de connexion
@@ -60,9 +62,9 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - retour en arrière après redirection vers FI
-    Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
-    Et que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton AgentConnect
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
+    Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "many@polyfi.fr"
     Quand je clique sur le bouton de connexion
@@ -77,9 +79,9 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - fi par défaut est accepté par tous les fqdnToIdp
-    Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
-    Et que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton AgentConnect
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
+    Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "many@polyfi.fr"
     Quand je clique sur le bouton de connexion
@@ -88,9 +90,9 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - fi par défaut n'est pas accepté par l'un des fqdnToIdp
-    Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
-    Et que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton AgentConnect
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
+    Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "many@polyfi2.fr"
     Quand je clique sur le bouton de connexion

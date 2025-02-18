@@ -3,14 +3,7 @@
     "name": "fsa1v2",
     "descriptions": ["par défaut", "avec accès au FI par défaut (premier FS)"],
     "clientId": "6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950",
-    "mocked": true,
-    "url": "https://fsa1v2.integ01.dev-agentconnect.fr",
-    "acrValue": "eidas1",
-    "selectors": {
-      "fcaButton": "#call-authorize-button",
-      "logoutButton": ".nav-logout"
-    },
-    "authorizeHttpMethod": "get"
+    "url": "https://fsa1v2.integ01.dev-agentconnect.fr"
   },
   {
     "name": "fsa2v2",
@@ -19,14 +12,7 @@
       "avec accès au FI par défaut (deuxième FS)"
     ],
     "clientId": "7a79e45107f9ccc6a3a5971d501220dc4fd9e87bb5e3fc62ce4104c756e22775",
-    "mocked": true,
-    "url": "https://fsa2v2.integ01.dev-agentconnect.fr",
-    "acrValue": "eidas1",
-    "selectors": {
-      "fcaButton": "#call-authorize-button",
-      "logoutButton": ".nav-logout"
-    },
-    "authorizeHttpMethod": "get"
+    "url": "https://fsa2v2.integ01.dev-agentconnect.fr"
   },
   {
     "name": "fsa3v2",
@@ -36,26 +22,6 @@
       "non habilité à demander le claim amr"
     ],
     "clientId": "ls8qhv2n0u0mk86j4l9ydw769h7ibcajoez9nmky1q38ju02d0mpq9gutf7fko7t",
-    "mocked": true,
-    "url": "https://fsa3v2.integ01.dev-agentconnect.fr",
-    "acrValue": "eidas1",
-    "selectors": {
-      "fcaButton": "#call-authorize-button",
-      "logoutButton": ".nav-logout"
-    },
-    "authorizeHttpMethod": "get"
-  },
-  {
-    "name": "osmose",
-    "clientId": "0def22fe-f69f-46a3-9e66-80caf65c2c9f",
-    "descriptions": ["osmose"],
-    "mocked": false,
-    "url": "https://bacasable-prep-osmose.jaliosagora.com",
-    "acrValue": "eidas1",
-    "selectors": {
-      "fcaButton": ".ac-authentication img",
-      "logoutButton": "#main-sidebar-opener"
-    },
-    "authorizeHttpMethod": "get"
+    "url": "https://fsa3v2.integ01.dev-agentconnect.fr"
   }
 ]

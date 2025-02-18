@@ -1,5 +1,6 @@
-import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
+import { getServiceProviderByDescription } from '../../common/helpers';
 import IdentityProviderPage from '../pages/identity-provider-page';
 
 let identityProviderPage: IdentityProviderPage;
@@ -51,22 +52,10 @@ Then('le champ identifiant correspond à {string}', function (login: string) {
   identityProviderPage.getLogin().invoke('val').should('be.equal', login);
 });
 
-Given(
-  'je paramètre un intercepteur pour retirer le paramètre {string} au prochain appel authorize à AgentConnect',
-  function (param: string) {
-    const { fcaRootUrl } = this.env;
-    cy.intercept(`${fcaRootUrl}/api/v2/authorize*`, (req) => {
-      if (req.method === 'GET') {
-        delete req.query[param];
-        return;
-      }
-      const searchParams = new URLSearchParams(req.body);
-      searchParams.delete(param);
-      req.body = searchParams.toString();
-    }).as('AC:AuthorizeRemoveParam');
+Then(
+  /la page du FI affiche l'id du FS "([^"]*)"/,
+  function (spDescription: string) {
+    const { clientId } = getServiceProviderByDescription(spDescription);
+    identityProviderPage.checkSpIdIsVisible(clientId);
   },
 );
-
-Then("la page du FI affiche l'id du FS", function () {
-  identityProviderPage.checkSpIdIsVisible(this.serviceProvider.clientId);
-});

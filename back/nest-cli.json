@@ -45,16 +45,7 @@
       "compilerOptions": {
         "tsConfigPath": "instances/mock-service-provider-fca-low/tsconfig.app.json",
         "assets": [
-          "../../../apps/mock-service-provider/**/*.js",
-          "../../../apps/mock-service-provider/**/*.ejs",
-          "../../../apps/mock-service-provider/**/*.css",
-          "../../../apps/mock-service-provider/**/*.svg",
-          "../../../apps/mock-service-provider/**/*.png",
-          "../../../instances/mock-service-provider-fca-low/**/*.js",
-          "../../../instances/mock-service-provider-fca-low/**/*.ejs",
-          "../../../instances/mock-service-provider-fca-low/**/*.css",
-          "../../../instances/mock-service-provider-fca-low/**/*.svg",
-          "../../../instances/mock-service-provider-fca-low/**/*.png"
+          "../../../instances/mock-service-provider-fca-low/**/*.ejs"
         ]
       }
     },
@@ -311,15 +302,6 @@
       "sourceRoot": "libs/mailer/src",
       "compilerOptions": {
         "tsConfigPath": "libs/mailer/tsconfig.lib.json"
-      }
-    },
-    "mock-service-provider": {
-      "type": "library",
-      "root": "apps/mock-service-provider",
-      "entryFile": "index",
-      "sourceRoot": "apps/mock-service-provider/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/mock-service-provider/tsconfig.lib.json"
       }
     },
     "mock-identity-provider": {

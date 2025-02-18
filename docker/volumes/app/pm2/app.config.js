@@ -4,7 +4,7 @@ module.exports = {
   apps: [
     {
       name: os.hostname(),
-      script: process.env.PM2_SCRIPT, // "yarn run start:debug",
+      script: process.env.PM2_SCRIPT,
       autorestart: process.env.PM2_AUTORESTART,
       cwd: process.env.PM2_CWD || "/var/www/app",
       out_file:

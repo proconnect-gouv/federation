@@ -1,128 +1,265 @@
-import { join } from 'path';
+import * as bodyParser from 'body-parser';
+import * as express from 'express';
+import * as session from 'express-session';
+import { chain, isObject } from 'lodash';
+import * as path from 'node:path';
+import * as process from 'node:process';
+import * as client from 'openid-client-v6';
 
-import * as CookieParser from 'cookie-parser';
-import { renderFile } from 'ejs';
-import { urlencoded } from 'express';
-import helmet from 'helmet';
+import { decrypt } from './decrypt';
 
-import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
-
-import { NestJsDependencyInjectionWrapper } from '@fc/common';
-import { ConfigService } from '@fc/config';
-import { NestLoggerService } from '@fc/logger';
-import {
-  AppConfig,
-  MockServiceProviderConfig,
-} from '@fc/mock-service-provider';
-import { SessionConfig } from '@fc/session';
-
-import { AppModule } from './app.module';
-import config from './config';
-
-async function bootstrap() {
-  const configService = new ConfigService({
-    config,
-    schema: MockServiceProviderConfig,
-  });
-  const {
-    assetsPaths,
-    httpsOptions: { key, cert },
-  } = configService.get<AppConfig>('App');
-
-  const appModule = AppModule.forRoot(configService);
-
-  const httpsOptions = key && cert ? { cert, key } : null;
-
-  const app = await NestFactory.create<NestExpressApplication>(appModule, {
-    /**
-     * We need to handle the bodyParser ourselves because of prototype pollution risk with `body-parser` library.
-     *
-     * Track the handling of this issue on `body-parser` repository:
-     * @see https://github.com/expressjs/body-parser/issues/347
-     *
-     * Description of the vulnerability:
-     * @see https://gist.github.com/rgrove/3ea9421b3912235e978f55e291f19d5d/revisions
-     *
-     * More general explanation about prototype pollution/poising:
-     * @see https://medium.com/intrinsic/javascript-prototype-poisoning-vulnerabilities-in-the-wild-7bc15347c96
-     */
-    bodyParser: false,
-    httpsOptions,
-    bufferLogs: true,
-  });
-
-  const logger = await app.resolve(NestLoggerService);
-
-  app.useLogger(logger);
-  /**
-   * @see https://expressjs.com/fr/api.html#app.set
-   * @see https://github.com/expressjs/express/issues/3361
-   */
-  app.set('query parser', 'simple');
-
-  /**
-   * Protect app from common risks
-   * @see https://helmetjs.github.io/
-   */
-  app.use(helmet());
-  app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ["'self'"],
-        /**
-         * Allow inline CSS and JS
-         * @TODO #168 remove this header once the UI is properly implemented
-         * to forbid the use of inline CSS or JS
-         * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/168
-         */
-        scriptSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
-        scriptSrcAttr: ["'unsafe-inline'"],
-        styleSrc: ["'self'", "'unsafe-inline'", 'stackpath.bootstrapcdn.com'],
-        /**
-         * We should be able to call to any domain that we need (SPs, IdPs, rnipp), the default "self"
-         * is too restricting. We don't have a precise domain to restrain to.
-         */
-        formAction: null,
-      },
-    }),
-  );
-  app.use(helmet.permittedCrossDomainPolicies());
-
-  /**
-   * The security concern is on bodyParser.json (see upper comment).
-   * In the application, only the "urlencoded" form is necessary.
-   * therefore, we only activate the "body.urlencoded" middleware
-   *
-   * JSON parsing exists in our app, but it is handled by `jose`.
-   *
-   * Deactivate extended "qs" parser to prevent prototype pollution hazard.
-   * @see body-parser.md in the project doc folder for further information.
-   */
-  app.use(urlencoded({ extended: false }));
-
-  app.engine('ejs', renderFile);
-
-  // appConfig.viewsPaths &&
-  //   app.set(
-  //     'views',
-  //     appConfig.viewsPaths.map((path) => join(__dirname, path, 'views')),
-  //   );
-  app.set('views', [join(__dirname, 'views')]);
-
-  app.setViewEngine('ejs');
-
-  assetsPaths &&
-    assetsPaths.forEach((path) => {
-      app.useStaticAssets(join(__dirname, path, 'public'));
-    });
-
-  const { cookieSecrets } = configService.get<SessionConfig>('Session');
-  app.use(CookieParser(cookieSecrets));
-
-  NestJsDependencyInjectionWrapper.use(app.select(appModule));
-
-  await app.listen(3000);
+declare module 'express-session' {
+  export interface SessionData {
+    userinfo?: any;
+    userdata?: any;
+    idtoken?: any;
+    oauth2token?: any;
+    nonce?: string;
+    state?: string;
+    id_token_hint?: string;
+  }
 }
 
-void bootstrap();
+const HOST = `https://${process.env.VIRTUAL_HOST}`;
+const PORT = parseInt(process.env.PORT, 10) || 3000;
+const SITE_TITLE = process.env.APP_NAME;
+const STYLESHEET_URL = 'https://unpkg.com/bamboo.css';
+const CALLBACK_URL = '/oidc-callback';
+const PC_CLIENT_ID = process.env.IdentityProviderAdapterEnv_CLIENT_ID;
+const PC_CLIENT_SECRET = decrypt(
+  process.env.IdentityProviderAdapterEnv_CLIENT_SECRET,
+  process.env.IdentityProviderAdapterEnv_CLIENT_SECRET_CIPHER_PASS,
+);
+const PC_PROVIDER = process.env.ISSUER;
+const PC_SCOPES = process.env.OidcClient_SCOPE;
+const LOGIN_HINT = '';
+const PC_ID_TOKEN_SIGNED_RESPONSE_ALG =
+  process.env.IdentityProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG;
+const PC_USERINFO_SIGNED_RESPONSE_ALG =
+  process.env.IdentityProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG;
+const dataProviderConfigs: { name: string; url: string; secret: string }[] =
+  JSON.parse(process.env.App_DATA_APIS);
+
+const app = express();
+
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '/'));
+app.use(
+  session({
+    name: 'session',
+    secret: 'pas_hyper_secret',
+    rolling: true,
+  }),
+);
+app.enable('trust proxy');
+
+const objToUrlParams = (obj) =>
+  new URLSearchParams(
+    chain(obj)
+      .omitBy((v) => !v)
+      .mapValues((o) => (isObject(o) ? JSON.stringify(o) : o))
+      .value(),
+  );
+
+const getCurrentUrl = (req) =>
+  new URL(`${req.protocol}://${req.get('host')}${req.originalUrl}`);
+
+const getProviderConfig = async () => {
+  const config = await client.discovery(
+    new URL(PC_PROVIDER),
+    PC_CLIENT_ID,
+    {
+      id_token_signed_response_alg: PC_ID_TOKEN_SIGNED_RESPONSE_ALG,
+      userinfo_signed_response_alg: PC_USERINFO_SIGNED_RESPONSE_ALG || null,
+    },
+    client.ClientSecretPost(PC_CLIENT_SECRET),
+  );
+  return config;
+};
+
+const AUTHORIZATION_DEFAULT_PARAMS = {
+  redirect_uri: `${HOST}${CALLBACK_URL}`,
+  scope: PC_SCOPES,
+  login_hint: LOGIN_HINT || null,
+  claims: {
+    id_token: {
+      amr: {
+        essential: true,
+      },
+    },
+  },
+};
+
+app.get('/', (req, res, next) => {
+  try {
+    res.render('index', {
+      title: SITE_TITLE,
+      stylesheetUrl: STYLESHEET_URL,
+      userinfo: JSON.stringify(req.session.userinfo, null, 2),
+      idtoken: JSON.stringify(req.session.idtoken, null, 2),
+      oauth2token: JSON.stringify(req.session.oauth2token, null, 2),
+      userdata: JSON.stringify(req.session.userdata, null, 2),
+      defaultParamsValue: JSON.stringify(AUTHORIZATION_DEFAULT_PARAMS, null, 2),
+    });
+  } catch (e) {
+    next(e);
+  }
+});
+
+const getAuthorizationControllerFactory = (extraParams = {}) => {
+  return async (req, res, next) => {
+    try {
+      const config = await getProviderConfig();
+      const nonce = client.randomNonce();
+      const state = client.randomState();
+
+      req.session.state = state;
+      req.session.nonce = nonce;
+
+      const redirectUrl = client.buildAuthorizationUrl(
+        config,
+        objToUrlParams({
+          nonce,
+          state,
+          ...AUTHORIZATION_DEFAULT_PARAMS,
+          ...extraParams,
+        }),
+      );
+
+      res.redirect(redirectUrl);
+    } catch (e) {
+      next(e);
+    }
+  };
+};
+
+app.post('/login', getAuthorizationControllerFactory());
+
+app.post(
+  '/custom-connection',
+  bodyParser.urlencoded({ extended: false }),
+  (req, res, next) => {
+    const customParams = JSON.parse(req.body['custom-params']);
+
+    return getAuthorizationControllerFactory(customParams)(req, res, next);
+  },
+);
+
+app.get(CALLBACK_URL, async (req, res, next) => {
+  try {
+    const config = await getProviderConfig();
+    const currentUrl = getCurrentUrl(req);
+    const tokens = await client.authorizationCodeGrant(config, currentUrl, {
+      expectedNonce: req.session.nonce,
+      expectedState: req.session.state,
+    });
+
+    req.session.nonce = null;
+    req.session.state = null;
+    const claims = tokens.claims();
+    req.session.userinfo = await client.fetchUserInfo(
+      config,
+      tokens.access_token,
+      claims.sub,
+    );
+    req.session.idtoken = claims;
+    req.session.id_token_hint = tokens.id_token;
+    req.session.oauth2token = tokens;
+    res.redirect('/');
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+app.post('/logout', async (req, res, next) => {
+  try {
+    const id_token_hint = req.session.id_token_hint;
+    await new Promise((resolve) => req.session.destroy(resolve));
+    const config = await getProviderConfig();
+    const redirectUrl = client.buildEndSessionUrl(
+      config,
+      objToUrlParams({
+        post_logout_redirect_uri: `${HOST}/`,
+        id_token_hint,
+      }),
+    );
+
+    res.redirect(redirectUrl.toString());
+  } catch (e) {
+    next(e);
+  }
+});
+
+app.post(
+  '/revoke-token',
+  bodyParser.urlencoded({ extended: false }),
+  async (req, res, next) => {
+    try {
+      const config = await getProviderConfig();
+      await client.tokenRevocation(
+        config,
+        req.session?.oauth2token?.access_token,
+      );
+      res.redirect('/');
+    } catch (e) {
+      console.error(e);
+      next(e);
+    }
+  },
+);
+
+app.post('/fetch-userinfo', async (req, res, next) => {
+  try {
+    const config = await getProviderConfig();
+    req.session.userinfo = await client.fetchUserInfo(
+      config,
+      req.session?.oauth2token?.access_token,
+      req.session?.idtoken?.sub,
+    );
+    res.redirect('/');
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+app.post('/fetch-userdata', async (req, res, next) => {
+  try {
+    const encodedAccessToken = Buffer.from(
+      req.session?.oauth2token?.access_token,
+      'utf-8',
+    ).toString('base64');
+    const userdataPromises = dataProviderConfigs.map(
+      // eslint-disable-next-line max-nested-callbacks
+      async ({ name, url, secret }) => {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${encodedAccessToken}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            // Input data for the mock-data-provider endpoint
+            // eslint-disable-next-line @typescript-eslint/naming-convention
+            auth_secret: secret,
+          }),
+        });
+        return {
+          name,
+          response: await response.json(),
+        };
+      },
+    );
+    req.session.userdata = await Promise.all(userdataPromises);
+
+    res.redirect('/');
+  } catch (e) {
+    console.error(e);
+    next(e);
+  }
+});
+
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+});

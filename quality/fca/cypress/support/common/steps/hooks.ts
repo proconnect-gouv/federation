@@ -5,16 +5,10 @@ import {
   clearBusinessLog,
   forceSameSiteNone,
   getDefaultIdentityProvider,
-  getDefaultServiceProvider,
   getDefaultUser,
   isUsingFCBasicAuthorization,
 } from '../helpers';
-import {
-  Environment,
-  IdentityProvider,
-  ServiceProvider,
-  UserData,
-} from '../types';
+import { Environment, IdentityProvider, UserData } from '../types';
 
 const setFixtureContext = (
   fixture: string,
@@ -36,17 +30,12 @@ Before(function () {
   const pathArray = [platform, testEnv];
   setFixtureContext('environment.json', pathArray, 'env');
   setFixtureContext('api-common.json', pathArray, 'apiRequests');
-  setFixtureContext('service-providers.json', pathArray, 'serviceProviders');
   setFixtureContext('service-provider-configs.json', pathArray, 'spConfigs');
   setFixtureContext('identity-providers.json', pathArray, 'identityProviders');
   setFixtureContext('identity-provider-configs.json', pathArray, 'idpConfigs');
-  setFixtureContext('scopes.json', pathArray, 'scopes');
   setFixtureContext('users.json', pathArray, 'users');
 
   // Define default data
-  cy.get<ServiceProvider[]>('@serviceProviders').then((serviceProviders) => {
-    this.serviceProvider = getDefaultServiceProvider(serviceProviders);
-  });
   cy.get<IdentityProvider[]>('@identityProviders').then((identityProviders) => {
     this.identityProvider = getDefaultIdentityProvider(identityProviders);
   });
@@ -78,8 +67,6 @@ Before(function () {
  */
 After(function () {
   // Delete the Context variable changed during the scenario
-  delete this.requestedScope;
-  delete this.serviceProvider;
   delete this.identityProvider;
   delete this.user;
   delete this.operatorUser;

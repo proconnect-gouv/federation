@@ -1,134 +1,147 @@
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 import {
+  checkExpectedUserClaims,
   checkFCBasicAuthorization,
+  checkMandatoryData,
+  checkNoExtraClaims,
+  getScopeByDescription,
+  getServiceProviderByDescription,
+  getUserInfoProperty,
   isUsingFCBasicAuthorization,
-  navigateTo,
+  removeFromRequestedClaims,
+  removePrompt,
+  setAcrValues,
+  setAsRequestedClaims,
+  setIdpHint,
+  setPrompt,
+  setScope,
 } from '../../common/helpers';
-import { getClaims, getScopeByType } from '../helpers';
-import ServiceProviderPage from '../pages/service-provider-page';
 
-let serviceProviderPage: ServiceProviderPage;
-
-Given('je mémorise le sub envoyé au fournisseur de service', function () {
-  serviceProviderPage.getMockPropertyText('sub').as('spSub');
-});
-
-When("je redemande les informations de l'usager", function () {
-  serviceProviderPage.getUserInfoButton().click();
-});
-
-When('je navigue sur la page fournisseur de service', function () {
-  const { allAppsUrl } = this.env;
-  expect(this.serviceProvider).to.exist;
-  serviceProviderPage = new ServiceProviderPage(this.serviceProvider);
-  navigateTo({ appId: this.serviceProvider.name, baseUrl: allAppsUrl });
-});
+When(
+  /je navigue sur la page fournisseur de service "([^"]+)"/,
+  function (description: string) {
+    const serviceProvider = getServiceProviderByDescription(description);
+    cy.visit(serviceProvider.url);
+  },
+);
 
 Given(
   'le fournisseur de service requiert le claim {string}',
   function (claim: string) {
-    serviceProviderPage.setAsRequestedClaims(claim);
+    setAsRequestedClaims(claim);
   },
 );
 
 Given(
   'le fournisseur de service ne requiert pas le claim {string}',
   function (claim: string) {
-    serviceProviderPage.removeFromRequestedClaims(claim);
+    removeFromRequestedClaims(claim);
+  },
+);
+
+Given(
+  'le fournisseur de service requiert un acr_values à {string}',
+  function (acrValues: string) {
+    setAcrValues(acrValues);
   },
 );
 
 Given(
   'le fournisseur de service requiert un niveau de sécurité {string}',
   function (acrValue: string) {
-    serviceProviderPage.setAsRequestedClaims('acr', acrValue);
+    setAsRequestedClaims('acr', acrValue);
   },
 );
 
-When('je clique sur le bouton AgentConnect', function () {
-  // Setup the requested scope and eidas on mocked environment
-  if (this.serviceProvider.mocked === true) {
-    serviceProviderPage.setMockAuthorizeHttpMethod(
-      this.serviceProvider.authorizeHttpMethod,
-    );
-    serviceProviderPage.setMockRequestedScope(this.requestedScope);
-    serviceProviderPage.setMockRequestedAcr(this.serviceProvider.acrValue);
-  }
-  serviceProviderPage.getFcaButton().click();
+Given(
+  /^le fournisseur de service requiert l'accès aux informations (?:du|des) scopes? "([^"]+)"$/,
+  function (description: string) {
+    setScope(getScopeByDescription(description));
+  },
+);
+
+When('je clique sur le bouton ProConnect', function () {
+  cy.get('button#custom-connection').click({ force: true });
 
   if (isUsingFCBasicAuthorization()) {
     checkFCBasicAuthorization();
   }
 });
 
-Then('je suis redirigé vers la page fournisseur de service', function () {
-  serviceProviderPage.checkIsVisible();
-});
+Then(
+  /je suis redirigé vers la page fournisseur de service "([^"]+)"/,
+  function (description: string) {
+    const serviceProvider = getServiceProviderByDescription(description);
+    cy.url().should('include', serviceProvider.url);
+  },
+);
 
 Then('je suis connecté au fournisseur de service', function () {
-  serviceProviderPage.checkIsUserConnected();
+  cy.contains('Information utilisateur');
+});
+
+Then('je suis déconnecté du fournisseur de service', function () {
+  // I am on the sp page
+  cy.contains('Se connecter');
+  // userinfo section is not displayed as I am disconnected
+  cy.contains('Information utilisateur').should('not.exist');
 });
 
 Then(
   /le fournisseur de service a accès aux informations (?:du|des) scopes? "([^"]+)"/,
-  function (type: string) {
-    if (this.serviceProvider.mocked === true) {
-      serviceProviderPage.checkMandatoryData();
-      const scope = getScopeByType(this.scopes, type);
-      const expectedClaims = getClaims(scope);
+  function (description: string) {
+    checkMandatoryData();
 
-      const { claims } = this.user;
-      // Add idp claims' values
-      const idpClaimsMap = [
-        { claim: 'idp_acr', valueKey: 'acrValue' },
-        { claim: 'idp_id', valueKey: 'idpId' },
-      ];
-      idpClaimsMap.forEach(({ claim, valueKey }) => {
-        claims[claim] = this.identityProvider[valueKey];
-      });
+    const { claims } = this.user;
+    // Add idp claims' values
+    claims['idp_acr'] = this.identityProvider['acrValue'];
+    claims['idp_id'] = this.identityProvider['idpId'];
 
-      serviceProviderPage.checkExpectedUserClaims(expectedClaims, claims);
-      serviceProviderPage.checkNoExtraClaims(expectedClaims);
-    }
+    checkExpectedUserClaims(description, claims);
+    checkNoExtraClaims(description);
   },
 );
 
 Then(
   'la cinématique a utilisé le niveau de sécurité {string}',
   function (acrValue: string) {
-    serviceProviderPage.checkMockAcrValue(acrValue);
+    cy.contains(`"acr": "${acrValue}"`);
   },
 );
 
 Then("la cinématique a renvoyé l'amr {string}", function (amrValue: string) {
-  serviceProviderPage.checkMockAmrValue(amrValue);
+  cy.contains(`"amr": [\n    "${amrValue}"\n  ],`);
 });
 
 Then("la cinématique n'a pas renvoyé d'amr", function () {
-  serviceProviderPage.checkMockAmrValue('N/A');
+  cy.contains('"amr": "').should('not.exist');
 });
 
 Then(
   'je suis redirigé vers la page erreur du fournisseur de service',
   function () {
-    serviceProviderPage.checkMockErrorCallback();
+    cy.url().should('include', '/oidc-callback?error=');
   },
 );
 
 Then(
   "le titre de l'erreur fournisseur de service est {string}",
   function (errorCode: string) {
-    serviceProviderPage.checkMockErrorCode(errorCode);
+    cy.url().should('include', `error=${errorCode}`);
   },
 );
 
 Then(
   "la description de l'erreur fournisseur de service est {string}",
   function (errorDescription: string) {
-    serviceProviderPage.checkMockErrorDescription(errorDescription);
+    cy.url().should('include', `error_description=${errorDescription}`);
   },
 );
+
+Given('je mémorise le sub envoyé au fournisseur de service', function () {
+  getUserInfoProperty('sub').as('spSub');
+});
 
 Then(
   /^le sub transmis au fournisseur de service est (identique|différent) [ad]u sub mémorisé$/,
@@ -136,9 +149,7 @@ Then(
     const comparison = text === 'identique' ? 'be.equal' : 'not.be.equal';
 
     cy.get<string>('@spSub').then((previousSpSub) => {
-      serviceProviderPage
-        .getMockPropertyText('sub')
-        .should(comparison, previousSpSub);
+      getUserInfoProperty('sub').should(comparison, previousSpSub);
     });
   },
 );
@@ -146,14 +157,14 @@ Then(
 Then(
   'le sub transmis au fournisseur de service est le suivant {string}',
   function (sub: string) {
-    serviceProviderPage.getMockPropertyText('sub').should('be.equal', sub);
+    getUserInfoProperty('sub').should('be.equal', sub);
   },
 );
 
 Then(
   'le siret transmis au fournisseur de service est le suivant {string}',
   function (siret: string) {
-    serviceProviderPage.getMockPropertyText('siret').should('be.equal', siret);
+    getUserInfoProperty('siret').should('be.equal', siret);
   },
 );
 
@@ -161,47 +172,60 @@ Given(
   "je rentre l'id du fournisseur d'identité dans le champ idp_hint",
   function () {
     const { idpId } = this.identityProvider;
-    serviceProviderPage.setIdpHint(idpId);
+    setIdpHint(idpId);
   },
 );
 
 Given('je rentre {string} dans le champ prompt', function (prompt: string) {
   if (prompt === 'disabled') {
-    serviceProviderPage.disablePrompt();
+    removePrompt();
     return;
   }
-  serviceProviderPage.setPrompt(prompt);
+
+  setPrompt(prompt);
 });
 
-When('je révoque le token AgentConnect', function () {
-  serviceProviderPage.getRevokeTokenButton().click();
+When('je révoque le token ProConnect', function () {
+  cy.get('#revoke-token').click();
+});
+
+Then('le token ProConnect est révoqué', function () {
+  // I am on the sp page
+  cy.contains('Se connecter');
+});
+
+When("je redemande les informations de l'usager", function () {
+  cy.get('#fetch-userinfo').click();
+});
+
+Then(/je vois l'erreur "([^"]+)"/, function (errorMessage: string) {
+  cy.contains(errorMessage);
 });
 
 When(
   "le fournisseur de service demande l'accès aux données au fournisseur de données",
   function () {
-    serviceProviderPage.getDataButton().click();
+    cy.get('#fetch-userdata').click();
   },
 );
 
 Then(
   "le fournisseur de données vérifie l'access token fourni par le fournisseur de service",
   function () {
-    serviceProviderPage.checkIsMockDataPageVisible();
-    serviceProviderPage
-      .getMockIntrospectionTokenText()
+    cy.get('#userdata')
+      .invoke('text')
       .should('be.ok')
       .then((tokenText) => {
-        const token = JSON.parse(tokenText);
+        const token = JSON.parse(tokenText)[0].response;
         cy.wrap(token).as('tokenIntrospection');
       });
   },
 );
 
 Given(
-  "je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service",
-  function () {
-    const { url } = this.serviceProvider;
+  /je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "([^"]+)"/,
+  function (description: string) {
+    const { url } = getServiceProviderByDescription(description);
     cy.intercept(`${url}/oidc-callback*`, (req) => {
       req.reply({
         body: '<h1>Intercepted request</h1>',
@@ -211,7 +235,7 @@ Given(
 );
 
 Given(
-  'je mets le code renvoyé par AC au FS dans la propriété "code" du corps de la requête',
+  'je mets le code renvoyé par PC au FS dans la propriété "code" du corps de la requête',
   function () {
     cy.wait('@FS:OidcCallback')
       .its('request.query.code')
@@ -221,7 +245,3 @@ Given(
       });
   },
 );
-
-Then('le token AgentConnect est révoqué', function () {
-  serviceProviderPage.getTokenRevokationConfirmation().should('be.visible');
-});

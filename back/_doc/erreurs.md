@@ -46,12 +46,6 @@
 | [<b>030030</b>](../libs/oidc-provider/src/exceptions/oidc-provider-user-aborted.exception.ts) | L&#39;usager a annulé l&#39;authentification (lien de retour vers le FS) |  | <b>Classe :</b> [OidcProviderUserAbortedException](../libs/oidc-provider/src/exceptions/oidc-provider-user-aborted.exception.ts) <br /><b>Code HTTP :</b> 303 <br /><b>error :</b> access_denied <br /> <b>error_description :</b> user authentication aborted |
 | [<b>030031</b>](../libs/oidc-provider/src/exceptions/oidc-provider-no-wrapper.exception.ts) | Une erreur émise par la librairie OIDC Provider de manière dynamique, il est nécessaire de consulter les logs pour en savoir plus. |  | <b>Classe :</b> [OidcProviderNoWrapperException](../libs/oidc-provider/src/exceptions/oidc-provider-no-wrapper.exception.ts) <br /><b>Code HTTP :</b> 400 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
 
-## @fc/mock-service-provider
-| Code d'erreur | Description | Message utilisateur | Infos techniques |
-|---|---|---|---|
-| [<b>090003</b>](../apps/mock-service-provider/src/exceptions/mock-service-provider-userinfo.exception.ts) | Une erreur s&#39;est produite lors de la récupération des données utilisateurs depuis un FS de démo. Il faut recommencer la cinématique. Si le problème persiste, contacter le support N3 |  | <b>Classe :</b> [MockServiceProviderUserinfoException](../apps/mock-service-provider/src/exceptions/mock-service-provider-userinfo.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-| [<b>090004</b>](../apps/mock-service-provider/src/exceptions/mock-service-provider-token-revocation.exception.ts) | Une erreur s&#39;est produite lors de la révocation d&#39;un token par un FS de démo. Le token a dû expirer avec révocation. Si le problème persiste, contacter le support N3. |  | <b>Classe :</b> [MockServiceProviderTokenRevocationException](../apps/mock-service-provider/src/exceptions/mock-service-provider-token-revocation.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b> server_error <br /> <b>error_description :</b> authentication aborted due to a technical error on the authorization server |
-
 ## @fc/override-oidc-provider
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|

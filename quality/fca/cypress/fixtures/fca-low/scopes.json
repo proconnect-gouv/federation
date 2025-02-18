@@ -1,6 +1,6 @@
 [
   {
-    "type": "tous les scopes",
+    "description": "tous les scopes",
     "scopes": [
       "openid",
       "uid",
@@ -19,7 +19,7 @@
     ]
   },
   {
-    "type": "tous les scopes sauf phone",
+    "description": "tous les scopes sauf phone",
     "scopes": [
       "openid",
       "uid",
@@ -37,11 +37,11 @@
     ]
   },
   {
-    "type": "obligatoires",
+    "description": "obligatoires",
     "scopes": ["openid", "uid", "given_name", "usual_name", "email"]
   },
   {
-    "type": "obligatoires et siren/siret",
+    "description": "obligatoires et siren/siret",
     "scopes": [
       "openid",
       "uid",
@@ -53,7 +53,7 @@
     ]
   },
   {
-    "type": "obligatoires et organizational_unit/phone",
+    "description": "obligatoires et organizational_unit/phone",
     "scopes": [
       "openid",
       "uid",
@@ -65,7 +65,7 @@
     ]
   },
   {
-    "type": "obligatoires et belonging_population",
+    "description": "obligatoires et belonging_population",
     "scopes": [
       "openid",
       "uid",
@@ -76,39 +76,39 @@
     ]
   },
   {
-    "type": "obligatoires et idp_id",
+    "description": "obligatoires et idp_id",
     "scopes": ["openid", "uid", "given_name", "usual_name", "email", "idp_id"]
   },
   {
-    "type": "obligatoires et idp_acr",
+    "description": "obligatoires et idp_acr",
     "scopes": ["openid", "uid", "given_name", "usual_name", "email", "idp_acr"]
   },
   {
-    "type": "obligatoires sans openid",
+    "description": "obligatoires sans openid",
     "scopes": ["uid", "given_name", "usual_name", "email"]
   },
   {
-    "type": "chorusdt",
+    "description": "chorusdt",
     "scopes": ["openid", "chorusdt"]
   },
   {
-    "type": "email avec scope inconnu",
+    "description": "email avec scope inconnu",
     "scopes": ["openid", "email", "inconnu"]
   },
   {
-    "type": "email",
+    "description": "email",
     "scopes": ["openid", "email"]
   },
   {
-    "type": "anonyme",
+    "description": "anonyme",
     "scopes": ["openid"]
   },
   {
-    "type": "vide",
+    "description": "vide",
     "scopes": []
   },
   {
-    "type": "obligatoires et groups",
+    "description": "obligatoires et groups",
     "scopes": ["openid", "uid", "given_name", "usual_name", "email", "groups"]
   }
 ]
