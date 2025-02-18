@@ -5,7 +5,6 @@ import { type User } from '../helpers';
 import { Environment } from './environment';
 import { IdentityProvider } from './identity-provider';
 import { IdentityProviderConfig } from './identity-provider-config';
-import { ScopeContext, ServiceProvider } from './service-provider';
 import { ServiceProviderConfig } from './service-provider-config';
 import { UserData } from './user';
 
@@ -40,10 +39,6 @@ declare module 'mocha' {
     idpConfig?: IdentityProviderConfig;
     idpConfigs: IdentityProviderConfig[];
     operatorUser?: OperatorUser;
-    requestedScope: ScopeContext;
-    scopes: ScopeContext[];
-    serviceProvider: ServiceProvider;
-    serviceProviders: ServiceProvider[];
     spConfig?: ServiceProviderConfig;
     spConfigs: ServiceProviderConfig[];
     users: UserData[];

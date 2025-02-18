@@ -6,13 +6,14 @@ Fonctionnalité: Connexion Usager - Token
   # afin de continuer à utiliser mes données depuis mon fournisseur de service
 
   Scénario: Token non valide après révocation
-    Etant donné que je navigue sur la page fournisseur de service
-    Et que je me connecte à AgentConnect
-    Et que je suis redirigé vers la page fournisseur de service
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Et que je m'authentifie avec succès
     Et que je suis connecté au fournisseur de service
-    Quand je révoque le token AgentConnect
-    Et le token AgentConnect est révoqué
+    Quand je révoque le token ProConnect
+    Et le token ProConnect est révoqué
     Et je redemande les informations de l'usager
-    Alors je suis redirigé vers la page erreur du fournisseur de service
-    Et le titre de l'erreur fournisseur de service est "invalid_token"
-    Et la description de l'erreur fournisseur de service est "invalid token provided"
+    Alors je vois l'erreur "WWWAuthenticateChallengeError"

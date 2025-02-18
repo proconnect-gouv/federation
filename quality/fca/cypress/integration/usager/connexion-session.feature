@@ -6,19 +6,21 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
   # afin d'éviter le vol de mes données personnelles
 
   Scénario: Session avec SSO activé - Nouvelle session créée lors de l'appel à authorize (1ère connexion)
-    Etant donné que j'utilise un fournisseur de service "par défaut"
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que j'utilise le fournisseur d'identité "par défaut"
-    Et que je navigue sur la page fournisseur de service
-    Quand je clique sur le bouton AgentConnect
+    Quand je clique sur le bouton ProConnect
     Alors je suis redirigé vers la page interaction
     Et le cookie "fc_session_id" est présent
     Et l'événement "FC_AUTHORIZE_INITIATED" est journalisé avec "browsingSessionId" "non null" et "sessionId" "non null" et "isSso" "false"
 
   Scénario: Session avec SSO activé - Nouvelle session initialisée lors de l'appel à authorize (2ème connexion)
-    Etant donné que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Etant donné que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que j'utilise le fournisseur d'identité "par défaut"
-    Et que je navigue sur la page fournisseur de service
-    Et que je me connecte à AgentConnect
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Et que je m'authentifie avec succès
     Et que je suis connecté au fournisseur de service
     Et que le cookie "fc_session_id" est présent
     Et que je mémorise la valeur du cookie "fc_session_id"
@@ -27,10 +29,9 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je mémorise la valeur "browsingSessionId" de l'événement "SP_REQUESTED_FC_USERINFO"
     Et que je mémorise la valeur "sessionId" de l'événement "SP_REQUESTED_FC_USERINFO"
     Et que je mémorise la valeur "accountId" de l'événement "SP_REQUESTED_FC_USERINFO"
-    Quand j'utilise un fournisseur de service "avec accès au FI par défaut (deuxième FS)"
-    Et je navigue sur la page fournisseur de service
-    Et je clique sur le bouton AgentConnect
-    Alors je suis redirigé vers la page fournisseur de service
+    Quand je navigue sur la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
+    Et je clique sur le bouton ProConnect
+    Alors je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
     Et je suis connecté au fournisseur de service
     # le cookie n'est pas supprimé en fin de cinématique
     Et le cookie "fc_session_id" est présent
@@ -54,11 +55,14 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
 
   Scénario: Session avec SSO activé - Nouvelle session après retour du FI si FI non disponible
     Etant donné que j'utilise un compte usager "par défaut"
-    Et que j'utilise un fournisseur de service "avec accès exclusif à un FI"
+    Et que je navigue sur la page fournisseur de service "avec accès exclusif à un FI"
     Et que j'utilise le fournisseur d'identité "disponible que pour un FS"
-    Et que je navigue sur la page fournisseur de service
-    Et que je me connecte à AgentConnect
-    Et que je suis redirigé vers la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia8.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Et que je m'authentifie avec succès
+    Et que je suis redirigé vers la page fournisseur de service "avec accès exclusif à un FI"
     Et que je suis connecté au fournisseur de service
     Et que le cookie "fc_session_id" est présent
     Et que je mémorise la valeur du cookie "fc_session_id"
@@ -68,9 +72,8 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je mémorise la valeur "sessionId" de l'événement "SP_REQUESTED_FC_USERINFO"
     Et que je mémorise la valeur "accountId" de l'événement "SP_REQUESTED_FC_USERINFO"
     Et que je mémorise la valeur "idpId" de l'événement "SP_REQUESTED_FC_USERINFO"
-    Et que j'utilise un fournisseur de service "par défaut"
-    Et que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton AgentConnect
+    Et que je navigue sur la page fournisseur de service "par défaut"
+    Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Et que le cookie "fc_session_id" est présent
     Et que la valeur du cookie "fc_session_id" est différente
@@ -95,7 +98,7 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     # J'utilise un compte usager différent pour obtenir un accountId différent
     Et j'utilise un compte usager "différent"
     Et je m'authentifie avec succès
-    Alors je suis redirigé vers la page fournisseur de service
+    Et je suis redirigé vers la page fournisseur de service "par défaut"
     Et je suis connecté au fournisseur de service
     Et le cookie "fc_session_id" est présent
     Et la valeur du cookie "fc_session_id" est différente
@@ -116,22 +119,28 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et la valeur "accountId" est identique dans l'événement "SP_REQUESTED_FC_USERINFO"
 
   Scénario: Session avec SSO activé - Session non détachée avant le retour au FS
-    Etant donné que j'utilise un fournisseur de service "par défaut"
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
     Et que j'utilise le fournisseur d'identité "par défaut"
-    Et que je navigue sur la page fournisseur de service
-    Quand je me connecte à AgentConnect
-    Alors je suis redirigé vers la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Et que je m'authentifie avec succès
+    Alors je suis redirigé vers la page fournisseur de service "par défaut"
     Et je suis connecté au fournisseur de service
     Et le cookie "fc_session_id" est présent
 
   Scénario: Session avec SSO désactivé - isSso false et nouvelle session après retour du FI
     Etant donné que je désactive le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Et que j'utilise un fournisseur de service "avec accès au FI par défaut (deuxième FS)"
+    Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
     Et que j'utilise un compte usager "par défaut"
     Et que j'utilise le fournisseur d'identité "par défaut"
-    Et que je navigue sur la page fournisseur de service
-    Et que je me connecte à AgentConnect
-    Et que je suis redirigé vers la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Et que je m'authentifie avec succès
+    Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
     Et que je suis connecté au fournisseur de service
     Et que le cookie "fc_session_id" est présent
     Et que je mémorise la valeur du cookie "fc_session_id"
@@ -141,11 +150,14 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je mémorise la valeur "sessionId" de l'événement "SP_REQUESTED_FC_USERINFO"
     Et que je mémorise la valeur "accountId" de l'événement "SP_REQUESTED_FC_USERINFO"
     Et que je mémorise la valeur "idpId" de l'événement "SP_REQUESTED_FC_USERINFO"
-    Quand j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Quand je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et j'utilise le fournisseur d'identité "différent"
-    Et je navigue sur la page fournisseur de service
-    Et je me connecte à AgentConnect
-    Alors je suis redirigé vers la page fournisseur de service
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia2.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Et que je m'authentifie avec succès
+    Alors je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et je suis connecté au fournisseur de service
     Et le cookie "fc_session_id" est présent
     Et la valeur du cookie "fc_session_id" est différente
@@ -168,10 +180,13 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
 
   Scénario: Session avec SSO désactivé - SSO possible après cinématique avec FS ayant le SSO désactivé
     Etant donné que je désactive le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Et que j'utilise un fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Et que je navigue sur la page fournisseur de service
-    Et que je me connecte à AgentConnect
-    Et que je suis redirigé vers la page fournisseur de service
+    Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
+    Et que je clique sur le bouton ProConnect
+    Et que j'entre l'email "test@fia1.fr"
+    Et que je clique sur le bouton de connexion
+    Et que je suis redirigé vers la page login du fournisseur d'identité
+    Et que je m'authentifie avec succès
+    Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que je suis connecté au fournisseur de service
     # Evènement SP_REQUESTED_FC_USERINFO: première cinématique finalisée avec FS ayant désactivé le SSO
     Et que l'événement "SP_REQUESTED_FC_USERINFO" est journalisé avec "isSso" "false"
@@ -179,10 +194,9 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je mémorise la valeur "sessionId" de l'événement "SP_REQUESTED_FC_USERINFO"
     Et que je mémorise la valeur "accountId" de l'événement "SP_REQUESTED_FC_USERINFO"
     Et que je mémorise la valeur "idpId" de l'événement "SP_REQUESTED_FC_USERINFO"
-    Quand j'utilise un fournisseur de service "avec accès au FI par défaut (deuxième FS)"
-    Et je navigue sur la page fournisseur de service
-    Et je clique sur le bouton AgentConnect
-    Alors je suis redirigé vers la page fournisseur de service
+    Quand je navigue sur la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
+    Et je clique sur le bouton ProConnect
+    Alors je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
     # Evènement FC_AUTHORIZE_INITIATED: cinématique SSO initialisée
     Et l'événement "FC_AUTHORIZE_INITIATED" est journalisé avec "accountId" "non null" et "isSso" "true"
     Et la valeur "browsingSessionId" est identique dans l'événement "FC_AUTHORIZE_INITIATED"

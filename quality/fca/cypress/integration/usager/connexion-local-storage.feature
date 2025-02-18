@@ -6,16 +6,16 @@ Fonctionnalité: Connexion avec LocalStorage
   # afin d'accéder à mon service
 
   Plan du Scénario: Connexion avec LocalStorage - avec email et interruption
-    Etant donné que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
-    Et que je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton AgentConnect
+    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
+    Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "<email>"
     Et que je clique sur le bouton de connexion
     Et que j'utilise le fournisseur d'identité "<fi>"
     Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je navigue sur la page fournisseur de service
-    Et que je clique sur le bouton AgentConnect
+    Quand je navigue sur la page fournisseur de service "par défaut"
+    Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Alors le champ email correspond à "<email>"
     Et je clique sur le bouton de connexion
