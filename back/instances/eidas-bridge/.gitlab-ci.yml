@@ -19,7 +19,7 @@ eidas-bridge:
     TZ: 'Europe/Paris'
     CYPRESS_PLATFORM: 'fcp-high'
     CYPRESS_TEST_ENV: 'docker'
-    CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
+    CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 300000
   cache:
     key: ${CACHE_KEY}
     policy: pull
