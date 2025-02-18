@@ -14,7 +14,7 @@ quality-fcp-high-release:
     BDD_TAGS: '@fcpHigh and not @ignoreHigh'
     CYPRESS_PLATFORM: 'fcp-high'
     CYPRESS_TEST_ENV: 'integ01'
-    CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 120000
+    CYPRESS_INTERNAL_BROWSER_CONNECT_TIMEOUT: 300000
   cache:
     key: ${CACHE_KEY}
     policy: pull
