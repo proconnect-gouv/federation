@@ -20,7 +20,7 @@ declare module 'express-session' {
   }
 }
 
-const HOST = `https://${process.env.VIRTUAL_HOST}`;
+const HOST = `https://${process.env.FQDN}`;
 const PORT = parseInt(process.env.PORT, 10) || 3000;
 const SITE_TITLE = process.env.APP_NAME;
 const STYLESHEET_URL = 'https://unpkg.com/bamboo.css';
@@ -30,7 +30,7 @@ const PC_CLIENT_SECRET = decrypt(
   process.env.IdentityProviderAdapterEnv_CLIENT_SECRET,
   process.env.IdentityProviderAdapterEnv_CLIENT_SECRET_CIPHER_PASS,
 );
-const PC_PROVIDER = process.env.ISSUER;
+const PC_PROVIDER = process.env.IdentityProviderAdapterEnv_DISCOVERY_URL;
 const PC_SCOPES = process.env.OidcClient_SCOPE;
 const LOGIN_HINT = '';
 const PC_ID_TOKEN_SIGNED_RESPONSE_ALG =
