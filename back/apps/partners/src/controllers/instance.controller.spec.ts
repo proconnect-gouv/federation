@@ -54,7 +54,7 @@ describe('InstanceController', () => {
   ];
 
   const userInfoMock = {
-    accountId: Symbol('accountId'),
+    id: Symbol('accountId'),
     email: 'email@email.fr',
     given_name: 'givenName',
     usual_name: 'usualName',
@@ -120,7 +120,7 @@ describe('InstanceController', () => {
 
     instanceMock.upsert.mockResolvedValueOnce({ id: instanceIdMock });
     versionMock.create.mockResolvedValueOnce({ id: versionIdMock });
-    sessionPartnersAccountMock.get.mockReturnValue(userInfoMock);
+    sessionPartnersAccountMock.get.mockReturnValue({ identity: userInfoMock });
     partnersServiceMock.fromFormValues.mockResolvedValue(body);
   });
 
@@ -228,7 +228,7 @@ describe('InstanceController', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         accountPermissionRepositoryMock.addInstancePermission,
-      ).toHaveBeenCalledWith(userInfoMock.accountId, instanceIdMock);
+      ).toHaveBeenCalledWith(userInfoMock.id, instanceIdMock);
     });
 
     it('should call addVersionPermission with versionId and accountId', async () => {
@@ -241,7 +241,7 @@ describe('InstanceController', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         accountPermissionRepositoryMock.addVersionPermission,
-      ).toHaveBeenCalledWith(userInfoMock.accountId, versionIdMock);
+      ).toHaveBeenCalledWith(userInfoMock.id, versionIdMock);
     });
   });
 
@@ -307,7 +307,7 @@ describe('InstanceController', () => {
       ).toHaveBeenCalledTimes(1);
       expect(
         accountPermissionRepositoryMock.addVersionPermission,
-      ).toHaveBeenCalledWith(userInfoMock.accountId, versionIdMock);
+      ).toHaveBeenCalledWith(userInfoMock.id, versionIdMock);
     });
   });
 });
