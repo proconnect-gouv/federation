@@ -1,4 +1,5 @@
 {
+  "Form.button.copy": "Copier",
   "Form.submit": "Envoyer ces informations",
   "Form.reset": "Effacer le formulaire",
   "Form.message.valid": "Texte de validation",

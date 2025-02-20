@@ -1,3 +1,4 @@
+import { omitBy } from 'lodash';
 import validatorjs from 'validator';
 
 import { ArgumentMetadata, Injectable, PipeTransform } from '@nestjs/common';
@@ -60,7 +61,20 @@ export class FormValidationPipe implements PipeTransform {
       throw new Dto2FormValidationErrorException(fieldValidationResults);
     }
 
-    return target;
+    const cleanedTarget = this.removeReadonlyFields(target, metadata);
+
+    return cleanedTarget;
+  }
+
+  private removeReadonlyFields(
+    target: Record<string, unknown>,
+    metadata: FieldAttributes[],
+  ): Record<string, unknown> {
+    const readonlyFields = metadata
+      .filter((field) => field.readonly)
+      .map((field) => field.name);
+
+    return omitBy(target, (_value, key) => readonlyFields.includes(key));
   }
 
   private async validate(
@@ -84,12 +98,17 @@ export class FormValidationPipe implements PipeTransform {
       name,
       validators: [],
     };
+
     if (!fieldMetadata) {
       fieldErrors.validators.push({
         name,
         errorLabel: `${name}_invalidKey_error`,
         validationArgs: [],
       });
+      return fieldErrors;
+    }
+
+    if (fieldMetadata.readonly) {
       return fieldErrors;
     }
 
@@ -103,6 +122,22 @@ export class FormValidationPipe implements PipeTransform {
       return fieldErrors;
     }
 
+    fieldErrors.validators = await this.handleFieldValidation(
+      fieldErrors,
+      target,
+      fieldMetadata,
+      name,
+    );
+
+    return fieldErrors;
+  }
+
+  private async handleFieldValidation(
+    fieldErrors: FieldErrorsInterface,
+    target: Record<string, unknown>,
+    fieldMetadata: FieldAttributes,
+    name: string,
+  ): Promise<(FieldValidator | FieldValidator[])[]> {
     if (fieldMetadata.array) {
       fieldErrors.validators = await this.handleArrayValidation(
         target,
@@ -117,7 +152,7 @@ export class FormValidationPipe implements PipeTransform {
       );
     }
 
-    return fieldErrors;
+    return fieldErrors.validators;
   }
 
   private async handleArrayValidation(

@@ -1,11 +1,11 @@
 import { useCallback } from 'react';
 
 import { Strings } from '@fc/common';
-import type { FormPropsInterface } from '@fc/forms';
+import type { FormInterface } from '@fc/forms';
 import { isString } from '@fc/validators';
 
 export const useFormPreSubmit = <T extends Record<string, unknown>>(
-  onSubmit: FormPropsInterface<T>['onSubmit'],
+  onSubmit: FormInterface<T>['onSubmit'],
 ) => {
   const preSubmitHandler = useCallback(
     (values: T) => {

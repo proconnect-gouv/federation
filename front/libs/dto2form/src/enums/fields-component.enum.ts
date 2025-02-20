@@ -1,4 +1,4 @@
-import { ChoicesField, FieldTypes, InputField, SelectField } from '@fc/forms';
+import { ChoicesField, FieldTypes, InputField, SelectField, TextAreaField } from '@fc/forms';
 
 export const FieldsCommponentMap = {
   [FieldTypes.CHECKBOX]: ChoicesField,
@@ -9,5 +9,5 @@ export const FieldsCommponentMap = {
   [FieldTypes.RADIO]: ChoicesField,
   [FieldTypes.SELECT]: SelectField,
   [FieldTypes.TEXT]: InputField,
-  [FieldTypes.TEXTAREA]: InputField,
+  [FieldTypes.TEXTAREA]: TextAreaField,
 };

@@ -6,12 +6,14 @@ export function getFieldAttributesMock(
   name: string,
   required = true,
   array = false,
+  readonly = false,
 ): FieldAttributes {
   return {
     name,
     type: 'text',
     required,
     array,
+    readonly,
     initialValue: '',
     validateIf: [
       getValidateIfMock(`${name}_validate_if_rule_1`),

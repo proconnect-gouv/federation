@@ -1,20 +1,18 @@
-import type { FieldValidator } from 'final-form';
 import React, { useCallback } from 'react';
 import { useFieldArray } from 'react-final-form-arrays';
 
 import { Strings } from '@fc/common';
 
-import type { InputAttributesInterface, InputConfigInterface } from '../../../interfaces';
+import type { FieldConfigInterface } from '../../../interfaces';
 import { ArrayAddButton, LabelElement } from '../../elements';
 import { TextWithRemoveInput } from '../../inputs';
 
 interface ArrayFieldProps {
-  validate?: FieldValidator<string> | undefined;
-  config: InputConfigInterface & InputAttributesInterface<string>;
+  config: FieldConfigInterface;
 }
 
-export const ArrayField = React.memo(({ config, validate }: ArrayFieldProps) => {
-  const { hint, label, name, required } = config;
+export const ArrayField = React.memo(({ config }: ArrayFieldProps) => {
+  const { hint, label, name, required, validate } = config;
 
   const { fields } = useFieldArray(name);
 

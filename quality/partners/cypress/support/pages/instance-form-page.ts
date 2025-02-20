@@ -9,6 +9,22 @@ export default class InstanceFormPage {
     cy.get('[id="DTO2Form-instance-update"]').should('be.visible');
   }
 
+  getClientId(): Cypress.Chainable<string> {
+    return cy.get('[name="client_id"]').invoke('val');
+  }
+
+  getCopyClientIdButton(): ChainableElement {
+    return cy.get('[data-testid="form-input-text-client_id-copy-button"]');
+  }
+
+  getClientSecret(): Cypress.Chainable<string> {
+    return cy.get('[name="client_secret"]').invoke('val');
+  }
+
+  getCopyClientSecretButton(): ChainableElement {
+    return cy.get('[data-testid="form-input-text-client_secret-copy-button"]');
+  }
+
   protected getAllFormInputs(): ChainableElement {
     return cy.get('input');
   }

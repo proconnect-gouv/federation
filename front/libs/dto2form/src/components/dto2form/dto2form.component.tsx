@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 
 import { sortByKey } from '@fc/common';
 import { ConfigService } from '@fc/config';
-import type { FormPropsInterface } from '@fc/forms';
+import type { FormInterface } from '@fc/forms';
 import { FormComponent } from '@fc/forms';
 
 import { Options } from '../../enums';
@@ -11,7 +11,7 @@ import type { DTO2FormConfig } from '../../interfaces';
 import type { JSONFieldType } from '../../types';
 import { DTO2FieldComponent } from '../dto2field/dto2field.component';
 
-interface DTO2FormComponentProps<T> extends FormPropsInterface<T> {
+interface DTO2FormComponentProps<T> extends FormInterface<T> {
   schema: JSONFieldType[];
 }
 

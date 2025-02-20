@@ -48,6 +48,7 @@ export class FormDecoratorHelper {
 
     const isArray = Boolean(attributes.array);
     const required = Boolean(attributes.required);
+    const readonly = Boolean(attributes.readonly);
 
     const initialValue = FormDecoratorHelper.getInitialValue(
       isArray,
@@ -58,6 +59,7 @@ export class FormDecoratorHelper {
       type: attributes.type || defaultType,
       name: key,
       required,
+      readonly,
       initialValue,
       array: isArray,
       order: attributes.order || defaultOrder,

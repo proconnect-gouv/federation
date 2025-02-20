@@ -27,20 +27,22 @@ export const FormWrapperComponent = ({
   submitError,
   submitting,
 }: FormWrapperComponentProps) => {
-  const { description, id, title } = config;
+  const { description, id, mentions, title, titleHeading } = config;
 
   const canSubmit = !submitting;
   const showFormHeader = !!(title || description);
 
   return (
     <form data-testid={`${id}--testid`} id={id} onSubmit={handleSubmit}>
-      {showFormHeader && <FormHeaderComponent description={description} title={title} />}
+      {showFormHeader && (
+        <FormHeaderComponent description={description} title={title} titleHeading={titleHeading} />
+      )}
       <div className="flex-rows">
         {!noRequired && <FormRequiredMessageComponent />}
         {children}
         <FormActionsComponent canSubmit={canSubmit} />
         {submitError && <FormErrorComponent error={submitError} />}
-        <FormMentionsComponent />
+        {mentions && <FormMentionsComponent content={mentions} />}
         <FormErrorScrollComponent active={scrollTopOnSubmit} />
       </div>
     </form>

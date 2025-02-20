@@ -2,6 +2,7 @@ import { render } from '@testing-library/react';
 
 import type { JSONFieldType } from '@fc/dto2form';
 import { DTO2FormComponent } from '@fc/dto2form';
+import { t } from '@fc/i18n';
 
 import { useInstanceCreate } from '../../../hooks';
 import { InstanceCreatePage } from './instance-create.page';
@@ -24,11 +25,17 @@ describe('InstanceCreatePage', () => {
       submitHandler: submitHandlerMock,
     });
 
+    jest.mocked(t).mockReturnValueOnce('Partners-form-createTitle-mock');
+
     // When
-    const { container } = render(<InstanceCreatePage />);
+    const { container, getByText } = render(<InstanceCreatePage />);
+    const titleElt = getByText('Partners-form-createTitle-mock');
 
     // Then
     expect(container).toMatchSnapshot();
+    expect(titleElt).toBeInTheDocument();
+    expect(t).toHaveBeenCalledOnce();
+    expect(t).toHaveBeenCalledWith('Partners.createpage.title');
     expect(DTO2FormComponent).toHaveBeenCalledOnce();
     expect(DTO2FormComponent).toHaveBeenCalledWith(
       {

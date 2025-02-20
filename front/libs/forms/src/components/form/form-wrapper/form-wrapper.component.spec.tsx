@@ -1,5 +1,7 @@
 import { render } from '@testing-library/react';
 
+import { HeadingTag } from '@fc/common';
+
 import { FormActionsComponent } from '../form-actions';
 import { FormErrorComponent } from '../form-error';
 import { FormErrorScrollComponent } from '../form-error-scroll';
@@ -30,7 +32,9 @@ describe('FormWrapperComponent', () => {
         config={{
           description: 'any-description-mock',
           id: 'any-id-mock',
+          mentions: 'any-mentions-text-mock',
           title: 'any-title-mock',
+          titleHeading: HeadingTag.H6,
         }}
         handleSubmit={handleSubmitMock}
         noRequired={false}
@@ -52,6 +56,7 @@ describe('FormWrapperComponent', () => {
       {
         description: 'any-description-mock',
         title: 'any-title-mock',
+        titleHeading: HeadingTag.H6,
       },
       {},
     );
@@ -68,7 +73,12 @@ describe('FormWrapperComponent', () => {
     expect(FormErrorComponent).toHaveBeenCalledOnce();
     expect(FormErrorComponent).toHaveBeenCalledWith({ error: 'any-submit-error-mock' }, {});
     expect(FormMentionsComponent).toHaveBeenCalledOnce();
-    expect(FormMentionsComponent).toHaveBeenCalledWith({}, {});
+    expect(FormMentionsComponent).toHaveBeenCalledWith(
+      {
+        content: 'any-mentions-text-mock',
+      },
+      {},
+    );
     expect(FormErrorScrollComponent).toHaveBeenCalledOnce();
     expect(FormErrorScrollComponent).toHaveBeenCalledWith({ active: scrollTopOnSubmitMock }, {});
   });

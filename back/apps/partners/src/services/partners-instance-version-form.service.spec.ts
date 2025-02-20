@@ -4,12 +4,10 @@ import { PartnersServiceProviderInstance } from '@entities/typeorm';
 
 import { getTransformed } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
+import { PartnersServiceProviderInstanceService } from '@fc/partners-service-provider-instance';
 import { ServiceProviderInstanceVersionDto } from '@fc/partners-service-provider-instance-version';
-import {
-  ClientTypeEnum,
-  OidcClientInterface,
-  SignatureAlgorithmEnum,
-} from '@fc/service-provider';
+import { ClientTypeEnum, SignatureAlgorithmEnum } from '@fc/service-provider';
 
 import { getConfigMock } from '@mocks/config';
 
@@ -20,27 +18,28 @@ describe('PartnersInstanceVersionFormService', () => {
 
   const configServiceMock = getConfigMock();
 
-  const clientIdMock = 'client_id mock';
+  const generatedClientIdMock = 'generated client_id mock';
+  const generatedClientSecretMock = 'generated client_secret mock';
 
+  const credentialsBytesLengthMock = 42;
   const configDataMock = {
     active: false,
     type: ClientTypeEnum.PUBLIC,
-    client_id: clientIdMock,
     scopes: ['openid'],
     claims: [],
     rep_scope: [],
-    client_secret:
-      'ffabf84ed1bfe1f94097b66495d1760282053ab01e77c8c9c65de65b61f0c73a',
     idpFilterExclude: true,
     idpFilterList: [],
     identityConsent: false,
     ssoDisabled: false,
+    credentialsBytesLength: credentialsBytesLengthMock,
   };
 
-  const databaseVersionMock: Partial<OidcClientInterface> = {
+  const databaseVersionMock: ServiceProviderInstanceVersionDto = {
     name: 'instance name',
-    entityId: clientIdMock,
-    client_id: clientIdMock,
+    entityId: 'entityId from database',
+    client_id: 'clientIdMock from database',
+    client_secret: 'clientSecretMock from database',
     signupId: '123456',
     id_token_signed_response_alg: SignatureAlgorithmEnum.ES256,
     site: ['https://site.fr'],
@@ -50,10 +49,12 @@ describe('PartnersInstanceVersionFormService', () => {
     ...configDataMock,
   };
 
-  const formVersionMock: Partial<OidcClientInterface> = getTransformed(
+  const formVersionMock: ServiceProviderInstanceVersionDto = getTransformed(
     {
       name: 'instance name',
-      entityId: clientIdMock,
+      entityId: 'entityId from form',
+      client_id: 'clientIdMock from form',
+      client_secret: 'clientSecretMock from form',
       signupId: '123456',
       id_token_signed_response_alg: SignatureAlgorithmEnum.ES256,
       site: ['https://site.fr'],
@@ -64,14 +65,31 @@ describe('PartnersInstanceVersionFormService', () => {
     ServiceProviderInstanceVersionDto,
   );
 
+  const cryptoMock = {
+    genRandomString: jest.fn(),
+  };
+
+  const instanceMock = {
+    getById: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [PartnersInstanceVersionFormService, ConfigService],
+      providers: [
+        PartnersInstanceVersionFormService,
+        ConfigService,
+        PartnersServiceProviderInstanceService,
+        CryptographyService,
+      ],
     })
       .overrideProvider(ConfigService)
       .useValue(configServiceMock)
+      .overrideProvider(PartnersServiceProviderInstanceService)
+      .useValue(instanceMock)
+      .overrideProvider(CryptographyService)
+      .useValue(cryptoMock)
       .compile();
 
     service = module.get<PartnersInstanceVersionFormService>(
@@ -79,6 +97,9 @@ describe('PartnersInstanceVersionFormService', () => {
     );
 
     configServiceMock.get.mockReturnValue(configDataMock);
+    cryptoMock.genRandomString
+      .mockReturnValueOnce(generatedClientIdMock)
+      .mockReturnValueOnce(generatedClientSecretMock);
   });
 
   it('should be defined', () => {
@@ -86,20 +107,113 @@ describe('PartnersInstanceVersionFormService', () => {
   });
 
   describe('fromFormValues', () => {
-    it('should add default values from config', () => {
+    it('should return an object with default values from config', async () => {
       // When
-      const result = service.fromFormValues(formVersionMock);
+      const result = await service.fromFormValues(formVersionMock);
 
       // Then
-      expect(result).toStrictEqual(databaseVersionMock);
+      expect(result).toStrictEqual(expect.objectContaining(configDataMock));
     });
 
-    it('should keep provided entityId', () => {
+    it('should return an object with generated values', async () => {
+      // Given
+      const generatedValues = {
+        generated: 'value',
+      };
+      service['getGeneratedValues'] = jest
+        .fn()
+        .mockResolvedValueOnce(generatedValues);
+
       // When
-      const result = service.fromFormValues(formVersionMock);
+      const result = await service.fromFormValues(formVersionMock);
 
       // Then
-      expect(result).toStrictEqual(databaseVersionMock);
+      expect(result).toStrictEqual(expect.objectContaining(generatedValues));
+    });
+  });
+
+  describe('getGeneratedValues', () => {
+    it('should return credentials for given instanceId', async () => {
+      // Given
+      const getCredentialsForInstanceResult = Symbol(
+        'getCredentialsForInstanceResult',
+      );
+      service['getCredentialsForInstance'] = jest
+        .fn()
+        .mockResolvedValueOnce(getCredentialsForInstanceResult);
+
+      // When
+      const result = await service['getGeneratedValues']('instanceId');
+
+      // Then
+      expect(result).toBe(getCredentialsForInstanceResult);
+    });
+
+    it('should return generated credentials', async () => {
+      // Given
+      const generateNewCredentialsResult = Symbol(
+        'generateNewCredentialsResult',
+      );
+      service['generateNewCredentials'] = jest
+        .fn()
+        .mockReturnValueOnce(generateNewCredentialsResult);
+
+      // When
+      const result = await service['getGeneratedValues']();
+
+      // Then
+      expect(result).toBe(generateNewCredentialsResult);
+    });
+  });
+
+  describe('getCredentialsForInstance', () => {
+    it('should return an object with client_id and client_secret', async () => {
+      // Given
+      instanceMock.getById.mockResolvedValueOnce({
+        versions: [
+          {
+            data: databaseVersionMock,
+          },
+        ],
+      });
+
+      // When
+      const result = await service['getCredentialsForInstance']('instanceId');
+
+      // Then
+      expect(result).toStrictEqual({
+        client_id: databaseVersionMock.client_id,
+        client_secret: databaseVersionMock.client_secret,
+      });
+    });
+  });
+
+  describe('generateNewCredentials', () => {
+    it('should use length from config to generate random strings', () => {
+      // When
+      service['generateNewCredentials']();
+
+      // Then
+      expect(cryptoMock.genRandomString).toHaveBeenCalledTimes(2);
+      expect(cryptoMock.genRandomString).toHaveBeenNthCalledWith(
+        1,
+        credentialsBytesLengthMock,
+      );
+      expect(cryptoMock.genRandomString).toHaveBeenNthCalledWith(
+        2,
+        credentialsBytesLengthMock,
+      );
+    });
+
+    it('should return an object with generated values', () => {
+      // When
+      const result = service['generateNewCredentials']();
+
+      // Then
+      expect(result).toStrictEqual({
+        client_id: generatedClientIdMock,
+        client_secret: generatedClientSecretMock,
+      });
     });
   });
 
@@ -118,11 +232,16 @@ describe('PartnersInstanceVersionFormService', () => {
       const result = service.toFormValues(instanceMock);
 
       // Then
-      expect(result).toStrictEqual({
+      expect(result).toEqual({
         ...instanceMock,
         versions: [
           {
-            data: formVersionMock,
+            data: {
+              ...formVersionMock,
+              client_id: databaseVersionMock.client_id,
+              client_secret: databaseVersionMock.client_secret,
+              entityId: databaseVersionMock.entityId,
+            },
           },
         ],
       });

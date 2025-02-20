@@ -22,7 +22,6 @@ describe('ArrayField', () => {
 
   it('should match the snapshot', () => {
     // Given
-    const formatMock = jest.fn();
     const validateMock = jest.fn();
     const pushHandlerMock = jest.fn();
 
@@ -35,13 +34,11 @@ describe('ArrayField', () => {
     const { container } = render(
       <ArrayField
         config={{
-          clipboardDisabled: true,
-          format: formatMock,
           label: 'any-label-mock',
           name: 'any-name-mock',
           required: true,
+          validate: validateMock,
         }}
-        validate={validateMock}
       />,
     );
 

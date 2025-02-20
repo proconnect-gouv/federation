@@ -1,4 +1,4 @@
-import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
+import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
 import InstanceCard from '../../pages/instance-card';
 import InstancesListPage from '../../pages/instances-list-page';
@@ -104,4 +104,22 @@ Then(/^la date de création de l'instance est affichée$/, function () {
     .getCreationDate()
     .invoke('text')
     .should('contains', 'Créée le :');
+});
+
+Then(`le "client_id" de l'instance est affiché`, function () {
+  currentInstanceCard.checkIsClientIdDisplayed();
+});
+
+Then(`le "client_secret" de l'instance est affiché`, function () {
+  currentInstanceCard.checkIsClientSecretDisplayed();
+});
+
+Given('je mémorise le "client_id" de la première instance', function () {
+  instancesListPage.getInstanceCard(0).checkIsClientIdDisplayed();
+  instancesListPage.getInstanceCard(0).getClientId().as('client_id');
+});
+
+Given('je mémorise le "client_secret" de la première instance', function () {
+  instancesListPage.getInstanceCard(0).checkIsClientIdDisplayed();
+  instancesListPage.getInstanceCard(0).getClientSecret().as('client_secret');
 });

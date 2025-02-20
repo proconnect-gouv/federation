@@ -16,6 +16,7 @@ export type ValidatorType = (
 
 export interface MetadataDtoInterface {
   required: boolean;
+  readonly: boolean;
   array: boolean;
   order: number;
   validators: ValidatorType;

@@ -8,7 +8,6 @@ import { SelectField } from './select.field';
 describe('selectField', () => {
   it('should match the snapshot', () => {
     // Given
-    const formatMock = jest.fn();
     const valildateMock = jest.fn();
     jest.mocked(Field).mockImplementationOnce(() => <div data-mockid="Field" />);
 
@@ -20,14 +19,13 @@ describe('selectField', () => {
           { label: 'mock-label-2', value: 'mock-value-2' },
         ]}
         config={{
-          format: formatMock,
           hint: 'any-hint-mock',
           label: 'any-label-mock',
           name: 'any-name-mock',
           required: true,
+          type: FieldTypes.SELECT,
+          validate: valildateMock,
         }}
-        type={FieldTypes.SELECT}
-        validate={valildateMock}
       />,
     );
 
@@ -46,7 +44,6 @@ describe('selectField', () => {
           label: 'any-label-mock',
           required: true,
         },
-        format: formatMock,
         name: 'any-name-mock',
         subscription: { error: true, touched: true, value: true },
         type: 'select',

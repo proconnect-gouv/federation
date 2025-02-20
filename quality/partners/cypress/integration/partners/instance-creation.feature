@@ -30,5 +30,7 @@ Fonctionnalité: Instance - Création
     Et l'instance créée est affichée
     Et le nom de l'instance est affiché
     Et la date de création de l'instance est affichée
+    Et le "client_id" de l'instance est affiché
+    Et le "client_secret" de l'instance est affiché
     Et je masque la confirmation de création de l'instance
     Et la confirmation de création de l'instance n'est pas affichée

@@ -41,9 +41,9 @@ describe('ChoicesField', () => {
           label: 'any-label-mock',
           name: 'any-name-mock',
           required: true,
+          type: FieldTypes.CHECKBOX,
+          validate: validateMock,
         }}
-        type={FieldTypes.CHECKBOX}
-        validate={validateMock}
       />,
     );
 
@@ -95,6 +95,8 @@ describe('ChoicesField', () => {
           label: 'any-label-mock',
           name: 'any-name-mock',
           required: true,
+          type: FieldTypes.CHECKBOX,
+          validate: validateMock,
         },
         name: 'any-name-mock',
         type: FieldTypes.CHECKBOX,
@@ -113,6 +115,8 @@ describe('ChoicesField', () => {
           label: 'any-label-mock',
           name: 'any-name-mock',
           required: true,
+          type: FieldTypes.CHECKBOX,
+          validate: validateMock,
         },
         name: 'any-name-mock',
         type: FieldTypes.CHECKBOX,

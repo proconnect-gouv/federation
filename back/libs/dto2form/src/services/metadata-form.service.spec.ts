@@ -24,7 +24,7 @@ describe('MetadataFormService', () => {
   });
 
   describe('getDtoMetadata', () => {
-    it('should return metadata for a valid DTO when the input is not required and an array', () => {
+    it('should return metadata for a valid DTO when input is an array', () => {
       // Given
       @Form()
       class TestDtoWithoutRequired {
@@ -40,6 +40,7 @@ describe('MetadataFormService', () => {
         {
           required: false,
           array: true,
+          readonly: false,
           order: 0,
           initialValue: [''],
           validators: [
@@ -67,7 +68,7 @@ describe('MetadataFormService', () => {
       expect(metadata).toEqual(expectedMockMetadata);
     });
 
-    it('should return metadata for a valid DTO when the input is required and not an array', () => {
+    it('should return metadata for a valid DTO when input is required', () => {
       // Given
       @Form()
       class TestDtoWithRequired {
@@ -83,6 +84,7 @@ describe('MetadataFormService', () => {
         {
           required: true,
           array: false,
+          readonly: false,
           order: 0,
           initialValue: '',
           validators: [
@@ -99,6 +101,45 @@ describe('MetadataFormService', () => {
             {
               name: 'isNotEmpty',
               errorLabel: 'isNotEmpty_error',
+              validationArgs: [],
+            },
+          ],
+          validateIf: [],
+          type: 'text',
+          name: 'given_name',
+        },
+      ];
+
+      // When
+      const metadata = service.getDtoMetadata(TestDtoWithRequired);
+
+      // Then
+      expect(metadata).toEqual(expectedMockMetadata);
+    });
+
+    it('should return metadata for a valid DTO when input is readonly', () => {
+      // Given
+      @Form()
+      class TestDtoWithRequired {
+        @Input({
+          readonly: true,
+          order: 0,
+          validators: [$IsString()],
+        })
+        given_name: string;
+      }
+
+      const expectedMockMetadata = [
+        {
+          required: false,
+          array: false,
+          readonly: true,
+          order: 0,
+          initialValue: '',
+          validators: [
+            {
+              name: 'isString',
+              errorLabel: 'isString_error',
               validationArgs: [],
             },
           ],
