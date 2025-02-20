@@ -54,7 +54,6 @@ Before(function () {
     // Setup interceptions to override set-cookie samesite values
     const crossDomains = {
       AC: 'dev-agentconnect.fr',
-      Osmose: 'bacasable-prep-osmose.jaliosagora.com',
     };
     forceSameSiteNone(crossDomains);
   }
