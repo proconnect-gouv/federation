@@ -9,6 +9,7 @@ export interface FieldAttributesArguments {
   initialValue?: string | string[];
   placeholder?: string;
   required?: boolean;
+  readonly?: boolean;
 
   array?: boolean;
 
@@ -25,6 +26,7 @@ export interface FieldAttributes extends FieldAttributesArguments {
   type: string;
   name: string;
   required: boolean;
+  readonly: boolean;
   array: boolean;
   initialValue: string | string[];
 

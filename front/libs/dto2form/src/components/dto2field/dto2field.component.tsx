@@ -14,6 +14,9 @@ interface DTO2FieldComponentProps {
 }
 
 export const DTO2FieldComponent = React.memo(({ field }: DTO2FieldComponentProps) => {
+  // @NOTE Should we use the flag into the useFieldValidate hook ?
+  // Or into fields subscription
+  // @SEE https://final-form.org/docs/react-final-form/types/FieldProps#subscription
   const { validateOnFieldChange } = ConfigService.get<DTO2FormConfig>(Options.CONFIG_NAME);
 
   const {
@@ -24,6 +27,7 @@ export const DTO2FieldComponent = React.memo(({ field }: DTO2FieldComponentProps
     maxChars,
     name,
     options,
+    readonly,
     required,
     type,
     validators,
@@ -31,29 +35,34 @@ export const DTO2FieldComponent = React.memo(({ field }: DTO2FieldComponentProps
   } = field;
 
   const validate = useFieldValidate({
+    // @NOTE using a hook is performance issue ?
+    // Should be moved to an helper instead of being computed at each render
+    // Should it help when the validator is changing ?
     disabled,
     required,
     validators,
   });
 
+  const choices = options || [];
+  const validateFunc = validateOnFieldChange ? validate : undefined;
+
   const config = {
-    clipboardDisabled: false,
     hint,
     inline: true,
     label,
     maxChars,
     name,
+    readonly,
     required,
     size: Sizes.MEDIUM,
+    type,
+    validate: validateFunc,
     value,
   };
 
-  const choices = options || [];
-  const validateFunc = validateOnFieldChange ? validate : undefined;
-
   const Component = array ? ArrayField : FieldsCommponentMap[type];
 
-  return <Component choices={choices} config={config} type={type} validate={validateFunc} />;
+  return <Component choices={choices} config={config} />;
 });
 
 DTO2FieldComponent.displayName = 'DTO2FieldComponent';

@@ -86,6 +86,9 @@ describe('FormValidationPipe', () => {
         .fn()
         .mockReturnValueOnce([{ name: 'required field', errors: [] }]);
       service['hasValidatorsErrors'] = jest.fn().mockReturnValueOnce(false);
+      service['removeReadonlyFields'] = jest
+        .fn()
+        .mockReturnValueOnce(targetMock);
     });
 
     it('should not validate if type is not body or query', async () => {
@@ -282,8 +285,7 @@ describe('FormValidationPipe', () => {
 
     beforeEach(() => {
       service['shouldValidate'] = jest.fn().mockResolvedValue(true);
-      service['handleValidation'] = jest.fn().mockResolvedValue([errorMock]);
-      service['handleArrayValidation'] = jest
+      service['handleFieldValidation'] = jest
         .fn()
         .mockResolvedValue([errorMock]);
     });
@@ -316,6 +318,26 @@ describe('FormValidationPipe', () => {
       });
     });
 
+    it('should bypass error test if field is readonly', async () => {
+      // Given
+      const metadataMock = [getFieldAttributesMock('name1', true, true, true)];
+
+      // When
+      const result = await service['validateField'](
+        targetMock,
+        metadataMock,
+        nameMock,
+      );
+
+      // Then
+      expect(result).toEqual({
+        name: nameMock,
+        validators: [],
+      });
+      expect(service['shouldValidate']).toHaveBeenCalledTimes(0);
+      expect(service['handleFieldValidation']).toHaveBeenCalledTimes(0);
+    });
+
     it('should check if it should validate', async () => {
       // Given
       const metadataMock = [
@@ -346,7 +368,7 @@ describe('FormValidationPipe', () => {
       await service['validateField'](targetMock, metadataMock, nameMock);
 
       // Then
-      expect(service['handleValidation']).not.toHaveBeenCalled();
+      expect(service['handleFieldValidation']).not.toHaveBeenCalled();
     });
 
     it('should return no field errors if should not validate', async () => {
@@ -371,26 +393,7 @@ describe('FormValidationPipe', () => {
       });
     });
 
-    it('should call handleValidation method once when field is not an array', async () => {
-      // Given
-      const metadataMock = [
-        getFieldAttributesMock('name1'),
-        getFieldAttributesMock('name2'),
-      ];
-
-      // When
-      await service['validateField'](targetMock, metadataMock, nameMock);
-
-      // Then
-      expect(service['handleValidation']).toHaveBeenCalledTimes(1);
-      expect(service['handleValidation']).toHaveBeenCalledWith(
-        targetMock,
-        metadataMock[0],
-        targetMock[nameMock],
-      );
-    });
-
-    it('should call handleArrayValidation method with array params set to true', async () => {
+    it('should call handleFieldValidation method with params', async () => {
       // Given
       const metadataMock = [
         getFieldAttributesMock('name1', true, true),
@@ -401,8 +404,9 @@ describe('FormValidationPipe', () => {
       await service['validateField'](targetMock, metadataMock, nameMock);
 
       // Then
-      expect(service['handleArrayValidation']).toHaveBeenCalledTimes(1);
-      expect(service['handleArrayValidation']).toHaveBeenCalledWith(
+      expect(service['handleFieldValidation']).toHaveBeenCalledTimes(1);
+      expect(service['handleFieldValidation']).toHaveBeenCalledWith(
+        { name: nameMock, validators: [errorMock] },
         targetMock,
         metadataMock[0],
         nameMock,
@@ -433,7 +437,7 @@ describe('FormValidationPipe', () => {
         getFieldAttributesMock('name1'),
         getFieldAttributesMock('name2'),
       ];
-      service['handleValidation'] = jest.fn().mockResolvedValue([]);
+      service['handleFieldValidation'] = jest.fn().mockResolvedValue([]);
 
       // When
       const result = await service['validateField'](
@@ -993,6 +997,91 @@ describe('FormValidationPipe', () => {
       // Then
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual(errorsMock[0]);
+    });
+  });
+
+  describe('handleFieldValidation', () => {
+    const fieldErrorMock = {
+      name: nameMock,
+      validators: [],
+    };
+    const validatorMock = [
+      { name: 'validator1', errorLabel: 'Error 1', validationArgs: [] },
+    ];
+
+    beforeEach(() => {
+      service['handleArrayValidation'] = jest
+        .fn()
+        .mockResolvedValueOnce(validatorMock);
+      service['handleValidation'] = jest
+        .fn()
+        .mockResolvedValueOnce(validatorMock);
+    });
+
+    it('should call handleArrayValidation if field is an array', async () => {
+      // Given
+      const metadataMock = getFieldAttributesMock('name1', true, true);
+
+      // When
+      const result = await service['handleFieldValidation'](
+        fieldErrorMock,
+        targetMock,
+        metadataMock,
+        nameMock,
+      );
+
+      // Then
+      expect(service['handleValidation']).toHaveBeenCalledTimes(0);
+      expect(service['handleArrayValidation']).toHaveBeenCalledTimes(1);
+      expect(service['handleArrayValidation']).toHaveBeenCalledWith(
+        targetMock,
+        metadataMock,
+        nameMock,
+      );
+      expect(result).toEqual(validatorMock);
+    });
+
+    it('should call handleValidation if field is not an array', async () => {
+      // Given
+      const metadataMock = getFieldAttributesMock('name1');
+
+      // When
+      const result = await service['handleFieldValidation'](
+        fieldErrorMock,
+        targetMock,
+        metadataMock,
+        nameMock,
+      );
+
+      // Then
+      expect(service['handleArrayValidation']).toHaveBeenCalledTimes(0);
+      expect(service['handleValidation']).toHaveBeenCalledTimes(1);
+      expect(service['handleValidation']).toHaveBeenCalledWith(
+        targetMock,
+        metadataMock,
+        targetMock[nameMock],
+      );
+      expect(result).toEqual(validatorMock);
+    });
+  });
+
+  describe('removeReadonlyFields', () => {
+    it('should return only metadata with readonly at false', () => {
+      // Given
+      const metadataMock = [
+        getFieldAttributesMock('name1', true, true, true),
+        getFieldAttributesMock('name2'),
+      ];
+      const targetMock = {
+        name1: 'name1',
+        name2: 'name2',
+      };
+
+      // When
+      const result = service['removeReadonlyFields'](targetMock, metadataMock);
+
+      // Then
+      expect(result).toEqual({ name2: 'name2' });
     });
   });
 });

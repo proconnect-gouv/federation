@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`InputTextElement should match the snapshot, with optional props 1`] = `
+exports[`InputComponent should match the snapshot, with optional props 1`] = `
 <div>
   <input
     aria-describedby="any-name-mock-messages"
@@ -15,7 +15,7 @@ exports[`InputTextElement should match the snapshot, with optional props 1`] = `
 </div>
 `;
 
-exports[`InputTextElement should match the snapshot, with required props 1`] = `
+exports[`InputComponent should match the snapshot, with required props 1`] = `
 <div>
   <input
     aria-describedby="any-name-mock-messages"

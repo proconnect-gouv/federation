@@ -57,9 +57,6 @@ exports[`FormWrapperComponent should match snapshot without descriptionn, title 
         data-mockid="FormErrorComponent"
       />
       <div
-        data-mockid="FormMentionsComponent"
-      />
-      <div
         data-mockid="FormErrorScrollComponent"
       />
     </div>
@@ -86,9 +83,6 @@ exports[`FormWrapperComponent should not render all fields required message 1`] 
         data-mockid="FormErrorComponent"
       />
       <div
-        data-mockid="FormMentionsComponent"
-      />
-      <div
         data-mockid="FormErrorScrollComponent"
       />
     </div>
@@ -112,9 +106,6 @@ exports[`FormWrapperComponent should not render the error message 1`] = `
         data-mockid="FormActionsComponent"
       />
       <div
-        data-mockid="FormMentionsComponent"
-      />
-      <div
         data-mockid="FormErrorScrollComponent"
       />
     </div>
@@ -136,9 +127,6 @@ exports[`FormWrapperComponent should not render the error scroll component 1`] =
       </div>
       <div
         data-mockid="FormActionsComponent"
-      />
-      <div
-        data-mockid="FormMentionsComponent"
       />
       <div
         data-mockid="FormErrorScrollComponent"

@@ -32,6 +32,7 @@ export default {
       ...Object.keys(dss.scopes),
     ]),
   ],
+  emails: [''],
   claims: ['amr'],
   eidas: 1,
   rep_scope: [],
@@ -51,13 +52,4 @@ export default {
   userinfo_signed_response_alg: SignatureAlgorithmEnum.NONE,
   userinfo_encrypted_response_alg: EncryptionAlgorithmEnum.NONE,
   userinfo_encrypted_response_enc: EncryptionEncodingEnum.NONE,
-
-  /**
-   * @TODO FC-2050
-   *
-   * For now use client_id and client_secret of FSP1-LOW
-   * */
-  client_secret:
-    'a970fc88b3111fcfdce515c2ee03488d8a349e5379a3ba2aa48c225dcea243a5',
-  client_id: '6925fb8143c76eded44d32b40c0cb1006065f7f003de52712b78985704f39950',
 } as DefaultServiceProviderLowValueConfig;

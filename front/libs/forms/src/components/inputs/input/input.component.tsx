@@ -3,14 +3,15 @@ import type { FieldInputProps } from 'react-final-form';
 
 import type { PropsWithClassName } from '@fc/common';
 
-interface InputTextElementProps<FieldValue = string> extends PropsWithClassName {
+interface InputComponentProps<FieldValue = string> extends PropsWithClassName {
+  readOnly?: boolean;
   disabled?: boolean;
   id: string;
   input: FieldInputProps<FieldValue, HTMLElement | HTMLSelectElement>;
 }
 
-export const InputTextElement = React.memo(
-  ({ className, disabled = false, id, input }: InputTextElementProps) => (
+export const InputComponent = React.memo(
+  ({ className, disabled = false, id, input, readOnly = false }: InputComponentProps) => (
     <input
       {...input}
       aria-describedby={`${input.name}-messages`}
@@ -19,9 +20,10 @@ export const InputTextElement = React.memo(
       disabled={disabled}
       id={id}
       name={input.name}
+      readOnly={readOnly}
       type={input.type}
     />
   ),
 );
 
-InputTextElement.displayName = 'InputTextElement';
+InputComponent.displayName = 'InputComponent';

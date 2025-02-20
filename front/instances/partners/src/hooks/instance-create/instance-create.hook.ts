@@ -9,9 +9,13 @@ import { InstancesService } from '../../services';
 
 export const useInstanceCreate = () => {
   const navigate = useNavigate();
-  const schema = useRouteLoaderData(RouteLoaderDataIds.VERSION_SCHEMA) as JSONFieldType[];
+  const jsonSchema = useRouteLoaderData(RouteLoaderDataIds.VERSION_SCHEMA) as JSONFieldType[];
 
-  const initialValues = parseInitialValues(schema, {});
+  // @NOTE Temporary solution to resolve client id/secre display
+  // While creating a new instance
+  const schema = jsonSchema.filter((field) => !field.readonly);
+
+  const initialValues = parseInitialValues(jsonSchema, {});
 
   const submitHandler = useCallback(
     async (data: HttpClientDataInterface) => {

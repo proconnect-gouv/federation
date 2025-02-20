@@ -28,7 +28,40 @@
     "array": false,
     "validateIf": [],
     "label": "any-label-mock-1",
-    "hint": "any-hint-mock-1"
+    "hint": "any-hint-mock-1",
+    "readonly": true
+  },
+  {
+    "required": true,
+    "order": 3,
+    "validators": [
+      {
+        "name": "any-validator-mock-3.1",
+        "errorLabel": "any-error-label-mock-3.1",
+        "validationArgs": []
+      },
+      {
+        "name": "any-validator-mock-3.2",
+        "errorLabel": "any-error-label-mock-3.2",
+        "validationArgs": []
+      },
+      {
+        "name": "any-validator-mock-3.3",
+        "validationArgs": [
+          {
+            "max": 256
+          }
+        ],
+        "errorLabel": "any-error-label-mock-3.3"
+      }
+    ],
+    "type": "any-type-mock-3",
+    "name": "any-name-mock-3",
+    "array": true,
+    "validateIf": [],
+    "label": "any-label-mock-3",
+    "hint": "any-hint-mock-3",
+    "readonly": false
   },
   {
     "required": true,
@@ -59,6 +92,7 @@
     "array": true,
     "validateIf": [],
     "label": "any-label-mock-2",
-    "hint": "any-hint-mock-2"
+    "hint": "any-hint-mock-2",
+    "readonly": false
   }
 ]

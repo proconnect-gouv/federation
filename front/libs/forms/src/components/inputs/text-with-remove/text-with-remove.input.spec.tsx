@@ -1,23 +1,30 @@
 import { fireEvent, render } from '@testing-library/react';
 import React from 'react';
-import type { FieldInputProps } from 'react-final-form';
+import { type FieldInputProps, useField } from 'react-final-form';
 
-import { useArrayFieldMeta } from '../../../hooks';
-import { ArrayRemoveButton, GroupElement, InputTextElement, MessageElement } from '../../elements';
+import { useFieldMeta } from '../../../hooks';
+import { ArrayRemoveButton, GroupElement, MessageElement } from '../../elements';
+import { InputComponent } from '../input';
 import { TextWithRemoveInput } from './text-with-remove.input';
 
+jest.mock('../input/input.component');
 jest.mock('../../elements/group/group.element');
 jest.mock('../../elements/label/label.element');
 jest.mock('../../elements/message/message.element');
-jest.mock('../../elements/input-text/input-text.element');
 jest.mock('../../elements/buttons/array-remove/array-remove.button');
-jest.mock('../../../hooks/array-field-meta/array-field-meta.hook');
+jest.mock('../../../hooks/field-meta/field-meta.hook');
 
 describe('TextWithRemoveInput', () => {
   // Given
   const isValidMock = Symbol('is-valid-mock') as unknown as boolean;
   const disabledMock = Symbol('disabled-mock') as unknown as boolean;
   const hasErrorMock = Symbol('has-error-mock') as unknown as boolean;
+
+  const metaMock = {
+    error: 'any-errorMessage-mock',
+    touched: false,
+    value: 'any-input-value-mock',
+  };
 
   const inputMock = {
     className: 'any-classname-mock',
@@ -29,10 +36,13 @@ describe('TextWithRemoveInput', () => {
 
   beforeEach(() => {
     // Given
-    jest.mocked(useArrayFieldMeta).mockReturnValue({
+    jest.mocked(useField).mockReturnValue({
+      input: inputMock,
+      meta: metaMock,
+    });
+    jest.mocked(useFieldMeta).mockReturnValue({
       errorMessage: 'any-error-message-mock',
       hasError: hasErrorMock,
-      input: inputMock,
       inputClassname: 'any-input-classname-mock',
       isValid: isValidMock,
     });
@@ -60,12 +70,8 @@ describe('TextWithRemoveInput', () => {
 
     // Then
     expect(container).toMatchSnapshot();
-    expect(useArrayFieldMeta).toHaveBeenCalledOnce();
-    expect(useArrayFieldMeta).toHaveBeenCalledWith({
-      fieldName: 'any-fieldname-mock',
-      index: 0,
-      validate: validateMock,
-    });
+    expect(useFieldMeta).toHaveBeenCalledOnce();
+    expect(useFieldMeta).toHaveBeenCalledWith(metaMock);
     expect(GroupElement).toHaveBeenCalledOnce();
     expect(GroupElement).toHaveBeenCalledWith(
       {
@@ -78,8 +84,8 @@ describe('TextWithRemoveInput', () => {
       },
       {},
     );
-    expect(InputTextElement).toHaveBeenCalledOnce();
-    expect(InputTextElement).toHaveBeenCalledWith(
+    expect(InputComponent).toHaveBeenCalledOnce();
+    expect(InputComponent).toHaveBeenCalledWith(
       {
         className: 'any-input-classname-mock',
         disabled: false,

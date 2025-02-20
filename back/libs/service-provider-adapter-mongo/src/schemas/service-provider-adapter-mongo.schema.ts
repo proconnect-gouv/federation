@@ -87,6 +87,9 @@ export class ServiceProvider extends Document {
 
   @Prop({ type: String })
   signup_id: string;
+
+  @Prop({ type: String })
+  email: string;
 }
 
 export const ServiceProviderSchema =

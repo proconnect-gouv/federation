@@ -121,7 +121,7 @@ describe('InstanceController', () => {
     instanceMock.upsert.mockResolvedValueOnce({ id: instanceIdMock });
     versionMock.create.mockResolvedValueOnce({ id: versionIdMock });
     sessionPartnersAccountMock.get.mockReturnValue(userInfoMock);
-    partnersServiceMock.fromFormValues.mockReturnValue(body);
+    partnersServiceMock.fromFormValues.mockResolvedValue(body);
   });
 
   it('should be defined', () => {

@@ -4,31 +4,78 @@ import { PartnersServiceProviderInstance } from '@entities/typeorm';
 
 import { getTransformed } from '@fc/common';
 import { ConfigService } from '@fc/config';
+import { CryptographyService } from '@fc/cryptography';
+import { PartnersServiceProviderInstanceService } from '@fc/partners-service-provider-instance';
 import { ServiceProviderInstanceVersionDto } from '@fc/partners-service-provider-instance-version';
 import { OidcClientInterface } from '@fc/service-provider';
 
-import { DefaultServiceProviderLowValueConfig } from '../dto';
+import { AppConfig, DefaultServiceProviderLowValueConfig } from '../dto';
 
 @Injectable()
 export class PartnersInstanceVersionFormService {
-  constructor(private readonly config: ConfigService) {}
+  constructor(
+    private readonly config: ConfigService,
+    private readonly instance: PartnersServiceProviderInstanceService,
+    private readonly crypto: CryptographyService,
+  ) {}
 
   /**
    * Get a full OidcClientInterface from the posted values.
    * Default or private values are set in the returned object
    */
-  fromFormValues(values: Partial<OidcClientInterface>): OidcClientInterface {
+  async fromFormValues(
+    values: ServiceProviderInstanceVersionDto,
+    instanceId?: string,
+  ): Promise<OidcClientInterface> {
     const DefaultServiceProviderLowValue =
       this.config.get<DefaultServiceProviderLowValueConfig>(
         'DefaultServiceProviderLowValue',
       );
 
+    const generatedValues = await this.getGeneratedValues(instanceId);
+
     const output = {
       ...DefaultServiceProviderLowValue,
-      ...(values as OidcClientInterface),
+      ...values,
+      ...generatedValues,
     };
 
     return output;
+  }
+
+  private async getGeneratedValues(
+    instanceId?: string,
+  ): Promise<Pick<OidcClientInterface, 'client_id' | 'client_secret'>> {
+    if (instanceId) {
+      return await this.getCredentialsForInstance(instanceId);
+    }
+
+    return this.generateNewCredentials();
+  }
+
+  private async getCredentialsForInstance(
+    instanceId: string,
+  ): Promise<Pick<OidcClientInterface, 'client_id' | 'client_secret'>> {
+    const { versions } = await this.instance.getById(instanceId);
+
+    const { client_id, client_secret } = versions[0].data;
+
+    return {
+      client_id,
+      client_secret,
+    };
+  }
+
+  private generateNewCredentials(): Pick<
+    OidcClientInterface,
+    'client_id' | 'client_secret'
+  > {
+    const { credentialsBytesLength } = this.config.get<AppConfig>('App');
+
+    return {
+      client_id: this.crypto.genRandomString(credentialsBytesLength),
+      client_secret: this.crypto.genRandomString(credentialsBytesLength),
+    };
   }
 
   /**
@@ -41,7 +88,7 @@ export class PartnersInstanceVersionFormService {
     return {
       ...instance,
       versions: instance.versions.map((version) => {
-        version.data = getTransformed<Record<string, unknown>>(
+        version.data = getTransformed<OidcClientInterface>(
           version.data,
           ServiceProviderInstanceVersionDto,
           { excludeExtraneousValues: true },

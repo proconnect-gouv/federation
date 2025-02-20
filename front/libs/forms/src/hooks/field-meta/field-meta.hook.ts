@@ -1,11 +1,7 @@
 import classnames from 'classnames';
 import type { FieldMetaState } from 'react-final-form';
 
-import type { InputMetaInterface } from '../../interfaces';
-
-export const useFieldMeta = <FieldValue = string>(
-  meta: FieldMetaState<FieldValue>,
-): InputMetaInterface => {
+export const useFieldMeta = (meta: FieldMetaState<string>) => {
   const { error, invalid, pristine, submitError, touched, valid } = meta;
 
   const hasError = !!(touched && invalid);

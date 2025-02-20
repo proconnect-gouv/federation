@@ -25,11 +25,27 @@ export class ServiceProviderInstanceVersionDto
 {
   @Input({
     required: true,
-    order: 2,
+    order: 0,
     validators: [$IsString(), $IsLength({ max: 256 })],
   })
   @Expose()
   readonly name: string;
+
+  @Input({
+    readonly: true,
+    order: 1,
+    validators: [$IsString()],
+  })
+  @Expose()
+  readonly client_id: string;
+
+  @Input({
+    readonly: true,
+    order: 2,
+    validators: [$IsString()],
+  })
+  @Expose()
+  readonly client_secret: string;
 
   @Input({
     order: 3,

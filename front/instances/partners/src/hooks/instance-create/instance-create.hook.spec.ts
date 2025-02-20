@@ -36,13 +36,22 @@ describe('useInstanceCreate', () => {
     // Then
     expect(result.current).toStrictEqual({
       initialValues: initialValuesMock,
-      schema: schemaMock,
+      schema: expect.any(Object),
       submitHandler: expect.any(Function),
     });
     expect(useNavigate).toHaveBeenCalledOnce();
     expect(useNavigate).toHaveBeenCalledWith();
     expect(useRouteLoaderData).toHaveBeenCalledOnce();
     expect(useRouteLoaderData).toHaveBeenCalledWith('dto2form::version::shema');
+  });
+
+  it('should filter returned property schema without any readonly field definition', () => {
+    // When
+    const { result } = renderHook(() => useInstanceCreate());
+
+    expect(result.current.schema).toHaveLength(2);
+    expect(result.current.schema[0].name).toBe('any-name-mock-3');
+    expect(result.current.schema[1].name).toBe('any-name-mock-2');
   });
 
   describe('The submit function', () => {

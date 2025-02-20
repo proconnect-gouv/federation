@@ -1,9 +1,11 @@
 import type { FieldValidator } from 'final-form';
 import React, { useCallback } from 'react';
+import { useField } from 'react-final-form';
 
 import { ComponentTypes } from '../../../enums';
-import { useArrayFieldMeta } from '../../../hooks/array-field-meta';
-import { ArrayRemoveButton, GroupElement, InputTextElement, MessageElement } from '../../elements';
+import { useFieldMeta } from '../../../hooks';
+import { ArrayRemoveButton, GroupElement, MessageElement } from '../../elements';
+import { InputComponent } from '../input';
 
 interface TextWithRemoveInputProps {
   index: number;
@@ -15,11 +17,8 @@ interface TextWithRemoveInputProps {
 
 export const TextWithRemoveInput = React.memo(
   ({ fieldName, index, isRemovable = false, onRemove, validate }: TextWithRemoveInputProps) => {
-    const { errorMessage, hasError, input, inputClassname, isValid } = useArrayFieldMeta({
-      fieldName,
-      index,
-      validate,
-    });
+    const { input, meta } = useField(fieldName, { validate });
+    const { errorMessage, hasError, inputClassname, isValid } = useFieldMeta(meta);
 
     const removeHandler = useCallback(() => {
       onRemove(index);
@@ -35,7 +34,7 @@ export const TextWithRemoveInput = React.memo(
         isValid={isValid}
         type={ComponentTypes.INPUT}>
         <div className="flex-columns">
-          <InputTextElement className={inputClassname} disabled={false} id={id} input={input} />
+          <InputComponent className={inputClassname} disabled={false} id={id} input={input} />
           <ArrayRemoveButton
             dataTestId={`${fieldName}-remove`}
             disabled={!isRemovable}

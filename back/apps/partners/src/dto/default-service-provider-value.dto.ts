@@ -4,15 +4,23 @@ import {
   IsEnum,
   IsIn,
   IsNumber,
-  IsOptional,
   IsString,
 } from 'class-validator';
 
-import { ClientTypeEnum, PlatformEnum } from '@fc/service-provider';
+import {
+  ClientTypeEnum,
+  EncryptionAlgorithmEnum,
+  EncryptionEncodingEnum,
+  PlatformEnum,
+  SignatureAlgorithmEnum,
+} from '@fc/service-provider';
 
 export class DefaultServiceProviderLowValueConfig {
   @IsArray()
   readonly scope: string[];
+
+  @IsArray()
+  readonly emails: string[];
 
   @IsArray()
   readonly claims: string[];
@@ -46,28 +54,17 @@ export class DefaultServiceProviderLowValueConfig {
   readonly ssoDisabled: boolean;
 
   @IsString()
-  readonly client_secret: string;
+  readonly id_token_encrypted_response_alg: EncryptionAlgorithmEnum;
 
   @IsString()
-  readonly client_id: string;
+  readonly id_token_encrypted_response_enc: EncryptionEncodingEnum;
 
   @IsString()
-  @IsOptional()
-  readonly id_token_encrypted_response_alg?: string;
+  readonly userinfo_signed_response_alg: SignatureAlgorithmEnum;
 
   @IsString()
-  @IsOptional()
-  readonly id_token_encrypted_response_enc?: string;
+  readonly userinfo_encrypted_response_alg: EncryptionAlgorithmEnum;
 
   @IsString()
-  @IsOptional()
-  readonly userinfo_signed_response_alg?: string;
-
-  @IsString()
-  @IsOptional()
-  readonly userinfo_encrypted_response_alg?: string;
-
-  @IsString()
-  @IsOptional()
-  readonly userinfo_encrypted_response_enc?: string;
+  readonly userinfo_encrypted_response_enc: EncryptionEncodingEnum;
 }

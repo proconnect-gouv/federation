@@ -106,7 +106,7 @@ export class InstanceController {
     sessionPartnersAccount: ISessionService<PartnersAccountSession>,
   ): Promise<FSA<FSAMeta, unknown>> {
     const { accountId } = sessionPartnersAccount.get();
-    const data = this.form.fromFormValues(values);
+    const data = await this.form.fromFormValues(values);
     const { id: instanceId } = await this.instance.upsert({
       name: data.name,
       environment: EnvironmentEnum.SANDBOX,
@@ -153,7 +153,7 @@ export class InstanceController {
   ): Promise<FSA<FSAMeta, unknown>> {
     const { accountId } = sessionPartnersAccount.get();
 
-    const fullData = this.form.fromFormValues(data);
+    const fullData = await this.form.fromFormValues(data, instanceId);
 
     await this.instance.upsert(
       {

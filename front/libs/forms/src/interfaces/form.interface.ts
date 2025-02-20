@@ -1,8 +1,16 @@
 import type { Decorator, SubmissionErrors, ValidationErrors } from 'final-form';
 
-import type { FormConfigInterface } from './form-props-config.interface';
+import type { HeadingTag } from '@fc/common';
 
-export interface FormPropsInterface<T> {
+export interface FormConfigInterface {
+  description?: string;
+  id: string;
+  title?: string;
+  titleHeading?: HeadingTag;
+  mentions?: string;
+}
+
+export interface FormInterface<T> {
   initialValues?: T;
   config: FormConfigInterface;
   noRequired?: boolean;

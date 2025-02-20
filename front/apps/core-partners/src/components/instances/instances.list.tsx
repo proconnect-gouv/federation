@@ -11,9 +11,13 @@ interface InstancesListComponentProps {
 
 export const InstancesListComponent = React.memo(({ items }: InstancesListComponentProps) => (
   <div className="fr-col-12">
-    {items.sort(sortByKey('updatedAt', SortOrder.DESC)).map((item) => {
-      const uniqkey = `instance::${item.id}`;
-      return <InstanceComponent key={uniqkey} item={item} />;
+    {items.sort(sortByKey('updatedAt', SortOrder.DESC)).map(({ createdAt, id, name, versions }) => {
+      const { data } = versions[0];
+
+      const uniqkey = `instance::${id}`;
+      return (
+        <InstanceComponent key={uniqkey} createdAt={createdAt} data={data} id={id} name={name} />
+      );
     })}
   </div>
 ));

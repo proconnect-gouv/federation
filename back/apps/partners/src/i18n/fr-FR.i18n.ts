@@ -19,6 +19,8 @@ export const frFR: I18nTranslationsMapType = {
 
   // form create instance label
   'Form.label.name': 'Nom de l’instance',
+  'Form.label.client_id': 'Client ID',
+  'Form.label.client_secret': 'Client Secret',
   'Form.label.signupId': 'Numéro de la demande datapass',
   'Form.label.site': 'URL du site',
   'Form.label.redirect_uris': 'URL de connexion',
@@ -29,6 +31,8 @@ export const frFR: I18nTranslationsMapType = {
 
   // form create instance label description
   'Form.hint.name': 'Exemple : Commune de Paris - Portail Citoyen',
+  'Form.hint.client_id': '',
+  'Form.hint.client_secret': '',
   'Form.hint.signupId':
     'Renseignez ici le numéro de la demande Datapass qui a été validée',
   'Form.hint.site': 'Renseignez ici votre URL de site',
@@ -48,6 +52,10 @@ export const frFR: I18nTranslationsMapType = {
   'Form.isString_error.name': 'Veuillez saisir un nom valide',
   'Form.isLength_error.max.name':
     'Le nom de l’instance doit être de {max} caractères maximum',
+  // client_id
+  'Form.isString_error.client_id': 'Veuillez saisir votre client id',
+  // client_secret
+  'Form.isString_error.client_secret': 'Veuillez saisir votre client secret',
   // signupId
   'Form.isNumeric_error.signupId': 'Veuillez saisir un numéro valide',
   'Form.isLength_error.max.signupId':

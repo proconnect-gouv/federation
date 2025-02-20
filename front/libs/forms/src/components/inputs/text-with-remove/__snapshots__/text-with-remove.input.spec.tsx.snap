@@ -9,7 +9,7 @@ exports[`TextWithRemoveInput should match snapshot 1`] = `
       class="flex-columns"
     >
       <div
-        data-mockid="InputTextElement"
+        data-mockid="InputComponent"
       />
       <div
         data-mockid="ArrayRemoveButton"

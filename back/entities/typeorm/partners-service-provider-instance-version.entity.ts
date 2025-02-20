@@ -8,6 +8,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { OidcClientInterface } from '@fc/service-provider';
+
 import { PartnersServiceProviderInstance } from './partners-service-provider-instance.entity';
 
 export enum PublicationStatusEnum {
@@ -44,7 +46,7 @@ export class PartnersServiceProviderInstanceVersion {
     type: 'json',
     default: '{}',
   })
-  data: Record<string, unknown | unknown[]>;
+  data: OidcClientInterface;
 
   @CreateDateColumn({
     default: () => 'NOW()',

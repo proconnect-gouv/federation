@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react';
 import type { FieldInputProps } from 'react-final-form';
 
-import { InputTextElement } from './input-text.element';
+import { InputComponent } from './input.component';
 
-describe('InputTextElement', () => {
+describe('InputComponent', () => {
   it('should match the snapshot, with required props', () => {
     // Given
     const idMock = 'any-id-mock';
@@ -13,7 +13,7 @@ describe('InputTextElement', () => {
     } as unknown as FieldInputProps<string, HTMLElement | HTMLSelectElement>;
 
     // When
-    const { container } = render(<InputTextElement id={idMock} input={anyInputProps} />);
+    const { container } = render(<InputComponent id={idMock} input={anyInputProps} />);
     const inputElt = container.firstChild as HTMLInputElement;
 
     // Then
@@ -37,12 +37,7 @@ describe('InputTextElement', () => {
 
     // When
     const { container } = render(
-      <InputTextElement
-        disabled
-        className="any-classname-mock"
-        id={idMock}
-        input={anyInputProps}
-      />,
+      <InputComponent disabled className="any-classname-mock" id={idMock} input={anyInputProps} />,
     );
     const inputElt = container.firstChild as HTMLInputElement;
 

@@ -11,6 +11,7 @@ jest.mock('../../hooks/field-validate/field-validate.hook');
 describe('DTO2FieldComponent', () => {
   // Given
   const maxCharsMock = Symbol('maxChars') as unknown as number;
+  const readonlyMock = Symbol('readonly') as unknown as boolean;
   const disabledMock = Symbol('disabled') as unknown as boolean;
   const requiredMock = Symbol('required') as unknown as boolean;
   const hintMock = Symbol('hint') as unknown as string;
@@ -25,6 +26,7 @@ describe('DTO2FieldComponent', () => {
     maxChars: maxCharsMock,
     name: nameMock,
     order: 1,
+    readonly: readonlyMock,
     required: requiredMock,
     size: 'md',
     validators: expect.anything(),
@@ -65,18 +67,18 @@ describe('DTO2FieldComponent', () => {
       {
         choices: [],
         config: {
-          clipboardDisabled: false,
           hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
           name: nameMock,
+          readonly: readonlyMock,
           required: requiredMock,
           size: 'md',
+          type: 'text',
+          validate: validateMock,
           value: valueMock,
         },
-        type: 'text',
-        validate: validateMock,
       },
       {},
     );
@@ -108,18 +110,18 @@ describe('DTO2FieldComponent', () => {
       {
         choices: optionsMock,
         config: {
-          clipboardDisabled: false,
           hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
           name: nameMock,
+          readonly: readonlyMock,
           required: requiredMock,
           size: 'md',
+          type: 'select',
+          validate: validateMock,
           value: valueMock,
         },
-        type: 'select',
-        validate: validateMock,
       },
       {},
     );
@@ -148,18 +150,18 @@ describe('DTO2FieldComponent', () => {
       {
         choices: optionsMock,
         config: {
-          clipboardDisabled: false,
           hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
           name: nameMock,
+          readonly: readonlyMock,
           required: requiredMock,
           size: 'md',
+          type: 'radio',
+          validate: validateMock,
           value: valueMock,
         },
-        type: 'radio',
-        validate: validateMock,
       },
       {},
     );
@@ -188,18 +190,18 @@ describe('DTO2FieldComponent', () => {
       {
         choices: optionsMock,
         config: {
-          clipboardDisabled: false,
           hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
           name: nameMock,
+          readonly: readonlyMock,
           required: requiredMock,
           size: 'md',
+          type: 'checkbox',
+          validate: validateMock,
           value: valueMock,
         },
-        type: 'checkbox',
-        validate: validateMock,
       },
       {},
     );
@@ -218,18 +220,18 @@ describe('DTO2FieldComponent', () => {
       {
         choices: [],
         config: {
-          clipboardDisabled: false,
           hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
           name: nameMock,
+          readonly: readonlyMock,
           required: requiredMock,
           size: 'md',
+          type: 'text',
+          validate: validateMock,
           value: valueMock,
         },
-        type: 'text',
-        validate: validateMock,
       },
       {},
     );
@@ -251,18 +253,18 @@ describe('DTO2FieldComponent', () => {
       {
         choices: [],
         config: {
-          clipboardDisabled: false,
           hint: hintMock,
           inline: true,
           label: labelMock,
           maxChars: maxCharsMock,
           name: nameMock,
+          readonly: readonlyMock,
           required: requiredMock,
           size: 'md',
+          type: 'text',
+          validate: undefined,
           value: valueMock,
         },
-        type: 'text',
-        validate: undefined,
       },
       {},
     );
