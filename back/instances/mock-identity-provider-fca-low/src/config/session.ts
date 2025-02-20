@@ -12,7 +12,6 @@ const cookieOptions: SessionCookieOptionsInterface = {
   httpOnly: true,
   secure: true,
   maxAge: 600000, // 10 minutes
-  domain: process.env.FQDN,
 };
 
 export default {

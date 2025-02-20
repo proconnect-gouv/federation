@@ -1,4 +1,4 @@
-const FC_SESSION_COOKIE = 'fc_session_id';
+const FC_SESSION_COOKIE = 'pc_session_id';
 
 /**
  * Adds response interceptions to force SameSite cookie attributes by none

@@ -16,7 +16,6 @@ const cookieOptions: SessionCookieOptionsInterface = {
   httpOnly: true,
   secure: true,
   maxAge: 43200000, // 12h
-  domain: process.env.FQDN,
 };
 
 export default {
@@ -24,7 +23,7 @@ export default {
   prefix: 'FCA-LOW-SESS:',
   cookieOptions,
   cookieSecrets: env.json('COOKIE_SECRETS'),
-  sessionCookieName: 'fc_session_id',
+  sessionCookieName: 'pc_session_id',
   lifetime: 43200, // 12h
   sessionIdLength: 64,
   slidingExpiration: false,
