@@ -7,7 +7,7 @@ back:
   image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
   stage: 'Code quality'
   tags:
-    - node
+    - node-fc
   rules:
     - if: '$CI_PIPELINE_SOURCE != "merge_request_event" && $CI_COMMIT_BRANCH != "staging"'
       when: never
@@ -54,7 +54,7 @@ back:
 build-cache:
   image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
   tags:
-    - node
+    - node-fc
   cache:
     key: ${CI_PROJECT_ID}
     policy: push

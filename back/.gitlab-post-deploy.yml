@@ -4,7 +4,7 @@ publish-sources:
     name: alpine/git
     entrypoint: ['']
   tags:
-    - publish
+    - publish-fc
   only:
     - tags
   when: manual
