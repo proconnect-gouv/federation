@@ -2,7 +2,7 @@
   stage: 'Build Front'
   image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
   tags:
-    - build
+    - build-fc
   only:
     - tags
   when: manual
@@ -24,7 +24,7 @@
   stage: 'Tag Front'
   image: ${BUILD_IMAGE}
   tags:
-    - build
+    - build-fc
   rules:
     - if: $CI_COMMIT_TAG && $CI_COMMIT_REF_NAME =~ /RC.$/
       when: manual
