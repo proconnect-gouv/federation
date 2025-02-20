@@ -23,7 +23,7 @@ Fonctionnalité: Déconnexion Usager
     Et la session ProConnect est détruite
     Et je suis déconnecté du fournisseur de service
     Et je suis redirigé vers la page fournisseur de service "par défaut"
-    Et le cookie "fc_session_id" est supprimé
+    Et le cookie "pc_session_id" est supprimé
     Et l'événement "SP_REQUESTED_LOGOUT" est journalisé
     Et l'événement "FC_REQUESTED_LOGOUT_FROM_IDP" est journalisé
     Et l'événement "FC_SESSION_TERMINATED" est journalisé

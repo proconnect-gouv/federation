@@ -51,7 +51,7 @@ Then('les cookies AgentConnect sont présents', function () {
   const url = new URL(fcaRootUrl);
   const domain = url.hostname;
 
-  checkCookieExists('fc_session_id', domain);
+  checkCookieExists('pc_session_id', domain);
 
   cy.getCookies({ domain })
     .should('have.length', 5)

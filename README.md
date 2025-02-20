@@ -202,4 +202,5 @@ cd $FC_ROOT/fc/back
 yarn doc
 yarn lint --fix
 yarn prettier --write
+yarn tsc --noEmit
 ```

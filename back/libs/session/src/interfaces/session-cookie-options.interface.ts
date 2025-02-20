@@ -12,6 +12,5 @@ export interface SessionCookieOptionsInterface {
   httpOnly: boolean;
   secure: boolean;
   maxAge?: number;
-  domain: string;
   sameSite: SameSiteType | boolean;
 }

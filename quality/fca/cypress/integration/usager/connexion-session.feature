@@ -10,7 +10,7 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que j'utilise le fournisseur d'identité "par défaut"
     Quand je clique sur le bouton ProConnect
     Alors je suis redirigé vers la page interaction
-    Et le cookie "fc_session_id" est présent
+    Et le cookie "pc_session_id" est présent
     Et l'événement "FC_AUTHORIZE_INITIATED" est journalisé avec "browsingSessionId" "non null" et "sessionId" "non null" et "isSso" "false"
 
   Scénario: Session avec SSO activé - Nouvelle session initialisée lors de l'appel à authorize (2ème connexion)
@@ -22,8 +22,8 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je suis redirigé vers la page login du fournisseur d'identité
     Et que je m'authentifie avec succès
     Et que je suis connecté au fournisseur de service
-    Et que le cookie "fc_session_id" est présent
-    Et que je mémorise la valeur du cookie "fc_session_id"
+    Et que le cookie "pc_session_id" est présent
+    Et que je mémorise la valeur du cookie "pc_session_id"
     # Evènement SP_REQUESTED_FC_USERINFO: première cinématique finalisée
     Et que l'événement "SP_REQUESTED_FC_USERINFO" est journalisé avec "accountId" "non null" et "isSso" "false"
     Et que je mémorise la valeur "browsingSessionId" de l'événement "SP_REQUESTED_FC_USERINFO"
@@ -34,8 +34,8 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Alors je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
     Et je suis connecté au fournisseur de service
     # le cookie n'est pas supprimé en fin de cinématique
-    Et le cookie "fc_session_id" est présent
-    Et la valeur du cookie "fc_session_id" est différente
+    Et le cookie "pc_session_id" est présent
+    Et la valeur du cookie "pc_session_id" est différente
     # Evènement FC_AUTHORIZE_INITIATED: cinématique SSO initialisée avec nouveau sessionId
     Et l'événement "FC_AUTHORIZE_INITIATED" est journalisé avec "accountId" "non null" et "isSso" "true"
     Et la valeur "browsingSessionId" est identique dans l'événement "FC_AUTHORIZE_INITIATED"
@@ -64,8 +64,8 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je m'authentifie avec succès
     Et que je suis redirigé vers la page fournisseur de service "avec accès exclusif à un FI"
     Et que je suis connecté au fournisseur de service
-    Et que le cookie "fc_session_id" est présent
-    Et que je mémorise la valeur du cookie "fc_session_id"
+    Et que le cookie "pc_session_id" est présent
+    Et que je mémorise la valeur du cookie "pc_session_id"
     # Evènement SP_REQUESTED_FC_USERINFO: première cinématique finalisée
     Et que l'événement "SP_REQUESTED_FC_USERINFO" est journalisé avec "accountId" "non null" et "isSso" "false"
     Et que je mémorise la valeur "browsingSessionId" de l'événement "SP_REQUESTED_FC_USERINFO"
@@ -75,9 +75,9 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
-    Et que le cookie "fc_session_id" est présent
-    Et que la valeur du cookie "fc_session_id" est différente
-    Et que je mémorise la valeur du cookie "fc_session_id"
+    Et que le cookie "pc_session_id" est présent
+    Et que la valeur du cookie "pc_session_id" est différente
+    Et que je mémorise la valeur du cookie "pc_session_id"
     # Evènement FC_AUTHORIZE_INITIATED: cinématique SSO initialisée dans un premier temps avec nouveau sessionId
     Et que l'événement "FC_AUTHORIZE_INITIATED" est journalisé avec "accountId" "non null" et "isSso" "true"
     Et que la valeur "browsingSessionId" est identique dans l'événement "FC_AUTHORIZE_INITIATED"
@@ -100,8 +100,8 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et je m'authentifie avec succès
     Et je suis redirigé vers la page fournisseur de service "par défaut"
     Et je suis connecté au fournisseur de service
-    Et le cookie "fc_session_id" est présent
-    Et la valeur du cookie "fc_session_id" est différente
+    Et le cookie "pc_session_id" est présent
+    Et la valeur du cookie "pc_session_id" est différente
     # Evènement IDP_CALLEDBACK: nouveau sessionId lors du retour depuis le FI
     Et l'événement "IDP_CALLEDBACK" est journalisé avec "idpId" "non null" et "accountId" "null" et "isSso" "false"
     Et la valeur "browsingSessionId" est identique dans l'événement "IDP_CALLEDBACK"
@@ -128,7 +128,7 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je m'authentifie avec succès
     Alors je suis redirigé vers la page fournisseur de service "par défaut"
     Et je suis connecté au fournisseur de service
-    Et le cookie "fc_session_id" est présent
+    Et le cookie "pc_session_id" est présent
 
   Scénario: Session avec SSO désactivé - isSso false et nouvelle session après retour du FI
     Etant donné que je désactive le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
@@ -142,8 +142,8 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je m'authentifie avec succès
     Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
     Et que je suis connecté au fournisseur de service
-    Et que le cookie "fc_session_id" est présent
-    Et que je mémorise la valeur du cookie "fc_session_id"
+    Et que le cookie "pc_session_id" est présent
+    Et que je mémorise la valeur du cookie "pc_session_id"
     # Evènement SP_REQUESTED_FC_USERINFO: première cinématique finalisée
     Et que l'événement "SP_REQUESTED_FC_USERINFO" est journalisé avec "accountId" "non null" et "isSso" "false"
     Et que je mémorise la valeur "browsingSessionId" de l'événement "SP_REQUESTED_FC_USERINFO"
@@ -159,8 +159,8 @@ Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
     Et que je m'authentifie avec succès
     Alors je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et je suis connecté au fournisseur de service
-    Et le cookie "fc_session_id" est présent
-    Et la valeur du cookie "fc_session_id" est différente
+    Et le cookie "pc_session_id" est présent
+    Et la valeur du cookie "pc_session_id" est différente
     # Evènement FC_AUTHORIZE_INITIATED: cinématique SSO initialisée dans un premier temps
     Et l'événement "FC_AUTHORIZE_INITIATED" est journalisé avec "accountId" "non null" et "isSso" "true"
     Et la valeur "browsingSessionId" est identique dans l'événement "FC_AUTHORIZE_INITIATED"
