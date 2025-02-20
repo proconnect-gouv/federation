@@ -1,0 +1,136 @@
+####################
+####################
+services:
+  ####################
+  # SP Mocks
+  ####################
+
+  fsa1-low:
+    hostname: fsa1-low
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      redis-pwd:
+        condition: service_healthy
+      squid:
+        condition: service_healthy
+    volumes:
+      - '${VOLUMES_DIR}/src/sp-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/log/:/var/log/app'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/fca-low/.env/fsa1-low.env'
+    tty: true
+    networks:
+      - public
+      - data
+    init: true
+    command: 'pm2 logs'
+
+  fsa2-low:
+    hostname: fsa2-low
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      redis-pwd:
+        condition: service_healthy
+      squid:
+        condition: service_healthy
+    volumes:
+      - '${VOLUMES_DIR}/src/sp-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/log/:/var/log/app'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/fca-low/.env/fsa2-low.env'
+    tty: true
+    networks:
+      - public
+      - data
+    init: true
+    command: 'pm2 logs'
+
+  fsa3-low:
+    hostname: fsa3-low
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      redis-pwd:
+        condition: service_healthy
+      squid:
+        condition: service_healthy
+    volumes:
+      - '${VOLUMES_DIR}/src/sp-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/log/:/var/log/app'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/fca-low/.env/fsa3-low.env'
+    tty: true
+    networks:
+      - public
+      - data
+    init: true
+    command: 'pm2 logs'
+
+  fsa4-low:
+    hostname: fsa4-low
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      redis-pwd:
+        condition: service_healthy
+      squid:
+        condition: service_healthy
+    volumes:
+      - '${VOLUMES_DIR}/src/sp-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/log/:/var/log/app'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/fca-low/.env/fsa4-low.env'
+    tty: true
+    networks:
+      - public
+      - data
+    init: true
+    command: 'pm2 logs'
+
+  fsa5-low:
+    hostname: fsa5-low
+    image: ${FC_DOCKER_REGISTRY}/nodejs:${NODE_VERSION}-dev
+    user: ${CURRENT_UID}
+    working_dir: /var/www/app
+    depends_on:
+      redis-pwd:
+        condition: service_healthy
+      squid:
+        condition: service_healthy
+    volumes:
+      - '${VOLUMES_DIR}/src/sp-mock:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/log/:/var/log/app'
+      - '${VOLUMES_DIR}/.home:/home'
+      - '${VOLUMES_DIR}/ssl:/etc/ssl/docker_host:ro'
+    env_file:
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
+      - '${COMPOSE_DIR}/fca-low/.env/fsa5-low.env'
+    tty: true
+    networks:
+      - public
+      - data
+    init: true
+    command: 'pm2 logs'

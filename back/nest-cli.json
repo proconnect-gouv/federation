@@ -37,16 +37,7 @@
         ]
       }
     },
-    "mock-service-provider-fca-low": {
-      "type": "application",
-      "root": "instances/mock-service-provider-fca-low",
-      "entryFile": "main",
-      "sourceRoot": "instances/mock-service-provider-fca-low/src",
-      "compilerOptions": {
-        "tsConfigPath": "instances/mock-service-provider-fca-low/tsconfig.app.json",
-        "assets": ["../../../instances/mock-service-provider-fca-low/**/*.ejs"]
-      }
-    },
+
     "mock-identity-provider-fca-low": {
       "type": "application",
       "root": "instances/mock-identity-provider-fca-low",

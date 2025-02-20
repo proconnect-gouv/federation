@@ -28,6 +28,7 @@ This guide provides steps to run the ProConnect Fédération within a custom doc
 brew install bash
 brew install coreutils
 ```
+
 Install the latest version of bash.
 Install coreutils gives you access to the timeout function.
 
@@ -75,6 +76,7 @@ git clone ssh://git@gitlab.dev-franceconnect.fr:2222/france-connect/fc-apps.git
 cd $FC_ROOT/fc/docker/volumes/src
 ln -s $FC_ROOT/fc
 ln -s $FC_ROOT/fc-apps
+ln -s $FC_ROOT/fc/sp-mock
 ```
 
 - pull FC docker images, you will need to authenticate against the FC docker registry:
@@ -113,6 +115,7 @@ dks switch bdd-fca-low
 Then go to https://exploitation-fca-low.docker.dev-franceconnect.fr/login.
 
 Login with:
+
 - Username: `jean_moust`
 - Password: `georgesmoustaki`
 - TOTP: enter this secret in your totp app `KVKFKRCPNZQUYMLXOVYDSQKJKZDTSRLD`
@@ -142,6 +145,7 @@ Alternatively, you can use `dks log core-fca-low`.
 
 By default, only the core-fca service runs in watch mode.
 To apply changes to either the idp, sp or data provider, execute the following command:
+
 ```bash
 dks start fia1-low
 ```

@@ -1,5 +1,6 @@
 import type { Config } from 'jest';
 import { pathsToModuleNameMapper } from 'ts-jest';
+
 import { compilerOptions } from './tsconfig.json';
 
 const config: Config = {
@@ -9,7 +10,6 @@ const config: Config = {
   coveragePathIgnorePatterns: [
     'instances/.+/src/config/.+.ts',
     'instances/.+/src/main.ts',
-    'instances/mock-service-provider-fca-low/.+.ts',
     'instances/mock-identity-provider-fca-low/.+.ts',
     '.mocks/',
     '.+/index.ts',
