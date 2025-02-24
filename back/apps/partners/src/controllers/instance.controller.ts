@@ -105,7 +105,9 @@ export class InstanceController {
     @Session('PartnersAccount')
     sessionPartnersAccount: ISessionService<PartnersAccountSession>,
   ): Promise<FSA<FSAMeta, unknown>> {
-    const { accountId } = sessionPartnersAccount.get();
+    const {
+      identity: { id: accountId },
+    } = sessionPartnersAccount.get();
     const data = await this.form.fromFormValues(values);
     const { id: instanceId } = await this.instance.upsert({
       name: data.name,
@@ -151,7 +153,9 @@ export class InstanceController {
     @Session('PartnersAccount')
     sessionPartnersAccount: ISessionService<PartnersAccountSession>,
   ): Promise<FSA<FSAMeta, unknown>> {
-    const { accountId } = sessionPartnersAccount.get();
+    const {
+      identity: { id: accountId },
+    } = sessionPartnersAccount.get();
 
     const fullData = await this.form.fromFormValues(data, instanceId);
 
