@@ -1,21 +1,43 @@
 import { Expose } from 'class-transformer';
 import {
+  IsAscii,
   IsBoolean,
+  IsEmail,
   IsOptional,
   IsString,
   MaxLength,
   MinLength,
 } from 'class-validator';
 
-import { IsPhoneNumberFca } from '../validators/is-phone-number-fca.validator';
 import { IsSiret } from '../validators/is-siret-validator';
-import { MandatoryIdentityDto } from './mandatory-identity.dto';
 
-export class OidcIdentityDto extends MandatoryIdentityDto {
-  /**
-   * @todo #484 Faire un validator pour siren
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/484
-   */
+export class IdentityFromIdpDto {
+  @MinLength(1)
+  @IsAscii()
+  @Expose()
+  readonly sub!: string;
+
+  @IsString()
+  @MinLength(1)
+  @MaxLength(256)
+  @Expose()
+  readonly given_name: string;
+
+  @IsString()
+  @MinLength(1)
+  @MaxLength(256)
+  @Expose()
+  readonly usual_name: string;
+
+  @IsEmail()
+  @Expose()
+  readonly email: string;
+
+  @MinLength(1)
+  @IsAscii()
+  @Expose()
+  readonly uid: string;
+
   @IsString()
   @MinLength(1)
   @MaxLength(256)
@@ -23,12 +45,7 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
   @Expose()
   readonly siren?: string;
 
-  /**
-   * @todo #484 Faire un validator pour siren
-   * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/484
-   */
   @IsSiret()
-  @IsOptional()
   @Expose()
   readonly siret?: string;
 
@@ -46,7 +63,7 @@ export class OidcIdentityDto extends MandatoryIdentityDto {
   @Expose()
   readonly belonging_population?: string;
 
-  @IsPhoneNumberFca()
+  @IsString()
   @IsOptional()
   @Expose()
   readonly phone_number?: string;

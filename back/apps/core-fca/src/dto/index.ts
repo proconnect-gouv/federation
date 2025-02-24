@@ -10,5 +10,5 @@ export * from './get-login-session-dto';
 export * from './get-oidc-callback-session-dto';
 export * from './get-redirect-to-idp-session-dto';
 export * from './get-verify-session-dto';
-export * from './mandatory-identity.dto';
-export * from './oidc-identity.dto';
+export * from './identity-for-sp.dto';
+export * from './identity-from-idp.dto';

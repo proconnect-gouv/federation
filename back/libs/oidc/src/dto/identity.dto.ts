@@ -5,7 +5,7 @@ import { PivotIdentityDto } from './pivot-identity.dto';
 /**
  * @see https://openid.net/specs/openid-connect-core-1_0.html#rfc.section.5.1
  */
-export class OidcIdentityDto extends PivotIdentityDto {
+export class IdentityForSpDto extends PivotIdentityDto {
   @IsString()
   @IsOptional()
   sub?: string;

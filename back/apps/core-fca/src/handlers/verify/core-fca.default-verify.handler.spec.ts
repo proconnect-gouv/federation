@@ -41,6 +41,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
     uid: 'uidValue',
     usual_name: 'usalNameValue',
     email: 'myemail@mail.fr',
+    siret: '81801912700021',
   };
 
   const { sub: _sub, ...idpIdentityMockCleaned } = idpIdentityMock;
@@ -288,6 +289,7 @@ describe('CoreFcaDefaultVerifyHandler', () => {
           given_name: idpIdentityMock.given_name,
           uid: idpIdentityMock.uid,
           idp_id: sessionDataMock.idpId,
+          siret: idpIdentityMock.siret,
           idp_acr: sessionDataMock.idpAcr,
           email: idpIdentityMock.email,
           usual_name: idpIdentityMock.usual_name,

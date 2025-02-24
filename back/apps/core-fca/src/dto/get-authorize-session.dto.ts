@@ -10,7 +10,7 @@ import {
 
 import { PartialExcept } from '@fc/common';
 import { CoreBaseOidcClientSessionDto } from '@fc/core';
-import { IOidcIdentity, OidcIdentityDto } from '@fc/oidc';
+import { IdentityForSpDto, IOidcIdentity } from '@fc/oidc';
 
 import { AppSession } from './app-session.dto';
 import { CoreSessionDto } from './core-session.dto';
@@ -71,7 +71,7 @@ export class GetAuthorizeOidcClientSsoSession extends CoreBaseOidcClientSessionD
   // Identity: We MUST have an spIdentity (SSO)
   @IsObject()
   @Expose()
-  readonly spIdentity: OidcIdentityDto;
+  readonly spIdentity: IdentityForSpDto;
 }
 
 export class GetAuthorizeSessionDto {
