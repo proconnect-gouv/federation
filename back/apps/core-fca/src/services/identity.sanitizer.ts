@@ -7,10 +7,9 @@ import { validateDto } from '@fc/common';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 
-import { OidcIdentityDto } from '../dto';
+import { IdentityForSpDto, IdentityFromIdpDto } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
 import { NoDefaultSiretException } from '../exceptions/no-default-idp-siret.exception';
-import { IAgentIdentity } from '../interfaces';
 
 @Injectable()
 export class IdentitySanitizer {
@@ -20,9 +19,9 @@ export class IdentitySanitizer {
   ) {}
 
   async sanitize(
-    identity: OidcIdentityDto,
+    identity: IdentityFromIdpDto,
     idpId: string,
-  ): Promise<OidcIdentityDto> {
+  ): Promise<IdentityForSpDto> {
     const validatorOptions: ValidatorOptions = {
       forbidNonWhitelisted: true,
       forbidUnknownValues: true,
@@ -34,13 +33,13 @@ export class IdentitySanitizer {
 
     const errors = await validateDto(
       identity,
-      OidcIdentityDto,
+      IdentityForSpDto,
       validatorOptions,
       transformOptions,
     );
 
     if (errors.length === 0) {
-      return identity;
+      return identity as IdentityForSpDto;
     }
 
     return await this.handleErrors(errors, identity, idpId);
@@ -48,10 +47,11 @@ export class IdentitySanitizer {
 
   private async handleErrors(
     errors: any,
-    identity: IAgentIdentity,
+    identity: IdentityFromIdpDto,
     idpId: string,
-  ): Promise<IAgentIdentity> {
+  ): Promise<IdentityForSpDto> {
     this.logger.debug(errors, `Identity from "${idpId}" is invalid`);
+    const transformedIdentity = { ...identity };
 
     for (const error of errors) {
       /**
@@ -60,21 +60,21 @@ export class IdentitySanitizer {
        * to avoid to display an empty string
        */
       if (error.property === 'phone_number') {
-        delete identity.phone_number;
+        delete transformedIdentity.phone_number;
       } else if (error.property === 'siret') {
         /**
          * if there is an error with the siret returned by idp
          * we return the default siret from the current idp
          * ProConnect must always return a siret
          */
-        identity.siret = await this.sanitizeSiret(error, idpId);
+        transformedIdentity.siret = await this.sanitizeSiret(error, idpId);
       } else {
         this.logger.err(error, `Identity from "${idpId}" is invalid`);
         throw new CoreFcaInvalidIdentityException();
       }
     }
 
-    return identity;
+    return transformedIdentity as IdentityForSpDto;
   }
 
   private async sanitizeSiret(error: any, idpId: string): Promise<string> {

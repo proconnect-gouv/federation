@@ -9,7 +9,7 @@ import { LoggerService } from '@fc/logger';
 
 import { getLoggerMock } from '@mocks/logger';
 
-import { OidcIdentityDto } from '../dto';
+import { IdentityForSpDto } from '../dto';
 import { CoreFcaInvalidIdentityException } from '../exceptions';
 import { NoDefaultSiretException } from '../exceptions/no-default-idp-siret.exception';
 import { IdentitySanitizer } from './identity.sanitizer';
@@ -31,6 +31,7 @@ describe('IdentitySanitizer', () => {
     email: 'complete@identity.fr',
     usual_name: 'usual_name',
     uid: 'uid',
+    siret: validSiretMock,
   };
 
   const identityProviderAdapterMock = {
@@ -77,14 +78,14 @@ describe('IdentitySanitizer', () => {
       expect(res).toBe(identityMock);
     });
 
-    it('should validate the OidcIdentityDto with correct params', async () => {
+    it('should validate the IdentityFromIdpDto with correct params', async () => {
       // When
       await service.sanitize(identityMock, idpIdMock);
       // Then
       expect(FcCommon.validateDto).toHaveBeenCalledTimes(1);
       expect(FcCommon.validateDto).toHaveBeenCalledWith(
         identityMock,
-        OidcIdentityDto,
+        IdentityForSpDto,
         {
           forbidNonWhitelisted: true,
           forbidUnknownValues: true,
@@ -109,8 +110,8 @@ describe('IdentitySanitizer', () => {
       const emailIdentity = {
         email: '12345',
       };
-      const oidcIdentityDto = plainToInstance(OidcIdentityDto, emailIdentity);
-      const errors = await validate(oidcIdentityDto, {
+      const identityForSpDto = plainToInstance(IdentityForSpDto, emailIdentity);
+      const errors = await validate(identityForSpDto, {
         skipMissingProperties: true,
       });
       expect(errors.length).not.toBe(0);
@@ -169,22 +170,22 @@ describe('IdentitySanitizer', () => {
         organizational_unit:
           'MINISTERE INTERIEUR/DGPN/US REGROUPEMENT DES DZPN/US REGROUP. DIPN GC/DIPN77/CPN MELUN VAL DE SEINE',
       };
-      const oidcIdentityDto = plainToInstance(
-        OidcIdentityDto,
+      const identityForSpDto = plainToInstance(
+        IdentityForSpDto,
         organizationalUnitIdentity,
       );
-      const errors = await validate(oidcIdentityDto, {
+      const errors = await validate(identityForSpDto, {
         skipMissingProperties: true,
       });
       expect(errors.length).toBe(0);
     });
 
-    it('should failed if siren is empty string', async () => {
+    it('should fail if siren is empty string', async () => {
       const sirenIdentity = {
         siren: '',
       };
-      const oidcIdentityDto = plainToInstance(OidcIdentityDto, sirenIdentity);
-      const errors = await validate(oidcIdentityDto, {
+      const identityForSpDto = plainToInstance(IdentityForSpDto, sirenIdentity);
+      const errors = await validate(identityForSpDto, {
         skipMissingProperties: true,
       });
       expect(errors.length).not.toBe(0);
@@ -193,13 +194,12 @@ describe('IdentitySanitizer', () => {
       );
     });
 
-    // todo: check this 2 following siret tests, why an error?
     it('should failed if siret is empty string', async () => {
       const sirenIdentity = {
         siret: '',
       };
-      const oidcIdentityDto = plainToInstance(OidcIdentityDto, sirenIdentity);
-      const errors = await validate(oidcIdentityDto, {
+      const identityForSpDto = plainToInstance(IdentityForSpDto, sirenIdentity);
+      const errors = await validate(identityForSpDto, {
         skipMissingProperties: true,
       });
       expect(errors.length).not.toBe(0);
@@ -210,10 +210,23 @@ describe('IdentitySanitizer', () => {
       const siretIdentity = {
         siret: 1234,
       };
-      const oidcIdentityDto = plainToInstance(OidcIdentityDto, siretIdentity);
-      const errors = await validate(oidcIdentityDto, {
+      const identityForSpDto = plainToInstance(IdentityForSpDto, siretIdentity);
+      const errors = await validate(identityForSpDto, {
         skipMissingProperties: true,
       });
+      expect(errors.length).not.toBe(0);
+      expect(errors[0].constraints.isSiret).toContain(`Le siret est invalide.`);
+    });
+
+    it('should failed if siret is an empty property', async () => {
+      const { siret: _, ...identityWihoutSiret } = identityMock;
+
+      const identityForSpDto = plainToInstance(
+        IdentityForSpDto,
+        identityWihoutSiret,
+      );
+
+      const errors = await validate(identityForSpDto);
       expect(errors.length).not.toBe(0);
       expect(errors[0].constraints.isSiret).toContain(`Le siret est invalide.`);
     });
@@ -234,7 +247,7 @@ describe('IdentitySanitizer', () => {
       expect(FcCommon.validateDto).toHaveBeenCalledTimes(1);
       expect(FcCommon.validateDto).toHaveBeenCalledWith(
         identityMockWithCustomProperties,
-        OidcIdentityDto,
+        IdentityForSpDto,
         {
           forbidNonWhitelisted: true,
           forbidUnknownValues: true,

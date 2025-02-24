@@ -8,7 +8,7 @@ export interface IAgentIdentity {
   uid: string;
   email: string;
   siren?: string;
-  siret?: string;
+  siret: string;
   organizational_unit?: string;
   belonging_population?: string;
   phone_number?: string;

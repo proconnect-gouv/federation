@@ -38,7 +38,7 @@ import {
   GetOidcCallbackOidcClientSessionDto,
   GetOidcCallbackSessionDto,
   GetRedirectToIdpOidcClientSessionDto,
-  OidcIdentityDto,
+  IdentityFromIdpDto,
 } from '../dto';
 import { AppConfig } from '../dto/app-config.dto';
 import { RedirectToIdp } from '../dto/redirect-to-idp.dto';
@@ -313,7 +313,7 @@ export class OidcClientController {
     };
 
     const identity =
-      await this.oidcClient.getUserInfosFromProvider<OidcIdentityDto>(
+      await this.oidcClient.getUserInfosFromProvider<IdentityFromIdpDto>(
         userInfoParams,
         req,
       );

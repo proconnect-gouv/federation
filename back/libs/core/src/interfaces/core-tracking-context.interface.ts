@@ -1,4 +1,4 @@
-import { OidcIdentityDto } from '@fc/oidc';
+import { IdentityForSpDto } from '@fc/oidc';
 import { NetworkContextInterface } from '@fc/tracking-context';
 
 export interface ICoreTrackingContext {
@@ -24,7 +24,7 @@ export interface ICoreTrackingContext {
   readonly idpAcr?: string;
   readonly idpName?: string;
   readonly idpLabel?: string;
-  readonly idpIdentity?: OidcIdentityDto;
+  readonly idpIdentity?: IdentityForSpDto;
 
   readonly deviceTrusted?: boolean;
   readonly deviceIsSuspicious?: boolean;
