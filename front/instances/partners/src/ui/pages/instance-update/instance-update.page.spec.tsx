@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 
 import { type AnyObjectInterface, HeadingTag } from '@fc/common';
-import type { JSONFieldType } from '@fc/dto2form';
+import type { SchemaFieldType } from '@fc/dto2form';
 import { DTO2FormComponent } from '@fc/dto2form';
 import { t } from '@fc/i18n';
 
@@ -15,7 +15,7 @@ describe('InstanceUpdatePage', () => {
     // Given
     const submitHandlerMock = jest.fn();
     const initialValuesMock = Symbol('any-initial-values-mock') as unknown as AnyObjectInterface;
-    const schemaMock = Symbol('any-schema-mock') as unknown as JSONFieldType[];
+    const schemaMock = Symbol('any-schema-mock') as unknown as SchemaFieldType[];
 
     jest.mocked(useInstanceUpdate).mockReturnValueOnce({
       initialValues: initialValuesMock,

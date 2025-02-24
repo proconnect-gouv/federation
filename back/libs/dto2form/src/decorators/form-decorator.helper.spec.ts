@@ -1,5 +1,6 @@
 import * as ClassValidator from 'class-validator';
 
+import { Fields } from '../enums';
 import { convertRegExpToStrings } from '../helpers';
 import {
   FieldAttributes,
@@ -125,6 +126,55 @@ describe('FormDecoratorHelper', () => {
 
       // Then
       expect(result).toStrictEqual('');
+    });
+  });
+
+  describe('generateTextMissingAttributes', () => {
+    const defaultOrderMock = 1;
+    const defaultTypeMock = Fields.SECTION;
+
+    it('should generate text attributes with provided values', () => {
+      // Given
+      const attributes = {
+        order: 2,
+      } as FieldAttributesArguments;
+      const expectedAttributes = {
+        name: key,
+        type: defaultTypeMock,
+        order: attributes.order,
+      } as FieldAttributes;
+
+      // When
+      const result = FormDecoratorHelper.generateTextMissingAttributes(
+        key,
+        attributes,
+        defaultOrderMock,
+        defaultTypeMock,
+      );
+
+      // Then
+      expect(result).toStrictEqual(expectedAttributes);
+    });
+
+    it('should generate text attributes with default values', () => {
+      // Given
+      const attributes = {} as FieldAttributesArguments;
+      const expectedAttributes = {
+        name: key,
+        type: defaultTypeMock,
+        order: defaultOrderMock,
+      } as FieldAttributes;
+
+      // When
+      const result = FormDecoratorHelper.generateTextMissingAttributes(
+        key,
+        attributes,
+        defaultOrderMock,
+        defaultTypeMock,
+      );
+
+      // Then
+      expect(result).toStrictEqual(expectedAttributes);
     });
   });
 

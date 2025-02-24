@@ -44,16 +44,18 @@ export class FieldDto {
   @IsNotEmpty()
   readonly name: string;
 
+  @IsOptional()
   @IsBoolean()
-  readonly required: boolean;
+  readonly required?: boolean;
 
   @IsOptional()
   @IsNumber()
   readonly order?: number;
 
+  @IsOptional()
   @ValidateNested({ each: true })
   @Type(() => ValidatorDto)
-  readonly validators: ValidatorDto[];
+  readonly validators?: ValidatorDto[];
 
   @Optional()
   @ValidateNested({ each: true })

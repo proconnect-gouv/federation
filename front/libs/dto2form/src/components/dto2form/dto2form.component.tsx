@@ -7,12 +7,14 @@ import { FormComponent } from '@fc/forms';
 
 import { Options } from '../../enums';
 import { useFormPreSubmit } from '../../hooks';
-import type { DTO2FormConfig } from '../../interfaces';
-import type { JSONFieldType } from '../../types';
-import { DTO2FieldComponent } from '../dto2field/dto2field.component';
+import type { BaseAttributes, DTO2FormConfig, FieldAttributes } from '../../interfaces';
+import type { SchemaFieldType } from '../../types';
+import { DTO2InputComponent } from '../dto2input/dto2input.component';
+import { DTO2SectionComponent } from '../dto2section';
 
 interface DTO2FormComponentProps<T> extends FormInterface<T> {
-  schema: JSONFieldType[];
+  // @TODO this should be refactored
+  schema: BaseAttributes[];
 }
 
 export function DTO2FormComponent<T extends Record<string, unknown>>({
@@ -28,10 +30,18 @@ export function DTO2FormComponent<T extends Record<string, unknown>>({
   const preSubmitHandler = useFormPreSubmit(onSubmit);
 
   const fields = useMemo(() => {
-    const sorter = sortByKey<JSONFieldType>('order');
+    const sorter = sortByKey<SchemaFieldType>('order');
     return schema.sort(sorter).map((field) => {
+      // @TODO this should be refactored
+      // The way the section are built should be the same as the fields
+      const isSection = field.type === 'section';
       const key = `dto2form::${config.id}::field::${field.type}::${field.name}`;
-      return <DTO2FieldComponent key={key} field={field} />;
+      if (isSection) {
+        return <DTO2SectionComponent key={key} field={field} />;
+      }
+      // @TODO this should be refactored
+      const fieldObject = field as FieldAttributes;
+      return <DTO2InputComponent key={key} field={fieldObject} />;
     });
   }, [schema, config.id]);
 

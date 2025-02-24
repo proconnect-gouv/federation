@@ -21,11 +21,13 @@ describe('PartnersService', () => {
       validators: [{ name: 'isLength' }],
       name: 'nameMock1',
       label: 'nameMock1_label',
+      type: 'input',
     },
     {
       validators: [{ name: 'isFoo' }],
       name: 'nameMock2',
       label: 'knameMock2_label',
+      type: 'input',
     },
   ] as unknown as MetadataDtoInterface[];
 
@@ -49,13 +51,6 @@ describe('PartnersService', () => {
 
   describe('translation', () => {
     beforeEach(() => {
-      service['getTranslation'] = jest
-        .fn()
-        .mockReturnValueOnce('label nameMock1')
-        .mockReturnValueOnce('hint nameMock1')
-        .mockReturnValueOnce('label nameMock2')
-        .mockReturnValueOnce('hint nameMock2');
-
       service['getValidatorsWithErrorLabels'] = jest
         .fn()
         .mockReturnValueOnce({
@@ -70,7 +65,41 @@ describe('PartnersService', () => {
         });
     });
 
+    it('should call getTranslation once for text and return result', () => {
+      // Given
+      const payloadMock = [
+        {
+          name: 'nameMock1',
+          type: 'section',
+        },
+      ] as unknown as MetadataDtoInterface[];
+      const labelMock = Symbol('labelMock');
+
+      service['getTranslation'] = jest.fn().mockReturnValueOnce(labelMock);
+
+      const expected = [{ ...payloadMock[0], label: labelMock }];
+
+      // When
+      const result = service.translation(payloadMock);
+
+      // Then
+      expect(service['getTranslation']).toHaveBeenCalledTimes(1);
+      expect(service['getTranslation']).toHaveBeenCalledWith(
+        'label',
+        'nameMock1',
+      );
+      expect(result).toEqual(expected);
+    });
+
     it('should call getTranslation twice for label and hint', () => {
+      // Given
+      service['getTranslation'] = jest
+        .fn()
+        .mockReturnValueOnce('label nameMock1')
+        .mockReturnValueOnce('hint nameMock1')
+        .mockReturnValueOnce('label nameMock2')
+        .mockReturnValueOnce('hint nameMock2');
+
       // When
       const _result = service.translation(payloadMock);
 
@@ -118,11 +147,19 @@ describe('PartnersService', () => {
 
     it('should return a translated payload', () => {
       // Given
+      service['getTranslation'] = jest
+        .fn()
+        .mockReturnValueOnce('label nameMock1')
+        .mockReturnValueOnce('hint nameMock1')
+        .mockReturnValueOnce('label nameMock2')
+        .mockReturnValueOnce('hint nameMock2');
+
       const expected = [
         {
           label: 'label nameMock1',
           hint: 'hint nameMock1',
           name: 'nameMock1',
+          type: 'input',
           validators: {
             errorLabel: 'errorLabel nameMock1',
             name: 'isLength',
@@ -133,6 +170,7 @@ describe('PartnersService', () => {
           label: 'label nameMock2',
           hint: 'hint nameMock2',
           name: 'nameMock2',
+          type: 'input',
           validators: {
             errorLabel: 'errorLabel nameMock2',
             name: 'nameMock2',
@@ -140,6 +178,7 @@ describe('PartnersService', () => {
           },
         },
       ];
+
       // When
       const result = service.translation(payloadMock);
 

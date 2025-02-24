@@ -9,8 +9,7 @@ import {
 } from '@entities/typeorm';
 
 import { uuid } from '@fc/common';
-
-import { ServiceProviderInstanceVersionDto } from '../dto';
+import { OidcClientInterface } from '@fc/service-provider';
 
 @Injectable()
 export class PartnersServiceProviderInstanceVersionService {
@@ -20,7 +19,7 @@ export class PartnersServiceProviderInstanceVersionService {
   ) {}
 
   async create(
-    version: ServiceProviderInstanceVersionDto,
+    version: OidcClientInterface,
     instanceId: uuid,
     publicationStatus: PublicationStatusEnum = PublicationStatusEnum.DRAFT,
   ): Promise<PartnersServiceProviderInstanceVersion> {

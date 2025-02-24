@@ -1,4 +1,4 @@
-import type { JSONFieldType } from '../../types';
+import type { SchemaFieldType } from '../../types';
 import { parseInitialValues } from './parse-initial-values.helper';
 
 describe('parseInitialValues', () => {
@@ -9,7 +9,7 @@ describe('parseInitialValues', () => {
     { initialValue: ['any', 'string', 'array'], name: 'Jolene' },
     { initialValue: 123, name: 'John' },
     { initialValue: { a: 1, b: 3, c: 2 }, name: 'James' },
-  ] as JSONFieldType[];
+  ] as SchemaFieldType[];
 
   it('should return the initialValues, when no values are provided', () => {
     // When
@@ -43,5 +43,20 @@ describe('parseInitialValues', () => {
       John: undefined,
       Jolene: ['mock', 'values'],
     });
+  });
+
+  it('should return the an empty object, when values do not have any initial value', () => {
+    // When
+    const result = parseInitialValues(
+      [{ name: 'Jolene' }, { name: 'John' }, { name: 'James' }] as SchemaFieldType[],
+      {
+        James: { a: 3, c: { d: 'e', f: 'g' } },
+        John: undefined,
+        Jolene: ['mock', 'values'],
+      },
+    );
+
+    // Then
+    expect(result).toEqual({});
   });
 });

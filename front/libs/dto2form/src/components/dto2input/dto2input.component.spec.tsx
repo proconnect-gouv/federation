@@ -4,11 +4,11 @@ import { ConfigService } from '@fc/config';
 import { ArrayField, ChoicesField, FieldTypes, InputField, SelectField } from '@fc/forms';
 
 import { useFieldValidate } from '../../hooks';
-import { DTO2FieldComponent } from './dto2field.component';
+import { DTO2InputComponent } from './dto2input.component';
 
 jest.mock('../../hooks/field-validate/field-validate.hook');
 
-describe('DTO2FieldComponent', () => {
+describe('DTO2InputComponent', () => {
   // Given
   const maxCharsMock = Symbol('maxChars') as unknown as number;
   const readonlyMock = Symbol('readonly') as unknown as boolean;
@@ -42,7 +42,7 @@ describe('DTO2FieldComponent', () => {
 
   it('should call useFieldValidate hook', () => {
     // When
-    render(<DTO2FieldComponent field={{ ...fieldMock, type: FieldTypes.TEXT }} />);
+    render(<DTO2InputComponent field={{ ...fieldMock, type: FieldTypes.TEXT }} />);
 
     // Then
     expect(useFieldValidate).toHaveBeenCalledOnce();
@@ -56,7 +56,7 @@ describe('DTO2FieldComponent', () => {
   it('should match the snapshot, should create an InputField', () => {
     // When
     const { container } = render(
-      <DTO2FieldComponent field={{ ...fieldMock, type: FieldTypes.TEXT }} />,
+      <DTO2InputComponent field={{ ...fieldMock, type: FieldTypes.TEXT }} />,
     );
 
     // Then
@@ -99,7 +99,7 @@ describe('DTO2FieldComponent', () => {
 
     // When
     render(
-      <DTO2FieldComponent
+      <DTO2InputComponent
         field={{ ...fieldMock, options: optionsMock, type: FieldTypes.SELECT }}
       />,
     );
@@ -142,7 +142,7 @@ describe('DTO2FieldComponent', () => {
     const radioFieldMock = { ...fieldMock, options: optionsMock, type: FieldTypes.RADIO };
 
     // When
-    render(<DTO2FieldComponent field={radioFieldMock} />);
+    render(<DTO2InputComponent field={radioFieldMock} />);
 
     // Then
     expect(ChoicesField).toHaveBeenCalledOnce();
@@ -182,7 +182,7 @@ describe('DTO2FieldComponent', () => {
     const checkboxFieldMock = { ...fieldMock, options: optionsMock, type: FieldTypes.CHECKBOX };
 
     // When
-    render(<DTO2FieldComponent field={checkboxFieldMock} />);
+    render(<DTO2InputComponent field={checkboxFieldMock} />);
 
     // Then
     expect(ChoicesField).toHaveBeenCalledOnce();
@@ -212,7 +212,7 @@ describe('DTO2FieldComponent', () => {
     const arrayFieldMock = { ...fieldMock, array: true, type: FieldTypes.TEXT };
 
     // When
-    render(<DTO2FieldComponent field={arrayFieldMock} />);
+    render(<DTO2InputComponent field={arrayFieldMock} />);
 
     // Then
     expect(ArrayField).toHaveBeenCalledOnce();
@@ -242,7 +242,7 @@ describe('DTO2FieldComponent', () => {
     jest.mocked(ConfigService.get).mockReturnValueOnce({ validateOnFieldChange: false });
 
     // When
-    render(<DTO2FieldComponent field={{ ...fieldMock, type: FieldTypes.TEXT }} />);
+    render(<DTO2InputComponent field={{ ...fieldMock, type: FieldTypes.TEXT }} />);
 
     // Then
     expect(useFieldValidate).toHaveBeenCalledOnce();

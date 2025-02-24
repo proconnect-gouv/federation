@@ -17,6 +17,14 @@ export const frFR: I18nTranslationsMapType = {
   ...frSession,
   ...frViewTemplates,
 
+  // form text
+  'Form.label.spInformationSection':
+    '1. Informations sur votre Fournisseur de Service',
+  'Form.label.spConfigurationSection':
+    '2. Configuration de votre Fournisseur de Service',
+  'Form.label.subSection':
+    '3. Gestion des subs pour votre Fournisseur de Service',
+
   // form create instance label
   'Form.label.name': 'Nom de l’instance',
   'Form.label.client_id': 'Client ID',

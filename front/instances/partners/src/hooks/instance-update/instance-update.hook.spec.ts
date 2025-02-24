@@ -2,7 +2,7 @@ import { renderHook } from '@testing-library/react';
 import { useLoaderData, useNavigate, useParams, useRouteLoaderData } from 'react-router-dom';
 
 import type { VersionInterface } from '@fc/core-partners';
-import { type JSONFieldType, parseInitialValues } from '@fc/dto2form';
+import { parseInitialValues, type SchemaFieldType } from '@fc/dto2form';
 import type { HttpClientDataInterface } from '@fc/http-client';
 
 import { InstancesService } from '../../services';
@@ -16,7 +16,7 @@ describe('useInstanceUpdate', () => {
   const navigateMock = jest.fn();
   const instanceIdMock = 'any-instanceId-mock';
   const paramsMock = { instanceId: instanceIdMock };
-  const schemaMock = Symbol('schema-mock') as unknown as JSONFieldType[];
+  const schemaMock = Symbol('schema-mock') as unknown as SchemaFieldType[];
   const versionMock = Symbol('data-mock') as unknown as VersionInterface;
   const payloadMock = {
     name: 'any-name-mock',
