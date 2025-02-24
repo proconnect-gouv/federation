@@ -1,7 +1,8 @@
+import has from 'lodash.has';
 import { useCallback } from 'react';
 import { useNavigate, useRouteLoaderData } from 'react-router-dom';
 
-import { type JSONFieldType, parseInitialValues } from '@fc/dto2form';
+import { parseInitialValues, type SchemaFieldType } from '@fc/dto2form';
 import type { HttpClientDataInterface } from '@fc/http-client';
 
 import { RouteLoaderDataIds, SubmitTypes, SubmitTypesMessage } from '../../enums';
@@ -9,11 +10,12 @@ import { InstancesService } from '../../services';
 
 export const useInstanceCreate = () => {
   const navigate = useNavigate();
-  const jsonSchema = useRouteLoaderData(RouteLoaderDataIds.VERSION_SCHEMA) as JSONFieldType[];
+  const jsonSchema = useRouteLoaderData(RouteLoaderDataIds.VERSION_SCHEMA) as SchemaFieldType[];
 
   // @NOTE Temporary solution to resolve client id/secre display
   // While creating a new instance
-  const schema = jsonSchema.filter((field) => !field.readonly);
+  // @NOTE section are filtered too
+  const schema = jsonSchema.filter((field) => !has(field, 'readonly') || !field.readonly);
 
   const initialValues = parseInitialValues(jsonSchema, {});
 

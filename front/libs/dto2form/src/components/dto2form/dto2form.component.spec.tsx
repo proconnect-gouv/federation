@@ -6,11 +6,14 @@ import { ConfigService } from '@fc/config';
 import { FieldTypes, FormComponent } from '@fc/forms';
 
 import { useFormPreSubmit } from '../../hooks';
-import type { JSONFieldType } from '../../types';
+import type { SchemaFieldType } from '../../types';
+import { DTO2InputComponent } from '../dto2input';
+import { DTO2SectionComponent } from '../dto2section';
 import { DTO2FormComponent } from './dto2form.component';
 
 // Given
-jest.mock('../dto2field/dto2field.component');
+jest.mock('../dto2input/dto2input.component');
+jest.mock('../dto2section/dto2section.component');
 jest.mock('../../hooks/form-pre-submit/form-pre-submit.hook');
 
 describe('DTO2FormComponent', () => {
@@ -20,9 +23,10 @@ describe('DTO2FormComponent', () => {
   const preSubmitMock = jest.fn();
   const onValidateMock = jest.fn();
   const schemaMock = [
-    { name: 'any-name-1-mock', order: 1, type: FieldTypes.TEXT } as unknown as JSONFieldType,
-    { name: 'any-name-3-mock', order: 3, type: FieldTypes.TEXT } as unknown as JSONFieldType,
-    { name: 'any-name-2-mock', order: 2, type: FieldTypes.TEXT } as unknown as JSONFieldType,
+    { name: 'any-name-1-mock', order: 1, type: FieldTypes.TEXT } as unknown as SchemaFieldType,
+    { name: 'any-name-2-mock', order: 3, type: FieldTypes.TEXT } as unknown as SchemaFieldType,
+    { name: 'any-section-mock', order: 2, type: 'section' } as unknown as SchemaFieldType,
+    { name: 'any-name-3-mock', order: 4, type: FieldTypes.TEXT } as unknown as SchemaFieldType,
   ];
   const configMock = {
     id: expect.any(String),
@@ -122,7 +126,15 @@ describe('DTO2FormComponent', () => {
     // Then
     expect(sortByKey).toHaveBeenCalledOnce();
     expect(sortByKey).toHaveBeenCalledWith('order');
-    expect(orderSorterMock).toHaveBeenCalledTimes(2);
+    expect(orderSorterMock).toHaveBeenCalledTimes(3);
+    // input
+    expect(DTO2InputComponent).toHaveBeenCalledTimes(3);
+    expect(DTO2InputComponent).toHaveBeenNthCalledWith(1, { field: schemaMock[0] }, {});
+    expect(DTO2InputComponent).toHaveBeenNthCalledWith(2, { field: schemaMock[1] }, {});
+    expect(DTO2InputComponent).toHaveBeenNthCalledWith(3, { field: schemaMock[3] }, {});
+    // section
+    expect(DTO2SectionComponent).toHaveBeenCalledOnce();
+    expect(DTO2SectionComponent).toHaveBeenNthCalledWith(1, { field: schemaMock[2] }, {});
   });
 
   it('should call FormComponent without the validate function when DTO2Form.validateOnSubmit is false', () => {

@@ -12,6 +12,7 @@ import {
   Form,
   FormDtoBase,
   Input,
+  Text,
 } from '@fc/dto2form';
 import {
   OidcClientInterface,
@@ -25,7 +26,7 @@ export class ServiceProviderInstanceVersionDto
 {
   @Input({
     required: true,
-    order: 0,
+    order: 1,
     validators: [$IsString(), $IsLength({ max: 256 })],
   })
   @Expose()
@@ -33,7 +34,7 @@ export class ServiceProviderInstanceVersionDto
 
   @Input({
     readonly: true,
-    order: 1,
+    order: 2,
     validators: [$IsString()],
   })
   @Expose()
@@ -41,23 +42,35 @@ export class ServiceProviderInstanceVersionDto
 
   @Input({
     readonly: true,
-    order: 2,
+    order: 3,
     validators: [$IsString()],
   })
   @Expose()
   readonly client_secret: string;
 
+  @Text({
+    order: 10,
+  })
+  @Expose()
+  readonly spInformationSection: string;
+
   @Input({
-    order: 3,
+    order: 11,
     validators: [$IsLength({ max: 7 }), $IsNumeric()],
   })
   @Expose()
   readonly signupId: string;
 
+  @Text({
+    order: 20,
+  })
+  @Expose()
+  readonly spConfigurationSection: string;
+
   @Input({
     required: true,
     array: true,
-    order: 4,
+    order: 21,
     validators: [$IsWebsiteURL(), $IsLength({ max: 1024 })],
   })
   @Expose()
@@ -70,7 +83,7 @@ export class ServiceProviderInstanceVersionDto
   @Input({
     required: true,
     array: true,
-    order: 5,
+    order: 22,
     validators: [$IsRedirectURL(), $IsLength({ max: 1024 })],
   })
   @Expose()
@@ -83,15 +96,15 @@ export class ServiceProviderInstanceVersionDto
   @Input({
     required: true,
     array: true,
-    order: 6,
+    order: 23,
     validators: [$IsRedirectURL(), $IsLength({ max: 1024 })],
   })
   @Expose()
   readonly post_logout_redirect_uris: string[];
 
   @Input({
-    order: 7,
     array: true,
+    order: 24,
     validators: [$IsIpAddressesAndRange()],
   })
   @Expose()
@@ -99,14 +112,20 @@ export class ServiceProviderInstanceVersionDto
 
   @Input({
     required: true,
-    order: 9,
+    order: 25,
     validators: [$IsString(), $IsSignedResponseAlg()],
   })
   @Expose()
   readonly id_token_signed_response_alg: SignatureAlgorithmEnum;
 
+  @Text({
+    order: 30,
+  })
+  @Expose()
+  readonly subSection: string;
+
   @Input({
-    order: 11,
+    order: 31,
     validators: [$IsLength({ max: 64, min: 36 }), $Matches(/^[a-zA-Z0-9-]+$/)],
   })
   @Expose()

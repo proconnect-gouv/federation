@@ -49,9 +49,11 @@ describe('useInstanceCreate', () => {
     // When
     const { result } = renderHook(() => useInstanceCreate());
 
-    expect(result.current.schema).toHaveLength(2);
+    expect(result.current.schema).toHaveLength(4);
     expect(result.current.schema[0].name).toBe('any-name-mock-3');
-    expect(result.current.schema[1].name).toBe('any-name-mock-2');
+    expect(result.current.schema[1].name).toBe('any-section-name-mock-2');
+    expect(result.current.schema[2].name).toBe('any-name-mock-2');
+    expect(result.current.schema[3].name).toBe('any-section-name-mock-999999999999999');
   });
 
   describe('The submit function', () => {

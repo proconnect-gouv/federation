@@ -6,11 +6,11 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm';
 import { PartnersServiceProviderInstanceVersion } from '@entities/typeorm';
 
 import { LoggerService } from '@fc/logger';
+import { OidcClientInterface } from '@fc/service-provider';
 
 import { getLoggerMock } from '@mocks/logger';
 import { getRepositoryMock, resetRepositoryMock } from '@mocks/typeorm';
 
-import { ServiceProviderInstanceVersionDto } from '../dto';
 import { PartnersServiceProviderInstanceVersionService } from './partners-service-provider-instance-version.service';
 
 jest.mock('@fc/access-control');
@@ -24,7 +24,7 @@ describe('PartnersServiceProviderInstanceVersionService', () => {
 
   const idMock = 'id';
   const versionMock = {} as unknown as PartnersServiceProviderInstanceVersion;
-  const versionDataMock = {} as unknown as ServiceProviderInstanceVersionDto;
+  const versionDataMock = {} as unknown as OidcClientInterface;
 
   beforeEach(async () => {
     jest.resetAllMocks();

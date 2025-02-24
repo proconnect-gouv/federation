@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 
 import {
+  Fields,
   MetadataDtoInterface,
   MetadataDtoValidatorsInterface,
   ValidatorType,
@@ -16,16 +17,20 @@ export class PartnersI18nService {
   public translation(payload: MetadataDtoInterface[]): MetadataDtoInterface[] {
     return payload.map((item) => {
       const label = this.getTranslation('label', item.name);
-      const hint = this.getTranslation('hint', item.name);
+      const commonFields = { ...item, label };
 
+      if (item.type === Fields.SECTION) {
+        return commonFields;
+      }
+
+      const hint = this.getTranslation('hint', item.name);
       const validators = this.getValidatorsWithErrorLabels(
         item.validators,
         item.name,
       );
 
       return {
-        ...item,
-        label,
+        ...commonFields,
         hint,
         validators,
       };

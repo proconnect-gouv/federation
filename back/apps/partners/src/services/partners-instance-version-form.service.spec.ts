@@ -35,7 +35,7 @@ describe('PartnersInstanceVersionFormService', () => {
     credentialsBytesLength: credentialsBytesLengthMock,
   };
 
-  const databaseVersionMock: ServiceProviderInstanceVersionDto = {
+  const databaseVersionMock = {
     name: 'instance name',
     entityId: 'entityId from database',
     client_id: 'clientIdMock from database',
@@ -47,9 +47,9 @@ describe('PartnersInstanceVersionFormService', () => {
     post_logout_redirect_uris: ['https://site.fr/logout'],
     IPServerAddressesAndRanges: [],
     ...configDataMock,
-  };
+  } as unknown as ServiceProviderInstanceVersionDto;
 
-  const formVersionMock: ServiceProviderInstanceVersionDto = getTransformed(
+  const formVersionMock = getTransformed(
     {
       name: 'instance name',
       entityId: 'entityId from form',
@@ -63,7 +63,7 @@ describe('PartnersInstanceVersionFormService', () => {
       IPServerAddressesAndRanges: [],
     },
     ServiceProviderInstanceVersionDto,
-  );
+  ) as unknown as ServiceProviderInstanceVersionDto;
 
   const cryptoMock = {
     genRandomString: jest.fn(),

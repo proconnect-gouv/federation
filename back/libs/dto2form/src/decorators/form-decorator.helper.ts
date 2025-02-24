@@ -6,6 +6,7 @@ import {
   FieldAttributesArguments,
   FieldValidator,
   FieldValidatorBase,
+  TextAttributes,
 } from '../interfaces';
 
 export class FormDecoratorHelper {
@@ -33,6 +34,19 @@ export class FormDecoratorHelper {
 
       return validator;
     }) as [FieldValidator, ...FieldValidator[]];
+  }
+
+  static generateTextMissingAttributes(
+    key: string,
+    attributes: Pick<FieldAttributesArguments, 'order'>,
+    defaultOrder: number,
+    defaultType: string,
+  ): TextAttributes {
+    return {
+      name: key,
+      type: defaultType,
+      order: attributes.order || defaultOrder,
+    };
   }
 
   static generateFieldMissingAttributes<T extends FieldAttributes>(

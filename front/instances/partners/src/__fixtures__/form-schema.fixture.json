@@ -64,6 +64,12 @@
     "readonly": false
   },
   {
+    "label": "any-section-label-mock-2",
+    "order": 2,
+    "type": "section",
+    "name": "any-section-name-mock-2"
+  },
+  {
     "required": true,
     "order": 2,
     "validators": [
@@ -94,5 +100,11 @@
     "label": "any-label-mock-2",
     "hint": "any-hint-mock-2",
     "readonly": false
+  },
+  {
+    "label": "any-section-label-mock-999999999999999",
+    "order": 999999999999999,
+    "type": "section",
+    "name": "any-section-name-mock-999999999999999"
   }
 ]

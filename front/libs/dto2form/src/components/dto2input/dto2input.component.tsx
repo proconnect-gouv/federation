@@ -6,14 +6,13 @@ import { ArrayField } from '@fc/forms';
 
 import { FieldsCommponentMap, Options } from '../../enums';
 import { useFieldValidate } from '../../hooks';
-import type { DTO2FormConfig } from '../../interfaces';
-import type { JSONFieldType } from '../../types';
+import type { DTO2FormConfig, FieldAttributes } from '../../interfaces';
 
-interface DTO2FieldComponentProps {
-  field: JSONFieldType;
+interface DTO2InputComponentProps {
+  field: FieldAttributes;
 }
 
-export const DTO2FieldComponent = React.memo(({ field }: DTO2FieldComponentProps) => {
+export const DTO2InputComponent = React.memo(({ field }: DTO2InputComponentProps) => {
   // @NOTE Should we use the flag into the useFieldValidate hook ?
   // Or into fields subscription
   // @SEE https://final-form.org/docs/react-final-form/types/FieldProps#subscription
@@ -60,9 +59,11 @@ export const DTO2FieldComponent = React.memo(({ field }: DTO2FieldComponentProps
     value,
   };
 
+  // @TODO create a array field into FieldTypes
+  // get the component using the same cas as others components
   const Component = array ? ArrayField : FieldsCommponentMap[type];
 
   return <Component choices={choices} config={config} />;
 });
 
-DTO2FieldComponent.displayName = 'DTO2FieldComponent';
+DTO2InputComponent.displayName = 'DTO2InputComponent';

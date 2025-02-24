@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import type { JSONFieldType } from '@fc/dto2form';
+import type { SchemaFieldType } from '@fc/dto2form';
 import { DTO2FormComponent } from '@fc/dto2form';
 import { t } from '@fc/i18n';
 
@@ -13,7 +13,7 @@ describe('InstanceCreatePage', () => {
   it('should match the snapshot', () => {
     // Given
     const submitHandlerMock = jest.fn();
-    const schemaMock = Symbol('any-schema-mock') as unknown as JSONFieldType[];
+    const schemaMock = Symbol('any-schema-mock') as unknown as SchemaFieldType[];
     const initialValuesMock = Symbol('any-initial-values-mock') as unknown as Record<
       string,
       string | string[]
