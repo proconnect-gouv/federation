@@ -8,8 +8,13 @@
     <title>Erreur</title>
   </head>
   <body>
+    <%- include('includes/skiplinks.ejs') %>
     <%- include('includes/header.ejs') %>
-    <main class="fr-container fr-grid-row fr-grid-row--center" role="main">
+    <main
+      class="fr-container fr-grid-row fr-grid-row--center"
+      role="main"
+      id="content"
+    >
       <section data-testid="error-section" class="fr-col-lg-10 fr-col-md-10">
         <%- include('pages/error/error.content.ejs') %>
       </section>
