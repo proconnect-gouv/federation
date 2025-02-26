@@ -44,8 +44,6 @@ export const AlertComponent = jest.fn(({ children }) => (
   </div>
 ));
 
-export const AlertComponentV2 = jest.fn(() => <div data-mockid="AlertComponentV2" />);
-
 export const AccordionComponent = jest.fn(({ children }) => (
   <div data-mockid="AccordionComponent">
     <h3>AccordionComponent</h3>

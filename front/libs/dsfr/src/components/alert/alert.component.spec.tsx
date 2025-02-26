@@ -4,15 +4,15 @@ import { EventTypes, HeadingTag } from '@fc/common';
 import { t } from '@fc/i18n';
 
 import { Sizes } from '../../enums';
-import { AlertComponentV2 } from './alert-v2.component';
+import { AlertComponent } from './alert.component';
 
-describe('AlertComponentV2', () => {
+describe('AlertComponent', () => {
   it('should match the snapshot with default values', () => {
     // Given
     jest.mocked(t).mockReturnValueOnce('DSFR.alert.close.mock_value');
 
     // When
-    const { container, getByRole } = render(<AlertComponentV2 />);
+    const { container, getByRole } = render(<AlertComponent />);
 
     // Then
     expect(() => getByRole('button')).toThrow();
@@ -32,17 +32,17 @@ describe('AlertComponentV2', () => {
 
     // When
     const { container, getByRole, getByText, getByTitle } = render(
-      <AlertComponentV2
+      <AlertComponent
         noRole
         className="any-custom-class-mock"
         dataTestId="any-data-test-id-mock"
-        description={<p className="any-description-class-mock">any-description-value-mock</p>}
         heading={HeadingTag.H2}
         size={Sizes.MEDIUM}
         title="any-title-mock"
         type={EventTypes.ERROR}
-        onClose={onCloseMock}
-      />,
+        onClose={onCloseMock}>
+        <p className="any-description-class-mock">any-description-value-mock</p>
+      </AlertComponent>,
     );
     const titleElt = getByText('any-title-mock');
     const descriptionElt = getByText('any-description-value-mock');
@@ -74,7 +74,7 @@ describe('AlertComponentV2', () => {
   it('should match the snapshot, when size is small, title should not be displayed', () => {
     // When
     const { container, getByText } = render(
-      <AlertComponentV2 size={Sizes.SMALL} title="any-title-mock" />,
+      <AlertComponent size={Sizes.SMALL} title="any-title-mock" />,
     );
 
     // Then

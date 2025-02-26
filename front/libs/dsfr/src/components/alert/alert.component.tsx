@@ -1,4 +1,5 @@
 import classnames from 'classnames';
+import type { PropsWithChildren } from 'react';
 import React from 'react';
 
 import { EventTypes, HeadingTag, type PropsWithClassName } from '@fc/common';
@@ -6,7 +7,7 @@ import { t } from '@fc/i18n';
 
 import { Sizes } from '../../enums';
 
-interface AlertComponentV2Props extends PropsWithClassName {
+interface AlertComponentV2Props extends PropsWithClassName, PropsWithChildren {
   // @NOTE [DSFR] attribute role="alert"
   // - should be defined if the Component is injected dynamicly into the page
   // - should NOT be defined if the Component is not injected dynamicly into the page
@@ -14,18 +15,17 @@ interface AlertComponentV2Props extends PropsWithClassName {
   size?: Omit<Sizes, Sizes.LARGE>;
   type?: EventTypes;
   title?: string;
-  description?: React.ReactNode | undefined;
   // @NOTE TS Omit(H1) issued with HeadingTag's type
   heading?: HeadingTag.H2 | HeadingTag.H3 | HeadingTag.H4 | HeadingTag.H5 | HeadingTag.H6;
   onClose?: () => void;
   dataTestId?: string;
 }
 
-export const AlertComponentV2 = React.memo(
+export const AlertComponent = React.memo(
   ({
+    children: description,
     className,
-    dataTestId = 'AlertComponentV2',
-    description,
+    dataTestId = 'AlertComponent',
     heading: Heading = HeadingTag.H3,
     noRole = false,
     onClose = undefined,
@@ -61,4 +61,4 @@ export const AlertComponentV2 = React.memo(
   },
 );
 
-AlertComponentV2.displayName = 'AlertComponentV2';
+AlertComponent.displayName = 'AlertComponent';
