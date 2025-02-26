@@ -27,7 +27,7 @@ export class FormDecoratorHelper {
     return validators.map((validator: FieldValidatorBase) => {
       const finalValidator = validator as FieldValidator;
 
-      finalValidator.errorLabel = `${validator.name}_error`;
+      finalValidator.errorMessage = `${validator.name}_error`;
       finalValidator.validationArgs = convertRegExpToStrings(
         validator.validationArgs,
       );
@@ -88,7 +88,7 @@ export class FormDecoratorHelper {
     if (attributes.required) {
       const requiredFieldValidator = {
         name: 'isFilled',
-        errorLabel: `isFilled_error`,
+        errorMessage: `isFilled_error`,
         validationArgs: [],
       };
       attributes.validators.unshift(requiredFieldValidator);

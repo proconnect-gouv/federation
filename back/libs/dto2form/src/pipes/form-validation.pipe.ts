@@ -102,7 +102,7 @@ export class FormValidationPipe implements PipeTransform {
     if (!fieldMetadata) {
       fieldErrors.validators.push({
         name,
-        errorLabel: `${name}_invalidKey_error`,
+        errorMessage: `${name}_invalidKey_error`,
         validationArgs: [],
       });
       return fieldErrors;
@@ -206,7 +206,7 @@ export class FormValidationPipe implements PipeTransform {
     if (!valid) {
       errors.push({
         name: validator.name,
-        errorLabel: validator.errorLabel,
+        errorMessage: validator.errorMessage,
         validationArgs: validator.validationArgs,
       });
     }
@@ -303,7 +303,7 @@ export class FormValidationPipe implements PipeTransform {
         validators: [
           {
             name: 'isFilled',
-            errorLabel: `isFilled_error`,
+            errorMessage: `isFilled_error`,
             validationArgs: [],
           },
         ],

@@ -221,12 +221,12 @@ describe('FormValidationExceptionFilter', () => {
           validators: [
             {
               name: 'isRequired',
-              errorLabel: 'This field is required',
+              errorMessage: 'This field is required',
               validationArgs: [],
             },
             {
               name: 'isLength',
-              errorLabel: 'Must be between 3 and 10 characters',
+              errorMessage: 'Must be between 3 and 10 characters',
               validationArgs: [],
             },
           ],
@@ -236,7 +236,7 @@ describe('FormValidationExceptionFilter', () => {
           validators: [
             {
               name: 'isEmail',
-              errorLabel: 'Must be a valid email',
+              errorMessage: 'Must be a valid email',
               validationArgs: [],
             },
           ],
@@ -266,12 +266,12 @@ describe('FormValidationExceptionFilter', () => {
           validators: [
             {
               name: 'isRequired',
-              errorLabel: 'This field is required',
+              errorMessage: 'This field is required',
               validationArgs: [],
             },
             {
               name: 'isLength',
-              errorLabel: 'Must be between 3 and 10 characters',
+              errorMessage: 'Must be between 3 and 10 characters',
               validationArgs: [],
             },
           ],
@@ -334,18 +334,18 @@ describe('FormValidationExceptionFilter', () => {
       )[] = [
         {
           name: 'isRequired',
-          errorLabel: 'This field is required',
+          errorMessage: 'This field is required',
           validationArgs: [],
         },
         [
           {
             name: 'isLength',
-            errorLabel: 'Must be between 3 and 10 characters',
+            errorMessage: 'Must be between 3 and 10 characters',
             validationArgs: [],
           },
           {
             name: 'isEmail',
-            errorLabel: 'Must be a valid email',
+            errorMessage: 'Must be a valid email',
             validationArgs: [],
           },
         ],
@@ -380,11 +380,11 @@ describe('FormValidationExceptionFilter', () => {
   });
 
   describe('extractErrorLabel', () => {
-    it('should return the errorLabel for a single validator', () => {
+    it('should return the errorMessage for a single validator', () => {
       // Given
       const validatorMock: MetadataDtoValidatorsInterface = {
         name: 'isRequired',
-        errorLabel: 'This field is required',
+        errorMessage: 'This field is required',
         validationArgs: [],
       };
 
@@ -400,12 +400,12 @@ describe('FormValidationExceptionFilter', () => {
       const validatorMock: MetadataDtoValidatorsInterface[] = [
         {
           name: 'isRequired',
-          errorLabel: 'This field is required',
+          errorMessage: 'This field is required',
           validationArgs: [],
         },
         {
           name: 'isLength',
-          errorLabel: 'Must be between 3 and 10 characters',
+          errorMessage: 'Must be between 3 and 10 characters',
           validationArgs: [],
         },
       ];

@@ -69,7 +69,7 @@ export class PartnersI18nService {
     validator: MetadataDtoValidatorsInterface,
     name: string,
   ): MetadataDtoValidatorsInterface {
-    let errorLabel: string;
+    let errorMessage: string;
 
     if (validator.name === 'isLength') {
       const { suffix, options } = this.generateI18nIsLengthParams(
@@ -79,16 +79,16 @@ export class PartnersI18nService {
         validator.validationArgs[0] as unknown as Record<string, unknown>,
       );
 
-      errorLabel = this.getTranslation(
-        `${validator.errorLabel}${suffix}`,
+      errorMessage = this.getTranslation(
+        `${validator.errorMessage}${suffix}`,
         name,
         { ...options },
       );
     } else {
-      errorLabel = this.getTranslation(validator.errorLabel, name);
+      errorMessage = this.getTranslation(validator.errorMessage, name);
     }
 
-    return { ...validator, errorLabel };
+    return { ...validator, errorMessage };
   }
 
   private generateI18nIsLengthParams(

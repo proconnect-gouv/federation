@@ -208,7 +208,7 @@ describe('FormValidationPipe', () => {
         {
           name: 'name',
           validators: [
-            { name: 'name', errorLabel: 'errrors', validationArgs: [] },
+            { name: 'name', errorMessage: 'errrors', validationArgs: [] },
           ],
         },
       ]);
@@ -310,7 +310,7 @@ describe('FormValidationPipe', () => {
         name: invalidKeyMock,
         validators: [
           {
-            errorLabel: `${invalidKeyMock}_invalidKey_error`,
+            errorMessage: `${invalidKeyMock}_invalidKey_error`,
             name: invalidKeyMock,
             validationArgs: [],
           },
@@ -609,7 +609,7 @@ describe('FormValidationPipe', () => {
         name: ValidatorJs.CONTAINS,
 
         validationArgs: [Symbol('arg1'), Symbol('arg2')],
-        errorLabel: 'error_label',
+        errorMessage: 'error_label',
       };
 
       // When
@@ -633,7 +633,7 @@ describe('FormValidationPipe', () => {
         name: 'validator1',
 
         validationArgs: [Symbol('arg1'), Symbol('arg2')],
-        errorLabel: 'error_label',
+        errorMessage: 'error_label',
       };
 
       // When
@@ -664,7 +664,7 @@ describe('FormValidationPipe', () => {
         name: ValidatorJs.CONTAINS,
 
         validationArgs: [],
-        errorLabel: 'error_label',
+        errorMessage: 'error_label',
       };
 
       // When
@@ -753,7 +753,7 @@ describe('FormValidationPipe', () => {
           name: 'field2',
           validators: [
             {
-              errorLabel: 'isFilled_error',
+              errorMessage: 'isFilled_error',
               name: 'isFilled',
               validationArgs: [],
             },
@@ -804,7 +804,7 @@ describe('FormValidationPipe', () => {
       // Given
       const errorsMapAsyncMock: FieldValidator[][] = [
         [],
-        [{ name: 'error2', errorLabel: 'Another error', validationArgs: [] }],
+        [{ name: 'error2', errorMessage: 'Another error', validationArgs: [] }],
       ];
 
       jest
@@ -864,7 +864,7 @@ describe('FormValidationPipe', () => {
     const valueMock = 'testValue';
     const metadataMock = {
       validators: [
-        { name: 'validator1', errorLabel: 'Error 1', validationArgs: [] },
+        { name: 'validator1', errorMessage: 'Error 1', validationArgs: [] },
       ],
     } as unknown as FieldAttributes;
 
@@ -903,7 +903,7 @@ describe('FormValidationPipe', () => {
       service['processValidator'] = jest
         .fn()
         .mockResolvedValueOnce([
-          { name: 'validator1', errorLabel: 'Error 1', validationArgs: [] },
+          { name: 'validator1', errorMessage: 'Error 1', validationArgs: [] },
         ]);
 
       // When
@@ -915,7 +915,7 @@ describe('FormValidationPipe', () => {
 
       // Then
       expect(result).toEqual([
-        { name: 'validator1', errorLabel: 'Error 1', validationArgs: [] },
+        { name: 'validator1', errorMessage: 'Error 1', validationArgs: [] },
       ]);
     });
   });
@@ -951,7 +951,7 @@ describe('FormValidationPipe', () => {
       const errorsMock: FieldValidator[] = [];
       const validatorMock: FieldValidator = {
         name: 'testValidator',
-        errorLabel: 'Invalid value',
+        errorMessage: 'Invalid value',
         validationArgs: [{ minLength: 3 }],
       };
 
@@ -969,7 +969,7 @@ describe('FormValidationPipe', () => {
       expect(result).toHaveLength(1);
       expect(result[0]).toEqual({
         name: 'testValidator',
-        errorLabel: 'Invalid value',
+        errorMessage: 'Invalid value',
         validationArgs: [{ minLength: 3 }],
       });
     });
@@ -979,7 +979,7 @@ describe('FormValidationPipe', () => {
       const errorsMock: FieldValidator[] = [
         {
           name: 'existingValidator',
-          errorLabel: 'Existing error',
+          errorMessage: 'Existing error',
           validationArgs: [],
         },
       ];
@@ -1006,7 +1006,7 @@ describe('FormValidationPipe', () => {
       validators: [],
     };
     const validatorMock = [
-      { name: 'validator1', errorLabel: 'Error 1', validationArgs: [] },
+      { name: 'validator1', errorMessage: 'Error 1', validationArgs: [] },
     ];
 
     beforeEach(() => {
