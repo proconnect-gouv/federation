@@ -1,61 +1,76 @@
 import { Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
-import { getServiceProviderByDescription } from '../../common/helpers';
-import IdentityProviderPage from '../pages/identity-provider-page';
-
-let identityProviderPage: IdentityProviderPage;
+import {
+  getIdentityProviderByDescription,
+  getServiceProviderByDescription,
+} from '../../common/helpers';
 
 Then(
-  /^je (suis|ne suis pas) redirigé vers la page login du fournisseur d'identité$/,
-  function (text: string) {
-    const expectVisible = text === 'suis';
-    identityProviderPage = new IdentityProviderPage(this.identityProvider);
-    if (expectVisible) {
-      identityProviderPage.checkIsVisible();
-    } else {
-      identityProviderPage.checkIsNotVisible();
-    }
+  /je suis redirigé vers la page login du fournisseur d'identité "([^"]*)"/,
+  function (description: string) {
+    const { url } = getIdentityProviderByDescription(description);
+    cy.url().should('include', url);
   },
 );
 
 When(
   "le fournisseur d'identité garantit un niveau de sécurité {string}",
   function (acr: string) {
-    identityProviderPage.setMockAcrValue(acr);
-    this.identityProvider.acrValue = acr;
+    cy.get('input[name="acr"]').type(`{selectAll}${acr}`, { force: true });
   },
 );
 
-When("je m'authentifie avec succès", function () {
-  expect(this.user).to.exist;
+When("je m'authentifie", function () {
+  cy.get("button[type='submit']").click();
+});
 
-  const { idpId } = this.identityProvider;
-  const userCredentials = this.user.getCredentials(idpId);
-  expect(userCredentials).to.exist;
-  identityProviderPage.login(userCredentials);
+When("j'utilise un compte usager privé", function () {
+  cy.get('input[name="is_service_public"]').type(`{selectAll}false`, {
+    force: true,
+  });
 });
 
 When(
-  `je m'authentifie avec succès avec l'identifiant {string}`,
-  function (login: string) {
-    identityProviderPage.loginWithUsername(login);
+  "j'utilise le compte usager avec l'email {string}",
+  function (email: string) {
+    cy.get('input[name="email"]').type(`{selectAll}${email}`);
   },
 );
 
-When("je saisis manuellement l'identité de l'utilisateur", function () {
-  expect(this.user).to.exist;
-
-  identityProviderPage.useCustomIdentity(this.user);
+When("j'utilise le compte usager avec le sub {string}", function (sub: string) {
+  cy.get('input[name="sub"]').type(`{selectAll}${sub}`, {
+    force: true,
+  });
 });
 
-Then('le champ identifiant correspond à {string}', function (login: string) {
-  identityProviderPage.getLogin().invoke('val').should('be.equal', login);
+When("j'utilise un compte usager sans email", function () {
+  cy.get('input[name="email"]').clear();
+});
+
+When("j'utilise un compte usager avec téléphone incorrect", function () {
+  cy.get('input[name="phone_number"]').type(`{selectAll}incorrect`, {
+    force: true,
+  });
+});
+
+When("j'utilise un compte usager avec email incorrect", function () {
+  cy.get('input[name="email"]').type(`{selectAll}incorrect`);
+});
+
+When("j'utilise un compte usager avec siret incorrect", function () {
+  cy.get('input[name="siret"]').type(`{selectAll}incorrect`, {
+    force: true,
+  });
 });
 
 Then(
   /la page du FI affiche l'id du FS "([^"]*)"/,
   function (spDescription: string) {
     const { clientId } = getServiceProviderByDescription(spDescription);
-    identityProviderPage.checkSpIdIsVisible(clientId);
+    cy.contains(`"sp_id": "${clientId}"`);
   },
 );
+
+Then('le champ identifiant correspond à {string}', function (email: string) {
+  cy.get('input[name="email"]').should('have.value', email);
+});

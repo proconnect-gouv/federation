@@ -1,21 +1,8 @@
-export interface IdentityProviderBase {
-  selectors: {
-    password: string;
-    loginButton: string;
-    username: string;
-  };
-  url: string;
-}
-
-export interface IdentityProvider extends IdentityProviderBase {
-  acrValue: string;
-  encryption: string;
-  signature: string;
+export interface IdentityProvider {
   descriptions: string[];
-  usable: boolean;
-  idpId: string;
-  mocked: boolean;
-  title: string;
-  name: string;
   fqdn?: string;
+  id: string;
+  signature: string;
+  title: string;
+  url: string;
 }

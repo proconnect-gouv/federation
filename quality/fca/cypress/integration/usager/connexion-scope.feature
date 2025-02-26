@@ -1,28 +1,18 @@
 #language: fr
-@usager @connexionScope
+@ci @usager @connexionScope
 Fonctionnalité: Connexion Usager - Scope
-  # En tant qu'usager d'un fournisseur de service,
-  # je veux me connecter en utilisant un fournisseur d'identité
-  # afin de communiquer certaines informations personnelles au fournisseur de service
-
   Plan du Scénario: Connexion d'un usager - scope <scopeType>
-    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "<scopeType>"
     # Currently, if acr_value is not required, the idp_acr claim will be empty.
     # The desired behavior is for idp_acr to be set regardless of whether acr_value is required.
     Et que le fournisseur de service requiert un acr_values à "eidas1"
-    Et que j'utilise un fournisseur d'identité "actif"
     Et que je clique sur le bouton ProConnect
-    Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec succès
-    Alors je suis redirigé vers la page fournisseur de service "par défaut"
-    Et je suis connecté au fournisseur de service
-    Et le fournisseur de service a accès aux informations des scopes "<scopeType>"
+    Quand je m'authentifie
+    Alors le fournisseur de service a accès aux informations des scopes "<scopeType>" en provenance du FI "par défaut"
 
-    @ci
     Exemples:
       | scopeType                                 |
       | tous les scopes                           |
@@ -38,49 +28,38 @@ Fonctionnalité: Connexion Usager - Scope
       | email                                     |
       | chorusdt                                  |
 
-  @ci @ignoreInteg01
+  @ignoreInteg01
   Scénario: Connexion d'un usager - scope anonyme
-    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations du scope "anonyme"
-    Et que j'utilise un fournisseur d'identité "actif"
     Et que je clique sur le bouton ProConnect
-    Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec succès
-    Alors je suis redirigé vers la page fournisseur de service "par défaut"
-    Et je suis connecté au fournisseur de service
-    Et le fournisseur de service a accès aux informations du scope "anonyme"
+    Quand je m'authentifie
+    Alors le fournisseur de service a accès aux informations du scope "anonyme" en provenance du FI "par défaut"
 
-  @ci @ignoreInteg01
+  @ignoreInteg01
   Scénario: Connexion d'un usager - attribut scope inconnu ignoré
-    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "email avec scope inconnu"
-    Et que j'utilise un fournisseur d'identité "actif"
     Et que je clique sur le bouton ProConnect
-    Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec succès
-    Alors je suis redirigé vers la page fournisseur de service "par défaut"
-    Et je suis connecté au fournisseur de service
-    Et le fournisseur de service a accès aux informations des scopes "email"
+    Quand je m'authentifie
+    Alors le fournisseur de service a accès aux informations des scopes "email" en provenance du FI "par défaut"
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - erreur scope vide
-    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert un acr_values à "eidas1"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "vide"
     Quand je clique sur le bouton ProConnect
-    Alors je suis redirigé vers la page erreur du fournisseur de service
-    Et le titre de l'erreur fournisseur de service est "invalid_request"
-    Et la description de l'erreur fournisseur de service est "openid%20scope%20must%20be%20requested%20when%20using%20the%20acr_values%20parameter"
+    Et je suis redirigé vers la page erreur technique
+    Et le code d'erreur est "Y000400"
 
   @ignoreInteg01
   Scénario: Connexion d'un usager - erreur scope openid manquant
-    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert un acr_values à "eidas1"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires sans openid"
     Quand je clique sur le bouton ProConnect

@@ -6,22 +6,19 @@ Fonctionnalité: Connexion avec LocalStorage
   # afin d'accéder à mon service
 
   Plan du Scénario: Connexion avec LocalStorage - avec email et interruption
-    Etant donné que je navigue sur la page fournisseur de service "par défaut"
-    Et que le fournisseur de service requiert l'accès aux informations du scope "tous les scopes"
+    Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
-    Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "<email>"
     Et que je clique sur le bouton de connexion
-    Et que j'utilise le fournisseur d'identité "<fi>"
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je navigue sur la page fournisseur de service "par défaut"
+    Et que je suis redirigé vers la page login du fournisseur d'identité "<idpDescription>"
+    Quand je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Alors le champ email correspond à "<email>"
     Et je clique sur le bouton de connexion
-    Et je suis redirigé vers la page login du fournisseur d'identité
+    Et je suis redirigé vers la page login du fournisseur d'identité "<idpDescription>"
 
     Exemples:
-      | email                        | fi           |
-      | albus.dumbledore@hogwarts.uk | moncomptepro |
-      | albus.dumbledore@fia1.fr     | par défaut   |
+      | email                        | idpDescription |
+      | albus.dumbledore@hogwarts.uk | moncomptepro   |
+      | albus.dumbledore@fia1.fr     | par défaut     |

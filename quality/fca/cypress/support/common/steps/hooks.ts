@@ -4,11 +4,9 @@ import {
   addFCBasicAuthorization,
   clearBusinessLog,
   forceSameSiteNone,
-  getDefaultIdentityProvider,
-  getDefaultUser,
   isUsingFCBasicAuthorization,
 } from '../helpers';
-import { Environment, IdentityProvider, UserData } from '../types';
+import { Environment } from '../types';
 
 const setFixtureContext = (
   fixture: string,
@@ -31,17 +29,7 @@ Before(function () {
   setFixtureContext('environment.json', pathArray, 'env');
   setFixtureContext('api-common.json', pathArray, 'apiRequests');
   setFixtureContext('service-provider-configs.json', pathArray, 'spConfigs');
-  setFixtureContext('identity-providers.json', pathArray, 'identityProviders');
   setFixtureContext('identity-provider-configs.json', pathArray, 'idpConfigs');
-  setFixtureContext('users.json', pathArray, 'users');
-
-  // Define default data
-  cy.get<IdentityProvider[]>('@identityProviders').then((identityProviders) => {
-    this.identityProvider = getDefaultIdentityProvider(identityProviders);
-  });
-  cy.get<UserData[]>('@users').then((users) => {
-    this.user = getDefaultUser(users);
-  });
 
   // Setup interceptions to add basic authorization header on FC requests
   if (isUsingFCBasicAuthorization()) {
@@ -66,7 +54,6 @@ Before(function () {
  */
 After(function () {
   // Delete the Context variable changed during the scenario
-  delete this.identityProvider;
   delete this.user;
   delete this.operatorUser;
 });

@@ -1,8 +1,15 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
-import ServiceProviderErrorPage from '../pages/service-provider-error-page';
+const ERROR_URL_REGEXP =
+  /^https:\/\/.*\/oidc-callback([?#])error=([^&]+)&error_description=([^&]+)&state=.+$/;
+const URL_TYPE_GROUP = 1;
 
-const serviceProviderErrorPage = new ServiceProviderErrorPage();
+const checkErrorCallbackUrl = (url: string, containsQuery = true): void => {
+  const match = url.match(ERROR_URL_REGEXP);
+  expect(match.length).to.equal(4);
+  const delimitor = containsQuery ? '?' : '#';
+  expect(match[URL_TYPE_GROUP]).to.equal(delimitor);
+};
 
 Then(
   /^l'entête de la réponse a une propriété "location" contenant l'url de callback du FS avec l'erreur( \(fragment\))?$/,
@@ -12,7 +19,7 @@ Then(
       .its('headers')
       .its('location')
       .then((url) => {
-        serviceProviderErrorPage.checkErrorCallbackUrl(url, containsQuery);
+        checkErrorCallbackUrl(url, containsQuery);
       });
   },
 );

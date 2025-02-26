@@ -1,12 +1,10 @@
 import { Result } from 'axe-core';
 
 import { type OperatorUser } from '../../exploitation/helpers';
-import { type User } from '../helpers';
 import { Environment } from './environment';
 import { IdentityProvider } from './identity-provider';
 import { IdentityProviderConfig } from './identity-provider-config';
 import { ServiceProviderConfig } from './service-provider-config';
-import { UserData } from './user';
 
 // Cypress Alias
 // eslint-disable-next-line no-undef
@@ -34,15 +32,12 @@ declare module 'mocha' {
 
     // BDD context
     env: Environment;
-    identityProvider: IdentityProvider;
     identityProviders: IdentityProvider[];
     idpConfig?: IdentityProviderConfig;
     idpConfigs: IdentityProviderConfig[];
     operatorUser?: OperatorUser;
     spConfig?: ServiceProviderConfig;
     spConfigs: ServiceProviderConfig[];
-    users: UserData[];
-    user: User;
   }
 }
 
@@ -51,4 +46,3 @@ export * from './identity-provider';
 export * from './identity-provider-config';
 export * from './service-provider';
 export * from './service-provider-config';
-export * from './user';

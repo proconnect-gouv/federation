@@ -5,6 +5,7 @@ import {
   checkFCBasicAuthorization,
   checkMandatoryData,
   checkNoExtraClaims,
+  getIdentityProviderByDescription,
   getScopeByDescription,
   getServiceProviderByDescription,
   getUserInfoProperty,
@@ -17,6 +18,11 @@ import {
   setPrompt,
   setScope,
 } from '../../common/helpers';
+
+When('je navigue sur la page fournisseur de service', function () {
+  const serviceProvider = getServiceProviderByDescription('par défaut');
+  cy.visit(serviceProvider.url);
+});
 
 When(
   /je navigue sur la page fournisseur de service "([^"]+)"/,
@@ -89,17 +95,17 @@ Then('je suis déconnecté du fournisseur de service', function () {
 });
 
 Then(
-  /le fournisseur de service a accès aux informations (?:du|des) scopes? "([^"]+)"/,
-  function (description: string) {
+  /le fournisseur de service a accès aux informations (?:du|des) scopes? "([^"]+)" en provenance du FI "([^"]+)"/,
+  function (spDescription: string, idpDescription: string) {
     checkMandatoryData();
 
-    const { claims } = this.user;
-    // Add idp claims' values
-    claims['idp_acr'] = this.identityProvider['acrValue'];
-    claims['idp_id'] = this.identityProvider['idpId'];
+    const idpClaims = {
+      idp_acr: 'eidas1',
+      idp_id: getIdentityProviderByDescription(idpDescription).id,
+    };
 
-    checkExpectedUserClaims(description, claims);
-    checkNoExtraClaims(description);
+    checkExpectedUserClaims(spDescription, idpClaims);
+    checkNoExtraClaims(spDescription);
   },
 );
 
@@ -169,9 +175,9 @@ Then(
 );
 
 Given(
-  "je rentre l'id du fournisseur d'identité dans le champ idp_hint",
-  function () {
-    const { idpId } = this.identityProvider;
+  /je rentre l'id du fournisseur d'identité "([^"]+)" dans le champ idp_hint/,
+  function (idpDescription: string) {
+    const { id: idpId } = getIdentityProviderByDescription(idpDescription);
     setIdpHint(idpId);
   },
 );

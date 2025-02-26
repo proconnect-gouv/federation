@@ -3,7 +3,7 @@
     "name": "bdd-idp-default",
     "title": "FI de test sans discovery url",
     "issuer": "https://fia1-low.docker.dev-franceconnect.fr",
-    "authorizationUrl": "https://fia1-low.docker.dev-franceconnect.fr/authorize",
+    "authorizationUrl": "https://fia1-low.docker.dev-franceconnect.fr/auth",
     "tokenUrl": "https://fia1-low.docker.dev-franceconnect.fr/token",
     "userInfoUrl": "https://fia1-low.docker.dev-franceconnect.fr/userinfo",
     "logoutUrl": "https://fia1-low.docker.dev-franceconnect.fr/session/end",

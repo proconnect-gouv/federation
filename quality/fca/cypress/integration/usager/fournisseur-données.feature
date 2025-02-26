@@ -13,10 +13,7 @@ Fonctionnalité: Fournisseur Données
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
-    Et que je suis redirigé vers la page fournisseur de service "éligible au scope groups"
-    Et que je suis connecté au fournisseur de service
+    Et que je m'authentifie
     Quand le fournisseur de service demande l'accès aux données au fournisseur de données
     Alors le fournisseur de données vérifie l'access token fourni par le fournisseur de service
     Et le checktoken endpoint envoie un token d'introspection valide
@@ -27,30 +24,24 @@ Fonctionnalité: Fournisseur Données
     Et le token d'introspection a une propriété "exp" avec le timestamp d'expiration de l'access token
 
   Scénario: Checktoken - access token expiré
-    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
-    Et que je suis redirigé vers la page fournisseur de service "par défaut"
-    Et que je suis connecté au fournisseur de service
+    Et que je m'authentifie
     Quand je révoque le token ProConnect
     Et le fournisseur de service demande l'accès aux données au fournisseur de données
     Alors le fournisseur de données vérifie l'access token fourni par le fournisseur de service
     Et le checktoken endpoint envoie un token d'introspection expiré
 
   Scénario: Checktoken - access token aucun scope ne correspond au FD
-    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires"
     Et que le fournisseur de service requiert un acr_values à "eidas1"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
-    Et que je suis redirigé vers la page fournisseur de service "par défaut"
-    Et que je suis connecté au fournisseur de service
+    Et que je m'authentifie
     Quand le fournisseur de service demande l'accès aux données au fournisseur de données
     Alors le fournisseur de données vérifie l'access token fourni par le fournisseur de service
     Et le checktoken endpoint envoie un token d'introspection valide

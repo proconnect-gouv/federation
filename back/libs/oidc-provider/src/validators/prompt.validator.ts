@@ -1,9 +1,4 @@
-import {
-  ValidateBy,
-  ValidationArguments,
-  ValidationOptions,
-  ValidatorConstraint,
-} from 'class-validator';
+import { ValidationArguments, ValidatorConstraint } from 'class-validator';
 
 import { Injectable } from '@nestjs/common';
 
@@ -27,17 +22,4 @@ export class IsValidPromptConstraint extends ArrayAtLeastOneConstraint {
   getAllowedList(_args: ValidationArguments): string[] {
     return this.configValues;
   }
-}
-
-export function IsValidPrompt(
-  validationOptions?: ValidationOptions,
-): PropertyDecorator {
-  return ValidateBy(
-    {
-      name: 'IsValidPrompt',
-      constraints: [],
-      validator: IsValidPromptConstraint,
-    },
-    validationOptions,
-  );
 }

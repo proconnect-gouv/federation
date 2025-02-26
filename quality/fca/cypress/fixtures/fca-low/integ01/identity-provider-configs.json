@@ -3,7 +3,7 @@
     "name": "bdd-idp-default",
     "title": "FI de test sans discovery url",
     "issuer": "https://fia1v2.integ01.dev-agentconnect.fr",
-    "authorizationUrl": "https://fia1v2.integ01.dev-agentconnect.fr/authorize",
+    "authorizationUrl": "https://fia1v2.integ01.dev-agentconnect.fr/auth",
     "tokenUrl": "https://fia1v2.integ01.dev-agentconnect.fr/token",
     "userInfoUrl": "https://fia1v2.integ01.dev-agentconnect.fr/userinfo",
     "logoutUrl": "https://fia1v2.integ01.dev-agentconnect.fr/session/end",

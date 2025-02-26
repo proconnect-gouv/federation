@@ -82,8 +82,6 @@
       "@fc/override-oidc-provider/*": ["libs/override-oidc-provider/src/*"],
       "@fc/mailer": ["libs/mailer/src"],
       "@fc/mailer/*": ["libs/mailer/src/*"],
-      "@fc/mock-service-provider": ["apps/mock-service-provider/src"],
-      "@fc/mock-service-provider/*": ["apps/mock-service-provider/src/*"],
       "@fc/tracking": ["libs/tracking/src"],
       "@fc/tracking/*": ["libs/tracking/src/*"],
       "@fc/tracking-context": ["libs/tracking-context/src"],
@@ -102,8 +100,6 @@
       "@fc/service-provider-adapter-env/*": [
         "libs/service-provider-adapter-env/src/*"
       ],
-      "@fc/mock-identity-provider": ["apps/mock-identity-provider/src"],
-      "@fc/mock-identity-provider/*": ["apps/mock-identity-provider/src/*"],
       "@fc/apache-ignite": ["libs/apache-ignite/src"],
       "@fc/apache-ignite/*": ["libs/apache-ignite/src/*"],
       "@fc/notifications": ["libs/notifications/src"],

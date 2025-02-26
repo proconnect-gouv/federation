@@ -3,7 +3,7 @@
 Fonctionnalité: API - redirect to idp
 
   Scénario: API redirect-to-idp - Not valid CSRF token
-    Etant donné que je navigue sur la page fournisseur de service "par défaut"
+    Etant donné que je navigue sur la page fournisseur de service
     Et que je clique sur le bouton ProConnect
     Et que je suis redirigé vers la page interaction
     Et que je prépare une requête "redirect-to-idp"

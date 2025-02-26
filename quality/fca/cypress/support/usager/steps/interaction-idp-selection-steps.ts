@@ -1,15 +1,10 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
-import InteractionIdpSelectionPage from '../pages/interaction-idp-selection-page';
-
-const interactionIdpSelectionPage = new InteractionIdpSelectionPage();
-
 Then(
   /^le fournisseur d'identité "([^"]+)" (est|n'est pas) affiché$/,
   function (idpName: string, text: string) {
     const isVisible = text === 'est';
-    interactionIdpSelectionPage
-      .getSelectableIdps()
+    cy.get('#radio-hint label')
       .invoke('text')
       .should(isVisible ? 'contains' : 'not.contains', idpName);
   },

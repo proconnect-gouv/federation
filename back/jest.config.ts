@@ -10,6 +10,7 @@ const config: Config = {
     'instances/.+/src/config/.+.ts',
     'instances/.+/src/main.ts',
     'instances/mock-service-provider-fca-low/.+.ts',
+    'instances/mock-identity-provider-fca-low/.+.ts',
     '.mocks/',
     '.+/index.ts',
     '.+.(config|descriptor|dto|enum|fixture|i18n|interface|module|plugin|schema|type|token).ts',

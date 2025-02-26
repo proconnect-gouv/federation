@@ -7,13 +7,11 @@ Fonctionnalité: Connexion Usager - SSO
 
   Plan du Scénario: Connexion SSO - deux FS avec accès au même FI
     Etant donné que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je rentre "<prompt premier FS>" dans le champ prompt
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
+    Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
@@ -31,17 +29,14 @@ Fonctionnalité: Connexion Usager - SSO
   @ignoreInteg01
   Scénario: Connexion SSO - deuxième FS sans accès au FI
     Etant donné que je navigue sur la page fournisseur de service "avec accès exclusif à un FI"
-    Et que j'utilise le fournisseur d'identité "disponible que pour un FS"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia8.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
+    Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "avec accès exclusif à un FI"
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "par défaut"
     Quand je clique sur le bouton ProConnect
-    Et que je suis redirigé vers la page interaction
     Et que j'entre l'email "test@fia8.fr"
     Et que je clique sur le bouton de connexion
     Alors je suis redirigé vers la page erreur technique
@@ -50,34 +45,27 @@ Fonctionnalité: Connexion Usager - SSO
   @ignoreInteg01
   Scénario: Connexion SSO - deuxième FS utilise un autre FI
     Etant donné que je navigue sur la page fournisseur de service "avec accès exclusif à un FI"
-    Et que j'utilise le fournisseur d'identité "disponible que pour un FS"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia8.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
+    Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "avec accès exclusif à un FI"
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "par défaut"
     Et que je clique sur le bouton ProConnect
-    Et que je suis redirigé vers la page interaction
-    Et que j'utilise un fournisseur d'identité "par défaut"
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Quand je m'authentifie avec succès
+    Quand je m'authentifie
     Alors je suis redirigé vers la page fournisseur de service "par défaut"
     Et je suis connecté au fournisseur de service
 
   @ignoreInteg01
   Scénario: Connexion SSO - troisième FS utilise SSO après une cinématique non terminée
     Etant donné que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
+    Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "sans accès au FI par défaut"
@@ -92,12 +80,10 @@ Fonctionnalité: Connexion Usager - SSO
   @ignoreInteg01
   Scénario: Connexion SSO - déconnexion d'un FS seulement et SSO terminé
     Etant donné que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
+    Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
@@ -118,12 +104,10 @@ Fonctionnalité: Connexion Usager - SSO
   @ignoreInteg01
   Scénario: Connexion SSO - déconnexion de plusieurs FS
     Etant donné que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
+    Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (troisième FS)"
@@ -141,7 +125,7 @@ Fonctionnalité: Connexion Usager - SSO
     Quand je me déconnecte du fournisseur de service
     Alors je suis déconnecté du fournisseur de service
     Alors le fournisseur de service requiert l'accès aux informations du scope "obligatoires"
-    Alors le fournisseur de service ne requiert pas le claim "amr"
+    Et le fournisseur de service ne requiert pas le claim "amr"
     Et je clique sur le bouton ProConnect
     Et je suis redirigé vers la page interaction
 
@@ -149,12 +133,10 @@ Fonctionnalité: Connexion Usager - SSO
   Scénario: Connexion SSO - SSO désactivé pour le deuxième FS
     Etant donné que je désactive le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
-    Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
+    Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
@@ -165,12 +147,10 @@ Fonctionnalité: Connexion Usager - SSO
   Scénario: Connexion SSO - SSO réactivé pour le deuxième FS
     Etant donné que j'active le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
-    Et que j'utilise le fournisseur d'identité "par défaut"
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
-    Et que je suis redirigé vers la page login du fournisseur d'identité
-    Et que je m'authentifie avec succès
+    Et que je m'authentifie
     Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
     Et que je suis connecté au fournisseur de service
     Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"

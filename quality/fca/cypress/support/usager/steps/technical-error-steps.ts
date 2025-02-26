@@ -1,43 +1,42 @@
 import { Then } from '@badeball/cypress-cucumber-preprocessor';
 
-import TechnicalErrorPage from '../pages/technical-error-page';
-
-const {
-  checkErrorCode,
-  checkErrorMessage,
-  checkErrorTitle,
-  checkIsVisible,
-  checkSessionNumberVisible,
-  getBackToSPLink,
-} = new TechnicalErrorPage();
-
 Then('je suis redirigé vers la page erreur technique', function () {
-  checkIsVisible();
+  cy.get('[data-testid="error-section"]').should('be.visible');
 });
 
 Then(
   "le titre de la page d'erreur est {string}",
   function (errorTitle: string) {
-    checkErrorTitle(errorTitle);
+    cy.get('[data-testid="error-section-title"]').should('contain', errorTitle);
   },
 );
 
 Then("le code d'erreur est {string}", function (errorCode: string) {
-  checkErrorCode(errorCode);
+  cy.get('[data-testid="error-code"]').should(
+    'contain',
+    `code erreur : ${errorCode}`,
+  );
 });
 
-Then("le message d'erreur est {string}", function (errorCode: string) {
-  checkErrorMessage(errorCode);
+Then("le message d'erreur est {string}", function (errorMessage: string) {
+  cy.get('[data-testid="error-message"]').should('contain', `${errorMessage}`);
 });
 
 Then('le numéro de session AgentConnect est affiché', function () {
-  checkSessionNumberVisible();
+  cy.contains('[data-testid="error-session-id"]')
+    .invoke('text')
+    .should(
+      'match',
+      /^ID : [0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/,
+    );
 });
 
 Then(
   /^le lien retour vers le FS (est|n'est pas) affiché dans la page erreur technique$/,
   function (text: string) {
     const isVisible = text === 'est';
-    getBackToSPLink().should(isVisible ? 'be.visible' : 'not.exist');
+    cy.get('[data-testid="back-to-sp-link"]').should(
+      isVisible ? 'be.visible' : 'not.exist',
+    );
   },
 );
