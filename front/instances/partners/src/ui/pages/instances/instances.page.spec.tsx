@@ -7,7 +7,7 @@ import {
   type InstanceInterface,
   InstancesListComponent,
 } from '@fc/core-partners';
-import { AlertComponentV2, TileComponent } from '@fc/dsfr';
+import { AlertComponent, TileComponent } from '@fc/dsfr';
 import { t } from '@fc/i18n';
 
 import type { SubmitTypesMessage } from '../../../enums';
@@ -149,8 +149,8 @@ describe('InstancesPage', () => {
     // Then
     expect(t).toHaveBeenNthCalledWith(2, 'any-submit-i18n-message-mock');
     expect(container).toMatchSnapshot();
-    expect(AlertComponentV2).toHaveBeenCalledOnce();
-    expect(AlertComponentV2).toHaveBeenCalledWith(
+    expect(AlertComponent).toHaveBeenCalledOnce();
+    expect(AlertComponent).toHaveBeenCalledWith(
       {
         dataTestId: 'instances-page-alert-top',
         onClose: closeAlertHandlerMock,

@@ -86,8 +86,13 @@ exports[`InstancesPage should match snapshot, when the alert component is displa
       </h1>
     </div>
     <div
-      data-mockid="AlertComponentV2"
-    />
+      data-mockid="AlertComponent"
+    >
+      <div>
+        AlertComponent
+      </div>
+      <div />
+    </div>
     <div
       class="fr-col-12"
     >

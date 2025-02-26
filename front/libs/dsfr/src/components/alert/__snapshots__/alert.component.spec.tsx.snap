@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`AlertComponentV2 should match the snapshot with all optional values 1`] = `
+exports[`AlertComponent should match the snapshot with all optional values 1`] = `
 <div>
   <div
     class="any-custom-class-mock fr-alert fr-alert--error fr-alert--md"
@@ -28,11 +28,11 @@ exports[`AlertComponentV2 should match the snapshot with all optional values 1`]
 </div>
 `;
 
-exports[`AlertComponentV2 should match the snapshot with default values 1`] = `
+exports[`AlertComponent should match the snapshot with default values 1`] = `
 <div>
   <div
     class="fr-alert fr-alert--info fr-alert--md"
-    data-testid="AlertComponentV2"
+    data-testid="AlertComponent"
     role="alert"
   />
 </div>
