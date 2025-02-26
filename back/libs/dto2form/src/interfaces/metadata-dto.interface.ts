@@ -1,6 +1,6 @@
 export interface MetadataDtoValidatorsInterface {
   name: string;
-  errorLabel: string;
+  errorMessage: string;
   validationArgs: unknown[];
 }
 

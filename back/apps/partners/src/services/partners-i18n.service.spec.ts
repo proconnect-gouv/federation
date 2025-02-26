@@ -54,12 +54,12 @@ describe('PartnersService', () => {
       service['getValidatorsWithErrorLabels'] = jest
         .fn()
         .mockReturnValueOnce({
-          errorLabel: 'errorLabel nameMock1',
+          errorMessage: 'errorMessage nameMock1',
           name: 'isLength',
           validationArgs: [],
         })
         .mockReturnValueOnce({
-          errorLabel: 'errorLabel nameMock2',
+          errorMessage: 'errorMessage nameMock2',
           name: 'nameMock2',
           validationArgs: [],
         });
@@ -161,7 +161,7 @@ describe('PartnersService', () => {
           name: 'nameMock1',
           type: 'input',
           validators: {
-            errorLabel: 'errorLabel nameMock1',
+            errorMessage: 'errorMessage nameMock1',
             name: 'isLength',
             validationArgs: [],
           },
@@ -172,7 +172,7 @@ describe('PartnersService', () => {
           name: 'nameMock2',
           type: 'input',
           validators: {
-            errorLabel: 'errorLabel nameMock2',
+            errorMessage: 'errorMessage nameMock2',
             name: 'nameMock2',
             validationArgs: [],
           },
@@ -252,7 +252,7 @@ describe('PartnersService', () => {
         .mockImplementation(
           (validator: MetadataDtoValidatorsInterface, name: string) => ({
             ...validator,
-            errorLabel: `Processed ${name}`,
+            errorMessage: `Processed ${name}`,
           }),
         );
 
@@ -263,8 +263,8 @@ describe('PartnersService', () => {
       // Given
       const validatorsMock: MetadataDtoValidatorsInterface[][] = [
         [
-          { name: 'isRequired', errorLabel: '', validationArgs: [] },
-          { name: 'isEmail', errorLabel: '', validationArgs: [] },
+          { name: 'isRequired', errorMessage: '', validationArgs: [] },
+          { name: 'isEmail', errorMessage: '', validationArgs: [] },
         ],
       ];
 
@@ -281,8 +281,8 @@ describe('PartnersService', () => {
       expect(service['processValidatorsRecursively']).toHaveBeenCalledTimes(2);
       expect(result).toEqual([
         [
-          { ...validatorsMock[0][0], errorLabel: 'Processed nameMock' },
-          { ...validatorsMock[0][1], errorLabel: 'Processed nameMock' },
+          { ...validatorsMock[0][0], errorMessage: 'Processed nameMock' },
+          { ...validatorsMock[0][1], errorMessage: 'Processed nameMock' },
         ],
       ]);
     });
@@ -290,8 +290,8 @@ describe('PartnersService', () => {
     it('should process a flat array of validators', () => {
       // Given
       const validatorsMock: MetadataDtoValidatorsInterface[] = [
-        { name: 'isLength', errorLabel: '', validationArgs: [] },
-        { name: 'isRequired', errorLabel: '', validationArgs: [] },
+        { name: 'isLength', errorMessage: '', validationArgs: [] },
+        { name: 'isRequired', errorMessage: '', validationArgs: [] },
       ];
 
       // When
@@ -306,8 +306,8 @@ describe('PartnersService', () => {
       );
       expect(service['processValidatorsRecursively']).toHaveBeenCalledTimes(1);
       expect(result).toEqual([
-        { ...validatorsMock[0], errorLabel: 'Processed nameMock' },
-        { ...validatorsMock[1], errorLabel: 'Processed nameMock' },
+        { ...validatorsMock[0], errorMessage: 'Processed nameMock' },
+        { ...validatorsMock[1], errorMessage: 'Processed nameMock' },
       ]);
     });
   });
@@ -318,14 +318,14 @@ describe('PartnersService', () => {
     beforeEach(() => {
       service['getTranslation'] = jest
         .fn()
-        .mockReturnValueOnce('label errorLabel');
+        .mockReturnValueOnce('label errorMessage');
     });
 
     it('should call generateI18nIsLengthParams', () => {
       // Given
       const validatorsMock: MetadataDtoValidatorsInterface = {
         name: 'isLength',
-        errorLabel: 'errorLabel',
+        errorMessage: 'errorMessage',
         validationArgs: [{ max: 10 }],
       };
 
@@ -347,7 +347,7 @@ describe('PartnersService', () => {
       // Given
       const validatorsMock: MetadataDtoValidatorsInterface = {
         name: 'isLength',
-        errorLabel: 'errorLabel',
+        errorMessage: 'errorMessage',
         validationArgs: [{ max: 10 }],
       };
 
@@ -366,7 +366,7 @@ describe('PartnersService', () => {
       // Then
       expect(service['getTranslation']).toHaveBeenCalledTimes(1);
       expect(service['getTranslation']).toHaveBeenCalledWith(
-        `${validatorsMock.errorLabel}${response.suffix}`,
+        `${validatorsMock.errorMessage}${response.suffix}`,
         nameMock,
         { max: 10 },
       );
@@ -376,7 +376,7 @@ describe('PartnersService', () => {
       // Given
       const validatorsMock: MetadataDtoValidatorsInterface = {
         name: 'isLength',
-        errorLabel: 'errorLabel',
+        errorMessage: 'errorMessage',
         validationArgs: [{ min: 10 }],
       };
 
@@ -395,7 +395,7 @@ describe('PartnersService', () => {
       // Then
       expect(service['getTranslation']).toHaveBeenCalledTimes(1);
       expect(service['getTranslation']).toHaveBeenCalledWith(
-        `${validatorsMock.errorLabel}${response.suffix}`,
+        `${validatorsMock.errorMessage}${response.suffix}`,
         nameMock,
         { min: 10 },
       );
@@ -405,7 +405,7 @@ describe('PartnersService', () => {
       // Given
       const validatorsMock: MetadataDtoValidatorsInterface = {
         name: 'isLength',
-        errorLabel: 'errorLabel',
+        errorMessage: 'errorMessage',
         validationArgs: [{ max: 20, min: 10 }],
       };
 
@@ -424,7 +424,7 @@ describe('PartnersService', () => {
       // Then
       expect(service['getTranslation']).toHaveBeenCalledTimes(1);
       expect(service['getTranslation']).toHaveBeenCalledWith(
-        `${validatorsMock.errorLabel}${response.suffix}`,
+        `${validatorsMock.errorMessage}${response.suffix}`,
         nameMock,
         { min: 10, max: 20 },
       );
@@ -434,7 +434,7 @@ describe('PartnersService', () => {
       // Given
       const validatorsMock = {
         name: 'otherName',
-        errorLabel: 'errorLabel',
+        errorMessage: 'errorMessage',
         validationArgs: [{ max: 20, min: 10 }],
       } as unknown as MetadataDtoValidatorsInterface;
 
@@ -444,7 +444,7 @@ describe('PartnersService', () => {
       // Then
       expect(service['getTranslation']).toHaveBeenCalledTimes(1);
       expect(service['getTranslation']).toHaveBeenCalledWith(
-        validatorsMock.errorLabel,
+        validatorsMock.errorMessage,
         nameMock,
       );
     });
@@ -453,12 +453,12 @@ describe('PartnersService', () => {
       // Given
       const validatorsMock = {
         name: 'otherName',
-        errorLabel: 'errorLabel',
+        errorMessage: 'errorMessage',
         validationArgs: [],
       } as unknown as MetadataDtoValidatorsInterface;
 
       const expected = {
-        errorLabel: 'label errorLabel',
+        errorMessage: 'label errorMessage',
         name: 'otherName',
         validationArgs: [],
       };

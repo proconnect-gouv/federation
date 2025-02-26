@@ -24,17 +24,17 @@ describe('FormDecoratorHelper', () => {
   const expectedFinalValidators = [
     {
       name: 'required',
-      errorLabel: 'required_error',
+      errorMessage: 'required_error',
       validationArgs: [],
     },
     {
       name: 'minLength',
-      errorLabel: 'minLength_error',
+      errorMessage: 'minLength_error',
       validationArgs: [],
     },
     {
       name: 'maxLength',
-      errorLabel: 'maxLength_error',
+      errorMessage: 'maxLength_error',
       validationArgs: [],
     },
   ] as [FieldValidator, ...FieldValidator[]];
@@ -191,17 +191,17 @@ describe('FormDecoratorHelper', () => {
       const expectedFinalValidators = [
         {
           name: 'any_validator',
-          errorLabel: 'any_validator_error',
+          errorMessage: 'any_validator_error',
           validationArgs: ['Hello', 42],
         },
         {
           name: 'minLength',
-          errorLabel: 'minLength_error',
+          errorMessage: 'minLength_error',
           validationArgs: [5],
         },
         {
           name: 'maxLength',
-          errorLabel: 'maxLength_error',
+          errorMessage: 'maxLength_error',
           validationArgs: [{ foo: 'bar' }],
         },
       ] as [FieldValidator, ...FieldValidator[]];
@@ -361,7 +361,7 @@ describe('FormDecoratorHelper', () => {
         validators: [
           {
             name: 'isFilled',
-            errorLabel: `isFilled_error`,
+            errorMessage: `isFilled_error`,
             validationArgs: [],
           },
           ...expectedFinalValidators,

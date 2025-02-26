@@ -109,6 +109,6 @@ export class FormValidationExceptionFilter
     if (Array.isArray(validator)) {
       return validator.map((v) => this.extractErrorLabel(v));
     }
-    return validator.errorLabel;
+    return validator.errorMessage;
   }
 }
