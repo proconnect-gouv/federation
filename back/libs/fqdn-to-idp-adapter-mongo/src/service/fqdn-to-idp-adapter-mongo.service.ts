@@ -4,7 +4,7 @@ import { Model } from 'mongoose';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 
-import { asyncFilter, validateDto } from '@fc/common';
+import { ArrayAsyncHelper, validateDto } from '@fc/common';
 import { validationOptions } from '@fc/config';
 import { LoggerService } from '@fc/logger';
 import { MongooseCollectionOperationWatcherHelper } from '@fc/mongoose';
@@ -99,27 +99,28 @@ export class FqdnToIdpAdapterMongoService
       .sort({ fqdn: 1, identityProvider: 1 })
       .lean();
 
-    const fqdnToProvider = await asyncFilter<FqdnToIdentityProvider[]>(
-      // because fqdnToProvidr entity == fqdnToProvider dto
-      // we don't need to transform fqdnToProviderRow into a dto
-      fqdnToProviderRaw,
-      async (doc: FqdnToIdentityProvider) => {
-        const errors = await validateDto(
-          doc,
-          GetFqdnToIdentityProviderMongoDto,
-          validationOptions,
-        );
-
-        if (errors.length > 0) {
-          this.logger.warning(
-            `fqdnToProvider with domain "${doc.fqdn}" and provider uuid "${doc.identityProvider}" was excluded from the result at DTO validation.`,
+    const fqdnToProvider =
+      await ArrayAsyncHelper.filterAsync<FqdnToIdentityProvider>(
+        // because fqdnToProvidr entity == fqdnToProvider dto
+        // we don't need to transform fqdnToProviderRow into a dto
+        fqdnToProviderRaw,
+        async (doc: FqdnToIdentityProvider) => {
+          const errors = await validateDto(
+            doc,
+            GetFqdnToIdentityProviderMongoDto,
+            validationOptions,
           );
-          this.logger.err({ errors });
-        }
 
-        return errors.length === 0;
-      },
-    );
+          if (errors.length > 0) {
+            this.logger.warning(
+              `fqdnToProvider with domain "${doc.fqdn}" and provider uuid "${doc.identityProvider}" was excluded from the result at DTO validation.`,
+            );
+            this.logger.err({ errors });
+          }
+
+          return errors.length === 0;
+        },
+      );
 
     return fqdnToProvider;
   }
