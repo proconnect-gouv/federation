@@ -10,7 +10,7 @@ import { createUser, getDefaultUser } from './user-data';
 
 const {
   PORT = 3000,
-  ISSUER = `http://localhost:${PORT}`,
+  FQDN,
   STYLESHEET_URL = 'https://cdn.jsdelivr.net/gh/raj457036/attriCSS@master/themes/brightlight-green.css',
   APP_NAME,
 } = process.env;
@@ -21,7 +21,7 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/'));
 app.enable('trust proxy');
 
-const provider = new Provider(ISSUER, {
+const provider = new Provider(`https://${FQDN}`, {
   adapter: MemoryAdapter,
   ...configuration,
 });
