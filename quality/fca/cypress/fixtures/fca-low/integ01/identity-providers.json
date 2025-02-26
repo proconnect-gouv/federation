@@ -1,6 +1,6 @@
 [
   {
-    "idpId": "moncomptepro",
+    "id": "moncomptepro",
     "descriptions": [
       "moncomptepro",
       "whitelisté",
@@ -8,24 +8,13 @@
       "rattaché à un ministère avec plusieurs FI",
       "non autorisé pour idp_hint"
     ],
-    "ministry": "Démonstration",
     "title": "MonComptePro Identity Provider",
-    "mocked": true,
-    "usable": true,
     "url": "https://identite-sandbox.proconnect.gouv.fr",
-    "acrValue": "eidas1",
-    "encryption": "",
     "signature": "HS256",
-    "selectors": {
-      "idpButton": "#idp-moncomptepro",
-      "username": "input[name='login']",
-      "password": ".fr-password input[name='password']",
-      "loginButton": "button[type='submit']"
-    },
     "fqdn": "moncomptepro.fr"
   },
   {
-    "idpId": "fia1v2",
+    "id": "fia1v2",
     "descriptions": [
       "par défaut",
       "actif",
@@ -35,129 +24,61 @@
       "rattaché à un ministère avec plusieurs FI",
       "non autorisé pour idp_hint"
     ],
-    "ministry": "Démonstration",
     "title": "Identity Provider 1 - HS256",
-    "mocked": true,
-    "usable": true,
     "url": "https://fia1v2.integ01.dev-agentconnect.fr",
-    "acrValue": "eidas1",
-    "encryption": "",
     "signature": "HS256",
-    "selectors": {
-      "idpButton": "#idp-fia1v2",
-      "username": "input[name='login']",
-      "password": "input[name='password']",
-      "loginButton": "button[type='submit']"
-    },
     "fqdn": "fia1.fr"
   },
   {
-    "idpId": "fia2v2",
+    "id": "fia2v2",
     "descriptions": ["FI eidas1 avec signature ES256", "différent"],
-    "ministry": "Démonstration",
     "title": "Identity Provider 2 - ES256",
-    "mocked": true,
-    "usable": true,
     "url": "https://fia2v2.integ01.dev-agentconnect.fr",
-    "acrValue": "eidas1",
-    "encryption": "",
     "signature": "ES256",
-    "selectors": {
-      "idpButton": "#idp-fia2v2",
-      "username": "input[name='login']",
-      "password": "input[name='password']",
-      "loginButton": "button[type='submit']"
-    },
     "fqdn": "fia2.fr"
   },
   {
-    "idpId": "fia3v2",
+    "id": "fia3v2",
     "descriptions": [
       "FI eidas1 avec signature RS256",
       "non whitelisté",
       "blacklisté"
     ],
-    "ministry": "Démonstration",
     "title": "Identity Provider 3 - RS256",
-    "mocked": true,
-    "usable": true,
     "url": "https://fia3v2.integ01.dev-agentconnect.fr",
-    "acrValue": "eidas1",
-    "encryption": "",
     "signature": "RS256",
-    "selectors": {
-      "idpButton": "#idp-fia3v2",
-      "username": "input[name='login']",
-      "password": "input[name='password']",
-      "loginButton": "button[type='submit']"
-    },
     "fqdn": "fia3.fr"
   },
   {
-    "idpId": "fia4-desactive-visible",
+    "id": "fia4-desactive-visible",
     "descriptions": ["désactivé et visible"],
-    "ministry": "Démonstration",
     "title": "Identity Provider 4 - désactivé et visible",
-    "mocked": true,
-    "usable": false,
     "url": "https://fia4-desactive-visible.integ01.dev-agentconnect.fr",
-    "acrValue": "eidas1",
-    "encryption": "",
     "signature": "ES256",
-    "selectors": {
-      "idpButton": "#idp-fia4-desactive-visible"
-    },
     "fqdn": "fia4.fr"
   },
   {
-    "idpId": "fia5-active-invisible",
+    "id": "fia5-active-invisible",
     "descriptions": ["actif et non visible"],
-    "ministry": "Démonstration",
     "title": "Identity Provider 5 - activé et invisible",
-    "mocked": true,
-    "usable": false,
     "url": "https://fia5-active-invisible.integ01.dev-agentconnect.fr",
-    "acrValue": "eidas1",
-    "encryption": "",
     "signature": "ES256",
-    "selectors": {
-      "idpButton": "#idp-fia5-active-invisible"
-    },
     "fqdn": "fia5.fr"
   },
   {
-    "idpId": "fia6-desactive-invisible",
+    "id": "fia6-desactive-invisible",
     "descriptions": ["désactivé et non visible"],
-    "ministry": "Démonstration",
     "title": "Identity Provider 6 - désactivé et invisible",
-    "mocked": true,
-    "usable": false,
     "url": "https://fia6-desactive-invisible.integ01.dev-agentconnect.fr",
-    "acrValue": "eidas1",
-    "encryption": "",
     "signature": "ES256",
-    "selectors": {
-      "idpButton": "#idp-fia6-desactive-invisible"
-    },
     "fqdn": "fia6.fr"
   },
   {
-    "idpId": "cerbere",
+    "id": "cerbere",
     "descriptions": ["rattaché à plusieurs ministères", "cerbere"],
-    "ministry": "Ministère de la Transition écologique",
     "title": "Cerbère",
-    "mocked": false,
-    "usable": true,
     "url": "https://authentification.recette.din.developpement-durable.gouv.fr",
-    "acrValue": "eidas1",
-    "encryption": "",
     "signature": "RS256",
-    "selectors": {
-      "idpButton": "#idp-cerbere-button",
-      "username": "input[name='login']",
-      "password": "input[name='password']",
-      "loginButton": "button[type='submit']"
-    },
     "fqdn": "developpement-durable.gouv.fr"
   }
 ]

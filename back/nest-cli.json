@@ -44,9 +44,7 @@
       "sourceRoot": "instances/mock-service-provider-fca-low/src",
       "compilerOptions": {
         "tsConfigPath": "instances/mock-service-provider-fca-low/tsconfig.app.json",
-        "assets": [
-          "../../../instances/mock-service-provider-fca-low/**/*.ejs"
-        ]
+        "assets": ["../../../instances/mock-service-provider-fca-low/**/*.ejs"]
       }
     },
     "mock-identity-provider-fca-low": {
@@ -56,18 +54,7 @@
       "sourceRoot": "instances/mock-identity-provider-fca-low/src",
       "compilerOptions": {
         "tsConfigPath": "instances/mock-identity-provider-fca-low/tsconfig.app.json",
-        "assets": [
-          "../../../apps/mock-identity-provider/**/*.ejs",
-          "../../../apps/mock-identity-provider/**/*.css",
-          "../../../apps/mock-identity-provider/**/*.svg",
-          "../../../apps/mock-identity-provider/**/*.png",
-          "../../../apps/mock-identity-provider/**/*.csv",
-          "../../../instances/mock-identity-provider-fca-low/**/*.ejs",
-          "../../../instances/mock-identity-provider-fca-low/**/*.css",
-          "../../../instances/mock-identity-provider-fca-low/**/*.svg",
-          "../../../instances/mock-identity-provider-fca-low/**/*.csv",
-          "../../../instances/mock-identity-provider-fca-low/**/*.png"
-        ]
+        "assets": ["../../../instances/mock-identity-provider-fca-low/**/*.ejs"]
       }
     },
     "bridge-http-proxy-rie": {
@@ -302,15 +289,6 @@
       "sourceRoot": "libs/mailer/src",
       "compilerOptions": {
         "tsConfigPath": "libs/mailer/tsconfig.lib.json"
-      }
-    },
-    "mock-identity-provider": {
-      "type": "library",
-      "root": "apps/mock-identity-provider",
-      "entryFile": "index",
-      "sourceRoot": "apps/mock-identity-provider/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/mock-identity-provider/tsconfig.lib.json"
       }
     },
     "identity-provider-adapter-env": {

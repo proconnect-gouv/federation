@@ -1,5 +1,23 @@
-import { ChainableElement, UserClaims } from '../types';
+import { ChainableElement } from '../types';
 import scopes from './../../../fixtures/fca-low/scopes.json';
+
+const defaultUserClaims = {
+  belonging_population: 'agent',
+  'chorusdt:matricule': 'USER_AGC',
+  'chorusdt:societe': 'CHT',
+  custom: {
+    email_verified: false,
+    phone_number_verified: false,
+  },
+  given_name: 'John',
+  is_service_public: 'true',
+  organizational_unit: 'comptabilite',
+  phone_number: '+49 000 000000',
+  siren: '130025265',
+  siret: '13002526500013',
+  uid: '1',
+  usual_name: 'Doe',
+};
 
 const getUserInfo = (): ChainableElement =>
   cy.get('#userinfo').invoke('text').then(JSON.parse);
@@ -48,14 +66,15 @@ export const getClaims = (scope: string): string[] => {
 // Check the userInfo claims against the user fixtures
 export const checkExpectedUserClaims = (
   expectedScopeDescription: string,
-  userClaims: UserClaims,
+  idpClaims: { idp_id: string; idp_acr: string },
 ): void => {
   const expectedScope = getScopeByDescription(expectedScopeDescription);
   const expectedClaims = getClaims(expectedScope);
+  const userClaims = { ...defaultUserClaims, ...idpClaims };
 
   getUserInfo().then((userInfo) => {
     expectedClaims
-      .filter((claimName) => claimName !== 'sub')
+      .filter((claimName) => claimName !== 'sub' && claimName !== 'email')
       .forEach((claimName) => {
         expect(userInfo[claimName]).to.deep.equal(
           userClaims[claimName],

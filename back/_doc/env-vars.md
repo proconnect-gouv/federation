@@ -8,7 +8,6 @@
 2. [core-fca-low](#core-fca-low)
 3. [csmr-rie](#csmr-rie)
 4. [mock-data-provider](#mock-data-provider)
-5. [mock-identity-provider-fca-low](#mock-identity-provider-fca-low)
 
 ## Variables
 
@@ -110,46 +109,3 @@
 | DataProviderAdapterCore_JWKS | json |
 | DataProviderAdapterCore_JWKS_ENDPOINT | string |
 | Logger_THRESHOLD | string |
-
-### mock-identity-provider-fca-low
-
-| Var Name | Inferred type |
-|---|---|
-| App_ALLOW_CUSTOM_IDENTITY | boolean |
-| App_ASSETS_PATHS | json |
-| App_CITIZEN_DATABASE_PATH | string |
-| App_ENVIRONMENT | string |
-| App_HTTPS_SERVER_CERT | file |
-| App_HTTPS_SERVER_KEY | file |
-| App_PASSWORD_VERIFICATION | boolean |
-| App_SCENARIOS_DATABASE_PATH | string |
-| App_VIEWS_PATHS | json |
-| FQDN | string |
-| Logger_THRESHOLD | string |
-| OidcProvider_COOKIES_KEYS | json |
-| OidcProvider_CRYPTO_SIG_ES256_PRIV_KEYS | json |
-| OidcProvider_CRYPTO_SIG_RS256_PRIV_KEYS | json |
-| OidcProvider_ERROR_URI_BASE | string |
-| OidcProvider_PREFIX | string |
-| OidcProvider_USE_ENCRYPTION | boolean |
-| REQUEST_TIMEOUT | string |
-| Redis_CACERT | file |
-| Redis_DB | number |
-| Redis_ENABLE_TLS_FOR_SENTINEL_MODE | boolean |
-| Redis_HOST | string |
-| Redis_PASSWORD | string |
-| Redis_PORT | number |
-| ServiceProviderAdapterEnv_CLIENT_ID | string |
-| ServiceProviderAdapterEnv_CLIENT_SECRET | string |
-| ServiceProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ALG | string |
-| ServiceProviderAdapterEnv_ID_TOKEN_ENCRYPTED_RESPONSE_ENC | string |
-| ServiceProviderAdapterEnv_ID_TOKEN_SIGNED_RESPONSE_ALG | string |
-| ServiceProviderAdapterEnv_JWKS_URI | string |
-| ServiceProviderAdapterEnv_POST_LOGOUT_REDIRECT_URIS | json |
-| ServiceProviderAdapterEnv_REDIRECT_URIS | json |
-| ServiceProviderAdapterEnv_SCOPE | string |
-| ServiceProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ALG | string |
-| ServiceProviderAdapterEnv_USERINFO_ENCRYPTED_RESPONSE_ENC | string |
-| ServiceProviderAdapterEnv_USERINFO_SIGNED_RESPONSE_ALG | string |
-| Session_COOKIE_SECRETS | json |
-| Session_USERINFO_CRYPT_KEY | string |

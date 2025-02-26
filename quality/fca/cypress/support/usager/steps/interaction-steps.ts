@@ -1,30 +1,28 @@
 import { Given, Then, When } from '@badeball/cypress-cucumber-preprocessor';
 
-import InteractionPage from '../pages/interaction-page';
-
-const interactionPage = new InteractionPage();
+import { getIdentityProviderByDescription } from '../../common/helpers';
 
 Then('je suis redirigé vers la page interaction', function () {
-  interactionPage.checkIsVisible();
+  cy.get('[data-testid="interaction-connection-button"]').should('be.visible');
 });
 
 When("j'entre l'email {string}", function (email: string) {
-  interactionPage.getEmail().clearThenType(email);
+  cy.get('#email-input').clearThenType(email);
 });
 
 When('je clique sur le bouton de connexion', function () {
-  interactionPage.getConnectionButton().click();
+  cy.get('[data-testid="interaction-connection-button"]').click();
 });
 
 Then('le champ email correspond à {string}', function (email: string) {
-  interactionPage.getEmail().invoke('val').should('be.equal', email);
+  cy.get('#email-input').invoke('val').should('be.equal', email);
 });
 
 Given(
-  "je paramètre un intercepteur pour l'appel authorize au fournisseur d'identité",
-  function () {
-    const { url } = this.identityProvider;
-    cy.intercept(`${url}/authorize*`).as('FI:Authorize');
+  /je paramètre un intercepteur pour l'appel authorize au fournisseur d'identité "([^"]*)"/,
+  function (idpDescription: string) {
+    const { url } = getIdentityProviderByDescription(idpDescription);
+    cy.intercept(`${url}/auth*`).as('FI:Authorize');
   },
 );
 

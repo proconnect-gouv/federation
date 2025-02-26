@@ -3,15 +3,13 @@
 Fonctionnalité: API - token
 
 Scénario: API token - cas nominal
-  Etant donné que je navigue sur la page fournisseur de service "par défaut"
+  Etant donné que je navigue sur la page fournisseur de service
   Et que je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "par défaut"
   Et que le fournisseur de service requiert un acr_values à "eidas1"
   Et que je clique sur le bouton ProConnect
   Et que j'entre l'email "test@fia1.fr"
   Et que je clique sur le bouton de connexion
-  Et que je suis redirigé vers la page login du fournisseur d'identité
-  Et que je m'authentifie avec succès
-  Et que je suis redirigé vers la page fournisseur de service "par défaut"
+  Et que je m'authentifie
   Et que je prépare une requête "token"
   Et que je mets le code renvoyé par PC au FS dans la propriété "code" du corps de la requête
   Quand je lance la requête
@@ -46,15 +44,13 @@ Scénario: API token - code invalide
   Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (authorization code not found)"
 
 Scénario: API token - id_token
-  Etant donné que je navigue sur la page fournisseur de service "par défaut"
+  Etant donné que je navigue sur la page fournisseur de service
   Et que je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "par défaut"
   Et que le fournisseur de service requiert un acr_values à "eidas1"
   Et que je clique sur le bouton ProConnect
   Et que j'entre l'email "test@fia1.fr"
   Et que je clique sur le bouton de connexion
-  Et que je suis redirigé vers la page login du fournisseur d'identité
-  Et que je m'authentifie avec succès
-  Et que je suis redirigé vers la page fournisseur de service "par défaut"
+  Et que je m'authentifie
   Et que je prépare une requête "token"
   Et que je mets le code renvoyé par PC au FS dans la propriété "code" du corps de la requête
   Quand je lance la requête
@@ -78,15 +74,13 @@ Scénario: API token - id_token
   Et le payload du JWT a une propriété "iss" égale à "https://core-fca-low.docker.dev-franceconnect.fr/api/v2"
 
 Scénario: API token - refresh token
-  Etant donné que je navigue sur la page fournisseur de service "par défaut"
+  Etant donné que je navigue sur la page fournisseur de service
   Et que je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "par défaut"
   Et que le fournisseur de service requiert un acr_values à "eidas1"
   Et que je clique sur le bouton ProConnect
   Et que j'entre l'email "test@fia1.fr"
   Et que je clique sur le bouton de connexion
-  Et que je suis redirigé vers la page login du fournisseur d'identité
-  Et que je m'authentifie avec succès
-  Et que je suis redirigé vers la page fournisseur de service "par défaut"
+  Et que je m'authentifie
   Et que je prépare une requête "token"
   Et que je mets le code renvoyé par PC au FS dans la propriété "code" du corps de la requête
   Et que je lance la requête
@@ -114,7 +108,7 @@ Scénario: API token - refresh token
   Et le payload du JWT a une propriété "iss" égale à "https://core-fca-low.docker.dev-franceconnect.fr/api/v2"
 
 Scénario: API token - refresh token invalide
-  Etant donné que je navigue sur la page fournisseur de service "par défaut"
+  Etant donné que je navigue sur la page fournisseur de service
   Et que je prépare une requête "token-from-refresh-token"
   Quand je lance la requête
   Alors le statut de la réponse est 400
@@ -125,14 +119,12 @@ Scénario: API token - refresh token invalide
   Et le corps de la réponse a une propriété "error_description" égale à "grant request is invalid (refresh token not found)"
 
 Scénario: API token - refresh token révoqué
-  Etant donné que je navigue sur la page fournisseur de service "par défaut"
+  Etant donné que je navigue sur la page fournisseur de service
   Et que je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "par défaut"
   Et que je clique sur le bouton ProConnect
   Et que j'entre l'email "test@fia1.fr"
   Et que je clique sur le bouton de connexion
-  Et que je suis redirigé vers la page login du fournisseur d'identité
-  Et que je m'authentifie avec succès
-  Et que je suis redirigé vers la page fournisseur de service "par défaut"
+  Et que je m'authentifie
   Et que je prépare une requête "token"
   Et que je mets le code renvoyé par PC au FS dans la propriété "code" du corps de la requête
   Et que je lance la requête

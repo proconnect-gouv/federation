@@ -1,122 +1,103 @@
-import { join } from 'path';
-
-import * as CookieParser from 'cookie-parser';
-import { renderFile } from 'ejs';
+import * as express from 'express';
 import { urlencoded } from 'express';
-import helmet from 'helmet';
+import { strict as assert } from 'node:assert';
+import * as path from 'node:path';
+import Provider from 'oidc-provider-v8';
 
-import { NestFactory } from '@nestjs/core';
-import { NestExpressApplication } from '@nestjs/platform-express';
+import configuration from './oidc-provider-support/configuration';
+import MemoryAdapter from './oidc-provider-support/memory_adapter.js';
+import { createUser, getDefaultUser } from './user-data';
 
-import { NestJsDependencyInjectionWrapper } from '@fc/common';
-import { ConfigService } from '@fc/config';
-import { NestLoggerService } from '@fc/logger';
-import {
-  AppConfig,
-  MockIdentityProviderConfig,
-} from '@fc/mock-identity-provider';
-import { SessionConfig } from '@fc/session';
+const {
+  PORT = 3000,
+  ISSUER = `http://localhost:${PORT}`,
+  STYLESHEET_URL = 'https://cdn.jsdelivr.net/gh/raj457036/attriCSS@master/themes/brightlight-green.css',
+  APP_NAME,
+} = process.env;
 
-import { AppModule } from './app.module';
-import config from './config';
+const app = express();
 
-async function bootstrap() {
-  const configService = new ConfigService({
-    config,
-    schema: MockIdentityProviderConfig,
-  });
-  const {
-    httpsOptions: { key, cert },
-    viewsPaths,
-  } = configService.get<AppConfig>('App');
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '/'));
+app.enable('trust proxy');
 
-  const appModule = AppModule.forRoot(configService);
+const provider = new Provider(ISSUER, {
+  adapter: MemoryAdapter,
+  ...configuration,
+});
+provider.proxy = true;
 
-  const httpsOptions = key && cert ? { key, cert } : null;
+// eslint-disable-next-line complexity
+app.get('/interaction/:uid', async (req, res, next) => {
+  try {
+    const { uid, prompt, params, session } = await provider.interactionDetails(
+      req,
+      res,
+    );
 
-  const app = await NestFactory.create<NestExpressApplication>(appModule, {
-    /**
-     * We need to handle the bodyParser ourself because of prototype pollution risk with `body-parser` library.
-     *
-     * Track the handling of this issue on `body-parser` repositoty:
-     * @see https://github.com/expressjs/body-parser/issues/347
-     *
-     * Description of the vulnerability:
-     * @see https://gist.github.com/rgrove/3ea9421b3912235e978f55e291f19d5d/revisions
-     *
-     * More general explanation about prototype pollution/poising:
-     * @see https://medium.com/intrinsic/javascript-prototype-poisoning-vulnerabilities-in-the-wild-7bc15347c96
-     */
-    bodyParser: false,
-    httpsOptions,
-    bufferLogs: true,
-  });
+    const client = await provider.Client.find(params.client_id);
 
-  const logger = await app.resolve(NestLoggerService);
+    const defaultUser = getDefaultUser();
 
-  app.useLogger(logger);
+    if (prompt.name === 'login') {
+      return res.render('index', {
+        title: APP_NAME,
+        stylesheetUrl: STYLESHEET_URL,
+        uid,
+        email: params?.login_hint || defaultUser.email,
+        defaultUser,
+        acr: params?.acr_values?.split(' ')[0] || 'eidas1',
+        debugInfo: JSON.stringify(
+          {
+            oidcProviderPrompt: prompt,
+            oidcProviderParams: params,
+            oidcProviderSession: session,
+            oidcProviderClient: client,
+          },
+          null,
+          2,
+        ),
+      });
+    }
 
-  /**
-   * @see https://expressjs.com/fr/api.html#app.set
-   * @see https://github.com/expressjs/express/issues/3361
-   */
-  app.set('query parser', 'simple');
+    return next(new Error('unsupported_prompt'));
+  } catch (err) {
+    return next(err);
+  }
+});
 
-  /**
-   * Protect app from common risks
-   * @see https://helmetjs.github.io/
-   */
-  app.use(helmet());
-  app.use(
-    helmet.contentSecurityPolicy({
-      directives: {
-        defaultSrc: ["'self'"],
-        /**
-         * Allow inline CSS and JS
-         * @TODO #168 remove this header once the UI is properly implemented
-         * to forbid the use of inline CSS or JS
-         * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/168
-         */
-        styleSrc: ["'self'", "'unsafe-inline'"],
-        scriptSrc: ["'self'", "'unsafe-inline'"],
-        /**
-         * We should be able to call to any domain that we need (SPs, IdPs, rnipp), the default "self"
-         * is too restricting. We don't have a precise domain to restrain to.
-         */
-        formAction: null,
-      },
-    }),
-  );
-  app.use(helmet.permittedCrossDomainPolicies());
+app.post(
+  '/interaction/:uid/login',
+  urlencoded({ extended: false }),
+  async (req, res, next) => {
+    try {
+      const {
+        prompt: { name },
+      } = await provider.interactionDetails(req, res);
+      assert.equal(name, 'login');
+      const { acr, ...userAttributes } = req.body;
+      const userId = createUser(userAttributes);
 
-  /**
-   * The security concern is on bodyParser.json (see upper comment).
-   * In the application, only the "urlencoded" form is necessary.
-   * therefore, we only activate the "body.urlencoded" middleware
-   *
-   * JSON parsing exists in our app, but it is handled by `jose`.
-   *
-   * Desactivate extended "qs" parser to prevent prototype pollution hazard.
-   * @see body-parser.md in the project doc folder for further informations.
-   */
-  app.use(urlencoded({ extended: false }));
+      const result = {
+        login: {
+          accountId: userId,
+          acr,
+          // the user is considered to have just logged in
+          ts: Date.now(),
+          // the user is considered to have logged with a password
+          amr: ['pwd'],
+        },
+      };
 
-  app.engine('ejs', renderFile);
-  app.set(
-    'views',
-    viewsPaths.map((viewsPath) => {
-      return join(__dirname, viewsPath, 'views');
-    }),
-  );
-  app.setViewEngine('ejs');
-  app.useStaticAssets(join(__dirname, 'public'));
+      await provider.interactionFinished(req, res, result);
+    } catch (err) {
+      next(err);
+    }
+  },
+);
 
-  const { cookieSecrets } = configService.get<SessionConfig>('Session');
-  app.use(CookieParser(cookieSecrets));
+app.use(provider.callback());
 
-  NestJsDependencyInjectionWrapper.use(app.select(appModule));
-
-  await app.listen(3000);
-}
-
-void bootstrap();
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
+});
