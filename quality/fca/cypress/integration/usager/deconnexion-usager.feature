@@ -1,9 +1,5 @@
 #language: fr
-@usager @deconnexionUsager @ci
 Fonctionnalité: Déconnexion Usager
-  # En tant qu'usager d'un fournisseur de service,
-  # je veux me déconnecter du fournisseur de service, d'agent connect et du fournisseur d'identité
-  # afin de clore ma session
 
   @ignoreInteg01
   Scénario: Déconnexion d'un usager avec log métier

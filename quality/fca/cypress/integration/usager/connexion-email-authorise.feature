@@ -1,8 +1,6 @@
 #language: fr
-@usager @connexionEmailAuthorise @ci @ignoreInteg01
+@ignoreInteg01
 Fonctionnalité: Connexion Usager - Email autorisé
-  # En tant qu'agent,
-  # je ne peux pas pas me connecter avec certains emails via certains FS
 
   Scénario: Connexion à un FS qui limite les emails avec un email authorisé
     Etant donné que je navigue sur la page fournisseur de service "avec une restriction de fqdn"

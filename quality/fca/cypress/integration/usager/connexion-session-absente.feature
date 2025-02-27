@@ -1,9 +1,5 @@
 #language: fr
-@usager @sessionAbsente @ci
 Fonctionnalité: Connexion Usager - session absente
-  # En tant qu'usagère,
-  # je veux être informée quand il y a un problème avec ma session
-  # afin de pouvoir réessayer ma connexion
 
   Scénario: Connexion OK - vérification des cookies AgentConnect après l'appel authorize
     Etant donné que je navigue sur la page fournisseur de service

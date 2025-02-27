@@ -1,5 +1,5 @@
 #language: fr
-@usager @connexionUsager @ci @ignoreInteg01
+@ignoreInteg01
 Fonctionnalité: Connexion Usager personnalisé
   Scénario: Connexion d'un usager - claim phone_number non renvoyé si mauvais format
     Etant donné que je navigue sur la page fournisseur de service

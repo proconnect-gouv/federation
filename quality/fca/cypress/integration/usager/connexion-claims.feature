@@ -1,5 +1,4 @@
 #language: fr
-@usager @connexionClaims @ci
 Fonctionnalité: Connexion avec Claims
   Scénario: Connexion avec claims - avec claim AMR pwd
     Etant donné que je navigue sur la page fournisseur de service

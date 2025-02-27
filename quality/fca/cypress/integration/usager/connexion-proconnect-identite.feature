@@ -1,5 +1,5 @@
 #language: fr
-@usager @ignoreDocker
+@ignoreDocker
 Fonctionnalité: Connexion Partenaires
   Scénario: Connexion d'un usager - ProConnect Identité : agent public
     Etant donné que je navigue sur la page fournisseur de service

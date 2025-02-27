@@ -1,5 +1,5 @@
 #language: fr
-@usager @connexionloginHint @ci @ignoreInteg01
+@ignoreInteg01
 Fonctionnalité: Connexion Usager - login_hint
 
   Scénario: Connexion initiale + login_hint

@@ -1,9 +1,5 @@
 #language: fr
-@usager @token @ci
 Fonctionnalité: Connexion Usager - Token
-  # En tant qu'usager,
-  # je souhaite que mes données de session soient accessibles tant que mon token est valide
-  # afin de continuer à utiliser mes données depuis mon fournisseur de service
 
   Scénario: Token non valide après révocation
     Etant donné que je navigue sur la page fournisseur de service

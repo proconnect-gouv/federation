@@ -1,5 +1,5 @@
 #language: fr
-@usager @connexionAcr @ci @ignoreInteg01
+@ignoreInteg01
 Fonctionnalité: Connexion Usager - ACR
   Plan du Scénario: Connexion ACR - identification niveau "<acrValues>" utilise eidas1
     Etant donné que je navigue sur la page fournisseur de service

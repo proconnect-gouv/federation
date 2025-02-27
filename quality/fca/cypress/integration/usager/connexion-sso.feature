@@ -1,9 +1,5 @@
 #language: fr
-@usager @connexionSSO @ci
 Fonctionnalité: Connexion Usager - SSO
-  # En tant qu'agent,
-  # je souhaite bénéficier d'une authentification unique sur AgentConnect
-  # afin de naviguer sur différents FS sans avoir à me ré-authentifier
 
   Plan du Scénario: Connexion SSO - deux FS avec accès au même FI
     Etant donné que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"

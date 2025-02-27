@@ -1,5 +1,4 @@
 #language: fr
-@api @apiRedirectToIdp
 Fonctionnalité: API - redirect to idp
 
   Scénario: API redirect-to-idp - Not valid CSRF token

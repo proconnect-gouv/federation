@@ -1,9 +1,7 @@
 #language: fr
-@usager @session @ci @ignoreInteg01
+@ignoreInteg01
 Fonctionnalité: Connexion Usager - session fca-low (avec SSO)
-  # En tant qu'usager,
-  # je souhaite que mes données de session ne soit accessible que lorsqu'elles sont requises
-  # afin d'éviter le vol de mes données personnelles
+
   Scénario: Session avec SSO activé - Nouvelle session créée lors de l'appel à authorize (1ère connexion)
     Etant donné que je navigue sur la page fournisseur de service
     Quand je clique sur le bouton ProConnect

@@ -1,5 +1,4 @@
 #language: fr
-@usager @connexionUsager @ci
 Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
 
   Plan du Scénario: Connexion d'un usager au FI <idpLabel> docker
