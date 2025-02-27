@@ -1,5 +1,5 @@
 #language: fr
-@api @apiDiscovery @ci
+@apiDiscovery
 Fonctionnalité: API - discovery
 
   Scénario: API discovery - fca-low

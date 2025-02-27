@@ -1,5 +1,5 @@
 #language: fr
-@usager @apiOidcCallback @ignoreInteg01 @ci
+@ignoreInteg01
 Fonctionnalité: API - oidc-callback
 
   Scénario: API oidc-callback - state manquant

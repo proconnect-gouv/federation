@@ -1,9 +1,5 @@
 #language: fr
-@usager @fournisseurDonnées @ci
 Fonctionnalité: Fournisseur Données
-  # En tant que fournisseur de données,
-  # je souhaite vérifier la validité d'un access token
-  # afin de fournir les données liées aux scopes autorisés pour le fournisseur de service
 
   @ignoreInteg01
   Scénario: Checktoken - access token valide avec un scope groups

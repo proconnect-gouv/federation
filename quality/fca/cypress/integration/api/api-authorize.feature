@@ -1,5 +1,4 @@
 #language: fr
-@api @apiAuthorize
 Fonctionnalité: API - authorize
   Plan du Scénario: API authorize - erreur Y04A586 client_id=<clientId>
     Etant donné que je prépare une requête "authorize"

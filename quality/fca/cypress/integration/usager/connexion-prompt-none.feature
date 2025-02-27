@@ -1,5 +1,4 @@
 #language: fr
-@usager @connexionPromptNone @ci
 Fonctionnalité: Connexion avec prompt none
 
   Scénario: Connexion avec prompt none - SSO ok

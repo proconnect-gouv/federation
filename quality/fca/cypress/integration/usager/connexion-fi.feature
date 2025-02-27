@@ -1,9 +1,5 @@
 #language: fr
-@usager @connexionClaims @ci
 Fonctionnalité: Connexion à un FI
-  # En tant qu'usager d'un fournisseur de service,
-  # je veux accéder à la mire du fournisseur d'identité
-  # afin de m'authentifier
 
   @ignoreInteg01
   Scénario: Je me rends sur la page du FI et je récupère correctement le sp_id

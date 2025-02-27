@@ -1,5 +1,4 @@
 #language: fr
-@accessibilite @ci
 Fonctionnalité: Accessibilité
 
   Plan du Scénario: Accessibilité - page sélection FI sur <device>

@@ -1,5 +1,4 @@
 #language: fr
-@ci @usager @connexionScope
 Fonctionnalité: Connexion Usager - Scope
   Plan du Scénario: Connexion d'un usager - scope <scopeType>
     Etant donné que je navigue sur la page fournisseur de service
@@ -17,6 +16,7 @@ Fonctionnalité: Connexion Usager - Scope
       | scopeType                                 |
       | tous les scopes                           |
 
+    @ignoreInteg01
     Exemples:
       | scopeType                                 |
       | obligatoires                              |

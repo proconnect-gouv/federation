@@ -1,9 +1,5 @@
 #language: fr
-@usager @connexionClaims @ci
 Fonctionnalité: Connexion avec LocalStorage
-  # En tant qu'usager d'un fournisseur de service,
-  # je veux me connecter sans avoir à écrire mon email après m'être connecté une première fois
-  # afin d'accéder à mon service
 
   Plan du Scénario: Connexion avec LocalStorage - avec email et interruption
     Etant donné que je navigue sur la page fournisseur de service

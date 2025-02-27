@@ -1,9 +1,6 @@
 #language: fr
-@usager @connexionSub @ci
 Fonctionnalité: Connexion Usager - Sub
-  # En tant qu'usager,
-  # je veux transmettre un sub unique au fournisseur de service
-  # afin d'accéder à mon compte
+
   Scénario: Connexion Usager - deux FS avec accès au même FI génèrent le même sub
     Etant donné que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
     Et que je clique sur le bouton ProConnect

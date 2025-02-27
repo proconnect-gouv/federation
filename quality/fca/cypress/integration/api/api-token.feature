@@ -1,5 +1,5 @@
 #language: fr
-@usager @apiToken @ignoreInteg01 @ci
+@ignoreInteg01
 Fonctionnalité: API - token
 
 Scénario: API token - cas nominal

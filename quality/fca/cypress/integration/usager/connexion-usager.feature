@@ -1,5 +1,4 @@
 #language: fr
-@usager @connexionUsager @ci
 Fonctionnalité: Connexion Usager - Redirection vers FI avec email
   Plan du Scénario: Connexion d'un usager - fqdn <idpDescription>
     Etant donné que je navigue sur la page fournisseur de service
