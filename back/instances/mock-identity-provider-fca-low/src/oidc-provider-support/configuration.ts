@@ -71,6 +71,10 @@ export default {
       'and one more',
     ],
   },
+  enabledJWA: {
+    idTokenSigningAlgValues: ['HS256', 'ES256', 'RS256'],
+    userinfoSigningAlgValues: ['HS256', 'ES256', 'RS256'],
+  },
   extraParams: ['sp_id'],
   features: {
     claimsParameter: { enabled: true },
