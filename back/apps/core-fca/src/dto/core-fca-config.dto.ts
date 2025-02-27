@@ -3,6 +3,7 @@ import { IsObject, ValidateNested } from 'class-validator';
 
 import { CoreConfig } from '@fc/core';
 import { DataProviderAdapterMongoConfig } from '@fc/data-provider-adapter-mongo';
+import { EmailValidatorConfig } from '@fc/email-validator/dto';
 import { ExceptionsConfig } from '@fc/exceptions/dto';
 import { I18nConfig } from '@fc/i18n';
 import { IdentityProviderAdapterMongoConfig } from '@fc/identity-provider-adapter-mongo';
@@ -41,6 +42,11 @@ export class CoreFcaConfig {
   @ValidateNested()
   @Type(() => ExceptionsConfig)
   readonly Exceptions: ExceptionsConfig;
+
+  @IsObject()
+  @ValidateNested()
+  @Type(() => EmailValidatorConfig)
+  readonly EmailValidator: EmailValidatorConfig;
 
   @IsObject()
   @ValidateNested()

@@ -504,6 +504,14 @@
     lodash.isundefined "^3.0.1"
     lodash.uniq "^4.5.0"
 
+"@gouvfr-lasuite/proconnect.debounce@^0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@gouvfr-lasuite/proconnect.debounce/-/proconnect.debounce-0.4.1.tgz#6d535a78038979dd9bc60729f1250480e590cfe6"
+  integrity sha512-awcU9HCGxzxZ0BYW/FhFRMasnwaWzJ5oviGHuqz657GkRGlnRuQRNEuKXWKq63q2EGfVNEyHt+YBphAiJgrLbQ==
+  dependencies:
+    axios "^1.7.7"
+    zod "^3.24.1"
+
 "@gouvfr/dsfr@^1.12.1":
   version "1.12.1"
   resolved "https://registry.npmjs.org/@gouvfr/dsfr/-/dsfr-1.12.1.tgz"
@@ -2231,6 +2239,15 @@ axios@^1.5.0:
   version "1.7.7"
   resolved "https://registry.npmjs.org/axios/-/axios-1.7.7.tgz"
   integrity sha512-S4kL7XrjgBmvdGut0sN3yJxqYzrDOnivkBiN0OFs6hLiUam3UPvswUo0kqGyhqUZGEOytHyumEdXsAkgCOUf3Q==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
+
+axios@^1.7.7:
+  version "1.7.9"
+  resolved "https://registry.yarnpkg.com/axios/-/axios-1.7.9.tgz#d7d071380c132a24accda1b2cfc1535b79ec650a"
+  integrity sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==
   dependencies:
     follow-redirects "^1.15.6"
     form-data "^4.0.0"
@@ -9599,6 +9616,11 @@ yocto-queue@^0.1.0:
   version "0.1.0"
   resolved "https://registry.npmjs.org/yocto-queue/-/yocto-queue-0.1.0.tgz"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
+
+zod@^3.24.1:
+  version "3.24.1"
+  resolved "https://registry.yarnpkg.com/zod/-/zod-3.24.1.tgz#27445c912738c8ad1e9de1bea0359fa44d9d35ee"
+  integrity sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==
 
 zwitch@^2.0.4:
   version "2.0.4"
