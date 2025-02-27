@@ -5,7 +5,7 @@ Fonctionnalité: API - token
 Scénario: API token - cas nominal
   Etant donné que je navigue sur la page fournisseur de service
   Et que je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "par défaut"
-  Et que le fournisseur de service requiert un acr_values à "eidas1"
+  Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
   Et que je clique sur le bouton ProConnect
   Et que j'entre l'email "test@fia1.fr"
   Et que je clique sur le bouton de connexion
@@ -46,7 +46,7 @@ Scénario: API token - code invalide
 Scénario: API token - id_token
   Etant donné que je navigue sur la page fournisseur de service
   Et que je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "par défaut"
-  Et que le fournisseur de service requiert un acr_values à "eidas1"
+  Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
   Et que je clique sur le bouton ProConnect
   Et que j'entre l'email "test@fia1.fr"
   Et que je clique sur le bouton de connexion
@@ -76,7 +76,7 @@ Scénario: API token - id_token
 Scénario: API token - refresh token
   Etant donné que je navigue sur la page fournisseur de service
   Et que je paramètre un intercepteur pour l'appel à la redirect_uri du fournisseur de service "par défaut"
-  Et que le fournisseur de service requiert un acr_values à "eidas1"
+  Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
   Et que je clique sur le bouton ProConnect
   Et que j'entre l'email "test@fia1.fr"
   Et que je clique sur le bouton de connexion
