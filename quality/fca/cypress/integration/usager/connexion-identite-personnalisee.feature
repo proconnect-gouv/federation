@@ -4,7 +4,7 @@ Fonctionnalité: Connexion Usager personnalisé
   Scénario: Connexion d'un usager - claim phone_number non renvoyé si mauvais format
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "tous les scopes"
-    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion

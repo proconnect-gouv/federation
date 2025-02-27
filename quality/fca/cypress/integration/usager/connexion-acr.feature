@@ -3,7 +3,7 @@
 Fonctionnalité: Connexion Usager - ACR
   Plan du Scénario: Connexion ACR - identification niveau "<acrValues>" utilise eidas1
     Etant donné que je navigue sur la page fournisseur de service
-    Et que le fournisseur de service requiert un acr_values à "<acrValues>"
+    Et que le fournisseur de service demande un niveau de sécurité "<acrValues>" via acr_values
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Quand je clique sur le bouton de connexion
@@ -19,7 +19,7 @@ Fonctionnalité: Connexion Usager - ACR
 
   Scénario: Connexion ACR - FI retourne le niveau eidas3
     Etant donné que je navigue sur la page fournisseur de service
-    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
@@ -29,7 +29,7 @@ Fonctionnalité: Connexion Usager - ACR
 
   Scénario: Connexion ACR - FI retourne un niveau inconnu
     Etant donné que je navigue sur la page fournisseur de service
-    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion

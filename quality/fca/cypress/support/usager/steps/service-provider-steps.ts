@@ -47,9 +47,9 @@ Given(
 );
 
 Given(
-  'le fournisseur de service requiert un acr_values à {string}',
-  function (acrValues: string) {
-    setAcrValues(acrValues);
+  'le fournisseur de service demande un niveau de sécurité {string} via acr_values',
+  function (acrValue: string) {
+    setAcrValues(acrValue);
   },
 );
 

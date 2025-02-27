@@ -4,7 +4,7 @@ Fonctionnalité: Connexion Usager dont le fqdn est lié à plusieurs fi
   Plan du Scénario: Connexion d'un usager au FI <idpLabel> docker
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations du scope "<scope>"
-    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "many@polyfi.fr"
     Quand je clique sur le bouton de connexion

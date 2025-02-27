@@ -5,7 +5,7 @@ Fonctionnalité: Connexion Usager - Scope
     Et que le fournisseur de service requiert l'accès aux informations des scopes "<scopeType>"
     # Currently, if acr_value is not required, the idp_acr claim will be empty.
     # The desired behavior is for idp_acr to be set regardless of whether acr_value is required.
-    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
@@ -51,7 +51,7 @@ Fonctionnalité: Connexion Usager - Scope
   @ignoreInteg01
   Scénario: Connexion d'un usager - erreur scope vide
     Etant donné que je navigue sur la page fournisseur de service
-    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
     Et que le fournisseur de service requiert l'accès aux informations des scopes "vide"
     Quand je clique sur le bouton ProConnect
     Et je suis redirigé vers la page erreur technique
@@ -60,7 +60,7 @@ Fonctionnalité: Connexion Usager - Scope
   @ignoreInteg01
   Scénario: Connexion d'un usager - erreur scope openid manquant
     Etant donné que je navigue sur la page fournisseur de service
-    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires sans openid"
     Quand je clique sur le bouton ProConnect
     Alors je suis redirigé vers la page erreur du fournisseur de service

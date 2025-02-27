@@ -2,7 +2,7 @@
 Fonctionnalité: Connexion Usager - Redirection vers FI avec email
   Plan du Scénario: Connexion d'un usager - fqdn <idpDescription>
     Etant donné que je navigue sur la page fournisseur de service
-    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "<email>"
     Quand je clique sur le bouton de connexion

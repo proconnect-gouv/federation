@@ -5,7 +5,7 @@ Fonctionnalité: Fournisseur Données
   Scénario: Checktoken - access token valide avec un scope groups
     Etant donné que je navigue sur la page fournisseur de service "éligible au scope groups"
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires et groups"
-    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
@@ -33,7 +33,7 @@ Fonctionnalité: Fournisseur Données
   Scénario: Checktoken - access token aucun scope ne correspond au FD
     Etant donné que je navigue sur la page fournisseur de service
     Et que le fournisseur de service requiert l'accès aux informations des scopes "obligatoires"
-    Et que le fournisseur de service requiert un acr_values à "eidas1"
+    Et que le fournisseur de service demande un niveau de sécurité "eidas1" via acr_values
     Et que je clique sur le bouton ProConnect
     Et que j'entre l'email "test@fia1.fr"
     Et que je clique sur le bouton de connexion
