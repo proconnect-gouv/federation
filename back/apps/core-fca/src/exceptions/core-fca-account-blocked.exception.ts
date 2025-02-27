@@ -14,7 +14,7 @@ export class CoreFcaAgentAccountBlockedException extends CoreFcaBaseException {
   public illustration = 'access-restricted-error';
   public title = 'Accès impossible';
   public description =
-    "Votre compte n'est plus actif, vous ne pouvez pas accéder au service demandé.";
+    'Votre compte n’est plus actif, vous ne pouvez pas accéder au service demandé.';
 
   public displayContact = false;
 }

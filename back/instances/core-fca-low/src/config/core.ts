@@ -5,6 +5,6 @@ const env = new ConfigParser(process.env, 'Core');
 
 export default {
   allowedIdpHints: env.json('ALLOWED_IDP_HINTS'),
-  defaultRedirectUri: 'https://agentconnect.gouv.fr',
+  defaultRedirectUri: 'https://www.proconnect.gouv.fr',
   enableSso: true,
 } as CoreConfig;

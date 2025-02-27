@@ -16,7 +16,7 @@ export class CoreFcaAgentNotFromPublicServiceException extends CoreFcaBaseExcept
   public illustration = 'access-restricted-error';
   public title = 'Accès impossible';
   public description =
-    "Seuls les agents et agentes de la fonction publique de l'État et de ses opérateurs sont autorisées à se connecter via ProConnect.";
+    'Seuls les agents et agentes de la fonction publique de l’État et de ses opérateurs sont autorisées à se connecter via ProConnect.';
 
   public displayContact = true;
   public contactMessage =

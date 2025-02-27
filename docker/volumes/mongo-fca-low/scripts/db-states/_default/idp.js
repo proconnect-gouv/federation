@@ -16,7 +16,7 @@ const fia = {
     eidas: 1,
     allowedAcr: ['eidas1'],
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     featureHandlers: {
       coreVerify: 'core-fca-default-verify',
       authenticationEmail: null,
@@ -69,7 +69,7 @@ const fia = {
     eidas: 1,
     allowedAcr: ['eidas1'],
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     featureHandlers: {
       coreVerify: 'core-fca-default-verify',
       authenticationEmail: null,
@@ -122,7 +122,7 @@ const fia = {
     eidas: 1,
     allowedAcr: ['eidas1'],
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     featureHandlers: {
       coreVerify: 'core-fca-default-verify',
       authenticationEmail: null,
@@ -180,7 +180,7 @@ const fia = {
       coreAuthorization: 'core-fca-default-authorization',
     },
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     specificText: 'specific text fia4-low',
     url: 'https://fia4-low.docker.dev-franceconnect.fr/',
     statusURL: 'https://fia4-low.docker.dev-franceconnect.fr/',
@@ -233,7 +233,7 @@ const fia = {
       coreAuthorization: 'core-fca-default-authorization',
     },
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     specificText: 'specific text fia5-low',
     url: 'https://fia5-low.docker.dev-franceconnect.fr/',
     statusURL: 'https://fia5-low.docker.dev-franceconnect.fr/',
@@ -281,7 +281,7 @@ const fia = {
     eidas: 1,
     allowedAcr: ['eidas1'],
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     featureHandlers: {
       coreVerify: 'core-fca-default-verify',
       authenticationEmail: null,
@@ -334,7 +334,7 @@ const fia = {
     eidas: 1,
     allowedAcr: ['eidas1'],
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     featureHandlers: {
       coreVerify: 'core-fca-default-verify',
       authenticationEmail: null,
@@ -387,7 +387,7 @@ const fia = {
     eidas: 1,
     allowedAcr: ['eidas1'],
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     featureHandlers: {
       coreVerify: 'core-fca-default-verify',
       authenticationEmail: null,
@@ -440,7 +440,7 @@ const fia = {
     eidas: 1,
     allowedAcr: ['eidas1'],
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     featureHandlers: {
       coreVerify: 'core-fca-mcp-verify',
       authenticationEmail: null,
@@ -493,7 +493,7 @@ const fia = {
     eidas: 1,
     allowedAcr: ['eidas1'],
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     featureHandlers: {
       coreVerify: 'core-fca-default-verify',
       authenticationEmail: null,
@@ -551,7 +551,7 @@ const fia = {
       coreAuthorization: 'core-fca-default-authorization',
     },
     mailto: '',
-    supportEmail: 'support@proconnect.gouv.fr',
+    supportEmail: 'support+federation@proconnect.gouv.fr',
     specificText: 'specific text llng',
     url: 'https://auth.llng.docker.dev-franceconnect.fr',
     discoveryUrl:

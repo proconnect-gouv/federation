@@ -5,7 +5,7 @@ export class CoreFcaBaseException extends FcException {
 
   public title = 'Accès impossible';
   public description =
-    "Nous n'arrivons pas à vous connecter à votre service en ligne pour l'instant.";
+    'Nous n’arrivons pas à vous connecter à votre service en ligne pour l’instant.';
   public illustration = 'default-error';
 
   public displayContact = true;
