@@ -14,6 +14,7 @@ import {
 } from '@fc/core';
 import { CsrfModule } from '@fc/csrf';
 import { DataProviderAdapterMongoModule } from '@fc/data-provider-adapter-mongo';
+import { EmailValidatorModule } from '@fc/email-validator/email-validator.module';
 import { FeatureHandlerModule } from '@fc/feature-handler';
 import { FlowStepsModule } from '@fc/flow-steps';
 import { FqdnToIdpAdapterMongoModule } from '@fc/fqdn-to-idp-adapter-mongo';
@@ -68,6 +69,7 @@ import { IsPhoneNumberFCAConstraint } from './validators';
   imports: [
     CqrsModule,
     AsyncLocalStorageModule,
+    EmailValidatorModule.register('EmailValidator'),
     SessionModule,
     MongooseModule.forRoot(),
     AccountModule,

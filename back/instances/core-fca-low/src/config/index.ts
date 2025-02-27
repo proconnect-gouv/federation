@@ -3,6 +3,7 @@ import { CoreFcaConfig } from '@fc/core-fca';
 import App from './app';
 import Core from './core';
 import DataProviderAdapterMongo from './data-provider-adapter-mongo';
+import EmailValidator from './email-validator';
 import Exceptions from './exceptions';
 import I18n from './i18n';
 import IdentityProviderAdapterMongo from './identity-provider-adapter-mongo';
@@ -22,6 +23,7 @@ import Tracking from './tracking';
 export default {
   App,
   I18n,
+  EmailValidator,
   Exceptions,
   Core,
   Logger,

@@ -46,6 +46,7 @@
   },
   "dependencies": {
     "@fast-csv/parse": "^5.0.2",
+    "@gouvfr-lasuite/proconnect.debounce": "^0.4.1",
     "@gouvfr/dsfr": "^1.12.1",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/axios": "^3.0.0",

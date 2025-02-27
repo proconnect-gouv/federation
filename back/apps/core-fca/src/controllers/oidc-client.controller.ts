@@ -18,6 +18,7 @@ import {
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfToken, CsrfTokenGuard } from '@fc/csrf';
+import { EmailValidatorService } from '@fc/email-validator/services';
 import { ForbidRefresh, IsStep } from '@fc/flow-steps';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
@@ -66,6 +67,7 @@ export class OidcClientController {
     private readonly sessionService: SessionService,
     private readonly tracking: TrackingService,
     private readonly crypto: CryptographyService,
+    private readonly emailValidatorService: EmailValidatorService,
     private readonly fqdnService: CoreFcaFqdnService,
     private readonly sanitizer: IdentitySanitizer,
   ) {}
@@ -129,6 +131,11 @@ export class OidcClientController {
     // if email is set, this controller is called from the interaction page
     // if identityProviderUid is set, this controller is called directly from the sp page via idp_hint or from the select-idp page
     const { email, identityProviderUid } = body;
+
+    // TODO(douglasduteil): temporary solution to avoid blocking the user
+    // We are testing the email validity without breaking the flow here
+    await this.emailValidatorService.validate(email);
+
     const fqdn = this.fqdnService.getFqdnFromEmail(email);
 
     const {

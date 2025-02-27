@@ -5,6 +5,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigService } from '@fc/config';
 import { CryptographyService } from '@fc/cryptography';
 import { CsrfTokenGuard } from '@fc/csrf';
+import { EmailValidatorService } from '@fc/email-validator/services';
 import { IdentityProviderAdapterMongoService } from '@fc/identity-provider-adapter-mongo';
 import { LoggerService } from '@fc/logger';
 import { IdentityProviderMetadata, IOidcIdentity } from '@fc/oidc';
@@ -19,6 +20,7 @@ import { OidcProviderService } from '@fc/oidc-provider';
 import { SessionService } from '@fc/session';
 import { TrackingService } from '@fc/tracking';
 
+import { getEmailValidatorMock } from '@mocks/email-validator';
 import { getLoggerMock } from '@mocks/logger';
 import { getSessionServiceMock } from '@mocks/session';
 
@@ -169,6 +171,8 @@ describe('OidcClient Controller', () => {
     genRandomString: jest.fn(),
   };
 
+  const emailValidatorServiceMock = getEmailValidatorMock();
+
   const csrfTokenGuardMock = {
     canActivate: () => true,
   };
@@ -202,6 +206,7 @@ describe('OidcClient Controller', () => {
         CoreFcaService,
         OidcClientConfigService,
         CryptographyService,
+        EmailValidatorService,
         CoreFcaFqdnService,
         IdentitySanitizer,
       ],
@@ -232,6 +237,8 @@ describe('OidcClient Controller', () => {
       .useValue(oidcClientConfigServiceMock)
       .overrideProvider(CryptographyService)
       .useValue(cryptographyMock)
+      .overrideProvider(EmailValidatorService)
+      .useValue(emailValidatorServiceMock)
       .overrideProvider(CoreFcaFqdnService)
       .useValue(coreFcaFqdnServiceMock)
       .overrideProvider(IdentitySanitizer)
