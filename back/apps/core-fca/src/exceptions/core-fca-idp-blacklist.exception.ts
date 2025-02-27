@@ -6,7 +6,7 @@ import { CoreFcaBaseException } from './core-fca-base.exception';
 export class CoreFcaAgentIdpBlacklistedException extends CoreFcaBaseException {
   static CODE = ErrorCode.PROVIDER_BLACKLISTED_OR_NON_WHITELISTED;
   static DOCUMENTATION =
-    "Le fournisseur d'identité utilisé par l'usager n'est pas autorisé pour ce FS. Cela peut se produire uniquement lorsque l'on a ajouté le FI dans la blacklist du FS. L'utilisateur doit recommencer sa cinématique. Si le problème persiste, contacter le support ProConnect";
+    "Le fournisseur d'identité utilisé par l’usager n’est pas autorisé pour ce FS. Cela peut se produire uniquement lorsque l’on a ajouté le FI dans la blacklist du FS. L’utilisateur doit recommencer sa cinématique. Si le problème persiste, contacter le support ProConnect";
   static HTTP_STATUS_CODE = HttpStatus.BAD_REQUEST;
 
   static ERROR = 'access_denied';

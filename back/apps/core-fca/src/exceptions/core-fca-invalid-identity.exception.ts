@@ -15,4 +15,5 @@ export class CoreFcaInvalidIdentityException extends CoreFcaBaseException {
 
   public description = CoreFcaInvalidIdentityException.DOCUMENTATION;
   public displayContact = true;
+  public contactMessage = 'Signaler l’erreur au service informatique concerné';
 }
