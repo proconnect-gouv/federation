@@ -1,3 +1,4 @@
+import policy from '../oidc-provider-support/policy';
 import { findUserById } from '../user-data';
 
 const {
@@ -111,6 +112,7 @@ export default {
     url(_ctx, interaction) {
       return `/interaction/${interaction.uid}`;
     },
+    policy,
   },
   jwks: {
     keys: [

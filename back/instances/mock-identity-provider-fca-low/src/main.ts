@@ -1,5 +1,6 @@
 import * as express from 'express';
 import { urlencoded } from 'express';
+import { get } from 'lodash';
 import { strict as assert } from 'node:assert';
 import * as path from 'node:path';
 import Provider from 'oidc-provider-v8';
@@ -46,7 +47,11 @@ app.get('/interaction/:uid', async (req, res, next) => {
         uid,
         email: params?.login_hint || defaultUser.email,
         defaultUser,
-        acr: params?.acr_values?.split(' ')[0] || 'eidas1',
+        acr:
+          get(prompt.details, 'acr.value') ||
+          get(prompt.details, 'acr.values.0') ||
+          params?.acr_values?.split(' ')[0] ||
+          'eidas1',
         debugInfo: JSON.stringify(
           {
             oidcProviderPrompt: prompt,
