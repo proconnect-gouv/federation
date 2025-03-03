@@ -150,6 +150,7 @@ const config: Config = {
     '^@fc/logger-plugins(|/.*)$': '<rootDir>/libs/logger-plugins/src/$1',
     '^@mocks/common(|/.*)$': '<rootDir>/libs/common/.mocks/$1',
     '^@mocks/typeorm(|/.*)$': '<rootDir>/libs/typeorm/.mocks/$1',
+    '^@fc/typeorm(|/.*)$': '<rootDir>/libs/typeorm/src/$1',
     '^@fc/postgres(|/.*)$': '<rootDir>/libs/postgres/src/$1',
     '^@fc/partners-account(|/.*)$': '<rootDir>/libs/partners-account/src/$1',
     '^@fc/partners-organisation(|/.*)$':
@@ -178,6 +179,7 @@ const config: Config = {
     '^@fc/service-partners(|/.*)$': '<rootDir>/apps/service-partners/src/$1',
     '^@fc/service-provider(|/.*)$': '<rootDir>/libs/service-provider/src/$1',
     '^@fc/override-code(|/.*)$': '<rootDir>/libs/override-code/src/$1',
+
   },
   preset: 'ts-jest',
 };

@@ -10,7 +10,6 @@ import {
   ValidationPipe,
 } from '@nestjs/common';
 
-import { AccountPermissionRepository } from '@fc/access-control';
 import { ConfigService } from '@fc/config';
 import { IdentityProviderAdapterEnvService } from '@fc/identity-provider-adapter-env';
 import { OidcSession } from '@fc/oidc';
@@ -33,6 +32,7 @@ import {
   SessionNotFoundException,
   SessionService,
 } from '@fc/session';
+import { queryBuilderGetCurrentTimestamp } from '@fc/typeorm';
 
 import { AppConfig } from '../dto';
 import { PartnersBackRoutes, PartnersFrontRoutes } from '../enums';
@@ -48,7 +48,6 @@ export class OidcClientController {
     private readonly config: ConfigService,
     private readonly sessionService: SessionService,
     private readonly partnersAccount: PartnersAccountService,
-    private readonly accessControl: AccountPermissionRepository,
   ) {}
 
   @Get(OidcClientRoutes.REDIRECT_TO_IDP)
@@ -153,15 +152,20 @@ export class OidcClientController {
       siren: identity.siren,
     };
 
-    const { identifiers } = await this.partnersAccount.upsert(partnersAccount);
+    let accountId =
+      await this.partnersAccount.updateLastConnection(partnersAccount);
 
+    if (!accountId) {
+      accountId = await this.partnersAccount.init({
+        ...partnersAccount,
+        lastConnection: queryBuilderGetCurrentTimestamp,
+      });
+    }
     partnersAccount = {
       ...partnersAccount,
-      id: identifiers[0].id,
+      id: accountId,
     };
     sessionPartnersAccount.set({ identity: partnersAccount });
-
-    await this.accessControl.init(identifiers[0].id);
 
     // Temporary redirect
     res.redirect(PartnersFrontRoutes.INDEX);
