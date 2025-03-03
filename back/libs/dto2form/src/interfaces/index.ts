@@ -3,6 +3,7 @@ export * from './field-errors.interface';
 export * from './field-validate-if-rule.interface';
 export * from './field-validator.interface';
 export * from './input-attributes.interface';
+export * from './is-length-i18n-options.interface';
 export * from './metadata-dto.interface';
 export * from './select-attributes.interface';
 export * from './text-attributes.interface';

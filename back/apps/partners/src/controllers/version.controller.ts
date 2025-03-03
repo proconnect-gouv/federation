@@ -6,11 +6,14 @@ import {
   PermissionsType,
   RequirePermission,
 } from '@fc/access-control';
-import { MetadataDtoInterface, MetadataFormService } from '@fc/dto2form';
+import {
+  MetadataDtoInterface,
+  MetadataFormService,
+  PartnersI18nService,
+} from '@fc/dto2form';
 import { ServiceProviderInstanceVersionDto } from '@fc/partners-service-provider-instance-version';
 
 import { PartnersBackRoutes } from '../enums';
-import { PartnersI18nService } from '../services';
 
 @Controller()
 @Injectable()

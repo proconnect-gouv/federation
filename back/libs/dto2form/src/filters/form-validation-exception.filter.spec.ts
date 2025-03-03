@@ -4,10 +4,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 
 import { ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import {
-  MetadataDtoInterface,
-  MetadataDtoValidatorsInterface,
-} from '@fc/dto2form';
 import { FcException } from '@fc/exceptions';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId } from '@fc/exceptions/helpers';
@@ -17,6 +13,10 @@ import { ViewTemplateService } from '@fc/view-templates';
 import { getConfigMock } from '@mocks/config';
 import { getLoggerMock } from '@mocks/logger';
 
+import {
+  MetadataDtoInterface,
+  MetadataDtoValidatorsInterface,
+} from '../interfaces';
 import { PartnersI18nService } from '../services';
 import { FormValidationExceptionFilter } from './form-validation-exception.filter';
 
@@ -210,10 +210,10 @@ describe('FormValidationExceptionFilter', () => {
 
   describe('transformToFinalForm', () => {
     beforeEach(() => {
-      filter['getErrorLabels'] = jest.fn();
+      filter['getErrorMessages'] = jest.fn();
     });
 
-    it('should call getErrorLabels with params', () => {
+    it('should call getErrorMessages with params', () => {
       // Given
       const payloadMock = [
         {
@@ -247,12 +247,12 @@ describe('FormValidationExceptionFilter', () => {
       const _result = filter['transformToFinalForm'](payloadMock);
 
       // Then
-      expect(filter['getErrorLabels']).toHaveBeenCalledTimes(2);
-      expect(filter['getErrorLabels']).toHaveBeenNthCalledWith(
+      expect(filter['getErrorMessages']).toHaveBeenCalledTimes(2);
+      expect(filter['getErrorMessages']).toHaveBeenNthCalledWith(
         1,
         payloadMock[0].validators,
       );
-      expect(filter['getErrorLabels']).toHaveBeenNthCalledWith(
+      expect(filter['getErrorMessages']).toHaveBeenNthCalledWith(
         2,
         payloadMock[1].validators,
       );
@@ -282,7 +282,7 @@ describe('FormValidationExceptionFilter', () => {
         'This field is required',
         'Must be between 3 and 10 characters',
       ];
-      filter['getErrorLabels'] = jest.fn().mockReturnValue(expected);
+      filter['getErrorMessages'] = jest.fn().mockReturnValue(expected);
 
       // When
       const result = filter['transformToFinalForm'](payload);
@@ -308,7 +308,7 @@ describe('FormValidationExceptionFilter', () => {
       const result = filter['transformToFinalForm'](payload);
 
       // Then
-      expect(filter['getErrorLabels']).not.toHaveBeenCalled();
+      expect(filter['getErrorMessages']).not.toHaveBeenCalled();
       expect(result).toEqual({});
     });
 
@@ -320,13 +320,13 @@ describe('FormValidationExceptionFilter', () => {
       const result = filter['transformToFinalForm'](payload);
 
       // Then
-      expect(filter['getErrorLabels']).not.toHaveBeenCalled();
+      expect(filter['getErrorMessages']).not.toHaveBeenCalled();
       expect(result).toEqual({});
     });
   });
 
-  describe('getErrorLabels', () => {
-    it('should call extractErrorLabel with params', () => {
+  describe('getErrorMessages', () => {
+    it('should call extractErrorMessage with params', () => {
       // Given
       const nestedValidatorsMock: (
         | MetadataDtoValidatorsInterface
@@ -351,7 +351,7 @@ describe('FormValidationExceptionFilter', () => {
         ],
       ];
 
-      filter['extractErrorLabel'] = jest
+      filter['extractErrorMessage'] = jest
         .fn()
         .mockReturnValueOnce('This field is required')
         .mockReturnValueOnce([
@@ -360,15 +360,15 @@ describe('FormValidationExceptionFilter', () => {
         ]);
 
       // When
-      const result = filter['getErrorLabels'](nestedValidatorsMock);
+      const result = filter['getErrorMessages'](nestedValidatorsMock);
 
       // Then
-      expect(filter['extractErrorLabel']).toHaveBeenCalledTimes(2);
-      expect(filter['extractErrorLabel']).toHaveBeenNthCalledWith(
+      expect(filter['extractErrorMessage']).toHaveBeenCalledTimes(2);
+      expect(filter['extractErrorMessage']).toHaveBeenNthCalledWith(
         1,
         nestedValidatorsMock[0],
       );
-      expect(filter['extractErrorLabel']).toHaveBeenNthCalledWith(
+      expect(filter['extractErrorMessage']).toHaveBeenNthCalledWith(
         2,
         nestedValidatorsMock[1],
       );
@@ -378,24 +378,8 @@ describe('FormValidationExceptionFilter', () => {
       ]);
     });
   });
-
-  describe('extractErrorLabel', () => {
-    it('should return the errorMessage for a single validator', () => {
-      // Given
-      const validatorMock: MetadataDtoValidatorsInterface = {
-        name: 'isRequired',
-        errorMessage: 'This field is required',
-        validationArgs: [],
-      };
-
-      // When
-      const result = filter['extractErrorLabel'](validatorMock);
-
-      // Then
-      expect(result).toEqual('This field is required');
-    });
-
-    it('should recursively extract error labels for an array of validators', () => {
+  describe('extractErrorMessagesFromArray', () => {
+    it('should extract error labels for an array of validators', () => {
       // Given
       const validatorMock: MetadataDtoValidatorsInterface[] = [
         {
@@ -411,7 +395,7 @@ describe('FormValidationExceptionFilter', () => {
       ];
 
       // When
-      const result = filter['extractErrorLabel'](validatorMock);
+      const result = filter['extractErrorMessagesFromArray'](validatorMock);
 
       // Then
       expect(result).toEqual([
@@ -425,7 +409,61 @@ describe('FormValidationExceptionFilter', () => {
       const emptyValidatorsMock: MetadataDtoValidatorsInterface[] = [];
 
       // When
-      const result = filter['extractErrorLabel'](emptyValidatorsMock);
+      const result =
+        filter['extractErrorMessagesFromArray'](emptyValidatorsMock);
+
+      // Then
+      expect(result).toEqual([]);
+    });
+  });
+
+  describe('extractErrorMessage', () => {
+    it('should return the errorMessage for a single validator', () => {
+      // Given
+      const validatorMock: MetadataDtoValidatorsInterface = {
+        name: 'isRequired',
+        errorMessage: 'This field is required',
+        validationArgs: [],
+      };
+
+      // When
+      const result = filter['extractErrorMessage'](validatorMock);
+
+      // Then
+      expect(result).toEqual('This field is required');
+    });
+
+    it('should extract error labels for an array of validators', () => {
+      // Given
+      const validatorMock: MetadataDtoValidatorsInterface[] = [
+        {
+          name: 'isRequired',
+          errorMessage: 'This field is required',
+          validationArgs: [],
+        },
+        {
+          name: 'isLength',
+          errorMessage: 'Must be between 3 and 10 characters',
+          validationArgs: [],
+        },
+      ];
+
+      // When
+      const result = filter['extractErrorMessage'](validatorMock);
+
+      // Then
+      expect(result).toEqual([
+        'This field is required',
+        'Must be between 3 and 10 characters',
+      ]);
+    });
+
+    it('should return an empty array if the validator array is empty', () => {
+      // Given
+      const emptyValidatorsMock: MetadataDtoValidatorsInterface[] = [];
+
+      // When
+      const result = filter['extractErrorMessage'](emptyValidatorsMock);
 
       // Then
       expect(result).toEqual([]);

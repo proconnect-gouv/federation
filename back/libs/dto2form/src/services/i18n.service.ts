@@ -1,14 +1,14 @@
 import { Injectable } from '@nestjs/common';
 
+import { I18nService, I18nVariables } from '@fc/i18n';
+
+import { Fields } from '../enums';
 import {
-  Fields,
+  IsLengthI18nOptions,
   MetadataDtoInterface,
   MetadataDtoValidatorsInterface,
   ValidatorType,
-} from '@fc/dto2form';
-import { I18nService, I18nVariables } from '@fc/i18n';
-
-import { IsLengthI18nOptions } from '../interfaces';
+} from '../interfaces';
 
 @Injectable()
 export class PartnersI18nService {
@@ -24,7 +24,7 @@ export class PartnersI18nService {
       }
 
       const hint = this.getTranslation('hint', item.name);
-      const validators = this.getValidatorsWithErrorLabels(
+      const validators = this.getValidatorsWithErrorMessages(
         item.validators,
         item.name,
       );
@@ -45,7 +45,7 @@ export class PartnersI18nService {
     return this.i18nService.translate(`Form.${type}.${name}`, option);
   }
 
-  private getValidatorsWithErrorLabels(
+  private getValidatorsWithErrorMessages(
     validators: ValidatorType,
     name: string,
   ): ValidatorType {
@@ -61,11 +61,11 @@ export class PartnersI18nService {
         return this.processValidatorsRecursively(validator, name);
       }
 
-      return this.enhanceValidatorWithErrorLabel(validator, name);
+      return this.enhanceValidatorWithErrorMessage(validator, name);
     }) as MetadataDtoValidatorsInterface[];
   }
 
-  private enhanceValidatorWithErrorLabel(
+  private enhanceValidatorWithErrorMessage(
     validator: MetadataDtoValidatorsInterface,
     name: string,
   ): MetadataDtoValidatorsInterface {
