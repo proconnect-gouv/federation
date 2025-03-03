@@ -32,7 +32,7 @@ describe('InstanceController', () => {
   const instanceMock = {
     getAllowedInstances: jest.fn(),
     getById: jest.fn(),
-    upsert: jest.fn(),
+    save: jest.fn(),
   };
 
   const versionMock = {
@@ -119,7 +119,7 @@ describe('InstanceController', () => {
 
     controller = module.get<InstanceController>(InstanceController);
 
-    instanceMock.upsert.mockResolvedValueOnce({ id: instanceIdMock });
+    instanceMock.save.mockResolvedValueOnce({ id: instanceIdMock });
     versionMock.create.mockResolvedValueOnce({ id: versionIdMock });
     sessionPartnersAccountMock.get.mockReturnValue({ identity: userInfoMock });
     partnersServiceMock.fromFormValues.mockResolvedValue(body);
@@ -184,10 +184,9 @@ describe('InstanceController', () => {
   });
 
   describe('createInstance', () => {
-    it('should call service.upsert with instance value from body', async () => {
+    it('should call service.save with instance value from body', async () => {
       // Given
       const expected = {
-        name: body.name,
         environment: EnvironmentEnum.SANDBOX,
       };
 
@@ -195,7 +194,8 @@ describe('InstanceController', () => {
       await controller.createInstance(body, sessionPartnersAccountMock);
 
       // Then
-      expect(instanceMock.upsert).toHaveBeenCalledExactlyOnceWith(expected);
+      expect(instanceMock.save).toHaveBeenCalledTimes(1);
+      expect(instanceMock.save).toHaveBeenCalledWith(expected);
     });
 
     it('should call version.create with body and instance id', async () => {
@@ -237,20 +237,6 @@ describe('InstanceController', () => {
   });
 
   describe('updateInstance', () => {
-    it('should call service.upsert with body and instance id', async () => {
-      // When
-      await controller.updateInstance(body, instanceIdMock);
-
-      // Then
-      expect(instanceMock.upsert).toHaveBeenCalledTimes(1);
-      expect(instanceMock.upsert).toHaveBeenCalledWith(
-        {
-          name: body.name,
-        },
-        instanceIdMock,
-      );
-    });
-
     it('should call version.create with body and instance id', async () => {
       // When
       await controller.updateInstance(body, instanceIdMock);

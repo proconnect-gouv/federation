@@ -16,7 +16,6 @@ describe('InstancesListComponent', () => {
       createdAt: 'any-createdAt-mock-1' as unknown as ISODate,
       environment: 'SANDBOX' as unknown as Environment,
       id: '1',
-      name: 'name-1',
       updatedAt: 'any-updatedAt-mock-1' as unknown as ISODate,
       versions: [
         {
@@ -27,6 +26,7 @@ describe('InstancesListComponent', () => {
             // @NOTE API interface
             // eslint-disable-next-line @typescript-eslint/naming-convention
             client_secret: 'any-client_secret-mock-1',
+            name: 'any-name-mock-1',
           },
         } as unknown as VersionInterface,
       ],
@@ -35,7 +35,6 @@ describe('InstancesListComponent', () => {
       createdAt: 'any-createdAt-mock-2' as unknown as ISODate,
       environment: 'SANDBOX' as unknown as Environment,
       id: '2',
-      name: 'name-2',
       updatedAt: 'any-updatedAt-mock-2' as unknown as ISODate,
       versions: [
         {
@@ -46,6 +45,7 @@ describe('InstancesListComponent', () => {
             // @NOTE API interface
             // eslint-disable-next-line @typescript-eslint/naming-convention
             client_secret: 'any-client_secret-mock-2',
+            name: 'any-name-mock-2',
           },
         } as unknown as VersionInterface,
       ],
@@ -54,7 +54,6 @@ describe('InstancesListComponent', () => {
       createdAt: 'any-createdAt-mock-3' as unknown as ISODate,
       environment: 'SANDBOX' as unknown as Environment,
       id: '3',
-      name: 'name-3',
       updatedAt: 'any-updatedAt-mock-3' as unknown as ISODate,
       versions: [
         {
@@ -65,6 +64,7 @@ describe('InstancesListComponent', () => {
             // @NOTE API interface
             // eslint-disable-next-line @typescript-eslint/naming-convention
             client_secret: 'any-client_secret-mock-3',
+            name: 'any-name-mock-3',
           },
         } as unknown as VersionInterface,
       ],
@@ -89,9 +89,9 @@ describe('InstancesListComponent', () => {
           // @NOTE API interface
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: 'any-client_secret-mock-1',
+          name: 'any-name-mock-1',
         },
         id: '1',
-        name: 'name-1',
       },
       {},
     );
@@ -106,9 +106,9 @@ describe('InstancesListComponent', () => {
           // @NOTE API interface
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: 'any-client_secret-mock-2',
+          name: 'any-name-mock-2',
         },
         id: '2',
-        name: 'name-2',
       },
       {},
     );
@@ -123,9 +123,9 @@ describe('InstancesListComponent', () => {
           // @NOTE API interface
           // eslint-disable-next-line @typescript-eslint/naming-convention
           client_secret: 'any-client_secret-mock-3',
+          name: 'any-name-mock-3',
         },
         id: '3',
-        name: 'name-3',
       },
       {},
     );

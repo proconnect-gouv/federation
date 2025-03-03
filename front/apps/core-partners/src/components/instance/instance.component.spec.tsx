@@ -10,7 +10,6 @@ describe('InstanceComponent', () => {
   it('should match the snapshot', () => {
     // Given
     const idMock = 'any-id-mock';
-    const nameMock = 'any-name-mock';
     const dataMock = {
       // @NOTE API interface
       // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -18,6 +17,7 @@ describe('InstanceComponent', () => {
       // @NOTE API interface
       // eslint-disable-next-line @typescript-eslint/naming-convention
       client_secret: 'any-client_secret-mock',
+      name: 'any-name-mock',
     };
     const createdAtMock = Symbol('any-create-at-mock') as unknown as ISODate;
 
@@ -25,7 +25,7 @@ describe('InstanceComponent', () => {
 
     // When
     const { container, getByText } = render(
-      <InstanceComponent createdAt={createdAtMock} data={dataMock} id={idMock} name={nameMock} />,
+      <InstanceComponent createdAt={createdAtMock} data={dataMock} id={idMock} />,
     );
     const clientIdElt = getByText('any-client_id-mock');
     const clientSecretElt = getByText('any-client_secret-mock');
