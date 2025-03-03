@@ -54,6 +54,10 @@ const oidcClientModule = OidcClientModule.register(
   ServiceProviderAdapterEnvModule,
 );
 
+const accessControlModule = AccessControlModule.withRolesHandler(
+  AppPermissionsHandler,
+);
+
 @Module({
   imports: [
     AsyncLocalStorageModule,
@@ -70,9 +74,9 @@ const oidcClientModule = OidcClientModule.register(
     CqrsModule,
     ViewTemplatesModule,
     PostgresModule,
-    PartnersAccountModule,
+    PartnersAccountModule.register(accessControlModule),
     PartnersServiceProviderInstanceVersionModule,
-    AccessControlModule.withRolesHandler(AppPermissionsHandler),
+    accessControlModule,
     Dto2formModule,
     CsmrConfigClientModule.registerFor('SandboxLow'),
     HttpProxyModule,

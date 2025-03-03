@@ -18,8 +18,8 @@ import {
 
 import {
   AccessControlGuard,
-  AccountPermissionRepository,
   AccountPermissions,
+  AccountPermissionService,
   EntityType,
   PermissionInterface,
   PermissionsType,
@@ -51,9 +51,9 @@ export class InstanceController {
   constructor(
     private readonly instance: PartnersServiceProviderInstanceService,
     private readonly version: PartnersServiceProviderInstanceVersionService,
-    private readonly accessControl: AccountPermissionRepository,
     private readonly publication: PartnerPublicationService,
     private readonly form: PartnersInstanceVersionFormService,
+    private readonly accessControl: AccountPermissionService,
   ) {}
 
   @Get(PartnersBackRoutes.SP_INSTANCES)
@@ -108,6 +108,10 @@ export class InstanceController {
     const {
       identity: { id: accountId },
     } = sessionPartnersAccount.get();
+    /**
+     * @TODO #2149 passer par une transaction
+     **/
+
     const data = await this.form.fromFormValues(values);
     const { id: instanceId } = await this.instance.upsert({
       name: data.name,
@@ -122,8 +126,12 @@ export class InstanceController {
       status,
     );
 
-    await this.accessControl.addVersionPermission(accountId, versionId);
-    await this.accessControl.addInstancePermission(accountId, instanceId);
+    await this.accessControl.addPermission({
+      accountId,
+      permissionType: PermissionsType.VIEW,
+      entity: EntityType.SP_INSTANCE,
+      entityId: instanceId,
+    });
 
     await this.publication.publish(
       instanceId,
@@ -150,13 +158,7 @@ export class InstanceController {
   async updateInstance(
     @Body() data: ServiceProviderInstanceVersionDto,
     @Param('instanceId') instanceId: string,
-    @Session('PartnersAccount')
-    sessionPartnersAccount: ISessionService<PartnersAccountSession>,
   ): Promise<FSA<FSAMeta, unknown>> {
-    const {
-      identity: { id: accountId },
-    } = sessionPartnersAccount.get();
-
     const fullData = await this.form.fromFormValues(data, instanceId);
 
     await this.instance.upsert(
@@ -173,8 +175,6 @@ export class InstanceController {
       instanceId,
       status,
     );
-
-    await this.accessControl.addVersionPermission(accountId, versionId);
 
     await this.publication.publish(
       instanceId,

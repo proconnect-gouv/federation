@@ -231,6 +231,8 @@
       "@fc/postgres/*": ["libs/postgres/src/*"],
       "@mocks/typeorm": ["libs/typeorm/.mocks"],
       "@mocks/typeorm/*": ["libs/typeorm/.mocks/*"],
+      "@fc/typeorm": ["libs/typeorm/src"],
+      "@fc/typeorm/*": ["libs/typeorm/src/*"],
       "@fc/partners-account": ["libs/partners-account/src"],
       "@fc/partners-account/*": ["libs/partners-account/src/*"],
       "@fc/partners-organisation": ["libs/partners-organisation/src"],

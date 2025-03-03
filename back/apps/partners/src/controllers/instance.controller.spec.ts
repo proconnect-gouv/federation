@@ -4,7 +4,9 @@ import { EnvironmentEnum, PublicationStatusEnum } from '@entities/typeorm';
 
 import {
   AccessControlGuard,
-  AccountPermissionRepository,
+  AccountPermissionService,
+  EntityType,
+  PermissionsType,
 } from '@fc/access-control';
 import { CsrfTokenGuard } from '@fc/csrf';
 import { FormValidationPipe } from '@fc/dto2form';
@@ -37,9 +39,8 @@ describe('InstanceController', () => {
     create: jest.fn(),
   };
 
-  const accountPermissionRepositoryMock = {
-    addInstancePermission: jest.fn(),
-    addVersionPermission: jest.fn(),
+  const accountPermissionServiceMock = {
+    addPermission: jest.fn(),
   };
 
   const partnersServiceMock = {
@@ -93,7 +94,7 @@ describe('InstanceController', () => {
       providers: [
         PartnersServiceProviderInstanceService,
         PartnersServiceProviderInstanceVersionService,
-        AccountPermissionRepository,
+        AccountPermissionService,
         PartnerPublicationService,
         PartnersInstanceVersionFormService,
       ],
@@ -102,8 +103,8 @@ describe('InstanceController', () => {
       .useValue(instanceMock)
       .overrideProvider(PartnersServiceProviderInstanceVersionService)
       .useValue(versionMock)
-      .overrideProvider(AccountPermissionRepository)
-      .useValue(accountPermissionRepositoryMock)
+      .overrideProvider(AccountPermissionService)
+      .useValue(accountPermissionServiceMock)
       .overrideProvider(PartnersInstanceVersionFormService)
       .useValue(partnersServiceMock)
       .overrideGuard(AccessControlGuard)
@@ -218,41 +219,27 @@ describe('InstanceController', () => {
       expect(sessionPartnersAccountMock.get).toHaveBeenCalledTimes(1);
     });
 
-    it('should call addInstancePermission with instanceId and accountId', async () => {
+    it('should call addPermission with instanceId, accountId and default params', async () => {
       // When
       await controller.createInstance(body, sessionPartnersAccountMock);
 
       // Then
-      expect(
-        accountPermissionRepositoryMock.addInstancePermission,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        accountPermissionRepositoryMock.addInstancePermission,
-      ).toHaveBeenCalledWith(userInfoMock.id, instanceIdMock);
-    });
-
-    it('should call addVersionPermission with versionId and accountId', async () => {
-      // When
-      await controller.createInstance(body, sessionPartnersAccountMock);
-
-      // Then
-      expect(
-        accountPermissionRepositoryMock.addVersionPermission,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        accountPermissionRepositoryMock.addVersionPermission,
-      ).toHaveBeenCalledWith(userInfoMock.id, versionIdMock);
+      expect(accountPermissionServiceMock.addPermission).toHaveBeenCalledTimes(
+        1,
+      );
+      expect(accountPermissionServiceMock.addPermission).toHaveBeenCalledWith({
+        accountId: userInfoMock.id,
+        entityId: instanceIdMock,
+        entity: EntityType.SP_INSTANCE,
+        permissionType: PermissionsType.VIEW,
+      });
     });
   });
 
   describe('updateInstance', () => {
     it('should call service.upsert with body and instance id', async () => {
       // When
-      await controller.updateInstance(
-        body,
-        instanceIdMock,
-        sessionPartnersAccountMock,
-      );
+      await controller.updateInstance(body, instanceIdMock);
 
       // Then
       expect(instanceMock.upsert).toHaveBeenCalledTimes(1);
@@ -266,11 +253,7 @@ describe('InstanceController', () => {
 
     it('should call version.create with body and instance id', async () => {
       // When
-      await controller.updateInstance(
-        body,
-        instanceIdMock,
-        sessionPartnersAccountMock,
-      );
+      await controller.updateInstance(body, instanceIdMock);
 
       // Then
       expect(versionMock.create).toHaveBeenCalledTimes(1);
@@ -279,35 +262,6 @@ describe('InstanceController', () => {
         instanceIdMock,
         pendingPublicationStatus,
       );
-    });
-
-    it('should call session partner account to retrieve accountId', async () => {
-      // When
-      await controller.updateInstance(
-        body,
-        instanceIdMock,
-        sessionPartnersAccountMock,
-      );
-
-      // Then
-      expect(sessionPartnersAccountMock.get).toHaveBeenCalledTimes(1);
-    });
-
-    it('should call addVersionPermission with versionId and accountId', async () => {
-      // When
-      await controller.updateInstance(
-        body,
-        instanceIdMock,
-        sessionPartnersAccountMock,
-      );
-
-      // Then
-      expect(
-        accountPermissionRepositoryMock.addVersionPermission,
-      ).toHaveBeenCalledTimes(1);
-      expect(
-        accountPermissionRepositoryMock.addVersionPermission,
-      ).toHaveBeenCalledWith(userInfoMock.id, versionIdMock);
     });
   });
 });

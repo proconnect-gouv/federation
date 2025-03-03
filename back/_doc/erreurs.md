@@ -316,6 +316,11 @@
 |---|---|---|---|
 | [<b>560001</b>](../libs/postgres/src/exceptions/postgres-operation-failure.exception.ts) | Une erreur est survenue lors de l&#39;appel à la base de donnée. Contacter le support N3. |  | <b>Classe :</b> [PostgresOperationFailure](../libs/postgres/src/exceptions/postgres-operation-failure.exception.ts) <br /><b>Code HTTP :</b> 401 <br /><b>error :</b>  <br /> <b>error_description :</b>  |
 
+## @fc/partners-account
+| Code d'erreur | Description | Message utilisateur | Infos techniques |
+|---|---|---|---|
+| [<b>570001</b>](../libs/partners-account/src/exceptions/partners-account-init.exception.ts) |  |  | <b>Classe :</b> [PartnersAccountInitException](../libs/partners-account/src/exceptions/partners-account-init.exception.ts) <br /><b>Code HTTP :</b> 500 <br /><b>error :</b>  <br /> <b>error_description :</b>  |
+
 ## @fc/core-fcp
 | Code d'erreur | Description | Message utilisateur | Infos techniques |
 |---|---|---|---|
