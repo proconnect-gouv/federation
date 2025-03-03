@@ -7,7 +7,7 @@ import { AppModule } from '@fc/app';
 import { AsyncLocalStorageModule } from '@fc/async-local-storage';
 import { CsmrConfigClientModule } from '@fc/csmr-config-client';
 import { CsrfModule } from '@fc/csrf';
-import { Dto2formModule } from '@fc/dto2form';
+import { Dto2formModule, FormValidationExceptionFilter } from '@fc/dto2form';
 import {
   ExceptionsModule,
   FcWebJsonExceptionFilter,
@@ -39,11 +39,9 @@ import {
   PartnersController,
   VersionController,
 } from './controllers/';
-import { FormValidationExceptionFilter } from './filters';
 import { AppPermissionsHandler } from './handlers';
 import {
   PartnerPublicationService,
-  PartnersI18nService,
   PartnersInstanceVersionFormService,
 } from './services';
 
@@ -97,7 +95,6 @@ const accessControlModule = AccessControlModule.withRolesHandler(
       provide: APP_FILTER,
       useClass: FormValidationExceptionFilter,
     },
-    PartnersI18nService,
     PartnersInstanceVersionFormService,
   ],
   controllers: [

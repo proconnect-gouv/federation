@@ -8,17 +8,17 @@ import { EventBus } from '@nestjs/cqrs';
 
 import { ApiErrorMessage, ApiErrorParams } from '@fc/app';
 import { ConfigService } from '@fc/config';
-import {
-  MetadataDtoInterface,
-  MetadataDtoValidatorsInterface,
-  ValidatorType,
-} from '@fc/dto2form';
 import { Dto2FormValidationErrorException } from '@fc/dto2form/exceptions';
 import { BaseException, FcBaseExceptionFilter } from '@fc/exceptions';
 import { ExceptionCaughtEvent } from '@fc/exceptions/events';
 import { generateErrorId, getClass } from '@fc/exceptions/helpers';
 import { LoggerService } from '@fc/logger';
 
+import {
+  MetadataDtoInterface,
+  MetadataDtoValidatorsInterface,
+  ValidatorType,
+} from '../interfaces';
 import { PartnersI18nService } from '../services';
 
 @Catch(Dto2FormValidationErrorException)
@@ -88,7 +88,7 @@ export class FormValidationExceptionFilter
         const hasValidators = validators && validators.length > 0;
 
         if (hasValidators) {
-          acc[name] = this.getErrorLabels(validators);
+          acc[name] = this.getErrorMessages(validators);
         }
 
         return acc;
@@ -97,17 +97,23 @@ export class FormValidationExceptionFilter
     );
   }
 
-  private getErrorLabels(validators: ValidatorType): unknown[] {
-    return validators.map((validator) => this.extractErrorLabel(validator));
+  private getErrorMessages(validators: ValidatorType): unknown[] {
+    return validators.map((validator) => this.extractErrorMessage(validator));
   }
 
-  private extractErrorLabel(
+  private extractErrorMessagesFromArray(
+    validators: MetadataDtoValidatorsInterface[],
+  ): unknown[] {
+    return validators.map((v) => v.errorMessage);
+  }
+
+  private extractErrorMessage(
     validator:
       | MetadataDtoValidatorsInterface
       | MetadataDtoValidatorsInterface[],
   ): unknown {
     if (Array.isArray(validator)) {
-      return validator.map((v) => this.extractErrorLabel(v));
+      return this.extractErrorMessagesFromArray(validator);
     }
     return validator.errorMessage;
   }
