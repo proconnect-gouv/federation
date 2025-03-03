@@ -113,8 +113,7 @@ export class InstanceController {
      **/
 
     const data = await this.form.fromFormValues(values);
-    const { id: instanceId } = await this.instance.upsert({
-      name: data.name,
+    const { id: instanceId } = await this.instance.save({
       environment: EnvironmentEnum.SANDBOX,
     });
 
@@ -160,13 +159,6 @@ export class InstanceController {
     @Param('instanceId') instanceId: string,
   ): Promise<FSA<FSAMeta, unknown>> {
     const fullData = await this.form.fromFormValues(data, instanceId);
-
-    await this.instance.upsert(
-      {
-        name: fullData.name,
-      },
-      instanceId,
-    );
 
     // Skip "DRAFT" for sandbox since there is no point to update right after creation
     const status = PublicationStatusEnum.PENDING;

@@ -8,41 +8,37 @@ import type { VersionInterface } from '../../interfaces';
 
 interface InstanceComponentProps {
   id: string;
-  name: string;
   createdAt: ISODate;
   data: VersionInterface['data'];
 }
 
-export const InstanceComponent = React.memo(
-  ({ createdAt, data, id, name }: InstanceComponentProps) => {
-    const date = t('CorePartners.instance.createdAt', { date: createdAt });
+export const InstanceComponent = React.memo(({ createdAt, data, id }: InstanceComponentProps) => {
+  const { client_id: clientId, client_secret: clientSecret, name } = data;
 
-    const clientId = data.client_id;
-    const clientSecret = data.client_secret;
+  const date = t('CorePartners.instance.createdAt', { date: createdAt });
 
-    return (
-      <CardComponent
-        enlargeLink
-        details={{
-          top: {
-            className: 'fr-icon-arrow-right-line',
-            content: date,
-          },
-        }}
-        link={id}
-        size={Sizes.LARGE}
-        title={name}>
-        <p>
-          <b className="is-block">Client ID</b>
-          <span data-testid="InstanceComponent-client-id">{clientId}</span>
-        </p>
-        <p>
-          <b className="is-block">Client Secret</b>
-          <span data-testid="InstanceComponent-client-secret">{clientSecret}</span>
-        </p>
-      </CardComponent>
-    );
-  },
-);
+  return (
+    <CardComponent
+      enlargeLink
+      details={{
+        top: {
+          className: 'fr-icon-arrow-right-line',
+          content: date,
+        },
+      }}
+      link={id}
+      size={Sizes.LARGE}
+      title={name}>
+      <p>
+        <b className="is-block">Client ID</b>
+        <span data-testid="InstanceComponent-client-id">{clientId}</span>
+      </p>
+      <p>
+        <b className="is-block">Client Secret</b>
+        <span data-testid="InstanceComponent-client-secret">{clientSecret}</span>
+      </p>
+    </CardComponent>
+  );
+});
 
 InstanceComponent.displayName = 'InstanceComponent';
