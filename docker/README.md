@@ -17,20 +17,12 @@ This directory contains everything to run a local FranceConnect or AgentConnect 
 ### Access a MongoDb shell
 
 ```bash
-dks mongo-shell-core-fcp-high
-# Or
-dks mongo-shell-core-fcp-low
-# Or
 dks mongo-shell-core-fca-low
 ```
 
 ### Reset the MongoDb fixtures
 
 ```bash
-dks reset-db-core-fcp-high
-# Or
-dks reset-db-core-fcp-low
-# Or
 dks reset-db-core-fca-low
 ```
 
@@ -111,13 +103,13 @@ services:
   <my_application>:
     image: alpine
     depends_on:
-      - "<my_application>-<front/back>"
+      - '<my_application>-<front/back>'
 
   bdd-<my_application>:
     image: alpine
     depends_on:
       # -- MY APPLICATION
-      - "<my_application>"
+      - '<my_application>'
 ```
 
 - create the application availables services `<my_application>/<my_application>.yml` file
@@ -132,16 +124,16 @@ services:
     depends_on:
       - <...any_required_service...>
     volumes:
-      - "${VOLUMES_DIR}/src/fc/<back/front>:/var/www/app"
-      - "${VOLUMES_DIR}/app:/opt/scripts"
-      - "${VOLUMES_DIR}/.home:/home"
+      - '${VOLUMES_DIR}/src/fc/<back/front>:/var/www/app'
+      - '${VOLUMES_DIR}/app:/opt/scripts'
+      - '${VOLUMES_DIR}/.home:/home'
       - <...others_required_volumes...>
     env_file:
-      - "${COMPOSE_DIR}/shared/.env/base-app.env"
+      - '${COMPOSE_DIR}/shared/.env/base-app.env'
     networks:
       - public
     init: true
-    command: "pm2 logs"
+    command: 'pm2 logs'
 ```
 
 #### Front Application
@@ -163,5 +155,5 @@ services:
   <my_application>:
     image: alpine
     depends_on:
-      - "<my_application>-front"
+      - '<my_application>-front'
 ```

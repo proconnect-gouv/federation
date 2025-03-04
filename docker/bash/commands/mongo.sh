@@ -37,31 +37,10 @@ _mongo_script() {
 }
 
 # Presets for backward compatibility
-
-_reset_db_fcp_high() {
-  _reset_mongodb "mongo-fcp-high"
-}
-
-_reset_db_fcp_low() {
-  _reset_mongodb "mongo-fcp-low"
-}
-
 _reset_db_core_fca_low() {
   _reset_mongodb "mongo-fca-low"
 }
 
 _mongo_shell_core_fca_low() {
   _mongo_core_shell "fca-low"
-}
-
-_mongo_shell_core_fcp_high() {
-  _mongo_core_shell "fcp-high"
-}
-
-_mongo_shell_core_fcp_low() {
-  _mongo_core_shell "fcp-low"
-
-}
-_mongo_shell_core_legacy() {
-  _mongo_core_shell "legacy"
 }
