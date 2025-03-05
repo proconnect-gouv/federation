@@ -67,12 +67,6 @@ export interface OidcClientInterface {
   title?: string;
 
   /**
-   * Only used in core-fca
-   * @todo remove if proConnect fork ratified
-   */
-  ssoDisabled: boolean;
-
-  /**
    * Management only
    */
   emails: string[];

@@ -1,15 +1,14 @@
-# Description du besoin 
+# Description du besoin
 
-En tant que dev, 
+En tant que dev,
 
 Je challenge l'architecture
 
-Afin m'assurer que l'architecture du core-fcp / core-fca est toujours adaptée et maintenable
+Afin de m'assurer que l'architecture du core-fcp est toujours adaptée et maintenable
 
 # Situation Actuelle
 
 Le code évoluant régulièrement, il faut veiller à faire évoluer l'architecture pour qu'elle soit adaptée aux besoins du projet
-
 
 # Actions
 
@@ -17,12 +16,11 @@ Le code évoluant régulièrement, il faut veiller à faire évoluer l'architect
 - [ ] Faire une revue du code
 - [ ] Mettre en commentaire le compte rendu de la revue de code / des questions sur l'architecture
 
-Si besoin 
+Si besoin
 
 - [ ] Faire des ateliers pour discuter entre dev / ops sur les évolutions d'architecture
 - [ ] Créer des tickets pour appliquer des évolutions décidées
 - [ ] Lier les tickets créés avec ce ticket
-
 
 # Recette
 

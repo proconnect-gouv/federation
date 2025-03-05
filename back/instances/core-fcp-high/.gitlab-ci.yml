@@ -29,7 +29,6 @@ fcp-high:
       - back/node_modules/
       # Front
       - front/node_modules/
-      - front/instances/agent-connect/node_modules/
       - front/instances/user-dashboard/node_modules/
       # Quality
       - quality/node_modules/

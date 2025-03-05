@@ -40,11 +40,6 @@ export class OidcProviderController {
   getLogin(
     @Req() req,
     @Res() res,
-    /**
-     * @TODO #1018 Refactoriser la partie API du controller core-fca
-     * @see https://gitlab.dev-franceconnect.fr/france-connect/fc/-/issues/1018
-     * @ticket FC-1018
-     */
     @Session('OidcClient')
     sessionOidc: ISessionService<OidcClientSession>,
   ): Promise<void> {
