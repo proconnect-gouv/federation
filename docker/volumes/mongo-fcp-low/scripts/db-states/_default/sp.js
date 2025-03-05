@@ -4,9 +4,7 @@ const fsp = {
     name: "fsp1-low",
     title: "FSP1 - LOW",
     eidas: 2,
-    site: [
-      "https://fsp1-low.docker.dev-franceconnect.fr/login",
-    ],
+    site: ["https://fsp1-low.docker.dev-franceconnect.fr/login"],
     redirect_uris: [
       "https://fsp1-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
@@ -37,8 +35,6 @@ const fsp = {
       "birthcountry",
       "email",
       "preferred_username",
-      "address",
-      "phone",
       "profile",
       "birth",
       "identite_pivot",
@@ -72,9 +68,7 @@ const fsp = {
     name: "fsp2-low",
     title: "FSP2 - LOW",
     eidas: 2,
-    site: [
-      "https://fsp2-low.docker.dev-franceconnect.fr/login",
-    ],
+    site: ["https://fsp2-low.docker.dev-franceconnect.fr/login"],
     redirect_uris: [
       "https://fsp2-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
@@ -105,8 +99,6 @@ const fsp = {
       "birthcountry",
       "email",
       "preferred_username",
-      "address",
-      "phone",
       "profile",
       "birth",
       "identite_pivot",
@@ -144,9 +136,7 @@ const fsp = {
     name: "fsp3-low",
     title: "FSP3 - LOW",
     eidas: 1,
-    site: [
-      "https://fsp3-low.docker.dev-franceconnect.fr/login",
-    ],
+    site: ["https://fsp3-low.docker.dev-franceconnect.fr/login"],
     redirect_uris: [
       "https://fsp3-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
@@ -177,8 +167,6 @@ const fsp = {
       "birthcountry",
       "email",
       "preferred_username",
-      "address",
-      "phone",
       "profile",
       "birth",
       "identite_pivot",
@@ -217,9 +205,7 @@ const fsp = {
     name: "fsp4-low",
     title: "FSP4 - LOW",
     eidas: 1,
-    site: [
-      "https://fsp4-low.docker.dev-franceconnect.fr/login",
-    ],
+    site: ["https://fsp4-low.docker.dev-franceconnect.fr/login"],
     redirect_uris: [
       "https://fsp4-low.docker.dev-franceconnect.fr/oidc-callback",
     ],
@@ -250,8 +236,6 @@ const fsp = {
       "birthcountry",
       "email",
       "preferred_username",
-      "address",
-      "phone",
       "profile",
       "birth",
       "identite_pivot",
@@ -283,9 +267,7 @@ const fsp = {
   "user dashboard": {
     name: "User Dashboard",
     title: "Tableau de bord",
-    site: [
-      "https://ud.docker.dev-franceconnect.fr/",
-    ],
+    site: ["https://ud.docker.dev-franceconnect.fr/"],
     redirect_uris: ["https://ud.docker.dev-franceconnect.fr/api/oidc-callback"],
     post_logout_redirect_uris: [
       "https://ud.docker.dev-franceconnect.fr/api/logout-callback",
