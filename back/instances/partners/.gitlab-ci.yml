@@ -29,7 +29,6 @@ partners:
       - back/node_modules/
       # Front
       - front/node_modules/
-      - front/instances/agent-connect/node_modules/
       - front/instances/partners/node_modules/
       # Quality
       - quality/node_modules/
@@ -86,7 +85,7 @@ partners:
     - docker-stack start-all-ci
     # Ensure the required apps are running
     - docker-stack wait "partners-front" "https://partners.docker.dev-franceconnect.fr" "240"
-    - docker-stack wait "core-fca-low" "https://core-fca-low.docker.dev-franceconnect.fr/api/v2/.well-known/openid-configuration"
+    - docker-stack wait "mock-proconnect" "https://mock-proconnect.docker.dev-franceconnect.fr/.well-known/openid-configuration"
     # Starting Cypress Quality checks
     - cd $CI_PROJECT_DIR/quality/partners
     - yarn install --frozen-lockfile

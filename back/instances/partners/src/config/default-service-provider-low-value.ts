@@ -45,7 +45,6 @@ export default {
   active: true,
   type: ClientTypeEnum.PUBLIC,
   identityConsent: false,
-  ssoDisabled: false,
 
   id_token_encrypted_response_alg: EncryptionAlgorithmEnum.NONE,
   id_token_encrypted_response_enc: EncryptionEncodingEnum.NONE,

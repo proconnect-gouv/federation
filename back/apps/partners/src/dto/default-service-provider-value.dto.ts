@@ -50,9 +50,6 @@ export class DefaultServiceProviderLowValueConfig {
   @IsBoolean()
   readonly identityConsent: boolean;
 
-  @IsBoolean()
-  readonly ssoDisabled: boolean;
-
   @IsString()
   readonly id_token_encrypted_response_alg: EncryptionAlgorithmEnum;
 

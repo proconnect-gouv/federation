@@ -39,10 +39,6 @@ back:
     - yarn lint
     - yarn prettier
     - yarn tsc --noEmit
-    - cd $CI_PROJECT_DIR/quality/fca
-    - yarn lint
-    - yarn prettier
-    - yarn tsc --noEmit
     - cd $CI_PROJECT_DIR/quality/fcp
     - yarn lint
     - yarn prettier
@@ -63,7 +59,6 @@ build-cache:
       - back/node_modules/
       # Front
       - front/node_modules/
-      - front/instances/agent-connect/node_modules/
       - front/instances/user-dashboard/node_modules/
       # Quality
       - quality/node_modules/
