@@ -18,17 +18,19 @@ export const frFR: I18nTranslationsMapType = {
   ...frViewTemplates,
 
   // form text
+  'Form.label.platformSection': '1. Choix de l’environnement',
   'Form.label.spInformationSection':
-    '1. Informations sur votre Fournisseur de Service',
+    '2. Informations sur votre Fournisseur de Service',
   'Form.label.spConfigurationSection':
-    '2. Configuration de votre Fournisseur de Service',
+    '3. Configuration de votre Fournisseur de Service',
   'Form.label.subSection':
-    '3. Gestion des subs pour votre Fournisseur de Service',
+    '4. Gestion des subs pour votre Fournisseur de Service',
 
   // form create instance label
   'Form.label.name': 'Nom de l’instance',
   'Form.label.client_id': 'Client ID',
   'Form.label.client_secret': 'Client Secret',
+  'Form.label.platform': 'Choix de l’environnement',
   'Form.label.signupId': 'Numéro de la demande datapass',
   'Form.label.site': 'URL du site',
   'Form.label.redirect_uris': 'URL de connexion',
@@ -41,6 +43,7 @@ export const frFR: I18nTranslationsMapType = {
   'Form.hint.name': 'Exemple : Commune de Paris - Portail Citoyen',
   'Form.hint.client_id': '',
   'Form.hint.client_secret': '',
+  'Form.hint.platform': '',
   'Form.hint.signupId':
     'Renseignez ici le numéro de la demande Datapass qui a été validée',
   'Form.hint.site': 'Renseignez ici votre URL de site',
@@ -64,6 +67,9 @@ export const frFR: I18nTranslationsMapType = {
   'Form.isString_error.client_id': 'Veuillez saisir votre client id',
   // client_secret
   'Form.isString_error.client_secret': 'Veuillez saisir votre client secret',
+  // platform
+  'Form.isFilled_error.platform': 'Veuillez saisir votre environnement',
+  'Form.isString_error.platform': 'Veuillez saisir votre environnement',
   // signupId
   'Form.isNumeric_error.signupId': 'Veuillez saisir un numéro valide',
   'Form.isLength_error.max.signupId':

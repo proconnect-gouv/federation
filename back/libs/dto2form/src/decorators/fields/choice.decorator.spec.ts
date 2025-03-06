@@ -1,8 +1,10 @@
+import { FieldsChoice } from '@fc/dto2form/enums';
+
 import { FormDtoBase } from '../../dto';
-import { SelectAttributes } from '../../interfaces';
+import { ChoiceAttributes, ChoiceAttributesArguments } from '../../interfaces';
 import { FORM_METADATA_TOKEN } from '../../tokens';
 import { FormDecoratorHelper } from '../form-decorator.helper';
-import { Select } from './select.decorator';
+import { Choice } from './choice.decorator';
 
 describe('Select', () => {
   class TestDto extends FormDtoBase {}
@@ -10,7 +12,11 @@ describe('Select', () => {
   const keyMock = 'country';
   const attributesMock = Symbol(
     'attributesMock',
-  ) as unknown as SelectAttributes;
+  ) as unknown as ChoiceAttributesArguments;
+
+  const expectedAttributesMock = Symbol(
+    'expectedAttributesMock',
+  ) as unknown as ChoiceAttributes;
 
   beforeEach(() => {
     jest.resetAllMocks();
@@ -22,15 +28,18 @@ describe('Select', () => {
     jest.spyOn(Reflect, 'defineMetadata');
     jest
       .spyOn(FormDecoratorHelper, 'generateFieldMissingAttributes')
-      .mockReturnValue(attributesMock);
+      .mockReturnValueOnce(expectedAttributesMock);
+    jest
+      .spyOn(FormDecoratorHelper, 'generateInputChoiceMissingAttributes')
+      .mockReturnValueOnce(expectedAttributesMock);
     jest
       .spyOn(FormDecoratorHelper, 'handleRequiredField')
-      .mockReturnValue(attributesMock);
+      .mockReturnValueOnce(expectedAttributesMock);
   });
 
   it('should retrieve metadata for the given class', () => {
     // When
-    Select(attributesMock)(targetMock, keyMock);
+    Choice(attributesMock)(targetMock, keyMock);
 
     // Then
     expect(Reflect.getMetadata).toHaveBeenCalledExactlyOnceWith(
@@ -41,7 +50,7 @@ describe('Select', () => {
 
   it('should generate field missing attributes', () => {
     // When
-    Select(attributesMock)(targetMock, keyMock);
+    Choice(attributesMock)(targetMock, keyMock);
 
     // Then
     expect(
@@ -52,25 +61,43 @@ describe('Select', () => {
     ).toHaveBeenCalledExactlyOnceWith(keyMock, attributesMock, 0, 'select');
   });
 
+  it('should generate input choice missing attributes if type is radio or checkbox', () => {
+    // Given
+    const attributesMock = {
+      type: FieldsChoice.RADIO,
+    } as unknown as ChoiceAttributesArguments;
+
+    // When
+    Choice(attributesMock)(targetMock, keyMock);
+
+    // Then
+    expect(
+      FormDecoratorHelper.generateInputChoiceMissingAttributes,
+    ).toHaveBeenCalledOnce();
+    expect(
+      FormDecoratorHelper.generateInputChoiceMissingAttributes,
+    ).toHaveBeenCalledExactlyOnceWith(expectedAttributesMock);
+  });
+
   it('should call handleRequiredField', () => {
     // When
-    Select(attributesMock)(targetMock, keyMock);
+    Choice(attributesMock)(targetMock, keyMock);
 
     // Then
     expect(FormDecoratorHelper.handleRequiredField).toHaveBeenCalledOnce();
     expect(
       FormDecoratorHelper.handleRequiredField,
-    ).toHaveBeenCalledExactlyOnceWith(attributesMock);
+    ).toHaveBeenCalledExactlyOnceWith(expectedAttributesMock);
   });
 
   it('should define metadata with the return of generateFieldMissingAttributes for the given class', () => {
     // When
-    Select(attributesMock)(targetMock, keyMock);
+    Choice(attributesMock)(targetMock, keyMock);
 
     // Then
     expect(Reflect.defineMetadata).toHaveBeenCalledExactlyOnceWith(
       FORM_METADATA_TOKEN,
-      [attributesMock],
+      [expectedAttributesMock],
       targetMock.constructor,
     );
   });
@@ -85,12 +112,12 @@ describe('Select', () => {
     jest.mocked(Reflect.defineMetadata).mockClear();
 
     // When
-    Select(attributesMock)(targetMock, keyMock);
+    Choice(attributesMock)(targetMock, keyMock);
 
     // Then
     expect(Reflect.defineMetadata).toHaveBeenCalledExactlyOnceWith(
       FORM_METADATA_TOKEN,
-      [attributesMock],
+      [expectedAttributesMock],
       targetMock.constructor,
     );
   });

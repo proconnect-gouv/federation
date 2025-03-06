@@ -1,29 +1,41 @@
 import 'reflect-metadata';
 
+import { FieldsChoice } from '@fc/dto2form/enums';
+
 import { FormDtoBase } from '../../dto';
 import {
+  ChoiceAttributes,
+  ChoiceAttributesArguments,
   FieldAttributes,
-  SelectAttributes,
-  SelectAttributesArguments,
 } from '../../interfaces';
 import { FORM_METADATA_TOKEN } from '../../tokens';
 import { FormDecoratorHelper } from '../form-decorator.helper';
 
-export function Select(attributes: SelectAttributesArguments) {
+export function Choice(attributes: ChoiceAttributesArguments) {
   return (target: FormDtoBase, key: string) => {
     const formMetadata: FieldAttributes[] =
       Reflect.getMetadata(FORM_METADATA_TOKEN, target.constructor) || [];
 
-    const fieldWithMissingAttributes =
-      FormDecoratorHelper.generateFieldMissingAttributes<SelectAttributes>(
+    let fieldWithMissingAttributes =
+      FormDecoratorHelper.generateFieldMissingAttributes<ChoiceAttributes>(
         key,
         attributes,
         formMetadata.length,
         'select',
       );
 
+    if (
+      attributes.type === FieldsChoice.RADIO ||
+      attributes.type === FieldsChoice.CHECKBOX
+    ) {
+      fieldWithMissingAttributes =
+        FormDecoratorHelper.generateInputChoiceMissingAttributes(
+          fieldWithMissingAttributes,
+        );
+    }
+
     const finalAttributes =
-      FormDecoratorHelper.handleRequiredField<SelectAttributes>(
+      FormDecoratorHelper.handleRequiredField<ChoiceAttributes>(
         fieldWithMissingAttributes,
       );
 

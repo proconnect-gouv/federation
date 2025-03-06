@@ -4,7 +4,7 @@ import {
   ClientTypeEnum,
   EncryptionAlgorithmEnum,
   EncryptionEncodingEnum,
-  PlatformEnum,
+  PlatformTechnicalKeyEnum,
   SignatureAlgorithmEnum,
 } from '../enums';
 import { OidcClientInterface, OidcClientLegacyInterface } from '../interfaces';
@@ -54,7 +54,7 @@ describe('ServiceProviderService', () => {
     IPServerAddressesAndRanges: ['IPServerAddressesAndRanges'],
     type: ClientTypeEnum.PRIVATE,
     site: ['site'],
-    platform: PlatformEnum.CORE_FCP,
+    platform: PlatformTechnicalKeyEnum.CORE_FCP,
     rep_scope: ['rep_scope'],
     client_id: 'key',
     client_secret: 'client_secret',
