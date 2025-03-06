@@ -4,7 +4,7 @@ import {
   ClientTypeEnum,
   EncryptionAlgorithmEnum,
   EncryptionEncodingEnum,
-  PlatformEnum,
+  PlatformTechnicalKeyEnum,
   SignatureAlgorithmEnum,
 } from '../enums';
 import { OidcClientInterface, OidcClientLegacyInterface } from '../interfaces';
@@ -77,7 +77,7 @@ export class ServiceProviderService {
       eidas,
       rep_scope,
       type: type as ClientTypeEnum,
-      platform: platform as PlatformEnum,
+      platform: platform as PlatformTechnicalKeyEnum,
       active,
       identityConsent,
       name,

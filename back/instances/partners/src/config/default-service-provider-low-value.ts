@@ -14,7 +14,7 @@ import {
   ClientTypeEnum,
   EncryptionAlgorithmEnum,
   EncryptionEncodingEnum,
-  PlatformEnum,
+  PlatformTechnicalKeyEnum,
   SignatureAlgorithmEnum,
 } from '@fc/service-provider';
 
@@ -37,7 +37,7 @@ export default {
   eidas: 1,
   rep_scope: [],
 
-  platform: PlatformEnum.CORE_FCP,
+  platform: PlatformTechnicalKeyEnum.CORE_FCP,
 
   idpFilterExclude: true,
   idpFilterList: [],

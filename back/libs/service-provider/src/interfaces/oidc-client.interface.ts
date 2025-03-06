@@ -2,7 +2,7 @@ import {
   ClientTypeEnum,
   EncryptionAlgorithmEnum,
   EncryptionEncodingEnum,
-  PlatformEnum,
+  PlatformTechnicalKeyEnum,
   SignatureAlgorithmEnum,
 } from '../enums';
 
@@ -34,7 +34,7 @@ export interface OidcClientInterface {
    * Used while transitioning to the new platform
    * @todo Remove when core-legacy is shuted down
    */
-  platform?: PlatformEnum;
+  platform?: PlatformTechnicalKeyEnum;
 
   /**
    * Used to generate a organisation (entity) wise sub.

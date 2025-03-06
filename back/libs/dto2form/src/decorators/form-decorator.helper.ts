@@ -2,8 +2,10 @@ import { getMetadataStorage } from 'class-validator';
 
 import { convertRegExpToStrings } from '../helpers';
 import {
+  ChoiceAttributes,
   FieldAttributes,
   FieldAttributesArguments,
+  FieldValidateIfRule,
   FieldValidator,
   FieldValidatorBase,
   TextAttributes,
@@ -49,6 +51,14 @@ export class FormDecoratorHelper {
     };
   }
 
+  static getDefaultAttributes<T>(
+    key: string,
+    attributes: FieldAttributesArguments,
+    defaultAttribute?: number | string | FieldValidateIfRule[],
+  ): T {
+    return attributes[key] || defaultAttribute;
+  }
+
   static generateFieldMissingAttributes<T extends FieldAttributes>(
     key: string,
     attributes: FieldAttributesArguments,
@@ -60,28 +70,50 @@ export class FormDecoratorHelper {
         attributes.validators,
       );
 
-    const isArray = Boolean(attributes.array);
+    const array = Boolean(attributes.array);
     const required = Boolean(attributes.required);
     const readonly = Boolean(attributes.readonly);
 
+    const type = FormDecoratorHelper.getDefaultAttributes<string>(
+      'type',
+      attributes,
+      defaultType,
+    );
+    const order = FormDecoratorHelper.getDefaultAttributes<number>(
+      'order',
+      attributes,
+      defaultOrder,
+    );
+    const validateIf = FormDecoratorHelper.getDefaultAttributes<
+      FieldValidateIfRule[]
+    >('validateIf', attributes, [] as FieldValidateIfRule[]);
+
     const initialValue = FormDecoratorHelper.getInitialValue(
-      isArray,
+      array,
       attributes.initialValue,
     );
 
     const result = Object.assign({}, attributes, {
-      type: attributes.type || defaultType,
+      type,
       name: key,
       required,
       readonly,
       initialValue,
-      array: isArray,
-      order: attributes.order || defaultOrder,
-      validateIf: attributes.validateIf || [],
+      array,
+      order,
+      validateIf,
       validators,
     }) as T;
 
     return result;
+  }
+
+  static generateInputChoiceMissingAttributes(
+    attributes: ChoiceAttributes,
+  ): ChoiceAttributes {
+    attributes.inline = Boolean(attributes.inline);
+
+    return attributes;
   }
 
   static handleRequiredField<T extends FieldAttributes>(attributes: T): T {
