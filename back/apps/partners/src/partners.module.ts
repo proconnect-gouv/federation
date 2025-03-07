@@ -43,6 +43,7 @@ import { AppPermissionsHandler } from './handlers';
 import {
   PartnerPublicationService,
   PartnersInstanceVersionFormService,
+  PartnersOidcClientService,
 } from './services';
 
 const oidcClientModule = OidcClientModule.register(
@@ -96,6 +97,7 @@ const accessControlModule = AccessControlModule.withRolesHandler(
       useClass: FormValidationExceptionFilter,
     },
     PartnersInstanceVersionFormService,
+    PartnersOidcClientService,
   ],
   controllers: [
     InstanceController,
