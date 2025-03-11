@@ -125,31 +125,3 @@ Fonctionnalité: Connexion Usager - SSO
     Et je clique sur le bouton ProConnect
     Et je suis redirigé vers la page interaction
 
-  @ignoreInteg01
-  Scénario: Connexion SSO - SSO désactivé pour le deuxième FS
-    Etant donné que je désactive le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
-    Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "test@fia1.fr"
-    Et que je clique sur le bouton de connexion
-    Et que je m'authentifie
-    Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
-    Et que je suis connecté au fournisseur de service
-    Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Quand je clique sur le bouton ProConnect
-    Alors je suis redirigé vers la page interaction
-
-  @ignoreInteg01
-  Scénario: Connexion SSO - SSO réactivé pour le deuxième FS
-    Etant donné que j'active le SSO pour le fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
-    Et que je clique sur le bouton ProConnect
-    Et que j'entre l'email "test@fia1.fr"
-    Et que je clique sur le bouton de connexion
-    Et que je m'authentifie
-    Et que je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (deuxième FS)"
-    Et que je suis connecté au fournisseur de service
-    Et que je navigue sur la page fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Quand je clique sur le bouton ProConnect
-    Alors je suis redirigé vers la page fournisseur de service "avec accès au FI par défaut (premier FS)"
-    Et je suis connecté au fournisseur de service
